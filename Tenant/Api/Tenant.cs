@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Runtime.CompilerServices;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
@@ -13,7 +14,7 @@ namespace Tenant.Api
 
     public static class EndpointExtensions
     {
-        public static void AddTenantEndpoints(this WebApplication app)
+        public static void UseTenantEndpoints(this WebApplication app)
         {
             app.MapGet("/tenants", () =>
                 {
