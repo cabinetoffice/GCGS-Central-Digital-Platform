@@ -27,10 +27,14 @@ namespace Tenant.Api
                     ).ToArray();
                 })
                 .Produces<List<Tenant>>(200, "application/json")
-                .WithName("listTenants")
-                .WithSummary("A list of tenants.")
-                .WithDescription("A list of tenants.")
-                .WithOpenApi();
+                .WithOpenApi(operation =>
+                {
+                    operation.OperationId = "GetTenants";
+                    operation.Description = "A list of tenants.";
+                    operation.Summary = "A list of tenants.";
+                    operation.Responses["200"].Description = "A list of tenants.";
+                    return operation;
+                });
         }
     }
 
