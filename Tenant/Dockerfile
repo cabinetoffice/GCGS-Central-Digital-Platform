@@ -7,10 +7,10 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["Tenant/Tenant.csproj", "Tenant/"]
+COPY ["Tenant.csproj", "Tenant/"]
 RUN dotnet restore "Tenant/Tenant.csproj"
-COPY . .
 WORKDIR "/src/Tenant"
+COPY . .
 RUN dotnet build "Tenant.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
