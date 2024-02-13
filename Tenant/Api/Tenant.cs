@@ -10,6 +10,15 @@ namespace Tenant.Api
         [Required(AllowEmptyStrings = true)] public required string Id { get; init; }
 
         [Required(AllowEmptyStrings = true)] public required string Name { get; init; }
+
+        [Required(AllowEmptyStrings = true)] public required TenantContactInfo ContactInfo { get; init; }
+    }
+    
+    internal record TenantContactInfo
+    {
+        [Required(AllowEmptyStrings = true)] public required string Email { get; init; }
+
+        [Required(AllowEmptyStrings = true)] public required string Phone { get; init; }
     }
 
     public static class EndpointExtensions
@@ -22,8 +31,12 @@ namespace Tenant.Api
                         new Tenant
                         {
                             Id = index.ToString(),
-                            Name = $"Bobby Tables {index}"
+                            Name = $"Bobby Tables {index}",
+                            ContactInfo = new TenantContactInfo {
+                                Email = $"bobby{index}@example.com",
+                                Phone = $"0555 123 95{index}"
                         }
+                    }
                     ).ToArray();
                 })
                 .Produces<List<Tenant>>(200, "application/json")
