@@ -1,0 +1,5 @@
+services:
+  tenant:
+    extends:
+      file: compose.common.yml
+      service: tenant

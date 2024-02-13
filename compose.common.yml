@@ -1,0 +1,10 @@
+version: '3'
+
+services:
+  tenant:
+    container_name: co-org-info-tenant
+    build:
+      context: Tenant
+      dockerfile: Dockerfile
+      target: final
+    image: 'cabinetoffice/org-info-tenant:${IMAGE_VERSION:-latest}'
