@@ -42,26 +42,17 @@ app.UseHttpsRedirection();
 app.MapGet("/tenants", () =>
     {
         return Enumerable.Range(1, 5).Select(index =>
-            new Tenant
+            new Tenant.Api.Tenant
             {
                 Id = index.ToString(),
                 Name = $"Bobby Tables {index}"
             }
         ).ToArray();
     })
-    .Produces<List<Tenant>>(200, "application/json")
+    .Produces<List<Tenant.Api.Tenant>>(200, "application/json")
     .WithName("listTenants")
     .WithSummary("A list of tenants.")
     .WithDescription("A list of tenants.")
     .WithOpenApi();
 
 app.Run();
-
-internal record Tenant
-{
-    [Required(AllowEmptyStrings = true)]
-    public required string Id { get; init; }
-    
-    [Required(AllowEmptyStrings = true)]
-    public required string Name { get; init; }
-}
