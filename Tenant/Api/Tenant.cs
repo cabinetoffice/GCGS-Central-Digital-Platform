@@ -85,6 +85,25 @@ namespace Tenant.Api
                     operation.Responses["204"].Description = "Tenant deleted successfully.";
                     return operation;
                 });
+            app.MapGet("/tenants/{tenantId}", (String tenantId) => Results.Ok(new Tenant
+                {
+                    Id = tenantId,
+                    Name = $"Bobby Tables {tenantId}",
+                    ContactInfo = new TenantContactInfo
+                    {
+                        Email = $"bobby{tenantId}@example.com",
+                        Phone = $"0555 123 95{tenantId}"
+                    }
+                }))
+                .Produces<Tenant>(200, "application/json")
+                .WithOpenApi(operation =>
+                {
+                    operation.OperationId = "GetTenant";
+                    operation.Description = "Get a tenant by ID.";
+                    operation.Summary = "Get a tenant by ID.";
+                    operation.Responses["200"].Description = "Tenant details.";
+                    return operation;
+                });
         }
     }
 
