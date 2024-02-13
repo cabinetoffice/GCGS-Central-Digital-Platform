@@ -75,6 +75,16 @@ namespace Tenant.Api
                     operation.Responses["201"].Description = "Tenant created successfully.";
                     return operation;
                 });
+            app.MapDelete("/tenants/{tenantId}", (String tenantId) => Results.NoContent())
+                .Produces(204)
+                .WithOpenApi(operation =>
+                {
+                    operation.OperationId = "DeleteTenant";
+                    operation.Description = "Delete a tenant.";
+                    operation.Summary = "Delete a tenant.";
+                    operation.Responses["204"].Description = "Tenant deleted successfully.";
+                    return operation;
+                });
         }
     }
 
