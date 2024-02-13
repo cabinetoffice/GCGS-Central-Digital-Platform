@@ -1,5 +1,5 @@
-using System.ComponentModel.DataAnnotations;
 using Microsoft.OpenApi.Models;
+using Tenant.Api;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -38,21 +38,5 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
-app.MapGet("/tenants", () =>
-    {
-        return Enumerable.Range(1, 5).Select(index =>
-            new Tenant.Api.Tenant
-            {
-                Id = index.ToString(),
-                Name = $"Bobby Tables {index}"
-            }
-        ).ToArray();
-    })
-    .Produces<List<Tenant.Api.Tenant>>(200, "application/json")
-    .WithName("listTenants")
-    .WithSummary("A list of tenants.")
-    .WithDescription("A list of tenants.")
-    .WithOpenApi();
-
+app.AddTenantEndpoints();
 app.Run();
