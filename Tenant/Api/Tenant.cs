@@ -42,7 +42,7 @@ namespace Tenant.Api
                 .Produces<List<Tenant>>(200, "application/json")
                 .WithOpenApi(operation =>
                 {
-                    operation.OperationId = "GetTenants";
+                    operation.OperationId = "ListTenants";
                     operation.Description = "A list of tenants.";
                     operation.Summary = "A list of tenants.";
                     operation.Responses["200"].Description = "A list of tenants.";
