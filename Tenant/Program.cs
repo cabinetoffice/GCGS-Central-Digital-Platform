@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -38,14 +39,14 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-
 app.MapGet("/tenants", () =>
     {
         return Enumerable.Range(1, 5).Select(index =>
-            new Tenant(
-                index.ToString(),
-                $"Bobby Tables {index}"
-            )
+            new Tenant
+            {
+                Id = index.ToString(),
+                Name = $"Bobby Tables {index}"
+            }
         ).ToArray();
     })
     .WithName("listTenants")
@@ -55,6 +56,11 @@ app.MapGet("/tenants", () =>
 
 app.Run();
 
-internal record Tenant(string Id, string Name)
+internal record Tenant
 {
+    [Required(AllowEmptyStrings = true)]
+    public required string Id { get; init; }
+    
+    [Required(AllowEmptyStrings = true)]
+    public required string Name { get; init; }
 }
