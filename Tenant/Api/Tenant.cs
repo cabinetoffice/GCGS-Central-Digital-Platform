@@ -13,7 +13,14 @@ namespace Tenant.Api
 
         [Required(AllowEmptyStrings = true)] public required TenantContactInfo ContactInfo { get; init; }
     }
-    
+
+    internal record NewTenant
+    {
+        [Required(AllowEmptyStrings = true)] public required string Name { get; init; }
+
+        [Required(AllowEmptyStrings = true)] public required TenantContactInfo ContactInfo { get; init; }
+    }
+
     internal record TenantContactInfo
     {
         [Required(AllowEmptyStrings = true)] public required string Email { get; init; }
@@ -32,11 +39,12 @@ namespace Tenant.Api
                         {
                             Id = index.ToString(),
                             Name = $"Bobby Tables {index}",
-                            ContactInfo = new TenantContactInfo {
+                            ContactInfo = new TenantContactInfo
+                            {
                                 Email = $"bobby{index}@example.com",
                                 Phone = $"0555 123 95{index}"
+                            }
                         }
-                    }
                     ).ToArray();
                 })
                 .Produces<List<Tenant>>(200, "application/json")
@@ -46,6 +54,25 @@ namespace Tenant.Api
                     operation.Description = "A list of tenants.";
                     operation.Summary = "A list of tenants.";
                     operation.Responses["200"].Description = "A list of tenants.";
+                    return operation;
+                });
+            app.MapPost("/tenants", (NewTenant newTenant) =>
+                {
+                    var tenant = new Tenant
+                    {
+                        Id = Random.Shared.Next(1, 5).ToString(),
+                        Name = newTenant.Name,
+                        ContactInfo = newTenant.ContactInfo
+                    };
+                    return Results.Created(new Uri($"/tenants/{tenant.Id}"), tenant);
+                })
+                .Produces<Tenant>(201, "application/json")
+                .WithOpenApi(operation =>
+                {
+                    operation.OperationId = "CreateTenant";
+                    operation.Description = "Create a new tenant.";
+                    operation.Summary = "Create a new tenant.";
+                    operation.Responses["201"].Description = "Tenant created successfully.";
                     return operation;
                 });
         }
