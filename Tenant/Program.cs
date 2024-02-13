@@ -49,6 +49,7 @@ app.MapGet("/tenants", () =>
             }
         ).ToArray();
     })
+    .Produces<List<Tenant>>(200, "application/json")
     .WithName("listTenants")
     .WithSummary("A list of tenants.")
     .WithDescription("A list of tenants.")
