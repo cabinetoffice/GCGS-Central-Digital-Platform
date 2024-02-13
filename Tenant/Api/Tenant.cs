@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using System.Runtime.CompilerServices;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
@@ -15,6 +14,13 @@ namespace Tenant.Api
     }
 
     internal record NewTenant
+    {
+        [Required(AllowEmptyStrings = true)] public required string Name { get; init; }
+
+        [Required(AllowEmptyStrings = true)] public required TenantContactInfo ContactInfo { get; init; }
+    }
+
+    internal record UpdatedTenant
     {
         [Required(AllowEmptyStrings = true)] public required string Name { get; init; }
 
@@ -102,6 +108,29 @@ namespace Tenant.Api
                     operation.Description = "Get a tenant by ID.";
                     operation.Summary = "Get a tenant by ID.";
                     operation.Responses["200"].Description = "Tenant details.";
+                    return operation;
+                });
+            app.MapPut("/tenants/{tenantId}", (String tenantId, UpdatedTenant updatedTenant) =>
+                {
+                    var tenant = new Tenant
+                    {
+                        Id = tenantId,
+                        Name = updatedTenant.Name ?? $"Bobby Tables {tenantId}",
+                        ContactInfo = updatedTenant.ContactInfo ?? new TenantContactInfo
+                        {
+                            Email = $"bobby{tenantId}@example.com",
+                            Phone = $"0555 123 95{tenantId}"
+                        }
+                    };
+                    return Results.Ok(tenant);
+                })
+                .Produces<Tenant>(200, "application/json")
+                .WithOpenApi(operation =>
+                {
+                    operation.OperationId = "UpdateTenant";
+                    operation.Description = "Update a tenant";
+                    operation.Summary = "Update a tenant";
+                    operation.Responses["200"].Description = "Tenant updated successfully.";
                     return operation;
                 });
         }
