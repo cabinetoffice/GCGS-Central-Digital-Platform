@@ -36,23 +36,21 @@ namespace Tenant.Api
 
     public static class EndpointExtensions
     {
+        private static Dictionary<string, Tenant> _tenants = Enumerable.Range(1, 5)
+            .ToDictionary(index => index.ToString(), index => new Tenant
+            {
+                Id = index.ToString(),
+                Name = $"Bobby Tables {index}",
+                ContactInfo = new TenantContactInfo
+                {
+                    Email = $"bobby{index}@example.com",
+                    Phone = $"0555 123 95{index}"
+                }
+            });
+
         public static void UseTenantEndpoints(this WebApplication app)
         {
-            app.MapGet("/tenants", () =>
-                {
-                    return Enumerable.Range(1, 5).Select(index =>
-                        new Tenant
-                        {
-                            Id = index.ToString(),
-                            Name = $"Bobby Tables {index}",
-                            ContactInfo = new TenantContactInfo
-                            {
-                                Email = $"bobby{index}@example.com",
-                                Phone = $"0555 123 95{index}"
-                            }
-                        }
-                    ).ToArray();
-                })
+            app.MapGet("/tenants", () => _tenants.Values.ToArray())
                 .Produces<List<Tenant>>(200, "application/json")
                 .WithOpenApi(operation =>
                 {
@@ -66,10 +64,11 @@ namespace Tenant.Api
                 {
                     var tenant = new Tenant
                     {
-                        Id = Random.Shared.Next(1, 5).ToString(),
+                        Id = (_tenants.Count + 1).ToString(),
                         Name = newTenant.Name,
                         ContactInfo = newTenant.ContactInfo
                     };
+                    _tenants.Add(tenant.Id, tenant);
                     return Results.Created(new Uri($"/tenants/{tenant.Id}"), tenant);
                 })
                 .Produces<Tenant>(201, "application/json")
@@ -81,7 +80,11 @@ namespace Tenant.Api
                     operation.Responses["201"].Description = "Tenant created successfully.";
                     return operation;
                 });
-            app.MapDelete("/tenants/{tenantId}", (String tenantId) => Results.NoContent())
+            app.MapDelete("/tenants/{tenantId}", (String tenantId) =>
+                {
+                    _tenants.Remove(tenantId);
+                    return Results.NoContent();
+                })
                 .Produces(204)
                 .WithOpenApi(operation =>
                 {
@@ -91,17 +94,19 @@ namespace Tenant.Api
                     operation.Responses["204"].Description = "Tenant deleted successfully.";
                     return operation;
                 });
-            app.MapGet("/tenants/{tenantId}", (String tenantId) => Results.Ok(new Tenant
+            app.MapGet("/tenants/{tenantId}", (String tenantId) =>
                 {
-                    Id = tenantId,
-                    Name = $"Bobby Tables {tenantId}",
-                    ContactInfo = new TenantContactInfo
+                    try
                     {
-                        Email = $"bobby{tenantId}@example.com",
-                        Phone = $"0555 123 95{tenantId}"
+                        return Results.Ok(_tenants[tenantId]);
                     }
-                }))
+                    catch (KeyNotFoundException _)
+                    {
+                        return Results.NotFound();
+                    }
+                })
                 .Produces<Tenant>(200, "application/json")
+                .Produces(404)
                 .WithOpenApi(operation =>
                 {
                     operation.OperationId = "GetTenant";
@@ -112,17 +117,13 @@ namespace Tenant.Api
                 });
             app.MapPut("/tenants/{tenantId}", (String tenantId, UpdatedTenant updatedTenant) =>
                 {
-                    var tenant = new Tenant
+                    _tenants[tenantId] = new Tenant
                     {
                         Id = tenantId,
-                        Name = updatedTenant.Name ?? $"Bobby Tables {tenantId}",
-                        ContactInfo = updatedTenant.ContactInfo ?? new TenantContactInfo
-                        {
-                            Email = $"bobby{tenantId}@example.com",
-                            Phone = $"0555 123 95{tenantId}"
-                        }
+                        Name = updatedTenant.Name,
+                        ContactInfo = updatedTenant.ContactInfo
                     };
-                    return Results.Ok(tenant);
+                    return Results.Ok(_tenants[tenantId]);
                 })
                 .Produces<Tenant>(200, "application/json")
                 .WithOpenApi(operation =>
