@@ -25,11 +25,11 @@ ps:
 	@docker compose ps
 .PHONY: ps
 
-OpenAPI: CDP_TENANT_PORT ?= 8080
-OpenAPI: CDP_ORGANISATION_PORT ?= 8082
-OpenAPI: CDP_PERSON_PORT ?= 8084
-OpenAPI: CDP_FORMS_PORT ?= 8086
-OpenAPI: CDP_DATA_SHARING_PORT ?= 8088
+CDP_TENANT_PORT ?= 8080
+CDP_ORGANISATION_PORT ?= 8082
+CDP_PERSON_PORT ?= 8084
+CDP_FORMS_PORT ?= 8086
+CDP_DATA_SHARING_PORT ?= 8088
 OpenAPI: up
 	@mkdir -p OpenAPI
 	@curl -sL http://localhost:$(CDP_TENANT_PORT)/swagger/v1/swagger.json > OpenAPI/TenantApi.json
