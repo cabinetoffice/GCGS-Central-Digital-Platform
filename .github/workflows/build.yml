@@ -25,5 +25,7 @@ jobs:
           key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
           restore-keys: |
             ${{ runner.os }}-nuget
+      - name: Build
+        run: make build
       - name: Test
         run: make test

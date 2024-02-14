@@ -1,5 +1,13 @@
-
 build:
+	@dotnet restore
+	@dotnet build
+.PHONY: build
+
+test:
+	@dotnet test
+.PHONY: test
+
+build-docker:
 	@docker compose build
 .PHONY: build
 
@@ -15,10 +23,6 @@ down:
 ps:
 	@docker compose ps
 .PHONY: ps
-
-test:
-	@dotnet test
-.PHONY: test
 
 define COMPOSE_OVERRIDE_YML
 version: '3'

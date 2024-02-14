@@ -1,5 +1,16 @@
 # Organisation Information
 
+## Development
+
+Import the project to your favourite IDE to build and run tests from there.
+
+Alternatively, use the `dotnet` command or the following make targets to build and run tests:
+
+```bash
+make build
+make test
+```
+
 ## Docker
 
 While local development is done within our IDE of choice, the Docker configuration is provided to conveniently start
@@ -8,7 +19,7 @@ all the services at once.
 First, we need to build all Docker containers:
 
 ```bash
-make build
+make build-docker
 ```
 
 To start all Docker services:
