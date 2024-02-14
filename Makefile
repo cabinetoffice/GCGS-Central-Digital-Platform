@@ -16,6 +16,10 @@ ps:
 	@docker compose ps
 .PHONY: ps
 
+test:
+	@dotnet test
+.PHONY: test
+
 define COMPOSE_OVERRIDE_YML
 version: '3'
 services:
