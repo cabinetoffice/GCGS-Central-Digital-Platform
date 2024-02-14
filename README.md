@@ -1,4 +1,4 @@
-# Organisation Information
+# GCGS Central Digital Platform
 
 ## Development
 
