@@ -53,18 +53,7 @@ jobs:
       - name: Start services
         run: make up
       - name: Generate OpenAPI contracts
-        run: |
-          mkdir OpenAPI
-          curl -sL http://localhost:$CDP_TENANT_PORT/swagger/v1/swagger.json > OpenAPI/TenantApi.json
-          curl -sL http://localhost:$CDP_TENANT_PORT/swagger/v1/swagger.yaml > OpenAPI/TenantApi.yaml
-          curl -sL http://localhost:$CDP_ORGANISATION_PORT/swagger/v1/swagger.json > OpenAPI/OrganisationApi.json
-          curl -sL http://localhost:$CDP_ORGANISATION_PORT/swagger/v1/swagger.yaml > OpenAPI/OrganisationApi.yaml
-          curl -sL http://localhost:$CDP_PERSON_PORT/swagger/v1/swagger.json > OpenAPI/PersonApi.json
-          curl -sL http://localhost:$CDP_PERSON_PORT/swagger/v1/swagger.yaml > OpenAPI/PersonApi.yaml
-          curl -sL http://localhost:$CDP_FORMS_PORT/swagger/v1/swagger.json > OpenAPI/FormsApi.json
-          curl -sL http://localhost:$CDP_FORMS_PORT/swagger/v1/swagger.yaml > OpenAPI/FormsApi.yaml
-          curl -sL http://localhost:$CDP_DATA_SHARING_PORT/swagger/v1/swagger.json > OpenAPI/DataSharingApi.json
-          curl -sL http://localhost:$CDP_DATA_SHARING_PORT/swagger/v1/swagger.yaml > OpenAPI/DataSharingApi.yaml
+        run: make OpenAPI
       - name: Stop services
         run: make down
       - name: Upload OpenAPI contracts

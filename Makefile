@@ -25,6 +25,24 @@ ps:
 	@docker compose ps
 .PHONY: ps
 
+OpenAPI: CDP_TENANT_PORT ?= 8080
+OpenAPI: CDP_ORGANISATION_PORT ?= 8082
+OpenAPI: CDP_PERSON_PORT ?= 8084
+OpenAPI: CDP_FORMS_PORT ?= 8086
+OpenAPI: CDP_DATA_SHARING_PORT ?= 8088
+OpenAPI: up
+	@mkdir -p OpenAPI
+	@curl -sL http://localhost:$(CDP_TENANT_PORT)/swagger/v1/swagger.json > OpenAPI/TenantApi.json
+	@curl -sL http://localhost:$(CDP_TENANT_PORT)/swagger/v1/swagger.yaml > OpenAPI/TenantApi.yaml
+	@curl -sL http://localhost:$(CDP_ORGANISATION_PORT)/swagger/v1/swagger.json > OpenAPI/OrganisationApi.json
+	@curl -sL http://localhost:$(CDP_ORGANISATION_PORT)/swagger/v1/swagger.yaml > OpenAPI/OrganisationApi.yaml
+	@curl -sL http://localhost:$(CDP_PERSON_PORT)/swagger/v1/swagger.json > OpenAPI/PersonApi.json
+	@curl -sL http://localhost:$(CDP_PERSON_PORT)/swagger/v1/swagger.yaml > OpenAPI/PersonApi.yaml
+	@curl -sL http://localhost:$(CDP_FORMS_PORT)/swagger/v1/swagger.json > OpenAPI/FormsApi.json
+	@curl -sL http://localhost:$(CDP_FORMS_PORT)/swagger/v1/swagger.yaml > OpenAPI/FormsApi.yaml
+	@curl -sL http://localhost:$(CDP_DATA_SHARING_PORT)/swagger/v1/swagger.json > OpenAPI/DataSharingApi.json
+	@curl -sL http://localhost:$(CDP_DATA_SHARING_PORT)/swagger/v1/swagger.yaml > OpenAPI/DataSharingApi.yaml
+
 define COMPOSE_OVERRIDE_YML
 version: '3'
 services:
