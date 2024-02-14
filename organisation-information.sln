@@ -2,6 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tenant", "Tenant\Tenant.csproj", "{C9278454-2E29-45D4-8F0F-F27C548E0B1F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tenant.Tests", "Tenant.Tests\Tenant.Tests.csproj", "{71129DB6-C02A-4476-A328-BA5822F22A8C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +14,9 @@ Global
 		{C9278454-2E29-45D4-8F0F-F27C548E0B1F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C9278454-2E29-45D4-8F0F-F27C548E0B1F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C9278454-2E29-45D4-8F0F-F27C548E0B1F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{71129DB6-C02A-4476-A328-BA5822F22A8C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{71129DB6-C02A-4476-A328-BA5822F22A8C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{71129DB6-C02A-4476-A328-BA5822F22A8C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{71129DB6-C02A-4476-A328-BA5822F22A8C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
