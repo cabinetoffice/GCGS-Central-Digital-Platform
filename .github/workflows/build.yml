@@ -36,3 +36,10 @@ jobs:
           name: test-results-dotnet-${{ matrix.dotnet-version }}
           path: TestResults-${{ matrix.dotnet-version }}
         if: ${{ always() }}
+
+  docker:
+    runs-on: ubuntu-latest
+    name: Build containers
+    steps:
+      - name: Build
+        run: make build-docker
