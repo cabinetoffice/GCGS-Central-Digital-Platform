@@ -3,7 +3,7 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace DataSharing.Api
 {
-    public static class DataSharing
+    public static class EndpointExtensions
     {
         public static void UseDataSharingEndpoints(this WebApplication app)
         {

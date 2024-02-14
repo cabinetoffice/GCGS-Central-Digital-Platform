@@ -4,7 +4,7 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace Organisation.Api
 {
-    public static class Organisation
+    public static class EndpointExtensions
     {
         public static void UseOrganisationEndpoints(this WebApplication app)
         {
