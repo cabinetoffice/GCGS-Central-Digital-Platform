@@ -51,7 +51,7 @@ jobs:
       - name: Build
         run: make build-docker
       - name: Start services
-        run: make compose.override.yml && cat compose.override.yml && env && docker compose up -d && make up
+        run: make up
       - name: Generate OpenAPI contracts
         run: make OpenAPI
       - name: Stop services
