@@ -3,8 +3,9 @@ build:
 	@dotnet build
 .PHONY: build
 
+test: TEST_OPTIONS ?= ""
 test:
-	@dotnet test
+	@dotnet test $(TEST_OPTIONS)
 .PHONY: test
 
 build-docker:

@@ -29,4 +29,10 @@ jobs:
       - name: Build
         run: make build
       - name: Test
-        run: make test
+        run: make test TEST_OPTIONS="--logger trx --results-directory 'TestResults-${{ matrix.dotnet-version }}'"
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-dotnet-${{ matrix.dotnet-version }}
+          path: TestResults-${{ matrix.dotnet-version }}
+        if: ${{ always() }}
