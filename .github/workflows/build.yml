@@ -41,5 +41,6 @@ jobs:
     runs-on: ubuntu-latest
     name: Build containers
     steps:
+      - uses: actions/checkout@v4
       - name: Build
         run: make build-docker
