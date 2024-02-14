@@ -1,0 +1,6 @@
+@Person_HostAddress = http://localhost:5120
+
+GET {{Person_HostAddress}}/persons/
+Accept: application/json
+
+###

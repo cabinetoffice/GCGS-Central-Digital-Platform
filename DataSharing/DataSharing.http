@@ -1,0 +1,6 @@
+@DataSharing_HostAddress = http://localhost:5203
+
+GET {{DataSharing_HostAddress}}/share/data
+Accept: application/json
+
+###

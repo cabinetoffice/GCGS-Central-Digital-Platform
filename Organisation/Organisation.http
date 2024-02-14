@@ -1,0 +1,6 @@
+@Organisation_HostAddress = http://localhost:5288
+
+GET {{Organisation_HostAddress}}/organisations/
+Accept: application/json
+
+###

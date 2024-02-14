@@ -1,0 +1,6 @@
+@Forms_HostAddress = http://localhost:5014
+
+GET {{Forms_HostAddress}}/forms/
+Accept: application/json
+
+###
