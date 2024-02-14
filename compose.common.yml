@@ -4,10 +4,74 @@ services:
   tenant:
     container_name: co-org-info-tenant
     build:
-      context: Tenant
+      context: Services/Tenant
       dockerfile: Dockerfile
       target: final
     image: 'cabinetoffice/org-info-tenant:${IMAGE_VERSION:-latest}'
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+    healthcheck:
+      test: ["CMD-SHELL", "curl --fail --silent --write-out '{\"status\":%{http_code}}' --output /dev/null http://127.0.0.1:8080/health"]
+      start_period: 10s
+      interval: 60s
+      timeout: 10s
+      retries: 10
+
+  organisation:
+    container_name: co-org-info-organisation
+    build:
+      context: Services/Organisation
+      dockerfile: Dockerfile
+      target: final
+    image: 'cabinetoffice/org-info-organisation:${IMAGE_VERSION:-latest}'
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+    healthcheck:
+      test: ["CMD-SHELL", "curl --fail --silent --write-out '{\"status\":%{http_code}}' --output /dev/null http://127.0.0.1:8080/health"]
+      start_period: 10s
+      interval: 60s
+      timeout: 10s
+      retries: 10
+
+  person:
+    container_name: co-org-info-person
+    build:
+      context: Services/Person
+      dockerfile: Dockerfile
+      target: final
+    image: 'cabinetoffice/org-info-person:${IMAGE_VERSION:-latest}'
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+    healthcheck:
+      test: ["CMD-SHELL", "curl --fail --silent --write-out '{\"status\":%{http_code}}' --output /dev/null http://127.0.0.1:8080/health"]
+      start_period: 10s
+      interval: 60s
+      timeout: 10s
+      retries: 10
+
+  forms:
+    container_name: co-org-info-forms
+    build:
+      context: Services/Forms
+      dockerfile: Dockerfile
+      target: final
+    image: 'cabinetoffice/org-info-forms:${IMAGE_VERSION:-latest}'
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+    healthcheck:
+      test: ["CMD-SHELL", "curl --fail --silent --write-out '{\"status\":%{http_code}}' --output /dev/null http://127.0.0.1:8080/health"]
+      start_period: 10s
+      interval: 60s
+      timeout: 10s
+      retries: 10
+
+  data-sharing:
+    container_name: co-org-info-data-sharing
+    build:
+      context: Services/DataSharing
+      dockerfile: Dockerfile
+      target: final
+    image: 'cabinetoffice/org-info-data-sharing:${IMAGE_VERSION:-latest}'
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
     healthcheck:

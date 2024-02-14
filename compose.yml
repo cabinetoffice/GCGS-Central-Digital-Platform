@@ -3,3 +3,19 @@ services:
     extends:
       file: compose.common.yml
       service: tenant
+  organisation:
+    extends:
+      file: compose.common.yml
+      service: organisation
+  person:
+    extends:
+      file: compose.common.yml
+      service: person
+  forms:
+    extends:
+      file: compose.common.yml
+      service: forms
+  data-sharing:
+    extends:
+      file: compose.common.yml
+      service: data-sharing

@@ -22,6 +22,28 @@ services:
   tenant:
     ports:
       - '8080:8080'
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+  organisation:
+    ports:
+      - '8082:8080'
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+  person:
+    ports:
+      - '8084:8080'
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+  forms:
+    ports:
+      - '8086:8080'
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+  data-sharing:
+    ports:
+      - '8088:8080'
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
 endef
 
 export COMPOSE_OVERRIDE_YML

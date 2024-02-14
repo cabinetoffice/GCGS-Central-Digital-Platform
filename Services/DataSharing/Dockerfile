@@ -1,4 +1,5 @@
 ﻿FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
+RUN apt-get update && apt-get install -y --no-install-recommends curl && rm -rf /var/lib/apt/lists/*
 USER $APP_UID
 WORKDIR /app
 EXPOSE 8080
@@ -7,10 +8,10 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["DataSharing/DataSharing.csproj", "DataSharing/"]
+COPY ["DataSharing.csproj", "DataSharing/"]
 RUN dotnet restore "DataSharing/DataSharing.csproj"
-COPY . .
 WORKDIR "/src/DataSharing"
+COPY . .
 RUN dotnet build "DataSharing.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
