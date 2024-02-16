@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
@@ -29,9 +30,38 @@ namespace Tenant.Api
 
     internal record TenantContactInfo
     {
-        [Required(AllowEmptyStrings = true), EmailAddress] public required string Email { get; init; }
+        [Required(AllowEmptyStrings = true), EmailAddress]
+        public required string Email { get; init; }
 
         [Required(AllowEmptyStrings = true)] public required string Phone { get; init; }
+    }
+
+    internal record TenantLookupCriteria
+    {
+        [Required(AllowEmptyStrings = true)] public required string UserPrinciple { get; init; }
+
+        [Required(AllowEmptyStrings = true)] public required string OpenId { get; init; }
+    }
+
+    internal record TenantLookupResponse
+    {
+        [Required(AllowEmptyStrings = true)] public required string UserPrinciple { get; init; }
+        [Required] public required UserDetails UserDetails { get; init; }
+        [Required] public required List<UserInTenants> UserTenants { get; init; }
+    }
+
+    internal record UserDetails
+    {
+        [Required(AllowEmptyStrings = true)] public required string Name { get; init; }
+
+        [EmailAddress, Required(AllowEmptyStrings = true)]
+        public required string Email { get; init; }
+    }
+
+    internal record UserInTenants
+    {
+        [Required(AllowEmptyStrings = true)] public required string Id { get; init; }
+        [Required(AllowEmptyStrings = true)] public required string Name { get; init; }
     }
 
     public static class EndpointExtensions
@@ -132,6 +162,31 @@ namespace Tenant.Api
                     operation.Description = "Update a tenant";
                     operation.Summary = "Update a tenant";
                     operation.Responses["200"].Description = "Tenant updated successfully.";
+                    return operation;
+                });
+            app.MapPost("/tenant/lookup",
+                    ([FromBody] TenantLookupCriteria criteria) => new TenantLookupResponse
+                    {
+                        UserPrinciple = criteria.UserPrinciple,
+                        UserDetails = new UserDetails
+                        {
+                            Name = "Bobby Tables",
+                            Email = "bob@example.com"
+                        },
+                        UserTenants = _tenants.Select(tenant => new UserInTenants
+                        {
+                            Id = tenant.Value.Id,
+                            Name = tenant.Value.Name
+                        }).ToList()
+                    })
+                .Accepts<TenantLookupCriteria>("application/json")
+                .Produces<TenantLookupResponse>(200, "application/json")
+                .WithOpenApi(operation =>
+                {
+                    operation.OperationId = "LookupTenant";
+                    operation.Description = "Lookup person by identifier.";
+                    operation.Summary = "Lookup person by identifier.";
+                    operation.Responses["200"].Description = "Tenants Associated with the the user.";
                     return operation;
                 });
         }
