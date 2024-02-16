@@ -81,6 +81,20 @@ namespace Tenant.Api
         [Required(AllowEmptyStrings = true)] public required string Message { get; init; }
     }
 
+    internal record ModifyUserPermissions
+    {
+        [Required(AllowEmptyStrings = true)] public required string UserId { get; init; }
+        [Required(AllowEmptyStrings = true)] public required string OrganisationId { get; init; }
+        [Required] public required List<string> Permissions { get; init; }
+        [Required] public required UserPermissionsAction Action { get; init; }
+
+        internal enum UserPermissionsAction
+        {
+            Add,
+            Remove
+        }
+    }
+
     public static class EndpointExtensions
     {
         private static Dictionary<string, Tenant> _tenants = Enumerable.Range(1, 5)
@@ -207,7 +221,7 @@ namespace Tenant.Api
                     return operation;
                 });
             app.MapPost("/tenant/{tenantId}/assign-user",
-                    (string tenantId, [FromBody] AssignUserToOrganisation request) =>
+                    (string tenantId, [FromBody] AssignUserToOrganisation command) =>
                         new Receipt { Message = "User assigned successfully." })
                 .Accepts<AssignUserToOrganisation>("application/json")
                 .Produces<Receipt>(200, "application/json")
@@ -219,6 +233,20 @@ namespace Tenant.Api
                     operation.Summary = "Assign user to an organisation.";
                     operation.Tags.Add(new OpenApiTag { Name = "User Management" });
                     operation.Responses["200"].Description = "User successfully assigned to the organisation.";
+                    return operation;
+                });
+            app.MapPatch("/tenant/{tenantId}/user-permissions",
+                    (string tenantId, [FromBody] ModifyUserPermissions command) =>
+                        new Receipt { Message = "User permissions updated successfully." })
+                .Produces<Receipt>(200, "application/json")
+                .Produces<Error>(400, "application/json")
+                .WithOpenApi(operation =>
+                {
+                    operation.OperationId = "ModifyUserPermissions";
+                    operation.Description = "Modify user permissions within an organisation.";
+                    operation.Summary = "Modify user permissions within an organisation.";
+                    operation.Tags.Add(new OpenApiTag { Name = "User Management" });
+                    operation.Responses["200"].Description = "User permissions modified successfully.";
                     return operation;
                 });
         }
