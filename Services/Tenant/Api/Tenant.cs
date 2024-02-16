@@ -64,6 +64,23 @@ namespace Tenant.Api
         [Required(AllowEmptyStrings = true)] public required string Name { get; init; }
     }
 
+    internal record AssignUserToOrganisation
+    {
+        [Required(AllowEmptyStrings = true)] public required string UserId { get; init; }
+        [Required(AllowEmptyStrings = true)] public required string OrganisationId { get; init; }
+    }
+
+    internal record Receipt
+    {
+        [Required(AllowEmptyStrings = true)] public required string Message { get; init; }
+    }
+
+    internal record Error
+    {
+        [Required(AllowEmptyStrings = true)] public required string Code { get; init; }
+        [Required(AllowEmptyStrings = true)] public required string Message { get; init; }
+    }
+
     public static class EndpointExtensions
     {
         private static Dictionary<string, Tenant> _tenants = Enumerable.Range(1, 5)
@@ -187,6 +204,21 @@ namespace Tenant.Api
                     operation.Description = "Lookup person by identifier.";
                     operation.Summary = "Lookup person by identifier.";
                     operation.Responses["200"].Description = "Tenants Associated with the the user.";
+                    return operation;
+                });
+            app.MapPost("/tenant/{tenantId}/assign-user",
+                    (string tenantId, [FromBody] AssignUserToOrganisation request) =>
+                        new Receipt { Message = "User assigned successfully." })
+                .Accepts<AssignUserToOrganisation>("application/json")
+                .Produces<Receipt>(200, "application/json")
+                .Produces<Error>(400, "application/json")
+                .WithOpenApi(operation =>
+                {
+                    operation.OperationId = "AssignUserToOrganisation";
+                    operation.Description = "Assign user to an organisation.";
+                    operation.Summary = "Assign user to an organisation.";
+                    operation.Tags.Add(new OpenApiTag { Name = "User Management" });
+                    operation.Responses["200"].Description = "User successfully assigned to the organisation.";
                     return operation;
                 });
         }
