@@ -195,6 +195,10 @@ namespace Tenant.Api
                     operation.Responses["200"].Description = "Tenant updated successfully.";
                     return operation;
                 });
+        }
+
+        public static void UseTenantLookupEndpoints(this WebApplication app)
+        {
             app.MapPost("/tenant/lookup",
                     ([FromBody] TenantLookupCriteria criteria) => new TenantLookupResponse
                     {
@@ -217,11 +221,15 @@ namespace Tenant.Api
                     operation.OperationId = "LookupTenant";
                     operation.Description = "Lookup person by identifier.";
                     operation.Summary = "Lookup person by identifier.";
-                    operation.Tags.Add(new OpenApiTag { Name = "Tenant Lookup" });
+                    operation.Tags = new List<OpenApiTag> { new() { Name = "Tenant Lookup" } };
                     operation.Responses["200"].Description = "Tenants Associated with the the user.";
                     return operation;
                 });
-            app.MapPost("/tenant/{tenantId}/assign-user",
+        }
+
+        public static void UseUserManagementEndpoints(this WebApplication app)
+        {
+            app.MapPost("/tenants/{tenantId}/assign-user",
                     (string tenantId, [FromBody] AssignUserToOrganisation command) =>
                         new Receipt { Message = "User assigned successfully." })
                 .Accepts<AssignUserToOrganisation>("application/json")
@@ -232,11 +240,11 @@ namespace Tenant.Api
                     operation.OperationId = "AssignUserToOrganisation";
                     operation.Description = "Assign user to an organisation.";
                     operation.Summary = "Assign user to an organisation.";
-                    operation.Tags.Add(new OpenApiTag { Name = "User Management" });
+                    operation.Tags = new List<OpenApiTag> { new() { Name = "User Management" } };
                     operation.Responses["200"].Description = "User successfully assigned to the organisation.";
                     return operation;
                 });
-            app.MapPatch("/tenant/{tenantId}/user-permissions",
+            app.MapPatch("/tenants/{tenantId}/user-permissions",
                     (string tenantId, [FromBody] ModifyUserPermissions command) =>
                         new Receipt { Message = "User permissions updated successfully." })
                 .Produces<Receipt>(200, "application/json")
@@ -246,7 +254,7 @@ namespace Tenant.Api
                     operation.OperationId = "ModifyUserPermissions";
                     operation.Description = "Modify user permissions within an organisation.";
                     operation.Summary = "Modify user permissions within an organisation.";
-                    operation.Tags.Add(new OpenApiTag { Name = "User Management" });
+                    operation.Tags = new List<OpenApiTag> { new() { Name = "User Management" } };
                     operation.Responses["200"].Description = "User permissions modified successfully.";
                     return operation;
                 });

@@ -21,4 +21,6 @@ if (app.Environment.IsDevelopment())
 app.MapHealthChecks("/health");
 app.UseHttpsRedirection();
 app.UseTenantEndpoints();
+app.UseTenantLookupEndpoints();
+app.UseUserManagementEndpoints();
 app.Run();
