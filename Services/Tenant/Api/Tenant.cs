@@ -217,6 +217,7 @@ namespace Tenant.Api
                     operation.OperationId = "LookupTenant";
                     operation.Description = "Lookup person by identifier.";
                     operation.Summary = "Lookup person by identifier.";
+                    operation.Tags.Add(new OpenApiTag { Name = "Tenant Lookup" });
                     operation.Responses["200"].Description = "Tenants Associated with the the user.";
                     return operation;
                 });
