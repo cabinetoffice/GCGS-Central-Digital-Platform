@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, Navigate, RouterProvider } from "react-router-dom";
 import reportWebVitals from './reportWebVitals';
 
 import 'assets/css/govuk-frontend.min.css';
@@ -21,6 +21,7 @@ const router = createBrowserRouter([
             {
                 path: "supplier-registration",
                 children: [
+                    { path: "", element: <Navigate to="/supplier-registration/your-details" /> },
                     { path: "your-details", element: <SupplierRegistrationDetailsPage /> },
                     { path: "organisation-type", element: <OrganisationTypePage /> }
                 ]
