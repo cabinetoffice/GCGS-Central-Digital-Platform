@@ -5,11 +5,11 @@ import reportWebVitals from './reportWebVitals';
 
 import 'assets/css/govuk-frontend.min.css';
 
-import ErrorPage from './features/root/errorPage';
-import RootLayout from './features/root/rootLayout';
-import HomePage from './features/root/homePage';
-import SupplierRegistrationDetailsPage from './features/supplier-registration/yourDetailsPage';
-import OrganisationTypePage from './features/supplier-registration/organisationTypePage';
+import ErrorPage from 'features/root/errorPage';
+import RootLayout from 'features/root/rootLayout';
+import HomePage from 'features/root/homePage';
+import SupplierRegistrationDetailsPage from 'features/supplier-registration/yourDetailsPage';
+import OrganisationTypePage from 'features/supplier-registration/organisationTypePage';
 
 const router = createBrowserRouter([
     {
