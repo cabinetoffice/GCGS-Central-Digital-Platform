@@ -25,6 +25,7 @@ ps:
 	@docker compose ps
 .PHONY: ps
 
+CDP_ORGANISATION_APP_PORT ?= 3000
 CDP_TENANT_PORT ?= 8080
 CDP_ORGANISATION_PORT ?= 8082
 CDP_PERSON_PORT ?= 8084
@@ -46,6 +47,9 @@ OpenAPI: up
 define COMPOSE_OVERRIDE_YML
 version: '3'
 services:
+  organisation-app:
+    ports:
+      - "${CDP_ORGANISATION_APP_PORT:-3000}:3000"
   tenant:
     ports:
       - "$${CDP_TENANT_PORT:-8080}:8080"

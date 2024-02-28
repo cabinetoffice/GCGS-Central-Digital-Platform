@@ -41,6 +41,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Build containers
     env:
+      CDP_ORGANISATION_APP_PORT: 3000
       CDP_TENANT_PORT: 8811
       CDP_ORGANISATION_PORT: 8822
       CDP_PERSON_PORT: 8833

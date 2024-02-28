@@ -1,6 +1,14 @@
 version: '3'
 
 services:
+  organisation-app:
+    container_name: co-org-info-organisation-app
+    build:
+      context: Frontend/organisation-app
+      dockerfile: Dockerfile
+      target: dev
+    image: 'cabinetoffice/org-info-organisation-app:${IMAGE_VERSION:-latest}'
+
   tenant:
     container_name: co-org-info-tenant
     build:
