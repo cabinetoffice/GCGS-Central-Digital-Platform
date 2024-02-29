@@ -10,7 +10,7 @@ services:
     image: 'cabinetoffice/org-info-organisation-app:${IMAGE_VERSION:-latest}'
     volumes:
       - ./Frontend/organisation-app:/app
-    command: sh -c 'npm ci && npm start'
+    command: sh -c 'npm ci --cache /app/.npm && npm start'
 
   tenant:
     container_name: co-org-info-tenant
