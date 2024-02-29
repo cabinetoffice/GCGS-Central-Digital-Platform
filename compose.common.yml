@@ -8,6 +8,9 @@ services:
       dockerfile: Dockerfile
       target: dev
     image: 'cabinetoffice/org-info-organisation-app:${IMAGE_VERSION:-latest}'
+    volumes:
+      - ./Frontend/organisation-app:/app
+    command: sh -c 'npm ci && npm start'
 
   tenant:
     container_name: co-org-info-tenant
