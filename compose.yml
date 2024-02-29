@@ -1,4 +1,8 @@
 services:
+  organisation-app:
+    extends:
+      file: compose.common.yml
+      service: organisation-app
   tenant:
     extends:
       file: compose.common.yml
