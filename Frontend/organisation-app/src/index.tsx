@@ -21,7 +21,7 @@ const router = createBrowserRouter([
             {
                 path: "supplier-registration",
                 children: [
-                    { path: "", element: <Navigate to="/supplier-registration/your-details" /> },
+                    { path: "", element: <Navigate to="/supplier-registration/your-details" replace /> },
                     { path: "your-details", element: <SupplierRegistrationDetailsPage /> },
                     { path: "organisation-type", element: <OrganisationTypePage /> }
                 ]
