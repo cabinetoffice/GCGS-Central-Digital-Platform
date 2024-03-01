@@ -2,23 +2,23 @@ version: '3'
 
 services:
   organisation-app:
-    container_name: co-org-info-organisation-app
+    container_name: co-cdp-organisation-app
     build:
       context: Frontend/organisation-app
       dockerfile: Dockerfile
       target: dev
-    image: 'cabinetoffice/org-info-organisation-app:${IMAGE_VERSION:-latest}'
+    image: 'cabinetoffice/cdp-organisation-app:${IMAGE_VERSION:-latest}'
     volumes:
       - ./Frontend/organisation-app:/app
     command: sh -c 'npm ci --cache /app/.npm && npm start'
 
   tenant:
-    container_name: co-org-info-tenant
+    container_name: co-cdp-tenant
     build:
       context: Services/Tenant
       dockerfile: Dockerfile
       target: final
-    image: 'cabinetoffice/org-info-tenant:${IMAGE_VERSION:-latest}'
+    image: 'cabinetoffice/cdp-tenant:${IMAGE_VERSION:-latest}'
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
     healthcheck:
@@ -29,12 +29,12 @@ services:
       retries: 10
 
   organisation:
-    container_name: co-org-info-organisation
+    container_name: co-cdp-organisation
     build:
       context: Services/Organisation
       dockerfile: Dockerfile
       target: final
-    image: 'cabinetoffice/org-info-organisation:${IMAGE_VERSION:-latest}'
+    image: 'cabinetoffice/cdp-organisation:${IMAGE_VERSION:-latest}'
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
     healthcheck:
@@ -45,12 +45,12 @@ services:
       retries: 10
 
   person:
-    container_name: co-org-info-person
+    container_name: co-cdp-person
     build:
       context: Services/Person
       dockerfile: Dockerfile
       target: final
-    image: 'cabinetoffice/org-info-person:${IMAGE_VERSION:-latest}'
+    image: 'cabinetoffice/cdp-person:${IMAGE_VERSION:-latest}'
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
     healthcheck:
@@ -61,12 +61,12 @@ services:
       retries: 10
 
   forms:
-    container_name: co-org-info-forms
+    container_name: co-cdp-forms
     build:
       context: Services/Forms
       dockerfile: Dockerfile
       target: final
-    image: 'cabinetoffice/org-info-forms:${IMAGE_VERSION:-latest}'
+    image: 'cabinetoffice/cdp-forms:${IMAGE_VERSION:-latest}'
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
     healthcheck:
@@ -77,12 +77,12 @@ services:
       retries: 10
 
   data-sharing:
-    container_name: co-org-info-data-sharing
+    container_name: co-cdp-data-sharing
     build:
       context: Services/DataSharing
       dockerfile: Dockerfile
       target: final
-    image: 'cabinetoffice/org-info-data-sharing:${IMAGE_VERSION:-latest}'
+    image: 'cabinetoffice/cdp-data-sharing:${IMAGE_VERSION:-latest}'
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
     healthcheck:
