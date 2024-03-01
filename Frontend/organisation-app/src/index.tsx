@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client';
 import { createBrowserRouter, Navigate, RouterProvider } from "react-router-dom";
 import reportWebVitals from './reportWebVitals';
 
-import 'assets/css/govuk-frontend.min.css';
+import 'govuk-frontend/dist/govuk/all.scss'
 
 import ErrorPage from 'features/root/errorPage';
 import RootLayout from 'features/root/rootLayout';
