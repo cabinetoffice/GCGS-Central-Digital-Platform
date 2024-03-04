@@ -1,0 +1,15 @@
+= Design Decisions
+:doctype: book
+:toclevels: 0
+:data-uri:
+:source-highlighter: rouge
+
+This is a log of important design decisions that were made during development.
+
+The design decision log accomplishes the following goals:
+
+* Provide a structured approach to decision-making.
+* Explain to current and future developers why things are the way that they are.
+* Help to revise decisions when the situation changes.
+
+include::0001-record-architecture-decisions.adoc[]
