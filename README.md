@@ -11,6 +11,10 @@ make build
 make test
 ```
 
+## Design Decisions
+
+For important design decisions that were made as the project evolved see the [decision log](docs/decisions/index.adoc).
+
 ## Docker
 
 While local development is done within our IDE of choice, the Docker configuration is provided to conveniently start

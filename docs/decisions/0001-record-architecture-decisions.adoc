@@ -1,0 +1,28 @@
+= 1. Record architecture decisions
+
+Date: 2023-03-04
+
+== Status
+
+Accepted
+
+== Context
+
+We need to record the architectural decisions made on this project
+so that future developers understand the context of our solutions.
+
+== Decision
+
+We will use Architecture Decision Records,
+as http://thinkrelevance.com/blog/2011/11/15/documenting-architecture-decisions[described by Michael Nygard].
+
+== Consequences
+
+All significant decisions will be discussed within the team and documented in the decision log including:
+
+* the date decision was made
+* the status of the decision (Accepted, Draft, or Rejected)
+* the context of the decision
+* options that were considered
+* the decision made
+* the consequences of the decision
