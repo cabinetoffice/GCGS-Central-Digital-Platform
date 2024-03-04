@@ -62,3 +62,16 @@ jobs:
         with:
           name: OpenAPI
           path: OpenAPI
+
+  docs:
+    runs-on: ubuntu-latest
+    name: Build documentation
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build
+        run: cd docs && make build
+      - name: Upload Documentation
+        uses: actions/upload-artifact@v4
+        with:
+          name: Documentation
+          path: docs/build/*
