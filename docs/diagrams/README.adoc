@@ -1,0 +1,16 @@
+= Diagrams
+
+Architecture diagrams are managed with Structurizr DSL in `workspace.dsl` file.
+Edit the file to update diagrams.
+
+Start Structurizr Lite to view and export the diagrams:
+
+[source,bash]
+----
+make structurizr
+----
+
+Open http://localhost:9999/ to view the diagrams and manage the layout.
+
+WARNING: Unfortunately, diagrams cannot be exported automatically from the command line.
+Each time a diagram is changed it has to be exported via the UI and copied to the `export/` directory.

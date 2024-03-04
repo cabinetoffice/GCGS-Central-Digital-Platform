@@ -1,0 +1,3 @@
+= Introduction
+
+The Central Digital Platform (CDP) that is being developed to support the new procurement regime. 

@@ -1,0 +1,16 @@
+= Central Digital Platform
+:doctype: book
+:toc: left
+:toclevels: 0
+:data-uri:
+:source-highlighter: rouge
+
+This is a technical documentation for the Cabinet Office's Central Digital Platform.
+
+:leveloffset: +1
+
+include::01-Introduction.adoc[]
+
+include::02-overview.adoc[]
+
+:leveloffset: -1

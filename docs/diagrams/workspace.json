@@ -1,0 +1,222 @@
+{
+  "configuration" : {
+    "scope" : "SoftwareSystem"
+  },
+  "description" : "Description",
+  "documentation" : { },
+  "id" : 1,
+  "lastModifiedDate" : "2024-03-04T11:55:00Z",
+  "model" : {
+    "people" : [ {
+      "id" : "1",
+      "location" : "Unspecified",
+      "name" : "Supplier",
+      "properties" : {
+        "structurizr.dsl.identifier" : "supplier"
+      },
+      "relationships" : [ {
+        "description" : "Uses",
+        "destinationId" : "4",
+        "id" : "9",
+        "properties" : {
+          "structurizr.dsl.identifier" : "2ce7b40d-6c3d-4657-819f-c4f54e5fc360"
+        },
+        "sourceId" : "1",
+        "tags" : "Relationship"
+      } ],
+      "tags" : "Element,Person"
+    }, {
+      "id" : "2",
+      "location" : "Unspecified",
+      "name" : "Buyer",
+      "properties" : {
+        "structurizr.dsl.identifier" : "buyer"
+      },
+      "relationships" : [ {
+        "description" : "Uses",
+        "destinationId" : "3",
+        "id" : "10",
+        "properties" : {
+          "structurizr.dsl.identifier" : "38ff073a-9d53-4a1d-bb09-ba5fee168afe"
+        },
+        "sourceId" : "2",
+        "tags" : "Relationship"
+      } ],
+      "tags" : "Element,Person"
+    } ],
+    "softwareSystems" : [ {
+      "description" : "Commercial Software that Buyers use to manage tender processes",
+      "documentation" : { },
+      "id" : "3",
+      "location" : "Unspecified",
+      "name" : "eSender",
+      "properties" : {
+        "structurizr.dsl.identifier" : "esender"
+      },
+      "relationships" : [ {
+        "description" : "Looks up supplier information",
+        "destinationId" : "4",
+        "id" : "12",
+        "properties" : {
+          "structurizr.dsl.identifier" : "06398015-1bb6-4c40-8f44-f783a661fe46"
+        },
+        "sourceId" : "3",
+        "tags" : "Relationship"
+      } ],
+      "tags" : "Element,Software System"
+    }, {
+      "description" : "Support procurement",
+      "documentation" : { },
+      "id" : "4",
+      "location" : "Unspecified",
+      "name" : "Central Digital Platform",
+      "properties" : {
+        "structurizr.dsl.identifier" : "cdp"
+      },
+      "relationships" : [ {
+        "description" : "Authenticates with",
+        "destinationId" : "5",
+        "id" : "11",
+        "properties" : {
+          "structurizr.dsl.identifier" : "42eadc60-00d3-4308-a02b-332e1874f115"
+        },
+        "sourceId" : "4",
+        "tags" : "Relationship"
+      } ],
+      "tags" : "Element,Software System"
+    }, {
+      "description" : "Let users sign in and prove their identities to use your service",
+      "documentation" : { },
+      "id" : "5",
+      "location" : "Unspecified",
+      "name" : "Gov.uk One Login",
+      "properties" : {
+        "structurizr.dsl.identifier" : "onelogin"
+      },
+      "tags" : "Element,Software System"
+    }, {
+      "documentation" : { },
+      "id" : "6",
+      "location" : "Unspecified",
+      "name" : "Find a Tender",
+      "properties" : {
+        "structurizr.dsl.identifier" : "fts"
+      },
+      "relationships" : [ {
+        "description" : "Authorizes with",
+        "destinationId" : "4",
+        "id" : "13",
+        "properties" : {
+          "structurizr.dsl.identifier" : "14408d2b-a759-4010-b051-38ef82c8c0e6"
+        },
+        "sourceId" : "6",
+        "tags" : "Relationship"
+      } ],
+      "tags" : "Element,Software System"
+    }, {
+      "documentation" : { },
+      "id" : "7",
+      "location" : "Unspecified",
+      "name" : "Supplier Information and Contracts Finder",
+      "properties" : {
+        "structurizr.dsl.identifier" : "cfs"
+      },
+      "relationships" : [ {
+        "description" : "Authorizes with",
+        "destinationId" : "4",
+        "id" : "14",
+        "properties" : {
+          "structurizr.dsl.identifier" : "2665499c-7439-4a63-bae3-5e3db42e7ccb"
+        },
+        "sourceId" : "7",
+        "tags" : "Relationship"
+      } ],
+      "tags" : "Element,Software System"
+    }, {
+      "documentation" : { },
+      "id" : "8",
+      "location" : "Unspecified",
+      "name" : "Public Procurement Gateway",
+      "properties" : {
+        "structurizr.dsl.identifier" : "ppg"
+      },
+      "relationships" : [ {
+        "description" : "Authorizes with",
+        "destinationId" : "4",
+        "id" : "15",
+        "properties" : {
+          "structurizr.dsl.identifier" : "e6a4edf7-e5ec-4167-98e3-e6fda4ae2dcd"
+        },
+        "sourceId" : "8",
+        "tags" : "Relationship"
+      } ],
+      "tags" : "Element,Software System"
+    } ]
+  },
+  "name" : "Central Digital Platform",
+  "properties" : {
+    "structurizr.dsl" : "d29ya3NwYWNlICJDZW50cmFsIERpZ2l0YWwgUGxhdGZvcm0iIHsKCiAgICBtb2RlbCB7CiAgICAgICAgc3VwcGxpZXIgPSBwZXJzb24gIlN1cHBsaWVyIgogICAgICAgIGJ1eWVyID0gcGVyc29uICJCdXllciIKICAgICAgICBlU2VuZGVyID0gc29mdHdhcmVTeXN0ZW0gImVTZW5kZXIiICJDb21tZXJjaWFsIFNvZnR3YXJlIHRoYXQgQnV5ZXJzIHVzZSB0byBtYW5hZ2UgdGVuZGVyIHByb2Nlc3NlcyIKICAgICAgICBjZHAgPSBzb2Z0d2FyZVN5c3RlbSAiQ2VudHJhbCBEaWdpdGFsIFBsYXRmb3JtIiAiU3VwcG9ydCBwcm9jdXJlbWVudCIKICAgICAgICBvbmVMb2dpbiA9IHNvZnR3YXJlU3lzdGVtICJHb3YudWsgT25lIExvZ2luIiAiTGV0IHVzZXJzIHNpZ24gaW4gYW5kIHByb3ZlIHRoZWlyIGlkZW50aXRpZXMgdG8gdXNlIHlvdXIgc2VydmljZSIKICAgICAgICBmdHMgPSBzb2Z0d2FyZVN5c3RlbSAiRmluZCBhIFRlbmRlciIKICAgICAgICBjZnMgPSBzb2Z0d2FyZVN5c3RlbSAiU3VwcGxpZXIgSW5mb3JtYXRpb24gYW5kIENvbnRyYWN0cyBGaW5kZXIiCiAgICAgICAgcHBnID0gc29mdHdhcmVTeXN0ZW0gIlB1YmxpYyBQcm9jdXJlbWVudCBHYXRld2F5IgoKICAgICAgICBzdXBwbGllciAtPiBjZHAgIlVzZXMiCiAgICAgICAgYnV5ZXIgLT4gZVNlbmRlciAiVXNlcyIKCiAgICAgICAgY2RwIC0+IG9uZUxvZ2luICJBdXRoZW50aWNhdGVzIHdpdGgiCgogICAgICAgIGVTZW5kZXIgLT4gY2RwICJMb29rcyB1cCBzdXBwbGllciBpbmZvcm1hdGlvbiIKICAgICAgICBmdHMgLT4gY2RwICJBdXRob3JpemVzIHdpdGgiCiAgICAgICAgY2ZzIC0+IGNkcCAiQXV0aG9yaXplcyB3aXRoIgogICAgICAgIHBwZyAtPiBjZHAgIkF1dGhvcml6ZXMgd2l0aCIKICAgIH0KCiAgICB2aWV3cyB7CiAgICAgICAgc3lzdGVtQ29udGV4dCBjZHAgIkNEUC1TeXN0ZW1Db250ZXh0IiB7CiAgICAgICAgICAgIGluY2x1ZGUgKgogICAgICAgIH0KICAgICAgICB0aGVtZSBkZWZhdWx0CiAgICB9CgogICAgY29uZmlndXJhdGlvbiB7CiAgICAgICAgc2NvcGUgc29mdHdhcmVzeXN0ZW0KICAgIH0KCn0K"
+  },
+  "views" : {
+    "configuration" : {
+      "branding" : { },
+      "lastSavedView" : "CDP-SystemContext",
+      "styles" : { },
+      "terminology" : { },
+      "themes" : [ "https://static.structurizr.com/themes/default/theme.json" ]
+    },
+    "systemContextViews" : [ {
+      "dimensions" : {
+        "height" : 1748,
+        "width" : 2480
+      },
+      "elements" : [ {
+        "id" : "1",
+        "x" : 1035,
+        "y" : 10
+      }, {
+        "id" : "3",
+        "x" : 1010,
+        "y" : 1265
+      }, {
+        "id" : "4",
+        "x" : 1010,
+        "y" : 740
+      }, {
+        "id" : "5",
+        "x" : 1890,
+        "y" : 730
+      }, {
+        "id" : "6",
+        "x" : 145,
+        "y" : 360
+      }, {
+        "id" : "7",
+        "x" : 145,
+        "y" : 725
+      }, {
+        "id" : "8",
+        "x" : 145,
+        "y" : 1090
+      } ],
+      "enterpriseBoundaryVisible" : true,
+      "key" : "CDP-SystemContext",
+      "order" : 1,
+      "paperSize" : "A5_Landscape",
+      "relationships" : [ {
+        "id" : "11"
+      }, {
+        "id" : "12"
+      }, {
+        "id" : "13"
+      }, {
+        "id" : "14"
+      }, {
+        "id" : "15"
+      }, {
+        "id" : "9"
+      } ],
+      "softwareSystemId" : "4"
+    } ]
+  }
+}
