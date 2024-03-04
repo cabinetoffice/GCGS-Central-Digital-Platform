@@ -13,4 +13,6 @@ include::01-Introduction.adoc[]
 
 include::02-overview.adoc[]
 
+include::03-software-architecture.adoc[]
+
 :leveloffset: -1
