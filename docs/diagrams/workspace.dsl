@@ -9,11 +9,21 @@ workspace "Central Digital Platform" {
         cfs = softwareSystem "Supplier Information and Contracts Finder"
         ppg = softwareSystem "Public Procurement Gateway"
         cdp = softwareSystem "Central Digital Platform" "Supports procurement" {
-            tenantApi = container "Tenant API" "" "Asp.Net Core" WebApi
-            personApi = container "Person API" "" "Asp.Net Core" WebApi
-            organisationApi = container "Organisation API" "" "Asp.Net Core" WebApi
-            dataCaptureApi = container "Data Capture API" "" "Asp.Net Core" WebApi
-            dataSharingApi = container "Data Sharing API" "" "Asp.Net Core" WebApi
+            tenantApi = container "Tenant API" "" "Asp.Net Core" WebApi {
+                tenantEndpoint = component "Tenant Endpoint" "" "Asp.Net Core Web API"
+            }
+            personApi = container "Person API" "" "Asp.Net Core" WebApi {
+                personEndpoint = component "Person Endpoint" "" "Asp.Net Core Web API"
+            }
+            organisationApi = container "Organisation API" "" "Asp.Net Core" WebApi {
+                organisationEndpoint = component "Organisation Endpoint" "" "Asp.Net Core Web API"
+            }
+            dataCaptureApi = container "Data Capture API" "" "Asp.Net Core" WebApi {
+                dataCaptureEndpoint = component "Data Capture Endpoint" "" "Asp.Net Core Web API"
+            }
+            dataSharingApi = container "Data Sharing API" "" "Asp.Net Core" WebApi {
+                dataSharingEndpoint = component "Data Sharing Endpoint" "" "Asp.Net Core Web API"
+            }
             database = container "Organisation Information Database" "" PostgreSQL Database
             webApp = container "Web Application" "Account & data capture frontend" "Asp.Net Core MVC" WebApp {
                 signInController = component "Sign In Controller" "Enables organisations to sign in to the Organisation Account." "Asp.Net Core MVC Controller"
@@ -35,7 +45,7 @@ workspace "Central Digital Platform" {
                 supplier -> coreDataController "Uses" "HTTPS"
                 supplier -> dataCaptureController "Uses" "HTTPS"
                 supplier -> dataSharingController "Uses" "HTTPS"
-                
+
                 signInController -> oneLogin "Authenticates with" "HTTPS"
                 registrationController -> tenantClient "Uses"
                 registrationController -> personClient "Uses"
@@ -44,12 +54,6 @@ workspace "Central Digital Platform" {
                 coreDataController -> organisationClient "Uses"
                 dataCaptureController -> dataCaptureClient "Uses"
                 dataSharingController -> dataSharingClient "Uses"
-                
-                tenantClient -> tenantApi "Calls" "HTTPS/json"
-                personClient -> personApi "Calls" "HTTPS/json"
-                organisationClient -> organisationApi "Calls" "HTTPS/json"
-                dataCaptureClient -> dataCaptureApi "Calls" "HTTPS/json"
-                dataSharingClient -> dataSharingApi "Calls" "HTTPS/json"
             }
 
             tenantApi -> database "reads/writes" "SQL"
@@ -57,28 +61,54 @@ workspace "Central Digital Platform" {
             organisationApi -> database "reads/writes" "SQL"
             dataCaptureApi -> database "reads/writes" "SQL"
             dataSharingApi -> database "reads/writes" "SQL"
+
+            tenantClient -> tenantEndpoint "Calls" "HTTPS/json"
+            personClient -> personEndpoint "Calls" "HTTPS/json"
+            organisationClient -> organisationEndpoint "Calls" "HTTPS/json"
+            dataCaptureClient -> dataCaptureEndpoint "Calls" "HTTPS/json"
+            dataSharingClient -> dataSharingEndpoint "Calls" "HTTPS/json"
+            eSender -> dataSharingEndpoint "Looks up supplier information" "HTTPS/json"
         }
 
         buyer -> eSender "Uses"
 
-        eSender -> dataSharingApi "Looks up supplier information" "HTTPS/json"
         fts -> cdp "Authorizes with"
         cfs -> cdp "Authorizes with"
         ppg -> cdp "Authorizes with"
     }
 
     views {
-        systemContext cdp "CDP-SystemContext" {
+        systemContext cdp "CDP-1-SystemContext" {
             include *
             description "The system context diagram for the Central Digital Platform."
         }
-        container cdp "CDP-ContainerView" {
+        container cdp "CDP-2-ContainerView" {
             include *
             description "The container diagram for the Central Digital Platform."
         }
-         component webApp "CDP-WebApp-Components" {
+         component webApp "CDP-3-WebApp-Components" {
             include *
             description "The component diagram for the Web Application."
+        }
+        component tenantApi "CDP-4-TenantApi-Components" {
+            include *
+            description "The component diagram for the Tenant API."
+        }
+        component personApi "CDP-5-PersonApi-Components" {
+            include *
+            description "The component diagram for the Person API."
+        }
+        component organisationApi "CDP-6-OrganisationApi-Components" {
+            include *
+            description "The component diagram for the Organisation API."
+        }
+        component dataCaptureApi "CDP-7-DataCaptureApi-Components" {
+            include *
+            description "The component diagram for the Data Capture API."
+        }
+        component dataSharingApi "CDP-8-DataSharingApi-Components" {
+            include *
+            description "The component diagram for the Data Sharing API."
         }
         theme default
         styles {
