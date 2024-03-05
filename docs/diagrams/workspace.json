@@ -1,0 +1,478 @@
+{
+  "configuration" : {
+    "scope" : "SoftwareSystem"
+  },
+  "description" : "Description",
+  "documentation" : { },
+  "id" : 1,
+  "lastModifiedDate" : "2024-03-04T15:34:04Z",
+  "model" : {
+    "people" : [ {
+      "id" : "1",
+      "location" : "Unspecified",
+      "name" : "Supplier",
+      "properties" : {
+        "structurizr.dsl.identifier" : "supplier"
+      },
+      "relationships" : [ {
+        "description" : "Uses",
+        "destinationId" : "5",
+        "id" : "25",
+        "properties" : {
+          "structurizr.dsl.identifier" : "0ff62219-cdd0-4e0a-b858-f36f96ea41f4"
+        },
+        "sourceId" : "1",
+        "tags" : "Relationship",
+        "technology" : "HTTPS"
+      }, {
+        "description" : "Uses",
+        "destinationId" : "4",
+        "id" : "26",
+        "linkedRelationshipId" : "25",
+        "sourceId" : "1",
+        "technology" : "HTTPS"
+      } ],
+      "tags" : "Element,Person"
+    }, {
+      "id" : "2",
+      "location" : "Unspecified",
+      "name" : "Buyer",
+      "properties" : {
+        "structurizr.dsl.identifier" : "buyer"
+      },
+      "relationships" : [ {
+        "description" : "Uses",
+        "destinationId" : "3",
+        "id" : "27",
+        "properties" : {
+          "structurizr.dsl.identifier" : "b722c4dd-82ee-4234-ad80-6e9ac537e72b"
+        },
+        "sourceId" : "2",
+        "tags" : "Relationship"
+      } ],
+      "tags" : "Element,Person"
+    } ],
+    "softwareSystems" : [ {
+      "description" : "Commercial Software that Buyers use to manage tender processes",
+      "documentation" : { },
+      "id" : "3",
+      "location" : "Unspecified",
+      "name" : "eSender",
+      "properties" : {
+        "structurizr.dsl.identifier" : "esender"
+      },
+      "relationships" : [ {
+        "description" : "Looks up supplier information",
+        "destinationId" : "10",
+        "id" : "29",
+        "properties" : {
+          "structurizr.dsl.identifier" : "fea6b714-ea04-4497-9533-778afac0e9d6"
+        },
+        "sourceId" : "3",
+        "tags" : "Relationship",
+        "technology" : "HTTPS/json"
+      }, {
+        "description" : "Looks up supplier information",
+        "destinationId" : "4",
+        "id" : "30",
+        "linkedRelationshipId" : "29",
+        "sourceId" : "3",
+        "technology" : "HTTPS/json"
+      } ],
+      "tags" : "Element,Software System"
+    }, {
+      "containers" : [ {
+        "description" : "Account & data capture frontend",
+        "documentation" : { },
+        "id" : "5",
+        "name" : "Web Application",
+        "properties" : {
+          "structurizr.dsl.identifier" : "webapp"
+        },
+        "relationships" : [ {
+          "description" : "calls",
+          "destinationId" : "6",
+          "id" : "12",
+          "properties" : {
+            "structurizr.dsl.identifier" : "c9d7b919-61d9-4274-96d5-3c23d38e1c6e"
+          },
+          "sourceId" : "5",
+          "tags" : "Relationship",
+          "technology" : "HTTPS/json"
+        }, {
+          "description" : "calls",
+          "destinationId" : "7",
+          "id" : "13",
+          "properties" : {
+            "structurizr.dsl.identifier" : "1ee6ab4b-a991-4987-8fc3-fe717a0d062b"
+          },
+          "sourceId" : "5",
+          "tags" : "Relationship",
+          "technology" : "HTTPS/json"
+        }, {
+          "description" : "calls",
+          "destinationId" : "8",
+          "id" : "14",
+          "properties" : {
+            "structurizr.dsl.identifier" : "d9473a5b-3f2f-48f1-8d5b-d1beee8e3a1f"
+          },
+          "sourceId" : "5",
+          "tags" : "Relationship",
+          "technology" : "HTTPS/json"
+        }, {
+          "description" : "calls",
+          "destinationId" : "9",
+          "id" : "15",
+          "properties" : {
+            "structurizr.dsl.identifier" : "218f83a5-7d1e-41cc-b78a-c0aabf6f5fa8"
+          },
+          "sourceId" : "5",
+          "tags" : "Relationship",
+          "technology" : "HTTPS/json"
+        } ],
+        "tags" : "Element,Container,WebApp",
+        "technology" : "React"
+      }, {
+        "documentation" : { },
+        "id" : "6",
+        "name" : "Tenant API",
+        "properties" : {
+          "structurizr.dsl.identifier" : "tenantapi"
+        },
+        "relationships" : [ {
+          "description" : "reads/writes",
+          "destinationId" : "11",
+          "id" : "16",
+          "properties" : {
+            "structurizr.dsl.identifier" : "4d58b390-87cf-4859-b4d0-9378a8ee54f9"
+          },
+          "sourceId" : "6",
+          "tags" : "Relationship",
+          "technology" : "SQL"
+        } ],
+        "tags" : "Element,Container,WebApi",
+        "technology" : "DotNetCore"
+      }, {
+        "documentation" : { },
+        "id" : "7",
+        "name" : "Person API",
+        "properties" : {
+          "structurizr.dsl.identifier" : "personapi"
+        },
+        "relationships" : [ {
+          "description" : "reads/writes",
+          "destinationId" : "11",
+          "id" : "17",
+          "properties" : {
+            "structurizr.dsl.identifier" : "8fd9af6c-0ac4-4cab-a3fb-4fe6d3627162"
+          },
+          "sourceId" : "7",
+          "tags" : "Relationship",
+          "technology" : "SQL"
+        } ],
+        "tags" : "Element,Container,WebApi",
+        "technology" : "DotNetCore"
+      }, {
+        "documentation" : { },
+        "id" : "8",
+        "name" : "Organisation API",
+        "properties" : {
+          "structurizr.dsl.identifier" : "organisationapi"
+        },
+        "relationships" : [ {
+          "description" : "reads/writes",
+          "destinationId" : "11",
+          "id" : "18",
+          "properties" : {
+            "structurizr.dsl.identifier" : "e6c00c56-2216-4dca-a3da-6e12a8978c17"
+          },
+          "sourceId" : "8",
+          "tags" : "Relationship",
+          "technology" : "SQL"
+        } ],
+        "tags" : "Element,Container,WebApi",
+        "technology" : "DotNetCore"
+      }, {
+        "documentation" : { },
+        "id" : "9",
+        "name" : "Data Capture API",
+        "properties" : {
+          "structurizr.dsl.identifier" : "datacaptureapi"
+        },
+        "relationships" : [ {
+          "description" : "reads/writes",
+          "destinationId" : "11",
+          "id" : "19",
+          "properties" : {
+            "structurizr.dsl.identifier" : "cc6b6578-9720-49ef-8ab6-bf35d471c0bb"
+          },
+          "sourceId" : "9",
+          "tags" : "Relationship",
+          "technology" : "SQL"
+        } ],
+        "tags" : "Element,Container,WebApi",
+        "technology" : "DotNetCore"
+      }, {
+        "documentation" : { },
+        "id" : "10",
+        "name" : "Data Sharing API",
+        "properties" : {
+          "structurizr.dsl.identifier" : "datasharingapi"
+        },
+        "relationships" : [ {
+          "description" : "reads/writes",
+          "destinationId" : "11",
+          "id" : "20",
+          "properties" : {
+            "structurizr.dsl.identifier" : "00394eea-9a53-40fb-b079-fcb49a373eaa"
+          },
+          "sourceId" : "10",
+          "tags" : "Relationship",
+          "technology" : "SQL"
+        } ],
+        "tags" : "Element,Container,WebApi",
+        "technology" : "DotNetCore"
+      }, {
+        "documentation" : { },
+        "id" : "11",
+        "name" : "Organisation Information Database",
+        "properties" : {
+          "structurizr.dsl.identifier" : "database"
+        },
+        "tags" : "Element,Container,Database",
+        "technology" : "PostgreSQL"
+      } ],
+      "description" : "Supports procurement",
+      "documentation" : { },
+      "id" : "4",
+      "location" : "Unspecified",
+      "name" : "Central Digital Platform",
+      "properties" : {
+        "structurizr.dsl.identifier" : "cdp"
+      },
+      "relationships" : [ {
+        "description" : "Authenticates with",
+        "destinationId" : "21",
+        "id" : "28",
+        "properties" : {
+          "structurizr.dsl.identifier" : "05383d15-dcd9-4fec-8d92-2e8aa9e2cc72"
+        },
+        "sourceId" : "4",
+        "tags" : "Relationship"
+      } ],
+      "tags" : "Element,Software System"
+    }, {
+      "description" : "Let users sign in and prove their identities to use your service",
+      "documentation" : { },
+      "id" : "21",
+      "location" : "Unspecified",
+      "name" : "Gov.uk One Login",
+      "properties" : {
+        "structurizr.dsl.identifier" : "onelogin"
+      },
+      "tags" : "Element,Software System"
+    }, {
+      "documentation" : { },
+      "id" : "22",
+      "location" : "Unspecified",
+      "name" : "Find a Tender",
+      "properties" : {
+        "structurizr.dsl.identifier" : "fts"
+      },
+      "relationships" : [ {
+        "description" : "Authorizes with",
+        "destinationId" : "4",
+        "id" : "31",
+        "properties" : {
+          "structurizr.dsl.identifier" : "eb497f78-323c-4b08-8d57-5965df900e8d"
+        },
+        "sourceId" : "22",
+        "tags" : "Relationship"
+      } ],
+      "tags" : "Element,Software System"
+    }, {
+      "documentation" : { },
+      "id" : "23",
+      "location" : "Unspecified",
+      "name" : "Supplier Information and Contracts Finder",
+      "properties" : {
+        "structurizr.dsl.identifier" : "cfs"
+      },
+      "relationships" : [ {
+        "description" : "Authorizes with",
+        "destinationId" : "4",
+        "id" : "32",
+        "properties" : {
+          "structurizr.dsl.identifier" : "33119b9b-db05-4cb7-a26a-4b24b9327011"
+        },
+        "sourceId" : "23",
+        "tags" : "Relationship"
+      } ],
+      "tags" : "Element,Software System"
+    }, {
+      "documentation" : { },
+      "id" : "24",
+      "location" : "Unspecified",
+      "name" : "Public Procurement Gateway",
+      "properties" : {
+        "structurizr.dsl.identifier" : "ppg"
+      },
+      "relationships" : [ {
+        "description" : "Authorizes with",
+        "destinationId" : "4",
+        "id" : "33",
+        "properties" : {
+          "structurizr.dsl.identifier" : "7aebc183-b8f3-4c97-a5e2-cad034a5d66a"
+        },
+        "sourceId" : "24",
+        "tags" : "Relationship"
+      } ],
+      "tags" : "Element,Software System"
+    } ]
+  },
+  "name" : "Central Digital Platform",
+  "properties" : {
+    "structurizr.dsl" : "d29ya3NwYWNlICJDZW50cmFsIERpZ2l0YWwgUGxhdGZvcm0iIHsKCiAgICBtb2RlbCB7CiAgICAgICAgc3VwcGxpZXIgPSBwZXJzb24gIlN1cHBsaWVyIgogICAgICAgIGJ1eWVyID0gcGVyc29uICJCdXllciIKICAgICAgICBlU2VuZGVyID0gc29mdHdhcmVTeXN0ZW0gImVTZW5kZXIiICJDb21tZXJjaWFsIFNvZnR3YXJlIHRoYXQgQnV5ZXJzIHVzZSB0byBtYW5hZ2UgdGVuZGVyIHByb2Nlc3NlcyIKICAgICAgICBjZHAgPSBzb2Z0d2FyZVN5c3RlbSAiQ2VudHJhbCBEaWdpdGFsIFBsYXRmb3JtIiAiU3VwcG9ydHMgcHJvY3VyZW1lbnQiIHsKICAgICAgICAgICAgd2ViQXBwID0gY29udGFpbmVyICJXZWIgQXBwbGljYXRpb24iICJBY2NvdW50ICYgZGF0YSBjYXB0dXJlIGZyb250ZW5kIiBSZWFjdCBXZWJBcHAKICAgICAgICAgICAgdGVuYW50QXBpID0gY29udGFpbmVyICJUZW5hbnQgQVBJIiAiIiBEb3ROZXRDb3JlIFdlYkFwaQogICAgICAgICAgICBwZXJzb25BcGkgPSBjb250YWluZXIgIlBlcnNvbiBBUEkiICIiIERvdE5ldENvcmUgV2ViQXBpCiAgICAgICAgICAgIG9yZ2FuaXNhdGlvbkFwaSA9IGNvbnRhaW5lciAiT3JnYW5pc2F0aW9uIEFQSSIgIiIgRG90TmV0Q29yZSBXZWJBcGkKICAgICAgICAgICAgZGF0YUNhcHR1cmVBcGkgPSBjb250YWluZXIgIkRhdGEgQ2FwdHVyZSBBUEkiICIiIERvdE5ldENvcmUgV2ViQXBpCiAgICAgICAgICAgIGRhdGFTaGFyaW5nQXBpID0gY29udGFpbmVyICJEYXRhIFNoYXJpbmcgQVBJIiAiIiBEb3ROZXRDb3JlIFdlYkFwaQogICAgICAgICAgICBkYXRhYmFzZSA9IGNvbnRhaW5lciAiT3JnYW5pc2F0aW9uIEluZm9ybWF0aW9uIERhdGFiYXNlIiAiIiBQb3N0Z3JlU1FMIERhdGFiYXNlCiAgICAgICAgICAgIAogICAgICAgICAgICB3ZWJBcHAgLT4gdGVuYW50QXBpICJjYWxscyIgIkhUVFBTL2pzb24iCiAgICAgICAgICAgIHdlYkFwcCAtPiBwZXJzb25BcGkgImNhbGxzIiAiSFRUUFMvanNvbiIKICAgICAgICAgICAgd2ViQXBwIC0+IG9yZ2FuaXNhdGlvbkFwaSAiY2FsbHMiICJIVFRQUy9qc29uIgogICAgICAgICAgICB3ZWJBcHAgLT4gZGF0YUNhcHR1cmVBcGkgImNhbGxzIiAiSFRUUFMvanNvbiIKICAgICAgICAgICAgCiAgICAgICAgICAgIHRlbmFudEFwaSAtPiBkYXRhYmFzZSAicmVhZHMvd3JpdGVzIiAiU1FMIgogICAgICAgICAgICBwZXJzb25BcGkgLT4gZGF0YWJhc2UgInJlYWRzL3dyaXRlcyIgIlNRTCIKICAgICAgICAgICAgb3JnYW5pc2F0aW9uQXBpIC0+IGRhdGFiYXNlICJyZWFkcy93cml0ZXMiICJTUUwiCiAgICAgICAgICAgIGRhdGFDYXB0dXJlQXBpIC0+IGRhdGFiYXNlICJyZWFkcy93cml0ZXMiICJTUUwiCiAgICAgICAgICAgIGRhdGFTaGFyaW5nQXBpIC0+IGRhdGFiYXNlICJyZWFkcy93cml0ZXMiICJTUUwiCiAgICAgICAgfQogICAgICAgIG9uZUxvZ2luID0gc29mdHdhcmVTeXN0ZW0gIkdvdi51ayBPbmUgTG9naW4iICJMZXQgdXNlcnMgc2lnbiBpbiBhbmQgcHJvdmUgdGhlaXIgaWRlbnRpdGllcyB0byB1c2UgeW91ciBzZXJ2aWNlIgogICAgICAgIGZ0cyA9IHNvZnR3YXJlU3lzdGVtICJGaW5kIGEgVGVuZGVyIgogICAgICAgIGNmcyA9IHNvZnR3YXJlU3lzdGVtICJTdXBwbGllciBJbmZvcm1hdGlvbiBhbmQgQ29udHJhY3RzIEZpbmRlciIKICAgICAgICBwcGcgPSBzb2Z0d2FyZVN5c3RlbSAiUHVibGljIFByb2N1cmVtZW50IEdhdGV3YXkiCgogICAgICAgIHN1cHBsaWVyIC0+IHdlYkFwcCAiVXNlcyIgIkhUVFBTIgogICAgICAgIGJ1eWVyIC0+IGVTZW5kZXIgIlVzZXMiCgogICAgICAgIGNkcCAtPiBvbmVMb2dpbiAiQXV0aGVudGljYXRlcyB3aXRoIgoKICAgICAgICBlU2VuZGVyIC0+IGRhdGFTaGFyaW5nQXBpICJMb29rcyB1cCBzdXBwbGllciBpbmZvcm1hdGlvbiIgIkhUVFBTL2pzb24iCiAgICAgICAgZnRzIC0+IGNkcCAiQXV0aG9yaXplcyB3aXRoIgogICAgICAgIGNmcyAtPiBjZHAgIkF1dGhvcml6ZXMgd2l0aCIKICAgICAgICBwcGcgLT4gY2RwICJBdXRob3JpemVzIHdpdGgiCiAgICB9CgogICAgdmlld3MgewogICAgICAgIHN5c3RlbUNvbnRleHQgY2RwICJDRFAtU3lzdGVtQ29udGV4dCIgewogICAgICAgICAgICBpbmNsdWRlICoKICAgICAgICB9CiAgICAgICAgY29udGFpbmVyIGNkcCAiQ0RQLUNvbnRhaW5lclZpZXciIHsKICAgICAgICAgICAgaW5jbHVkZSAqCiAgICAgICAgfQogICAgICAgIHRoZW1lIGRlZmF1bHQKICAgICAgICBzdHlsZXMgewogICAgICAgICAgICBlbGVtZW50IERhdGFiYXNlIHsKICAgICAgICAgICAgICAgIHNoYXBlIEN5bGluZGVyCiAgICAgICAgICAgIH0KICAgICAgICAgICAgZWxlbWVudCBXZWJBcHAgewogICAgICAgICAgICAgICAgc2hhcGUgV2ViQnJvd3NlcgogICAgICAgICAgICB9CiAgICAgICAgfQogICAgfQoKICAgIGNvbmZpZ3VyYXRpb24gewogICAgICAgIHNjb3BlIHNvZnR3YXJlc3lzdGVtCiAgICB9Cgp9Cg=="
+  },
+  "views" : {
+    "configuration" : {
+      "branding" : { },
+      "lastSavedView" : "CDP-ContainerView",
+      "styles" : {
+        "elements" : [ {
+          "shape" : "Cylinder",
+          "tag" : "Database"
+        }, {
+          "shape" : "WebBrowser",
+          "tag" : "WebApp"
+        } ]
+      },
+      "terminology" : { },
+      "themes" : [ "https://static.structurizr.com/themes/default/theme.json" ]
+    },
+    "containerViews" : [ {
+      "dimensions" : {
+        "height" : 2480,
+        "width" : 3508
+      },
+      "elements" : [ {
+        "id" : "1",
+        "x" : 40,
+        "y" : 75
+      }, {
+        "id" : "3",
+        "x" : 25,
+        "y" : 785
+      }, {
+        "id" : "5",
+        "x" : 2125,
+        "y" : 115
+      }, {
+        "id" : "6",
+        "x" : 2900,
+        "y" : 780
+      }, {
+        "id" : "7",
+        "x" : 1890,
+        "y" : 780
+      }, {
+        "id" : "8",
+        "x" : 2395,
+        "y" : 780
+      }, {
+        "id" : "9",
+        "x" : 1385,
+        "y" : 780
+      }, {
+        "id" : "10",
+        "x" : 880,
+        "y" : 780
+      }, {
+        "id" : "11",
+        "x" : 1895,
+        "y" : 1430
+      } ],
+      "externalSoftwareSystemBoundariesVisible" : false,
+      "key" : "CDP-ContainerView",
+      "order" : 2,
+      "paperSize" : "A4_Landscape",
+      "relationships" : [ {
+        "id" : "12"
+      }, {
+        "id" : "13"
+      }, {
+        "id" : "14"
+      }, {
+        "id" : "15"
+      }, {
+        "id" : "16"
+      }, {
+        "id" : "17"
+      }, {
+        "id" : "18"
+      }, {
+        "id" : "19"
+      }, {
+        "id" : "20"
+      }, {
+        "id" : "25"
+      }, {
+        "id" : "29"
+      } ],
+      "softwareSystemId" : "4"
+    } ],
+    "systemContextViews" : [ {
+      "dimensions" : {
+        "height" : 1748,
+        "width" : 2480
+      },
+      "elements" : [ {
+        "id" : "1",
+        "x" : 1035,
+        "y" : 10
+      }, {
+        "id" : "3",
+        "x" : 1010,
+        "y" : 1265
+      }, {
+        "id" : "4",
+        "x" : 1010,
+        "y" : 740
+      }, {
+        "id" : "21",
+        "x" : 1890,
+        "y" : 730
+      }, {
+        "id" : "22",
+        "x" : 145,
+        "y" : 360
+      }, {
+        "id" : "23",
+        "x" : 145,
+        "y" : 725
+      }, {
+        "id" : "24",
+        "x" : 145,
+        "y" : 1090
+      } ],
+      "enterpriseBoundaryVisible" : true,
+      "key" : "CDP-SystemContext",
+      "order" : 1,
+      "paperSize" : "A5_Landscape",
+      "relationships" : [ {
+        "id" : "26"
+      }, {
+        "id" : "28"
+      }, {
+        "id" : "30"
+      }, {
+        "id" : "31"
+      }, {
+        "id" : "32"
+      }, {
+        "id" : "33"
+      } ],
+      "softwareSystemId" : "4"
+    } ]
+  }
+}

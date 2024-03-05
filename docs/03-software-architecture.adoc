@@ -1,0 +1,11 @@
+= Software Architecture
+
+== Container view
+
+The diagram below focuses on high level responsibilities and technology choices within the Central Digital Platform system.
+
+.Container View of the Central Digital Platform system
+image::diagrams/export/structurizr-1-CDP-ContainerView.svg[Container View of the Central Digital Platform system]
+
+.Legend
+image::diagrams/export/structurizr-1-CDP-ContainerView-key.svg[Legend]

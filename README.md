@@ -11,6 +11,10 @@ make build
 make test
 ```
 
+## Documentation
+
+For technical documentation see [Docs](docs/index.adoc).
+
 ## Design Decisions
 
 For important design decisions that were made as the project evolved see the [decision log](docs/decisions/index.adoc).
