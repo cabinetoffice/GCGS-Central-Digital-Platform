@@ -42,6 +42,9 @@ namespace DataSharing.Api
 
     internal record ContactPoint
     {
+        public string? Email { get; init; }
+        public string? Telephone { get; init; }
+        public string? FaxNumber { get; init; }
     }
 
     internal enum PartyRole
@@ -61,6 +64,50 @@ namespace DataSharing.Api
 
     internal record SupplierInformationData
     {
+        [Required] public required Guid FormId { get; init; }
+        public List<SupplierFormAnswer> Answers { get; init; } = new List<SupplierFormAnswer>();
+        public List<FormQuestion> Questions { get; init; } = new List<FormQuestion>();
+
+    }
+
+    internal record SupplierFormAnswer
+    {
+        public string? QuestionName { get; init; }
+        public bool? BoolValue { get; init; }
+        public double? NumericValue { get; init; }
+        public DateTime? StartValue { get; init; }
+        public DateTime? EndValue { get; init; }
+        public string? TextValue { get; init; }
+        public int? OptionValue { get; init; }
+    }
+
+    internal record FormQuestion
+    {
+        public QuestionTypes? Type { get; init; }
+        public string? Name { get; init; }
+        public string? Text { get; init; }
+        public bool IsRequired { get; init; }
+        public string? SectionName { get; init; }
+        public List<QuestionOption> Options { get; init; } = new List<QuestionOption>();
+    }
+
+    internal enum QuestionTypes
+    {
+        Type1 = 1,
+        Type2 = 2,
+        Type3 = 3,
+        Type4 = 4,
+        Type5 = 5,
+        Type6 = 6,
+        Type7 = 7,
+        Type8 = 8,
+        Type9 = 9
+    }
+
+    internal record QuestionOption
+    {
+        [Required] public required Guid Id { get; init; }
+        public string? Value { get; init; }
     }
 
     public static class EndpointExtensions
@@ -68,28 +115,73 @@ namespace DataSharing.Api
         public static void UseDataSharingEndpoints(this WebApplication app)
         {
             app.MapGet("/share/data/{sharecode}", (string sharecode) => new SupplierInformation
-                {
-                    Id = Guid.NewGuid(),
-                    Name = "Tables Ltd",
-                    AdditionalParties = [],
-                    Identifier = new Identifier
+            {
+                Id = Guid.NewGuid(),
+                Name = "Tables Ltd",
+                AdditionalParties = new List<OrganisationReference>{
+                    new OrganisationReference
                     {
-                        Scheme = "CH",
                         Id = Guid.NewGuid(),
+                         Name = "Org 1"
                     },
-                    AdditionalIdentifiers = [],
-                    Address = new Address()
+                    new OrganisationReference
                     {
-                        StreetAddress = $"42 Green Lane",
-                        Locality = "London",
-                        Region = "Kent",
-                        PostalCode = "BR8 7AA"
+                        Id = Guid.NewGuid(),
+                        Name = "Org 2"
+                    }
+                },
+                Identifier = new Identifier
+                {
+                    Scheme = "CH",
+                    Id = Guid.NewGuid(),
+                    LegalName = "Tables Incorporated",
+                    Uri = "https://tablesinc.com"
+                },
+                AdditionalIdentifiers = new List<Identifier>
+                {
+                    new Identifier {
+                        Id = Guid.NewGuid(),
+                        Scheme = "GB-COH",
+                        LegalName = "Tables Ltd",
+                        Uri = "https://tables.co.uk" }
+                },
+                Address = new Address
+                {
+                    StreetAddress = $"42 Green Lane",
+                    Locality = "London",
+                    Region = "Kent",
+                    PostalCode = "BR8 7AA"
+                },
+                ContactPoints = new List<ContactPoint>
+                    {
+                        new ContactPoint {
+                            Email = "info@tables.com",
+                            Telephone = "+441234567890" }
                     },
-                    ContactPoints = [new ContactPoint()],
-                    Roles = [PartyRole.Buyer],
-                    Details = "Details.",
-                    SupplierInformationData = new SupplierInformationData(),
-                })
+                Roles = new List<PartyRole> {
+                    PartyRole.Supplier
+                },
+                Details = "Details.",
+                SupplierInformationData = new SupplierInformationData
+                {
+                    FormId = Guid.NewGuid(),
+                    Questions = new List<FormQuestion>
+                        {
+                            new FormQuestion {
+                                Name = "Question 1",
+                                Text = "What is your answer?",
+                                IsRequired = true
+                            }
+                        },
+                    Answers = new List<SupplierFormAnswer>
+                        {
+                            new SupplierFormAnswer {
+                                QuestionName = "Question 1",
+                                TextValue = "Answer 1"
+                            }
+                        }
+                },
+            })
                 .Produces<SupplierInformation>(200, "application/json")
                 .WithOpenApi(operation =>
                 {
@@ -98,6 +190,24 @@ namespace DataSharing.Api
                         "Operation to obtain Supplier information which has been shared as part of a notice.";
                     operation.Summary = "Request Supplier Submitted Information.";
                     operation.Responses["200"].Description = "Organisation Information including Form Answers.";
+                    return operation;
+                });
+
+
+
+            app.MapPost("/share/data", (SupplierInformationData shareRequest) =>
+            {
+                var shareCode = Guid.NewGuid().ToString();
+
+                return Results.Ok(new { ShareCode = shareCode, Expiry = DateTime.UtcNow.AddDays(7) });
+            }).Produces(StatusCodes.Status200OK)
+                .WithOpenApi(operation =>
+                {
+                    operation.OperationId = "CreateSharedData";
+                    operation.Description =
+                        "Operation to obtain Supplier information which has been shared as part of a notice.";
+                    operation.Summary = "Create Supplier Submitted Information.";
+                    operation.Responses["200"].Description = "Organisation Information created.";
                     return operation;
                 });
         }
