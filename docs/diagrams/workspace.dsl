@@ -5,12 +5,12 @@ workspace "Central Digital Platform" {
         buyer = person "Buyer"
         eSender = softwareSystem "eSender" "Commercial Software that Buyers use to manage tender processes"
         cdp = softwareSystem "Central Digital Platform" "Supports procurement" {
-            webApp = container "Web Application" "Account & data capture frontend" React WebApp
-            tenantApi = container "Tenant API" "" DotNetCore WebApi
-            personApi = container "Person API" "" DotNetCore WebApi
-            organisationApi = container "Organisation API" "" DotNetCore WebApi
-            dataCaptureApi = container "Data Capture API" "" DotNetCore WebApi
-            dataSharingApi = container "Data Sharing API" "" DotNetCore WebApi
+            webApp = container "Web Application" "Account & data capture frontend" "Asp.Net Core MVC" WebApp
+            tenantApi = container "Tenant API" "" "Asp.Net Core" WebApi
+            personApi = container "Person API" "" "Asp.Net Core" WebApi
+            organisationApi = container "Organisation API" "" "Asp.Net Core" WebApi
+            dataCaptureApi = container "Data Capture API" "" "Asp.Net Core" WebApi
+            dataSharingApi = container "Data Sharing API" "" "Asp.Net Core" WebApi
             database = container "Organisation Information Database" "" PostgreSQL Database
 
             webApp -> tenantApi "calls" "HTTPS/json"

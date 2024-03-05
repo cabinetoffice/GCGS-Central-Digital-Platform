@@ -20,6 +20,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Forms.Tests", "Services\For
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataSharing.Tests", "Services\DataSharing.Tests\DataSharing.Tests.csproj", "{D5413393-FCD2-4BC0-8A2D-127952EE43D4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrganisationApp", "Frontend\OrganisationApp\OrganisationApp.csproj", "{379D2839-9ECA-4DC4-9BF3-12D1DFB25908}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -66,5 +68,9 @@ Global
 		{D5413393-FCD2-4BC0-8A2D-127952EE43D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D5413393-FCD2-4BC0-8A2D-127952EE43D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D5413393-FCD2-4BC0-8A2D-127952EE43D4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{379D2839-9ECA-4DC4-9BF3-12D1DFB25908}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{379D2839-9ECA-4DC4-9BF3-12D1DFB25908}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{379D2839-9ECA-4DC4-9BF3-12D1DFB25908}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{379D2839-9ECA-4DC4-9BF3-12D1DFB25908}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
