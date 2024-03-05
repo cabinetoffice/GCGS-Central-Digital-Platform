@@ -1,0 +1,43 @@
+﻿@page "/supplier-registration/your-details"
+
+<a href="/" class="govuk-back-link">
+    Back
+</a>
+
+<main class="govuk-main-wrapper">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <h1 class="govuk-heading-xl">
+                Supplier Registration
+            </h1>
+
+            <fieldset class="govuk-fieldset">
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                    <h1 class="govuk-fieldset__heading">
+                        Enter your details?
+                    </h1>
+                </legend>
+
+                <div class="govuk-form-group">
+                    <label class="govuk-label" htmlFor="first-name">
+                        First name
+                    </label>
+                    <input class="govuk-input" id="first-name" name="firstName" type="text" />
+                </div>
+
+                <div class="govuk-form-group">
+                    <label class="govuk-label" htmlFor="last-name">
+                        Last name
+                    </label>
+                    <input class="govuk-input" id="last-name" name="lastName" type="text" />
+                </div>
+            </fieldset>
+
+            <a href="/supplier-registration/organisation-type">
+                <button type="submit" class="govuk-button" data-module="govuk-button">
+                    Save and continue
+                </button>
+            </a>
+        </div>
+    </div>
+</main>
