@@ -1,0 +1,78 @@
+﻿@page "/registration/organisation-registered-address"
+
+<a href="/registration/your-details" class="govuk-back-link">
+    Back
+</a>
+
+<main class="govuk-main-wrapper">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <h1 class="govuk-heading-xl">Supplier Registration</h1>
+
+            <fieldset class="govuk-fieldset">
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                    <h1 class="govuk-fieldset__heading">
+                        Enter organisation address
+                    </h1>
+                </legend>
+
+                <div class="govuk-form-group">
+                    <label class="govuk-label" htmlFor="address-one">
+                        Address line 1
+                    </label>
+                    <input class="govuk-input"
+                           id="address-one"
+                           name="addressOne"
+                           type="text" />
+                </div>
+
+                <div class="govuk-form-group">
+                    <label class="govuk-label" htmlFor="address-two">
+                        Address line 2
+                    </label>
+                    <input class="govuk-input"
+                           id="address-two"
+                           name="addressTwo"
+                           type="text" />
+                </div>
+
+                <div class="govuk-form-group">
+                    <label class="govuk-label" htmlFor="city">
+                        City or town
+                    </label>
+                    <input class="govuk-input"
+                           id="city"
+                           name="city"
+                           type="text" />
+                </div>
+
+                <div class="govuk-form-group">
+                    <label class="govuk-label" htmlFor="postcode">
+                        Postcode or Zip Code
+                    </label>
+                    <input class="govuk-input"
+                           id="postcode"
+                           name="postcode"
+                           type="text" />
+                </div>
+
+                <div class="govuk-form-group">
+                    <label class="govuk-label" htmlFor="country">
+                        Country
+                    </label>
+                    <select class="govuk-select" id="country" name="country">
+                        <option value="england" selected>England</option>
+                        <option value="scotland">Scotland</option>
+                        <option value="northernIreland">Northern Ireland</option>
+                        <option value="wales">Wales</option>
+                    </select>
+                </div>
+            </fieldset>
+            <a href="/registration/organisation-details-summary">
+                <button type="submit" class="govuk-button" data-module="govuk-button">
+                    Continue
+                </button>
+            </a>
+        </div>
+    </div>
+</main>

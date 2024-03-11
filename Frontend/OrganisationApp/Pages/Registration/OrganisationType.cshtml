@@ -1,0 +1,47 @@
+﻿@page "/registration/organisation-type"
+
+<a href="/registration/your-details" class="govuk-back-link">
+    Back
+</a>
+
+<main class="govuk-main-wrapper">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <h1 class="govuk-heading-xl">
+                Supplier Registration
+            </h1>
+
+            <div class="govuk-form-group">
+                <fieldset class="govuk-fieldset">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                        <h1 class="govuk-fieldset__heading">
+                            Is your organisation a supplier, buyer or both?
+                        </h1>
+                    </legend>
+                    <div id="waste-hint" class="govuk-hint">
+                        Select all that apply.
+                    </div>
+                    <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+                        <div class="govuk-checkboxes__item">
+                            <input class="govuk-checkboxes__input" id="supplier" name="supplier-type" type="checkbox" value="supplier" />
+                            <label class="govuk-label govuk-checkboxes__label" for="supplier">
+                                Supplier
+                            </label>
+                        </div>
+                        <div class="govuk-checkboxes__item">
+                            <input class="govuk-checkboxes__input" id="buyer" name="supplier-type" type="checkbox" value="buyer" />
+                            <label class="govuk-label govuk-checkboxes__label" for="buyer">
+                                Buyer
+                            </label>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+            <a href="/registration/organisation-details">
+                <button type="submit" class="govuk-button" data-module="govuk-button">
+                    Continue
+                </button>
+            </a>
+        </div>
+    </div>
+</main>

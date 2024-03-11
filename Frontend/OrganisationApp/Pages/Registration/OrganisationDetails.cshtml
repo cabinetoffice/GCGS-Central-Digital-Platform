@@ -1,0 +1,60 @@
+﻿@page "/registration/organisation-details"
+
+<a href="/registration/your-details" class="govuk-back-link">
+    Back
+</a>
+
+<main class="govuk-main-wrapper">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <h1 class="govuk-heading-xl">Supplier Registration</h1>
+
+            <div class="govuk-form-group">
+                <fieldset class="govuk-fieldset">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                        <h1 class="govuk-fieldset__heading">
+                            Enter your organisation details
+                        </h1>
+                    </legend>
+                    <div class="govuk-form-group">
+                        <label class="govuk-label" htmlFor="organisation-name">
+                            Organisation name
+                        </label>
+                        <input class="govuk-input"
+                               id="organisation-name"
+                               name="organisationName"
+                               type="text" />
+                    </div>
+
+                    <div class="govuk-form-group">
+                        <label class="govuk-label" htmlFor="org-email-address">
+                            Email address
+                        </label>
+                        <input class="govuk-input"
+                               id="org-email-address"
+                               name="orgEmailAddress"
+                               type="text" />
+                    </div>
+
+                    <div class="govuk-form-group">
+                        <label class="govuk-label" htmlFor="org-telephone-number">
+                            Telephone number
+                        </label>
+                        <input class="govuk-input"
+                               id="org-telephone-number"
+                               name="orgTelephoneNumber"
+                               type="text" />
+                    </div>
+                </fieldset>
+            </div>
+
+            <a href="/registration/organisation-identification">
+                <button type="submit"
+                        class="govuk-button"
+                        data-module="govuk-button">
+                    Continue
+                </button>
+            </a>
+        </div>
+    </div>
+</main>
