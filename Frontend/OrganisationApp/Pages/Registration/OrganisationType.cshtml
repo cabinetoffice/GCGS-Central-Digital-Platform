@@ -15,26 +15,23 @@
                 <fieldset class="govuk-fieldset">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                         <h1 class="govuk-fieldset__heading">
-                            Are you a supplier, buyer, or both?
+                            Is your organisation a supplier, buyer or both?
                         </h1>
                     </legend>
-                    <div class="govuk-radios" data-module="govuk-radios">
-                        <div class="govuk-radios__item">
-                            <input class="govuk-radios__input" id="supplier" name="supplier-type" type="radio" value="supplier" />
-                            <label class="govuk-label govuk-radios__label" for="supplier">
+                    <div id="waste-hint" class="govuk-hint">
+                        Select all that apply.
+                    </div>
+                    <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+                        <div class="govuk-checkboxes__item">
+                            <input class="govuk-checkboxes__input" id="supplier" name="supplier-type" type="checkbox" value="supplier" />
+                            <label class="govuk-label govuk-checkboxes__label" for="supplier">
                                 Supplier
                             </label>
                         </div>
-                        <div class="govuk-radios__item">
-                            <input class="govuk-radios__input" id="buyer" name="supplier-type" type="radio" value="buyer" />
-                            <label class="govuk-label govuk-radios__label" for="buyer">
+                        <div class="govuk-checkboxes__item">
+                            <input class="govuk-checkboxes__input" id="buyer" name="supplier-type" type="checkbox" value="buyer" />
+                            <label class="govuk-label govuk-checkboxes__label" for="buyer">
                                 Buyer
-                            </label>
-                        </div>
-                        <div class="govuk-radios__item">
-                            <input class="govuk-radios__input" id="both" name="supplier-type" type="radio" value="both" />
-                            <label class="govuk-label govuk-radios__label" for="both">
-                                Both
                             </label>
                         </div>
                     </div>
@@ -42,7 +39,7 @@
             </div>
             <a href="/registration/organisation-details">
                 <button type="submit" class="govuk-button" data-module="govuk-button">
-                    Save and continue
+                    Continue
                 </button>
             </a>
         </div>
