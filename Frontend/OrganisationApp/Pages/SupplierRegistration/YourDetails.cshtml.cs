@@ -1,17 +1,19 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace OrganisationApp.Pages.SupplierRegistration;
-
-public class YourDetailsModel : PageModel
+namespace OrganisationApp.Pages.SupplierRegistration
 {
-    private readonly ILogger<YourDetailsModel> _logger;
 
-    public YourDetailsModel(ILogger<YourDetailsModel> logger)
+    public class YourDetailsModel : PageModel
     {
-        _logger = logger;
-    }
+        private readonly ILogger<YourDetailsModel> _logger;
 
-    public void OnGet()
-    {
+        public YourDetailsModel(ILogger<YourDetailsModel> logger)
+        {
+            _logger = logger;
+        }
+
+        public void OnGet()
+        {
+        }
     }
 }
