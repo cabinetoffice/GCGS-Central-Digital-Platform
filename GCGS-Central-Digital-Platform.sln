@@ -1,26 +1,33 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tenant", "Services\Tenant\Tenant.csproj", "{C9278454-2E29-45D4-8F0F-F27C548E0B1F}"
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34601.278
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tenant", "Services\Tenant\Tenant.csproj", "{C9278454-2E29-45D4-8F0F-F27C548E0B1F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tenant.Tests", "Services\Tenant.Tests\Tenant.Tests.csproj", "{71129DB6-C02A-4476-A328-BA5822F22A8C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tenant.Tests", "Services\Tenant.Tests\Tenant.Tests.csproj", "{71129DB6-C02A-4476-A328-BA5822F22A8C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Organisation", "Services\Organisation\Organisation.csproj", "{F73306D3-A170-4849-8982-5FF3D1961362}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Organisation", "Services\Organisation\Organisation.csproj", "{F73306D3-A170-4849-8982-5FF3D1961362}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Person", "Services\Person\Person.csproj", "{D9CC02AD-3031-496A-8E48-E736623D1B41}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Person", "Services\Person\Person.csproj", "{D9CC02AD-3031-496A-8E48-E736623D1B41}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataSharing", "Services\DataSharing\DataSharing.csproj", "{C5DD309E-CA59-4C82-BFC4-9374026A2B21}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataSharing", "Services\DataSharing\DataSharing.csproj", "{C5DD309E-CA59-4C82-BFC4-9374026A2B21}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Forms", "Services\Forms\Forms.csproj", "{4298A4EF-B336-4809-95F0-AF5D73266A18}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Forms", "Services\Forms\Forms.csproj", "{4298A4EF-B336-4809-95F0-AF5D73266A18}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Organisation.Tests", "Services\Organisation.Tests\Organisation.Tests.csproj", "{41DF6448-6761-4000-9948-CA906100E55E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Organisation.Tests", "Services\Organisation.Tests\Organisation.Tests.csproj", "{41DF6448-6761-4000-9948-CA906100E55E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Person.Tests", "Services\Person.Tests\Person.Tests.csproj", "{24CCE329-0EE7-4677-A90F-47DB2F37AE4A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Person.Tests", "Services\Person.Tests\Person.Tests.csproj", "{24CCE329-0EE7-4677-A90F-47DB2F37AE4A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Forms.Tests", "Services\Forms.Tests\Forms.Tests.csproj", "{FE1C13BB-72CE-4EB4-98D3-C6A9B29E14E3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Forms.Tests", "Services\Forms.Tests\Forms.Tests.csproj", "{FE1C13BB-72CE-4EB4-98D3-C6A9B29E14E3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataSharing.Tests", "Services\DataSharing.Tests\DataSharing.Tests.csproj", "{D5413393-FCD2-4BC0-8A2D-127952EE43D4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataSharing.Tests", "Services\DataSharing.Tests\DataSharing.Tests.csproj", "{D5413393-FCD2-4BC0-8A2D-127952EE43D4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrganisationApp", "Frontend\OrganisationApp\OrganisationApp.csproj", "{379D2839-9ECA-4DC4-9BF3-12D1DFB25908}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrganisationApp", "Frontend\OrganisationApp\OrganisationApp.csproj", "{379D2839-9ECA-4DC4-9BF3-12D1DFB25908}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Spikes", "Spikes", "{A4FDE654-9456-4EBA-90A3-F04AA687B325}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GCGS.OneLogin.SignIn.Auth", "Spikes\GCGS.OneLogin.SignIn.Auth\GCGS.OneLogin.SignIn.Auth.csproj", "{96DC7D0E-1D48-4DBC-9D9D-6B5B77B7E8AA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -72,5 +79,15 @@ Global
 		{379D2839-9ECA-4DC4-9BF3-12D1DFB25908}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{379D2839-9ECA-4DC4-9BF3-12D1DFB25908}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{379D2839-9ECA-4DC4-9BF3-12D1DFB25908}.Release|Any CPU.Build.0 = Release|Any CPU
+		{96DC7D0E-1D48-4DBC-9D9D-6B5B77B7E8AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{96DC7D0E-1D48-4DBC-9D9D-6B5B77B7E8AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{96DC7D0E-1D48-4DBC-9D9D-6B5B77B7E8AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{96DC7D0E-1D48-4DBC-9D9D-6B5B77B7E8AA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{96DC7D0E-1D48-4DBC-9D9D-6B5B77B7E8AA} = {A4FDE654-9456-4EBA-90A3-F04AA687B325}
 	EndGlobalSection
 EndGlobal
