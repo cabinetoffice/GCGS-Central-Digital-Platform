@@ -1,5 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34622.214
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.Tenant.WebApi", "Services\CO.CDP.Tenant.WebApi\CO.CDP.Tenant.WebApi.csproj", "{C9278454-2E29-45D4-8F0F-F27C548E0B1F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.Tenant.WebApi.Tests", "Services\CO.CDP.Tenant.WebApi.Tests\CO.CDP.Tenant.WebApi.Tests.csproj", "{71129DB6-C02A-4476-A328-BA5822F22A8C}"
@@ -21,6 +24,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.DataSharing.WebApi.Tests", "Services\CO.CDP.DataSharing.WebApi.Tests\CO.CDP.DataSharing.WebApi.Tests.csproj", "{D5413393-FCD2-4BC0-8A2D-127952EE43D4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.OrganisationApp", "Frontend\CO.CDP.OrganisationApp\CO.CDP.OrganisationApp.csproj", "{379D2839-9ECA-4DC4-9BF3-12D1DFB25908}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.OrganisationApp.Tests", "Frontend\CO.CDP.OrganisationApp.Tests\CO.CDP.OrganisationApp.Tests.csproj", "{F4C94C12-3FAC-4BE3-9924-5B2B2E2A5E04}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -72,5 +77,15 @@ Global
 		{379D2839-9ECA-4DC4-9BF3-12D1DFB25908}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{379D2839-9ECA-4DC4-9BF3-12D1DFB25908}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{379D2839-9ECA-4DC4-9BF3-12D1DFB25908}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F4C94C12-3FAC-4BE3-9924-5B2B2E2A5E04}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F4C94C12-3FAC-4BE3-9924-5B2B2E2A5E04}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F4C94C12-3FAC-4BE3-9924-5B2B2E2A5E04}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F4C94C12-3FAC-4BE3-9924-5B2B2E2A5E04}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {14A331DA-D14C-4072-99C5-3AA3369A6B0C}
 	EndGlobalSection
 EndGlobal
