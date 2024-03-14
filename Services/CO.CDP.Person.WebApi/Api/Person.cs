@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace Person.Api
+namespace CO.CDP.Person.WebApi.Api
 {
     internal record Person
     {

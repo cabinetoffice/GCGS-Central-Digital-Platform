@@ -52,7 +52,7 @@ services:
   person:
     container_name: co-cdp-person
     build:
-      context: Services/Person
+      context: Services/CO.CDP.Person.WebApi
       dockerfile: Dockerfile
       target: final
     image: 'cabinetoffice/cdp-person:${IMAGE_VERSION:-latest}'
