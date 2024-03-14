@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace OrganisationApp.Pages;
+namespace CO.CDP.OrganisationApp.Pages;
 
 public class IndexModel : PageModel
 {

@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace OrganisationApp.Pages.SupplierRegistration
+namespace CO.CDP.OrganisationApp.Pages.SupplierRegistration
 {
     public class OrganisationDetailsSummaryModel : PageModel
     {

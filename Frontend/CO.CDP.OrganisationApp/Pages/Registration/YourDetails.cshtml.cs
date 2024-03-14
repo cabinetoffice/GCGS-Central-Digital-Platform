@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace OrganisationApp.Pages.SupplierRegistration
+namespace CO.CDP.OrganisationApp.Pages.SupplierRegistration
 {
 
     public class YourDetailsModel : PageModel

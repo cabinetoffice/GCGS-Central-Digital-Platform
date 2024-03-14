@@ -4,7 +4,7 @@ services:
   organisation-app:
     container_name: co-cdp-organisation-app
     build:
-      context: Frontend/OrganisationApp
+      context: Frontend/CO.CDP.OrganisationApp
       dockerfile: Dockerfile
       target: final
     image: 'cabinetoffice/cdp-organisation-app:${IMAGE_VERSION:-latest}'

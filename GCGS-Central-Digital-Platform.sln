@@ -20,7 +20,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Forms.Tests", "Services\For
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataSharing.Tests", "Services\DataSharing.Tests\DataSharing.Tests.csproj", "{D5413393-FCD2-4BC0-8A2D-127952EE43D4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrganisationApp", "Frontend\OrganisationApp\OrganisationApp.csproj", "{379D2839-9ECA-4DC4-9BF3-12D1DFB25908}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.OrganisationApp", "Frontend\CO.CDP.OrganisationApp\CO.CDP.OrganisationApp.csproj", "{379D2839-9ECA-4DC4-9BF3-12D1DFB25908}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
