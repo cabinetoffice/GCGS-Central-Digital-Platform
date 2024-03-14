@@ -4,8 +4,8 @@ services:
   organisation-app:
     container_name: co-cdp-organisation-app
     build:
-      context: Frontend/CO.CDP.OrganisationApp
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: Frontend/CO.CDP.OrganisationApp/Dockerfile
       target: final
     image: 'cabinetoffice/cdp-organisation-app:${IMAGE_VERSION:-latest}'
     environment:
@@ -36,8 +36,8 @@ services:
   organisation:
     container_name: co-cdp-organisation
     build:
-      context: Services/CO.CDP.Organisation.WebApi
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: Services/CO.CDP.Organisation.WebApi/Dockerfile
       target: final
     image: 'cabinetoffice/cdp-organisation:${IMAGE_VERSION:-latest}'
     environment:
@@ -52,8 +52,8 @@ services:
   person:
     container_name: co-cdp-person
     build:
-      context: Services/CO.CDP.Person.WebApi
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: Services/CO.CDP.Person.WebApi/Dockerfile
       target: final
     image: 'cabinetoffice/cdp-person:${IMAGE_VERSION:-latest}'
     environment:
@@ -68,8 +68,8 @@ services:
   forms:
     container_name: co-cdp-forms
     build:
-      context: Services/CO.CDP.Forms.WebApi
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: Services/CO.CDP.Forms.WebApi/Dockerfile
       target: final
     image: 'cabinetoffice/cdp-forms:${IMAGE_VERSION:-latest}'
     environment:
@@ -84,8 +84,8 @@ services:
   data-sharing:
     container_name: co-cdp-data-sharing
     build:
-      context: Services/CO.CDP.DataSharing.WebApi
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: Services/CO.CDP.DataSharing.WebApi/Dockerfile
       target: final
     image: 'cabinetoffice/cdp-data-sharing:${IMAGE_VERSION:-latest}'
     environment:

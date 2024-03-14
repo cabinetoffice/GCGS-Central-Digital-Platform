@@ -8,10 +8,10 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["CO.CDP.DataSharing.WebApi.csproj", "DataSharing/"]
-RUN dotnet restore "DataSharing/CO.CDP.DataSharing.WebApi.csproj"
-WORKDIR "/src/DataSharing"
-COPY . .
+COPY ["Services/CO.CDP.DataSharing.WebApi/CO.CDP.DataSharing.WebApi.csproj", "CO.CDP.DataSharing.WebApi/"]
+RUN dotnet restore "CO.CDP.DataSharing.WebApi/CO.CDP.DataSharing.WebApi.csproj"
+WORKDIR "/src/Services/CO.CDP.DataSharing.WebApi"
+COPY Services/ /src/Services
 RUN dotnet build "CO.CDP.DataSharing.WebApi.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
