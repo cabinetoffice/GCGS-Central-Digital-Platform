@@ -1,4 +1,4 @@
-using DataSharing.Api;
+using CO.CDP.DataSharing.WebApi.Api;
 
 var builder = WebApplication.CreateBuilder(args);
 

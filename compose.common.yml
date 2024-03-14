@@ -84,7 +84,7 @@ services:
   data-sharing:
     container_name: co-cdp-data-sharing
     build:
-      context: Services/DataSharing
+      context: Services/CO.CDP.DataSharing.WebApi
       dockerfile: Dockerfile
       target: final
     image: 'cabinetoffice/cdp-data-sharing:${IMAGE_VERSION:-latest}'

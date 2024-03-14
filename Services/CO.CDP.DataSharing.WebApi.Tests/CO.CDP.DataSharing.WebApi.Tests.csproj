@@ -7,6 +7,7 @@
 
         <IsPackable>false</IsPackable>
         <IsTestProject>true</IsTestProject>
+        <RootNamespace>DataSharing.Tests</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
@@ -20,7 +21,7 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>
-        <ProjectReference Include="../DataSharing/DataSharing.csproj" />
+        <ProjectReference Include="..\CO.CDP.DataSharing.WebApi\CO.CDP.DataSharing.WebApi.csproj" />
     </ItemGroup>
 
 </Project>

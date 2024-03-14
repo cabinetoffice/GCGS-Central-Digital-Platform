@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace DataSharing.Api
+namespace CO.CDP.DataSharing.WebApi.Api
 {
     internal record SupplierInformation
     {

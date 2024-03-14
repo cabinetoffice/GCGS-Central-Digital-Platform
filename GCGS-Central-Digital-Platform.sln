@@ -8,7 +8,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Organisation", "Services\Or
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Person", "Services\Person\Person.csproj", "{D9CC02AD-3031-496A-8E48-E736623D1B41}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataSharing", "Services\DataSharing\DataSharing.csproj", "{C5DD309E-CA59-4C82-BFC4-9374026A2B21}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.DataSharing.WebApi", "Services\CO.CDP.DataSharing.WebApi\CO.CDP.DataSharing.WebApi.csproj", "{C5DD309E-CA59-4C82-BFC4-9374026A2B21}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Forms", "Services\Forms\Forms.csproj", "{4298A4EF-B336-4809-95F0-AF5D73266A18}"
 EndProject
@@ -18,7 +18,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Person.Tests", "Services\Pe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Forms.Tests", "Services\Forms.Tests\Forms.Tests.csproj", "{FE1C13BB-72CE-4EB4-98D3-C6A9B29E14E3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataSharing.Tests", "Services\DataSharing.Tests\DataSharing.Tests.csproj", "{D5413393-FCD2-4BC0-8A2D-127952EE43D4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.DataSharing.WebApi.Tests", "Services\CO.CDP.DataSharing.WebApi.Tests\CO.CDP.DataSharing.WebApi.Tests.csproj", "{D5413393-FCD2-4BC0-8A2D-127952EE43D4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.OrganisationApp", "Frontend\CO.CDP.OrganisationApp\CO.CDP.OrganisationApp.csproj", "{379D2839-9ECA-4DC4-9BF3-12D1DFB25908}"
 EndProject
