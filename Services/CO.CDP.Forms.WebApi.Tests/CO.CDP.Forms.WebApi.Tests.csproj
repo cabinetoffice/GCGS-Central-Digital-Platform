@@ -20,7 +20,7 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>
-        <ProjectReference Include="../Forms/Forms.csproj" />
+        <ProjectReference Include="..\CO.CDP.Forms.WebApi\CO.CDP.Forms.WebApi.csproj" />
     </ItemGroup>
 
 </Project>

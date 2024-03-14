@@ -1,4 +1,4 @@
-namespace Forms.Tests;
+namespace CO.CDP.Forms.WebApi.Tests;
 
 public class UnitTest1
 {

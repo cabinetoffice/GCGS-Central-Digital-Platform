@@ -1,7 +1,7 @@
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace Forms.Api
+namespace CO.CDP.Forms.WebApi.Api
 {
     public static class EndpointExtensions
     {

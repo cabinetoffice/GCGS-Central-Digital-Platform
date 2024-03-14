@@ -68,7 +68,7 @@ services:
   forms:
     container_name: co-cdp-forms
     build:
-      context: Services/Forms
+      context: Services/CO.CDP.Forms.WebApi
       dockerfile: Dockerfile
       target: final
     image: 'cabinetoffice/cdp-forms:${IMAGE_VERSION:-latest}'
