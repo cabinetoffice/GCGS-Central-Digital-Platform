@@ -36,7 +36,7 @@ services:
   organisation:
     container_name: co-cdp-organisation
     build:
-      context: Services/Organisation
+      context: Services/CO.CDP.Organisation.WebApi
       dockerfile: Dockerfile
       target: final
     image: 'cabinetoffice/cdp-organisation:${IMAGE_VERSION:-latest}'

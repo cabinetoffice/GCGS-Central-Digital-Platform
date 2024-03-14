@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace Organisation.Api
+namespace CO.CDP.Organisation.WebApi.Api
 {
     internal record Organisation
     {

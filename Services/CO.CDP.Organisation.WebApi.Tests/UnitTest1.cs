@@ -1,4 +1,4 @@
-namespace Organisation.Tests;
+namespace CO.CDP.Organisation.WebApi.Tests;
 
 public class UnitTest1
 {

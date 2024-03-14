@@ -20,7 +20,7 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>
-        <ProjectReference Include="../Organisation/Organisation.csproj" />
+        <ProjectReference Include="..\CO.CDP.Organisation.WebApi\CO.CDP.Organisation.WebApi.csproj" />
     </ItemGroup>
 
 </Project>

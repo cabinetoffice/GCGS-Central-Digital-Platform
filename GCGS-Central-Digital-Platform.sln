@@ -4,7 +4,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tenant", "Services\Tenant\T
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tenant.Tests", "Services\Tenant.Tests\Tenant.Tests.csproj", "{71129DB6-C02A-4476-A328-BA5822F22A8C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Organisation", "Services\Organisation\Organisation.csproj", "{F73306D3-A170-4849-8982-5FF3D1961362}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.Organisation.WebApi", "Services\CO.CDP.Organisation.WebApi\CO.CDP.Organisation.WebApi.csproj", "{F73306D3-A170-4849-8982-5FF3D1961362}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Person", "Services\Person\Person.csproj", "{D9CC02AD-3031-496A-8E48-E736623D1B41}"
 EndProject
@@ -12,7 +12,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.DataSharing.WebApi",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.Forms.WebApi", "Services\CO.CDP.Forms.WebApi\CO.CDP.Forms.WebApi.csproj", "{4298A4EF-B336-4809-95F0-AF5D73266A18}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Organisation.Tests", "Services\Organisation.Tests\Organisation.Tests.csproj", "{41DF6448-6761-4000-9948-CA906100E55E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.Organisation.WebApi.Tests", "Services\CO.CDP.Organisation.WebApi.Tests\CO.CDP.Organisation.WebApi.Tests.csproj", "{41DF6448-6761-4000-9948-CA906100E55E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Person.Tests", "Services\Person.Tests\Person.Tests.csproj", "{24CCE329-0EE7-4677-A90F-47DB2F37AE4A}"
 EndProject

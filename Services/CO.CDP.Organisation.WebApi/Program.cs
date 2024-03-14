@@ -1,4 +1,4 @@
-using Organisation.Api;
+using CO.CDP.Organisation.WebApi.Api;
 
 var builder = WebApplication.CreateBuilder(args);
 
