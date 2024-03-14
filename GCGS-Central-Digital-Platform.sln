@@ -1,8 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tenant", "Services\Tenant\Tenant.csproj", "{C9278454-2E29-45D4-8F0F-F27C548E0B1F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.Tenant.WebApi", "Services\CO.CDP.Tenant.WebApi\CO.CDP.Tenant.WebApi.csproj", "{C9278454-2E29-45D4-8F0F-F27C548E0B1F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tenant.Tests", "Services\Tenant.Tests\Tenant.Tests.csproj", "{71129DB6-C02A-4476-A328-BA5822F22A8C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.Tenant.WebApi.Tests", "Services\CO.CDP.Tenant.WebApi.Tests\CO.CDP.Tenant.WebApi.Tests.csproj", "{71129DB6-C02A-4476-A328-BA5822F22A8C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.Organisation.WebApi", "Services\CO.CDP.Organisation.WebApi\CO.CDP.Organisation.WebApi.csproj", "{F73306D3-A170-4849-8982-5FF3D1961362}"
 EndProject

@@ -8,17 +8,17 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["Tenant.csproj", "Tenant/"]
-RUN dotnet restore "Tenant/Tenant.csproj"
+COPY ["CO.CDP.Tenant.WebApi.csproj", "Tenant/"]
+RUN dotnet restore "Tenant/CO.CDP.Tenant.WebApi.csproj"
 WORKDIR "/src/Tenant"
 COPY . .
-RUN dotnet build "Tenant.csproj" -c $BUILD_CONFIGURATION -o /app/build
+RUN dotnet build "CO.CDP.Tenant.WebApi.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "Tenant.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "CO.CDP.Tenant.WebApi.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "Tenant.dll"]
+ENTRYPOINT ["dotnet", "CO.CDP.Tenant.WebApi.dll"]

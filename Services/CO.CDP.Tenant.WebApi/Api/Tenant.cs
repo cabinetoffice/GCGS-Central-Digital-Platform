@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace Tenant.Api
+namespace CO.CDP.Tenant.WebApi.Api
 {
     internal record Tenant
     {

@@ -1,4 +1,4 @@
-using Tenant.Api;
+using CO.CDP.Tenant.WebApi.Api;
 
 var builder = WebApplication.CreateBuilder(args);
 

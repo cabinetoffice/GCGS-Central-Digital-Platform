@@ -1,4 +1,4 @@
-namespace Tenant.Tests;
+namespace CO.CDP.Tenant.WebApi.Tests;
 
 public class UnitTest1
 {

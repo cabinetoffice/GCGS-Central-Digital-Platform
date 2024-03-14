@@ -20,7 +20,7 @@ services:
   tenant:
     container_name: co-cdp-tenant
     build:
-      context: Services/Tenant
+      context: Services/CO.CDP.Tenant.WebApi
       dockerfile: Dockerfile
       target: final
     image: 'cabinetoffice/cdp-tenant:${IMAGE_VERSION:-latest}'
