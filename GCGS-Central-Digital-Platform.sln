@@ -30,6 +30,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.Testcontainers.Postg
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.Testcontainers.PostgreSql", "TestKit\CO.CDP.Testcontainers.PostgreSql\CO.CDP.Testcontainers.PostgreSql.csproj", "{A706D75A-4235-46FE-A2C2-DB7365BB732B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.Tenant.Persistence", "Services\CO.CDP.Tenant.Persistence\CO.CDP.Tenant.Persistence.csproj", "{446A0EFB-D623-4C5F-BB3E-8EAACF0D865C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.Tenant.Persistence.Tests", "Services\CO.CDP.Tenant.Persistence.Tests\CO.CDP.Tenant.Persistence.Tests.csproj", "{69F70A0E-7C9B-4DE8-9AF6-11C7E23A7DB1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -92,5 +96,13 @@ Global
 		{A706D75A-4235-46FE-A2C2-DB7365BB732B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A706D75A-4235-46FE-A2C2-DB7365BB732B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A706D75A-4235-46FE-A2C2-DB7365BB732B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{446A0EFB-D623-4C5F-BB3E-8EAACF0D865C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{446A0EFB-D623-4C5F-BB3E-8EAACF0D865C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{446A0EFB-D623-4C5F-BB3E-8EAACF0D865C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{446A0EFB-D623-4C5F-BB3E-8EAACF0D865C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{69F70A0E-7C9B-4DE8-9AF6-11C7E23A7DB1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{69F70A0E-7C9B-4DE8-9AF6-11C7E23A7DB1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{69F70A0E-7C9B-4DE8-9AF6-11C7E23A7DB1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{69F70A0E-7C9B-4DE8-9AF6-11C7E23A7DB1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
