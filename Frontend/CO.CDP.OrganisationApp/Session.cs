@@ -6,7 +6,7 @@ namespace CO.CDP.OrganisationApp
     {
         public T? Get<T>(string key)
         {
-            CheckSessionIsNull(httpContextAccessor.HttpContext);
+            CheckSessionIsNull();
 
             var value = httpContextAccessor.HttpContext!.Session.GetString(key);
             return value == null ? default : JsonSerializer.Deserialize<T>(value);
@@ -14,7 +14,7 @@ namespace CO.CDP.OrganisationApp
 
         public void Set<T>(string key, T value)
         {
-            CheckSessionIsNull(httpContextAccessor.HttpContext);
+            CheckSessionIsNull();
 
             httpContextAccessor.HttpContext!.Session
                 .SetString(key, JsonSerializer.Serialize(value));
@@ -22,14 +22,14 @@ namespace CO.CDP.OrganisationApp
 
         public void Remove(string key)
         {
-            CheckSessionIsNull(httpContextAccessor.HttpContext);
+            CheckSessionIsNull();
 
             httpContextAccessor.HttpContext!.Session.Remove(key);
         }
 
-        private static void CheckSessionIsNull(HttpContext? context)
+        private void CheckSessionIsNull()
         {
-            if (context?.Session == null)
+            if (httpContextAccessor.HttpContext?.Session == null)
             {
                 throw new Exception("Session is not available");
             }
