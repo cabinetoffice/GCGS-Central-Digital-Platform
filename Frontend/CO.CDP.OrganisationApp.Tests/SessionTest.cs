@@ -65,9 +65,9 @@ namespace CO.CDP.OrganisationApp.Tests
 
         private record TestClass
         {
-            public string Prop1 { get; set; } = "Test Val";
-            public int Prop2 { get; set; } = 20;
-            public bool Prop3 { get; set; } = false;
+            public string Prop1 { get; init; } = "Test Val";
+            public int Prop2 { get; init; } = 20;
+            public bool Prop3 { get; init; } = false;
         }
 
         [Fact]
@@ -147,7 +147,8 @@ namespace CO.CDP.OrganisationApp.Tests
 
         private void SetHttpContextWithSessionValue<T>(T value)
         {
-            var outVal = value == null ? default : Encoding.UTF8.GetBytes(JsonSerializer.Serialize(value));
+            var outVal = value == null ? default :
+                Encoding.UTF8.GetBytes(JsonSerializer.Serialize(value));
 
             sessionMock
                 .Setup(_ => _.TryGetValue(It.IsAny<string>(), out outVal))
