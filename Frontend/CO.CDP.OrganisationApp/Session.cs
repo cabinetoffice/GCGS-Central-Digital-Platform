@@ -29,9 +29,16 @@ namespace CO.CDP.OrganisationApp
 
         private void CheckSessionIsNull()
         {
-            if (httpContextAccessor.HttpContext?.Session == null)
+            try
             {
-                throw new Exception("Session is not available");
+                if (httpContextAccessor.HttpContext?.Session == null)
+                {
+                    throw new Exception("Session is not available");
+                }
+            }
+            catch (InvalidOperationException cause)
+            {
+                throw new Exception("Session is not available", cause);
             }
         }
     }

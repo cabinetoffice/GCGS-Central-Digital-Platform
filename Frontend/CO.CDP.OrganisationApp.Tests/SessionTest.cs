@@ -1,27 +1,33 @@
-using System.Text;
-using System.Text.Json;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
-using Moq;
-using HttpSession = Microsoft.AspNetCore.Http.ISession;
+using Microsoft.AspNetCore.Session;
+using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace CO.CDP.OrganisationApp.Tests
 {
     public class SessionTest
     {
-        const string dummySessionKey = "session_key";
-        const string dummySessionValue = "session_value";
-        readonly Mock<IHttpContextAccessor> httpContextAccessorMock = new();
-        readonly Mock<HttpSession> sessionMock = new();
-
         [Fact]
         public void Get_WhenSessionIsNull_ThrowException()
         {
-            SetDefaultHttpContext();
+            var httpContextAccessor = GivenHttpContextWithNoSession();
+            var session = new Session(httpContextAccessor);
 
-            var session = new Session(httpContextAccessorMock.Object);
+            Action act = () => session.Get<int>("session_key");
 
-            Action act = () => session.Get<int>(dummySessionKey);
+            act.Should().Throw<Exception>().WithMessage("Session is not available");
+        }
+
+        [Fact]
+        public void Get_WhenHttpContextIsMissing_ThrowException()
+        {
+            var httpContextAccessor = GivenNoHttpContext();
+            var session = new Session(httpContextAccessor);
+
+            Action act = () => session.Get<int>("session_key");
 
             act.Should().Throw<Exception>().WithMessage("Session is not available");
         }
@@ -29,11 +35,11 @@ namespace CO.CDP.OrganisationApp.Tests
         [Fact]
         public void Get_WhenNoValueInSession_ReturnsNull()
         {
-            SetHttpContextWithSessionValue(default(string));
+            var httpContextAccessor = GivenHttpContextWithSession();
+            var session = new Session(httpContextAccessor);
+            session.Set("session_key", default(string));
 
-            var session = new Session(httpContextAccessorMock.Object);
-
-            var val = session.Get<string?>(dummySessionKey);
+            var val = session.Get<string?>("session_key");
 
             val.Should().BeNull();
         }
@@ -41,23 +47,24 @@ namespace CO.CDP.OrganisationApp.Tests
         [Fact]
         public void Get_WhenStringValueInSession_ReturnsSessionValue()
         {
-            SetHttpContextWithSessionValue(dummySessionValue);
+            var httpContextAccessor = GivenHttpContextWithSession();
+            var session = new Session(httpContextAccessor);
+            session.Set("session_key", "session_value");
 
-            var session = new Session(httpContextAccessorMock.Object);
+            var val = session.Get<string>("session_key");
 
-            var val = session.Get<string>(dummySessionKey);
-
-            val.Should().Be(dummySessionValue);
+            val.Should().Be("session_value");
         }
 
         [Fact]
         public void Get_WhenIntValueInSession_ReturnsSessionValue()
         {
-            SetHttpContextWithSessionValue(15);
+            var httpContextAccessor = GivenHttpContextWithSession();
 
-            var session = new Session(httpContextAccessorMock.Object);
+            var session = new Session(httpContextAccessor);
+            session.Set("session_key", 15);
 
-            var val = session.Get<int?>(dummySessionKey);
+            var val = session.Get<int?>("session_key");
 
             val.Should().NotBeNull();
             val.Should().Be(15);
@@ -67,95 +74,104 @@ namespace CO.CDP.OrganisationApp.Tests
         {
             public string Prop1 { get; init; } = "Test Val";
             public int Prop2 { get; init; } = 20;
-            public bool Prop3 { get; init; } = false;
+            public bool Prop3 { get; init; } = true;
         }
 
         [Fact]
         public void Get_WhenClassObjectValueInSession_ReturnsSessionValue()
         {
-            SetHttpContextWithSessionValue(new TestClass());
+            var httpContextAccessor = GivenHttpContextWithSession();
+            var session = new Session(httpContextAccessor);
+            session.Set("session_key", new TestClass
+            {
+                Prop1 = "Test value",
+                Prop2 = 42,
+                Prop3 = false
+            });
 
-            var session = new Session(httpContextAccessorMock.Object);
+            var val = session.Get<TestClass?>("session_key");
 
-            var val = session.Get<TestClass?>(dummySessionKey);
-
-            val.Should().NotBeNull();
-            val!.Prop1.Should().Be("Test Val");
-            val!.Prop2.Should().Be(20);
-            val!.Prop3.Should().Be(false);
+            val.Should().Be(new TestClass
+            {
+                Prop1 = "Test value",
+                Prop2 = 42,
+                Prop3 = false
+            });
         }
 
         [Fact]
         public void Set_WhenSessionIsNull_ThrowException()
         {
-            SetDefaultHttpContext();
+            var httpContextAccessor = GivenHttpContextWithNoSession();
+            var session = new Session(httpContextAccessor);
 
-            var session = new Session(httpContextAccessorMock.Object);
-
-            Action act = () => session.Set(dummySessionKey, dummySessionValue);
+            Action act = () => session.Set("session_key", "session_value");
 
             act.Should().Throw<Exception>().WithMessage("Session is not available");
         }
 
         [Fact]
-        public void Set_WhenSessionIsAvailable_HttpSessionSetIsCalled()
+        public void Set_WhenSessionIsAvailable_ValueIsSet()
         {
-            SetDefaultHttpContext(true);
+            var httpContextAccessor = GivenHttpContextWithSession();
+            var session = new Session(httpContextAccessor);
+            session.Set("session_key", "session_value");
 
-            var session = new Session(httpContextAccessorMock.Object);
-
-            session.Set(dummySessionKey, dummySessionValue);
-
-            sessionMock?.Verify(_ => _.Set(dummySessionKey, It.IsAny<byte[]>()), Times.Once);
+            Assert.Equal("session_value", session.Get<string>("session_key"));
         }
 
         [Fact]
         public void Remove_WhenSessionIsNull_ThrowException()
         {
-            SetDefaultHttpContext();
+            var httpContextAccessor = GivenHttpContextWithNoSession();
+            var session = new Session(httpContextAccessor);
 
-            var session = new Session(httpContextAccessorMock.Object);
-
-            Action act = () => session.Remove(dummySessionKey);
+            Action act = () => session.Remove("session_key");
 
             act.Should().Throw<Exception>().WithMessage("Session is not available");
         }
 
         [Fact]
-        public void Remove_WhenSessionIsAvailable_HttpSessionRemoveIsCalled()
+        public void Remove_WhenSessionIsAvailable_ValueIsRemoved()
         {
-            SetDefaultHttpContext(true);
+            var httpContextAccessor = GivenHttpContextWithSession();
+            var session = new Session(httpContextAccessor);
 
-            var session = new Session(httpContextAccessorMock.Object);
+            session.Remove("session_key");
 
-            session.Remove(dummySessionKey);
-
-            sessionMock?.Verify(_ => _.Remove(dummySessionKey), Times.Once);
+            Assert.Null(session.Get<string>("session_key"));
         }
 
-        private void SetDefaultHttpContext(bool withDefaultSession = false)
+        private static IHttpContextAccessor GivenHttpContextWithNoSession()
         {
-            var httpContext = default(HttpContext);
-
-            if (withDefaultSession)
+            return new HttpContextAccessor
             {
-                httpContext = new DefaultHttpContext { Session = sessionMock.Object };
-            }
-
-            httpContextAccessorMock.SetupGet(_ => _.HttpContext).Returns(httpContext);
+                HttpContext = new DefaultHttpContext()
+            };
         }
 
-        private void SetHttpContextWithSessionValue<T>(T value)
+        private static IHttpContextAccessor GivenNoHttpContext()
         {
-            var outVal = value == null ? default :
-                Encoding.UTF8.GetBytes(JsonSerializer.Serialize(value));
+            return new HttpContextAccessor();
+        }
 
-            sessionMock
-                .Setup(_ => _.TryGetValue(It.IsAny<string>(), out outVal))
-                .Returns(value != null);
-
-            httpContextAccessorMock.SetupGet(_ => _.HttpContext)
-                .Returns(new DefaultHttpContext { Session = sessionMock.Object });
+        private static IHttpContextAccessor GivenHttpContextWithSession()
+        {
+            return new HttpContextAccessor
+            {
+                HttpContext = new DefaultHttpContext
+                {
+                    Session = new DistributedSession(
+                        new MemoryDistributedCache(Options.Create(new MemoryDistributedCacheOptions())),
+                        "session_key",
+                        TimeSpan.FromHours(1),
+                        TimeSpan.Zero,
+                        () => true,
+                        LoggerFactory.Create(_ => { }),
+                        true
+                    )
+                }
+            };
         }
     }
 }
