@@ -1,4 +1,5 @@
 ﻿@page "/registration/organisation-identification"
+@model CO.CDP.OrganisationApp.Pages.Registration.OrganisationIdentificationModel
 
 <a href="/registration/your-details" class="govuk-back-link">
     Back
@@ -10,144 +11,151 @@
             <h1 class="govuk-heading-xl">
                 Supplier Registration
             </h1>
-
-            <div class="govuk-form-group">
-                <fieldset class="govuk-fieldset">
-                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                        <h1 class="govuk-fieldset__heading">
-                            Enter your organisation number
-                        </h1>
-                    </legend>
-                    <div id="contact-hint" class="govuk-hint">
-                        Select one option.
-                    </div>
-                    <div class="govuk-radios" data-module="govuk-radios">
-                        <div class="govuk-radios__item">
-                            <input class="govuk-radios__input" id="companiesHouseNumber" name="organisationIdentification" type="radio" value="companiesHouseNumber" data-aria-controls="conditional-companiesHouseNumber">
-                            <label class="govuk-label govuk-radios__label" for="companiesHouseNumber">
-                                Companies House Number
-                            </label>
+             <form method="post">
+                <div class="govuk-form-group">
+                    <fieldset class="govuk-fieldset">
+                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                            <h1 class="govuk-fieldset__heading">
+                                Enter your organisation number
+                            </h1>
+                        </legend>
+                        <div id="contact-hint" class="govuk-hint">
+                            Select one option.
                         </div>
-                        <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-companiesHouseNumber">
-                            <div class="govuk-form-group">
-                                <label class="govuk-label" for="companies-house-number">
-                                    Enter companies house number
+
+                        @if (Model.HasError)
+                        {
+                            <p id="supplier-error" class="govuk-error-message">
+                                <span class="govuk-visually-hidden">Error:</span> Identification number cannot be empty
+                            </p>
+                        }
+
+                        <div class="govuk-radios" data-module="govuk-radios">
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input" id="companiesHouseNumber" name="organisationIdentification" type="radio" value="companiesHouseNumber" data-aria-controls="conditional-companiesHouseNumber">
+                                <label class="govuk-label govuk-radios__label" for="companiesHouseNumber">
+                                    Companies House Number
                                 </label>
-                                <input class="govuk-input govuk-!-width-one-third" id="companies-house-number" name="companiesHouseNumber" type="text" spellcheck="false" autocomplete="text">
                             </div>
-                        </div>
+                            <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-companiesHouseNumber">
+                                <div class="govuk-form-group">
+                                    <label class="govuk-label" for="companies-house-number">
+                                        Enter companies house number
+                                    </label>
+                                    <input class="govuk-input govuk-!-width-one-third" id="companies-house-number" name="companiesHouseNumber" type="text" spellcheck="false" autocomplete="text">
+                                </div>
+                            </div>
 
-                        <div class="govuk-radios__item">
-                            <input class="govuk-radios__input" id="dunAndBradstreet" name="organisationIdentification" type="radio" value="dunAndBradstreet" data-aria-controls="conditional-dunAndBradstreet">
-                            <label class="govuk-label govuk-radios__label" for="dunAndBradstreet">
-                                Dun &amp; Bradstreet
-                            </label>
-                        </div>
-
-                        <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-dunAndBradstreet">
-                            <div class="govuk-form-group">
-                                <label class="govuk-label" for="dun-and-bradstreet-number">
-                                    Enter Dun &amp; Bradstreet number
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input" id="dunAndBradstreet" name="organisationIdentification" type="radio" value="dunAndBradstreet" data-aria-controls="conditional-dunAndBradstreet">
+                                <label class="govuk-label govuk-radios__label" for="dunAndBradstreet">
+                                    Dun &amp; Bradstreet
                                 </label>
-                                <input class="govuk-input govuk-!-width-one-third" id="dun-and-bradstreet-number" name="dunAndBradstreetNumber" type="text" spellcheck="false" autocomplete="text">
                             </div>
-                        </div>
 
-                        <div class="govuk-radios__item">
-                            <input class="govuk-radios__input" id="charityCommissionForEnglandAndWales" name="organisationIdentification" type="radio" value="charityCommissionForEnglandAndWales" data-aria-controls="conditional-charityCommissionForEnglandAndWales">
-                            <label class="govuk-label govuk-radios__label" for="charityCommissionForEnglandAndWales">
-                                Charity Commission for England &amp; Wales
-                            </label>
-                        </div>
+                            <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-dunAndBradstreet">
+                                <div class="govuk-form-group">
+                                    <label class="govuk-label" for="dun-and-bradstreet-number">
+                                        Enter Dun &amp; Bradstreet number
+                                    </label>
+                                    <input class="govuk-input govuk-!-width-one-third" id="dun-and-bradstreet-number" name="dunAndBradstreetNumber" type="text" spellcheck="false" autocomplete="text">
+                                </div>
+                            </div>
 
-                        <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-charityCommissionForEnglandAndWales">
-                            <div class="govuk-form-group">
-                                <label class="govuk-label" for="charity-commission-england-wales-number">
-                                    Enter Charity Commission for England &amp; Wales number
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input" id="charityCommissionForEnglandAndWales" name="organisationIdentification" type="radio" value="charityCommissionForEnglandAndWales" data-aria-controls="conditional-charityCommissionForEnglandAndWales">
+                                <label class="govuk-label govuk-radios__label" for="charityCommissionForEnglandAndWales">
+                                    Charity Commission for England &amp; Wales
                                 </label>
-                                <input class="govuk-input govuk-!-width-one-third" id="charity-commission-england-wales-number" name="charityCommissionForEnglandAndWalesNumber" type="text" spellcheck="false" autocomplete="text">
                             </div>
-                        </div>
 
-                        <div class="govuk-radios__item">
-                            <input class="govuk-radios__input" id="officeOfTheScottishCharityRegulator" name="organisationIdentification" type="radio" value="officeOfTheScottishCharityRegulator" data-aria-controls="conditional-officeOfTheScottishCharityRegulator">
-                            <label class="govuk-label govuk-radios__label" for="officeOfTheScottishCharityRegulator">
-                                Office of the Scottish Charity Regulator (OSCR)
-                            </label>
-                        </div>
+                            <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-charityCommissionForEnglandAndWales">
+                                <div class="govuk-form-group">
+                                    <label class="govuk-label" for="charity-commission-england-wales-number">
+                                        Enter Charity Commission for England &amp; Wales number
+                                    </label>
+                                    <input class="govuk-input govuk-!-width-one-third" id="charity-commission-england-wales-number" name="charityCommissionForEnglandAndWalesNumber" type="text" spellcheck="false" autocomplete="text">
+                                </div>
+                            </div>
 
-                        <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-officeOfTheScottishCharityRegulator">
-                            <div class="govuk-form-group">
-                                <label class="govuk-label" for="office-of-the-scottish-charity-regulator-number">
-                                    Enter Office of the Scottish Charity Regulator (OSCR) number
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input" id="officeOfTheScottishCharityRegulator" name="organisationIdentification" type="radio" value="officeOfTheScottishCharityRegulator" data-aria-controls="conditional-officeOfTheScottishCharityRegulator">
+                                <label class="govuk-label govuk-radios__label" for="officeOfTheScottishCharityRegulator">
+                                    Office of the Scottish Charity Regulator (OSCR)
                                 </label>
-                                <input class="govuk-input govuk-!-width-one-third" id="office-of-the-scottish-charity-regulator-number" name="officeOfTheScottishCharityRegulatorNumber" type="text" spellcheck="false" autocomplete="text">
                             </div>
-                        </div>
 
-                        <div class="govuk-radios__item">
-                            <input class="govuk-radios__input" id="theCharityCommissionForNorthernIreland" name="organisationIdentification" type="radio" value="theCharityCommissionForNorthernIreland" data-aria-controls="conditional-theCharityCommissionForNorthernIreland">
-                            <label class="govuk-label govuk-radios__label" for="theCharityCommissionForNorthernIreland">
-                                The Charity Commission for Northern Ireland
-                            </label>
-                        </div>
+                            <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-officeOfTheScottishCharityRegulator">
+                                <div class="govuk-form-group">
+                                    <label class="govuk-label" for="office-of-the-scottish-charity-regulator-number">
+                                        Enter Office of the Scottish Charity Regulator (OSCR) number
+                                    </label>
+                                    <input class="govuk-input govuk-!-width-one-third" id="office-of-the-scottish-charity-regulator-number" name="officeOfTheScottishCharityRegulatorNumber" type="text" spellcheck="false" autocomplete="text">
+                                </div>
+                            </div>
 
-                        <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-theCharityCommissionForNorthernIreland">
-                            <div class="govuk-form-group">
-                                <label class="govuk-label" for="charity-commission-northern-ireland-number">
-                                    Enter The Charity Commission for Northern Ireland number
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input" id="theCharityCommissionForNorthernIreland" name="organisationIdentification" type="radio" value="theCharityCommissionForNorthernIreland" data-aria-controls="conditional-theCharityCommissionForNorthernIreland">
+                                <label class="govuk-label govuk-radios__label" for="theCharityCommissionForNorthernIreland">
+                                    The Charity Commission for Northern Ireland
                                 </label>
-                                <input class="govuk-input govuk-!-width-one-third" id="charity-commission-northern-ireland-number" name="charityCommissionForNorthernIrelandNumber" type="text" spellcheck="false" autocomplete="text">
                             </div>
-                        </div>
 
-                        <div class="govuk-radios__item">
-                            <input class="govuk-radios__input" id="nationalHealthServiceOrganisationsRegistry" name="organisationIdentification" type="radio" value="nationalHealthServiceOrganisationsRegistry" data-aria-controls="conditional-nationalHealthServiceOrganisationsRegistry">
-                            <label class="govuk-label govuk-radios__label" for="nationalHealthServiceOrganisationsRegistry">
-                                National Health Service Organisations Registry
-                            </label>
-                        </div>
+                            <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-theCharityCommissionForNorthernIreland">
+                                <div class="govuk-form-group">
+                                    <label class="govuk-label" for="charity-commission-northern-ireland-number">
+                                        Enter The Charity Commission for Northern Ireland number
+                                    </label>
+                                    <input class="govuk-input govuk-!-width-one-third" id="charity-commission-northern-ireland-number" name="charityCommissionForNorthernIrelandNumber" type="text" spellcheck="false" autocomplete="text">
+                                </div>
+                            </div>
 
-                        <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-nationalHealthServiceOrganisationsRegistry">
-                            <div class="govuk-form-group">
-                                <label class="govuk-label" for="national-health-service-organisations-registry-number">
-                                    Enter National Health Service Organisations Registry number
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input" id="nationalHealthServiceOrganisationsRegistry" name="organisationIdentification" type="radio" value="nationalHealthServiceOrganisationsRegistry" data-aria-controls="conditional-nationalHealthServiceOrganisationsRegistry">
+                                <label class="govuk-label govuk-radios__label" for="nationalHealthServiceOrganisationsRegistry">
+                                    National Health Service Organisations Registry
                                 </label>
-                                <input class="govuk-input govuk-!-width-one-third" id="national-health-service-organisations-registry-number" name="nationalHealthServiceOrganisationsRegistryNumber" type="text" spellcheck="false" autocomplete="text">
                             </div>
-                        </div>
 
-                        <div class="govuk-radios__item">
-                            <input class="govuk-radios__input" id="departmentForEducation" name="organisationIdentification" type="radio" value="departmentForEducation" data-aria-controls="conditional-departmentForEducation">
-                            <label class="govuk-label govuk-radios__label" for="departmentForEducation">
-                                Department For Education
-                            </label>
-                        </div>
+                            <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-nationalHealthServiceOrganisationsRegistry">
+                                <div class="govuk-form-group">
+                                    <label class="govuk-label" for="national-health-service-organisations-registry-number">
+                                        Enter National Health Service Organisations Registry number
+                                    </label>
+                                    <input class="govuk-input govuk-!-width-one-third" id="national-health-service-organisations-registry-number" name="nationalHealthServiceOrganisationsRegistryNumber" type="text" spellcheck="false" autocomplete="text">
+                                </div>
+                            </div>
 
-                        <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-departmentForEducation">
-                            <div class="govuk-form-group">
-                                <label class="govuk-label" for="department-for-education-number">
-                                    Enter Department For Education number
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input" id="departmentForEducation" name="organisationIdentification" type="radio" value="departmentForEducation" data-aria-controls="conditional-departmentForEducation">
+                                <label class="govuk-label govuk-radios__label" for="departmentForEducation">
+                                    Department For Education
                                 </label>
-                                <input class="govuk-input govuk-!-width-one-third" id="department-for-education-number" name="departmentForEducationNumber" type="text" spellcheck="false" autocomplete="text">
                             </div>
-                        </div>
 
-                        <div class="govuk-radios__item">
-                            <input class="govuk-radios__input" id="otherNone" name="organisationIdentification" type="radio" value="otherNone">
-                            <label class="govuk-label govuk-radios__label" for="otherNone">
-                                Other / None
-                            </label>
-                        </div>
+                            <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-departmentForEducation">
+                                <div class="govuk-form-group">
+                                    <label class="govuk-label" for="department-for-education-number">
+                                        Enter Department For Education number
+                                    </label>
+                                    <input class="govuk-input govuk-!-width-one-third" id="department-for-education-number" name="departmentForEducationNumber" type="text" spellcheck="false" autocomplete="text">
+                                </div>
+                            </div>
+
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input" id="otherNone" name="organisationIdentification" type="radio" value="otherNone">
+                                <label class="govuk-label govuk-radios__label" for="otherNone">
+                                    Other / None
+                                </label>
+                            </div>
                       
-                    </div>
-                </fieldset>
-            </div>
-            <a href="/registration/organisation-registered-address">
+                        </div>
+                    </fieldset>
+                </div>
                 <button type="submit" class="govuk-button" data-module="govuk-button">
                     Continue
-                </button>
-            </a>
+                </button>       
+            </form>
         </div>
     </div>
 </main>
