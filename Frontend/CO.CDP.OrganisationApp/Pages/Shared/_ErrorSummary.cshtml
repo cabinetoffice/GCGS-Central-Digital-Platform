@@ -1,0 +1,23 @@
+﻿@model Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateDictionary
+
+@if (!Model.IsValid)
+{
+	<div class="govuk-error-summary" data-module="govuk-error-summary">
+		<div role="alert">
+			<h2 class="govuk-error-summary__title">
+				There is a problem
+			</h2>
+			<div class="govuk-error-summary__body">
+				<ul class="govuk-list govuk-error-summary__list">
+					@foreach (var ms in Model.Where(m => m.Value != null))
+					{
+						@foreach (var msv in ms.Value!.Errors)
+						{
+							<li><a href="#@ms.Key">@msv.ErrorMessage</a></li>
+						}
+					}
+				</ul>
+			</div>
+		</div>
+	</div>
+}
