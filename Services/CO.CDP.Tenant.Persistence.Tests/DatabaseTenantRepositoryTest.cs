@@ -1,5 +1,7 @@
 using CO.CDP.Testcontainers.PostgreSql;
+using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using static CO.CDP.Tenant.Persistence.ITenantRepository.TenantRepositoryException;
 
 namespace CO.CDP.Tenant.Persistence.Tests;
 
@@ -16,7 +18,7 @@ public class DatabaseTenantRepositoryTest(PostgreSqlFixture postgreSql) : IClass
 
         var found = await repository.Find(tenant.Guid);
 
-        Assert.Equal(tenant, found);
+        found.Should().Be(tenant);
     }
 
     [Fact]
@@ -29,7 +31,25 @@ public class DatabaseTenantRepositoryTest(PostgreSqlFixture postgreSql) : IClass
 
         repository.Save(tenant1);
 
-        AssertDuplicateKeyViolation("Tenants_Name", () => repository.Save(tenant2));
+        repository.Invoking(r => r.Save(tenant2))
+            .Should().Throw<DuplicateTenantException>()
+            .WithMessage($"Tenant with name `Bob` already exists.");
+    }
+
+    [Fact]
+    public void ItRejectsTwoTenantsWithTheSameGuid()
+    {
+        using var repository = new DatabaseTenantRepository(TenantContext());
+
+        var guid = Guid.NewGuid();
+        var tenant1 = GivenTenant(guid: guid, name: "Alice");
+        var tenant2 = GivenTenant(guid: guid, name: "Sussan");
+
+        repository.Save(tenant1);
+
+        repository.Invoking((r) => r.Save(tenant2))
+            .Should().Throw<DuplicateTenantException>()
+            .WithMessage($"Tenant with guid `{guid}` already exists.");
     }
 
     private static Tenant GivenTenant(
@@ -57,13 +77,5 @@ public class DatabaseTenantRepositoryTest(PostgreSqlFixture postgreSql) : IClass
         context.Database.Migrate();
         context.SaveChanges();
         return context;
-    }
-
-    private void AssertDuplicateKeyViolation(string indexName, Action action)
-    {
-        var exception = Assert.Throws<DbUpdateException>(action);
-        Assert.IsType<Npgsql.PostgresException>(exception.InnerException);
-        Assert.Contains("duplicate key value violates unique constraint", exception.InnerException.Message);
-        Assert.Contains(indexName, exception.InnerException.Message);
     }
 }
