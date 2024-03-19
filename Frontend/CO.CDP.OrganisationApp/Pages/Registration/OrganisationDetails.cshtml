@@ -1,60 +1,105 @@
 ﻿@page "/registration/organisation-details"
+@model CO.CDP.OrganisationApp.Pages.Registration.OrganisationDetailModel
 
 <a href="/registration/your-details" class="govuk-back-link">
     Back
 </a>
+@{
+    var organisationNameHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.OrganisationName)).HasInnerHtml;
+    var organisationTypeHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.OrganisationType)).HasInnerHtml;
+    var emailAddressHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.EmailAddress)).HasInnerHtml;
+    var telephoneNumberHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.TelephoneNumber)).HasInnerHtml;
+}
 
 <main class="govuk-main-wrapper">
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
+            <partial name="_ErrorSummary" model="@ModelState" />
+
             <h1 class="govuk-heading-xl">Supplier Registration</h1>
 
-            <div class="govuk-form-group">
-                <fieldset class="govuk-fieldset">
-                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                        <h1 class="govuk-fieldset__heading">
-                            Enter your organisation details
-                        </h1>
-                    </legend>
-                    <div class="govuk-form-group">
-                        <label class="govuk-label" htmlFor="organisation-name">
-                            Organisation name
-                        </label>
-                        <input class="govuk-input"
-                               id="organisation-name"
-                               name="organisationName"
-                               type="text" />
-                    </div>
+            <form method="post">
+                <div class="govuk-form-group">
+                    <fieldset class="govuk-fieldset">
+                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                            <h1 class="govuk-fieldset__heading">
+                                Enter your organisation details
+                            </h1>
+                        </legend>
+                        <div class="govuk-form-group @(organisationNameHasError ? "govuk-form-group--error" : "")">
+                            <label class="govuk-label" for="@nameof(Model.OrganisationName)">
+                                @Html.DisplayNameFor(m => m.OrganisationName)
+                            </label>
+                            @if (organisationNameHasError)
+                            {
+                                <p id="organisation-name-error" class="govuk-error-message">
+                                    <span class="govuk-visually-hidden">Error:</span>
+                                    @Html.ValidationMessageFor(m => m.OrganisationName)
+                                </p>
+                            }
+                            <input class="govuk-input @(organisationNameHasError ? "govuk-input--error" : "")" id="@nameof(Model.OrganisationName)"
+                                   value="@Model.OrganisationName" name="@nameof(Model.OrganisationName)" type="text"
+                                   spellcheck="false" @(organisationNameHasError ? "aria-describedby=organisation-name-error" : "")>
+                        </div>
 
-                    <div class="govuk-form-group">
-                        <label class="govuk-label" htmlFor="org-email-address">
-                            Email address
-                        </label>
-                        <input class="govuk-input"
-                               id="org-email-address"
-                               name="orgEmailAddress"
-                               type="text" />
-                    </div>
+                        <div class="govuk-form-group @(organisationTypeHasError ? "govuk-form-group--error" : "")">
+                            <label class="govuk-label" for="@nameof(Model.OrganisationType)">
+                                @Html.DisplayNameFor(m => m.OrganisationType)
+                            </label>
+                            @if (organisationTypeHasError)
+                            {
+                                <p id="organisation-type-error" class="govuk-error-message">
+                                    <span class="govuk-visually-hidden">Error:</span>
+                                    @Html.ValidationMessageFor(m => m.OrganisationType)
+                                </p>
+                            }
+                            <input class="govuk-input @(organisationTypeHasError ? "govuk-input--error" : "")" id="@nameof(Model.OrganisationType)"
+                                   value="@Model.OrganisationType" name="@nameof(Model.OrganisationType)" type="text"
+                                   spellcheck="false" @(organisationTypeHasError ? "aria-describedby=organisation-type-error" : "")>
+                        </div>
 
-                    <div class="govuk-form-group">
-                        <label class="govuk-label" htmlFor="org-telephone-number">
-                            Telephone number
-                        </label>
-                        <input class="govuk-input"
-                               id="org-telephone-number"
-                               name="orgTelephoneNumber"
-                               type="text" />
-                    </div>
-                </fieldset>
-            </div>
+                        <div class="govuk-form-group @(emailAddressHasError ? "govuk-form-group--error" : "")">
+                            <label class="govuk-label" for="@nameof(Model.EmailAddress)">
+                                @Html.DisplayNameFor(m => m.EmailAddress)
+                            </label>
+                            @if (emailAddressHasError)
+                            {
+                                <p id="email-address-error" class="govuk-error-message">
+                                    <span class="govuk-visually-hidden">Error:</span>
+                                    @Html.ValidationMessageFor(m => m.EmailAddress)
+                                </p>
+                            }
+                            <input class="govuk-input @(emailAddressHasError ? "govuk-input--error" : "")" id="@nameof(Model.EmailAddress)"
+                                   value="@Model.EmailAddress" type="email" name="@nameof(Model.EmailAddress)"
+                                   spellcheck="false" autocomplete="email" @(emailAddressHasError ? "aria-describedby=email-address-error" : "")>
+                        </div>
 
-            <a href="/registration/organisation-identification">
-                <button type="submit"
-                        class="govuk-button"
-                        data-module="govuk-button">
-                    Continue
-                </button>
-            </a>
+                        <div class="govuk-form-group @(telephoneNumberHasError ? "govuk-form-group--error" : "")">
+                            <label class="govuk-label" for="@nameof(Model.TelephoneNumber)">
+                                @Html.DisplayNameFor(m => m.TelephoneNumber)
+                            </label>
+                            @if (telephoneNumberHasError)
+                            {
+                                <p id="telephone-number-error" class="govuk-error-message">
+                                    <span class="govuk-visually-hidden">Error:</span>
+                                    @Html.ValidationMessageFor(m => m.TelephoneNumber)
+                                </p>
+                            }
+                            <input class="govuk-input @(telephoneNumberHasError ? "govuk-input--error" : "")" id="@nameof(Model.TelephoneNumber)"
+                                   value="@Model.TelephoneNumber" name="@nameof(Model.TelephoneNumber)" type="tel"
+                                   spellcheck="false" @(telephoneNumberHasError ? "aria-describedby=telephone-number-error" : "")>
+                        </div>
+                    </fieldset>
+                </div>
+
+                <a href="/registration/organisation-identification">
+                    <button type="submit"
+                            class="govuk-button"
+                            data-module="govuk-button">
+                        Continue
+                    </button>
+                </a>
+            </form>
         </div>
     </div>
 </main>
