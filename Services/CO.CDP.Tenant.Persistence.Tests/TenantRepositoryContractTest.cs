@@ -52,6 +52,22 @@ public abstract class TenantRepositoryContractTest
             .WithMessage($"Tenant with guid `{guid}` already exists.");
     }
 
+    [Fact]
+    public async Task ItUpdatesAnExistingTenant()
+    {
+        using var repository = TenantRepository();
+
+        var tenant = GivenTenant(guid: Guid.NewGuid(), name: "Olivia");
+
+        repository.Save(tenant);
+        tenant.Name = "Hannah";
+        repository.Save(tenant);
+
+        var found = await repository.Find(tenant.Guid);
+
+        found.Should().Be(tenant);
+    }
+
     protected abstract ITenantRepository TenantRepository();
 
     private static Tenant GivenTenant(

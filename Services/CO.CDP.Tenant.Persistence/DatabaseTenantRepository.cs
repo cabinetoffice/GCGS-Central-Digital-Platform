@@ -9,7 +9,7 @@ public class DatabaseTenantRepository(TenantContext context) : ITenantRepository
     {
         try
         {
-            context.Add(tenant);
+            context.Update(tenant);
             context.SaveChanges();
         }
         catch (DbUpdateException cause)
