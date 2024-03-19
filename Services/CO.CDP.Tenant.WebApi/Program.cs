@@ -11,6 +11,7 @@ builder.Services.AddSwaggerGen(options => { options.DocumentTenantApi(); });
 builder.Services.AddHealthChecks();
 
 builder.Services.AddScoped<TenantContext>(_ => new TenantContext(builder.Configuration.GetConnectionString("TenantDatabase") ?? ""));
+builder.Services.AddScoped<ITenantRepository, DatabaseTenantRepository>();
 
 var app = builder.Build();
 
@@ -27,3 +28,7 @@ app.UseTenantEndpoints();
 app.UseTenantLookupEndpoints();
 app.UseUserManagementEndpoints();
 app.Run();
+
+public abstract partial class Program
+{
+}

@@ -1,20 +1,21 @@
 using System.ComponentModel.DataAnnotations;
+using CO.CDP.Tenant.Persistence;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace CO.CDP.Tenant.WebApi.Api
 {
-    internal record Tenant
+    public record Tenant
     {
-        [Required(AllowEmptyStrings = true)] public required string Id { get; init; }
+        [Required(AllowEmptyStrings = true)] public required Guid Id { get; init; }
 
         [Required(AllowEmptyStrings = true)] public required string Name { get; init; }
 
         [Required(AllowEmptyStrings = true)] public required TenantContactInfo ContactInfo { get; init; }
     }
 
-    internal record NewTenant
+    public record NewTenant
     {
         [Required(AllowEmptyStrings = true)] public required string Name { get; init; }
 
@@ -28,7 +29,7 @@ namespace CO.CDP.Tenant.WebApi.Api
         [Required(AllowEmptyStrings = true)] public required TenantContactInfo ContactInfo { get; init; }
     }
 
-    internal record TenantContactInfo
+    public record TenantContactInfo
     {
         [Required(AllowEmptyStrings = true), EmailAddress]
         public required string Email { get; init; }
@@ -60,14 +61,14 @@ namespace CO.CDP.Tenant.WebApi.Api
 
     internal record UserInTenants
     {
-        [Required(AllowEmptyStrings = true)] public required string Id { get; init; }
+        [Required(AllowEmptyStrings = true)] public required Guid Id { get; init; }
         [Required(AllowEmptyStrings = true)] public required string Name { get; init; }
     }
 
     internal record AssignUserToOrganisation
     {
-        [Required(AllowEmptyStrings = true)] public required string UserId { get; init; }
-        [Required(AllowEmptyStrings = true)] public required string OrganisationId { get; init; }
+        [Required(AllowEmptyStrings = true)] public required Guid UserId { get; init; }
+        [Required(AllowEmptyStrings = true)] public required Guid OrganisationId { get; init; }
     }
 
     internal record Receipt
@@ -97,15 +98,16 @@ namespace CO.CDP.Tenant.WebApi.Api
 
     public static class EndpointExtensions
     {
-        private static Dictionary<string, Tenant> _tenants = Enumerable.Range(1, 5)
-            .ToDictionary(index => index.ToString(), index => new Tenant
+        private static Dictionary<Guid, Tenant> _tenants = Enumerable.Range(1, 5)
+            .Select(_ => Guid.NewGuid())
+            .ToDictionary(id => id, id => new Tenant
             {
-                Id = index.ToString(),
-                Name = $"Bobby Tables {index}",
+                Id = id,
+                Name = $"Bobby Tables {id}",
                 ContactInfo = new TenantContactInfo
                 {
-                    Email = $"bobby{index}@example.com",
-                    Phone = $"0555 123 95{index}"
+                    Email = $"bobby{id}@example.com",
+                    Phone = $"0555 123 952"
                 }
             });
 
@@ -121,16 +123,29 @@ namespace CO.CDP.Tenant.WebApi.Api
                     operation.Responses["200"].Description = "A list of tenants.";
                     return operation;
                 });
-            app.MapPost("/tenants", (NewTenant newTenant) =>
+            app.MapPost("/tenants", (NewTenant newTenant, ITenantRepository repository) =>
                 {
-                    var tenant = new Tenant
+                    var tenant = new Persistence.Tenant
                     {
-                        Id = (_tenants.Count + 1).ToString(),
+                        Guid = Guid.NewGuid(),
                         Name = newTenant.Name,
-                        ContactInfo = newTenant.ContactInfo
+                        ContactInfo = new Persistence.Tenant.TenantContactInfo
+                        {
+                            Email = newTenant.ContactInfo.Email,
+                            Phone = newTenant.ContactInfo.Phone
+                        }
                     };
-                    _tenants.Add(tenant.Id, tenant);
-                    return Results.Created(new Uri($"/tenants/{tenant.Id}"), tenant);
+                    repository.Save(tenant);
+                    return Results.Created(new Uri($"/tenants/{tenant.Guid}", UriKind.Relative), new Tenant
+                    {
+                        Id = tenant.Guid,
+                        Name = tenant.Name,
+                        ContactInfo = new TenantContactInfo
+                        {
+                            Email = tenant.ContactInfo.Email,
+                            Phone = tenant.ContactInfo.Phone
+                        }
+                    });
                 })
                 .Produces<Tenant>(201, "application/json")
                 .WithOpenApi(operation =>
@@ -141,7 +156,7 @@ namespace CO.CDP.Tenant.WebApi.Api
                     operation.Responses["201"].Description = "Tenant created successfully.";
                     return operation;
                 });
-            app.MapDelete("/tenants/{tenantId}", (String tenantId) =>
+            app.MapDelete("/tenants/{tenantId}", (Guid tenantId) =>
                 {
                     _tenants.Remove(tenantId);
                     return Results.NoContent();
@@ -155,7 +170,7 @@ namespace CO.CDP.Tenant.WebApi.Api
                     operation.Responses["204"].Description = "Tenant deleted successfully.";
                     return operation;
                 });
-            app.MapGet("/tenants/{tenantId}", (String tenantId) =>
+            app.MapGet("/tenants/{tenantId}", (Guid tenantId) =>
                 {
                     try
                     {
@@ -176,7 +191,7 @@ namespace CO.CDP.Tenant.WebApi.Api
                     operation.Responses["200"].Description = "Tenant details.";
                     return operation;
                 });
-            app.MapPut("/tenants/{tenantId}", (String tenantId, UpdatedTenant updatedTenant) =>
+            app.MapPut("/tenants/{tenantId}", (Guid tenantId, UpdatedTenant updatedTenant) =>
                 {
                     _tenants[tenantId] = new Tenant
                     {

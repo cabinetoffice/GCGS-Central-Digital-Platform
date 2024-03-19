@@ -1,4 +1,4 @@
-namespace CO.CDP.Tenant.Persistence.Tests;
+namespace CO.CDP.Tenant.Persistence;
 
 public class InMemoryTenantRepository : ITenantRepository
 {
