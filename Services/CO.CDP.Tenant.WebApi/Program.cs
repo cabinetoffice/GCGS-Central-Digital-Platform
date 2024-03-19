@@ -1,3 +1,4 @@
+using CO.CDP.Tenant.Persistence;
 using CO.CDP.Tenant.WebApi.Api;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,6 +9,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options => { options.DocumentTenantApi(); });
 
 builder.Services.AddHealthChecks();
+
+builder.Services.AddScoped<TenantContext>(_ => new TenantContext(builder.Configuration.GetConnectionString("TenantDatabase") ?? ""));
 
 var app = builder.Build();
 

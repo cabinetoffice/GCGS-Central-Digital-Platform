@@ -20,7 +20,8 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>
-        <ProjectReference Include="..\CO.CDP.Tenant.WebApi\CO.CDP.Tenant.WebApi.csproj" />
+        <ProjectReference Include="../CO.CDP.Tenant.Persistence/CO.CDP.Tenant.Persistence.csproj" />
+        <ProjectReference Include="../../TestKit/CO.CDP.Testcontainers.PostgreSql/CO.CDP.Testcontainers.PostgreSql.csproj" />
     </ItemGroup>
 
 </Project>
