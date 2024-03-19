@@ -18,6 +18,7 @@ public abstract class TenantRepositoryContractTest
         var found = await repository.Find(tenant.Guid);
 
         found.Should().Be(tenant);
+        found.As<Tenant>().Id.Should().BePositive();
     }
 
     [Fact]
