@@ -62,7 +62,7 @@ public class OrganisationDetailModelTest
 	}
 
 	[Fact]
-	public void WhenEmailIsEmpty_ShouldRaiseEmailValidationError()
+	public void WhenEmailIsEmpty_ShouldRaiseEmailAddressValidationError()
 	{
 		var model = new OrganisationDetailModel();
 
