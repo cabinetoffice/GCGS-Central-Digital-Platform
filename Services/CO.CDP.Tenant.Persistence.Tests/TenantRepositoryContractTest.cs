@@ -22,6 +22,16 @@ public abstract class TenantRepositoryContractTest
     }
 
     [Fact]
+    public async Task ItReturnsNullIfTenantIsNotFound()
+    {
+        using var repository = TenantRepository();
+
+        var found = await repository.Find(Guid.NewGuid());
+
+        found.Should().BeNull();
+    }
+
+    [Fact]
     public void ItRejectsTwoTenantsWithTheSameName()
     {
         using var repository = TenantRepository();
