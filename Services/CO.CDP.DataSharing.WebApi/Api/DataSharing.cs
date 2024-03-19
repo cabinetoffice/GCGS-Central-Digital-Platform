@@ -2,8 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace CO.CDP.DataSharing.WebApi.Api
-{
+namespace CO.CDP.DataSharing.WebApi.Api;
     internal record SupplierInformation
     {
         [Required] public required Guid Id { get; init; }
@@ -225,4 +224,3 @@ namespace CO.CDP.DataSharing.WebApi.Api
             });
         }
     }
-}
