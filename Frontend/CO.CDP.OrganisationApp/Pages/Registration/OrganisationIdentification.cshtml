@@ -1,7 +1,9 @@
 ﻿@page "/registration/organisation-identification"
 @model CO.CDP.OrganisationApp.Pages.Registration.OrganisationIdentificationModel
 
-<a href="/" class="govuk-back-link">Back</a>
+<a href="/registration/your-details" class="govuk-back-link">
+    Back
+</a>
 
 @{  
     var companiesHouseNumberHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.CompaniesHouseNumber)).HasInnerHtml;
