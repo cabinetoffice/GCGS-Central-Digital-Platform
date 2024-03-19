@@ -161,7 +161,7 @@ namespace CO.CDP.Tenant.WebApi.Api
                     {
                         return Results.Ok(_tenants[tenantId]);
                     }
-                    catch (KeyNotFoundException _)
+                    catch (KeyNotFoundException)
                     {
                         return Results.NotFound();
                     }
