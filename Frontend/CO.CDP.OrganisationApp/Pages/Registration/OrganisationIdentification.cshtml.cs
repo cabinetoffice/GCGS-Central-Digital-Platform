@@ -7,9 +7,12 @@ namespace CO.CDP.OrganisationApp.Pages.Registration
     {
         private readonly ILogger<OrganisationIdentificationModel> _logger;
         public bool HasError { get; set; }
-        public OrganisationIdentificationModel(ILogger<OrganisationIdentificationModel> logger)
+        private readonly ISession _session;
+
+        public OrganisationIdentificationModel(ILogger<OrganisationIdentificationModel> logger, ISession session)
         {
             _logger = logger;
+            _session = session;
         }
 
         public void OnGet()
@@ -22,6 +25,11 @@ namespace CO.CDP.OrganisationApp.Pages.Registration
 
             if (organisationIdentification == "otherNone" || ValidateOrganisationNumber(organisationIdentification, organisationNumbers))
             {
+                if (organisationNumbers.TryGetValue(organisationIdentification, out var number) && !string.IsNullOrEmpty(number))
+                {
+                    _session.Set(organisationIdentification, number);
+                }
+
                 return RedirectToPage("./OrganisationRegisteredAddress");
             }
 

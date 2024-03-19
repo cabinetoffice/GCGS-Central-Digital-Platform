@@ -14,7 +14,7 @@ builder.Services.AddSession(options =>
 });
 
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-builder.Services.AddSingleton<CO.CDP.OrganisationApp.ISession, Session>();
+builder.Services.AddScoped<CO.CDP.OrganisationApp.ISession, Session>();
 
 var app = builder.Build();
 
