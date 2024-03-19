@@ -145,7 +145,7 @@ namespace CO.CDP.Organisation.WebApi.Api
                     {
                         return Results.Ok(_organisations[organisationId]);
                     }
-                    catch (KeyNotFoundException _)
+                    catch (KeyNotFoundException)
                     {
                         return Results.NotFound();
                     }

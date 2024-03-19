@@ -77,7 +77,7 @@ namespace CO.CDP.Person.WebApi.Api
                     {
                         return Results.Ok(_persons[personId]);
                     }
-                    catch (KeyNotFoundException _)
+                    catch (KeyNotFoundException)
                     {
                         return Results.NotFound();
                     }
