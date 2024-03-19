@@ -6,32 +6,33 @@ namespace CO.CDP.OrganisationApp
     {
         public T? Get<T>(string key)
         {
-            CheckSessionIsNull();
-
-            var value = httpContextAccessor.HttpContext!.Session.GetString(key);
+            var value = GetSession().GetString(key);
             return value == null ? default : JsonSerializer.Deserialize<T>(value);
         }
 
         public void Set<T>(string key, T value)
         {
-            CheckSessionIsNull();
-
-            httpContextAccessor.HttpContext!.Session
-                .SetString(key, JsonSerializer.Serialize(value));
+            GetSession().SetString(key, JsonSerializer.Serialize(value));
         }
 
         public void Remove(string key)
         {
-            CheckSessionIsNull();
-
-            httpContextAccessor.HttpContext!.Session.Remove(key);
+            GetSession().Remove(key);
         }
 
-        private void CheckSessionIsNull()
+        private Microsoft.AspNetCore.Http.ISession GetSession()
         {
-            if (httpContextAccessor.HttpContext?.Session == null)
+            try
             {
-                throw new Exception("Session is not available");
+                if (httpContextAccessor.HttpContext?.Session == null)
+                {
+                    throw new Exception("Session is not available");
+                }
+                return httpContextAccessor.HttpContext!.Session;
+            }
+            catch (InvalidOperationException cause)
+            {
+                throw new Exception("Session is not available", cause);
             }
         }
     }
