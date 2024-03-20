@@ -170,16 +170,23 @@ namespace CO.CDP.Tenant.WebApi.Api
                     operation.Responses["204"].Description = "Tenant deleted successfully.";
                     return operation;
                 });
-            app.MapGet("/tenants/{tenantId}", (Guid tenantId) =>
+            app.MapGet("/tenants/{tenantId}", async (Guid tenantId, ITenantRepository repository) =>
                 {
-                    try
+                    var tenant = await repository.Find(tenantId);
+                    if (tenant != null)
                     {
-                        return Results.Ok(_tenants[tenantId]);
+                        return Results.Ok(new Tenant
+                        {
+                            Id = tenant.Guid,
+                            Name = tenant.Name,
+                            ContactInfo = new TenantContactInfo
+                            {
+                                Email = tenant.ContactInfo.Email,
+                                Phone = tenant.ContactInfo.Phone
+                            }
+                        });
                     }
-                    catch (KeyNotFoundException)
-                    {
-                        return Results.NotFound();
-                    }
+                    return Results.NotFound();
                 })
                 .Produces<Tenant>(200, "application/json")
                 .Produces(404)

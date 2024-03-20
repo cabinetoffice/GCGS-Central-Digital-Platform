@@ -45,6 +45,50 @@ public class TenantApiIntegrationTest
             }
         });
     }
+
+    [Fact]
+    public async Task ItDoesNotFindTheTenant()
+    {
+        var response = await _httpClient.GetAsync($"/tenants/{Guid.NewGuid()}");
+
+        response.Should().HaveStatusCode(HttpStatusCode.NotFound);
+    }
+
+    [Fact]
+    public async Task ItFindsTheTenant()
+    {
+        var tenantId = await GivenTenantExists(new NewTenant
+        {
+            Name = "TrentTheTenant",
+            ContactInfo = new TenantContactInfo
+            {
+                Email = "trent@example.com",
+                Phone = "07925987654"
+            }
+        });
+
+        var response = await _httpClient.GetAsync($"/tenants/{tenantId}");
+
+        response.Should().HaveStatusCode(HttpStatusCode.OK);
+        await response.Should().HaveContent(new Api.Tenant
+        {
+            Id = tenantId,
+            Name = "TrentTheTenant",
+            ContactInfo = new TenantContactInfo
+            {
+                Email = "trent@example.com",
+                Phone = "07925987654"
+            }
+        });
+    }
+
+    private async Task<Guid> GivenTenantExists(NewTenant newTenant)
+    {
+        var response = await _httpClient.PostAsJsonAsync("/tenants", newTenant);
+
+        response.Should().HaveStatusCode(HttpStatusCode.Created);
+        return response.TenantId();
+    }
 }
 
 internal static class HttpResponseMessageExtensions
