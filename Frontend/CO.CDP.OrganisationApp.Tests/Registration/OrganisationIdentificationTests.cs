@@ -1,7 +1,5 @@
 ﻿using CO.CDP.OrganisationApp.Pages.Registration;
-using CO.CDP.OrganisationApp.Tests.Common;
 using FluentAssertions;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
@@ -11,40 +9,64 @@ namespace CO.CDP.OrganisationApp.Tests.Registration
 {
     public class OrganisationIdentificationModelTests
     {
-        private readonly OrganisationIdentificationModel _pageModel;
-        private readonly Session _session;
-        private readonly DefaultHttpContext _httpContext;
         private readonly Mock<ILogger<OrganisationIdentificationModel>> _loggerMock;
+        private readonly Mock<ISession> _sessionMock;
+        private readonly OrganisationIdentificationModel _pageModel;
 
         public OrganisationIdentificationModelTests()
         {
             _loggerMock = new Mock<ILogger<OrganisationIdentificationModel>>();
-
-            _httpContext = new DefaultHttpContext
-            {
-                Session = new MockHttpSession()
-            };
-            var httpContextAccessor = new HttpContextAccessor { HttpContext = _httpContext };
-
-            _session = new Session(httpContextAccessor);
-
-            _pageModel = new OrganisationIdentificationModel(_loggerMock.Object, _session);
+            _sessionMock = new Mock<ISession>();
+            _pageModel = new OrganisationIdentificationModel(_loggerMock.Object, _sessionMock.Object);
         }
 
         [Fact]
-        public void ValidIdentificationNumber_ShouldStoreInSession()
+        public void ValidOrganisationNumber_ShouldStoreInSession_AndRedirect()
         {
             // Arrange
-            var validOrganisationId = "companiesHouseNumber";
-            var validNumber = "12345678";
-            var organisationNumbers = new Dictionary<string, string> { { validOrganisationId, validNumber } };
+            var orgId = "companiesHouseNumber";
+            var validNumber = "123456";
+            var organisationNumbers = new Dictionary<string, string> { { orgId, validNumber } };
 
             // Act
-            _pageModel.OnPost(validOrganisationId, organisationNumbers);
+            var result = _pageModel.OnPost(orgId, organisationNumbers);
 
-            // Assert            
-            string storedNumber = _session.Get<string>(validOrganisationId);
-            storedNumber.Should().Be(validNumber);
+            // Assert
+            _sessionMock.Verify(s => s.Set(orgId, validNumber), Times.Once);
+            result.Should().BeOfType<RedirectToPageResult>();
+            ((RedirectToPageResult)result).PageName.Should().Be("./OrganisationRegisteredAddress");
+        }
+
+        [Fact]
+        public void InvalidOrganisationNumber_ShouldSetError_AndReturnPage()
+        {
+            // Arrange
+            var orgId = "companiesHouseNumber";
+            var invalidNumber = "";
+            var organisationNumbers = new Dictionary<string, string> { { orgId, invalidNumber } };
+
+            // Act
+            var result = _pageModel.OnPost(orgId, organisationNumbers);
+
+            // Assert
+            _pageModel.HasError.Should().BeTrue();
+            result.Should().BeOfType<PageResult>();
+        }
+
+        [Fact]
+        public void OtherNoneIdentification_ShouldRedirect_WithoutSessionStorage()
+        {
+            // Arrange
+            var orgId = "otherNone";
+            var organisationNumbers = new Dictionary<string, string>();
+
+            // Act
+            var result = _pageModel.OnPost(orgId, organisationNumbers);
+
+            // Assert
+            _sessionMock.Verify(s => s.Set(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
+            result.Should().BeOfType<RedirectToPageResult>();
+            ((RedirectToPageResult)result).PageName.Should().Be("./OrganisationRegisteredAddress");
         }
 
         [Theory]
