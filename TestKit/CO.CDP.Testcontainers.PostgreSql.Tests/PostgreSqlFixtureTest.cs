@@ -9,6 +9,7 @@ public class PostgreSqlFixtureTest(PostgreSqlFixture postgreSql) : IClassFixture
     {
         await using var dataSource = NpgsqlDataSource.Create(postgreSql.ConnectionString);
         await using var command = dataSource.CreateCommand("SELECT 42");
-        Assert.Equal(42, command.ExecuteScalarAsync().Result);
+        var result = await command.ExecuteScalarAsync();
+        Assert.Equal(42, result);
     }
 }
