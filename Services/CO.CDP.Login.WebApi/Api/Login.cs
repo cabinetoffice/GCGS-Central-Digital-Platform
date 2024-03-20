@@ -1,13 +1,9 @@
-using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.OpenApi.Models;
-using Swashbuckle.AspNetCore.SwaggerGen;
 using CO.CDP.Common.Auth;
 
 namespace CO.CDP.Login.WebApi.Api;
-public static class EndpointExtensions
-{
 
+public static class Login
+{
     public static void UseLoginEndpoints(this WebApplication app)
     {
         app.MapGet("/fake-onelogin/", () =>
@@ -33,18 +29,5 @@ public static class EndpointExtensions
                 operation.Responses["200"].Description = "OneLogin payload.";
                 return operation;
             });
-    }
-}
-
-public static class ApiExtensions
-{
-    public static void DocumentLoginApi(this SwaggerGenOptions options)
-    {
-        options.SwaggerDoc("v1", new OpenApiInfo
-        {
-            Version = "1.0.0.0",
-            Title = "Login API",
-            Description = "",
-        });
     }
 }

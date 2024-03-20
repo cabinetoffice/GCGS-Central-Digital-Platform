@@ -1,8 +1,7 @@
-using System.Net;
-using System.Net.Http;
-using Xunit;
-using System.Text.Json;
+using FluentAssertions;
 using CO.CDP.Common.Auth;
+using System.Net;
+using System.Net.Http.Json;
 
 namespace CO.CDP.Login.WebApi.Tests;
 
@@ -20,19 +19,17 @@ public class FakeOneLoginControllerTests
     {
         string url = "http://localhost:5130/fake-onelogin";
         HttpResponseMessage response = await _client.GetAsync(url);
-        string contentString = await response.Content.ReadAsStringAsync();
-        var result = JsonSerializer.Deserialize<OneLoginResponce>(contentString, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+        var result = await response.Content.ReadFromJsonAsync<OneLoginResponce>();
 
-        Assert.True(response.IsSuccessStatusCode);
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        Assert.NotNull(result);
-        Assert.Equal("urn:fdc:gov.uk:2022:56P4CMsGh_-2sVIB2nsNU7mcLZYhYw=", result.Sub);
-        Assert.Equal("test@example.com", result.Email);
-        Assert.True(result.EmailVerified);
-        Assert.Equal("01406946277", result.PhoneNumber);
-        Assert.True(result.PhoneNumberVerified);
-        Assert.Equal(1311280970, result.UpdatedAt);
+        response.IsSuccessStatusCode.Should().BeTrue();
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        result.Should().NotBeNull();
+        result?.Sub.Should().Be("urn:fdc:gov.uk:2022:56P4CMsGh_-2sVIB2nsNU7mcLZYhYw=");
+        result?.Email.Should().Be("test@example.com");
+        result?.EmailVerified.Should().BeTrue();
+        result?.PhoneNumber.Should().Be("01406946277");
+        result?.PhoneNumberVerified.Should().BeTrue();
+        result?.UpdatedAt.Should().Be(1311280970);
     }
 
 }
