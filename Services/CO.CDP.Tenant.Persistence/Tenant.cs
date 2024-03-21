@@ -5,7 +5,7 @@ namespace CO.CDP.Tenant.Persistence;
 
 [Index(nameof(Guid), IsUnique=true)]
 [Index(nameof(Name), IsUnique=true)]
-public class Tenant
+public record Tenant
 {
     public int Id { get; set; }
     public required Guid Guid { get; set; }
