@@ -1,4 +1,5 @@
 using CO.CDP.OrganisationApp.CustomeValidationAttributes;
+using CO.CDP.OrganisationApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel;
@@ -6,7 +7,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CO.CDP.OrganisationApp.Pages.Registration
 {
-    public class OrganisationIdentificationModel : PageModel
+    public class OrganisationIdentificationModel(ISession session) : PageModel
     {
         [BindProperty]
         [DisplayName("Organisation Type")]
@@ -95,6 +96,43 @@ namespace CO.CDP.OrganisationApp.Pages.Registration
             {
                 return Page();
             }
+
+            var registrationDetails = session.Get<RegistrationDetails>(Session.RegistrationDetailsKey);
+            registrationDetails ??= new RegistrationDetails();
+            registrationDetails.OrganisationType = OrganisationType;
+
+            switch (OrganisationType)
+            {
+                case "CHN":
+                    registrationDetails.OrganisationIdentificationNumber = CompaniesHouseNumber;
+                    break;
+                case "DUN":
+                    registrationDetails.OrganisationIdentificationNumber = DunBradstreetNumber;
+                    break;
+                case "CCEW":
+                    registrationDetails.OrganisationIdentificationNumber = CharityCommissionEnglandWalesNumber;
+                    break;
+                case "OSCR":
+                    registrationDetails.OrganisationIdentificationNumber = OfficeOfScottishCharityRegulatorNumber;
+                    break;
+                case "CCNI":
+                    registrationDetails.OrganisationIdentificationNumber = CharityCommissionNorthernIrelandNumber;
+                    break;
+                case "NHOR":
+                    registrationDetails.OrganisationIdentificationNumber = NationalHealthServiceOrganisationsRegistryNumber;
+                    break;
+                case "DFE":
+                    registrationDetails.OrganisationIdentificationNumber = DepartmentForEducationNumber;
+                    break;
+                case "Other":
+                    registrationDetails.OrganisationIdentificationNumber = OtherNumber;
+                    break;
+                default:
+                    registrationDetails.OrganisationIdentificationNumber = string.Empty;
+                    break;
+            }
+
+            session.Set(Session.RegistrationDetailsKey, registrationDetails);
 
             return RedirectToPage("./OrganisationRegisteredAddress");
         }
