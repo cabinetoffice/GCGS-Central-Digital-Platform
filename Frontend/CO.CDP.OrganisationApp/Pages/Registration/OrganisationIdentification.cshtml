@@ -1,160 +1,131 @@
 ﻿@page "/registration/organisation-identification"
 @model CO.CDP.OrganisationApp.Pages.Registration.OrganisationIdentificationModel
 
-<a href="/registration/your-details" class="govuk-back-link">
-    Back
-</a>
+<a href="/" class="govuk-back-link">Back</a>
+
+@{  
+    var companiesHouseNumberHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.CompaniesHouseNumber)).HasInnerHtml;
+    var dunBradstreetNumberHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.DunBradstreetNumber)).HasInnerHtml;
+    var charityCommissionEnglandWalesNumberHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.CharityCommissionEnglandWalesNumber)).HasInnerHtml;
+    var officeOfScottishCharityRegulatorNumberHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.OfficeOfScottishCharityRegulatorNumber)).HasInnerHtml;
+    var charityCommissionNorthernIrelandNumberHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.CharityCommissionNorthernIrelandNumber)).HasInnerHtml;
+    var nationalHealthServiceOrganisationsRegistryNumberHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.NationalHealthServiceOrganisationsRegistryNumber)).HasInnerHtml;
+    var departmentForEducationNumberHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.DepartmentForEducationNumber)).HasInnerHtml;
+    var otherNumberHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.OtherNumber)).HasInnerHtml;
+
+}
 
 <main class="govuk-main-wrapper">
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-            <h1 class="govuk-heading-xl">
-                Supplier Registration
-            </h1>
-             <form method="post">
+            <partial name="_ErrorSummary" model="@Model.ModelState" />
+            <h1 class="govuk-heading-l">Organisation Identification</h1>
+            <form method="post">
                 <div class="govuk-form-group">
                     <fieldset class="govuk-fieldset">
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                            <h1 class="govuk-fieldset__heading">
-                                Enter your organisation number
-                            </h1>
+                            Organisation Type
                         </legend>
-                        <div id="contact-hint" class="govuk-hint">
-                            Select one option.
-                        </div>
-
-                        @if (Model.HasError)
-                        {
-                            <p id="supplier-error" class="govuk-error-message">
-                                <span class="govuk-visually-hidden">Error:</span> Identification number cannot be empty
-                            </p>
-                        }
-
                         <div class="govuk-radios" data-module="govuk-radios">
                             <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="companiesHouseNumber" name="organisationIdentification" type="radio" value="companiesHouseNumber" data-aria-controls="conditional-companiesHouseNumber">
-                                <label class="govuk-label govuk-radios__label" for="companiesHouseNumber">
-                                    Companies House Number
-                                </label>
+                                <input class="govuk-radios__input" id="CHN" name="OrganisationType" type="radio" value="CHN" data-aria-controls="conditional-CHN" @(Model.OrganisationType == "CHN" ? "checked" : "")>
+                                @Html.LabelFor(m => m.CompaniesHouse, new { @class = "govuk-label govuk-radios__label", @for = "CHN" })
                             </div>
-                            <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-companiesHouseNumber">
-                                <div class="govuk-form-group">
-                                    <label class="govuk-label" for="companies-house-number">
-                                        Enter companies house number
-                                    </label>
-                                    <input class="govuk-input govuk-!-width-one-third" id="companies-house-number" name="companiesHouseNumber" type="text" spellcheck="false" autocomplete="text">
+                            <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-CHN">
+                                <div class="govuk-form-group @(companiesHouseNumberHasError ? "govuk-form-group--error" : "")">
+                                    @Html.LabelFor(m => m.CompaniesHouseNumber, new { @class = "govuk-label", @for = Model.CompaniesHouseNumber })
+                                    @Html.ValidationMessageFor(m => m.CompaniesHouseNumber, "", new { @class = "govuk-error-message", @id = "CompaniesHouseNumber-error" })
+                                    @Html.TextBoxFor(m => m.CompaniesHouseNumber, new { @class = "govuk-input " + (companiesHouseNumberHasError ? "govuk-input--error" : ""), @id = "CompaniesHouseNumber", @type = "text", spellcheck = "false", autocomplete = "off" })
+                                </div>
+                            </div>
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input" id="DUN" name="OrganisationType" type="radio" value="DUN" data-aria-controls="conditional-DUN" @(Model.OrganisationType == "DUN" ? "checked" : "")>
+                                @Html.LabelFor(m => m.DunBradstreet, new { @class = "govuk-label govuk-radios__label", @for = "DUN" })
+                            </div>
+                            <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-DUN">
+                                <div class="govuk-form-group @(dunBradstreetNumberHasError ? "govuk-form-group--error" : "")">
+                                    @Html.LabelFor(m => m.DunBradstreetNumber, new { @class = "govuk-label", @for = Model.DunBradstreetNumber })
+                                    @Html.ValidationMessageFor(m => m.DunBradstreetNumber, "", new { @class = "govuk-error-message", @id = "DunBradstreetNumber-error" })
+                                    @Html.TextBoxFor(m => m.DunBradstreetNumber, new { @class = "govuk-input " + (dunBradstreetNumberHasError ? "govuk-input--error" : ""), @id = "DunBradstreetNumber", @type = "text", spellcheck = "false", autocomplete = "off" })
                                 </div>
                             </div>
 
                             <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="dunAndBradstreet" name="organisationIdentification" type="radio" value="dunAndBradstreet" data-aria-controls="conditional-dunAndBradstreet">
-                                <label class="govuk-label govuk-radios__label" for="dunAndBradstreet">
-                                    Dun &amp; Bradstreet
-                                </label>
+                                <input class="govuk-radios__input" id="CCEW" name="OrganisationType" type="radio" value="CCEW" data-aria-controls="conditional-CCEW" @(Model.OrganisationType == "CCEW" ? "checked" : "")>
+                                @Html.LabelFor(m => m.CharityCommissionEnglandWales, new { @class = "govuk-label govuk-radios__label", @for = "CCEW" })
                             </div>
-
-                            <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-dunAndBradstreet">
-                                <div class="govuk-form-group">
-                                    <label class="govuk-label" for="dun-and-bradstreet-number">
-                                        Enter Dun &amp; Bradstreet number
-                                    </label>
-                                    <input class="govuk-input govuk-!-width-one-third" id="dun-and-bradstreet-number" name="dunAndBradstreetNumber" type="text" spellcheck="false" autocomplete="text">
+                            <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-CCEW">
+                                <div class="govuk-form-group @(charityCommissionEnglandWalesNumberHasError ? "govuk-form-group--error" : "")">
+                                    @Html.LabelFor(m => m.CharityCommissionEnglandWalesNumber, new { @class = "govuk-label", @for = Model.CharityCommissionEnglandWalesNumber })
+                                    @Html.ValidationMessageFor(m => m.CharityCommissionEnglandWalesNumber, "", new { @class = "govuk-error-message", @id = "CharityCommissionEnglandWalesNumber-error" })
+                                    @Html.TextBoxFor(m => m.CharityCommissionEnglandWalesNumber, new { @class = "govuk-input " + (charityCommissionEnglandWalesNumberHasError ? "govuk-input--error" : ""), @id = "CharityCommissionEnglandWalesNumber", @type = "text", spellcheck = "false", autocomplete = "off" })
                                 </div>
                             </div>
 
                             <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="charityCommissionForEnglandAndWales" name="organisationIdentification" type="radio" value="charityCommissionForEnglandAndWales" data-aria-controls="conditional-charityCommissionForEnglandAndWales">
-                                <label class="govuk-label govuk-radios__label" for="charityCommissionForEnglandAndWales">
-                                    Charity Commission for England &amp; Wales
-                                </label>
+                                <input class="govuk-radios__input" id="OSCR" name="OrganisationType" type="radio" value="OSCR" data-aria-controls="conditional-OSCR" @(Model.OrganisationType == "OSCR" ? "checked" : "")>
+                                @Html.LabelFor(m => m.OfficeOfScottishCharityRegulator, new { @class = "govuk-label govuk-radios__label", @for = "OSCR" })
                             </div>
-
-                            <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-charityCommissionForEnglandAndWales">
-                                <div class="govuk-form-group">
-                                    <label class="govuk-label" for="charity-commission-england-wales-number">
-                                        Enter Charity Commission for England &amp; Wales number
-                                    </label>
-                                    <input class="govuk-input govuk-!-width-one-third" id="charity-commission-england-wales-number" name="charityCommissionForEnglandAndWalesNumber" type="text" spellcheck="false" autocomplete="text">
+                            <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-OSCR">
+                                <div class="govuk-form-group @(officeOfScottishCharityRegulatorNumberHasError ? "govuk-form-group--error" : "")">
+                                    @Html.LabelFor(m => m.OfficeOfScottishCharityRegulatorNumber, new { @class = "govuk-label", @for = Model.OfficeOfScottishCharityRegulatorNumber })
+                                    @Html.ValidationMessageFor(m => m.OfficeOfScottishCharityRegulatorNumber, "", new { @class = "govuk-error-message", @id = "OfficeOfScottishCharityRegulatorNumber-error" })
+                                    @Html.TextBoxFor(m => m.OfficeOfScottishCharityRegulatorNumber, new { @class = "govuk-input " + (officeOfScottishCharityRegulatorNumberHasError ? "govuk-input--error" : ""), @id = "OfficeOfScottishCharityRegulatorNumber", @type = "text", spellcheck = "false", autocomplete = "off" })
                                 </div>
                             </div>
 
                             <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="officeOfTheScottishCharityRegulator" name="organisationIdentification" type="radio" value="officeOfTheScottishCharityRegulator" data-aria-controls="conditional-officeOfTheScottishCharityRegulator">
-                                <label class="govuk-label govuk-radios__label" for="officeOfTheScottishCharityRegulator">
-                                    Office of the Scottish Charity Regulator (OSCR)
-                                </label>
+                                <input class="govuk-radios__input" id="CCNI" name="OrganisationType" type="radio" value="CCNI" data-aria-controls="conditional-CCNI" @(Model.OrganisationType == "CCNI" ? "checked" : "")>
+                                @Html.LabelFor(m => m.CharityCommissionNorthernIreland, new { @class = "govuk-label govuk-radios__label", @for = "CCNI" })
                             </div>
-
-                            <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-officeOfTheScottishCharityRegulator">
-                                <div class="govuk-form-group">
-                                    <label class="govuk-label" for="office-of-the-scottish-charity-regulator-number">
-                                        Enter Office of the Scottish Charity Regulator (OSCR) number
-                                    </label>
-                                    <input class="govuk-input govuk-!-width-one-third" id="office-of-the-scottish-charity-regulator-number" name="officeOfTheScottishCharityRegulatorNumber" type="text" spellcheck="false" autocomplete="text">
+                            <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-CCNI">
+                                <div class="govuk-form-group @(charityCommissionNorthernIrelandNumberHasError ? "govuk-form-group--error" : "")">
+                                    @Html.LabelFor(m => m.CharityCommissionNorthernIrelandNumber, new { @class = "govuk-label", @for = Model.CharityCommissionNorthernIrelandNumber })
+                                    @Html.ValidationMessageFor(m => m.CharityCommissionNorthernIrelandNumber, "", new { @class = "govuk-error-message", @id = "CharityCommissionNorthernIrelandNumber-error" })
+                                    @Html.TextBoxFor(m => m.CharityCommissionNorthernIrelandNumber, new { @class = "govuk-input " + (charityCommissionNorthernIrelandNumberHasError ? "govuk-input--error" : ""), @id = "CharityCommissionNorthernIrelandNumber", @type = "text", spellcheck = "false", autocomplete = "off" })
                                 </div>
                             </div>
 
                             <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="theCharityCommissionForNorthernIreland" name="organisationIdentification" type="radio" value="theCharityCommissionForNorthernIreland" data-aria-controls="conditional-theCharityCommissionForNorthernIreland">
-                                <label class="govuk-label govuk-radios__label" for="theCharityCommissionForNorthernIreland">
-                                    The Charity Commission for Northern Ireland
-                                </label>
+                                <input class="govuk-radios__input" id="NHOR" name="OrganisationType" type="radio" value="NHOR" data-aria-controls="conditional-NHOR" @(Model.OrganisationType == "NHOR" ? "checked" : "")>
+                                @Html.LabelFor(m => m.NationalHealthServiceOrganisationsRegistry, new { @class = "govuk-label govuk-radios__label", @for = "NHOR" })
                             </div>
-
-                            <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-theCharityCommissionForNorthernIreland">
-                                <div class="govuk-form-group">
-                                    <label class="govuk-label" for="charity-commission-northern-ireland-number">
-                                        Enter The Charity Commission for Northern Ireland number
-                                    </label>
-                                    <input class="govuk-input govuk-!-width-one-third" id="charity-commission-northern-ireland-number" name="charityCommissionForNorthernIrelandNumber" type="text" spellcheck="false" autocomplete="text">
+                            <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-NHOR">
+                                <div class="govuk-form-group @(nationalHealthServiceOrganisationsRegistryNumberHasError ? "govuk-form-group--error" : "")">
+                                    @Html.LabelFor(m => m.NationalHealthServiceOrganisationsRegistryNumber, new { @class = "govuk-label", @for = Model.NationalHealthServiceOrganisationsRegistryNumber })
+                                    @Html.ValidationMessageFor(m => m.NationalHealthServiceOrganisationsRegistryNumber, "", new { @class = "govuk-error-message", @id = "NationalHealthServiceOrganisationsRegistryNumber-error" })
+                                    @Html.TextBoxFor(m => m.NationalHealthServiceOrganisationsRegistryNumber, new { @class = "govuk-input " + (nationalHealthServiceOrganisationsRegistryNumberHasError ? "govuk-input--error" : ""), @id = "NationalHealthServiceOrganisationsRegistryNumber", @type = "text", spellcheck = "false", autocomplete = "off" })
                                 </div>
                             </div>
 
                             <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="nationalHealthServiceOrganisationsRegistry" name="organisationIdentification" type="radio" value="nationalHealthServiceOrganisationsRegistry" data-aria-controls="conditional-nationalHealthServiceOrganisationsRegistry">
-                                <label class="govuk-label govuk-radios__label" for="nationalHealthServiceOrganisationsRegistry">
-                                    National Health Service Organisations Registry
-                                </label>
+                                <input class="govuk-radios__input" id="DFE" name="OrganisationType" type="radio" value="DFE" data-aria-controls="conditional-DFE" @(Model.OrganisationType == "DFE" ? "checked" : "")>
+                                @Html.LabelFor(m => m.DepartmentForEducation, new { @class = "govuk-label govuk-radios__label", @for = "DFE" })
                             </div>
-
-                            <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-nationalHealthServiceOrganisationsRegistry">
-                                <div class="govuk-form-group">
-                                    <label class="govuk-label" for="national-health-service-organisations-registry-number">
-                                        Enter National Health Service Organisations Registry number
-                                    </label>
-                                    <input class="govuk-input govuk-!-width-one-third" id="national-health-service-organisations-registry-number" name="nationalHealthServiceOrganisationsRegistryNumber" type="text" spellcheck="false" autocomplete="text">
+                            <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-DFE">
+                                <div class="govuk-form-group @(departmentForEducationNumberHasError ? "govuk-form-group--error" : "")">
+                                    @Html.LabelFor(m => m.DepartmentForEducationNumber, new { @class = "govuk-label", @for = Model.DepartmentForEducationNumber })
+                                    @Html.ValidationMessageFor(m => m.DepartmentForEducationNumber, "", new { @class = "govuk-error-message", @id = "DepartmentForEducationNumber-error" })
+                                    @Html.TextBoxFor(m => m.DepartmentForEducationNumber, new { @class = "govuk-input " + (departmentForEducationNumberHasError ? "govuk-input--error" : ""), @id = "DepartmentForEducationNumber", @type = "text", spellcheck = "false", autocomplete = "off" })
                                 </div>
                             </div>
 
                             <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="departmentForEducation" name="organisationIdentification" type="radio" value="departmentForEducation" data-aria-controls="conditional-departmentForEducation">
-                                <label class="govuk-label govuk-radios__label" for="departmentForEducation">
-                                    Department For Education
-                                </label>
+                                <input class="govuk-radios__input" id="Other" name="OrganisationType" type="radio" value="Other" data-aria-controls="conditional-Other" @(Model.OrganisationType == "Other" ? "checked" : "")>
+                                @Html.LabelFor(m => m.Other, new { @class = "govuk-label govuk-radios__label", @for = "Other" })
                             </div>
-
-                            <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-departmentForEducation">
-                                <div class="govuk-form-group">
-                                    <label class="govuk-label" for="department-for-education-number">
-                                        Enter Department For Education number
-                                    </label>
-                                    <input class="govuk-input govuk-!-width-one-third" id="department-for-education-number" name="departmentForEducationNumber" type="text" spellcheck="false" autocomplete="text">
+                            <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-Other">
+                                <div class="govuk-form-group @(otherNumberHasError ? "govuk-form-group--error" : "")">
+                                    @Html.LabelFor(m => m.OtherNumber, new { @class = "govuk-label", @for = Model.OtherNumber })
+                                    @Html.ValidationMessageFor(m => m.OtherNumber, "", new { @class = "govuk-error-message", @id = "OtherNumber-error" })
+                                    @Html.TextBoxFor(m => m.OtherNumber, new { @class = "govuk-input " + (otherNumberHasError ? "govuk-input--error" : ""), @id = "OtherNumber", @type = "text", spellcheck = "false", autocomplete = "off" })
                                 </div>
                             </div>
 
-                            <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="otherNone" name="organisationIdentification" type="radio" value="otherNone">
-                                <label class="govuk-label govuk-radios__label" for="otherNone">
-                                    Other / None
-                                </label>
-                            </div>
-                      
                         </div>
                     </fieldset>
                 </div>
-                <button type="submit" class="govuk-button" data-module="govuk-button">
-                    Continue
-                </button>       
+                <button type="submit" class="govuk-button" data-module="govuk-button">Continue</button>
             </form>
         </div>
     </div>

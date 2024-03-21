@@ -1,51 +1,103 @@
+using CO.CDP.OrganisationApp.CustomeValidationAttributes;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace CO.CDP.OrganisationApp.Pages.Registration
 {
     public class OrganisationIdentificationModel : PageModel
     {
-        private readonly ILogger<OrganisationIdentificationModel> _logger;
-        public bool HasError { get; set; }
-        private readonly ISession _session;
+        [BindProperty]
+        [DisplayName("Organisation Type")]
+        [Required(ErrorMessage = "Please select your organisation type")]
+        public string? OrganisationType { get; set; }
 
-        public OrganisationIdentificationModel(ILogger<OrganisationIdentificationModel> logger, ISession session)
-        {
-            _logger = logger;
-            _session = session;
-        }
+        [BindProperty]
+        [DisplayName("Companies House")]
+        public string? CompaniesHouse { get; set; }
+
+        [BindProperty]
+        [DisplayName("Companies House Number")]
+        [RequiredIf("OrganisationType", "CHN")]
+        public string? CompaniesHouseNumber { get; set; }
+
+        [BindProperty]
+        [DisplayName("Dun & Bradstreet")]
+        public string? DunBradstreet { get; set; }
+
+        [BindProperty]
+        [DisplayName("Dun & Bradstreet Number")]
+        [RequiredIf("OrganisationType", "DUN")]
+        public string? DunBradstreetNumber { get; set; }
+
+        [BindProperty]
+        [DisplayName("Charity Commission for England & Wales")]
+        public string? CharityCommissionEnglandWales { get; set; }
+
+        [BindProperty]
+        [DisplayName("Charity Commission for England & Wales Number")]
+        [RequiredIf("OrganisationType", "CCEW")]
+        public string? CharityCommissionEnglandWalesNumber { get; set; }
+
+        [BindProperty]
+        [DisplayName("Office of the Scottish Charity Regulator (OSCR)")]
+        public string? OfficeOfScottishCharityRegulator { get; set; }
+
+        [BindProperty]
+        [DisplayName("Office of the Scottish Charity Regulator (OSCR) Number")]
+        [RequiredIf("OrganisationType", "OSCR")]
+        public string? OfficeOfScottishCharityRegulatorNumber { get; set; }
+
+        [BindProperty]
+        [DisplayName("The Charity Commission for Northren Ireland")]
+        public string? CharityCommissionNorthernIreland { get; set; }
+
+        [BindProperty]
+        [DisplayName("The Charity Commission for Northren Ireland Number")]
+        [RequiredIf("OrganisationType", "CCNI")]
+        public string? CharityCommissionNorthernIrelandNumber { get; set; }
+
+        [BindProperty]
+        [DisplayName("National health Service Organisations Registry")]
+        public string? NationalHealthServiceOrganisationsRegistry { get; set; }
+
+        [BindProperty]
+        [DisplayName("National health Service Organisations Registry Number")]
+        [RequiredIf("OrganisationType", "NHOR")]
+        public string? NationalHealthServiceOrganisationsRegistryNumber { get; set; }
+
+        [BindProperty]
+        [DisplayName("Department For Education")]
+        public string? DepartmentForEducation { get; set; }
+
+        [BindProperty]
+        [DisplayName("Department For Education Number")]
+        [RequiredIf("OrganisationType", "DFE")]
+        public string? DepartmentForEducationNumber { get; set; }
+
+        [BindProperty]
+        [DisplayName("Other / None")]
+        public string? Other { get; set; }
+
+        [BindProperty]
+        [DisplayName("Other / None Number")]
+        [RequiredIf("OrganisationType", "Other")]
+        public string? OtherNumber { get; set; }
 
         public void OnGet()
         {
-            HasError = false;
         }
 
-        public IActionResult OnPost(string organisationIdentification, IDictionary<string, string> organisationNumbers)
+        public IActionResult OnPost()
         {
-
-            if (organisationIdentification == "otherNone" || ValidateOrganisationNumber(organisationIdentification, organisationNumbers))
+            if (!ModelState.IsValid)
             {
-                if (organisationNumbers.TryGetValue(organisationIdentification, out var number) && !string.IsNullOrEmpty(number))
-                {
-                    _session.Set(organisationIdentification, number);
-                }
-
-                return RedirectToPage("./OrganisationRegisteredAddress");
+                return Page();
             }
 
-            HasError = true;
-            return Page();
+            return RedirectToPage("./OrganisationRegisteredAddress");
         }
-
-        private bool ValidateOrganisationNumber(string organisationIdentification, IDictionary<string, string> organisationNumbers)
-        {
-            if (organisationNumbers.TryGetValue(organisationIdentification, out var number))
-            {
-                return !string.IsNullOrEmpty(number);
-            }
-            HasError = true;
-            return false;
-        }
-
     }
+
 }
