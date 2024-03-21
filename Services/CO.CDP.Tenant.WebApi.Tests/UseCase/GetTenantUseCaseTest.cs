@@ -1,15 +1,16 @@
 using CO.CDP.Tenant.Persistence;
 using CO.CDP.Tenant.WebApi.Model;
+using CO.CDP.Tenant.WebApi.Tests.AutoMapper;
 using CO.CDP.Tenant.WebApi.UseCase;
 using FluentAssertions;
 using Moq;
 
 namespace CO.CDP.Tenant.WebApi.Tests.UseCase;
 
-public class GetTenantUseCaseTest
+public class GetTenantUseCaseTest(AutoMapperFixture mapperFixture) : IClassFixture<AutoMapperFixture>
 {
     private readonly Mock<ITenantRepository> _repository = new();
-    private GetTenantUseCase UseCase => new(_repository.Object);
+    private GetTenantUseCase UseCase => new(_repository.Object, mapperFixture.Mapper);
 
     [Fact]
     public async Task ItReturnsNullIfNoTenantIsFound()

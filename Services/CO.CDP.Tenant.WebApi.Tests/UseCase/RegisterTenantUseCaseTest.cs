@@ -1,16 +1,17 @@
 using CO.CDP.Tenant.Persistence;
 using CO.CDP.Tenant.WebApi.Model;
+using CO.CDP.Tenant.WebApi.Tests.AutoMapper;
 using CO.CDP.Tenant.WebApi.UseCase;
 using FluentAssertions;
 using Moq;
 
 namespace CO.CDP.Tenant.WebApi.Tests.UseCase;
 
-public class RegisterTenantUseCaseTest
+public class RegisterTenantUseCaseTest(AutoMapperFixture mapperFixture) : IClassFixture<AutoMapperFixture>
 {
     private readonly Mock<ITenantRepository> _repository = new();
     private readonly Guid _generatedGuid = Guid.NewGuid();
-    private RegisterTenantUseCase UseCase => new(_repository.Object, () => _generatedGuid);
+    private RegisterTenantUseCase UseCase => new(_repository.Object, mapperFixture.Mapper, () => _generatedGuid);
 
     [Fact]
     public async Task ItReturnsTheRegisteredTenant()

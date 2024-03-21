@@ -1,5 +1,6 @@
 using CO.CDP.Tenant.Persistence;
 using CO.CDP.Tenant.WebApi.Api;
+using CO.CDP.Tenant.WebApi.AutoMapper;
 using CO.CDP.Tenant.WebApi.Model;
 using CO.CDP.Tenant.WebApi.UseCase;
 using Tenant = CO.CDP.Tenant.WebApi.Model.Tenant;
@@ -12,6 +13,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options => { options.DocumentTenantApi(); });
 
 builder.Services.AddHealthChecks();
+builder.Services.AddAutoMapper(typeof(WebApiToPersistenceProfile));
 
 builder.Services.AddScoped<TenantContext>(_ => new TenantContext(builder.Configuration.GetConnectionString("TenantDatabase") ?? ""));
 builder.Services.AddScoped<ITenantRepository, DatabaseTenantRepository>();
