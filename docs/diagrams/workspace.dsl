@@ -11,6 +11,13 @@ workspace "Central Digital Platform" {
         cdp = softwareSystem "Central Digital Platform" "Supports procurement" {
             tenantApi = container "Tenant API" "" "Asp.Net Core" WebApi {
                 tenantEndpoint = component "Tenant Endpoint" "" "Asp.Net Core Web API"
+                registerTenantUseCase = component "Register Tenant Use Case"
+                getTenantUseCase = component "Get Tenant Use Case"
+                tenantPersistence = component "Persistence" "" "Project"
+                tenantEndpoint -> registerTenantUseCase "Executes"
+                tenantEndpoint -> getTenantUseCase "Executes"
+                registerTenantUseCase -> tenantPersistence "Calls"
+                getTenantUseCase -> tenantPersistence "Calls"
             }
             personApi = container "Person API" "" "Asp.Net Core" WebApi {
                 personEndpoint = component "Person Endpoint" "" "Asp.Net Core Web API"
@@ -24,7 +31,9 @@ workspace "Central Digital Platform" {
             dataSharingApi = container "Data Sharing API" "" "Asp.Net Core" WebApi {
                 dataSharingEndpoint = component "Data Sharing Endpoint" "" "Asp.Net Core Web API"
             }
-            database = container "Organisation Information Database" "" PostgreSQL Database
+            database = container "Organisation Information Database" "" PostgreSQL Database {
+                tenantPersistence -> database "reads/writes" "SQL"
+            }
             webApp = container "Web Application" "Account & data capture frontend" "Asp.Net Core MVC" WebApp {
                 signInController = component "Sign In Controller" "Enables organisations to sign in to the Organisation Account." "Asp.Net Core MVC Controller"
                 registrationController = component "Registration Controller" "Enables organisations to sign sign up for the Organisation Account." "Asp.Net Core MVC Controller"
@@ -56,7 +65,6 @@ workspace "Central Digital Platform" {
                 dataSharingController -> dataSharingClient "Uses"
             }
 
-            tenantApi -> database "reads/writes" "SQL"
             personApi -> database "reads/writes" "SQL"
             organisationApi -> database "reads/writes" "SQL"
             dataCaptureApi -> database "reads/writes" "SQL"
