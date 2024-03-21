@@ -10,7 +10,7 @@ public class OrganisationDetailModel : PageModel
 {
     [BindProperty]
     [DisplayName("Organisation name")]
-    [Required(ErrorMessage = "Enter your organisation name")]    
+    [Required(ErrorMessage = "Enter your organisation name")]
     public string? OrganisationName { get; set; }
 
     [BindProperty]
