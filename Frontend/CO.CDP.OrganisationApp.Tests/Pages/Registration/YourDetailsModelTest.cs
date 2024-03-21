@@ -1,14 +1,28 @@
-﻿using FluentAssertions;
+﻿using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.Pages.Registration;
+using FluentAssertions;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Routing;
+using Moq;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages.Registration;
 
 public class YourDetailsModelTest
 {
-	[Fact]
-	public void WhenEmptyModelIsPosted_ShouldRaiseValidationErrors()
+	private readonly Mock<ISession> sessionMock;
+
+	public YourDetailsModelTest()
 	{
-		var model = new YourDetailsModel();
+		sessionMock = new Mock<ISession>();
+	}
+
+	[Fact]
+	public void Model_WhenNotPolpulated_ShouldRaiseValidationErrors()
+	{
+		var model = GivenYourDetailsModel();
 
 		var results = ModelValidationHelper.Validate(model);
 
@@ -16,9 +30,9 @@ public class YourDetailsModelTest
 	}
 
 	[Fact]
-	public void WhenFirstNameIsEmpty_ShouldRaiseFirstNameValidationError()
+	public void Model_WhenFirstNameIsEmpty_ShouldRaiseFirstNameValidationError()
 	{
-		var model = new YourDetailsModel();
+		var model = GivenYourDetailsModel();
 
 		var results = ModelValidationHelper.Validate(model);
 
@@ -29,9 +43,10 @@ public class YourDetailsModelTest
 	}
 
 	[Fact]
-	public void WhenFirstNameIsNotEmpty_ShouldNotRaiseFirstNameValidationError()
+	public void Model_WhenFirstNameIsNotEmpty_ShouldNotRaiseFirstNameValidationError()
 	{
-		var model = new YourDetailsModel { FirstName = "dummay" };
+		var model = GivenYourDetailsModel();
+		model.FirstName = "dummay";
 
 		var results = ModelValidationHelper.Validate(model);
 
@@ -39,9 +54,9 @@ public class YourDetailsModelTest
 	}
 
 	[Fact]
-	public void WhenLastNameIsEmpty_ShouldRaiseLastNameValidationError()
+	public void Model_WhenLastNameIsEmpty_ShouldRaiseLastNameValidationError()
 	{
-		var model = new YourDetailsModel();
+		var model = GivenYourDetailsModel();
 
 		var results = ModelValidationHelper.Validate(model);
 
@@ -52,9 +67,10 @@ public class YourDetailsModelTest
 	}
 
 	[Fact]
-	public void WhenLastNameIsNotEmpty_ShouldNotRaiseLastNameValidationError()
+	public void Model_WhenLastNameIsNotEmpty_ShouldNotRaiseLastNameValidationError()
 	{
-		var model = new YourDetailsModel { LastName = "dummay" };
+		var model = GivenYourDetailsModel();
+		model.LastName = "dummay";
 
 		var results = ModelValidationHelper.Validate(model);
 
@@ -62,9 +78,9 @@ public class YourDetailsModelTest
 	}
 
 	[Fact]
-	public void WhenEmailIsEmpty_ShouldRaiseEmailValidationError()
+	public void Model_WhenEmailIsEmpty_ShouldRaiseEmailValidationError()
 	{
-		var model = new YourDetailsModel();
+		var model = GivenYourDetailsModel();
 
 		var results = ModelValidationHelper.Validate(model);
 
@@ -75,9 +91,10 @@ public class YourDetailsModelTest
 	}
 
 	[Fact]
-	public void WhenEmailIsInvalid_ShouldRaiseEmailValidationError()
+	public void Model_WhenEmailIsInvalid_ShouldRaiseEmailValidationError()
 	{
-		var model = new YourDetailsModel { Email = "dummy" };
+		var model = GivenYourDetailsModel();
+		model.Email = "dummy";
 
 		var results = ModelValidationHelper.Validate(model);
 
@@ -88,12 +105,57 @@ public class YourDetailsModelTest
 	}
 
 	[Fact]
-	public void WhenEmailIsValid_ShouldNotRaiseEmailValidationError()
+	public void Model_WhenEmailIsValid_ShouldNotRaiseEmailValidationError()
 	{
-		var model = new YourDetailsModel { Email = "dummay@test.com" };
+		var model = GivenYourDetailsModel();
+		model.Email = "dummay@test.com";
 
 		var results = ModelValidationHelper.Validate(model);
 
 		results.Any(c => c.MemberNames.Contains("Email")).Should().BeFalse();
+	}
+
+	[Fact]
+	public void OnPost_WhenInValidModel_ShouldReturnSamePage()
+	{
+		var modelState = new ModelStateDictionary();
+		modelState.AddModelError("error", "some error");
+		var actionContext = new ActionContext(new DefaultHttpContext(),
+			new RouteData(), new PageActionDescriptor(), modelState);
+		var pageContext = new PageContext(actionContext);
+
+		var model = GivenYourDetailsModel();
+		model.PageContext = pageContext;
+
+		var actionResult = model.OnPost();
+
+		actionResult.Should().BeOfType<PageResult>();
+	}
+
+	[Fact]
+	public void OnPost_WhenValidModel_ShouldSetRegistrationDetailsInSession()
+	{
+		var model = GivenYourDetailsModel();
+
+		model.OnPost();
+
+		sessionMock.Verify(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey), Times.Once);
+		sessionMock.Verify(s => s.Set(Session.RegistrationDetailsKey, It.IsAny<RegistrationDetails>()), Times.Once);
+	}
+
+	[Fact]
+	public void OnPost_WhenValidModel_ShouldRedirectToOrganisationDetailsPage()
+	{
+		var model = GivenYourDetailsModel();
+
+		var actionResult = model.OnPost();
+
+		actionResult.Should().BeOfType<RedirectToPageResult>()
+			.Which.PageName.Should().Be("OrganisationDetails");
+	}
+
+	private YourDetailsModel GivenYourDetailsModel()
+	{
+		return new YourDetailsModel(sessionMock.Object);
 	}
 }
