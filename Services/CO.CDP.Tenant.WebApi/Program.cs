@@ -1,5 +1,8 @@
 using CO.CDP.Tenant.Persistence;
 using CO.CDP.Tenant.WebApi.Api;
+using CO.CDP.Tenant.WebApi.Model;
+using CO.CDP.Tenant.WebApi.UseCase;
+using Tenant = CO.CDP.Tenant.WebApi.Model.Tenant;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +15,8 @@ builder.Services.AddHealthChecks();
 
 builder.Services.AddScoped<TenantContext>(_ => new TenantContext(builder.Configuration.GetConnectionString("TenantDatabase") ?? ""));
 builder.Services.AddScoped<ITenantRepository, DatabaseTenantRepository>();
+builder.Services.AddScoped<IUseCase<RegisterTenant, Tenant>, RegisterTenantUseCase>();
+builder.Services.AddScoped<IUseCase<Guid, Tenant?>, GetTenantUseCase>();
 
 var app = builder.Build();
 
@@ -29,6 +34,4 @@ app.UseTenantLookupEndpoints();
 app.UseUserManagementEndpoints();
 app.Run();
 
-public abstract partial class Program
-{
-}
+public abstract partial class Program;

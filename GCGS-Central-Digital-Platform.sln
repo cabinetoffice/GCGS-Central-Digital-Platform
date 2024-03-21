@@ -26,6 +26,7 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.OrganisationApp", "Frontend\CO.CDP.OrganisationApp\CO.CDP.OrganisationApp.csproj", "{379D2839-9ECA-4DC4-9BF3-12D1DFB25908}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.OrganisationApp.Tests", "Frontend\CO.CDP.OrganisationApp.Tests\CO.CDP.OrganisationApp.Tests.csproj", "{F4C94C12-3FAC-4BE3-9924-5B2B2E2A5E04}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.Testcontainers.PostgreSql.Tests", "TestKit\CO.CDP.Testcontainers.PostgreSql.Tests\CO.CDP.Testcontainers.PostgreSql.Tests.csproj", "{EAC4F0BA-22F7-4A7B-8B9E-4EF536A32E8D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.Testcontainers.PostgreSql", "TestKit\CO.CDP.Testcontainers.PostgreSql\CO.CDP.Testcontainers.PostgreSql.csproj", "{A706D75A-4235-46FE-A2C2-DB7365BB732B}"
