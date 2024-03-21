@@ -11,7 +11,7 @@ public class DatabaseTenantRepositoryTest(PostgreSqlFixture postgreSql) : IClass
     {
         using var repository = TenantRepository();
 
-        var tenant = GivenTenant() with { Guid = Guid.NewGuid() };
+        var tenant = GivenTenant(guid: Guid.NewGuid());
 
         repository.Save(tenant);
 
@@ -36,8 +36,8 @@ public class DatabaseTenantRepositoryTest(PostgreSqlFixture postgreSql) : IClass
     {
         using var repository = TenantRepository();
 
-        var tenant1 = GivenTenant() with { Guid = Guid.NewGuid(), Name = "Bob" };
-        var tenant2 = GivenTenant() with { Guid = Guid.NewGuid(), Name = "Bob" };
+        var tenant1 = GivenTenant(guid: Guid.NewGuid(), name: "Bob");
+        var tenant2 = GivenTenant(guid: Guid.NewGuid(), name: "Bob");
 
         repository.Save(tenant1);
 
@@ -52,8 +52,8 @@ public class DatabaseTenantRepositoryTest(PostgreSqlFixture postgreSql) : IClass
         using var repository = TenantRepository();
 
         var guid = Guid.NewGuid();
-        var tenant1 = GivenTenant() with { Guid = guid, Name = "Alice" };
-        var tenant2 = GivenTenant() with { Guid = guid, Name = "Sussan" };
+        var tenant1 = GivenTenant(guid: guid, name: "Alice");
+        var tenant2 = GivenTenant(guid: guid, name: "Sussan");
 
         repository.Save(tenant1);
 
@@ -67,7 +67,7 @@ public class DatabaseTenantRepositoryTest(PostgreSqlFixture postgreSql) : IClass
     {
         using var repository = TenantRepository();
 
-        var tenant = GivenTenant() with { Guid = Guid.NewGuid(), Name = "Olivia" };
+        var tenant = GivenTenant(guid: Guid.NewGuid(), name: "Olivia");
 
         repository.Save(tenant);
         tenant.Name = "Hannah";
@@ -91,17 +91,22 @@ public class DatabaseTenantRepositoryTest(PostgreSqlFixture postgreSql) : IClass
         return context;
     }
 
-    private static Tenant GivenTenant()
+    private static Tenant GivenTenant(
+        Guid? guid = null,
+        string? name = null,
+        string email = "stefan@example.com",
+        string phone = "07925123123")
     {
-        var guid = Guid.NewGuid();
+        var theGuid = guid ?? Guid.NewGuid();
+        var theName = name ?? $"Stefan {theGuid}";
         return new Tenant
         {
-            Guid = guid,
-            Name = $"Stefan {guid}",
+            Guid = theGuid,
+            Name = theName,
             ContactInfo = new Tenant.TenantContactInfo
             {
-                Email = "stefan@example.com",
-                Phone = "07925123123"
+                Email = email,
+                Phone = phone
             }
         };
     }
