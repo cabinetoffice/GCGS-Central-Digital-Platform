@@ -161,6 +161,10 @@ public class OrganisationDetailModelTest
     {
         var model = GivenOrganisationDetailModel();
 
+        RegistrationDetails registrationDetails = DummyRegistrationDetails();
+
+        sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(registrationDetails);
+
         model.OnPost();
 
         sessionMock.Verify(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey), Times.Once);
@@ -172,10 +176,54 @@ public class OrganisationDetailModelTest
     {
         var model = GivenOrganisationDetailModel();
 
+        RegistrationDetails registrationDetails = DummyRegistrationDetails();
+        sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(registrationDetails);
+
         var actionResult = model.OnPost();
 
         actionResult.Should().BeOfType<RedirectToPageResult>()
             .Which.PageName.Should().Be("OrganisationIdentification");
+    }
+
+    [Fact]
+    public void OnGet_ValidSession_ReturnsRegistrationDetails()
+    {        
+        var model = GivenOrganisationDetailModel();
+
+        RegistrationDetails registrationDetails = DummyRegistrationDetails();
+
+        sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(registrationDetails);
+
+        model.OnGet();
+
+        Assert.Equal(registrationDetails.OrganisationName, model.OrganisationName);
+        Assert.Equal(registrationDetails.OrganisationType, model.OrganisationType);
+        Assert.Equal(registrationDetails.OrganisationEmailAddress, model.EmailAddress);
+        Assert.Equal(registrationDetails.OrganisationTelephoneNumber, model.TelephoneNumber);
+    }
+
+    private RegistrationDetails DummyRegistrationDetails()
+    {
+        var registrationDetails = new RegistrationDetails
+        {
+            OrganisationName = "TestOrg",
+            OrganisationType = "TestType",
+            OrganisationEmailAddress = "test@example.com",
+            OrganisationTelephoneNumber = "1234567890"
+        };
+
+        return registrationDetails;
+    }
+
+    [Fact]
+    public void OnGet_InvalidSession_ThrowsException()
+    {
+        sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns<RegistrationDetails>(null);
+
+        var model = GivenOrganisationDetailModel();
+
+        var ex = Assert.Throws<Exception>(() => model.OnGet());
+        Assert.Equal("Shoudn't be here", ex.Message);
     }
 
     private OrganisationDetailModel GivenOrganisationDetailModel()

@@ -32,6 +32,13 @@ public class OrganisationDetailModel(ISession session) : PageModel
 
     public void OnGet()
     {
+        var registrationDetails = VerifySession();
+
+        OrganisationName = registrationDetails.OrganisationName;
+        OrganisationType = registrationDetails.OrganisationType;
+        EmailAddress = registrationDetails.OrganisationEmailAddress;
+        TelephoneNumber = registrationDetails.OrganisationTelephoneNumber;
+
     }
 
     public IActionResult OnPost()
@@ -41,8 +48,8 @@ public class OrganisationDetailModel(ISession session) : PageModel
             return Page();
         }
 
-        var registrationDetails = session.Get<RegistrationDetails>(Session.RegistrationDetailsKey);
-        registrationDetails ??= new RegistrationDetails();
+        var registrationDetails = VerifySession();
+
         registrationDetails.OrganisationName = OrganisationName;
         registrationDetails.OrganisationType = OrganisationType;
         registrationDetails.OrganisationEmailAddress = EmailAddress;
@@ -51,6 +58,17 @@ public class OrganisationDetailModel(ISession session) : PageModel
         session.Set(Session.RegistrationDetailsKey, registrationDetails);
 
         return RedirectToPage("OrganisationIdentification");
+    }
+
+    private RegistrationDetails VerifySession()
+    {
+        var registrationDetails = session.Get<RegistrationDetails>(Session.RegistrationDetailsKey);
+        if (registrationDetails == null)
+        {
+            //show error page (Once we finalise)
+            throw new Exception("Shoudn't be here");
+        }
+        return registrationDetails;
     }
 }
 
