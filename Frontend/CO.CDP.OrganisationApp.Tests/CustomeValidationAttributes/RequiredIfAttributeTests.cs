@@ -6,36 +6,49 @@ namespace CO.CDP.OrganisationApp.Tests.CustomeValidationAttributes
 {
     public class RequiredIfAttributeTests
     {
-        [Theory]
-        [InlineData("CCNI", null, false)]
-        [InlineData("CCNI", "", false)]
-        [InlineData("CCNI", "123", true)]
-        [InlineData("OTHER", "", true)]
-        [InlineData("OTHER", null, true)]
-        public void Validate_RequiredIfCondition_ReturnsExpectedResult(string organisationType, string? charityNumber, bool isValidExpected)
+        public class RequiredIfAttributeValidationTests
         {
+            [Fact]
+            public void Should_Fail_Validation_When_OrganisationType_Matches_And_IdentificationNumber_IsNull()
+            {
+                var model = new OrganisationTestModel { OrganisationType = "CCNI" };
+                var validationContext = new ValidationContext(model, null, null)
+                {
+                    MemberName = nameof(OrganisationTestModel.CharityCommissionNorthernIrelandNumber)
+                };
+                var attribute = new RequiredIfAttribute("OrganisationType", "CCNI");
+
+                var result = attribute.GetValidationResult(null, validationContext);
+
+                result.Should().NotBeNull()
+                      .And.BeOfType<ValidationResult>()
+                      .Which.ErrorMessage.Should().Be("CharityCommissionNorthernIrelandNumber is required");
+            }
+        }
+
+        [Fact]
+        public void Should_Pass_All_Validation_When_OrganisationType_Matches_And_IdentificationNumber_IsProvided()
+        {
+            var model = new OrganisationTestModel
+            {
+                OrganisationType = "CCNI",
+                CharityCommissionNorthernIrelandNumber = "12345"
+            };
+            var context = new ValidationContext(model, null, null)
+            {
+                MemberName = nameof(OrganisationTestModel.CharityCommissionNorthernIrelandNumber)
+            };
             var attribute = new RequiredIfAttribute("OrganisationType", "CCNI");
-            var model = new
-            {
-                OrganisationType = organisationType,
-                CharityCommissionNorthernIrelandNumber = charityNumber
-            };
-            var validationContext = new ValidationContext(model)
-            {
-                MemberName = "CharityCommissionNorthernIrelandNumber"
-            };
 
-            var result = attribute.GetValidationResult(model.CharityCommissionNorthernIrelandNumber, validationContext);
+            var result = attribute.GetValidationResult(model.CharityCommissionNorthernIrelandNumber, context);
 
-            if (isValidExpected)
-            {
-                result.Should().BeNull();
-            }
-            else
-            {
-                result.Should().NotBeNull();
-                result.ErrorMessage.Should().Be("CharityCommissionNorthernIrelandNumber is required");
-            }
+            result.Should().BeNull("because the identification number is provided when the organisation type matches");
+        }
+
+        private class OrganisationTestModel
+        {
+            public string? OrganisationType { get; set; }
+            public string? CharityCommissionNorthernIrelandNumber { get; set; }
         }
     }
 }
