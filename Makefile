@@ -47,6 +47,11 @@ OpenAPI: up
 define COMPOSE_OVERRIDE_YML
 version: '3'
 services:
+  db:
+    ports:
+      - "$${CDP_DB_PORT:-5432}:5432"
+    deploy:
+      replicas: 1
   organisation-app:
     ports:
       - "$${CDP_ORGANISATION_APP_PORT:-80}:8080"

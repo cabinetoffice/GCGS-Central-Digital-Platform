@@ -6,7 +6,7 @@ The system context diagram below presents the Central Digital Platform system
 in the context of users and other systems.
 
 .System Context for Central Digital Platform
-image::diagrams/export/structurizr-1-CDP-SystemContext.svg[System Context for Central Digital Platform]
+image::diagrams/export/structurizr-1-CDP-1-SystemContext.svg[System Context for Central Digital Platform]
 
 .Legend
-image::diagrams/export/structurizr-1-CDP-SystemContext-key.svg[Legend]
+image::diagrams/export/structurizr-1-CDP-1-SystemContext-key.svg[Legend]
