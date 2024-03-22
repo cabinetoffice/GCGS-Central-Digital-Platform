@@ -196,10 +196,10 @@ public class OrganisationDetailModelTest
 
         model.OnGet();
 
-        Assert.Equal(registrationDetails.OrganisationName, model.OrganisationName);
-        Assert.Equal(registrationDetails.OrganisationType, model.OrganisationType);
-        Assert.Equal(registrationDetails.OrganisationEmailAddress, model.EmailAddress);
-        Assert.Equal(registrationDetails.OrganisationTelephoneNumber, model.TelephoneNumber);
+        model.OrganisationName.Should().Be(registrationDetails.OrganisationName);
+        model.OrganisationType.Should().Be(registrationDetails.OrganisationType);
+        model.EmailAddress.Should().Be(registrationDetails.OrganisationEmailAddress);
+        model.TelephoneNumber.Should().Be(registrationDetails.OrganisationTelephoneNumber);
     }
 
     private RegistrationDetails DummyRegistrationDetails()
@@ -218,12 +218,12 @@ public class OrganisationDetailModelTest
     [Fact]
     public void OnGet_InvalidSession_ThrowsException()
     {
-        sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns<RegistrationDetails>(null);
+        sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(value: null);
 
         var model = GivenOrganisationDetailModel();
 
-        var ex = Assert.Throws<Exception>(() => model.OnGet());
-        Assert.Equal("Shoudn't be here", ex.Message);
+        Action action = () => model.OnGet();
+        action.Should().Throw<Exception>().WithMessage("Shoudn't be here");
     }
 
     private OrganisationDetailModel GivenOrganisationDetailModel()
