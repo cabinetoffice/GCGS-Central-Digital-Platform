@@ -46,6 +46,7 @@ By default service and application ports are mapped as follows:
 * Person - http://localhost:8084/swagger/
 * Forms - http://localhost:8086/swagger/
 * Data Sharing - http://localhost:8088/swagger/
+* PostgreSQL database - :5432
 
 In order to prevent selected service(s) from starting, configure the number of replicate in `compose.override.yml` to 0:
 

@@ -1,4 +1,5 @@
 using CO.CDP.Testcontainers.PostgreSql;
+using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 
 namespace CO.CDP.Tenant.Persistence.Tests;
@@ -8,7 +9,7 @@ public class DatabaseTenantRepositoryTest(PostgreSqlFixture postgreSql) : IClass
     [Fact]
     public async Task ItFindsSavedTenant()
     {
-        using var repository = new DatabaseTenantRepository(TenantContext());
+        using var repository = TenantRepository();
 
         var tenant = GivenTenant(guid: Guid.NewGuid());
 
@@ -16,39 +17,70 @@ public class DatabaseTenantRepositoryTest(PostgreSqlFixture postgreSql) : IClass
 
         var found = await repository.Find(tenant.Guid);
 
-        Assert.Equal(tenant, found);
+        found.Should().Be(tenant);
+        found.As<Tenant>().Id.Should().BePositive();
+    }
+
+    [Fact]
+    public async Task ItReturnsNullIfTenantIsNotFound()
+    {
+        using var repository = TenantRepository();
+
+        var found = await repository.Find(Guid.NewGuid());
+
+        found.Should().BeNull();
     }
 
     [Fact]
     public void ItRejectsTwoTenantsWithTheSameName()
     {
-        using var repository = new DatabaseTenantRepository(TenantContext());
+        using var repository = TenantRepository();
 
         var tenant1 = GivenTenant(guid: Guid.NewGuid(), name: "Bob");
         var tenant2 = GivenTenant(guid: Guid.NewGuid(), name: "Bob");
 
         repository.Save(tenant1);
 
-        AssertDuplicateKeyViolation("Tenants_Name", () => repository.Save(tenant2));
+        repository.Invoking(r => r.Save(tenant2))
+            .Should().Throw<ITenantRepository.TenantRepositoryException.DuplicateTenantException>()
+            .WithMessage($"Tenant with name `Bob` already exists.");
     }
 
-    private static Tenant GivenTenant(
-        Guid? guid,
-        string name = "Stefan",
-        string email = "stefan@example.com",
-        string phone = "07925123123")
+    [Fact]
+    public void ItRejectsTwoTenantsWithTheSameGuid()
     {
-        var theGuid = guid ?? Guid.NewGuid();
-        return new Tenant
-        {
-            Guid = theGuid,
-            Name = name,
-            ContactInfo = new Tenant.TenantContactInfo
-            {
-                Email = email,
-                Phone = phone
-            }
-        };
+        using var repository = TenantRepository();
+
+        var guid = Guid.NewGuid();
+        var tenant1 = GivenTenant(guid: guid, name: "Alice");
+        var tenant2 = GivenTenant(guid: guid, name: "Sussan");
+
+        repository.Save(tenant1);
+
+        repository.Invoking((r) => r.Save(tenant2))
+            .Should().Throw<ITenantRepository.TenantRepositoryException.DuplicateTenantException>()
+            .WithMessage($"Tenant with guid `{guid}` already exists.");
+    }
+
+    [Fact]
+    public async Task ItUpdatesAnExistingTenant()
+    {
+        using var repository = TenantRepository();
+
+        var tenant = GivenTenant(guid: Guid.NewGuid(), name: "Olivia");
+
+        repository.Save(tenant);
+        tenant.Name = "Hannah";
+        repository.Save(tenant);
+
+        var found = await repository.Find(tenant.Guid);
+
+        found.Should().Be(tenant);
+    }
+
+    private ITenantRepository TenantRepository()
+    {
+        return new DatabaseTenantRepository(TenantContext());
     }
 
     private TenantContext TenantContext()
@@ -59,11 +91,23 @@ public class DatabaseTenantRepositoryTest(PostgreSqlFixture postgreSql) : IClass
         return context;
     }
 
-    private void AssertDuplicateKeyViolation(string indexName, Action action)
+    private static Tenant GivenTenant(
+        Guid? guid = null,
+        string? name = null,
+        string email = "stefan@example.com",
+        string phone = "07925123123")
     {
-        var exception = Assert.Throws<DbUpdateException>(action);
-        Assert.IsType<Npgsql.PostgresException>(exception.InnerException);
-        Assert.Contains("duplicate key value violates unique constraint", exception.InnerException.Message);
-        Assert.Contains(indexName, exception.InnerException.Message);
+        var theGuid = guid ?? Guid.NewGuid();
+        var theName = name ?? $"Stefan {theGuid}";
+        return new Tenant
+        {
+            Guid = theGuid,
+            Name = theName,
+            ContactInfo = new Tenant.TenantContactInfo
+            {
+                Email = email,
+                Phone = phone
+            }
+        };
     }
 }

@@ -15,5 +15,7 @@ namespace CO.CDP.OrganisationApp.Models
         public string? OrganisationEmailAddress { get; set; }
 
         public string? OrganisationTelephoneNumber { get; set; }
+
+        public string? OrganisationIdentificationNumber { get; set; }
     }
 }

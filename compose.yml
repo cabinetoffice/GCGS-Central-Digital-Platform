@@ -1,4 +1,12 @@
 services:
+  db:
+    extends:
+      file: compose.common.yml
+      service: db
+    environment:
+      POSTGRES_DB: cdp
+      POSTGRES_USER: cdp_user
+      POSTGRES_PASSWORD: cdp123
   organisation-app:
     extends:
       file: compose.common.yml
@@ -7,19 +15,39 @@ services:
     extends:
       file: compose.common.yml
       service: tenant
+    links:
+      - db:db
+    depends_on:
+      - db
   organisation:
     extends:
       file: compose.common.yml
       service: organisation
+    links:
+      - db:db
+    depends_on:
+      - db
   person:
     extends:
       file: compose.common.yml
       service: person
+    links:
+      - db:db
+    depends_on:
+      - db
   forms:
     extends:
       file: compose.common.yml
       service: forms
+    links:
+      - db:db
+    depends_on:
+      - db
   data-sharing:
     extends:
       file: compose.common.yml
       service: data-sharing
+    links:
+      - db:db
+    depends_on:
+      - db

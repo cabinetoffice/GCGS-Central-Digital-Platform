@@ -1,41 +1,12 @@
 using System.ComponentModel.DataAnnotations;
+using CO.CDP.Tenant.WebApi.Model;
+using CO.CDP.Tenant.WebApi.UseCase;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace CO.CDP.Tenant.WebApi.Api
 {
-    internal record Tenant
-    {
-        [Required(AllowEmptyStrings = true)] public required string Id { get; init; }
-
-        [Required(AllowEmptyStrings = true)] public required string Name { get; init; }
-
-        [Required(AllowEmptyStrings = true)] public required TenantContactInfo ContactInfo { get; init; }
-    }
-
-    internal record NewTenant
-    {
-        [Required(AllowEmptyStrings = true)] public required string Name { get; init; }
-
-        [Required(AllowEmptyStrings = true)] public required TenantContactInfo ContactInfo { get; init; }
-    }
-
-    internal record UpdatedTenant
-    {
-        [Required(AllowEmptyStrings = true)] public required string Name { get; init; }
-
-        [Required(AllowEmptyStrings = true)] public required TenantContactInfo ContactInfo { get; init; }
-    }
-
-    internal record TenantContactInfo
-    {
-        [Required(AllowEmptyStrings = true), EmailAddress]
-        public required string Email { get; init; }
-
-        [Required(AllowEmptyStrings = true)] public required string Phone { get; init; }
-    }
-
     internal record TenantLookupCriteria
     {
         [Required(AllowEmptyStrings = true)] public required string UserPrinciple { get; init; }
@@ -60,14 +31,14 @@ namespace CO.CDP.Tenant.WebApi.Api
 
     internal record UserInTenants
     {
-        [Required(AllowEmptyStrings = true)] public required string Id { get; init; }
+        [Required(AllowEmptyStrings = true)] public required Guid Id { get; init; }
         [Required(AllowEmptyStrings = true)] public required string Name { get; init; }
     }
 
     internal record AssignUserToOrganisation
     {
-        [Required(AllowEmptyStrings = true)] public required string UserId { get; init; }
-        [Required(AllowEmptyStrings = true)] public required string OrganisationId { get; init; }
+        [Required(AllowEmptyStrings = true)] public required Guid UserId { get; init; }
+        [Required(AllowEmptyStrings = true)] public required Guid OrganisationId { get; init; }
     }
 
     internal record Receipt
@@ -97,22 +68,23 @@ namespace CO.CDP.Tenant.WebApi.Api
 
     public static class EndpointExtensions
     {
-        private static Dictionary<string, Tenant> _tenants = Enumerable.Range(1, 5)
-            .ToDictionary(index => index.ToString(), index => new Tenant
+        private static Dictionary<Guid, Model.Tenant> _tenants = Enumerable.Range(1, 5)
+            .Select(_ => Guid.NewGuid())
+            .ToDictionary(id => id, id => new Model.Tenant
             {
-                Id = index.ToString(),
-                Name = $"Bobby Tables {index}",
+                Id = id,
+                Name = $"Bobby Tables {id}",
                 ContactInfo = new TenantContactInfo
                 {
-                    Email = $"bobby{index}@example.com",
-                    Phone = $"0555 123 95{index}"
+                    Email = $"bobby{id}@example.com",
+                    Phone = $"0555 123 952"
                 }
             });
 
         public static void UseTenantEndpoints(this WebApplication app)
         {
             app.MapGet("/tenants", () => _tenants.Values.ToArray())
-                .Produces<List<Tenant>>(200, "application/json")
+                .Produces<List<Model.Tenant>>(200, "application/json")
                 .WithOpenApi(operation =>
                 {
                     operation.OperationId = "ListTenants";
@@ -121,18 +93,12 @@ namespace CO.CDP.Tenant.WebApi.Api
                     operation.Responses["200"].Description = "A list of tenants.";
                     return operation;
                 });
-            app.MapPost("/tenants", (NewTenant newTenant) =>
-                {
-                    var tenant = new Tenant
-                    {
-                        Id = (_tenants.Count + 1).ToString(),
-                        Name = newTenant.Name,
-                        ContactInfo = newTenant.ContactInfo
-                    };
-                    _tenants.Add(tenant.Id, tenant);
-                    return Results.Created(new Uri($"/tenants/{tenant.Id}"), tenant);
-                })
-                .Produces<Tenant>(201, "application/json")
+            app.MapPost("/tenants", async (RegisterTenant command, IUseCase<RegisterTenant, Model.Tenant> useCase) =>
+                    await useCase.Execute(command)
+                        .AndThen(tenant =>
+                            Results.Created(new Uri($"/tenants/{tenant.Id}", UriKind.Relative), tenant)
+                        ))
+                .Produces<Model.Tenant>(201, "application/json")
                 .WithOpenApi(operation =>
                 {
                     operation.OperationId = "CreateTenant";
@@ -141,7 +107,7 @@ namespace CO.CDP.Tenant.WebApi.Api
                     operation.Responses["201"].Description = "Tenant created successfully.";
                     return operation;
                 });
-            app.MapDelete("/tenants/{tenantId}", (String tenantId) =>
+            app.MapDelete("/tenants/{tenantId}", (Guid tenantId) =>
                 {
                     _tenants.Remove(tenantId);
                     return Results.NoContent();
@@ -155,18 +121,10 @@ namespace CO.CDP.Tenant.WebApi.Api
                     operation.Responses["204"].Description = "Tenant deleted successfully.";
                     return operation;
                 });
-            app.MapGet("/tenants/{tenantId}", (String tenantId) =>
-                {
-                    try
-                    {
-                        return Results.Ok(_tenants[tenantId]);
-                    }
-                    catch (KeyNotFoundException)
-                    {
-                        return Results.NotFound();
-                    }
-                })
-                .Produces<Tenant>(200, "application/json")
+            app.MapGet("/tenants/{tenantId}", async (Guid tenantId, IUseCase<Guid, Model.Tenant?> useCase) =>
+                    await useCase.Execute(tenantId)
+                        .AndThen(tenant => tenant != null ? Results.Ok(tenant) : Results.NotFound()))
+                .Produces<Model.Tenant>(200, "application/json")
                 .Produces(404)
                 .WithOpenApi(operation =>
                 {
@@ -176,9 +134,9 @@ namespace CO.CDP.Tenant.WebApi.Api
                     operation.Responses["200"].Description = "Tenant details.";
                     return operation;
                 });
-            app.MapPut("/tenants/{tenantId}", (String tenantId, UpdatedTenant updatedTenant) =>
+            app.MapPut("/tenants/{tenantId}", (Guid tenantId, UpdateTenant updatedTenant) =>
                 {
-                    _tenants[tenantId] = new Tenant
+                    _tenants[tenantId] = new Model.Tenant
                     {
                         Id = tenantId,
                         Name = updatedTenant.Name,
@@ -186,7 +144,7 @@ namespace CO.CDP.Tenant.WebApi.Api
                     };
                     return Results.Ok(_tenants[tenantId]);
                 })
-                .Produces<Tenant>(200, "application/json")
+                .Produces<Model.Tenant>(200, "application/json")
                 .WithOpenApi(operation =>
                 {
                     operation.OperationId = "UpdateTenant";
@@ -283,6 +241,16 @@ namespace CO.CDP.Tenant.WebApi.Api
                     Url = new Uri("https://example.com/license")
                 }
             });
+            options.CustomSchemaIds(type =>
+                {
+                    var typeMap = new Dictionary<Type, string>
+                    {
+                        { typeof(RegisterTenant), "NewTenant" },
+                        { typeof(UpdateTenant), "UpdatedTenant" },
+                    };
+                    return typeMap.GetValueOrDefault(type, type.Name);
+                }
+            );
         }
     }
 }
