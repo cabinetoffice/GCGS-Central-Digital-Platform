@@ -49,7 +49,7 @@ version: '3'
 services:
   db:
     ports:
-      - "${CDP_DB_PORT:-5432}:5432"
+      - "$${CDP_DB_PORT:-5432}:5432"
     deploy:
       replicas: 1
   organisation-app:
