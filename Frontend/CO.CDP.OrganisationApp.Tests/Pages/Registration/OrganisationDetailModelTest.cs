@@ -1,106 +1,124 @@
-﻿using FluentAssertions;
+using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.Pages.Registration;
+using FluentAssertions;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Routing;
+using Moq;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages.Registration;
 
 public class OrganisationDetailModelTest
 {
-	[Fact]
-	public void WhenEmptyModelIsPosted_ShouldRaiseValidationErrors()
-	{
-		var model = new OrganisationDetailModel();
+    private readonly Mock<ISession> sessionMock;
 
-		var results = ModelValidationHelper.Validate(model);
+    public OrganisationDetailModelTest()
+    {
+        sessionMock = new Mock<ISession>();
+    }
 
-		results.Count.Should().Be(4);
-	}
+    [Fact]
+    public void WhenEmptyModelIsPosted_ShouldRaiseValidationErrors()
+    {
+        var model = GivenOrganisationDetailModel();
 
-	[Fact]
-	public void WhenOrganisationNameIsEmpty_ShouldRaiseOrganisationNameValidationError()
-	{
-		var model = new OrganisationDetailModel();
+        var results = ModelValidationHelper.Validate(model);
 
-		var results = ModelValidationHelper.Validate(model);
+        results.Count.Should().Be(4);
+    }
 
-		results.Any(c => c.MemberNames.Contains("OrganisationName")).Should().BeTrue();
+    [Fact]
+    public void WhenOrganisationNameIsEmpty_ShouldRaiseOrganisationNameValidationError()
+    {
+        var model = GivenOrganisationDetailModel();
 
-		results.Where(c => c.MemberNames.Contains("OrganisationName")).First()
-			.ErrorMessage.Should().Be("Enter your organisation name");
-	}
+        var results = ModelValidationHelper.Validate(model);
 
-	[Fact]
-	public void WhenOrganisationNameIsNotEmpty_ShouldNotRaiseOrganisationNameValidationError()
-	{
-		var model = new OrganisationDetailModel { OrganisationName = "dummay" };
+        results.Any(c => c.MemberNames.Contains("OrganisationName")).Should().BeTrue();
 
-		var results = ModelValidationHelper.Validate(model);
+        results.Where(c => c.MemberNames.Contains("OrganisationName")).First()
+            .ErrorMessage.Should().Be("Enter your organisation name");
+    }
 
-		results.Any(c => c.MemberNames.Contains("OrganisationName")).Should().BeFalse();
-	}
+    [Fact]
+    public void WhenOrganisationNameIsNotEmpty_ShouldNotRaiseOrganisationNameValidationError()
+    {
+        var model = GivenOrganisationDetailModel();
+        model.OrganisationName = "dummay";
 
-	[Fact]
-	public void WhenOrganisationTypeIsEmpty_ShouldRaiseOrganisationTypeValidationError()
-	{
-		var model = new OrganisationDetailModel();
+        var results = ModelValidationHelper.Validate(model);
 
-		var results = ModelValidationHelper.Validate(model);
+        results.Any(c => c.MemberNames.Contains("OrganisationName")).Should().BeFalse();
+    }
 
-		results.Any(c => c.MemberNames.Contains("OrganisationType")).Should().BeTrue();
+    [Fact]
+    public void WhenOrganisationTypeIsEmpty_ShouldRaiseOrganisationTypeValidationError()
+    {
+        var model = GivenOrganisationDetailModel();
 
-		results.Where(c => c.MemberNames.Contains("OrganisationType")).First()
-			.ErrorMessage.Should().Be("Enter your organisation type");
-	}
+        var results = ModelValidationHelper.Validate(model);
 
-	[Fact]
-	public void WhenOrganisationTypeIsNotEmpty_ShouldNotRaiseOrganisationTypeValidationError()
-	{
-		var model = new OrganisationDetailModel { OrganisationType = "dummay" };
+        results.Any(c => c.MemberNames.Contains("OrganisationType")).Should().BeTrue();
 
-		var results = ModelValidationHelper.Validate(model);
+        results.Where(c => c.MemberNames.Contains("OrganisationType")).First()
+            .ErrorMessage.Should().Be("Enter your organisation type");
+    }
 
-		results.Any(c => c.MemberNames.Contains("OrganisationType")).Should().BeFalse();
-	}
+    [Fact]
+    public void WhenOrganisationTypeIsNotEmpty_ShouldNotRaiseOrganisationTypeValidationError()
+    {
+        var model = GivenOrganisationDetailModel();
+        model.OrganisationType = "dummay";
 
-	[Fact]
-	public void WhenEmailIsEmpty_ShouldRaiseEmailAddressValidationError()
-	{
-		var model = new OrganisationDetailModel();
+        var results = ModelValidationHelper.Validate(model);
 
-		var results = ModelValidationHelper.Validate(model);
+        results.Any(c => c.MemberNames.Contains("OrganisationType")).Should().BeFalse();
+    }
 
-		results.Any(c => c.MemberNames.Contains("EmailAddress")).Should().BeTrue();
+    [Fact]
+    public void WhenEmailIsEmpty_ShouldRaiseEmailAddressValidationError()
+    {
+        var model = GivenOrganisationDetailModel();
 
-		results.Where(c => c.MemberNames.Contains("EmailAddress")).First()
-			.ErrorMessage.Should().Be("Enter your email address");
-	}
+        var results = ModelValidationHelper.Validate(model);
 
-	[Fact]
-	public void WhenEmailAddressIsInvalid_ShouldRaiseEmailAddressValidationError()
-	{
-		var model = new OrganisationDetailModel { EmailAddress = "dummy" };
+        results.Any(c => c.MemberNames.Contains("EmailAddress")).Should().BeTrue();
 
-		var results = ModelValidationHelper.Validate(model);
+        results.Where(c => c.MemberNames.Contains("EmailAddress")).First()
+            .ErrorMessage.Should().Be("Enter your email address");
+    }
 
-		results.Any(c => c.MemberNames.Contains("EmailAddress")).Should().BeTrue();
+    [Fact]
+    public void WhenEmailAddressIsInvalid_ShouldRaiseEmailAddressValidationError()
+    {
+        var model = GivenOrganisationDetailModel();
+        model.EmailAddress = "dummy";
 
-		results.Where(c => c.MemberNames.Contains("EmailAddress")).First()
-			.ErrorMessage.Should().Be("Enter an email address in the correct format, like name@example.com");
-	}
+        var results = ModelValidationHelper.Validate(model);
 
-	[Fact]
-	public void WhenEmailAddressIsValid_ShouldNotRaiseEmailAddressValidationError()
-	{
-		var model = new OrganisationDetailModel { EmailAddress = "dummay@test.com" };
+        results.Any(c => c.MemberNames.Contains("EmailAddress")).Should().BeTrue();
 
-		var results = ModelValidationHelper.Validate(model);
+        results.Where(c => c.MemberNames.Contains("EmailAddress")).First()
+            .ErrorMessage.Should().Be("Enter an email address in the correct format, like name@example.com");
+    }
 
-		results.Any(c => c.MemberNames.Contains("EmailAddress")).Should().BeFalse();
-	}
+    [Fact]
+    public void WhenEmailAddressIsValid_ShouldNotRaiseEmailAddressValidationError()
+    {
+        var model = GivenOrganisationDetailModel();
+        model.EmailAddress = "dummay@test.com";
+
+        var results = ModelValidationHelper.Validate(model);
+
+        results.Any(c => c.MemberNames.Contains("EmailAddress")).Should().BeFalse();
+    }
 
     [Fact]
     public void WhenTelephoneNumberIsEmpty_ShouldRaiseTelephoneNumberValidationError()
     {
-        var model = new OrganisationDetailModel();
+        var model = GivenOrganisationDetailModel();
 
         var results = ModelValidationHelper.Validate(model);
 
@@ -113,10 +131,103 @@ public class OrganisationDetailModelTest
     [Fact]
     public void WhenTelephoneNumberIsNotEmpty_ShouldNotRaiseTelephoneNumberValidationError()
     {
-        var model = new OrganisationDetailModel { TelephoneNumber = "0123456789" };
+        var model = GivenOrganisationDetailModel();
+        model.TelephoneNumber = "0123456789";
 
         var results = ModelValidationHelper.Validate(model);
 
         results.Any(c => c.MemberNames.Contains("TelephoneNumber")).Should().BeFalse();
+    }
+
+    [Fact]
+    public void OnPost_WhenInValidModel_ShouldReturnSamePage()
+    {
+        var modelState = new ModelStateDictionary();
+        modelState.AddModelError("error", "some error");
+        var actionContext = new ActionContext(new DefaultHttpContext(),
+            new RouteData(), new PageActionDescriptor(), modelState);
+        var pageContext = new PageContext(actionContext);
+
+        var model = GivenOrganisationDetailModel();
+        model.PageContext = pageContext;
+
+        var actionResult = model.OnPost();
+
+        actionResult.Should().BeOfType<PageResult>();
+    }
+
+    [Fact]
+    public void OnPost_WhenValidModel_ShouldSetRegistrationDetailsInSession()
+    {
+        var model = GivenOrganisationDetailModel();
+
+        RegistrationDetails registrationDetails = DummyRegistrationDetails();
+
+        sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(registrationDetails);
+
+        model.OnPost();
+
+        sessionMock.Verify(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey), Times.Once);
+        sessionMock.Verify(s => s.Set(Session.RegistrationDetailsKey, It.IsAny<RegistrationDetails>()), Times.Once);
+    }
+
+    [Fact]
+    public void OnPost_WhenValidModel_ShouldRedirectToOrganisationDetailsPage()
+    {
+        var model = GivenOrganisationDetailModel();
+
+        RegistrationDetails registrationDetails = DummyRegistrationDetails();
+        sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(registrationDetails);
+
+        var actionResult = model.OnPost();
+
+        actionResult.Should().BeOfType<RedirectToPageResult>()
+            .Which.PageName.Should().Be("OrganisationIdentification");
+    }
+
+    [Fact]
+    public void OnGet_ValidSession_ReturnsRegistrationDetails()
+    {        
+        var model = GivenOrganisationDetailModel();
+
+        RegistrationDetails registrationDetails = DummyRegistrationDetails();
+
+        sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(registrationDetails);
+
+        model.OnGet();
+
+        model.OrganisationName.Should().Be(registrationDetails.OrganisationName);
+        model.OrganisationType.Should().Be(registrationDetails.OrganisationType);
+        model.EmailAddress.Should().Be(registrationDetails.OrganisationEmailAddress);
+        model.TelephoneNumber.Should().Be(registrationDetails.OrganisationTelephoneNumber);
+    }
+
+    private RegistrationDetails DummyRegistrationDetails()
+    {
+        var registrationDetails = new RegistrationDetails
+        {
+            OrganisationName = "TestOrg",
+            OrganisationType = "TestType",
+            OrganisationEmailAddress = "test@example.com",
+            OrganisationTelephoneNumber = "1234567890"
+        };
+
+        return registrationDetails;
+    }
+
+    [Fact]
+    public void OnGet_InvalidSession_ThrowsException()
+    {
+        sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(value: null);
+
+        var model = GivenOrganisationDetailModel();
+
+        Action action = () => model.OnGet();
+        action.Should().Throw<Exception>().WithMessage("Shoudn't be here");
+    }
+
+    private OrganisationDetailModel GivenOrganisationDetailModel()
+    {
+        return new OrganisationDetailModel(sessionMock.Object);
     }
 }

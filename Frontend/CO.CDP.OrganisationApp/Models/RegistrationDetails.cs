@@ -10,7 +10,13 @@ public class RegistrationDetails
 
         public string? Email { get; set; }
 
+        public string? OrganisationName { get; set; }
+
         public string? OrganisationType { get; set; }
+
+        public string? OrganisationEmailAddress { get; set; }
+
+        public string? OrganisationTelephoneNumber { get; set; }
 
         public string? OrganisationIdentificationNumber { get; set; }
     }
