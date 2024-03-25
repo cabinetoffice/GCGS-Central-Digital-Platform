@@ -13,3 +13,5 @@ The design decision log accomplishes the following goals:
 * Help to revise decisions when the situation changes.
 
 include::0001-record-architecture-decisions.adoc[]
+
+include::0002-create-webapi-clients.adoc[]
