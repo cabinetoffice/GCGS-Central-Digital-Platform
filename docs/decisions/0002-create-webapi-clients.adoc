@@ -1,0 +1,161 @@
+= 2. Create web api clients
+
+Date: 2023-03-25
+
+== Status
+
+Draft
+
+== Context
+
+We need to create clients for each of our web api services to be used internally (at least initially).
+Clients must be compliant with the OpenAPI contracts we expose, so that once we expose them externally
+we're sure of their correctness.
+
+Microsoft is planning to make OpenAPI support a first-class citizen in ASP.NET Core.
+Swashbuckle is scheduled to be dropped in .NET 9 (see https://github.com/dotnet/aspnetcore/issues/54599).
+NSwag is the most feature-rich library in the ecosystem, and their maintainer already raised concerns Microsoft will
+make NSwag redundant.
+
+We have considered a number of options to move forward.
+
+=== Option 1: Craft clients from scratch
+
+Create a `Client` interface for each service and implement it with `HttpClient`.
+This will require writing a lot of code ourselves based on the OpenAPI contract
+and keeping it in sync with the changing contract.
+
+Advantages:
+
+* "It's just code", so it's easy to change.
+* It's more flexible compared to generating code.
+
+Disadvantages:
+
+* Needs a process to keep the client in sync with the OpenAPI contract.
+* Needs more tests to guarantee client's compliance with the OpenAPI contract.
+* Requires effort and time.
+
+=== Option 2: Generate clients based on OpenAPI contracts (Kiota)
+
+https://github.com/microsoft/kiota[Kiota] is a command-line tool for generating API clients
+based on OpenAPI descriptions. It's developed by Microsoft and has a nice programming API.
+
+Here's an example code using the generated Kiota client:
+
+[source,csharp]
+----
+var authProvider = new AnonymousAuthenticationProvider();
+var httpClient = new HttpClient
+{
+    BaseAddress = new Uri("http://localhost:5182")
+};
+var adapter = new HttpClientRequestAdapter(authProvider, httpClient: httpClient);
+var client = new TenantClient(adapter);
+
+var tenant = await client.Tenants.PostAsync(new NewTenant
+{
+    Name = $"Bob {Guid.NewGuid()}",
+    ContactInfo = new TenantContactInfo
+    {
+        Email = "bob@example.com",
+        Phone = "07925344234"
+    }
+});
+
+// Properties are nullable even though they're required in the contract
+var tenantId = tenant?.Id ?? Guid.Empty;
+var foundTenant = await client.Tenants[tenantId].GetAsync();
+
+Assert.Equivalent(
+    new Models.Tenant
+    {
+        Id = tenantId,
+        Name = tenant!.Name,
+        ContactInfo = new TenantContactInfo
+        {
+            Email = "bob@example.com",
+            Phone = "07925344234"
+        }
+    },
+    foundTenant
+);
+----
+
+Advantages:
+
+* Generated clients are compliant with the OpenAPI contract.
+* Generated clients can be refreshed when the OpenAPI contract changes.
+* Saves development time.
+* The tool comes from Microsoft and has an opportunity to become the standard in the .NET ecosystem.
+
+Disadvantages:
+
+* It doesn't seem to support some of the OpenAPI spec yet.
+* Nullable properties make it awkward to use. This won't be even considered for fixing until Kiota v3
+  (we're at Kiota v1 now).
+
+=== Option 3: Generate clients based on OpenAPI contracts (NSwag)
+
+https://github.com/RicoSuter/NSwag[NSwag] is the most feature-rich OpenAPI toolchain in the .NET ecosystem.
+It support generating clients as well as OpenAPI contracts.
+
+NSwag is actively maintained, but there's a risk of it becoming eventually redundant since Microsoft
+https://github.com/dotnet/aspnetcore/issues/54599[revealed their plans].
+
+Advantages:
+
+* Generated clients are compliant with the OpenAPI contract.
+* Generated clients can be refreshed when the OpenAPI contract changes.
+* Saves development time.
+* It's well maintained.
+* It is mature.
+* It is feature-rich.
+
+Disadvantages:
+
+* There's a risk Microsoft will eventually make NSwag redundant.
+
+Example code using the generated client:
+
+[source,csharp]
+----
+var baseUrl = "http://localhost:5182";
+
+ITenantClient client = new TenantClient(baseUrl, new HttpClient());
+
+var tenant = await client.CreateTenantAsync(new NewTenant(
+    name: $"Bob {Guid.NewGuid()}",
+    contactInfo: new TenantContactInfo(
+        email: "bob@example.com",
+        phone: "07923234234"
+    )
+));
+
+var foundTenant = await client.GetTenantAsync(tenant.Id);
+
+Assert.Equal(
+    new Tenant
+    (
+        id: tenant.Id,
+        name: tenant.Name,
+        contactInfo: new TenantContactInfo(
+            email: "bob@example.com",
+            phone: "07923234234"
+        )
+    ),
+    foundTenant
+);
+----
+
+== Decision
+
+We will use the NSwag to generate API clients (option 3). The tool is feature-complete and should cause us the least
+headaches while saving development time in the same time.
+
+On the server side we should leverage OpenAPI.NET as much as possible (avoid Swashbuckle or NSwag specific types).
+
+== Consequences
+
+We will ensure that OpenAPI contracts are generated at build-time so that client libraries have access to them.
+Client libraries will generate the client based on the OpenAPI contract.
