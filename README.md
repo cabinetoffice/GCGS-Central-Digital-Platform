@@ -11,6 +11,8 @@ make build
 make test
 ```
 
+Any dotnet tools used by the project are [installed locally](https://learn.microsoft.com/en-us/dotnet/core/tools/global-tools#install-a-local-tool).
+
 ## Documentation
 
 For technical documentation see [Docs](docs/index.adoc).
