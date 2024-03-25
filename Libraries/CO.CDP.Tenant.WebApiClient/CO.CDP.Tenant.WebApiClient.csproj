@@ -15,4 +15,12 @@
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>
     </ItemGroup>
+    <ItemGroup>
+        <OpenApiReference
+            Include="$(MSBuildProjectDirectory)/../../Services/CO.CDP.Tenant.WebApi/OpenAPI/CO.CDP.Tenant.WebApi.json"
+            Namespace="CO.CDP.Tenant.WebApiClient"
+            ClassName="TenantClient">
+            <Options>/GenerateClientInterfaces:true /ClassStyle:Record /GenerateNativeRecords:true</Options>
+        </OpenApiReference>
+    </ItemGroup>
 </Project>

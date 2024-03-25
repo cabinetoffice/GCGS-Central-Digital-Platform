@@ -36,6 +36,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.Tenant.Persistence.Tests", "Services\CO.CDP.Tenant.Persistence.Tests\CO.CDP.Tenant.Persistence.Tests.csproj", "{69F70A0E-7C9B-4DE8-9AF6-11C7E23A7DB1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.Tenant.WebApiClient", "Libraries\CO.CDP.Tenant.WebApiClient\CO.CDP.Tenant.WebApiClient.csproj", "{29F9AB38-BEE0-4522-97BC-CC3B3390E8B5}"
+	ProjectSection(ProjectDependencies) = postProject
+		{C9278454-2E29-45D4-8F0F-F27C548E0B1F} = {C9278454-2E29-45D4-8F0F-F27C548E0B1F}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.Tenant.WebApiClient.Tests", "Libraries\CO.CDP.Tenant.WebApiClient.Tests\CO.CDP.Tenant.WebApiClient.Tests.csproj", "{ED9D64F1-9EF1-4784-848B-5C665394F6CA}"
 EndProject
