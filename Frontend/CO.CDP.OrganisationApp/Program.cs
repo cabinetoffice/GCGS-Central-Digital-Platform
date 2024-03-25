@@ -1,4 +1,6 @@
 using CO.CDP.OrganisationApp;
+using CO.CDP.OrganisationApp.ServiceClient;
+using CO.CDP.Tenant.WebApiClient;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +18,9 @@ builder.Services.AddSession(options =>
 
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddSingleton<CO.CDP.OrganisationApp.ISession, Session>();
+
+builder.Services.AddTransient<IOneLoginClient, FakeOneLoginClient>();
+builder.Services.AddTransient<ITenantClient, FakeTenantClient>();
 
 var app = builder.Build();
 

@@ -5,14 +5,8 @@ namespace CO.CDP.OrganisationApp.Pages;
 
 public class IndexModel : PageModel
 {
-    private readonly ILogger<IndexModel> _logger;
-
-    public IndexModel(ILogger<IndexModel> logger)
+    public IActionResult OnPost()
     {
-        _logger = logger;
-    }
-
-    public void OnGet()
-    {
+        return RedirectToPage("Registration/OneLoginCallback");
     }
 }

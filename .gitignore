@@ -46,3 +46,4 @@ msbuild.err
 msbuild.wrn
 OpenAPI
 TestResults/
+/Frontend/CO.CDP.OrganisationApp/web.config

@@ -17,4 +17,8 @@
       <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="8.0.2" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\..\Libraries\CO.CDP.Tenant.WebApiClient\CO.CDP.Tenant.WebApiClient.csproj" />
+    </ItemGroup>
+
 </Project>
