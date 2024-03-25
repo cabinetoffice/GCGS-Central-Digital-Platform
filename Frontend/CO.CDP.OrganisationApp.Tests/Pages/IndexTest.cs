@@ -14,7 +14,7 @@ public class IndexTest
         var results = model.OnPost();
 
         results.Should().BeOfType<RedirectToPageResult>()
-            .Which.PageName.Should().Be("YourDetails");
+            .Which.PageName.Should().Be("Registration/OneLoginCallback");
     }
 
     private static IndexModel GivenIndexModel()
