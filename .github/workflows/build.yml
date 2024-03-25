@@ -27,7 +27,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-nuget
       - name: Build
-        run: make build
+        run: make build OpenAPI
       - name: Test
         run: make test TEST_OPTIONS="--logger trx --results-directory 'TestResults-${{ matrix.dotnet-version }}'"
       - name: Upload test results
@@ -36,6 +36,11 @@ jobs:
           name: test-results-dotnet-${{ matrix.dotnet-version }}
           path: TestResults-${{ matrix.dotnet-version }}
         if: ${{ always() }}
+      - name: Upload OpenAPI contracts
+        uses: actions/upload-artifact@v4
+        with:
+          name: OpenAPI
+          path: OpenAPI
 
   docker:
     runs-on: ubuntu-latest
@@ -53,15 +58,8 @@ jobs:
         run: make build-docker
       - name: Start services
         run: make up
-      - name: Generate OpenAPI contracts
-        run: make OpenAPI
       - name: Stop services
         run: make down
-      - name: Upload OpenAPI contracts
-        uses: actions/upload-artifact@v4
-        with:
-          name: OpenAPI
-          path: OpenAPI
 
   docs:
     runs-on: ubuntu-latest

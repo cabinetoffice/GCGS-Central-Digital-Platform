@@ -1,7 +1,7 @@
-using System.ComponentModel.DataAnnotations;
+using DotSwashbuckle.AspNetCore.SwaggerGen;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
-using Swashbuckle.AspNetCore.SwaggerGen;
+using System.ComponentModel.DataAnnotations;
 
 namespace CO.CDP.Person.WebApi.Api
 {
@@ -12,21 +12,21 @@ namespace CO.CDP.Person.WebApi.Api
         public required int Age { get; init; }
         [EmailAddress] public required string Email { get; init; }
     }
-    
+
     internal record NewPerson
     {
         [Required(AllowEmptyStrings = true)] public required string Name { get; init; }
         public required int Age { get; init; }
         [EmailAddress] public required string Email { get; init; }
     }
-    
+
     internal record UpdatedPerson
     {
         [Required(AllowEmptyStrings = true)] public required string Name { get; init; }
         public required int Age { get; init; }
         [EmailAddress] public required string Email { get; init; }
     }
-    
+
     public static class EndpointExtensions
     {
         private static Dictionary<string, Person> _persons = Enumerable.Range(1, 5)
@@ -37,7 +37,7 @@ namespace CO.CDP.Person.WebApi.Api
                 Age = 40 + index,
                 Email = "sussan@example.com"
             });
-        
+
         public static void UsePersonEndpoints(this WebApplication app)
         {
             app.MapGet("/persons", () => _persons.Values.ToArray())

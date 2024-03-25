@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using Microsoft.OpenApi.Models;
-using Swashbuckle.AspNetCore.SwaggerGen;
+using DotSwashbuckle.AspNetCore.SwaggerGen;
 
 namespace CO.CDP.DataSharing.WebApi.Api
 {
