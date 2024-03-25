@@ -7,6 +7,12 @@
       "commands": [
         "dotnet-ef"
       ]
+    },
+    "microsoft.dotnet-openapi": {
+      "version": "8.0.3",
+      "commands": [
+        "dotnet-openapi"
+      ]
     }
   }
 }
