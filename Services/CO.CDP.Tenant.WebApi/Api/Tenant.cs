@@ -3,7 +3,7 @@ using CO.CDP.Tenant.WebApi.Model;
 using CO.CDP.Tenant.WebApi.UseCase;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
-using Swashbuckle.AspNetCore.SwaggerGen;
+using DotSwashbuckle.AspNetCore.SwaggerGen;
 
 namespace CO.CDP.Tenant.WebApi.Api
 {
