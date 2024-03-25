@@ -1,78 +1,116 @@
-﻿@page "/registration/organisation-registered-address"
+@page "/registration/organisation-registered-address"
+@model CO.CDP.OrganisationApp.Pages.Registration.OrganisationRegisteredAddressModel
 
 <a href="/registration/your-details" class="govuk-back-link">
     Back
 </a>
+
+@{
+    var addressLine1HasError = ((TagBuilder)Html.ValidationMessageFor(m => m.AddressLine1)).HasInnerHtml;
+    var addressLine2HasError = ((TagBuilder)Html.ValidationMessageFor(m => m.AddressLine2)).HasInnerHtml;
+    var cityOrTownHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.CityOrTown)).HasInnerHtml;
+    var postcodeHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Postcode)).HasInnerHtml;
+    var countryHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Country)).HasInnerHtml;
+}
+
 
 <main class="govuk-main-wrapper">
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <h1 class="govuk-heading-xl">Supplier Registration</h1>
 
-            <fieldset class="govuk-fieldset">
-                <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                    <h1 class="govuk-fieldset__heading">
-                        Enter organisation address
-                    </h1>
-                </legend>
-
+            <form method="post">
                 <div class="govuk-form-group">
-                    <label class="govuk-label" htmlFor="address-one">
-                        Address line 1
-                    </label>
-                    <input class="govuk-input"
-                           id="address-one"
-                           name="addressOne"
-                           type="text" />
-                </div>
+                    <fieldset class="govuk-fieldset">
+                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                            <h1 class="govuk-fieldset__heading">
+                                Enter organisation address
+                            </h1>
+                        </legend>
 
-                <div class="govuk-form-group">
-                    <label class="govuk-label" htmlFor="address-two">
-                        Address line 2
-                    </label>
-                    <input class="govuk-input"
-                           id="address-two"
-                           name="addressTwo"
-                           type="text" />
-                </div>
+                        <div class="govuk-form-group @(addressLine1HasError ? "govuk-form-group--error" : "")">
+                            <label class="govuk-label" for="@nameof(Model.AddressLine1)">
+                                @Html.DisplayNameFor(m => m.AddressLine1)
+                            </label>
+                            @if (addressLine1HasError)
+                            {
+                                <p id="address-one-error" class="govuk-error-message">
+                                    <span class="govuk-visually-hidden">Error:</span>
+                                    @Html.ValidationMessageFor(m => m.AddressLine1)
+                                </p>
+                            }
+                            <input class="govuk-input @(addressLine1HasError ? "govuk-input--error" : "")" id="@nameof(Model.AddressLine1)"
+                                   value="@Model.AddressLine1" name="@nameof(Model.AddressLine1)" type="text"
+                                   spellcheck="false" @(addressLine1HasError ? "aria-describedby=address-one-error" : "")>
+                        </div>
 
-                <div class="govuk-form-group">
-                    <label class="govuk-label" htmlFor="city">
-                        City or town
-                    </label>
-                    <input class="govuk-input"
-                           id="city"
-                           name="city"
-                           type="text" />
-                </div>
+                        <div class="govuk-form-group @(addressLine2HasError ? "govuk-form-group--error" : "")">
+                            <label class="govuk-label" for="@nameof(Model.AddressLine2)">
+                                @Html.DisplayNameFor(m => m.AddressLine2)
+                            </label>
+                            @if (addressLine2HasError)
+                            {
+                                <p id="address-two-error" class="govuk-error-message">
+                                    <span class="govuk-visually-hidden">Error:</span>
+                                    @Html.ValidationMessageFor(m => m.AddressLine2)
+                                </p>
+                            }
+                            <input class="govuk-input @(addressLine2HasError ? "govuk-input--error" : "")" id="@nameof(Model.AddressLine2)"
+                                   value="@Model.AddressLine2" name="@nameof(Model.AddressLine2)" type="text"
+                                   spellcheck="false" @(addressLine2HasError ? "aria-describedby=address-two-error" : "")>
+                        </div>
 
-                <div class="govuk-form-group">
-                    <label class="govuk-label" htmlFor="postcode">
-                        Postcode or Zip Code
-                    </label>
-                    <input class="govuk-input"
-                           id="postcode"
-                           name="postcode"
-                           type="text" />
-                </div>
+                        <div class="govuk-form-group @(cityOrTownHasError ? "govuk-form-group--error" : "")">
+                            <label class="govuk-label" for="@nameof(Model.CityOrTown)">
+                                @Html.DisplayNameFor(m => m.CityOrTown)
+                            </label>
+                            @if (cityOrTownHasError)
+                            {
+                                <p id="city-error" class="govuk-error-message">
+                                    <span class="govuk-visually-hidden">Error:</span>
+                                    @Html.ValidationMessageFor(m => m.CityOrTown)
+                                </p>
+                            }
+                            <input class="govuk-input @(cityOrTownHasError ? "govuk-input--error" : "")" id="@nameof(Model.CityOrTown)"
+                                   value="@Model.CityOrTown" name="@nameof(Model.CityOrTown)" type="text"
+                                   spellcheck="false" @(cityOrTownHasError ? "aria-describedby=city-error" : "")>
+                        </div>
 
-                <div class="govuk-form-group">
-                    <label class="govuk-label" htmlFor="country">
-                        Country
-                    </label>
-                    <select class="govuk-select" id="country" name="country">
-                        <option value="england" selected>England</option>
-                        <option value="scotland">Scotland</option>
-                        <option value="northernIreland">Northern Ireland</option>
-                        <option value="wales">Wales</option>
-                    </select>
+                        <div class="govuk-form-group @(postcodeHasError ? "govuk-form-group--error" : "")">
+                            <label class="govuk-label" for="@nameof(Model.Postcode)">
+                                @Html.DisplayNameFor(m => m.Postcode)
+                            </label>
+                            @if (postcodeHasError)
+                            {
+                                <p id="postcode-error" class="govuk-error-message">
+                                    <span class="govuk-visually-hidden">Error:</span>
+                                    @Html.ValidationMessageFor(m => m.Postcode)
+                                </p>
+                            }
+                            <input class="govuk-input @(postcodeHasError ? "govuk-input--error" : "")" id="@nameof(Model.Postcode)"
+                                   value="@Model.Postcode" name="@nameof(Model.Postcode)" type="text"
+                                   spellcheck="false" @(postcodeHasError ? "aria-describedby=postcode-error" : "")>
+                        </div>
+
+                        <div class="govuk-form-group">
+                            <label class="govuk-label" for="@nameof(Model.Country)">
+                                @Html.DisplayNameFor(m => m.Country)
+                            </label>
+                            <select class="govuk-select" asp-for="@Model.Country">
+                                <option value="england" selected>England</option>
+                                <option value="scotland">Scotland</option>
+                                <option value="northernIreland">Northern Ireland</option>
+                                <option value="wales">Wales</option>
+                            </select>
+                        </div>
+                    </fieldset>
                 </div>
-            </fieldset>
-            <a href="/registration/organisation-details-summary">
-                <button type="submit" class="govuk-button" data-module="govuk-button">
-                    Continue
-                </button>
-            </a>
+                <a href="/registration/organisation-details-summary">
+                    <button type="submit" class="govuk-button" data-module="govuk-button">
+                        Continue
+                    </button>
+                </a>
+            </form>
         </div>
     </div>
 </main>
