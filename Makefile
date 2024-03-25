@@ -1,4 +1,5 @@
 build:
+	@dotnet tool restore
 	@dotnet restore
 	@dotnet build
 .PHONY: build
