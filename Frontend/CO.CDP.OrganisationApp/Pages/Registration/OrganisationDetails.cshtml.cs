@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using System.ComponentModel.DataAnnotations;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace CO.CDP.OrganisationApp.Pages.Registration;
 
@@ -40,7 +40,7 @@ public class OrganisationDetailModel : PageModel
             return Page();
         }
 
-        return Page();
+        return RedirectToPage("./OrganisationIdentification");
     }
 }
 
