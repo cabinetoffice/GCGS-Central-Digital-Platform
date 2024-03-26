@@ -14,7 +14,7 @@ public class RequiredIfAttribute(string dependentProperty, object targetValue) :
 
         if (conditionMet && (value == null || (value is string str && string.IsNullOrWhiteSpace(str))))
         {
-            return new ValidationResult(ErrorMessage ?? $"{validationContext.DisplayName} is required.");
+            return new ValidationResult(ErrorMessage ?? $"{validationContext.DisplayName} is required");
         }
 
         return ValidationResult.Success!;
