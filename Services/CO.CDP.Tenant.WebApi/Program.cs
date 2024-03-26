@@ -3,6 +3,7 @@ using CO.CDP.Tenant.WebApi.Api;
 using CO.CDP.Tenant.WebApi.AutoMapper;
 using CO.CDP.Tenant.WebApi.Model;
 using CO.CDP.Tenant.WebApi.UseCase;
+using Microsoft.EntityFrameworkCore;
 using Tenant = CO.CDP.Tenant.WebApi.Model.Tenant;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -27,6 +28,11 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    using (var scope = app.Services.CreateScope())
+    {
+        var db = scope.ServiceProvider.GetRequiredService<TenantContext>();
+        db.Database.Migrate();
+    }
 }
 
 app.MapHealthChecks("/health");
