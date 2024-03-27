@@ -16,8 +16,8 @@ services:
     container_name: co-cdp-organisation-app
     build:
       context: .
-      dockerfile: Frontend/CO.CDP.OrganisationApp/Dockerfile
-      target: final
+      dockerfile: Dockerfile
+      target: final-organisation-app
     image: 'cabinetoffice/cdp-organisation-app:${IMAGE_VERSION:-latest}'
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
@@ -32,8 +32,8 @@ services:
     container_name: co-cdp-tenant
     build:
       context: .
-      dockerfile: Services/CO.CDP.Tenant.WebApi/Dockerfile
-      target: final
+      dockerfile: Dockerfile
+      target: final-tenant
     image: 'cabinetoffice/cdp-tenant:${IMAGE_VERSION:-latest}'
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
@@ -48,8 +48,8 @@ services:
     container_name: co-cdp-organisation
     build:
       context: .
-      dockerfile: Services/CO.CDP.Organisation.WebApi/Dockerfile
-      target: final
+      dockerfile: Dockerfile
+      target: final-organisation
     image: 'cabinetoffice/cdp-organisation:${IMAGE_VERSION:-latest}'
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
@@ -64,8 +64,8 @@ services:
     container_name: co-cdp-person
     build:
       context: .
-      dockerfile: Services/CO.CDP.Person.WebApi/Dockerfile
-      target: final
+      dockerfile: Dockerfile
+      target: final-person
     image: 'cabinetoffice/cdp-person:${IMAGE_VERSION:-latest}'
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
@@ -80,8 +80,8 @@ services:
     container_name: co-cdp-forms
     build:
       context: .
-      dockerfile: Services/CO.CDP.Forms.WebApi/Dockerfile
-      target: final
+      dockerfile: Dockerfile
+      target: final-forms
     image: 'cabinetoffice/cdp-forms:${IMAGE_VERSION:-latest}'
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
@@ -96,8 +96,8 @@ services:
     container_name: co-cdp-data-sharing
     build:
       context: .
-      dockerfile: Services/CO.CDP.DataSharing.WebApi/Dockerfile
-      target: final
+      dockerfile: Dockerfile
+      target: final-data-sharing
     image: 'cabinetoffice/cdp-data-sharing:${IMAGE_VERSION:-latest}'
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
