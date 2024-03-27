@@ -2,6 +2,7 @@ using CO.CDP.OrganisationApp;
 using CO.CDP.OrganisationApp.ServiceClient;
 using CO.CDP.Tenant.WebApiClient;
 
+const string TenantHttpClientName = "TenantHttpClient";
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -20,7 +21,14 @@ builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddSingleton<CO.CDP.OrganisationApp.ISession, Session>();
 
 builder.Services.AddTransient<IOneLoginClient, FakeOneLoginClient>();
-builder.Services.AddTransient<ITenantClient, FakeTenantClient>();
+
+var tenantServiceUrl = builder.Configuration.GetValue<string>("TenantService");
+
+builder.Services.AddHttpClient(TenantHttpClientName);
+
+builder.Services.AddTransient<ITenantClient, TenantClient>(
+    sc => new TenantClient(tenantServiceUrl,
+        sc.GetRequiredService<IHttpClientFactory>().CreateClient(TenantHttpClientName)));
 
 var app = builder.Build();
 

@@ -13,44 +13,17 @@ public class OneLoginCallback(
 {
     public async Task<IActionResult> OnGet()
     {
-        // Retrieve user information
         var userInfo = await oneLoginClient.GetUserInfo()
                     ?? throw new Exception("Unable to retrive user info"); // show error page?
 
-        // Do Tenant lookup
-        //var tenantLookup = await tenantClient.LookupTenant(userInfo.UserId);
-        dynamic tenantLookup = null;
-        Tenant.WebApiClient.Tenant? tenant;
-
-        if (tenantLookup == null)
+        try
         {
-            // Create Tenant
-            try
-            {
-                tenant = await tenantClient.RegisterTenant(new NewTenant
-                {
-                    Name = userInfo.UserId,
-                    ContactInfo = new TenantContactInfo
-                    {
-                        Email = userInfo.Email,
-                        Phone = userInfo.PhoneNumber
-                    }
-                });
-            }
-            catch (TenantClientException)
-            {
-                // show error page?
-                throw new Exception("Unable to create tenant"); 
-            }
-        }
-        else
-        {
-            // Retrieve Tenant
-            tenant = await tenantClient.GetTenant(tenantLookup.UserId)
-                        ?? throw new Exception("Get tenant error"); // show error page?
-        }
+            var tenant = await tenantClient.CreateTenantAsync(
+                new NewTenant(
+                    new TenantContactInfo(userInfo.Email, userInfo.PhoneNumber),
+                    userInfo.UserId));
 
-        session.Set(Session.RegistrationDetailsKey,
+            session.Set(Session.RegistrationDetailsKey,
             new RegistrationDetails
             {
                 TenantId = tenant.Id,
@@ -58,6 +31,13 @@ public class OneLoginCallback(
                 Email = tenant.ContactInfo.Email,
             });
 
-        return RedirectToPage("YourDetails");
+            return RedirectToPage("YourDetails");
+        }
+        catch (ApiException ex)
+        {
+            // show error page?
+            throw new Exception("Unable to create tenant");
+        }
+
     }
 }
