@@ -4,33 +4,19 @@ namespace CO.CDP.OrganisationApp.CustomeValidationAttributes;
 
 public class RequiredIfAttribute(string dependentProperty, object targetValue) : RequiredAttribute
 {
-    protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
+    protected override ValidationResult IsValid(object? value, ValidationContext validationContext)
     {
-        var field = validationContext.ObjectType.GetProperty(dependentProperty);
-        if (field != null)
+        var instance = validationContext.ObjectInstance;
+        var type = instance.GetType();
+        var propertyValue = type.GetProperty(dependentProperty)?.GetValue(instance, null);
+
+        bool conditionMet = (propertyValue?.Equals(targetValue) ?? false);
+
+        if (conditionMet && (value == null || (value is string str && string.IsNullOrWhiteSpace(str))))
         {
-            var dependentValue = field.GetValue(validationContext.ObjectInstance, null);
-
-            if (dependentValue == null && targetValue == null || dependentValue != null && dependentValue.Equals(targetValue))
-            {
-                var requiredAttribute = new RequiredAttribute();
-
-                if (!requiredAttribute.IsValid(value))
-                {
-                    string name = validationContext.DisplayName! ?? validationContext.MemberName!;
-
-                    if (string.IsNullOrEmpty(ErrorMessage))
-                    {
-                        ErrorMessage = name + " is required";
-                    }
-
-                    return new ValidationResult(ErrorMessage, new List<string>() { name });
-                }
-            }
-
-            return ValidationResult.Success;
+            return new ValidationResult(ErrorMessage ?? $"{validationContext.DisplayName} is required");
         }
 
-        return new ValidationResult(FormatErrorMessage(dependentProperty));
+        return ValidationResult.Success!;
     }
 }
