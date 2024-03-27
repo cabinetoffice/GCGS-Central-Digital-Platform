@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel;
 using CO.CDP.OrganisationApp.Models;
 using System.ComponentModel.DataAnnotations;
+using CO.CDP.OrganisationApp.Constants;
 
 namespace CO.CDP.OrganisationApp.Pages.Registration;
 
@@ -22,7 +23,7 @@ public class OrganisationDetailModel(ISession session) : PageModel
     [BindProperty]
     [DisplayName("Email address")]
     [Required(ErrorMessage = "Enter your email address")]
-    [EmailAddress(ErrorMessage = "Enter an email address in the correct format, like name@example.com")]
+    [RegularExpression(RegExPatterns.EmailAddress, ErrorMessage = "Enter an email address in the correct format, like name@example.com")]
     public string? EmailAddress { get; set; }
 
     [BindProperty]
