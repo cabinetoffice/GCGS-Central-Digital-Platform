@@ -8,13 +8,18 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
+COPY ["Libraries/CO.CDP.Tenant.WebApiClient/CO.CDP.Tenant.WebApiClient.csproj", "CO.CDP.OrganisationApp/"]
+RUN dotnet restore "CO.CDP.OrganisationApp/CO.CDP.Tenant.WebApiClient.csproj"
 COPY ["Frontend/CO.CDP.OrganisationApp/CO.CDP.OrganisationApp.csproj", "CO.CDP.OrganisationApp/"]
 RUN dotnet restore "CO.CDP.OrganisationApp/CO.CDP.OrganisationApp.csproj"
 
-WORKDIR "/src/Frontend/CO.CDP.OrganisationApp"
-COPY Frontend/ /src/Frontend
+WORKDIR "/src/Libraries/CO.CDP.Tenant.WebApiClient"
 COPY Libraries/ /src/Libraries
 COPY Services/ /src/Services
+RUN dotnet build "CO.CDP.Tenant.WebApiClient.csproj" -c $BUILD_CONFIGURATION -o /app/build
+
+WORKDIR "/src/Frontend/CO.CDP.OrganisationApp"
+COPY Frontend/ /src/Frontend
 RUN dotnet build "CO.CDP.OrganisationApp.csproj" -c $BUILD_CONFIGURATION -o /app/build
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
