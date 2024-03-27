@@ -23,7 +23,7 @@ public class OrganisationDetailModel(ISession session) : PageModel
     [BindProperty]
     [DisplayName("Email address")]
     [Required(ErrorMessage = "Enter your email address")]
-    [RegularExpression(RegExPatterns.EmailAddress, ErrorMessage = "Enter an email address in the correct format, like name@example.com")]
+    [EmailAddress(ErrorMessage = "Enter an email address in the correct format, like name@example.com")]
     public string? EmailAddress { get; set; }
 
     [BindProperty]
