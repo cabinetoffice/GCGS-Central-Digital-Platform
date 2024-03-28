@@ -70,7 +70,7 @@
                                 </p>
                             }
                             <input class="govuk-input @(emailAddressHasError ? "govuk-input--error" : "")" id="@nameof(Model.EmailAddress)"
-                                   value="@Model.EmailAddress" type="email" name="@nameof(Model.EmailAddress)"
+                                   value="@Model.EmailAddress" type="text" name="@nameof(Model.EmailAddress)"
                                    spellcheck="false" autocomplete="email" @(emailAddressHasError ? "aria-describedby=email-address-error" : "")>
                         </div>
 

@@ -1,4 +1,4 @@
-﻿@page "/registration/your-details"
+@page "/registration/your-details"
 @model CO.CDP.OrganisationApp.Pages.Registration.YourDetailsModel
 
 <a href="/" class="govuk-back-link">
@@ -67,7 +67,7 @@
 							</p>
 						}
 						<input class="govuk-input @(emailHasError ? "govuk-input--error" : "")" id="@nameof(Model.Email)"
-							   value="@Model.Email" type="email" name="@nameof(Model.Email)"
+							   value="@Model.Email" type="text" name="@nameof(Model.Email)"
 							   spellcheck="false" autocomplete="email" @(emailHasError ? "aria-describedby=email-error" : "")>
 					</div>
 				</fieldset>
