@@ -3,7 +3,9 @@ using CO.CDP.Tenant.WebApi.Model;
 using CO.CDP.Tenant.WebApi.Tests.Api.WebApp;
 using CO.CDP.Tenant.WebApi.UseCase;
 using FluentAssertions;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Moq;
 using static System.Net.HttpStatusCode;
 
@@ -16,9 +18,15 @@ public class RegisterTenantTest
 
     public RegisterTenantTest()
     {
-        TestWebApplicationFactory<Program> factory = new(services =>
+        TestWebApplicationFactory<Program> factory = new(builder =>
         {
-            services.AddScoped<IUseCase<RegisterTenant, Model.Tenant>>(_ => _registerTenantUseCase.Object);
+            builder.ConfigureServices(services =>
+                services.AddScoped<IUseCase<RegisterTenant, Model.Tenant>>(_ => _registerTenantUseCase.Object)
+            );
+            builder.ConfigureAppConfiguration(c => c.AddInMemoryCollection(new Dictionary<string, string?>
+            {
+                { "RunMigrationsOnStartup", "false" }
+            }));
         });
         _httpClient = factory.CreateClient();
     }
