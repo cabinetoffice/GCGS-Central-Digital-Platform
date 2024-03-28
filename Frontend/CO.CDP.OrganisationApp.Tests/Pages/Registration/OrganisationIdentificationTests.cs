@@ -17,11 +17,54 @@ public class OrganisationIdentificationModelTests
     }
 
     [Fact]
-    public void OnGet_ShouldNotThrowException()
+    public void OnGet_ShouldThrowException_If_Empty_Model()
     {
         var model = new OrganisationIdentificationModel(sessionMock.Object);
-        var exception = Record.Exception(() => model.OnGet());
-        exception.Should().BeNull();
+        Action action = () => model.OnGet();
+        action.Should().Throw<Exception>().WithMessage("Shoudn't be here");
+    }
+
+    [Fact]
+    public void OnGet_ValidSession_Returns_Saved_RegistrationDetails()
+    {
+        var model = new OrganisationIdentificationModel(sessionMock.Object);
+
+        RegistrationDetails registrationDetails = DummyRegistrationDetails();
+
+        sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(registrationDetails);
+
+        model.OnGet();
+
+        model.OrganisationType.Should().Be(registrationDetails.OrganisationType);
+
+        switch (registrationDetails.OrganisationType)
+        {
+            case "CHN":
+                model.CompaniesHouseNumber.Should().Be(registrationDetails.OrganisationIdentificationNumber);
+                break;
+            case "DUN":
+                model.DunBradstreetNumber.Should().Be(registrationDetails.OrganisationIdentificationNumber);
+                break;
+            case "CCEW":
+                model.CharityCommissionEnglandWalesNumber.Should().Be(registrationDetails.OrganisationIdentificationNumber);
+                break;
+            case "OSCR":
+                model.OfficeOfScottishCharityRegulatorNumber.Should().Be(registrationDetails.OrganisationIdentificationNumber);
+                break;
+            case "CCNI":
+                model.CharityCommissionNorthernIrelandNumber.Should().Be(registrationDetails.OrganisationIdentificationNumber);
+                break;
+            case "NHOR":
+                model.NationalHealthServiceOrganisationsRegistryNumber.Should().Be(registrationDetails.OrganisationIdentificationNumber);
+                break;
+            case "DFE":
+                model.DepartmentForEducationNumber.Should().Be(registrationDetails.OrganisationIdentificationNumber);
+                break;
+            case "Other":
+                model.OtherNumber.Should().Be(registrationDetails.OrganisationIdentificationNumber);
+                break;
+        }
+
     }
 
     [Theory]
@@ -235,5 +278,16 @@ public class OrganisationIdentificationModelTests
                 model.OtherNumber = identificationNumber;
                 break;
         }
+    }
+
+    private RegistrationDetails DummyRegistrationDetails()
+    {
+        var registrationDetails = new RegistrationDetails
+        {
+            OrganisationType = "CHN",
+            OrganisationIdentificationNumber = "12345678",
+        };
+
+        return registrationDetails;
     }
 }
