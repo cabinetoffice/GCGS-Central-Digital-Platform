@@ -44,6 +44,17 @@ services:
       timeout: 10s
       retries: 10
 
+  tenant-migrations:
+    container_name: co-cdp-tenant-migrations
+    restart: no
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: migrations-tenant
+    image: 'cabinetoffice/cdp-tenant-migrations:${IMAGE_VERSION:-latest}'
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+
   organisation:
     container_name: co-cdp-organisation
     build:
