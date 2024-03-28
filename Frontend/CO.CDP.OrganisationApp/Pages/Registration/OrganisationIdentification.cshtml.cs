@@ -88,6 +88,40 @@ public class OrganisationIdentificationModel(ISession session) : PageModel
 
     public void OnGet()
     {
+        var registrationDetails = VerifySession();
+
+        OrganisationType = registrationDetails.OrganisationType;
+
+        switch (OrganisationType)
+        {
+            case "CHN":
+                CompaniesHouseNumber = registrationDetails.OrganisationIdentificationNumber;
+                break;
+            case "DUN":
+                DunBradstreetNumber = registrationDetails.OrganisationIdentificationNumber;
+                break;
+            case "CCEW":
+                CharityCommissionEnglandWalesNumber = registrationDetails.OrganisationIdentificationNumber;
+                break;
+            case "OSCR":
+                OfficeOfScottishCharityRegulatorNumber = registrationDetails.OrganisationIdentificationNumber;
+                break;
+            case "CCNI":
+                CharityCommissionNorthernIrelandNumber = registrationDetails.OrganisationIdentificationNumber;
+                break;
+            case "NHOR":
+                NationalHealthServiceOrganisationsRegistryNumber = registrationDetails.OrganisationIdentificationNumber;
+                break;
+            case "DFE":
+                DepartmentForEducationNumber = registrationDetails.OrganisationIdentificationNumber;
+                break;
+            case "Other":
+                OtherNumber = registrationDetails.OrganisationIdentificationNumber;
+                break;
+            default:
+                break;
+        }
+
     }
 
     public IActionResult OnPost()
@@ -135,6 +169,17 @@ public class OrganisationIdentificationModel(ISession session) : PageModel
         session.Set(Session.RegistrationDetailsKey, registrationDetails);
 
         return RedirectToPage("./OrganisationRegisteredAddress");
+    }
+
+    private RegistrationDetails VerifySession()
+    {
+        var registrationDetails = session.Get<RegistrationDetails>(Session.RegistrationDetailsKey);
+        if (registrationDetails == null)
+        {
+            //show error page (Once we finalise)
+            throw new Exception("Shoudn't be here");
+        }
+        return registrationDetails;
     }
 
 }
