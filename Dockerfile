@@ -101,6 +101,18 @@ FROM build-organisation-app AS publish-organisation-app
 ARG BUILD_CONFIGURATION
 RUN dotnet publish "CO.CDP.OrganisationApp.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
+FROM build-tenant AS build-migrations-tenant
+WORKDIR /src
+COPY .config/dotnet-tools.json .config/
+RUN dotnet tool restore
+RUN dotnet ef migrations bundle -p /src/Services/CO.CDP.Tenant.Persistence -s /src/Services/CO.CDP.Tenant.WebApi --self-contained -o /app/migrations/efbundle
+
+FROM base AS migrations-tenant
+ENV MIGRATIONS_CONNECTION_STRING=""
+WORKDIR /app
+COPY --from=build-migrations-tenant /app/migrations/efbundle .
+ENTRYPOINT /app/efbundle --connection "$MIGRATIONS_CONNECTION_STRING"
+
 FROM base AS final-tenant
 WORKDIR /app
 COPY --from=publish-tenant /app/publish .
