@@ -17,7 +17,7 @@ public class OrganisationIdentificationModelTests
     }
 
     [Fact]
-    public void OnGet_ShouldThrowException_If_Empty_Model()
+    public void OnGet_WheEmptyModel_ShouldThrowException()
     {
         var model = new OrganisationIdentificationModel(sessionMock.Object);
         Action action = () => model.OnGet();
@@ -25,7 +25,7 @@ public class OrganisationIdentificationModelTests
     }
 
     [Fact]
-    public void OnGet_ValidSession_Returns_Saved_RegistrationDetails()
+    public void OnGet_WhenValidSession_ShouldSaveRegistrationDetails()
     {
         var model = new OrganisationIdentificationModel(sessionMock.Object);
 
