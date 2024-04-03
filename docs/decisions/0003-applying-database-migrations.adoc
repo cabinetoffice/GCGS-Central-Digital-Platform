@@ -1,10 +1,10 @@
 = 3. Applying database migrations
 
-Date: 2023-03-28
+Date: 2023-04-03
 
 == Status
 
-Draft
+Accepted
 
 == Context
 
@@ -159,8 +159,17 @@ We have not explored this option much.
 
 == Decision
 
-TBD
+We're going to go with option 5 - Migration bundles (containerised).
+Bundles are one of the recommended solutions.
+Putting bundles inside a container gives us several options we could execute them during the deployment.
+
+Option 5 is slitghtly easier to implement than option 3 while also being less flexible.
+Option 3 allows for tweaking generated SQL scripts.
+We might revisit the decision in future if it turns out we need this flexibility.
 
 == Consequences
 
-TBD
+We're going to merge https://github.com/cabinetoffice/GCGS-Central-Digital-Platform/pull/51.
+The pull request introduces a migration container that's executed with docker compose in local development environment.
+The same container will be executed during the deployment.
+
