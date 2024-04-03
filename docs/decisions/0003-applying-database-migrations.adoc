@@ -1,0 +1,175 @@
+= 3. Applying database migrations
+
+Date: 2023-04-03
+
+== Status
+
+Accepted
+
+== Context
+
+We need to evolve the database as we progress with development and, later on, with maintenance.
+
+We have considered a number of options including those suggested in the official Entity Core documentation:
+https://learn.microsoft.com/en-us/ef/core/managing-schemas/migrations/applying?tabs=dotnet-core-cli
+
+=== Option 1: DbContext.Database.Migrate() during startup
+
+The application already has access to the database context, the connection, and migration files.
+That means it's capable of executing the migrations during startup.
+
+To achieve this, the following code needs to be added the the startup `Program`:
+
+[source,csharp]
+----
+if (app.Configuration.GetValue<bool>("RunMigrationsOnStartup"))
+{
+    using (var scope = app.Services.CreateScope())
+    {
+        var db = scope.ServiceProvider.GetRequiredService<TenantContext>();
+        db.Database.Migrate();
+    }
+}
+----
+
+Full change is available in the following pull request: https://github.com/cabinetoffice/GCGS-Central-Digital-Platform/pull/44
+
+Advantages:
+
+* Works with no additional effort.
+
+Disadvantages:
+
+* Multiple instances of any given service will compete for making schema modifications.
+* It's officially not recommended to use this method in production.
+
+Running `dotnet ef database update` is similar and is also not recommended for production.
+
+=== Option 2: Generated SQL scripts
+
+SQL scripts generated out of EF migrations are the most reliable option.
+An SQL script can be reviewed before applying and the changes are idempotent.
+It's recommended SQL scripts are version controlled.
+
+To generate a migration:
+
+[source,bash]
+----
+dotnet ef migrations script \
+  -p Services/CO.CDP.Tenant.Persistence \
+  -s Services/CO.CDP.Tenant.WebApi \
+  --idempotent \
+  -o Services/CO.CDP.Tenant.Persistence/Migrations/SQL/$(date +%Y-%m-%d_%H%M)_CreateTenants.sql
+----
+
+To apply it in our local development setup:
+
+[source,csharp]
+----
+docker compose exec \
+  -it db psql -U cdp_user \
+  -f - cdp < Services/CO.CDP.Tenant.Persistence/Migrations/SQL/2024-03-23_2303_CreateTenants.sql
+----
+
+Example implementation can be found in the following pull request:
+https://github.com/cabinetoffice/GCGS-Central-Digital-Platform/pull/34/files
+
+Advantages:
+
+* Reliability.
+* Simplicity.
+
+Disadvantages:
+
+* Requires additional tools to execute the migration (a database client, like psql).
+* Since there's no way to know which migrations were already executed, all the migrations need to be re-applied.
+  It's mostly fine since they're idempotent.
+
+=== Option 3: Generated SQL scripts (containerised)
+
+One limitation of option 2 is the availability of the database client during the deployment.
+This could be fixed by building a dedicated migrations container to be run during the deployment.
+
+Advantages:
+
+* Reliability.
+
+Disadvantages:
+
+* Since there's no way to know which migrations were already executed, all the migrations need to be re-applied.
+  It's mostly fine since they're idempotent.
+
+=== Option 4: Migration bundles
+
+Migration bundles are single-file executables that can be used to apply migrations to a database.
+They're meant to
+https://learn.microsoft.com/en-us/ef/core/managing-schemas/migrations/applying?tabs=dotnet-core-cli#bundles[address the shortcomings]
+of SQL scripts and command-line tools.
+
+Migration bundles can be self contained, which means they won't depend on anything else (like dotnet runtime).
+
+Here's an example of how to generate a bundle:
+
+[source,csharp]
+----
+dotnet ef migrations bundle \
+  -p Services/CO.CDP.Tenant.Persistence \
+  -s Services/CO.CDP.Tenant.WebApi \
+  --self-contained
+----
+
+Bundle is self contained and all it needs to apply migrations is the connection string:
+
+[source,csharp]
+----
+./efbundle --connection 'Server=localhost;Database=MYDB;Username=MYUSER;Password=MYPASS;'
+----
+
+Advantages:
+
+* Self contained
+
+Disadvantages:
+
+* It's not very well documented how bundles work and how they're different to migration command-line tools.
+* It's a manual step that needs to be run in development.
+
+=== Option 5: Migration bundles (containerised)
+
+Similarly to containerising SQL scripts, we can containerise bundles, and ship them with the application
+or a dedicated container.
+
+An implementation of this approach is provided in this pull request:
+https://github.com/cabinetoffice/GCGS-Central-Digital-Platform/pull/51
+
+Advantages:
+
+* Self contained.
+* Container version of migrations matches the application's version.
+* The container can be run automatically when the development database starts.
+
+Disadvantages:
+
+* It's not very well documented how bundles work and how they're different to migration command-line tools.
+
+=== Option 6: Use a specialized migrations library
+
+Finally, a dedicated migrations library can be used to manage and execute migrations.
+We have not explored this option much.
+
+== Decision
+
+We're going to go with option 5 - Migration bundles (containerised).
+Bundles are one of the recommended solutions.
+Putting bundles inside a container gives us several options we could execute them during the deployment.
+
+Option 5 is slitghtly easier to implement than option 3 while also being less flexible.
+Option 3 allows for tweaking generated SQL scripts.
+We might revisit the decision in future if it turns out we need this flexibility.
+
+== Consequences
+
+We're going to merge https://github.com/cabinetoffice/GCGS-Central-Digital-Platform/pull/51.
+The pull request introduces a migration container that's executed with docker compose in local development environment.
+The same container will be executed during the deployment.
+
