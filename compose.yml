@@ -19,6 +19,17 @@ services:
       - db:db
     depends_on:
       - db
+  tenant-migrations:
+    extends:
+      file: compose.common.yml
+      service: tenant-migrations
+    links:
+      - db:db
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      MIGRATIONS_CONNECTION_STRING: "Server=db;Database=cdp;Username=cdp_user;Password=cdp123;"
   organisation:
     extends:
       file: compose.common.yml
