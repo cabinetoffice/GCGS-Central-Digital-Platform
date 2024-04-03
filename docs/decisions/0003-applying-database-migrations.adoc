@@ -136,7 +136,7 @@ Disadvantages:
 
 === Option 5: Migration bundles (containerised)
 
-Just like we could containerise SQL script we could containerise bundles and ship them with the application
+Similarly to containerising SQL scripts, we can containerise bundles, and ship them with the application
 or a dedicated container.
 
 An implementation of this approach is provided in this pull request:
