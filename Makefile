@@ -26,6 +26,11 @@ ps:
 	@docker compose ps
 .PHONY: ps
 
+db: compose.override.yml
+	@docker compose up -d db tenant-migrations
+	@docker compose logs -f tenant-migrations
+.PHONY: up
+
 OpenAPI: build
 	@mkdir -p OpenAPI
 	cp ./Services/CO.CDP.Tenant.WebApi/OpenAPI/CO.CDP.Tenant.WebApi.json OpenAPI/Tenant.json
