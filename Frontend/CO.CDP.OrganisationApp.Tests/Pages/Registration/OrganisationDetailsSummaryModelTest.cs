@@ -38,8 +38,7 @@ public class OrganisationDetailsSummaryModelTest
         {
             OrganisationName = "TestOrg",
             OrganisationType = "TestType",
-            OrganisationEmailAddress = "test@example.com",
-            OrganisationTelephoneNumber = "1234567890"
+            OrganisationEmailAddress = "test@example.com"
         };
 
         return registrationDetails;
