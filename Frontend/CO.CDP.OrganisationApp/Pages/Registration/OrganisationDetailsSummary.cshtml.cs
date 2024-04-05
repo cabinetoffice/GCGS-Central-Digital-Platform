@@ -6,7 +6,7 @@ namespace CO.CDP.OrganisationApp.Pages.Registration;
 
 public class OrganisationDetailsSummaryModel(ISession session) : PageModel
 {
-    public RegistrationDetails RegistrationDetailModel { get; set; }
+    public RegistrationDetails? RegistrationDetailModel { get; set; }
 
     public void OnGet()
     {
