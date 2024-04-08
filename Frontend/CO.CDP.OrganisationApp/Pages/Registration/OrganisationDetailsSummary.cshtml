@@ -28,7 +28,7 @@
                             First name
                         </dt>
                         <dd class="govuk-summary-list__value">
-                            @registrationDetails.FirstName
+                            @registrationDetails?.FirstName
                         </dd>
                         <dd class="govuk-summary-list__actions">
                             <a class="govuk-link" href="/registration/your-details">Change<span class="govuk-visually-hidden"> first name</span></a>
@@ -39,7 +39,7 @@
                             Last name
                         </dt>
                         <dd class="govuk-summary-list__value">
-                            @registrationDetails.LastName
+                            @registrationDetails?.LastName
                         </dd>
                         <dd class="govuk-summary-list__actions">
                             <a class="govuk-link" href="/registration/your-details">Change<span class="govuk-visually-hidden"> last name</span></a>
@@ -47,10 +47,21 @@
                     </div>
                     <div class="govuk-summary-list__row">
                         <dt class="govuk-summary-list__key">
+                            Email Address
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            @registrationDetails?.Email
+                        </dd>
+                        <dd class="govuk-summary-list__actions">
+                            <a class="govuk-link" href="/registration/your-details">Change<span class="govuk-visually-hidden"> email Address</span></a>
+                        </dd>
+                    </div>
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
                             Organisation name
                         </dt>
                         <dd class="govuk-summary-list__value">
-                            @registrationDetails.OrganisationName
+                            @registrationDetails?.OrganisationName
                         </dd>
                         <dd class="govuk-summary-list__actions">
                             <a class="govuk-link" href="/registration/organisation-details">Change<span class="govuk-visually-hidden"> organisation name</span></a>
@@ -61,7 +72,7 @@
                             Organisation type
                         </dt>
                         <dd class="govuk-summary-list__value">
-                            @registrationDetails.OrganisationType
+                            @registrationDetails?.OrganisationType
                         </dd>
                         <dd class="govuk-summary-list__actions">
                             <a class="govuk-link" href="/registration/organisation-details">Change<span class="govuk-visually-hidden"> organisation type</span></a>
@@ -72,7 +83,7 @@
                             Organisation number
                         </dt>
                         <dd class="govuk-summary-list__value">
-                            @registrationDetails.OrganisationIdentificationNumber
+                            @registrationDetails?.OrganisationIdentificationNumber
                         </dd>
                         <dd class="govuk-summary-list__actions">
                             <a class="govuk-link" href="/registration/organisation-identification">Change<span class="govuk-visually-hidden"> organisation identification number</span></a>
@@ -80,24 +91,13 @@
                     </div>
                     <div class="govuk-summary-list__row">
                         <dt class="govuk-summary-list__key">
-                            Email address
+                            Organisation Email address
                         </dt>
                         <dd class="govuk-summary-list__value">
-                            @registrationDetails.OrganisationEmailAddress
+                            @registrationDetails?.OrganisationEmailAddress
                         </dd>
                         <dd class="govuk-summary-list__actions">
                             <a class="govuk-link" href="/registration/organisation-details">Change<span class="govuk-visually-hidden"> email address</span></a>
-                        </dd>
-                    </div>
-                    <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">
-                            Telephone number
-                        </dt>
-                        <dd class="govuk-summary-list__value">
-                            @registrationDetails.OrganisationTelephoneNumber
-                        </dd>
-                        <dd class="govuk-summary-list__actions">
-                            <a class="govuk-link" href="/registration/organisation-details">Change<span class="govuk-visually-hidden"> telephone number</span></a>
                         </dd>
                     </div>
 
@@ -106,11 +106,11 @@
                             Organisation address
                         </dt>
                         <dd class="govuk-summary-list__value">
-                            <p class="govuk-body">@registrationDetails.OrganisationAddressLine1</p>
-                            <p class="govuk-body">@registrationDetails.OrganisationAddressLine2</p>
-                            <p class="govuk-body">@registrationDetails.OrganisationCityOrTown</p>
-                            <p class="govuk-body">@registrationDetails.OrganisationPostcode</p>
-                            <p class="govuk-body">@registrationDetails.OrganisationCountry</p>
+                            <p class="govuk-body">@registrationDetails?.OrganisationAddressLine1</p>
+                            <p class="govuk-body">@registrationDetails?.OrganisationAddressLine2</p>
+                            <p class="govuk-body">@registrationDetails?.OrganisationCityOrTown</p>
+                            <p class="govuk-body">@registrationDetails?.OrganisationPostcode</p>
+                            <p class="govuk-body">@registrationDetails?.OrganisationCountry</p>
                         </dd>
                         <dd class="govuk-summary-list__actions">
                             <a class="govuk-link" href="/registration/organisation-registered-address">Change<span class="govuk-visually-hidden"> organisation address</span></a>

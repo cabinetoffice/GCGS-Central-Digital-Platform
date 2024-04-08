@@ -116,6 +116,37 @@ public class YourDetailsModelTest
     }
 
     [Fact]
+    public void OnGet_WhenRegistrationDetailsNotInSession_ShouldThrowException()
+    {
+        var model = GivenYourDetailsModel();
+
+        Action act = () => model.OnGet();
+
+        act.Should().Throw<Exception>().WithMessage("Shoudn't be here");
+    }
+
+    [Fact]
+    public void OnGet_WhenRegistrationDetailsInSession_ShouldPopulatePageModel()
+    {
+        var model = GivenYourDetailsModel();
+
+        sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey))
+            .Returns(new RegistrationDetails
+            {
+                TenantId = Guid.NewGuid(),
+                FirstName = "firstdummy",
+                LastName = "lastdummy",
+                Email = "dummy@test.com"
+            });
+
+        model.OnGet();
+
+        model.FirstName.Should().Be("firstdummy");
+        model.LastName.Should().Be("lastdummy");
+        model.Email.Should().Be("dummy@test.com");
+    }
+
+    [Fact]
     public void OnPost_WhenInValidModel_ShouldReturnSamePage()
     {
         var modelState = new ModelStateDictionary();
@@ -133,9 +164,22 @@ public class YourDetailsModelTest
     }
 
     [Fact]
+    public void OnPost_WhenRegistrationDetailsNotInSession_ShouldThrowException()
+    {
+        var model = GivenYourDetailsModel();
+
+        Action act = () => model.OnPost();
+
+        act.Should().Throw<Exception>().WithMessage("Shoudn't be here");
+    }
+
+    [Fact]
     public void OnPost_WhenValidModel_ShouldSetRegistrationDetailsInSession()
     {
         var model = GivenYourDetailsModel();
+
+        sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey))
+            .Returns(new RegistrationDetails { TenantId = Guid.NewGuid() });
 
         model.OnPost();
 
@@ -147,6 +191,9 @@ public class YourDetailsModelTest
     public void OnPost_WhenValidModel_ShouldRedirectToOrganisationDetailsPage()
     {
         var model = GivenYourDetailsModel();
+
+        sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey))
+            .Returns(new RegistrationDetails { TenantId = Guid.NewGuid() });
 
         var actionResult = model.OnPost();
 
