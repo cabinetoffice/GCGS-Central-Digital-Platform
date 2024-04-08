@@ -26,7 +26,7 @@ public class OrganisationDetailModelTest
 
         var results = ModelValidationHelper.Validate(model);
 
-        results.Count.Should().Be(4);
+        results.Count.Should().Be(3);
     }
 
     [Fact]
@@ -116,30 +116,6 @@ public class OrganisationDetailModelTest
     }
 
     [Fact]
-    public void WhenTelephoneNumberIsEmpty_ShouldRaiseTelephoneNumberValidationError()
-    {
-        var model = GivenOrganisationDetailModel();
-
-        var results = ModelValidationHelper.Validate(model);
-
-        results.Any(c => c.MemberNames.Contains("TelephoneNumber")).Should().BeTrue();
-
-        results.Where(c => c.MemberNames.Contains("TelephoneNumber")).First()
-            .ErrorMessage.Should().Be("Enter your telephone number");
-    }
-
-    [Fact]
-    public void WhenTelephoneNumberIsNotEmpty_ShouldNotRaiseTelephoneNumberValidationError()
-    {
-        var model = GivenOrganisationDetailModel();
-        model.TelephoneNumber = "0123456789";
-
-        var results = ModelValidationHelper.Validate(model);
-
-        results.Any(c => c.MemberNames.Contains("TelephoneNumber")).Should().BeFalse();
-    }
-
-    [Fact]
     public void OnPost_WhenInValidModel_ShouldReturnSamePage()
     {
         var modelState = new ModelStateDictionary();
@@ -199,7 +175,6 @@ public class OrganisationDetailModelTest
         model.OrganisationName.Should().Be(registrationDetails.OrganisationName);
         model.OrganisationType.Should().Be(registrationDetails.OrganisationType);
         model.EmailAddress.Should().Be(registrationDetails.OrganisationEmailAddress);
-        model.TelephoneNumber.Should().Be(registrationDetails.OrganisationTelephoneNumber);
     }
 
     private RegistrationDetails DummyRegistrationDetails()
@@ -208,8 +183,7 @@ public class OrganisationDetailModelTest
         {
             OrganisationName = "TestOrg",
             OrganisationType = "TestType",
-            OrganisationEmailAddress = "test@example.com",
-            OrganisationTelephoneNumber = "1234567890"
+            OrganisationEmailAddress = "test@example.com"
         };
 
         return registrationDetails;

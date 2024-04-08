@@ -26,11 +26,6 @@ public class OrganisationDetailModel(ISession session) : PageModel
     [EmailAddress(ErrorMessage = "Enter an email address in the correct format, like name@example.com")]
     public string? EmailAddress { get; set; }
 
-    [BindProperty]
-    [DisplayName("Telephone number")]
-    [Required(ErrorMessage = "Enter your telephone number")]
-    public string? TelephoneNumber { get; set; }
-
     public void OnGet()
     {
         var registrationDetails = VerifySession();
@@ -38,8 +33,6 @@ public class OrganisationDetailModel(ISession session) : PageModel
         OrganisationName = registrationDetails.OrganisationName;
         OrganisationType = registrationDetails.OrganisationType;
         EmailAddress = registrationDetails.OrganisationEmailAddress;
-        TelephoneNumber = registrationDetails.OrganisationTelephoneNumber;
-
     }
 
     public IActionResult OnPost()
@@ -54,7 +47,6 @@ public class OrganisationDetailModel(ISession session) : PageModel
         registrationDetails.OrganisationName = OrganisationName;
         registrationDetails.OrganisationType = OrganisationType;
         registrationDetails.OrganisationEmailAddress = EmailAddress;
-        registrationDetails.OrganisationTelephoneNumber = TelephoneNumber;
 
         session.Set(Session.RegistrationDetailsKey, registrationDetails);
 
