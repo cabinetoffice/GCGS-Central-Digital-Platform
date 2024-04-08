@@ -25,7 +25,7 @@ public class YourDetailsModel(ISession session) : PageModel
     [EmailAddress(ErrorMessage = "Enter an email address in the correct format, like name@example.com")]
     public string? Email { get; set; }
 
-    public void OnGet()
+    public IActionResult OnGet()
     {
         var registrationDetails = VerifySession();
 
@@ -33,6 +33,7 @@ public class YourDetailsModel(ISession session) : PageModel
         LastName = registrationDetails.LastName;
         Email = registrationDetails.Email;
 
+        return Page();
     }
 
     public IActionResult OnPost()
@@ -42,8 +43,8 @@ public class YourDetailsModel(ISession session) : PageModel
             return Page();
         }
 
-        var registrationDetails = session.Get<RegistrationDetails>(Session.RegistrationDetailsKey);
-        registrationDetails ??= new RegistrationDetails();
+        var registrationDetails = VerifySession();
+
         registrationDetails.FirstName = FirstName;
         registrationDetails.LastName = LastName;
         registrationDetails.Email = Email;
@@ -55,11 +56,9 @@ public class YourDetailsModel(ISession session) : PageModel
 
     private RegistrationDetails VerifySession()
     {
-        var registrationDetails = session.Get<RegistrationDetails>(Session.RegistrationDetailsKey);
-        if (registrationDetails == null)
-        {
-            registrationDetails = new RegistrationDetails();
-        }
+        var registrationDetails = session.Get<RegistrationDetails>(Session.RegistrationDetailsKey)
+            ?? throw new Exception("Shoudn't be here"); // show error page?
+ 
         return registrationDetails;
     }
 }
