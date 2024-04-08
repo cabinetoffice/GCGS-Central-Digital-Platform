@@ -78,6 +78,31 @@ public class DatabaseTenantRepositoryTest(PostgreSqlFixture postgreSql) : IClass
         found.Should().Be(tenant);
     }
 
+    [Fact]
+    public async Task FindByName_WhenFound_ReturnsTenant()
+    {
+        using var repository = TenantRepository();
+
+        var tenant = GivenTenant(name : "urn:fdc:gov.uk:2022:43af5a8b-f4c0-414b-b341-d4f1fa894302");
+
+        repository.Save(tenant);
+
+        var found = await repository.FindByName(tenant.Name);
+
+        found.Should().Be(tenant);
+        found.As<Tenant>().Id.Should().BePositive();
+    }
+
+    [Fact]
+    public async Task FindByName_WhenNotFound_ReturnsNull()
+    {
+        using var repository = TenantRepository();
+
+        var found = await repository.FindByName("urn:fdc:gov.uk:2022:43af5a8b-f4c0-414b-b341-d4f1fa894302");
+
+        found.Should().BeNull();
+    }
+
     private ITenantRepository TenantRepository()
     {
         return new DatabaseTenantRepository(TenantContext());

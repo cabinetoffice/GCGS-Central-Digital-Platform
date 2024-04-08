@@ -7,20 +7,6 @@ using DotSwashbuckle.AspNetCore.SwaggerGen;
 
 namespace CO.CDP.Tenant.WebApi.Api
 {
-    internal record TenantLookupCriteria
-    {
-        [Required(AllowEmptyStrings = true)] public required string UserPrinciple { get; init; }
-
-        [Required(AllowEmptyStrings = true)] public required string OpenId { get; init; }
-    }
-
-    internal record TenantLookupResponse
-    {
-        [Required(AllowEmptyStrings = true)] public required string UserPrinciple { get; init; }
-        [Required] public required UserDetails UserDetails { get; init; }
-        [Required] public required List<UserInTenants> UserTenants { get; init; }
-    }
-
     internal record UserDetails
     {
         [Required(AllowEmptyStrings = true)] public required string Name { get; init; }
@@ -157,23 +143,12 @@ namespace CO.CDP.Tenant.WebApi.Api
 
         public static void UseTenantLookupEndpoints(this WebApplication app)
         {
-            app.MapPost("/tenant/lookup",
-                    ([FromBody] TenantLookupCriteria criteria) => new TenantLookupResponse
-                    {
-                        UserPrinciple = criteria.UserPrinciple,
-                        UserDetails = new UserDetails
-                        {
-                            Name = "Bobby Tables",
-                            Email = "bob@example.com"
-                        },
-                        UserTenants = _tenants.Select(tenant => new UserInTenants
-                        {
-                            Id = tenant.Value.Id,
-                            Name = tenant.Value.Name
-                        }).ToList()
-                    })
-                .Accepts<TenantLookupCriteria>("application/json")
-                .Produces<TenantLookupResponse>(200, "application/json")
+            app.MapGet("/tenant/lookup",
+                    async ([FromQuery] string name, IUseCase<string, Model.Tenant?> useCase) =>
+                    await useCase.Execute(name)
+                        .AndThen(tenant => tenant != null ? Results.Ok(tenant) : Results.NotFound()))
+                .Produces<Model.Tenant>(200, "application/json")
+                .Produces(404)
                 .WithOpenApi(operation =>
                 {
                     operation.OperationId = "LookupTenant";

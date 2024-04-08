@@ -19,6 +19,7 @@ builder.Services.AddScoped<TenantContext>(_ => new TenantContext(builder.Configu
 builder.Services.AddScoped<ITenantRepository, DatabaseTenantRepository>();
 builder.Services.AddScoped<IUseCase<RegisterTenant, Tenant>, RegisterTenantUseCase>();
 builder.Services.AddScoped<IUseCase<Guid, Tenant?>, GetTenantUseCase>();
+builder.Services.AddScoped<IUseCase<string, Tenant?>, LookupTenantUseCase>();
 
 var app = builder.Build();
 
