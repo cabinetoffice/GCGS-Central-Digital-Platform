@@ -201,6 +201,23 @@ public class YourDetailsModelTest
             .Which.PageName.Should().Be("OrganisationDetails");
     }
 
+    [Fact]
+    public void OnGet_ValidSession_ReturnsRegistrationDetails()
+    {
+        var model = GivenYourDetailsModel();
+
+        RegistrationDetails registrationDetails = new RegistrationDetails
+                                                        { FirstName = "first name", LastName = "last name", Email = "test@co.com" };
+
+        sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(registrationDetails);
+
+        model.OnGet();
+
+        model.FirstName.Should().Be(registrationDetails.FirstName);
+        model.LastName.Should().Be(registrationDetails.LastName);
+        model.Email.Should().Be(registrationDetails.Email);
+    }
+
     private YourDetailsModel GivenYourDetailsModel()
     {
         return new YourDetailsModel(sessionMock.Object);

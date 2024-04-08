@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -57,6 +58,7 @@ public class YourDetailsModel(ISession session) : PageModel
     {
         var registrationDetails = session.Get<RegistrationDetails>(Session.RegistrationDetailsKey)
             ?? throw new Exception("Shoudn't be here"); // show error page?
+ 
         return registrationDetails;
     }
 }

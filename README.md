@@ -65,3 +65,11 @@ Stop all Docker services:
 ```bash
 make down
 ```
+
+To only start the database and apply migrations run:
+
+
+```bash
+make db
+```
+
