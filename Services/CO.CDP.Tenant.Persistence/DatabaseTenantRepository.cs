@@ -23,6 +23,11 @@ public class DatabaseTenantRepository(TenantContext context) : ITenantRepository
         return await context.Tenants.FirstOrDefaultAsync(t => t.Guid == tenantId);
     }
 
+    public async Task<Tenant?> FindByName(string name)
+    {
+        return await context.Tenants.FirstOrDefaultAsync(t => t.Name == name);
+    }
+
     public void Dispose()
     {
         context.Dispose();
