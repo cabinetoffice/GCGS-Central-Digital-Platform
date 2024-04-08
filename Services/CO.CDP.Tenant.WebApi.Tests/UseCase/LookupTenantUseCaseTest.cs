@@ -7,17 +7,17 @@ using Moq;
 
 namespace CO.CDP.Tenant.WebApi.Tests.UseCase;
 
-public class LookupTenantUseCase(AutoMapperFixture mapperFixture) : IClassFixture<AutoMapperFixture>
+public class LookupTenantUseCaseTest(AutoMapperFixture mapperFixture) : IClassFixture<AutoMapperFixture>
 {
     private readonly Mock<ITenantRepository> _repository = new();
-    private GetTenantUseCase UseCase => new(_repository.Object, mapperFixture.Mapper);
+    private LookupTenantUseCase UseCase => new(_repository.Object, mapperFixture.Mapper);
 
     [Fact]
     public async Task Execute_IfNoTenantIsFound_ReturnsNull()
     {
-        var tenantId = Guid.NewGuid();
+        var name = "urn:fdc:gov.uk:2022:43af5a8b-f4c0-414b-b341-d4f1fa894302";
 
-        var found = await UseCase.Execute(tenantId);
+        var found = await UseCase.Execute(name);
 
         found.Should().BeNull();
     }
@@ -40,7 +40,7 @@ public class LookupTenantUseCase(AutoMapperFixture mapperFixture) : IClassFixtur
 
         _repository.Setup(r => r.FindByName(tenant.Name)).ReturnsAsync(tenant);
 
-        var found = await UseCase.Execute(tenantId);
+        var found = await UseCase.Execute("urn:fdc:gov.uk:2022:43af5a8b-f4c0-414b-b341-d4f1fa894302");
 
         found.Should().Be(new Model.Tenant
         {
