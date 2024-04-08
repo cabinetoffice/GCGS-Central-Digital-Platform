@@ -33,7 +33,7 @@ public class OneLoginCallback(
 
             return RedirectToPage("YourDetails");
         }
-        catch (ApiException ex)
+        catch (ApiException)
         {
             // show error page?
             throw new Exception("Unable to create tenant");
