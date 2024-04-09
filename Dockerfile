@@ -130,7 +130,7 @@ ENTRYPOINT ["dotnet", "CO.CDP.Person.WebApi.dll"]
 
 FROM base AS final-forms
 WORKDIR /app
-COPY --from=publish-person /app/publish .
+COPY --from=publish-forms /app/publish .
 ENTRYPOINT ["dotnet", "CO.CDP.Forms.WebApi.dll"]
 
 FROM base AS final-data-sharing
