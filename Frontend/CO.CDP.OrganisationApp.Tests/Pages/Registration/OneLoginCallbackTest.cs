@@ -14,6 +14,11 @@ public class OneLoginCallbackTest
     private readonly Mock<ITenantClient> tenantClientMock;
     private readonly Mock<ISession> sessionMock;
 
+    Tenant.WebApiClient.Tenant dummyTenant = new(
+                new TenantContactInfo("dummy@test.com", "0123456789"),
+                Guid.NewGuid(), "dummy"
+            );
+
     public OneLoginCallbackTest()
     {
         oneLoginClientMock = new Mock<IOneLoginClient>();
@@ -32,7 +37,7 @@ public class OneLoginCallbackTest
     }
 
     [Fact]
-    public void OnGet_WhenUserProfileIsNull_ShouldThrowExcption()
+    public async Task OnGet_WhenUserProfileIsNull_ShouldThrowExcption()
     {
         var model = GivenOneLoginCallbackModel();
 
@@ -41,7 +46,20 @@ public class OneLoginCallbackTest
 
         Func<Task> act = model.OnGet;
 
-        act.Should().ThrowAsync<Exception>().WithMessage("Unable to retrive user info");
+        await act.Should().ThrowAsync<Exception>().WithMessage("Unable to retrive user info");
+    }
+
+    [Fact]
+    public async Task OnGet_WhenTenantIsRegistered_ShouldNotRegisterTenantAgain()
+    {
+        var model = GivenOneLoginCallbackModel();
+
+        tenantClientMock.Setup(t => t.LookupTenantAsync(It.IsAny<string>()))
+            .ReturnsAsync(dummyTenant);
+
+        var results = await model.OnGet();
+
+        tenantClientMock.Verify(v => v.CreateTenantAsync(It.IsAny<NewTenant>()), Times.Never);
     }
 
     [Fact]
@@ -55,7 +73,7 @@ public class OneLoginCallbackTest
     }
 
     [Fact]
-    public void OnGet_WhenRegisterTenantFails_ShouldThrowExcption()
+    public async Task OnGet_WhenRegisterTenantFails_ShouldThrowExcption()
     {
         var model = GivenOneLoginCallbackModel();
 
@@ -64,7 +82,7 @@ public class OneLoginCallbackTest
 
         Func<Task> act = model.OnGet;
 
-        act.Should().ThrowAsync<Exception>().WithMessage("Unable to create tenant");
+        await act.Should().ThrowAsync<Exception>().WithMessage("Unable to create tenant");
     }
 
     [Fact]
@@ -92,11 +110,11 @@ public class OneLoginCallbackTest
                 UserId = "dummy:user_id"
             });
 
+        tenantClientMock.Setup(t => t.LookupTenantAsync(It.IsAny<string>()))
+            .ThrowsAsync(new ApiException("", 404, "", default, null));
+
         tenantClientMock.Setup(t => t.CreateTenantAsync(It.IsAny<NewTenant>()))
-            .ReturnsAsync(new Tenant.WebApiClient.Tenant(
-                new TenantContactInfo("dummy@test.com", "0123456789"),
-                Guid.NewGuid(), "dummy"
-            ));
+            .ReturnsAsync(dummyTenant);
 
         return new OneLoginCallback(
             oneLoginClientMock.Object,
