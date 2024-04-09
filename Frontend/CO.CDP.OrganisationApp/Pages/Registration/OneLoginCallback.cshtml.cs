@@ -16,28 +16,34 @@ public class OneLoginCallback(
         var userInfo = await oneLoginClient.GetUserInfo()
                     ?? throw new Exception("Unable to retrive user info"); // show error page?
 
+        Tenant.WebApiClient.Tenant? tenant;
+
         try
         {
-            var tenant = await tenantClient.CreateTenantAsync(
-                new NewTenant(
-                    new TenantContactInfo(userInfo.Email, userInfo.PhoneNumber),
-                    userInfo.UserId));
-
-            session.Set(Session.RegistrationDetailsKey,
-            new RegistrationDetails
-            {
-                TenantId = tenant.Id,
-                FirstName = tenant.Name,
-                Email = tenant.ContactInfo.Email,
-            });
-
-            return RedirectToPage("YourDetails");
+            tenant = await tenantClient.LookupTenantAsync(userInfo.UserId);
         }
-        catch (ApiException)
+        catch (ApiException ex) when (ex.StatusCode == 404)
         {
-            // show error page?
-            throw new Exception("Unable to create tenant");
+            try
+            {
+                tenant = await tenantClient.CreateTenantAsync(
+                   new NewTenant(
+                       new TenantContactInfo(userInfo.Email, userInfo.PhoneNumber),
+                       userInfo.UserId));
+            }
+            catch (ApiException)
+            {
+                throw new Exception("Unable to create tenant");
+            }
         }
 
+        session.Set(Session.RegistrationDetailsKey,
+        new RegistrationDetails
+        {
+            TenantId = tenant.Id,
+            Email = tenant.ContactInfo.Email
+        });
+
+        return RedirectToPage("YourDetails");
     }
 }
