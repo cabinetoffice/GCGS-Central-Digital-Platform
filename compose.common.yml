@@ -21,6 +21,7 @@ services:
     image: 'cabinetoffice/cdp-organisation-app:${IMAGE_VERSION:-latest}'
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
+      - TenantService=http://tenant:8080
     healthcheck:
       test: ["CMD-SHELL", "curl --fail --silent --write-out '{\"status\":%{http_code}}' --output /dev/null http://127.0.0.1:8080/health"]
       start_period: 10s
