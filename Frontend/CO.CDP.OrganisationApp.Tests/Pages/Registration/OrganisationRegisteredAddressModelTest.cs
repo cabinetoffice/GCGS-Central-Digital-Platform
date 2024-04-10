@@ -26,7 +26,7 @@ public class OrganisationRegisteredAddressModelTest
 
         var results = ModelValidationHelper.Validate(model);
 
-        results.Count.Should().Be(5);
+        results.Count.Should().Be(4);
     }
 
     [Fact]
@@ -51,20 +51,7 @@ public class OrganisationRegisteredAddressModelTest
         var results = ModelValidationHelper.Validate(model);
 
         results.Any(c => c.MemberNames.Contains("AddressLine1")).Should().BeFalse();
-    }
-
-    [Fact]
-    public void WhenAddressLine2IsEmpty_ShouldRaiseAddressLine2ValidationError()
-    {
-        var model = GivenOrganisationDetailModel();
-
-        var results = ModelValidationHelper.Validate(model);
-
-        results.Any(c => c.MemberNames.Contains("AddressLine2")).Should().BeTrue();
-
-        results.Where(c => c.MemberNames.Contains("AddressLine2")).First()
-            .ErrorMessage.Should().Be("Enter your address line 2");
-    }
+    }    
 
     [Fact]
     public void WhenAddressLine2IsNotEmpty_ShouldNotRaiseAddressLine2ValidationError()

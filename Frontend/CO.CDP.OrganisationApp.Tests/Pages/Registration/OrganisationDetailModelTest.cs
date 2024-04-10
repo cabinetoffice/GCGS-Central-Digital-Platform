@@ -26,7 +26,7 @@ public class OrganisationDetailModelTest
 
         var results = ModelValidationHelper.Validate(model);
 
-        results.Count.Should().Be(3);
+        results.Count.Should().Be(2);
     }
 
     [Fact]
@@ -54,23 +54,10 @@ public class OrganisationDetailModelTest
     }
 
     [Fact]
-    public void WhenOrganisationTypeIsEmpty_ShouldRaiseOrganisationTypeValidationError()
-    {
-        var model = GivenOrganisationDetailModel();
-
-        var results = ModelValidationHelper.Validate(model);
-
-        results.Any(c => c.MemberNames.Contains("OrganisationType")).Should().BeTrue();
-
-        results.Where(c => c.MemberNames.Contains("OrganisationType")).First()
-            .ErrorMessage.Should().Be("Enter your organisation type");
-    }
-
-    [Fact]
     public void WhenOrganisationTypeIsNotEmpty_ShouldNotRaiseOrganisationTypeValidationError()
     {
         var model = GivenOrganisationDetailModel();
-        model.OrganisationType = "dummay";
+        //model.OrganisationType = "dummay";
 
         var results = ModelValidationHelper.Validate(model);
 
@@ -173,7 +160,7 @@ public class OrganisationDetailModelTest
         model.OnGet();
 
         model.OrganisationName.Should().Be(registrationDetails.OrganisationName);
-        model.OrganisationType.Should().Be(registrationDetails.OrganisationType);
+        //model.OrganisationType.Should().Be(registrationDetails.OrganisationType);
         model.EmailAddress.Should().Be(registrationDetails.OrganisationEmailAddress);
     }
 

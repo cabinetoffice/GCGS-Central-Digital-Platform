@@ -15,10 +15,10 @@ public class OrganisationDetailModel(ISession session) : PageModel
     [Required(ErrorMessage = "Enter your organisation name")]
     public string? OrganisationName { get; set; }
 
-    [BindProperty]
-    [DisplayName("Organisation type")]
-    [Required(ErrorMessage = "Enter your organisation type")]
-    public string? OrganisationType { get; set; }
+    //[BindProperty]
+    //[DisplayName("Organisation type")]
+    //[Required(ErrorMessage = "Enter your organisation type")]
+    //public string? OrganisationType { get; set; }
 
     [BindProperty]
     [DisplayName("Email address")]
@@ -31,7 +31,6 @@ public class OrganisationDetailModel(ISession session) : PageModel
         var registrationDetails = VerifySession();
 
         OrganisationName = registrationDetails.OrganisationName;
-        OrganisationType = registrationDetails.OrganisationType;
         EmailAddress = registrationDetails.OrganisationEmailAddress;
     }
 
@@ -45,7 +44,6 @@ public class OrganisationDetailModel(ISession session) : PageModel
         var registrationDetails = VerifySession();
 
         registrationDetails.OrganisationName = OrganisationName;
-        registrationDetails.OrganisationType = OrganisationType;
         registrationDetails.OrganisationEmailAddress = EmailAddress;
 
         session.Set(Session.RegistrationDetailsKey, registrationDetails);

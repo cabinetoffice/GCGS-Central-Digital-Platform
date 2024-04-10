@@ -5,8 +5,7 @@
     Back
 </a>
 @{
-    var organisationNameHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.OrganisationName)).HasInnerHtml;
-    var organisationTypeHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.OrganisationType)).HasInnerHtml;
+    var organisationNameHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.OrganisationName)).HasInnerHtml;    
     var emailAddressHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.EmailAddress)).HasInnerHtml;
 }
 
@@ -39,23 +38,7 @@
                             <input class="govuk-input @(organisationNameHasError ? "govuk-input--error" : "")" id="@nameof(Model.OrganisationName)"
                                    value="@Model.OrganisationName" name="@nameof(Model.OrganisationName)" type="text"
                                    spellcheck="false" @(organisationNameHasError ? "aria-describedby=organisation-name-error" : "")>
-                        </div>
-
-                        <div class="govuk-form-group @(organisationTypeHasError ? "govuk-form-group--error" : "")">
-                            <label class="govuk-label" for="@nameof(Model.OrganisationType)">
-                                @Html.DisplayNameFor(m => m.OrganisationType)
-                            </label>
-                            @if (organisationTypeHasError)
-                            {
-                                <p id="organisation-type-error" class="govuk-error-message">
-                                    <span class="govuk-visually-hidden">Error:</span>
-                                    @Html.ValidationMessageFor(m => m.OrganisationType)
-                                </p>
-                            }
-                            <input class="govuk-input @(organisationTypeHasError ? "govuk-input--error" : "")" id="@nameof(Model.OrganisationType)"
-                                   value="@Model.OrganisationType" name="@nameof(Model.OrganisationType)" type="text"
-                                   spellcheck="false" @(organisationTypeHasError ? "aria-describedby=organisation-type-error" : "")>
-                        </div>
+                        </div>                        
 
                         <div class="govuk-form-group @(emailAddressHasError ? "govuk-form-group--error" : "")">
                             <label class="govuk-label" for="@nameof(Model.EmailAddress)">
