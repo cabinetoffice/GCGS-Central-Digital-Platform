@@ -75,10 +75,6 @@ public class OrganisationIdentificationModelTests
             case "VAT":
                 model.VATNumber.Should().Be(registrationDetails.OrganisationIdentificationNumber);
                 break;
-
-            case "Other":
-                model.OtherNumber.Should().Be(registrationDetails.OrganisationIdentificationNumber);
-                break;
         }
 
     }
@@ -323,7 +319,6 @@ public class OrganisationIdentificationModelTests
     [InlineData("NHOR", "STUVWX")]
     [InlineData("UKPRN", "PRN1234")]
     [InlineData("VAT", "GB1234")]
-    [InlineData("Other", "567890")]
     public void OnPost_WhenModelStateIsValid_ShouldStoreOrganisationTypeAndIdentificationNumberInSession(string organisationType, string identificationNumber)
     {
         var model = new OrganisationIdentificationModel(sessionMock.Object)
@@ -376,10 +371,6 @@ public class OrganisationIdentificationModelTests
                 break;
             case "VAT":
                 model.VATNumber = identificationNumber;
-                break;
-
-            case "Other":
-                model.OtherNumber = identificationNumber;
                 break;
         }
     }

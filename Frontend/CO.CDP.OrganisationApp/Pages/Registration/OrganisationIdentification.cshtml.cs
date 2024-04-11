@@ -131,11 +131,6 @@ public class OrganisationIdentificationModel(ISession session) : PageModel
     [DisplayName("Other / None")]
     public string? Other { get; set; }
 
-    [BindProperty]
-    [DisplayName("Other / None Number")]
-    [RequiredIf("OrganisationType", "Other")]
-    public string? OtherNumber { get; set; }
-
     public void OnGet()
     {
         var registrationDetails = VerifySession();
@@ -177,9 +172,6 @@ public class OrganisationIdentificationModel(ISession session) : PageModel
                 break;
             case "VAT":
                 VATNumber = registrationDetails.OrganisationIdentificationNumber;
-                break;
-            case "Other":
-                OtherNumber = registrationDetails.OrganisationIdentificationNumber;
                 break;
             default:
                 break;
@@ -238,7 +230,7 @@ public class OrganisationIdentificationModel(ISession session) : PageModel
                 registrationDetails.OrganisationIdentificationNumber = VATNumber;
                 break;
             case "Other":
-                registrationDetails.OrganisationIdentificationNumber = OtherNumber;
+                registrationDetails.OrganisationIdentificationNumber = string.Empty;
                 break;
             default:
                 registrationDetails.OrganisationIdentificationNumber = string.Empty;

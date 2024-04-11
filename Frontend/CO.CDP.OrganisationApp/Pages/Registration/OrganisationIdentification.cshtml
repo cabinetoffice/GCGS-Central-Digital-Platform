@@ -19,8 +19,7 @@
     var ukLearningProviderReferenceNumberHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.UKLearningProviderReferenceNumber)).HasInnerHtml;
     var vatNumberHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.VATNumber)).HasInnerHtml;
     
-    var nationalHealthServiceOrganisationsRegistryNumberHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.NationalHealthServiceOrganisationsRegistryNumber)).HasInnerHtml;    
-    var otherNumberHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.OtherNumber)).HasInnerHtml;
+    var nationalHealthServiceOrganisationsRegistryNumberHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.NationalHealthServiceOrganisationsRegistryNumber)).HasInnerHtml;   
 
 }
 
@@ -172,14 +171,6 @@
                                 <input class="govuk-radios__input" id="Other" name="OrganisationType" type="radio" value="Other" data-aria-controls="conditional-Other" @(Model.OrganisationType == "Other" ? "checked" : "")>
                                 @Html.LabelFor(m => m.Other, new { @class = "govuk-label govuk-radios__label", @for = "Other" })
                             </div>
-                            <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-Other">
-                                <div class="govuk-form-group @(otherNumberHasError ? "govuk-form-group--error" : "")">
-                                    @Html.LabelFor(m => m.OtherNumber, new { @class = "govuk-label", @for = Model.OtherNumber })
-                                    @Html.ValidationMessageFor(m => m.OtherNumber, "", new { @class = "govuk-error-message", @id = "OtherNumber-error" })
-                                    @Html.TextBoxFor(m => m.OtherNumber, new { @class = "govuk-input " + (otherNumberHasError ? "govuk-input--error" : ""), @id = "OtherNumber", @type = "text", spellcheck = "false", autocomplete = "off" })
-                                </div>
-                            </div>
-
                         </div>
                     </fieldset>
                 </div>
