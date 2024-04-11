@@ -158,8 +158,7 @@ public class OrganisationDetailModelTest
 
         model.OnGet();
 
-        model.OrganisationName.Should().Be(registrationDetails.OrganisationName);
-        //model.OrganisationType.Should().Be(registrationDetails.OrganisationType);
+        model.OrganisationName.Should().Be(registrationDetails.OrganisationName);        
         model.EmailAddress.Should().Be(registrationDetails.OrganisationEmailAddress);
     }
 
