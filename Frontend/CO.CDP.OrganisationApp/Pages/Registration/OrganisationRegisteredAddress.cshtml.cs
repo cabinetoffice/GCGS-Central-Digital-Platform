@@ -16,7 +16,6 @@ public class OrganisationRegisteredAddressModel(ISession session) : PageModel
 
     [BindProperty]
     [DisplayName("Address line 2")]
-    //[Required(ErrorMessage = "Enter your address line 2")]
     public string? AddressLine2 { get; set; }
 
     [BindProperty]
