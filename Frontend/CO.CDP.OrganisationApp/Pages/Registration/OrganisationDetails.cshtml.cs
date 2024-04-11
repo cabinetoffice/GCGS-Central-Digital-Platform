@@ -15,11 +15,6 @@ public class OrganisationDetailModel(ISession session) : PageModel
     [Required(ErrorMessage = "Enter your organisation name")]
     public string? OrganisationName { get; set; }
 
-    //[BindProperty]
-    //[DisplayName("Organisation type")]
-    //[Required(ErrorMessage = "Enter your organisation type")]
-    //public string? OrganisationType { get; set; }
-
     [BindProperty]
     [DisplayName("Email address")]
     [Required(ErrorMessage = "Enter your email address")]
