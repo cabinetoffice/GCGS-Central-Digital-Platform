@@ -57,7 +57,6 @@ public class OrganisationDetailModelTest
     public void WhenOrganisationTypeIsNotEmpty_ShouldNotRaiseOrganisationTypeValidationError()
     {
         var model = GivenOrganisationDetailModel();
-        //model.OrganisationType = "dummay";
 
         var results = ModelValidationHelper.Validate(model);
 
