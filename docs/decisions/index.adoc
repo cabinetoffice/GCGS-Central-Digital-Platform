@@ -17,3 +17,5 @@ include::0001-record-architecture-decisions.adoc[]
 include::0002-create-webapi-clients.adoc[]
 
 include::0003-applying-database-migrations.adoc[]
+
+include::0004-error-handing-and-validation.adoc[]
