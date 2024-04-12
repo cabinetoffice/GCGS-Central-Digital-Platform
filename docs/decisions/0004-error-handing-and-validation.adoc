@@ -10,8 +10,6 @@ Draft
 
 We need to establish a standardised approach to error handling and validation.
 
-
-
 === Error handling
 
 ==== Option 1: Problem details response
@@ -19,23 +17,26 @@ We need to establish a standardised approach to error handling and validation.
 Utilise the Results.Problem method to generate standardized HTTP problem details responses.
 
 Advantages:
+
 * Preferred Approach: Results.Problem is Microsoft’s recommendations for handling errors.
 * Standards: This approach adheres to the RFC 7807 standard, providing a uniform format for error messages that include details such as status code, error type, and a readable description.
 * Rich Error Information: Offers a structured format that can include extensive information about the nature of the error, which can be extremely helpful for debugging by clients.
 
 Disadvantages:
+
 * Heavy for Simple projects: Might be overly complex for simple error messages where extensive details are unnecessary or out of scope.
 * Potential Information Leakage: If not carefully managed, it could inadvertently expose sensitive information about the API’s internal workings.
-
 
 ==== Option 2: Validation Action Filters
 Validation Action Filters intercept the request before it reaches the controller action, validating input data and returning appropriate error responses.
 
 Advantages:
+
 * Pre-Controller Validation: Errors can be caught and handled before reaching the business logic.
 * Reuse: Logic can be encapsulated and reused across multiple controllers or actions, promoting code reuse.
 
 Disadvantages:
+
 * Limited Scope: Primarily useful for handling model validation errors. Other types of errors (e.g., those thrown from within service layers or unhandled exceptions) would not be caught by these filters.
 * Coupling: Ties validation logic to the MVC framework, which may not be ideal if some parts of your application require different handling or operate outside the typical request pipeline.
 
@@ -44,15 +45,16 @@ Disadvantages:
 Implement custom exception middleware that catches exceptions globally across the API, allowing for error handling.
 
 Advantages:
+
 * Central Error Handling: Provides a single point within your application to handle exceptions, simplifying & reducing code duplication.
 * Flexibility: Allows you to create custom error responses based on exception types or other criteria.
 * Consistency: Can be combined with Results.Problem to ensure that all errors, handled or unhandled, return a consistent response format.
 
 Disadvantages:
+
 * Complexity: Requires a more detailed setup and understanding of the middleware pipeline in ASP.NET Core.
 * Maintenance: As the application grows, the middleware might need continuous updates to handle new changes.
 * Debugging: This can make it difficult to trace back to the original source of the error, can be complex because errors are handled globally and may be stripped of their context.
-
 
 === Validation
 
@@ -62,14 +64,15 @@ Use attributes from the System.ComponentModel.DataAnnotations namespace to decla
 This method is deeply integrated with ASP.NET Core and is supported out of the box, requiring minimal setup for basic validation scenarios.
 
 Advantages:
+
 * Easy of Implementation: Simple to apply with minimal code, making it an efficient option for straightforward validation requirements.
 * Automatic Enforcement: Automatically enforced by ASP.NET Core during model binding.
 * Framework Integration: Seamlessly integrates with ASP.NET Core, providing error handling built-in stadnard model validation architecture.
 
 Disadvantages:
+
 * Cluttered Model Classes: Adding validation attributes directly to model properties can lead to cluttered and bloated model classes.
 * Flexibility: Can de difficult and messy to implement more complex validation and cannot handle cross-field dependencies without additional overhead.
-
 
 ==== Option 2: Fluent Validation
 A third-party library that uses a fluent interface to build validation rules separately from your models.
@@ -77,28 +80,31 @@ A third-party library that uses a fluent interface to build validation rules sep
 Defined separately from model classes, offering a powerful alternative to data annotations with support for complex validation scenarios.
 
 Advantages:
+
 * Greater Flexibility and Control: Provides extensive control over validation logic, allowing for complex rules and dependencies.
 * Separation of Concerns: Keeps validation logic decoupled from model definitions, aiding in the maintenance and scalability of the application.
 * Consitency with Unit Testing: We are using FluentAssertions in our unit tests, which complement Fluent Validations.
 
-Greater flexibility and control over validation logic; supports complex validation scenarios; easily integrates with ASP.NET Core. We are using FluentAssertions in our unit tests.
 
 Disadvantages:
+
 * Additional Dependency: Incorporates an external package into the project, introducing potential issues with third-party dependencies and updates.
 * External Configuration: Validation rules are maintained outside the model, potentially complicating the development process.
 
 
-==== Option 3:
+==== Option 3: Input Models with Built-in Validation
 Use dedicated input models (DTOs) that include validation logic, separating it from your domain models.
 
 This approach utilises either data annotations or custom validation methods embedded within the DTOs themselves, providing a clean separation between the data used for input and the internal domain models.
 
 Advantages:
+
 * Clear Separation of Concerns: Keeps API input validation separate from business logic, reducing the complexity of domain models.
 * Specialised Validation Logic: Allows for validation rules that are specific to the API layer, which can differ from how data validation is handled internally.
 * Flexibility: More control over how data is validated and transformed before being passed to the domain model or business logic.
 
 Disadvantages:
+
 * Duplication of code: May lead to duplication of code or additional boilerplate, potentially increasing the overhead of maintaining similar models.
 * Additional Mapping Required: Requires mapping between DTOs and domain models, which can introduce additional complexity and overhead.
 
@@ -107,15 +113,15 @@ Disadvantages:
 Create custom attributes by extending the ValidationAttribute class to define specific validation rules that are not provided out of the box by data annotations.
 
 Advantages:
+
 * Highly Customizable: Enables the creation of validation rules that are perfectly tailored to specific business requirements.
 * Reusable: Custom attributes can be reused across different models and projects, promoting consistency.
 * Integrates with MVC: Works seamlessly with ASP.NET Core's model binding and validation frameworks.
 
 Disadvantages:
+
 * Increased Complexity: Requires a deeper understanding of attribute-based programming and reflection.
 * Development Overhead: More time-consuming to develop and test compared to using standard data annotations.
-
-
 
 == Decisions
 
@@ -124,7 +130,5 @@ TBD
 == Consequences
 
 TBD
-
-
 
 

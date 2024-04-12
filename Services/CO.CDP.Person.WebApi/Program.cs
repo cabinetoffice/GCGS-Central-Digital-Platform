@@ -1,4 +1,6 @@
 using CO.CDP.Person.WebApi.Api;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,3 +24,6 @@ app.MapHealthChecks("/health");
 app.UseHttpsRedirection();
 app.UsePersonEndpoints();
 app.Run();
+
+builder.Services.AddFluentValidationAutoValidation();
+builder.Services.AddValidatorsFromAssemblyContaining<CO.CDP.Person.WebApi.Api.ValidationSpikeTwo.NewPersonValidator>();
