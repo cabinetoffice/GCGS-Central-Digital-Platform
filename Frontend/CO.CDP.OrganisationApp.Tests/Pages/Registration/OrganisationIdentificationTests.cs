@@ -41,27 +41,39 @@ public class OrganisationIdentificationModelTests
         {
             case "CHN":
                 model.CompaniesHouseNumber.Should().Be(registrationDetails.OrganisationIdentificationNumber);
-                break;
-            case "DUN":
-                model.DunBradstreetNumber.Should().Be(registrationDetails.OrganisationIdentificationNumber);
-                break;
+                break;            
             case "CCEW":
                 model.CharityCommissionEnglandWalesNumber.Should().Be(registrationDetails.OrganisationIdentificationNumber);
                 break;
-            case "OSCR":
-                model.OfficeOfScottishCharityRegulatorNumber.Should().Be(registrationDetails.OrganisationIdentificationNumber);
+            case "SCR":
+                model.ScottishCharityRegulatorNumber.Should().Be(registrationDetails.OrganisationIdentificationNumber);
                 break;
             case "CCNI":
                 model.CharityCommissionNorthernIrelandNumber.Should().Be(registrationDetails.OrganisationIdentificationNumber);
                 break;
+
+            case "MPR":
+                model.MutualsPublicRegisterNumber.Should().Be(registrationDetails.OrganisationIdentificationNumber);
+                break;
+            case "GRN":
+                model.GuernseyRegistryNumber.Should().Be(registrationDetails.OrganisationIdentificationNumber);
+                break;
+            case "JFSC":
+                model.JerseyFinancialServicesCommissionRegistryNumber.Should().Be(registrationDetails.OrganisationIdentificationNumber);
+                break;
+            case "IMCR":
+                model.IsleofManCompaniesRegistryNumber.Should().Be(registrationDetails.OrganisationIdentificationNumber);
+                break;
+
             case "NHOR":
                 model.NationalHealthServiceOrganisationsRegistryNumber.Should().Be(registrationDetails.OrganisationIdentificationNumber);
                 break;
-            case "DFE":
-                model.DepartmentForEducationNumber.Should().Be(registrationDetails.OrganisationIdentificationNumber);
+
+            case "UKPRN":
+                model.UKLearningProviderReferenceNumber.Should().Be(registrationDetails.OrganisationIdentificationNumber);
                 break;
-            case "Other":
-                model.OtherNumber.Should().Be(registrationDetails.OrganisationIdentificationNumber);
+            case "VAT":
+                model.VATNumber.Should().Be(registrationDetails.OrganisationIdentificationNumber);
                 break;
         }
 
@@ -104,24 +116,6 @@ public class OrganisationIdentificationModelTests
     }
 
     [Theory]
-    [InlineData("DUN", null)]
-    [InlineData("DUN", "")]
-    public void OnPost_WhenOrganisationTypeIsDUNAndDunBradstreetNumberIsNullOrEmpty_ShouldReturnPageWithModelStateError(string organisationType, string dunBradstreetNumber)
-    {
-        var model = new OrganisationIdentificationModel(sessionMock.Object)
-        {
-            OrganisationType = organisationType,
-            DunBradstreetNumber = dunBradstreetNumber
-        };
-        model.ModelState.AddModelError("DunBradstreetNumber", "The Dun & Bradstreet Number field is required.");
-
-        var result = model.OnPost();
-
-        result.Should().BeOfType<PageResult>();
-        model.ModelState.IsValid.Should().BeFalse();
-    }
-
-    [Theory]
     [InlineData("CCEW", null)]
     [InlineData("CCEW", "")]
     public void OnPost_WhenOrganisationTypeIsCCEWAndCharityCommissionEnglandWalesNumberIsNullOrEmpty_ShouldReturnPageWithModelStateError(string organisationType, string charityCommissionEnglandWalesNumber)
@@ -140,16 +134,16 @@ public class OrganisationIdentificationModelTests
     }
 
     [Theory]
-    [InlineData("OSCR", null)]
-    [InlineData("OSCR", "")]
-    public void OnPost_WhenOrganisationTypeIsOSCRAndOfficeOfScottishCharityRegulatorNumberIsNullOrEmpty_ShouldReturnPageWithModelStateError(string organisationType, string officeOfScottishCharityRegulatorNumber)
+    [InlineData("SCR", null)]
+    [InlineData("SCR", "")]
+    public void OnPost_WhenOrganisationTypeIsOSCRAndScottishCharityRegulatorNumberIsNullOrEmpty_ShouldReturnPageWithModelStateError(string organisationType, string scottishCharityRegulatorNumber)
     {
         var model = new OrganisationIdentificationModel(sessionMock.Object)
         {
             OrganisationType = organisationType,
-            OfficeOfScottishCharityRegulatorNumber = officeOfScottishCharityRegulatorNumber
+            ScottishCharityRegulatorNumber = scottishCharityRegulatorNumber
         };
-        model.ModelState.AddModelError("OfficeOfScottishCharityRegulatorNumber", "The Office of the Scottish Charity Regulator (OSCR) Number field is required.");
+        model.ModelState.AddModelError("ScottishCharityRegulatorNumber", "The Office of the Scottish Charity Regulator (OSCR) Number field is required.");
 
         var result = model.OnPost();
 
@@ -176,6 +170,78 @@ public class OrganisationIdentificationModelTests
     }
 
     [Theory]
+    [InlineData("MPR", null)]
+    [InlineData("MPR", "")]
+    public void OnPost_WhenOrganisationTypeIsMPRAndMutualsPublicRegisterNumberIsNullOrEmpty_ShouldReturnPageWithModelStateError(string organisationType, string mutualsPublicRegisterNumber)
+    {
+        var model = new OrganisationIdentificationModel(sessionMock.Object)
+        {
+            OrganisationType = organisationType,
+            MutualsPublicRegisterNumber = mutualsPublicRegisterNumber
+        };
+        model.ModelState.AddModelError("MutualsPublicRegisterNumber", "Mutuals Public Register Number field is required.");
+
+        var result = model.OnPost();
+
+        result.Should().BeOfType<PageResult>();
+        model.ModelState.IsValid.Should().BeFalse();
+    }
+
+    [Theory]
+    [InlineData("GRN", null)]
+    [InlineData("GRN", "")]
+    public void OnPost_WhenOrganisationTypeIsGRNAndGuernseyRegistryNumberIsNullOrEmpty_ShouldReturnPageWithModelStateError(string organisationType, string guernseyRegistryNumber)
+    {
+        var model = new OrganisationIdentificationModel(sessionMock.Object)
+        {
+            OrganisationType = organisationType,
+            GuernseyRegistryNumber = guernseyRegistryNumber
+        };
+        model.ModelState.AddModelError("GuernseyRegistryNumber", "Guernsey Registry Number field is required.");
+
+        var result = model.OnPost();
+
+        result.Should().BeOfType<PageResult>();
+        model.ModelState.IsValid.Should().BeFalse();
+    }
+
+    [Theory]
+    [InlineData("JFSC", null)]
+    [InlineData("JFSC", "")]
+    public void OnPost_WhenOrganisationTypeIsJFSCAndJerseyFinancialServicesCommissionRegistryNumberIsNullOrEmpty_ShouldReturnPageWithModelStateError(string organisationType, string jerseyFinancialServicesCommissionRegistryNumber)
+    {
+        var model = new OrganisationIdentificationModel(sessionMock.Object)
+        {
+            OrganisationType = organisationType,
+            JerseyFinancialServicesCommissionRegistryNumber = jerseyFinancialServicesCommissionRegistryNumber
+        };
+        model.ModelState.AddModelError("JerseyFinancialServicesCommissionRegistryNumber", "Jersey Financial Services Commission Registry Number field is required.");
+
+        var result = model.OnPost();
+
+        result.Should().BeOfType<PageResult>();
+        model.ModelState.IsValid.Should().BeFalse();
+    }
+
+    [Theory]
+    [InlineData("IMCR", null)]
+    [InlineData("IMCR", "")]
+    public void OnPost_WhenOrganisationTypeIsIMCRAndIsleofManCompaniesRegistryNumberIsNullOrEmpty_ShouldReturnPageWithModelStateError(string organisationType, string isleofManCompaniesRegistryNumber)
+    {
+        var model = new OrganisationIdentificationModel(sessionMock.Object)
+        {
+            OrganisationType = organisationType,
+            IsleofManCompaniesRegistryNumber = isleofManCompaniesRegistryNumber
+        };
+        model.ModelState.AddModelError("IsleofManCompaniesRegistryNumber", "Isle of Man Companies Registry Number field is required.");
+
+        var result = model.OnPost();
+
+        result.Should().BeOfType<PageResult>();
+        model.ModelState.IsValid.Should().BeFalse();
+    }
+
+    [Theory]
     [InlineData("NHOR", null)]
     [InlineData("NHOR", "")]
     public void OnPost_WhenOrganisationTypeIsNHORAndNationalHealthServiceOrganisationsRegistryNumberIsNullOrEmpty_ShouldReturnPageWithModelStateError(string organisationType, string nationalHealthServiceOrganisationsRegistryNumber)
@@ -194,17 +260,34 @@ public class OrganisationIdentificationModelTests
     }
 
     [Theory]
-    [InlineData("DFE", null)]
-    [InlineData("DFE", "")]
-    public void OnPost_WhenOrganisationTypeIsDFEAndDepartmentForEducationNumberIsNullOrEmpty_ShouldReturnPageWithModelStateError(string organisationType, string departmentForEducationNumber)
+    [InlineData("UKPRN", null)]
+    [InlineData("UKPRN", "")]
+    public void OnPost_WhenOrganisationTypeIsUKPRNAndUKLearningProviderReferenceNumberIsNullOrEmpty_ShouldReturnPageWithModelStateError(string organisationType, string ukLearningProviderReferenceNumber)
     {
-
         var model = new OrganisationIdentificationModel(sessionMock.Object)
         {
             OrganisationType = organisationType,
-            DepartmentForEducationNumber = departmentForEducationNumber
+            UKLearningProviderReferenceNumber = ukLearningProviderReferenceNumber
         };
-        model.ModelState.AddModelError("DepartmentForEducationNumber", "The Department For Education Number field is required.");
+        model.ModelState.AddModelError("UKLearningProviderReferenceNumber", "UK Register of Learning Provider Number field is required.");
+
+        var result = model.OnPost();
+
+        result.Should().BeOfType<PageResult>();
+        model.ModelState.IsValid.Should().BeFalse();
+    }
+
+    [Theory]
+    [InlineData("VAT", null)]
+    [InlineData("VAT", "")]
+    public void OnPost_WhenOrganisationTypeIsVATAndVATNumberIsNullOrEmpty_ShouldReturnPageWithModelStateError(string organisationType, string vatNumber)
+    {
+        var model = new OrganisationIdentificationModel(sessionMock.Object)
+        {
+            OrganisationType = organisationType,
+            VATNumber = vatNumber
+        };
+        model.ModelState.AddModelError("VATNumber", "VAT Number field is required.");
 
         var result = model.OnPost();
 
@@ -226,13 +309,16 @@ public class OrganisationIdentificationModelTests
 
     [Theory]
     [InlineData("CHN", "123456")]
-    [InlineData("DUN", "987654")]
     [InlineData("CCEW", "ABCDEF")]
-    [InlineData("OSCR", "GHIJKL")]
+    [InlineData("SCR", "GHIJKL")]
     [InlineData("CCNI", "MNOPQR")]
+    [InlineData("MPR", "MPR123")]
+    [InlineData("GRN", "GRN123")]
+    [InlineData("JFSC", "JFSC123")]
+    [InlineData("IMCR", "IMCR123")]
     [InlineData("NHOR", "STUVWX")]
-    [InlineData("DFE", "YZ1234")]
-    [InlineData("Other", "567890")]
+    [InlineData("UKPRN", "PRN1234")]
+    [InlineData("VAT", "GB1234")]
     public void OnPost_WhenModelStateIsValid_ShouldStoreOrganisationTypeAndIdentificationNumberInSession(string organisationType, string identificationNumber)
     {
         var model = new OrganisationIdentificationModel(sessionMock.Object)
@@ -256,26 +342,35 @@ public class OrganisationIdentificationModelTests
             case "CHN":
                 model.CompaniesHouseNumber = identificationNumber;
                 break;
-            case "DUN":
-                model.DunBradstreetNumber = identificationNumber;
-                break;
             case "CCEW":
                 model.CharityCommissionEnglandWalesNumber = identificationNumber;
                 break;
-            case "OSCR":
-                model.OfficeOfScottishCharityRegulatorNumber = identificationNumber;
+            case "SCR":
+                model.ScottishCharityRegulatorNumber = identificationNumber;
                 break;
             case "CCNI":
                 model.CharityCommissionNorthernIrelandNumber = identificationNumber;
+                break;            
+            case "MPR":
+                model.MutualsPublicRegisterNumber = identificationNumber;
+                break;
+            case "GRN":
+                model.GuernseyRegistryNumber = identificationNumber;
+                break;
+            case "JFSC":
+                model.JerseyFinancialServicesCommissionRegistryNumber = identificationNumber;
+                break;
+            case "IMCR":
+                model.IsleofManCompaniesRegistryNumber = identificationNumber;
                 break;
             case "NHOR":
                 model.NationalHealthServiceOrganisationsRegistryNumber = identificationNumber;
                 break;
-            case "DFE":
-                model.DepartmentForEducationNumber = identificationNumber;
+            case "UKPRN":
+                model.UKLearningProviderReferenceNumber = identificationNumber;
                 break;
-            case "Other":
-                model.OtherNumber = identificationNumber;
+            case "VAT":
+                model.VATNumber = identificationNumber;
                 break;
         }
     }
