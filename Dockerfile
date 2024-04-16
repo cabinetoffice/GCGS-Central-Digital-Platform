@@ -29,6 +29,8 @@ COPY Services/CO.CDP.DataSharing.WebApi/CO.CDP.DataSharing.WebApi.csproj Service
 COPY Services/CO.CDP.DataSharing.WebApi.Tests/CO.CDP.DataSharing.WebApi.Tests.csproj Services/CO.CDP.DataSharing.WebApi.Tests/
 COPY Services/CO.CDP.Organisation.WebApi.Tests/CO.CDP.Organisation.WebApi.Tests.csproj Services/CO.CDP.Organisation.WebApi.Tests/
 COPY Services/CO.CDP.Organisation.WebApi/CO.CDP.Organisation.WebApi.csproj Services/CO.CDP.Organisation.WebApi/
+COPY Services/CO.CDP.Person.Persistence/CO.CDP.Person.Persistence.csproj Services/CO.CDP.Person.Persistence/
+COPY Services/CO.CDP.Person.Persistence.Tests/CO.CDP.Person.Persistence.Tests.csproj Services/CO.CDP.Person.Persistence.Tests/
 COPY Services/CO.CDP.Person.WebApi/CO.CDP.Person.WebApi.csproj Services/CO.CDP.Person.WebApi/
 COPY Services/CO.CDP.Person.WebApi.Tests/CO.CDP.Person.WebApi.Tests.csproj Services/CO.CDP.Person.WebApi.Tests/
 COPY Services/CO.CDP.Forms.WebApi/CO.CDP.Forms.WebApi.csproj Services/CO.CDP.Forms.WebApi/
