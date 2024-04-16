@@ -3,44 +3,48 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34622.214
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.Tenant.WebApi", "Services\CO.CDP.Tenant.WebApi\CO.CDP.Tenant.WebApi.csproj", "{C9278454-2E29-45D4-8F0F-F27C548E0B1F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.Tenant.WebApi", "Services\CO.CDP.Tenant.WebApi\CO.CDP.Tenant.WebApi.csproj", "{C9278454-2E29-45D4-8F0F-F27C548E0B1F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.Tenant.WebApi.Tests", "Services\CO.CDP.Tenant.WebApi.Tests\CO.CDP.Tenant.WebApi.Tests.csproj", "{71129DB6-C02A-4476-A328-BA5822F22A8C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.Tenant.WebApi.Tests", "Services\CO.CDP.Tenant.WebApi.Tests\CO.CDP.Tenant.WebApi.Tests.csproj", "{71129DB6-C02A-4476-A328-BA5822F22A8C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.Organisation.WebApi", "Services\CO.CDP.Organisation.WebApi\CO.CDP.Organisation.WebApi.csproj", "{F73306D3-A170-4849-8982-5FF3D1961362}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.Organisation.WebApi", "Services\CO.CDP.Organisation.WebApi\CO.CDP.Organisation.WebApi.csproj", "{F73306D3-A170-4849-8982-5FF3D1961362}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.Person.WebApi", "Services\CO.CDP.Person.WebApi\CO.CDP.Person.WebApi.csproj", "{D9CC02AD-3031-496A-8E48-E736623D1B41}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.Person.WebApi", "Services\CO.CDP.Person.WebApi\CO.CDP.Person.WebApi.csproj", "{D9CC02AD-3031-496A-8E48-E736623D1B41}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.DataSharing.WebApi", "Services\CO.CDP.DataSharing.WebApi\CO.CDP.DataSharing.WebApi.csproj", "{C5DD309E-CA59-4C82-BFC4-9374026A2B21}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.DataSharing.WebApi", "Services\CO.CDP.DataSharing.WebApi\CO.CDP.DataSharing.WebApi.csproj", "{C5DD309E-CA59-4C82-BFC4-9374026A2B21}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.Forms.WebApi", "Services\CO.CDP.Forms.WebApi\CO.CDP.Forms.WebApi.csproj", "{4298A4EF-B336-4809-95F0-AF5D73266A18}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.Forms.WebApi", "Services\CO.CDP.Forms.WebApi\CO.CDP.Forms.WebApi.csproj", "{4298A4EF-B336-4809-95F0-AF5D73266A18}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.Organisation.WebApi.Tests", "Services\CO.CDP.Organisation.WebApi.Tests\CO.CDP.Organisation.WebApi.Tests.csproj", "{41DF6448-6761-4000-9948-CA906100E55E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.Organisation.WebApi.Tests", "Services\CO.CDP.Organisation.WebApi.Tests\CO.CDP.Organisation.WebApi.Tests.csproj", "{41DF6448-6761-4000-9948-CA906100E55E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.Person.WebApi.Tests", "Services\CO.CDP.Person.WebApi.Tests\CO.CDP.Person.WebApi.Tests.csproj", "{24CCE329-0EE7-4677-A90F-47DB2F37AE4A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.Person.WebApi.Tests", "Services\CO.CDP.Person.WebApi.Tests\CO.CDP.Person.WebApi.Tests.csproj", "{24CCE329-0EE7-4677-A90F-47DB2F37AE4A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.Forms.WebApi.Tests", "Services\CO.CDP.Forms.WebApi.Tests\CO.CDP.Forms.WebApi.Tests.csproj", "{FE1C13BB-72CE-4EB4-98D3-C6A9B29E14E3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.Forms.WebApi.Tests", "Services\CO.CDP.Forms.WebApi.Tests\CO.CDP.Forms.WebApi.Tests.csproj", "{FE1C13BB-72CE-4EB4-98D3-C6A9B29E14E3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.DataSharing.WebApi.Tests", "Services\CO.CDP.DataSharing.WebApi.Tests\CO.CDP.DataSharing.WebApi.Tests.csproj", "{D5413393-FCD2-4BC0-8A2D-127952EE43D4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.DataSharing.WebApi.Tests", "Services\CO.CDP.DataSharing.WebApi.Tests\CO.CDP.DataSharing.WebApi.Tests.csproj", "{D5413393-FCD2-4BC0-8A2D-127952EE43D4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.OrganisationApp", "Frontend\CO.CDP.OrganisationApp\CO.CDP.OrganisationApp.csproj", "{379D2839-9ECA-4DC4-9BF3-12D1DFB25908}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.OrganisationApp", "Frontend\CO.CDP.OrganisationApp\CO.CDP.OrganisationApp.csproj", "{379D2839-9ECA-4DC4-9BF3-12D1DFB25908}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.OrganisationApp.Tests", "Frontend\CO.CDP.OrganisationApp.Tests\CO.CDP.OrganisationApp.Tests.csproj", "{F4C94C12-3FAC-4BE3-9924-5B2B2E2A5E04}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.OrganisationApp.Tests", "Frontend\CO.CDP.OrganisationApp.Tests\CO.CDP.OrganisationApp.Tests.csproj", "{F4C94C12-3FAC-4BE3-9924-5B2B2E2A5E04}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.Testcontainers.PostgreSql.Tests", "TestKit\CO.CDP.Testcontainers.PostgreSql.Tests\CO.CDP.Testcontainers.PostgreSql.Tests.csproj", "{EAC4F0BA-22F7-4A7B-8B9E-4EF536A32E8D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.Testcontainers.PostgreSql.Tests", "TestKit\CO.CDP.Testcontainers.PostgreSql.Tests\CO.CDP.Testcontainers.PostgreSql.Tests.csproj", "{EAC4F0BA-22F7-4A7B-8B9E-4EF536A32E8D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.Testcontainers.PostgreSql", "TestKit\CO.CDP.Testcontainers.PostgreSql\CO.CDP.Testcontainers.PostgreSql.csproj", "{A706D75A-4235-46FE-A2C2-DB7365BB732B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.Testcontainers.PostgreSql", "TestKit\CO.CDP.Testcontainers.PostgreSql\CO.CDP.Testcontainers.PostgreSql.csproj", "{A706D75A-4235-46FE-A2C2-DB7365BB732B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.Tenant.Persistence", "Services\CO.CDP.Tenant.Persistence\CO.CDP.Tenant.Persistence.csproj", "{446A0EFB-D623-4C5F-BB3E-8EAACF0D865C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.Tenant.Persistence", "Services\CO.CDP.Tenant.Persistence\CO.CDP.Tenant.Persistence.csproj", "{446A0EFB-D623-4C5F-BB3E-8EAACF0D865C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.Tenant.Persistence.Tests", "Services\CO.CDP.Tenant.Persistence.Tests\CO.CDP.Tenant.Persistence.Tests.csproj", "{69F70A0E-7C9B-4DE8-9AF6-11C7E23A7DB1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.Tenant.Persistence.Tests", "Services\CO.CDP.Tenant.Persistence.Tests\CO.CDP.Tenant.Persistence.Tests.csproj", "{69F70A0E-7C9B-4DE8-9AF6-11C7E23A7DB1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.Tenant.WebApiClient", "Libraries\CO.CDP.Tenant.WebApiClient\CO.CDP.Tenant.WebApiClient.csproj", "{29F9AB38-BEE0-4522-97BC-CC3B3390E8B5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.Tenant.WebApiClient", "Libraries\CO.CDP.Tenant.WebApiClient\CO.CDP.Tenant.WebApiClient.csproj", "{29F9AB38-BEE0-4522-97BC-CC3B3390E8B5}"
 	ProjectSection(ProjectDependencies) = postProject
 		{C9278454-2E29-45D4-8F0F-F27C548E0B1F} = {C9278454-2E29-45D4-8F0F-F27C548E0B1F}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.Tenant.WebApiClient.Tests", "Libraries\CO.CDP.Tenant.WebApiClient.Tests\CO.CDP.Tenant.WebApiClient.Tests.csproj", "{ED9D64F1-9EF1-4784-848B-5C665394F6CA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.Tenant.WebApiClient.Tests", "Libraries\CO.CDP.Tenant.WebApiClient.Tests\CO.CDP.Tenant.WebApiClient.Tests.csproj", "{ED9D64F1-9EF1-4784-848B-5C665394F6CA}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.Organisation.Persistence.Tests", "Services\CO.CDP.Organisation.Persistence.Tests\CO.CDP.Organisation.Persistence.Tests.csproj", "{E7300B9F-A1D7-45B1-B027-81ABA8160ABD}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.Organisation.Persistence", "Services\CO.CDP.Organisation.Persistence\CO.CDP.Organisation.Persistence.csproj", "{96374813-92B6-4FFF-9034-796D5720B7D4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -120,5 +124,19 @@ Global
 		{ED9D64F1-9EF1-4784-848B-5C665394F6CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ED9D64F1-9EF1-4784-848B-5C665394F6CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ED9D64F1-9EF1-4784-848B-5C665394F6CA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E7300B9F-A1D7-45B1-B027-81ABA8160ABD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E7300B9F-A1D7-45B1-B027-81ABA8160ABD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E7300B9F-A1D7-45B1-B027-81ABA8160ABD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E7300B9F-A1D7-45B1-B027-81ABA8160ABD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{96374813-92B6-4FFF-9034-796D5720B7D4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{96374813-92B6-4FFF-9034-796D5720B7D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{96374813-92B6-4FFF-9034-796D5720B7D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{96374813-92B6-4FFF-9034-796D5720B7D4}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0E6CB9A0-2955-4B92-9C53-84615B6B659B}
 	EndGlobalSection
 EndGlobal
