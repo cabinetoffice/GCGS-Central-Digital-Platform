@@ -1,81 +1,93 @@
 @page "/registration/your-details"
 @model CO.CDP.OrganisationApp.Pages.Registration.YourDetailsModel
 
-<a href="/" class="govuk-back-link">
-	Back
-</a>
-
 @{
-	var firstNameHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.FirstName)).HasInnerHtml;
-	var lastNameHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.LastName)).HasInnerHtml;
-	var emailHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Email)).HasInnerHtml;
+    var firstNameHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.FirstName)).HasInnerHtml;
+    var lastNameHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.LastName)).HasInnerHtml;
+    var emailHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Email)).HasInnerHtml;
+
+    var backLink = "/";
+    if (Request.Query.ContainsKey("frm-summary"))
+    {
+        backLink = "/registration/organisation-details-summary";
+    }
 }
 
+<a href="@backLink" class="govuk-back-link">
+    Back
+</a>
+
 <main class="govuk-main-wrapper">
-	<div class="govuk-grid-row">
-		<div class="govuk-grid-column-two-thirds">
-			<partial name="_ErrorSummary" model="@ModelState" />
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <partial name="_ErrorSummary" model="@ModelState" />
 
-			<h1 class="govuk-heading-l">
-				Confirm your name
-			</h1>
-			<p class="govuk-body">We have used the name you entered in GOV.UK One Login.</p>
+            <h1 class="govuk-heading-l">
+                Confirm your name
+            </h1>
+            <p class="govuk-body">We have used the name you entered in GOV.UK One Login.</p>
 
-			<form method="post">
-				<fieldset class="govuk-fieldset">
-					<div class="govuk-form-group @(firstNameHasError ? "govuk-form-group--error" : "")">
-						<label class="govuk-label" for="@nameof(Model.FirstName)">
-							@Html.DisplayNameFor(m => m.FirstName)
-						</label>
-						@if (firstNameHasError)
-						{
-							<p id="first-name-error" class="govuk-error-message">
-								<span class="govuk-visually-hidden">Error:</span>
-								@Html.ValidationMessageFor(m => m.FirstName)
-							</p>
-						}
-						<input class="govuk-input @(firstNameHasError ? "govuk-input--error" : "")" id="@nameof(Model.FirstName)"
-							   value="@Model.FirstName" name="@nameof(Model.FirstName)" type="text"
-							   spellcheck="false" @(firstNameHasError ? "aria-describedby=first-name-error" : "")>
-					</div>
+            <form method="post">
 
-					<div class="govuk-form-group @(lastNameHasError ? "govuk-form-group--error" : "")">
-						<label class="govuk-label" for="@nameof(Model.LastName)">
-							@Html.DisplayNameFor(m => m.LastName)
-						</label>
-						@if (lastNameHasError)
-						{
-							<p id="last-name-error" class="govuk-error-message">
-								<span class="govuk-visually-hidden">Error:</span>
-								@Html.ValidationMessageFor(m => m.LastName)
-							</p>
-						}
-						<input class="govuk-input @(lastNameHasError ? "govuk-input--error" : "")" id="@nameof(Model.LastName)"
-							   value="@Model.LastName" name="@nameof(Model.LastName)" type="text"
-							   spellcheck="false" @(lastNameHasError ? "aria-describedby=last-name-error" : "")>
-					</div>
+                @if (Request.Query.ContainsKey("frm-summary"))
+                {
+                    <input type="hidden" name="RedirectToSummary" value="true" />
+                }
 
-					<div class="govuk-form-group @(emailHasError ? "govuk-form-group--error" : "")">
-						<label class="govuk-label" for="@nameof(Model.Email)">
-							@Html.DisplayNameFor(m => m.Email)
-						</label>
-						@if (emailHasError)
-						{
-							<p id="email-error" class="govuk-error-message">
-								<span class="govuk-visually-hidden">Error:</span>
-								@Html.ValidationMessageFor(m => m.Email)
-							</p>
-						}
-						<input class="govuk-input @(emailHasError ? "govuk-input--error" : "")" id="@nameof(Model.Email)"
-							   value="@Model.Email" type="text" name="@nameof(Model.Email)"
-							   spellcheck="false" autocomplete="email" @(emailHasError ? "aria-describedby=email-error" : "")>
-					</div>
-				</fieldset>
+                <fieldset class="govuk-fieldset">
+                    <div class="govuk-form-group @(firstNameHasError ? "govuk-form-group--error" : "")">
+                        <label class="govuk-label" for="@nameof(Model.FirstName)">
+                            @Html.DisplayNameFor(m => m.FirstName)
+                        </label>
+                        @if (firstNameHasError)
+                        {
+                            <p id="first-name-error" class="govuk-error-message">
+                                <span class="govuk-visually-hidden">Error:</span>
+                                @Html.ValidationMessageFor(m => m.FirstName)
+                            </p>
+                        }
+                        <input class="govuk-input @(firstNameHasError ? "govuk-input--error" : "")" id="@nameof(Model.FirstName)"
+                               value="@Model.FirstName" name="@nameof(Model.FirstName)" type="text"
+                               spellcheck="false" @(firstNameHasError ? "aria-describedby=first-name-error" : "")>
+                    </div>
 
-				<button type="submit" class="govuk-button" data-module="govuk-button">
-					Continue
-				</button>
-			</form>
-		</div>
-	</div>
+                    <div class="govuk-form-group @(lastNameHasError ? "govuk-form-group--error" : "")">
+                        <label class="govuk-label" for="@nameof(Model.LastName)">
+                            @Html.DisplayNameFor(m => m.LastName)
+                        </label>
+                        @if (lastNameHasError)
+                        {
+                            <p id="last-name-error" class="govuk-error-message">
+                                <span class="govuk-visually-hidden">Error:</span>
+                                @Html.ValidationMessageFor(m => m.LastName)
+                            </p>
+                        }
+                        <input class="govuk-input @(lastNameHasError ? "govuk-input--error" : "")" id="@nameof(Model.LastName)"
+                               value="@Model.LastName" name="@nameof(Model.LastName)" type="text"
+                               spellcheck="false" @(lastNameHasError ? "aria-describedby=last-name-error" : "")>
+                    </div>
+
+                    <div class="govuk-form-group @(emailHasError ? "govuk-form-group--error" : "")">
+                        <label class="govuk-label" for="@nameof(Model.Email)">
+                            @Html.DisplayNameFor(m => m.Email)
+                        </label>
+                        @if (emailHasError)
+                        {
+                            <p id="email-error" class="govuk-error-message">
+                                <span class="govuk-visually-hidden">Error:</span>
+                                @Html.ValidationMessageFor(m => m.Email)
+                            </p>
+                        }
+                        <input class="govuk-input @(emailHasError ? "govuk-input--error" : "")" id="@nameof(Model.Email)"
+                               value="@Model.Email" type="text" name="@nameof(Model.Email)"
+                               spellcheck="false" autocomplete="email" @(emailHasError ? "aria-describedby=email-error" : "")>
+                    </div>
+                </fieldset>
+
+                <button type="submit" class="govuk-button" data-module="govuk-button">
+                    Continue
+                </button>
+            </form>
+        </div>
+    </div>
 </main>

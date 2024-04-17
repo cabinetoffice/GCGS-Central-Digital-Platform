@@ -202,6 +202,20 @@ public class YourDetailsModelTest
     }
 
     [Fact]
+    public void OnPost_WhenValidModelAndRedirectToSummary_ShouldRedirectToOrganisationDetailSummaryPage()
+    {
+        var model = GivenYourDetailsModel();
+        model.RedirectToSummary = true;
+        sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey))
+            .Returns(new RegistrationDetails { TenantId = Guid.NewGuid() });
+
+        var actionResult = model.OnPost();
+
+        actionResult.Should().BeOfType<RedirectToPageResult>()
+            .Which.PageName.Should().Be("OrganisationDetailsSummary");
+    }
+
+    [Fact]
     public void OnGet_ValidSession_ReturnsRegistrationDetails()
     {
         var model = GivenYourDetailsModel();

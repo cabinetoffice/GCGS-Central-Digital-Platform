@@ -1,14 +1,20 @@
 @page "/registration/organisation-details"
 @model CO.CDP.OrganisationApp.Pages.Registration.OrganisationDetailModel
 
-<a href="/registration/your-details" class="govuk-back-link">
+@{
+    var organisationNameHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.OrganisationName)).HasInnerHtml;
+    var emailAddressHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.EmailAddress)).HasInnerHtml;
+
+    var backLink = "/registration/your-details";
+    if (Request.Query.ContainsKey("frm-summary"))
+    {
+        backLink = "/registration/organisation-details-summary";
+        Model.RedirectToSummary = true;
+    }
+}
+<a href="@backLink" class="govuk-back-link">
     Back
 </a>
-@{
-    var organisationNameHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.OrganisationName)).HasInnerHtml;    
-    var emailAddressHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.EmailAddress)).HasInnerHtml;
-}
-
 <main class="govuk-main-wrapper">
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
@@ -17,6 +23,12 @@
             <h1 class="govuk-heading-xl">Supplier Registration</h1>
 
             <form method="post">
+
+                @if (Request.Query.ContainsKey("frm-summary"))
+                {
+                    <input type="hidden" name="RedirectToSummary" value="true" />
+                }
+
                 <div class="govuk-form-group">
                     <fieldset class="govuk-fieldset">
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">

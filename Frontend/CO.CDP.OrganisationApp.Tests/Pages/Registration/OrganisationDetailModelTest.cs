@@ -148,6 +148,21 @@ public class OrganisationDetailModelTest
     }
 
     [Fact]
+    public void OnPost_WhenModelStateIsValidAndRedirectToSummary_ShouldRedirectToOrganisationDetailSummaryPage()
+    {
+        var model = GivenOrganisationDetailModel();
+        model.RedirectToSummary = true;
+
+        RegistrationDetails registrationDetails = DummyRegistrationDetails();
+        sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(registrationDetails);
+
+        var actionResult = model.OnPost();
+
+        actionResult.Should().BeOfType<RedirectToPageResult>()
+            .Which.PageName.Should().Be("OrganisationDetailsSummary");
+    }
+
+    [Fact]
     public void OnGet_ValidSession_ReturnsRegistrationDetails()
     {        
         var model = GivenOrganisationDetailModel();
