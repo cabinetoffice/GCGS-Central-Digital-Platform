@@ -26,7 +26,7 @@ public class YourDetailsModelTest
 
         var results = ModelValidationHelper.Validate(model);
 
-        results.Count.Should().Be(3);
+        results.Count.Should().Be(2);
     }
 
     [Fact]
@@ -78,44 +78,6 @@ public class YourDetailsModelTest
     }
 
     [Fact]
-    public void Model_WhenEmailIsEmpty_ShouldRaiseEmailValidationError()
-    {
-        var model = GivenYourDetailsModel();
-
-        var results = ModelValidationHelper.Validate(model);
-
-        results.Any(c => c.MemberNames.Contains("Email")).Should().BeTrue();
-
-        results.Where(c => c.MemberNames.Contains("Email")).First()
-            .ErrorMessage.Should().Be("Enter your email address");
-    }
-
-    [Fact]
-    public void Model_WhenEmailIsInvalid_ShouldRaiseEmailValidationError()
-    {
-        var model = GivenYourDetailsModel();
-        model.Email = "dummy";
-
-        var results = ModelValidationHelper.Validate(model);
-
-        results.Any(c => c.MemberNames.Contains("Email")).Should().BeTrue();
-
-        results.Where(c => c.MemberNames.Contains("Email")).First()
-            .ErrorMessage.Should().Be("Enter an email address in the correct format, like name@example.com");
-    }
-
-    [Fact]
-    public void Model_WhenEmailIsValid_ShouldNotRaiseEmailValidationError()
-    {
-        var model = GivenYourDetailsModel();
-        model.Email = "dummay@test.com";
-
-        var results = ModelValidationHelper.Validate(model);
-
-        results.Any(c => c.MemberNames.Contains("Email")).Should().BeFalse();
-    }
-
-    [Fact]
     public void OnGet_WhenRegistrationDetailsNotInSession_ShouldThrowException()
     {
         var model = GivenYourDetailsModel();
@@ -135,15 +97,13 @@ public class YourDetailsModelTest
             {
                 TenantId = Guid.NewGuid(),
                 FirstName = "firstdummy",
-                LastName = "lastdummy",
-                Email = "dummy@test.com"
+                LastName = "lastdummy"
             });
 
         model.OnGet();
 
         model.FirstName.Should().Be("firstdummy");
         model.LastName.Should().Be("lastdummy");
-        model.Email.Should().Be("dummy@test.com");
     }
 
     [Fact]
@@ -221,7 +181,7 @@ public class YourDetailsModelTest
         var model = GivenYourDetailsModel();
 
         RegistrationDetails registrationDetails = new RegistrationDetails
-                                                        { FirstName = "first name", LastName = "last name", Email = "test@co.com" };
+        { FirstName = "first name", LastName = "last name", Email = "test@co.com" };
 
         sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(registrationDetails);
 
@@ -229,7 +189,6 @@ public class YourDetailsModelTest
 
         model.FirstName.Should().Be(registrationDetails.FirstName);
         model.LastName.Should().Be(registrationDetails.LastName);
-        model.Email.Should().Be(registrationDetails.Email);
     }
 
     private YourDetailsModel GivenYourDetailsModel()
