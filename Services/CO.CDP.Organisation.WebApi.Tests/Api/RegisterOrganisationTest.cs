@@ -1,9 +1,12 @@
 using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.Organisation.WebApi.Tests.Api.WebApp;
 using CO.CDP.Organisation.WebApi.UseCase;
+using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
+using System.Net;
 using System.Net.Http.Json;
+using static System.Net.HttpStatusCode;
 
 namespace CO.CDP.Organisation.WebApi.Tests.Api;
 public class RegisterOrganisationTest
@@ -35,20 +38,28 @@ public class RegisterOrganisationTest
             Roles = command.Roles
         };
 
-        _registerOrganisationUseCase.Setup(useCase => useCase.Execute(command))
-            .Returns(Task.FromResult(organisation));
+        _registerOrganisationUseCase.Setup(useCase => useCase.Execute(It.IsAny<RegisterOrganisation>()))
+                                    .ReturnsAsync(organisation);
 
         var response = await _httpClient.PostAsJsonAsync("/organisations", command);
 
-        //response.Should().HaveStatusCode(Created, await response.Content.ReadAsStringAsync());
-        //response.StatusCode.Should().Be(System.Net.HttpStatusCode.Created);
-        //response.Headers.Location.Should().Match<string>("^/organisations/[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}$");
-        //var content = await response.Content.ReadFromJsonAsync<Model.Organisation>();
-        //content.Should().BeEquivalentTo(organisation);
+        response.Should().HaveStatusCode(Created, await response.Content.ReadAsStringAsync());
 
-        //response.Should().HaveStatusCode(Created, await response.Content.ReadAsStringAsync());
-        //response.Should().MatchLocation("^/organisations/[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}$");
-        //await response.Should().HaveContent(organisation);
+        var returnedOrganisation = await response.Content.ReadFromJsonAsync<Model.Organisation>();
+        returnedOrganisation.Should().BeEquivalentTo(organisation, options => options.ComparingByMembers<Model.Organisation>());
+    }
+
+    [Fact]
+    public async Task ItHandlesOrganisationCreationFailure()
+    {
+        var command = GivenRegisterOrganisationCommand();
+
+        _registerOrganisationUseCase.Setup(useCase => useCase.Execute(It.IsAny<RegisterOrganisation>()))
+                                    .ReturnsAsync((Model.Organisation)null);
+
+        var response = await _httpClient.PostAsJsonAsync("/organisations", command);
+
+        response.Should().HaveStatusCode(HttpStatusCode.InternalServerError, await response.Content.ReadAsStringAsync());
     }
 
     private static RegisterOrganisation GivenRegisterOrganisationCommand()

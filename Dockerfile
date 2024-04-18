@@ -33,6 +33,8 @@ COPY Services/CO.CDP.Person.WebApi/CO.CDP.Person.WebApi.csproj Services/CO.CDP.P
 COPY Services/CO.CDP.Person.WebApi.Tests/CO.CDP.Person.WebApi.Tests.csproj Services/CO.CDP.Person.WebApi.Tests/
 COPY Services/CO.CDP.Forms.WebApi/CO.CDP.Forms.WebApi.csproj Services/CO.CDP.Forms.WebApi/
 COPY Services/CO.CDP.Forms.WebApi.Tests/CO.CDP.Forms.WebApi.Tests.csproj Services/CO.CDP.Forms.WebApi.Tests/
+COPY Services/CO.CDP.Organisation.Persistence/CO.CDP.Organisation.Persistence.csproj Services/CO.CDP.Organisation.Persistence/
+COPY Services/CO.CDP.Organisation.Persistence.Tests/CO.CDP.Organisation.Persistence.Tests.csproj Services/CO.CDP.Organisation.Persistence.Tests/
 COPY GCGS-Central-Digital-Platform.sln .
 RUN dotnet restore "GCGS-Central-Digital-Platform.sln"
 
@@ -117,6 +119,18 @@ FROM base AS final-tenant
 WORKDIR /app
 COPY --from=publish-tenant /app/publish .
 ENTRYPOINT ["dotnet", "CO.CDP.Tenant.WebApi.dll"]
+
+FROM build-organisation AS build-migrations-organisation
+WORKDIR /src
+COPY .config/dotnet-tools.json .config/
+RUN dotnet tool restore
+RUN dotnet ef migrations bundle -p /src/Services/CO.CDP.Organisation.Persistence -s /src/Services/CO.CDP.Organisation.WebApi --self-contained -o /app/migrations/efbundle
+
+FROM base AS migrations-organisation
+ENV MIGRATIONS_CONNECTION_STRING=""
+WORKDIR /app
+COPY --from=build-migrations-organisation /app/migrations/efbundle .
+ENTRYPOINT /app/efbundle --connection "$MIGRATIONS_CONNECTION_STRING"
 
 FROM base AS final-organisation
 WORKDIR /app

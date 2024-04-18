@@ -7,7 +7,6 @@ using System.ComponentModel.DataAnnotations;
 namespace CO.CDP.Organisation.WebApi.Api;
 internal record OrganisationDetails
 {
-    // [Required(AllowEmptyStrings = true)] public required string Id { get; init; }
     [Required] public required OrganisationIdentifier Identifier { get; init; }
     [Required] public required List<OrganisationIdentifier> AdditionalIdentifiers { get; init; }
     [Required(AllowEmptyStrings = true)] public required string Name { get; init; }
@@ -84,43 +83,23 @@ public static class EndpointExtensions
             });
 
         app.MapPost("/organisations", async (RegisterOrganisation command, IUseCase<RegisterOrganisation, Model.Organisation> useCase) =>
-                await useCase.Execute(command)
-                    .AndThen(organisation =>
-                        Results.Created(new Uri($"/organisations/{organisation.Id}", UriKind.Relative), organisation)
-                    ))
-            .Produces<Model.Organisation>(201, "application/json")
-            .WithOpenApi(operation =>
-            {
-                operation.OperationId = "CreateOrganisation";
-                operation.Description = "Create a new organisation.";
-                operation.Summary = "Create a new organisation.";
-                operation.Responses["201"].Description = "Organisation created successfully.";
-                return operation;
-            });
-        //app.MapPost("/organisations", (NewOrganisation newOrganisation) =>
-        //    {
-        //        var organisation = new Organisation
-        //        {
-        //            Id = (_organisations.Count + 1).ToString(),
-        //            Identifier = newOrganisation.Identifier,
-        //            Name = newOrganisation.Name,
-        //            AdditionalIdentifiers = newOrganisation.AdditionalIdentifiers,
-        //            Address = newOrganisation.Address,
-        //            ContactPoint = newOrganisation.ContactPoint,
-        //            Roles = newOrganisation.Roles,
-        //        };
-        //        _organisations.Add(organisation.Id, organisation);
-        //        return Results.Created(new Uri($"/organisations/{organisation.Id}"), organisation);
-        //    })
-        //    .Produces<Organisation>(201, "application/json")
-        //    .WithOpenApi(operation =>
-        //    {
-        //        operation.OperationId = "CreateOrganisation";
-        //        operation.Description = "Create a new organisation.";
-        //        operation.Summary = "Create a new organisation.";
-        //        operation.Responses["201"].Description = "Organisation created.";
-        //        return operation;
-        //    });
+            await useCase.Execute(command)
+                .AndThen(organisation =>
+                    organisation != null
+                        ? Results.Created(new Uri($"/organisations/{organisation.Id}", UriKind.Relative), organisation)
+                        : Results.Problem("Organisation could not be created due to an internal error"))
+        )
+        .Produces<Model.Organisation>(201, "application/json")
+        .ProducesProblem(500)
+        .WithOpenApi(operation =>
+        {
+            operation.OperationId = "CreateOrganisation";
+            operation.Description = "Create a new organisation.";
+            operation.Summary = "Create a new organisation.";
+            operation.Responses["201"].Description = "Organisation created successfully.";
+            return operation;
+        });
+
         app.MapGet("/organisations/{organisationId}", (Guid organisationId) =>
             {
                 try
