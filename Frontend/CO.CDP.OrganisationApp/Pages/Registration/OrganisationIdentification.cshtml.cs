@@ -131,6 +131,9 @@ public class OrganisationIdentificationModel(ISession session) : PageModel
     [DisplayName("Other / None")]
     public string? Other { get; set; }
 
+    [BindProperty]
+    public bool? RedirectToSummary { get; set; }
+
     public void OnGet()
     {
         var registrationDetails = VerifySession();
@@ -239,7 +242,14 @@ public class OrganisationIdentificationModel(ISession session) : PageModel
 
         session.Set(Session.RegistrationDetailsKey, registrationDetails);
 
-        return RedirectToPage("./OrganisationRegisteredAddress");
+        if (RedirectToSummary == true)
+        {
+            return RedirectToPage("OrganisationDetailsSummary");
+        }
+        else
+        {
+            return RedirectToPage("./OrganisationRegisteredAddress");
+        }
     }
 
     private RegistrationDetails VerifySession()

@@ -1,10 +1,6 @@
 @page "/registration/organisation-identification"
 @model CO.CDP.OrganisationApp.Pages.Registration.OrganisationIdentificationModel
 
-<a href="/registration/organisation-details" class="govuk-back-link">
-    Back
-</a>
-
 @{
     var companiesHouseNumberHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.CompaniesHouseNumber)).HasInnerHtml;    
     var charityCommissionEnglandWalesNumberHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.CharityCommissionEnglandWalesNumber)).HasInnerHtml;
@@ -19,9 +15,19 @@
     var ukLearningProviderReferenceNumberHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.UKLearningProviderReferenceNumber)).HasInnerHtml;
     var vatNumberHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.VATNumber)).HasInnerHtml;
     
-    var nationalHealthServiceOrganisationsRegistryNumberHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.NationalHealthServiceOrganisationsRegistryNumber)).HasInnerHtml;   
+    var nationalHealthServiceOrganisationsRegistryNumberHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.NationalHealthServiceOrganisationsRegistryNumber)).HasInnerHtml;
 
+    var backLink = "/registration/organisation-details";
+    if (Request.Query.ContainsKey("frm-summary"))
+    {
+        backLink = "/registration/organisation-details-summary";
+        Model.RedirectToSummary = true;
+    }
 }
+
+<a href="@backLink" class="govuk-back-link">
+    Back
+</a>
 
 <main class="govuk-main-wrapper">
     <div class="govuk-grid-row">
@@ -29,6 +35,10 @@
             <partial name="_ErrorSummary" model="@Model.ModelState" />
             <h1 class="govuk-heading-l">Organisation Identification</h1>
             <form method="post">
+                @if (Request.Query.ContainsKey("frm-summary"))
+                {
+                    <input type="hidden" name="RedirectToSummary" value="true" />
+                }
                 <div class="govuk-form-group">
                     <fieldset class="govuk-fieldset">
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
@@ -168,7 +178,7 @@
                             </div>
 
                             <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="Other" name="OrganisationType" type="radio" value="Other" data-aria-controls="conditional-Other" @(Model.OrganisationType == "Other" ? "checked" : "")>
+                                <input class="govuk-radios__input" id="Other" name="OrganisationType" type="radio" value="Other" @(Model.OrganisationType == "Other" ? "checked" : "")>
                                 @Html.LabelFor(m => m.Other, new { @class = "govuk-label govuk-radios__label", @for = "Other" })
                             </div>
                         </div>

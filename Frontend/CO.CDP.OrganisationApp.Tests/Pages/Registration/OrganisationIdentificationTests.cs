@@ -307,6 +307,19 @@ public class OrganisationIdentificationModelTests
         (result as RedirectToPageResult)?.PageName.Should().Be("./OrganisationRegisteredAddress");
     }
 
+    [Fact]
+    public void OnPost_WhenModelStateIsValidAndRedirectToSummary_ShouldRedirectToOrganisationDetailSummaryPage()
+    {
+        var model = new OrganisationIdentificationModel(sessionMock.Object)
+        {
+            OrganisationType = "Other",
+            RedirectToSummary = true
+        };
+        var result = model.OnPost();
+        result.Should().BeOfType<RedirectToPageResult>();
+        (result as RedirectToPageResult)?.PageName.Should().Be("OrganisationDetailsSummary");
+    }
+
     [Theory]
     [InlineData("CHN", "123456")]
     [InlineData("CCEW", "ABCDEF")]
