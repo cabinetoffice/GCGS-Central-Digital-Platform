@@ -4,7 +4,6 @@
 @{
     var firstNameHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.FirstName)).HasInnerHtml;
     var lastNameHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.LastName)).HasInnerHtml;
-    var emailHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Email)).HasInnerHtml;
 
     var backLink = "/";
     if (Request.Query.ContainsKey("frm-summary"))
@@ -65,22 +64,6 @@
                         <input class="govuk-input @(lastNameHasError ? "govuk-input--error" : "")" id="@nameof(Model.LastName)"
                                value="@Model.LastName" name="@nameof(Model.LastName)" type="text"
                                spellcheck="false" @(lastNameHasError ? "aria-describedby=last-name-error" : "")>
-                    </div>
-
-                    <div class="govuk-form-group @(emailHasError ? "govuk-form-group--error" : "")">
-                        <label class="govuk-label" for="@nameof(Model.Email)">
-                            @Html.DisplayNameFor(m => m.Email)
-                        </label>
-                        @if (emailHasError)
-                        {
-                            <p id="email-error" class="govuk-error-message">
-                                <span class="govuk-visually-hidden">Error:</span>
-                                @Html.ValidationMessageFor(m => m.Email)
-                            </p>
-                        }
-                        <input class="govuk-input @(emailHasError ? "govuk-input--error" : "")" id="@nameof(Model.Email)"
-                               value="@Model.Email" type="text" name="@nameof(Model.Email)"
-                               spellcheck="false" autocomplete="email" @(emailHasError ? "aria-describedby=email-error" : "")>
                     </div>
                 </fieldset>
 

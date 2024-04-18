@@ -1,18 +1,22 @@
 @page "/registration/organisation-registered-address"
 @model CO.CDP.OrganisationApp.Pages.Registration.OrganisationRegisteredAddressModel
 
-<a href="/registration/organisation-identification" class="govuk-back-link">
-    Back
-</a>
-
 @{
     var addressLine1HasError = ((TagBuilder)Html.ValidationMessageFor(m => m.AddressLine1)).HasInnerHtml;
     var addressLine2HasError = ((TagBuilder)Html.ValidationMessageFor(m => m.AddressLine2)).HasInnerHtml;
     var cityOrTownHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.CityOrTown)).HasInnerHtml;
     var postcodeHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Postcode)).HasInnerHtml;
     var countryHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Country)).HasInnerHtml;
+    var backLink = "/registration/organisation-identification";
+    if (Request.Query.ContainsKey("frm-summary"))
+    {
+        backLink = "/registration/organisation-details-summary";
+    }
 }
 
+<a href="@backLink" class="govuk-back-link">
+    Back
+</a>
 
 <main class="govuk-main-wrapper">
     <div class="govuk-grid-row">
