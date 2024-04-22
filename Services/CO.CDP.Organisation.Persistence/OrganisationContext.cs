@@ -4,9 +4,6 @@ namespace CO.CDP.Organisation.Persistence;
 public class OrganisationContext(string connectionString) : DbContext
 {
     public DbSet<Organisation> Organisations { get; set; } = null!;
-    // public DbSet<OrganisationIdentifier> OrganisationIdentifier { get; set; } = null!;
-    //public DbSet<OrganisationAddress> OrganisationAddress { get; set; } = null!;
-    //public DbSet<OrganisationContactPoint> OrganisationContactPoint { get; set; } = null!;
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -34,11 +31,7 @@ public class OrganisationContext(string connectionString) : DbContext
                 a.Property(ai => ai.Scheme);
                 a.Property(ai => ai.LegalName);
                 a.Property(ai => ai.Uri);
-                //a.ToTable("AdditionalIdentifiers");
             });
-
-            // entity.OwnsOne(e => e.Address);
-            // entity.OwnsOne(e => e.ContactPoint);
         });
 
         base.OnModelCreating(modelBuilder);
