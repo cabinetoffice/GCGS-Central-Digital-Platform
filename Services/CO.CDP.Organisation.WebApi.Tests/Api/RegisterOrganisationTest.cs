@@ -55,7 +55,7 @@ public class RegisterOrganisationTest
         var command = GivenRegisterOrganisationCommand();
 
         _registerOrganisationUseCase.Setup(useCase => useCase.Execute(It.IsAny<RegisterOrganisation>()))
-                                    .ReturnsAsync((Model.Organisation)null);
+                                    .ReturnsAsync((Model.Organisation)null!);
 
         var response = await _httpClient.PostAsJsonAsync("/organisations", command);
 

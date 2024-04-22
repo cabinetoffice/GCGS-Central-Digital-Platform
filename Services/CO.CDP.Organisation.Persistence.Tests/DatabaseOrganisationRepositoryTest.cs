@@ -121,7 +121,7 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql) : 
 
         var updatedOrganisation = await repository.Find(guid)!;
         updatedOrganisation.Should().NotBeNull();
-        updatedOrganisation.Name.Should().Be(updatedName);
+        updatedOrganisation?.Name.Should().Be(updatedName);
     }
 
     [Fact]
@@ -135,7 +135,7 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql) : 
         var found = await repository.FindByName(organisation.Name);
 
         found.Should().BeEquivalentTo(organisation, options => options.ComparingByMembers<Organisation>());
-        found.Id.Should().BePositive();
+        found?.Id.Should().BePositive();
     }
 
     [Fact]
