@@ -1,12 +1,11 @@
-using System.ComponentModel.DataAnnotations;
 using CO.CDP.Tenant.WebApi.Model;
 using CO.CDP.Tenant.WebApi.UseCase;
+using DotSwashbuckle.AspNetCore.SwaggerGen;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
-using DotSwashbuckle.AspNetCore.SwaggerGen;
+using System.ComponentModel.DataAnnotations;
 
 namespace CO.CDP.Tenant.WebApi.Api;
-
 internal record UserDetails
 {
     [Required(AllowEmptyStrings = true)] public required string Name { get; init; }

@@ -14,7 +14,7 @@ public class OneLoginCallback(
     public async Task<IActionResult> OnGet()
     {
         var userInfo = await oneLoginClient.GetUserInfo()
-                    ?? throw new Exception("Unable to retrive user info"); // show error page?
+                    ?? throw new Exception("Unable to retrive user info");
 
         Tenant.WebApiClient.Tenant? tenant;
 
