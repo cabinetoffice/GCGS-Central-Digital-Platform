@@ -26,7 +26,7 @@ public class OrganisationDetailModelTest
 
         var results = ModelValidationHelper.Validate(model);
 
-        results.Count.Should().Be(3);
+        results.Count.Should().Be(2);
     }
 
     [Fact]
@@ -54,23 +54,9 @@ public class OrganisationDetailModelTest
     }
 
     [Fact]
-    public void WhenOrganisationTypeIsEmpty_ShouldRaiseOrganisationTypeValidationError()
-    {
-        var model = GivenOrganisationDetailModel();
-
-        var results = ModelValidationHelper.Validate(model);
-
-        results.Any(c => c.MemberNames.Contains("OrganisationType")).Should().BeTrue();
-
-        results.Where(c => c.MemberNames.Contains("OrganisationType")).First()
-            .ErrorMessage.Should().Be("Enter your organisation type");
-    }
-
-    [Fact]
     public void WhenOrganisationTypeIsNotEmpty_ShouldNotRaiseOrganisationTypeValidationError()
     {
         var model = GivenOrganisationDetailModel();
-        model.OrganisationType = "dummay";
 
         var results = ModelValidationHelper.Validate(model);
 
@@ -162,6 +148,21 @@ public class OrganisationDetailModelTest
     }
 
     [Fact]
+    public void OnPost_WhenModelStateIsValidAndRedirectToSummary_ShouldRedirectToOrganisationDetailSummaryPage()
+    {
+        var model = GivenOrganisationDetailModel();
+        model.RedirectToSummary = true;
+
+        RegistrationDetails registrationDetails = DummyRegistrationDetails();
+        sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(registrationDetails);
+
+        var actionResult = model.OnPost();
+
+        actionResult.Should().BeOfType<RedirectToPageResult>()
+            .Which.PageName.Should().Be("OrganisationDetailsSummary");
+    }
+
+    [Fact]
     public void OnGet_ValidSession_ReturnsRegistrationDetails()
     {        
         var model = GivenOrganisationDetailModel();
@@ -172,8 +173,7 @@ public class OrganisationDetailModelTest
 
         model.OnGet();
 
-        model.OrganisationName.Should().Be(registrationDetails.OrganisationName);
-        model.OrganisationType.Should().Be(registrationDetails.OrganisationType);
+        model.OrganisationName.Should().Be(registrationDetails.OrganisationName);        
         model.EmailAddress.Should().Be(registrationDetails.OrganisationEmailAddress);
     }
 

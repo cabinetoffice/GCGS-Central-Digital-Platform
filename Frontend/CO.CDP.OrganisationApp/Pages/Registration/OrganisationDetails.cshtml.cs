@@ -16,22 +16,19 @@ public class OrganisationDetailModel(ISession session) : PageModel
     public string? OrganisationName { get; set; }
 
     [BindProperty]
-    [DisplayName("Organisation type")]
-    [Required(ErrorMessage = "Enter your organisation type")]
-    public string? OrganisationType { get; set; }
-
-    [BindProperty]
     [DisplayName("Email address")]
     [Required(ErrorMessage = "Enter your email address")]
     [EmailAddress(ErrorMessage = "Enter an email address in the correct format, like name@example.com")]
     public string? EmailAddress { get; set; }
+
+    [BindProperty]
+    public bool? RedirectToSummary { get; set; }
 
     public void OnGet()
     {
         var registrationDetails = VerifySession();
 
         OrganisationName = registrationDetails.OrganisationName;
-        OrganisationType = registrationDetails.OrganisationType;
         EmailAddress = registrationDetails.OrganisationEmailAddress;
     }
 
@@ -45,12 +42,18 @@ public class OrganisationDetailModel(ISession session) : PageModel
         var registrationDetails = VerifySession();
 
         registrationDetails.OrganisationName = OrganisationName;
-        registrationDetails.OrganisationType = OrganisationType;
         registrationDetails.OrganisationEmailAddress = EmailAddress;
 
         session.Set(Session.RegistrationDetailsKey, registrationDetails);
 
-        return RedirectToPage("OrganisationIdentification");
+        if (RedirectToSummary == true)
+        {
+            return RedirectToPage("OrganisationDetailsSummary");
+        }
+        else
+        {
+            return RedirectToPage("OrganisationIdentification");
+        }
     }
 
     private RegistrationDetails VerifySession()

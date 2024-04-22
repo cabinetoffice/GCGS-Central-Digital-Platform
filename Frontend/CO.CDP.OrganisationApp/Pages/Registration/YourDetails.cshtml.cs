@@ -20,10 +20,7 @@ public class YourDetailsModel(ISession session) : PageModel
     public string? LastName { get; set; }
 
     [BindProperty]
-    [DisplayName("Email address")]
-    [Required(ErrorMessage = "Enter your email address")]
-    [EmailAddress(ErrorMessage = "Enter an email address in the correct format, like name@example.com")]
-    public string? Email { get; set; }
+    public bool? RedirectToSummary { get; set; }
 
     public IActionResult OnGet()
     {
@@ -31,7 +28,6 @@ public class YourDetailsModel(ISession session) : PageModel
 
         FirstName = registrationDetails.FirstName;
         LastName = registrationDetails.LastName;
-        Email = registrationDetails.Email;
 
         return Page();
     }
@@ -47,18 +43,24 @@ public class YourDetailsModel(ISession session) : PageModel
 
         registrationDetails.FirstName = FirstName;
         registrationDetails.LastName = LastName;
-        registrationDetails.Email = Email;
 
         session.Set(Session.RegistrationDetailsKey, registrationDetails);
 
-        return RedirectToPage("OrganisationDetails");
+        if (RedirectToSummary == true)
+        {
+            return RedirectToPage("OrganisationDetailsSummary");
+        }
+        else
+        {
+            return RedirectToPage("OrganisationDetails");
+        }
     }
 
     private RegistrationDetails VerifySession()
     {
         var registrationDetails = session.Get<RegistrationDetails>(Session.RegistrationDetailsKey)
             ?? throw new Exception("Shoudn't be here"); // show error page?
- 
+
         return registrationDetails;
     }
 }
