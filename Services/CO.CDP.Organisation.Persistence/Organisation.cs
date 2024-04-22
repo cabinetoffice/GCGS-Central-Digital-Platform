@@ -16,6 +16,7 @@ public class Organisation
     public required OrganisationContactPoint ContactPoint { get; set; }
     public required List<int> Roles { get; set; } = [];
 
+    [ComplexType]
     public record OrganisationIdentifier
     {
         public required string Id;

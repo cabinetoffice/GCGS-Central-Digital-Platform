@@ -42,6 +42,56 @@ namespace CO.CDP.Organisation.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("integer[]");
 
+                    b.ComplexProperty<Dictionary<string, object>>("Address", "CO.CDP.Organisation.Persistence.Organisation.Address#OrganisationAddress", b1 =>
+                        {
+                            b1.IsRequired();
+
+                            b1.Property<string>("CountryName")
+                                .IsRequired()
+                                .HasColumnType("text");
+
+                            b1.Property<string>("Locality")
+                                .IsRequired()
+                                .HasColumnType("text");
+
+                            b1.Property<string>("PostalCode")
+                                .IsRequired()
+                                .HasColumnType("text");
+
+                            b1.Property<string>("Region")
+                                .IsRequired()
+                                .HasColumnType("text");
+
+                            b1.Property<string>("StreetAddress")
+                                .IsRequired()
+                                .HasColumnType("text");
+                        });
+
+                    b.ComplexProperty<Dictionary<string, object>>("ContactPoint", "CO.CDP.Organisation.Persistence.Organisation.ContactPoint#OrganisationContactPoint", b1 =>
+                        {
+                            b1.IsRequired();
+
+                            b1.Property<string>("Email")
+                                .IsRequired()
+                                .HasColumnType("text");
+
+                            b1.Property<string>("FaxNumber")
+                                .IsRequired()
+                                .HasColumnType("text");
+
+                            b1.Property<string>("Name")
+                                .IsRequired()
+                                .HasColumnType("text");
+
+                            b1.Property<string>("Telephone")
+                                .IsRequired()
+                                .HasColumnType("text");
+
+                            b1.Property<string>("Url")
+                                .IsRequired()
+                                .HasColumnType("text");
+                        });
+
                     b.HasKey("Id");
 
                     b.HasIndex("Guid")
@@ -55,59 +105,29 @@ namespace CO.CDP.Organisation.Persistence.Migrations
 
             modelBuilder.Entity("CO.CDP.Organisation.Persistence.Organisation", b =>
                 {
-                    b.OwnsOne("CO.CDP.Organisation.Persistence.Organisation+OrganisationAddress", "Address", b1 =>
-                        {
-                            b1.Property<int>("OrganisationId")
-                                .HasColumnType("integer");
-
-                            b1.HasKey("OrganisationId");
-
-                            b1.ToTable("Organisations");
-
-                            b1.WithOwner()
-                                .HasForeignKey("OrganisationId");
-                        });
-
-                    b.OwnsOne("CO.CDP.Organisation.Persistence.Organisation+OrganisationContactPoint", "ContactPoint", b1 =>
-                        {
-                            b1.Property<int>("OrganisationId")
-                                .HasColumnType("integer");
-
-                            b1.HasKey("OrganisationId");
-
-                            b1.ToTable("Organisations");
-
-                            b1.WithOwner()
-                                .HasForeignKey("OrganisationId");
-                        });
-
                     b.OwnsMany("CO.CDP.Organisation.Persistence.Organisation+OrganisationIdentifier", "AdditionalIdentifiers", b1 =>
                         {
                             b1.Property<int>("OrganisationId")
                                 .HasColumnType("integer");
 
                             b1.Property<string>("Id")
-                                .HasColumnType("text")
-                                .HasColumnName("IdentifierId");
+                                .HasColumnType("text");
 
                             b1.Property<string>("LegalName")
                                 .IsRequired()
-                                .HasColumnType("text")
-                                .HasColumnName("LegalName");
+                                .HasColumnType("text");
 
                             b1.Property<string>("Scheme")
                                 .IsRequired()
-                                .HasColumnType("text")
-                                .HasColumnName("Scheme");
+                                .HasColumnType("text");
 
                             b1.Property<string>("Uri")
                                 .IsRequired()
-                                .HasColumnType("text")
-                                .HasColumnName("Uri");
+                                .HasColumnType("text");
 
                             b1.HasKey("OrganisationId", "Id");
 
-                            b1.ToTable("AdditionalIdentifiers", (string)null);
+                            b1.ToTable("Organisations_AdditionalIdentifiers");
 
                             b1.WithOwner()
                                 .HasForeignKey("OrganisationId");
@@ -120,23 +140,19 @@ namespace CO.CDP.Organisation.Persistence.Migrations
 
                             b1.Property<string>("Id")
                                 .IsRequired()
-                                .HasColumnType("text")
-                                .HasColumnName("IdentifierId");
+                                .HasColumnType("text");
 
                             b1.Property<string>("LegalName")
                                 .IsRequired()
-                                .HasColumnType("text")
-                                .HasColumnName("LegalName");
+                                .HasColumnType("text");
 
                             b1.Property<string>("Scheme")
                                 .IsRequired()
-                                .HasColumnType("text")
-                                .HasColumnName("Scheme");
+                                .HasColumnType("text");
 
                             b1.Property<string>("Uri")
                                 .IsRequired()
-                                .HasColumnType("text")
-                                .HasColumnName("Uri");
+                                .HasColumnType("text");
 
                             b1.HasKey("OrganisationId");
 
@@ -147,12 +163,6 @@ namespace CO.CDP.Organisation.Persistence.Migrations
                         });
 
                     b.Navigation("AdditionalIdentifiers");
-
-                    b.Navigation("Address")
-                        .IsRequired();
-
-                    b.Navigation("ContactPoint")
-                        .IsRequired();
 
                     b.Navigation("Identifier")
                         .IsRequired();
