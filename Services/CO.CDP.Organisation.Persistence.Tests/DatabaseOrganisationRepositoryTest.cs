@@ -68,12 +68,10 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql) : 
     public async Task ItUpdatesAnExistingOrganisation()
     {
         var guid = Guid.NewGuid();
-        var initialName = "TheOrganisation";
-        var updatedName = "TheOrganisationUpdated";
+        var initialName = "TheOrganisation1";
+        var updatedName = "TheOrganisationUpdated1";
 
-        //using var context = new OrganisationContext("Server=localhost;Database=cdp;Username=cdp_user;Password=cdp123;Trusted_Connection=True;");
-        var context = new OrganisationContext(postgreSql.ConnectionString);
-        var repository = new DatabaseOrganisationRepository(context);
+        var repository = OrganisationRepository();
 
         var organisation = new Organisation
         {
@@ -86,7 +84,13 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql) : 
                 LegalName = "DefaultLegalName",
                 Uri = "http://default.org"
             },
-            AdditionalIdentifiers = new List<OrganisationIdentifier>(),
+            AdditionalIdentifiers = new[] { new OrganisationIdentifier
+            {
+                Scheme = "ISO9001",
+                Id = "1",
+                LegalName = "DefaultLegalName",
+                Uri = "http://default.org"
+            }}.ToList(),
             Address = new OrganisationAddress
             {
                 StreetAddress = "1234 Default St",
@@ -108,90 +112,16 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql) : 
 
         repository.Save(organisation);
 
-        var organisationToUpdate = context.Organisations.FirstOrDefault(o => o.Guid == guid);
+        var organisationToUpdate = await repository.Find(guid);
         if (organisationToUpdate != null)
         {
             organisationToUpdate.Name = updatedName;
             repository.Save(organisationToUpdate);
         }
 
-        var updatedOrganisation = await context.Organisations.FindAsync(guid);
+        var updatedOrganisation = await repository.Find(guid)!;
         updatedOrganisation.Should().NotBeNull();
         updatedOrganisation.Name.Should().Be(updatedName);
-
-        //string scheme = "ISO9001";
-        //string identifierId = "1";
-        //string legalName = "DefaultLegalName";
-        //string uri = "http://default.org";
-        //string streetAddress = null;
-        //string locality = null;
-        //string region = null;
-        //string postalCode = null;
-        //string countryName = null;
-        //string contactName = null;
-        //string email = null;
-        //string telephone = null;
-        //string faxNumber = null;
-        //string contactUri = null;
-
-        //var guid = Guid.NewGuid();
-        //using (var repository = OrganisationRepository())
-        //{
-        //    var organisation = GivenOrganisation(guid: guid, name: "TheOrganisation");
-        //    repository.Save(organisation);
-        //}
-
-        //using (var repository = OrganisationRepository())
-        //{
-        //    var organisationToUpdate = repository.Find(guid).Result;
-        //    organisationToUpdate.Name = "TheOrganisation1";
-        //    repository.Save(organisationToUpdate);
-        //}
-
-        //using (var repository = OrganisationRepository())
-        //{
-        //    var found = await repository.Find(guid);
-
-        //    found.Should().BeEquivalentTo(new Organisation
-        //    {
-        //        Id = 1,
-        //        Guid = guid,
-        //        Name = "TheOrganisation1",
-        //        Identifier = new OrganisationIdentifier
-        //        {
-        //            Scheme = scheme,
-        //            Id = identifierId,
-        //            LegalName = legalName,
-        //            Uri = uri
-        //        },
-        //        AdditionalIdentifiers = new List<OrganisationIdentifier>{
-        //            new OrganisationIdentifier
-        //            {
-        //                Scheme = "ISO14001",
-        //                Id = "2",
-        //                LegalName = "AnotherLegalName",
-        //                Uri = "http://example.com"
-        //            }
-        //        },
-        //        Address = new OrganisationAddress
-        //        {
-        //            StreetAddress = streetAddress,
-        //            Locality = locality,
-        //            Region = region,
-        //            PostalCode = postalCode,
-        //            CountryName = countryName
-        //        },
-        //        ContactPoint = new OrganisationContactPoint
-        //        {
-        //            Name = contactName,
-        //            Email = email,
-        //            Telephone = telephone,
-        //            FaxNumber = faxNumber,
-        //            Url = contactUri
-        //        },
-        //        Roles = new List<int> { 1 }
-        //    }, opts => opts.ComparingByMembers<Organisation>());
-        //}
     }
 
     [Fact]
@@ -265,15 +195,14 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql) : 
                 Uri = uri
             },
             AdditionalIdentifiers = new List<OrganisationIdentifier>
-        {
-            new OrganisationIdentifier
             {
-                Scheme = "ISO14001",
-                Id = "2",
-                LegalName = "AnotherLegalName",
-                Uri = "http://example.com"
-            }
-        },
+                new() {
+                    Scheme = "ISO14001",
+                    Id = "2",
+                    LegalName = "AnotherLegalName",
+                    Uri = "http://example.com"
+                }
+            },
             Address = new OrganisationAddress
             {
                 StreetAddress = streetAddress,

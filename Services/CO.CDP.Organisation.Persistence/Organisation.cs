@@ -11,7 +11,7 @@ public class Organisation
     public required Guid Guid { get; set; }
     public required string Name { get; set; }
     public required OrganisationIdentifier Identifier { get; set; }
-    public required List<OrganisationIdentifier> AdditionalIdentifiers { get; set; } = [];
+    public List<OrganisationIdentifier> AdditionalIdentifiers { get; set; } = [];
     public required OrganisationAddress Address { get; set; }
     public required OrganisationContactPoint ContactPoint { get; set; }
     public required List<int> Roles { get; set; } = [];
