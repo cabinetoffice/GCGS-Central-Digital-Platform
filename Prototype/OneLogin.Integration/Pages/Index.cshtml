@@ -1,0 +1,13 @@
+@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<form method="post" id="registerform">
+    <p class="govuk-body">
+        To use the service to register your information, you will first need to
+        <a class="govuk-link govuk-link--no-visited-state"
+           onclick="document.getElementById('registerform').submit(); return false;">create GOV.UK One Login or sign in.</a>
+    </p>
+</form>
