@@ -82,7 +82,7 @@ public class OrganisationIdentificationModelTests
     [Theory]
     [InlineData(null)]
     [InlineData("")]
-    public void OnPost_WhenOrganisationTypeIsNullOrEmpty_ShouldReturnPageWithModelStateError(string organisationType)
+    public void OnPost_WhenOrganisationTypeIsNullOrEmpty_ShouldReturnPageWithModelStateError(string? organisationType)
     {
 
         var model = new OrganisationIdentificationModel(sessionMock.Object)
@@ -100,7 +100,7 @@ public class OrganisationIdentificationModelTests
     [Theory]
     [InlineData("CHN", null)]
     [InlineData("CHN", "")]
-    public void OnPost_WhenOrganisationTypeIsCHNAndCompaniesHouseNumberIsNullOrEmpty_ShouldReturnPageWithModelStateError(string organisationType, string companiesHouseNumber)
+    public void OnPost_WhenOrganisationTypeIsCHNAndCompaniesHouseNumberIsNullOrEmpty_ShouldReturnPageWithModelStateError(string organisationType, string? companiesHouseNumber)
     {
         var model = new OrganisationIdentificationModel(sessionMock.Object)
         {
@@ -118,7 +118,7 @@ public class OrganisationIdentificationModelTests
     [Theory]
     [InlineData("CCEW", null)]
     [InlineData("CCEW", "")]
-    public void OnPost_WhenOrganisationTypeIsCCEWAndCharityCommissionEnglandWalesNumberIsNullOrEmpty_ShouldReturnPageWithModelStateError(string organisationType, string charityCommissionEnglandWalesNumber)
+    public void OnPost_WhenOrganisationTypeIsCCEWAndCharityCommissionEnglandWalesNumberIsNullOrEmpty_ShouldReturnPageWithModelStateError(string organisationType, string? charityCommissionEnglandWalesNumber)
     {
         var model = new OrganisationIdentificationModel(sessionMock.Object)
         {
@@ -136,7 +136,7 @@ public class OrganisationIdentificationModelTests
     [Theory]
     [InlineData("SCR", null)]
     [InlineData("SCR", "")]
-    public void OnPost_WhenOrganisationTypeIsOSCRAndScottishCharityRegulatorNumberIsNullOrEmpty_ShouldReturnPageWithModelStateError(string organisationType, string scottishCharityRegulatorNumber)
+    public void OnPost_WhenOrganisationTypeIsOSCRAndScottishCharityRegulatorNumberIsNullOrEmpty_ShouldReturnPageWithModelStateError(string organisationType, string? scottishCharityRegulatorNumber)
     {
         var model = new OrganisationIdentificationModel(sessionMock.Object)
         {
@@ -154,7 +154,7 @@ public class OrganisationIdentificationModelTests
     [Theory]
     [InlineData("CCNI", null)]
     [InlineData("CCNI", "")]
-    public void OnPost_WhenOrganisationTypeIsCCNIAndCharityCommissionNorthernIrelandNumberIsNullOrEmpty_ShouldReturnPageWithModelStateError(string organisationType, string charityCommissionNorthernIrelandNumber)
+    public void OnPost_WhenOrganisationTypeIsCCNIAndCharityCommissionNorthernIrelandNumberIsNullOrEmpty_ShouldReturnPageWithModelStateError(string organisationType, string? charityCommissionNorthernIrelandNumber)
     {
         var model = new OrganisationIdentificationModel(sessionMock.Object)
         {
@@ -172,7 +172,7 @@ public class OrganisationIdentificationModelTests
     [Theory]
     [InlineData("MPR", null)]
     [InlineData("MPR", "")]
-    public void OnPost_WhenOrganisationTypeIsMPRAndMutualsPublicRegisterNumberIsNullOrEmpty_ShouldReturnPageWithModelStateError(string organisationType, string mutualsPublicRegisterNumber)
+    public void OnPost_WhenOrganisationTypeIsMPRAndMutualsPublicRegisterNumberIsNullOrEmpty_ShouldReturnPageWithModelStateError(string organisationType, string? mutualsPublicRegisterNumber)
     {
         var model = new OrganisationIdentificationModel(sessionMock.Object)
         {
@@ -190,7 +190,7 @@ public class OrganisationIdentificationModelTests
     [Theory]
     [InlineData("GRN", null)]
     [InlineData("GRN", "")]
-    public void OnPost_WhenOrganisationTypeIsGRNAndGuernseyRegistryNumberIsNullOrEmpty_ShouldReturnPageWithModelStateError(string organisationType, string guernseyRegistryNumber)
+    public void OnPost_WhenOrganisationTypeIsGRNAndGuernseyRegistryNumberIsNullOrEmpty_ShouldReturnPageWithModelStateError(string organisationType, string? guernseyRegistryNumber)
     {
         var model = new OrganisationIdentificationModel(sessionMock.Object)
         {
@@ -208,7 +208,7 @@ public class OrganisationIdentificationModelTests
     [Theory]
     [InlineData("JFSC", null)]
     [InlineData("JFSC", "")]
-    public void OnPost_WhenOrganisationTypeIsJFSCAndJerseyFinancialServicesCommissionRegistryNumberIsNullOrEmpty_ShouldReturnPageWithModelStateError(string organisationType, string jerseyFinancialServicesCommissionRegistryNumber)
+    public void OnPost_WhenOrganisationTypeIsJFSCAndJerseyFinancialServicesCommissionRegistryNumberIsNullOrEmpty_ShouldReturnPageWithModelStateError(string organisationType, string? jerseyFinancialServicesCommissionRegistryNumber)
     {
         var model = new OrganisationIdentificationModel(sessionMock.Object)
         {
@@ -226,7 +226,7 @@ public class OrganisationIdentificationModelTests
     [Theory]
     [InlineData("IMCR", null)]
     [InlineData("IMCR", "")]
-    public void OnPost_WhenOrganisationTypeIsIMCRAndIsleofManCompaniesRegistryNumberIsNullOrEmpty_ShouldReturnPageWithModelStateError(string organisationType, string isleofManCompaniesRegistryNumber)
+    public void OnPost_WhenOrganisationTypeIsIMCRAndIsleofManCompaniesRegistryNumberIsNullOrEmpty_ShouldReturnPageWithModelStateError(string organisationType, string? isleofManCompaniesRegistryNumber)
     {
         var model = new OrganisationIdentificationModel(sessionMock.Object)
         {
@@ -244,7 +244,7 @@ public class OrganisationIdentificationModelTests
     [Theory]
     [InlineData("NHOR", null)]
     [InlineData("NHOR", "")]
-    public void OnPost_WhenOrganisationTypeIsNHORAndNationalHealthServiceOrganisationsRegistryNumberIsNullOrEmpty_ShouldReturnPageWithModelStateError(string organisationType, string nationalHealthServiceOrganisationsRegistryNumber)
+    public void OnPost_WhenOrganisationTypeIsNHORAndNationalHealthServiceOrganisationsRegistryNumberIsNullOrEmpty_ShouldReturnPageWithModelStateError(string organisationType, string? nationalHealthServiceOrganisationsRegistryNumber)
     {
         var model = new OrganisationIdentificationModel(sessionMock.Object)
         {
@@ -262,7 +262,7 @@ public class OrganisationIdentificationModelTests
     [Theory]
     [InlineData("UKPRN", null)]
     [InlineData("UKPRN", "")]
-    public void OnPost_WhenOrganisationTypeIsUKPRNAndUKLearningProviderReferenceNumberIsNullOrEmpty_ShouldReturnPageWithModelStateError(string organisationType, string ukLearningProviderReferenceNumber)
+    public void OnPost_WhenOrganisationTypeIsUKPRNAndUKLearningProviderReferenceNumberIsNullOrEmpty_ShouldReturnPageWithModelStateError(string organisationType, string? ukLearningProviderReferenceNumber)
     {
         var model = new OrganisationIdentificationModel(sessionMock.Object)
         {
@@ -280,7 +280,7 @@ public class OrganisationIdentificationModelTests
     [Theory]
     [InlineData("VAT", null)]
     [InlineData("VAT", "")]
-    public void OnPost_WhenOrganisationTypeIsVATAndVATNumberIsNullOrEmpty_ShouldReturnPageWithModelStateError(string organisationType, string vatNumber)
+    public void OnPost_WhenOrganisationTypeIsVATAndVATNumberIsNullOrEmpty_ShouldReturnPageWithModelStateError(string organisationType, string? vatNumber)
     {
         var model = new OrganisationIdentificationModel(sessionMock.Object)
         {
@@ -348,7 +348,7 @@ public class OrganisationIdentificationModelTests
             rd.OrganisationIdentificationNumber == identificationNumber)), Times.Once);
     }
 
-    private void SetIdentificationNumber(OrganisationIdentificationModel model, string organisationType, string identificationNumber)
+    private static void SetIdentificationNumber(OrganisationIdentificationModel model, string organisationType, string identificationNumber)
     {
         switch (organisationType)
         {
@@ -388,7 +388,7 @@ public class OrganisationIdentificationModelTests
         }
     }
 
-    private RegistrationDetails DummyRegistrationDetails()
+    private static RegistrationDetails DummyRegistrationDetails()
     {
         var registrationDetails = new RegistrationDetails
         {

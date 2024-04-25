@@ -12,23 +12,10 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="AutoMapper" Version="13.0.1" />
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.1" />
         <PackageReference Include="DotSwashbuckle.AspNetCore" Version="3.0.8" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.4">
-          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-          <PrivateAssets>all</PrivateAssets>
-        </PackageReference>
-    </ItemGroup>
-
-    <ItemGroup>
-      <Content Include="..\.dockerignore">
-        <Link>.dockerignore</Link>
-      </Content>
-    </ItemGroup>
-
-    <ItemGroup>
-      <ProjectReference Include="..\CO.CDP.Organisation.Persistence\CO.CDP.Organisation.Persistence.csproj" />
+        <PackageReference Include="AutoMapper" Version="13.0.1" />
+        <ProjectReference Include="../CO.CDP.Organisation.Persistence/CO.CDP.Organisation.Persistence.csproj" />
     </ItemGroup>
 
 </Project>
