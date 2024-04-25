@@ -1,12 +1,16 @@
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace OneLogin.Integration.Pages;
 public class IndexModel : PageModel
 {
-    public IActionResult OnPost()
+    public IActionResult OnGet()
     {
-        return Challenge(new AuthenticationProperties { RedirectUri = "/one-login/sign-in-callback" });
+        if (User?.Identity?.IsAuthenticated == true)
+        {
+            return Redirect("/one-login/user-info");
+        }
+
+        return Page();
     }
 }

@@ -1,14 +1,12 @@
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Security.Claims;
 
 namespace CO.CDP.OrganisationApp.Pages.Registration;
 
-[Authorize]
 public class OneLogin : PageModel
 {
     [BindProperty]
@@ -24,23 +22,40 @@ public class OneLogin : PageModel
     {
         return action switch
         {
-            "sign-in-callback" => await SignIn(),
+            "sign-in" => SignIn(),
+            "user-info" => await UserInfo(),
             "sign-out" => SignOut(),
             _ => RedirectToPage("/"),
         };
     }
 
-    private async Task<IActionResult> SignIn()
+    private IActionResult SignIn()
     {
-        UserId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        Email = HttpContext.User.FindFirst("email")?.Value;
-        Phone = HttpContext.User.FindFirst("phone_number")?.Value;
+        return Challenge(new AuthenticationProperties { RedirectUri = "/one-login/user-info" });
+    }
+
+    private async Task<IActionResult> UserInfo()
+    {
+        var userInfo = await HttpContext.AuthenticateAsync();
+        if (!userInfo.Succeeded)
+        {
+            return SignIn();
+        }
+
+        UserId = userInfo.Principal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        Email = userInfo.Principal.FindFirst("email")?.Value;
+        Phone = userInfo.Principal.FindFirst("phone_number")?.Value;
 
         return Page();
     }
 
     private IActionResult SignOut()
     {
+        if (User?.Identity?.IsAuthenticated != true)
+        {
+            return Redirect("/");
+        }
+
         return SignOut(new AuthenticationProperties { RedirectUri = "/" },
                 CookieAuthenticationDefaults.AuthenticationScheme,
                 OpenIdConnectDefaults.AuthenticationScheme);

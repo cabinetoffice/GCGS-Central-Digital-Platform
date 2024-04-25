@@ -9,7 +9,6 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 builder.Services.AddTransient<OidcEvents>();
 
-
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
@@ -26,8 +25,6 @@ builder.Services.AddAuthentication(options =>
     options.Scope.Add("phone");
     options.Scope.Add("email");
     options.Scope.Remove("profile");
-    options.CallbackPath = "/one-login/callback";
-    options.SignedOutCallbackPath = "/one-login/log-out";
     options.SaveTokens = true;
     options.GetClaimsFromUserInfoEndpoint = true;
     options.UsePkce = false;
