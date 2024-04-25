@@ -46,6 +46,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.Organisation.Persist
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.Organisation.Persistence", "Services\CO.CDP.Organisation.Persistence\CO.CDP.Organisation.Persistence.csproj", "{96374813-92B6-4FFF-9034-796D5720B7D4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.Organisation.WebApiClient", "Libraries\CO.CDP.Organisation.WebApiClient\CO.CDP.Organisation.WebApiClient.csproj", "{79DB776F-9818-4FCF-A8AD-B89BFD4F6ABB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.Organisation.WebApiClient.Tests", "Libraries\CO.CDP.Organisation.WebApiClient.Tests\CO.CDP.Organisation.WebApiClient.Tests.csproj", "{13DCC5D5-6DE3-49FB-BE07-4A9053AC7F2E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -132,6 +136,14 @@ Global
 		{96374813-92B6-4FFF-9034-796D5720B7D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{96374813-92B6-4FFF-9034-796D5720B7D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{96374813-92B6-4FFF-9034-796D5720B7D4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{79DB776F-9818-4FCF-A8AD-B89BFD4F6ABB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{79DB776F-9818-4FCF-A8AD-B89BFD4F6ABB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{79DB776F-9818-4FCF-A8AD-B89BFD4F6ABB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{79DB776F-9818-4FCF-A8AD-B89BFD4F6ABB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{13DCC5D5-6DE3-49FB-BE07-4A9053AC7F2E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{13DCC5D5-6DE3-49FB-BE07-4A9053AC7F2E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{13DCC5D5-6DE3-49FB-BE07-4A9053AC7F2E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{13DCC5D5-6DE3-49FB-BE07-4A9053AC7F2E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
