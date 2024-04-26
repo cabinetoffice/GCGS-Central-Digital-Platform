@@ -27,16 +27,17 @@ public class OidcEvents(IConfiguration configuration) : OpenIdConnectEvents
 
     private string CreateClientToken()
     {
+        var clientId = configuration.GetValue<string>("OneLogin:ClientId")!;
+        var authority = configuration.GetValue<string>("OneLogin:Authority")!;
+        var privateKey = configuration.GetValue<string>("OneLogin:PrivateKey")!;
+
         using var rsa = RSA.Create();
-        rsa.ImportFromPem(File.ReadAllText("cdp-private.pem"));
+        rsa.ImportFromPem(privateKey);
 
         var credential = new SigningCredentials(new RsaSecurityKey(rsa), SecurityAlgorithms.RsaSha256)
         {
             CryptoProviderFactory = new CryptoProviderFactory { CacheSignatureProviders = false }
         };
-
-        var clientId = configuration.GetValue<string>("OneLogin:ClientId")!;
-        var authority = configuration.GetValue<string>("OneLogin:Authority")!;
 
         var now = DateTime.UtcNow;
 
