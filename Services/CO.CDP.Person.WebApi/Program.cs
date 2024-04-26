@@ -24,6 +24,3 @@ app.MapHealthChecks("/health");
 app.UseHttpsRedirection();
 app.UsePersonEndpoints();
 app.Run();
-
-builder.Services.AddFluentValidationAutoValidation();
-builder.Services.AddValidatorsFromAssemblyContaining<CO.CDP.Person.WebApi.Api.ValidationSpikeTwo.NewPersonValidator>();
