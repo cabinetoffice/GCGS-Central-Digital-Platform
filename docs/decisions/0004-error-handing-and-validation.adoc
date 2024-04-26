@@ -125,10 +125,16 @@ Disadvantages:
 
 == Decisions
 
-TBD
+=== Validation Decision
+
+We will adopt FluentValidation for validation, enhancing both maintainability and scalability (related to Validation Option 2). This approach allows for pre-controller validation, catching errors early and enabling us to reuse validation logic across multiple controllers, simplifying error handling and promoting code reuse.
+
+=== Error Handling Decision
+
+We have decided to implement Custom Exception Middleware as our error handling strategy (related to Error Handling Option 3). This approach centralises error handling at a single point within the application, simplifying the process and reducing code duplication. It also offers the flexibility to create custom error responses based on different exception types or criteria, and ensures consistency by combining with the Results.Problem method to standardise response formats across the API, according to RFC 7807.
 
 == Consequences
 
-TBD
+These updates require modifications to existing validation logic and some refactoring, since work has already commenced on creating APIs.
 
 
