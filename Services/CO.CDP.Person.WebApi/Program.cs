@@ -1,4 +1,6 @@
 using CO.CDP.Person.WebApi.Api;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
