@@ -1,15 +1,14 @@
 using CO.CDP.OrganisationApp.CustomeValidationAttributes;
 using CO.CDP.OrganisationApp.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.VisualBasic;
-using Microsoft.Win32;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Reflection;
 
 namespace CO.CDP.OrganisationApp.Pages.Registration;
 
+[Authorize]
 public class OrganisationIdentificationModel(ISession session) : PageModel
 {
     [BindProperty]

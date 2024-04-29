@@ -1,6 +1,10 @@
 using CO.CDP.OrganisationApp;
-using CO.CDP.OrganisationApp.ServiceClient;
 using CO.CDP.Tenant.WebApiClient;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+using static IdentityModel.OidcConstants;
 
 const string TenantHttpClientName = "TenantHttpClient";
 var builder = WebApplication.CreateBuilder(args);
@@ -20,8 +24,6 @@ builder.Services.AddSession(options =>
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddSingleton<CO.CDP.OrganisationApp.ISession, Session>();
 
-builder.Services.AddTransient<IOneLoginClient, FakeOneLoginClient>();
-
 var tenantServiceUrl = builder.Configuration.GetValue<string>("TenantService");
 
 builder.Services.AddHttpClient(TenantHttpClientName);
@@ -29,6 +31,30 @@ builder.Services.AddHttpClient(TenantHttpClientName);
 builder.Services.AddTransient<ITenantClient, TenantClient>(
     sc => new TenantClient(tenantServiceUrl,
         sc.GetRequiredService<IHttpClientFactory>().CreateClient(TenantHttpClientName)));
+builder.Services.AddTransient<OidcEvents>();
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
+})
+.AddCookie()
+.AddOpenIdConnect(options =>
+{
+    options.Authority = builder.Configuration["OneLogin:Authority"];
+    options.ClientId = builder.Configuration["OneLogin:ClientId"];
+    options.ResponseType = OpenIdConnectResponseType.Code;
+    options.ResponseMode = OpenIdConnectResponseMode.Query;
+    options.Scope.Clear();
+    options.Scope.Add(StandardScopes.OpenId);
+    options.Scope.Add(StandardScopes.Phone);
+    options.Scope.Add(StandardScopes.Email);
+    options.SaveTokens = true;
+    options.GetClaimsFromUserInfoEndpoint = true;
+    options.UsePkce = false;
+    options.EventsType = typeof(OidcEvents);
+    options.ClaimActions.MapAll();
+});
 
 var app = builder.Build();
 
@@ -42,13 +68,10 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
 app.UseRouting();
-
+app.UseAuthentication();
 app.UseAuthorization();
-
 app.UseSession();
-
 app.MapRazorPages();
 
 app.Run();
