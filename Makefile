@@ -40,7 +40,6 @@ OpenAPI: build
 	cp ./Services/CO.CDP.Forms.WebApi/OpenAPI/CO.CDP.Forms.WebApi.json OpenAPI/Forms.json
 
 define COMPOSE_OVERRIDE_YML
-version: '3'
 services:
   db:
     ports:
