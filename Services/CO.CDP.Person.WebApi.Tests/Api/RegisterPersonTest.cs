@@ -3,7 +3,6 @@ using CO.CDP.Person.WebApi.Tests.Api.WebApp;
 using CO.CDP.Person.WebApi.UseCase;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.VisualStudio.TestPlatform.TestHost;
 using Moq;
 using System.Net;
 using System.Net.Http.Json;

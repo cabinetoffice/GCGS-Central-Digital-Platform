@@ -31,3 +31,4 @@ app.MapHealthChecks("/health");
 app.UseHttpsRedirection();
 app.UsePersonEndpoints();
 app.Run();
+public abstract partial class Program;
