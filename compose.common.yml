@@ -1,5 +1,3 @@
-version: '3'
-
 services:
   db:
     container_name: co-cdp-db
@@ -20,8 +18,7 @@ services:
       target: final-organisation-app
     image: 'cabinetoffice/cdp-organisation-app:${IMAGE_VERSION:-latest}'
     environment:
-      - ASPNETCORE_ENVIRONMENT=Production
-      - TenantService=http://tenant:8080
+      ASPNETCORE_ENVIRONMENT: Production
     healthcheck:
       test: ["CMD-SHELL", "curl --fail --silent --write-out '{\"status\":%{http_code}}' --output /dev/null http://127.0.0.1:8080/health"]
       start_period: 10s
@@ -37,7 +34,7 @@ services:
       target: final-tenant
     image: 'cabinetoffice/cdp-tenant:${IMAGE_VERSION:-latest}'
     environment:
-      - ASPNETCORE_ENVIRONMENT=Production
+      ASPNETCORE_ENVIRONMENT: Production
     healthcheck:
       test: ["CMD-SHELL", "curl --fail --silent --write-out '{\"status\":%{http_code}}' --output /dev/null http://127.0.0.1:8080/health"]
       start_period: 10s
@@ -54,7 +51,7 @@ services:
       target: migrations-tenant
     image: 'cabinetoffice/cdp-tenant-migrations:${IMAGE_VERSION:-latest}'
     environment:
-      - ASPNETCORE_ENVIRONMENT=Production
+      ASPNETCORE_ENVIRONMENT: Production
 
   organisation-migrations:
     container_name: co-cdp-organisation-migrations
@@ -65,7 +62,7 @@ services:
       target: migrations-organisation
     image: 'cabinetoffice/cdp-organisation-migrations:${IMAGE_VERSION:-latest}'
     environment:
-      - ASPNETCORE_ENVIRONMENT=Production
+      ASPNETCORE_ENVIRONMENT: Production
 
   organisation:
     container_name: co-cdp-organisation
@@ -75,7 +72,7 @@ services:
       target: final-organisation
     image: 'cabinetoffice/cdp-organisation:${IMAGE_VERSION:-latest}'
     environment:
-      - ASPNETCORE_ENVIRONMENT=Production
+      ASPNETCORE_ENVIRONMENT: Production
     healthcheck:
       test: ["CMD-SHELL", "curl --fail --silent --write-out '{\"status\":%{http_code}}' --output /dev/null http://127.0.0.1:8080/health"]
       start_period: 10s
@@ -101,7 +98,7 @@ services:
       target: final-person
     image: 'cabinetoffice/cdp-person:${IMAGE_VERSION:-latest}'
     environment:
-      - ASPNETCORE_ENVIRONMENT=Production
+      ASPNETCORE_ENVIRONMENT: Production
     healthcheck:
       test: ["CMD-SHELL", "curl --fail --silent --write-out '{\"status\":%{http_code}}' --output /dev/null http://127.0.0.1:8080/health"]
       start_period: 10s
@@ -117,7 +114,7 @@ services:
       target: final-forms
     image: 'cabinetoffice/cdp-forms:${IMAGE_VERSION:-latest}'
     environment:
-      - ASPNETCORE_ENVIRONMENT=Production
+      ASPNETCORE_ENVIRONMENT: Production
     healthcheck:
       test: ["CMD-SHELL", "curl --fail --silent --write-out '{\"status\":%{http_code}}' --output /dev/null http://127.0.0.1:8080/health"]
       start_period: 10s
@@ -133,7 +130,7 @@ services:
       target: final-data-sharing
     image: 'cabinetoffice/cdp-data-sharing:${IMAGE_VERSION:-latest}'
     environment:
-      - ASPNETCORE_ENVIRONMENT=Production
+      ASPNETCORE_ENVIRONMENT: Production
     healthcheck:
       test: ["CMD-SHELL", "curl --fail --silent --write-out '{\"status\":%{http_code}}' --output /dev/null http://127.0.0.1:8080/health"]
       start_period: 10s

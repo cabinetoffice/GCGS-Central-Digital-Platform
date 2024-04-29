@@ -1,9 +1,9 @@
+using IdentityModel;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using System.Security.Claims;
 
 namespace CO.CDP.OrganisationApp.Pages.Registration;
 
@@ -42,9 +42,9 @@ public class OneLogin : PageModel
             return SignIn();
         }
 
-        UserId = userInfo.Principal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        Email = userInfo.Principal.FindFirst("email")?.Value;
-        Phone = userInfo.Principal.FindFirst("phone_number")?.Value;
+        UserId = userInfo.Principal.FindFirst(JwtClaimTypes.Subject)?.Value;
+        Email = userInfo.Principal.FindFirst(JwtClaimTypes.Email)?.Value;
+        Phone = userInfo.Principal.FindFirst(JwtClaimTypes.PhoneNumber)?.Value;
 
         return Page();
     }

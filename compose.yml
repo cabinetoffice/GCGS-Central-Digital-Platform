@@ -11,20 +11,20 @@ services:
     extends:
       file: compose.common.yml
       service: organisation-app
+    environment:
+      TenantService: 'http://tenant:8080'
   tenant:
     extends:
       file: compose.common.yml
       service: tenant
-    links:
-      - db:db
     depends_on:
       - db
+    environment:
+      ConnectionStrings__TenantDatabase: 'Server=db;Database=cdp;Username=cdp_user;Password=cdp123;'
   tenant-migrations:
     extends:
       file: compose.common.yml
       service: tenant-migrations
-    links:
-      - db:db
     depends_on:
       db:
         condition: service_healthy
@@ -47,8 +47,6 @@ services:
     extends:
       file: compose.common.yml
       service: organisation-migrations
-    links:
-      - db:db
     depends_on:
       db:
         condition: service_healthy
@@ -58,31 +56,25 @@ services:
     extends:
       file: compose.common.yml
       service: organisation
-    links:
-      - db:db
     depends_on:
       - db
+    environment:
+      ConnectionStrings__OrganisationDatabase: 'Server=db;Database=cdp;Username=cdp_user;Password=cdp123;'
   person:
     extends:
       file: compose.common.yml
       service: person
-    links:
-      - db:db
     depends_on:
       - db
   forms:
     extends:
       file: compose.common.yml
       service: forms
-    links:
-      - db:db
     depends_on:
       - db
   data-sharing:
     extends:
       file: compose.common.yml
       service: data-sharing
-    links:
-      - db:db
     depends_on:
       - db
