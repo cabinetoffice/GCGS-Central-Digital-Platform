@@ -51,7 +51,7 @@ public class OidcEvents(IConfiguration configuration) : OpenIdConnectEvents
                 new Claim(JwtClaimTypes.IssuedAt, now.ToEpochTime().ToString(), ClaimValueTypes.Integer64)
             },
             now,
-            now.AddMinutes(1),
+            now.AddMinutes(5),
             credential
         );
 
