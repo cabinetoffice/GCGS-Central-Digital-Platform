@@ -51,6 +51,9 @@ services:
       - "$${CDP_ORGANISATION_APP_PORT:-8090}:8080"
     environment:
       ASPNETCORE_ENVIRONMENT: Development
+      OneLogin__Authority: "https://oidc.example.com"
+      OneLogin__ClientId: "client-id"
+      OneLogin__PrivateKey: "RSA PRIVATE KEY"
     deploy:
       replicas: 1
   tenant:

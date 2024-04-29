@@ -26,11 +26,25 @@ For important design decisions that were made as the project evolved see the [de
 While local development is done within our IDE of choice, the Docker configuration is provided to conveniently start
 all the services at once.
 
+### Building containers
+
 First, we need to build all Docker containers:
 
 ```bash
 make build-docker
 ```
+
+### Configuration
+
+Run `make compose.override.yml` to generate the default configuration.
+
+One login details need to be provided to the `organisation-app` in `compose.override.yml` as environment variables:
+
+* `OneLogin__Authority`
+* `OneLogin__ClientId`
+* `OneLogin__PrivateKey`
+
+### Starting services
 
 To start all Docker services:
 
