@@ -1,6 +1,8 @@
+using CO.CDP.Person.Persistence;
 using CO.CDP.Person.WebApi.Api;
-using FluentValidation;
-using FluentValidation.AspNetCore;
+using CO.CDP.Person.WebApi.AutoMapper;
+using CO.CDP.Person.WebApi.Model;
+using CO.CDP.Person.WebApi.UseCase;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +12,11 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options => { options.DocumentPersonApi(); });
 
 builder.Services.AddHealthChecks();
+builder.Services.AddAutoMapper(typeof(WebApiToPersistenceProfile));
+
+builder.Services.AddScoped<PersonContext>(_ => new PersonContext(builder.Configuration.GetConnectionString("PersonDatabase") ?? ""));
+builder.Services.AddScoped<IPersonRepository, DatabasePersonRepository>();
+builder.Services.AddScoped<IUseCase<RegisterPerson, CO.CDP.Person.WebApi.Model.Person>, RegisterPersonUseCase>();
 
 var app = builder.Build();
 
