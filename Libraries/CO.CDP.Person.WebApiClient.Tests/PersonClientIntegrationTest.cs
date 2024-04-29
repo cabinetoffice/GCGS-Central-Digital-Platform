@@ -5,7 +5,7 @@ public class PersonClientIntegrationTest
     [Fact(Skip = "The test requires the person service to run.")]
     public async Task ItTalksToTheOrganisationApi()
     {
-        IPersonClient client = new PersonClient("http://localhost:8084", new HttpClient());
+        IPersonClient client = new PersonClient("http://localhost:5120", new HttpClient());
 
         var newPerson = new RegisterPerson(        
             age: 40,
