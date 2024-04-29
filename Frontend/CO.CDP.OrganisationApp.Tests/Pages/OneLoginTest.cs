@@ -16,7 +16,6 @@ public class OneLoginTest
     private readonly Mock<ITenantClient> tenantClientMock;
     private readonly Mock<ISession> sessionMock;
     private readonly Mock<IHttpContextAccessor> httpContextAccessorMock;
-    private readonly Mock<HttpContext> httpContext;
     private readonly Mock<IAuthenticationService> authService;
 
     public OneLoginTest()
@@ -24,7 +23,6 @@ public class OneLoginTest
         httpContextAccessorMock = new Mock<IHttpContextAccessor>();
         tenantClientMock = new Mock<ITenantClient>();
         sessionMock = new Mock<ISession>();
-        httpContext = new Mock<HttpContext>();
         authService = new Mock<IAuthenticationService>();
     }
 
@@ -117,7 +115,7 @@ public class OneLoginTest
     {
         var model = GivenOneLoginCallbackModel();
 
-        httpContext.Setup(x => x.User!.Identity!.IsAuthenticated)
+        httpContextAccessorMock.Setup(x => x.HttpContext!.User!.Identity!.IsAuthenticated)
            .Returns(true);
 
         var results = await model.OnGet("sign-out");
@@ -157,11 +155,12 @@ public class OneLoginTest
         authService.Setup(a => a.AuthenticateAsync(It.IsAny<HttpContext>(), It.IsAny<string>()))
             .ReturnsAsync(authResultSuccess);
 
-        httpContext.Setup(x => x.RequestServices.GetService(typeof(IAuthenticationService)))
+        var serviceProvider = new Mock<IServiceProvider>();
+        serviceProvider.Setup(x => x.GetService(typeof(IAuthenticationService)))
             .Returns(authService.Object);
 
-        httpContextAccessorMock.Setup(t => t.HttpContext)
-            .Returns(httpContext.Object);
+        httpContextAccessorMock.SetupGet(t => t.HttpContext)
+            .Returns(new DefaultHttpContext { RequestServices = serviceProvider.Object });
 
         tenantClientMock.Setup(t => t.LookupTenantAsync(It.IsAny<string>()))
             .ThrowsAsync(new ApiException("", 404, "", default, null));
