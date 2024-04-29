@@ -21,6 +21,8 @@ COPY Libraries/CO.CDP.Tenant.WebApiClient/CO.CDP.Tenant.WebApiClient.csproj Libr
 COPY Libraries/CO.CDP.Tenant.WebApiClient.Tests/CO.CDP.Tenant.WebApiClient.Tests.csproj Libraries/CO.CDP.Tenant.WebApiClient.Tests/
 COPY Libraries/CO.CDP.Organisation.WebApiClient/CO.CDP.Organisation.WebApiClient.csproj Libraries/CO.CDP.Organisation.WebApiClient/
 COPY Libraries/CO.CDP.Organisation.WebApiClient.Tests/CO.CDP.Organisation.WebApiClient.Tests.csproj Libraries/CO.CDP.Organisation.WebApiClient.Tests/
+COPY Libraries/CO.CDP.Person.WebApiClient/CO.CDP.Person.WebApiClient.csproj Libraries/CO.CDP.Person.WebApiClient/
+COPY Libraries/CO.CDP.Person.WebApiClient.Tests/CO.CDP.Person.WebApiClient.Tests.csproj Libraries/CO.CDP.Person.WebApiClient.Tests/
 COPY TestKit/CO.CDP.Testcontainers.PostgreSql/CO.CDP.Testcontainers.PostgreSql.csproj TestKit/CO.CDP.Testcontainers.PostgreSql/
 COPY TestKit/CO.CDP.Testcontainers.PostgreSql.Tests/CO.CDP.Testcontainers.PostgreSql.Tests.csproj TestKit/CO.CDP.Testcontainers.PostgreSql.Tests/
 COPY Services/CO.CDP.Tenant.Persistence/CO.CDP.Tenant.Persistence.csproj Services/CO.CDP.Tenant.Persistence/
