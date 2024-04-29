@@ -42,7 +42,7 @@ The first run creates `compose.override.yml` that can be used to override servic
 
 By default service and application ports are mapped as follows:
 
-* OrganisationApp - - http://localhost/
+* OrganisationApp - - http://localhost:8090/
 * Tenant - http://localhost:8080/swagger/
 * Organisation - http://localhost:8082/swagger/
 * Person - http://localhost:8084/swagger/
