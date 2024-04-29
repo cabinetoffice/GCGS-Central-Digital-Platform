@@ -17,6 +17,8 @@ services:
       service: tenant
     depends_on:
       - db
+    environment:
+      ConnectionStrings__TenantDatabase: 'Server=db;Database=cdp;Username=cdp_user;Password=cdp123;'
   tenant-migrations:
     extends:
       file: compose.common.yml
@@ -41,6 +43,8 @@ services:
       service: organisation
     depends_on:
       - db
+    environment:
+      ConnectionStrings__OrganisationDatabase: 'Server=db;Database=cdp;Username=cdp_user;Password=cdp123;'
   person:
     extends:
       file: compose.common.yml
