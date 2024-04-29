@@ -164,7 +164,7 @@ public class OrganisationDetailModelTest
 
     [Fact]
     public void OnGet_ValidSession_ReturnsRegistrationDetails()
-    {        
+    {
         var model = GivenOrganisationDetailModel();
 
         RegistrationDetails registrationDetails = DummyRegistrationDetails();
@@ -173,7 +173,7 @@ public class OrganisationDetailModelTest
 
         model.OnGet();
 
-        model.OrganisationName.Should().Be(registrationDetails.OrganisationName);        
+        model.OrganisationName.Should().Be(registrationDetails.OrganisationName);
         model.EmailAddress.Should().Be(registrationDetails.OrganisationEmailAddress);
     }
 

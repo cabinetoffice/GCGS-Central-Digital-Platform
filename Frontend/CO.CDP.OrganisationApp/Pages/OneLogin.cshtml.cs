@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 namespace CO.CDP.OrganisationApp.Pages.Registration;
 
 public class OneLogin(
+    IHttpContextAccessor httpContextAccessor,
     ITenantClient tenantClient,
     ISession session) : PageModel
 {
@@ -31,7 +32,7 @@ public class OneLogin(
 
     private async Task<IActionResult> UserInfo()
     {
-        var userInfo = await HttpContext.AuthenticateAsync();
+        var userInfo = await httpContextAccessor.HttpContext!.AuthenticateAsync();
         if (!userInfo.Succeeded)
         {
             return SignIn();
@@ -67,9 +68,9 @@ public class OneLogin(
 
     private IActionResult SignOut()
     {
-        if (User?.Identity?.IsAuthenticated != true)
+        if (httpContextAccessor.HttpContext?.User?.Identity?.IsAuthenticated != true)
         {
-            return Redirect("/");
+            return RedirectToPage("/");
         }
 
         return SignOut(new AuthenticationProperties { RedirectUri = "/" },
