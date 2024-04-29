@@ -117,7 +117,7 @@ public class OneLoginTest
     {
         var model = GivenOneLoginCallbackModel();
 
-        httpContext.Setup(x => x.User.Identity.IsAuthenticated)
+        httpContext.Setup(x => x.User!.Identity!.IsAuthenticated)
            .Returns(true);
 
         var results = await model.OnGet("sign-out");
