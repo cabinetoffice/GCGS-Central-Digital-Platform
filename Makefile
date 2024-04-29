@@ -50,42 +50,42 @@ services:
     ports:
       - "$${CDP_ORGANISATION_APP_PORT:-80}:8080"
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
+      ASPNETCORE_ENVIRONMENT: Development
     deploy:
       replicas: 1
   tenant:
     ports:
       - "$${CDP_TENANT_PORT:-8080}:8080"
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
+      ASPNETCORE_ENVIRONMENT: Development
     deploy:
       replicas: 1
   organisation:
     ports:
       - '$${CDP_ORGANISATION_PORT:-8082}:8080'
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
+      ASPNETCORE_ENVIRONMENT: Development
     deploy:
       replicas: 1
   person:
     ports:
       - '$${CDP_PERSON_PORT:-8084}:8080'
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
+      ASPNETCORE_ENVIRONMENT: Development
     deploy:
       replicas: 1
   forms:
     ports:
       - '$${CDP_FORMS_PORT:-8086}:8080'
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
+      ASPNETCORE_ENVIRONMENT: Development
     deploy:
       replicas: 1
   data-sharing:
     ports:
       - '$${CDP_DATA_SHARING_PORT:-8088}:8080'
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
+      ASPNETCORE_ENVIRONMENT: Development
     deploy:
       replicas: 1
 endef

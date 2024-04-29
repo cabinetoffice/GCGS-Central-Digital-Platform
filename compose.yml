@@ -11,6 +11,8 @@ services:
     extends:
       file: compose.common.yml
       service: organisation-app
+    environment:
+      TenantService: 'http://tenant:8080'
   tenant:
     extends:
       file: compose.common.yml
