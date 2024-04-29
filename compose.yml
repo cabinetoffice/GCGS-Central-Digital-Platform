@@ -15,16 +15,12 @@ services:
     extends:
       file: compose.common.yml
       service: tenant
-    links:
-      - db:db
     depends_on:
       - db
   tenant-migrations:
     extends:
       file: compose.common.yml
       service: tenant-migrations
-    links:
-      - db:db
     depends_on:
       db:
         condition: service_healthy
@@ -34,8 +30,6 @@ services:
     extends:
       file: compose.common.yml
       service: organisation-migrations
-    links:
-      - db:db
     depends_on:
       db:
         condition: service_healthy
@@ -45,31 +39,23 @@ services:
     extends:
       file: compose.common.yml
       service: organisation
-    links:
-      - db:db
     depends_on:
       - db
   person:
     extends:
       file: compose.common.yml
       service: person
-    links:
-      - db:db
     depends_on:
       - db
   forms:
     extends:
       file: compose.common.yml
       service: forms
-    links:
-      - db:db
     depends_on:
       - db
   data-sharing:
     extends:
       file: compose.common.yml
       service: data-sharing
-    links:
-      - db:db
     depends_on:
       - db
