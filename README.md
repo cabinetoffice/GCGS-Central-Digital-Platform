@@ -13,6 +13,41 @@ make test
 
 Any dotnet tools used by the project are [installed locally](https://learn.microsoft.com/en-us/dotnet/core/tools/global-tools#install-a-local-tool).
 
+The database is one of the services defined in Docker Compose. It can be started on its own and used with the IDE setup.
+First, containers need to be built:
+
+```bash
+make build-docker
+```
+
+The database can be then started together with migrations:
+
+```bash
+docker compose up -d db tenant-migrations organisation-migrations
+```
+
+### Configuration
+
+The application is mostly configured to start with a fresh repository checkout.
+Secrets that are not safe to be committed to the repository are managed with the
+[Secrets Manager](https://learn.microsoft.com/en-us/aspnet/core/security/app-secrets?view=aspnetcore-8.0&tabs=linux#secret-manager):
+
+* `OneLogin:Authority`
+* `OneLogin:ClientId`
+* `OneLogin:PrivateKey`
+
+These can be set within the IDE, or with the dotnet command:
+
+```bash
+dotnet user-secrets set --project Frontend/CO.CDP.OrganisationApp/CO.CDP.OrganisationApp.csproj OneLogin:Authority "https://oidc.example.com"
+dotnet user-secrets set --project Frontend/CO.CDP.OrganisationApp/CO.CDP.OrganisationApp.csproj OneLogin:ClientId "client-id"
+dotnet user-secrets set --project Frontend/CO.CDP.OrganisationApp/CO.CDP.OrganisationApp.csproj OneLogin:PrivateKey "-----BEGIN RSA PRIVATE KEY-----
+SECRET KEY
+-----END RSA PRIVATE KEY-----"
+```
+
+**Never commit secrets to the repository.**
+
 ## Documentation
 
 For technical documentation see [Docs](docs/index.adoc).

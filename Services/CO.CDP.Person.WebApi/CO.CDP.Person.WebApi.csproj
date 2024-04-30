@@ -15,12 +15,7 @@
         <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.1" />
         <PackageReference Include="DotSwashbuckle.AspNetCore" Version="3.0.8" />
+        <PackageReference Include="AutoMapper" Version="13.0.1" />
+        <ProjectReference Include="../CO.CDP.Person.Persistence/CO.CDP.Person.Persistence.csproj" />
     </ItemGroup>
-
-    <ItemGroup>
-      <Content Include="..\.dockerignore">
-        <Link>.dockerignore</Link>
-      </Content>
-    </ItemGroup>
-
 </Project>
