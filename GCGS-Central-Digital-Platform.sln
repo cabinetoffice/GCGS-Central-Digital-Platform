@@ -58,6 +58,9 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.Person.Persistence.Tests", "Services\CO.CDP.Person.Persistence.Tests\CO.CDP.Person.Persistence.Tests.csproj", "{7CD03C63-7AB5-444A-B851-840024D21684}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.Person.WebApiClient", "Libraries\CO.CDP.Person.WebApiClient\CO.CDP.Person.WebApiClient.csproj", "{5437873C-34C0-4E54-BE1B-B06021999473}"
+	ProjectSection(ProjectDependencies) = postProject
+		{D9CC02AD-3031-496A-8E48-E736623D1B41} = {D9CC02AD-3031-496A-8E48-E736623D1B41}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.Person.WebApiClient.Tests", "Libraries\CO.CDP.Person.WebApiClient.Tests\CO.CDP.Person.WebApiClient.Tests.csproj", "{B8AF6C32-1FCE-4772-A06B-0652E67E7A93}"
 EndProject
