@@ -18,7 +18,8 @@ builder.Services.AddAutoMapper(typeof(WebApiToPersistenceProfile));
 builder.Services.AddScoped<OrganisationContext>(_ => new OrganisationContext(builder.Configuration.GetConnectionString("OrganisationDatabase") ?? ""));
 builder.Services.AddScoped<IOrganisationRepository, DatabaseOrganisationRepository>();
 builder.Services.AddScoped<IUseCase<RegisterOrganisation, Organisation>, RegisterOrganisationUseCase>();
-
+builder.Services.AddScoped<IUseCase<Guid, Organisation?>, GetOrganisationUseCase>();
+builder.Services.AddScoped<IUseCase<string, Organisation?>, LookupOrganisationUseCase>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -31,5 +32,6 @@ if (app.Environment.IsDevelopment())
 app.MapHealthChecks("/health");
 app.UseHttpsRedirection();
 app.UseOrganisationEndpoints();
+app.UseOrganisationLookupEndpoints();
 app.Run();
 public abstract partial class Program;
