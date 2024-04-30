@@ -1,9 +1,10 @@
 using CO.CDP.OrganisationApp.Models;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace CO.CDP.OrganisationApp.Pages.Registration;
 
+[Authorize]
 public class OrganisationDetailsSummaryModel(ISession session) : PageModel
 {
     public RegistrationDetails? RegistrationDetailModel { get; set; }

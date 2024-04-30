@@ -17,7 +17,7 @@
             "commandName": "Project",
             "dotnetRunMessages": true,
             "launchBrowser": true,
-            "applicationUrl": "http://localhost:5219",
+            "applicationUrl": "http://localhost:8090",
             "environmentVariables": {
                 "ASPNETCORE_ENVIRONMENT": "Development",
                 "ASPNETCORE_HOSTINGSTARTUPASSEMBLIES": "Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation"

@@ -26,11 +26,25 @@ For important design decisions that were made as the project evolved see the [de
 While local development is done within our IDE of choice, the Docker configuration is provided to conveniently start
 all the services at once.
 
+### Building containers
+
 First, we need to build all Docker containers:
 
 ```bash
 make build-docker
 ```
+
+### Configuration
+
+Run `make compose.override.yml` to generate the default configuration.
+
+One login details need to be provided to the `organisation-app` in `compose.override.yml` as environment variables:
+
+* `OneLogin__Authority`
+* `OneLogin__ClientId`
+* `OneLogin__PrivateKey`
+
+### Starting services
 
 To start all Docker services:
 
@@ -42,7 +56,7 @@ The first run creates `compose.override.yml` that can be used to override servic
 
 By default service and application ports are mapped as follows:
 
-* OrganisationApp - - http://localhost/
+* OrganisationApp - - http://localhost:8090/
 * Tenant - http://localhost:8080/swagger/
 * Organisation - http://localhost:8082/swagger/
 * Person - http://localhost:8084/swagger/

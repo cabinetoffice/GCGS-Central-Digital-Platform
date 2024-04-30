@@ -1,13 +1,13 @@
+using CO.CDP.OrganisationApp.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel;
-using CO.CDP.OrganisationApp.Models;
 using System.ComponentModel.DataAnnotations;
-using CO.CDP.OrganisationApp.Constants;
 
 namespace CO.CDP.OrganisationApp.Pages.Registration;
 
-
+[Authorize]
 public class OrganisationDetailModel(ISession session) : PageModel
 {
     [BindProperty]
