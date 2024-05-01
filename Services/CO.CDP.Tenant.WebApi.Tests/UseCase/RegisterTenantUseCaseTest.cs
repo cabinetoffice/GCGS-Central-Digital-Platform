@@ -1,4 +1,4 @@
-using CO.CDP.Tenant.Persistence;
+using CO.CDP.Persistence.OrganisationInformation;
 using CO.CDP.Tenant.WebApi.Model;
 using CO.CDP.Tenant.WebApi.Tests.AutoMapper;
 using CO.CDP.Tenant.WebApi.UseCase;
@@ -51,10 +51,10 @@ public class RegisterTenantUseCaseTest(AutoMapperFixture mapperFixture) : IClass
             }
         });
 
-        _repository.Verify(r => r.Save(It.Is<Persistence.Tenant>(actual =>
+        _repository.Verify(r => r.Save(It.Is<Persistence.OrganisationInformation.Tenant>(actual =>
             actual.Guid == _generatedGuid &&
             actual.Name == "TrentTheTenant" &&
-            actual.ContactInfo == new Persistence.Tenant.TenantContactInfo
+            actual.ContactInfo == new Persistence.OrganisationInformation.Tenant.TenantContactInfo
             {
                 Email = "trent@example.com",
                 Phone = "07925987654"

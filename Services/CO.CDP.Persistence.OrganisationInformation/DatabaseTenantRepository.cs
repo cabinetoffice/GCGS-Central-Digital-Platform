@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-using static CO.CDP.Tenant.Persistence.ITenantRepository.TenantRepositoryException;
+using static CO.CDP.Persistence.OrganisationInformation.ITenantRepository.TenantRepositoryException;
 
-namespace CO.CDP.Tenant.Persistence;
+namespace CO.CDP.Persistence.OrganisationInformation;
 
 public class DatabaseTenantRepository(TenantContext context) : ITenantRepository
 {
@@ -38,9 +38,9 @@ public class DatabaseTenantRepository(TenantContext context) : ITenantRepository
         switch (cause.InnerException)
         {
             case { } e when e.ContainsDuplicateKey("_Tenants_Name"):
-                throw new DuplicateTenantException($"Tenant with name `{tenant.Name}` already exists.", cause);
+                throw new ITenantRepository.TenantRepositoryException.DuplicateTenantException($"Tenant with name `{tenant.Name}` already exists.", cause);
             case { } e when e.ContainsDuplicateKey("_Tenants_Guid"):
-                throw new DuplicateTenantException($"Tenant with guid `{tenant.Guid}` already exists.", cause);
+                throw new ITenantRepository.TenantRepositoryException.DuplicateTenantException($"Tenant with guid `{tenant.Guid}` already exists.", cause);
             default: throw cause;
         }
     }

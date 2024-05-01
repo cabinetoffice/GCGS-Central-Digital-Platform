@@ -1,5 +1,5 @@
 using AutoMapper;
-using CO.CDP.Tenant.Persistence;
+using CO.CDP.Persistence.OrganisationInformation;
 using CO.CDP.Tenant.WebApi.Model;
 
 namespace CO.CDP.Tenant.WebApi.UseCase;
@@ -14,7 +14,7 @@ public class RegisterTenantUseCase(ITenantRepository tenantRepository, IMapper m
 
     public Task<Model.Tenant> Execute(RegisterTenant command)
     {
-        var tenant = mapper.Map<Persistence.Tenant>(command, o => o.Items["Guid"] = guidFactory());
+        var tenant = mapper.Map<Persistence.OrganisationInformation.Tenant>(command, o => o.Items["Guid"] = guidFactory());
         tenantRepository.Save(tenant);
         return Task.FromResult(mapper.Map<Model.Tenant>(tenant));
     }

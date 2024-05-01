@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 
-namespace CO.CDP.Tenant.Persistence;
+namespace CO.CDP.Persistence.OrganisationInformation;
 
 public class TenantContext(string connectionString) : DbContext
 {

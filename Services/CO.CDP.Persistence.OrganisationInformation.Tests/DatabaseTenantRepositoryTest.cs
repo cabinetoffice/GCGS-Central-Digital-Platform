@@ -2,7 +2,7 @@ using CO.CDP.Testcontainers.PostgreSql;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 
-namespace CO.CDP.Tenant.Persistence.Tests;
+namespace CO.CDP.Persistence.OrganisationInformation.Tests;
 
 public class DatabaseTenantRepositoryTest(PostgreSqlFixture postgreSql) : IClassFixture<PostgreSqlFixture>
 {

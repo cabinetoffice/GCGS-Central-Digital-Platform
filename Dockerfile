@@ -25,8 +25,8 @@ COPY Libraries/CO.CDP.Person.WebApiClient/CO.CDP.Person.WebApiClient.csproj Libr
 COPY Libraries/CO.CDP.Person.WebApiClient.Tests/CO.CDP.Person.WebApiClient.Tests.csproj Libraries/CO.CDP.Person.WebApiClient.Tests/
 COPY TestKit/CO.CDP.Testcontainers.PostgreSql/CO.CDP.Testcontainers.PostgreSql.csproj TestKit/CO.CDP.Testcontainers.PostgreSql/
 COPY TestKit/CO.CDP.Testcontainers.PostgreSql.Tests/CO.CDP.Testcontainers.PostgreSql.Tests.csproj TestKit/CO.CDP.Testcontainers.PostgreSql.Tests/
-COPY Services/CO.CDP.Tenant.Persistence/CO.CDP.Tenant.Persistence.csproj Services/CO.CDP.Tenant.Persistence/
-COPY Services/CO.CDP.Tenant.Persistence.Tests/CO.CDP.Tenant.Persistence.Tests.csproj Services/CO.CDP.Tenant.Persistence.Tests/
+COPY Services/CO.CDP.Persistence.OrganisationInformation/CO.CDP.Persistence.OrganisationInformation.csproj Services/CO.CDP.Persistence.OrganisationInformation/
+COPY Services/CO.CDP.Persistence.OrganisationInformation.Tests/CO.CDP.Persistence.OrganisationInformation.Tests.csproj Services/CO.CDP.Persistence.OrganisationInformation.Tests/
 COPY Services/CO.CDP.Tenant.WebApi/CO.CDP.Tenant.WebApi.csproj Services/CO.CDP.Tenant.WebApi/
 COPY Services/CO.CDP.Tenant.WebApi.Tests/CO.CDP.Tenant.WebApi.Tests.csproj Services/CO.CDP.Tenant.WebApi.Tests/
 COPY Services/CO.CDP.DataSharing.WebApi/CO.CDP.DataSharing.WebApi.csproj Services/CO.CDP.DataSharing.WebApi/
@@ -113,7 +113,7 @@ FROM build-tenant AS build-migrations-tenant
 WORKDIR /src
 COPY .config/dotnet-tools.json .config/
 RUN dotnet tool restore
-RUN dotnet ef migrations bundle -p /src/Services/CO.CDP.Tenant.Persistence -s /src/Services/CO.CDP.Tenant.WebApi --self-contained -o /app/migrations/efbundle
+RUN dotnet ef migrations bundle -p /src/Services/CO.CDP.Persistence.OrganisationInformation -s /src/Services/CO.CDP.Tenant.WebApi --self-contained -o /app/migrations/efbundle
 
 FROM base AS migrations-tenant
 ENV MIGRATIONS_CONNECTION_STRING=""
