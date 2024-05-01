@@ -1,4 +1,4 @@
-using CO.CDP.Person.Persistence;
+using CO.CDP.OrganisationInformation.Persistence;
 using CO.CDP.Person.WebApi.Api;
 using CO.CDP.Person.WebApi.AutoMapper;
 using CO.CDP.Person.WebApi.Model;
@@ -14,7 +14,7 @@ builder.Services.AddSwaggerGen(options => { options.DocumentPersonApi(); });
 builder.Services.AddHealthChecks();
 builder.Services.AddAutoMapper(typeof(WebApiToPersistenceProfile));
 
-builder.Services.AddScoped<PersonContext>(_ => new PersonContext(builder.Configuration.GetConnectionString("PersonDatabase") ?? ""));
+builder.Services.AddScoped<OrganisationInformationContext>(_ => new OrganisationInformationContext(builder.Configuration.GetConnectionString("OrganisationInformationDatabase") ?? ""));
 builder.Services.AddScoped<IPersonRepository, DatabasePersonRepository>();
 builder.Services.AddScoped<IUseCase<RegisterPerson, CO.CDP.Person.WebApi.Model.Person>, RegisterPersonUseCase>();
 

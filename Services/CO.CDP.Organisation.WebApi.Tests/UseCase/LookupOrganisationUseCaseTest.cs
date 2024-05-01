@@ -1,6 +1,7 @@
-using CO.CDP.Organisation.Persistence;
+using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.Organisation.WebApi.Tests.AutoMapper;
 using CO.CDP.Organisation.WebApi.UseCase;
+using CO.CDP.OrganisationInformation.Persistence;
 using FluentAssertions;
 using Moq;
 
@@ -24,21 +25,21 @@ public class LookupOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
     public async Task Execute_IfOrganisationIsFound_ReturnsOrganisation()
     {
         var organisationId = Guid.NewGuid();
-        var persistenceOrganisation = new Persistence.Organisation
+        var persistenceOrganisation = new OrganisationInformation.Persistence.Organisation
         {
             Id = 1,
             Guid = organisationId,
             Name = "Test Organisation",
-            Identifier = new Persistence.Organisation.OrganisationIdentifier
+            Identifier = new OrganisationInformation.Persistence.Organisation.OrganisationIdentifier
             {
                 Id = "Identifier1",
                 Scheme = "Scheme1",
                 LegalName = "Legal Name",
                 Uri = "http://example.com"
             },
-            AdditionalIdentifiers = new List<Persistence.Organisation.OrganisationIdentifier>
+            AdditionalIdentifiers = new List<OrganisationInformation.Persistence.Organisation.OrganisationIdentifier>
             {
-                new Persistence.Organisation.OrganisationIdentifier
+                new OrganisationInformation.Persistence.Organisation.OrganisationIdentifier
                 {
                     Id = "Identifier2",
                     Scheme = "Scheme2",
@@ -46,7 +47,7 @@ public class LookupOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
                     Uri = "http://another-example.com"
                 }
             },
-            Address = new Persistence.Organisation.OrganisationAddress
+            Address = new OrganisationInformation.Persistence.Organisation.OrganisationAddress
             {
                 StreetAddress = "1234 Test St",
                 Locality = "Test City",
@@ -54,7 +55,7 @@ public class LookupOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
                 PostalCode = "12345",
                 CountryName = "Testland"
             },
-            ContactPoint = new Persistence.Organisation.OrganisationContactPoint
+            ContactPoint = new OrganisationInformation.Persistence.Organisation.OrganisationContactPoint
             {
                 Name = "Contact Name",
                 Email = "contact@test.org",
@@ -73,16 +74,16 @@ public class LookupOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
         {
             Id = organisationId,
             Name = "Test Organisation",
-            Identifier = new Model.OrganisationIdentifier
+            Identifier = new OrganisationIdentifier
             {
                 Id = "Identifier1",
                 Scheme = "Scheme1",
                 LegalName = "Legal Name",
                 Uri = "http://example.com"
             },
-            AdditionalIdentifiers = new List<Model.OrganisationIdentifier>
+            AdditionalIdentifiers = new List<OrganisationIdentifier>
             {
-                new Model.OrganisationIdentifier
+                new OrganisationIdentifier
                 {
                     Id = "Identifier2",
                     Scheme = "Scheme2",
@@ -90,7 +91,7 @@ public class LookupOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
                     Uri = "http://another-example.com"
                 }
             },
-            Address = new Model.OrganisationAddress
+            Address = new OrganisationAddress
             {
                 StreetAddress = "1234 Test St",
                 Locality = "Test City",
@@ -98,7 +99,7 @@ public class LookupOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
                 PostalCode = "12345",
                 CountryName = "Testland"
             },
-            ContactPoint = new Model.OrganisationContactPoint
+            ContactPoint = new OrganisationContactPoint
             {
                 Name = "Contact Name",
                 Email = "contact@test.org",

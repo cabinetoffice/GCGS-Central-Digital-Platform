@@ -25,18 +25,14 @@ COPY Libraries/CO.CDP.Person.WebApiClient/CO.CDP.Person.WebApiClient.csproj Libr
 COPY Libraries/CO.CDP.Person.WebApiClient.Tests/CO.CDP.Person.WebApiClient.Tests.csproj Libraries/CO.CDP.Person.WebApiClient.Tests/
 COPY TestKit/CO.CDP.Testcontainers.PostgreSql/CO.CDP.Testcontainers.PostgreSql.csproj TestKit/CO.CDP.Testcontainers.PostgreSql/
 COPY TestKit/CO.CDP.Testcontainers.PostgreSql.Tests/CO.CDP.Testcontainers.PostgreSql.Tests.csproj TestKit/CO.CDP.Testcontainers.PostgreSql.Tests/
-COPY Services/CO.CDP.Tenant.Persistence/CO.CDP.Tenant.Persistence.csproj Services/CO.CDP.Tenant.Persistence/
-COPY Services/CO.CDP.Tenant.Persistence.Tests/CO.CDP.Tenant.Persistence.Tests.csproj Services/CO.CDP.Tenant.Persistence.Tests/
+COPY Services/CO.CDP.OrganisationInformation.Persistence/CO.CDP.OrganisationInformation.Persistence.csproj Services/CO.CDP.OrganisationInformation.Persistence/
+COPY Services/CO.CDP.OrganisationInformation.Persistence.Tests/CO.CDP.OrganisationInformation.Persistence.Tests.csproj Services/CO.CDP.OrganisationInformation.Persistence.Tests/
 COPY Services/CO.CDP.Tenant.WebApi/CO.CDP.Tenant.WebApi.csproj Services/CO.CDP.Tenant.WebApi/
 COPY Services/CO.CDP.Tenant.WebApi.Tests/CO.CDP.Tenant.WebApi.Tests.csproj Services/CO.CDP.Tenant.WebApi.Tests/
 COPY Services/CO.CDP.DataSharing.WebApi/CO.CDP.DataSharing.WebApi.csproj Services/CO.CDP.DataSharing.WebApi/
 COPY Services/CO.CDP.DataSharing.WebApi.Tests/CO.CDP.DataSharing.WebApi.Tests.csproj Services/CO.CDP.DataSharing.WebApi.Tests/
-COPY Services/CO.CDP.Organisation.Persistence/CO.CDP.Organisation.Persistence.csproj Services/CO.CDP.Organisation.Persistence/
-COPY Services/CO.CDP.Organisation.Persistence.Tests/CO.CDP.Organisation.Persistence.Tests.csproj Services/CO.CDP.Organisation.Persistence.Tests/
 COPY Services/CO.CDP.Organisation.WebApi.Tests/CO.CDP.Organisation.WebApi.Tests.csproj Services/CO.CDP.Organisation.WebApi.Tests/
 COPY Services/CO.CDP.Organisation.WebApi/CO.CDP.Organisation.WebApi.csproj Services/CO.CDP.Organisation.WebApi/
-COPY Services/CO.CDP.Person.Persistence/CO.CDP.Person.Persistence.csproj Services/CO.CDP.Person.Persistence/
-COPY Services/CO.CDP.Person.Persistence.Tests/CO.CDP.Person.Persistence.Tests.csproj Services/CO.CDP.Person.Persistence.Tests/
 COPY Services/CO.CDP.Person.WebApi/CO.CDP.Person.WebApi.csproj Services/CO.CDP.Person.WebApi/
 COPY Services/CO.CDP.Person.WebApi.Tests/CO.CDP.Person.WebApi.Tests.csproj Services/CO.CDP.Person.WebApi.Tests/
 COPY Services/CO.CDP.Forms.WebApi/CO.CDP.Forms.WebApi.csproj Services/CO.CDP.Forms.WebApi/
@@ -109,16 +105,16 @@ FROM build-organisation-app AS publish-organisation-app
 ARG BUILD_CONFIGURATION
 RUN dotnet publish "CO.CDP.OrganisationApp.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
-FROM build-tenant AS build-migrations-tenant
+FROM build-tenant AS build-migrations-organisation-information
 WORKDIR /src
 COPY .config/dotnet-tools.json .config/
 RUN dotnet tool restore
-RUN dotnet ef migrations bundle -p /src/Services/CO.CDP.Tenant.Persistence -s /src/Services/CO.CDP.Tenant.WebApi --self-contained -o /app/migrations/efbundle
+RUN dotnet ef migrations bundle -p /src/Services/CO.CDP.OrganisationInformation.Persistence -s /src/Services/CO.CDP.Tenant.WebApi --self-contained -o /app/migrations/efbundle
 
-FROM base AS migrations-tenant
+FROM base AS migrations-organisation-information
 ENV MIGRATIONS_CONNECTION_STRING=""
 WORKDIR /app
-COPY --from=build-migrations-tenant /app/migrations/efbundle .
+COPY --from=build-migrations-organisation-information /app/migrations/efbundle .
 ENTRYPOINT /app/efbundle --connection "$MIGRATIONS_CONNECTION_STRING"
 
 FROM base AS final-tenant
@@ -126,34 +122,10 @@ WORKDIR /app
 COPY --from=publish-tenant /app/publish .
 ENTRYPOINT ["dotnet", "CO.CDP.Tenant.WebApi.dll"]
 
-FROM build-organisation AS build-migrations-organisation
-WORKDIR /src
-COPY .config/dotnet-tools.json .config/
-RUN dotnet tool restore
-RUN dotnet ef migrations bundle -p /src/Services/CO.CDP.Organisation.Persistence -s /src/Services/CO.CDP.Organisation.WebApi --self-contained -o /app/migrations/efbundle
-
-FROM base AS migrations-organisation
-ENV MIGRATIONS_CONNECTION_STRING=""
-WORKDIR /app
-COPY --from=build-migrations-organisation /app/migrations/efbundle .
-ENTRYPOINT /app/efbundle --connection "$MIGRATIONS_CONNECTION_STRING"
-
 FROM base AS final-organisation
 WORKDIR /app
 COPY --from=publish-organisation /app/publish .
 ENTRYPOINT ["dotnet", "CO.CDP.Organisation.WebApi.dll"]
-
-FROM build-person AS build-migrations-person
-WORKDIR /src
-COPY .config/dotnet-tools.json .config/
-RUN dotnet tool restore
-RUN dotnet ef migrations bundle -p /src/Services/CO.CDP.Person.Persistence -s /src/Services/CO.CDP.Person.WebApi --self-contained -o /app/migrations/efbundle
-
-FROM base AS migrations-person
-ENV MIGRATIONS_CONNECTION_STRING=""
-WORKDIR /app
-COPY --from=build-migrations-person /app/migrations/efbundle .
-ENTRYPOINT /app/efbundle --connection "$MIGRATIONS_CONNECTION_STRING"
 
 FROM base AS final-person
 WORKDIR /app

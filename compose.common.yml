@@ -10,6 +10,17 @@ services:
       timeout: 5s
       retries: 5
 
+  organisation-information-migrations:
+    container_name: co-cdp-organisation-information-migrations
+    restart: no
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: migrations-organisation-information
+    image: 'cabinetoffice/cdp-organisation-information-migrations:${IMAGE_VERSION:-latest}'
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+
   organisation-app:
     container_name: co-cdp-organisation-app
     build:
@@ -42,28 +53,6 @@ services:
       timeout: 10s
       retries: 10
 
-  tenant-migrations:
-    container_name: co-cdp-tenant-migrations
-    restart: no
-    build:
-      context: .
-      dockerfile: Dockerfile
-      target: migrations-tenant
-    image: 'cabinetoffice/cdp-tenant-migrations:${IMAGE_VERSION:-latest}'
-    environment:
-      ASPNETCORE_ENVIRONMENT: Production
-
-  organisation-migrations:
-    container_name: co-cdp-organisation-migrations
-    restart: no
-    build:
-      context: .
-      dockerfile: Dockerfile
-      target: migrations-organisation
-    image: 'cabinetoffice/cdp-organisation-migrations:${IMAGE_VERSION:-latest}'
-    environment:
-      ASPNETCORE_ENVIRONMENT: Production
-
   organisation:
     container_name: co-cdp-organisation
     build:
@@ -80,16 +69,6 @@ services:
       timeout: 10s
       retries: 10
 
-  person-migrations:
-    container_name: co-cdp-person-migrations
-    restart: no
-    build:
-      context: .
-      dockerfile: Dockerfile
-      target: migrations-person
-    image: 'cabinetoffice/cdp-person-migrations:${IMAGE_VERSION:-latest}'
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Production
   person:
     container_name: co-cdp-person
     build:

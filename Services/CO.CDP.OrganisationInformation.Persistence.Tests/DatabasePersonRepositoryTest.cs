@@ -1,9 +1,8 @@
 using CO.CDP.Testcontainers.PostgreSql;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
-using static CO.CDP.Person.Persistence.Person;
 
-namespace CO.CDP.Person.Persistence.Tests;
+namespace CO.CDP.OrganisationInformation.Persistence.Tests;
 
 public class DatabasePersonRepositoryTest(PostgreSqlFixture postgreSql) : IClassFixture<PostgreSqlFixture>
 {
@@ -107,12 +106,12 @@ public class DatabasePersonRepositoryTest(PostgreSqlFixture postgreSql) : IClass
 
     private IPersonRepository PersonRepository()
     {
-        return new DatabasePersonRepository(PersonContext());
+        return new DatabasePersonRepository(OrganisationInformationContext());
     }
 
-    private PersonContext PersonContext()
+    private OrganisationInformationContext OrganisationInformationContext()
     {
-        var context = new PersonContext(postgreSql.ConnectionString);
+        var context = new OrganisationInformationContext(postgreSql.ConnectionString);
         context.Database.Migrate();
         context.SaveChanges();
         return context;

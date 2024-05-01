@@ -27,8 +27,8 @@ ps:
 .PHONY: ps
 
 db: compose.override.yml
-	@docker compose up -d db tenant-migrations
-	@docker compose logs -f tenant-migrations
+	@docker compose up -d db organisation-information-migrations
+	@docker compose logs -f organisation-information-migrations
 .PHONY: up
 
 OpenAPI: build

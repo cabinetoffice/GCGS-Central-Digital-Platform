@@ -1,4 +1,4 @@
-namespace CO.CDP.Tenant.Persistence;
+namespace CO.CDP.OrganisationInformation.Persistence;
 
 public interface ITenantRepository : IDisposable
 {

@@ -17,7 +17,7 @@
       "applicationUrl": "http://localhost:5288",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "ConnectionStrings__OrganisationDatabase": "Server=localhost;Database=cdp;Username=cdp_user;Password=cdp123;"
+        "ConnectionStrings__OrganisationInformationDatabase": "Server=localhost;Database=cdp;Username=cdp_user;Password=cdp123;"
       }
     },
     "https": {

@@ -2,7 +2,7 @@ using CO.CDP.Testcontainers.PostgreSql;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 
-namespace CO.CDP.Tenant.Persistence.Tests;
+namespace CO.CDP.OrganisationInformation.Persistence.Tests;
 
 public class DatabaseTenantRepositoryTest(PostgreSqlFixture postgreSql) : IClassFixture<PostgreSqlFixture>
 {
@@ -98,19 +98,19 @@ public class DatabaseTenantRepositoryTest(PostgreSqlFixture postgreSql) : IClass
     {
         using var repository = TenantRepository();
 
-        var found = await repository.FindByName("urn:fdc:gov.uk:2022:43af5a8b-f4c0-414b-b341-d4f1fa894302");
+        var found = await repository.FindByName("urn:fdc:gov.uk:2022:43af5a8b-f4c0-414b-b341-d4f1fa894301");
 
         found.Should().BeNull();
     }
 
     private ITenantRepository TenantRepository()
     {
-        return new DatabaseTenantRepository(TenantContext());
+        return new DatabaseTenantRepository(OrganisationInformationContext());
     }
 
-    private TenantContext TenantContext()
+    private OrganisationInformationContext OrganisationInformationContext()
     {
-        var context = new TenantContext(postgreSql.ConnectionString);
+        var context = new OrganisationInformationContext(postgreSql.ConnectionString);
         context.Database.Migrate();
         context.SaveChanges();
         return context;

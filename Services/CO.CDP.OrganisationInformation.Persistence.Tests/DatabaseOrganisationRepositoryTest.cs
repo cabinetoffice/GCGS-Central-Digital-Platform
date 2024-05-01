@@ -1,9 +1,9 @@
 using CO.CDP.Testcontainers.PostgreSql;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
-using static CO.CDP.Organisation.Persistence.Organisation;
+using static CO.CDP.OrganisationInformation.Persistence.Organisation;
 
-namespace CO.CDP.Organisation.Persistence.Tests;
+namespace CO.CDP.OrganisationInformation.Persistence.Tests;
 
 public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql) : IClassFixture<PostgreSqlFixture>
 {
@@ -143,19 +143,19 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql) : 
     {
         using var repository = OrganisationRepository();
 
-        var found = await repository.FindByName("urn:fdc:gov.uk:2022:43af5a8b-f4c0-414b-b341-d4f1fa894302");
+        var found = await repository.FindByName("urn:fdc:gov.uk:2022:43af5a8b-f4c0-414b-b341-d4f1fa894301");
 
         found.Should().BeNull();
     }
 
     private IOrganisationRepository OrganisationRepository()
     {
-        return new DatabaseOrganisationRepository(OrganisationContext());
+        return new DatabaseOrganisationRepository(OrganisationInformationContext());
     }
 
-    private OrganisationContext OrganisationContext()
+    private OrganisationInformationContext OrganisationInformationContext()
     {
-        var context = new OrganisationContext(postgreSql.ConnectionString);
+        var context = new OrganisationInformationContext(postgreSql.ConnectionString);
         context.Database.Migrate();
         context.SaveChanges();
         return context;

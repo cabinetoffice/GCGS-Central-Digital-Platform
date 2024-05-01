@@ -7,10 +7,10 @@ public class WebApiToPersistenceProfile : Profile
 {
     public WebApiToPersistenceProfile()
     {
-        CreateMap<Person.Persistence.Person, Person.WebApi.Model.Person>()
-            .ForMember(m => m.Id, o => o.MapFrom(m => m.Guid));        
+        CreateMap<OrganisationInformation.Persistence.Person, Model.Person>()
+            .ForMember(m => m.Id, o => o.MapFrom(m => m.Guid));
 
-        CreateMap<RegisterPerson, Person.Persistence.Person>()
+        CreateMap<RegisterPerson, OrganisationInformation.Persistence.Person>()
             .ForMember(m => m.Guid, o => o.MapFrom((_, _, _, context) => context.Items["Guid"]))
             .ForMember(m => m.Id, o => o.Ignore());
     }

@@ -7,19 +7,19 @@ public class WebApiToPersistenceProfile : Profile
 {
     public WebApiToPersistenceProfile()
     {
-        CreateMap<Persistence.Organisation, Model.Organisation>()
+        CreateMap<OrganisationInformation.Persistence.Organisation, Model.Organisation>()
             .ForMember(m => m.Id, o => o.MapFrom(m => m.Guid));
 
-        CreateMap<OrganisationIdentifier, Persistence.Organisation.OrganisationIdentifier>();
-        CreateMap<Persistence.Organisation.OrganisationIdentifier, OrganisationIdentifier>();
-        CreateMap<OrganisationAddress, Persistence.Organisation.OrganisationAddress>();
-        CreateMap<Persistence.Organisation.OrganisationAddress, OrganisationAddress>();
+        CreateMap<OrganisationIdentifier, OrganisationInformation.Persistence.Organisation.OrganisationIdentifier>();
+        CreateMap<OrganisationInformation.Persistence.Organisation.OrganisationIdentifier, OrganisationIdentifier>();
+        CreateMap<OrganisationAddress, OrganisationInformation.Persistence.Organisation.OrganisationAddress>();
+        CreateMap<OrganisationInformation.Persistence.Organisation.OrganisationAddress, OrganisationAddress>();
 
-        CreateMap<OrganisationContactPoint, Persistence.Organisation.OrganisationContactPoint>();
-        CreateMap<Persistence.Organisation.OrganisationContactPoint, OrganisationContactPoint>();
+        CreateMap<OrganisationContactPoint, OrganisationInformation.Persistence.Organisation.OrganisationContactPoint>();
+        CreateMap<OrganisationInformation.Persistence.Organisation.OrganisationContactPoint, OrganisationContactPoint>();
 
 
-        CreateMap<RegisterOrganisation, Persistence.Organisation>()
+        CreateMap<RegisterOrganisation, OrganisationInformation.Persistence.Organisation>()
             .ForMember(m => m.Guid, o => o.MapFrom((_, _, _, context) => context.Items["Guid"]))
             .ForMember(m => m.Id, o => o.Ignore());
     }

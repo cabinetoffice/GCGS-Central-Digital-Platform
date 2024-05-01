@@ -1,7 +1,7 @@
-using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
-namespace CO.CDP.Organisation.Persistence;
+namespace CO.CDP.OrganisationInformation.Persistence;
 
 [Index(nameof(Guid), IsUnique = true)]
 [Index(nameof(Name), IsUnique = true)]

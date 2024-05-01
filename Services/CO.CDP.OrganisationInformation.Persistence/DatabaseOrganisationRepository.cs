@@ -1,9 +1,8 @@
-
 using Microsoft.EntityFrameworkCore;
-using static CO.CDP.Organisation.Persistence.IOrganisationRepository.OrganisationRepositoryException;
 
-namespace CO.CDP.Organisation.Persistence;
-public class DatabaseOrganisationRepository(OrganisationContext context) : IOrganisationRepository
+namespace CO.CDP.OrganisationInformation.Persistence;
+
+public class DatabaseOrganisationRepository(OrganisationInformationContext context) : IOrganisationRepository
 {
     public void Dispose()
     {
@@ -38,21 +37,13 @@ public class DatabaseOrganisationRepository(OrganisationContext context) : IOrga
         switch (cause.InnerException)
         {
             case { } e when e.Message.Contains("_Organisations_Name"):
-                throw new DuplicateOrganisationException($"Organisation with name `{organisation.Name}` already exists.", cause);
+                throw new IOrganisationRepository.OrganisationRepositoryException.DuplicateOrganisationException(
+                    $"Organisation with name `{organisation.Name}` already exists.", cause);
             case { } e when e.Message.Contains("_Organisations_Guid"):
-                throw new DuplicateOrganisationException($"Organisation with guid `{organisation.Guid}` already exists.", cause);
+                throw new IOrganisationRepository.OrganisationRepositoryException.DuplicateOrganisationException(
+                    $"Organisation with guid `{organisation.Guid}` already exists.", cause);
             default:
                 throw cause;
         }
     }
-}
-
-internal static class StringExtensions
-{
-    internal static bool ContainsDuplicateKey(this Exception cause, string name) =>
-        cause.Message.ContainsDuplicateKey(name);
-
-    private static bool ContainsDuplicateKey(this string message, string name) =>
-        message.Contains("duplicate key value violates unique constraint") &&
-        message.Contains($"{name}\"");
 }

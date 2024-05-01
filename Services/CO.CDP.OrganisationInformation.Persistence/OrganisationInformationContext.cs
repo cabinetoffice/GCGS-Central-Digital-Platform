@@ -1,9 +1,12 @@
 using Microsoft.EntityFrameworkCore;
 
-namespace CO.CDP.Organisation.Persistence;
-public class OrganisationContext(string connectionString) : DbContext
+namespace CO.CDP.OrganisationInformation.Persistence;
+
+public class OrganisationInformationContext(string connectionString) : DbContext
 {
+    public DbSet<Tenant> Tenants { get; set; } = null!;
     public DbSet<Organisation> Organisations { get; set; } = null!;
+    public DbSet<Person> Persons { get; set; } = null!;
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -32,6 +35,10 @@ public class OrganisationContext(string connectionString) : DbContext
                 a.Property(ai => ai.LegalName);
                 a.Property(ai => ai.Uri);
             });
+        });
+        modelBuilder.Entity<Person>(entity =>
+        {
+            entity.HasKey(e => e.Id);
         });
 
         base.OnModelCreating(modelBuilder);
