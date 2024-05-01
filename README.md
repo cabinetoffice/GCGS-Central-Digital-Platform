@@ -23,7 +23,7 @@ make build-docker
 The database can be then started together with migrations:
 
 ```bash
-docker compose up -d db tenant-migrations organisation-migrations
+docker compose up -d db organisation-information-migrations
 ```
 
 ### Configuration

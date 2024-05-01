@@ -21,10 +21,10 @@ services:
       - db
     environment:
       ConnectionStrings__TenantDatabase: 'Server=db;Database=cdp;Username=cdp_user;Password=cdp123;'
-  tenant-migrations:
+  organisation-information-migrations:
     extends:
       file: compose.common.yml
-      service: tenant-migrations
+      service: organisation-information-migrations
     depends_on:
       db:
         condition: service_healthy
