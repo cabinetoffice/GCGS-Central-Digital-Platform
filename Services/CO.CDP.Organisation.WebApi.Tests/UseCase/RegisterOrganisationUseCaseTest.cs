@@ -72,7 +72,7 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
     }
 
     [Fact]
-    public void ItSavesNewTenantInTheRepository()
+    public void ItSavesNewOrganisationInTheRepository()
     {
         UseCase.Execute(new RegisterOrganisation
         {

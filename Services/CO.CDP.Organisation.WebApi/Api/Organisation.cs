@@ -1,6 +1,7 @@
 using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.Organisation.WebApi.UseCase;
 using DotSwashbuckle.AspNetCore.SwaggerGen;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
 using System.ComponentModel.DataAnnotations;
 
@@ -99,28 +100,19 @@ public static class EndpointExtensions
             operation.Responses["201"].Description = "Organisation created successfully.";
             return operation;
         });
-
-        app.MapGet("/organisations/{organisationId}", (Guid organisationId) =>
-            {
-                try
-                {
-                    return Results.Ok(_organisations[organisationId]);
-                }
-                catch (KeyNotFoundException)
-                {
-                    return Results.NotFound();
-                }
-            })
-            .Produces<Model.Organisation>(200, "application/json")
-            .Produces(404)
-            .WithOpenApi(operation =>
-            {
-                operation.OperationId = "GetOrganisation";
-                operation.Description = "Get a organisation by ID.";
-                operation.Summary = "Get a organisation by ID.";
-                operation.Responses["200"].Description = "Organisation details.";
-                return operation;
-            });
+        app.MapGet("/organisations/{organisationId}", async (Guid organisationId, IUseCase<Guid, Model.Organisation?> useCase) =>
+               await useCase.Execute(organisationId)
+                   .AndThen(organisation => organisation != null ? Results.Ok(organisation) : Results.NotFound()))
+           .Produces<Model.Organisation>(200, "application/json")
+           .Produces(404)
+           .WithOpenApi(operation =>
+           {
+               operation.OperationId = "GetOrganisation";
+               operation.Description = "Get a organisation by ID.";
+               operation.Summary = "Get a organisation by ID.";
+               operation.Responses["200"].Description = "Organisation details.";
+               return operation;
+           });
         app.MapPut("/organisations/{organisationId}",
                 (Guid organisationId, UpdateOrganisation updatedOrganisation) =>
                 {
@@ -160,7 +152,26 @@ public static class EndpointExtensions
                 return operation;
             });
     }
+    public static void UseOrganisationLookupEndpoints(this WebApplication app)
+    {
+        app.MapGet("/organisation/lookup",
+                async ([FromQuery] string name, IUseCase<string, Model.Organisation?> useCase) =>
+                await useCase.Execute(name)
+                    .AndThen(organisation => organisation != null ? Results.Ok(organisation) : Results.NotFound()))
+            .Produces<Model.Organisation>(200, "application/json")
+            .Produces(404)
+            .WithOpenApi(operation =>
+            {
+                operation.OperationId = "LookupOrganisation";
+                operation.Description = "Lookup organisation by identifier.";
+                operation.Summary = "Lookup organisation by identifier.";
+                operation.Tags = new List<OpenApiTag> { new() { Name = "Organisation Lookup" } };
+                operation.Responses["200"].Description = "Organisations Associated.";
+                return operation;
+            });
+    }
 }
+
 
 public static class ApiExtensions
 {
