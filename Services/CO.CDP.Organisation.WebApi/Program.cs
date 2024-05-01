@@ -1,8 +1,8 @@
-using CO.CDP.Organisation.Persistence;
 using CO.CDP.Organisation.WebApi.Api;
 using CO.CDP.Organisation.WebApi.AutoMapper;
 using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.Organisation.WebApi.UseCase;
+using CO.CDP.Persistence.OrganisationInformation;
 using Organisation = CO.CDP.Organisation.WebApi.Model.Organisation;
 
 var builder = WebApplication.CreateBuilder(args);

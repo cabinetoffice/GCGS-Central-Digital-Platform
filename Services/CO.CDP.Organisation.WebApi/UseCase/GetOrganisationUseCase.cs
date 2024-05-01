@@ -1,5 +1,5 @@
 using AutoMapper;
-using CO.CDP.Organisation.Persistence;
+using CO.CDP.Persistence.OrganisationInformation;
 
 namespace CO.CDP.Organisation.WebApi.UseCase;
 public class GetOrganisationUseCase(IOrganisationRepository organisationRepository, IMapper mapper) : IUseCase<Guid, Model.Organisation?>

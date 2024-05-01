@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 
-namespace CO.CDP.Organisation.Persistence;
+namespace CO.CDP.Persistence.OrganisationInformation;
+
 public class OrganisationContext(string connectionString) : DbContext
 {
     public DbSet<Organisation> Organisations { get; set; } = null!;

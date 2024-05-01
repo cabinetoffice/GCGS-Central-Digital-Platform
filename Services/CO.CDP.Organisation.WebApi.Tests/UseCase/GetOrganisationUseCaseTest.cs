@@ -1,6 +1,6 @@
-using CO.CDP.Organisation.Persistence;
 using CO.CDP.Organisation.WebApi.Tests.AutoMapper;
 using CO.CDP.Organisation.WebApi.UseCase;
+using CO.CDP.Persistence.OrganisationInformation;
 using FluentAssertions;
 using Moq;
 
@@ -24,21 +24,21 @@ public class GetOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IClas
     public async Task ItReturnsTheFoundOrganisation()
     {
         var organisationId = Guid.NewGuid();
-        var persistenceOrganisation = new Persistence.Organisation
+        var persistenceOrganisation = new CDP.Persistence.OrganisationInformation.Organisation
         {
             Id = 1,
             Guid = organisationId,
             Name = "Test Organisation",
-            Identifier = new Persistence.Organisation.OrganisationIdentifier
+            Identifier = new CDP.Persistence.OrganisationInformation.Organisation.OrganisationIdentifier
             {
                 Id = "Identifier1",
                 Scheme = "Scheme1",
                 LegalName = "Legal Name",
                 Uri = "http://example.com"
             },
-            AdditionalIdentifiers = new List<Persistence.Organisation.OrganisationIdentifier>
+            AdditionalIdentifiers = new List<CDP.Persistence.OrganisationInformation.Organisation.OrganisationIdentifier>
         {
-            new Persistence.Organisation.OrganisationIdentifier
+            new CDP.Persistence.OrganisationInformation.Organisation.OrganisationIdentifier
             {
                 Id = "Identifier2",
                 Scheme = "Scheme2",
@@ -46,7 +46,7 @@ public class GetOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IClas
                 Uri = "http://another-example.com"
             }
         },
-            Address = new Persistence.Organisation.OrganisationAddress
+            Address = new CDP.Persistence.OrganisationInformation.Organisation.OrganisationAddress
             {
                 StreetAddress = "1234 Test St",
                 Locality = "Test City",
@@ -54,7 +54,7 @@ public class GetOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IClas
                 PostalCode = "12345",
                 CountryName = "Testland"
             },
-            ContactPoint = new Persistence.Organisation.OrganisationContactPoint
+            ContactPoint = new CDP.Persistence.OrganisationInformation.Organisation.OrganisationContactPoint
             {
                 Name = "Contact Name",
                 Email = "contact@test.org",

@@ -1,6 +1,6 @@
 using AutoMapper;
-using CO.CDP.Organisation.Persistence;
 using CO.CDP.Organisation.WebApi.Model;
+using CO.CDP.Persistence.OrganisationInformation;
 
 namespace CO.CDP.Organisation.WebApi.UseCase;
 
@@ -14,7 +14,7 @@ public class RegisterOrganisationUseCase(IOrganisationRepository organisationRep
 
     public Task<Model.Organisation> Execute(RegisterOrganisation command)
     {
-        var organisation = mapper.Map<Persistence.Organisation>(command, o => o.Items["Guid"] = guidFactory());
+        var organisation = mapper.Map<CDP.Persistence.OrganisationInformation.Organisation>(command, o => o.Items["Guid"] = guidFactory());
         organisationRepository.Save(organisation);
         return Task.FromResult(mapper.Map<Model.Organisation>(organisation));
     }

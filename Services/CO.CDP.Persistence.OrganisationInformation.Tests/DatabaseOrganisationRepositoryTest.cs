@@ -1,8 +1,7 @@
-using CO.CDP.Organisation.Persistence;
 using CO.CDP.Testcontainers.PostgreSql;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
-using static CO.CDP.Organisation.Persistence.Organisation;
+using static CO.CDP.Persistence.OrganisationInformation.Organisation;
 
 namespace CO.CDP.Persistence.OrganisationInformation.Tests;
 
@@ -20,7 +19,7 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql) : 
         var found = await repository.Find(organisation.Guid);
 
         found.Should().Be(organisation);
-        found.As<Organisation.Persistence.Organisation>().Id.Should().BePositive();
+        found.As<Organisation>().Id.Should().BePositive();
 
     }
 
@@ -74,7 +73,7 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql) : 
 
         var repository = OrganisationRepository();
 
-        var organisation = new Organisation.Persistence.Organisation
+        var organisation = new Organisation
         {
             Guid = guid,
             Name = initialName,
@@ -135,7 +134,7 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql) : 
 
         var found = await repository.FindByName(organisation.Name);
 
-        found.Should().BeEquivalentTo(organisation, options => options.ComparingByMembers<Organisation.Persistence.Organisation>());
+        found.Should().BeEquivalentTo(organisation, options => options.ComparingByMembers<Organisation>());
         found?.Id.Should().BePositive();
     }
 
@@ -162,7 +161,7 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql) : 
         return context;
     }
 
-    private static Organisation.Persistence.Organisation GivenOrganisation(
+    private static Organisation GivenOrganisation(
     Guid? guid = null,
     string? name = null,
     string scheme = "ISO9001",
@@ -184,7 +183,7 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql) : 
         var theGuid = guid ?? Guid.NewGuid();
         var theName = name ?? $"Organisation {theGuid}";
 
-        return new Organisation.Persistence.Organisation
+        return new Organisation
         {
             Guid = theGuid,
             Name = theName,

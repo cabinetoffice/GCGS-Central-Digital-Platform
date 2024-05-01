@@ -3,7 +3,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace CO.CDP.Organisation.Persistence.Migrations;
+namespace CO.CDP.Persistence.OrganisationInformation.Migrations;
 
 /// <inheritdoc />
 public partial class CreateOrganisation : Migration

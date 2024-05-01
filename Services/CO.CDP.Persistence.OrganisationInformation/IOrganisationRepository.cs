@@ -1,4 +1,4 @@
-namespace CO.CDP.Organisation.Persistence;
+namespace CO.CDP.Persistence.OrganisationInformation;
 
 public interface IOrganisationRepository : IDisposable
 {

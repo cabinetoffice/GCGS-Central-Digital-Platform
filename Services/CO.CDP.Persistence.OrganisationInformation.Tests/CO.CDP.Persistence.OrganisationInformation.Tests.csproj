@@ -22,7 +22,6 @@
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>
         <ProjectReference Include="..\CO.CDP.Persistence.OrganisationInformation\CO.CDP.Persistence.OrganisationInformation.csproj" />
-        <ProjectReference Include="..\CO.CDP.Organisation.Persistence\CO.CDP.Organisation.Persistence.csproj" />
         <ProjectReference Include="../../TestKit/CO.CDP.Testcontainers.PostgreSql/CO.CDP.Testcontainers.PostgreSql.csproj" />
     </ItemGroup>
 

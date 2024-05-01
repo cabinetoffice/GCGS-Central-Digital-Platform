@@ -53,17 +53,6 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: Production
 
-  organisation-migrations:
-    container_name: co-cdp-organisation-migrations
-    restart: no
-    build:
-      context: .
-      dockerfile: Dockerfile
-      target: migrations-organisation
-    image: 'cabinetoffice/cdp-organisation-migrations:${IMAGE_VERSION:-latest}'
-    environment:
-      ASPNETCORE_ENVIRONMENT: Production
-
   organisation:
     container_name: co-cdp-organisation
     build:
