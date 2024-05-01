@@ -3,7 +3,7 @@ using static CO.CDP.Persistence.OrganisationInformation.IOrganisationRepository.
 
 namespace CO.CDP.Persistence.OrganisationInformation;
 
-public class DatabaseOrganisationRepository(OrganisationContext context) : IOrganisationRepository
+public class DatabaseOrganisationRepository(OrganisationInformationContext context) : IOrganisationRepository
 {
     public void Dispose()
     {

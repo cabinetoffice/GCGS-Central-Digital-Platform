@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace CO.CDP.Persistence.OrganisationInformation.Migrations
 {
-    [DbContext(typeof(TenantContext))]
+    [DbContext(typeof(OrganisationInformationContext))]
     [Migration("20240314110111_CreateTenants")]
     partial class CreateTenants
     {

@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace CO.CDP.Persistence.OrganisationInformation.Migrations
 {
-    [DbContext(typeof(OrganisationContext))]
+    [DbContext(typeof(OrganisationInformationContext))]
     [Migration("20240418171525_CreateOrganisation")]
     partial class CreateOrganisation
     {

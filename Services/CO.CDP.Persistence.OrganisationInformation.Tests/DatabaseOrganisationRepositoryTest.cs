@@ -150,12 +150,12 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql) : 
 
     private IOrganisationRepository OrganisationRepository()
     {
-        return new DatabaseOrganisationRepository(OrganisationContext());
+        return new DatabaseOrganisationRepository(OrganisationInformationContext());
     }
 
-    private OrganisationContext OrganisationContext()
+    private OrganisationInformationContext OrganisationInformationContext()
     {
-        var context = new OrganisationContext(postgreSql.ConnectionString);
+        var context = new OrganisationInformationContext(postgreSql.ConnectionString);
         context.Database.Migrate();
         context.SaveChanges();
         return context;

@@ -11,7 +11,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace CO.CDP.Persistence.OrganisationInformation.Migrations
 {
-    [DbContext(typeof(TenantContext))]
+    [DbContext(typeof(OrganisationInformationContext))]
     partial class TenantContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

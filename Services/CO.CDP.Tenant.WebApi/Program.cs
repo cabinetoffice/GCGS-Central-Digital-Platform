@@ -15,7 +15,7 @@ builder.Services.AddSwaggerGen(options => { options.DocumentTenantApi(); });
 builder.Services.AddHealthChecks();
 builder.Services.AddAutoMapper(typeof(WebApiToPersistenceProfile));
 
-builder.Services.AddScoped<TenantContext>(_ => new TenantContext(builder.Configuration.GetConnectionString("TenantDatabase") ?? ""));
+builder.Services.AddScoped<OrganisationInformationContext>(_ => new OrganisationInformationContext(builder.Configuration.GetConnectionString("TenantDatabase") ?? ""));
 builder.Services.AddScoped<ITenantRepository, DatabaseTenantRepository>();
 builder.Services.AddScoped<IUseCase<RegisterTenant, Tenant>, RegisterTenantUseCase>();
 builder.Services.AddScoped<IUseCase<Guid, Tenant?>, GetTenantUseCase>();

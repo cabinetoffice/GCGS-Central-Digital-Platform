@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CO.CDP.Persistence.OrganisationInformation;
 
-public class DatabaseTenantRepository(TenantContext context) : ITenantRepository
+public class DatabaseTenantRepository(OrganisationInformationContext context) : ITenantRepository
 {
     public void Save(Tenant tenant)
     {

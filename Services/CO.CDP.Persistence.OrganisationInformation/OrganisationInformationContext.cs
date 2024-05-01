@@ -2,8 +2,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CO.CDP.Persistence.OrganisationInformation;
 
-public class OrganisationContext(string connectionString) : DbContext
+public class OrganisationInformationContext(string connectionString) : DbContext
 {
+    public DbSet<Tenant> Tenants { get; set; } = null!;
     public DbSet<Organisation> Organisations { get; set; } = null!;
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
