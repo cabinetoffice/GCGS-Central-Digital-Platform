@@ -25,8 +25,8 @@ COPY Libraries/CO.CDP.Person.WebApiClient/CO.CDP.Person.WebApiClient.csproj Libr
 COPY Libraries/CO.CDP.Person.WebApiClient.Tests/CO.CDP.Person.WebApiClient.Tests.csproj Libraries/CO.CDP.Person.WebApiClient.Tests/
 COPY TestKit/CO.CDP.Testcontainers.PostgreSql/CO.CDP.Testcontainers.PostgreSql.csproj TestKit/CO.CDP.Testcontainers.PostgreSql/
 COPY TestKit/CO.CDP.Testcontainers.PostgreSql.Tests/CO.CDP.Testcontainers.PostgreSql.Tests.csproj TestKit/CO.CDP.Testcontainers.PostgreSql.Tests/
-COPY Services/CO.CDP.Persistence.OrganisationInformation/CO.CDP.Persistence.OrganisationInformation.csproj Services/CO.CDP.Persistence.OrganisationInformation/
-COPY Services/CO.CDP.Persistence.OrganisationInformation.Tests/CO.CDP.Persistence.OrganisationInformation.Tests.csproj Services/CO.CDP.Persistence.OrganisationInformation.Tests/
+COPY Services/CO.CDP.OrganisationInformation.Persistence/CO.CDP.OrganisationInformation.Persistence.csproj Services/CO.CDP.OrganisationInformation.Persistence/
+COPY Services/CO.CDP.OrganisationInformation.Persistence.Tests/CO.CDP.OrganisationInformation.Persistence.Tests.csproj Services/CO.CDP.OrganisationInformation.Persistence.Tests/
 COPY Services/CO.CDP.Tenant.WebApi/CO.CDP.Tenant.WebApi.csproj Services/CO.CDP.Tenant.WebApi/
 COPY Services/CO.CDP.Tenant.WebApi.Tests/CO.CDP.Tenant.WebApi.Tests.csproj Services/CO.CDP.Tenant.WebApi.Tests/
 COPY Services/CO.CDP.DataSharing.WebApi/CO.CDP.DataSharing.WebApi.csproj Services/CO.CDP.DataSharing.WebApi/
@@ -109,7 +109,7 @@ FROM build-tenant AS build-migrations-organisation-information
 WORKDIR /src
 COPY .config/dotnet-tools.json .config/
 RUN dotnet tool restore
-RUN dotnet ef migrations bundle -p /src/Services/CO.CDP.Persistence.OrganisationInformation -s /src/Services/CO.CDP.Tenant.WebApi --self-contained -o /app/migrations/efbundle
+RUN dotnet ef migrations bundle -p /src/Services/CO.CDP.OrganisationInformation.Persistence -s /src/Services/CO.CDP.Tenant.WebApi --self-contained -o /app/migrations/efbundle
 
 FROM base AS migrations-organisation-information
 ENV MIGRATIONS_CONNECTION_STRING=""

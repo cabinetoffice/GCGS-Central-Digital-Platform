@@ -1,7 +1,7 @@
 using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.Organisation.WebApi.Tests.AutoMapper;
 using CO.CDP.Organisation.WebApi.UseCase;
-using CO.CDP.Persistence.OrganisationInformation;
+using CO.CDP.OrganisationInformation.Persistence;
 using FluentAssertions;
 using Moq;
 
@@ -113,17 +113,17 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
             Roles = new List<int> { 1 }
         });
 
-        _repository.Verify(r => r.Save(It.Is<CDP.Persistence.OrganisationInformation.Organisation>(o =>
+        _repository.Verify(r => r.Save(It.Is<OrganisationInformation.Persistence.Organisation>(o =>
              o.Guid == _generatedGuid &&
              o.Name == "TheOrganisation" &&
-             o.Identifier == new CDP.Persistence.OrganisationInformation.Organisation.OrganisationIdentifier
+             o.Identifier == new OrganisationInformation.Persistence.Organisation.OrganisationIdentifier
              {
                  Scheme = "ISO9001",
                  Id = "1",
                  LegalName = "OfficialOrganisationName",
                  Uri = "http://example.org"
              } &&
-             o.Address == new CDP.Persistence.OrganisationInformation.Organisation.OrganisationAddress
+             o.Address == new OrganisationInformation.Persistence.Organisation.OrganisationAddress
              {
                  StreetAddress = "1234 Example St",
                  Locality = "Example City",
@@ -131,7 +131,7 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
                  PostalCode = "12345",
                  CountryName = "Exampleland"
              } &&
-             o.ContactPoint == new CDP.Persistence.OrganisationInformation.Organisation.OrganisationContactPoint
+             o.ContactPoint == new OrganisationInformation.Persistence.Organisation.OrganisationContactPoint
              {
                  Name = "Contact Name",
                  Email = "contact@example.org",

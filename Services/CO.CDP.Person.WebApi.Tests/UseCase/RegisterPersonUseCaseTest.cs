@@ -1,4 +1,4 @@
-using CO.CDP.Persistence.OrganisationInformation;
+using CO.CDP.OrganisationInformation.Persistence;
 using CO.CDP.Person.WebApi.Model;
 using CO.CDP.Person.WebApi.Tests.AutoMapper;
 using CO.CDP.Person.WebApi.UseCase;
@@ -46,7 +46,7 @@ public class RegisterPersonUseCaseTest(AutoMapperFixture mapperFixture) : IClass
             Age = 40
         });
 
-        _repository.Verify(r => r.Save(It.Is<CDP.Persistence.OrganisationInformation.Person>(o =>
+        _repository.Verify(r => r.Save(It.Is<OrganisationInformation.Persistence.Person>(o =>
              o.Guid == _generatedGuid &&
              o.Name == "ThePerson" &&
              o.Email == "jon@email.com"

@@ -31,9 +31,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.Testcontainers.Postg
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.Testcontainers.PostgreSql", "TestKit\CO.CDP.Testcontainers.PostgreSql\CO.CDP.Testcontainers.PostgreSql.csproj", "{A706D75A-4235-46FE-A2C2-DB7365BB732B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.Persistence.OrganisationInformation", "Services\CO.CDP.Persistence.OrganisationInformation\CO.CDP.Persistence.OrganisationInformation.csproj", "{446A0EFB-D623-4C5F-BB3E-8EAACF0D865C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.OrganisationInformation.Persistence", "Services\CO.CDP.OrganisationInformation.Persistence\CO.CDP.OrganisationInformation.Persistence.csproj", "{446A0EFB-D623-4C5F-BB3E-8EAACF0D865C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.Persistence.OrganisationInformation.Tests", "Services\CO.CDP.Persistence.OrganisationInformation.Tests\CO.CDP.Persistence.OrganisationInformation.Tests.csproj", "{69F70A0E-7C9B-4DE8-9AF6-11C7E23A7DB1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.OrganisationInformation.Persistence.Tests", "Services\CO.CDP.OrganisationInformation.Persistence.Tests\CO.CDP.OrganisationInformation.Persistence.Tests.csproj", "{69F70A0E-7C9B-4DE8-9AF6-11C7E23A7DB1}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.Tenant.WebApiClient", "Libraries\CO.CDP.Tenant.WebApiClient\CO.CDP.Tenant.WebApiClient.csproj", "{29F9AB38-BEE0-4522-97BC-CC3B3390E8B5}"
 	ProjectSection(ProjectDependencies) = postProject

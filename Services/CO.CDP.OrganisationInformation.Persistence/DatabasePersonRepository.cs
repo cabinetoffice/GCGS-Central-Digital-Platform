@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-using static CO.CDP.Persistence.OrganisationInformation.IPersonRepository.PersonRepositoryException;
+using static CO.CDP.OrganisationInformation.Persistence.IPersonRepository.PersonRepositoryException;
 
-namespace CO.CDP.Persistence.OrganisationInformation;
+namespace CO.CDP.OrganisationInformation.Persistence;
 
 public class DatabasePersonRepository(OrganisationInformationContext context) : IPersonRepository
 {
@@ -38,9 +38,9 @@ public class DatabasePersonRepository(OrganisationInformationContext context) : 
         switch (cause.InnerException)
         {
             case { } e when e.Message.Contains("_Persons_Email"):
-                throw new DuplicatePersonException($"Person with email `{person.Email}` already exists.", cause);
+                throw new IPersonRepository.PersonRepositoryException.DuplicatePersonException($"Person with email `{person.Email}` already exists.", cause);
             case { } e when e.Message.Contains("_Persons_Guid"):
-                throw new DuplicatePersonException($"Person with guid `{person.Guid}` already exists.", cause);
+                throw new IPersonRepository.PersonRepositoryException.DuplicatePersonException($"Person with guid `{person.Guid}` already exists.", cause);
             default:
                 throw cause;
         }

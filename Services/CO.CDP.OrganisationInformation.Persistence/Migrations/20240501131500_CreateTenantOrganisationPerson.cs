@@ -5,7 +5,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace CO.CDP.Persistence.OrganisationInformation.Migrations
+namespace CO.CDP.OrganisationInformation.Persistence.Migrations
 {
     /// <inheritdoc />
     public partial class CreateTenantOrganisationPerson : Migration

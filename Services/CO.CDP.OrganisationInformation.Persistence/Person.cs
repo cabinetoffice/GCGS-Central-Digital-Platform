@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 
-namespace CO.CDP.Persistence.OrganisationInformation;
+namespace CO.CDP.OrganisationInformation.Persistence;
 
 [Index(nameof(Guid), IsUnique = true)]
 [Index(nameof(Email), IsUnique = true)]

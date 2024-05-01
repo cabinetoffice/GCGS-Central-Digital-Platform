@@ -1,4 +1,4 @@
-using CO.CDP.Persistence.OrganisationInformation;
+using CO.CDP.OrganisationInformation.Persistence;
 using CO.CDP.Tenant.WebApi.Model;
 using CO.CDP.Tenant.WebApi.Tests.AutoMapper;
 using CO.CDP.Tenant.WebApi.UseCase;
@@ -26,12 +26,12 @@ public class GetTenantUseCaseTest(AutoMapperFixture mapperFixture) : IClassFixtu
     public async Task ItReturnsTheFoundTenant()
     {
         var tenantId = Guid.NewGuid();
-        var tenant = new Persistence.OrganisationInformation.Tenant
+        var tenant = new OrganisationInformation.Persistence.Tenant
         {
             Id = 42,
             Guid = tenantId,
             Name = "TrentTheTenant",
-            ContactInfo = new Persistence.OrganisationInformation.Tenant.TenantContactInfo
+            ContactInfo = new OrganisationInformation.Persistence.Tenant.TenantContactInfo
             {
                 Email = "trent@example.com",
                 Phone = "07925987654"

@@ -1,4 +1,4 @@
-using CO.CDP.Persistence.OrganisationInformation;
+using CO.CDP.OrganisationInformation.Persistence;
 using CO.CDP.Tenant.WebApi.Api;
 using CO.CDP.Tenant.WebApi.AutoMapper;
 using CO.CDP.Tenant.WebApi.Model;

@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 
-namespace CO.CDP.Persistence.OrganisationInformation;
+namespace CO.CDP.OrganisationInformation.Persistence;
 
 public class DatabaseTenantRepository(OrganisationInformationContext context) : ITenantRepository
 {

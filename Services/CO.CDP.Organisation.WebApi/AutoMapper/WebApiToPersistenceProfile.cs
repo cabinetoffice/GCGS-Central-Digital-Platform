@@ -7,19 +7,19 @@ public class WebApiToPersistenceProfile : Profile
 {
     public WebApiToPersistenceProfile()
     {
-        CreateMap<CDP.Persistence.OrganisationInformation.Organisation, Model.Organisation>()
+        CreateMap<OrganisationInformation.Persistence.Organisation, Model.Organisation>()
             .ForMember(m => m.Id, o => o.MapFrom(m => m.Guid));
 
-        CreateMap<OrganisationIdentifier, CDP.Persistence.OrganisationInformation.Organisation.OrganisationIdentifier>();
-        CreateMap<CDP.Persistence.OrganisationInformation.Organisation.OrganisationIdentifier, OrganisationIdentifier>();
-        CreateMap<OrganisationAddress, CDP.Persistence.OrganisationInformation.Organisation.OrganisationAddress>();
-        CreateMap<CDP.Persistence.OrganisationInformation.Organisation.OrganisationAddress, OrganisationAddress>();
+        CreateMap<OrganisationIdentifier, OrganisationInformation.Persistence.Organisation.OrganisationIdentifier>();
+        CreateMap<OrganisationInformation.Persistence.Organisation.OrganisationIdentifier, OrganisationIdentifier>();
+        CreateMap<OrganisationAddress, OrganisationInformation.Persistence.Organisation.OrganisationAddress>();
+        CreateMap<OrganisationInformation.Persistence.Organisation.OrganisationAddress, OrganisationAddress>();
 
-        CreateMap<OrganisationContactPoint, CDP.Persistence.OrganisationInformation.Organisation.OrganisationContactPoint>();
-        CreateMap<CDP.Persistence.OrganisationInformation.Organisation.OrganisationContactPoint, OrganisationContactPoint>();
+        CreateMap<OrganisationContactPoint, OrganisationInformation.Persistence.Organisation.OrganisationContactPoint>();
+        CreateMap<OrganisationInformation.Persistence.Organisation.OrganisationContactPoint, OrganisationContactPoint>();
 
 
-        CreateMap<RegisterOrganisation, CDP.Persistence.OrganisationInformation.Organisation>()
+        CreateMap<RegisterOrganisation, OrganisationInformation.Persistence.Organisation>()
             .ForMember(m => m.Guid, o => o.MapFrom((_, _, _, context) => context.Items["Guid"]))
             .ForMember(m => m.Id, o => o.Ignore());
     }

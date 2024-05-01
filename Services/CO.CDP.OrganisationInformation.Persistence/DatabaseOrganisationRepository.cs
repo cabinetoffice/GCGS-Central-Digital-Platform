@@ -1,7 +1,6 @@
 using Microsoft.EntityFrameworkCore;
-using static CO.CDP.Persistence.OrganisationInformation.IOrganisationRepository.OrganisationRepositoryException;
 
-namespace CO.CDP.Persistence.OrganisationInformation;
+namespace CO.CDP.OrganisationInformation.Persistence;
 
 public class DatabaseOrganisationRepository(OrganisationInformationContext context) : IOrganisationRepository
 {
@@ -38,10 +37,10 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
         switch (cause.InnerException)
         {
             case { } e when e.Message.Contains("_Organisations_Name"):
-                throw new DuplicateOrganisationException(
+                throw new IOrganisationRepository.OrganisationRepositoryException.DuplicateOrganisationException(
                     $"Organisation with name `{organisation.Name}` already exists.", cause);
             case { } e when e.Message.Contains("_Organisations_Guid"):
-                throw new DuplicateOrganisationException(
+                throw new IOrganisationRepository.OrganisationRepositoryException.DuplicateOrganisationException(
                     $"Organisation with guid `{organisation.Guid}` already exists.", cause);
             default:
                 throw cause;

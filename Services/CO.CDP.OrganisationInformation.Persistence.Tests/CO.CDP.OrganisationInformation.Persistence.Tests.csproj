@@ -21,7 +21,7 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>
-        <ProjectReference Include="..\CO.CDP.Persistence.OrganisationInformation\CO.CDP.Persistence.OrganisationInformation.csproj" />
+        <ProjectReference Include="..\CO.CDP.OrganisationInformation.Persistence\CO.CDP.OrganisationInformation.Persistence.csproj" />
         <ProjectReference Include="../../TestKit/CO.CDP.Testcontainers.PostgreSql/CO.CDP.Testcontainers.PostgreSql.csproj" />
     </ItemGroup>
 
