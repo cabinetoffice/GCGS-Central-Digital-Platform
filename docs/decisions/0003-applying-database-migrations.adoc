@@ -56,10 +56,10 @@ To generate a migration:
 [source,bash]
 ----
 dotnet ef migrations script \
-  -p Services/CO.CDP.Persistence.OrganisationInformation \
+  -p Services/CO.CDP.Tenant.Persistence \
   -s Services/CO.CDP.Tenant.WebApi \
   --idempotent \
-  -o Services/CO.CDP.Persistence.OrganisationInformation/Migrations/SQL/$(date +%Y-%m-%d_%H%M)_CreateTenants.sql
+  -o Services/CO.CDP.Tenant.Persistence/Migrations/SQL/$(date +%Y-%m-%d_%H%M)_CreateTenants.sql
 ----
 
 To apply it in our local development setup:
@@ -68,7 +68,7 @@ To apply it in our local development setup:
 ----
 docker compose exec \
   -it db psql -U cdp_user \
-  -f - cdp < Services/CO.CDP.Persistence.OrganisationInformation/Migrations/SQL/2024-03-23_2303_CreateTenants.sql
+  -f - cdp < Services/CO.CDP.Tenant.Persistence/Migrations/SQL/2024-03-23_2303_CreateTenants.sql
 ----
 
 Example implementation can be found in the following pull request:
@@ -113,7 +113,7 @@ Here's an example of how to generate a bundle:
 [source,csharp]
 ----
 dotnet ef migrations bundle \
-  -p Services/CO.CDP.Persistence.OrganisationInformation \
+  -p Services/CO.CDP.Tenant.Persistence \
   -s Services/CO.CDP.Tenant.WebApi \
   --self-contained
 ----
