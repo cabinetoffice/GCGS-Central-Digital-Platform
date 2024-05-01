@@ -51,8 +51,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.Organisation.WebApiC
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.Person.Persistence", "Services\CO.CDP.Person.Persistence\CO.CDP.Person.Persistence.csproj", "{3DF3E73E-3593-495E-9996-F66AEDA45B76}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.Person.Persistence.Tests", "Services\CO.CDP.Person.Persistence.Tests\CO.CDP.Person.Persistence.Tests.csproj", "{7CD03C63-7AB5-444A-B851-840024D21684}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.Person.WebApiClient", "Libraries\CO.CDP.Person.WebApiClient\CO.CDP.Person.WebApiClient.csproj", "{5437873C-34C0-4E54-BE1B-B06021999473}"
 	ProjectSection(ProjectDependencies) = postProject
 		{D9CC02AD-3031-496A-8E48-E736623D1B41} = {D9CC02AD-3031-496A-8E48-E736623D1B41}
@@ -150,10 +148,6 @@ Global
 		{3DF3E73E-3593-495E-9996-F66AEDA45B76}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3DF3E73E-3593-495E-9996-F66AEDA45B76}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3DF3E73E-3593-495E-9996-F66AEDA45B76}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7CD03C63-7AB5-444A-B851-840024D21684}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7CD03C63-7AB5-444A-B851-840024D21684}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7CD03C63-7AB5-444A-B851-840024D21684}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7CD03C63-7AB5-444A-B851-840024D21684}.Release|Any CPU.Build.0 = Release|Any CPU
 		{5437873C-34C0-4E54-BE1B-B06021999473}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{5437873C-34C0-4E54-BE1B-B06021999473}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5437873C-34C0-4E54-BE1B-B06021999473}.Release|Any CPU.ActiveCfg = Release|Any CPU

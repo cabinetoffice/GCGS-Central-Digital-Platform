@@ -1,9 +1,9 @@
+using CO.CDP.Person.Persistence;
 using CO.CDP.Testcontainers.PostgreSql;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
-using static CO.CDP.Person.Persistence.Person;
 
-namespace CO.CDP.Person.Persistence.Tests;
+namespace CO.CDP.Persistence.OrganisationInformation.Tests;
 
 public class DatabasePersonRepositoryTest(PostgreSqlFixture postgreSql) : IClassFixture<PostgreSqlFixture>
 {
@@ -20,7 +20,7 @@ public class DatabasePersonRepositoryTest(PostgreSqlFixture postgreSql) : IClass
         var found = await repository.Find(Person.Guid);
 
         found.Should().Be(Person);
-        found.As<Person>().Id.Should().BePositive();
+        found.As<Person.Persistence.Person>().Id.Should().BePositive();
 
     }
 
@@ -118,9 +118,9 @@ public class DatabasePersonRepositoryTest(PostgreSqlFixture postgreSql) : IClass
         return context;
     }
 
-    private static Person GivenPerson(Guid? guid = null, string name = "Jon Doe", int age = 40, string email = "jon@example.com")
+    private static Person.Persistence.Person GivenPerson(Guid? guid = null, string name = "Jon Doe", int age = 40, string email = "jon@example.com")
     {
-        return new Person
+        return new Person.Persistence.Person
         {
             Guid = guid ?? Guid.NewGuid(),
             Name = name,
