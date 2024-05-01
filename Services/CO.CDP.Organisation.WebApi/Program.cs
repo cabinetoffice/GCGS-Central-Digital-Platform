@@ -15,7 +15,7 @@ builder.Services.AddSwaggerGen(options => { options.DocumentOrganisationApi(); }
 builder.Services.AddHealthChecks();
 builder.Services.AddAutoMapper(typeof(WebApiToPersistenceProfile));
 
-builder.Services.AddScoped<OrganisationInformationContext>(_ => new OrganisationInformationContext(builder.Configuration.GetConnectionString("OrganisationDatabase") ?? ""));
+builder.Services.AddScoped<OrganisationInformationContext>(_ => new OrganisationInformationContext(builder.Configuration.GetConnectionString("OrganisationInformationDatabase") ?? ""));
 builder.Services.AddScoped<IOrganisationRepository, DatabaseOrganisationRepository>();
 builder.Services.AddScoped<IUseCase<RegisterOrganisation, Organisation>, RegisterOrganisationUseCase>();
 builder.Services.AddScoped<IUseCase<Guid, Organisation?>, GetOrganisationUseCase>();

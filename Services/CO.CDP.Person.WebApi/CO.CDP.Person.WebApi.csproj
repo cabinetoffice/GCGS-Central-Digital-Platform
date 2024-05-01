@@ -16,6 +16,6 @@
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.1" />
         <PackageReference Include="DotSwashbuckle.AspNetCore" Version="3.0.8" />
         <PackageReference Include="AutoMapper" Version="13.0.1" />
-        <ProjectReference Include="../CO.CDP.Person.Persistence/CO.CDP.Person.Persistence.csproj" />
+        <ProjectReference Include="../CO.CDP.Persistence.OrganisationInformation/CO.CDP.Persistence.OrganisationInformation.csproj" />
     </ItemGroup>
 </Project>

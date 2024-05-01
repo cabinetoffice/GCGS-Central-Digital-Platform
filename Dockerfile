@@ -33,7 +33,6 @@ COPY Services/CO.CDP.DataSharing.WebApi/CO.CDP.DataSharing.WebApi.csproj Service
 COPY Services/CO.CDP.DataSharing.WebApi.Tests/CO.CDP.DataSharing.WebApi.Tests.csproj Services/CO.CDP.DataSharing.WebApi.Tests/
 COPY Services/CO.CDP.Organisation.WebApi.Tests/CO.CDP.Organisation.WebApi.Tests.csproj Services/CO.CDP.Organisation.WebApi.Tests/
 COPY Services/CO.CDP.Organisation.WebApi/CO.CDP.Organisation.WebApi.csproj Services/CO.CDP.Organisation.WebApi/
-COPY Services/CO.CDP.Person.Persistence/CO.CDP.Person.Persistence.csproj Services/CO.CDP.Person.Persistence/
 COPY Services/CO.CDP.Person.WebApi/CO.CDP.Person.WebApi.csproj Services/CO.CDP.Person.WebApi/
 COPY Services/CO.CDP.Person.WebApi.Tests/CO.CDP.Person.WebApi.Tests.csproj Services/CO.CDP.Person.WebApi.Tests/
 COPY Services/CO.CDP.Forms.WebApi/CO.CDP.Forms.WebApi.csproj Services/CO.CDP.Forms.WebApi/
@@ -106,16 +105,16 @@ FROM build-organisation-app AS publish-organisation-app
 ARG BUILD_CONFIGURATION
 RUN dotnet publish "CO.CDP.OrganisationApp.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
-FROM build-tenant AS build-migrations-tenant
+FROM build-tenant AS build-migrations-organisation-information
 WORKDIR /src
 COPY .config/dotnet-tools.json .config/
 RUN dotnet tool restore
 RUN dotnet ef migrations bundle -p /src/Services/CO.CDP.Persistence.OrganisationInformation -s /src/Services/CO.CDP.Tenant.WebApi --self-contained -o /app/migrations/efbundle
 
-FROM base AS migrations-tenant
+FROM base AS migrations-organisation-information
 ENV MIGRATIONS_CONNECTION_STRING=""
 WORKDIR /app
-COPY --from=build-migrations-tenant /app/migrations/efbundle .
+COPY --from=build-migrations-organisation-information /app/migrations/efbundle .
 ENTRYPOINT /app/efbundle --connection "$MIGRATIONS_CONNECTION_STRING"
 
 FROM base AS final-tenant
@@ -127,18 +126,6 @@ FROM base AS final-organisation
 WORKDIR /app
 COPY --from=publish-organisation /app/publish .
 ENTRYPOINT ["dotnet", "CO.CDP.Organisation.WebApi.dll"]
-
-FROM build-person AS build-migrations-person
-WORKDIR /src
-COPY .config/dotnet-tools.json .config/
-RUN dotnet tool restore
-RUN dotnet ef migrations bundle -p /src/Services/CO.CDP.Person.Persistence -s /src/Services/CO.CDP.Person.WebApi --self-contained -o /app/migrations/efbundle
-
-FROM base AS migrations-person
-ENV MIGRATIONS_CONNECTION_STRING=""
-WORKDIR /app
-COPY --from=build-migrations-person /app/migrations/efbundle .
-ENTRYPOINT /app/efbundle --connection "$MIGRATIONS_CONNECTION_STRING"
 
 FROM base AS final-person
 WORKDIR /app

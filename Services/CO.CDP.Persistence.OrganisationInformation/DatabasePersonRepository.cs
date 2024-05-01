@@ -1,8 +1,9 @@
 using Microsoft.EntityFrameworkCore;
-using static CO.CDP.Person.Persistence.IPersonRepository.PersonRepositoryException;
+using static CO.CDP.Persistence.OrganisationInformation.IPersonRepository.PersonRepositoryException;
 
-namespace CO.CDP.Person.Persistence;
-public class DatabasePersonRepository(PersonContext context) : IPersonRepository
+namespace CO.CDP.Persistence.OrganisationInformation;
+
+public class DatabasePersonRepository(OrganisationInformationContext context) : IPersonRepository
 {
     public void Dispose()
     {
@@ -44,14 +45,4 @@ public class DatabasePersonRepository(PersonContext context) : IPersonRepository
                 throw cause;
         }
     }
-}
-
-internal static class StringExtensions
-{
-    internal static bool ContainsDuplicateKey(this Exception cause, string name) =>
-        cause.Message.ContainsDuplicateKey(name);
-
-    private static bool ContainsDuplicateKey(this string message, string name) =>
-        message.Contains("duplicate key value violates unique constraint") &&
-        message.Contains($"{name}\"");
 }
