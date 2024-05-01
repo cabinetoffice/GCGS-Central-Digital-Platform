@@ -20,7 +20,7 @@ services:
     depends_on:
       - db
     environment:
-      ConnectionStrings__TenantDatabase: 'Server=db;Database=cdp;Username=cdp_user;Password=cdp123;'
+      ConnectionStrings__OrganisationInformationDatabase: 'Server=db;Database=cdp;Username=cdp_user;Password=cdp123;'
   organisation-information-migrations:
     extends:
       file: compose.common.yml
