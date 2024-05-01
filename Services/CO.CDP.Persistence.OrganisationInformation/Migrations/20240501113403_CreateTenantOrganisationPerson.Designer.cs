@@ -13,15 +13,15 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CO.CDP.Persistence.OrganisationInformation.Migrations
 {
     [DbContext(typeof(OrganisationInformationContext))]
-    [Migration("20240418171525_CreateOrganisation")]
-    partial class CreateOrganisation
+    [Migration("20240501113403_CreateTenantOrganisationPerson")]
+    partial class CreateTenantOrganisationPerson
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.4")
+                .HasAnnotation("ProductVersion", "8.0.3")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -104,6 +104,78 @@ namespace CO.CDP.Persistence.OrganisationInformation.Migrations
                         .IsUnique();
 
                     b.ToTable("Organisations");
+                });
+
+            modelBuilder.Entity("CO.CDP.Persistence.OrganisationInformation.Person", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("Age")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("Guid")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.HasIndex("Guid")
+                        .IsUnique();
+
+                    b.ToTable("Persons");
+                });
+
+            modelBuilder.Entity("CO.CDP.Persistence.OrganisationInformation.Tenant", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<Guid>("Guid")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.ComplexProperty<Dictionary<string, object>>("ContactInfo", "CO.CDP.Persistence.OrganisationInformation.Tenant.ContactInfo#TenantContactInfo", b1 =>
+                        {
+                            b1.IsRequired();
+
+                            b1.Property<string>("Email")
+                                .IsRequired()
+                                .HasColumnType("text");
+
+                            b1.Property<string>("Phone")
+                                .IsRequired()
+                                .HasColumnType("text");
+                        });
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Guid")
+                        .IsUnique();
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("Tenants");
                 });
 
             modelBuilder.Entity("CO.CDP.Persistence.OrganisationInformation.Organisation", b =>
