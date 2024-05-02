@@ -11,7 +11,7 @@ public class PersonClientIntegrationTest
 
         var newPerson = new RegisterPerson(
             age: 40,
-            email: $"test{DateTime.Now}@email.com",
+            email: $"test{DateTime.Now.ToString("ddMMyyyyHHmmssfff")}@email.com",
             firstName: "Test",
             lastName: "ln"
         );
