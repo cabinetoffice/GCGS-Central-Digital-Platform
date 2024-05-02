@@ -14,7 +14,7 @@ public class OrganisationIdentificationModel(ISession session) : PageModel
     [BindProperty]
     [DisplayName("Organisation Type")]
     [Required(ErrorMessage = "Please select your organisation type")]
-    public string? OrganisationType { get; set; }
+    public string? OrganisationScheme { get; set; }
 
     //a. Companies House
     [BindProperty]
@@ -137,9 +137,9 @@ public class OrganisationIdentificationModel(ISession session) : PageModel
     {
         var registrationDetails = VerifySession();
 
-        OrganisationType = registrationDetails.OrganisationType;
+        OrganisationScheme = registrationDetails.OrganisationScheme;
 
-        switch (OrganisationType)
+        switch (OrganisationScheme)
         {
             case "CHN":
                 CompaniesHouseNumber = registrationDetails.OrganisationIdentificationNumber;
@@ -190,9 +190,9 @@ public class OrganisationIdentificationModel(ISession session) : PageModel
 
         var registrationDetails = session.Get<RegistrationDetails>(Session.RegistrationDetailsKey);
         registrationDetails ??= new RegistrationDetails();
-        registrationDetails.OrganisationType = OrganisationType;
+        registrationDetails.OrganisationScheme = OrganisationScheme;
 
-        switch (OrganisationType)
+        switch (OrganisationScheme)
         {
             case "CHN":
                 registrationDetails.OrganisationIdentificationNumber = CompaniesHouseNumber;

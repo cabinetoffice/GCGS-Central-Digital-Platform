@@ -182,7 +182,7 @@ public class OrganisationDetailModelTest
         var registrationDetails = new RegistrationDetails
         {
             OrganisationName = "TestOrg",
-            OrganisationType = "TestType",
+            OrganisationScheme = "TestType",
             OrganisationEmailAddress = "test@example.com"
         };
 

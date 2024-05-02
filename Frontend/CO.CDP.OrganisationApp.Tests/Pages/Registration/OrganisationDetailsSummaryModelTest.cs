@@ -1,11 +1,8 @@
+using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.Pages.Registration;
 using FluentAssertions;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Routing;
 using Moq;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages.Registration;
@@ -13,15 +10,17 @@ namespace CO.CDP.OrganisationApp.Tests.Pages.Registration;
 public class OrganisationDetailsSummaryModelTest
 {
     private readonly Mock<ISession> sessionMock;
+    private readonly Mock<IOrganisationClient> organisationClientMock;
 
     public OrganisationDetailsSummaryModelTest()
     {
         sessionMock = new Mock<ISession>();
+        organisationClientMock = new Mock<IOrganisationClient>();
     }
 
     [Fact]
     public void OnGet_ValidSession_ReturnsRegistrationDetails()
-    {        
+    {
         var model = GivenOrganisationDetailModel();
 
         RegistrationDetails registrationDetails = DummyRegistrationDetails();
@@ -29,7 +28,7 @@ public class OrganisationDetailsSummaryModelTest
         sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(registrationDetails);
 
         model.OnGet();
-        model.RegistrationDetailModel.As<RegistrationDetails>().Should().NotBeNull();
+        model.Details.As<RegistrationDetails>().Should().NotBeNull();
     }
 
     private RegistrationDetails DummyRegistrationDetails()
@@ -37,7 +36,7 @@ public class OrganisationDetailsSummaryModelTest
         var registrationDetails = new RegistrationDetails
         {
             OrganisationName = "TestOrg",
-            OrganisationType = "TestType",
+            OrganisationScheme = "TestType",
             OrganisationEmailAddress = "test@example.com"
         };
 
@@ -55,8 +54,46 @@ public class OrganisationDetailsSummaryModelTest
         action.Should().Throw<Exception>().WithMessage("Shoudn't be here");
     }
 
+    [Fact]
+    public async Task OnPost_InvalidSession_ThrowsException()
+    {
+        sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(value: null);
+
+        var model = GivenOrganisationDetailModel();
+
+        Func<Task> act = model.OnPost;
+        await act.Should().ThrowAsync<Exception>().WithMessage("Shoudn't be here");
+    }
+
+    [Fact]
+    public async Task OnPost_ValidSession_CallsCreateOrganisation()
+    {
+        sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey))
+            .Returns(DummyRegistrationDetails());
+
+        var model = GivenOrganisationDetailModel();
+
+        await model.OnPost();
+
+        organisationClientMock.Verify(o => o.CreateOrganisationAsync(It.IsAny<NewOrganisation>()), Times.Once);
+    }
+
+    [Fact]
+    public async Task OnPost_OnSuccess_RedirectsToOrganisationAccount()
+    {
+        sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey))
+            .Returns(DummyRegistrationDetails());
+
+        var model = GivenOrganisationDetailModel();
+
+        var actionResult = await model.OnPost();
+
+        actionResult.Should().BeOfType<RedirectToPageResult>()
+            .Which.PageName.Should().Be("OrganisationAccount");
+    }
+
     private OrganisationDetailsSummaryModel GivenOrganisationDetailModel()
     {
-        return new OrganisationDetailsSummaryModel(sessionMock.Object);
+        return new OrganisationDetailsSummaryModel(sessionMock.Object, organisationClientMock.Object);
     }
 }

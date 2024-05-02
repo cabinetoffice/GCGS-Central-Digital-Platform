@@ -1,5 +1,5 @@
 @page "/registration/your-details"
-@model CO.CDP.OrganisationApp.Pages.Registration.YourDetailsModel
+@model YourDetailsModel
 
 @{
     var firstNameHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.FirstName)).HasInnerHtml;

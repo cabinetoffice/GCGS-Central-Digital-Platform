@@ -6,7 +6,7 @@
 </a>
 
 @{
-    var registrationDetails = Model.RegistrationDetailModel;
+    var registrationDetails = Model.Details;
 }
 
 <main class="govuk-main-wrapper">
@@ -61,13 +61,13 @@
                             Organisation type
                         </dt>
                         <dd class="govuk-summary-list__value">
-                            @registrationDetails?.OrganisationType
+                            @registrationDetails?.OrganisationScheme
                         </dd>
                         <dd class="govuk-summary-list__actions">
                             <a class="govuk-link" href="/registration/organisation-identification?frm-summary">Change<span class="govuk-visually-hidden"> organisation type</span></a>
                         </dd>
                     </div>
-                    @if (@registrationDetails?.OrganisationType != "Other")
+                    @if (@registrationDetails?.OrganisationScheme != "Other")
                     {
                         <div class="govuk-summary-list__row">
                             <dt class="govuk-summary-list__key">
@@ -110,12 +110,13 @@
                     </div>
                 </dl>
             </fieldset>
-
-            <button type="submit"
-                    class="govuk-button"
-                    data-module="govuk-button">
-                Submit
-            </button>
+            <form method="post">
+                <button type="submit"
+                        class="govuk-button"
+                        data-module="govuk-button">
+                    Submit
+                </button>
+            </form>
         </div>
     </div>
 </main>
