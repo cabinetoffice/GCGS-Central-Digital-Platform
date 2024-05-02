@@ -12,7 +12,7 @@ public class RegistrationDetails
 
     public string? OrganisationName { get; set; }
 
-    public string? OrganisationType { get; set; }
+    public string? OrganisationScheme { get; set; }
 
     public string? OrganisationEmailAddress { get; set; }
 

@@ -1,3 +1,4 @@
+using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp;
 using CO.CDP.Tenant.WebApiClient;
 using Microsoft.AspNetCore.Authentication;
@@ -7,6 +8,7 @@ using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using static IdentityModel.OidcConstants;
 
 const string TenantHttpClientName = "TenantHttpClient";
+const string OrganisationHttpClientName = "OrganisationHttpClient";
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -25,12 +27,17 @@ builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddSingleton<CO.CDP.OrganisationApp.ISession, Session>();
 
 var tenantServiceUrl = builder.Configuration.GetValue<string>("TenantService");
-
 builder.Services.AddHttpClient(TenantHttpClientName);
-
 builder.Services.AddTransient<ITenantClient, TenantClient>(
     sc => new TenantClient(tenantServiceUrl,
         sc.GetRequiredService<IHttpClientFactory>().CreateClient(TenantHttpClientName)));
+
+var organisationServiceUrl = builder.Configuration.GetValue<string>("OrganisationService");
+builder.Services.AddHttpClient(OrganisationHttpClientName);
+builder.Services.AddTransient<IOrganisationClient, OrganisationClient>(
+    sc => new OrganisationClient(organisationServiceUrl,
+        sc.GetRequiredService<IHttpClientFactory>().CreateClient(OrganisationHttpClientName)));
+
 builder.Services.AddTransient<OidcEvents>();
 
 builder.Services.AddAuthentication(options =>

@@ -35,9 +35,9 @@ public class OrganisationIdentificationModelTests
 
         model.OnGet();
 
-        model.OrganisationType.Should().Be(registrationDetails.OrganisationType);
+        model.OrganisationScheme.Should().Be(registrationDetails.OrganisationScheme);
 
-        switch (registrationDetails.OrganisationType)
+        switch (registrationDetails.OrganisationScheme)
         {
             case "CHN":
                 model.CompaniesHouseNumber.Should().Be(registrationDetails.OrganisationIdentificationNumber);
@@ -87,7 +87,7 @@ public class OrganisationIdentificationModelTests
 
         var model = new OrganisationIdentificationModel(sessionMock.Object)
         {
-            OrganisationType = organisationType
+            OrganisationScheme = organisationType
         };
         model.ModelState.AddModelError("OrganisationType", "Please select your organisation type");
 
@@ -104,7 +104,7 @@ public class OrganisationIdentificationModelTests
     {
         var model = new OrganisationIdentificationModel(sessionMock.Object)
         {
-            OrganisationType = organisationType,
+            OrganisationScheme = organisationType,
             CompaniesHouseNumber = companiesHouseNumber
         };
         model.ModelState.AddModelError("CompaniesHouseNumber", "The Companies House Number field is required.");
@@ -122,7 +122,7 @@ public class OrganisationIdentificationModelTests
     {
         var model = new OrganisationIdentificationModel(sessionMock.Object)
         {
-            OrganisationType = organisationType,
+            OrganisationScheme = organisationType,
             CharityCommissionEnglandWalesNumber = charityCommissionEnglandWalesNumber
         };
         model.ModelState.AddModelError("CharityCommissionEnglandWalesNumber", "The Charity Commission for England & Wales Number field is required.");
@@ -140,7 +140,7 @@ public class OrganisationIdentificationModelTests
     {
         var model = new OrganisationIdentificationModel(sessionMock.Object)
         {
-            OrganisationType = organisationType,
+            OrganisationScheme = organisationType,
             ScottishCharityRegulatorNumber = scottishCharityRegulatorNumber
         };
         model.ModelState.AddModelError("ScottishCharityRegulatorNumber", "The Office of the Scottish Charity Regulator (OSCR) Number field is required.");
@@ -158,7 +158,7 @@ public class OrganisationIdentificationModelTests
     {
         var model = new OrganisationIdentificationModel(sessionMock.Object)
         {
-            OrganisationType = organisationType,
+            OrganisationScheme = organisationType,
             CharityCommissionNorthernIrelandNumber = charityCommissionNorthernIrelandNumber
         };
         model.ModelState.AddModelError("CharityCommissionNorthernIrelandNumber", "The Charity Commission for Northren Ireland Number field is required.");
@@ -176,7 +176,7 @@ public class OrganisationIdentificationModelTests
     {
         var model = new OrganisationIdentificationModel(sessionMock.Object)
         {
-            OrganisationType = organisationType,
+            OrganisationScheme = organisationType,
             MutualsPublicRegisterNumber = mutualsPublicRegisterNumber
         };
         model.ModelState.AddModelError("MutualsPublicRegisterNumber", "Mutuals Public Register Number field is required.");
@@ -194,7 +194,7 @@ public class OrganisationIdentificationModelTests
     {
         var model = new OrganisationIdentificationModel(sessionMock.Object)
         {
-            OrganisationType = organisationType,
+            OrganisationScheme = organisationType,
             GuernseyRegistryNumber = guernseyRegistryNumber
         };
         model.ModelState.AddModelError("GuernseyRegistryNumber", "Guernsey Registry Number field is required.");
@@ -212,7 +212,7 @@ public class OrganisationIdentificationModelTests
     {
         var model = new OrganisationIdentificationModel(sessionMock.Object)
         {
-            OrganisationType = organisationType,
+            OrganisationScheme = organisationType,
             JerseyFinancialServicesCommissionRegistryNumber = jerseyFinancialServicesCommissionRegistryNumber
         };
         model.ModelState.AddModelError("JerseyFinancialServicesCommissionRegistryNumber", "Jersey Financial Services Commission Registry Number field is required.");
@@ -230,7 +230,7 @@ public class OrganisationIdentificationModelTests
     {
         var model = new OrganisationIdentificationModel(sessionMock.Object)
         {
-            OrganisationType = organisationType,
+            OrganisationScheme = organisationType,
             IsleofManCompaniesRegistryNumber = isleofManCompaniesRegistryNumber
         };
         model.ModelState.AddModelError("IsleofManCompaniesRegistryNumber", "Isle of Man Companies Registry Number field is required.");
@@ -248,7 +248,7 @@ public class OrganisationIdentificationModelTests
     {
         var model = new OrganisationIdentificationModel(sessionMock.Object)
         {
-            OrganisationType = organisationType,
+            OrganisationScheme = organisationType,
             NationalHealthServiceOrganisationsRegistryNumber = nationalHealthServiceOrganisationsRegistryNumber
         };
         model.ModelState.AddModelError("NationalHealthServiceOrganisationsRegistryNumber", "The National health Service Organisations Registry Number field is required.");
@@ -266,7 +266,7 @@ public class OrganisationIdentificationModelTests
     {
         var model = new OrganisationIdentificationModel(sessionMock.Object)
         {
-            OrganisationType = organisationType,
+            OrganisationScheme = organisationType,
             UKLearningProviderReferenceNumber = ukLearningProviderReferenceNumber
         };
         model.ModelState.AddModelError("UKLearningProviderReferenceNumber", "UK Register of Learning Provider Number field is required.");
@@ -284,7 +284,7 @@ public class OrganisationIdentificationModelTests
     {
         var model = new OrganisationIdentificationModel(sessionMock.Object)
         {
-            OrganisationType = organisationType,
+            OrganisationScheme = organisationType,
             VATNumber = vatNumber
         };
         model.ModelState.AddModelError("VATNumber", "VAT Number field is required.");
@@ -300,7 +300,7 @@ public class OrganisationIdentificationModelTests
     {
         var model = new OrganisationIdentificationModel(sessionMock.Object)
         {
-            OrganisationType = "Other"
+            OrganisationScheme = "Other"
         };
         var result = model.OnPost();
         result.Should().BeOfType<RedirectToPageResult>();
@@ -312,7 +312,7 @@ public class OrganisationIdentificationModelTests
     {
         var model = new OrganisationIdentificationModel(sessionMock.Object)
         {
-            OrganisationType = "Other",
+            OrganisationScheme = "Other",
             RedirectToSummary = true
         };
         var result = model.OnPost();
@@ -336,7 +336,7 @@ public class OrganisationIdentificationModelTests
     {
         var model = new OrganisationIdentificationModel(sessionMock.Object)
         {
-            OrganisationType = organisationType
+            OrganisationScheme = organisationType
         };
 
         SetIdentificationNumber(model, organisationType, identificationNumber);
@@ -344,7 +344,7 @@ public class OrganisationIdentificationModelTests
 
         result.Should().BeOfType<RedirectToPageResult>();
         sessionMock.Verify(s => s.Set(It.IsAny<string>(), It.Is<RegistrationDetails>(rd =>
-            rd.OrganisationType == organisationType &&
+            rd.OrganisationScheme == organisationType &&
             rd.OrganisationIdentificationNumber == identificationNumber)), Times.Once);
     }
 
@@ -392,7 +392,7 @@ public class OrganisationIdentificationModelTests
     {
         var registrationDetails = new RegistrationDetails
         {
-            OrganisationType = "CHN",
+            OrganisationScheme = "CHN",
             OrganisationIdentificationNumber = "12345678",
         };
 

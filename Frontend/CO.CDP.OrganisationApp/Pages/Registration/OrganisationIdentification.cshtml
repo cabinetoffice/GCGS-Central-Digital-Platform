@@ -46,7 +46,7 @@
                         </legend>
                         <div class="govuk-radios" data-module="govuk-radios">
                             <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="CHN" name="OrganisationType" type="radio" value="CHN" data-aria-controls="conditional-CHN" @(Model.OrganisationType == "CHN" ? "checked" : "")>
+                                <input class="govuk-radios__input" id="CHN" name="OrganisationScheme" type="radio" value="CHN" data-aria-controls="conditional-CHN" @(Model.OrganisationScheme == "CHN" ? "checked" : "")>
                                 @Html.LabelFor(m => m.CompaniesHouse, new { @class = "govuk-label govuk-radios__label", @for = "CHN" })
                             </div>
                             <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-CHN">
@@ -58,7 +58,7 @@
                             </div>
 
                             <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="CCEW" name="OrganisationType" type="radio" value="CCEW" data-aria-controls="conditional-CCEW" @(Model.OrganisationType == "CCEW" ? "checked" : "")>
+                                <input class="govuk-radios__input" id="CCEW" name="OrganisationScheme" type="radio" value="CCEW" data-aria-controls="conditional-CCEW" @(Model.OrganisationScheme == "CCEW" ? "checked" : "")>
                                 @Html.LabelFor(m => m.CharityCommissionEnglandWales, new { @class = "govuk-label govuk-radios__label", @for = "CCEW" })
                             </div>
                             <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-CCEW">
@@ -70,7 +70,7 @@
                             </div>
 
                             <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="SCR" name="OrganisationType" type="radio" value="SCR" data-aria-controls="conditional-SCR" @(Model.OrganisationType == "SCR" ? "checked" : "")>
+                                <input class="govuk-radios__input" id="SCR" name="OrganisationScheme" type="radio" value="SCR" data-aria-controls="conditional-SCR" @(Model.OrganisationScheme == "SCR" ? "checked" : "")>
                                 @Html.LabelFor(m => m.ScottishCharityRegulator, new { @class = "govuk-label govuk-radios__label", @for = "SCR" })
                             </div>
                             <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-SCR">
@@ -82,7 +82,7 @@
                             </div>
 
                             <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="CCNI" name="OrganisationType" type="radio" value="CCNI" data-aria-controls="conditional-CCNI" @(Model.OrganisationType == "CCNI" ? "checked" : "")>
+                                <input class="govuk-radios__input" id="CCNI" name="OrganisationScheme" type="radio" value="CCNI" data-aria-controls="conditional-CCNI" @(Model.OrganisationScheme == "CCNI" ? "checked" : "")>
                                 @Html.LabelFor(m => m.CharityCommissionNorthernIreland, new { @class = "govuk-label govuk-radios__label", @for = "CCNI" })
                             </div>
                             <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-CCNI">
@@ -94,7 +94,7 @@
                             </div>
 
                             <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="MPR" name="OrganisationType" type="radio" value="MPR" data-aria-controls="conditional-MPR" @(Model.OrganisationType == "MPR" ? "checked" : "")>
+                                <input class="govuk-radios__input" id="MPR" name="OrganisationScheme" type="radio" value="MPR" data-aria-controls="conditional-MPR" @(Model.OrganisationScheme == "MPR" ? "checked" : "")>
                                 @Html.LabelFor(m => m.MutualsPublicRegister, new { @class = "govuk-label govuk-radios__label", @for = "MPR" })
                             </div>
                             <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-MPR">
@@ -106,7 +106,7 @@
                             </div>
 
                             <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="GRN" name="OrganisationType" type="radio" value="GRN" data-aria-controls="conditional-GRN" @(Model.OrganisationType == "GRN" ? "checked" : "")>
+                                <input class="govuk-radios__input" id="GRN" name="OrganisationScheme" type="radio" value="GRN" data-aria-controls="conditional-GRN" @(Model.OrganisationScheme == "GRN" ? "checked" : "")>
                                 @Html.LabelFor(m => m.GuernseyRegistry, new { @class = "govuk-label govuk-radios__label", @for = "GRN" })
                             </div>
                             <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-GRN">
@@ -118,7 +118,7 @@
                             </div>
 
                             <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="JFSC" name="OrganisationType" type="radio" value="JFSC" data-aria-controls="conditional-JFSC" @(Model.OrganisationType == "JFSC" ? "checked" : "")>
+                                <input class="govuk-radios__input" id="JFSC" name="OrganisationScheme" type="radio" value="JFSC" data-aria-controls="conditional-JFSC" @(Model.OrganisationScheme == "JFSC" ? "checked" : "")>
                                 @Html.LabelFor(m => m.JerseyFinancialServicesCommissionRegistry, new { @class = "govuk-label govuk-radios__label", @for = "JFSC" })
                             </div>
                             <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-JFSC">
@@ -130,7 +130,7 @@
                             </div>
 
                             <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="IMCR" name="OrganisationType" type="radio" value="IMCR" data-aria-controls="conditional-IMCR" @(Model.OrganisationType == "IMCR" ? "checked" : "")>
+                                <input class="govuk-radios__input" id="IMCR" name="OrganisationScheme" type="radio" value="IMCR" data-aria-controls="conditional-IMCR" @(Model.OrganisationScheme == "IMCR" ? "checked" : "")>
                                 @Html.LabelFor(m => m.IsleofManCompaniesRegistry, new { @class = "govuk-label govuk-radios__label", @for = "IMCR" })
                             </div>
                             <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-IMCR">
@@ -142,7 +142,7 @@
                             </div>
 
                             <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="NHOR" name="OrganisationType" type="radio" value="NHOR" data-aria-controls="conditional-NHOR" @(Model.OrganisationType == "NHOR" ? "checked" : "")>
+                                <input class="govuk-radios__input" id="NHOR" name="OrganisationScheme" type="radio" value="NHOR" data-aria-controls="conditional-NHOR" @(Model.OrganisationScheme == "NHOR" ? "checked" : "")>
                                 @Html.LabelFor(m => m.NationalHealthServiceOrganisationsRegistry, new { @class = "govuk-label govuk-radios__label", @for = "NHOR" })
                             </div>
                             <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-NHOR">
@@ -154,7 +154,7 @@
                             </div>
 
                             <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="UKPRN" name="OrganisationType" type="radio" value="UKPRN" data-aria-controls="conditional-UKPRN" @(Model.OrganisationType == "UKPRN" ? "checked" : "")>
+                                <input class="govuk-radios__input" id="UKPRN" name="OrganisationScheme" type="radio" value="UKPRN" data-aria-controls="conditional-UKPRN" @(Model.OrganisationScheme == "UKPRN" ? "checked" : "")>
                                 @Html.LabelFor(m => m.UKLearningProviderReference, new { @class = "govuk-label govuk-radios__label", @for = "VAT" })
                             </div>
                             <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-UKPRN">
@@ -166,7 +166,7 @@
                             </div>
 
                             <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="VAT" name="OrganisationType" type="radio" value="VAT" data-aria-controls="conditional-VAT" @(Model.OrganisationType == "VAT" ? "checked" : "")>
+                                <input class="govuk-radios__input" id="VAT" name="OrganisationScheme" type="radio" value="VAT" data-aria-controls="conditional-VAT" @(Model.OrganisationScheme == "VAT" ? "checked" : "")>
                                 @Html.LabelFor(m => m.VAT, new { @class = "govuk-label govuk-radios__label", @for = "VAT" })
                             </div>
                             <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-VAT">
@@ -178,7 +178,7 @@
                             </div>
 
                             <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="Other" name="OrganisationType" type="radio" value="Other" @(Model.OrganisationType == "Other" ? "checked" : "")>
+                                <input class="govuk-radios__input" id="Other" name="OrganisationScheme" type="radio" value="Other" @(Model.OrganisationScheme == "Other" ? "checked" : "")>
                                 @Html.LabelFor(m => m.Other, new { @class = "govuk-label govuk-radios__label", @for = "Other" })
                             </div>
                         </div>
