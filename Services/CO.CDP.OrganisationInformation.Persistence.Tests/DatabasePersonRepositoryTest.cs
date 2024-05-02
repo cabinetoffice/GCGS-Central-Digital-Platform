@@ -80,30 +80,6 @@ public class DatabasePersonRepositoryTest(PostgreSqlFixture postgreSql) : IClass
         found!.Email.Should().Be("email@email.com");
     }
 
-    [Fact]
-    public async Task FindByName_WhenFound_ReturnsPerson()
-    {
-        using var repository = PersonRepository();
-
-        var person = GivenPerson(name: "UniqueName");
-        person.Email = "email1@email.com";
-        repository.Save(person);
-
-        var found = await repository.FindByName(person.Name);
-
-        found.Should().BeEquivalentTo(person);
-    }
-
-    [Fact]
-    public async Task FindByName_WhenNotFound_ReturnsNull()
-    {
-        using var repository = PersonRepository();
-
-        var found = await repository.FindByName("NonExistentName");
-
-        found.Should().BeNull();
-    }
-
     private IPersonRepository PersonRepository()
     {
         return new DatabasePersonRepository(OrganisationInformationContext());
@@ -117,12 +93,13 @@ public class DatabasePersonRepositoryTest(PostgreSqlFixture postgreSql) : IClass
         return context;
     }
 
-    private static Person GivenPerson(Guid? guid = null, string name = "Jon Doe", int age = 40, string email = "jon@example.com")
+    private static Person GivenPerson(Guid? guid = null, string firstname = "Jon", string lastname ="doe", int age = 40, string email = "jon@example.com")
     {
         return new Person
         {
             Guid = guid ?? Guid.NewGuid(),
-            Name = name,
+            FirstName = firstname,
+            LastName = lastname,
             Age = age,
             Email = email
         };

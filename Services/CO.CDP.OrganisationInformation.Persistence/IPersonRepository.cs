@@ -6,8 +6,6 @@ public interface IPersonRepository : IDisposable
 
     public Task<Person?> Find(Guid personId);
 
-    public Task<Person?> FindByName(string name);
-
     public class PersonRepositoryException(string message, Exception? cause = null) : Exception(message, cause)
     {
         public class DuplicatePersonException(string message, Exception? cause = null)
