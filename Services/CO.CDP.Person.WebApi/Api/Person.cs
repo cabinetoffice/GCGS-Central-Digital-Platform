@@ -12,7 +12,8 @@ public static class EndpointExtensions
         .ToDictionary(index => index, index => new Model.Person
         {
             Id = index,
-            Name = $"Sussan Tables {index}",
+            FirstName = $"Sussan Tables {index}",
+            LastName = "LN",
             Age = 40,
             Email = "sussan@example.com"
         });
@@ -76,7 +77,8 @@ public static class EndpointExtensions
                     {
                         Id = personId,
                         Email = updatedPerson.Email,
-                        Name = updatedPerson.Name,
+                        FirstName = updatedPerson.FirstName,
+                        LastName = updatedPerson.LastName,
                         Age = updatedPerson.Age,
                     };
                     return Results.Ok(_persons[personId]);

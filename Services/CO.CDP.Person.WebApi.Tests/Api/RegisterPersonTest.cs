@@ -30,7 +30,8 @@ public class RegisterPersonTest
         var person = new Model.Person
         {
             Id = Guid.NewGuid(),
-            Name = "ThePerson",
+            FirstName = "ThePerson",
+            LastName = "lastname",
             Email = "email@email.com",
             Age = 40
         };
@@ -63,7 +64,8 @@ public class RegisterPersonTest
     {
         return new RegisterPerson
         {
-            Name = "ThePerson",
+            FirstName = "ThePerson",
+            LastName = "lastname",
             Email = "email@email.com",
             Age = 40
         };

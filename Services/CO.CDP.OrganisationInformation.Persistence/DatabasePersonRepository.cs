@@ -15,11 +15,6 @@ public class DatabasePersonRepository(OrganisationInformationContext context) : 
         return await context.Persons.FirstOrDefaultAsync(t => t.Guid == organisationId);
     }
 
-    public async Task<Person?> FindByName(string name)
-    {
-        return await context.Persons.FirstOrDefaultAsync(t => t.Name == name);
-    }
-
     public void Save(Person person)
     {
         try

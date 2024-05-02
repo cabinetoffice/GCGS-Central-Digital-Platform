@@ -18,7 +18,8 @@ public class RegisterPersonUseCaseTest(AutoMapperFixture mapperFixture) : IClass
     {
         var command = new RegisterPerson
         {
-            Name = "ThePerson",
+            FirstName = "ThePerson",
+            LastName = "lastname", 
             Age = 40,
             Email = "jon@email.com"
         };
@@ -28,7 +29,8 @@ public class RegisterPersonUseCaseTest(AutoMapperFixture mapperFixture) : IClass
         var expectedPerson = new Model.Person
         {
             Id = _generatedGuid,
-            Name = "ThePerson",
+            FirstName = "ThePerson",
+            LastName = "lastname",
             Email = "jon@email.com",
             Age = 40
         };
@@ -41,14 +43,16 @@ public class RegisterPersonUseCaseTest(AutoMapperFixture mapperFixture) : IClass
     {
         UseCase.Execute(new RegisterPerson
         {
-            Name = "ThePerson",
+            FirstName = "ThePerson",
+            LastName = "lastname",
             Email = "jon@email.com",
             Age = 40
         });
 
         _repository.Verify(r => r.Save(It.Is<OrganisationInformation.Persistence.Person>(o =>
              o.Guid == _generatedGuid &&
-             o.Name == "ThePerson" &&
+             o.FirstName == "ThePerson" &&
+             o.LastName == "lastname" &&
              o.Email == "jon@email.com"
          )), Times.Once);
     }
