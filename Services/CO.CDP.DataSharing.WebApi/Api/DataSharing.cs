@@ -187,8 +187,8 @@ namespace CO.CDP.DataSharing.WebApi.Api
                 {
                     operation.OperationId = "GetSharedData";
                     operation.Description =
-                        "Operation to obtain Supplier information which has been shared as part of a notice.";
-                    operation.Summary = "Request Supplier Submitted Information.";
+                        "[STUB] Operation to obtain Supplier information which has been shared as part of a notice. [STUB]";
+                    operation.Summary = "[STUB] Request Supplier Submitted Information. [STUB]";
                     operation.Responses["200"].Description = "Organisation Information including Form Answers.";
                     return operation;
                 });
@@ -205,8 +205,8 @@ namespace CO.CDP.DataSharing.WebApi.Api
                 {
                     operation.OperationId = "CreateSharedData";
                     operation.Description =
-                        "Operation to obtain Supplier information which has been shared as part of a notice.";
-                    operation.Summary = "Create Supplier Submitted Information.";
+                        "[STUB] Operation to obtain Supplier information which has been shared as part of a notice. [STUB]";
+                    operation.Summary = "[STUB] Create Supplier Submitted Information. [STUB]";
                     operation.Responses["200"].Description = "Organisation Information created.";
                     return operation;
                 });
