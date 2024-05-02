@@ -1,5 +1,6 @@
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Models;
+using CO.CDP.Person.WebApiClient;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -9,7 +10,8 @@ namespace CO.CDP.OrganisationApp.Pages.Registration;
 [Authorize]
 public class OrganisationDetailsSummaryModel(
     ISession session,
-    IOrganisationClient organisationClient) : PageModel
+    IOrganisationClient organisationClient,
+    IPersonClient personClient) : PageModel
 {
     public RegistrationDetails? Details { get; set; }
 
@@ -46,6 +48,13 @@ public class OrganisationDetailsSummaryModel(
                 [1] // TODO: Need to Remove - Hard-coded till we have buyer/supplier screen
             ));
 
+        await personClient.CreatePersonAsync
+            (new RegisterPerson(
+                null,
+                Details.Email,
+                Details.FirstName,
+                Details.LastName)
+            );
         return RedirectToPage("OrganisationAccount");
     }
 

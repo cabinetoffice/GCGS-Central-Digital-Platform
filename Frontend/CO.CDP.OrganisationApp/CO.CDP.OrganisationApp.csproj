@@ -22,6 +22,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\Libraries\CO.CDP.Organisation.WebApiClient\CO.CDP.Organisation.WebApiClient.csproj" />
+      <ProjectReference Include="..\..\Libraries\CO.CDP.Person.WebApiClient\CO.CDP.Person.WebApiClient.csproj" />
       <ProjectReference Include="..\..\Libraries\CO.CDP.Tenant.WebApiClient\CO.CDP.Tenant.WebApiClient.csproj" />
     </ItemGroup>
 

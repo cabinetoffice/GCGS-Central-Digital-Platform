@@ -1,5 +1,6 @@
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp;
+using CO.CDP.Person.WebApiClient;
 using CO.CDP.Tenant.WebApiClient;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -9,6 +10,8 @@ using static IdentityModel.OidcConstants;
 
 const string TenantHttpClientName = "TenantHttpClient";
 const string OrganisationHttpClientName = "OrganisationHttpClient";
+const string PersonHttpClientName = "PersonHttpClient";
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -31,6 +34,12 @@ builder.Services.AddHttpClient(TenantHttpClientName);
 builder.Services.AddTransient<ITenantClient, TenantClient>(
     sc => new TenantClient(tenantServiceUrl,
         sc.GetRequiredService<IHttpClientFactory>().CreateClient(TenantHttpClientName)));
+
+var personServiceUrl = builder.Configuration.GetValue<string>("PersonService");
+builder.Services.AddHttpClient(PersonHttpClientName);
+builder.Services.AddTransient<IPersonClient, PersonClient>(
+    sc => new PersonClient(personServiceUrl,
+        sc.GetRequiredService<IHttpClientFactory>().CreateClient(PersonHttpClientName)));
 
 var organisationServiceUrl = builder.Configuration.GetValue<string>("OrganisationService");
 builder.Services.AddHttpClient(OrganisationHttpClientName);
