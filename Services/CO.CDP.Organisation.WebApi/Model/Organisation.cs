@@ -26,7 +26,7 @@ public record OrganisationIdentifier
     public required string Scheme { get; init; }
 
     [Required(AllowEmptyStrings = false)]
-    public required string Number;
+    public required string Number { get; init; }
     public string? Id { get; init; }
     public string? LegalName { get; init; }
     public string? Uri { get; init; }

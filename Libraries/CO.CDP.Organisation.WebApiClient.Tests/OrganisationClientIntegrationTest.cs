@@ -11,7 +11,8 @@ public class OrganisationClientIntegrationTest
             scheme: "ISO9001",
             id: "1",
             legalName: "New Org Legal Name",
-            uri: "http://neworg.com"
+            uri: "http://neworg.com",
+            number: "1234567"
         );
         var address = new OrganisationAddress(
             addressLine1: "1234 New St",
@@ -32,7 +33,8 @@ public class OrganisationClientIntegrationTest
             scheme: "ISO14001",
             id: "2",
             legalName: "Additional Legal Name",
-            uri: "http://additionalorg.com"
+            uri: "http://additionalorg.com",
+            number: "1234567"
         )
     };
         var types = new List<int> { 1 };
