@@ -73,8 +73,8 @@ public static class EndpointExtensions
             .WithOpenApi(operation =>
             {
                 operation.OperationId = "ListTenants";
-                operation.Description = "A list of tenants.";
-                operation.Summary = "A list of tenants.";
+                operation.Description = "[STUB] A list of tenants. [STUB]";
+                operation.Summary = "[STUB] A list of tenants. [STUB]";
                 operation.Responses["200"].Description = "A list of tenants.";
                 return operation;
             });
@@ -101,8 +101,8 @@ public static class EndpointExtensions
             .WithOpenApi(operation =>
             {
                 operation.OperationId = "DeleteTenant";
-                operation.Description = "Delete a tenant.";
-                operation.Summary = "Delete a tenant.";
+                operation.Description = "[STUB] Delete a tenant. [STUB]";
+                operation.Summary = "[STUB] Delete a tenant. [STUB]";
                 operation.Responses["204"].Description = "Tenant deleted successfully.";
                 return operation;
             });
@@ -133,8 +133,8 @@ public static class EndpointExtensions
             .WithOpenApi(operation =>
             {
                 operation.OperationId = "UpdateTenant";
-                operation.Description = "Update a tenant";
-                operation.Summary = "Update a tenant";
+                operation.Description = "[STUB] Update a tenant [STUB]";
+                operation.Summary = "[STUB] Update a tenant [STUB]";
                 operation.Responses["200"].Description = "Tenant updated successfully.";
                 return operation;
             });
@@ -170,8 +170,8 @@ public static class EndpointExtensions
             .WithOpenApi(operation =>
             {
                 operation.OperationId = "AssignUserToOrganisation";
-                operation.Description = "Assign user to an organisation.";
-                operation.Summary = "Assign user to an organisation.";
+                operation.Description = "[STUB] Assign user to an organisation. [STUB]";
+                operation.Summary = "[STUB] Assign user to an organisation. [STUB]";
                 operation.Tags = new List<OpenApiTag> { new() { Name = "User Management" } };
                 operation.Responses["200"].Description = "User successfully assigned to the organisation.";
                 return operation;
@@ -184,8 +184,8 @@ public static class EndpointExtensions
             .WithOpenApi(operation =>
             {
                 operation.OperationId = "ModifyUserPermissions";
-                operation.Description = "Modify user permissions within an organisation.";
-                operation.Summary = "Modify user permissions within an organisation.";
+                operation.Description = "[STUB] Modify user permissions within an organisation. [STUB]";
+                operation.Summary = "[STUB] Modify user permissions within an organisation. [STUB]";
                 operation.Tags = new List<OpenApiTag> { new() { Name = "User Management" } };
                 operation.Responses["200"].Description = "User permissions modified successfully.";
                 return operation;
