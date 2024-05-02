@@ -10,17 +10,14 @@ public record Organisation
     [Required]
     public required OrganisationIdentifier Identifier { get; init; }
 
-    [Required]
-    public required List<OrganisationIdentifier> AdditionalIdentifiers { get; init; }
+    public List<OrganisationIdentifier>? AdditionalIdentifiers { get; init; }
 
     [Required]
     public required OrganisationAddress Address { get; init; }
 
-    [Required]
-    public required OrganisationContactPoint ContactPoint { get; init; }
+    public OrganisationContactPoint? ContactPoint { get; init; }
 
-    [Required]
-    public required List<int> Roles { get; init; }
+    public List<int>? Types { get; init; }
 }
 
 public record OrganisationIdentifier
@@ -29,47 +26,33 @@ public record OrganisationIdentifier
     public required string Scheme { get; init; }
 
     [Required(AllowEmptyStrings = false)]
-    public required string Id { get; init; }
-
-    [Required(AllowEmptyStrings = false)]
-    public required string LegalName { get; init; }
-
-    [Required(AllowEmptyStrings = false)]
-    public required string Uri { get; init; }
+    public required string Number { get; init; }
+    public string? Id { get; init; }
+    public string? LegalName { get; init; }
+    public string? Uri { get; init; }
 }
 
 public record OrganisationAddress
 {
     [Required(AllowEmptyStrings = false)]
-    public required string StreetAddress { get; init; }
+    public required string AddressLine1 { get; init; }
+    public string? AddressLine2 { get; init; }
 
     [Required(AllowEmptyStrings = false)]
-    public required string Locality { get; init; }
+    public required string City { get; init; }
 
     [Required(AllowEmptyStrings = false)]
-    public required string Region { get; init; }
+    public required string PostCode { get; init; }
 
-    [Required(AllowEmptyStrings = false)]
-    public required string PostalCode { get; init; }
-
-    [Required(AllowEmptyStrings = false)]
-    public required string CountryName { get; init; }
+    public string? Country { get; init; }
 }
 
 public record OrganisationContactPoint
 {
-    [Required(AllowEmptyStrings = false)]
-    public required string Name { get; init; }
+    public string? Name { get; init; }
 
     [Required(AllowEmptyStrings = false)]
     public required string Email { get; init; }
-
-    [Required(AllowEmptyStrings = false)]
-    public required string Telephone { get; init; }
-
-    [Required(AllowEmptyStrings = false)]
-    public required string FaxNumber { get; init; }
-
-    [Required(AllowEmptyStrings = false)]
-    public required string Url { get; init; }
+    public string? Telephone { get; init; }
+    public string? Url { get; init; }
 }

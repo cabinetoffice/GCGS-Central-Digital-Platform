@@ -16,7 +16,7 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
     [Fact]
     public async Task ItReturnsTheRegisteredOrganisation()
     {
-        var command = new RegisterOrganisation
+        var command = new NewOrganisation
         {
             Name = "TheOrganisation",
             Identifier = new OrganisationIdentifier
@@ -24,7 +24,8 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
                 Scheme = "ISO9001",
                 Id = "1",
                 LegalName = "OfficialOrganisationName",
-                Uri = "http://example.org"
+                Uri = "http://example.org",
+                Number = "123456"
             },
             AdditionalIdentifiers = new List<OrganisationIdentifier>
             {
@@ -33,26 +34,25 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
                     Scheme = "ISO14001",
                     Id = "2",
                     LegalName = "AnotherOrganisationName",
-                    Uri = "http://example.com"
+                    Uri = "http://example.com",
+                    Number = "123456"
                 }
             },
             Address = new OrganisationAddress
             {
-                StreetAddress = "1234 Example St",
-                Locality = "Example City",
-                Region = "Example Region",
-                PostalCode = "12345",
-                CountryName = "Exampleland"
+                AddressLine1 = "1234 Example St",
+                City = "Example City",
+                PostCode = "12345",
+                Country = "Exampleland"
             },
             ContactPoint = new OrganisationContactPoint
             {
                 Name = "Contact Name",
                 Email = "contact@example.org",
                 Telephone = "123-456-7890",
-                FaxNumber = "123-456-7891",
                 Url = "http://example.org/contact"
             },
-            Roles = new List<int> { 1 }
+            Types = new List<int> { 1 }
         };
 
         var createdOrganisation = await UseCase.Execute(command);
@@ -65,7 +65,7 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
             AdditionalIdentifiers = command.AdditionalIdentifiers,
             Address = command.Address,
             ContactPoint = command.ContactPoint,
-            Roles = command.Roles
+            Types = command.Types
         };
 
         createdOrganisation.Should().BeEquivalentTo(expectedOrganisation, options => options.ComparingByMembers<Model.Organisation>());
@@ -74,7 +74,7 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
     [Fact]
     public void ItSavesNewOrganisationInTheRepository()
     {
-        UseCase.Execute(new RegisterOrganisation
+        UseCase.Execute(new NewOrganisation
         {
             Name = "TheOrganisation",
             Identifier = new OrganisationIdentifier
@@ -82,7 +82,8 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
                 Scheme = "ISO9001",
                 Id = "1",
                 LegalName = "OfficialOrganisationName",
-                Uri = "http://example.org"
+                Uri = "http://example.org",
+                Number = "123456"
             },
             AdditionalIdentifiers = new List<OrganisationIdentifier>
             {
@@ -91,26 +92,25 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
                     Scheme = "ISO14001",
                     Id = "2",
                     LegalName = "AnotherOrganisationName",
-                    Uri = "http://example.com"
+                    Uri = "http://example.com",
+                    Number = "123456"
                 }
             },
             Address = new OrganisationAddress
             {
-                StreetAddress = "1234 Example St",
-                Locality = "Example City",
-                Region = "Example Region",
-                PostalCode = "12345",
-                CountryName = "Exampleland"
+                AddressLine1 = "1234 Example St",
+                City = "Example City",
+                PostCode = "12345",
+                Country = "Exampleland"
             },
             ContactPoint = new OrganisationContactPoint
             {
                 Name = "Contact Name",
                 Email = "contact@example.org",
                 Telephone = "123-456-7890",
-                FaxNumber = "123-456-7891",
                 Url = "http://example.org/contact"
             },
-            Roles = new List<int> { 1 }
+            Types = new List<int> { 1 }
         });
 
         _repository.Verify(r => r.Save(It.Is<OrganisationInformation.Persistence.Organisation>(o =>
@@ -121,25 +121,24 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
                  Scheme = "ISO9001",
                  Id = "1",
                  LegalName = "OfficialOrganisationName",
-                 Uri = "http://example.org"
+                 Uri = "http://example.org",
+                 Number = "123456"
              } &&
              o.Address == new OrganisationInformation.Persistence.Organisation.OrganisationAddress
              {
-                 StreetAddress = "1234 Example St",
-                 Locality = "Example City",
-                 Region = "Example Region",
-                 PostalCode = "12345",
-                 CountryName = "Exampleland"
+                 AddressLine1 = "1234 Example St",
+                 City = "Example City",
+                 PostCode = "12345",
+                 Country = "Exampleland"
              } &&
              o.ContactPoint == new OrganisationInformation.Persistence.Organisation.OrganisationContactPoint
              {
                  Name = "Contact Name",
                  Email = "contact@example.org",
                  Telephone = "123-456-7890",
-                 FaxNumber = "123-456-7891",
                  Url = "http://example.org/contact"
              } &&
-             o.Roles.SequenceEqual(new List<int> { 1 })
+             o.Types.SequenceEqual(new List<int> { 1 })
          )), Times.Once);
     }
 }

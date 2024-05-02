@@ -25,6 +25,7 @@ public class OrganisationInformationContext(string connectionString) : DbContext
                 b.Property(p => p.Scheme);
                 b.Property(p => p.LegalName);
                 b.Property(p => p.Uri);
+                b.Property(p => p.Number);
             });
 
             entity.OwnsMany(e => e.AdditionalIdentifiers, a =>
@@ -34,6 +35,7 @@ public class OrganisationInformationContext(string connectionString) : DbContext
                 a.Property(ai => ai.Scheme);
                 a.Property(ai => ai.LegalName);
                 a.Property(ai => ai.Uri);
+                a.Property(ai => ai.Number);
             });
         });
         modelBuilder.Entity<Person>(entity =>

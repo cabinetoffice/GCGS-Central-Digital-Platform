@@ -1,4 +1,3 @@
-using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.Organisation.WebApi.Tests.AutoMapper;
 using CO.CDP.Organisation.WebApi.UseCase;
 using CO.CDP.OrganisationInformation.Persistence;
@@ -35,7 +34,8 @@ public class GetOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IClas
                 Id = "Identifier1",
                 Scheme = "Scheme1",
                 LegalName = "Legal Name",
-                Uri = "http://example.com"
+                Uri = "http://example.com",
+                Number = "123456"
             },
             AdditionalIdentifiers = new List<OrganisationInformation.Persistence.Organisation.OrganisationIdentifier>
         {
@@ -44,26 +44,25 @@ public class GetOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IClas
                 Id = "Identifier2",
                 Scheme = "Scheme2",
                 LegalName = "Another Legal Name",
-                Uri = "http://another-example.com"
+                Uri = "http://another-example.com",
+                Number = "123456"
             }
         },
             Address = new OrganisationInformation.Persistence.Organisation.OrganisationAddress
             {
-                StreetAddress = "1234 Test St",
-                Locality = "Test City",
-                Region = "Test Region",
-                PostalCode = "12345",
-                CountryName = "Testland"
+                AddressLine1 = "1234 Test St",
+                City = "Test City",
+                PostCode = "12345",
+                Country = "Testland"
             },
             ContactPoint = new OrganisationInformation.Persistence.Organisation.OrganisationContactPoint
             {
                 Name = "Contact Name",
                 Email = "contact@test.org",
                 Telephone = "123-456-7890",
-                FaxNumber = "123-456-7891",
                 Url = "http://contact.test.org"
             },
-            Roles = new List<int> { 1 }
+            Types = new List<int> { 1 }
         };
 
         _repository.Setup(r => r.Find(organisationId)).ReturnsAsync(persistenceOrganisation);
@@ -73,40 +72,40 @@ public class GetOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IClas
         {
             Id = organisationId,
             Name = "Test Organisation",
-            Identifier = new OrganisationIdentifier
+            Identifier = new Model.OrganisationIdentifier
             {
                 Id = "Identifier1",
                 Scheme = "Scheme1",
                 LegalName = "Legal Name",
-                Uri = "http://example.com"
+                Uri = "http://example.com",
+                Number = "123456"
             },
-            AdditionalIdentifiers = new List<OrganisationIdentifier>
+            AdditionalIdentifiers = new List<Model.OrganisationIdentifier>
         {
-            new OrganisationIdentifier
+            new Model.OrganisationIdentifier
             {
                 Id = "Identifier2",
                 Scheme = "Scheme2",
                 LegalName = "Another Legal Name",
-                Uri = "http://another-example.com"
+                Uri = "http://another-example.com",
+                Number = "123456"
             }
         },
-            Address = new OrganisationAddress
+            Address = new Model.OrganisationAddress
             {
-                StreetAddress = "1234 Test St",
-                Locality = "Test City",
-                Region = "Test Region",
-                PostalCode = "12345",
-                CountryName = "Testland"
+                AddressLine1 = "1234 Test St",
+                City = "Test City",
+                PostCode = "12345",
+                Country = "Testland"
             },
-            ContactPoint = new OrganisationContactPoint
+            ContactPoint = new Model.OrganisationContactPoint
             {
                 Name = "Contact Name",
                 Email = "contact@test.org",
                 Telephone = "123-456-7890",
-                FaxNumber = "123-456-7891",
                 Url = "http://contact.test.org"
             },
-            Roles = new List<int> { 1 }
+            Types = new List<int> { 1 }
         };
 
         found.Should().BeEquivalentTo(expectedModelOrganisation, options => options.ComparingByMembers<Model.Organisation>());

@@ -82,32 +82,32 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql) : 
                 Scheme = "ISO9001",
                 Id = "1",
                 LegalName = "DefaultLegalName",
-                Uri = "http://default.org"
+                Uri = "http://default.org",
+                Number = "123456"
             },
             AdditionalIdentifiers = new[] { new OrganisationIdentifier
             {
                 Scheme = "ISO9001",
                 Id = "1",
                 LegalName = "DefaultLegalName",
-                Uri = "http://default.org"
+                Uri = "http://default.org",
+                Number = "123456"
             }}.ToList(),
             Address = new OrganisationAddress
             {
-                StreetAddress = "1234 Default St",
-                Locality = "Default City",
-                Region = "Default Region",
-                PostalCode = "12345",
-                CountryName = "Defaultland"
+                AddressLine1 = "1234 Default St",
+                City = "London",
+                PostCode = "12345",
+                Country = "Defaultland"
             },
             ContactPoint = new OrganisationContactPoint
             {
                 Name = "Default Contact",
                 Email = "contact@default.org",
                 Telephone = "123-456-7890",
-                FaxNumber = "123-456-7891",
                 Url = "http://contact.default.org"
             },
-            Roles = new List<int> { 1 }
+            Types = new List<int> { 1 }
         };
 
         repository.Save(organisation);
@@ -170,14 +170,15 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql) : 
     string uri = "http://default.org",
     string streetAddress = "1234 Default St",
     string locality = "Default City",
-    string region = "Default Region",
-    string postalCode = "12345",
-    string countryName = "Defaultland",
+    string city = "Default Region",
+    string postCode = "12345",
+    string country = "Defaultland",
     string contactName = "Default Contact",
     string email = "contact@default.org",
     string telephone = "123-456-7890",
-    string faxNumber = "123-456-7891",
     string contactUri = "http://contact.default.org",
+    string number = "123456",
+
     List<int>? roles = null)
     {
         var theGuid = guid ?? Guid.NewGuid();
@@ -192,7 +193,8 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql) : 
                 Scheme = scheme,
                 Id = identifierId,
                 LegalName = legalName,
-                Uri = uri
+                Uri = uri,
+                Number = number
             },
             AdditionalIdentifiers = new List<OrganisationIdentifier>
             {
@@ -200,26 +202,25 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql) : 
                     Scheme = "ISO14001",
                     Id = "2",
                     LegalName = "AnotherLegalName",
-                    Uri = "http://example.com"
+                    Uri = "http://example.com",
+                    Number = number
                 }
             },
             Address = new OrganisationAddress
             {
-                StreetAddress = streetAddress,
-                Locality = locality,
-                Region = region,
-                PostalCode = postalCode,
-                CountryName = countryName
+                AddressLine1 = streetAddress,
+                City = city,
+                PostCode = postCode,
+                Country = country
             },
             ContactPoint = new OrganisationContactPoint
             {
                 Name = contactName,
                 Email = email,
                 Telephone = telephone,
-                FaxNumber = faxNumber,
                 Url = contactUri
             },
-            Roles = roles ?? new List<int> { 1 }
+            Types = roles ?? new List<int> { 1 }
         };
     }
 }

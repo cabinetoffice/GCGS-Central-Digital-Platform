@@ -12,13 +12,13 @@ namespace CO.CDP.Organisation.WebApi.Tests.Api;
 public class RegisterOrganisationTest
 {
     private readonly HttpClient _httpClient;
-    private readonly Mock<IUseCase<RegisterOrganisation, Model.Organisation>> _registerOrganisationUseCase = new();
+    private readonly Mock<IUseCase<NewOrganisation, Model.Organisation>> _registerOrganisationUseCase = new();
 
     public RegisterOrganisationTest()
     {
         TestWebApplicationFactory<Program> factory = new(services =>
         {
-            services.AddScoped<IUseCase<RegisterOrganisation, Model.Organisation>>(_ => _registerOrganisationUseCase.Object);
+            services.AddScoped<IUseCase<NewOrganisation, Model.Organisation>>(_ => _registerOrganisationUseCase.Object);
         });
         _httpClient = factory.CreateClient();
     }
@@ -35,10 +35,10 @@ public class RegisterOrganisationTest
             AdditionalIdentifiers = command.AdditionalIdentifiers,
             Address = command.Address,
             ContactPoint = command.ContactPoint,
-            Roles = command.Roles
+            Types = command.Types
         };
 
-        _registerOrganisationUseCase.Setup(useCase => useCase.Execute(It.IsAny<RegisterOrganisation>()))
+        _registerOrganisationUseCase.Setup(useCase => useCase.Execute(It.IsAny<NewOrganisation>()))
                                     .ReturnsAsync(organisation);
 
         var response = await _httpClient.PostAsJsonAsync("/organisations", command);
@@ -54,7 +54,7 @@ public class RegisterOrganisationTest
     {
         var command = GivenRegisterOrganisationCommand();
 
-        _registerOrganisationUseCase.Setup(useCase => useCase.Execute(It.IsAny<RegisterOrganisation>()))
+        _registerOrganisationUseCase.Setup(useCase => useCase.Execute(It.IsAny<NewOrganisation>()))
                                     .ReturnsAsync((Model.Organisation)null!);
 
         var response = await _httpClient.PostAsJsonAsync("/organisations", command);
@@ -62,9 +62,9 @@ public class RegisterOrganisationTest
         response.Should().HaveStatusCode(HttpStatusCode.InternalServerError, await response.Content.ReadAsStringAsync());
     }
 
-    private static RegisterOrganisation GivenRegisterOrganisationCommand()
+    private static NewOrganisation GivenRegisterOrganisationCommand()
     {
-        return new RegisterOrganisation
+        return new NewOrganisation
         {
             Name = "TheOrganisation",
             Identifier = new OrganisationIdentifier
@@ -72,7 +72,8 @@ public class RegisterOrganisationTest
                 Scheme = "ISO9001",
                 Id = "1",
                 LegalName = "OfficialOrganisationName",
-                Uri = "http://example.org"
+                Uri = "http://example.org",
+                Number = "123456"
             },
             AdditionalIdentifiers = new List<OrganisationIdentifier>
             {
@@ -81,26 +82,25 @@ public class RegisterOrganisationTest
                     Scheme = "ISO14001",
                     Id = "2",
                     LegalName = "AnotherOrganisationName",
-                    Uri = "http://example.com"
+                    Uri = "http://example.com",
+                    Number = "123456"
                 }
             },
             Address = new OrganisationAddress
             {
-                StreetAddress = "1234 Example St",
-                Locality = "Example City",
-                Region = "Example Region",
-                PostalCode = "12345",
-                CountryName = "Exampleland"
+                AddressLine1 = "1234 Example St",
+                City = "Example Region",
+                PostCode = "12345",
+                Country = "Exampleland"
             },
             ContactPoint = new OrganisationContactPoint
             {
                 Name = "Contact Name",
                 Email = "contact@example.org",
                 Telephone = "123-456-7890",
-                FaxNumber = "123-456-7891",
                 Url = "http://example.org/contact"
             },
-            Roles = new List<int> { 1 }
+            Types = new List<int> { 1 }
         };
     }
 }
