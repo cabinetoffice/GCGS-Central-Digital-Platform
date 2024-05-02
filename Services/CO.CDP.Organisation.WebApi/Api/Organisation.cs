@@ -77,8 +77,8 @@ public static class EndpointExtensions
             .WithOpenApi(operation =>
             {
                 operation.OperationId = "ListOrganisations";
-                operation.Description = "A list of organisations.";
-                operation.Summary = "A list of organisations.";
+                operation.Description = "[STUB] A list of organisations. [STUB]";
+                operation.Summary = "[STUB] A list of organisations. [STUB]";
                 operation.Responses["200"].Description = "A list of organisations.";
                 return operation;
             });
@@ -132,8 +132,8 @@ public static class EndpointExtensions
             .WithOpenApi(operation =>
             {
                 operation.OperationId = "UpdateOrganisation";
-                operation.Description = "Update a organisation";
-                operation.Summary = "Update a organisation";
+                operation.Description = "[STUB] Update a organisation [STUB]";
+                operation.Summary = "[STUB] Update a organisation [STUB]";
                 operation.Responses["200"].Description = "Organisation updated.";
                 return operation;
             });
@@ -146,8 +146,8 @@ public static class EndpointExtensions
             .WithOpenApi(operation =>
             {
                 operation.OperationId = "DeleteOrganisation";
-                operation.Description = "Delete a organisation.";
-                operation.Summary = "Delete a organisation.";
+                operation.Description = "[STUB] Delete a organisation. [STUB]";
+                operation.Summary = "[STUB] Delete a organisation. [STUB]";
                 operation.Responses["204"].Description = "Organisation deleted.";
                 return operation;
             });

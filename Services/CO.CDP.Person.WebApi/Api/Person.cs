@@ -24,8 +24,8 @@ public static class EndpointExtensions
             .WithOpenApi(operation =>
             {
                 operation.OperationId = "ListPersons";
-                operation.Description = "A list of persons.";
-                operation.Summary = "A list of persons.";
+                operation.Description = "[STUB] A list of persons. [STUB]";
+                operation.Summary = "[STUB] A list of persons. [STUB]";
                 operation.Responses["200"].Description = "A list of persons.";
                 return operation;
             });
@@ -63,8 +63,8 @@ public static class EndpointExtensions
             .WithOpenApi(operation =>
             {
                 operation.OperationId = "GetPersons";
-                operation.Description = "Get a person by ID.";
-                operation.Summary = "Get a person by ID.";
+                operation.Description = "[STUB] Get a person by ID. [STUB]";
+                operation.Summary = "[STUB] Get a person by ID. [STUB]";
                 operation.Responses["200"].Description = "Person details.";
                 return operation;
             });
@@ -85,8 +85,8 @@ public static class EndpointExtensions
             .WithOpenApi(operation =>
             {
                 operation.OperationId = "UpdatePerson";
-                operation.Description = "Update a person";
-                operation.Summary = "Update a person";
+                operation.Description = "[STUB] Update a person [STUB]";
+                operation.Summary = "[STUB] Update a person [STUB]";
                 operation.Responses["200"].Description = "Person updated.";
                 return operation;
             });
@@ -99,8 +99,8 @@ public static class EndpointExtensions
             .WithOpenApi(operation =>
             {
                 operation.OperationId = "DeletePerson";
-                operation.Description = "Delete a person.";
-                operation.Summary = "Delete a person.";
+                operation.Description = "[STUB] Delete a person. [STUB]";
+                operation.Summary = "[STUB] Delete a person. [STUB]";
                 operation.Responses["204"].Description = "Person deleted.";
                 return operation;
             });
