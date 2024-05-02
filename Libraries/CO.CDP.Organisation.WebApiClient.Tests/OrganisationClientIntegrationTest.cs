@@ -14,17 +14,16 @@ public class OrganisationClientIntegrationTest
             uri: "http://neworg.com"
         );
         var address = new OrganisationAddress(
-            streetAddress: "1234 New St",
-            locality: "New City",
-            region: "New State",
-            postalCode: "123456",
-            countryName: "Newland"
+            addressLine1: "1234 New St",
+            addressLine2: null,
+            city: "New City",
+            postCode: "123456",
+            country: "Newland"
         );
         var contactPoint = new OrganisationContactPoint(
             name: "Main Contact",
             email: "contact@neworg.com",
             telephone: "123-456-7890",
-            faxNumber: "123-456-7891",
             url: "http://contact.neworg.com"
         );
         var additionalIdentifiers = new List<OrganisationIdentifier>
@@ -36,14 +35,14 @@ public class OrganisationClientIntegrationTest
             uri: "http://additionalorg.com"
         )
     };
-        var roles = new List<int> { 1 };
+        var types = new List<int> { 1 };
         var newOrganisation = new NewOrganisation(
             additionalIdentifiers: additionalIdentifiers,
             address: address,
             contactPoint: contactPoint,
             identifier: identifier,
             name: "New Organisation",
-            roles: roles
+            types: types
         );
         var organisation = await client.CreateOrganisationAsync(newOrganisation);
 

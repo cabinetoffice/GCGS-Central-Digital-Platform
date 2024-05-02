@@ -1,5 +1,5 @@
-using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CO.CDP.OrganisationInformation.Persistence;
 
@@ -14,34 +14,34 @@ public class Organisation
     public List<OrganisationIdentifier> AdditionalIdentifiers { get; set; } = [];
     public required OrganisationAddress Address { get; set; }
     public required OrganisationContactPoint ContactPoint { get; set; }
-    public required List<int> Roles { get; set; } = [];
+    public List<int> Types { get; set; } = [];
 
     [ComplexType]
     public record OrganisationIdentifier
     {
-        public required string Id;
+        public string? Id;
         public required string Scheme;
-        public required string LegalName;
-        public required string Uri;
+        public required string Number;
+        public string? LegalName;
+        public string? Uri;
     }
 
     [ComplexType]
     public record OrganisationAddress
     {
-        public required string StreetAddress;
-        public required string Locality;
-        public required string Region;
-        public required string PostalCode;
-        public required string CountryName;
+        public required string AddressLine1;
+        public string? AddressLine2;
+        public required string City;
+        public required string PostCode;
+        public string? Country;
     }
 
     [ComplexType]
     public record OrganisationContactPoint
     {
-        public required string Name;
+        public string? Name;
         public required string Email;
-        public required string Telephone;
-        public required string FaxNumber;
-        public required string Url;
+        public string? Telephone;
+        public string? Url;
     }
 }

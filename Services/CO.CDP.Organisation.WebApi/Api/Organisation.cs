@@ -3,32 +3,12 @@ using CO.CDP.Organisation.WebApi.UseCase;
 using DotSwashbuckle.AspNetCore.SwaggerGen;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
-using System.ComponentModel.DataAnnotations;
 
 namespace CO.CDP.Organisation.WebApi.Api;
-internal record OrganisationDetails
-{
-    [Required] public required OrganisationIdentifier Identifier { get; init; }
-    [Required] public required List<OrganisationIdentifier> AdditionalIdentifiers { get; init; }
-    [Required(AllowEmptyStrings = true)] public required string Name { get; init; }
-    [Required] public required OrganisationAddress Address { get; init; }
-    [Required] public required OrganisationContactPoint ContactPoint { get; init; }
-    [Required] public required List<Role> Roles { get; init; }
-}
 
-internal record NewOrganisation
+internal enum Types
 {
-    [Required] public required OrganisationIdentifier Identifier { get; init; }
-    [Required] public required List<OrganisationIdentifier> AdditionalIdentifiers { get; init; }
-    [Required(AllowEmptyStrings = true)] public required string Name { get; init; }
-    [Required] public required OrganisationAddress Address { get; init; }
-    [Required] public required OrganisationContactPoint ContactPoint { get; init; }
-    [Required] public required List<Role> Roles { get; init; }
-}
-
-internal enum Role
-{
-    ProcuringEntity,
+    ProcuringEntity = 1,
     Supplier,
     Tenderer,
     Funder,
@@ -47,27 +27,25 @@ public static class EndpointExtensions
                 Scheme = "CH",
                 Id = $"123945123{id}",
                 LegalName = "TheOrganisation",
-                Uri = "https://example.com"
+                Uri = "https://example.com",
+                Number = "123456",
             },
             Name = $"Tables Limited {id}",
             AdditionalIdentifiers = [],
             Address = new OrganisationAddress
             {
-                StreetAddress = $"Green Lane {id}",
-                Locality = "London",
-                Region = "Kent",
-                CountryName = "United Kingdom",
-                PostalCode = "BR8 7AA"
+                AddressLine1 = $"Green Lane {id}",
+                City = "London",
+                PostCode = "BR8 7AA"
             },
             ContactPoint = new OrganisationContactPoint
             {
                 Name = "Bobby Tables",
                 Email = $"bobby+{id}@example.com",
                 Telephone = "07925123123",
-                FaxNumber = "07925123999",
                 Url = "https://example.com"
             },
-            Roles = [1],
+            Types = [1],
         });
 
     public static void UseOrganisationEndpoints(this WebApplication app)
@@ -82,8 +60,7 @@ public static class EndpointExtensions
                 operation.Responses["200"].Description = "A list of organisations.";
                 return operation;
             });
-
-        app.MapPost("/organisations", async (RegisterOrganisation command, IUseCase<RegisterOrganisation, Model.Organisation> useCase) =>
+        app.MapPost("/organisations", async (NewOrganisation command, IUseCase<NewOrganisation, Model.Organisation> useCase) =>
             await useCase.Execute(command)
                 .AndThen(organisation =>
                     organisation != null
@@ -124,7 +101,7 @@ public static class EndpointExtensions
                         AdditionalIdentifiers = updatedOrganisation.AdditionalIdentifiers,
                         Address = updatedOrganisation.Address,
                         ContactPoint = updatedOrganisation.ContactPoint,
-                        Roles = updatedOrganisation.Roles,
+                        Types = updatedOrganisation.Types,
                     };
                     return Results.Ok(_organisations[organisationId]);
                 })
@@ -193,15 +170,6 @@ public static class ApiExtensions
                 Name = "Example License",
                 Url = new Uri("https://example.com/license")
             }
-        });
-        options.CustomSchemaIds(type =>
-        {
-            var typeMap = new Dictionary<Type, string>
-                {
-                    { typeof(RegisterOrganisation), "NewOrganisation" },
-                    { typeof(UpdateOrganisation), "UpdatedOrganisation" },
-                };
-            return typeMap.GetValueOrDefault(type, type.Name);
         });
     }
 
