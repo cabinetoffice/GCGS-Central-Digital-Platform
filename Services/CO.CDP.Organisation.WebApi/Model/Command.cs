@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CO.CDP.Organisation.WebApi.Model;
 
-public record RegistaerOrganisation
+public record RegisterOrganisation
 {
     [Required(AllowEmptyStrings = true)] public required string Name { get; init; }
 

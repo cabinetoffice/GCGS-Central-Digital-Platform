@@ -19,7 +19,7 @@ public class WebApiToPersistenceProfile : Profile
         CreateMap<OrganisationInformation.Persistence.Organisation.OrganisationContactPoint, OrganisationContactPoint>();
 
 
-        CreateMap<RegistaerOrganisation, OrganisationInformation.Persistence.Organisation>()
+        CreateMap<RegisterOrganisation, OrganisationInformation.Persistence.Organisation>()
             .ForMember(m => m.Guid, o => o.MapFrom((_, _, _, context) => context.Items["Guid"]))
             .ForMember(m => m.Id, o => o.Ignore());
     }

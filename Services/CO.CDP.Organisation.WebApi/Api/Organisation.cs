@@ -60,7 +60,7 @@ public static class EndpointExtensions
                 operation.Responses["200"].Description = "A list of organisations.";
                 return operation;
             });
-        app.MapPost("/organisations", async (RegistaerOrganisation command, IUseCase<RegistaerOrganisation, Model.Organisation> useCase) =>
+        app.MapPost("/organisations", async (RegisterOrganisation command, IUseCase<RegisterOrganisation, Model.Organisation> useCase) =>
             await useCase.Execute(command)
                 .AndThen(organisation =>
                     organisation != null
@@ -175,7 +175,7 @@ public static class ApiExtensions
         {
             var typeMap = new Dictionary<Type, string>
                 {
-                    { typeof(RegistaerOrganisation), "NewOrganisation" },
+                    { typeof(RegisterOrganisation), "NewOrganisation" },
                     { typeof(UpdateOrganisation), "UpdatedOrganisation" },
                 };
             return typeMap.GetValueOrDefault(type, type.Name);
