@@ -12,13 +12,13 @@ namespace CO.CDP.Organisation.WebApi.Tests.Api;
 public class RegisterOrganisationTest
 {
     private readonly HttpClient _httpClient;
-    private readonly Mock<IUseCase<NewOrganisation, Model.Organisation>> _registerOrganisationUseCase = new();
+    private readonly Mock<IUseCase<RegistaerOrganisation, Model.Organisation>> _registerOrganisationUseCase = new();
 
     public RegisterOrganisationTest()
     {
         TestWebApplicationFactory<Program> factory = new(services =>
         {
-            services.AddScoped<IUseCase<NewOrganisation, Model.Organisation>>(_ => _registerOrganisationUseCase.Object);
+            services.AddScoped<IUseCase<RegistaerOrganisation, Model.Organisation>>(_ => _registerOrganisationUseCase.Object);
         });
         _httpClient = factory.CreateClient();
     }
@@ -38,7 +38,7 @@ public class RegisterOrganisationTest
             Types = command.Types
         };
 
-        _registerOrganisationUseCase.Setup(useCase => useCase.Execute(It.IsAny<NewOrganisation>()))
+        _registerOrganisationUseCase.Setup(useCase => useCase.Execute(It.IsAny<RegistaerOrganisation>()))
                                     .ReturnsAsync(organisation);
 
         var response = await _httpClient.PostAsJsonAsync("/organisations", command);
@@ -54,7 +54,7 @@ public class RegisterOrganisationTest
     {
         var command = GivenRegisterOrganisationCommand();
 
-        _registerOrganisationUseCase.Setup(useCase => useCase.Execute(It.IsAny<NewOrganisation>()))
+        _registerOrganisationUseCase.Setup(useCase => useCase.Execute(It.IsAny<RegistaerOrganisation>()))
                                     .ReturnsAsync((Model.Organisation)null!);
 
         var response = await _httpClient.PostAsJsonAsync("/organisations", command);
@@ -62,9 +62,9 @@ public class RegisterOrganisationTest
         response.Should().HaveStatusCode(HttpStatusCode.InternalServerError, await response.Content.ReadAsStringAsync());
     }
 
-    private static NewOrganisation GivenRegisterOrganisationCommand()
+    private static RegistaerOrganisation GivenRegisterOrganisationCommand()
     {
-        return new NewOrganisation
+        return new RegistaerOrganisation
         {
             Name = "TheOrganisation",
             Identifier = new OrganisationIdentifier

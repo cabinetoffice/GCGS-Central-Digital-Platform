@@ -79,7 +79,7 @@ public class OrganisationDetailsSummaryModelTest
         await model.OnPost();
 
         organisationClientMock.Verify(o => o.CreateOrganisationAsync(It.IsAny<NewOrganisation>()), Times.Once);
-        personClientMock.Verify(o => o.CreatePersonAsync(It.IsAny<RegisterPerson>()), Times.Once);
+        personClientMock.Verify(o => o.CreatePersonAsync(It.IsAny<NewPerson>()), Times.Once);
     }
 
     [Fact]

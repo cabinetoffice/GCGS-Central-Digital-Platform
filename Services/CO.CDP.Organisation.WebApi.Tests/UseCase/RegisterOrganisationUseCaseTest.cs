@@ -16,7 +16,7 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
     [Fact]
     public async Task ItReturnsTheRegisteredOrganisation()
     {
-        var command = new NewOrganisation
+        var command = new RegistaerOrganisation
         {
             Name = "TheOrganisation",
             Identifier = new OrganisationIdentifier
@@ -74,7 +74,7 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
     [Fact]
     public void ItSavesNewOrganisationInTheRepository()
     {
-        UseCase.Execute(new NewOrganisation
+        UseCase.Execute(new RegistaerOrganisation
         {
             Name = "TheOrganisation",
             Identifier = new OrganisationIdentifier
