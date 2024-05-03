@@ -1,6 +1,7 @@
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.Pages.Registration;
+using CO.CDP.Person.WebApiClient;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -11,11 +12,13 @@ public class OrganisationDetailsSummaryModelTest
 {
     private readonly Mock<ISession> sessionMock;
     private readonly Mock<IOrganisationClient> organisationClientMock;
+    private readonly Mock<IPersonClient> personClientMock;
 
     public OrganisationDetailsSummaryModelTest()
     {
         sessionMock = new Mock<ISession>();
         organisationClientMock = new Mock<IOrganisationClient>();
+        personClientMock = new Mock<IPersonClient>();
     }
 
     [Fact]
@@ -66,7 +69,7 @@ public class OrganisationDetailsSummaryModelTest
     }
 
     [Fact]
-    public async Task OnPost_ValidSession_CallsCreateOrganisation()
+    public async Task OnPost_ValidSession_CallsCreateOrganisationAndPerson()
     {
         sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey))
             .Returns(DummyRegistrationDetails());
@@ -76,6 +79,7 @@ public class OrganisationDetailsSummaryModelTest
         await model.OnPost();
 
         organisationClientMock.Verify(o => o.CreateOrganisationAsync(It.IsAny<NewOrganisation>()), Times.Once);
+        personClientMock.Verify(o => o.CreatePersonAsync(It.IsAny<RegisterPerson>()), Times.Once);
     }
 
     [Fact]
@@ -94,6 +98,6 @@ public class OrganisationDetailsSummaryModelTest
 
     private OrganisationDetailsSummaryModel GivenOrganisationDetailModel()
     {
-        return new OrganisationDetailsSummaryModel(sessionMock.Object, organisationClientMock.Object);
+        return new OrganisationDetailsSummaryModel(sessionMock.Object, organisationClientMock.Object, personClientMock.Object);
     }
 }
