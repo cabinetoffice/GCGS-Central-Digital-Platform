@@ -27,4 +27,6 @@ public class RegistrationDetails
     public string? OrganisationPostcode { get; set; }
 
     public string? OrganisationCountry { get; set; }
+
+    public Guid? OrganisationId { get; set; }
 }

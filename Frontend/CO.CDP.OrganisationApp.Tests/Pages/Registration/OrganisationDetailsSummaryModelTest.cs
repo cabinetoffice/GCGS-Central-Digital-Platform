@@ -4,6 +4,7 @@ using CO.CDP.OrganisationApp.Pages.Registration;
 using CO.CDP.Person.WebApiClient;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moq;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages.Registration;
@@ -74,6 +75,9 @@ public class OrganisationDetailsSummaryModelTest
         sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey))
             .Returns(DummyRegistrationDetails());
 
+        organisationClientMock.Setup(o => o.CreateOrganisationAsync(It.IsAny<NewOrganisation>()))
+            .ReturnsAsync(GivenOrganisationClientModel());
+
         var model = GivenOrganisationDetailModel();
 
         await model.OnPost();
@@ -83,10 +87,53 @@ public class OrganisationDetailsSummaryModelTest
     }
 
     [Fact]
+    public async Task OnPost_WhenErrorInRegisteringOrganisation_ShouldReturnPageWithError()
+    {
+        sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey))
+            .Returns(DummyRegistrationDetails());
+
+        organisationClientMock.Setup(o => o.CreateOrganisationAsync(It.IsAny<NewOrganisation>()))
+            .ThrowsAsync(new Organisation.WebApiClient.ApiException("Unexpected error", 500, "", default, null));
+
+        var model = GivenOrganisationDetailModel();
+
+        var actionResult = await model.OnPost();
+
+        personClientMock.Verify(o => o.CreatePersonAsync(It.IsAny<RegisterPerson>()), Times.Never);
+        actionResult.Should().BeOfType<PageResult>();
+    }
+
+    [Fact]
+    public async Task OnPost_WhenOrganisationAlreadyRegistered_ShouldNotRegisterOrganisationAgain()
+    {
+        var details = DummyRegistrationDetails();
+        details.OrganisationId = Guid.NewGuid();
+
+        sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey))
+            .Returns(details);
+
+        organisationClientMock.Setup(o => o.GetOrganisationAsync(It.IsAny<Guid>()))
+            .ReturnsAsync(GivenOrganisationClientModel());
+
+        var model = GivenOrganisationDetailModel();
+
+        var actionResult = await model.OnPost();
+
+        organisationClientMock.Verify(o => o.CreateOrganisationAsync(It.IsAny<NewOrganisation>()), Times.Never);
+        organisationClientMock.Verify(o => o.GetOrganisationAsync(It.IsAny<Guid>()), Times.Once);
+        personClientMock.Verify(o => o.CreatePersonAsync(It.IsAny<RegisterPerson>()), Times.Once);
+        actionResult.Should().BeOfType<RedirectToPageResult>()
+            .Which.PageName.Should().Be("OrganisationAccount");
+    }
+
+    [Fact]
     public async Task OnPost_OnSuccess_RedirectsToOrganisationAccount()
     {
         sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey))
             .Returns(DummyRegistrationDetails());
+
+        organisationClientMock.Setup(o => o.CreateOrganisationAsync(It.IsAny<NewOrganisation>()))
+            .ReturnsAsync(GivenOrganisationClientModel());
 
         var model = GivenOrganisationDetailModel();
 
@@ -94,6 +141,11 @@ public class OrganisationDetailsSummaryModelTest
 
         actionResult.Should().BeOfType<RedirectToPageResult>()
             .Which.PageName.Should().Be("OrganisationAccount");
+    }
+
+    private Organisation.WebApiClient.Organisation GivenOrganisationClientModel()
+    {
+        return new Organisation.WebApiClient.Organisation(null, null, null, Guid.NewGuid(), null, "Test Org", []);
     }
 
     private OrganisationDetailsSummaryModel GivenOrganisationDetailModel()
