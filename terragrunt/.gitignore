@@ -1,0 +1,7 @@
+**/.terraform
+**/.terragrunt-cache
+**/terraform.tfstate
+**/terraform.tfstate.backup
+**/temp_providers.tf
+**/remote_state.tf
+.terraform.lock.hcl
