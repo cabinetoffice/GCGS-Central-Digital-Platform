@@ -2,6 +2,7 @@ using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.Pages.Registration;
 using CO.CDP.Person.WebApiClient;
+using CO.CDP.Tenant.WebApiClient;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -14,12 +15,14 @@ public class OrganisationDetailsSummaryModelTest
     private readonly Mock<ISession> sessionMock;
     private readonly Mock<IOrganisationClient> organisationClientMock;
     private readonly Mock<IPersonClient> personClientMock;
+    private readonly Mock<ITenantClient> tenantClientMock;
 
     public OrganisationDetailsSummaryModelTest()
     {
         sessionMock = new Mock<ISession>();
         organisationClientMock = new Mock<IOrganisationClient>();
         personClientMock = new Mock<IPersonClient>();
+        tenantClientMock = new Mock<ITenantClient>();
     }
 
     [Fact]
@@ -33,18 +36,6 @@ public class OrganisationDetailsSummaryModelTest
 
         model.OnGet();
         model.Details.As<RegistrationDetails>().Should().NotBeNull();
-    }
-
-    private RegistrationDetails DummyRegistrationDetails()
-    {
-        var registrationDetails = new RegistrationDetails
-        {
-            OrganisationName = "TestOrg",
-            OrganisationScheme = "TestType",
-            OrganisationEmailAddress = "test@example.com"
-        };
-
-        return registrationDetails;
     }
 
     [Fact]
@@ -72,11 +63,18 @@ public class OrganisationDetailsSummaryModelTest
     [Fact]
     public async Task OnPost_ValidSession_CallsCreateOrganisationAndPerson()
     {
+        var person = GivenPersonClientModel();
+        var tenant = GivenTenantClientModel();
+
         sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey))
             .Returns(DummyRegistrationDetails());
 
         organisationClientMock.Setup(o => o.CreateOrganisationAsync(It.IsAny<NewOrganisation>()))
             .ReturnsAsync(GivenOrganisationClientModel());
+        personClientMock.Setup(p => p.CreatePersonAsync(It.IsAny<NewPerson>()))
+            .ReturnsAsync(person);
+        tenantClientMock.Setup(p => p.CreateTenantAsync(It.IsAny<NewTenant>()))
+            .ReturnsAsync(tenant);
 
         var model = GivenOrganisationDetailModel();
 
@@ -108,12 +106,17 @@ public class OrganisationDetailsSummaryModelTest
     {
         var details = DummyRegistrationDetails();
         details.OrganisationId = Guid.NewGuid();
-
+        var person = GivenPersonClientModel();
+        var tenant = GivenTenantClientModel();
         sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey))
             .Returns(details);
 
         organisationClientMock.Setup(o => o.GetOrganisationAsync(It.IsAny<Guid>()))
             .ReturnsAsync(GivenOrganisationClientModel());
+        personClientMock.Setup(p => p.CreatePersonAsync(It.IsAny<NewPerson>()))
+       .ReturnsAsync(person);
+        tenantClientMock.Setup(p => p.CreateTenantAsync(It.IsAny<NewTenant>()))
+            .ReturnsAsync(tenant);
 
         var model = GivenOrganisationDetailModel();
 
@@ -129,11 +132,18 @@ public class OrganisationDetailsSummaryModelTest
     [Fact]
     public async Task OnPost_OnSuccess_RedirectsToOrganisationAccount()
     {
+        var registrationDetails = DummyRegistrationDetails();
+        var person = GivenPersonClientModel();
+        var tenant = GivenTenantClientModel();
         sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey))
-            .Returns(DummyRegistrationDetails());
+            .Returns(registrationDetails);
 
         organisationClientMock.Setup(o => o.CreateOrganisationAsync(It.IsAny<NewOrganisation>()))
             .ReturnsAsync(GivenOrganisationClientModel());
+        personClientMock.Setup(p => p.CreatePersonAsync(It.IsAny<NewPerson>()))
+          .ReturnsAsync(person);
+        tenantClientMock.Setup(p => p.CreateTenantAsync(It.IsAny<NewTenant>()))
+            .ReturnsAsync(tenant);
 
         var model = GivenOrganisationDetailModel();
 
@@ -143,6 +153,56 @@ public class OrganisationDetailsSummaryModelTest
             .Which.PageName.Should().Be("OrganisationAccount");
     }
 
+    [Fact]
+    public async Task OnPost_WithValidSession_AssignsUserToOrganisation()
+    {
+        var registrationDetails = DummyRegistrationDetails();
+        var organisation = GivenOrganisationClientModel();
+        var person = GivenPersonClientModel();
+        var tenant = GivenTenantClientModel();
+
+        sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey))
+            .Returns(registrationDetails);
+        organisationClientMock.Setup(o => o.CreateOrganisationAsync(It.IsAny<NewOrganisation>()))
+            .ReturnsAsync(organisation);
+        personClientMock.Setup(p => p.CreatePersonAsync(It.IsAny<NewPerson>()))
+            .ReturnsAsync(person);
+        tenantClientMock.Setup(p => p.CreateTenantAsync(It.IsAny<NewTenant>()))
+            .ReturnsAsync(tenant);
+
+        var model = GivenOrganisationDetailModel();
+        await model.OnPost();
+
+        tenantClientMock.Verify(t => t.AssignUserToOrganisationAsync(
+            registrationDetails.TenantId.ToString(),
+            It.Is<AssignUserToOrganisation>(au =>
+                au.OrganisationId == organisation.Id &&
+                au.UserId == person.Id)),
+            Times.Once);
+    }
+
+    private RegistrationDetails DummyRegistrationDetails()
+    {
+        var registrationDetails = new RegistrationDetails
+        {
+            OrganisationName = "TestOrg",
+            OrganisationScheme = "TestType",
+            OrganisationEmailAddress = "test@example.com"
+        };
+
+        return registrationDetails;
+    }
+
+    private Tenant.WebApiClient.Tenant GivenTenantClientModel()
+    {
+        return new Tenant.WebApiClient.Tenant(new TenantContactInfo("dummy@test.com", "0123456789"), Guid.NewGuid(), "Smith");
+    }
+
+    private Person.WebApiClient.Person GivenPersonClientModel()
+    {
+        return new Person.WebApiClient.Person(null, "test@gmail.com", "John", Guid.NewGuid(), "Smith");
+    }
+
     private Organisation.WebApiClient.Organisation GivenOrganisationClientModel()
     {
         return new Organisation.WebApiClient.Organisation(null, null, null, Guid.NewGuid(), null, "Test Org", []);
@@ -150,6 +210,6 @@ public class OrganisationDetailsSummaryModelTest
 
     private OrganisationDetailsSummaryModel GivenOrganisationDetailModel()
     {
-        return new OrganisationDetailsSummaryModel(sessionMock.Object, organisationClientMock.Object, personClientMock.Object);
+        return new OrganisationDetailsSummaryModel(sessionMock.Object, organisationClientMock.Object, personClientMock.Object, tenantClientMock.Object);
     }
 }

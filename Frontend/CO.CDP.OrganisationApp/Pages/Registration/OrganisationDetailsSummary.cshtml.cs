@@ -1,6 +1,7 @@
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Models;
 using CO.CDP.Person.WebApiClient;
+using CO.CDP.Tenant.WebApiClient;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -12,7 +13,7 @@ namespace CO.CDP.OrganisationApp.Pages.Registration;
 public class OrganisationDetailsSummaryModel(
     ISession session,
     IOrganisationClient organisationClient,
-    IPersonClient personClient) : PageModel
+    IPersonClient personClient, ITenantClient tenantClient) : PageModel
 {
     public RegistrationDetails? Details { get; set; }
 
@@ -34,13 +35,16 @@ public class OrganisationDetailsSummaryModel(
             return Page();
         }
 
-        await personClient.CreatePersonAsync
+        var person = await personClient.CreatePersonAsync
             (new NewPerson(
                 null,
                 Details.Email,
                 Details.FirstName,
                 Details.LastName)
             );
+
+        await tenantClient.AssignUserToOrganisationAsync(
+            Details.TenantId.ToString(), new AssignUserToOrganisation(organisation.Id, person.Id));
 
         return RedirectToPage("OrganisationAccount");
     }
