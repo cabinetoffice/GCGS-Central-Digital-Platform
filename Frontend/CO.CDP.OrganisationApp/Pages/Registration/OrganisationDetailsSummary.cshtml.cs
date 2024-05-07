@@ -35,7 +35,7 @@ public class OrganisationDetailsSummaryModel(
             return Page();
         }
 
-        await personClient.CreatePersonAsync
+        var person = await personClient.CreatePersonAsync
             (new NewPerson(
                 null,
                 Details.Email,
