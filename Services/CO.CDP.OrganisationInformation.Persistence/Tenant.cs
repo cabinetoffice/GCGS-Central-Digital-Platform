@@ -16,6 +16,6 @@ public class Tenant
     public record TenantContactInfo
     {
         public required string Email;
-        public required string Phone;
+        public string? Phone;
     }
 }

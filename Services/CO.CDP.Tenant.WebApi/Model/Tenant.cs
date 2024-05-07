@@ -16,5 +16,5 @@ public record TenantContactInfo
     [Required(AllowEmptyStrings = true), EmailAddress]
     public required string Email { get; init; }
 
-    [Required(AllowEmptyStrings = true)] public required string Phone { get; init; }
+    public required string Phone { get; init; }
 }
