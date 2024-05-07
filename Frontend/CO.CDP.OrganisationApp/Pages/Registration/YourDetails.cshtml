@@ -5,7 +5,7 @@
     var firstNameHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.FirstName)).HasInnerHtml;
     var lastNameHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.LastName)).HasInnerHtml;
 
-    var backLink = "/";
+    var backLink = "/privacy-policy";
     if (Request.Query.ContainsKey("frm-summary"))
     {
         backLink = "/registration/organisation-details-summary";

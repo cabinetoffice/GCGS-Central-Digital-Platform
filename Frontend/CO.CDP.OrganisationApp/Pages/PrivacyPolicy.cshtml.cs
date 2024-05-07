@@ -12,7 +12,7 @@ public class PrivacyPolicyModel : PageModel
     [BindProperty]
     [DisplayName("Yes, I have read and agree to the Central Digital Platform service privacy policy")]
     [Required(ErrorMessage = "Select if you have read and agree to the Central Digital Platform service privacy policy")]
-    public bool AgreeToPrivacy { get; set; }
+    public bool? AgreeToPrivacy { get; set; }
 
     public IActionResult OnPost()
     {

@@ -1,35 +1,37 @@
-using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.Pages;
-using CO.CDP.OrganisationApp.Pages.Registration;
-using CO.CDP.Tenant.WebApiClient;
 using FluentAssertions;
-using IdentityModel;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Moq;
-using System.Security.Claims;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages;
 
 public class PrivacyPolicyTest
 {
-    private PrivacyPolicyModel GivenPrivacyPolicyModel()
+    [Fact]
+    public void Model_WhenAgreeToPrivacyPolicyNotSet_ShouldRaiseAgreeToPrivacyPolicyValidationError()
     {
-        return new PrivacyPolicyModel(); 
+        var model = GivenPrivacyPolicyModel();
+
+        var results = ModelValidationHelper.Validate(model);
+
+        results.Where(c => c.MemberNames.Contains("AgreeToPrivacy"))
+            .First().ErrorMessage.Should()
+            .Be("Select if you have read and agree to the Central Digital Platform service privacy policy");
     }
 
     [Fact]
-    public void Model_WhenAgreeToPrivacyPolicyIsEmpty_ShouldRaiseAgreeToPrivacyPolicyValidationError()
+    public void Model_WhenAgreeToPrivacyPolicySetTrue_ShouldRedirectToTourDetailsPage()
     {
         var model = GivenPrivacyPolicyModel();
-        model.AgreeToPrivacy = false;
-        var results = ModelValidationHelper.Validate(model);
+        model.AgreeToPrivacy = true;
 
-        results.Any(c => c.MemberNames.Contains("AgreeToPrivacy")).Should().BeFalse();
+        var actionResult = model.OnPost();
 
-        results.Where(c => c.MemberNames.Contains("AgreeToPrivacy")).First()
-            .ErrorMessage.Should().Be("Select if you have read and agree to the Central Digital Platform service privacy policy");
+        actionResult.Should().BeOfType<RedirectToPageResult>()
+            .Which.PageName.Should().Be("Registration/YourDetails");
     }
 
+    private PrivacyPolicyModel GivenPrivacyPolicyModel()
+    {
+        return new PrivacyPolicyModel();
+    }
 }

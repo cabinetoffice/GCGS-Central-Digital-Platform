@@ -19,7 +19,7 @@
                             </h1>
                         </legend>
                         <p>
-                            Before you can continue, you need to read and agree to the <a class="govuk-link" href="#">Central Digital Platform service privacy policy (opens in new tab)</a>.
+                            Before you can continue, you need to read and agree to the <a class="govuk-link" target="_blank" href="#">Central Digital Platform service privacy policy (opens in new tab)</a>.
                         </p>
 
                         @if (agreetoPrivacyPolicyHasError)
@@ -31,7 +31,7 @@
                         }
                         <div class="govuk-checkboxes" data-module="govuk-checkboxes">
                             <div class="govuk-checkboxes__item">
-                                <input class="govuk-checkboxes__input" id="@nameof(Model.AgreeToPrivacy)" name="@nameof(Model.AgreeToPrivacy)" type="checkbox" value="@(Model.AgreeToPrivacy ? "true" :"false")">
+                                <input class="govuk-checkboxes__input" id="@nameof(Model.AgreeToPrivacy)" name="@nameof(Model.AgreeToPrivacy)" type="checkbox" value="@(Model.AgreeToPrivacy == true ? "true" :"false")">
                                 <label class="govuk-label govuk-checkboxes__label" for="@nameof(Model.AgreeToPrivacy)">
                                     @Html.DisplayNameFor(m => m.AgreeToPrivacy)
                                 </label>
