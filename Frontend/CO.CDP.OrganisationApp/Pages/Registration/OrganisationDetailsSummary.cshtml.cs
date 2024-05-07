@@ -35,7 +35,7 @@ public class OrganisationDetailsSummaryModel(
         }
 
         await personClient.CreatePersonAsync
-            (new RegisterPerson(
+            (new NewPerson(
                 null,
                 Details.Email,
                 Details.FirstName,

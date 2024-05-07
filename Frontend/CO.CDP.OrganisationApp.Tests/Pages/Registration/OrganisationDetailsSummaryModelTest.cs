@@ -83,7 +83,7 @@ public class OrganisationDetailsSummaryModelTest
         await model.OnPost();
 
         organisationClientMock.Verify(o => o.CreateOrganisationAsync(It.IsAny<NewOrganisation>()), Times.Once);
-        personClientMock.Verify(o => o.CreatePersonAsync(It.IsAny<RegisterPerson>()), Times.Once);
+        personClientMock.Verify(o => o.CreatePersonAsync(It.IsAny<NewPerson>()), Times.Once);
     }
 
     [Fact]
@@ -99,7 +99,7 @@ public class OrganisationDetailsSummaryModelTest
 
         var actionResult = await model.OnPost();
 
-        personClientMock.Verify(o => o.CreatePersonAsync(It.IsAny<RegisterPerson>()), Times.Never);
+        personClientMock.Verify(o => o.CreatePersonAsync(It.IsAny<NewPerson>()), Times.Never);
         actionResult.Should().BeOfType<PageResult>();
     }
 
@@ -121,7 +121,7 @@ public class OrganisationDetailsSummaryModelTest
 
         organisationClientMock.Verify(o => o.CreateOrganisationAsync(It.IsAny<NewOrganisation>()), Times.Never);
         organisationClientMock.Verify(o => o.GetOrganisationAsync(It.IsAny<Guid>()), Times.Once);
-        personClientMock.Verify(o => o.CreatePersonAsync(It.IsAny<RegisterPerson>()), Times.Once);
+        personClientMock.Verify(o => o.CreatePersonAsync(It.IsAny<NewPerson>()), Times.Once);
         actionResult.Should().BeOfType<RedirectToPageResult>()
             .Which.PageName.Should().Be("OrganisationAccount");
     }

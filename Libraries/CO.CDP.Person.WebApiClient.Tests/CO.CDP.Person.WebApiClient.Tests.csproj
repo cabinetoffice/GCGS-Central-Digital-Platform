@@ -18,6 +18,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\..\Services\CO.CDP.Person.WebApi\CO.CDP.Person.WebApi.csproj" />
         <ProjectReference Include="..\CO.CDP.Person.WebApiClient\CO.CDP.Person.WebApiClient.csproj" />
     </ItemGroup>
 

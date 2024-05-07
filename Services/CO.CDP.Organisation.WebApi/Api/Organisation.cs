@@ -60,7 +60,7 @@ public static class EndpointExtensions
                 operation.Responses["200"].Description = "A list of organisations.";
                 return operation;
             });
-        app.MapPost("/organisations", async (NewOrganisation command, IUseCase<NewOrganisation, Model.Organisation> useCase) =>
+        app.MapPost("/organisations", async (RegisterOrganisation command, IUseCase<RegisterOrganisation, Model.Organisation> useCase) =>
             await useCase.Execute(command)
                 .AndThen(organisation =>
                     organisation != null
@@ -171,6 +171,16 @@ public static class ApiExtensions
                 Url = new Uri("https://example.com/license")
             }
         });
+        options.CustomSchemaIds(type =>
+        {
+            var typeMap = new Dictionary<Type, string>
+                {
+                    { typeof(RegisterOrganisation), "NewOrganisation" },
+                    { typeof(UpdateOrganisation), "UpdatedOrganisation" },
+                };
+            return typeMap.GetValueOrDefault(type, type.Name);
+        }
+       );
     }
 
 }
