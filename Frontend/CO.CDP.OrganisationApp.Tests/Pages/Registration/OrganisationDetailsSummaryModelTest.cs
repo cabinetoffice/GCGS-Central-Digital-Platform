@@ -76,6 +76,9 @@ public class OrganisationDetailsSummaryModelTest
         tenantClientMock.Setup(p => p.CreateTenantAsync(It.IsAny<NewTenant>()))
             .ReturnsAsync(tenant);
 
+        personClientMock.Setup(t => t.LookupPersonAsync(It.IsAny<string>()))
+            .ThrowsAsync(new Person.WebApiClient.ApiException("", 404, "", default, null));
+
         var model = GivenOrganisationDetailModel();
 
         await model.OnPost();
@@ -118,6 +121,12 @@ public class OrganisationDetailsSummaryModelTest
         tenantClientMock.Setup(p => p.CreateTenantAsync(It.IsAny<NewTenant>()))
             .ReturnsAsync(tenant);
 
+        personClientMock.Setup(t => t.LookupPersonAsync(It.IsAny<string>()))
+            .ThrowsAsync(new Person.WebApiClient.ApiException("", 404, "", default, null));
+
+        personClientMock.Setup(o => o.CreatePersonAsync(It.IsAny<NewPerson>()))
+            .ReturnsAsync(GivenPersonClientModel());
+
         var model = GivenOrganisationDetailModel();
 
         var actionResult = await model.OnPost();
@@ -125,6 +134,50 @@ public class OrganisationDetailsSummaryModelTest
         organisationClientMock.Verify(o => o.CreateOrganisationAsync(It.IsAny<NewOrganisation>()), Times.Never);
         organisationClientMock.Verify(o => o.GetOrganisationAsync(It.IsAny<Guid>()), Times.Once);
         personClientMock.Verify(o => o.CreatePersonAsync(It.IsAny<NewPerson>()), Times.Once);
+        actionResult.Should().BeOfType<RedirectToPageResult>()
+            .Which.PageName.Should().Be("OrganisationAccount");
+    }
+
+    [Fact]
+    public async Task OnPost_WhenErrorInRegisteringPerson_ShouldReturnPageWithError()
+    {
+        sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey))
+            .Returns(DummyRegistrationDetails());
+
+        organisationClientMock.Setup(o => o.GetOrganisationAsync(It.IsAny<Guid>()))
+            .ReturnsAsync(GivenOrganisationClientModel());
+
+        personClientMock.Setup(o => o.CreatePersonAsync(It.IsAny<NewPerson>()))
+            .ThrowsAsync(new Person.WebApiClient.ApiException("Unexpected error", 500, "", default, null));
+
+        var model = GivenOrganisationDetailModel();
+
+        var actionResult = await model.OnPost();
+
+        actionResult.Should().BeOfType<PageResult>();
+    }
+
+    [Fact]
+    public async Task OnPost_WhenPersonAlreadyRegistered_ShouldNotRegisterOrganisationAgain()
+    {
+        var details = DummyRegistrationDetails();
+        details.PersonId = Guid.NewGuid();
+
+        sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey))
+            .Returns(details);
+
+        organisationClientMock.Setup(o => o.CreateOrganisationAsync(It.IsAny<NewOrganisation>()))
+            .ReturnsAsync(GivenOrganisationClientModel());
+
+        personClientMock.Setup(o => o.GetPersonAsync(It.IsAny<Guid>()))
+            .ReturnsAsync(GivenPersonClientModel());
+
+        var model = GivenOrganisationDetailModel();
+
+        var actionResult = await model.OnPost();
+
+        personClientMock.Verify(o => o.CreatePersonAsync(It.IsAny<NewPerson>()), Times.Never);
+        personClientMock.Verify(o => o.GetPersonAsync(It.IsAny<Guid>()), Times.Once);
         actionResult.Should().BeOfType<RedirectToPageResult>()
             .Which.PageName.Should().Be("OrganisationAccount");
     }
@@ -144,6 +197,12 @@ public class OrganisationDetailsSummaryModelTest
           .ReturnsAsync(person);
         tenantClientMock.Setup(p => p.CreateTenantAsync(It.IsAny<NewTenant>()))
             .ReturnsAsync(tenant);
+
+        personClientMock.Setup(t => t.LookupPersonAsync(It.IsAny<string>()))
+            .ThrowsAsync(new Person.WebApiClient.ApiException("", 404, "", default, null));
+
+        personClientMock.Setup(o => o.CreatePersonAsync(It.IsAny<NewPerson>()))
+            .ReturnsAsync(GivenPersonClientModel());
 
         var model = GivenOrganisationDetailModel();
 
@@ -169,7 +228,8 @@ public class OrganisationDetailsSummaryModelTest
             .ReturnsAsync(person);
         tenantClientMock.Setup(p => p.CreateTenantAsync(It.IsAny<NewTenant>()))
             .ReturnsAsync(tenant);
-
+        personClientMock.Setup(t => t.LookupPersonAsync(It.IsAny<string>()))
+            .ThrowsAsync(new Person.WebApiClient.ApiException("", 404, "", default, null));
         var model = GivenOrganisationDetailModel();
         await model.OnPost();
 
@@ -198,14 +258,13 @@ public class OrganisationDetailsSummaryModelTest
         return new Tenant.WebApiClient.Tenant(new TenantContactInfo("dummy@test.com", "0123456789"), Guid.NewGuid(), "Smith");
     }
 
-    private Person.WebApiClient.Person GivenPersonClientModel()
-    {
-        return new Person.WebApiClient.Person(null, "test@gmail.com", "John", Guid.NewGuid(), "Smith");
-    }
-
     private Organisation.WebApiClient.Organisation GivenOrganisationClientModel()
     {
         return new Organisation.WebApiClient.Organisation(null, null, null, Guid.NewGuid(), null, "Test Org", []);
+    }
+    private Person.WebApiClient.Person GivenPersonClientModel()
+    {
+        return new Person.WebApiClient.Person(null, "test@test.com", "test_first", Guid.NewGuid(), "test_last");
     }
 
     private OrganisationDetailsSummaryModel GivenOrganisationDetailModel()
