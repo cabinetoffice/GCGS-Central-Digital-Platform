@@ -129,6 +129,16 @@ public static class ApiExtensions
                 Name = "Example License",
                 Url = new Uri("https://example.com/license")
             }
-        });        
+        });
+        options.CustomSchemaIds(type =>
+        {
+            var typeMap = new Dictionary<Type, string>
+                {
+                    { typeof(RegisterPerson), "NewPerson" },
+                    { typeof(UpdatePerson), "UpdatedPerson" },
+                };
+            return typeMap.GetValueOrDefault(type, type.Name);
+        }
+       );
     }
 }
