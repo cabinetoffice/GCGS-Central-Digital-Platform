@@ -1,0 +1,19 @@
+.supplier-info-header {
+    background-color: #1d70b8;
+    margin-top: -10px;
+    padding-top: 50px;
+}
+
+    .supplier-info-header .govuk-width-container {
+        display: flex;
+    }
+
+    .supplier-info-header .govuk-heading-xl {
+        color: #fff;
+    }
+
+.govuk-phase-banner__content__tag {
+    background-color: #1d70b8;
+    color: #ffffff;
+    text-transform: uppercase;
+}

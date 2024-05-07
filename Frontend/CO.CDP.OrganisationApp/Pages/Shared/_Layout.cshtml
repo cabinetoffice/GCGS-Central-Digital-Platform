@@ -8,6 +8,7 @@
     <meta name="description" content="GOV.UK Central Digital Platform" />
     <link rel="manifest" href="/manifest.json" />
     <link rel="stylesheet" href="/css/govuk-frontend-5.2.0.min.css">
+    <link rel="stylesheet" href="/css/site.css">
     <title>Central Digital Platform - GOV.UK</title>
 </head>
 <body class="govuk-template__body">
@@ -49,7 +50,23 @@
         </div>
     </header>
 
+    <div class="supplier-info-header">
+        <div class="govuk-width-container">
+            <h1 class="govuk-heading-xl">Supplier Information</h1>
+        </div>
+    </div>
+
     <div class="govuk-width-container">
+        <div class="govuk-phase-banner">
+            <p class="govuk-phase-banner__content">
+                <strong class="govuk-tag govuk-phase-banner__content__tag">
+                    Prototype
+                </strong>
+                <span class="govuk-phase-banner__text">
+                    This is a prototype of a service in development.
+                </span>
+            </p>
+        </div>
         @RenderBody()
     </div>
 
