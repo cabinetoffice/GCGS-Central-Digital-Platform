@@ -29,4 +29,6 @@ public class RegistrationDetails
     public string? OrganisationCountry { get; set; }
 
     public Guid? OrganisationId { get; set; }
+
+    public Guid? PersonId { get; set; }
 }

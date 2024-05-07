@@ -1,6 +1,7 @@
 using CO.CDP.Person.WebApi.Model;
 using CO.CDP.Person.WebApi.UseCase;
 using DotSwashbuckle.AspNetCore.SwaggerGen;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
 
 namespace CO.CDP.Person.WebApi.Api;
@@ -20,16 +21,6 @@ public static class EndpointExtensions
 
     public static void UsePersonEndpoints(this WebApplication app)
     {
-        app.MapGet("/persons", () => _persons.Values.ToArray())
-            .Produces<List<Model.Person>>(200, "application/json")
-            .WithOpenApi(operation =>
-            {
-                operation.OperationId = "ListPersons";
-                operation.Description = "[STUB] A list of persons. [STUB]";
-                operation.Summary = "[STUB] A list of persons. [STUB]";
-                operation.Responses["200"].Description = "A list of persons.";
-                return operation;
-            });
         app.MapPost("/persons", async (RegisterPerson command, IUseCase<RegisterPerson, Model.Person> useCase) =>
             await useCase.Execute(command)
                 .AndThen(person =>
@@ -48,24 +39,16 @@ public static class EndpointExtensions
             return operation;
         });
 
-        app.MapGet("/persons/{personId}", (Guid personId) =>
-        {
-            try
-            {
-                return Results.Ok(_persons[personId]);
-            }
-            catch (KeyNotFoundException)
-            {
-                return Results.NotFound();
-            }
-        })
+        app.MapGet("/persons/{personId}", async (Guid personId, IUseCase<Guid, Model.Person?> useCase) =>
+                await useCase.Execute(personId)
+                    .AndThen(person => person != null ? Results.Ok(person) : Results.NotFound()))
             .Produces<Model.Person>(200, "application/json")
             .Produces(404)
             .WithOpenApi(operation =>
             {
-                operation.OperationId = "GetPersons";
-                operation.Description = "[STUB] Get a person by ID. [STUB]";
-                operation.Summary = "[STUB] Get a person by ID. [STUB]";
+                operation.OperationId = "GetPerson";
+                operation.Description = "Get a person by ID.";
+                operation.Summary = "Get a person by ID.";
                 operation.Responses["200"].Description = "Person details.";
                 return operation;
             });
@@ -104,6 +87,25 @@ public static class EndpointExtensions
                 operation.Description = "[STUB] Delete a person. [STUB]";
                 operation.Summary = "[STUB] Delete a person. [STUB]";
                 operation.Responses["204"].Description = "Person deleted.";
+                return operation;
+            });
+    }
+
+    public static void UsePersonLookupEndpoints(this WebApplication app)
+    {
+        app.MapGet("/persons/lookup",
+                async ([FromQuery] string name, IUseCase<string, Model.Person?> useCase) =>
+                await useCase.Execute(name)
+                    .AndThen(persons => persons != null ? Results.Ok(persons) : Results.NotFound()))
+            .Produces<Model.Person>(200, "application/json")
+            .Produces(404)
+            .WithOpenApi(operation =>
+            {
+                operation.OperationId = "LookupPerson";
+                operation.Description = "Lookup person by email.";
+                operation.Summary = "Lookup person by email.";
+                operation.Tags = new List<OpenApiTag> { new() { Name = "Person Lookup" } };
+                operation.Responses["200"].Description = "Person Associated.";
                 return operation;
             });
     }

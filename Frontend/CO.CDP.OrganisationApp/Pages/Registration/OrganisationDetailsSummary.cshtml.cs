@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using OrganisationWebApiClient = CO.CDP.Organisation.WebApiClient;
+using PersonWebApiClient = CO.CDP.Person.WebApiClient;
 
 namespace CO.CDP.OrganisationApp.Pages.Registration;
 
@@ -30,18 +31,26 @@ public class OrganisationDetailsSummaryModel(
         Details = VerifySession();
 
         var organisation = await RegisterOrganisation();
-        if (organisation == null)
+        if (organisation != null)
+        {
+            Details.OrganisationId = organisation.Id;
+            session.Set(Session.RegistrationDetailsKey, Details);
+        }
+        else
         {
             return Page();
         }
 
-        var person = await personClient.CreatePersonAsync
-            (new NewPerson(
-                null,
-                Details.Email,
-                Details.FirstName,
-                Details.LastName)
-            );
+        var person = await RegisterPerson();
+        if (person != null)
+        {
+            Details.PersonId = person.Id;
+            session.Set(Session.RegistrationDetailsKey, Details);
+        }
+        else
+        {
+            return Page();
+        }
 
         await tenantClient.AssignUserToOrganisationAsync(
             Details.TenantId.ToString(), new AssignUserToOrganisation(organisation.Id, person.Id));
@@ -86,20 +95,11 @@ public class OrganisationDetailsSummaryModel(
                             Details.OrganisationName,
                             [1] // TODO: Need to update - Hard-coded till we have buyer/supplier screen
                         ));
-
-                    Details.OrganisationId = organisation.Id;
-                    session.Set(Session.RegistrationDetailsKey, Details);
                 }
                 catch (OrganisationWebApiClient.ApiException aex)
+                    when (aex is OrganisationWebApiClient.ApiException<OrganisationWebApiClient.ProblemDetails> pd)
                 {
-                    if (aex is OrganisationWebApiClient.ApiException<OrganisationWebApiClient.ProblemDetails> pd)
-                    {
-                        Error = pd.Result.Title;
-                    }
-                    else
-                    {
-                        Error = aex.Message;
-                    }
+                    Error = pd.Result.Detail;
                 }
             }
         }
@@ -109,6 +109,49 @@ public class OrganisationDetailsSummaryModel(
         }
 
         return organisation;
+    }
+
+    private async Task<PersonWebApiClient.Person?> RegisterPerson()
+    {
+        PersonWebApiClient.Person? person = null;
+
+        try
+        {
+            if (Details!.PersonId.HasValue)
+            {
+                person = await personClient.GetPersonAsync(Details.PersonId.Value);
+            }
+            else
+            {
+                try
+                {
+                    person = await personClient.LookupPersonAsync(Details.Email);
+                }
+                catch (PersonWebApiClient.ApiException ex) when (ex.StatusCode == 404)
+                {
+                    try
+                    {
+                        person = await personClient.CreatePersonAsync
+                                (new NewPerson(
+                                    null,
+                                    Details.Email,
+                                    Details.FirstName,
+                                    Details.LastName));
+                    }
+                    catch (PersonWebApiClient.ApiException aex)
+                        when (aex is PersonWebApiClient.ApiException<PersonWebApiClient.ProblemDetails> pd)
+                    {
+                        Error = pd.Result.Detail;
+                    }
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Error = ex.Message;
+        }
+
+        return person;
     }
 
     private RegistrationDetails VerifySession()

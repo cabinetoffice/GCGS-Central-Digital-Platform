@@ -10,9 +10,14 @@ public class DatabasePersonRepository(OrganisationInformationContext context) : 
         context.Dispose();
     }
 
-    public async Task<Person?> Find(Guid organisationId)
+    public async Task<Person?> Find(Guid personId)
     {
-        return await context.Persons.FirstOrDefaultAsync(t => t.Guid == organisationId);
+        return await context.Persons.FirstOrDefaultAsync(t => t.Guid == personId);
+    }
+
+    public async Task<Person?> FindByEmail(string email)
+    {
+        return await context.Persons.FirstOrDefaultAsync(t => t.Email == email);
     }
 
     public void Save(Person person)
