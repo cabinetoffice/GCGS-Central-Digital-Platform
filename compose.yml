@@ -46,6 +46,8 @@ services:
       service: person
     depends_on:
       - db
+    environment:
+      ConnectionStrings__OrganisationInformationDatabase: 'Server=db;Database=cdp;Username=cdp_user;Password=cdp123;'
   forms:
     extends:
       file: compose.common.yml
