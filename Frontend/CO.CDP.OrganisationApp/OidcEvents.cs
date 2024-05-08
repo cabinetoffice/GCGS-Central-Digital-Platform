@@ -1,4 +1,5 @@
 using IdentityModel;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -9,6 +10,14 @@ namespace CO.CDP.OrganisationApp;
 
 public class OidcEvents(IConfiguration configuration) : OpenIdConnectEvents
 {
+    public override Task RemoteFailure(RemoteFailureContext context)
+    {   
+        context.Response.Redirect($"/?one-login-error={context.Failure?.Message}");
+        context.HandleResponse();
+
+        return Task.CompletedTask;
+    }
+
     public override Task RedirectToIdentityProvider(RedirectContext context)
     {
         context.ProtocolMessage.Parameters.Add("vtr", "[\"Cl.Cm\"]");
