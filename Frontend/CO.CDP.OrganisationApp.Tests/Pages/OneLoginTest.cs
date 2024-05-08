@@ -96,7 +96,7 @@ public class OneLoginTest
         sessionMock.Verify(v => v.Set(Session.RegistrationDetailsKey, It.IsAny<RegistrationDetails>()), Times.Once);
 
         results.Should().BeOfType<RedirectToPageResult>()
-            .Which.PageName.Should().Be("Registration/YourDetails");
+            .Which.PageName.Should().Be("PrivacyPolicy");
     }
 
     [Fact]

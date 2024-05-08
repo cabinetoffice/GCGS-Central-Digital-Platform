@@ -1,0 +1,49 @@
+@page "/privacy-policy"
+@model PrivacyPolicyModel
+@{
+    ViewData["Title"] = "Supplier Information";
+    var agreetoPrivacyPolicyHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.AgreeToPrivacy)).HasInnerHtml;
+}
+
+<main class="govuk-main-wrapper">
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds govuk-body">
+            <form method="post">
+
+                <div class="govuk-form-group">
+                    <fieldset class="govuk-fieldset" aria-describedby="privacy-hint">
+                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                            <h1 class="govuk-fieldset__heading">
+                                Agree to privacy policy before continuing
+                            </h1>
+                        </legend>
+                        <p>
+                            Before you can continue, you need to read and agree to the <a class="govuk-link" target="_blank" href="/privacy-notice">Central Digital Platform service privacy policy (opens in new tab)</a>.
+                        </p>
+
+                        @if (agreetoPrivacyPolicyHasError)
+                        {
+                            <p id="privacy-error" class="govuk-error-message">
+                                <span class="govuk-visually-hidden">Error:</span>
+                                @Html.ValidationMessageFor(m => m.AgreeToPrivacy)
+                            </p>
+                        }
+                        <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+                            <div class="govuk-checkboxes__item">
+                                <input class="govuk-checkboxes__input" id="@nameof(Model.AgreeToPrivacy)" name="@nameof(Model.AgreeToPrivacy)" type="checkbox" value="@(Model.AgreeToPrivacy == true ? "true" :"false")">
+                                <label class="govuk-label govuk-checkboxes__label" for="@nameof(Model.AgreeToPrivacy)">
+                                    @Html.DisplayNameFor(m => m.AgreeToPrivacy)
+                                </label>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+
+                <button type="submit" class="govuk-button" data-module="govuk-button">
+                    Continue
+                </button>
+            </form>
+        </div>
+    </div>
+</main>

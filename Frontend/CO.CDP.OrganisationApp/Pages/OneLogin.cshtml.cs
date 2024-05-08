@@ -63,7 +63,7 @@ public class OneLogin(
             Email = tenant.ContactInfo.Email
         });
 
-        return RedirectToPage("Registration/YourDetails");
+        return RedirectToPage("PrivacyPolicy");
     }
 
     private IActionResult SignOut()
