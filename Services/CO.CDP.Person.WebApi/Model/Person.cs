@@ -6,6 +6,5 @@ public record Person
     [Required(AllowEmptyStrings = true)] public required Guid Id { get; init; }
     [Required(AllowEmptyStrings = true)] public required string FirstName { get; init; }
     [Required(AllowEmptyStrings = true)] public required string LastName { get; init; }
-    public int? Age { get; init; }
     [EmailAddress] public required string Email { get; init; }
 }

@@ -33,7 +33,6 @@ public class GetPersonUseCaseTest(AutoMapperFixture mapperFixture) : IClassFixtu
             Email = "person@example.com",
             FirstName ="fn",
             LastName ="ln",
-            Age = 40
         };
 
         _repository.Setup(r => r.Find(persontId)).ReturnsAsync(tenant);
@@ -46,7 +45,6 @@ public class GetPersonUseCaseTest(AutoMapperFixture mapperFixture) : IClassFixtu
             FirstName = "fn",
             LastName = "ln",
             Email = "person@example.com",
-            Age = 40
         });
     }
 }

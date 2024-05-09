@@ -33,7 +33,6 @@ public class RegisterPersonTest
             FirstName = "ThePerson",
             LastName = "lastname",
             Email = "email@email.com",
-            Age = 40
         };
 
         _registerPersonUseCase.Setup(useCase => useCase.Execute(It.IsAny<RegisterPerson>()))
@@ -67,7 +66,7 @@ public class RegisterPersonTest
             FirstName = "ThePerson",
             LastName = "lastname",
             Email = "email@email.com",
-            Age = 40
+            UserPrincipal = "urn:fdc:gov.uk:2022:4a41435d-107a-46ff-a3b8-34e5fbe1c508"
         };
     }
 }

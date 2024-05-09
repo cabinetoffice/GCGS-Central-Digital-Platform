@@ -188,8 +188,7 @@ public class OrganisationIdentificationModel(ISession session) : PageModel
             return Page();
         }
 
-        var registrationDetails = session.Get<RegistrationDetails>(Session.RegistrationDetailsKey);
-        registrationDetails ??= new RegistrationDetails();
+        var registrationDetails = VerifySession();
         registrationDetails.OrganisationScheme = OrganisationScheme;
 
         switch (OrganisationScheme)

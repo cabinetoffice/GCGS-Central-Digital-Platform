@@ -302,6 +302,9 @@ public class OrganisationIdentificationModelTests
         {
             OrganisationScheme = "Other"
         };
+
+        GivenRegistrationIsInProgress();
+
         var result = model.OnPost();
         result.Should().BeOfType<RedirectToPageResult>();
         (result as RedirectToPageResult)?.PageName.Should().Be("./OrganisationRegisteredAddress");
@@ -315,6 +318,8 @@ public class OrganisationIdentificationModelTests
             OrganisationScheme = "Other",
             RedirectToSummary = true
         };
+        GivenRegistrationIsInProgress();
+
         var result = model.OnPost();
         result.Should().BeOfType<RedirectToPageResult>();
         (result as RedirectToPageResult)?.PageName.Should().Be("OrganisationDetailsSummary");
@@ -340,6 +345,8 @@ public class OrganisationIdentificationModelTests
         };
 
         SetIdentificationNumber(model, organisationType, identificationNumber);
+        GivenRegistrationIsInProgress();
+
         var result = model.OnPost();
 
         result.Should().BeOfType<RedirectToPageResult>();
@@ -388,10 +395,18 @@ public class OrganisationIdentificationModelTests
         }
     }
 
+    private void GivenRegistrationIsInProgress()
+    {
+        RegistrationDetails registrationDetails = DummyRegistrationDetails();
+        sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey))
+            .Returns(registrationDetails);
+    }
+
     private static RegistrationDetails DummyRegistrationDetails()
     {
         var registrationDetails = new RegistrationDetails
         {
+            UserPrincipal = "urn:fdc:gov.uk:2022:37d8856672e84a57ae9c86b27b226225",
             OrganisationScheme = "CHN",
             OrganisationIdentificationNumber = "12345678",
         };

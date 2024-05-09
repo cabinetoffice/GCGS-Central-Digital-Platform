@@ -133,10 +133,10 @@ public class OrganisationDetailsSummaryModel(
                     {
                         person = await personClient.CreatePersonAsync
                                 (new NewPerson(
-                                    null,
                                     Details.Email,
                                     Details.FirstName,
-                                    Details.LastName));
+                                    Details.LastName,
+                                    Details.UserPrincipal));
                     }
                     catch (PersonWebApiClient.ApiException aex)
                         when (aex is PersonWebApiClient.ApiException<PersonWebApiClient.ProblemDetails> pd)
