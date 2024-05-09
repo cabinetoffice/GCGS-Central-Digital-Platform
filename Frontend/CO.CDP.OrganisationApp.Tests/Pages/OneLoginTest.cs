@@ -47,7 +47,9 @@ public class OneLoginTest
         sessionMock.Verify(v => v.Set(Session.RegistrationDetailsKey,
             It.Is<RegistrationDetails>(rd =>
                 rd.Email == "dummy@test.com"
-                && rd.TenantId == new Guid("0bacf3d1-3b69-4efa-80e9-3623f4b7786e"))), Times.Once);
+                && rd.TenantId == new Guid("0bacf3d1-3b69-4efa-80e9-3623f4b7786e")
+                && rd.UserPrincipal == "urn:fdc:gov.uk:2022:7wTqYGMFQxgukTSpSI2GodMwe9"
+            )), Times.Once);
     }
 
     [Fact]

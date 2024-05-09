@@ -12,7 +12,8 @@ public class PersonClientIntegrationTest
         var newPerson = new NewPerson(
             email: $"test{DateTime.Now.ToString("ddMMyyyyHHmmssfff")}@email.com",
             firstName: "Test",
-            lastName: "ln"
+            lastName: "ln",
+            userPrincipal: $"urn:fdc:gov.uk:2022:{Guid.NewGuid()}"
         );
 
         var person = await client.CreatePersonAsync(newPerson);

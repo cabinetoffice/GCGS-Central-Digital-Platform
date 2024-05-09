@@ -59,6 +59,7 @@ public class OneLogin(
         session.Set(Session.RegistrationDetailsKey,
         new RegistrationDetails
         {
+            UserPrincipal = userId,
             TenantId = tenant.Id,
             Email = tenant.ContactInfo.Email
         });

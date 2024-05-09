@@ -3,6 +3,7 @@ namespace CO.CDP.OrganisationApp.Models;
 public class RegistrationDetails
 {
     public Guid TenantId { get; set; }
+    public string? UserPrincipal { get; set; }
 
     public string? FirstName { get; set; }
 
