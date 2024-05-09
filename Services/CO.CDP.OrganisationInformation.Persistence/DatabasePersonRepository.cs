@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using static CO.CDP.OrganisationInformation.Persistence.IPersonRepository.PersonRepositoryException;
 
 namespace CO.CDP.OrganisationInformation.Persistence;
 
@@ -15,9 +14,9 @@ public class DatabasePersonRepository(OrganisationInformationContext context) : 
         return await context.Persons.FirstOrDefaultAsync(t => t.Guid == personId);
     }
 
-    public async Task<Person?> FindByEmail(string email)
+    public async Task<Person?> FindByUrn(string urn)
     {
-        return await context.Persons.FirstOrDefaultAsync(t => t.Email == email);
+        return await context.Persons.FirstOrDefaultAsync(t => t.UserUrn == urn);
     }
 
     public void Save(Person person)

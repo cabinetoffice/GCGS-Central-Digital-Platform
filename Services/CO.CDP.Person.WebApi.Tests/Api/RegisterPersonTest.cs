@@ -66,7 +66,7 @@ public class RegisterPersonTest
             FirstName = "ThePerson",
             LastName = "lastname",
             Email = "email@email.com",
-            UserPrincipal = "urn:fdc:gov.uk:2022:4a41435d-107a-46ff-a3b8-34e5fbe1c508"
+            UserUrn = "urn:fdc:gov.uk:2022:4a41435d-107a-46ff-a3b8-34e5fbe1c508"
         };
     }
 }

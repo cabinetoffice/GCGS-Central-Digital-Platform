@@ -8,7 +8,7 @@ public record RegisterPerson
     [Required(AllowEmptyStrings = true)] public required string LastName { get; init; }
     [EmailAddress] public required string Email { get; init; }
     public string? Phone { get; init; }
-    public string? UserPrincipal { get; init; }
+    public string? UserUrn { get; init; }
 }
 
 internal record UpdatePerson

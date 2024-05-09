@@ -15,6 +15,8 @@ FROM mcr.microsoft.com/dotnet/sdk:${ASPNET_VERSION} AS solution-dependencies
 ARG NUGET_PACKAGES
 ENV NUGET_PACKAGES="${NUGET_PACKAGES}"
 WORKDIR /src
+COPY Libraries/CO.CDP.Common/CO.CDP.Common.csproj Libraries/CO.CDP.Common/
+COPY Libraries/CO.CDP.Common.Tests/CO.CDP.Common.Tests.csproj Libraries/CO.CDP.Common.Tests/
 COPY Frontend/CO.CDP.OrganisationApp/CO.CDP.OrganisationApp.csproj Frontend/CO.CDP.OrganisationApp/
 COPY Frontend/CO.CDP.OrganisationApp.Tests/CO.CDP.OrganisationApp.Tests.csproj Frontend/CO.CDP.OrganisationApp.Tests/
 COPY Libraries/CO.CDP.Tenant.WebApiClient/CO.CDP.Tenant.WebApiClient.csproj Libraries/CO.CDP.Tenant.WebApiClient/

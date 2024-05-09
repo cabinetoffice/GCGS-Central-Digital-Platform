@@ -136,7 +136,7 @@ public class OrganisationDetailsSummaryModel(
                             phone: Details.Phone,
                             firstName: Details.FirstName,
                             lastName: Details.LastName,
-                            userPrincipal: Details.UserPrincipal
+                            userUrn: Details.UserPrincipal
                         ));
                     }
                     catch (PersonWebApiClient.ApiException aex)

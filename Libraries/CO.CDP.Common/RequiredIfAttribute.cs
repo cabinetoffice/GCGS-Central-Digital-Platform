@@ -1,8 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace CO.CDP.OrganisationApp.CustomeValidationAttributes;
+namespace CO.CDP.Common;
 
-public class RequiredIfAttribute(string dependentProperty, object targetValue) : RequiredAttribute
+public class RequiredIfAttribute(string dependentProperty, object? targetValue) : RequiredAttribute
 {
     protected override ValidationResult IsValid(object? value, ValidationContext validationContext)
     {
