@@ -15,7 +15,6 @@ public static class EndpointExtensions
             Id = index,
             FirstName = $"Sussan Tables {index}",
             LastName = "LN",
-            Age = 40,
             Email = "sussan@example.com"
         });
 
@@ -60,7 +59,6 @@ public static class EndpointExtensions
                         Email = updatedPerson.Email,
                         FirstName = updatedPerson.FirstName,
                         LastName = updatedPerson.LastName,
-                        Age = updatedPerson.Age,
                     };
                     return Results.Ok(_persons[personId]);
                 })

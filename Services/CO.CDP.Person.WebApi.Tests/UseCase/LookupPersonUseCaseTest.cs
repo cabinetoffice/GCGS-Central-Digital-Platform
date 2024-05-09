@@ -30,7 +30,6 @@ public class LookupPersonUseCaseTest(AutoMapperFixture mapperFixture) : IClassFi
             Guid = personId,
             FirstName = "fn",
             LastName = "ln",
-            Age = 40,
             Email = "email@email.com"
         };
 
@@ -44,7 +43,6 @@ public class LookupPersonUseCaseTest(AutoMapperFixture mapperFixture) : IClassFi
             Email = "email@email.com",
             FirstName = "fn",
             LastName = "ln",
-            Age = 40,
         }, options => options.ComparingByMembers<Model.Person>());
     }
 }

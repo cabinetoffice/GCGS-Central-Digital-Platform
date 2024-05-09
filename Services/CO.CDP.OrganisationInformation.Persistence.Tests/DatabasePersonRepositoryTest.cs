@@ -100,7 +100,6 @@ public class DatabasePersonRepositoryTest(PostgreSqlFixture postgreSql) : IClass
             Guid = guid ?? Guid.NewGuid(),
             FirstName = firstname,
             LastName = lastname,
-            Age = age,
             Email = email
         };
     }

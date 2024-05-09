@@ -19,7 +19,7 @@ public class RegisterPersonUseCaseTest(AutoMapperFixture mapperFixture) : IClass
         var command = new RegisterPerson
         {
             FirstName = "ThePerson",
-            LastName = "lastname", 
+            LastName = "lastname",
             Age = 40,
             Email = "jon@email.com"
         };
@@ -31,8 +31,7 @@ public class RegisterPersonUseCaseTest(AutoMapperFixture mapperFixture) : IClass
             Id = _generatedGuid,
             FirstName = "ThePerson",
             LastName = "lastname",
-            Email = "jon@email.com",
-            Age = 40
+            Email = "jon@email.com"
         };
 
         createdPerson.Should().BeEquivalentTo(expectedPerson, options => options.ComparingByMembers<Model.Person>());

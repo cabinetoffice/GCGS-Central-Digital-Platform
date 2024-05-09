@@ -33,7 +33,6 @@ public class RegisterPersonTest
             FirstName = "ThePerson",
             LastName = "lastname",
             Email = "email@email.com",
-            Age = 40
         };
 
         _registerPersonUseCase.Setup(useCase => useCase.Execute(It.IsAny<RegisterPerson>()))

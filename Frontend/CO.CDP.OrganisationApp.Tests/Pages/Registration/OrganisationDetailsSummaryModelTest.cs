@@ -264,7 +264,7 @@ public class OrganisationDetailsSummaryModelTest
     }
     private Person.WebApiClient.Person GivenPersonClientModel()
     {
-        return new Person.WebApiClient.Person(null, "test@test.com", "test_first", Guid.NewGuid(), "test_last");
+        return new Person.WebApiClient.Person( "test@test.com", "test_first", Guid.NewGuid(), "test_last");
     }
 
     private OrganisationDetailsSummaryModel GivenOrganisationDetailModel()
