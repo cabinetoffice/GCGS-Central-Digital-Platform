@@ -11,6 +11,7 @@ public class PersonClientIntegrationTest
 
         var newPerson = new NewPerson(
             email: $"test{DateTime.Now.ToString("ddMMyyyyHHmmssfff")}@email.com",
+            phone: "07925123123",
             firstName: "Test",
             lastName: "ln",
             userPrincipal: $"urn:fdc:gov.uk:2022:{Guid.NewGuid()}"
