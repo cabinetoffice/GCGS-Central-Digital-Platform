@@ -66,7 +66,8 @@ public class OneLogin(
         {
             UserPrincipal = userId,
             TenantId = tenant.Id,
-            Email = tenant.ContactInfo.Email
+            Email = tenant.ContactInfo.Email,
+            Phone = phone
         });
 
         return RedirectToPage("PrivacyPolicy");
