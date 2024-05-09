@@ -24,9 +24,7 @@ public static class EndpointExtensions
         app.MapPost("/persons", async (RegisterPerson command, IUseCase<RegisterPerson, Model.Person> useCase) =>
             await useCase.Execute(command)
                 .AndThen(person =>
-                    person != null
-                        ? Results.Created(new Uri($"/persons/{person.Id}", UriKind.Relative), person)
-                        : Results.Problem("Person could not be created due to an internal error"))
+                    Results.Created(new Uri($"/persons/{person.Id}", UriKind.Relative), person))
                 )
         .Produces<Model.Person>(201, "application/json")
         .ProducesProblem(500)
