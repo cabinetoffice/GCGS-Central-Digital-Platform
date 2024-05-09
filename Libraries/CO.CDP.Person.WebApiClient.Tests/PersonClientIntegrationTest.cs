@@ -14,7 +14,7 @@ public class PersonClientIntegrationTest
             phone: "07925123123",
             firstName: "Test",
             lastName: "ln",
-            userPrincipal: $"urn:fdc:gov.uk:2022:{Guid.NewGuid()}"
+            userUrn: $"urn:fdc:gov.uk:2022:{Guid.NewGuid()}"
         );
 
         var person = await client.CreatePersonAsync(newPerson);

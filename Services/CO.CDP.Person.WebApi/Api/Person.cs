@@ -1,3 +1,4 @@
+using CO.CDP.Common;
 using CO.CDP.Person.WebApi.Model;
 using CO.CDP.Person.WebApi.UseCase;
 using DotSwashbuckle.AspNetCore.SwaggerGen;
@@ -90,16 +91,16 @@ public static class EndpointExtensions
     public static void UsePersonLookupEndpoints(this WebApplication app)
     {
         app.MapGet("/persons/lookup",
-                async ([FromQuery] string name, IUseCase<string, Model.Person?> useCase) =>
-                await useCase.Execute(name)
+                async ([FromQuery] string urn, IUseCase<string, Model.Person?> useCase) =>
+                await useCase.Execute(urn)
                     .AndThen(persons => persons != null ? Results.Ok(persons) : Results.NotFound()))
             .Produces<Model.Person>(200, "application/json")
             .Produces(404)
             .WithOpenApi(operation =>
             {
                 operation.OperationId = "LookupPerson";
-                operation.Description = "Lookup person by email.";
-                operation.Summary = "Lookup person by email.";
+                operation.Description = "Lookup person by user principal.";
+                operation.Summary = "Lookup person by user principal.";
                 operation.Tags = new List<OpenApiTag> { new() { Name = "Person Lookup" } };
                 operation.Responses["200"].Description = "Person Associated.";
                 return operation;

@@ -1,4 +1,4 @@
-namespace CO.CDP.Tenant.WebApi;
+namespace CO.CDP.Common;
 
 public static class FunctionalExtensions
 {
