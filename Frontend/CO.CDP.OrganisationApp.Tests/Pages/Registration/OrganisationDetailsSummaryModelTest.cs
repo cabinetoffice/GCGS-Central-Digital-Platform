@@ -245,6 +245,7 @@ public class OrganisationDetailsSummaryModelTest
     {
         var registrationDetails = new RegistrationDetails
         {
+            UserPrincipal = "urn:fdc:gov.uk:2022:6ba2a483e56144418756fd2edf1a55f6",
             OrganisationName = "TestOrg",
             OrganisationScheme = "TestType",
             OrganisationEmailAddress = "test@example.com"

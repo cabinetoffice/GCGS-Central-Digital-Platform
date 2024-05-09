@@ -95,6 +95,7 @@ public class YourDetailsModelTest
         sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey))
             .Returns(new RegistrationDetails
             {
+                UserPrincipal = "urn:fdc:gov.uk:2022:b1829a14353c429ea6e23798e020d775",
                 TenantId = Guid.NewGuid(),
                 FirstName = "firstdummy",
                 LastName = "lastdummy"
@@ -139,7 +140,11 @@ public class YourDetailsModelTest
         var model = GivenYourDetailsModel();
 
         sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey))
-            .Returns(new RegistrationDetails { TenantId = Guid.NewGuid() });
+            .Returns(new RegistrationDetails
+            {
+                UserPrincipal = "urn:fdc:gov.uk:2022:bad51498dcfe4572959c4540aef2397e",
+                TenantId = Guid.NewGuid()
+            });
 
         model.OnPost();
 
@@ -153,7 +158,11 @@ public class YourDetailsModelTest
         var model = GivenYourDetailsModel();
 
         sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey))
-            .Returns(new RegistrationDetails { TenantId = Guid.NewGuid() });
+            .Returns(new RegistrationDetails
+            {
+                UserPrincipal = "urn:fdc:gov.uk:2022:5973548c6f464dd98109b11cdda30947",
+                TenantId = Guid.NewGuid()
+            });
 
         var actionResult = model.OnPost();
 
@@ -167,7 +176,11 @@ public class YourDetailsModelTest
         var model = GivenYourDetailsModel();
         model.RedirectToSummary = true;
         sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey))
-            .Returns(new RegistrationDetails { TenantId = Guid.NewGuid() });
+            .Returns(new RegistrationDetails
+            {
+                UserPrincipal = "urn:fdc:gov.uk:2022:928db154d82d496fb81a113acf923872",
+                TenantId = Guid.NewGuid()
+            });
 
         var actionResult = model.OnPost();
 
@@ -181,7 +194,12 @@ public class YourDetailsModelTest
         var model = GivenYourDetailsModel();
 
         RegistrationDetails registrationDetails = new RegistrationDetails
-        { FirstName = "first name", LastName = "last name", Email = "test@co.com" };
+        {
+            UserPrincipal = "urn:fdc:gov.uk:2022:3771d941a5774a8e8058972661fd4f7c",
+            FirstName = "first name",
+            LastName = "last name",
+            Email = "test@co.com"
+        };
 
         sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(registrationDetails);
 

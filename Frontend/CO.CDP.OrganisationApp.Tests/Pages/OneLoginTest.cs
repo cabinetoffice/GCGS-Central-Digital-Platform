@@ -66,6 +66,19 @@ public class OneLoginTest
     }
 
     [Fact]
+    public async Task OnGetUserInfo_OnAuthenticationWithMissingSubject_ShouldRedirectToSignIn()
+    {
+        var model = GivenOneLoginCallbackModel();
+
+        authService.Setup(a => a.AuthenticateAsync(It.IsAny<HttpContext>(), It.IsAny<string>()))
+            .ReturnsAsync(authResultWithMissingSubjectSuccess);
+
+        var results = await model.OnGet("user-info");
+
+        results.Should().BeOfType<ChallengeResult>();
+    }
+
+    [Fact]
     public async Task OnGetUserInfo_WhenTenantIsRegistered_ShouldNotRegisterTenantAgain()
     {
         var model = GivenOneLoginCallbackModel();
@@ -144,6 +157,13 @@ public class OneLoginTest
                     new Claim(JwtClaimTypes.PhoneNumber, "+44 123456789")
                 })),
             "TestScheme"));
+
+    private readonly AuthenticateResult authResultWithMissingSubjectSuccess = AuthenticateResult.Success(new AuthenticationTicket(
+        new ClaimsPrincipal(new ClaimsIdentity(new[] {
+            new Claim(JwtClaimTypes.Email, "dummy@test.com"),
+            new Claim(JwtClaimTypes.PhoneNumber, "+44 123456789")
+        })),
+        "TestScheme"));
 
     private readonly AuthenticateResult authResultFail = AuthenticateResult.Fail(new Exception("Auth failed"));
 
