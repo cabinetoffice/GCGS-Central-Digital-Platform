@@ -20,7 +20,6 @@ public class RegisterPersonUseCaseTest(AutoMapperFixture mapperFixture) : IClass
         {
             FirstName = "ThePerson",
             LastName = "lastname",
-            Age = 40,
             Email = "jon@email.com"
         };
 
@@ -45,7 +44,6 @@ public class RegisterPersonUseCaseTest(AutoMapperFixture mapperFixture) : IClass
             FirstName = "ThePerson",
             LastName = "lastname",
             Email = "jon@email.com",
-            Age = 40
         });
 
         _repository.Verify(r => r.Save(It.Is<OrganisationInformation.Persistence.Person>(o =>

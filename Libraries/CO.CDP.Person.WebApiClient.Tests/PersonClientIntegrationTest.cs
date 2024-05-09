@@ -10,7 +10,6 @@ public class PersonClientIntegrationTest
         IPersonClient client = new PersonClient("http://localhost:8084", new HttpClient());
 
         var newPerson = new NewPerson(
-            age: 40,
             email: $"test{DateTime.Now.ToString("ddMMyyyyHHmmssfff")}@email.com",
             firstName: "Test",
             lastName: "ln"

@@ -66,7 +66,6 @@ public class RegisterPersonTest
             FirstName = "ThePerson",
             LastName = "lastname",
             Email = "email@email.com",
-            Age = 40
         };
     }
 }

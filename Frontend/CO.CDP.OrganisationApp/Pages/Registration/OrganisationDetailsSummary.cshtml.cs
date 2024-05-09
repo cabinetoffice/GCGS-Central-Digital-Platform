@@ -133,7 +133,6 @@ public class OrganisationDetailsSummaryModel(
                     {
                         person = await personClient.CreatePersonAsync
                                 (new NewPerson(
-                                    null,
                                     Details.Email,
                                     Details.FirstName,
                                     Details.LastName));
