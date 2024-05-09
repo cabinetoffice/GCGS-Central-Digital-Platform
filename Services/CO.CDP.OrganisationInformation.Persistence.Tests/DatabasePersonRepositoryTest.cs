@@ -93,16 +93,21 @@ public class DatabasePersonRepositoryTest(PostgreSqlFixture postgreSql) : IClass
         return context;
     }
 
-    private static Person GivenPerson(Guid? guid = null, string firstname = "Jon", string lastname ="doe", int age = 40, string email = "jon@example.com")
+    private static Person GivenPerson(
+        Guid? guid = null,
+        string firstname = "Jon",
+        string lastname = "doe",
+        string email = "jon@example.com",
+        string phone = "07925123123"
+    )
     {
         return new Person
         {
             Guid = guid ?? Guid.NewGuid(),
             FirstName = firstname,
             LastName = lastname,
-            Age = age,
-            Email = email
+            Email = email,
+            Phone = phone
         };
     }
-
 }

@@ -10,10 +10,11 @@ public class PersonClientIntegrationTest
         IPersonClient client = new PersonClient("http://localhost:8084", new HttpClient());
 
         var newPerson = new NewPerson(
-            age: 40,
             email: $"test{DateTime.Now.ToString("ddMMyyyyHHmmssfff")}@email.com",
+            phone: "07925123123",
             firstName: "Test",
-            lastName: "ln"
+            lastName: "ln",
+            userUrn: $"urn:fdc:gov.uk:2022:{Guid.NewGuid()}"
         );
 
         var person = await client.CreatePersonAsync(newPerson);

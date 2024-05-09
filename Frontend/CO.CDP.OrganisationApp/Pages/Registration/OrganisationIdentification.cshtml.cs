@@ -1,4 +1,4 @@
-using CO.CDP.OrganisationApp.CustomeValidationAttributes;
+using CO.CDP.Common;
 using CO.CDP.OrganisationApp.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -188,8 +188,7 @@ public class OrganisationIdentificationModel(ISession session) : PageModel
             return Page();
         }
 
-        var registrationDetails = session.Get<RegistrationDetails>(Session.RegistrationDetailsKey);
-        registrationDetails ??= new RegistrationDetails();
+        var registrationDetails = VerifySession();
         registrationDetails.OrganisationScheme = OrganisationScheme;
 
         switch (OrganisationScheme)

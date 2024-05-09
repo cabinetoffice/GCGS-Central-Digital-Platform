@@ -6,7 +6,7 @@ public interface IPersonRepository : IDisposable
 
     public Task<Person?> Find(Guid personId);
 
-    public Task<Person?> FindByEmail(string email);
+    public Task<Person?> FindByUrn(string urn);
 
     public class PersonRepositoryException(string message, Exception? cause = null) : Exception(message, cause)
     {

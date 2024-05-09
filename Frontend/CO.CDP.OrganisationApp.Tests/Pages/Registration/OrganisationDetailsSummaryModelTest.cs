@@ -245,6 +245,7 @@ public class OrganisationDetailsSummaryModelTest
     {
         var registrationDetails = new RegistrationDetails
         {
+            UserPrincipal = "urn:fdc:gov.uk:2022:6ba2a483e56144418756fd2edf1a55f6",
             OrganisationName = "TestOrg",
             OrganisationScheme = "TestType",
             OrganisationEmailAddress = "test@example.com"
@@ -264,7 +265,7 @@ public class OrganisationDetailsSummaryModelTest
     }
     private Person.WebApiClient.Person GivenPersonClientModel()
     {
-        return new Person.WebApiClient.Person(null, "test@test.com", "test_first", Guid.NewGuid(), "test_last");
+        return new Person.WebApiClient.Person( "test@test.com", "test_first", Guid.NewGuid(), "test_last");
     }
 
     private OrganisationDetailsSummaryModel GivenOrganisationDetailModel()

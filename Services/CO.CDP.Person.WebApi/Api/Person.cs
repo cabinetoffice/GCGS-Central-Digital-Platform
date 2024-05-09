@@ -1,3 +1,4 @@
+using CO.CDP.Common;
 using CO.CDP.Person.WebApi.Model;
 using CO.CDP.Person.WebApi.UseCase;
 using DotSwashbuckle.AspNetCore.SwaggerGen;
@@ -15,7 +16,6 @@ public static class EndpointExtensions
             Id = index,
             FirstName = $"Sussan Tables {index}",
             LastName = "LN",
-            Age = 40,
             Email = "sussan@example.com"
         });
 
@@ -24,9 +24,7 @@ public static class EndpointExtensions
         app.MapPost("/persons", async (RegisterPerson command, IUseCase<RegisterPerson, Model.Person> useCase) =>
             await useCase.Execute(command)
                 .AndThen(person =>
-                    person != null
-                        ? Results.Created(new Uri($"/persons/{person.Id}", UriKind.Relative), person)
-                        : Results.Problem("Person could not be created due to an internal error"))
+                    Results.Created(new Uri($"/persons/{person.Id}", UriKind.Relative), person))
                 )
         .Produces<Model.Person>(201, "application/json")
         .ProducesProblem(500)
@@ -62,7 +60,6 @@ public static class EndpointExtensions
                         Email = updatedPerson.Email,
                         FirstName = updatedPerson.FirstName,
                         LastName = updatedPerson.LastName,
-                        Age = updatedPerson.Age,
                     };
                     return Results.Ok(_persons[personId]);
                 })
@@ -94,16 +91,16 @@ public static class EndpointExtensions
     public static void UsePersonLookupEndpoints(this WebApplication app)
     {
         app.MapGet("/persons/lookup",
-                async ([FromQuery] string name, IUseCase<string, Model.Person?> useCase) =>
-                await useCase.Execute(name)
+                async ([FromQuery] string urn, IUseCase<string, Model.Person?> useCase) =>
+                await useCase.Execute(urn)
                     .AndThen(persons => persons != null ? Results.Ok(persons) : Results.NotFound()))
             .Produces<Model.Person>(200, "application/json")
             .Produces(404)
             .WithOpenApi(operation =>
             {
                 operation.OperationId = "LookupPerson";
-                operation.Description = "Lookup person by email.";
-                operation.Summary = "Lookup person by email.";
+                operation.Description = "Lookup person by user principal.";
+                operation.Summary = "Lookup person by user principal.";
                 operation.Tags = new List<OpenApiTag> { new() { Name = "Person Lookup" } };
                 operation.Responses["200"].Description = "Person Associated.";
                 return operation;

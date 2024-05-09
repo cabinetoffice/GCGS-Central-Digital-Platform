@@ -47,7 +47,10 @@ public class OneLoginTest
         sessionMock.Verify(v => v.Set(Session.RegistrationDetailsKey,
             It.Is<RegistrationDetails>(rd =>
                 rd.Email == "dummy@test.com"
-                && rd.TenantId == new Guid("0bacf3d1-3b69-4efa-80e9-3623f4b7786e"))), Times.Once);
+                && rd.Phone == "+44 123456789"
+                && rd.TenantId == new Guid("0bacf3d1-3b69-4efa-80e9-3623f4b7786e")
+                && rd.UserPrincipal == "urn:fdc:gov.uk:2022:7wTqYGMFQxgukTSpSI2GodMwe9"
+            )), Times.Once);
     }
 
     [Fact]
@@ -57,6 +60,19 @@ public class OneLoginTest
 
         authService.Setup(a => a.AuthenticateAsync(It.IsAny<HttpContext>(), It.IsAny<string>()))
             .ReturnsAsync(authResultFail);
+
+        var results = await model.OnGet("user-info");
+
+        results.Should().BeOfType<ChallengeResult>();
+    }
+
+    [Fact]
+    public async Task OnGetUserInfo_OnAuthenticationWithMissingSubject_ShouldRedirectToSignIn()
+    {
+        var model = GivenOneLoginCallbackModel();
+
+        authService.Setup(a => a.AuthenticateAsync(It.IsAny<HttpContext>(), It.IsAny<string>()))
+            .ReturnsAsync(authResultWithMissingSubjectSuccess);
 
         var results = await model.OnGet("user-info");
 
@@ -142,6 +158,13 @@ public class OneLoginTest
                     new Claim(JwtClaimTypes.PhoneNumber, "+44 123456789")
                 })),
             "TestScheme"));
+
+    private readonly AuthenticateResult authResultWithMissingSubjectSuccess = AuthenticateResult.Success(new AuthenticationTicket(
+        new ClaimsPrincipal(new ClaimsIdentity(new[] {
+            new Claim(JwtClaimTypes.Email, "dummy@test.com"),
+            new Claim(JwtClaimTypes.PhoneNumber, "+44 123456789")
+        })),
+        "TestScheme"));
 
     private readonly AuthenticateResult authResultFail = AuthenticateResult.Fail(new Exception("Auth failed"));
 

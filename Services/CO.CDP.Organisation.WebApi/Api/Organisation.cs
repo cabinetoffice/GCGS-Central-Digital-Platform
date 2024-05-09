@@ -1,3 +1,4 @@
+using CO.CDP.Common;
 using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.Organisation.WebApi.UseCase;
 using DotSwashbuckle.AspNetCore.SwaggerGen;

@@ -13,9 +13,9 @@ public class LookupPersonUseCaseTest(AutoMapperFixture mapperFixture) : IClassFi
     [Fact]
     public async Task Execute_IfNoPersonIsFound_ReturnsNull()
     {
-        var name = "Test Person";
+        var urn = "urn:fdc:gov.uk:2022:7wTqYGMFQxgukTSpSI2GodMwe9";
 
-        var found = await UseCase.Execute(name);
+        var found = await UseCase.Execute(urn);
 
         found.Should().BeNull();
     }
@@ -30,13 +30,13 @@ public class LookupPersonUseCaseTest(AutoMapperFixture mapperFixture) : IClassFi
             Guid = personId,
             FirstName = "fn",
             LastName = "ln",
-            Age = 40,
-            Email = "email@email.com"
+            Email = "email@email.com",
+            UserUrn = "urn:fdc:gov.uk:2022:7wTqYGMFQxgukTSpSI2GodMwe9"
         };
 
-        _repository.Setup(r => r.FindByEmail(persistencePerson.Email)).ReturnsAsync(persistencePerson);
+        _repository.Setup(r => r.FindByUrn(persistencePerson.UserUrn)).ReturnsAsync(persistencePerson);
 
-        var found = await UseCase.Execute("email@email.com");
+        var found = await UseCase.Execute("urn:fdc:gov.uk:2022:7wTqYGMFQxgukTSpSI2GodMwe9");
 
         found.Should().BeEquivalentTo(new Model.Person
         {
@@ -44,7 +44,6 @@ public class LookupPersonUseCaseTest(AutoMapperFixture mapperFixture) : IClassFi
             Email = "email@email.com",
             FirstName = "fn",
             LastName = "ln",
-            Age = 40,
         }, options => options.ComparingByMembers<Model.Person>());
     }
 }

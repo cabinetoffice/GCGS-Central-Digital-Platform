@@ -42,6 +42,11 @@ public class OneLogin(
         var email = userInfo.Principal.FindFirst(JwtClaimTypes.Email)?.Value;
         var phone = userInfo.Principal.FindFirst(JwtClaimTypes.PhoneNumber)?.Value;
 
+        if (userId == null)
+        {
+            return SignIn();
+        }
+
         Tenant.WebApiClient.Tenant? tenant;
 
         try
@@ -59,8 +64,10 @@ public class OneLogin(
         session.Set(Session.RegistrationDetailsKey,
         new RegistrationDetails
         {
+            UserPrincipal = userId,
             TenantId = tenant.Id,
-            Email = tenant.ContactInfo.Email
+            Email = tenant.ContactInfo.Email,
+            Phone = phone
         });
 
         return RedirectToPage("PrivacyPolicy");

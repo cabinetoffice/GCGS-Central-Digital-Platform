@@ -1,8 +1,7 @@
-using CO.CDP.OrganisationApp.CustomeValidationAttributes;
 using FluentAssertions;
 using System.ComponentModel.DataAnnotations;
 
-namespace CO.CDP.OrganisationApp.Tests.CustomeValidationAttributes;
+namespace CO.CDP.Common.Tests;
 
 public class RequiredIfAttributeTests
 {
