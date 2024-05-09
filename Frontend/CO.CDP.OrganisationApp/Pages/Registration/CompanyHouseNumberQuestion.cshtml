@@ -1,0 +1,46 @@
+@page "/registration/company-house-number"
+@model CO.CDP.OrganisationApp.Pages.Registration.CompanyHouseNumberQuestionModel
+
+@{
+    var backLink = "/registration/organisation-details";
+    if (Request.Query.ContainsKey("frm-summary"))
+    {
+        backLink = "/registration/organisation-details-summary";
+        Model.RedirectToSummary = true;
+    }
+}
+<a href="@backLink" class="govuk-back-link">
+    Back
+</a>
+
+@* <main class="govuk-main-wrapper">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <partial name="_ErrorSummary" model="@Model.ModelState" />
+            <h1 class="govuk-heading-l">Organisation Identification</h1>
+            <form method="post">
+                @if (Request.Query.ContainsKey("frm-summary"))
+                {
+                    <input type="hidden" name="RedirectToSummary" value="true" />
+                }
+                <div class="govuk-form-group">
+                    <fieldset class="govuk-fieldset">
+                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                            Organisation Type
+                        </legend>
+                        <div class="govuk-radios" data-module="govuk-radios">
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input" id="CHN" name="OrganisationScheme" type="radio" value="CHN" data-aria-controls="conditional-CHN" @(Model.OrganisationScheme == "CHN" ? "checked" : "")>
+                                @Html.LabelFor(m => m.CompaniesHouse, new { @class = "govuk-label govuk-radios__label", @for = "CHN" })
+                            </div>
+                            <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-CHN">
+                                <div class="govuk-form-group @(companiesHouseNumberHasError ? "govuk-form-group--error" : "")">
+                                    @Html.LabelFor(m => m.CompaniesHouseNumber, new { @class = "govuk-label", @for = Model.CompaniesHouseNumber })
+                                    @Html.ValidationMessageFor(m => m.CompaniesHouseNumber, "", new { @class = "govuk-error-message", @id = "CompaniesHouseNumber-error" })
+                                    @Html.TextBoxFor(m => m.CompaniesHouseNumber, new { @class = "govuk-input " + (companiesHouseNumberHasError ? "govuk-input--error" : ""), @id = "CompaniesHouseNumber", @type = "text", spellcheck = "false", autocomplete = "off" })
+                                </div>
+                            </div>
+                        </div>
+                        </fieldset>
+
+ *@
