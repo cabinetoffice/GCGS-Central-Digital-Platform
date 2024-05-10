@@ -60,6 +60,8 @@ public class OneLogin(
         {
             person = await personClient.LookupPersonAsync(urn);
             rd.PersonId = person.Id;
+            rd.FirstName = person.FirstName;
+            rd.LastName = person.LastName;
 
             session.Set(Session.RegistrationDetailsKey, rd);
 
