@@ -18,23 +18,13 @@ public class RegisterTenantUseCaseTest(AutoMapperFixture mapperFixture) : IClass
     {
         var createdTenant = await UseCase.Execute(new RegisterTenant
         {
-            Name = "TrentTheTenant",
-            ContactInfo = new TenantContactInfo
-            {
-                Email = "trent@example.com",
-                Phone = "07925987654"
-            }
+            Name = "TrentTheTenant"
         });
 
         createdTenant.Should().Be(new Model.Tenant
         {
             Id = _generatedGuid,
-            Name = "TrentTheTenant",
-            ContactInfo = new TenantContactInfo
-            {
-                Email = "trent@example.com",
-                Phone = "07925987654"
-            }
+            Name = "TrentTheTenant"
         });
     }
 
@@ -43,22 +33,12 @@ public class RegisterTenantUseCaseTest(AutoMapperFixture mapperFixture) : IClass
     {
         UseCase.Execute(new RegisterTenant
         {
-            Name = "TrentTheTenant",
-            ContactInfo = new TenantContactInfo
-            {
-                Email = "trent@example.com",
-                Phone = "07925987654"
-            }
+            Name = "TrentTheTenant"
         });
 
         _repository.Verify(r => r.Save(It.Is<OrganisationInformation.Persistence.Tenant>(actual =>
             actual.Guid == _generatedGuid &&
-            actual.Name == "TrentTheTenant" &&
-            actual.ContactInfo == new OrganisationInformation.Persistence.Tenant.TenantContactInfo
-            {
-                Email = "trent@example.com",
-                Phone = "07925987654"
-            }
+            actual.Name == "TrentTheTenant"
         )), Times.Once);
     }
 }

@@ -1,4 +1,3 @@
-using CO.CDP.Tenant.WebApi.Model;
 using CO.CDP.Tenant.WebApi.Tests.Api.WebApp;
 using CO.CDP.Tenant.WebApi.UseCase;
 using FluentAssertions;
@@ -54,12 +53,7 @@ public class TenantLookupTest
         return new Model.Tenant
         {
             Id = Guid.NewGuid(),
-            Name = "urn:fdc:gov.uk:2022:43af5a8b-f4c0-414b-b341-d4f1fa894302",
-            ContactInfo = new TenantContactInfo
-            {
-                Email = "trent@example.com",
-                Phone = "07925987654"
-            }
+            Name = "urn:fdc:gov.uk:2022:43af5a8b-f4c0-414b-b341-d4f1fa894302"
         };
     }
 }

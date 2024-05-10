@@ -1,4 +1,3 @@
-using CO.CDP.Tenant.WebApi.Model;
 using CO.CDP.Tenant.WebApi.Tests.Api.WebApp;
 using CO.CDP.Tenant.WebApi.UseCase;
 using FluentAssertions;
@@ -54,12 +53,7 @@ public class GetTenantTest
         return new Model.Tenant
         {
             Id = Guid.NewGuid(),
-            Name = "TrentTheTenant:1",
-            ContactInfo = new TenantContactInfo
-            {
-                Email = "trent@example.com",
-                Phone = "07925987654"
-            }
+            Name = "TrentTheTenant:1"
         };
     }
 }

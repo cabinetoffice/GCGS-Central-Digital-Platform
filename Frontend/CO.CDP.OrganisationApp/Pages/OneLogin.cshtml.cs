@@ -71,7 +71,6 @@ public class OneLogin(
 
             return RedirectToPage("PrivacyPolicy");
         }
-
     }
 
     private IActionResult SignOut()
