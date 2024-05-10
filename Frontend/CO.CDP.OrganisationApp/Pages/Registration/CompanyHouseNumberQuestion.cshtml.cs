@@ -2,24 +2,16 @@ using CO.CDP.OrganisationApp.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace CO.CDP.OrganisationApp.Pages.Registration;
 
 [Authorize]
-public class OrganisationDetailModel(ISession session) : PageModel
+public class CompanyHouseNumberQuestionModel(ISession session) : PageModel
 {
     [BindProperty]
-    [DisplayName("Organisation name")]
-    [Required(ErrorMessage = "Enter your organisation name")]
-    public string? OrganisationName { get; set; }
-
-    [BindProperty]
-    [DisplayName("Email address")]
-    [Required(ErrorMessage = "Enter your email address")]
-    [EmailAddress(ErrorMessage = "Enter an email address in the correct format, like name@example.com")]
-    public string? EmailAddress { get; set; }
+    [Required(ErrorMessage = "Please select an option")]
+    public bool? HasCompaniesHouseNumber { get; set; }
 
     [BindProperty]
     public bool? RedirectToSummary { get; set; }
@@ -27,9 +19,7 @@ public class OrganisationDetailModel(ISession session) : PageModel
     public void OnGet()
     {
         var registrationDetails = VerifySession();
-
-        OrganisationName = registrationDetails.OrganisationName;
-        EmailAddress = registrationDetails.OrganisationEmailAddress;
+        HasCompaniesHouseNumber = registrationDetails.OrganisationHasCompaniesHouseNumber;
     }
 
     public IActionResult OnPost()
@@ -41,8 +31,7 @@ public class OrganisationDetailModel(ISession session) : PageModel
 
         var registrationDetails = VerifySession();
 
-        registrationDetails.OrganisationName = OrganisationName;
-        registrationDetails.OrganisationEmailAddress = EmailAddress;
+        registrationDetails.OrganisationHasCompaniesHouseNumber = HasCompaniesHouseNumber;
 
         session.Set(Session.RegistrationDetailsKey, registrationDetails);
 
@@ -50,9 +39,13 @@ public class OrganisationDetailModel(ISession session) : PageModel
         {
             return RedirectToPage("OrganisationDetailsSummary");
         }
+        else if (HasCompaniesHouseNumber == false)
+        {
+            return RedirectToPage("OrganisationIdentification");
+        }
         else
         {
-            return RedirectToPage("CompanyHouseNumberQuestion");
+            return RedirectToPage("OrganisationRegisteredAddress");
         }
     }
 
@@ -67,4 +60,3 @@ public class OrganisationDetailModel(ISession session) : PageModel
         return registrationDetails;
     }
 }
-
