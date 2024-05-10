@@ -1,5 +1,6 @@
 using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.Pages.Registration;
+using CO.CDP.Person.WebApiClient;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -13,10 +14,12 @@ namespace CO.CDP.OrganisationApp.Tests.Pages.Registration;
 public class YourDetailsModelTest
 {
     private readonly Mock<ISession> sessionMock;
+    private readonly Mock<IPersonClient> personClientMock;
 
     public YourDetailsModelTest()
     {
         sessionMock = new Mock<ISession>();
+        personClientMock = new Mock<IPersonClient>();
     }
 
     [Fact]
@@ -95,8 +98,7 @@ public class YourDetailsModelTest
         sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey))
             .Returns(new RegistrationDetails
             {
-                UserPrincipal = "urn:fdc:gov.uk:2022:b1829a14353c429ea6e23798e020d775",
-                TenantId = Guid.NewGuid(),
+                UserUrn = "urn:fdc:gov.uk:2022:b1829a14353c429ea6e23798e020d775",
                 FirstName = "firstdummy",
                 LastName = "lastdummy"
             });
@@ -108,94 +110,13 @@ public class YourDetailsModelTest
     }
 
     [Fact]
-    public void OnPost_WhenInValidModel_ShouldReturnSamePage()
-    {
-        var modelState = new ModelStateDictionary();
-        modelState.AddModelError("error", "some error");
-        var actionContext = new ActionContext(new DefaultHttpContext(),
-            new RouteData(), new PageActionDescriptor(), modelState);
-        var pageContext = new PageContext(actionContext);
-
-        var model = GivenYourDetailsModel();
-        model.PageContext = pageContext;
-
-        var actionResult = model.OnPost();
-
-        actionResult.Should().BeOfType<PageResult>();
-    }
-
-    [Fact]
-    public void OnPost_WhenRegistrationDetailsNotInSession_ShouldThrowException()
-    {
-        var model = GivenYourDetailsModel();
-
-        Action act = () => model.OnPost();
-
-        act.Should().Throw<Exception>().WithMessage("Shoudn't be here");
-    }
-
-    [Fact]
-    public void OnPost_WhenValidModel_ShouldSetRegistrationDetailsInSession()
-    {
-        var model = GivenYourDetailsModel();
-
-        sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey))
-            .Returns(new RegistrationDetails
-            {
-                UserPrincipal = "urn:fdc:gov.uk:2022:bad51498dcfe4572959c4540aef2397e",
-                TenantId = Guid.NewGuid()
-            });
-
-        model.OnPost();
-
-        sessionMock.Verify(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey), Times.Once);
-        sessionMock.Verify(s => s.Set(Session.RegistrationDetailsKey, It.IsAny<RegistrationDetails>()), Times.Once);
-    }
-
-    [Fact]
-    public void OnPost_WhenValidModel_ShouldRedirectToOrganisationDetailsPage()
-    {
-        var model = GivenYourDetailsModel();
-
-        sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey))
-            .Returns(new RegistrationDetails
-            {
-                UserPrincipal = "urn:fdc:gov.uk:2022:5973548c6f464dd98109b11cdda30947",
-                TenantId = Guid.NewGuid()
-            });
-
-        var actionResult = model.OnPost();
-
-        actionResult.Should().BeOfType<RedirectToPageResult>()
-            .Which.PageName.Should().Be("OrganisationDetails");
-    }
-
-    [Fact]
-    public void OnPost_WhenValidModelAndRedirectToSummary_ShouldRedirectToOrganisationDetailSummaryPage()
-    {
-        var model = GivenYourDetailsModel();
-        model.RedirectToSummary = true;
-        sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey))
-            .Returns(new RegistrationDetails
-            {
-                UserPrincipal = "urn:fdc:gov.uk:2022:928db154d82d496fb81a113acf923872",
-                TenantId = Guid.NewGuid()
-            });
-
-        var actionResult = model.OnPost();
-
-        actionResult.Should().BeOfType<RedirectToPageResult>()
-            .Which.PageName.Should().Be("OrganisationDetailsSummary");
-    }
-
-    [Fact]
     public void OnGet_ValidSession_ReturnsRegistrationDetails()
     {
         var model = GivenYourDetailsModel();
 
-        RegistrationDetails registrationDetails = new RegistrationDetails
+        var registrationDetails = new RegistrationDetails
         {
-            UserPrincipal = "urn:fdc:gov.uk:2022:3771d941a5774a8e8058972661fd4f7c",
+            UserUrn = "urn:fdc:gov.uk:2022:3771d941a5774a8e8058972661fd4f7c",
             FirstName = "first name",
             LastName = "last name",
             Email = "test@co.com"
@@ -209,8 +130,103 @@ public class YourDetailsModelTest
         model.LastName.Should().Be(registrationDetails.LastName);
     }
 
+    [Fact]
+    public async Task OnPost_WhenInValidModel_ShouldReturnSamePage()
+    {
+        var modelState = new ModelStateDictionary();
+        modelState.AddModelError("error", "some error");
+        var actionContext = new ActionContext(new DefaultHttpContext(),
+            new RouteData(), new PageActionDescriptor(), modelState);
+        var pageContext = new PageContext(actionContext);
+
+        var model = GivenYourDetailsModel();
+        model.PageContext = pageContext;
+
+        var actionResult = await model.OnPost();
+
+        actionResult.Should().BeOfType<PageResult>();
+    }
+
+    [Fact]
+    public async Task OnPost_WhenRegistrationDetailsNotInSession_ShouldThrowException()
+    {
+        var model = GivenYourDetailsModel();
+
+        Func<Task> act = model.OnPost;
+
+        await act.Should().ThrowAsync<Exception>().WithMessage("Shoudn't be here");
+    }
+
+    [Fact]
+    public async Task OnPost_WhenValidModel_ShouldRegisterPerson()
+    {
+        var model = GivenYourDetailsModel();
+
+        sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey))
+            .Returns(new RegistrationDetails
+            {
+                UserUrn = "urn:fdc:gov.uk:2022:bad51498dcfe4572959c4540aef2397e",
+                Email = "dummy@test.com"
+            });
+
+        personClientMock.Setup(s => s.CreatePersonAsync(It.IsAny<NewPerson>()))
+            .ReturnsAsync(dummyPerson);
+
+        var actionResult = await model.OnPost();
+
+        personClientMock.Verify(s => s.CreatePersonAsync(It.IsAny<NewPerson>()), Times.Once);
+        actionResult.Should().BeOfType<RedirectToPageResult>()
+            .Which.PageName.Should().Be("OrganisationDetails");
+    }
+
+    [Fact]
+    public async Task OnPost_WhenErrorInRegisteringPerson_ShouldReturnPageWithError()
+    {
+        var model = GivenYourDetailsModel();
+
+        sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey))
+            .Returns(new RegistrationDetails
+            {
+                UserUrn = "urn:fdc:gov.uk:2022:bad51498dcfe4572959c4540aef2397e",
+                Email = "dummy@test.com"
+            });
+
+        personClientMock.Setup(s => s.CreatePersonAsync(It.IsAny<NewPerson>()))
+            .ThrowsAsync(new ApiException("Unexpected error", 500, "", default, null));
+
+        var actionResult = await model.OnPost();
+
+        actionResult.Should().BeOfType<PageResult>();
+    }
+
+    [Fact]
+    public async Task OnPost_WhenValidModelAndRedirectToSummary_ShouldRedirectToOrganisationDetailSummaryPage()
+    {
+        var model = GivenYourDetailsModel();
+        model.RedirectToSummary = true;
+
+        sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey))
+            .Returns(new RegistrationDetails
+            {
+                UserUrn = "urn:fdc:gov.uk:2022:bad51498dcfe4572959c4540aef2397e",
+                Email = "dummy@test.com"
+            });
+
+        personClientMock.Setup(s => s.CreatePersonAsync(It.IsAny<NewPerson>()))
+            .ReturnsAsync(dummyPerson);
+
+        var actionResult = await model.OnPost();
+
+        actionResult.Should().BeOfType<RedirectToPageResult>()
+            .Which.PageName.Should().Be("OrganisationDetailsSummary");
+    }
+
+
+    private readonly Person.WebApiClient.Person dummyPerson
+        = new("dummy@test.com", "firstdummy", Guid.NewGuid(), "lastdummy");
+
     private YourDetailsModel GivenYourDetailsModel()
     {
-        return new YourDetailsModel(sessionMock.Object);
+        return new YourDetailsModel(sessionMock.Object, personClientMock.Object);
     }
 }
