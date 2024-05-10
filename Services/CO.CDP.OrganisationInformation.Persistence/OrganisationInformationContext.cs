@@ -41,6 +41,10 @@ public class OrganisationInformationContext(string connectionString) : DbContext
         modelBuilder.Entity<Person>(entity =>
         {
             entity.HasKey(e => e.Id);
+            modelBuilder.Entity<Person>()
+                .HasMany(p => p.Tenants)
+                .WithMany(t => t.Persons)
+                .UsingEntity<TenantPerson>();
         });
 
         base.OnModelCreating(modelBuilder);

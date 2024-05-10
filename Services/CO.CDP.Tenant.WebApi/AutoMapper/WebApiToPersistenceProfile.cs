@@ -12,6 +12,7 @@ public class WebApiToPersistenceProfile : Profile
 
         CreateMap<RegisterTenant, OrganisationInformation.Persistence.Tenant>()
             .ForMember(m => m.Guid, o => o.MapFrom((_, _, _, context) => context.Items["Guid"]))
-            .ForMember(m => m.Id, o => o.Ignore());
+            .ForMember(m => m.Id, o => o.Ignore())
+            .ForMember(m => m.Persons, o => o.Ignore());
     }
 }
