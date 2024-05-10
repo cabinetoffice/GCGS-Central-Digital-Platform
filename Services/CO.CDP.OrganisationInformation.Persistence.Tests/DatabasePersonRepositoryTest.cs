@@ -12,15 +12,16 @@ public class DatabasePersonRepositoryTest(PostgreSqlFixture postgreSql) : IClass
     {
         using var repository = PersonRepository();
 
-        var Person = GivenPerson(guid: Guid.NewGuid());
+        var tenant = GivenTenant();
+        var person = GivenPerson(guid: Guid.NewGuid(), tenant: tenant);
 
-        repository.Save(Person);
+        repository.Save(person);
 
-        var found = await repository.Find(Person.Guid);
+        var found = await repository.Find(person.Guid);
 
-        found.Should().Be(Person);
+        found.Should().Be(person);
         found.As<Person>().Id.Should().BePositive();
-
+        found.As<Person>().Tenants.Should().Contain(t => t.Guid == tenant.Guid);
     }
 
     [Fact]
@@ -95,19 +96,36 @@ public class DatabasePersonRepositoryTest(PostgreSqlFixture postgreSql) : IClass
 
     private static Person GivenPerson(
         Guid? guid = null,
+        string? userUrn = null,
         string firstname = "Jon",
         string lastname = "doe",
         string email = "jon@example.com",
-        string phone = "07925123123"
-    )
+        string phone = "07925123123",
+        Tenant? tenant = null)
     {
-        return new Person
+        var person = new Person
         {
             Guid = guid ?? Guid.NewGuid(),
+            UserUrn = userUrn ?? $"urn:fdc:gov.uk:2022:{Guid.NewGuid()}",
             FirstName = firstname,
             LastName = lastname,
             Email = email,
             Phone = phone
+        };
+        if (tenant != null)
+        {
+            person.Tenants.Add(tenant);
+        }
+        return person;
+    }
+
+    private static Tenant GivenTenant()
+    {
+        var guid = Guid.NewGuid();
+        return new Tenant
+        {
+            Guid = guid,
+            Name = $"Tenant {guid}"
         };
     }
 }
