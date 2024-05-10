@@ -141,4 +141,60 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
              o.Types.SequenceEqual(new List<int> { 1 })
          )), Times.Once);
     }
+
+    [Fact]
+    public void ItAssociatesTheTenantWithThePerson()
+    {
+        UseCase.Execute(GivenRegisterOrganisationCommand(
+            name: "ACME"
+        ));
+
+        _repository.Verify(r => r.Save(It.Is<OrganisationInformation.Persistence.Organisation>(o =>
+            o.Tenant.Name == "ACME"
+        )), Times.Once);
+    }
+
+    private static RegisterOrganisation GivenRegisterOrganisationCommand(
+        string name = "TheOrganisation"
+    )
+    {
+        return new RegisterOrganisation
+        {
+            Name = name,
+            Identifier = new OrganisationIdentifier
+            {
+                Scheme = "ISO9001",
+                Id = "1",
+                LegalName = "OfficialOrganisationName",
+                Uri = "http://example.org",
+                Number = "123456"
+            },
+            AdditionalIdentifiers = new List<OrganisationIdentifier>
+            {
+                new OrganisationIdentifier
+                {
+                    Scheme = "ISO14001",
+                    Id = "2",
+                    LegalName = "AnotherOrganisationName",
+                    Uri = "http://example.com",
+                    Number = "123456"
+                }
+            },
+            Address = new OrganisationAddress
+            {
+                AddressLine1 = "1234 Example St",
+                City = "Example City",
+                PostCode = "12345",
+                Country = "Exampleland"
+            },
+            ContactPoint = new OrganisationContactPoint
+            {
+                Name = "Contact Name",
+                Email = "contact@example.org",
+                Telephone = "123-456-7890",
+                Url = "http://example.org/contact"
+            },
+            Types = new List<int> { 1 }
+        };
+    }
 }
