@@ -9,6 +9,7 @@ public class Organisation
 {
     public int Id { get; set; }
     public required Guid Guid { get; set; }
+    public required Tenant Tenant { get; set; }
     public required string Name { get; set; }
     public required OrganisationIdentifier Identifier { get; set; }
     public List<OrganisationIdentifier> AdditionalIdentifiers { get; set; } = [];

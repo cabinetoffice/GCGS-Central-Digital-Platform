@@ -1,3 +1,4 @@
+using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.Organisation.WebApi.Tests.AutoMapper;
 using CO.CDP.Organisation.WebApi.UseCase;
 using CO.CDP.OrganisationInformation.Persistence;
@@ -29,6 +30,12 @@ public class GetOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IClas
             Id = 1,
             Guid = organisationId,
             Name = "Test Organisation",
+            Tenant = new Tenant
+            {
+                Id = 101,
+                Guid = Guid.NewGuid(),
+                Name = "Tenant 101"
+            },
             Identifier = new OrganisationInformation.Persistence.Organisation.OrganisationIdentifier
             {
                 Id = "Identifier1",
@@ -72,7 +79,7 @@ public class GetOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IClas
         {
             Id = organisationId,
             Name = "Test Organisation",
-            Identifier = new Model.OrganisationIdentifier
+            Identifier = new OrganisationIdentifier
             {
                 Id = "Identifier1",
                 Scheme = "Scheme1",
@@ -80,9 +87,9 @@ public class GetOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IClas
                 Uri = "http://example.com",
                 Number = "123456"
             },
-            AdditionalIdentifiers = new List<Model.OrganisationIdentifier>
+            AdditionalIdentifiers = new List<OrganisationIdentifier>
         {
-            new Model.OrganisationIdentifier
+            new OrganisationIdentifier
             {
                 Id = "Identifier2",
                 Scheme = "Scheme2",
@@ -91,14 +98,14 @@ public class GetOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IClas
                 Number = "123456"
             }
         },
-            Address = new Model.OrganisationAddress
+            Address = new OrganisationAddress
             {
                 AddressLine1 = "1234 Test St",
                 City = "Test City",
                 PostCode = "12345",
                 Country = "Testland"
             },
-            ContactPoint = new Model.OrganisationContactPoint
+            ContactPoint = new OrganisationContactPoint
             {
                 Name = "Contact Name",
                 Email = "contact@test.org",

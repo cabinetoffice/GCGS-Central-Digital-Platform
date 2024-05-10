@@ -78,6 +78,7 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql) : 
         {
             Guid = guid,
             Name = initialName,
+            Tenant = GivenTenant(),
             Identifier = new OrganisationIdentifier
             {
                 Scheme = "ISO9001",
@@ -122,7 +123,8 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql) : 
 
         var updatedOrganisation = await repository.Find(guid)!;
         updatedOrganisation.Should().NotBeNull();
-        updatedOrganisation?.Name.Should().Be(updatedName);
+        updatedOrganisation.As<Organisation>().Name.Should().Be(updatedName);
+        updatedOrganisation.As<Organisation>().Tenant.Should().Be(organisation.Tenant);
     }
 
     [Fact]
@@ -130,13 +132,18 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql) : 
     {
         using var repository = OrganisationRepository();
 
-        var organisation = GivenOrganisation(name: "urn:fdc:gov.uk:2022:43af5a8b-f4c0-414b-b341-d4f1fa894302");
+        var tenant = GivenTenant();
+        var organisation = GivenOrganisation(
+            name: "Acme Ltd",
+            tenant: tenant
+        );
         repository.Save(organisation);
 
         var found = await repository.FindByName(organisation.Name);
 
         found.Should().BeEquivalentTo(organisation, options => options.ComparingByMembers<Organisation>());
-        found?.Id.Should().BePositive();
+        found.As<Organisation>().Id.Should().BePositive();
+        found.As<Organisation>().Tenant.Should().Be(tenant);
     }
 
     [Fact]
