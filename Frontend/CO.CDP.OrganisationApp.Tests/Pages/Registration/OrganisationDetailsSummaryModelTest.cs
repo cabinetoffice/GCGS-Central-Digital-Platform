@@ -256,7 +256,7 @@ public class OrganisationDetailsSummaryModelTest
 
     private Tenant.WebApiClient.Tenant GivenTenantClientModel()
     {
-        return new Tenant.WebApiClient.Tenant(new TenantContactInfo("dummy@test.com", "0123456789"), Guid.NewGuid(), "Smith");
+        return new Tenant.WebApiClient.Tenant(Guid.NewGuid(), "Smith");
     }
 
     private Organisation.WebApiClient.Organisation GivenOrganisationClientModel()

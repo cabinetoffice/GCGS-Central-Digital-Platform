@@ -1,5 +1,4 @@
 using CO.CDP.OrganisationInformation.Persistence;
-using CO.CDP.Tenant.WebApi.Model;
 using CO.CDP.Tenant.WebApi.Tests.AutoMapper;
 using CO.CDP.Tenant.WebApi.UseCase;
 using FluentAssertions;
@@ -30,12 +29,7 @@ public class LookupTenantUseCaseTest(AutoMapperFixture mapperFixture) : IClassFi
         {
             Id = 42,
             Guid = tenantId,
-            Name = "urn:fdc:gov.uk:2022:43af5a8b-f4c0-414b-b341-d4f1fa894302",
-            ContactInfo = new OrganisationInformation.Persistence.Tenant.TenantContactInfo
-            {
-                Email = "trent@example.com",
-                Phone = "07925987654"
-            }
+            Name = "urn:fdc:gov.uk:2022:43af5a8b-f4c0-414b-b341-d4f1fa894302"
         };
 
         _repository.Setup(r => r.FindByName(tenant.Name)).ReturnsAsync(tenant);
@@ -45,12 +39,7 @@ public class LookupTenantUseCaseTest(AutoMapperFixture mapperFixture) : IClassFi
         found.Should().Be(new Model.Tenant
         {
             Id = tenantId,
-            Name = "urn:fdc:gov.uk:2022:43af5a8b-f4c0-414b-b341-d4f1fa894302",
-            ContactInfo = new TenantContactInfo
-            {
-                Email = "trent@example.com",
-                Phone = "07925987654"
-            }
+            Name = "urn:fdc:gov.uk:2022:43af5a8b-f4c0-414b-b341-d4f1fa894302"
         });
     }
 }

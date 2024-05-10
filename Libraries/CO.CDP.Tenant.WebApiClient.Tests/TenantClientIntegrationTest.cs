@@ -8,11 +8,7 @@ public class TenantClientIntegrationTest
         ITenantClient client = new TenantClient("http://localhost:5182", new HttpClient());
 
         var tenant = await client.CreateTenantAsync(new NewTenant(
-            name: $"Bob {Guid.NewGuid()}",
-            contactInfo: new TenantContactInfo(
-                email: "bob@example.com",
-                phone: "07923234234"
-            )
+            name: $"Bob {Guid.NewGuid()}"
         ));
 
         var foundTenant = await client.GetTenantAsync(tenant.Id);
@@ -21,11 +17,7 @@ public class TenantClientIntegrationTest
             new Tenant
             (
                 id: tenant.Id,
-                name: tenant.Name,
-                contactInfo: new TenantContactInfo(
-                    email: "bob@example.com",
-                    phone: "07923234234"
-                )
+                name: tenant.Name
             ),
             foundTenant
         );

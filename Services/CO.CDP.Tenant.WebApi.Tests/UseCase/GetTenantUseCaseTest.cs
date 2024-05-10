@@ -30,12 +30,7 @@ public class GetTenantUseCaseTest(AutoMapperFixture mapperFixture) : IClassFixtu
         {
             Id = 42,
             Guid = tenantId,
-            Name = "TrentTheTenant",
-            ContactInfo = new OrganisationInformation.Persistence.Tenant.TenantContactInfo
-            {
-                Email = "trent@example.com",
-                Phone = "07925987654"
-            }
+            Name = "TrentTheTenant"
         };
 
         _repository.Setup(r => r.Find(tenantId)).ReturnsAsync(tenant);
@@ -45,12 +40,7 @@ public class GetTenantUseCaseTest(AutoMapperFixture mapperFixture) : IClassFixtu
         found.Should().Be(new Model.Tenant
         {
             Id = tenantId,
-            Name = "TrentTheTenant",
-            ContactInfo = new TenantContactInfo
-            {
-                Email = "trent@example.com",
-                Phone = "07925987654"
-            }
+            Name = "TrentTheTenant"
         });
     }
 }

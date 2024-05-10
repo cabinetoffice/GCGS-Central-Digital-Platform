@@ -118,21 +118,14 @@ public class DatabaseTenantRepositoryTest(PostgreSqlFixture postgreSql) : IClass
 
     private static Tenant GivenTenant(
         Guid? guid = null,
-        string? name = null,
-        string email = "stefan@example.com",
-        string phone = "07925123123")
+        string? name = null)
     {
         var theGuid = guid ?? Guid.NewGuid();
         var theName = name ?? $"Stefan {theGuid}";
         return new Tenant
         {
             Guid = theGuid,
-            Name = theName,
-            ContactInfo = new Tenant.TenantContactInfo
-            {
-                Email = email,
-                Phone = phone
-            }
+            Name = theName
         };
     }
 }

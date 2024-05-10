@@ -59,12 +59,7 @@ public static class EndpointExtensions
         .ToDictionary(id => id, id => new Model.Tenant
         {
             Id = id,
-            Name = $"Bobby Tables {id}",
-            ContactInfo = new TenantContactInfo
-            {
-                Email = $"bobby{id}@example.com",
-                Phone = $"0555 123 952"
-            }
+            Name = $"Bobby Tables {id}"
         });
 
     public static void UseTenantEndpoints(this WebApplication app)
@@ -125,8 +120,7 @@ public static class EndpointExtensions
                 _tenants[tenantId] = new Model.Tenant
                 {
                     Id = tenantId,
-                    Name = updatedTenant.Name,
-                    ContactInfo = updatedTenant.ContactInfo
+                    Name = updatedTenant.Name
                 };
                 return Results.Ok(_tenants[tenantId]);
             })

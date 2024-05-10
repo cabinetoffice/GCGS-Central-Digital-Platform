@@ -43,12 +43,7 @@ public class RegisterTenantTest
     {
         return new RegisterTenant
         {
-            Name = "TrentTheTenant",
-            ContactInfo = new TenantContactInfo
-            {
-                Email = "trent@example.com",
-                Phone = "07925987654"
-            }
+            Name = "TrentTheTenant"
         };
     }
 
@@ -57,12 +52,7 @@ public class RegisterTenantTest
         return new Model.Tenant
         {
             Id = Guid.NewGuid(),
-            Name = "TrentTheTenant",
-            ContactInfo = new TenantContactInfo
-            {
-                Email = "trent@example.com",
-                Phone = "07925987654"
-            }
+            Name = "TrentTheTenant"
         };
     }
 }

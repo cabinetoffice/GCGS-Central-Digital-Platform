@@ -55,10 +55,7 @@ public class OneLogin(
         }
         catch (ApiException ex) when (ex.StatusCode == 404)
         {
-            tenant = await tenantClient.CreateTenantAsync(
-                   new NewTenant(
-                       new TenantContactInfo(email, phone),
-                       userId));
+            tenant = await tenantClient.CreateTenantAsync(new NewTenant(userId));
         }
 
         session.Set(Session.RegistrationDetailsKey,
@@ -66,7 +63,7 @@ public class OneLogin(
         {
             UserPrincipal = userId,
             TenantId = tenant.Id,
-            Email = tenant.ContactInfo.Email,
+            Email = email,
             Phone = phone
         });
 

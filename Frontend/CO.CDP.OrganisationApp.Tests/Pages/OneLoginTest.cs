@@ -169,7 +169,6 @@ public class OneLoginTest
     private readonly AuthenticateResult authResultFail = AuthenticateResult.Fail(new Exception("Auth failed"));
 
     private Tenant.WebApiClient.Tenant dummyTenant = new(
-                new TenantContactInfo("dummy@test.com", "0123456789"),
                 new Guid("0bacf3d1-3b69-4efa-80e9-3623f4b7786e"), "dummy"
             );
 
