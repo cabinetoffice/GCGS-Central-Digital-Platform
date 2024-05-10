@@ -13,4 +13,5 @@ public class Person
     public required string Email { get; set; }
     public string? Phone { get; set; }
     public string? UserUrn { get; set; }
+    public List<Tenant> Tenants { get; } = [];
 }

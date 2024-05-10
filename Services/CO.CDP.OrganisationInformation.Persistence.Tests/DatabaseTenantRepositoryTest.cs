@@ -11,7 +11,8 @@ public class DatabaseTenantRepositoryTest(PostgreSqlFixture postgreSql) : IClass
     {
         using var repository = TenantRepository();
 
-        var tenant = GivenTenant(guid: Guid.NewGuid());
+        var person = GivenPerson();
+        var tenant = GivenTenant(guid: Guid.NewGuid(), person: person);
 
         repository.Save(tenant);
 
@@ -19,6 +20,7 @@ public class DatabaseTenantRepositoryTest(PostgreSqlFixture postgreSql) : IClass
 
         found.Should().Be(tenant);
         found.As<Tenant>().Id.Should().BePositive();
+        found.As<Tenant>().Persons.Should().Contain(p => p.Guid == person.Guid);
     }
 
     [Fact]
@@ -118,14 +120,34 @@ public class DatabaseTenantRepositoryTest(PostgreSqlFixture postgreSql) : IClass
 
     private static Tenant GivenTenant(
         Guid? guid = null,
-        string? name = null)
+        string? name = null,
+        Person? person = null)
     {
         var theGuid = guid ?? Guid.NewGuid();
         var theName = name ?? $"Stefan {theGuid}";
-        return new Tenant
+        var tenant = new Tenant
         {
             Guid = theGuid,
             Name = theName
+        };
+        if (person != null)
+        {
+            tenant.Persons.Add(person);
+        }
+        return tenant;
+    }
+
+    private static Person GivenPerson()
+    {
+        var guid = Guid.NewGuid();
+        return new Person
+        {
+            Guid = guid,
+            UserUrn = $"urn:fdc:gov.uk:2022:{guid}",
+            FirstName = "john",
+            LastName = "doe",
+            Email = "jon@example.com",
+            Phone = "07925123123"
         };
     }
 }
