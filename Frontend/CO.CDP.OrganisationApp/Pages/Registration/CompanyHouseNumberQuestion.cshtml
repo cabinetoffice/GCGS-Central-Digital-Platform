@@ -1,7 +1,7 @@
-@page "/registration/company-house-number"
+@page "/registration/has-companies-house-number"
 @model CO.CDP.OrganisationApp.Pages.Registration.CompanyHouseNumberQuestionModel
 
-@{
+@{  
     var backLink = "/registration/organisation-details";
     if (Request.Query.ContainsKey("frm-summary"))
     {
@@ -13,11 +13,11 @@
     Back
 </a>
 
-@* <main class="govuk-main-wrapper">
+<main class="govuk-main-wrapper">
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <partial name="_ErrorSummary" model="@Model.ModelState" />
-            <h1 class="govuk-heading-l">Organisation Identification</h1>
+            <h1 class="govuk-heading-l">Does your organisation have a Companies House number?</h1>           
             <form method="post">
                 @if (Request.Query.ContainsKey("frm-summary"))
                 {
@@ -25,22 +25,22 @@
                 }
                 <div class="govuk-form-group">
                     <fieldset class="govuk-fieldset">
-                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                            Organisation Type
-                        </legend>
                         <div class="govuk-radios" data-module="govuk-radios">
                             <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="CHN" name="OrganisationScheme" type="radio" value="CHN" data-aria-controls="conditional-CHN" @(Model.OrganisationScheme == "CHN" ? "checked" : "")>
-                                @Html.LabelFor(m => m.CompaniesHouse, new { @class = "govuk-label govuk-radios__label", @for = "CHN" })
-                            </div>
-                            <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-CHN">
-                                <div class="govuk-form-group @(companiesHouseNumberHasError ? "govuk-form-group--error" : "")">
-                                    @Html.LabelFor(m => m.CompaniesHouseNumber, new { @class = "govuk-label", @for = Model.CompaniesHouseNumber })
-                                    @Html.ValidationMessageFor(m => m.CompaniesHouseNumber, "", new { @class = "govuk-error-message", @id = "CompaniesHouseNumber-error" })
-                                    @Html.TextBoxFor(m => m.CompaniesHouseNumber, new { @class = "govuk-input " + (companiesHouseNumberHasError ? "govuk-input--error" : ""), @id = "CompaniesHouseNumber", @type = "text", spellcheck = "false", autocomplete = "off" })
-                                </div>
+                                <input class="govuk-radios__input" id="YES" name="HasCompaniesHouseNumber" type="radio" value="true" data-aria-controls="conditional-YES" @(Model.HasCompaniesHouseNumber == true ? "checked" : "")>
+                                <label class="govuk-label govuk-radios__label" for="YES">Yes</label>
+                            </div>                            
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input" id="NO" name="HasCompaniesHouseNumber" type="radio" value="false" data-aria-controls="conditional-NO" @(Model.HasCompaniesHouseNumber == false ? "checked" : "")>
+                                <label class="govuk-label govuk-radios__label" for="NO">No</label>
                             </div>
                         </div>
-                        </fieldset>
+                    </fieldset>
+                </div>
+                <button type="submit" class="govuk-button" data-module="govuk-button">Continue</button>
+            </form>
+        </div>
+    </div>
+</main>
 
- *@
+

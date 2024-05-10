@@ -144,7 +144,7 @@ public class OrganisationDetailModelTest
         var actionResult = model.OnPost();
 
         actionResult.Should().BeOfType<RedirectToPageResult>()
-            .Which.PageName.Should().Be("OrganisationIdentification");
+            .Which.PageName.Should().Be("CompanyHouseNumberQuestion");
     }
 
     [Fact]

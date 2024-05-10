@@ -52,7 +52,7 @@ public class OrganisationDetailModel(ISession session) : PageModel
         }
         else
         {
-            return RedirectToPage("OrganisationIdentification");
+            return RedirectToPage("CompanyHouseNumberQuestion");
         }
     }
 

@@ -33,4 +33,5 @@ public class RegistrationDetails
     public Guid? OrganisationId { get; set; }
 
     public Guid? PersonId { get; set; }
+    public bool? OrganisationHasCompaniesHouseNumber { get; set; }
 }
