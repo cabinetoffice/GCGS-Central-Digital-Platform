@@ -1,4 +1,5 @@
 using CO.CDP.OrganisationApp.Models;
+using CO.CDP.Person.WebApiClient;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -8,7 +9,9 @@ using System.ComponentModel.DataAnnotations;
 namespace CO.CDP.OrganisationApp.Pages.Registration;
 
 [Authorize]
-public class YourDetailsModel(ISession session) : PageModel
+public class YourDetailsModel(
+    ISession session,
+    IPersonClient personClient) : PageModel
 {
     [BindProperty]
     [DisplayName("First name")]
@@ -23,6 +26,9 @@ public class YourDetailsModel(ISession session) : PageModel
     [BindProperty]
     public bool? RedirectToSummary { get; set; }
 
+    [BindProperty]
+    public string? Error { get; set; }
+
     public IActionResult OnGet()
     {
         var registrationDetails = VerifySession();
@@ -33,7 +39,7 @@ public class YourDetailsModel(ISession session) : PageModel
         return Page();
     }
 
-    public IActionResult OnPost()
+    public async Task<IActionResult> OnPost()
     {
         if (!ModelState.IsValid)
         {
@@ -42,10 +48,19 @@ public class YourDetailsModel(ISession session) : PageModel
 
         var registrationDetails = VerifySession();
 
-        registrationDetails.FirstName = FirstName;
-        registrationDetails.LastName = LastName;
+        var person = await RegisterPerson(registrationDetails);
+        if (person != null)
+        {
+            registrationDetails.PersonId = person.Id;
+            registrationDetails.FirstName = FirstName;
+            registrationDetails.LastName = LastName;
 
-        session.Set(Session.RegistrationDetailsKey, registrationDetails);
+            session.Set(Session.RegistrationDetailsKey, registrationDetails);
+        }
+        else
+        {
+            return Page();
+        }
 
         if (RedirectToSummary == true)
         {
@@ -55,6 +70,33 @@ public class YourDetailsModel(ISession session) : PageModel
         {
             return RedirectToPage("OrganisationDetails");
         }
+    }
+
+    private async Task<Person.WebApiClient.Person?> RegisterPerson(RegistrationDetails registrationDetails)
+    {
+        Person.WebApiClient.Person? person = null;
+
+        try
+        {
+            person = await personClient.CreatePersonAsync(new NewPerson(
+                userUrn: registrationDetails.UserUrn,
+                email: registrationDetails.Email,
+                phone: registrationDetails.Phone,
+                firstName: FirstName,
+                lastName: LastName
+            ));
+        }
+        catch (ApiException aex)
+            when (aex is ApiException<Person.WebApiClient.ProblemDetails> pd)
+        {
+            Error = pd.Result.Detail;
+        }
+        catch (Exception ex)
+        {
+            Error = ex.Message;
+        }
+
+        return person;
     }
 
     private RegistrationDetails VerifySession()

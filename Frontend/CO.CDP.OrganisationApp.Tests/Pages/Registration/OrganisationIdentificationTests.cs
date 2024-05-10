@@ -406,7 +406,7 @@ public class OrganisationIdentificationModelTests
     {
         var registrationDetails = new RegistrationDetails
         {
-            UserPrincipal = "urn:fdc:gov.uk:2022:37d8856672e84a57ae9c86b27b226225",
+            UserUrn = "urn:fdc:gov.uk:2022:37d8856672e84a57ae9c86b27b226225",
             OrganisationScheme = "CHN",
             OrganisationIdentificationNumber = "12345678",
         };

@@ -1,6 +1,6 @@
 using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.Pages.Registration;
-using CO.CDP.Tenant.WebApiClient;
+using CO.CDP.Person.WebApiClient;
 using FluentAssertions;
 using IdentityModel;
 using Microsoft.AspNetCore.Authentication;
@@ -13,7 +13,7 @@ namespace CO.CDP.OrganisationApp.Tests.Pages;
 
 public class OneLoginTest
 {
-    private readonly Mock<ITenantClient> tenantClientMock;
+    private readonly Mock<IPersonClient> personClientMock;
     private readonly Mock<ISession> sessionMock;
     private readonly Mock<IHttpContextAccessor> httpContextAccessorMock;
     private readonly Mock<IAuthenticationService> authService;
@@ -21,7 +21,7 @@ public class OneLoginTest
     public OneLoginTest()
     {
         httpContextAccessorMock = new Mock<IHttpContextAccessor>();
-        tenantClientMock = new Mock<ITenantClient>();
+        personClientMock = new Mock<IPersonClient>();
         sessionMock = new Mock<ISession>();
         authService = new Mock<IAuthenticationService>();
     }
@@ -48,8 +48,7 @@ public class OneLoginTest
             It.Is<RegistrationDetails>(rd =>
                 rd.Email == "dummy@test.com"
                 && rd.Phone == "+44 123456789"
-                && rd.TenantId == new Guid("0bacf3d1-3b69-4efa-80e9-3623f4b7786e")
-                && rd.UserPrincipal == "urn:fdc:gov.uk:2022:7wTqYGMFQxgukTSpSI2GodMwe9"
+                && rd.UserUrn == "urn:fdc:gov.uk:2022:7wTqYGMFQxgukTSpSI2GodMwe9"
             )), Times.Once);
     }
 
@@ -80,36 +79,28 @@ public class OneLoginTest
     }
 
     [Fact]
-    public async Task OnGetUserInfo_WhenTenantIsRegistered_ShouldNotRegisterTenantAgain()
+    public async Task OnGetUserInfo_WhenPersonAlreadyRegistered_ShouldRedirectToOrganisationDetailsPage()
     {
         var model = GivenOneLoginCallbackModel();
 
-        tenantClientMock.Setup(t => t.LookupTenantAsync(It.IsAny<string>()))
-            .ReturnsAsync(dummyTenant);
+        personClientMock.Setup(t => t.LookupPersonAsync(It.IsAny<string>()))
+            .ReturnsAsync(dummyPerson);
 
         var results = await model.OnGet("user-info");
 
-        tenantClientMock.Verify(v => v.CreateTenantAsync(It.IsAny<NewTenant>()), Times.Never);
+        results.Should().BeOfType<RedirectToPageResult>()
+            .Which.PageName.Should().Be("Registration/OrganisationDetails");
     }
 
     [Fact]
-    public async Task OnGetUserInfo_WhenTenantIsNotRegistered_ShouldRegisterTenant()
+    public async Task OnGetUserInfo_WhenPersonNotRegistered_ShouldRedirectToPrivacyPolicyPage()
     {
         var model = GivenOneLoginCallbackModel();
 
-        var results = await model.OnGet("user-info");
-
-        tenantClientMock.Verify(v => v.CreateTenantAsync(It.IsAny<NewTenant>()), Times.Once);
-    }
-
-    [Fact]
-    public async Task OnGetUserInfo_WhenSuccessfulRegistration_ShouldSetRegistrationDetailsInSessionAndRedirect()
-    {
-        var model = GivenOneLoginCallbackModel();
+        personClientMock.Setup(t => t.LookupPersonAsync(It.IsAny<string>()))
+            .ThrowsAsync(new ApiException("Unexpected error", 404, "", default, null));
 
         var results = await model.OnGet("user-info");
-
-        sessionMock.Verify(v => v.Set(Session.RegistrationDetailsKey, It.IsAny<RegistrationDetails>()), Times.Once);
 
         results.Should().BeOfType<RedirectToPageResult>()
             .Which.PageName.Should().Be("PrivacyPolicy");
@@ -168,10 +159,8 @@ public class OneLoginTest
 
     private readonly AuthenticateResult authResultFail = AuthenticateResult.Fail(new Exception("Auth failed"));
 
-    private Tenant.WebApiClient.Tenant dummyTenant = new(
-                new TenantContactInfo("dummy@test.com", "0123456789"),
-                new Guid("0bacf3d1-3b69-4efa-80e9-3623f4b7786e"), "dummy"
-            );
+    private readonly Person.WebApiClient.Person dummyPerson
+        = new("dummy@test.com", "firstdummy", Guid.NewGuid(), "lastdummy");
 
     private OneLogin GivenOneLoginCallbackModel()
     {
@@ -185,15 +174,12 @@ public class OneLoginTest
         httpContextAccessorMock.SetupGet(t => t.HttpContext)
             .Returns(new DefaultHttpContext { RequestServices = serviceProvider.Object });
 
-        tenantClientMock.Setup(t => t.LookupTenantAsync(It.IsAny<string>()))
+        personClientMock.Setup(t => t.LookupPersonAsync(It.IsAny<string>()))
             .ThrowsAsync(new ApiException("", 404, "", default, null));
-
-        tenantClientMock.Setup(t => t.CreateTenantAsync(It.IsAny<NewTenant>()))
-            .ReturnsAsync(dummyTenant);
 
         return new OneLogin(
             httpContextAccessorMock.Object,
-            tenantClientMock.Object,
+            personClientMock.Object,
             sessionMock.Object);
     }
 }

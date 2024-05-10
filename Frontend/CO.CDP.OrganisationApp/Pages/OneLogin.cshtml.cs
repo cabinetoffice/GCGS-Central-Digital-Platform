@@ -1,5 +1,5 @@
 using CO.CDP.OrganisationApp.Models;
-using CO.CDP.Tenant.WebApiClient;
+using CO.CDP.Person.WebApiClient;
 using IdentityModel;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -11,7 +11,7 @@ namespace CO.CDP.OrganisationApp.Pages.Registration;
 
 public class OneLogin(
     IHttpContextAccessor httpContextAccessor,
-    ITenantClient tenantClient,
+    IPersonClient personClient,
     ISession session) : PageModel
 {
     public async Task<IActionResult> OnGet(string action)
@@ -38,39 +38,40 @@ public class OneLogin(
             return SignIn();
         }
 
-        var userId = userInfo.Principal.FindFirst(JwtClaimTypes.Subject)?.Value;
+        var urn = userInfo.Principal.FindFirst(JwtClaimTypes.Subject)?.Value;
         var email = userInfo.Principal.FindFirst(JwtClaimTypes.Email)?.Value;
         var phone = userInfo.Principal.FindFirst(JwtClaimTypes.PhoneNumber)?.Value;
 
-        if (userId == null)
+        if (urn == null)
         {
             return SignIn();
         }
 
-        Tenant.WebApiClient.Tenant? tenant;
+        var rd = new RegistrationDetails
+        {
+            UserUrn = urn,
+            Email = email,
+            Phone = phone
+        };
+
+        Person.WebApiClient.Person? person;
 
         try
         {
-            tenant = await tenantClient.LookupTenantAsync(userId);
+            person = await personClient.LookupPersonAsync(urn);
+            rd.PersonId = person.Id;
+
+            session.Set(Session.RegistrationDetailsKey, rd);
+
+            return RedirectToPage("Registration/OrganisationDetails");
         }
         catch (ApiException ex) when (ex.StatusCode == 404)
         {
-            tenant = await tenantClient.CreateTenantAsync(
-                   new NewTenant(
-                       new TenantContactInfo(email, phone),
-                       userId));
+            session.Set(Session.RegistrationDetailsKey, rd);
+
+            return RedirectToPage("PrivacyPolicy");
         }
 
-        session.Set(Session.RegistrationDetailsKey,
-        new RegistrationDetails
-        {
-            UserPrincipal = userId,
-            TenantId = tenant.Id,
-            Email = tenant.ContactInfo.Email,
-            Phone = phone
-        });
-
-        return RedirectToPage("PrivacyPolicy");
     }
 
     private IActionResult SignOut()
