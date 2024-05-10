@@ -88,6 +88,12 @@ public class OneLoginTest
 
         var results = await model.OnGet("user-info");
 
+        sessionMock.Verify(t => t.Set(Session.RegistrationDetailsKey, It.Is<RegistrationDetails>(o =>
+             o.FirstName == "firstdummy" &&
+             o.LastName == "lastdummy" &&
+             o.PersonId == new Guid("0bacf3d1-3b69-4efa-80e9-3623f4b7786e")
+         )), Times.Once);
+
         results.Should().BeOfType<RedirectToPageResult>()
             .Which.PageName.Should().Be("Registration/OrganisationDetails");
     }
@@ -160,7 +166,7 @@ public class OneLoginTest
     private readonly AuthenticateResult authResultFail = AuthenticateResult.Fail(new Exception("Auth failed"));
 
     private readonly Person.WebApiClient.Person dummyPerson
-        = new("dummy@test.com", "firstdummy", Guid.NewGuid(), "lastdummy");
+        = new("dummy@test.com", "firstdummy", new Guid("0bacf3d1-3b69-4efa-80e9-3623f4b7786e"), "lastdummy");
 
     private OneLogin GivenOneLoginCallbackModel()
     {
