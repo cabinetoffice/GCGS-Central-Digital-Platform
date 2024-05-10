@@ -206,7 +206,7 @@ public class OrganisationRegisteredAddressModelTest
     {
         var registrationDetails = new RegistrationDetails
         {
-            UserPrincipal = "urn:fdc:gov.uk:2022:2e7f0429ebec480fb5568221a3fd735f",
+            UserUrn = "urn:fdc:gov.uk:2022:2e7f0429ebec480fb5568221a3fd735f",
             OrganisationAddressLine1 = "address line 1",
             OrganisationAddressLine2 = "address line 2",
             OrganisationCityOrTown = "london",

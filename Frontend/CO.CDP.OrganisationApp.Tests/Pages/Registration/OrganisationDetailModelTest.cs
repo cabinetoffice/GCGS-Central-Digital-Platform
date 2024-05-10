@@ -144,7 +144,7 @@ public class OrganisationDetailModelTest
         var actionResult = model.OnPost();
 
         actionResult.Should().BeOfType<RedirectToPageResult>()
-            .Which.PageName.Should().Be("OrganisationIdentification");
+            .Which.PageName.Should().Be("CompanyHouseNumberQuestion");
     }
 
     [Fact]
@@ -181,7 +181,7 @@ public class OrganisationDetailModelTest
     {
         var registrationDetails = new RegistrationDetails
         {
-            UserPrincipal = "urn:fdc:gov.uk:2022:91e9da3e77824185b7f8639d4a63dfc7",
+            UserUrn = "urn:fdc:gov.uk:2022:91e9da3e77824185b7f8639d4a63dfc7",
             OrganisationName = "TestOrg",
             OrganisationScheme = "TestType",
             OrganisationEmailAddress = "test@example.com"

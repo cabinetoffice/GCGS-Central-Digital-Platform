@@ -2,8 +2,7 @@ namespace CO.CDP.OrganisationApp.Models;
 
 public class RegistrationDetails
 {
-    public Guid TenantId { get; set; }
-    public required string UserPrincipal { get; set; }
+    public required string UserUrn { get; set; }
 
     public string? FirstName { get; set; }
 
@@ -33,4 +32,5 @@ public class RegistrationDetails
     public Guid? OrganisationId { get; set; }
 
     public Guid? PersonId { get; set; }
+    public bool? OrganisationHasCompaniesHouseNumber { get; set; }
 }
