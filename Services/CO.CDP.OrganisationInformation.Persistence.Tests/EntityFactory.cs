@@ -7,6 +7,7 @@ public static class EntityFactory
     public static Tenant GivenTenant(
         Guid? guid = null,
         string? name = null,
+        Organisation? organisation = null,
         Person? person = null)
     {
         var theGuid = guid ?? Guid.NewGuid();
@@ -16,6 +17,10 @@ public static class EntityFactory
             Guid = theGuid,
             Name = theName
         };
+        if (organisation != null)
+        {
+            tenant.Organisations.Add(organisation);
+        }
         if (person != null)
         {
             tenant.Persons.Add(person);
@@ -52,6 +57,7 @@ public static class EntityFactory
 
     public static Organisation GivenOrganisation(
         Guid? guid = null,
+        Tenant? tenant = null,
         string? name = null,
         string scheme = "ISO9001",
         string identifierId = "1",
@@ -76,6 +82,7 @@ public static class EntityFactory
         {
             Guid = theGuid,
             Name = theName,
+            Tenant = tenant ?? GivenTenant(),
             Identifier = new OrganisationIdentifier
             {
                 Scheme = scheme,
