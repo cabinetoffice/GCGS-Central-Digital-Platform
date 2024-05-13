@@ -14,4 +14,5 @@ public class Person
     public string? Phone { get; set; }
     public string? UserUrn { get; set; }
     public List<Tenant> Tenants { get; } = [];
+    public List<Organisation> Organisations { get; } = [];
 }
