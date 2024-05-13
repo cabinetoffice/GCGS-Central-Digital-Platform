@@ -26,7 +26,7 @@ public class OrganisationDetailsSummaryModel(
     {
         Details = VerifySession();
 
-        var organisation = await RegisterOrganisation();
+        var organisation = await RegisterOrganisation(Details);
         if (organisation != null)
         {
             Details.OrganisationId = organisation.Id;
@@ -40,7 +40,7 @@ public class OrganisationDetailsSummaryModel(
         return RedirectToPage("OrganisationAccount");
     }
 
-    private async Task<OrganisationWebApiClient.Organisation?> RegisterOrganisation()
+    private async Task<OrganisationWebApiClient.Organisation?> RegisterOrganisation(RegistrationDetails details)
     {
         OrganisationWebApiClient.Organisation? organisation = null;
 
@@ -50,23 +50,23 @@ public class OrganisationDetailsSummaryModel(
                 (new NewOrganisation(
                     null,
                     new OrganisationAddress(
-                        Details!.OrganisationAddressLine1,
-                        Details.OrganisationAddressLine2,
-                        Details.OrganisationCityOrTown,
-                        Details.OrganisationCountry,
-                        Details.OrganisationPostcode),
+                        details.OrganisationAddressLine1,
+                        details.OrganisationAddressLine2,
+                        details.OrganisationCityOrTown,
+                        details.OrganisationCountry,
+                        details.OrganisationPostcode),
                     new OrganisationContactPoint(
-                        Details.OrganisationEmailAddress,
+                        details.OrganisationEmailAddress,
                         null,
                         null,
                         null),
                     new OrganisationIdentifier(
                         null,
                         null,
-                        Details.OrganisationIdentificationNumber,
-                        Details.OrganisationScheme,
+                        details.OrganisationIdentificationNumber,
+                        details.OrganisationScheme,
                         null),
-                    Details.OrganisationName,
+                    details.OrganisationName,
                     [1] // TODO: Need to update - Hard-coded till we have buyer/supplier screen
                 ));
         }
