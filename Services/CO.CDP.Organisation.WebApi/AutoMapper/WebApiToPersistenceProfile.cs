@@ -22,6 +22,7 @@ public class WebApiToPersistenceProfile : Profile
         CreateMap<RegisterOrganisation, OrganisationInformation.Persistence.Organisation>()
             .ForMember(m => m.Guid, o => o.MapFrom((_, _, _, context) => context.Items["Guid"]))
             .ForMember(m => m.Id, o => o.Ignore())
-            .ForMember(m => m.Tenant, o => o.MapFrom((_, _, _, context) => context.Items["Tenant"]));
+            .ForMember(m => m.Tenant, o => o.MapFrom((_, _, _, context) => context.Items["Tenant"]))
+            .ForMember(m => m.Persons, o => o.Ignore());
     }
 }

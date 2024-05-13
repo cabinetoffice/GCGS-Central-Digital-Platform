@@ -26,7 +26,7 @@ public class OrganisationDetailsSummaryModel(
     {
         Details = VerifySession();
 
-        var organisation = await RegisterOrganisation();
+        var organisation = await RegisterOrganisation(Details);
         if (organisation != null)
         {
             Details.OrganisationId = organisation.Id;
@@ -40,35 +40,15 @@ public class OrganisationDetailsSummaryModel(
         return RedirectToPage("OrganisationAccount");
     }
 
-    private async Task<OrganisationWebApiClient.Organisation?> RegisterOrganisation()
+    private async Task<OrganisationWebApiClient.Organisation?> RegisterOrganisation(RegistrationDetails details)
     {
-        OrganisationWebApiClient.Organisation? organisation = null;
-
         try
         {
-            organisation = await organisationClient.CreateOrganisationAsync
-                (new NewOrganisation(
-                    null,
-                    new OrganisationAddress(
-                        Details!.OrganisationAddressLine1,
-                        Details.OrganisationAddressLine2,
-                        Details.OrganisationCityOrTown,
-                        Details.OrganisationCountry,
-                        Details.OrganisationPostcode),
-                    new OrganisationContactPoint(
-                        Details.OrganisationEmailAddress,
-                        null,
-                        null,
-                        null),
-                    new OrganisationIdentifier(
-                        null,
-                        null,
-                        Details.OrganisationIdentificationNumber,
-                        Details.OrganisationScheme,
-                        null),
-                    Details.OrganisationName,
-                    Details.OrganisationType.HasValue ? [(int)Details.OrganisationType.Value] : []
-                ));
+            var payload = NewOrganisationPayload(details);
+            if (payload is not null)
+            {
+                return await organisationClient.CreateOrganisationAsync(payload);
+            }
         }
         catch (ApiException aex)
             when (aex is ApiException<OrganisationWebApiClient.ProblemDetails> pd)
@@ -80,7 +60,39 @@ public class OrganisationDetailsSummaryModel(
             Error = ex.Message;
         }
 
-        return organisation;
+        return null;
+    }
+
+    private static NewOrganisation? NewOrganisationPayload(RegistrationDetails details)
+    {
+        if (!details.PersonId.HasValue)
+        {
+            return null;
+        }
+
+        return new NewOrganisation(
+            additionalIdentifiers: null,
+            address: new OrganisationAddress(
+                details.OrganisationAddressLine1,
+                details.OrganisationAddressLine2,
+                details.OrganisationCityOrTown,
+                details.OrganisationCountry,
+                details.OrganisationPostcode),
+            contactPoint: new OrganisationContactPoint(
+                details.OrganisationEmailAddress,
+                null,
+                null,
+                null),
+            identifier: new OrganisationIdentifier(
+                null,
+                null,
+                details.OrganisationIdentificationNumber,
+                details.OrganisationScheme,
+                null),
+            name: details.OrganisationName,
+            types: Details.OrganisationType.HasValue ? [(int)Details.OrganisationType.Value] : [],
+            personId: details.PersonId.Value
+        );
     }
 
     private RegistrationDetails VerifySession()

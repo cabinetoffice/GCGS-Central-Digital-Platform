@@ -5,6 +5,7 @@ namespace CO.CDP.Organisation.WebApi.Model;
 public record RegisterOrganisation
 {
     [Required(AllowEmptyStrings = true)] public required string Name { get; init; }
+    [Required] public required Guid PersonId { get; init; }
 
     public required OrganisationIdentifier Identifier { get; init; }
 

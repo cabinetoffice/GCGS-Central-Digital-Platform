@@ -111,6 +111,7 @@ public class OrganisationDetailsSummaryModelTest
         var registrationDetails = new RegistrationDetails
         {
             UserUrn = "urn:fdc:gov.uk:2022:6ba2a483e56144418756fd2edf1a55f6",
+            PersonId = Guid.NewGuid(),
             OrganisationName = "TestOrg",
             OrganisationScheme = "TestType",
             OrganisationEmailAddress = "test@example.com",

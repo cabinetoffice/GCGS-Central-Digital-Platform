@@ -82,6 +82,24 @@ public class DatabasePersonRepositoryTest(PostgreSqlFixture postgreSql) : IClass
         found!.Email.Should().Be("email@email.com");
     }
 
+    [Fact]
+    public async Task ItCorrectlyAssociatesPersonWithOrganisation()
+    {
+        using var repository = PersonRepository();
+
+        var person = GivenPerson(guid: Guid.NewGuid(), email: "Person3@example.com");
+        var tenant = GivenTenant();
+        var organisation = GivenOrganisation(guid: Guid.NewGuid(), name: "TheOrganisation");
+        person.Organisations.Add(organisation);
+
+        repository.Save(person);
+        var found = await repository.Find(person.Guid);
+
+        found.Should().NotBeNull();
+        found?.Organisations.Should().Contain(org => org.Guid == organisation.Guid);
+    }
+
+
     private IPersonRepository PersonRepository()
     {
         return new DatabasePersonRepository(OrganisationInformationContext());

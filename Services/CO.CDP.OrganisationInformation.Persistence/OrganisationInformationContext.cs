@@ -37,14 +37,19 @@ public class OrganisationInformationContext(string connectionString) : DbContext
                 a.Property(ai => ai.Uri);
                 a.Property(ai => ai.Number);
             });
-        });
-        modelBuilder.Entity<Person>(entity =>
-        {
-            entity.HasKey(e => e.Id);
+
             modelBuilder.Entity<Person>()
                 .HasMany(p => p.Tenants)
                 .WithMany(t => t.Persons)
                 .UsingEntity<TenantPerson>();
+        });
+        modelBuilder.Entity<Person>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            modelBuilder.Entity<Organisation>()
+                .HasMany(p => p.Persons)
+                .WithMany(t => t.Organisations)
+                .UsingEntity<OrganisationPerson>();
         });
 
         base.OnModelCreating(modelBuilder);

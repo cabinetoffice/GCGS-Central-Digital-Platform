@@ -67,6 +67,7 @@ public class RegisterOrganisationTest
         return new RegisterOrganisation
         {
             Name = "TheOrganisation",
+            PersonId = Guid.NewGuid(),
             Identifier = new OrganisationIdentifier
             {
                 Scheme = "ISO9001",
