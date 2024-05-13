@@ -67,7 +67,7 @@ public class OrganisationDetailsSummaryModel(
                         Details.OrganisationScheme,
                         null),
                     Details.OrganisationName,
-                    [1] // TODO: Need to update - Hard-coded till we have buyer/supplier screen
+                    [(int)Details.OrganisationType!.Value]
                 ));
         }
         catch (ApiException aex)

@@ -24,9 +24,6 @@ public class YourDetailsModel(
     public string? LastName { get; set; }
 
     [BindProperty]
-    public bool? RedirectToSummary { get; set; }
-
-    [BindProperty]
     public string? Error { get; set; }
 
     public IActionResult OnGet()
@@ -62,14 +59,7 @@ public class YourDetailsModel(
             return Page();
         }
 
-        if (RedirectToSummary == true)
-        {
-            return RedirectToPage("OrganisationDetailsSummary");
-        }
-        else
-        {
-            return RedirectToPage("OrganisationDetails");
-        }
+        return RedirectToPage("OrganisationSelection");
     }
 
     private async Task<Person.WebApiClient.Person?> RegisterPerson(RegistrationDetails registrationDetails)

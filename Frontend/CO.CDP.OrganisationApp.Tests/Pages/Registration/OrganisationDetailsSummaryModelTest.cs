@@ -1,3 +1,4 @@
+using CO.CDP.Common.Enums;
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.Pages.Registration;
@@ -112,7 +113,8 @@ public class OrganisationDetailsSummaryModelTest
             UserUrn = "urn:fdc:gov.uk:2022:6ba2a483e56144418756fd2edf1a55f6",
             OrganisationName = "TestOrg",
             OrganisationScheme = "TestType",
-            OrganisationEmailAddress = "test@example.com"
+            OrganisationEmailAddress = "test@example.com",
+            OrganisationType = OrganisationType.Supplier
         };
 
         return registrationDetails;

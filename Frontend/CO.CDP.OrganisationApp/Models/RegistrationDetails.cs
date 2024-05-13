@@ -1,3 +1,5 @@
+using CO.CDP.Common.Enums;
+
 namespace CO.CDP.OrganisationApp.Models;
 
 public class RegistrationDetails
@@ -30,6 +32,8 @@ public class RegistrationDetails
     public string? OrganisationCountry { get; set; }
 
     public Guid? OrganisationId { get; set; }
+
+    public OrganisationType? OrganisationType { get; set; }
 
     public Guid? PersonId { get; set; }
     public bool? OrganisationHasCompaniesHouseNumber { get; set; }

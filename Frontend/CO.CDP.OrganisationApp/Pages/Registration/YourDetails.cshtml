@@ -4,17 +4,7 @@
 @{
     var firstNameHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.FirstName)).HasInnerHtml;
     var lastNameHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.LastName)).HasInnerHtml;
-
-    var backLink = "/privacy-policy";
-    if (Request.Query.ContainsKey("frm-summary"))
-    {
-        backLink = "/registration/organisation-details-summary";
-    }
 }
-
-<a href="@backLink" class="govuk-back-link">
-    Back
-</a>
 
 <main class="govuk-main-wrapper">
     <div class="govuk-grid-row">
@@ -41,12 +31,6 @@
             </h1>
 
             <form method="post">
-
-                @if (Request.Query.ContainsKey("frm-summary"))
-                {
-                    <input type="hidden" name="RedirectToSummary" value="true" />
-                }
-
                 <fieldset class="govuk-fieldset">
                     <div class="govuk-form-group @(firstNameHasError ? "govuk-form-group--error" : "")">
                         <label class="govuk-label" for="@nameof(Model.FirstName)">
