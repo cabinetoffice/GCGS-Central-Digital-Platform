@@ -67,7 +67,7 @@ public class OrganisationDetailsSummaryModel(
                         Details.OrganisationScheme,
                         null),
                     Details.OrganisationName,
-                    [(int)Details.OrganisationType!.Value]
+                    Details.OrganisationType.HasValue ? [(int)Details.OrganisationType.Value] : []
                 ));
         }
         catch (ApiException aex)
