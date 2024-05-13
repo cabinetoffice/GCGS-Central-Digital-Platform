@@ -1,0 +1,91 @@
+@page "/registration/organisation-overview"
+@model CO.CDP.OrganisationApp.Pages.Registration.OrganisationOverviewModel
+
+@{
+    var organisationDetails = Model.OrganisationDetails!;
+}
+
+<main class="govuk-main-wrapper">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <fieldset class="govuk-fieldset">
+                <h1 class="govuk-heading-l">
+                    <span class="govuk-label--l">@organisationDetails.Name</span>
+                </h1>
+                <h2 class="govuk-heading-m">Organisation details</h2>
+                <dl class="govuk-summary-list">
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            Organisation name
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            <p class="govuk-body">@organisationDetails.Name</p>
+                        </dd>
+                        <dd class="govuk-summary-list__actions">
+                            <a class="govuk-link govuk-link--no-visited-state" href="#">Change<span class="govuk-visually-hidden"> address</span></a>
+                        </dd>
+                    </div>
+
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            Organisation identifier
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            <p class="govuk-body">@organisationDetails.Identifier.Scheme</p>
+                            <p class="govuk-body">@organisationDetails.Identifier.Number</p>
+                        </dd>
+                        <dd class="govuk-summary-list__actions">
+                            <a class="govuk-link govuk-link--no-visited-state" href="#">Change<span class="govuk-visually-hidden"> address</span></a>
+                        </dd>
+                    </div>
+
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            Organisation email
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            <p class="govuk-body">@organisationDetails.ContactPoint.Email</p>
+                        </dd>
+                        <dd class="govuk-summary-list__actions">
+                            <a class="govuk-link govuk-link--no-visited-state" href="#">Change<span class="govuk-visually-hidden"> address</span></a>
+                        </dd>
+                    </div>
+
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            Organisation address
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            <p class="govuk-body">@organisationDetails.Address.AddressLine1</p>
+                            <p class="govuk-body">@organisationDetails.Address.AddressLine2</p>
+                            <p class="govuk-body">@organisationDetails.Address.City</p>
+                            <p class="govuk-body">@organisationDetails.Address.PostCode</p>
+                            <p class="govuk-body">@organisationDetails.Address.Country</p>
+                        </dd>
+                        <dd class="govuk-summary-list__actions">
+                            <a class="govuk-link govuk-link--no-visited-state" href="#">Change<span class="govuk-visually-hidden"> address</span></a>
+                        </dd>
+                    </div>
+
+                </dl>
+                <h2 class="govuk-heading-m govuk-!-margin-top-9">Organisation users</h2>
+                <dl class="govuk-summary-list">
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            <a href="#">Add users</a>
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+
+                        </dd>
+                        <dd class="govuk-summary-list__actions">
+                            <strong class="govuk-tag govuk-tag--blue">
+                                Incomplete
+                            </strong>
+                        </dd>
+                    </div>
+                </dl>
+                <a href="#" class="govuk-link govuk-link--no-visited-state">Back to all organisations</a>
+            </fieldset>
+        </div>
+    </div>
+</main>
