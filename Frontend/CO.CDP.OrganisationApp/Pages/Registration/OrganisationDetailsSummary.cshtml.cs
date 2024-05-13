@@ -90,7 +90,7 @@ public class OrganisationDetailsSummaryModel(
                 details.OrganisationScheme,
                 null),
             name: details.OrganisationName,
-            types: Details.OrganisationType.HasValue ? [(int)Details.OrganisationType.Value] : [],
+            types: details.OrganisationType.HasValue ? [(int)details.OrganisationType.Value] : [],
             personId: details.PersonId.Value
         );
     }
