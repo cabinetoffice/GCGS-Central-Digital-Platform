@@ -16,6 +16,7 @@ public class Organisation
     public required OrganisationAddress Address { get; set; }
     public required OrganisationContactPoint ContactPoint { get; set; }
     public List<int> Types { get; set; } = [];
+    public List<Person> Persons { get; } = [];
 
     [ComplexType]
     public record OrganisationIdentifier
