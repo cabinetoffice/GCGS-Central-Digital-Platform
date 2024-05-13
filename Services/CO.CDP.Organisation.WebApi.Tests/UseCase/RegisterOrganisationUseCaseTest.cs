@@ -19,6 +19,7 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
         var command = new RegisterOrganisation
         {
             Name = "TheOrganisation",
+            PersonId = Guid.NewGuid(),
             Identifier = new OrganisationIdentifier
             {
                 Scheme = "ISO9001",
@@ -77,6 +78,7 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
         UseCase.Execute(new RegisterOrganisation
         {
             Name = "TheOrganisation",
+            PersonId = Guid.NewGuid(),
             Identifier = new OrganisationIdentifier
             {
                 Scheme = "ISO9001",
@@ -161,6 +163,7 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
         return new RegisterOrganisation
         {
             Name = name,
+            PersonId = Guid.NewGuid(),
             Identifier = new OrganisationIdentifier
             {
                 Scheme = "ISO9001",

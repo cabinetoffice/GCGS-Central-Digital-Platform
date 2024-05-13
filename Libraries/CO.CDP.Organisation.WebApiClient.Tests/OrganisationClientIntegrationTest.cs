@@ -39,6 +39,8 @@ public class OrganisationClientIntegrationTest
     };
         var types = new List<int> { 1 };
         var newOrganisation = new NewOrganisation(
+            // @TODO: pass the actual person id
+            personId: Guid.NewGuid(),
             additionalIdentifiers: additionalIdentifiers,
             address: address,
             contactPoint: contactPoint,
