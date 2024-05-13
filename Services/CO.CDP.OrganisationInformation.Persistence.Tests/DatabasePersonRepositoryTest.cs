@@ -93,40 +93,5 @@ public class DatabasePersonRepositoryTest(PostgreSqlFixture postgreSql) : IClass
         context.Database.Migrate();
         context.SaveChanges();
         return context;
-    }
-
-    private static Person GivenPerson(
-        Guid? guid = null,
-        string? userUrn = null,
-        string firstname = "Jon",
-        string lastname = "doe",
-        string email = "jon@example.com",
-        string phone = "07925123123",
-        Tenant? tenant = null)
-    {
-        var person = new Person
-        {
-            Guid = guid ?? Guid.NewGuid(),
-            UserUrn = userUrn ?? $"urn:fdc:gov.uk:2022:{Guid.NewGuid()}",
-            FirstName = firstname,
-            LastName = lastname,
-            Email = email,
-            Phone = phone
-        };
-        if (tenant != null)
-        {
-            person.Tenants.Add(tenant);
-        }
-        return person;
-    }
-
-    private static Tenant GivenTenant()
-    {
-        var guid = Guid.NewGuid();
-        return new Tenant
-        {
-            Guid = guid,
-            Name = $"Tenant {guid}"
-        };
-    }
+    }    
 }
