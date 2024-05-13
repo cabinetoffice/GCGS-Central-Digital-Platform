@@ -93,5 +93,5 @@ public class DatabasePersonRepositoryTest(PostgreSqlFixture postgreSql) : IClass
         context.Database.Migrate();
         context.SaveChanges();
         return context;
-    }    
+    }
 }
