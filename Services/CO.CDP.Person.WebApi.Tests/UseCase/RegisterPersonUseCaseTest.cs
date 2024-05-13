@@ -14,7 +14,7 @@ public class RegisterPersonUseCaseTest(AutoMapperFixture mapperFixture) : IClass
     private RegisterPersonUseCase UseCase => new(_repository.Object, mapperFixture.Mapper, () => _generatedGuid);
 
     [Fact]
-    public async Task ItReturnsTheRegisteredOrganisation()
+    public async Task ItReturnsTheRegisteredPerson()
     {
         var command = new RegisterPerson
         {
