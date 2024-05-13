@@ -10,15 +10,19 @@ namespace CO.CDP.Organisation.WebApi.Tests.UseCase;
 public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IClassFixture<AutoMapperFixture>
 {
     private readonly Mock<IOrganisationRepository> _repository = new();
+    private readonly Mock<IPersonRepository> _persons = new();
     private readonly Guid _generatedGuid = Guid.NewGuid();
-    private RegisterOrganisationUseCase UseCase => new(_repository.Object, mapperFixture.Mapper, () => _generatedGuid);
+    private RegisterOrganisationUseCase UseCase => new(_repository.Object, _persons.Object, mapperFixture.Mapper, () => _generatedGuid);
 
     [Fact]
     public async Task ItReturnsTheRegisteredOrganisation()
     {
+        var person = GivenPersonExists(guid: Guid.NewGuid());
+
         var command = new RegisterOrganisation
         {
             Name = "TheOrganisation",
+            PersonId = person.Guid,
             Identifier = new OrganisationIdentifier
             {
                 Scheme = "ISO9001",
@@ -72,11 +76,14 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
     }
 
     [Fact]
-    public void ItSavesNewOrganisationInTheRepository()
+    public async void ItSavesNewOrganisationInTheRepository()
     {
-        UseCase.Execute(new RegisterOrganisation
+        var person = GivenPersonExists(guid: Guid.NewGuid());
+
+        await UseCase.Execute(new RegisterOrganisation
         {
             Name = "TheOrganisation",
+            PersonId = person.Guid,
             Identifier = new OrganisationIdentifier
             {
                 Scheme = "ISO9001",
@@ -143,10 +150,13 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
     }
 
     [Fact]
-    public void ItAssociatesTheTenantWithThePerson()
+    public async void ItAssociatesTheTenantWithTheOrganisation()
     {
-        UseCase.Execute(GivenRegisterOrganisationCommand(
-            name: "ACME"
+        var person = GivenPersonExists(guid: Guid.NewGuid());
+
+        await UseCase.Execute(GivenRegisterOrganisationCommand(
+            name: "ACME",
+            personId: person.Guid
         ));
 
         _repository.Verify(r => r.Save(It.Is<OrganisationInformation.Persistence.Organisation>(o =>
@@ -154,13 +164,48 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
         )), Times.Once);
     }
 
+    [Fact]
+    public async void ItAssociatesTheTenantWithThePerson()
+    {
+        var person = GivenPersonExists(guid: Guid.NewGuid());
+
+        await UseCase.Execute(GivenRegisterOrganisationCommand(
+            name: "ACME",
+            personId: person.Guid
+        ));
+
+        _repository.Verify(r => r.Save(It.Is<OrganisationInformation.Persistence.Organisation>(o =>
+            o.Tenant.Persons.Count == 1 && o.Tenant.Persons.First().Guid == person.Guid
+        )), Times.Once);
+    }
+
+    [Fact]
+    public async void ItRejectsUnknownPersons()
+    {
+        var unknownPersonId = Guid.NewGuid();
+
+        await UseCase
+            .Invoking(u => u.Execute(GivenRegisterOrganisationCommand(
+                name: "ACME",
+                personId: unknownPersonId
+            )))
+            .Should()
+            .ThrowAsync<RegisterOrganisationUseCase.RegisterOrganisationException.UnknownPersonException>();
+
+        _repository.Verify(
+            r => r.Save(It.IsAny<OrganisationInformation.Persistence.Organisation>()),
+            Times.Never);
+    }
+
     private static RegisterOrganisation GivenRegisterOrganisationCommand(
-        string name = "TheOrganisation"
+        string name = "TheOrganisation",
+        Guid? personId = null
     )
     {
         return new RegisterOrganisation
         {
             Name = name,
+            PersonId = personId ?? Guid.NewGuid(),
             Identifier = new OrganisationIdentifier
             {
                 Scheme = "ISO9001",
@@ -196,5 +241,19 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
             },
             Types = new List<int> { 1 }
         };
+    }
+
+    private Person GivenPersonExists(Guid guid)
+    {
+        Person person = new Person
+        {
+            Id = 13,
+            Guid = guid,
+            FirstName = "Bob",
+            LastName = "Smith",
+            Email = "contact@example.com"
+        };
+        _persons.Setup(r => r.Find(guid)).ReturnsAsync(person);
+        return person;
     }
 }
