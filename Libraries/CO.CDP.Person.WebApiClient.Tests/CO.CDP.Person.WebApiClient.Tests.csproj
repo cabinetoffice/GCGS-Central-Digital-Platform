@@ -20,6 +20,7 @@
     <ItemGroup>
         <ProjectReference Include="..\..\Services\CO.CDP.Person.WebApi\CO.CDP.Person.WebApi.csproj" />
         <ProjectReference Include="..\CO.CDP.Person.WebApiClient\CO.CDP.Person.WebApiClient.csproj" />
+        <ProjectReference Include="..\..\TestKit\CO.CDP.TestKit.Mvc\CO.CDP.TestKit.Mvc.csproj" />
     </ItemGroup>
 
     <ItemGroup>
