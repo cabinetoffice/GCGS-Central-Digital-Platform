@@ -7,6 +7,7 @@
 
         <IsPackable>false</IsPackable>
         <IsTestProject>true</IsTestProject>
+        <GenerateProgramFile>false</GenerateProgramFile>
         <RootNamespace>CO.CDP.TestKit.Mvc.Tests</RootNamespace>
     </PropertyGroup>
 
