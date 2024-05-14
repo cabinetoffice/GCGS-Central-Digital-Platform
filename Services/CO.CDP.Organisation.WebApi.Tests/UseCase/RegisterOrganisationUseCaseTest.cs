@@ -180,6 +180,21 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
     }
 
     [Fact]
+    public async void ItAssociatesTheOrganisationWithThePerson()
+    {
+        var person = GivenPersonExists(guid: Guid.NewGuid());
+
+        await UseCase.Execute(GivenRegisterOrganisationCommand(
+            name: "ACME",
+            personId: person.Guid
+        ));
+
+        _repository.Verify(r => r.Save(It.Is<OrganisationInformation.Persistence.Organisation>(o =>
+            o.Persons.Count == 1 && o.Persons.First().Guid == person.Guid
+        )), Times.Once);
+    }
+
+    [Fact]
     public async void ItRejectsUnknownPersons()
     {
         var unknownPersonId = Guid.NewGuid();
