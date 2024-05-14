@@ -20,7 +20,9 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>
+        <ProjectReference Include="../../Services/CO.CDP.Tenant.WebApi/CO.CDP.Tenant.WebApi.csproj" />
         <ProjectReference Include="../CO.CDP.Tenant.WebApiClient/CO.CDP.Tenant.WebApiClient.csproj"/>
+        <ProjectReference Include="../../TestKit/CO.CDP.TestKit.Mvc/CO.CDP.TestKit.Mvc.csproj" />
     </ItemGroup>
 
 </Project>

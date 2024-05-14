@@ -6,10 +6,11 @@ namespace CO.CDP.TestKit.Mvc;
 public static class ServiceCollectionExtensions
 {
     public static IServiceCollection ConfigureInMemoryDbContext<TC>(this IServiceCollection services)
-        where TC : DbContext =>
-        services.AddScoped<DbContextOptions<TC>>(_ =>
-            new DbContextOptionsBuilder<TC>()
-                .UseInMemoryDatabase(databaseName: $"db-{Guid.NewGuid()}")
-                .Options
-        );
+        where TC : DbContext
+    {
+        var dbContextOptions = new DbContextOptionsBuilder<TC>()
+            .UseInMemoryDatabase(databaseName: $"db-{Guid.NewGuid()}")
+            .Options;
+        return services.AddScoped<DbContextOptions<TC>>(_ => dbContextOptions);
+    }
 }
