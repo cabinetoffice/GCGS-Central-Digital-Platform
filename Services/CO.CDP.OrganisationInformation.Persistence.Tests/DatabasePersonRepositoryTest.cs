@@ -1,6 +1,5 @@
 using CO.CDP.Testcontainers.PostgreSql;
 using FluentAssertions;
-using Microsoft.EntityFrameworkCore;
 using static CO.CDP.OrganisationInformation.Persistence.Tests.EntityFactory;
 
 namespace CO.CDP.OrganisationInformation.Persistence.Tests;
@@ -102,17 +101,6 @@ public class DatabasePersonRepositoryTest(PostgreSqlFixture postgreSql) : IClass
 
     private IPersonRepository PersonRepository()
     {
-        return new DatabasePersonRepository(OrganisationInformationContext());
-    }
-
-    private OrganisationInformationContext OrganisationInformationContext()
-    {
-        var options = new DbContextOptionsBuilder<OrganisationInformationContext>()
-            .UseNpgsql(postgreSql.ConnectionString)
-            .Options;
-        var context = new OrganisationInformationContext(options);
-        context.Database.Migrate();
-        context.SaveChanges();
-        return context;
+        return new DatabasePersonRepository(postgreSql.OrganisationInformationContext());
     }
 }

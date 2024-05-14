@@ -110,17 +110,6 @@ public class DatabaseTenantRepositoryTest(PostgreSqlFixture postgreSql) : IClass
 
     private ITenantRepository TenantRepository()
     {
-        return new DatabaseTenantRepository(OrganisationInformationContext());
-    }
-
-    private OrganisationInformationContext OrganisationInformationContext()
-    {
-        var options = new DbContextOptionsBuilder<OrganisationInformationContext>()
-            .UseNpgsql(postgreSql.ConnectionString)
-            .Options;
-        var context = new OrganisationInformationContext(options);
-        context.Database.Migrate();
-        context.SaveChanges();
-        return context;
+        return new DatabaseTenantRepository(postgreSql.OrganisationInformationContext());
     }
 }
