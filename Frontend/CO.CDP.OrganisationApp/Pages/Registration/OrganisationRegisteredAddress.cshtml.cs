@@ -16,17 +16,17 @@ public class OrganisationRegisteredAddressModel(ISession session) : PageModel
     public string? AddressLine1 { get; set; }
 
     [BindProperty]
-    [DisplayName("Address line 2")]
+    [DisplayName("Address line 2 (optional)")]
     public string? AddressLine2 { get; set; }
 
     [BindProperty]
-    [DisplayName("City or town")]
-    [Required(ErrorMessage = "Enter your city or town")]
-    public string? CityOrTown { get; set; }
+    [DisplayName("Town or city")]
+    [Required(ErrorMessage = "Enter your town or city")]
+    public string? TownOrCity { get; set; }
 
     [BindProperty]
-    [DisplayName("Postcode or ZIP Code")]
-    [Required(ErrorMessage = "Enter your postcode or zip Code")]
+    [DisplayName("Postcode")]
+    [Required(ErrorMessage = "Enter your postcode")]
     public string? Postcode { get; set; }
 
     [BindProperty]
@@ -36,16 +36,17 @@ public class OrganisationRegisteredAddressModel(ISession session) : PageModel
 
     public void OnGet()
     {
-        var registrationDetails = VerifySession();
+        var details = VerifySession();
 
-        AddressLine1 = registrationDetails.OrganisationAddressLine1;
-        AddressLine2 = registrationDetails.OrganisationAddressLine2;
-        CityOrTown = registrationDetails.OrganisationCityOrTown;
-        Postcode = registrationDetails.OrganisationPostcode;
-        Country = registrationDetails.OrganisationCountry;
+        AddressLine1 = details.OrganisationAddressLine1;
+        AddressLine2 = details.OrganisationAddressLine2;
+        TownOrCity = details.OrganisationCityOrTown;
+        Postcode = details.OrganisationPostcode;
+        Country = details.OrganisationCountry;
     }
 
-    public IActionResult OnPost() {
+    public IActionResult OnPost()
+    {
         if (!ModelState.IsValid)
         {
             return Page();
@@ -55,7 +56,7 @@ public class OrganisationRegisteredAddressModel(ISession session) : PageModel
 
         registrationDetails.OrganisationAddressLine1 = AddressLine1;
         registrationDetails.OrganisationAddressLine2 = AddressLine2;
-        registrationDetails.OrganisationCityOrTown = CityOrTown;
+        registrationDetails.OrganisationCityOrTown = TownOrCity;
         registrationDetails.OrganisationPostcode = Postcode;
         registrationDetails.OrganisationCountry = Country;
 

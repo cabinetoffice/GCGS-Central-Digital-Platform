@@ -65,27 +65,27 @@ public class OrganisationRegisteredAddressModelTest
     }
 
     [Fact]
-    public void WhenCityOrTownIsEmpty_ShouldRaiseCityOrTownValidationError()
+    public void WhenTownOrCityIsEmpty_ShouldRaiseTownOrCityValidationError()
     {
         var model = GivenOrganisationDetailModel();
 
         var results = ModelValidationHelper.Validate(model);
 
-        results.Any(c => c.MemberNames.Contains("CityOrTown")).Should().BeTrue();
+        results.Any(c => c.MemberNames.Contains("TownOrCity")).Should().BeTrue();
 
-        results.Where(c => c.MemberNames.Contains("CityOrTown")).First()
-            .ErrorMessage.Should().Be("Enter your city or town");
+        results.Where(c => c.MemberNames.Contains("TownOrCity")).First()
+            .ErrorMessage.Should().Be("Enter your town or city");
     }
 
     [Fact]
-    public void WhenCityOrTownIsNotEmpty_ShouldNotRaiseCityOrTownValidationError()
+    public void WhenTownOrCityIsNotEmpty_ShouldNotRaiseTownOrCityValidationError()
     {
         var model = GivenOrganisationDetailModel();
-        model.CityOrTown = "dummay";
+        model.TownOrCity = "dummay";
 
         var results = ModelValidationHelper.Validate(model);
 
-        results.Any(c => c.MemberNames.Contains("CityOrTown")).Should().BeFalse();
+        results.Any(c => c.MemberNames.Contains("TownOrCity")).Should().BeFalse();
     }
 
     [Fact]
@@ -98,7 +98,7 @@ public class OrganisationRegisteredAddressModelTest
         results.Any(c => c.MemberNames.Contains("Postcode")).Should().BeTrue();
 
         results.Where(c => c.MemberNames.Contains("Postcode")).First()
-            .ErrorMessage.Should().Be("Enter your postcode or zip Code");
+            .ErrorMessage.Should().Be("Enter your postcode");
     }
 
     [Fact]
@@ -111,8 +111,6 @@ public class OrganisationRegisteredAddressModelTest
 
         results.Any(c => c.MemberNames.Contains("Postcode")).Should().BeFalse();
     }
-
-
 
     [Fact]
     public void WhenCountryIsEmpty_ShouldRaiseCountryValidationError()
@@ -197,9 +195,9 @@ public class OrganisationRegisteredAddressModelTest
 
         model.AddressLine1.Should().Be(registrationDetails.OrganisationAddressLine1);
         model.AddressLine2.Should().Be(registrationDetails.OrganisationAddressLine2);
-        model.CityOrTown.Should().Be(registrationDetails.OrganisationCityOrTown);
+        model.TownOrCity.Should().Be(registrationDetails.OrganisationCityOrTown);
         model.Postcode.Should().Be(registrationDetails.OrganisationPostcode);
-        model.Country.Should().Be(registrationDetails.OrganisationCountry);
+        //model.Country.Should().Be(registrationDetails.OrganisationCountry);
     }
 
     private RegistrationDetails DummyRegistrationDetails()

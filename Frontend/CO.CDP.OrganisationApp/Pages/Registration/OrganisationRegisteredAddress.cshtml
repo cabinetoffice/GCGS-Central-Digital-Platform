@@ -4,9 +4,8 @@
 @{
     var addressLine1HasError = ((TagBuilder)Html.ValidationMessageFor(m => m.AddressLine1)).HasInnerHtml;
     var addressLine2HasError = ((TagBuilder)Html.ValidationMessageFor(m => m.AddressLine2)).HasInnerHtml;
-    var cityOrTownHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.CityOrTown)).HasInnerHtml;
+    var cityOrTownHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.TownOrCity)).HasInnerHtml;
     var postcodeHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Postcode)).HasInnerHtml;
-    var countryHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Country)).HasInnerHtml;
     var backLink = "/registration/organisation-identification";
     if (Request.Query.ContainsKey("frm-summary"))
     {
@@ -23,14 +22,12 @@
         <div class="govuk-grid-column-two-thirds">
             <partial name="_ErrorSummary" model="@ModelState" />
 
-            <h1 class="govuk-heading-xl">Supplier Registration</h1>
-
             <form method="post">
                 <div class="govuk-form-group">
                     <fieldset class="govuk-fieldset">
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                             <h1 class="govuk-fieldset__heading">
-                                Enter organisation address
+                                Enter a UK address for your organisation
                             </h1>
                         </legend>
 
@@ -67,18 +64,18 @@
                         </div>
 
                         <div class="govuk-form-group @(cityOrTownHasError ? "govuk-form-group--error" : "")">
-                            <label class="govuk-label" for="@nameof(Model.CityOrTown)">
-                                @Html.DisplayNameFor(m => m.CityOrTown)
+                            <label class="govuk-label" for="@nameof(Model.TownOrCity)">
+                                @Html.DisplayNameFor(m => m.TownOrCity)
                             </label>
                             @if (cityOrTownHasError)
                             {
                                 <p id="city-error" class="govuk-error-message">
                                     <span class="govuk-visually-hidden">Error:</span>
-                                    @Html.ValidationMessageFor(m => m.CityOrTown)
+                                    @Html.ValidationMessageFor(m => m.TownOrCity)
                                 </p>
                             }
-                            <input class="govuk-input @(cityOrTownHasError ? "govuk-input--error" : "")" id="@nameof(Model.CityOrTown)"
-                                   value="@Model.CityOrTown" name="@nameof(Model.CityOrTown)" type="text"
+                            <input class="govuk-input govuk-!-width-two-thirds @(cityOrTownHasError ? "govuk-input--error" : "")" id="@nameof(Model.TownOrCity)"
+                                   value="@Model.TownOrCity" name="@nameof(Model.TownOrCity)" type="text"
                                    spellcheck="false" @(cityOrTownHasError ? "aria-describedby=city-error" : "")>
                         </div>
 
@@ -93,12 +90,12 @@
                                     @Html.ValidationMessageFor(m => m.Postcode)
                                 </p>
                             }
-                            <input class="govuk-input @(postcodeHasError ? "govuk-input--error" : "")" id="@nameof(Model.Postcode)"
+                            <input class="govuk-input govuk-input--width-10 @(postcodeHasError ? "govuk-input--error" : "")" id="@nameof(Model.Postcode)"
                                    value="@Model.Postcode" name="@nameof(Model.Postcode)" type="text"
                                    spellcheck="false" @(postcodeHasError ? "aria-describedby=postcode-error" : "")>
                         </div>
 
-                        <div class="govuk-form-group">
+                        <div class="govuk-form-group govuk-visually-hidden">
                             <label class="govuk-label" for="@nameof(Model.Country)">
                                 @Html.DisplayNameFor(m => m.Country)
                             </label>
