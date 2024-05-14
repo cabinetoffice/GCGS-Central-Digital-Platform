@@ -35,6 +35,7 @@ public class RegisterOrganisationUseCase(
                 Persons = { person }
             };
         });
+        organisation.Persons.Add(person);
         organisationRepository.Save(organisation);
         return mapper.Map<Model.Organisation>(organisation);
     }
