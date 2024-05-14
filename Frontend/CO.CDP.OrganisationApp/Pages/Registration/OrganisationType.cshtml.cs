@@ -44,7 +44,7 @@ public class OrganisationTypeModel(
         }
         else
         {
-            return RedirectToPage("OrganisationDetails");
+            return RedirectToPage("OrganisationName");
         }
     }
 

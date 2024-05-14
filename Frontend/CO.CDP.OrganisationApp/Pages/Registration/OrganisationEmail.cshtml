@@ -1,0 +1,54 @@
+@page "/registration/organisation-email"
+@model CO.CDP.OrganisationApp.Pages.Registration.OrganisationEmailModel
+
+@{
+    var emailAddressHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.EmailAddress)).HasInnerHtml;
+}
+
+<main class="govuk-main-wrapper">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <partial name="_ErrorSummary" model="@ModelState" />
+
+            <form method="post">
+
+                @if (Request.Query.ContainsKey("frm-summary"))
+                {
+                    <input type="hidden" name="RedirectToSummary" value="true" />
+                }
+
+                <div class="govuk-form-group">
+                    <fieldset class="govuk-fieldset">
+                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                            <h1 class="govuk-label-wrapper">
+                                <label class="govuk-label govuk-label--l" for="@nameof(Model.EmailAddress)">
+                                    @Html.DisplayNameFor(m => m.EmailAddress)
+                                </label>
+                            </h1>
+                        </legend>
+
+                        <div class="govuk-form-group govuk-!-width-two-thirds @(emailAddressHasError ? "govuk-form-group--error" : "")">
+                            @if (emailAddressHasError)
+                            {
+                                <p id="email-address-error" class="govuk-error-message">
+                                    <span class="govuk-visually-hidden">Error:</span>
+                                    @Html.ValidationMessageFor(m => m.EmailAddress)
+                                </p>
+                            }
+                            <input class="govuk-input @(emailAddressHasError ? "govuk-input--error" : "")" id="@nameof(Model.EmailAddress)"
+                                   value="@Model.EmailAddress" type="text" name="@nameof(Model.EmailAddress)"
+                                   spellcheck="false" autocomplete="email" @(emailAddressHasError ? "aria-describedby=email-address-error" : "")>
+                        </div>
+                    </fieldset>
+                </div>
+
+                <button type="submit"
+                        class="govuk-button"
+                        data-module="govuk-button">
+                    Continue
+                </button>
+
+            </form>
+        </div>
+    </div>
+</main>
