@@ -7,15 +7,6 @@ using Microsoft.OpenApi.Models;
 
 namespace CO.CDP.Organisation.WebApi.Api;
 
-internal enum Types
-{
-    ProcuringEntity = 1,
-    Supplier,
-    Tenderer,
-    Funder,
-    Enquirer
-}
-
 public static class EndpointExtensions
 {
     private static Dictionary<Guid, Model.Organisation> _organisations = Enumerable.Range(1, 5)

@@ -95,7 +95,7 @@ public class OneLoginTest
          )), Times.Once);
 
         results.Should().BeOfType<RedirectToPageResult>()
-            .Which.PageName.Should().Be("Registration/OrganisationDetails");
+            .Which.PageName.Should().Be("Registration/OrganisationSelection");
     }
 
     [Fact]

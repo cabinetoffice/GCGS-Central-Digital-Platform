@@ -1,0 +1,29 @@
+@page "/registration/organisation-selection"
+@model OrganisationSelectionModel
+
+<main class="govuk-main-wrapper">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <h1 class="govuk-heading-l">
+                <span class="govuk-label--l">Select or add an organisation</span>
+            </h1>
+
+            <table class="govuk-table">
+                <caption class="govuk-table__caption govuk-table__caption--m">List of organisations</caption>
+                <thead class="govuk-table__head">
+                    <tr class="govuk-table__row">
+                        <th scope="col" colspan="2" class="govuk-table__header">Organisation name</th>
+                    </tr>
+                </thead>
+                <tbody class="govuk-table__body">
+                </tbody>
+            </table>
+
+            <form method="post">
+                <button type="submit" class="govuk-button" data-module="govuk-button">
+                    Add Organisation
+                </button>
+            </form>
+        </div>
+    </div>
+</main>

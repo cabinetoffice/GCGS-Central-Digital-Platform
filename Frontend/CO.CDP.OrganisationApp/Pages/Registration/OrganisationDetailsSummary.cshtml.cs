@@ -90,7 +90,7 @@ public class OrganisationDetailsSummaryModel(
                 details.OrganisationScheme,
                 null),
             name: details.OrganisationName,
-            types: [1], // TODO: Need to update - Hard-coded till we have buyer/supplier screen
+            types: details.OrganisationType.HasValue ? [(int)details.OrganisationType.Value] : [],
             personId: details.PersonId.Value
         );
     }
