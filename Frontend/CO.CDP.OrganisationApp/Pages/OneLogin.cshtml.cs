@@ -65,7 +65,7 @@ public class OneLogin(
 
             session.Set(Session.RegistrationDetailsKey, rd);
 
-            return RedirectToPage("Registration/OrganisationDetails");
+            return RedirectToPage("Registration/OrganisationSelection");
         }
         catch (ApiException ex) when (ex.StatusCode == 404)
         {

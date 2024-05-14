@@ -176,7 +176,7 @@ public class YourDetailsModelTest
 
         personClientMock.Verify(s => s.CreatePersonAsync(It.IsAny<NewPerson>()), Times.Once);
         actionResult.Should().BeOfType<RedirectToPageResult>()
-            .Which.PageName.Should().Be("OrganisationDetails");
+            .Which.PageName.Should().Be("OrganisationSelection");
     }
 
     [Fact]
@@ -198,29 +198,6 @@ public class YourDetailsModelTest
 
         actionResult.Should().BeOfType<PageResult>();
     }
-
-    [Fact]
-    public async Task OnPost_WhenValidModelAndRedirectToSummary_ShouldRedirectToOrganisationDetailSummaryPage()
-    {
-        var model = GivenYourDetailsModel();
-        model.RedirectToSummary = true;
-
-        sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey))
-            .Returns(new RegistrationDetails
-            {
-                UserUrn = "urn:fdc:gov.uk:2022:bad51498dcfe4572959c4540aef2397e",
-                Email = "dummy@test.com"
-            });
-
-        personClientMock.Setup(s => s.CreatePersonAsync(It.IsAny<NewPerson>()))
-            .ReturnsAsync(dummyPerson);
-
-        var actionResult = await model.OnPost();
-
-        actionResult.Should().BeOfType<RedirectToPageResult>()
-            .Which.PageName.Should().Be("OrganisationDetailsSummary");
-    }
-
 
     private readonly Person.WebApiClient.Person dummyPerson
         = new("dummy@test.com", "firstdummy", Guid.NewGuid(), "lastdummy");

@@ -1,47 +1,84 @@
-﻿@page "/registration/organisation-type"
+@page "/registration/organisation-type"
+@model OrganisationTypeModel
+@using CO.CDP.Common.Enums
 
-<a href="/registration/your-details" class="govuk-back-link">
+@{
+    var organisationTypeHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.OrganisationType)).HasInnerHtml;
+
+    var backLink = "/registration/organisation-selection";
+    if (Request.Query.ContainsKey("frm-summary"))
+    {
+        backLink = "/registration/organisation-details-summary";
+        Model.RedirectToSummary = true;
+    }
+
+    string IsSelected(OrganisationType radioValue)
+    {
+        return Model.OrganisationType == radioValue ? "checked='checked'" : string.Empty;
+    }
+}
+
+<a href="@backLink" class="govuk-back-link">
     Back
 </a>
 
 <main class="govuk-main-wrapper">
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-            <h1 class="govuk-heading-xl">
-                Supplier Registration
-            </h1>
+            <partial name="_ErrorSummary" model="@ModelState" />
+            <form method="post">
+                @if (Request.Query.ContainsKey("frm-summary"))
+                {
+                    <input type="hidden" name="RedirectToSummary" value="true" />
+                }
+                <div class="govuk-form-group @(organisationTypeHasError ? "govuk-form-group--error" : "")">
+                    <fieldset class="govuk-fieldset">
+                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                            <h1 class="govuk-fieldset__heading">
+                                What do you want to register your organisation as?
+                            </h1>
+                        </legend>
 
-            <div class="govuk-form-group">
-                <fieldset class="govuk-fieldset">
-                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                        <h1 class="govuk-fieldset__heading">
-                            Is your organisation a supplier, buyer or both?
-                        </h1>
-                    </legend>
-                    <div id="waste-hint" class="govuk-hint">
-                        Select all that apply.
-                    </div>
-                    <div class="govuk-checkboxes" data-module="govuk-checkboxes">
-                        <div class="govuk-checkboxes__item">
-                            <input class="govuk-checkboxes__input" id="supplier" name="supplier-type" type="checkbox" value="supplier" />
-                            <label class="govuk-label govuk-checkboxes__label" for="supplier">
-                                Supplier
-                            </label>
+                        @if (organisationTypeHasError)
+                        {
+                            <p id="organisationType-error" class="govuk-error-message">
+                                <span class="govuk-visually-hidden">Error:</span> @Html.ValidationMessageFor(m => m.OrganisationType)
+                            </p>
+                        }
+
+                        <div class="govuk-radios" data-module="govuk-radios">
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input" id="buyer" name="OrganisationType"
+                                       type="radio" value="@OrganisationType.Tenderer"
+                                       aria-describedby="buyer-hint" @IsSelected(OrganisationType.Tenderer)>
+                                <label class="govuk-label govuk-radios__label" for="buyer">
+                                    A buyer
+                                </label>
+                                <div id="buyer-hint" class="govuk-hint govuk-radios__hint">
+                                    You are involved with managing, paying for, or procuring contracts for goods, works, or services.
+                                </div>
+                            </div>
+
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input" id="supplier" name="OrganisationType"
+                                       type="radio" value="@OrganisationType.Supplier"
+                                       aria-describedby="supplier-hint" @IsSelected(OrganisationType.Supplier)>
+                                <label class="govuk-label govuk-radios__label" for="supplier">
+                                    A supplier
+                                </label>
+                                <div id="supplier-hint" class="govuk-hint govuk-radios__hint">
+                                    You look at contracts to supply, have enquired about supplying, have submitted tenders, or have been paid to supply goods, works, or services.
+                                </div>
+                            </div>
                         </div>
-                        <div class="govuk-checkboxes__item">
-                            <input class="govuk-checkboxes__input" id="buyer" name="supplier-type" type="checkbox" value="buyer" />
-                            <label class="govuk-label govuk-checkboxes__label" for="buyer">
-                                Buyer
-                            </label>
-                        </div>
-                    </div>
-                </fieldset>
-            </div>
-            <a href="/registration/organisation-details">
-                <button type="submit" class="govuk-button" data-module="govuk-button">
-                    Continue
-                </button>
-            </a>
+                    </fieldset>
+                </div>
+                <a href="/registration/organisation-details">
+                    <button type="submit" class="govuk-button" data-module="govuk-button">
+                        Continue
+                    </button>
+                </a>
+            </form>
         </div>
     </div>
 </main>

@@ -1,3 +1,4 @@
+using CO.CDP.Common.Enums;
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.Pages.Registration;
@@ -113,7 +114,8 @@ public class OrganisationDetailsSummaryModelTest
             PersonId = Guid.NewGuid(),
             OrganisationName = "TestOrg",
             OrganisationScheme = "TestType",
-            OrganisationEmailAddress = "test@example.com"
+            OrganisationEmailAddress = "test@example.com",
+            OrganisationType = OrganisationType.Supplier
         };
 
         return registrationDetails;
