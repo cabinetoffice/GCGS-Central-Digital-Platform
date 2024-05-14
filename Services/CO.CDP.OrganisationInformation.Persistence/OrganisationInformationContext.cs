@@ -2,15 +2,21 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CO.CDP.OrganisationInformation.Persistence;
 
-public class OrganisationInformationContext(string connectionString) : DbContext
+public class OrganisationInformationContext(DbContextOptions<OrganisationInformationContext> options)
+    : DbContext(options)
 {
+    public OrganisationInformationContext(string connectionString) : this(
+        new DbContextOptionsBuilder<OrganisationInformationContext>().UseNpgsql(connectionString).Options
+    )
+    {
+    }
+
     public DbSet<Tenant> Tenants { get; set; } = null!;
     public DbSet<Organisation> Organisations { get; set; } = null!;
     public DbSet<Person> Persons { get; set; } = null!;
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseNpgsql(connectionString);
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
