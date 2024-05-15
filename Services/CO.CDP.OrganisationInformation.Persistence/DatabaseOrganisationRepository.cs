@@ -24,7 +24,7 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
         var person = await context.Persons
             .Include(p => p.Organisations)
             .FirstOrDefaultAsync(p => p.UserUrn == userUrn);
-        return person == null ? [] : person.Organisations;
+        return person?.Organisations ?? [];
     }
 
     public void Save(Organisation organisation)
