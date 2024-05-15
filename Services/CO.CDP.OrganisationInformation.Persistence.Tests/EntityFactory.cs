@@ -64,7 +64,6 @@ public static class EntityFactory
         string legalName = "DefaultLegalName",
         string uri = "http://default.org",
         string streetAddress = "1234 Default St",
-        string locality = "Default City",
         string city = "Default Region",
         string postCode = "12345",
         string country = "Defaultland",
