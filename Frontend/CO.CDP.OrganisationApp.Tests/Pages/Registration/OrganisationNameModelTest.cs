@@ -22,7 +22,7 @@ public class OrganisationNameModelTest
     [Fact]
     public void WhenEmptyModelIsPosted_ShouldRaiseValidationErrors()
     {
-        var model = GivenOrganisationDetailModel();
+        var model = GivenOrganisationNameModel();
 
         var results = ModelValidationHelper.Validate(model);
 
@@ -32,7 +32,7 @@ public class OrganisationNameModelTest
     [Fact]
     public void WhenOrganisationNameIsEmpty_ShouldRaiseOrganisationNameValidationError()
     {
-        var model = GivenOrganisationDetailModel();
+        var model = GivenOrganisationNameModel();
 
         var results = ModelValidationHelper.Validate(model);
 
@@ -45,7 +45,7 @@ public class OrganisationNameModelTest
     [Fact]
     public void WhenOrganisationNameIsNotEmpty_ShouldNotRaiseOrganisationNameValidationError()
     {
-        var model = GivenOrganisationDetailModel();
+        var model = GivenOrganisationNameModel();
         model.OrganisationName = "dummay";
 
         var results = ModelValidationHelper.Validate(model);
@@ -62,7 +62,7 @@ public class OrganisationNameModelTest
             new RouteData(), new PageActionDescriptor(), modelState);
         var pageContext = new PageContext(actionContext);
 
-        var model = GivenOrganisationDetailModel();
+        var model = GivenOrganisationNameModel();
         model.PageContext = pageContext;
 
         var actionResult = model.OnPost();
@@ -73,7 +73,7 @@ public class OrganisationNameModelTest
     [Fact]
     public void OnPost_WhenValidModel_ShouldSetRegistrationDetailsInSession()
     {
-        var model = GivenOrganisationDetailModel();
+        var model = GivenOrganisationNameModel();
 
         RegistrationDetails registrationDetails = DummyRegistrationDetails();
 
@@ -88,7 +88,7 @@ public class OrganisationNameModelTest
     [Fact]
     public void OnPost_WhenValidModel_ShouldRedirectToOrganisationEmailPage()
     {
-        var model = GivenOrganisationDetailModel();
+        var model = GivenOrganisationNameModel();
 
         RegistrationDetails registrationDetails = DummyRegistrationDetails();
         sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(registrationDetails);
@@ -103,7 +103,7 @@ public class OrganisationNameModelTest
     [Fact]
     public void OnGet_ValidSession_ReturnsRegistrationDetails()
     {
-        var model = GivenOrganisationDetailModel();
+        var model = GivenOrganisationNameModel();
 
         RegistrationDetails registrationDetails = DummyRegistrationDetails();
 
@@ -132,13 +132,13 @@ public class OrganisationNameModelTest
     {
         sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(value: null);
 
-        var model = GivenOrganisationDetailModel();
+        var model = GivenOrganisationNameModel();
 
         Action action = () => model.OnGet();
         action.Should().Throw<Exception>().WithMessage("Shoudn't be here");
     }
 
-    private OrganisationNameModel GivenOrganisationDetailModel()
+    private OrganisationNameModel GivenOrganisationNameModel()
     {
         return new OrganisationNameModel(sessionMock.Object);
     }

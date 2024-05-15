@@ -22,7 +22,7 @@ public class OrganisationEmailModelTest
     [Fact]
     public void WhenEmptyModelIsPosted_ShouldRaiseValidationErrors()
     {
-        var model = GivenOrganisationDetailModel();
+        var model = GivenOrganisationEmailModel();
 
         var results = ModelValidationHelper.Validate(model);
 
@@ -33,7 +33,7 @@ public class OrganisationEmailModelTest
     [Fact]
     public void WhenEmailIsEmpty_ShouldRaiseEmailAddressValidationError()
     {
-        var model = GivenOrganisationDetailModel();
+        var model = GivenOrganisationEmailModel();
 
         var results = ModelValidationHelper.Validate(model);
 
@@ -46,7 +46,7 @@ public class OrganisationEmailModelTest
     [Fact]
     public void WhenEmailAddressIsInvalid_ShouldRaiseEmailAddressValidationError()
     {
-        var model = GivenOrganisationDetailModel();
+        var model = GivenOrganisationEmailModel();
         model.EmailAddress = "dummy";
 
         var results = ModelValidationHelper.Validate(model);
@@ -60,7 +60,7 @@ public class OrganisationEmailModelTest
     [Fact]
     public void WhenEmailAddressIsValid_ShouldNotRaiseEmailAddressValidationError()
     {
-        var model = GivenOrganisationDetailModel();
+        var model = GivenOrganisationEmailModel();
         model.EmailAddress = "dummay@test.com";
 
         var results = ModelValidationHelper.Validate(model);
@@ -77,7 +77,7 @@ public class OrganisationEmailModelTest
             new RouteData(), new PageActionDescriptor(), modelState);
         var pageContext = new PageContext(actionContext);
 
-        var model = GivenOrganisationDetailModel();
+        var model = GivenOrganisationEmailModel();
         model.PageContext = pageContext;
 
         var actionResult = model.OnPost();
@@ -88,7 +88,7 @@ public class OrganisationEmailModelTest
     [Fact]
     public void OnPost_WhenValidModel_ShouldSetRegistrationDetailsInSession()
     {
-        var model = GivenOrganisationDetailModel();
+        var model = GivenOrganisationEmailModel();
 
         RegistrationDetails registrationDetails = DummyRegistrationDetails();
 
@@ -103,7 +103,7 @@ public class OrganisationEmailModelTest
     [Fact]
     public void OnPost_WhenValidModel_ShouldRedirectToOrganisationAddressPage()
     {
-        var model = GivenOrganisationDetailModel();
+        var model = GivenOrganisationEmailModel();
 
         RegistrationDetails registrationDetails = DummyRegistrationDetails();
         sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(registrationDetails);
@@ -117,7 +117,7 @@ public class OrganisationEmailModelTest
     [Fact]
     public void OnGet_ValidSession_ReturnsRegistrationDetails()
     {
-        var model = GivenOrganisationDetailModel();
+        var model = GivenOrganisationEmailModel();
 
         RegistrationDetails registrationDetails = DummyRegistrationDetails();
 
@@ -146,13 +146,13 @@ public class OrganisationEmailModelTest
     {
         sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(value: null);
 
-        var model = GivenOrganisationDetailModel();
+        var model = GivenOrganisationEmailModel();
 
         Action action = () => model.OnGet();
         action.Should().Throw<Exception>().WithMessage("Shoudn't be here");
     }
 
-    private OrganisationEmailModel GivenOrganisationDetailModel()
+    private OrganisationEmailModel GivenOrganisationEmailModel()
     {
         return new OrganisationEmailModel(sessionMock.Object);
     }
