@@ -1,12 +1,23 @@
+using CO.CDP.OrganisationInformation.Persistence;
+using CO.CDP.TestKit.Mvc;
+using Xunit.Abstractions;
+
 namespace CO.CDP.Organisation.WebApiClient.Tests;
 
-public class OrganisationClientIntegrationTest
+public class OrganisationClientIntegrationTest(ITestOutputHelper testOutputHelper)
 {
-    [Fact(Skip = "The test requires the organisation service to run.")]
+    private readonly TestWebApplicationFactory<Program> _factory = new(builder =>
+    {
+        builder.ConfigureInMemoryDbContext<OrganisationInformationContext>();
+        builder.ConfigureLogging(testOutputHelper);
+    });
+
+    [Fact]
     public async Task ItTalksToTheOrganisationApi()
     {
-        IOrganisationClient client = new OrganisationClient("http://localhost:5288", new HttpClient());
+        IOrganisationClient client = new OrganisationClient("https://localhost", _factory.CreateClient());
 
+        var unknownPersonId = Guid.NewGuid();
         var identifier = new OrganisationIdentifier(
             scheme: "ISO9001",
             id: "1",
@@ -28,19 +39,18 @@ public class OrganisationClientIntegrationTest
             url: "http://contact.neworg.com"
         );
         var additionalIdentifiers = new List<OrganisationIdentifier>
-    {
-        new OrganisationIdentifier(
-            scheme: "ISO14001",
-            id: "2",
-            legalName: "Additional Legal Name",
-            uri: "http://additionalorg.com",
-            number: "1234567"
-        )
-    };
+        {
+            new(
+                scheme: "ISO14001",
+                id: "2",
+                legalName: "Additional Legal Name",
+                uri: "http://additionalorg.com",
+                number: "1234567"
+            )
+        };
         var types = new List<int> { 1 };
         var newOrganisation = new NewOrganisation(
-            // @TODO: pass the actual person id
-            personId: Guid.NewGuid(),
+            personId: unknownPersonId,
             additionalIdentifiers: additionalIdentifiers,
             address: address,
             contactPoint: contactPoint,
@@ -48,10 +58,7 @@ public class OrganisationClientIntegrationTest
             name: "New Organisation",
             types: types
         );
-        var organisation = await client.CreateOrganisationAsync(newOrganisation);
 
-        var foundOrganisation = await client.GetOrganisationAsync(organisation.Id);
-
-        Assert.Equal(organisation, foundOrganisation);
+        await Assert.ThrowsAsync<ApiException<ProblemDetails>>(() => client.CreateOrganisationAsync(newOrganisation));
     }
 }
