@@ -10,7 +10,6 @@ namespace CO.CDP.OrganisationApp.Pages.Registration;
 [Authorize]
 public class OrganisationNameModel(ISession session) : PageModel
 {
-
     [BindProperty]
     [DisplayName("Enter the organisation name")]
     [Required(ErrorMessage = "Enter the organisation name")]
