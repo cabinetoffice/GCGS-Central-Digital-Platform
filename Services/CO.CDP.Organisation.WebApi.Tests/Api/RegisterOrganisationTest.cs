@@ -13,12 +13,14 @@ public class RegisterOrganisationTest
 {
     private readonly HttpClient _httpClient;
     private readonly Mock<IUseCase<RegisterOrganisation, Model.Organisation>> _registerOrganisationUseCase = new();
+    private readonly Mock<IUseCase<string, IEnumerable<Model.Organisation>>> _getOrganisationsUseCase = new();
 
     public RegisterOrganisationTest()
     {
         TestWebApplicationFactory<Program> factory = new(services =>
         {
             services.AddScoped<IUseCase<RegisterOrganisation, Model.Organisation>>(_ => _registerOrganisationUseCase.Object);
+            services.AddScoped(_ => _getOrganisationsUseCase.Object);
         });
         _httpClient = factory.CreateClient();
     }
@@ -60,6 +62,30 @@ public class RegisterOrganisationTest
         var response = await _httpClient.PostAsJsonAsync("/organisations", command);
 
         response.Should().HaveStatusCode(HttpStatusCode.InternalServerError, await response.Content.ReadAsStringAsync());
+    }
+
+    [Fact]
+    public async Task ItListsOrganisationWhenFound()
+    {
+        var command = GivenRegisterOrganisationCommand();
+        var organisation = new Model.Organisation
+        {
+            Id = Guid.NewGuid(),
+            Name = "TheOrganisation",
+            Identifier = command.Identifier,
+            AdditionalIdentifiers = command.AdditionalIdentifiers,
+            Address = command.Address,
+            ContactPoint = command.ContactPoint,
+            Types = command.Types
+        };
+
+        _getOrganisationsUseCase.Setup(useCase => useCase.Execute(It.IsAny<string>()))
+                                    .ReturnsAsync([organisation]);
+
+        var returnedOrganisations = await _httpClient.GetFromJsonAsync<IEnumerable<Model.Organisation>>(
+            "/organisations?userUrn=urn:7wTqYGMFQxgukTSpSI2GodMwe9");
+
+        returnedOrganisations.Should().ContainEquivalentOf(organisation);
     }
 
     private static RegisterOrganisation GivenRegisterOrganisationCommand()

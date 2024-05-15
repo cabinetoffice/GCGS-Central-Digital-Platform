@@ -156,6 +156,39 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql) : 
         found.Should().BeNull();
     }
 
+    [Fact]
+    public async Task FindByUserUrn_WhenNoOrganisationFound_ReturnEmptyList()
+    {
+        using var repository = OrganisationRepository();
+        var userUrn = "urn:fdc:gov.uk:2022:7wTqYGMFQxgukTSpSI2G0dMwe9";
+
+        var found = await repository.FindByUserUrn(userUrn);
+
+        found.Should().BeEmpty();
+    }
+
+    [Fact]
+    public async Task FindByUserUrn_WhenOrganisationsFound_ReturnThatList()
+    {
+        using var repository = OrganisationRepository();
+        var userUrn = "urn:fdc:gov.uk:2022:7wTqYGMFQxgukTSpSI2GodMwe9";
+
+        var person = GivenPerson(userUrn: userUrn);
+
+        var organisation1 = GivenOrganisation();
+        organisation1.Persons.Add(person);
+        repository.Save(organisation1);
+
+        var organisation2 = GivenOrganisation();
+        organisation2.Persons.Add(person);
+        repository.Save(organisation2);
+
+        var found = await repository.FindByUserUrn(userUrn);
+
+        found.Should().HaveCount(2);
+        found.Should().ContainEquivalentOf(organisation1);
+    }
+
     private IOrganisationRepository OrganisationRepository()
     {
         return new DatabaseOrganisationRepository(OrganisationInformationContext());

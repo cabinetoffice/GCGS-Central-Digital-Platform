@@ -42,13 +42,16 @@ public static class EndpointExtensions
 
     public static void UseOrganisationEndpoints(this WebApplication app)
     {
-        app.MapGet("/organisations", () => _organisations.Values.ToArray())
+        app.MapGet("/organisations",
+                async ([FromQuery] string userUrn, IUseCase<string, IEnumerable<Model.Organisation>> useCase) =>
+                await useCase.Execute(userUrn)
+                    .AndThen(organisations => Results.Ok(organisations)))
             .Produces<List<Model.Organisation>>(200, "application/json")
             .WithOpenApi(operation =>
             {
                 operation.OperationId = "ListOrganisations";
-                operation.Description = "[STUB] A list of organisations. [STUB]";
-                operation.Summary = "[STUB] A list of organisations. [STUB]";
+                operation.Description = "A list of organisations.";
+                operation.Summary = "A list of organisations.";
                 operation.Responses["200"].Description = "A list of organisations.";
                 return operation;
             });
