@@ -1,11 +1,12 @@
 using CO.CDP.Organisation.WebApi.Model;
-using CO.CDP.Organisation.WebApi.Tests.Api.WebApp;
 using CO.CDP.Organisation.WebApi.UseCase;
 using FluentAssertions;
-using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using System.Net;
 using System.Net.Http.Json;
+using CO.CDP.TestKit.Mvc;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using static System.Net.HttpStatusCode;
 
 namespace CO.CDP.Organisation.WebApi.Tests.Api;
@@ -17,10 +18,14 @@ public class RegisterOrganisationTest
 
     public RegisterOrganisationTest()
     {
-        TestWebApplicationFactory<Program> factory = new(services =>
+        TestWebApplicationFactory<Program> factory = new(builder =>
         {
-            services.AddScoped<IUseCase<RegisterOrganisation, Model.Organisation>>(_ => _registerOrganisationUseCase.Object);
-            services.AddScoped(_ => _getOrganisationsUseCase.Object);
+            builder.ConfigureServices(services =>
+            {
+                services.AddScoped<IUseCase<RegisterOrganisation, Model.Organisation>>(_ =>
+                    _registerOrganisationUseCase.Object);
+                services.AddScoped(_ => _getOrganisationsUseCase.Object);
+            });
         });
         _httpClient = factory.CreateClient();
     }

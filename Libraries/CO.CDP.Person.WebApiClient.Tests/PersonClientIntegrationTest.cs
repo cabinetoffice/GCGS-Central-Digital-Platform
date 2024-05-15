@@ -1,13 +1,22 @@
+using CO.CDP.OrganisationInformation.Persistence;
+using CO.CDP.TestKit.Mvc;
 using FluentAssertions;
+using Xunit.Abstractions;
 
 namespace CO.CDP.Person.WebApiClient.Tests;
 
-public class PersonClientIntegrationTest
+public class PersonClientIntegrationTest(ITestOutputHelper testOutputHelper)
 {
-    [Fact(Skip = "The test requires the person service to run.")]
+    private readonly TestWebApplicationFactory<Program> _factory = new(builder =>
+    {
+        builder.ConfigureInMemoryDbContext<OrganisationInformationContext>();
+        builder.ConfigureLogging(testOutputHelper);
+    });
+
+    [Fact]
     public async Task ItTalksToThePersonApi()
     {
-        IPersonClient client = new PersonClient("http://localhost:8084", new HttpClient());
+        IPersonClient client = new PersonClient("https://localhost", _factory.CreateClient());
 
         var newPerson = new NewPerson(
             email: $"test{DateTime.Now.ToString("ddMMyyyyHHmmssfff")}@email.com",

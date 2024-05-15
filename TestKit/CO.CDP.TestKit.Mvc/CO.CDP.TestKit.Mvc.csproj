@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <RootNamespace>CO.CDP.TestKit.Mvc</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="8.0.4"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="8.0.4" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.1"/>
+        <PackageReference Include="xunit.abstractions" Version="2.0.3"/>
+        <PackageReference Include="Meziantou.Extensions.Logging.Xunit" Version="1.0.7"/>
+    </ItemGroup>
+
+</Project>

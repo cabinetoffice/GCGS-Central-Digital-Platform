@@ -1,7 +1,8 @@
-using CO.CDP.Tenant.WebApi.Tests.Api.WebApp;
 using CO.CDP.Tenant.WebApi.UseCase;
+using CO.CDP.TestKit.Mvc;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Moq;
 using static System.Net.HttpStatusCode;
 
@@ -14,9 +15,11 @@ public class GetTenantTest
 
     public GetTenantTest()
     {
-        TestWebApplicationFactory<Program> factory = new(services =>
+        TestWebApplicationFactory<Program> factory = new(builder =>
         {
-            services.AddScoped<IUseCase<Guid, Model.Tenant?>>(_ => _getTenantUseCase.Object);
+            builder.ConfigureServices(services =>
+                services.AddScoped<IUseCase<Guid, Model.Tenant?>>(_ => _getTenantUseCase.Object)
+            );
         });
         _httpClient = factory.CreateClient();
     }

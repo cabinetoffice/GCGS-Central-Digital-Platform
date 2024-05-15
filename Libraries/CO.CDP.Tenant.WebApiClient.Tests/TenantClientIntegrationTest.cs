@@ -1,11 +1,21 @@
+using CO.CDP.OrganisationInformation.Persistence;
+using CO.CDP.TestKit.Mvc;
+using Xunit.Abstractions;
+
 namespace CO.CDP.Tenant.WebApiClient.Tests;
 
-public class TenantClientIntegrationTest
+public class TenantClientIntegrationTest(ITestOutputHelper testOutputHelper)
 {
-    [Fact(Skip = "The test requires the tenant service to run.")]
+    private readonly TestWebApplicationFactory<Program> _factory = new(builder =>
+    {
+        builder.ConfigureInMemoryDbContext<OrganisationInformationContext>();
+        builder.ConfigureLogging(testOutputHelper);
+    });
+
+    [Fact]
     public async Task ItTalksToTheTenantApi()
     {
-        ITenantClient client = new TenantClient("http://localhost:5182", new HttpClient());
+        ITenantClient client = new TenantClient("https://localhost", _factory.CreateClient());
 
         var tenant = await client.CreateTenantAsync(new NewTenant(
             name: $"Bob {Guid.NewGuid()}"

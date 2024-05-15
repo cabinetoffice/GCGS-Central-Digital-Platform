@@ -1,11 +1,11 @@
+using System.Net.Http.Json;
 using CO.CDP.Person.WebApi.Model;
-using CO.CDP.Person.WebApi.Tests.Api.WebApp;
 using CO.CDP.Person.WebApi.UseCase;
+using CO.CDP.TestKit.Mvc;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Moq;
-using System.Net;
-using System.Net.Http.Json;
 using static System.Net.HttpStatusCode;
 
 namespace CO.CDP.Person.WebApi.Tests.Api;
@@ -16,9 +16,11 @@ public class RegisterPersonTest
 
     public RegisterPersonTest()
     {
-        TestWebApplicationFactory<Program> factory = new(services =>
+        TestWebApplicationFactory<Program> factory = new(builder =>
         {
-            services.AddScoped<IUseCase<RegisterPerson, Model.Person>>(_ => _registerPersonUseCase.Object);
+            builder.ConfigureServices(services =>
+                services.AddScoped<IUseCase<RegisterPerson, Model.Person>>(_ => _registerPersonUseCase.Object)
+            );
         });
         _httpClient = factory.CreateClient();
     }
@@ -56,7 +58,7 @@ public class RegisterPersonTest
 
         var response = await _httpClient.PostAsJsonAsync("/persons", command);
 
-        response.Should().HaveStatusCode(HttpStatusCode.InternalServerError, await response.Content.ReadAsStringAsync());
+        response.Should().HaveStatusCode(InternalServerError, await response.Content.ReadAsStringAsync());
     }
 
     private static RegisterPerson GivenRegisterPersonCommand()

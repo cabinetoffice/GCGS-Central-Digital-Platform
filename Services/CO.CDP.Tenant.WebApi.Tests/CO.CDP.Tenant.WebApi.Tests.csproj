@@ -24,6 +24,7 @@
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>
         <ProjectReference Include="..\CO.CDP.Tenant.WebApi\CO.CDP.Tenant.WebApi.csproj" />
+        <ProjectReference Include="..\..\TestKit\CO.CDP.TestKit.Mvc\CO.CDP.TestKit.Mvc.csproj" />
     </ItemGroup>
 
 </Project>
