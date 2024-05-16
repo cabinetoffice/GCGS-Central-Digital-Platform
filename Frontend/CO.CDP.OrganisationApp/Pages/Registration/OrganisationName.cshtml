@@ -4,7 +4,7 @@
 @{
     var organisationNameHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.OrganisationName)).HasInnerHtml;
 
-    var backLink = "/registration/organisation-type";
+    var backLink = "/registration/organisation-identification";
     if (Request.Query.ContainsKey("frm-summary"))
     {
         backLink = "/registration/organisation-details-summary";

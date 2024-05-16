@@ -296,7 +296,7 @@ public class OrganisationIdentificationModelTests
     }
 
     [Fact]
-    public void OnPost_WhenModelStateIsValid_ShouldRedirectToOrganisationRegisteredAddress()
+    public void OnPost_WhenModelStateIsValid_ShouldRedirectToOrganisationName()
     {
         var model = new OrganisationIdentificationModel(sessionMock.Object)
         {
@@ -307,7 +307,7 @@ public class OrganisationIdentificationModelTests
 
         var result = model.OnPost();
         result.Should().BeOfType<RedirectToPageResult>();
-        (result as RedirectToPageResult)?.PageName.Should().Be("./OrganisationRegisteredAddress");
+        (result as RedirectToPageResult)?.PageName.Should().Be("OrganisationName");
     }
 
     [Fact]

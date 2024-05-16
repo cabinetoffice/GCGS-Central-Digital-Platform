@@ -37,7 +37,7 @@ public class OrganisationDetailsSummaryModel(
             return Page();
         }
 
-        return RedirectToPage("OrganisationAccount");
+        return RedirectToPage("OrganisationOverview", new { organisation.Id });
     }
 
     private async Task<OrganisationWebApiClient.Organisation?> RegisterOrganisation(RegistrationDetails details)

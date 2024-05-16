@@ -88,7 +88,7 @@ public class OrganisationDetailsSummaryModelTest
     }
 
     [Fact]
-    public async Task OnPost_OnSuccess_RedirectsToOrganisationAccount()
+    public async Task OnPost_OnSuccess_RedirectsToOrganisationOverview()
     {
         var registrationDetails = DummyRegistrationDetails();
 
@@ -103,7 +103,7 @@ public class OrganisationDetailsSummaryModelTest
         var actionResult = await model.OnPost();
 
         actionResult.Should().BeOfType<RedirectToPageResult>()
-            .Which.PageName.Should().Be("OrganisationAccount");
+            .Which.PageName.Should().Be("OrganisationOverview");
     }
 
     private RegistrationDetails DummyRegistrationDetails()
