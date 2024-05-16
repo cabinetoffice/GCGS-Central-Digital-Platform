@@ -4,7 +4,7 @@ namespace CO.CDP.OrganisationInformation.Persistence;
 
 [Index(nameof(Guid), IsUnique = true)]
 [Index(nameof(Email), IsUnique = true)]
-public class Person
+public class Person: IEntityDate
 {
     public int Id { get; set; }
     public required Guid Guid { get; set; }
@@ -15,4 +15,6 @@ public class Person
     public string? UserUrn { get; set; }
     public List<Tenant> Tenants { get; } = [];
     public List<Organisation> Organisations { get; } = [];
+    public DateTimeOffset CreatedOn { get; set; }
+    public DateTimeOffset UpdatedOn { get; set; }
 }

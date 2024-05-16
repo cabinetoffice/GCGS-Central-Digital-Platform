@@ -71,14 +71,19 @@ public class DatabasePersonRepositoryTest(PostgreSqlFixture postgreSql) : IClass
     {
         using var repository = PersonRepository();
 
-        var person = GivenPerson();
-        person.Email = "email@email.com";
+        var guid = Guid.NewGuid();
+        var initialEmail = "initial@example.com";
+        var initialDate = DateTime.UtcNow.AddDays(-1);
+        var person = GivenPerson(guid: guid, email: initialEmail);
+
+        person.Email = "updated@example.com";
         repository.Save(person);
 
         var found = await repository.Find(person.Guid);
 
         found.Should().NotBeNull();
-        found!.Email.Should().Be("email@email.com");
+        found.As<Person>().Email.Should().Be("updated@example.com");
+        found.As<Person>().UpdatedOn.Should().BeAfter(initialDate);
     }
 
     [Fact]
