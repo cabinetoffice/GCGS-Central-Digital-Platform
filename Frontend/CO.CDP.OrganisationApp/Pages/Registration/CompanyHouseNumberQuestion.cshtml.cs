@@ -1,3 +1,4 @@
+using CO.CDP.Common;
 using CO.CDP.OrganisationApp.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -14,6 +15,7 @@ public class CompanyHouseNumberQuestionModel(ISession session) : PageModel
     public bool? HasCompaniesHouseNumber { get; set; }
 
     [BindProperty]
+    [RequiredIf(nameof(HasCompaniesHouseNumber), true, ErrorMessage = "Please enter the Companies House number.")]
     public string? CompaniesHouseNumber { get; set; }
 
     [BindProperty]
@@ -28,11 +30,6 @@ public class CompanyHouseNumberQuestionModel(ISession session) : PageModel
 
     public IActionResult OnPost()
     {
-        if (HasCompaniesHouseNumber == true && string.IsNullOrWhiteSpace(CompaniesHouseNumber))
-        {
-            ModelState.AddModelError(nameof(CompaniesHouseNumber), "Please enter the Companies House number.");
-        }
-
         if (!ModelState.IsValid)
         {
             return Page();
@@ -41,17 +38,27 @@ public class CompanyHouseNumberQuestionModel(ISession session) : PageModel
         var registrationDetails = VerifySession();
 
         registrationDetails.OrganisationHasCompaniesHouseNumber = HasCompaniesHouseNumber;
-        registrationDetails.OrganisationIdentificationNumber = CompaniesHouseNumber;
+        if (HasCompaniesHouseNumber ?? false)
+        {
+            registrationDetails.OrganisationIdentificationNumber = CompaniesHouseNumber;
+            registrationDetails.OrganisationScheme = "CHN";
+        }
 
         session.Set(Session.RegistrationDetailsKey, registrationDetails);
 
-        if (RedirectToSummary == true)
+        if (HasCompaniesHouseNumber == false)
+        {
+            var routeValuesDictionary = new RouteValueDictionary();
+            if (RedirectToSummary ?? false)
+            {
+                routeValuesDictionary.Add("frm-summary", "true");
+            }
+
+            return RedirectToPage($"OrganisationIdentification", routeValuesDictionary);
+        }
+        else if (RedirectToSummary == true)
         {
             return RedirectToPage("OrganisationDetailsSummary");
-        }
-        else if (HasCompaniesHouseNumber == false)
-        {
-            return RedirectToPage("OrganisationIdentification");
         }
         else
         {

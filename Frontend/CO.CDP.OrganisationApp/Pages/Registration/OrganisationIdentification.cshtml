@@ -17,12 +17,7 @@
     
     var nationalHealthServiceOrganisationsRegistryNumberHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.NationalHealthServiceOrganisationsRegistryNumber)).HasInnerHtml;
 
-    var backLink = "/registration/has-companies-house-number";
-    if (Request.Query.ContainsKey("frm-summary"))
-    {
-        backLink = "/registration/organisation-details-summary";
-        Model.RedirectToSummary = true;
-    }
+    var backLink = $"/registration/has-companies-house-number{(Request.Query.ContainsKey("frm-summary") ? "?frm-summary" : "")}";
 }
 
 <a href="@backLink" class="govuk-back-link">

@@ -1,5 +1,14 @@
 @page "/registration/organisation-selection"
+@using CO.CDP.Organisation.WebApiClient
 @model OrganisationSelectionModel
+
+@{
+    string GetAddress(OrganisationAddress add)
+    {
+        return string.Join(", ", new[] { add.AddressLine1, add.AddressLine2, add.City, add.Country, add.PostCode }
+            .Where(t => !string.IsNullOrWhiteSpace(t)));
+    }
+}
 
 <main class="govuk-main-wrapper">
     <div class="govuk-grid-row">
@@ -16,6 +25,23 @@
                     </tr>
                 </thead>
                 <tbody class="govuk-table__body">
+                    @{
+                        foreach (var org in Model.Organisations)
+                        {
+                            <tr class="govuk-table__row">
+                                <th scope="row" class="govuk-table__header">
+                                    @org.Name
+                                    <span class="govuk-hint govuk-!-display-block">
+                                        @GetAddress(org.Address)
+                                    </span>
+                                </th>
+                                <td class="govuk-table__cell">
+                                    <a class="govuk-link govuk-link--no-visited-state"
+                                       href="/registration/organisation-overview?id=@org.Id">Select</a>
+                                </td>
+                            </tr>
+                        }
+                    }
                 </tbody>
             </table>
 

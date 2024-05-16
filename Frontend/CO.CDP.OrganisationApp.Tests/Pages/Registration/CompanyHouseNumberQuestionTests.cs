@@ -78,7 +78,7 @@ public class CompanyHouseNumberQuestionTests
     {
         var model = new CompanyHouseNumberQuestionModel(sessionMock.Object)
         {
-            HasCompaniesHouseNumber = false,
+            HasCompaniesHouseNumber = true,
             RedirectToSummary = true,
             CompaniesHouseNumber = "123456"
         };
