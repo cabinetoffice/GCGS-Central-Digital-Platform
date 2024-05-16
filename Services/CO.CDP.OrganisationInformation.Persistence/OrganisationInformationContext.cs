@@ -48,6 +48,46 @@ public class OrganisationInformationContext(DbContextOptions<OrganisationInforma
                 .UsingEntity<OrganisationPerson>();
         });
 
+       foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+        {
+            if (typeof(IEntityDate).IsAssignableFrom(entityType.ClrType))
+            {
+                modelBuilder.Entity(entityType.ClrType).Property<DateTimeOffset>("CreatedOn").IsRequired()
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                modelBuilder.Entity(entityType.ClrType).Property<DateTimeOffset>("UpdatedOn").IsRequired()
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP");
+            }
+        }
+
         base.OnModelCreating(modelBuilder);
     }
+    public override int SaveChanges()
+    {
+        UpdateTimestamps();
+        return base.SaveChanges();
+    }
+
+    public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    {
+        UpdateTimestamps();
+        return base.SaveChangesAsync(cancellationToken);
+    }
+
+    private void UpdateTimestamps()
+    {
+        var entries = ChangeTracker
+            .Entries<IEntityDate>()
+            .Where(e => e.State == EntityState.Added || e.State == EntityState.Modified);
+
+        foreach (var entityEntry in entries)
+        {
+            if (entityEntry.State == EntityState.Added)
+            {
+                entityEntry.Entity.CreatedOn = DateTimeOffset.UtcNow;
+            }
+
+            entityEntry.Entity.UpdatedOn = DateTimeOffset.UtcNow;
+        }
+    }
+
 }

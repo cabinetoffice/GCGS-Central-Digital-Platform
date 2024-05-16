@@ -70,6 +70,7 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql) : 
         var guid = Guid.NewGuid();
         var initialName = "TheOrganisation1";
         var updatedName = "TheOrganisationUpdated1";
+        var initialDate = DateTime.UtcNow.AddDays(-1);
 
         var repository = OrganisationRepository();
 
@@ -108,6 +109,8 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql) : 
                 Telephone = "123-456-7890",
                 Url = "http://contact.default.org"
             },
+            UpdatedOn = initialDate,
+            CreatedOn = initialDate,
             Types = new List<int> { 1 }
         };
 
@@ -120,10 +123,14 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql) : 
             repository.Save(organisationToUpdate);
         }
 
+
+    repository.Save(organisation);
+
         var updatedOrganisation = await repository.Find(guid)!;
         updatedOrganisation.Should().NotBeNull();
         updatedOrganisation.As<Organisation>().Name.Should().Be(updatedName);
         updatedOrganisation.As<Organisation>().Tenant.Should().Be(organisation.Tenant);
+        updatedOrganisation.As<Organisation>().UpdatedOn.Should().BeAfter(initialDate);
     }
 
     [Fact]

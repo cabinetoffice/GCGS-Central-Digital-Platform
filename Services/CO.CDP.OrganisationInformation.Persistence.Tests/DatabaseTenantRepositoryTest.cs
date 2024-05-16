@@ -73,6 +73,7 @@ public class DatabaseTenantRepositoryTest(PostgreSqlFixture postgreSql) : IClass
         using var repository = TenantRepository();
 
         var tenant = GivenTenant(guid: Guid.NewGuid(), name: "Olivia");
+        var initialDate = DateTime.UtcNow.AddDays(-1);
 
         repository.Save(tenant);
         tenant.Name = "Hannah";
@@ -81,6 +82,7 @@ public class DatabaseTenantRepositoryTest(PostgreSqlFixture postgreSql) : IClass
         var found = await repository.Find(tenant.Guid);
 
         found.Should().Be(tenant);
+        found.As<Tenant>().UpdatedOn.Should().BeAfter(initialDate);
     }
 
     [Fact]
@@ -107,6 +109,27 @@ public class DatabaseTenantRepositoryTest(PostgreSqlFixture postgreSql) : IClass
 
         found.Should().BeNull();
     }
+
+    [Fact]
+    public async Task ItCorrectlyAssociatesTenantWithMultiplePersons()
+    {
+        using var repository = TenantRepository();
+
+        var tenant = GivenTenant(guid: Guid.NewGuid(), name: "Tenant with Persons");
+        var person1 = GivenPerson(guid: Guid.NewGuid(), email: "person1@example.com");
+        var person2 = GivenPerson(guid: Guid.NewGuid(), email: "person2@example.com");
+        tenant.Persons.Add(person1);
+        tenant.Persons.Add(person2);
+
+        repository.Save(tenant);
+        var found = await repository.Find(tenant.Guid);
+
+        found.Should().NotBeNull();
+        found!.Persons.Should().HaveCount(2);
+        found.Persons.Should().Contain(p => p.Guid == person1.Guid);
+        found.Persons.Should().Contain(p => p.Guid == person2.Guid);
+    }
+
 
     private ITenantRepository TenantRepository()
     {

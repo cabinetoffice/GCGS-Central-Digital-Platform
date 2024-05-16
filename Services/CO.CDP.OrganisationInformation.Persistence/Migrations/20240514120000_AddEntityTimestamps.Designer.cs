@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using CO.CDP.OrganisationInformation.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,9 +13,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CO.CDP.OrganisationInformation.Persistence.Migrations
 {
     [DbContext(typeof(OrganisationInformationContext))]
-    partial class OrganisationInformationContextModelSnapshot : ModelSnapshot
+    [Migration("20240514120000_AddEntityTimestamps")]
+    partial class AddEntityTimestamps
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -102,22 +105,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
 
                     b.HasIndex("TenantId");
 
-                    b.ToTable("Organisations", (string)null);
-                });
-
-            modelBuilder.Entity("CO.CDP.OrganisationInformation.Persistence.OrganisationPerson", b =>
-                {
-                    b.Property<int>("OrganisationId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("PersonId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("OrganisationId", "PersonId");
-
-                    b.HasIndex("PersonId");
-
-                    b.ToTable("OrganisationPerson", (string)null);
+                    b.ToTable("Organisations");
                 });
 
             modelBuilder.Entity("CO.CDP.OrganisationInformation.Persistence.OrganisationPerson", b =>
@@ -178,7 +166,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                     b.HasIndex("Guid")
                         .IsUnique();
 
-                    b.ToTable("Persons", (string)null);
+                    b.ToTable("Persons");
                 });
 
             modelBuilder.Entity("CO.CDP.OrganisationInformation.Persistence.Tenant", b =>
@@ -210,22 +198,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.ToTable("Tenants", (string)null);
-                });
-
-            modelBuilder.Entity("CO.CDP.OrganisationInformation.Persistence.TenantPerson", b =>
-                {
-                    b.Property<int>("PersonId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("TenantId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("PersonId", "TenantId");
-
-                    b.HasIndex("TenantId");
-
-                    b.ToTable("TenantPerson", (string)null);
+                    b.ToTable("Tenants");
                 });
 
             modelBuilder.Entity("CO.CDP.OrganisationInformation.Persistence.TenantPerson", b =>
@@ -251,7 +224,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.OwnsMany("CO.CDP.OrganisationInformation.Persistence.Organisation.AdditionalIdentifiers#CO.CDP.OrganisationInformation.Persistence.Organisation+OrganisationIdentifier", "AdditionalIdentifiers", b1 =>
+                    b.OwnsMany("CO.CDP.OrganisationInformation.Persistence.Organisation+OrganisationIdentifier", "AdditionalIdentifiers", b1 =>
                         {
                             b1.Property<int>("OrganisationId")
                                 .HasColumnType("integer");
@@ -275,13 +248,13 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
 
                             b1.HasKey("OrganisationId", "Id");
 
-                            b1.ToTable("Organisations_AdditionalIdentifiers", (string)null);
+                            b1.ToTable("Organisations_AdditionalIdentifiers");
 
                             b1.WithOwner()
                                 .HasForeignKey("OrganisationId");
                         });
 
-                    b.OwnsOne("CO.CDP.OrganisationInformation.Persistence.Organisation.Identifier#CO.CDP.OrganisationInformation.Persistence.Organisation+OrganisationIdentifier", "Identifier", b1 =>
+                    b.OwnsOne("CO.CDP.OrganisationInformation.Persistence.Organisation+OrganisationIdentifier", "Identifier", b1 =>
                         {
                             b1.Property<int>("OrganisationId")
                                 .HasColumnType("integer");
@@ -305,7 +278,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
 
                             b1.HasKey("OrganisationId");
 
-                            b1.ToTable("Organisations", (string)null);
+                            b1.ToTable("Organisations");
 
                             b1.WithOwner()
                                 .HasForeignKey("OrganisationId");
