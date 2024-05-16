@@ -15,6 +15,9 @@ public class OrganisationNameModel(ISession session) : PageModel
     [Required(ErrorMessage = "Enter the organisation name")]
     public string? OrganisationName { get; set; }
 
+    [BindProperty]
+    public bool? RedirectToSummary { get; set; }
+
     public void OnGet()
     {
         var registrationDetails = VerifySession();
@@ -33,7 +36,14 @@ public class OrganisationNameModel(ISession session) : PageModel
         registrationDetails.OrganisationName = OrganisationName;
         session.Set(Session.RegistrationDetailsKey, registrationDetails);
 
-        return RedirectToPage("OrganisationEmail");
+        if (RedirectToSummary == true)
+        {
+            return RedirectToPage("OrganisationDetailsSummary");
+        }
+        else
+        {
+            return RedirectToPage("OrganisationEmail");
+        }
     }
 
     private RegistrationDetails VerifySession()

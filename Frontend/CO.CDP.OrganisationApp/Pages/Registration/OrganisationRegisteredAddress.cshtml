@@ -5,8 +5,18 @@
     var addressLine1HasError = ((TagBuilder)Html.ValidationMessageFor(m => m.AddressLine1)).HasInnerHtml;
     var addressLine2HasError = ((TagBuilder)Html.ValidationMessageFor(m => m.AddressLine2)).HasInnerHtml;
     var cityOrTownHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.TownOrCity)).HasInnerHtml;
-    var postcodeHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Postcode)).HasInnerHtml;    
+    var postcodeHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Postcode)).HasInnerHtml;
+
+    var backLink = "/registration/organisation-email";
+    if (Request.Query.ContainsKey("frm-summary"))
+    {
+        backLink = "/registration/organisation-details-summary";
+    }
 }
+
+<a href="@backLink" class="govuk-back-link">
+    Back
+</a>
 
 <main class="govuk-main-wrapper">
     <div class="govuk-grid-row">

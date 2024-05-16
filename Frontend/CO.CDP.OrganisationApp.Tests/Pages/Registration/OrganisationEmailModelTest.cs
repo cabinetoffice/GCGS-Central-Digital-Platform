@@ -29,7 +29,6 @@ public class OrganisationEmailModelTest
         results.Count.Should().Be(1);
     }
 
-
     [Fact]
     public void WhenEmailIsEmpty_ShouldRaiseEmailAddressValidationError()
     {
@@ -101,6 +100,20 @@ public class OrganisationEmailModelTest
     }
 
     [Fact]
+    public void OnGet_ValidSession_ReturnsRegistrationDetails()
+    {
+        var model = GivenOrganisationEmailModel();
+
+        RegistrationDetails registrationDetails = DummyRegistrationDetails();
+
+        sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(registrationDetails);
+
+        model.OnGet();
+
+        model.EmailAddress.Should().Be(registrationDetails.OrganisationEmailAddress);
+    }
+
+    [Fact]
     public void OnPost_WhenValidModel_ShouldRedirectToOrganisationAddressPage()
     {
         var model = GivenOrganisationEmailModel();
@@ -115,17 +128,29 @@ public class OrganisationEmailModelTest
     }
 
     [Fact]
-    public void OnGet_ValidSession_ReturnsRegistrationDetails()
+    public void OnPost_WhenModelStateIsValidAndRedirectToSummary_ShouldRedirectToOrganisationDetailSummaryPage()
     {
         var model = GivenOrganisationEmailModel();
+        model.RedirectToSummary = true;
 
         RegistrationDetails registrationDetails = DummyRegistrationDetails();
-
         sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(registrationDetails);
 
-        model.OnGet();
+        var actionResult = model.OnPost();
 
-        model.EmailAddress.Should().Be(registrationDetails.OrganisationEmailAddress);
+        actionResult.Should().BeOfType<RedirectToPageResult>()
+            .Which.PageName.Should().Be("OrganisationDetailsSummary");
+    }
+
+    [Fact]
+    public void OnGet_InvalidSession_ThrowsException()
+    {
+        sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(value: null);
+
+        var model = GivenOrganisationEmailModel();
+
+        Action action = () => model.OnGet();
+        action.Should().Throw<Exception>().WithMessage("Shoudn't be here");
     }
 
     private RegistrationDetails DummyRegistrationDetails()
@@ -139,17 +164,6 @@ public class OrganisationEmailModelTest
         };
 
         return registrationDetails;
-    }
-
-    [Fact]
-    public void OnGet_InvalidSession_ThrowsException()
-    {
-        sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(value: null);
-
-        var model = GivenOrganisationEmailModel();
-
-        Action action = () => model.OnGet();
-        action.Should().Throw<Exception>().WithMessage("Shoudn't be here");
     }
 
     private OrganisationEmailModel GivenOrganisationEmailModel()

@@ -86,21 +86,6 @@ public class OrganisationNameModelTest
     }
 
     [Fact]
-    public void OnPost_WhenValidModel_ShouldRedirectToOrganisationEmailPage()
-    {
-        var model = GivenOrganisationNameModel();
-
-        RegistrationDetails registrationDetails = DummyRegistrationDetails();
-        sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(registrationDetails);
-
-        var actionResult = model.OnPost();
-
-        actionResult.Should().BeOfType<RedirectToPageResult>()
-            .Which.PageName.Should().Be("OrganisationEmail");
-    }
-
-
-    [Fact]
     public void OnGet_ValidSession_ReturnsRegistrationDetails()
     {
         var model = GivenOrganisationNameModel();
@@ -114,17 +99,33 @@ public class OrganisationNameModelTest
         model.OrganisationName.Should().Be(registrationDetails.OrganisationName);
     }
 
-    private RegistrationDetails DummyRegistrationDetails()
+    [Fact]
+    public void OnPost_WhenValidModel_ShouldRedirectToOrganisationEmailPage()
     {
-        var registrationDetails = new RegistrationDetails
-        {
-            UserUrn = "urn:fdc:gov.uk:2022:91e9da3e77824185b7f8639d4a63dfc7",
-            OrganisationName = "TestOrg",
-            OrganisationScheme = "TestType",
-            OrganisationEmailAddress = "test@example.com"
-        };
+        var model = GivenOrganisationNameModel();
 
-        return registrationDetails;
+        RegistrationDetails registrationDetails = DummyRegistrationDetails();
+        sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(registrationDetails);
+
+        var actionResult = model.OnPost();
+
+        actionResult.Should().BeOfType<RedirectToPageResult>()
+            .Which.PageName.Should().Be("OrganisationEmail");
+    }
+
+    [Fact]
+    public void OnPost_WhenModelStateIsValidAndRedirectToSummary_ShouldRedirectToOrganisationDetailSummaryPage()
+    {
+        var model = GivenOrganisationNameModel();
+        model.RedirectToSummary = true;
+
+        RegistrationDetails registrationDetails = DummyRegistrationDetails();
+        sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(registrationDetails);
+
+        var actionResult = model.OnPost();
+
+        actionResult.Should().BeOfType<RedirectToPageResult>()
+            .Which.PageName.Should().Be("OrganisationDetailsSummary");
     }
 
     [Fact]
@@ -136,6 +137,19 @@ public class OrganisationNameModelTest
 
         Action action = () => model.OnGet();
         action.Should().Throw<Exception>().WithMessage("Shoudn't be here");
+    }
+
+    private RegistrationDetails DummyRegistrationDetails()
+    {
+        var registrationDetails = new RegistrationDetails
+        {
+            UserUrn = "urn:fdc:gov.uk:2022:91e9da3e77824185b7f8639d4a63dfc7",
+            OrganisationName = "TestOrg",
+            OrganisationScheme = "TestType",
+            OrganisationEmailAddress = "test@example.com"
+        };
+
+        return registrationDetails;
     }
 
     private OrganisationNameModel GivenOrganisationNameModel()

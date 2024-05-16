@@ -3,7 +3,18 @@
 
 @{
     var emailAddressHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.EmailAddress)).HasInnerHtml;
+
+    var backLink = "/registration/organisation-name";
+    if (Request.Query.ContainsKey("frm-summary"))
+    {
+        backLink = "/registration/organisation-details-summary";
+        Model.RedirectToSummary = true;
+    }
 }
+
+<a href="@backLink" class="govuk-back-link">
+    Back
+</a>
 
 <main class="govuk-main-wrapper">
     <div class="govuk-grid-row">

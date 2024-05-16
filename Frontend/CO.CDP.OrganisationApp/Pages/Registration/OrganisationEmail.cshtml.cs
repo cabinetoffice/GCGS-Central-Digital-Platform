@@ -16,6 +16,9 @@ public class OrganisationEmailModel(ISession session) : PageModel
     [EmailAddress(ErrorMessage = "Enter an email address in the correct format, like name@example.com")]
     public string? EmailAddress { get; set; }
 
+    [BindProperty]
+    public bool? RedirectToSummary { get; set; }
+
     public void OnGet()
     {
         var registrationDetails = VerifySession();
@@ -36,7 +39,14 @@ public class OrganisationEmailModel(ISession session) : PageModel
 
         session.Set(Session.RegistrationDetailsKey, registrationDetails);
 
-        return RedirectToPage("OrganisationRegisteredAddress");
+        if (RedirectToSummary == true)
+        {
+            return RedirectToPage("OrganisationDetailsSummary");
+        }
+        else
+        {
+            return RedirectToPage("OrganisationRegisteredAddress");
+        }
     }
 
     private RegistrationDetails VerifySession()

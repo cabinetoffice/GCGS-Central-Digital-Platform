@@ -63,7 +63,6 @@ public class OrganisationRegisteredAddressModel(ISession session) : PageModel
         session.Set(Session.RegistrationDetailsKey, registrationDetails);
 
         return RedirectToPage("OrganisationDetailsSummary");
-
     }
 
     private RegistrationDetails VerifySession()
