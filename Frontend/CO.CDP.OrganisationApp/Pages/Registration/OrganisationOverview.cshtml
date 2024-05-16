@@ -31,7 +31,9 @@
                             Organisation identifier
                         </dt>
                         <dd class="govuk-summary-list__value">
-                            <p class="govuk-body">@organisationDetails.Identifier.Scheme</p>
+                            <p class="govuk-body">
+                                @Constants.OrganisationSchemeType.OrganisationScheme[@organisationDetails.Identifier.Scheme]
+                            </p>
                             <p class="govuk-body">@organisationDetails.Identifier.Number</p>
                         </dd>
                         <dd class="govuk-summary-list__actions">
