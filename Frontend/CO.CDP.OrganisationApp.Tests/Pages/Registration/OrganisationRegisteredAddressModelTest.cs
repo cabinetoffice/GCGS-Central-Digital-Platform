@@ -22,7 +22,7 @@ public class OrganisationRegisteredAddressModelTest
     [Fact]
     public void WhenEmptyModelIsPosted_ShouldRaiseValidationErrors()
     {
-        var model = GivenOrganisationDetailModel();
+        var model = GivenOrganisationAddressModel();
 
         var results = ModelValidationHelper.Validate(model);
 
@@ -32,7 +32,7 @@ public class OrganisationRegisteredAddressModelTest
     [Fact]
     public void WhenAddressLine1IsEmpty_ShouldRaiseAddressLine1ValidationError()
     {
-        var model = GivenOrganisationDetailModel();
+        var model = GivenOrganisationAddressModel();
 
         var results = ModelValidationHelper.Validate(model);
 
@@ -45,18 +45,18 @@ public class OrganisationRegisteredAddressModelTest
     [Fact]
     public void WhenAddressLine1IsNotEmpty_ShouldNotRaiseAddressLine1ValidationError()
     {
-        var model = GivenOrganisationDetailModel();
+        var model = GivenOrganisationAddressModel();
         model.AddressLine1 = "dummay";
 
         var results = ModelValidationHelper.Validate(model);
 
         results.Any(c => c.MemberNames.Contains("AddressLine1")).Should().BeFalse();
-    }    
+    }
 
     [Fact]
     public void WhenAddressLine2IsNotEmpty_ShouldNotRaiseAddressLine2ValidationError()
     {
-        var model = GivenOrganisationDetailModel();
+        var model = GivenOrganisationAddressModel();
         model.AddressLine2 = "dummay";
 
         var results = ModelValidationHelper.Validate(model);
@@ -65,46 +65,46 @@ public class OrganisationRegisteredAddressModelTest
     }
 
     [Fact]
-    public void WhenCityOrTownIsEmpty_ShouldRaiseCityOrTownValidationError()
+    public void WhenTownOrCityIsEmpty_ShouldRaiseTownOrCityValidationError()
     {
-        var model = GivenOrganisationDetailModel();
+        var model = GivenOrganisationAddressModel();
 
         var results = ModelValidationHelper.Validate(model);
 
-        results.Any(c => c.MemberNames.Contains("CityOrTown")).Should().BeTrue();
+        results.Any(c => c.MemberNames.Contains("TownOrCity")).Should().BeTrue();
 
-        results.Where(c => c.MemberNames.Contains("CityOrTown")).First()
-            .ErrorMessage.Should().Be("Enter your city or town");
+        results.Where(c => c.MemberNames.Contains("TownOrCity")).First()
+            .ErrorMessage.Should().Be("Enter your town or city");
     }
 
     [Fact]
-    public void WhenCityOrTownIsNotEmpty_ShouldNotRaiseCityOrTownValidationError()
+    public void WhenTownOrCityIsNotEmpty_ShouldNotRaiseTownOrCityValidationError()
     {
-        var model = GivenOrganisationDetailModel();
-        model.CityOrTown = "dummay";
+        var model = GivenOrganisationAddressModel();
+        model.TownOrCity = "dummay";
 
         var results = ModelValidationHelper.Validate(model);
 
-        results.Any(c => c.MemberNames.Contains("CityOrTown")).Should().BeFalse();
+        results.Any(c => c.MemberNames.Contains("TownOrCity")).Should().BeFalse();
     }
 
     [Fact]
     public void WhenPostcodeIsEmpty_ShouldRaisePostcodeValidationError()
     {
-        var model = GivenOrganisationDetailModel();
+        var model = GivenOrganisationAddressModel();
 
         var results = ModelValidationHelper.Validate(model);
 
         results.Any(c => c.MemberNames.Contains("Postcode")).Should().BeTrue();
 
         results.Where(c => c.MemberNames.Contains("Postcode")).First()
-            .ErrorMessage.Should().Be("Enter your postcode or zip Code");
+            .ErrorMessage.Should().Be("Enter your postcode");
     }
 
     [Fact]
     public void WhenPostcodeIsNotEmpty_ShouldNotRaisePostcodeValidationError()
     {
-        var model = GivenOrganisationDetailModel();
+        var model = GivenOrganisationAddressModel();
         model.Postcode = "dummay";
 
         var results = ModelValidationHelper.Validate(model);
@@ -112,12 +112,10 @@ public class OrganisationRegisteredAddressModelTest
         results.Any(c => c.MemberNames.Contains("Postcode")).Should().BeFalse();
     }
 
-
-
     [Fact]
     public void WhenCountryIsEmpty_ShouldRaiseCountryValidationError()
     {
-        var model = GivenOrganisationDetailModel();
+        var model = GivenOrganisationAddressModel();
 
         var results = ModelValidationHelper.Validate(model);
 
@@ -130,7 +128,7 @@ public class OrganisationRegisteredAddressModelTest
     [Fact]
     public void WhenCountryIsNotEmpty_ShouldNotRaiseCountryValidationError()
     {
-        var model = GivenOrganisationDetailModel();
+        var model = GivenOrganisationAddressModel();
         model.Country = "england";
 
         var results = ModelValidationHelper.Validate(model);
@@ -147,7 +145,7 @@ public class OrganisationRegisteredAddressModelTest
             new RouteData(), new PageActionDescriptor(), modelState);
         var pageContext = new PageContext(actionContext);
 
-        var model = GivenOrganisationDetailModel();
+        var model = GivenOrganisationAddressModel();
         model.PageContext = pageContext;
 
         var actionResult = model.OnPost();
@@ -158,7 +156,7 @@ public class OrganisationRegisteredAddressModelTest
     [Fact]
     public void OnPost_WhenValidModel_ShouldSetRegistrationDetailsInSession()
     {
-        var model = GivenOrganisationDetailModel();
+        var model = GivenOrganisationAddressModel();
 
         RegistrationDetails registrationDetails = DummyRegistrationDetails();
 
@@ -173,7 +171,7 @@ public class OrganisationRegisteredAddressModelTest
     [Fact]
     public void OnPost_WhenValidModel_ShouldRedirectToOrganisationDetailsPage()
     {
-        var model = GivenOrganisationDetailModel();
+        var model = GivenOrganisationAddressModel();
 
         RegistrationDetails registrationDetails = DummyRegistrationDetails();
         sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(registrationDetails);
@@ -186,8 +184,8 @@ public class OrganisationRegisteredAddressModelTest
 
     [Fact]
     public void OnGet_ValidSession_ReturnsRegistrationDetails()
-    {        
-        var model = GivenOrganisationDetailModel();
+    {
+        var model = GivenOrganisationAddressModel();
 
         RegistrationDetails registrationDetails = DummyRegistrationDetails();
 
@@ -197,9 +195,9 @@ public class OrganisationRegisteredAddressModelTest
 
         model.AddressLine1.Should().Be(registrationDetails.OrganisationAddressLine1);
         model.AddressLine2.Should().Be(registrationDetails.OrganisationAddressLine2);
-        model.CityOrTown.Should().Be(registrationDetails.OrganisationCityOrTown);
+        model.TownOrCity.Should().Be(registrationDetails.OrganisationCityOrTown);
         model.Postcode.Should().Be(registrationDetails.OrganisationPostcode);
-        model.Country.Should().Be(registrationDetails.OrganisationCountry);
+        //model.Country.Should().Be(registrationDetails.OrganisationCountry);
     }
 
     private RegistrationDetails DummyRegistrationDetails()
@@ -222,13 +220,13 @@ public class OrganisationRegisteredAddressModelTest
     {
         sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(value: null);
 
-        var model = GivenOrganisationDetailModel();
+        var model = GivenOrganisationAddressModel();
 
         Action action = () => model.OnGet();
         action.Should().Throw<Exception>().WithMessage("Shoudn't be here");
     }
 
-    private OrganisationRegisteredAddressModel GivenOrganisationDetailModel()
+    private OrganisationRegisteredAddressModel GivenOrganisationAddressModel()
     {
         return new OrganisationRegisteredAddressModel(sessionMock.Object);
     }

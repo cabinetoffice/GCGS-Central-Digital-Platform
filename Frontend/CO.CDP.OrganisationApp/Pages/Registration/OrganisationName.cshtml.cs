@@ -1,30 +1,28 @@
-using CO.CDP.Common.Enums;
 using CO.CDP.OrganisationApp.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace CO.CDP.OrganisationApp.Pages.Registration;
 
 [Authorize]
-public class OrganisationTypeModel(
-    ISession session) : PageModel
+public class OrganisationNameModel(ISession session) : PageModel
 {
     [BindProperty]
-    [Required(ErrorMessage = "Select the organisation type")]
-    public OrganisationType? OrganisationType { get; set; }
+    [DisplayName("Enter the organisation name")]
+    [Required(ErrorMessage = "Enter the organisation name")]
+    public string? OrganisationName { get; set; }
 
     [BindProperty]
     public bool? RedirectToSummary { get; set; }
 
-    public IActionResult OnGet()
+    public void OnGet()
     {
         var registrationDetails = VerifySession();
 
-        OrganisationType = registrationDetails.OrganisationType;
-
-        return Page();
+        OrganisationName = registrationDetails.OrganisationName;
     }
 
     public IActionResult OnPost()
@@ -35,7 +33,7 @@ public class OrganisationTypeModel(
         }
 
         var registrationDetails = VerifySession();
-        registrationDetails.OrganisationType = OrganisationType;
+        registrationDetails.OrganisationName = OrganisationName;
         session.Set(Session.RegistrationDetailsKey, registrationDetails);
 
         if (RedirectToSummary == true)
@@ -44,14 +42,19 @@ public class OrganisationTypeModel(
         }
         else
         {
-            return RedirectToPage("OrganisationName");
+            return RedirectToPage("OrganisationEmail");
         }
     }
 
     private RegistrationDetails VerifySession()
     {
-        var registrationDetails = session.Get<RegistrationDetails>(Session.RegistrationDetailsKey)
-            ?? throw new Exception("Shoudn't be here"); // show error page?
+        var registrationDetails = session.Get<RegistrationDetails>(Session.RegistrationDetailsKey);
+
+        if (registrationDetails == null)
+        {
+            //show error page (Once we finalise)
+            throw new Exception("Shoudn't be here");
+        }
 
         return registrationDetails;
     }
