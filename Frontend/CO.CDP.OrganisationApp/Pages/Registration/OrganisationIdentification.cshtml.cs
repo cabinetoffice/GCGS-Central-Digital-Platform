@@ -246,7 +246,7 @@ public class OrganisationIdentificationModel(ISession session) : PageModel
         }
         else
         {
-            return RedirectToPage("./OrganisationRegisteredAddress");
+            return RedirectToPage("OrganisationName");
         }
     }
 

@@ -17,7 +17,7 @@
     
     var nationalHealthServiceOrganisationsRegistryNumberHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.NationalHealthServiceOrganisationsRegistryNumber)).HasInnerHtml;
 
-    var backLink = "/registration/has-companies-house-number";
+    var backLink = "/registration/organisation-type";
     if (Request.Query.ContainsKey("frm-summary"))
     {
         backLink = "/registration/organisation-details-summary";
