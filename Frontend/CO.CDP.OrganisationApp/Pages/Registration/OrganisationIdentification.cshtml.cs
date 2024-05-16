@@ -16,17 +16,11 @@ public class OrganisationIdentificationModel(ISession session) : PageModel
     [Required(ErrorMessage = "Please select your organisation type")]
     public string? OrganisationScheme { get; set; }
 
-    //a. Companies House
-    [BindProperty]
-    [DisplayName("Companies House")]
-    public string? CompaniesHouse { get; set; }
-
     [BindProperty]
     [DisplayName("Companies House Number")]
     [RequiredIf("OrganisationType", "CHN")]
     public string? CompaniesHouseNumber { get; set; }
 
-    //b. Charity Commission for England and Wales
     [BindProperty]
     [DisplayName("Charity Commission for England & Wales")]
     public string? CharityCommissionEnglandWales { get; set; }
@@ -36,7 +30,6 @@ public class OrganisationIdentificationModel(ISession session) : PageModel
     [RequiredIf("OrganisationType", "CCEW")]
     public string? CharityCommissionEnglandWalesNumber { get; set; }
 
-    //c. Scottish Charity Regulator
     [BindProperty]
     [DisplayName("Scottish Charity Regulator")]
     public string? ScottishCharityRegulator { get; set; }
@@ -46,7 +39,6 @@ public class OrganisationIdentificationModel(ISession session) : PageModel
     [RequiredIf("OrganisationType", "SCR")]
     public string? ScottishCharityRegulatorNumber { get; set; }
 
-    //d.Charity Commission for Northern Ireland
     [BindProperty]
     [DisplayName("Charity Commission for Northren Ireland")]
     public string? CharityCommissionNorthernIreland { get; set; }
@@ -56,7 +48,6 @@ public class OrganisationIdentificationModel(ISession session) : PageModel
     [RequiredIf("OrganisationType", "CCNI")]
     public string? CharityCommissionNorthernIrelandNumber { get; set; }
 
-    //e. Mutuals Public Register
     [BindProperty]
     [DisplayName("Mutuals Public Register")]
     public string? MutualsPublicRegister { get; set; }
@@ -66,7 +57,6 @@ public class OrganisationIdentificationModel(ISession session) : PageModel
     [RequiredIf("OrganisationType", "MPR")]
     public string? MutualsPublicRegisterNumber { get; set; }
 
-    //f.Guernsey Registry
     [BindProperty]
     [DisplayName("Guernsey Registry")]
     public string? GuernseyRegistry { get; set; }
@@ -76,7 +66,6 @@ public class OrganisationIdentificationModel(ISession session) : PageModel
     [RequiredIf("OrganisationType", "GRN")]
     public string? GuernseyRegistryNumber { get; set; }
 
-    //g. Jersey Financial Services Commission Registry
     [BindProperty]
     [DisplayName("Jersey Financial Services Commission Registry")]
     public string? JerseyFinancialServicesCommissionRegistry { get; set; }
@@ -86,7 +75,6 @@ public class OrganisationIdentificationModel(ISession session) : PageModel
     [RequiredIf("OrganisationType", "JFSC")]
     public string? JerseyFinancialServicesCommissionRegistryNumber { get; set; }
 
-    //h. Isle of Man Companies Registry
     [BindProperty]
     [DisplayName("Isle of Man Companies Registry")]
     public string? IsleofManCompaniesRegistry { get; set; }
@@ -96,7 +84,6 @@ public class OrganisationIdentificationModel(ISession session) : PageModel
     [RequiredIf("OrganisationType", "IMCR")]
     public string? IsleofManCompaniesRegistryNumber { get; set; }
 
-    //i. National Health Service Organisation Data Service
     [BindProperty]
     [DisplayName("National health Service Organisations Registry")]
     public string? NationalHealthServiceOrganisationsRegistry { get; set; }
@@ -106,7 +93,6 @@ public class OrganisationIdentificationModel(ISession session) : PageModel
     [RequiredIf("OrganisationType", "NHOR")]
     public string? NationalHealthServiceOrganisationsRegistryNumber { get; set; }
 
-    //j. UK Register of Learning Providers (UKPRN number)
     [BindProperty]
     [DisplayName("UK Register of Learning Provider")]
     public string? UKLearningProviderReference { get; set; }
@@ -116,7 +102,6 @@ public class OrganisationIdentificationModel(ISession session) : PageModel
     [RequiredIf("OrganisationType", "UKPRN")]
     public string? UKLearningProviderReferenceNumber { get; set; }
 
-    //k. VAT number
     [BindProperty]
     [DisplayName("VAT number")]
     public string? VAT { get; set; }
@@ -141,9 +126,6 @@ public class OrganisationIdentificationModel(ISession session) : PageModel
 
         switch (OrganisationScheme)
         {
-            case "CHN":
-                CompaniesHouseNumber = registrationDetails.OrganisationIdentificationNumber;
-                break;            
             case "CCEW":
                 CharityCommissionEnglandWalesNumber = registrationDetails.OrganisationIdentificationNumber;
                 break;
@@ -161,16 +143,18 @@ public class OrganisationIdentificationModel(ISession session) : PageModel
                 break;
 
             case "JFSC":
-                JerseyFinancialServicesCommissionRegistryNumber = registrationDetails.OrganisationIdentificationNumber; ;
+                JerseyFinancialServicesCommissionRegistryNumber = registrationDetails.OrganisationIdentificationNumber;
+                ;
                 break;
             case "IMCR":
-                IsleofManCompaniesRegistryNumber = registrationDetails.OrganisationIdentificationNumber; ;
+                IsleofManCompaniesRegistryNumber = registrationDetails.OrganisationIdentificationNumber;
+                ;
                 break;
             case "NHOR":
                 NationalHealthServiceOrganisationsRegistryNumber = registrationDetails.OrganisationIdentificationNumber;
                 break;
             case "UKPRN":
-                UKLearningProviderReferenceNumber = registrationDetails.OrganisationIdentificationNumber; 
+                UKLearningProviderReferenceNumber = registrationDetails.OrganisationIdentificationNumber;
                 break;
             case "VAT":
                 VATNumber = registrationDetails.OrganisationIdentificationNumber;
@@ -193,9 +177,6 @@ public class OrganisationIdentificationModel(ISession session) : PageModel
 
         switch (OrganisationScheme)
         {
-            case "CHN":
-                registrationDetails.OrganisationIdentificationNumber = CompaniesHouseNumber;
-                break;
             case "CCEW":
                 registrationDetails.OrganisationIdentificationNumber = CharityCommissionEnglandWalesNumber;
                 break;
@@ -218,8 +199,6 @@ public class OrganisationIdentificationModel(ISession session) : PageModel
             case "IMCR":
                 registrationDetails.OrganisationIdentificationNumber = IsleofManCompaniesRegistryNumber;
                 break;
-
-
             case "NHOR":
                 registrationDetails.OrganisationIdentificationNumber = NationalHealthServiceOrganisationsRegistryNumber;
                 break;

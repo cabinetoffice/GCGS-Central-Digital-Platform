@@ -1,8 +1,10 @@
 @page "/registration/has-companies-house-number"
 @model CO.CDP.OrganisationApp.Pages.Registration.CompanyHouseNumberQuestionModel
 
-@{  
-    var backLink = "/registration/organisation-details";
+@{
+    var companiesHouseNumberHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.HasCompaniesHouseNumber)).HasInnerHtml;
+
+    var backLink = "/registration/organisation-type";
     if (Request.Query.ContainsKey("frm-summary"))
     {
         backLink = "/registration/organisation-details-summary";
@@ -12,8 +14,6 @@
 <a href="@backLink" class="govuk-back-link">
     Back
 </a>
-
-
 
 <main class="govuk-main-wrapper">
     <div class="govuk-grid-row">
@@ -28,14 +28,24 @@
                 <div class="govuk-form-group">
                     <fieldset class="govuk-fieldset">
                         <div class="govuk-radios" data-module="govuk-radios">
+
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input" id="YES" name="HasCompaniesHouseNumber" type="radio" value="true" data-aria-controls="conditional-YES" @(Model.HasCompaniesHouseNumber == true ? "checked" : "")>
                                 <label class="govuk-label govuk-radios__label" for="YES">Yes</label>
                             </div>
+                            <div class="govuk-radios__conditional" id="conditional-YES">
+                                <div class="govuk-form-group @(companiesHouseNumberHasError ? "govuk-form-group--error" : "")">
+                                    <label class="govuk-label" for="CompaniesHouseNumber">Company House Number</label>
+                                    <input class="govuk-input govuk-!-width-one-half @(companiesHouseNumberHasError ? "govuk-input--error" : "")"
+                                    id="CompaniesHouseNumber" name="CompaniesHouseNumber" type="text" spellcheck="false" autocomplete="off"
+                                           value="@(Model.HasCompaniesHouseNumber == true ? Model.CompaniesHouseNumber : "")">
+                                </div>
+                            </div>
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input" id="NO" name="HasCompaniesHouseNumber" type="radio" value="false" data-aria-controls="conditional-NO" @(Model.HasCompaniesHouseNumber == false ? "checked" : "")>
                                 <label class="govuk-label govuk-radios__label" for="NO">No</label>
-                            </div>
+                                <div class="govuk-radios__conditional--hidden" id="conditional-NO"></div>
+                            </div>       
                         </div>
                     </fieldset>
                 </div>

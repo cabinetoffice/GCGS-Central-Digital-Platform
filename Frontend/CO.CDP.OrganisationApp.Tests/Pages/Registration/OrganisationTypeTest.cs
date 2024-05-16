@@ -92,7 +92,7 @@ public class OrganisationTypeTest
     }
 
     [Fact]
-    public void OnPost_WhenValidModel_ShouldRedirectToOrganisationIdentificationPage()
+    public void OnPost_WhenValidModel_ShouldRedirectToCompanyHouseNumberQuestionPage()
     {
         var model = GivenOrganisationTypeModel();
 
@@ -102,7 +102,7 @@ public class OrganisationTypeTest
         var actionResult = model.OnPost();
 
         actionResult.Should().BeOfType<RedirectToPageResult>()
-            .Which.PageName.Should().Be("OrganisationIdentification");
+            .Which.PageName.Should().Be("CompanyHouseNumberQuestion");
     }
 
     [Fact]

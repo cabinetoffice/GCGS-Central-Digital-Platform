@@ -56,6 +56,8 @@ public class OrganisationNameModelTest
     [Fact]
     public void OnPost_WhenInValidModel_ShouldReturnSamePage()
     {
+        sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).
+            Returns(DummyRegistrationDetails());
         var modelState = new ModelStateDictionary();
         modelState.AddModelError("error", "some error");
         var actionContext = new ActionContext(new DefaultHttpContext(),

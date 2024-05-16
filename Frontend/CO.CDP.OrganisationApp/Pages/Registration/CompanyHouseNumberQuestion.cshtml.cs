@@ -14,16 +14,25 @@ public class CompanyHouseNumberQuestionModel(ISession session) : PageModel
     public bool? HasCompaniesHouseNumber { get; set; }
 
     [BindProperty]
+    public string? CompaniesHouseNumber { get; set; }
+
+    [BindProperty]
     public bool? RedirectToSummary { get; set; }
 
     public void OnGet()
     {
         var registrationDetails = VerifySession();
         HasCompaniesHouseNumber = registrationDetails.OrganisationHasCompaniesHouseNumber;
+        CompaniesHouseNumber = registrationDetails.OrganisationIdentificationNumber;
     }
 
     public IActionResult OnPost()
     {
+        if (HasCompaniesHouseNumber == true && string.IsNullOrWhiteSpace(CompaniesHouseNumber))
+        {
+            ModelState.AddModelError(nameof(CompaniesHouseNumber), "Please enter the Companies House number.");
+        }
+
         if (!ModelState.IsValid)
         {
             return Page();
@@ -32,6 +41,7 @@ public class CompanyHouseNumberQuestionModel(ISession session) : PageModel
         var registrationDetails = VerifySession();
 
         registrationDetails.OrganisationHasCompaniesHouseNumber = HasCompaniesHouseNumber;
+        registrationDetails.OrganisationIdentificationNumber = CompaniesHouseNumber;
 
         session.Set(Session.RegistrationDetailsKey, registrationDetails);
 
@@ -45,7 +55,7 @@ public class CompanyHouseNumberQuestionModel(ISession session) : PageModel
         }
         else
         {
-            return RedirectToPage("OrganisationRegisteredAddress");
+            return RedirectToPage("OrganisationName");
         }
     }
 

@@ -17,7 +17,7 @@
     
     var nationalHealthServiceOrganisationsRegistryNumberHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.NationalHealthServiceOrganisationsRegistryNumber)).HasInnerHtml;
 
-    var backLink = "/registration/organisation-type";
+    var backLink = "/registration/has-companies-house-number";
     if (Request.Query.ContainsKey("frm-summary"))
     {
         backLink = "/registration/organisation-details-summary";
@@ -45,18 +45,6 @@
                             Organisation Type
                         </legend>
                         <div class="govuk-radios" data-module="govuk-radios">
-                            <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="CHN" name="OrganisationScheme" type="radio" value="CHN" data-aria-controls="conditional-CHN" @(Model.OrganisationScheme == "CHN" ? "checked" : "")>
-                                @Html.LabelFor(m => m.CompaniesHouse, new { @class = "govuk-label govuk-radios__label", @for = "CHN" })
-                            </div>
-                            <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-CHN">
-                                <div class="govuk-form-group @(companiesHouseNumberHasError ? "govuk-form-group--error" : "")">
-                                    @Html.LabelFor(m => m.CompaniesHouseNumber, new { @class = "govuk-label", @for = Model.CompaniesHouseNumber })
-                                    @Html.ValidationMessageFor(m => m.CompaniesHouseNumber, "", new { @class = "govuk-error-message", @id = "CompaniesHouseNumber-error" })
-                                    @Html.TextBoxFor(m => m.CompaniesHouseNumber, new { @class = "govuk-input " + (companiesHouseNumberHasError ? "govuk-input--error" : ""), @id = "CompaniesHouseNumber", @type = "text", spellcheck = "false", autocomplete = "off" })
-                                </div>
-                            </div>
-
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input" id="CCEW" name="OrganisationScheme" type="radio" value="CCEW" data-aria-controls="conditional-CCEW" @(Model.OrganisationScheme == "CCEW" ? "checked" : "")>
                                 @Html.LabelFor(m => m.CharityCommissionEnglandWales, new { @class = "govuk-label govuk-radios__label", @for = "CCEW" })

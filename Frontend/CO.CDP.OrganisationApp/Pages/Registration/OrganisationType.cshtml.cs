@@ -44,7 +44,7 @@ public class OrganisationTypeModel(
         }
         else
         {
-            return RedirectToPage("OrganisationIdentification");
+            return RedirectToPage("CompanyHouseNumberQuestion");
         }
     }
 

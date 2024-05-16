@@ -1,11 +1,10 @@
-﻿namespace CO.CDP.OrganisationApp
+namespace CO.CDP.OrganisationApp;
+
+public interface ISession
 {
-    public interface ISession
-    {
-        T? Get<T>(string key);
+    T? Get<T>(string key);
 
-        void Set<T>(string key, T value);
+    void Set<T>(string key, T value);
 
-        void Remove(string key);
-    }
+    void Remove(string key);
 }
