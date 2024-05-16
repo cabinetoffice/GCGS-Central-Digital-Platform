@@ -39,9 +39,6 @@ public class OrganisationIdentificationModelTests
 
         switch (registrationDetails.OrganisationScheme)
         {
-            case "CHN":
-                model.CompaniesHouseNumber.Should().Be(registrationDetails.OrganisationIdentificationNumber);
-                break;            
             case "CCEW":
                 model.CharityCommissionEnglandWalesNumber.Should().Be(registrationDetails.OrganisationIdentificationNumber);
                 break;
@@ -90,24 +87,6 @@ public class OrganisationIdentificationModelTests
             OrganisationScheme = organisationType
         };
         model.ModelState.AddModelError("OrganisationType", "Please select your organisation type");
-
-        var result = model.OnPost();
-
-        result.Should().BeOfType<PageResult>();
-        model.ModelState.IsValid.Should().BeFalse();
-    }
-
-    [Theory]
-    [InlineData("CHN", null)]
-    [InlineData("CHN", "")]
-    public void OnPost_WhenOrganisationTypeIsCHNAndCompaniesHouseNumberIsNullOrEmpty_ShouldReturnPageWithModelStateError(string organisationType, string? companiesHouseNumber)
-    {
-        var model = new OrganisationIdentificationModel(sessionMock.Object)
-        {
-            OrganisationScheme = organisationType,
-            CompaniesHouseNumber = companiesHouseNumber
-        };
-        model.ModelState.AddModelError("CompaniesHouseNumber", "The Companies House Number field is required.");
 
         var result = model.OnPost();
 
@@ -326,7 +305,6 @@ public class OrganisationIdentificationModelTests
     }
 
     [Theory]
-    [InlineData("CHN", "123456")]
     [InlineData("CCEW", "ABCDEF")]
     [InlineData("SCR", "GHIJKL")]
     [InlineData("CCNI", "MNOPQR")]
@@ -359,9 +337,6 @@ public class OrganisationIdentificationModelTests
     {
         switch (organisationType)
         {
-            case "CHN":
-                model.CompaniesHouseNumber = identificationNumber;
-                break;
             case "CCEW":
                 model.CharityCommissionEnglandWalesNumber = identificationNumber;
                 break;
@@ -370,7 +345,7 @@ public class OrganisationIdentificationModelTests
                 break;
             case "CCNI":
                 model.CharityCommissionNorthernIrelandNumber = identificationNumber;
-                break;            
+                break;
             case "MPR":
                 model.MutualsPublicRegisterNumber = identificationNumber;
                 break;

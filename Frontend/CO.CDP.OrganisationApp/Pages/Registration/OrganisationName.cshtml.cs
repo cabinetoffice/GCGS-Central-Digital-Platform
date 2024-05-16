@@ -18,21 +18,26 @@ public class OrganisationNameModel(ISession session) : PageModel
     [BindProperty]
     public bool? RedirectToSummary { get; set; }
 
+    public bool HasCompaniesHouseNumber { get; set; }
+
     public void OnGet()
     {
         var registrationDetails = VerifySession();
 
         OrganisationName = registrationDetails.OrganisationName;
+        HasCompaniesHouseNumber = registrationDetails.OrganisationHasCompaniesHouseNumber ?? false;
     }
 
     public IActionResult OnPost()
     {
+        var registrationDetails = VerifySession();
+        HasCompaniesHouseNumber = registrationDetails.OrganisationHasCompaniesHouseNumber ?? false;
+
         if (!ModelState.IsValid)
         {
             return Page();
         }
 
-        var registrationDetails = VerifySession();
         registrationDetails.OrganisationName = OrganisationName;
         session.Set(Session.RegistrationDetailsKey, registrationDetails);
 

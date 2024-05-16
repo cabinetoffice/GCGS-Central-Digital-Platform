@@ -10,6 +10,10 @@
         backLink = "/registration/organisation-details-summary";
         Model.RedirectToSummary = true;
     }
+    else if (Model.HasCompaniesHouseNumber)
+    {
+        backLink = "/registration/has-companies-house-number";
+    }
 }
 
 <a href="@backLink" class="govuk-back-link">

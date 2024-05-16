@@ -46,14 +46,31 @@ public class CompanyHouseNumberQuestionTests
     {
         var model = new CompanyHouseNumberQuestionModel(sessionMock.Object)
         {
-            HasCompaniesHouseNumber = false
+            HasCompaniesHouseNumber = false,
+            CompaniesHouseNumber = "12345678"
         };
 
-        GivenRegistrationIsInProgress();
+        GivenRegistrationIsInProgress(model.HasCompaniesHouseNumber, model.CompaniesHouseNumber);
 
         var result = model.OnPost();
         result.Should().BeOfType<RedirectToPageResult>();
         (result as RedirectToPageResult)?.PageName.Should().Be("OrganisationIdentification");
+    }
+
+    [Fact]
+    public void OnPost_WhenModelStateIsValid_And_CompaniesNumber_Provided_ShouldRedirectToOrganisationName()
+    {
+        var model = new CompanyHouseNumberQuestionModel(sessionMock.Object)
+        {
+            HasCompaniesHouseNumber = true,
+            CompaniesHouseNumber = "12345678"
+        };
+
+        GivenRegistrationIsInProgress(model.HasCompaniesHouseNumber, model.CompaniesHouseNumber);
+
+        var result = model.OnPost();
+        result.Should().BeOfType<RedirectToPageResult>();
+        (result as RedirectToPageResult)?.PageName.Should().Be("OrganisationName");
     }
 
     [Fact]
@@ -62,30 +79,31 @@ public class CompanyHouseNumberQuestionTests
         var model = new CompanyHouseNumberQuestionModel(sessionMock.Object)
         {
             HasCompaniesHouseNumber = false,
-            RedirectToSummary = true
+            RedirectToSummary = true,
+            CompaniesHouseNumber = "123456"
         };
-        GivenRegistrationIsInProgress();
+        GivenRegistrationIsInProgress(model.HasCompaniesHouseNumber, model.CompaniesHouseNumber);
 
         var result = model.OnPost();
         result.Should().BeOfType<RedirectToPageResult>();
         (result as RedirectToPageResult)?.PageName.Should().Be("OrganisationDetailsSummary");
     }
 
-    private void GivenRegistrationIsInProgress()
+    private void GivenRegistrationIsInProgress(bool? hasNumber, string companyHouseNumber)
     {
-        RegistrationDetails registrationDetails = DummyRegistrationDetails();
+        RegistrationDetails registrationDetails = DummyRegistrationDetails(hasNumber, companyHouseNumber);
         sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey))
             .Returns(registrationDetails);
     }
 
-    private static RegistrationDetails DummyRegistrationDetails()
+    private static RegistrationDetails DummyRegistrationDetails(bool? hasNumber, string companyHouseNumber)
     {
         var registrationDetails = new RegistrationDetails
         {
             UserUrn = "urn:fdc:gov.uk:2022:37d8856672e84a57ae9c86b27b226225",
-            OrganisationScheme = "CHN",
-            OrganisationIdentificationNumber = "12345678",
-            OrganisationHasCompaniesHouseNumber = false,
+            OrganisationScheme = "CCEW",
+            OrganisationIdentificationNumber = companyHouseNumber,
+            OrganisationHasCompaniesHouseNumber = hasNumber
         };
 
         return registrationDetails;
