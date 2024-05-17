@@ -53,12 +53,12 @@ namespace CO.CDP.DataSharing.WebApi.Api
                     PostalCode = "BR8 7AA",
                     CountryName = "United Kingdom"
                 },
-                ContactPoints = new List<ContactPoint>
-                    {
-                        new ContactPoint {
-                            Email = "info@tables.com",
-                            Telephone = "+441234567890" }
-                    },
+                ContactPoint = new ContactPoint
+                {
+                    Name = "Procurement Team",
+                    Email = "info@tables.com",
+                    Telephone = "+441234567890"
+                },
                 Roles = new List<PartyRole> {
                     PartyRole.Supplier
                 },

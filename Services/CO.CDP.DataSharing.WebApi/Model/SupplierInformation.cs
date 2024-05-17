@@ -13,7 +13,7 @@ internal record SupplierInformation
     [Required] public required Identifier Identifier { get; init; }
     [Required] public required List<Identifier> AdditionalIdentifiers { get; init; }
     [Required] public required Address Address { get; init; }
-    [Required] public required List<ContactPoint> ContactPoints { get; init; }
+    [Required] public required ContactPoint ContactPoint { get; init; }
     [Required] public required List<PartyRole> Roles { get; init; }
     [Required(AllowEmptyStrings = true)] public required string Details { get; init; }
     [Required] public required SupplierInformationData SupplierInformationData { get; init; }
