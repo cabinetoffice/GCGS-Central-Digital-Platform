@@ -126,8 +126,8 @@ public class DatabaseTenantRepositoryTest(PostgreSqlFixture postgreSql) : IClass
 
         found.Should().NotBeNull();
         found.As<Tenant>().Persons.Should().HaveCount(2);
-        found.Persons.Should().Contain(p => p.Guid == person1.Guid);
-        found.Persons.Should().Contain(p => p.Guid == person2.Guid);
+        found.As<Tenant>().Persons.Should().Contain(p => p.Guid == person1.Guid);
+        found.As<Tenant>().Persons.Should().Contain(p => p.Guid == person2.Guid);
     }
 
 
