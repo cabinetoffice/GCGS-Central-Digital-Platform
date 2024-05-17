@@ -11,8 +11,7 @@ public class Organisation : IEntityDate
     public required Guid Guid { get; set; }
     public required Tenant Tenant { get; set; }
     public required string Name { get; set; }
-    public required OrganisationIdentifier Identifier { get; set; }
-    public List<OrganisationIdentifier> AdditionalIdentifiers { get; set; } = [];
+    public ICollection<OrganisationIdentifier> Identifiers { get; set; } = [];
     public required OrganisationAddress Address { get; set; }
     public required OrganisationContactPoint ContactPoint { get; set; }
     public List<int> Types { get; set; } = [];
@@ -20,14 +19,16 @@ public class Organisation : IEntityDate
     public DateTimeOffset CreatedOn { get; set; }
     public DateTimeOffset UpdatedOn { get; set; }
 
-    [ComplexType]
+    [Owned]
     public record OrganisationIdentifier
     {
-        public string? Id;
+        public int Id { get; set; }
+        public string? IdentifierId;
         public required string Scheme;
         public required string Number;
         public string? LegalName;
         public string? Uri;
+        public required bool Primary { get; set; }
     }
 
     [ComplexType]

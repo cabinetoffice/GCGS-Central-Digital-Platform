@@ -35,25 +35,24 @@ public class LookupOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
                 Guid = Guid.NewGuid(),
                 Name = "Tenant 102"
             },
-            Identifier = new OrganisationInformation.Persistence.Organisation.OrganisationIdentifier
-            {
-                Id = "Identifier1",
-                Scheme = "Scheme1",
-                LegalName = "Legal Name",
-                Uri = "http://example.com",
-                Number = "123456"
-            },
-            AdditionalIdentifiers = new List<OrganisationInformation.Persistence.Organisation.OrganisationIdentifier>
-            {
+            Identifiers = [new OrganisationInformation.Persistence.Organisation.OrganisationIdentifier
+                {
+                    Primary = true,
+                    IdentifierId = "Identifier1",
+                    Scheme = "Scheme1",
+                    LegalName = "Legal Name",
+                    Uri = "http://example.com",
+                    Number = "123456"
+                },
                 new OrganisationInformation.Persistence.Organisation.OrganisationIdentifier
                 {
-                    Id = "Identifier2",
+                    Primary = false,
+                    IdentifierId = "Identifier2",
                     Scheme = "Scheme2",
                     LegalName = "Another Legal Name",
                     Uri = "http://another-example.com",
                     Number = "123456"
-                }
-            },
+                }],
             Address = new OrganisationInformation.Persistence.Organisation.OrganisationAddress
             {
                 AddressLine1 = "1234 Test St",
