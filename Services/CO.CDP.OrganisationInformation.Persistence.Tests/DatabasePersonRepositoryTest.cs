@@ -100,7 +100,7 @@ public class DatabasePersonRepositoryTest(PostgreSqlFixture postgreSql) : IClass
         var found = await repository.Find(person.Guid);
 
         found.Should().NotBeNull();
-        found?.Organisations.Should().Contain(org => org.Guid == organisation.Guid);
+        found.As<Person>().Organisations.Should().Contain(org => org.Guid == organisation.Guid);
     }
 
 
