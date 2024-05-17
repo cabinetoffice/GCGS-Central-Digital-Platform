@@ -82,25 +82,24 @@ public static class EntityFactory
             Guid = theGuid,
             Name = theName,
             Tenant = tenant ?? GivenTenant(),
-            Identifier = new OrganisationIdentifier
-            {
-                Scheme = scheme,
-                Id = identifierId,
-                LegalName = legalName,
-                Uri = uri,
-                Number = number
-            },
-            AdditionalIdentifiers = new List<OrganisationIdentifier>
-            {
-                new()
+            Identifiers = [new OrganisationIdentifier
                 {
+                    Primary = true,
+                    Scheme = scheme,
+                    IdentifierId = identifierId,
+                    LegalName = legalName,
+                    Uri = uri,
+                    Number = number
+                },
+                new OrganisationIdentifier
+                {
+                    Primary = false,
                     Scheme = "ISO14001",
-                    Id = "2",
+                    IdentifierId = "2",
                     LegalName = "AnotherLegalName",
                     Uri = "http://example.com",
                     Number = number
-                }
-            },
+                }],
             Address = new OrganisationAddress
             {
                 AddressLine1 = streetAddress,

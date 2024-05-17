@@ -15,40 +15,28 @@ public class OrganisationInformationContext(DbContextOptions<OrganisationInforma
         {
             entity.HasKey(e => e.Id);
 
-            entity.OwnsOne(e => e.Identifier, b =>
+            entity.OwnsMany(e => e.Identifiers, a =>
             {
-                b.Property(p => p.Id);
-                b.Property(p => p.Scheme);
-                b.Property(p => p.LegalName);
-                b.Property(p => p.Uri);
-                b.Property(p => p.Number);
-            });
-
-            entity.OwnsMany(e => e.AdditionalIdentifiers, a =>
-            {
-                a.WithOwner();
-                a.Property(ai => ai.Id);
+                a.HasKey(e => e.Id);
+                a.Property(ai => ai.Primary);
+                a.Property(ai => ai.IdentifierId);
                 a.Property(ai => ai.Scheme);
                 a.Property(ai => ai.LegalName);
                 a.Property(ai => ai.Uri);
                 a.Property(ai => ai.Number);
             });
 
-            modelBuilder.Entity<Person>()
-                .HasMany(p => p.Tenants)
-                .WithMany(t => t.Persons)
-                .UsingEntity<TenantPerson>();
-        });
-        modelBuilder.Entity<Person>(entity =>
-        {
-            entity.HasKey(e => e.Id);
-            modelBuilder.Entity<Organisation>()
-                .HasMany(p => p.Persons)
+            entity.HasMany(p => p.Persons)
                 .WithMany(t => t.Organisations)
                 .UsingEntity<OrganisationPerson>();
         });
 
-       foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+        modelBuilder.Entity<Person>()
+            .HasMany(p => p.Tenants)
+            .WithMany(t => t.Persons)
+            .UsingEntity<TenantPerson>();
+
+        foreach (var entityType in modelBuilder.Model.GetEntityTypes())
         {
             if (typeof(IEntityDate).IsAssignableFrom(entityType.ClrType))
             {
@@ -61,6 +49,7 @@ public class OrganisationInformationContext(DbContextOptions<OrganisationInforma
 
         base.OnModelCreating(modelBuilder);
     }
+
     public override int SaveChanges()
     {
         UpdateTimestamps();

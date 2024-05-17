@@ -79,22 +79,23 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql) : 
             Guid = guid,
             Name = initialName,
             Tenant = GivenTenant(),
-            Identifier = new OrganisationIdentifier
+            Identifiers = [new OrganisationIdentifier
             {
+                Primary = true,
                 Scheme = "ISO9001",
-                Id = "1",
+                IdentifierId = "1",
                 LegalName = "DefaultLegalName",
                 Uri = "http://default.org",
                 Number = "123456"
-            },
-            AdditionalIdentifiers = new[] { new OrganisationIdentifier
+            }, new OrganisationIdentifier
             {
+                Primary = false,
                 Scheme = "ISO9001",
-                Id = "1",
+                IdentifierId = "1",
                 LegalName = "DefaultLegalName",
                 Uri = "http://default.org",
                 Number = "123456"
-            }}.ToList(),
+            }],
             Address = new OrganisationAddress
             {
                 AddressLine1 = "1234 Default St",

@@ -2,6 +2,7 @@ using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.Organisation.WebApi.Tests.AutoMapper;
 using CO.CDP.Organisation.WebApi.UseCase;
 using CO.CDP.OrganisationInformation.Persistence;
+using Persistence = CO.CDP.OrganisationInformation.Persistence;
 using FluentAssertions;
 using Moq;
 
@@ -80,6 +81,11 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
     {
         var person = GivenPersonExists(guid: Guid.NewGuid());
 
+        Persistence.Organisation? persistanceOrganisation = null;
+        _repository
+            .Setup(x => x.Save(It.IsAny<Persistence.Organisation>()))
+            .Callback<Persistence.Organisation>(b => persistanceOrganisation = b);
+
         await UseCase.Execute(new RegisterOrganisation
         {
             Name = "TheOrganisation",
@@ -120,25 +126,17 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
             Types = new List<int> { 1 }
         });
 
-        _repository.Verify(r => r.Save(It.Is<OrganisationInformation.Persistence.Organisation>(o =>
+        _repository.Verify(r => r.Save(It.Is<Persistence.Organisation>(o =>
              o.Guid == _generatedGuid &&
              o.Name == "TheOrganisation" &&
-             o.Identifier == new OrganisationInformation.Persistence.Organisation.OrganisationIdentifier
-             {
-                 Scheme = "ISO9001",
-                 Id = "1",
-                 LegalName = "OfficialOrganisationName",
-                 Uri = "http://example.org",
-                 Number = "123456"
-             } &&
-             o.Address == new OrganisationInformation.Persistence.Organisation.OrganisationAddress
+             o.Address == new Persistence.Organisation.OrganisationAddress
              {
                  AddressLine1 = "1234 Example St",
                  City = "Example City",
                  PostCode = "12345",
                  Country = "Exampleland"
              } &&
-             o.ContactPoint == new OrganisationInformation.Persistence.Organisation.OrganisationContactPoint
+             o.ContactPoint == new Persistence.Organisation.OrganisationContactPoint
              {
                  Name = "Contact Name",
                  Email = "contact@example.org",
@@ -147,6 +145,30 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
              } &&
              o.Types.SequenceEqual(new List<int> { 1 })
          )), Times.Once);
+
+        persistanceOrganisation.Should().NotBeNull();
+        persistanceOrganisation.As<Persistence.Organisation>().Identifiers.Should().HaveCount(2);
+        persistanceOrganisation.As<Persistence.Organisation>().Identifiers.First()
+            .Should().BeEquivalentTo(new Persistence.Organisation.OrganisationIdentifier
+            {
+                Primary = true,
+                Scheme = "ISO9001",
+                IdentifierId = "1",
+                LegalName = "OfficialOrganisationName",
+                Uri = "http://example.org",
+                Number = "123456"
+            });
+
+        persistanceOrganisation.As<Persistence.Organisation>().Identifiers.Last()
+            .Should().BeEquivalentTo(new Persistence.Organisation.OrganisationIdentifier
+            {
+                Primary = false,
+                Scheme = "ISO14001",
+                IdentifierId = "2",
+                LegalName = "AnotherOrganisationName",
+                Uri = "http://example.com",
+                Number = "123456"
+            });
     }
 
     [Fact]
@@ -159,7 +181,7 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
             personId: person.Guid
         ));
 
-        _repository.Verify(r => r.Save(It.Is<OrganisationInformation.Persistence.Organisation>(o =>
+        _repository.Verify(r => r.Save(It.Is<Persistence.Organisation>(o =>
             o.Tenant.Name == "ACME"
         )), Times.Once);
     }
@@ -174,7 +196,7 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
             personId: person.Guid
         ));
 
-        _repository.Verify(r => r.Save(It.Is<OrganisationInformation.Persistence.Organisation>(o =>
+        _repository.Verify(r => r.Save(It.Is<Persistence.Organisation>(o =>
             o.Tenant.Persons.Count == 1 && o.Tenant.Persons.First().Guid == person.Guid
         )), Times.Once);
     }
@@ -189,7 +211,7 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
             personId: person.Guid
         ));
 
-        _repository.Verify(r => r.Save(It.Is<OrganisationInformation.Persistence.Organisation>(o =>
+        _repository.Verify(r => r.Save(It.Is<Persistence.Organisation>(o =>
             o.Persons.Count == 1 && o.Persons.First().Guid == person.Guid
         )), Times.Once);
     }
@@ -208,7 +230,7 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
             .ThrowAsync<RegisterOrganisationUseCase.RegisterOrganisationException.UnknownPersonException>();
 
         _repository.Verify(
-            r => r.Save(It.IsAny<OrganisationInformation.Persistence.Organisation>()),
+            r => r.Save(It.IsAny<Persistence.Organisation>()),
             Times.Never);
     }
 
