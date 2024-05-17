@@ -13,6 +13,7 @@ namespace CO.CDP.DataSharing.WebApi.Api
             {
                 Id = Guid.NewGuid(),
                 Name = "Tables Ltd",
+                AssociatedPersons = new List<AssociatedPerson>(),
                 AdditionalParties = new List<OrganisationReference>{
                     new OrganisationReference
                     {

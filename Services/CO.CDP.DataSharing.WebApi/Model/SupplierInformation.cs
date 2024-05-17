@@ -8,6 +8,7 @@ internal record SupplierInformation
     [Required] public required Guid Id { get; init; }
     /// <example>"Acme Corporation"</example>
     [Required(AllowEmptyStrings = true)] public required string Name { get; init; }
+    [Required] public required List<AssociatedPerson> AssociatedPersons { get; init; }
     [Required] public required List<OrganisationReference> AdditionalParties { get; init; }
     [Required] public required Identifier Identifier { get; init; }
     [Required] public required List<Identifier> AdditionalIdentifiers { get; init; }
