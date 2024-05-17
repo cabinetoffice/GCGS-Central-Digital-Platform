@@ -1,4 +1,5 @@
 @page "/registration/organisation-details-summary"
+@using CO.CDP.OrganisationApp.Constants
 @model CO.CDP.OrganisationApp.Pages.Registration.OrganisationDetailsSummaryModel
 
 <a href="/registration/organisation-registered-address" class="govuk-back-link">
@@ -52,11 +53,12 @@
                             Organisation type
                         </dt>
                         <dd class="govuk-summary-list__value">
-                            @details?.OrganisationScheme
+                            @details?.OrganisationScheme.SchemeDescription()
                         </dd>
                         <dd class="govuk-summary-list__actions">
                             <a class="govuk-link" href="/registration/has-companies-house-number?frm-summary">
-                                Change<span class="govuk-visually-hidden"> organisation type</span></a>
+                                Change<span class="govuk-visually-hidden"> organisation type</span>
+                            </a>
                         </dd>
                     </div>
                     @if (details?.OrganisationScheme != "Other")
@@ -70,7 +72,8 @@
                             </dd>
                             <dd class="govuk-summary-list__actions">
                                 <a class="govuk-link" href="/registration/has-companies-house-number?frm-summary">
-                                    Change<span class="govuk-visually-hidden"> organisation identification number</span></a>
+                                    Change<span class="govuk-visually-hidden"> organisation identification number</span>
+                                </a>
                             </dd>
                         </div>
                     }

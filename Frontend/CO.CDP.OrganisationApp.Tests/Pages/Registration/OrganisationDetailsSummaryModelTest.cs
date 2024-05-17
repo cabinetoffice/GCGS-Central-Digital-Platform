@@ -128,6 +128,7 @@ public class OrganisationDetailsSummaryModelTest
 
     private OrganisationDetailsSummaryModel GivenOrganisationDetailModel()
     {
-        return new OrganisationDetailsSummaryModel(sessionMock.Object, organisationClientMock.Object);
+        return new OrganisationDetailsSummaryModel(sessionMock.Object, organisationClientMock.Object)
+        { Details = DummyRegistrationDetails()};
     }
 }

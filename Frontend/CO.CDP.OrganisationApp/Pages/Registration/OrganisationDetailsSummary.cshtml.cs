@@ -12,7 +12,7 @@ public class OrganisationDetailsSummaryModel(
     ISession session,
     IOrganisationClient organisationClient) : PageModel
 {
-    public RegistrationDetails? Details { get; set; }
+    public required RegistrationDetails Details { get; set; }
 
     [BindProperty]
     public string? Error { get; set; }
