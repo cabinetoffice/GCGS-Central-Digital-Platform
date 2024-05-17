@@ -118,6 +118,8 @@ namespace CO.CDP.DataSharing.WebApi.Api
                 Title = "Data Sharing API",
                 Description = "",
             });
+            options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory,
+                $"{Assembly.GetExecutingAssembly().GetName().Name}.xml"));
         }
     }
 }
