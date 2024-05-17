@@ -50,7 +50,8 @@ namespace CO.CDP.DataSharing.WebApi.Api
                     StreetAddress = $"42 Green Lane",
                     Locality = "London",
                     Region = "Kent",
-                    PostalCode = "BR8 7AA"
+                    PostalCode = "BR8 7AA",
+                    CountryName = "United Kingdom"
                 },
                 ContactPoints = new List<ContactPoint>
                     {

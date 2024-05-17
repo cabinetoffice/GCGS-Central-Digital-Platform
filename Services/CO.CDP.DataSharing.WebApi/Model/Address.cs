@@ -4,8 +4,14 @@ namespace CO.CDP.DataSharing.WebApi.Model;
 
 internal record Address
 {
-    [Required(AllowEmptyStrings = true)] public required string StreetAddress { get; init; }
-    [Required(AllowEmptyStrings = true)] public required string Locality { get; init; }
-    public string? Region { get; init; }
-    public string? PostalCode { get; init; }
+    /// <example>"82 St. John’s Road"</example>
+    [Required] public required string StreetAddress { get; init; }
+    /// <example>"CHESTER"</example>
+    [Required] public required string Locality { get; init; }
+    /// <example>"Lancashire"</example>
+    [Required] public required string Region { get; init; }
+    /// <example>"CH43 7UR"</example>
+    [Required] public required string PostalCode { get; init; }
+    /// <example>"United Kingdom"</example>
+    [Required] public required string CountryName { get; init; }
 }
