@@ -32,15 +32,15 @@ namespace CO.CDP.DataSharing.WebApi.Api
                 },
                 Identifier = new Identifier
                 {
-                    Scheme = "CH",
-                    Id = Guid.NewGuid(),
+                    Scheme = "CDP-PPON",
+                    Id = Guid.NewGuid().ToString(),
                     LegalName = "Tables Incorporated",
                     Uri = "https://tablesinc.com"
                 },
                 AdditionalIdentifiers = new List<Identifier>
                 {
                     new Identifier {
-                        Id = Guid.NewGuid(),
+                        Id = Guid.NewGuid().ToString(),
                         Scheme = "GB-COH",
                         LegalName = "Tables Ltd",
                         Uri = "https://tables.co.uk" }
