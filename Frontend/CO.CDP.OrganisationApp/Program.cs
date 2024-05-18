@@ -72,6 +72,8 @@ builder.Services.AddAuthentication(options =>
     options.ClaimActions.MapAll();
 });
 
+builder.Services.AddHealthChecks();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -82,6 +84,7 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+app.MapHealthChecks("/health");
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
