@@ -62,7 +62,7 @@ namespace CO.CDP.DataSharing.WebApi.Api
                 Roles = new List<PartyRole> {
                     PartyRole.Supplier
                 },
-                Details = "Details.",
+                Details = new Details(),
                 SupplierInformationData = new SupplierInformationData
                 {
                     FormId = Guid.NewGuid(),
