@@ -19,14 +19,14 @@ namespace CO.CDP.DataSharing.WebApi.Api
                     {
                          Id = Guid.NewGuid(),
                          Name = "Org 1",
-                         PartyRole = 0,
+                         Roles = [PartyRole.Supplier],
                          Uri = new Uri("https://cdp.cabinetoffice.gov.uk/organisations/f4596cdd-12e5-4f25-9db1-4312474e516f")
                     },
                     new OrganisationReference
                     {
                         Id = Guid.NewGuid(),
                         Name = "Org 2",
-                        PartyRole = 1,
+                        Roles = [PartyRole.Buyer],
                         Uri = new Uri("https://cdp.cabinetoffice.gov.uk/organisations/d6935471-3875-49e0-b6ad-2758da5ada7c")
                     }
                 },

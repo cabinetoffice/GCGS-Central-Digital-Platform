@@ -14,6 +14,7 @@ internal record SupplierInformation
     [Required] public required List<Identifier> AdditionalIdentifiers { get; init; }
     [Required] public required Address Address { get; init; }
     [Required] public required ContactPoint ContactPoint { get; init; }
+    /// <example>["supplier"]</example>
     [Required] public required List<PartyRole> Roles { get; init; }
     [Required(AllowEmptyStrings = true)] public required string Details { get; init; }
     [Required] public required SupplierInformationData SupplierInformationData { get; init; }
