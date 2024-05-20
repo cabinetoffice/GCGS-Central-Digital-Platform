@@ -1,5 +1,3 @@
 namespace CO.CDP.DataSharing.WebApi.Model;
 
-internal class Details
-{
-}
+internal record Details;

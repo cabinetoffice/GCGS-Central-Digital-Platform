@@ -66,7 +66,19 @@ namespace CO.CDP.DataSharing.WebApi.Api
                 Details = new Details(),
                 SupplierInformationData = new SupplierInformationData
                 {
-                    FormId = Guid.NewGuid(),
+                    Form = new Form
+                    {
+                        Name = "Standard Questions",
+                        SubmissionState = FormSubmissionState.Submitted,
+                        SubmittedAt = DateTime.Now,
+                        OrganisationId = Guid.NewGuid(),
+                        SupplierFormId = Guid.NewGuid(),
+                        FormVersionId = "20240309",
+                        IsRequired = true,
+                        BookingReference = "AGMT-2024-XYZ",
+                        Scope = 0,
+                        Type = 0
+                    },
                     Questions = new List<FormQuestion>
                         {
                             new FormQuestion {
