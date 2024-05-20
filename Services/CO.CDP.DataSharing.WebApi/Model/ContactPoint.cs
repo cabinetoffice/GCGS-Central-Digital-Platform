@@ -2,6 +2,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CO.CDP.DataSharing.WebApi.Model;
 
+/// <summary>
+/// Based on OCDS <a href="https://standard.open-contracting.org/latest/en/schema/reference/#contactpoint">ContactPoint</a>.
+/// </summary>
 internal record ContactPoint
 {
     /// <example>"Procurement Team"</example>

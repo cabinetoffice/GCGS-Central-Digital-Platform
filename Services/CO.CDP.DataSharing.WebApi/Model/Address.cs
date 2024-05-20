@@ -2,6 +2,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CO.CDP.DataSharing.WebApi.Model;
 
+/// <summary>
+/// Based on OCDS <a href="https://standard.open-contracting.org/latest/en/schema/reference/#address">Address</a>.
+/// </summary>
 internal record Address
 {
     /// <example>"82 St. John’s Road"</example>
