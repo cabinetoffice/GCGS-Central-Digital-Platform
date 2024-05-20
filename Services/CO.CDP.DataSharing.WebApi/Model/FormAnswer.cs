@@ -1,6 +1,6 @@
 namespace CO.CDP.DataSharing.WebApi.Model;
 
-internal record SupplierFormAnswer
+internal record FormAnswer
 {
     public string? QuestionName { get; init; }
     public bool? BoolValue { get; init; }

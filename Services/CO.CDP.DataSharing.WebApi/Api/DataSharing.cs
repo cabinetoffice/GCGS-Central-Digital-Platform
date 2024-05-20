@@ -87,9 +87,9 @@ namespace CO.CDP.DataSharing.WebApi.Api
                                 IsRequired = true
                             }
                         },
-                    Answers = new List<SupplierFormAnswer>
+                    Answers = new List<FormAnswer>
                         {
-                            new SupplierFormAnswer {
+                            new FormAnswer {
                                 QuestionName = "Question 1",
                                 TextValue = "Answer 1"
                             }
