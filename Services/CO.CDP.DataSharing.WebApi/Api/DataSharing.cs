@@ -30,6 +30,7 @@ namespace CO.CDP.DataSharing.WebApi.Api
                         Uri = new Uri("https://cdp.cabinetoffice.gov.uk/organisations/d6935471-3875-49e0-b6ad-2758da5ada7c")
                     }
                 },
+                AdditionalEntities = [],
                 Identifier = new Identifier
                 {
                     Scheme = "CDP-PPON",
