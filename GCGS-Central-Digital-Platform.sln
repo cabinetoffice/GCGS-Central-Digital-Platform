@@ -56,13 +56,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.Person.WebApiClient"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.Person.WebApiClient.Tests", "Libraries\CO.CDP.Person.WebApiClient.Tests\CO.CDP.Person.WebApiClient.Tests.csproj", "{B8AF6C32-1FCE-4772-A06B-0652E67E7A93}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.Common", "Libraries\CO.CDP.Common\CO.CDP.Common.csproj", "{4C11F7A1-6562-4D72-A657-D56BDF7CF0AF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.Common", "Libraries\CO.CDP.Common\CO.CDP.Common.csproj", "{4C11F7A1-6562-4D72-A657-D56BDF7CF0AF}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.Common.Tests", "Libraries\CO.CDP.Common.Tests\CO.CDP.Common.Tests.csproj", "{02A3AF19-2506-4CFF-8083-5F517C013E1E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.TestKit.Mvc.Tests", "TestKit\CO.CDP.TestKit.Mvc.Tests\CO.CDP.TestKit.Mvc.Tests.csproj", "{72E8088E-3EA7-4A5A-8208-5FA2F9589537}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.TestKit.Mvc.Tests", "TestKit\CO.CDP.TestKit.Mvc.Tests\CO.CDP.TestKit.Mvc.Tests.csproj", "{72E8088E-3EA7-4A5A-8208-5FA2F9589537}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.TestKit.Mvc", "TestKit\CO.CDP.TestKit.Mvc\CO.CDP.TestKit.Mvc.csproj", "{A34220C0-CE7E-4966-9175-111EE5D04676}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.TestKit.Mvc", "TestKit\CO.CDP.TestKit.Mvc\CO.CDP.TestKit.Mvc.csproj", "{A34220C0-CE7E-4966-9175-111EE5D04676}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
