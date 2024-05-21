@@ -16,5 +16,5 @@ internal record FormQuestion
     /// <example>"Steel"</example>
     public string? SectionName { get; init; }
 
-    public List<QuestionOption> Options { get; init; } = new();
+    public List<FormQuestionOption> Options { get; init; } = new();
 }
