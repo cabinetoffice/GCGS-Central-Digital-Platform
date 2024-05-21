@@ -10,103 +10,141 @@ namespace CO.CDP.DataSharing.WebApi.Api
         public static void UseDataSharingEndpoints(this WebApplication app)
         {
             app.MapGet("/share/data/{sharecode}", (string sharecode) => new SupplierInformation
-            {
-                Id = Guid.NewGuid(),
-                Name = "Tables Ltd",
-                AssociatedPersons = new List<AssociatedPerson>(),
-                AdditionalParties = new List<OrganisationReference>{
-                    new OrganisationReference
-                    {
-                         Id = Guid.NewGuid(),
-                         Name = "Org 1",
-                         Roles = [PartyRole.Supplier],
-                         Uri = new Uri("https://cdp.cabinetoffice.gov.uk/organisations/f4596cdd-12e5-4f25-9db1-4312474e516f")
-                    },
-                    new OrganisationReference
-                    {
-                        Id = Guid.NewGuid(),
-                        Name = "Org 2",
-                        Roles = [PartyRole.Buyer],
-                        Uri = new Uri("https://cdp.cabinetoffice.gov.uk/organisations/d6935471-3875-49e0-b6ad-2758da5ada7c")
-                    }
-                },
-                AdditionalEntities = [],
-                Identifier = new Identifier
                 {
-                    Scheme = "CDP-PPON",
-                    Id = Guid.NewGuid().ToString(),
-                    LegalName = "Tables Incorporated",
-                    Uri = "https://tablesinc.com"
-                },
-                AdditionalIdentifiers = new List<Identifier>
-                {
-                    new Identifier {
-                        Id = Guid.NewGuid().ToString(),
-                        Scheme = "GB-COH",
-                        LegalName = "Tables Ltd",
-                        Uri = "https://tables.co.uk" }
-                },
-                Address = new Address
-                {
-                    StreetAddress = $"42 Green Lane",
-                    Locality = "London",
-                    Region = "Kent",
-                    PostalCode = "BR8 7AA",
-                    CountryName = "United Kingdom"
-                },
-                ContactPoint = new ContactPoint
-                {
-                    Name = "Procurement Team",
-                    Email = "info@tables.com",
-                    Telephone = "+441234567890"
-                },
-                Roles = new List<PartyRole> {
-                    PartyRole.Supplier
-                },
-                Details = new Details(),
-                SupplierInformationData = new SupplierInformationData
-                {
-                    Form = new Form
-                    {
-                        Name = "Standard Questions",
-                        SubmissionState = FormSubmissionState.Submitted,
-                        SubmittedAt = DateTime.Now,
-                        OrganisationId = Guid.NewGuid(),
-                        SupplierFormId = Guid.NewGuid(),
-                        FormVersionId = "20240309",
-                        IsRequired = true,
-                        BookingReference = "AGMT-2024-XYZ",
-                        Scope = 0,
-                        Type = 0
-                    },
-                    Questions = new List<FormQuestion>
+                    Id = Guid.Parse("1e39d0ce-3abd-43c5-9f23-78c92e437f2a"),
+                    Name = "Acme Corporation",
+                    AssociatedPersons =
+                    [
+                        new AssociatedPerson
                         {
-                            new FormQuestion {
-                                Name = "Question 1",
-                                Text = "What is your answer?",
-                                IsRequired = true
-                            },
-                            new FormQuestion {
-                                Name = "Question 2",
-                                Text = "What is your answer?",
-                                IsRequired = true
-                            }
+                            Id = Guid.Parse("c16f9f7b-3f10-42db-86f8-93607b034a4c"),
+                            Name = "Alice Doe",
+                            Relationship = "Company Director",
+                            Uri = new Uri(
+                                "https://cdp.cabinetoffice.gov.uk/persons/c16f9f7b-3f10-42db-86f8-93607b034a4c"),
+                            Role = 4
+                        }
+                    ],
+                    AdditionalParties =
+                    [
+                        new OrganisationReference
+                        {
+                            Id = Guid.Parse("f4596cdd-12e5-4f25-9db1-4312474e516f"),
+                            Name = "Acme Group Ltd",
+                            Roles = [PartyRole.Supplier],
+                            Uri = new Uri(
+                                "https://cdp.cabinetoffice.gov.uk/organisations/f4596cdd-12e5-4f25-9db1-4312474e516f")
+                        }
+                    ],
+                    AdditionalEntities = [
+                        new OrganisationReference
+                        {
+                            Id = Guid.Parse("f4596cdd-12e5-4f25-9db1-4312474e516f"),
+                            Name = "Acme Group Ltd",
+                            Roles = [PartyRole.Supplier],
+                            Uri = new Uri(
+                                "https://cdp.cabinetoffice.gov.uk/organisations/f4596cdd-12e5-4f25-9db1-4312474e516f")
+                        }
+                    ],
+                    Identifier = new Identifier
+                    {
+                        Scheme = "CDP-PPON",
+                        Id = "1e39d0ce-3abd-43c5-9f23-78c92e437f2a",
+                        LegalName = "Acme Corporation Ltd",
+                        Uri = new Uri("https://cdp.cabinetoffice.gov.uk/organisations/1e39d0ce-3abd-43c5-9f23-78c92e437f2a")
+                    },
+                    AdditionalIdentifiers =
+                    [
+                        new Identifier
+                        {
+                            Id = "06368740",
+                            Scheme = "GB-COH",
+                            LegalName = "Acme Corporation Ltd",
+                            Uri = new Uri("http://data.companieshouse.gov.uk/doc/company/06368740")
+                        }
+                    ],
+                    Address = new Address
+                    {
+                        StreetAddress = "82 St. John’s Road",
+                        Locality = "CHESTER",
+                        Region = "Lancashire",
+                        PostalCode = "CH43 7UR",
+                        CountryName = "United Kingdom"
+                    },
+                    ContactPoint = new ContactPoint
+                    {
+                        Name = "Procurement Team",
+                        Email = "info@example.com",
+                        Telephone = "+441234567890"
+                    },
+                    Roles = [PartyRole.Supplier],
+                    Details = new Details(),
+                    SupplierInformationData = new SupplierInformationData
+                    {
+                        Form = new Form
+                        {
+                            Name = "Standard Questions",
+                            SubmissionState = FormSubmissionState.Submitted,
+                            SubmittedAt = DateTime.Parse("2024-03-28T18:24:00.000Z"),
+                            OrganisationId = Guid.Parse("1e39d0ce-3abd-43c5-9f23-78c92e437f2a"),
+                            SupplierFormId = Guid.Parse("f174b921-0c58-4644-80f1-8707d8300130"),
+                            FormVersionId = "20240309",
+                            IsRequired = true,
+                            BookingReference = "AGMT-2024-XYZ",
+                            Scope = 0,
+                            Type = 0
                         },
-                    Answers = new List<FormAnswer>
-                        {
+                        Questions =
+                        [
+                            new FormQuestion
+                            {
+                                Name = "_Steel01",
+                                Type = FormQuestionType.Text,
+                                Text = "<span style='font-weight: bold;'>Central Government Only - UK</span><span style='font-size:16.000000000000004px'><br /></span><p><span style='font-size:13.333299999999998px'>For contracts which relate to projects/programmes (i) with a value of \u00a310 million or more; or (ii) a value of less than \u00a310 million where it is anticipated that the project will require in excess of 500 tonnes of steel; please describe the steel specific supply chain management systems, policies, standards and procedures you have in place to ensure robust supply chain management and compliance with relevant legislation.</span><span style='font-size:16.000000000000004px'></span></p><span style='font-size:13.333299999999998px'>Please provide details of previous similar projects where you have demonstrated a high level of competency and effectiveness in managing all supply chain members involved in steel supply or production to ensure a sustainable and resilient supply of steel.</span>",
+                                IsRequired = false,
+                                SectionName = "Steel"
+                            },
+                            new FormQuestion
+                            {
+                                Name = "_Steel02",
+                                Type = FormQuestionType.Text,
+                                Text = "<p>Please provide all the relevant details of previous breaches of health and safety legislation in the last 5 years, applicable to the country in which you operate, on comparable projects, for both:&nbsp;<span style='font-size:13.333299999999998px'>Your organisation</span></p><span style='font-size:13.333299999999998px'>All your supply chain members involved in the production or supply of steel</span>",
+                                IsRequired = true,
+                                SectionName = "Steel"
+                            },
+                            new FormQuestion
+                            {
+                                Name = "_ModernSlavery01",
+                                Type = FormQuestionType.Text,
+                                Text = "Central Government Only - Tackling Modern Slavery in Supply Chains<span style='font-size:16.000000000000004px'><br /></span><span style='font-size:13.333299999999998px'>If you are a relevant commercial organisation subject to Section 54 of the Modern Slavery Act 2015, and if your latest statement is available electronically please provide:</span><span style='font-size:16.000000000000004px'><br /></span><span style='font-size:13.333299999999998px'i. the web address,</span><span style='font-size:16.000000000000004px'><br /></span><span style='font-size:13.333299999999998px>ii. precise reference of the documents.</span><span style='font-size:16.000000000000004px'><br /></span><span style='font-size:13.333299999999998p'>iii. If your latest statement is not available electronically, please provide a copy.</span>",
+                                IsRequired = true,
+                                SectionName = "Modern slavery"
+                            },
+                            new FormQuestion
+                            {
+                                Name = "_CarbonNetZero01",
+                                Type = FormQuestionType.Boolean,
+                                Text = "Please confirm that you have detailed your environmental management measures by completing and publishing a Carbon Reduction Plan which meets the required reporting standard.",
+                                IsRequired = true,
+                                SectionName = "Carbon Net Zero"
+                            }
+                        ],
+                        Answers =
+                        [
                             new FormAnswer
                             {
-                                QuestionName = "Question 1",
+                                QuestionName = "_Steel02",
                                 TextValue = "Answer to question 1.",
                             },
+
                             new FormAnswer
                             {
-                                QuestionName = "Question 2",
-                                BoolValue = false
+                                QuestionName = "_CarbonNetZero01",
+                                BoolValue = true
                             }
-                        }
-                },
-            })
+                        ]
+                    },
+                })
                 .Produces<SupplierInformation>(200, "application/json")
                 .WithOpenApi(operation =>
                 {
@@ -119,13 +157,12 @@ namespace CO.CDP.DataSharing.WebApi.Api
                 });
 
 
-
             app.MapPost("/share/data", (SupplierInformationData shareRequest) =>
-            {
-                var shareCode = Guid.NewGuid().ToString();
+                {
+                    var shareCode = Guid.NewGuid().ToString();
 
-                return Results.Ok(new { ShareCode = shareCode, Expiry = DateTime.UtcNow.AddDays(7) });
-            }).Produces(StatusCodes.Status200OK)
+                    return Results.Ok(new { ShareCode = shareCode, Expiry = DateTime.UtcNow.AddDays(7) });
+                }).Produces(StatusCodes.Status200OK)
                 .WithOpenApi(operation =>
                 {
                     operation.OperationId = "CreateSharedData";

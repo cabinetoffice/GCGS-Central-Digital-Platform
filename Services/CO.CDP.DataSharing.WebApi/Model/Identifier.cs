@@ -14,5 +14,5 @@ internal record Identifier
     /// <example>"Acme Corporation Ltd."</example>
     [Required(AllowEmptyStrings = true)] public required string LegalName { get; init; }
     /// <example>"https://cdp.cabinetoffice.gov.uk/organisations/5a360be7-e1d3-4214-9f72-0e1d6b57b85d"</example>
-    [Required(AllowEmptyStrings = true)] public required string Uri { get; init; }
+    [Required] public required Uri? Uri { get; init; }
 }
