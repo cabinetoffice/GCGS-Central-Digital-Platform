@@ -154,6 +154,7 @@ public static class EndpointExtensions
                     "[STUB] Operation to obtain Supplier information which has been shared as part of a notice. [STUB]";
                 operation.Summary = "[STUB] Request Supplier Submitted Information. [STUB]";
                 operation.Responses["200"].Description = "Organisation Information including Form Answers.";
+                operation.Responses["404"].Description = "Share code not found or not authorised.";
                 return operation;
             });
 
