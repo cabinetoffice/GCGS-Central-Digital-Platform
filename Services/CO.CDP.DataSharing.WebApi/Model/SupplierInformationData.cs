@@ -1,5 +1,3 @@
-using System.ComponentModel.DataAnnotations;
-
 namespace CO.CDP.DataSharing.WebApi.Model;
 
 internal record SupplierInformationData

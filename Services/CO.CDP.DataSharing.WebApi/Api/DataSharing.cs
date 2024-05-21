@@ -85,13 +85,24 @@ namespace CO.CDP.DataSharing.WebApi.Api
                                 Name = "Question 1",
                                 Text = "What is your answer?",
                                 IsRequired = true
+                            },
+                            new FormQuestion {
+                                Name = "Question 2",
+                                Text = "What is your answer?",
+                                IsRequired = true
                             }
                         },
                     Answers = new List<FormAnswer>
                         {
-                            new FormAnswer {
+                            new FormAnswer
+                            {
                                 QuestionName = "Question 1",
-                                TextValue = "Answer 1"
+                                TextValue = "Answer to question 1.",
+                            },
+                            new FormAnswer
+                            {
+                                QuestionName = "Question 2",
+                                BoolValue = false
                             }
                         }
                 },
