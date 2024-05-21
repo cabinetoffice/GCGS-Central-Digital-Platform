@@ -146,6 +146,7 @@ namespace CO.CDP.DataSharing.WebApi.Api
                     },
                 })
                 .Produces<SupplierInformation>(200, "application/json")
+                .Produces(StatusCodes.Status404NotFound)
                 .WithOpenApi(operation =>
                 {
                     operation.OperationId = "GetSharedData";
@@ -162,7 +163,8 @@ namespace CO.CDP.DataSharing.WebApi.Api
                     var shareCode = Guid.NewGuid().ToString();
 
                     return Results.Ok(new { ShareCode = shareCode, Expiry = DateTime.UtcNow.AddDays(7) });
-                }).Produces(StatusCodes.Status200OK)
+                })
+                .Produces(StatusCodes.Status200OK)
                 .WithOpenApi(operation =>
                 {
                     operation.OperationId = "CreateSharedData";
