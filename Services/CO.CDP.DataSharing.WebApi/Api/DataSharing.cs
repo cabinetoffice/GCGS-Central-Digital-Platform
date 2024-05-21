@@ -1,228 +1,194 @@
-using System.ComponentModel.DataAnnotations;
-using Microsoft.OpenApi.Models;
+using System.Reflection;
+using CO.CDP.DataSharing.WebApi.Model;
 using DotSwashbuckle.AspNetCore.SwaggerGen;
+using Microsoft.OpenApi.Models;
 
-namespace CO.CDP.DataSharing.WebApi.Api
+namespace CO.CDP.DataSharing.WebApi.Api;
+
+public static class EndpointExtensions
 {
-    internal record SupplierInformation
+    public static void UseDataSharingEndpoints(this WebApplication app)
     {
-        [Required] public required Guid Id { get; init; }
-        [Required(AllowEmptyStrings = true)] public required string Name { get; init; }
-        [Required] public required List<OrganisationReference> AdditionalParties { get; init; }
-        [Required] public required Identifier Identifier { get; init; }
-        [Required] public required List<Identifier> AdditionalIdentifiers { get; init; }
-        [Required] public required Address Address { get; init; }
-        [Required] public required List<ContactPoint> ContactPoints { get; init; }
-        [Required] public required List<PartyRole> Roles { get; init; }
-        [Required(AllowEmptyStrings = true)] public required string Details { get; init; }
-        [Required] public required SupplierInformationData SupplierInformationData { get; init; }
-    }
-
-    internal record OrganisationReference
-    {
-        [Required] public required Guid Id { get; init; }
-        [Required(AllowEmptyStrings = true)] public required string Name { get; init; }
-    }
-
-    internal record Identifier
-    {
-        [Required(AllowEmptyStrings = true)] public required string Scheme { get; init; }
-        [Required] public required Guid Id { get; init; }
-        public string? LegalName { get; init; }
-        public string? Uri { get; init; }
-    }
-
-    internal record Address
-    {
-        [Required(AllowEmptyStrings = true)] public required string StreetAddress { get; init; }
-        [Required(AllowEmptyStrings = true)] public required string Locality { get; init; }
-        public string? Region { get; init; }
-        public string? PostalCode { get; init; }
-    }
-
-    internal record ContactPoint
-    {
-        public string? Email { get; init; }
-        public string? Telephone { get; init; }
-        public string? FaxNumber { get; init; }
-    }
-
-    internal enum PartyRole
-    {
-        Buyer,
-        ProcuringEntity,
-        Supplier,
-        Tenderer,
-        Funder,
-        Enquirer,
-        Payer,
-        Payee,
-        ReviewBody,
-        InterestedParty,
-        Consortium
-    }
-
-    internal record SupplierInformationData
-    {
-        [Required] public required Guid FormId { get; init; }
-        public List<SupplierFormAnswer> Answers { get; init; } = new List<SupplierFormAnswer>();
-        public List<FormQuestion> Questions { get; init; } = new List<FormQuestion>();
-
-    }
-
-    internal record SupplierFormAnswer
-    {
-        public string? QuestionName { get; init; }
-        public bool? BoolValue { get; init; }
-        public double? NumericValue { get; init; }
-        public DateTime? StartValue { get; init; }
-        public DateTime? EndValue { get; init; }
-        public string? TextValue { get; init; }
-        public int? OptionValue { get; init; }
-    }
-
-    internal record FormQuestion
-    {
-        public QuestionTypes? Type { get; init; }
-        public string? Name { get; init; }
-        public string? Text { get; init; }
-        public bool IsRequired { get; init; }
-        public string? SectionName { get; init; }
-        public List<QuestionOption> Options { get; init; } = new List<QuestionOption>();
-    }
-
-    internal enum QuestionTypes
-    {
-        Type1 = 1,
-        Type2 = 2,
-        Type3 = 3,
-        Type4 = 4,
-        Type5 = 5,
-        Type6 = 6,
-        Type7 = 7,
-        Type8 = 8,
-        Type9 = 9
-    }
-
-    internal record QuestionOption
-    {
-        [Required] public required Guid Id { get; init; }
-        public string? Value { get; init; }
-    }
-
-    public static class EndpointExtensions
-    {
-        public static void UseDataSharingEndpoints(this WebApplication app)
-        {
-            app.MapGet("/share/data/{sharecode}", (string sharecode) => new SupplierInformation
+        app.MapGet("/share/data/{sharecode}", (string sharecode) => new SupplierInformation
             {
-                Id = Guid.NewGuid(),
-                Name = "Tables Ltd",
-                AdditionalParties = new List<OrganisationReference>{
-                    new OrganisationReference
+                Id = Guid.Parse("1e39d0ce-3abd-43c5-9f23-78c92e437f2a"),
+                Name = "Acme Corporation",
+                AssociatedPersons =
+                [
+                    new AssociatedPerson
                     {
-                        Id = Guid.NewGuid(),
-                         Name = "Org 1"
-                    },
-                    new OrganisationReference
-                    {
-                        Id = Guid.NewGuid(),
-                        Name = "Org 2"
+                        Id = Guid.Parse("c16f9f7b-3f10-42db-86f8-93607b034a4c"),
+                        Name = "Alice Doe",
+                        Relationship = "Company Director",
+                        Uri = new Uri(
+                            "https://cdp.cabinetoffice.gov.uk/persons/c16f9f7b-3f10-42db-86f8-93607b034a4c"),
+                        Role = 4
                     }
-                },
+                ],
+                AdditionalParties =
+                [
+                    new OrganisationReference
+                    {
+                        Id = Guid.Parse("f4596cdd-12e5-4f25-9db1-4312474e516f"),
+                        Name = "Acme Group Ltd",
+                        Roles = [PartyRole.Supplier],
+                        Uri = new Uri(
+                            "https://cdp.cabinetoffice.gov.uk/organisations/f4596cdd-12e5-4f25-9db1-4312474e516f")
+                    }
+                ],
+                AdditionalEntities = [
+                    new OrganisationReference
+                    {
+                        Id = Guid.Parse("f4596cdd-12e5-4f25-9db1-4312474e516f"),
+                        Name = "Acme Group Ltd",
+                        Roles = [PartyRole.Supplier],
+                        Uri = new Uri(
+                            "https://cdp.cabinetoffice.gov.uk/organisations/f4596cdd-12e5-4f25-9db1-4312474e516f")
+                    }
+                ],
                 Identifier = new Identifier
                 {
-                    Scheme = "CH",
-                    Id = Guid.NewGuid(),
-                    LegalName = "Tables Incorporated",
-                    Uri = "https://tablesinc.com"
+                    Scheme = "CDP-PPON",
+                    Id = "1e39d0ce-3abd-43c5-9f23-78c92e437f2a",
+                    LegalName = "Acme Corporation Ltd",
+                    Uri = new Uri("https://cdp.cabinetoffice.gov.uk/organisations/1e39d0ce-3abd-43c5-9f23-78c92e437f2a")
                 },
-                AdditionalIdentifiers = new List<Identifier>
-                {
-                    new Identifier {
-                        Id = Guid.NewGuid(),
+                AdditionalIdentifiers =
+                [
+                    new Identifier
+                    {
+                        Id = "06368740",
                         Scheme = "GB-COH",
-                        LegalName = "Tables Ltd",
-                        Uri = "https://tables.co.uk" }
-                },
+                        LegalName = "Acme Corporation Ltd",
+                        Uri = new Uri("http://data.companieshouse.gov.uk/doc/company/06368740")
+                    }
+                ],
                 Address = new Address
                 {
-                    StreetAddress = $"42 Green Lane",
-                    Locality = "London",
-                    Region = "Kent",
-                    PostalCode = "BR8 7AA"
+                    StreetAddress = "82 St. John’s Road",
+                    Locality = "CHESTER",
+                    Region = "Lancashire",
+                    PostalCode = "CH43 7UR",
+                    CountryName = "United Kingdom"
                 },
-                ContactPoints = new List<ContactPoint>
-                    {
-                        new ContactPoint {
-                            Email = "info@tables.com",
-                            Telephone = "+441234567890" }
-                    },
-                Roles = new List<PartyRole> {
-                    PartyRole.Supplier
+                ContactPoint = new ContactPoint
+                {
+                    Name = "Procurement Team",
+                    Email = "info@example.com",
+                    Telephone = "+441234567890"
                 },
-                Details = "Details.",
+                Roles = [PartyRole.Supplier],
+                Details = new Details(),
                 SupplierInformationData = new SupplierInformationData
                 {
-                    FormId = Guid.NewGuid(),
-                    Questions = new List<FormQuestion>
+                    Form = new Form
+                    {
+                        Name = "Standard Questions",
+                        SubmissionState = FormSubmissionState.Submitted,
+                        SubmittedAt = DateTime.Parse("2024-03-28T18:24:00.000Z"),
+                        OrganisationId = Guid.Parse("1e39d0ce-3abd-43c5-9f23-78c92e437f2a"),
+                        SupplierFormId = Guid.Parse("f174b921-0c58-4644-80f1-8707d8300130"),
+                        FormVersionId = "20240309",
+                        IsRequired = true,
+                        BookingReference = "AGMT-2024-XYZ",
+                        Scope = 0,
+                        Type = 0
+                    },
+                    Questions =
+                    [
+                        new FormQuestion
                         {
-                            new FormQuestion {
-                                Name = "Question 1",
-                                Text = "What is your answer?",
-                                IsRequired = true
-                            }
+                            Name = "_Steel01",
+                            Type = FormQuestionType.Text,
+                            Text = "<span style='font-weight: bold;'>Central Government Only - UK</span><span style='font-size:16.000000000000004px'><br /></span><p><span style='font-size:13.333299999999998px'>For contracts which relate to projects/programmes (i) with a value of \u00a310 million or more; or (ii) a value of less than \u00a310 million where it is anticipated that the project will require in excess of 500 tonnes of steel; please describe the steel specific supply chain management systems, policies, standards and procedures you have in place to ensure robust supply chain management and compliance with relevant legislation.</span><span style='font-size:16.000000000000004px'></span></p><span style='font-size:13.333299999999998px'>Please provide details of previous similar projects where you have demonstrated a high level of competency and effectiveness in managing all supply chain members involved in steel supply or production to ensure a sustainable and resilient supply of steel.</span>",
+                            IsRequired = false,
+                            SectionName = "Steel"
                         },
-                    Answers = new List<SupplierFormAnswer>
+                        new FormQuestion
                         {
-                            new SupplierFormAnswer {
-                                QuestionName = "Question 1",
-                                TextValue = "Answer 1"
-                            }
+                            Name = "_Steel02",
+                            Type = FormQuestionType.Text,
+                            Text = "<p>Please provide all the relevant details of previous breaches of health and safety legislation in the last 5 years, applicable to the country in which you operate, on comparable projects, for both:&nbsp;<span style='font-size:13.333299999999998px'>Your organisation</span></p><span style='font-size:13.333299999999998px'>All your supply chain members involved in the production or supply of steel</span>",
+                            IsRequired = true,
+                            SectionName = "Steel"
+                        },
+                        new FormQuestion
+                        {
+                            Name = "_ModernSlavery01",
+                            Type = FormQuestionType.Text,
+                            Text = "Central Government Only - Tackling Modern Slavery in Supply Chains<span style='font-size:16.000000000000004px'><br /></span><span style='font-size:13.333299999999998px'>If you are a relevant commercial organisation subject to Section 54 of the Modern Slavery Act 2015, and if your latest statement is available electronically please provide:</span><span style='font-size:16.000000000000004px'><br /></span><span style='font-size:13.333299999999998px'i. the web address,</span><span style='font-size:16.000000000000004px'><br /></span><span style='font-size:13.333299999999998px>ii. precise reference of the documents.</span><span style='font-size:16.000000000000004px'><br /></span><span style='font-size:13.333299999999998p'>iii. If your latest statement is not available electronically, please provide a copy.</span>",
+                            IsRequired = true,
+                            SectionName = "Modern slavery"
+                        },
+                        new FormQuestion
+                        {
+                            Name = "_CarbonNetZero01",
+                            Type = FormQuestionType.Boolean,
+                            Text = "Please confirm that you have detailed your environmental management measures by completing and publishing a Carbon Reduction Plan which meets the required reporting standard.",
+                            IsRequired = true,
+                            SectionName = "Carbon Net Zero"
                         }
+                    ],
+                    Answers =
+                    [
+                        new FormAnswer
+                        {
+                            QuestionName = "_Steel02",
+                            TextValue = "Answer to question 1.",
+                        },
+
+                        new FormAnswer
+                        {
+                            QuestionName = "_CarbonNetZero01",
+                            BoolValue = true
+                        }
+                    ]
                 },
             })
-                .Produces<SupplierInformation>(200, "application/json")
-                .WithOpenApi(operation =>
-                {
-                    operation.OperationId = "GetSharedData";
-                    operation.Description =
-                        "[STUB] Operation to obtain Supplier information which has been shared as part of a notice. [STUB]";
-                    operation.Summary = "[STUB] Request Supplier Submitted Information. [STUB]";
-                    operation.Responses["200"].Description = "Organisation Information including Form Answers.";
-                    return operation;
-                });
+            .Produces<SupplierInformation>(200, "application/json")
+            .Produces(StatusCodes.Status404NotFound)
+            .WithOpenApi(operation =>
+            {
+                operation.OperationId = "GetSharedData";
+                operation.Description =
+                    "[STUB] Operation to obtain Supplier information which has been shared as part of a notice. [STUB]";
+                operation.Summary = "[STUB] Request Supplier Submitted Information. [STUB]";
+                operation.Responses["200"].Description = "Organisation Information including Form Answers.";
+                operation.Responses["404"].Description = "Share code not found or not authorised.";
+                return operation;
+            });
 
 
-
-            app.MapPost("/share/data", (SupplierInformationData shareRequest) =>
+        app.MapPost("/share/data", (SupplierInformationData shareRequest) =>
             {
                 var shareCode = Guid.NewGuid().ToString();
 
                 return Results.Ok(new { ShareCode = shareCode, Expiry = DateTime.UtcNow.AddDays(7) });
-            }).Produces(StatusCodes.Status200OK)
-                .WithOpenApi(operation =>
-                {
-                    operation.OperationId = "CreateSharedData";
-                    operation.Description =
-                        "[STUB] Operation to obtain Supplier information which has been shared as part of a notice. [STUB]";
-                    operation.Summary = "[STUB] Create Supplier Submitted Information. [STUB]";
-                    operation.Responses["200"].Description = "Organisation Information created.";
-                    return operation;
-                });
-        }
-    }
-
-    public static class ApiExtensions
-    {
-        public static void DocumentDataSharingApi(this SwaggerGenOptions options)
-        {
-            options.SwaggerDoc("v1", new OpenApiInfo
+            })
+            .Produces(StatusCodes.Status200OK)
+            .WithOpenApi(operation =>
             {
-                Version = "1.0.0.0",
-                Title = "Data Sharing API",
-                Description = "",
+                operation.OperationId = "CreateSharedData";
+                operation.Description =
+                    "[STUB] Operation to obtain Supplier information which has been shared as part of a notice. [STUB]";
+                operation.Summary = "[STUB] Create Supplier Submitted Information. [STUB]";
+                operation.Responses["200"].Description = "Organisation Information created.";
+                return operation;
             });
-        }
+    }
+}
+
+public static class ApiExtensions
+{
+    public static void DocumentDataSharingApi(this SwaggerGenOptions options)
+    {
+        options.SwaggerDoc("v1", new OpenApiInfo
+        {
+            Version = "1.0.0.0",
+            Title = "Data Sharing API",
+            Description = "",
+        });
+        options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory,
+            $"{Assembly.GetExecutingAssembly().GetName().Name}.xml"));
     }
 }
