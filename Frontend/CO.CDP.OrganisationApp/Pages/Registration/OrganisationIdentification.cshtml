@@ -2,7 +2,7 @@
 @model CO.CDP.OrganisationApp.Pages.Registration.OrganisationIdentificationModel
 
 @{
-    var companiesHouseNumberHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.CompaniesHouseNumber)).HasInnerHtml;    
+    var companiesHouseNumberHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.CompaniesHouseNumber)).HasInnerHtml;
     var charityCommissionEnglandWalesNumberHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.CharityCommissionEnglandWalesNumber)).HasInnerHtml;
     var scottishCharityRegulatorNumberHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.ScottishCharityRegulatorNumber)).HasInnerHtml;
     var charityCommissionNorthernIrelandNumberHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.CharityCommissionNorthernIrelandNumber)).HasInnerHtml;
@@ -14,7 +14,7 @@
 
     var ukLearningProviderReferenceNumberHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.UKLearningProviderReferenceNumber)).HasInnerHtml;
     var vatNumberHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.VATNumber)).HasInnerHtml;
-    
+
     var nationalHealthServiceOrganisationsRegistryNumberHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.NationalHealthServiceOrganisationsRegistryNumber)).HasInnerHtml;
 
     var backLink = $"/registration/has-companies-house-number{(Request.Query.ContainsKey("frm-summary") ? "?frm-summary" : "")}";
@@ -28,7 +28,6 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <partial name="_ErrorSummary" model="@Model.ModelState" />
-            <h1 class="govuk-heading-l">Organisation Identification</h1>
             <form method="post">
                 @if (Request.Query.ContainsKey("frm-summary"))
                 {
@@ -37,7 +36,9 @@
                 <div class="govuk-form-group">
                     <fieldset class="govuk-fieldset">
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                            Organisation Type
+                            <h1 class="govuk-fieldset__heading">
+                                Select the organisation registry and enter the number
+                            </h1>
                         </legend>
                         <div class="govuk-radios" data-module="govuk-radios">
                             <div class="govuk-radios__item">
@@ -159,7 +160,7 @@
                                     @Html.TextBoxFor(m => m.VATNumber, new { @class = "govuk-input " + (vatNumberHasError ? "govuk-input--error" : ""), @id = "VATNumber", @type = "text", spellcheck = "false", autocomplete = "off" })
                                 </div>
                             </div>
-
+                            <div class="govuk-radios__divider">or</div>
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input" id="Other" name="OrganisationScheme" type="radio" value="Other" @(Model.OrganisationScheme == "Other" ? "checked" : "")>
                                 @Html.LabelFor(m => m.Other, new { @class = "govuk-label govuk-radios__label", @for = "Other" })
