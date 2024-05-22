@@ -156,6 +156,7 @@ public static class EndpointExtensions
             .Produces<SupplierInformation>(StatusCodes.Status200OK, "application/json")
             .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
             .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
+            .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError)
             .WithOpenApi(operation =>
             {
                 operation.OperationId = "GetSharedData";
@@ -165,6 +166,7 @@ public static class EndpointExtensions
                 operation.Responses["200"].Description = "Organisation Information including Form Answers.";
                 operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
                 operation.Responses["404"].Description = "Share code not found or the caller is not authorised to use it.";
+                operation.Responses["500"].Description = "Internal server error.";
                 return operation;
             });
 
@@ -179,6 +181,7 @@ public static class EndpointExtensions
             ))
             .Produces<ShareReceipt>(StatusCodes.Status200OK, "application/json")
             .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
+            .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError)
             .WithOpenApi(operation =>
             {
                 operation.OperationId = "CreateSharedData";
@@ -187,6 +190,7 @@ public static class EndpointExtensions
                 operation.Summary = "[STUB] Create Supplier Submitted Information. [STUB]";
                 operation.Responses["200"].Description = "Organisation Information created.";
                 operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
+                operation.Responses["500"].Description = "Internal server error.";
                 return operation;
             });
     }
