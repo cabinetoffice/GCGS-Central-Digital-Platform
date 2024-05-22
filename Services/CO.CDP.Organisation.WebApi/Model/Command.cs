@@ -37,3 +37,8 @@ internal record UpdateOrganisation
 
     public List<int>? Types { get; init; }
 }
+
+public class DeleteOrganisationRequest
+{
+    public Guid OrganisationId { get; set; }
+}

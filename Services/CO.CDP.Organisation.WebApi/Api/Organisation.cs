@@ -2,6 +2,7 @@ using CO.CDP.Common;
 using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.Organisation.WebApi.UseCase;
 using DotSwashbuckle.AspNetCore.SwaggerGen;
+using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
 
@@ -109,18 +110,41 @@ public static class EndpointExtensions
                 operation.Responses["200"].Description = "Organisation updated.";
                 return operation;
             });
-        app.MapDelete("/organisations/{organisationId}", (Guid organisationId) =>
+        app.MapDelete("/organisations/{organisationId}",
+            async (Guid organisationId, IValidator<DeleteOrganisationRequest> validator) =>
             {
-                _organisations.Remove(organisationId);
+                var request = new DeleteOrganisationRequest { OrganisationId = organisationId };
+                var validationResult = await validator.ValidateAsync(request);
+                if (!validationResult.IsValid)
+                {
+                    return Results.BadRequest(validationResult.Errors);
+                }
+
+                if (!_organisations.ContainsKey(request.OrganisationId))
+                {
+                    return Results.NotFound(new ProblemDetails
+                    {
+                        Status = 404,
+                        Title = "Not Found",
+                        Detail = "The specified resource was not found.",
+                        Instance = $"/organisations/{request.OrganisationId}"
+                    });
+                }
+
+                _organisations.Remove(request.OrganisationId);
                 return Results.NoContent();
             })
             .Produces(204)
+            .Produces<ProblemDetails>(400)
+            .Produces<ProblemDetails>(404)
             .WithOpenApi(operation =>
             {
                 operation.OperationId = "DeleteOrganisation";
-                operation.Description = "[STUB] Delete a organisation. [STUB]";
-                operation.Summary = "[STUB] Delete a organisation. [STUB]";
+                operation.Description = "Delete an organisation by ID.";
+                operation.Summary = "Delete an organisation by ID.";
                 operation.Responses["204"].Description = "Organisation deleted.";
+                operation.Responses["400"].Description = "Invalid organisation ID.";
+                operation.Responses["404"].Description = "Organisation not found.";
                 return operation;
             });
     }
