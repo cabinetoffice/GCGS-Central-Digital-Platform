@@ -102,6 +102,7 @@ services:
       - '$${CDP_DATA_SHARING_PORT:-8088}:8080'
     environment:
       ASPNETCORE_ENVIRONMENT: Development
+      OneLogin__Discovery: "https://oidc.example.com/.well-known/openid-configuration"
     deploy:
       replicas: 1
 endef
