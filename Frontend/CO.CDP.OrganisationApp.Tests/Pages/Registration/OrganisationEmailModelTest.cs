@@ -150,7 +150,7 @@ public class OrganisationEmailModelTest
         var model = GivenOrganisationEmailModel();
 
         Action action = () => model.OnGet();
-        action.Should().Throw<Exception>().WithMessage("Shoudn't be here");
+        action.Should().Throw<Exception>().WithMessage("Session not found");
     }
 
     private RegistrationDetails DummyRegistrationDetails()

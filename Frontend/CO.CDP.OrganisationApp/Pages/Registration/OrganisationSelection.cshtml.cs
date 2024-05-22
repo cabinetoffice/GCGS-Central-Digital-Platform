@@ -1,4 +1,5 @@
 using CO.CDP.Organisation.WebApiClient;
+using CO.CDP.OrganisationApp.Helpers;
 using CO.CDP.OrganisationApp.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -13,13 +14,26 @@ public class OrganisationSelectionModel(
 {
     public IEnumerable<Organisation.WebApiClient.Organisation> Organisations { get; set; } = [];
 
+    public string? Error { get; set; }
+
     public async Task<IActionResult> OnGet()
     {
         var details = VerifySession();
 
-        Organisations = await organisationClient.ListOrganisationsAsync(details.UserUrn);
+        try
+        {
+            Organisations = await ApiHelper.CallApiAsync(
+                    () => organisationClient.ListOrganisationsAsync(details.UserUrn),
+                    "Failed to retrieve organisations list."
+                );
 
-        return Page();
+            return Page();
+        }
+        catch (Exception ex)
+        {
+            Error = ex.Message;
+            return Page();
+        }
     }
 
     public IActionResult OnPost()
@@ -30,7 +44,7 @@ public class OrganisationSelectionModel(
     private RegistrationDetails VerifySession()
     {
         var details = session.Get<RegistrationDetails>(Session.RegistrationDetailsKey)
-            ?? throw new Exception("Shoudn't be here"); // show error page?
+            ?? throw new Exception("Session not found");
 
         return details;
     }

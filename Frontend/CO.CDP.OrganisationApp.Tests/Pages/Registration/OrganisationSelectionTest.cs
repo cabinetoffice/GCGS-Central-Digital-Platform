@@ -25,7 +25,7 @@ public class OrganisationSelectionTest
 
         Func<Task> act = model.OnGet;
 
-        await act.Should().ThrowAsync<Exception>().WithMessage("Shoudn't be here");
+        await act.Should().ThrowAsync<Exception>().WithMessage("Session not found");
     }
 
     [Fact]

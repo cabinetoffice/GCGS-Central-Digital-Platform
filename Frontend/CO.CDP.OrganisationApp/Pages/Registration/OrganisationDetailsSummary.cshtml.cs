@@ -1,4 +1,5 @@
 using CO.CDP.Organisation.WebApiClient;
+using CO.CDP.OrganisationApp.Helpers;
 using CO.CDP.OrganisationApp.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -14,7 +15,6 @@ public class OrganisationDetailsSummaryModel(
 {
     public required RegistrationDetails Details { get; set; }
 
-    [BindProperty]
     public string? Error { get; set; }
 
     public void OnGet()
@@ -26,38 +26,39 @@ public class OrganisationDetailsSummaryModel(
     {
         Details = VerifySession();
 
-        var organisation = await RegisterOrganisation(Details);
-        if (organisation != null)
-        {
-            Details.OrganisationId = organisation.Id;
-            session.Set(Session.RegistrationDetailsKey, Details);
-        }
-        else
-        {
-            return Page();
-        }
-
-        return RedirectToPage("OrganisationOverview", new { organisation.Id });
-    }
-
-    private async Task<OrganisationWebApiClient.Organisation?> RegisterOrganisation(RegistrationDetails details)
-    {
         try
         {
-            var payload = NewOrganisationPayload(details);
-            if (payload is not null)
+            var organisation = await ApiHelper.CallApiAsync(
+                        () => RegisterOrganisation(Details),
+                        "Failed to register organisation."
+            );
+
+            if (organisation != null)
             {
-                return await organisationClient.CreateOrganisationAsync(payload);
+                Details.OrganisationId = organisation.Id;
+                session.Set(Session.RegistrationDetailsKey, Details);
             }
-        }
-        catch (ApiException aex)
-            when (aex is ApiException<OrganisationWebApiClient.ProblemDetails> pd)
-        {
-            Error = pd.Result.Detail;
+            else
+            {
+                return Page();
+            }
+
+            return RedirectToPage("OrganisationOverview", new { organisation.Id });
         }
         catch (Exception ex)
         {
             Error = ex.Message;
+            return Page();
+        }
+    }
+
+    private async Task<OrganisationWebApiClient.Organisation?> RegisterOrganisation(RegistrationDetails details)
+    {
+        var payload = NewOrganisationPayload(details);
+
+        if (payload is not null)
+        {
+            return await organisationClient.CreateOrganisationAsync(payload);
         }
 
         return null;
@@ -97,12 +98,9 @@ public class OrganisationDetailsSummaryModel(
 
     private RegistrationDetails VerifySession()
     {
-        var registrationDetails = session.Get<RegistrationDetails>(Session.RegistrationDetailsKey);
-        if (registrationDetails == null)
-        {
-            //show error page (Once we finalise)
-            throw new Exception("Shoudn't be here");
-        }
+        var registrationDetails = session.Get<RegistrationDetails>(Session.RegistrationDetailsKey)
+            ?? throw new Exception("Session not found");
+
         return registrationDetails;
     }
 }

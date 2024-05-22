@@ -22,12 +22,21 @@ public static class EndpointExtensions
     public static void UsePersonEndpoints(this WebApplication app)
     {
         app.MapPost("/persons", async (RegisterPerson command, IUseCase<RegisterPerson, Model.Person> useCase) =>
-            await useCase.Execute(command)
-                .AndThen(person =>
-                    Results.Created(new Uri($"/persons/{person.Id}", UriKind.Relative), person))
-                )
+        {
+            if (command == null)
+            {
+                return Results.BadRequest("Invalid request payload.");
+            }
+
+            var result = await useCase.Execute(command);
+
+            return result != null
+                    ? Results.Created(new Uri($"/persons/{result.Id}", UriKind.Relative), result)
+                    : Results.Problem("Person could not be created due to an internal error");
+        })
         .Produces<Model.Person>(201, "application/json")
         .ProducesProblem(500)
+        .Produces(400)
         .WithOpenApi(operation =>
         {
             operation.OperationId = "CreatePerson";
@@ -54,6 +63,16 @@ public static class EndpointExtensions
         app.MapPut("/persons/{personId}",
                 (Guid personId, UpdatePerson updatedPerson) =>
                 {
+                    if (!_persons.ContainsKey(personId))
+                    {
+                        return Results.NotFound();
+                    }
+
+                    if (updatedPerson == null)
+                    {
+                        return Results.BadRequest("Invalid request payload.");
+                    }
+
                     _persons[personId] = new Model.Person
                     {
                         Id = personId,
@@ -64,6 +83,8 @@ public static class EndpointExtensions
                     return Results.Ok(_persons[personId]);
                 })
             .Produces<Model.Person>(200, "application/json")
+            .Produces(404)
+            .Produces(400)
             .WithOpenApi(operation =>
             {
                 operation.OperationId = "UpdatePerson";
@@ -78,6 +99,7 @@ public static class EndpointExtensions
             return Results.NoContent();
         })
             .Produces(204)
+            .Produces(404)
             .WithOpenApi(operation =>
             {
                 operation.OperationId = "DeletePerson";

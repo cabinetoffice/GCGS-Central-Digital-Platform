@@ -223,7 +223,7 @@ public class OrganisationRegisteredAddressModelTest
         var model = GivenOrganisationAddressModel();
 
         Action action = () => model.OnGet();
-        action.Should().Throw<Exception>().WithMessage("Shoudn't be here");
+        action.Should().Throw<Exception>().WithMessage("Session not found");
     }
 
     private OrganisationRegisteredAddressModel GivenOrganisationAddressModel()

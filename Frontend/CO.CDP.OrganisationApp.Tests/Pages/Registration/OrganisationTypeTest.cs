@@ -27,7 +27,7 @@ public class OrganisationTypeTest
 
         Action act = () => model.OnGet();
 
-        act.Should().Throw<Exception>().WithMessage("Shoudn't be here");
+        act.Should().Throw<Exception>().WithMessage("Session not found");
     }
 
     [Fact]
@@ -71,7 +71,7 @@ public class OrganisationTypeTest
 
         Action act = () => model.OnPost();
 
-        act.Should().Throw<Exception>().WithMessage("Shoudn't be here");
+        act.Should().Throw<Exception>().WithMessage("Session not found");
     }
 
     [Fact]

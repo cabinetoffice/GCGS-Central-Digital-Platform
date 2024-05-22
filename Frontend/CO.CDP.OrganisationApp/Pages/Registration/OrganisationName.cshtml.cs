@@ -53,13 +53,8 @@ public class OrganisationNameModel(ISession session) : PageModel
 
     private RegistrationDetails VerifySession()
     {
-        var registrationDetails = session.Get<RegistrationDetails>(Session.RegistrationDetailsKey);
-
-        if (registrationDetails == null)
-        {
-            //show error page (Once we finalise)
-            throw new Exception("Shoudn't be here");
-        }
+        var registrationDetails = session.Get<RegistrationDetails>(Session.RegistrationDetailsKey)
+            ?? throw new Exception("Session not found");
 
         return registrationDetails;
     }

@@ -51,7 +51,7 @@ public class OrganisationTypeModel(
     private RegistrationDetails VerifySession()
     {
         var registrationDetails = session.Get<RegistrationDetails>(Session.RegistrationDetailsKey)
-            ?? throw new Exception("Shoudn't be here"); // show error page?
+            ?? throw new Exception("Session not found");
 
         return registrationDetails;
     }

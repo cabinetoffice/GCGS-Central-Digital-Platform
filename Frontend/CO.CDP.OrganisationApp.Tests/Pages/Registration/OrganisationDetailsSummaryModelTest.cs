@@ -41,7 +41,7 @@ public class OrganisationDetailsSummaryModelTest
         var model = GivenOrganisationDetailModel();
 
         Action action = model.OnGet;
-        action.Should().Throw<Exception>().WithMessage("Shoudn't be here");
+        action.Should().Throw<Exception>().WithMessage("Session not found");
     }
 
     [Fact]
@@ -52,7 +52,7 @@ public class OrganisationDetailsSummaryModelTest
         var model = GivenOrganisationDetailModel();
 
         Func<Task> act = model.OnPost;
-        await act.Should().ThrowAsync<Exception>().WithMessage("Shoudn't be here");
+        await act.Should().ThrowAsync<Exception>().WithMessage("Session not found");
     }
 
     [Fact]
@@ -129,6 +129,6 @@ public class OrganisationDetailsSummaryModelTest
     private OrganisationDetailsSummaryModel GivenOrganisationDetailModel()
     {
         return new OrganisationDetailsSummaryModel(sessionMock.Object, organisationClientMock.Object)
-        { Details = DummyRegistrationDetails()};
+        { Details = DummyRegistrationDetails() };
     }
 }

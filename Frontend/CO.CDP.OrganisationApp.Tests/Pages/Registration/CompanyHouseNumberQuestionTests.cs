@@ -20,7 +20,7 @@ public class CompanyHouseNumberQuestionTests
     {
         var model = new CompanyHouseNumberQuestionModel(sessionMock.Object);
         Action action = () => model.OnGet();
-        action.Should().Throw<Exception>().WithMessage("Shoudn't be here");
+        action.Should().Throw<Exception>().WithMessage("Session not found");
     }
 
     [Theory]

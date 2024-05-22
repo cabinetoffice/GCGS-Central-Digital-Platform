@@ -87,7 +87,7 @@ public class YourDetailsModelTest
 
         Action act = () => model.OnGet();
 
-        act.Should().Throw<Exception>().WithMessage("Shoudn't be here");
+        act.Should().Throw<Exception>().WithMessage("Session not found");
     }
 
     [Fact]
@@ -154,7 +154,7 @@ public class YourDetailsModelTest
 
         Func<Task> act = model.OnPost;
 
-        await act.Should().ThrowAsync<Exception>().WithMessage("Shoudn't be here");
+        await act.Should().ThrowAsync<Exception>().WithMessage("Session not found");
     }
 
     [Fact]
