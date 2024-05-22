@@ -1,6 +1,8 @@
 using System.Reflection;
 using CO.CDP.DataSharing.WebApi.Model;
+using CO.CDP.Swashbuckle.Filter;
 using DotSwashbuckle.AspNetCore.SwaggerGen;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
 
 namespace CO.CDP.DataSharing.WebApi.Api;
@@ -36,7 +38,8 @@ public static class EndpointExtensions
                             "https://cdp.cabinetoffice.gov.uk/organisations/f4596cdd-12e5-4f25-9db1-4312474e516f")
                     }
                 ],
-                AdditionalEntities = [
+                AdditionalEntities =
+                [
                     new OrganisationReference
                     {
                         Id = Guid.Parse("f4596cdd-12e5-4f25-9db1-4312474e516f"),
@@ -51,7 +54,8 @@ public static class EndpointExtensions
                     Scheme = "CDP-PPON",
                     Id = "1e39d0ce-3abd-43c5-9f23-78c92e437f2a",
                     LegalName = "Acme Corporation Ltd",
-                    Uri = new Uri("https://cdp.cabinetoffice.gov.uk/organisations/1e39d0ce-3abd-43c5-9f23-78c92e437f2a")
+                    Uri = new Uri(
+                        "https://cdp.cabinetoffice.gov.uk/organisations/1e39d0ce-3abd-43c5-9f23-78c92e437f2a")
                 },
                 AdditionalIdentifiers =
                 [
@@ -100,7 +104,8 @@ public static class EndpointExtensions
                         {
                             Name = "_Steel01",
                             Type = FormQuestionType.Text,
-                            Text = "<span style='font-weight: bold;'>Central Government Only - UK</span><span style='font-size:16.000000000000004px'><br /></span><p><span style='font-size:13.333299999999998px'>For contracts which relate to projects/programmes (i) with a value of \u00a310 million or more; or (ii) a value of less than \u00a310 million where it is anticipated that the project will require in excess of 500 tonnes of steel; please describe the steel specific supply chain management systems, policies, standards and procedures you have in place to ensure robust supply chain management and compliance with relevant legislation.</span><span style='font-size:16.000000000000004px'></span></p><span style='font-size:13.333299999999998px'>Please provide details of previous similar projects where you have demonstrated a high level of competency and effectiveness in managing all supply chain members involved in steel supply or production to ensure a sustainable and resilient supply of steel.</span>",
+                            Text =
+                                "<span style='font-weight: bold;'>Central Government Only - UK</span><span style='font-size:16.000000000000004px'><br /></span><p><span style='font-size:13.333299999999998px'>For contracts which relate to projects/programmes (i) with a value of \u00a310 million or more; or (ii) a value of less than \u00a310 million where it is anticipated that the project will require in excess of 500 tonnes of steel; please describe the steel specific supply chain management systems, policies, standards and procedures you have in place to ensure robust supply chain management and compliance with relevant legislation.</span><span style='font-size:16.000000000000004px'></span></p><span style='font-size:13.333299999999998px'>Please provide details of previous similar projects where you have demonstrated a high level of competency and effectiveness in managing all supply chain members involved in steel supply or production to ensure a sustainable and resilient supply of steel.</span>",
                             IsRequired = false,
                             SectionName = "Steel"
                         },
@@ -108,7 +113,8 @@ public static class EndpointExtensions
                         {
                             Name = "_Steel02",
                             Type = FormQuestionType.Text,
-                            Text = "<p>Please provide all the relevant details of previous breaches of health and safety legislation in the last 5 years, applicable to the country in which you operate, on comparable projects, for both:&nbsp;<span style='font-size:13.333299999999998px'>Your organisation</span></p><span style='font-size:13.333299999999998px'>All your supply chain members involved in the production or supply of steel</span>",
+                            Text =
+                                "<p>Please provide all the relevant details of previous breaches of health and safety legislation in the last 5 years, applicable to the country in which you operate, on comparable projects, for both:&nbsp;<span style='font-size:13.333299999999998px'>Your organisation</span></p><span style='font-size:13.333299999999998px'>All your supply chain members involved in the production or supply of steel</span>",
                             IsRequired = true,
                             SectionName = "Steel"
                         },
@@ -116,7 +122,8 @@ public static class EndpointExtensions
                         {
                             Name = "_ModernSlavery01",
                             Type = FormQuestionType.Text,
-                            Text = "Central Government Only - Tackling Modern Slavery in Supply Chains<span style='font-size:16.000000000000004px'><br /></span><span style='font-size:13.333299999999998px'>If you are a relevant commercial organisation subject to Section 54 of the Modern Slavery Act 2015, and if your latest statement is available electronically please provide:</span><span style='font-size:16.000000000000004px'><br /></span><span style='font-size:13.333299999999998px'i. the web address,</span><span style='font-size:16.000000000000004px'><br /></span><span style='font-size:13.333299999999998px>ii. precise reference of the documents.</span><span style='font-size:16.000000000000004px'><br /></span><span style='font-size:13.333299999999998p'>iii. If your latest statement is not available electronically, please provide a copy.</span>",
+                            Text =
+                                "Central Government Only - Tackling Modern Slavery in Supply Chains<span style='font-size:16.000000000000004px'><br /></span><span style='font-size:13.333299999999998px'>If you are a relevant commercial organisation subject to Section 54 of the Modern Slavery Act 2015, and if your latest statement is available electronically please provide:</span><span style='font-size:16.000000000000004px'><br /></span><span style='font-size:13.333299999999998px'i. the web address,</span><span style='font-size:16.000000000000004px'><br /></span><span style='font-size:13.333299999999998px>ii. precise reference of the documents.</span><span style='font-size:16.000000000000004px'><br /></span><span style='font-size:13.333299999999998p'>iii. If your latest statement is not available electronically, please provide a copy.</span>",
                             IsRequired = true,
                             SectionName = "Modern slavery"
                         },
@@ -124,7 +131,8 @@ public static class EndpointExtensions
                         {
                             Name = "_CarbonNetZero01",
                             Type = FormQuestionType.Boolean,
-                            Text = "Please confirm that you have detailed your environmental management measures by completing and publishing a Carbon Reduction Plan which meets the required reporting standard.",
+                            Text =
+                                "Please confirm that you have detailed your environmental management measures by completing and publishing a Carbon Reduction Plan which meets the required reporting standard.",
                             IsRequired = true,
                             SectionName = "Carbon Net Zero"
                         }
@@ -145,8 +153,9 @@ public static class EndpointExtensions
                     ]
                 },
             })
-            .Produces<SupplierInformation>(200, "application/json")
-            .Produces(StatusCodes.Status404NotFound)
+            .Produces<SupplierInformation>(StatusCodes.Status200OK, "application/json")
+            .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
+            .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
             .WithOpenApi(operation =>
             {
                 operation.OperationId = "GetSharedData";
@@ -154,7 +163,8 @@ public static class EndpointExtensions
                     "[STUB] Operation to obtain Supplier information which has been shared as part of a notice. [STUB]";
                 operation.Summary = "[STUB] Request Supplier Submitted Information. [STUB]";
                 operation.Responses["200"].Description = "Organisation Information including Form Answers.";
-                operation.Responses["404"].Description = "Share code not found or not authorised.";
+                operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
+                operation.Responses["404"].Description = "Share code not found or the caller is not authorised to use it.";
                 return operation;
             });
 
@@ -168,6 +178,7 @@ public static class EndpointExtensions
                 }
             ))
             .Produces<ShareReceipt>(StatusCodes.Status200OK, "application/json")
+            .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
             .WithOpenApi(operation =>
             {
                 operation.OperationId = "CreateSharedData";
@@ -175,6 +186,7 @@ public static class EndpointExtensions
                     "[STUB] Operation to obtain Supplier information which has been shared as part of a notice. [STUB]";
                 operation.Summary = "[STUB] Create Supplier Submitted Information. [STUB]";
                 operation.Responses["200"].Description = "Organisation Information created.";
+                operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
                 return operation;
             });
     }
@@ -192,5 +204,6 @@ public static class ApiExtensions
         });
         options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory,
             $"{Assembly.GetExecutingAssembly().GetName().Name}.xml"));
+        options.OperationFilter<ProblemDetailsOperationFilter>();
     }
 }
