@@ -15,7 +15,6 @@ public class ProblemDetailsOperationFilter : IOperationFilter
         ["type"] = new OpenApiString("https://tools.ietf.org/html/rfc7231#section-6.5.1"),
         ["title"] = new OpenApiString(ReasonPhrases.GetReasonPhrase(StatusCodes.Status400BadRequest)),
         ["status"] = new OpenApiInteger(StatusCodes.Status400BadRequest),
-        ["traceId"] = new OpenApiString("00-982607166a542147b435be3a847aaa12-fc75498eb9f09a83-00"),
         ["errors"] = new OpenApiObject
         {
             ["property1"] = new OpenApiArray
@@ -30,7 +29,6 @@ public class ProblemDetailsOperationFilter : IOperationFilter
         ["type"] = new OpenApiString("https://tools.ietf.org/html/rfc7235#section-3.1"),
         ["title"] = new OpenApiString(ReasonPhrases.GetReasonPhrase(StatusCodes.Status401Unauthorized)),
         ["status"] = new OpenApiInteger(StatusCodes.Status401Unauthorized),
-        ["traceId"] = new OpenApiString("00-982607166a542147b435be3a847aaa12-fc75498eb9f09a83-00"),
     };
 
     private static readonly OpenApiObject Status403ProblemDetails = new()
@@ -38,7 +36,6 @@ public class ProblemDetailsOperationFilter : IOperationFilter
         ["type"] = new OpenApiString("https://tools.ietf.org/html/rfc7231#section-6.5.3"),
         ["title"] = new OpenApiString(ReasonPhrases.GetReasonPhrase(StatusCodes.Status403Forbidden)),
         ["status"] = new OpenApiInteger(StatusCodes.Status403Forbidden),
-        ["traceId"] = new OpenApiString("00-982607166a542147b435be3a847aaa12-fc75498eb9f09a83-00"),
     };
 
     private static readonly OpenApiObject Status404ProblemDetails = new()
@@ -46,7 +43,6 @@ public class ProblemDetailsOperationFilter : IOperationFilter
         ["type"] = new OpenApiString("https://tools.ietf.org/html/rfc7231#section-6.5.4"),
         ["title"] = new OpenApiString(ReasonPhrases.GetReasonPhrase(StatusCodes.Status404NotFound)),
         ["status"] = new OpenApiInteger(StatusCodes.Status404NotFound),
-        ["traceId"] = new OpenApiString("00-982607166a542147b435be3a847aaa12-fc75498eb9f09a83-00"),
     };
 
     private static readonly OpenApiObject Status406ProblemDetails = new()
@@ -54,7 +50,6 @@ public class ProblemDetailsOperationFilter : IOperationFilter
         ["type"] = new OpenApiString("https://tools.ietf.org/html/rfc7231#section-6.5.6"),
         ["title"] = new OpenApiString(ReasonPhrases.GetReasonPhrase(StatusCodes.Status406NotAcceptable)),
         ["status"] = new OpenApiInteger(StatusCodes.Status406NotAcceptable),
-        ["traceId"] = new OpenApiString("00-982607166a542147b435be3a847aaa12-fc75498eb9f09a83-00"),
     };
 
     private static readonly OpenApiObject Status409ProblemDetails = new()
@@ -62,7 +57,6 @@ public class ProblemDetailsOperationFilter : IOperationFilter
         ["type"] = new OpenApiString("https://tools.ietf.org/html/rfc7231#section-6.5.8"),
         ["title"] = new OpenApiString(ReasonPhrases.GetReasonPhrase(StatusCodes.Status409Conflict)),
         ["status"] = new OpenApiInteger(StatusCodes.Status409Conflict),
-        ["traceId"] = new OpenApiString("00-982607166a542147b435be3a847aaa12-fc75498eb9f09a83-00"),
     };
 
     private static readonly OpenApiObject Status415ProblemDetails = new()
@@ -70,7 +64,6 @@ public class ProblemDetailsOperationFilter : IOperationFilter
         ["type"] = new OpenApiString("https://tools.ietf.org/html/rfc7231#section-6.5.13"),
         ["title"] = new OpenApiString(ReasonPhrases.GetReasonPhrase(StatusCodes.Status415UnsupportedMediaType)),
         ["status"] = new OpenApiInteger(StatusCodes.Status415UnsupportedMediaType),
-        ["traceId"] = new OpenApiString("00-982607166a542147b435be3a847aaa12-fc75498eb9f09a83-00"),
     };
 
     private static readonly OpenApiObject _status422ProblemDetails = new()
@@ -78,7 +71,6 @@ public class ProblemDetailsOperationFilter : IOperationFilter
         ["type"] = new OpenApiString("https://tools.ietf.org/html/rfc4918#section-11.2"),
         ["title"] = new OpenApiString(ReasonPhrases.GetReasonPhrase(StatusCodes.Status422UnprocessableEntity)),
         ["status"] = new OpenApiInteger(StatusCodes.Status422UnprocessableEntity),
-        ["traceId"] = new OpenApiString("00-982607166a542147b435be3a847aaa12-fc75498eb9f09a83-00"),
     };
 
     private static readonly OpenApiObject Status500ProblemDetails = new()
@@ -86,7 +78,6 @@ public class ProblemDetailsOperationFilter : IOperationFilter
         ["type"] = new OpenApiString("https://tools.ietf.org/html/rfc7231#section-6.6.1"),
         ["title"] = new OpenApiString(ReasonPhrases.GetReasonPhrase(StatusCodes.Status500InternalServerError)),
         ["status"] = new OpenApiInteger(StatusCodes.Status500InternalServerError),
-        ["traceId"] = new OpenApiString("00-982607166a542147b435be3a847aaa12-fc75498eb9f09a83-00"),
     };
 
     private readonly Dictionary<string, IOpenApiAny> _problemDetails = new()
