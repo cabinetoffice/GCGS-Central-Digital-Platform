@@ -37,4 +37,7 @@ public class RegistrationDetails
 
     public Guid? PersonId { get; set; }
     public bool? OrganisationHasCompaniesHouseNumber { get; set; }
+
+    public string? BuyerOrganisationType { get; set; }
+    public string? BuyerOrganisationOtherValue { get; set; }
 }

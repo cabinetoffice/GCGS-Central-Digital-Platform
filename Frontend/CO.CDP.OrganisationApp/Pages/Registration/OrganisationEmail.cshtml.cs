@@ -11,8 +11,8 @@ namespace CO.CDP.OrganisationApp.Pages.Registration;
 public class OrganisationEmailModel(ISession session) : PageModel
 {
     [BindProperty]
-    [DisplayName("Enter the organisation email address")]
-    [Required(ErrorMessage = "Enter the organisation email address")]
+    [DisplayName("Enter the organisation's contact email address")]
+    [Required(ErrorMessage = "Enter the organisation's contact email address")]
     [EmailAddress(ErrorMessage = "Enter an email address in the correct format, like name@example.com")]
     public string? EmailAddress { get; set; }
 

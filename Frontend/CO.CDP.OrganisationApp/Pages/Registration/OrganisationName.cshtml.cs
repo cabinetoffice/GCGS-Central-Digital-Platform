@@ -11,8 +11,8 @@ namespace CO.CDP.OrganisationApp.Pages.Registration;
 public class OrganisationNameModel(ISession session) : PageModel
 {
     [BindProperty]
-    [DisplayName("Enter the organisation name")]
-    [Required(ErrorMessage = "Enter the organisation name")]
+    [DisplayName("Enter the organisation's name")]
+    [Required(ErrorMessage = "Enter the organisation's name")]
     public string? OrganisationName { get; set; }
 
     [BindProperty]

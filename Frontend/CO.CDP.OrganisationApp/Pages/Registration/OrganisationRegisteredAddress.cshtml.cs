@@ -62,7 +62,14 @@ public class OrganisationRegisteredAddressModel(ISession session) : PageModel
 
         session.Set(Session.RegistrationDetailsKey, registrationDetails);
 
-        return RedirectToPage("OrganisationDetailsSummary");
+        if (registrationDetails.OrganisationType == Common.Enums.OrganisationType.Tenderer)
+        {
+            return RedirectToPage("BuyerOrganisationType");
+        }
+        else
+        {
+            return RedirectToPage("OrganisationDetailsSummary");
+        }
     }
 
     private RegistrationDetails VerifySession()
