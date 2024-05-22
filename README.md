@@ -35,6 +35,7 @@ Secrets that are not safe to be committed to the repository are managed with the
 * `OneLogin:Authority`
 * `OneLogin:ClientId`
 * `OneLogin:PrivateKey`
+* `OneLogin:Discovery`
 
 These can be set within the IDE, or with the dotnet command:
 
@@ -44,6 +45,7 @@ dotnet user-secrets set --project Frontend/CO.CDP.OrganisationApp/CO.CDP.Organis
 dotnet user-secrets set --project Frontend/CO.CDP.OrganisationApp/CO.CDP.OrganisationApp.csproj OneLogin:PrivateKey "-----BEGIN RSA PRIVATE KEY-----
 SECRET KEY
 -----END RSA PRIVATE KEY-----"
+dotnet user-secrets set --project Services/CO.CDP.DataSharing.WebApi/CO.CDP.DataSharing.WebApi.csproj OneLogin:Discovery "https://oidc.example.com/.well-known/openid-configuration"
 ```
 
 **Never commit secrets to the repository.**
