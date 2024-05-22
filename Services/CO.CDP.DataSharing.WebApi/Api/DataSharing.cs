@@ -159,13 +159,15 @@ public static class EndpointExtensions
             });
 
 
-        app.MapPost("/share/data", (SupplierInformationData shareRequest) =>
-            {
-                var shareCode = Guid.NewGuid().ToString();
-
-                return Results.Ok(new { ShareCode = shareCode, Expiry = DateTime.UtcNow.AddDays(7) });
-            })
-            .Produces(StatusCodes.Status200OK)
+        app.MapPost("/share/data", (ShareRequest shareRequest) => Results.Ok(new ShareReceipt
+                {
+                    ShareCode = Guid.NewGuid().ToString(),
+                    ExpiresAt = shareRequest.ExpiresAt,
+                    SupplierFormId = shareRequest.SupplierFormId,
+                    Permissions = shareRequest.Permissions
+                }
+            ))
+            .Produces<ShareReceipt>(StatusCodes.Status200OK, "application/json")
             .WithOpenApi(operation =>
             {
                 operation.OperationId = "CreateSharedData";
