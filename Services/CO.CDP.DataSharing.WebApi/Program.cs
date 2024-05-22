@@ -9,6 +9,8 @@ builder.Services.AddSwaggerGen(options => { options.DocumentDataSharingApi(); })
 
 builder.Services.AddHealthChecks();
 
+builder.Services.AddProblemDetails();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
