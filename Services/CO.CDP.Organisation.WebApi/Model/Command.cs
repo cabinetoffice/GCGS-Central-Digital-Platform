@@ -70,7 +70,7 @@ public static class MappingExtensions
         {
             Scheme = command.Scheme,
             Id = command.Id,
-            LegalName = command.LegalName ?? "",
+            LegalName = command.LegalName,
             Uri = null
         };
 
