@@ -97,7 +97,7 @@ public class YourDetailsModel(
                     break;
             }
         }
-        catch (Exception ex)
+        catch
         {
             Error = ErrorMessagesList.UnexpectedError;
         }

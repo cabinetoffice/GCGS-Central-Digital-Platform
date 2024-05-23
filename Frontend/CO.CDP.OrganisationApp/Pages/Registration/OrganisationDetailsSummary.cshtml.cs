@@ -62,7 +62,7 @@ public class OrganisationDetailsSummaryModel(
                     Error = ErrorMessagesList.UnexpectedError;
                 }
             }
-            catch (Exception ex)
+            catch
             {
                 Error = ErrorMessagesList.UnexpectedError;
             }
