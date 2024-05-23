@@ -30,13 +30,14 @@
 
                 <div class="govuk-form-group">
                     <fieldset class="govuk-fieldset">
-                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                            <h1 class="govuk-label-wrapper">
-                                <label class="govuk-label govuk-label--l" for="@nameof(Model.EmailAddress)">
-                                    @Html.DisplayNameFor(m => m.EmailAddress)
-                                </label>
-                            </h1>
-                        </legend>
+
+                        <h1 class="govuk-label-wrapper">
+                            <label class="govuk-label govuk-label--l" for="@nameof(Model.EmailAddress)">
+                                @Html.DisplayNameFor(m => m.EmailAddress)
+                            </label>
+                        </h1>
+
+                        <div id="hint" class="govuk-hint">It should be a shared inbox managed by your team, not your own email address. This will be displayed on notices.</div>
 
                         <div class="govuk-form-group govuk-!-width-two-thirds @(emailAddressHasError ? "govuk-form-group--error" : "")">
                             @if (emailAddressHasError)

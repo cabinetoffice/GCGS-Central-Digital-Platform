@@ -39,7 +39,7 @@ public class OrganisationNameModelTest
         results.Any(c => c.MemberNames.Contains("OrganisationName")).Should().BeTrue();
 
         results.Where(c => c.MemberNames.Contains("OrganisationName")).First()
-            .ErrorMessage.Should().Be("Enter the organisation name");
+            .ErrorMessage.Should().Be("Enter the organisation's name");
     }
 
     [Fact]

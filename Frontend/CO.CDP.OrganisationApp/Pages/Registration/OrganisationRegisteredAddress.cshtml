@@ -28,9 +28,11 @@
                     <fieldset class="govuk-fieldset">
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                             <h1 class="govuk-fieldset__heading">
-                                Enter a UK address for your organisation
+                                Enter the organisation's registered UK address
                             </h1>
                         </legend>
+
+                        <div id="hint" class="govuk-hint">The address of the company or organisation which is recorded on public records or within the public domain. This will be displayed on notices.</div>
 
                         <div class="govuk-form-group @(addressLine1HasError ? "govuk-form-group--error" : "")">
                             <label class="govuk-label" for="@nameof(Model.AddressLine1)">

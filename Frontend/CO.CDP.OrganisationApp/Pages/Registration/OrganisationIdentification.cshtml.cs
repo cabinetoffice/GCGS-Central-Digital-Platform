@@ -85,20 +85,20 @@ public class OrganisationIdentificationModel(ISession session) : PageModel
     public string? IsleofManCompaniesRegistryNumber { get; set; }
 
     [BindProperty]
-    [DisplayName("National health Service Organisations Registry")]
+    [DisplayName("NHS Organisation Data Service (ODS)")]
     public string? NationalHealthServiceOrganisationsRegistry { get; set; }
 
     [BindProperty]
-    [DisplayName("National health Service Organisations Registry Number")]
+    [DisplayName("NHS Organisation Data Service (ODS)")]
     [RequiredIf("OrganisationType", "NHOR")]
     public string? NationalHealthServiceOrganisationsRegistryNumber { get; set; }
 
     [BindProperty]
-    [DisplayName("UK Register of Learning Provider")]
+    [DisplayName("UK Register of Learning Providers (UKPRN)")]
     public string? UKLearningProviderReference { get; set; }
 
     [BindProperty]
-    [DisplayName("UK Register of Learning Provider Number")]
+    [DisplayName("UK Register of Learning Providers (UKPRN)")]
     [RequiredIf("OrganisationType", "UKPRN")]
     public string? UKLearningProviderReferenceNumber { get; set; }
 
@@ -112,7 +112,7 @@ public class OrganisationIdentificationModel(ISession session) : PageModel
     public string? VATNumber { get; set; }
 
     [BindProperty]
-    [DisplayName("Other / None")]
+    [DisplayName("The organisation does not have a registry number")]
     public string? Other { get; set; }
 
     [BindProperty]

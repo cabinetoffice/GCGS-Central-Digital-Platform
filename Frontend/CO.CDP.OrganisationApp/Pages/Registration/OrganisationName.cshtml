@@ -34,13 +34,15 @@
 
                 <div class="govuk-form-group">
                     <fieldset class="govuk-fieldset">
-                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                            <h1 class="govuk-label-wrapper">
-                                <label class="govuk-label govuk-label--l" for="@nameof(Model.OrganisationName)">
-                                    @Html.DisplayNameFor(m => m.OrganisationName)
-                                </label>
-                            </h1>
-                        </legend>
+
+                        <h1 class="govuk-label-wrapper">
+                            <label class="govuk-label govuk-label--l" for="@nameof(Model.OrganisationName)">
+                                @Html.DisplayNameFor(m => m.OrganisationName)
+                            </label>
+                        </h1>
+
+                        <div id="hint" class="govuk-hint">As registered on Companies House if incorporated, or the trading name of the company.</div>
+
                         <div class="govuk-form-group @(organisationNameHasError ? "govuk-form-group--error" : "")">
                             @if (organisationNameHasError)
                             {
