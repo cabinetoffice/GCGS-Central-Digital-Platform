@@ -56,14 +56,24 @@ public static class EndpointExtensions
                 operation.Responses["200"].Description = "A list of organisations.";
                 return operation;
             });
-        app.MapPost("/organisations", async (RegisterOrganisation command, IUseCase<RegisterOrganisation, Model.Organisation> useCase) =>
+        app.MapPost("/organisations", async (RegisterOrganisation command, IUseCase<RegisterOrganisation, Model.Organisation> useCase, IValidator<RegisterOrganisation> validator) =>
+        {
+            var validationResult = await validator.ValidateAsync(command);
+                if (!validationResult.IsValid)
+                {
+                    return Results.BadRequest(validationResult.Errors);
+                }
+
             await useCase.Execute(command)
                 .AndThen(organisation =>
                     organisation != null
                         ? Results.Created(new Uri($"/organisations/{organisation.Id}", UriKind.Relative), organisation)
-                        : Results.Problem("Organisation could not be created due to an internal error"))
-        )
+                        : Results.Problem("Organisation could not be created due to an internal error"));
+
+                return Results.Problem("Organisation could not be created due to an internal error", statusCode: 500);
+        })
         .Produces<Model.Organisation>(201, "application/json")
+        .ProducesProblem(422)
         .ProducesProblem(500)
         .WithOpenApi(operation =>
         {
@@ -71,6 +81,8 @@ public static class EndpointExtensions
             operation.Description = "Create a new organisation.";
             operation.Summary = "Create a new organisation.";
             operation.Responses["201"].Description = "Organisation created successfully.";
+            operation.Responses["422"].Description = "Validation error.";
+            operation.Responses["500"].Description = "Internal server error.";
             return operation;
         });
         app.MapGet("/organisations/{organisationId}", async (Guid organisationId, IUseCase<Guid, Model.Organisation?> useCase) =>

@@ -5,7 +5,7 @@ using CO.CDP.Organisation.WebApi.UseCase;
 using CO.CDP.OrganisationInformation.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Organisation = CO.CDP.Organisation.WebApi.Model.Organisation;
-using CO.CDP.Common.WebApi;
+using CO.CDP.AspNetCore;
 using FluentValidation;
 using CO.CDP.Organisation.WebApi.Validators;
 using FluentValidation.AspNetCore;

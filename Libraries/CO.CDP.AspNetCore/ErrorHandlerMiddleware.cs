@@ -6,17 +6,23 @@ using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
-using Newtonsoft.Json;
+using System.Text.Json;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
-namespace CO.CDP.Common.WebApi;
-
+namespace CO.CDP.AspNetCore;
 public class ErrorHandlerMiddleware
 {
     private readonly RequestDelegate _next;
+    private readonly ILogger<ErrorHandlerMiddleware> _logger;
+    private readonly IWebHostEnvironment _environment;
 
-    public ErrorHandlerMiddleware(RequestDelegate next)
+    public ErrorHandlerMiddleware(RequestDelegate next, ILogger<ErrorHandlerMiddleware> logger, IWebHostEnvironment environment)
     {
         _next = next;
+        _logger = logger;
+        _environment = environment;
     }
 
     public async Task InvokeAsync(HttpContext context)
@@ -27,11 +33,12 @@ public class ErrorHandlerMiddleware
         }
         catch (Exception ex)
         {
+            _logger.LogError(ex, "An unexpected error occurred right");
             await HandleExceptionAsync(context, ex);
         }
     }
 
-    private static Task HandleExceptionAsync(HttpContext context, Exception exception)
+    private Task HandleExceptionAsync(HttpContext context, Exception exception)
     {
         var response = context.Response;
         response.ContentType = "application/json";
@@ -40,7 +47,8 @@ public class ErrorHandlerMiddleware
         {
             KeyNotFoundException => (int)HttpStatusCode.NotFound,
             ArgumentException => (int)HttpStatusCode.BadRequest,
-            ValidationException => (int)HttpStatusCode.BadRequest,
+            JsonException => StatusCodes.Status422UnprocessableEntity,
+            BadHttpRequestException => StatusCodes.Status422UnprocessableEntity,
             _ => (int)HttpStatusCode.InternalServerError,
         };
 
@@ -48,12 +56,11 @@ public class ErrorHandlerMiddleware
         {
             Status = statusCode,
             Title = statusCode == (int)HttpStatusCode.InternalServerError ? "An unexpected error occurred" : exception.Message,
-            Detail = exception.ToString(),
-            Instance = context.Request.Path
+            Detail = _environment.IsDevelopment() ? exception.ToString() : (statusCode == (int)HttpStatusCode.InternalServerError ? "Internal Server Error" : exception.Message),
         };
 
         response.StatusCode = statusCode;
-        var json = JsonConvert.SerializeObject(problemDetails);
+        var json = JsonSerializer.Serialize(problemDetails);
         return response.WriteAsync(json);
     }
 }

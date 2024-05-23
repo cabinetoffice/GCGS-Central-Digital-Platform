@@ -1,10 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using CO.CDP.Organisation.WebApi.Model;
 using FluentValidation;
-using FluentValidation.AspNetCore;
 
 namespace CO.CDP.Organisation.WebApi.Validators;
 
