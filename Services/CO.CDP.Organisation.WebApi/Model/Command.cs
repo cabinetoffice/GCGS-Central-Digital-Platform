@@ -45,7 +45,6 @@ public record OrganisationIdentifier
     public required string Scheme { get; init; }
     public required string Id { get; init; }
     public string? LegalName { get; init; }
-    public string? Uri { get; init; }
 }
 
 
@@ -57,7 +56,7 @@ public static class MappingExtensions
             Scheme = command.Scheme,
             Id = command.Id,
             LegalName = command.LegalName ?? "",
-            Uri = command.Uri != null ? new Uri(command.Uri) : null
+            Uri = null
         };
 
     public static List<Identifier> AsView(this List<OrganisationIdentifier>? command) =>

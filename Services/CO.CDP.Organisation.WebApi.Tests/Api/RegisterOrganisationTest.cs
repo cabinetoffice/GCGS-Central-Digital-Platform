@@ -103,8 +103,7 @@ public class RegisterOrganisationTest
             {
                 Scheme = "ISO9001",
                 Id = "1",
-                LegalName = "OfficialOrganisationName",
-                Uri = "http://example.org"
+                LegalName = "OfficialOrganisationName"
             },
             AdditionalIdentifiers = new List<OrganisationIdentifier>
             {
@@ -112,8 +111,7 @@ public class RegisterOrganisationTest
                 {
                     Scheme = "ISO14001",
                     Id = "2",
-                    LegalName = "AnotherOrganisationName",
-                    Uri = "http://example.com"
+                    LegalName = "AnotherOrganisationName"
                 }
             },
             Address = new OrganisationAddress

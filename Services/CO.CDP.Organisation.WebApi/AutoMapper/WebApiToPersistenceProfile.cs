@@ -17,6 +17,7 @@ public class WebApiToPersistenceProfile : Profile
         CreateMap<OrganisationIdentifier, Persistence.Organisation.OrganisationIdentifier>()
             .ForMember(m => m.Id, o => o.Ignore())
             .ForMember(m => m.Primary, o => o.Ignore())
+            .ForMember(m => m.Uri, o => o.Ignore())
             .ForMember(m => m.IdentifierId, o => o.MapFrom(m => m.Id))
             .ReverseMap()
             .ForMember(m => m.Id, o => o.MapFrom(m => m.IdentifierId));

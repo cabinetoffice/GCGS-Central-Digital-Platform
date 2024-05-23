@@ -21,8 +21,7 @@ public class OrganisationClientIntegrationTest(ITestOutputHelper testOutputHelpe
         var identifier = new OrganisationIdentifier(
             scheme: "ISO9001",
             id: "1234567",
-            legalName: "New Org Legal Name",
-            uri: "http://neworg.com"
+            legalName: "New Org Legal Name"
         );
         var address = new OrganisationAddress(
             addressLine1: "1234 New St",
@@ -42,8 +41,7 @@ public class OrganisationClientIntegrationTest(ITestOutputHelper testOutputHelpe
             new(
                 scheme: "ISO14001",
                 id: "1234567",
-                legalName: "Additional Legal Name",
-                uri: "http://additionalorg.com"
+                legalName: "Additional Legal Name"
             )
         };
         var types = new List<int> { 1 };

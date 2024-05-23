@@ -86,8 +86,7 @@ public class OrganisationDetailsSummaryModel(
             identifier: new OrganisationIdentifier(
                 details.OrganisationIdentificationNumber,
                 details.OrganisationName,
-                details.OrganisationScheme,
-                null),
+                details.OrganisationScheme),
             name: details.OrganisationName,
             types: details.OrganisationType.HasValue ? [(int)details.OrganisationType.Value] : [],
             personId: details.PersonId.Value
