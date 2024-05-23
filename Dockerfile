@@ -17,6 +17,7 @@ ENV NUGET_PACKAGES="${NUGET_PACKAGES}"
 WORKDIR /src
 COPY Libraries/CO.CDP.Common/CO.CDP.Common.csproj Libraries/CO.CDP.Common/
 COPY Libraries/CO.CDP.Common.Tests/CO.CDP.Common.Tests.csproj Libraries/CO.CDP.Common.Tests/
+COPY Libraries/CO.CDP.OrganisationInformation/CO.CDP.OrganisationInformation.csproj Libraries/CO.CDP.OrganisationInformation/
 COPY Libraries/CO.CDP.Swashbuckle/CO.CDP.Swashbuckle.csproj Libraries/CO.CDP.Swashbuckle/
 COPY Libraries/CO.CDP.Swashbuckle.Tests/CO.CDP.Swashbuckle.Tests.csproj Libraries/CO.CDP.Swashbuckle.Tests/
 COPY Frontend/CO.CDP.OrganisationApp/CO.CDP.OrganisationApp.csproj Frontend/CO.CDP.OrganisationApp/
