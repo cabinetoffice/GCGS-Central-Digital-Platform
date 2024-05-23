@@ -1,9 +1,9 @@
 locals {
 
   ecr_urls = [
-    for repos in aws_ecr_repository.this.* : {for repo, attr in repos : repo => attr.repository_url}
-  ][
-  0
+    for repos in aws_ecr_repository.this.* : { for repo, attr in repos : repo => attr.repository_url }
+    ][
+    0
   ]
 
   name_prefix = var.product.resource_name
@@ -25,6 +25,6 @@ locals {
     "tenant"
   ]
 
-  tasks = concat(local.services , ["organisation-information-migrations"])
+  tasks = concat(local.services, ["organisation-information-migrations"])
 
 }

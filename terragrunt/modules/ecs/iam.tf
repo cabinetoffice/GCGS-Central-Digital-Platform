@@ -20,13 +20,13 @@ resource "aws_iam_role_policy_attachment" "cloudwatch_event_invoke_deployer_step
   role       = var.role_cloudwatch_events_name
 }
 
-resource "aws_iam_policy" "step_function_update_service" {
-  name        = "${local.name_prefix}-step-function-update-service"
+resource "aws_iam_policy" "step_function_manage_services" {
+  name        = "${local.name_prefix}-step-function-manage-services"
   description = "Policy for Step Functions to update ECS service"
-  policy      = data.aws_iam_policy_document.service_deployer_step_function.json
+  policy      = data.aws_iam_policy_document.step_function_manage_services.json
 }
 
 resource "aws_iam_role_policy_attachment" "service_deployer_step_function" {
-  policy_arn = aws_iam_policy.step_function_update_service.arn
+  policy_arn = aws_iam_policy.step_function_manage_services.arn
   role       = var.role_service_deployer_step_function_name
 }
