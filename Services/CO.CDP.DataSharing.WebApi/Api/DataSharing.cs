@@ -1,10 +1,10 @@
 using System.Reflection;
 using CO.CDP.DataSharing.WebApi.Model;
 using CO.CDP.Swashbuckle.Filter;
+using CO.CDP.Swashbuckle.Security;
 using DotSwashbuckle.AspNetCore.SwaggerGen;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace CO.CDP.DataSharing.WebApi.Api;
 
@@ -212,40 +212,5 @@ public static class ApiExtensions
         options.OperationFilter<ProblemDetailsOperationFilter>();
         options.ConfigureOneLoginSecurity();
         options.ConfigureApiKeySecurity();
-    }
-
-    private static void ConfigureOneLoginSecurity(this SwaggerGenOptions options)
-    {
-        var oneLoginSecurityScheme = new OpenApiSecurityScheme
-        {
-            Description = "GOV.UK One Login JWT Bearer token",
-            Type = SecuritySchemeType.Http,
-            Scheme = JwtBearerDefaults.AuthenticationScheme,
-            Reference = new OpenApiReference
-            {
-                Type = ReferenceType.SecurityScheme,
-                Id = "OneLogin"
-            }
-        };
-        options.AddSecurityDefinition("OneLogin", oneLoginSecurityScheme);
-        options.AddSecurityRequirement(new OpenApiSecurityRequirement { { oneLoginSecurityScheme, [] } });
-    }
-
-    private static void ConfigureApiKeySecurity(this SwaggerGenOptions options)
-    {
-        var apiKeySecurityScheme = new OpenApiSecurityScheme
-        {
-            Description = "Central Digital Platform API Key",
-            Type = SecuritySchemeType.ApiKey,
-            In = ParameterLocation.Header,
-            Name = "CDP-Api-Key",
-            Reference = new OpenApiReference
-            {
-                Type = ReferenceType.SecurityScheme,
-                Id = "ApiKey"
-            }
-        };
-        options.AddSecurityDefinition("ApiKey", apiKeySecurityScheme);
-        options.AddSecurityRequirement(new OpenApiSecurityRequirement { { apiKeySecurityScheme, [] } });
     }
 }
