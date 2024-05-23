@@ -5,16 +5,14 @@ namespace CO.CDP.Organisation.WebApi.Model;
 
 public record Organisation
 {
-    [Required(AllowEmptyStrings = true)] public required Guid Id { get; init; }
+    public required Guid Id { get; init; }
 
-    [Required(AllowEmptyStrings = true)] public required string Name { get; init; }
+    public required string Name { get; init; }
 
-    [Required]
     public required Identifier Identifier { get; init; }
 
     public List<Identifier> AdditionalIdentifiers { get; init; } = [];
 
-    [Required]
     public required OrganisationAddress Address { get; init; }
 
     public OrganisationContactPoint? ContactPoint { get; init; }
