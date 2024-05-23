@@ -68,7 +68,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.Swashbuckle", "Libra
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.Swashbuckle.Tests", "Libraries\CO.CDP.Swashbuckle.Tests\CO.CDP.Swashbuckle.Tests.csproj", "{9D53B3DD-81C0-4249-8284-5FCDE3151516}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.OrganisationInformation", "Libraries\CO.CDP.OrganisationInformation\CO.CDP.OrganisationInformation.csproj", "{A214D6B4-31B5-4AD7-BE76-0FF0ACE9C807}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.OrganisationInformation", "Services\CO.CDP.OrganisationInformation\CO.CDP.OrganisationInformation.csproj", "{A214D6B4-31B5-4AD7-BE76-0FF0ACE9C807}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -17,7 +17,6 @@ ENV NUGET_PACKAGES="${NUGET_PACKAGES}"
 WORKDIR /src
 COPY Libraries/CO.CDP.Common/CO.CDP.Common.csproj Libraries/CO.CDP.Common/
 COPY Libraries/CO.CDP.Common.Tests/CO.CDP.Common.Tests.csproj Libraries/CO.CDP.Common.Tests/
-COPY Libraries/CO.CDP.OrganisationInformation/CO.CDP.OrganisationInformation.csproj Libraries/CO.CDP.OrganisationInformation/
 COPY Libraries/CO.CDP.Swashbuckle/CO.CDP.Swashbuckle.csproj Libraries/CO.CDP.Swashbuckle/
 COPY Libraries/CO.CDP.Swashbuckle.Tests/CO.CDP.Swashbuckle.Tests.csproj Libraries/CO.CDP.Swashbuckle.Tests/
 COPY Frontend/CO.CDP.OrganisationApp/CO.CDP.OrganisationApp.csproj Frontend/CO.CDP.OrganisationApp/
@@ -32,6 +31,7 @@ COPY TestKit/CO.CDP.TestKit.Mvc/CO.CDP.TestKit.Mvc.csproj TestKit/CO.CDP.TestKit
 COPY TestKit/CO.CDP.TestKit.Mvc.Tests/CO.CDP.TestKit.Mvc.Tests.csproj TestKit/CO.CDP.TestKit.Mvc.Tests/
 COPY TestKit/CO.CDP.Testcontainers.PostgreSql/CO.CDP.Testcontainers.PostgreSql.csproj TestKit/CO.CDP.Testcontainers.PostgreSql/
 COPY TestKit/CO.CDP.Testcontainers.PostgreSql.Tests/CO.CDP.Testcontainers.PostgreSql.Tests.csproj TestKit/CO.CDP.Testcontainers.PostgreSql.Tests/
+COPY Services/CO.CDP.OrganisationInformation/CO.CDP.OrganisationInformation.csproj Services/CO.CDP.OrganisationInformation/
 COPY Services/CO.CDP.OrganisationInformation.Persistence/CO.CDP.OrganisationInformation.Persistence.csproj Services/CO.CDP.OrganisationInformation.Persistence/
 COPY Services/CO.CDP.OrganisationInformation.Persistence.Tests/CO.CDP.OrganisationInformation.Persistence.Tests.csproj Services/CO.CDP.OrganisationInformation.Persistence.Tests/
 COPY Services/CO.CDP.Tenant.WebApi/CO.CDP.Tenant.WebApi.csproj Services/CO.CDP.Tenant.WebApi/
