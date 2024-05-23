@@ -85,16 +85,14 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql) : 
                 Scheme = "ISO9001",
                 IdentifierId = "1",
                 LegalName = "DefaultLegalName",
-                Uri = "http://default.org",
-                Number = "123456"
+                Uri = "http://default.org"
             }, new OrganisationIdentifier
             {
                 Primary = false,
                 Scheme = "ISO9001",
                 IdentifierId = "1",
                 LegalName = "DefaultLegalName",
-                Uri = "http://default.org",
-                Number = "123456"
+                Uri = "http://default.org"
             }],
             Address = new OrganisationAddress
             {

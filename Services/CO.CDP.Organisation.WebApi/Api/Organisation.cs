@@ -1,6 +1,7 @@
 using CO.CDP.Common;
 using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.Organisation.WebApi.UseCase;
+using CO.CDP.OrganisationInformation;
 using DotSwashbuckle.AspNetCore.SwaggerGen;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
@@ -14,13 +15,12 @@ public static class EndpointExtensions
         .ToDictionary(id => id, id => new Model.Organisation
         {
             Id = id,
-            Identifier = new OrganisationIdentifier
+            Identifier = new Identifier
             {
                 Scheme = "CH",
                 Id = $"123945123{id}",
                 LegalName = "TheOrganisation",
-                Uri = "https://example.com",
-                Number = "123456",
+                Uri = new Uri("https://example.com")
             },
             Name = $"Tables Limited {id}",
             AdditionalIdentifiers = [],
@@ -91,9 +91,9 @@ public static class EndpointExtensions
                     _organisations[organisationId] = new Model.Organisation
                     {
                         Id = organisationId,
-                        Identifier = updatedOrganisation.Identifier,
+                        Identifier =updatedOrganisation.Identifier.AsView(),
                         Name = updatedOrganisation.Name,
-                        AdditionalIdentifiers = updatedOrganisation.AdditionalIdentifiers,
+                        AdditionalIdentifiers = updatedOrganisation.AdditionalIdentifiers.AsView(),
                         Address = updatedOrganisation.Address,
                         ContactPoint = updatedOrganisation.ContactPoint,
                         Types = updatedOrganisation.Types,

@@ -20,10 +20,9 @@ public class OrganisationClientIntegrationTest(ITestOutputHelper testOutputHelpe
         var unknownPersonId = Guid.NewGuid();
         var identifier = new OrganisationIdentifier(
             scheme: "ISO9001",
-            id: "1",
+            id: "1234567",
             legalName: "New Org Legal Name",
-            uri: "http://neworg.com",
-            number: "1234567"
+            uri: "http://neworg.com"
         );
         var address = new OrganisationAddress(
             addressLine1: "1234 New St",
@@ -42,10 +41,9 @@ public class OrganisationClientIntegrationTest(ITestOutputHelper testOutputHelpe
         {
             new(
                 scheme: "ISO14001",
-                id: "2",
+                id: "1234567",
                 legalName: "Additional Legal Name",
-                uri: "http://additionalorg.com",
-                number: "1234567"
+                uri: "http://additionalorg.com"
             )
         };
         var types = new List<int> { 1 };

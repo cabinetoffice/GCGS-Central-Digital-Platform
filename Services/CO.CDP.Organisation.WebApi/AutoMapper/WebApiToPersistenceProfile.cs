@@ -1,5 +1,6 @@
 using AutoMapper;
 using CO.CDP.Organisation.WebApi.Model;
+using CO.CDP.OrganisationInformation;
 using Persistence = CO.CDP.OrganisationInformation.Persistence;
 
 namespace CO.CDP.Organisation.WebApi.AutoMapper;
@@ -14,6 +15,12 @@ public class WebApiToPersistenceProfile : Profile
             .ForMember(m => m.AdditionalIdentifiers, o => o.MapFrom(m => m.Identifiers.Where(i => !i.Primary)));
 
         CreateMap<OrganisationIdentifier, Persistence.Organisation.OrganisationIdentifier>()
+            .ForMember(m => m.Id, o => o.Ignore())
+            .ForMember(m => m.Primary, o => o.Ignore())
+            .ForMember(m => m.IdentifierId, o => o.MapFrom(m => m.Id))
+            .ReverseMap()
+            .ForMember(m => m.Id, o => o.MapFrom(m => m.IdentifierId));
+        CreateMap<Identifier, Persistence.Organisation.OrganisationIdentifier>()
             .ForMember(m => m.Id, o => o.Ignore())
             .ForMember(m => m.Primary, o => o.Ignore())
             .ForMember(m => m.IdentifierId, o => o.MapFrom(m => m.Id))

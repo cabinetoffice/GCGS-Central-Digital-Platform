@@ -39,7 +39,7 @@ public class GetOrganisationsUseCaseTest(AutoMapperFixture mapperFixture) : ICla
             {
                 Primary = true,
                 Scheme = "Scheme1",
-                Number = "123456"
+                IdentifierId = "123456"
             }],
             Address = new OrganisationInformation.Persistence.Organisation.OrganisationAddress
             {
@@ -69,7 +69,7 @@ public class GetOrganisationsUseCaseTest(AutoMapperFixture mapperFixture) : ICla
             {
                 Primary = true,
                 Scheme = "Scheme1",
-                Number = "123456"
+                IdentifierId = "123456"
             }],
             Address = new OrganisationInformation.Persistence.Organisation.OrganisationAddress
             {

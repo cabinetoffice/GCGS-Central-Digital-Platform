@@ -84,9 +84,8 @@ public class OrganisationDetailsSummaryModel(
                 null,
                 null),
             identifier: new OrganisationIdentifier(
-                null,
-                null,
                 details.OrganisationIdentificationNumber,
+                details.OrganisationName,
                 details.OrganisationScheme,
                 null),
             name: details.OrganisationName,

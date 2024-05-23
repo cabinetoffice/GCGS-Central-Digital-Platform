@@ -23,9 +23,8 @@ public class Organisation : IEntityDate
     public record OrganisationIdentifier
     {
         public int Id { get; set; }
-        public string? IdentifierId;
+        public required string IdentifierId;
         public required string Scheme;
-        public required string Number;
         public string? LegalName;
         public string? Uri;
         public required bool Primary { get; set; }

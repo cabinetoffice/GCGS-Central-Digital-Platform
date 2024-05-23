@@ -1,5 +1,7 @@
+using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.Organisation.WebApi.Tests.AutoMapper;
 using CO.CDP.Organisation.WebApi.UseCase;
+using CO.CDP.OrganisationInformation;
 using CO.CDP.OrganisationInformation.Persistence;
 using FluentAssertions;
 using Moq;
@@ -38,20 +40,18 @@ public class LookupOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
             Identifiers = [new OrganisationInformation.Persistence.Organisation.OrganisationIdentifier
                 {
                     Primary = true,
-                    IdentifierId = "Identifier1",
+                    IdentifierId = "123456",
                     Scheme = "Scheme1",
                     LegalName = "Legal Name",
-                    Uri = "http://example.com",
-                    Number = "123456"
+                    Uri = "http://example.com"
                 },
                 new OrganisationInformation.Persistence.Organisation.OrganisationIdentifier
                 {
                     Primary = false,
-                    IdentifierId = "Identifier2",
+                    IdentifierId = "123456",
                     Scheme = "Scheme2",
                     LegalName = "Another Legal Name",
-                    Uri = "http://another-example.com",
-                    Number = "123456"
+                    Uri = "http://another-example.com"
                 }],
             Address = new OrganisationInformation.Persistence.Organisation.OrganisationAddress
             {
@@ -78,25 +78,23 @@ public class LookupOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
         {
             Id = organisationId,
             Name = "Test Organisation",
-            Identifier = new Model.OrganisationIdentifier
+            Identifier = new Identifier
             {
-                Id = "Identifier1",
+                Id = "123456",
                 Scheme = "Scheme1",
                 LegalName = "Legal Name",
-                Uri = "http://example.com",
-                Number = "123456"
+                Uri = new Uri("http://example.com")
             },
-            AdditionalIdentifiers = new List<Model.OrganisationIdentifier>
-            {
-                new Model.OrganisationIdentifier
+            AdditionalIdentifiers =
+            [
+                new Identifier
                 {
-                    Id = "Identifier2",
+                    Id = "123456",
                     Scheme = "Scheme2",
                     LegalName = "Another Legal Name",
-                    Uri = "http://another-example.com",
-                    Number = "123456"
+                    Uri = new Uri("http://another-example.com")
                 }
-            },
+            ],
             Address = new Model.OrganisationAddress
             {
                 AddressLine1 = "1234 Test St",

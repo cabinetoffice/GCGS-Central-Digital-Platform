@@ -29,8 +29,7 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
                 Scheme = "ISO9001",
                 Id = "1",
                 LegalName = "OfficialOrganisationName",
-                Uri = "http://example.org",
-                Number = "123456"
+                Uri = "http://example.org"
             },
             AdditionalIdentifiers = new List<OrganisationIdentifier>
             {
@@ -39,8 +38,7 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
                     Scheme = "ISO14001",
                     Id = "2",
                     LegalName = "AnotherOrganisationName",
-                    Uri = "http://example.com",
-                    Number = "123456"
+                    Uri = "http://example.com"
                 }
             },
             Address = new OrganisationAddress
@@ -66,8 +64,8 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
         {
             Id = _generatedGuid,
             Name = "TheOrganisation",
-            Identifier = command.Identifier,
-            AdditionalIdentifiers = command.AdditionalIdentifiers,
+            Identifier = command.Identifier.AsView(),
+            AdditionalIdentifiers = command.AdditionalIdentifiers.AsView(),
             Address = command.Address,
             ContactPoint = command.ContactPoint,
             Types = command.Types
@@ -95,8 +93,7 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
                 Scheme = "ISO9001",
                 Id = "1",
                 LegalName = "OfficialOrganisationName",
-                Uri = "http://example.org",
-                Number = "123456"
+                Uri = "http://example.org"
             },
             AdditionalIdentifiers = new List<OrganisationIdentifier>
             {
@@ -105,8 +102,7 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
                     Scheme = "ISO14001",
                     Id = "2",
                     LegalName = "AnotherOrganisationName",
-                    Uri = "http://example.com",
-                    Number = "123456"
+                    Uri = "http://example.com"
                 }
             },
             Address = new OrganisationAddress
@@ -155,8 +151,7 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
                 Scheme = "ISO9001",
                 IdentifierId = "1",
                 LegalName = "OfficialOrganisationName",
-                Uri = "http://example.org",
-                Number = "123456"
+                Uri = "http://example.org"
             });
 
         persistanceOrganisation.As<Persistence.Organisation>().Identifiers.Last()
@@ -166,8 +161,7 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
                 Scheme = "ISO14001",
                 IdentifierId = "2",
                 LegalName = "AnotherOrganisationName",
-                Uri = "http://example.com",
-                Number = "123456"
+                Uri = "http://example.com"
             });
     }
 
@@ -248,8 +242,7 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
                 Scheme = "ISO9001",
                 Id = "1",
                 LegalName = "OfficialOrganisationName",
-                Uri = "http://example.org",
-                Number = "123456"
+                Uri = "http://example.org"
             },
             AdditionalIdentifiers = new List<OrganisationIdentifier>
             {
@@ -258,8 +251,7 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
                     Scheme = "ISO14001",
                     Id = "2",
                     LegalName = "AnotherOrganisationName",
-                    Uri = "http://example.com",
-                    Number = "123456"
+                    Uri = "http://example.com"
                 }
             },
             Address = new OrganisationAddress

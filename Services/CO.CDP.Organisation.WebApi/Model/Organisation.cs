@@ -1,4 +1,6 @@
 using System.ComponentModel.DataAnnotations;
+using CO.CDP.OrganisationInformation;
+
 namespace CO.CDP.Organisation.WebApi.Model;
 
 public record Organisation
@@ -8,9 +10,9 @@ public record Organisation
     [Required(AllowEmptyStrings = true)] public required string Name { get; init; }
 
     [Required]
-    public required OrganisationIdentifier Identifier { get; init; }
+    public required Identifier Identifier { get; init; }
 
-    public List<OrganisationIdentifier>? AdditionalIdentifiers { get; init; }
+    public List<Identifier> AdditionalIdentifiers { get; init; } = [];
 
     [Required]
     public required OrganisationAddress Address { get; init; }
@@ -18,18 +20,6 @@ public record Organisation
     public OrganisationContactPoint? ContactPoint { get; init; }
 
     public List<int>? Types { get; init; }
-}
-
-public record OrganisationIdentifier
-{
-    [Required(AllowEmptyStrings = false)]
-    public required string Scheme { get; init; }
-
-    [Required(AllowEmptyStrings = false)]
-    public required string Number { get; init; }
-    public string? Id { get; init; }
-    public string? LegalName { get; init; }
-    public string? Uri { get; init; }
 }
 
 public record OrganisationAddress

@@ -23,7 +23,6 @@ public class OrganisationInformationContext(DbContextOptions<OrganisationInforma
                 a.Property(ai => ai.Scheme);
                 a.Property(ai => ai.LegalName);
                 a.Property(ai => ai.Uri);
-                a.Property(ai => ai.Number);
             });
 
             entity.HasMany(p => p.Persons)

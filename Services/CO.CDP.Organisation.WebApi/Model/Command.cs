@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using CO.CDP.OrganisationInformation;
 
 namespace CO.CDP.Organisation.WebApi.Model;
 
@@ -36,4 +37,29 @@ internal record UpdateOrganisation
     public OrganisationContactPoint? ContactPoint { get; init; }
 
     public List<int>? Types { get; init; }
+}
+
+public record OrganisationIdentifier
+{
+    [Required(AllowEmptyStrings = false)]
+    public required string Scheme { get; init; }
+    public required string Id { get; init; }
+    public string? LegalName { get; init; }
+    public string? Uri { get; init; }
+}
+
+
+public static class MappingExtensions
+{
+    public static Identifier AsView(this OrganisationIdentifier command) =>
+        new()
+        {
+            Scheme = command.Scheme,
+            Id = command.Id,
+            LegalName = command.LegalName ?? "",
+            Uri = command.Uri != null ? new Uri(command.Uri) : null
+        };
+
+    public static List<Identifier> AsView(this List<OrganisationIdentifier>? command) =>
+        command?.Select(i => i.AsView()).ToList() ?? [];
 }
