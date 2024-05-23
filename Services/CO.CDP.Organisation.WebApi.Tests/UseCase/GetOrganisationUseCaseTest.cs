@@ -55,11 +55,11 @@ public class GetOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IClas
                 }],
             Address = new OrganisationInformation.Persistence.Organisation.OrganisationAddress
             {
-                AddressLine1 = "1234 Test St",
-                AddressLine2 = "Green Tower",
-                City = "Test City",
-                PostCode = "12345",
-                Country = "Testland"
+                StreetAddress = "1234 Test St",
+                StreetAddress2 = "Green Tower",
+                Locality = "Test City",
+                PostalCode = "12345",
+                CountryName = "Testland"
             },
             ContactPoint = new OrganisationInformation.Persistence.Organisation.OrganisationContactPoint
             {

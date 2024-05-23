@@ -96,10 +96,11 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql) : 
             }],
             Address = new OrganisationAddress
             {
-                AddressLine1 = "1234 Default St",
-                City = "London",
-                PostCode = "12345",
-                Country = "Defaultland"
+                StreetAddress = "1234 Default St",
+                StreetAddress2 = "High Tower",
+                Locality = "London",
+                PostalCode = "12345",
+                CountryName = "Defaultland"
             },
             ContactPoint = new OrganisationContactPoint
             {
@@ -123,7 +124,7 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql) : 
         }
 
 
-    repository.Save(organisation);
+        repository.Save(organisation);
 
         var updatedOrganisation = await repository.Find(guid)!;
         updatedOrganisation.Should().NotBeNull();

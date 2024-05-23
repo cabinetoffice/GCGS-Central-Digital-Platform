@@ -44,10 +44,11 @@ public class GetOrganisationsUseCaseTest(AutoMapperFixture mapperFixture) : ICla
             }],
             Address = new OrganisationInformation.Persistence.Organisation.OrganisationAddress
             {
-                AddressLine1 = "1234 Test St",
-                City = "Test City",
-                PostCode = "12345",
-                Country = "Testland"
+                StreetAddress = "1234 Test St",
+                StreetAddress2 = "High Tower",
+                Locality = "Test City",
+                PostalCode = "12345",
+                CountryName = "Testland"
             },
             ContactPoint = new OrganisationInformation.Persistence.Organisation.OrganisationContactPoint
             {
@@ -75,10 +76,11 @@ public class GetOrganisationsUseCaseTest(AutoMapperFixture mapperFixture) : ICla
             }],
             Address = new OrganisationInformation.Persistence.Organisation.OrganisationAddress
             {
-                AddressLine1 = "1234 Test St",
-                City = "Test City",
-                PostCode = "12345",
-                Country = "Testland"
+                StreetAddress = "1234 Test St",
+                StreetAddress2 = "High Tower",
+                Locality = "Test City",
+                PostalCode = "12345",
+                CountryName = "Testland"
             },
             ContactPoint = new OrganisationInformation.Persistence.Organisation.OrganisationContactPoint
             {

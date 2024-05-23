@@ -100,10 +100,11 @@ public static class EntityFactory
                 }],
             Address = new OrganisationAddress
             {
-                AddressLine1 = streetAddress,
-                City = city,
-                PostCode = postCode,
-                Country = country
+                StreetAddress = streetAddress,
+                StreetAddress2 = "",
+                Locality = city,
+                PostalCode = postCode,
+                CountryName = country
             },
             ContactPoint = new OrganisationContactPoint
             {
