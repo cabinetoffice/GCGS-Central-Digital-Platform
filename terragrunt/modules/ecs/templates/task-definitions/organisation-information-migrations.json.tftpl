@@ -1,0 +1,33 @@
+[
+  {
+    "name": "${name}",
+    "image": "${image}",
+    "cpu": ${cpu},
+    "memory": ${memory},
+    "portMappings": [
+      {
+        "containerPort": ${container_port},
+        "hostPort": ${host_port},
+        "protocol": "tcp"
+      }
+    ],
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-group": "${lg_name}",
+        "awslogs-region": "${lg_region}",
+        "awslogs-stream-prefix": "${lg_prefix}"
+      }
+    },
+    "environment": [
+        {"name": "ASPNETCORE_ENVIRONMENT", "value": "${environment}"},
+        {"name": "ASPNETCORE_HTTP_PORTS", "value": "${host_port}"}
+    ],
+    "secrets": [
+        {"name": "MIGRATIONS_CONNECTION_STRING", "valueFrom": "${conn_string_location}"}
+    ],
+    "volumesFrom": [],
+    "mountPoints": [],
+    "essential": true
+  }
+]

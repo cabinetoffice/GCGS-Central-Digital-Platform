@@ -1,0 +1,38 @@
+[
+  {
+    "name": "${name}",
+    "image": "${image}",
+    "cpu": ${cpu},
+    "memory": ${memory},
+    "portMappings": [
+      {
+        "containerPort": ${container_port},
+        "hostPort": ${host_port},
+        "protocol": "tcp"
+      }
+    ],
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-group": "${lg_name}",
+        "awslogs-region": "${lg_region}",
+        "awslogs-stream-prefix": "${lg_prefix}"
+      }
+    },
+    "environment": [
+        {"name": "ASPNETCORE_ENVIRONMENT", "value": "${environment}"},
+        {"name": "ASPNETCORE_HTTP_PORTS", "value": "${host_port}"},
+        {"name": "TenantService", "value": "http://cdp-sirsi-1939052961.eu-west-2.elb.amazonaws.com:8080"},
+        {"name": "OrganisationService", "value": "http://cdp-sirsi-1939052961.eu-west-2.elb.amazonaws.com:8084"},
+        {"name": "PersonService", "value": "http://cdp-sirsi-1939052961.eu-west-2.elb.amazonaws.com:8082"}
+    ],
+    "secrets": [
+        {"name": "OneLogin__Authority", "valueFrom": "${oneLogin_authority}"},
+        {"name": "OneLogin__ClientId", "valueFrom": "${oneLogin_client_id}"},
+        {"name": "OneLogin__PrivateKey", "valueFrom": "${oneLogin_private_key}"}
+    ],
+    "volumesFrom": [],
+    "mountPoints": [],
+    "essential": true
+  }
+]
