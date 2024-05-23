@@ -41,11 +41,11 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
             },
             Address = new OrganisationAddress
             {
-                AddressLine1 = "1234 Example St",
-                AddressLine2 = "",
-                City = "Example City",
-                PostCode = "12345",
-                Country = "Exampleland"
+                StreetAddress = "1234 Example St",
+                StreetAddress2 = "",
+                Locality = "Example City",
+                PostalCode = "12345",
+                CountryName = "Exampleland"
             },
             ContactPoint = new OrganisationContactPoint
             {
@@ -104,11 +104,11 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
             },
             Address = new OrganisationAddress
             {
-                AddressLine1 = "1234 Example St",
-                AddressLine2 = "",
-                City = "Example City",
-                PostCode = "12345",
-                Country = "Exampleland"
+                StreetAddress = "1234 Example St",
+                StreetAddress2 = "",
+                Locality = "Example City",
+                PostalCode = "12345",
+                CountryName = "Exampleland"
             },
             ContactPoint = new OrganisationContactPoint
             {
@@ -251,11 +251,11 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
             },
             Address = new OrganisationAddress
             {
-                AddressLine1 = "1234 Example St",
-                AddressLine2 = "",
-                City = "Example City",
-                PostCode = "12345",
-                Country = "Exampleland"
+                StreetAddress = "1234 Example St",
+                StreetAddress2 = "",
+                Locality = "Example City",
+                PostalCode = "12345",
+                CountryName = "Exampleland"
             },
             ContactPoint = new OrganisationContactPoint
             {

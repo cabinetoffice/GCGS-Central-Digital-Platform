@@ -50,17 +50,17 @@ public record OrganisationIdentifier
 public record OrganisationAddress
 {
     [Required(AllowEmptyStrings = false)]
-    public required string AddressLine1 { get; init; }
+    public required string StreetAddress { get; init; }
     [Required(AllowEmptyStrings = true)]
-    public required string AddressLine2 { get; init; }
+    public required string StreetAddress2 { get; init; }
 
     [Required(AllowEmptyStrings = false)]
-    public required string City { get; init; }
+    public required string Locality { get; init; }
 
     [Required(AllowEmptyStrings = false)]
-    public required string PostCode { get; init; }
+    public required string PostalCode { get; init; }
 
-    public required string Country { get; init; }
+    public required string CountryName { get; init; }
 }
 
 public static class MappingExtensions
@@ -80,11 +80,11 @@ public static class MappingExtensions
     public static Address AsView(this OrganisationAddress command) =>
         new()
         {
-            StreetAddress = command.AddressLine1,
-            StreetAddress2 = command.AddressLine2 ?? "",
-            Locality = command.City,
+            StreetAddress = command.StreetAddress,
+            StreetAddress2 = command.StreetAddress2 ?? "",
+            Locality = command.Locality,
             Region = "",
-            PostalCode = command.PostCode,
-            CountryName = command.Country
+            PostalCode = command.PostalCode,
+            CountryName = command.CountryName
         };
 }

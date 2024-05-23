@@ -24,11 +24,11 @@ public class OrganisationClientIntegrationTest(ITestOutputHelper testOutputHelpe
             legalName: "New Org Legal Name"
         );
         var address = new OrganisationAddress(
-            addressLine1: "1234 New St",
-            addressLine2: "",
-            city: "New City",
-            postCode: "123456",
-            country: "Newland"
+            streetAddress: "1234 New St",
+            streetAddress2: "",
+            locality: "New City",
+            postalCode: "123456",
+            countryName: "Newland"
         );
         var contactPoint = new OrganisationContactPoint(
             name: "Main Contact",

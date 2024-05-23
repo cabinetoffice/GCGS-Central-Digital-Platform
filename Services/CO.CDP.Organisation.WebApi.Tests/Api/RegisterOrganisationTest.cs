@@ -116,11 +116,11 @@ public class RegisterOrganisationTest
             },
             Address = new OrganisationAddress
             {
-                AddressLine1 = "1234 Example St",
-                AddressLine2 = "",
-                City = "Example Region",
-                PostCode = "12345",
-                Country = "Exampleland"
+                StreetAddress = "1234 Example St",
+                StreetAddress2 = "",
+                Locality = "Example Region",
+                PostalCode = "12345",
+                CountryName = "Exampleland"
             },
             ContactPoint = new OrganisationContactPoint
             {
