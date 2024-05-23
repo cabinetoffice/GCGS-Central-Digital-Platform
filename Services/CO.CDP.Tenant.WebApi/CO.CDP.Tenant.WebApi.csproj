@@ -9,10 +9,12 @@
         <OpenApiDocumentsDirectory>$(MSBuildProjectDirectory)/OpenAPI</OpenApiDocumentsDirectory>
         <OpenApiGenerateDocuments>true</OpenApiGenerateDocuments>
         <OpenApiGenerateDocumentsOnBuild>true</OpenApiGenerateDocumentsOnBuild>
+        <UserSecretsId>041260cc-981e-4325-9ad0-9a0c04b50207</UserSecretsId>
     </PropertyGroup>
 
     <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.1" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.5" />
         <PackageReference Include="DotSwashbuckle.AspNetCore" Version="3.0.8" />
         <PackageReference Include="AutoMapper" Version="13.0.1" />
         <ProjectReference Include="..\CO.CDP.OrganisationInformation.Persistence\CO.CDP.OrganisationInformation.Persistence.csproj" />

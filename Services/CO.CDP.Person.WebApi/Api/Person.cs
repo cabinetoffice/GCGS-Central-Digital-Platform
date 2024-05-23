@@ -2,6 +2,7 @@ using CO.CDP.Common;
 using CO.CDP.Person.WebApi.Model;
 using CO.CDP.Person.WebApi.UseCase;
 using DotSwashbuckle.AspNetCore.SwaggerGen;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
 
@@ -26,21 +27,24 @@ public static class EndpointExtensions
                 .AndThen(person =>
                     Results.Created(new Uri($"/persons/{person.Id}", UriKind.Relative), person))
                 )
-        .Produces<Model.Person>(201, "application/json")
-        .ProducesProblem(500)
-        .WithOpenApi(operation =>
-        {
-            operation.OperationId = "CreatePerson";
-            operation.Description = "Create a new person.";
-            operation.Summary = "Create a new person.";
-            operation.Responses["201"].Description = "Person created successfully.";
-            return operation;
-        });
+            .Produces<Model.Person>(201, "application/json")
+            .Produces(401)
+            .ProducesProblem(500)
+            .WithOpenApi(operation =>
+            {
+                operation.OperationId = "CreatePerson";
+                operation.Description = "Create a new person.";
+                operation.Summary = "Create a new person.";
+                operation.Responses["201"].Description = "Person created successfully.";
+                return operation;
+            })
+            .RequireAuthorization();
 
         app.MapGet("/persons/{personId}", async (Guid personId, IUseCase<Guid, Model.Person?> useCase) =>
                 await useCase.Execute(personId)
                     .AndThen(person => person != null ? Results.Ok(person) : Results.NotFound()))
             .Produces<Model.Person>(200, "application/json")
+            .Produces(401)
             .Produces(404)
             .WithOpenApi(operation =>
             {
@@ -49,7 +53,8 @@ public static class EndpointExtensions
                 operation.Summary = "Get a person by ID.";
                 operation.Responses["200"].Description = "Person details.";
                 return operation;
-            });
+            })
+            .RequireAuthorization();
 
         app.MapPut("/persons/{personId}",
                 (Guid personId, UpdatePerson updatedPerson) =>
@@ -64,6 +69,7 @@ public static class EndpointExtensions
                     return Results.Ok(_persons[personId]);
                 })
             .Produces<Model.Person>(200, "application/json")
+            .Produces(401)
             .WithOpenApi(operation =>
             {
                 operation.OperationId = "UpdatePerson";
@@ -71,13 +77,16 @@ public static class EndpointExtensions
                 operation.Summary = "[STUB] Update a person [STUB]";
                 operation.Responses["200"].Description = "Person updated.";
                 return operation;
-            });
+            })
+            .RequireAuthorization();
+
         app.MapDelete("/persons/{personId}", (Guid personId) =>
-        {
-            _persons.Remove(personId);
-            return Results.NoContent();
-        })
+            {
+                _persons.Remove(personId);
+                return Results.NoContent();
+            })
             .Produces(204)
+            .Produces(401)
             .WithOpenApi(operation =>
             {
                 operation.OperationId = "DeletePerson";
@@ -85,7 +94,8 @@ public static class EndpointExtensions
                 operation.Summary = "[STUB] Delete a person. [STUB]";
                 operation.Responses["204"].Description = "Person deleted.";
                 return operation;
-            });
+            })
+            .RequireAuthorization();
     }
 
     public static void UsePersonLookupEndpoints(this WebApplication app)
@@ -95,6 +105,7 @@ public static class EndpointExtensions
                 await useCase.Execute(urn)
                     .AndThen(persons => persons != null ? Results.Ok(persons) : Results.NotFound()))
             .Produces<Model.Person>(200, "application/json")
+            .Produces(401)
             .Produces(404)
             .WithOpenApi(operation =>
             {
@@ -104,7 +115,8 @@ public static class EndpointExtensions
                 operation.Tags = new List<OpenApiTag> { new() { Name = "Person Lookup" } };
                 operation.Responses["200"].Description = "Person Associated.";
                 return operation;
-            });
+            })
+            .RequireAuthorization();
     }
 }
 
@@ -129,6 +141,7 @@ public static class ApiExtensions
                 Url = new Uri("https://example.com/license")
             }
         });
+
         options.CustomSchemaIds(type =>
         {
             var typeMap = new Dictionary<Type, string>
@@ -137,7 +150,22 @@ public static class ApiExtensions
                     { typeof(UpdatePerson), "UpdatedPerson" },
                 };
             return typeMap.GetValueOrDefault(type, type.Name);
-        }
-       );
+        });
+
+        var jwtSecurityScheme = new OpenApiSecurityScheme
+        {
+            In = ParameterLocation.Header,
+            Description = "GOV.UK One Login JWT Bearer token",
+            Type = SecuritySchemeType.Http,
+            Scheme = JwtBearerDefaults.AuthenticationScheme,
+            Reference = new OpenApiReference
+            {
+                Type = ReferenceType.SecurityScheme,
+                Id = JwtBearerDefaults.AuthenticationScheme
+            }
+        };
+
+        options.AddSecurityDefinition(JwtBearerDefaults.AuthenticationScheme, jwtSecurityScheme);
+        options.AddSecurityRequirement(new OpenApiSecurityRequirement { { jwtSecurityScheme, Array.Empty<string>() } });
     }
 }

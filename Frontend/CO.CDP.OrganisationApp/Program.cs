@@ -29,20 +29,25 @@ builder.Services.AddSession(options =>
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddSingleton<CO.CDP.OrganisationApp.ISession, Session>();
 
+builder.Services.AddTransient<ApiBearerTokenHandler>();
+
 var tenantServiceUrl = builder.Configuration.GetValue<string>("TenantService");
-builder.Services.AddHttpClient(TenantHttpClientName);
+builder.Services.AddHttpClient(TenantHttpClientName)
+    .AddHttpMessageHandler<ApiBearerTokenHandler>();
 builder.Services.AddTransient<ITenantClient, TenantClient>(
     sc => new TenantClient(tenantServiceUrl,
         sc.GetRequiredService<IHttpClientFactory>().CreateClient(TenantHttpClientName)));
 
 var personServiceUrl = builder.Configuration.GetValue<string>("PersonService");
-builder.Services.AddHttpClient(PersonHttpClientName);
+builder.Services.AddHttpClient(PersonHttpClientName)
+    .AddHttpMessageHandler<ApiBearerTokenHandler>();
 builder.Services.AddTransient<IPersonClient, PersonClient>(
     sc => new PersonClient(personServiceUrl,
         sc.GetRequiredService<IHttpClientFactory>().CreateClient(PersonHttpClientName)));
 
 var organisationServiceUrl = builder.Configuration.GetValue<string>("OrganisationService");
-builder.Services.AddHttpClient(OrganisationHttpClientName);
+builder.Services.AddHttpClient(OrganisationHttpClientName)
+    .AddHttpMessageHandler<ApiBearerTokenHandler>();
 builder.Services.AddTransient<IOrganisationClient, OrganisationClient>(
     sc => new OrganisationClient(organisationServiceUrl,
         sc.GetRequiredService<IHttpClientFactory>().CreateClient(OrganisationHttpClientName)));

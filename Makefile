@@ -74,6 +74,7 @@ services:
       - "$${CDP_TENANT_PORT:-8080}:8080"
     environment:
       ASPNETCORE_ENVIRONMENT: Development
+      OneLogin__Authority: "https://oidc.example.com"
     deploy:
       replicas: 1
   organisation:
@@ -81,6 +82,7 @@ services:
       - '$${CDP_ORGANISATION_PORT:-8082}:8080'
     environment:
       ASPNETCORE_ENVIRONMENT: Development
+      OneLogin__Authority: "https://oidc.example.com"
     deploy:
       replicas: 1
   person:
@@ -88,6 +90,7 @@ services:
       - '$${CDP_PERSON_PORT:-8084}:8080'
     environment:
       ASPNETCORE_ENVIRONMENT: Development
+      OneLogin__Authority: "https://oidc.example.com"
     deploy:
       replicas: 1
   forms:

@@ -2,6 +2,7 @@ using CO.CDP.Common;
 using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.Organisation.WebApi.UseCase;
 using DotSwashbuckle.AspNetCore.SwaggerGen;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
 
@@ -47,6 +48,7 @@ public static class EndpointExtensions
                 await useCase.Execute(userUrn)
                     .AndThen(organisations => Results.Ok(organisations)))
             .Produces<List<Model.Organisation>>(200, "application/json")
+            .Produces(401)
             .WithOpenApi(operation =>
             {
                 operation.OperationId = "ListOrganisations";
@@ -54,37 +56,45 @@ public static class EndpointExtensions
                 operation.Summary = "A list of organisations.";
                 operation.Responses["200"].Description = "A list of organisations.";
                 return operation;
-            });
+            })
+            .RequireAuthorization();
+
         app.MapPost("/organisations", async (RegisterOrganisation command, IUseCase<RegisterOrganisation, Model.Organisation> useCase) =>
             await useCase.Execute(command)
                 .AndThen(organisation =>
                     organisation != null
                         ? Results.Created(new Uri($"/organisations/{organisation.Id}", UriKind.Relative), organisation)
                         : Results.Problem("Organisation could not be created due to an internal error"))
-        )
-        .Produces<Model.Organisation>(201, "application/json")
-        .ProducesProblem(500)
-        .WithOpenApi(operation =>
-        {
-            operation.OperationId = "CreateOrganisation";
-            operation.Description = "Create a new organisation.";
-            operation.Summary = "Create a new organisation.";
-            operation.Responses["201"].Description = "Organisation created successfully.";
-            return operation;
-        });
+            )
+            .Produces<Model.Organisation>(201, "application/json")
+            .Produces(401)
+            .ProducesProblem(500)
+            .WithOpenApi(operation =>
+            {
+                operation.OperationId = "CreateOrganisation";
+                operation.Description = "Create a new organisation.";
+                operation.Summary = "Create a new organisation.";
+                operation.Responses["201"].Description = "Organisation created successfully.";
+                return operation;
+            })
+            .RequireAuthorization();
+
         app.MapGet("/organisations/{organisationId}", async (Guid organisationId, IUseCase<Guid, Model.Organisation?> useCase) =>
                await useCase.Execute(organisationId)
                    .AndThen(organisation => organisation != null ? Results.Ok(organisation) : Results.NotFound()))
-           .Produces<Model.Organisation>(200, "application/json")
-           .Produces(404)
-           .WithOpenApi(operation =>
-           {
-               operation.OperationId = "GetOrganisation";
-               operation.Description = "Get a organisation by ID.";
-               operation.Summary = "Get a organisation by ID.";
-               operation.Responses["200"].Description = "Organisation details.";
-               return operation;
-           });
+            .Produces<Model.Organisation>(200, "application/json")
+            .Produces(401)
+            .Produces(404)
+            .WithOpenApi(operation =>
+            {
+                operation.OperationId = "GetOrganisation";
+                operation.Description = "Get a organisation by ID.";
+                operation.Summary = "Get a organisation by ID.";
+                operation.Responses["200"].Description = "Organisation details.";
+                return operation;
+            })
+            .RequireAuthorization();
+
         app.MapPut("/organisations/{organisationId}",
                 (Guid organisationId, UpdateOrganisation updatedOrganisation) =>
                 {
@@ -101,6 +111,7 @@ public static class EndpointExtensions
                     return Results.Ok(_organisations[organisationId]);
                 })
             .Produces<Model.Organisation>(200, "application/json")
+            .Produces(401)
             .WithOpenApi(operation =>
             {
                 operation.OperationId = "UpdateOrganisation";
@@ -108,13 +119,16 @@ public static class EndpointExtensions
                 operation.Summary = "[STUB] Update a organisation [STUB]";
                 operation.Responses["200"].Description = "Organisation updated.";
                 return operation;
-            });
+            })
+            .RequireAuthorization();
+
         app.MapDelete("/organisations/{organisationId}", (Guid organisationId) =>
             {
                 _organisations.Remove(organisationId);
                 return Results.NoContent();
             })
             .Produces(204)
+            .Produces(401)
             .WithOpenApi(operation =>
             {
                 operation.OperationId = "DeleteOrganisation";
@@ -122,7 +136,8 @@ public static class EndpointExtensions
                 operation.Summary = "[STUB] Delete a organisation. [STUB]";
                 operation.Responses["204"].Description = "Organisation deleted.";
                 return operation;
-            });
+            })
+            .RequireAuthorization();
     }
     public static void UseOrganisationLookupEndpoints(this WebApplication app)
     {
@@ -131,6 +146,7 @@ public static class EndpointExtensions
                 await useCase.Execute(name)
                     .AndThen(organisation => organisation != null ? Results.Ok(organisation) : Results.NotFound()))
             .Produces<Model.Organisation>(200, "application/json")
+            .Produces(401)
             .Produces(404)
             .WithOpenApi(operation =>
             {
@@ -140,10 +156,10 @@ public static class EndpointExtensions
                 operation.Tags = new List<OpenApiTag> { new() { Name = "Organisation Lookup" } };
                 operation.Responses["200"].Description = "Organisations Associated.";
                 return operation;
-            });
+            })
+            .RequireAuthorization();
     }
 }
-
 
 public static class ApiExtensions
 {
@@ -174,8 +190,23 @@ public static class ApiExtensions
                     { typeof(UpdateOrganisation), "UpdatedOrganisation" },
                 };
             return typeMap.GetValueOrDefault(type, type.Name);
-        }
-       );
+        });
+
+        var jwtSecurityScheme = new OpenApiSecurityScheme
+        {
+            In = ParameterLocation.Header,
+            Description = "GOV.UK One Login JWT Bearer token",
+            Type = SecuritySchemeType.Http,
+            Scheme = JwtBearerDefaults.AuthenticationScheme,
+            Reference = new OpenApiReference
+            {
+                Type = ReferenceType.SecurityScheme,
+                Id = JwtBearerDefaults.AuthenticationScheme
+            }
+        };
+
+        options.AddSecurityDefinition(JwtBearerDefaults.AuthenticationScheme, jwtSecurityScheme);
+        options.AddSecurityRequirement(new OpenApiSecurityRequirement { { jwtSecurityScheme, Array.Empty<string>() } });
     }
 
 }
