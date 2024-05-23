@@ -25,7 +25,7 @@ public class OrganisationClientIntegrationTest(ITestOutputHelper testOutputHelpe
         );
         var address = new OrganisationAddress(
             addressLine1: "1234 New St",
-            addressLine2: null,
+            addressLine2: "",
             city: "New City",
             postCode: "123456",
             country: "Newland"

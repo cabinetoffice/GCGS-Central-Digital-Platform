@@ -30,6 +30,14 @@ public class WebApiToPersistenceProfile : Profile
 
         CreateMap<OrganisationAddress, Persistence.Organisation.OrganisationAddress>()
             .ReverseMap();
+        CreateMap<Address, Persistence.Organisation.OrganisationAddress>()
+            .ForMember(m => m.AddressLine1, o => o.MapFrom(m => m.StreetAddress))
+            .ForMember(m => m.AddressLine2, o => o.MapFrom(m => m.StreetAddress2))
+            .ForMember(m => m.City, o => o.MapFrom(m => m.Locality))
+            .ForMember(m => m.PostCode, o => o.MapFrom(m => m.PostalCode))
+            .ForMember(m => m.Country, o => o.MapFrom(m => m.CountryName))
+            .ReverseMap()
+            .ForMember(m => m.Region, o => o.MapFrom(m => ""));
 
         CreateMap<OrganisationContactPoint, Persistence.Organisation.OrganisationContactPoint>()
             .ReverseMap();

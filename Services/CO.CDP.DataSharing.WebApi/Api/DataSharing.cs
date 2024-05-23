@@ -72,6 +72,7 @@ public static class EndpointExtensions
                 Address = new Address
                 {
                     StreetAddress = "82 St. John’s Road",
+                    StreetAddress2 = "Green Tower",
                     Locality = "CHESTER",
                     Region = "Lancashire",
                     PostalCode = "CH43 7UR",

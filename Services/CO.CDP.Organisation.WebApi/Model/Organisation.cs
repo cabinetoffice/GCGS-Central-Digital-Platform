@@ -13,26 +13,11 @@ public record Organisation
 
     public List<Identifier> AdditionalIdentifiers { get; init; } = [];
 
-    public required OrganisationAddress Address { get; init; }
+    public required Address Address { get; init; }
 
     public OrganisationContactPoint? ContactPoint { get; init; }
 
     public List<int>? Types { get; init; }
-}
-
-public record OrganisationAddress
-{
-    [Required(AllowEmptyStrings = false)]
-    public required string AddressLine1 { get; init; }
-    public string? AddressLine2 { get; init; }
-
-    [Required(AllowEmptyStrings = false)]
-    public required string City { get; init; }
-
-    [Required(AllowEmptyStrings = false)]
-    public required string PostCode { get; init; }
-
-    public string? Country { get; init; }
 }
 
 public record OrganisationContactPoint

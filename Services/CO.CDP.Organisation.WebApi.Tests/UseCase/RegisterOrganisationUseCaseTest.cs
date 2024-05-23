@@ -42,6 +42,7 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
             Address = new OrganisationAddress
             {
                 AddressLine1 = "1234 Example St",
+                AddressLine2 = "",
                 City = "Example City",
                 PostCode = "12345",
                 Country = "Exampleland"
@@ -64,7 +65,7 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
             Name = "TheOrganisation",
             Identifier = command.Identifier.AsView(),
             AdditionalIdentifiers = command.AdditionalIdentifiers.AsView(),
-            Address = command.Address,
+            Address = command.Address.AsView(),
             ContactPoint = command.ContactPoint,
             Types = command.Types
         };
@@ -104,6 +105,7 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
             Address = new OrganisationAddress
             {
                 AddressLine1 = "1234 Example St",
+                AddressLine2 = "",
                 City = "Example City",
                 PostCode = "12345",
                 Country = "Exampleland"
@@ -124,6 +126,7 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
              o.Address == new Persistence.Organisation.OrganisationAddress
              {
                  AddressLine1 = "1234 Example St",
+                 AddressLine2 = "",
                  City = "Example City",
                  PostCode = "12345",
                  Country = "Exampleland"
@@ -249,6 +252,7 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
             Address = new OrganisationAddress
             {
                 AddressLine1 = "1234 Example St",
+                AddressLine2 = "",
                 City = "Example City",
                 PostCode = "12345",
                 Country = "Exampleland"

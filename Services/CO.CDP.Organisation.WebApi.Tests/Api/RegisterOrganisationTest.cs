@@ -40,7 +40,7 @@ public class RegisterOrganisationTest
             Name = "TheOrganisation",
             Identifier = command.Identifier.AsView(),
             AdditionalIdentifiers = command.AdditionalIdentifiers.AsView(),
-            Address = command.Address,
+            Address = command.Address.AsView(),
             ContactPoint = command.ContactPoint,
             Types = command.Types
         };
@@ -79,7 +79,7 @@ public class RegisterOrganisationTest
             Name = "TheOrganisation",
             Identifier = command.Identifier.AsView(),
             AdditionalIdentifiers = command.AdditionalIdentifiers.AsView(),
-            Address = command.Address,
+            Address = command.Address.AsView(),
             ContactPoint = command.ContactPoint,
             Types = command.Types
         };
@@ -117,6 +117,7 @@ public class RegisterOrganisationTest
             Address = new OrganisationAddress
             {
                 AddressLine1 = "1234 Example St",
+                AddressLine2 = "",
                 City = "Example Region",
                 PostCode = "12345",
                 Country = "Exampleland"

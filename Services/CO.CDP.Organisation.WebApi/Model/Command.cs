@@ -47,6 +47,21 @@ public record OrganisationIdentifier
     public required string LegalName { get; init; }
 }
 
+public record OrganisationAddress
+{
+    [Required(AllowEmptyStrings = false)]
+    public required string AddressLine1 { get; init; }
+    [Required(AllowEmptyStrings = true)]
+    public required string AddressLine2 { get; init; }
+
+    [Required(AllowEmptyStrings = false)]
+    public required string City { get; init; }
+
+    [Required(AllowEmptyStrings = false)]
+    public required string PostCode { get; init; }
+
+    public required string Country { get; init; }
+}
 
 public static class MappingExtensions
 {
@@ -61,4 +76,15 @@ public static class MappingExtensions
 
     public static List<Identifier> AsView(this List<OrganisationIdentifier>? command) =>
         command?.Select(i => i.AsView()).ToList() ?? [];
+
+    public static Address AsView(this OrganisationAddress command) =>
+        new()
+        {
+            StreetAddress = command.AddressLine1,
+            StreetAddress2 = command.AddressLine2 ?? "",
+            Locality = command.City,
+            Region = "",
+            PostalCode = command.PostCode,
+            CountryName = command.Country
+        };
 }

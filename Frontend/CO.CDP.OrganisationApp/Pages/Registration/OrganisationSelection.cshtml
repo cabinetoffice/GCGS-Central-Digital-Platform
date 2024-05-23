@@ -3,9 +3,9 @@
 @model OrganisationSelectionModel
 
 @{
-    string GetAddress(OrganisationAddress add)
+    string GetAddress(Address add)
     {
-        return string.Join(", ", new[] { add.AddressLine1, add.AddressLine2, add.City, add.Country, add.PostCode }
+        return string.Join(", ", new[] { add.StreetAddress, add.StreetAddress2, add.Locality, add.CountryName, add.PostalCode }
             .Where(t => !string.IsNullOrWhiteSpace(t)));
     }
 }

@@ -24,11 +24,14 @@ public static class EndpointExtensions
             },
             Name = $"Tables Limited {id}",
             AdditionalIdentifiers = [],
-            Address = new OrganisationAddress
+            Address = new Address
             {
-                AddressLine1 = $"Green Lane {id}",
-                City = "London",
-                PostCode = "BR8 7AA"
+                StreetAddress = $"Green Lane {id}",
+                StreetAddress2 = "",
+                Locality = "London",
+                Region = "",
+                PostalCode = "BR8 7AA",
+                CountryName = "United Kingdom"
             },
             ContactPoint = new OrganisationContactPoint
             {
@@ -94,7 +97,7 @@ public static class EndpointExtensions
                         Identifier =updatedOrganisation.Identifier.AsView(),
                         Name = updatedOrganisation.Name,
                         AdditionalIdentifiers = updatedOrganisation.AdditionalIdentifiers.AsView(),
-                        Address = updatedOrganisation.Address,
+                        Address = updatedOrganisation.Address.AsView(),
                         ContactPoint = updatedOrganisation.ContactPoint,
                         Types = updatedOrganisation.Types,
                     };
