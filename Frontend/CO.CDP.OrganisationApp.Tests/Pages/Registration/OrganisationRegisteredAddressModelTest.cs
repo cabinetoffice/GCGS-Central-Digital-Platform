@@ -1,3 +1,4 @@
+using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.Pages.Registration;
 using FluentAssertions;
@@ -187,7 +188,7 @@ public class OrganisationRegisteredAddressModelTest
     public void OnPost_WhenValidModelAndBuyer_ShouldRedirectToBuyerOrganisationTypePage()
     {
         var model = GivenOrganisationAddressModel();
-        
+
         RegistrationDetails registrationDetails = DummyRegistrationDetails();
         registrationDetails.OrganisationType = Common.Enums.OrganisationType.Tenderer;
         sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(registrationDetails);
@@ -239,7 +240,7 @@ public class OrganisationRegisteredAddressModelTest
         var model = GivenOrganisationAddressModel();
 
         Action action = () => model.OnGet();
-        action.Should().Throw<Exception>().WithMessage("Session not found");
+        action.Should().Throw<Exception>().WithMessage(ErrorMessagesList.SessionNotFound);
     }
 
     private OrganisationRegisteredAddressModel GivenOrganisationAddressModel()

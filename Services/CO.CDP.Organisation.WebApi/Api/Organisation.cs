@@ -47,6 +47,7 @@ public static class EndpointExtensions
                 await useCase.Execute(userUrn)
                     .AndThen(organisations => Results.Ok(organisations)))
             .Produces<List<Model.Organisation>>(200, "application/json")
+            .Produces(404)
             .WithOpenApi(operation =>
             {
                 operation.OperationId = "ListOrganisations";
@@ -57,10 +58,6 @@ public static class EndpointExtensions
             });
         app.MapPost("/organisations", async (RegisterOrganisation command, IUseCase<RegisterOrganisation, Model.Organisation> useCase) =>
         {
-            if (command == null)
-            {
-                return Results.BadRequest("Invalid request payload.");
-            }
             var result = await useCase.Execute(command);
             return result != null
                     ? Results.Created(new Uri($"/organisations/{result.Id}", UriKind.Relative), result)
@@ -96,11 +93,6 @@ public static class EndpointExtensions
                     if (!_organisations.ContainsKey(organisationId))
                     {
                         return Results.NotFound();
-                    }
-
-                    if (updatedOrganisation == null)
-                    {
-                        return Results.BadRequest("Invalid request payload.");
                     }
                     _organisations[organisationId] = new Model.Organisation
                     {

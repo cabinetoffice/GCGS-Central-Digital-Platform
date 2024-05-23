@@ -1,5 +1,5 @@
 using CO.CDP.Organisation.WebApiClient;
-using CO.CDP.OrganisationApp.Helpers;
+using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -26,30 +26,19 @@ public class OrganisationDetailsSummaryModel(
     {
         Details = VerifySession();
 
-        try
+        var organisation = await RegisterOrganisation(Details);
+
+        if (organisation != null)
         {
-            var organisation = await ApiHelper.CallApiAsync(
-                        () => RegisterOrganisation(Details),
-                        "Failed to register organisation."
-            );
-
-            if (organisation != null)
-            {
-                Details.OrganisationId = organisation.Id;
-                session.Set(Session.RegistrationDetailsKey, Details);
-            }
-            else
-            {
-                return Page();
-            }
-
-            return RedirectToPage("OrganisationOverview", new { organisation.Id });
+            Details.OrganisationId = organisation.Id;
+            session.Set(Session.RegistrationDetailsKey, Details);
         }
-        catch (Exception ex)
+        else
         {
-            Error = ex.Message;
             return Page();
         }
+
+        return RedirectToPage("OrganisationOverview", new { organisation.Id });
     }
 
     private async Task<OrganisationWebApiClient.Organisation?> RegisterOrganisation(RegistrationDetails details)
@@ -58,7 +47,25 @@ public class OrganisationDetailsSummaryModel(
 
         if (payload is not null)
         {
-            return await organisationClient.CreateOrganisationAsync(payload);
+            try
+            {
+                return await organisationClient.CreateOrganisationAsync(payload);
+            }
+            catch (ApiException<OrganisationWebApiClient.ProblemDetails> aex)
+            {
+                if (aex.StatusCode == StatusCodes.Status400BadRequest)
+                {
+                    ModelState.AddModelError(string.Empty, ErrorMessagesList.OrganisationCreationFailed);
+                }
+                else
+                {
+                    Error = ErrorMessagesList.UnexpectedError;
+                }
+            }
+            catch (Exception ex)
+            {
+                Error = ErrorMessagesList.UnexpectedError;
+            }
         }
 
         return null;
@@ -99,7 +106,7 @@ public class OrganisationDetailsSummaryModel(
     private RegistrationDetails VerifySession()
     {
         var registrationDetails = session.Get<RegistrationDetails>(Session.RegistrationDetailsKey)
-            ?? throw new Exception("Session not found");
+            ?? throw new Exception(ErrorMessagesList.SessionNotFound);
 
         return registrationDetails;
     }

@@ -1,3 +1,4 @@
+using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.Pages.Registration;
 using FluentAssertions;
@@ -150,7 +151,7 @@ public class OrganisationEmailModelTest
         var model = GivenOrganisationEmailModel();
 
         Action action = () => model.OnGet();
-        action.Should().Throw<Exception>().WithMessage("Session not found");
+        action.Should().Throw<Exception>().WithMessage(ErrorMessagesList.SessionNotFound);
     }
 
     private RegistrationDetails DummyRegistrationDetails()

@@ -1,4 +1,4 @@
-using CO.CDP.OrganisationApp.Helpers;
+using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
 using CO.CDP.Person.WebApiClient;
 using Microsoft.AspNetCore.Authorization;
@@ -45,52 +45,69 @@ public class YourDetailsModel(
 
         var registrationDetails = VerifySession();
 
-        try
+        var person = await RegisterPerson(registrationDetails);
+
+        if (person != null)
         {
-            var person = await ApiHelper.CallApiAsync(
-                () => RegisterPerson(registrationDetails),
-                "Failed to register person."
-            );
+            registrationDetails.PersonId = person.Id;
+            registrationDetails.FirstName = FirstName;
+            registrationDetails.LastName = LastName;
 
-            if (person != null)
-            {
-                registrationDetails.PersonId = person.Id;
-                registrationDetails.FirstName = FirstName;
-                registrationDetails.LastName = LastName;
-
-                session.Set(Session.RegistrationDetailsKey, registrationDetails);
-            }
-            else
-            {
-                return Page();
-            }
-
-            return RedirectToPage("OrganisationSelection");
-
+            session.Set(Session.RegistrationDetailsKey, registrationDetails);
         }
-        catch (Exception ex)
+        else
         {
-            Error = ex.Message;
             return Page();
         }
+
+        return RedirectToPage("OrganisationSelection");
     }
 
     private async Task<Person.WebApiClient.Person?> RegisterPerson(RegistrationDetails registrationDetails)
     {
-        return await personClient.CreatePersonAsync(new NewPerson(
+        Person.WebApiClient.Person? person = null;
+
+        try
+        {
+            person = await personClient.CreatePersonAsync(new NewPerson(
                 userUrn: registrationDetails.UserUrn,
                 email: registrationDetails.Email,
                 phone: registrationDetails.Phone,
                 firstName: FirstName,
                 lastName: LastName
             ));
+        }
+        catch (ApiException<Person.WebApiClient.ProblemDetails> aex)
+        {
+            var statusCode = aex.StatusCode;
+            var problemDetails = aex.Result;
 
+            switch (statusCode)
+            {
+                case StatusCodes.Status400BadRequest:
+                    ModelState.AddModelError(string.Empty, ErrorMessagesList.DuplicatePersonName);
+                    break;
+
+                case StatusCodes.Status404NotFound:
+                    ModelState.AddModelError(string.Empty, ErrorMessagesList.PersonNotFound);
+                    return null;
+
+                default:
+                    Error = ErrorMessagesList.UnexpectedError;
+                    break;
+            }
+        }
+        catch (Exception ex)
+        {
+            Error = ErrorMessagesList.UnexpectedError;
+        }
+        return person;
     }
 
     private RegistrationDetails VerifySession()
     {
         var registrationDetails = session.Get<RegistrationDetails>(Session.RegistrationDetailsKey)
-            ?? throw new Exception("Session not found");
+            ?? throw new Exception(ErrorMessagesList.SessionNotFound);
 
         return registrationDetails;
     }

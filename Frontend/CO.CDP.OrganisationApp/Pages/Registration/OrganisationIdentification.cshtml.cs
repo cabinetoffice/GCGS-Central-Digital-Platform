@@ -1,4 +1,5 @@
 using CO.CDP.Common;
+using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -203,7 +204,7 @@ public class OrganisationIdentificationModel(ISession session) : PageModel
     private RegistrationDetails VerifySession()
     {
         var registrationDetails = session.Get<RegistrationDetails>(Session.RegistrationDetailsKey)
-            ?? throw new Exception("Session not found");
+            ?? throw new Exception(ErrorMessagesList.SessionNotFound);
 
         return registrationDetails;
     }

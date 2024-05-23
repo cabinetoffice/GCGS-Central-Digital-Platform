@@ -1,3 +1,4 @@
+using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.Pages.Registration;
 using CO.CDP.Person.WebApiClient;
@@ -87,7 +88,7 @@ public class YourDetailsModelTest
 
         Action act = () => model.OnGet();
 
-        act.Should().Throw<Exception>().WithMessage("Session not found");
+        act.Should().Throw<Exception>().WithMessage(ErrorMessagesList.SessionNotFound);
     }
 
     [Fact]
@@ -154,7 +155,7 @@ public class YourDetailsModelTest
 
         Func<Task> act = model.OnPost;
 
-        await act.Should().ThrowAsync<Exception>().WithMessage("Session not found");
+        await act.Should().ThrowAsync<Exception>().WithMessage(ErrorMessagesList.SessionNotFound);
     }
 
     [Fact]

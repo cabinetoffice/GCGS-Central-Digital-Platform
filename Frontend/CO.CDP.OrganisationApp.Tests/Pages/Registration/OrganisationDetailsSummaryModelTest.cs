@@ -1,5 +1,6 @@
 using CO.CDP.Common.Enums;
 using CO.CDP.Organisation.WebApiClient;
+using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.Pages.Registration;
 using FluentAssertions;
@@ -41,7 +42,7 @@ public class OrganisationDetailsSummaryModelTest
         var model = GivenOrganisationDetailModel();
 
         Action action = model.OnGet;
-        action.Should().Throw<Exception>().WithMessage("Session not found");
+        action.Should().Throw<Exception>().WithMessage(ErrorMessagesList.SessionNotFound);
     }
 
     [Fact]
@@ -52,7 +53,7 @@ public class OrganisationDetailsSummaryModelTest
         var model = GivenOrganisationDetailModel();
 
         Func<Task> act = model.OnPost;
-        await act.Should().ThrowAsync<Exception>().WithMessage("Session not found");
+        await act.Should().ThrowAsync<Exception>().WithMessage(ErrorMessagesList.SessionNotFound);
     }
 
     [Fact]

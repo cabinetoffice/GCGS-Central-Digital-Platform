@@ -66,6 +66,7 @@ public static class EndpointExtensions
     {
         app.MapGet("/tenants", () => _tenants.Values.ToArray())
             .Produces<List<Model.Tenant>>(200, "application/json")
+            .Produces(404)
             .WithOpenApi(operation =>
             {
                 operation.OperationId = "ListTenants";

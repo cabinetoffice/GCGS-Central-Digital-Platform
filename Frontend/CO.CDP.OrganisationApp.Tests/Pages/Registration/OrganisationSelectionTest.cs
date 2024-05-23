@@ -1,4 +1,5 @@
 using CO.CDP.Organisation.WebApiClient;
+using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.Pages.Registration;
 using FluentAssertions;
@@ -25,7 +26,7 @@ public class OrganisationSelectionTest
 
         Func<Task> act = model.OnGet;
 
-        await act.Should().ThrowAsync<Exception>().WithMessage("Session not found");
+        await act.Should().ThrowAsync<Exception>().WithMessage(ErrorMessagesList.SessionNotFound);
     }
 
     [Fact]

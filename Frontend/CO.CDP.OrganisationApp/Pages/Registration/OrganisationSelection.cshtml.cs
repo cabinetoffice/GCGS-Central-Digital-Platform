@@ -1,5 +1,5 @@
 using CO.CDP.Organisation.WebApiClient;
-using CO.CDP.OrganisationApp.Helpers;
+using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -22,18 +22,25 @@ public class OrganisationSelectionModel(
 
         try
         {
-            Organisations = await ApiHelper.CallApiAsync(
-                    () => organisationClient.ListOrganisationsAsync(details.UserUrn),
-                    "Failed to retrieve organisations list."
-                );
-
-            return Page();
+            Organisations = await organisationClient.ListOrganisationsAsync(details.UserUrn);
+        }
+        catch (ApiException<Organisation.WebApiClient.ProblemDetails> aex)
+        {
+            if (aex.StatusCode == StatusCodes.Status404NotFound)
+            {
+                ModelState.AddModelError(string.Empty, ErrorMessagesList.OrganisationNotFound);
+            }
+            else
+            {
+                Error = ErrorMessagesList.UnexpectedError;
+            }
         }
         catch (Exception ex)
         {
-            Error = ex.Message;
-            return Page();
+            Error = ErrorMessagesList.UnexpectedError;
         }
+
+        return Page();
     }
 
     public IActionResult OnPost()
@@ -44,7 +51,7 @@ public class OrganisationSelectionModel(
     private RegistrationDetails VerifySession()
     {
         var details = session.Get<RegistrationDetails>(Session.RegistrationDetailsKey)
-            ?? throw new Exception("Session not found");
+            ?? throw new Exception(ErrorMessagesList.SessionNotFound);
 
         return details;
     }

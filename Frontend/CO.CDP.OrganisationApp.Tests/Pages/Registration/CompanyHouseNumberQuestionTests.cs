@@ -1,3 +1,4 @@
+using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.Pages.Registration;
 using FluentAssertions;
@@ -20,7 +21,7 @@ public class CompanyHouseNumberQuestionTests
     {
         var model = new CompanyHouseNumberQuestionModel(sessionMock.Object);
         Action action = () => model.OnGet();
-        action.Should().Throw<Exception>().WithMessage("Session not found");
+        action.Should().Throw<Exception>().WithMessage(ErrorMessagesList.SessionNotFound);
     }
 
     [Theory]
