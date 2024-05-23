@@ -1,6 +1,7 @@
 using System.Reflection;
 using CO.CDP.DataSharing.WebApi.Model;
 using CO.CDP.Swashbuckle.Filter;
+using CO.CDP.Swashbuckle.Security;
 using DotSwashbuckle.AspNetCore.SwaggerGen;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
@@ -198,7 +199,7 @@ public static class EndpointExtensions
 
 public static class ApiExtensions
 {
-    public static void DocumentDataSharingApi(this SwaggerGenOptions options, Uri openIdDiscovery)
+    public static void DocumentDataSharingApi(this SwaggerGenOptions options)
     {
         options.SwaggerDoc("v1", new OpenApiInfo
         {
@@ -209,46 +210,7 @@ public static class ApiExtensions
         options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory,
             $"{Assembly.GetExecutingAssembly().GetName().Name}.xml"));
         options.OperationFilter<ProblemDetailsOperationFilter>();
-        options.AddSecurityRequirement(new OpenApiSecurityRequirement
-        {
-            {
-                new OpenApiSecurityScheme
-                {
-                    Reference = new OpenApiReference
-                    {
-                        Type = ReferenceType.SecurityScheme,
-                        Id = "OneLogin"
-                    }
-                },
-                []
-            }
-        });
-        options.AddSecurityRequirement(new OpenApiSecurityRequirement
-        {
-            {
-                new OpenApiSecurityScheme
-                {
-                    Reference = new OpenApiReference
-                    {
-                        Type = ReferenceType.SecurityScheme,
-                        Id = "ApiKey"
-                    }
-                },
-                []
-            }
-        });
-        options.AddSecurityDefinition("OneLogin", new OpenApiSecurityScheme
-        {
-            Description = "GOV.UK One Login Token",
-            Type = SecuritySchemeType.OpenIdConnect,
-            OpenIdConnectUrl = openIdDiscovery
-        });
-        options.AddSecurityDefinition("ApiKey", new OpenApiSecurityScheme
-        {
-            Description = "Central Digital Platform API Key",
-            Type = SecuritySchemeType.ApiKey,
-            In = ParameterLocation.Header,
-            Name = "CDP-Api-Key"
-        });
+        options.ConfigureOneLoginSecurity();
+        options.ConfigureApiKeySecurity();
     }
 }
