@@ -194,6 +194,34 @@ public static class EndpointExtensions
                 operation.Responses["500"].Description = "Internal server error.";
                 return operation;
             });
+
+        app.MapPost("/share/data/verify", (ShareVerificationRequest request) => Results.Ok(
+                    new ShareVerificationReceipt
+                    {
+                        ShareCode = request.ShareCode,
+                        ExpiresAt = DateTime.Now.AddDays(5),
+                        FormId = Guid.Parse("f174b921-0c58-4644-80f1-8707d8300130"),
+                        FormVersionId = "20240427",
+                        Permissions = []
+                    }
+                )
+            )
+            .Produces<ShareVerificationReceipt>(StatusCodes.Status200OK, "application/json")
+            .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
+            .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
+            .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError)
+            .WithOpenApi(operation =>
+            {
+                operation.OperationId = "VerifySharedData";
+                operation.Description =
+                    "[STUB] Operation to verify if shared data is the latest version available. [STUB]";
+                operation.Summary = "[STUB] Create Supplier Submitted Information. [STUB]";
+                operation.Responses["200"].Description = "Share code and version verification.";
+                operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
+                operation.Responses["404"].Description = "Share code not found or the caller is not authorised to use it.";
+                operation.Responses["500"].Description = "Internal server error.";
+                return operation;
+            });
     }
 }
 
