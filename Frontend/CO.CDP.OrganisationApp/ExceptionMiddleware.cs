@@ -14,7 +14,7 @@ public class ExceptionMiddleware
         {
             await this._next.Invoke(context);
         }
-        catch (Exception ex)
+        catch
         {
             context.Response.Redirect("/error");
         }
