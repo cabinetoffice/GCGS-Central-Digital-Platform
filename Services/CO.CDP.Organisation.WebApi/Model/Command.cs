@@ -44,7 +44,7 @@ public record OrganisationIdentifier
     [Required(AllowEmptyStrings = false)]
     public required string Scheme { get; init; }
     public required string Id { get; init; }
-    public string? LegalName { get; init; }
+    public required string LegalName { get; init; }
 }
 
 

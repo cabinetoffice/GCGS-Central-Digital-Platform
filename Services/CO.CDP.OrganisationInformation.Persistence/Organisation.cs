@@ -25,7 +25,7 @@ public class Organisation : IEntityDate
         public int Id { get; set; }
         public required string IdentifierId;
         public required string Scheme;
-        public string? LegalName;
+        public required string LegalName;
         public string? Uri;
         public required bool Primary { get; set; }
     }
