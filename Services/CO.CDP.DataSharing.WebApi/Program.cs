@@ -7,7 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
-    options.DocumentDataSharingApi(builder.Configuration.GetValue<Uri>("OneLogin:Discovery") ?? new Uri("https://example.com"));
+    options.DocumentDataSharingApi();
 });
 
 builder.Services.AddHealthChecks();
