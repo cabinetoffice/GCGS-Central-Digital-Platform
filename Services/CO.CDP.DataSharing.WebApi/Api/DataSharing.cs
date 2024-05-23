@@ -1,5 +1,6 @@
 using System.Reflection;
 using CO.CDP.DataSharing.WebApi.Model;
+using CO.CDP.OrganisationInformation;
 using CO.CDP.Swashbuckle.Filter;
 using CO.CDP.Swashbuckle.Security;
 using DotSwashbuckle.AspNetCore.SwaggerGen;
