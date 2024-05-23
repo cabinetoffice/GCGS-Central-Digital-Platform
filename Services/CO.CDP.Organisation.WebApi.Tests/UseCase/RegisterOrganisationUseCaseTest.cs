@@ -66,7 +66,7 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
             Identifier = command.Identifier.AsView(),
             AdditionalIdentifiers = command.AdditionalIdentifiers.AsView(),
             Address = command.Address.AsView(),
-            ContactPoint = command.ContactPoint,
+            ContactPoint = command.ContactPoint.AsView(),
             Types = command.Types
         };
 

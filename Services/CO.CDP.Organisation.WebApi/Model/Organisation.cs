@@ -15,17 +15,7 @@ public record Organisation
 
     public required Address Address { get; init; }
 
-    public OrganisationContactPoint? ContactPoint { get; init; }
+    public ContactPoint? ContactPoint { get; init; }
 
     public List<int>? Types { get; init; }
-}
-
-public record OrganisationContactPoint
-{
-    public string? Name { get; init; }
-
-    [Required(AllowEmptyStrings = false)]
-    public required string Email { get; init; }
-    public string? Telephone { get; init; }
-    public string? Url { get; init; }
 }

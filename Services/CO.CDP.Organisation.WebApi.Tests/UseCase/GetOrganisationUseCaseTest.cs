@@ -104,12 +104,12 @@ public class GetOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IClas
                 CountryName = "Testland",
                 Region = ""
             },
-            ContactPoint = new OrganisationContactPoint
+            ContactPoint = new ContactPoint
             {
                 Name = "Contact Name",
                 Email = "contact@test.org",
                 Telephone = "123-456-7890",
-                Url = "http://contact.test.org"
+                Url = new Uri("http://contact.test.org")
             },
             Types = new List<int> { 1 }
         };

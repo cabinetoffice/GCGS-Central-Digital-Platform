@@ -105,12 +105,12 @@ public class LookupOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
                 CountryName = "Testland",
                 Region = ""
             },
-            ContactPoint = new Model.OrganisationContactPoint
+            ContactPoint = new ContactPoint
             {
                 Name = "Contact Name",
                 Email = "contact@test.org",
                 Telephone = "123-456-7890",
-                Url = "http://contact.test.org"
+                Url = new Uri("http://contact.test.org")
             },
             Types = new List<int> { 1 }
         }, options => options.ComparingByMembers<Model.Organisation>());

@@ -33,12 +33,12 @@ public static class EndpointExtensions
                 PostalCode = "BR8 7AA",
                 CountryName = "United Kingdom"
             },
-            ContactPoint = new OrganisationContactPoint
+            ContactPoint = new ContactPoint
             {
                 Name = "Bobby Tables",
                 Email = $"bobby+{id}@example.com",
                 Telephone = "07925123123",
-                Url = "https://example.com"
+                Url = new Uri("https://example.com")
             },
             Types = [1],
         });
@@ -98,7 +98,7 @@ public static class EndpointExtensions
                         Name = updatedOrganisation.Name,
                         AdditionalIdentifiers = updatedOrganisation.AdditionalIdentifiers.AsView(),
                         Address = updatedOrganisation.Address.AsView(),
-                        ContactPoint = updatedOrganisation.ContactPoint,
+                        ContactPoint = updatedOrganisation.ContactPoint?.AsView(),
                         Types = updatedOrganisation.Types,
                     };
                     return Results.Ok(_organisations[organisationId]);

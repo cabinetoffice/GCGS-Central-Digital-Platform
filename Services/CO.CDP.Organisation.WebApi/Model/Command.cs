@@ -63,6 +63,16 @@ public record OrganisationAddress
     public required string CountryName { get; init; }
 }
 
+public record OrganisationContactPoint
+{
+    public string? Name { get; init; }
+
+    [Required(AllowEmptyStrings = false)]
+    public required string Email { get; init; }
+    public string? Telephone { get; init; }
+    public string? Url { get; init; }
+}
+
 public static class MappingExtensions
 {
     public static Identifier AsView(this OrganisationIdentifier command) =>
@@ -86,5 +96,14 @@ public static class MappingExtensions
             Region = "",
             PostalCode = command.PostalCode,
             CountryName = command.CountryName
+        };
+
+    public static ContactPoint AsView(this OrganisationContactPoint command) =>
+        new()
+        {
+            Name = command.Name ?? "",
+            Email = command.Email,
+            Telephone = command.Telephone,
+            Url = command.Url != null ? new Uri(command.Url) : null
         };
 }
