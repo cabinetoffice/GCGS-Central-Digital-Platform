@@ -92,7 +92,7 @@ public static class EndpointExtensions
                         SubmissionState = FormSubmissionState.Submitted,
                         SubmittedAt = DateTime.Parse("2024-03-28T18:24:00.000Z"),
                         OrganisationId = Guid.Parse("1e39d0ce-3abd-43c5-9f23-78c92e437f2a"),
-                        SupplierFormId = Guid.Parse("f174b921-0c58-4644-80f1-8707d8300130"),
+                        FormId = Guid.Parse("f174b921-0c58-4644-80f1-8707d8300130"),
                         FormVersionId = "20240309",
                         IsRequired = true,
                         BookingReference = "AGMT-2024-XYZ",
@@ -171,12 +171,12 @@ public static class EndpointExtensions
                 return operation;
             });
 
-
         app.MapPost("/share/data", (ShareRequest shareRequest) => Results.Ok(new ShareReceipt
                 {
                     ShareCode = Guid.NewGuid().ToString(),
                     ExpiresAt = shareRequest.ExpiresAt,
-                    SupplierFormId = shareRequest.SupplierFormId,
+                    FormId = shareRequest.SupplierFormId,
+                    FormVersionId = "20240317",
                     Permissions = shareRequest.Permissions
                 }
             ))
