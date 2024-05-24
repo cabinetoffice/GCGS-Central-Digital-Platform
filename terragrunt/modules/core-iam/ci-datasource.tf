@@ -239,10 +239,12 @@ data "aws_iam_policy_document" "terraform" {
       "events:ListTagsForResource",
       "events:PutRule",
       "events:TagResource",
+      "iam:PassRole",
     ]
     effect = "Allow"
     resources = [
-      "arn:aws:events:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:rule/cdp-sirsi-*"
+      "arn:aws:events:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:rule/cdp-sirsi-*",
+      "arn:aws:events:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:rule/StepFunctionsGetEventsForStepFunctionsExecutionRule"
     ]
     sid = "ManageProductEvents"
   }
@@ -329,6 +331,7 @@ data "aws_iam_policy_document" "terraform" {
   statement {
     actions = [
       "states:CreateStateMachine",
+      "states:UpdateStateMachine",
       "states:TagResource",
       "states:Delete*",
       "states:Describe*",

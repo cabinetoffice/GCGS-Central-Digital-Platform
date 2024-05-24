@@ -18,7 +18,7 @@ resource "aws_iam_role_policy_attachment" "ecs_task_exec_generic" {
 }
 
 resource "aws_iam_role" "service_deployer_step_function" {
-  name               = "${local.name_prefix}-service-deployer-step-function"
+  name               = "${local.name_prefix}-step-function-manage-services"
   assume_role_policy = data.aws_iam_policy_document.states_assume.json
 
   tags = var.tags

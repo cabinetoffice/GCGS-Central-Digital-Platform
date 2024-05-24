@@ -1,0 +1,22 @@
+{
+  "Comment": "Force a migration by running ${task} task",
+  "StartAt": "ECS RunTask",
+  "States": {
+    "ECS RunTask": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::ecs:runTask.sync",
+      "Parameters": {
+        "Cluster": "${cluster}",
+        "LaunchType": "FARGATE",
+        "NetworkConfiguration": {
+            "AwsvpcConfiguration" :{
+                "SecurityGroups": [ "${security_groups}" ],
+                "Subnets": [ "${subnet}" ]
+            }
+        },
+        "TaskDefinition": "${task_definition}"
+      },
+      "End": true
+    }
+  }
+}
