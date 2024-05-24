@@ -21,7 +21,12 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+} else {
+    app.UseExceptionHandler();
+    app.UseHsts();
 }
+
+app.UseStatusCodePages();
 
 app.MapHealthChecks("/health");
 app.UseHttpsRedirection();

@@ -23,6 +23,7 @@ builder.Services.AddScoped<ITenantRepository, DatabaseTenantRepository>();
 builder.Services.AddScoped<IUseCase<RegisterTenant, Tenant>, RegisterTenantUseCase>();
 builder.Services.AddScoped<IUseCase<Guid, Tenant?>, GetTenantUseCase>();
 builder.Services.AddScoped<IUseCase<string, Tenant?>, LookupTenantUseCase>();
+builder.Services.AddProblemDetails();
 
 var app = builder.Build();
 
@@ -31,7 +32,12 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+} else {
+    app.UseExceptionHandler();
+    app.UseHsts();
 }
+
+app.UseStatusCodePages();
 
 app.MapHealthChecks("/health");
 app.UseHttpsRedirection();

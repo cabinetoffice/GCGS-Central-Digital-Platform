@@ -25,6 +25,7 @@ builder.Services.AddScoped<IUseCase<RegisterOrganisation, Organisation>, Registe
 builder.Services.AddScoped<IUseCase<Guid, Organisation?>, GetOrganisationUseCase>();
 builder.Services.AddScoped<IUseCase<string, Organisation?>, LookupOrganisationUseCase>();
 builder.Services.AddScoped<IUseCase<string, IEnumerable<Organisation>>, GetOrganisationsUseCase>();
+builder.Services.AddProblemDetails();
 
 var app = builder.Build();
 
@@ -33,7 +34,12 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+} else {
+    app.UseExceptionHandler();
+    app.UseHsts();
 }
+
+app.UseStatusCodePages();
 
 app.MapHealthChecks("/health");
 app.UseHttpsRedirection();
