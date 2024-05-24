@@ -23,10 +23,9 @@ public class Organisation : IEntityDate
     public record OrganisationIdentifier
     {
         public int Id { get; set; }
-        public string? IdentifierId;
+        public required string IdentifierId;
         public required string Scheme;
-        public required string Number;
-        public string? LegalName;
+        public required string LegalName;
         public string? Uri;
         public required bool Primary { get; set; }
     }
@@ -34,11 +33,11 @@ public class Organisation : IEntityDate
     [ComplexType]
     public record OrganisationAddress
     {
-        public required string AddressLine1;
-        public string? AddressLine2;
-        public required string City;
-        public required string PostCode;
-        public string? Country;
+        public required string StreetAddress;
+        public required string StreetAddress2;
+        public required string Locality;
+        public required string PostalCode;
+        public required string CountryName;
     }
 
     [ComplexType]

@@ -88,8 +88,7 @@ public static class EntityFactory
                     Scheme = scheme,
                     IdentifierId = identifierId,
                     LegalName = legalName,
-                    Uri = uri,
-                    Number = number
+                    Uri = uri
                 },
                 new OrganisationIdentifier
                 {
@@ -97,15 +96,15 @@ public static class EntityFactory
                     Scheme = "ISO14001",
                     IdentifierId = "2",
                     LegalName = "AnotherLegalName",
-                    Uri = "http://example.com",
-                    Number = number
+                    Uri = "http://example.com"
                 }],
             Address = new OrganisationAddress
             {
-                AddressLine1 = streetAddress,
-                City = city,
-                PostCode = postCode,
-                Country = country
+                StreetAddress = streetAddress,
+                StreetAddress2 = "",
+                Locality = city,
+                PostalCode = postCode,
+                CountryName = country
             },
             ContactPoint = new OrganisationContactPoint
             {

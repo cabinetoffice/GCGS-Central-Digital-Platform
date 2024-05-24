@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using CO.CDP.OrganisationInformation;
 
 namespace CO.CDP.DataSharing.WebApi.Model;
 

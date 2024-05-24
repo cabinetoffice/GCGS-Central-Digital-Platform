@@ -1,6 +1,7 @@
 using CO.CDP.Common;
 using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.Organisation.WebApi.UseCase;
+using CO.CDP.OrganisationInformation;
 using DotSwashbuckle.AspNetCore.SwaggerGen;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
@@ -14,28 +15,30 @@ public static class EndpointExtensions
         .ToDictionary(id => id, id => new Model.Organisation
         {
             Id = id,
-            Identifier = new OrganisationIdentifier
+            Identifier = new Identifier
             {
                 Scheme = "CH",
                 Id = $"123945123{id}",
                 LegalName = "TheOrganisation",
-                Uri = "https://example.com",
-                Number = "123456",
+                Uri = new Uri("https://example.com")
             },
             Name = $"Tables Limited {id}",
             AdditionalIdentifiers = [],
-            Address = new OrganisationAddress
+            Address = new Address
             {
-                AddressLine1 = $"Green Lane {id}",
-                City = "London",
-                PostCode = "BR8 7AA"
+                StreetAddress = $"Green Lane {id}",
+                StreetAddress2 = "",
+                Locality = "London",
+                Region = "",
+                PostalCode = "BR8 7AA",
+                CountryName = "United Kingdom"
             },
-            ContactPoint = new OrganisationContactPoint
+            ContactPoint = new ContactPoint
             {
                 Name = "Bobby Tables",
                 Email = $"bobby+{id}@example.com",
                 Telephone = "07925123123",
-                Url = "https://example.com"
+                Url = new Uri("https://example.com")
             },
             Types = [1],
         });
@@ -91,11 +94,11 @@ public static class EndpointExtensions
                     _organisations[organisationId] = new Model.Organisation
                     {
                         Id = organisationId,
-                        Identifier = updatedOrganisation.Identifier,
+                        Identifier =updatedOrganisation.Identifier.AsView(),
                         Name = updatedOrganisation.Name,
-                        AdditionalIdentifiers = updatedOrganisation.AdditionalIdentifiers,
-                        Address = updatedOrganisation.Address,
-                        ContactPoint = updatedOrganisation.ContactPoint,
+                        AdditionalIdentifiers = updatedOrganisation.AdditionalIdentifiers.AsView(),
+                        Address = updatedOrganisation.Address.AsView(),
+                        ContactPoint = updatedOrganisation.ContactPoint?.AsView(),
                         Types = updatedOrganisation.Types,
                     };
                     return Results.Ok(_organisations[organisationId]);

@@ -1,6 +1,7 @@
 using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.Organisation.WebApi.Tests.AutoMapper;
 using CO.CDP.Organisation.WebApi.UseCase;
+using CO.CDP.OrganisationInformation;
 using CO.CDP.OrganisationInformation.Persistence;
 using FluentAssertions;
 using Moq;
@@ -39,27 +40,26 @@ public class GetOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IClas
             Identifiers = [new OrganisationInformation.Persistence.Organisation.OrganisationIdentifier
                 {
                     Primary = true,
-                    IdentifierId = "Identifier1",
+                    IdentifierId = "123456",
                     Scheme = "Scheme1",
                     LegalName = "Legal Name",
-                    Uri = "http://example.com",
-                    Number = "123456"
+                    Uri = "http://example.com"
                 },
                 new OrganisationInformation.Persistence.Organisation.OrganisationIdentifier
                 {
                     Primary = false,
-                    IdentifierId = "Identifier2",
+                    IdentifierId = "123456",
                     Scheme = "Scheme2",
                     LegalName = "Another Legal Name",
-                    Uri = "http://another-example.com",
-                    Number = "123456"
+                    Uri = "http://another-example.com"
                 }],
             Address = new OrganisationInformation.Persistence.Organisation.OrganisationAddress
             {
-                AddressLine1 = "1234 Test St",
-                City = "Test City",
-                PostCode = "12345",
-                Country = "Testland"
+                StreetAddress = "1234 Test St",
+                StreetAddress2 = "Green Tower",
+                Locality = "Test City",
+                PostalCode = "12345",
+                CountryName = "Testland"
             },
             ContactPoint = new OrganisationInformation.Persistence.Organisation.OrganisationContactPoint
             {
@@ -78,38 +78,38 @@ public class GetOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IClas
         {
             Id = organisationId,
             Name = "Test Organisation",
-            Identifier = new OrganisationIdentifier
+            Identifier = new Identifier
             {
-                Id = "Identifier1",
+                Id = "123456",
                 Scheme = "Scheme1",
                 LegalName = "Legal Name",
-                Uri = "http://example.com",
-                Number = "123456"
+                Uri = new Uri("http://example.com")
             },
-            AdditionalIdentifiers = new List<OrganisationIdentifier>
-        {
-            new OrganisationIdentifier
+            AdditionalIdentifiers =
+            [
+                new()
+                {
+                    Id = "123456",
+                    Scheme = "Scheme2",
+                    LegalName = "Another Legal Name",
+                    Uri = new Uri("http://another-example.com"),
+                }
+            ],
+            Address = new Address
             {
-                Id = "Identifier2",
-                Scheme = "Scheme2",
-                LegalName = "Another Legal Name",
-                Uri = "http://another-example.com",
-                Number = "123456"
-            }
-        },
-            Address = new OrganisationAddress
-            {
-                AddressLine1 = "1234 Test St",
-                City = "Test City",
-                PostCode = "12345",
-                Country = "Testland"
+                StreetAddress = "1234 Test St",
+                StreetAddress2 = "Green Tower",
+                Locality = "Test City",
+                PostalCode = "12345",
+                CountryName = "Testland",
+                Region = ""
             },
-            ContactPoint = new OrganisationContactPoint
+            ContactPoint = new ContactPoint
             {
                 Name = "Contact Name",
                 Email = "contact@test.org",
                 Telephone = "123-456-7890",
-                Url = "http://contact.test.org"
+                Url = new Uri("http://contact.test.org")
             },
             Types = new List<int> { 1 }
         };

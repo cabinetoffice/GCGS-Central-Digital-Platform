@@ -1,5 +1,6 @@
 using System.Reflection;
 using CO.CDP.DataSharing.WebApi.Model;
+using CO.CDP.OrganisationInformation;
 using CO.CDP.Swashbuckle.Filter;
 using CO.CDP.Swashbuckle.Security;
 using DotSwashbuckle.AspNetCore.SwaggerGen;
@@ -71,6 +72,7 @@ public static class EndpointExtensions
                 Address = new Address
                 {
                     StreetAddress = "82 St. John’s Road",
+                    StreetAddress2 = "Green Tower",
                     Locality = "CHESTER",
                     Region = "Lancashire",
                     PostalCode = "CH43 7UR",
