@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CO.CDP.DataSharing.WebApi.Model;
 
-internal record ShareReceipt
+internal record ShareVerificationReceipt
 {
     /// <example>"3b3a269a-c1fa-4bfa-8892-7c6a9aef03bb"</example>
     [Required]

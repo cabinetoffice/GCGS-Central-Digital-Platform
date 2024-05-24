@@ -25,7 +25,7 @@ internal record Form
     public required Guid OrganisationId { get; init; }
 
     /// <example>"3b3a269a-c1fa-4bfa-8892-7c6a9aef03bb"</example>
-    public required Guid SupplierFormId { get; init; }
+    public required Guid FormId { get; init; }
 
     /// <example>"20240429"</example>
     public required string FormVersionId { get; init; }

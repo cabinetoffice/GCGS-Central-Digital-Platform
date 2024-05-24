@@ -1,0 +1,4 @@
+[tools]
+dotnet = "8.0.300"
+terraform = "1.8.2"
+terragrunt = "0.58.2"
