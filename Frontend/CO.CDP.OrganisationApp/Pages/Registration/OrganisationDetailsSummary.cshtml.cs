@@ -52,19 +52,9 @@ public class OrganisationDetailsSummaryModel(
                 return await organisationClient.CreateOrganisationAsync(payload);
             }
             catch (ApiException<OrganisationWebApiClient.ProblemDetails> aex)
+                when (aex.StatusCode == StatusCodes.Status400BadRequest)
             {
-                if (aex.StatusCode == StatusCodes.Status400BadRequest)
-                {
-                    ModelState.AddModelError(string.Empty, ErrorMessagesList.OrganisationCreationFailed);
-                }
-                else
-                {
-                    Error = ErrorMessagesList.UnexpectedError;
-                }
-            }
-            catch
-            {
-                Error = ErrorMessagesList.UnexpectedError;
+                ModelState.AddModelError(string.Empty, ErrorMessagesList.OrganisationCreationFailed);
             }
         }
 

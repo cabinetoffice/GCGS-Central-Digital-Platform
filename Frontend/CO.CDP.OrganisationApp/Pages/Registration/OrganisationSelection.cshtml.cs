@@ -20,25 +20,7 @@ public class OrganisationSelectionModel(
     {
         var details = VerifySession();
 
-        try
-        {
-            Organisations = await organisationClient.ListOrganisationsAsync(details.UserUrn);
-        }
-        catch (ApiException<Organisation.WebApiClient.ProblemDetails> aex)
-        {
-            if (aex.StatusCode == StatusCodes.Status404NotFound)
-            {
-                ModelState.AddModelError(string.Empty, ErrorMessagesList.OrganisationNotFound);
-            }
-            else
-            {
-                Error = ErrorMessagesList.UnexpectedError;
-            }
-        }
-        catch
-        {
-            Error = ErrorMessagesList.UnexpectedError;
-        }
+        Organisations = await organisationClient.ListOrganisationsAsync(details.UserUrn);
 
         return Page();
     }

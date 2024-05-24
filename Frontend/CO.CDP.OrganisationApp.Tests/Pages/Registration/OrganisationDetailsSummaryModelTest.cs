@@ -5,7 +5,6 @@ using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.Pages.Registration;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moq;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages.Registration;
@@ -70,22 +69,6 @@ public class OrganisationDetailsSummaryModelTest
         await model.OnPost();
 
         organisationClientMock.Verify(o => o.CreateOrganisationAsync(It.IsAny<NewOrganisation>()), Times.Once);
-    }
-
-    [Fact]
-    public async Task OnPost_WhenErrorInRegisteringOrganisation_ShouldReturnPageWithError()
-    {
-        sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey))
-            .Returns(DummyRegistrationDetails());
-
-        organisationClientMock.Setup(o => o.CreateOrganisationAsync(It.IsAny<NewOrganisation>()))
-            .ThrowsAsync(new ApiException("Unexpected error", 500, "", default, null));
-
-        var model = GivenOrganisationDetailModel();
-
-        var actionResult = await model.OnPost();
-
-        actionResult.Should().BeOfType<PageResult>();
     }
 
     [Fact]

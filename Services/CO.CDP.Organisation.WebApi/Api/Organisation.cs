@@ -47,7 +47,6 @@ public static class EndpointExtensions
                 await useCase.Execute(userUrn)
                     .AndThen(organisations => Results.Ok(organisations)))
             .Produces<List<Model.Organisation>>(200, "application/json")
-            .Produces(404)
             .WithOpenApi(operation =>
             {
                 operation.OperationId = "ListOrganisations";
@@ -57,23 +56,23 @@ public static class EndpointExtensions
                 return operation;
             });
         app.MapPost("/organisations", async (RegisterOrganisation command, IUseCase<RegisterOrganisation, Model.Organisation> useCase) =>
-        {
-            var result = await useCase.Execute(command);
-            return result != null
-                    ? Results.Created(new Uri($"/organisations/{result.Id}", UriKind.Relative), result)
-                        : Results.Problem("Organisation could not be created due to an internal error");
-        })
-        .Produces<Model.Organisation>(201, "application/json")
-        .ProducesProblem(500)
-        .Produces(400)
-        .WithOpenApi(operation =>
-        {
-            operation.OperationId = "CreateOrganisation";
-            operation.Description = "Create a new organisation.";
-            operation.Summary = "Create a new organisation.";
-            operation.Responses["201"].Description = "Organisation created successfully.";
-            return operation;
-        });
+              await useCase.Execute(command)
+              .AndThen(organisation =>
+                  organisation != null
+                      ? Results.Created(new Uri($"/organisations/{organisation.Id}", UriKind.Relative), organisation)
+                      : Results.Problem("Organisation could not be created due to an internal error"))
+       )
+      .Produces<Model.Organisation>(201, "application/json")
+      .ProducesProblem(500)
+      .Produces(400)
+      .WithOpenApi(operation =>
+      {
+          operation.OperationId = "CreateOrganisation";
+          operation.Description = "Create a new organisation.";
+          operation.Summary = "Create a new organisation.";
+          operation.Responses["201"].Description = "Organisation created successfully.";
+          return operation;
+      });
         app.MapGet("/organisations/{organisationId}", async (Guid organisationId, IUseCase<Guid, Model.Organisation?> useCase) =>
                await useCase.Execute(organisationId)
                    .AndThen(organisation => organisation != null ? Results.Ok(organisation) : Results.NotFound()))
@@ -127,7 +126,6 @@ public static class EndpointExtensions
                 return Results.NoContent();
             })
             .Produces(204)
-            .Produces(404)
             .WithOpenApi(operation =>
             {
                 operation.OperationId = "DeleteOrganisation";
