@@ -193,11 +193,10 @@ public class YourDetailsModelTest
             });
 
         personClientMock.Setup(s => s.CreatePersonAsync(It.IsAny<NewPerson>()))
-            .ThrowsAsync(new ApiException("Unexpected error", 500, "", default, null));
+       .ThrowsAsync(new ApiException("Unexpected error", 500, "", default, null));
 
-        var actionResult = await model.OnPost();
-
-        actionResult.Should().BeOfType<PageResult>();
+        var exception = await Assert.ThrowsAsync<ApiException>(() => model.OnPost());
+        Assert.Equal(500, exception.StatusCode);
     }
 
     private readonly Person.WebApiClient.Person dummyPerson

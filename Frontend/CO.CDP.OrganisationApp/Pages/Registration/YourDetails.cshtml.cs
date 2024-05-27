@@ -65,43 +65,23 @@ public class YourDetailsModel(
 
     private async Task<Person.WebApiClient.Person?> RegisterPerson(RegistrationDetails registrationDetails)
     {
-        Person.WebApiClient.Person? person = null;
-
         try
         {
-            person = await personClient.CreatePersonAsync(new NewPerson(
-                userUrn: registrationDetails.UserUrn,
-                email: registrationDetails.Email,
-                phone: registrationDetails.Phone,
-                firstName: FirstName,
-                lastName: LastName
+            return await personClient.CreatePersonAsync(new NewPerson(
+            userUrn: registrationDetails.UserUrn,
+            email: registrationDetails.Email,
+            phone: registrationDetails.Phone,
+            firstName: registrationDetails.FirstName,
+            lastName: LastName
             ));
         }
         catch (ApiException<Person.WebApiClient.ProblemDetails> aex)
+               when (aex.StatusCode == StatusCodes.Status400BadRequest)
         {
-            var statusCode = aex.StatusCode;
-            var problemDetails = aex.Result;
-
-            switch (statusCode)
-            {
-                case StatusCodes.Status400BadRequest:
-                    ModelState.AddModelError(string.Empty, ErrorMessagesList.DuplicatePersonName);
-                    break;
-
-                case StatusCodes.Status404NotFound:
-                    ModelState.AddModelError(string.Empty, ErrorMessagesList.PersonNotFound);
-                    return null;
-
-                default:
-                    Error = ErrorMessagesList.UnexpectedError;
-                    break;
-            }
+            ModelState.AddModelError(string.Empty, ErrorMessagesList.PayLoadIssue);
         }
-        catch
-        {
-            Error = ErrorMessagesList.UnexpectedError;
-        }
-        return person;
+
+        return null;
     }
 
     private RegistrationDetails VerifySession()
