@@ -25,3 +25,7 @@ output "service_deployer_step_function_arn" {
 output "service_deployer_step_function_name" {
   value = aws_iam_role.service_deployer_step_function.name
 }
+
+output "terraform" {
+  value = aws_iam_role.terraform.arn
+}
