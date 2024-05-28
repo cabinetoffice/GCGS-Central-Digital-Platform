@@ -1,0 +1,73 @@
+@page "/registration/buyer-select-devolved-regulations"
+@model BuyerSelectDevolvedRegulationModel
+@using CO.CDP.Common.Enums
+
+@{
+    var regulationsHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Regulations)).HasInnerHtml;
+
+    var backLink = "/registration/buyer-devolved-regulations";
+
+    string IsSelected(string regulationValue)
+    {
+        return Model.Regulations.Contains(regulationValue) ? "checked='checked'" : string.Empty;
+    }
+
+}
+
+<a href="@backLink" class="govuk-back-link">
+    Back
+</a>
+
+<main class="govuk-main-wrapper">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds govuk-body">
+            <partial name="_ErrorSummary" model="@ModelState" />
+            <form method="post">
+                <div class="govuk-form-group @(regulationsHasError ? "govuk-form-group--error" : "")">
+                    <fieldset class="govuk-fieldset">
+                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                            <h1 class="govuk-fieldset__heading">
+                                Do devolved regulations apply to your organisation?
+                            </h1>
+                        </legend>
+                        <div id="waste-hint" class="govuk-hint">
+                            Select all that apply.
+                        </div>
+                        @if (regulationsHasError)
+                        {
+                            <p id="devolved-error" class="govuk-error-message">
+                                <span class="govuk-visually-hidden">Error:</span> @Html.ValidationMessageFor(m => m.Regulations)
+                            </p>
+                        }
+
+                        <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+                            <div class="govuk-checkboxes__item">
+                                <input class="govuk-checkboxes__input" id="chkni" name="Regulations" type="checkbox" value="ni" @IsSelected("ni")>
+                                <label class="govuk-label govuk-checkboxes__label" for="chkni">
+                                    Northern Ireland
+                                </label>
+                            </div>
+                            <div class="govuk-checkboxes__item">
+                                <input class="govuk-checkboxes__input" id="chkscotland" name="Regulations" type="checkbox" value="scotland" @IsSelected("scotland")>
+                                <label class="govuk-label govuk-checkboxes__label" for="chkscotland">
+                                    Scotland
+                                </label>
+                            </div>
+                            <div class="govuk-checkboxes__item">
+                                <input class="govuk-checkboxes__input" id="chkwales" name="Regulations" type="checkbox" value="wales" @IsSelected("wales")>
+                                <label class="govuk-label govuk-checkboxes__label" for="chkwales">
+                                    Wales
+                                </label>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+                <a href="/registration/organisation-selection">
+                    <button type="submit" class="govuk-button" data-module="govuk-button">
+                        Continue
+                    </button>
+                </a>
+            </form>
+        </div>
+    </div>
+</main>
