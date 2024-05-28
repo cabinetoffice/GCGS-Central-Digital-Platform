@@ -1,0 +1,26 @@
+= External Services
+
+In our prject we have to integrate with external services e.g. Company House API, Postcode lookup ect
+
+== Company House API
+We are using the Companies House API to get information about the organisations in the system such as Registered Addresses and also when searching by Company Number.
+
+== The API
+The official documentation can be found here: https://developer-specs.company-information.service.gov.uk/guides/index
+
+== How we use the API
+All calls to the Companies House API are via the CompaniesHouseApi in this project. This is used for a few processes:
+
+* The search process by Company Number:
+ When adding an organisation it searches against this Company House API, and if searching by company number, when the user selects one it populates the relevent information from the API
+* Look up calls: We use the API to look up latest details e.g. address
+
+== Rate Limit
+The Companies House API has a rate limit of 600 requests per 5 minutes https://developer-specs.company-information.service.gov.uk/guides/rateLimiting.
+If in any case, this limit is hit, the service will recieve 429 Too Many Requests HTTP status codes from all requests beyond the limit, and throws an exception containing this status code.
+[,ruby]
+----
+ public string CompanyName { get; set; }
+ public string CompanyNumber { get; set; }
+ public CompaniesHouseAddress RegisteredOfficeAddress { get; set; }
+----
