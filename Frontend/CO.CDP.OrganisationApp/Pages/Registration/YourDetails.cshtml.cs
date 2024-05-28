@@ -68,11 +68,11 @@ public class YourDetailsModel(
         try
         {
             return await personClient.CreatePersonAsync(new NewPerson(
-            userUrn: registrationDetails.UserUrn,
-            email: registrationDetails.Email,
-            phone: registrationDetails.Phone,
-            firstName: registrationDetails.FirstName,
-            lastName: LastName
+                userUrn: registrationDetails.UserUrn,
+                email: registrationDetails.Email,
+                phone: registrationDetails.Phone,
+                firstName: FirstName,
+                lastName: LastName
             ));
         }
         catch (ApiException<Person.WebApiClient.ProblemDetails> aex)
