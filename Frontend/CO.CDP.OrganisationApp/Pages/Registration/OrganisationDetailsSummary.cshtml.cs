@@ -1,4 +1,5 @@
 using CO.CDP.Organisation.WebApiClient;
+using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -14,7 +15,6 @@ public class OrganisationDetailsSummaryModel(
 {
     public required RegistrationDetails Details { get; set; }
 
-    [BindProperty]
     public string? Error { get; set; }
 
     public void OnGet()
@@ -27,6 +27,7 @@ public class OrganisationDetailsSummaryModel(
         Details = VerifySession();
 
         var organisation = await RegisterOrganisation(Details);
+
         if (organisation != null)
         {
             Details.OrganisationId = organisation.Id;
@@ -42,22 +43,19 @@ public class OrganisationDetailsSummaryModel(
 
     private async Task<OrganisationWebApiClient.Organisation?> RegisterOrganisation(RegistrationDetails details)
     {
-        try
+        var payload = NewOrganisationPayload(details);
+
+        if (payload is not null)
         {
-            var payload = NewOrganisationPayload(details);
-            if (payload is not null)
+            try
             {
                 return await organisationClient.CreateOrganisationAsync(payload);
             }
-        }
-        catch (ApiException aex)
-            when (aex is ApiException<OrganisationWebApiClient.ProblemDetails> pd)
-        {
-            Error = pd.Result.Detail;
-        }
-        catch (Exception ex)
-        {
-            Error = ex.Message;
+            catch (ApiException<OrganisationWebApiClient.ProblemDetails> aex)
+                when (aex.StatusCode == StatusCodes.Status400BadRequest)
+            {
+                ModelState.AddModelError(string.Empty, ErrorMessagesList.OrganisationCreationFailed);
+            }
         }
 
         return null;
@@ -95,12 +93,9 @@ public class OrganisationDetailsSummaryModel(
 
     private RegistrationDetails VerifySession()
     {
-        var registrationDetails = session.Get<RegistrationDetails>(Session.RegistrationDetailsKey);
-        if (registrationDetails == null)
-        {
-            //show error page (Once we finalise)
-            throw new Exception("Shoudn't be here");
-        }
+        var registrationDetails = session.Get<RegistrationDetails>(Session.RegistrationDetailsKey)
+            ?? throw new Exception(ErrorMessagesList.SessionNotFound);
+
         return registrationDetails;
     }
 }

@@ -1,3 +1,4 @@
+using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -74,12 +75,9 @@ public class OrganisationRegisteredAddressModel(ISession session) : PageModel
 
     private RegistrationDetails VerifySession()
     {
-        var registrationDetails = session.Get<RegistrationDetails>(Session.RegistrationDetailsKey);
-        if (registrationDetails == null)
-        {
-            //show error page (Once we finalise)
-            throw new Exception("Shoudn't be here");
-        }
+        var registrationDetails = session.Get<RegistrationDetails>(Session.RegistrationDetailsKey)
+            ?? throw new Exception(ErrorMessagesList.SessionNotFound);
+
         return registrationDetails;
     }
 }

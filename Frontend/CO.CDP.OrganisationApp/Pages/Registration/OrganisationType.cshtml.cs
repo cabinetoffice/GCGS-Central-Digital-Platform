@@ -1,4 +1,5 @@
 using CO.CDP.Common.Enums;
+using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -51,7 +52,7 @@ public class OrganisationTypeModel(
     private RegistrationDetails VerifySession()
     {
         var registrationDetails = session.Get<RegistrationDetails>(Session.RegistrationDetailsKey)
-            ?? throw new Exception("Shoudn't be here"); // show error page?
+            ?? throw new Exception(ErrorMessagesList.SessionNotFound);
 
         return registrationDetails;
     }

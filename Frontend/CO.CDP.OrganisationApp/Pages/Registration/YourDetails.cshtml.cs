@@ -1,3 +1,4 @@
+using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
 using CO.CDP.Person.WebApiClient;
 using Microsoft.AspNetCore.Authorization;
@@ -23,7 +24,6 @@ public class YourDetailsModel(
     [Required(ErrorMessage = "Enter your last name")]
     public string? LastName { get; set; }
 
-    [BindProperty]
     public string? Error { get; set; }
 
     public IActionResult OnGet()
@@ -46,6 +46,7 @@ public class YourDetailsModel(
         var registrationDetails = VerifySession();
 
         var person = await RegisterPerson(registrationDetails);
+
         if (person != null)
         {
             registrationDetails.PersonId = person.Id;
@@ -64,35 +65,29 @@ public class YourDetailsModel(
 
     private async Task<Person.WebApiClient.Person?> RegisterPerson(RegistrationDetails registrationDetails)
     {
-        Person.WebApiClient.Person? person = null;
-
         try
         {
-            person = await personClient.CreatePersonAsync(new NewPerson(
-                userUrn: registrationDetails.UserUrn,
-                email: registrationDetails.Email,
-                phone: registrationDetails.Phone,
-                firstName: FirstName,
-                lastName: LastName
+            return await personClient.CreatePersonAsync(new NewPerson(
+            userUrn: registrationDetails.UserUrn,
+            email: registrationDetails.Email,
+            phone: registrationDetails.Phone,
+            firstName: registrationDetails.FirstName,
+            lastName: LastName
             ));
         }
-        catch (ApiException aex)
-            when (aex is ApiException<Person.WebApiClient.ProblemDetails> pd)
+        catch (ApiException<Person.WebApiClient.ProblemDetails> aex)
+               when (aex.StatusCode == StatusCodes.Status400BadRequest)
         {
-            Error = pd.Result.Detail;
-        }
-        catch (Exception ex)
-        {
-            Error = ex.Message;
+            ModelState.AddModelError(string.Empty, ErrorMessagesList.PayLoadIssue);
         }
 
-        return person;
+        return null;
     }
 
     private RegistrationDetails VerifySession()
     {
         var registrationDetails = session.Get<RegistrationDetails>(Session.RegistrationDetailsKey)
-            ?? throw new Exception("Shoudn't be here"); // show error page?
+            ?? throw new Exception(ErrorMessagesList.SessionNotFound);
 
         return registrationDetails;
     }

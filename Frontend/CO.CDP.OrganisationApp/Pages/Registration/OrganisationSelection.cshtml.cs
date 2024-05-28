@@ -1,4 +1,5 @@
 using CO.CDP.Organisation.WebApiClient;
+using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -12,6 +13,8 @@ public class OrganisationSelectionModel(
     ISession session) : PageModel
 {
     public IEnumerable<Organisation.WebApiClient.Organisation> Organisations { get; set; } = [];
+
+    public string? Error { get; set; }
 
     public async Task<IActionResult> OnGet()
     {
@@ -30,7 +33,7 @@ public class OrganisationSelectionModel(
     private RegistrationDetails VerifySession()
     {
         var details = session.Get<RegistrationDetails>(Session.RegistrationDetailsKey)
-            ?? throw new Exception("Shoudn't be here"); // show error page?
+            ?? throw new Exception(ErrorMessagesList.SessionNotFound);
 
         return details;
     }

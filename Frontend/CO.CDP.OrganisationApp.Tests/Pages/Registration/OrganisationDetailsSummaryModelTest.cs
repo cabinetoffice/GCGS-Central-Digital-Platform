@@ -1,10 +1,10 @@
 using CO.CDP.Common.Enums;
 using CO.CDP.Organisation.WebApiClient;
+using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.Pages.Registration;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moq;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages.Registration;
@@ -41,7 +41,7 @@ public class OrganisationDetailsSummaryModelTest
         var model = GivenOrganisationDetailModel();
 
         Action action = model.OnGet;
-        action.Should().Throw<Exception>().WithMessage("Shoudn't be here");
+        action.Should().Throw<Exception>().WithMessage(ErrorMessagesList.SessionNotFound);
     }
 
     [Fact]
@@ -52,7 +52,7 @@ public class OrganisationDetailsSummaryModelTest
         var model = GivenOrganisationDetailModel();
 
         Func<Task> act = model.OnPost;
-        await act.Should().ThrowAsync<Exception>().WithMessage("Shoudn't be here");
+        await act.Should().ThrowAsync<Exception>().WithMessage(ErrorMessagesList.SessionNotFound);
     }
 
     [Fact]
@@ -69,22 +69,6 @@ public class OrganisationDetailsSummaryModelTest
         await model.OnPost();
 
         organisationClientMock.Verify(o => o.CreateOrganisationAsync(It.IsAny<NewOrganisation>()), Times.Once);
-    }
-
-    [Fact]
-    public async Task OnPost_WhenErrorInRegisteringOrganisation_ShouldReturnPageWithError()
-    {
-        sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey))
-            .Returns(DummyRegistrationDetails());
-
-        organisationClientMock.Setup(o => o.CreateOrganisationAsync(It.IsAny<NewOrganisation>()))
-            .ThrowsAsync(new ApiException("Unexpected error", 500, "", default, null));
-
-        var model = GivenOrganisationDetailModel();
-
-        var actionResult = await model.OnPost();
-
-        actionResult.Should().BeOfType<PageResult>();
     }
 
     [Fact]
@@ -129,6 +113,6 @@ public class OrganisationDetailsSummaryModelTest
     private OrganisationDetailsSummaryModel GivenOrganisationDetailModel()
     {
         return new OrganisationDetailsSummaryModel(sessionMock.Object, organisationClientMock.Object)
-        { Details = DummyRegistrationDetails()};
+        { Details = DummyRegistrationDetails() };
     }
 }

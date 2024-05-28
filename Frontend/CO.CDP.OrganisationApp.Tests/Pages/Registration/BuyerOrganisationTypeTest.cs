@@ -1,4 +1,5 @@
 using CO.CDP.Common.Enums;
+using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.Pages.Registration;
 using FluentAssertions;
@@ -27,7 +28,7 @@ public class BuyerOrganisationTypeTest
 
         Action act = () => model.OnGet();
 
-        act.Should().Throw<Exception>().WithMessage("Shoudn't be here");
+        act.Should().Throw<Exception>().WithMessage(ErrorMessagesList.SessionNotFound);
     }
 
     [Fact]
@@ -72,7 +73,7 @@ public class BuyerOrganisationTypeTest
 
         Action act = () => model.OnPost();
 
-        act.Should().Throw<Exception>().WithMessage("Shoudn't be here");
+        act.Should().Throw<Exception>().WithMessage(ErrorMessagesList.SessionNotFound);
     }
 
     [Fact]

@@ -1,3 +1,4 @@
+using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.Pages.Registration;
 using CO.CDP.Person.WebApiClient;
@@ -87,7 +88,7 @@ public class YourDetailsModelTest
 
         Action act = () => model.OnGet();
 
-        act.Should().Throw<Exception>().WithMessage("Shoudn't be here");
+        act.Should().Throw<Exception>().WithMessage(ErrorMessagesList.SessionNotFound);
     }
 
     [Fact]
@@ -154,7 +155,7 @@ public class YourDetailsModelTest
 
         Func<Task> act = model.OnPost;
 
-        await act.Should().ThrowAsync<Exception>().WithMessage("Shoudn't be here");
+        await act.Should().ThrowAsync<Exception>().WithMessage(ErrorMessagesList.SessionNotFound);
     }
 
     [Fact]
@@ -192,11 +193,10 @@ public class YourDetailsModelTest
             });
 
         personClientMock.Setup(s => s.CreatePersonAsync(It.IsAny<NewPerson>()))
-            .ThrowsAsync(new ApiException("Unexpected error", 500, "", default, null));
+       .ThrowsAsync(new ApiException("Unexpected error", 500, "", default, null));
 
-        var actionResult = await model.OnPost();
-
-        actionResult.Should().BeOfType<PageResult>();
+        var exception = await Assert.ThrowsAsync<ApiException>(() => model.OnPost());
+        Assert.Equal(500, exception.StatusCode);
     }
 
     private readonly Person.WebApiClient.Person dummyPerson

@@ -22,12 +22,13 @@ public static class EndpointExtensions
     public static void UsePersonEndpoints(this WebApplication app)
     {
         app.MapPost("/persons", async (RegisterPerson command, IUseCase<RegisterPerson, Model.Person> useCase) =>
-            await useCase.Execute(command)
+         await useCase.Execute(command)
                 .AndThen(person =>
                     Results.Created(new Uri($"/persons/{person.Id}", UriKind.Relative), person))
-                )
+         )
         .Produces<Model.Person>(201, "application/json")
         .ProducesProblem(500)
+        .Produces(400)
         .WithOpenApi(operation =>
         {
             operation.OperationId = "CreatePerson";
@@ -64,6 +65,8 @@ public static class EndpointExtensions
                     return Results.Ok(_persons[personId]);
                 })
             .Produces<Model.Person>(200, "application/json")
+            .Produces(404)
+            .Produces(400)
             .WithOpenApi(operation =>
             {
                 operation.OperationId = "UpdatePerson";

@@ -1,3 +1,4 @@
+using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.Pages.Registration;
 using FluentAssertions;
@@ -138,7 +139,7 @@ public class OrganisationNameModelTest
         var model = GivenOrganisationNameModel();
 
         Action action = () => model.OnGet();
-        action.Should().Throw<Exception>().WithMessage("Shoudn't be here");
+        action.Should().Throw<Exception>().WithMessage(ErrorMessagesList.SessionNotFound);
     }
 
     private RegistrationDetails DummyRegistrationDetails()
