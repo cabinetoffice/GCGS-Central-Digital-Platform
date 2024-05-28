@@ -116,4 +116,4 @@ aws-push-to-ecr: build-docker ## Build, tag and push Docker images to ECR
 	$(foreach image,$(TAGGED_IMAGES),docker tag $(image) $(REPO_URL)/$(notdir $(basename $(image)));)
 	aws ecr get-login-password --region eu-west-2 | docker login --username AWS --password-stdin $(REPO_URL)
 	$(foreach image,$(IMAGES),docker push $(REPO_URL)/$(image);)
-.PHONY: docker-push-to-ecr
+.PHONY: aws-push-to-ecr
