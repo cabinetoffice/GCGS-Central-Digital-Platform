@@ -28,9 +28,7 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
             {
                 Scheme = "ISO9001",
                 Id = "1",
-                LegalName = "OfficialOrganisationName",
-                Uri = "http://example.org",
-                Number = "123456"
+                LegalName = "OfficialOrganisationName"
             },
             AdditionalIdentifiers = new List<OrganisationIdentifier>
             {
@@ -38,17 +36,16 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
                 {
                     Scheme = "ISO14001",
                     Id = "2",
-                    LegalName = "AnotherOrganisationName",
-                    Uri = "http://example.com",
-                    Number = "123456"
+                    LegalName = "AnotherOrganisationName"
                 }
             },
             Address = new OrganisationAddress
             {
-                AddressLine1 = "1234 Example St",
-                City = "Example City",
-                PostCode = "12345",
-                Country = "Exampleland"
+                StreetAddress = "1234 Example St",
+                StreetAddress2 = "",
+                Locality = "Example City",
+                PostalCode = "12345",
+                CountryName = "Exampleland"
             },
             ContactPoint = new OrganisationContactPoint
             {
@@ -66,10 +63,10 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
         {
             Id = _generatedGuid,
             Name = "TheOrganisation",
-            Identifier = command.Identifier,
-            AdditionalIdentifiers = command.AdditionalIdentifiers,
-            Address = command.Address,
-            ContactPoint = command.ContactPoint,
+            Identifier = command.Identifier.AsView(),
+            AdditionalIdentifiers = command.AdditionalIdentifiers.AsView(),
+            Address = command.Address.AsView(),
+            ContactPoint = command.ContactPoint.AsView(),
             Types = command.Types
         };
 
@@ -94,9 +91,7 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
             {
                 Scheme = "ISO9001",
                 Id = "1",
-                LegalName = "OfficialOrganisationName",
-                Uri = "http://example.org",
-                Number = "123456"
+                LegalName = "OfficialOrganisationName"
             },
             AdditionalIdentifiers = new List<OrganisationIdentifier>
             {
@@ -104,17 +99,16 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
                 {
                     Scheme = "ISO14001",
                     Id = "2",
-                    LegalName = "AnotherOrganisationName",
-                    Uri = "http://example.com",
-                    Number = "123456"
+                    LegalName = "AnotherOrganisationName"
                 }
             },
             Address = new OrganisationAddress
             {
-                AddressLine1 = "1234 Example St",
-                City = "Example City",
-                PostCode = "12345",
-                Country = "Exampleland"
+                StreetAddress = "1234 Example St",
+                StreetAddress2 = "",
+                Locality = "Example City",
+                PostalCode = "12345",
+                CountryName = "Exampleland"
             },
             ContactPoint = new OrganisationContactPoint
             {
@@ -131,10 +125,11 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
              o.Name == "TheOrganisation" &&
              o.Address == new Persistence.Organisation.OrganisationAddress
              {
-                 AddressLine1 = "1234 Example St",
-                 City = "Example City",
-                 PostCode = "12345",
-                 Country = "Exampleland"
+                 StreetAddress = "1234 Example St",
+                 StreetAddress2 = "",
+                 Locality = "Example City",
+                 PostalCode = "12345",
+                 CountryName = "Exampleland"
              } &&
              o.ContactPoint == new Persistence.Organisation.OrganisationContactPoint
              {
@@ -154,9 +149,7 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
                 Primary = true,
                 Scheme = "ISO9001",
                 IdentifierId = "1",
-                LegalName = "OfficialOrganisationName",
-                Uri = "http://example.org",
-                Number = "123456"
+                LegalName = "OfficialOrganisationName"
             });
 
         persistanceOrganisation.As<Persistence.Organisation>().Identifiers.Last()
@@ -165,9 +158,7 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
                 Primary = false,
                 Scheme = "ISO14001",
                 IdentifierId = "2",
-                LegalName = "AnotherOrganisationName",
-                Uri = "http://example.com",
-                Number = "123456"
+                LegalName = "AnotherOrganisationName"
             });
     }
 
@@ -247,9 +238,7 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
             {
                 Scheme = "ISO9001",
                 Id = "1",
-                LegalName = "OfficialOrganisationName",
-                Uri = "http://example.org",
-                Number = "123456"
+                LegalName = "OfficialOrganisationName"
             },
             AdditionalIdentifiers = new List<OrganisationIdentifier>
             {
@@ -257,17 +246,16 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
                 {
                     Scheme = "ISO14001",
                     Id = "2",
-                    LegalName = "AnotherOrganisationName",
-                    Uri = "http://example.com",
-                    Number = "123456"
+                    LegalName = "AnotherOrganisationName"
                 }
             },
             Address = new OrganisationAddress
             {
-                AddressLine1 = "1234 Example St",
-                City = "Example City",
-                PostCode = "12345",
-                Country = "Exampleland"
+                StreetAddress = "1234 Example St",
+                StreetAddress2 = "",
+                Locality = "Example City",
+                PostalCode = "12345",
+                CountryName = "Exampleland"
             },
             ContactPoint = new OrganisationContactPoint
             {

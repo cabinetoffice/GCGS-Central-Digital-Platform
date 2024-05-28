@@ -9,6 +9,8 @@ builder.Services.AddSwaggerGen(options => { options.DocumentFormsApi(); });
 
 builder.Services.AddHealthChecks();
 
+builder.Services.AddProblemDetails();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -16,7 +18,12 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+} else {
+    app.UseExceptionHandler();
+    app.UseHsts();
 }
+
+app.UseStatusCodePages();
 
 app.MapHealthChecks("/health");
 app.UseHttpsRedirection();

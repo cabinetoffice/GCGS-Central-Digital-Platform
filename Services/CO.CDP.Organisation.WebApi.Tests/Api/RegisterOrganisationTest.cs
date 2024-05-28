@@ -38,10 +38,10 @@ public class RegisterOrganisationTest
         {
             Id = Guid.NewGuid(),
             Name = "TheOrganisation",
-            Identifier = command.Identifier,
-            AdditionalIdentifiers = command.AdditionalIdentifiers,
-            Address = command.Address,
-            ContactPoint = command.ContactPoint,
+            Identifier = command.Identifier.AsView(),
+            AdditionalIdentifiers = command.AdditionalIdentifiers.AsView(),
+            Address = command.Address.AsView(),
+            ContactPoint = command.ContactPoint?.AsView(),
             Types = command.Types
         };
 
@@ -77,10 +77,10 @@ public class RegisterOrganisationTest
         {
             Id = Guid.NewGuid(),
             Name = "TheOrganisation",
-            Identifier = command.Identifier,
-            AdditionalIdentifiers = command.AdditionalIdentifiers,
-            Address = command.Address,
-            ContactPoint = command.ContactPoint,
+            Identifier = command.Identifier.AsView(),
+            AdditionalIdentifiers = command.AdditionalIdentifiers.AsView(),
+            Address = command.Address.AsView(),
+            ContactPoint = command.ContactPoint?.AsView(),
             Types = command.Types
         };
 
@@ -103,9 +103,7 @@ public class RegisterOrganisationTest
             {
                 Scheme = "ISO9001",
                 Id = "1",
-                LegalName = "OfficialOrganisationName",
-                Uri = "http://example.org",
-                Number = "123456"
+                LegalName = "OfficialOrganisationName"
             },
             AdditionalIdentifiers = new List<OrganisationIdentifier>
             {
@@ -113,17 +111,16 @@ public class RegisterOrganisationTest
                 {
                     Scheme = "ISO14001",
                     Id = "2",
-                    LegalName = "AnotherOrganisationName",
-                    Uri = "http://example.com",
-                    Number = "123456"
+                    LegalName = "AnotherOrganisationName"
                 }
             },
             Address = new OrganisationAddress
             {
-                AddressLine1 = "1234 Example St",
-                City = "Example Region",
-                PostCode = "12345",
-                Country = "Exampleland"
+                StreetAddress = "1234 Example St",
+                StreetAddress2 = "",
+                Locality = "Example Region",
+                PostalCode = "12345",
+                CountryName = "Exampleland"
             },
             ContactPoint = new OrganisationContactPoint
             {

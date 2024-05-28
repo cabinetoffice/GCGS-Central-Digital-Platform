@@ -1,5 +1,6 @@
 using AutoMapper;
 using CO.CDP.Organisation.WebApi.Model;
+using CO.CDP.OrganisationInformation;
 using Persistence = CO.CDP.OrganisationInformation.Persistence;
 
 namespace CO.CDP.Organisation.WebApi.AutoMapper;
@@ -16,14 +17,26 @@ public class WebApiToPersistenceProfile : Profile
         CreateMap<OrganisationIdentifier, Persistence.Organisation.OrganisationIdentifier>()
             .ForMember(m => m.Id, o => o.Ignore())
             .ForMember(m => m.Primary, o => o.Ignore())
+            .ForMember(m => m.Uri, o => o.Ignore())
+            .ForMember(m => m.IdentifierId, o => o.MapFrom(m => m.Id))
+            .ReverseMap()
+            .ForMember(m => m.Id, o => o.MapFrom(m => m.IdentifierId));
+        CreateMap<Identifier, Persistence.Organisation.OrganisationIdentifier>()
+            .ForMember(m => m.Id, o => o.Ignore())
+            .ForMember(m => m.Primary, o => o.Ignore())
             .ForMember(m => m.IdentifierId, o => o.MapFrom(m => m.Id))
             .ReverseMap()
             .ForMember(m => m.Id, o => o.MapFrom(m => m.IdentifierId));
 
         CreateMap<OrganisationAddress, Persistence.Organisation.OrganisationAddress>()
             .ReverseMap();
+        CreateMap<Address, Persistence.Organisation.OrganisationAddress>()
+            .ReverseMap()
+            .ForMember(m => m.Region, o => o.MapFrom(m => ""));
 
         CreateMap<OrganisationContactPoint, Persistence.Organisation.OrganisationContactPoint>()
+            .ReverseMap();
+        CreateMap<ContactPoint, Persistence.Organisation.OrganisationContactPoint>()
             .ReverseMap();
 
         CreateMap<RegisterOrganisation, Persistence.Organisation>()

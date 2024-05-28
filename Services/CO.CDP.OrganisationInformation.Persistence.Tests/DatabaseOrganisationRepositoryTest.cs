@@ -85,23 +85,22 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql) : 
                 Scheme = "ISO9001",
                 IdentifierId = "1",
                 LegalName = "DefaultLegalName",
-                Uri = "http://default.org",
-                Number = "123456"
+                Uri = "http://default.org"
             }, new OrganisationIdentifier
             {
                 Primary = false,
                 Scheme = "ISO9001",
                 IdentifierId = "1",
                 LegalName = "DefaultLegalName",
-                Uri = "http://default.org",
-                Number = "123456"
+                Uri = "http://default.org"
             }],
             Address = new OrganisationAddress
             {
-                AddressLine1 = "1234 Default St",
-                City = "London",
-                PostCode = "12345",
-                Country = "Defaultland"
+                StreetAddress = "1234 Default St",
+                StreetAddress2 = "High Tower",
+                Locality = "London",
+                PostalCode = "12345",
+                CountryName = "Defaultland"
             },
             ContactPoint = new OrganisationContactPoint
             {
@@ -125,7 +124,7 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql) : 
         }
 
 
-    repository.Save(organisation);
+        repository.Save(organisation);
 
         var updatedOrganisation = await repository.Find(guid)!;
         updatedOrganisation.Should().NotBeNull();

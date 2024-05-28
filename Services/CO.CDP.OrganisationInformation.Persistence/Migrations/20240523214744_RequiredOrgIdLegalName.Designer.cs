@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using CO.CDP.OrganisationInformation.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,9 +13,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CO.CDP.OrganisationInformation.Persistence.Migrations
 {
     [DbContext(typeof(OrganisationInformationContext))]
-    partial class OrganisationInformationContextModelSnapshot : ModelSnapshot
+    [Migration("20240523214744_RequiredOrgIdLegalName")]
+    partial class RequiredOrgIdLegalName
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -59,23 +62,21 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                         {
                             b1.IsRequired();
 
-                            b1.Property<string>("CountryName")
+                            b1.Property<string>("AddressLine1")
                                 .IsRequired()
                                 .HasColumnType("text");
 
-                            b1.Property<string>("Locality")
+                            b1.Property<string>("AddressLine2")
+                                .HasColumnType("text");
+
+                            b1.Property<string>("City")
                                 .IsRequired()
                                 .HasColumnType("text");
 
-                            b1.Property<string>("PostalCode")
-                                .IsRequired()
+                            b1.Property<string>("Country")
                                 .HasColumnType("text");
 
-                            b1.Property<string>("StreetAddress")
-                                .IsRequired()
-                                .HasColumnType("text");
-
-                            b1.Property<string>("StreetAddress2")
+                            b1.Property<string>("PostCode")
                                 .IsRequired()
                                 .HasColumnType("text");
                         });
