@@ -6,12 +6,6 @@
     var devolvedHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Devolved)).HasInnerHtml;
 
     var backLink = "/registration/buyer-organisation-type";
-
-    string IsSelected(string radioValue)
-    {
-        return Model.Devolved == radioValue ? "checked='checked'" : string.Empty;
-    }
-
 }
 
 <a href="@backLink" class="govuk-back-link">
@@ -39,13 +33,13 @@
 
                         <div class="govuk-radios" data-module="govuk-radios">
                             <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="devolved-yes" name="Devolved" type="radio" value="yes" @IsSelected("yes")>
+                                <input class="govuk-radios__input" id="devolved-yes" name="Devolved" type="radio" value="true" @(Model.Devolved == true ? "checked" : "")>
                                 <label class="govuk-label govuk-radios__label" for="devolved-yes">
                                     Yes
                                 </label>
                             </div>
                             <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="devolved-na" name="Devolved" type="radio" value="na" @IsSelected("na")>
+                                <input class="govuk-radios__input" id="devolved-na" name="Devolved" type="radio" value="false" @(Model.Devolved == false ? "checked" : "")>
                                 <label class="govuk-label govuk-radios__label" for="devolved-na">
                                     No
                                 </label>

@@ -41,12 +41,12 @@ public class BuyerDevolvedRegulationTest
             {
                 UserUrn = "urn:test",
                 OrganisationType = OrganisationType.Tenderer,
-                Devolved = "yes"
+                Devolved = true
             });
 
         model.OnGet();
 
-        model.Devolved.Should().Be("yes");
+        model.Devolved.Should().BeTrue();
     }
 
     [Fact]
@@ -80,16 +80,16 @@ public class BuyerDevolvedRegulationTest
     public void OnPost_WhenValidModel_ShouldSetDevolvedInSession()
     {
         var model = GivenBuyerDevolvedRegulationModel();
-        model.Devolved = "yes";
+        model.Devolved = true;
 
         sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey))
-            .Returns(new RegistrationDetails { UserUrn = "urn:test", Devolved = "yes" });
+            .Returns(new RegistrationDetails { UserUrn = "urn:test", Devolved = true });
 
         var results = model.OnPost();
 
         sessionMock.Verify(v => v.Set(Session.RegistrationDetailsKey,
             It.Is<RegistrationDetails>(rd =>
-                rd.Devolved == "yes"
+                rd.Devolved == true
             )), Times.Once);
     }
 
@@ -97,10 +97,10 @@ public class BuyerDevolvedRegulationTest
     public void OnPost_WhenValidModelWithYes_ShouldRedirectToBuyerSelectDevolvedRegulationPage()
     {
         var model = GivenBuyerDevolvedRegulationModel();
-        model.Devolved = "yes";
+        model.Devolved = true;
 
         sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey))
-            .Returns(new RegistrationDetails { UserUrn = "urn:test", Devolved = "yes" });
+            .Returns(new RegistrationDetails { UserUrn = "urn:test", Devolved = true });
 
         var actionResult = model.OnPost();
 
@@ -112,10 +112,10 @@ public class BuyerDevolvedRegulationTest
     public void OnPost_WhenValidModelWithNo_ShouldRedirectToOrganisationSelectionPage()
     {
         var model = GivenBuyerDevolvedRegulationModel();
-        model.Devolved = "no";
+        model.Devolved = false;
 
         sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey))
-            .Returns(new RegistrationDetails { UserUrn = "urn:test", Devolved = "no" });
+            .Returns(new RegistrationDetails { UserUrn = "urn:test", Devolved = false });
 
         var actionResult = model.OnPost();
 

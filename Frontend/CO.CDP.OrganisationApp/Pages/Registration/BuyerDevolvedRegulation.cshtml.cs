@@ -12,7 +12,7 @@ public class BuyerDevolvedRegulationModel(ISession session) : PageModel
 {
     [BindProperty]
     [Required(ErrorMessage = "Select the do devolved regulations apply to your organisation?")]
-    public string? Devolved { get; set; }
+    public bool? Devolved { get; set; }
 
     public IActionResult OnGet()
     {
@@ -33,7 +33,7 @@ public class BuyerDevolvedRegulationModel(ISession session) : PageModel
         var registrationDetails = VerifySession();
         registrationDetails.Devolved = Devolved;        
 
-        if (Devolved == "yes")
+        if (Devolved == true)
         {
             session.Set(Session.RegistrationDetailsKey, registrationDetails);
             return RedirectToPage("BuyerSelectDevolvedRegulation");

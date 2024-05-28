@@ -40,6 +40,6 @@ public class RegistrationDetails
 
     public string? BuyerOrganisationType { get; set; }
     public string? BuyerOrganisationOtherValue { get; set; }
-    public string? Devolved { get; set; }
+    public bool? Devolved { get; set; }
     public List<string>? Regulations { get; set; }
 }
