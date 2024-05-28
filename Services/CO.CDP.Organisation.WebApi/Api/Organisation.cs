@@ -119,24 +119,6 @@ public static class EndpointExtensions
                 operation.Responses["200"].Description = "Organisation updated.";
                 return operation;
             });
-        app.MapDelete("/organisations/{organisationId}", (Guid organisationId) =>
-            {
-                if (!_organisations.ContainsKey(organisationId))
-                {
-                    return Results.NotFound();
-                }
-                _organisations.Remove(organisationId);
-                return Results.NoContent();
-            })
-            .Produces(204)
-            .WithOpenApi(operation =>
-            {
-                operation.OperationId = "DeleteOrganisation";
-                operation.Description = "[STUB] Delete a organisation. [STUB]";
-                operation.Summary = "[STUB] Delete a organisation. [STUB]";
-                operation.Responses["204"].Description = "Organisation deleted.";
-                return operation;
-            });
     }
     public static void UseOrganisationLookupEndpoints(this WebApplication app)
     {
