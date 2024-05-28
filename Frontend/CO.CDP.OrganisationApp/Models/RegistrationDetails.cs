@@ -21,15 +21,15 @@ public class RegistrationDetails
 
     public string? OrganisationIdentificationNumber { get; set; }
 
-    public string? OrganisationAddressLine1 { get; set; }
+    public string OrganisationAddressLine1 { get; set; } = "";
 
-    public string? OrganisationAddressLine2 { get; set; }
+    public string OrganisationAddressLine2 { get; set; } = "";
 
-    public string? OrganisationCityOrTown { get; set; }
+    public string OrganisationCityOrTown { get; set; } = "";
 
-    public string? OrganisationPostcode { get; set; }
+    public string OrganisationPostcode { get; set; } = "";
 
-    public string? OrganisationCountry { get; set; }
+    public string OrganisationCountry { get; set; } = "United Kingdom";
 
     public Guid? OrganisationId { get; set; }
 

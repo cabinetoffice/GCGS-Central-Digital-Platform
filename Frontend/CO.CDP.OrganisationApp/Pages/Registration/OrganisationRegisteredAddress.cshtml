@@ -102,12 +102,7 @@
                             <label class="govuk-label" for="@nameof(Model.Country)">
                                 @Html.DisplayNameFor(m => m.Country)
                             </label>
-                            <select class="govuk-select" asp-for="@Model.Country">
-                                <option value="england" selected>England</option>
-                                <option value="scotland">Scotland</option>
-                                <option value="northernIreland">Northern Ireland</option>
-                                <option value="wales">Wales</option>
-                            </select>
+                            <input type="hidden" id="@nameof(Model.Country)" name="@nameof(Model.Country)" value="@Model.Country"/>
                         </div>
                     </fieldset>
                 </div>
