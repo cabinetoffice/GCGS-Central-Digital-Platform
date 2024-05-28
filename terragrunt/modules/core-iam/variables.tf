@@ -16,3 +16,8 @@ variable "tags" {
   description = "Tags to apply to all resources in this module"
   type        = map(string)
 }
+
+variable "tfstate_bucket_name" {
+  description = "Terraform state files S3 Bucket name"
+  type        = string
+}
