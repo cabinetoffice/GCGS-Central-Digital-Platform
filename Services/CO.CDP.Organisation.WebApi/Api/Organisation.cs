@@ -45,6 +45,22 @@ public static class EndpointExtensions
 
     public static void UseOrganisationEndpoints(this WebApplication app)
     {
+        app.MapGet("/organisations/me", () => Results.Ok(_organisations.First().Value))
+            .Produces<List<Model.Organisation>>(StatusCodes.Status200OK, "application/json")
+            .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
+            .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
+            .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError)
+            .WithOpenApi(operation =>
+            {
+                operation.OperationId = "MyOrganisation";
+                operation.Description = "[STUB] The organisation details of the organisation the API key was issued for. [STUB]";
+                operation.Summary = "[STUB] The organisation details of the organisation the API key was issued for. [STUB]";
+                operation.Responses["200"].Description = "Organisation details.";
+                operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
+                operation.Responses["404"].Description = "Organisation matching the API key was not found.";
+                operation.Responses["500"].Description = "Internal server error.";
+                return operation;
+            });
         app.MapGet("/organisations",
                 async ([FromQuery] string userUrn, IUseCase<string, IEnumerable<Model.Organisation>> useCase) =>
                 await useCase.Execute(userUrn)
