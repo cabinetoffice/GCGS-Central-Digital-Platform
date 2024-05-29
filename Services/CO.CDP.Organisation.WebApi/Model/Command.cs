@@ -51,13 +51,14 @@ public record OrganisationAddress
 {
     [Required(AllowEmptyStrings = false)]
     public required string StreetAddress { get; init; }
-    [Required(AllowEmptyStrings = true)]
-    public required string StreetAddress2 { get; init; }
+
+    public string? StreetAddress2 { get; init; }
 
     [Required(AllowEmptyStrings = false)]
     public required string Locality { get; init; }
 
-    [Required(AllowEmptyStrings = false)]
+    public string? Region { get; init; }
+
     public required string PostalCode { get; init; }
 
     public required string CountryName { get; init; }
@@ -91,9 +92,9 @@ public static class MappingExtensions
         new()
         {
             StreetAddress = command.StreetAddress,
-            StreetAddress2 = command.StreetAddress2 ?? "",
+            StreetAddress2 = command.StreetAddress2,
             Locality = command.Locality,
-            Region = "",
+            Region = command.Region,
             PostalCode = command.PostalCode,
             CountryName = command.CountryName
         };

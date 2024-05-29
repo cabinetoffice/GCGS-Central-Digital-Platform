@@ -1,3 +1,4 @@
+using CO.CDP.Common.Enums;
 using CO.CDP.Organisation.WebApi.Tests.AutoMapper;
 using CO.CDP.Organisation.WebApi.UseCase;
 using CO.CDP.OrganisationInformation.Persistence;
@@ -42,19 +43,23 @@ public class GetOrganisationsUseCaseTest(AutoMapperFixture mapperFixture) : ICla
                 IdentifierId = "123456",
                 LegalName = "Test Organisation Ltd"
             }],
-            Address = new OrganisationInformation.Persistence.Organisation.OrganisationAddress
+            Addresses = {new OrganisationInformation.Persistence.Organisation.OrganisationAddress
             {
-                StreetAddress = "1234 Test St",
-                StreetAddress2 = "High Tower",
-                Locality = "Test City",
-                PostalCode = "12345",
-                CountryName = "Testland"
-            },
+                Type  = AddressType.Registered,
+                Address = new Address
+                {
+                    StreetAddress = "1234 Test St",
+                    StreetAddress2 = "High Tower",
+                    Locality = "Test City",
+                    PostalCode = "12345",
+                    CountryName = "Testland"
+                }
+            }},
             ContactPoint = new OrganisationInformation.Persistence.Organisation.OrganisationContactPoint
             {
                 Email = "contact@test.org"
             },
-            Types = new List<int> { 1 }
+            Types = [OrganisationType.ProcuringEntity]
         },
         new OrganisationInformation.Persistence.Organisation
         {
@@ -74,19 +79,23 @@ public class GetOrganisationsUseCaseTest(AutoMapperFixture mapperFixture) : ICla
                 IdentifierId = "123456",
                 LegalName = "Test Organisation Ltd"
             }],
-            Address = new OrganisationInformation.Persistence.Organisation.OrganisationAddress
+            Addresses = {new OrganisationInformation.Persistence.Organisation.OrganisationAddress
             {
-                StreetAddress = "1234 Test St",
-                StreetAddress2 = "High Tower",
-                Locality = "Test City",
-                PostalCode = "12345",
-                CountryName = "Testland"
-            },
+                Type = Common.Enums.AddressType.Registered,
+                Address = new Address
+                {
+                    StreetAddress = "1234 Test St",
+                    StreetAddress2 = "High Tower",
+                    Locality = "Test City",
+                    PostalCode = "12345",
+                    CountryName = "Testland"
+                }
+            }},
             ContactPoint = new OrganisationInformation.Persistence.Organisation.OrganisationContactPoint
             {
                 Email = "contact@test.org"
             },
-            Types = new List<int> { 1 }
+            Types = [OrganisationType.ProcuringEntity]
         }};
 
         _repository.Setup(r => r.FindByUserUrn(userUrn)).ReturnsAsync(persistenceOrganisation);

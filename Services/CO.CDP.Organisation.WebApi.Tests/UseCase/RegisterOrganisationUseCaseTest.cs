@@ -1,10 +1,11 @@
+using CO.CDP.Common.Enums;
 using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.Organisation.WebApi.Tests.AutoMapper;
 using CO.CDP.Organisation.WebApi.UseCase;
 using CO.CDP.OrganisationInformation.Persistence;
-using Persistence = CO.CDP.OrganisationInformation.Persistence;
 using FluentAssertions;
 using Moq;
+using Persistence = CO.CDP.OrganisationInformation.Persistence;
 
 namespace CO.CDP.Organisation.WebApi.Tests.UseCase;
 
@@ -44,6 +45,7 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
                 StreetAddress = "1234 Example St",
                 StreetAddress2 = "",
                 Locality = "Example City",
+                Region = "Test Region",
                 PostalCode = "12345",
                 CountryName = "Exampleland"
             },
@@ -107,6 +109,7 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
                 StreetAddress = "1234 Example St",
                 StreetAddress2 = "",
                 Locality = "Example City",
+                Region = "Test Region",
                 PostalCode = "12345",
                 CountryName = "Exampleland"
             },
@@ -122,15 +125,7 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
 
         _repository.Verify(r => r.Save(It.Is<Persistence.Organisation>(o =>
              o.Guid == _generatedGuid &&
-             o.Name == "TheOrganisation" &&
-             o.Address == new Persistence.Organisation.OrganisationAddress
-             {
-                 StreetAddress = "1234 Example St",
-                 StreetAddress2 = "",
-                 Locality = "Example City",
-                 PostalCode = "12345",
-                 CountryName = "Exampleland"
-             } &&
+             o.Name == "TheOrganisation"&&
              o.ContactPoint == new Persistence.Organisation.OrganisationContactPoint
              {
                  Name = "Contact Name",
@@ -138,7 +133,7 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
                  Telephone = "123-456-7890",
                  Url = "http://example.org/contact"
              } &&
-             o.Types.SequenceEqual(new List<int> { 1 })
+             o.Types.SequenceEqual(new List<OrganisationType> { OrganisationType.ProcuringEntity })
          )), Times.Once);
 
         persistanceOrganisation.Should().NotBeNull();
@@ -159,6 +154,22 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
                 Scheme = "ISO14001",
                 IdentifierId = "2",
                 LegalName = "AnotherOrganisationName"
+            });
+
+        persistanceOrganisation.As<Persistence.Organisation>().Addresses.Should().HaveCount(1);
+        persistanceOrganisation.As<Persistence.Organisation>().Addresses.First()
+            .Should().BeEquivalentTo(new Persistence.Organisation.OrganisationAddress
+            {
+                Type = AddressType.Registered,
+                Address = new Address
+                {
+                    StreetAddress = "1234 Example St",
+                    StreetAddress2 = "",
+                    Locality = "Example City",
+                    Region = "Test Region",
+                    PostalCode = "12345",
+                    CountryName = "Exampleland"
+                }
             });
     }
 
@@ -254,6 +265,7 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
                 StreetAddress = "1234 Example St",
                 StreetAddress2 = "",
                 Locality = "Example City",
+                Region = "Test Region",
                 PostalCode = "12345",
                 CountryName = "Exampleland"
             },

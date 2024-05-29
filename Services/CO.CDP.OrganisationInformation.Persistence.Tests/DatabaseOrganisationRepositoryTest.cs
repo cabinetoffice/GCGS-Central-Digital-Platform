@@ -1,3 +1,4 @@
+using CO.CDP.Common.Enums;
 using CO.CDP.Testcontainers.PostgreSql;
 using FluentAssertions;
 using static CO.CDP.OrganisationInformation.Persistence.Organisation;
@@ -94,14 +95,17 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql) : 
                 LegalName = "DefaultLegalName",
                 Uri = "http://default.org"
             }],
-            Address = new OrganisationAddress
+            Addresses =  {new OrganisationAddress
             {
-                StreetAddress = "1234 Default St",
-                StreetAddress2 = "High Tower",
-                Locality = "London",
-                PostalCode = "12345",
-                CountryName = "Defaultland"
-            },
+                Type = AddressType.Registered,
+                Address = new Address{
+                    StreetAddress = "1234 Default St",
+                    StreetAddress2 = "High Tower",
+                    Locality = "London",
+                    PostalCode = "12345",
+                    CountryName = "Defaultland"
+                }
+            }},
             ContactPoint = new OrganisationContactPoint
             {
                 Name = "Default Contact",
@@ -111,7 +115,7 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql) : 
             },
             UpdatedOn = initialDate,
             CreatedOn = initialDate,
-            Types = new List<int> { 1 }
+            Types =  { OrganisationType.ProcuringEntity }
         };
 
         repository.Save(organisation);

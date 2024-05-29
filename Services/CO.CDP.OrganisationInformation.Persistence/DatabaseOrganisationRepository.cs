@@ -11,18 +11,26 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
 
     public async Task<Organisation?> Find(Guid organisationId)
     {
-        return await context.Organisations.FirstOrDefaultAsync(t => t.Guid == organisationId);
+        return await context.Organisations
+            .Include(p => p.Addresses)
+            .ThenInclude(p => p.Address)
+            .FirstOrDefaultAsync(t => t.Guid == organisationId);
     }
 
     public async Task<Organisation?> FindByName(string name)
     {
-        return await context.Organisations.FirstOrDefaultAsync(t => t.Name == name);
+        return await context.Organisations
+            .Include(p => p.Addresses)
+            .ThenInclude(p => p.Address)
+            .FirstOrDefaultAsync(t => t.Name == name);
     }
 
     public async Task<IEnumerable<Organisation>> FindByUserUrn(string userUrn)
     {
         var person = await context.Persons
             .Include(p => p.Organisations)
+            .ThenInclude(p => p.Addresses)
+            .ThenInclude(p => p.Address)
             .FirstOrDefaultAsync(p => p.UserUrn == userUrn);
         return person?.Organisations ?? [];
     }
