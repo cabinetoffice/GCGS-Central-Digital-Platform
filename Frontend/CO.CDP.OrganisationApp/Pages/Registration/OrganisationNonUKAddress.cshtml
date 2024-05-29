@@ -123,7 +123,7 @@
                             }
                             <select asp-for="Country" class="govuk-select @(countryHasError ? "govuk-select--error" : "")">
                                 <option value="">Please select</option>
-                                @foreach (var cnt in Model.Countires)
+                                @foreach (var cnt in Model.Countries)
                                 {
                                     <option value="@cnt">@cnt</option>
                                 }
