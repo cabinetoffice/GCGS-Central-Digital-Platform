@@ -20,11 +20,34 @@ First, containers need to be built:
 make build-docker
 ```
 
-The database can be then started together with migrations:
+The database can be then started together with migrations (`make db`):
 
 ```bash
 docker compose up -d db organisation-information-migrations
 ```
+
+### Mixing services started by IDE with Docker
+
+During development, testing, or debugging it's often useful to run some services with Docker,
+while others with an IDE.
+
+To do that, first start all the services with Docker. Remember to override environment variables for services
+that you plan to run in an IDE:
+
+```bash
+OrganisationService=http://host.docker.internal:8082 docker compose up -d
+```
+
+In the above example, we pointed the Organisation service to the one we plan to start with the IDE.
+`host.docker.internal` is used to connect from Docker containers to the host machine.
+
+Next, stop selected services in Docker:
+
+```bash
+docker compose stop organisation
+```
+
+Finally, start the selected services in the IDE.
 
 ### Configuration
 

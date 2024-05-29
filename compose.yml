@@ -21,9 +21,9 @@ services:
       file: compose.common.yml
       service: organisation-app
     environment:
-      TenantService: 'http://tenant:8080'
-      OrganisationService: 'http://organisation:8080'
-      PersonService: 'http://person:8080'
+      TenantService: '${TenantService:-http://tenant:8080}'
+      OrganisationService: '${OrganisationService:-http://organisation:8080}'
+      PersonService: '${PersonService:-http://person:8080}'
   tenant:
     extends:
       file: compose.common.yml
