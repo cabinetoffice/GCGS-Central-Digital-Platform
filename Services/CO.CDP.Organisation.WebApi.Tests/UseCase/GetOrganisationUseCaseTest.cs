@@ -55,7 +55,7 @@ public class GetOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IClas
                 }],
             Addresses = {new OrganisationInformation.Persistence.Organisation.OrganisationAddress
             {
-                Type = AddressType.Regsitered,
+                Type = AddressType.Registered,
                 Address = new OrganisationInformation.Persistence.Address
                 {
                     StreetAddress = "1234 Test St",

@@ -45,6 +45,7 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
                 StreetAddress = "1234 Example St",
                 StreetAddress2 = "",
                 Locality = "Example City",
+                Region = "Test Region",
                 PostalCode = "12345",
                 CountryName = "Exampleland"
             },
@@ -108,6 +109,7 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
                 StreetAddress = "1234 Example St",
                 StreetAddress2 = "",
                 Locality = "Example City",
+                Region = "Test Region",
                 PostalCode = "12345",
                 CountryName = "Exampleland"
             },
@@ -158,12 +160,13 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
         persistanceOrganisation.As<Persistence.Organisation>().Addresses.First()
             .Should().BeEquivalentTo(new Persistence.Organisation.OrganisationAddress
             {
-                Type = AddressType.Regsitered,
+                Type = AddressType.Registered,
                 Address = new Address
                 {
                     StreetAddress = "1234 Example St",
                     StreetAddress2 = "",
                     Locality = "Example City",
+                    Region = "Test Region",
                     PostalCode = "12345",
                     CountryName = "Exampleland"
                 }
@@ -262,6 +265,7 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
                 StreetAddress = "1234 Example St",
                 StreetAddress2 = "",
                 Locality = "Example City",
+                Region = "Test Region",
                 PostalCode = "12345",
                 CountryName = "Exampleland"
             },

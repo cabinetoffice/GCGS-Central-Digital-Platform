@@ -45,7 +45,7 @@ public class GetOrganisationsUseCaseTest(AutoMapperFixture mapperFixture) : ICla
             }],
             Addresses = {new OrganisationInformation.Persistence.Organisation.OrganisationAddress
             {
-                Type  = AddressType.Regsitered,
+                Type  = AddressType.Registered,
                 Address = new Address
                 {
                     StreetAddress = "1234 Test St",
@@ -81,7 +81,7 @@ public class GetOrganisationsUseCaseTest(AutoMapperFixture mapperFixture) : ICla
             }],
             Addresses = {new OrganisationInformation.Persistence.Organisation.OrganisationAddress
             {
-                Type = Common.Enums.AddressType.Regsitered,
+                Type = Common.Enums.AddressType.Registered,
                 Address = new Address
                 {
                     StreetAddress = "1234 Test St",

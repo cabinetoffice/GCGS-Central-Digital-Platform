@@ -97,7 +97,7 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql) : 
             }],
             Addresses =  {new OrganisationAddress
             {
-                Type = AddressType.Regsitered,
+                Type = AddressType.Registered,
                 Address = new Address{
                     StreetAddress = "1234 Default St",
                     StreetAddress2 = "High Tower",

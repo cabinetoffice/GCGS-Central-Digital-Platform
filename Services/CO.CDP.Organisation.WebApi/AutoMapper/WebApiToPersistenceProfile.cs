@@ -14,7 +14,7 @@ public class WebApiToPersistenceProfile : Profile
             .ForMember(m => m.Id, o => o.MapFrom(m => m.Guid))
             .ForMember(m => m.Identifier, o => o.MapFrom(m => m.Identifiers.FirstOrDefault(i => i.Primary)))
             .ForMember(m => m.AdditionalIdentifiers, o => o.MapFrom(m => m.Identifiers.Where(i => !i.Primary)))
-            .ForMember(m => m.Address, o => o.MapFrom(m => m.Addresses.FirstOrDefault(i => i.Type == AddressType.Regsitered)));
+            .ForMember(m => m.Address, o => o.MapFrom(m => m.Addresses.FirstOrDefault(i => i.Type == AddressType.Registered)));
 
         CreateMap<OrganisationIdentifier, Persistence.Organisation.OrganisationIdentifier>()
             .ForMember(m => m.Id, o => o.Ignore())
@@ -33,7 +33,7 @@ public class WebApiToPersistenceProfile : Profile
         CreateMap<OrganisationAddress, Persistence.Address>(MemberList.Source);
         CreateMap<OrganisationAddress, Persistence.Organisation.OrganisationAddress>()
             .ForMember(m => m.Id, o => o.Ignore())
-            .ForMember(m => m.Type, o => o.MapFrom(m => AddressType.Regsitered))
+            .ForMember(m => m.Type, o => o.MapFrom(m => AddressType.Registered))
             .ForMember(m => m.Address, o => o.MapFrom(m => m));
 
         CreateMap<Persistence.Organisation.OrganisationAddress, Address>()

@@ -101,7 +101,7 @@ public static class EntityFactory
                 }],
             Addresses = {new OrganisationAddress
             {
-                Type  = AddressType.Regsitered,
+                Type  = AddressType.Registered,
                 Address = new Address{
                     StreetAddress = streetAddress,
                     StreetAddress2 = "",
