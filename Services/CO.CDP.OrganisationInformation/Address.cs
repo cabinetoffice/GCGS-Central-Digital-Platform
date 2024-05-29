@@ -1,3 +1,5 @@
+using CO.CDP.Common.Enums;
+
 namespace CO.CDP.OrganisationInformation;
 
 /// <summary>
@@ -22,4 +24,6 @@ public record Address
 
     /// <example>"United Kingdom"</example>
     public required string CountryName { get; init; }
+
+    public required AddressType Type { get; init; }
 }

@@ -1,6 +1,9 @@
+using System.Text.Json.Serialization;
+
 namespace CO.CDP.Common.Enums;
 
-public enum AddressType : int
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum AddressType
 {
     Registered = 1,
     Postal

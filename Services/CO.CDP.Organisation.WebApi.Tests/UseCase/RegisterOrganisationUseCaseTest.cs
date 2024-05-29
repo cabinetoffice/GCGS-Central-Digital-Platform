@@ -40,15 +40,16 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
                     LegalName = "AnotherOrganisationName"
                 }
             },
-            Address = new OrganisationAddress
+            Addresses = [new OrganisationAddress
             {
+                Type = AddressType.Registered,
                 StreetAddress = "1234 Example St",
                 StreetAddress2 = "",
                 Locality = "Example City",
                 Region = "Test Region",
                 PostalCode = "12345",
                 CountryName = "Exampleland"
-            },
+            }],
             ContactPoint = new OrganisationContactPoint
             {
                 Name = "Contact Name",
@@ -67,7 +68,7 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
             Name = "TheOrganisation",
             Identifier = command.Identifier.AsView(),
             AdditionalIdentifiers = command.AdditionalIdentifiers.AsView(),
-            Address = command.Address.AsView(),
+            Addresses = command.Addresses.AsView(),
             ContactPoint = command.ContactPoint.AsView(),
             Types = command.Types
         };
@@ -104,15 +105,16 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
                     LegalName = "AnotherOrganisationName"
                 }
             },
-            Address = new OrganisationAddress
+            Addresses = [new OrganisationAddress
             {
+                Type = AddressType.Registered,
                 StreetAddress = "1234 Example St",
                 StreetAddress2 = "",
                 Locality = "Example City",
                 Region = "Test Region",
                 PostalCode = "12345",
                 CountryName = "Exampleland"
-            },
+            }],
             ContactPoint = new OrganisationContactPoint
             {
                 Name = "Contact Name",
@@ -260,15 +262,16 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
                     LegalName = "AnotherOrganisationName"
                 }
             },
-            Address = new OrganisationAddress
+            Addresses = [new OrganisationAddress
             {
+                Type = AddressType.Registered,
                 StreetAddress = "1234 Example St",
                 StreetAddress2 = "",
                 Locality = "Example City",
                 Region = "Test Region",
                 PostalCode = "12345",
                 CountryName = "Exampleland"
-            },
+            }],
             ContactPoint = new OrganisationContactPoint
             {
                 Name = "Contact Name",

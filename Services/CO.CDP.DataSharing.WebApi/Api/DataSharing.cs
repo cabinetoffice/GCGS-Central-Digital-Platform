@@ -76,7 +76,8 @@ public static class EndpointExtensions
                     Locality = "CHESTER",
                     Region = "Lancashire",
                     PostalCode = "CH43 7UR",
-                    CountryName = "United Kingdom"
+                    CountryName = "United Kingdom",
+                    Type = Common.Enums.AddressType.Registered,
                 },
                 ContactPoint = new ContactPoint
                 {

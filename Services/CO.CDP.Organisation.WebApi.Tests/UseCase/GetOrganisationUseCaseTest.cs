@@ -100,15 +100,16 @@ public class GetOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IClas
                     Uri = new Uri("http://another-example.com"),
                 }
             ],
-            Address = new OrganisationInformation.Address
+            Addresses = [new OrganisationInformation.Address
             {
+                Type= AddressType.Registered,
                 StreetAddress = "1234 Test St",
                 StreetAddress2 = "Green Tower",
                 Locality = "Test City",
                 PostalCode = "12345",
                 CountryName = "Testland",
                 Region = ""
-            },
+            }],
             ContactPoint = new ContactPoint
             {
                 Name = "Contact Name",
