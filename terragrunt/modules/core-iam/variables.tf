@@ -17,6 +17,11 @@ variable "tags" {
   type        = map(string)
 }
 
+variable "terraform_operators" {
+  description = "List of IAM user ARNs allowed to assume terraform roles"
+  type        = list(string)
+}
+
 variable "tfstate_bucket_name" {
   description = "Terraform state files S3 Bucket name"
   type        = string

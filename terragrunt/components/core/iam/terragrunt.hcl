@@ -20,5 +20,7 @@ locals {
 }
 
 inputs = {
-  tags = local.tags
+  tags                = local.tags
+  terraform_operators = local.global_vars.locals.terraform_operators
+  tfstate_bucket_name = local.global_vars.locals.tg.state_bucket
 }
