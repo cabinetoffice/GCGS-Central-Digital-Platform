@@ -237,7 +237,10 @@ data "aws_iam_policy_document" "terraform" {
       "events:DeleteRule",
       "events:DescribeRule",
       "events:ListTagsForResource",
+      "events:ListTargetsByRule",
       "events:PutRule",
+      "events:PutTargets",
+      "events:RemoveTargets",
       "events:TagResource",
       "iam:PassRole",
     ]
