@@ -1,13 +1,15 @@
 locals {
 
     cidr_b_development = 3
+    cidr_b_production = 1
+    cidr_b_staging = 2
 
     environment = get_env("TG_ENVIRONMENT", "development")
 
     environments = {
         development = {
             cidr_block             = "10.${local.cidr_b_development}.0.0/16"
-            name                   = "production"
+            name                   = "development"
             postgres_instance_type = "db.t4g.micro"
             private_subnets        = [
                 "10.${local.cidr_b_development}.101.0/24",
@@ -20,6 +22,21 @@ locals {
                 "10.${local.cidr_b_development}.3.0/24"
             ]
         }
+        staging = {
+            cidr_block             = "10.${local.cidr_b_staging}.0.0/16"
+            name                   = "staging"
+            postgres_instance_type = "db.t4g.micro"
+            private_subnets        = [
+                "10.${local.cidr_b_staging}.101.0/24",
+                "10.${local.cidr_b_staging}.102.0/24",
+                "10.${local.cidr_b_staging}.103.0/24"
+            ]
+            public_subnets = [
+                "10.${local.cidr_b_staging}.1.0/24",
+                "10.${local.cidr_b_staging}.2.0/24",
+                "10.${local.cidr_b_staging}.3.0/24"
+            ]
+        }
     }
 
     product = {
@@ -28,15 +45,19 @@ locals {
         public_hosted_zone = "cdp-sirsi.civilservice.gov.uk"
     }
 
+    tags = {
+        environment    = local.environment
+        managed_by     = "terragrunt"
+    }
+
+    terraform_operators = [
+        "arn:aws:iam::525593800265:user/ali.bahman@goaco.com",
+        "arn:aws:iam::525593800265:user/jakub.zalas@goaco.com"
+    ]
 
     tg = {
         state_bucket = "tfstate-${local.product.resource_name}-${local.environment}-${get_aws_account_id()}"
         state_key    = "${path_relative_to_include()}/terraform.tfstate"
-    }
-
-    tags = {
-        environment    = local.environment
-        managed_by     = "terragrunt"
     }
 
     versions = {

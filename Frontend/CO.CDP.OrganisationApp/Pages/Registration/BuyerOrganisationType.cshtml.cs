@@ -43,7 +43,7 @@ public class BuyerOrganisationTypeModel(
         registrationDetails.BuyerOrganisationOtherValue = (BuyerOrganisationType == "type5" ? OtherValue : "");
         session.Set(Session.RegistrationDetailsKey, registrationDetails);
 
-        return RedirectToPage("BuyerDevolvedRegulations");
+        return RedirectToPage("BuyerDevolvedRegulation");
 
     }
 

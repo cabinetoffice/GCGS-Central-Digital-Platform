@@ -226,7 +226,7 @@ public class OrganisationRegisteredAddressModelTest
             OrganisationAddressLine2 = "address line 2",
             OrganisationCityOrTown = "london",
             OrganisationPostcode = "SW1A 2AA",
-            OrganisationCountry = "england"
+            OrganisationCountry = "United Kingdom"
         };
 
         return registrationDetails;

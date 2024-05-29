@@ -1,5 +1,6 @@
 # Define Docker/ECR attributes
-REPO_URL := 471112892058.dkr.ecr.eu-west-2.amazonaws.com
+AWS_ACCOUNT_ID=$$(aws sts get-caller-identity | jq -r '.Account')
+REPO_URL := $(AWS_ACCOUNT_ID).dkr.ecr.eu-west-2.amazonaws.com
 IMAGES := cdp-organisation-information-migrations cdp-data-sharing cdp-forms cdp-organisation-app cdp-organisation cdp-person cdp-tenant
 TAGGED_IMAGES := $(addprefix cabinetoffice/,$(addsuffix :latest,$(IMAGES)))
 TAGGED_REPO_IMAGES := $(addprefix $(REPO_URL)/,$(TAGGED_IMAGES))
@@ -115,4 +116,4 @@ aws-push-to-ecr: build-docker ## Build, tag and push Docker images to ECR
 	$(foreach image,$(TAGGED_IMAGES),docker tag $(image) $(REPO_URL)/$(notdir $(basename $(image)));)
 	aws ecr get-login-password --region eu-west-2 | docker login --username AWS --password-stdin $(REPO_URL)
 	$(foreach image,$(IMAGES),docker push $(REPO_URL)/$(image);)
-.PHONY: docker-push-to-ecr
+.PHONY: aws-push-to-ecr

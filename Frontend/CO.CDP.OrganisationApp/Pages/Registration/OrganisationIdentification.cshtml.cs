@@ -18,17 +18,12 @@ public class OrganisationIdentificationModel(ISession session) : PageModel
     public string? OrganisationScheme { get; set; }
 
     [BindProperty]
-    [DisplayName("Companies House Number")]
-    [RequiredIf("OrganisationType", "CHN")]
-    public string? CompaniesHouseNumber { get; set; }
-
-    [BindProperty]
     [DisplayName("Charity Commission for England & Wales")]
     public string? CharityCommissionEnglandWales { get; set; }
 
     [BindProperty]
     [DisplayName("Charity Commission for England & Wales Number")]
-    [RequiredIf("OrganisationType", "CCEW")]
+    [RequiredIf(nameof(OrganisationScheme), "CCEW", ErrorMessage = "Please enter the Charity Commission for England & Wales number.")]
     public string? CharityCommissionEnglandWalesNumber { get; set; }
 
     [BindProperty]
@@ -37,7 +32,7 @@ public class OrganisationIdentificationModel(ISession session) : PageModel
 
     [BindProperty]
     [DisplayName("Scottish Charity Regulator Number")]
-    [RequiredIf("OrganisationType", "SCR")]
+    [RequiredIf(nameof(OrganisationScheme), "SCR", ErrorMessage = "Please enter the Scottish Charity Regulator number.")]
     public string? ScottishCharityRegulatorNumber { get; set; }
 
     [BindProperty]
@@ -46,7 +41,7 @@ public class OrganisationIdentificationModel(ISession session) : PageModel
 
     [BindProperty]
     [DisplayName("Charity Commission for Northren Ireland Number")]
-    [RequiredIf("OrganisationType", "CCNI")]
+    [RequiredIf(nameof(OrganisationScheme), "CCNI", ErrorMessage = "Please enter the Charity Commission for Northren Ireland number.")]
     public string? CharityCommissionNorthernIrelandNumber { get; set; }
 
     [BindProperty]
@@ -55,7 +50,7 @@ public class OrganisationIdentificationModel(ISession session) : PageModel
 
     [BindProperty]
     [DisplayName("Mutuals Public Register Number")]
-    [RequiredIf("OrganisationType", "MPR")]
+    [RequiredIf(nameof(OrganisationScheme), "MPR", ErrorMessage = "Please enter the Mutuals Public Register number .")]
     public string? MutualsPublicRegisterNumber { get; set; }
 
     [BindProperty]
@@ -64,7 +59,7 @@ public class OrganisationIdentificationModel(ISession session) : PageModel
 
     [BindProperty]
     [DisplayName("Guernsey Registry Number")]
-    [RequiredIf("OrganisationType", "GRN")]
+    [RequiredIf(nameof(OrganisationScheme), "GRN", ErrorMessage = "Please enter the Guernsey Registry number.")]
     public string? GuernseyRegistryNumber { get; set; }
 
     [BindProperty]
@@ -73,7 +68,7 @@ public class OrganisationIdentificationModel(ISession session) : PageModel
 
     [BindProperty]
     [DisplayName("Jersey Financial Services Commission Registry Number")]
-    [RequiredIf("OrganisationType", "JFSC")]
+    [RequiredIf(nameof(OrganisationScheme), "JFSC", ErrorMessage = "Please enter Jersey Financial Services Commission Registry number")]
     public string? JerseyFinancialServicesCommissionRegistryNumber { get; set; }
 
     [BindProperty]
@@ -82,7 +77,7 @@ public class OrganisationIdentificationModel(ISession session) : PageModel
 
     [BindProperty]
     [DisplayName("Isle of Man Companies Registry Number")]
-    [RequiredIf("OrganisationType", "IMCR")]
+    [RequiredIf(nameof(OrganisationScheme), "IMCR", ErrorMessage = "Please enter the Isle of Man Companies Registry number.")]
     public string? IsleofManCompaniesRegistryNumber { get; set; }
 
     [BindProperty]
@@ -91,7 +86,7 @@ public class OrganisationIdentificationModel(ISession session) : PageModel
 
     [BindProperty]
     [DisplayName("NHS Organisation Data Service (ODS)")]
-    [RequiredIf("OrganisationType", "NHOR")]
+    [RequiredIf(nameof(OrganisationScheme), "NHOR", ErrorMessage = "Please enter the NHS Organisation Data Service number.")]
     public string? NationalHealthServiceOrganisationsRegistryNumber { get; set; }
 
     [BindProperty]
@@ -100,7 +95,7 @@ public class OrganisationIdentificationModel(ISession session) : PageModel
 
     [BindProperty]
     [DisplayName("UK Register of Learning Providers (UKPRN)")]
-    [RequiredIf("OrganisationType", "UKPRN")]
+    [RequiredIf(nameof(OrganisationScheme), "UKPRN", ErrorMessage = "Please enter the UK Register of Learning Providers number.")]
     public string? UKLearningProviderReferenceNumber { get; set; }
 
     [BindProperty]
@@ -109,7 +104,7 @@ public class OrganisationIdentificationModel(ISession session) : PageModel
 
     [BindProperty]
     [DisplayName("VAT number")]
-    [RequiredIf("OrganisationType", "VAT")]
+    [RequiredIf(nameof(OrganisationScheme), "VAT", ErrorMessage = "Please enter the VAT number.")]
     public string? VATNumber { get; set; }
 
     [BindProperty]

@@ -23,6 +23,51 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("CO.CDP.OrganisationInformation.Persistence.Address", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("CountryName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTimeOffset>("CreatedOn")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                    b.Property<string>("Locality")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("PostalCode")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Region")
+                        .HasColumnType("text");
+
+                    b.Property<string>("StreetAddress")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("StreetAddress2")
+                        .HasColumnType("text");
+
+                    b.Property<DateTimeOffset>("UpdatedOn")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Address");
+                });
+
             modelBuilder.Entity("CO.CDP.OrganisationInformation.Persistence.Organisation", b =>
                 {
                     b.Property<int>("Id")
@@ -46,7 +91,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                     b.Property<int>("TenantId")
                         .HasColumnType("integer");
 
-                    b.Property<List<int>>("Types")
+                    b.Property<int[]>("Types")
                         .IsRequired()
                         .HasColumnType("integer[]");
 
@@ -54,31 +99,6 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
                         .HasDefaultValueSql("CURRENT_TIMESTAMP");
-
-                    b.ComplexProperty<Dictionary<string, object>>("Address", "CO.CDP.OrganisationInformation.Persistence.Organisation.Address#OrganisationAddress", b1 =>
-                        {
-                            b1.IsRequired();
-
-                            b1.Property<string>("CountryName")
-                                .IsRequired()
-                                .HasColumnType("text");
-
-                            b1.Property<string>("Locality")
-                                .IsRequired()
-                                .HasColumnType("text");
-
-                            b1.Property<string>("PostalCode")
-                                .IsRequired()
-                                .HasColumnType("text");
-
-                            b1.Property<string>("StreetAddress")
-                                .IsRequired()
-                                .HasColumnType("text");
-
-                            b1.Property<string>("StreetAddress2")
-                                .IsRequired()
-                                .HasColumnType("text");
-                        });
 
                     b.ComplexProperty<Dictionary<string, object>>("ContactPoint", "CO.CDP.OrganisationInformation.Persistence.Organisation.ContactPoint#OrganisationContactPoint", b1 =>
                         {
@@ -235,6 +255,43 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.OwnsMany("CO.CDP.OrganisationInformation.Persistence.Organisation+OrganisationAddress", "Addresses", b1 =>
+                        {
+                            b1.Property<int>("Id")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("integer");
+
+                            NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b1.Property<int>("Id"));
+
+                            b1.Property<int>("AddressId")
+                                .HasColumnType("integer");
+
+                            b1.Property<int>("OrganisationId")
+                                .HasColumnType("integer");
+
+                            b1.Property<int>("Type")
+                                .HasColumnType("integer");
+
+                            b1.HasKey("Id");
+
+                            b1.HasIndex("AddressId");
+
+                            b1.HasIndex("OrganisationId");
+
+                            b1.ToTable("OrganisationAddress");
+
+                            b1.HasOne("CO.CDP.OrganisationInformation.Persistence.Address", "Address")
+                                .WithMany()
+                                .HasForeignKey("AddressId")
+                                .OnDelete(DeleteBehavior.Cascade)
+                                .IsRequired();
+
+                            b1.WithOwner()
+                                .HasForeignKey("OrganisationId");
+
+                            b1.Navigation("Address");
+                        });
+
                     b.OwnsMany("CO.CDP.OrganisationInformation.Persistence.Organisation+OrganisationIdentifier", "Identifiers", b1 =>
                         {
                             b1.Property<int>("Id")
@@ -273,6 +330,8 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                             b1.WithOwner()
                                 .HasForeignKey("OrganisationId");
                         });
+
+                    b.Navigation("Addresses");
 
                     b.Navigation("Identifiers");
 

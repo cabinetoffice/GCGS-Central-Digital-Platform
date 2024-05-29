@@ -104,7 +104,7 @@ public class BuyerOrganisationTypeTest
         var actionResult = model.OnPost();
 
         actionResult.Should().BeOfType<RedirectToPageResult>()
-            .Which.PageName.Should().Be("BuyerDevolvedRegulations");
+            .Which.PageName.Should().Be("BuyerDevolvedRegulation");
     }
 
     private BuyerOrganisationTypeModel GivenBuyerOrganisationTypeModel()

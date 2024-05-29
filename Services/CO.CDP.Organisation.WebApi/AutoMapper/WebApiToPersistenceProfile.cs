@@ -28,11 +28,21 @@ public class WebApiToPersistenceProfile : Profile
             .ReverseMap()
             .ForMember(m => m.Id, o => o.MapFrom(m => m.IdentifierId));
 
+        CreateMap<OrganisationAddress, Persistence.Address>(MemberList.Source)
+            .ForSourceMember(m => m.Type, o => o.DoNotValidate());
         CreateMap<OrganisationAddress, Persistence.Organisation.OrganisationAddress>()
-            .ReverseMap();
-        CreateMap<Address, Persistence.Organisation.OrganisationAddress>()
-            .ReverseMap()
-            .ForMember(m => m.Region, o => o.MapFrom(m => ""));
+            .ForMember(m => m.Id, o => o.Ignore())
+            .ForMember(m => m.Type, o => o.MapFrom(m => m.Type))
+            .ForMember(m => m.Address, o => o.MapFrom(m => m));
+
+        CreateMap<Persistence.Organisation.OrganisationAddress, Address>()
+            .ForMember(m => m.Type, o => o.MapFrom(m => m.Type))
+            .ForMember(m => m.StreetAddress, o => o.MapFrom(m => m.Address.StreetAddress))
+            .ForMember(m => m.StreetAddress2, o => o.MapFrom(m => m.Address.StreetAddress2))
+            .ForMember(m => m.Locality, o => o.MapFrom(m => m.Address.Locality))
+            .ForMember(m => m.Region, o => o.MapFrom(m => m.Address.Region))
+            .ForMember(m => m.PostalCode, o => o.MapFrom(m => m.Address.PostalCode))
+            .ForMember(m => m.CountryName, o => o.MapFrom(m => m.Address.CountryName));
 
         CreateMap<OrganisationContactPoint, Persistence.Organisation.OrganisationContactPoint>()
             .ReverseMap();

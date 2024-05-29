@@ -1,21 +1,18 @@
 namespace CO.CDP.OrganisationApp;
 
-public class ExceptionMiddleware
+public class ExceptionMiddleware(
+    RequestDelegate next,
+    ILogger<ExceptionMiddleware> logger)
 {
-    private readonly RequestDelegate _next;
-
-    public ExceptionMiddleware(RequestDelegate next)
-    {
-        _next = next;
-    }
     public async Task Invoke(HttpContext context)
     {
         try
         {
-            await this._next.Invoke(context);
+            await next.Invoke(context);
         }
-        catch
+        catch (Exception ex)
         {
+            logger.LogError(ex, ex.Message);
             context.Response.Redirect("/error");
         }
     }

@@ -1,8 +1,10 @@
 @page "/registration/buyer-devolved-regulations"
-@model BuyerDevolvedRegulationsModel
+@model BuyerDevolvedRegulationModel
 @using CO.CDP.Common.Enums
 
 @{
+    var devolvedHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Devolved)).HasInnerHtml;
+
     var backLink = "/registration/buyer-organisation-type";
 }
 
@@ -14,46 +16,38 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds govuk-body">
             <partial name="_ErrorSummary" model="@ModelState" />
-            <form method="post">
-                <div class="govuk-form-group">
+            <form method="post">               
+                <div class="govuk-form-group @(devolvedHasError ? "govuk-form-group--error" : "")">
                     <fieldset class="govuk-fieldset">
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                             <h1 class="govuk-fieldset__heading">
                                 Do devolved regulations apply to your organisation?
                             </h1>
                         </legend>
+                        @if (devolvedHasError)
+                        {
+                            <p id="devolved-error" class="govuk-error-message">
+                                <span class="govuk-visually-hidden">Error:</span> @Html.ValidationMessageFor(m => m.Devolved)
+                            </p>
+                        }
 
                         <div class="govuk-radios" data-module="govuk-radios">
                             <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="devolved-ni" name="devolved" type="radio" value="ni">
-                                <label class="govuk-label govuk-radios__label" for="devolved-ni">
-                                    Yes, Northern Ireland
+                                <input class="govuk-radios__input" id="devolved-yes" name="Devolved" type="radio" value="true" @(Model.Devolved == true ? "checked" : "")>
+                                <label class="govuk-label govuk-radios__label" for="devolved-yes">
+                                    Yes
                                 </label>
                             </div>
                             <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="devolved-scotland" name="devolved" type="radio" value="scotland">
-                                <label class="govuk-label govuk-radios__label" for="devolved-scotland">
-                                    Yes, Scotland
-                                </label>
-                            </div>
-
-                            <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="devolved-wales" name="devolved" type="radio" value="wales">
-                                <label class="govuk-label govuk-radios__label" for="devolved-wales">
-                                    Yes, Wales
-                                </label>
-                            </div>
-                            <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="devolved-na" name="devolved" type="radio" value="na">
+                                <input class="govuk-radios__input" id="devolved-na" name="Devolved" type="radio" value="false" @(Model.Devolved == false ? "checked" : "")>
                                 <label class="govuk-label govuk-radios__label" for="devolved-na">
                                     No
                                 </label>
-
                             </div>
                         </div>
                     </fieldset>
                 </div>
-                <a href="/registration/organisation-selection">
+                <a href="/registration/buyer-select-devolved-regulations">
                     <button type="submit" class="govuk-button" data-module="govuk-button">
                         Continue
                     </button>

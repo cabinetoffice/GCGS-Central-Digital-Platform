@@ -8,7 +8,7 @@ namespace CO.CDP.OrganisationInformation;
 public record ContactPoint
 {
     /// <example>"Procurement Team"</example>
-    public required string Name { get; init; }
+    public string? Name { get; init; }
 
     /// <example>"procurement@example.com"</example>
     public string? Email { get; init; }

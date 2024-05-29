@@ -70,21 +70,23 @@ public class OrganisationDetailsSummaryModel(
 
         return new NewOrganisation(
             additionalIdentifiers: null,
-            address: new OrganisationAddress(
-                details.OrganisationAddressLine1,
-                details.OrganisationAddressLine2,
-                details.OrganisationCityOrTown,
-                details.OrganisationCountry,
-                details.OrganisationPostcode),
+            addresses: [new OrganisationAddress(
+                type: AddressType.Registered,
+                streetAddress: details.OrganisationAddressLine1,
+                streetAddress2: details.OrganisationAddressLine2,
+                locality: details.OrganisationCityOrTown,
+                region: details.OrganisationRegion,
+                countryName: details.OrganisationCountry,
+                postalCode: details.OrganisationPostcode)],
             contactPoint: new OrganisationContactPoint(
-                details.OrganisationEmailAddress,
-                null,
-                null,
-                null),
+                email: details.OrganisationEmailAddress,
+                name: null,
+                telephone: null,
+                url: null),
             identifier: new OrganisationIdentifier(
-                details.OrganisationIdentificationNumber,
-                details.OrganisationName,
-                details.OrganisationScheme),
+                id: details.OrganisationIdentificationNumber,
+                legalName: details.OrganisationName,
+                scheme: details.OrganisationScheme),
             name: details.OrganisationName,
             types: details.OrganisationType.HasValue ? [(int)details.OrganisationType.Value] : [],
             personId: details.PersonId.Value

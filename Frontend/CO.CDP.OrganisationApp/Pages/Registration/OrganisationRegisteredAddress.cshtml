@@ -33,7 +33,12 @@
                         </legend>
 
                         <div id="hint" class="govuk-hint">The address of the company or organisation which is recorded on public records or within the public domain. This will be displayed on notices.</div>
-
+                        <p class="govuk-body">
+                            <a class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19"
+                               href="/registration/organisation-non-uk-address">
+                                Enter an international address
+                            </a>
+                        </p>
                         <div class="govuk-form-group @(addressLine1HasError ? "govuk-form-group--error" : "")">
                             <label class="govuk-label" for="@nameof(Model.AddressLine1)">
                                 @Html.DisplayNameFor(m => m.AddressLine1)
@@ -102,12 +107,7 @@
                             <label class="govuk-label" for="@nameof(Model.Country)">
                                 @Html.DisplayNameFor(m => m.Country)
                             </label>
-                            <select class="govuk-select" asp-for="@Model.Country">
-                                <option value="england" selected>England</option>
-                                <option value="scotland">Scotland</option>
-                                <option value="northernIreland">Northern Ireland</option>
-                                <option value="wales">Wales</option>
-                            </select>
+                            <input type="hidden" id="@nameof(Model.Country)" name="@nameof(Model.Country)" value="@Model.Country" />
                         </div>
                     </fieldset>
                 </div>

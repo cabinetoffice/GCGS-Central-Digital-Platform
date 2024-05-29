@@ -1,4 +1,4 @@
-using System.ComponentModel.DataAnnotations;
+using CO.CDP.Common.Enums;
 
 namespace CO.CDP.OrganisationInformation;
 
@@ -11,17 +11,19 @@ public record Address
     public required string StreetAddress { get; init; }
 
     /// <example>"Green Tower"</example>
-    public required string StreetAddress2 { get; init; }
+    public string? StreetAddress2 { get; init; }
 
     /// <example>"CHESTER"</example>
     public required string Locality { get; init; }
 
     /// <example>"Lancashire"</example>
-    public required string Region { get; init; }
+    public string? Region { get; init; }
 
     /// <example>"CH43 7UR"</example>
     public required string PostalCode { get; init; }
 
     /// <example>"United Kingdom"</example>
     public required string CountryName { get; init; }
+
+    public required AddressType Type { get; init; }
 }

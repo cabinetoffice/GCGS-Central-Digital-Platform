@@ -76,7 +76,8 @@ public static class EndpointExtensions
                     Locality = "CHESTER",
                     Region = "Lancashire",
                     PostalCode = "CH43 7UR",
-                    CountryName = "United Kingdom"
+                    CountryName = "United Kingdom",
+                    Type = Common.Enums.AddressType.Registered,
                 },
                 ContactPoint = new ContactPoint
                 {
@@ -201,10 +202,8 @@ public static class EndpointExtensions
                     new ShareVerificationReceipt
                     {
                         ShareCode = request.ShareCode,
-                        ExpiresAt = DateTime.Now.AddDays(5),
-                        FormId = Guid.Parse("f174b921-0c58-4644-80f1-8707d8300130"),
-                        FormVersionId = "20240427",
-                        Permissions = []
+                        FormVersionId = request.FormVersionId,
+                        IsLatest = true
                     }
                 )
             )

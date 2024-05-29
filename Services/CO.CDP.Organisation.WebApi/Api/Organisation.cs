@@ -24,15 +24,16 @@ public static class EndpointExtensions
             },
             Name = $"Tables Limited {id}",
             AdditionalIdentifiers = [],
-            Address = new Address
+            Addresses = [new Address
             {
+                Type = Common.Enums.AddressType.Registered,
                 StreetAddress = $"Green Lane {id}",
                 StreetAddress2 = "",
                 Locality = "London",
                 Region = "",
                 PostalCode = "BR8 7AA",
                 CountryName = "United Kingdom"
-            },
+            }],
             ContactPoint = new ContactPoint
             {
                 Name = "Bobby Tables",
@@ -102,7 +103,7 @@ public static class EndpointExtensions
                         Identifier =updatedOrganisation.Identifier.AsView(),
                         Name = updatedOrganisation.Name,
                         AdditionalIdentifiers = updatedOrganisation.AdditionalIdentifiers.AsView(),
-                        Address = updatedOrganisation.Address.AsView(),
+                        Addresses = updatedOrganisation.Addresses.AsView(),
                         ContactPoint = updatedOrganisation.ContactPoint?.AsView(),
                         Types = updatedOrganisation.Types,
                     };
@@ -117,24 +118,6 @@ public static class EndpointExtensions
                 operation.Description = "[STUB] Update a organisation [STUB]";
                 operation.Summary = "[STUB] Update a organisation [STUB]";
                 operation.Responses["200"].Description = "Organisation updated.";
-                return operation;
-            });
-        app.MapDelete("/organisations/{organisationId}", (Guid organisationId) =>
-            {
-                if (!_organisations.ContainsKey(organisationId))
-                {
-                    return Results.NotFound();
-                }
-                _organisations.Remove(organisationId);
-                return Results.NoContent();
-            })
-            .Produces(204)
-            .WithOpenApi(operation =>
-            {
-                operation.OperationId = "DeleteOrganisation";
-                operation.Description = "[STUB] Delete a organisation. [STUB]";
-                operation.Summary = "[STUB] Delete a organisation. [STUB]";
-                operation.Responses["204"].Description = "Organisation deleted.";
                 return operation;
             });
     }
