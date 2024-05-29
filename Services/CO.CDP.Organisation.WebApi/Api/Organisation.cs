@@ -1,7 +1,11 @@
+using System.Reflection;
 using CO.CDP.Common;
 using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.Organisation.WebApi.UseCase;
 using CO.CDP.OrganisationInformation;
+using CO.CDP.Swashbuckle.Filter;
+using CO.CDP.Swashbuckle.Security;
+using CO.CDP.Swashbuckle.SwaggerGen;
 using DotSwashbuckle.AspNetCore.SwaggerGen;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
@@ -188,6 +192,10 @@ public static class ApiExtensions
             return typeMap.GetValueOrDefault(type, type.Name);
         }
        );
+        options.IncludeXmlComments(Assembly.GetExecutingAssembly(), Assembly.GetAssembly(typeof(Address)));
+        options.OperationFilter<ProblemDetailsOperationFilter>();
+        options.ConfigureOneLoginSecurity();
+        options.ConfigureApiKeySecurity();
     }
 
 }
