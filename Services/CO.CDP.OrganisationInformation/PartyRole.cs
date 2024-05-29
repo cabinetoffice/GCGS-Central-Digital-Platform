@@ -1,12 +1,12 @@
 using System.Text.Json.Serialization;
 
-namespace CO.CDP.DataSharing.WebApi.Model;
+namespace CO.CDP.OrganisationInformation;
 
 /// <summary>
 /// Based on OCDS <a href="https://standard.open-contracting.org/latest/en/schema/codelists/#party-role">PartyRole</a>.
 /// </summary>
 [JsonConverter(typeof(JsonStringEnumConverter))]
-internal enum PartyRole
+public enum PartyRole
 {
     Buyer,
     ProcuringEntity,
