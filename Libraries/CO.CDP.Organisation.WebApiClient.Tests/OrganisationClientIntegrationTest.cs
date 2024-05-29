@@ -24,6 +24,7 @@ public class OrganisationClientIntegrationTest(ITestOutputHelper testOutputHelpe
             legalName: "New Org Legal Name"
         );
         var address = new OrganisationAddress(
+            type: AddressType.Registered,
             streetAddress: "1234 New St",
             streetAddress2: "",
             locality: "New City",
@@ -49,7 +50,7 @@ public class OrganisationClientIntegrationTest(ITestOutputHelper testOutputHelpe
         var newOrganisation = new NewOrganisation(
             personId: unknownPersonId,
             additionalIdentifiers: additionalIdentifiers,
-            address: address,
+            addresses: [address],
             contactPoint: contactPoint,
             identifier: identifier,
             name: "New Organisation",

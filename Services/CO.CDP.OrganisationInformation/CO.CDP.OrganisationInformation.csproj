@@ -6,4 +6,8 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\..\Libraries\CO.CDP.Common\CO.CDP.Common.csproj" />
+    </ItemGroup>
+
 </Project>

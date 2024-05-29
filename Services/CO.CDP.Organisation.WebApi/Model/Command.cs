@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using CO.CDP.Common.Enums;
 using CO.CDP.OrganisationInformation;
 
 namespace CO.CDP.Organisation.WebApi.Model;
@@ -12,8 +13,7 @@ public record RegisterOrganisation
 
     public List<OrganisationIdentifier>? AdditionalIdentifiers { get; init; }
 
-    [Required]
-    public required OrganisationAddress Address { get; init; }
+    public List<OrganisationAddress> Addresses { get; init; } = [];
 
     public required OrganisationContactPoint? ContactPoint { get; init; }
 
@@ -32,7 +32,7 @@ internal record UpdateOrganisation
     public List<OrganisationIdentifier>? AdditionalIdentifiers { get; init; }
 
     [Required]
-    public required OrganisationAddress Address { get; init; }
+    public List<OrganisationAddress> Addresses { get; init; } = [];
 
     public OrganisationContactPoint? ContactPoint { get; init; }
 
@@ -49,6 +49,9 @@ public record OrganisationIdentifier
 
 public record OrganisationAddress
 {
+    [Required]
+    public required AddressType Type { get; init; }
+
     [Required(AllowEmptyStrings = false)]
     public required string StreetAddress { get; init; }
 
@@ -91,6 +94,7 @@ public static class MappingExtensions
     public static Address AsView(this OrganisationAddress command) =>
         new()
         {
+            Type = command.Type,
             StreetAddress = command.StreetAddress,
             StreetAddress2 = command.StreetAddress2,
             Locality = command.Locality,
@@ -98,6 +102,9 @@ public static class MappingExtensions
             PostalCode = command.PostalCode,
             CountryName = command.CountryName
         };
+
+    public static List<Address> AsView(this List<OrganisationAddress> command) =>
+        command?.Select(i => i.AsView()).ToList() ?? [];
 
     public static ContactPoint AsView(this OrganisationContactPoint command) =>
         new()

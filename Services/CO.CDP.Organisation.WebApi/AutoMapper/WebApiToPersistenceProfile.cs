@@ -1,5 +1,4 @@
 using AutoMapper;
-using CO.CDP.Common.Enums;
 using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.OrganisationInformation;
 using Persistence = CO.CDP.OrganisationInformation.Persistence;
@@ -13,8 +12,7 @@ public class WebApiToPersistenceProfile : Profile
         CreateMap<Persistence.Organisation, Model.Organisation>()
             .ForMember(m => m.Id, o => o.MapFrom(m => m.Guid))
             .ForMember(m => m.Identifier, o => o.MapFrom(m => m.Identifiers.FirstOrDefault(i => i.Primary)))
-            .ForMember(m => m.AdditionalIdentifiers, o => o.MapFrom(m => m.Identifiers.Where(i => !i.Primary)))
-            .ForMember(m => m.Address, o => o.MapFrom(m => m.Addresses.FirstOrDefault(i => i.Type == AddressType.Registered)));
+            .ForMember(m => m.AdditionalIdentifiers, o => o.MapFrom(m => m.Identifiers.Where(i => !i.Primary)));
 
         CreateMap<OrganisationIdentifier, Persistence.Organisation.OrganisationIdentifier>()
             .ForMember(m => m.Id, o => o.Ignore())
@@ -30,13 +28,15 @@ public class WebApiToPersistenceProfile : Profile
             .ReverseMap()
             .ForMember(m => m.Id, o => o.MapFrom(m => m.IdentifierId));
 
-        CreateMap<OrganisationAddress, Persistence.Address>(MemberList.Source);
+        CreateMap<OrganisationAddress, Persistence.Address>(MemberList.Source)
+            .ForSourceMember(m => m.Type, o => o.DoNotValidate());
         CreateMap<OrganisationAddress, Persistence.Organisation.OrganisationAddress>()
             .ForMember(m => m.Id, o => o.Ignore())
-            .ForMember(m => m.Type, o => o.MapFrom(m => AddressType.Registered))
+            .ForMember(m => m.Type, o => o.MapFrom(m => m.Type))
             .ForMember(m => m.Address, o => o.MapFrom(m => m));
 
         CreateMap<Persistence.Organisation.OrganisationAddress, Address>()
+            .ForMember(m => m.Type, o => o.MapFrom(m => m.Type))
             .ForMember(m => m.StreetAddress, o => o.MapFrom(m => m.Address.StreetAddress))
             .ForMember(m => m.StreetAddress2, o => o.MapFrom(m => m.Address.StreetAddress2))
             .ForMember(m => m.Locality, o => o.MapFrom(m => m.Address.Locality))
@@ -56,8 +56,7 @@ public class WebApiToPersistenceProfile : Profile
             .ForMember(m => m.Persons, o => o.Ignore())
             .ForMember(m => m.CreatedOn, o => o.Ignore())
             .ForMember(m => m.UpdatedOn, o => o.Ignore())
-            .ForMember(m => m.Identifiers, o => o.MapFrom<IdentifiersResolver>())
-            .ForMember(m => m.Addresses, o => o.MapFrom(m => new[] { m.Address }));
+            .ForMember(m => m.Identifiers, o => o.MapFrom<IdentifiersResolver>());
     }
 
     public class IdentifiersResolver : IValueResolver<RegisterOrganisation, Persistence.Organisation,

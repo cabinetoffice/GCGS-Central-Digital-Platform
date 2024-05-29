@@ -4,6 +4,7 @@
 
 @{
     var organisationDetails = Model.OrganisationDetails!;
+    var registeredAddress = organisationDetails.Addresses.FirstOrDefault(a => a.Type == Organisation.WebApiClient.AddressType.Registered);
 }
 
 <main class="govuk-main-wrapper">
@@ -54,21 +55,24 @@
                         </dd>
                     </div>
 
-                    <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">
-                            Organisation address
-                        </dt>
-                        <dd class="govuk-summary-list__value">
-                            <p class="govuk-body">@organisationDetails.Address.StreetAddress</p>
-                            <p class="govuk-body">@organisationDetails.Address.StreetAddress2</p>
-                            <p class="govuk-body">@organisationDetails.Address.Locality</p>
-                            <p class="govuk-body">@organisationDetails.Address.PostalCode</p>
-                            <p class="govuk-body">@organisationDetails.Address.CountryName</p>
-                        </dd>
-                        <dd class="govuk-summary-list__actions">
-                            <a class="govuk-link govuk-link--no-visited-state" href="#">Change<span class="govuk-visually-hidden"> address</span></a>
-                        </dd>
-                    </div>
+                    @if (registeredAddress != null)
+                    {
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">
+                                Organisation address
+                            </dt>
+                            <dd class="govuk-summary-list__value">
+                                <p class="govuk-body">@registeredAddress.StreetAddress</p>
+                                <p class="govuk-body">@registeredAddress.StreetAddress2</p>
+                                <p class="govuk-body">@registeredAddress.Locality</p>
+                                <p class="govuk-body">@registeredAddress.PostalCode</p>
+                                <p class="govuk-body">@registeredAddress.CountryName</p>
+                            </dd>
+                            <dd class="govuk-summary-list__actions">
+                                <a class="govuk-link govuk-link--no-visited-state" href="#">Change<span class="govuk-visually-hidden"> address</span></a>
+                            </dd>
+                        </div>
+                    }
 
                 </dl>
                 <h2 class="govuk-heading-m govuk-!-margin-top-9">Organisation users</h2>
