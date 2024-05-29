@@ -24,3 +24,19 @@ If in any case, this limit is hit, the service will recieve 429 Too Many Request
  public string CompanyNumber { get; set; }
  public CompaniesHouseAddress RegisteredOfficeAddress { get; set; }
 ----
+== How to start using Companies House API
+STEP1: You need to register with your email. It will send you a verification email in your inpox.
+
+STEP2: To register, login to https://developer.company-information.service.gov.uk/
+
+STEP3: Once successfuly logged in, create an Application which will give you an access key, 
+https://developer.company-information.service.gov.uk/manage-applications/add
+
+STEP4: Generate a key, you can use that key in your application. Store it in either appsettings or congif file.
+
+STEP5: Try calling the API using the API KEY. In postman use the following end-point
+https://api.company-information.service.gov.uk/company/00000006/registered-office-address
+User basic auth: Remember that you need to put the API key in the username and there is NO password. 
+
+More Information and endpoints: https://developer-specs.company-information.service.gov.uk/companies-house-public-data-api/reference
+
