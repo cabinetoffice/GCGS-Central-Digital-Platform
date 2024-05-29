@@ -55,11 +55,11 @@ public class OrganisationRegisteredAddressModel(ISession session) : PageModel
 
         var registrationDetails = VerifySession();
 
-        registrationDetails.OrganisationAddressLine1 = AddressLine1;
-        registrationDetails.OrganisationAddressLine2 = AddressLine2;
-        registrationDetails.OrganisationCityOrTown = TownOrCity;
-        registrationDetails.OrganisationPostcode = Postcode;
-        registrationDetails.OrganisationCountry = Country;
+        registrationDetails.OrganisationAddressLine1 = AddressLine1 ?? registrationDetails.OrganisationAddressLine1;
+        registrationDetails.OrganisationAddressLine2 = AddressLine2 ?? registrationDetails.OrganisationAddressLine2;
+        registrationDetails.OrganisationCityOrTown = TownOrCity ?? registrationDetails.OrganisationCityOrTown;
+        registrationDetails.OrganisationPostcode = Postcode ?? registrationDetails.OrganisationPostcode;
+        registrationDetails.OrganisationCountry = Country ?? registrationDetails.OrganisationCountry;
 
         session.Set(Session.RegistrationDetailsKey, registrationDetails);
 
