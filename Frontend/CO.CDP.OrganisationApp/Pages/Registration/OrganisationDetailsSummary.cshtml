@@ -95,13 +95,23 @@
                         </dt>
                         <dd class="govuk-summary-list__value">
                             <p class="govuk-body">@details?.OrganisationAddressLine1</p>
-                            <p class="govuk-body">@details?.OrganisationAddressLine2</p>
+                            @if (!string.IsNullOrWhiteSpace(details?.OrganisationAddressLine2))
+                            {
+                                <p class="govuk-body">@details?.OrganisationAddressLine2</p>
+                            }
                             <p class="govuk-body">@details?.OrganisationCityOrTown</p>
+                            @if (!string.IsNullOrWhiteSpace(details?.OrganisationRegion))
+                            {
+                                <p class="govuk-body">@details?.OrganisationRegion</p>
+                            }
                             <p class="govuk-body">@details?.OrganisationPostcode</p>
-                            <p class="govuk-body govuk-visually-hidden">@details?.OrganisationCountry</p>
+                            <p class="govuk-body">@details?.OrganisationCountry</p>
                         </dd>
                         <dd class="govuk-summary-list__actions">
-                            <a class="govuk-link" href="/registration/organisation-registered-address?frm-summary">Change<span class="govuk-visually-hidden"> organisation address</span></a>
+                            <a class="govuk-link"
+                               href="/registration/@(details?.OrganisationCountry == "United Kingdom" ? "organisation-registered-address" : "organisation-non-uk-address")?frm-summary">
+                                Change<span class="govuk-visually-hidden"> organisation address</span>
+                            </a>
                         </dd>
                     </div>
                 </dl>

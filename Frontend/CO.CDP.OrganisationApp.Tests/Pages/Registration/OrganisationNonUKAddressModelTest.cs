@@ -11,11 +11,11 @@ using Moq;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages.Registration;
 
-public class OrganisationRegisteredAddressModelTest
+public class OrganisationNonUKAddressModelTest
 {
     private readonly Mock<ISession> sessionMock;
 
-    public OrganisationRegisteredAddressModelTest()
+    public OrganisationNonUKAddressModelTest()
     {
         sessionMock = new Mock<ISession>();
     }
@@ -130,7 +130,7 @@ public class OrganisationRegisteredAddressModelTest
     public void WhenCountryIsNotEmpty_ShouldNotRaiseCountryValidationError()
     {
         var model = GivenOrganisationAddressModel();
-        model.Country = "england";
+        model.Country = "India";
 
         var results = ModelValidationHelper.Validate(model);
 
@@ -214,7 +214,7 @@ public class OrganisationRegisteredAddressModelTest
         model.AddressLine2.Should().Be(registrationDetails.OrganisationAddressLine2);
         model.TownOrCity.Should().Be(registrationDetails.OrganisationCityOrTown);
         model.Postcode.Should().Be(registrationDetails.OrganisationPostcode);
-        //model.Country.Should().Be(registrationDetails.OrganisationCountry);
+        model.Country.Should().Be(registrationDetails.OrganisationCountry);
     }
 
     private RegistrationDetails DummyRegistrationDetails()
@@ -224,9 +224,10 @@ public class OrganisationRegisteredAddressModelTest
             UserUrn = "urn:fdc:gov.uk:2022:2e7f0429ebec480fb5568221a3fd735f",
             OrganisationAddressLine1 = "address line 1",
             OrganisationAddressLine2 = "address line 2",
-            OrganisationCityOrTown = "london",
-            OrganisationPostcode = "SW1A 2AA",
-            OrganisationCountry = "United Kingdom"
+            OrganisationCityOrTown = "New Delhi",
+            OrganisationRegion = "NCR",
+            OrganisationPostcode = "0123456789",
+            OrganisationCountry = "India"
         };
 
         return registrationDetails;
@@ -243,8 +244,8 @@ public class OrganisationRegisteredAddressModelTest
         action.Should().Throw<Exception>().WithMessage(ErrorMessagesList.SessionNotFound);
     }
 
-    private OrganisationRegisteredAddressModel GivenOrganisationAddressModel()
+    private OrganisationNonUKAddressModel GivenOrganisationAddressModel()
     {
-        return new OrganisationRegisteredAddressModel(sessionMock.Object);
+        return new OrganisationNonUKAddressModel(sessionMock.Object);
     }
 }
