@@ -4,30 +4,22 @@ using CO.CDP.OrganisationApp.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 
 namespace CO.CDP.OrganisationApp.Pages.Registration;
 
 [Authorize]
-public class BuyerOrganisationTypeModel(
-    ISession session) : PageModel
+public class BuyerSelectDevolvedRegulationModel(ISession session) : PageModel
 {
     [BindProperty]
-    [Required(ErrorMessage = "Select the organisation type")]
-    public string? BuyerOrganisationType { get; set; }
-
-    [BindProperty]
-    [DisplayName("Enter type")]
-    [RequiredIf("BuyerOrganisationType", "type5")]
-    public string? OtherValue { get; set; }
+    [NotEmpty(ErrorMessage = "Select the do devolved regulations apply to your organisation?")]
+    public required List<string> Regulations { get; set; } = [];
 
     public IActionResult OnGet()
     {
         var registrationDetails = VerifySession();
 
-        BuyerOrganisationType = registrationDetails.BuyerOrganisationType;
-        OtherValue = registrationDetails.BuyerOrganisationOtherValue;
+        Regulations = registrationDetails.Regulations ?? [];
+
         return Page();
     }
 
@@ -39,12 +31,10 @@ public class BuyerOrganisationTypeModel(
         }
 
         var registrationDetails = VerifySession();
-        registrationDetails.BuyerOrganisationType = BuyerOrganisationType;
-        registrationDetails.BuyerOrganisationOtherValue = (BuyerOrganisationType == "type5" ? OtherValue : "");
+        registrationDetails.Regulations = Regulations;
         session.Set(Session.RegistrationDetailsKey, registrationDetails);
 
-        return RedirectToPage("BuyerDevolvedRegulation");
-
+        return RedirectToPage("OrganisationSelection");
     }
 
     private RegistrationDetails VerifySession()

@@ -12,11 +12,11 @@ using Moq;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages.Registration;
 
-public class BuyerOrganisationTypeTest
+public class BuyerDevolvedRegulationTest
 {
     private readonly Mock<ISession> sessionMock;
 
-    public BuyerOrganisationTypeTest()
+    public BuyerDevolvedRegulationTest()
     {
         sessionMock = new Mock<ISession>();
     }
@@ -24,7 +24,7 @@ public class BuyerOrganisationTypeTest
     [Fact]
     public void OnGet_WhenRegistrationDetailsNotInSession_ShouldThrowException()
     {
-        var model = GivenBuyerOrganisationTypeModel();
+        var model = GivenBuyerDevolvedRegulationModel();
 
         Action act = () => model.OnGet();
 
@@ -32,21 +32,21 @@ public class BuyerOrganisationTypeTest
     }
 
     [Fact]
-    public void OnGet_WhenOrganisationTypeSetInSession_ShouldPopulatePageModel()
+    public void OnGet_WhenDevolvedSetInSession_ShouldPopulatePageModel()
     {
-        var model = GivenBuyerOrganisationTypeModel();
+        var model = GivenBuyerDevolvedRegulationModel();
 
         sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey))
             .Returns(new RegistrationDetails
             {
                 UserUrn = "urn:test",
                 OrganisationType = OrganisationType.Tenderer,
-                BuyerOrganisationType = "type1"
+                Devolved = true
             });
 
         model.OnGet();
 
-        model.BuyerOrganisationType.Should().Be("type1");
+        model.Devolved.Should().BeTrue();
     }
 
     [Fact]
@@ -58,7 +58,7 @@ public class BuyerOrganisationTypeTest
             new RouteData(), new PageActionDescriptor(), modelState);
         var pageContext = new PageContext(actionContext);
 
-        var model = GivenBuyerOrganisationTypeModel();
+        var model = GivenBuyerDevolvedRegulationModel();
         model.PageContext = pageContext;
 
         var actionResult = model.OnPost();
@@ -67,9 +67,9 @@ public class BuyerOrganisationTypeTest
     }
 
     [Fact]
-    public void OnPost_WhenRegistrationDetailsNotInSession_ShouldThrowException()
+    public void OnPost_WhenDevolvedNotInSession_ShouldThrowException()
     {
-        var model = GivenBuyerOrganisationTypeModel();
+        var model = GivenBuyerDevolvedRegulationModel();
 
         Action act = () => model.OnPost();
 
@@ -77,38 +77,54 @@ public class BuyerOrganisationTypeTest
     }
 
     [Fact]
-    public void OnPost_WhenValidModel_ShouldSetOrganisationTypeInSession()
+    public void OnPost_WhenValidModel_ShouldSetDevolvedInSession()
     {
-        var model = GivenBuyerOrganisationTypeModel();
-        model.BuyerOrganisationType = "type1";
+        var model = GivenBuyerDevolvedRegulationModel();
+        model.Devolved = true;
 
         sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey))
-            .Returns(new RegistrationDetails { UserUrn = "urn:test", OrganisationType = OrganisationType.Tenderer });
+            .Returns(new RegistrationDetails { UserUrn = "urn:test", Devolved = true });
 
         var results = model.OnPost();
 
         sessionMock.Verify(v => v.Set(Session.RegistrationDetailsKey,
             It.Is<RegistrationDetails>(rd =>
-                rd.OrganisationType == OrganisationType.Tenderer
+                rd.Devolved == true
             )), Times.Once);
     }
 
     [Fact]
-    public void OnPost_WhenValidModel_ShouldRedirectToBuyerDevolvedRegulationsPage()
+    public void OnPost_WhenValidModelWithYes_ShouldRedirectToBuyerSelectDevolvedRegulationPage()
     {
-        var model = GivenBuyerOrganisationTypeModel();
+        var model = GivenBuyerDevolvedRegulationModel();
+        model.Devolved = true;
 
         sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey))
-            .Returns(new RegistrationDetails { UserUrn = "urn:test", OrganisationType = OrganisationType.Tenderer });
+            .Returns(new RegistrationDetails { UserUrn = "urn:test", Devolved = true });
 
         var actionResult = model.OnPost();
 
         actionResult.Should().BeOfType<RedirectToPageResult>()
-            .Which.PageName.Should().Be("BuyerDevolvedRegulation");
+            .Which.PageName.Should().Be("BuyerSelectDevolvedRegulation");
     }
 
-    private BuyerOrganisationTypeModel GivenBuyerOrganisationTypeModel()
+    [Fact]
+    public void OnPost_WhenValidModelWithNo_ShouldRedirectToOrganisationSelectionPage()
     {
-        return new BuyerOrganisationTypeModel(sessionMock.Object);
+        var model = GivenBuyerDevolvedRegulationModel();
+        model.Devolved = false;
+
+        sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey))
+            .Returns(new RegistrationDetails { UserUrn = "urn:test", Devolved = false });
+
+        var actionResult = model.OnPost();
+
+        actionResult.Should().BeOfType<RedirectToPageResult>()
+            .Which.PageName.Should().Be("OrganisationSelection");
+    }
+
+    private BuyerDevolvedRegulationModel GivenBuyerDevolvedRegulationModel()
+    {
+        return new BuyerDevolvedRegulationModel(sessionMock.Object);
     }
 }

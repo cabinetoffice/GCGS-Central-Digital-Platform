@@ -1,33 +1,25 @@
-using CO.CDP.Common;
 using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace CO.CDP.OrganisationApp.Pages.Registration;
 
 [Authorize]
-public class BuyerOrganisationTypeModel(
-    ISession session) : PageModel
+public class BuyerDevolvedRegulationModel(ISession session) : PageModel
 {
     [BindProperty]
-    [Required(ErrorMessage = "Select the organisation type")]
-    public string? BuyerOrganisationType { get; set; }
-
-    [BindProperty]
-    [DisplayName("Enter type")]
-    [RequiredIf("BuyerOrganisationType", "type5")]
-    public string? OtherValue { get; set; }
+    [Required(ErrorMessage = "Select the do devolved regulations apply to your organisation?")]
+    public bool? Devolved { get; set; }
 
     public IActionResult OnGet()
     {
         var registrationDetails = VerifySession();
 
-        BuyerOrganisationType = registrationDetails.BuyerOrganisationType;
-        OtherValue = registrationDetails.BuyerOrganisationOtherValue;
+        Devolved = registrationDetails.Devolved;
+
         return Page();
     }
 
@@ -39,12 +31,19 @@ public class BuyerOrganisationTypeModel(
         }
 
         var registrationDetails = VerifySession();
-        registrationDetails.BuyerOrganisationType = BuyerOrganisationType;
-        registrationDetails.BuyerOrganisationOtherValue = (BuyerOrganisationType == "type5" ? OtherValue : "");
-        session.Set(Session.RegistrationDetailsKey, registrationDetails);
+        registrationDetails.Devolved = Devolved;        
 
-        return RedirectToPage("BuyerDevolvedRegulation");
-
+        if (Devolved == true)
+        {
+            session.Set(Session.RegistrationDetailsKey, registrationDetails);
+            return RedirectToPage("BuyerSelectDevolvedRegulation");
+        }
+        else
+        {
+            registrationDetails.Regulations = [];
+            session.Set(Session.RegistrationDetailsKey, registrationDetails);
+            return RedirectToPage("OrganisationSelection");
+        }
     }
 
     private RegistrationDetails VerifySession()

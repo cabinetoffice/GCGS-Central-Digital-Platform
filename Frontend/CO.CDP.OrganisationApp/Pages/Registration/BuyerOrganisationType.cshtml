@@ -6,7 +6,7 @@
     var organisationTypeHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.BuyerOrganisationType)).HasInnerHtml;
     var otherHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.OtherValue)).HasInnerHtml;
 
-    var backLink = "/registration/organisation-type";    
+    var backLink = "/registration/organisation-registered-address";
 
     string IsSelected(string radioValue)
     {
@@ -48,10 +48,10 @@
                                        type="radio" value="type1"
                                        aria-describedby="ca-type-item-hint" @IsSelected("type1")>
                                 <label class="govuk-label govuk-radios__label" for="ca-type">
-                                    Public authority - UK, Scottish and Welsh central government, and Northern Irish Executive
+                                    Central government, public authority: UK, Scottish, Welsh and Northern Irish Executive
                                 </label>
                                 <div id="ca-type-item-hint" class="govuk-hint govuk-radios__hint">
-                                    This includes arm’s-length bodies (ALB):
+                                    Includes arm's-length bodies:
                                     <ul>
                                         <li>executive agencies (EA)</li>
                                         <li>non-departmental public bodies (NDPB)</li>
@@ -66,12 +66,11 @@
                                        type="radio" value="type2"
                                        aria-describedby="ca-type-2-item-hint" @IsSelected("type2")>
                                 <label class="govuk-label govuk-radios__label" for="ca-type-2">
-                                    Public authority - regional and local government
+                                    Regional and local government, public authority: UK, Scottish, Welsh and Northern Irish
                                 </label>
                                 <div id="ca-type-2-item-hint" class="govuk-hint govuk-radios__hint">
-                                    This includes:
+                                    Includes:
                                     <ul>
-                                        <li>UK, Scottish, Welsh and Northern Irish regional and local government</li>
                                         <li>unitary authorities</li>
                                         <li>county, district, borough and parish councils</li>
                                         <li>the Greater London Authority</li>
@@ -128,7 +127,7 @@
                                             @type = "text",
                                             spellcheck = "false",
                                             autocomplete = "off"
-                                        })                                    
+                                        })
                                 </div>
                             </div>
                         </div>
