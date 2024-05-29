@@ -75,7 +75,7 @@ public class OrganisationDetailsSummaryModel(
                 streetAddress: details.OrganisationAddressLine1,
                 streetAddress2: details.OrganisationAddressLine2,
                 locality: details.OrganisationCityOrTown,
-                region: null,
+                region: details.OrganisationRegion,
                 countryName: details.OrganisationCountry,
                 postalCode: details.OrganisationPostcode)],
             contactPoint: new OrganisationContactPoint(

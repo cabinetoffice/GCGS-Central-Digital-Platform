@@ -39,11 +39,14 @@ public class OrganisationRegisteredAddressModel(ISession session) : PageModel
     {
         var details = VerifySession();
 
-        AddressLine1 = details.OrganisationAddressLine1;
-        AddressLine2 = details.OrganisationAddressLine2;
-        TownOrCity = details.OrganisationCityOrTown;
-        Postcode = details.OrganisationPostcode;
-        Country = details.OrganisationCountry;
+        if (details.OrganisationCountry == "United Kingdom")
+        {
+            AddressLine1 = details.OrganisationAddressLine1;
+            AddressLine2 = details.OrganisationAddressLine2;
+            TownOrCity = details.OrganisationCityOrTown;
+            Postcode = details.OrganisationPostcode;
+            Country = details.OrganisationCountry;
+        }
     }
 
     public IActionResult OnPost()
@@ -59,6 +62,7 @@ public class OrganisationRegisteredAddressModel(ISession session) : PageModel
         registrationDetails.OrganisationAddressLine2 = AddressLine2 ?? registrationDetails.OrganisationAddressLine2;
         registrationDetails.OrganisationCityOrTown = TownOrCity ?? registrationDetails.OrganisationCityOrTown;
         registrationDetails.OrganisationPostcode = Postcode ?? registrationDetails.OrganisationPostcode;
+        registrationDetails.OrganisationRegion = "";
         registrationDetails.OrganisationCountry = Country ?? registrationDetails.OrganisationCountry;
 
         session.Set(Session.RegistrationDetailsKey, registrationDetails);
