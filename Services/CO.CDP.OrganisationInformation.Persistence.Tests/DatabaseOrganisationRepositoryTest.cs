@@ -115,7 +115,7 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql) : 
             },
             UpdatedOn = initialDate,
             CreatedOn = initialDate,
-            Types =  { OrganisationType.ProcuringEntity }
+            Roles =  { PartyRole.Buyer }
         };
 
         repository.Save(organisation);

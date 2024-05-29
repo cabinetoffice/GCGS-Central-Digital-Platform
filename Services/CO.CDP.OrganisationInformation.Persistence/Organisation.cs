@@ -15,7 +15,7 @@ public class Organisation : IEntityDate
     public ICollection<OrganisationIdentifier> Identifiers { get; set; } = [];
     public ICollection<OrganisationAddress> Addresses { get; set; } = [];
     public required OrganisationContactPoint ContactPoint { get; set; }
-    public List<OrganisationType> Types { get; set; } = [];
+    public List<PartyRole> Roles { get; set; } = [];
     public List<Person> Persons { get; } = [];
     public DateTimeOffset CreatedOn { get; set; }
     public DateTimeOffset UpdatedOn { get; set; }

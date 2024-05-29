@@ -1,4 +1,5 @@
 using CO.CDP.Common.Enums;
+using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.Pages.Registration;
@@ -40,7 +41,7 @@ public class BuyerSelectDevolvedRegulationTest
             .Returns(new RegistrationDetails
             {
                 UserUrn = "urn:test",
-                OrganisationType = OrganisationType.Tenderer,
+                OrganisationType = OrganisationType.Buyer,
                 Devolved = true,
                 Regulations = ["ni"]
             });

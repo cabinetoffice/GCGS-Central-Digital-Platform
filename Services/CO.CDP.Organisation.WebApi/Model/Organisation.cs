@@ -20,7 +20,8 @@ public record Organisation
 
     public required Address Address { get; init; }
 
-    public ContactPoint? ContactPoint { get; init; }
+    public required ContactPoint ContactPoint { get; init; }
 
-    public List<int>? Types { get; init; }
+    /// <example>["Supplier"]</example>
+    public required List<PartyRole> Roles { get; init; }
 }

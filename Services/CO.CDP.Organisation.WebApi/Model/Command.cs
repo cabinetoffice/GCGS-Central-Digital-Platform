@@ -17,7 +17,7 @@ public record RegisterOrganisation
 
     public required OrganisationContactPoint? ContactPoint { get; init; }
 
-    public List<int>? Types { get; init; }
+    public required List<PartyRole> Roles { get; init; }
 
 }
 
@@ -36,7 +36,7 @@ internal record UpdateOrganisation
 
     public OrganisationContactPoint? ContactPoint { get; init; }
 
-    public List<int>? Types { get; init; }
+    public List<PartyRole>? Roles { get; init; }
 }
 
 public record OrganisationIdentifier

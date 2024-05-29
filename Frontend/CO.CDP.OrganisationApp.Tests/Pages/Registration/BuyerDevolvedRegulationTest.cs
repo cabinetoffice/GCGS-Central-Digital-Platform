@@ -1,4 +1,3 @@
-using CO.CDP.Common.Enums;
 using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.Pages.Registration;
@@ -40,7 +39,7 @@ public class BuyerDevolvedRegulationTest
             .Returns(new RegistrationDetails
             {
                 UserUrn = "urn:test",
-                OrganisationType = OrganisationType.Tenderer,
+                OrganisationType = OrganisationType.Buyer,
                 Devolved = true
             });
 

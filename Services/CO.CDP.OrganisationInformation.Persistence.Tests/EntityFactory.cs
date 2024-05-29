@@ -73,7 +73,7 @@ public static class EntityFactory
         string telephone = "123-456-7890",
         string contactUri = "http://contact.default.org",
         string number = "123456",
-        List<OrganisationType>? roles = null)
+        List<PartyRole>? roles = null)
     {
         var theGuid = guid ?? Guid.NewGuid();
         var theName = name ?? $"Organisation {theGuid}";
@@ -117,7 +117,7 @@ public static class EntityFactory
                 Telephone = telephone,
                 Url = contactUri
             },
-            Types = roles ?? [OrganisationType.ProcuringEntity]
+            Roles = roles ?? [PartyRole.Buyer]
         };
     }
 }

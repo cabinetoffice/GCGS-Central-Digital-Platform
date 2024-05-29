@@ -44,7 +44,7 @@ public static class EndpointExtensions
                 Telephone = "07925123123",
                 Url = new Uri("https://example.com")
             },
-            Types = [1],
+            Roles = [PartyRole.Supplier],
         });
 
     public static void UseOrganisationEndpoints(this WebApplication app)
@@ -124,7 +124,7 @@ public static class EndpointExtensions
                         AdditionalIdentifiers = updatedOrganisation.AdditionalIdentifiers.AsView(),
                         Address = updatedOrganisation.Address.AsView(),
                         ContactPoint = updatedOrganisation.ContactPoint?.AsView(),
-                        Types = updatedOrganisation.Types,
+                        Roles = updatedOrganisation.Roles,
                     };
                     return Results.Ok(_organisations[organisationId]);
                 })

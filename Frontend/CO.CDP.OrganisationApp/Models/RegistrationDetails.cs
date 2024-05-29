@@ -1,4 +1,6 @@
 using CO.CDP.Common.Enums;
+using CO.CDP.Organisation.WebApiClient;
+using CO.CDP.OrganisationApp.Constants;
 
 namespace CO.CDP.OrganisationApp.Models;
 
@@ -33,7 +35,7 @@ public class RegistrationDetails
 
     public Guid? OrganisationId { get; set; }
 
-    public OrganisationType? OrganisationType { get; set; }
+    public OrganisationType OrganisationType { get; set; } = OrganisationType.Supplier;
 
     public Guid? PersonId { get; set; }
     public bool? OrganisationHasCompaniesHouseNumber { get; set; }
