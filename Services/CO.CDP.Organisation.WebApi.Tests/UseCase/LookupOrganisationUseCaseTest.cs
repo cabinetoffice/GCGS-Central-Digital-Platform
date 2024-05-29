@@ -1,4 +1,4 @@
-using CO.CDP.Organisation.WebApi.Model;
+using CO.CDP.Common.Enums;
 using CO.CDP.Organisation.WebApi.Tests.AutoMapper;
 using CO.CDP.Organisation.WebApi.UseCase;
 using CO.CDP.OrganisationInformation;
@@ -53,14 +53,18 @@ public class LookupOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
                     LegalName = "Another Legal Name",
                     Uri = "http://another-example.com"
                 }],
-            Address = new OrganisationInformation.Persistence.Organisation.OrganisationAddress
+            Addresses = {new OrganisationInformation.Persistence.Organisation.OrganisationAddress
             {
-                StreetAddress = "1234 Test St",
-                StreetAddress2 = "",
-                Locality = "Test City",
-                PostalCode = "12345",
-                CountryName = "Testland"
-            },
+                Type = AddressType.Regsitered,
+                Address = new OrganisationInformation.Persistence.Address{
+                    StreetAddress = "1234 Test St",
+                    StreetAddress2 = "",
+                    Locality = "Test City",
+                    PostalCode = "12345",
+                    CountryName = "Testland",
+                    Region = ""
+                }
+            }},
             ContactPoint = new OrganisationInformation.Persistence.Organisation.OrganisationContactPoint
             {
                 Name = "Contact Name",
@@ -68,7 +72,7 @@ public class LookupOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
                 Telephone = "123-456-7890",
                 Url = "http://contact.test.org"
             },
-            Types = new List<int> { 1 }
+            Types = [OrganisationType.ProcuringEntity]
         };
 
         _repository.Setup(r => r.FindByName(persistenceOrganisation.Name)).ReturnsAsync(persistenceOrganisation);
@@ -96,7 +100,7 @@ public class LookupOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
                     Uri = new Uri("http://another-example.com")
                 }
             ],
-            Address = new Address
+            Address = new OrganisationInformation.Address
             {
                 StreetAddress = "1234 Test St",
                 StreetAddress2 = "",

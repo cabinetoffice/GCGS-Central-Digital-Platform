@@ -1,3 +1,4 @@
+using CO.CDP.Common.Enums;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -12,9 +13,9 @@ public class Organisation : IEntityDate
     public required Tenant Tenant { get; set; }
     public required string Name { get; set; }
     public ICollection<OrganisationIdentifier> Identifiers { get; set; } = [];
-    public required OrganisationAddress Address { get; set; }
+    public ICollection<OrganisationAddress> Addresses { get; set; } = [];
     public required OrganisationContactPoint ContactPoint { get; set; }
-    public List<int> Types { get; set; } = [];
+    public List<OrganisationType> Types { get; set; } = [];
     public List<Person> Persons { get; } = [];
     public DateTimeOffset CreatedOn { get; set; }
     public DateTimeOffset UpdatedOn { get; set; }
@@ -30,14 +31,12 @@ public class Organisation : IEntityDate
         public required bool Primary { get; set; }
     }
 
-    [ComplexType]
+    [Owned]
     public record OrganisationAddress
     {
-        public required string StreetAddress;
-        public required string StreetAddress2;
-        public required string Locality;
-        public required string PostalCode;
-        public required string CountryName;
+        public int Id { get; set; }
+        public required AddressType Type { get; set; }
+        public required Address Address { get; set; }
     }
 
     [ComplexType]

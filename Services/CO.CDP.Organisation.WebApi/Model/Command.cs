@@ -93,7 +93,6 @@ public static class MappingExtensions
             StreetAddress = command.StreetAddress,
             StreetAddress2 = command.StreetAddress2 ?? "",
             Locality = command.Locality,
-            Region = "",
             PostalCode = command.PostalCode,
             CountryName = command.CountryName
         };

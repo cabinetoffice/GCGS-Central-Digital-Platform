@@ -28,6 +28,11 @@ public class OrganisationInformationContext(DbContextOptions<OrganisationInforma
             entity.HasMany(p => p.Persons)
                 .WithMany(t => t.Organisations)
                 .UsingEntity<OrganisationPerson>();
+
+            entity.OwnsMany(e => e.Addresses, a =>
+            {
+                a.HasKey(e => e.Id);
+            });
         });
 
         modelBuilder.Entity<Person>()

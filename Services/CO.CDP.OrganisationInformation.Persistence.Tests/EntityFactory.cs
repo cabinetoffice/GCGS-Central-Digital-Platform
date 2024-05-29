@@ -1,3 +1,4 @@
+using CO.CDP.Common.Enums;
 using static CO.CDP.OrganisationInformation.Persistence.Organisation;
 
 namespace CO.CDP.OrganisationInformation.Persistence.Tests;
@@ -72,7 +73,7 @@ public static class EntityFactory
         string telephone = "123-456-7890",
         string contactUri = "http://contact.default.org",
         string number = "123456",
-        List<int>? roles = null)
+        List<OrganisationType>? roles = null)
     {
         var theGuid = guid ?? Guid.NewGuid();
         var theName = name ?? $"Organisation {theGuid}";
@@ -98,14 +99,17 @@ public static class EntityFactory
                     LegalName = "AnotherLegalName",
                     Uri = "http://example.com"
                 }],
-            Address = new OrganisationAddress
+            Addresses = {new OrganisationAddress
             {
-                StreetAddress = streetAddress,
-                StreetAddress2 = "",
-                Locality = city,
-                PostalCode = postCode,
-                CountryName = country
-            },
+                Type  = AddressType.Regsitered,
+                Address = new Address{
+                    StreetAddress = streetAddress,
+                    StreetAddress2 = "",
+                    Locality = city,
+                    PostalCode = postCode,
+                    CountryName = country
+                }
+            } },
             ContactPoint = new OrganisationContactPoint
             {
                 Name = contactName,
@@ -113,7 +117,7 @@ public static class EntityFactory
                 Telephone = telephone,
                 Url = contactUri
             },
-            Types = roles ?? new List<int> { 1 }
+            Types = roles ?? [OrganisationType.ProcuringEntity]
         };
     }
 }
