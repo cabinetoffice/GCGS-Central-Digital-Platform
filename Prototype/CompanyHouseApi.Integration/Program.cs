@@ -1,7 +1,16 @@
+using CompanyHouseApi.Integration.ExternalServices.CompaniesHouse;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
+
+builder.Services.AddHttpClient<ICompaniesHouseService, CompaniesHouseService>();
+
+if (builder.Environment.IsDevelopment())
+{
+    builder.Configuration.AddUserSecrets<Program>();
+}
 
 var app = builder.Build();
 

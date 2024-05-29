@@ -1,11 +1,44 @@
 @page
 @model IndexModel
 @{
-    ViewData["Title"] = "Home page";
+    ViewData["Title"] = "Companies House Number Search";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Companies house</h1>
-    Enter Company House Number:
+<h2>Company Search</h2>
 
-</div>
+<form method="post">
+    <div>
+        <label for="CompanyNumber">Company Number:</label>
+        <input type="text" id="CompanyNumber" asp-for="CompaniesHouseNumber" />
+        <span asp-validation-for="CompaniesHouseNumber" class="text-danger"></span>
+    </div>
+    <button type="submit">Search</button>
+</form>
+
+@if (!string.IsNullOrEmpty(Model.ErrorMessage))
+{
+    <div class="alert alert-danger">@Model.ErrorMessage</div>
+}
+
+@if (Model.CompanyDetails != null)
+{
+    <h3>Company Details</h3>
+    <p><strong>Company Name:</strong> @Model.CompanyDetails.CompanyName</p>
+    <p><strong>Company Number:</strong> @Model.CompanyDetails.CompanyNumber</p>
+    <p><strong>Date of Creation:</strong> @Model.CompanyDetails.DateOfCreation</p>
+    <p><strong>Jurisdiction:</strong> @Model.CompanyDetails.Jurisdiction</p>
+    <p><strong>Company Status:</strong> @Model.CompanyDetails.CompanyStatus</p>
+    <h4>Registered Office Address</h4>
+    <p>@Model.CompanyDetails.RegisteredOfficeAddress.AddressLine1</p>
+    <p>@Model.CompanyDetails.RegisteredOfficeAddress.AddressLine2</p>
+    <p>@Model.CompanyDetails.RegisteredOfficeAddress.Locality</p>
+    <p>@Model.CompanyDetails.RegisteredOfficeAddress.PostalCode</p>
+    <p>@Model.CompanyDetails.RegisteredOfficeAddress.Country</p>
+    <h4>SIC Codes</h4>
+    <ul>
+        @foreach (var sicCode in Model.CompanyDetails.SicCodes)
+        {
+            <li>@sicCode</li>
+        }
+    </ul>
+}
