@@ -1,4 +1,4 @@
-using CO.CDP.Common.Enums;
+using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.Pages.Registration;
@@ -40,12 +40,12 @@ public class OrganisationTypeTest
             .Returns(new RegistrationDetails
             {
                 UserUrn = "urn:test",
-                OrganisationType = OrganisationType.Supplier
+                OrganisationRole = PartyRole.Supplier
             });
 
         model.OnGet();
 
-        model.OrganisationType.Should().Be(OrganisationType.Supplier);
+        model.OrganisationRole.Should().Be(PartyRole.Buyer);
     }
 
     [Fact]
@@ -79,7 +79,7 @@ public class OrganisationTypeTest
     public void OnPost_WhenValidModel_ShouldSetOrganisationTypeInSession()
     {
         var model = GivenOrganisationTypeModel();
-        model.OrganisationType = OrganisationType.Supplier;
+        model.OrganisationRole = PartyRole.Supplier;
 
         sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey))
             .Returns(new RegistrationDetails { UserUrn = "urn:test" });
@@ -88,7 +88,7 @@ public class OrganisationTypeTest
 
         sessionMock.Verify(v => v.Set(Session.RegistrationDetailsKey,
             It.Is<RegistrationDetails>(rd =>
-                rd.OrganisationType == OrganisationType.Supplier
+                rd.OrganisationRole == PartyRole.Supplier
             )), Times.Once);
     }
 

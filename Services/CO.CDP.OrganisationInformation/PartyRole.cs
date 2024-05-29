@@ -8,15 +8,15 @@ namespace CO.CDP.OrganisationInformation;
 [JsonConverter(typeof(JsonStringEnumConverter))]
 public enum PartyRole
 {
-    Buyer,
-    ProcuringEntity,
-    Supplier,
-    Tenderer,
-    Funder,
-    Enquirer,
-    Payer,
-    Payee,
-    ReviewBody,
-    InterestedParty,
-    Consortium
+    Buyer = 1,
+    ProcuringEntity = 2,
+    Supplier = 3,
+    Tenderer = 4,
+    Funder = 5,
+    Enquirer = 6,
+    Payer = 7,
+    Payee = 8,
+    ReviewBody = 9,
+    InterestedParty = 10,
+    Consortium = 11
 }
