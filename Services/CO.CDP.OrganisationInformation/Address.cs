@@ -1,5 +1,3 @@
-using CO.CDP.Common.Enums;
-
 namespace CO.CDP.OrganisationInformation;
 
 /// <summary>

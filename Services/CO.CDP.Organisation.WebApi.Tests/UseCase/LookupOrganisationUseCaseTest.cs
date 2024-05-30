@@ -1,10 +1,10 @@
-using CO.CDP.Common.Enums;
 using CO.CDP.Organisation.WebApi.Tests.AutoMapper;
 using CO.CDP.Organisation.WebApi.UseCase;
 using CO.CDP.OrganisationInformation;
 using CO.CDP.OrganisationInformation.Persistence;
 using FluentAssertions;
 using Moq;
+using Address = CO.CDP.OrganisationInformation.Persistence.Address;
 
 namespace CO.CDP.Organisation.WebApi.Tests.UseCase;
 public class LookupOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IClassFixture<AutoMapperFixture>
@@ -43,7 +43,7 @@ public class LookupOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
                     IdentifierId = "123456",
                     Scheme = "Scheme1",
                     LegalName = "Legal Name",
-                    Uri = "http://example.com"
+                    Uri = "https://example.com"
                 },
                 new OrganisationInformation.Persistence.Organisation.OrganisationIdentifier
                 {
@@ -51,12 +51,12 @@ public class LookupOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
                     IdentifierId = "123456",
                     Scheme = "Scheme2",
                     LegalName = "Another Legal Name",
-                    Uri = "http://another-example.com"
+                    Uri = "https://another-example.com"
                 }],
             Addresses = {new OrganisationInformation.Persistence.Organisation.OrganisationAddress
             {
                 Type = AddressType.Registered,
-                Address = new OrganisationInformation.Persistence.Address{
+                Address = new Address{
                     StreetAddress = "1234 Test St",
                     StreetAddress2 = "",
                     Locality = "Test City",
@@ -70,9 +70,9 @@ public class LookupOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
                 Name = "Contact Name",
                 Email = "contact@test.org",
                 Telephone = "123-456-7890",
-                Url = "http://contact.test.org"
+                Url = "https://contact.test.org"
             },
-            Types = [OrganisationType.ProcuringEntity]
+            Roles = [PartyRole.Supplier]
         };
 
         _repository.Setup(r => r.FindByName(persistenceOrganisation.Name)).ReturnsAsync(persistenceOrganisation);
@@ -88,7 +88,7 @@ public class LookupOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
                 Id = "123456",
                 Scheme = "Scheme1",
                 LegalName = "Legal Name",
-                Uri = new Uri("http://example.com")
+                Uri = new Uri("https://example.com")
             },
             AdditionalIdentifiers =
             [
@@ -97,7 +97,7 @@ public class LookupOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
                     Id = "123456",
                     Scheme = "Scheme2",
                     LegalName = "Another Legal Name",
-                    Uri = new Uri("http://another-example.com")
+                    Uri = new Uri("https://another-example.com")
                 }
             ],
             Addresses = [new OrganisationInformation.Address
@@ -115,9 +115,9 @@ public class LookupOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
                 Name = "Contact Name",
                 Email = "contact@test.org",
                 Telephone = "123-456-7890",
-                Url = new Uri("http://contact.test.org")
+                Url = new Uri("https://contact.test.org")
             },
-            Types = new List<int> { 1 }
+            Roles = [PartyRole.Supplier]
         }, options => options.ComparingByMembers<Model.Organisation>());
     }
 }

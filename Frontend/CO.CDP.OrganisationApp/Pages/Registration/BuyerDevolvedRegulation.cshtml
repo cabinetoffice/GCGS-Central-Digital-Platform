@@ -1,6 +1,5 @@
 @page "/registration/buyer-devolved-regulations"
 @model BuyerDevolvedRegulationModel
-@using CO.CDP.Common.Enums
 
 @{
     var devolvedHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Devolved)).HasInnerHtml;

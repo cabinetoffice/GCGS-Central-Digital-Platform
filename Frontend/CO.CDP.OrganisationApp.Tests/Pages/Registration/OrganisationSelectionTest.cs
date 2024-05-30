@@ -38,7 +38,7 @@ public class OrganisationSelectionTest
             .Returns(new RegistrationDetails { UserUrn = "urn:test" });
 
         organisationClientMock.Setup(o => o.ListOrganisationsAsync(It.IsAny<string>()))
-            .ReturnsAsync([new Organisation.WebApiClient.Organisation(null, null, null, Guid.NewGuid(), null, "Test Org", [1])]);
+            .ReturnsAsync([new Organisation.WebApiClient.Organisation(null, null, null, Guid.NewGuid(), null, "Test Org", [PartyRole.Buyer])]);
 
         var actionResult = await model.OnGet();
 

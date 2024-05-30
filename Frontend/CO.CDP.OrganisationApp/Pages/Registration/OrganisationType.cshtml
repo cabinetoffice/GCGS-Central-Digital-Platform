@@ -1,6 +1,7 @@
 @page "/registration/organisation-type"
 @model OrganisationTypeModel
-@using CO.CDP.Common.Enums
+@using CO.CDP.Organisation.WebApiClient
+@using CO.CDP.OrganisationApp.Constants
 
 @{
     var organisationTypeHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.OrganisationType)).HasInnerHtml;
@@ -49,8 +50,8 @@
                         <div class="govuk-radios" data-module="govuk-radios">
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input" id="buyer" name="OrganisationType"
-                                       type="radio" value="@OrganisationType.Tenderer"
-                                       aria-describedby="buyer-hint" @IsSelected(OrganisationType.Tenderer)>
+                                       type="radio" value="@OrganisationType.Buyer"
+                                       aria-describedby="buyer-hint" @IsSelected(OrganisationType.Buyer)>
                                 <label class="govuk-label govuk-radios__label" for="buyer">
                                     A buyer
                                 </label>
@@ -62,7 +63,7 @@
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input" id="supplier" name="OrganisationType"
                                        type="radio" value="@OrganisationType.Supplier"
-                                       aria-describedby="supplier-hint" @IsSelected(OrganisationType.Supplier)>
+                                       aria-describedby="supplier-hint" @IsSelected(OrganisationType.Buyer)>
                                 <label class="govuk-label govuk-radios__label" for="supplier">
                                     A supplier
                                 </label>

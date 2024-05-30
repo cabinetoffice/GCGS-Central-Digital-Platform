@@ -1,0 +1,125 @@
+{
+  "widgets": [
+    {
+      "height": 8,
+      "width": 8,
+      "y": 0,
+      "x": 0,
+      "type": "metric",
+      "properties": {
+        "metrics": [
+          [ "AWS/Events", "TriggeredRules", "RuleName", "cdp-sirsi-ecr-push-to-cdp-data-sharing", { "region": "eu-west-2", "label": "ecr-push-to-cdp-data-sharing" } ],
+          [ "...", "cdp-sirsi-ecr-push-to-cdp-forms", { "region": "eu-west-2", "label": "ecr-push-to-cdp-forms" } ],
+          [ "...", "cdp-sirsi-ecr-push-to-cdp-organisation", { "region": "eu-west-2", "label": "ecr-push-to-cdp-organisation" } ],
+          [ "...", "cdp-sirsi-ecr-push-to-cdp-organisation-app", { "region": "eu-west-2", "label": "ecr-push-to-cdp-organisation-app" } ],
+          [ "...", "cdp-sirsi-ecr-push-to-cdp-organisation-information-migrations", { "region": "eu-west-2", "label": "ecr-push-to-cdp-organisation-information-migrations" } ],
+          [ "...", "cdp-sirsi-ecr-push-to-cdp-person", { "region": "eu-west-2", "label": "ecr-push-to-cdp-person" } ],
+          [ "...", "cdp-sirsi-ecr-push-to-cdp-tenant", { "region": "eu-west-2", "label": "ecr-push-to-cdp-tenant" } ]
+        ],
+        "sparkline": false,
+        "view": "table",
+        "region": "eu-west-2",
+        "period": 2592000,
+        "stacked": false,
+        "stat": "Sum",
+        "table": {
+          "summaryColumns": [],
+          "stickySummary": true
+        }
+      }
+    },
+    {
+      "height": 9,
+      "width": 8,
+      "y": 8,
+      "x": 0,
+      "type": "metric",
+      "properties": {
+        "metrics": [
+          [ "AWS/States", "ExecutionsSucceeded", "StateMachineArn", "arn:aws:states:eu-west-2:${account_id}:stateMachine:cdp-sirsi-deploy-data-sharing", { "region": "eu-west-2", "label": "deploy-data-sharing" } ],
+          [ "...", "arn:aws:states:eu-west-2:${account_id}:stateMachine:cdp-sirsi-deploy-forms", { "region": "eu-west-2", "label": "deploy-forms" } ],
+          [ "...", "arn:aws:states:eu-west-2:${account_id}:stateMachine:cdp-sirsi-deploy-organisation", { "region": "eu-west-2", "label": "deploy-organisation" } ],
+          [ "...", "arn:aws:states:eu-west-2:${account_id}:stateMachine:cdp-sirsi-deploy-organisation-app", { "region": "eu-west-2", "label": "deploy-organisation-app" } ],
+          [ "...", "arn:aws:states:eu-west-2:${account_id}:stateMachine:cdp-sirsi-deploy-person", { "region": "eu-west-2", "label": "deploy-person" } ],
+          [ "...", "arn:aws:states:eu-west-2:${account_id}:stateMachine:cdp-sirsi-deploy-tenant", { "region": "eu-west-2", "label": "deploy-tenant" } ],
+          [ "...", "arn:aws:states:eu-west-2:${account_id}:stateMachine:cdp-sirsi-run-organisation-information-migrations", { "label": "run-organisation-information-migrations", "region": "eu-west-2" } ]
+        ],
+        "sparkline": false,
+        "view": "pie",
+        "region": "eu-west-2",
+        "setPeriodToTimeRange": true,
+        "period": 2592000,
+        "stat": "Sum",
+        "title": "SF Successful Executions"
+      }
+    },
+    {
+      "height": 9,
+      "width": 8,
+      "y": 8,
+      "x": 8,
+      "type": "metric",
+      "properties": {
+        "metrics": [
+          [ "AWS/States", "ExecutionsFailed", "StateMachineArn", "arn:aws:states:eu-west-2:${account_id}:stateMachine:cdp-sirsi-deploy-data-sharing", { "region": "eu-west-2", "label": "deploy-data-sharing" } ],
+          [ "...", "arn:aws:states:eu-west-2:${account_id}:stateMachine:cdp-sirsi-deploy-forms", { "region": "eu-west-2", "label": "deploy-forms" } ],
+          [ "...", "arn:aws:states:eu-west-2:${account_id}:stateMachine:cdp-sirsi-deploy-organisation", { "region": "eu-west-2", "label": "deploy-organisation" } ],
+          [ "...", "arn:aws:states:eu-west-2:${account_id}:stateMachine:cdp-sirsi-deploy-organisation-app", { "region": "eu-west-2", "label": "deploy-organisation-app" } ],
+          [ "...", "arn:aws:states:eu-west-2:${account_id}:stateMachine:cdp-sirsi-deploy-person", { "region": "eu-west-2", "label": "deploy-person" } ],
+          [ "...", "arn:aws:states:eu-west-2:${account_id}:stateMachine:cdp-sirsi-deploy-tenant", { "region": "eu-west-2", "label": "deploy-tenant" } ],
+          [ "...", "arn:aws:states:eu-west-2:${account_id}:stateMachine:cdp-sirsi-run-organisation-information-migrations", { "region": "eu-west-2", "label": "run-organisation-information-migrations" } ]
+        ],
+        "sparkline": false,
+        "view": "pie",
+        "region": "eu-west-2",
+        "setPeriodToTimeRange": true,
+        "period": 2592000,
+        "stat": "Sum",
+        "title": "SF Failed Executions"
+      }
+    },
+    {
+      "type": "log",
+      "x": 16,
+      "y": 0,
+      "width": 8,
+      "height": 17,
+      "properties": {
+        "query": "SOURCE '/ecs/organisation-information-migrations' | fields @timestamp, @message\n| sort @timestamp desc\n| limit 1000",
+        "region": "eu-west-2",
+        "stacked": false,
+        "view": "table",
+        "title": "DB Migration Logs"
+      }
+    },
+    {
+      "height": 8,
+      "width": 8,
+      "y": 0,
+      "x": 8,
+      "type": "metric",
+      "properties": {
+        "metrics": [
+          [ "AWS/Events", "FailedInvocations", "RuleName", "cdp-sirsi-ecr-push-to-cdp-data-sharing", { "region": "eu-west-2", "label": "ecr-push-to-cdp-data-sharing" } ],
+          [ "...", "cdp-sirsi-ecr-push-to-cdp-forms", { "region": "eu-west-2", "label": "ecr-push-to-cdp-forms" } ],
+          [ "...", "cdp-sirsi-ecr-push-to-cdp-organisation", { "region": "eu-west-2", "label": "ecr-push-to-cdp-organisation" } ],
+          [ "...", "cdp-sirsi-ecr-push-to-cdp-organisation-app", { "region": "eu-west-2", "label": "ecr-push-to-cdp-organisation-app" } ],
+          [ "...", "cdp-sirsi-ecr-push-to-cdp-person", { "region": "eu-west-2" } ],
+          [ "...", "cdp-sirsi-ecr-push-to-cdp-tenant", { "region": "eu-west-2", "label": "ecr-push-to-cdp-tenant" } ],
+          [ "...", "cdp-sirsi-ecr-push-to-cdp-organisation-information-migrations", { "region": "eu-west-2", "label": "ecr-push-to-cdp-organisation-information-migrations" } ]
+        ],
+        "sparkline": false,
+        "view": "table",
+        "region": "eu-west-2",
+        "period": 2592000,
+        "stacked": false,
+        "stat": "Sum",
+        "table": {
+          "summaryColumns": [],
+          "stickySummary": true
+        },
+        "title": "Failed Invocations"
+      }
+    }
+  ]
+}

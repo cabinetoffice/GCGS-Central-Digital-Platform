@@ -1,4 +1,3 @@
-using CO.CDP.Common.Enums;
 using static CO.CDP.OrganisationInformation.Persistence.Organisation;
 
 namespace CO.CDP.OrganisationInformation.Persistence.Tests;
@@ -72,7 +71,7 @@ public static class EntityFactory
         string email = "contact@default.org",
         string telephone = "123-456-7890",
         string contactUri = "http://contact.default.org",
-        List<OrganisationType>? roles = null)
+        List<PartyRole>? roles = null)
     {
         var theGuid = guid ?? Guid.NewGuid();
         var theName = name ?? $"Organisation {theGuid}";
@@ -117,7 +116,7 @@ public static class EntityFactory
                 Telephone = telephone,
                 Url = contactUri
             },
-            Types = roles ?? [OrganisationType.ProcuringEntity]
+            Roles = roles ?? [PartyRole.Buyer]
         };
     }
 }

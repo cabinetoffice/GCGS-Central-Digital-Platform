@@ -1,4 +1,4 @@
-@Tenant_HostAddress = http://localhost:5182
+@Tenant_HostAddress = http://localhost:8080
 
 GET {{Tenant_HostAddress}}/tenants/
 Accept: application/json

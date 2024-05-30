@@ -34,7 +34,7 @@ data "aws_iam_policy_document" "ecs_task_exec" {
 data "aws_iam_policy_document" "cloudwatch_event_invoke_deployer_step_function" {
   statement {
     actions   = ["states:StartExecution"]
-    resources = [for sm in aws_sfn_state_machine.ecs_force_deploy : sm.arn]
+    resources = concat([for sm in aws_sfn_state_machine.ecs_force_deploy : sm.arn], [aws_sfn_state_machine.ecs_run_migration.arn])
   }
 }
 

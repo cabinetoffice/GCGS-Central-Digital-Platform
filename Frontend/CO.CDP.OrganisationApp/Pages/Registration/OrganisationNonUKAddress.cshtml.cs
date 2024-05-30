@@ -71,7 +71,7 @@ public class OrganisationNonUKAddressModel(ISession session) : PageModel
 
         session.Set(Session.RegistrationDetailsKey, registrationDetails);
 
-        if (registrationDetails.OrganisationType == Common.Enums.OrganisationType.Tenderer)
+        if (registrationDetails.OrganisationType == OrganisationType.Buyer)
         {
             return RedirectToPage("BuyerOrganisationType");
         }

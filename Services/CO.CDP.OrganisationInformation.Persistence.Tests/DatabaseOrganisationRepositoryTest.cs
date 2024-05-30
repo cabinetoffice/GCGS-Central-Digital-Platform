@@ -1,4 +1,3 @@
-using CO.CDP.Common.Enums;
 using CO.CDP.Testcontainers.PostgreSql;
 using FluentAssertions;
 using static CO.CDP.OrganisationInformation.Persistence.Organisation;
@@ -115,7 +114,7 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql) : 
             },
             UpdatedOn = initialDate,
             CreatedOn = initialDate,
-            Types =  { OrganisationType.ProcuringEntity }
+            Roles =  { PartyRole.Buyer }
         };
 
         repository.Save(organisation);

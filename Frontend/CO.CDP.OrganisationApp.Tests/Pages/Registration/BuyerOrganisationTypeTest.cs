@@ -1,4 +1,3 @@
-using CO.CDP.Common.Enums;
 using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.Pages.Registration;
@@ -40,7 +39,7 @@ public class BuyerOrganisationTypeTest
             .Returns(new RegistrationDetails
             {
                 UserUrn = "urn:test",
-                OrganisationType = OrganisationType.Tenderer,
+                OrganisationType = OrganisationType.Buyer,
                 BuyerOrganisationType = "type1"
             });
 
@@ -83,13 +82,13 @@ public class BuyerOrganisationTypeTest
         model.BuyerOrganisationType = "type1";
 
         sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey))
-            .Returns(new RegistrationDetails { UserUrn = "urn:test", OrganisationType = OrganisationType.Tenderer });
+            .Returns(new RegistrationDetails { UserUrn = "urn:test", OrganisationType = OrganisationType.Buyer });
 
         var results = model.OnPost();
 
         sessionMock.Verify(v => v.Set(Session.RegistrationDetailsKey,
             It.Is<RegistrationDetails>(rd =>
-                rd.OrganisationType == OrganisationType.Tenderer
+                rd.OrganisationType == OrganisationType.Buyer
             )), Times.Once);
     }
 
@@ -99,7 +98,7 @@ public class BuyerOrganisationTypeTest
         var model = GivenBuyerOrganisationTypeModel();
 
         sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey))
-            .Returns(new RegistrationDetails { UserUrn = "urn:test", OrganisationType = OrganisationType.Tenderer });
+            .Returns(new RegistrationDetails { UserUrn = "urn:test", OrganisationType = OrganisationType.Buyer });
 
         var actionResult = model.OnPost();
 

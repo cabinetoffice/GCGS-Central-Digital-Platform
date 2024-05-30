@@ -71,7 +71,7 @@ public class OrganisationDetailsSummaryModel(
         return new NewOrganisation(
             additionalIdentifiers: null,
             addresses: [new OrganisationAddress(
-                type: AddressType.Registered,
+                type: Constants.AddressType.Registered.AsApiClientAddressType(),
                 streetAddress: details.OrganisationAddressLine1,
                 streetAddress2: details.OrganisationAddressLine2,
                 locality: details.OrganisationCityOrTown,
@@ -88,7 +88,7 @@ public class OrganisationDetailsSummaryModel(
                 legalName: details.OrganisationName,
                 scheme: details.OrganisationScheme),
             name: details.OrganisationName,
-            types: details.OrganisationType.HasValue ? [(int)details.OrganisationType.Value] : [],
+            roles: [details.OrganisationType.AsPartyRole()],
             personId: details.PersonId.Value
         );
     }

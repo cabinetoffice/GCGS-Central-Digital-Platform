@@ -60,12 +60,24 @@ data "aws_iam_policy_document" "terraform" {
     ]
     effect = "Allow"
     resources = [
-      "arn:aws:iam::471112892058:policy/development-cloudwatch-events-policy",
       "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/cdp-sirsi-*",
       "arn:aws:iam::${data.aws_caller_identity.current.account_id}:policy/cdp-sirsi-*",
       "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/aws-service-role/*"
     ]
     sid = "ManageProductIAMs"
+  }
+
+  statement {
+    actions = [
+      "cloudwatch:Delete*",
+      "cloudwatch:Get*",
+      "cloudwatch:Put*",
+    ]
+    effect = "Allow"
+    resources = [
+      "arn:aws:cloudwatch::${data.aws_caller_identity.current.account_id}:dashboard/cdp-sirsi-*"
+    ]
+    sid = "ManageProductCloudwatch"
   }
 
   statement {
@@ -237,7 +249,10 @@ data "aws_iam_policy_document" "terraform" {
       "events:DeleteRule",
       "events:DescribeRule",
       "events:ListTagsForResource",
+      "events:ListTargetsByRule",
       "events:PutRule",
+      "events:PutTargets",
+      "events:RemoveTargets",
       "events:TagResource",
       "iam:PassRole",
     ]

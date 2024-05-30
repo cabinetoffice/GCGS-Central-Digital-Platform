@@ -3,6 +3,7 @@ using CO.CDP.DataSharing.WebApi.Model;
 using CO.CDP.OrganisationInformation;
 using CO.CDP.Swashbuckle.Filter;
 using CO.CDP.Swashbuckle.Security;
+using CO.CDP.Swashbuckle.SwaggerGen;
 using DotSwashbuckle.AspNetCore.SwaggerGen;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
@@ -77,7 +78,7 @@ public static class EndpointExtensions
                     Region = "Lancashire",
                     PostalCode = "CH43 7UR",
                     CountryName = "United Kingdom",
-                    Type = Common.Enums.AddressType.Registered,
+                    Type = AddressType.Registered,
                 },
                 ContactPoint = new ContactPoint
                 {
@@ -236,8 +237,7 @@ public static class ApiExtensions
             Title = "Data Sharing API",
             Description = "",
         });
-        options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory,
-            $"{Assembly.GetExecutingAssembly().GetName().Name}.xml"));
+        options.IncludeXmlComments(Assembly.GetExecutingAssembly(), Assembly.GetAssembly(typeof(Address)));
         options.OperationFilter<ProblemDetailsOperationFilter>();
         options.ConfigureOneLoginSecurity();
         options.ConfigureApiKeySecurity();

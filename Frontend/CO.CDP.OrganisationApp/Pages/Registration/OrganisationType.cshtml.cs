@@ -1,4 +1,3 @@
-using CO.CDP.Common.Enums;
 using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -36,7 +35,7 @@ public class OrganisationTypeModel(
         }
 
         var registrationDetails = VerifySession();
-        registrationDetails.OrganisationType = OrganisationType;
+        registrationDetails.OrganisationType = OrganisationType ?? registrationDetails.OrganisationType;
         session.Set(Session.RegistrationDetailsKey, registrationDetails);
 
         if (RedirectToSummary == true)
