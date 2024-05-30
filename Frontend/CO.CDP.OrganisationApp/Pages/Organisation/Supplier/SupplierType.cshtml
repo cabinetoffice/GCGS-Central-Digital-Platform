@@ -1,0 +1,76 @@
+@page "/organisation/supplier-type"
+@model SupplierTypeModel
+@using CO.CDP.Organisation.WebApiClient
+@using CO.CDP.OrganisationApp.Constants
+
+@{
+    var supplierTypeHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.SupplierType)).HasInnerHtml;
+
+    var backLink = "/registration/organisation-overview";
+
+    string IsSelected(SupplierType radioValue)
+    {
+        return Model.SupplierType == radioValue ? "checked='checked'" : string.Empty;
+    }
+}
+
+<a href="@backLink" class="govuk-back-link">
+    Back
+</a>
+
+<main class="govuk-main-wrapper">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <partial name="_ErrorSummary" model="@ModelState" />
+            <form method="post">
+                @if (Request.Query.ContainsKey("frm-summary"))
+                {
+                    <input type="hidden" name="RedirectToSummary" value="true" />
+                }
+                <div class="govuk-form-group @(supplierTypeHasError ? "govuk-form-group--error" : "")">
+                    <fieldset class="govuk-fieldset">
+                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                            <h1 class="govuk-fieldset__heading">
+                                What type of supplier are you?
+                            </h1>
+                        </legend>
+                        <div id="individualOrOrg-hint" class="govuk-hint">
+                            We need information from you based on the type of supplier you are.
+                        </div>
+                        @if (supplierTypeHasError)
+                        {
+                            <p id="supplierType-error" class="govuk-error-message">
+                                <span class="govuk-visually-hidden">Error:</span> @Html.ValidationMessageFor(m => m.SupplierType)
+                            </p>
+                        }
+
+                        <div class="govuk-radios" data-module="govuk-radios">
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input" id="organisation" name="SupplierType"
+                                       type="radio" value="@SupplierType.Organisation"
+                                       aria-describedby="organisation-hint" @IsSelected(SupplierType.Organisation)>
+                                <label class="govuk-label govuk-radios__label" for="organisation">
+                                    Organisation - for example, a company
+                                </label>
+                            </div>
+
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input" id="individual" name="SupplierType"
+                                       type="radio" value="@SupplierType.Individual"
+                                       aria-describedby="individual-hint" @IsSelected(SupplierType.Individual)>
+                                <label class="govuk-label govuk-radios__label" for="individual">
+                                    Individual - for example, a sole trader
+                                </label>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+                <a href="/organisation/basic-information">
+                    <button type="submit" class="govuk-button" data-module="govuk-button">
+                        Continue
+                    </button>
+                </a>
+            </form>
+        </div>
+    </div>
+</main>

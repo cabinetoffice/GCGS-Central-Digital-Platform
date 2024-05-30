@@ -35,9 +35,9 @@ public class OrganisationOverviewTest
         await Assert.ThrowsAsync<ArgumentNullException>(() => model.OnGet(id));
     }
 
-    private Organisation.WebApiClient.Organisation GivenOrganisationClientModel(Guid? id)
+    private CDP.Organisation.WebApiClient.Organisation GivenOrganisationClientModel(Guid? id)
     {
-        return new Organisation.WebApiClient.Organisation(null, null, null, id!.Value, null, "Test Org", []);
+        return new CDP.Organisation.WebApiClient.Organisation(null, null, null, id!.Value, null, "Test Org", []);
     }
 
     private OrganisationOverviewModel GivenOrganisationOverviewModel()

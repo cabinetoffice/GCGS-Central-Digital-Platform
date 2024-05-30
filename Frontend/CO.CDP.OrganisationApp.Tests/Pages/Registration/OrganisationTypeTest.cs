@@ -11,11 +11,11 @@ using Moq;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages.Registration;
 
-public class OrganisationTypeTest
+public class SupplierTypeTest
 {
     private readonly Mock<ISession> sessionMock;
 
-    public OrganisationTypeTest()
+    public SupplierTypeTest()
     {
         sessionMock = new Mock<ISession>();
     }

@@ -12,7 +12,7 @@ public class OrganisationSelectionModel(
     IOrganisationClient organisationClient,
     ISession session) : PageModel
 {
-    public IEnumerable<Organisation.WebApiClient.Organisation> Organisations { get; set; } = [];
+    public IEnumerable<CDP.Organisation.WebApiClient.Organisation> Organisations { get; set; } = [];
 
     public string? Error { get; set; }
 

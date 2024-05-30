@@ -4,7 +4,7 @@
 
 @{
     var organisationDetails = Model.OrganisationDetails!;
-    var registeredAddress = organisationDetails.Addresses.FirstOrDefault(a => a.Type == Organisation.WebApiClient.AddressType.Registered);
+    var registeredAddress = organisationDetails.Addresses.FirstOrDefault(a => a.Type == CDP.Organisation.WebApiClient.AddressType.Registered);
 }
 
 <main class="govuk-main-wrapper">
@@ -80,8 +80,22 @@
                             </dd>
                         </div>
                     }
-
                 </dl>
+                <h2 class="govuk-heading-m govuk-!-margin-top-9">Supplier information</h2>
+                <dl class="govuk-summary-list">
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            <a class="govuk-link govuk-link--no-visited-state" href="/organisation/supplier-type?id=@organisationDetails.Id">Basic information</a>
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+
+                        </dd>
+                        <dd class="govuk-summary-list__actions">
+                            <strong class="govuk-tag">In progress</strong>
+                        </dd>
+                    </div>
+                </dl>
+
                 <h2 class="govuk-heading-m govuk-!-margin-top-9">Organisation users</h2>
                 <dl class="govuk-summary-list">
                     <div class="govuk-summary-list__row">

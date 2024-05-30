@@ -104,9 +104,9 @@ public class OrganisationDetailsSummaryModelTest
         return registrationDetails;
     }
 
-    private static Organisation.WebApiClient.Organisation GivenOrganisationClientModel()
+    private static CDP.Organisation.WebApiClient.Organisation GivenOrganisationClientModel()
     {
-        return new Organisation.WebApiClient.Organisation(null, null, null, Guid.NewGuid(), null, "Test Org", []);
+        return new CDP.Organisation.WebApiClient.Organisation(null, null, null, Guid.NewGuid(), null, "Test Org", []);
     }
 
     private OrganisationDetailsSummaryModel GivenOrganisationDetailModel()

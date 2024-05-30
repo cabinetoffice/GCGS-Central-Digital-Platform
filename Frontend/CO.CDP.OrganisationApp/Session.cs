@@ -5,6 +5,7 @@ namespace CO.CDP.OrganisationApp;
 public class Session(IHttpContextAccessor httpContextAccessor) : ISession
 {
     public const string RegistrationDetailsKey = "RegistrationDetails";
+    public const string OrganisationDetailsKey = "OrganisationDetails";
 
     public T? Get<T>(string key)
     {
