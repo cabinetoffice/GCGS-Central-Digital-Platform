@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using CO.CDP.Common.Enums;
 using CO.CDP.OrganisationInformation;
 
 namespace CO.CDP.Organisation.WebApi.Model;

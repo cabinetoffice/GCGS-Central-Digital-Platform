@@ -1,6 +1,5 @@
 @page "/registration/buyer-select-devolved-regulations"
 @model BuyerSelectDevolvedRegulationModel
-@using CO.CDP.Common.Enums
 
 @{
     var regulationsHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Regulations)).HasInnerHtml;

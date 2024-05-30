@@ -117,7 +117,7 @@ public class RegisterOrganisationTest
             },
             Addresses = [new OrganisationAddress
             {
-                Type = Common.Enums.AddressType.Registered,
+                Type = AddressType.Registered,
                 StreetAddress = "1234 Example St",
                 StreetAddress2 = "",
                 Locality = "Example City",

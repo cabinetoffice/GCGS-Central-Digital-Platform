@@ -71,7 +71,7 @@ public class OrganisationDetailsSummaryModel(
         return new NewOrganisation(
             additionalIdentifiers: null,
             addresses: [new OrganisationAddress(
-                type: AddressType.Registered,
+                type: Constants.AddressType.Registered.AsApiClientAddressType(),
                 streetAddress: details.OrganisationAddressLine1,
                 streetAddress2: details.OrganisationAddressLine2,
                 locality: details.OrganisationCityOrTown,

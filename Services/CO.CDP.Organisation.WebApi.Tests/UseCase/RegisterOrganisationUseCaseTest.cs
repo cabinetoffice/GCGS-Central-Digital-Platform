@@ -1,4 +1,3 @@
-using CO.CDP.Common.Enums;
 using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.Organisation.WebApi.Tests.AutoMapper;
 using CO.CDP.Organisation.WebApi.UseCase;

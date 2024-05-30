@@ -1,4 +1,3 @@
-using CO.CDP.Common.Enums;
 using CO.CDP.Testcontainers.PostgreSql;
 using FluentAssertions;
 using static CO.CDP.OrganisationInformation.Persistence.Organisation;
