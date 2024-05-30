@@ -1,4 +1,3 @@
-using System.ComponentModel.DataAnnotations;
 using CO.CDP.OrganisationInformation;
 
 namespace CO.CDP.Organisation.WebApi.Model;
@@ -18,7 +17,7 @@ public record Organisation
 
     public List<Identifier> AdditionalIdentifiers { get; init; } = [];
 
-    public required Address Address { get; init; }
+    public List<Address> Addresses { get; init; } = [];
 
     public required ContactPoint ContactPoint { get; init; }
 

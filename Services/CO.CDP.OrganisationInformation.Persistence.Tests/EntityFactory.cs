@@ -72,7 +72,6 @@ public static class EntityFactory
         string email = "contact@default.org",
         string telephone = "123-456-7890",
         string contactUri = "http://contact.default.org",
-        string number = "123456",
         List<PartyRole>? roles = null)
     {
         var theGuid = guid ?? Guid.NewGuid();
@@ -106,6 +105,7 @@ public static class EntityFactory
                     StreetAddress = streetAddress,
                     StreetAddress2 = "",
                     Locality = city,
+                    Region = "",
                     PostalCode = postCode,
                     CountryName = country
                 }

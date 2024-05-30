@@ -3,8 +3,9 @@
 @model OrganisationSelectionModel
 
 @{
-    string GetAddress(Address add)
+    string GetAddress(IEnumerable<Address> addresses)
     {
+        var add = addresses.First(a => a.Type == AddressType.Registered);
         return string.Join(", ", new[] { add.StreetAddress, add.StreetAddress2, add.Locality, add.CountryName, add.PostalCode }
             .Where(t => !string.IsNullOrWhiteSpace(t)));
     }
@@ -13,38 +14,48 @@
 <main class="govuk-main-wrapper">
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-            <h1 class="govuk-heading-l">
-                <span class="govuk-label--l">Select or add an organisation</span>
-            </h1>
+            @if (Model.Organisations.Any())
+            {
+                <h1 class="govuk-heading-l">
+                    <span class="govuk-label--l">Select or add an organisation</span>
+                </h1>
 
-            <table class="govuk-table">
-                <caption class="govuk-table__caption govuk-table__caption--m">List of organisations</caption>
-                <thead class="govuk-table__head">
-                    <tr class="govuk-table__row">
-                        <th scope="col" colspan="2" class="govuk-table__header">Organisation name</th>
-                    </tr>
-                </thead>
-                <tbody class="govuk-table__body">
-                    @{
-                        foreach (var org in Model.Organisations)
-                        {
-                            <tr class="govuk-table__row">
-                                <th scope="row" class="govuk-table__header">
-                                    @org.Name
-                                    <span class="govuk-hint govuk-!-display-block">
-                                        @GetAddress(org.Address)
-                                    </span>
-                                </th>
-                                <td class="govuk-table__cell">
-                                    <a class="govuk-link govuk-link--no-visited-state"
-                                       href="/registration/organisation-overview?id=@org.Id">Select</a>
-                                </td>
-                            </tr>
+                <table class="govuk-table">
+                    <caption class="govuk-table__caption govuk-table__caption--m">List of organisations</caption>
+                    <thead class="govuk-table__head">
+                        <tr class="govuk-table__row">
+                            <th scope="col" colspan="2" class="govuk-table__header">Organisation name</th>
+                        </tr>
+                    </thead>
+                    <tbody class="govuk-table__body">
+                        @{
+                            foreach (var org in Model.Organisations)
+                            {
+                                <tr class="govuk-table__row">
+                                    <th scope="row" class="govuk-table__header">
+                                        @org.Name
+                                        <span class="govuk-hint govuk-!-display-block">
+                                            @GetAddress(org.Addresses)
+                                        </span>
+                                    </th>
+                                    <td class="govuk-table__cell">
+                                        <a class="govuk-link govuk-link--no-visited-state"
+                                           href="/registration/organisation-overview?id=@org.Id">Select</a>
+                                    </td>
+                                </tr>
+                            }
                         }
-                    }
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <h1 class="govuk-heading-l">
+                    <span class="govuk-label--l">Add an organisation</span>
+                </h1>
 
+                <p class="govuk-body">Begin by adding your organisation. If you have more than one organisation to manage, you can add additional organisations after you've added the first one.</p>
+            }
             <form method="post">
                 <button type="submit" class="govuk-button" data-module="govuk-button">
                     Add Organisation

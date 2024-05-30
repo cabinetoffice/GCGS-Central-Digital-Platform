@@ -1,22 +1,18 @@
-@page "/registration/organisation-registered-address"
-@model CO.CDP.OrganisationApp.Pages.Registration.OrganisationRegisteredAddressModel
+@page "/registration/organisation-non-uk-address"
+@model CO.CDP.OrganisationApp.Pages.Registration.OrganisationNonUKAddressModel
 
 @{
     var addressLine1HasError = ((TagBuilder)Html.ValidationMessageFor(m => m.AddressLine1)).HasInnerHtml;
     var addressLine2HasError = ((TagBuilder)Html.ValidationMessageFor(m => m.AddressLine2)).HasInnerHtml;
     var cityOrTownHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.TownOrCity)).HasInnerHtml;
+    var regionHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Region)).HasInnerHtml;
     var postcodeHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Postcode)).HasInnerHtml;
+    var countryHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Country)).HasInnerHtml;
 
-    var backLink = "/registration/organisation-email";
-    if (Request.Query.ContainsKey("frm-summary"))
-    {
-        backLink = "/registration/organisation-details-summary";
-    }
+    var backLink = $"/registration/organisation-registered-address{(Request.Query.ContainsKey("frm-summary") ? "?frm-summary" : "")}";
 }
 
-<a href="@backLink" class="govuk-back-link">
-    Back
-</a>
+<a href="@backLink" class="govuk-back-link">Back</a>
 
 <main class="govuk-main-wrapper">
     <div class="govuk-grid-row">
@@ -28,17 +24,12 @@
                     <fieldset class="govuk-fieldset">
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                             <h1 class="govuk-fieldset__heading">
-                                Enter the organisation's registered UK address
+                                Enter an International address for your organisation
                             </h1>
                         </legend>
 
                         <div id="hint" class="govuk-hint">The address of the company or organisation which is recorded on public records or within the public domain. This will be displayed on notices.</div>
-                        <p class="govuk-body">
-                            <a class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19"
-                               href="/registration/organisation-non-uk-address">
-                                Enter an international address
-                            </a>
-                        </p>
+
                         <div class="govuk-form-group @(addressLine1HasError ? "govuk-form-group--error" : "")">
                             <label class="govuk-label" for="@nameof(Model.AddressLine1)">
                                 @Html.DisplayNameFor(m => m.AddressLine1)
@@ -87,6 +78,22 @@
                                    spellcheck="false" @(cityOrTownHasError ? "aria-describedby=city-error" : "")>
                         </div>
 
+                        <div class="govuk-form-group @(regionHasError ? "govuk-form-group--error" : "")">
+                            <label class="govuk-label" for="@nameof(Model.Region)">
+                                @Html.DisplayNameFor(m => m.Region)
+                            </label>
+                            @if (regionHasError)
+                            {
+                                <p id="region-error" class="govuk-error-message">
+                                    <span class="govuk-visually-hidden">Error:</span>
+                                    @Html.ValidationMessageFor(m => m.Region)
+                                </p>
+                            }
+                            <input class="govuk-input govuk-input--width-10 @(regionHasError ? "govuk-input--error" : "")" id="@nameof(Model.Region)"
+                                   value="@Model.Region" name="@nameof(Model.Region)" type="text"
+                                   spellcheck="false" @(regionHasError ? "aria-describedby=region-error" : "")>
+                        </div>
+
                         <div class="govuk-form-group @(postcodeHasError ? "govuk-form-group--error" : "")">
                             <label class="govuk-label" for="@nameof(Model.Postcode)">
                                 @Html.DisplayNameFor(m => m.Postcode)
@@ -103,11 +110,24 @@
                                    spellcheck="false" @(postcodeHasError ? "aria-describedby=postcode-error" : "")>
                         </div>
 
-                        <div class="govuk-form-group govuk-visually-hidden">
+                        <div class="govuk-form-group @(countryHasError ? "govuk-form-group--error" : "")">
                             <label class="govuk-label" for="@nameof(Model.Country)">
                                 @Html.DisplayNameFor(m => m.Country)
                             </label>
-                            <input type="hidden" id="@nameof(Model.Country)" name="@nameof(Model.Country)" value="@Model.Country" />
+                            @if (countryHasError)
+                            {
+                                <p id="country-error" class="govuk-error-message">
+                                    <span class="govuk-visually-hidden">Error:</span>
+                                    @Html.ValidationMessageFor(m => m.Country)
+                                </p>
+                            }
+                            <select asp-for="Country" class="govuk-select @(countryHasError ? "govuk-select--error" : "")">
+                                <option value="">Please select</option>
+                                @foreach (var cnt in Model.Countries)
+                                {
+                                    <option value="@cnt">@cnt</option>
+                                }
+                            </select>
                         </div>
                     </fieldset>
                 </div>

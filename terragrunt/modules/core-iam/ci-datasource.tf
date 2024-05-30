@@ -3,7 +3,7 @@ data "aws_iam_policy_document" "terraform_assume" {
     actions = ["sts:AssumeRole"]
     principals {
       type        = "AWS"
-      identifiers = ["arn:aws:iam::525593800265:user/ali.bahman@goaco.com"]
+      identifiers = var.terraform_operators
     }
     condition {
       test     = "Bool"

@@ -101,15 +101,16 @@ public class LookupOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
                     Uri = new Uri("https://another-example.com")
                 }
             ],
-            Address = new OrganisationInformation.Address
+            Addresses = [new OrganisationInformation.Address
             {
+                Type = AddressType.Registered,
                 StreetAddress = "1234 Test St",
                 StreetAddress2 = "",
                 Locality = "Test City",
                 PostalCode = "12345",
                 CountryName = "Testland",
                 Region = ""
-            },
+            }],
             ContactPoint = new ContactPoint
             {
                 Name = "Contact Name",

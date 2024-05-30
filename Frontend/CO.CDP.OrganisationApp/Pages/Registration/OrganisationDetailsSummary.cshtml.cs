@@ -70,13 +70,14 @@ public class OrganisationDetailsSummaryModel(
 
         return new NewOrganisation(
             additionalIdentifiers: null,
-            address: new OrganisationAddress(
+            addresses: [new OrganisationAddress(
+                type: AddressType.Registered,
                 streetAddress: details.OrganisationAddressLine1,
                 streetAddress2: details.OrganisationAddressLine2,
                 locality: details.OrganisationCityOrTown,
-                region: null,
+                region: details.OrganisationRegion,
                 countryName: details.OrganisationCountry,
-                postalCode: details.OrganisationPostcode),
+                postalCode: details.OrganisationPostcode)],
             contactPoint: new OrganisationContactPoint(
                 email: details.OrganisationEmailAddress,
                 name: null,

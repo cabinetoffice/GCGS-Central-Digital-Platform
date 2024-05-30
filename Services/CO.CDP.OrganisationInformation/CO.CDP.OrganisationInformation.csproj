@@ -8,4 +8,8 @@
         <NoWarn>$(NoWarn);1591</NoWarn>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\..\Libraries\CO.CDP.Common\CO.CDP.Common.csproj" />
+    </ItemGroup>
+
 </Project>

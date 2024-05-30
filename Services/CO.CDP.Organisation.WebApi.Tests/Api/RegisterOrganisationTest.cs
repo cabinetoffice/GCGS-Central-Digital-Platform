@@ -41,7 +41,7 @@ public class RegisterOrganisationTest
             Name = "TheOrganisation",
             Identifier = command.Identifier.AsView(),
             AdditionalIdentifiers = command.AdditionalIdentifiers.AsView(),
-            Address = command.Address.AsView(),
+            Addresses = command.Addresses.AsView(),
             ContactPoint = command.ContactPoint?.AsView(),
             Roles = command.Roles
         };
@@ -80,7 +80,7 @@ public class RegisterOrganisationTest
             Name = "TheOrganisation",
             Identifier = command.Identifier.AsView(),
             AdditionalIdentifiers = command.AdditionalIdentifiers.AsView(),
-            Address = command.Address.AsView(),
+            Addresses = command.Addresses.AsView(),
             ContactPoint = command.ContactPoint?.AsView(),
             Roles = command.Roles
         };
@@ -115,15 +115,16 @@ public class RegisterOrganisationTest
                     LegalName = "AnotherOrganisationName"
                 }
             },
-            Address = new OrganisationAddress
+            Addresses = [new OrganisationAddress
             {
+                Type = Common.Enums.AddressType.Registered,
                 StreetAddress = "1234 Example St",
                 StreetAddress2 = "",
                 Locality = "Example City",
                 Region = "Test Region",
                 PostalCode = "12345",
                 CountryName = "Exampleland"
-            },
+            }],
             ContactPoint = new OrganisationContactPoint
             {
                 Name = "Contact Name",

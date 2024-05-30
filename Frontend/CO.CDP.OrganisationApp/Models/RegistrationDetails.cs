@@ -29,6 +29,8 @@ public class RegistrationDetails
 
     public string OrganisationCityOrTown { get; set; } = "";
 
+    public string OrganisationRegion { get; set; } = "";
+
     public string OrganisationPostcode { get; set; } = "";
 
     public string OrganisationCountry { get; set; } = "United Kingdom";

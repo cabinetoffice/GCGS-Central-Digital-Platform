@@ -45,15 +45,19 @@ locals {
         public_hosted_zone = "cdp-sirsi.civilservice.gov.uk"
     }
 
+    tags = {
+        environment    = local.environment
+        managed_by     = "terragrunt"
+    }
+
+    terraform_operators = [
+        "arn:aws:iam::525593800265:user/ali.bahman@goaco.com",
+        "arn:aws:iam::525593800265:user/jakub.zalas@goaco.com"
+    ]
 
     tg = {
         state_bucket = "tfstate-${local.product.resource_name}-${local.environment}-${get_aws_account_id()}"
         state_key    = "${path_relative_to_include()}/terraform.tfstate"
-    }
-
-    tags = {
-        environment    = local.environment
-        managed_by     = "terragrunt"
     }
 
     versions = {
@@ -88,7 +92,6 @@ inputs = {
     environment             = local.environment
     product                 = local.product
     tags                    = local.tags
-    tfstate_bucket_name     = local.tg.state_bucket
     postgres_engine_version = local.versions.postgres_engine
     postgres_instance_type  = local.environments[local.environment].postgres_instance_type
     vpc_cidr                = local.environments[local.environment].cidr_block

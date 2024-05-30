@@ -28,15 +28,16 @@ public static class EndpointExtensions
             },
             Name = $"Tables Limited {id}",
             AdditionalIdentifiers = [],
-            Address = new Address
+            Addresses = [new Address
             {
+                Type = Common.Enums.AddressType.Registered,
                 StreetAddress = $"Green Lane {id}",
                 StreetAddress2 = "",
                 Locality = "London",
                 Region = "",
                 PostalCode = "BR8 7AA",
                 CountryName = "United Kingdom"
-            },
+            }],
             ContactPoint = new ContactPoint
             {
                 Name = "Bobby Tables",
@@ -119,7 +120,7 @@ public static class EndpointExtensions
                         Identifier =updatedOrganisation.Identifier.AsView(),
                         Name = updatedOrganisation.Name,
                         AdditionalIdentifiers = updatedOrganisation.AdditionalIdentifiers.AsView(),
-                        Address = updatedOrganisation.Address.AsView(),
+                        Addresses = updatedOrganisation.Addresses.AsView(),
                         ContactPoint = updatedOrganisation.ContactPoint?.AsView(),
                         Roles = updatedOrganisation.Roles ?? [],
                     };
