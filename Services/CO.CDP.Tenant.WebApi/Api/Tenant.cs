@@ -111,7 +111,7 @@ public static class ApiExtensions
     {
         options.SwaggerDoc("v1", new OpenApiInfo
         {
-            Version = "1.0.0.0",
+            Version = "1.0.0",
             Title = "Tenant Management API",
             Description =
                 "API for creating, updating, deleting, and listing tenants, including a lookup feature against person identifiers.",

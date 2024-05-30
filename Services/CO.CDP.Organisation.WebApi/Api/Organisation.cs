@@ -192,7 +192,7 @@ public static class ApiExtensions
     {
         options.SwaggerDoc("v1", new OpenApiInfo
         {
-            Version = "1.0.0.0",
+            Version = "1.0.0",
             Title = "Organisation Management API",
             Description = "API for creating, updating, deleting, and listing organisations, including a lookup feature against organisation identifiers.",
             TermsOfService = new Uri("https://example.com/terms"),

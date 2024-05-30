@@ -117,7 +117,7 @@ public static class ApiExtensions
     {
         options.SwaggerDoc("v1", new OpenApiInfo
         {
-            Version = "1.0.0.0",
+            Version = "1.0.0",
             Title = "Person API",
             Description = "API for creating, updating, deleting, and listing persons.",
             TermsOfService = new Uri("https://example.com/terms"),
