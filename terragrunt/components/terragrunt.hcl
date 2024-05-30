@@ -37,6 +37,21 @@ locals {
                 "10.${local.cidr_b_staging}.3.0/24"
             ]
         }
+        production = {
+            cidr_block             = "10.${local.cidr_b_production}.0.0/16"
+            name                   = "production"
+            postgres_instance_type = "db.t4g.micro"
+            private_subnets        = [
+                "10.${local.cidr_b_production}.101.0/24",
+                "10.${local.cidr_b_production}.102.0/24",
+                "10.${local.cidr_b_production}.103.0/24"
+            ]
+            public_subnets = [
+                "10.${local.cidr_b_production}.1.0/24",
+                "10.${local.cidr_b_production}.2.0/24",
+                "10.${local.cidr_b_production}.3.0/24"
+            ]
+        }
     }
 
     product = {
