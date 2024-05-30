@@ -29,7 +29,7 @@ public class OrganisationDetailsSummaryModel(
         {
             return Page();
         }
-
+        session.Remove(Session.RegistrationDetailsKey);
         return RedirectToPage("OrganisationOverview", new { organisation.Id });
     }
 
