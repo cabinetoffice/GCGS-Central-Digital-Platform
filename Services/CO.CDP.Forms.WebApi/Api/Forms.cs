@@ -16,7 +16,7 @@ namespace CO.CDP.Forms.WebApi.Api
         {
             options.SwaggerDoc("v1", new OpenApiInfo
             {
-                Version = "1.0.0.0",
+                Version = "1.0.0",
                 Title = "Forms API",
                 Description = "",
             });

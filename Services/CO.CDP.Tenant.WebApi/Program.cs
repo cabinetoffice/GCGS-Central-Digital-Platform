@@ -43,7 +43,6 @@ app.MapHealthChecks("/health");
 app.UseHttpsRedirection();
 app.UseTenantEndpoints();
 app.UseTenantLookupEndpoints();
-app.UseUserManagementEndpoints();
 app.Run();
 
 public abstract partial class Program;
