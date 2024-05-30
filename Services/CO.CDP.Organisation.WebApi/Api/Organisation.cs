@@ -49,33 +49,21 @@ public static class EndpointExtensions
 
     public static void UseOrganisationEndpoints(this WebApplication app)
     {
-        app.MapGet("/organisations/me", () => Results.Ok(_organisations.First().Value))
-            .Produces<List<Model.Organisation>>(StatusCodes.Status200OK, "application/json")
-            .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
-            .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
-            .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError)
-            .WithOpenApi(operation =>
-            {
-                operation.OperationId = "MyOrganisation";
-                operation.Description = "[STUB] The organisation details of the organisation the API key was issued for. [STUB]";
-                operation.Summary = "[STUB] The organisation details of the organisation the API key was issued for. [STUB]";
-                operation.Responses["200"].Description = "Organisation details.";
-                operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
-                operation.Responses["404"].Description = "Organisation matching the API key was not found.";
-                operation.Responses["500"].Description = "Internal server error.";
-                return operation;
-            });
         app.MapGet("/organisations",
                 async ([FromQuery] string userUrn, IUseCase<string, IEnumerable<Model.Organisation>> useCase) =>
                 await useCase.Execute(userUrn)
                     .AndThen(organisations => Results.Ok(organisations)))
-            .Produces<List<Model.Organisation>>(200, "application/json")
+            .Produces<List<Model.Organisation>>(StatusCodes.Status200OK, "application/json")
+            .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
+            .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError)
             .WithOpenApi(operation =>
             {
                 operation.OperationId = "ListOrganisations";
-                operation.Description = "A list of organisations.";
-                operation.Summary = "A list of organisations.";
+                operation.Description = "Get a list of organisations.";
+                operation.Summary = "Get a list of organisations.";
                 operation.Responses["200"].Description = "A list of organisations.";
+                operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
+                operation.Responses["500"].Description = "Internal server error.";
                 return operation;
             });
         app.MapPost("/organisations", async (RegisterOrganisation command, IUseCase<RegisterOrganisation, Model.Organisation> useCase) =>
@@ -85,28 +73,37 @@ public static class EndpointExtensions
                       ? Results.Created(new Uri($"/organisations/{organisation.Id}", UriKind.Relative), organisation)
                       : Results.Problem("Organisation could not be created due to an internal error"))
        )
-      .Produces<Model.Organisation>(201, "application/json")
-      .ProducesProblem(500)
-      .Produces(400)
+      .Produces<Model.Organisation>(StatusCodes.Status201Created, "application/json")
+      .Produces<ProblemDetails>(StatusCodes.Status400BadRequest)
+      .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
+      .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError)
       .WithOpenApi(operation =>
       {
           operation.OperationId = "CreateOrganisation";
           operation.Description = "Create a new organisation.";
           operation.Summary = "Create a new organisation.";
           operation.Responses["201"].Description = "Organisation created successfully.";
+          operation.Responses["400"].Description = "Failed to create the organisation due to a validation failure.";
+          operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
+          operation.Responses["500"].Description = "Internal server error.";
           return operation;
       });
         app.MapGet("/organisations/{organisationId}", async (Guid organisationId, IUseCase<Guid, Model.Organisation?> useCase) =>
                await useCase.Execute(organisationId)
                    .AndThen(organisation => organisation != null ? Results.Ok(organisation) : Results.NotFound()))
-           .Produces<Model.Organisation>(200, "application/json")
-           .Produces(404)
+           .Produces<Model.Organisation>(StatusCodes.Status200OK, "application/json")
+           .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
+           .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
+           .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError)
            .WithOpenApi(operation =>
            {
                operation.OperationId = "GetOrganisation";
-               operation.Description = "Get a organisation by ID.";
-               operation.Summary = "Get a organisation by ID.";
+               operation.Description = "Get an organisation by ID.";
+               operation.Summary = "Get an organisation by ID.";
                operation.Responses["200"].Description = "Organisation details.";
+               operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
+               operation.Responses["404"].Description = "Organisation not found.";
+               operation.Responses["500"].Description = "Internal server error.";
                return operation;
            });
         app.MapPut("/organisations/{organisationId}",
@@ -124,37 +121,64 @@ public static class EndpointExtensions
                         AdditionalIdentifiers = updatedOrganisation.AdditionalIdentifiers.AsView(),
                         Address = updatedOrganisation.Address.AsView(),
                         ContactPoint = updatedOrganisation.ContactPoint?.AsView(),
-                        Roles = updatedOrganisation.Roles,
+                        Roles = updatedOrganisation.Roles ?? [],
                     };
                     return Results.Ok(_organisations[organisationId]);
                 })
             .Produces<Model.Organisation>(200, "application/json")
-            .Produces(404)
-            .Produces(400)
+            .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
+            .Produces<ProblemDetails>(StatusCodes.Status400BadRequest)
+            .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
+            .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError)
             .WithOpenApi(operation =>
             {
                 operation.OperationId = "UpdateOrganisation";
                 operation.Description = "[STUB] Update a organisation [STUB]";
                 operation.Summary = "[STUB] Update a organisation [STUB]";
                 operation.Responses["200"].Description = "Organisation updated.";
+                operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
+                operation.Responses["404"].Description = "Organisation not found.";
+                operation.Responses["500"].Description = "Internal server error.";
                 return operation;
             });
     }
     public static void UseOrganisationLookupEndpoints(this WebApplication app)
     {
+        app.MapGet("/organisation/me", () => Results.Ok(_organisations.First().Value))
+            .Produces<List<Model.Organisation>>(StatusCodes.Status200OK, "application/json")
+            .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
+            .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
+            .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError)
+            .WithOpenApi(operation =>
+            {
+                operation.OperationId = "MyOrganisation";
+                operation.Description = "[STUB] The organisation details of the organisation the API key was issued for. [STUB]";
+                operation.Summary = "[STUB] The organisation details of the organisation the API key was issued for. [STUB]";
+                operation.Tags = new List<OpenApiTag> { new() { Name = "Organisation Lookup" } };
+                operation.Responses["200"].Description = "Organisation details.";
+                operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
+                operation.Responses["404"].Description = "Organisation matching the API key was not found.";
+                operation.Responses["500"].Description = "Internal server error.";
+                return operation;
+            });
         app.MapGet("/organisation/lookup",
                 async ([FromQuery] string name, IUseCase<string, Model.Organisation?> useCase) =>
                 await useCase.Execute(name)
                     .AndThen(organisation => organisation != null ? Results.Ok(organisation) : Results.NotFound()))
-            .Produces<Model.Organisation>(200, "application/json")
-            .Produces(404)
+            .Produces<Model.Organisation>(StatusCodes.Status200OK, "application/json")
+            .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
+            .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
+            .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError)
             .WithOpenApi(operation =>
             {
                 operation.OperationId = "LookupOrganisation";
-                operation.Description = "Lookup organisation by identifier.";
-                operation.Summary = "Lookup organisation by identifier.";
+                operation.Description = "Find an organisation.";
+                operation.Summary = "Find an organisation.";
                 operation.Tags = new List<OpenApiTag> { new() { Name = "Organisation Lookup" } };
                 operation.Responses["200"].Description = "Organisations Associated.";
+                operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
+                operation.Responses["404"].Description = "Organisation not found.";
+                operation.Responses["500"].Description = "Internal server error.";
                 return operation;
             });
     }
