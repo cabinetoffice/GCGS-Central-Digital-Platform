@@ -4,6 +4,6 @@ resource "aws_route53_zone" "public" {
   tags = merge(var.tags, { environment : "all", state_location : "all" })
 
   lifecycle {
-    prevent_destroy = true
+    prevent_destroy = false
   }
 }
