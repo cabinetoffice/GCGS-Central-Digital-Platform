@@ -15,36 +15,36 @@ FROM mcr.microsoft.com/dotnet/sdk:${ASPNET_VERSION} AS solution-dependencies
 ARG NUGET_PACKAGES
 ENV NUGET_PACKAGES="${NUGET_PACKAGES}"
 WORKDIR /src
-COPY Libraries/CO.CDP.Common/CO.CDP.Common.csproj Libraries/CO.CDP.Common/
-COPY Libraries/CO.CDP.Common.Tests/CO.CDP.Common.Tests.csproj Libraries/CO.CDP.Common.Tests/
-COPY Libraries/CO.CDP.Swashbuckle/CO.CDP.Swashbuckle.csproj Libraries/CO.CDP.Swashbuckle/
-COPY Libraries/CO.CDP.Swashbuckle.Tests/CO.CDP.Swashbuckle.Tests.csproj Libraries/CO.CDP.Swashbuckle.Tests/
-COPY Frontend/CO.CDP.OrganisationApp/CO.CDP.OrganisationApp.csproj Frontend/CO.CDP.OrganisationApp/
-COPY Frontend/CO.CDP.OrganisationApp.Tests/CO.CDP.OrganisationApp.Tests.csproj Frontend/CO.CDP.OrganisationApp.Tests/
-COPY Libraries/CO.CDP.Tenant.WebApiClient/CO.CDP.Tenant.WebApiClient.csproj Libraries/CO.CDP.Tenant.WebApiClient/
-COPY Libraries/CO.CDP.Tenant.WebApiClient.Tests/CO.CDP.Tenant.WebApiClient.Tests.csproj Libraries/CO.CDP.Tenant.WebApiClient.Tests/
-COPY Libraries/CO.CDP.Organisation.WebApiClient/CO.CDP.Organisation.WebApiClient.csproj Libraries/CO.CDP.Organisation.WebApiClient/
-COPY Libraries/CO.CDP.Organisation.WebApiClient.Tests/CO.CDP.Organisation.WebApiClient.Tests.csproj Libraries/CO.CDP.Organisation.WebApiClient.Tests/
-COPY Libraries/CO.CDP.Person.WebApiClient/CO.CDP.Person.WebApiClient.csproj Libraries/CO.CDP.Person.WebApiClient/
-COPY Libraries/CO.CDP.Person.WebApiClient.Tests/CO.CDP.Person.WebApiClient.Tests.csproj Libraries/CO.CDP.Person.WebApiClient.Tests/
-COPY TestKit/CO.CDP.TestKit.Mvc/CO.CDP.TestKit.Mvc.csproj TestKit/CO.CDP.TestKit.Mvc/
-COPY TestKit/CO.CDP.TestKit.Mvc.Tests/CO.CDP.TestKit.Mvc.Tests.csproj TestKit/CO.CDP.TestKit.Mvc.Tests/
-COPY TestKit/CO.CDP.Testcontainers.PostgreSql/CO.CDP.Testcontainers.PostgreSql.csproj TestKit/CO.CDP.Testcontainers.PostgreSql/
-COPY TestKit/CO.CDP.Testcontainers.PostgreSql.Tests/CO.CDP.Testcontainers.PostgreSql.Tests.csproj TestKit/CO.CDP.Testcontainers.PostgreSql.Tests/
-COPY Services/CO.CDP.OrganisationInformation/CO.CDP.OrganisationInformation.csproj Services/CO.CDP.OrganisationInformation/
-COPY Services/CO.CDP.OrganisationInformation.Persistence/CO.CDP.OrganisationInformation.Persistence.csproj Services/CO.CDP.OrganisationInformation.Persistence/
-COPY Services/CO.CDP.OrganisationInformation.Persistence.Tests/CO.CDP.OrganisationInformation.Persistence.Tests.csproj Services/CO.CDP.OrganisationInformation.Persistence.Tests/
-COPY Services/CO.CDP.Tenant.WebApi/CO.CDP.Tenant.WebApi.csproj Services/CO.CDP.Tenant.WebApi/
-COPY Services/CO.CDP.Tenant.WebApi.Tests/CO.CDP.Tenant.WebApi.Tests.csproj Services/CO.CDP.Tenant.WebApi.Tests/
-COPY Services/CO.CDP.DataSharing.WebApi/CO.CDP.DataSharing.WebApi.csproj Services/CO.CDP.DataSharing.WebApi/
-COPY Services/CO.CDP.DataSharing.WebApi.Tests/CO.CDP.DataSharing.WebApi.Tests.csproj Services/CO.CDP.DataSharing.WebApi.Tests/
-COPY Services/CO.CDP.Organisation.WebApi.Tests/CO.CDP.Organisation.WebApi.Tests.csproj Services/CO.CDP.Organisation.WebApi.Tests/
-COPY Services/CO.CDP.Organisation.WebApi/CO.CDP.Organisation.WebApi.csproj Services/CO.CDP.Organisation.WebApi/
-COPY Services/CO.CDP.Person.WebApi/CO.CDP.Person.WebApi.csproj Services/CO.CDP.Person.WebApi/
-COPY Services/CO.CDP.Person.WebApi.Tests/CO.CDP.Person.WebApi.Tests.csproj Services/CO.CDP.Person.WebApi.Tests/
-COPY Services/CO.CDP.Forms.WebApi/CO.CDP.Forms.WebApi.csproj Services/CO.CDP.Forms.WebApi/
-COPY Services/CO.CDP.Forms.WebApi.Tests/CO.CDP.Forms.WebApi.Tests.csproj Services/CO.CDP.Forms.WebApi.Tests/
-COPY GCGS-Central-Digital-Platform.sln .
+COPY --link Libraries/CO.CDP.Common/CO.CDP.Common.csproj Libraries/CO.CDP.Common/
+COPY --link Libraries/CO.CDP.Common.Tests/CO.CDP.Common.Tests.csproj Libraries/CO.CDP.Common.Tests/
+COPY --link Libraries/CO.CDP.Swashbuckle/CO.CDP.Swashbuckle.csproj Libraries/CO.CDP.Swashbuckle/
+COPY --link Libraries/CO.CDP.Swashbuckle.Tests/CO.CDP.Swashbuckle.Tests.csproj Libraries/CO.CDP.Swashbuckle.Tests/
+COPY --link Frontend/CO.CDP.OrganisationApp/CO.CDP.OrganisationApp.csproj Frontend/CO.CDP.OrganisationApp/
+COPY --link Frontend/CO.CDP.OrganisationApp.Tests/CO.CDP.OrganisationApp.Tests.csproj Frontend/CO.CDP.OrganisationApp.Tests/
+COPY --link Libraries/CO.CDP.Tenant.WebApiClient/CO.CDP.Tenant.WebApiClient.csproj Libraries/CO.CDP.Tenant.WebApiClient/
+COPY --link Libraries/CO.CDP.Tenant.WebApiClient.Tests/CO.CDP.Tenant.WebApiClient.Tests.csproj Libraries/CO.CDP.Tenant.WebApiClient.Tests/
+COPY --link Libraries/CO.CDP.Organisation.WebApiClient/CO.CDP.Organisation.WebApiClient.csproj Libraries/CO.CDP.Organisation.WebApiClient/
+COPY --link Libraries/CO.CDP.Organisation.WebApiClient.Tests/CO.CDP.Organisation.WebApiClient.Tests.csproj Libraries/CO.CDP.Organisation.WebApiClient.Tests/
+COPY --link Libraries/CO.CDP.Person.WebApiClient/CO.CDP.Person.WebApiClient.csproj Libraries/CO.CDP.Person.WebApiClient/
+COPY --link Libraries/CO.CDP.Person.WebApiClient.Tests/CO.CDP.Person.WebApiClient.Tests.csproj Libraries/CO.CDP.Person.WebApiClient.Tests/
+COPY --link TestKit/CO.CDP.TestKit.Mvc/CO.CDP.TestKit.Mvc.csproj TestKit/CO.CDP.TestKit.Mvc/
+COPY --link TestKit/CO.CDP.TestKit.Mvc.Tests/CO.CDP.TestKit.Mvc.Tests.csproj TestKit/CO.CDP.TestKit.Mvc.Tests/
+COPY --link TestKit/CO.CDP.Testcontainers.PostgreSql/CO.CDP.Testcontainers.PostgreSql.csproj TestKit/CO.CDP.Testcontainers.PostgreSql/
+COPY --link TestKit/CO.CDP.Testcontainers.PostgreSql.Tests/CO.CDP.Testcontainers.PostgreSql.Tests.csproj TestKit/CO.CDP.Testcontainers.PostgreSql.Tests/
+COPY --link Services/CO.CDP.OrganisationInformation/CO.CDP.OrganisationInformation.csproj Services/CO.CDP.OrganisationInformation/
+COPY --link Services/CO.CDP.OrganisationInformation.Persistence/CO.CDP.OrganisationInformation.Persistence.csproj Services/CO.CDP.OrganisationInformation.Persistence/
+COPY --link Services/CO.CDP.OrganisationInformation.Persistence.Tests/CO.CDP.OrganisationInformation.Persistence.Tests.csproj Services/CO.CDP.OrganisationInformation.Persistence.Tests/
+COPY --link Services/CO.CDP.Tenant.WebApi/CO.CDP.Tenant.WebApi.csproj Services/CO.CDP.Tenant.WebApi/
+COPY --link Services/CO.CDP.Tenant.WebApi.Tests/CO.CDP.Tenant.WebApi.Tests.csproj Services/CO.CDP.Tenant.WebApi.Tests/
+COPY --link Services/CO.CDP.DataSharing.WebApi/CO.CDP.DataSharing.WebApi.csproj Services/CO.CDP.DataSharing.WebApi/
+COPY --link Services/CO.CDP.DataSharing.WebApi.Tests/CO.CDP.DataSharing.WebApi.Tests.csproj Services/CO.CDP.DataSharing.WebApi.Tests/
+COPY --link Services/CO.CDP.Organisation.WebApi.Tests/CO.CDP.Organisation.WebApi.Tests.csproj Services/CO.CDP.Organisation.WebApi.Tests/
+COPY --link Services/CO.CDP.Organisation.WebApi/CO.CDP.Organisation.WebApi.csproj Services/CO.CDP.Organisation.WebApi/
+COPY --link Services/CO.CDP.Person.WebApi/CO.CDP.Person.WebApi.csproj Services/CO.CDP.Person.WebApi/
+COPY --link Services/CO.CDP.Person.WebApi.Tests/CO.CDP.Person.WebApi.Tests.csproj Services/CO.CDP.Person.WebApi.Tests/
+COPY --link Services/CO.CDP.Forms.WebApi/CO.CDP.Forms.WebApi.csproj Services/CO.CDP.Forms.WebApi/
+COPY --link Services/CO.CDP.Forms.WebApi.Tests/CO.CDP.Forms.WebApi.Tests.csproj Services/CO.CDP.Forms.WebApi.Tests/
+COPY --link GCGS-Central-Digital-Platform.sln .
 RUN dotnet restore "GCGS-Central-Digital-Platform.sln"
 
 FROM solution-dependencies AS source
