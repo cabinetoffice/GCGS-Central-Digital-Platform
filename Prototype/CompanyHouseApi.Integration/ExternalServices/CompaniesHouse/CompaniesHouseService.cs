@@ -1,6 +1,5 @@
 using System.Net.Http.Headers;
 using System.Text;
-using System.Text.Json;
 
 namespace CompanyHouseApi.Integration.ExternalServices.CompaniesHouse;
 
@@ -25,15 +24,10 @@ public class CompaniesHouseService : ICompaniesHouseService
 
         if (response.IsSuccessStatusCode)
         {
-            var content = await response.Content.ReadAsStringAsync();
-            return JsonSerializer.Deserialize<CompanyHouseDetails>(content, new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true
-            }) ?? new CompanyHouseDetails();
+            return await response.Content.ReadFromJsonAsync<CompanyHouseDetails>() ?? new CompanyHouseDetails();
         }
         else
         {
-            // Handle error response
             throw new Exception("Unable to fetch company details");
         }
     }
