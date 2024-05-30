@@ -48,10 +48,10 @@ COPY --link GCGS-Central-Digital-Platform.sln .
 RUN dotnet restore "GCGS-Central-Digital-Platform.sln"
 
 FROM solution-dependencies AS source
-COPY TestKit TestKit
-COPY Libraries Libraries
-COPY Services Services
-COPY Frontend Frontend
+COPY --link TestKit TestKit
+COPY --link Libraries Libraries
+COPY --link Services Services
+COPY --link Frontend Frontend
 
 FROM source AS build
 ARG BUILD_CONFIGURATION
