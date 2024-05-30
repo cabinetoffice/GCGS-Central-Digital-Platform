@@ -54,26 +54,8 @@ internal record ModifyUserPermissions
 
 public static class EndpointExtensions
 {
-    private static Dictionary<Guid, Model.Tenant> _tenants = Enumerable.Range(1, 5)
-        .Select(_ => Guid.NewGuid())
-        .ToDictionary(id => id, id => new Model.Tenant
-        {
-            Id = id,
-            Name = $"Bobby Tables {id}"
-        });
-
     public static void UseTenantEndpoints(this WebApplication app)
     {
-        app.MapGet("/tenants", () => _tenants.Values.ToArray())
-            .Produces<List<Model.Tenant>>(200, "application/json")
-            .WithOpenApi(operation =>
-            {
-                operation.OperationId = "ListTenants";
-                operation.Description = "[STUB] A list of tenants. [STUB]";
-                operation.Summary = "[STUB] A list of tenants. [STUB]";
-                operation.Responses["200"].Description = "A list of tenants.";
-                return operation;
-            });
         app.MapPost("/tenants", async (RegisterTenant command, IUseCase<RegisterTenant, Model.Tenant> useCase) =>
                 await useCase.Execute(command)
                     .AndThen(tenant =>
@@ -88,20 +70,6 @@ public static class EndpointExtensions
                 operation.Responses["201"].Description = "Tenant created successfully.";
                 return operation;
             });
-        app.MapDelete("/tenants/{tenantId}", (Guid tenantId) =>
-            {
-                _tenants.Remove(tenantId);
-                return Results.NoContent();
-            })
-            .Produces(204)
-            .WithOpenApi(operation =>
-            {
-                operation.OperationId = "DeleteTenant";
-                operation.Description = "[STUB] Delete a tenant. [STUB]";
-                operation.Summary = "[STUB] Delete a tenant. [STUB]";
-                operation.Responses["204"].Description = "Tenant deleted successfully.";
-                return operation;
-            });
         app.MapGet("/tenants/{tenantId}", async (Guid tenantId, IUseCase<Guid, Model.Tenant?> useCase) =>
                 await useCase.Execute(tenantId)
                     .AndThen(tenant => tenant != null ? Results.Ok(tenant) : Results.NotFound()))
@@ -113,24 +81,6 @@ public static class EndpointExtensions
                 operation.Description = "Get a tenant by ID.";
                 operation.Summary = "Get a tenant by ID.";
                 operation.Responses["200"].Description = "Tenant details.";
-                return operation;
-            });
-        app.MapPut("/tenants/{tenantId}", (Guid tenantId, UpdateTenant updatedTenant) =>
-            {
-                _tenants[tenantId] = new Model.Tenant
-                {
-                    Id = tenantId,
-                    Name = updatedTenant.Name
-                };
-                return Results.Ok(_tenants[tenantId]);
-            })
-            .Produces<Model.Tenant>(200, "application/json")
-            .WithOpenApi(operation =>
-            {
-                operation.OperationId = "UpdateTenant";
-                operation.Description = "[STUB] Update a tenant [STUB]";
-                operation.Summary = "[STUB] Update a tenant [STUB]";
-                operation.Responses["200"].Description = "Tenant updated successfully.";
                 return operation;
             });
     }
@@ -150,39 +100,6 @@ public static class EndpointExtensions
                 operation.Summary = "Lookup person by identifier.";
                 operation.Tags = new List<OpenApiTag> { new() { Name = "Tenant Lookup" } };
                 operation.Responses["200"].Description = "Tenants Associated with the the user.";
-                return operation;
-            });
-    }
-
-    public static void UseUserManagementEndpoints(this WebApplication app)
-    {
-        app.MapPost("/tenants/{tenantId}/assign-user",
-                (string tenantId, [FromBody] AssignUserToOrganisation command) =>
-                    new Receipt { Message = "User assigned successfully." })
-            .Accepts<AssignUserToOrganisation>("application/json")
-            .Produces<Receipt>(200, "application/json")
-            .Produces<Error>(400, "application/json")
-            .WithOpenApi(operation =>
-            {
-                operation.OperationId = "AssignUserToOrganisation";
-                operation.Description = "[STUB] Assign user to an organisation. [STUB]";
-                operation.Summary = "[STUB] Assign user to an organisation. [STUB]";
-                operation.Tags = new List<OpenApiTag> { new() { Name = "User Management" } };
-                operation.Responses["200"].Description = "User successfully assigned to the organisation.";
-                return operation;
-            });
-        app.MapPatch("/tenants/{tenantId}/user-permissions",
-                (string tenantId, [FromBody] ModifyUserPermissions command) =>
-                    new Receipt { Message = "User permissions updated successfully." })
-            .Produces<Receipt>(200, "application/json")
-            .Produces<Error>(400, "application/json")
-            .WithOpenApi(operation =>
-            {
-                operation.OperationId = "ModifyUserPermissions";
-                operation.Description = "[STUB] Modify user permissions within an organisation. [STUB]";
-                operation.Summary = "[STUB] Modify user permissions within an organisation. [STUB]";
-                operation.Tags = new List<OpenApiTag> { new() { Name = "User Management" } };
-                operation.Responses["200"].Description = "User permissions modified successfully.";
                 return operation;
             });
     }
