@@ -29,14 +29,14 @@
     <p><strong>Jurisdiction:</strong> @Model.CompanyDetails.Jurisdiction</p>
     <p><strong>Company Status:</strong> @Model.CompanyDetails.CompanyStatus</p>
     <h4>Registered Office Address</h4>
-    <p>@Model.CompanyDetails.RegisteredOfficeAddress.AddressLine1</p>
-    <p>@Model.CompanyDetails.RegisteredOfficeAddress.AddressLine2</p>
-    <p>@Model.CompanyDetails.RegisteredOfficeAddress.Locality</p>
-    <p>@Model.CompanyDetails.RegisteredOfficeAddress.PostalCode</p>
-    <p>@Model.CompanyDetails.RegisteredOfficeAddress.Country</p>
+    <p>@Model.CompanyDetails.RegisteredOfficeAddress?.AddressLine1</p>
+    <p>@Model.CompanyDetails.RegisteredOfficeAddress?.AddressLine2</p>
+    <p>@Model.CompanyDetails.RegisteredOfficeAddress?.Locality</p>
+    <p>@Model.CompanyDetails.RegisteredOfficeAddress?.PostalCode</p>
+    <p>@Model.CompanyDetails.RegisteredOfficeAddress?.Country</p>
     <h4>SIC Codes</h4>
     <ul>
-        @foreach (var sicCode in Model.CompanyDetails.SicCodes)
+        @foreach (var sicCode in Model.CompanyDetails.SicCodes ?? new List<string>())
         {
             <li>@sicCode</li>
         }

@@ -6,13 +6,13 @@ namespace CompanyHouseApi.Integration.ExternalServices.CompaniesHouse;
 
 public class CompaniesHouseService : ICompaniesHouseService
 {
-    private readonly HttpClient _httpClient;
     private readonly string _apiKey;
+    private readonly HttpClient httpClient;
 
     public CompaniesHouseService(HttpClient httpClient, IConfiguration configuration)
     {
-        _httpClient = httpClient;
-        _apiKey = configuration["CompaniesHouse:ApiKey"];
+        this.httpClient = httpClient;
+        _apiKey = configuration["CompaniesHouse:ApiKey"] ?? throw new ArgumentNullException(nameof(configuration), "API Key is missing in configuration.");
     }
 
     public async Task<CompanyHouseDetails> GetCompanyAsync(string companyNumber)
@@ -21,7 +21,7 @@ public class CompaniesHouseService : ICompaniesHouseService
         var byteArray = new UTF8Encoding().GetBytes($"{_apiKey}:");
         request.Headers.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(byteArray));
 
-        var response = await _httpClient.SendAsync(request);
+        var response = await httpClient.SendAsync(request);
 
         if (response.IsSuccessStatusCode)
         {
@@ -29,7 +29,7 @@ public class CompaniesHouseService : ICompaniesHouseService
             return JsonSerializer.Deserialize<CompanyHouseDetails>(content, new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true
-            });
+            }) ?? new CompanyHouseDetails();
         }
         else
         {

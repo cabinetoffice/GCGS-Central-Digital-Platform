@@ -12,8 +12,8 @@ public class IndexModel(ICompaniesHouseService companiesHouseService) : PageMode
     [Required(ErrorMessage = "Enter Comapnies House Number")]
     public string? CompaniesHouseNumber { get; set; }
 
-    public CompanyHouseDetails CompanyDetails { get; set; }
-    public string ErrorMessage { get; set; }
+    public CompanyHouseDetails? CompanyDetails { get; set; }
+    public string? ErrorMessage { get; set; }
 
     public void OnGet()
     {

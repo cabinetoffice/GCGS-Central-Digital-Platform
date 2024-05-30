@@ -1,6 +1,6 @@
 = External Services
 
-In our prject we have to integrate with external services e.g. Company House API, Postcode lookup ect
+In our project we have to integrate with external services e.g. Company House API, Postcode lookup ect
 
 == Company House API
 We are using the Companies House API to get information about the organisations in the system such as Registered Addresses and also when searching by Company Number.
@@ -12,12 +12,12 @@ The official documentation can be found here: https://developer-specs.company-in
 All calls to the Companies House API are via the CompaniesHouseApi in this project. This is used for a few processes:
 
 * The search process by Company Number:
- When adding an organisation it searches against this Company House API, and if searching by company number, when the user selects one it populates the relevent information from the API
-* Look up calls: We use the API to look up latest details e.g. address
+ When adding an organisation number it searches against this Company House API, it will populate the relevent information from the API
+* Look up calls: We can use the API to look up latest details e.g. address
 
 == Rate Limit
 The Companies House API has a rate limit of 600 requests per 5 minutes https://developer-specs.company-information.service.gov.uk/guides/rateLimiting.
-If in any case, this limit is hit, the service will recieve 429 Too Many Requests HTTP status codes from all requests beyond the limit, and throws an exception containing this status code.
+If in any case, this limit is hit, the service will receive 429 Too Many Requests HTTP status codes from all requests beyond the limit, and throws an exception containing this status code.
 [,ruby]
 ----
  public string CompanyName { get; set; }
@@ -25,18 +25,25 @@ If in any case, this limit is hit, the service will recieve 429 Too Many Request
  public CompaniesHouseAddress RegisteredOfficeAddress { get; set; }
 ----
 == How to start using Companies House API
-STEP1: You need to register with your email. It will send you a verification email in your inpox.
+STEP1: You need to register with your email. It will send you a verification email in your inbox, (NOTE: It may take 2-3 hours)
 
 STEP2: To register, login to https://developer.company-information.service.gov.uk/
 
 STEP3: Once successfuly logged in, create an Application which will give you an access key, 
 https://developer.company-information.service.gov.uk/manage-applications/add
 
-STEP4: Generate a key, you can use that key in your application. Store it in either appsettings or congif file.
+STEP4: Generate a key, you can use that key in your application. Store it in either appsettings or congif file. For development, it should be used in Secrets.
 
-STEP5: Try calling the API using the API KEY. In postman use the following end-point
+STEP5: Try calling the API using the API KEY. In postman use the following end-point to test it first
 https://api.company-information.service.gov.uk/company/00000006/registered-office-address
-User basic auth: Remember that you need to put the API key in the username and there is NO password. 
+Basic auth: Remember that you need to put the API key in the username and there is NO password.
 
 More Information and endpoints: https://developer-specs.company-information.service.gov.uk/companies-house-public-data-api/reference
+
+== Developer Guidlines from official website
+API rate limits:
+Rate limiting is applied to the Companies House API to ensure a high quality service is delivered for all users, and to protect client applications from unexpected loops.
+You can make up to 600 requests within a 5 minute period. If you exceed this limit, you will receive a 429 Too Many Requests HTTP status code for each request made within the rest of the 5 minute time frame. At the end of the period, your rate limit will reset back to 600 requests.
+If you have an application that requires a higher rate limit than this default, contact us at https://find-and-update.company-information.service.gov.uk/help/contact-us.
+We reserve the right to ban without notice applications that regularly exceed or attempt to bypass the rate limits.
 
