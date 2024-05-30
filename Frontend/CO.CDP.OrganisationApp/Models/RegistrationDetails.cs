@@ -1,5 +1,3 @@
-using CO.CDP.Common.Enums;
-using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Constants;
 
 namespace CO.CDP.OrganisationApp.Models;

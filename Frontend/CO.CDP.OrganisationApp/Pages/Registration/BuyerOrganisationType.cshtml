@@ -1,6 +1,5 @@
 @page "/registration/buyer-organisation-type"
 @model BuyerOrganisationTypeModel
-@using CO.CDP.Common.Enums
 
 @{
     var organisationTypeHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.BuyerOrganisationType)).HasInnerHtml;

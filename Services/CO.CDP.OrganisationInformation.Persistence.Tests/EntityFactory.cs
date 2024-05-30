@@ -1,4 +1,3 @@
-using CO.CDP.Common.Enums;
 using static CO.CDP.OrganisationInformation.Persistence.Organisation;
 
 namespace CO.CDP.OrganisationInformation.Persistence.Tests;

@@ -30,7 +30,7 @@ public static class EndpointExtensions
             AdditionalIdentifiers = [],
             Addresses = [new Address
             {
-                Type = Common.Enums.AddressType.Registered,
+                Type = AddressType.Registered,
                 StreetAddress = $"Green Lane {id}",
                 StreetAddress2 = "",
                 Locality = "London",

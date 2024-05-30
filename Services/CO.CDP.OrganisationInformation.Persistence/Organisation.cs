@@ -1,4 +1,3 @@
-using CO.CDP.Common.Enums;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations.Schema;
 
