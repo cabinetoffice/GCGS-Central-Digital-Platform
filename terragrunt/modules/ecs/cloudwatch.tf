@@ -58,8 +58,9 @@ resource "aws_cloudwatch_event_rule" "ecr_push" {
   tags = var.tags
 }
 
-# resource "aws_cloudwatch_event_target" "step_function_target" {
-#   rule     = aws_cloudwatch_event_rule.ecr_push_event_rule.name
-#   arn      = aws_sfn_state_machine.ecs_force_deploy.arn
-#   role_arn = aws_iam_role.cloudwatch_events_role.arn
-# }
+resource "aws_cloudwatch_event_target" "trigger_service_deployment" {
+  for_each = aws_cloudwatch_event_rule.ecr_push
+  rule     = each.value.name
+  arn      = each.key == "organisation-information-migrations" ? aws_sfn_state_machine.ecs_run_migration.arn : aws_sfn_state_machine.ecs_force_deploy[each.key].arn
+  role_arn = var.role_cloudwatch_events_arn
+}
