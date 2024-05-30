@@ -16,14 +16,6 @@ public class CompanyHouseNumberQuestionTests
         sessionMock = new Mock<ISession>();
     }
 
-    [Fact]
-    public void OnGet_WheEmptyModel_ShouldThrowException()
-    {
-        var model = new CompanyHouseNumberQuestionModel(sessionMock.Object);
-        Action action = () => model.OnGet();
-        action.Should().Throw<Exception>().WithMessage(ErrorMessagesList.SessionNotFound);
-    }
-
     [Theory]
     [InlineData(null)]
     [InlineData(false)]
@@ -101,7 +93,6 @@ public class CompanyHouseNumberQuestionTests
     {
         var registrationDetails = new RegistrationDetails
         {
-            UserUrn = "urn:fdc:gov.uk:2022:37d8856672e84a57ae9c86b27b226225",
             OrganisationScheme = "CCEW",
             OrganisationIdentificationNumber = companyHouseNumber,
             OrganisationHasCompaniesHouseNumber = hasNumber

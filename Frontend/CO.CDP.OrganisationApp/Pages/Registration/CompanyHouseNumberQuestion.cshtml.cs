@@ -1,16 +1,18 @@
 using CO.CDP.Common;
-using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
 
 namespace CO.CDP.OrganisationApp.Pages.Registration;
 
 [Authorize]
-public class CompanyHouseNumberQuestionModel(ISession session) : PageModel
+[ValidateRegistrationStep]
+public class CompanyHouseNumberQuestionModel(ISession session) : RegistrationStepModel
 {
+    public override string CurrentPage => OrganisationHasCompanyHouseNumberPage;
+    public override ISession SessionContext => session;
+
     [BindProperty]
     [Required(ErrorMessage = "Please select an option")]
     public bool? HasCompaniesHouseNumber { get; set; }
@@ -26,9 +28,8 @@ public class CompanyHouseNumberQuestionModel(ISession session) : PageModel
 
     public void OnGet()
     {
-        var registrationDetails = VerifySession();
-        HasCompaniesHouseNumber = registrationDetails.OrganisationHasCompaniesHouseNumber;
-        CompaniesHouseNumber = registrationDetails.OrganisationIdentificationNumber;
+        HasCompaniesHouseNumber = RegistrationDetails.OrganisationHasCompaniesHouseNumber;
+        CompaniesHouseNumber = RegistrationDetails.OrganisationIdentificationNumber;
     }
 
     public IActionResult OnPost()
@@ -38,16 +39,14 @@ public class CompanyHouseNumberQuestionModel(ISession session) : PageModel
             return Page();
         }
 
-        var registrationDetails = VerifySession();
-
-        registrationDetails.OrganisationHasCompaniesHouseNumber = HasCompaniesHouseNumber;
+        RegistrationDetails.OrganisationHasCompaniesHouseNumber = HasCompaniesHouseNumber;
         if (HasCompaniesHouseNumber ?? false)
         {
-            registrationDetails.OrganisationIdentificationNumber = CompaniesHouseNumber;
-            registrationDetails.OrganisationScheme = "CHN";
+            RegistrationDetails.OrganisationIdentificationNumber = CompaniesHouseNumber;
+            RegistrationDetails.OrganisationScheme = "CHN";
         }
 
-        session.Set(Session.RegistrationDetailsKey, registrationDetails);
+        session.Set(Session.RegistrationDetailsKey, RegistrationDetails);
 
         if (HasCompaniesHouseNumber == false)
         {
@@ -67,13 +66,5 @@ public class CompanyHouseNumberQuestionModel(ISession session) : PageModel
         {
             return RedirectToPage("OrganisationName");
         }
-    }
-
-    private RegistrationDetails VerifySession()
-    {
-        var registrationDetails = session.Get<RegistrationDetails>(Session.RegistrationDetailsKey)
-            ?? throw new Exception(ErrorMessagesList.SessionNotFound);
-
-        return registrationDetails;
     }
 }

@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace CO.CDP.OrganisationApp.Pages.Registration;
+namespace CO.CDP.OrganisationApp.Pages;
 
 [Authorize]
 public class OrganisationSelectionModel(
@@ -18,7 +18,11 @@ public class OrganisationSelectionModel(
 
     public async Task<IActionResult> OnGet()
     {
-        var details = VerifySession();
+        var details = session.Get<UserDetails>(Session.UserDetailsKey);
+        if (details == null)
+        {
+            return Redirect("/one-login/user-info");
+        }
 
         Organisations = await organisationClient.ListOrganisationsAsync(details.UserUrn);
 
@@ -27,14 +31,6 @@ public class OrganisationSelectionModel(
 
     public IActionResult OnPost()
     {
-        return RedirectToPage("OrganisationType");
-    }
-
-    private RegistrationDetails VerifySession()
-    {
-        var details = session.Get<RegistrationDetails>(Session.RegistrationDetailsKey)
-            ?? throw new Exception(ErrorMessagesList.SessionNotFound);
-
-        return details;
+        return RedirectToPage("/Registration/OrganisationType");
     }
 }

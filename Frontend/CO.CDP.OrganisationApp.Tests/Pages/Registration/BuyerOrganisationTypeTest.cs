@@ -38,7 +38,6 @@ public class BuyerOrganisationTypeTest
         sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey))
             .Returns(new RegistrationDetails
             {
-                UserUrn = "urn:test",
                 OrganisationType = OrganisationType.Buyer,
                 BuyerOrganisationType = "type1"
             });
@@ -82,7 +81,7 @@ public class BuyerOrganisationTypeTest
         model.BuyerOrganisationType = "type1";
 
         sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey))
-            .Returns(new RegistrationDetails { UserUrn = "urn:test", OrganisationType = OrganisationType.Buyer });
+            .Returns(new RegistrationDetails { OrganisationType = OrganisationType.Buyer });
 
         var results = model.OnPost();
 
@@ -98,7 +97,7 @@ public class BuyerOrganisationTypeTest
         var model = GivenBuyerOrganisationTypeModel();
 
         sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey))
-            .Returns(new RegistrationDetails { UserUrn = "urn:test", OrganisationType = OrganisationType.Buyer });
+            .Returns(new RegistrationDetails { OrganisationType = OrganisationType.Buyer });
 
         var actionResult = model.OnPost();
 
