@@ -1,10 +1,10 @@
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 
 namespace CO.CDP.OrganisationApp.Pages.Registration;
 
@@ -67,7 +67,7 @@ public class OrganisationRegisteredAddressModel(ISession session) : PageModel
 
         session.Set(Session.RegistrationDetailsKey, registrationDetails);
 
-        if (registrationDetails.OrganisationType == Common.Enums.OrganisationType.Tenderer)
+        if (registrationDetails.OrganisationType == OrganisationType.Buyer)
         {
             return RedirectToPage("BuyerOrganisationType");
         }

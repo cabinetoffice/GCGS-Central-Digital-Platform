@@ -1,3 +1,4 @@
+using CO.CDP.OrganisationInformation;
 using CO.CDP.OrganisationInformation.Persistence;
 using CO.CDP.TestKit.Mvc;
 using Xunit.Abstractions;
@@ -46,7 +47,7 @@ public class OrganisationClientIntegrationTest(ITestOutputHelper testOutputHelpe
                 legalName: "Additional Legal Name"
             )
         };
-        var types = new List<int> { 1 };
+        var roles = new List<PartyRole> { PartyRole.Supplier };
         var newOrganisation = new NewOrganisation(
             personId: unknownPersonId,
             additionalIdentifiers: additionalIdentifiers,
@@ -54,7 +55,7 @@ public class OrganisationClientIntegrationTest(ITestOutputHelper testOutputHelpe
             contactPoint: contactPoint,
             identifier: identifier,
             name: "New Organisation",
-            types: types
+            roles: roles
         );
 
         await Assert.ThrowsAsync<ApiException<ProblemDetails>>(() => client.CreateOrganisationAsync(newOrganisation));

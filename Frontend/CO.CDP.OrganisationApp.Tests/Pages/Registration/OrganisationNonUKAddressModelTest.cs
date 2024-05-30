@@ -175,7 +175,7 @@ public class OrganisationNonUKAddressModelTest
         var model = GivenOrganisationAddressModel();
 
         RegistrationDetails registrationDetails = DummyRegistrationDetails();
-        registrationDetails.OrganisationType = Common.Enums.OrganisationType.Supplier;
+        registrationDetails.OrganisationType = OrganisationType.Supplier;
         sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(registrationDetails);
 
         var actionResult = model.OnPost();
@@ -190,7 +190,7 @@ public class OrganisationNonUKAddressModelTest
         var model = GivenOrganisationAddressModel();
 
         RegistrationDetails registrationDetails = DummyRegistrationDetails();
-        registrationDetails.OrganisationType = Common.Enums.OrganisationType.Tenderer;
+        registrationDetails.OrganisationType = OrganisationType.Buyer;
         sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(registrationDetails);
 
         var actionResult = model.OnPost();

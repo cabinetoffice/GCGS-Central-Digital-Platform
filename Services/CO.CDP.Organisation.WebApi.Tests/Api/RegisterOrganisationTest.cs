@@ -4,6 +4,7 @@ using FluentAssertions;
 using Moq;
 using System.Net;
 using System.Net.Http.Json;
+using CO.CDP.OrganisationInformation;
 using CO.CDP.TestKit.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -42,7 +43,7 @@ public class RegisterOrganisationTest
             AdditionalIdentifiers = command.AdditionalIdentifiers.AsView(),
             Addresses = command.Addresses.AsView(),
             ContactPoint = command.ContactPoint?.AsView(),
-            Types = command.Types
+            Roles = command.Roles
         };
 
         _registerOrganisationUseCase.Setup(useCase => useCase.Execute(It.IsAny<RegisterOrganisation>()))
@@ -81,7 +82,7 @@ public class RegisterOrganisationTest
             AdditionalIdentifiers = command.AdditionalIdentifiers.AsView(),
             Addresses = command.Addresses.AsView(),
             ContactPoint = command.ContactPoint?.AsView(),
-            Types = command.Types
+            Roles = command.Roles
         };
 
         _getOrganisationsUseCase.Setup(useCase => useCase.Execute(It.IsAny<string>()))
@@ -131,7 +132,7 @@ public class RegisterOrganisationTest
                 Telephone = "123-456-7890",
                 Url = "http://example.org/contact"
             },
-            Types = new List<int> { 1 }
+            Roles = [PartyRole.Supplier]
         };
     }
 }

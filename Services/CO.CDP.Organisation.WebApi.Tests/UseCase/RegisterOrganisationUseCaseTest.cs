@@ -2,7 +2,7 @@ using CO.CDP.Common.Enums;
 using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.Organisation.WebApi.Tests.AutoMapper;
 using CO.CDP.Organisation.WebApi.UseCase;
-using CO.CDP.OrganisationInformation.Persistence;
+using CO.CDP.OrganisationInformation;
 using FluentAssertions;
 using Moq;
 using Persistence = CO.CDP.OrganisationInformation.Persistence;
@@ -11,8 +11,8 @@ namespace CO.CDP.Organisation.WebApi.Tests.UseCase;
 
 public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IClassFixture<AutoMapperFixture>
 {
-    private readonly Mock<IOrganisationRepository> _repository = new();
-    private readonly Mock<IPersonRepository> _persons = new();
+    private readonly Mock<Persistence.IOrganisationRepository> _repository = new();
+    private readonly Mock<Persistence.IPersonRepository> _persons = new();
     private readonly Guid _generatedGuid = Guid.NewGuid();
     private RegisterOrganisationUseCase UseCase => new(_repository.Object, _persons.Object, mapperFixture.Mapper, () => _generatedGuid);
 
@@ -57,7 +57,7 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
                 Telephone = "123-456-7890",
                 Url = "http://example.org/contact"
             },
-            Types = new List<int> { 1 }
+            Roles = [PartyRole.Supplier]
         };
 
         var createdOrganisation = await UseCase.Execute(command);
@@ -70,7 +70,7 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
             AdditionalIdentifiers = command.AdditionalIdentifiers.AsView(),
             Addresses = command.Addresses.AsView(),
             ContactPoint = command.ContactPoint.AsView(),
-            Types = command.Types
+            Roles = command.Roles
         };
 
         createdOrganisation.Should().BeEquivalentTo(expectedOrganisation, options => options.ComparingByMembers<Model.Organisation>());
@@ -122,7 +122,7 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
                 Telephone = "123-456-7890",
                 Url = "http://example.org/contact"
             },
-            Types = new List<int> { 1 }
+            Roles = [PartyRole.Supplier]
         });
 
         _repository.Verify(r => r.Save(It.Is<Persistence.Organisation>(o =>
@@ -135,7 +135,7 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
                  Telephone = "123-456-7890",
                  Url = "http://example.org/contact"
              } &&
-             o.Types.SequenceEqual(new List<OrganisationType> { OrganisationType.ProcuringEntity })
+             o.Roles.SequenceEqual(new List<PartyRole> { PartyRole.Supplier })
          )), Times.Once);
 
         persistanceOrganisation.Should().NotBeNull();
@@ -163,7 +163,7 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
             .Should().BeEquivalentTo(new Persistence.Organisation.OrganisationAddress
             {
                 Type = AddressType.Registered,
-                Address = new Address
+                Address = new Persistence.Address
                 {
                     StreetAddress = "1234 Example St",
                     StreetAddress2 = "",
@@ -279,13 +279,13 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
                 Telephone = "123-456-7890",
                 Url = "http://example.org/contact"
             },
-            Types = new List<int> { 1 }
+            Roles = [PartyRole.Supplier]
         };
     }
 
-    private Person GivenPersonExists(Guid guid)
+    private Persistence.Person GivenPersonExists(Guid guid)
     {
-        Person person = new Person
+        Persistence.Person person = new Persistence.Person
         {
             Id = 13,
             Guid = guid,

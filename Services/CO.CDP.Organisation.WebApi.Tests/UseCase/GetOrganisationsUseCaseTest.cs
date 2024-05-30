@@ -1,9 +1,11 @@
 using CO.CDP.Common.Enums;
 using CO.CDP.Organisation.WebApi.Tests.AutoMapper;
 using CO.CDP.Organisation.WebApi.UseCase;
+using CO.CDP.OrganisationInformation;
 using CO.CDP.OrganisationInformation.Persistence;
 using FluentAssertions;
 using Moq;
+using Address = CO.CDP.OrganisationInformation.Persistence.Address;
 
 namespace CO.CDP.Organisation.WebApi.Tests.UseCase;
 public class GetOrganisationsUseCaseTest(AutoMapperFixture mapperFixture) : IClassFixture<AutoMapperFixture>
@@ -59,7 +61,7 @@ public class GetOrganisationsUseCaseTest(AutoMapperFixture mapperFixture) : ICla
             {
                 Email = "contact@test.org"
             },
-            Types = [OrganisationType.ProcuringEntity]
+            Roles = [PartyRole.Buyer]
         },
         new OrganisationInformation.Persistence.Organisation
         {
@@ -81,7 +83,7 @@ public class GetOrganisationsUseCaseTest(AutoMapperFixture mapperFixture) : ICla
             }],
             Addresses = {new OrganisationInformation.Persistence.Organisation.OrganisationAddress
             {
-                Type = Common.Enums.AddressType.Registered,
+                Type = AddressType.Registered,
                 Address = new Address
                 {
                     StreetAddress = "1234 Test St",
@@ -95,7 +97,7 @@ public class GetOrganisationsUseCaseTest(AutoMapperFixture mapperFixture) : ICla
             {
                 Email = "contact@test.org"
             },
-            Types = [OrganisationType.ProcuringEntity]
+            Roles = [PartyRole.Buyer]
         }};
 
         _repository.Setup(r => r.FindByUserUrn(userUrn)).ReturnsAsync(persistenceOrganisation);

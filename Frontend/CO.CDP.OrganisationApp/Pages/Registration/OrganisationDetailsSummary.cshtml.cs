@@ -88,7 +88,7 @@ public class OrganisationDetailsSummaryModel(
                 legalName: details.OrganisationName,
                 scheme: details.OrganisationScheme),
             name: details.OrganisationName,
-            types: details.OrganisationType.HasValue ? [(int)details.OrganisationType.Value] : [],
+            roles: [details.OrganisationType.AsPartyRole()],
             personId: details.PersonId.Value
         );
     }
