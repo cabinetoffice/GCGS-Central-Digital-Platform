@@ -61,45 +61,61 @@ public static class EndpointExtensions
                     .AndThen(tenant =>
                         Results.Created(new Uri($"/tenants/{tenant.Id}", UriKind.Relative), tenant)
                     ))
-            .Produces<Model.Tenant>(201, "application/json")
+            .Produces<Model.Tenant>(StatusCodes.Status201Created, "application/json")
+            .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
+            .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError)
             .WithOpenApi(operation =>
             {
                 operation.OperationId = "CreateTenant";
                 operation.Description = "Create a new tenant.";
                 operation.Summary = "Create a new tenant.";
                 operation.Responses["201"].Description = "Tenant created successfully.";
+                operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
+                operation.Responses["500"].Description = "Internal server error.";
                 return operation;
             });
         app.MapGet("/tenants/{tenantId}", async (Guid tenantId, IUseCase<Guid, Model.Tenant?> useCase) =>
                 await useCase.Execute(tenantId)
                     .AndThen(tenant => tenant != null ? Results.Ok(tenant) : Results.NotFound()))
-            .Produces<Model.Tenant>(200, "application/json")
-            .Produces(404)
+            .Produces<Model.Tenant>(StatusCodes.Status200OK, "application/json")
+            .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
+            .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
+            .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError)
             .WithOpenApi(operation =>
             {
                 operation.OperationId = "GetTenant";
                 operation.Description = "Get a tenant by ID.";
                 operation.Summary = "Get a tenant by ID.";
                 operation.Responses["200"].Description = "Tenant details.";
+                operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
+                operation.Responses["404"].Description = "Tenant not found.";
+                operation.Responses["500"].Description = "Internal server error.";
                 return operation;
             });
     }
 
     public static void UseTenantLookupEndpoints(this WebApplication app)
     {
+        var openApiTags = new List<OpenApiTag> { new() { Name = "Tenant Lookup" } };
+
         app.MapGet("/tenant/lookup",
-                async ([FromQuery] string name, IUseCase<string, Model.Tenant?> useCase) =>
-                await useCase.Execute(name)
+                async ([FromQuery] string userId, IUseCase<string, Model.Tenant?> useCase) =>
+                await useCase.Execute(userId)
                     .AndThen(tenant => tenant != null ? Results.Ok(tenant) : Results.NotFound()))
-            .Produces<Model.Tenant>(200, "application/json")
-            .Produces(404)
+            .Produces<Model.Tenant>(StatusCodes.Status200OK, "application/json")
+            .Produces(StatusCodes.Status401Unauthorized)
+            .Produces(StatusCodes.Status404NotFound)
+            .Produces(StatusCodes.Status500InternalServerError)
             .WithOpenApi(operation =>
             {
                 operation.OperationId = "LookupTenant";
-                operation.Description = "Lookup person by identifier.";
-                operation.Summary = "Lookup person by identifier.";
-                operation.Tags = new List<OpenApiTag> { new() { Name = "Tenant Lookup" } };
-                operation.Responses["200"].Description = "Tenants Associated with the the user.";
+                operation.Description = "Lookup the tenant for the authenticated user.";
+                operation.Summary = "Lookup the tenant for the authenticated user.";
+                operation.Tags = openApiTags;
+                operation.Responses["200"].Description = "Tenants associated with the the user.";
+                operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
+                operation.Responses["404"].Description = "Tenant not found.";
+                operation.Responses["500"].Description = "Internal server error.";
                 return operation;
             });
     }
