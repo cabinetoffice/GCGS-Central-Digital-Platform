@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace CO.CDP.Common;
+namespace CO.CDP.Mvc.Validation;
 
 public class RequiredIfAttribute(string dependentProperty, object? targetValue) : RequiredAttribute
 {

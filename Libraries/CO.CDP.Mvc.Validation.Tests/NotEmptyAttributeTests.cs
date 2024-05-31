@@ -1,13 +1,11 @@
-using System.Collections.Generic;
-using CO.CDP.Common;
-using Microsoft.AspNetCore.Mvc.ModelBinding.Metadata;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
+using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Metadata;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Moq;
-using Xunit;
-using System.ComponentModel.DataAnnotations;
-using FluentAssertions;
+
+namespace CO.CDP.Mvc.Validation.Tests;
 
 public class NotEmptyAttributeTests
 {
@@ -17,7 +15,8 @@ public class NotEmptyAttributeTests
     public NotEmptyAttributeTests()
     {
         _attribute = new NotEmptyAttribute { ErrorMessage = "The collection cannot be empty." };
-        _mockMetadata = new Mock<ModelMetadata>(MockBehavior.Strict, ModelMetadataIdentity.ForType(typeof(List<string>)));
+        _mockMetadata =
+            new Mock<ModelMetadata>(MockBehavior.Strict, ModelMetadataIdentity.ForType(typeof(List<string>)));
     }
 
     [Fact]
@@ -47,8 +46,8 @@ public class NotEmptyAttributeTests
         var result = _attribute.Validate(context);
 
         result.Single().Should().NotBeNull()
-                  .And.BeOfType<ModelValidationResult>()
-                  .Which.Message.Should().Be("The collection cannot be empty.");
+            .And.BeOfType<ModelValidationResult>()
+            .Which.Message.Should().Be("The collection cannot be empty.");
     }
 
     [Fact]
@@ -65,8 +64,8 @@ public class NotEmptyAttributeTests
         var result = _attribute.Validate(context);
 
         result.Single().Should().NotBeNull()
-                  .And.BeOfType<ModelValidationResult>()
-                  .Which.Message.Should().Be("The collection cannot be empty.");
+            .And.BeOfType<ModelValidationResult>()
+            .Which.Message.Should().Be("The collection cannot be empty.");
     }
 
     [Fact]
@@ -82,7 +81,7 @@ public class NotEmptyAttributeTests
         var result = _attribute.Validate(context);
 
         result.Single().Should().NotBeNull()
-                  .And.BeOfType<ModelValidationResult>()
-                  .Which.Message.Should().Be("The collection cannot be empty.");
+            .And.BeOfType<ModelValidationResult>()
+            .Which.Message.Should().Be("The collection cannot be empty.");
     }
 }

@@ -1,7 +1,7 @@
-using FluentAssertions;
 using System.ComponentModel.DataAnnotations;
+using FluentAssertions;
 
-namespace CO.CDP.Common.Tests;
+namespace CO.CDP.Mvc.Validation.Tests;
 
 public class RequiredIfAttributeTests
 {
@@ -20,8 +20,8 @@ public class RequiredIfAttributeTests
             var result = attribute.GetValidationResult(null, validationContext);
 
             result.Should().NotBeNull()
-                  .And.BeOfType<ValidationResult>()
-                  .Which.ErrorMessage.Should().Be("CharityCommissionNorthernIrelandNumber is required");
+                .And.BeOfType<ValidationResult>()
+                .Which.ErrorMessage.Should().Be("CharityCommissionNorthernIrelandNumber is required");
         }
     }
 

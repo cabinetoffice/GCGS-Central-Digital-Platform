@@ -12,7 +12,7 @@
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.4">
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <ProjectReference Include="..\..\Libraries\CO.CDP.Common\CO.CDP.Common.csproj" />
+        <ProjectReference Include="..\..\Libraries\CO.CDP.Functional\CO.CDP.Functional.csproj" />
         <ProjectReference Include="..\CO.CDP.OrganisationInformation\CO.CDP.OrganisationInformation.csproj" />
     </ItemGroup>
 
