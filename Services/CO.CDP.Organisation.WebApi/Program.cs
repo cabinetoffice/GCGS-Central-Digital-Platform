@@ -1,5 +1,6 @@
 using CO.CDP.Organisation.WebApi.Api;
 using CO.CDP.Organisation.WebApi.AutoMapper;
+using CO.CDP.Organisation.WebApi.Extensions;
 using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.Organisation.WebApi.UseCase;
 using CO.CDP.OrganisationInformation.Persistence;
@@ -12,8 +13,6 @@ var builder = WebApplication.CreateBuilder(args);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options => { options.DocumentOrganisationApi(); });
-builder.Services.AddProblemDetails();
-
 builder.Services.AddHealthChecks();
 builder.Services.AddAutoMapper(typeof(WebApiToPersistenceProfile));
 
@@ -25,7 +24,7 @@ builder.Services.AddScoped<IUseCase<RegisterOrganisation, Organisation>, Registe
 builder.Services.AddScoped<IUseCase<Guid, Organisation?>, GetOrganisationUseCase>();
 builder.Services.AddScoped<IUseCase<string, Organisation?>, LookupOrganisationUseCase>();
 builder.Services.AddScoped<IUseCase<string, IEnumerable<Organisation>>, GetOrganisationsUseCase>();
-builder.Services.AddProblemDetails();
+builder.Services.AddOrganisationProblemDetails();
 
 var app = builder.Build();
 

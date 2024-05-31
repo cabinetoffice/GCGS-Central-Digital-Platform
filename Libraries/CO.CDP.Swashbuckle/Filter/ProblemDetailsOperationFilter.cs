@@ -73,7 +73,7 @@ public class ProblemDetailsOperationFilter : IOperationFilter
         ["detail"] = new OpenApiString("Error details."),
     };
 
-    private static readonly OpenApiObject _status422ProblemDetails = new()
+    private static readonly OpenApiObject Status422ProblemDetails = new()
     {
         ["type"] = new OpenApiString("https://tools.ietf.org/html/rfc4918#section-11.2"),
         ["title"] = new OpenApiString(ReasonPhrases.GetReasonPhrase(StatusCodes.Status422UnprocessableEntity)),
@@ -98,7 +98,7 @@ public class ProblemDetailsOperationFilter : IOperationFilter
         { StatusCodes.Status406NotAcceptable.ToString(), Status406ProblemDetails },
         { StatusCodes.Status409Conflict.ToString(), Status409ProblemDetails },
         { StatusCodes.Status415UnsupportedMediaType.ToString(), Status415ProblemDetails },
-        { StatusCodes.Status422UnprocessableEntity.ToString(), _status422ProblemDetails },
+        { StatusCodes.Status422UnprocessableEntity.ToString(), Status422ProblemDetails },
         { StatusCodes.Status500InternalServerError.ToString(), Status500ProblemDetails },
     };
 
