@@ -59,8 +59,8 @@
                             <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-SCR">
                                 <div class="govuk-form-group @(scottishCharityRegulatorNumberHasError ? "govuk-form-group--error" : "")">
                                     @Html.LabelFor(m => m.ScottishCharityRegulatorNumber, new { @class = "govuk-label", @for = Model.ScottishCharityRegulatorNumber })
-                                    @Html.ValidationMessageFor(m => m.ScottishCharityRegulatorNumber, "", new { @class = "govuk-error-message", @id = "OfficeOfScottishCharityRegulatorNumber-error" })
-                                    @Html.TextBoxFor(m => m.ScottishCharityRegulatorNumber, new { @class = "govuk-input " + (scottishCharityRegulatorNumberHasError ? "govuk-input--error" : ""), @id = "OfficeOfScottishCharityRegulatorNumber", @type = "text", spellcheck = "false", autocomplete = "off" })
+                                    @Html.ValidationMessageFor(m => m.ScottishCharityRegulatorNumber, "", new { @class = "govuk-error-message", @id = "ScottishCharityRegulatorNumber-error" })
+                                    @Html.TextBoxFor(m => m.ScottishCharityRegulatorNumber, new { @class = "govuk-input " + (scottishCharityRegulatorNumberHasError ? "govuk-input--error" : ""), @id = "ScottishCharityRegulatorNumber", @type = "text", spellcheck = "false", autocomplete = "off" })
                                 </div>
                             </div>
 
