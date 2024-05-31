@@ -42,3 +42,30 @@
         }
     </ul>
 }
+
+@if (Model.CompanyOfficers != null && Model.CompanyOfficers.Any())
+{
+    <h3>Company Officers</h3>
+    <ul>
+        @foreach (var officer in Model.CompanyOfficers)
+        {
+            <li>
+                <p><strong>Name:</strong> @officer.Name</p>
+                <p><strong>Role:</strong> @officer.OfficerRole</p>
+                <p><strong>Appointed On:</strong> @officer.AppointedOn</p>
+                <p><strong>Country of Residence:</strong> @officer.CountryOfResidence</p>
+                <p><strong>Nationality:</strong> @officer.Nationality</p>
+                <p><strong>Occupation:</strong> @officer.Occupation</p>
+                <p><strong>Date of Birth:</strong> @officer.DateOfBirth?.Month/@officer.DateOfBirth?.Year</p>
+                <h4>Address</h4>
+                <p>@officer.Address?.Premises</p>
+                <p>@officer.Address?.AddressLine1</p>
+                <p>@officer.Address?.AddressLine2</p>
+                <p>@officer.Address?.Locality</p>
+                <p>@officer.Address?.Region</p>
+                <p>@officer.Address?.Country</p>
+                <p>@officer.Address?.PostalCode</p>
+            </li>
+        }
+    </ul>
+}
