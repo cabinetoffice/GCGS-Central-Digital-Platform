@@ -30,5 +30,22 @@ internal record UserTenant
     /// <example>"Acme Corporation / John Doe"</example>
     public required string Name { get; init; }
 
-    public required List<OrganisationReference> Organisations { get; init; } = [];
+    public required List<UserOrganisation> Organisations { get; init; } = [];
+}
+
+internal record UserOrganisation
+{
+    /// <example>"f4596cdd-12e5-4f25-9db1-4312474e516f"</example>
+    public required Guid Id { get; init; }
+
+    /// <example>"Acme Group Ltd"</example>
+    public required string Name { get; init; }
+
+    public required List<PartyRole> Roles { get; init; }
+
+    /// <example>"https://cdp.cabinetoffice.gov.uk/organisations/f4596cdd-12e5-4f25-9db1-4312474e516f"</example>
+    public required Uri Uri { get; init; }
+
+    /// <example>["Responder"]</example>
+    public required List<string> Scopes { get; init; }
 }
