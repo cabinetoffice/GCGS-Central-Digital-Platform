@@ -9,6 +9,8 @@
         <OpenApiDocumentsDirectory>$(MSBuildProjectDirectory)/OpenAPI</OpenApiDocumentsDirectory>
         <OpenApiGenerateDocuments>true</OpenApiGenerateDocuments>
         <OpenApiGenerateDocumentsOnBuild>true</OpenApiGenerateDocumentsOnBuild>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <NoWarn>$(NoWarn);1591</NoWarn>
     </PropertyGroup>
 
     <ItemGroup>
@@ -16,7 +18,9 @@
         <PackageReference Include="DotSwashbuckle.AspNetCore" Version="3.0.8" />
         <PackageReference Include="AutoMapper" Version="13.0.1" />
         <ProjectReference Include="..\CO.CDP.OrganisationInformation.Persistence\CO.CDP.OrganisationInformation.Persistence.csproj" />
+        <ProjectReference Include="..\CO.CDP.OrganisationInformation\CO.CDP.OrganisationInformation.csproj" />
         <ProjectReference Include="..\..\Libraries\CO.CDP.Common\CO.CDP.Common.csproj" />
+        <ProjectReference Include="..\..\Libraries\CO.CDP.Swashbuckle\CO.CDP.Swashbuckle.csproj" />
     </ItemGroup>
 
 </Project>

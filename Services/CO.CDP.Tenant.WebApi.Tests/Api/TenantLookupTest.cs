@@ -27,12 +27,12 @@ public class TenantLookupTest
     [Fact]
     public async Task IfNoTenantIsFound_ReturnsNotFound()
     {
-        var name = "urn:fdc:gov.uk:2022:43af5a8b-f4c0-414b-b341-d4f1fa894302";
+        var urn = "urn:fdc:gov.uk:2022:43af5a8b-f4c0-414b-b341-d4f1fa894302";
 
-        _getTenantUseCase.Setup(useCase => useCase.Execute(name))
+        _getTenantUseCase.Setup(useCase => useCase.Execute(urn))
             .Returns(Task.FromResult<Model.Tenant?>(null));
 
-        var response = await _httpClient.GetAsync($"/tenant/lookup?name={name}");
+        var response = await _httpClient.GetAsync($"/tenant/lookup?urn={urn}");
 
         response.Should().HaveStatusCode(NotFound);
     }
@@ -45,7 +45,7 @@ public class TenantLookupTest
         _getTenantUseCase.Setup(useCase => useCase.Execute(tenant.Name))
             .Returns(Task.FromResult<Model.Tenant?>(tenant));
 
-        var response = await _httpClient.GetAsync($"/tenant/lookup?name={tenant.Name}");
+        var response = await _httpClient.GetAsync($"/tenant/lookup?urn={tenant.Name}");
 
         response.Should().HaveStatusCode(OK);
         await response.Should().HaveContent(tenant);

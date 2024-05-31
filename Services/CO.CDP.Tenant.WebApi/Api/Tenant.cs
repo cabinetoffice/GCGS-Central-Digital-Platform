@@ -1,10 +1,15 @@
+using System.ComponentModel.DataAnnotations;
+using System.Reflection;
 using CO.CDP.Common;
+using CO.CDP.OrganisationInformation;
+using CO.CDP.Swashbuckle.Filter;
+using CO.CDP.Swashbuckle.Security;
+using CO.CDP.Swashbuckle.SwaggerGen;
 using CO.CDP.Tenant.WebApi.Model;
 using CO.CDP.Tenant.WebApi.UseCase;
 using DotSwashbuckle.AspNetCore.SwaggerGen;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
-using System.ComponentModel.DataAnnotations;
 
 namespace CO.CDP.Tenant.WebApi.Api;
 internal record UserDetails
@@ -99,8 +104,8 @@ public static class EndpointExtensions
         var openApiTags = new List<OpenApiTag> { new() { Name = "Tenant Lookup" } };
 
         app.MapGet("/tenant/lookup",
-                async ([FromQuery] string userId, IUseCase<string, Model.Tenant?> useCase) =>
-                await useCase.Execute(userId)
+                async ([FromQuery] string urn, IUseCase<string, Model.Tenant?> useCase) =>
+                await useCase.Execute(urn)
                     .AndThen(tenant => tenant != null ? Results.Ok(tenant) : Results.NotFound()))
             .Produces<Model.Tenant>(StatusCodes.Status200OK, "application/json")
             .Produces(StatusCodes.Status401Unauthorized)
@@ -153,5 +158,9 @@ public static class ApiExtensions
                 return typeMap.GetValueOrDefault(type, type.Name);
             }
         );
+        options.IncludeXmlComments(Assembly.GetExecutingAssembly(), Assembly.GetAssembly(typeof(Address)));
+        options.OperationFilter<ProblemDetailsOperationFilter>();
+        options.ConfigureOneLoginSecurity();
+        options.ConfigureApiKeySecurity();
     }
 }
