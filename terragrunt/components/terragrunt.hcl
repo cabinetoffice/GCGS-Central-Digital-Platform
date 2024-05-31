@@ -9,7 +9,7 @@ locals {
     environments = {
         development = {
             cidr_block             = "10.${local.cidr_b_development}.0.0/16"
-            name                   = "development"
+            name                   = "dev"
             postgres_instance_type = "db.t4g.micro"
             private_subnets        = [
                 "10.${local.cidr_b_development}.101.0/24",
@@ -21,6 +21,7 @@ locals {
                 "10.${local.cidr_b_development}.2.0/24",
                 "10.${local.cidr_b_development}.3.0/24"
             ]
+            top_level_domain = "findatender.codatt.net"
         }
         staging = {
             cidr_block             = "10.${local.cidr_b_staging}.0.0/16"
@@ -36,6 +37,7 @@ locals {
                 "10.${local.cidr_b_staging}.2.0/24",
                 "10.${local.cidr_b_staging}.3.0/24"
             ]
+            top_level_domain = "findatender.codatt.net"
         }
         production = {
             cidr_block             = "10.${local.cidr_b_production}.0.0/16"
@@ -51,13 +53,14 @@ locals {
                 "10.${local.cidr_b_production}.2.0/24",
                 "10.${local.cidr_b_production}.3.0/24"
             ]
+            top_level_domain = "findatender.codatt.net"
         }
     }
 
     product = {
         name               = "CDP SIRSI"
         resource_name      = "cdp-sirsi"
-        public_hosted_zone = "cdp-sirsi.civilservice.gov.uk"
+        public_hosted_zone = "${local.environments[local.environment].name}.supplier.information.${local.environments[local.environment].top_level_domain}"
     }
 
     tags = {

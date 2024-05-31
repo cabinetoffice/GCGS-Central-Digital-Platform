@@ -21,7 +21,7 @@ output "private_subnets_cidr_blocks" {
   value       = aws_subnet.private.*.cidr_block
 }
 
-output "public_hosted_zone" {
+output "public_hosted_zone_id" {
   value = aws_route53_zone.public.id
 }
 
