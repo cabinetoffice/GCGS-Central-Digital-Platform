@@ -1,0 +1,71 @@
+@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Companies House Number Search";
+}
+
+<h2>Company Search</h2>
+
+<form method="post">
+    <div>
+        <label for="CompanyNumber">Company Number:</label>
+        <input type="text" id="CompanyNumber" asp-for="CompaniesHouseNumber" />
+        <span asp-validation-for="CompaniesHouseNumber" class="text-danger"></span>
+    </div>
+    <button type="submit">Search</button>
+</form>
+
+@if (!string.IsNullOrEmpty(Model.ErrorMessage))
+{
+    <div class="alert alert-danger">@Model.ErrorMessage</div>
+}
+
+@if (Model.CompanyDetails != null)
+{
+    <h3>Company Details</h3>
+    <p><strong>Company Name:</strong> @Model.CompanyDetails.CompanyName</p>
+    <p><strong>Company Number:</strong> @Model.CompanyDetails.CompanyNumber</p>
+    <p><strong>Date of Creation:</strong> @Model.CompanyDetails.DateOfCreation</p>
+    <p><strong>Jurisdiction:</strong> @Model.CompanyDetails.Jurisdiction</p>
+    <p><strong>Company Status:</strong> @Model.CompanyDetails.CompanyStatus</p>
+    <h4>Registered Office Address</h4>
+    <p>@Model.CompanyDetails.RegisteredOfficeAddress?.AddressLine1</p>
+    <p>@Model.CompanyDetails.RegisteredOfficeAddress?.AddressLine2</p>
+    <p>@Model.CompanyDetails.RegisteredOfficeAddress?.Locality</p>
+    <p>@Model.CompanyDetails.RegisteredOfficeAddress?.PostalCode</p>
+    <p>@Model.CompanyDetails.RegisteredOfficeAddress?.Country</p>
+    <h4>SIC Codes</h4>
+    <ul>
+        @foreach (var sicCode in Model.CompanyDetails.SicCodes ?? new List<string>())
+        {
+            <li>@sicCode</li>
+        }
+    </ul>
+}
+
+@if (Model.CompanyOfficers != null && Model.CompanyOfficers.Any())
+{
+    <h3>Company Officers</h3>
+    <ul>
+        @foreach (var officer in Model.CompanyOfficers)
+        {
+            <li>
+                <p><strong>Name:</strong> @officer.Name</p>
+                <p><strong>Role:</strong> @officer.OfficerRole</p>
+                <p><strong>Appointed On:</strong> @officer.AppointedOn</p>
+                <p><strong>Country of Residence:</strong> @officer.CountryOfResidence</p>
+                <p><strong>Nationality:</strong> @officer.Nationality</p>
+                <p><strong>Occupation:</strong> @officer.Occupation</p>
+                <p><strong>Date of Birth:</strong> @officer.DateOfBirth?.Month/@officer.DateOfBirth?.Year</p>
+                <h4>Address</h4>
+                <p>@officer.Address?.Premises</p>
+                <p>@officer.Address?.AddressLine1</p>
+                <p>@officer.Address?.AddressLine2</p>
+                <p>@officer.Address?.Locality</p>
+                <p>@officer.Address?.Region</p>
+                <p>@officer.Address?.Country</p>
+                <p>@officer.Address?.PostalCode</p>
+            </li>
+        }
+    </ul>
+}
