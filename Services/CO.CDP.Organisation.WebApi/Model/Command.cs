@@ -124,14 +124,14 @@ public static class MappingExtensions
         };
 
     public static List<Address> AsView(this List<OrganisationAddress> command) =>
-        command?.Select(i => i.AsView()).ToList() ?? [];
+        command.Select(i => i.AsView()).ToList() ?? [];
 
-    public static ContactPoint AsView(this OrganisationContactPoint command) =>
-        new()
+    public static ContactPoint AsView(this OrganisationContactPoint? command) =>
+        command != null ? new()
         {
             Name = command.Name ?? "",
             Email = command.Email,
             Telephone = command.Telephone,
             Url = command.Url != null ? new Uri(command.Url) : null
-        };
+        } : new ContactPoint();
 }

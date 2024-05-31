@@ -56,10 +56,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.Person.WebApiClient"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.Person.WebApiClient.Tests", "Libraries\CO.CDP.Person.WebApiClient.Tests\CO.CDP.Person.WebApiClient.Tests.csproj", "{B8AF6C32-1FCE-4772-A06B-0652E67E7A93}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.Common", "Libraries\CO.CDP.Common\CO.CDP.Common.csproj", "{4C11F7A1-6562-4D72-A657-D56BDF7CF0AF}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.Common.Tests", "Libraries\CO.CDP.Common.Tests\CO.CDP.Common.Tests.csproj", "{02A3AF19-2506-4CFF-8083-5F517C013E1E}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.TestKit.Mvc.Tests", "TestKit\CO.CDP.TestKit.Mvc.Tests\CO.CDP.TestKit.Mvc.Tests.csproj", "{72E8088E-3EA7-4A5A-8208-5FA2F9589537}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.TestKit.Mvc", "TestKit\CO.CDP.TestKit.Mvc\CO.CDP.TestKit.Mvc.csproj", "{A34220C0-CE7E-4966-9175-111EE5D04676}"
@@ -69,6 +65,14 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.Swashbuckle.Tests", "Libraries\CO.CDP.Swashbuckle.Tests\CO.CDP.Swashbuckle.Tests.csproj", "{9D53B3DD-81C0-4249-8284-5FCDE3151516}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.OrganisationInformation", "Services\CO.CDP.OrganisationInformation\CO.CDP.OrganisationInformation.csproj", "{A214D6B4-31B5-4AD7-BE76-0FF0ACE9C807}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.Mvc.Validation", "Libraries\CO.CDP.Mvc.Validation\CO.CDP.Mvc.Validation.csproj", "{668EA906-B2F6-4086-9113-4C1041914C7C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.Mvc.Validation.Tests", "Libraries\CO.CDP.Mvc.Validation.Tests\CO.CDP.Mvc.Validation.Tests.csproj", "{C9E4C41D-25C6-4E7C-91CA-DE95E12F4054}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.Functional.Tests", "Libraries\CO.CDP.Functional.Tests\CO.CDP.Functional.Tests.csproj", "{0985B40E-808C-4C4C-B99E-4E3056CA9B5E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.Functional", "Libraries\CO.CDP.Functional\CO.CDP.Functional.csproj", "{266E1C53-5C6B-456A-BBB1-1EE60C6F477A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -164,14 +168,6 @@ Global
 		{B8AF6C32-1FCE-4772-A06B-0652E67E7A93}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B8AF6C32-1FCE-4772-A06B-0652E67E7A93}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B8AF6C32-1FCE-4772-A06B-0652E67E7A93}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4C11F7A1-6562-4D72-A657-D56BDF7CF0AF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4C11F7A1-6562-4D72-A657-D56BDF7CF0AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4C11F7A1-6562-4D72-A657-D56BDF7CF0AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4C11F7A1-6562-4D72-A657-D56BDF7CF0AF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{02A3AF19-2506-4CFF-8083-5F517C013E1E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{02A3AF19-2506-4CFF-8083-5F517C013E1E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{02A3AF19-2506-4CFF-8083-5F517C013E1E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{02A3AF19-2506-4CFF-8083-5F517C013E1E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{72E8088E-3EA7-4A5A-8208-5FA2F9589537}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{72E8088E-3EA7-4A5A-8208-5FA2F9589537}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{72E8088E-3EA7-4A5A-8208-5FA2F9589537}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -192,6 +188,22 @@ Global
 		{A214D6B4-31B5-4AD7-BE76-0FF0ACE9C807}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A214D6B4-31B5-4AD7-BE76-0FF0ACE9C807}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A214D6B4-31B5-4AD7-BE76-0FF0ACE9C807}.Release|Any CPU.Build.0 = Release|Any CPU
+		{668EA906-B2F6-4086-9113-4C1041914C7C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{668EA906-B2F6-4086-9113-4C1041914C7C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{668EA906-B2F6-4086-9113-4C1041914C7C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{668EA906-B2F6-4086-9113-4C1041914C7C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C9E4C41D-25C6-4E7C-91CA-DE95E12F4054}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C9E4C41D-25C6-4E7C-91CA-DE95E12F4054}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C9E4C41D-25C6-4E7C-91CA-DE95E12F4054}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C9E4C41D-25C6-4E7C-91CA-DE95E12F4054}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0985B40E-808C-4C4C-B99E-4E3056CA9B5E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0985B40E-808C-4C4C-B99E-4E3056CA9B5E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0985B40E-808C-4C4C-B99E-4E3056CA9B5E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0985B40E-808C-4C4C-B99E-4E3056CA9B5E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{266E1C53-5C6B-456A-BBB1-1EE60C6F477A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{266E1C53-5C6B-456A-BBB1-1EE60C6F477A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{266E1C53-5C6B-456A-BBB1-1EE60C6F477A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{266E1C53-5C6B-456A-BBB1-1EE60C6F477A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

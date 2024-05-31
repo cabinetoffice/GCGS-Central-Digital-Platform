@@ -1,4 +1,4 @@
-using CO.CDP.Common;
+using CO.CDP.Mvc.Validation;
 using CO.CDP.OrganisationApp.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
