@@ -75,7 +75,16 @@ public static class EndpointExtensions
                                 new UserTenant
                                 {
                                     Id = Guid.Parse("826def77-311c-424d-a86e-069029c859c0"),
-                                    Name = "Acme Corporation / John Doe"
+                                    Name = "Acme Corporation / John Doe",
+                                    Organisations = [
+                                        new OrganisationReference
+                                        {
+                                            Id = Guid.Parse("23135984-b706-47db-8867-b4e34016b501"),
+                                            Name = "Acme Corporation",
+                                            Roles = [PartyRole.Supplier],
+                                            Uri = new Uri("/organsations/23135984-b706-47db-8867-b4e34016b501")
+                                        }
+                                    ]
                                 }
                             ]
                         }

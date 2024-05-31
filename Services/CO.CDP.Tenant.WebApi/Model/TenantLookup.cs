@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using CO.CDP.OrganisationInformation;
 
 namespace CO.CDP.Tenant.WebApi.Model;
 
@@ -28,4 +29,6 @@ internal record UserTenant
 
     /// <example>"Acme Corporation / John Doe"</example>
     public required string Name { get; init; }
+
+    public required List<OrganisationReference> Organisations { get; init; } = [];
 }
