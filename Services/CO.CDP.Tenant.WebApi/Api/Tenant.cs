@@ -12,50 +12,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
 
 namespace CO.CDP.Tenant.WebApi.Api;
-internal record UserDetails
-{
-    [Required(AllowEmptyStrings = true)] public required string Name { get; init; }
-
-    [EmailAddress, Required(AllowEmptyStrings = true)]
-    public required string Email { get; init; }
-}
-
-internal record UserInTenants
-{
-    [Required(AllowEmptyStrings = true)] public required Guid Id { get; init; }
-    [Required(AllowEmptyStrings = true)] public required string Name { get; init; }
-}
-
-internal record AssignUserToOrganisation
-{
-    [Required(AllowEmptyStrings = true)] public required Guid UserId { get; init; }
-    [Required(AllowEmptyStrings = true)] public required Guid OrganisationId { get; init; }
-}
-
-internal record Receipt
-{
-    [Required(AllowEmptyStrings = true)] public required string Message { get; init; }
-}
-
-internal record Error
-{
-    [Required(AllowEmptyStrings = true)] public required string Code { get; init; }
-    [Required(AllowEmptyStrings = true)] public required string Message { get; init; }
-}
-
-internal record ModifyUserPermissions
-{
-    [Required(AllowEmptyStrings = true)] public required string UserId { get; init; }
-    [Required(AllowEmptyStrings = true)] public required string OrganisationId { get; init; }
-    [Required] public required List<string> Permissions { get; init; }
-    [Required] public required UserPermissionsAction Action { get; init; }
-
-    internal enum UserPermissionsAction
-    {
-        Add,
-        Remove
-    }
-}
 
 public static class EndpointExtensions
 {
@@ -106,11 +62,28 @@ public static class EndpointExtensions
         app.MapGet("/tenant/lookup",
                 async ([FromQuery] string urn, IUseCase<string, Model.Tenant?> useCase) =>
                 await useCase.Execute(urn)
-                    .AndThen(tenant => tenant != null ? Results.Ok(tenant) : Results.NotFound()))
-            .Produces<Model.Tenant>(StatusCodes.Status200OK, "application/json")
-            .Produces(StatusCodes.Status401Unauthorized)
-            .Produces(StatusCodes.Status404NotFound)
-            .Produces(StatusCodes.Status500InternalServerError)
+                    .AndThen(tenant => tenant != null ? Results.Ok(
+                        new TenantLookup
+                        {
+                            User = new UserDetails
+                            {
+                                Urn = urn,
+                                Email = "contact@example.com",
+                                Name = "John Doe"
+                            },
+                            Tenants = [
+                                new UserTenant
+                                {
+                                    Id = Guid.Parse("826def77-311c-424d-a86e-069029c859c0"),
+                                    Name = "Acme Corporation / John Doe"
+                                }
+                            ]
+                        }
+                        ) : Results.NotFound()))
+            .Produces<TenantLookup>(StatusCodes.Status200OK, "application/json")
+            .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
+            .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
+            .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError)
             .WithOpenApi(operation =>
             {
                 operation.OperationId = "LookupTenant";
