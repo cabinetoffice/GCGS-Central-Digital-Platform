@@ -1,12 +1,11 @@
 using CO.CDP.Organisation.WebApiClient;
-using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
-using CO.CDP.OrganisationApp.Pages.Registration;
+using CO.CDP.OrganisationApp.Pages;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 
-namespace CO.CDP.OrganisationApp.Tests.Pages.Registration;
+namespace CO.CDP.OrganisationApp.Tests.Pages;
 
 public class OrganisationSelectionTest
 {
@@ -20,22 +19,12 @@ public class OrganisationSelectionTest
     }
 
     [Fact]
-    public async Task OnGet_WhenRegistrationDetailsNotInSession_ShouldThrowException()
-    {
-        var model = GivenOrganisationSelectionModelModel();
-
-        Func<Task> act = model.OnGet;
-
-        await act.Should().ThrowAsync<Exception>().WithMessage(ErrorMessagesList.SessionNotFound);
-    }
-
-    [Fact]
     public async Task OnGet_WhenSessionIsValid_ShouldPopulatePageModel()
     {
         var model = GivenOrganisationSelectionModelModel();
 
-        sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey))
-            .Returns(new RegistrationDetails { UserUrn = "urn:test" });
+        sessionMock.Setup(s => s.Get<UserDetails>(Session.UserDetailsKey))
+            .Returns(new UserDetails { UserUrn = "urn:test" });
 
         organisationClientMock.Setup(o => o.ListOrganisationsAsync(It.IsAny<string>()))
             .ReturnsAsync([new Organisation.WebApiClient.Organisation(null, null, null, Guid.NewGuid(), null, "Test Org", [PartyRole.Buyer])]);
@@ -53,7 +42,7 @@ public class OrganisationSelectionTest
         var actionResult = model.OnPost();
 
         actionResult.Should().BeOfType<RedirectToPageResult>()
-            .Which.PageName.Should().Be("OrganisationType");
+            .Which.PageName.Should().Be("/Registration/OrganisationType");
     }
 
     private OrganisationSelectionModel GivenOrganisationSelectionModelModel()

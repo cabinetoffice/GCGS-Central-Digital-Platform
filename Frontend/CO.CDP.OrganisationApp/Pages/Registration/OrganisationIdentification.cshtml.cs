@@ -1,17 +1,19 @@
-using CO.CDP.OrganisationApp.Constants;
+using CO.CDP.Mvc.Validation;
 using CO.CDP.OrganisationApp.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using CO.CDP.Mvc.Validation;
 
 namespace CO.CDP.OrganisationApp.Pages.Registration;
 
 [Authorize]
-public class OrganisationIdentificationModel(ISession session) : PageModel
+[ValidateRegistrationStep]
+public class OrganisationIdentificationModel(ISession session) : RegistrationStepModel
 {
+    public override string CurrentPage => OrganisationIdentifierPage;
+    public override ISession SessionContext => session;
+
     [BindProperty]
     [DisplayName("Organisation Type")]
     [Required(ErrorMessage = "Please select your organisation type")]
@@ -116,42 +118,40 @@ public class OrganisationIdentificationModel(ISession session) : PageModel
 
     public void OnGet()
     {
-        var registrationDetails = VerifySession();
-
-        OrganisationScheme = registrationDetails.OrganisationScheme;
+        OrganisationScheme = RegistrationDetails.OrganisationScheme;
 
         switch (OrganisationScheme)
         {
             case "CCEW":
-                CharityCommissionEnglandWalesNumber = registrationDetails.OrganisationIdentificationNumber;
+                CharityCommissionEnglandWalesNumber = RegistrationDetails.OrganisationIdentificationNumber;
                 break;
             case "SCR":
-                ScottishCharityRegulatorNumber = registrationDetails.OrganisationIdentificationNumber;
+                ScottishCharityRegulatorNumber = RegistrationDetails.OrganisationIdentificationNumber;
                 break;
             case "CCNI":
-                CharityCommissionNorthernIrelandNumber = registrationDetails.OrganisationIdentificationNumber;
+                CharityCommissionNorthernIrelandNumber = RegistrationDetails.OrganisationIdentificationNumber;
                 break;
             case "MPR":
-                MutualsPublicRegisterNumber = registrationDetails.OrganisationIdentificationNumber;
+                MutualsPublicRegisterNumber = RegistrationDetails.OrganisationIdentificationNumber;
                 break;
             case "GRN":
-                GuernseyRegistryNumber = registrationDetails.OrganisationIdentificationNumber;
+                GuernseyRegistryNumber = RegistrationDetails.OrganisationIdentificationNumber;
                 break;
 
             case "JFSC":
-                JerseyFinancialServicesCommissionRegistryNumber = registrationDetails.OrganisationIdentificationNumber;
+                JerseyFinancialServicesCommissionRegistryNumber = RegistrationDetails.OrganisationIdentificationNumber;
                 break;
             case "IMCR":
-                IsleofManCompaniesRegistryNumber = registrationDetails.OrganisationIdentificationNumber;
+                IsleofManCompaniesRegistryNumber = RegistrationDetails.OrganisationIdentificationNumber;
                 break;
             case "NHOR":
-                NationalHealthServiceOrganisationsRegistryNumber = registrationDetails.OrganisationIdentificationNumber;
+                NationalHealthServiceOrganisationsRegistryNumber = RegistrationDetails.OrganisationIdentificationNumber;
                 break;
             case "UKPRN":
-                UKLearningProviderReferenceNumber = registrationDetails.OrganisationIdentificationNumber;
+                UKLearningProviderReferenceNumber = RegistrationDetails.OrganisationIdentificationNumber;
                 break;
             case "VAT":
-                VATNumber = registrationDetails.OrganisationIdentificationNumber;
+                VATNumber = RegistrationDetails.OrganisationIdentificationNumber;
                 break;
             default:
                 break;
@@ -166,10 +166,9 @@ public class OrganisationIdentificationModel(ISession session) : PageModel
             return Page();
         }
 
-        var registrationDetails = VerifySession();
-        registrationDetails.OrganisationScheme = OrganisationScheme;
+        RegistrationDetails.OrganisationScheme = OrganisationScheme;
 
-        registrationDetails.OrganisationIdentificationNumber = OrganisationScheme switch
+        RegistrationDetails.OrganisationIdentificationNumber = OrganisationScheme switch
         {
             "CCEW" => CharityCommissionEnglandWalesNumber,
             "SCR" => ScottishCharityRegulatorNumber,
@@ -184,7 +183,7 @@ public class OrganisationIdentificationModel(ISession session) : PageModel
             "Other" => string.Empty,
             _ => string.Empty,
         };
-        session.Set(Session.RegistrationDetailsKey, registrationDetails);
+        session.Set(Session.RegistrationDetailsKey, RegistrationDetails);
 
         if (RedirectToSummary == true)
         {
@@ -195,13 +194,4 @@ public class OrganisationIdentificationModel(ISession session) : PageModel
             return RedirectToPage("OrganisationName");
         }
     }
-
-    private RegistrationDetails VerifySession()
-    {
-        var registrationDetails = session.Get<RegistrationDetails>(Session.RegistrationDetailsKey)
-            ?? throw new Exception(ErrorMessagesList.SessionNotFound);
-
-        return registrationDetails;
-    }
-
 }

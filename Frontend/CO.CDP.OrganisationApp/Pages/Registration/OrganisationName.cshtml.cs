@@ -1,16 +1,18 @@
-using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace CO.CDP.OrganisationApp.Pages.Registration;
 
 [Authorize]
-public class OrganisationNameModel(ISession session) : PageModel
+[ValidateRegistrationStep]
+public class OrganisationNameModel(ISession session) : RegistrationStepModel
 {
+    public override string CurrentPage => OrganisationNamePage;
+    public override ISession SessionContext => session;
+
     [BindProperty]
     [DisplayName("Enter the organisation's name")]
     [Required(ErrorMessage = "Enter the organisation's name")]
@@ -23,24 +25,21 @@ public class OrganisationNameModel(ISession session) : PageModel
 
     public void OnGet()
     {
-        var registrationDetails = VerifySession();
-
-        OrganisationName = registrationDetails.OrganisationName;
-        HasCompaniesHouseNumber = registrationDetails.OrganisationHasCompaniesHouseNumber ?? false;
+        OrganisationName = RegistrationDetails.OrganisationName;
+        HasCompaniesHouseNumber = RegistrationDetails.OrganisationHasCompaniesHouseNumber ?? false;
     }
 
     public IActionResult OnPost()
     {
-        var registrationDetails = VerifySession();
-        HasCompaniesHouseNumber = registrationDetails.OrganisationHasCompaniesHouseNumber ?? false;
+        HasCompaniesHouseNumber = RegistrationDetails.OrganisationHasCompaniesHouseNumber ?? false;
 
         if (!ModelState.IsValid)
         {
             return Page();
         }
 
-        registrationDetails.OrganisationName = OrganisationName;
-        session.Set(Session.RegistrationDetailsKey, registrationDetails);
+        RegistrationDetails.OrganisationName = OrganisationName;
+        session.Set(Session.RegistrationDetailsKey, RegistrationDetails);
 
         if (RedirectToSummary == true)
         {
@@ -50,13 +49,5 @@ public class OrganisationNameModel(ISession session) : PageModel
         {
             return RedirectToPage("OrganisationEmail");
         }
-    }
-
-    private RegistrationDetails VerifySession()
-    {
-        var registrationDetails = session.Get<RegistrationDetails>(Session.RegistrationDetailsKey)
-            ?? throw new Exception(ErrorMessagesList.SessionNotFound);
-
-        return registrationDetails;
     }
 }

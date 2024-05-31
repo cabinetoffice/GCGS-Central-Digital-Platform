@@ -21,26 +21,15 @@ public class OrganisationTypeTest
     }
 
     [Fact]
-    public void OnGet_WhenRegistrationDetailsNotInSession_ShouldThrowException()
-    {
-        var model = GivenOrganisationTypeModel();
-
-        Action act = () => model.OnGet();
-
-        act.Should().Throw<Exception>().WithMessage(ErrorMessagesList.SessionNotFound);
-    }
-
-    [Fact]
     public void OnGet_WhenOrganisationTypeSetInSession_ShouldPopulatePageModel()
     {
-        var model = GivenOrganisationTypeModel();
-
         sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey))
             .Returns(new RegistrationDetails
             {
-                UserUrn = "urn:test",
                 OrganisationType = OrganisationType.Supplier
             });
+
+        var model = GivenOrganisationTypeModel();
 
         model.OnGet();
 
@@ -65,23 +54,13 @@ public class OrganisationTypeTest
     }
 
     [Fact]
-    public void OnPost_WhenRegistrationDetailsNotInSession_ShouldThrowException()
-    {
-        var model = GivenOrganisationTypeModel();
-
-        Action act = () => model.OnPost();
-
-        act.Should().Throw<Exception>().WithMessage(ErrorMessagesList.SessionNotFound);
-    }
-
-    [Fact]
     public void OnPost_WhenValidModel_ShouldSetOrganisationTypeInSession()
     {
         var model = GivenOrganisationTypeModel();
         model.OrganisationType = OrganisationType.Supplier;
 
         sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey))
-            .Returns(new RegistrationDetails { UserUrn = "urn:test" });
+            .Returns(new RegistrationDetails());
 
         var results = model.OnPost();
 
@@ -97,7 +76,7 @@ public class OrganisationTypeTest
         var model = GivenOrganisationTypeModel();
 
         sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey))
-            .Returns(new RegistrationDetails { UserUrn = "urn:test" });
+            .Returns(new RegistrationDetails());
 
         var actionResult = model.OnPost();
 
@@ -112,7 +91,7 @@ public class OrganisationTypeTest
         model.RedirectToSummary = true;
 
         sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey))
-            .Returns(new RegistrationDetails { UserUrn = "urn:test" });
+            .Returns(new RegistrationDetails());
 
         var actionResult = model.OnPost();
 

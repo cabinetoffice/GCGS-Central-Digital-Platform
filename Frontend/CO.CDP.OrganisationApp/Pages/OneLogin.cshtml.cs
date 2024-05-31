@@ -47,29 +47,24 @@ public class OneLogin(
             return SignIn();
         }
 
-        var rd = new RegistrationDetails
-        {
-            UserUrn = urn,
-            Email = email,
-            Phone = phone
-        };
+        var ud = new UserDetails { UserUrn = urn, Email = email, Phone = phone };
 
         Person.WebApiClient.Person? person;
 
         try
         {
             person = await personClient.LookupPersonAsync(urn);
-            rd.PersonId = person.Id;
-            rd.FirstName = person.FirstName;
-            rd.LastName = person.LastName;
+            ud.PersonId = person.Id;
+            ud.FirstName = person.FirstName;
+            ud.LastName = person.LastName;
 
-            session.Set(Session.RegistrationDetailsKey, rd);
+            session.Set(Session.UserDetailsKey, ud);
 
-            return RedirectToPage("Registration/OrganisationSelection");
+            return RedirectToPage("OrganisationSelection");
         }
         catch (ApiException ex) when (ex.StatusCode == 404)
         {
-            session.Set(Session.RegistrationDetailsKey, rd);
+            session.Set(Session.UserDetailsKey, ud);
 
             return RedirectToPage("PrivacyPolicy");
         }

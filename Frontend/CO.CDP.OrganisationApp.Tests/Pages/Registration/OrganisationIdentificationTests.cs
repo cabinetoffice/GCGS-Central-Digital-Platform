@@ -1,4 +1,3 @@
-using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.Pages.Registration;
 using FluentAssertions;
@@ -18,22 +17,13 @@ public class OrganisationIdentificationModelTests
     }
 
     [Fact]
-    public void OnGet_WheEmptyModel_ShouldThrowException()
-    {
-        var model = new OrganisationIdentificationModel(sessionMock.Object);
-        Action action = () => model.OnGet();
-        action.Should().Throw<Exception>().WithMessage(ErrorMessagesList.SessionNotFound);
-    }
-
-    [Fact]
     public void OnGet_WhenValidSession_ShouldSaveRegistrationDetails()
     {
-        var model = new OrganisationIdentificationModel(sessionMock.Object);
-
         RegistrationDetails registrationDetails = DummyRegistrationDetails();
 
         sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(registrationDetails);
 
+        var model = new OrganisationIdentificationModel(sessionMock.Object);
         model.OnGet();
 
         model.OrganisationScheme.Should().Be(registrationDetails.OrganisationScheme);
@@ -382,7 +372,6 @@ public class OrganisationIdentificationModelTests
     {
         var registrationDetails = new RegistrationDetails
         {
-            UserUrn = "urn:fdc:gov.uk:2022:37d8856672e84a57ae9c86b27b226225",
             OrganisationScheme = "CHN",
             OrganisationIdentificationNumber = "12345678",
         };
