@@ -17,6 +17,8 @@ ENV NUGET_PACKAGES="${NUGET_PACKAGES}"
 WORKDIR /src
 COPY --link Libraries/CO.CDP.Common/CO.CDP.Common.csproj Libraries/CO.CDP.Common/
 COPY --link Libraries/CO.CDP.Common.Tests/CO.CDP.Common.Tests.csproj Libraries/CO.CDP.Common.Tests/
+COPY --link Libraries/CO.CDP.Functional/CO.CDP.Functional.csproj Libraries/CO.CDP.Functional/
+COPY --link Libraries/CO.CDP.Functional.Tests/CO.CDP.Functional.Tests.csproj Libraries/CO.CDP.Functional.Tests/
 COPY --link Libraries/CO.CDP.Mvc.Validation/CO.CDP.Mvc.Validation.csproj Libraries/CO.CDP.Mvc.Validation/
 COPY --link Libraries/CO.CDP.Mvc.Validation.Tests/CO.CDP.Mvc.Validation.Tests.csproj Libraries/CO.CDP.Mvc.Validation.Tests/
 COPY --link Libraries/CO.CDP.Swashbuckle/CO.CDP.Swashbuckle.csproj Libraries/CO.CDP.Swashbuckle/

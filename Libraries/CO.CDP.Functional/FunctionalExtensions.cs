@@ -1,4 +1,4 @@
-namespace CO.CDP.Common;
+namespace CO.CDP.Functional;
 
 public static class FunctionalExtensions
 {

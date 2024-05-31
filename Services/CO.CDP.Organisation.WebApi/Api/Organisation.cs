@@ -1,5 +1,5 @@
 using System.Reflection;
-using CO.CDP.Common;
+using CO.CDP.Functional;
 using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.Organisation.WebApi.UseCase;
 using CO.CDP.OrganisationInformation;
