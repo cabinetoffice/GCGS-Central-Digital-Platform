@@ -121,7 +121,7 @@ public static class EndpointExtensions
                         Name = updatedOrganisation.Name,
                         AdditionalIdentifiers = updatedOrganisation.AdditionalIdentifiers.AsView(),
                         Addresses = updatedOrganisation.Addresses.AsView(),
-                        ContactPoint = updatedOrganisation.ContactPoint?.AsView(),
+                        ContactPoint = updatedOrganisation.ContactPoint.AsView(),
                         Roles = updatedOrganisation.Roles ?? [],
                     };
                     return Results.Ok(_organisations[organisationId]);
