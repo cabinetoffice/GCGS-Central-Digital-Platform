@@ -38,7 +38,6 @@ public class BuyerSelectDevolvedRegulationTest
         sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey))
             .Returns(new RegistrationDetails
             {
-                UserUrn = "urn:test",
                 OrganisationType = OrganisationType.Buyer,
                 Devolved = true,
                 Regulations = ["ni"]
@@ -83,7 +82,7 @@ public class BuyerSelectDevolvedRegulationTest
         model.Regulations = ["ni"];
 
         sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey))
-            .Returns(new RegistrationDetails { UserUrn = "urn:test", Devolved = true, Regulations = ["ni"] });
+            .Returns(new RegistrationDetails { Devolved = true, Regulations = ["ni"] });
 
         var results = model.OnPost();
 
@@ -99,7 +98,7 @@ public class BuyerSelectDevolvedRegulationTest
         var model = GivenBuyerSelectDevolvedRegulationModel();
 
         sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey))
-            .Returns(new RegistrationDetails { UserUrn = "urn:test", Devolved = true, Regulations = ["ni"] });
+            .Returns(new RegistrationDetails { Devolved = true, Regulations = ["ni"] });
 
         var actionResult = model.OnPost();
 

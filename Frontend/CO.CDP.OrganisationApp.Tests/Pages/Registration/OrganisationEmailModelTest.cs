@@ -1,4 +1,3 @@
-using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.Pages.Registration;
 using FluentAssertions;
@@ -103,12 +102,11 @@ public class OrganisationEmailModelTest
     [Fact]
     public void OnGet_ValidSession_ReturnsRegistrationDetails()
     {
-        var model = GivenOrganisationEmailModel();
-
         RegistrationDetails registrationDetails = DummyRegistrationDetails();
 
         sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(registrationDetails);
 
+        var model = GivenOrganisationEmailModel();
         model.OnGet();
 
         model.EmailAddress.Should().Be(registrationDetails.OrganisationEmailAddress);
@@ -143,22 +141,10 @@ public class OrganisationEmailModelTest
             .Which.PageName.Should().Be("OrganisationDetailsSummary");
     }
 
-    [Fact]
-    public void OnGet_InvalidSession_ThrowsException()
-    {
-        sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(value: null);
-
-        var model = GivenOrganisationEmailModel();
-
-        Action action = () => model.OnGet();
-        action.Should().Throw<Exception>().WithMessage(ErrorMessagesList.SessionNotFound);
-    }
-
     private RegistrationDetails DummyRegistrationDetails()
     {
         var registrationDetails = new RegistrationDetails
         {
-            UserUrn = "urn:fdc:gov.uk:2022:91e9da3e77824185b7f8639d4a63dfc7",
             OrganisationName = "TestOrg",
             OrganisationScheme = "TestType",
             OrganisationEmailAddress = "test@example.com"

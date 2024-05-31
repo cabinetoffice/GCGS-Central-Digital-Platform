@@ -91,12 +91,11 @@ public class OrganisationNameModelTest
     [Fact]
     public void OnGet_ValidSession_ReturnsRegistrationDetails()
     {
-        var model = GivenOrganisationNameModel();
-
         RegistrationDetails registrationDetails = DummyRegistrationDetails();
 
         sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(registrationDetails);
 
+        var model = GivenOrganisationNameModel();
         model.OnGet();
 
         model.OrganisationName.Should().Be(registrationDetails.OrganisationName);
@@ -131,22 +130,10 @@ public class OrganisationNameModelTest
             .Which.PageName.Should().Be("OrganisationDetailsSummary");
     }
 
-    [Fact]
-    public void OnGet_InvalidSession_ThrowsException()
-    {
-        sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(value: null);
-
-        var model = GivenOrganisationNameModel();
-
-        Action action = () => model.OnGet();
-        action.Should().Throw<Exception>().WithMessage(ErrorMessagesList.SessionNotFound);
-    }
-
     private RegistrationDetails DummyRegistrationDetails()
     {
         var registrationDetails = new RegistrationDetails
         {
-            UserUrn = "urn:fdc:gov.uk:2022:91e9da3e77824185b7f8639d4a63dfc7",
             OrganisationName = "TestOrg",
             OrganisationScheme = "TestType",
             OrganisationEmailAddress = "test@example.com"

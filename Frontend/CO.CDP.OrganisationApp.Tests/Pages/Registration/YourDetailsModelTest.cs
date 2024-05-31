@@ -82,22 +82,12 @@ public class YourDetailsModelTest
     }
 
     [Fact]
-    public void OnGet_WhenRegistrationDetailsNotInSession_ShouldThrowException()
+    public void OnGet_WhenUserDetailsInSession_ShouldPopulatePageModel()
     {
         var model = GivenYourDetailsModel();
 
-        Action act = () => model.OnGet();
-
-        act.Should().Throw<Exception>().WithMessage(ErrorMessagesList.SessionNotFound);
-    }
-
-    [Fact]
-    public void OnGet_WhenRegistrationDetailsInSession_ShouldPopulatePageModel()
-    {
-        var model = GivenYourDetailsModel();
-
-        sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey))
-            .Returns(new RegistrationDetails
+        sessionMock.Setup(s => s.Get<UserDetails>(Session.UserDetailsKey))
+            .Returns(new UserDetails
             {
                 UserUrn = "urn:fdc:gov.uk:2022:b1829a14353c429ea6e23798e020d775",
                 FirstName = "firstdummy",
@@ -111,11 +101,11 @@ public class YourDetailsModelTest
     }
 
     [Fact]
-    public void OnGet_ValidSession_ReturnsRegistrationDetails()
+    public void OnGet_ValidSession_ReturnsUserDetails()
     {
         var model = GivenYourDetailsModel();
 
-        var registrationDetails = new RegistrationDetails
+        var userDetails = new UserDetails
         {
             UserUrn = "urn:fdc:gov.uk:2022:3771d941a5774a8e8058972661fd4f7c",
             FirstName = "first name",
@@ -123,12 +113,12 @@ public class YourDetailsModelTest
             Email = "test@co.com"
         };
 
-        sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(registrationDetails);
+        sessionMock.Setup(s => s.Get<UserDetails>(Session.UserDetailsKey)).Returns(userDetails);
 
         model.OnGet();
 
-        model.FirstName.Should().Be(registrationDetails.FirstName);
-        model.LastName.Should().Be(registrationDetails.LastName);
+        model.FirstName.Should().Be(userDetails.FirstName);
+        model.LastName.Should().Be(userDetails.LastName);
     }
 
     [Fact]
@@ -149,22 +139,12 @@ public class YourDetailsModelTest
     }
 
     [Fact]
-    public async Task OnPost_WhenRegistrationDetailsNotInSession_ShouldThrowException()
-    {
-        var model = GivenYourDetailsModel();
-
-        Func<Task> act = model.OnPost;
-
-        await act.Should().ThrowAsync<Exception>().WithMessage(ErrorMessagesList.SessionNotFound);
-    }
-
-    [Fact]
     public async Task OnPost_WhenValidModel_ShouldRegisterPerson()
     {
         var model = GivenYourDetailsModel();
 
-        sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey))
-            .Returns(new RegistrationDetails
+        sessionMock.Setup(s => s.Get<UserDetails>(Session.UserDetailsKey))
+            .Returns(new UserDetails
             {
                 UserUrn = "urn:fdc:gov.uk:2022:bad51498dcfe4572959c4540aef2397e",
                 Email = "dummy@test.com"
@@ -185,8 +165,8 @@ public class YourDetailsModelTest
     {
         var model = GivenYourDetailsModel();
 
-        sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey))
-            .Returns(new RegistrationDetails
+        sessionMock.Setup(s => s.Get<UserDetails>(Session.UserDetailsKey))
+            .Returns(new UserDetails
             {
                 UserUrn = "urn:fdc:gov.uk:2022:bad51498dcfe4572959c4540aef2397e",
                 Email = "dummy@test.com"

@@ -1,6 +1,7 @@
 using FluentAssertions;
 
-namespace CO.CDP.Common.Tests;
+namespace CO.CDP.Functional.Tests;
+
 public class FunctionalExtensionsTest
 {
     [Fact]

@@ -42,7 +42,7 @@ public class RegisterOrganisationTest
             Identifier = command.Identifier.AsView(),
             AdditionalIdentifiers = command.AdditionalIdentifiers.AsView(),
             Addresses = command.Addresses.AsView(),
-            ContactPoint = command.ContactPoint?.AsView(),
+            ContactPoint = command.ContactPoint.AsView(),
             Roles = command.Roles
         };
 
@@ -81,7 +81,7 @@ public class RegisterOrganisationTest
             Identifier = command.Identifier.AsView(),
             AdditionalIdentifiers = command.AdditionalIdentifiers.AsView(),
             Addresses = command.Addresses.AsView(),
-            ContactPoint = command.ContactPoint?.AsView(),
+            ContactPoint = command.ContactPoint.AsView(),
             Roles = command.Roles
         };
 

@@ -187,11 +187,11 @@ public class OrganisationNonUKAddressModelTest
     [Fact]
     public void OnPost_WhenValidModelAndBuyer_ShouldRedirectToBuyerOrganisationTypePage()
     {
-        var model = GivenOrganisationAddressModel();
-
         RegistrationDetails registrationDetails = DummyRegistrationDetails();
         registrationDetails.OrganisationType = OrganisationType.Buyer;
         sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(registrationDetails);
+
+        var model = GivenOrganisationAddressModel();
 
         var actionResult = model.OnPost();
 
@@ -202,11 +202,11 @@ public class OrganisationNonUKAddressModelTest
     [Fact]
     public void OnGet_ValidSession_ReturnsRegistrationDetails()
     {
-        var model = GivenOrganisationAddressModel();
-
         RegistrationDetails registrationDetails = DummyRegistrationDetails();
 
         sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(registrationDetails);
+
+        var model = GivenOrganisationAddressModel();
 
         model.OnGet();
 
@@ -221,7 +221,6 @@ public class OrganisationNonUKAddressModelTest
     {
         var registrationDetails = new RegistrationDetails
         {
-            UserUrn = "urn:fdc:gov.uk:2022:2e7f0429ebec480fb5568221a3fd735f",
             OrganisationAddressLine1 = "address line 1",
             OrganisationAddressLine2 = "address line 2",
             OrganisationCityOrTown = "New Delhi",
@@ -231,17 +230,6 @@ public class OrganisationNonUKAddressModelTest
         };
 
         return registrationDetails;
-    }
-
-    [Fact]
-    public void OnGet_InvalidSession_ThrowsException()
-    {
-        sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(value: null);
-
-        var model = GivenOrganisationAddressModel();
-
-        Action action = () => model.OnGet();
-        action.Should().Throw<Exception>().WithMessage(ErrorMessagesList.SessionNotFound);
     }
 
     private OrganisationNonUKAddressModel GivenOrganisationAddressModel()

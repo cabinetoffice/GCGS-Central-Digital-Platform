@@ -28,10 +28,14 @@ public class YourDetailsModel(
 
     public IActionResult OnGet()
     {
-        var registrationDetails = VerifySession();
+        var details = session.Get<UserDetails>(Session.UserDetailsKey);
+        if (details == null)
+        {
+            return Redirect("/one-login/user-info");
+        }
 
-        FirstName = registrationDetails.FirstName;
-        LastName = registrationDetails.LastName;
+        FirstName = details.FirstName;
+        LastName = details.LastName;
 
         return Page();
     }
@@ -43,17 +47,21 @@ public class YourDetailsModel(
             return Page();
         }
 
-        var registrationDetails = VerifySession();
+        var details = session.Get<UserDetails>(Session.UserDetailsKey);
+        if (details == null)
+        {
+            return Redirect("/one-login/user-info");
+        }
 
-        var person = await RegisterPerson(registrationDetails);
+        var person = await RegisterPerson(details);
 
         if (person != null)
         {
-            registrationDetails.PersonId = person.Id;
-            registrationDetails.FirstName = FirstName;
-            registrationDetails.LastName = LastName;
+            details.PersonId = person.Id;
+            details.FirstName = FirstName;
+            details.LastName = LastName;
 
-            session.Set(Session.RegistrationDetailsKey, registrationDetails);
+            session.Set(Session.UserDetailsKey, details);
         }
         else
         {
@@ -63,14 +71,14 @@ public class YourDetailsModel(
         return RedirectToPage("OrganisationSelection");
     }
 
-    private async Task<Person.WebApiClient.Person?> RegisterPerson(RegistrationDetails registrationDetails)
+    private async Task<Person.WebApiClient.Person?> RegisterPerson(UserDetails details)
     {
         try
         {
             return await personClient.CreatePersonAsync(new NewPerson(
-                userUrn: registrationDetails.UserUrn,
-                email: registrationDetails.Email,
-                phone: registrationDetails.Phone,
+                userUrn: details.UserUrn,
+                email: details.Email,
+                phone: details.Phone,
                 firstName: FirstName,
                 lastName: LastName
             ));
@@ -82,13 +90,5 @@ public class YourDetailsModel(
         }
 
         return null;
-    }
-
-    private RegistrationDetails VerifySession()
-    {
-        var registrationDetails = session.Get<RegistrationDetails>(Session.RegistrationDetailsKey)
-            ?? throw new Exception(ErrorMessagesList.SessionNotFound);
-
-        return registrationDetails;
     }
 }

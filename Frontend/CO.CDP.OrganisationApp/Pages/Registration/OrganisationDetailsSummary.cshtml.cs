@@ -3,47 +3,39 @@ using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using OrganisationWebApiClient = CO.CDP.Organisation.WebApiClient;
 
 namespace CO.CDP.OrganisationApp.Pages.Registration;
 
 [Authorize]
+[ValidateRegistrationStep]
 public class OrganisationDetailsSummaryModel(
     ISession session,
-    IOrganisationClient organisationClient) : PageModel
+    IOrganisationClient organisationClient) : RegistrationStepModel
 {
-    public required RegistrationDetails Details { get; set; }
+    public override string CurrentPage => OrganisationSummaryPage;
+    public override ISession SessionContext => session;
 
     public string? Error { get; set; }
 
     public void OnGet()
     {
-        Details = VerifySession();
     }
 
     public async Task<IActionResult> OnPost()
     {
-        Details = VerifySession();
-
-        var organisation = await RegisterOrganisation(Details);
-
-        if (organisation != null)
-        {
-            Details.OrganisationId = organisation.Id;
-            session.Set(Session.RegistrationDetailsKey, Details);
-        }
-        else
+        var organisation = await RegisterOrganisation(UserDetails!, RegistrationDetails);
+        if (organisation == null)
         {
             return Page();
         }
-
+        session.Remove(Session.RegistrationDetailsKey);
         return RedirectToPage("OrganisationOverview", new { organisation.Id });
     }
 
-    private async Task<OrganisationWebApiClient.Organisation?> RegisterOrganisation(RegistrationDetails details)
+    private async Task<OrganisationWebApiClient.Organisation?> RegisterOrganisation(UserDetails user, RegistrationDetails details)
     {
-        var payload = NewOrganisationPayload(details);
+        var payload = NewOrganisationPayload(user, details);
 
         if (payload is not null)
         {
@@ -61,9 +53,9 @@ public class OrganisationDetailsSummaryModel(
         return null;
     }
 
-    private static NewOrganisation? NewOrganisationPayload(RegistrationDetails details)
+    private static NewOrganisation? NewOrganisationPayload(UserDetails user, RegistrationDetails details)
     {
-        if (!details.PersonId.HasValue)
+        if (!user.PersonId.HasValue)
         {
             return null;
         }
@@ -88,16 +80,8 @@ public class OrganisationDetailsSummaryModel(
                 legalName: details.OrganisationName,
                 scheme: details.OrganisationScheme),
             name: details.OrganisationName,
-            roles: [details.OrganisationType.AsPartyRole()],
-            personId: details.PersonId.Value
+            roles: [details.OrganisationType!.Value.AsPartyRole()],
+            personId: user.PersonId.Value
         );
-    }
-
-    private RegistrationDetails VerifySession()
-    {
-        var registrationDetails = session.Get<RegistrationDetails>(Session.RegistrationDetailsKey)
-            ?? throw new Exception(ErrorMessagesList.SessionNotFound);
-
-        return registrationDetails;
     }
 }

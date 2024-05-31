@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
-namespace CO.CDP.Common;
+namespace CO.CDP.Mvc.Validation;
 
 public class NotEmptyAttribute : Attribute, IModelValidator
 {

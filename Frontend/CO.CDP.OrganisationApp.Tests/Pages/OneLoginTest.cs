@@ -44,8 +44,8 @@ public class OneLoginTest
 
         var results = await model.OnGet("user-info");
 
-        sessionMock.Verify(v => v.Set(Session.RegistrationDetailsKey,
-            It.Is<RegistrationDetails>(rd =>
+        sessionMock.Verify(v => v.Set(Session.UserDetailsKey,
+            It.Is<UserDetails>(rd =>
                 rd.Email == "dummy@test.com"
                 && rd.Phone == "+44 123456789"
                 && rd.UserUrn == "urn:fdc:gov.uk:2022:7wTqYGMFQxgukTSpSI2GodMwe9"
@@ -88,14 +88,14 @@ public class OneLoginTest
 
         var results = await model.OnGet("user-info");
 
-        sessionMock.Verify(t => t.Set(Session.RegistrationDetailsKey, It.Is<RegistrationDetails>(o =>
+        sessionMock.Verify(t => t.Set(Session.UserDetailsKey, It.Is<UserDetails>(o =>
              o.FirstName == "firstdummy" &&
              o.LastName == "lastdummy" &&
              o.PersonId == new Guid("0bacf3d1-3b69-4efa-80e9-3623f4b7786e")
          )), Times.Once);
 
         results.Should().BeOfType<RedirectToPageResult>()
-            .Which.PageName.Should().Be("Registration/OrganisationSelection");
+            .Which.PageName.Should().Be("OrganisationSelection");
     }
 
     [Fact]

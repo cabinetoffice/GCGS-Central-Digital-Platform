@@ -27,12 +27,14 @@ data "aws_iam_policy_document" "terraform" {
   statement {
     sid = "ManageR53"
     actions = [
+      "route53:ChangeResourceRecordSets",
       "route53:ChangeTagsForResource",
       "route53:CreateHostedZone",
       "route53:DeleteHostedZone",
       "route53:GetChange",
       "route53:GetHostedZone",
       "route53:GetHostedZone",
+      "route53:ListResourceRecordSets",
       "route53:ListTagsForResource",
     ]
 

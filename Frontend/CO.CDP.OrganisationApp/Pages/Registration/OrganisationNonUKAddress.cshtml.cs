@@ -2,15 +2,18 @@ using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace CO.CDP.OrganisationApp.Pages.Registration;
 
 [Authorize]
-public class OrganisationNonUKAddressModel(ISession session) : PageModel
+[ValidateRegistrationStep]
+public class OrganisationNonUKAddressModel(ISession session) : RegistrationStepModel
 {
+    public override string CurrentPage => OrganisationNonUKAddressPage;
+    public override ISession SessionContext => session;
+
     [BindProperty]
     [DisplayName("Address line 1")]
     [Required(ErrorMessage = "Enter your address line 1")]
@@ -43,14 +46,12 @@ public class OrganisationNonUKAddressModel(ISession session) : PageModel
 
     public void OnGet()
     {
-        var details = VerifySession();
-
-        AddressLine1 = details.OrganisationAddressLine1;
-        AddressLine2 = details.OrganisationAddressLine2;
-        TownOrCity = details.OrganisationCityOrTown;
-        Region = details.OrganisationRegion;
-        Postcode = details.OrganisationPostcode;
-        Country = details.OrganisationCountry;
+        AddressLine1 = RegistrationDetails.OrganisationAddressLine1;
+        AddressLine2 = RegistrationDetails.OrganisationAddressLine2;
+        TownOrCity = RegistrationDetails.OrganisationCityOrTown;
+        Region = RegistrationDetails.OrganisationRegion;
+        Postcode = RegistrationDetails.OrganisationPostcode;
+        Country = RegistrationDetails.OrganisationCountry;
     }
 
     public IActionResult OnPost()
@@ -60,18 +61,16 @@ public class OrganisationNonUKAddressModel(ISession session) : PageModel
             return Page();
         }
 
-        var registrationDetails = VerifySession();
+        RegistrationDetails.OrganisationAddressLine1 = AddressLine1 ?? RegistrationDetails.OrganisationAddressLine1;
+        RegistrationDetails.OrganisationAddressLine2 = AddressLine2 ?? RegistrationDetails.OrganisationAddressLine2;
+        RegistrationDetails.OrganisationCityOrTown = TownOrCity ?? RegistrationDetails.OrganisationCityOrTown;
+        RegistrationDetails.OrganisationRegion = Region ?? RegistrationDetails.OrganisationRegion;
+        RegistrationDetails.OrganisationPostcode = Postcode ?? RegistrationDetails.OrganisationPostcode;
+        RegistrationDetails.OrganisationCountry = Country ?? RegistrationDetails.OrganisationCountry;
 
-        registrationDetails.OrganisationAddressLine1 = AddressLine1 ?? registrationDetails.OrganisationAddressLine1;
-        registrationDetails.OrganisationAddressLine2 = AddressLine2 ?? registrationDetails.OrganisationAddressLine2;
-        registrationDetails.OrganisationCityOrTown = TownOrCity ?? registrationDetails.OrganisationCityOrTown;
-        registrationDetails.OrganisationRegion = Region ?? registrationDetails.OrganisationRegion;
-        registrationDetails.OrganisationPostcode = Postcode ?? registrationDetails.OrganisationPostcode;
-        registrationDetails.OrganisationCountry = Country ?? registrationDetails.OrganisationCountry;
+        session.Set(Session.RegistrationDetailsKey, RegistrationDetails);
 
-        session.Set(Session.RegistrationDetailsKey, registrationDetails);
-
-        if (registrationDetails.OrganisationType == OrganisationType.Buyer)
+        if (RegistrationDetails.OrganisationType == OrganisationType.Buyer)
         {
             return RedirectToPage("BuyerOrganisationType");
         }
@@ -79,13 +78,5 @@ public class OrganisationNonUKAddressModel(ISession session) : PageModel
         {
             return RedirectToPage("OrganisationDetailsSummary");
         }
-    }
-
-    private RegistrationDetails VerifySession()
-    {
-        var registrationDetails = session.Get<RegistrationDetails>(Session.RegistrationDetailsKey)
-            ?? throw new Exception(ErrorMessagesList.SessionNotFound);
-
-        return registrationDetails;
     }
 }

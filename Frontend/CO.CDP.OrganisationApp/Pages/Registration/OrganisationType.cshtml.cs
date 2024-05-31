@@ -2,15 +2,18 @@ using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
 
 namespace CO.CDP.OrganisationApp.Pages.Registration;
 
 [Authorize]
+[ValidateRegistrationStep]
 public class OrganisationTypeModel(
-    ISession session) : PageModel
+    ISession session) : RegistrationStepModel
 {
+    public override string CurrentPage => OrganisationTypePage;
+    public override ISession SessionContext => session;
+
     [BindProperty]
     [Required(ErrorMessage = "Select the organisation type")]
     public OrganisationType? OrganisationType { get; set; }
@@ -20,9 +23,7 @@ public class OrganisationTypeModel(
 
     public IActionResult OnGet()
     {
-        var registrationDetails = VerifySession();
-
-        OrganisationType = registrationDetails.OrganisationType;
+        OrganisationType = RegistrationDetails.OrganisationType;
 
         return Page();
     }
@@ -34,9 +35,8 @@ public class OrganisationTypeModel(
             return Page();
         }
 
-        var registrationDetails = VerifySession();
-        registrationDetails.OrganisationType = OrganisationType ?? registrationDetails.OrganisationType;
-        session.Set(Session.RegistrationDetailsKey, registrationDetails);
+        RegistrationDetails.OrganisationType = OrganisationType;
+        session.Set(Session.RegistrationDetailsKey, RegistrationDetails);
 
         if (RedirectToSummary == true)
         {
@@ -46,13 +46,5 @@ public class OrganisationTypeModel(
         {
             return RedirectToPage("CompanyHouseNumberQuestion");
         }
-    }
-
-    private RegistrationDetails VerifySession()
-    {
-        var registrationDetails = session.Get<RegistrationDetails>(Session.RegistrationDetailsKey)
-            ?? throw new Exception(ErrorMessagesList.SessionNotFound);
-
-        return registrationDetails;
     }
 }

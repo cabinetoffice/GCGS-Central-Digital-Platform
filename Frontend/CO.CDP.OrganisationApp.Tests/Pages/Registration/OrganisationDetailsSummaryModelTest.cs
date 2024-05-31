@@ -24,41 +24,16 @@ public class OrganisationDetailsSummaryModelTest
     {
         var model = GivenOrganisationDetailModel();
 
-        RegistrationDetails registrationDetails = DummyRegistrationDetails();
-
-        sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(registrationDetails);
-
         model.OnGet();
-        model.Details.As<RegistrationDetails>().Should().NotBeNull();
-    }
 
-    [Fact]
-    public void OnGet_InvalidSession_ThrowsException()
-    {
-        sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(value: null);
-
-        var model = GivenOrganisationDetailModel();
-
-        Action action = model.OnGet;
-        action.Should().Throw<Exception>().WithMessage(ErrorMessagesList.SessionNotFound);
-    }
-
-    [Fact]
-    public async Task OnPost_InvalidSession_ThrowsException()
-    {
-        sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(value: null);
-
-        var model = GivenOrganisationDetailModel();
-
-        Func<Task> act = model.OnPost;
-        await act.Should().ThrowAsync<Exception>().WithMessage(ErrorMessagesList.SessionNotFound);
+        model.RegistrationDetails.As<RegistrationDetails>().Should().NotBeNull();
     }
 
     [Fact]
     public async Task OnPost_ValidSession_ShouldRegisterOrganisation()
     {
-        sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey))
-            .Returns(DummyRegistrationDetails());
+        sessionMock.Setup(s => s.Get<UserDetails>(Session.UserDetailsKey))
+            .Returns(new UserDetails { UserUrn = "test", PersonId = Guid.NewGuid() });
 
         organisationClientMock.Setup(o => o.CreateOrganisationAsync(It.IsAny<NewOrganisation>()))
             .ReturnsAsync(GivenOrganisationClientModel());
@@ -73,10 +48,8 @@ public class OrganisationDetailsSummaryModelTest
     [Fact]
     public async Task OnPost_OnSuccess_RedirectsToOrganisationOverview()
     {
-        var registrationDetails = DummyRegistrationDetails();
-
-        sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey))
-            .Returns(registrationDetails);
+        sessionMock.Setup(s => s.Get<UserDetails>(Session.UserDetailsKey))
+            .Returns(new UserDetails { UserUrn = "test", PersonId = Guid.NewGuid() });
 
         organisationClientMock.Setup(o => o.CreateOrganisationAsync(It.IsAny<NewOrganisation>()))
             .ReturnsAsync(GivenOrganisationClientModel());
@@ -93,8 +66,6 @@ public class OrganisationDetailsSummaryModelTest
     {
         var registrationDetails = new RegistrationDetails
         {
-            UserUrn = "urn:fdc:gov.uk:2022:6ba2a483e56144418756fd2edf1a55f6",
-            PersonId = Guid.NewGuid(),
             OrganisationName = "TestOrg",
             OrganisationScheme = "TestType",
             OrganisationEmailAddress = "test@example.com",
@@ -111,7 +82,11 @@ public class OrganisationDetailsSummaryModelTest
 
     private OrganisationDetailsSummaryModel GivenOrganisationDetailModel()
     {
-        return new OrganisationDetailsSummaryModel(sessionMock.Object, organisationClientMock.Object)
-        { Details = DummyRegistrationDetails() };
+        var registrationDetails = DummyRegistrationDetails();
+
+        sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey))
+            .Returns(registrationDetails);
+
+        return new OrganisationDetailsSummaryModel(sessionMock.Object, organisationClientMock.Object);
     }
 }
