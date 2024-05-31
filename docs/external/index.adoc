@@ -35,8 +35,10 @@ https://developer.company-information.service.gov.uk/manage-applications/add
 STEP4: Generate a key, you can use that key in your application. Store it in either appsettings or congif file. For development, it should be used in Secrets.
 
 STEP5: Try calling the API using the API KEY. In postman use the following end-point to test it first
-https://api.company-information.service.gov.uk/company/00000006/registered-office-address
 Basic auth: Remember that you need to put the API key in the username and there is NO password.
+https://api.company-information.service.gov.uk/company/13981671
+https://api.company-information.service.gov.uk/company/00000006/registered-office-address
+https://api.company-information.service.gov.uk/company/13981671/officers
 
 More Information and endpoints: https://developer-specs.company-information.service.gov.uk/companies-house-public-data-api/reference
 
@@ -47,3 +49,4 @@ You can make up to 600 requests within a 5 minute period. If you exceed this lim
 If you have an application that requires a higher rate limit than this default, contact us at https://find-and-update.company-information.service.gov.uk/help/contact-us.
 We reserve the right to ban without notice applications that regularly exceed or attempt to bypass the rate limits.
 
+== 
