@@ -24,6 +24,10 @@ data "aws_iam_policy_document" "terraform" {
     sid = "ManageTerraformLock"
   }
 
+}
+
+data "aws_iam_policy_document" "terraform_global" {
+
   statement {
     sid = "ManageR53"
     actions = [
@@ -57,29 +61,17 @@ data "aws_iam_policy_document" "terraform" {
 
   statement {
     actions = [
-      "iam:*",
-      "ecs:*"
+      "apigateway:DELETE",
+      "apigateway:GET",
+      "apigateway:PATCH",
+      "apigateway:POST",
+      "apigateway:PUT",
     ]
     effect = "Allow"
     resources = [
-      "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/cdp-sirsi-*",
-      "arn:aws:iam::${data.aws_caller_identity.current.account_id}:policy/cdp-sirsi-*",
-      "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/aws-service-role/*"
+      "arn:aws:apigateway:${data.aws_region.current.name}:*",
     ]
-    sid = "ManageProductIAMs"
-  }
-
-  statement {
-    actions = [
-      "cloudwatch:Delete*",
-      "cloudwatch:Get*",
-      "cloudwatch:Put*",
-    ]
-    effect = "Allow"
-    resources = [
-      "arn:aws:cloudwatch::${data.aws_caller_identity.current.account_id}:dashboard/cdp-sirsi-*"
-    ]
-    sid = "ManageProductCloudwatch"
+    sid = "ManageAPIGateway"
   }
 
   statement {
@@ -132,17 +124,6 @@ data "aws_iam_policy_document" "terraform" {
       "*"
     ]
     sid = "ManageEC2"
-  }
-
-  statement {
-    actions = ["ec2:*"]
-    effect  = "Allow"
-    resources = [
-      "arn:aws:ec2:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:*/cdp-sirsi-*",
-      "arn:aws:ec2:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:vpc/cdp-sirsi-*",
-      "arn:aws:ec2:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:elastic-ip/cdp-sirsi-*"
-    ]
-    sid = "ManageProductEC2"
   }
 
   statement {
@@ -205,6 +186,86 @@ data "aws_iam_policy_document" "terraform" {
 
   statement {
     actions = [
+      "logs:DescribeLogGroups",
+    ]
+    effect = "Allow"
+    resources = [
+      "arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:*",
+    ]
+    sid = "ManageLogs"
+  }
+
+  statement {
+    actions = [
+      "rds:DescribeDBInstances",
+    ]
+    effect = "Allow"
+    resources = [
+      "arn:aws:rds:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:db:*",
+    ]
+    sid = "ManageRDS"
+  }
+
+  statement {
+    actions = [
+      "elasticloadbalancing:DescribeListeners",
+      "elasticloadbalancing:DescribeLoadBalancerAttributes",
+      "elasticloadbalancing:DescribeLoadBalancers",
+      "elasticloadbalancing:DescribeTags",
+      "elasticloadbalancing:DescribeTargetGroupAttributes",
+      "elasticloadbalancing:DescribeTargetGroups",
+    ]
+    effect = "Allow"
+    resources = [
+      "*",
+    ]
+    sid = "ManageLBs"
+  }
+
+}
+
+data "aws_iam_policy_document" "terraform_product" {
+
+  statement {
+    actions = [
+      "iam:*",
+      "ecs:*"
+    ]
+    effect = "Allow"
+    resources = [
+      "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/cdp-sirsi-*",
+      "arn:aws:iam::${data.aws_caller_identity.current.account_id}:policy/cdp-sirsi-*",
+      "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/aws-service-role/*"
+    ]
+    sid = "ManageProductIAMs"
+  }
+
+  statement {
+    actions = [
+      "cloudwatch:Delete*",
+      "cloudwatch:Get*",
+      "cloudwatch:Put*",
+    ]
+    effect = "Allow"
+    resources = [
+      "arn:aws:cloudwatch::${data.aws_caller_identity.current.account_id}:dashboard/cdp-sirsi-*"
+    ]
+    sid = "ManageProductCloudwatch"
+  }
+
+  statement {
+    actions = ["ec2:*"]
+    effect  = "Allow"
+    resources = [
+      "arn:aws:ec2:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:*/cdp-sirsi-*",
+      "arn:aws:ec2:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:vpc/cdp-sirsi-*",
+      "arn:aws:ec2:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:elastic-ip/cdp-sirsi-*"
+    ]
+    sid = "ManageProductEC2"
+  }
+
+  statement {
+    actions = [
       "ecr:*",
       "ecs:*"
     ]
@@ -217,17 +278,6 @@ data "aws_iam_policy_document" "terraform" {
       "arn:aws:ecs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:task-definition/db*",
     ]
     sid = "ManageProductECS"
-  }
-
-  statement {
-    actions = [
-      "logs:DescribeLogGroups",
-    ]
-    effect = "Allow"
-    resources = [
-      "arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:*",
-    ]
-    sid = "ManageLogs"
   }
 
   statement {
@@ -268,17 +318,6 @@ data "aws_iam_policy_document" "terraform" {
 
   statement {
     actions = [
-      "rds:DescribeDBInstances",
-    ]
-    effect = "Allow"
-    resources = [
-      "arn:aws:rds:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:db:*",
-    ]
-    sid = "ManageRDS"
-  }
-
-  statement {
-    actions = [
       "rds:AddTagsToResource",
       "rds:Create*",
       "rds:Delete*",
@@ -315,22 +354,6 @@ data "aws_iam_policy_document" "terraform" {
 
   statement {
     actions = [
-      "elasticloadbalancing:DescribeListeners",
-      "elasticloadbalancing:DescribeLoadBalancerAttributes",
-      "elasticloadbalancing:DescribeLoadBalancers",
-      "elasticloadbalancing:DescribeTags",
-      "elasticloadbalancing:DescribeTargetGroupAttributes",
-      "elasticloadbalancing:DescribeTargetGroups",
-    ]
-    effect = "Allow"
-    resources = [
-      "*",
-    ]
-    sid = "ManageLBs"
-  }
-
-  statement {
-    actions = [
       "elasticloadbalancing:AddTags",
       "elasticloadbalancing:Create*",
       "elasticloadbalancing:Delete*",
@@ -358,7 +381,7 @@ data "aws_iam_policy_document" "terraform" {
     resources = [
       "arn:aws:states:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:stateMachine:cdp-sirsi-*"
     ]
-    sid = "ManageStateMachines"
+    sid = "ManageProductStateMachines"
   }
 
 }

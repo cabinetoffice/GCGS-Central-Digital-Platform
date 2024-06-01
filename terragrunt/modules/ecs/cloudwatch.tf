@@ -19,7 +19,7 @@ resource "aws_kms_alias" "ecs_cloudwatch" {
 resource "aws_cloudwatch_log_group" "ecs" {
   name = "/${local.name_prefix}/ecs"
 
-  retention_in_days = var.environment == "prod" ? 0 : 90
+  retention_in_days = var.environment == "production" ? 0 : 90
   #   kms_key_id        = aws_kms_key.ecs_cloudwatch.arn
 
   tags = var.tags
@@ -30,7 +30,7 @@ resource "aws_cloudwatch_log_group" "tasks" {
 
   name = "/ecs/${each.value}"
 
-  retention_in_days = var.environment == "prod" ? 0 : 90
+  retention_in_days = var.environment == "production" ? 0 : 90
   #   kms_key_id = var.ecs_cloudwatch_kms_key_id
 
   tags = var.tags
