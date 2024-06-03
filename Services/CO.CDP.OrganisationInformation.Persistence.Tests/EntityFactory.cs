@@ -82,13 +82,13 @@ public static class EntityFactory
             Name = theName,
             Tenant = tenant ?? GivenTenant(),
             Identifiers = [new OrganisationIdentifier
-                {
-                    Primary = true,
-                    Scheme = scheme,
-                    IdentifierId = identifierId,
-                    LegalName = legalName,
-                    Uri = uri
-                },
+            {
+                Primary = true,
+                Scheme = scheme,
+                IdentifierId = identifierId,
+                LegalName = legalName,
+                Uri = uri
+            },
                 new OrganisationIdentifier
                 {
                     Primary = false,

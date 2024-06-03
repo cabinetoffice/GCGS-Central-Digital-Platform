@@ -126,7 +126,7 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
 
         _repository.Verify(r => r.Save(It.Is<Persistence.Organisation>(o =>
              o.Guid == _generatedGuid &&
-             o.Name == "TheOrganisation"&&
+             o.Name == "TheOrganisation" &&
              o.ContactPoint == new Persistence.Organisation.OrganisationContactPoint
              {
                  Name = "Contact Name",

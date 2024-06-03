@@ -86,14 +86,15 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql) : 
                 IdentifierId = "1",
                 LegalName = "DefaultLegalName",
                 Uri = "http://default.org"
-            }, new OrganisationIdentifier
-            {
-                Primary = false,
-                Scheme = "ISO9001",
-                IdentifierId = "1",
-                LegalName = "DefaultLegalName",
-                Uri = "http://default.org"
-            }],
+            },
+                new OrganisationIdentifier
+                {
+                    Primary = false,
+                    Scheme = "ISO9001",
+                    IdentifierId = "1",
+                    LegalName = "DefaultLegalName",
+                    Uri = "http://default.org"
+                }],
             Addresses =  {new OrganisationAddress
             {
                 Type = AddressType.Registered,
@@ -114,7 +115,7 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql) : 
             },
             UpdatedOn = initialDate,
             CreatedOn = initialDate,
-            Roles =  { PartyRole.Buyer }
+            Roles = { PartyRole.Buyer }
         };
 
         repository.Save(organisation);

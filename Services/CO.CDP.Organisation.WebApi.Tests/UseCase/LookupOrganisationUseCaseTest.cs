@@ -38,13 +38,13 @@ public class LookupOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
                 Name = "Tenant 102"
             },
             Identifiers = [new OrganisationInformation.Persistence.Organisation.OrganisationIdentifier
-                {
-                    Primary = true,
-                    IdentifierId = "123456",
-                    Scheme = "Scheme1",
-                    LegalName = "Legal Name",
-                    Uri = "https://example.com"
-                },
+            {
+                Primary = true,
+                IdentifierId = "123456",
+                Scheme = "Scheme1",
+                LegalName = "Legal Name",
+                Uri = "https://example.com"
+            },
                 new OrganisationInformation.Persistence.Organisation.OrganisationIdentifier
                 {
                     Primary = false,

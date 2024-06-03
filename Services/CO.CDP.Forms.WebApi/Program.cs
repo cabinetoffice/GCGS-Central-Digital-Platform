@@ -18,7 +18,9 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
-} else {
+}
+else
+{
     app.UseExceptionHandler();
     app.UseHsts();
 }
