@@ -34,7 +34,7 @@ module "ecs_service_tenant" {
   cluster_id             = aws_ecs_cluster.this.id
   container_port         = local.tenant.ports.container
   cpu                    = local.tenant.cpu
-  ecs_listener_arn       = aws_lb_listener.ecs_http.arn
+  ecs_listener_arn       = aws_lb_listener.ecs.arn
   ecs_alb_sg_id          = var.alb_sg_id
   ecs_service_base_sg_id = var.ecs_sg_id
   environment            = var.environment

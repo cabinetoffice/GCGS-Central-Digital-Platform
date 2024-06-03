@@ -61,6 +61,21 @@ data "aws_iam_policy_document" "terraform_global" {
 
   statement {
     actions = [
+      "acm:AddTagsToCertificate",
+      "acm:DeleteCertificate",
+      "acm:DescribeCertificate",
+      "acm:ListTagsForCertificate",
+      "acm:RequestCertificate",
+    ]
+    effect = "Allow"
+    resources = [
+      "*",
+    ]
+    sid = "ManageACMs"
+  }
+
+  statement {
+    actions = [
       "apigateway:DELETE",
       "apigateway:GET",
       "apigateway:PATCH",

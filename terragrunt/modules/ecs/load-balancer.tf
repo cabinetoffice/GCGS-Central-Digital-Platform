@@ -16,11 +16,12 @@ resource "aws_lb" "ecs" {
   )
 }
 
-resource "aws_lb_listener" "ecs_http" {
+resource "aws_lb_listener" "ecs" {
 
+  certificate_arn   = aws_acm_certificate.this.arn
   load_balancer_arn = aws_lb.ecs.arn
-  port              = 80
-  protocol          = "HTTP"
+  port              = 443
+  protocol          = "HTTPS"
   tags              = var.tags
 
   default_action {
@@ -31,6 +32,23 @@ resource "aws_lb_listener" "ecs_http" {
       message_body = "Fixed response from ${var.environment} environment"
       status_code  = "200"
     }
+  }
+}
+
+resource "aws_lb_listener" "ecs_http" {
+
+  load_balancer_arn = aws_lb.ecs.arn
+  port              = 80
+  protocol          = "HTTP"
+  tags              = var.tags
+
+  default_action {
+    redirect {
+      status_code = "HTTP_301"
+      protocol    = "HTTPS"
+      port        = "443"
+    }
+    type = "redirect"
   }
 
 }
