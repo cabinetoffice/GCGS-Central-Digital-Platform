@@ -36,7 +36,7 @@ public class OrganisationRegisteredAddressModel(ISession session) : Registration
     [BindProperty]
     [DisplayName("Country")]
     [Required(ErrorMessage = "Enter your country")]
-    public string? Country { get; set; }
+    public string? Country { get; set; } = "United Kingdom";
 
     public void OnGet()
     {

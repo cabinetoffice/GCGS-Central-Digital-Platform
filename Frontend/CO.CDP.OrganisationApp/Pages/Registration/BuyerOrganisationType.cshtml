@@ -1,11 +1,12 @@
-@page "/registration/buyer-organisation-type"
+@page
+@attribute [RazorCompiledItemMetadata("RouteTemplate", RegistrationStepModel.BuyerOrganisationTypePage)]
 @model BuyerOrganisationTypeModel
 
 @{
     var organisationTypeHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.BuyerOrganisationType)).HasInnerHtml;
     var otherHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.OtherValue)).HasInnerHtml;
 
-    var backLink = "/registration/organisation-registered-address";
+    var backLink = RegistrationStepModel.OrganisationAddressPage;
 
     string IsSelected(string radioValue)
     {

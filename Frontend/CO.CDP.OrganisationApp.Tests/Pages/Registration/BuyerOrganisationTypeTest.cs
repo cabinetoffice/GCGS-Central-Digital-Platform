@@ -21,26 +21,16 @@ public class BuyerOrganisationTypeTest
     }
 
     [Fact]
-    public void OnGet_WhenRegistrationDetailsNotInSession_ShouldThrowException()
-    {
-        var model = GivenBuyerOrganisationTypeModel();
-
-        Action act = () => model.OnGet();
-
-        act.Should().Throw<Exception>().WithMessage(ErrorMessagesList.SessionNotFound);
-    }
-
-    [Fact]
     public void OnGet_WhenOrganisationTypeSetInSession_ShouldPopulatePageModel()
     {
-        var model = GivenBuyerOrganisationTypeModel();
-
         sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey))
             .Returns(new RegistrationDetails
             {
                 OrganisationType = OrganisationType.Buyer,
                 BuyerOrganisationType = "type1"
             });
+
+        var model = GivenBuyerOrganisationTypeModel();
 
         model.OnGet();
 
@@ -65,23 +55,13 @@ public class BuyerOrganisationTypeTest
     }
 
     [Fact]
-    public void OnPost_WhenRegistrationDetailsNotInSession_ShouldThrowException()
-    {
-        var model = GivenBuyerOrganisationTypeModel();
-
-        Action act = () => model.OnPost();
-
-        act.Should().Throw<Exception>().WithMessage(ErrorMessagesList.SessionNotFound);
-    }
-
-    [Fact]
     public void OnPost_WhenValidModel_ShouldSetOrganisationTypeInSession()
     {
-        var model = GivenBuyerOrganisationTypeModel();
-        model.BuyerOrganisationType = "type1";
-
         sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey))
             .Returns(new RegistrationDetails { OrganisationType = OrganisationType.Buyer });
+
+        var model = GivenBuyerOrganisationTypeModel();
+        model.BuyerOrganisationType = "type1";
 
         var results = model.OnPost();
 

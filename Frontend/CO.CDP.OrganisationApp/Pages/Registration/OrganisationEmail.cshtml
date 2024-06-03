@@ -1,13 +1,14 @@
-@page "/registration/organisation-email"
+@page
+@attribute [RazorCompiledItemMetadata("RouteTemplate", RegistrationStepModel.OrganisationEmailPage)]
 @model CO.CDP.OrganisationApp.Pages.Registration.OrganisationEmailModel
 
 @{
     var emailAddressHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.EmailAddress)).HasInnerHtml;
 
-    var backLink = "/registration/organisation-name";
+    var backLink = RegistrationStepModel.OrganisationNamePage;
     if (Request.Query.ContainsKey("frm-summary"))
     {
-        backLink = "/registration/organisation-details-summary";
+        backLink = RegistrationStepModel.OrganisationSummaryPage;
         Model.RedirectToSummary = true;
     }
 }

@@ -1,10 +1,11 @@
-@page "/registration/buyer-select-devolved-regulations"
+@page
+@attribute [RazorCompiledItemMetadata("RouteTemplate", RegistrationStepModel.BuyerSelectDevolvedRegulationPage)]
 @model BuyerSelectDevolvedRegulationModel
 
 @{
     var regulationsHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Regulations)).HasInnerHtml;
 
-    var backLink = "/registration/buyer-devolved-regulations";
+    var backLink = RegistrationStepModel.BuyerDevolvedRegulationPage;
 
     string IsSelected(string regulationValue)
     {

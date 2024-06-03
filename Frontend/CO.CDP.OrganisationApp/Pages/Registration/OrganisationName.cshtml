@@ -1,18 +1,19 @@
-@page "/registration/organisation-name"
+@page
+@attribute [RazorCompiledItemMetadata("RouteTemplate", RegistrationStepModel.OrganisationNamePage)]
 @model CO.CDP.OrganisationApp.Pages.Registration.OrganisationNameModel
 
 @{
     var organisationNameHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.OrganisationName)).HasInnerHtml;
 
-    var backLink = "/registration/organisation-identification";
+    var backLink = RegistrationStepModel.OrganisationIdentifierPage;
     if (Request.Query.ContainsKey("frm-summary"))
     {
-        backLink = "/registration/organisation-details-summary";
+        backLink = RegistrationStepModel.OrganisationSummaryPage;
         Model.RedirectToSummary = true;
     }
     else if (Model.HasCompaniesHouseNumber)
     {
-        backLink = "/registration/has-companies-house-number";
+        backLink = RegistrationStepModel.OrganisationHasCompanyHouseNumberPage;
     }
 }
 
