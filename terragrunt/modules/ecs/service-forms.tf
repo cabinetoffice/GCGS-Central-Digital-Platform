@@ -33,18 +33,18 @@ module "ecs_service_forms" {
   cluster_id             = aws_ecs_cluster.this.id
   container_port         = local.forms.ports.container
   cpu                    = local.forms.cpu
-  ecs_listener_arn       = aws_lb_listener.ecs.arn
   ecs_alb_sg_id          = var.alb_sg_id
+  ecs_listener_arn       = aws_lb_listener.ecs.arn
   ecs_service_base_sg_id = var.ecs_sg_id
-  environment            = var.environment
   family                 = "app"
+  host_port              = local.forms.ports.host
   listening_port         = local.forms.ports.listener
   memory                 = local.forms.memory
   name                   = local.forms.name
   private_subnet_ids     = var.private_subnet_ids
+  product                = var.product
   role_ecs_task_arn      = var.role_ecs_task_arn
   role_ecs_task_exec_arn = var.role_ecs_task_exec_arn
   tags                   = var.tags
   vpc_id                 = var.vpc_id
-  host_port              = local.forms.ports.host
 }
