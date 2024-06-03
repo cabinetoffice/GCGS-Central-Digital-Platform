@@ -4,13 +4,13 @@ resource "aws_cloudwatch_event_rule" "rds_credentials_rotation" {
 
   event_pattern = jsonencode(
     {
-      "source": ["aws.secretsmanager"],
-      "detail-type": ["AWS API Call via CloudTrail"],
-      "detail": {
-        "eventSource": ["secretsmanager.amazonaws.com"],
-        "eventName": ["RotateSecret"],
-        "requestParameters": {
-          "secretId": [data.aws_secretsmanager_secret.postgres.arn]
+      "source" : ["aws.secretsmanager"],
+      "detail-type" : ["AWS API Call via CloudTrail"],
+      "detail" : {
+        "eventSource" : ["secretsmanager.amazonaws.com"],
+        "eventName" : ["RotateSecret"],
+        "requestParameters" : {
+          "secretId" : [data.aws_secretsmanager_secret.postgres.arn]
         }
       }
     }

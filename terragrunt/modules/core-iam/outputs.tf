@@ -1,3 +1,11 @@
+output "api_gateway_cloudwatch_arn" {
+  value = aws_iam_role.api_gateway_cloudwatch.arn
+}
+
+output "api_gateway_cloudwatch_name" {
+  value = aws_iam_role.api_gateway_cloudwatch.name
+}
+
 output "cloudwatch_events_arn" {
   value = aws_iam_role.cloudwatch_events.arn
 }
