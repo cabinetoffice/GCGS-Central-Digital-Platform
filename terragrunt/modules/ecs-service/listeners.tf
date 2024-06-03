@@ -1,25 +1,3 @@
-resource "aws_lb_listener" "ecs_http" {
-  count = var.listening_port != null ? 1 : 0
-
-  load_balancer_arn = var.ecs_alb_arn
-  port              = var.listening_port
-  protocol          = "HTTP"
-  tags              = var.tags
-
-  default_action {
-    target_group_arn = aws_lb_target_group.this[0].arn
-    type             = "forward"
-  }
-  #   default_action {
-  #     redirect {
-  #       status_code = "HTTP_301"
-  #       protocol    = "HTTPS"
-  #       port        = "443"
-  #     }
-  #     type = "redirect"
-  #   }
-}
-
 resource "aws_lb_target_group" "this" {
   count = var.listening_port != null ? 1 : 0
 
@@ -44,4 +22,26 @@ resource "aws_lb_target_group" "this" {
   lifecycle {
     create_before_destroy = false
   }
+}
+
+
+resource "aws_lb_listener_rule" "this" {
+  count = var.listening_port != null ? 1 : 0
+
+
+  listener_arn = var.ecs_listener_arn
+  priority     = var.host_port - 8000
+
+  action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.this[0].arn
+  }
+
+  condition {
+    host_header {
+      values = ["${var.name}.dev.supplier.information.findatender.codatt.net"]
+    }
+  }
+
+  tags = merge(var.tags, { Name : var.name })
 }

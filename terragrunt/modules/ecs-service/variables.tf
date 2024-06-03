@@ -30,8 +30,8 @@ variable "desired_count" {
   type        = number
 }
 
-variable "ecs_alb_arn" {
-  description = "ECS Application Loadbalancer ARN"
+variable "ecs_listener_arn" {
+  description = "ECS Application Loadbalancer Listener ARN"
   type        = string
 }
 

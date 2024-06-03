@@ -15,3 +15,22 @@ resource "aws_lb" "ecs" {
     }
   )
 }
+
+resource "aws_lb_listener" "ecs_http" {
+
+  load_balancer_arn = aws_lb.ecs.arn
+  port              = 80
+  protocol          = "HTTP"
+  tags              = var.tags
+
+  default_action {
+    type = "fixed-response"
+
+    fixed_response {
+      content_type = "text/plain"
+      message_body = "Fixed response from ${var.environment} environment"
+      status_code  = "200"
+    }
+  }
+
+}
