@@ -37,7 +37,6 @@ public static class EndpointExtensions
                 operation.Responses["400"].Description = "Bad request.";
                 operation.Responses["422"].Description = "Unprocessable entity.";
                 operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
-                operation.Responses["404"].Description = "Not found.";
                 operation.Responses["500"].Description = "Internal server error.";
                 return operation;
             });
