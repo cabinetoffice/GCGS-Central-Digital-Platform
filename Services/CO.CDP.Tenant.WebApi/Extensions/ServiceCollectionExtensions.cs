@@ -27,7 +27,7 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
-    private static (int status, string error) MapException(Exception? exception)
+    public static (int status, string error) MapException(Exception? exception)
     {
         switch (exception)
         {
