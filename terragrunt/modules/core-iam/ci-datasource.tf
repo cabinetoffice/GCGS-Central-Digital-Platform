@@ -211,6 +211,7 @@ data "aws_iam_policy_document" "terraform_global" {
       "elasticloadbalancing:DescribeListeners",
       "elasticloadbalancing:DescribeLoadBalancerAttributes",
       "elasticloadbalancing:DescribeLoadBalancers",
+      "elasticloadbalancing:DescribeRules",
       "elasticloadbalancing:DescribeTags",
       "elasticloadbalancing:DescribeTargetGroupAttributes",
       "elasticloadbalancing:DescribeTargetGroups",
@@ -357,11 +358,14 @@ data "aws_iam_policy_document" "terraform_product" {
       "elasticloadbalancing:AddTags",
       "elasticloadbalancing:Create*",
       "elasticloadbalancing:Delete*",
+      "elasticloadbalancing:Describe*",
       "elasticloadbalancing:Modify*",
+      "elasticloadbalancing:SetRulePriorities",
     ]
     effect = "Allow"
     resources = [
       "arn:aws:elasticloadbalancing:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:listener/app/cdp-*",
+      "arn:aws:elasticloadbalancing:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:listener-rule/app/cdp-*",
       "arn:aws:elasticloadbalancing:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:loadbalancer/app/cdp-*",
       "arn:aws:elasticloadbalancing:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:targetgroup/cdp-*",
     ]

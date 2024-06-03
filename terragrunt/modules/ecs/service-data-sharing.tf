@@ -34,7 +34,7 @@ module "ecs_service_data_sharing" {
   cluster_id             = aws_ecs_cluster.this.id
   container_port         = local.data_sharing.ports.container
   cpu                    = local.data_sharing.cpu
-  ecs_alb_arn            = aws_lb.ecs.arn
+  ecs_listener_arn       = aws_lb_listener.ecs_http.arn
   ecs_alb_sg_id          = var.alb_sg_id
   ecs_service_base_sg_id = var.ecs_sg_id
   environment            = var.environment
