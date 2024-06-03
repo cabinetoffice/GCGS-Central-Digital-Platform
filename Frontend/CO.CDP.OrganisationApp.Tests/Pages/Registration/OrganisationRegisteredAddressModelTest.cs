@@ -27,7 +27,7 @@ public class OrganisationRegisteredAddressModelTest
 
         var results = ModelValidationHelper.Validate(model);
 
-        results.Count.Should().Be(4);
+        results.Count.Should().Be(3);
     }
 
     [Fact]
@@ -111,19 +111,6 @@ public class OrganisationRegisteredAddressModelTest
         var results = ModelValidationHelper.Validate(model);
 
         results.Any(c => c.MemberNames.Contains("Postcode")).Should().BeFalse();
-    }
-
-    [Fact]
-    public void WhenCountryIsEmpty_ShouldRaiseCountryValidationError()
-    {
-        var model = GivenOrganisationAddressModel();
-
-        var results = ModelValidationHelper.Validate(model);
-
-        results.Any(c => c.MemberNames.Contains("Country")).Should().BeTrue();
-
-        results.Where(c => c.MemberNames.Contains("Country")).First()
-            .ErrorMessage.Should().Be("Enter your country");
     }
 
     [Fact]

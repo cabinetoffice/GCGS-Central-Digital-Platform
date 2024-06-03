@@ -1,10 +1,11 @@
-@page "/registration/buyer-devolved-regulations"
+@page
+@attribute [RazorCompiledItemMetadata("RouteTemplate", RegistrationStepModel.BuyerDevolvedRegulationPage)]
 @model BuyerDevolvedRegulationModel
 
 @{
     var devolvedHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Devolved)).HasInnerHtml;
 
-    var backLink = "/registration/buyer-organisation-type";
+    var backLink = RegistrationStepModel.BuyerOrganisationTypePage;
 }
 
 <a href="@backLink" class="govuk-back-link">

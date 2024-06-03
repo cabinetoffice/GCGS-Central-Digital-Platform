@@ -1,18 +1,20 @@
-using CO.CDP.OrganisationApp.Constants;
+using CO.CDP.Mvc.Validation;
 using CO.CDP.OrganisationApp.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using CO.CDP.Mvc.Validation;
 
 namespace CO.CDP.OrganisationApp.Pages.Registration;
 
 [Authorize]
-public class BuyerOrganisationTypeModel(
-    ISession session) : PageModel
+[ValidateRegistrationStep]
+public class BuyerOrganisationTypeModel(ISession session) : RegistrationStepModel
 {
+    public override string CurrentPage => BuyerOrganisationTypePage;
+
+    public override ISession SessionContext => session;
+
     [BindProperty]
     [Required(ErrorMessage = "Select the organisation type")]
     public string? BuyerOrganisationType { get; set; }
@@ -24,10 +26,8 @@ public class BuyerOrganisationTypeModel(
 
     public IActionResult OnGet()
     {
-        var registrationDetails = VerifySession();
-
-        BuyerOrganisationType = registrationDetails.BuyerOrganisationType;
-        OtherValue = registrationDetails.BuyerOrganisationOtherValue;
+        BuyerOrganisationType = RegistrationDetails.BuyerOrganisationType;
+        OtherValue = RegistrationDetails.BuyerOrganisationOtherValue;
         return Page();
     }
 
@@ -38,20 +38,11 @@ public class BuyerOrganisationTypeModel(
             return Page();
         }
 
-        var registrationDetails = VerifySession();
-        registrationDetails.BuyerOrganisationType = BuyerOrganisationType;
-        registrationDetails.BuyerOrganisationOtherValue = (BuyerOrganisationType == "type5" ? OtherValue : "");
-        session.Set(Session.RegistrationDetailsKey, registrationDetails);
+        RegistrationDetails.BuyerOrganisationType = BuyerOrganisationType;
+        RegistrationDetails.BuyerOrganisationOtherValue = (BuyerOrganisationType == "type5" ? OtherValue : "");
+        session.Set(Session.RegistrationDetailsKey, RegistrationDetails);
 
         return RedirectToPage("BuyerDevolvedRegulation");
 
-    }
-
-    private RegistrationDetails VerifySession()
-    {
-        var registrationDetails = session.Get<RegistrationDetails>(Session.RegistrationDetailsKey)
-            ?? throw new Exception(ErrorMessagesList.SessionNotFound);
-
-        return registrationDetails;
     }
 }

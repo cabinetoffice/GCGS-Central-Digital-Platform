@@ -1,24 +1,24 @@
-using CO.CDP.OrganisationApp.Constants;
-using CO.CDP.OrganisationApp.Models;
 using CO.CDP.Mvc.Validation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace CO.CDP.OrganisationApp.Pages.Registration;
 
 [Authorize]
-public class BuyerSelectDevolvedRegulationModel(ISession session) : PageModel
+[ValidateRegistrationStep]
+public class BuyerSelectDevolvedRegulationModel(ISession session) : RegistrationStepModel
 {
+    public override string CurrentPage => BuyerSelectDevolvedRegulationPage;
+
+    public override ISession SessionContext => session;
+
     [BindProperty]
     [NotEmpty(ErrorMessage = "Select the do devolved regulations apply to your organisation?")]
     public required List<string> Regulations { get; set; } = [];
 
     public IActionResult OnGet()
     {
-        var registrationDetails = VerifySession();
-
-        Regulations = registrationDetails.Regulations ?? [];
+        Regulations = RegistrationDetails.Regulations;
 
         return Page();
     }
@@ -30,18 +30,9 @@ public class BuyerSelectDevolvedRegulationModel(ISession session) : PageModel
             return Page();
         }
 
-        var registrationDetails = VerifySession();
-        registrationDetails.Regulations = Regulations;
-        session.Set(Session.RegistrationDetailsKey, registrationDetails);
+        RegistrationDetails.Regulations = Regulations;
+        session.Set(Session.RegistrationDetailsKey, RegistrationDetails);
 
-        return RedirectToPage("OrganisationSelection");
-    }
-
-    private RegistrationDetails VerifySession()
-    {
-        var registrationDetails = session.Get<RegistrationDetails>(Session.RegistrationDetailsKey)
-            ?? throw new Exception(ErrorMessagesList.SessionNotFound);
-
-        return registrationDetails;
+        return RedirectToPage("/OrganisationSelection");
     }
 }

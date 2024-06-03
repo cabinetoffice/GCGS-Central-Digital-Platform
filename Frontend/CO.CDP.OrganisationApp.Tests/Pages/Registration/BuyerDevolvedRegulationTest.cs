@@ -21,26 +21,16 @@ public class BuyerDevolvedRegulationTest
     }
 
     [Fact]
-    public void OnGet_WhenRegistrationDetailsNotInSession_ShouldThrowException()
-    {
-        var model = GivenBuyerDevolvedRegulationModel();
-
-        Action act = () => model.OnGet();
-
-        act.Should().Throw<Exception>().WithMessage(ErrorMessagesList.SessionNotFound);
-    }
-
-    [Fact]
     public void OnGet_WhenDevolvedSetInSession_ShouldPopulatePageModel()
     {
-        var model = GivenBuyerDevolvedRegulationModel();
-
         sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey))
             .Returns(new RegistrationDetails
             {
                 OrganisationType = OrganisationType.Buyer,
                 Devolved = true
             });
+
+        var model = GivenBuyerDevolvedRegulationModel();
 
         model.OnGet();
 
@@ -62,16 +52,6 @@ public class BuyerDevolvedRegulationTest
         var actionResult = model.OnPost();
 
         actionResult.Should().BeOfType<PageResult>();
-    }
-
-    [Fact]
-    public void OnPost_WhenDevolvedNotInSession_ShouldThrowException()
-    {
-        var model = GivenBuyerDevolvedRegulationModel();
-
-        Action act = () => model.OnPost();
-
-        act.Should().Throw<Exception>().WithMessage(ErrorMessagesList.SessionNotFound);
     }
 
     [Fact]
@@ -118,7 +98,7 @@ public class BuyerDevolvedRegulationTest
         var actionResult = model.OnPost();
 
         actionResult.Should().BeOfType<RedirectToPageResult>()
-            .Which.PageName.Should().Be("OrganisationSelection");
+            .Which.PageName.Should().Be("/OrganisationSelection");
     }
 
     private BuyerDevolvedRegulationModel GivenBuyerDevolvedRegulationModel()

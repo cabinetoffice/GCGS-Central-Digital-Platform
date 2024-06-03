@@ -1,4 +1,5 @@
-@page "/registration/organisation-type"
+@page
+@attribute [RazorCompiledItemMetadata("RouteTemplate", RegistrationStepModel.OrganisationTypePage)]
 @model OrganisationTypeModel
 @using CO.CDP.Organisation.WebApiClient
 @using CO.CDP.OrganisationApp.Constants
@@ -9,7 +10,7 @@
     var backLink = "/organisation-selection";
     if (Request.Query.ContainsKey("frm-summary"))
     {
-        backLink = "/registration/organisation-details-summary";
+        backLink = RegistrationStepModel.OrganisationSummaryPage;
         Model.RedirectToSummary = true;
     }
 
@@ -63,7 +64,7 @@
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input" id="supplier" name="OrganisationType"
                                        type="radio" value="@OrganisationType.Supplier"
-                                       aria-describedby="supplier-hint" @IsSelected(OrganisationType.Buyer)>
+                                       aria-describedby="supplier-hint" @IsSelected(OrganisationType.Supplier)>
                                 <label class="govuk-label govuk-radios__label" for="supplier">
                                     A supplier
                                 </label>
