@@ -19,7 +19,7 @@ public static class OrganisationSchemeType
         };
 
     public static string? SchemeDescription(this string? scheme)
-    {        
+    {
         return !string.IsNullOrWhiteSpace(scheme) && OrganisationScheme.TryGetValue(scheme, out string? value) ? value : null;
     }
 }

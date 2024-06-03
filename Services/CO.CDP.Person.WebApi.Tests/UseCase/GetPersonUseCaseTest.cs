@@ -31,8 +31,8 @@ public class GetPersonUseCaseTest(AutoMapperFixture mapperFixture) : IClassFixtu
             Id = 42,
             Guid = persontId,
             Email = "person@example.com",
-            FirstName ="fn",
-            LastName ="ln",
+            FirstName = "fn",
+            LastName = "ln",
         };
 
         _repository.Setup(r => r.Find(persontId)).ReturnsAsync(tenant);

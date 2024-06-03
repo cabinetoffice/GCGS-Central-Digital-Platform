@@ -90,7 +90,7 @@ public class DatabaseTenantRepositoryTest(PostgreSqlFixture postgreSql) : IClass
     {
         using var repository = TenantRepository();
 
-        var tenant = GivenTenant(name : "urn:fdc:gov.uk:2022:43af5a8b-f4c0-414b-b341-d4f1fa894302");
+        var tenant = GivenTenant(name: "urn:fdc:gov.uk:2022:43af5a8b-f4c0-414b-b341-d4f1fa894302");
 
         repository.Save(tenant);
 

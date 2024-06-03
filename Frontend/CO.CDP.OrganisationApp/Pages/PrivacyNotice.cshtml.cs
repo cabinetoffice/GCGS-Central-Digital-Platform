@@ -4,5 +4,5 @@ namespace CO.CDP.OrganisationApp.Pages;
 
 public class PrivacyNoticeModel : PageModel
 {
-    
+
 }

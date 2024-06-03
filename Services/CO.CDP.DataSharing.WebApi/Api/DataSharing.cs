@@ -15,10 +15,10 @@ public static class EndpointExtensions
     public static void UseDataSharingEndpoints(this WebApplication app)
     {
         app.MapGet("/share/data/{sharecode}", (string sharecode) => new SupplierInformation
-            {
-                Id = Guid.Parse("1e39d0ce-3abd-43c5-9f23-78c92e437f2a"),
-                Name = "Acme Corporation",
-                AssociatedPersons =
+        {
+            Id = Guid.Parse("1e39d0ce-3abd-43c5-9f23-78c92e437f2a"),
+            Name = "Acme Corporation",
+            AssociatedPersons =
                 [
                     new AssociatedPerson
                     {
@@ -30,7 +30,7 @@ public static class EndpointExtensions
                         Role = 4
                     }
                 ],
-                AdditionalParties =
+            AdditionalParties =
                 [
                     new OrganisationReference
                     {
@@ -41,7 +41,7 @@ public static class EndpointExtensions
                             "https://cdp.cabinetoffice.gov.uk/organisations/f4596cdd-12e5-4f25-9db1-4312474e516f")
                     }
                 ],
-                AdditionalEntities =
+            AdditionalEntities =
                 [
                     new OrganisationReference
                     {
@@ -52,15 +52,15 @@ public static class EndpointExtensions
                             "https://cdp.cabinetoffice.gov.uk/organisations/f4596cdd-12e5-4f25-9db1-4312474e516f")
                     }
                 ],
-                Identifier = new Identifier
-                {
-                    Scheme = "CDP-PPON",
-                    Id = "1e39d0ce-3abd-43c5-9f23-78c92e437f2a",
-                    LegalName = "Acme Corporation Ltd",
-                    Uri = new Uri(
+            Identifier = new Identifier
+            {
+                Scheme = "CDP-PPON",
+                Id = "1e39d0ce-3abd-43c5-9f23-78c92e437f2a",
+                LegalName = "Acme Corporation Ltd",
+                Uri = new Uri(
                         "https://cdp.cabinetoffice.gov.uk/organisations/1e39d0ce-3abd-43c5-9f23-78c92e437f2a")
-                },
-                AdditionalIdentifiers =
+            },
+            AdditionalIdentifiers =
                 [
                     new Identifier
                     {
@@ -70,40 +70,40 @@ public static class EndpointExtensions
                         Uri = new Uri("http://data.companieshouse.gov.uk/doc/company/06368740")
                     }
                 ],
-                Address = new Address
+            Address = new Address
+            {
+                StreetAddress = "82 St. John’s Road",
+                StreetAddress2 = "Green Tower",
+                Locality = "CHESTER",
+                Region = "Lancashire",
+                PostalCode = "CH43 7UR",
+                CountryName = "United Kingdom",
+                Type = AddressType.Registered,
+            },
+            ContactPoint = new ContactPoint
+            {
+                Name = "Procurement Team",
+                Email = "info@example.com",
+                Telephone = "+441234567890"
+            },
+            Roles = [PartyRole.Supplier],
+            Details = new Details(),
+            SupplierInformationData = new SupplierInformationData
+            {
+                Form = new Form
                 {
-                    StreetAddress = "82 St. John’s Road",
-                    StreetAddress2 = "Green Tower",
-                    Locality = "CHESTER",
-                    Region = "Lancashire",
-                    PostalCode = "CH43 7UR",
-                    CountryName = "United Kingdom",
-                    Type = AddressType.Registered,
+                    Name = "Standard Questions",
+                    SubmissionState = FormSubmissionState.Submitted,
+                    SubmittedAt = DateTime.Parse("2024-03-28T18:24:00.000Z"),
+                    OrganisationId = Guid.Parse("1e39d0ce-3abd-43c5-9f23-78c92e437f2a"),
+                    FormId = Guid.Parse("f174b921-0c58-4644-80f1-8707d8300130"),
+                    FormVersionId = "20240309",
+                    IsRequired = true,
+                    BookingReference = "AGMT-2024-XYZ",
+                    Scope = 0,
+                    Type = 0
                 },
-                ContactPoint = new ContactPoint
-                {
-                    Name = "Procurement Team",
-                    Email = "info@example.com",
-                    Telephone = "+441234567890"
-                },
-                Roles = [PartyRole.Supplier],
-                Details = new Details(),
-                SupplierInformationData = new SupplierInformationData
-                {
-                    Form = new Form
-                    {
-                        Name = "Standard Questions",
-                        SubmissionState = FormSubmissionState.Submitted,
-                        SubmittedAt = DateTime.Parse("2024-03-28T18:24:00.000Z"),
-                        OrganisationId = Guid.Parse("1e39d0ce-3abd-43c5-9f23-78c92e437f2a"),
-                        FormId = Guid.Parse("f174b921-0c58-4644-80f1-8707d8300130"),
-                        FormVersionId = "20240309",
-                        IsRequired = true,
-                        BookingReference = "AGMT-2024-XYZ",
-                        Scope = 0,
-                        Type = 0
-                    },
-                    Questions =
+                Questions =
                     [
                         new FormQuestion
                         {
@@ -142,7 +142,7 @@ public static class EndpointExtensions
                             SectionName = "Carbon Net Zero"
                         }
                     ],
-                    Answers =
+                Answers =
                     [
                         new FormAnswer
                         {
@@ -156,8 +156,8 @@ public static class EndpointExtensions
                             BoolValue = true
                         }
                     ]
-                },
-            })
+            },
+        })
             .Produces<SupplierInformation>(StatusCodes.Status200OK, "application/json")
             .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
             .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
@@ -176,13 +176,13 @@ public static class EndpointExtensions
             });
 
         app.MapPost("/share/data", (ShareRequest shareRequest) => Results.Ok(new ShareReceipt
-                {
-                    ShareCode = Guid.NewGuid().ToString(),
-                    ExpiresAt = shareRequest.ExpiresAt,
-                    FormId = shareRequest.SupplierFormId,
-                    FormVersionId = "20240317",
-                    Permissions = shareRequest.Permissions
-                }
+        {
+            ShareCode = Guid.NewGuid().ToString(),
+            ExpiresAt = shareRequest.ExpiresAt,
+            FormId = shareRequest.SupplierFormId,
+            FormVersionId = "20240317",
+            Permissions = shareRequest.Permissions
+        }
             ))
             .Produces<ShareReceipt>(StatusCodes.Status200OK, "application/json")
             .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)

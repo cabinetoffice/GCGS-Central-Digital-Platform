@@ -11,7 +11,7 @@ namespace CO.CDP.OrganisationApp;
 public class OidcEvents(IConfiguration configuration) : OpenIdConnectEvents
 {
     public override Task RemoteFailure(RemoteFailureContext context)
-    {   
+    {
         context.Response.Redirect($"/?one-login-error={context.Failure?.Message}");
         context.HandleResponse();
 

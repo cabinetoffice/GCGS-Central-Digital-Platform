@@ -38,13 +38,13 @@ public class GetOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IClas
                 Name = "Tenant 101"
             },
             Identifiers = [new OrganisationInformation.Persistence.Organisation.OrganisationIdentifier
-                {
-                    Primary = true,
-                    IdentifierId = "123456",
-                    Scheme = "Scheme1",
-                    LegalName = "Legal Name",
-                    Uri = "https://example.com"
-                },
+            {
+                Primary = true,
+                IdentifierId = "123456",
+                Scheme = "Scheme1",
+                LegalName = "Legal Name",
+                Uri = "https://example.com"
+            },
                 new OrganisationInformation.Persistence.Organisation.OrganisationIdentifier
                 {
                     Primary = false,
@@ -102,7 +102,7 @@ public class GetOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IClas
             ],
             Addresses = [new OrganisationInformation.Address
             {
-                Type= AddressType.Registered,
+                Type = AddressType.Registered,
                 StreetAddress = "1234 Test St",
                 StreetAddress2 = "Green Tower",
                 Locality = "Test City",

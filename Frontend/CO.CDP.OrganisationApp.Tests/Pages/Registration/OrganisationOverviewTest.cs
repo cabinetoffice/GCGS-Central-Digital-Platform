@@ -7,16 +7,16 @@ namespace CO.CDP.OrganisationApp.Tests.Pages.Registration;
 public class OrganisationOverviewTest
 {
     private readonly Mock<IOrganisationClient> organisationClientMock;
-    
+
     public OrganisationOverviewTest()
     {
-        organisationClientMock = new Mock<IOrganisationClient>();        
+        organisationClientMock = new Mock<IOrganisationClient>();
     }
 
     [Fact]
     public async Task OnGet_WithValidId_CallsGetOrganisationAsync()
     {
-        var id = Guid.NewGuid();        
+        var id = Guid.NewGuid();
         var model = GivenOrganisationOverviewModel();
         organisationClientMock.Setup(o => o.GetOrganisationAsync(id))
             .ReturnsAsync(GivenOrganisationClientModel(id));
