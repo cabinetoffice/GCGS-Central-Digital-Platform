@@ -23,14 +23,19 @@ public static class EndpointExtensions
                         Results.Created(new Uri($"/tenants/{tenant.Id}", UriKind.Relative), tenant)
                     ))
             .Produces<Model.Tenant>(StatusCodes.Status201Created, "application/json")
+            .ProducesProblem(StatusCodes.Status500InternalServerError)
+            .ProducesProblem(StatusCodes.Status400BadRequest)
             .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
-            .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError)
+            .ProducesProblem(StatusCodes.Status422UnprocessableEntity)
+            .ProducesProblem(StatusCodes.Status404NotFound)
             .WithOpenApi(operation =>
             {
                 operation.OperationId = "CreateTenant";
                 operation.Description = "Create a new tenant.";
                 operation.Summary = "Create a new tenant.";
                 operation.Responses["201"].Description = "Tenant created successfully.";
+                operation.Responses["400"].Description = "Bad request.";
+                operation.Responses["422"].Description = "Unprocessable entity.";
                 operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
                 operation.Responses["500"].Description = "Internal server error.";
                 return operation;

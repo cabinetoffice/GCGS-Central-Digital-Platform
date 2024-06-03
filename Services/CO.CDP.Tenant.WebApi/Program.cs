@@ -1,6 +1,7 @@
 using CO.CDP.OrganisationInformation.Persistence;
 using CO.CDP.Tenant.WebApi.Api;
 using CO.CDP.Tenant.WebApi.AutoMapper;
+using CO.CDP.Tenant.WebApi.Extensions;
 using CO.CDP.Tenant.WebApi.Model;
 using CO.CDP.Tenant.WebApi.UseCase;
 using Microsoft.EntityFrameworkCore;
@@ -12,7 +13,6 @@ var builder = WebApplication.CreateBuilder(args);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options => { options.DocumentTenantApi(); });
-builder.Services.AddProblemDetails();
 
 builder.Services.AddHealthChecks();
 builder.Services.AddAutoMapper(typeof(WebApiToPersistenceProfile));
@@ -23,7 +23,8 @@ builder.Services.AddScoped<ITenantRepository, DatabaseTenantRepository>();
 builder.Services.AddScoped<IUseCase<RegisterTenant, Tenant>, RegisterTenantUseCase>();
 builder.Services.AddScoped<IUseCase<Guid, Tenant?>, GetTenantUseCase>();
 builder.Services.AddScoped<IUseCase<string, Tenant?>, LookupTenantUseCase>();
-builder.Services.AddProblemDetails();
+builder.Services.AddTenantProblemDetails();
+
 
 var app = builder.Build();
 

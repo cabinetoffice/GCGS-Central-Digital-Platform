@@ -58,6 +58,8 @@ public class OrganisationClientIntegrationTest(ITestOutputHelper testOutputHelpe
             roles: roles
         );
 
-        await Assert.ThrowsAsync<ApiException<ProblemDetails>>(() => client.CreateOrganisationAsync(newOrganisation));
+        var exception = await Assert.ThrowsAsync<ApiException<ProblemDetails>>(() => client.CreateOrganisationAsync(newOrganisation));
+        Assert.Equal(404, exception.StatusCode);
+        Assert.Contains("Unknown person", exception.Result.Detail);
     }
 }

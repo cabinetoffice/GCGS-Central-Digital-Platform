@@ -73,22 +73,25 @@ public static class EndpointExtensions
                   organisation != null
                       ? Results.Created(new Uri($"/organisations/{organisation.Id}", UriKind.Relative), organisation)
                       : Results.Problem("Organisation could not be created due to an internal error"))
-       )
-      .Produces<Model.Organisation>(StatusCodes.Status201Created, "application/json")
-      .Produces<ProblemDetails>(StatusCodes.Status400BadRequest)
-      .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
-      .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError)
-      .WithOpenApi(operation =>
-      {
-          operation.OperationId = "CreateOrganisation";
-          operation.Description = "Create a new organisation.";
-          operation.Summary = "Create a new organisation.";
-          operation.Responses["201"].Description = "Organisation created successfully.";
-          operation.Responses["400"].Description = "Failed to create the organisation due to a validation failure.";
-          operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
-          operation.Responses["500"].Description = "Internal server error.";
-          return operation;
-      });
+        )
+        .Produces<Model.Organisation>(StatusCodes.Status201Created, "application/json")
+        .ProducesProblem(StatusCodes.Status500InternalServerError)
+        .ProducesProblem(StatusCodes.Status400BadRequest)
+        .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
+        .ProducesProblem(StatusCodes.Status422UnprocessableEntity)
+        .ProducesProblem(StatusCodes.Status404NotFound)
+        .WithOpenApi(operation =>
+        {
+            operation.OperationId = "CreateOrganisation";
+            operation.Description = "Create a new organisation.";
+            operation.Summary = "Create a new organisation.";
+            operation.Responses["201"].Description = "Organisation created successfully.";
+            operation.Responses["400"].Description = "Bad request.";
+            operation.Responses["422"].Description = "Unprocessable entity.";
+            operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
+            operation.Responses["500"].Description = "Internal server error.";
+            return operation;
+        });
         app.MapGet("/organisations/{organisationId}", async (Guid organisationId, IUseCase<Guid, Model.Organisation?> useCase) =>
                await useCase.Execute(organisationId)
                    .AndThen(organisation => organisation != null ? Results.Ok(organisation) : Results.NotFound()))
@@ -117,7 +120,7 @@ public static class EndpointExtensions
                     _organisations[organisationId] = new Model.Organisation
                     {
                         Id = organisationId,
-                        Identifier =updatedOrganisation.Identifier.AsView(),
+                        Identifier = updatedOrganisation.Identifier.AsView(),
                         Name = updatedOrganisation.Name,
                         AdditionalIdentifiers = updatedOrganisation.AdditionalIdentifiers.AsView(),
                         Addresses = updatedOrganisation.Addresses.AsView(),
