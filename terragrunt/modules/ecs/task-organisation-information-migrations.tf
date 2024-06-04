@@ -19,7 +19,7 @@ module "ecs_service_organisation_information_migrations" {
       container_port       = local.organisation_information_migrations.ports.container
       cpu                  = local.organisation_information_migrations.cpu
       conn_string_location = var.db_connection_secret_arn
-      environment          = title(var.environment)
+      environment          = local.service_environment
       host_port            = local.organisation_information_migrations.ports.host
       image                = "${local.ecr_urls["organisation-information-migrations"]}:latest"
       lg_name              = aws_cloudwatch_log_group.tasks[local.organisation_information_migrations.name].name

@@ -20,7 +20,7 @@ module "ecs_service_tenant" {
       container_port       = local.tenant.ports.container
       cpu                  = local.tenant.cpu
       conn_string_location = var.db_connection_secret_arn
-      environment          = title(var.environment)
+      environment          = local.service_environment
       host_port            = local.tenant.ports.host
       image                = "${local.ecr_urls[local.tenant.name]}:latest"
       lg_name              = aws_cloudwatch_log_group.tasks[local.tenant.name].name

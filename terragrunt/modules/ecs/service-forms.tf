@@ -19,7 +19,7 @@ module "ecs_service_forms" {
     {
       container_port = local.forms.ports.container
       cpu            = local.forms.cpu
-      environment    = title(var.environment)
+      environment    = local.service_environment
       host_port      = local.forms.ports.host
       image          = "${local.ecr_urls[local.forms.name]}:latest"
       lg_name        = aws_cloudwatch_log_group.tasks[local.forms.name].name

@@ -65,7 +65,7 @@ variable "host_port" {
 }
 
 variable "is_frontend_app" {
-  description = "Weather it is an API or the Frontend service, to link the domain alias to"
+  description = "Whether it is an API or the Frontend service, to link the domain alias to"
   type        = bool
   default     = false
 }
