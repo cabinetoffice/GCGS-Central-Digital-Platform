@@ -69,3 +69,40 @@
         }
     </ul>
 }
+
+@if (Model.PersonsWithSignificantControl != null && Model.PersonsWithSignificantControl.Any())
+{
+    <h3>Persons with Significant Control</h3>
+    <ul>
+        @foreach (var psc in Model.PersonsWithSignificantControl)
+        {
+            <li>
+                <p><strong>Name:</strong> @psc.Name</p>
+                <p><strong>Role:</strong> @psc.Kind</p>
+                <p><strong>Notified On:</strong> @psc.NotifiedOn</p>
+                <p><strong>Country of Residence:</strong> @psc.CountryOfResidence</p>
+                <p><strong>Nationality:</strong> @psc.Nationality</p>
+                <p><strong>Date of Birth:</strong> @psc.DateOfBirth?.Month/@psc.DateOfBirth?.Year</p>
+                <h4>Address</h4>
+                <p>@psc.Address?.Premises</p>
+                <p>@psc.Address?.AddressLine1</p>
+                <p>@psc.Address?.AddressLine2</p>
+                <p>@psc.Address?.Locality</p>
+                <p>@psc.Address?.Region</p>
+                <p>@psc.Address?.Country</p>
+                <p>@psc.Address?.PostalCode</p>
+                <h4>Natures of Control</h4>
+                <ul>
+                    @foreach (var natureOfControl in psc.NaturesOfControl ?? new List<string>())
+                    {
+                        <li>@natureOfControl</li>
+                    }
+                </ul>
+            </li>
+        }
+    </ul>
+}
+else if (Model.PersonsWithSignificantControl != null)
+{
+    <p>There are no persons with significant control in this company.</p>
+}
