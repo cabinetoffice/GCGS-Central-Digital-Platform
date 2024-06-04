@@ -27,7 +27,7 @@ public static class EndpointExtensions
                         Relationship = "Company Director",
                         Uri = new Uri(
                             "https://cdp.cabinetoffice.gov.uk/persons/c16f9f7b-3f10-42db-86f8-93607b034a4c"),
-                        Role = 4
+                        Roles = [PartyRole.Supplier]
                     }
                 ],
             AdditionalParties =
