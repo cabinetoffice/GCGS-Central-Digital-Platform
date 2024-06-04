@@ -6,8 +6,6 @@ namespace CO.CDP.OrganisationApp.Pages.Registration;
 
 public abstract class RegistrationStepModel : PageModel
 {
-    public const string UserInfoPage = "/one-login/user-info";
-
     public const string OrganisationTypePage = "/registration/organisation-type";
     public const string OrganisationHasCompanyHouseNumberPage = "/registration/has-companies-house-number";
     public const string OrganisationIdentifierPage = "/registration/organisation-identification";
@@ -41,7 +39,7 @@ public abstract class RegistrationStepModel : PageModel
     {
         if (UserDetails == null)
         {
-            ToRedirectPageUrl = UserInfoPage;
+            ToRedirectPageUrl = "/";
             return false;
         }
 

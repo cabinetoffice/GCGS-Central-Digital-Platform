@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace CO.CDP.OrganisationApp.Pages.Registration;
+namespace CO.CDP.OrganisationApp.Pages;
 
 [Authorize]
 public class YourDetailsModel(

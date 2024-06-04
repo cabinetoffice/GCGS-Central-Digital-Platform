@@ -27,7 +27,7 @@ public class PrivacyPolicyTest
         var actionResult = model.OnPost();
 
         actionResult.Should().BeOfType<RedirectToPageResult>()
-            .Which.PageName.Should().Be("Registration/YourDetails");
+            .Which.PageName.Should().Be("YourDetails");
     }
 
     private PrivacyPolicyModel GivenPrivacyPolicyModel()
