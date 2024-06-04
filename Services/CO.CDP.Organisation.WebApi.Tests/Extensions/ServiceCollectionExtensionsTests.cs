@@ -25,7 +25,7 @@ public class ServiceCollectionExtensionsTests
         var exception = new DuplicateOrganisationException("Duplicate organisation");
         var result = ServiceCollectionExtensions.MapException(exception);
 
-        Assert.Equal(StatusCodes.Status404NotFound, result.status);
+        Assert.Equal(StatusCodes.Status400BadRequest, result.status);
         Assert.Equal("ORGANISATION_ALREADY_EXISTS", result.error);
     }
 
