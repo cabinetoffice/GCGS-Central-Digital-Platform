@@ -20,7 +20,7 @@ module "ecs_service_data_sharing" {
       container_port       = local.data_sharing.ports.container
       cpu                  = local.data_sharing.cpu
       conn_string_location = var.db_connection_secret_arn
-      environment          = title(var.environment)
+      environment          = local.service_environment
       host_port            = local.data_sharing.ports.host
       image                = "${local.ecr_urls[local.data_sharing.name]}:latest"
       lg_name              = aws_cloudwatch_log_group.tasks[local.data_sharing.name].name

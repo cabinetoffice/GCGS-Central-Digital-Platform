@@ -20,7 +20,7 @@ module "ecs_service_person" {
       container_port       = local.person.ports.container
       cpu                  = local.person.cpu
       conn_string_location = var.db_connection_secret_arn
-      environment          = title(var.environment)
+      environment          = local.service_environment
       host_port            = local.person.ports.host
       image                = "${local.ecr_urls[local.person.name]}:latest"
       lg_name              = aws_cloudwatch_log_group.tasks[local.person.name].name

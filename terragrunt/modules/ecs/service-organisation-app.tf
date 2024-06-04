@@ -20,7 +20,7 @@ module "ecs_service_organisation_app" {
       container_port       = local.organisation_app.ports.container
       cpu                  = local.organisation_app.cpu
       conn_string_location = var.db_connection_secret_arn
-      environment          = title(var.environment)
+      environment          = local.service_environment
       host_port            = local.organisation_app.ports.host
       image                = "${local.ecr_urls[local.organisation_app.name]}:latest"
       lg_name              = aws_cloudwatch_log_group.tasks[local.organisation_app.name].name
