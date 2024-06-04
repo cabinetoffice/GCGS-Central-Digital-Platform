@@ -42,6 +42,7 @@ module "ecs_service_organisation_app" {
   ecs_service_base_sg_id = var.ecs_sg_id
   family                 = "app"
   host_port              = local.organisation_app.ports.host
+  is_frontend_app        = true
   listening_port         = local.organisation_app.ports.listener
   memory                 = local.organisation_app.memory
   name                   = local.organisation_app.name
