@@ -38,4 +38,9 @@ public class Session(IHttpContextAccessor httpContextAccessor) : ISession
             throw new Exception("Session is not available", cause);
         }
     }
+
+    public void Clear()
+    {
+        GetSession().Clear();
+    }
 }

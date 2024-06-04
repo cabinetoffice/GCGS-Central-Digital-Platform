@@ -72,6 +72,7 @@ public class OneLogin(
 
     private IActionResult SignOut()
     {
+        session.Clear();
         if (httpContextAccessor.HttpContext?.User?.Identity?.IsAuthenticated != true)
         {
             return RedirectToPage("/");

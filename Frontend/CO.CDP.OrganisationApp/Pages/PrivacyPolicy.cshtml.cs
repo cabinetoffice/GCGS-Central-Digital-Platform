@@ -21,6 +21,6 @@ public class PrivacyPolicyModel : PageModel
             return Page();
         }
 
-        return RedirectToPage("Registration/YourDetails");
+        return RedirectToPage("YourDetails");
     }
 }

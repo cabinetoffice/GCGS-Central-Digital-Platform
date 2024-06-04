@@ -117,7 +117,7 @@ public class SessionTest
         var session = new Session(httpContextAccessor);
         session.Set("session_key", "session_value");
 
-        Assert.Equal("session_value", session.Get<string>("session_key"));
+        session.Get<string>("session_key").Should().Be("session_value");
     }
 
     [Fact]
@@ -139,7 +139,21 @@ public class SessionTest
 
         session.Remove("session_key");
 
-        Assert.Null(session.Get<string>("session_key"));
+        session.Get<string>("session_key").Should().BeNull();
+    }
+
+    [Fact]
+    public void Clear_WhenSessionIsAvailable_ClearAllSessionValues()
+    {
+        var httpContextAccessor = GivenHttpContextWithSession();
+        var session = new Session(httpContextAccessor);
+        session.Set("session_key1", "session_value1");
+        session.Set("session_key2", "session_value2");
+
+        session.Clear();
+
+        session.Get<string>("session_key1").Should().BeNull();
+        session.Get<string>("session_key2").Should().BeNull();
     }
 
     private static IHttpContextAccessor GivenHttpContextWithNoSession()

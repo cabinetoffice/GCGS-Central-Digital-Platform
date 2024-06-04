@@ -25,7 +25,7 @@ public class RegistrationStepModelTest
         var result = model.ValidateStep();
 
         result.Should().BeFalse();
-        model.ToRedirectPageUrl.Should().Be(RegistrationStepModel.UserInfoPage);
+        model.ToRedirectPageUrl.Should().Be("/");
     }
 
     [Theory]
