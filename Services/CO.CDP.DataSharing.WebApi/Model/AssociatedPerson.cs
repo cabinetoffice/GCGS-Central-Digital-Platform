@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using CO.CDP.OrganisationInformation;
 
 namespace CO.CDP.DataSharing.WebApi.Model;
 
@@ -12,6 +13,5 @@ internal record AssociatedPerson
     [Required] public required string Relationship { get; init; }
     /// <example>"https://cdp.cabinetoffice.gov.uk/persons/c16f9f7b-3f10-42db-86f8-93607b034a4c"</example>
     [Required] public required Uri Uri { get; init; }
-    /// <example>4</example>
-    [Required] public required int Role { get; init; }
+    [Required] public required List<PartyRole> Roles { get; init; }
 }
