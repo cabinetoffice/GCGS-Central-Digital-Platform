@@ -45,9 +45,13 @@ variable "ecs_service_base_sg_id" {
   type        = string
 }
 
-variable "environment" {
-  description = "The environment we are provisioning"
-  type        = string
+variable "product" {
+  description = "product's common attributes"
+  type = object({
+    name               = string
+    resource_name      = string
+    public_hosted_zone = string
+  })
 }
 
 variable "family" {

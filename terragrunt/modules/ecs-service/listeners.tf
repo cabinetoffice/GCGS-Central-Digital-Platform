@@ -39,7 +39,7 @@ resource "aws_lb_listener_rule" "this" {
 
   condition {
     host_header {
-      values = ["${var.name}.dev.supplier.information.findatender.codatt.net"]
+      values = ["${var.name}.${var.product.public_hosted_zone}"]
     }
   }
 

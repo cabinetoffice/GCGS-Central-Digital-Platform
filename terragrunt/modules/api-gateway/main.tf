@@ -101,7 +101,7 @@ resource "aws_api_gateway_method" "root_method" {
 resource "aws_api_gateway_integration" "root_integration" {
   http_method             = aws_api_gateway_method.root_method.http_method
   integration_http_method = "ANY"
-  passthrough_behavior = "WHEN_NO_MATCH"
+  passthrough_behavior    = "WHEN_NO_MATCH"
   resource_id             = aws_api_gateway_rest_api.ecs_api.root_resource_id
   rest_api_id             = aws_api_gateway_rest_api.ecs_api.id
   type                    = "MOCK"

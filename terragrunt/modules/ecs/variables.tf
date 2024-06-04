@@ -47,6 +47,11 @@ variable "product" {
   })
 }
 
+variable "public_hosted_zone_fqdn" {
+  description = "Fully qualified domain name of the public hosted zone"
+  type        = string
+}
+
 variable "public_hosted_zone_id" {
   description = "ID of the public hosted zone"
   type        = string
