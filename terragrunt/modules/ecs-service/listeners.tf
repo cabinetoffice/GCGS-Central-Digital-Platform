@@ -39,7 +39,7 @@ resource "aws_lb_listener_rule" "this" {
 
   condition {
     host_header {
-      values = ["${var.name}.${var.product.public_hosted_zone}"]
+      values = var.is_frontend_app ? local.tg_host_header_with_alias : local.tg_host_header
     }
   }
 

@@ -64,6 +64,12 @@ variable "host_port" {
   type        = number
 }
 
+variable "is_frontend_app" {
+  description = "Weather it is an API or the Frontend service, to link the domain alias to"
+  type        = bool
+  default     = false
+}
+
 variable "listening_port" {
   description = "Port on which the load balancer is listening for this service"
   type        = number
