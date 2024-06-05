@@ -28,6 +28,16 @@ resource "aws_security_group_rule" "temp_public_access_to_alb_http" {
   type              = "ingress"
 }
 
+resource "aws_security_group_rule" "ecs_service_to_public_https" {
+  description       = "Public access from ${local.name_prefix} service"
+  from_port         = 443
+  protocol          = "TCP"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = var.ecs_sg_id
+  to_port           = 443
+  type              = "egress"
+}
+
 resource "aws_security_group_rule" "postgres_from_ecs_service" {
   description              = "From ECS Service"
   from_port                = 5432
