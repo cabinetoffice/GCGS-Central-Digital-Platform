@@ -30,21 +30,16 @@ ave aws sts get-caller-identity | cat
 - Assume the account bootstrap role.
 - Set the `TG_ENVIRONMENT` environment variable (staging in the following example).
 - Apply Terraform using Terragrunt while the bootstrap role is assumed.
-- When Terragrunt prompts for the creation of the state bucket, allow it to be created.
+- When Terragrunt prompts for the creation of the state bucket, allow it to be created.\
    ![bootstrap-start.png](../docs/images/infra/bootstrap-start.png)
-- Core IAM will create the Terraform role to be used from now on.
+- Core IAM will create the Terraform role to be used from now on.\
    ![bootstrap-output-terraform-role.png](../docs/images/infra/bootstrap-output-terraform-role.png)
 - Assume the Terraform role.
-- Confirm the caller identity.
+- Confirm the caller identity.\
    ![bootstrao-confirm-terraform-caller.png](../docs/images/infra/bootstrao-confirm-terraform-caller.png)
 
 ### Provision rest of the components
 - Navigate to the root directory
-- Build and push images to ECR
-```shell
-make build-docker
-ave make aws-push-to-ecr
-```
 - Create the OneLogin secret `cdp-sirsi-one-login-credentials`, i.e:
 ```shell
 ave aws secretsmanager create-secret --name cdp-sirsi-one-login-credentials --secret-string '{"Authority":"https://stagingoidc.example.com", "ClientId": "staging-client-id", "PrivateKey":"DEV RSA PRIVATE KEY"}'
@@ -52,3 +47,7 @@ ave aws secretsmanager create-secret --name cdp-sirsi-one-login-credentials --se
 - Navigate to the root of components
 - Apply all, while terraform role is assumed
 ![img.png](../docs/images/infra/terragrunt-apply-all.png)
+- Build and push images to ECR
+```shell
+ave make aws-push-to-ecr
+```
