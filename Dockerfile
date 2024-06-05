@@ -46,6 +46,7 @@ COPY --link Services/CO.CDP.Person.WebApi/CO.CDP.Person.WebApi.csproj Services/C
 COPY --link Services/CO.CDP.Person.WebApi.Tests/CO.CDP.Person.WebApi.Tests.csproj Services/CO.CDP.Person.WebApi.Tests/
 COPY --link Services/CO.CDP.Forms.WebApi/CO.CDP.Forms.WebApi.csproj Services/CO.CDP.Forms.WebApi/
 COPY --link Services/CO.CDP.Forms.WebApi.Tests/CO.CDP.Forms.WebApi.Tests.csproj Services/CO.CDP.Forms.WebApi.Tests/
+COPY --link Services/CO.CDP.Organisation.Authority/CO.CDP.Organisation.Authority.csproj Services/CO.CDP.Organisation.Authority/
 COPY --link GCGS-Central-Digital-Platform.sln .
 RUN dotnet restore "GCGS-Central-Digital-Platform.sln"
 
@@ -59,6 +60,11 @@ FROM source AS build
 ARG BUILD_CONFIGURATION
 WORKDIR /src
 RUN dotnet build -c $BUILD_CONFIGURATION
+
+FROM build AS build-authority
+ARG BUILD_CONFIGURATION
+WORKDIR /src/Services/CO.CDP.Organisation.Authority
+RUN dotnet build -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS build-tenant
 ARG BUILD_CONFIGURATION
@@ -89,6 +95,10 @@ FROM build AS build-organisation-app
 ARG BUILD_CONFIGURATION
 WORKDIR /src/Frontend/CO.CDP.OrganisationApp
 RUN dotnet build -c $BUILD_CONFIGURATION -o /app/build
+
+FROM build-authority AS publish-authority
+ARG BUILD_CONFIGURATION
+RUN dotnet publish "CO.CDP.Organisation.Authority.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 FROM build-tenant AS publish-tenant
 ARG BUILD_CONFIGURATION
@@ -125,6 +135,11 @@ ENV MIGRATIONS_CONNECTION_STRING=""
 WORKDIR /app
 COPY --from=build-migrations-organisation-information /app/migrations/efbundle .
 ENTRYPOINT /app/efbundle --connection "$MIGRATIONS_CONNECTION_STRING"
+
+FROM base AS final-authority
+WORKDIR /app
+COPY --from=publish-authority /app/publish .
+ENTRYPOINT ["dotnet", "CO.CDP.Organisation.Authority.dll"]
 
 FROM base AS final-tenant
 WORKDIR /app

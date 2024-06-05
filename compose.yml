@@ -24,6 +24,15 @@ services:
       TenantService: '${TenantService:-http://tenant:8080}'
       OrganisationService: '${OrganisationService:-http://organisation:8080}'
       PersonService: '${PersonService:-http://person:8080}'
+      Organisation__Authority: '${Organisation__Authority:-http://authority:8080}'
+  authority:
+    extends:
+      file: compose.common.yml
+      service: authority
+    depends_on:
+      - db
+    environment:
+      ConnectionStrings__OrganisationInformationDatabase: 'Server=db;Database=cdp;Username=cdp_user;Password=cdp123;'
   tenant:
     extends:
       file: compose.common.yml
@@ -40,6 +49,7 @@ services:
       - db
     environment:
       ConnectionStrings__OrganisationInformationDatabase: 'Server=db;Database=cdp;Username=cdp_user;Password=cdp123;'
+      Organisation__Authority: '${Organisation__Authority:-http://authority:8080}'
   person:
     extends:
       file: compose.common.yml

@@ -60,9 +60,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.TestKit.Mvc.Tests", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.TestKit.Mvc", "TestKit\CO.CDP.TestKit.Mvc\CO.CDP.TestKit.Mvc.csproj", "{A34220C0-CE7E-4966-9175-111EE5D04676}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.Swashbuckle", "Libraries\CO.CDP.Swashbuckle\CO.CDP.Swashbuckle.csproj", "{F84FB143-7483-4BE9-BD4A-8BF10E93E859}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.Swashbuckle", "Libraries\CO.CDP.Swashbuckle\CO.CDP.Swashbuckle.csproj", "{F84FB143-7483-4BE9-BD4A-8BF10E93E859}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.Swashbuckle.Tests", "Libraries\CO.CDP.Swashbuckle.Tests\CO.CDP.Swashbuckle.Tests.csproj", "{9D53B3DD-81C0-4249-8284-5FCDE3151516}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.Swashbuckle.Tests", "Libraries\CO.CDP.Swashbuckle.Tests\CO.CDP.Swashbuckle.Tests.csproj", "{9D53B3DD-81C0-4249-8284-5FCDE3151516}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.OrganisationInformation", "Services\CO.CDP.OrganisationInformation\CO.CDP.OrganisationInformation.csproj", "{A214D6B4-31B5-4AD7-BE76-0FF0ACE9C807}"
 EndProject
@@ -73,6 +73,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.Functional.Tests", "Libraries\CO.CDP.Functional.Tests\CO.CDP.Functional.Tests.csproj", "{0985B40E-808C-4C4C-B99E-4E3056CA9B5E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.Functional", "Libraries\CO.CDP.Functional\CO.CDP.Functional.csproj", "{266E1C53-5C6B-456A-BBB1-1EE60C6F477A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.Organisation.Authority", "Services\CO.CDP.Organisation.Authority\CO.CDP.Organisation.Authority.csproj", "{FF389E99-5EC4-4812-B358-94696CF8F70C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -204,6 +206,10 @@ Global
 		{266E1C53-5C6B-456A-BBB1-1EE60C6F477A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{266E1C53-5C6B-456A-BBB1-1EE60C6F477A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{266E1C53-5C6B-456A-BBB1-1EE60C6F477A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FF389E99-5EC4-4812-B358-94696CF8F70C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FF389E99-5EC4-4812-B358-94696CF8F70C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FF389E99-5EC4-4812-B358-94696CF8F70C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FF389E99-5EC4-4812-B358-94696CF8F70C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
