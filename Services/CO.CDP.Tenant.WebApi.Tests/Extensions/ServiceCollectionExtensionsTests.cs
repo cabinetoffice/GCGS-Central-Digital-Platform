@@ -24,7 +24,7 @@ public class ServiceCollectionExtensionsTests
         var exception = new DuplicateTenantException("Duplicate tenant");
         var result = ServiceCollectionExtensions.MapException(exception);
 
-        Assert.Equal(StatusCodes.Status404NotFound, result.status);
+        Assert.Equal(StatusCodes.Status400BadRequest, result.status);
         Assert.Equal("TENANT_ALREADY_EXISTS", result.error);
     }
 

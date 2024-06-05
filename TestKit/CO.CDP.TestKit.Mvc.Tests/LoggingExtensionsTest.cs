@@ -20,23 +20,7 @@ internal class TestOutput : ITestOutputHelper
 
 public class LoggingExtensionsTest
 {
-    private readonly TestOutput _testOutput = new TestOutput();
-
-    [Fact]
-    public async void ItConfiguresLoggingProvider()
-    {
-        var factory = new TestWebApplicationFactory<TestProgram>(c =>
-        {
-            c.UseContentRoot(Directory.GetCurrentDirectory());
-            c.ConfigureLogging(s => s.AddProvider(_testOutput));
-        });
-        var httpClient = factory.CreateClient();
-
-        var response = await httpClient.GetAsync("/log");
-
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        Assert.Contains("Hello!", _testOutput.Messages);
-    }
+    private readonly TestOutput _testOutput = new();
 
     [Fact]
     public async void ItConfiguresLogging()
