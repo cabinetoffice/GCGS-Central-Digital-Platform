@@ -30,7 +30,7 @@ public static class ServiceCollectionExtensions
             case BadHttpRequestException:
                 return (StatusCodes.Status422UnprocessableEntity, "UNPROCESSABLE_ENTITY");
             case DuplicatePersonException:
-                return (StatusCodes.Status400BadRequest, "PERSON_DOES_NOT_EXIST");
+                return (StatusCodes.Status400BadRequest, "PERSON_ALREADY_EXISTS");
             case ArgumentNullException:
                 return (StatusCodes.Status400BadRequest, "ARGUMENT_NULL");
             case InvalidOperationException:

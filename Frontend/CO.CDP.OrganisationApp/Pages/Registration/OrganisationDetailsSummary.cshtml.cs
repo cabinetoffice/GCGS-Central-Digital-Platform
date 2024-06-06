@@ -24,8 +24,8 @@ public class OrganisationDetailsSummaryModel(
 
     public async Task<IActionResult> OnPost()
     {
-        var organisation = await RegisterOrganisation(UserDetails!, RegistrationDetails);
-        if (organisation == null)
+        var organisation = await RegisterOrganisationAsync(UserDetails!, RegistrationDetails);
+        if (!ModelState.IsValid || organisation == null)
         {
             return Page();
         }
@@ -33,21 +33,23 @@ public class OrganisationDetailsSummaryModel(
         return RedirectToPage("OrganisationOverview", new { organisation.Id });
     }
 
-    private async Task<OrganisationWebApiClient.Organisation?> RegisterOrganisation(UserDetails user, RegistrationDetails details)
+    private async Task<OrganisationWebApiClient.Organisation?> RegisterOrganisationAsync(UserDetails user, RegistrationDetails details)
     {
         var payload = NewOrganisationPayload(user, details);
 
-        if (payload is not null)
+        if (payload == null)
         {
-            try
-            {
-                return await organisationClient.CreateOrganisationAsync(payload);
-            }
-            catch (ApiException<OrganisationWebApiClient.ProblemDetails> aex)
-                when (aex.StatusCode == StatusCodes.Status400BadRequest)
-            {
-                ModelState.AddModelError(string.Empty, ErrorMessagesList.OrganisationCreationFailed);
-            }
+            ModelState.AddModelError(string.Empty, ErrorMessagesList.PayLoadIssueOrNullAurgument);
+            return null;
+        }
+
+        try
+        {
+            return await organisationClient.CreateOrganisationAsync(payload);
+        }
+        catch (ApiException<OrganisationWebApiClient.ProblemDetails> aex)
+        {
+            MapApiExceptions(aex);
         }
 
         return null;
@@ -84,4 +86,30 @@ public class OrganisationDetailsSummaryModel(
             personId: user.PersonId.Value
         );
     }
+
+    private void MapApiExceptions(ApiException<OrganisationWebApiClient.ProblemDetails> aex)
+    {
+        var code = ExtractErrorCode(aex);
+
+        if (!string.IsNullOrEmpty(code))
+        {
+            ModelState.AddModelError(string.Empty, code switch
+            {
+                ErrorCodes.ORGANISATION_ALREADY_EXISTS => ErrorMessagesList.DuplicateOgranisationName,
+                ErrorCodes.ARGUMENT_NULL => ErrorMessagesList.PayLoadIssueOrNullAurgument,
+                ErrorCodes.INVALID_OPERATION => ErrorMessagesList.OrganisationCreationFailed,
+                ErrorCodes.PERSON_DOES_NOT_EXIST => ErrorMessagesList.PersonNotFound,
+                ErrorCodes.UNPROCESSABLE_ENTITY => ErrorMessagesList.UnprocessableEntity,
+                _ => ErrorMessagesList.UnexpectedError
+            });
+        }
+    }
+
+    private static string? ExtractErrorCode(ApiException<OrganisationWebApiClient.ProblemDetails> aex)
+    {
+        return aex.Result.AdditionalProperties.TryGetValue("code", out var code) && code is string codeString
+            ? codeString
+            : null;
+    }
+
 }
