@@ -1,6 +1,7 @@
 locals {
 
     cidr_b_development = 3
+    cidr_b_integration = 4
     cidr_b_production = 1
     cidr_b_staging = 2
 
@@ -36,6 +37,22 @@ locals {
                 "10.${local.cidr_b_staging}.1.0/24",
                 "10.${local.cidr_b_staging}.2.0/24",
                 "10.${local.cidr_b_staging}.3.0/24"
+            ]
+            top_level_domain = "findatender.codatt.net"
+        }
+        integration = {
+            cidr_block             = "10.${local.cidr_b_integration}.0.0/16"
+            name                   = "integration"
+            postgres_instance_type = "db.t4g.micro"
+            private_subnets        = [
+                "10.${local.cidr_b_integration}.101.0/24",
+                "10.${local.cidr_b_integration}.102.0/24",
+                "10.${local.cidr_b_integration}.103.0/24"
+            ]
+            public_subnets = [
+                "10.${local.cidr_b_integration}.1.0/24",
+                "10.${local.cidr_b_integration}.2.0/24",
+                "10.${local.cidr_b_integration}.3.0/24"
             ]
             top_level_domain = "findatender.codatt.net"
         }
