@@ -25,6 +25,16 @@ public class OrganisationInformationContext(DbContextOptions<OrganisationInforma
                 a.Property(ai => ai.Uri);
             });
 
+            entity.OwnsOne(e => e.SupplierInfo, a =>
+            {
+                a.HasKey(e => e.Id);                
+            });
+
+            entity.OwnsOne(e => e.BuyerInfo, a =>
+            {
+                a.HasKey(e => e.Id);
+            });
+
             entity.HasMany(p => p.Persons)
                 .WithMany(t => t.Organisations)
                 .UsingEntity<OrganisationPerson>();
