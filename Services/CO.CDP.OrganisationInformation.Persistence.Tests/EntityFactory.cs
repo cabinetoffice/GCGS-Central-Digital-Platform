@@ -80,7 +80,7 @@ public static class EntityFactory
         {
             Guid = theGuid,
             Name = theName,
-            Tenant = tenant ?? GivenTenant(),
+            Tenant = tenant ?? GivenTenant(name: theName),
             Identifiers = [new OrganisationIdentifier
             {
                 Primary = true,
