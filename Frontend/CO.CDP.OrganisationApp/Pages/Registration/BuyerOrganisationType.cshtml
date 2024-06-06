@@ -4,11 +4,16 @@
 
 @{
     var organisationTypeHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.BuyerOrganisationType)).HasInnerHtml;
-    var otherHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.OtherValue)).HasInnerHtml;
+    //var otherHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.OtherValue)).HasInnerHtml;
 
-    var backLink = RegistrationStepModel.OrganisationAddressPage;
+    var backLink = RegistrationStepModel.OrganisationAddressPage;    
+    if (Request.Query.ContainsKey("frm-summary"))
+    {
+        backLink = RegistrationStepModel.OrganisationSummaryPage;
+        Model.RedirectToSummary = true;
+    }
 
-    string IsSelected(string radioValue)
+    string IsSelected(string? radioValue)
     {
         return Model.BuyerOrganisationType == radioValue ? "checked='checked'" : string.Empty;
     }
@@ -45,10 +50,10 @@
                         <div class="govuk-radios" data-module="govuk-radios">
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input" id="ca-type" name="BuyerOrganisationType"
-                                       type="radio" value="type1"
-                                       aria-describedby="ca-type-item-hint" @IsSelected("type1")>
+                                       type="radio" value="CentralGovernment"
+                                       aria-describedby="ca-type-item-hint" @IsSelected("CentralGovernment")>
                                 <label class="govuk-label govuk-radios__label" for="ca-type">
-                                    Central government, public authority: UK, Scottish, Welsh and Northern Irish Executive
+                                    @BuyerOrganisationTypeModel.BuyerTypeDescription("CentralGovernment")
                                 </label>
                                 <div id="ca-type-item-hint" class="govuk-hint govuk-radios__hint">
                                     Includes arm's-length bodies:
@@ -63,10 +68,10 @@
 
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input" id="ca-type-2" name="BuyerOrganisationType"
-                                       type="radio" value="type2"
-                                       aria-describedby="ca-type-2-item-hint" @IsSelected("type2")>
+                                       type="radio" value="RegionalAndLocalGovernment"
+                                       aria-describedby="ca-type-2-item-hint" @IsSelected("RegionalAndLocalGovernment")>
                                 <label class="govuk-label govuk-radios__label" for="ca-type-2">
-                                    Regional and local government, public authority: UK, Scottish, Welsh and Northern Irish
+                                    @BuyerOrganisationTypeModel.BuyerTypeDescription("RegionalAndLocalGovernment")
                                 </label>
                                 <div id="ca-type-2-item-hint" class="govuk-hint govuk-radios__hint">
                                     Includes:
@@ -83,9 +88,9 @@
 
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input" id="ca-type-3" name="BuyerOrganisationType"
-                                       type="radio" value="type3" aria-describedby="ca-type-3-item-hint" @IsSelected("type3")>
+                                       type="radio" value="PublicUndertaking" aria-describedby="ca-type-3-item-hint" @IsSelected("PublicUndertaking")>
                                 <label class="govuk-label govuk-radios__label" for="ca-type-3">
-                                    Public undertaking
+                                    @BuyerOrganisationTypeModel.BuyerTypeDescription("PublicUndertaking")
                                 </label>
                                 <div id="ca-type-3-item-hint" class="govuk-hint govuk-radios__hint">
                                     Unlike a public authority, organisations that operate commercially and provide utility activities to the public. For example, Transport for Wales.
@@ -93,9 +98,9 @@
                             </div>
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input" id="ca-type-4" name="BuyerOrganisationType"
-                                       type="radio" value="type4" aria-describedby="ca-type-4-item-hint" @IsSelected("type4")>
+                                       type="radio" value="PrivateUtility" aria-describedby="ca-type-4-item-hint" @IsSelected("PrivateUtility")>
                                 <label class="govuk-label govuk-radios__label" for="ca-type-4">
-                                    Private utility
+                                    @BuyerOrganisationTypeModel.BuyerTypeDescription("PrivateUtility")
                                 </label>
                                 <div id="ca-type-4-item-hint" class="govuk-hint govuk-radios__hint">
                                     For example, private companies that have been granted a special or exclusive right to provide utility activities to the public. Such as National Grid or British Gas.
@@ -103,27 +108,27 @@
                             </div>
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input" id="ca-type-5" name="BuyerOrganisationType"
-                                       type="radio" value="type5" data-aria-controls="conditional-ca-type-5" @IsSelected("type5")>
+                                       type="radio" value="Other" data-aria-controls="conditional-ca-type-5" @IsSelected(Model.BuyerOrganisationType)>
                                 <label class="govuk-label govuk-radios__label" for="ca-type-5">
-                                    Other
+                                    @BuyerOrganisationTypeModel.BuyerTypeDescription("Other")
                                 </label>
                             </div>
 
                             <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-ca-type-5">
-                                <div class="govuk-form-group @(otherHasError ? "govuk-form-group--error" : "")">
+                                <div class="govuk-form-group @(organisationTypeHasError ? "govuk-form-group--error" : "")">
                                     <label class="govuk-label" for="other-buyer-type">
                                         Enter type
                                     </label>
-                                    @Html.ValidationMessageFor(m => m.OtherValue, "", new { @class = "govuk-error-message", @id = "other-buyer-type-error" })
+                                    @Html.ValidationMessageFor(m => m.BuyerOrganisationType, "", new { @class = "govuk-error-message", @id = "other-buyer-type-error" })
 
                                     <div id="ca-type-5-item-hint" class="govuk-hint">
                                         For example, the establishment of a utilities dynamic market by a non-contracting authority.
                                     </div>
 
-                                    @Html.TextBoxFor(m => m.OtherValue, new
+                                    @Html.TextBoxFor(m => m.BuyerOrganisationType, new
                                         {
-                                            @class = "govuk-input " + (otherHasError ? "govuk-input--error" : ""),
-                                            @id = "OtherValue",
+                                            @class = "govuk-input " + (organisationTypeHasError ? "govuk-input--error" : ""),
+                                            @id = "BuyerOrganisationType",
                                             @type = "text",
                                             spellcheck = "false",
                                             autocomplete = "off"
@@ -133,11 +138,9 @@
                         </div>
                     </fieldset>
                 </div>
-                <a href="/registration/buyer-devolved-regulations">
-                    <button type="submit" class="govuk-button" data-module="govuk-button">
-                        Continue
-                    </button>
-                </a>
+                <button type="submit" class="govuk-button" data-module="govuk-button">
+                    Continue
+                </button>
             </form>
         </div>
     </div>

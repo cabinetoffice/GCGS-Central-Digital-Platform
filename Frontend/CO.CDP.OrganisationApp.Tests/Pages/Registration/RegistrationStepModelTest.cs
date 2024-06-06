@@ -41,11 +41,11 @@ public class RegistrationStepModelTest
     [InlineData(RegistrationStepModel.BuyerDevolvedRegulationPage, OrganisationType.Buyer, "Test", "Test Org", "test@example.com", "add 1", "city", "post code", "UK", "type-1")]
     [InlineData(RegistrationStepModel.BuyerSelectDevolvedRegulationPage, OrganisationType.Buyer, "Test", "Test Org", "test@example.com", "add 1", "city", "post code", "UK", "type-1", true)]
     [InlineData(RegistrationStepModel.OrganisationSummaryPage, OrganisationType.Buyer, "Test", "Test Org", "test@example.com", "add 1", "city", "post code", "UK", "type-1", false)]
-    [InlineData(RegistrationStepModel.OrganisationSummaryPage, OrganisationType.Buyer, "Test", "Test Org", "test@example.com", "add 1", "city", "post code", "UK", "type-1", true, new[] { "test-regulation" })]
+    [InlineData(RegistrationStepModel.OrganisationSummaryPage, OrganisationType.Buyer, "Test", "Test Org", "test@example.com", "add 1", "city", "post code", "UK", "type-1", true, new[] { DevolvedRegulation.NorthernIreland })]
     public void ValidateStep_ShouldValidateType(string page, OrganisationType? organisationType = null, string? organisationScheme = null,
         string? organisationName = null, string? organisationEmail = null, string? addressLine1 = null, string? city = null,
         string? postcode = null, string? country = null,
-        string? buyerOrganisationType = null, bool? devolved = null, IEnumerable<string>? regulations = null)
+        string? buyerOrganisationType = null, bool? devolved = null, IEnumerable<DevolvedRegulation>? regulations = null)
     {
         SetupRegistrationDetails(new RegistrationDetails
         {
@@ -86,7 +86,7 @@ public class RegistrationStepModelTest
     public void ValidateStep_ShouldRedirectToExpectedPage(string currentPage, string expectedRedirectPage, OrganisationType? organisationType = null,
         string? organisationScheme = null, string? organisationName = null, string? organisationEmail = null, string? addressLine1 = null,
         string? city = null, string? postcode = null, string? country = null,
-        string? buyerOrganisationType = null, bool? devolved = null, IEnumerable<string>? regulations = null)
+        string? buyerOrganisationType = null, bool? devolved = null, IEnumerable<DevolvedRegulation>? regulations = null)
     {
         SetupRegistrationDetails(new RegistrationDetails
         {

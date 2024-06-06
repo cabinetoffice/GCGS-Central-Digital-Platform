@@ -17,6 +17,9 @@ public class BuyerDevolvedRegulationModel(ISession session) : RegistrationStepMo
     [Required(ErrorMessage = "Select the do devolved regulations apply to your organisation?")]
     public bool? Devolved { get; set; }
 
+    [BindProperty]
+    public bool? RedirectToSummary { get; set; }
+
     public IActionResult OnGet()
     {
         Devolved = RegistrationDetails.Devolved;
@@ -42,7 +45,7 @@ public class BuyerDevolvedRegulationModel(ISession session) : RegistrationStepMo
         {
             RegistrationDetails.Regulations = [];
             session.Set(Session.RegistrationDetailsKey, RegistrationDetails);
-            return RedirectToPage("/OrganisationSelection");
+            return RedirectToPage("OrganisationDetailsSummary");
         }
     }
 }

@@ -11,6 +11,7 @@
     var backLink = RegistrationStepModel.OrganisationEmailPage;
     if (Request.Query.ContainsKey("frm-summary"))
     {
+        Model.RedirectToSummary = true;
         backLink = RegistrationStepModel.OrganisationSummaryPage;
     }
 }

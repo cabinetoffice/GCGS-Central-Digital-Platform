@@ -3,13 +3,28 @@
 @using CO.CDP.OrganisationApp.Constants
 @model CO.CDP.OrganisationApp.Pages.Registration.OrganisationDetailsSummaryModel
 
-<a href="/registration/organisation-registered-address" class="govuk-back-link">
+@{
+    var details = Model.RegistrationDetails!;
+
+    var backLink = RegistrationStepModel.OrganisationAddressPage;
+
+    if (details.OrganisationType == OrganisationType.Buyer)
+    {
+        if (details.Devolved == true)
+        {
+            backLink = RegistrationStepModel.BuyerSelectDevolvedRegulationPage;
+        }
+        else
+        {
+            backLink = RegistrationStepModel.BuyerDevolvedRegulationPage;
+        }        
+    }
+}
+
+
+<a href="@backLink" class="govuk-back-link">
     Back
 </a>
-
-@{
-    var details = Model.RegistrationDetails;
-}
 
 <main class="govuk-main-wrapper">
     <div class="govuk-grid-row">
@@ -37,24 +52,19 @@
 
                     <h2 class="govuk-heading-m">Organisation details</h2>
                 </legend>
+
                 <dl class="govuk-summary-list">
                     <div class="govuk-summary-list__row">
                         <dt class="govuk-summary-list__key">
-                            Organisation name
+                            Organisation identifier
                         </dt>
                         <dd class="govuk-summary-list__value">
-                            @details?.OrganisationName
-                        </dd>
-                        <dd class="govuk-summary-list__actions">
-                            <a class="govuk-link" href="/registration/organisation-name?frm-summary">Change<span class="govuk-visually-hidden"> organisation name</span></a>
-                        </dd>
-                    </div>
-                    <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">
-                            Organisation type
-                        </dt>
-                        <dd class="govuk-summary-list__value">
-                            @details?.OrganisationScheme.SchemeDescription()
+                            @details.OrganisationScheme.SchemeDescription()
+                            @if (details.OrganisationScheme != "Other")
+                            {
+                                <br />
+                                @details.OrganisationIdentificationNumber
+                            }
                         </dd>
                         <dd class="govuk-summary-list__actions">
                             <a class="govuk-link" href="/registration/has-companies-house-number?frm-summary">
@@ -62,28 +72,23 @@
                             </a>
                         </dd>
                     </div>
-                    @if (details?.OrganisationScheme != "Other")
-                    {
-                        <div class="govuk-summary-list__row">
-                            <dt class="govuk-summary-list__key">
-                                Organisation number
-                            </dt>
-                            <dd class="govuk-summary-list__value">
-                                @details?.OrganisationIdentificationNumber
-                            </dd>
-                            <dd class="govuk-summary-list__actions">
-                                <a class="govuk-link" href="/registration/has-companies-house-number?frm-summary">
-                                    Change<span class="govuk-visually-hidden"> organisation identification number</span>
-                                </a>
-                            </dd>
-                        </div>
-                    }
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            Organisation name
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            @details.OrganisationName
+                        </dd>
+                        <dd class="govuk-summary-list__actions">
+                            <a class="govuk-link" href="/registration/organisation-name?frm-summary">Change<span class="govuk-visually-hidden"> organisation name</span></a>
+                        </dd>
+                    </div>
                     <div class="govuk-summary-list__row">
                         <dt class="govuk-summary-list__key">
                             Organisation Email address
                         </dt>
                         <dd class="govuk-summary-list__value">
-                            @details?.OrganisationEmailAddress
+                            @details.OrganisationEmailAddress
                         </dd>
                         <dd class="govuk-summary-list__actions">
                             <a class="govuk-link" href="/registration/organisation-email?frm-summary">Change<span class="govuk-visually-hidden"> email address</span></a>
@@ -95,26 +100,67 @@
                             Organisation address
                         </dt>
                         <dd class="govuk-summary-list__value">
-                            <p class="govuk-body">@details?.OrganisationAddressLine1</p>
-                            @if (!string.IsNullOrWhiteSpace(details?.OrganisationAddressLine2))
+                            <p class="govuk-body">@details.OrganisationAddressLine1</p>
+                            @if (!string.IsNullOrWhiteSpace(details.OrganisationAddressLine2))
                             {
-                                <p class="govuk-body">@details?.OrganisationAddressLine2</p>
+                                <p class="govuk-body">@details.OrganisationAddressLine2</p>
                             }
-                            <p class="govuk-body">@details?.OrganisationCityOrTown</p>
-                            @if (!string.IsNullOrWhiteSpace(details?.OrganisationRegion))
+                            <p class="govuk-body">@details.OrganisationCityOrTown</p>
+                            @if (!string.IsNullOrWhiteSpace(details.OrganisationRegion))
                             {
-                                <p class="govuk-body">@details?.OrganisationRegion</p>
+                                <p class="govuk-body">@details.OrganisationRegion</p>
                             }
-                            <p class="govuk-body">@details?.OrganisationPostcode</p>
-                            <p class="govuk-body">@details?.OrganisationCountry</p>
+                            <p class="govuk-body">@details.OrganisationPostcode</p>
+                            <p class="govuk-body">@details.OrganisationCountry</p>
                         </dd>
                         <dd class="govuk-summary-list__actions">
                             <a class="govuk-link"
-                               href="/registration/@(details?.OrganisationCountry == "United Kingdom" ? "organisation-registered-address" : "organisation-non-uk-address")?frm-summary">
+                               href="/registration/@(details.OrganisationCountry == "United Kingdom" ? "organisation-registered-address" : "organisation-non-uk-address")?frm-summary">
                                 Change<span class="govuk-visually-hidden"> organisation address</span>
                             </a>
                         </dd>
                     </div>
+                    @if (details.OrganisationType == OrganisationType.Buyer)
+                    {
+
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">
+                                Organisation type
+                            </dt>
+                            <dd class="govuk-summary-list__value">
+                                @BuyerOrganisationTypeModel.BuyerTypeDescription(details.BuyerOrganisationType ?? "")                                
+                            </dd>
+                            <dd class="govuk-summary-list__actions">
+                                <a class="govuk-link govuk-link--no-visited-state" href="@RegistrationStepModel.BuyerOrganisationTypePage?frm-summary">Change<span class="govuk-visually-hidden"> organisation type</span></a>
+                            </dd>
+                        </div>
+
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">
+                                Do devolved regulations apply to the organisation?
+                            </dt>
+                            <dd class="govuk-summary-list__value">
+                                @(details.Devolved == true ? "Yes" : "No")
+                            </dd>
+                            <dd class="govuk-summary-list__actions">
+                                <a class="govuk-link govuk-link--no-visited-state" href="@RegistrationStepModel.BuyerDevolvedRegulationPage?frm-summary">Change<span class="govuk-visually-hidden"> do devolved regulations apply to the organisation?</span></a>
+                            </dd>
+                        </div>
+                        @if (details.Devolved == true)
+                        {
+                            <div class="govuk-summary-list__row">
+                                <dt class="govuk-summary-list__key">
+                                    Which devolved regulations apply to the organisation?
+                                </dt>
+                                <dd class="govuk-summary-list__value">                                    
+                                     @Html.Raw(string.Join("<br /> ", details.Regulations.Select(x => x.Description())))
+                                </dd>
+                                <dd class="govuk-summary-list__actions">
+                                    <a class="govuk-link govuk-link--no-visited-state" href="@RegistrationStepModel.BuyerSelectDevolvedRegulationPage?frm-summary">Change<span class="govuk-visually-hidden"> which devolved regulations apply to the organisation?</span></a>
+                                </dd>
+                            </div>
+                        }
+                    }
                 </dl>
             </fieldset>
             <form method="post">

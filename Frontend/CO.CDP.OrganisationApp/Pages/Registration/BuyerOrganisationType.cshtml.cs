@@ -1,4 +1,5 @@
 using CO.CDP.Mvc.Validation;
+using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -19,15 +20,18 @@ public class BuyerOrganisationTypeModel(ISession session) : RegistrationStepMode
     [Required(ErrorMessage = "Select the organisation type")]
     public string? BuyerOrganisationType { get; set; }
 
+    //[BindProperty]
+    //[DisplayName("Enter type")]
+    //[RequiredIf("BuyerOrganisationType", "Other")]
+    //public string? OtherValue { get; set; }
+
     [BindProperty]
-    [DisplayName("Enter type")]
-    [RequiredIf("BuyerOrganisationType", "type5")]
-    public string? OtherValue { get; set; }
+    public bool? RedirectToSummary { get; set; }
 
     public IActionResult OnGet()
     {
         BuyerOrganisationType = RegistrationDetails.BuyerOrganisationType;
-        OtherValue = RegistrationDetails.BuyerOrganisationOtherValue;
+        //OtherValue = RegistrationDetails.BuyerOrganisationOtherValue;
         return Page();
     }
 
@@ -39,10 +43,32 @@ public class BuyerOrganisationTypeModel(ISession session) : RegistrationStepMode
         }
 
         RegistrationDetails.BuyerOrganisationType = BuyerOrganisationType;
-        RegistrationDetails.BuyerOrganisationOtherValue = (BuyerOrganisationType == "type5" ? OtherValue : "");
+
+        //RegistrationDetails.BuyerOrganisationType = (BuyerOrganisationType == "Other" ? OtherValue : BuyerOrganisationType);
+        //RegistrationDetails.BuyerOrganisationOtherValue = (BuyerOrganisationType == "Other" ? OtherValue : "");
         session.Set(Session.RegistrationDetailsKey, RegistrationDetails);
 
-        return RedirectToPage("BuyerDevolvedRegulation");
+        if (RedirectToSummary == true)
+        {
+            return RedirectToPage("OrganisationDetailsSummary");
+        }
+        else
+        {
+            return RedirectToPage("BuyerDevolvedRegulation");
+        }
 
+    }
+
+    public static string BuyerTypeDescription(string buyerType)
+    {
+        return buyerType switch
+        {
+            "CentralGovernment" => "Central government, public authority: UK, Scottish, Welsh and Northern Irish Executive",
+            "RegionalAndLocalGovernment" => "Regional and local government, public authority: UK, Scottish, Welsh and Northern Irish",
+            "PublicUndertaking" => "Public undertaking",
+            "PrivateUtility" => "Private utility",
+            "Other" => "Other",
+            _ => throw new NotImplementedException(),
+        };
     }
 }

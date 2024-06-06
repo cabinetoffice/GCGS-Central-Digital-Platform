@@ -23,4 +23,6 @@ public record Organisation
 
     /// <example>["Supplier"]</example>
     public required List<PartyRole> Roles { get; init; }
+    //public string? BuyerType { get; set; }
+    //public List<DevolvedRegulation> DevolvedRegulations { get; set; } = [];
 }

@@ -87,7 +87,7 @@ public class BuyerDevolvedRegulationTest
     }
 
     [Fact]
-    public void OnPost_WhenValidModelWithNo_ShouldRedirectToOrganisationSelectionPage()
+    public void OnPost_WhenValidModelWithNo_ShouldRedirectToOrganisationDetailsSummaryPage()
     {
         var model = GivenBuyerDevolvedRegulationModel();
         model.Devolved = false;
@@ -98,7 +98,7 @@ public class BuyerDevolvedRegulationTest
         var actionResult = model.OnPost();
 
         actionResult.Should().BeOfType<RedirectToPageResult>()
-            .Which.PageName.Should().Be("/OrganisationSelection");
+            .Which.PageName.Should().Be("OrganisationDetailsSummary");
     }
 
     private BuyerDevolvedRegulationModel GivenBuyerDevolvedRegulationModel()
