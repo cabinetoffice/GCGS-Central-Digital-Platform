@@ -2,6 +2,9 @@
 
 This code base is responsible for provisioning the AWS infrastructure needed to support the CDP SIRSI application.
 
+## Table of Contents
+1. [Bootstrap a new account](#bootstrap-a-new-account)
+2. [Update OneLogin secrets](#update-onelogin-secrets)
 
 ## Bootstrap a new account
 
@@ -47,7 +50,32 @@ ave aws secretsmanager create-secret --name cdp-sirsi-one-login-credentials --se
 - Navigate to the root of components
 - Apply all, while terraform role is assumed
 ![img.png](../docs/images/infra/terragrunt-apply-all.png)
+
 - Build and push images to ECR
 ```shell
 ave make aws-push-to-ecr
 ```
+
+
+---
+
+## Update OneLogin secrets
+
+1. Create a JSON file in the `./secrets` folder with the following attributes, e.g., **onelogin-secrets-development.json**:
+
+```json
+{
+  "Authority":"https://xxxxx",
+  "ClientId": "xxxxx",
+  "PrivateKey":"-----BEGIN RSA PRIVATE KEY-----\nxxxx\nxxxx==\n-----END RSA PRIVATE KEY-----%"
+}
+```
+Note: The `./secrets` folder is set to ignore all files to ensure no sensitive information is committed.
+
+2. Assume the appropriate role for the target environment and update the secret:
+
+```shell
+# ave is alias for `aws-vault exec` command
+ave aws secretsmanager put-secret-value --secret-id cdp-sirsi-one-login-credentials --secret-string file://secrets/onelogin-secrets-development.json 
+```
+3. Redeploy the organisation-app service.
