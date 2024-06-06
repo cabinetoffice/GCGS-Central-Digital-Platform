@@ -38,14 +38,33 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql) : 
     {
         using var repository = OrganisationRepository();
 
-        var organisation1 = GivenOrganisation(guid: Guid.NewGuid(), name: "TheOrganisation");
-        var organisation2 = GivenOrganisation(guid: Guid.NewGuid(), name: "TheOrganisation");
+        var organisation1 =
+            GivenOrganisation(guid: Guid.NewGuid(), name: "TheOrganisation", tenant: GivenTenant(name: "T1"));
+        var organisation2 =
+            GivenOrganisation(guid: Guid.NewGuid(), name: "TheOrganisation", tenant: GivenTenant(name: "T2"));
 
         repository.Save(organisation1);
 
         repository.Invoking(r => r.Save(organisation2))
             .Should().Throw<IOrganisationRepository.OrganisationRepositoryException.DuplicateOrganisationException>()
             .WithMessage($"Organisation with name `TheOrganisation` already exists.");
+    }
+
+    [Fact]
+    public void ItRejectsTwoOrganisationsWithTheSameNameWhenCreatingTenant()
+    {
+        using var repository = OrganisationRepository();
+
+        var organisation1 =
+            GivenOrganisation(guid: Guid.NewGuid(), name: "Acme LTD", tenant: GivenTenant(name: "Acme LTD"));
+        var organisation2 =
+            GivenOrganisation(guid: Guid.NewGuid(), name: "Acme LTD", tenant: GivenTenant(name: "Acme LTD"));
+
+        repository.Save(organisation1);
+
+        repository.Invoking(r => r.Save(organisation2))
+            .Should().Throw<IOrganisationRepository.OrganisationRepositoryException.DuplicateOrganisationException>()
+            .WithMessage($"Organisation with name `Acme LTD` already exists.");
     }
 
     [Fact]
