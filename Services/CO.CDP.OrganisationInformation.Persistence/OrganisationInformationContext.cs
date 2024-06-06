@@ -27,22 +27,19 @@ public class OrganisationInformationContext(DbContextOptions<OrganisationInforma
 
             entity.OwnsOne(e => e.SupplierInfo, a =>
             {
-                a.HasKey(e => e.Id);                
+                a.ToTable("SupplierInformation");
+                a.OwnsMany(x => x.Qualifications, y => { y.HasKey(z => z.Id); y.ToTable("Qualification"); });
+                a.OwnsMany(x => x.TradeAssurances, y => { y.HasKey(z => z.Id); y.ToTable("TradeAssurance"); });
+                a.OwnsOne(x => x.LegalForm, y => { y.ToTable("LegalForm"); });
             });
 
-            entity.OwnsOne(e => e.BuyerInfo, a =>
-            {
-                a.HasKey(e => e.Id);
-            });
+            entity.OwnsOne(e => e.BuyerInfo, a => { a.ToTable("BuyerInformation"); });
 
             entity.HasMany(p => p.Persons)
                 .WithMany(t => t.Organisations)
                 .UsingEntity<OrganisationPerson>();
 
-            entity.OwnsMany(e => e.Addresses, a =>
-            {
-                a.HasKey(e => e.Id);
-            });
+            entity.OwnsMany(e => e.Addresses, a => { a.HasKey(e => e.Id); });
         });
 
         modelBuilder.Entity<Person>()

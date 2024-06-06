@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CO.CDP.OrganisationInformation.Persistence;
@@ -17,10 +16,10 @@ public class Organisation : IEntityDate
     public required OrganisationContactPoint ContactPoint { get; set; }
     public List<PartyRole> Roles { get; set; } = [];
     public List<Person> Persons { get; } = [];
-    public DateTimeOffset CreatedOn { get; set; }
-    public DateTimeOffset UpdatedOn { get; set; }
     public SupplierInformation? SupplierInfo { get; set; }
     public BuyerInformation? BuyerInfo { get; set; }
+    public DateTimeOffset CreatedOn { get; set; }
+    public DateTimeOffset UpdatedOn { get; set; }
 
     [Owned]
     public record OrganisationIdentifier
@@ -53,7 +52,6 @@ public class Organisation : IEntityDate
     [Owned]
     public record SupplierInformation
     {
-        public int Id { get; set; }
         public required SupplierType SupplierType { get; set; }
         public ICollection<OperationType> OperationTypes { get; set; } = [];
         public bool? CompletedRegAddress { get; set; }
@@ -73,18 +71,14 @@ public class Organisation : IEntityDate
     [Owned]
     public record BuyerInformation
     {
-        public int Id { get; set; }
-        //public required int OrganisationId { get; set; }        
-        public string? BuyerType { get; set; }
+        public required string BuyerType { get; set; }
         public ICollection<DevolvedRegulation> DevolvedRegulations { get; set; } = [];
-
     }
 
     [Owned]
     public record Qualification
     {
         public int Id { get; set; }
-        //public required int SupplierInfoId { get; set; }
         public string? AwardedByPersonOrBodyName { get; set; }
         public DateTimeOffset DateAwarded { get; set; }
         public string? Name { get; set; }
@@ -94,7 +88,6 @@ public class Organisation : IEntityDate
     public record TradeAssurance
     {
         public int Id { get; set; }
-        //public required int SupplierInfoId { get; set; }
         public string? AwardedByPersonOrBodyName { get; set; }
         public string? ReferenceNumber { get; set; }
         public DateTimeOffset DateAwarded { get; set; }
@@ -103,8 +96,6 @@ public class Organisation : IEntityDate
     [Owned]
     public record LegalForm
     {
-        public int Id { get; set; }
-        //public required int SupplierInfoId { get; set; }
         public required string RegisteredUnderAct2006 { get; set; }
         public required string RegisteredLegalForm { get; set; }
         public required string LawRegistered { get; set; }
