@@ -51,8 +51,7 @@ builder.Services
         new AuthorizationPolicyBuilder()
             .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
             .RequireAuthenticatedUser()
-            .Build()
-    );
+            .Build());
 
 var app = builder.Build();
 
@@ -70,7 +69,7 @@ else
 
 app.UseStatusCodePages();
 
-app.MapHealthChecks("/health");
+app.MapHealthChecks("/health").AllowAnonymous();
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();

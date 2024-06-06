@@ -1,5 +1,4 @@
 using IdentityModel;
-using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -98,7 +97,7 @@ public static class EndpointExtensions
 
             var jsonToken = (JwtSecurityToken)tokenHandler.ReadToken(token);
 
-            var key = oneLoginConfiguration.SigningKeys.FirstOrDefault(sk => sk.IsSupportedAlgorithm(jsonToken.SignatureAlgorithm))
+            var issuerSigningPublicKey = oneLoginConfiguration.SigningKeys.FirstOrDefault(sk => sk.IsSupportedAlgorithm(jsonToken.SignatureAlgorithm))
                             ?? throw new Exception($"Missing {jsonToken.SignatureAlgorithm} auth signing security key.");
 
             var parameters = new TokenValidationParameters
@@ -108,7 +107,7 @@ public static class EndpointExtensions
                 ValidateAudience = false,
                 ValidateLifetime = true,
                 ValidateIssuerSigningKey = true,
-                IssuerSigningKey = key
+                IssuerSigningKey = issuerSigningPublicKey
             };
 
             tokenHandler.ValidateToken(token, parameters, out SecurityToken validatedToken);
