@@ -1,19 +1,19 @@
 using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
 using CO.CDP.Person.WebApiClient;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace CO.CDP.OrganisationApp.Pages;
 
-[Authorize]
+[AuthorisedSession]
 public class YourDetailsModel(
     ISession session,
-    IPersonClient personClient) : PageModel
+    IPersonClient personClient) : LoggedInUserAwareModel
 {
+    public override ISession SessionContext => session;
+
     [BindProperty]
     [DisplayName("First name")]
     [Required(ErrorMessage = "Enter your first name")]
@@ -28,14 +28,13 @@ public class YourDetailsModel(
 
     public IActionResult OnGet()
     {
-        var details = session.Get<UserDetails>(Session.UserDetailsKey);
-        if (details == null)
+        if (UserDetails.PersonId.HasValue)
         {
-            return Redirect("/one-login/user-info");
+            return RedirectToPage("OrganisationSelection");
         }
 
-        FirstName = details.FirstName;
-        LastName = details.LastName;
+        FirstName = UserDetails.FirstName;
+        LastName = UserDetails.LastName;
 
         return Page();
     }
@@ -47,21 +46,15 @@ public class YourDetailsModel(
             return Page();
         }
 
-        var details = session.Get<UserDetails>(Session.UserDetailsKey);
-        if (details == null)
-        {
-            return Redirect("/one-login/user-info");
-        }
-
-        var person = await RegisterPerson(details);
+        var person = await RegisterPerson(UserDetails);
 
         if (person != null)
         {
-            details.PersonId = person.Id;
-            details.FirstName = FirstName;
-            details.LastName = LastName;
+            UserDetails.PersonId = person.Id;
+            UserDetails.FirstName = FirstName;
+            UserDetails.LastName = LastName;
 
-            session.Set(Session.UserDetailsKey, details);
+            session.Set(Session.UserDetailsKey, UserDetails);
         }
         else
         {

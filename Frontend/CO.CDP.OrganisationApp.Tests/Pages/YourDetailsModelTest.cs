@@ -84,8 +84,6 @@ public class YourDetailsModelTest
     [Fact]
     public void OnGet_WhenUserDetailsInSession_ShouldPopulatePageModel()
     {
-        var model = GivenYourDetailsModel();
-
         sessionMock.Setup(s => s.Get<UserDetails>(Session.UserDetailsKey))
             .Returns(new UserDetails
             {
@@ -93,6 +91,7 @@ public class YourDetailsModelTest
                 FirstName = "firstdummy",
                 LastName = "lastdummy"
             });
+        var model = GivenYourDetailsModel();
 
         model.OnGet();
 
@@ -103,8 +102,6 @@ public class YourDetailsModelTest
     [Fact]
     public void OnGet_ValidSession_ReturnsUserDetails()
     {
-        var model = GivenYourDetailsModel();
-
         var userDetails = new UserDetails
         {
             UserUrn = "urn:fdc:gov.uk:2022:3771d941a5774a8e8058972661fd4f7c",
@@ -114,6 +111,7 @@ public class YourDetailsModelTest
         };
 
         sessionMock.Setup(s => s.Get<UserDetails>(Session.UserDetailsKey)).Returns(userDetails);
+        var model = GivenYourDetailsModel();
 
         model.OnGet();
 
