@@ -13,7 +13,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CO.CDP.OrganisationInformation.Persistence.Migrations
 {
     [DbContext(typeof(OrganisationInformationContext))]
-    [Migration("20240606163539_BuyerSupplierInfo")]
+    [Migration("20240606165519_BuyerSupplierInfo")]
     partial class BuyerSupplierInfo
     {
         /// <inheritdoc />
@@ -272,7 +272,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                                 .HasColumnType("timestamp with time zone")
                                 .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
-                            b1.Property<int[]>("DevolvedRegulations")
+                            b1.Property<List<int>>("DevolvedRegulations")
                                 .IsRequired()
                                 .HasColumnType("integer[]");
 

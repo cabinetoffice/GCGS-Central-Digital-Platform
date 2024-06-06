@@ -55,7 +55,7 @@ public class Organisation : IEntityDate
     public record SupplierInformation : IEntityDate
     {
         public required SupplierType SupplierType { get; set; }
-        public ICollection<OperationType> OperationTypes { get; set; } = [];
+        public List<OperationType> OperationTypes { get; set; } = [];
         public bool? CompletedRegAddress { get; set; }
         public bool? CompletedPostalAddress { get; set; }
         public bool? CompletedVat { get; set; }
@@ -65,8 +65,8 @@ public class Organisation : IEntityDate
         public bool? CompletedTradeAssurance { get; set; }
         public bool? CompletedOrganisationType { get; set; }
         public bool? CompletedLegalForm { get; set; }
-        public ICollection<Qualification> Qualifications { get; set; } = [];
-        public ICollection<TradeAssurance> TradeAssurances { get; set; } = [];
+        public List<Qualification> Qualifications { get; set; } = [];
+        public List<TradeAssurance> TradeAssurances { get; set; } = [];
         public LegalForm? LegalForm { get; set; }
         public DateTimeOffset CreatedOn { get; set; }
         public DateTimeOffset UpdatedOn { get; set; }
@@ -76,7 +76,7 @@ public class Organisation : IEntityDate
     public record BuyerInformation : IEntityDate
     {
         public required string BuyerType { get; set; }
-        public ICollection<DevolvedRegulation> DevolvedRegulations { get; set; } = [];
+        public List<DevolvedRegulation> DevolvedRegulations { get; set; } = [];
         public DateTimeOffset CreatedOn { get; set; }
         public DateTimeOffset UpdatedOn { get; set; }
     }

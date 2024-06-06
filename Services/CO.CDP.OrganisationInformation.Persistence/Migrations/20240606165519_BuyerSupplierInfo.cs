@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -32,7 +33,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                 {
                     OrganisationId = table.Column<int>(type: "integer", nullable: false),
                     BuyerType = table.Column<string>(type: "text", nullable: false),
-                    DevolvedRegulations = table.Column<int[]>(type: "integer[]", nullable: false),
+                    DevolvedRegulations = table.Column<List<int>>(type: "integer[]", nullable: false),
                     CreatedOn = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP"),
                     UpdatedOn = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP")
                 },
