@@ -13,7 +13,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CO.CDP.OrganisationInformation.Persistence.Migrations
 {
     [DbContext(typeof(OrganisationInformationContext))]
-    [Migration("20240606142557_BuyerSupplierInfo")]
+    [Migration("20240606163539_BuyerSupplierInfo")]
     partial class BuyerSupplierInfo
     {
         /// <inheritdoc />
@@ -267,9 +267,19 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                                 .IsRequired()
                                 .HasColumnType("text");
 
+                            b1.Property<DateTimeOffset>("CreatedOn")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("timestamp with time zone")
+                                .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
                             b1.Property<int[]>("DevolvedRegulations")
                                 .IsRequired()
                                 .HasColumnType("integer[]");
+
+                            b1.Property<DateTimeOffset>("UpdatedOn")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("timestamp with time zone")
+                                .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                             b1.HasKey("OrganisationId");
 
@@ -324,6 +334,11 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
 
                             NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b1.Property<int>("Id"));
 
+                            b1.Property<DateTimeOffset>("CreatedOn")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("timestamp with time zone")
+                                .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
                             b1.Property<string>("IdentifierId")
                                 .IsRequired()
                                 .HasColumnType("text");
@@ -341,6 +356,11 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                             b1.Property<string>("Scheme")
                                 .IsRequired()
                                 .HasColumnType("text");
+
+                            b1.Property<DateTimeOffset>("UpdatedOn")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("timestamp with time zone")
+                                .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                             b1.Property<string>("Uri")
                                 .HasColumnType("text");
@@ -387,12 +407,22 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                             b1.Property<bool?>("CompletedWebsiteAddress")
                                 .HasColumnType("boolean");
 
+                            b1.Property<DateTimeOffset>("CreatedOn")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("timestamp with time zone")
+                                .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
                             b1.Property<int[]>("OperationTypes")
                                 .IsRequired()
                                 .HasColumnType("integer[]");
 
                             b1.Property<int>("SupplierType")
                                 .HasColumnType("integer");
+
+                            b1.Property<DateTimeOffset>("UpdatedOn")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("timestamp with time zone")
+                                .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                             b1.HasKey("OrganisationId");
 
@@ -405,6 +435,11 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                                 {
                                     b2.Property<int>("SupplierInformationOrganisationId")
                                         .HasColumnType("integer");
+
+                                    b2.Property<DateTimeOffset>("CreatedOn")
+                                        .ValueGeneratedOnAdd()
+                                        .HasColumnType("timestamp with time zone")
+                                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                                     b2.Property<string>("LawRegistered")
                                         .IsRequired()
@@ -420,6 +455,11 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
 
                                     b2.Property<DateTimeOffset>("RegistrationDate")
                                         .HasColumnType("timestamp with time zone");
+
+                                    b2.Property<DateTimeOffset>("UpdatedOn")
+                                        .ValueGeneratedOnAdd()
+                                        .HasColumnType("timestamp with time zone")
+                                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                                     b2.HasKey("SupplierInformationOrganisationId");
 
@@ -440,6 +480,11 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                                     b2.Property<string>("AwardedByPersonOrBodyName")
                                         .HasColumnType("text");
 
+                                    b2.Property<DateTimeOffset>("CreatedOn")
+                                        .ValueGeneratedOnAdd()
+                                        .HasColumnType("timestamp with time zone")
+                                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
                                     b2.Property<DateTimeOffset>("DateAwarded")
                                         .HasColumnType("timestamp with time zone");
 
@@ -448,6 +493,11 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
 
                                     b2.Property<int>("SupplierInformationOrganisationId")
                                         .HasColumnType("integer");
+
+                                    b2.Property<DateTimeOffset>("UpdatedOn")
+                                        .ValueGeneratedOnAdd()
+                                        .HasColumnType("timestamp with time zone")
+                                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                                     b2.HasKey("Id");
 
@@ -470,6 +520,11 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                                     b2.Property<string>("AwardedByPersonOrBodyName")
                                         .HasColumnType("text");
 
+                                    b2.Property<DateTimeOffset>("CreatedOn")
+                                        .ValueGeneratedOnAdd()
+                                        .HasColumnType("timestamp with time zone")
+                                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
                                     b2.Property<DateTimeOffset>("DateAwarded")
                                         .HasColumnType("timestamp with time zone");
 
@@ -478,6 +533,11 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
 
                                     b2.Property<int>("SupplierInformationOrganisationId")
                                         .HasColumnType("integer");
+
+                                    b2.Property<DateTimeOffset>("UpdatedOn")
+                                        .ValueGeneratedOnAdd()
+                                        .HasColumnType("timestamp with time zone")
+                                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                                     b2.HasKey("Id");
 

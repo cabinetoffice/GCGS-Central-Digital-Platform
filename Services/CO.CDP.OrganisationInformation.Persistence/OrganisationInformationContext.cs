@@ -23,17 +23,45 @@ public class OrganisationInformationContext(DbContextOptions<OrganisationInforma
                 a.Property(ai => ai.Scheme);
                 a.Property(ai => ai.LegalName);
                 a.Property(ai => ai.Uri);
+                a.Property(ai => ai.CreatedOn).IsRequired().HasDefaultValueSql("CURRENT_TIMESTAMP");
+                a.Property(ai => ai.UpdatedOn).IsRequired().HasDefaultValueSql("CURRENT_TIMESTAMP");
             });
 
             entity.OwnsOne(e => e.SupplierInfo, a =>
             {
+                a.Property(z => z.CreatedOn).IsRequired().HasDefaultValueSql("CURRENT_TIMESTAMP");
+                a.Property(z => z.UpdatedOn).IsRequired().HasDefaultValueSql("CURRENT_TIMESTAMP");
                 a.ToTable("SupplierInformation");
-                a.OwnsMany(x => x.Qualifications, y => { y.HasKey(z => z.Id); y.ToTable("Qualification"); });
-                a.OwnsMany(x => x.TradeAssurances, y => { y.HasKey(z => z.Id); y.ToTable("TradeAssurance"); });
-                a.OwnsOne(x => x.LegalForm, y => { y.ToTable("LegalForm"); });
+
+                a.OwnsMany(x => x.Qualifications, y =>
+                {
+                    y.HasKey(z => z.Id);
+                    y.Property(z => z.CreatedOn).IsRequired().HasDefaultValueSql("CURRENT_TIMESTAMP");
+                    y.Property(z => z.UpdatedOn).IsRequired().HasDefaultValueSql("CURRENT_TIMESTAMP");
+                    y.ToTable("Qualification");
+                });
+
+                a.OwnsMany(x => x.TradeAssurances, y =>
+                {
+                    y.HasKey(z => z.Id);
+                    y.Property(z => z.CreatedOn).IsRequired().HasDefaultValueSql("CURRENT_TIMESTAMP");
+                    y.Property(z => z.UpdatedOn).IsRequired().HasDefaultValueSql("CURRENT_TIMESTAMP");
+                    y.ToTable("TradeAssurance");
+                });
+                a.OwnsOne(x => x.LegalForm, y =>
+                {
+                    y.Property(z => z.CreatedOn).IsRequired().HasDefaultValueSql("CURRENT_TIMESTAMP");
+                    y.Property(z => z.UpdatedOn).IsRequired().HasDefaultValueSql("CURRENT_TIMESTAMP");
+                    y.ToTable("LegalForm");
+                });
             });
 
-            entity.OwnsOne(e => e.BuyerInfo, a => { a.ToTable("BuyerInformation"); });
+            entity.OwnsOne(e => e.BuyerInfo, a =>
+            {
+                a.Property(z => z.CreatedOn).IsRequired().HasDefaultValueSql("CURRENT_TIMESTAMP");
+                a.Property(z => z.UpdatedOn).IsRequired().HasDefaultValueSql("CURRENT_TIMESTAMP");
+                a.ToTable("BuyerInformation");
+            });
 
             entity.HasMany(p => p.Persons)
                 .WithMany(t => t.Organisations)
@@ -49,7 +77,7 @@ public class OrganisationInformationContext(DbContextOptions<OrganisationInforma
 
         foreach (var entityType in modelBuilder.Model.GetEntityTypes())
         {
-            if (typeof(IEntityDate).IsAssignableFrom(entityType.ClrType))
+            if (typeof(IEntityDate).IsAssignableFrom(entityType.ClrType) && !entityType.IsOwned())
             {
                 modelBuilder.Entity(entityType.ClrType).Property<DateTimeOffset>("CreatedOn").IsRequired()
                     .HasDefaultValueSql("CURRENT_TIMESTAMP");
@@ -63,13 +91,13 @@ public class OrganisationInformationContext(DbContextOptions<OrganisationInforma
 
     public override int SaveChanges()
     {
-        UpdateTimestamps();
+        //UpdateTimestamps();
         return base.SaveChanges();
     }
 
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
-        UpdateTimestamps();
+        //UpdateTimestamps();
         return base.SaveChangesAsync(cancellationToken);
     }
 

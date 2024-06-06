@@ -12,13 +12,29 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.AddColumn<DateTimeOffset>(
+                name: "CreatedOn",
+                table: "OrganisationIdentifier",
+                type: "timestamp with time zone",
+                nullable: false,
+                defaultValueSql: "CURRENT_TIMESTAMP");
+
+            migrationBuilder.AddColumn<DateTimeOffset>(
+                name: "UpdatedOn",
+                table: "OrganisationIdentifier",
+                type: "timestamp with time zone",
+                nullable: false,
+                defaultValueSql: "CURRENT_TIMESTAMP");
+
             migrationBuilder.CreateTable(
                 name: "BuyerInformation",
                 columns: table => new
                 {
                     OrganisationId = table.Column<int>(type: "integer", nullable: false),
                     BuyerType = table.Column<string>(type: "text", nullable: false),
-                    DevolvedRegulations = table.Column<int[]>(type: "integer[]", nullable: false)
+                    DevolvedRegulations = table.Column<int[]>(type: "integer[]", nullable: false),
+                    CreatedOn = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP"),
+                    UpdatedOn = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP")
                 },
                 constraints: table =>
                 {
@@ -46,7 +62,9 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                     CompletedQualification = table.Column<bool>(type: "boolean", nullable: true),
                     CompletedTradeAssurance = table.Column<bool>(type: "boolean", nullable: true),
                     CompletedOrganisationType = table.Column<bool>(type: "boolean", nullable: true),
-                    CompletedLegalForm = table.Column<bool>(type: "boolean", nullable: true)
+                    CompletedLegalForm = table.Column<bool>(type: "boolean", nullable: true),
+                    CreatedOn = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP"),
+                    UpdatedOn = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP")
                 },
                 constraints: table =>
                 {
@@ -67,7 +85,9 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                     RegisteredUnderAct2006 = table.Column<string>(type: "text", nullable: false),
                     RegisteredLegalForm = table.Column<string>(type: "text", nullable: false),
                     LawRegistered = table.Column<string>(type: "text", nullable: false),
-                    RegistrationDate = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
+                    RegistrationDate = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    CreatedOn = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP"),
+                    UpdatedOn = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP")
                 },
                 constraints: table =>
                 {
@@ -89,6 +109,8 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                     AwardedByPersonOrBodyName = table.Column<string>(type: "text", nullable: true),
                     DateAwarded = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     Name = table.Column<string>(type: "text", nullable: true),
+                    CreatedOn = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP"),
+                    UpdatedOn = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP"),
                     SupplierInformationOrganisationId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
@@ -111,6 +133,8 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                     AwardedByPersonOrBodyName = table.Column<string>(type: "text", nullable: true),
                     ReferenceNumber = table.Column<string>(type: "text", nullable: true),
                     DateAwarded = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    CreatedOn = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP"),
+                    UpdatedOn = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP"),
                     SupplierInformationOrganisationId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
@@ -152,6 +176,14 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
 
             migrationBuilder.DropTable(
                 name: "SupplierInformation");
+
+            migrationBuilder.DropColumn(
+                name: "CreatedOn",
+                table: "OrganisationIdentifier");
+
+            migrationBuilder.DropColumn(
+                name: "UpdatedOn",
+                table: "OrganisationIdentifier");
         }
     }
 }

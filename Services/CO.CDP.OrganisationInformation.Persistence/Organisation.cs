@@ -22,7 +22,7 @@ public class Organisation : IEntityDate
     public DateTimeOffset UpdatedOn { get; set; }
 
     [Owned]
-    public record OrganisationIdentifier
+    public record OrganisationIdentifier : IEntityDate
     {
         public int Id { get; set; }
         public required string IdentifierId;
@@ -30,6 +30,8 @@ public class Organisation : IEntityDate
         public required string LegalName;
         public string? Uri;
         public required bool Primary { get; set; }
+        public DateTimeOffset CreatedOn { get; set; }
+        public DateTimeOffset UpdatedOn { get; set; }
     }
 
     [Owned]
@@ -50,7 +52,7 @@ public class Organisation : IEntityDate
     }
 
     [Owned]
-    public record SupplierInformation
+    public record SupplierInformation : IEntityDate
     {
         public required SupplierType SupplierType { get; set; }
         public ICollection<OperationType> OperationTypes { get; set; } = [];
@@ -66,39 +68,49 @@ public class Organisation : IEntityDate
         public ICollection<Qualification> Qualifications { get; set; } = [];
         public ICollection<TradeAssurance> TradeAssurances { get; set; } = [];
         public LegalForm? LegalForm { get; set; }
+        public DateTimeOffset CreatedOn { get; set; }
+        public DateTimeOffset UpdatedOn { get; set; }
     }
 
     [Owned]
-    public record BuyerInformation
+    public record BuyerInformation : IEntityDate
     {
         public required string BuyerType { get; set; }
         public ICollection<DevolvedRegulation> DevolvedRegulations { get; set; } = [];
+        public DateTimeOffset CreatedOn { get; set; }
+        public DateTimeOffset UpdatedOn { get; set; }
     }
 
     [Owned]
-    public record Qualification
+    public record Qualification : IEntityDate
     {
         public int Id { get; set; }
         public string? AwardedByPersonOrBodyName { get; set; }
         public DateTimeOffset DateAwarded { get; set; }
         public string? Name { get; set; }
+        public DateTimeOffset CreatedOn { get; set; }
+        public DateTimeOffset UpdatedOn { get; set; }
     }
 
     [Owned]
-    public record TradeAssurance
+    public record TradeAssurance : IEntityDate
     {
         public int Id { get; set; }
         public string? AwardedByPersonOrBodyName { get; set; }
         public string? ReferenceNumber { get; set; }
         public DateTimeOffset DateAwarded { get; set; }
+        public DateTimeOffset CreatedOn { get; set; }
+        public DateTimeOffset UpdatedOn { get; set; }
     }
 
     [Owned]
-    public record LegalForm
+    public record LegalForm : IEntityDate
     {
         public required string RegisteredUnderAct2006 { get; set; }
         public required string RegisteredLegalForm { get; set; }
         public required string LawRegistered { get; set; }
         public DateTimeOffset RegistrationDate { get; set; }
+        public DateTimeOffset CreatedOn { get; set; }
+        public DateTimeOffset UpdatedOn { get; set; }
     }
 }
