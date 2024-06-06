@@ -22,9 +22,9 @@
     "environment": [
         {"name": "ASPNETCORE_ENVIRONMENT", "value": "${environment}"},
         {"name": "ASPNETCORE_HTTP_PORTS", "value": "${host_port}"},
-        {"name": "TenantService", "value": "http://cdp-sirsi-1939052961.eu-west-2.elb.amazonaws.com:8080"},
-        {"name": "OrganisationService", "value": "http://cdp-sirsi-1939052961.eu-west-2.elb.amazonaws.com:8084"},
-        {"name": "PersonService", "value": "http://cdp-sirsi-1939052961.eu-west-2.elb.amazonaws.com:8082"}
+        {"name": "TenantService", "value": "https://tenant.${public_hosted_zone_fqdn}"},
+        {"name": "OrganisationService", "value": "https://organisation.${public_hosted_zone_fqdn}"},
+        {"name": "PersonService", "value": "https://person.${public_hosted_zone_fqdn}"}
     ],
     "secrets": [
         {"name": "OneLogin__Authority", "valueFrom": "${oneLogin_authority}"},
