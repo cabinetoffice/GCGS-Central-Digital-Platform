@@ -69,20 +69,16 @@ public class OrganisationRegisteredAddressModel(ISession session) : Registration
 
         session.Set(Session.RegistrationDetailsKey, RegistrationDetails);
 
-        if (RegistrationDetails.OrganisationType == OrganisationType.Buyer)
-        {
-            if (RedirectToSummary == true)
-            {
-                return RedirectToPage("OrganisationDetailsSummary");
-            }
-            else
-            {
-                return RedirectToPage("BuyerOrganisationType");
-            }
-        }
-        else
+        if (RedirectToSummary == true)
         {
             return RedirectToPage("OrganisationDetailsSummary");
         }
+
+        if (RegistrationDetails.OrganisationType == OrganisationType.Buyer)
+        {
+            return RedirectToPage("BuyerOrganisationType");
+        }
+
+        return RedirectToPage("OrganisationDetailsSummary");
     }
 }

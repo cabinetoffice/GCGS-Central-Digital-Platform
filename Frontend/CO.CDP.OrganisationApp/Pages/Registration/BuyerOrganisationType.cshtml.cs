@@ -1,5 +1,4 @@
 using CO.CDP.Mvc.Validation;
-using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -20,10 +19,10 @@ public class BuyerOrganisationTypeModel(ISession session) : RegistrationStepMode
     [Required(ErrorMessage = "Select the organisation type")]
     public string? BuyerOrganisationType { get; set; }
 
-    //[BindProperty]
-    //[DisplayName("Enter type")]
-    //[RequiredIf("BuyerOrganisationType", "Other")]
-    //public string? OtherValue { get; set; }
+    [BindProperty]
+    [DisplayName("Enter type")]
+    [RequiredIf("BuyerOrganisationType", "Other")]
+    public string? OtherValue { get; set; }
 
     [BindProperty]
     public bool? RedirectToSummary { get; set; }
@@ -31,7 +30,12 @@ public class BuyerOrganisationTypeModel(ISession session) : RegistrationStepMode
     public IActionResult OnGet()
     {
         BuyerOrganisationType = RegistrationDetails.BuyerOrganisationType;
-        //OtherValue = RegistrationDetails.BuyerOrganisationOtherValue;
+        if (!string.IsNullOrEmpty(BuyerOrganisationType) && !BuyerTypes.Keys.Contains(BuyerOrganisationType))
+        {
+            OtherValue = BuyerOrganisationType;
+            BuyerOrganisationType = "Other";
+        }
+
         return Page();
     }
 
@@ -42,10 +46,7 @@ public class BuyerOrganisationTypeModel(ISession session) : RegistrationStepMode
             return Page();
         }
 
-        RegistrationDetails.BuyerOrganisationType = BuyerOrganisationType;
-
-        //RegistrationDetails.BuyerOrganisationType = (BuyerOrganisationType == "Other" ? OtherValue : BuyerOrganisationType);
-        //RegistrationDetails.BuyerOrganisationOtherValue = (BuyerOrganisationType == "Other" ? OtherValue : "");
+        RegistrationDetails.BuyerOrganisationType = (BuyerOrganisationType == "Other" ? OtherValue : BuyerOrganisationType);
         session.Set(Session.RegistrationDetailsKey, RegistrationDetails);
 
         if (RedirectToSummary == true)
@@ -59,16 +60,11 @@ public class BuyerOrganisationTypeModel(ISession session) : RegistrationStepMode
 
     }
 
-    public static string BuyerTypeDescription(string buyerType)
+    public static Dictionary<string, string> BuyerTypes => new()
     {
-        return buyerType switch
-        {
-            "CentralGovernment" => "Central government, public authority: UK, Scottish, Welsh and Northern Irish Executive",
-            "RegionalAndLocalGovernment" => "Regional and local government, public authority: UK, Scottish, Welsh and Northern Irish",
-            "PublicUndertaking" => "Public undertaking",
-            "PrivateUtility" => "Private utility",
-            "Other" => "Other",
-            _ => throw new NotImplementedException(),
-        };
-    }
+        { "CentralGovernment", "Central government, public authority: UK, Scottish, Welsh and Northern Irish Executive"},
+        { "RegionalAndLocalGovernment", "Regional and local government, public authority: UK, Scottish, Welsh and Northern Irish"},
+        { "PublicUndertaking", "Public undertaking"},
+        { "PrivateUtility", "Private utility"}
+    };
 }

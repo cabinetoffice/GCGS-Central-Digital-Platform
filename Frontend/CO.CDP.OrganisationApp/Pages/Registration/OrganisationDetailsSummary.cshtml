@@ -17,7 +17,7 @@
         else
         {
             backLink = RegistrationStepModel.BuyerDevolvedRegulationPage;
-        }        
+        }
     }
 }
 
@@ -128,7 +128,14 @@
                                 Organisation type
                             </dt>
                             <dd class="govuk-summary-list__value">
-                                @BuyerOrganisationTypeModel.BuyerTypeDescription(details.BuyerOrganisationType ?? "")                                
+                                @if (BuyerOrganisationTypeModel.BuyerTypes.Keys.Contains(details.BuyerOrganisationType!))
+                                {
+                                    @(BuyerOrganisationTypeModel.BuyerTypes[details.BuyerOrganisationType!])
+                                }
+                                else
+                                {
+                                    @(details.BuyerOrganisationType)
+                                }
                             </dd>
                             <dd class="govuk-summary-list__actions">
                                 <a class="govuk-link govuk-link--no-visited-state" href="@RegistrationStepModel.BuyerOrganisationTypePage?frm-summary">Change<span class="govuk-visually-hidden"> organisation type</span></a>
@@ -152,8 +159,8 @@
                                 <dt class="govuk-summary-list__key">
                                     Which devolved regulations apply to the organisation?
                                 </dt>
-                                <dd class="govuk-summary-list__value">                                    
-                                     @Html.Raw(string.Join("<br /> ", details.Regulations.Select(x => x.Description())))
+                                <dd class="govuk-summary-list__value">
+                                    @Html.Raw(string.Join("<br /> ", details.Regulations.Select(x => x.Description())))
                                 </dd>
                                 <dd class="govuk-summary-list__actions">
                                     <a class="govuk-link govuk-link--no-visited-state" href="@RegistrationStepModel.BuyerSelectDevolvedRegulationPage?frm-summary">Change<span class="govuk-visually-hidden"> which devolved regulations apply to the organisation?</span></a>

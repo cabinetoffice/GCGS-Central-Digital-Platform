@@ -26,6 +26,11 @@
             <partial name="_ErrorSummary" model="@ModelState" />
 
             <form method="post">
+
+                @if (Request.Query.ContainsKey("frm-summary"))
+                {
+                    <input type="hidden" name="RedirectToSummary" value="true" />
+                }
                 <div class="govuk-form-group">
                     <fieldset class="govuk-fieldset">
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
@@ -113,11 +118,12 @@
                         </div>
                     </fieldset>
                 </div>
-                <a href="/registration/organisation-details-summary">
-                    <button type="submit" class="govuk-button" data-module="govuk-button">
-                        Continue
-                    </button>
-                </a>
+
+                <button type="submit"
+                        class="govuk-button"
+                        data-module="govuk-button">
+                    Continue
+                </button>
             </form>
         </div>
     </div>

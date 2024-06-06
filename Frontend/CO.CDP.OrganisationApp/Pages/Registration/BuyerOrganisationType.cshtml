@@ -4,7 +4,7 @@
 
 @{
     var organisationTypeHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.BuyerOrganisationType)).HasInnerHtml;
-    //var otherHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.OtherValue)).HasInnerHtml;
+    var otherHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.OtherValue)).HasInnerHtml;
 
     var backLink = RegistrationStepModel.OrganisationAddressPage;    
     if (Request.Query.ContainsKey("frm-summary"))
@@ -53,7 +53,7 @@
                                        type="radio" value="CentralGovernment"
                                        aria-describedby="ca-type-item-hint" @IsSelected("CentralGovernment")>
                                 <label class="govuk-label govuk-radios__label" for="ca-type">
-                                    @BuyerOrganisationTypeModel.BuyerTypeDescription("CentralGovernment")
+                                    @BuyerOrganisationTypeModel.BuyerTypes["CentralGovernment"]
                                 </label>
                                 <div id="ca-type-item-hint" class="govuk-hint govuk-radios__hint">
                                     Includes arm's-length bodies:
@@ -71,7 +71,7 @@
                                        type="radio" value="RegionalAndLocalGovernment"
                                        aria-describedby="ca-type-2-item-hint" @IsSelected("RegionalAndLocalGovernment")>
                                 <label class="govuk-label govuk-radios__label" for="ca-type-2">
-                                    @BuyerOrganisationTypeModel.BuyerTypeDescription("RegionalAndLocalGovernment")
+                                    @BuyerOrganisationTypeModel.BuyerTypes["RegionalAndLocalGovernment"]
                                 </label>
                                 <div id="ca-type-2-item-hint" class="govuk-hint govuk-radios__hint">
                                     Includes:
@@ -90,7 +90,7 @@
                                 <input class="govuk-radios__input" id="ca-type-3" name="BuyerOrganisationType"
                                        type="radio" value="PublicUndertaking" aria-describedby="ca-type-3-item-hint" @IsSelected("PublicUndertaking")>
                                 <label class="govuk-label govuk-radios__label" for="ca-type-3">
-                                    @BuyerOrganisationTypeModel.BuyerTypeDescription("PublicUndertaking")
+                                    @BuyerOrganisationTypeModel.BuyerTypes["PublicUndertaking"]
                                 </label>
                                 <div id="ca-type-3-item-hint" class="govuk-hint govuk-radios__hint">
                                     Unlike a public authority, organisations that operate commercially and provide utility activities to the public. For example, Transport for Wales.
@@ -100,7 +100,7 @@
                                 <input class="govuk-radios__input" id="ca-type-4" name="BuyerOrganisationType"
                                        type="radio" value="PrivateUtility" aria-describedby="ca-type-4-item-hint" @IsSelected("PrivateUtility")>
                                 <label class="govuk-label govuk-radios__label" for="ca-type-4">
-                                    @BuyerOrganisationTypeModel.BuyerTypeDescription("PrivateUtility")
+                                    @BuyerOrganisationTypeModel.BuyerTypes["PrivateUtility"]
                                 </label>
                                 <div id="ca-type-4-item-hint" class="govuk-hint govuk-radios__hint">
                                     For example, private companies that have been granted a special or exclusive right to provide utility activities to the public. Such as National Grid or British Gas.
@@ -108,31 +108,26 @@
                             </div>
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input" id="ca-type-5" name="BuyerOrganisationType"
-                                       type="radio" value="Other" data-aria-controls="conditional-ca-type-5" @IsSelected(Model.BuyerOrganisationType)>
+                                       type="radio" value="Other" data-aria-controls="conditional-ca-type-5" @IsSelected("Other")>
                                 <label class="govuk-label govuk-radios__label" for="ca-type-5">
-                                    @BuyerOrganisationTypeModel.BuyerTypeDescription("Other")
+                                    Other
                                 </label>
                             </div>
 
                             <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-ca-type-5">
-                                <div class="govuk-form-group @(organisationTypeHasError ? "govuk-form-group--error" : "")">
+                                <div class="govuk-form-group @(otherHasError ? "govuk-form-group--error" : "")">
                                     <label class="govuk-label" for="other-buyer-type">
                                         Enter type
                                     </label>
-                                    @Html.ValidationMessageFor(m => m.BuyerOrganisationType, "", new { @class = "govuk-error-message", @id = "other-buyer-type-error" })
+                                    @Html.ValidationMessageFor(m => m.OtherValue, "", new { @class = "govuk-error-message", @id = "other-buyer-type-error" })
 
                                     <div id="ca-type-5-item-hint" class="govuk-hint">
                                         For example, the establishment of a utilities dynamic market by a non-contracting authority.
                                     </div>
 
-                                    @Html.TextBoxFor(m => m.BuyerOrganisationType, new
-                                        {
-                                            @class = "govuk-input " + (organisationTypeHasError ? "govuk-input--error" : ""),
-                                            @id = "BuyerOrganisationType",
-                                            @type = "text",
-                                            spellcheck = "false",
-                                            autocomplete = "off"
-                                        })
+                                    <input autocomplete="off" class="govuk-input @(otherHasError ? "govuk-input--error" : "")"
+                                           id="OtherValue" name="OtherValue" type="text" value="@(Model.BuyerOrganisationType == "Other" ? Model.OtherValue : "")">
+
                                 </div>
                             </div>
                         </div>
