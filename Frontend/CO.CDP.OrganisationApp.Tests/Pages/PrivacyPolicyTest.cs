@@ -1,11 +1,20 @@
 using CO.CDP.OrganisationApp.Pages;
+using CO.CDP.Person.WebApiClient;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
+using Moq;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages;
 
 public class PrivacyPolicyTest
 {
+    private readonly Mock<ISession> sessionMock;
+
+    public PrivacyPolicyTest()
+    {
+        sessionMock = new Mock<ISession>();
+    }
+
     [Fact]
     public void Model_WhenAgreeToPrivacyPolicyNotSet_ShouldRaiseAgreeToPrivacyPolicyValidationError()
     {
@@ -32,6 +41,6 @@ public class PrivacyPolicyTest
 
     private PrivacyPolicyModel GivenPrivacyPolicyModel()
     {
-        return new PrivacyPolicyModel();
+        return new PrivacyPolicyModel(sessionMock.Object);
     }
 }

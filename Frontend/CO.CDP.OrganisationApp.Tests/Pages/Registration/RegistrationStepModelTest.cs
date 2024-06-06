@@ -16,18 +16,6 @@ public class RegistrationStepModelTest
         sessionMock.Setup(s => s.Get<UserDetails>(Session.UserDetailsKey)).Returns(new UserDetails { UserUrn = "test_urn" });
     }
 
-    [Fact]
-    public void ValidateStep_UserDetailsIsNull_ShouldRedirectToUserInfoPage()
-    {
-        sessionMock.Setup(s => s.Get<UserDetails>(Session.UserDetailsKey)).Returns(value: null);
-        var model = new TestRegistrationStepModel(sessionMock.Object, RegistrationStepModel.OrganisationTypePage);
-
-        var result = model.ValidateStep();
-
-        result.Should().BeFalse();
-        model.ToRedirectPageUrl.Should().Be("/");
-    }
-
     [Theory]
     [InlineData(RegistrationStepModel.OrganisationTypePage)]
     [InlineData(RegistrationStepModel.OrganisationHasCompanyHouseNumberPage, OrganisationType.Supplier)]

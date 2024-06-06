@@ -34,7 +34,7 @@ public static class ServiceCollectionExtensions
             case BadHttpRequestException:
                 return (StatusCodes.Status422UnprocessableEntity, "UNPROCESSABLE_ENTITY");
             case DuplicateTenantException:
-                return (StatusCodes.Status404NotFound, "TENANT_ALREADY_EXISTS");
+                return (StatusCodes.Status400BadRequest, "TENANT_ALREADY_EXISTS");
             case ArgumentNullException:
                 return (StatusCodes.Status400BadRequest, "ARGUMENT_NULL");
             case InvalidOperationException:

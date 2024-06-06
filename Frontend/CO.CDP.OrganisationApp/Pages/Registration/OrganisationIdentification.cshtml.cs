@@ -1,13 +1,12 @@
 using CO.CDP.Mvc.Validation;
 using CO.CDP.OrganisationApp.Models;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace CO.CDP.OrganisationApp.Pages.Registration;
 
-[Authorize]
+[AuthorisedSession]
 [ValidateRegistrationStep]
 public class OrganisationIdentificationModel(ISession session) : RegistrationStepModel
 {

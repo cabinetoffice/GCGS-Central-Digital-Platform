@@ -23,7 +23,7 @@ public class ServiceCollectionExtensionsTests
         var exception = new DuplicatePersonException("Duplicate person");
         var result = ServiceCollectionExtensions.MapException(exception);
 
-        Assert.Equal(StatusCodes.Status404NotFound, result.status);
+        Assert.Equal(StatusCodes.Status400BadRequest, result.status);
         Assert.Equal("PERSON_DOES_NOT_EXIST", result.error);
     }
 

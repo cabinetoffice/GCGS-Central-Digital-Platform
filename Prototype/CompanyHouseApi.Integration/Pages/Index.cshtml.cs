@@ -13,6 +13,7 @@ public class IndexModel(ICompaniesHouseService companiesHouseService) : PageMode
     public string? CompaniesHouseNumber { get; set; }
     public CompanyHouseDetails? CompanyDetails { get; set; }
     public List<Officer>? CompanyOfficers { get; set; }
+    public List<PersonWithSignificantControl>? PersonsWithSignificantControl { get; set; }
     public string? ErrorMessage { get; set; }
 
     public void OnGet()
@@ -31,6 +32,13 @@ public class IndexModel(ICompaniesHouseService companiesHouseService) : PageMode
         {
             CompanyDetails = await companiesHouseService.GetCompanyAsync(CompaniesHouseNumber);
             CompanyOfficers = await companiesHouseService.GetCompanyOfficersListAsync(CompaniesHouseNumber);
+            PersonsWithSignificantControl = await companiesHouseService.GetPersonsWithSignificantControlAsync(CompaniesHouseNumber);
+
+            if (PersonsWithSignificantControl == null || !PersonsWithSignificantControl.Any())
+            {
+                ErrorMessage = "There are no persons with significant control in this company.";
+            }
+
         }
         catch (Exception ex)
         {

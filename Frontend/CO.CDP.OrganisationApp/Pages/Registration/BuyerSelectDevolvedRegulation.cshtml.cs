@@ -1,11 +1,9 @@
 using CO.CDP.Mvc.Validation;
-using CO.CDP.OrganisationApp.Constants;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CO.CDP.OrganisationApp.Pages.Registration;
 
-[Authorize]
+[AuthorisedSession]
 [ValidateRegistrationStep]
 public class BuyerSelectDevolvedRegulationModel(ISession session) : RegistrationStepModel
 {

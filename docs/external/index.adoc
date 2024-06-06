@@ -39,6 +39,8 @@ Basic auth: Remember that you need to put the API key in the username and there 
 https://api.company-information.service.gov.uk/company/13981671
 https://api.company-information.service.gov.uk/company/00000006/registered-office-address
 https://api.company-information.service.gov.uk/company/13981671/officers
+https://api.company-information.service.gov.uk/company/OC318696/persons-with-significant-control
+
 
 More Information and endpoints: https://developer-specs.company-information.service.gov.uk/companies-house-public-data-api/reference
 

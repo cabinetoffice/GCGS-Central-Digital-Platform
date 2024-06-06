@@ -1,11 +1,10 @@
 using CO.CDP.OrganisationApp.Models;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 
 namespace CO.CDP.OrganisationApp.Pages.Registration;
 
-[Authorize]
+[AuthorisedSession]
 [ValidateRegistrationStep]
 public class BuyerDevolvedRegulationModel(ISession session) : RegistrationStepModel
 {

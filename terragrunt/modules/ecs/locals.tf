@@ -1,5 +1,7 @@
 locals {
 
+  service_environment = var.environment == "production" ? "Production" : "Development"
+
   ecr_urls = [
     for repos in aws_ecr_repository.this.* : { for repo, attr in repos : repo => attr.repository_url }
     ][
