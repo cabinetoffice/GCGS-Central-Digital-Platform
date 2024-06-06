@@ -1,10 +1,9 @@
 using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace CO.CDP.OrganisationApp.Pages.Registration;
 
-public abstract class RegistrationStepModel : PageModel
+public abstract class RegistrationStepModel : LoggedInUserAwareModel
 {
     public const string OrganisationTypePage = "/registration/organisation-type";
     public const string OrganisationHasCompanyHouseNumberPage = "/registration/has-companies-house-number";
@@ -21,28 +20,17 @@ public abstract class RegistrationStepModel : PageModel
 
     public abstract string CurrentPage { get; }
 
-    public abstract ISession SessionContext { get; }
-
     public string ToRedirectPageUrl { get; protected set; } = "/";
 
-    public RegistrationDetails RegistrationDetails { get; } = new();
-
-    public UserDetails? UserDetails { get; }
+    public RegistrationDetails RegistrationDetails { get; }
 
     protected RegistrationStepModel()
     {
         RegistrationDetails = SessionContext.Get<RegistrationDetails?>(Session.RegistrationDetailsKey) ?? new();
-        UserDetails = SessionContext.Get<UserDetails>(Session.UserDetailsKey);
     }
 
     public bool ValidateStep()
     {
-        if (UserDetails == null)
-        {
-            ToRedirectPageUrl = "/";
-            return false;
-        }
-
         return CurrentPage switch
         {
             OrganisationTypePage => true,

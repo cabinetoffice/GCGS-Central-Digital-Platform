@@ -1,12 +1,11 @@
 using CO.CDP.Mvc.Validation;
 using CO.CDP.OrganisationApp.Models;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 
 namespace CO.CDP.OrganisationApp.Pages.Registration;
 
-[Authorize]
+[AuthorisedSession]
 [ValidateRegistrationStep]
 public class CompanyHouseNumberQuestionModel(ISession session) : RegistrationStepModel
 {
