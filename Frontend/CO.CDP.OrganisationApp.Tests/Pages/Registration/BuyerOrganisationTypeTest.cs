@@ -30,13 +30,10 @@ public class BuyerOrganisationTypeTest
     [Fact]
     public void OnGet_SetsBuyerOrganisationTypeAndOtherValueToNull_WhenBuyerOrganisationTypeIsNullOrEmpty()
     {
-        // Arrange
         _registrationDetails.BuyerOrganisationType = null;
 
-        // Act
         var result = _model.OnGet();
 
-        // Assert
         _model.BuyerOrganisationType.Should().BeNull();
         _model.OtherValue.Should().BeNull();
         result.Should().BeOfType<PageResult>();
@@ -45,15 +42,12 @@ public class BuyerOrganisationTypeTest
     [Fact]
     public void OnPost_RedirectsToSummary_WhenRedirectToSummaryIsTrue()
     {
-        // Arrange
         _model.BuyerOrganisationType = "CentralGovernment";
         _model.RedirectToSummary = true;
         _model.ModelState.Clear();
 
-        // Act
         var result = _model.OnPost();
 
-        // Assert
         var redirectResult = result.Should().BeOfType<RedirectToPageResult>().Subject;
         redirectResult.PageName.Should().Be("OrganisationDetailsSummary");
     }
@@ -61,15 +55,12 @@ public class BuyerOrganisationTypeTest
     [Fact]
     public void OnPost_RedirectsToBuyerDevolvedRegulation_WhenRedirectToSummaryIsFalse()
     {
-        // Arrange
         _model.BuyerOrganisationType = "CentralGovernment";
         _model.RedirectToSummary = false;
         _model.ModelState.Clear();
 
-        // Act
         var result = _model.OnPost();
 
-        // Assert
         var redirectResult = result.Should().BeOfType<RedirectToPageResult>().Subject;
         redirectResult.PageName.Should().Be("BuyerDevolvedRegulation");
     }
@@ -77,13 +68,10 @@ public class BuyerOrganisationTypeTest
     [Fact]
     public void OnPost_ReturnsPage_WhenModelStateIsInvalid()
     {
-        // Arrange
         _model.ModelState.AddModelError("BuyerOrganisationType", "Required");
 
-        // Act
         var result = _model.OnPost();
 
-        // Assert
         result.Should().BeOfType<PageResult>();
     }
 
