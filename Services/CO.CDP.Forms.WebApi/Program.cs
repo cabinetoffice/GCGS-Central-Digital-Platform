@@ -56,5 +56,7 @@ app.UseStatusCodePages();
 
 app.MapHealthChecks("/health").AllowAnonymous();
 app.UseHttpsRedirection();
+app.UseAuthentication();
+app.UseAuthorization();
 app.UseFormsEndpoints();
 app.Run();
