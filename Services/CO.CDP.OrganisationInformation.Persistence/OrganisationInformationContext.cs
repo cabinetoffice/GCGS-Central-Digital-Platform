@@ -91,13 +91,13 @@ public class OrganisationInformationContext(DbContextOptions<OrganisationInforma
 
     public override int SaveChanges()
     {
-        //UpdateTimestamps();
+        UpdateTimestamps();
         return base.SaveChanges();
     }
 
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
-        //UpdateTimestamps();
+        UpdateTimestamps();
         return base.SaveChangesAsync(cancellationToken);
     }
 

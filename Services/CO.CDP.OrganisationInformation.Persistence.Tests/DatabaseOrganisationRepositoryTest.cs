@@ -98,7 +98,7 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql) : 
             Guid = guid,
             Name = initialName,
             Tenant = GivenTenant(),
-            Identifiers = [new OrganisationIdentifier
+            Identifiers = [new Organisation.Identifier
             {
                 Primary = true,
                 Scheme = "ISO9001",
@@ -106,7 +106,7 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql) : 
                 LegalName = "DefaultLegalName",
                 Uri = "http://default.org"
             },
-                new OrganisationIdentifier
+                new Organisation.Identifier
                 {
                     Primary = false,
                     Scheme = "ISO9001",
@@ -153,7 +153,6 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql) : 
         updatedOrganisation.Should().NotBeNull();
         updatedOrganisation.As<Organisation>().Name.Should().Be(updatedName);
         updatedOrganisation.As<Organisation>().Tenant.Should().Be(organisation.Tenant);
-        //updatedOrganisation.As<Organisation>().UpdatedOn.Should().BeAfter(initialDate);
     }
 
     [Fact]

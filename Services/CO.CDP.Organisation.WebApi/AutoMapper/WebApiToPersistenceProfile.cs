@@ -14,7 +14,7 @@ public class WebApiToPersistenceProfile : Profile
             .ForMember(m => m.Identifier, o => o.MapFrom(m => m.Identifiers.FirstOrDefault(i => i.Primary)))
             .ForMember(m => m.AdditionalIdentifiers, o => o.MapFrom(m => m.Identifiers.Where(i => !i.Primary)));
 
-        CreateMap<OrganisationIdentifier, Persistence.Organisation.OrganisationIdentifier>()
+        CreateMap<OrganisationIdentifier, Persistence.Organisation.Identifier>()
             .ForMember(m => m.Id, o => o.Ignore())
             .ForMember(m => m.Primary, o => o.Ignore())
             .ForMember(m => m.Uri, o => o.Ignore())
@@ -24,7 +24,7 @@ public class WebApiToPersistenceProfile : Profile
             .ReverseMap()
             .ForMember(m => m.Id, o => o.MapFrom(m => m.IdentifierId));
 
-        CreateMap<Identifier, Persistence.Organisation.OrganisationIdentifier>()
+        CreateMap<Identifier, Persistence.Organisation.Identifier>()
             .ForMember(m => m.Id, o => o.Ignore())
             .ForMember(m => m.Primary, o => o.Ignore())
             .ForMember(m => m.CreatedOn, o => o.Ignore())
@@ -68,17 +68,17 @@ public class WebApiToPersistenceProfile : Profile
     }
 
     public class IdentifiersResolver : IValueResolver<RegisterOrganisation, Persistence.Organisation,
-        ICollection<Persistence.Organisation.OrganisationIdentifier>>
+        ICollection<Persistence.Organisation.Identifier>>
     {
-        public ICollection<Persistence.Organisation.OrganisationIdentifier> Resolve(
+        public ICollection<Persistence.Organisation.Identifier> Resolve(
             RegisterOrganisation source, Persistence.Organisation destination,
-            ICollection<Persistence.Organisation.OrganisationIdentifier> destMember,
+            ICollection<Persistence.Organisation.Identifier> destMember,
             ResolutionContext context)
         {
-            var pi = context.Mapper.Map<Persistence.Organisation.OrganisationIdentifier>(source.Identifier);
+            var pi = context.Mapper.Map<Persistence.Organisation.Identifier>(source.Identifier);
             pi.Primary = true;
 
-            var ai = context.Mapper.Map<List<Persistence.Organisation.OrganisationIdentifier>>(source.AdditionalIdentifiers);
+            var ai = context.Mapper.Map<List<Persistence.Organisation.Identifier>>(source.AdditionalIdentifiers);
             ai.ForEach(i => i.Primary = false);
 
             return [pi, .. ai];

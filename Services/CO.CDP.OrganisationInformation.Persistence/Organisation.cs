@@ -11,7 +11,7 @@ public class Organisation : IEntityDate
     public required Guid Guid { get; set; }
     public required Tenant Tenant { get; set; }
     public required string Name { get; set; }
-    public ICollection<OrganisationIdentifier> Identifiers { get; set; } = [];
+    public ICollection<Identifier> Identifiers { get; set; } = [];
     public ICollection<OrganisationAddress> Addresses { get; set; } = [];
     public required OrganisationContactPoint ContactPoint { get; set; }
     public List<PartyRole> Roles { get; set; } = [];
@@ -22,7 +22,7 @@ public class Organisation : IEntityDate
     public DateTimeOffset UpdatedOn { get; set; }
 
     [Owned]
-    public record OrganisationIdentifier : IEntityDate
+    public record Identifier : IEntityDate
     {
         public int Id { get; set; }
         public required string IdentifierId;
@@ -56,15 +56,15 @@ public class Organisation : IEntityDate
     {
         public required SupplierType SupplierType { get; set; }
         public List<OperationType> OperationTypes { get; set; } = [];
-        public bool? CompletedRegAddress { get; set; }
-        public bool? CompletedPostalAddress { get; set; }
-        public bool? CompletedVat { get; set; }
-        public bool? CompletedWebsiteAddress { get; set; }
-        public bool? CompletedEmailAddress { get; set; }
-        public bool? CompletedQualification { get; set; }
-        public bool? CompletedTradeAssurance { get; set; }
-        public bool? CompletedOrganisationType { get; set; }
-        public bool? CompletedLegalForm { get; set; }
+        public bool CompletedRegAddress { get; set; }
+        public bool CompletedPostalAddress { get; set; }
+        public bool CompletedVat { get; set; }
+        public bool CompletedWebsiteAddress { get; set; }
+        public bool CompletedEmailAddress { get; set; }
+        public bool CompletedQualification { get; set; }
+        public bool CompletedTradeAssurance { get; set; }
+        public bool CompletedOrganisationType { get; set; }
+        public bool CompletedLegalForm { get; set; }
         public List<Qualification> Qualifications { get; set; } = [];
         public List<TradeAssurance> TradeAssurances { get; set; } = [];
         public LegalForm? LegalForm { get; set; }

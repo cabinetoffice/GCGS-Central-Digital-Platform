@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -8,24 +7,13 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CO.CDP.OrganisationInformation.Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class BuyerSupplierInfo : Migration
+    public partial class BuyerSupplierInfoAndRenameOrgIdentifier : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<DateTimeOffset>(
-                name: "CreatedOn",
-                table: "OrganisationIdentifier",
-                type: "timestamp with time zone",
-                nullable: false,
-                defaultValueSql: "CURRENT_TIMESTAMP");
-
-            migrationBuilder.AddColumn<DateTimeOffset>(
-                name: "UpdatedOn",
-                table: "OrganisationIdentifier",
-                type: "timestamp with time zone",
-                nullable: false,
-                defaultValueSql: "CURRENT_TIMESTAMP");
+            migrationBuilder.DropTable(
+                name: "OrganisationIdentifier");
 
             migrationBuilder.CreateTable(
                 name: "BuyerInformation",
@@ -33,7 +21,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                 {
                     OrganisationId = table.Column<int>(type: "integer", nullable: false),
                     BuyerType = table.Column<string>(type: "text", nullable: false),
-                    DevolvedRegulations = table.Column<List<int>>(type: "integer[]", nullable: false),
+                    DevolvedRegulations = table.Column<int[]>(type: "integer[]", nullable: false),
                     CreatedOn = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP"),
                     UpdatedOn = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP")
                 },
@@ -49,21 +37,47 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Identifier",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Primary = table.Column<bool>(type: "boolean", nullable: false),
+                    CreatedOn = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP"),
+                    UpdatedOn = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP"),
+                    IdentifierId = table.Column<string>(type: "text", nullable: false),
+                    LegalName = table.Column<string>(type: "text", nullable: false),
+                    OrganisationId = table.Column<int>(type: "integer", nullable: false),
+                    Scheme = table.Column<string>(type: "text", nullable: false),
+                    Uri = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Identifier", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Identifier_Organisations_OrganisationId",
+                        column: x => x.OrganisationId,
+                        principalTable: "Organisations",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "SupplierInformation",
                 columns: table => new
                 {
                     OrganisationId = table.Column<int>(type: "integer", nullable: false),
                     SupplierType = table.Column<int>(type: "integer", nullable: false),
                     OperationTypes = table.Column<int[]>(type: "integer[]", nullable: false),
-                    CompletedRegAddress = table.Column<bool>(type: "boolean", nullable: true),
-                    CompletedPostalAddress = table.Column<bool>(type: "boolean", nullable: true),
-                    CompletedVat = table.Column<bool>(type: "boolean", nullable: true),
-                    CompletedWebsiteAddress = table.Column<bool>(type: "boolean", nullable: true),
-                    CompletedEmailAddress = table.Column<bool>(type: "boolean", nullable: true),
-                    CompletedQualification = table.Column<bool>(type: "boolean", nullable: true),
-                    CompletedTradeAssurance = table.Column<bool>(type: "boolean", nullable: true),
-                    CompletedOrganisationType = table.Column<bool>(type: "boolean", nullable: true),
-                    CompletedLegalForm = table.Column<bool>(type: "boolean", nullable: true),
+                    CompletedRegAddress = table.Column<bool>(type: "boolean", nullable: false),
+                    CompletedPostalAddress = table.Column<bool>(type: "boolean", nullable: false),
+                    CompletedVat = table.Column<bool>(type: "boolean", nullable: false),
+                    CompletedWebsiteAddress = table.Column<bool>(type: "boolean", nullable: false),
+                    CompletedEmailAddress = table.Column<bool>(type: "boolean", nullable: false),
+                    CompletedQualification = table.Column<bool>(type: "boolean", nullable: false),
+                    CompletedTradeAssurance = table.Column<bool>(type: "boolean", nullable: false),
+                    CompletedOrganisationType = table.Column<bool>(type: "boolean", nullable: false),
+                    CompletedLegalForm = table.Column<bool>(type: "boolean", nullable: false),
                     CreatedOn = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP"),
                     UpdatedOn = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP")
                 },
@@ -150,6 +164,11 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_Identifier_OrganisationId",
+                table: "Identifier",
+                column: "OrganisationId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Qualification_SupplierInformationOrganisationId",
                 table: "Qualification",
                 column: "SupplierInformationOrganisationId");
@@ -167,6 +186,9 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                 name: "BuyerInformation");
 
             migrationBuilder.DropTable(
+                name: "Identifier");
+
+            migrationBuilder.DropTable(
                 name: "LegalForm");
 
             migrationBuilder.DropTable(
@@ -178,13 +200,34 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
             migrationBuilder.DropTable(
                 name: "SupplierInformation");
 
-            migrationBuilder.DropColumn(
-                name: "CreatedOn",
-                table: "OrganisationIdentifier");
+            migrationBuilder.CreateTable(
+                name: "OrganisationIdentifier",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    IdentifierId = table.Column<string>(type: "text", nullable: false),
+                    LegalName = table.Column<string>(type: "text", nullable: false),
+                    OrganisationId = table.Column<int>(type: "integer", nullable: false),
+                    Primary = table.Column<bool>(type: "boolean", nullable: false),
+                    Scheme = table.Column<string>(type: "text", nullable: false),
+                    Uri = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OrganisationIdentifier", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_OrganisationIdentifier_Organisations_OrganisationId",
+                        column: x => x.OrganisationId,
+                        principalTable: "Organisations",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
 
-            migrationBuilder.DropColumn(
-                name: "UpdatedOn",
-                table: "OrganisationIdentifier");
+            migrationBuilder.CreateIndex(
+                name: "IX_OrganisationIdentifier_OrganisationId",
+                table: "OrganisationIdentifier",
+                column: "OrganisationId");
         }
     }
 }

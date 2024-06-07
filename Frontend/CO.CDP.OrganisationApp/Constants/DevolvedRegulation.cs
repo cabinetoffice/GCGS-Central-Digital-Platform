@@ -11,17 +11,6 @@ public enum DevolvedRegulation
 
 public static class DevolvedRegulationsExtensions
 {
-    //public static Organisation.WebApiClient.DevolvedRegulation AsApiDevolvedRegulations(this DevolvedRegulation devolvedRegulations)
-    //{
-    //    return devolvedRegulations switch
-    //    {
-    //        DevolvedRegulation.NorthernIreland => Organisation.WebApiClient.DevolvedRegulation.NorthernIreland,
-    //        DevolvedRegulation.Scotland => Organisation.WebApiClient.DevolvedRegulation.Scotland,
-    //        DevolvedRegulation.Wales => Organisation.WebApiClient.DevolvedRegulation.Wales,
-    //        _ => throw new NotImplementedException(),
-    //    };
-    //}
-
     public static string Description(this DevolvedRegulation devolvedRegulations)
     {        
         return devolvedRegulations switch

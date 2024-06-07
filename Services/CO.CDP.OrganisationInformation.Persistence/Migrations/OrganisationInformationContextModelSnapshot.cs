@@ -286,44 +286,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                                 .HasForeignKey("OrganisationId");
                         });
 
-                    b.OwnsMany("CO.CDP.OrganisationInformation.Persistence.Organisation+OrganisationAddress", "Addresses", b1 =>
-                        {
-                            b1.Property<int>("Id")
-                                .ValueGeneratedOnAdd()
-                                .HasColumnType("integer");
-
-                            NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b1.Property<int>("Id"));
-
-                            b1.Property<int>("AddressId")
-                                .HasColumnType("integer");
-
-                            b1.Property<int>("OrganisationId")
-                                .HasColumnType("integer");
-
-                            b1.Property<int>("Type")
-                                .HasColumnType("integer");
-
-                            b1.HasKey("Id");
-
-                            b1.HasIndex("AddressId");
-
-                            b1.HasIndex("OrganisationId");
-
-                            b1.ToTable("OrganisationAddress");
-
-                            b1.HasOne("CO.CDP.OrganisationInformation.Persistence.Address", "Address")
-                                .WithMany()
-                                .HasForeignKey("AddressId")
-                                .OnDelete(DeleteBehavior.Cascade)
-                                .IsRequired();
-
-                            b1.WithOwner()
-                                .HasForeignKey("OrganisationId");
-
-                            b1.Navigation("Address");
-                        });
-
-                    b.OwnsMany("CO.CDP.OrganisationInformation.Persistence.Organisation+OrganisationIdentifier", "Identifiers", b1 =>
+                    b.OwnsMany("CO.CDP.OrganisationInformation.Persistence.Organisation+Identifier", "Identifiers", b1 =>
                         {
                             b1.Property<int>("Id")
                                 .ValueGeneratedOnAdd()
@@ -366,10 +329,47 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
 
                             b1.HasIndex("OrganisationId");
 
-                            b1.ToTable("OrganisationIdentifier");
+                            b1.ToTable("Identifier");
 
                             b1.WithOwner()
                                 .HasForeignKey("OrganisationId");
+                        });
+
+                    b.OwnsMany("CO.CDP.OrganisationInformation.Persistence.Organisation+OrganisationAddress", "Addresses", b1 =>
+                        {
+                            b1.Property<int>("Id")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("integer");
+
+                            NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b1.Property<int>("Id"));
+
+                            b1.Property<int>("AddressId")
+                                .HasColumnType("integer");
+
+                            b1.Property<int>("OrganisationId")
+                                .HasColumnType("integer");
+
+                            b1.Property<int>("Type")
+                                .HasColumnType("integer");
+
+                            b1.HasKey("Id");
+
+                            b1.HasIndex("AddressId");
+
+                            b1.HasIndex("OrganisationId");
+
+                            b1.ToTable("OrganisationAddress");
+
+                            b1.HasOne("CO.CDP.OrganisationInformation.Persistence.Address", "Address")
+                                .WithMany()
+                                .HasForeignKey("AddressId")
+                                .OnDelete(DeleteBehavior.Cascade)
+                                .IsRequired();
+
+                            b1.WithOwner()
+                                .HasForeignKey("OrganisationId");
+
+                            b1.Navigation("Address");
                         });
 
                     b.OwnsOne("CO.CDP.OrganisationInformation.Persistence.Organisation+SupplierInformation", "SupplierInfo", b1 =>
@@ -377,31 +377,31 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                             b1.Property<int>("OrganisationId")
                                 .HasColumnType("integer");
 
-                            b1.Property<bool?>("CompletedEmailAddress")
+                            b1.Property<bool>("CompletedEmailAddress")
                                 .HasColumnType("boolean");
 
-                            b1.Property<bool?>("CompletedLegalForm")
+                            b1.Property<bool>("CompletedLegalForm")
                                 .HasColumnType("boolean");
 
-                            b1.Property<bool?>("CompletedOrganisationType")
+                            b1.Property<bool>("CompletedOrganisationType")
                                 .HasColumnType("boolean");
 
-                            b1.Property<bool?>("CompletedPostalAddress")
+                            b1.Property<bool>("CompletedPostalAddress")
                                 .HasColumnType("boolean");
 
-                            b1.Property<bool?>("CompletedQualification")
+                            b1.Property<bool>("CompletedQualification")
                                 .HasColumnType("boolean");
 
-                            b1.Property<bool?>("CompletedRegAddress")
+                            b1.Property<bool>("CompletedRegAddress")
                                 .HasColumnType("boolean");
 
-                            b1.Property<bool?>("CompletedTradeAssurance")
+                            b1.Property<bool>("CompletedTradeAssurance")
                                 .HasColumnType("boolean");
 
-                            b1.Property<bool?>("CompletedVat")
+                            b1.Property<bool>("CompletedVat")
                                 .HasColumnType("boolean");
 
-                            b1.Property<bool?>("CompletedWebsiteAddress")
+                            b1.Property<bool>("CompletedWebsiteAddress")
                                 .HasColumnType("boolean");
 
                             b1.Property<DateTimeOffset>("CreatedOn")
