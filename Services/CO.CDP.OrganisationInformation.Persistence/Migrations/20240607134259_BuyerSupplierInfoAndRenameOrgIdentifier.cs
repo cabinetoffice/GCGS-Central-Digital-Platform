@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,8 +12,9 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "OrganisationIdentifier");
+            migrationBuilder.RenameTable(
+                name: "OrganisationIdentifier",
+                newName : "Identifier");
 
             migrationBuilder.CreateTable(
                 name: "BuyerInformation",
@@ -30,32 +31,6 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                     table.PrimaryKey("PK_BuyerInformation", x => x.OrganisationId);
                     table.ForeignKey(
                         name: "FK_BuyerInformation_Organisations_OrganisationId",
-                        column: x => x.OrganisationId,
-                        principalTable: "Organisations",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Identifier",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Primary = table.Column<bool>(type: "boolean", nullable: false),
-                    CreatedOn = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP"),
-                    UpdatedOn = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP"),
-                    IdentifierId = table.Column<string>(type: "text", nullable: false),
-                    LegalName = table.Column<string>(type: "text", nullable: false),
-                    OrganisationId = table.Column<int>(type: "integer", nullable: false),
-                    Scheme = table.Column<string>(type: "text", nullable: false),
-                    Uri = table.Column<string>(type: "text", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Identifier", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Identifier_Organisations_OrganisationId",
                         column: x => x.OrganisationId,
                         principalTable: "Organisations",
                         principalColumn: "Id",
@@ -163,10 +138,13 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateIndex(
-                name: "IX_Identifier_OrganisationId",
-                table: "Identifier",
-                column: "OrganisationId");
+            migrationBuilder.RenameIndex(
+                name: "PK_OrganisationIdentifier",
+                newName: "PK_Identifier");
+
+            migrationBuilder.RenameIndex(
+                name: "IX_OrganisationIdentifier_OrganisationId",
+                newName: "IX_Identifier_OrganisationId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Qualification_SupplierInformationOrganisationId",
@@ -185,8 +163,9 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
             migrationBuilder.DropTable(
                 name: "BuyerInformation");
 
-            migrationBuilder.DropTable(
-                name: "Identifier");
+            migrationBuilder.RenameTable(
+                name: "Identifier",
+                newName: "OrganisationIdentifier");
 
             migrationBuilder.DropTable(
                 name: "LegalForm");
@@ -200,34 +179,13 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
             migrationBuilder.DropTable(
                 name: "SupplierInformation");
 
-            migrationBuilder.CreateTable(
-                name: "OrganisationIdentifier",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    IdentifierId = table.Column<string>(type: "text", nullable: false),
-                    LegalName = table.Column<string>(type: "text", nullable: false),
-                    OrganisationId = table.Column<int>(type: "integer", nullable: false),
-                    Primary = table.Column<bool>(type: "boolean", nullable: false),
-                    Scheme = table.Column<string>(type: "text", nullable: false),
-                    Uri = table.Column<string>(type: "text", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_OrganisationIdentifier", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_OrganisationIdentifier_Organisations_OrganisationId",
-                        column: x => x.OrganisationId,
-                        principalTable: "Organisations",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
+            migrationBuilder.RenameIndex(
+                name: "PK_Identifier",
+                newName: "PK_OrganisationIdentifier");
 
-            migrationBuilder.CreateIndex(
-                name: "IX_OrganisationIdentifier_OrganisationId",
-                table: "OrganisationIdentifier",
-                column: "OrganisationId");
+            migrationBuilder.RenameIndex(
+                name: "IX_Identifier_OrganisationId",
+                newName: "IX_OrganisationIdentifier_OrganisationId");
         }
     }
 }
