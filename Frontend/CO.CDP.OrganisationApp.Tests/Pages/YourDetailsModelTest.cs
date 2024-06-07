@@ -216,7 +216,7 @@ public class YourDetailsModelTest
         Assert.NotNull(model.ModelState);
         var modelState = model.ModelState[string.Empty];
         Assert.NotNull(modelState);
-        modelState.Errors.Should().Contain(e => e.ErrorMessage == ErrorMessagesList.PersonNotFound);
+        modelState.Errors.Should().Contain(e => e.ErrorMessage == ErrorMessagesList.DuplicatePersonName);
     }
 
     [Fact]
