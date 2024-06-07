@@ -12,9 +12,23 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.AddColumn<DateTimeOffset>(
+                name: "CreatedOn",
+                table: "OrganisationIdentifier",
+                type: "timestamp with time zone",
+                nullable: false,
+                defaultValueSql: "CURRENT_TIMESTAMP");
+
+            migrationBuilder.AddColumn<DateTimeOffset>(
+                name: "UpdatedOn",
+                table: "OrganisationIdentifier",
+                type: "timestamp with time zone",
+                nullable: false,
+                defaultValueSql: "CURRENT_TIMESTAMP");
+
             migrationBuilder.RenameTable(
                 name: "OrganisationIdentifier",
-                newName : "Identifier");
+                newName: "Identifier");
 
             migrationBuilder.CreateTable(
                 name: "BuyerInformation",
@@ -186,6 +200,14 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
             migrationBuilder.RenameIndex(
                 name: "IX_Identifier_OrganisationId",
                 newName: "IX_OrganisationIdentifier_OrganisationId");
+
+            migrationBuilder.DropColumn(
+                name: "CreatedOn",
+                table: "OrganisationIdentifier");
+
+            migrationBuilder.DropColumn(
+                name: "UpdatedOn",
+                table: "OrganisationIdentifier");
         }
     }
 }
