@@ -1,16 +1,18 @@
 using CO.CDP.Organisation.WebApiClient;
-using CO.CDP.OrganisationApp.Pages.Registration;
+using CO.CDP.OrganisationApp.Pages;
 using Moq;
 
-namespace CO.CDP.OrganisationApp.Tests.Pages.Registration;
+namespace CO.CDP.OrganisationApp.Tests.Pages;
 
 public class OrganisationOverviewTest
 {
     private readonly Mock<IOrganisationClient> organisationClientMock;
+    private readonly Mock<ISession> sessionMock;
 
     public OrganisationOverviewTest()
     {
         organisationClientMock = new Mock<IOrganisationClient>();
+        sessionMock = new Mock<ISession>();
     }
 
     [Fact]
@@ -42,6 +44,6 @@ public class OrganisationOverviewTest
 
     private OrganisationOverviewModel GivenOrganisationOverviewModel()
     {
-        return new OrganisationOverviewModel(organisationClientMock.Object);
+        return new OrganisationOverviewModel(organisationClientMock.Object, sessionMock.Object);
     }
 }

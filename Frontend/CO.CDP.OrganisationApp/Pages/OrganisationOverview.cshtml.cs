@@ -1,13 +1,14 @@
 using CO.CDP.Organisation.WebApiClient;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using OrganisationWebApiClient = CO.CDP.Organisation.WebApiClient;
 
-namespace CO.CDP.OrganisationApp.Pages.Registration;
+namespace CO.CDP.OrganisationApp.Pages;
 
 [AuthorisedSession]
 public class OrganisationOverviewModel(
-    IOrganisationClient organisationClient) : PageModel
+    IOrganisationClient organisationClient,
+    ISession session) : LoggedInUserAwareModel
 {
+    public override ISession SessionContext => session;
 
     public OrganisationWebApiClient.Organisation? OrganisationDetails { get; set; }
 
@@ -15,6 +16,6 @@ public class OrganisationOverviewModel(
     {
         ArgumentNullException.ThrowIfNull(id);
 
-        OrganisationDetails = await organisationClient.GetOrganisationAsync(id!.Value);
+        OrganisationDetails = await organisationClient.GetOrganisationAsync(id.Value);
     }
 }
