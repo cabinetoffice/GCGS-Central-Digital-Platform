@@ -26,7 +26,6 @@ module "ecs_service_tenant" {
   ecs_service_base_sg_id = var.ecs_sg_id
   family                 = "app"
   host_port              = var.service_configs.tenant.port
-  listening_port         = var.service_configs.tenant.port_listener
   memory                 = var.service_configs.tenant.memory
   name                   = var.service_configs.tenant.name
   private_subnet_ids     = var.private_subnet_ids

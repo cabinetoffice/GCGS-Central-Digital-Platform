@@ -31,7 +31,6 @@ module "ecs_service_organisation_app" {
   family                 = "app"
   host_port              = var.service_configs.organisation_app.port
   is_frontend_app        = true
-  listening_port         = var.service_configs.organisation_app.port_listener
   memory                 = var.service_configs.organisation_app.memory
   name                   = var.service_configs.organisation_app.name
   private_subnet_ids     = var.private_subnet_ids

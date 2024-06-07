@@ -4,11 +4,9 @@ module "ecs_service_organisation_information_migrations" {
   container_definitions = templatefile(
     "${path.module}/templates/task-definitions/${var.service_configs.organisation_information_migrations.name}.json.tftpl",
     {
-      container_port       = var.service_configs.organisation_information_migrations.port
       cpu                  = var.service_configs.organisation_information_migrations.cpu
       conn_string_location = var.db_connection_secret_arn
       environment          = local.service_environment
-      host_port            = var.service_configs.organisation_information_migrations.port
       image                = "${local.ecr_urls[var.service_configs.organisation_information_migrations.name]}:latest"
       lg_name              = aws_cloudwatch_log_group.tasks[var.service_configs.organisation_information_migrations.name].name
       lg_prefix            = "db"
@@ -19,13 +17,12 @@ module "ecs_service_organisation_information_migrations" {
   )
 
   cluster_id             = aws_ecs_cluster.this.id
-  container_port         = var.service_configs.organisation_information_migrations.port_listener
+  container_port         = var.service_configs.organisation_information_migrations.port
   cpu                    = var.service_configs.organisation_information_migrations.cpu
   ecs_alb_sg_id          = var.alb_sg_id
   ecs_listener_arn       = aws_lb_listener.ecs.arn
   ecs_service_base_sg_id = var.ecs_sg_id
   family                 = "db"
-  host_port              = var.service_configs.organisation_information_migrations.port
   memory                 = var.service_configs.organisation_information_migrations.memory
   name                   = var.service_configs.organisation_information_migrations.name
   private_subnet_ids     = var.private_subnet_ids

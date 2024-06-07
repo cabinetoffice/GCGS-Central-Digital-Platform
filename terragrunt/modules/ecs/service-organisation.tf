@@ -26,7 +26,6 @@ module "ecs_service_organisation" {
   ecs_service_base_sg_id = var.ecs_sg_id
   family                 = "app"
   host_port              = var.service_configs.organisation.port
-  listening_port         = var.service_configs.organisation.port_listener
   memory                 = var.service_configs.organisation.memory
   name                   = var.service_configs.organisation.name
   private_subnet_ids     = var.private_subnet_ids

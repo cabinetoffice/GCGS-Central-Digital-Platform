@@ -25,7 +25,6 @@ module "ecs_service_forms" {
   ecs_service_base_sg_id = var.ecs_sg_id
   family                 = "app"
   host_port              = var.service_configs.forms.port
-  listening_port         = var.service_configs.forms.port_listener
   memory                 = var.service_configs.forms.memory
   name                   = var.service_configs.forms.name
   private_subnet_ids     = var.private_subnet_ids
