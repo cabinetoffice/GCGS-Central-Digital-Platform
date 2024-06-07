@@ -81,7 +81,7 @@ public static class EntityFactory
             Guid = theGuid,
             Name = theName,
             Tenant = tenant ?? GivenTenant(name: theName),
-            Identifiers = [new OrganisationIdentifier
+            Identifiers = [new Organisation.Identifier
             {
                 Primary = true,
                 Scheme = scheme,
@@ -89,7 +89,7 @@ public static class EntityFactory
                 LegalName = legalName,
                 Uri = uri
             },
-                new OrganisationIdentifier
+                new Organisation.Identifier
                 {
                     Primary = false,
                     Scheme = "ISO14001",

@@ -11,6 +11,11 @@
     var countryHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Country)).HasInnerHtml;
 
     var backLink = $"{RegistrationStepModel.OrganisationAddressPage}{(Request.Query.ContainsKey("frm-summary") ? "?frm-summary" : "")}";
+
+    if (Request.Query.ContainsKey("frm-summary"))
+    {
+        Model.RedirectToSummary = true;
+    }
 }
 
 <a href="@backLink" class="govuk-back-link">Back</a>

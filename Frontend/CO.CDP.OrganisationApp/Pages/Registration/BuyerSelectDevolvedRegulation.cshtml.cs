@@ -1,4 +1,5 @@
 using CO.CDP.Mvc.Validation;
+using CO.CDP.OrganisationApp.Constants;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CO.CDP.OrganisationApp.Pages.Registration;
@@ -13,7 +14,10 @@ public class BuyerSelectDevolvedRegulationModel(ISession session) : Registration
 
     [BindProperty]
     [NotEmpty(ErrorMessage = "Select the do devolved regulations apply to your organisation?")]
-    public required List<string> Regulations { get; set; } = [];
+    public required List<DevolvedRegulation> Regulations { get; set; } = [];
+
+    [BindProperty]
+    public bool? RedirectToSummary { get; set; }
 
     public IActionResult OnGet()
     {
@@ -32,6 +36,6 @@ public class BuyerSelectDevolvedRegulationModel(ISession session) : Registration
         RegistrationDetails.Regulations = Regulations;
         session.Set(Session.RegistrationDetailsKey, RegistrationDetails);
 
-        return RedirectToPage("/OrganisationSelection");
+        return RedirectToPage("OrganisationDetailsSummary");
     }
 }

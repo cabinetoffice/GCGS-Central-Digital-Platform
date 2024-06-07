@@ -20,13 +20,21 @@ public class BuyerOrganisationTypeModel(ISession session) : RegistrationStepMode
 
     [BindProperty]
     [DisplayName("Enter type")]
-    [RequiredIf("BuyerOrganisationType", "type5")]
+    [RequiredIf("BuyerOrganisationType", "Other")]
     public string? OtherValue { get; set; }
+
+    [BindProperty]
+    public bool? RedirectToSummary { get; set; }
 
     public IActionResult OnGet()
     {
         BuyerOrganisationType = RegistrationDetails.BuyerOrganisationType;
-        OtherValue = RegistrationDetails.BuyerOrganisationOtherValue;
+        if (!string.IsNullOrEmpty(BuyerOrganisationType) && !BuyerTypes.Keys.Contains(BuyerOrganisationType))
+        {
+            OtherValue = BuyerOrganisationType;
+            BuyerOrganisationType = "Other";
+        }
+
         return Page();
     }
 
@@ -37,11 +45,25 @@ public class BuyerOrganisationTypeModel(ISession session) : RegistrationStepMode
             return Page();
         }
 
-        RegistrationDetails.BuyerOrganisationType = BuyerOrganisationType;
-        RegistrationDetails.BuyerOrganisationOtherValue = (BuyerOrganisationType == "type5" ? OtherValue : "");
+        RegistrationDetails.BuyerOrganisationType = (BuyerOrganisationType == "Other" ? OtherValue : BuyerOrganisationType);
         session.Set(Session.RegistrationDetailsKey, RegistrationDetails);
 
-        return RedirectToPage("BuyerDevolvedRegulation");
+        if (RedirectToSummary == true)
+        {
+            return RedirectToPage("OrganisationDetailsSummary");
+        }
+        else
+        {
+            return RedirectToPage("BuyerDevolvedRegulation");
+        }
 
     }
+
+    public static Dictionary<string, string> BuyerTypes => new()
+    {
+        { "CentralGovernment", "Central government, public authority: UK, Scottish, Welsh and Northern Irish Executive"},
+        { "RegionalAndLocalGovernment", "Regional and local government, public authority: UK, Scottish, Welsh and Northern Irish"},
+        { "PublicUndertaking", "Public undertaking"},
+        { "PrivateUtility", "Private utility"}
+    };
 }

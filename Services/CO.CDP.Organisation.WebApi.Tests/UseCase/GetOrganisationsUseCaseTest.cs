@@ -37,7 +37,7 @@ public class GetOrganisationsUseCaseTest(AutoMapperFixture mapperFixture) : ICla
                 Guid = Guid.NewGuid(),
                 Name = "Tenant 101"
             },
-            Identifiers = [new OrganisationInformation.Persistence.Organisation.OrganisationIdentifier
+            Identifiers = [new OrganisationInformation.Persistence.Organisation.Identifier
             {
                 Primary = true,
                 Scheme = "Scheme1",
@@ -73,7 +73,7 @@ public class GetOrganisationsUseCaseTest(AutoMapperFixture mapperFixture) : ICla
                 Guid = Guid.NewGuid(),
                 Name = "Tenant 101"
             },
-            Identifiers = [new OrganisationInformation.Persistence.Organisation.OrganisationIdentifier
+            Identifiers = [new OrganisationInformation.Persistence.Organisation.Identifier
             {
                 Primary = true,
                 Scheme = "Scheme1",
