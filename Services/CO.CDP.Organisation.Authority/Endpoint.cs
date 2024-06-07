@@ -14,22 +14,22 @@ public static class EndpointExtensions
         RsaSecurityKey rsaPrivateKey, RSAParameters resPublicParams,
         OpenIdConnectConfiguration oneLoginConfiguration)
     {
-        app.MapGet("/.well-known/openid-configuration", () => new
+        app.MapGet($"/{Discovery.DiscoveryEndpoint}", () => new
         {
             issuer,
             token_endpoint = $"{issuer}/token",
-            jwks_uri = $"{issuer}/.well-known/openid-configuration/jwks",
+            jwks_uri = $"{issuer}/{Discovery.DiscoveryEndpoint}/jwks",
             response_types_supported = new[] { ResponseTypes.Token },
-            subject_types_supported = new[] { "public" },
             scopes_supported = new[] { StandardScopes.OpenId },
             token_endpoint_auth_methods_supported = new[] { EndpointAuthenticationMethods.PostBody },
             token_endpoint_auth_signing_alg_values_supported = new[] { SecurityAlgorithms.RsaSha256 },
             grant_types_supported = new[] { GrantTypes.ClientCredentials },
+            subject_types_supported = new[] { "public" },
             claim_types_supported = new[] { "normal" },
-            claims_supported = new[] { "sub", "org_claim1", "org_claim2" }
+            claims_supported = new[] { JwtClaimTypes.Subject } // TODO: Add additional claims here <----
         });
 
-        app.MapGet("/.well-known/openid-configuration/jwks", () => new
+        app.MapGet($"/{Discovery.DiscoveryEndpoint}/jwks", () => new
         {
             keys = new[] {
                 new {
@@ -68,7 +68,7 @@ public static class EndpointExtensions
             {
                 Subject = new ClaimsIdentity(new[] {
                     new Claim("sub", urn!),
-                    // Add additional claims here <----
+                    // TODO: Add additional claims here <----
                 }),
                 Expires = DateTime.UtcNow.AddSeconds(tokenExpiry),
                 Issuer = issuer,

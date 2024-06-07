@@ -3,6 +3,7 @@ using Microsoft.IdentityModel.Protocols;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Cryptography;
+using static IdentityModel.OidcConstants;
 
 var builder = WebApplication.CreateBuilder(args);
 var app = builder.Build();
@@ -33,7 +34,7 @@ app.Run();
 static async Task<OpenIdConnectConfiguration> GetOpenIdConnectConfigurationAsync(string authority)
 {
     var configurationManager = new ConfigurationManager<OpenIdConnectConfiguration>(
-        new Uri(new Uri(authority), ".well-known/openid-configuration").ToString(),
+        new Uri(new Uri(authority), Discovery.DiscoveryEndpoint).ToString(),
         new OpenIdConnectConfigurationRetriever());
 
     return await configurationManager.GetConfigurationAsync();

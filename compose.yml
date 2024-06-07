@@ -41,6 +41,7 @@ services:
       - db
     environment:
       ConnectionStrings__OrganisationInformationDatabase: 'Server=db;Database=cdp;Username=cdp_user;Password=cdp123;'
+      Organisation__Authority: '${Organisation__Authority:-http://authority:8080}'
   organisation:
     extends:
       file: compose.common.yml
@@ -58,12 +59,15 @@ services:
       - db
     environment:
       ConnectionStrings__OrganisationInformationDatabase: 'Server=db;Database=cdp;Username=cdp_user;Password=cdp123;'
+      Organisation__Authority: '${Organisation__Authority:-http://authority:8080}'
   forms:
     extends:
       file: compose.common.yml
       service: forms
     depends_on:
       - db
+    environment:
+      Organisation__Authority: '${Organisation__Authority:-http://authority:8080}'
   data-sharing:
     extends:
       file: compose.common.yml
