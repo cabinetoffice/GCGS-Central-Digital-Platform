@@ -11,7 +11,7 @@ public class SecurityExtensionsTest
     {
         var options = new SwaggerGenOptions();
 
-        options.ConfigureOneLoginSecurity();
+        options.ConfigureBearerSecurity();
 
         options.SwaggerGeneratorOptions.SecuritySchemes
             .Should().Contain(
