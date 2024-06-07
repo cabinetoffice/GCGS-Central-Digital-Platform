@@ -4,6 +4,7 @@ using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.Pages.Registration;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Moq;
 using OrganisationWebApiClient = CO.CDP.Organisation.WebApiClient;
 
@@ -66,28 +67,8 @@ public class OrganisationDetailsSummaryModelTest
     [Fact]
     public async Task OnPost_DuplicateOrganisationName_AddsModelError()
     {
-        var problemDetails = new OrganisationWebApiClient.ProblemDetails(
-            title: "Duplicate organisation",
-            detail: "An organisation with this name already exists.",
-            status: 400,
-            instance: null,
-            type: null
-        )
-        {
-            AdditionalProperties = new Dictionary<string, object>
-            {
-                { "code", ErrorCodes.ORGANISATION_ALREADY_EXISTS }
-            }
-        };
-
-        var aex = new ApiException<OrganisationWebApiClient.ProblemDetails>(
-            "Duplicate organisation",
-            400,
-            "Bad Request",
-            null,
-            problemDetails,
-            null
-        );
+        var problemDetails = GivenProblemDetails(statusCode: 400, code: ErrorCodes.ORGANISATION_ALREADY_EXISTS);
+        var aex = GivenApiException(statusCode: 400, problemDetails: problemDetails);
 
         sessionMock.Setup(s => s.Get<UserDetails>(Session.UserDetailsKey))
             .Returns(new UserDetails { UserUrn = "test", PersonId = Guid.NewGuid() });
@@ -108,28 +89,8 @@ public class OrganisationDetailsSummaryModelTest
     [Fact]
     public async Task OnPost_ArgumentNull_AddsModelError()
     {
-        var problemDetails = new OrganisationWebApiClient.ProblemDetails(
-            title: "Argument null",
-            detail: "Argument cannot be null.",
-            status: 400,
-            instance: null,
-            type: null
-        )
-        {
-            AdditionalProperties = new Dictionary<string, object>
-            {
-                { "code", ErrorCodes.ARGUMENT_NULL }
-            }
-        };
-
-        var aex = new ApiException<OrganisationWebApiClient.ProblemDetails>(
-            "Argument null",
-            400,
-            "Bad Request",
-            null,
-            problemDetails,
-            null
-        );
+        var problemDetails = GivenProblemDetails(code: ErrorCodes.ARGUMENT_NULL, statusCode: 400);
+        var aex = GivenApiException(statusCode: 400, problemDetails: problemDetails);
 
         sessionMock.Setup(s => s.Get<UserDetails>(Session.UserDetailsKey))
             .Returns(new UserDetails { UserUrn = "test", PersonId = Guid.NewGuid() });
@@ -141,10 +102,8 @@ public class OrganisationDetailsSummaryModelTest
 
         await model.OnPost();
 
-        Assert.NotNull(model.ModelState);
-        var modelState = model.ModelState[string.Empty];
-        Assert.NotNull(modelState);
-        modelState.Errors.Should().Contain(e => e.ErrorMessage == ErrorMessagesList.PayLoadIssueOrNullAurgument);
+        model.ModelState[string.Empty].As<ModelStateEntry>().Errors
+            .Should().Contain(e => e.ErrorMessage == ErrorMessagesList.PayLoadIssueOrNullAurgument);
     }
 
     [Fact]
@@ -299,5 +258,45 @@ public class OrganisationDetailsSummaryModelTest
             .Returns(registrationDetails);
 
         return new OrganisationDetailsSummaryModel(sessionMock.Object, organisationClientMock.Object);
+    }
+
+    private static OrganisationWebApiClient.ProblemDetails GivenProblemDetails(
+        string anOrganisationWithThisNameAlreadyExists = "An organisation with this name already exists.",
+        string duplicateOrganisation = "Duplicate organisation",
+        int statusCode = 500,
+        string code = "UNKNOWN_CODE"
+    )
+    {
+        var problemDetails = new OrganisationWebApiClient.ProblemDetails(
+            title: duplicateOrganisation,
+            detail: anOrganisationWithThisNameAlreadyExists,
+            status: statusCode,
+            instance: null,
+            type: null
+        )
+        {
+            AdditionalProperties =
+            {
+                { "code", code }
+            }
+        };
+        return problemDetails;
+    }
+
+    private static ApiException<OrganisationWebApiClient.ProblemDetails> GivenApiException(
+        int statusCode = 500,
+        OrganisationWebApiClient.ProblemDetails? problemDetails = null
+    )
+    {
+        var aex = new ApiException<OrganisationWebApiClient.ProblemDetails>(
+            "Duplicate organisation",
+            statusCode,
+            "Bad Request",
+            null,
+            problemDetails ?? new OrganisationWebApiClient.ProblemDetails("Detail", "Instance", statusCode,
+                "Problem title", "Problem type"),
+            null
+        );
+        return aex;
     }
 }
