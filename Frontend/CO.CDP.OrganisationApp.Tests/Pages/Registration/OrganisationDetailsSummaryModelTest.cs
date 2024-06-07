@@ -6,7 +6,6 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Moq;
-using OrganisationWebApiClient = CO.CDP.Organisation.WebApiClient;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages.Registration;
 
@@ -67,8 +66,8 @@ public class OrganisationDetailsSummaryModelTest
     [Fact]
     public async Task OnPost_DuplicateOrganisationName_AddsModelError()
     {
-        var problemDetails = GivenProblemDetails(statusCode: 400, code: ErrorCodes.ORGANISATION_ALREADY_EXISTS);
-        var aex = GivenApiException(statusCode: 400, problemDetails: problemDetails);
+        var problemDetails = OrganisationEntityFactory.GivenProblemDetails(statusCode: 400, code: ErrorCodes.ORGANISATION_ALREADY_EXISTS);
+        var aex = OrganisationEntityFactory.GivenApiException(statusCode: 400, problemDetails: problemDetails);
 
         sessionMock.Setup(s => s.Get<UserDetails>(Session.UserDetailsKey))
             .Returns(new UserDetails { UserUrn = "test", PersonId = Guid.NewGuid() });
@@ -79,18 +78,15 @@ public class OrganisationDetailsSummaryModelTest
         var model = GivenOrganisationDetailModel();
 
         await model.OnPost();
-
-        Assert.NotNull(model.ModelState);
-        var modelState = model.ModelState[string.Empty];
-        Assert.NotNull(modelState);
-        modelState.Errors.Should().Contain(e => e.ErrorMessage == ErrorMessagesList.DuplicateOgranisationName);
+        model.ModelState[string.Empty].As<ModelStateEntry>().Errors
+          .Should().Contain(e => e.ErrorMessage == ErrorMessagesList.DuplicateOgranisationName);
     }
 
     [Fact]
     public async Task OnPost_ArgumentNull_AddsModelError()
     {
-        var problemDetails = GivenProblemDetails(code: ErrorCodes.ARGUMENT_NULL, statusCode: 400);
-        var aex = GivenApiException(statusCode: 400, problemDetails: problemDetails);
+        var problemDetails = OrganisationEntityFactory.GivenProblemDetails(code: ErrorCodes.ARGUMENT_NULL, statusCode: 400);
+        var aex = OrganisationEntityFactory.GivenApiException(statusCode: 400, problemDetails: problemDetails);
 
         sessionMock.Setup(s => s.Get<UserDetails>(Session.UserDetailsKey))
             .Returns(new UserDetails { UserUrn = "test", PersonId = Guid.NewGuid() });
@@ -109,28 +105,8 @@ public class OrganisationDetailsSummaryModelTest
     [Fact]
     public async Task OnPost_InvalidOperation_AddsModelError()
     {
-        var problemDetails = new OrganisationWebApiClient.ProblemDetails(
-            title: "Invalid operation",
-            detail: "The operation is invalid.",
-            status: 400,
-            instance: null,
-            type: null
-        )
-        {
-            AdditionalProperties = new Dictionary<string, object>
-            {
-                { "code", ErrorCodes.INVALID_OPERATION }
-            }
-        };
-
-        var aex = new ApiException<OrganisationWebApiClient.ProblemDetails>(
-            "Invalid operation",
-            400,
-            "Bad Request",
-            null,
-            problemDetails,
-            null
-        );
+        var problemDetails = OrganisationEntityFactory.GivenProblemDetails(code: ErrorCodes.INVALID_OPERATION, statusCode: 400);
+        var aex = OrganisationEntityFactory.GivenApiException(statusCode: 400, problemDetails: problemDetails);
 
         sessionMock.Setup(s => s.Get<UserDetails>(Session.UserDetailsKey))
             .Returns(new UserDetails { UserUrn = "test", PersonId = Guid.NewGuid() });
@@ -142,37 +118,15 @@ public class OrganisationDetailsSummaryModelTest
 
         await model.OnPost();
 
-        Assert.NotNull(model.ModelState);
-        var modelState = model.ModelState[string.Empty];
-        Assert.NotNull(modelState);
-        modelState.Errors.Should().Contain(e => e.ErrorMessage == ErrorMessagesList.OrganisationCreationFailed);
+        model.ModelState[string.Empty].As<ModelStateEntry>().Errors
+           .Should().Contain(e => e.ErrorMessage == ErrorMessagesList.OrganisationCreationFailed);
     }
 
     [Fact]
     public async Task OnPost_PersonNotFound_AddsModelError()
     {
-        var problemDetails = new OrganisationWebApiClient.ProblemDetails(
-            title: "Person not found",
-            detail: "The requested person was not found.",
-            status: 404,
-            instance: null,
-            type: null
-        )
-        {
-            AdditionalProperties = new Dictionary<string, object>
-            {
-                { "code", ErrorCodes.PERSON_DOES_NOT_EXIST }
-            }
-        };
-
-        var aex = new ApiException<OrganisationWebApiClient.ProblemDetails>(
-            "Person not found",
-            404,
-            "Not Found",
-            null,
-            problemDetails,
-            null
-        );
+        var problemDetails = OrganisationEntityFactory.GivenProblemDetails(code: ErrorCodes.PERSON_DOES_NOT_EXIST, statusCode: 404);
+        var aex = OrganisationEntityFactory.GivenApiException(statusCode: 404, problemDetails: problemDetails);
 
         sessionMock.Setup(s => s.Get<UserDetails>(Session.UserDetailsKey))
             .Returns(new UserDetails { UserUrn = "test", PersonId = Guid.NewGuid() });
@@ -184,37 +138,15 @@ public class OrganisationDetailsSummaryModelTest
 
         await model.OnPost();
 
-        Assert.NotNull(model.ModelState);
-        var modelState = model.ModelState[string.Empty];
-        Assert.NotNull(modelState);
-        modelState.Errors.Should().Contain(e => e.ErrorMessage == ErrorMessagesList.PersonNotFound);
+        model.ModelState[string.Empty].As<ModelStateEntry>().Errors
+          .Should().Contain(e => e.ErrorMessage == ErrorMessagesList.PersonNotFound);
     }
 
     [Fact]
     public async Task OnPost_UnprocessableEntity_AddsModelError()
     {
-        var problemDetails = new OrganisationWebApiClient.ProblemDetails(
-            title: "Unprocessable entity",
-            detail: "The provided data is not processable.",
-            status: 422,
-            instance: null,
-            type: null
-        )
-        {
-            AdditionalProperties = new Dictionary<string, object>
-            {
-                { "code", ErrorCodes.UNPROCESSABLE_ENTITY }
-            }
-        };
-
-        var aex = new ApiException<OrganisationWebApiClient.ProblemDetails>(
-            "Unprocessable entity",
-            422,
-            "Unprocessable Entity",
-            null,
-            problemDetails,
-            null
-        );
+        var problemDetails = OrganisationEntityFactory.GivenProblemDetails(code: ErrorCodes.UNPROCESSABLE_ENTITY, statusCode: 422);
+        var aex = OrganisationEntityFactory.GivenApiException(statusCode: 422, problemDetails: problemDetails);
 
         sessionMock.Setup(s => s.Get<UserDetails>(Session.UserDetailsKey))
             .Returns(new UserDetails { UserUrn = "test", PersonId = Guid.NewGuid() });
@@ -226,10 +158,8 @@ public class OrganisationDetailsSummaryModelTest
 
         await model.OnPost();
 
-        Assert.NotNull(model.ModelState);
-        var modelState = model.ModelState[string.Empty];
-        Assert.NotNull(modelState);
-        modelState.Errors.Should().Contain(e => e.ErrorMessage == ErrorMessagesList.UnprocessableEntity);
+        model.ModelState[string.Empty].As<ModelStateEntry>().Errors
+         .Should().Contain(e => e.ErrorMessage == ErrorMessagesList.UnprocessableEntity);
     }
 
     private RegistrationDetails DummyRegistrationDetails()
@@ -260,43 +190,4 @@ public class OrganisationDetailsSummaryModelTest
         return new OrganisationDetailsSummaryModel(sessionMock.Object, organisationClientMock.Object);
     }
 
-    private static OrganisationWebApiClient.ProblemDetails GivenProblemDetails(
-        string anOrganisationWithThisNameAlreadyExists = "An organisation with this name already exists.",
-        string duplicateOrganisation = "Duplicate organisation",
-        int statusCode = 500,
-        string code = "UNKNOWN_CODE"
-    )
-    {
-        var problemDetails = new OrganisationWebApiClient.ProblemDetails(
-            title: duplicateOrganisation,
-            detail: anOrganisationWithThisNameAlreadyExists,
-            status: statusCode,
-            instance: null,
-            type: null
-        )
-        {
-            AdditionalProperties =
-            {
-                { "code", code }
-            }
-        };
-        return problemDetails;
-    }
-
-    private static ApiException<OrganisationWebApiClient.ProblemDetails> GivenApiException(
-        int statusCode = 500,
-        OrganisationWebApiClient.ProblemDetails? problemDetails = null
-    )
-    {
-        var aex = new ApiException<OrganisationWebApiClient.ProblemDetails>(
-            "Duplicate organisation",
-            statusCode,
-            "Bad Request",
-            null,
-            problemDetails ?? new OrganisationWebApiClient.ProblemDetails("Detail", "Instance", statusCode,
-                "Problem title", "Problem type"),
-            null
-        );
-        return aex;
-    }
 }

@@ -180,28 +180,8 @@ public class YourDetailsModelTest
     [Fact]
     public async Task OnPost_DuplicatePersonName_AddsModelError()
     {
-        var problemDetails = new Person.WebApiClient.ProblemDetails(
-            title: "Duplicate person",
-            detail: "A person with this name already exists.",
-            status: 400,
-            instance: null,
-            type: null
-        )
-        {
-            AdditionalProperties = new Dictionary<string, object>
-            {
-                { "code", ErrorCodes.PERSON_ALREADY_EXISTS }
-            }
-        };
-
-        var aex = new ApiException<Person.WebApiClient.ProblemDetails>(
-            "Duplicate person",
-            400,
-            "Bad Request",
-            null,
-            problemDetails,
-            null
-        );
+        var problemDetails = PersonEntityFactory.GivenProblemDetails(statusCode: 400, code: ErrorCodes.PERSON_ALREADY_EXISTS);
+        var aex = PersonEntityFactory.GivenApiException(statusCode: 400, problemDetails: problemDetails);
 
         sessionMock.Setup(s => s.Get<UserDetails>(Session.UserDetailsKey))
             .Returns(new UserDetails { UserUrn = "test", PersonId = Guid.NewGuid(), FirstName = "John", LastName = "Doe" });
@@ -212,38 +192,15 @@ public class YourDetailsModelTest
         var model = GivenYourDetailsModel();
 
         await model.OnPost();
-
-        Assert.NotNull(model.ModelState);
-        var modelState = model.ModelState[string.Empty];
-        Assert.NotNull(modelState);
-        modelState.Errors.Should().Contain(e => e.ErrorMessage == ErrorMessagesList.DuplicatePersonName);
+        model.ModelState[string.Empty].As<ModelStateEntry>().Errors
+          .Should().Contain(e => e.ErrorMessage == ErrorMessagesList.DuplicatePersonName);
     }
 
     [Fact]
     public async Task OnPost_ArgumentNull_AddsModelError()
     {
-        var problemDetails = new Person.WebApiClient.ProblemDetails(
-            title: "Argument null",
-            detail: "Argument cannot be null.",
-            status: 400,
-            instance: null,
-            type: null
-        )
-        {
-            AdditionalProperties = new Dictionary<string, object>
-            {
-                { "code", ErrorCodes.ARGUMENT_NULL }
-            }
-        };
-
-        var aex = new ApiException<Person.WebApiClient.ProblemDetails>(
-            "Argument null",
-            400,
-            "Bad Request",
-            null,
-            problemDetails,
-            null
-        );
+        var problemDetails = PersonEntityFactory.GivenProblemDetails(statusCode: 400, code: ErrorCodes.ARGUMENT_NULL);
+        var aex = PersonEntityFactory.GivenApiException(statusCode: 400, problemDetails: problemDetails);
 
         sessionMock.Setup(s => s.Get<UserDetails>(Session.UserDetailsKey))
             .Returns(new UserDetails { UserUrn = "test", PersonId = Guid.NewGuid(), FirstName = "John", LastName = "Doe" });
@@ -254,38 +211,15 @@ public class YourDetailsModelTest
         var model = GivenYourDetailsModel();
 
         await model.OnPost();
-
-        Assert.NotNull(model.ModelState);
-        var modelState = model.ModelState[string.Empty];
-        Assert.NotNull(modelState);
-        modelState.Errors.Should().Contain(e => e.ErrorMessage == ErrorMessagesList.PayLoadIssueOrNullAurgument);
+        model.ModelState[string.Empty].As<ModelStateEntry>().Errors
+         .Should().Contain(e => e.ErrorMessage == ErrorMessagesList.PayLoadIssueOrNullAurgument);
     }
 
     [Fact]
     public async Task OnPost_InvalidOperation_AddsModelError()
     {
-        var problemDetails = new Person.WebApiClient.ProblemDetails(
-            title: "Invalid operation",
-            detail: "The operation is invalid.",
-            status: 400,
-            instance: null,
-            type: null
-        )
-        {
-            AdditionalProperties = new Dictionary<string, object>
-            {
-                { "code", ErrorCodes.INVALID_OPERATION }
-            }
-        };
-
-        var aex = new ApiException<Person.WebApiClient.ProblemDetails>(
-            "Invalid operation",
-            400,
-            "Bad Request",
-            null,
-            problemDetails,
-            null
-        );
+        var problemDetails = PersonEntityFactory.GivenProblemDetails(statusCode: 400, code: ErrorCodes.INVALID_OPERATION);
+        var aex = PersonEntityFactory.GivenApiException(statusCode: 400, problemDetails: problemDetails);
 
         sessionMock.Setup(s => s.Get<UserDetails>(Session.UserDetailsKey))
             .Returns(new UserDetails { UserUrn = "test", PersonId = Guid.NewGuid(), FirstName = "John", LastName = "Doe" });
@@ -297,37 +231,15 @@ public class YourDetailsModelTest
 
         await model.OnPost();
 
-        Assert.NotNull(model.ModelState);
-        var modelState = model.ModelState[string.Empty];
-        Assert.NotNull(modelState);
-        modelState.Errors.Should().Contain(e => e.ErrorMessage == ErrorMessagesList.PersonCreationFailed);
+        model.ModelState[string.Empty].As<ModelStateEntry>().Errors
+        .Should().Contain(e => e.ErrorMessage == ErrorMessagesList.PersonCreationFailed);
     }
 
     [Fact]
     public async Task OnPost_UnprocessableEntity_AddsModelError()
     {
-        var problemDetails = new Person.WebApiClient.ProblemDetails(
-            title: "Unprocessable entity",
-            detail: "The provided data is not processable.",
-            status: 422,
-            instance: null,
-            type: null
-        )
-        {
-            AdditionalProperties = new Dictionary<string, object>
-            {
-                { "code", ErrorCodes.UNPROCESSABLE_ENTITY }
-            }
-        };
-
-        var aex = new ApiException<Person.WebApiClient.ProblemDetails>(
-            "Unprocessable entity",
-            422,
-            "Unprocessable Entity",
-            null,
-            problemDetails,
-            null
-        );
+        var problemDetails = PersonEntityFactory.GivenProblemDetails(statusCode: 422, code: ErrorCodes.UNPROCESSABLE_ENTITY);
+        var aex = PersonEntityFactory.GivenApiException(statusCode: 422, problemDetails: problemDetails);
 
         sessionMock.Setup(s => s.Get<UserDetails>(Session.UserDetailsKey))
             .Returns(new UserDetails { UserUrn = "test", PersonId = Guid.NewGuid(), FirstName = "John", LastName = "Doe" });
@@ -339,10 +251,8 @@ public class YourDetailsModelTest
 
         await model.OnPost();
 
-        Assert.NotNull(model.ModelState);
-        var modelState = model.ModelState[string.Empty];
-        Assert.NotNull(modelState);
-        modelState.Errors.Should().Contain(e => e.ErrorMessage == ErrorMessagesList.UnprocessableEntity);
+        model.ModelState[string.Empty].As<ModelStateEntry>().Errors
+        .Should().Contain(e => e.ErrorMessage == ErrorMessagesList.UnprocessableEntity);
     }
 
     private readonly Person.WebApiClient.Person dummyPerson
