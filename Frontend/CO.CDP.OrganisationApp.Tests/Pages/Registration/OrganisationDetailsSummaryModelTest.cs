@@ -59,7 +59,7 @@ public class OrganisationDetailsSummaryModelTest
         var actionResult = await model.OnPost();
 
         actionResult.Should().BeOfType<RedirectToPageResult>()
-            .Which.PageName.Should().Be("OrganisationOverview");
+            .Which.PageName.Should().Be("/OrganisationOverview");
     }
 
     private RegistrationDetails DummyRegistrationDetails()

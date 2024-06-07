@@ -29,7 +29,7 @@ public class OrganisationDetailsSummaryModel(
             return Page();
         }
         session.Remove(Session.RegistrationDetailsKey);
-        return RedirectToPage("OrganisationOverview", new { organisation.Id });
+        return RedirectToPage("/OrganisationOverview", new { organisation.Id });
     }
 
     private async Task<OrganisationWebApiClient.Organisation?> RegisterOrganisation(UserDetails user, RegistrationDetails details)
