@@ -52,7 +52,11 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
     {
         switch (cause.InnerException)
         {
-            case { } e when e.Message.Contains("_Organisations_Name"):
+            case { } e when e.Message.Contains("_Organisations_Name") || e.Message.Contains("_Tenants_Name"):
+                // Currently the Organisation Name matches the Tenant Name.
+                // When both tenant and organisation are created at the same time, the Tenant is inserted first,
+                // and throws an error before the organisation insert is attempted.
+                // It's unexpected to get a duplicate tenant exception from the organisation repository.
                 throw new IOrganisationRepository.OrganisationRepositoryException.DuplicateOrganisationException(
                     $"Organisation with name `{organisation.Name}` already exists.", cause);
             case { } e when e.Message.Contains("_Organisations_Guid"):

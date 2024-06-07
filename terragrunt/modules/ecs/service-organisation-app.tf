@@ -17,20 +17,21 @@ module "ecs_service_organisation_app" {
   container_definitions = templatefile(
     "${path.module}/templates/task-definitions/${local.organisation_app.name}.json.tftpl",
     {
-      container_port       = local.organisation_app.ports.container
-      cpu                  = local.organisation_app.cpu
-      conn_string_location = var.db_connection_secret_arn
-      environment          = local.service_environment
-      host_port            = local.organisation_app.ports.host
-      image                = "${local.ecr_urls[local.organisation_app.name]}:latest"
-      lg_name              = aws_cloudwatch_log_group.tasks[local.organisation_app.name].name
-      lg_prefix            = "app"
-      lg_region            = data.aws_region.current.name
-      memory               = local.organisation_app.memory
-      name                 = local.organisation_app.name
-      oneLogin_authority   = local.one_loging.credential_locations.authority
-      oneLogin_client_id   = local.one_loging.credential_locations.client_id
-      oneLogin_private_key = local.one_loging.credential_locations.private_key
+      container_port          = local.organisation_app.ports.container
+      cpu                     = local.organisation_app.cpu
+      conn_string_location    = var.db_connection_secret_arn
+      environment             = local.service_environment
+      host_port               = local.organisation_app.ports.host
+      image                   = "${local.ecr_urls[local.organisation_app.name]}:latest"
+      lg_name                 = aws_cloudwatch_log_group.tasks[local.organisation_app.name].name
+      lg_prefix               = "app"
+      lg_region               = data.aws_region.current.name
+      memory                  = local.organisation_app.memory
+      name                    = local.organisation_app.name
+      oneLogin_authority      = local.one_loging.credential_locations.authority
+      oneLogin_client_id      = local.one_loging.credential_locations.client_id
+      oneLogin_private_key    = local.one_loging.credential_locations.private_key
+      public_hosted_zone_fqdn = var.public_hosted_zone_fqdn
     }
   )
 

@@ -2,12 +2,11 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CO.CDP.OrganisationApp.Pages.Registration;
 
-[Authorize]
+[AuthorisedSession]
 [ValidateRegistrationStep]
 public class OrganisationRegisteredAddressModel(ISession session) : RegistrationStepModel
 {
