@@ -1,5 +1,5 @@
 resource "aws_security_group_rule" "ecs_service_from_ecs_alb" {
-  count = var.listening_port != null ? 1 : 0
+  count = var.host_port != null ? 1 : 0
 
   description              = "From ALB to ${var.name} service"
   from_port                = var.container_port
@@ -11,7 +11,7 @@ resource "aws_security_group_rule" "ecs_service_from_ecs_alb" {
 }
 
 resource "aws_security_group_rule" "ecs_alb_to_ecs_service" {
-  count = var.listening_port != null ? 1 : 0
+  count = var.host_port != null ? 1 : 0
 
   description              = "From ALB to ${var.name} service"
   from_port                = var.container_port
