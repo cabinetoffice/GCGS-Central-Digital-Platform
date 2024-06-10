@@ -6,6 +6,7 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Moq;
+using static CO.CDP.OrganisationApp.Tests.Pages.Registration.OrganisationEntityFactory;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages.Registration;
 
@@ -66,8 +67,8 @@ public class OrganisationDetailsSummaryModelTest
     [Fact]
     public async Task OnPost_DuplicateOrganisationName_AddsModelError()
     {
-        var problemDetails = OrganisationEntityFactory.GivenProblemDetails(statusCode: 400, code: ErrorCodes.ORGANISATION_ALREADY_EXISTS);
-        var aex = OrganisationEntityFactory.GivenApiException(statusCode: 400, problemDetails: problemDetails);
+        var problemDetails = GivenOrganisationProblemDetails(statusCode: 400, code: ErrorCodes.ORGANISATION_ALREADY_EXISTS);
+        var aex = GivenOrganisationApiException(statusCode: 400, problemDetails: problemDetails);
 
         sessionMock.Setup(s => s.Get<UserDetails>(Session.UserDetailsKey))
             .Returns(new UserDetails { UserUrn = "test", PersonId = Guid.NewGuid() });
@@ -85,8 +86,8 @@ public class OrganisationDetailsSummaryModelTest
     [Fact]
     public async Task OnPost_ArgumentNull_AddsModelError()
     {
-        var problemDetails = OrganisationEntityFactory.GivenProblemDetails(code: ErrorCodes.ARGUMENT_NULL, statusCode: 400);
-        var aex = OrganisationEntityFactory.GivenApiException(statusCode: 400, problemDetails: problemDetails);
+        var problemDetails = GivenOrganisationProblemDetails(code: ErrorCodes.ARGUMENT_NULL, statusCode: 400);
+        var aex = GivenOrganisationApiException(statusCode: 400, problemDetails: problemDetails);
 
         sessionMock.Setup(s => s.Get<UserDetails>(Session.UserDetailsKey))
             .Returns(new UserDetails { UserUrn = "test", PersonId = Guid.NewGuid() });
@@ -105,8 +106,8 @@ public class OrganisationDetailsSummaryModelTest
     [Fact]
     public async Task OnPost_InvalidOperation_AddsModelError()
     {
-        var problemDetails = OrganisationEntityFactory.GivenProblemDetails(code: ErrorCodes.INVALID_OPERATION, statusCode: 400);
-        var aex = OrganisationEntityFactory.GivenApiException(statusCode: 400, problemDetails: problemDetails);
+        var problemDetails = GivenOrganisationProblemDetails(code: ErrorCodes.INVALID_OPERATION, statusCode: 400);
+        var aex = GivenOrganisationApiException(statusCode: 400, problemDetails: problemDetails);
 
         sessionMock.Setup(s => s.Get<UserDetails>(Session.UserDetailsKey))
             .Returns(new UserDetails { UserUrn = "test", PersonId = Guid.NewGuid() });
@@ -125,8 +126,8 @@ public class OrganisationDetailsSummaryModelTest
     [Fact]
     public async Task OnPost_PersonNotFound_AddsModelError()
     {
-        var problemDetails = OrganisationEntityFactory.GivenProblemDetails(code: ErrorCodes.PERSON_DOES_NOT_EXIST, statusCode: 404);
-        var aex = OrganisationEntityFactory.GivenApiException(statusCode: 404, problemDetails: problemDetails);
+        var problemDetails = GivenOrganisationProblemDetails(code: ErrorCodes.PERSON_DOES_NOT_EXIST, statusCode: 404);
+        var aex = GivenOrganisationApiException(statusCode: 404, problemDetails: problemDetails);
 
         sessionMock.Setup(s => s.Get<UserDetails>(Session.UserDetailsKey))
             .Returns(new UserDetails { UserUrn = "test", PersonId = Guid.NewGuid() });
@@ -145,8 +146,8 @@ public class OrganisationDetailsSummaryModelTest
     [Fact]
     public async Task OnPost_UnprocessableEntity_AddsModelError()
     {
-        var problemDetails = OrganisationEntityFactory.GivenProblemDetails(code: ErrorCodes.UNPROCESSABLE_ENTITY, statusCode: 422);
-        var aex = OrganisationEntityFactory.GivenApiException(statusCode: 422, problemDetails: problemDetails);
+        var problemDetails = GivenOrganisationProblemDetails(code: ErrorCodes.UNPROCESSABLE_ENTITY, statusCode: 422);
+        var aex = GivenOrganisationApiException(statusCode: 422, problemDetails: problemDetails);
 
         sessionMock.Setup(s => s.Get<UserDetails>(Session.UserDetailsKey))
             .Returns(new UserDetails { UserUrn = "test", PersonId = Guid.NewGuid() });

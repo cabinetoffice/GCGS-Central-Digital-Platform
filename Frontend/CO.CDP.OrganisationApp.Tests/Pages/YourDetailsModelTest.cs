@@ -180,8 +180,8 @@ public class YourDetailsModelTest
     [Fact]
     public async Task OnPost_DuplicatePersonName_AddsModelError()
     {
-        var problemDetails = PersonEntityFactory.GivenProblemDetails(statusCode: 400, code: ErrorCodes.PERSON_ALREADY_EXISTS);
-        var aex = PersonEntityFactory.GivenApiException(statusCode: 400, problemDetails: problemDetails);
+        var problemDetails = ProblemDetailsFactory.GivenProblemDetails(statusCode: 400, code: ErrorCodes.PERSON_ALREADY_EXISTS);
+        var aex = ProblemDetailsFactory.GivenApiException(statusCode: 400, problemDetails: problemDetails);
 
         sessionMock.Setup(s => s.Get<UserDetails>(Session.UserDetailsKey))
             .Returns(new UserDetails { UserUrn = "test", PersonId = Guid.NewGuid(), FirstName = "John", LastName = "Doe" });
@@ -199,8 +199,8 @@ public class YourDetailsModelTest
     [Fact]
     public async Task OnPost_ArgumentNull_AddsModelError()
     {
-        var problemDetails = PersonEntityFactory.GivenProblemDetails(statusCode: 400, code: ErrorCodes.ARGUMENT_NULL);
-        var aex = PersonEntityFactory.GivenApiException(statusCode: 400, problemDetails: problemDetails);
+        var problemDetails = ProblemDetailsFactory.GivenProblemDetails(statusCode: 400, code: ErrorCodes.ARGUMENT_NULL);
+        var aex = ProblemDetailsFactory.GivenApiException(statusCode: 400, problemDetails: problemDetails);
 
         sessionMock.Setup(s => s.Get<UserDetails>(Session.UserDetailsKey))
             .Returns(new UserDetails { UserUrn = "test", PersonId = Guid.NewGuid(), FirstName = "John", LastName = "Doe" });
@@ -218,8 +218,8 @@ public class YourDetailsModelTest
     [Fact]
     public async Task OnPost_InvalidOperation_AddsModelError()
     {
-        var problemDetails = PersonEntityFactory.GivenProblemDetails(statusCode: 400, code: ErrorCodes.INVALID_OPERATION);
-        var aex = PersonEntityFactory.GivenApiException(statusCode: 400, problemDetails: problemDetails);
+        var problemDetails = ProblemDetailsFactory.GivenProblemDetails(statusCode: 400, code: ErrorCodes.INVALID_OPERATION);
+        var aex = ProblemDetailsFactory.GivenApiException(statusCode: 400, problemDetails: problemDetails);
 
         sessionMock.Setup(s => s.Get<UserDetails>(Session.UserDetailsKey))
             .Returns(new UserDetails { UserUrn = "test", PersonId = Guid.NewGuid(), FirstName = "John", LastName = "Doe" });
@@ -238,8 +238,8 @@ public class YourDetailsModelTest
     [Fact]
     public async Task OnPost_UnprocessableEntity_AddsModelError()
     {
-        var problemDetails = PersonEntityFactory.GivenProblemDetails(statusCode: 422, code: ErrorCodes.UNPROCESSABLE_ENTITY);
-        var aex = PersonEntityFactory.GivenApiException(statusCode: 422, problemDetails: problemDetails);
+        var problemDetails = ProblemDetailsFactory.GivenProblemDetails(statusCode: 422, code: ErrorCodes.UNPROCESSABLE_ENTITY);
+        var aex = ProblemDetailsFactory.GivenApiException(statusCode: 422, problemDetails: problemDetails);
 
         sessionMock.Setup(s => s.Get<UserDetails>(Session.UserDetailsKey))
             .Returns(new UserDetails { UserUrn = "test", PersonId = Guid.NewGuid(), FirstName = "John", LastName = "Doe" });

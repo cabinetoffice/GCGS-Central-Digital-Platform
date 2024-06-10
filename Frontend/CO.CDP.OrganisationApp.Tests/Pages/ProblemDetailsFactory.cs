@@ -1,7 +1,7 @@
 using CO.CDP.Person.WebApiClient;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages;
-public static class PersonEntityFactory
+public static class ProblemDetailsFactory
 {
     public static ProblemDetails GivenProblemDetails(
         string detail = "An error occurred.",
@@ -40,27 +40,4 @@ public static class PersonEntityFactory
         );
         return aex;
     }
-
-    //public static UserDetails DummyUserDetails()
-    //{
-    //    return new UserDetails
-    //    {
-    //        UserUrn = "test",
-    //        PersonId = Guid.NewGuid(),
-    //        FirstName = "John",
-    //        LastName = "Doe",
-    //        Email = "john.doe@example.com",
-    //        Phone = "1234567890"
-    //    };
-    //}
-
-    //public static Person.WebApiClient.Person GivenPersonClientModel()
-    //{
-    //    return new Person.WebApiClient.Person(
-    //        email: "john.doe@example.com",
-    //        firstName: "John",
-    //        lastName: "Doe",
-    //        id: Guid.NewGuid()
-    //    );
-    //}
 }
