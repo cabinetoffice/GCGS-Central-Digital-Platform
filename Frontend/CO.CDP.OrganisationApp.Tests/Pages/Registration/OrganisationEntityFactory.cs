@@ -8,7 +8,7 @@ public static class OrganisationEntityFactory
         return new Organisation.WebApiClient.Organisation(null, null, null, Guid.NewGuid(), null, "Test Org", []);
     }
 
-    public static ProblemDetails GivenOrganisationProblemDetails(
+    public static ProblemDetails GivenProblemDetails(
         string anOrganisationWithThisNameAlreadyExists = "An organisation with this name already exists.",
         string duplicateOrganisation = "Duplicate organisation",
         int statusCode = 500,
@@ -31,7 +31,7 @@ public static class OrganisationEntityFactory
         return problemDetails;
     }
 
-    public static ApiException<ProblemDetails> GivenOrganisationApiException(
+    public static ApiException<ProblemDetails> GivenApiException(
         int statusCode = 500,
         ProblemDetails? problemDetails = null
     )

@@ -67,8 +67,8 @@ public class OrganisationDetailsSummaryModelTest
     [Fact]
     public async Task OnPost_DuplicateOrganisationName_AddsModelError()
     {
-        var problemDetails = GivenOrganisationProblemDetails(statusCode: 400, code: ErrorCodes.ORGANISATION_ALREADY_EXISTS);
-        var aex = GivenOrganisationApiException(statusCode: 400, problemDetails: problemDetails);
+        var problemDetails = GivenProblemDetails(statusCode: 400, code: ErrorCodes.ORGANISATION_ALREADY_EXISTS);
+        var aex = GivenApiException(statusCode: 400, problemDetails: problemDetails);
 
         sessionMock.Setup(s => s.Get<UserDetails>(Session.UserDetailsKey))
             .Returns(new UserDetails { UserUrn = "test", PersonId = Guid.NewGuid() });
@@ -86,8 +86,8 @@ public class OrganisationDetailsSummaryModelTest
     [Fact]
     public async Task OnPost_ArgumentNull_AddsModelError()
     {
-        var problemDetails = GivenOrganisationProblemDetails(code: ErrorCodes.ARGUMENT_NULL, statusCode: 400);
-        var aex = GivenOrganisationApiException(statusCode: 400, problemDetails: problemDetails);
+        var problemDetails = GivenProblemDetails(code: ErrorCodes.ARGUMENT_NULL, statusCode: 400);
+        var aex = GivenApiException(statusCode: 400, problemDetails: problemDetails);
 
         sessionMock.Setup(s => s.Get<UserDetails>(Session.UserDetailsKey))
             .Returns(new UserDetails { UserUrn = "test", PersonId = Guid.NewGuid() });
@@ -106,8 +106,8 @@ public class OrganisationDetailsSummaryModelTest
     [Fact]
     public async Task OnPost_InvalidOperation_AddsModelError()
     {
-        var problemDetails = GivenOrganisationProblemDetails(code: ErrorCodes.INVALID_OPERATION, statusCode: 400);
-        var aex = GivenOrganisationApiException(statusCode: 400, problemDetails: problemDetails);
+        var problemDetails = GivenProblemDetails(code: ErrorCodes.INVALID_OPERATION, statusCode: 400);
+        var aex = GivenApiException(statusCode: 400, problemDetails: problemDetails);
 
         sessionMock.Setup(s => s.Get<UserDetails>(Session.UserDetailsKey))
             .Returns(new UserDetails { UserUrn = "test", PersonId = Guid.NewGuid() });
@@ -126,8 +126,8 @@ public class OrganisationDetailsSummaryModelTest
     [Fact]
     public async Task OnPost_PersonNotFound_AddsModelError()
     {
-        var problemDetails = GivenOrganisationProblemDetails(code: ErrorCodes.PERSON_DOES_NOT_EXIST, statusCode: 404);
-        var aex = GivenOrganisationApiException(statusCode: 404, problemDetails: problemDetails);
+        var problemDetails = GivenProblemDetails(code: ErrorCodes.PERSON_DOES_NOT_EXIST, statusCode: 404);
+        var aex = GivenApiException(statusCode: 404, problemDetails: problemDetails);
 
         sessionMock.Setup(s => s.Get<UserDetails>(Session.UserDetailsKey))
             .Returns(new UserDetails { UserUrn = "test", PersonId = Guid.NewGuid() });
@@ -146,8 +146,8 @@ public class OrganisationDetailsSummaryModelTest
     [Fact]
     public async Task OnPost_UnprocessableEntity_AddsModelError()
     {
-        var problemDetails = GivenOrganisationProblemDetails(code: ErrorCodes.UNPROCESSABLE_ENTITY, statusCode: 422);
-        var aex = GivenOrganisationApiException(statusCode: 422, problemDetails: problemDetails);
+        var problemDetails = GivenProblemDetails(code: ErrorCodes.UNPROCESSABLE_ENTITY, statusCode: 422);
+        var aex = GivenApiException(statusCode: 422, problemDetails: problemDetails);
 
         sessionMock.Setup(s => s.Get<UserDetails>(Session.UserDetailsKey))
             .Returns(new UserDetails { UserUrn = "test", PersonId = Guid.NewGuid() });
