@@ -77,7 +77,7 @@ public class SupplierInformationTest
     {
         var organisation = GivenOrganisation(
             roles: [PartyRole.Supplier],
-            identifiers: [GivenIdentifier(scheme: "GB-VAT")]
+            identifiers: [GivenIdentifier(scheme: "VAT")]
         );
 
         organisation.UpdateSupplierInformation();
