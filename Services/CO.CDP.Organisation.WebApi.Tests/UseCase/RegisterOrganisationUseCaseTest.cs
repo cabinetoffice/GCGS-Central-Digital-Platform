@@ -253,6 +253,22 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
         )), Times.Once);
     }
 
+    [Fact]
+    public async Task ItInitialisesSupplierInformationWhenRegisteringSupplierOrganisation()
+    {
+        var person = GivenPersonExists(guid: Guid.NewGuid());
+        var command = GivenRegisterOrganisationCommand(
+            personId: person.Guid,
+            roles: [PartyRole.Supplier]
+        );
+
+        await UseCase.Execute(command);
+
+        _repository.Verify(r => r.Save(It.Is<Persistence.Organisation>(o =>
+            o.BuyerInfo == null && o.SupplierInfo != null
+        )), Times.Once);
+    }
+
     private static RegisterOrganisation GivenRegisterOrganisationCommand(
         string name = "TheOrganisation",
         Guid? personId = null,

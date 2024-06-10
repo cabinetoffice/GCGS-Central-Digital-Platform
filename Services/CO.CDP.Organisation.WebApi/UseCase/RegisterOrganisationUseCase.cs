@@ -1,5 +1,6 @@
 using AutoMapper;
 using CO.CDP.Organisation.WebApi.Model;
+using CO.CDP.OrganisationInformation;
 using CO.CDP.OrganisationInformation.Persistence;
 
 namespace CO.CDP.Organisation.WebApi.UseCase;
@@ -43,10 +44,20 @@ public class RegisterOrganisationUseCase(
     {
         var organisation = MapRequestToOrganisation(command, person);
         organisation.Persons.Add(person);
-        organisation.BuyerInfo = new OrganisationInformation.Persistence.Organisation.BuyerInformation
+        if (organisation.Roles.Contains(PartyRole.Buyer))
         {
-            BuyerType = ""
-        };
+            organisation.BuyerInfo = new OrganisationInformation.Persistence.Organisation.BuyerInformation
+            {
+                BuyerType = ""
+            };
+        }
+        if (organisation.Roles.Contains(PartyRole.Supplier))
+        {
+            organisation.SupplierInfo = new OrganisationInformation.Persistence.Organisation.SupplierInformation
+            {
+                SupplierType = SupplierType.Organisation
+            };
+        }
         return organisation;
     }
 
