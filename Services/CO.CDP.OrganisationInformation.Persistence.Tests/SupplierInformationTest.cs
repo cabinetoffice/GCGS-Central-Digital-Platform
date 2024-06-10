@@ -28,4 +28,18 @@ public class SupplierInformationTest
 
         organisation.SupplierInfo.Should().BeNull();
     }
+
+    [Fact]
+    public void ItDoesNotCreateNewSupplierInformationIfItIsAlreadyPresent()
+    {
+        var organisation = GivenOrganisation(
+            roles: [PartyRole.Supplier],
+            supplierInformation: GivenSupplierInformation(type: SupplierType.Individual)
+        );
+
+        organisation.UpdateSupplierInformation();
+
+        organisation.SupplierInfo.As<Organisation.SupplierInformation>()
+            .SupplierType.Should().Be(SupplierType.Individual);
+    }
 }

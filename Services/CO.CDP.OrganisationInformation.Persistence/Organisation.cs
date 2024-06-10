@@ -120,7 +120,7 @@ public class Organisation : IEntityDate
         {
             return;
         }
-        BuyerInfo = new BuyerInformation();
+        BuyerInfo ??= new BuyerInformation();
     }
 
     public void UpdateSupplierInformation()
@@ -129,6 +129,6 @@ public class Organisation : IEntityDate
         {
             return;
         }
-        SupplierInfo = new SupplierInformation();
+        SupplierInfo ??= new SupplierInformation();
     }
 }

@@ -71,7 +71,10 @@ public static class EntityFactory
         string email = "contact@default.org",
         string telephone = "123-456-7890",
         string contactUri = "http://contact.default.org",
-        List<PartyRole>? roles = null)
+        List<PartyRole>? roles = null,
+        BuyerInformation? buyerInformation = null,
+        SupplierInformation? supplierInformation = null
+    )
     {
         var theGuid = guid ?? Guid.NewGuid();
         var theName = name ?? $"Organisation {theGuid}";
@@ -116,7 +119,23 @@ public static class EntityFactory
                 Telephone = telephone,
                 Url = contactUri
             },
-            Roles = roles ?? [PartyRole.Buyer]
+            Roles = roles ?? [PartyRole.Buyer],
+            BuyerInfo = buyerInformation,
+            SupplierInfo = supplierInformation
         };
     }
+
+    public static BuyerInformation GivenBuyerInformation(
+        string? type = null
+    ) => new()
+    {
+        BuyerType = type
+    };
+
+    public static SupplierInformation GivenSupplierInformation(
+        SupplierType? type = null
+    ) => new()
+    {
+        SupplierType = type
+    };
 }

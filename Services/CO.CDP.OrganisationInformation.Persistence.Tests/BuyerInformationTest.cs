@@ -29,4 +29,17 @@ public class BuyerInformationTest
 
         organisation.BuyerInfo.Should().BeNull();
     }
+
+    [Fact]
+    public void ItDoesNotCreateNewBuyerInformationIfItIsAlreadyPresent()
+    {
+        var organisation = GivenOrganisation(
+            roles: [PartyRole.Buyer],
+            buyerInformation: GivenBuyerInformation(type: "Buyer type 1")
+        );
+
+        organisation.UpdateBuyerInformation();
+
+        organisation.BuyerInfo.As<Organisation.BuyerInformation>().BuyerType.Should().Be("Buyer type 1");
+    }
 }
