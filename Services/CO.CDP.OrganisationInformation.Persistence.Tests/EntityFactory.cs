@@ -61,10 +61,7 @@ public static class EntityFactory
         string? name = null,
         List<Organisation.Identifier>? identifiers = null,
         List<OrganisationAddress>? addresses = null,
-        string contactName = "Default Contact",
-        string email = "contact@default.org",
-        string telephone = "123-456-7890",
-        string contactUri = "http://contact.default.org",
+        OrganisationContactPoint? contactPoint = null,
         List<PartyRole>? roles = null,
         BuyerInformation? buyerInformation = null,
         SupplierInformation? supplierInformation = null
@@ -109,12 +106,12 @@ public static class EntityFactory
                     CountryName = "Defaultland"
                 }
             }],
-            ContactPoint = new OrganisationContactPoint
+            ContactPoint = contactPoint ?? new OrganisationContactPoint
             {
-                Name = contactName,
-                Email = email,
-                Telephone = telephone,
-                Url = contactUri
+                Name = "Default Contact",
+                Email = "contact@default.org",
+                Telephone = "123-456-7890",
+                Url = "https://contact.default.org"
             },
             Roles = roles ?? [PartyRole.Buyer],
             BuyerInfo = buyerInformation,
