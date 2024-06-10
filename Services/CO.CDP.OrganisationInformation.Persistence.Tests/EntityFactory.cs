@@ -132,12 +132,14 @@ public static class EntityFactory
     public static SupplierInformation GivenSupplierInformation(
         SupplierType? type = null,
         List<Qualification>? qualifications = null,
-        List<TradeAssurance>? tradeAssurances = null
+        List<TradeAssurance>? tradeAssurances = null,
+        LegalForm? legalForm = null
     ) => new()
     {
         SupplierType = type,
         Qualifications = qualifications ?? [],
-        TradeAssurances = tradeAssurances ?? []
+        TradeAssurances = tradeAssurances ?? [],
+        LegalForm = legalForm
     };
 
     public static OrganisationAddress GivenOrganisationAddress(
@@ -187,5 +189,16 @@ public static class EntityFactory
             AwardedByPersonOrBodyName = "Assurance Body",
             ReferenceNumber = "QA-12333",
             DateAwarded = DateTimeOffset.Parse("2009-10-03T00:00:00Z")
+        };
+
+    public static LegalForm GivenSupplierLegalForm(
+        string registeredLegalForm = "Limited company"
+    )
+        => new()
+        {
+            RegisteredUnderAct2006 = "yes",
+            RegisteredLegalForm = registeredLegalForm,
+            LawRegistered = "England and Wales",
+            RegistrationDate = DateTimeOffset.Parse("2005-12-02T00:00:00Z")
         };
 }

@@ -128,4 +128,20 @@ public class SupplierInformationTest
         organisation.SupplierInfo.As<Organisation.SupplierInformation>()
             .CompletedTradeAssurance.Should().BeTrue();
     }
+
+    [Fact]
+    public void ItMarksLegalFormAsCompletedIfGiven()
+    {
+        var organisation = GivenOrganisation(
+            roles: [PartyRole.Supplier],
+            supplierInformation: GivenSupplierInformation(
+                legalForm: GivenSupplierLegalForm(registeredLegalForm: "Limited company")
+            )
+        );
+
+        organisation.UpdateSupplierInformation();
+
+        organisation.SupplierInfo.As<Organisation.SupplierInformation>()
+            .CompletedLegalForm.Should().BeTrue();
+    }
 }
