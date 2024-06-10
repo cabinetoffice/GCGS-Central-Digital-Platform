@@ -120,6 +120,7 @@ public class Organisation : IEntityDate
         {
             return;
         }
+
         BuyerInfo ??= new BuyerInformation();
     }
 
@@ -129,6 +130,8 @@ public class Organisation : IEntityDate
         {
             return;
         }
+
         SupplierInfo ??= new SupplierInformation();
+        SupplierInfo.CompletedRegAddress = Addresses.Any(a => a.Type == AddressType.Registered);
     }
 }

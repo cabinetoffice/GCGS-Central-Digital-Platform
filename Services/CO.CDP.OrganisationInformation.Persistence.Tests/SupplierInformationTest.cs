@@ -9,7 +9,8 @@ public class SupplierInformationTest
     public void ItInitialisesSupplierInformationIfSupplierRoleIsPresent()
     {
         var organisation = GivenOrganisation(
-            roles: [PartyRole.Supplier]
+            roles: [PartyRole.Supplier],
+            addresses: []
         );
 
         organisation.UpdateSupplierInformation();
@@ -41,5 +42,31 @@ public class SupplierInformationTest
 
         organisation.SupplierInfo.As<Organisation.SupplierInformation>()
             .SupplierType.Should().Be(SupplierType.Individual);
+    }
+
+    [Fact]
+    public void ItMarksRegistrationAddressAsCompletedInSupplierInformationIfGiven()
+    {
+        var organisation = GivenOrganisation(
+            roles: [PartyRole.Supplier],
+            addresses: [new Organisation.OrganisationAddress
+            {
+                Type  = AddressType.Registered,
+                Address = new Address{
+                    StreetAddress = "10 Green Lane",
+                    StreetAddress2 = "Blue House",
+                    Locality = "London",
+                    Region = "",
+                    PostalCode = "SW19 8AR",
+                    CountryName = "United Kingdom"
+                }
+            }]
+
+        );
+
+        organisation.UpdateSupplierInformation();
+
+        organisation.SupplierInfo.As<Organisation.SupplierInformation>()
+            .CompletedRegAddress.Should().BeTrue();
     }
 }
