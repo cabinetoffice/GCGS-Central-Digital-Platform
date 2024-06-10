@@ -54,7 +54,7 @@ public class Organisation : IEntityDate
     [Owned]
     public record SupplierInformation : IEntityDate
     {
-        public required SupplierType SupplierType { get; set; }
+        public SupplierType? SupplierType { get; set; }
         public List<OperationType> OperationTypes { get; set; } = [];
         public bool CompletedRegAddress { get; set; }
         public bool CompletedPostalAddress { get; set; }
@@ -75,7 +75,7 @@ public class Organisation : IEntityDate
     [Owned]
     public record BuyerInformation : IEntityDate
     {
-        public required string BuyerType { get; set; }
+        public string? BuyerType { get; set; }
         public List<DevolvedRegulation> DevolvedRegulations { get; set; } = [];
         public DateTimeOffset CreatedOn { get; set; }
         public DateTimeOffset UpdatedOn { get; set; }
@@ -112,5 +112,31 @@ public class Organisation : IEntityDate
         public DateTimeOffset RegistrationDate { get; set; }
         public DateTimeOffset CreatedOn { get; set; }
         public DateTimeOffset UpdatedOn { get; set; }
+    }
+
+    public void UpdateBuyerInformation()
+    {
+        if (!Roles.Contains(PartyRole.Buyer))
+        {
+            return;
+        }
+
+        BuyerInfo ??= new BuyerInformation();
+    }
+
+    public void UpdateSupplierInformation()
+    {
+        if (!Roles.Contains(PartyRole.Supplier))
+        {
+            return;
+        }
+
+        SupplierInfo ??= new SupplierInformation();
+        SupplierInfo.CompletedRegAddress = Addresses.Any(a => a.Type == AddressType.Registered);
+        SupplierInfo.CompletedPostalAddress = Addresses.Any(a => a.Type == AddressType.Postal);
+        SupplierInfo.CompletedVat = Identifiers.Any(i => i.Scheme == "VAT");
+        SupplierInfo.CompletedQualification = SupplierInfo.Qualifications.Count > 0;
+        SupplierInfo.CompletedTradeAssurance = SupplierInfo.TradeAssurances.Count > 0;
+        SupplierInfo.CompletedLegalForm = SupplierInfo.LegalForm != null;
     }
 }
