@@ -9,6 +9,11 @@ workspace "Central Digital Platform" {
         cfs = softwareSystem "Supplier Information and Contracts Finder"
         ppg = softwareSystem "Public Procurement Gateway"
         cdp = softwareSystem "Central Digital Platform" "Supports procurement" {
+            authority = container "Authority" "" "Asp.Net Core" WebApi {
+                openIdConfigurationEndpoint = component "OpenID Well-Known Configuration Endpoint" "Exposes OpenID configuration" "Asp.Net Core Web API"
+                openIdJwksConfigurationEndpoint = component "OpenID Well-Known JWKS Configuration Endpoint" "Exposes Json Web Key Set" "Asp.Net Core Web API"
+                tokenEndpoint = component "Token endpoint" "Exchanges a valid One Login token to a longer-lived token with additional claims." "Asp.Net Core Web API"
+            }
             tenantApi = container "Tenant API" "" "Asp.Net Core" WebApi {
                 tenantEndpoint = component "Tenant Endpoint" "" "Asp.Net Core Web API"
                 registerTenantUseCase = component "Register Tenant Use Case"
@@ -25,8 +30,8 @@ workspace "Central Digital Platform" {
             organisationApi = container "Organisation API" "" "Asp.Net Core" WebApi {
                 organisationEndpoint = component "Organisation Endpoint" "" "Asp.Net Core Web API"
             }
-            dataCaptureApi = container "Data Capture API" "" "Asp.Net Core" WebApi {
-                dataCaptureEndpoint = component "Data Capture Endpoint" "" "Asp.Net Core Web API"
+            formsApi = container "Forms API" "" "Asp.Net Core" WebApi {
+                formsEndpoint = component "Forms Endpoint" "" "Asp.Net Core Web API"
             }
             dataSharingApi = container "Data Sharing API" "" "Asp.Net Core" WebApi {
                 dataSharingEndpoint = component "Data Sharing Endpoint" "" "Asp.Net Core Web API"
@@ -35,54 +40,48 @@ workspace "Central Digital Platform" {
                 tenantPersistence -> database "reads/writes" "SQL"
             }
             webApp = container "Web Application" "Account & data capture frontend" "Asp.Net Core MVC" WebApp {
-                signInController = component "Sign In Controller" "Enables organisations to sign in to the Organisation Account." "Asp.Net Core MVC Controller"
-                registrationController = component "Registration Controller" "Enables organisations to sign sign up for the Organisation Account." "Asp.Net Core MVC Controller"
-                personController = component "Person Controller" "Enables organisations to manage organisation persons." "Asp.Net Core MVC Controller"
-                coreDataController = component "Core Data Controller" "Enables organisations to provide core data for their Organisation." "Asp.Net Core MVC Controller"
-                dataCaptureController = component "Data Capture Controller" "Enables organisations to provide additional details." "Asp.Net Core MVC Controller"
-                dataSharingController = component "Data Sharing Controller" "Enables Suppliers to share their Organisation data with Buyers." "Asp.Net Core MVC Controller"
+                mvcController = component "MVC Controller" "Enables web users to perform tasks." "Asp.Net Core MVC Controller"
 
                 tenantClient = component "Tenant Client" "Makes API calls to the Tenant API" "library"
                 personClient = component "Person Client" "Makes API calls to the Person API" "library"
                 organisationClient = component "Organisation Client" "Makes API calls to the Organisation API" "library"
-                dataCaptureClient = component "Data Capture Client" "Makes API calls to the Data Capture API" "library"
+                formsClient = component "Forms Client" "Makes API calls to the Forms API" "library"
                 dataSharingClient = component "Data Sharing Client" "Makes API calls to the Data Sharing API" "library"
 
-                supplier -> signInController "Uses" "HTTPS"
-                supplier -> registrationController "Uses" "HTTPS"
-                supplier -> personController "Uses" "HTTPS"
-                supplier -> coreDataController "Uses" "HTTPS"
-                supplier -> dataCaptureController "Uses" "HTTPS"
-                supplier -> dataSharingController "Uses" "HTTPS"
+                supplier -> mvcController "Uses" "HTTPS"
 
-                signInController -> oneLogin "Authenticates with" "HTTPS"
-                registrationController -> tenantClient "Uses"
-                registrationController -> personClient "Uses"
-                registrationController -> organisationClient "Uses"
-                personController -> personClient "Uses"
-                coreDataController -> organisationClient "Uses"
-                dataCaptureController -> dataCaptureClient "Uses"
-                dataSharingController -> dataSharingClient "Uses"
+                mvcController -> oneLogin "Authenticates with" "HTTPS"
+                mvcController -> tokenEndpoint "Authenticates and authorises with" "HTTPS"
+                mvcController -> tenantClient "Uses"
+                mvcController -> personClient "Uses"
+                mvcController -> organisationClient "Uses"
+                mvcController -> formsClient "Uses"
+                mvcController -> dataSharingClient "Uses"
             }
 
             personApi -> database "reads/writes" "SQL"
             organisationApi -> database "reads/writes" "SQL"
-            dataCaptureApi -> database "reads/writes" "SQL"
+            formsApi -> database "reads/writes" "SQL"
             dataSharingApi -> database "reads/writes" "SQL"
 
             tenantClient -> tenantEndpoint "Calls" "HTTPS/json"
             personClient -> personEndpoint "Calls" "HTTPS/json"
             organisationClient -> organisationEndpoint "Calls" "HTTPS/json"
-            dataCaptureClient -> dataCaptureEndpoint "Calls" "HTTPS/json"
+            formsClient -> formsEndpoint "Calls" "HTTPS/json"
             dataSharingClient -> dataSharingEndpoint "Calls" "HTTPS/json"
             eSender -> dataSharingEndpoint "Looks up supplier information" "HTTPS/json"
         }
 
         buyer -> eSender "Uses"
 
-        fts -> cdp "Authorizes with"
-        cfs -> cdp "Authorizes with"
-        ppg -> cdp "Authorizes with"
+        fts -> oneLogin "Authenticates with"
+        fts -> tokenEndpoint "Authorizes with"
+        fts -> openIdConfigurationEndpoint "Retrieves OpenID configuration from"
+        fts -> openIdJwksConfigurationEndpoint "Retrieves Json Web Key Set from"
+        webApp -> openIdConfigurationEndpoint "Retrieves OpenID configuration from"
+        webApp -> openIdJwksConfigurationEndpoint "Retrieves Json Web Key Set from"
+        cfs -> authority "Authorizes with"
+        ppg -> authority "Authorizes with"
     }
 
     views {
@@ -94,7 +93,11 @@ workspace "Central Digital Platform" {
             include *
             description "The container diagram for the Central Digital Platform."
         }
-         component webApp "CDP-3-WebApp-Components" {
+        component authority "CDP-3-Authority-Components" {
+            include *
+            description "The component diagram for the Authority service."
+        }
+        component webApp "CDP-3-WebApp-Components" {
             include *
             description "The component diagram for the Web Application."
         }
@@ -110,9 +113,9 @@ workspace "Central Digital Platform" {
             include *
             description "The component diagram for the Organisation API."
         }
-        component dataCaptureApi "CDP-7-DataCaptureApi-Components" {
+        component formsApi "CDP-7-FormsApi-Components" {
             include *
-            description "The component diagram for the Data Capture API."
+            description "The component diagram for the Forms API."
         }
         component dataSharingApi "CDP-8-DataSharingApi-Components" {
             include *
