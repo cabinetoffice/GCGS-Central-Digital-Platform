@@ -43,6 +43,10 @@ public class RegisterOrganisationUseCase(
     {
         var organisation = MapRequestToOrganisation(command, person);
         organisation.Persons.Add(person);
+        organisation.BuyerInfo = new OrganisationInformation.Persistence.Organisation.BuyerInformation
+        {
+            BuyerType = ""
+        };
         return organisation;
     }
 

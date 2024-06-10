@@ -237,9 +237,26 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
             Times.Never);
     }
 
+    [Fact]
+    public async Task ItInitialisesBuyerInformationWhenRegisteringBuyerOrganisation()
+    {
+        var person = GivenPersonExists(guid: Guid.NewGuid());
+        var command = GivenRegisterOrganisationCommand(
+            personId: person.Guid,
+            roles: [PartyRole.Buyer]
+        );
+
+        await UseCase.Execute(command);
+
+        _repository.Verify(r => r.Save(It.Is<Persistence.Organisation>(o =>
+            o.BuyerInfo != null && o.SupplierInfo == null
+        )), Times.Once);
+    }
+
     private static RegisterOrganisation GivenRegisterOrganisationCommand(
         string name = "TheOrganisation",
-        Guid? personId = null
+        Guid? personId = null,
+        List<PartyRole>? roles = null
     )
     {
         return new RegisterOrganisation
@@ -278,7 +295,7 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
                 Telephone = "123-456-7890",
                 Url = "https://example.org/contact"
             },
-            Roles = [PartyRole.Supplier]
+            Roles = roles ?? [PartyRole.Supplier]
         };
     }
 
