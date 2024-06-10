@@ -21,6 +21,14 @@ public record RegisterOrganisation
 
     public required List<PartyRole> Roles { get; init; }
 
+    public BuyerInformation? BuyerInfo { get; init; }
+}
+
+public record BuyerInformation
+{
+    public string? BuyerType { get; set; }
+
+    public required List<DevolvedRegulation> DevolvedRegulations { get; init; }
 }
 
 internal record UpdateOrganisation

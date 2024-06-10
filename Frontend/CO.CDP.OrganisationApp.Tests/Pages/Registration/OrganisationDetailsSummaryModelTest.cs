@@ -48,7 +48,7 @@ public class OrganisationDetailsSummaryModelTest
     }
 
     [Fact]
-    public async Task OnPost_OnSuccess_RedirectsToOrganisationOverview()
+    public async Task OnPost_OnSuccess_RedirectsToOrganisationSelection()
     {
         sessionMock.Setup(s => s.Get<UserDetails>(Session.UserDetailsKey))
             .Returns(new UserDetails { UserUrn = "test", PersonId = Guid.NewGuid() });
@@ -61,7 +61,7 @@ public class OrganisationDetailsSummaryModelTest
         var actionResult = await model.OnPost();
 
         actionResult.Should().BeOfType<RedirectToPageResult>()
-            .Which.PageName.Should().Be("/OrganisationOverview");
+            .Which.PageName.Should().Be("/OrganisationSelection");
     }
 
     [Fact]

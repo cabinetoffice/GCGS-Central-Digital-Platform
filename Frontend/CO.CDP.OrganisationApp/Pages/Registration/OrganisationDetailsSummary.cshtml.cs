@@ -29,7 +29,7 @@ public class OrganisationDetailsSummaryModel(
             return Page();
         }
         session.Remove(Session.RegistrationDetailsKey);
-        return RedirectToPage("/OrganisationOverview", new { organisation.Id });
+        return RedirectToPage("/OrganisationSelection");
     }
 
     private async Task<OrganisationWebApiClient.Organisation?> RegisterOrganisationAsync(UserDetails user, RegistrationDetails details)
@@ -71,6 +71,9 @@ public class OrganisationDetailsSummaryModel(
                 region: details.OrganisationRegion,
                 countryName: details.OrganisationCountry,
                 postalCode: details.OrganisationPostcode)],
+            buyerInfo: new BuyerInformation(
+                buyerType: details.BuyerOrganisationType,
+                devolvedRegulations: details.Regulations.AsApiClientDevolvedRegulationList()),
             contactPoint: new OrganisationContactPoint(
                 email: details.OrganisationEmailAddress,
                 name: null,
