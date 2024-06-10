@@ -63,10 +63,7 @@ public static class EntityFactory
         string identifierId = "1",
         string legalName = "DefaultLegalName",
         string uri = "http://default.org",
-        string streetAddress = "1234 Default St",
-        string city = "Default Region",
-        string postCode = "12345",
-        string country = "Defaultland",
+        List<OrganisationAddress>? addresses = null,
         string contactName = "Default Contact",
         string email = "contact@default.org",
         string telephone = "123-456-7890",
@@ -100,18 +97,18 @@ public static class EntityFactory
                     LegalName = "AnotherLegalName",
                     Uri = "http://example.com"
                 }],
-            Addresses = {new OrganisationAddress
+            Addresses = addresses ?? [new OrganisationAddress
             {
                 Type  = AddressType.Registered,
                 Address = new Address{
-                    StreetAddress = streetAddress,
+                    StreetAddress = "1234 Default St",
                     StreetAddress2 = "",
-                    Locality = city,
+                    Locality = "Default City",
                     Region = "",
-                    PostalCode = postCode,
-                    CountryName = country
+                    PostalCode = "12345",
+                    CountryName = "Defaultland"
                 }
-            } },
+            }],
             ContactPoint = new OrganisationContactPoint
             {
                 Name = contactName,
