@@ -65,36 +65,9 @@ public static class EndpointExtensions
         var openApiTags = new List<OpenApiTag> { new() { Name = "Tenant Lookup" } };
 
         app.MapGet("/tenant/lookup",
-                async ([FromQuery] string urn, IUseCase<string, Model.Tenant?> useCase) =>
+                async ([FromQuery] string urn, IUseCase<string, Model.TenantLookup?> useCase) =>
                 await useCase.Execute(urn)
-                    .AndThen(tenant => tenant != null ? Results.Ok(
-                        new TenantLookup
-                        {
-                            User = new UserDetails
-                            {
-                                Urn = urn,
-                                Email = "contact@example.com",
-                                Name = "John Doe"
-                            },
-                            Tenants = [
-                                new UserTenant
-                                {
-                                    Id = Guid.Parse("826def77-311c-424d-a86e-069029c859c0"),
-                                    Name = "Acme Corporation / John Doe",
-                                    Organisations = [
-                                        new UserOrganisation
-                                        {
-                                            Id = Guid.Parse("23135984-b706-47db-8867-b4e34016b501"),
-                                            Name = "Acme Corporation",
-                                            Roles = [PartyRole.Supplier],
-                                            Uri = new Uri("/organsations/23135984-b706-47db-8867-b4e34016b501"),
-                                            Scopes = ["Responder"]
-                                        }
-                                    ]
-                                }
-                            ]
-                        }
-                        ) : Results.NotFound()))
+                    .AndThen(tenant => tenant != null ? Results.Ok(tenant) : Results.NotFound()))
             .Produces<TenantLookup>(StatusCodes.Status200OK, "application/json")
             .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
             .Produces<ProblemDetails>(StatusCodes.Status404NotFound)

@@ -27,6 +27,14 @@ public class DatabaseTenantRepository(OrganisationInformationContext context) : 
         return await context.Tenants.FirstOrDefaultAsync(t => t.Name == name);
     }
 
+    public async Task<Person?> FindByUserUrn(string userUrn)
+    {
+        return await context.Persons
+                    .Include(p => p.Tenants)
+                    .Include(p => p.Organisations)
+                    .FirstOrDefaultAsync(p => p.UserUrn == userUrn);
+    }
+
     public void Dispose()
     {
         context.Dispose();

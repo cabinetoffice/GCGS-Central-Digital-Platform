@@ -130,6 +130,28 @@ public class DatabaseTenantRepositoryTest(PostgreSqlFixture postgreSql) : IClass
         found.As<Tenant>().Persons.Should().Contain(p => p.Guid == person2.Guid);
     }
 
+    [Fact]
+    public async Task FindByUserUrn_WhenPersonExistsWithTenantsAndOrganisations_ReturnsPersonWithAssociations()
+    {
+        using var repository = TenantRepository();
+
+        var userUrn = "urn:fdc:gov.uk:2022:43af5a8b-f4c0-414b-b341-d4f1fa894302";
+        var person = GivenPerson(guid: Guid.NewGuid(), email: "Person1@example.com", userUrn: userUrn);
+        var organisation1 = GivenOrganisation(guid: Guid.NewGuid(), name: "Acme Corporation");
+        var organisation2 = GivenOrganisation(guid: Guid.NewGuid(), name: "Widget Co");
+        var tenant1 = GivenTenant(guid: Guid.NewGuid(), name: "Acme Corporation / John Doe", person: person, organisation: organisation1);
+        var tenant2 = GivenTenant(guid: Guid.NewGuid(), name: "Widget Co / John Doe", person: person, organisation: organisation2);
+
+        repository.Save(tenant1);
+        repository.Save(tenant2);
+
+        var foundPerson = await repository.FindByUserUrn(userUrn);
+
+        foundPerson.Should().NotBeNull();
+        foundPerson.As<Person>().UserUrn.Should().Be(userUrn);
+        foundPerson.As<Person>().Tenants.Should().HaveCount(2);
+        foundPerson.As<Person>().Tenants?.FirstOrDefault()?.Organisations.Should().HaveCount(1);
+    }
 
     private ITenantRepository TenantRepository()
     {
