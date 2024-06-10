@@ -101,4 +101,20 @@ public class SupplierInformationTest
         organisation.SupplierInfo.As<Organisation.SupplierInformation>()
             .CompletedQualification.Should().BeTrue();
     }
+
+    [Fact]
+    public void ItMarksTradeAssuranceAsCompletedIfGiven()
+    {
+        var organisation = GivenOrganisation(
+            roles: [PartyRole.Supplier],
+            supplierInformation: GivenSupplierInformation(
+                tradeAssurances: [GivenSupplierTradeAssurance()]
+            )
+        );
+
+        organisation.UpdateSupplierInformation();
+
+        organisation.SupplierInfo.As<Organisation.SupplierInformation>()
+            .CompletedTradeAssurance.Should().BeTrue();
+    }
 }

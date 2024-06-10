@@ -131,11 +131,13 @@ public static class EntityFactory
 
     public static SupplierInformation GivenSupplierInformation(
         SupplierType? type = null,
-        List<Qualification>? qualifications = null
+        List<Qualification>? qualifications = null,
+        List<TradeAssurance>? tradeAssurances = null
     ) => new()
     {
         SupplierType = type,
-        Qualifications = qualifications ?? []
+        Qualifications = qualifications ?? [],
+        TradeAssurances = tradeAssurances ?? []
     };
 
     public static OrganisationAddress GivenOrganisationAddress(
@@ -178,4 +180,12 @@ public static class EntityFactory
         AwardedByPersonOrBodyName = "Qualification Centre",
         DateAwarded = DateTimeOffset.Parse("2018-02-20T00:00:00Z")
     };
+
+    public static TradeAssurance GivenSupplierTradeAssurance()
+        => new()
+        {
+            AwardedByPersonOrBodyName = "Assurance Body",
+            ReferenceNumber = "QA-12333",
+            DateAwarded = DateTimeOffset.Parse("2009-10-03T00:00:00Z")
+        };
 }
