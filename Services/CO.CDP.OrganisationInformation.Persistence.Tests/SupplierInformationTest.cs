@@ -15,7 +15,18 @@ public class SupplierInformationTest
 
         organisation.UpdateSupplierInformation();
 
-        organisation.SupplierInfo.Should().BeEquivalentTo(new Organisation.SupplierInformation());
+        organisation.SupplierInfo.Should().BeEquivalentTo(new Organisation.SupplierInformation
+        {
+            CompletedRegAddress = false,
+            CompletedPostalAddress = false,
+            CompletedVat = false,
+            CompletedWebsiteAddress = false,
+            CompletedEmailAddress = false,
+            CompletedQualification = false,
+            CompletedTradeAssurance = false,
+            CompletedOrganisationType = false,
+            CompletedLegalForm = false
+        });
     }
 
     [Fact]
