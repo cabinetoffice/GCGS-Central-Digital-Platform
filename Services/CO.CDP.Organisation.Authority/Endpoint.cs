@@ -77,7 +77,7 @@ public static class EndpointExtensions
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(new[] {
-                    new Claim("sub", urn!),
+                    new Claim("sub", urn),
                     // TODO: Add additional claims here <----
                 }),
             Expires = DateTime.UtcNow.AddSeconds(tokenExpiry),
