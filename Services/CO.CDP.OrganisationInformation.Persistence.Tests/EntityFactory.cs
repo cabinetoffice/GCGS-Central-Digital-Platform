@@ -63,7 +63,7 @@ public static class EntityFactory
         List<OrganisationAddress>? addresses = null,
         OrganisationContactPoint? contactPoint = null,
         List<PartyRole>? roles = null,
-        BuyerInformation? buyerInformation = null,
+        Organisation.BuyerInformation? buyerInformation = null,
         SupplierInformation? supplierInformation = null
     )
     {
@@ -119,7 +119,7 @@ public static class EntityFactory
         };
     }
 
-    public static BuyerInformation GivenBuyerInformation(
+    public static Organisation.BuyerInformation GivenBuyerInformation(
         string? type = null
     ) => new()
     {

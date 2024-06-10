@@ -132,6 +132,12 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql) : 
                 Telephone = "123-456-7890",
                 Url = "http://contact.default.org"
             },
+            BuyerInfo = new Organisation.BuyerInformation{
+            BuyerType = "Buyer Type 1",
+            DevolvedRegulations = [DevolvedRegulation.NorthernIreland],
+            CreatedOn = initialDate,
+            UpdatedOn = initialDate,
+            },
             UpdatedOn = initialDate,
             CreatedOn = initialDate,
             Roles = { PartyRole.Buyer }
