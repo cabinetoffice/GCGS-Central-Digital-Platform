@@ -57,7 +57,6 @@ public static class EndpointExtensions
                 if (grant_type != GrantTypes.ClientCredentials
                         || !ValidToken(app.Logger, client_secret, oneloginConfig, out var urn))
                 {
-                    app.Logger.LogInformation($"Invalid client credentials, payload - grant_type:{grant_type},client_secret:{client_secret}");
                     return Results.BadRequest("Invalid client credentials");
                 }
 
