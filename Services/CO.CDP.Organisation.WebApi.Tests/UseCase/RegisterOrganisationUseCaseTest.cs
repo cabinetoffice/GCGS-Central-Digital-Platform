@@ -54,7 +54,7 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
                 Name = "Contact Name",
                 Email = "contact@example.org",
                 Telephone = "123-456-7890",
-                Url = "http://example.org/contact"
+                Url = "https://example.org/contact"
             },
             Roles = [PartyRole.Supplier]
         };
@@ -119,7 +119,7 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
                 Name = "Contact Name",
                 Email = "contact@example.org",
                 Telephone = "123-456-7890",
-                Url = "http://example.org/contact"
+                Url = "https://example.org/contact"
             },
             Roles = [PartyRole.Supplier]
         });
@@ -132,7 +132,7 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
                  Name = "Contact Name",
                  Email = "contact@example.org",
                  Telephone = "123-456-7890",
-                 Url = "http://example.org/contact"
+                 Url = "https://example.org/contact"
              } &&
              o.Roles.SequenceEqual(new List<PartyRole> { PartyRole.Supplier })
          )), Times.Once);
@@ -276,7 +276,7 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
                 Name = "Contact Name",
                 Email = "contact@example.org",
                 Telephone = "123-456-7890",
-                Url = "http://example.org/contact"
+                Url = "https://example.org/contact"
             },
             Roles = [PartyRole.Supplier]
         };
