@@ -1,6 +1,10 @@
+using CO.CDP.Organisation.Authority.Model;
+using DotSwashbuckle.AspNetCore.SwaggerGen;
 using IdentityModel;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
@@ -11,83 +15,89 @@ namespace CO.CDP.Organisation.Authority;
 public static class EndpointExtensions
 {
     public static void UseIdentity(this WebApplication app, string issuer,
-        RsaSecurityKey rsaPrivateKey, RSAParameters resPublicParams,
-        OpenIdConnectConfiguration oneLoginConfiguration)
+        RsaSecurityKey rsaPrivateKey, RSAParameters rsaPublicParams)
     {
-        app.MapGet($"/{Discovery.DiscoveryEndpoint}", () => new
-        {
-            issuer,
-            token_endpoint = $"{issuer}/token",
-            jwks_uri = $"{issuer}/{Discovery.DiscoveryEndpoint}/jwks",
-            response_types_supported = new[] { ResponseTypes.Token },
-            scopes_supported = new[] { StandardScopes.OpenId },
-            token_endpoint_auth_methods_supported = new[] { EndpointAuthenticationMethods.PostBody },
-            token_endpoint_auth_signing_alg_values_supported = new[] { SecurityAlgorithms.RsaSha256 },
-            grant_types_supported = new[] { GrantTypes.ClientCredentials },
-            subject_types_supported = new[] { "public" },
-            claim_types_supported = new[] { "normal" },
-            claims_supported = new[] { JwtClaimTypes.Subject } // TODO: Add additional claims here <----
-        });
+        app.MapGet($"/{Discovery.DiscoveryEndpoint}",
+            () => new OpenIdConfiguration
+            {
+                Issuer = issuer,
+                TokenEndpoint = $"{issuer}/token",
+                JwksUri = $"{issuer}/{Discovery.DiscoveryEndpoint}/jwks",
+                ResponseTypesSupported = [ResponseTypes.Token],
+                ScopesSupported = [StandardScopes.OpenId],
+                TokenEndpointAuthMethodsSupported = [EndpointAuthenticationMethods.PostBody],
+                TokenEndpointAuthSigningAlgValuesSupported = [SecurityAlgorithms.RsaSha256],
+                GrantTypesSupported = [GrantTypes.ClientCredentials],
+                SubjectTypesSupported = ["public"],
+                ClaimTypesSupported = ["normal"],
+                ClaimsSupported = [JwtClaimTypes.Subject] // TODO: Add additional claims here <----
+            })
+            .Produces<OpenIdConfiguration>(StatusCodes.Status200OK, "application/json");
 
-        app.MapGet($"/{Discovery.DiscoveryEndpoint}/jwks", () => new
-        {
-            keys = new[] {
-                new {
-                    kty = "RSA",
-                    use = "sig",
-                    kid = "c2c3b22ac07f425eb893123de395464e",
-                    alg = SecurityAlgorithms.RsaSha256,
-                    n = Base64UrlEncoder.Encode(resPublicParams.Modulus!),
-                    e = Base64UrlEncoder.Encode(resPublicParams.Exponent!)
+        app.MapGet($"/{Discovery.DiscoveryEndpoint}/jwks",
+            () => new Model.JsonWebKeySet
+            {
+                Keys = [new() {
+                        Kty = "RSA",
+                        Use = "sig",
+                        Kid = "c2c3b22ac07f425eb893123de395464e",
+                        Alg = SecurityAlgorithms.RsaSha256,
+                        N = Base64UrlEncoder.Encode(rsaPublicParams.Modulus!),
+                        E = Base64UrlEncoder.Encode(rsaPublicParams.Exponent!)
+                    }]
+            })
+            .Produces<Model.JsonWebKeySet>(StatusCodes.Status200OK, "application/json");
+
+        app.MapPost("/token",
+            async ([FromForm] string grant_type, [FromForm] string client_secret, IOpenIdConfiguration config) =>
+            {
+                var oneloginConfig = await config.Get();
+
+                // Validate client credentials
+                if (grant_type != GrantTypes.ClientCredentials
+                        || !ValidToken(app.Logger, client_secret, oneloginConfig, out var urn))
+                {
+                    app.Logger.LogInformation($"Invalid client credentials, payload - grant_type:{grant_type},client_secret:{client_secret}");
+                    return Results.BadRequest("Invalid client credentials");
                 }
-            }
-        });
 
-        app.MapPost("/token", async (HttpRequest request) =>
+                return Results.Ok(CreateToken(issuer, rsaPrivateKey, urn!));
+            })
+            .DisableAntiforgery()
+            .WithMetadata(new ConsumesAttribute("application/x-www-form-urlencoded"))
+            .Produces<Model.TokenResponse>(StatusCodes.Status200OK, "application/json")
+            .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError)
+            .Produces(StatusCodes.Status415UnsupportedMediaType); ;
+    }
+
+    private static Model.TokenResponse CreateToken(string issuer, RsaSecurityKey rsaPrivateKey, string urn)
+    {
+        // TODO: Fetch additional claims for authorisation purpose
+
+        var tokenExpiry = 3600d;
+        var tokenDescriptor = new SecurityTokenDescriptor
         {
-            if (!request.HasFormContentType)
-            {
-                return Results.BadRequest("Invalid form content type");
-            }
-
-            var form = await request.ReadFormAsync();
-            var grantType = form[TokenRequest.GrantType];
-            var clientSecret = form[TokenRequest.ClientSecret];
-
-            // Validate client credentials
-            if (grantType != GrantTypes.ClientCredentials
-                || !ValidToken(app.Logger, clientSecret, oneLoginConfiguration, out var urn))
-            {
-                return Results.BadRequest("Invalid client credentials");
-            }
-
-            // TODO: Fetch additional claims for authorisation purpose
-
-            var tokenExpiry = 3600d;
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(new[] {
+            Subject = new ClaimsIdentity(new[] {
                     new Claim("sub", urn!),
                     // TODO: Add additional claims here <----
                 }),
-                Expires = DateTime.UtcNow.AddSeconds(tokenExpiry),
-                Issuer = issuer,
-                SigningCredentials = new SigningCredentials(rsaPrivateKey, SecurityAlgorithms.RsaSha256)
-            };
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            var tokenString = tokenHandler.WriteToken(token);
+            Expires = DateTime.UtcNow.AddSeconds(tokenExpiry),
+            Issuer = issuer,
+            SigningCredentials = new SigningCredentials(rsaPrivateKey, SecurityAlgorithms.RsaSha256)
+        };
+        var tokenHandler = new JwtSecurityTokenHandler();
+        var token = tokenHandler.CreateToken(tokenDescriptor);
+        var tokenString = tokenHandler.WriteToken(token);
 
-            return Results.Ok(new
-            {
-                token_type = TokenResponse.BearerTokenType,
-                access_token = tokenString,
-                expires_in = tokenExpiry,
-            });
-        });
+        return new Model.TokenResponse
+        {
+            TokenType = OidcConstants.TokenResponse.BearerTokenType,
+            AccessToken = tokenString,
+            ExpiresIn = tokenExpiry,
+        };
     }
 
-    private static bool ValidToken(ILogger logger, string? token, OpenIdConnectConfiguration oneLoginConfiguration, out string? urn)
+    private static bool ValidToken(ILogger logger, string? token, OpenIdConnectConfiguration oneLoginConfig, out string? urn)
     {
         try
         {
@@ -97,13 +107,13 @@ public static class EndpointExtensions
 
             var jsonToken = (JwtSecurityToken)tokenHandler.ReadToken(token);
 
-            var issuerSigningPublicKey = oneLoginConfiguration.SigningKeys.FirstOrDefault(sk => sk.IsSupportedAlgorithm(jsonToken.SignatureAlgorithm))
+            var issuerSigningPublicKey = oneLoginConfig.SigningKeys.FirstOrDefault(sk => sk.IsSupportedAlgorithm(jsonToken.SignatureAlgorithm))
                             ?? throw new Exception($"Missing {jsonToken.SignatureAlgorithm} auth signing security key.");
 
             var parameters = new TokenValidationParameters
             {
                 ValidateIssuer = true,
-                ValidIssuer = oneLoginConfiguration.Issuer,
+                ValidIssuer = oneLoginConfig.Issuer,
                 ValidateAudience = false,
                 ValidateLifetime = true,
                 ValidateIssuerSigningKey = true,
@@ -124,5 +134,26 @@ public static class EndpointExtensions
             urn = null;
             return false;
         }
+    }
+
+    public static void DocumentApi(this SwaggerGenOptions options)
+    {
+        options.SwaggerDoc("v1", new OpenApiInfo
+        {
+            Version = "1.0.0",
+            Title = "Organisation Authority API",
+            Description = "API for generating token using OpenId Connect Client Credentials flow.",
+            TermsOfService = new Uri("https://example.com/terms"),
+            Contact = new OpenApiContact
+            {
+                Name = "Example Contact",
+                Url = new Uri("https://example.com/contact")
+            },
+            License = new OpenApiLicense
+            {
+                Name = "Example License",
+                Url = new Uri("https://example.com/license")
+            }
+        });
     }
 }
