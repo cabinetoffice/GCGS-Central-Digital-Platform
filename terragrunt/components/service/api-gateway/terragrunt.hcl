@@ -35,7 +35,9 @@ dependency service_ecs {
 }
 
 inputs = {
-  tags = local.tags
+
+  service_configs = local.global_vars.locals.service_configs
+  tags            = local.tags
 
   role_api_gateway_cloudwatch_arn  = dependency.core_iam.outputs.api_gateway_cloudwatch_arn
 

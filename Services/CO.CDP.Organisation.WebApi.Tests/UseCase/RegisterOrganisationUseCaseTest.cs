@@ -54,7 +54,7 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
                 Name = "Contact Name",
                 Email = "contact@example.org",
                 Telephone = "123-456-7890",
-                Url = "http://example.org/contact"
+                Url = "https://example.org/contact"
             },
             Roles = [PartyRole.Supplier]
         };
@@ -119,20 +119,20 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
                 Name = "Contact Name",
                 Email = "contact@example.org",
                 Telephone = "123-456-7890",
-                Url = "http://example.org/contact"
+                Url = "https://example.org/contact"
             },
             Roles = [PartyRole.Supplier]
         });
 
         _repository.Verify(r => r.Save(It.Is<Persistence.Organisation>(o =>
              o.Guid == _generatedGuid &&
-             o.Name == "TheOrganisation" &&
+             o.Name == "TheOrganisation"&&
              o.ContactPoint == new Persistence.Organisation.OrganisationContactPoint
              {
                  Name = "Contact Name",
                  Email = "contact@example.org",
                  Telephone = "123-456-7890",
-                 Url = "http://example.org/contact"
+                 Url = "https://example.org/contact"
              } &&
              o.Roles.SequenceEqual(new List<PartyRole> { PartyRole.Supplier })
          )), Times.Once);
@@ -140,7 +140,7 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
         persistanceOrganisation.Should().NotBeNull();
         persistanceOrganisation.As<Persistence.Organisation>().Identifiers.Should().HaveCount(2);
         persistanceOrganisation.As<Persistence.Organisation>().Identifiers.First()
-            .Should().BeEquivalentTo(new Persistence.Organisation.OrganisationIdentifier
+            .Should().BeEquivalentTo(new Persistence.Organisation.Identifier
             {
                 Primary = true,
                 Scheme = "ISO9001",
@@ -149,7 +149,7 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
             });
 
         persistanceOrganisation.As<Persistence.Organisation>().Identifiers.Last()
-            .Should().BeEquivalentTo(new Persistence.Organisation.OrganisationIdentifier
+            .Should().BeEquivalentTo(new Persistence.Organisation.Identifier
             {
                 Primary = false,
                 Scheme = "ISO14001",
@@ -237,9 +237,42 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
             Times.Never);
     }
 
+    [Fact]
+    public async Task ItInitialisesBuyerInformationWhenRegisteringBuyerOrganisation()
+    {
+        var person = GivenPersonExists(guid: Guid.NewGuid());
+        var command = GivenRegisterOrganisationCommand(
+            personId: person.Guid,
+            roles: [PartyRole.Buyer]
+        );
+
+        await UseCase.Execute(command);
+
+        _repository.Verify(r => r.Save(It.Is<Persistence.Organisation>(o =>
+            o.BuyerInfo != null && o.SupplierInfo == null
+        )), Times.Once);
+    }
+
+    [Fact]
+    public async Task ItInitialisesSupplierInformationWhenRegisteringSupplierOrganisation()
+    {
+        var person = GivenPersonExists(guid: Guid.NewGuid());
+        var command = GivenRegisterOrganisationCommand(
+            personId: person.Guid,
+            roles: [PartyRole.Supplier]
+        );
+
+        await UseCase.Execute(command);
+
+        _repository.Verify(r => r.Save(It.Is<Persistence.Organisation>(o =>
+            o.BuyerInfo == null && o.SupplierInfo != null
+        )), Times.Once);
+    }
+
     private static RegisterOrganisation GivenRegisterOrganisationCommand(
         string name = "TheOrganisation",
-        Guid? personId = null
+        Guid? personId = null,
+        List<PartyRole>? roles = null
     )
     {
         return new RegisterOrganisation
@@ -276,9 +309,9 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
                 Name = "Contact Name",
                 Email = "contact@example.org",
                 Telephone = "123-456-7890",
-                Url = "http://example.org/contact"
+                Url = "https://example.org/contact"
             },
-            Roles = [PartyRole.Supplier]
+            Roles = roles ?? [PartyRole.Supplier]
         };
     }
 

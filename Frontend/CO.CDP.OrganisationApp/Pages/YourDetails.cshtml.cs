@@ -46,7 +46,7 @@ public class YourDetailsModel(
             return Page();
         }
 
-        var person = await RegisterPerson(UserDetails);
+        var person = await RegisterPersonAsync(UserDetails);
 
         if (person != null)
         {
@@ -64,7 +64,7 @@ public class YourDetailsModel(
         return RedirectToPage("OrganisationSelection");
     }
 
-    private async Task<Person.WebApiClient.Person?> RegisterPerson(UserDetails details)
+    private async Task<Person.WebApiClient.Person?> RegisterPersonAsync(UserDetails details)
     {
         try
         {
@@ -77,11 +77,35 @@ public class YourDetailsModel(
             ));
         }
         catch (ApiException<Person.WebApiClient.ProblemDetails> aex)
-               when (aex.StatusCode == StatusCodes.Status400BadRequest)
         {
-            ModelState.AddModelError(string.Empty, ErrorMessagesList.PayLoadIssue);
+            MapApiException(aex);
         }
 
         return null;
     }
+
+    private void MapApiException(ApiException<Person.WebApiClient.ProblemDetails> aex)
+    {
+        var code = ExtractErrorCode(aex);
+
+        if (!string.IsNullOrEmpty(code))
+        {
+            ModelState.AddModelError(string.Empty, code switch
+            {
+                ErrorCodes.PERSON_ALREADY_EXISTS => ErrorMessagesList.DuplicatePersonName,
+                ErrorCodes.ARGUMENT_NULL => ErrorMessagesList.PayLoadIssueOrNullAurgument,
+                ErrorCodes.INVALID_OPERATION => ErrorMessagesList.PersonCreationFailed,
+                ErrorCodes.UNPROCESSABLE_ENTITY => ErrorMessagesList.UnprocessableEntity,
+                _ => ErrorMessagesList.UnexpectedError
+            });
+        }
+    }
+
+    private static string? ExtractErrorCode(ApiException<Person.WebApiClient.ProblemDetails> aex)
+    {
+        return aex.Result.AdditionalProperties.TryGetValue("code", out var code) && code is string codeString
+            ? codeString
+            : null;
+    }
+
 }

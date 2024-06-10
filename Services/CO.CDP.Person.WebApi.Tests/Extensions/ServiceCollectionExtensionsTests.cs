@@ -1,4 +1,3 @@
-using System.Reflection;
 using CO.CDP.Person.WebApi.Extensions;
 using Microsoft.AspNetCore.Http;
 using static CO.CDP.OrganisationInformation.Persistence.IPersonRepository.PersonRepositoryException;
@@ -24,7 +23,7 @@ public class ServiceCollectionExtensionsTests
         var result = ServiceCollectionExtensions.MapException(exception);
 
         Assert.Equal(StatusCodes.Status400BadRequest, result.status);
-        Assert.Equal("PERSON_DOES_NOT_EXIST", result.error);
+        Assert.Equal("PERSON_ALREADY_EXISTS", result.error);
     }
 
     [Fact]

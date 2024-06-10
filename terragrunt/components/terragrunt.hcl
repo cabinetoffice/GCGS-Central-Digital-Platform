@@ -80,6 +80,58 @@ locals {
         public_hosted_zone = "${local.environments[local.environment].name}.supplier.information.${local.environments[local.environment].top_level_domain}"
     }
 
+    service_configs = {
+        data_sharing = {
+            cpu           = 256
+            memory        = 512
+            name          = "data-sharing"
+            port          = 8088
+            port_host     = 8088
+        }
+        forms = {
+            cpu           = 256
+            memory        = 512
+            name          = "forms"
+            port          = 8086
+            port_host     = 8086
+        }
+        organisation = {
+            cpu           = 256
+            memory        = 512
+            name          = "organisation"
+            port          = 8082
+            port_host     = 8082
+        }
+        organisation_app = {
+            cpu           = 256
+            memory        = 512
+            name          = "organisation-app"
+            port          = 8090
+            port_host     = 80
+        }
+        organisation_information_migrations = {
+            cpu           = 256
+            memory        = 512
+            name          = "organisation-information-migrations"
+            port          = 9090
+            port_host     = null
+        }
+        person = {
+            cpu           = 256
+            memory        = 512
+            name          = "person"
+            port          = 8084
+            port_host     = 8084
+        }
+        tenant = {
+            cpu           = 256
+            memory        = 512
+            name          = "tenant"
+            port          = 8080
+            port_host     = 8080
+        }
+    }
+
     tags = {
         environment    = local.environment
         managed_by     = "terragrunt"

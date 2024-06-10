@@ -255,6 +255,85 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.OwnsOne("CO.CDP.OrganisationInformation.Persistence.Organisation+BuyerInformation", "BuyerInfo", b1 =>
+                        {
+                            b1.Property<int>("OrganisationId")
+                                .HasColumnType("integer");
+
+                            b1.Property<string>("BuyerType")
+                                .HasColumnType("text");
+
+                            b1.Property<DateTimeOffset>("CreatedOn")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("timestamp with time zone")
+                                .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                            b1.Property<int[]>("DevolvedRegulations")
+                                .IsRequired()
+                                .HasColumnType("integer[]");
+
+                            b1.Property<DateTimeOffset>("UpdatedOn")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("timestamp with time zone")
+                                .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                            b1.HasKey("OrganisationId");
+
+                            b1.ToTable("BuyerInformation", (string)null);
+
+                            b1.WithOwner()
+                                .HasForeignKey("OrganisationId");
+                        });
+
+                    b.OwnsMany("CO.CDP.OrganisationInformation.Persistence.Organisation+Identifier", "Identifiers", b1 =>
+                        {
+                            b1.Property<int>("Id")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("integer");
+
+                            NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b1.Property<int>("Id"));
+
+                            b1.Property<DateTimeOffset>("CreatedOn")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("timestamp with time zone")
+                                .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                            b1.Property<string>("IdentifierId")
+                                .IsRequired()
+                                .HasColumnType("text");
+
+                            b1.Property<string>("LegalName")
+                                .IsRequired()
+                                .HasColumnType("text");
+
+                            b1.Property<int>("OrganisationId")
+                                .HasColumnType("integer");
+
+                            b1.Property<bool>("Primary")
+                                .HasColumnType("boolean");
+
+                            b1.Property<string>("Scheme")
+                                .IsRequired()
+                                .HasColumnType("text");
+
+                            b1.Property<DateTimeOffset>("UpdatedOn")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("timestamp with time zone")
+                                .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                            b1.Property<string>("Uri")
+                                .HasColumnType("text");
+
+                            b1.HasKey("Id");
+
+                            b1.HasIndex("OrganisationId");
+
+                            b1.ToTable("Identifier");
+
+                            b1.WithOwner()
+                                .HasForeignKey("OrganisationId");
+                        });
+
                     b.OwnsMany("CO.CDP.OrganisationInformation.Persistence.Organisation+OrganisationAddress", "Addresses", b1 =>
                         {
                             b1.Property<int>("Id")
@@ -292,48 +371,194 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                             b1.Navigation("Address");
                         });
 
-                    b.OwnsMany("CO.CDP.OrganisationInformation.Persistence.Organisation+OrganisationIdentifier", "Identifiers", b1 =>
+                    b.OwnsOne("CO.CDP.OrganisationInformation.Persistence.Organisation+SupplierInformation", "SupplierInfo", b1 =>
                         {
-                            b1.Property<int>("Id")
-                                .ValueGeneratedOnAdd()
-                                .HasColumnType("integer");
-
-                            NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b1.Property<int>("Id"));
-
-                            b1.Property<string>("IdentifierId")
-                                .IsRequired()
-                                .HasColumnType("text");
-
-                            b1.Property<string>("LegalName")
-                                .IsRequired()
-                                .HasColumnType("text");
-
                             b1.Property<int>("OrganisationId")
                                 .HasColumnType("integer");
 
-                            b1.Property<bool>("Primary")
+                            b1.Property<bool>("CompletedEmailAddress")
                                 .HasColumnType("boolean");
 
-                            b1.Property<string>("Scheme")
+                            b1.Property<bool>("CompletedLegalForm")
+                                .HasColumnType("boolean");
+
+                            b1.Property<bool>("CompletedOrganisationType")
+                                .HasColumnType("boolean");
+
+                            b1.Property<bool>("CompletedPostalAddress")
+                                .HasColumnType("boolean");
+
+                            b1.Property<bool>("CompletedQualification")
+                                .HasColumnType("boolean");
+
+                            b1.Property<bool>("CompletedRegAddress")
+                                .HasColumnType("boolean");
+
+                            b1.Property<bool>("CompletedTradeAssurance")
+                                .HasColumnType("boolean");
+
+                            b1.Property<bool>("CompletedVat")
+                                .HasColumnType("boolean");
+
+                            b1.Property<bool>("CompletedWebsiteAddress")
+                                .HasColumnType("boolean");
+
+                            b1.Property<DateTimeOffset>("CreatedOn")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("timestamp with time zone")
+                                .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                            b1.Property<int[]>("OperationTypes")
                                 .IsRequired()
-                                .HasColumnType("text");
+                                .HasColumnType("integer[]");
 
-                            b1.Property<string>("Uri")
-                                .HasColumnType("text");
+                            b1.Property<int?>("SupplierType")
+                                .HasColumnType("integer");
 
-                            b1.HasKey("Id");
+                            b1.Property<DateTimeOffset>("UpdatedOn")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("timestamp with time zone")
+                                .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
-                            b1.HasIndex("OrganisationId");
+                            b1.HasKey("OrganisationId");
 
-                            b1.ToTable("OrganisationIdentifier");
+                            b1.ToTable("SupplierInformation", (string)null);
 
                             b1.WithOwner()
                                 .HasForeignKey("OrganisationId");
+
+                            b1.OwnsOne("CO.CDP.OrganisationInformation.Persistence.Organisation+LegalForm", "LegalForm", b2 =>
+                                {
+                                    b2.Property<int>("SupplierInformationOrganisationId")
+                                        .HasColumnType("integer");
+
+                                    b2.Property<DateTimeOffset>("CreatedOn")
+                                        .ValueGeneratedOnAdd()
+                                        .HasColumnType("timestamp with time zone")
+                                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                                    b2.Property<string>("LawRegistered")
+                                        .IsRequired()
+                                        .HasColumnType("text");
+
+                                    b2.Property<string>("RegisteredLegalForm")
+                                        .IsRequired()
+                                        .HasColumnType("text");
+
+                                    b2.Property<string>("RegisteredUnderAct2006")
+                                        .IsRequired()
+                                        .HasColumnType("text");
+
+                                    b2.Property<DateTimeOffset>("RegistrationDate")
+                                        .HasColumnType("timestamp with time zone");
+
+                                    b2.Property<DateTimeOffset>("UpdatedOn")
+                                        .ValueGeneratedOnAdd()
+                                        .HasColumnType("timestamp with time zone")
+                                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                                    b2.HasKey("SupplierInformationOrganisationId");
+
+                                    b2.ToTable("LegalForm", (string)null);
+
+                                    b2.WithOwner()
+                                        .HasForeignKey("SupplierInformationOrganisationId");
+                                });
+
+                            b1.OwnsMany("CO.CDP.OrganisationInformation.Persistence.Organisation+Qualification", "Qualifications", b2 =>
+                                {
+                                    b2.Property<int>("Id")
+                                        .ValueGeneratedOnAdd()
+                                        .HasColumnType("integer");
+
+                                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b2.Property<int>("Id"));
+
+                                    b2.Property<string>("AwardedByPersonOrBodyName")
+                                        .HasColumnType("text");
+
+                                    b2.Property<DateTimeOffset>("CreatedOn")
+                                        .ValueGeneratedOnAdd()
+                                        .HasColumnType("timestamp with time zone")
+                                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                                    b2.Property<DateTimeOffset>("DateAwarded")
+                                        .HasColumnType("timestamp with time zone");
+
+                                    b2.Property<string>("Name")
+                                        .HasColumnType("text");
+
+                                    b2.Property<int>("SupplierInformationOrganisationId")
+                                        .HasColumnType("integer");
+
+                                    b2.Property<DateTimeOffset>("UpdatedOn")
+                                        .ValueGeneratedOnAdd()
+                                        .HasColumnType("timestamp with time zone")
+                                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                                    b2.HasKey("Id");
+
+                                    b2.HasIndex("SupplierInformationOrganisationId");
+
+                                    b2.ToTable("Qualification", (string)null);
+
+                                    b2.WithOwner()
+                                        .HasForeignKey("SupplierInformationOrganisationId");
+                                });
+
+                            b1.OwnsMany("CO.CDP.OrganisationInformation.Persistence.Organisation+TradeAssurance", "TradeAssurances", b2 =>
+                                {
+                                    b2.Property<int>("Id")
+                                        .ValueGeneratedOnAdd()
+                                        .HasColumnType("integer");
+
+                                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b2.Property<int>("Id"));
+
+                                    b2.Property<string>("AwardedByPersonOrBodyName")
+                                        .HasColumnType("text");
+
+                                    b2.Property<DateTimeOffset>("CreatedOn")
+                                        .ValueGeneratedOnAdd()
+                                        .HasColumnType("timestamp with time zone")
+                                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                                    b2.Property<DateTimeOffset>("DateAwarded")
+                                        .HasColumnType("timestamp with time zone");
+
+                                    b2.Property<string>("ReferenceNumber")
+                                        .HasColumnType("text");
+
+                                    b2.Property<int>("SupplierInformationOrganisationId")
+                                        .HasColumnType("integer");
+
+                                    b2.Property<DateTimeOffset>("UpdatedOn")
+                                        .ValueGeneratedOnAdd()
+                                        .HasColumnType("timestamp with time zone")
+                                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                                    b2.HasKey("Id");
+
+                                    b2.HasIndex("SupplierInformationOrganisationId");
+
+                                    b2.ToTable("TradeAssurance", (string)null);
+
+                                    b2.WithOwner()
+                                        .HasForeignKey("SupplierInformationOrganisationId");
+                                });
+
+                            b1.Navigation("LegalForm");
+
+                            b1.Navigation("Qualifications");
+
+                            b1.Navigation("TradeAssurances");
                         });
 
                     b.Navigation("Addresses");
 
+                    b.Navigation("BuyerInfo");
+
                     b.Navigation("Identifiers");
+
+                    b.Navigation("SupplierInfo");
 
                     b.Navigation("Tenant");
                 });

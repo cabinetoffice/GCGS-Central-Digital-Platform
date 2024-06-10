@@ -98,7 +98,7 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql) : 
             Guid = guid,
             Name = initialName,
             Tenant = GivenTenant(),
-            Identifiers = [new OrganisationIdentifier
+            Identifiers = [new Organisation.Identifier
             {
                 Primary = true,
                 Scheme = "ISO9001",
@@ -106,7 +106,7 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql) : 
                 LegalName = "DefaultLegalName",
                 Uri = "http://default.org"
             },
-                new OrganisationIdentifier
+                new Organisation.Identifier
                 {
                     Primary = false,
                     Scheme = "ISO9001",

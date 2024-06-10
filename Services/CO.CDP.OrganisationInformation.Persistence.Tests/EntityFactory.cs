@@ -59,19 +59,13 @@ public static class EntityFactory
         Guid? guid = null,
         Tenant? tenant = null,
         string? name = null,
-        string scheme = "ISO9001",
-        string identifierId = "1",
-        string legalName = "DefaultLegalName",
-        string uri = "http://default.org",
-        string streetAddress = "1234 Default St",
-        string city = "Default Region",
-        string postCode = "12345",
-        string country = "Defaultland",
-        string contactName = "Default Contact",
-        string email = "contact@default.org",
-        string telephone = "123-456-7890",
-        string contactUri = "http://contact.default.org",
-        List<PartyRole>? roles = null)
+        List<Organisation.Identifier>? identifiers = null,
+        List<OrganisationAddress>? addresses = null,
+        OrganisationContactPoint? contactPoint = null,
+        List<PartyRole>? roles = null,
+        BuyerInformation? buyerInformation = null,
+        SupplierInformation? supplierInformation = null
+    )
     {
         var theGuid = guid ?? Guid.NewGuid();
         var theName = name ?? $"Organisation {theGuid}";
@@ -81,42 +75,127 @@ public static class EntityFactory
             Guid = theGuid,
             Name = theName,
             Tenant = tenant ?? GivenTenant(name: theName),
-            Identifiers = [new OrganisationIdentifier
-            {
-                Primary = true,
-                Scheme = scheme,
-                IdentifierId = identifierId,
-                LegalName = legalName,
-                Uri = uri
-            },
-                new OrganisationIdentifier
+            Identifiers = identifiers ??
+            [
+                new Organisation.Identifier
+                {
+                    Primary = true,
+                    Scheme = "ISO9001",
+                    IdentifierId = "1",
+                    LegalName = "DefaultLegalName",
+                    Uri = "https://default.org"
+                },
+                new Organisation.Identifier
                 {
                     Primary = false,
                     Scheme = "ISO14001",
                     IdentifierId = "2",
                     LegalName = "AnotherLegalName",
                     Uri = "http://example.com"
-                }],
-            Addresses = {new OrganisationAddress
+                }
+            ],
+            Addresses = addresses ?? [new OrganisationAddress
             {
                 Type  = AddressType.Registered,
                 Address = new Address{
-                    StreetAddress = streetAddress,
+                    StreetAddress = "1234 Default St",
                     StreetAddress2 = "",
-                    Locality = city,
+                    Locality = "Default City",
                     Region = "",
-                    PostalCode = postCode,
-                    CountryName = country
+                    PostalCode = "12345",
+                    CountryName = "Defaultland"
                 }
-            } },
-            ContactPoint = new OrganisationContactPoint
+            }],
+            ContactPoint = contactPoint ?? new OrganisationContactPoint
             {
-                Name = contactName,
-                Email = email,
-                Telephone = telephone,
-                Url = contactUri
+                Name = "Default Contact",
+                Email = "contact@default.org",
+                Telephone = "123-456-7890",
+                Url = "https://contact.default.org"
             },
-            Roles = roles ?? [PartyRole.Buyer]
+            Roles = roles ?? [PartyRole.Buyer],
+            BuyerInfo = buyerInformation,
+            SupplierInfo = supplierInformation
         };
     }
+
+    public static BuyerInformation GivenBuyerInformation(
+        string? type = null
+    ) => new()
+    {
+        BuyerType = type
+    };
+
+    public static SupplierInformation GivenSupplierInformation(
+        SupplierType? type = null,
+        List<Qualification>? qualifications = null,
+        List<TradeAssurance>? tradeAssurances = null,
+        LegalForm? legalForm = null
+    ) => new()
+    {
+        SupplierType = type,
+        Qualifications = qualifications ?? [],
+        TradeAssurances = tradeAssurances ?? [],
+        LegalForm = legalForm
+    };
+
+    public static OrganisationAddress GivenOrganisationAddress(
+        AddressType type
+    ) =>
+        new()
+        {
+            Type = type,
+            Address = new Address
+            {
+                StreetAddress = "10 Green Lane",
+                StreetAddress2 = "Blue House",
+                Locality = "London",
+                Region = "",
+                PostalCode = "SW19 8AR",
+                CountryName = "United Kingdom"
+            }
+        };
+
+    public static Organisation.Identifier GivenIdentifier(
+        string scheme = "GB-COH",
+        string identifierId = "cee5ca59-b1ae-40e3-807a-adf8370799be",
+        string legalName = "Acme LTD",
+        bool primary = false,
+        string uri = "https://example.org"
+    ) => new()
+    {
+        Primary = primary,
+        Scheme = scheme,
+        IdentifierId = identifierId,
+        LegalName = legalName,
+        Uri = uri
+    };
+
+    public static Qualification GivenSupplierQualification(
+        string name = "My Qualification"
+    ) => new()
+    {
+        Name = name,
+        AwardedByPersonOrBodyName = "Qualification Centre",
+        DateAwarded = DateTimeOffset.Parse("2018-02-20T00:00:00Z")
+    };
+
+    public static TradeAssurance GivenSupplierTradeAssurance()
+        => new()
+        {
+            AwardedByPersonOrBodyName = "Assurance Body",
+            ReferenceNumber = "QA-12333",
+            DateAwarded = DateTimeOffset.Parse("2009-10-03T00:00:00Z")
+        };
+
+    public static LegalForm GivenSupplierLegalForm(
+        string registeredLegalForm = "Limited company"
+    )
+        => new()
+        {
+            RegisteredUnderAct2006 = "yes",
+            RegisteredLegalForm = registeredLegalForm,
+            LawRegistered = "England and Wales",
+            RegistrationDate = DateTimeOffset.Parse("2005-12-02T00:00:00Z")
+        };
 }

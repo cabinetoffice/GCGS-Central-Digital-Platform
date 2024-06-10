@@ -9,7 +9,7 @@ resource "aws_api_gateway_rest_api" "ecs_api" {
 }
 
 resource "aws_api_gateway_resource" "ecs_service" {
-  for_each = local.service_port_map
+  for_each = var.service_configs
 
   parent_id   = aws_api_gateway_rest_api.ecs_api.root_resource_id
   path_part   = each.key
@@ -17,7 +17,7 @@ resource "aws_api_gateway_resource" "ecs_service" {
 }
 
 resource "aws_api_gateway_method" "ecs_service" {
-  for_each = local.service_port_map
+  for_each = var.service_configs
 
   authorization = "NONE"
   http_method   = "GET"
@@ -26,7 +26,7 @@ resource "aws_api_gateway_method" "ecs_service" {
 }
 
 resource "aws_api_gateway_integration" "ecs_service" {
-  for_each = local.service_port_map
+  for_each = var.service_configs
 
   http_method             = aws_api_gateway_method.ecs_service[each.key].http_method
   integration_http_method = "GET"
@@ -34,11 +34,11 @@ resource "aws_api_gateway_integration" "ecs_service" {
   resource_id             = aws_api_gateway_resource.ecs_service[each.key].id
   rest_api_id             = aws_api_gateway_rest_api.ecs_api.id
   type                    = "HTTP"
-  uri                     = "http://${var.lb_ecs_dns_name}:${each.value}/swagger/index.html"
+  uri                     = "http://${var.lb_ecs_dns_name}:${each.value.port}/swagger/index.html"
 }
 
 resource "aws_api_gateway_method_response" "ecs_service" {
-  for_each = local.service_port_map
+  for_each = var.service_configs
 
   http_method = aws_api_gateway_method.ecs_service[each.key].http_method
   resource_id = aws_api_gateway_resource.ecs_service[each.key].id
@@ -51,7 +51,7 @@ resource "aws_api_gateway_method_response" "ecs_service" {
 }
 
 resource "aws_api_gateway_resource" "ecs_service_proxy" {
-  for_each = local.service_port_map
+  for_each = var.service_configs
 
   rest_api_id = aws_api_gateway_rest_api.ecs_api.id
   parent_id   = aws_api_gateway_resource.ecs_service[each.key].id
@@ -59,7 +59,7 @@ resource "aws_api_gateway_resource" "ecs_service_proxy" {
 }
 
 resource "aws_api_gateway_method" "ecs_service_proxy" {
-  for_each = local.service_port_map
+  for_each = var.service_configs
 
   authorization = "NONE"
   http_method   = "ANY"
@@ -72,7 +72,7 @@ resource "aws_api_gateway_method" "ecs_service_proxy" {
 }
 
 resource "aws_api_gateway_integration" "ecs_service_proxy" {
-  for_each = local.service_port_map
+  for_each = var.service_configs
 
   http_method             = aws_api_gateway_method.ecs_service_proxy[each.key].http_method
   integration_http_method = "ANY"
@@ -80,7 +80,7 @@ resource "aws_api_gateway_integration" "ecs_service_proxy" {
   resource_id             = aws_api_gateway_resource.ecs_service_proxy[each.key].id
   rest_api_id             = aws_api_gateway_rest_api.ecs_api.id
   type                    = "HTTP_PROXY"
-  uri                     = "http://${var.lb_ecs_dns_name}:${each.value}/{proxy}"
+  uri                     = "http://${var.lb_ecs_dns_name}:${each.value.port}/{proxy}"
 
   request_parameters = {
     "integration.request.path.proxy" = "method.request.path.proxy"

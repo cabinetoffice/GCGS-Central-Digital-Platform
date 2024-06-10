@@ -1,17 +1,22 @@
 @page
 @attribute [RazorCompiledItemMetadata("RouteTemplate", RegistrationStepModel.BuyerSelectDevolvedRegulationPage)]
 @model BuyerSelectDevolvedRegulationModel
+@using CO.CDP.OrganisationApp.Constants
 
 @{
     var regulationsHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Regulations)).HasInnerHtml;
 
     var backLink = RegistrationStepModel.BuyerDevolvedRegulationPage;
+    if (Request.Query.ContainsKey("frm-summary"))
+    {
+        backLink = RegistrationStepModel.OrganisationSummaryPage;
+        Model.RedirectToSummary = true;
+    }
 
-    string IsSelected(string regulationValue)
+    string IsSelected(DevolvedRegulation regulationValue)
     {
         return Model.Regulations.Contains(regulationValue) ? "checked='checked'" : string.Empty;
     }
-
 }
 
 <a href="@backLink" class="govuk-back-link">
@@ -42,19 +47,19 @@
 
                         <div class="govuk-checkboxes" data-module="govuk-checkboxes">
                             <div class="govuk-checkboxes__item">
-                                <input class="govuk-checkboxes__input" id="chkni" name="Regulations" type="checkbox" value="ni" @IsSelected("ni")>
+                                <input class="govuk-checkboxes__input" id="chkni" name="Regulations" type="checkbox" value="@DevolvedRegulation.NorthernIreland" @IsSelected(DevolvedRegulation.NorthernIreland)>
                                 <label class="govuk-label govuk-checkboxes__label" for="chkni">
                                     Northern Ireland
                                 </label>
                             </div>
                             <div class="govuk-checkboxes__item">
-                                <input class="govuk-checkboxes__input" id="chkscotland" name="Regulations" type="checkbox" value="scotland" @IsSelected("scotland")>
+                                <input class="govuk-checkboxes__input" id="chkscotland" name="Regulations" type="checkbox" value="@DevolvedRegulation.Scotland" @IsSelected(DevolvedRegulation.Scotland)>
                                 <label class="govuk-label govuk-checkboxes__label" for="chkscotland">
                                     Scotland
                                 </label>
                             </div>
                             <div class="govuk-checkboxes__item">
-                                <input class="govuk-checkboxes__input" id="chkwales" name="Regulations" type="checkbox" value="wales" @IsSelected("wales")>
+                                <input class="govuk-checkboxes__input" id="chkwales" name="Regulations" type="checkbox" value="@DevolvedRegulation.Wales" @IsSelected(DevolvedRegulation.Wales)>
                                 <label class="govuk-label govuk-checkboxes__label" for="chkwales">
                                     Wales
                                 </label>
@@ -62,11 +67,9 @@
                         </div>
                     </fieldset>
                 </div>
-                <a href="/registration/organisation-selection">
-                    <button type="submit" class="govuk-button" data-module="govuk-button">
-                        Continue
-                    </button>
-                </a>
+                <button type="submit" class="govuk-button" data-module="govuk-button">
+                    Continue
+                </button>
             </form>
         </div>
     </div>
