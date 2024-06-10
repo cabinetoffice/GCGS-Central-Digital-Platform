@@ -135,5 +135,6 @@ public class Organisation : IEntityDate
         SupplierInfo.CompletedRegAddress = Addresses.Any(a => a.Type == AddressType.Registered);
         SupplierInfo.CompletedPostalAddress = Addresses.Any(a => a.Type == AddressType.Postal);
         SupplierInfo.CompletedVat = Identifiers.Any(i => i.Scheme == "GB-VAT");
+        SupplierInfo.CompletedQualification = SupplierInfo.Qualifications.Count > 0;
     }
 }

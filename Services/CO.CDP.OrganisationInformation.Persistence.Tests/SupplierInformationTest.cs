@@ -73,7 +73,7 @@ public class SupplierInformationTest
     }
 
     [Fact]
-    public void ItVatAsCompletedInSupplierInformationIfGiven()
+    public void ItMarksVatAsCompletedInSupplierInformationIfGiven()
     {
         var organisation = GivenOrganisation(
             roles: [PartyRole.Supplier],
@@ -84,5 +84,21 @@ public class SupplierInformationTest
 
         organisation.SupplierInfo.As<Organisation.SupplierInformation>()
             .CompletedVat.Should().BeTrue();
+    }
+
+    [Fact]
+    public void ItMarksQualificationAsCompletedIfGiven()
+    {
+        var organisation = GivenOrganisation(
+            roles: [PartyRole.Supplier],
+            supplierInformation: GivenSupplierInformation(
+                qualifications: [GivenSupplierQualification(name: "Qualification 1")]
+            )
+        );
+
+        organisation.UpdateSupplierInformation();
+
+        organisation.SupplierInfo.As<Organisation.SupplierInformation>()
+            .CompletedQualification.Should().BeTrue();
     }
 }

@@ -130,10 +130,12 @@ public static class EntityFactory
     };
 
     public static SupplierInformation GivenSupplierInformation(
-        SupplierType? type = null
+        SupplierType? type = null,
+        List<Qualification>? qualifications = null
     ) => new()
     {
-        SupplierType = type
+        SupplierType = type,
+        Qualifications = qualifications ?? []
     };
 
     public static OrganisationAddress GivenOrganisationAddress(
@@ -166,5 +168,14 @@ public static class EntityFactory
         IdentifierId = identifierId,
         LegalName = legalName,
         Uri = uri
+    };
+
+    public static Qualification GivenSupplierQualification(
+        string name = "My Qualification"
+    ) => new()
+    {
+        Name = name,
+        AwardedByPersonOrBodyName = "Qualification Centre",
+        DateAwarded = DateTimeOffset.Parse("2018-02-20T00:00:00Z")
     };
 }
