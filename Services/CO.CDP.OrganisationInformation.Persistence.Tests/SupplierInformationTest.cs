@@ -71,4 +71,18 @@ public class SupplierInformationTest
         organisation.SupplierInfo.As<Organisation.SupplierInformation>()
             .CompletedPostalAddress.Should().BeTrue();
     }
+
+    [Fact]
+    public void ItVatAsCompletedInSupplierInformationIfGiven()
+    {
+        var organisation = GivenOrganisation(
+            roles: [PartyRole.Supplier],
+            identifiers: [GivenIdentifier(scheme: "GB-VAT")]
+        );
+
+        organisation.UpdateSupplierInformation();
+
+        organisation.SupplierInfo.As<Organisation.SupplierInformation>()
+            .CompletedVat.Should().BeTrue();
+    }
 }

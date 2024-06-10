@@ -59,10 +59,7 @@ public static class EntityFactory
         Guid? guid = null,
         Tenant? tenant = null,
         string? name = null,
-        string scheme = "ISO9001",
-        string identifierId = "1",
-        string legalName = "DefaultLegalName",
-        string uri = "http://default.org",
+        List<Organisation.Identifier>? identifiers = null,
         List<OrganisationAddress>? addresses = null,
         string contactName = "Default Contact",
         string email = "contact@default.org",
@@ -81,14 +78,16 @@ public static class EntityFactory
             Guid = theGuid,
             Name = theName,
             Tenant = tenant ?? GivenTenant(name: theName),
-            Identifiers = [new Organisation.Identifier
-            {
-                Primary = true,
-                Scheme = scheme,
-                IdentifierId = identifierId,
-                LegalName = legalName,
-                Uri = uri
-            },
+            Identifiers = identifiers ??
+            [
+                new Organisation.Identifier
+                {
+                    Primary = true,
+                    Scheme = "ISO9001",
+                    IdentifierId = "1",
+                    LegalName = "DefaultLegalName",
+                    Uri = "https://default.org"
+                },
                 new Organisation.Identifier
                 {
                     Primary = false,
@@ -96,7 +95,8 @@ public static class EntityFactory
                     IdentifierId = "2",
                     LegalName = "AnotherLegalName",
                     Uri = "http://example.com"
-                }],
+                }
+            ],
             Addresses = addresses ?? [new OrganisationAddress
             {
                 Type  = AddressType.Registered,
@@ -152,4 +152,19 @@ public static class EntityFactory
                 CountryName = "United Kingdom"
             }
         };
+
+    public static Organisation.Identifier GivenIdentifier(
+        string scheme = "GB-COH",
+        string identifierId = "cee5ca59-b1ae-40e3-807a-adf8370799be",
+        string legalName = "Acme LTD",
+        bool primary = false,
+        string uri = "https://example.org"
+    ) => new()
+    {
+        Primary = primary,
+        Scheme = scheme,
+        IdentifierId = identifierId,
+        LegalName = legalName,
+        Uri = uri
+    };
 }
