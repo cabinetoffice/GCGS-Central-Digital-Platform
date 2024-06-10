@@ -153,6 +153,7 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql) : 
         updatedOrganisation.Should().NotBeNull();
         updatedOrganisation.As<Organisation>().Name.Should().Be(updatedName);
         updatedOrganisation.As<Organisation>().Tenant.Should().Be(organisation.Tenant);
+        updatedOrganisation.As<Organisation>().UpdatedOn.Should().BeAfter(initialDate);
     }
 
     [Fact]
