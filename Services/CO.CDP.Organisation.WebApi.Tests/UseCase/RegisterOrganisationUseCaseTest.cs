@@ -126,7 +126,7 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
 
         _repository.Verify(r => r.Save(It.Is<Persistence.Organisation>(o =>
              o.Guid == _generatedGuid &&
-             o.Name == "TheOrganisation" &&
+             o.Name == "TheOrganisation"&&
              o.ContactPoint == new Persistence.Organisation.OrganisationContactPoint
              {
                  Name = "Contact Name",
@@ -140,7 +140,7 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
         persistanceOrganisation.Should().NotBeNull();
         persistanceOrganisation.As<Persistence.Organisation>().Identifiers.Should().HaveCount(2);
         persistanceOrganisation.As<Persistence.Organisation>().Identifiers.First()
-            .Should().BeEquivalentTo(new Persistence.Organisation.OrganisationIdentifier
+            .Should().BeEquivalentTo(new Persistence.Organisation.Identifier
             {
                 Primary = true,
                 Scheme = "ISO9001",
@@ -149,7 +149,7 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
             });
 
         persistanceOrganisation.As<Persistence.Organisation>().Identifiers.Last()
-            .Should().BeEquivalentTo(new Persistence.Organisation.OrganisationIdentifier
+            .Should().BeEquivalentTo(new Persistence.Organisation.Identifier
             {
                 Primary = false,
                 Scheme = "ISO14001",

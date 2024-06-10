@@ -60,20 +60,15 @@ variable "family" {
 }
 
 variable "host_port" {
-  description = "The port number on the container instance to reserve for container"
+  description = "The port number on the container instance to reserve for container, if not set we ignore port mapping and listener links"
   type        = number
+  default     = null
 }
 
 variable "is_frontend_app" {
   description = "Whether it is an API or the Frontend service, to link the domain alias to"
   type        = bool
   default     = false
-}
-
-variable "listening_port" {
-  description = "Port on which the load balancer is listening for this service"
-  type        = number
-  default     = null
 }
 
 variable "memory" {

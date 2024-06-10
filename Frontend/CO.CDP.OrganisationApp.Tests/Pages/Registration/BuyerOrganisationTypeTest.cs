@@ -13,80 +13,66 @@ namespace CO.CDP.OrganisationApp.Tests.Pages.Registration;
 
 public class BuyerOrganisationTypeTest
 {
-    private readonly Mock<ISession> sessionMock;
+    private readonly Mock<ISession> _sessionMock;
+    private readonly BuyerOrganisationTypeModel _model;
+    private readonly RegistrationDetails _registrationDetails;
 
     public BuyerOrganisationTypeTest()
     {
-        sessionMock = new Mock<ISession>();
+        _sessionMock = new Mock<ISession>();
+        _model = new BuyerOrganisationTypeModel(_sessionMock.Object);
+        _registrationDetails = new RegistrationDetails();
+        _sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey))
+                    .Returns(_registrationDetails);
+    }
+
+
+    [Fact]
+    public void OnGet_SetsBuyerOrganisationTypeAndOtherValueToNull_WhenBuyerOrganisationTypeIsNullOrEmpty()
+    {
+        _registrationDetails.BuyerOrganisationType = null;
+
+        var result = _model.OnGet();
+
+        _model.BuyerOrganisationType.Should().BeNull();
+        _model.OtherValue.Should().BeNull();
+        result.Should().BeOfType<PageResult>();
     }
 
     [Fact]
-    public void OnGet_WhenOrganisationTypeSetInSession_ShouldPopulatePageModel()
+    public void OnPost_RedirectsToSummary_WhenRedirectToSummaryIsTrue()
     {
-        sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey))
-            .Returns(new RegistrationDetails
-            {
-                OrganisationType = OrganisationType.Buyer,
-                BuyerOrganisationType = "type1"
-            });
+        _model.BuyerOrganisationType = "CentralGovernment";
+        _model.RedirectToSummary = true;
+        _model.ModelState.Clear();
 
-        var model = GivenBuyerOrganisationTypeModel();
+        var result = _model.OnPost();
 
-        model.OnGet();
-
-        model.BuyerOrganisationType.Should().Be("type1");
+        var redirectResult = result.Should().BeOfType<RedirectToPageResult>().Subject;
+        redirectResult.PageName.Should().Be("OrganisationDetailsSummary");
     }
 
     [Fact]
-    public void OnPost_WhenInValidModel_ShouldReturnSamePage()
+    public void OnPost_RedirectsToBuyerDevolvedRegulation_WhenRedirectToSummaryIsFalse()
     {
-        var modelState = new ModelStateDictionary();
-        modelState.AddModelError("error", "some error");
-        var actionContext = new ActionContext(new DefaultHttpContext(),
-            new RouteData(), new PageActionDescriptor(), modelState);
-        var pageContext = new PageContext(actionContext);
+        _model.BuyerOrganisationType = "CentralGovernment";
+        _model.RedirectToSummary = false;
+        _model.ModelState.Clear();
 
-        var model = GivenBuyerOrganisationTypeModel();
-        model.PageContext = pageContext;
+        var result = _model.OnPost();
 
-        var actionResult = model.OnPost();
-
-        actionResult.Should().BeOfType<PageResult>();
+        var redirectResult = result.Should().BeOfType<RedirectToPageResult>().Subject;
+        redirectResult.PageName.Should().Be("BuyerDevolvedRegulation");
     }
 
     [Fact]
-    public void OnPost_WhenValidModel_ShouldSetOrganisationTypeInSession()
+    public void OnPost_ReturnsPage_WhenModelStateIsInvalid()
     {
-        sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey))
-            .Returns(new RegistrationDetails { OrganisationType = OrganisationType.Buyer });
+        _model.ModelState.AddModelError("BuyerOrganisationType", "Required");
 
-        var model = GivenBuyerOrganisationTypeModel();
-        model.BuyerOrganisationType = "type1";
+        var result = _model.OnPost();
 
-        var results = model.OnPost();
-
-        sessionMock.Verify(v => v.Set(Session.RegistrationDetailsKey,
-            It.Is<RegistrationDetails>(rd =>
-                rd.OrganisationType == OrganisationType.Buyer
-            )), Times.Once);
+        result.Should().BeOfType<PageResult>();
     }
 
-    [Fact]
-    public void OnPost_WhenValidModel_ShouldRedirectToBuyerDevolvedRegulationsPage()
-    {
-        var model = GivenBuyerOrganisationTypeModel();
-
-        sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey))
-            .Returns(new RegistrationDetails { OrganisationType = OrganisationType.Buyer });
-
-        var actionResult = model.OnPost();
-
-        actionResult.Should().BeOfType<RedirectToPageResult>()
-            .Which.PageName.Should().Be("BuyerDevolvedRegulation");
-    }
-
-    private BuyerOrganisationTypeModel GivenBuyerOrganisationTypeModel()
-    {
-        return new BuyerOrganisationTypeModel(sessionMock.Object);
-    }
 }

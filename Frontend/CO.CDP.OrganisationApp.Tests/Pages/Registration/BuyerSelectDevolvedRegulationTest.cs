@@ -28,14 +28,14 @@ public class BuyerSelectDevolvedRegulationTest
             {
                 OrganisationType = OrganisationType.Buyer,
                 Devolved = true,
-                Regulations = ["ni"]
+                Regulations = [DevolvedRegulation.NorthernIreland]
             });
 
         var model = GivenBuyerSelectDevolvedRegulationModel();
 
         model.OnGet();
 
-        model.Regulations.Should().Contain("ni");
+        model.Regulations.Should().Contain(DevolvedRegulation.NorthernIreland);
     }
 
     [Fact]
@@ -59,31 +59,31 @@ public class BuyerSelectDevolvedRegulationTest
     public void OnPost_WhenValidModel_ShouldSetRegulationsInSession()
     {
         var model = GivenBuyerSelectDevolvedRegulationModel();
-        model.Regulations = ["ni"];
+        model.Regulations = [DevolvedRegulation.NorthernIreland];
 
         sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey))
-            .Returns(new RegistrationDetails { Devolved = true, Regulations = ["ni"] });
+            .Returns(new RegistrationDetails { Devolved = true, Regulations = [DevolvedRegulation.NorthernIreland] });
 
         var results = model.OnPost();
 
         sessionMock.Verify(v => v.Set(Session.RegistrationDetailsKey,
             It.Is<RegistrationDetails>(rd =>
-                rd.Regulations!.Contains("ni")
+                rd.Regulations!.Contains(DevolvedRegulation.NorthernIreland)
             )), Times.Once);
     }
 
     [Fact]
-    public void OnPost_WhenValidModel_ShouldRedirectToOrganisationSelectionPage()
+    public void OnPost_WhenValidModel_ShouldRedirectToOrganisationDetailsSummaryPage()
     {
         var model = GivenBuyerSelectDevolvedRegulationModel();
 
         sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey))
-            .Returns(new RegistrationDetails { Devolved = true, Regulations = ["ni"] });
+            .Returns(new RegistrationDetails { Devolved = true, Regulations = [DevolvedRegulation.NorthernIreland] });
 
         var actionResult = model.OnPost();
 
         actionResult.Should().BeOfType<RedirectToPageResult>()
-            .Which.PageName.Should().Be("/OrganisationSelection");
+            .Which.PageName.Should().Be("OrganisationDetailsSummary");
     }
 
     private BuyerSelectDevolvedRegulationModel GivenBuyerSelectDevolvedRegulationModel()

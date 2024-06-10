@@ -6,6 +6,11 @@
     var devolvedHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Devolved)).HasInnerHtml;
 
     var backLink = RegistrationStepModel.BuyerOrganisationTypePage;
+    if (Request.Query.ContainsKey("frm-summary"))
+    {
+        backLink = RegistrationStepModel.OrganisationSummaryPage;
+        Model.RedirectToSummary = true;
+    }
 }
 
 <a href="@backLink" class="govuk-back-link">

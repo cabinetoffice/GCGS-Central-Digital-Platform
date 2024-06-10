@@ -19,14 +19,13 @@ locals {
   }
 
   services = [
-    "data-sharing",
-    "forms",
-    "organisation",
-    "organisation-app",
-    "person",
-    "tenant"
+    for name, config in var.service_configs :
+    config.name if config.name != "organisation-information-migrations"
   ]
 
-  tasks = concat(local.services, ["organisation-information-migrations"])
+  tasks = [
+    for name, config in var.service_configs :
+    config.name
+  ]
 
 }

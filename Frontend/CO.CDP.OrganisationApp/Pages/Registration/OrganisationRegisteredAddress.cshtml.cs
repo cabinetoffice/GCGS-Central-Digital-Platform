@@ -37,6 +37,9 @@ public class OrganisationRegisteredAddressModel(ISession session) : Registration
     [Required(ErrorMessage = "Enter your country")]
     public string? Country { get; set; } = "United Kingdom";
 
+    [BindProperty]
+    public bool? RedirectToSummary { get; set; }
+
     public void OnGet()
     {
         if (RegistrationDetails.OrganisationCountry == "United Kingdom")
@@ -65,13 +68,16 @@ public class OrganisationRegisteredAddressModel(ISession session) : Registration
 
         session.Set(Session.RegistrationDetailsKey, RegistrationDetails);
 
+        if (RedirectToSummary == true)
+        {
+            return RedirectToPage("OrganisationDetailsSummary");
+        }
+
         if (RegistrationDetails.OrganisationType == OrganisationType.Buyer)
         {
             return RedirectToPage("BuyerOrganisationType");
         }
-        else
-        {
-            return RedirectToPage("OrganisationDetailsSummary");
-        }
+
+        return RedirectToPage("OrganisationDetailsSummary");
     }
 }

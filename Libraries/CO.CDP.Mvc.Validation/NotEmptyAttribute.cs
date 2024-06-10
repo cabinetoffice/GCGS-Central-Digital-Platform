@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using System.Collections;
 
 namespace CO.CDP.Mvc.Validation;
 
@@ -8,7 +9,7 @@ public class NotEmptyAttribute : Attribute, IModelValidator
 
     public IEnumerable<ModelValidationResult> Validate(ModelValidationContext context)
     {
-        var collection = context.Model as List<string>;
+        var collection = context.Model as ICollection;
         if (collection != null && collection.Count > 0)
         {
             return [];

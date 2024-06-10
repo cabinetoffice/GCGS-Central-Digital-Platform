@@ -4,13 +4,7 @@
     "image": "${image}",
     "cpu": ${cpu},
     "memory": ${memory},
-    "portMappings": [
-      {
-        "containerPort": ${container_port},
-        "hostPort": ${host_port},
-        "protocol": "tcp"
-      }
-    ],
+    "portMappings": [],
     "logConfiguration": {
       "logDriver": "awslogs",
       "options": {
@@ -20,8 +14,7 @@
       }
     },
     "environment": [
-        {"name": "ASPNETCORE_ENVIRONMENT", "value": "${environment}"},
-        {"name": "ASPNETCORE_HTTP_PORTS", "value": "${host_port}"}
+        {"name": "ASPNETCORE_ENVIRONMENT", "value": "${environment}"}
     ],
     "secrets": [
         {"name": "MIGRATIONS_CONNECTION_STRING", "valueFrom": "${conn_string_location}"}
