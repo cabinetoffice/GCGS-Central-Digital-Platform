@@ -49,24 +49,26 @@ public class SupplierInformationTest
     {
         var organisation = GivenOrganisation(
             roles: [PartyRole.Supplier],
-            addresses: [new Organisation.OrganisationAddress
-            {
-                Type  = AddressType.Registered,
-                Address = new Address{
-                    StreetAddress = "10 Green Lane",
-                    StreetAddress2 = "Blue House",
-                    Locality = "London",
-                    Region = "",
-                    PostalCode = "SW19 8AR",
-                    CountryName = "United Kingdom"
-                }
-            }]
-
+            addresses: [GivenOrganisationAddress(type: AddressType.Registered)]
         );
 
         organisation.UpdateSupplierInformation();
 
         organisation.SupplierInfo.As<Organisation.SupplierInformation>()
             .CompletedRegAddress.Should().BeTrue();
+    }
+
+    [Fact]
+    public void ItMarksPostalAddressAsCompletedInSupplierInformationIfGiven()
+    {
+        var organisation = GivenOrganisation(
+            roles: [PartyRole.Supplier],
+            addresses: [GivenOrganisationAddress(type: AddressType.Postal)]
+        );
+
+        organisation.UpdateSupplierInformation();
+
+        organisation.SupplierInfo.As<Organisation.SupplierInformation>()
+            .CompletedPostalAddress.Should().BeTrue();
     }
 }

@@ -135,4 +135,21 @@ public static class EntityFactory
     {
         SupplierType = type
     };
+
+    public static OrganisationAddress GivenOrganisationAddress(
+        AddressType type
+    ) =>
+        new()
+        {
+            Type = type,
+            Address = new Address
+            {
+                StreetAddress = "10 Green Lane",
+                StreetAddress2 = "Blue House",
+                Locality = "London",
+                Region = "",
+                PostalCode = "SW19 8AR",
+                CountryName = "United Kingdom"
+            }
+        };
 }
