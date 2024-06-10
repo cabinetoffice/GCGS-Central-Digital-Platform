@@ -8,8 +8,13 @@ variable "environment" {
   type        = string
 }
 
-variable "lb_ecs_dns_name" {
-  description = "DNS name of the ECS's load-balancer"
+variable "public_hosted_zone_fqdn" {
+  description = "Fully qualified domain name of the public hosted zone"
+  type        = string
+}
+
+variable "public_hosted_zone_id" {
+  description = "ID of the public hosted zone"
   type        = string
 }
 
@@ -29,7 +34,7 @@ variable "service_configs" {
     memory        = number
     name          = string
     port          = number
-    port_listener = number
+    port_host     = number
   }))
 }
 
