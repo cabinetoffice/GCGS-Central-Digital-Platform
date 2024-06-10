@@ -113,4 +113,28 @@ public class Organisation : IEntityDate
         public DateTimeOffset CreatedOn { get; set; }
         public DateTimeOffset UpdatedOn { get; set; }
     }
+
+    public void UpdateBuyerInformation()
+    {
+        if (!Roles.Contains(PartyRole.Buyer))
+        {
+            return;
+        }
+        BuyerInfo = new BuyerInformation
+        {
+            BuyerType = ""
+        };
+    }
+
+    public void UpdateSupplierInformation()
+    {
+        if (!Roles.Contains(PartyRole.Supplier))
+        {
+            return;
+        }
+        SupplierInfo = new SupplierInformation
+        {
+            SupplierType = SupplierType.Organisation
+        };
+    }
 }

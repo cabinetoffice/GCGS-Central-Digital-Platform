@@ -44,20 +44,8 @@ public class RegisterOrganisationUseCase(
     {
         var organisation = MapRequestToOrganisation(command, person);
         organisation.Persons.Add(person);
-        if (organisation.Roles.Contains(PartyRole.Buyer))
-        {
-            organisation.BuyerInfo = new OrganisationInformation.Persistence.Organisation.BuyerInformation
-            {
-                BuyerType = ""
-            };
-        }
-        if (organisation.Roles.Contains(PartyRole.Supplier))
-        {
-            organisation.SupplierInfo = new OrganisationInformation.Persistence.Organisation.SupplierInformation
-            {
-                SupplierType = SupplierType.Organisation
-            };
-        }
+        organisation.UpdateBuyerInformation();
+        organisation.UpdateSupplierInformation();
         return organisation;
     }
 
