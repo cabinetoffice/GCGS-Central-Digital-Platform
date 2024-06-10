@@ -54,7 +54,7 @@ public class Organisation : IEntityDate
     [Owned]
     public record SupplierInformation : IEntityDate
     {
-        public required SupplierType SupplierType { get; set; }
+        public SupplierType? SupplierType { get; set; }
         public List<OperationType> OperationTypes { get; set; } = [];
         public bool CompletedRegAddress { get; set; }
         public bool CompletedPostalAddress { get; set; }
@@ -75,7 +75,7 @@ public class Organisation : IEntityDate
     [Owned]
     public record BuyerInformation : IEntityDate
     {
-        public required string BuyerType { get; set; }
+        public string? BuyerType { get; set; }
         public List<DevolvedRegulation> DevolvedRegulations { get; set; } = [];
         public DateTimeOffset CreatedOn { get; set; }
         public DateTimeOffset UpdatedOn { get; set; }
@@ -120,10 +120,7 @@ public class Organisation : IEntityDate
         {
             return;
         }
-        BuyerInfo = new BuyerInformation
-        {
-            BuyerType = ""
-        };
+        BuyerInfo = new BuyerInformation();
     }
 
     public void UpdateSupplierInformation()
@@ -132,9 +129,6 @@ public class Organisation : IEntityDate
         {
             return;
         }
-        SupplierInfo = new SupplierInformation
-        {
-            SupplierType = SupplierType.Organisation
-        };
+        SupplierInfo = new SupplierInformation();
     }
 }

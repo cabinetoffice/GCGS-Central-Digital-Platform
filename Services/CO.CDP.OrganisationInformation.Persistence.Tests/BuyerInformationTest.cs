@@ -15,10 +15,7 @@ public class BuyerInformationTest
 
         organisation.UpdateBuyerInformation();
 
-        organisation.BuyerInfo.Should().BeEquivalentTo(new Organisation.BuyerInformation
-        {
-            BuyerType = ""
-        });
+        organisation.BuyerInfo.Should().BeEquivalentTo(new Organisation.BuyerInformation());
     }
 
     [Fact]

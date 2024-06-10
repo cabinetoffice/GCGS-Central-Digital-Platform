@@ -14,10 +14,7 @@ public class SupplierInformationTest
 
         organisation.UpdateSupplierInformation();
 
-        organisation.SupplierInfo.Should().BeEquivalentTo(new Organisation.SupplierInformation
-        {
-            SupplierType = SupplierType.Organisation
-        });
+        organisation.SupplierInfo.Should().BeEquivalentTo(new Organisation.SupplierInformation());
     }
 
     [Fact]
