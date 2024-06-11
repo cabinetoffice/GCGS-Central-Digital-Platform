@@ -215,7 +215,7 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
         ));
 
         _repository.Verify(r => r.Save(It.Is<Persistence.Organisation>(o =>
-            o.Persons.Count == 1 && o.Persons.First().Guid == person.Guid
+            o.OrganisationPersons.Count == 1 && o.OrganisationPersons.First().Person.Guid == person.Guid
         )), Times.Once);
     }
 

@@ -64,6 +64,7 @@ public class WebApiToPersistenceProfile : Profile
             .ForMember(m => m.Id, o => o.Ignore())
             .ForMember(m => m.Tenant, o => o.MapFrom((_, _, _, context) => context.Items["Tenant"]))
             .ForMember(m => m.Persons, o => o.Ignore())
+            .ForMember(m => m.OrganisationPersons, o => o.Ignore())
             .ForMember(m => m.CreatedOn, o => o.Ignore())
             .ForMember(m => m.UpdatedOn, o => o.Ignore())
             .ForMember(m => m.SupplierInfo, o => o.Ignore())

@@ -43,7 +43,11 @@ public class RegisterOrganisationUseCase(
     )
     {
         var organisation = MapRequestToOrganisation(command, person);
-        organisation.Persons.Add(person);
+        organisation.OrganisationPersons.Add(new OrganisationPerson
+        {
+            Person = person,
+            Organisation = organisation
+        });
         organisation.UpdateBuyerInformation();
         organisation.UpdateSupplierInformation();
         return organisation;

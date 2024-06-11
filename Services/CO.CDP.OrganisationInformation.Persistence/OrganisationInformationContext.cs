@@ -63,9 +63,10 @@ public class OrganisationInformationContext(DbContextOptions<OrganisationInforma
                 a.ToTable("BuyerInformation");
             });
 
-            entity.HasMany(p => p.Persons)
-            .WithMany(t => t.Organisations)
-            .UsingEntity<OrganisationPerson>(j =>
+            entity
+                .HasMany(p => p.Persons)
+                .WithMany(t => t.Organisations)
+                .UsingEntity<OrganisationPerson>(j =>
                 {
                     j.Property(op => op.CreatedOn).IsRequired().HasDefaultValueSql("CURRENT_TIMESTAMP");
                     j.Property(op => op.UpdatedOn).IsRequired().HasDefaultValueSql("CURRENT_TIMESTAMP");
