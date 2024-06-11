@@ -76,5 +76,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.UseOrganisationEndpoints();
 app.UseOrganisationLookupEndpoints();
+app.UseBuyerInformationEndpoints();
 app.Run();
 public abstract partial class Program;

@@ -1,4 +1,5 @@
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using CO.CDP.Functional;
 using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.Organisation.WebApi.UseCase;
@@ -144,16 +145,9 @@ public static class EndpointExtensions
                 operation.Responses["404"].Description = "Organisation not found.";
                 operation.Responses["500"].Description = "Internal server error.";
                 return operation;
-            });
-
-        app.MapPatch("/organisations/{organisationId}/buyerinformation",
-            async (Guid organisationId, UpdateBuyerInformation byuerInformation,
-                IUseCase<(Guid, UpdateBuyerInformation), bool> useCase) =>
-            {
-                await useCase.Execute((organisationId, byuerInformation))
-                   .AndThen(_ => Results.Ok());
-            });
+            });        
     }
+
     public static void UseOrganisationLookupEndpoints(this WebApplication app)
     {
         app.MapGet("/organisation/me", () => Results.Ok(_organisations.First().Value))
@@ -190,6 +184,36 @@ public static class EndpointExtensions
                 operation.Responses["200"].Description = "Organisations Associated.";
                 operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
                 operation.Responses["404"].Description = "Organisation not found.";
+                operation.Responses["500"].Description = "Internal server error.";
+                return operation;
+            });
+    }
+
+    public static void UseBuyerInformationEndpoints(this WebApplication app)
+    {
+        app.MapPatch("/organisations/{organisationId}/buyer-information",
+            async (Guid organisationId, UpdateBuyerInformation byuerInformation,
+                IUseCase<(Guid, UpdateBuyerInformation), bool> useCase) =>
+            {
+                await useCase.Execute((organisationId, byuerInformation))
+                   .AndThen(_ => Results.Ok());
+            })
+            .Produces<bool>(StatusCodes.Status200OK, "application/json")
+            .ProducesProblem(StatusCodes.Status500InternalServerError)
+            .ProducesProblem(StatusCodes.Status400BadRequest)
+            .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
+            .ProducesProblem(StatusCodes.Status422UnprocessableEntity)
+            .ProducesProblem(StatusCodes.Status404NotFound)
+            .WithOpenApi(operation =>
+            {
+                operation.OperationId = "UpdateBuyerInformation";
+                operation.Description = "Update Buyer Information.";
+                operation.Summary = "Update Buyer Information.";
+                operation.Tags = new List<OpenApiTag> { new() { Name = "Organisation - Buyer Information" } };
+                operation.Responses["200"].Description = "Buyer information updated successfully.";
+                operation.Responses["400"].Description = "Bad request.";
+                operation.Responses["422"].Description = "Unprocessable entity.";
+                operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
                 operation.Responses["500"].Description = "Internal server error.";
                 return operation;
             });

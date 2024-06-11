@@ -28,6 +28,29 @@ public class OrganisationDetailsSummaryModel(
         {
             return Page();
         }
+
+        List<Task> tasks =
+        [
+            organisationClient.UpdateBuyerInformationAsync(organisation.Id,
+                new UpdateBuyerInformation(
+                    type: BuyerInformationUpdateType.BuyerOrganisationType,
+                    buyerInformation: new BuyerInformation(
+                        buyerType: RegistrationDetails.BuyerOrganisationType,
+                        devolvedRegulations: null))),
+        ];
+
+        if (RegistrationDetails.Devolved == true)
+        {
+            tasks.Add(organisationClient.UpdateBuyerInformationAsync(organisation.Id,
+                new UpdateBuyerInformation(
+                    type: BuyerInformationUpdateType.DevolvedRegulation,
+                    buyerInformation: new BuyerInformation(
+                        buyerType: null,
+                        devolvedRegulations: RegistrationDetails.Regulations.AsApiClientDevolvedRegulationList()))));
+        }
+
+        await Task.WhenAll(tasks);
+
         session.Remove(Session.RegistrationDetailsKey);
         return RedirectToPage("/OrganisationSelection");
     }

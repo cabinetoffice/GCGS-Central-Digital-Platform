@@ -25,13 +25,13 @@ public record RegisterOrganisation
 
 public record UpdateBuyerInformation
 {
-    public required BuyerInformationPatchType Type { get; init; }
+    public required BuyerInformationUpdateType Type { get; init; }
 
     public required BuyerInformation BuyerInformation { get; init; }
 }
 
 [JsonConverter(typeof(JsonStringEnumConverter))]
-public enum BuyerInformationPatchType
+public enum BuyerInformationUpdateType
 {
     BuyerOrganisationType,
     DevolvedRegulation
