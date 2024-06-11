@@ -12,6 +12,8 @@ public class RegisterOrganisationUseCase(
     Func<Guid> guidFactory)
     : IUseCase<RegisterOrganisation, Model.Organisation>
 {
+    private readonly List<string> _defaultScopes = ["ADMIN"];
+
     public RegisterOrganisationUseCase(IOrganisationRepository organisationRepository,
         IPersonRepository personRepository, IMapper mapper)
         : this(organisationRepository, personRepository, mapper, Guid.NewGuid)
@@ -46,7 +48,8 @@ public class RegisterOrganisationUseCase(
         organisation.OrganisationPersons.Add(new OrganisationPerson
         {
             Person = person,
-            Organisation = organisation
+            Organisation = organisation,
+            Scopes = _defaultScopes
         });
         organisation.UpdateBuyerInformation();
         organisation.UpdateSupplierInformation();
