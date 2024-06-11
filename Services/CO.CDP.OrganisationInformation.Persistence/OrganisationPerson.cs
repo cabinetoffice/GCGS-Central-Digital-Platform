@@ -1,6 +1,6 @@
 namespace CO.CDP.OrganisationInformation.Persistence;
 
-public class OrganisationPerson
+public class OrganisationPerson : IEntityDate
 {
     public int PersonId { get; set; }
     public int OrganisationId { get; set; }
