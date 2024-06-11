@@ -64,8 +64,12 @@ public class OrganisationInformationContext(DbContextOptions<OrganisationInforma
             });
 
             entity.HasMany(p => p.Persons)
-                .WithMany(t => t.Organisations)
-                .UsingEntity<OrganisationPerson>();
+            .WithMany(t => t.Organisations)
+            .UsingEntity<OrganisationPerson>(j =>
+                {
+                    j.Property(op => op.CreatedOn).IsRequired().HasDefaultValueSql("CURRENT_TIMESTAMP");
+                    j.Property(op => op.UpdatedOn).IsRequired().HasDefaultValueSql("CURRENT_TIMESTAMP");
+                });
 
             entity.OwnsMany(e => e.Addresses, a => { a.HasKey(e => e.Id); });
         });

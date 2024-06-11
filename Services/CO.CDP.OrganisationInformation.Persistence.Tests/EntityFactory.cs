@@ -96,8 +96,9 @@ public static class EntityFactory
             ],
             Addresses = addresses ?? [new OrganisationAddress
             {
-                Type  = AddressType.Registered,
-                Address = new Address{
+                Type = AddressType.Registered,
+                Address = new Address
+                {
                     StreetAddress = "1234 Default St",
                     StreetAddress2 = "",
                     Locality = "Default City",
@@ -197,5 +198,17 @@ public static class EntityFactory
             RegisteredLegalForm = registeredLegalForm,
             LawRegistered = "England and Wales",
             RegistrationDate = DateTimeOffset.Parse("2005-12-02T00:00:00Z")
+        };
+
+    public static OrganisationPerson GivenOrganisationPerson(
+        int personId = default,
+        int organisationId = default,
+        string? scopes = null
+    )
+        => new()
+        {
+            PersonId = personId,
+            OrganisationId = organisationId,
+            Scopes = scopes ?? ""
         };
 }
