@@ -13,7 +13,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CO.CDP.OrganisationInformation.Persistence.Migrations
 {
     [DbContext(typeof(OrganisationInformationContext))]
-    [Migration("20240611080706_AddOrganisationPersonScopes")]
+    [Migration("20240611103325_AddOrganisationPersonScopes")]
     partial class AddOrganisationPersonScopes
     {
         /// <inheritdoc />
@@ -147,8 +147,9 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
-                    b.Property<string>("Scopes")
-                        .HasColumnType("text");
+                    b.Property<List<string>>("Scopes")
+                        .IsRequired()
+                        .HasColumnType("jsonb");
 
                     b.Property<DateTimeOffset>("UpdatedOn")
                         .ValueGeneratedOnAdd()
@@ -581,17 +582,21 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
 
             modelBuilder.Entity("CO.CDP.OrganisationInformation.Persistence.OrganisationPerson", b =>
                 {
-                    b.HasOne("CO.CDP.OrganisationInformation.Persistence.Organisation", null)
-                        .WithMany()
+                    b.HasOne("CO.CDP.OrganisationInformation.Persistence.Organisation", "Organisation")
+                        .WithMany("OrganisationPersons")
                         .HasForeignKey("OrganisationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("CO.CDP.OrganisationInformation.Persistence.Person", null)
+                    b.HasOne("CO.CDP.OrganisationInformation.Persistence.Person", "Person")
                         .WithMany()
                         .HasForeignKey("PersonId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Organisation");
+
+                    b.Navigation("Person");
                 });
 
             modelBuilder.Entity("CO.CDP.OrganisationInformation.Persistence.TenantPerson", b =>
@@ -607,6 +612,11 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                         .HasForeignKey("TenantId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("CO.CDP.OrganisationInformation.Persistence.Organisation", b =>
+                {
+                    b.Navigation("OrganisationPersons");
                 });
 
             modelBuilder.Entity("CO.CDP.OrganisationInformation.Persistence.Tenant", b =>

@@ -13,7 +13,7 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql) : 
         using var repository = OrganisationRepository();
 
         var person = GivenPerson();
-        var organisation = GivenOrganisation(guid: Guid.NewGuid(), personsWithScope: [(person, "ADMIN")]);
+        var organisation = GivenOrganisation(guid: Guid.NewGuid(), personsWithScope: [(person, ["ADMIN"])]);
 
         repository.Save(organisation);
 
@@ -21,7 +21,7 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql) : 
 
         found.Should().Be(organisation);
         found.As<Organisation>().Id.Should().BePositive();
-        found.As<Organisation>().OrganisationPersons.First().Scopes.Should().Be("ADMIN");
+        found.As<Organisation>().OrganisationPersons.First().Scopes.Should().Equal(["ADMIN"]);
     }
 
     [Fact]
@@ -211,10 +211,10 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql) : 
 
         var person = GivenPerson(userUrn: userUrn);
 
-        var organisation1 = GivenOrganisation(personsWithScope: [(person, "ADMIN")]);
+        var organisation1 = GivenOrganisation(personsWithScope: [(person, ["ADMIN"])]);
         repository.Save(organisation1);
 
-        var organisation2 = GivenOrganisation(personsWithScope: [(person, "ADMIN")]);
+        var organisation2 = GivenOrganisation(personsWithScope: [(person, ["ADMIN"])]);
         repository.Save(organisation2);
 
         var found = await repository.FindByUserUrn(userUrn);

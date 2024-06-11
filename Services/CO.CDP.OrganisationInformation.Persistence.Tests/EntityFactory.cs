@@ -65,7 +65,7 @@ public static class EntityFactory
         List<OrganisationAddress>? addresses = null,
         OrganisationContactPoint? contactPoint = null,
         List<PartyRole>? roles = null,
-        List<(Person, string)>? personsWithScope = null,
+        List<(Person, List<string>)>? personsWithScope = null,
         Organisation.BuyerInformation? buyerInformation = null,
         SupplierInformation? supplierInformation = null
     )

@@ -1,4 +1,5 @@
-using System;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
@@ -18,11 +19,11 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                 nullable: false,
                 defaultValueSql: "CURRENT_TIMESTAMP");
 
-            migrationBuilder.AddColumn<string>(
+            migrationBuilder.AddColumn<List<string>>(
                 name: "Scopes",
                 table: "OrganisationPerson",
-                type: "text",
-                nullable: true);
+                type: "jsonb",
+                nullable: false);
 
             migrationBuilder.AddColumn<DateTimeOffset>(
                 name: "UpdatedOn",

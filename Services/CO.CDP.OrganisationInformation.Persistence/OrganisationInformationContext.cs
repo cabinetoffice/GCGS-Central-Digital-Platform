@@ -1,4 +1,6 @@
+using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace CO.CDP.OrganisationInformation.Persistence;
 
@@ -68,6 +70,7 @@ public class OrganisationInformationContext(DbContextOptions<OrganisationInforma
                 .WithMany(t => t.Organisations)
                 .UsingEntity<OrganisationPerson>(j =>
                 {
+                    j.Property(op => op.Scopes).IsRequired().HasJsonColumn([]);
                     j.Property(op => op.CreatedOn).IsRequired().HasDefaultValueSql("CURRENT_TIMESTAMP");
                     j.Property(op => op.UpdatedOn).IsRequired().HasDefaultValueSql("CURRENT_TIMESTAMP");
                 });
@@ -122,5 +125,17 @@ public class OrganisationInformationContext(DbContextOptions<OrganisationInforma
             entityEntry.Entity.UpdatedOn = DateTimeOffset.UtcNow;
         }
     }
+}
 
+internal static class PropertyBuilderExtensions
+{
+    public static PropertyBuilder<TProperty> HasJsonColumn<TProperty>(
+        this PropertyBuilder<TProperty> propertyBuilder,
+        TProperty defaultValue
+    ) => propertyBuilder
+        .HasColumnType("jsonb")
+        .HasConversion(
+            v => JsonSerializer.Serialize(v, JsonSerializerOptions.Default),
+            v => JsonSerializer.Deserialize<TProperty>(v, JsonSerializerOptions.Default) ?? defaultValue
+        );
 }
