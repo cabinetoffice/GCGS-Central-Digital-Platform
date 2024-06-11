@@ -48,6 +48,7 @@ public class OneLogin(
         }
 
         var ud = new UserDetails { UserUrn = urn, Email = email, Phone = phone };
+        session.Set(Session.UserDetailsKey, ud);
 
         Person.WebApiClient.Person? person;
 
@@ -64,8 +65,6 @@ public class OneLogin(
         }
         catch (ApiException ex) when (ex.StatusCode == 404)
         {
-            session.Set(Session.UserDetailsKey, ud);
-
             return RedirectToPage("PrivacyPolicy");
         }
     }

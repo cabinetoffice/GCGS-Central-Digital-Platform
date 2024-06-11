@@ -4,7 +4,10 @@ using CO.CDP.Tenant.WebApi.AutoMapper;
 using CO.CDP.Tenant.WebApi.Extensions;
 using CO.CDP.Tenant.WebApi.Model;
 using CO.CDP.Tenant.WebApi.UseCase;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Tenant = CO.CDP.Tenant.WebApi.Model.Tenant;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -25,6 +28,29 @@ builder.Services.AddScoped<IUseCase<Guid, Tenant?>, GetTenantUseCase>();
 builder.Services.AddScoped<IUseCase<string, Tenant?>, LookupTenantUseCase>();
 builder.Services.AddTenantProblemDetails();
 
+var authority = builder.Configuration["Organisation:Authority"]
+    ?? throw new Exception("Missing configuration key: Organisation:Authority.");
+
+builder.Services
+    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
+    {
+        options.Authority = authority;
+        options.RequireHttpsMetadata = !builder.Environment.IsDevelopment();
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateAudience = false,
+            ValidateIssuerSigningKey = true
+        };
+    });
+
+builder.Services
+    .AddAuthorizationBuilder()
+    .SetFallbackPolicy(
+        new AuthorizationPolicyBuilder()
+            .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
+            .RequireAuthenticatedUser()
+            .Build());
 
 var app = builder.Build();
 
@@ -42,8 +68,10 @@ else
 
 app.UseStatusCodePages();
 
-app.MapHealthChecks("/health");
+app.MapHealthChecks("/health").AllowAnonymous();
 app.UseHttpsRedirection();
+app.UseAuthentication();
+app.UseAuthorization();
 app.UseTenantEndpoints();
 app.UseTenantLookupEndpoints();
 app.Run();

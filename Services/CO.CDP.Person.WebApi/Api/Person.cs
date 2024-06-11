@@ -1,6 +1,7 @@
 using CO.CDP.Functional;
 using CO.CDP.Person.WebApi.Model;
 using CO.CDP.Person.WebApi.UseCase;
+using CO.CDP.Swashbuckle.Security;
 using DotSwashbuckle.AspNetCore.SwaggerGen;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
@@ -147,7 +148,7 @@ public static class ApiExtensions
                     { typeof(UpdatePerson), "UpdatedPerson" },
                 };
             return typeMap.GetValueOrDefault(type, type.Name);
-        }
-       );
+        });
+        options.ConfigureBearerSecurity();
     }
 }

@@ -13,4 +13,6 @@ public class UserDetails
     public string? Phone { get; set; }
 
     public Guid? PersonId { get; set; }
+
+    public string? AccessToken { get; set; }
 }

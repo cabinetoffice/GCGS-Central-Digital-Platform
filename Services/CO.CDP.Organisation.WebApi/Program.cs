@@ -4,7 +4,10 @@ using CO.CDP.Organisation.WebApi.Extensions;
 using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.Organisation.WebApi.UseCase;
 using CO.CDP.OrganisationInformation.Persistence;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Organisation = CO.CDP.Organisation.WebApi.Model.Organisation;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -26,6 +29,30 @@ builder.Services.AddScoped<IUseCase<string, Organisation?>, LookupOrganisationUs
 builder.Services.AddScoped<IUseCase<string, IEnumerable<Organisation>>, GetOrganisationsUseCase>();
 builder.Services.AddOrganisationProblemDetails();
 
+var authority = builder.Configuration["Organisation:Authority"]
+    ?? throw new Exception("Missing configuration key: Organisation:Authority.");
+
+builder.Services
+    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
+    {
+        options.Authority = authority;
+        options.RequireHttpsMetadata = !builder.Environment.IsDevelopment();
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateAudience = false,
+            ValidateIssuerSigningKey = true
+        };
+    });
+
+builder.Services
+    .AddAuthorizationBuilder()
+    .SetFallbackPolicy(
+        new AuthorizationPolicyBuilder()
+            .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
+            .RequireAuthenticatedUser()
+            .Build());
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -42,8 +69,10 @@ else
 
 app.UseStatusCodePages();
 
-app.MapHealthChecks("/health");
+app.MapHealthChecks("/health").AllowAnonymous();
 app.UseHttpsRedirection();
+app.UseAuthentication();
+app.UseAuthorization();
 app.UseOrganisationEndpoints();
 app.UseOrganisationLookupEndpoints();
 app.Run();

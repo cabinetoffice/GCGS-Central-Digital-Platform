@@ -6,21 +6,21 @@ namespace CO.CDP.Swashbuckle.Security;
 
 public static class SecurityExtensions
 {
-    public static void ConfigureOneLoginSecurity(this SwaggerGenOptions options)
+    public static void ConfigureBearerSecurity(this SwaggerGenOptions options)
     {
-        var oneLoginSecurityScheme = new OpenApiSecurityScheme
+        var bearerSecurityScheme = new OpenApiSecurityScheme
         {
-            Description = "GOV.UK One Login JWT Bearer token",
+            Description = "Organisation Authority JWT Bearer token",
             Type = SecuritySchemeType.Http,
             Scheme = "Bearer",
             Reference = new OpenApiReference
             {
                 Type = ReferenceType.SecurityScheme,
-                Id = "OneLogin"
+                Id = "OrganisationAuthority"
             }
         };
-        options.AddSecurityDefinition("OneLogin", oneLoginSecurityScheme);
-        options.AddSecurityRequirement(new OpenApiSecurityRequirement { { oneLoginSecurityScheme, [] } });
+        options.AddSecurityDefinition("OrganisationAuthority", bearerSecurityScheme);
+        options.AddSecurityRequirement(new OpenApiSecurityRequirement { { bearerSecurityScheme, [] } });
     }
 
     public static void ConfigureApiKeySecurity(this SwaggerGenOptions options)

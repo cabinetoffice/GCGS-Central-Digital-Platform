@@ -1,5 +1,6 @@
-using Microsoft.OpenApi.Models;
+using CO.CDP.Swashbuckle.Security;
 using DotSwashbuckle.AspNetCore.SwaggerGen;
+using Microsoft.OpenApi.Models;
 
 namespace CO.CDP.Forms.WebApi.Api
 {
@@ -20,6 +21,7 @@ namespace CO.CDP.Forms.WebApi.Api
                 Title = "Forms API",
                 Description = "",
             });
+            options.ConfigureBearerSecurity();
         }
     }
 }
