@@ -1,3 +1,4 @@
+using FluentAssertions;
 using static CO.CDP.OrganisationInformation.Persistence.Organisation;
 
 namespace CO.CDP.OrganisationInformation.Persistence.Tests;
@@ -34,17 +35,18 @@ public static class EntityFactory
         string? userUrn = null,
         string firstname = "Jon",
         string lastname = "doe",
-        string email = "jon@example.com",
+        string? email = null,
         string phone = "07925123123",
         Tenant? tenant = null)
     {
+        var personGuid = guid ?? Guid.NewGuid();
         var person = new Person
         {
-            Guid = guid ?? Guid.NewGuid(),
+            Guid = personGuid,
             UserUrn = userUrn ?? $"urn:fdc:gov.uk:2022:{Guid.NewGuid()}",
             FirstName = firstname,
             LastName = lastname,
-            Email = email,
+            Email = email ?? $"jon{personGuid}@example.com",
             Phone = phone
         };
         if (tenant != null)
@@ -63,18 +65,19 @@ public static class EntityFactory
         List<OrganisationAddress>? addresses = null,
         OrganisationContactPoint? contactPoint = null,
         List<PartyRole>? roles = null,
+        List<(Person, List<string>)>? personsWithScope = null,
         Organisation.BuyerInformation? buyerInformation = null,
         SupplierInformation? supplierInformation = null
     )
     {
         var theGuid = guid ?? Guid.NewGuid();
         var theName = name ?? $"Organisation {theGuid}";
-
-        return new Organisation
+        var organisation = new Organisation
         {
             Guid = theGuid,
             Name = theName,
             Tenant = tenant ?? GivenTenant(name: theName),
+
             Identifiers = identifiers ??
             [
                 new Organisation.Identifier
@@ -96,8 +99,9 @@ public static class EntityFactory
             ],
             Addresses = addresses ?? [new OrganisationAddress
             {
-                Type  = AddressType.Registered,
-                Address = new Address{
+                Type = AddressType.Registered,
+                Address = new Address
+                {
                     StreetAddress = "1234 Default St",
                     StreetAddress2 = "",
                     Locality = "Default City",
@@ -117,6 +121,18 @@ public static class EntityFactory
             BuyerInfo = buyerInformation,
             SupplierInfo = supplierInformation
         };
+        foreach (var personWithScope in personsWithScope ?? [])
+        {
+            organisation.OrganisationPersons.Add(
+                new OrganisationPerson
+                {
+                    Person = personWithScope.Item1,
+                    Organisation = organisation,
+                    Scopes = personWithScope.Item2
+                }
+            );
+        }
+        return organisation;
     }
 
     public static Organisation.BuyerInformation GivenBuyerInformation(

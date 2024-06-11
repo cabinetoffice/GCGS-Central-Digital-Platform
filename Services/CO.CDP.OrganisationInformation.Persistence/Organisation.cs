@@ -15,7 +15,8 @@ public class Organisation : IEntityDate
     public ICollection<OrganisationAddress> Addresses { get; set; } = [];
     public required OrganisationContactPoint ContactPoint { get; set; }
     public List<PartyRole> Roles { get; set; } = [];
-    public List<Person> Persons { get; } = [];
+    public List<Person> Persons => OrganisationPersons.Select(p => p.Person).ToList();
+    public List<OrganisationPerson> OrganisationPersons { get; init; } = [];
     public SupplierInformation? SupplierInfo { get; set; }
     public BuyerInformation? BuyerInfo { get; set; }
     public DateTimeOffset CreatedOn { get; set; }

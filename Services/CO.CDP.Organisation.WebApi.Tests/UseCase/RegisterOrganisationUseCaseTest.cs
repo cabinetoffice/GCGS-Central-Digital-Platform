@@ -125,16 +125,18 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
         });
 
         _repository.Verify(r => r.Save(It.Is<Persistence.Organisation>(o =>
-             o.Guid == _generatedGuid &&
-             o.Name == "TheOrganisation"&&
-             o.ContactPoint == new Persistence.Organisation.OrganisationContactPoint
-             {
-                 Name = "Contact Name",
-                 Email = "contact@example.org",
-                 Telephone = "123-456-7890",
-                 Url = "https://example.org/contact"
-             } &&
-             o.Roles.SequenceEqual(new List<PartyRole> { PartyRole.Supplier })
+            o.Guid == _generatedGuid &&
+            o.Name == "TheOrganisation" &&
+            o.ContactPoint == new Persistence.Organisation.OrganisationContactPoint
+            {
+                Name = "Contact Name",
+                Email = "contact@example.org",
+                Telephone = "123-456-7890",
+                Url = "https://example.org/contact"
+            } &&
+            o.Roles.SequenceEqual(new List<PartyRole> { PartyRole.Supplier }) &&
+            o.OrganisationPersons.First().Scopes.Count == 1 &&
+            o.OrganisationPersons.First().Scopes.First() == "ADMIN"
          )), Times.Once);
 
         persistanceOrganisation.Should().NotBeNull();
@@ -215,7 +217,7 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
         ));
 
         _repository.Verify(r => r.Save(It.Is<Persistence.Organisation>(o =>
-            o.Persons.Count == 1 && o.Persons.First().Guid == person.Guid
+            o.OrganisationPersons.Count == 1 && o.OrganisationPersons.First().Person.Guid == person.Guid
         )), Times.Once);
     }
 
