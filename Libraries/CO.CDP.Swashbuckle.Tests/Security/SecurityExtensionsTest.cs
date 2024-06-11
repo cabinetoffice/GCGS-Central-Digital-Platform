@@ -11,13 +11,13 @@ public class SecurityExtensionsTest
     {
         var options = new SwaggerGenOptions();
 
-        options.ConfigureOneLoginSecurity();
+        options.ConfigureBearerSecurity();
 
         options.SwaggerGeneratorOptions.SecuritySchemes
             .Should().Contain(
-                s => s.Key == "OneLogin" && s.Value.Scheme == "Bearer");
+                s => s.Key == "OrganisationAuthority" && s.Value.Scheme == "Bearer");
         options.SwaggerGeneratorOptions.SecurityRequirements.First()
-            .Should().Contain(r => r.Key.Reference.Id == "OneLogin");
+            .Should().Contain(r => r.Key.Reference.Id == "OrganisationAuthority");
     }
 
     [Fact]

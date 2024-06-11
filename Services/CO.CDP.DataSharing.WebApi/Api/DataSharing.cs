@@ -239,7 +239,6 @@ public static class ApiExtensions
         });
         options.IncludeXmlComments(Assembly.GetExecutingAssembly(), Assembly.GetAssembly(typeof(Address)));
         options.OperationFilter<ProblemDetailsOperationFilter>();
-        options.ConfigureOneLoginSecurity();
         options.ConfigureApiKeySecurity();
     }
 }
