@@ -36,9 +36,12 @@ public class OidcEvents(IConfiguration configuration) : OpenIdConnectEvents
 
     private string CreateClientToken()
     {
-        var clientId = configuration.GetValue<string>("OneLogin:ClientId")!;
-        var authority = configuration.GetValue<string>("OneLogin:Authority")!;
-        var privateKey = configuration.GetValue<string>("OneLogin:PrivateKey")!;
+        var clientId = configuration.GetValue<string>("OneLogin:ClientId")
+            ?? throw new Exception("Missing configuration key: OneLogin:ClientId.");
+        var authority = configuration.GetValue<string>("OneLogin:Authority")
+            ?? throw new Exception("Missing configuration key: OneLogin:Authority.");
+        var privateKey = configuration.GetValue<string>("OneLogin:PrivateKey")
+            ?? throw new Exception("Missing configuration key: OneLogin:PrivateKey.");
 
         using var rsa = RSA.Create();
         rsa.ImportFromPem(privateKey);

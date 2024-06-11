@@ -11,10 +11,10 @@ using static IdentityModel.OidcConstants;
 const string TenantHttpClientName = "TenantHttpClient";
 const string OrganisationHttpClientName = "OrganisationHttpClient";
 const string PersonHttpClientName = "PersonHttpClient";
+const string OrganisationAuthorityHttpClientName = "OrganisationAuthorityHttpClient";
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services.AddRazorPages()
     .AddRazorRuntimeCompilation();
 
@@ -29,26 +29,43 @@ builder.Services.AddSession(options =>
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddSingleton<CO.CDP.OrganisationApp.ISession, Session>();
 
-var tenantServiceUrl = builder.Configuration.GetValue<string>("TenantService");
-builder.Services.AddHttpClient(TenantHttpClientName);
+builder.Services.AddTransient<ApiBearerTokenHandler>();
+
+var tenantServiceUrl = builder.Configuration.GetValue<string>("TenantService")
+            ?? throw new Exception("Missing configuration key: TenantService.");
+builder.Services.AddHttpClient(TenantHttpClientName)
+    .AddHttpMessageHandler<ApiBearerTokenHandler>();
 builder.Services.AddTransient<ITenantClient, TenantClient>(
     sc => new TenantClient(tenantServiceUrl,
         sc.GetRequiredService<IHttpClientFactory>().CreateClient(TenantHttpClientName)));
 
-var personServiceUrl = builder.Configuration.GetValue<string>("PersonService");
-builder.Services.AddHttpClient(PersonHttpClientName);
+var personServiceUrl = builder.Configuration.GetValue<string>("PersonService")
+            ?? throw new Exception("Missing configuration key: PersonService.");
+builder.Services.AddHttpClient(PersonHttpClientName)
+    .AddHttpMessageHandler<ApiBearerTokenHandler>();
 builder.Services.AddTransient<IPersonClient, PersonClient>(
     sc => new PersonClient(personServiceUrl,
         sc.GetRequiredService<IHttpClientFactory>().CreateClient(PersonHttpClientName)));
 
-var organisationServiceUrl = builder.Configuration.GetValue<string>("OrganisationService");
-builder.Services.AddHttpClient(OrganisationHttpClientName);
+var organisationServiceUrl = builder.Configuration.GetValue<string>("OrganisationService")
+            ?? throw new Exception("Missing configuration key: OrganisationService.");
+builder.Services.AddHttpClient(OrganisationHttpClientName)
+    .AddHttpMessageHandler<ApiBearerTokenHandler>();
 builder.Services.AddTransient<IOrganisationClient, OrganisationClient>(
     sc => new OrganisationClient(organisationServiceUrl,
         sc.GetRequiredService<IHttpClientFactory>().CreateClient(OrganisationHttpClientName)));
 
+var organisationAuthority = builder.Configuration.GetValue<Uri>("Organisation:Authority")
+            ?? throw new Exception("Missing configuration key: Organisation:Authority.");
+builder.Services.AddHttpClient(OrganisationAuthorityHttpClientName, c => { c.BaseAddress = organisationAuthority; });
+
 builder.Services.AddTransient<OidcEvents>();
 
+var oneLoginAuthority = builder.Configuration.GetValue<string>("OneLogin:Authority")
+            ?? throw new Exception("Missing configuration key: OneLogin:Authority.");
+
+var oneLoginClientId = builder.Configuration.GetValue<string>("OneLogin:ClientId")
+            ?? throw new Exception("Missing configuration key: OneLogin:ClientId.");
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
@@ -57,8 +74,8 @@ builder.Services.AddAuthentication(options =>
 .AddCookie()
 .AddOpenIdConnect(options =>
 {
-    options.Authority = builder.Configuration["OneLogin:Authority"];
-    options.ClientId = builder.Configuration["OneLogin:ClientId"];
+    options.Authority = oneLoginAuthority;
+    options.ClientId = oneLoginClientId;
     options.ResponseType = OpenIdConnectResponseType.Code;
     options.ResponseMode = OpenIdConnectResponseMode.Query;
     options.Scope.Clear();

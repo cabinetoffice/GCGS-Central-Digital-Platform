@@ -1,7 +1,7 @@
 # Define Docker/ECR attributes
 AWS_ACCOUNT_ID=$$(aws sts get-caller-identity | jq -r '.Account')
 REPO_URL := $(AWS_ACCOUNT_ID).dkr.ecr.eu-west-2.amazonaws.com
-IMAGES := cdp-organisation-information-migrations cdp-data-sharing cdp-forms cdp-organisation-app cdp-organisation cdp-person cdp-tenant
+IMAGES := cdp-organisation-information-migrations cdp-data-sharing cdp-forms cdp-organisation-app cdp-organisation cdp-person cdp-tenant cdp-authority
 TAGGED_IMAGES := $(addprefix cabinetoffice/,$(addsuffix :latest,$(IMAGES)))
 TAGGED_REPO_IMAGES := $(addprefix $(REPO_URL)/,$(TAGGED_IMAGES))
 
@@ -68,6 +68,13 @@ services:
       OneLogin__Authority: "https://oidc.example.com"
       OneLogin__ClientId: "client-id"
       OneLogin__PrivateKey: "RSA PRIVATE KEY"
+    deploy:
+      replicas: 1
+  authority:
+    ports:
+      - "$${CDP_AUTHORITY_PORT:-8092}:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
     deploy:
       replicas: 1
   tenant:

@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Routing;
 using Moq;
+using static CO.CDP.OrganisationApp.Tests.Pages.ProblemDetailsFactory;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages;
 
@@ -175,6 +176,84 @@ public class YourDetailsModelTest
 
         var exception = await Assert.ThrowsAsync<ApiException>(() => model.OnPost());
         Assert.Equal(500, exception.StatusCode);
+    }
+
+    [Fact]
+    public async Task OnPost_DuplicatePersonName_AddsModelError()
+    {
+        var problemDetails = GivenProblemDetails(statusCode: 400, code: ErrorCodes.PERSON_ALREADY_EXISTS);
+        var aex = GivenApiException(statusCode: 400, problemDetails: problemDetails);
+
+        sessionMock.Setup(s => s.Get<UserDetails>(Session.UserDetailsKey))
+            .Returns(new UserDetails { UserUrn = "test", PersonId = Guid.NewGuid(), FirstName = "John", LastName = "Doe" });
+
+        personClientMock.Setup(o => o.CreatePersonAsync(It.IsAny<NewPerson>()))
+            .ThrowsAsync(aex);
+
+        var model = GivenYourDetailsModel();
+
+        await model.OnPost();
+        model.ModelState[string.Empty].As<ModelStateEntry>().Errors
+          .Should().Contain(e => e.ErrorMessage == ErrorMessagesList.DuplicatePersonName);
+    }
+
+    [Fact]
+    public async Task OnPost_ArgumentNull_AddsModelError()
+    {
+        var problemDetails = GivenProblemDetails(statusCode: 400, code: ErrorCodes.ARGUMENT_NULL);
+        var aex = GivenApiException(statusCode: 400, problemDetails: problemDetails);
+
+        sessionMock.Setup(s => s.Get<UserDetails>(Session.UserDetailsKey))
+            .Returns(new UserDetails { UserUrn = "test", PersonId = Guid.NewGuid(), FirstName = "John", LastName = "Doe" });
+
+        personClientMock.Setup(o => o.CreatePersonAsync(It.IsAny<NewPerson>()))
+            .ThrowsAsync(aex);
+
+        var model = GivenYourDetailsModel();
+
+        await model.OnPost();
+        model.ModelState[string.Empty].As<ModelStateEntry>().Errors
+         .Should().Contain(e => e.ErrorMessage == ErrorMessagesList.PayLoadIssueOrNullAurgument);
+    }
+
+    [Fact]
+    public async Task OnPost_InvalidOperation_AddsModelError()
+    {
+        var problemDetails = GivenProblemDetails(statusCode: 400, code: ErrorCodes.INVALID_OPERATION);
+        var aex = GivenApiException(statusCode: 400, problemDetails: problemDetails);
+
+        sessionMock.Setup(s => s.Get<UserDetails>(Session.UserDetailsKey))
+            .Returns(new UserDetails { UserUrn = "test", PersonId = Guid.NewGuid(), FirstName = "John", LastName = "Doe" });
+
+        personClientMock.Setup(o => o.CreatePersonAsync(It.IsAny<NewPerson>()))
+            .ThrowsAsync(aex);
+
+        var model = GivenYourDetailsModel();
+
+        await model.OnPost();
+
+        model.ModelState[string.Empty].As<ModelStateEntry>().Errors
+        .Should().Contain(e => e.ErrorMessage == ErrorMessagesList.PersonCreationFailed);
+    }
+
+    [Fact]
+    public async Task OnPost_UnprocessableEntity_AddsModelError()
+    {
+        var problemDetails = GivenProblemDetails(statusCode: 422, code: ErrorCodes.UNPROCESSABLE_ENTITY);
+        var aex = GivenApiException(statusCode: 422, problemDetails: problemDetails);
+
+        sessionMock.Setup(s => s.Get<UserDetails>(Session.UserDetailsKey))
+            .Returns(new UserDetails { UserUrn = "test", PersonId = Guid.NewGuid(), FirstName = "John", LastName = "Doe" });
+
+        personClientMock.Setup(o => o.CreatePersonAsync(It.IsAny<NewPerson>()))
+            .ThrowsAsync(aex);
+
+        var model = GivenYourDetailsModel();
+
+        await model.OnPost();
+
+        model.ModelState[string.Empty].As<ModelStateEntry>().Errors
+        .Should().Contain(e => e.ErrorMessage == ErrorMessagesList.UnprocessableEntity);
     }
 
     private readonly Person.WebApiClient.Person dummyPerson

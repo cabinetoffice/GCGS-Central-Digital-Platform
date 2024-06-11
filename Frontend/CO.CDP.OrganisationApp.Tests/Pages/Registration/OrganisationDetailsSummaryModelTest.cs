@@ -4,7 +4,9 @@ using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.Pages.Registration;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Moq;
+using static CO.CDP.OrganisationApp.Tests.Pages.Registration.OrganisationEntityFactory;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages.Registration;
 
@@ -46,7 +48,7 @@ public class OrganisationDetailsSummaryModelTest
     }
 
     [Fact]
-    public async Task OnPost_OnSuccess_RedirectsToOrganisationOverview()
+    public async Task OnPost_OnSuccess_RedirectsToOrganisationSelection()
     {
         sessionMock.Setup(s => s.Get<UserDetails>(Session.UserDetailsKey))
             .Returns(new UserDetails { UserUrn = "test", PersonId = Guid.NewGuid() });
@@ -59,7 +61,106 @@ public class OrganisationDetailsSummaryModelTest
         var actionResult = await model.OnPost();
 
         actionResult.Should().BeOfType<RedirectToPageResult>()
-            .Which.PageName.Should().Be("/OrganisationOverview");
+            .Which.PageName.Should().Be("/OrganisationSelection");
+    }
+
+    [Fact]
+    public async Task OnPost_DuplicateOrganisationName_AddsModelError()
+    {
+        var problemDetails = GivenProblemDetails(statusCode: 400, code: ErrorCodes.ORGANISATION_ALREADY_EXISTS);
+        var aex = GivenApiException(statusCode: 400, problemDetails: problemDetails);
+
+        sessionMock.Setup(s => s.Get<UserDetails>(Session.UserDetailsKey))
+            .Returns(new UserDetails { UserUrn = "test", PersonId = Guid.NewGuid() });
+
+        organisationClientMock.Setup(o => o.CreateOrganisationAsync(It.IsAny<NewOrganisation>()))
+            .ThrowsAsync(aex);
+
+        var model = GivenOrganisationDetailModel();
+
+        await model.OnPost();
+        model.ModelState[string.Empty].As<ModelStateEntry>().Errors
+          .Should().Contain(e => e.ErrorMessage == ErrorMessagesList.DuplicateOgranisationName);
+    }
+
+    [Fact]
+    public async Task OnPost_ArgumentNull_AddsModelError()
+    {
+        var problemDetails = GivenProblemDetails(code: ErrorCodes.ARGUMENT_NULL, statusCode: 400);
+        var aex = GivenApiException(statusCode: 400, problemDetails: problemDetails);
+
+        sessionMock.Setup(s => s.Get<UserDetails>(Session.UserDetailsKey))
+            .Returns(new UserDetails { UserUrn = "test", PersonId = Guid.NewGuid() });
+
+        organisationClientMock.Setup(o => o.CreateOrganisationAsync(It.IsAny<NewOrganisation>()))
+            .ThrowsAsync(aex);
+
+        var model = GivenOrganisationDetailModel();
+
+        await model.OnPost();
+
+        model.ModelState[string.Empty].As<ModelStateEntry>().Errors
+            .Should().Contain(e => e.ErrorMessage == ErrorMessagesList.PayLoadIssueOrNullAurgument);
+    }
+
+    [Fact]
+    public async Task OnPost_InvalidOperation_AddsModelError()
+    {
+        var problemDetails = GivenProblemDetails(code: ErrorCodes.INVALID_OPERATION, statusCode: 400);
+        var aex = GivenApiException(statusCode: 400, problemDetails: problemDetails);
+
+        sessionMock.Setup(s => s.Get<UserDetails>(Session.UserDetailsKey))
+            .Returns(new UserDetails { UserUrn = "test", PersonId = Guid.NewGuid() });
+
+        organisationClientMock.Setup(o => o.CreateOrganisationAsync(It.IsAny<NewOrganisation>()))
+            .ThrowsAsync(aex);
+
+        var model = GivenOrganisationDetailModel();
+
+        await model.OnPost();
+
+        model.ModelState[string.Empty].As<ModelStateEntry>().Errors
+           .Should().Contain(e => e.ErrorMessage == ErrorMessagesList.OrganisationCreationFailed);
+    }
+
+    [Fact]
+    public async Task OnPost_PersonNotFound_AddsModelError()
+    {
+        var problemDetails = GivenProblemDetails(code: ErrorCodes.PERSON_DOES_NOT_EXIST, statusCode: 404);
+        var aex = GivenApiException(statusCode: 404, problemDetails: problemDetails);
+
+        sessionMock.Setup(s => s.Get<UserDetails>(Session.UserDetailsKey))
+            .Returns(new UserDetails { UserUrn = "test", PersonId = Guid.NewGuid() });
+
+        organisationClientMock.Setup(o => o.CreateOrganisationAsync(It.IsAny<NewOrganisation>()))
+            .ThrowsAsync(aex);
+
+        var model = GivenOrganisationDetailModel();
+
+        await model.OnPost();
+
+        model.ModelState[string.Empty].As<ModelStateEntry>().Errors
+          .Should().Contain(e => e.ErrorMessage == ErrorMessagesList.PersonNotFound);
+    }
+
+    [Fact]
+    public async Task OnPost_UnprocessableEntity_AddsModelError()
+    {
+        var problemDetails = GivenProblemDetails(code: ErrorCodes.UNPROCESSABLE_ENTITY, statusCode: 422);
+        var aex = GivenApiException(statusCode: 422, problemDetails: problemDetails);
+
+        sessionMock.Setup(s => s.Get<UserDetails>(Session.UserDetailsKey))
+            .Returns(new UserDetails { UserUrn = "test", PersonId = Guid.NewGuid() });
+
+        organisationClientMock.Setup(o => o.CreateOrganisationAsync(It.IsAny<NewOrganisation>()))
+            .ThrowsAsync(aex);
+
+        var model = GivenOrganisationDetailModel();
+
+        await model.OnPost();
+
+        model.ModelState[string.Empty].As<ModelStateEntry>().Errors
+         .Should().Contain(e => e.ErrorMessage == ErrorMessagesList.UnprocessableEntity);
     }
 
     private RegistrationDetails DummyRegistrationDetails()
@@ -89,4 +190,5 @@ public class OrganisationDetailsSummaryModelTest
 
         return new OrganisationDetailsSummaryModel(sessionMock.Object, organisationClientMock.Object);
     }
+
 }

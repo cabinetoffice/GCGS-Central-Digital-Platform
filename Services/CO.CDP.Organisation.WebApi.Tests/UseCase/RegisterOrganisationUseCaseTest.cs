@@ -54,7 +54,7 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
                 Name = "Contact Name",
                 Email = "contact@example.org",
                 Telephone = "123-456-7890",
-                Url = "http://example.org/contact"
+                Url = "https://example.org/contact"
             },
             Roles = [PartyRole.Supplier]
         };
@@ -119,22 +119,24 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
                 Name = "Contact Name",
                 Email = "contact@example.org",
                 Telephone = "123-456-7890",
-                Url = "http://example.org/contact"
+                Url = "https://example.org/contact"
             },
             Roles = [PartyRole.Supplier]
         });
 
         _repository.Verify(r => r.Save(It.Is<Persistence.Organisation>(o =>
-             o.Guid == _generatedGuid &&
-             o.Name == "TheOrganisation"&&
-             o.ContactPoint == new Persistence.Organisation.OrganisationContactPoint
-             {
-                 Name = "Contact Name",
-                 Email = "contact@example.org",
-                 Telephone = "123-456-7890",
-                 Url = "http://example.org/contact"
-             } &&
-             o.Roles.SequenceEqual(new List<PartyRole> { PartyRole.Supplier })
+            o.Guid == _generatedGuid &&
+            o.Name == "TheOrganisation" &&
+            o.ContactPoint == new Persistence.Organisation.OrganisationContactPoint
+            {
+                Name = "Contact Name",
+                Email = "contact@example.org",
+                Telephone = "123-456-7890",
+                Url = "https://example.org/contact"
+            } &&
+            o.Roles.SequenceEqual(new List<PartyRole> { PartyRole.Supplier }) &&
+            o.OrganisationPersons.First().Scopes.Count == 1 &&
+            o.OrganisationPersons.First().Scopes.First() == "ADMIN"
          )), Times.Once);
 
         persistanceOrganisation.Should().NotBeNull();
@@ -215,7 +217,7 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
         ));
 
         _repository.Verify(r => r.Save(It.Is<Persistence.Organisation>(o =>
-            o.Persons.Count == 1 && o.Persons.First().Guid == person.Guid
+            o.OrganisationPersons.Count == 1 && o.OrganisationPersons.First().Person.Guid == person.Guid
         )), Times.Once);
     }
 
@@ -237,9 +239,42 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
             Times.Never);
     }
 
+    [Fact]
+    public async Task ItInitialisesBuyerInformationWhenRegisteringBuyerOrganisation()
+    {
+        var person = GivenPersonExists(guid: Guid.NewGuid());
+        var command = GivenRegisterOrganisationCommand(
+            personId: person.Guid,
+            roles: [PartyRole.Buyer]
+        );
+
+        await UseCase.Execute(command);
+
+        _repository.Verify(r => r.Save(It.Is<Persistence.Organisation>(o =>
+            o.BuyerInfo != null && o.SupplierInfo == null
+        )), Times.Once);
+    }
+
+    [Fact]
+    public async Task ItInitialisesSupplierInformationWhenRegisteringSupplierOrganisation()
+    {
+        var person = GivenPersonExists(guid: Guid.NewGuid());
+        var command = GivenRegisterOrganisationCommand(
+            personId: person.Guid,
+            roles: [PartyRole.Supplier]
+        );
+
+        await UseCase.Execute(command);
+
+        _repository.Verify(r => r.Save(It.Is<Persistence.Organisation>(o =>
+            o.BuyerInfo == null && o.SupplierInfo != null
+        )), Times.Once);
+    }
+
     private static RegisterOrganisation GivenRegisterOrganisationCommand(
         string name = "TheOrganisation",
-        Guid? personId = null
+        Guid? personId = null,
+        List<PartyRole>? roles = null
     )
     {
         return new RegisterOrganisation
@@ -276,9 +311,9 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
                 Name = "Contact Name",
                 Email = "contact@example.org",
                 Telephone = "123-456-7890",
-                Url = "http://example.org/contact"
+                Url = "https://example.org/contact"
             },
-            Roles = [PartyRole.Supplier]
+            Roles = roles ?? [PartyRole.Supplier]
         };
     }
 

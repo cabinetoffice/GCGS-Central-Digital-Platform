@@ -29,30 +29,14 @@
 <main class="govuk-main-wrapper">
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
+            <partial name="_ErrorSummary" model="@ModelState" />
+            <h1 class="govuk-heading-l">
+                <span class="govuk-label--l">Overview</span>
+            </h1>
             <fieldset class="govuk-fieldset">
-                <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                    @if (!string.IsNullOrWhiteSpace(Model.Error))
-                    {
-                        <div class="govuk-error-summary" data-module="govuk-error-summary">
-                            <div role="alert">
-                                <h2 class="govuk-error-summary__title">
-                                    There is a problem, please retry
-                                </h2>
-                                <div class="govuk-error-summary__body">
-                                    <ul class="govuk-list govuk-error-summary__list">
-                                        <li><a href="#">@(Model.Error)</a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    }
-                    <h1 class="govuk-heading-l">
-                        <span class="govuk-label--l">Overview</span>
-                    </h1>
-
-                    <h2 class="govuk-heading-m">Organisation details</h2>
-                </legend>
-
+                
+                <h2 class="govuk-heading-m">Organisation details</h2>
+                
                 <dl class="govuk-summary-list">
                     <div class="govuk-summary-list__row">
                         <dt class="govuk-summary-list__key">

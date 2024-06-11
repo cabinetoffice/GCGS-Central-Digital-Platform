@@ -48,10 +48,15 @@ public class OrganisationClientIntegrationTest(ITestOutputHelper testOutputHelpe
             )
         };
         var roles = new List<PartyRole> { PartyRole.Supplier };
+        var buyerInfo = new BuyerInformation(
+            buyerType:"Buyer Type",
+            devolvedRegulations: [DevolvedRegulation.NorthernIreland, DevolvedRegulation.Wales]);
+
         var newOrganisation = new NewOrganisation(
             personId: unknownPersonId,
             additionalIdentifiers: additionalIdentifiers,
             addresses: [address],
+            buyerInfo: buyerInfo,
             contactPoint: contactPoint,
             identifier: identifier,
             name: "New Organisation",
