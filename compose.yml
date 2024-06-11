@@ -16,6 +16,7 @@ services:
         condition: service_healthy
     environment:
       MIGRATIONS_CONNECTION_STRING: "Server=db;Database=cdp;Username=cdp_user;Password=cdp123;"
+      Organisation__Authority: '${Organisation__Authority:-http://authority:8080}'
   organisation-app:
     extends:
       file: compose.common.yml
