@@ -122,6 +122,9 @@ public class OrganisationDetailsSummaryModel(
                 ErrorCodes.INVALID_OPERATION => ErrorMessagesList.OrganisationCreationFailed,
                 ErrorCodes.PERSON_DOES_NOT_EXIST => ErrorMessagesList.PersonNotFound,
                 ErrorCodes.UNPROCESSABLE_ENTITY => ErrorMessagesList.UnprocessableEntity,
+                ErrorCodes.UNKNOWN_ORGANISATION => ErrorMessagesList.UnknownOrganisation,
+                ErrorCodes.BUYER_INFO_NOT_EXISTS => ErrorMessagesList.BuyerInfoNotExists,
+                ErrorCodes.UNKNOWN_BUYER_INFORMATION_UPDATE_TYPE => ErrorMessagesList.UnknownBuyerInformationUpdateType,
                 _ => ErrorMessagesList.UnexpectedError
             });
         }

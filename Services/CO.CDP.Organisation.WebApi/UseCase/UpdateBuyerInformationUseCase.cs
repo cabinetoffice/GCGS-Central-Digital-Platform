@@ -29,7 +29,7 @@ public class UpdateBuyerInformationUseCase(IOrganisationRepository organisationR
                 break;
 
             default:
-                throw new UpdateBuyerInformationException.UnknownBuyerInformationUpdateTypeException("Unknown buyer information update type."); //Bad request
+                throw new UpdateBuyerInformationException.UnknownBuyerInformationUpdateTypeException("Unknown buyer information update type.");
         }
 
         organisationRepository.Save(organisation);

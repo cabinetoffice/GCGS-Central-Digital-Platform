@@ -12,4 +12,9 @@ public static class ErrorCodes
     public const string UNPROCESSABLE_ENTITY = "UNPROCESSABLE_ENTITY";
 
     public const string GENERIC_ERROR = "GENERIC_ERROR";
+
+
+    public const string UNKNOWN_ORGANISATION = "UNKNOWN_ORGANISATION";
+    public const string BUYER_INFO_NOT_EXISTS = "BUYER_INFO_NOT_EXISTS";
+    public const string UNKNOWN_BUYER_INFORMATION_UPDATE_TYPE = "UNKNOWN_BUYER_INFORMATION_UPDATE_TYPE";
 }
