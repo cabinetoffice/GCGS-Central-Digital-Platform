@@ -116,7 +116,7 @@ resource "aws_api_gateway_deployment" "ecs_api" {
   depends_on  = [aws_api_gateway_integration.ecs_service_proxy, aws_api_gateway_integration.root_integration]
 }
 
-resource "aws_api_gateway_stage" "api_stage" {
+resource "aws_api_gateway_stage" "ecs_api" {
   deployment_id = aws_api_gateway_deployment.ecs_api.id
   rest_api_id   = aws_api_gateway_rest_api.ecs_api.id
   stage_name    = "v1" #var.environment
