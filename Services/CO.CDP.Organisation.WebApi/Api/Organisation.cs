@@ -1,5 +1,3 @@
-using System.Reflection;
-using System.Runtime.CompilerServices;
 using CO.CDP.Functional;
 using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.Organisation.WebApi.UseCase;
@@ -10,6 +8,7 @@ using CO.CDP.Swashbuckle.SwaggerGen;
 using DotSwashbuckle.AspNetCore.SwaggerGen;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
+using System.Reflection;
 
 namespace CO.CDP.Organisation.WebApi.Api;
 
@@ -50,7 +49,7 @@ public static class EndpointExtensions
         });
 
     public static void UseOrganisationEndpoints(this WebApplication app)
-    {        
+    {
         app.MapGet("/organisations",
                 async ([FromQuery] string userUrn, IUseCase<string, IEnumerable<Model.Organisation>> useCase) =>
                 await useCase.Execute(userUrn)
@@ -145,7 +144,7 @@ public static class EndpointExtensions
                 operation.Responses["404"].Description = "Organisation not found.";
                 operation.Responses["500"].Description = "Internal server error.";
                 return operation;
-            });        
+            });
     }
 
     public static RouteGroupBuilder UseOrganisationLookupEndpoints(this RouteGroupBuilder app)
@@ -192,12 +191,12 @@ public static class EndpointExtensions
     }
 
     public static RouteGroupBuilder UseBuyerInformationEndpoints(this RouteGroupBuilder app)
-    {        
+    {
         app.MapPatch("/{organisationId}/buyer-information",
-            async (Guid organisationId, UpdateBuyerInformation byuerInformation,
+        async (Guid organisationId, UpdateBuyerInformation byuerInformation,
                 IUseCase<(Guid, UpdateBuyerInformation), bool> useCase) =>
             {
-                await useCase.Execute((organisationId, byuerInformation))
+                return await useCase.Execute((organisationId, byuerInformation))
                    .AndThen(_ => Results.NoContent());
             })
             .Produces(StatusCodes.Status204NoContent)
@@ -209,7 +208,7 @@ public static class EndpointExtensions
             {
                 operation.OperationId = "UpdateBuyerInformation";
                 operation.Description = "Update Buyer Information.";
-                operation.Summary = "Update Buyer Information.";                
+                operation.Summary = "Update Buyer Information.";
                 operation.Responses["204"].Description = "Buyer information updated successfully.";
                 operation.Responses["400"].Description = "Bad request.";
                 operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
