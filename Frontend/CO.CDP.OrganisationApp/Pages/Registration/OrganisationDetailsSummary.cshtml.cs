@@ -36,7 +36,7 @@ public class OrganisationDetailsSummaryModel(
                     type: BuyerInformationUpdateType.BuyerOrganisationType,
                     buyerInformation: new BuyerInformation(
                         buyerType: RegistrationDetails.BuyerOrganisationType,
-                        devolvedRegulations: null))),
+                        devolvedRegulations: []))),
         ];
 
         if (RegistrationDetails.Devolved == true)

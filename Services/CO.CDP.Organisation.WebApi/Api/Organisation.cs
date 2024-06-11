@@ -198,22 +198,20 @@ public static class EndpointExtensions
                 IUseCase<(Guid, UpdateBuyerInformation), bool> useCase) =>
             {
                 await useCase.Execute((organisationId, byuerInformation))
-                   .AndThen(_ => Results.Ok());
+                   .AndThen(_ => Results.NoContent());
             })
-            .Produces<bool>(StatusCodes.Status200OK, "application/json")
+            .Produces(StatusCodes.Status204NoContent)
             .ProducesProblem(StatusCodes.Status500InternalServerError)
             .ProducesProblem(StatusCodes.Status400BadRequest)
             .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
-            .ProducesProblem(StatusCodes.Status422UnprocessableEntity)
             .ProducesProblem(StatusCodes.Status404NotFound)
             .WithOpenApi(operation =>
             {
                 operation.OperationId = "UpdateBuyerInformation";
                 operation.Description = "Update Buyer Information.";
                 operation.Summary = "Update Buyer Information.";                
-                operation.Responses["200"].Description = "Buyer information updated successfully.";
+                operation.Responses["204"].Description = "Buyer information updated successfully.";
                 operation.Responses["400"].Description = "Bad request.";
-                operation.Responses["422"].Description = "Unprocessable entity.";
                 operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
                 operation.Responses["500"].Description = "Internal server error.";
                 return operation;
