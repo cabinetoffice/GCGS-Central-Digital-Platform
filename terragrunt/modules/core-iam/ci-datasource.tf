@@ -66,6 +66,7 @@ data "aws_iam_policy_document" "terraform_global" {
       "acm:DescribeCertificate",
       "acm:ListTagsForCertificate",
       "acm:RequestCertificate",
+      "iam:PassRole",
     ]
     effect = "Allow"
     resources = [
@@ -159,6 +160,17 @@ data "aws_iam_policy_document" "terraform_global" {
       "*"
     ]
     sid = "ManageKms"
+  }
+
+  statement {
+    actions = [
+      "cloudfront:UpdateDistribution",
+    ]
+    effect = "Allow"
+    resources = [
+      "*"
+    ]
+    sid = "ManageCloudfront"
   }
 
   statement {
