@@ -50,7 +50,7 @@ public static class EndpointExtensions
         });
 
     public static void UseOrganisationEndpoints(this WebApplication app)
-    {
+    {        
         app.MapGet("/organisations",
                 async ([FromQuery] string userUrn, IUseCase<string, IEnumerable<Model.Organisation>> useCase) =>
                 await useCase.Execute(userUrn)
@@ -148,9 +148,9 @@ public static class EndpointExtensions
             });        
     }
 
-    public static void UseOrganisationLookupEndpoints(this WebApplication app)
+    public static RouteGroupBuilder UseOrganisationLookupEndpoints(this RouteGroupBuilder app)
     {
-        app.MapGet("/organisation/me", () => Results.Ok(_organisations.First().Value))
+        app.MapGet("/me", () => Results.Ok(_organisations.First().Value))
             .Produces<List<Model.Organisation>>(StatusCodes.Status200OK, "application/json")
             .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
             .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
@@ -160,14 +160,14 @@ public static class EndpointExtensions
                 operation.OperationId = "MyOrganisation";
                 operation.Description = "[STUB] The organisation details of the organisation the API key was issued for. [STUB]";
                 operation.Summary = "[STUB] The organisation details of the organisation the API key was issued for. [STUB]";
-                operation.Tags = new List<OpenApiTag> { new() { Name = "Organisation Lookup" } };
+                operation.Tags = new List<OpenApiTag> { new() { Name = "Organisation - Lookup" } };
                 operation.Responses["200"].Description = "Organisation details.";
                 operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
                 operation.Responses["404"].Description = "Organisation matching the API key was not found.";
                 operation.Responses["500"].Description = "Internal server error.";
                 return operation;
             });
-        app.MapGet("/organisation/lookup",
+        app.MapGet("/lookup",
                 async ([FromQuery] string name, IUseCase<string, Model.Organisation?> useCase) =>
                 await useCase.Execute(name)
                     .AndThen(organisation => organisation != null ? Results.Ok(organisation) : Results.NotFound()))
@@ -180,18 +180,20 @@ public static class EndpointExtensions
                 operation.OperationId = "LookupOrganisation";
                 operation.Description = "Find an organisation.";
                 operation.Summary = "Find an organisation.";
-                operation.Tags = new List<OpenApiTag> { new() { Name = "Organisation Lookup" } };
+                operation.Tags = new List<OpenApiTag> { new() { Name = "Organisation - Lookup" } };
                 operation.Responses["200"].Description = "Organisations Associated.";
                 operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
                 operation.Responses["404"].Description = "Organisation not found.";
                 operation.Responses["500"].Description = "Internal server error.";
                 return operation;
             });
+
+        return app;
     }
 
-    public static void UseBuyerInformationEndpoints(this WebApplication app)
-    {
-        app.MapPatch("/organisations/{organisationId}/buyer-information",
+    public static RouteGroupBuilder UseBuyerInformationEndpoints(this RouteGroupBuilder app)
+    {        
+        app.MapPatch("/{organisationId}/buyer-information",
             async (Guid organisationId, UpdateBuyerInformation byuerInformation,
                 IUseCase<(Guid, UpdateBuyerInformation), bool> useCase) =>
             {
@@ -208,8 +210,7 @@ public static class EndpointExtensions
             {
                 operation.OperationId = "UpdateBuyerInformation";
                 operation.Description = "Update Buyer Information.";
-                operation.Summary = "Update Buyer Information.";
-                operation.Tags = new List<OpenApiTag> { new() { Name = "Organisation - Buyer Information" } };
+                operation.Summary = "Update Buyer Information.";                
                 operation.Responses["200"].Description = "Buyer information updated successfully.";
                 operation.Responses["400"].Description = "Bad request.";
                 operation.Responses["422"].Description = "Unprocessable entity.";
@@ -217,6 +218,7 @@ public static class EndpointExtensions
                 operation.Responses["500"].Description = "Internal server error.";
                 return operation;
             });
+        return app;
     }
 }
 

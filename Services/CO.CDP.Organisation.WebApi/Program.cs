@@ -75,7 +75,14 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseOrganisationEndpoints();
-app.UseOrganisationLookupEndpoints();
-app.UseBuyerInformationEndpoints();
+
+app.MapGroup("/organisation")
+    .UseOrganisationLookupEndpoints()
+    .WithTags("Organisation - Lookup");
+
+app.MapGroup("/organisations")
+    .UseBuyerInformationEndpoints()
+    .WithTags("Organisation - Buyer Information");
+
 app.Run();
 public abstract partial class Program;
