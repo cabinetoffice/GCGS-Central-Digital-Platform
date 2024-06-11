@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 using CO.CDP.OrganisationInformation;
 
 namespace CO.CDP.Organisation.WebApi.Model;
@@ -20,6 +21,20 @@ public record RegisterOrganisation
     public required OrganisationContactPoint? ContactPoint { get; init; }
 
     public required List<PartyRole> Roles { get; init; }
+}
+
+public record UpdateBuyerInformation
+{
+    public required BuyerInformationPatchType Type { get; init; }
+
+    public required BuyerInformation BuyerInformation { get; init; }
+}
+
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum BuyerInformationPatchType
+{
+    BuyerOrganisationType,
+    DevolvedRegulation
 }
 
 public record BuyerInformation

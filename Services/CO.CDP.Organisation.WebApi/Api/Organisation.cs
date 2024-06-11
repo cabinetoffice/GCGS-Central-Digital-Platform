@@ -147,9 +147,11 @@ public static class EndpointExtensions
             });
 
         app.MapPatch("/organisations/{organisationId}/buyerinformation",
-            (int organisationId, BuyerInformation byuerInformation) =>
+            async (Guid organisationId, UpdateBuyerInformation byuerInformation,
+                IUseCase<(Guid, UpdateBuyerInformation), bool> useCase) =>
             {
-
+                await useCase.Execute((organisationId, byuerInformation))
+                   .AndThen(_ => Results.Ok());
             });
     }
     public static void UseOrganisationLookupEndpoints(this WebApplication app)

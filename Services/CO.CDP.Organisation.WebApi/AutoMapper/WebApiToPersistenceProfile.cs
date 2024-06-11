@@ -55,7 +55,7 @@ public class WebApiToPersistenceProfile : Profile
         CreateMap<ContactPoint, Persistence.Organisation.OrganisationContactPoint>()
             .ReverseMap();
 
-        CreateMap<BuyerInformation, Persistence.Organisation.BuyerInformation>()
+        CreateMap<UpdateBuyerInformation, Persistence.Organisation.BuyerInformation>()
             .ForMember(m => m.CreatedOn, o => o.Ignore())
             .ForMember(m => m.UpdatedOn, o => o.Ignore());
 
