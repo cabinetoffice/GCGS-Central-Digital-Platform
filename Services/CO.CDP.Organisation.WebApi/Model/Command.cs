@@ -20,8 +20,6 @@ public record RegisterOrganisation
     public required OrganisationContactPoint? ContactPoint { get; init; }
 
     public required List<PartyRole> Roles { get; init; }
-
-    public BuyerInformation? BuyerInfo { get; init; }
 }
 
 public record BuyerInformation

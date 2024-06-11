@@ -145,6 +145,12 @@ public static class EndpointExtensions
                 operation.Responses["500"].Description = "Internal server error.";
                 return operation;
             });
+
+        app.MapPatch("/organisations/{organisationId}/buyerinformation",
+            (int organisationId, BuyerInformation byuerInformation) =>
+            {
+
+            });
     }
     public static void UseOrganisationLookupEndpoints(this WebApplication app)
     {

@@ -56,7 +56,6 @@ public class OrganisationClientIntegrationTest(ITestOutputHelper testOutputHelpe
             personId: unknownPersonId,
             additionalIdentifiers: additionalIdentifiers,
             addresses: [address],
-            buyerInfo: buyerInfo,
             contactPoint: contactPoint,
             identifier: identifier,
             name: "New Organisation",

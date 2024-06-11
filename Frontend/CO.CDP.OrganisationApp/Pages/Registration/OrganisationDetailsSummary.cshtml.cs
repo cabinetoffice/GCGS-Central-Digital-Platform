@@ -71,9 +71,6 @@ public class OrganisationDetailsSummaryModel(
                 region: details.OrganisationRegion,
                 countryName: details.OrganisationCountry,
                 postalCode: details.OrganisationPostcode)],
-            buyerInfo: new BuyerInformation(
-                buyerType: details.BuyerOrganisationType,
-                devolvedRegulations: details.Regulations.AsApiClientDevolvedRegulationList()),
             contactPoint: new OrganisationContactPoint(
                 email: details.OrganisationEmailAddress,
                 name: null,
