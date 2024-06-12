@@ -37,7 +37,9 @@ public static class EntityFactory
         string lastname = "doe",
         string? email = null,
         string phone = "07925123123",
-        Tenant? tenant = null)
+        Tenant? tenant = null,
+        List<(Organisation, List<string>)>? organisationsWithScope = null
+    )
     {
         var personGuid = guid ?? Guid.NewGuid();
         var person = new Person
@@ -52,6 +54,18 @@ public static class EntityFactory
         if (tenant != null)
         {
             person.Tenants.Add(tenant);
+        }
+
+        foreach (var organisationWithScope in organisationsWithScope ?? [])
+        {
+            person.PersonOrganisations.Add(
+                new OrganisationPerson
+                {
+                    Person = person,
+                    Organisation = organisationWithScope.Item1,
+                    Scopes = organisationWithScope.Item2
+                }
+            );
         }
 
         return person;
