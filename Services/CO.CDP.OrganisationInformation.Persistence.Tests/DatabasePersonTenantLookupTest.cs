@@ -13,12 +13,13 @@ public class DatabasePersonTenantLookupTest(PostgreSqlFixture postgreSql) : ICla
         using var repository = PersonRepository();
 
         var acmeCoPersonUrn = "urn:fdc:gov.uk:2022:7wTqYGMFQxgukTSpSI2G0dMwe9";
+        var acmeCoPersonScopes = new List<string> { "ADMIN" };
         var acmeCoTenant = GivenTenant(name: "Acme Co Tenant");
         var acmeCoOrganisation = GivenOrganisation(tenant: acmeCoTenant);
         var acmeCoPerson = GivenPerson(
             userUrn: acmeCoPersonUrn,
             tenant: acmeCoTenant,
-            organisationsWithScope: [(acmeCoOrganisation, ["ADMIN"])]
+            organisationsWithScope: [(acmeCoOrganisation, acmeCoPersonScopes)]
         );
         var acmeCoPersonWithNoTenantConnection = GivenPerson(
             organisationsWithScope: [(acmeCoOrganisation, ["USER"])]
@@ -39,30 +40,94 @@ public class DatabasePersonTenantLookupTest(PostgreSqlFixture postgreSql) : ICla
         repository.Save(acmeCoPersonWithNoTenantConnection);
         repository.Save(acmeCoPersonWithNoOrganisationConnection);
 
-        var person = await postgreSql.OrganisationInformationContext()
+        var tenantLookup = await postgreSql.OrganisationInformationContext()
             .Persons
             .Where(p => p.UserUrn == acmeCoPersonUrn)
-            .Include(p => p.Tenants)
-            .ThenInclude(t => t.Organisations)
-            .ThenInclude(o => o.OrganisationPersons.Where(op => op.Person.UserUrn == acmeCoPersonUrn))
+            .Select(p => new TenantLookup
+            {
+                User = new TenantLookup.PersonUser
+                {
+                    Email = p.Email,
+                    Urn = p.UserUrn ?? "",
+                    Name = $"{p.FirstName} {p.LastName}"
+                },
+                Tenants = p.Tenants.Select(t => new TenantLookup.Tenant
+                {
+                    Id = t.Guid,
+                    Name = t.Name,
+                    Organisations = t.Organisations.Select(o => new TenantLookup.Organisation
+                    {
+                        Id = o.Guid,
+                        Name = o.Name,
+                        Roles = o.Roles,
+                        Uri = "",
+                        Scopes = o.OrganisationPersons.Single(op => op.PersonId == p.Id).Scopes
+                    }).ToList()
+                }).ToList()
+            })
             .SingleAsync();
 
-        person.Guid.Should().Be(acmeCoPerson.Guid);
-        person.Tenants.Count.Should().Be(1);
-        person.Tenants.Should().Contain(t => t.Name == acmeCoTenant.Name);
-        person.Tenants.First().Organisations.Should().Contain(o => o.Guid == acmeCoOrganisation.Guid);
-        person.Tenants.First().Organisations.Count.Should().Be(1);
-        person.Tenants.First().Organisations.First().OrganisationPersons.Should().Contain(op =>
-            op.Person.Guid == acmeCoPerson.Guid &&
-            op.Organisation.Guid == acmeCoOrganisation.Guid &&
-            op.Scopes.Contains("ADMIN") &&
-            op.Scopes.Count == 1
-        );
-        person.Tenants.First().Organisations.First().OrganisationPersons.Count.Should().Be(1);
+        tenantLookup.Should().BeEquivalentTo(new TenantLookup
+        {
+            User = new TenantLookup.PersonUser
+            {
+                Email = acmeCoPerson.Email,
+                Name = $"{acmeCoPerson.FirstName} {acmeCoPerson.LastName}",
+                Urn = acmeCoPersonUrn
+            },
+            Tenants = new List<TenantLookup.Tenant>
+            {
+                new()
+                {
+                    Id = acmeCoTenant.Guid,
+                    Name = acmeCoTenant.Name,
+                    Organisations =
+                    [
+                        new TenantLookup.Organisation
+                        {
+                            Id = acmeCoOrganisation.Guid,
+                            Name = acmeCoOrganisation.Name,
+                            Roles = acmeCoOrganisation.Roles,
+                            Scopes = acmeCoPersonScopes,
+                            Uri = ""
+                        }
+                    ]
+                }
+            }
+        });
     }
 
     private IPersonRepository PersonRepository()
     {
         return new DatabasePersonRepository(postgreSql.OrganisationInformationContext());
+    }
+}
+
+public class TenantLookup
+{
+    public required PersonUser User { get; init; }
+    public required List<Tenant> Tenants { get; init; }
+
+    public class PersonUser
+    {
+        public required string Name { get; init; }
+        public required string Urn { get; init; }
+        public required string Email { get; init; }
+    }
+
+    public class Tenant
+    {
+        public required Guid Id { get; init; }
+        public required string Name { get; init; }
+        public required List<Organisation> Organisations { get; init; }
+    }
+
+    public class Organisation
+    {
+        public required Guid Id { get; init; }
+        public required string Name { get; init; }
+        public required List<PartyRole> Roles { get; init; }
+        public required string Uri { get; init; }
+        public required List<string> Scopes { get; init; }
     }
 }
