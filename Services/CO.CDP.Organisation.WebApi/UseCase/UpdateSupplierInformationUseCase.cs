@@ -39,7 +39,7 @@ public class UpdateSupplierInformationUseCase(IOrganisationRepository organisati
                     {
                         IdentifierId = updateObject.VatNumber!,
                         Primary = false,
-                        LegalName = "VAT",
+                        LegalName = organisation.Name,
                         Scheme = "VAT"
                     });
                 }
