@@ -27,30 +27,6 @@ public class UpdateSupplierInformationUseCase(IOrganisationRepository organisati
                 }
                 organisation.SupplierInfo.SupplierType = updateObject.SupplierType;
                 break;
-
-            case SupplierInformationUpdateType.Vat:
-                if (updateObject.HasVatNumber == null || (updateObject.HasVatNumber == true && string.IsNullOrWhiteSpace(updateObject.VatNumber)))
-                {
-                    throw new InvalidUpdateSupplierInformationCommand("Missing vat identifier.");
-                }
-                if (updateObject.HasVatNumber == true)
-                {
-                    organisation.Identifiers.Add(new OrganisationInformation.Persistence.Organisation.Identifier
-                    {
-                        IdentifierId = updateObject.VatNumber!,
-                        Primary = false,
-                        LegalName = organisation.Name,
-                        Scheme = "VAT"
-                    });
-                }
-                else
-                {
-                    var vatIdentifier = organisation.Identifiers.FirstOrDefault(i => i.Scheme == "VAT");
-                    if (vatIdentifier != null) organisation.Identifiers.Remove(vatIdentifier);
-                }
-                organisation.SupplierInfo.CompletedVat = true;
-                break;
-
             default:
                 throw new InvalidUpdateSupplierInformationCommand("Unknown supplier information update type.");
         }

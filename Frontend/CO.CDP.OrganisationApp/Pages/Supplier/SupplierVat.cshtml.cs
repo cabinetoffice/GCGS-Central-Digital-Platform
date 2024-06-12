@@ -27,11 +27,19 @@ public class SupplierVatModel(
     {
         try
         {
-            var details = await organisationClient.GetOrganisationSupplierInformationAsync(id);
-            if (details.CompletedVat)
+            var getOrganisationTask = organisationClient.GetOrganisationAsync(id);
+            var getSupplierInfoTask = organisationClient.GetOrganisationSupplierInformationAsync(id);
+
+            await Task.WhenAll(getOrganisationTask, getSupplierInfoTask);
+
+            if (getSupplierInfoTask.Result.CompletedVat)
             {
-                HasVatNumber = !string.IsNullOrWhiteSpace(details.VatNumber);
-                VatNumber = details.VatNumber;
+                var vatIdentifier = getOrganisationTask.Result.AdditionalIdentifiers.FirstOrDefault(i => i.Scheme == "VAT");
+                if (vatIdentifier != null)
+                {
+                    HasVatNumber = !string.IsNullOrWhiteSpace(vatIdentifier.Id);
+                    VatNumber = vatIdentifier.Id;
+                }
             }
         }
         catch (ApiException ex) when (ex.StatusCode == 404)
@@ -51,14 +59,19 @@ public class SupplierVatModel(
 
         try
         {
-            await organisationClient.UpdateSupplierInformationAsync(Id,
-                new UpdateSupplierInformation
+            var organisation = await organisationClient.GetOrganisationAsync(Id);
+
+            await organisationClient.UpdateOrganisationAsync(Id,
+                new UpdatedOrganisation
                 (
-                    type: SupplierInformationUpdateType.Vat,
-                    supplierInformation: new SupplierInfo(
-                        supplierType: null,
-                        hasVatNumber: HasVatNumber,
-                        vatNumber: VatNumber)
+                    type: OrganisationUpdateType.AdditionalIdentifiers,
+                    organisation: new OrganisationInfo(
+                        additionalIdentifiers: [
+                            new OrganisationIdentifier(
+                                id: HasVatNumber == true ? VatNumber : "",
+                                legalName: organisation.Name,
+                                scheme: "VAT")
+                        ])
                 ));
         }
         catch (ApiException ex) when (ex.StatusCode == 404)

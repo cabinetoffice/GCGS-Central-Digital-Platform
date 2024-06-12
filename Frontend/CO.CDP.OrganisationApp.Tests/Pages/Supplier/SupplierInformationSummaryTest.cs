@@ -8,13 +8,15 @@ namespace CO.CDP.OrganisationApp.Tests.Pages.Supplier;
 
 public class SupplierInformationSummaryTest
 {
-    private readonly Mock<ISession> sessionMock;
-    private readonly Mock<IOrganisationClient> organisationClientMock;
+    private readonly Mock<ISession> _sessionMock;
+    private readonly Mock<IOrganisationClient> _organisationClientMock;
+    private readonly SupplierInformationSummaryModel _model;
 
     public SupplierInformationSummaryTest()
     {
-        sessionMock = new Mock<ISession>();
-        organisationClientMock = new Mock<IOrganisationClient>();
+        _sessionMock = new Mock<ISession>();
+        _organisationClientMock = new Mock<IOrganisationClient>();
+        _model = new SupplierInformationSummaryModel(_sessionMock.Object, _organisationClientMock.Object);
     }
 
     [Theory]
@@ -35,7 +37,6 @@ public class SupplierInformationSummaryTest
             bool completedLegalForm,
             StepStatus expectedStatus)
     {
-        var model = GivenSupplierInformationSummaryModel();
         var supplierInformation = new SupplierInformation(
             organisationName: "FakeOrg",
             supplierType: supplierType,
@@ -48,34 +49,26 @@ public class SupplierInformationSummaryTest
             completedQualification: completedQualification,
             completedTradeAssurance: completedTradeAssurance,
             completedOperationType: completedOperationType,
-            completedLegalForm: completedLegalForm,
-            vatNumber: null);
+            completedLegalForm: completedLegalForm);
 
-        organisationClientMock.Setup(o => o.GetOrganisationSupplierInformationAsync(It.IsAny<Guid>()))
+        _organisationClientMock.Setup(o => o.GetOrganisationSupplierInformationAsync(It.IsAny<Guid>()))
             .ReturnsAsync(supplierInformation);
 
-        await model.OnGet(Guid.NewGuid());
+        await _model.OnGet(Guid.NewGuid());
 
-        model.Name.Should().Be("FakeOrg");
-        model.BasicInformationStepStatus.Should().Be(expectedStatus);
+        _model.Name.Should().Be("FakeOrg");
+        _model.BasicInformationStepStatus.Should().Be(expectedStatus);
     }
 
     [Fact]
     public async Task OnGet_PageNotFound()
     {
-        var model = GivenSupplierInformationSummaryModel();
-
-        organisationClientMock.Setup(o => o.GetOrganisationSupplierInformationAsync(It.IsAny<Guid>()))
+        _organisationClientMock.Setup(o => o.GetOrganisationSupplierInformationAsync(It.IsAny<Guid>()))
             .ThrowsAsync(new ApiException("Unexpected error", 404, "", default, null));
 
-        var result = await model.OnGet(Guid.NewGuid());
+        var result = await _model.OnGet(Guid.NewGuid());
 
         result.Should().BeOfType<RedirectResult>()
             .Which.Url.Should().Be("/page-not-found");
-    }
-
-    private SupplierInformationSummaryModel GivenSupplierInformationSummaryModel()
-    {
-        return new SupplierInformationSummaryModel(sessionMock.Object, organisationClientMock.Object);
     }
 }

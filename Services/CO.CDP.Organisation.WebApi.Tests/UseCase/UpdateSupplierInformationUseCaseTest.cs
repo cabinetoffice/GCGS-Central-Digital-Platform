@@ -108,40 +108,6 @@ public class UpdateSupplierInformationUseCaseTests
             .WithMessage("Missing supplier type.");
     }
 
-    [Fact]
-    public async Task Execute_ShouldThrowInvalidUpdateSupplierInformationCommand_WhenVatInfoIsMissing()
-    {
-        var updateSupplierInformation = new UpdateSupplierInformation
-        {
-            Type = SupplierInformationUpdateType.Vat,
-            SupplierInformation = new SupplierInfo()
-        };
-        _organisationRepositoryMock.Setup(repo => repo.Find(_organisationId)).ReturnsAsync(Organisation);
-
-        Func<Task> act = async () => await _useCase.Execute((_organisationId, updateSupplierInformation));
-
-        await act.Should()
-            .ThrowAsync<InvalidUpdateSupplierInformationCommand>()
-            .WithMessage("Missing vat identifier.");
-    }
-
-    [Fact]
-    public async Task Execute_ShouldThrowInvalidUpdateSupplierInformationCommand_WhenVatNumberIsMissing()
-    {
-        var updateSupplierInformation = new UpdateSupplierInformation
-        {
-            Type = SupplierInformationUpdateType.Vat,
-            SupplierInformation = new SupplierInfo { HasVatNumber = true }
-        };
-        _organisationRepositoryMock.Setup(repo => repo.Find(_organisationId)).ReturnsAsync(Organisation);
-
-        Func<Task> act = async () => await _useCase.Execute((_organisationId, updateSupplierInformation));
-
-        await act.Should()
-            .ThrowAsync<InvalidUpdateSupplierInformationCommand>()
-            .WithMessage("Missing vat identifier.");
-    }
-
     private Persistence.Organisation Organisation =>
         new Persistence.Organisation
         {

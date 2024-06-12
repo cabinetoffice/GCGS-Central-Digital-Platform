@@ -68,8 +68,7 @@ public class WebApiToPersistenceProfile : Profile
             .ForMember(m => m.Identifiers, o => o.MapFrom<IdentifiersResolver>());
 
         CreateMap<Persistence.Organisation.SupplierInformation, SupplierInformation>()
-            .ForMember(m => m.OrganisationName, o => o.Ignore())
-            .ForMember(m => m.VatNumber, o => o.Ignore());
+            .ForMember(m => m.OrganisationName, o => o.Ignore());
     }
 
     public class IdentifiersResolver : IValueResolver<RegisterOrganisation, Persistence.Organisation,

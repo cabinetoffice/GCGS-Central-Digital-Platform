@@ -18,6 +18,7 @@ public class RegisterOrganisationTest
     private readonly Mock<IUseCase<string, IEnumerable<Model.Organisation>>> _getOrganisationsUseCase = new();
     private readonly Mock<IUseCase<Guid, SupplierInformation?>> _getSupplierInformationUseCase = new();
     private readonly Mock<IUseCase<(Guid, UpdateSupplierInformation), bool>> _updatesSupplierInformationUseCase = new();
+    private readonly Mock<IUseCase<(Guid, UpdateOrganisation), bool>> _updatesOrganisationUseCase = new();
 
     public RegisterOrganisationTest()
     {
@@ -29,6 +30,7 @@ public class RegisterOrganisationTest
                 services.AddScoped(_ => _getOrganisationsUseCase.Object);
                 services.AddScoped(_ => _getSupplierInformationUseCase.Object);
                 services.AddScoped(_ => _updatesSupplierInformationUseCase.Object);
+                services.AddScoped(_ => _updatesOrganisationUseCase.Object);
             });
         });
         _httpClient = factory.CreateClient();
@@ -166,6 +168,45 @@ public class RegisterOrganisationTest
 
         var response = await _httpClient.PatchAsJsonAsync($"/organisations/{invalidOrganisationId}/supplier-information",
             new UpdateSupplierInformation { Type = SupplierInformationUpdateType.SupplierType, SupplierInformation = new() });
+
+        response.StatusCode.Should().Be(UnprocessableEntity);
+    }
+
+    [Fact]
+    public async Task UpdateOrganisation_ValidOrganisationId_ReturnsOk()
+    {
+        var organisationId = Guid.NewGuid();
+        var updateOrganisation = new UpdateOrganisation { Type = OrganisationUpdateType.AdditionalIdentifiers, Organisation = new() };
+        var command = (organisationId, updateOrganisation);
+
+        _updatesOrganisationUseCase.Setup(uc => uc.Execute(command)).ReturnsAsync(true);
+
+        var response = await _httpClient.PatchAsJsonAsync($"/organisations/{organisationId}", updateOrganisation);
+
+        response.StatusCode.Should().Be(NoContent);
+    }
+
+    [Fact]
+    public async Task UpdateOrganisation_OrganisationNotFound_ReturnsNotFound()
+    {
+        var organisationId = Guid.NewGuid();
+        var updateOrganisation = new UpdateOrganisation { Type = OrganisationUpdateType.AdditionalIdentifiers, Organisation = new() };
+        var command = (organisationId, updateOrganisation);
+
+        _updatesOrganisationUseCase.Setup(uc => uc.Execute(command)).ThrowsAsync(new UnknownOrganisationException(""));
+
+        var response = await _httpClient.PatchAsJsonAsync($"/organisations/{organisationId}", updateOrganisation);
+
+        response.StatusCode.Should().Be(NotFound);
+    }
+
+    [Fact]
+    public async Task UpdateOrganisation_InvalidOrganisationId_ReturnsUnprocessableEntity()
+    {
+        var invalidOrganisationId = "invalid-guid";
+
+        var response = await _httpClient.PatchAsJsonAsync($"/organisations/{invalidOrganisationId}",
+            new UpdateOrganisation { Type = OrganisationUpdateType.AdditionalIdentifiers, Organisation = new() });
 
         response.StatusCode.Should().Be(UnprocessableEntity);
     }

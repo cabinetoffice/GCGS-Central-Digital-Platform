@@ -44,23 +44,22 @@ public record BuyerInformation
     public List<DevolvedRegulation>? DevolvedRegulations { get; init; }
 }
 
-internal record UpdateOrganisation
+public record UpdateOrganisation
 {
-    /// <example>"Acme Corporation"</example>
-    [Required]
-    public required string Name { get; init; }
+    public required OrganisationUpdateType Type { get; init; }
 
-    [Required]
-    public required OrganisationIdentifier Identifier { get; init; }
+    public required OrganisationInfo Organisation { get; init; }
+}
 
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum OrganisationUpdateType
+{
+    AdditionalIdentifiers
+}
+
+public record OrganisationInfo
+{
     public List<OrganisationIdentifier>? AdditionalIdentifiers { get; init; }
-
-    [Required]
-    public List<OrganisationAddress> Addresses { get; init; } = [];
-
-    public OrganisationContactPoint? ContactPoint { get; init; }
-
-    public List<PartyRole>? Roles { get; init; }
 }
 
 public record OrganisationIdentifier
@@ -128,17 +127,12 @@ public record UpdateSupplierInformation
 [JsonConverter(typeof(JsonStringEnumConverter))]
 public enum SupplierInformationUpdateType
 {
-    SupplierType,
-    Vat
+    SupplierType
 }
 
 public record SupplierInfo
 {
     public SupplierType? SupplierType { get; set; }
-
-    public bool? HasVatNumber { get; init; }
-
-    public string? VatNumber { get; init; }
 }
 
 public static class MappingExtensions

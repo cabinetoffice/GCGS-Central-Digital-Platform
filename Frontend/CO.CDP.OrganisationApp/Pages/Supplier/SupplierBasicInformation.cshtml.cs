@@ -13,11 +13,26 @@ public class SupplierBasicInformationModel(
     [BindProperty]
     public SupplierInformation? SupplierInformation { get; set; }
 
+    [BindProperty]
+    public string? VatNumber { get; set; }
+
     public async Task<IActionResult> OnGet(Guid id)
     {
         try
         {
-            SupplierInformation = await organisationClient.GetOrganisationSupplierInformationAsync(id);
+            var getOrganisationTask = organisationClient.GetOrganisationAsync(id);
+            var getSupplierInfoTask = organisationClient.GetOrganisationSupplierInformationAsync(id);
+
+            await Task.WhenAll(getOrganisationTask, getSupplierInfoTask);
+
+            SupplierInformation = getSupplierInfoTask.Result;
+            var organisation = getOrganisationTask.Result;
+
+            var vatIdentifier = organisation.AdditionalIdentifiers.FirstOrDefault(i => i.Scheme == "VAT");
+            if (vatIdentifier != null)
+            {
+                VatNumber = vatIdentifier.Id;
+            }
         }
         catch (ApiException ex) when (ex.StatusCode == 404)
         {

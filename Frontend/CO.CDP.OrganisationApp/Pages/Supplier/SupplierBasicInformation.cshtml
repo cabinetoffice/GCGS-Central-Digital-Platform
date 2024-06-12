@@ -66,10 +66,10 @@
                     <dt class="govuk-summary-list__value">
                         @if (details.CompletedVat)
                         {
-                            if (!string.IsNullOrWhiteSpace(details.VatNumber))
+                            if (!string.IsNullOrWhiteSpace(Model.VatNumber))
                             {
                                 @:Yes<br />
-                                @(details.VatNumber)
+                                @(Model.VatNumber)
                             }
                             else
                             {

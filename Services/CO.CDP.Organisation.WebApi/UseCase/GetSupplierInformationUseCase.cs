@@ -17,12 +17,6 @@ public class GetSupplierInformationUseCase(IOrganisationRepository organisationR
         var supplierInfo = mapper.Map<SupplierInformation>(organisation.SupplierInfo);
         supplierInfo.OrganisationName = organisation.Name;
 
-        if (supplierInfo.CompletedVat)
-        {
-            var vatIdentifier = organisation.Identifiers.FirstOrDefault(i => i.Scheme == "VAT");
-            if (vatIdentifier != null) supplierInfo.VatNumber = vatIdentifier.IdentifierId;
-        }
-
         return supplierInfo;
     }
 }

@@ -24,29 +24,18 @@ public class SupplierVatModelTests
     public async Task OnGet_ValidId_ReturnsPageResult()
     {
         var id = Guid.NewGuid();
-        var supplierInformation = new SupplierInformation(
-            organisationName: "FakeOrg",
-            supplierType: SupplierType.Organisation,
-            operationTypes: null,
-            completedRegAddress: true,
-            completedPostalAddress: false,
-            completedVat: true,
-            completedWebsiteAddress: false,
-            completedEmailAddress: false,
-            completedQualification: false,
-            completedTradeAssurance: false,
-            completedOperationType: false,
-            completedLegalForm: false,
-            vatNumber: "VAT12345");
 
         _organisationClientMock.Setup(client => client.GetOrganisationSupplierInformationAsync(id))
-            .ReturnsAsync(supplierInformation);
+            .ReturnsAsync(SupplierInformationClientModel);
+
+        _organisationClientMock.Setup(client => client.GetOrganisationAsync(id))
+            .ReturnsAsync(OrganisationClientModel(id));
 
         var result = await _model.OnGet(id);
 
         result.Should().BeOfType<PageResult>();
         _model.HasVatNumber.Should().Be(true);
-        _model.VatNumber.Should().Be("VAT12345");
+        _model.VatNumber.Should().Be("FakeId");
     }
 
     [Fact]
@@ -69,6 +58,9 @@ public class SupplierVatModelTests
         _model.Id = id;
         _model.HasVatNumber = true;
         _model.VatNumber = "VAT12345";
+
+        _organisationClientMock.Setup(client => client.GetOrganisationAsync(id))
+            .ReturnsAsync(OrganisationClientModel(id));
 
         _organisationClientMock.Setup(client => client.UpdateSupplierInformationAsync(id,
             It.IsAny<UpdateSupplierInformation>())).Returns(Task.CompletedTask);
@@ -96,11 +88,35 @@ public class SupplierVatModelTests
         _model.Id = id;
         _model.HasVatNumber = false;
 
-        _organisationClientMock.Setup(client => client.UpdateSupplierInformationAsync(id, It.IsAny<UpdateSupplierInformation>()))
+        _organisationClientMock.Setup(client => client.GetOrganisationAsync(id))
             .ThrowsAsync(new ApiException("Unexpected error", 404, "", default, null));
 
         var result = await _model.OnPost();
 
         result.Should().BeOfType<RedirectResult>().Which.Url.Should().Be("/page-not-found");
     }
+
+    private static SupplierInformation SupplierInformationClientModel => new(
+            organisationName: "FakeOrg",
+            supplierType: SupplierType.Organisation,
+            operationTypes: null,
+            completedRegAddress: true,
+            completedPostalAddress: false,
+            completedVat: true,
+            completedWebsiteAddress: false,
+            completedEmailAddress: false,
+            completedQualification: false,
+            completedTradeAssurance: false,
+            completedOperationType: false,
+            completedLegalForm: false);
+
+    private static Organisation.WebApiClient.Organisation OrganisationClientModel(Guid id) =>
+        new(
+            additionalIdentifiers: [new Identifier(id: "FakeId", legalName: "FakeOrg", scheme: "VAT", uri: null)],
+            addresses: null,
+            contactPoint: null,
+            id: id,
+            identifier: null,
+            name: "Test Org",
+            roles: [PartyRole.Supplier]);
 }

@@ -39,5 +39,4 @@ public record SupplierInformation
     public bool CompletedTradeAssurance { get; set; }
     public bool CompletedOperationType { get; set; }
     public bool CompletedLegalForm { get; set; }
-    public string? VatNumber { get; set; }
 }
