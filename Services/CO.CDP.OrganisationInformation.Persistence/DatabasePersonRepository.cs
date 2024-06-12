@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using CO.CDP.Tenant.WebApi.Model;
 
 namespace CO.CDP.OrganisationInformation.Persistence;
 
