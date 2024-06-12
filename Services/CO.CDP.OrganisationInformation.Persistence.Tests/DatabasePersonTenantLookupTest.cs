@@ -60,7 +60,6 @@ public class DatabasePersonTenantLookupTest(PostgreSqlFixture postgreSql) : ICla
                         Id = o.Guid,
                         Name = o.Name,
                         Roles = o.Roles,
-                        Uri = "",
                         Scopes = o.OrganisationPersons.Single(op => op.PersonId == p.Id).Scopes
                     }).ToList()
                 }).ToList()
@@ -88,8 +87,7 @@ public class DatabasePersonTenantLookupTest(PostgreSqlFixture postgreSql) : ICla
                             Id = acmeCoOrganisation.Guid,
                             Name = acmeCoOrganisation.Name,
                             Roles = acmeCoOrganisation.Roles,
-                            Scopes = acmeCoPersonScopes,
-                            Uri = ""
+                            Scopes = acmeCoPersonScopes
                         }
                     ]
                 }
@@ -127,7 +125,6 @@ public class TenantLookup
         public required Guid Id { get; init; }
         public required string Name { get; init; }
         public required List<PartyRole> Roles { get; init; }
-        public required string Uri { get; init; }
         public required List<string> Scopes { get; init; }
     }
 }
