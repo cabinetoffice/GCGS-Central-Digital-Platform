@@ -24,7 +24,7 @@ public class SupplierInformationTest
             CompletedEmailAddress = false,
             CompletedQualification = false,
             CompletedTradeAssurance = false,
-            CompletedOrganisationType = false,
+            CompletedOperationType = false,
             CompletedLegalForm = false
         });
     }

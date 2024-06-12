@@ -31,7 +31,7 @@ public class SupplierInformationSummaryTest
             bool completedEmailAddress,
             bool completedQualification,
             bool completedTradeAssurance,
-            bool completedOrganisationType,
+            bool completedOperationType,
             bool completedLegalForm,
             StepStatus expectedStatus)
     {
@@ -47,7 +47,7 @@ public class SupplierInformationSummaryTest
             completedEmailAddress: completedEmailAddress,
             completedQualification: completedQualification,
             completedTradeAssurance: completedTradeAssurance,
-            completedOrganisationType: completedOrganisationType,
+            completedOperationType: completedOperationType,
             completedLegalForm: completedLegalForm);
 
         organisationClientMock.Setup(o => o.GetOrganisationSupplierInformationAsync(It.IsAny<Guid>()))
