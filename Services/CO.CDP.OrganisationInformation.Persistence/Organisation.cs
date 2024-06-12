@@ -64,7 +64,7 @@ public class Organisation : IEntityDate
         public bool CompletedEmailAddress { get; set; }
         public bool CompletedQualification { get; set; }
         public bool CompletedTradeAssurance { get; set; }
-        public bool CompletedOrganisationType { get; set; }
+        public bool CompletedOperationType { get; set; }
         public bool CompletedLegalForm { get; set; }
         public List<Qualification> Qualifications { get; set; } = [];
         public List<TradeAssurance> TradeAssurances { get; set; } = [];

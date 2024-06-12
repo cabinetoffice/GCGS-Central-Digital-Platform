@@ -32,7 +32,7 @@ public class SupplierBasicInformationTest
             completedEmailAddress: false,
             completedQualification: false,
             completedTradeAssurance: false,
-            completedOrganisationType: false,
+            completedOperationType: false,
             completedLegalForm: false);
 
         organisationClientMock.Setup(o => o.GetOrganisationSupplierInformationAsync(It.IsAny<Guid>()))
