@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moq;
 using static CO.CDP.OrganisationApp.Tests.Pages.Registration.OrganisationEntityFactory;
+using DevolvedRegulation = CO.CDP.OrganisationApp.Constants.DevolvedRegulation;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages.Registration;
 
@@ -87,11 +88,16 @@ public class OrganisationDetailsSummaryModelTest
                         buyerType: model.RegistrationDetails.BuyerOrganisationType,
                         devolvedRegulations: []));
 
-        
-        
+
+
         var actionResult = await model.OnPost();
 
-        organisationClientMock.Verify(o => o.UpdateBuyerInformationAsync(_organisationId, It.IsAny<UpdateBuyerInformation>()), Times.AtLeastOnce);
+        organisationClientMock.Verify(
+            o => o.UpdateBuyerInformationAsync(
+                _organisationId,
+                It.Is<UpdateBuyerInformation>(b => b.Type == buyerInfo.Type
+                && b.BuyerInformation.BuyerType == buyerInfo.BuyerInformation.BuyerType)),
+            Times.AtLeastOnce);
         sessionMock.Verify(s => s.Remove(Session.RegistrationDetailsKey), Times.Once);
 
         actionResult.Should().BeOfType<RedirectToPageResult>()
@@ -109,7 +115,7 @@ public class OrganisationDetailsSummaryModelTest
 
         var model = GivenOrganisationDetailModel();
 
-        model.RegistrationDetails.BuyerOrganisationType = null;        
+        model.RegistrationDetails.BuyerOrganisationType = null;
         model.RegistrationDetails.Devolved = true;
         model.RegistrationDetails.Regulations = [Constants.DevolvedRegulation.NorthernIreland, Constants.DevolvedRegulation.Wales];
 
@@ -118,6 +124,29 @@ public class OrganisationDetailsSummaryModelTest
         organisationClientMock.Verify(o => o.UpdateBuyerInformationAsync(_organisationId, It.Is<UpdateBuyerInformation>(u => u.Type == BuyerInformationUpdateType.DevolvedRegulation)), Times.Once);
 
         sessionMock.Verify(s => s.Remove(Session.RegistrationDetailsKey), Times.Once);
+
+        result.Should().BeOfType<RedirectToPageResult>()
+            .Which.PageName.Should().Be("/OrganisationSelection");
+    }
+
+    [Fact]
+    public async Task OnPost_DevolvedFalse_UpdatesDevolvedRegulationAndRedirects()
+    {
+        sessionMock.Setup(s => s.Get<UserDetails>(Session.UserDetailsKey))
+            .Returns(new UserDetails { UserUrn = "test", PersonId = Guid.NewGuid() });
+
+        organisationClientMock.Setup(o => o.CreateOrganisationAsync(It.IsAny<NewOrganisation>()))
+            .ReturnsAsync(GivenOrganisationClientModel());
+
+        var model = GivenOrganisationDetailModel();
+
+        model.RegistrationDetails.BuyerOrganisationType = null;
+        model.RegistrationDetails.Devolved = false;
+        model.RegistrationDetails.Regulations = [DevolvedRegulation.NorthernIreland, Constants.DevolvedRegulation.Wales];
+
+        var result = await model.OnPost();
+
+        organisationClientMock.Verify(o => o.UpdateBuyerInformationAsync(_organisationId, It.IsAny<UpdateBuyerInformation>()), Times.Never);
 
         result.Should().BeOfType<RedirectToPageResult>()
             .Which.PageName.Should().Be("/OrganisationSelection");
@@ -183,7 +212,7 @@ public class OrganisationDetailsSummaryModelTest
             OrganisationName = "TestOrg",
             OrganisationScheme = "TestType",
             OrganisationEmailAddress = "test@example.com",
-            OrganisationType = OrganisationType.Supplier,            
+            OrganisationType = OrganisationType.Supplier,
         };
 
         return registrationDetails;
