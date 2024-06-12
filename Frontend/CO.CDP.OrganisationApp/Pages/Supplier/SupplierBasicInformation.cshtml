@@ -4,6 +4,23 @@
 @{
     var details = Model.SupplierInformation!;
     string GetActionString(bool completed) => completed ? "Change" : "Add";
+
+    void RenderAddress(CO.CDP.Organisation.WebApiClient.Address address)
+    {
+        <p class="govuk-body">@address.StreetAddress</p>
+
+        @if (!string.IsNullOrWhiteSpace(address.StreetAddress2))
+        {
+            <p class="govuk-body">@address.StreetAddress2</p>
+        }
+        <p class="govuk-body">@address.Locality</p>
+        @if (!string.IsNullOrWhiteSpace(address.Region))
+        {
+            <p class="govuk-body">@address.Region</p>
+        }
+        <p class="govuk-body">@address.PostalCode</p>
+        <p class="govuk-body">@address.CountryName</p>
+    }
 }
 
 <a href="." class="govuk-back-link">Back</a>
@@ -37,6 +54,10 @@
                             Registered address
                         </dt>
                         <dd class="govuk-summary-list__value">
+                            @if (details.CompletedRegAddress && Model.RegisteredAddress != null)
+                            {
+                                RenderAddress(Model.RegisteredAddress);
+                            }
                         </dd>
                         <dd class="govuk-summary-list__actions">
                             <a class="govuk-link" href="#">
@@ -51,6 +72,10 @@
                         Postal address
                     </dt>
                     <dd class="govuk-summary-list__value">
+                        @if (details.CompletedPostalAddress && Model.PostalAddress != null)
+                        {
+                            RenderAddress(Model.PostalAddress);
+                        }
                     </dd>
                     <dd class="govuk-summary-list__actions">
                         <a class="govuk-link" href="#">

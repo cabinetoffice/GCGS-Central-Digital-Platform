@@ -16,6 +16,12 @@ public class SupplierBasicInformationModel(
     [BindProperty]
     public string? VatNumber { get; set; }
 
+    [BindProperty]
+    public Address? RegisteredAddress { get; set; }
+
+    [BindProperty]
+    public Address? PostalAddress { get; set; }
+
     public async Task<IActionResult> OnGet(Guid id)
     {
         try
@@ -32,6 +38,18 @@ public class SupplierBasicInformationModel(
             if (vatIdentifier != null)
             {
                 VatNumber = vatIdentifier.Id;
+            }
+
+            var registeredAddrress = organisation.Addresses.FirstOrDefault(i => i.Type == AddressType.Registered);
+            if (registeredAddrress != null)
+            {
+                RegisteredAddress = registeredAddrress;
+            }
+
+            var postalAddrress = organisation.Addresses.FirstOrDefault(i => i.Type == AddressType.Postal);
+            if (postalAddrress != null)
+            {
+                PostalAddress = postalAddrress;
             }
         }
         catch (ApiException ex) when (ex.StatusCode == 404)

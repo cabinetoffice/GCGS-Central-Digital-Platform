@@ -64,7 +64,7 @@ public class SupplierBasicInformationTest
     private static Organisation.WebApiClient.Organisation OrganisationClientModel(Guid id) =>
         new(
             additionalIdentifiers: [new Identifier(id: "FakeVatId", legalName: "FakeOrg", scheme: "VAT", uri: null)],
-            addresses: null,
+            addresses: [],
             contactPoint: null,
             id: id,
             identifier: null,
