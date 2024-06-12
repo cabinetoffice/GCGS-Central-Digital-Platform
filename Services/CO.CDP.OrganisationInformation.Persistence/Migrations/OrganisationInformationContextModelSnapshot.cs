@@ -144,7 +144,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
-                    b.Property<List<string>>("Scopes")
+                    b.Property<string>("Scopes")
                         .IsRequired()
                         .HasColumnType("jsonb");
 
