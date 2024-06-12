@@ -76,6 +76,7 @@ public class Organisation : IEntityDate
     [Owned]
     public record BuyerInformation : IEntityDate
     {
+        public int OrganisationId { get; set; }
         public string? BuyerType { get; set; }
         public List<DevolvedRegulation> DevolvedRegulations { get; set; } = [];
         public DateTimeOffset CreatedOn { get; set; }

@@ -28,6 +28,29 @@ public class OrganisationDetailsSummaryModel(
         {
             return Page();
         }
+
+        List<Task> tasks =
+        [
+            organisationClient.UpdateBuyerInformationAsync(organisation.Id,
+                new UpdateBuyerInformation(
+                    type: BuyerInformationUpdateType.BuyerOrganisationType,
+                    buyerInformation: new BuyerInformation(
+                        buyerType: RegistrationDetails.BuyerOrganisationType,
+                        devolvedRegulations: []))),
+        ];
+
+        if (RegistrationDetails.Devolved == true)
+        {
+            tasks.Add(organisationClient.UpdateBuyerInformationAsync(organisation.Id,
+                new UpdateBuyerInformation(
+                    type: BuyerInformationUpdateType.DevolvedRegulation,
+                    buyerInformation: new BuyerInformation(
+                        buyerType: null,
+                        devolvedRegulations: RegistrationDetails.Regulations.AsApiClientDevolvedRegulationList()))));
+        }
+
+        await Task.WhenAll(tasks);
+
         session.Remove(Session.RegistrationDetailsKey);
         return RedirectToPage("/OrganisationSelection");
     }
@@ -71,9 +94,6 @@ public class OrganisationDetailsSummaryModel(
                 region: details.OrganisationRegion,
                 countryName: details.OrganisationCountry,
                 postalCode: details.OrganisationPostcode)],
-            buyerInfo: new BuyerInformation(
-                buyerType: details.BuyerOrganisationType,
-                devolvedRegulations: details.Regulations.AsApiClientDevolvedRegulationList()),
             contactPoint: new OrganisationContactPoint(
                 email: details.OrganisationEmailAddress,
                 name: null,
@@ -102,6 +122,9 @@ public class OrganisationDetailsSummaryModel(
                 ErrorCodes.INVALID_OPERATION => ErrorMessagesList.OrganisationCreationFailed,
                 ErrorCodes.PERSON_DOES_NOT_EXIST => ErrorMessagesList.PersonNotFound,
                 ErrorCodes.UNPROCESSABLE_ENTITY => ErrorMessagesList.UnprocessableEntity,
+                ErrorCodes.UNKNOWN_ORGANISATION => ErrorMessagesList.UnknownOrganisation,
+                ErrorCodes.BUYER_INFO_NOT_EXISTS => ErrorMessagesList.BuyerInfoNotExists,
+                ErrorCodes.UNKNOWN_BUYER_INFORMATION_UPDATE_TYPE => ErrorMessagesList.UnknownBuyerInformationUpdateType,
                 _ => ErrorMessagesList.UnexpectedError
             });
         }

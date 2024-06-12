@@ -27,6 +27,7 @@ builder.Services.AddScoped<IUseCase<RegisterOrganisation, Organisation>, Registe
 builder.Services.AddScoped<IUseCase<Guid, Organisation?>, GetOrganisationUseCase>();
 builder.Services.AddScoped<IUseCase<string, Organisation?>, LookupOrganisationUseCase>();
 builder.Services.AddScoped<IUseCase<string, IEnumerable<Organisation>>, GetOrganisationsUseCase>();
+builder.Services.AddScoped<IUseCase<(Guid, UpdateBuyerInformation), bool>, UpdateBuyerInformationUseCase>();
 builder.Services.AddOrganisationProblemDetails();
 
 var authority = builder.Configuration["Organisation:Authority"]
@@ -74,6 +75,14 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseOrganisationEndpoints();
-app.UseOrganisationLookupEndpoints();
+
+app.MapGroup("/organisation")
+    .UseOrganisationLookupEndpoints()
+    .WithTags("Organisation - Lookup");
+
+app.MapGroup("/organisations")
+    .UseBuyerInformationEndpoints()
+    .WithTags("Organisation - Buyer Information");
+
 app.Run();
 public abstract partial class Program;

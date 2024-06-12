@@ -1,4 +1,3 @@
-using System.Reflection;
 using CO.CDP.Functional;
 using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.Organisation.WebApi.UseCase;
@@ -9,6 +8,7 @@ using CO.CDP.Swashbuckle.SwaggerGen;
 using DotSwashbuckle.AspNetCore.SwaggerGen;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
+using System.Reflection;
 
 namespace CO.CDP.Organisation.WebApi.Api;
 
@@ -146,9 +146,10 @@ public static class EndpointExtensions
                 return operation;
             });
     }
-    public static void UseOrganisationLookupEndpoints(this WebApplication app)
+
+    public static RouteGroupBuilder UseOrganisationLookupEndpoints(this RouteGroupBuilder app)
     {
-        app.MapGet("/organisation/me", () => Results.Ok(_organisations.First().Value))
+        app.MapGet("/me", () => Results.Ok(_organisations.First().Value))
             .Produces<List<Model.Organisation>>(StatusCodes.Status200OK, "application/json")
             .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
             .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
@@ -158,14 +159,14 @@ public static class EndpointExtensions
                 operation.OperationId = "MyOrganisation";
                 operation.Description = "[STUB] The organisation details of the organisation the API key was issued for. [STUB]";
                 operation.Summary = "[STUB] The organisation details of the organisation the API key was issued for. [STUB]";
-                operation.Tags = new List<OpenApiTag> { new() { Name = "Organisation Lookup" } };
+                operation.Tags = new List<OpenApiTag> { new() { Name = "Organisation - Lookup" } };
                 operation.Responses["200"].Description = "Organisation details.";
                 operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
                 operation.Responses["404"].Description = "Organisation matching the API key was not found.";
                 operation.Responses["500"].Description = "Internal server error.";
                 return operation;
             });
-        app.MapGet("/organisation/lookup",
+        app.MapGet("/lookup",
                 async ([FromQuery] string name, IUseCase<string, Model.Organisation?> useCase) =>
                 await useCase.Execute(name)
                     .AndThen(organisation => organisation != null ? Results.Ok(organisation) : Results.NotFound()))
@@ -178,13 +179,43 @@ public static class EndpointExtensions
                 operation.OperationId = "LookupOrganisation";
                 operation.Description = "Find an organisation.";
                 operation.Summary = "Find an organisation.";
-                operation.Tags = new List<OpenApiTag> { new() { Name = "Organisation Lookup" } };
+                operation.Tags = new List<OpenApiTag> { new() { Name = "Organisation - Lookup" } };
                 operation.Responses["200"].Description = "Organisations Associated.";
                 operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
                 operation.Responses["404"].Description = "Organisation not found.";
                 operation.Responses["500"].Description = "Internal server error.";
                 return operation;
             });
+
+        return app;
+    }
+
+    public static RouteGroupBuilder UseBuyerInformationEndpoints(this RouteGroupBuilder app)
+    {
+        app.MapPatch("/{organisationId}/buyer-information",
+        async (Guid organisationId, UpdateBuyerInformation byuerInformation,
+                IUseCase<(Guid, UpdateBuyerInformation), bool> useCase) =>
+            {
+                return await useCase.Execute((organisationId, byuerInformation))
+                   .AndThen(_ => Results.NoContent());
+            })
+            .Produces(StatusCodes.Status204NoContent)
+            .ProducesProblem(StatusCodes.Status500InternalServerError)
+            .ProducesProblem(StatusCodes.Status400BadRequest)
+            .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
+            .ProducesProblem(StatusCodes.Status404NotFound)
+            .WithOpenApi(operation =>
+            {
+                operation.OperationId = "UpdateBuyerInformation";
+                operation.Description = "Update Buyer Information.";
+                operation.Summary = "Update Buyer Information.";
+                operation.Responses["204"].Description = "Buyer information updated successfully.";
+                operation.Responses["400"].Description = "Bad request.";
+                operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
+                operation.Responses["500"].Description = "Internal server error.";
+                return operation;
+            });
+        return app;
     }
 }
 
