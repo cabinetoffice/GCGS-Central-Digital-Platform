@@ -9,7 +9,7 @@ public class LookupTenantUseCase(IPersonRepository personRepository, IMapper map
 {
     public async Task<Model.TenantLookup?> Execute(string urn)
     {
-        return await personRepository.FindByUserUrn(urn)
+        return await personRepository.LookupTenant(urn)
             .AndThen(mapper.Map<Model.TenantLookup>);
     }
 }

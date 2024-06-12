@@ -14,23 +14,23 @@ public class DatabasePersonRepository(OrganisationInformationContext context) : 
         return await context.Persons.FirstOrDefaultAsync(t => t.Guid == personId);
     }
 
-    public async Task<UserTenantLookup?> FindByUserUrn(string userUrn)
+    public async Task<TenantLookup?> LookupTenant(string userUrn)
     {
         return await context.Persons
             .Where(p => p.UserUrn == userUrn)
-            .Select(p => new UserTenantLookup
+            .Select(p => new TenantLookup
             {
-                User = new UserTenantLookup.PersonUser
+                User = new TenantLookup.PersonUser
                 {
                     Email = p.Email,
                     Urn = p.UserUrn ?? "",
                     Name = $"{p.FirstName} {p.LastName}"
                 },
-                Tenants = p.Tenants.Select(t => new UserTenantLookup.Tenant
+                Tenants = p.Tenants.Select(t => new TenantLookup.Tenant
                 {
                     Id = t.Guid,
                     Name = t.Name,
-                    Organisations = t.Organisations.Select(o => new UserTenantLookup.Organisation
+                    Organisations = t.Organisations.Select(o => new TenantLookup.Organisation
                     {
                         Id = o.Guid,
                         Name = o.Name,

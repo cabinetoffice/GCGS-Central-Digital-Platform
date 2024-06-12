@@ -1,6 +1,7 @@
 using AutoMapper;
 using CO.CDP.OrganisationInformation.Persistence;
 using CO.CDP.Tenant.WebApi.Model;
+using TenantLookup = CO.CDP.OrganisationInformation.Persistence.TenantLookup;
 
 namespace CO.CDP.Tenant.WebApi.AutoMapper;
 
@@ -11,10 +12,10 @@ public class WebApiToPersistenceProfile : Profile
         CreateMap<OrganisationInformation.Persistence.Tenant, Model.Tenant>()
             .ForMember(m => m.Id, o => o.MapFrom(m => m.Guid));
 
-        CreateMap<UserTenantLookup, TenantLookup>();
-        CreateMap<UserTenantLookup.PersonUser, UserDetails>();
-        CreateMap<UserTenantLookup.Tenant, UserTenant>();
-        CreateMap<UserTenantLookup.Organisation, UserOrganisation>()
+        CreateMap<TenantLookup, Model.TenantLookup>();
+        CreateMap<TenantLookup.PersonUser, UserDetails>();
+        CreateMap<TenantLookup.Tenant, UserTenant>();
+        CreateMap<TenantLookup.Organisation, UserOrganisation>()
             .ForMember(m => m.Uri, o => o.MapFrom(src => new Uri($"/organisations/{src.Id}")));
 
         CreateMap<RegisterTenant, OrganisationInformation.Persistence.Tenant>()

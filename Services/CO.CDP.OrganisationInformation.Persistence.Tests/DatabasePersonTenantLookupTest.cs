@@ -40,11 +40,11 @@ public class DatabasePersonTenantLookupTest(PostgreSqlFixture postgreSql) : ICla
         repository.Save(acmeCoPersonWithNoTenantConnection);
         repository.Save(acmeCoPersonWithNoOrganisationConnection);
 
-        var tenantLookup = await repository.FindByUserUrn(acmeCoPersonUrn);
+        var tenantLookup = await repository.LookupTenant(acmeCoPersonUrn);
 
-        tenantLookup.Should().BeEquivalentTo(new UserTenantLookup
+        tenantLookup.Should().BeEquivalentTo(new TenantLookup
         {
-            User = new UserTenantLookup.PersonUser
+            User = new TenantLookup.PersonUser
             {
                 Email = acmeCoPerson.Email,
                 Name = $"{acmeCoPerson.FirstName} {acmeCoPerson.LastName}",
@@ -58,7 +58,7 @@ public class DatabasePersonTenantLookupTest(PostgreSqlFixture postgreSql) : ICla
                     Name = acmeCoTenant.Name,
                     Organisations =
                     [
-                        new UserTenantLookup.Organisation
+                        new TenantLookup.Organisation
                         {
                             Id = acmeCoOrganisation.Guid,
                             Name = acmeCoOrganisation.Name,

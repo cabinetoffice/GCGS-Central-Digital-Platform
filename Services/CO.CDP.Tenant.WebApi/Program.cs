@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Tenant = CO.CDP.Tenant.WebApi.Model.Tenant;
+using TenantLookup = CO.CDP.Tenant.WebApi.Model.TenantLookup;
 
 var builder = WebApplication.CreateBuilder(args);
 

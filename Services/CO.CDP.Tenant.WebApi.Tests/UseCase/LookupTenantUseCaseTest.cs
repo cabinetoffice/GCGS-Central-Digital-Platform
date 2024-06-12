@@ -6,6 +6,7 @@ using CO.CDP.Tenant.WebApi.UseCase;
 using FluentAssertions;
 using Moq;
 using Address = CO.CDP.OrganisationInformation.Persistence.Address;
+using TenantLookup = CO.CDP.OrganisationInformation.Persistence.TenantLookup;
 
 namespace CO.CDP.Tenant.WebApi.Tests.UseCase;
 
@@ -29,9 +30,9 @@ public class LookupTenantUseCaseTest(AutoMapperFixture mapperFixture) : IClassFi
     {
         var tenantId = Guid.NewGuid();
         var userUrn = "urn:fdc:gov.uk:2022:43af5a8b-f4c0-414b-b341-d4f1fa894302";
-        var userTenantLookup = new UserTenantLookup
+        var userTenantLookup = new TenantLookup
         {
-            User = new UserTenantLookup.PersonUser
+            User = new TenantLookup.PersonUser
             {
                 Urn = userUrn,
                 Name = "fn ln",
@@ -57,11 +58,11 @@ public class LookupTenantUseCaseTest(AutoMapperFixture mapperFixture) : IClassFi
             ]
         };
 
-        _repository.Setup(r => r.FindByUserUrn(userUrn)).ReturnsAsync(userTenantLookup);
+        _repository.Setup(r => r.LookupTenant(userUrn)).ReturnsAsync(userTenantLookup);
 
         var found = await UseCase.Execute("urn:fdc:gov.uk:2022:43af5a8b-f4c0-414b-b341-d4f1fa894302");
 
-        found.Should().BeEquivalentTo(new TenantLookup
+        found.Should().BeEquivalentTo(new Model.TenantLookup
         {
             User = new UserDetails
             {
