@@ -3,8 +3,14 @@ resource "aws_api_gateway_domain_name" "ecs_api" {
   certificate_arn = aws_acm_certificate.ecs_api.arn
 
   depends_on = [
-    aws_acm_certificate.ecs_api
+    aws_acm_certificate_validation.ecs_api
   ]
+}
+
+resource "aws_api_gateway_base_path_mapping" "custom" {
+  domain_name = aws_api_gateway_domain_name.ecs_api.id
+  stage_name  = aws_api_gateway_stage.ecs_api.stage_name
+  api_id      = aws_api_gateway_rest_api.ecs_api.id
 }
 
 
