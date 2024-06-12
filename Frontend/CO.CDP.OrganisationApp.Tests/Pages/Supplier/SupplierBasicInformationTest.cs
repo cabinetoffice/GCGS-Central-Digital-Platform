@@ -33,7 +33,8 @@ public class SupplierBasicInformationTest
             completedQualification: false,
             completedTradeAssurance: false,
             completedOperationType: false,
-            completedLegalForm: false);
+            completedLegalForm: false,
+            vatNumber: null);
 
         organisationClientMock.Setup(o => o.GetOrganisationSupplierInformationAsync(It.IsAny<Guid>()))
             .ReturnsAsync(supplierInformation);

@@ -64,9 +64,21 @@
                         VAT number
                     </dt>
                     <dt class="govuk-summary-list__value">
+                        @if (details.CompletedVat)
+                        {
+                            if (!string.IsNullOrWhiteSpace(details.VatNumber))
+                            {
+                                @:Yes<br />
+                                @(details.VatNumber)
+                            }
+                            else
+                            {
+                                @:No
+                            }
+                        }
                     </dt>
                     <dd class="govuk-summary-list__actions">
-                        <a class="govuk-link" href="#">
+                        <a class="govuk-link" href="vat-question">
                             @GetActionString(details.CompletedVat)<span class="govuk-visually-hidden"> Change</span>
                         </a>
                     </dd>

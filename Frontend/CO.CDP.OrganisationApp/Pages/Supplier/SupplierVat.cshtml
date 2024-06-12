@@ -1,0 +1,63 @@
+@page "/organisation/{id}/supplier-information/vat-question"
+@model CO.CDP.OrganisationApp.Pages.SupplierVatModel
+
+@{
+    var invalidSelection = ((TagBuilder)Html.ValidationMessageFor(m => m.HasVatNumber)).HasInnerHtml;
+    var vatRegHasError = invalidSelection || ((TagBuilder)Html.ValidationMessageFor(m => m.VatNumber)).HasInnerHtml;
+}
+
+<a href="." class="govuk-back-link">Back</a>
+
+<main class="govuk-main-wrapper">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <partial name="_ErrorSummary" model="@Model.ModelState" />
+            <form class="form" method="post">
+                <div class="govuk-form-group @(invalidSelection ? "govuk-form-group--error": "")">
+                    <fieldset class="govuk-fieldset" data-required="" data-error="Select yes if you are registered for VAT" aria-required="true">
+
+                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                            <h1 class="govuk-fieldset__heading">
+                                Are you registered for VAT?
+                            </h1>
+                        </legend>
+                        <div class="govuk-radios govuk-!-margin-top-6" data-module="govuk-radios">
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input" id="vatReg" name="HasVatNumber" type="radio"
+                                       value="true" aria-controls="conditional-vat-yes" aria-expanded="false" @(Model.HasVatNumber == true ? "checked" : "")>
+                                <label class="govuk-label govuk-radios__label" for="vatReg">
+                                    Yes
+                                </label>
+                            </div>
+
+                            <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-vat-yes">
+                                <div class="govuk-form-group @(vatRegHasError ? "govuk-form-group--error" : "")">
+                                    <label class="govuk-label" for="vatNumber">
+                                        VAT number
+                                    </label>
+                                    <div id="vat-registration-number-hint" class="govuk-hint">
+                                        <!--This is 9 numbers, sometimes with 'GB' at the start, for example 123456789 or GB123456789.-->You can find it
+                                        on your VAT registration certificate.
+                                    </div>
+                                    <input class="govuk-input govuk-!-width-one-third @(vatRegHasError ? "govuk-form-group--error" : "")"
+                                           id="vatNumber" name="VatNumber" spellcheck="false" autocomplete="false" aria-describedby="vat-registration-number-hint"
+                                           value="@(Model.HasVatNumber == true ? Model.VatNumber : "")">
+                                </div>
+                            </div>
+
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input" id="vatReg-2" name="HasVatNumber" type="radio" value="false"
+                                @(Model.HasVatNumber == false ? "checked" : "")>
+                                <label class="govuk-label govuk-radios__label" for="vatReg-2">No</label>
+                            </div>
+
+                        </div>
+
+                    </fieldset>
+                </div>
+
+                <button class="govuk-button govuk-!-margin-top-4" type="submit">Save and continue</button>
+            </form>
+        </div>
+    </div>
+</main>

@@ -17,6 +17,7 @@ public class RegisterOrganisationTest
     private readonly Mock<IUseCase<RegisterOrganisation, Model.Organisation>> _registerOrganisationUseCase = new();
     private readonly Mock<IUseCase<string, IEnumerable<Model.Organisation>>> _getOrganisationsUseCase = new();
     private readonly Mock<IUseCase<Guid, SupplierInformation?>> _getSupplierInformationUseCase = new();
+    private readonly Mock<IUseCase<(Guid, UpdateSupplierInformation), bool>> _updatesSupplierInformationUseCase = new();
 
     public RegisterOrganisationTest()
     {
@@ -27,6 +28,7 @@ public class RegisterOrganisationTest
                 services.AddScoped(_ => _registerOrganisationUseCase.Object);
                 services.AddScoped(_ => _getOrganisationsUseCase.Object);
                 services.AddScoped(_ => _getSupplierInformationUseCase.Object);
+                services.AddScoped(_ => _updatesSupplierInformationUseCase.Object);
             });
         });
         _httpClient = factory.CreateClient();
@@ -112,8 +114,7 @@ public class RegisterOrganisationTest
     public async Task GetSupplierInformation_OrganisationNotFound_ReturnsNotFound()
     {
         var organisationId = Guid.NewGuid();
-        var mockUseCase = new Mock<IUseCase<Guid, SupplierInformation?>>();
-        mockUseCase.Setup(uc => uc.Execute(organisationId)).ReturnsAsync((SupplierInformation?)null);
+        _getSupplierInformationUseCase.Setup(uc => uc.Execute(organisationId)).ReturnsAsync((SupplierInformation?)null);
 
         var response = await _httpClient.GetAsync($"/organisations/{organisationId}/supplier-information");
 
@@ -126,6 +127,45 @@ public class RegisterOrganisationTest
         var invalidOrganisationId = "invalid-guid";
 
         var response = await _httpClient.GetAsync($"/organisations/{invalidOrganisationId}/supplier-information");
+
+        response.StatusCode.Should().Be(UnprocessableEntity);
+    }
+
+    [Fact]
+    public async Task UpdateSupplierInformation_ValidOrganisationId_ReturnsOk()
+    {
+        var organisationId = Guid.NewGuid();
+        var updateSupplierInformation = new UpdateSupplierInformation { Type = SupplierInformationUpdateType.SupplierType, SupplierInformation = new() };
+        var command = (organisationId, updateSupplierInformation);
+
+        _updatesSupplierInformationUseCase.Setup(uc => uc.Execute(command)).ReturnsAsync(true);
+
+        var response = await _httpClient.PatchAsJsonAsync($"/organisations/{organisationId}/supplier-information", updateSupplierInformation);
+
+        response.StatusCode.Should().Be(NoContent);
+    }
+
+    [Fact]
+    public async Task UpdateSupplierInformation_OrganisationNotFound_ReturnsNotFound()
+    {
+        var organisationId = Guid.NewGuid();
+        var updateSupplierInformation = new UpdateSupplierInformation { Type = SupplierInformationUpdateType.SupplierType, SupplierInformation = new() };
+        var command = (organisationId, updateSupplierInformation);
+
+        _updatesSupplierInformationUseCase.Setup(uc => uc.Execute(command)).ThrowsAsync(new UnknownOrganisationException(""));
+
+        var response = await _httpClient.PatchAsJsonAsync($"/organisations/{organisationId}/supplier-information", updateSupplierInformation);
+
+        response.StatusCode.Should().Be(NotFound);
+    }
+
+    [Fact]
+    public async Task UpdateSupplierInformation_InvalidOrganisationId_ReturnsUnprocessableEntity()
+    {
+        var invalidOrganisationId = "invalid-guid";
+
+        var response = await _httpClient.PatchAsJsonAsync($"/organisations/{invalidOrganisationId}/supplier-information",
+            new UpdateSupplierInformation { Type = SupplierInformationUpdateType.SupplierType, SupplierInformation = new() });
 
         response.StatusCode.Should().Be(UnprocessableEntity);
     }

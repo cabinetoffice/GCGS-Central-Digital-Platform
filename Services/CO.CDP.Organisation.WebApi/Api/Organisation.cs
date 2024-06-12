@@ -145,28 +145,6 @@ public static class EndpointExtensions
                 operation.Responses["500"].Description = "Internal server error.";
                 return operation;
             });
-
-        app.MapGet("/organisations/{organisationId}/supplier-information",
-            async (Guid organisationId, IUseCase<Guid, SupplierInformation?> useCase) =>
-               await useCase.Execute(organisationId)
-                   .AndThen(supplier => supplier != null ? Results.Ok(supplier) : Results.NotFound()))
-           .Produces<SupplierInformation>(StatusCodes.Status200OK, "application/json")
-           .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
-           .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
-           .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError)
-           .ProducesProblem(StatusCodes.Status422UnprocessableEntity)
-           .WithOpenApi(operation =>
-           {
-               operation.OperationId = "GetOrganisationSupplierInformation";
-               operation.Description = "Get organisation supplier information by ID.";
-               operation.Summary = "Get organisation supplier information by ID.";
-               operation.Responses["200"].Description = "Organisation supplier information details.";
-               operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
-               operation.Responses["404"].Description = "Organisation supplier information not found.";
-               operation.Responses["422"].Description = "Unprocessable entity.";
-               operation.Responses["500"].Description = "Internal server error.";
-               return operation;
-           });
     }
 
     public static RouteGroupBuilder UseOrganisationLookupEndpoints(this RouteGroupBuilder app)
@@ -237,6 +215,60 @@ public static class EndpointExtensions
                 operation.Responses["500"].Description = "Internal server error.";
                 return operation;
             });
+        return app;
+    }
+
+    public static RouteGroupBuilder UseSupplierInformationEndpoints(this RouteGroupBuilder app)
+    {
+        app.MapGet("/{organisationId}/supplier-information",
+            async (Guid organisationId, IUseCase<Guid, SupplierInformation?> useCase) =>
+               await useCase.Execute(organisationId)
+                   .AndThen(supplier => supplier != null ? Results.Ok(supplier) : Results.NotFound()))
+           .Produces<SupplierInformation>(StatusCodes.Status200OK, "application/json")
+           .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
+           .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
+           .ProducesProblem(StatusCodes.Status422UnprocessableEntity)
+           .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError)
+           .WithOpenApi(operation =>
+           {
+               operation.OperationId = "GetOrganisationSupplierInformation";
+               operation.Description = "Get organisation supplier information by ID.";
+               operation.Summary = "Get organisation supplier information by ID.";
+               operation.Responses["200"].Description = "Organisation supplier information details.";
+               operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
+               operation.Responses["404"].Description = "Organisation supplier information not found.";
+               operation.Responses["422"].Description = "Unprocessable entity.";
+               operation.Responses["500"].Description = "Internal server error.";
+               return operation;
+           });
+
+
+        app.MapPatch("/{organisationId}/supplier-information",
+            async (Guid organisationId, UpdateSupplierInformation supplierInformation,
+                IUseCase<(Guid, UpdateSupplierInformation), bool> useCase) =>
+                    await useCase.Execute((organisationId, supplierInformation))
+                        .AndThen(_ => Results.NoContent())
+        )
+            .Produces(StatusCodes.Status204NoContent)
+            .ProducesProblem(StatusCodes.Status400BadRequest)
+            .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
+            .ProducesProblem(StatusCodes.Status404NotFound)
+            .ProducesProblem(StatusCodes.Status422UnprocessableEntity)
+            .ProducesProblem(StatusCodes.Status500InternalServerError)
+            .WithOpenApi(operation =>
+            {
+                operation.OperationId = "UpdateSupplierInformation";
+                operation.Description = "Update Supplier Information.";
+                operation.Summary = "Update Supplier Information.";
+                operation.Responses["204"].Description = "Supplier information updated successfully.";
+                operation.Responses["400"].Description = "Bad request.";
+                operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
+                operation.Responses["404"].Description = "Organisation supplier information not found.";
+                operation.Responses["422"].Description = "Unprocessable entity.";
+                operation.Responses["500"].Description = "Internal server error.";
+                return operation;
+            });
+
         return app;
     }
 }

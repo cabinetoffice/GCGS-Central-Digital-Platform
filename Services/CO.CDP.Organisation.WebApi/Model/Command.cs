@@ -118,6 +118,29 @@ public record OrganisationContactPoint
     public string? Url { get; init; }
 }
 
+public record UpdateSupplierInformation
+{
+    public required SupplierInformationUpdateType Type { get; init; }
+
+    public required SupplierInfo SupplierInformation { get; init; }
+}
+
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum SupplierInformationUpdateType
+{
+    SupplierType,
+    Vat
+}
+
+public record SupplierInfo
+{
+    public SupplierType? SupplierType { get; set; }
+
+    public bool? HasVatNumber { get; init; }
+
+    public string? VatNumber { get; init; }
+}
+
 public static class MappingExtensions
 {
     public static Identifier AsView(this OrganisationIdentifier command) =>

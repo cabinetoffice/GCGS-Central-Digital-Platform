@@ -29,6 +29,7 @@ builder.Services.AddScoped<IUseCase<string, Organisation?>, LookupOrganisationUs
 builder.Services.AddScoped<IUseCase<string, IEnumerable<Organisation>>, GetOrganisationsUseCase>();
 builder.Services.AddScoped<IUseCase<Guid, SupplierInformation?>, GetSupplierInformationUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, UpdateBuyerInformation), bool>, UpdateBuyerInformationUseCase>();
+builder.Services.AddScoped<IUseCase<(Guid, UpdateSupplierInformation), bool>, UpdateSupplierInformationUseCase>();
 builder.Services.AddOrganisationProblemDetails();
 
 var authority = builder.Configuration["Organisation:Authority"]
@@ -46,14 +47,14 @@ builder.Services
             ValidateIssuerSigningKey = true
         };
     });
-
-builder.Services
-    .AddAuthorizationBuilder()
-    .SetFallbackPolicy(
-        new AuthorizationPolicyBuilder()
-            .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
-            .RequireAuthenticatedUser()
-            .Build());
+builder.Services.AddAuthorization();
+//builder.Services
+//    .AddAuthorizationBuilder()
+//    .SetFallbackPolicy(
+//        new AuthorizationPolicyBuilder()
+//            .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
+//            .RequireAuthenticatedUser()
+//            .Build());
 
 var app = builder.Build();
 
@@ -84,6 +85,10 @@ app.MapGroup("/organisation")
 app.MapGroup("/organisations")
     .UseBuyerInformationEndpoints()
     .WithTags("Organisation - Buyer Information");
+
+app.MapGroup("/organisations")
+    .UseSupplierInformationEndpoints()
+    .WithTags("Organisation - Supplier Information");
 
 app.Run();
 public abstract partial class Program;
