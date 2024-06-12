@@ -1,5 +1,4 @@
 using AutoMapper;
-using CO.CDP.OrganisationInformation.Persistence;
 using CO.CDP.Tenant.WebApi.Model;
 using TenantLookup = CO.CDP.OrganisationInformation.Persistence.TenantLookup;
 

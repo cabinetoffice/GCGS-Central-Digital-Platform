@@ -1,4 +1,3 @@
-using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 using CO.CDP.Functional;
 using CO.CDP.OrganisationInformation;

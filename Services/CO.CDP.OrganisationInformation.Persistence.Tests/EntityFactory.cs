@@ -1,4 +1,3 @@
-using FluentAssertions;
 using static CO.CDP.OrganisationInformation.Persistence.Organisation;
 
 namespace CO.CDP.OrganisationInformation.Persistence.Tests;
