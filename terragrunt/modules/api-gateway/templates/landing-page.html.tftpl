@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="https://${frontend_url}/assets/images/favicon.ico" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+    <meta name="theme-color" content="#000000" />
+    <meta name="description" content="GOV.UK Central Digital Platform" />
+    <link rel="manifest" href="https://${frontend_url}/manifest.json" />
+    <link rel="stylesheet" href="https://${frontend_url}/css/govuk-frontend-5.2.0.min.css">
+    <link rel="stylesheet" href="https://${frontend_url}/css/site.css">
+    <title>Central Digital Platform - GOV.UK</title>
+</head>
+<body class="govuk-template__body">
+
+    <div class="govuk-width-container">
+        <div class="govuk-phase-banner">
+            <p class="govuk-phase-banner__content">
+                <strong class="govuk-tag govuk-phase-banner__content__tag">
+                    Prototype
+                </strong>
+                <span class="govuk-phase-banner__text">
+                    This is a prototype of a service in development.
+                </span>
+            </p>
+        </div>
+
+        <main class="govuk-main-wrapper">
+
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-two-thirds govuk-body">
+                    <h4>API Endpoints:</h4>
+                    <ul class="govuk-list govuk-list--bullet">
+                    %{ for endpoint in endpoints }
+                        <li><a href="${endpoint.url}">${endpoint.name}</a></li>
+                    %{ endfor }
+                    </ul>
+                </div>
+            </div>
+        </main>
+    </div>
+
+
+</body>
+</html>

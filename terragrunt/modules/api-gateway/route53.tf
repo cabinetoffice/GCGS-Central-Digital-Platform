@@ -1,5 +1,5 @@
 resource "aws_api_gateway_domain_name" "ecs_api" {
-  domain_name = "api.${var.public_hosted_zone_fqdn}"
+  domain_name     = "api.${var.public_hosted_zone_fqdn}"
   certificate_arn = aws_acm_certificate.ecs_api.arn
 
   depends_on = [

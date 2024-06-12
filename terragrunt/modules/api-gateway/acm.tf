@@ -16,10 +16,10 @@ resource "aws_acm_certificate" "ecs_api" {
 }
 
 resource "aws_acm_certificate_validation" "ecs_api" {
-  certificate_arn         = aws_acm_certificate.ecs_api.arn
-  provider                = aws.virginia
+  certificate_arn = aws_acm_certificate.ecs_api.arn
+  provider        = aws.virginia
   validation_record_fqdns = [
-    for record in aws_acm_certificate.ecs_api.domain_validation_options :record.resource_record_name
+    for record in aws_acm_certificate.ecs_api.domain_validation_options : record.resource_record_name
   ]
 }
 

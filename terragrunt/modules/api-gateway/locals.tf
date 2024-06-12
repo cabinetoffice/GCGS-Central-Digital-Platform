@@ -7,4 +7,12 @@ locals {
     name => config if !contains(["organisation-information-migrations", "organisation-app"], config.name)
   }
 
+  endpoints = [
+    for service in local.services :
+    {
+      name = service.name,
+      url  = "https://${aws_api_gateway_domain_name.ecs_api.domain_name}/${service.name}/swagger/index.html"
+    }
+  ]
+
 }
