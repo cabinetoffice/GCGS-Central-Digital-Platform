@@ -39,9 +39,9 @@ public enum BuyerInformationUpdateType
 
 public record BuyerInformation
 {
-    public string? BuyerType { get; set; }
+    public string? BuyerType { get; init; }
 
-    public required List<DevolvedRegulation> DevolvedRegulations { get; init; }
+    public List<DevolvedRegulation>? DevolvedRegulations { get; init; }
 }
 
 internal record UpdateOrganisation
