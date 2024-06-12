@@ -1,0 +1,107 @@
+@page "/organisation/{id}/supplier-information"
+@model CO.CDP.OrganisationApp.Pages.SupplierInformationSummaryModel
+
+@{
+    string GetStepStatusDescription(StepStatus status)
+    {
+        return status switch
+        {
+            StepStatus.NotStarted => "Not started",
+            StepStatus.InProcess => "In progress",
+            StepStatus.Completed => "Completed",
+            _ => "Not started"
+        };
+    }
+}
+
+<a href="/organisation/@RouteData.Values["id"]" class="govuk-back-link">
+    Back
+</a>
+
+<main class="govuk-main-wrapper">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds govuk-body">
+            <h1 class="govuk-heading-l">
+                <span class="govuk-label--l">@Model.Name</span>
+            </h1>
+            <h2 class="govuk-heading-m">Supplier information</h2>
+            <dl class="govuk-summary-list">
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        <a class="govuk-link govuk-link--no-visited-state" href="#">Basic information</a>
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+
+                    </dd>
+                    <dd class="govuk-summary-list__actions">
+                        <strong class="govuk-tag">@GetStepStatusDescription(Model.BasicInformationStepStatus)</strong>
+                    </dd>
+                </div>
+            </dl>
+            <dl class="govuk-summary-list">
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        <a class="govuk-link govuk-link--no-visited-state" href="#">Connected persons</a>
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+
+                    </dd>
+                    <dd class="govuk-summary-list__actions">
+                        <strong class="govuk-tag">Not started</strong>
+                    </dd>
+                </div>
+
+            </dl>
+            <dl class="govuk-summary-list">
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        <a class="govuk-link govuk-link--no-visited-state" href="#">Mandatory exclusions</a>
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+
+                    </dd>
+                    <dd class="govuk-summary-list__actions">
+                        <strong class="govuk-tag">Not started</strong>
+                    </dd>
+                </div>
+
+            </dl>
+            <dl class="govuk-summary-list">
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        <a class="govuk-link govuk-link--no-visited-state" href="#">Discretionary exclusions</a>
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+
+                    </dd>
+                    <dd class="govuk-summary-list__actions">
+                        <strong class="govuk-tag">Not started</strong>
+                    </dd>
+                </div>
+
+            </dl>
+            <dl class="govuk-summary-list">
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        <a class="govuk-link govuk-link--no-visited-state" href="#">Financial information</a>
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+
+                    </dd>
+                    <dd class="govuk-summary-list__actions">
+                        <strong class="govuk-tag">Not started</strong>
+                    </dd>
+                </div>
+            </dl>
+
+            <a href="#" role="button" class="govuk-button govuk-button--start govuk-!-margin-top-5" data-module="govuk-button">
+                Share my data
+            </a>
+
+            <div class="govuk-!-margin-top-3">
+                <a class="govuk-link" href="/organisation/@RouteData.Values["id"]">Back to organisation details</a>
+            </div>
+
+        </div>
+    </div>
+</main>
