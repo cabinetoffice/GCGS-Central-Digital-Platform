@@ -1,7 +1,7 @@
 namespace CO.CDP.OrganisationInformation.Persistence;
 
 
-public class TenantLookup
+public class UserTenantLookup
 {
     public required PersonUser User { get; init; }
     public required List<Tenant> Tenants { get; init; }
