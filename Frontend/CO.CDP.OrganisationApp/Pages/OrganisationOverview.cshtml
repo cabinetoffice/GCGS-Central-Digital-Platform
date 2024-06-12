@@ -83,9 +83,12 @@
 
                 </dl>
 
-                <h3 class="govuk-!-margin-top-3">
-                    <a class="govuk-link" href="/organisation/@RouteData.Values["id"]/supplier-information">Supplier information</a>
-                </h3>
+                @if (organisationDetails.Roles.Contains(Organisation.WebApiClient.PartyRole.Supplier))
+                {
+                    <h3 class="govuk-!-margin-top-3">
+                        <a class="govuk-link" href="/organisation/@RouteData.Values["id"]/supplier-information">Supplier information</a>
+                    </h3>
+                }
 
                 <h3 class="govuk-!-margin-top-3">
                     <a class="govuk-link" href="#">Users</a>
