@@ -1,13 +1,12 @@
-using System;
-using System.Threading.Tasks;
 using CO.CDP.Organisation.WebApi.Model;
-using CO.CDP.OrganisationInformation.Persistence;
 using CO.CDP.Organisation.WebApi.UseCase;
+using CO.CDP.OrganisationInformation;
+using CO.CDP.OrganisationInformation.Persistence;
 using FluentAssertions;
 using Moq;
-using Xunit;
-using CO.CDP.OrganisationInformation;
 using static CO.CDP.Organisation.WebApi.UseCase.UpdateBuyerInformationUseCase;
+
+namespace CO.CDP.Organisation.WebApi.Tests.UseCase;
 
 public class UpdateBuyerInformationUseCaseTests
 {
@@ -44,7 +43,7 @@ public class UpdateBuyerInformationUseCaseTests
     [Fact]
     public async Task Execute_ShouldThrowUnknownOrganisationException_WhenOrganisationNotFound()
     {
-        CO.CDP.OrganisationInformation.Persistence.Organisation? organisation = null;
+        OrganisationInformation.Persistence.Organisation? organisation = null;
         var updateBuyerInformation = GetUpdateBuyerInformation();
 
         _organisationRepositoryMock.Setup(repo => repo.Find(_organisationId))
@@ -55,11 +54,11 @@ public class UpdateBuyerInformationUseCaseTests
         await act.Should()
             .ThrowAsync<UpdateBuyerInformationException.UnknownOrganisationException>()
             .WithMessage($"Unknown organisation {_organisationId}.");
-    }    
+    }
 
     [Fact]
     public async Task Execute_ShouldThrowBuyerInfoNotExistException_WhenBuyerInfoIsNull()
-    {        
+    {
         var updateBuyerInformation = GetUpdateBuyerInformation();
         var organisation = GetOrganisation();
         organisation.BuyerInfo = null;
@@ -111,16 +110,16 @@ public class UpdateBuyerInformationUseCaseTests
         };
     }
 
-    private CO.CDP.OrganisationInformation.Persistence.Organisation GetOrganisation()
+    private OrganisationInformation.Persistence.Organisation GetOrganisation()
     {
-        return  new CO.CDP.OrganisationInformation.Persistence.Organisation
+        return new OrganisationInformation.Persistence.Organisation
         {
-            ContactPoint = new CO.CDP.OrganisationInformation.Persistence.Organisation.OrganisationContactPoint
+            ContactPoint = new OrganisationInformation.Persistence.Organisation.OrganisationContactPoint
             { Email = "test@test.com" },
             Guid = _organisationId,
             Name = "Test",
             Tenant = It.IsAny<Tenant>(),
-            BuyerInfo = new CO.CDP.OrganisationInformation.Persistence.Organisation.BuyerInformation
+            BuyerInfo = new OrganisationInformation.Persistence.Organisation.BuyerInformation
             { BuyerType = "NewType", DevolvedRegulations = [DevolvedRegulation.NorthernIreland] },
         };
     }

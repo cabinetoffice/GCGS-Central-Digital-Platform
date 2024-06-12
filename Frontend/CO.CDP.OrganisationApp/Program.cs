@@ -112,4 +112,9 @@ app.UseAuthorization();
 app.UseSession();
 app.MapRazorPages();
 
+app.MapFallback(ctx => {
+    ctx.Response.Redirect("/page-not-found");
+    return Task.CompletedTask;
+});
+
 app.Run();
