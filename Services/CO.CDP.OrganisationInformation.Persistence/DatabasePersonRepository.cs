@@ -65,9 +65,11 @@ public class DatabasePersonRepository(OrganisationInformationContext context) : 
         switch (cause.InnerException)
         {
             case { } e when e.Message.Contains("_Persons_Email"):
-                throw new IPersonRepository.PersonRepositoryException.DuplicatePersonException($"Person with email `{person.Email}` already exists.", cause);
+                throw new IPersonRepository.PersonRepositoryException.DuplicatePersonException(
+                    $"Person with email `{person.Email}` already exists.", cause);
             case { } e when e.Message.Contains("_Persons_Guid"):
-                throw new IPersonRepository.PersonRepositoryException.DuplicatePersonException($"Person with guid `{person.Guid}` already exists.", cause);
+                throw new IPersonRepository.PersonRepositoryException.DuplicatePersonException(
+                    $"Person with guid `{person.Guid}` already exists.", cause);
             default:
                 throw cause;
         }

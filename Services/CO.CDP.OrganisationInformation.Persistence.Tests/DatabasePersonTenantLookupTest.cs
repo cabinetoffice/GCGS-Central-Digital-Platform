@@ -40,49 +40,25 @@ public class DatabasePersonTenantLookupTest(PostgreSqlFixture postgreSql) : ICla
         repository.Save(acmeCoPersonWithNoTenantConnection);
         repository.Save(acmeCoPersonWithNoOrganisationConnection);
 
-        var tenantLookup = await postgreSql.OrganisationInformationContext()
-            .Persons
-            .Where(p => p.UserUrn == acmeCoPersonUrn)
-            .Select(p => new TenantLookup
-            {
-                User = new TenantLookup.PersonUser
-                {
-                    Email = p.Email,
-                    Urn = p.UserUrn ?? "",
-                    Name = $"{p.FirstName} {p.LastName}"
-                },
-                Tenants = p.Tenants.Select(t => new TenantLookup.Tenant
-                {
-                    Id = t.Guid,
-                    Name = t.Name,
-                    Organisations = t.Organisations.Select(o => new TenantLookup.Organisation
-                    {
-                        Id = o.Guid,
-                        Name = o.Name,
-                        Roles = o.Roles,
-                        Scopes = o.OrganisationPersons.Single(op => op.PersonId == p.Id).Scopes
-                    }).ToList()
-                }).ToList()
-            })
-            .SingleAsync();
+        var tenantLookup = await repository.FindByUserUrn(acmeCoPersonUrn);
 
-        tenantLookup.Should().BeEquivalentTo(new TenantLookup
+        tenantLookup.Should().BeEquivalentTo(new UserTenantLookup
         {
-            User = new TenantLookup.PersonUser
+            User = new UserTenantLookup.PersonUser
             {
                 Email = acmeCoPerson.Email,
                 Name = $"{acmeCoPerson.FirstName} {acmeCoPerson.LastName}",
                 Urn = acmeCoPersonUrn
             },
-            Tenants = new List<TenantLookup.Tenant>
-            {
+            Tenants =
+            [
                 new()
                 {
                     Id = acmeCoTenant.Guid,
                     Name = acmeCoTenant.Name,
                     Organisations =
                     [
-                        new TenantLookup.Organisation
+                        new UserTenantLookup.Organisation
                         {
                             Id = acmeCoOrganisation.Guid,
                             Name = acmeCoOrganisation.Name,
@@ -91,40 +67,12 @@ public class DatabasePersonTenantLookupTest(PostgreSqlFixture postgreSql) : ICla
                         }
                     ]
                 }
-            }
+            ]
         });
     }
 
     private IPersonRepository PersonRepository()
     {
         return new DatabasePersonRepository(postgreSql.OrganisationInformationContext());
-    }
-}
-
-public class TenantLookup
-{
-    public required PersonUser User { get; init; }
-    public required List<Tenant> Tenants { get; init; }
-
-    public class PersonUser
-    {
-        public required string Name { get; init; }
-        public required string Urn { get; init; }
-        public required string Email { get; init; }
-    }
-
-    public class Tenant
-    {
-        public required Guid Id { get; init; }
-        public required string Name { get; init; }
-        public required List<Organisation> Organisations { get; init; }
-    }
-
-    public class Organisation
-    {
-        public required Guid Id { get; init; }
-        public required string Name { get; init; }
-        public required List<PartyRole> Roles { get; init; }
-        public required List<string> Scopes { get; init; }
     }
 }
