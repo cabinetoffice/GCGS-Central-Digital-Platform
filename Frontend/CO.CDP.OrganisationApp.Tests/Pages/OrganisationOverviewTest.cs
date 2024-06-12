@@ -1,5 +1,7 @@
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Pages;
+using FluentAssertions;
+using Microsoft.AspNetCore.Mvc;
 using Moq;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages;
@@ -29,15 +31,20 @@ public class OrganisationOverviewTest
     }
 
     [Fact]
-    public async Task OnGet_WithNullId_ThrowsArgumentNullException()
+    public async Task OnGet_PageNotFound()
     {
-        Guid? id = null;
         var model = GivenOrganisationOverviewModel();
 
-        await Assert.ThrowsAsync<ArgumentNullException>(() => model.OnGet(id));
+        organisationClientMock.Setup(o => o.GetOrganisationAsync(It.IsAny<Guid>()))
+            .ThrowsAsync(new ApiException("Unexpected error", 404, "", default, null));
+
+        var result = await model.OnGet(Guid.NewGuid());
+
+        result.Should().BeOfType<RedirectResult>()
+            .Which.Url.Should().Be("/page-not-found");
     }
 
-    private Organisation.WebApiClient.Organisation GivenOrganisationClientModel(Guid? id)
+    private static Organisation.WebApiClient.Organisation GivenOrganisationClientModel(Guid? id)
     {
         return new Organisation.WebApiClient.Organisation(null, null, null, id!.Value, null, "Test Org", []);
     }

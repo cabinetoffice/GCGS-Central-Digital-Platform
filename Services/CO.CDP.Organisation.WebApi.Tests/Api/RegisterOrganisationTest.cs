@@ -16,6 +16,7 @@ public class RegisterOrganisationTest
     private readonly HttpClient _httpClient;
     private readonly Mock<IUseCase<RegisterOrganisation, Model.Organisation>> _registerOrganisationUseCase = new();
     private readonly Mock<IUseCase<string, IEnumerable<Model.Organisation>>> _getOrganisationsUseCase = new();
+    private readonly Mock<IUseCase<Guid, SupplierInformation?>> _getSupplierInformationUseCase = new();
 
     public RegisterOrganisationTest()
     {
@@ -23,9 +24,9 @@ public class RegisterOrganisationTest
         {
             builder.ConfigureServices(services =>
             {
-                services.AddScoped<IUseCase<RegisterOrganisation, Model.Organisation>>(_ =>
-                    _registerOrganisationUseCase.Object);
+                services.AddScoped(_ => _registerOrganisationUseCase.Object);
                 services.AddScoped(_ => _getOrganisationsUseCase.Object);
+                services.AddScoped(_ => _getSupplierInformationUseCase.Object);
             });
         });
         _httpClient = factory.CreateClient();
@@ -92,6 +93,41 @@ public class RegisterOrganisationTest
             "/organisations?userUrn=urn:7wTqYGMFQxgukTSpSI2GodMwe9");
 
         returnedOrganisations.Should().ContainEquivalentOf(organisation);
+    }
+
+    [Fact]
+    public async Task GetSupplierInformation_ValidOrganisationId_ReturnsOk()
+    {
+        var organisationId = Guid.NewGuid();
+        var supplierInformation = new SupplierInformation { OrganisationName = "FakeOrg" };
+        _getSupplierInformationUseCase.Setup(uc => uc.Execute(organisationId)).ReturnsAsync(supplierInformation);
+
+        var returnedSupplierInformation = await _httpClient.GetFromJsonAsync<SupplierInformation>(
+            $"/organisations/{organisationId}/supplier-information");
+
+        returnedSupplierInformation.Should().BeEquivalentTo(supplierInformation);
+    }
+
+    [Fact]
+    public async Task GetSupplierInformation_OrganisationNotFound_ReturnsNotFound()
+    {
+        var organisationId = Guid.NewGuid();
+        var mockUseCase = new Mock<IUseCase<Guid, SupplierInformation?>>();
+        mockUseCase.Setup(uc => uc.Execute(organisationId)).ReturnsAsync((SupplierInformation?)null);
+
+        var response = await _httpClient.GetAsync($"/organisations/{organisationId}/supplier-information");
+
+        response.StatusCode.Should().Be(NotFound);
+    }
+
+    [Fact]
+    public async Task GetSupplierInformation_InvalidOrganisationId_ReturnsUnprocessableEntity()
+    {
+        var invalidOrganisationId = "invalid-guid";
+
+        var response = await _httpClient.GetAsync($"/organisations/{invalidOrganisationId}/supplier-information");
+
+        response.StatusCode.Should().Be(UnprocessableEntity);
     }
 
     private static RegisterOrganisation GivenRegisterOrganisationCommand()

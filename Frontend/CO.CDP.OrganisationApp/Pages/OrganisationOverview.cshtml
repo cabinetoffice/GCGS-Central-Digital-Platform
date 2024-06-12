@@ -1,4 +1,4 @@
-@page "/organisation-overview"
+@page "/organisation/{id}"
 @using CO.CDP.OrganisationApp.Constants
 @model OrganisationOverviewModel
 
@@ -82,23 +82,18 @@
                     }
 
                 </dl>
-                <h2 class="govuk-heading-m govuk-!-margin-top-9">Organisation users</h2>
-                <dl class="govuk-summary-list">
-                    <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">
-                            <a href="#">Add users</a>
-                        </dt>
-                        <dd class="govuk-summary-list__value">
 
-                        </dd>
-                        <dd class="govuk-summary-list__actions">
-                            <strong class="govuk-tag govuk-tag--blue">
-                                Incomplete
-                            </strong>
-                        </dd>
-                    </div>
-                </dl>
-                <a href="/organisation-selection" class="govuk-link govuk-link--no-visited-state">Back to all organisations</a>
+                <h3 class="govuk-!-margin-top-3">
+                    <a class="govuk-link" href="/organisation/@RouteData.Values["id"]/supplier-information">Supplier information</a>
+                </h3>
+
+                <h3 class="govuk-!-margin-top-3">
+                    <a class="govuk-link" href="#">Users</a>
+                </h3>
+
+                <div class="govuk-!-margin-top-6">
+                    <a href="/organisation-selection" class="govuk-link govuk-link--no-visited-state">Back to all organisations</a>
+                </div>
             </fieldset>
         </div>
     </div>

@@ -145,6 +145,28 @@ public static class EndpointExtensions
                 operation.Responses["500"].Description = "Internal server error.";
                 return operation;
             });
+
+        app.MapGet("/organisations/{organisationId}/supplier-information",
+            async (Guid organisationId, IUseCase<Guid, SupplierInformation?> useCase) =>
+               await useCase.Execute(organisationId)
+                   .AndThen(supplier => supplier != null ? Results.Ok(supplier) : Results.NotFound()))
+           .Produces<SupplierInformation>(StatusCodes.Status200OK, "application/json")
+           .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
+           .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
+           .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError)
+           .ProducesProblem(StatusCodes.Status422UnprocessableEntity)
+           .WithOpenApi(operation =>
+           {
+               operation.OperationId = "GetOrganisationSupplierInformation";
+               operation.Description = "Get organisation supplier information by ID.";
+               operation.Summary = "Get organisation supplier information by ID.";
+               operation.Responses["200"].Description = "Organisation supplier information details.";
+               operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
+               operation.Responses["404"].Description = "Organisation supplier information not found.";
+               operation.Responses["422"].Description = "Unprocessable entity.";
+               operation.Responses["500"].Description = "Internal server error.";
+               return operation;
+           });
     }
     public static void UseOrganisationLookupEndpoints(this WebApplication app)
     {

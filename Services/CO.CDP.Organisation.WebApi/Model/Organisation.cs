@@ -24,3 +24,19 @@ public record Organisation
     /// <example>["Supplier"]</example>
     public required List<PartyRole> Roles { get; init; }
 }
+
+public record SupplierInformation
+{
+    public required string OrganisationName { get; set; }
+    public SupplierType? SupplierType { get; set; }
+    public List<OperationType> OperationTypes { get; set; } = [];
+    public bool CompletedRegAddress { get; set; }
+    public bool CompletedPostalAddress { get; set; }
+    public bool CompletedVat { get; set; }
+    public bool CompletedWebsiteAddress { get; set; }
+    public bool CompletedEmailAddress { get; set; }
+    public bool CompletedQualification { get; set; }
+    public bool CompletedTradeAssurance { get; set; }
+    public bool CompletedOrganisationType { get; set; }
+    public bool CompletedLegalForm { get; set; }
+}
