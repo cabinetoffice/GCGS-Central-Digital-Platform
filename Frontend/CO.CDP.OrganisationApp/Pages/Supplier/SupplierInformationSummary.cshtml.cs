@@ -43,7 +43,7 @@ public class SupplierInformationSummaryModel(
             SupplierType.Organisation => info.CompletedRegAddress && info.CompletedPostalAddress
                             && info.CompletedVat && info.CompletedWebsiteAddress
                             && info.CompletedEmailAddress && info.CompletedQualification
-                            && info.CompletedTradeAssurance && info.CompletedOrganisationType && info.CompletedLegalForm ? StepStatus.Completed : StepStatus.InProcess,
+                            && info.CompletedTradeAssurance && info.CompletedOperationType && info.CompletedLegalForm ? StepStatus.Completed : StepStatus.InProcess,
 
             SupplierType.Individual => info.CompletedRegAddress && info.CompletedPostalAddress
                             && info.CompletedVat && info.CompletedWebsiteAddress

@@ -37,6 +37,6 @@ public record SupplierInformation
     public bool CompletedEmailAddress { get; set; }
     public bool CompletedQualification { get; set; }
     public bool CompletedTradeAssurance { get; set; }
-    public bool CompletedOrganisationType { get; set; }
+    public bool CompletedOperationType { get; set; }
     public bool CompletedLegalForm { get; set; }
 }
