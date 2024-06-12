@@ -6,6 +6,7 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moq;
 using static CO.CDP.OrganisationApp.Tests.Pages.Registration.OrganisationEntityFactory;
 
@@ -120,6 +121,30 @@ public class OrganisationDetailsSummaryModelTest
 
         result.Should().BeOfType<RedirectToPageResult>()
             .Which.PageName.Should().Be("/OrganisationSelection");
+    }
+
+    [Fact]
+    public async Task OnPost_InvalidModelState_ReturnsPage()
+    {
+        var model = GivenOrganisationDetailModel();
+        model.ModelState.AddModelError("error", "some error");
+
+        var result = await model.OnPost();
+
+        result.Should().BeOfType<PageResult>();
+    }
+
+    [Fact]
+    public async Task OnPost_NullOrganisation_ReturnsPage()
+    {
+        var model = GivenOrganisationDetailModel();
+        Organisation.WebApiClient.Organisation? organisation = null;
+        organisationClientMock.Setup(o => o.CreateOrganisationAsync(It.IsAny<NewOrganisation>()))
+            .ReturnsAsync(organisation);
+
+        var result = await model.OnPost();
+
+        result.Should().BeOfType<PageResult>();
     }
 
     [Theory]
