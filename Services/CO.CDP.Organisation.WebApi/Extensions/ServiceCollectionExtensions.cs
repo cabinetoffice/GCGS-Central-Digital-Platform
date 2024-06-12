@@ -1,6 +1,7 @@
 using static CO.CDP.OrganisationInformation.Persistence.IOrganisationRepository.OrganisationRepositoryException;
 using static CO.CDP.Organisation.WebApi.UseCase.RegisterOrganisationUseCase.RegisterOrganisationException;
 using static CO.CDP.OrganisationInformation.Persistence.ITenantRepository.TenantRepositoryException;
+using static CO.CDP.Organisation.WebApi.UseCase.UpdateBuyerInformationUseCase.UpdateBuyerInformationException;
 
 namespace CO.CDP.Organisation.WebApi.Extensions;
 
@@ -39,6 +40,12 @@ public static class ServiceCollectionExtensions
                 return (StatusCodes.Status400BadRequest, "ARGUMENT_NULL");
             case InvalidOperationException:
                 return (StatusCodes.Status400BadRequest, "INVALID_OPERATION");
+            case UnknownOrganisationException:
+                return (StatusCodes.Status404NotFound, "UNKNOWN_ORGANISATION");
+            case BuyerInfoNotExistException:
+                return (StatusCodes.Status404NotFound, "BUYER_INFO_NOT_EXISTS");
+            case UnknownBuyerInformationUpdateTypeException:
+                return (StatusCodes.Status400BadRequest, "UNKNOWN_BUYER_INFORMATION_UPDATE_TYPE");
             default:
                 return (StatusCodes.Status500InternalServerError, "GENERIC_ERROR");
         }

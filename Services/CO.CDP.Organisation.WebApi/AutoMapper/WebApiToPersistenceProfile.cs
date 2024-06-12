@@ -54,11 +54,7 @@ public class WebApiToPersistenceProfile : Profile
             .ReverseMap();
         CreateMap<ContactPoint, Persistence.Organisation.OrganisationContactPoint>()
             .ReverseMap();
-
-        CreateMap<Model.BuyerInformation, Persistence.Organisation.BuyerInformation>()
-            .ForMember(m => m.CreatedOn, o => o.Ignore())
-            .ForMember(m => m.UpdatedOn, o => o.Ignore());
-
+              
         CreateMap<RegisterOrganisation, Persistence.Organisation>()
             .ForMember(m => m.Guid, o => o.MapFrom((_, _, _, context) => context.Items["Guid"]))
             .ForMember(m => m.Id, o => o.Ignore())
@@ -68,8 +64,11 @@ public class WebApiToPersistenceProfile : Profile
             .ForMember(m => m.CreatedOn, o => o.Ignore())
             .ForMember(m => m.UpdatedOn, o => o.Ignore())
             .ForMember(m => m.SupplierInfo, o => o.Ignore())
-            .ForMember(m => m.BuyerInfo, o => o.MapFrom(x => x.BuyerInfo))
+            .ForMember(m => m.BuyerInfo, o => o.Ignore())
             .ForMember(m => m.Identifiers, o => o.MapFrom<IdentifiersResolver>());
+
+        CreateMap<Persistence.Organisation.SupplierInformation, SupplierInformation>()
+            .ForMember(m => m.OrganisationName, o => o.Ignore());
     }
 
     public class IdentifiersResolver : IValueResolver<RegisterOrganisation, Persistence.Organisation,

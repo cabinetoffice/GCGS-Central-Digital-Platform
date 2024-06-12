@@ -3,8 +3,10 @@ using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.Pages.Registration;
 using FluentAssertions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moq;
 using static CO.CDP.OrganisationApp.Tests.Pages.Registration.OrganisationEntityFactory;
 
@@ -14,6 +16,7 @@ public class OrganisationDetailsSummaryModelTest
 {
     private readonly Mock<ISession> sessionMock;
     private readonly Mock<IOrganisationClient> organisationClientMock;
+    private static readonly Guid _organisationId = Guid.NewGuid();
 
     public OrganisationDetailsSummaryModelTest()
     {
@@ -65,69 +68,98 @@ public class OrganisationDetailsSummaryModelTest
     }
 
     [Fact]
-    public async Task OnPost_DuplicateOrganisationName_AddsModelError()
+    public async Task OnPost_ValidOrganisation_UpdatesBuyerInformationAndRedirects()
     {
-        var problemDetails = GivenProblemDetails(statusCode: 400, code: ErrorCodes.ORGANISATION_ALREADY_EXISTS);
-        var aex = GivenApiException(statusCode: 400, problemDetails: problemDetails);
-
         sessionMock.Setup(s => s.Get<UserDetails>(Session.UserDetailsKey))
             .Returns(new UserDetails { UserUrn = "test", PersonId = Guid.NewGuid() });
 
         organisationClientMock.Setup(o => o.CreateOrganisationAsync(It.IsAny<NewOrganisation>()))
-            .ThrowsAsync(aex);
+            .ReturnsAsync(GivenOrganisationClientModel());
 
         var model = GivenOrganisationDetailModel();
 
-        await model.OnPost();
-        model.ModelState[string.Empty].As<ModelStateEntry>().Errors
-          .Should().Contain(e => e.ErrorMessage == ErrorMessagesList.DuplicateOgranisationName);
+        model.RegistrationDetails.BuyerOrganisationType = "BuyerOrgType";
+        model.RegistrationDetails.Devolved = false;
+
+        var buyerInfo = new UpdateBuyerInformation(
+                    type: BuyerInformationUpdateType.BuyerOrganisationType,
+                    buyerInformation: new BuyerInformation(
+                        buyerType: model.RegistrationDetails.BuyerOrganisationType,
+                        devolvedRegulations: []));
+
+        
+        
+        var actionResult = await model.OnPost();
+
+        organisationClientMock.Verify(o => o.UpdateBuyerInformationAsync(_organisationId, It.IsAny<UpdateBuyerInformation>()), Times.AtLeastOnce);
+        sessionMock.Verify(s => s.Remove(Session.RegistrationDetailsKey), Times.Once);
+
+        actionResult.Should().BeOfType<RedirectToPageResult>()
+            .Which.PageName.Should().Be("/OrganisationSelection");
     }
 
     [Fact]
-    public async Task OnPost_ArgumentNull_AddsModelError()
+    public async Task OnPost_DevolvedTrue_UpdatesDevolvedRegulationAndRedirects()
     {
-        var problemDetails = GivenProblemDetails(code: ErrorCodes.ARGUMENT_NULL, statusCode: 400);
-        var aex = GivenApiException(statusCode: 400, problemDetails: problemDetails);
-
         sessionMock.Setup(s => s.Get<UserDetails>(Session.UserDetailsKey))
             .Returns(new UserDetails { UserUrn = "test", PersonId = Guid.NewGuid() });
 
         organisationClientMock.Setup(o => o.CreateOrganisationAsync(It.IsAny<NewOrganisation>()))
-            .ThrowsAsync(aex);
+            .ReturnsAsync(GivenOrganisationClientModel());
 
         var model = GivenOrganisationDetailModel();
 
-        await model.OnPost();
+        model.RegistrationDetails.BuyerOrganisationType = null;        
+        model.RegistrationDetails.Devolved = true;
+        model.RegistrationDetails.Regulations = [Constants.DevolvedRegulation.NorthernIreland, Constants.DevolvedRegulation.Wales];
 
-        model.ModelState[string.Empty].As<ModelStateEntry>().Errors
-            .Should().Contain(e => e.ErrorMessage == ErrorMessagesList.PayLoadIssueOrNullAurgument);
+        var result = await model.OnPost();
+
+        organisationClientMock.Verify(o => o.UpdateBuyerInformationAsync(_organisationId, It.Is<UpdateBuyerInformation>(u => u.Type == BuyerInformationUpdateType.DevolvedRegulation)), Times.Once);
+
+        sessionMock.Verify(s => s.Remove(Session.RegistrationDetailsKey), Times.Once);
+
+        result.Should().BeOfType<RedirectToPageResult>()
+            .Which.PageName.Should().Be("/OrganisationSelection");
     }
 
     [Fact]
-    public async Task OnPost_InvalidOperation_AddsModelError()
+    public async Task OnPost_InvalidModelState_ReturnsPage()
     {
-        var problemDetails = GivenProblemDetails(code: ErrorCodes.INVALID_OPERATION, statusCode: 400);
-        var aex = GivenApiException(statusCode: 400, problemDetails: problemDetails);
-
-        sessionMock.Setup(s => s.Get<UserDetails>(Session.UserDetailsKey))
-            .Returns(new UserDetails { UserUrn = "test", PersonId = Guid.NewGuid() });
-
-        organisationClientMock.Setup(o => o.CreateOrganisationAsync(It.IsAny<NewOrganisation>()))
-            .ThrowsAsync(aex);
-
         var model = GivenOrganisationDetailModel();
+        model.ModelState.AddModelError("error", "some error");
 
-        await model.OnPost();
+        var result = await model.OnPost();
 
-        model.ModelState[string.Empty].As<ModelStateEntry>().Errors
-           .Should().Contain(e => e.ErrorMessage == ErrorMessagesList.OrganisationCreationFailed);
+        result.Should().BeOfType<PageResult>();
     }
 
     [Fact]
-    public async Task OnPost_PersonNotFound_AddsModelError()
+    public async Task OnPost_NullOrganisation_ReturnsPage()
     {
-        var problemDetails = GivenProblemDetails(code: ErrorCodes.PERSON_DOES_NOT_EXIST, statusCode: 404);
-        var aex = GivenApiException(statusCode: 404, problemDetails: problemDetails);
+        var model = GivenOrganisationDetailModel();
+        Organisation.WebApiClient.Organisation? organisation = null;
+        organisationClientMock.Setup(o => o.CreateOrganisationAsync(It.IsAny<NewOrganisation>()))
+            .ReturnsAsync(organisation);
+
+        var result = await model.OnPost();
+
+        result.Should().BeOfType<PageResult>();
+    }
+
+    [Theory]
+    [InlineData(ErrorCodes.ORGANISATION_ALREADY_EXISTS, ErrorMessagesList.DuplicateOgranisationName, StatusCodes.Status400BadRequest)]
+    [InlineData(ErrorCodes.ARGUMENT_NULL, ErrorMessagesList.PayLoadIssueOrNullAurgument, StatusCodes.Status400BadRequest)]
+    [InlineData(ErrorCodes.INVALID_OPERATION, ErrorMessagesList.OrganisationCreationFailed, StatusCodes.Status400BadRequest)]
+    [InlineData(ErrorCodes.PERSON_DOES_NOT_EXIST, ErrorMessagesList.PersonNotFound, StatusCodes.Status404NotFound)]
+    [InlineData(ErrorCodes.UNPROCESSABLE_ENTITY, ErrorMessagesList.UnprocessableEntity, StatusCodes.Status422UnprocessableEntity)]
+    [InlineData(ErrorCodes.UNKNOWN_ORGANISATION, ErrorMessagesList.UnknownOrganisation, StatusCodes.Status404NotFound)]
+    [InlineData(ErrorCodes.BUYER_INFO_NOT_EXISTS, ErrorMessagesList.BuyerInfoNotExists, StatusCodes.Status404NotFound)]
+    [InlineData(ErrorCodes.UNKNOWN_BUYER_INFORMATION_UPDATE_TYPE, ErrorMessagesList.UnknownBuyerInformationUpdateType, StatusCodes.Status400BadRequest)]
+    public async Task OnPost_AddsModelError(string errorCode, string expectedErrorMessage, int statusCode)
+    {
+        var problemDetails = GivenProblemDetails(code: errorCode, statusCode: statusCode);
+        var aex = GivenApiException(statusCode: statusCode, problemDetails: problemDetails);
 
         sessionMock.Setup(s => s.Get<UserDetails>(Session.UserDetailsKey))
             .Returns(new UserDetails { UserUrn = "test", PersonId = Guid.NewGuid() });
@@ -140,28 +172,9 @@ public class OrganisationDetailsSummaryModelTest
         await model.OnPost();
 
         model.ModelState[string.Empty].As<ModelStateEntry>().Errors
-          .Should().Contain(e => e.ErrorMessage == ErrorMessagesList.PersonNotFound);
+            .Should().Contain(e => e.ErrorMessage == expectedErrorMessage);
     }
 
-    [Fact]
-    public async Task OnPost_UnprocessableEntity_AddsModelError()
-    {
-        var problemDetails = GivenProblemDetails(code: ErrorCodes.UNPROCESSABLE_ENTITY, statusCode: 422);
-        var aex = GivenApiException(statusCode: 422, problemDetails: problemDetails);
-
-        sessionMock.Setup(s => s.Get<UserDetails>(Session.UserDetailsKey))
-            .Returns(new UserDetails { UserUrn = "test", PersonId = Guid.NewGuid() });
-
-        organisationClientMock.Setup(o => o.CreateOrganisationAsync(It.IsAny<NewOrganisation>()))
-            .ThrowsAsync(aex);
-
-        var model = GivenOrganisationDetailModel();
-
-        await model.OnPost();
-
-        model.ModelState[string.Empty].As<ModelStateEntry>().Errors
-         .Should().Contain(e => e.ErrorMessage == ErrorMessagesList.UnprocessableEntity);
-    }
 
     private RegistrationDetails DummyRegistrationDetails()
     {
@@ -170,7 +183,7 @@ public class OrganisationDetailsSummaryModelTest
             OrganisationName = "TestOrg",
             OrganisationScheme = "TestType",
             OrganisationEmailAddress = "test@example.com",
-            OrganisationType = OrganisationType.Supplier
+            OrganisationType = OrganisationType.Supplier,            
         };
 
         return registrationDetails;
@@ -178,7 +191,7 @@ public class OrganisationDetailsSummaryModelTest
 
     private static Organisation.WebApiClient.Organisation GivenOrganisationClientModel()
     {
-        return new Organisation.WebApiClient.Organisation(null, null, null, Guid.NewGuid(), null, "Test Org", []);
+        return new Organisation.WebApiClient.Organisation(null, null, null, _organisationId, null, "Test Org", []);
     }
 
     private OrganisationDetailsSummaryModel GivenOrganisationDetailModel()
@@ -190,5 +203,4 @@ public class OrganisationDetailsSummaryModelTest
 
         return new OrganisationDetailsSummaryModel(sessionMock.Object, organisationClientMock.Object);
     }
-
 }

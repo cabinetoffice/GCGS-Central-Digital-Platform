@@ -14,4 +14,10 @@ public static class ErrorMessagesList
 
     public const string UnprocessableEntity = "An unprocessable entity found. Please try again with valid data.";
     public const string UnexpectedError = "An unexpected error occurred. Please try again with valid data.";
+
+
+    public const string UnknownOrganisation = "The requested organisation was not found.";
+    public const string BuyerInfoNotExists = "The buyer information for requested organisation not exist.";
+    public const string UnknownBuyerInformationUpdateType = "The requested buyer information update type is unknown.";
+
 }
