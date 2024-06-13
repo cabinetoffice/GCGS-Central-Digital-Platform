@@ -175,4 +175,19 @@ public class SupplierInformationTest
         organisation.SupplierInfo.As<Organisation.SupplierInformation>()
             .CompletedPostalAddress.Should().BeTrue();
     }
+
+
+    [Fact]
+    public void ItDoesNotRemoveTheVatFlagIfItWasExplicitlySet()
+    {
+        var organisation = GivenOrganisation(
+            roles: [PartyRole.Supplier],
+            supplierInformation: GivenSupplierInformation(completedVat: true)
+        );
+
+        organisation.UpdateSupplierInformation();
+
+        organisation.SupplierInfo.As<Organisation.SupplierInformation>()
+            .CompletedVat.Should().BeTrue();
+    }
 }

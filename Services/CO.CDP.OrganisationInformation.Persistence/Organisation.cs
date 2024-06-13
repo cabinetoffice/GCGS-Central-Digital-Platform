@@ -138,7 +138,7 @@ public class Organisation : IEntityDate
             Addresses.Any(a => a.Type == AddressType.Registered) || SupplierInfo.CompletedRegAddress;
         SupplierInfo.CompletedPostalAddress =
             Addresses.Any(a => a.Type == AddressType.Postal) || SupplierInfo.CompletedPostalAddress;
-        SupplierInfo.CompletedVat = Identifiers.Any(i => i.Scheme == "VAT");
+        SupplierInfo.CompletedVat = Identifiers.Any(i => i.Scheme == "VAT") || SupplierInfo.CompletedVat;
         SupplierInfo.CompletedQualification = SupplierInfo.Qualifications.Count > 0;
         SupplierInfo.CompletedTradeAssurance = SupplierInfo.TradeAssurances.Count > 0;
         SupplierInfo.CompletedLegalForm = SupplierInfo.LegalForm != null;

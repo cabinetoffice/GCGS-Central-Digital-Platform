@@ -161,7 +161,8 @@ public static class EntityFactory
         List<TradeAssurance>? tradeAssurances = null,
         LegalForm? legalForm = null,
         bool completedRegAddress = false,
-        bool completedPostalAddress = false
+        bool completedPostalAddress = false,
+        bool completedVat = false
     ) => new()
     {
         SupplierType = type,
@@ -169,7 +170,8 @@ public static class EntityFactory
         TradeAssurances = tradeAssurances ?? [],
         LegalForm = legalForm,
         CompletedRegAddress = completedRegAddress,
-        CompletedPostalAddress = completedPostalAddress
+        CompletedPostalAddress = completedPostalAddress,
+        CompletedVat = completedVat
     };
 
     public static OrganisationAddress GivenOrganisationAddress(
