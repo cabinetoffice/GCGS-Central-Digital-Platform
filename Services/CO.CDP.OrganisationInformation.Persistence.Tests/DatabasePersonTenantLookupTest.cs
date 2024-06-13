@@ -148,7 +148,7 @@ public class DatabasePersonTenantLookupTest(PostgreSqlFixture postgreSql) : ICla
                             Id = acmeCoOrganisation.Guid,
                             Name = acmeCoOrganisation.Name,
                             Roles = acmeCoOrganisation.Roles,
-                            Scopes = null
+                            Scopes = []
                         }
                     ]
                 }
