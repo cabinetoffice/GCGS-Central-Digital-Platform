@@ -54,7 +54,7 @@ public class WebApiToPersistenceProfile : Profile
             .ReverseMap();
         CreateMap<ContactPoint, Persistence.Organisation.OrganisationContactPoint>()
             .ReverseMap();
-              
+
         CreateMap<RegisterOrganisation, Persistence.Organisation>()
             .ForMember(m => m.Guid, o => o.MapFrom((_, _, _, context) => context.Items["Guid"]))
             .ForMember(m => m.Id, o => o.Ignore())
