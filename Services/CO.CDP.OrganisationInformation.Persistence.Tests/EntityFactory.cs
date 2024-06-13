@@ -1,4 +1,3 @@
-using FluentAssertions;
 using static CO.CDP.OrganisationInformation.Persistence.Organisation;
 
 namespace CO.CDP.OrganisationInformation.Persistence.Tests;
@@ -37,7 +36,9 @@ public static class EntityFactory
         string lastname = "doe",
         string? email = null,
         string phone = "07925123123",
-        Tenant? tenant = null)
+        Tenant? tenant = null,
+        List<(Organisation, List<string>)>? organisationsWithScope = null
+    )
     {
         var personGuid = guid ?? Guid.NewGuid();
         var person = new Person
@@ -54,6 +55,18 @@ public static class EntityFactory
             person.Tenants.Add(tenant);
         }
 
+        foreach (var organisationWithScope in organisationsWithScope ?? [])
+        {
+            person.PersonOrganisations.Add(
+                new OrganisationPerson
+                {
+                    Person = person,
+                    Organisation = organisationWithScope.Item1,
+                    Scopes = organisationWithScope.Item2
+                }
+            );
+        }
+
         return person;
     }
 
@@ -66,7 +79,7 @@ public static class EntityFactory
         OrganisationContactPoint? contactPoint = null,
         List<PartyRole>? roles = null,
         List<(Person, List<string>)>? personsWithScope = null,
-        Organisation.BuyerInformation? buyerInformation = null,
+        BuyerInformation? buyerInformation = null,
         SupplierInformation? supplierInformation = null
     )
     {
@@ -146,13 +159,25 @@ public static class EntityFactory
         SupplierType? type = null,
         List<Qualification>? qualifications = null,
         List<TradeAssurance>? tradeAssurances = null,
-        LegalForm? legalForm = null
+        LegalForm? legalForm = null,
+        bool completedRegAddress = false,
+        bool completedPostalAddress = false,
+        bool completedVat = false,
+        bool completedQualification = false,
+        bool completedTradeAssurance = false,
+        bool completedLegalForm = false
     ) => new()
     {
         SupplierType = type,
         Qualifications = qualifications ?? [],
         TradeAssurances = tradeAssurances ?? [],
-        LegalForm = legalForm
+        LegalForm = legalForm,
+        CompletedRegAddress = completedRegAddress,
+        CompletedPostalAddress = completedPostalAddress,
+        CompletedVat = completedVat,
+        CompletedQualification = completedQualification,
+        CompletedTradeAssurance = completedTradeAssurance,
+        CompletedLegalForm = completedLegalForm
     };
 
     public static OrganisationAddress GivenOrganisationAddress(

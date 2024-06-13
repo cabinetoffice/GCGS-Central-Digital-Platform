@@ -39,28 +39,27 @@ public enum BuyerInformationUpdateType
 
 public record BuyerInformation
 {
-    public string? BuyerType { get; set; }
+    public string? BuyerType { get; init; }
 
-    public required List<DevolvedRegulation> DevolvedRegulations { get; init; }
+    public List<DevolvedRegulation>? DevolvedRegulations { get; init; }
 }
 
-internal record UpdateOrganisation
+public record UpdateOrganisation
 {
-    /// <example>"Acme Corporation"</example>
-    [Required]
-    public required string Name { get; init; }
+    public required OrganisationUpdateType Type { get; init; }
 
-    [Required]
-    public required OrganisationIdentifier Identifier { get; init; }
+    public required OrganisationInfo Organisation { get; init; }
+}
 
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum OrganisationUpdateType
+{
+    AdditionalIdentifiers
+}
+
+public record OrganisationInfo
+{
     public List<OrganisationIdentifier>? AdditionalIdentifiers { get; init; }
-
-    [Required]
-    public List<OrganisationAddress> Addresses { get; init; } = [];
-
-    public OrganisationContactPoint? ContactPoint { get; init; }
-
-    public List<PartyRole>? Roles { get; init; }
 }
 
 public record OrganisationIdentifier
@@ -116,6 +115,24 @@ public record OrganisationContactPoint
 
     /// <example>"https://example.com"</example>
     public string? Url { get; init; }
+}
+
+public record UpdateSupplierInformation
+{
+    public required SupplierInformationUpdateType Type { get; init; }
+
+    public required SupplierInfo SupplierInformation { get; init; }
+}
+
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum SupplierInformationUpdateType
+{
+    SupplierType
+}
+
+public record SupplierInfo
+{
+    public SupplierType? SupplierType { get; set; }
 }
 
 public static class MappingExtensions

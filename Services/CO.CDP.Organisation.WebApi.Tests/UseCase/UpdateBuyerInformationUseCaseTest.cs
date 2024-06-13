@@ -1,13 +1,11 @@
-using System;
-using System.Threading.Tasks;
 using CO.CDP.Organisation.WebApi.Model;
-using CO.CDP.OrganisationInformation.Persistence;
 using CO.CDP.Organisation.WebApi.UseCase;
+using CO.CDP.OrganisationInformation;
+using CO.CDP.OrganisationInformation.Persistence;
 using FluentAssertions;
 using Moq;
-using Xunit;
-using CO.CDP.OrganisationInformation;
-using static CO.CDP.Organisation.WebApi.UseCase.UpdateBuyerInformationUseCase;
+
+namespace CO.CDP.Organisation.WebApi.Tests.UseCase;
 
 public class UpdateBuyerInformationUseCaseTests
 {
@@ -20,7 +18,6 @@ public class UpdateBuyerInformationUseCaseTests
         _organisationRepositoryMock = new Mock<IOrganisationRepository>();
         _useCase = new UpdateBuyerInformationUseCase(_organisationRepositoryMock.Object);
     }
-
 
     [Fact]
     public async Task Execute_ShouldUpdateBuyerInformation_WhenOrganisationExists()
@@ -44,7 +41,7 @@ public class UpdateBuyerInformationUseCaseTests
     [Fact]
     public async Task Execute_ShouldThrowUnknownOrganisationException_WhenOrganisationNotFound()
     {
-        CO.CDP.OrganisationInformation.Persistence.Organisation? organisation = null;
+        OrganisationInformation.Persistence.Organisation? organisation = null;
         var updateBuyerInformation = GetUpdateBuyerInformation();
 
         _organisationRepositoryMock.Setup(repo => repo.Find(_organisationId))
@@ -53,13 +50,13 @@ public class UpdateBuyerInformationUseCaseTests
         Func<Task> act = async () => await _useCase.Execute((_organisationId, updateBuyerInformation));
 
         await act.Should()
-            .ThrowAsync<UpdateBuyerInformationException.UnknownOrganisationException>()
+            .ThrowAsync<UnknownOrganisationException>()
             .WithMessage($"Unknown organisation {_organisationId}.");
-    }    
+    }
 
     [Fact]
     public async Task Execute_ShouldThrowBuyerInfoNotExistException_WhenBuyerInfoIsNull()
-    {        
+    {
         var updateBuyerInformation = GetUpdateBuyerInformation();
         var organisation = GetOrganisation();
         organisation.BuyerInfo = null;
@@ -70,12 +67,12 @@ public class UpdateBuyerInformationUseCaseTests
         Func<Task> act = async () => await _useCase.Execute((_organisationId, updateBuyerInformation));
 
         await act.Should()
-            .ThrowAsync<UpdateBuyerInformationException.BuyerInfoNotExistException>()
+            .ThrowAsync<BuyerInfoNotExistException>()
             .WithMessage($"Buyer information for organisation {_organisationId} not exist.");
     }
 
     [Fact]
-    public async Task Execute_ShouldThrowUnknownBuyerInformationUpdateTypeException_WhenUpdateTypeIsUnknown()
+    public async Task Execute_ShouldThrowInvalidUpdateBuyerInformationCommand_WhenUpdateTypeIsUnknown()
     {
         var updateBuyerInformation = new UpdateBuyerInformation
         {
@@ -94,8 +91,32 @@ public class UpdateBuyerInformationUseCaseTests
         Func<Task> act = async () => await _useCase.Execute((_organisationId, updateBuyerInformation));
 
         await act.Should()
-            .ThrowAsync<UpdateBuyerInformationException.UnknownBuyerInformationUpdateTypeException>()
+            .ThrowAsync<InvalidUpdateBuyerInformationCommand>()
             .WithMessage("Unknown buyer information update type.");
+    }
+
+    [Fact]
+    public async Task Execute_ShouldThrowInvalidUpdateBuyerInformationCommand_WhenBuyerTypeIsNull()
+    {
+        var updateBuyerInformation = new UpdateBuyerInformation
+        {
+            Type = BuyerInformationUpdateType.BuyerOrganisationType,
+            BuyerInformation = new BuyerInformation
+            {
+                BuyerType = null,
+                DevolvedRegulations = [DevolvedRegulation.NorthernIreland]
+            }
+        };
+        var organisation = GetOrganisation();
+
+        _organisationRepositoryMock.Setup(repo => repo.Find(_organisationId))
+            .ReturnsAsync(organisation);
+
+        Func<Task> act = async () => await _useCase.Execute((_organisationId, updateBuyerInformation));
+
+        await act.Should()
+            .ThrowAsync<InvalidUpdateBuyerInformationCommand>()
+            .WithMessage("Missing buyer type.");
     }
 
     private UpdateBuyerInformation GetUpdateBuyerInformation()
@@ -111,16 +132,16 @@ public class UpdateBuyerInformationUseCaseTests
         };
     }
 
-    private CO.CDP.OrganisationInformation.Persistence.Organisation GetOrganisation()
+    private OrganisationInformation.Persistence.Organisation GetOrganisation()
     {
-        return  new CO.CDP.OrganisationInformation.Persistence.Organisation
+        return new OrganisationInformation.Persistence.Organisation
         {
-            ContactPoint = new CO.CDP.OrganisationInformation.Persistence.Organisation.OrganisationContactPoint
+            ContactPoint = new OrganisationInformation.Persistence.Organisation.OrganisationContactPoint
             { Email = "test@test.com" },
             Guid = _organisationId,
             Name = "Test",
             Tenant = It.IsAny<Tenant>(),
-            BuyerInfo = new CO.CDP.OrganisationInformation.Persistence.Organisation.BuyerInformation
+            BuyerInfo = new OrganisationInformation.Persistence.Organisation.BuyerInformation
             { BuyerType = "NewType", DevolvedRegulations = [DevolvedRegulation.NorthernIreland] },
         };
     }

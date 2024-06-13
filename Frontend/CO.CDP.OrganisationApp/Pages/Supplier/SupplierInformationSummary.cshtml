@@ -1,5 +1,5 @@
 @page "/organisation/{id}/supplier-information"
-@model CO.CDP.OrganisationApp.Pages.SupplierInformationSummaryModel
+@model CO.CDP.OrganisationApp.Pages.Supplier.SupplierInformationSummaryModel
 
 @{
     string GetStepStatusDescription(StepStatus status)
@@ -28,7 +28,8 @@
             <dl class="govuk-summary-list">
                 <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">
-                        <a class="govuk-link govuk-link--no-visited-state" href="#">Basic information</a>
+                        <a class="govuk-link govuk-link--no-visited-state"
+                            href="/organisation/@RouteData.Values["id"]/supplier-information/basic-information">Basic information</a>
                     </dt>
                     <dd class="govuk-summary-list__value">
 

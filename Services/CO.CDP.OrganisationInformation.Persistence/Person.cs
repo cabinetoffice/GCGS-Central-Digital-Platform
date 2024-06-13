@@ -15,6 +15,7 @@ public class Person : IEntityDate
     public string? UserUrn { get; set; }
     public List<Tenant> Tenants { get; } = [];
     public List<Organisation> Organisations { get; } = [];
+    public List<OrganisationPerson> PersonOrganisations { get; init; } = [];
     public DateTimeOffset CreatedOn { get; set; }
     public DateTimeOffset UpdatedOn { get; set; }
 }

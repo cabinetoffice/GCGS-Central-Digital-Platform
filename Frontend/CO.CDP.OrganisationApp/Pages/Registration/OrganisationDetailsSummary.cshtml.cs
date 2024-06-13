@@ -29,15 +29,17 @@ public class OrganisationDetailsSummaryModel(
             return Page();
         }
 
-        List<Task> tasks =
-        [
-            organisationClient.UpdateBuyerInformationAsync(organisation.Id,
+        List<Task> tasks = [];
+
+        if (RegistrationDetails.BuyerOrganisationType != null)
+        {
+            tasks.Add(organisationClient.UpdateBuyerInformationAsync(organisation.Id,
                 new UpdateBuyerInformation(
                     type: BuyerInformationUpdateType.BuyerOrganisationType,
                     buyerInformation: new BuyerInformation(
                         buyerType: RegistrationDetails.BuyerOrganisationType,
-                        devolvedRegulations: []))),
-        ];
+                        devolvedRegulations: []))));
+        }
 
         if (RegistrationDetails.Devolved == true)
         {

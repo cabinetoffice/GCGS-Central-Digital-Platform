@@ -7,6 +7,7 @@ public interface ITenantRepository : IDisposable
     public Task<Tenant?> Find(Guid tenantId);
 
     public Task<Tenant?> FindByName(string name);
+    public Task<TenantLookup?> LookupTenant(string userUrn);
 
     public class TenantRepositoryException(string message, Exception? cause = null) : Exception(message, cause)
     {

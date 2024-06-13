@@ -28,7 +28,9 @@ builder.Services.AddScoped<IUseCase<Guid, Organisation?>, GetOrganisationUseCase
 builder.Services.AddScoped<IUseCase<string, Organisation?>, LookupOrganisationUseCase>();
 builder.Services.AddScoped<IUseCase<string, IEnumerable<Organisation>>, GetOrganisationsUseCase>();
 builder.Services.AddScoped<IUseCase<Guid, SupplierInformation?>, GetSupplierInformationUseCase>();
+builder.Services.AddScoped<IUseCase<(Guid, UpdateOrganisation), bool>, UpdateOrganisationUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, UpdateBuyerInformation), bool>, UpdateBuyerInformationUseCase>();
+builder.Services.AddScoped<IUseCase<(Guid, UpdateSupplierInformation), bool>, UpdateSupplierInformationUseCase>();
 builder.Services.AddOrganisationProblemDetails();
 
 var authority = builder.Configuration["Organisation:Authority"]
@@ -46,7 +48,7 @@ builder.Services
             ValidateIssuerSigningKey = true
         };
     });
-
+//builder.Services.AddAuthorization();
 builder.Services
     .AddAuthorizationBuilder()
     .SetFallbackPolicy(
@@ -84,6 +86,10 @@ app.MapGroup("/organisation")
 app.MapGroup("/organisations")
     .UseBuyerInformationEndpoints()
     .WithTags("Organisation - Buyer Information");
+
+app.MapGroup("/organisations")
+    .UseSupplierInformationEndpoints()
+    .WithTags("Organisation - Supplier Information");
 
 app.Run();
 public abstract partial class Program;

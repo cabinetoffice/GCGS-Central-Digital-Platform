@@ -1,5 +1,5 @@
-using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace CO.CDP.OrganisationInformation.Persistence;
 
@@ -64,7 +64,7 @@ public class Organisation : IEntityDate
         public bool CompletedEmailAddress { get; set; }
         public bool CompletedQualification { get; set; }
         public bool CompletedTradeAssurance { get; set; }
-        public bool CompletedOrganisationType { get; set; }
+        public bool CompletedOperationType { get; set; }
         public bool CompletedLegalForm { get; set; }
         public List<Qualification> Qualifications { get; set; } = [];
         public List<TradeAssurance> TradeAssurances { get; set; } = [];
@@ -134,11 +134,15 @@ public class Organisation : IEntityDate
         }
 
         SupplierInfo ??= new SupplierInformation();
-        SupplierInfo.CompletedRegAddress = Addresses.Any(a => a.Type == AddressType.Registered);
-        SupplierInfo.CompletedPostalAddress = Addresses.Any(a => a.Type == AddressType.Postal);
-        SupplierInfo.CompletedVat = Identifiers.Any(i => i.Scheme == "VAT");
-        SupplierInfo.CompletedQualification = SupplierInfo.Qualifications.Count > 0;
-        SupplierInfo.CompletedTradeAssurance = SupplierInfo.TradeAssurances.Count > 0;
-        SupplierInfo.CompletedLegalForm = SupplierInfo.LegalForm != null;
+        SupplierInfo.CompletedRegAddress =
+            Addresses.Any(a => a.Type == AddressType.Registered) || SupplierInfo.CompletedRegAddress;
+        SupplierInfo.CompletedPostalAddress =
+            Addresses.Any(a => a.Type == AddressType.Postal) || SupplierInfo.CompletedPostalAddress;
+        SupplierInfo.CompletedVat = Identifiers.Any(i => i.Scheme == "VAT") || SupplierInfo.CompletedVat;
+        SupplierInfo.CompletedQualification =
+            SupplierInfo.Qualifications.Count > 0 || SupplierInfo.CompletedQualification;
+        SupplierInfo.CompletedTradeAssurance =
+            SupplierInfo.TradeAssurances.Count > 0 || SupplierInfo.CompletedTradeAssurance;
+        SupplierInfo.CompletedLegalForm = SupplierInfo.LegalForm != null || SupplierInfo.CompletedLegalForm;
     }
 }
