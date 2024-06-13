@@ -144,4 +144,20 @@ public class SupplierInformationTest
         organisation.SupplierInfo.As<Organisation.SupplierInformation>()
             .CompletedLegalForm.Should().BeTrue();
     }
+
+
+    [Fact]
+    public void ItDoesNotMarkRegistrationAddressAsNotCompletedIfItWasAlreadyCompleted()
+    {
+        var organisation = GivenOrganisation(
+            roles: [PartyRole.Supplier],
+            addresses: [],
+            supplierInformation: GivenSupplierInformation(completedRegAddress: true)
+        );
+
+        organisation.UpdateSupplierInformation();
+
+        organisation.SupplierInfo.As<Organisation.SupplierInformation>()
+            .CompletedRegAddress.Should().BeTrue();
+    }
 }

@@ -79,7 +79,7 @@ public static class EntityFactory
         OrganisationContactPoint? contactPoint = null,
         List<PartyRole>? roles = null,
         List<(Person, List<string>)>? personsWithScope = null,
-        Organisation.BuyerInformation? buyerInformation = null,
+        BuyerInformation? buyerInformation = null,
         SupplierInformation? supplierInformation = null
     )
     {
@@ -159,13 +159,15 @@ public static class EntityFactory
         SupplierType? type = null,
         List<Qualification>? qualifications = null,
         List<TradeAssurance>? tradeAssurances = null,
-        LegalForm? legalForm = null
+        LegalForm? legalForm = null,
+        bool completedRegAddress = false
     ) => new()
     {
         SupplierType = type,
         Qualifications = qualifications ?? [],
         TradeAssurances = tradeAssurances ?? [],
-        LegalForm = legalForm
+        LegalForm = legalForm,
+        CompletedRegAddress = completedRegAddress
     };
 
     public static OrganisationAddress GivenOrganisationAddress(
