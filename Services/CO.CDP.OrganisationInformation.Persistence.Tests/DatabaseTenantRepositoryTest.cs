@@ -1,6 +1,5 @@
 using CO.CDP.Testcontainers.PostgreSql;
 using FluentAssertions;
-using Microsoft.EntityFrameworkCore;
 using static CO.CDP.OrganisationInformation.Persistence.Tests.EntityFactory;
 
 namespace CO.CDP.OrganisationInformation.Persistence.Tests;
@@ -129,7 +128,6 @@ public class DatabaseTenantRepositoryTest(PostgreSqlFixture postgreSql) : IClass
         found.As<Tenant>().Persons.Should().Contain(p => p.Guid == person1.Guid);
         found.As<Tenant>().Persons.Should().Contain(p => p.Guid == person2.Guid);
     }
-
 
     private ITenantRepository TenantRepository()
     {

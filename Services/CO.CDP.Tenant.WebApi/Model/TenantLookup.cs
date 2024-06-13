@@ -3,13 +3,13 @@ using CO.CDP.OrganisationInformation;
 
 namespace CO.CDP.Tenant.WebApi.Model;
 
-internal record TenantLookup
+public record TenantLookup
 {
     public required UserDetails User { get; init; }
     public required List<UserTenant> Tenants { get; init; } = [];
 }
 
-internal record UserDetails
+public record UserDetails
 {
     /// <example>"urn:fdc:gov.uk:2022:43af5a8b-f4c0-414b-b341-d4f1fa894302"</example>
     public required string Urn { get; init; }
@@ -22,7 +22,7 @@ internal record UserDetails
     public required string Email { get; init; }
 }
 
-internal record UserTenant
+public record UserTenant
 {
     /// <example>"826def77-311c-424d-a86e-069029c859c0"</example>
     public required Guid Id { get; init; }
@@ -33,7 +33,7 @@ internal record UserTenant
     public required List<UserOrganisation> Organisations { get; init; } = [];
 }
 
-internal record UserOrganisation
+public record UserOrganisation
 {
     /// <example>"f4596cdd-12e5-4f25-9db1-4312474e516f"</example>
     public required Guid Id { get; init; }
