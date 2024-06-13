@@ -190,4 +190,18 @@ public class SupplierInformationTest
         organisation.SupplierInfo.As<Organisation.SupplierInformation>()
             .CompletedVat.Should().BeTrue();
     }
+
+    [Fact]
+    public void ItDoesNotRemoveTheCompletedQualificationFlagIfItWasExplicitlySet()
+    {
+        var organisation = GivenOrganisation(
+            roles: [PartyRole.Supplier],
+            supplierInformation: GivenSupplierInformation(completedQualification: true)
+        );
+
+        organisation.UpdateSupplierInformation();
+
+        organisation.SupplierInfo.As<Organisation.SupplierInformation>()
+            .CompletedQualification.Should().BeTrue();
+    }
 }

@@ -162,7 +162,8 @@ public static class EntityFactory
         LegalForm? legalForm = null,
         bool completedRegAddress = false,
         bool completedPostalAddress = false,
-        bool completedVat = false
+        bool completedVat = false,
+        bool completedQualification = false
     ) => new()
     {
         SupplierType = type,
@@ -171,7 +172,8 @@ public static class EntityFactory
         LegalForm = legalForm,
         CompletedRegAddress = completedRegAddress,
         CompletedPostalAddress = completedPostalAddress,
-        CompletedVat = completedVat
+        CompletedVat = completedVat,
+        CompletedQualification = completedQualification
     };
 
     public static OrganisationAddress GivenOrganisationAddress(
