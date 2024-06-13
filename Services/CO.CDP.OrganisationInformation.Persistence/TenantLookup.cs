@@ -25,6 +25,6 @@ public class TenantLookup
         public required Guid Id { get; init; }
         public required string Name { get; init; }
         public required List<PartyRole> Roles { get; init; }
-        public required List<string> Scopes { get; init; }
+        public required List<string>? Scopes { get; init; }
     }
 }
