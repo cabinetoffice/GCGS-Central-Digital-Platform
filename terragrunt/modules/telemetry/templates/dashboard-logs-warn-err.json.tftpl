@@ -1,0 +1,20 @@
+{
+    "widgets": [
+    %{ for widget in flat_service_widgets }
+        {
+            "type": "log",
+            "x": ${widget.x},
+            "y": ${widget.y},
+            "width": ${widget.width},
+            "height": ${widget.height},
+            "properties": {
+                "query": "SOURCE '/ecs/${widget.name}' | fields @timestamp, @message\n| filter @message like \"${widget.type}\"\n| sort @timestamp desc\n| limit 1000",
+                "region": "eu-west-2",
+                "stacked": false,
+                "title": "${widget.name} ${widget.type}s",
+                "view": "table"
+            }
+        }%{ if widget != flat_service_widgets[length(flat_service_widgets) - 1] },%{ endif }
+    %{ endfor }
+    ]
+}
