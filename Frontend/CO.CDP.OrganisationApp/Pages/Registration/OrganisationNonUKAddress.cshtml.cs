@@ -66,11 +66,11 @@ public class OrganisationNonUKAddressModel(ISession session) : RegistrationStepM
             return Page();
         }
 
-        RegistrationDetails.OrganisationAddressLine1 = AddressLine1 ?? RegistrationDetails.OrganisationAddressLine1;
-        RegistrationDetails.OrganisationAddressLine2 = AddressLine2 ?? RegistrationDetails.OrganisationAddressLine2;
-        RegistrationDetails.OrganisationCityOrTown = TownOrCity ?? RegistrationDetails.OrganisationCityOrTown;
-        RegistrationDetails.OrganisationRegion = Region ?? RegistrationDetails.OrganisationRegion;
-        RegistrationDetails.OrganisationPostcode = Postcode ?? RegistrationDetails.OrganisationPostcode;
+        RegistrationDetails.OrganisationAddressLine1 = AddressLine1;
+        RegistrationDetails.OrganisationAddressLine2 = AddressLine2;
+        RegistrationDetails.OrganisationCityOrTown = TownOrCity;
+        RegistrationDetails.OrganisationRegion = Region;
+        RegistrationDetails.OrganisationPostcode = Postcode;
         RegistrationDetails.OrganisationCountry = Country ?? RegistrationDetails.OrganisationCountry;
 
         session.Set(Session.RegistrationDetailsKey, RegistrationDetails);
