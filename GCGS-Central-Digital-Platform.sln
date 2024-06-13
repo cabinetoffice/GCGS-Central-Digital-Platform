@@ -76,7 +76,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.Functional", "Librar
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.Organisation.Authority", "Services\CO.CDP.Organisation.Authority\CO.CDP.Organisation.Authority.csproj", "{FF389E99-5EC4-4812-B358-94696CF8F70C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.Organisation.Authority.Tests", "Services\CO.CDP.Organisation.Authority.Tests\CO.CDP.Organisation.Authority.Tests.csproj", "{683AC3AE-1837-40E1-8BEF-D9869917A094}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.Organisation.Authority.Tests", "Services\CO.CDP.Organisation.Authority.Tests\CO.CDP.Organisation.Authority.Tests.csproj", "{683AC3AE-1837-40E1-8BEF-D9869917A094}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
