@@ -27,6 +27,34 @@ public class DatabaseTenantRepository(OrganisationInformationContext context) : 
         return await context.Tenants.FirstOrDefaultAsync(t => t.Name == name);
     }
 
+    public async Task<TenantLookup?> LookupTenant(string userUrn)
+    {
+        return await context.Persons
+            .Where(p => p.UserUrn == userUrn)
+            .Select(p => new TenantLookup
+            {
+                User = new TenantLookup.PersonUser
+                {
+                    Email = p.Email,
+                    Urn = p.UserUrn ?? "",
+                    Name = $"{p.FirstName} {p.LastName}"
+                },
+                Tenants = p.Tenants.Select(t => new TenantLookup.Tenant
+                {
+                    Id = t.Guid,
+                    Name = t.Name,
+                    Organisations = t.Organisations.Select(o => new TenantLookup.Organisation
+                    {
+                        Id = o.Guid,
+                        Name = o.Name,
+                        Roles = o.Roles,
+                        Scopes = o.OrganisationPersons.Single(op => op.PersonId == p.Id).Scopes
+                    }).ToList()
+                }).ToList()
+            })
+            .SingleAsync();
+    }
+
     public void Dispose()
     {
         context.Dispose();

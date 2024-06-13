@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Tenant = CO.CDP.Tenant.WebApi.Model.Tenant;
+using TenantLookup = CO.CDP.Tenant.WebApi.Model.TenantLookup;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,9 +24,10 @@ builder.Services.AddAutoMapper(typeof(WebApiToPersistenceProfile));
 builder.Services.AddDbContext<OrganisationInformationContext>(o =>
     o.UseNpgsql(builder.Configuration.GetConnectionString("OrganisationInformationDatabase") ?? ""));
 builder.Services.AddScoped<ITenantRepository, DatabaseTenantRepository>();
+
 builder.Services.AddScoped<IUseCase<RegisterTenant, Tenant>, RegisterTenantUseCase>();
 builder.Services.AddScoped<IUseCase<Guid, Tenant?>, GetTenantUseCase>();
-builder.Services.AddScoped<IUseCase<string, Tenant?>, LookupTenantUseCase>();
+builder.Services.AddScoped<IUseCase<string, TenantLookup?>, LookupTenantUseCase>();
 builder.Services.AddTenantProblemDetails();
 
 var authority = builder.Configuration["Organisation:Authority"]

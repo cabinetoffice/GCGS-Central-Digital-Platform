@@ -1,8 +1,12 @@
+using CO.CDP.OrganisationInformation;
 using CO.CDP.OrganisationInformation.Persistence;
+using CO.CDP.Tenant.WebApi.Model;
 using CO.CDP.Tenant.WebApi.Tests.AutoMapper;
 using CO.CDP.Tenant.WebApi.UseCase;
 using FluentAssertions;
 using Moq;
+using Address = CO.CDP.OrganisationInformation.Persistence.Address;
+using TenantLookup = CO.CDP.OrganisationInformation.Persistence.TenantLookup;
 
 namespace CO.CDP.Tenant.WebApi.Tests.UseCase;
 
@@ -25,21 +29,66 @@ public class LookupTenantUseCaseTest(AutoMapperFixture mapperFixture) : IClassFi
     public async Task Execute_IfTenantIsFound_ReturnsTenant()
     {
         var tenantId = Guid.NewGuid();
-        var tenant = new OrganisationInformation.Persistence.Tenant
+        var userUrn = "urn:fdc:gov.uk:2022:43af5a8b-f4c0-414b-b341-d4f1fa894302";
+        var userTenantLookup = new TenantLookup
         {
-            Id = 42,
-            Guid = tenantId,
-            Name = "urn:fdc:gov.uk:2022:43af5a8b-f4c0-414b-b341-d4f1fa894302"
+            User = new TenantLookup.PersonUser
+            {
+                Urn = userUrn,
+                Name = "fn ln",
+                Email = "person@example.com"
+            },
+            Tenants =
+            [
+                new()
+                {
+                    Id = tenantId,
+                    Name = "TrentTheTenant",
+                    Organisations =
+                    [
+                        new()
+                        {
+                            Id = Guid.Parse("dfd0c5d3-0740-4be4-aa42-e42ec9c00bad"),
+                            Name = "Acme Ltd",
+                            Roles = [PartyRole.Supplier],
+                            Scopes = ["ADMIN"]
+                        }
+                    ]
+                }
+            ]
         };
 
-        _repository.Setup(r => r.FindByName(tenant.Name)).ReturnsAsync(tenant);
+        _repository.Setup(r => r.LookupTenant(userUrn)).ReturnsAsync(userTenantLookup);
 
         var found = await UseCase.Execute("urn:fdc:gov.uk:2022:43af5a8b-f4c0-414b-b341-d4f1fa894302");
 
-        found.Should().Be(new Model.Tenant
+        found.Should().BeEquivalentTo(new Model.TenantLookup
         {
-            Id = tenantId,
-            Name = "urn:fdc:gov.uk:2022:43af5a8b-f4c0-414b-b341-d4f1fa894302"
+            User = new UserDetails
+            {
+                Urn = userUrn,
+                Name = "fn ln",
+                Email = "person@example.com"
+            },
+            Tenants =
+            [
+                new UserTenant
+                {
+                    Id = tenantId,
+                    Name = "TrentTheTenant",
+                    Organisations =
+                    [
+                        new UserOrganisation
+                        {
+                            Id = Guid.Parse("dfd0c5d3-0740-4be4-aa42-e42ec9c00bad"),
+                            Name = "Acme Ltd",
+                            Roles = [PartyRole.Supplier],
+                            Scopes = ["ADMIN"],
+                            Uri = new Uri("/organisations/dfd0c5d3-0740-4be4-aa42-e42ec9c00bad")
+                        }
+                    ]
+                }
+            ]
         });
     }
 }
