@@ -9,10 +9,13 @@
     var postcodeHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Postcode)).HasInnerHtml;
 
     var backLink = RegistrationStepModel.OrganisationEmailPage;
+    var internationalLink = RegistrationStepModel.OrganisationNonUKAddressPage;
+
     if (Request.Query.ContainsKey("frm-summary"))
     {
         Model.RedirectToSummary = true;
         backLink = RegistrationStepModel.OrganisationSummaryPage;
+        internationalLink += "?frm-summary";
     }
 }
 
@@ -42,7 +45,7 @@
                         <div id="hint" class="govuk-hint">The address of the company or organisation which is recorded on public records or within the public domain. This will be displayed on notices.</div>
                         <p class="govuk-body">
                             <a class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19"
-                               href="@RegistrationStepModel.OrganisationNonUKAddressPage">
+                               href="@internationalLink">
                                 Enter an international address
                             </a>
                         </p>
