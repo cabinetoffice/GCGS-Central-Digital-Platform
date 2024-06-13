@@ -3,7 +3,7 @@ using CO.CDP.Organisation.WebApiClient;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 
-namespace CO.CDP.OrganisationApp.Pages;
+namespace CO.CDP.OrganisationApp.Pages.Supplier;
 
 [AuthorisedSession]
 public class SupplierVatModel(

@@ -1,7 +1,7 @@
 using CO.CDP.Organisation.WebApiClient;
 using Microsoft.AspNetCore.Mvc;
 
-namespace CO.CDP.OrganisationApp.Pages;
+namespace CO.CDP.OrganisationApp.Pages.Supplier;
 
 [AuthorisedSession]
 public class SupplierBasicInformationModel(
