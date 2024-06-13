@@ -144,4 +144,94 @@ public class SupplierInformationTest
         organisation.SupplierInfo.As<Organisation.SupplierInformation>()
             .CompletedLegalForm.Should().BeTrue();
     }
+
+
+    [Fact]
+    public void ItDoesNotRemoveTheCompletedRegAddressFlagIfItWasExplicitlySet()
+    {
+        var organisation = GivenOrganisation(
+            roles: [PartyRole.Supplier],
+            addresses: [],
+            supplierInformation: GivenSupplierInformation(completedRegAddress: true)
+        );
+
+        organisation.UpdateSupplierInformation();
+
+        organisation.SupplierInfo.As<Organisation.SupplierInformation>()
+            .CompletedRegAddress.Should().BeTrue();
+    }
+
+    [Fact]
+    public void ItDoesNotRemoveTheCompletedPostalAddressFlagIfItWasExplicitlySet()
+    {
+        var organisation = GivenOrganisation(
+            roles: [PartyRole.Supplier],
+            addresses: [],
+            supplierInformation: GivenSupplierInformation(completedPostalAddress: true)
+        );
+
+        organisation.UpdateSupplierInformation();
+
+        organisation.SupplierInfo.As<Organisation.SupplierInformation>()
+            .CompletedPostalAddress.Should().BeTrue();
+    }
+
+
+    [Fact]
+    public void ItDoesNotRemoveTheVatFlagIfItWasExplicitlySet()
+    {
+        var organisation = GivenOrganisation(
+            roles: [PartyRole.Supplier],
+            supplierInformation: GivenSupplierInformation(completedVat: true)
+        );
+
+        organisation.UpdateSupplierInformation();
+
+        organisation.SupplierInfo.As<Organisation.SupplierInformation>()
+            .CompletedVat.Should().BeTrue();
+    }
+
+    [Fact]
+    public void ItDoesNotRemoveTheCompletedQualificationFlagIfItWasExplicitlySet()
+    {
+        var organisation = GivenOrganisation(
+            roles: [PartyRole.Supplier],
+            supplierInformation: GivenSupplierInformation(completedQualification: true)
+        );
+
+        organisation.UpdateSupplierInformation();
+
+        organisation.SupplierInfo.As<Organisation.SupplierInformation>()
+            .CompletedQualification.Should().BeTrue();
+    }
+
+
+    [Fact]
+    public void ItDoesNotRemoveTheCompletedTradeAssuranceFlagIfItWasExplicitlySet()
+    {
+        var organisation = GivenOrganisation(
+            roles: [PartyRole.Supplier],
+            supplierInformation: GivenSupplierInformation(completedTradeAssurance: true)
+        );
+
+        organisation.UpdateSupplierInformation();
+
+        organisation.SupplierInfo.As<Organisation.SupplierInformation>()
+            .CompletedTradeAssurance.Should().BeTrue();
+    }
+
+
+    [Fact]
+    public void ItDoesNotRemoveTheCompletedLegalFormFlagIfItWasExplicitlySet()
+    {
+        var organisation = GivenOrganisation(
+            roles: [PartyRole.Supplier],
+            supplierInformation: GivenSupplierInformation(completedLegalForm: true)
+        );
+
+        organisation.UpdateSupplierInformation();
+
+        organisation.SupplierInfo.As<Organisation.SupplierInformation>()
+            .CompletedLegalForm.Should().BeTrue();
+    }
 }
