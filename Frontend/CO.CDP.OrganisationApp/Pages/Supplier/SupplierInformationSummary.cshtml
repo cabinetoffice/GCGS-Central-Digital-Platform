@@ -13,11 +13,7 @@
         };
     }
 
-    string basicInformationLink =
-                    (Model.HasSupplierType
-                            ? $"/organisation/{Model.Id}/supplier-information/basic-information"
-                            : $"/organisation/{Model.Id}/supplier-information/individual-or-org");
-    
+    var basicInformationLink = $"/organisation/{Model.Id}/supplier-information/{(Model.HasSupplierType ? "basic-information" : "individual-or-org")}";    
 }
 
 <a href="/organisation/@Model.Id" class="govuk-back-link">

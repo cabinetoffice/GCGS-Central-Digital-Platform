@@ -18,7 +18,7 @@ public class SupplierIndividualOrOrgModel(
     [BindProperty]
     public string? Name { get; set; }
 
-    [BindProperty]
+    [BindProperty(SupportsGet = true)]
     public Guid Id { get; set; }
 
 

@@ -4,16 +4,8 @@
 
 @{
     var supplierTypeHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.SupplierType)).HasInnerHtml;
-
-    string backLink =
-                    (Model.SupplierType.HasValue
-                                ? $"/organisation/{Model.Id}/supplier-information/basic-information"
-                                : $"/organisation/{Model.Id}/supplier-information");
-
-    string IsSelected(SupplierType radioValue)
-    {
-        return Model.SupplierType == radioValue ? "checked='checked'" : string.Empty;
-    }
+    var backLink = $"/organisation/{Model.Id}/supplier-information/{(Model.SupplierType.HasValue ? "basic-information" : "")}";
+    string IsSelected(SupplierType radioValue) => Model.SupplierType == radioValue ? "checked='checked'" : string.Empty;
 }
 
 <a href="@backLink" class="govuk-back-link">

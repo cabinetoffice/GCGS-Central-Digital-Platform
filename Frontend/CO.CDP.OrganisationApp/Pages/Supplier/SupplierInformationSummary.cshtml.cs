@@ -16,7 +16,7 @@ public class SupplierInformationSummaryModel(
     [BindProperty]
     public StepStatus BasicInformationStepStatus { get; set; }
 
-    [BindProperty]
+    [BindProperty(SupportsGet = true)]
     public Guid Id { get; set; }
 
     [BindProperty]
