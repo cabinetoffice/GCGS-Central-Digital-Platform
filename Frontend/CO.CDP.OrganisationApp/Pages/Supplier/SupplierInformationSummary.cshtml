@@ -12,9 +12,11 @@
             _ => "Not started"
         };
     }
+
+    var basicInformationLink = $"/organisation/{Model.Id}/supplier-information/{(Model.HasSupplierType ? "basic-information" : "individual-or-org")}";    
 }
 
-<a href="/organisation/@RouteData.Values["id"]" class="govuk-back-link">
+<a href="/organisation/@Model.Id" class="govuk-back-link">
     Back
 </a>
 
@@ -28,8 +30,7 @@
             <dl class="govuk-summary-list">
                 <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">
-                        <a class="govuk-link govuk-link--no-visited-state"
-                            href="/organisation/@RouteData.Values["id"]/supplier-information/basic-information">Basic information</a>
+                        <a class="govuk-link govuk-link--no-visited-state" href="@basicInformationLink">Basic information</a>
                     </dt>
                     <dd class="govuk-summary-list__value">
 
@@ -100,7 +101,7 @@
             </a>
 
             <div class="govuk-!-margin-top-3">
-                <a class="govuk-link" href="/organisation/@RouteData.Values["id"]">Back to organisation details</a>
+                <a class="govuk-link" href="/organisation/@Model.Id">Back to organisation details</a>
             </div>
 
         </div>

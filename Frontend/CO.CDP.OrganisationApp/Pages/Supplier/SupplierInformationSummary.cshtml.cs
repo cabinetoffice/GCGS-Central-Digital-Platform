@@ -16,12 +16,19 @@ public class SupplierInformationSummaryModel(
     [BindProperty]
     public StepStatus BasicInformationStepStatus { get; set; }
 
+    [BindProperty(SupportsGet = true)]
+    public Guid Id { get; set; }
+
+    [BindProperty]
+    public bool HasSupplierType { get; set; }
+
     public async Task<IActionResult> OnGet(Guid id)
     {
         SupplierInformation? supplierInfo;
         try
         {
             supplierInfo = await organisationClient.GetOrganisationSupplierInformationAsync(id);
+            HasSupplierType = supplierInfo.SupplierType.HasValue;
         }
         catch (ApiException ex) when (ex.StatusCode == 404)
         {

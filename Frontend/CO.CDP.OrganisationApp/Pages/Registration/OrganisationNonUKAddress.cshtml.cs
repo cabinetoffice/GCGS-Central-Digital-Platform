@@ -48,12 +48,15 @@ public class OrganisationNonUKAddressModel(ISession session) : RegistrationStepM
 
     public void OnGet()
     {
-        AddressLine1 = RegistrationDetails.OrganisationAddressLine1;
-        AddressLine2 = RegistrationDetails.OrganisationAddressLine2;
-        TownOrCity = RegistrationDetails.OrganisationCityOrTown;
-        Region = RegistrationDetails.OrganisationRegion;
-        Postcode = RegistrationDetails.OrganisationPostcode;
-        Country = RegistrationDetails.OrganisationCountry;
+        if (RegistrationDetails.OrganisationCountry != "United Kingdom")
+        {
+            AddressLine1 = RegistrationDetails.OrganisationAddressLine1;
+            AddressLine2 = RegistrationDetails.OrganisationAddressLine2;
+            TownOrCity = RegistrationDetails.OrganisationCityOrTown;
+            Region = RegistrationDetails.OrganisationRegion;
+            Postcode = RegistrationDetails.OrganisationPostcode;
+            Country = RegistrationDetails.OrganisationCountry;
+        }
     }
 
     public IActionResult OnPost()
@@ -72,20 +75,16 @@ public class OrganisationNonUKAddressModel(ISession session) : RegistrationStepM
 
         session.Set(Session.RegistrationDetailsKey, RegistrationDetails);
 
-        if (RegistrationDetails.OrganisationType == OrganisationType.Buyer)
-        {
-            if (RedirectToSummary == true)
-            {
-                return RedirectToPage("OrganisationDetailsSummary");
-            }
-            else
-            {
-                return RedirectToPage("BuyerOrganisationType");
-            }
-        }
-        else
+        if (RedirectToSummary == true)
         {
             return RedirectToPage("OrganisationDetailsSummary");
         }
+
+        if (RegistrationDetails.OrganisationType == OrganisationType.Buyer)
+        {
+            return RedirectToPage("BuyerOrganisationType");
+        }
+
+        return RedirectToPage("OrganisationDetailsSummary");
     }
 }

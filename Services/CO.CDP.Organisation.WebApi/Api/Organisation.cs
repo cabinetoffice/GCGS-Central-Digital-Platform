@@ -184,12 +184,13 @@ public static class EndpointExtensions
     public static RouteGroupBuilder UseBuyerInformationEndpoints(this RouteGroupBuilder app)
     {
         app.MapPatch("/{organisationId}/buyer-information",
-        async (Guid organisationId, UpdateBuyerInformation byuerInformation,
+
+            async (Guid organisationId, UpdateBuyerInformation byuerInformation,
                 IUseCase<(Guid, UpdateBuyerInformation), bool> useCase) =>
-            {
-                return await useCase.Execute((organisationId, byuerInformation))
-                   .AndThen(_ => Results.NoContent());
-            })
+
+                await useCase.Execute((organisationId, byuerInformation))
+                   .AndThen(_ => Results.NoContent())
+            )
             .Produces(StatusCodes.Status204NoContent)
             .ProducesProblem(StatusCodes.Status500InternalServerError)
             .ProducesProblem(StatusCodes.Status400BadRequest)

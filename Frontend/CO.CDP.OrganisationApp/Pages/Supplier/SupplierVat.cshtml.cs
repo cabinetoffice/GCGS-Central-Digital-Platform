@@ -20,7 +20,7 @@ public class SupplierVatModel(
     [RequiredIf(nameof(HasVatNumber), true, ErrorMessage = "Please enter the VAT number.")]
     public string? VatNumber { get; set; }
 
-    [BindProperty]
+    [BindProperty(SupportsGet = true)]
     public Guid Id { get; set; }
 
     public async Task<IActionResult> OnGet(Guid id)
