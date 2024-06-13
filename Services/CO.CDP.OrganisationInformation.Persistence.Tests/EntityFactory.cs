@@ -164,7 +164,8 @@ public static class EntityFactory
         bool completedPostalAddress = false,
         bool completedVat = false,
         bool completedQualification = false,
-        bool completedTradeAssurance = false
+        bool completedTradeAssurance = false,
+        bool completedLegalForm = false
     ) => new()
     {
         SupplierType = type,
@@ -175,7 +176,8 @@ public static class EntityFactory
         CompletedPostalAddress = completedPostalAddress,
         CompletedVat = completedVat,
         CompletedQualification = completedQualification,
-        CompletedTradeAssurance = completedTradeAssurance
+        CompletedTradeAssurance = completedTradeAssurance,
+        CompletedLegalForm = completedLegalForm
     };
 
     public static OrganisationAddress GivenOrganisationAddress(

@@ -143,6 +143,6 @@ public class Organisation : IEntityDate
             SupplierInfo.Qualifications.Count > 0 || SupplierInfo.CompletedQualification;
         SupplierInfo.CompletedTradeAssurance =
             SupplierInfo.TradeAssurances.Count > 0 || SupplierInfo.CompletedTradeAssurance;
-        SupplierInfo.CompletedLegalForm = SupplierInfo.LegalForm != null;
+        SupplierInfo.CompletedLegalForm = SupplierInfo.LegalForm != null || SupplierInfo.CompletedLegalForm;
     }
 }

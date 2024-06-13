@@ -219,4 +219,19 @@ public class SupplierInformationTest
         organisation.SupplierInfo.As<Organisation.SupplierInformation>()
             .CompletedTradeAssurance.Should().BeTrue();
     }
+
+
+    [Fact]
+    public void ItDoesNotRemoveTheCompletedLegalFormFlagIfItWasExplicitlySet()
+    {
+        var organisation = GivenOrganisation(
+            roles: [PartyRole.Supplier],
+            supplierInformation: GivenSupplierInformation(completedLegalForm: true)
+        );
+
+        organisation.UpdateSupplierInformation();
+
+        organisation.SupplierInfo.As<Organisation.SupplierInformation>()
+            .CompletedLegalForm.Should().BeTrue();
+    }
 }
