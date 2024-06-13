@@ -12,7 +12,7 @@ namespace CO.CDP.Tenant.WebApi.Tests.UseCase;
 
 public class LookupTenantUseCaseTest(AutoMapperFixture mapperFixture) : IClassFixture<AutoMapperFixture>
 {
-    private readonly Mock<IPersonRepository> _repository = new();
+    private readonly Mock<ITenantRepository> _repository = new();
     private LookupTenantUseCase UseCase => new(_repository.Object, mapperFixture.Mapper);
 
     [Fact]

@@ -7,7 +7,6 @@ public interface IPersonRepository : IDisposable
     public Task<Person?> Find(Guid personId);
 
     public Task<Person?> FindByUrn(string urn);
-    public Task<TenantLookup?> LookupTenant(string userUrn);
 
     public class PersonRepositoryException(string message, Exception? cause = null) : Exception(message, cause)
     {

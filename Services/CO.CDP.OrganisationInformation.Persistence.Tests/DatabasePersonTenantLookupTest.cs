@@ -9,7 +9,8 @@ public class DatabasePersonTenantLookupTest(PostgreSqlFixture postgreSql) : ICla
     [Fact]
     public async Task ItFindsThePersonWithAllTheirTenants()
     {
-        using var repository = PersonRepository();
+        using var personRepository = PersonRepository();
+        using var tenantRepository = TenantRepository();
 
         var acmeCoPersonUrn = "urn:fdc:gov.uk:2022:7wTqYGMFQxgukTSpSI2G0dMwe9";
         var acmeCoPersonScopes = new List<string> { "ADMIN" };
@@ -34,12 +35,12 @@ public class DatabasePersonTenantLookupTest(PostgreSqlFixture postgreSql) : ICla
             organisationsWithScope: [(widgetCoOrganisation, ["USER"]), (acmeCoOrganisation, ["USER"])]
         );
 
-        repository.Save(acmeCoPerson);
-        repository.Save(widgetCoPerson);
-        repository.Save(acmeCoPersonWithNoTenantConnection);
-        repository.Save(acmeCoPersonWithNoOrganisationConnection);
+        personRepository.Save(acmeCoPerson);
+        personRepository.Save(widgetCoPerson);
+        personRepository.Save(acmeCoPersonWithNoTenantConnection);
+        personRepository.Save(acmeCoPersonWithNoOrganisationConnection);
 
-        var tenantLookup = await repository.LookupTenant(acmeCoPersonUrn);
+        var tenantLookup = await tenantRepository.LookupTenant(acmeCoPersonUrn);
 
         tenantLookup.Should().BeEquivalentTo(new TenantLookup
         {
@@ -68,6 +69,11 @@ public class DatabasePersonTenantLookupTest(PostgreSqlFixture postgreSql) : ICla
                 }
             ]
         });
+    }
+
+    private ITenantRepository TenantRepository()
+    {
+        return new DatabaseTenantRepository(postgreSql.OrganisationInformationContext());
     }
 
     private IPersonRepository PersonRepository()
