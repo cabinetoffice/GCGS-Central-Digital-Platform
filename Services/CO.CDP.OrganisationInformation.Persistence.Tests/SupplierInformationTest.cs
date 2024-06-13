@@ -204,4 +204,19 @@ public class SupplierInformationTest
         organisation.SupplierInfo.As<Organisation.SupplierInformation>()
             .CompletedQualification.Should().BeTrue();
     }
+
+
+    [Fact]
+    public void ItDoesNotRemoveTheCompletedTradeAssuranceFlagIfItWasExplicitlySet()
+    {
+        var organisation = GivenOrganisation(
+            roles: [PartyRole.Supplier],
+            supplierInformation: GivenSupplierInformation(completedTradeAssurance: true)
+        );
+
+        organisation.UpdateSupplierInformation();
+
+        organisation.SupplierInfo.As<Organisation.SupplierInformation>()
+            .CompletedTradeAssurance.Should().BeTrue();
+    }
 }

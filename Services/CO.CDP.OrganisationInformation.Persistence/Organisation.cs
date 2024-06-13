@@ -141,7 +141,8 @@ public class Organisation : IEntityDate
         SupplierInfo.CompletedVat = Identifiers.Any(i => i.Scheme == "VAT") || SupplierInfo.CompletedVat;
         SupplierInfo.CompletedQualification =
             SupplierInfo.Qualifications.Count > 0 || SupplierInfo.CompletedQualification;
-        SupplierInfo.CompletedTradeAssurance = SupplierInfo.TradeAssurances.Count > 0;
+        SupplierInfo.CompletedTradeAssurance =
+            SupplierInfo.TradeAssurances.Count > 0 || SupplierInfo.CompletedTradeAssurance;
         SupplierInfo.CompletedLegalForm = SupplierInfo.LegalForm != null;
     }
 }
