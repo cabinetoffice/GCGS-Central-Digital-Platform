@@ -134,8 +134,10 @@ public class Organisation : IEntityDate
         }
 
         SupplierInfo ??= new SupplierInformation();
-        SupplierInfo.CompletedRegAddress = Addresses.Any(a => a.Type == AddressType.Registered) || SupplierInfo.CompletedRegAddress;
-        SupplierInfo.CompletedPostalAddress = Addresses.Any(a => a.Type == AddressType.Postal);
+        SupplierInfo.CompletedRegAddress =
+            Addresses.Any(a => a.Type == AddressType.Registered) || SupplierInfo.CompletedRegAddress;
+        SupplierInfo.CompletedPostalAddress =
+            Addresses.Any(a => a.Type == AddressType.Postal) || SupplierInfo.CompletedPostalAddress;
         SupplierInfo.CompletedVat = Identifiers.Any(i => i.Scheme == "VAT");
         SupplierInfo.CompletedQualification = SupplierInfo.Qualifications.Count > 0;
         SupplierInfo.CompletedTradeAssurance = SupplierInfo.TradeAssurances.Count > 0;

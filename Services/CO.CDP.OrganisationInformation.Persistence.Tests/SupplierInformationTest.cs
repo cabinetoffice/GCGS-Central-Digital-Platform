@@ -160,4 +160,19 @@ public class SupplierInformationTest
         organisation.SupplierInfo.As<Organisation.SupplierInformation>()
             .CompletedRegAddress.Should().BeTrue();
     }
+
+    [Fact]
+    public void ItDoesNotMarkPostalAddressAsNotCompletedIfItWasAlreadyCompleted()
+    {
+        var organisation = GivenOrganisation(
+            roles: [PartyRole.Supplier],
+            addresses: [],
+            supplierInformation: GivenSupplierInformation(completedPostalAddress: true)
+        );
+
+        organisation.UpdateSupplierInformation();
+
+        organisation.SupplierInfo.As<Organisation.SupplierInformation>()
+            .CompletedPostalAddress.Should().BeTrue();
+    }
 }
