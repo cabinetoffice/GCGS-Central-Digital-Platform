@@ -147,7 +147,7 @@ public class SupplierInformationTest
 
 
     [Fact]
-    public void ItDoesNotMarkRegistrationAddressAsNotCompletedIfItWasAlreadyCompleted()
+    public void ItDoesNotRemoveTheCompletedRegAddressFlagIfItWasExplicitlySet()
     {
         var organisation = GivenOrganisation(
             roles: [PartyRole.Supplier],
@@ -162,7 +162,7 @@ public class SupplierInformationTest
     }
 
     [Fact]
-    public void ItDoesNotMarkPostalAddressAsNotCompletedIfItWasAlreadyCompleted()
+    public void ItDoesNotRemoveTheCompletedPostalAddressFlagIfItWasExplicitlySet()
     {
         var organisation = GivenOrganisation(
             roles: [PartyRole.Supplier],
