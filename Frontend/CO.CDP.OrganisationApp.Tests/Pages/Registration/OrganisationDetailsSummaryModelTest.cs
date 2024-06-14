@@ -142,7 +142,7 @@ public class OrganisationDetailsSummaryModelTest
 
         model.RegistrationDetails.BuyerOrganisationType = null;
         model.RegistrationDetails.Devolved = false;
-        model.RegistrationDetails.Regulations = [DevolvedRegulation.NorthernIreland, Constants.DevolvedRegulation.Wales];
+        model.RegistrationDetails.Regulations = [DevolvedRegulation.NorthernIreland, DevolvedRegulation.Wales];
 
         var result = await model.OnPost();
 
