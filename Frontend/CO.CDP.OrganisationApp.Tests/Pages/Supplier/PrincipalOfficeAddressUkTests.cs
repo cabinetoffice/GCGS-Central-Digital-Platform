@@ -67,8 +67,8 @@ public class PrincipalOfficeAddressUkModelTests
 
         var result = await _model.OnGet(id);
 
-        result.Should().BeOfType<RedirectToPageResult>()
-            .Which.PageName.Should().Be("/page-not-found");
+        result.Should().BeOfType<RedirectResult>()
+            .Which.Url.Should().Be("/page-not-found");
     }
 
     [Fact]
@@ -112,7 +112,7 @@ public class PrincipalOfficeAddressUkModelTests
 
         var result = await _model.OnPost();
 
-        result.Should().BeOfType<RedirectToPageResult>()
-            .Which.PageName.Should().Be("/page-not-found");
+        result.Should().BeOfType<RedirectResult>()
+            .Which.Url.Should().Be("/page-not-found");
     }
 }
