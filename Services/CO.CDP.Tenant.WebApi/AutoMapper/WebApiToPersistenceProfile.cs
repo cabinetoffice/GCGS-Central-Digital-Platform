@@ -15,7 +15,7 @@ public class WebApiToPersistenceProfile : Profile
         CreateMap<TenantLookup.PersonUser, UserDetails>();
         CreateMap<TenantLookup.Tenant, UserTenant>();
         CreateMap<TenantLookup.Organisation, UserOrganisation>()
-            .ForMember(m => m.Uri, o => o.MapFrom(src => new Uri($"/organisations/{src.Id}")));
+            .ForMember(m => m.Uri, o => o.MapFrom(src => new Uri($"https://cdp.cabinetoffice.gov.uk/organisations/{src.Id}")));
 
         CreateMap<RegisterTenant, OrganisationInformation.Persistence.Tenant>()
             .ForMember(m => m.Guid, o => o.MapFrom((_, _, _, context) => context.Items["Guid"]))
