@@ -23,4 +23,22 @@ internal static class OrganisationClientExtensions
         buyerInformation: new BuyerInformation(
             buyerType: null,
             devolvedRegulations: devolvedRegulations.AsApiClientDevolvedRegulationList())));
+
+    internal static Task UpdateOrganisation(this IOrganisationClient organisationClient,
+        Guid organisationId, OrganisationUpdateType organisationUpdateType,
+        ICollection<OrganisationIdentifier>? additionalIdentifiers, OrganisationContactPoint contactPoint
+    ) => organisationClient.UpdateOrganisationAsync(organisationId, new UpdatedOrganisation
+                (
+                    type: organisationUpdateType,
+                    organisation: new OrganisationInfo(additionalIdentifiers: additionalIdentifiers, contactPoint: contactPoint)
+                ));
+
+    internal static Task UpdateSupplierInformation(this IOrganisationClient organisationClient,
+        Guid organisationId,
+        SupplierInformationUpdateType supplierInformationUpdateType
+    ) => organisationClient.UpdateSupplierInformationAsync(
+            organisationId,
+            new UpdateSupplierInformation(
+                type: supplierInformationUpdateType,
+                supplierInformation: new SupplierInfo(supplierType: null)));
 }

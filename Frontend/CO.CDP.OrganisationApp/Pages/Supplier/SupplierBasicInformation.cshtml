@@ -118,7 +118,12 @@
                         {
                             if (!string.IsNullOrWhiteSpace(Model.WebsiteAddress))
                             {
+                                @:Yes<br />
                                 @(Model.WebsiteAddress)
+                            }
+                            else
+                            {
+                                @:No
                             }
                         }
                     </dt>
@@ -137,13 +142,8 @@
                         @if (details.CompletedEmailAddress)
                         {
                             if (!string.IsNullOrWhiteSpace(Model.EmailAddress))
-                            {
-                                @:Yes<br />
+                            {                                
                                 @(Model.EmailAddress)
-                            }
-                            else
-                            {
-                                @:No
                             }
                         }
                     </dt>

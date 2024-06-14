@@ -1,5 +1,6 @@
 using CO.CDP.Mvc.Validation;
 using CO.CDP.Organisation.WebApiClient;
+using CO.CDP.OrganisationApp.WebApiClients;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -58,25 +59,19 @@ public class SupplierEmailAddressModel(
         {
             var organisation = await organisationClient.GetOrganisationAsync(Id);
 
+            List<Task> tasks = [];
+
             var cp = new OrganisationContactPoint(
                     name: organisation.ContactPoint.Name,
                     email: EmailAddress,
                     telephone: organisation.ContactPoint.Telephone,
                     url: organisation.ContactPoint.Url?.ToString());
 
-            await organisationClient.UpdateOrganisationAsync(Id,
-                new UpdatedOrganisation
-                (
-                    type: OrganisationUpdateType.ContactPoint,
-                    organisation: new OrganisationInfo(additionalIdentifiers: null, contactPoint: cp)
-                ));
+            tasks.Add(organisationClient.UpdateOrganisation(Id, OrganisationUpdateType.ContactPoint,null, cp));
 
-            await organisationClient.UpdateSupplierInformationAsync(Id,
-                new UpdateSupplierInformation
-                (
-                    type: SupplierInformationUpdateType.CompletedEmailAddress,
-                    supplierInformation: new SupplierInfo(supplierType: null))
-                );
+            tasks.Add(organisationClient.UpdateSupplierInformation(Id, SupplierInformationUpdateType.CompletedEmailAddress));
+
+            await Task.WhenAll(tasks);
         }
         catch (ApiException ex) when (ex.StatusCode == 404)
         {
