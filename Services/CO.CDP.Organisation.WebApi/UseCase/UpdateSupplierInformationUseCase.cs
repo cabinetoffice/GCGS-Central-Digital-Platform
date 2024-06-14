@@ -32,6 +32,10 @@ public class UpdateSupplierInformationUseCase(IOrganisationRepository organisati
                 organisation.SupplierInfo.CompletedWebsiteAddress = true;
                 break;
 
+            case SupplierInformationUpdateType.CompletedEmailAddress:
+                organisation.SupplierInfo.CompletedEmailAddress = true;
+                break;
+
             default:
                 throw new InvalidUpdateSupplierInformationCommand("Unknown supplier information update type.");
         }

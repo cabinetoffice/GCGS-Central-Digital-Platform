@@ -118,12 +118,7 @@
                         {
                             if (!string.IsNullOrWhiteSpace(Model.WebsiteAddress))
                             {
-                                @:Yes<br />
                                 @(Model.WebsiteAddress)
-                            }
-                            else
-                            {
-                                @:No
                             }
                         }
                     </dt>
@@ -153,7 +148,7 @@
                         }
                     </dt>
                     <dd class="govuk-summary-list__actions">
-                        <a class="govuk-link" href="email-question">
+                        <a class="govuk-link" href="email-address">
                             @GetActionString(details.CompletedEmailAddress)<span class="govuk-visually-hidden"> Change</span>
                         </a>
                     </dd>

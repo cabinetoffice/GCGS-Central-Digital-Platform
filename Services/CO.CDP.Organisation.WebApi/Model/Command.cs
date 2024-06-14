@@ -130,7 +130,8 @@ public record UpdateSupplierInformation
 public enum SupplierInformationUpdateType
 {
     SupplierType,
-    CompletedWebsiteAddress
+    CompletedWebsiteAddress,
+    CompletedEmailAddress
 }
 
 public record SupplierInfo
