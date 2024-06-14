@@ -24,15 +24,15 @@ public class SupplierBasicInformationTest
     {
         var organisationId = Guid.NewGuid();
         _organisationClientMock.Setup(o => o.GetOrganisationSupplierInformationAsync(organisationId))
-            .ReturnsAsync(SupplierInformationClientModel);
+            .ReturnsAsync(SupplierDetailsFactory.CreateSupplierInformationClientModel());
 
         _organisationClientMock.Setup(client => client.GetOrganisationAsync(organisationId))
-            .ReturnsAsync(OrganisationClientModel(organisationId));
+            .ReturnsAsync(SupplierDetailsFactory.GivenOrganisationClientModel(organisationId));
 
         await _model.OnGet(organisationId);
 
         _model.VatNumber.Should().Be("FakeVatId");
-        _model.SupplierInformation.Should().Be(SupplierInformationClientModel);
+        _model.SupplierInformation.Should().Be(SupplierDetailsFactory.CreateSupplierInformationClientModel());
     }
 
     [Fact]
@@ -46,28 +46,4 @@ public class SupplierBasicInformationTest
         result.Should().BeOfType<RedirectResult>()
             .Which.Url.Should().Be("/page-not-found");
     }
-
-    private static SupplierInformation SupplierInformationClientModel => new(
-            organisationName: "FakeOrg",
-            supplierType: SupplierType.Organisation,
-            operationTypes: null,
-            completedRegAddress: true,
-            completedPostalAddress: false,
-            completedVat: false,
-            completedWebsiteAddress: false,
-            completedEmailAddress: false,
-            completedQualification: false,
-            completedTradeAssurance: false,
-            completedOperationType: false,
-            completedLegalForm: false);
-
-    private static Organisation.WebApiClient.Organisation OrganisationClientModel(Guid id) =>
-        new(
-            additionalIdentifiers: [new Identifier(id: "FakeVatId", legalName: "FakeOrg", scheme: "VAT", uri: null)],
-            addresses: [],
-            contactPoint: null,
-            id: id,
-            identifier: null,
-            name: "Test Org",
-            roles: [PartyRole.Supplier]);
 }

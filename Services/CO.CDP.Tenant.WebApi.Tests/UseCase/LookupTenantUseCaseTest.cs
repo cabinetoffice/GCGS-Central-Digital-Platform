@@ -5,7 +5,6 @@ using CO.CDP.Tenant.WebApi.Tests.AutoMapper;
 using CO.CDP.Tenant.WebApi.UseCase;
 using FluentAssertions;
 using Moq;
-using Address = CO.CDP.OrganisationInformation.Persistence.Address;
 using TenantLookup = CO.CDP.OrganisationInformation.Persistence.TenantLookup;
 
 namespace CO.CDP.Tenant.WebApi.Tests.UseCase;
@@ -84,7 +83,7 @@ public class LookupTenantUseCaseTest(AutoMapperFixture mapperFixture) : IClassFi
                             Name = "Acme Ltd",
                             Roles = [PartyRole.Supplier],
                             Scopes = ["ADMIN"],
-                            Uri = new Uri("/organisations/dfd0c5d3-0740-4be4-aa42-e42ec9c00bad")
+                            Uri = new Uri($"https://cdp.cabinetoffice.gov.uk/organisations/dfd0c5d3-0740-4be4-aa42-e42ec9c00bad")
                         }
                     ]
                 }

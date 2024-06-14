@@ -61,7 +61,7 @@ public class AddressTypeQuestionModel(
         }
         catch (ApiException ex) when (ex.StatusCode == 404)
         {
-            return Redirect("/page-not-found");
+            return RedirectToPage("/page-not-found");
         }
     }
 }
