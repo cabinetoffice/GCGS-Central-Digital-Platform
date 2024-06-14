@@ -21,5 +21,6 @@ locals {
 }
 
 inputs = {
-  tags = local.tags
+  service_configs = local.global_vars.locals.service_configs
+  tags            = local.tags
 }

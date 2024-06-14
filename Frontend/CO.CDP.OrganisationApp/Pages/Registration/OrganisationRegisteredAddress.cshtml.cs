@@ -35,7 +35,7 @@ public class OrganisationRegisteredAddressModel(ISession session) : Registration
     [BindProperty]
     [DisplayName("Country")]
     [Required(ErrorMessage = "Enter your country")]
-    public string? Country { get; set; } = "United Kingdom";
+    public string Country { get; set; } = "United Kingdom";
 
     [BindProperty]
     public bool? RedirectToSummary { get; set; }
@@ -59,12 +59,12 @@ public class OrganisationRegisteredAddressModel(ISession session) : Registration
             return Page();
         }
 
-        RegistrationDetails.OrganisationAddressLine1 = AddressLine1 ?? RegistrationDetails.OrganisationAddressLine1;
-        RegistrationDetails.OrganisationAddressLine2 = AddressLine2 ?? RegistrationDetails.OrganisationAddressLine2;
-        RegistrationDetails.OrganisationCityOrTown = TownOrCity ?? RegistrationDetails.OrganisationCityOrTown;
-        RegistrationDetails.OrganisationPostcode = Postcode ?? RegistrationDetails.OrganisationPostcode;
+        RegistrationDetails.OrganisationAddressLine1 = AddressLine1;
+        RegistrationDetails.OrganisationAddressLine2 = AddressLine2;
+        RegistrationDetails.OrganisationCityOrTown = TownOrCity;
+        RegistrationDetails.OrganisationPostcode = Postcode;
         RegistrationDetails.OrganisationRegion = "";
-        RegistrationDetails.OrganisationCountry = Country ?? RegistrationDetails.OrganisationCountry;
+        RegistrationDetails.OrganisationCountry = Country;
 
         session.Set(Session.RegistrationDetailsKey, RegistrationDetails);
 
