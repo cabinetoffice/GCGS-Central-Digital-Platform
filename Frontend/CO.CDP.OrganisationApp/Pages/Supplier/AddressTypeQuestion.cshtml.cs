@@ -47,13 +47,21 @@ public class AddressTypeQuestionModel(
         {
             return Page();
         }
-        if (HasUkPrincipalAddress == true)
+
+        try
         {
-            return RedirectToPage("PrincipalOfficeAddressUk");
+            if (HasUkPrincipalAddress == true)
+            {
+                return RedirectToPage("PrincipalOfficeAddressUk", new { Id });
+            }
+            else
+            {
+                return RedirectToPage("PrincipalOfficeAddressNonUk", new { Id });
+            }
         }
-        else
+        catch (ApiException ex) when (ex.StatusCode == 404)
         {
-            return RedirectToPage("PrincipalOfficeAddressNonUk");
+            return Redirect("/page-not-found");
         }
     }
 }

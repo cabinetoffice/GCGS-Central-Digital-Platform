@@ -7,7 +7,8 @@ namespace CO.CDP.OrganisationApp.Pages.Supplier;
 
 [AuthorisedSession]
 public class PrincipalOfficeAddressUkModel(
-    ISession session, IOrganisationClient organisationClient) : LoggedInUserAwareModel
+    ISession session,
+    IOrganisationClient organisationClient) : LoggedInUserAwareModel
 {
 
     public override ISession SessionContext => session;
@@ -27,6 +28,11 @@ public class PrincipalOfficeAddressUkModel(
     public string? TownOrCity { get; set; }
 
     [BindProperty]
+    [DisplayName("Region")]
+    [Required(ErrorMessage = "Enter your Region")]
+    public string? Region { get; set; }
+
+    [BindProperty]
     [DisplayName("Postcode")]
     [Required(ErrorMessage = "Enter your postcode")]
     public string? Postcode { get; set; }
@@ -36,11 +42,13 @@ public class PrincipalOfficeAddressUkModel(
     [Required(ErrorMessage = "Enter your country")]
     public string? Country { get; set; } = "United Kingdom";
 
+    [BindProperty(SupportsGet = true)]
+    public Guid Id { get; set; }
+
     public async Task<IActionResult> OnGet(Guid id)
     {
         try
         {
-
             var getOrganisationTask = organisationClient.GetOrganisationAsync(id);
             var getSupplierInfoTask = organisationClient.GetOrganisationSupplierInformationAsync(id);
 
@@ -50,8 +58,11 @@ public class PrincipalOfficeAddressUkModel(
             {
                 var hasRegisteredUkAddress = getOrganisationTask.Result.Addresses.FirstOrDefault(i => i.CountryName == "United Kingdom");
                 AddressLine1 = hasRegisteredUkAddress?.StreetAddress;
-
-
+                AddressLine2 = hasRegisteredUkAddress?.StreetAddress2;
+                TownOrCity = hasRegisteredUkAddress?.Locality;
+                Region = hasRegisteredUkAddress?.Region;
+                Postcode = hasRegisteredUkAddress?.PostalCode;
+                Country = hasRegisteredUkAddress?.CountryName;
             }
         }
         catch (ApiException ex) when (ex.StatusCode == 404)
@@ -62,13 +73,40 @@ public class PrincipalOfficeAddressUkModel(
         return Page();
     }
 
-    public IActionResult OnPost()
+    public async Task<IActionResult> OnPost()
     {
         if (!ModelState.IsValid)
         {
             return Page();
         }
 
-        return RedirectToPage("BasicInformation");
+        try
+        {
+            var organisation = await organisationClient.GetOrganisationAsync(Id);
+
+            await organisationClient.UpdateOrganisationAsync(Id,
+              new UpdatedOrganisation
+                (
+                    type: OrganisationUpdateType.Address,
+
+                    organisation: new OrganisationInfo(null,
+                        addresses: [
+                            new OrganisationAddress (
+                            streetAddress : AddressLine1,
+                            streetAddress2 : AddressLine2,
+                            postalCode : Postcode,
+                            locality: TownOrCity,
+                            countryName: Country,
+                            type: AddressType.Registered,
+                            region: Region
+                            )]
+                )));
+        }
+        catch (ApiException ex) when (ex.StatusCode == 404)
+        {
+            return Redirect("/page-not-found");
+        }
+
+        return RedirectToPage("SupplierBasicInformation", new { Id });
     }
 }

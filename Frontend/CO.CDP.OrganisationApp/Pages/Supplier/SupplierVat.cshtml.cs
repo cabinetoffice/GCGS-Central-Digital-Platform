@@ -71,7 +71,7 @@ public class SupplierVatModel(
                                 id: HasVatNumber == true ? VatNumber : "",
                                 legalName: organisation.Name,
                                 scheme: "VAT")
-                        ])
+                        ], null)
                 ));
         }
         catch (ApiException ex) when (ex.StatusCode == 404)
