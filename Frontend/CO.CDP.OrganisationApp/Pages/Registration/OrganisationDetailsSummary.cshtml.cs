@@ -1,6 +1,7 @@
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
+using CO.CDP.OrganisationApp.WebApiClients;
 using Microsoft.AspNetCore.Mvc;
 using OrganisationWebApiClient = CO.CDP.Organisation.WebApiClient;
 
@@ -33,22 +34,12 @@ public class OrganisationDetailsSummaryModel(
 
         if (RegistrationDetails.BuyerOrganisationType != null)
         {
-            tasks.Add(organisationClient.UpdateBuyerInformationAsync(organisation.Id,
-                new UpdateBuyerInformation(
-                    type: BuyerInformationUpdateType.BuyerOrganisationType,
-                    buyerInformation: new BuyerInformation(
-                        buyerType: RegistrationDetails.BuyerOrganisationType,
-                        devolvedRegulations: []))));
+            tasks.Add(organisationClient.UpdateBuyerOrganisationType(organisation.Id, RegistrationDetails.BuyerOrganisationType));
         }
 
         if (RegistrationDetails.Devolved == true)
         {
-            tasks.Add(organisationClient.UpdateBuyerInformationAsync(organisation.Id,
-                new UpdateBuyerInformation(
-                    type: BuyerInformationUpdateType.DevolvedRegulation,
-                    buyerInformation: new BuyerInformation(
-                        buyerType: null,
-                        devolvedRegulations: RegistrationDetails.Regulations.AsApiClientDevolvedRegulationList()))));
+            tasks.Add(organisationClient.UpdateBuyerDevolvedRegulations(organisation.Id, RegistrationDetails.Regulations));
         }
 
         await Task.WhenAll(tasks);
@@ -138,5 +129,4 @@ public class OrganisationDetailsSummaryModel(
             ? codeString
             : null;
     }
-
 }
