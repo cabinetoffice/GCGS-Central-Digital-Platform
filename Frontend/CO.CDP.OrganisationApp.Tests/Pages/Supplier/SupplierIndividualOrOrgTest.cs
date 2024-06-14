@@ -21,19 +21,7 @@ public class SupplierIndividualOrOrgTest
     public async Task OnGet_SetSupplierInformationAndReturnPage()
     {
         var model = SupplierDetailsFactory.GivenSupplierIndividualOrOrgModel(sessionMock, organisationClientMock);
-        var supplierInformation = new SupplierInformation(
-            organisationName: "FakeOrg",
-            supplierType: SupplierType.Organisation,
-            operationTypes: null,
-            completedRegAddress: true,
-            completedPostalAddress: false,
-            completedVat: false,
-            completedWebsiteAddress: false,
-            completedEmailAddress: false,
-            completedQualification: false,
-            completedTradeAssurance: false,
-            completedOperationType: false,
-            completedLegalForm: false);
+        var supplierInformation = SupplierDetailsFactory.CreateSupplierInformationClientModel();
 
         organisationClientMock.Setup(o => o.GetOrganisationSupplierInformationAsync(It.IsAny<Guid>()))
             .ReturnsAsync(supplierInformation);
@@ -105,6 +93,5 @@ public class SupplierIndividualOrOrgTest
         result.Should().BeOfType<RedirectResult>()
             .Which.Url.Should().Be("/page-not-found");
     }
-
 
 }
