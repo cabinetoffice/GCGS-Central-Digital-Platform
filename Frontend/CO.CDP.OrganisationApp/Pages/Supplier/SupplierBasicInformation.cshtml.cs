@@ -17,6 +17,12 @@ public class SupplierBasicInformationModel(
     public string? VatNumber { get; set; }
 
     [BindProperty]
+    public string? WebsiteAddress { get; set; }
+
+    [BindProperty]
+    public string? EmailAddress { get; set; }
+
+    [BindProperty]
     public Address? RegisteredAddress { get; set; }
 
     [BindProperty]
@@ -33,24 +39,17 @@ public class SupplierBasicInformationModel(
 
             SupplierInformation = getSupplierInfoTask.Result;
             var organisation = getOrganisationTask.Result;
+            WebsiteAddress = organisation.ContactPoint.Url?.ToString();
+            EmailAddress = organisation.ContactPoint.Email;
 
             var vatIdentifier = organisation.AdditionalIdentifiers.FirstOrDefault(i => i.Scheme == "VAT");
-            if (vatIdentifier != null)
-            {
-                VatNumber = vatIdentifier.Id;
-            }
+            if (vatIdentifier != null) VatNumber = vatIdentifier.Id;
 
             var registeredAddrress = organisation.Addresses.FirstOrDefault(i => i.Type == AddressType.Registered);
-            if (registeredAddrress != null)
-            {
-                RegisteredAddress = registeredAddrress;
-            }
+            if (registeredAddrress != null) RegisteredAddress = registeredAddrress;
 
             var postalAddrress = organisation.Addresses.FirstOrDefault(i => i.Type == AddressType.Postal);
-            if (postalAddrress != null)
-            {
-                PostalAddress = postalAddrress;
-            }
+            if (postalAddrress != null) PostalAddress = postalAddrress;
         }
         catch (ApiException ex) when (ex.StatusCode == 404)
         {

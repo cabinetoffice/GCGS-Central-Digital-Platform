@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations;
 namespace CO.CDP.OrganisationApp.Pages.Supplier;
 
 [AuthorisedSession]
-public class SupplierVatModel(
+public class SupplierVatQuestionModel(
     ISession session,
     IOrganisationClient organisationClient) : LoggedInUserAwareModel
 {
@@ -34,6 +34,7 @@ public class SupplierVatModel(
 
             if (getSupplierInfoTask.Result.CompletedVat)
             {
+                HasVatNumber = false;
                 var vatIdentifier = getOrganisationTask.Result.AdditionalIdentifiers.FirstOrDefault(i => i.Scheme == "VAT");
                 if (vatIdentifier != null)
                 {
@@ -62,17 +63,18 @@ public class SupplierVatModel(
             var organisation = await organisationClient.GetOrganisationAsync(Id);
 
             await organisationClient.UpdateOrganisationAsync(Id,
-                new UpdatedOrganisation
-                (
-                    type: OrganisationUpdateType.AdditionalIdentifiers,
-                    organisation: new OrganisationInfo(
-                        additionalIdentifiers: [
-                            new OrganisationIdentifier(
+                    new UpdatedOrganisation
+                    (
+                        type: OrganisationUpdateType.AdditionalIdentifiers,
+                        organisation: new OrganisationInfo(
+                            additionalIdentifiers: [
+                                new OrganisationIdentifier(
                                 id: HasVatNumber == true ? VatNumber : "",
                                 legalName: organisation.Name,
                                 scheme: "VAT")
-                        ])
-                ));
+                            ],
+                            contactPoint: null)
+                    ));
         }
         catch (ApiException ex) when (ex.StatusCode == 404)
         {

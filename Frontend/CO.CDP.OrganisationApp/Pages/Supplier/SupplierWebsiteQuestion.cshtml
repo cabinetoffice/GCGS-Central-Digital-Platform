@@ -1,0 +1,59 @@
+@page "/organisation/{id}/supplier-information/website-question"
+@model CO.CDP.OrganisationApp.Pages.Supplier.SupplierWebsiteQuestionModel
+
+@{
+    var invalidSelection = ((TagBuilder)Html.ValidationMessageFor(m => m.HasWebsiteAddress)).HasInnerHtml;
+    var websiteRegHasError = invalidSelection || ((TagBuilder)Html.ValidationMessageFor(m => m.WebsiteAddress)).HasInnerHtml;
+}
+
+<a href="/organisation/@Model.Id/supplier-information/basic-information" class="govuk-back-link">Back</a>
+
+<main class="govuk-main-wrapper">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <partial name="_ErrorSummary" model="@Model.ModelState" />
+            <form class="form" method="post">
+                <div class="govuk-form-group @(invalidSelection ? "govuk-form-group--error": "")">
+                    <fieldset class="govuk-fieldset" data-required="" data-error="Select yes if you are registered for VAT" aria-required="true">
+
+                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                            <h1 class="govuk-fieldset__heading">
+                                Do you have a website?
+                            </h1>
+                        </legend>
+                        <div class="govuk-radios govuk-!-margin-top-6" data-module="govuk-radios">
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input" id="websiteReg" name="HasWebsiteAddress" type="radio"
+                                       value="true" aria-controls="conditional-website-yes" aria-expanded="false" @(Model.HasWebsiteAddress == true ? "checked" : "")>
+                                <label class="govuk-label govuk-radios__label" for="websiteReg">
+                                    Yes
+                                </label>
+                            </div>
+
+                            <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-website-yes">
+                                <div class="govuk-form-group @(websiteRegHasError ? "govuk-form-group--error" : "")">
+                                    <label class="govuk-label" for="websiteAddress">
+                                        Website address
+                                    </label>
+                                    <input class="govuk-input govuk-!-width-one-third @(websiteRegHasError ? "govuk-form-group--error" : "")"
+                                           id="websiteAddress" name="WebsiteAddress" spellcheck="false" autocomplete="false" aria-describedby="website-address-hint"
+                                           value="@(Model.HasWebsiteAddress == true ? Model.WebsiteAddress : "")">
+                                </div>
+                            </div>
+
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input" id="websiteReg-2" name="HasWebsiteAddress" type="radio" value="false"
+                                @(Model.HasWebsiteAddress == false ? "checked" : "")>
+                                <label class="govuk-label govuk-radios__label" for="websiteReg-2">No</label>
+                            </div>
+
+                        </div>
+
+                    </fieldset>
+                </div>
+
+                <button class="govuk-button govuk-!-margin-top-4" type="submit">Save and continue</button>
+            </form>
+        </div>
+    </div>
+</main>

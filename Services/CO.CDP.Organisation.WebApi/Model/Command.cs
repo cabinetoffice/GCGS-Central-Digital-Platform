@@ -54,12 +54,14 @@ public record UpdateOrganisation
 [JsonConverter(typeof(JsonStringEnumConverter))]
 public enum OrganisationUpdateType
 {
-    AdditionalIdentifiers
+    AdditionalIdentifiers,
+    ContactPoint
 }
 
 public record OrganisationInfo
 {
     public List<OrganisationIdentifier>? AdditionalIdentifiers { get; init; }
+    public OrganisationContactPoint? ContactPoint { get; init; }
 }
 
 public record OrganisationIdentifier
@@ -127,7 +129,8 @@ public record UpdateSupplierInformation
 [JsonConverter(typeof(JsonStringEnumConverter))]
 public enum SupplierInformationUpdateType
 {
-    SupplierType
+    SupplierType,
+    CompletedWebsiteAddress
 }
 
 public record SupplierInfo
