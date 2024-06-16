@@ -41,13 +41,13 @@ variable "ecs_alb_sg_id" {
 }
 
 variable "ecs_service_base_sg_id" {
-  description = "Security group ID of Flask Healtcheck ECS Service"
+  description = "Security group ID of Flask Healthcheck ECS Service"
   type        = string
 }
 
 variable "product" {
   description = "product's common attributes"
-  type = object({
+  type        = object({
     name               = string
     resource_name      = string
     public_hosted_zone = string
@@ -57,6 +57,11 @@ variable "product" {
 variable "family" {
   description = "A unique name for the task definition"
   type        = string
+}
+
+variable "healthcheck_path" {
+  description = "Path to health check the services"
+  default     = "/health"
 }
 
 variable "host_port" {

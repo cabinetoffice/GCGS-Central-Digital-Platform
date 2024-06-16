@@ -13,7 +13,7 @@ resource "aws_lb_target_group" "this" {
     interval          = 120
     timeout           = 60
     healthy_threshold = 10
-    path              = "/health"
+    path              = var.healthcheck_path
     port              = var.host_port
     protocol          = "HTTP"
     matcher           = "200"
@@ -30,7 +30,7 @@ resource "aws_lb_listener_rule" "this" {
 
 
   listener_arn = var.ecs_listener_arn
-  priority     = var.host_port - 8000
+  priority     = var.family == "app" ? var.host_port - 8000 : var.host_port
 
   action {
     type             = "forward"
