@@ -1,0 +1,30 @@
+@page "/organisation/{id}/supplier-information/supplier-qualification-awarded-Body"
+@model CO.CDP.OrganisationApp.Pages.Supplier.SupplierQualificationAwardedBodyModel
+@{
+    var personOrAwardedBodyHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.PersonOrAwardedBody)).HasInnerHtml;
+}
+<a href="/organisation/@Model.Id/supplier-information/basic-information" class="govuk-back-link">Back</a>
+
+<main class="govuk-main-wrapper">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <partial name="_ErrorSummary" model="@Model.ModelState" />
+            <form class="form" method="post">
+           
+                <div class="govuk-form-group @(personOrAwardedBodyHasError ? "govuk-form-group--error" : "")">
+                    <label class="govuk-label" for="vatNumber">
+                        Enter the name of the person or body which awarded the qualification
+                    </label>
+                    <div id="hint" class="govuk-hint">
+                        For example, Royal Institution of Chartered Surveyors (RICS).
+                    </div>
+                    <input class="govuk-input govuk-!-width-one-third @(personOrAwardedBodyHasError ? "govuk-form-group--error" : "")"
+                            id="vatNumber" name="VatNumber" spellcheck="false" autocomplete="false" aria-describedby="vat-registration-number-hint"
+                            value="@(!string.IsNullOrEmpty(Model.PersonOrAwardedBody) ? Model.PersonOrAwardedBody : "")">
+                </div>
+                
+                <button class="govuk-button govuk-!-margin-top-4" type="submit">Save and continue</button>
+            </form>
+        </div>
+    </div>
+</main>

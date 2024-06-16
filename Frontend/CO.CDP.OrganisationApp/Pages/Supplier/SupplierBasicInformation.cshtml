@@ -21,6 +21,7 @@
         <p class="govuk-body">@address.PostalCode</p>
         <p class="govuk-body">@address.CountryName</p>
     }
+
 }
 
 <a href="." class="govuk-back-link">Back</a>
@@ -140,9 +141,21 @@
                         Qualifications
                     </dt>
                     <dt class="govuk-summary-list__value">
+                        @if (details.CompletedQualification)
+                        {
+                            if (!string.IsNullOrWhiteSpace(Model.VatNumber))
+                            {
+                                @:Yes<br />
+                                @(Model.VatNumber)
+                            }
+                            else
+                            {
+                                @:None
+                            }
+                        }
                     </dt>
                     <dd class="govuk-summary-list__actions">
-                        <a class="govuk-link" href="#">
+                        <a class="govuk-link" href="supplier-qualification-question">
                             @GetActionString(details.CompletedQualification)<span class="govuk-visually-hidden"> Change</span>
                         </a>
                     </dd>

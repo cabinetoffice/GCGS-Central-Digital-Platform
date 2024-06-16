@@ -51,6 +51,12 @@ public class SupplierBasicInformationModel(
             {
                 PostalAddress = postalAddrress;
             }
+
+            //var organisation = organisation.Qualifications.FirstOrDefault(i => i.Type == AddressType.Registered);
+            //if (registeredAddrress != null)
+            //{
+            //    RegisteredAddress = registeredAddrress;
+            //}
         }
         catch (ApiException ex) when (ex.StatusCode == 404)
         {
