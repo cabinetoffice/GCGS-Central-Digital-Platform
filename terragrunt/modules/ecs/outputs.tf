@@ -6,10 +6,10 @@ output "ecs_cluster_id" {
   value = aws_ecs_cluster.this.id
 }
 
-output "ecs_listener_arn" {
-  value = aws_lb_listener.ecs.arn
-}
-
 output "ecs_lb_dns_name" {
   value = aws_lb.ecs.dns_name
+}
+
+output "ecs_listener_arn" {
+  value = aws_lb_listener.ecs.arn
 }

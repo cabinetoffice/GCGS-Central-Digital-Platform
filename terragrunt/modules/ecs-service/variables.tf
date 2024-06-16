@@ -30,28 +30,19 @@ variable "desired_count" {
   type        = number
 }
 
-variable "ecs_listener_arn" {
-  description = "ECS Application Loadbalancer Listener ARN"
+variable "ecs_alb_sg_id" {
+  description = "Application load-balancer security group ID"
   type        = string
 }
 
-variable "ecs_alb_sg_id" {
-  description = "Application load-balancer security group ID"
+variable "ecs_listener_arn" {
+  description = "ECS Application Loadbalancer Listener ARN"
   type        = string
 }
 
 variable "ecs_service_base_sg_id" {
   description = "Security group ID of Flask Healthcheck ECS Service"
   type        = string
-}
-
-variable "product" {
-  description = "product's common attributes"
-  type        = object({
-    name               = string
-    resource_name      = string
-    public_hosted_zone = string
-  })
 }
 
 variable "family" {
@@ -89,6 +80,15 @@ variable "name" {
 variable "private_subnet_ids" {
   description = "List of private subnet IDs"
   type        = list(string)
+}
+
+variable "product" {
+  description = "product's common attributes"
+  type = object({
+    name               = string
+    resource_name      = string
+    public_hosted_zone = string
+  })
 }
 
 variable "role_ecs_task_arn" {
