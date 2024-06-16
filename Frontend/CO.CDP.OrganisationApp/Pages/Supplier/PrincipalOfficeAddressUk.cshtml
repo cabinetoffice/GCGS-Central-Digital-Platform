@@ -1,0 +1,126 @@
+@page "/organisation/{id}/supplier-information/principal-office-address-uk"
+@model CO.CDP.OrganisationApp.Pages.Supplier.PrincipalOfficeAddressUkModel
+
+@{
+    var addressLine1HasError = ((TagBuilder)Html.ValidationMessageFor(m => m.AddressLine1)).HasInnerHtml;
+    var addressLine2HasError = ((TagBuilder)Html.ValidationMessageFor(m => m.AddressLine2)).HasInnerHtml;
+    var cityOrTownHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.TownOrCity)).HasInnerHtml;
+    var postcodeHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Postcode)).HasInnerHtml;
+    var regionHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Region)).HasInnerHtml;
+  
+}
+
+<a href="/organisation/@RouteData.Values["id"]/supplier-information/basic-information" class="govuk-back-link">Back</a>
+
+<main class="govuk-main-wrapper">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <partial name="_ErrorSummary" model="@ModelState" />
+
+            <form method="post">
+                <div class="govuk-form-group">
+                    <fieldset class="govuk-fieldset">
+                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                            <h1 class="govuk-fieldset__heading">
+                                Enter your registered or principal office UK address
+                            </h1>
+                        </legend>
+    
+                        <div class="govuk-form-group @(addressLine1HasError ? "govuk-form-group--error" : "")">
+                            <label class="govuk-label" for="@nameof(Model.AddressLine1)">
+                                @Html.DisplayNameFor(m => m.AddressLine1)
+                            </label>
+                            @if (addressLine1HasError)
+                            {
+                                <p id="address-one-error" class="govuk-error-message">
+                                    <span class="govuk-visually-hidden">Error:</span>
+                                    @Html.ValidationMessageFor(m => m.AddressLine1)
+                                </p>
+                            }
+                            <input class="govuk-input @(addressLine1HasError ? "govuk-input--error" : "")" id="@nameof(Model.AddressLine1)"
+                                   value="@Model.AddressLine1" name="@nameof(Model.AddressLine1)" type="text"
+                                   spellcheck="false" @(addressLine1HasError ? "aria-describedby=address-one-error" : "")>
+                        </div>
+
+                        <div class="govuk-form-group @(addressLine2HasError ? "govuk-form-group--error" : "")">
+                            <label class="govuk-label" for="@nameof(Model.AddressLine2)">
+                                @Html.DisplayNameFor(m => m.AddressLine2)
+                            </label>
+                            @if (addressLine2HasError)
+                            {
+                                <p id="address-two-error" class="govuk-error-message">
+                                    <span class="govuk-visually-hidden">Error:</span>
+                                    @Html.ValidationMessageFor(m => m.AddressLine2)
+                                </p>
+                            }
+                            <input class="govuk-input @(addressLine2HasError ? "govuk-input--error" : "")" id="@nameof(Model.AddressLine2)"
+                                   value="@Model.AddressLine2" name="@nameof(Model.AddressLine2)" type="text"
+                                   spellcheck="false" @(addressLine2HasError ? "aria-describedby=address-two-error" : "")>
+                        </div>
+
+                        <div class="govuk-form-group @(cityOrTownHasError ? "govuk-form-group--error" : "")">
+                            <label class="govuk-label" for="@nameof(Model.TownOrCity)">
+                                @Html.DisplayNameFor(m => m.TownOrCity)
+                            </label>
+                            @if (cityOrTownHasError)
+                            {
+                                <p id="city-error" class="govuk-error-message">
+                                    <span class="govuk-visually-hidden">Error:</span>
+                                    @Html.ValidationMessageFor(m => m.TownOrCity)
+                                </p>
+                            }
+                            <input class="govuk-input govuk-!-width-two-thirds @(cityOrTownHasError ? "govuk-input--error" : "")" id="@nameof(Model.TownOrCity)"
+                                   value="@Model.TownOrCity" name="@nameof(Model.TownOrCity)" type="text"
+                                   spellcheck="false" @(cityOrTownHasError ? "aria-describedby=city-error" : "")>
+                        </div>
+
+                        <div class="govuk-form-group @(regionHasError ? "govuk-form-group--error" : "")">
+                            <label class="govuk-label" for="@nameof(Model.Region)">
+                                @Html.DisplayNameFor(m => m.Region)
+                            </label>
+                            @if (regionHasError)
+                            {
+                                <p id="city-error" class="govuk-error-message">
+                                    <span class="govuk-visually-hidden">Error:</span>
+                                    @Html.ValidationMessageFor(m => m.Region)
+                                </p>
+                            }
+                            <input class="govuk-input govuk-!-width-two-thirds @(regionHasError ? "govuk-input--error" : "")" id="@nameof(Model.Region)"
+                                   value="@Model.Region" name="@nameof(Model.Region)" type="text"
+                                   spellcheck="false" @(regionHasError ? "aria-describedby=city-error" : "")>
+                        </div>
+
+                        <div class="govuk-form-group @(postcodeHasError ? "govuk-form-group--error" : "")">
+                            <label class="govuk-label" for="@nameof(Model.Postcode)">
+                                @Html.DisplayNameFor(m => m.Postcode)
+                            </label>
+                            @if (postcodeHasError)
+                            {
+                                <p id="postcode-error" class="govuk-error-message">
+                                    <span class="govuk-visually-hidden">Error:</span>
+                                    @Html.ValidationMessageFor(m => m.Postcode)
+                                </p>
+                            }
+                            <input class="govuk-input govuk-input--width-10 @(postcodeHasError ? "govuk-input--error" : "")" id="@nameof(Model.Postcode)"
+                                   value="@Model.Postcode" name="@nameof(Model.Postcode)" type="text"
+                                   spellcheck="false" @(postcodeHasError ? "aria-describedby=postcode-error" : "")>
+                        </div>
+
+                        <div class="govuk-form-group govuk-visually-hidden">
+                            <label class="govuk-label" for="@nameof(Model.Country)">
+                                @Html.DisplayNameFor(m => m.Country)
+                            </label>
+                            <input type="hidden" id="@nameof(Model.Country)" name="@nameof(Model.Country)" value="@Model.Country" />
+                        </div>
+                    </fieldset>
+                </div>
+
+                <button type="submit"
+                        class="govuk-button"
+                        data-module="govuk-button">
+                    Continue
+                </button>
+            </form>
+        </div>
+    </div>
+</main>
