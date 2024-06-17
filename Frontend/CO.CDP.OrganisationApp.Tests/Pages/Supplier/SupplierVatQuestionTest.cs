@@ -7,17 +7,17 @@ using Moq;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages.Supplier;
 
-public class SupplierVatModelTests
+public class SupplierVatModelQuestionTest
 {
     private readonly Mock<ISession> _sessionMock;
     private readonly Mock<IOrganisationClient> _organisationClientMock;
-    private readonly SupplierVatModel _model;
+    private readonly SupplierVatQuestionModel _model;
 
-    public SupplierVatModelTests()
+    public SupplierVatModelQuestionTest()
     {
         _sessionMock = new Mock<ISession>();
         _organisationClientMock = new Mock<IOrganisationClient>();
-        _model = new SupplierVatModel(_sessionMock.Object, _organisationClientMock.Object);
+        _model = new SupplierVatQuestionModel(_sessionMock.Object, _organisationClientMock.Object);
     }
 
     [Fact]

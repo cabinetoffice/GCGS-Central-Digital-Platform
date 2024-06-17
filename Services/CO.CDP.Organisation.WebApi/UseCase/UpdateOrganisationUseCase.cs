@@ -1,9 +1,10 @@
+using AutoMapper;
 using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.OrganisationInformation.Persistence;
 
 namespace CO.CDP.Organisation.WebApi.UseCase;
 
-public class UpdateOrganisationUseCase(IOrganisationRepository organisationRepository)
+public class UpdateOrganisationUseCase(IOrganisationRepository organisationRepository, IMapper mapper)
             : IUseCase<(Guid organisationId, UpdateOrganisation updateOrganisation), bool>
 {
     public async Task<bool> Execute((Guid organisationId, UpdateOrganisation updateOrganisation) command)
@@ -22,11 +23,11 @@ public class UpdateOrganisationUseCase(IOrganisationRepository organisationRepos
                 }
                 foreach (var identifier in updateObject.AdditionalIdentifiers)
                 {
-                    var existing = organisation.Identifiers.FirstOrDefault(i => i.Scheme == identifier.Scheme);
-                    if (existing != null)
+                    var existingIdentifier = organisation.Identifiers.FirstOrDefault(i => i.Scheme == identifier.Scheme);
+                    if (existingIdentifier != null)
                     {
-                        existing.IdentifierId = identifier.Id;
-                        existing.LegalName = identifier.LegalName;
+                        existingIdentifier.IdentifierId = identifier.Id;
+                        existingIdentifier.LegalName = identifier.LegalName;
                     }
                     else
                     {
@@ -40,6 +41,28 @@ public class UpdateOrganisationUseCase(IOrganisationRepository organisationRepos
                     }
                 }
                 break;
+
+            case OrganisationUpdateType.ContactPoint:
+                if (updateObject.ContactPoint == null)
+                {
+                    throw new InvalidUpdateOrganisationCommand("Missing contact point.");
+                }
+
+                var existingContact = organisation.ContactPoints.FirstOrDefault();
+                if (existingContact != null)
+                {
+                    existingContact.Name = updateObject.ContactPoint.Name;
+                    existingContact.Email = updateObject.ContactPoint.Email;
+                    existingContact.Telephone = updateObject.ContactPoint.Telephone;
+                    existingContact.Url = updateObject.ContactPoint.Url;
+                }
+                else
+                {
+                    organisation.ContactPoints.Add(
+                        mapper.Map<OrganisationInformation.Persistence.Organisation.ContactPoint>(updateObject.ContactPoint));
+                }
+                break;
+
             case OrganisationUpdateType.Address:
                 if (updateObject.Addresses == null)
                 {

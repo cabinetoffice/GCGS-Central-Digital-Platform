@@ -1,4 +1,5 @@
 using CO.CDP.Organisation.WebApiClient;
+using CO.CDP.OrganisationApp.WebApiClients;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -85,13 +86,7 @@ public class PrincipalOfficeAddressNonUkModel(
         {
             var organisation = await organisationClient.GetOrganisationAsync(Id);
 
-            await organisationClient.UpdateOrganisationAsync(Id,
-              new UpdatedOrganisation
-                (
-                    type: OrganisationUpdateType.Address,
-
-                    organisation: new OrganisationInfo(null,
-                        addresses: [
+            ICollection<OrganisationAddress> addresses = [
                             new OrganisationAddress (
                             streetAddress : AddressLine1,
                             streetAddress2 : AddressLine2,
@@ -99,9 +94,9 @@ public class PrincipalOfficeAddressNonUkModel(
                             locality: TownOrCity,
                             countryName: Country,
                             type: AddressType.Registered,
-                            region: Region
-                            )]
-                )));
+                            region: Region)];
+
+            await organisationClient.UpdateOrganisationAddresses(Id, addresses);
         }
         catch (ApiException ex) when (ex.StatusCode == 404)
         {

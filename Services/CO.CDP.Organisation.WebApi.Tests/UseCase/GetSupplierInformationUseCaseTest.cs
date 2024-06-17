@@ -66,10 +66,7 @@ public class GetSupplierInformationUseCaseTest(AutoMapperFixture mapperFixture)
                 Guid = Guid.NewGuid(),
                 Name = "Tenant 101"
             },
-            ContactPoint = new Persistence.Organisation.OrganisationContactPoint
-            {
-                Email = "contact@test.org"
-            }
+            ContactPoints = [new Persistence.Organisation.ContactPoint { Email = "contact@test.org" }]
         };
 
         if (withSupplierInfo == true)

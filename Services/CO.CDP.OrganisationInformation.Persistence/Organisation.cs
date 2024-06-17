@@ -1,4 +1,3 @@
-using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
 namespace CO.CDP.OrganisationInformation.Persistence;
@@ -13,7 +12,7 @@ public class Organisation : IEntityDate
     public required string Name { get; set; }
     public ICollection<Identifier> Identifiers { get; set; } = [];
     public ICollection<OrganisationAddress> Addresses { get; set; } = [];
-    public required OrganisationContactPoint ContactPoint { get; set; }
+    public ICollection<ContactPoint> ContactPoints { get; set; } = [];
     public List<PartyRole> Roles { get; set; } = [];
     public List<Person> Persons => OrganisationPersons.Select(p => p.Person).ToList();
     public List<OrganisationPerson> OrganisationPersons { get; init; } = [];
@@ -26,10 +25,10 @@ public class Organisation : IEntityDate
     public record Identifier : IEntityDate
     {
         public int Id { get; set; }
-        public required string IdentifierId;
-        public required string Scheme;
-        public required string LegalName;
-        public string? Uri;
+        public required string IdentifierId { get; set; }
+        public required string Scheme { get; set; }
+        public required string LegalName { get; set; }
+        public string? Uri { get; set; }
         public required bool Primary { get; set; }
         public DateTimeOffset CreatedOn { get; set; }
         public DateTimeOffset UpdatedOn { get; set; }
@@ -43,13 +42,16 @@ public class Organisation : IEntityDate
         public required Address Address { get; set; }
     }
 
-    [ComplexType]
-    public record OrganisationContactPoint
+    [Owned]
+    public record ContactPoint : IEntityDate
     {
-        public string? Name;
-        public required string Email;
-        public string? Telephone;
-        public string? Url;
+        public int Id { get; set; }
+        public string? Name { get; set; }
+        public string? Email { get; set; }
+        public string? Telephone { get; set; }
+        public string? Url { get; set; }
+        public DateTimeOffset CreatedOn { get; set; }
+        public DateTimeOffset UpdatedOn { get; set; }
     }
 
     [Owned]
@@ -144,5 +146,7 @@ public class Organisation : IEntityDate
         SupplierInfo.CompletedTradeAssurance =
             SupplierInfo.TradeAssurances.Count > 0 || SupplierInfo.CompletedTradeAssurance;
         SupplierInfo.CompletedLegalForm = SupplierInfo.LegalForm != null || SupplierInfo.CompletedLegalForm;
+        SupplierInfo.CompletedEmailAddress =
+            !string.IsNullOrWhiteSpace(ContactPoints.FirstOrDefault()?.Email) || SupplierInfo.CompletedEmailAddress;
     }
 }
