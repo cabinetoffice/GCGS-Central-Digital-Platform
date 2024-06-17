@@ -30,7 +30,7 @@ internal static class OrganisationClientExtensions
             => organisationClient.UpdateOrganisationAsync(organisationId,
                     new UpdatedOrganisation(
                         type: OrganisationUpdateType.AdditionalIdentifiers,
-                        organisation: new OrganisationInfo(additionalIdentifiers: additionalIdentifiers, contactPoint: null)));
+                        organisation: new OrganisationInfo(additionalIdentifiers: additionalIdentifiers, contactPoint: null, addresses: null)));
 
     internal static Task UpdateOrganisationContactPoint(this IOrganisationClient organisationClient,
         Guid organisationId,
@@ -38,7 +38,15 @@ internal static class OrganisationClientExtensions
             => organisationClient.UpdateOrganisationAsync(organisationId,
                     new UpdatedOrganisation(
                         type: OrganisationUpdateType.ContactPoint,
-                        organisation: new OrganisationInfo(additionalIdentifiers: null, contactPoint: contactPoint)));
+                        organisation: new OrganisationInfo(additionalIdentifiers: null, contactPoint: contactPoint, addresses: null)));
+
+    internal static Task UpdateOrganisationAddresses(this IOrganisationClient organisationClient,
+        Guid organisationId,
+        ICollection<OrganisationAddress> addresses)
+            => organisationClient.UpdateOrganisationAsync(organisationId,
+                    new UpdatedOrganisation(
+                        type: OrganisationUpdateType.Address,
+                        organisation: new OrganisationInfo(additionalIdentifiers: null, contactPoint: null, addresses: addresses)));
 
     internal static Task UpdateSupplierCompletedEmailAddress(this IOrganisationClient organisationClient, Guid organisationId)
         => organisationClient.UpdateSupplierInformationAsync(

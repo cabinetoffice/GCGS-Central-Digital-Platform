@@ -63,6 +63,42 @@ public class UpdateOrganisationUseCase(IOrganisationRepository organisationRepos
                 }
                 break;
 
+            case OrganisationUpdateType.Address:
+                if (updateObject.Addresses == null)
+                {
+                    throw new InvalidUpdateOrganisationCommand("Missing organisation address.");
+                }
+                foreach (var address in updateObject.Addresses)
+                {
+                    var existing = organisation.Addresses.FirstOrDefault(i => i.Type == address.Type);
+                    if (existing != null)
+                    {
+                        existing.Address.StreetAddress = address.StreetAddress;
+                        existing.Address.StreetAddress2 = address.StreetAddress2;
+                        existing.Address.PostalCode = address.PostalCode;
+                        existing.Address.Locality = address.Locality;
+                        existing.Address.Region = address.Region;
+                        existing.Address.CountryName = address.CountryName;
+                    }
+                    else
+                    {
+                        organisation.Addresses.Add(new OrganisationInformation.Persistence.Organisation.OrganisationAddress
+                        {
+                            Type = address.Type,
+                            Address = new Address
+                            {
+                                StreetAddress = address.StreetAddress,
+                                StreetAddress2 = address.StreetAddress2,
+                                PostalCode = address.PostalCode,
+                                Locality = address.Locality,
+                                Region = address.Region,
+                                CountryName = address.CountryName
+                            },
+                        });
+                    }
+                }
+
+                break;
             default:
                 throw new InvalidUpdateOrganisationCommand("Unknown organisation update type.");
         }

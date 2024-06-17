@@ -1,6 +1,6 @@
+using CO.CDP.OrganisationInformation;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
-using CO.CDP.OrganisationInformation;
 
 namespace CO.CDP.Organisation.WebApi.Model;
 
@@ -55,13 +55,15 @@ public record UpdateOrganisation
 public enum OrganisationUpdateType
 {
     AdditionalIdentifiers,
-    ContactPoint
+    ContactPoint,
+    Address
 }
 
 public record OrganisationInfo
 {
     public List<OrganisationIdentifier>? AdditionalIdentifiers { get; init; }
     public OrganisationContactPoint? ContactPoint { get; init; }
+    public List<OrganisationAddress>? Addresses { get; init; }
 }
 
 public record OrganisationIdentifier

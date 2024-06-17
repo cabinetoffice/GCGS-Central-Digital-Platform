@@ -5,7 +5,6 @@ using CO.CDP.Tenant.WebApi.Tests.AutoMapper;
 using CO.CDP.Tenant.WebApi.UseCase;
 using FluentAssertions;
 using Moq;
-using Address = CO.CDP.OrganisationInformation.Persistence.Address;
 using TenantLookup = CO.CDP.OrganisationInformation.Persistence.TenantLookup;
 
 namespace CO.CDP.Tenant.WebApi.Tests.UseCase;

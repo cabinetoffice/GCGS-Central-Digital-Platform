@@ -6,36 +6,54 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moq;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages.Supplier;
-
-public class SupplierVatModelQuestionTest
+public class PrincipalOfficeAddressUkModelTests
 {
     private readonly Mock<ISession> _sessionMock;
     private readonly Mock<IOrganisationClient> _organisationClientMock;
-    private readonly SupplierVatQuestionModel _model;
+    private readonly PrincipalOfficeAddressUkModel _model;
 
-    public SupplierVatModelQuestionTest()
+    public PrincipalOfficeAddressUkModelTests()
     {
-        _sessionMock = new Mock<ISession>();
-        _organisationClientMock = new Mock<IOrganisationClient>();
-        _model = new SupplierVatQuestionModel(_sessionMock.Object, _organisationClientMock.Object);
+        _sessionMock = SupplierDetailsFactory.CreateSessionMock();
+        _organisationClientMock = SupplierDetailsFactory.CreateOrganisationClientMock();
+        _model = new PrincipalOfficeAddressUkModel(_sessionMock.Object, _organisationClientMock.Object);
+    }
+
+    private void SetupModelWithUkAddress()
+    {
+        _model.AddressLine1 = "1 London Street";
+        _model.AddressLine2 = "";
+        _model.TownOrCity = "London";
+        _model.Postcode = "L1";
+        _model.Country = "United Kingdom";
+    }
+
+    private void SetupMockForValidGet(Guid id)
+    {
+        var supplierInformation = SupplierDetailsFactory.CreateSupplierInformationClientModel();
+        var organisation = SupplierDetailsFactory.GivenOrganisationClientModel(id);
+        organisation.Addresses.Add(new Address(countryName: "United Kingdom", locality: "London", postalCode: "L1", region: "South", streetAddress: "1 London Street", streetAddress2: "", type: AddressType.Registered));
+
+        _organisationClientMock.Setup(client => client.GetOrganisationSupplierInformationAsync(id))
+            .ReturnsAsync(supplierInformation);
+
+        _organisationClientMock.Setup(client => client.GetOrganisationAsync(id))
+            .ReturnsAsync(organisation);
     }
 
     [Fact]
-    public async Task OnGet_ValidId_ReturnsPageResult()
+    public async Task OnGet_ValidIdWithUkAddress_ReturnsPageResult()
     {
         var id = Guid.NewGuid();
-
-        _organisationClientMock.Setup(client => client.GetOrganisationSupplierInformationAsync(id))
-            .ReturnsAsync(SupplierDetailsFactory.CreateSupplierInformationClientModel());
-
-        _organisationClientMock.Setup(client => client.GetOrganisationAsync(id))
-            .ReturnsAsync(SupplierDetailsFactory.GivenOrganisationClientModel(id));
+        SetupMockForValidGet(id);
 
         var result = await _model.OnGet(id);
 
         result.Should().BeOfType<PageResult>();
-        _model.HasVatNumber.Should().Be(true);
-        _model.VatNumber.Should().Be("FakeVatId");
+        _model.AddressLine1.Should().Be("1 London Street");
+        _model.TownOrCity.Should().Be("London");
+        _model.Postcode.Should().Be("L1");
+        _model.Country.Should().Be("United Kingdom");
     }
 
     [Fact]
@@ -56,14 +74,13 @@ public class SupplierVatModelQuestionTest
     {
         var id = Guid.NewGuid();
         _model.Id = id;
-        _model.HasVatNumber = true;
-        _model.VatNumber = "VAT12345";
+        SetupModelWithUkAddress();
 
         _organisationClientMock.Setup(client => client.GetOrganisationAsync(id))
             .ReturnsAsync(SupplierDetailsFactory.GivenOrganisationClientModel(id));
 
-        _organisationClientMock.Setup(client => client.UpdateSupplierInformationAsync(id,
-            It.IsAny<UpdateSupplierInformation>())).Returns(Task.CompletedTask);
+        _organisationClientMock.Setup(client => client.UpdateOrganisationAsync(id, It.IsAny<UpdatedOrganisation>()))
+            .Returns(Task.CompletedTask);
 
         var result = await _model.OnPost();
 
@@ -74,7 +91,7 @@ public class SupplierVatModelQuestionTest
     [Fact]
     public async Task OnPost_InvalidModelState_ReturnsPageResult()
     {
-        _model.ModelState.AddModelError("HasVatNumber", "Please select an option");
+        _model.ModelState.AddModelError("AddressLine1", "Enter your address line 1");
 
         var result = await _model.OnPost();
 
@@ -86,14 +103,14 @@ public class SupplierVatModelQuestionTest
     {
         var id = Guid.NewGuid();
         _model.Id = id;
-        _model.HasVatNumber = false;
+        SetupModelWithUkAddress();
 
         _organisationClientMock.Setup(client => client.GetOrganisationAsync(id))
             .ThrowsAsync(new ApiException("Unexpected error", 404, "", default, null));
 
         var result = await _model.OnPost();
 
-        result.Should().BeOfType<RedirectResult>().Which.Url.Should().Be("/page-not-found");
+        result.Should().BeOfType<RedirectResult>()
+            .Which.Url.Should().Be("/page-not-found");
     }
-
 }

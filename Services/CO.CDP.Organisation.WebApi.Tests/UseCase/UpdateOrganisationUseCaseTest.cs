@@ -97,6 +97,23 @@ public class UpdateOrganisationUseCaseTest
             .WithMessage("Missing additional identifiers.");
     }
 
+    [Fact]
+    public async Task Execute_ShouldThrowInvalidUpdateOrganisationCommand_WhenAddressIsNull()
+    {
+        var updateOrganisation = new UpdateOrganisation
+        {
+            Type = OrganisationUpdateType.Address,
+            Organisation = new()
+        };
+        _organisationRepositoryMock.Setup(repo => repo.Find(_organisationId)).ReturnsAsync(Organisation);
+
+        Func<Task> act = async () => await _useCase.Execute((_organisationId, updateOrganisation));
+
+        await act.Should()
+            .ThrowAsync<InvalidUpdateOrganisationCommand>()
+            .WithMessage("Missing organisation address.");
+    }
+
     private Persistence.Organisation Organisation =>
         new Persistence.Organisation
         {
