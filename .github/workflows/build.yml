@@ -68,6 +68,9 @@ jobs:
       - uses: actions/checkout@v4
       - name: Build
         run: cd docs && make build
+      - name: Publish
+        if: github.ref == 'refs/heads/main' && github.repository_owner == 'cabinetoffice'
+        run: cd docs && make publish
       - name: Upload Documentation
         uses: actions/upload-artifact@v4
         with:
