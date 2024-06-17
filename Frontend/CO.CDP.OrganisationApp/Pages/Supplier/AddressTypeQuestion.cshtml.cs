@@ -1,4 +1,5 @@
 using CO.CDP.Organisation.WebApiClient;
+using CO.CDP.OrganisationApp.Constants;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 
@@ -12,24 +13,30 @@ public class AddressTypeQuestionModel(
 
     [BindProperty]
     [Required(ErrorMessage = "Please select an option")]
-    public bool? HasUkPrincipalAddress { get; set; }
+    public bool? HasUkAddress { get; set; }
 
-    [BindProperty]
+    [BindProperty(SupportsGet = true)]
     public Guid Id { get; set; }
 
-    public async Task<IActionResult> OnGet(Guid id)
+    [BindProperty(SupportsGet = true)]
+    public Constants.AddressType AddressType { get; set; }
+
+    public async Task<IActionResult> OnGet()
     {
         try
         {
-            var getOrganisationTask = organisationClient.GetOrganisationAsync(id);
-            var getSupplierInfoTask = organisationClient.GetOrganisationSupplierInformationAsync(id);
-
+            var getOrganisationTask = organisationClient.GetOrganisationAsync(Id);
+            var getSupplierInfoTask = organisationClient.GetOrganisationSupplierInformationAsync(Id);
             await Task.WhenAll(getOrganisationTask, getSupplierInfoTask);
+            var organisation = getOrganisationTask.Result;
+            var supplierInfo = getSupplierInfoTask.Result;
 
-            if (getSupplierInfoTask.Result.CompletedRegAddress)
+            if ((supplierInfo.CompletedRegAddress && AddressType == Constants.AddressType.Registered)
+                || (supplierInfo.CompletedPostalAddress && AddressType == Constants.AddressType.Postal))
             {
-                var hasRegisteredAddress = getOrganisationTask.Result.Addresses.FirstOrDefault(i => i.Type == AddressType.Registered);
-                HasUkPrincipalAddress = hasRegisteredAddress != null;
+                var address = organisation.Addresses.FirstOrDefault(a => a.Type == AddressType.AsApiClientAddressType());
+
+                HasUkAddress = address != null && address.CountryName == Constants.Country.UnitedKingdom;
             }
         }
         catch (ApiException ex) when (ex.StatusCode == 404)
@@ -48,20 +55,6 @@ public class AddressTypeQuestionModel(
             return Page();
         }
 
-        try
-        {
-            if (HasUkPrincipalAddress == true)
-            {
-                return RedirectToPage("PrincipalOfficeAddressUk", new { Id });
-            }
-            else
-            {
-                return RedirectToPage("PrincipalOfficeAddressNonUk", new { Id });
-            }
-        }
-        catch (ApiException ex) when (ex.StatusCode == 404)
-        {
-            return RedirectToPage("/page-not-found");
-        }
+        return RedirectToPage(HasUkAddress == true ? "AddressUk" : "AddressNonUk", new { Id, AddressType = AddressType.ToString().ToLower() });
     }
 }

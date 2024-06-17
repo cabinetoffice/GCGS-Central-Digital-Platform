@@ -1,15 +1,14 @@
-@page "/organisation/{id}/supplier-information/principal-office-address-non-uk"
-@model CO.CDP.OrganisationApp.Pages.Supplier.PrincipalOfficeAddressNonUkModel
+@page "/organisation/{id}/supplier-information/{addressType}-office-address-uk"
+@model CO.CDP.OrganisationApp.Pages.Supplier.AddressUkModel
+
 @{
     var addressLine1HasError = ((TagBuilder)Html.ValidationMessageFor(m => m.AddressLine1)).HasInnerHtml;
     var addressLine2HasError = ((TagBuilder)Html.ValidationMessageFor(m => m.AddressLine2)).HasInnerHtml;
     var cityOrTownHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.TownOrCity)).HasInnerHtml;
-    var regionHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Region)).HasInnerHtml;
     var postcodeHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Postcode)).HasInnerHtml;
-    var countryHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Country)).HasInnerHtml;
-
 }
-<a href="/organisation/@RouteData.Values["id"]/supplier-information/basic-information" class="govuk-back-link">Back</a>
+
+<a href="/organisation/@Model.Id/supplier-information/@(Model.AddressType.ToString().ToLower())-address-type-question" class="govuk-back-link">Back</a>
 
 <main class="govuk-main-wrapper">
     <div class="govuk-grid-row">
@@ -17,16 +16,17 @@
             <partial name="_ErrorSummary" model="@ModelState" />
 
             <form method="post">
-                @if (Request.Query.ContainsKey("frm-summary"))
-                {
-                    <input type="hidden" name="RedirectToSummary" value="true" />
-                }
                 <div class="govuk-form-group">
                     <fieldset class="govuk-fieldset">
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                            <h1 class="govuk-fieldset__heading">
-                                Enter your registered or principal office non-UK address
-                            </h1>
+                            @if (Model.AddressType == Constants.AddressType.Registered)
+                            {
+                                <h1 class="govuk-fieldset__heading">Enter your registered or principal office UK address</h1>
+                            }
+                            else if (Model.AddressType == Constants.AddressType.Postal)
+                            {
+                                <h1 class="govuk-fieldset__heading">Enter your organisation's postal address</h1>
+                            }
                         </legend>
 
                         <div class="govuk-form-group @(addressLine1HasError ? "govuk-form-group--error" : "")">
@@ -77,22 +77,6 @@
                                    spellcheck="false" @(cityOrTownHasError ? "aria-describedby=city-error" : "")>
                         </div>
 
-                        <div class="govuk-form-group @(regionHasError ? "govuk-form-group--error" : "")">
-                            <label class="govuk-label" for="@nameof(Model.Region)">
-                                @Html.DisplayNameFor(m => m.Region)
-                            </label>
-                            @if (regionHasError)
-                            {
-                                <p id="region-error" class="govuk-error-message">
-                                    <span class="govuk-visually-hidden">Error:</span>
-                                    @Html.ValidationMessageFor(m => m.Region)
-                                </p>
-                            }
-                            <input class="govuk-input govuk-input--width-10 @(regionHasError ? "govuk-input--error" : "")" id="@nameof(Model.Region)"
-                                   value="@Model.Region" name="@nameof(Model.Region)" type="text"
-                                   spellcheck="false" @(regionHasError ? "aria-describedby=region-error" : "")>
-                        </div>
-
                         <div class="govuk-form-group @(postcodeHasError ? "govuk-form-group--error" : "")">
                             <label class="govuk-label" for="@nameof(Model.Postcode)">
                                 @Html.DisplayNameFor(m => m.Postcode)
@@ -109,32 +93,16 @@
                                    spellcheck="false" @(postcodeHasError ? "aria-describedby=postcode-error" : "")>
                         </div>
 
-                        <div class="govuk-form-group @(countryHasError ? "govuk-form-group--error" : "")">
+                        <div class="govuk-form-group govuk-visually-hidden">
                             <label class="govuk-label" for="@nameof(Model.Country)">
                                 @Html.DisplayNameFor(m => m.Country)
                             </label>
-                            @if (countryHasError)
-                            {
-                                <p id="country-error" class="govuk-error-message">
-                                    <span class="govuk-visually-hidden">Error:</span>
-                                    @Html.ValidationMessageFor(m => m.Country)
-                                </p>
-                            }
-                            <select asp-for="Country" class="govuk-select @(countryHasError ? "govuk-select--error" : "")">
-                                <option value="">Please select</option>
-                                @foreach (var cnt in Model.Countries)
-                                {
-                                    <option value="@cnt">@cnt</option>
-                                }
-                            </select>
+                            <input type="hidden" id="@nameof(Model.Country)" name="@nameof(Model.Country)" value="@Model.Country" />
                         </div>
                     </fieldset>
                 </div>
-                <a href="/registration/organisation-details-summary">
-                    <button type="submit" class="govuk-button" data-module="govuk-button">
-                        Continue
-                    </button>
-                </a>
+
+                <button type="submit" class="govuk-button" data-module="govuk-button">Save and continue</button>
             </form>
         </div>
     </div>
