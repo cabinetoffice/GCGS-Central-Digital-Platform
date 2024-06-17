@@ -28,15 +28,12 @@ public class SupplierVatQuestionModel(
     {
         try
         {
-            var getOrganisationTask = organisationClient.GetOrganisationAsync(id);
-            var getSupplierInfoTask = organisationClient.GetOrganisationSupplierInformationAsync(id);
+            var composed = await organisationClient.GetComposedOrganisation(id);
 
-            await Task.WhenAll(getOrganisationTask, getSupplierInfoTask);
-
-            if (getSupplierInfoTask.Result.CompletedVat)
+            if (composed.SupplierInfo.CompletedVat)
             {
                 HasVatNumber = false;
-                var vatIdentifier = getOrganisationTask.Result.AdditionalIdentifiers.FirstOrDefault(i => i.Scheme == "VAT");
+                var vatIdentifier = composed.Organisation.AdditionalIdentifiers.FirstOrDefault(i => i.Scheme == "VAT");
                 if (vatIdentifier != null)
                 {
                     HasVatNumber = !string.IsNullOrWhiteSpace(vatIdentifier.Id);

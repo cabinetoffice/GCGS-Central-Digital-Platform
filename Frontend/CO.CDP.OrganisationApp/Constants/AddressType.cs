@@ -12,11 +12,11 @@ public static class AddressTypeExtensions
 {
     public static WebApiClient.AddressType AsApiClientAddressType(this AddressType addressType)
     {
-        switch (addressType)
+        return addressType switch
         {
-            case AddressType.Registered: return WebApiClient.AddressType.Registered;
-            case AddressType.Postal: return WebApiClient.AddressType.Postal;
-            default: return WebApiClient.AddressType.Registered;
-        }
+            AddressType.Registered => WebApiClient.AddressType.Registered,
+            AddressType.Postal => WebApiClient.AddressType.Postal,
+            _ => WebApiClient.AddressType.Registered,
+        };
     }
 }

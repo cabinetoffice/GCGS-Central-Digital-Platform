@@ -35,14 +35,14 @@ public class OrganisationRegisteredAddressModel(ISession session) : Registration
     [BindProperty]
     [DisplayName("Country")]
     [Required(ErrorMessage = "Enter your country")]
-    public string Country { get; set; } = "United Kingdom";
+    public string Country { get; set; } = Constants.Country.UnitedKingdom;
 
     [BindProperty]
     public bool? RedirectToSummary { get; set; }
 
     public void OnGet()
     {
-        if (RegistrationDetails.OrganisationCountry == "United Kingdom")
+        if (RegistrationDetails.OrganisationCountry == Constants.Country.UnitedKingdom)
         {
             AddressLine1 = RegistrationDetails.OrganisationAddressLine1;
             AddressLine2 = RegistrationDetails.OrganisationAddressLine2;

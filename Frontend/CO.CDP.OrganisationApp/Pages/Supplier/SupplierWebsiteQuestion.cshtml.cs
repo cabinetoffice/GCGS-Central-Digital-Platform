@@ -29,19 +29,14 @@ public class SupplierWebsiteQuestionModel(
     {
         try
         {
-            var getOrganisationTask = organisationClient.GetOrganisationAsync(id);
-            var getSupplierInfoTask = organisationClient.GetOrganisationSupplierInformationAsync(id);
-
-            await Task.WhenAll(getOrganisationTask, getSupplierInfoTask);
-            var organisation = getOrganisationTask.Result;
-
-            if (getSupplierInfoTask.Result.CompletedWebsiteAddress)
+            var composed = await organisationClient.GetComposedOrganisation(id);
+            if (composed.SupplierInfo.CompletedWebsiteAddress)
             {
                 HasWebsiteAddress = false;
-                if (organisation.ContactPoint.Url != null)
+                if (composed.Organisation.ContactPoint.Url != null)
                 {
                     HasWebsiteAddress = true;
-                    WebsiteAddress = organisation.ContactPoint.Url.ToString();
+                    WebsiteAddress = composed.Organisation.ContactPoint.Url.ToString();
                 }
             }
         }

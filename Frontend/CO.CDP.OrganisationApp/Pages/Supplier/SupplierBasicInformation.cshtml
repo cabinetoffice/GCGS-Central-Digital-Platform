@@ -60,7 +60,7 @@
                             }
                         </dd>
                         <dd class="govuk-summary-list__actions">
-                            <a class="govuk-link" href="address-type-question">
+                            <a class="govuk-link" href="@(Constants.AddressType.Registered.ToString().ToLower())-address-type-question">
                                 @GetActionString(details.CompletedRegAddress)<span class="govuk-visually-hidden"> Change</span>
                             </a>
                         </dd>
@@ -78,7 +78,7 @@
                         }
                     </dd>
                     <dd class="govuk-summary-list__actions">
-                        <a class="govuk-link" href="#">
+                        <a class="govuk-link" href="@(Constants.AddressType.Postal.ToString().ToLower())-address-type-question">
                             @GetActionString(details.CompletedPostalAddress)<span class="govuk-visually-hidden"> Change</span>
                         </a>
                     </dd>
