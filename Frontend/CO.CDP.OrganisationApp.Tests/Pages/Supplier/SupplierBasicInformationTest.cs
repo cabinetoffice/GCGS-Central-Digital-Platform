@@ -65,7 +65,7 @@ public class SupplierBasicInformationTest
         new(
             additionalIdentifiers: [new Identifier(id: "FakeVatId", legalName: "FakeOrg", scheme: "VAT", uri: null)],
             addresses: [],
-            contactPoint: null,
+            contactPoint: new ContactPoint(email: null, faxNumber: null, name: null, telephone: null, url: new Uri("https://xyz.com")),
             id: id,
             identifier: null,
             name: "Test Org",

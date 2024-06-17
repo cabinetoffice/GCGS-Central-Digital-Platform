@@ -1,4 +1,5 @@
 using CO.CDP.Organisation.WebApiClient;
+using CO.CDP.OrganisationApp.WebApiClients;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 
@@ -48,12 +49,7 @@ public class SupplierIndividualOrOrgModel(
 
         try
         {
-            await organisationClient.UpdateSupplierInformationAsync(Id,
-                new UpdateSupplierInformation
-                (
-                    type: SupplierInformationUpdateType.SupplierType,
-                    supplierInformation: new SupplierInfo(SupplierType)
-                ));
+            await organisationClient.UpdateSupplierType(Id, SupplierType!.Value);
         }
         catch (ApiException ex) when (ex.StatusCode == 404)
         {

@@ -56,10 +56,7 @@ public class GetOrganisationsUseCaseTest(AutoMapperFixture mapperFixture) : ICla
                     CountryName = "Testland"
                 }
             }},
-            ContactPoint = new OrganisationInformation.Persistence.Organisation.OrganisationContactPoint
-            {
-                Email = "contact@test.org"
-            },
+            ContactPoints = [new OrganisationInformation.Persistence.Organisation.ContactPoint { Email = "contact@test.org" }],
             Roles = [PartyRole.Buyer]
         },
         new OrganisationInformation.Persistence.Organisation
@@ -92,10 +89,7 @@ public class GetOrganisationsUseCaseTest(AutoMapperFixture mapperFixture) : ICla
                     CountryName = "Testland"
                 }
             }},
-            ContactPoint = new OrganisationInformation.Persistence.Organisation.OrganisationContactPoint
-            {
-                Email = "contact@test.org"
-            },
+            ContactPoints = [],
             Roles = [PartyRole.Buyer]
         }};
 

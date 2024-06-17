@@ -8,19 +8,56 @@ internal static class OrganisationClientExtensions
 {
     internal static Task UpdateBuyerOrganisationType(this IOrganisationClient organisationClient,
         Guid organisationId,
-        string buyerOrganisationType
-    ) => organisationClient.UpdateBuyerInformationAsync(organisationId, new UpdateBuyerInformation(
-        type: BuyerInformationUpdateType.BuyerOrganisationType,
-        buyerInformation: new BuyerInformation(
-            buyerType: buyerOrganisationType,
-            devolvedRegulations: [])));
+        string buyerOrganisationType)
+            => organisationClient.UpdateBuyerInformationAsync(organisationId, new UpdateBuyerInformation(
+                    type: BuyerInformationUpdateType.BuyerOrganisationType,
+                    buyerInformation: new BuyerInformation(
+                        buyerType: buyerOrganisationType,
+                        devolvedRegulations: [])));
 
     internal static Task UpdateBuyerDevolvedRegulations(this IOrganisationClient organisationClient,
         Guid organisationId,
-        List<DevolvedRegulation> devolvedRegulations
-    ) => organisationClient.UpdateBuyerInformationAsync(organisationId, new UpdateBuyerInformation(
-        type: BuyerInformationUpdateType.DevolvedRegulation,
-        buyerInformation: new BuyerInformation(
-            buyerType: null,
-            devolvedRegulations: devolvedRegulations.AsApiClientDevolvedRegulationList())));
+        List<DevolvedRegulation> devolvedRegulations)
+            => organisationClient.UpdateBuyerInformationAsync(organisationId, new UpdateBuyerInformation(
+                type: BuyerInformationUpdateType.DevolvedRegulation,
+                buyerInformation: new BuyerInformation(
+                    buyerType: null,
+                    devolvedRegulations: devolvedRegulations.AsApiClientDevolvedRegulationList())));
+
+    internal static Task UpdateOrganisationAdditionalIdentifiers(this IOrganisationClient organisationClient,
+        Guid organisationId,
+        ICollection<OrganisationIdentifier> additionalIdentifiers)
+            => organisationClient.UpdateOrganisationAsync(organisationId,
+                    new UpdatedOrganisation(
+                        type: OrganisationUpdateType.AdditionalIdentifiers,
+                        organisation: new OrganisationInfo(additionalIdentifiers: additionalIdentifiers, contactPoint: null)));
+
+    internal static Task UpdateOrganisationContactPoint(this IOrganisationClient organisationClient,
+        Guid organisationId,
+        OrganisationContactPoint contactPoint)
+            => organisationClient.UpdateOrganisationAsync(organisationId,
+                    new UpdatedOrganisation(
+                        type: OrganisationUpdateType.ContactPoint,
+                        organisation: new OrganisationInfo(additionalIdentifiers: null, contactPoint: contactPoint)));
+
+    internal static Task UpdateSupplierCompletedEmailAddress(this IOrganisationClient organisationClient, Guid organisationId)
+        => organisationClient.UpdateSupplierInformationAsync(
+            organisationId,
+            new UpdateSupplierInformation(
+                type: SupplierInformationUpdateType.CompletedEmailAddress,
+                supplierInformation: new SupplierInfo(supplierType: null)));
+
+    internal static Task UpdateSupplierType(this IOrganisationClient organisationClient, Guid organisationId, SupplierType supplierType)
+        => organisationClient.UpdateSupplierInformationAsync(
+            organisationId,
+            new UpdateSupplierInformation(
+                type: SupplierInformationUpdateType.SupplierType,
+                supplierInformation: new SupplierInfo(supplierType: supplierType)));
+
+    internal static Task UpdateSupplierCompletedWebsiteAddress(this IOrganisationClient organisationClient, Guid organisationId)
+        => organisationClient.UpdateSupplierInformationAsync(
+            organisationId,
+            new UpdateSupplierInformation(
+                type: SupplierInformationUpdateType.CompletedWebsiteAddress,
+                supplierInformation: new SupplierInfo(supplierType: null)));
 }

@@ -7,17 +7,17 @@ using Moq;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages.Supplier;
 
-public class SupplierVatModelTests
+public class SupplierWebsiteModelQuestionTest
 {
     private readonly Mock<ISession> _sessionMock;
     private readonly Mock<IOrganisationClient> _organisationClientMock;
-    private readonly SupplierVatModel _model;
+    private readonly SupplierWebsiteQuestionModel _model;
 
-    public SupplierVatModelTests()
+    public SupplierWebsiteModelQuestionTest()
     {
         _sessionMock = new Mock<ISession>();
         _organisationClientMock = new Mock<IOrganisationClient>();
-        _model = new SupplierVatModel(_sessionMock.Object, _organisationClientMock.Object);
+        _model = new SupplierWebsiteQuestionModel(_sessionMock.Object, _organisationClientMock.Object);
     }
 
     [Fact]
@@ -34,8 +34,8 @@ public class SupplierVatModelTests
         var result = await _model.OnGet(id);
 
         result.Should().BeOfType<PageResult>();
-        _model.HasVatNumber.Should().Be(true);
-        _model.VatNumber.Should().Be("FakeId");
+        _model.HasWebsiteAddress.Should().Be(true);
+        _model.WebsiteAddress.Should().Be("https://xyz.com/");
     }
 
     [Fact]
@@ -56,8 +56,8 @@ public class SupplierVatModelTests
     {
         var id = Guid.NewGuid();
         _model.Id = id;
-        _model.HasVatNumber = true;
-        _model.VatNumber = "VAT12345";
+        _model.HasWebsiteAddress = true;
+        _model.WebsiteAddress = "http://xyz.com";
 
         _organisationClientMock.Setup(client => client.GetOrganisationAsync(id))
             .ReturnsAsync(OrganisationClientModel(id));
@@ -74,7 +74,7 @@ public class SupplierVatModelTests
     [Fact]
     public async Task OnPost_InvalidModelState_ReturnsPageResult()
     {
-        _model.ModelState.AddModelError("HasVatNumber", "Please select an option");
+        _model.ModelState.AddModelError("HasWebsiteAddress", "Please select an option");
 
         var result = await _model.OnPost();
 
@@ -86,7 +86,7 @@ public class SupplierVatModelTests
     {
         var id = Guid.NewGuid();
         _model.Id = id;
-        _model.HasVatNumber = false;
+        _model.HasWebsiteAddress = false;
 
         _organisationClientMock.Setup(client => client.GetOrganisationAsync(id))
             .ThrowsAsync(new ApiException("Unexpected error", 404, "", default, null));
@@ -102,8 +102,8 @@ public class SupplierVatModelTests
             operationTypes: null,
             completedRegAddress: true,
             completedPostalAddress: false,
-            completedVat: true,
-            completedWebsiteAddress: false,
+            completedVat: false,
+            completedWebsiteAddress: true,
             completedEmailAddress: false,
             completedQualification: false,
             completedTradeAssurance: false,
@@ -114,7 +114,7 @@ public class SupplierVatModelTests
         new(
             additionalIdentifiers: [new Identifier(id: "FakeId", legalName: "FakeOrg", scheme: "VAT", uri: null)],
             addresses: null,
-            contactPoint: null,
+            contactPoint: new ContactPoint(email: null, faxNumber: null, name: null, telephone: null, url: new Uri("https://xyz.com")),
             id: id,
             identifier: null,
             name: "Test Org",

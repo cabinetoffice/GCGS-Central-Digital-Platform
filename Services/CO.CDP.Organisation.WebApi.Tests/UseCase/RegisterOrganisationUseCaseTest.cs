@@ -127,13 +127,6 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
         _repository.Verify(r => r.Save(It.Is<Persistence.Organisation>(o =>
             o.Guid == _generatedGuid &&
             o.Name == "TheOrganisation" &&
-            o.ContactPoint == new Persistence.Organisation.OrganisationContactPoint
-            {
-                Name = "Contact Name",
-                Email = "contact@example.org",
-                Telephone = "123-456-7890",
-                Url = "https://example.org/contact"
-            } &&
             o.Roles.SequenceEqual(new List<PartyRole> { PartyRole.Supplier }) &&
             o.OrganisationPersons.First().Scopes.Count == 1 &&
             o.OrganisationPersons.First().Scopes.First() == "ADMIN"
@@ -148,6 +141,16 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
                 Scheme = "ISO9001",
                 IdentifierId = "1",
                 LegalName = "OfficialOrganisationName"
+            });
+
+
+        persistanceOrganisation.As<Persistence.Organisation>().ContactPoints.First()
+            .Should().BeEquivalentTo(new Persistence.Organisation.ContactPoint
+            {
+                Name = "Contact Name",
+                Email = "contact@example.org",
+                Telephone = "123-456-7890",
+                Url = "https://example.org/contact"
             });
 
         persistanceOrganisation.As<Persistence.Organisation>().Identifiers.Last()

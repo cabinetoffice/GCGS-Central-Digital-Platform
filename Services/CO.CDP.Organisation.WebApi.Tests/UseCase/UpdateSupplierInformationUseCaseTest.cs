@@ -114,7 +114,7 @@ public class UpdateSupplierInformationUseCaseTests
             Guid = _organisationId,
             Name = "Test",
             Tenant = It.IsAny<Tenant>(),
-            ContactPoint = new Persistence.Organisation.OrganisationContactPoint { Email = "test@test.com" },
+            ContactPoints = [new Persistence.Organisation.ContactPoint { Email = "test@test.com" }],
             SupplierInfo = new Persistence.Organisation.SupplierInformation()
         };
 }

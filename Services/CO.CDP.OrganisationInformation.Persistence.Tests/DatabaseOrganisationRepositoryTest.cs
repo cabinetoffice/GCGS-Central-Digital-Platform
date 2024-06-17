@@ -126,13 +126,13 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql) : 
                     CountryName = "Defaultland"
                 }
             }},
-            ContactPoint = new OrganisationContactPoint
+            ContactPoints = [new Organisation.ContactPoint
             {
                 Name = "Default Contact",
                 Email = "contact@default.org",
                 Telephone = "123-456-7890",
                 Url = "http://contact.default.org"
-            },
+            }],
             BuyerInfo = new Organisation.BuyerInformation
             {
                 BuyerType = "Buyer Type 1",
