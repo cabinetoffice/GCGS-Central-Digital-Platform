@@ -1,5 +1,6 @@
 using CO.CDP.Mvc.Validation;
 using CO.CDP.Organisation.WebApiClient;
+using CO.CDP.OrganisationApp.WebApiClients;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 
@@ -62,19 +63,13 @@ public class SupplierVatQuestionModel(
         {
             var organisation = await organisationClient.GetOrganisationAsync(Id);
 
-            await organisationClient.UpdateOrganisationAsync(Id,
-                    new UpdatedOrganisation
-                    (
-                        type: OrganisationUpdateType.AdditionalIdentifiers,
-                        organisation: new OrganisationInfo(
-                            additionalIdentifiers: [
+            ICollection<OrganisationIdentifier> identifiers = [
                                 new OrganisationIdentifier(
-                                id: HasVatNumber == true ? VatNumber : "",
-                                legalName: organisation.Name,
-                                scheme: "VAT")
-                            ],
-                            contactPoint: null)
-                    ));
+                                    id: HasVatNumber == true ? VatNumber : "",
+                                    legalName: organisation.Name,
+                                    scheme: "VAT")];
+
+            await organisationClient.UpdateOrganisationAdditionalIdentifiers(Id, identifiers);
         }
         catch (ApiException ex) when (ex.StatusCode == 404)
         {

@@ -147,6 +147,6 @@ public class Organisation : IEntityDate
             SupplierInfo.TradeAssurances.Count > 0 || SupplierInfo.CompletedTradeAssurance;
         SupplierInfo.CompletedLegalForm = SupplierInfo.LegalForm != null || SupplierInfo.CompletedLegalForm;
         SupplierInfo.CompletedEmailAddress =
-            !string.IsNullOrWhiteSpace(ContactPoints.FirstOrDefault()?.Email) || SupplierInfo.CompletedTradeAssurance;
+            !string.IsNullOrWhiteSpace(ContactPoints.FirstOrDefault()?.Email) || SupplierInfo.CompletedEmailAddress;
     }
 }

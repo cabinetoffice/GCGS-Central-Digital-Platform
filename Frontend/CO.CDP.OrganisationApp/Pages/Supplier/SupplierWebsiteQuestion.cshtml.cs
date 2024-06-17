@@ -72,9 +72,9 @@ public class SupplierWebsiteQuestionModel(
                     telephone: organisation.ContactPoint.Telephone,
                     url: HasWebsiteAddress == true ? WebsiteAddress : null);
 
-            tasks.Add(organisationClient.UpdateOrganisation(Id, OrganisationUpdateType.ContactPoint, null, cp));
+            tasks.Add(organisationClient.UpdateOrganisationContactPoint(Id, cp));
 
-            tasks.Add(organisationClient.UpdateSupplierInformation(Id, SupplierInformationUpdateType.CompletedWebsiteAddress));
+            tasks.Add(organisationClient.UpdateSupplierCompletedWebsiteAddress(Id));
 
             await Task.WhenAll(tasks);
         }

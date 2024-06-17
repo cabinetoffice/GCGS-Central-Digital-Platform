@@ -1,8 +1,6 @@
-using CO.CDP.Mvc.Validation;
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.WebApiClients;
 using Microsoft.AspNetCore.Mvc;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace CO.CDP.OrganisationApp.Pages.Supplier;
@@ -67,9 +65,9 @@ public class SupplierEmailAddressModel(
                     telephone: organisation.ContactPoint.Telephone,
                     url: organisation.ContactPoint.Url?.ToString());
 
-            tasks.Add(organisationClient.UpdateOrganisation(Id, OrganisationUpdateType.ContactPoint,null, cp));
+            tasks.Add(organisationClient.UpdateOrganisationContactPoint(Id, cp));
 
-            tasks.Add(organisationClient.UpdateSupplierInformation(Id, SupplierInformationUpdateType.CompletedEmailAddress));
+            tasks.Add(organisationClient.UpdateSupplierCompletedEmailAddress(Id));
 
             await Task.WhenAll(tasks);
         }
