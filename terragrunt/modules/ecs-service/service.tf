@@ -11,7 +11,7 @@ resource "aws_ecs_task_definition" "this" {
 }
 
 resource "aws_ecs_service" "this" {
-  count = var.family == "app" ? 1 : 0
+  count = contains(["app", "telemetry"], var.family) ? 1 : 0
 
   name            = var.name
   cluster         = var.cluster_id

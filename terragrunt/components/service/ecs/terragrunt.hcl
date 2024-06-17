@@ -53,7 +53,6 @@ dependency core_security_groups {
     alb_sg_id                 = "mock"
     db_postgres_sg_id         = "mock"
     ecs_sg_id                 = "mock"
-    ecs_service_base_sg_id    = "mock"
     vpce_ecr_api_sg_id        = "mock"
     vpce_ecr_dkr_sg_id        = "mock"
     vpce_s3_sg_id             = "mock"
