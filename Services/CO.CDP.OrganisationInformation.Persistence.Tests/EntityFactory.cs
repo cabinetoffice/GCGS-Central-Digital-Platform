@@ -76,7 +76,7 @@ public static class EntityFactory
         string? name = null,
         List<Organisation.Identifier>? identifiers = null,
         List<OrganisationAddress>? addresses = null,
-        OrganisationContactPoint? contactPoint = null,
+        Organisation.ContactPoint? contactPoint = null,
         List<PartyRole>? roles = null,
         List<(Person, List<string>)>? personsWithScope = null,
         BuyerInformation? buyerInformation = null,
@@ -123,13 +123,13 @@ public static class EntityFactory
                     CountryName = "Defaultland"
                 }
             }],
-            ContactPoint = contactPoint ?? new OrganisationContactPoint
+            ContactPoints = contactPoint == null ? [new Organisation.ContactPoint
             {
                 Name = "Default Contact",
                 Email = "contact@default.org",
                 Telephone = "123-456-7890",
                 Url = "https://contact.default.org"
-            },
+            }] : [contactPoint],
             Roles = roles ?? [PartyRole.Buyer],
             BuyerInfo = buyerInformation,
             SupplierInfo = supplierInformation

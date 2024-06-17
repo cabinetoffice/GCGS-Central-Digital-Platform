@@ -60,7 +60,7 @@
                             }
                         </dd>
                         <dd class="govuk-summary-list__actions">
-                            <a class="govuk-link" href="#">
+                            <a class="govuk-link" href="address-type-question">
                                 @GetActionString(details.CompletedRegAddress)<span class="govuk-visually-hidden"> Change</span>
                             </a>
                         </dd>
@@ -114,9 +114,21 @@
                         Website address
                     </dt>
                     <dt class="govuk-summary-list__value">
+                        @if (details.CompletedWebsiteAddress)
+                        {
+                            if (!string.IsNullOrWhiteSpace(Model.WebsiteAddress))
+                            {
+                                @:Yes<br />
+                                @(Model.WebsiteAddress)
+                            }
+                            else
+                            {
+                                @:No
+                            }
+                        }
                     </dt>
                     <dd class="govuk-summary-list__actions">
-                        <a class="govuk-link" href="#">
+                        <a class="govuk-link" href="website-question">
                             @GetActionString(details.CompletedWebsiteAddress)<span class="govuk-visually-hidden"> Add</span>
                         </a>
                     </dd>
@@ -127,9 +139,16 @@
                         Email address
                     </dt>
                     <dt class="govuk-summary-list__value">
+                        @if (details.CompletedEmailAddress)
+                        {
+                            if (!string.IsNullOrWhiteSpace(Model.EmailAddress))
+                            {                                
+                                @(Model.EmailAddress)
+                            }
+                        }
                     </dt>
                     <dd class="govuk-summary-list__actions">
-                        <a class="govuk-link" href="#">
+                        <a class="govuk-link" href="email-address">
                             @GetActionString(details.CompletedEmailAddress)<span class="govuk-visually-hidden"> Change</span>
                         </a>
                     </dd>

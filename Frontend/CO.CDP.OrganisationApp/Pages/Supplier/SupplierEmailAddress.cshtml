@@ -1,0 +1,45 @@
+@page "/organisation/{id}/supplier-information/email-address"
+@model CO.CDP.OrganisationApp.Pages.Supplier.SupplierEmailAddressModel
+
+@{
+    var emailAddressHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.EmailAddress)).HasInnerHtml;
+}
+
+<a href="/organisation/@Model.Id/supplier-information/basic-information" class="govuk-back-link">Back</a>
+
+<main class="govuk-main-wrapper">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <partial name="_ErrorSummary" model="@Model.ModelState" />
+            <form class="form" method="post">
+                <div class="govuk-form-group">
+                    <fieldset class="govuk-fieldset">
+
+                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                            <h1 class="govuk-heading-l">Enter your email address</h1>
+                        </legend>
+                        <div id="organisation-email-hint" class="govuk-hint">
+                            It should be a shared inbox managed by your team, not your own email address. This will be displayed on notices.
+                        </div>
+
+                        <div class="govuk-form-group govuk-!-width-two-thirds @(emailAddressHasError ? "govuk-form-group--error" : "")">
+                            @if (emailAddressHasError)
+                            {
+                                <p id="email-address-error" class="govuk-error-message">
+                                    <span class="govuk-visually-hidden">Error:</span>
+                                    @Html.ValidationMessageFor(m => m.EmailAddress)
+                                </p>
+                            }
+                            <input class="govuk-input @(emailAddressHasError ? "govuk-input--error" : "")" id="@nameof(Model.EmailAddress)"
+                                   value="@Model.EmailAddress" type="text" name="@nameof(Model.EmailAddress)"
+                                   spellcheck="false" autocomplete="email" @(emailAddressHasError ? "aria-describedby=email-address-error" : "")>
+                        </div>
+
+                    </fieldset>
+                </div>
+
+                <button class="govuk-button govuk-!-margin-top-4" type="submit">Save and continue</button>
+            </form>
+        </div>
+    </div>
+</main>

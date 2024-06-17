@@ -65,13 +65,13 @@ public class LookupOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
                     Region = ""
                 }
             }},
-            ContactPoint = new OrganisationInformation.Persistence.Organisation.OrganisationContactPoint
+            ContactPoints = [new OrganisationInformation.Persistence.Organisation.ContactPoint
             {
                 Name = "Contact Name",
                 Email = "contact@test.org",
                 Telephone = "123-456-7890",
                 Url = "https://contact.test.org"
-            },
+            }],
             Roles = [PartyRole.Supplier]
         };
 

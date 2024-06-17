@@ -1,9 +1,10 @@
+using AutoMapper;
 using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.OrganisationInformation.Persistence;
 
 namespace CO.CDP.Organisation.WebApi.UseCase;
 
-public class UpdateOrganisationUseCase(IOrganisationRepository organisationRepository)
+public class UpdateOrganisationUseCase(IOrganisationRepository organisationRepository, IMapper mapper)
             : IUseCase<(Guid organisationId, UpdateOrganisation updateOrganisation), bool>
 {
     public async Task<bool> Execute((Guid organisationId, UpdateOrganisation updateOrganisation) command)
@@ -22,11 +23,11 @@ public class UpdateOrganisationUseCase(IOrganisationRepository organisationRepos
                 }
                 foreach (var identifier in updateObject.AdditionalIdentifiers)
                 {
-                    var existing = organisation.Identifiers.FirstOrDefault(i => i.Scheme == identifier.Scheme);
-                    if (existing != null)
+                    var existingIdentifier = organisation.Identifiers.FirstOrDefault(i => i.Scheme == identifier.Scheme);
+                    if (existingIdentifier != null)
                     {
-                        existing.IdentifierId = identifier.Id;
-                        existing.LegalName = identifier.LegalName;
+                        existingIdentifier.IdentifierId = identifier.Id;
+                        existingIdentifier.LegalName = identifier.LegalName;
                     }
                     else
                     {
@@ -39,6 +40,64 @@ public class UpdateOrganisationUseCase(IOrganisationRepository organisationRepos
                         });
                     }
                 }
+                break;
+
+            case OrganisationUpdateType.ContactPoint:
+                if (updateObject.ContactPoint == null)
+                {
+                    throw new InvalidUpdateOrganisationCommand("Missing contact point.");
+                }
+
+                var existingContact = organisation.ContactPoints.FirstOrDefault();
+                if (existingContact != null)
+                {
+                    existingContact.Name = updateObject.ContactPoint.Name;
+                    existingContact.Email = updateObject.ContactPoint.Email;
+                    existingContact.Telephone = updateObject.ContactPoint.Telephone;
+                    existingContact.Url = updateObject.ContactPoint.Url;
+                }
+                else
+                {
+                    organisation.ContactPoints.Add(
+                        mapper.Map<OrganisationInformation.Persistence.Organisation.ContactPoint>(updateObject.ContactPoint));
+                }
+                break;
+
+            case OrganisationUpdateType.Address:
+                if (updateObject.Addresses == null)
+                {
+                    throw new InvalidUpdateOrganisationCommand("Missing organisation address.");
+                }
+                foreach (var address in updateObject.Addresses)
+                {
+                    var existing = organisation.Addresses.FirstOrDefault(i => i.Type == address.Type);
+                    if (existing != null)
+                    {
+                        existing.Address.StreetAddress = address.StreetAddress;
+                        existing.Address.StreetAddress2 = address.StreetAddress2;
+                        existing.Address.PostalCode = address.PostalCode;
+                        existing.Address.Locality = address.Locality;
+                        existing.Address.Region = address.Region;
+                        existing.Address.CountryName = address.CountryName;
+                    }
+                    else
+                    {
+                        organisation.Addresses.Add(new OrganisationInformation.Persistence.Organisation.OrganisationAddress
+                        {
+                            Type = address.Type,
+                            Address = new Address
+                            {
+                                StreetAddress = address.StreetAddress,
+                                StreetAddress2 = address.StreetAddress2,
+                                PostalCode = address.PostalCode,
+                                Locality = address.Locality,
+                                Region = address.Region,
+                                CountryName = address.CountryName
+                            },
+                        });
+                    }
+                }
+
                 break;
             default:
                 throw new InvalidUpdateOrganisationCommand("Unknown organisation update type.");
