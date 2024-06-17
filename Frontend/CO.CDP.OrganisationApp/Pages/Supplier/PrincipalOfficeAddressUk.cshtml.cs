@@ -29,11 +29,6 @@ public class PrincipalOfficeAddressUkModel(
     public string? TownOrCity { get; set; }
 
     [BindProperty]
-    [DisplayName("Region")]
-    [Required(ErrorMessage = "Enter your Region")]
-    public string? Region { get; set; }
-
-    [BindProperty]
     [DisplayName("Postcode")]
     [Required(ErrorMessage = "Enter your postcode")]
     public string? Postcode { get; set; }
@@ -61,7 +56,6 @@ public class PrincipalOfficeAddressUkModel(
                 AddressLine1 = hasRegisteredUkAddress?.StreetAddress;
                 AddressLine2 = hasRegisteredUkAddress?.StreetAddress2;
                 TownOrCity = hasRegisteredUkAddress?.Locality;
-                Region = hasRegisteredUkAddress?.Region;
                 Postcode = hasRegisteredUkAddress?.PostalCode;
                 Country = hasRegisteredUkAddress?.CountryName;
             }
@@ -93,7 +87,7 @@ public class PrincipalOfficeAddressUkModel(
                             locality: TownOrCity,
                             countryName: Country,
                             type: AddressType.Registered,
-                            region: Region)];
+                            region: null)];
 
             await organisationClient.UpdateOrganisationAddresses(Id, addresses);
         }

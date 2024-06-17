@@ -24,7 +24,6 @@ public class PrincipalOfficeAddressUkModelTests
         _model.AddressLine1 = "1 London Street";
         _model.AddressLine2 = "";
         _model.TownOrCity = "London";
-        _model.Region = "South";
         _model.Postcode = "L1";
         _model.Country = "United Kingdom";
     }
@@ -53,7 +52,6 @@ public class PrincipalOfficeAddressUkModelTests
         result.Should().BeOfType<PageResult>();
         _model.AddressLine1.Should().Be("1 London Street");
         _model.TownOrCity.Should().Be("London");
-        _model.Region.Should().Be("South");
         _model.Postcode.Should().Be("L1");
         _model.Country.Should().Be("United Kingdom");
     }

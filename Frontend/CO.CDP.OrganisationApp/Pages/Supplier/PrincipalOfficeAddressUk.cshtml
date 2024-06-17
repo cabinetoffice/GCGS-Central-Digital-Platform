@@ -6,7 +6,6 @@
     var addressLine2HasError = ((TagBuilder)Html.ValidationMessageFor(m => m.AddressLine2)).HasInnerHtml;
     var cityOrTownHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.TownOrCity)).HasInnerHtml;
     var postcodeHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Postcode)).HasInnerHtml;
-    var regionHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Region)).HasInnerHtml;
   
 }
 
@@ -72,22 +71,6 @@
                             <input class="govuk-input govuk-!-width-two-thirds @(cityOrTownHasError ? "govuk-input--error" : "")" id="@nameof(Model.TownOrCity)"
                                    value="@Model.TownOrCity" name="@nameof(Model.TownOrCity)" type="text"
                                    spellcheck="false" @(cityOrTownHasError ? "aria-describedby=city-error" : "")>
-                        </div>
-
-                        <div class="govuk-form-group @(regionHasError ? "govuk-form-group--error" : "")">
-                            <label class="govuk-label" for="@nameof(Model.Region)">
-                                @Html.DisplayNameFor(m => m.Region)
-                            </label>
-                            @if (regionHasError)
-                            {
-                                <p id="city-error" class="govuk-error-message">
-                                    <span class="govuk-visually-hidden">Error:</span>
-                                    @Html.ValidationMessageFor(m => m.Region)
-                                </p>
-                            }
-                            <input class="govuk-input govuk-!-width-two-thirds @(regionHasError ? "govuk-input--error" : "")" id="@nameof(Model.Region)"
-                                   value="@Model.Region" name="@nameof(Model.Region)" type="text"
-                                   spellcheck="false" @(regionHasError ? "aria-describedby=city-error" : "")>
                         </div>
 
                         <div class="govuk-form-group @(postcodeHasError ? "govuk-form-group--error" : "")">
