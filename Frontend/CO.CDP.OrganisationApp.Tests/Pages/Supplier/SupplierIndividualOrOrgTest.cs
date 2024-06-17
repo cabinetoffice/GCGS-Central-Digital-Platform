@@ -1,5 +1,4 @@
 using CO.CDP.Organisation.WebApiClient;
-using CO.CDP.OrganisationApp.Pages.Supplier;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -21,20 +20,8 @@ public class SupplierIndividualOrOrgTest
     [Fact]
     public async Task OnGet_SetSupplierInformationAndReturnPage()
     {
-        var model = GivenSupplierIndividualOrOrgModel();
-        var supplierInformation = new SupplierInformation(
-            organisationName: "FakeOrg",
-            supplierType: SupplierType.Organisation,
-            operationTypes: null,
-            completedRegAddress: true,
-            completedPostalAddress: false,
-            completedVat: false,
-            completedWebsiteAddress: false,
-            completedEmailAddress: false,
-            completedQualification: false,
-            completedTradeAssurance: false,
-            completedOperationType: false,
-            completedLegalForm: false);
+        var model = SupplierDetailsFactory.GivenSupplierIndividualOrOrgModel(sessionMock, organisationClientMock);
+        var supplierInformation = SupplierDetailsFactory.CreateSupplierInformationClientModel();
 
         organisationClientMock.Setup(o => o.GetOrganisationSupplierInformationAsync(It.IsAny<Guid>()))
             .ReturnsAsync(supplierInformation);
@@ -48,7 +35,7 @@ public class SupplierIndividualOrOrgTest
     [Fact]
     public async Task OnGet_PageNotFound()
     {
-        var model = GivenSupplierIndividualOrOrgModel();
+        var model = SupplierDetailsFactory.GivenSupplierIndividualOrOrgModel(sessionMock, organisationClientMock);
 
         organisationClientMock.Setup(o => o.GetOrganisationSupplierInformationAsync(It.IsAny<Guid>()))
             .ThrowsAsync(new ApiException("Unexpected error", 404, "", default, null));
@@ -62,7 +49,7 @@ public class SupplierIndividualOrOrgTest
     [Fact]
     public async Task OnPost_InvalidModelState_ReturnsPage()
     {
-        var model = GivenSupplierIndividualOrOrgModel();
+        var model = SupplierDetailsFactory.GivenSupplierIndividualOrOrgModel(sessionMock, organisationClientMock);
 
         model.ModelState.AddModelError("error", "some error");
 
@@ -74,7 +61,7 @@ public class SupplierIndividualOrOrgTest
     [Fact]
     public async Task OnPost_ValidModelState_UpdatesSupplierInformationAndRedirects()
     {
-        var model = GivenSupplierIndividualOrOrgModel();
+        var model = SupplierDetailsFactory.GivenSupplierIndividualOrOrgModel(sessionMock, organisationClientMock);
         var id = Guid.NewGuid();
         model.Id = id;
         model.SupplierType = SupplierType.Organisation;
@@ -86,14 +73,14 @@ public class SupplierIndividualOrOrgTest
 
         result.Should().BeOfType<RedirectToPageResult>()
             .Which.PageName.Should().Be("SupplierBasicInformation");
-        
+
         (result as RedirectToPageResult)?.RouteValues?.GetValueOrDefault("Id").Should().Be(id);
     }
 
     [Fact]
     public async Task OnPost_ValidModelState_ThrowsApiException_ShouldRedirectToPageNotFound()
     {
-        var model = GivenSupplierIndividualOrOrgModel();
+        var model = SupplierDetailsFactory.GivenSupplierIndividualOrOrgModel(sessionMock, organisationClientMock);
         var id = Guid.NewGuid();
         model.Id = id;
         model.SupplierType = SupplierType.Organisation;
@@ -107,8 +94,4 @@ public class SupplierIndividualOrOrgTest
             .Which.Url.Should().Be("/page-not-found");
     }
 
-    private SupplierIndividualOrOrgModel GivenSupplierIndividualOrOrgModel()
-    {
-        return new SupplierIndividualOrOrgModel(sessionMock.Object, organisationClientMock.Object);
-    }
 }

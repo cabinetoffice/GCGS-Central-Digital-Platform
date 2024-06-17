@@ -30,6 +30,17 @@ public class OrganisationInformationContext(DbContextOptions<OrganisationInforma
                 a.Property(ai => ai.UpdatedOn).IsRequired().HasDefaultValueSql("CURRENT_TIMESTAMP");
             });
 
+            entity.OwnsMany(e => e.ContactPoints, a =>
+            {
+                a.HasKey(e => e.Id);
+                a.Property(ai => ai.Name);
+                a.Property(ai => ai.Email);
+                a.Property(ai => ai.Telephone);
+                a.Property(ai => ai.Url);
+                a.Property(ai => ai.CreatedOn).IsRequired().HasDefaultValueSql("CURRENT_TIMESTAMP");
+                a.Property(ai => ai.UpdatedOn).IsRequired().HasDefaultValueSql("CURRENT_TIMESTAMP");
+            });
+
             entity.OwnsOne(e => e.SupplierInfo, a =>
             {
                 a.Property(z => z.CreatedOn).IsRequired().HasDefaultValueSql("CURRENT_TIMESTAMP");
