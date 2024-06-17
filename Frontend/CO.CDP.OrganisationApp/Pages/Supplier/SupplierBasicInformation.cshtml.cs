@@ -1,4 +1,5 @@
 using CO.CDP.Organisation.WebApiClient;
+using CO.CDP.OrganisationApp.WebApiClients;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CO.CDP.OrganisationApp.Pages.Supplier;
@@ -32,23 +33,19 @@ public class SupplierBasicInformationModel(
     {
         try
         {
-            var getOrganisationTask = organisationClient.GetOrganisationAsync(id);
-            var getSupplierInfoTask = organisationClient.GetOrganisationSupplierInformationAsync(id);
+            var composed = await organisationClient.GetComposedOrganisation(id);
 
-            await Task.WhenAll(getOrganisationTask, getSupplierInfoTask);
+            SupplierInformation = composed.SupplierInfo;
+            WebsiteAddress = composed.Organisation.ContactPoint.Url?.ToString();
+            EmailAddress = composed.Organisation.ContactPoint.Email;
 
-            SupplierInformation = getSupplierInfoTask.Result;
-            var organisation = getOrganisationTask.Result;
-            WebsiteAddress = organisation.ContactPoint.Url?.ToString();
-            EmailAddress = organisation.ContactPoint.Email;
-
-            var vatIdentifier = organisation.AdditionalIdentifiers.FirstOrDefault(i => i.Scheme == "VAT");
+            var vatIdentifier = composed.Organisation.AdditionalIdentifiers.FirstOrDefault(i => i.Scheme == "VAT");
             if (vatIdentifier != null) VatNumber = vatIdentifier.Id;
 
-            var registeredAddrress = organisation.Addresses.FirstOrDefault(i => i.Type == AddressType.Registered);
+            var registeredAddrress = composed.Organisation.Addresses.FirstOrDefault(i => i.Type == AddressType.Registered);
             if (registeredAddrress != null) RegisteredAddress = registeredAddrress;
 
-            var postalAddrress = organisation.Addresses.FirstOrDefault(i => i.Type == AddressType.Postal);
+            var postalAddrress = composed.Organisation.Addresses.FirstOrDefault(i => i.Type == AddressType.Postal);
             if (postalAddrress != null) PostalAddress = postalAddrress;
         }
         catch (ApiException ex) when (ex.StatusCode == 404)

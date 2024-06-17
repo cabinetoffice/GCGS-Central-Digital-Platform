@@ -6,6 +6,20 @@ namespace CO.CDP.OrganisationApp.WebApiClients;
 
 internal static class OrganisationClientExtensions
 {
+    internal static async Task<ComposedOrganisation> GetComposedOrganisation(this IOrganisationClient organisationClient, Guid organisationId)
+    {
+        var getOrganisationTask = organisationClient.GetOrganisationAsync(organisationId);
+        var getSupplierInfoTask = organisationClient.GetOrganisationSupplierInformationAsync(organisationId);
+
+        await Task.WhenAll(getOrganisationTask, getSupplierInfoTask);
+
+        return new ComposedOrganisation
+        {
+            Organisation = getOrganisationTask.Result,
+            SupplierInfo = getSupplierInfoTask.Result
+        };
+    }
+
     internal static Task UpdateBuyerOrganisationType(this IOrganisationClient organisationClient,
         Guid organisationId,
         string buyerOrganisationType)
@@ -68,4 +82,11 @@ internal static class OrganisationClientExtensions
             new UpdateSupplierInformation(
                 type: SupplierInformationUpdateType.CompletedWebsiteAddress,
                 supplierInformation: new SupplierInfo(supplierType: null)));
+}
+
+public class ComposedOrganisation
+{
+    public required Organisation.WebApiClient.Organisation Organisation { get; init; }
+
+    public required SupplierInformation SupplierInfo { get; init; }
 }

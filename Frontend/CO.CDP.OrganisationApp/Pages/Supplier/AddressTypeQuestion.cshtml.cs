@@ -1,5 +1,6 @@
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Constants;
+using CO.CDP.OrganisationApp.WebApiClients;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 
@@ -25,18 +26,14 @@ public class AddressTypeQuestionModel(
     {
         try
         {
-            var getOrganisationTask = organisationClient.GetOrganisationAsync(Id);
-            var getSupplierInfoTask = organisationClient.GetOrganisationSupplierInformationAsync(Id);
-            await Task.WhenAll(getOrganisationTask, getSupplierInfoTask);
-            var organisation = getOrganisationTask.Result;
-            var supplierInfo = getSupplierInfoTask.Result;
+            var composed = await organisationClient.GetComposedOrganisation(Id);
 
-            if ((supplierInfo.CompletedRegAddress && AddressType == Constants.AddressType.Registered)
-                || (supplierInfo.CompletedPostalAddress && AddressType == Constants.AddressType.Postal))
+            if ((composed.SupplierInfo.CompletedRegAddress && AddressType == Constants.AddressType.Registered)
+                || (composed.SupplierInfo.CompletedPostalAddress && AddressType == Constants.AddressType.Postal))
             {
-                var address = organisation.Addresses.FirstOrDefault(a => a.Type == AddressType.AsApiClientAddressType());
+                var address = composed.Organisation.Addresses.FirstOrDefault(a => a.Type == AddressType.AsApiClientAddressType());
 
-                HasUkAddress = address != null && address.CountryName == Constants.Country.UnitedKingdom;
+                HasUkAddress = address != null && address.CountryName == Country.UnitedKingdom;
             }
         }
         catch (ApiException ex) when (ex.StatusCode == 404)

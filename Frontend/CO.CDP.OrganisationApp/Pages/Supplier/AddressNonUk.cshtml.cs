@@ -52,16 +52,12 @@ public class AddressNonUkModel(
     {
         try
         {
-            var getOrganisationTask = organisationClient.GetOrganisationAsync(Id);
-            var getSupplierInfoTask = organisationClient.GetOrganisationSupplierInformationAsync(Id);
-            await Task.WhenAll(getOrganisationTask, getSupplierInfoTask);
-            var organisation = getOrganisationTask.Result;
-            var supplierInfo = getSupplierInfoTask.Result;
+            var composed = await organisationClient.GetComposedOrganisation(Id);
 
-            if ((supplierInfo.CompletedRegAddress && AddressType == Constants.AddressType.Registered)
-                || (supplierInfo.CompletedPostalAddress && AddressType == Constants.AddressType.Postal))
+            if ((composed.SupplierInfo.CompletedRegAddress && AddressType == Constants.AddressType.Registered)
+                || (composed.SupplierInfo.CompletedPostalAddress && AddressType == Constants.AddressType.Postal))
             {
-                var address = organisation.Addresses.FirstOrDefault(a =>
+                var address = composed.Organisation.Addresses.FirstOrDefault(a =>
                     a.Type == AddressType.AsApiClientAddressType() && a.CountryName != Constants.Country.UnitedKingdom);
 
                 if (address != null)
