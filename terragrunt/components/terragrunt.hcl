@@ -137,6 +137,16 @@ locals {
         managed_by     = "terragrunt"
     }
 
+    tools_configs = {
+        grafana = {
+            cpu       = 256
+            memory    = 512
+            name      = "grafana"
+            port      = 3000
+            port_host = 3000
+        }
+    }
+
     terraform_operators = [
         "arn:aws:iam::525593800265:user/ali.bahman@goaco.com",
         "arn:aws:iam::525593800265:user/jakub.zalas@goaco.com"

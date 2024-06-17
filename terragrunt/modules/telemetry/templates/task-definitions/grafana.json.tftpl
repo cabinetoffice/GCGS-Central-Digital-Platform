@@ -1,0 +1,34 @@
+[
+  {
+    "name": "${name}",
+    "image": "${image}",
+    "cpu": ${cpu},
+    "memory": ${memory},
+    "portMappings": [
+      {
+        "containerPort": ${container_port},
+        "hostPort": ${host_port},
+        "protocol": "tcp"
+      }
+    ],
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-group": "${lg_name}",
+        "awslogs-region": "${lg_region}",
+        "awslogs-stream-prefix": "${lg_prefix}"
+      }
+    },
+    "environment": [
+        {"name": "GRAFANA_CLOUDWATCH_ROLE", "value": "${role_telemetry_arn}"},
+        {"name": "GRAFANA_CLOUDWATCH_ACCOUNT_ID", "value": "${account_id}"}
+    ],
+    "secrets": [
+        {"name": "GF_SECURITY_ADMIN_USER", "valueFrom": "${gf_admin_user}"},
+        {"name": "GF_SECURITY_ADMIN_PASSWORD", "valueFrom": "${gf_admin_password}"}
+    ],
+    "volumesFrom": [],
+    "mountPoints": [],
+    "essential": true
+  }
+]
