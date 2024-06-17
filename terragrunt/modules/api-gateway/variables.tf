@@ -1,11 +1,15 @@
-variable "role_api_gateway_cloudwatch_arn" {
-  description = "IAM role ID for API Gateway to use when interacting with Cloudwatch"
-  type        = string
-}
-
 variable "environment" {
   description = "The environment we are provisioning"
   type        = string
+}
+
+variable "product" {
+  description = "product's common attributes"
+  type = object({
+    name               = string
+    resource_name      = string
+    public_hosted_zone = string
+  })
 }
 
 variable "public_hosted_zone_fqdn" {
@@ -18,13 +22,9 @@ variable "public_hosted_zone_id" {
   type        = string
 }
 
-variable "product" {
-  description = "product's common attributes"
-  type = object({
-    name               = string
-    resource_name      = string
-    public_hosted_zone = string
-  })
+variable "role_api_gateway_cloudwatch_arn" {
+  description = "IAM role ID for API Gateway to use when interacting with Cloudwatch"
+  type        = string
 }
 
 variable "service_configs" {
