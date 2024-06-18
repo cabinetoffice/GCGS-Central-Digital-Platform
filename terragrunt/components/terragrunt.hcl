@@ -81,6 +81,13 @@ locals {
     }
 
     service_configs = {
+        authority = {
+            cpu           = 256
+            memory        = 512
+            name          = "authority"
+            port          = 8092
+            port_host     = 8092
+        }
         data_sharing = {
             cpu           = 256
             memory        = 512
