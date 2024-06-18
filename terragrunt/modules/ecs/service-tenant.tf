@@ -4,17 +4,18 @@ module "ecs_service_tenant" {
   container_definitions = templatefile(
     "${path.module}/templates/task-definitions/${var.service_configs.tenant.name}.json.tftpl",
     {
-      container_port       = var.service_configs.tenant.port
-      cpu                  = var.service_configs.tenant.cpu
-      conn_string_location = var.db_connection_secret_arn
-      environment          = local.service_environment
-      host_port            = var.service_configs.tenant.port
-      image                = "${local.ecr_urls[var.service_configs.tenant.name]}:latest"
-      lg_name              = aws_cloudwatch_log_group.tasks[var.service_configs.tenant.name].name
-      lg_prefix            = "app"
-      lg_region            = data.aws_region.current.name
-      memory               = var.service_configs.tenant.memory
-      name                 = var.service_configs.tenant.name
+      container_port          = var.service_configs.tenant.port
+      cpu                     = var.service_configs.tenant.cpu
+      conn_string_location    = var.db_connection_secret_arn
+      environment             = local.service_environment
+      host_port               = var.service_configs.tenant.port
+      image                   = "${local.ecr_urls[var.service_configs.tenant.name]}:latest"
+      lg_name                 = aws_cloudwatch_log_group.tasks[var.service_configs.tenant.name].name
+      lg_prefix               = "app"
+      lg_region               = data.aws_region.current.name
+      memory                  = var.service_configs.tenant.memory
+      name                    = var.service_configs.tenant.name
+      public_hosted_zone_fqdn = var.public_hosted_zone_fqdn
     }
   )
 
