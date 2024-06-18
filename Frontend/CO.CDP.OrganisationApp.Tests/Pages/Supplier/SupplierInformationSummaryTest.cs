@@ -49,7 +49,9 @@ public class SupplierInformationSummaryTest
             completedQualification: completedQualification,
             completedTradeAssurance: completedTradeAssurance,
             completedOperationType: completedOperationType,
-            completedLegalForm: completedLegalForm);
+            completedLegalForm: completedLegalForm,
+            tradeAssurances: null,
+            legalForm: null);
 
         _organisationClientMock.Setup(o => o.GetOrganisationSupplierInformationAsync(It.IsAny<Guid>()))
             .ReturnsAsync(supplierInformation);
