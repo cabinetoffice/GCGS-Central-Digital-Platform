@@ -216,6 +216,7 @@ public static class EntityFactory
         string name = "My Qualification"
     ) => new()
     {
+        Guid = Guid.NewGuid(),
         Name = name,
         AwardedByPersonOrBodyName = "Qualification Centre",
         DateAwarded = DateTimeOffset.Parse("2018-02-20T00:00:00Z")
@@ -224,6 +225,7 @@ public static class EntityFactory
     public static TradeAssurance GivenSupplierTradeAssurance()
         => new()
         {
+            Guid = Guid.NewGuid(),
             AwardedByPersonOrBodyName = "Assurance Body",
             ReferenceNumber = "QA-12333",
             DateAwarded = DateTimeOffset.Parse("2009-10-03T00:00:00Z")

@@ -48,14 +48,14 @@ builder.Services
             ValidateIssuerSigningKey = true
         };
     });
-//builder.Services.AddAuthorization();
-builder.Services
-    .AddAuthorizationBuilder()
-    .SetFallbackPolicy(
-        new AuthorizationPolicyBuilder()
-            .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
-            .RequireAuthenticatedUser()
-            .Build());
+builder.Services.AddAuthorization();
+//builder.Services
+//    .AddAuthorizationBuilder()
+//    .SetFallbackPolicy(
+//        new AuthorizationPolicyBuilder()
+//            .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
+//            .RequireAuthenticatedUser()
+//            .Build());
 
 var app = builder.Build();
 

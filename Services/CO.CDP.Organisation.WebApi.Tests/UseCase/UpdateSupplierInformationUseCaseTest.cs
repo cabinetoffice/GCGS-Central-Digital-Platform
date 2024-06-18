@@ -1,4 +1,5 @@
 using CO.CDP.Organisation.WebApi.Model;
+using CO.CDP.Organisation.WebApi.Tests.AutoMapper;
 using CO.CDP.Organisation.WebApi.UseCase;
 using CO.CDP.OrganisationInformation;
 using CO.CDP.OrganisationInformation.Persistence;
@@ -8,16 +9,16 @@ using Persistence = CO.CDP.OrganisationInformation.Persistence;
 
 namespace CO.CDP.Organisation.WebApi.Tests.UseCase;
 
-public class UpdateSupplierInformationUseCaseTests
+public class UpdateSupplierInformationUseCaseTests : IClassFixture<AutoMapperFixture>
 {
     private readonly Mock<IOrganisationRepository> _organisationRepositoryMock;
     private readonly UpdateSupplierInformationUseCase _useCase;
     private readonly Guid _organisationId = Guid.NewGuid();
 
-    public UpdateSupplierInformationUseCaseTests()
+    public UpdateSupplierInformationUseCaseTests(AutoMapperFixture mapperFixture)
     {
         _organisationRepositoryMock = new Mock<IOrganisationRepository>();
-        _useCase = new UpdateSupplierInformationUseCase(_organisationRepositoryMock.Object);
+        _useCase = new UpdateSupplierInformationUseCase(_organisationRepositoryMock.Object, mapperFixture.Mapper);
     }
 
     [Fact]
