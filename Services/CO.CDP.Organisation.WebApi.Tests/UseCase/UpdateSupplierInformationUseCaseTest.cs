@@ -109,6 +109,23 @@ public class UpdateSupplierInformationUseCaseTests : IClassFixture<AutoMapperFix
             .WithMessage("Missing supplier type.");
     }
 
+    [Fact]
+    public async Task Execute_ShouldThrowInvalidUpdateSupplierInformationCommand_WhenLegalFormIsNull()
+    {
+        var updateSupplierInformation = new UpdateSupplierInformation
+        {
+            Type = SupplierInformationUpdateType.LegalForm,
+            SupplierInformation = new SupplierInfo()
+        };
+        _organisationRepositoryMock.Setup(repo => repo.Find(_organisationId)).ReturnsAsync(Organisation);
+
+        Func<Task> act = async () => await _useCase.Execute((_organisationId, updateSupplierInformation));
+
+        await act.Should()
+            .ThrowAsync<InvalidUpdateSupplierInformationCommand>()
+            .WithMessage("Missing legal form.");
+    }
+
     private Persistence.Organisation Organisation =>
         new Persistence.Organisation
         {
