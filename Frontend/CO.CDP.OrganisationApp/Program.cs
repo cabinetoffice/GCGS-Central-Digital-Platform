@@ -6,6 +6,7 @@ using CO.CDP.Tenant.WebApiClient;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.IdentityModel.Tokens;
@@ -21,6 +22,15 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddRazorPages()
     .AddRazorRuntimeCompilation();
+builder.Services.AddHttpLogging(o =>
+{
+    o.LoggingFields = HttpLoggingFields.RequestPropertiesAndHeaders;
+    o.RequestHeaders.Add("X-Forwarded-For");
+    o.RequestHeaders.Add("X-Forwarded-Proto");
+    o.RequestHeaders.Add("X-Forwarded-Host");
+    o.RequestHeaders.Add("X-Forwarded-Prefix");
+    o.RequestHeaders.Add("X-Forwarded-Port");
+});
 builder.ConfigureForwardedHeaders();
 
 builder.Services.AddDistributedMemoryCache();
@@ -98,6 +108,7 @@ builder.Services.AddHealthChecks();
 
 var app = builder.Build();
 app.UseForwardedHeaders();
+app.UseHttpLogging();
 app.UseMiddleware<ExceptionMiddleware>();
 
 // Configure the HTTP request pipeline.
