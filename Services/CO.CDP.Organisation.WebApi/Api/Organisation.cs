@@ -299,6 +299,6 @@ public static class ApiExtensions
         options.OperationFilter<ProblemDetailsOperationFilter>();
         options.ConfigureBearerSecurity();
         options.ConfigureApiKeySecurity();
+        options.UseAllOfToExtendReferenceSchemas();
     }
-
 }

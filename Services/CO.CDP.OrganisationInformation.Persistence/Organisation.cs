@@ -86,23 +86,27 @@ public class Organisation : IEntityDate
     }
 
     [Owned]
+    [Index(nameof(Guid), IsUnique = true)]
     public record Qualification : IEntityDate
     {
         public int Id { get; set; }
-        public string? AwardedByPersonOrBodyName { get; set; }
-        public DateTimeOffset DateAwarded { get; set; }
-        public string? Name { get; set; }
+        public required Guid Guid { get; set; }
+        public required string AwardedByPersonOrBodyName { get; set; }
+        public required DateTimeOffset DateAwarded { get; set; }
+        public required string Name { get; set; }
         public DateTimeOffset CreatedOn { get; set; }
         public DateTimeOffset UpdatedOn { get; set; }
     }
 
     [Owned]
+    [Index(nameof(Guid), IsUnique = true)]
     public record TradeAssurance : IEntityDate
     {
         public int Id { get; set; }
-        public string? AwardedByPersonOrBodyName { get; set; }
-        public string? ReferenceNumber { get; set; }
-        public DateTimeOffset DateAwarded { get; set; }
+        public required Guid Guid { get; set; }
+        public required string AwardedByPersonOrBodyName { get; set; }
+        public required string ReferenceNumber { get; set; }
+        public required DateTimeOffset DateAwarded { get; set; }
         public DateTimeOffset CreatedOn { get; set; }
         public DateTimeOffset UpdatedOn { get; set; }
     }
@@ -113,7 +117,7 @@ public class Organisation : IEntityDate
         public required string RegisteredUnderAct2006 { get; set; }
         public required string RegisteredLegalForm { get; set; }
         public required string LawRegistered { get; set; }
-        public DateTimeOffset RegistrationDate { get; set; }
+        public required DateTimeOffset RegistrationDate { get; set; }
         public DateTimeOffset CreatedOn { get; set; }
         public DateTimeOffset UpdatedOn { get; set; }
     }

@@ -78,6 +78,19 @@ public class WebApiToPersistenceProfile : Profile
 
         CreateMap<Persistence.Organisation.SupplierInformation, SupplierInformation>()
             .ForMember(m => m.OrganisationName, o => o.Ignore());
+
+        CreateMap<TradeAssurance, Persistence.Organisation.TradeAssurance>()
+            .ForMember(m => m.Id, o => o.Ignore())
+            .ForMember(m => m.Guid, o => o.MapFrom(_ => Guid.NewGuid()))
+            .ForMember(m => m.CreatedOn, o => o.Ignore())
+            .ForMember(m => m.UpdatedOn, o => o.Ignore())
+            .ReverseMap()
+            .ForMember(m => m.Id, o => o.MapFrom(m => m.Guid));
+
+        CreateMap<LegalForm, Persistence.Organisation.LegalForm>()
+            .ForMember(m => m.CreatedOn, o => o.Ignore())
+            .ForMember(m => m.UpdatedOn, o => o.Ignore())
+            .ReverseMap();
     }
 
     public class IdentifiersResolver : IValueResolver<RegisterOrganisation, Persistence.Organisation,
