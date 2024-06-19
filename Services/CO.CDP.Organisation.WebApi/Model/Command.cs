@@ -133,12 +133,18 @@ public enum SupplierInformationUpdateType
 {
     SupplierType,
     CompletedWebsiteAddress,
-    CompletedEmailAddress
+    CompletedEmailAddress,
+    TradeAssurance,
+    LegalForm
 }
 
 public record SupplierInfo
 {
     public SupplierType? SupplierType { get; set; }
+
+    public TradeAssurance? TradeAssurance { get; set; }
+
+    public LegalForm? LegalForm { get; set; }
 }
 
 public static class MappingExtensions
