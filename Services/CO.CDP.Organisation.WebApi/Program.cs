@@ -1,3 +1,4 @@
+using CO.CDP.Configuration.ForwardedHeaders;
 using CO.CDP.Organisation.WebApi.Api;
 using CO.CDP.Organisation.WebApi.AutoMapper;
 using CO.CDP.Organisation.WebApi.Extensions;
@@ -11,6 +12,7 @@ using Microsoft.IdentityModel.Tokens;
 using Organisation = CO.CDP.Organisation.WebApi.Model.Organisation;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.ConfigureForwardedHeaders();
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -59,6 +61,7 @@ builder.Services
             .Build());
 
 var app = builder.Build();
+app.UseForwardedHeaders();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
