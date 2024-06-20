@@ -7,7 +7,9 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+using Microsoft.IdentityModel.Tokens;
 using static IdentityModel.OidcConstants;
+using ISession = CO.CDP.OrganisationApp.ISession;
 
 const string TenantHttpClientName = "TenantHttpClient";
 const string OrganisationHttpClientName = "OrganisationHttpClient";
@@ -15,12 +17,17 @@ const string PersonHttpClientName = "PersonHttpClient";
 const string OrganisationAuthorityHttpClientName = "OrganisationAuthorityHttpClient";
 
 var builder = WebApplication.CreateBuilder(args);
+var config = builder.Configuration.GetSection(OrganisationAppOptions.Section).Get<OrganisationAppOptions>() ?? new OrganisationAppOptions();
 
 builder.Services.AddRazorPages()
     .AddRazorRuntimeCompilation();
 builder.Services.Configure<ForwardedHeadersOptions>(options =>
 {
     options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+    if (!string.IsNullOrEmpty(config.KnownNetwork))
+    {
+        options.KnownNetworks.Add(IPNetwork.Parse(config.KnownNetwork));
+    }
 });
 
 builder.Services.AddDistributedMemoryCache();
@@ -32,7 +39,7 @@ builder.Services.AddSession(options =>
 });
 
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-builder.Services.AddSingleton<CO.CDP.OrganisationApp.ISession, Session>();
+builder.Services.AddSingleton<ISession, Session>();
 
 builder.Services.AddTransient<ApiBearerTokenHandler>();
 
