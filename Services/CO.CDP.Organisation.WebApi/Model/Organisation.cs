@@ -39,4 +39,5 @@ public record SupplierInformation
     public bool CompletedTradeAssurance { get; set; }
     public bool CompletedOperationType { get; set; }
     public bool CompletedLegalForm { get; set; }
+    public List<OrganisationQualification> Qualifications { get; set; } = [];
 }

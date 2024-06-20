@@ -34,7 +34,8 @@ public static class SupplierDetailsFactory
             completedQualification: false,
             completedTradeAssurance: false,
             completedOperationType: false,
-            completedLegalForm: false
+            completedLegalForm: false,
+            qualifications: null
         );
     }
 

@@ -30,7 +30,7 @@ public class SupplierQualificationQuestionModel : PageModel
 
         if (HasRelevantQualifications == true)
         {
-            return RedirectToPage("SupplierQualificationAwardedBody");
+            return RedirectToPage("SupplierQualificationAwardingBody");
         }
         else
         {
