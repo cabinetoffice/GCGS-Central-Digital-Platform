@@ -26,12 +26,20 @@ output "ecs_task_exec_name" {
   value = aws_iam_role.ecs_task_exec.name
 }
 
+output "ecs_task_name" {
+  value = aws_iam_role.ecs_task.name
+}
+
 output "service_deployer_step_function_arn" {
   value = aws_iam_role.service_deployer_step_function.arn
 }
 
 output "service_deployer_step_function_name" {
   value = aws_iam_role.service_deployer_step_function.name
+}
+
+output "telemetry" {
+  value = aws_iam_role.telemetry.arn
 }
 
 output "terraform" {

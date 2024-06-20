@@ -1,9 +1,11 @@
+using AutoMapper;
 using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.OrganisationInformation.Persistence;
+using PersistenceOrganisation = CO.CDP.OrganisationInformation.Persistence.Organisation;
 
 namespace CO.CDP.Organisation.WebApi.UseCase;
 
-public class UpdateSupplierInformationUseCase(IOrganisationRepository organisationRepository)
+public class UpdateSupplierInformationUseCase(IOrganisationRepository organisationRepository, IMapper mapper)
             : IUseCase<(Guid organisationId, UpdateSupplierInformation updateSupplierInformation), bool>
 {
     public async Task<bool> Execute((Guid organisationId, UpdateSupplierInformation updateSupplierInformation) command)
@@ -26,6 +28,63 @@ public class UpdateSupplierInformationUseCase(IOrganisationRepository organisati
                     throw new InvalidUpdateSupplierInformationCommand("Missing supplier type.");
                 }
                 organisation.SupplierInfo.SupplierType = updateObject.SupplierType;
+                break;
+
+            case SupplierInformationUpdateType.CompletedWebsiteAddress:
+                organisation.SupplierInfo.CompletedWebsiteAddress = true;
+                break;
+
+            case SupplierInformationUpdateType.CompletedEmailAddress:
+                organisation.SupplierInfo.CompletedEmailAddress = true;
+                break;
+
+            case SupplierInformationUpdateType.TradeAssurance:
+                if (updateObject.TradeAssurance != null)
+                {
+                    var existingTradeAssurance = !updateObject.TradeAssurance.Id.HasValue ? null :
+                        organisation.SupplierInfo.TradeAssurances.FirstOrDefault(ta => ta.Guid == updateObject.TradeAssurance.Id);
+                    if (existingTradeAssurance != null)
+                    {
+                        existingTradeAssurance.AwardedByPersonOrBodyName = updateObject.TradeAssurance.AwardedByPersonOrBodyName;
+                        existingTradeAssurance.ReferenceNumber = updateObject.TradeAssurance.ReferenceNumber;
+                        existingTradeAssurance.DateAwarded = updateObject.TradeAssurance.DateAwarded;
+                    }
+                    else
+                    {
+                        organisation.SupplierInfo.TradeAssurances.Add(
+                            mapper.Map<PersistenceOrganisation.TradeAssurance>(updateObject.TradeAssurance));
+                    }
+                }
+                organisation.SupplierInfo.CompletedTradeAssurance = true;
+                break;
+
+            case SupplierInformationUpdateType.LegalForm:
+                if (updateObject.LegalForm == null)
+                {
+                    throw new InvalidUpdateSupplierInformationCommand("Missing legal form.");
+                }
+                organisation.SupplierInfo.LegalForm = mapper.Map<PersistenceOrganisation.LegalForm>(updateObject.LegalForm);
+                organisation.SupplierInfo.CompletedLegalForm = true;
+                break;
+
+            case SupplierInformationUpdateType.Qualification:
+                if (updateObject.Qualification != null)
+                {
+                    var existingQualification = !updateObject.Qualification.Id.HasValue ? null :
+                        organisation.SupplierInfo.Qualifications.FirstOrDefault(ta => ta.Guid == updateObject.Qualification.Id);
+                    if (existingQualification != null)
+                    {
+                        existingQualification.AwardedByPersonOrBodyName = updateObject.Qualification.AwardedByPersonOrBodyName;
+                        existingQualification.Name = updateObject.Qualification.Name;
+                        existingQualification.DateAwarded = updateObject.Qualification.DateAwarded;
+                    }
+                    else
+                    {
+                        organisation.SupplierInfo.Qualifications.Add(
+                            mapper.Map<PersistenceOrganisation.Qualification>(updateObject.Qualification));
+                    }
+                }
+                organisation.SupplierInfo.CompletedQualification = true;
                 break;
             default:
                 throw new InvalidUpdateSupplierInformationCommand("Unknown supplier information update type.");

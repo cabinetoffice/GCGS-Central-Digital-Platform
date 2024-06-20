@@ -22,6 +22,10 @@
         <p class="govuk-body">@address.CountryName</p>
     }
 
+    string RenderQualificationsCount(List<CO.CDP.Organisation.WebApiClient.Qualification> qualifications)
+    {
+        return qualifications.Count() switch { 1 => "1 qualification", _ => $"{qualifications.Count()} qualifications" };
+    }
 }
 
 <a href="." class="govuk-back-link">Back</a>
@@ -61,7 +65,7 @@
                             }
                         </dd>
                         <dd class="govuk-summary-list__actions">
-                            <a class="govuk-link" href="address-type-question">
+                            <a class="govuk-link" href="@(Constants.AddressType.Registered.ToString().ToLower())-address-type-question">
                                 @GetActionString(details.CompletedRegAddress)<span class="govuk-visually-hidden"> Change</span>
                             </a>
                         </dd>
@@ -79,7 +83,7 @@
                         }
                     </dd>
                     <dd class="govuk-summary-list__actions">
-                        <a class="govuk-link" href="#">
+                        <a class="govuk-link" href="@(Constants.AddressType.Postal.ToString().ToLower())-address-type-question">
                             @GetActionString(details.CompletedPostalAddress)<span class="govuk-visually-hidden"> Change</span>
                         </a>
                     </dd>
@@ -115,9 +119,21 @@
                         Website address
                     </dt>
                     <dt class="govuk-summary-list__value">
+                        @if (details.CompletedWebsiteAddress)
+                        {
+                            if (!string.IsNullOrWhiteSpace(Model.WebsiteAddress))
+                            {
+                                @:Yes<br />
+                                @(Model.WebsiteAddress)
+                            }
+                            else
+                            {
+                                @:No
+                            }
+                        }
                     </dt>
                     <dd class="govuk-summary-list__actions">
-                        <a class="govuk-link" href="#">
+                        <a class="govuk-link" href="website-question">
                             @GetActionString(details.CompletedWebsiteAddress)<span class="govuk-visually-hidden"> Add</span>
                         </a>
                     </dd>
@@ -128,9 +144,16 @@
                         Email address
                     </dt>
                     <dt class="govuk-summary-list__value">
+                        @if (details.CompletedEmailAddress)
+                        {
+                            if (!string.IsNullOrWhiteSpace(Model.EmailAddress))
+                            {                                
+                                @(Model.EmailAddress)
+                            }
+                        }
                     </dt>
                     <dd class="govuk-summary-list__actions">
-                        <a class="govuk-link" href="#">
+                        <a class="govuk-link" href="email-address">
                             @GetActionString(details.CompletedEmailAddress)<span class="govuk-visually-hidden"> Change</span>
                         </a>
                     </dd>
@@ -143,10 +166,9 @@
                     <dt class="govuk-summary-list__value">
                         @if (details.CompletedQualification)
                         {
-                            if (!string.IsNullOrWhiteSpace(Model.VatNumber))
+                            if (details.Qualifications != null)
                             {
-                                @:Yes<br />
-                                @(Model.VatNumber)
+                                RenderQualificationsCount(details.Qualifications.ToList());
                             }
                             else
                             {

@@ -1,4 +1,6 @@
 using CO.CDP.Organisation.WebApiClient;
+using CO.CDP.OrganisationApp.Constants;
+using CO.CDP.OrganisationApp.WebApiClients;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -6,11 +8,10 @@ using System.ComponentModel.DataAnnotations;
 namespace CO.CDP.OrganisationApp.Pages.Supplier;
 
 [AuthorisedSession]
-public class PrincipalOfficeAddressUkModel(
+public class AddressNonUkModel(
     ISession session,
     IOrganisationClient organisationClient) : LoggedInUserAwareModel
 {
-
     public override ISession SessionContext => session;
 
     [BindProperty]
@@ -28,41 +29,46 @@ public class PrincipalOfficeAddressUkModel(
     public string? TownOrCity { get; set; }
 
     [BindProperty]
-    [DisplayName("Region")]
-    [Required(ErrorMessage = "Enter your Region")]
+    [DisplayName("Country, State or Province (optional)")]
     public string? Region { get; set; }
 
     [BindProperty]
-    [DisplayName("Postcode")]
+    [DisplayName("Postal or Zip code")]
     [Required(ErrorMessage = "Enter your postcode")]
     public string? Postcode { get; set; }
 
     [BindProperty]
     [DisplayName("Country")]
     [Required(ErrorMessage = "Enter your country")]
-    public string? Country { get; set; } = "United Kingdom";
+    public string? Country { get; set; }
 
     [BindProperty(SupportsGet = true)]
     public Guid Id { get; set; }
 
-    public async Task<IActionResult> OnGet(Guid id)
+    [BindProperty(SupportsGet = true)]
+    public Constants.AddressType AddressType { get; set; }
+
+    public async Task<IActionResult> OnGet()
     {
         try
         {
-            var getOrganisationTask = organisationClient.GetOrganisationAsync(id);
-            var getSupplierInfoTask = organisationClient.GetOrganisationSupplierInformationAsync(id);
+            var composed = await organisationClient.GetComposedOrganisation(Id);
 
-            await Task.WhenAll(getOrganisationTask, getSupplierInfoTask);
-
-            if (getSupplierInfoTask.Result.CompletedRegAddress)
+            if ((composed.SupplierInfo.CompletedRegAddress && AddressType == Constants.AddressType.Registered)
+                || (composed.SupplierInfo.CompletedPostalAddress && AddressType == Constants.AddressType.Postal))
             {
-                var hasRegisteredUkAddress = getOrganisationTask.Result.Addresses.FirstOrDefault(i => i.CountryName == "United Kingdom");
-                AddressLine1 = hasRegisteredUkAddress?.StreetAddress;
-                AddressLine2 = hasRegisteredUkAddress?.StreetAddress2;
-                TownOrCity = hasRegisteredUkAddress?.Locality;
-                Region = hasRegisteredUkAddress?.Region;
-                Postcode = hasRegisteredUkAddress?.PostalCode;
-                Country = hasRegisteredUkAddress?.CountryName;
+                var address = composed.Organisation.Addresses.FirstOrDefault(a =>
+                    a.Type == AddressType.AsApiClientAddressType() && a.CountryName != Constants.Country.UnitedKingdom);
+
+                if (address != null)
+                {
+                    AddressLine1 = address.StreetAddress;
+                    AddressLine2 = address.StreetAddress2;
+                    TownOrCity = address.Locality;
+                    Region = address.Region;
+                    Postcode = address.PostalCode;
+                    Country = address.CountryName;
+                }
             }
         }
         catch (ApiException ex) when (ex.StatusCode == 404)
@@ -84,23 +90,17 @@ public class PrincipalOfficeAddressUkModel(
         {
             var organisation = await organisationClient.GetOrganisationAsync(Id);
 
-            await organisationClient.UpdateOrganisationAsync(Id,
-              new UpdatedOrganisation
-                (
-                    type: OrganisationUpdateType.Address,
-
-                    organisation: new OrganisationInfo(null,
-                        addresses: [
+            ICollection<OrganisationAddress> addresses = [
                             new OrganisationAddress (
                             streetAddress : AddressLine1,
                             streetAddress2 : AddressLine2,
                             postalCode : Postcode,
                             locality: TownOrCity,
                             countryName: Country,
-                            type: AddressType.Registered,
-                            region: Region
-                            )]
-                )));
+                            type: AddressType.AsApiClientAddressType(),
+                            region: Region)];
+
+            await organisationClient.UpdateOrganisationAddresses(Id, addresses);
         }
         catch (ApiException ex) when (ex.StatusCode == 404)
         {

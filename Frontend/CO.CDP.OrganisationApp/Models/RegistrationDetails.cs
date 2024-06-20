@@ -22,7 +22,7 @@ public class RegistrationDetails
 
     public string? OrganisationPostcode { get; set; }
 
-    public string OrganisationCountry { get; set; } = "United Kingdom";
+    public string OrganisationCountry { get; set; } = Country.UnitedKingdom;
 
     public OrganisationType? OrganisationType { get; set; }
     public bool? OrganisationHasCompaniesHouseNumber { get; set; }

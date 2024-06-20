@@ -12,7 +12,8 @@ public class WebApiToPersistenceProfile : Profile
         CreateMap<Persistence.Organisation, Model.Organisation>()
             .ForMember(m => m.Id, o => o.MapFrom(m => m.Guid))
             .ForMember(m => m.Identifier, o => o.MapFrom(m => m.Identifiers.FirstOrDefault(i => i.Primary)))
-            .ForMember(m => m.AdditionalIdentifiers, o => o.MapFrom(m => m.Identifiers.Where(i => !i.Primary)));
+            .ForMember(m => m.AdditionalIdentifiers, o => o.MapFrom(m => m.Identifiers.Where(i => !i.Primary)))
+            .ForMember(m => m.ContactPoint, o => o.MapFrom(m => m.ContactPoints.FirstOrDefault() ?? new Persistence.Organisation.ContactPoint()));
 
         CreateMap<OrganisationIdentifier, Persistence.Organisation.Identifier>()
             .ForMember(m => m.Id, o => o.Ignore())
@@ -50,9 +51,16 @@ public class WebApiToPersistenceProfile : Profile
             .ForMember(m => m.PostalCode, o => o.MapFrom(m => m.Address.PostalCode))
             .ForMember(m => m.CountryName, o => o.MapFrom(m => m.Address.CountryName));
 
-        CreateMap<OrganisationContactPoint, Persistence.Organisation.OrganisationContactPoint>()
+        CreateMap<OrganisationContactPoint, Persistence.Organisation.ContactPoint>()
+            .ForMember(m => m.Id, o => o.Ignore())
+            .ForMember(m => m.CreatedOn, o => o.Ignore())
+            .ForMember(m => m.UpdatedOn, o => o.Ignore())
             .ReverseMap();
-        CreateMap<ContactPoint, Persistence.Organisation.OrganisationContactPoint>()
+
+        CreateMap<ContactPoint, Persistence.Organisation.ContactPoint>()
+            .ForMember(m => m.Id, o => o.Ignore())
+            .ForMember(m => m.CreatedOn, o => o.Ignore())
+            .ForMember(m => m.UpdatedOn, o => o.Ignore())
             .ReverseMap();
 
         CreateMap<RegisterOrganisation, Persistence.Organisation>()
@@ -65,10 +73,32 @@ public class WebApiToPersistenceProfile : Profile
             .ForMember(m => m.UpdatedOn, o => o.Ignore())
             .ForMember(m => m.SupplierInfo, o => o.Ignore())
             .ForMember(m => m.BuyerInfo, o => o.Ignore())
-            .ForMember(m => m.Identifiers, o => o.MapFrom<IdentifiersResolver>());
+            .ForMember(m => m.Identifiers, o => o.MapFrom<IdentifiersResolver>())
+            .ForMember(m => m.ContactPoints, o => o.MapFrom(m => new[] { m.ContactPoint }));
 
         CreateMap<Persistence.Organisation.SupplierInformation, SupplierInformation>()
             .ForMember(m => m.OrganisationName, o => o.Ignore());
+
+        CreateMap<TradeAssurance, Persistence.Organisation.TradeAssurance>()
+            .ForMember(m => m.Id, o => o.Ignore())
+            .ForMember(m => m.Guid, o => o.MapFrom(_ => Guid.NewGuid()))
+            .ForMember(m => m.CreatedOn, o => o.Ignore())
+            .ForMember(m => m.UpdatedOn, o => o.Ignore())
+            .ReverseMap()
+            .ForMember(m => m.Id, o => o.MapFrom(m => m.Guid));
+
+        CreateMap<LegalForm, Persistence.Organisation.LegalForm>()
+            .ForMember(m => m.CreatedOn, o => o.Ignore())
+            .ForMember(m => m.UpdatedOn, o => o.Ignore())
+            .ReverseMap();
+
+        CreateMap<Qualification, Persistence.Organisation.Qualification>()
+           .ForMember(m => m.Id, o => o.Ignore())
+           .ForMember(m => m.Guid, o => o.MapFrom(_ => Guid.NewGuid()))
+           .ForMember(m => m.CreatedOn, o => o.Ignore())
+           .ForMember(m => m.UpdatedOn, o => o.Ignore())
+           .ReverseMap()
+           .ForMember(m => m.Id, o => o.MapFrom(m => m.Guid));
     }
 
     public class IdentifiersResolver : IValueResolver<RegisterOrganisation, Persistence.Organisation,

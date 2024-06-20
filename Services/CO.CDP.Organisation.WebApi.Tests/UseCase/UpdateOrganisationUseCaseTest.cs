@@ -1,4 +1,5 @@
 using CO.CDP.Organisation.WebApi.Model;
+using CO.CDP.Organisation.WebApi.Tests.AutoMapper;
 using CO.CDP.Organisation.WebApi.UseCase;
 using CO.CDP.OrganisationInformation.Persistence;
 using FluentAssertions;
@@ -7,16 +8,16 @@ using Persistence = CO.CDP.OrganisationInformation.Persistence;
 
 namespace CO.CDP.Organisation.WebApi.Tests.UseCase;
 
-public class UpdateOrganisationUseCaseTest
+public class UpdateOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
 {
     private readonly Mock<IOrganisationRepository> _organisationRepositoryMock;
     private readonly UpdateOrganisationUseCase _useCase;
     private readonly Guid _organisationId = Guid.NewGuid();
 
-    public UpdateOrganisationUseCaseTest()
+    public UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture)
     {
         _organisationRepositoryMock = new Mock<IOrganisationRepository>();
-        _useCase = new UpdateOrganisationUseCase(_organisationRepositoryMock.Object);
+        _useCase = new UpdateOrganisationUseCase(_organisationRepositoryMock.Object, mapperFixture.Mapper);
     }
 
     [Fact]
@@ -117,6 +118,6 @@ public class UpdateOrganisationUseCaseTest
             Guid = _organisationId,
             Name = "Test",
             Tenant = It.IsAny<Tenant>(),
-            ContactPoint = new Persistence.Organisation.OrganisationContactPoint { Email = "test@test.com" }
+            ContactPoints = [new Persistence.Organisation.ContactPoint { Email = "test@test.com" }]
         };
 }

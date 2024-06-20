@@ -21,7 +21,7 @@ public class SupplierInformationTest
             CompletedPostalAddress = false,
             CompletedVat = false,
             CompletedWebsiteAddress = false,
-            CompletedEmailAddress = false,
+            CompletedEmailAddress = true,
             CompletedQualification = false,
             CompletedTradeAssurance = false,
             CompletedOperationType = false,

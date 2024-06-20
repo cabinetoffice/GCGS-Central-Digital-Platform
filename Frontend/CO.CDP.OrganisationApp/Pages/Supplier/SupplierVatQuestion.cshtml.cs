@@ -1,12 +1,13 @@
 using CO.CDP.Mvc.Validation;
 using CO.CDP.Organisation.WebApiClient;
+using CO.CDP.OrganisationApp.WebApiClients;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 
 namespace CO.CDP.OrganisationApp.Pages.Supplier;
 
 [AuthorisedSession]
-public class SupplierVatModel(
+public class SupplierVatQuestionModel(
     ISession session,
     IOrganisationClient organisationClient) : LoggedInUserAwareModel
 {
@@ -27,14 +28,12 @@ public class SupplierVatModel(
     {
         try
         {
-            var getOrganisationTask = organisationClient.GetOrganisationAsync(id);
-            var getSupplierInfoTask = organisationClient.GetOrganisationSupplierInformationAsync(id);
+            var composed = await organisationClient.GetComposedOrganisation(id);
 
-            await Task.WhenAll(getOrganisationTask, getSupplierInfoTask);
-
-            if (getSupplierInfoTask.Result.CompletedVat)
+            if (composed.SupplierInfo.CompletedVat)
             {
-                var vatIdentifier = getOrganisationTask.Result.AdditionalIdentifiers.FirstOrDefault(i => i.Scheme == "VAT");
+                HasVatNumber = false;
+                var vatIdentifier = composed.Organisation.AdditionalIdentifiers.FirstOrDefault(i => i.Scheme == "VAT");
                 if (vatIdentifier != null)
                 {
                     HasVatNumber = !string.IsNullOrWhiteSpace(vatIdentifier.Id);
@@ -61,18 +60,13 @@ public class SupplierVatModel(
         {
             var organisation = await organisationClient.GetOrganisationAsync(Id);
 
-            await organisationClient.UpdateOrganisationAsync(Id,
-                new UpdatedOrganisation
-                (
-                    type: OrganisationUpdateType.AdditionalIdentifiers,
-                    organisation: new OrganisationInfo(
-                        additionalIdentifiers: [
-                            new OrganisationIdentifier(
-                                id: HasVatNumber == true ? VatNumber : "",
-                                legalName: organisation.Name,
-                                scheme: "VAT")
-                        ], null)
-                ));
+            ICollection<OrganisationIdentifier> identifiers = [
+                                new OrganisationIdentifier(
+                                    id: HasVatNumber == true ? VatNumber : "",
+                                    legalName: organisation.Name,
+                                    scheme: "VAT")];
+
+            await organisationClient.UpdateOrganisationAdditionalIdentifiers(Id, identifiers);
         }
         catch (ApiException ex) when (ex.StatusCode == 404)
         {

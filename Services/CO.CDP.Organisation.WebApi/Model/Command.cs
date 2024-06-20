@@ -55,12 +55,14 @@ public record UpdateOrganisation
 public enum OrganisationUpdateType
 {
     AdditionalIdentifiers,
+    ContactPoint,
     Address
 }
 
 public record OrganisationInfo
 {
     public List<OrganisationIdentifier>? AdditionalIdentifiers { get; init; }
+    public OrganisationContactPoint? ContactPoint { get; init; }
     public List<OrganisationAddress>? Addresses { get; init; }
 }
 
@@ -129,12 +131,23 @@ public record UpdateSupplierInformation
 [JsonConverter(typeof(JsonStringEnumConverter))]
 public enum SupplierInformationUpdateType
 {
-    SupplierType
+    SupplierType,
+    CompletedWebsiteAddress,
+    CompletedEmailAddress,
+    TradeAssurance,
+    LegalForm,
+    Qualification,
 }
 
 public record SupplierInfo
 {
     public SupplierType? SupplierType { get; set; }
+
+    public TradeAssurance? TradeAssurance { get; set; }
+
+    public LegalForm? LegalForm { get; set; }
+
+    public Qualification? Qualification { get; set; }
 }
 
 public static class MappingExtensions

@@ -76,7 +76,7 @@ public static class EntityFactory
         string? name = null,
         List<Organisation.Identifier>? identifiers = null,
         List<OrganisationAddress>? addresses = null,
-        OrganisationContactPoint? contactPoint = null,
+        Organisation.ContactPoint? contactPoint = null,
         List<PartyRole>? roles = null,
         List<(Person, List<string>)>? personsWithScope = null,
         BuyerInformation? buyerInformation = null,
@@ -123,13 +123,13 @@ public static class EntityFactory
                     CountryName = "Defaultland"
                 }
             }],
-            ContactPoint = contactPoint ?? new OrganisationContactPoint
+            ContactPoints = contactPoint == null ? [new Organisation.ContactPoint
             {
                 Name = "Default Contact",
                 Email = "contact@default.org",
                 Telephone = "123-456-7890",
                 Url = "https://contact.default.org"
-            },
+            }] : [contactPoint],
             Roles = roles ?? [PartyRole.Buyer],
             BuyerInfo = buyerInformation,
             SupplierInfo = supplierInformation
@@ -216,6 +216,7 @@ public static class EntityFactory
         string name = "My Qualification"
     ) => new()
     {
+        Guid = Guid.NewGuid(),
         Name = name,
         AwardedByPersonOrBodyName = "Qualification Centre",
         DateAwarded = DateTimeOffset.Parse("2018-02-20T00:00:00Z")
@@ -224,6 +225,7 @@ public static class EntityFactory
     public static TradeAssurance GivenSupplierTradeAssurance()
         => new()
         {
+            Guid = Guid.NewGuid(),
             AwardedByPersonOrBodyName = "Assurance Body",
             ReferenceNumber = "QA-12333",
             DateAwarded = DateTimeOffset.Parse("2009-10-03T00:00:00Z")

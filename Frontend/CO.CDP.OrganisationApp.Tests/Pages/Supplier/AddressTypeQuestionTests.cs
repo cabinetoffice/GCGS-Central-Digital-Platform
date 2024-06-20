@@ -16,74 +16,71 @@ public class AddressTypeQuestionModelTests
     {
         _sessionMock = SupplierDetailsFactory.CreateSessionMock();
         _organisationClientMock = SupplierDetailsFactory.CreateOrganisationClientMock();
-        _model = new AddressTypeQuestionModel(_sessionMock.Object, _organisationClientMock.Object);
+        _model = new AddressTypeQuestionModel(_sessionMock.Object, _organisationClientMock.Object)
+        {
+            Id = Guid.NewGuid(),
+            AddressType = Constants.AddressType.Registered
+        };
     }
 
     [Fact]
     public async Task OnGet_ValidIdWithCompletedRegAddress_ReturnsPageResult()
     {
-        var id = Guid.NewGuid();
-
         var supplierInformation = SupplierDetailsFactory.CreateSupplierInformationClientModel();
-        var organisation = SupplierDetailsFactory.GivenOrganisationClientModel(id);
+        var organisation = SupplierDetailsFactory.GivenOrganisationClientModel(_model.Id);
         organisation.Addresses.Add(new Address(countryName: "United Kingdom", locality: "London", postalCode: "L1", region: "South", streetAddress: "1 London Street", streetAddress2: "", type: AddressType.Registered));
 
-        _organisationClientMock.Setup(client => client.GetOrganisationSupplierInformationAsync(id))
+        _organisationClientMock.Setup(client => client.GetOrganisationSupplierInformationAsync(_model.Id))
             .ReturnsAsync(supplierInformation);
 
-        _organisationClientMock.Setup(client => client.GetOrganisationAsync(id))
+        _organisationClientMock.Setup(client => client.GetOrganisationAsync(_model.Id))
             .ReturnsAsync(organisation);
 
-        var result = await _model.OnGet(id);
+        var result = await _model.OnGet();
 
         result.Should().BeOfType<PageResult>();
-        _model.HasUkPrincipalAddress.Should().Be(true);
+        _model.HasUkAddress.Should().Be(true);
     }
 
 
     [Fact]
     public async Task OnGet_OrganisationNotFound_ReturnsRedirectToPageNotFound()
     {
-        var id = Guid.NewGuid();
-        _organisationClientMock.Setup(client => client.GetOrganisationSupplierInformationAsync(id))
+        _organisationClientMock.Setup(client => client.GetOrganisationSupplierInformationAsync(_model.Id))
             .ThrowsAsync(new ApiException("Unexpected error", 404, "", default, null));
 
-        var result = await _model.OnGet(id);
+        var result = await _model.OnGet();
 
         result.Should().BeOfType<RedirectResult>()
             .Which.Url.Should().Be("/page-not-found");
     }
 
     [Fact]
-    public void OnPost_ValidModelStateWithUkPrincipalAddress_ReturnsRedirectToPrincipalOfficeAddressUk()
+    public void OnPost_ValidModelStateWithUkAddress_ReturnsRedirectToAddressUk()
     {
-        var id = Guid.NewGuid();
-        _model.Id = id;
-        _model.HasUkPrincipalAddress = true;
+        _model.HasUkAddress = true;
 
         var result = _model.OnPost();
 
         result.Should().BeOfType<RedirectToPageResult>()
-            .Which.PageName.Should().Be("PrincipalOfficeAddressUk");
+            .Which.PageName.Should().Be("AddressUk");
     }
 
     [Fact]
-    public void OnPost_ValidModelStateWithoutUkPrincipalAddress_ReturnsRedirectToPrincipalOfficeAddressNonUk()
+    public void OnPost_ValidModelStateWithoutUkAddress_ReturnsRedirectToAddressNonUk()
     {
-        var id = Guid.NewGuid();
-        _model.Id = id;
-        _model.HasUkPrincipalAddress = false;
+        _model.HasUkAddress = false;
 
         var result = _model.OnPost();
 
         result.Should().BeOfType<RedirectToPageResult>()
-            .Which.PageName.Should().Be("PrincipalOfficeAddressNonUk");
+            .Which.PageName.Should().Be("AddressNonUk");
     }
 
     [Fact]
     public void OnPost_InvalidModelState_ReturnsPageResult()
     {
-        _model.ModelState.AddModelError("HasUkPrincipalAddress", "Please select an option");
+        _model.ModelState.AddModelError("HasUkAddress", "Please select an option");
 
         var result = _model.OnPost();
 

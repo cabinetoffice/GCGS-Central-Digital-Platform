@@ -136,8 +136,7 @@ public class UpdateBuyerInformationUseCaseTests
     {
         return new OrganisationInformation.Persistence.Organisation
         {
-            ContactPoint = new OrganisationInformation.Persistence.Organisation.OrganisationContactPoint
-            { Email = "test@test.com" },
+            ContactPoints = [new OrganisationInformation.Persistence.Organisation.ContactPoint { Email = "test@test.com" }],
             Guid = _organisationId,
             Name = "Test",
             Tenant = It.IsAny<Tenant>(),

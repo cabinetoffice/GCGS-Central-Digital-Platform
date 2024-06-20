@@ -6,17 +6,21 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moq;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages.Supplier;
-public class PrincipalOfficeAddressUkModelTests
+public class AddressUkModelTests
 {
     private readonly Mock<ISession> _sessionMock;
     private readonly Mock<IOrganisationClient> _organisationClientMock;
-    private readonly PrincipalOfficeAddressUkModel _model;
+    private readonly AddressUkModel _model;
 
-    public PrincipalOfficeAddressUkModelTests()
+    public AddressUkModelTests()
     {
         _sessionMock = SupplierDetailsFactory.CreateSessionMock();
         _organisationClientMock = SupplierDetailsFactory.CreateOrganisationClientMock();
-        _model = new PrincipalOfficeAddressUkModel(_sessionMock.Object, _organisationClientMock.Object);
+        _model = new AddressUkModel(_sessionMock.Object, _organisationClientMock.Object)
+        {
+            Id = Guid.NewGuid(),
+            AddressType = Constants.AddressType.Registered
+        };
     }
 
     private void SetupModelWithUkAddress()
@@ -24,36 +28,33 @@ public class PrincipalOfficeAddressUkModelTests
         _model.AddressLine1 = "1 London Street";
         _model.AddressLine2 = "";
         _model.TownOrCity = "London";
-        _model.Region = "South";
         _model.Postcode = "L1";
         _model.Country = "United Kingdom";
     }
 
-    private void SetupMockForValidGet(Guid id)
+    private void SetupMockForValidGet()
     {
         var supplierInformation = SupplierDetailsFactory.CreateSupplierInformationClientModel();
-        var organisation = SupplierDetailsFactory.GivenOrganisationClientModel(id);
+        var organisation = SupplierDetailsFactory.GivenOrganisationClientModel(_model.Id);
         organisation.Addresses.Add(new Address(countryName: "United Kingdom", locality: "London", postalCode: "L1", region: "South", streetAddress: "1 London Street", streetAddress2: "", type: AddressType.Registered));
 
-        _organisationClientMock.Setup(client => client.GetOrganisationSupplierInformationAsync(id))
+        _organisationClientMock.Setup(client => client.GetOrganisationSupplierInformationAsync(_model.Id))
             .ReturnsAsync(supplierInformation);
 
-        _organisationClientMock.Setup(client => client.GetOrganisationAsync(id))
+        _organisationClientMock.Setup(client => client.GetOrganisationAsync(_model.Id))
             .ReturnsAsync(organisation);
     }
 
     [Fact]
     public async Task OnGet_ValidIdWithUkAddress_ReturnsPageResult()
     {
-        var id = Guid.NewGuid();
-        SetupMockForValidGet(id);
+        SetupMockForValidGet();
 
-        var result = await _model.OnGet(id);
+        var result = await _model.OnGet();
 
         result.Should().BeOfType<PageResult>();
         _model.AddressLine1.Should().Be("1 London Street");
         _model.TownOrCity.Should().Be("London");
-        _model.Region.Should().Be("South");
         _model.Postcode.Should().Be("L1");
         _model.Country.Should().Be("United Kingdom");
     }
@@ -61,11 +62,10 @@ public class PrincipalOfficeAddressUkModelTests
     [Fact]
     public async Task OnGet_OrganisationNotFound_ReturnsRedirectToPageNotFound()
     {
-        var id = Guid.NewGuid();
-        _organisationClientMock.Setup(client => client.GetOrganisationSupplierInformationAsync(id))
+        _organisationClientMock.Setup(client => client.GetOrganisationSupplierInformationAsync(_model.Id))
             .ThrowsAsync(new ApiException("Unexpected error", 404, "", default, null));
 
-        var result = await _model.OnGet(id);
+        var result = await _model.OnGet();
 
         result.Should().BeOfType<RedirectResult>()
             .Which.Url.Should().Be("/page-not-found");
@@ -74,14 +74,12 @@ public class PrincipalOfficeAddressUkModelTests
     [Fact]
     public async Task OnPost_ValidModelState_ReturnsRedirectToSupplierBasicInformation()
     {
-        var id = Guid.NewGuid();
-        _model.Id = id;
         SetupModelWithUkAddress();
 
-        _organisationClientMock.Setup(client => client.GetOrganisationAsync(id))
-            .ReturnsAsync(SupplierDetailsFactory.GivenOrganisationClientModel(id));
+        _organisationClientMock.Setup(client => client.GetOrganisationAsync(_model.Id))
+            .ReturnsAsync(SupplierDetailsFactory.GivenOrganisationClientModel(_model.Id));
 
-        _organisationClientMock.Setup(client => client.UpdateOrganisationAsync(id, It.IsAny<UpdatedOrganisation>()))
+        _organisationClientMock.Setup(client => client.UpdateOrganisationAsync(_model.Id, It.IsAny<UpdatedOrganisation>()))
             .Returns(Task.CompletedTask);
 
         var result = await _model.OnPost();
@@ -103,11 +101,9 @@ public class PrincipalOfficeAddressUkModelTests
     [Fact]
     public async Task OnPost_OrganisationNotFound_ReturnsRedirectToPageNotFound()
     {
-        var id = Guid.NewGuid();
-        _model.Id = id;
         SetupModelWithUkAddress();
 
-        _organisationClientMock.Setup(client => client.GetOrganisationAsync(id))
+        _organisationClientMock.Setup(client => client.GetOrganisationAsync(_model.Id))
             .ThrowsAsync(new ApiException("Unexpected error", 404, "", default, null));
 
         var result = await _model.OnPost();
