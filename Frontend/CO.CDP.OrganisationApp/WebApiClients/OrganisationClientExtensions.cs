@@ -67,28 +67,28 @@ internal static class OrganisationClientExtensions
             organisationId,
             new UpdateSupplierInformation(
                 type: SupplierInformationUpdateType.CompletedEmailAddress,
-                supplierInformation: new SupplierInfo(supplierType: null, tradeAssurance: null, legalForm: null)));
+                supplierInformation: new SupplierInfo(supplierType: null, operationTypes: null, tradeAssurance: null, legalForm: null)));
 
     internal static Task UpdateSupplierType(this IOrganisationClient organisationClient, Guid organisationId, SupplierType supplierType)
         => organisationClient.UpdateSupplierInformationAsync(
             organisationId,
             new UpdateSupplierInformation(
                 type: SupplierInformationUpdateType.SupplierType,
-                supplierInformation: new SupplierInfo(supplierType: supplierType, tradeAssurance: null, legalForm: null)));
+                supplierInformation: new SupplierInfo(supplierType: supplierType, operationTypes: null, tradeAssurance: null, legalForm: null)));
 
     internal static Task UpdateSupplierCompletedWebsiteAddress(this IOrganisationClient organisationClient, Guid organisationId)
         => organisationClient.UpdateSupplierInformationAsync(
             organisationId,
             new UpdateSupplierInformation(
                 type: SupplierInformationUpdateType.CompletedWebsiteAddress,
-                supplierInformation: new SupplierInfo(supplierType: null, tradeAssurance: null, legalForm: null)));
+                supplierInformation: new SupplierInfo(supplierType: null, operationTypes: null, tradeAssurance: null, legalForm: null)));
 
     internal static Task UpdateSupplierTradeAssurance(this IOrganisationClient organisationClient, Guid organisationId, TradeAssurance? tradeAssurance = null)
         => organisationClient.UpdateSupplierInformationAsync(
             organisationId,
             new UpdateSupplierInformation(
                 type: SupplierInformationUpdateType.TradeAssurance,
-                supplierInformation: new SupplierInfo(supplierType: null, tradeAssurance: tradeAssurance, legalForm: null)));
+                supplierInformation: new SupplierInfo(supplierType: null, operationTypes: null, tradeAssurance: tradeAssurance, legalForm: null)));
 }
 
 public class ComposedOrganisation
