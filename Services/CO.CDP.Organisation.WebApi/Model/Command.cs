@@ -147,6 +147,19 @@ public record SupplierInfo
     public LegalForm? LegalForm { get; set; }
 }
 
+public record DeleteSupplierInformation
+{
+    public required SupplierInformationDeleteType Type { get; init; }
+
+    public Guid? TradeAssuranceId { get; init; }
+}
+
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum SupplierInformationDeleteType
+{
+    TradeAssurance
+}
+
 public static class MappingExtensions
 {
     public static Identifier AsView(this OrganisationIdentifier command) =>
