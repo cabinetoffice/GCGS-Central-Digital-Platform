@@ -1,3 +1,4 @@
+using CO.CDP.Configuration.ForwardedHeaders;
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp;
 using CO.CDP.Person.WebApiClient;
@@ -17,18 +18,10 @@ const string PersonHttpClientName = "PersonHttpClient";
 const string OrganisationAuthorityHttpClientName = "OrganisationAuthorityHttpClient";
 
 var builder = WebApplication.CreateBuilder(args);
-var config = builder.Configuration.GetSection(OrganisationAppOptions.Section).Get<OrganisationAppOptions>() ?? new OrganisationAppOptions();
 
 builder.Services.AddRazorPages()
     .AddRazorRuntimeCompilation();
-builder.Services.Configure<ForwardedHeadersOptions>(options =>
-{
-    options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
-    if (!string.IsNullOrEmpty(config.KnownNetwork))
-    {
-        options.KnownNetworks.Add(IPNetwork.Parse(config.KnownNetwork));
-    }
-});
+builder.ConfigureForwardedHeaders();
 
 builder.Services.AddDistributedMemoryCache();
 
