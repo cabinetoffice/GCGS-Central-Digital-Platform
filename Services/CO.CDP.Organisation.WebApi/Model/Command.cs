@@ -135,7 +135,8 @@ public enum SupplierInformationUpdateType
     CompletedWebsiteAddress,
     CompletedEmailAddress,
     TradeAssurance,
-    LegalForm
+    LegalForm,
+    OperationType
 }
 
 public record SupplierInfo
@@ -145,6 +146,7 @@ public record SupplierInfo
     public TradeAssurance? TradeAssurance { get; set; }
 
     public LegalForm? LegalForm { get; set; }
+    public List<OperationType>? OperationTypes { get; set; }
 }
 
 public record DeleteSupplierInformation
