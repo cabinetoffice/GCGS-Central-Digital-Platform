@@ -1,9 +1,11 @@
 using CO.CDP.Organisation.Authority;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Cryptography;
+using CO.CDP.Configuration.ForwardedHeaders;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.ConfigureForwardedHeaders();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(o => { o.DocumentApi(); });
 builder.Services.AddHealthChecks();
@@ -11,6 +13,7 @@ builder.Services.AddProblemDetails();
 builder.Services.AddSingleton<IOpenIdConfiguration, OneLoginConfiguration>();
 
 var app = builder.Build();
+app.UseForwardedHeaders();
 app.MapHealthChecks("/health");
 
 if (app.Environment.IsDevelopment())
