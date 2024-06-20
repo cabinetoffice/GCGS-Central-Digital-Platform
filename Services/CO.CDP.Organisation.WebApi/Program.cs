@@ -31,6 +31,7 @@ builder.Services.AddScoped<IUseCase<Guid, SupplierInformation?>, GetSupplierInfo
 builder.Services.AddScoped<IUseCase<(Guid, UpdateOrganisation), bool>, UpdateOrganisationUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, UpdateBuyerInformation), bool>, UpdateBuyerInformationUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, UpdateSupplierInformation), bool>, UpdateSupplierInformationUseCase>();
+builder.Services.AddScoped<IUseCase<(Guid, DeleteSupplierInformation), bool>, DeleteSupplierInformationUseCase>();
 builder.Services.AddOrganisationProblemDetails();
 
 var authority = builder.Configuration["Organisation:Authority"]
