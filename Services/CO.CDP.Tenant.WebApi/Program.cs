@@ -1,3 +1,4 @@
+using CO.CDP.Configuration.ForwardedHeaders;
 using CO.CDP.OrganisationInformation.Persistence;
 using CO.CDP.Tenant.WebApi.Api;
 using CO.CDP.Tenant.WebApi.AutoMapper;
@@ -12,6 +13,7 @@ using Tenant = CO.CDP.Tenant.WebApi.Model.Tenant;
 using TenantLookup = CO.CDP.Tenant.WebApi.Model.TenantLookup;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.ConfigureForwardedHeaders();
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -55,6 +57,7 @@ builder.Services
             .Build());
 
 var app = builder.Build();
+app.UseForwardedHeaders();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

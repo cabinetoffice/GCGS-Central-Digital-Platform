@@ -185,10 +185,10 @@ public static class EndpointExtensions
     {
         app.MapPatch("/{organisationId}/buyer-information",
 
-            async (Guid organisationId, UpdateBuyerInformation byuerInformation,
+            async (Guid organisationId, UpdateBuyerInformation buyerInformation,
                 IUseCase<(Guid, UpdateBuyerInformation), bool> useCase) =>
 
-                await useCase.Execute((organisationId, byuerInformation))
+                await useCase.Execute((organisationId, buyerInformation))
                    .AndThen(_ => Results.NoContent())
             )
             .Produces(StatusCodes.Status204NoContent)
@@ -251,6 +251,31 @@ public static class EndpointExtensions
                 operation.Description = "Update Supplier Information.";
                 operation.Summary = "Update Supplier Information.";
                 operation.Responses["204"].Description = "Supplier information updated successfully.";
+                operation.Responses["400"].Description = "Bad request.";
+                operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
+                operation.Responses["404"].Description = "Organisation supplier information not found.";
+                operation.Responses["422"].Description = "Unprocessable entity.";
+                operation.Responses["500"].Description = "Internal server error.";
+                return operation;
+            });
+
+        app.MapDelete("/{organisationId}/supplier-information",
+            async (Guid organisationId, [FromBody]DeleteSupplierInformation deleteSupplierInformation,
+                IUseCase<(Guid, DeleteSupplierInformation), bool> useCase) =>
+                    await useCase.Execute((organisationId, deleteSupplierInformation))
+                        .AndThen(_ => Results.NoContent()))
+            .Produces(StatusCodes.Status204NoContent)
+            .ProducesProblem(StatusCodes.Status400BadRequest)
+            .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
+            .ProducesProblem(StatusCodes.Status404NotFound)
+            .ProducesProblem(StatusCodes.Status422UnprocessableEntity)
+            .ProducesProblem(StatusCodes.Status500InternalServerError)
+            .WithOpenApi(operation =>
+            {
+                operation.OperationId = "DeleteSupplierInformation";
+                operation.Description = "Delete Supplier Information.";
+                operation.Summary = "Delete Supplier Information.";
+                operation.Responses["204"].Description = "Supplier information deleted successfully.";
                 operation.Responses["400"].Description = "Bad request.";
                 operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
                 operation.Responses["404"].Description = "Organisation supplier information not found.";

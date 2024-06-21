@@ -135,7 +135,8 @@ public enum SupplierInformationUpdateType
     CompletedWebsiteAddress,
     CompletedEmailAddress,
     TradeAssurance,
-    LegalForm
+    LegalForm,
+    OperationType
 }
 
 public record SupplierInfo
@@ -145,6 +146,20 @@ public record SupplierInfo
     public TradeAssurance? TradeAssurance { get; set; }
 
     public LegalForm? LegalForm { get; set; }
+    public List<OperationType>? OperationTypes { get; set; }
+}
+
+public record DeleteSupplierInformation
+{
+    public required SupplierInformationDeleteType Type { get; init; }
+
+    public Guid? TradeAssuranceId { get; init; }
+}
+
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum SupplierInformationDeleteType
+{
+    TradeAssurance
 }
 
 public static class MappingExtensions
