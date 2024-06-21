@@ -15,6 +15,7 @@ public class SupplierIndividualOrOrgTest
 
     public SupplierIndividualOrOrgTest()
     {
+        _organisationId = Guid.NewGuid();
         _organisationClientMock = new Mock<IOrganisationClient>();
         _model = new SupplierIndividualOrOrgModel(_organisationClientMock.Object)
         {
