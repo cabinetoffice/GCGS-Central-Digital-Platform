@@ -1,16 +1,14 @@
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.WebApiClients;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace CO.CDP.OrganisationApp.Pages.Supplier;
 
-[AuthorisedSession]
-public class SupplierBasicInformationModel(
-    ISession session,
-    IOrganisationClient organisationClient) : LoggedInUserAwareModel
+[Authorize]
+public class SupplierBasicInformationModel(IOrganisationClient organisationClient) : PageModel
 {
-    public override ISession SessionContext => session;
-
     [BindProperty]
     public SupplierInformation? SupplierInformation { get; set; }
 

@@ -9,15 +9,13 @@ namespace CO.CDP.OrganisationApp.Tests.Pages.Supplier;
 
 public class SupplierEmailAddressTest
 {
-    private readonly Mock<ISession> _sessionMock;
     private readonly Mock<IOrganisationClient> _organisationClientMock;
     private readonly SupplierEmailAddressModel _model;
 
     public SupplierEmailAddressTest()
     {
-        _sessionMock = new Mock<ISession>();
         _organisationClientMock = new Mock<IOrganisationClient>();
-        _model = new SupplierEmailAddressModel(_sessionMock.Object, _organisationClientMock.Object);
+        _model = new SupplierEmailAddressModel(_organisationClientMock.Object);
     }
 
     [Fact]
@@ -81,7 +79,7 @@ public class SupplierEmailAddressTest
 
     [Fact]
     public void WhenEmailAddressIsInvalid_ShouldRaiseEmailAddressValidationError()
-    {        
+    {
         _model.EmailAddress = "dummy";
 
         var results = ModelValidationHelper.Validate(_model);

@@ -1,4 +1,5 @@
 using CO.CDP.Organisation.WebApiClient;
+using CO.CDP.OrganisationApp.Pages.Supplier;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -8,39 +9,40 @@ namespace CO.CDP.OrganisationApp.Tests.Pages.Supplier;
 
 public class SupplierIndividualOrOrgTest
 {
-    private readonly Mock<ISession> sessionMock;
-    private readonly Mock<IOrganisationClient> organisationClientMock;
+    private readonly Mock<IOrganisationClient> _organisationClientMock;
+    private readonly SupplierIndividualOrOrgModel _model;
+    private readonly Guid _organisationId;
 
     public SupplierIndividualOrOrgTest()
     {
-        sessionMock = new Mock<ISession>();
-        organisationClientMock = new Mock<IOrganisationClient>();
+        _organisationClientMock = new Mock<IOrganisationClient>();
+        _model = new SupplierIndividualOrOrgModel(_organisationClientMock.Object)
+        {
+            Id = _organisationId
+        };
     }
 
     [Fact]
     public async Task OnGet_SetSupplierInformationAndReturnPage()
     {
-        var model = SupplierDetailsFactory.GivenSupplierIndividualOrOrgModel(sessionMock, organisationClientMock);
         var supplierInformation = SupplierDetailsFactory.CreateSupplierInformationClientModel();
 
-        organisationClientMock.Setup(o => o.GetOrganisationSupplierInformationAsync(It.IsAny<Guid>()))
+        _organisationClientMock.Setup(o => o.GetOrganisationSupplierInformationAsync(_organisationId))
             .ReturnsAsync(supplierInformation);
 
-        var result = await model.OnGet(Guid.NewGuid());
+        var result = await _model.OnGet(_organisationId);
 
-        model.SupplierType.Should().Be(SupplierType.Organisation);
+        _model.SupplierType.Should().Be(SupplierType.Organisation);
         result.Should().BeOfType<PageResult>();
     }
 
     [Fact]
     public async Task OnGet_PageNotFound()
     {
-        var model = SupplierDetailsFactory.GivenSupplierIndividualOrOrgModel(sessionMock, organisationClientMock);
-
-        organisationClientMock.Setup(o => o.GetOrganisationSupplierInformationAsync(It.IsAny<Guid>()))
+        _organisationClientMock.Setup(o => o.GetOrganisationSupplierInformationAsync(_organisationId))
             .ThrowsAsync(new ApiException("Unexpected error", 404, "", default, null));
 
-        var result = await model.OnGet(Guid.NewGuid());
+        var result = await _model.OnGet(_organisationId);
 
         result.Should().BeOfType<RedirectResult>()
             .Which.Url.Should().Be("/page-not-found");
@@ -49,11 +51,9 @@ public class SupplierIndividualOrOrgTest
     [Fact]
     public async Task OnPost_InvalidModelState_ReturnsPage()
     {
-        var model = SupplierDetailsFactory.GivenSupplierIndividualOrOrgModel(sessionMock, organisationClientMock);
+        _model.ModelState.AddModelError("error", "some error");
 
-        model.ModelState.AddModelError("error", "some error");
-
-        var result = await model.OnPost();
+        var result = await _model.OnPost();
 
         result.Should().BeOfType<PageResult>();
     }
@@ -61,34 +61,28 @@ public class SupplierIndividualOrOrgTest
     [Fact]
     public async Task OnPost_ValidModelState_UpdatesSupplierInformationAndRedirects()
     {
-        var model = SupplierDetailsFactory.GivenSupplierIndividualOrOrgModel(sessionMock, organisationClientMock);
-        var id = Guid.NewGuid();
-        model.Id = id;
-        model.SupplierType = SupplierType.Organisation;
+        _model.SupplierType = SupplierType.Organisation;
 
-        var result = await model.OnPost();
+        var result = await _model.OnPost();
 
-        organisationClientMock.Verify(o => o.UpdateSupplierInformationAsync(id,
+        _organisationClientMock.Verify(o => o.UpdateSupplierInformationAsync(_organisationId,
             It.Is<UpdateSupplierInformation>(u => u.SupplierInformation.SupplierType == SupplierType.Organisation)), Times.Once);
 
         result.Should().BeOfType<RedirectToPageResult>()
             .Which.PageName.Should().Be("SupplierBasicInformation");
 
-        (result as RedirectToPageResult)?.RouteValues?.GetValueOrDefault("Id").Should().Be(id);
+        (result as RedirectToPageResult)?.RouteValues?.GetValueOrDefault("Id").Should().Be(_organisationId);
     }
 
     [Fact]
     public async Task OnPost_ValidModelState_ThrowsApiException_ShouldRedirectToPageNotFound()
     {
-        var model = SupplierDetailsFactory.GivenSupplierIndividualOrOrgModel(sessionMock, organisationClientMock);
-        var id = Guid.NewGuid();
-        model.Id = id;
-        model.SupplierType = SupplierType.Organisation;
+        _model.SupplierType = SupplierType.Organisation;
 
-        organisationClientMock.Setup(o => o.UpdateSupplierInformationAsync(id,
+        _organisationClientMock.Setup(o => o.UpdateSupplierInformationAsync(_organisationId,
             It.IsAny<UpdateSupplierInformation>())).ThrowsAsync(new ApiException("Unexpected error", 404, "", default, null));
 
-        var result = await model.OnPost();
+        var result = await _model.OnPost();
 
         result.Should().BeOfType<RedirectResult>()
             .Which.Url.Should().Be("/page-not-found");

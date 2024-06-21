@@ -9,15 +9,13 @@ namespace CO.CDP.OrganisationApp.Tests.Pages.Supplier;
 
 public class SupplierWebsiteModelQuestionTest
 {
-    private readonly Mock<ISession> _sessionMock;
     private readonly Mock<IOrganisationClient> _organisationClientMock;
     private readonly SupplierWebsiteQuestionModel _model;
 
     public SupplierWebsiteModelQuestionTest()
     {
-        _sessionMock = new Mock<ISession>();
         _organisationClientMock = new Mock<IOrganisationClient>();
-        _model = new SupplierWebsiteQuestionModel(_sessionMock.Object, _organisationClientMock.Object);
+        _model = new SupplierWebsiteQuestionModel(_organisationClientMock.Object);
     }
 
     [Fact]
