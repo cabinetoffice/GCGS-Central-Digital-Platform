@@ -181,7 +181,9 @@ internal static class PropertyBuilderExtensions
 
 /// <a href="https://github.com/efcore/EFCore.NamingConventions/issues/1">Keep history columns CamelCased</a>
 // ReSharper disable once ClassNeverInstantiated.Global
+#pragma warning disable EF1001
 internal class CamelCaseHistoryContext(HistoryRepositoryDependencies dependencies) : NpgsqlHistoryRepository(dependencies)
+#pragma warning restore EF1001
 {
     protected override void ConfigureTable(EntityTypeBuilder<HistoryRow> history)
     {
