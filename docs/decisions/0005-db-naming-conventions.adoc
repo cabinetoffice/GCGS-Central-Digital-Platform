@@ -1,0 +1,34 @@
+= 5. Database naming conventions
+
+Date: 2023-06-21
+
+== Status
+
+Accepted
+
+== Context
+
+PostgreSQL clients are forced to quote table and column names in SQL queries,
+if they're not lower-cased:
+
+[source,sql]
+----
+SELECT "Name" FROM "Organisations";
+----
+
+That's because they're lowercased by default unless quoted.
+
+This is inconvenient when writing queries by hand.
+
+== Decision
+
+We will follow a lowercase naming strategy with `_` separated words.
+
+[source,sql]
+----
+SELECT name FROM organisations;
+----
+
+== Consequences
+
+We will switch to the snake case naming convention and migrate existing schema to follow it as well.
