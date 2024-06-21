@@ -25,6 +25,7 @@
       <ProjectReference Include="..\..\Libraries\CO.CDP.Person.WebApiClient\CO.CDP.Person.WebApiClient.csproj" />
       <ProjectReference Include="..\..\Libraries\CO.CDP.Tenant.WebApiClient\CO.CDP.Tenant.WebApiClient.csproj" />
       <ProjectReference Include="..\..\Libraries\CO.CDP.Mvc.Validation\CO.CDP.Mvc.Validation.csproj" />
+      <ProjectReference Include="..\..\Libraries\CO.CDP.Configuration\CO.CDP.Configuration.csproj" />
     </ItemGroup>
 
 </Project>

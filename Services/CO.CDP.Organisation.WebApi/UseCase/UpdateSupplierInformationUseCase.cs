@@ -1,5 +1,6 @@
 using AutoMapper;
 using CO.CDP.Organisation.WebApi.Model;
+using CO.CDP.OrganisationInformation;
 using CO.CDP.OrganisationInformation.Persistence;
 using PersistenceOrganisation = CO.CDP.OrganisationInformation.Persistence.Organisation;
 
@@ -65,6 +66,19 @@ public class UpdateSupplierInformationUseCase(IOrganisationRepository organisati
                 }
                 organisation.SupplierInfo.LegalForm = mapper.Map<PersistenceOrganisation.LegalForm>(updateObject.LegalForm);
                 organisation.SupplierInfo.CompletedLegalForm = true;
+                break;
+
+            case SupplierInformationUpdateType.OperationType:
+                if (updateObject.OperationTypes == null || !updateObject.OperationTypes.Any())
+                {
+                    throw new InvalidUpdateSupplierInformationCommand("Missing operation types.");
+                }
+                if (updateObject.OperationTypes.Contains(OperationType.None) && updateObject.OperationTypes.Count > 1)
+                {
+                    throw new InvalidUpdateSupplierInformationCommand("When 'None' is specified, it must be the only operation type.");
+                }
+                organisation.SupplierInfo.OperationTypes = updateObject.OperationTypes;
+                organisation.SupplierInfo.CompletedOperationType = true;
                 break;
 
             case SupplierInformationUpdateType.Qualification:

@@ -1,3 +1,4 @@
+using CO.CDP.Configuration.ForwardedHeaders;
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp;
 using CO.CDP.Person.WebApiClient;
@@ -6,8 +7,11 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+using Microsoft.IdentityModel.Tokens;
 using static IdentityModel.OidcConstants;
+using ISession = CO.CDP.OrganisationApp.ISession;
 
 const string TenantHttpClientName = "TenantHttpClient";
 const string OrganisationHttpClientName = "OrganisationHttpClient";
@@ -17,11 +21,9 @@ const string OrganisationAuthorityHttpClientName = "OrganisationAuthorityHttpCli
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddRazorPages()
+    .AddSessionStateTempDataProvider()
     .AddRazorRuntimeCompilation();
-builder.Services.Configure<ForwardedHeadersOptions>(options =>
-{
-    options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
-});
+builder.ConfigureForwardedHeaders();
 
 builder.Services.AddDistributedMemoryCache();
 
@@ -32,7 +34,16 @@ builder.Services.AddSession(options =>
 });
 
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-builder.Services.AddSingleton<CO.CDP.OrganisationApp.ISession, Session>();
+builder.Services.AddSingleton<ISession, Session>();
+
+builder.Services.AddTransient(provider =>
+{
+    var httpContextAccessor = provider.GetRequiredService<IHttpContextAccessor>();
+    var factory = provider.GetRequiredService<ITempDataDictionaryFactory>();
+    var context = httpContextAccessor.HttpContext;
+    return factory.GetTempData(context);
+});
+builder.Services.AddScoped<ITempDataService, TempDataService>();
 
 builder.Services.AddTransient<ApiBearerTokenHandler>();
 
@@ -117,7 +128,8 @@ app.UseAuthorization();
 app.UseSession();
 app.MapRazorPages();
 
-app.MapFallback(ctx => {
+app.MapFallback(ctx =>
+{
     ctx.Response.Redirect("/page-not-found");
     return Task.CompletedTask;
 });

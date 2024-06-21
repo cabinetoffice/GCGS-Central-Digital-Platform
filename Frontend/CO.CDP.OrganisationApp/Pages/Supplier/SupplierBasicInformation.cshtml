@@ -4,6 +4,7 @@
 @{
     var details = Model.SupplierInformation!;
     string GetActionString(bool completed) => completed ? "Change" : "Add";
+    string GetActionStringWithItems(bool completed, int itemCount) => completed && itemCount > 0 ? "View" : "Add";
 
     void RenderAddress(CO.CDP.Organisation.WebApiClient.Address address)
     {
@@ -147,7 +148,7 @@
                         @if (details.CompletedEmailAddress)
                         {
                             if (!string.IsNullOrWhiteSpace(Model.EmailAddress))
-                            {                                
+                            {
                                 @(Model.EmailAddress)
                             }
                         }
@@ -188,10 +189,21 @@
                         Trade assurances
                     </dt>
                     <dt class="govuk-summary-list__value">
+                        @if (details.CompletedTradeAssurance)
+                        {
+                            if (details.TradeAssurances.Count > 0)
+                            {
+                                @(details.TradeAssurances.Count) @:trade assurances
+                            }
+                            else
+                            {
+                                @:None
+                            }
+                        }
                     </dt>
                     <dd class="govuk-summary-list__actions">
-                        <a class="govuk-link" href="#">
-                            @GetActionString(details.CompletedTradeAssurance)<span class="govuk-visually-hidden"> Change</span>
+                        <a class="govuk-link" href="trade-assurance-summary">
+                            @GetActionStringWithItems(details.CompletedTradeAssurance, details.TradeAssurances.Count)<span class="govuk-visually-hidden"> Change</span>
                         </a>
                     </dd>
                 </div>

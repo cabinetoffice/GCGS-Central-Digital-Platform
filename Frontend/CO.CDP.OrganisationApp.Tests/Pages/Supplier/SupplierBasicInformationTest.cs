@@ -22,9 +22,10 @@ public class SupplierBasicInformationTest
     [Fact]
     public async Task OnGet_SetSupplierInformation()
     {
+        var supplierInfo = SupplierDetailsFactory.CreateSupplierInformationClientModel();
         var organisationId = Guid.NewGuid();
         _organisationClientMock.Setup(o => o.GetOrganisationSupplierInformationAsync(organisationId))
-            .ReturnsAsync(SupplierDetailsFactory.CreateSupplierInformationClientModel());
+            .ReturnsAsync(supplierInfo);
 
         _organisationClientMock.Setup(client => client.GetOrganisationAsync(organisationId))
             .ReturnsAsync(SupplierDetailsFactory.GivenOrganisationClientModel(organisationId));
@@ -32,7 +33,7 @@ public class SupplierBasicInformationTest
         await _model.OnGet(organisationId);
 
         _model.VatNumber.Should().Be("FakeVatId");
-        _model.SupplierInformation.Should().Be(SupplierDetailsFactory.CreateSupplierInformationClientModel());
+        _model.SupplierInformation.Should().Be(supplierInfo);
     }
 
     [Fact]
