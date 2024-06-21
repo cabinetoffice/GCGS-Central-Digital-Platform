@@ -20,22 +20,22 @@ public static class SupplierDetailsFactory
         return new SupplierIndividualOrOrgModel(sessionMock.Object, organisationClientMock.Object);
     }
 
-    public static SupplierInformation CreateSupplierInformationClientModel()
+    public static SupplierInformation CreateSupplierInformationClientModel(bool completedTradeAssurance = false)
     {
         return new SupplierInformation(
             organisationName: "FakeOrg",
             supplierType: SupplierType.Organisation,
-            operationTypes: null,
+            operationTypes: [],
             completedRegAddress: true,
             completedPostalAddress: false,
             completedVat: true,
             completedWebsiteAddress: false,
             completedEmailAddress: false,
             completedQualification: false,
-            completedTradeAssurance: false,
+            completedTradeAssurance: completedTradeAssurance,
             completedOperationType: false,
             completedLegalForm: false,
-            tradeAssurances: null,
+            tradeAssurances: [],
             legalForm: null
         );
     }
