@@ -236,7 +236,7 @@ public static class EntityFactory
     )
         => new()
         {
-            RegisteredUnderAct2006 = "yes",
+            RegisteredUnderAct2006 = true,
             RegisteredLegalForm = registeredLegalForm,
             LawRegistered = "England and Wales",
             RegistrationDate = DateTimeOffset.Parse("2005-12-02T00:00:00Z")

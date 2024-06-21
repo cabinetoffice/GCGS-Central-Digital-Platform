@@ -27,6 +27,9 @@ public class SupplierBasicInformationModel(IOrganisationClient organisationClien
     [BindProperty]
     public Address? PostalAddress { get; set; }
 
+    [BindProperty]
+    public Organisation.WebApiClient.LegalForm? LegalForm { get; set; }
+
     public async Task<IActionResult> OnGet(Guid id)
     {
         try
@@ -36,6 +39,7 @@ public class SupplierBasicInformationModel(IOrganisationClient organisationClien
             SupplierInformation = composed.SupplierInfo;
             WebsiteAddress = composed.Organisation.ContactPoint.Url?.ToString();
             EmailAddress = composed.Organisation.ContactPoint.Email;
+            this.LegalForm = composed.SupplierInfo.LegalForm;
 
             var vatIdentifier = composed.Organisation.AdditionalIdentifiers.FirstOrDefault(i => i.Scheme == "VAT");
             if (vatIdentifier != null) VatNumber = vatIdentifier.Id;
@@ -45,6 +49,8 @@ public class SupplierBasicInformationModel(IOrganisationClient organisationClien
 
             var postalAddrress = composed.Organisation.Addresses.FirstOrDefault(i => i.Type == AddressType.Postal);
             if (postalAddrress != null) PostalAddress = postalAddrress;
+
+
         }
         catch (ApiException ex) when (ex.StatusCode == 404)
         {
