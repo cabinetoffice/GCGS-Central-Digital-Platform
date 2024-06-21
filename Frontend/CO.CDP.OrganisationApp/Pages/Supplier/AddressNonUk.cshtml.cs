@@ -1,19 +1,17 @@
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.WebApiClients;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace CO.CDP.OrganisationApp.Pages.Supplier;
 
-[AuthorisedSession]
-public class AddressNonUkModel(
-    ISession session,
-    IOrganisationClient organisationClient) : LoggedInUserAwareModel
+[Authorize]
+public class AddressNonUkModel(IOrganisationClient organisationClient) : PageModel
 {
-    public override ISession SessionContext => session;
-
     [BindProperty]
     [DisplayName("Address line 1")]
     [Required(ErrorMessage = "Enter your address line 1")]
