@@ -1,17 +1,17 @@
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.WebApiClients;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
 
 namespace CO.CDP.OrganisationApp.Pages.Supplier;
 
-[AuthorisedSession]
+[Authorize]
 public class AddressTypeQuestionModel(
-    ISession session, IOrganisationClient organisationClient) : LoggedInUserAwareModel
+    IOrganisationClient organisationClient) : PageModel
 {
-    public override ISession SessionContext => session;
-
     [BindProperty]
     [Required(ErrorMessage = "Please select an option")]
     public bool? HasUkAddress { get; set; }

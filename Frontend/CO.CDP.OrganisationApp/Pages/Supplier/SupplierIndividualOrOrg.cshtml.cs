@@ -1,17 +1,15 @@
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.WebApiClients;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
 
 namespace CO.CDP.OrganisationApp.Pages.Supplier;
 
-[AuthorisedSession]
-public class SupplierIndividualOrOrgModel(
-    ISession session,
-    IOrganisationClient organisationClient) : LoggedInUserAwareModel
+[Authorize]
+public class SupplierIndividualOrOrgModel(IOrganisationClient organisationClient) : PageModel
 {
-    public override ISession SessionContext => session;
-
     [BindProperty]
     [Required(ErrorMessage = "Select the journey you want to take")]
     public SupplierType? SupplierType { get; set; }
