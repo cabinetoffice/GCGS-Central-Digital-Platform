@@ -1,7 +1,7 @@
-@page "/organisation/{id}/supplier-information/supplier-qualification-awarded-Body"
+@page "/organisation/{id}/supplier-information/supplier-qualification-awarding-Body"
 @model CO.CDP.OrganisationApp.Pages.Supplier.SupplierQualificationAwardingBodyModel
 @{
-    var personOrAwardedBodyHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.PersonOrAwardingBody)).HasInnerHtml;
+    var personOrAwardingBodyHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.PersonOrAwardingBody)).HasInnerHtml;
 }
 <a href="/organisation/@Model.Id/supplier-information/basic-information" class="govuk-back-link">Back</a>
 
@@ -9,17 +9,13 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <partial name="_ErrorSummary" model="@Model.ModelState" />
+            <h1 class="govuk-heading-l">Enter the name of the person or body which awarded the qualification</h1>
+            <div id="hint" class="govuk-hint">For example, Royal Institution of Chartered Surveyors (RICS).</div>
             <form class="form" method="post">
            
-                <div class="govuk-form-group @(personOrAwardedBodyHasError ? "govuk-form-group--error" : "")">
-                    <label class="govuk-label" for="vatNumber">
-                        Enter the name of the person or body which awarded the qualification
-                    </label>
-                    <div id="hint" class="govuk-hint">
-                        For example, Royal Institution of Chartered Surveyors (RICS).
-                    </div>
-                    <input class="govuk-input govuk-!-width-one-third @(personOrAwardedBodyHasError ? "govuk-form-group--error" : "")"
-                            id="vatNumber" name="VatNumber" spellcheck="false" autocomplete="false" aria-describedby="vat-registration-number-hint"
+                <div class="govuk-form-group @(personOrAwardingBodyHasError ? "govuk-form-group--error" : "")">
+                    <input class="govuk-input govuk-!-width-two-thirds @(personOrAwardingBodyHasError ? "govuk-form-group--error" : "")"
+                           id="awardingBody" name="awardingBody" spellcheck="false" autocomplete="false" aria-describedby="awarding-body-hint"
                            value="@(!string.IsNullOrEmpty(Model.PersonOrAwardingBody) ? Model.PersonOrAwardingBody : "")">
                 </div>
                 

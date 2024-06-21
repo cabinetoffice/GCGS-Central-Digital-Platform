@@ -1,0 +1,26 @@
+@page "/organisation/{id}/supplier-information/supplier-qualification-date-awarded"
+@model CO.CDP.OrganisationApp.Pages.Supplier.SupplierQualificationDateAwardedModel
+@{
+    var dateAwardedHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.DateAwarded)).HasInnerHtml;
+}
+<a href="/organisation/@Model.Id/supplier-information/basic-information" class="govuk-back-link">Back</a>
+
+<main class="govuk-main-wrapper">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <partial name="_ErrorSummary" model="@Model.ModelState" />
+            <h1 class="govuk-heading-l">What date was the qualification awarded?</h1>
+            <div id="hint" class="govuk-hint">For example, 27 3 2007.</div>
+            <form class="form" method="post">
+
+                <div class="govuk-form-group @(dateAwardedHasError ? "govuk-form-group--error" : "")">
+                   @*  <input class="govuk-input govuk-!-width-two-thirds @(dateAwardedHasError ? "govuk-form-group--error" : "")"
+                           id="awardingBody" name="awardingBody" spellcheck="false" autocomplete="false" aria-describedby="awarding-date-hint"
+                           value="@(!string.IsNullOrEmpty(Model.DateAwarded) ? Model.DateAwarded : "")"> *@
+                </div>
+
+                <button class="govuk-button govuk-!-margin-top-4" type="submit">Save and continue</button>
+            </form>
+        </div>
+    </div>
+</main>

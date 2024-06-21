@@ -1,12 +1,16 @@
+using CO.CDP.Organisation.WebApiClient;
+using CO.CDP.OrganisationApp.WebApiClients;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
 
 namespace CO.CDP.OrganisationApp.Pages.Supplier;
 
 [AuthorisedSession]
-public class SupplierQualificationQuestionModel : PageModel
+public class SupplierQualificationQuestionModel(
+    ISession session,
+    IOrganisationClient organisationClient) : LoggedInUserAwareModel
 {
+    public override ISession SessionContext => session;
 
     [BindProperty]
     [Required(ErrorMessage = "Please select an option")]
@@ -17,8 +21,23 @@ public class SupplierQualificationQuestionModel : PageModel
     [BindProperty(SupportsGet = true)]
     public Guid Id { get; set; }
 
-    public void OnGet()
+    public async Task<IActionResult> OnGet()
     {
+        try
+        {
+            var composed = await organisationClient.GetComposedOrganisation(Id);
+
+            if (composed.SupplierInfo.CompletedQualification)
+            {
+                HasRelevantQualifications = true;
+            }
+        }
+        catch (ApiException ex) when (ex.StatusCode == 404)
+        {
+            return Redirect("/page-not-found");
+        }
+
+        return Page();
     }
 
     public IActionResult OnPost()
@@ -30,11 +49,11 @@ public class SupplierQualificationQuestionModel : PageModel
 
         if (HasRelevantQualifications == true)
         {
-            return RedirectToPage("SupplierQualificationAwardingBody");
+            return RedirectToPage("SupplierQualificationAwardingBody", new { Id });
         }
         else
         {
-            return RedirectToPage("SupplierBasicInformation");
+            return RedirectToPage("SupplierBasicInformation", new { Id });
         }
     }
 }

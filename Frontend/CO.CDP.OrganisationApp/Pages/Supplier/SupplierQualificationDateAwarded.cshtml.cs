@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations;
 namespace CO.CDP.OrganisationApp.Pages.Supplier;
 
 [AuthorisedSession]
-public class SupplierQualificationAwardingBodyModel(
+public class SupplierQualificationDateAwardedModel(
     ISession session,
     IOrganisationClient organisationClient) : LoggedInUserAwareModel
 {
@@ -14,7 +14,7 @@ public class SupplierQualificationAwardingBodyModel(
 
     [BindProperty]
     [Required(ErrorMessage = "Please enter person or awarding body.")]
-    public string? PersonOrAwardingBody { get; set; }
+    public DateTimeOffset? DateAwarded { get; set; }
 
     [BindProperty(SupportsGet = true)]
     public Guid Id { get; set; }
@@ -33,7 +33,7 @@ public class SupplierQualificationAwardingBodyModel(
 
                     if (qualification != null)
                     {
-                        PersonOrAwardingBody = qualification.AwardedByPersonOrBodyName;
+                        DateAwarded = qualification.DateAwarded;
                     }
                 }
             }
@@ -55,7 +55,7 @@ public class SupplierQualificationAwardingBodyModel(
 
         try
         {
-            session.Set("PersonOrAwardingBody", PersonOrAwardingBody);
+            session.Set("AwardedDate", DateAwarded);
 
         }
         catch (ApiException ex) when (ex.StatusCode == 404)
@@ -63,6 +63,6 @@ public class SupplierQualificationAwardingBodyModel(
             return Redirect("/page-not-found");
         }
 
-        return RedirectToPage("SupplierQualificationDateAwarded", new { Id });
+        return RedirectToPage("SupplierQualificationName", new { Id });
     }
 }
