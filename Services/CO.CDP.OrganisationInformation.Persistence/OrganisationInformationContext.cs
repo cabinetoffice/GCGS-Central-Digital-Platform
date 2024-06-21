@@ -28,6 +28,7 @@ public class OrganisationInformationContext(DbContextOptions<OrganisationInforma
                 a.Property(ai => ai.Uri);
                 a.Property(ai => ai.CreatedOn).IsRequired().HasDefaultValueSql("CURRENT_TIMESTAMP");
                 a.Property(ai => ai.UpdatedOn).IsRequired().HasDefaultValueSql("CURRENT_TIMESTAMP");
+                a.ToTable("identifiers");
             });
 
             entity.OwnsMany(e => e.ContactPoints, a =>
@@ -39,20 +40,21 @@ public class OrganisationInformationContext(DbContextOptions<OrganisationInforma
                 a.Property(ai => ai.Url);
                 a.Property(ai => ai.CreatedOn).IsRequired().HasDefaultValueSql("CURRENT_TIMESTAMP");
                 a.Property(ai => ai.UpdatedOn).IsRequired().HasDefaultValueSql("CURRENT_TIMESTAMP");
+                a.ToTable("contact_points");
             });
 
             entity.OwnsOne(e => e.SupplierInfo, a =>
             {
                 a.Property(z => z.CreatedOn).IsRequired().HasDefaultValueSql("CURRENT_TIMESTAMP");
                 a.Property(z => z.UpdatedOn).IsRequired().HasDefaultValueSql("CURRENT_TIMESTAMP");
-                a.ToTable("SupplierInformation");
+                a.ToTable("supplier_information");
 
                 a.OwnsMany(x => x.Qualifications, y =>
                 {
                     y.HasKey(z => z.Id);
                     y.Property(z => z.CreatedOn).IsRequired().HasDefaultValueSql("CURRENT_TIMESTAMP");
                     y.Property(z => z.UpdatedOn).IsRequired().HasDefaultValueSql("CURRENT_TIMESTAMP");
-                    y.ToTable("Qualification");
+                    y.ToTable("qualifications");
                 });
 
                 a.OwnsMany(x => x.TradeAssurances, y =>
@@ -60,13 +62,13 @@ public class OrganisationInformationContext(DbContextOptions<OrganisationInforma
                     y.HasKey(z => z.Id);
                     y.Property(z => z.CreatedOn).IsRequired().HasDefaultValueSql("CURRENT_TIMESTAMP");
                     y.Property(z => z.UpdatedOn).IsRequired().HasDefaultValueSql("CURRENT_TIMESTAMP");
-                    y.ToTable("TradeAssurance");
+                    y.ToTable("trade_assurances");
                 });
                 a.OwnsOne(x => x.LegalForm, y =>
                 {
                     y.Property(z => z.CreatedOn).IsRequired().HasDefaultValueSql("CURRENT_TIMESTAMP");
                     y.Property(z => z.UpdatedOn).IsRequired().HasDefaultValueSql("CURRENT_TIMESTAMP");
-                    y.ToTable("LegalForm");
+                    y.ToTable("legal_forms");
                 });
             });
 
@@ -74,7 +76,7 @@ public class OrganisationInformationContext(DbContextOptions<OrganisationInforma
             {
                 a.Property(z => z.CreatedOn).IsRequired().HasDefaultValueSql("CURRENT_TIMESTAMP");
                 a.Property(z => z.UpdatedOn).IsRequired().HasDefaultValueSql("CURRENT_TIMESTAMP");
-                a.ToTable("BuyerInformation");
+                a.ToTable("buyer_information");
             });
 
             entity
@@ -88,8 +90,14 @@ public class OrganisationInformationContext(DbContextOptions<OrganisationInforma
                     j.Property(op => op.UpdatedOn).IsRequired().HasDefaultValueSql("CURRENT_TIMESTAMP");
                 });
 
-            entity.OwnsMany(e => e.Addresses, a => { a.HasKey(e => e.Id); });
+            entity.OwnsMany(e => e.Addresses, a =>
+            {
+                a.HasKey(e => e.Id);
+            });
         });
+
+        modelBuilder.Entity<Address>()
+            .ToTable("addresses");
 
         modelBuilder.Entity<Person>()
             .HasMany(p => p.Tenants)
@@ -108,6 +116,12 @@ public class OrganisationInformationContext(DbContextOptions<OrganisationInforma
         }
 
         base.OnModelCreating(modelBuilder);
+    }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        optionsBuilder.UseSnakeCaseNamingConvention();
+        base.OnConfiguring(optionsBuilder);
     }
 
     public override int SaveChanges()
