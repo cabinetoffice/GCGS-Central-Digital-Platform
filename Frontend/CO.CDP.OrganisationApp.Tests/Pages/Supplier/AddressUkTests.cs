@@ -8,15 +8,13 @@ using Moq;
 namespace CO.CDP.OrganisationApp.Tests.Pages.Supplier;
 public class AddressUkModelTests
 {
-    private readonly Mock<ISession> _sessionMock;
     private readonly Mock<IOrganisationClient> _organisationClientMock;
     private readonly AddressUkModel _model;
 
     public AddressUkModelTests()
     {
-        _sessionMock = SupplierDetailsFactory.CreateSessionMock();
         _organisationClientMock = SupplierDetailsFactory.CreateOrganisationClientMock();
-        _model = new AddressUkModel(_sessionMock.Object, _organisationClientMock.Object)
+        _model = new AddressUkModel(_organisationClientMock.Object)
         {
             Id = Guid.NewGuid(),
             AddressType = Constants.AddressType.Registered

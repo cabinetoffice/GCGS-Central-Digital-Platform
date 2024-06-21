@@ -8,15 +8,13 @@ namespace CO.CDP.OrganisationApp.Tests.Pages.Supplier;
 
 public class SupplierBasicInformationTest
 {
-    private readonly Mock<ISession> _sessionMock;
     private readonly Mock<IOrganisationClient> _organisationClientMock;
     private readonly SupplierBasicInformationModel _model;
 
     public SupplierBasicInformationTest()
     {
-        _sessionMock = new Mock<ISession>();
         _organisationClientMock = new Mock<IOrganisationClient>();
-        _model = new SupplierBasicInformationModel(_sessionMock.Object, _organisationClientMock.Object);
+        _model = new SupplierBasicInformationModel(_organisationClientMock.Object);
     }
 
     [Fact]

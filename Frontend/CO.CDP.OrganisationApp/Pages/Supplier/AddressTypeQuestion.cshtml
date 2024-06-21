@@ -6,7 +6,9 @@
     var addressHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.HasUkAddress)).HasInnerHtml;
 }
 
-<a href="/organisation/@Model.Id/supplier-information/basic-information" class="govuk-back-link">Back</a>
+<a href="/organisation/@Model.Id/supplier-information/@(Model.AddressType == Constants.AddressType.Postal ? "postal-address-same-as-registered?selected=false" : "basic-information")" class="govuk-back-link">
+    Back
+</a>
 
 <main class="govuk-main-wrapper">
     <div class="govuk-grid-row">
