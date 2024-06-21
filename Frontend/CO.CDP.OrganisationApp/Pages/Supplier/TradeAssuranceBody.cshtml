@@ -1,0 +1,45 @@
+@page "/organisation/{id}/supplier-information/trade-assurance-body"
+
+@model CO.CDP.OrganisationApp.Pages.Supplier.TradeAssuranceBodyModel
+
+@{
+    var hasError = ((TagBuilder)Html.ValidationMessageFor(m => m.AwardedByPersonOrBodyName)).HasInnerHtml;
+}
+
+<a href="/organisation/@Model.Id/supplier-information/trade-assurance-summary@(Model.TradeAssuranceId.HasValue ? "" : "?selected=true")"
+   class="govuk-back-link">Back</a>
+
+<main class="govuk-main-wrapper">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <partial name="_ErrorSummary" model="@Model.ModelState" />
+            <fieldset class="govuk-fieldset" data-required="" data-error="Enter the trade assurance authority" aria-required="true">
+
+                <form method="post">
+                    <div class="govuk-form-group @(hasError ? "govuk-form-group--error" : "")">
+                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                            <h1 class="govuk-heading-l">Enter the name of the person or body which awarded the trade assurance</h1>
+                        </legend>
+                        <div id="trade-type-hint" class="govuk-hint">
+                            For example, Red Tractor Assurance or Feed Materials Assurance Scheme.
+                        </div>
+                        @if (hasError)
+                        {
+                            <p id="trade-type-error" class="govuk-error-message">
+                                <span class="govuk-visually-hidden">Error:</span>
+                                @Html.ValidationMessageFor(m => m.AwardedByPersonOrBodyName)
+                            </p>
+                        }
+                        <input class="govuk-input govuk-input--width-20 @(hasError ? "govuk-input--error" : "")"
+                               name="AwardedByPersonOrBodyName" id="tradeType" type="text"
+                               aria-describedby="@(hasError ? "trade-type-error" : "tradeType")"
+                               value="@Model.AwardedByPersonOrBodyName">
+                    </div>
+                    <button class="govuk-button" type="submit">Continue</button>
+                </form>
+
+            </fieldset>
+        </div>
+
+    </div>
+</main>
