@@ -28,28 +28,28 @@
                         </div>
                         @if (dayHasError)
                         {
-                            <p id="email-address-error" class="govuk-error-message">
+                            <p class="govuk-error-message">
                                 <span class="govuk-visually-hidden">Error:</span>
                                 @Html.ValidationMessageFor(m => m.Day)
                             </p>
                         }
                         @if (monthHasError)
                         {
-                            <p id="email-address-error" class="govuk-error-message">
+                            <p class="govuk-error-message">
                                 <span class="govuk-visually-hidden">Error:</span>
                                 @Html.ValidationMessageFor(m => m.Month)
                             </p>
                         }
                         @if (yearHasError)
                         {
-                            <p id="email-address-error" class="govuk-error-message">
+                            <p class="govuk-error-message">
                                 <span class="govuk-visually-hidden">Error:</span>
                                 @Html.ValidationMessageFor(m => m.Year)
                             </p>
                         }
                         @if (dateOfAwardHasError)
                         {
-                            <p id="email-address-error" class="govuk-error-message">
+                            <p class="govuk-error-message">
                                 <span class="govuk-visually-hidden">Error:</span>
                                 @Html.ValidationMessageFor(m => m.DateOfAward)
                             </p>
