@@ -2,6 +2,8 @@ using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Microsoft.EntityFrameworkCore.Migrations;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Migrations.Internal;
 
 namespace CO.CDP.OrganisationInformation.Persistence;
 
@@ -121,6 +123,7 @@ public class OrganisationInformationContext(DbContextOptions<OrganisationInforma
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         optionsBuilder.UseSnakeCaseNamingConvention();
+        optionsBuilder.ReplaceService<IHistoryRepository, CamelCaseHistoryContext>();
         base.OnConfiguring(optionsBuilder);
     }
 
@@ -174,4 +177,19 @@ internal static class PropertyBuilderExtensions
             v => JsonSerializer.Deserialize<TProperty>(v, JsonSerializerOptions.Default) ?? defaultValue,
             valueComparer
         );
+}
+
+/// <a href="https://github.com/efcore/EFCore.NamingConventions/issues/1">Keep history columns CamelCased</a>
+// ReSharper disable once ClassNeverInstantiated.Global
+internal class CamelCaseHistoryContext(HistoryRepositoryDependencies dependencies) : NpgsqlHistoryRepository(dependencies)
+{
+    protected override void ConfigureTable(EntityTypeBuilder<HistoryRow> history)
+    {
+        base.ConfigureTable(history);
+
+        // Ensure that previously created migrations table continues to work.
+        // Otherwise, EF will try to access these columns by their snake_names.
+        history.Property(h => h.MigrationId).HasColumnName("MigrationId");
+        history.Property(h => h.ProductVersion).HasColumnName("ProductVersion");
+    }
 }
