@@ -1,48 +1,25 @@
-using CO.CDP.Organisation.WebApiClient;
-using CO.CDP.OrganisationApp.WebApiClients;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
 
 namespace CO.CDP.OrganisationApp.Pages.Supplier;
 
-[AuthorisedSession]
+[Authorize]
 public class SupplierQualificationNameModel(
-    ISession session,
-    IOrganisationClient organisationClient) : LoggedInUserAwareModel
+    ITempDataService tempDataService) : PageModel
 {
-    public override ISession SessionContext => session;
-
-    [BindProperty]
-    [Required(ErrorMessage = "Please enter person or awarding body.")]
-    public string? Name { get; set; }
-
     [BindProperty(SupportsGet = true)]
     public Guid Id { get; set; }
 
-    public async Task<IActionResult> OnGet(Guid? qualificationId)
+    [BindProperty]
+    [Required(ErrorMessage = "Please enter person or awarding body.")]
+    public string? QualificationName { get; set; }
+
+    public IActionResult OnGet()
     {
-        try
-        {
-            if (qualificationId == null)
-            {
-                var composed = await organisationClient.GetComposedOrganisation(Id);
-
-                if (composed != null && composed.SupplierInfo.CompletedQualification)
-                {
-                    var qualification = composed.SupplierInfo.Qualifications.FirstOrDefault(a => a.Id == qualificationId);
-
-                    if (qualification != null)
-                    {
-                        Name = qualification.Name;
-                    }
-                }
-            }
-        }
-        catch (ApiException ex) when (ex.StatusCode == 404)
-        {
-            return Redirect("/page-not-found");
-        }
-
+        var qa = tempDataService.PeekOrDefault<Qualification>(Qualification.TempDataKey);
+        QualificationName = qa.Name;
         return Page();
     }
 
@@ -53,17 +30,11 @@ public class SupplierQualificationNameModel(
             return Page();
         }
 
-        try
-        {
-            session.Set("AwardedDate", Name);
+        var qa = tempDataService.PeekOrDefault<Qualification>(Qualification.TempDataKey);
+        qa.Name = QualificationName;
+        tempDataService.Put(TradeAssurance.TempDataKey, qa);
 
-        }
-        catch (ApiException ex) when (ex.StatusCode == 404)
-        {
-            return Redirect("/page-not-found");
-        }
-
-        return RedirectToPage("SupplierBasicInformation", new { Id });
+        return RedirectToPage("SupplierQualificationAwardingBody", new { Id });
     }
 }
 

@@ -1,7 +1,7 @@
 @page "/organisation/{id}/supplier-information/supplier-qualification-name"
 @model CO.CDP.OrganisationApp.Pages.Supplier.SupplierQualificationNameModel
 @{
-    var qualificationNameHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Name)).HasInnerHtml;
+    var qualificationNameHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.QualificationName)).HasInnerHtml;
 }
 <a href="/organisation/@Model.Id/supplier-information/basic-information" class="govuk-back-link">Back</a>
 
@@ -16,7 +16,7 @@
                 <div class="govuk-form-group @(qualificationNameHasError ? "govuk-form-group--error" : "")">
                     <input class="govuk-input govuk-!-width-two-thirds @(qualificationNameHasError ? "govuk-form-group--error" : "")"
                            id="qualificationName" name="qualificationName" spellcheck="false" autocomplete="false" aria-describedby="qualification-name-hint"
-                           value="@(!string.IsNullOrEmpty(Model.Name) ? Model.Name : "")">
+                           value="@(!string.IsNullOrEmpty(Model.QualificationName) ? Model.QualificationName : "")">
                 </div>
 
                 <button class="govuk-button govuk-!-margin-top-4" type="submit">Save and continue</button>

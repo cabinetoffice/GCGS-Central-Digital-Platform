@@ -1,48 +1,28 @@
-using CO.CDP.Organisation.WebApiClient;
-using CO.CDP.OrganisationApp.WebApiClients;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
 
 namespace CO.CDP.OrganisationApp.Pages.Supplier;
 
-[AuthorisedSession]
+[Authorize]
 public class SupplierQualificationAwardingBodyModel(
-    ISession session,
-    IOrganisationClient organisationClient) : LoggedInUserAwareModel
+    ITempDataService tempDataService) : PageModel
 {
-    public override ISession SessionContext => session;
-
     [BindProperty]
     [Required(ErrorMessage = "Please enter person or awarding body.")]
-    public string? PersonOrAwardingBody { get; set; }
+    public string? AwardedByPersonOrBodyName { get; set; }
 
     [BindProperty(SupportsGet = true)]
     public Guid Id { get; set; }
 
-    public async Task<IActionResult> OnGet(Guid? qualificationId)
+    public Guid? QualificationId { get; set; }
+
+    public IActionResult OnGet()
     {
-        try
-        {
-            if (qualificationId == null)
-            {
-                var composed = await organisationClient.GetComposedOrganisation(Id);
-
-                if (composed != null && composed.SupplierInfo.CompletedQualification)
-                {
-                    var qualification = composed.SupplierInfo.Qualifications.FirstOrDefault(a => a.Id == qualificationId);
-
-                    if (qualification != null)
-                    {
-                        PersonOrAwardingBody = qualification.AwardedByPersonOrBodyName;
-                    }
-                }
-            }
-        }
-        catch (ApiException ex) when (ex.StatusCode == 404)
-        {
-            return Redirect("/page-not-found");
-        }
-
+        var qa = tempDataService.PeekOrDefault<Qualification>(Qualification.TempDataKey);
+        QualificationId = qa.Id;
+        AwardedByPersonOrBodyName = qa.AwardedByPersonOrBodyName;
         return Page();
     }
 
@@ -52,17 +32,19 @@ public class SupplierQualificationAwardingBodyModel(
         {
             return Page();
         }
+        var qa = tempDataService.PeekOrDefault<Qualification>(Qualification.TempDataKey);
+        qa.AwardedByPersonOrBodyName = AwardedByPersonOrBodyName;
+        tempDataService.Put(Qualification.TempDataKey, qa);
 
-        try
-        {
-            session.Set("PersonOrAwardingBody", PersonOrAwardingBody);
-
-        }
-        catch (ApiException ex) when (ex.StatusCode == 404)
-        {
-            return Redirect("/page-not-found");
-        }
-
-        return RedirectToPage("SupplierQualificationDateAwarded", new { Id });
+        return RedirectToPage("SupplierQualificationAwardedDate", new { Id });
     }
+}
+
+public class Qualification
+{
+    public const string TempDataKey = "QualificationTempData";
+    public Guid? Id { get; set; }
+    public string? AwardedByPersonOrBodyName { get; set; }
+    public string? Name { get; set; }
+    public DateTimeOffset? DateAwarded { get; set; }
 }

@@ -1,7 +1,7 @@
 @page "/organisation/{id}/supplier-information/supplier-qualification-awarding-Body"
 @model CO.CDP.OrganisationApp.Pages.Supplier.SupplierQualificationAwardingBodyModel
 @{
-    var personOrAwardingBodyHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.PersonOrAwardingBody)).HasInnerHtml;
+    var hasError = ((TagBuilder)Html.ValidationMessageFor(m => m.AwardedByPersonOrBodyName)).HasInnerHtml;
 }
 <a href="/organisation/@Model.Id/supplier-information/basic-information" class="govuk-back-link">Back</a>
 
@@ -9,18 +9,33 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <partial name="_ErrorSummary" model="@Model.ModelState" />
-            <h1 class="govuk-heading-l">Enter the name of the person or body which awarded the qualification</h1>
-            <div id="hint" class="govuk-hint">For example, Royal Institution of Chartered Surveyors (RICS).</div>
-            <form class="form" method="post">
-           
-                <div class="govuk-form-group @(personOrAwardingBodyHasError ? "govuk-form-group--error" : "")">
-                    <input class="govuk-input govuk-!-width-two-thirds @(personOrAwardingBodyHasError ? "govuk-form-group--error" : "")"
-                           id="awardingBody" name="awardingBody" spellcheck="false" autocomplete="false" aria-describedby="awarding-body-hint"
-                           value="@(!string.IsNullOrEmpty(Model.PersonOrAwardingBody) ? Model.PersonOrAwardingBody : "")">
-                </div>
-                
-                <button class="govuk-button govuk-!-margin-top-4" type="submit">Save and continue</button>
-            </form>
+            <fieldset class="govuk-fieldset" data-required="" data-error="Enter the qualification" aria-required="true">
+
+                <form method="post">
+                    <div class="govuk-form-group @(hasError ? "govuk-form-group--error" : "")">
+                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                            <h1 class="govuk-heading-l">Enter the name of the person or body which awarded the qualification</h1>
+                        </legend>
+                        <div id="qualification-type-hint" class="govuk-hint">
+                            For example, Royal Institution of Chartered Surveyors (RICS).
+                        </div>
+                        @if (hasError)
+                        {
+                            <p id="qualification-body-name-error" class="govuk-error-message">
+                                <span class="govuk-visually-hidden">Error:</span>
+                                @Html.ValidationMessageFor(m => m.AwardedByPersonOrBodyName)
+                            </p>
+                        }
+                        <input class="govuk-input govuk-!-width-two-thirds @(hasError ? "govuk-input--error" : "")"
+                               name="AwardedByPersonOrBodyName" id="qualificationType" type="text"
+                               aria-describedby="@(hasError ? "qualification-body-name-error" : "qualificationType")"
+                               value="@Model.AwardedByPersonOrBodyName">
+                    </div>
+                    <button class="govuk-button" type="submit">Continue</button>
+                </form>
+
+            </fieldset>
         </div>
+
     </div>
 </main>

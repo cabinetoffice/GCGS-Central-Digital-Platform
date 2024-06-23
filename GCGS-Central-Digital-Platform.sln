@@ -78,9 +78,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.Organisation.Authori
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.Organisation.Authority.Tests", "Services\CO.CDP.Organisation.Authority.Tests\CO.CDP.Organisation.Authority.Tests.csproj", "{683AC3AE-1837-40E1-8BEF-D9869917A094}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.Configuration", "Libraries\CO.CDP.Configuration\CO.CDP.Configuration.csproj", "{11B64094-4A4C-4CED-B75E-1CA8A192CB14}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.Configuration", "Libraries\CO.CDP.Configuration\CO.CDP.Configuration.csproj", "{11B64094-4A4C-4CED-B75E-1CA8A192CB14}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.Configuration.Tests", "Libraries\CO.CDP.Configuration.Tests\CO.CDP.Configuration.Tests.csproj", "{C3372E9A-4B5B-4BEF-9A06-464669316098}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.Configuration.Tests", "Libraries\CO.CDP.Configuration.Tests\CO.CDP.Configuration.Tests.csproj", "{C3372E9A-4B5B-4BEF-9A06-464669316098}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
