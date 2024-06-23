@@ -156,13 +156,14 @@ public record DeleteSupplierInformation
     public required SupplierInformationDeleteType Type { get; init; }
 
     public Guid? TradeAssuranceId { get; init; }
+    public Guid? QualificationId { get; init; }
 }
 
 [JsonConverter(typeof(JsonStringEnumConverter))]
 public enum SupplierInformationDeleteType
 {
-    TradeAssurance
-
+    TradeAssurance,
+    Qualification
 
 }
 

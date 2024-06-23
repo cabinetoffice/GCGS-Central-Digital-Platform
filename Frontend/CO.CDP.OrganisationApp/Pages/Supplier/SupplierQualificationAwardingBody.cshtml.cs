@@ -26,7 +26,7 @@ public class SupplierQualificationAwardingBodyModel(
         return Page();
     }
 
-    public IActionResult OnPost()
+    public IActionResult OnPost(Guid? QualificationId)
     {
         if (!ModelState.IsValid)
         {

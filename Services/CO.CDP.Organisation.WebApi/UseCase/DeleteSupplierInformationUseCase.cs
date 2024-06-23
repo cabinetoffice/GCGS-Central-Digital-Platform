@@ -31,6 +31,19 @@ public class DeleteSupplierInformationUseCase(IOrganisationRepository organisati
                 }
                 break;
 
+            case SupplierInformationDeleteType.Qualification:
+                if (command.deleteSupplierInformation.QualificationId == null)
+                {
+                    throw new InvalidUpdateSupplierInformationCommand("Missing qualification id.");
+                }
+                var qualification = organisation.SupplierInfo.Qualifications
+                    .FirstOrDefault(t => t.Guid == command.deleteSupplierInformation.QualificationId);
+                if (qualification != null)
+                {
+                    organisation.SupplierInfo.Qualifications.Remove(qualification);
+                }
+                break;
+
             default:
                 throw new InvalidUpdateSupplierInformationCommand("Unknown supplier information delete type.");
         }

@@ -22,11 +22,6 @@
         <p class="govuk-body">@address.PostalCode</p>
         <p class="govuk-body">@address.CountryName</p>
     }
-
-    string RenderQualificationsCount(List<CO.CDP.Organisation.WebApiClient.Qualification> qualifications)
-    {
-        return qualifications.Count() switch { 1 => "1 qualification", _ => $"{qualifications.Count()} qualifications" };
-    }
 }
 
 <a href="." class="govuk-back-link">Back</a>
@@ -167,9 +162,9 @@
                     <dt class="govuk-summary-list__value">
                         @if (details.CompletedQualification)
                         {
-                            if (details.Qualifications != null)
+                            if (details.Qualifications.Count > 0)
                             {
-                                RenderQualificationsCount(details.Qualifications.ToList());
+                                @(details.Qualifications.Count) @:qualifications
                             }
                             else
                             {
@@ -178,7 +173,7 @@
                         }
                     </dt>
                     <dd class="govuk-summary-list__actions">
-                        <a class="govuk-link" href="supplier-qualification-question">
+                        <a class="govuk-link" href="supplier-qualification-summary">
                             @GetActionString(details.CompletedQualification)<span class="govuk-visually-hidden"> Change</span>
                         </a>
                     </dd>

@@ -101,7 +101,16 @@ internal static class OrganisationClientExtensions
             organisationId,
             new DeleteSupplierInformation(
                 type: SupplierInformationDeleteType.TradeAssurance,
-                tradeAssuranceId: tradeAssuranceId));
+                tradeAssuranceId: tradeAssuranceId,
+                qualificationId: null));
+
+    internal static Task DeleteSupplierQualification(this IOrganisationClient organisationClient, Guid organisationId, Guid qualificationId)
+      => organisationClient.DeleteSupplierInformationAsync(
+          organisationId,
+          new DeleteSupplierInformation(
+              type: SupplierInformationDeleteType.Qualification,
+              tradeAssuranceId: null,
+              qualificationId: qualificationId));
 }
 
 public class ComposedOrganisation

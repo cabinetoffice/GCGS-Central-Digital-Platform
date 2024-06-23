@@ -33,22 +33,22 @@ public class SupplierQualificationCheckAnswerModel(
             return Page();
         }
 
-        var ta = tempDataService.GetOrDefault<Qualification>(Qualification.TempDataKey);
-        if (!Validate(ta))
+        var qa = tempDataService.GetOrDefault<Qualification>(Qualification.TempDataKey);
+        if (!Validate(qa))
         {
             return RedirectToPage("SupplierQualificationAwardingBody", new { Id });
         }
 
         await organisationClient.UpdateSupplierQualification(Id,
             new Organisation.WebApiClient.Qualification(
-                id: ta.Id,
-                awardedByPersonOrBodyName: ta.AwardedByPersonOrBodyName,
-                name: ta.Name,
-                dateAwarded: ta.DateAwarded!.Value));
+                id: qa.Id,
+                awardedByPersonOrBodyName: qa.AwardedByPersonOrBodyName,
+                name: qa.Name,
+                dateAwarded: qa.DateAwarded!.Value));
 
         tempDataService.Remove(Qualification.TempDataKey);
 
-        return RedirectToPage("QualificationSummary", new { Id });
+        return RedirectToPage("SupplierQualificationSummary", new { Id });
     }
 
     private static bool Validate(Qualification qualification)
