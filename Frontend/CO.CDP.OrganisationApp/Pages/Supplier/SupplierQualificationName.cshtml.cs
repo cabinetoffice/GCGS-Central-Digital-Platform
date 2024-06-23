@@ -32,9 +32,9 @@ public class SupplierQualificationNameModel(
 
         var qa = tempDataService.PeekOrDefault<Qualification>(Qualification.TempDataKey);
         qa.Name = QualificationName;
-        tempDataService.Put(TradeAssurance.TempDataKey, qa);
+        tempDataService.Put(Qualification.TempDataKey, qa);
 
-        return RedirectToPage("SupplierQualificationAwardingBody", new { Id });
+        return RedirectToPage("SupplierQualificationCheckAnswer", new { Id });
     }
 }
 

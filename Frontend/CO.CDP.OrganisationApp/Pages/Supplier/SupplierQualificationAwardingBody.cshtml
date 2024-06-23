@@ -1,4 +1,4 @@
-@page "/organisation/{id}/supplier-information/supplier-qualification-awarding-Body"
+@page "/organisation/{id}/supplier-information/supplier-qualification-awarding-body"
 @model CO.CDP.OrganisationApp.Pages.Supplier.SupplierQualificationAwardingBodyModel
 @{
     var hasError = ((TagBuilder)Html.ValidationMessageFor(m => m.AwardedByPersonOrBodyName)).HasInnerHtml;
@@ -31,7 +31,7 @@
                                aria-describedby="@(hasError ? "qualification-body-name-error" : "qualificationType")"
                                value="@Model.AwardedByPersonOrBodyName">
                     </div>
-                    <button class="govuk-button" type="submit">Continue</button>
+                    <button class="govuk-button" type="submit">Save and Continue</button>
                 </form>
 
             </fieldset>

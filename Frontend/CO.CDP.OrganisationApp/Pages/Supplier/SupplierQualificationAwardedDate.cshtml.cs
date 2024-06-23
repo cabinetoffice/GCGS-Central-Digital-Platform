@@ -34,7 +34,7 @@ public class SupplierQualificationAwardedDateModel(
 
     public IActionResult OnGet()
     {
-        var qa = tempDataService.PeekOrDefault<TradeAssurance>(TradeAssurance.TempDataKey);
+        var qa = tempDataService.PeekOrDefault<Qualification>(Qualification.TempDataKey);
         if (qa.DateAwarded.HasValue)
         {
             Day = qa.DateAwarded.Value.Day.ToString();
@@ -64,9 +64,9 @@ public class SupplierQualificationAwardedDateModel(
             return Page();
         }
 
-        var qa = tempDataService.PeekOrDefault<TradeAssurance>(TradeAssurance.TempDataKey);
+        var qa = tempDataService.PeekOrDefault<Qualification>(Qualification.TempDataKey);
         qa.DateAwarded = parsedDate;
-        tempDataService.Put(TradeAssurance.TempDataKey, qa);
+        tempDataService.Put(Qualification.TempDataKey, qa);
 
         return RedirectToPage("SupplierQualificationName", new { Id });
     }
