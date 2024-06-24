@@ -103,6 +103,12 @@ internal static class OrganisationClientExtensions
             new DeleteSupplierInformation(
                 type: SupplierInformationDeleteType.TradeAssurance,
                 tradeAssuranceId: tradeAssuranceId));
+    internal static Task UpdateOperationType(this IOrganisationClient organisationClient, Guid organisationId, List<OperationType>? operationTypes)
+        => organisationClient.UpdateSupplierInformationAsync(
+            organisationId,
+            new UpdateSupplierInformation(
+                type: SupplierInformationUpdateType.OperationType,
+                supplierInformation: new SupplierInfo(supplierType: null, operationTypes: operationTypes, tradeAssurance: null, legalForm: null)));
 }
 
 public class ComposedOrganisation
