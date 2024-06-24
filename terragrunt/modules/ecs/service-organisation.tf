@@ -16,6 +16,7 @@ module "ecs_service_organisation" {
       memory                  = var.service_configs.organisation.memory
       name                    = var.service_configs.organisation.name
       public_hosted_zone_fqdn = var.public_hosted_zone_fqdn
+      vpc_cidr                = var.vpc_cider
     }
   )
 

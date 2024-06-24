@@ -28,7 +28,6 @@ resource "aws_lb_target_group" "this" {
 resource "aws_lb_listener_rule" "this" {
   count = var.host_port != null ? 1 : 0
 
-
   listener_arn = var.ecs_listener_arn
   priority     = var.family == "app" ? var.host_port - 8000 : var.host_port
 

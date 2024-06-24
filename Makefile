@@ -120,9 +120,19 @@ compose.override.yml:
 
 
 generate-authority-keys: ## Generate authority's private and public keys and store in ./terragrunt/secrets/ folder
-	openssl genpkey -algorithm RSA -out ./terragrunt/secrets/authority_private_key.pem -pkeyopt rsa_keygen_bits:2048
-	openssl rsa -pubout -in ./terragrunt/secrets/authority_private_key.pem -out ./terragrunt/secrets/authority_public_key.pem
+	openssl genpkey -algorithm RSA -out ./terragrunt/secrets/authority-private-key.pem -pkeyopt rsa_keygen_bits:2048
+	openssl rsa -pubout -in ./terragrunt/secrets/authority-private-key.pem -outform PEM -out ./terragrunt/secrets/authority-public-key.pem
 .PHONY: generate-authority-keys
+
+aws-push-authority-keys:
+	@#aws secretsmanager update-secret --secret-id cdp-sirsi-test2-authority-private-key --secret-string "$$(jq -n --arg priv "$$(cat ./terragrunt/secrets/authority-private-key.pem)" --arg pub "$$(cat ./terragrunt/secrets/authority-public-key.pem)" '{private: $$priv, public: $$pub}')"
+	@if aws secretsmanager describe-secret --secret-id cdp-sirsi-authority-keys > /dev/null 2>&1; then \
+		echo "Secret exists, updating..."; \
+		aws secretsmanager update-secret --secret-id cdp-sirsi-authority-keys --secret-string "$$(jq -n --arg priv "$$(cat ./terragrunt/secrets/authority-private-key.pem)" --arg pub "$$(cat ./terragrunt/secrets/authority-public-key.pem)" '{PRIVATE: $$priv, PUBLIC: $$pub}')"; \
+	else \
+		echo "Secret does not exist, creating..."; \
+		aws secretsmanager create-secret --name cdp-sirsi-authority-keys --secret-string "$$(jq -n --arg priv "$$(cat ./terragrunt/secrets/authority-private-key.pem)" --arg pub "$$(cat ./terragrunt/secrets/authority-public-key.pem)" '{PRIVATE: $$priv, PUBLIC: $$pub}')"; \
+	fi
 
 aws-push-to-ecr: build-docker ## Build, tag and push Docker images to ECR
 	$(foreach image,$(TAGGED_IMAGES),docker tag $(image) $(REPO_URL)/$(notdir $(basename $(image)));)

@@ -22,6 +22,7 @@
     "environment": [
         {"name": "ASPNETCORE_ENVIRONMENT", "value": "${environment}"},
         {"name": "ASPNETCORE_HTTP_PORTS", "value": "${host_port}"},
+        {"name": "ForwardedHeaders__KnownNetwork", "value": "${vpc_cidr}"},
         {"name": "TenantService", "value": "https://tenant.${public_hosted_zone_fqdn}"},
         {"name": "Organisation__Authority", "value": "https://authority.${public_hosted_zone_fqdn}"},
         {"name": "OrganisationService", "value": "https://organisation.${public_hosted_zone_fqdn}"},

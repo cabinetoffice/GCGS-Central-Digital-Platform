@@ -15,6 +15,7 @@ module "ecs_service_forms" {
       memory                  = var.service_configs.forms.memory
       name                    = var.service_configs.forms.name
       public_hosted_zone_fqdn = var.public_hosted_zone_fqdn
+      vpc_cidr                = var.vpc_cider
     }
   )
 

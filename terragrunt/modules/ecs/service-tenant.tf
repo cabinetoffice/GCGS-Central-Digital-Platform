@@ -16,6 +16,7 @@ module "ecs_service_tenant" {
       memory                  = var.service_configs.tenant.memory
       name                    = var.service_configs.tenant.name
       public_hosted_zone_fqdn = var.public_hosted_zone_fqdn
+      vpc_cidr                = var.vpc_cider
     }
   )
 

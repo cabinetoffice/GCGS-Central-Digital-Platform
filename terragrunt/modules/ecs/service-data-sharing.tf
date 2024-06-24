@@ -15,6 +15,7 @@ module "ecs_service_data_sharing" {
       memory                  = var.service_configs.data_sharing.memory
       name                    = var.service_configs.data_sharing.name
       public_hosted_zone_fqdn = var.public_hosted_zone_fqdn
+      vpc_cidr                = var.vpc_cider
     }
   )
 

@@ -18,6 +18,7 @@ module "ecs_service_organisation_app" {
       onelogin_client_id      = local.one_loging.credential_locations.client_id
       onelogin_private_key    = local.one_loging.credential_locations.private_key
       public_hosted_zone_fqdn = var.public_hosted_zone_fqdn
+      vpc_cidr                = var.vpc_cider
     }
   )
 
