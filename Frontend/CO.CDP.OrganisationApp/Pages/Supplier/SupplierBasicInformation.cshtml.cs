@@ -30,6 +30,9 @@ public class SupplierBasicInformationModel(IOrganisationClient organisationClien
     [BindProperty]
     public Organisation.WebApiClient.LegalForm? LegalForm { get; set; }
 
+    [BindProperty]
+    public required List<OperationType>? OperationTypes { get; set; }
+
     public async Task<IActionResult> OnGet(Guid id)
     {
         try
@@ -50,7 +53,8 @@ public class SupplierBasicInformationModel(IOrganisationClient organisationClien
             var postalAddrress = composed.Organisation.Addresses.FirstOrDefault(i => i.Type == AddressType.Postal);
             if (postalAddrress != null) PostalAddress = postalAddrress;
 
-
+            var operationTypes = composed.SupplierInfo.OperationTypes.ToList();
+            if (operationTypes != null) OperationTypes = operationTypes;
         }
         catch (ApiException ex) when (ex.StatusCode == 404)
         {

@@ -115,7 +115,7 @@
                   <div class="govuk-checkboxes__divider">or</div>
                   <div class="govuk-checkboxes__item">
                      <input class="govuk-checkboxes__input" id="chkNoneOfTheAbove"
-                     name="SelectedOperationTypes" type="checkbox" value="@OperationType.None" @IsSelected(OperationType.None) />
+                     name="SelectedOperationTypes" type="checkbox" value="@OperationType.None" @IsSelected(OperationType.None)  data-behaviour="exclusive" />
                      <label class="govuk-label govuk-checkboxes__label" for="chkNoneOfTheAbove">
                      @OperationType.None.Description()
                      </label>
