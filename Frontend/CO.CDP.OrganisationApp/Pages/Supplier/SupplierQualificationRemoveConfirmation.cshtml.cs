@@ -44,7 +44,7 @@ IOrganisationClient organisationClient) : PageModel
             await organisationClient.DeleteSupplierQualification(Id, QualificationId);
         }
 
-        return RedirectToPage("TradeAssuranceSummary", new { Id });
+        return RedirectToPage("SupplierQualificationSummary", new { Id });
     }
 
     private async Task<Organisation.WebApiClient.Qualification?> GetQualification(IOrganisationClient organisationClient)
