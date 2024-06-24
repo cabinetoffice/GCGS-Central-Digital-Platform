@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Pages.Supplier;
 using FluentAssertions;
@@ -7,15 +8,20 @@ using Moq;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages.Supplier;
 
-public class SupplierEmailAddressTest
+public class SupplierOperationQuestionTest
 {
+    private readonly Mock<ISession> _sessionMock;
     private readonly Mock<IOrganisationClient> _organisationClientMock;
-    private readonly SupplierEmailAddressModel _model;
+    private readonly SupplierOperationQuestionModel _model;
 
-    public SupplierEmailAddressTest()
+    public SupplierOperationQuestionTest()
     {
+        _sessionMock = new Mock<ISession>();
         _organisationClientMock = new Mock<IOrganisationClient>();
-        _model = new SupplierEmailAddressModel(_organisationClientMock.Object);
+        _model = new SupplierOperationQuestionModel(_sessionMock.Object, _organisationClientMock.Object)
+        {
+            SelectedOperationTypes = new List<OperationType>()
+        };
     }
 
     [Fact]
@@ -24,15 +30,15 @@ public class SupplierEmailAddressTest
         var id = Guid.NewGuid();
 
         _organisationClientMock.Setup(client => client.GetOrganisationSupplierInformationAsync(id))
-            .ReturnsAsync(SupplierInformationClientModel);
+            .ReturnsAsync(SupplierDetailsFactory.CreateSupplierInformationClientModel());
 
         _organisationClientMock.Setup(client => client.GetOrganisationAsync(id))
-            .ReturnsAsync(OrganisationClientModel(id));
+            .ReturnsAsync(SupplierDetailsFactory.GivenOrganisationClientModel(id));
 
         var result = await _model.OnGet(id);
 
         result.Should().BeOfType<PageResult>();
-        _model.EmailAddress.Should().Be("test@test.com");
+        _model.SelectedOperationTypes.Should().NotBeNull();
     }
 
     [Fact]
@@ -53,10 +59,10 @@ public class SupplierEmailAddressTest
     {
         var id = Guid.NewGuid();
         _model.Id = id;
-        _model.EmailAddress = "test@test.com";
+        _model.SelectedOperationTypes = new List<OperationType> { OperationType.SmallorMediumSized };
 
         _organisationClientMock.Setup(client => client.GetOrganisationAsync(id))
-            .ReturnsAsync(OrganisationClientModel(id));
+            .ReturnsAsync(SupplierDetailsFactory.GivenOrganisationClientModel(id));
 
         _organisationClientMock.Setup(client => client.UpdateSupplierInformationAsync(id,
             It.IsAny<UpdateSupplierInformation>())).Returns(Task.CompletedTask);
@@ -70,7 +76,7 @@ public class SupplierEmailAddressTest
     [Fact]
     public async Task OnPost_InvalidModelState_ReturnsPageResult()
     {
-        _model.ModelState.AddModelError("EmailAddress", "Please enter an email");
+        _model.ModelState.AddModelError("SelectedOperationTypes", "Please select at least one operation type");
 
         var result = await _model.OnPost();
 
@@ -78,23 +84,32 @@ public class SupplierEmailAddressTest
     }
 
     [Fact]
-    public void WhenEmailAddressIsInvalid_ShouldRaiseEmailAddressValidationError()
+    public void ValidateModel_WithNoneAndOtherOperationTypes_ShouldReturnValidationError()
     {
-        _model.EmailAddress = "dummy";
+        var model = new SupplierOperationQuestionModel(_sessionMock.Object, _organisationClientMock.Object)
+        {
+            SelectedOperationTypes = new List<OperationType>
+            {
+                OperationType.None,
+                OperationType.SmallorMediumSized
+            }
+        };
 
-        var results = ModelValidationHelper.Validate(_model);
+        var validationResults = new List<ValidationResult>();
+        var validationContext = new ValidationContext(model);
 
-        results.Any(c => c.MemberNames.Contains("EmailAddress")).Should().BeTrue();
+        var isValid = Validator.TryValidateObject(model, validationContext, validationResults, true);
 
-        results.Where(c => c.MemberNames.Contains("EmailAddress")).First()
-            .ErrorMessage.Should().Be("Enter an email address in the correct format, like name@example.com");
+        isValid.Should().BeFalse();
+        validationResults.Should().ContainSingle();
+        validationResults[0].ErrorMessage.Should().Be("You cannot select 'My organisation is none of the above' along with other options.");
     }
-
     [Fact]
     public async Task OnPost_OrganisationNotFound_ReturnsRedirectToPageNotFound()
     {
         var id = Guid.NewGuid();
         _model.Id = id;
+        _model.SelectedOperationTypes = new List<OperationType> { OperationType.None };
 
         _organisationClientMock.Setup(client => client.GetOrganisationAsync(id))
             .ThrowsAsync(new ApiException("Unexpected error", 404, "", default, null));
@@ -103,31 +118,4 @@ public class SupplierEmailAddressTest
 
         result.Should().BeOfType<RedirectResult>().Which.Url.Should().Be("/page-not-found");
     }
-
-    private static SupplierInformation SupplierInformationClientModel => new(
-            organisationName: "FakeOrg",
-            supplierType: SupplierType.Organisation,
-            operationTypes: null,
-            completedRegAddress: true,
-            completedPostalAddress: false,
-            completedVat: false,
-            completedWebsiteAddress: false,
-            completedEmailAddress: true,
-            completedQualification: false,
-            completedTradeAssurance: false,
-            completedOperationType: false,
-            completedLegalForm: false,
-            tradeAssurances: null,
-            legalForm: null,
-            qualifications: null);
-
-    private static Organisation.WebApiClient.Organisation OrganisationClientModel(Guid id) =>
-        new(
-            additionalIdentifiers: [new Identifier(id: "FakeId", legalName: "FakeOrg", scheme: "VAT", uri: null)],
-            addresses: null,
-            contactPoint: new ContactPoint(email: "test@test.com", faxNumber: null, name: null, telephone: null, url: new Uri("https://xyz.com")),
-            id: id,
-            identifier: null,
-            name: "Test Org",
-            roles: [PartyRole.Supplier]);
 }

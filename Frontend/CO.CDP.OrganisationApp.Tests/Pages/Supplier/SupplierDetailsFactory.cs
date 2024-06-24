@@ -5,29 +5,21 @@ using Moq;
 namespace CO.CDP.OrganisationApp.Tests.Pages.Supplier;
 public static class SupplierDetailsFactory
 {
-    public static Mock<ISession> CreateSessionMock()
-    {
-        return new Mock<ISession>();
-    }
-
     public static Mock<IOrganisationClient> CreateOrganisationClientMock()
     {
         return new Mock<IOrganisationClient>();
     }
 
-    public static SupplierIndividualOrOrgModel GivenSupplierIndividualOrOrgModel(Mock<ISession> sessionMock, Mock<IOrganisationClient> organisationClientMock)
-    {
-        return new SupplierIndividualOrOrgModel(sessionMock.Object, organisationClientMock.Object);
-    }
-
-    public static SupplierInformation CreateSupplierInformationClientModel(bool completedTradeAssurance = false)
+    public static SupplierInformation CreateSupplierInformationClientModel(
+        bool completedTradeAssurance = false,
+        bool completedPostalAddress = false)
     {
         return new SupplierInformation(
             organisationName: "FakeOrg",
             supplierType: SupplierType.Organisation,
             operationTypes: [],
             completedRegAddress: true,
-            completedPostalAddress: false,
+            completedPostalAddress: completedPostalAddress,
             completedVat: true,
             completedWebsiteAddress: false,
             completedEmailAddress: false,

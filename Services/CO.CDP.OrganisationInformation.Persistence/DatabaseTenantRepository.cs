@@ -65,10 +65,10 @@ public class DatabaseTenantRepository(OrganisationInformationContext context) : 
     {
         switch (cause.InnerException)
         {
-            case { } e when e.ContainsDuplicateKey("_Tenants_Name"):
+            case { } e when e.ContainsDuplicateKey("_tenants_name"):
                 throw new ITenantRepository.TenantRepositoryException.DuplicateTenantException(
                     $"Tenant with name `{tenant.Name}` already exists.", cause);
-            case { } e when e.ContainsDuplicateKey("_Tenants_Guid"):
+            case { } e when e.ContainsDuplicateKey("_tenants_guid"):
                 throw new ITenantRepository.TenantRepositoryException.DuplicateTenantException(
                     $"Tenant with guid `{tenant.Guid}` already exists.", cause);
             default: throw cause;

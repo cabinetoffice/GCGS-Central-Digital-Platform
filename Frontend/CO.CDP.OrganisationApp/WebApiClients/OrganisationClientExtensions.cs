@@ -104,6 +104,13 @@ internal static class OrganisationClientExtensions
                 tradeAssuranceId: tradeAssuranceId,
                 qualificationId: null));
 
+    internal static Task UpdateOperationType(this IOrganisationClient organisationClient, Guid organisationId, List<OperationType>? operationTypes)
+        => organisationClient.UpdateSupplierInformationAsync(
+            organisationId,
+            new UpdateSupplierInformation(
+                type: SupplierInformationUpdateType.OperationType,
+                supplierInformation: new SupplierInfo(supplierType: null, operationTypes: operationTypes, tradeAssurance: null, legalForm: null, qualification: null)));
+
     internal static Task DeleteSupplierQualification(this IOrganisationClient organisationClient, Guid organisationId, Guid qualificationId)
       => organisationClient.DeleteSupplierInformationAsync(
           organisationId,
