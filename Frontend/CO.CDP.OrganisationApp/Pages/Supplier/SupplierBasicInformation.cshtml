@@ -22,6 +22,20 @@
         <p class="govuk-body">@address.PostalCode</p>
         <p class="govuk-body">@address.CountryName</p>
     }
+
+    void RenderLegalForm(CO.CDP.Organisation.WebApiClient.LegalForm legalForm)
+    {
+        if (legalForm.RegisteredUnderAct2006 == true)
+        {
+            <p class="govuk-body">@LegalFormSelectOrganisationModel.OrganisationLegalForm[legalForm.RegisteredLegalForm]</p>
+        }
+        else
+        {
+            <p class="govuk-body">@legalForm.RegisteredLegalForm</p>
+        }
+        <p class="govuk-body">@legalForm.LawRegistered</p>
+        <p class="govuk-body">@legalForm.RegistrationDate.Date.ToShortDateString()</p>
+    }
 }
 
 <a href="." class="govuk-back-link">Back</a>
@@ -212,9 +226,13 @@
                             Legal form
                         </dt>
                         <dt class="govuk-summary-list__value">
+                            @if (details.CompletedLegalForm && Model.LegalForm != null)
+                            {
+                                RenderLegalForm(Model.LegalForm);
+                            }
                         </dt>
                         <dd class="govuk-summary-list__actions">
-                            <a class="govuk-link" href="#">
+                            <a class="govuk-link" href="ca-question">
                                 @GetActionString(details.CompletedLegalForm)<span class="govuk-visually-hidden"> Change</span>
                             </a>
                         </dd>

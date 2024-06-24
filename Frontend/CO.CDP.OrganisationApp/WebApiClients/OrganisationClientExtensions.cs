@@ -90,6 +90,13 @@ internal static class OrganisationClientExtensions
                 type: SupplierInformationUpdateType.TradeAssurance,
                 supplierInformation: new SupplierInfo(supplierType: null, operationTypes: null, tradeAssurance: tradeAssurance, legalForm: null)));
 
+    internal static Task UpdateSupplierLegalForm(this IOrganisationClient organisationClient, Guid organisationId, LegalForm? legalForm = null)
+        => organisationClient.UpdateSupplierInformationAsync(
+            organisationId,
+            new UpdateSupplierInformation(
+                type: SupplierInformationUpdateType.LegalForm,
+                supplierInformation: new SupplierInfo(supplierType: null, operationTypes: null, tradeAssurance: null, legalForm: legalForm)));
+
     internal static Task DeleteSupplierTradeAssurance(this IOrganisationClient organisationClient, Guid organisationId, Guid tradeAssuranceId)
         => organisationClient.DeleteSupplierInformationAsync(
             organisationId,

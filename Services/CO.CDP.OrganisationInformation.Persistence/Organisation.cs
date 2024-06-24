@@ -114,7 +114,7 @@ public class Organisation : IEntityDate
     [Owned]
     public record LegalForm : IEntityDate
     {
-        public required string RegisteredUnderAct2006 { get; set; }
+        public required bool RegisteredUnderAct2006 { get; set; }
         public required string RegisteredLegalForm { get; set; }
         public required string LawRegistered { get; set; }
         public required DateTimeOffset RegistrationDate { get; set; }

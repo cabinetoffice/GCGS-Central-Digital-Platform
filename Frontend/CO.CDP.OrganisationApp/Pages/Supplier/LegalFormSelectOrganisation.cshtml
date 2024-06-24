@@ -1,0 +1,76 @@
+@page "/organisation/{id}/supplier-information/legal-form-select-org"
+@model CO.CDP.OrganisationApp.Pages.Supplier.LegalFormSelectOrganisationModel
+
+@{
+    var registeredOrgHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.RegisteredOrg)).HasInnerHtml;
+    string IsSelected(string? radioValue)
+    {
+        return Model.RegisteredOrg == radioValue ? "checked='checked'" : string.Empty;
+    }
+}
+
+<a href="/organisation/@Model.Id/supplier-information/basic-information" class="govuk-back-link">Back</a>
+
+<main class="govuk-main-wrapper">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <partial name="_ErrorSummary" model="@Model.ModelState" />
+            <form class="form" method="post">
+                <div class="govuk-form-group @(registeredOrgHasError ? "govuk-form-group--error": "")">
+                    <fieldset class="govuk-fieldset" data-required="" data-error="Select your organisation's legal form" aria-required="true">
+                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                            <h1 class="govuk-fieldset__heading">
+                                Select your organisation's legal form
+                            </h1>
+                        </legend>
+                        <div id="legalForm-hint" class="govuk-hint govuk-!-margin-bottom-6">
+                            When it was set up and registered, what structure was used.
+                        </div>
+                        <div class="govuk-radios govuk-!-margin-top-6" data-module="govuk-radios">
+                            @if (registeredOrgHasError)
+                            {
+                                <p id="registered-org-error" class="govuk-error-message">
+                                    <span class="govuk-visually-hidden">Error:</span> @Html.ValidationMessageFor(m => m.RegisteredOrg)
+                                </p>
+                            }
+
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input" id="legalForm-lc" name="RegisteredOrg" type="radio" value="LimitedCompany"
+                                       data-aria-controls="conditional-legalForm-lc" @IsSelected("LimitedCompany")>
+                                <label class="govuk-label govuk-radios__label" for="legalForm-lc">
+                                    @LegalFormSelectOrganisationModel.OrganisationLegalForm["LimitedCompany"]
+                                </label>
+                            </div>
+
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input" id="legalForm-llp" name="RegisteredOrg" type="radio" value="LLP"
+                                       data-aria-controls="conditional-legalForm-llp" @IsSelected("LLP")>
+                                <label class="govuk-label govuk-radios__label" for="legalForm-llp">
+                                    @LegalFormSelectOrganisationModel.OrganisationLegalForm["LLP"]
+                                </label>
+                            </div>
+
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input" id="legalForm-lp" name="RegisteredOrg" type="radio"
+                                       value="LimitedPartnership" data-aria-controls="conditional-legalForm-lp" @IsSelected("LimitedPartnership")>
+                                <label class="govuk-label govuk-radios__label" for="legalForm-lp">
+                                    @LegalFormSelectOrganisationModel.OrganisationLegalForm["LimitedPartnership"]
+                                </label>
+                            </div>
+
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input" id="legalForm-other" name="RegisteredOrg" type="radio" value="Other"
+                                       data-aria-controls="conditional-legalForm-other" @IsSelected("Other")>
+                                <label class="govuk-label govuk-radios__label" for="legalForm-other">
+                                    @LegalFormSelectOrganisationModel.OrganisationLegalForm["Other"]
+                                </label>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+
+                <button class="govuk-button govuk-!-margin-top-4" type="submit">Save and continue</button>
+            </form>
+        </div>
+    </div>
+</main>
