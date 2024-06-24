@@ -14,7 +14,10 @@ public class SupplierBasicInformationTest
     public SupplierBasicInformationTest()
     {
         _organisationClientMock = new Mock<IOrganisationClient>();
-        _model = new SupplierBasicInformationModel(_organisationClientMock.Object);
+        _model = new SupplierBasicInformationModel(_organisationClientMock.Object)
+        {
+            OperationTypes = new List<OperationType>()
+        };
     }
 
     [Fact]
@@ -32,6 +35,10 @@ public class SupplierBasicInformationTest
 
         _model.VatNumber.Should().Be("FakeVatId");
         _model.SupplierInformation.Should().Be(supplierInfo);
+        _model.SupplierInformation?.OperationTypes.Should().NotBeNull();
+        _model.SupplierInformation?.OperationTypes.Should().BeOfType<List<OperationType>>();
+        _model.SupplierInformation?.OperationTypes.Should().Contain(OperationType.SmallorMediumSized);
+        _model.SupplierInformation?.OperationTypes.Should().Contain(OperationType.NonGovernmental);
     }
 
     [Fact]

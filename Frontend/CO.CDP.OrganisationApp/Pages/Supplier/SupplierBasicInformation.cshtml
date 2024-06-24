@@ -1,5 +1,6 @@
 @page "/organisation/{id}/supplier-information/basic-information"
 @model CO.CDP.OrganisationApp.Pages.Supplier.SupplierBasicInformationModel
+@using CO.CDP.OrganisationApp.Constants
 
 @{
     var details = Model.SupplierInformation!;
@@ -35,6 +36,14 @@
         }
         <p class="govuk-body">@legalForm.LawRegistered</p>
         <p class="govuk-body">@legalForm.RegistrationDate.Date.ToShortDateString()</p>
+    }
+
+    void RenderOperationTypes(List<CO.CDP.Organisation.WebApiClient.OperationType> operationTypes)
+    {
+         foreach (var item in operationTypes)
+        {
+            <p class="govuk-body">@item.ShortDescription()</p>
+        }
     }
 }
 
@@ -213,6 +222,10 @@
                             Organisation type
                         </dt>
                         <dt class="govuk-summary-list__value">
+                            @if (details.CompletedOperationType && Model.OperationTypes != null)
+                            {
+                                RenderOperationTypes(Model.OperationTypes);
+                            }
                         </dt>
                         <dd class="govuk-summary-list__actions">
                             <a class="govuk-link" href="operation">
