@@ -21,7 +21,9 @@
     },
     "environment": [
         {"name": "ASPNETCORE_ENVIRONMENT", "value": "${environment}"},
-        {"name": "ASPNETCORE_HTTP_PORTS", "value": "${host_port}"}
+        {"name": "ASPNETCORE_HTTP_PORTS", "value": "${host_port}"},
+        {"name": "ForwardedHeaders__KnownNetwork", "value": "${vpc_cidr}"},
+        {"name": "Organisation__Authority", "value": "https://authority.${public_hosted_zone_fqdn}"}
     ],
     "secrets": [],
     "volumesFrom": [],
