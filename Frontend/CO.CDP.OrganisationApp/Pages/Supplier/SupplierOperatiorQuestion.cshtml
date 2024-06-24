@@ -1,0 +1,130 @@
+@page "/organisation/{id}/supplier-information/operation"
+@using CO.CDP.Organisation.WebApiClient
+@using CO.CDP.OrganisationApp.Constants
+@model CO.CDP.OrganisationApp.Pages.Supplier.SupplierOperationQuestionModel
+
+@{
+    var invalidSelection = ((TagBuilder)Html.ValidationMessageFor(m => m.SelectedOperationTypes)).HasInnerHtml;
+    var operationTypeHasError = invalidSelection || ((TagBuilder)Html.ValidationMessageFor(m => m.SelectedOperationTypes)).HasInnerHtml;
+
+
+    string IsSelected(OperationType operationTypeValue)
+    {
+        return Model.SelectedOperationTypes?.Contains(operationTypeValue) == true ? "checked='checked'" : string.Empty;
+    }
+}
+
+<a href="/organisation/@Model.Id/supplier-information/basic-information" class="govuk-back-link">Back</a>
+<main class="govuk-main-wrapper">
+   <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+         <partial name="_ErrorSummary" model="@Model.ModelState" />
+         <form class="form" method="post">
+            <div class="govuk-form-group @(invalidSelection ? "govuk-form-group--error": "")">
+            <fieldset class="govuk-fieldset">
+               <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                  <h1 class="govuk-fieldset__heading">
+                     How does your organisation operate?
+                  </h1>
+               </legend>
+               <div id="waste-hint" class="govuk-hint">
+                  Select all that apply.
+               </div>
+               @if (operationTypeHasError)
+               {
+               <p id="organisation-type-error" class="govuk-error-message">
+                  <span class="govuk-visually-hidden">Error:</span> @Html.ValidationMessageFor(m =>
+                  m.SelectedOperationTypes)
+               </p>
+               }
+               <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+                  <div class="govuk-checkboxes__item">
+                     <input class="govuk-checkboxes__input" id="chkSmallOrMediumAized"
+                     name="SelectedOperationTypes" type="checkbox" value="@OperationType.SmallorMediumSized" @IsSelected(OperationType.SmallorMediumSized) />
+                     <label class="govuk-label govuk-checkboxes__label" for="chkSmallOrMediumAized">
+                     @OperationType.SmallorMediumSized.Description()
+                     </label>
+                  </div>
+                  <details class="govuk-details" data-module="govuk-details">
+                     <summary class="govuk-details__summary">
+                        <span class="govuk-details__summary-text">
+                        Small and medium-sized enterprises are defined by having:
+                        </span>
+                     </summary>
+                     <div class="govuk-details__text">
+                        (a) fewer than 250 staff, and <br><br>
+                        (b) a turnover of an amount less than or equal to £44 million, or a balance sheet total of an
+                        amount less than or equal to £38 million
+                     </div>
+                  </details>
+                  <div class="govuk-checkboxes__item">
+                     <input class="govuk-checkboxes__input" id="chkNonGovernmental"
+                     name="SelectedOperationTypes" type="checkbox" value="@OperationType.NonGovernmental" @IsSelected(OperationType.NonGovernmental) />
+                     <label class="govuk-label govuk-checkboxes__label" for="chkNonGovernmental">
+                     @OperationType.NonGovernmental.Description()
+                     </label>
+                  </div>
+                  <div class="govuk-checkboxes__item">
+                     <input class="govuk-checkboxes__input" id="chkSupportedEmploymentProvider"
+                     name="SelectedOperationTypes" type="checkbox" value="@OperationType.SupportedEmploymentProvider" @IsSelected(OperationType.SupportedEmploymentProvider) />
+                     <label class="govuk-label govuk-checkboxes__label" for="chkSupportedEmploymentProvider">
+                     @OperationType.SupportedEmploymentProvider.Description()
+                     </label>
+                  </div>
+                  <details class="govuk-details" data-module="govuk-details">
+                     <summary class="govuk-details__summary">
+                        <span class="govuk-details__summary-text">
+                        Supported employment providers are defined by having:
+                        </span>
+                     </summary>
+                     <div class="govuk-details__text">
+                        Wholly or partly provided employment, or employment related support, to disabled or disadvantaged individuals
+                        where:<br><br>
+                        (a) disabled or disadvantaged individuals represent at least 30 per cent of
+                        the workforce of the organisation,<br><br>
+                        (b) if a particular part of the organisation is to perform the contract,
+                        disabled or disadvantaged individuals represent at least 30 per cent of
+                        the workforce of that part of the organisation, or<br><br>
+                        (c) if more than one organisation is to perform the contract, disabled or
+                        disadvantaged individuals represent at least 30 per cent of the
+                        combined workforce of—<br><br>
+                        (i) those organisations,<br><br>
+                        (ii) where a particular part of each organisation is to perform the
+                        contract, those parts, or<br><br>
+                        (iii) where a combination of organisations and parts is to perform
+                        the contract, those organisations and parts.<br>
+                     </div>
+                  </details>
+                  <div class="govuk-checkboxes__item">
+                     <input class="govuk-checkboxes__input" id="chkPublicService"
+                     name="SelectedOperationTypes" type="checkbox" value="@OperationType.PublicService" @IsSelected(OperationType.PublicService) />
+                     <label class="govuk-label govuk-checkboxes__label" for="chkPublicService">
+                     @OperationType.PublicService.Description()
+                     </label>
+                  </div>
+                  <details class="govuk-details" data-module="govuk-details">
+                     <summary class="govuk-details__summary">
+                        <span class="govuk-details__summary-text">
+                        Public service mutuals are defined by having:
+                        </span>
+                     </summary>
+                     <div class="govuk-details__text">
+                        Previously left the public sector but continues delivering public services.
+                     </div>
+                  </details>
+                  <div class="govuk-checkboxes__divider">or</div>
+                  <div class="govuk-checkboxes__item">
+                     <input class="govuk-checkboxes__input" id="chkNoneOfTheAbove"
+                     name="SelectedOperationTypes" type="checkbox" value="@OperationType.None" @IsSelected(OperationType.None) />
+                     <label class="govuk-label govuk-checkboxes__label" for="chkNoneOfTheAbove">
+                     @OperationType.None.Description()
+                     </label>
+                  </div>
+               </div>
+            </fieldset>
+      </div>
+      <button class="govuk-button govuk-!-margin-top-4" type="submit">Save and exit</button>
+      </form>
+   </div>
+   </div>
+</main>
