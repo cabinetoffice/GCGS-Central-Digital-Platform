@@ -2,32 +2,32 @@
 
 This configuration is based on the latest published Grafana image, includes a CloudWatch data source, and provisions dashboards to enhance observability of SIRSI applications and infrastructure.
 
-```shell
-# In the following examples: 
-# - ave is alias for `aws-vault exec` command
-# - aws-switch-to-* is alias to set the:
-#   - AWS_PROFILE
-#   - TG_ENVIRONMENT
-#   - AWS_ENV (Not compulsory)
-#   - MFA_TOKEN handler (Out of scope of this documentation)
-# Feel free to use any convenient AWS profiler instead.
-```
+> In the following examples ave is alias for `aws-vault exec` command.
+Feel free to use any convenient AWS profiler instead.
+
 ## build
 
 ```shell
-docker build -t cdp-grafana .
+docker build -t cabinetoffice/cdp-grafana .
 ```
 
-## Push to ECR
+## Deploy
+
+### Push to ECR
 
 There are individual ECR repositories in each account. Using the following commands, we can push the built image to different accounts.
 
 ```shell
-aws-switch-to-cdp-sirsi-development-goaco-terraform
 ACCOUNT_ID=$(ave aws sts get-caller-identity | jq -r '.Account')
 ave aws ecr get-login-password --region eu-west-2 | docker login --username AWS --password-stdin ${ACCOUNT_ID}.dkr.ecr.eu-west-2.amazonaws.com
-docker tag cdp-grafana:latest ${ACCOUNT_ID}.dkr.ecr.eu-west-2.amazonaws.com/cdp-grafana:latest
+docker tag cabinetoffice/cdp-grafana:latest ${ACCOUNT_ID}.dkr.ecr.eu-west-2.amazonaws.com/cdp-grafana:latest
 docker push ${ACCOUNT_ID}.dkr.ecr.eu-west-2.amazonaws.com/cdp-grafana:latest
+```
+
+### Re-deploy Grafana service
+
+```shell
+ave aws ecs update-service --cluster cdp-sirsi --service grafana --force-new-deployment
 ```
 
 ## Fetch Credentials

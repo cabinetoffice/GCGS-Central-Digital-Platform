@@ -57,7 +57,7 @@
             {
               "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
               "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/organisation-app:*",
-              "name": "/ecs/organisation-app"
+              "name": "/ecs/authority"
             }
           ],
           "matchExact": true,
@@ -112,8 +112,8 @@
           "logGroups": [
             {
               "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
-              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/organisation-app:*",
-              "name": "/ecs/organisation-app"
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/authority:*",
+              "name": "/ecs/authority"
             }
           ],
           "matchExact": true,
@@ -168,8 +168,8 @@
           "logGroups": [
             {
               "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
-              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/organisation-app:*",
-              "name": "/ecs/organisation-app"
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/authority:*",
+              "name": "/ecs/authority"
             }
           ],
           "matchExact": true,
@@ -201,8 +201,8 @@
   },
   "timepicker": {},
   "timezone": "browser",
-  "title": "Organisation App",
-  "uid": "organisation-app",
+  "title": "Authority",
+  "uid": "authority",
   "version": 1,
   "weekStart": ""
 }
