@@ -4,15 +4,16 @@ module "ecs_service_organisation_information_migrations" {
   container_definitions = templatefile(
     "${path.module}/templates/task-definitions/${var.service_configs.organisation_information_migrations.name}.json.tftpl",
     {
-      cpu                  = var.service_configs.organisation_information_migrations.cpu
-      conn_string_location = var.db_connection_secret_arn
-      environment          = local.service_environment
-      image                = "${local.ecr_urls[var.service_configs.organisation_information_migrations.name]}:latest"
-      lg_name              = aws_cloudwatch_log_group.tasks[var.service_configs.organisation_information_migrations.name].name
-      lg_prefix            = "db"
-      lg_region            = data.aws_region.current.name
-      memory               = var.service_configs.organisation_information_migrations.memory
-      name                 = var.service_configs.organisation_information_migrations.name
+      cpu                     = var.service_configs.organisation_information_migrations.cpu
+      conn_string_location    = var.db_connection_secret_arn
+      environment             = local.service_environment
+      image                   = "${local.ecr_urls[var.service_configs.organisation_information_migrations.name]}:latest"
+      lg_name                 = aws_cloudwatch_log_group.tasks[var.service_configs.organisation_information_migrations.name].name
+      lg_prefix               = "db"
+      lg_region               = data.aws_region.current.name
+      memory                  = var.service_configs.organisation_information_migrations.memory
+      name                    = var.service_configs.organisation_information_migrations.name
+      public_hosted_zone_fqdn = var.public_hosted_zone_fqdn
     }
   )
 

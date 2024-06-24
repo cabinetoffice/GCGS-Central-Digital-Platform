@@ -96,6 +96,7 @@ inputs = {
   public_subnet_ids           = dependency.core_networking.outputs.public_subnet_ids
   public_subnets_cidr_blocks  = dependency.core_networking.outputs.public_subnets_cidr_blocks
   vpc_id                      = dependency.core_networking.outputs.vpc_id
+  vpc_cider                   = dependency.core_networking.outputs.vpc_cider
 
 
   alb_sg_id                 = dependency.core_security_groups.outputs.alb_sg_id

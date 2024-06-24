@@ -17,6 +17,19 @@ public static class OperationTypeExtensions
             _ => throw new NotImplementedException()
         };
     }
+
+    public static string ShortDescription(this OperationType operationType)
+    {
+        return operationType switch
+        {
+            OperationType.SmallorMediumSized => "Small or medium-sized enterprise",
+            OperationType.NonGovernmental => "Non-governmental organisation ",
+            OperationType.SupportedEmploymentProvider => "Supported employment provider",
+            OperationType.PublicService => "Public service mutual",
+            OperationType.None => "My organisation is not defined",
+            _ => throw new NotImplementedException()
+        };
+    }
 }
 
 public class ValidOperationTypeSelectionAttribute : ValidationAttribute

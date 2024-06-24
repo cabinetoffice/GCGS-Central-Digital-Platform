@@ -123,6 +123,11 @@ variable "vpc_id" {
   type        = string
 }
 
+variable "vpc_cider" {
+  description = "VPC's IPv4 CIDR"
+  type        = string
+}
+
 variable "vpce_ecr_api_sg_id" {
   description = "Security group ID of the ECR API VPC endpoint"
   type        = string
