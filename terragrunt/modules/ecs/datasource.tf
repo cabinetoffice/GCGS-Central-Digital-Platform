@@ -2,6 +2,10 @@ data "aws_caller_identity" "current" {}
 
 data "aws_region" "current" {}
 
+data "aws_secretsmanager_secret" "authority_keys" {
+  name = "${local.name_prefix}-authority-keys"
+}
+
 data "aws_secretsmanager_secret" "one_login" {
   name = "${local.name_prefix}-one-login-credentials"
 }

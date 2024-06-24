@@ -14,7 +14,8 @@
       }
     },
     "environment": [
-        {"name": "ASPNETCORE_ENVIRONMENT", "value": "${environment}"}
+        {"name": "ASPNETCORE_ENVIRONMENT", "value": "${environment}"},
+        {"name": "Organisation__Authority", "value": "https://authority.${public_hosted_zone_fqdn}"}
     ],
     "secrets": [
         {"name": "MIGRATIONS_CONNECTION_STRING", "valueFrom": "${conn_string_location}"}

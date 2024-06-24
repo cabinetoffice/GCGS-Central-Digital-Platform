@@ -25,4 +25,8 @@ resource "aws_secretsmanager_secret" "db_connection_string" {
 resource "aws_secretsmanager_secret_version" "db_connection_string" {
   secret_id     = aws_secretsmanager_secret.db_connection_string.id
   secret_string = "Server=${local.db_address};Database=${local.db_name};Username=${local.db_username};Password=${local.db_password}"
+
+  depends_on = [
+    data.aws_secretsmanager_secret.postgres
+  ]
 }

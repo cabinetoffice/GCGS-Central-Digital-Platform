@@ -47,6 +47,11 @@ ave aws sts get-caller-identity | cat
 ```shell
 ave aws secretsmanager create-secret --name cdp-sirsi-one-login-credentials --secret-string '{"Authority":"https://stagingoidc.example.com", "ClientId": "staging-client-id", "PrivateKey":"DEV RSA PRIVATE KEY"}'
 ```
+- Create the Authority secret `cdp-sirsi-authority-key`, i.e:
+```shell
+make generate-authority-keys
+ave make aws-push-authority-keys
+```
 - Navigate to the root of components
 - Apply all, while terraform role is assumed
 ![img.png](../docs/images/infra/terragrunt-apply-all.png)
