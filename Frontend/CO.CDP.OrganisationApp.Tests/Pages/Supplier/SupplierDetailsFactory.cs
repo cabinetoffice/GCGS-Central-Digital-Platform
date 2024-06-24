@@ -1,5 +1,4 @@
 using CO.CDP.Organisation.WebApiClient;
-using CO.CDP.OrganisationApp.Pages.Supplier;
 using Moq;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages.Supplier;
@@ -12,7 +11,9 @@ public static class SupplierDetailsFactory
 
     public static SupplierInformation CreateSupplierInformationClientModel(
         bool completedTradeAssurance = false,
-        bool completedPostalAddress = false)
+        bool completedPostalAddress = false,
+        bool completedLegalForm = false,
+        Organisation.WebApiClient.LegalForm? legalForm = null)
     {
         return new SupplierInformation(
             organisationName: "FakeOrg",
@@ -26,9 +27,9 @@ public static class SupplierDetailsFactory
             completedQualification: false,
             completedTradeAssurance: completedTradeAssurance,
             completedOperationType: false,
-            completedLegalForm: false,
+            completedLegalForm: completedLegalForm,
             tradeAssurances: [],
-            legalForm: null,
+            legalForm: legalForm,            
             qualifications: []
         );
     }

@@ -1,0 +1,95 @@
+@page "/organisation/{id}/supplier-information/legal-form-formation-date"
+
+@model CO.CDP.OrganisationApp.Pages.Supplier.LegalFormFormationDateModel
+
+@{
+    var dayHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Day)).HasInnerHtml;
+    var monthHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Month)).HasInnerHtml;
+    var yearHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Year)).HasInnerHtml;
+    var dateOfFormationHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.RegistrationDate)).HasInnerHtml;
+    var hasError = dateOfFormationHasError || dayHasError || monthHasError || yearHasError;
+}
+
+<a href="/organisation/@Model.Id/supplier-information/legal-form-law-registered" class="govuk-back-link">Back</a>
+
+<main class="govuk-main-wrapper">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <partial name="_ErrorSummary" model="@Model.ModelState" />
+            <form method="post">
+                <div class="govuk-form-group @(hasError ? "govuk-form-group--error" : "")">
+                    <fieldset class="govuk-fieldset" data-required="" data-error="Enter the date your company registered under the Companies Act 2006" aria-required="true">
+                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                            <h1 class="govuk-heading-l">
+                                What is the equivalent date your company registered under the Companies Act 2006?
+                            </h1>
+                        </legend>
+
+                        <div id="equivalent-date-registered-hint" class="govuk-hint">
+                            For example, 27 3 2007.
+                        </div>
+                        @if (dayHasError)
+                        {
+                            <p id="day-error" class="govuk-error-message">
+                                <span class="govuk-visually-hidden">Error:</span>
+                                @Html.ValidationMessageFor(m => m.Day)
+                            </p>
+                        }
+                        @if (monthHasError)
+                        {
+                            <p id="month-error" class="govuk-error-message">
+                                <span class="govuk-visually-hidden">Error:</span>
+                                @Html.ValidationMessageFor(m => m.Month)
+                            </p>
+                        }
+                        @if (yearHasError)
+                        {
+                            <p id="year-error" class="govuk-error-message">
+                                <span class="govuk-visually-hidden">Error:</span>
+                                @Html.ValidationMessageFor(m => m.Year)
+                            </p>
+                        }
+                        @if (dateOfFormationHasError)
+                        {
+                            <p id="date-of-formation-error" class="govuk-error-message">
+                                <span class="govuk-visually-hidden">Error:</span>
+                                @Html.ValidationMessageFor(m => m.RegistrationDate)
+                            </p>
+                        }
+                        <div class="govuk-date-input" id="registrationDate">
+                            <div class="govuk-date-input__item">
+                                <div class="govuk-form-group">
+                                    <label class="govuk-label govuk-date-input__label" for="registrationDateDay">
+                                        Day
+                                    </label>
+                                    <input class="govuk-input govuk-date-input__input govuk-input--width-2 @(dayHasError || dateOfFormationHasError ? "govuk-input--error" : "")"
+                                           id="registrationDateDay" name="Day" type="text" inputmode="numeric" value="@Model.Day">
+                                </div>
+                            </div>
+                            <div class="govuk-date-input__item">
+                                <div class="govuk-form-group">
+                                    <label class="govuk-label govuk-date-input__label" for="registrationDateMonth">
+                                        Month
+                                    </label>
+                                    <input class="govuk-input govuk-date-input__input govuk-input--width-2 @(monthHasError || dateOfFormationHasError ? "govuk-input--error" : "")"
+                                           id="registrationDateMonth" name="Month" type="text" inputmode="numeric" value="@Model.Month">
+                                </div>
+                            </div>
+                            <div class="govuk-date-input__item">
+                                <div class="govuk-form-group">
+                                    <label class="govuk-label govuk-date-input__label" for="registrationDateYear">
+                                        Year
+                                    </label>
+                                    <input class="govuk-input govuk-date-input__input govuk-input--width-4 @(yearHasError || dateOfFormationHasError ? "govuk-input--error" : "")"
+                                           id="registrationDateYear" name="Year" type="text" inputmode="numeric" value="@Model.Year">
+                                </div>
+                            </div>
+
+                        </div>
+                    </fieldset>
+                </div>
+                <button class="govuk-button" type="submit">Save and exit</button>
+            </form>
+        </div>
+    </div>
+</main>
