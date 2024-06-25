@@ -65,7 +65,7 @@ public class SupplierQualificationAwardedDateModel(
         }
 
         var qa = tempDataService.PeekOrDefault<Qualification>(Qualification.TempDataKey);
-        qa.DateAwarded = parsedDate;
+        qa.DateAwarded = new DateTimeOffset(parsedDate, TimeSpan.FromHours(0));
         tempDataService.Put(Qualification.TempDataKey, qa);
 
         return RedirectToPage("SupplierQualificationName", new { Id });
