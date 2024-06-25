@@ -48,7 +48,7 @@ public class SupplierQualificationNameTests
         var result = _model.OnPost();
 
         result.Should().BeOfType<RedirectToPageResult>()
-            .Which.PageName.Should().Be("SupplierQualificationAwardedDate");
+            .Which.PageName.Should().Be("SupplierQualificationCheckAnswer");
 
         _mockTempDataService.Verify(t => t.Put(Qualification.TempDataKey, It.Is<Qualification>(ta =>
             ta.Name == _model.QualificationName)), Times.Once);
