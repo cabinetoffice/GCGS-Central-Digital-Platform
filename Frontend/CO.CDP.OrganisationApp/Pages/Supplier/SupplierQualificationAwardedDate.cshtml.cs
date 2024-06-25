@@ -1,3 +1,4 @@
+using CO.CDP.OrganisationApp.Constants;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -15,17 +16,17 @@ public class SupplierQualificationAwardedDateModel(
 
     [BindProperty]
     [Required(ErrorMessage = "Date of award must include a day")]
-    [RegularExpression(@"^(0?[1-9]|[12][0-9]|3[01])$", ErrorMessage = "Day must be a valid number")]
+    [RegularExpression(RegExPatterns.Day, ErrorMessage = "Day must be a valid number")]
     public string? Day { get; set; }
 
     [BindProperty]
     [Required(ErrorMessage = "Date of award must include a month")]
-    [RegularExpression(@"^(0?[1-9]|1[0-2])$", ErrorMessage = "Month must be a valid number")]
+    [RegularExpression(RegExPatterns.Month, ErrorMessage = "Month must be a valid number")]
     public string? Month { get; set; }
 
     [BindProperty]
     [Required(ErrorMessage = "Date of award must include a year")]
-    [RegularExpression(@"^\d{4}$", ErrorMessage = "Year must be a valid number")]
+    [RegularExpression(RegExPatterns.Year, ErrorMessage = "Year must be a valid number")]
     public string? Year { get; set; }
 
     [BindProperty]
