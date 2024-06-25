@@ -158,25 +158,25 @@ public static class EndpointExtensions
                 return operation;
             });
         app.MapGet("/lookup",
-                async ([FromQuery] string name, IUseCase<string, Model.Organisation?> useCase) =>
-                await useCase.Execute(name)
-                    .AndThen(organisation => organisation != null ? Results.Ok(organisation) : Results.NotFound()))
-            .Produces<Model.Organisation>(StatusCodes.Status200OK, "application/json")
-            .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
-            .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
-            .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError)
-            .WithOpenApi(operation =>
-            {
-                operation.OperationId = "LookupOrganisation";
-                operation.Description = "Find an organisation.";
-                operation.Summary = "Find an organisation.";
-                operation.Tags = new List<OpenApiTag> { new() { Name = "Organisation - Lookup" } };
-                operation.Responses["200"].Description = "Organisations Associated.";
-                operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
-                operation.Responses["404"].Description = "Organisation not found.";
-                operation.Responses["500"].Description = "Internal server error.";
-                return operation;
-            });
+           async ([FromQuery] string query, IUseCase<string, Model.Organisation?> useCase) =>
+           await useCase.Execute(query)
+               .AndThen(organisation => organisation != null ? Results.Ok(organisation) : Results.NotFound()))
+       .Produces<Model.Organisation>(StatusCodes.Status200OK, "application/json")
+       .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
+       .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
+       .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError)
+       .WithOpenApi(operation =>
+       {
+           operation.OperationId = "LookupOrganisation";
+           operation.Description = "Find an organisation by name or identifier.";
+           operation.Summary = "Find an organisation by name or identifier.";
+           operation.Tags = new List<OpenApiTag> { new() { Name = "Organisation - Lookup" } };
+           operation.Responses["200"].Description = "Organisation details.";
+           operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
+           operation.Responses["404"].Description = "Organisation not found.";
+           operation.Responses["500"].Description = "Internal server error.";
+           return operation;
+       });
 
         return app;
     }
@@ -260,7 +260,7 @@ public static class EndpointExtensions
             });
 
         app.MapDelete("/{organisationId}/supplier-information",
-            async (Guid organisationId, [FromBody]DeleteSupplierInformation deleteSupplierInformation,
+            async (Guid organisationId, [FromBody] DeleteSupplierInformation deleteSupplierInformation,
                 IUseCase<(Guid, DeleteSupplierInformation), bool> useCase) =>
                     await useCase.Execute((organisationId, deleteSupplierInformation))
                         .AndThen(_ => Results.NoContent()))

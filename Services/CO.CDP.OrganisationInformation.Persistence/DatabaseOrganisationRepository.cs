@@ -34,6 +34,14 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
             .FirstOrDefaultAsync(p => p.UserUrn == userUrn);
         return person?.Organisations ?? [];
     }
+    public async Task<Organisation?> FindByIdentifier(string scheme, string identifierId)
+    {
+        return await context.Organisations
+            .Include(p => p.Identifiers)
+            .Include(p => p.Addresses)
+            .ThenInclude(p => p.Address)
+            .FirstOrDefaultAsync(o => o.Identifiers.Any(i => i.Scheme == scheme && i.IdentifierId == identifierId));
+    }
 
     public void Save(Organisation organisation)
     {
