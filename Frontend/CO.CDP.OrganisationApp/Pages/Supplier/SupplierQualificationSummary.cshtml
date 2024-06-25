@@ -1,0 +1,114 @@
+@page "/organisation/{id}/supplier-information/supplier-qualification-summary"
+@model CO.CDP.OrganisationApp.Pages.Supplier.SupplierQualificationSummaryModel
+
+@{
+    var hasError = ((TagBuilder)Html.ValidationMessageFor(m => m.HasQualification)).HasInnerHtml;
+}
+
+<a href="/organisation/@Model.Id/supplier-information/basic-information" class="govuk-back-link">Back</a>
+
+<main class="govuk-main-wrapper">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <partial name="_ErrorSummary" model="@Model.ModelState" />
+       
+            @if (Model.CompletedQualification && Model.Qualifications.Count > 0)
+            {
+                <h1 class="govuk-heading-l">
+                    You have added @(Model.Qualifications.Count == 1 ? "1 qualification" : $"{Model.Qualifications.Count} qualifications")
+                </h1>
+
+                @foreach (var qa in Model.Qualifications)
+                {
+                    <dl class="govuk-summary-list ros-add-to-a-list">
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">
+                                @qa.Name
+                            </dt>
+                            <dd class="govuk-summary-list__value"></dd>
+                            <dd class="govuk-summary-list__actions">
+                                <ul class="govuk-summary-list__actions-list">
+                                    <li class="govuk-summary-list__actions-list-item">
+                                        <a class="govuk-link" href="?handler=change&qualificationId=@qa.Id">Change</a>
+                                    </li>
+                                    <li class="govuk-summary-list__actions-list-item">
+                                        <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/qualification/@qa.Id/remove">Remove</a>                                        
+                                    </li>
+                                </ul>
+                            </dd>
+                        </div>
+                    </dl>
+                }
+
+                <div class="govuk-form-group @(hasError ? "govuk-form-group--error" : "")">
+                    <form class="form" method="post">
+                        <fieldset class="govuk-fieldset" data-required="" data-error="Select yes if you need to add another qualification" aria-required="true">
+                            <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                                <h2 class="govuk-fieldset__heading">
+                                    Do you need to add another qualification?
+                                </h2>
+                            </legend>
+                            @if (hasError)
+                            {
+                                <p id="qualification-option-error" class="govuk-error-message">
+                                    <span class="govuk-visually-hidden">Error:</span> Select an option
+                                </p>
+                            }
+                            <div class="govuk-radios govuk-radios--inline" data-module="govuk-radios">
+                                <div class="govuk-radios__item">
+                                    <input class="govuk-radios__input" id="conditional-YES" name="HasQualification" type="radio"
+                                           value="true" data-aria-controls="conditional-YES" @(Model.HasQualification == true ? "checked" : "")>
+                                    <label class="govuk-label govuk-radios__label" for="conditional-YES">Yes</label>
+                                </div>
+                                <div class="govuk-radios__item">
+                                    <input class="govuk-radios__input" id="conditional-NO" name="HasQualification" type="radio"
+                                           value="false" data-aria-controls="conditional-NO" @(Model.HasQualification == false ? "checked" : "")>
+                                    <label class="govuk-label govuk-radios__label" for="conditional-NO">No</label>
+                                </div>
+                            </div>
+                        </fieldset>
+
+                        <div class="govuk-button-group govuk-!-margin-top-6">
+                            <button class="govuk-button" data-module="govuk-button">
+                                Continue
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            }
+            else
+            {
+                <h1 class="govuk-heading-l">Does anyone within your organisation have any relevant qualifications?</h1>
+                <div id="hint" class="govuk-hint">A documented qualification, recognising competency and appropriate standards, within the business field or trade.</div>
+
+                <form method="post">
+                    <div class="govuk-form-group @(hasError ? "govuk-form-group--error" : "")">
+                        <fieldset class="govuk-fieldset" @(hasError ? "aria-describedby='qualification-option-error'" : "")>
+                            @if (hasError)
+                            {
+                                <p id="qualification-option-error" class="govuk-error-message">
+                                    <span class="govuk-visually-hidden">Error:</span> Select an option
+                                </p>
+                            }
+                            <div class="govuk-radios" data-module="govuk-radios">
+                                <div class="govuk-radios__item">
+                                    <input class="govuk-radios__input" id="YES" name="HasQualification" type="radio"
+                                           value="true" data-aria-controls="conditional-YES" @(Model.HasQualification == true ? "checked" : "")>
+                                    <label class="govuk-label govuk-radios__label" for="YES">Yes</label>
+                                </div>
+
+                                <div class="govuk-radios__item">
+                                    <input class="govuk-radios__input" id="NO" name="HasQualification" type="radio"
+                                           value="false" data-aria-controls="conditional-NO" @(Model.HasQualification == false ? "checked" : "")>
+                                    <label class="govuk-label govuk-radios__label" for="NO">No</label>
+                                    <div class="govuk-radios__conditional--hidden" id="conditional-NO"></div>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <button type="submit" class="govuk-button" data-module="govuk-button">Save and Continue</button>
+                </form>
+            }
+        </div>
+    </div>
+</main>

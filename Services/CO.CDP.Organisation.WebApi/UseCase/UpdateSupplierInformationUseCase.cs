@@ -81,6 +81,25 @@ public class UpdateSupplierInformationUseCase(IOrganisationRepository organisati
                 organisation.SupplierInfo.CompletedOperationType = true;
                 break;
 
+            case SupplierInformationUpdateType.Qualification:
+                if (updateObject.Qualification != null)
+                {
+                    var existingQualification = !updateObject.Qualification.Id.HasValue ? null :
+                        organisation.SupplierInfo.Qualifications.FirstOrDefault(ta => ta.Guid == updateObject.Qualification.Id);
+                    if (existingQualification != null)
+                    {
+                        existingQualification.AwardedByPersonOrBodyName = updateObject.Qualification.AwardedByPersonOrBodyName;
+                        existingQualification.Name = updateObject.Qualification.Name;
+                        existingQualification.DateAwarded = updateObject.Qualification.DateAwarded;
+                    }
+                    else
+                    {
+                        organisation.SupplierInfo.Qualifications.Add(
+                            mapper.Map<PersistenceOrganisation.Qualification>(updateObject.Qualification));
+                    }
+                }
+                organisation.SupplierInfo.CompletedQualification = true;
+                break;
             default:
                 throw new InvalidUpdateSupplierInformationCommand("Unknown supplier information update type.");
         }

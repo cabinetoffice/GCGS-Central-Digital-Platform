@@ -118,7 +118,8 @@ public class SupplierEmailAddressTest
             completedOperationType: false,
             completedLegalForm: false,
             tradeAssurances: null,
-            legalForm: null);
+            legalForm: null,
+            qualifications: null);
 
     private static Organisation.WebApiClient.Organisation OrganisationClientModel(Guid id) =>
         new(

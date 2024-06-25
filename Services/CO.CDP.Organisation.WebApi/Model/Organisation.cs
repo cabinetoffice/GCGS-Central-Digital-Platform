@@ -41,6 +41,7 @@ public record SupplierInformation
     public bool CompletedLegalForm { get; set; }
     public List<TradeAssurance> TradeAssurances { get; set; } = [];
     public LegalForm? LegalForm { get; set; }
+    public List<Qualification> Qualifications { get; set; } = [];
 }
 
 public record TradeAssurance
@@ -57,4 +58,12 @@ public record LegalForm
     public required string RegisteredLegalForm { get; set; }
     public required string LawRegistered { get; set; }
     public required DateTimeOffset RegistrationDate { get; set; }
+}
+
+public record Qualification
+{
+    public Guid? Id { get; set; }
+    public required string AwardedByPersonOrBodyName { get; set; }
+    public required string Name { get; set; }
+    public required DateTimeOffset DateAwarded { get; set; }
 }

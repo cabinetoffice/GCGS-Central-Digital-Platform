@@ -91,6 +91,14 @@ public class WebApiToPersistenceProfile : Profile
             .ForMember(m => m.CreatedOn, o => o.Ignore())
             .ForMember(m => m.UpdatedOn, o => o.Ignore())
             .ReverseMap();
+
+        CreateMap<Qualification, Persistence.Organisation.Qualification>()
+           .ForMember(m => m.Id, o => o.Ignore())
+           .ForMember(m => m.Guid, o => o.MapFrom(_ => Guid.NewGuid()))
+           .ForMember(m => m.CreatedOn, o => o.Ignore())
+           .ForMember(m => m.UpdatedOn, o => o.Ignore())
+           .ReverseMap()
+           .ForMember(m => m.Id, o => o.MapFrom(m => m.Guid));
     }
 
     public class IdentifiersResolver : IValueResolver<RegisterOrganisation, Persistence.Organisation,
