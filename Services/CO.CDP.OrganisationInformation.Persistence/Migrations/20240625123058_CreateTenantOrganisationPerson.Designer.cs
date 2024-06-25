@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CO.CDP.OrganisationInformation.Persistence.Migrations
 {
     [DbContext(typeof(OrganisationInformationContext))]
-    [Migration("20240621122200_RenameSeq")]
-    partial class RenameSeq
+    [Migration("20240625123058_CreateTenantOrganisationPerson")]
+    partial class CreateTenantOrganisationPerson
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -598,9 +598,8 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                                         .HasColumnType("text")
                                         .HasColumnName("registered_legal_form");
 
-                                    b2.Property<string>("RegisteredUnderAct2006")
-                                        .IsRequired()
-                                        .HasColumnType("text")
+                                    b2.Property<bool>("RegisteredUnderAct2006")
+                                        .HasColumnType("boolean")
                                         .HasColumnName("registered_under_act2006");
 
                                     b2.Property<DateTimeOffset>("RegistrationDate")
