@@ -37,14 +37,15 @@ public static class EndpointExtensions
         app.MapGet($"/{Discovery.DiscoveryEndpoint}/jwks",
             () => new Model.JsonWebKeySet
             {
-                Keys = [new() {
-                        Kty = "RSA",
-                        Use = "sig",
-                        Kid = "c2c3b22ac07f425eb893123de395464e",
-                        Alg = SecurityAlgorithms.RsaSha256,
-                        N = Base64UrlEncoder.Encode(rsaPublicParams.Modulus!),
-                        E = Base64UrlEncoder.Encode(rsaPublicParams.Exponent!)
-                    }]
+                Keys = [new()
+                {
+                    Kty = "RSA",
+                    Use = "sig",
+                    Kid = "c2c3b22ac07f425eb893123de395464e",
+                    Alg = SecurityAlgorithms.RsaSha256,
+                    N = Base64UrlEncoder.Encode(rsaPublicParams.Modulus!),
+                    E = Base64UrlEncoder.Encode(rsaPublicParams.Exponent!)
+                }]
             })
             .Produces<Model.JsonWebKeySet>(StatusCodes.Status200OK, "application/json");
 

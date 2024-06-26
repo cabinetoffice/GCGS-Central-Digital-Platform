@@ -29,7 +29,7 @@ public static class SupplierDetailsFactory
             completedOperationType: false,
             completedLegalForm: completedLegalForm,
             tradeAssurances: [],
-            legalForm: legalForm,            
+            legalForm: legalForm,
             qualifications: []
         );
     }
