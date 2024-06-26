@@ -12,6 +12,7 @@ services:
       - forms
       - data-sharing
     volumes:
+      - './docker/gateway/nginx.conf:/etc/nginx/nginx.conf:ro'
       - './docker/gateway/templates:/etc/nginx/templates:ro'
   db:
     extends:
