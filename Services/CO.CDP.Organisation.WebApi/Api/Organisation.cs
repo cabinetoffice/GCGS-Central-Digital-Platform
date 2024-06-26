@@ -125,18 +125,6 @@ public static class EndpointExtensions
                             ["code"] = new OpenApiString("ORGANISATION_ALREADY_EXISTS")
                         }
                     },
-                    ["ArgumentNull"] = new OpenApiExample
-                    {
-                        Summary = "Argument null",
-                        Value = new OpenApiObject
-                        {
-                            ["type"] = new OpenApiString("https://tools.ietf.org/html/rfc7231#section-6.5.1"),
-                            ["title"] = new OpenApiString("Bad Request"),
-                            ["status"] = new OpenApiInteger(400),
-                            ["detail"] = new OpenApiString("A required argument was null."),
-                            ["code"] = new OpenApiString("ARGUMENT_NULL")
-                        }
-                    },
                     ["InvalidOperation"] = new OpenApiExample
                     {
                         Summary = "Invalid operation",
@@ -334,18 +322,6 @@ public static class EndpointExtensions
                             ["detail"] = new OpenApiString("The update organisation command is invalid."),
                             ["code"] = new OpenApiString("INVALID_UPDATE_ORGANISATION_COMMAND")
                         }
-                    },
-                    ["ArgumentNull"] = new OpenApiExample
-                    {
-                        Summary = "Argument null",
-                        Value = new OpenApiObject
-                        {
-                            ["type"] = new OpenApiString("https://tools.ietf.org/html/rfc7231#section-6.5.1"),
-                            ["title"] = new OpenApiString("Bad Request"),
-                            ["status"] = new OpenApiInteger(400),
-                            ["detail"] = new OpenApiString("A required argument was null."),
-                            ["code"] = new OpenApiString("ARGUMENT_NULL")
-                        }
                     }
                 };
                 operation.Responses["401"].Content["application/json"].Examples = new Dictionary<string, OpenApiExample>
@@ -525,18 +501,6 @@ public static class EndpointExtensions
                             ["detail"] = new OpenApiString("The update buyer information command is invalid."),
                             ["code"] = new OpenApiString("INVALID_BUYER_INFORMATION_UPDATE_ENTITY")
                         }
-                    },
-                    ["ArgumentNull"] = new OpenApiExample
-                    {
-                        Summary = "Argument null",
-                        Value = new OpenApiObject
-                        {
-                            ["type"] = new OpenApiString("https://tools.ietf.org/html/rfc7231#section-6.5.1"),
-                            ["title"] = new OpenApiString("Bad Request"),
-                            ["status"] = new OpenApiInteger(400),
-                            ["detail"] = new OpenApiString("A required argument was null."),
-                            ["code"] = new OpenApiString("ARGUMENT_NULL")
-                        }
                     }
                 };
                 operation.Responses["401"].Content["application/json"].Examples = new Dictionary<string, OpenApiExample>
@@ -702,18 +666,6 @@ public static class EndpointExtensions
                             ["detail"] = new OpenApiString("The update supplier information command is invalid."),
                             ["code"] = new OpenApiString("INVALID_SUPPLIER_INFORMATION_UPDATE_ENTITY")
                         }
-                    },
-                    ["ArgumentNull"] = new OpenApiExample
-                    {
-                        Summary = "Argument null",
-                        Value = new OpenApiObject
-                        {
-                            ["type"] = new OpenApiString("https://tools.ietf.org/html/rfc7231#section-6.5.1"),
-                            ["title"] = new OpenApiString("Bad Request"),
-                            ["status"] = new OpenApiInteger(400),
-                            ["detail"] = new OpenApiString("A required argument was null."),
-                            ["code"] = new OpenApiString("ARGUMENT_NULL")
-                        }
                     }
                 };
                 operation.Responses["401"].Content["application/json"].Examples = new Dictionary<string, OpenApiExample>
@@ -816,18 +768,6 @@ public static class EndpointExtensions
                             ["status"] = new OpenApiInteger(400),
                             ["detail"] = new OpenApiString("The update supplier information command is invalid."),
                             ["code"] = new OpenApiString("INVALID_SUPPLIER_INFORMATION_UPDATE_ENTITY")
-                        }
-                    },
-                    ["ArgumentNull"] = new OpenApiExample
-                    {
-                        Summary = "Argument null",
-                        Value = new OpenApiObject
-                        {
-                            ["type"] = new OpenApiString("https://tools.ietf.org/html/rfc7231#section-6.5.1"),
-                            ["title"] = new OpenApiString("Bad Request"),
-                            ["status"] = new OpenApiInteger(400),
-                            ["detail"] = new OpenApiString("A required argument was null."),
-                            ["code"] = new OpenApiString("ARGUMENT_NULL")
                         }
                     }
                 };

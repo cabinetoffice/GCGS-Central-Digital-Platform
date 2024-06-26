@@ -31,10 +31,6 @@ public static class ServiceCollectionExtensions
                 return (StatusCodes.Status422UnprocessableEntity, "UNPROCESSABLE_ENTITY");
             case DuplicatePersonException:
                 return (StatusCodes.Status400BadRequest, "PERSON_ALREADY_EXISTS");
-            case ArgumentNullException:
-                return (StatusCodes.Status400BadRequest, "ARGUMENT_NULL");
-            case InvalidOperationException:
-                return (StatusCodes.Status400BadRequest, "INVALID_OPERATION");
             default:
                 return (StatusCodes.Status500InternalServerError, "GENERIC_ERROR");
         }

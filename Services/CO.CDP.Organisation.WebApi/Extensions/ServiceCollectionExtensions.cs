@@ -35,10 +35,6 @@ public static class ServiceCollectionExtensions
                 return (StatusCodes.Status400BadRequest, "ORGANISATION_ALREADY_EXISTS");
             case UnknownPersonException:
                 return (StatusCodes.Status404NotFound, "PERSON_DOES_NOT_EXIST");
-            case ArgumentNullException:
-                return (StatusCodes.Status400BadRequest, "ARGUMENT_NULL");
-            case InvalidOperationException:
-                return (StatusCodes.Status400BadRequest, "INVALID_OPERATION");
             case UnknownOrganisationException:
                 return (StatusCodes.Status404NotFound, "UNKNOWN_ORGANISATION");
             case BuyerInfoNotExistException:
