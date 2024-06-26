@@ -1,7 +1,7 @@
 = Central Digital Platform
 :doctype: book
 :toc: left
-:toclevels: 0
+:toclevels: 2
 :data-uri:
 :source-highlighter: rouge
 
@@ -14,5 +14,7 @@ include::01-Introduction.adoc[]
 include::02-overview.adoc[]
 
 include::03-software-architecture.adoc[]
+
+include::development/index.adoc[]
 
 :leveloffset: -1
