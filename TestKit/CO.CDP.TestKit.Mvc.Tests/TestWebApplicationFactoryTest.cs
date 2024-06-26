@@ -6,7 +6,7 @@ namespace CO.CDP.TestKit.Mvc.Tests;
 public class TestWebApplicationFactoryTest
 {
     [Fact]
-    public async void ItEnablesHostConfiguration()
+    public async Task ItEnablesHostConfiguration()
     {
         var factory = new TestWebApplicationFactory<TestProgram>(c =>
         {

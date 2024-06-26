@@ -28,7 +28,8 @@ public class UpdateOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
             Type = OrganisationUpdateType.AdditionalIdentifiers,
             Organisation = new OrganisationInfo
             {
-                AdditionalIdentifiers = [new OrganisationIdentifier {
+                AdditionalIdentifiers = [new OrganisationIdentifier
+                {
                     Id = "FakeId",
                     LegalName = "Illigal",
                     Scheme = "FakeScheme"

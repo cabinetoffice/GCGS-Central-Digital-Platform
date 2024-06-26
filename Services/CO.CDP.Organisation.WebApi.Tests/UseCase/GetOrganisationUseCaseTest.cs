@@ -38,13 +38,13 @@ public class GetOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IClas
                 Name = "Tenant 101"
             },
             Identifiers = [new OrganisationInformation.Persistence.Organisation.Identifier
-                {
-                    Primary = true,
-                    IdentifierId = "123456",
-                    Scheme = "Scheme1",
-                    LegalName = "Legal Name",
-                    Uri = "https://example.com"
-                },
+            {
+                Primary = true,
+                IdentifierId = "123456",
+                Scheme = "Scheme1",
+                LegalName = "Legal Name",
+                Uri = "https://example.com"
+            },
                 new OrganisationInformation.Persistence.Organisation.Identifier
                 {
                     Primary = false,

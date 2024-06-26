@@ -10,7 +10,7 @@ public static class Extensions
 {
     public static void ConfigureForwardedHeaders(this WebApplicationBuilder builder)
     {
-        builder.ConfigureForwardedHeaders(_ => {});
+        builder.ConfigureForwardedHeaders(_ => { });
     }
 
     private static void ConfigureForwardedHeaders(

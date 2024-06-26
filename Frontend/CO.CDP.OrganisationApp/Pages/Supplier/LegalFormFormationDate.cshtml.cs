@@ -75,7 +75,7 @@ public class LegalFormFormationDateModel(
                         (
                             lf.LawRegistered,
                             lf.RegisteredLegalForm,
-                            lf.RegisteredUnderAct2006!.Value, 
+                            lf.RegisteredUnderAct2006!.Value,
                             lf.RegistrationDate!.Value
                         );
         try

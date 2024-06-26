@@ -124,7 +124,7 @@ public class LegalFormFormationDateTest
         var validDate = new DateTimeOffset(2023, 6, 15, 0, 0, 0, TimeSpan.FromHours(0));
         SetDateFields(validDate.Day.ToString("D2"), validDate.Month.ToString("D2"), validDate.Year.ToString());
         _model.Id = Guid.NewGuid();
-        
+
         var legalForm = new LegalForm() { RegisteredUnderAct2006 = false };
         _mockTempDataService.Setup(s => s.PeekOrDefault<LegalForm>(LegalForm.TempDataKey)).Returns(legalForm);
         _mockOrganisationClient.Setup(c => c.UpdateSupplierInformationAsync(It.IsAny<Guid>(), It.IsAny<Organisation.WebApiClient.UpdateSupplierInformation>()))

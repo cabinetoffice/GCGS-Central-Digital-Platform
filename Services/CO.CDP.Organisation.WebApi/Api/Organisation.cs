@@ -260,7 +260,7 @@ public static class EndpointExtensions
             });
 
         app.MapDelete("/{organisationId}/supplier-information",
-            async (Guid organisationId, [FromBody]DeleteSupplierInformation deleteSupplierInformation,
+            async (Guid organisationId, [FromBody] DeleteSupplierInformation deleteSupplierInformation,
                 IUseCase<(Guid, DeleteSupplierInformation), bool> useCase) =>
                     await useCase.Execute((organisationId, deleteSupplierInformation))
                         .AndThen(_ => Results.NoContent()))
