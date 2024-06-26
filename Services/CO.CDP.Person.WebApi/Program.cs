@@ -45,14 +45,12 @@ builder.Services
     });
 
 builder.Services
-    .AddAuthorizationBuilder();
-// builder.Services
-//     .AddAuthorizationBuilder()
-//     .SetFallbackPolicy(
-//         new AuthorizationPolicyBuilder()
-//             .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
-//             .RequireAuthenticatedUser()
-//             .Build());
+    .AddAuthorizationBuilder()
+    .SetFallbackPolicy(
+        new AuthorizationPolicyBuilder()
+            .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
+            .RequireAuthenticatedUser()
+            .Build());
 
 var app = builder.Build();
 app.UseForwardedHeaders();
