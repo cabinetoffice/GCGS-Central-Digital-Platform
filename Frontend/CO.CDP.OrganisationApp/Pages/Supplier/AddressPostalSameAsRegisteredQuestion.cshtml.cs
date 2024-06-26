@@ -63,10 +63,10 @@ public class AddressPostalSameAsRegisteredQuestionModel
                 if (registeredAddress != null)
                 {
                     ICollection<OrganisationAddress> addresses = [
-                                new OrganisationAddress (
-                                    streetAddress : registeredAddress.StreetAddress,
-                                    streetAddress2 : registeredAddress.StreetAddress2,
-                                    postalCode : registeredAddress.PostalCode,
+                                new OrganisationAddress(
+                                    streetAddress: registeredAddress.StreetAddress,
+                                    streetAddress2: registeredAddress.StreetAddress2,
+                                    postalCode: registeredAddress.PostalCode,
                                     locality: registeredAddress.Locality,
                                     countryName: registeredAddress.CountryName,
                                     type: AddressType.Postal,

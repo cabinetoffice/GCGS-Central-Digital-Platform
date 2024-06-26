@@ -7,7 +7,7 @@ namespace CO.CDP.TestKit.Mvc.Tests;
 public class EntityFrameworkServiceCollectionExtensionsTest
 {
     [Fact]
-    public async void ItConfiguresInMemoryDbContextService()
+    public async Task ItConfiguresInMemoryDbContextService()
     {
         var factory = new TestWebApplicationFactory<TestProgram>(c =>
         {
@@ -23,7 +23,7 @@ public class EntityFrameworkServiceCollectionExtensionsTest
     }
 
     [Fact]
-    public async void ItConfiguresInMemoryDbContext()
+    public async Task ItConfiguresInMemoryDbContext()
     {
         var factory = new TestWebApplicationFactory<TestProgram>(c =>
         {

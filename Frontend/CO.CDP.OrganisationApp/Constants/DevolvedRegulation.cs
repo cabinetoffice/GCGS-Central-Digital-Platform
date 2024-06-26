@@ -11,7 +11,7 @@ public enum DevolvedRegulation
 public static class DevolvedRegulationsExtensions
 {
     public static string Description(this DevolvedRegulation devolvedRegulations)
-    {        
+    {
         return devolvedRegulations switch
         {
             DevolvedRegulation.NorthernIreland => "Northern Ireland",

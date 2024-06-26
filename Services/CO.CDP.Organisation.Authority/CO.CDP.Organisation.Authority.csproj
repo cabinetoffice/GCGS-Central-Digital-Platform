@@ -8,11 +8,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="IdentityModel" Version="7.0.0"/>
-        <PackageReference Include="Microsoft.IdentityModel.Protocols.OpenIdConnect" Version="7.1.2"/>
-        <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.1.2"/>
-        <PackageReference Include="DotSwashbuckle.AspNetCore" Version="3.0.8"/>
-        <ProjectReference Include="..\..\Libraries\CO.CDP.Configuration\CO.CDP.Configuration.csproj"/>
+        <PackageReference Include="IdentityModel" Version="7.0.0" />
+        <PackageReference Include="Microsoft.IdentityModel.Protocols.OpenIdConnect" Version="7.6.2" />
+        <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.6.2" />
+        <PackageReference Include="DotSwashbuckle.AspNetCore" Version="3.0.10" />
+        <ProjectReference Include="..\..\Libraries\CO.CDP.Configuration\CO.CDP.Configuration.csproj" />
     </ItemGroup>
 
 </Project>
