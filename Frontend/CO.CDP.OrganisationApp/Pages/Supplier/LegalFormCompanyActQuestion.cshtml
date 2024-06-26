@@ -1,8 +1,8 @@
-@page "/organisation/{id}/supplier-information/ca-question"
-@model CO.CDP.OrganisationApp.Pages.Supplier.LegalFormCaQuestionModel
+@page "/organisation/{id}/supplier-information/company-act-question"
+@model CO.CDP.OrganisationApp.Pages.Supplier.LegalFormCompanyActQuestionModel
 
 @{
-    var registeredOnChHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.RegisteredOnCh)).HasInnerHtml;
+    var registeredOnChHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.RegisteredOnCompanyHouse)).HasInnerHtml;
 }
 
 <a href="/organisation/@Model.Id/supplier-information/basic-information" class="govuk-back-link">Back</a>
@@ -27,21 +27,21 @@
                             @if (registeredOnChHasError)
                             {
                                 <p id="devolved-error" class="govuk-error-message">
-                                    <span class="govuk-visually-hidden">Error:</span> @Html.ValidationMessageFor(m => m.RegisteredOnCh)
+                                    <span class="govuk-visually-hidden">Error:</span> @Html.ValidationMessageFor(m => m.RegisteredOnCompanyHouse)
                                 </p>
                             }
 
                             <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="regOnCh" name="RegisteredOnCh" type="radio"
-                                       value="true" aria-controls="conditional-vat-yes" aria-expanded="false" @(Model.RegisteredOnCh == true ? "checked" : "")>
+                                <input class="govuk-radios__input" id="regOnCh" name="RegisteredOnCompanyHouse" type="radio"
+                                       value="true" aria-controls="conditional-vat-yes" aria-expanded="false" @(Model.RegisteredOnCompanyHouse == true ? "checked" : "")>
                                 <label class="govuk-label govuk-radios__label" for="regOnCh">
                                     Yes
                                 </label>
                             </div>
 
                             <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="regOnCh-2" name="RegisteredOnCh" type="radio" value="false"
-                                @(Model.RegisteredOnCh == false ? "checked" : "")>
+                                <input class="govuk-radios__input" id="regOnCh-2" name="RegisteredOnCompanyHouse" type="radio" value="false"
+                                @(Model.RegisteredOnCompanyHouse == false ? "checked" : "")>
                                 <label class="govuk-label govuk-radios__label" for="regOnCh-2">No</label>
                             </div>
 
