@@ -76,7 +76,7 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
     }
 
     [Fact]
-    public async void ItSavesNewOrganisationInTheRepository()
+    public async Task ItSavesNewOrganisationInTheRepository()
     {
         var person = GivenPersonExists(guid: Guid.NewGuid());
 
@@ -180,7 +180,7 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
     }
 
     [Fact]
-    public async void ItAssociatesTheTenantWithTheOrganisation()
+    public async Task ItAssociatesTheTenantWithTheOrganisation()
     {
         var person = GivenPersonExists(guid: Guid.NewGuid());
 
@@ -195,7 +195,7 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
     }
 
     [Fact]
-    public async void ItAssociatesTheTenantWithThePerson()
+    public async Task ItAssociatesTheTenantWithThePerson()
     {
         var person = GivenPersonExists(guid: Guid.NewGuid());
 
@@ -210,7 +210,7 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
     }
 
     [Fact]
-    public async void ItAssociatesTheOrganisationWithThePerson()
+    public async Task ItAssociatesTheOrganisationWithThePerson()
     {
         var person = GivenPersonExists(guid: Guid.NewGuid());
 
@@ -225,7 +225,7 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
     }
 
     [Fact]
-    public async void ItRejectsUnknownPersons()
+    public async Task ItRejectsUnknownPersons()
     {
         var unknownPersonId = Guid.NewGuid();
 

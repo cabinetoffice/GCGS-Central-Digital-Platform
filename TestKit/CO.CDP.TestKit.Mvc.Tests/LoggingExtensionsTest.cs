@@ -23,7 +23,7 @@ public class LoggingExtensionsTest
     private readonly TestOutput _testOutput = new();
 
     [Fact]
-    public async void ItConfiguresLogging()
+    public async Task ItConfiguresLogging()
     {
         var factory = new TestWebApplicationFactory<TestProgram>(c =>
         {
