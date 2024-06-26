@@ -4,6 +4,7 @@ using CO.CDP.Person.WebApi.UseCase;
 using CO.CDP.Swashbuckle.Security;
 using DotSwashbuckle.AspNetCore.SwaggerGen;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
 
 namespace CO.CDP.Person.WebApi.Api;
@@ -27,36 +28,115 @@ public static class EndpointExtensions
                 .AndThen(person =>
                     Results.Created(new Uri($"/persons/{person.Id}", UriKind.Relative), person))
          )
-        .Produces<Model.Person>(201, "application/json")
-        .ProducesProblem(StatusCodes.Status500InternalServerError)
-        .ProducesProblem(StatusCodes.Status400BadRequest)
+        .Produces<Model.Person>(StatusCodes.Status201Created, "application/json")
+        .Produces<ProblemDetails>(StatusCodes.Status400BadRequest)
         .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
-        .ProducesProblem(StatusCodes.Status422UnprocessableEntity)
-        .ProducesProblem(StatusCodes.Status404NotFound)
+        .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError)
         .WithOpenApi(operation =>
         {
             operation.OperationId = "CreatePerson";
             operation.Description = "Create a new person.";
             operation.Summary = "Create a new person.";
             operation.Responses["201"].Description = "Person created successfully.";
-            operation.Responses["400"].Description = "Bad request.";
-            operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
-            operation.Responses["422"].Description = "Unprocessable entity.";
-            operation.Responses["500"].Description = "Internal server error.";
+            operation.Responses["400"].Content["application/json"].Examples = new Dictionary<string, OpenApiExample>
+            {
+                ["UnknownPersonException"] = new OpenApiExample
+                {
+                    Summary = "Duplicate person",
+                    Value = new OpenApiObject
+                    {
+                        ["type"] = new OpenApiString("https://tools.ietf.org/html/rfc9110#section-15.6.1"),
+                        ["title"] = new OpenApiString("Duplicate person"),
+                        ["status"] = new OpenApiInteger(400),
+                        ["code"] = new OpenApiString("PERSON_ALREADY_EXISTS")
+                    }
+                }
+            };
+            operation.Responses["401"].Content["application/json"].Examples = new Dictionary<string, OpenApiExample>
+            {
+                ["Valid authentication credentials are missing in the request"] = new OpenApiExample
+                {
+                    Summary = "Unauthorized",
+                    Value = new OpenApiObject
+                    {
+                        ["type"] = new OpenApiString("https://tools.ietf.org/html/rfc9110#section-15.5.2"),
+                        ["title"] = new OpenApiString("Unauthorized"),
+                        ["status"] = new OpenApiInteger(401)
+                    }
+                }
+            };
+            operation.Responses["500"].Content["application/json"].Examples = new Dictionary<string, OpenApiExample>
+            {
+                ["UnknownPersonException"] = new OpenApiExample
+                {
+                    Summary = "Unknown person",
+                    Value = new OpenApiObject
+                    {
+                        ["type"] = new OpenApiString("https://tools.ietf.org/html/rfc9110#section-15.6.1"),
+                        ["title"] = new OpenApiString("An error occurred while processing your request."),
+                        ["status"] = new OpenApiInteger(500),
+                        ["code"] = new OpenApiString("GENERIC_ERROR")
+                    }
+                }
+            };
             return operation;
         });
 
         app.MapGet("/persons/{personId}", async (Guid personId, IUseCase<Guid, Model.Person?> useCase) =>
                 await useCase.Execute(personId)
                     .AndThen(person => person != null ? Results.Ok(person) : Results.NotFound()))
-            .Produces<Model.Person>(200, "application/json")
-            .Produces(404)
+            .Produces<Model.Person>(StatusCodes.Status200OK, "application/json")
+            .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
+            .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
+            .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError)
             .WithOpenApi(operation =>
             {
                 operation.OperationId = "GetPerson";
                 operation.Description = "Get a person by ID.";
                 operation.Summary = "Get a person by ID.";
                 operation.Responses["200"].Description = "Person details.";
+                operation.Responses["401"].Content["application/json"].Examples = new Dictionary<string, OpenApiExample>
+                {
+                    ["Valid authentication credentials are missing in the request"] = new OpenApiExample
+                    {
+                        Summary = "Unauthorized",
+                        Value = new OpenApiObject
+                        {
+                            ["type"] = new OpenApiString("https://tools.ietf.org/html/rfc9110#section-15.5.2"),
+                            ["title"] = new OpenApiString("Unauthorized"),
+                            ["status"] = new OpenApiInteger(401)
+                        }
+                    }
+                };
+                operation.Responses["404"].Content["application/json"].Examples = new Dictionary<string, OpenApiExample>
+                {
+                    ["The requested person was not found"] = new OpenApiExample
+                    {
+                        Summary = "The requested person was not found",
+                        Value = new OpenApiObject
+                        {
+                            ["type"] = new OpenApiString("https://tools.ietf.org/html/rfc4918#section-11.2"),
+                            ["title"] = new OpenApiString("An error occurred while processing your request."),
+                            ["status"] = new OpenApiInteger(404),
+                            ["detail"] = new OpenApiString("The requested person was not found"),
+                            ["code"] = new OpenApiString("PERSON_DOES_NOT_EXIST")
+                        }
+                    }
+                };
+                operation.Responses["500"].Content["application/json"].Examples = new Dictionary<string, OpenApiExample>
+                {
+                    ["Internal server error"] = new OpenApiExample
+                    {
+                        Value = new OpenApiObject
+                        {
+                            ["type"] = new OpenApiString("https://tools.ietf.org/html/rfc9110#section-15.6.1"),
+                            ["title"] = new OpenApiString("An error occurred while processing your request."),
+                            ["status"] = new OpenApiInteger(500),
+                            ["code"] = new OpenApiString("GENERIC_ERROR")
+                        }
+                    }
+                };
+
                 return operation;
             });
 
@@ -105,8 +185,10 @@ public static class EndpointExtensions
                 async ([FromQuery] string urn, IUseCase<string, Model.Person?> useCase) =>
                 await useCase.Execute(urn)
                     .AndThen(persons => persons != null ? Results.Ok(persons) : Results.NotFound()))
-            .Produces<Model.Person>(200, "application/json")
-            .Produces(404)
+            .Produces<Model.Person>(StatusCodes.Status200OK, "application/json")
+            .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
+            .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
+            .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError)
             .WithOpenApi(operation =>
             {
                 operation.OperationId = "LookupPerson";
@@ -114,6 +196,48 @@ public static class EndpointExtensions
                 operation.Summary = "Lookup person by user principal.";
                 operation.Tags = new List<OpenApiTag> { new() { Name = "Person Lookup" } };
                 operation.Responses["200"].Description = "Person Associated.";
+                operation.Responses["401"].Content["application/json"].Examples = new Dictionary<string, OpenApiExample>
+                {
+                    ["Valid authentication credentials are missing in the request"] = new OpenApiExample
+                    {
+                        Summary = "Unauthorized",
+                        Value = new OpenApiObject
+                        {
+                            ["type"] = new OpenApiString("https://tools.ietf.org/html/rfc9110#section-15.5.2"),
+                            ["title"] = new OpenApiString("Unauthorized"),
+                            ["status"] = new OpenApiInteger(401)
+                        }
+                    }
+                };
+                operation.Responses["404"].Content["application/json"].Examples = new Dictionary<string, OpenApiExample>
+                {
+                    ["The requested person was not found"] = new OpenApiExample
+                    {
+                        Summary = "The requested person was not found",
+                        Value = new OpenApiObject
+                        {
+                            ["type"] = new OpenApiString("https://tools.ietf.org/html/rfc4918#section-11.2"),
+                            ["title"] = new OpenApiString("An error occurred while processing your request."),
+                            ["status"] = new OpenApiInteger(404),
+                            ["detail"] = new OpenApiString("The requested person was not found"),
+                            ["code"] = new OpenApiString("PERSON_DOES_NOT_EXIST")
+                        }
+                    }
+                };
+                operation.Responses["500"].Content["application/json"].Examples = new Dictionary<string, OpenApiExample>
+                {
+                    ["Internal server error"] = new OpenApiExample
+                    {
+                        Value = new OpenApiObject
+                        {
+                            ["type"] = new OpenApiString("https://tools.ietf.org/html/rfc9110#section-15.6.1"),
+                            ["title"] = new OpenApiString("An error occurred while processing your request."),
+                            ["status"] = new OpenApiInteger(500),
+                            ["code"] = new OpenApiString("GENERIC_ERROR")
+                        }
+                    }
+                };
+
                 return operation;
             });
     }

@@ -8,6 +8,7 @@ using CO.CDP.Tenant.WebApi.Model;
 using CO.CDP.Tenant.WebApi.UseCase;
 using DotSwashbuckle.AspNetCore.SwaggerGen;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
 
 namespace CO.CDP.Tenant.WebApi.Api;
@@ -22,21 +23,55 @@ public static class EndpointExtensions
                         Results.Created(new Uri($"/tenants/{tenant.Id}", UriKind.Relative), tenant)
                     ))
             .Produces<Model.Tenant>(StatusCodes.Status201Created, "application/json")
-            .ProducesProblem(StatusCodes.Status500InternalServerError)
-            .ProducesProblem(StatusCodes.Status400BadRequest)
+            .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError)
+            .Produces<ProblemDetails>(StatusCodes.Status400BadRequest)
             .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
-            .ProducesProblem(StatusCodes.Status422UnprocessableEntity)
-            .ProducesProblem(StatusCodes.Status404NotFound)
             .WithOpenApi(operation =>
             {
                 operation.OperationId = "CreateTenant";
                 operation.Description = "Create a new tenant.";
                 operation.Summary = "Create a new tenant.";
                 operation.Responses["201"].Description = "Tenant created successfully.";
-                operation.Responses["400"].Description = "Bad request.";
-                operation.Responses["422"].Description = "Unprocessable entity.";
-                operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
-                operation.Responses["500"].Description = "Internal server error.";
+                operation.Responses["400"].Content["application/json"].Examples = new Dictionary<string, OpenApiExample>
+                {
+                    ["UnknownPersonException"] = new OpenApiExample
+                    {
+                        Summary = "Duplicate person",
+                        Value = new OpenApiObject
+                        {
+                            ["type"] = new OpenApiString("https://tools.ietf.org/html/rfc9110#section-15.6.1"),
+                            ["title"] = new OpenApiString("Duplicate tenant"),
+                            ["status"] = new OpenApiInteger(400),
+                            ["code"] = new OpenApiString("TENANT_ALREADY_EXISTS")
+                        }
+                    }
+                };
+                operation.Responses["401"].Content["application/json"].Examples = new Dictionary<string, OpenApiExample>
+                {
+                    ["Valid authentication credentials are missing in the request"] = new OpenApiExample
+                    {
+                        Summary = "Unauthorized",
+                        Value = new OpenApiObject
+                        {
+                            ["type"] = new OpenApiString("https://tools.ietf.org/html/rfc9110#section-15.5.2"),
+                            ["title"] = new OpenApiString("Unauthorized"),
+                            ["status"] = new OpenApiInteger(401)
+                        }
+                    }
+                };
+                operation.Responses["500"].Content["application/json"].Examples = new Dictionary<string, OpenApiExample>
+                {
+                    ["Internal server error"] = new OpenApiExample
+                    {
+                        Value = new OpenApiObject
+                        {
+                            ["type"] = new OpenApiString("https://tools.ietf.org/html/rfc9110#section-15.6.1"),
+                            ["title"] = new OpenApiString("An error occurred while processing your request."),
+                            ["status"] = new OpenApiInteger(500),
+                            ["code"] = new OpenApiString("GENERIC_ERROR")
+                        }
+                    }
+                };
                 return operation;
             });
         app.MapGet("/tenants/{tenantId}", async (Guid tenantId, IUseCase<Guid, Model.Tenant?> useCase) =>
@@ -52,9 +87,46 @@ public static class EndpointExtensions
                 operation.Description = "Get a tenant by ID.";
                 operation.Summary = "Get a tenant by ID.";
                 operation.Responses["200"].Description = "Tenant details.";
-                operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
-                operation.Responses["404"].Description = "Tenant not found.";
-                operation.Responses["500"].Description = "Internal server error.";
+                operation.Responses["401"].Content["application/json"].Examples = new Dictionary<string, OpenApiExample>
+                {
+                    ["Valid authentication credentials are missing in the request"] = new OpenApiExample
+                    {
+                        Summary = "Unauthorized",
+                        Value = new OpenApiObject
+                        {
+                            ["type"] = new OpenApiString("https://tools.ietf.org/html/rfc9110#section-15.5.2"),
+                            ["title"] = new OpenApiString("Unauthorized"),
+                            ["status"] = new OpenApiInteger(401)
+                        }
+                    }
+                };
+                operation.Responses["404"].Content["application/json"].Examples = new Dictionary<string, OpenApiExample>
+                {
+                    ["The requested person was not found"] = new OpenApiExample
+                    {
+                        Summary = "The requested person was not found",
+                        Value = new OpenApiObject
+                        {
+                            ["type"] = new OpenApiString("https://tools.ietf.org/html/rfc4918#section-11.2"),
+                            ["title"] = new OpenApiString("An error occurred while processing your request."),
+                            ["status"] = new OpenApiInteger(404),
+                            ["detail"] = new OpenApiString("Not found")
+                        }
+                    }
+                };
+                operation.Responses["500"].Content["application/json"].Examples = new Dictionary<string, OpenApiExample>
+                {
+                    ["Internal server error"] = new OpenApiExample
+                    {
+                        Value = new OpenApiObject
+                        {
+                            ["type"] = new OpenApiString("https://tools.ietf.org/html/rfc9110#section-15.6.1"),
+                            ["title"] = new OpenApiString("An error occurred while processing your request."),
+                            ["status"] = new OpenApiInteger(500),
+                            ["code"] = new OpenApiString("GENERIC_ERROR")
+                        }
+                    }
+                };
                 return operation;
             });
     }
@@ -78,9 +150,46 @@ public static class EndpointExtensions
                 operation.Summary = "Lookup the tenant for the authenticated user.";
                 operation.Tags = openApiTags;
                 operation.Responses["200"].Description = "Tenants associated with the the user.";
-                operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
-                operation.Responses["404"].Description = "Tenant not found.";
-                operation.Responses["500"].Description = "Internal server error.";
+                operation.Responses["401"].Content["application/json"].Examples = new Dictionary<string, OpenApiExample>
+                {
+                    ["Valid authentication credentials are missing in the request"] = new OpenApiExample
+                    {
+                        Summary = "Unauthorized",
+                        Value = new OpenApiObject
+                        {
+                            ["type"] = new OpenApiString("https://tools.ietf.org/html/rfc9110#section-15.5.2"),
+                            ["title"] = new OpenApiString("Unauthorized"),
+                            ["status"] = new OpenApiInteger(401)
+                        }
+                    }
+                };
+                operation.Responses["404"].Content["application/json"].Examples = new Dictionary<string, OpenApiExample>
+                {
+                    ["The requested person was not found"] = new OpenApiExample
+                    {
+                        Summary = "The requested person was not found",
+                        Value = new OpenApiObject
+                        {
+                            ["type"] = new OpenApiString("https://tools.ietf.org/html/rfc4918#section-11.2"),
+                            ["title"] = new OpenApiString("An error occurred while processing your request."),
+                            ["status"] = new OpenApiInteger(404),
+                            ["detail"] = new OpenApiString("Not found")
+                        }
+                    }
+                };
+                operation.Responses["500"].Content["application/json"].Examples = new Dictionary<string, OpenApiExample>
+                {
+                    ["Internal server error"] = new OpenApiExample
+                    {
+                        Value = new OpenApiObject
+                        {
+                            ["type"] = new OpenApiString("https://tools.ietf.org/html/rfc9110#section-15.6.1"),
+                            ["title"] = new OpenApiString("An error occurred while processing your request."),
+                            ["status"] = new OpenApiInteger(500),
+                            ["code"] = new OpenApiString("GENERIC_ERROR")
+                        }
+                    }
+                };
                 return operation;
             });
     }
