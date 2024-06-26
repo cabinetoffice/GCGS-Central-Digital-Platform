@@ -1,4 +1,18 @@
 services:
+  gateway:
+    extends:
+      file: compose.common.yml
+      service: gateway
+    depends_on:
+      - organisation-app
+      - authority
+      - tenant
+      - organisation
+      - person
+      - forms
+      - data-sharing
+    volumes:
+      - './docker/gateway/templates:/etc/nginx/templates:ro'
   db:
     extends:
       file: compose.common.yml
@@ -34,6 +48,7 @@ services:
       - db
     environment:
       ConnectionStrings__OrganisationInformationDatabase: 'Server=db;Database=cdp;Username=cdp_user;Password=cdp123;'
+      Issuer: 'http://authority:8080'
   tenant:
     extends:
       file: compose.common.yml

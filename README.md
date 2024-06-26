@@ -20,6 +20,8 @@ First, containers need to be built:
 make build-docker
 ```
 
+The first time, `compose.override.yml` needs to be generated and configured (see the Docker section).
+
 The database can be then started together with migrations (`make db`):
 
 ```bash
@@ -101,6 +103,15 @@ One login details need to be provided to the `organisation-app` in `compose.over
 * `OneLogin__Authority`
 * `OneLogin__ClientId`
 * `OneLogin__PrivateKey`
+
+The authority service also needs to be configured with:
+
+* `PublicKey`
+* `PrivateKey`
+* `OneLogin__Authority`
+
+The `make generate-authority-keys` command generates a pair of public and private keys that
+can be used with `PublicKey` and `PrivateKey`. Make sure to copy the contents of both files and not the path.
 
 ### Starting services
 

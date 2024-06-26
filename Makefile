@@ -55,14 +55,23 @@ OpenAPI: build ## Create OpenAPI folder and copy relevant files in
 
 define COMPOSE_OVERRIDE_YML
 services:
+  gateway:
+    ports:
+      - "$${CDP_ORGANISATION_APP_PORT:-8090}:8090"
+      - "$${CDP_AUTHORITY_PORT:-8092}:8092"
+      - "$${CDP_TENANT_PORT:-8080}:8080"
+      - '$${CDP_ORGANISATION_PORT:-8082}:8082'
+      - '$${CDP_PERSON_PORT:-8084}:8084'
+      - '$${CDP_FORMS_PORT:-8086}:8086'
+      - '$${CDP_DATA_SHARING_PORT:-8088}:8088'
+    deploy:
+      replicas: 1
   db:
     ports:
       - "$${CDP_DB_PORT:-5432}:5432"
     deploy:
       replicas: 1
   organisation-app:
-    ports:
-      - "$${CDP_ORGANISATION_APP_PORT:-8090}:8080"
     environment:
       ASPNETCORE_ENVIRONMENT: Development
       OneLogin__Authority: "https://oidc.example.com"
@@ -71,43 +80,34 @@ services:
     deploy:
       replicas: 1
   authority:
-    ports:
-      - "$${CDP_AUTHORITY_PORT:-8092}:8080"
     environment:
       ASPNETCORE_ENVIRONMENT: Development
+      PublicKey: "-----BEGIN RSA PUBLIC KEY-----"
+      PrivateKey: "-----BEGIN RSA PRIVATE KEY-----"
+      OneLogin__Authority: "https://oidc.example.com"
     deploy:
       replicas: 1
   tenant:
-    ports:
-      - "$${CDP_TENANT_PORT:-8080}:8080"
     environment:
       ASPNETCORE_ENVIRONMENT: Development
     deploy:
       replicas: 1
   organisation:
-    ports:
-      - '$${CDP_ORGANISATION_PORT:-8082}:8080'
     environment:
       ASPNETCORE_ENVIRONMENT: Development
     deploy:
       replicas: 1
   person:
-    ports:
-      - '$${CDP_PERSON_PORT:-8084}:8080'
     environment:
       ASPNETCORE_ENVIRONMENT: Development
     deploy:
       replicas: 1
   forms:
-    ports:
-      - '$${CDP_FORMS_PORT:-8086}:8080'
     environment:
       ASPNETCORE_ENVIRONMENT: Development
     deploy:
       replicas: 1
   data-sharing:
-    ports:
-      - '$${CDP_DATA_SHARING_PORT:-8088}:8080'
     environment:
       ASPNETCORE_ENVIRONMENT: Development
     deploy:
