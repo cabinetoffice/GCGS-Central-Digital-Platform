@@ -2,7 +2,7 @@ server {
     listen 8090;
 
     location / {
-        proxy_pass http://organisation-app:8080;
+        proxy_pass ${CDP_ORGANISATION_APP_HOST};
         proxy_set_header X-Forwarded-Host   $host;
         proxy_set_header X-Forwarded-Server $host;
         proxy_set_header X-Forwarded-For    $proxy_add_x_forwarded_for;
@@ -17,7 +17,7 @@ server {
     listen 8092;
 
     location / {
-        proxy_pass http://authority:8080;
+        proxy_pass ${CDP_AUTHORITY_HOST};
         proxy_set_header X-Forwarded-Host   $host;
         proxy_set_header X-Forwarded-Server $host;
         proxy_set_header X-Forwarded-For    $proxy_add_x_forwarded_for;
@@ -32,7 +32,7 @@ server {
     listen 8080;
 
     location / {
-        proxy_pass http://tenant:8080;
+        proxy_pass ${CDP_TENANT_HOST};
         proxy_set_header X-Forwarded-Host   $host;
         proxy_set_header X-Forwarded-Server $host;
         proxy_set_header X-Forwarded-For    $proxy_add_x_forwarded_for;
@@ -47,7 +47,7 @@ server {
     listen 8082;
 
     location / {
-        proxy_pass http://organisation:8080;
+        proxy_pass ${CDP_ORGANISATION_HOST};
         proxy_set_header X-Forwarded-Host   $host;
         proxy_set_header X-Forwarded-Server $host;
         proxy_set_header X-Forwarded-For    $proxy_add_x_forwarded_for;
@@ -62,7 +62,7 @@ server {
     listen 8084;
 
     location / {
-        proxy_pass http://person:8080;
+        proxy_pass ${CDP_PERSON_HOST};
         proxy_set_header X-Forwarded-Host   $host;
         proxy_set_header X-Forwarded-Server $host;
         proxy_set_header X-Forwarded-For    $proxy_add_x_forwarded_for;
@@ -77,7 +77,7 @@ server {
     listen 8086;
 
     location / {
-        proxy_pass http://forms:8080;
+        proxy_pass ${CDP_FORMS_HOST};
         proxy_set_header X-Forwarded-Host   $host;
         proxy_set_header X-Forwarded-Server $host;
         proxy_set_header X-Forwarded-For    $proxy_add_x_forwarded_for;
@@ -92,7 +92,7 @@ server {
     listen 8088;
 
     location / {
-        proxy_pass http://data-sharing:8080;
+        proxy_pass ${CDP_DATA_SHARING_HOST};
         proxy_set_header X-Forwarded-Host   $host;
         proxy_set_header X-Forwarded-Server $host;
         proxy_set_header X-Forwarded-For    $proxy_add_x_forwarded_for;
