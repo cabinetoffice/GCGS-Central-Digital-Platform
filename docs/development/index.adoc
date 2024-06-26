@@ -4,6 +4,8 @@ This section covers development related topics.
 
 :leveloffset: +1
 
+include::01-development-environment.adoc[]
+
 include::decisions/index.adoc[]
 
 :leveloffset: -1

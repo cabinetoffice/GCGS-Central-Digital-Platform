@@ -3,6 +3,7 @@
 :toc: left
 :toclevels: 2
 :data-uri:
+:imagesdir: images
 :source-highlighter: rouge
 
 This is a technical documentation for the Cabinet Office's Central Digital Platform.

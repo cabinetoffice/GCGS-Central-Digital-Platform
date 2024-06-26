@@ -1,0 +1,25 @@
+= Development environment
+
+== Requirements
+
+The minimum set of tools required to work on the project covers:
+
+* An IDE of your choice (i.e. Visual Studio, Rider)
+* https://www.docker.com/[Docker]
+
+On Windows, it might be handy to set up https://git-scm.com/downloads[git-bash] or WSL
+in order to run tools like Make.
+
+== Setting up
+
+Import the project to your favourite IDE to build and run tests from there.
+
+image::../images/development/run-all-tests.png[Runing all tests in the IDE]
+
+Alternatively, use the `dotnet` command or the following make targets to build and run tests:
+
+[source,bash]
+----
+make build
+make test
+----
