@@ -6,7 +6,6 @@ using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.Organisation.WebApi.UseCase;
 using CO.CDP.OrganisationInformation.Persistence;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Organisation = CO.CDP.Organisation.WebApi.Model.Organisation;
@@ -51,14 +50,14 @@ builder.Services
             ValidateIssuerSigningKey = true
         };
     });
-//builder.Services.AddAuthorization();
-builder.Services
-    .AddAuthorizationBuilder()
-    .SetFallbackPolicy(
-        new AuthorizationPolicyBuilder()
-            .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
-            .RequireAuthenticatedUser()
-            .Build());
+builder.Services.AddAuthorization();
+//builder.Services
+//    .AddAuthorizationBuilder()
+//    .SetFallbackPolicy(
+//        new AuthorizationPolicyBuilder()
+//            .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
+//            .RequireAuthenticatedUser()
+//            .Build());
 
 var app = builder.Build();
 app.UseForwardedHeaders();

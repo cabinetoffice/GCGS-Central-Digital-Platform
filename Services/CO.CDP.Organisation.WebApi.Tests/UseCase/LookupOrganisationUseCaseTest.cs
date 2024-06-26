@@ -15,9 +15,9 @@ public class LookupOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
     [Fact]
     public async Task Execute_IfNoOrganisationIsFound_ReturnsNull()
     {
-        var name = "Test Organisation";
+        var query = "Test Organisation";
 
-        var found = await UseCase.Execute(name);
+        var found = await UseCase.Execute(query);
 
         found.Should().BeNull();
     }
@@ -26,7 +26,45 @@ public class LookupOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
     public async Task Execute_IfOrganisationIsFound_ReturnsOrganisation()
     {
         var organisationId = Guid.NewGuid();
-        var persistenceOrganisation = new OrganisationInformation.Persistence.Organisation
+
+        var persistenceOrganisation = GivenPersistenceOrganisationInfo(organisationId);
+
+        _repository.Setup(r => r.FindByName(persistenceOrganisation.Name)).ReturnsAsync(persistenceOrganisation);
+
+        var found = await UseCase.Execute("Test Organisation");
+
+        found.Should().BeEquivalentTo(GivenModelOrganisationInfo(organisationId), options => options.ComparingByMembers<Model.Organisation>());
+
+    }
+
+    [Fact]
+    public async Task Execute_IfNoOrganisationIsFoundByIdentifier_ReturnsNull()
+    {
+        var query = "Sch:12";
+
+        var found = await UseCase.Execute(query);
+
+        found.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task Execute_IfOrganisationIsFoundByIdentifier_ReturnsOrganisation()
+    {
+        var organisationId = Guid.NewGuid();
+
+        var persistenceOrganisation = GivenPersistenceOrganisationInfo(organisationId);
+
+        _repository.Setup(r => r.FindByIdentifier("Scheme", "123456")).ReturnsAsync(persistenceOrganisation);
+
+        var found = await UseCase.Execute("Scheme:123456");
+
+        found.Should().BeEquivalentTo(GivenModelOrganisationInfo(organisationId), options => options.ComparingByMembers<Model.Organisation>());
+
+    }
+
+    private OrganisationInformation.Persistence.Organisation GivenPersistenceOrganisationInfo(Guid organisationId)
+    {
+        return new OrganisationInformation.Persistence.Organisation
         {
             Id = 1,
             Guid = organisationId,
@@ -75,11 +113,11 @@ public class LookupOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
             Roles = [PartyRole.Supplier]
         };
 
-        _repository.Setup(r => r.FindByName(persistenceOrganisation.Name)).ReturnsAsync(persistenceOrganisation);
+    }
 
-        var found = await UseCase.Execute("Test Organisation");
-
-        found.Should().BeEquivalentTo(new Model.Organisation
+    private Model.Organisation GivenModelOrganisationInfo(Guid organisationId)
+    {
+        return new Model.Organisation
         {
             Id = organisationId,
             Name = "Test Organisation",
@@ -118,6 +156,6 @@ public class LookupOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
                 Url = new Uri("https://contact.test.org")
             },
             Roles = [PartyRole.Supplier]
-        }, options => options.ComparingByMembers<Model.Organisation>());
+        };
     }
 }
