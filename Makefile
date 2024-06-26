@@ -64,6 +64,13 @@ services:
       - '$${CDP_PERSON_PORT:-8084}:8084'
       - '$${CDP_FORMS_PORT:-8086}:8086'
       - '$${CDP_DATA_SHARING_PORT:-8088}:8088'
+    environment:
+#      CDP_AUTHORITY_HOST: 'http://host.docker.internal:5050'
+#      CDP_TENANT_HOST: 'http://host.docker.internal:58080'
+#      CDP_ORGANISATION_HOST: 'http://host.docker.internal:58082'
+#      CDP_PERSON_HOST: 'http://host.docker.internal:58084'
+#      CDP_FORMS_HOST: 'http://host.docker.internal:58086'
+#      CDP_DATA_SHARING_HOST: 'http://host.docker.internal:58088'
     deploy:
       replicas: 1
   db:
