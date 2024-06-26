@@ -89,10 +89,10 @@ public class AddressNonUkModel(IOrganisationClient organisationClient) : PageMod
             var organisation = await organisationClient.GetOrganisationAsync(Id);
 
             ICollection<OrganisationAddress> addresses = [
-                            new OrganisationAddress (
-                            streetAddress : AddressLine1,
-                            streetAddress2 : AddressLine2,
-                            postalCode : Postcode,
+                            new OrganisationAddress(
+                            streetAddress: AddressLine1,
+                            streetAddress2: AddressLine2,
+                            postalCode: Postcode,
                             locality: TownOrCity,
                             countryName: Country,
                             type: AddressType.AsApiClientAddressType(),

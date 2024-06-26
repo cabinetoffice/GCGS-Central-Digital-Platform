@@ -37,4 +37,3 @@ public class SupplierQualificationNameModel(
         return RedirectToPage("SupplierQualificationCheckAnswer", new { Id });
     }
 }
-

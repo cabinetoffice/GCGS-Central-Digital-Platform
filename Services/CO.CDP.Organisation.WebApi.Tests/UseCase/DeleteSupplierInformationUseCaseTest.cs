@@ -108,8 +108,9 @@ public class DeleteSupplierInformationUseCaseTest
 
             if (!withoutTradeAssurance)
             {
-                org.SupplierInfo.TradeAssurances = [new Persistence.Organisation.TradeAssurance {
-                    Guid= _tradeAssuranceId,
+                org.SupplierInfo.TradeAssurances = [new Persistence.Organisation.TradeAssurance
+                {
+                    Guid = _tradeAssuranceId,
                     AwardedByPersonOrBodyName = "Award Body",
                     ReferenceNumber = "Ref123456",
                     DateAwarded = DateTime.Now.AddDays(1),
