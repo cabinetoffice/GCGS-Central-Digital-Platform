@@ -50,7 +50,7 @@
             "uid": "CLOUDWATCH"
           },
           "dimensions": {},
-          "expression": "fields @timestamp, @message \n| filter @message like 'err'\n| sort @timestamp desc\n| limit 10",
+          "expression": "fields @timestamp, @message \n| filter @message like /excep/ or @message like /Excep/ or @message like /err/ or @message like /Err/ or @message like /fail/ or @message like /Fail/\n| sort @timestamp desc\n| limit 10",
           "id": "",
           "label": "",
           "logGroups": [
@@ -106,7 +106,7 @@
             "uid": "CLOUDWATCH"
           },
           "dimensions": {},
-          "expression": "fields @timestamp, @message \n| filter @message like 'warn'\n| sort @timestamp desc\n| limit 10",
+          "expression": "fields @timestamp, @message \n| filter @message like /warn/ or @message like /Warn/\n| sort @timestamp desc\n| limit 10",
           "id": "",
           "label": "",
           "logGroups": [
