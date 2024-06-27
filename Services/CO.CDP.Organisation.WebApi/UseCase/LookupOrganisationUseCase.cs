@@ -7,17 +7,22 @@ public class LookupOrganisationUseCase(IOrganisationRepository organisationRepos
 {
     public async Task<Model.Organisation?> Execute(string query)
     {
-        if (IsIdentifier(query, out var scheme, out var id))
+        if (query.StartsWith("identifier:"))
         {
-            return await organisationRepository.FindByIdentifier(scheme, id)
+            var identifier = query.Substring("identifier:".Length);
+            if (IsIdentifier(identifier, out var scheme, out var id))
+            {
+                return await organisationRepository.FindByIdentifier(scheme, id)
+                    .AndThen(mapper.Map<Model.Organisation>);
+            }
+        }
+        else if (query.StartsWith("name:"))
+        {
+            var name = query.Substring("name:".Length);
+            return await organisationRepository.FindByName(name)
                 .AndThen(mapper.Map<Model.Organisation>);
         }
-        else
-        {
-            return await organisationRepository.FindByName(query)
-                .AndThen(mapper.Map<Model.Organisation>);
-        }
-
+        return null;
     }
     private bool IsIdentifier(string query, out string scheme, out string id)
     {

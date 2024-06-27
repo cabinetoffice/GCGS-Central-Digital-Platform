@@ -157,26 +157,43 @@ public static class EndpointExtensions
                 operation.Responses["500"].Description = "Internal server error.";
                 return operation;
             });
+
         app.MapGet("/lookup",
-           async ([FromQuery] string query, IUseCase<string, Model.Organisation?> useCase) =>
-           await useCase.Execute(query)
-               .AndThen(organisation => organisation != null ? Results.Ok(organisation) : Results.NotFound()))
-       .Produces<Model.Organisation>(StatusCodes.Status200OK, "application/json")
-       .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
-       .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
-       .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError)
-       .WithOpenApi(operation =>
-       {
-           operation.OperationId = "LookupOrganisation";
-           operation.Description = "Find an organisation by name or identifier.";
-           operation.Summary = "Find an organisation by name or identifier.";
-           operation.Tags = new List<OpenApiTag> { new() { Name = "Organisation - Lookup" } };
-           operation.Responses["200"].Description = "Organisation details.";
-           operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
-           operation.Responses["404"].Description = "Organisation not found.";
-           operation.Responses["500"].Description = "Internal server error.";
-           return operation;
-       });
+            async ([FromQuery] string? name, [FromQuery] string? identifier, IUseCase<string, Model.Organisation?> useCase) =>
+            {
+                if (!string.IsNullOrEmpty(identifier))
+                {
+                    return await useCase.Execute($"identifier:{identifier}")
+                        .AndThen(organisation => organisation != null ? Results.Ok(organisation) : Results.NotFound());
+                }
+                else if (!string.IsNullOrEmpty(name))
+                {
+                    return await useCase.Execute($"name:{name}")
+                        .AndThen(organisation => organisation != null ? Results.Ok(organisation) : Results.NotFound());
+                }
+                else
+                {
+                    return Results.BadRequest("Either name or identifier must be provided.");
+                }
+            })
+        .Produces<Model.Organisation>(StatusCodes.Status200OK, "application/json")
+        .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
+        .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
+        .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError)
+        .Produces<ProblemDetails>(StatusCodes.Status400BadRequest)
+        .WithOpenApi(operation =>
+        {
+            operation.OperationId = "LookupOrganisation";
+            operation.Description = "Find an organisation by name or identifier.";
+            operation.Summary = "Find an organisation by name or identifier.";
+            operation.Tags = new List<OpenApiTag> { new() { Name = "Organisation - Lookup" } };
+            operation.Responses["200"].Description = "Organisation details.";
+            operation.Responses["400"].Description = "Bad request.";
+            operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
+            operation.Responses["404"].Description = "Organisation not found.";
+            operation.Responses["500"].Description = "Internal server error.";
+            return operation;
+        });
 
         return app;
     }

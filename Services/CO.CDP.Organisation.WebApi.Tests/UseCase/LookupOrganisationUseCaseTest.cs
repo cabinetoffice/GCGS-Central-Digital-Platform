@@ -23,7 +23,7 @@ public class LookupOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
     }
 
     [Fact]
-    public async Task Execute_IfOrganisationIsFound_ReturnsOrganisation()
+    public async Task Execute_IfOrganisationIsFoundByName_ReturnsOrganisation()
     {
         var organisationId = Guid.NewGuid();
 
@@ -31,7 +31,7 @@ public class LookupOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
 
         _repository.Setup(r => r.FindByName(persistenceOrganisation.Name)).ReturnsAsync(persistenceOrganisation);
 
-        var found = await UseCase.Execute("Test Organisation");
+        var found = await UseCase.Execute("name:Test Organisation");
 
         found.Should().BeEquivalentTo(GivenModelOrganisationInfo(organisationId), options => options.ComparingByMembers<Model.Organisation>());
 
@@ -56,7 +56,7 @@ public class LookupOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
 
         _repository.Setup(r => r.FindByIdentifier("Scheme", "123456")).ReturnsAsync(persistenceOrganisation);
 
-        var found = await UseCase.Execute("Scheme:123456");
+        var found = await UseCase.Execute("identifier:Scheme:123456");
 
         found.Should().BeEquivalentTo(GivenModelOrganisationInfo(organisationId), options => options.ComparingByMembers<Model.Organisation>());
 
