@@ -65,6 +65,7 @@ services:
       - '$${CDP_FORMS_PORT:-8086}:8086'
       - '$${CDP_DATA_SHARING_PORT:-8088}:8088'
     environment:
+#      CDP_ORGANISATION_APP_HOST: 'http://host.docker.internal:58090'
 #      CDP_AUTHORITY_HOST: 'http://host.docker.internal:5050'
 #      CDP_TENANT_HOST: 'http://host.docker.internal:58080'
 #      CDP_ORGANISATION_HOST: 'http://host.docker.internal:58082'
