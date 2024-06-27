@@ -11,7 +11,8 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <partial name="_ErrorSummary" model="@Model.ModelState" />
-       
+        </div>
+        <div class="govuk-grid-column-full">
             @if (Model.CompletedQualification && Model.Qualifications.Count > 0)
             {
                 <h1 class="govuk-heading-l">
@@ -32,7 +33,7 @@
                                         <a class="govuk-link" href="?handler=change&qualificationId=@qa.Id">Change</a>
                                     </li>
                                     <li class="govuk-summary-list__actions-list-item">
-                                        <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/qualification/@qa.Id/remove">Remove</a>                                        
+                                        <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/qualification/@qa.Id/remove">Remove</a>
                                     </li>
                                 </ul>
                             </dd>

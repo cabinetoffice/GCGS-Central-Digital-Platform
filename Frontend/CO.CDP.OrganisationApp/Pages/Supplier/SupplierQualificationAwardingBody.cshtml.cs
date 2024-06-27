@@ -16,6 +16,9 @@ public class SupplierQualificationAwardingBodyModel(
     [BindProperty(SupportsGet = true)]
     public Guid Id { get; set; }
 
+    [BindProperty]
+    public bool? RedirectToCheckYourAnswer { get; set; }
+
     public Guid? QualificationId { get; set; }
 
     public IActionResult OnGet()
@@ -36,7 +39,14 @@ public class SupplierQualificationAwardingBodyModel(
         qa.AwardedByPersonOrBodyName = AwardedByPersonOrBodyName;
         tempDataService.Put(Qualification.TempDataKey, qa);
 
-        return RedirectToPage("SupplierQualificationAwardedDate", new { Id });
+        if (RedirectToCheckYourAnswer == true)
+        {
+            return RedirectToPage("SupplierQualificationCheckAnswer", new { Id });
+        }
+        else
+        {
+            return RedirectToPage("SupplierQualificationAwardedDate", new { Id });
+        }
     }
 }
 
