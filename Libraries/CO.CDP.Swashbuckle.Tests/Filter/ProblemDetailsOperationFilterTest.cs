@@ -42,6 +42,45 @@ public class ProblemDetailsOperationFilterTest
     }
 
     [Fact]
+    public void ItDocumentsErrorResponsesWithCustomisedErrorCodes()
+    {
+        var status = 400;
+        var title = "Bad Request";
+        var type = "https://tools.ietf.org/html/rfc7231#section-6.5.1";
+        var operation = GivenOperationWithResponse($"{status}", "application/json");
+
+        new ProblemDetailsOperationFilter(new()
+        {
+            { $"{status}", ["MISSING_TITLE", "USER_INACTIVE"] },
+            { "500", ["INTERNAL_SERVER_ERROR"] }
+        }).Apply(operation, OperationFilterContext());
+
+        operation.Should().BeResponseOf($"{status}", "application/json")
+            .And.Examples.Should(examples =>
+            {
+                using (new AssertionScope())
+                {
+                    examples.Should().ContainKey("MISSING_TITLE");
+                    examples["MISSING_TITLE"].As<OpenApiExample>().Value.Should(o =>
+                    {
+                        o.As<OpenApiObject>().Should().Contain("status", status);
+                        o.As<OpenApiObject>().Should().Contain("title", title);
+                        o.As<OpenApiObject>().Should().Contain("type", type);
+                        o.As<OpenApiObject>().Should().Contain("code", "MISSING_TITLE");
+                    });
+                    examples.Should().ContainKey("USER_INACTIVE");
+                    examples["USER_INACTIVE"].As<OpenApiExample>().Value.Should(o =>
+                    {
+                        o.As<OpenApiObject>().Should().Contain("status", status);
+                        o.As<OpenApiObject>().Should().Contain("title", title);
+                        o.As<OpenApiObject>().Should().Contain("type", type);
+                        o.As<OpenApiObject>().Should().Contain("code", "USER_INACTIVE");
+                    });
+                }
+            });
+    }
+
+    [Fact]
     public void ItIgnoresUnusedStatusCodeResponses()
     {
         var operation = GivenOperationWithResponse("401", "application/json");
