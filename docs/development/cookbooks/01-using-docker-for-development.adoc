@@ -74,3 +74,5 @@ Next, start selected services in the IDE, while Docker takes care of the other o
 
 .Organisation App and Organisation service running in the IDE
 image::../images/development/cookbooks/dev-environment-organisation-app-and-organisation-in-ide.svg[Organisation App and Organisation service running in the IDE]
+
+// Image source: https://excalidraw.com/#json=6jR07tyNlNJS7iHlclzu1,GH1rMRK-Q_kGWF85rhnoyQ
