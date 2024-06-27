@@ -3,25 +3,31 @@ using CO.CDP.Functional;
 using CO.CDP.OrganisationInformation.Persistence;
 
 namespace CO.CDP.Organisation.WebApi.UseCase;
-public class LookupOrganisationUseCase(IOrganisationRepository organisationRepository, IMapper mapper) : IUseCase<string, Model.Organisation?>
+public class LookupOrganisationUseCase(IOrganisationRepository organisationRepository, IMapper mapper) : IUseCase<OrganisationQuery, Model.Organisation?>
 {
-    public async Task<Model.Organisation?> Execute(string query)
+    public async Task<Model.Organisation?> Execute(OrganisationQuery query)
     {
-        if (query.StartsWith("identifier:"))
+        if (!query.IsValid)
         {
-            var identifier = query.Substring("identifier:".Length);
-            if (IsIdentifier(identifier, out var scheme, out var id))
+            throw new ArgumentException("Organisation name or identifier must be provided.");
+        }
+
+        if (!string.IsNullOrEmpty(query.Identifier))
+        {
+            if (IsIdentifier(query.Identifier, out var scheme, out var id))
             {
                 return await organisationRepository.FindByIdentifier(scheme, id)
                     .AndThen(mapper.Map<Model.Organisation>);
             }
+            throw new ArgumentException("Invalid identifier format.");
         }
-        else if (query.StartsWith("name:"))
+
+        if (!string.IsNullOrEmpty(query.Name))
         {
-            var name = query.Substring("name:".Length);
-            return await organisationRepository.FindByName(name)
+            return await organisationRepository.FindByName(query.Name)
                 .AndThen(mapper.Map<Model.Organisation>);
         }
+
         return null;
     }
     private bool IsIdentifier(string query, out string scheme, out string id)
@@ -37,4 +43,18 @@ public class LookupOrganisationUseCase(IOrganisationRepository organisationRepos
         id = string.Empty;
         return false;
     }
+}
+
+public class OrganisationQuery
+{
+    public string? Name { get; }
+    public string? Identifier { get; }
+
+    public OrganisationQuery(string? name = null, string? identifier = null)
+    {
+        Name = name;
+        Identifier = identifier;
+    }
+
+    public bool IsValid => !string.IsNullOrEmpty(Name) || !string.IsNullOrEmpty(Identifier);
 }

@@ -159,23 +159,11 @@ public static class EndpointExtensions
             });
 
         app.MapGet("/lookup",
-            async ([FromQuery] string? name, [FromQuery] string? identifier, IUseCase<string, Model.Organisation?> useCase) =>
-            {
-                if (!string.IsNullOrEmpty(identifier))
-                {
-                    return await useCase.Execute($"identifier:{identifier}")
-                        .AndThen(organisation => organisation != null ? Results.Ok(organisation) : Results.NotFound());
-                }
-                else if (!string.IsNullOrEmpty(name))
-                {
-                    return await useCase.Execute($"name:{name}")
-                        .AndThen(organisation => organisation != null ? Results.Ok(organisation) : Results.NotFound());
-                }
-                else
-                {
-                    return Results.BadRequest("Either name or identifier must be provided.");
-                }
-            })
+             async ([FromQuery] string? name, [FromQuery] string? identifier, IUseCase<OrganisationQuery, Model.Organisation?> useCase) =>
+             {
+                 return await useCase.Execute(new OrganisationQuery(name, identifier))
+                     .AndThen(organisation => organisation != null ? Results.Ok(organisation) : Results.NotFound());
+             })
         .Produces<Model.Organisation>(StatusCodes.Status200OK, "application/json")
         .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
         .Produces<ProblemDetails>(StatusCodes.Status404NotFound)

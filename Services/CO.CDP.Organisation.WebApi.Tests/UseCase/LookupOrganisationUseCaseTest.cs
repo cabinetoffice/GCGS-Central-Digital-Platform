@@ -15,11 +15,9 @@ public class LookupOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
     [Fact]
     public async Task Execute_IfNoOrganisationIsFound_ReturnsNull()
     {
-        var query = "Test Organisation";
+        var foundRecord = await UseCase.Execute(new OrganisationQuery(name: "Test Organisation"));
 
-        var found = await UseCase.Execute(query);
-
-        found.Should().BeNull();
+        foundRecord.Should().BeNull();
     }
 
     [Fact]
@@ -31,20 +29,18 @@ public class LookupOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
 
         _repository.Setup(r => r.FindByName(persistenceOrganisation.Name)).ReturnsAsync(persistenceOrganisation);
 
-        var found = await UseCase.Execute("name:Test Organisation");
+        var foundRecord = await UseCase.Execute(new OrganisationQuery(name: "Test Organisation"));
 
-        found.Should().BeEquivalentTo(GivenModelOrganisationInfo(organisationId), options => options.ComparingByMembers<Model.Organisation>());
+        foundRecord.Should().BeEquivalentTo(GivenModelOrganisationInfo(organisationId), options => options.ComparingByMembers<Model.Organisation>());
 
     }
 
     [Fact]
     public async Task Execute_IfNoOrganisationIsFoundByIdentifier_ReturnsNull()
     {
-        var query = "Sch:12";
+        var foundRecord = await UseCase.Execute(new OrganisationQuery(identifier: "Scheme:123456"));
 
-        var found = await UseCase.Execute(query);
-
-        found.Should().BeNull();
+        foundRecord.Should().BeNull();
     }
 
     [Fact]
@@ -56,9 +52,9 @@ public class LookupOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
 
         _repository.Setup(r => r.FindByIdentifier("Scheme", "123456")).ReturnsAsync(persistenceOrganisation);
 
-        var found = await UseCase.Execute("identifier:Scheme:123456");
+        var foundRecord = await UseCase.Execute(new OrganisationQuery(identifier: "Scheme:123456"));
 
-        found.Should().BeEquivalentTo(GivenModelOrganisationInfo(organisationId), options => options.ComparingByMembers<Model.Organisation>());
+        foundRecord.Should().BeEquivalentTo(GivenModelOrganisationInfo(organisationId), options => options.ComparingByMembers<Model.Organisation>());
 
     }
 
