@@ -1,5 +1,6 @@
 using CO.CDP.Organisation.WebApi.Extensions;
 using CO.CDP.Organisation.WebApi.Model;
+using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using static CO.CDP.Organisation.WebApi.UseCase.RegisterOrganisationUseCase.RegisterOrganisationException;
 using static CO.CDP.OrganisationInformation.Persistence.IOrganisationRepository.OrganisationRepositoryException;
@@ -76,5 +77,16 @@ public class ServiceCollectionExtensionsTests
 
         Assert.Equal(StatusCodes.Status400BadRequest, result.status);
         Assert.Equal("MISSING_QUERY_PARAMETERS", result.error);
+    }
+
+    [Fact]
+    public void ErrorCodes_ShouldReturn_ListOfStatusesMappedToErrorCodes()
+    {
+        var result = ServiceCollectionExtensions.ErrorCodes();
+
+        result.Should().ContainKey("400");
+        result["400"].Should().Contain("ORGANISATION_ALREADY_EXISTS");
+        result["400"].Should().Contain("INVALID_BUYER_INFORMATION_UPDATE_ENTITY");
+        result["400"].Should().Contain("INVALID_SUPPLIER_INFORMATION_UPDATE_ENTITY");
     }
 }
