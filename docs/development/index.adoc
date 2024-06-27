@@ -6,6 +6,8 @@ This section covers development related topics.
 
 include::01-development-environment.adoc[]
 
+include::cookbooks/index.adoc[]
+
 include::decisions/index.adoc[]
 
 :leveloffset: -1

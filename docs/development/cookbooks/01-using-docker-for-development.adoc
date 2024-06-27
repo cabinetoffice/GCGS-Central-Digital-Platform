@@ -1,0 +1,76 @@
+= Using Docker for development
+
+During development, testing, or debugging it's often useful to run some services with Docker,
+while others with an IDE.
+
+By default, Docker Compose will start all services defined in the Compose configuration.
+
+.All services started in Docker
+image::../images/development/cookbooks/dev-environment-all-in-docker.svg[All services started in Docker]
+
+Imagine we'd like to work on the Organisation App. Ideally, we'd work on it within our IDE, but continue running
+all the other services in Docker to use the application end-to-end.
+
+First, let's disable the `organisation-app` service in `compose.override.yml` by setting `replicas` to 0.
+
+[source,yaml]
+----
+# ...
+  organisation-app:
+    deploy:
+      replicas: 0
+    # ...
+----
+
+This way, when we start Docker services the `organisation-app` won't be started as we expect it to be started from the IDE.
+
+Next, point the gateway to where the Organisation App is running (outside of Docker):
+
+[source,yaml]
+----
+# ...
+  gateway:
+    environment:
+      CDP_ORGANISATION_APP_HOST: 'http://host.docker.internal:58090'
+#      CDP_AUTHORITY_HOST: 'http://host.docker.internal:5050'
+#      CDP_TENANT_HOST: 'http://host.docker.internal:58080'
+#      CDP_ORGANISATION_HOST: 'http://host.docker.internal:58082'
+#      CDP_PERSON_HOST: 'http://host.docker.internal:58084'
+#      CDP_FORMS_HOST: 'http://host.docker.internal:58086'
+#      CDP_DATA_SHARING_HOST: 'http://host.docker.internal:58088'
+    # ...
+----
+
+We use `host.docker.internal` to point to the host machine from Docker containers.
+
+Now, we can start all Docker services (but the Organisation App) with `make up` and run the Organisation App with the IDE.
+
+.Organisation App running in the IDE
+image::../images/development/cookbooks/dev-environment-organisation-app-in-ide.svg[Organisation App running in the IDE]
+
+We can pick and choose which services are run by the host or by Docker,
+so if we needed to also run the `organisation` service in the IDE, we can follow the same pattern.
+First, edit `compose.override.yml`:
+
+[source,yaml]
+----
+# ...
+  gateway:
+    environment:
+      CDP_ORGANISATION_APP_HOST: 'http://host.docker.internal:58090'
+#      CDP_AUTHORITY_HOST: 'http://host.docker.internal:5050'
+#      CDP_TENANT_HOST: 'http://host.docker.internal:58080'
+      CDP_ORGANISATION_HOST: 'http://host.docker.internal:58082'
+#      CDP_PERSON_HOST: 'http://host.docker.internal:58084'
+#      CDP_FORMS_HOST: 'http://host.docker.internal:58086'
+#      CDP_DATA_SHARING_HOST: 'http://host.docker.internal:58088'
+  organisation:
+    deploy:
+      replicas: 0
+    # ...
+----
+
+Next, start selected services in the IDE, while Docker takes care of the other ones.
+
+.Organisation App and Organisation service running in the IDE
+image::../images/development/cookbooks/dev-environment-organisation-app-and-organisation-in-ide.svg[Organisation App and Organisation service running in the IDE]

@@ -32,8 +32,12 @@ up: compose.override.yml ## Start Docker containers
 	@docker compose ps
 .PHONY: up
 
-down: ## Stop Docker containers
+down: ## Destroy Docker containers
 	@docker compose down
+.PHONY: down
+
+stop: ## Stop Docker containers
+	@docker compose stop
 .PHONY: down
 
 ps: ## Show Docker container status
