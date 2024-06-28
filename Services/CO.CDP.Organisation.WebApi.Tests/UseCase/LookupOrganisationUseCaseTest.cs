@@ -1,3 +1,4 @@
+using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.Organisation.WebApi.Tests.AutoMapper;
 using CO.CDP.Organisation.WebApi.UseCase;
 using CO.CDP.OrganisationInformation;
@@ -56,6 +57,24 @@ public class LookupOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
 
         foundRecord.Should().BeEquivalentTo(GivenModelOrganisationInfo(organisationId), options => options.ComparingByMembers<Model.Organisation>());
 
+    }
+
+    [Fact]
+    public async Task Execute_IfBothNameAndIdentifierAreMissing_ThrowsInvalidQueryException()
+    {
+        Func<Task> act = async () => await UseCase.Execute(new OrganisationQuery());
+
+        await act.Should().ThrowAsync<InvalidQueryException>().WithMessage("Both name and identifier are missing from the request.");
+    }
+
+    [Fact]
+    public async Task Execute_IfInvalidIdentifierFormat_ThrowsInvalidQueryException()
+    {
+        var query = new OrganisationQuery(identifier: "InvalidIdentifier");
+
+        Func<Task> act = async () => await UseCase.Execute(query);
+
+        await act.Should().ThrowAsync<InvalidQueryException>().WithMessage("Both name and identifier are missing from the request.");
     }
 
     private OrganisationInformation.Persistence.Organisation GivenPersistenceOrganisationInfo(Guid organisationId)

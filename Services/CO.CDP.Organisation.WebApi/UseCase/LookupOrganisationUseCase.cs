@@ -1,5 +1,7 @@
 using AutoMapper;
 using CO.CDP.Functional;
+using CO.CDP.Organisation.WebApi.Model;
+
 using CO.CDP.OrganisationInformation.Persistence;
 
 namespace CO.CDP.Organisation.WebApi.UseCase;
@@ -7,54 +9,18 @@ public class LookupOrganisationUseCase(IOrganisationRepository organisationRepos
 {
     public async Task<Model.Organisation?> Execute(OrganisationQuery query)
     {
-        if (!query.IsValid)
+        if (query.TryGetIdentifier(out var scheme, out var id))
         {
-            throw new ArgumentException("Organisation name or identifier must be provided.");
+            return await organisationRepository.FindByIdentifier(scheme, id)
+                                   .AndThen(mapper.Map<Model.Organisation>);
         }
 
-        if (!string.IsNullOrEmpty(query.Identifier))
+        if (query.TryGetName(out var name))
         {
-            if (IsIdentifier(query.Identifier, out var scheme, out var id))
-            {
-                return await organisationRepository.FindByIdentifier(scheme, id)
-                    .AndThen(mapper.Map<Model.Organisation>);
-            }
-            throw new ArgumentException("Invalid identifier format.");
+            return await organisationRepository.FindByName(name)
+                                   .AndThen(mapper.Map<Model.Organisation>);
         }
 
-        if (!string.IsNullOrEmpty(query.Name))
-        {
-            return await organisationRepository.FindByName(query.Name)
-                .AndThen(mapper.Map<Model.Organisation>);
-        }
-
-        return null;
+        throw new InvalidQueryException("Both name and identifier are missing from the request.");
     }
-    private bool IsIdentifier(string query, out string scheme, out string id)
-    {
-        var parts = query.Split(':');
-        if (parts.Length == 2)
-        {
-            scheme = parts[0];
-            id = parts[1];
-            return true;
-        }
-        scheme = string.Empty;
-        id = string.Empty;
-        return false;
-    }
-}
-
-public class OrganisationQuery
-{
-    public string? Name { get; }
-    public string? Identifier { get; }
-
-    public OrganisationQuery(string? name = null, string? identifier = null)
-    {
-        Name = name;
-        Identifier = identifier;
-    }
-
-    public bool IsValid => !string.IsNullOrEmpty(Name) || !string.IsNullOrEmpty(Identifier);
 }
