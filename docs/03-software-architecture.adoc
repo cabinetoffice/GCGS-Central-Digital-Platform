@@ -5,7 +5,7 @@
 The diagram below focuses on high level responsibilities and technology choices within the Central Digital Platform system.
 
 .Container View of the Central Digital Platform system
-image::diagrams/export/structurizr-1-CDP-2-ContainerView.svg[Container View of the Central Digital Platform system]
+image::diagrams/structurizr-1-CDP-2-ContainerView.svg[Container View of the Central Digital Platform system]
 
 .Legend
-image::diagrams/export/structurizr-1-CDP-2-ContainerView-key.svg[Legend]
+image::diagrams/structurizr-1-CDP-2-ContainerView-key.svg[Legend]
