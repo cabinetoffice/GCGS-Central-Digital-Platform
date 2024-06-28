@@ -1,4 +1,14 @@
 services:
+  gateway:
+    container_name: co-cdp-gateway
+    image: nginx:1.27
+    healthcheck:
+      test: ["CMD-SHELL", "curl --fail --silent --write-out '{\"status\":%{http_code}}' --output /dev/null http://127.0.0.1:8080/health"]
+      start_period: 10s
+      interval: 60s
+      timeout: 10s
+      retries: 10
+
   db:
     container_name: co-cdp-db
     image: postgres:16.2

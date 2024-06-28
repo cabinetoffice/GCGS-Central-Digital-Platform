@@ -1,4 +1,27 @@
 services:
+  gateway:
+    extends:
+      file: compose.common.yml
+      service: gateway
+    depends_on:
+      - organisation-app
+      - authority
+      - tenant
+      - organisation
+      - person
+      - forms
+      - data-sharing
+    volumes:
+      - './docker/gateway/nginx.conf:/etc/nginx/nginx.conf:ro'
+      - './docker/gateway/templates:/etc/nginx/templates:ro'
+    environment:
+      CDP_ORGANISATION_APP_HOST: 'http://organisation-app:8080'
+      CDP_AUTHORITY_HOST: 'http://authority:8080'
+      CDP_TENANT_HOST: 'http://tenant:8080'
+      CDP_ORGANISATION_HOST: 'http://organisation:8080'
+      CDP_PERSON_HOST: 'http://person:8080'
+      CDP_FORMS_HOST: 'http://forms:8080'
+      CDP_DATA_SHARING_HOST: 'http://data-sharing:8080'
   db:
     extends:
       file: compose.common.yml
@@ -16,16 +39,16 @@ services:
         condition: service_healthy
     environment:
       MIGRATIONS_CONNECTION_STRING: "Server=db;Database=cdp;Username=cdp_user;Password=cdp123;"
-      Organisation__Authority: '${Organisation__Authority:-http://authority:8080}'
+      Organisation__Authority: '${Organisation__Authority:-http://gateway:${CDP_AUTHORITY_PORT:-8092}}'
   organisation-app:
     extends:
       file: compose.common.yml
       service: organisation-app
     environment:
-      TenantService: '${TenantService:-http://tenant:8080}'
-      OrganisationService: '${OrganisationService:-http://organisation:8080}'
-      PersonService: '${PersonService:-http://person:8080}'
-      Organisation__Authority: '${Organisation__Authority:-http://authority:8080}'
+      TenantService: '${TenantService:-http://gateway:${CDP_TENANT_PORT:-8080}}'
+      OrganisationService: '${OrganisationService:-http://gateway:${CDP_ORGANISATION_PORT:-8082}}'
+      PersonService: '${PersonService:-http://gateway:${CDP_PERSON_PORT:-8084}}'
+      Organisation__Authority: '${Organisation__Authority:-http://gateway:${CDP_AUTHORITY_PORT:-8092}}'
   authority:
     extends:
       file: compose.common.yml
@@ -34,6 +57,7 @@ services:
       - db
     environment:
       ConnectionStrings__OrganisationInformationDatabase: 'Server=db;Database=cdp;Username=cdp_user;Password=cdp123;'
+      Issuer: 'http://gateway:${CDP_AUTHORITY_PORT:-8092}'
   tenant:
     extends:
       file: compose.common.yml
@@ -42,7 +66,7 @@ services:
       - db
     environment:
       ConnectionStrings__OrganisationInformationDatabase: 'Server=db;Database=cdp;Username=cdp_user;Password=cdp123;'
-      Organisation__Authority: '${Organisation__Authority:-http://authority:8080}'
+      Organisation__Authority: '${Organisation__Authority:-http://gateway:${CDP_AUTHORITY_PORT:-8092}}'
   organisation:
     extends:
       file: compose.common.yml
@@ -51,7 +75,7 @@ services:
       - db
     environment:
       ConnectionStrings__OrganisationInformationDatabase: 'Server=db;Database=cdp;Username=cdp_user;Password=cdp123;'
-      Organisation__Authority: '${Organisation__Authority:-http://authority:8080}'
+      Organisation__Authority: '${Organisation__Authority:-http://gateway:${CDP_AUTHORITY_PORT:-8092}}'
   person:
     extends:
       file: compose.common.yml
@@ -60,7 +84,7 @@ services:
       - db
     environment:
       ConnectionStrings__OrganisationInformationDatabase: 'Server=db;Database=cdp;Username=cdp_user;Password=cdp123;'
-      Organisation__Authority: '${Organisation__Authority:-http://authority:8080}'
+      Organisation__Authority: '${Organisation__Authority:-http://gateway:${CDP_AUTHORITY_PORT:-8092}}'
   forms:
     extends:
       file: compose.common.yml
@@ -68,7 +92,7 @@ services:
     depends_on:
       - db
     environment:
-      Organisation__Authority: '${Organisation__Authority:-http://authority:8080}'
+      Organisation__Authority: '${Organisation__Authority:-http://gateway:${CDP_AUTHORITY_PORT:-8092}}'
   data-sharing:
     extends:
       file: compose.common.yml

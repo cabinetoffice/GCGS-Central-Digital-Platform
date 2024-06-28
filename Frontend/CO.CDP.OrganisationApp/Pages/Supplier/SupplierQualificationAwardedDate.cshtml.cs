@@ -32,6 +32,8 @@ public class SupplierQualificationAwardedDateModel(
     [BindProperty]
     public string? DateOfAward { get; set; }
 
+    [BindProperty]
+    public bool? RedirectToCheckYourAnswer { get; set; }
 
     public IActionResult OnGet()
     {
@@ -69,6 +71,13 @@ public class SupplierQualificationAwardedDateModel(
         qa.DateAwarded = new DateTimeOffset(parsedDate, TimeSpan.FromHours(0));
         tempDataService.Put(Qualification.TempDataKey, qa);
 
-        return RedirectToPage("SupplierQualificationName", new { Id });
+        if (RedirectToCheckYourAnswer == true)
+        {
+            return RedirectToPage("SupplierQualificationCheckAnswer", new { Id });
+        }
+        else
+        {
+            return RedirectToPage("SupplierQualificationName", new { Id });
+        }
     }
 }
