@@ -1,0 +1,171 @@
+= Development environment
+
+== Requirements
+
+The minimum set of tools required to work on the project covers:
+
+* An IDE of your choice (i.e. Visual Studio, Rider)
+* https://www.docker.com/[Docker]
+
+On Windows, it might be handy to set up https://git-scm.com/downloads[git-bash] or WSL
+in order to run tools like Make.
+
+== Configuration
+
+The application is mostly configured to start with a fresh repository checkout.
+The only configuration missing are secrets that are not safe to be commited to the repository.
+
+**Never commit secrets to the repository.**
+
+Secrets are managed with the
+https://learn.microsoft.com/en-us/aspnet/core/security/app-secrets?view=aspnetcore-8.0&tabs=linux#secret-manager[Secrets Manager]
+and environment variables. IDE depends on the secrets manager while Docker depends on environment variables.
+
+Environment variables for Docker are managed in `compose.override.yml` file that's not version controlled.
+Run the following command to create it with defaults:
+
+[source,bash]
+----
+make compose.override.yml
+----
+
+=== Organisation App
+
+The `OrganisationApp` requires the following secrets / environment variables:
+
+* `OneLogin:Authority` / `OneLogin__Authority`
+* `OneLogin:ClientId` / `OneLogin__ClientId`
+* `OneLogin:PrivateKey` / `OneLogin__PrivateKey`
+
+These can be set as secrets with the following dotnet commands:
+
+[source,bash]
+----
+dotnet user-secrets set --project Frontend/CO.CDP.OrganisationApp/CO.CDP.OrganisationApp.csproj OneLogin:Authority "https://oidc.example.com"
+dotnet user-secrets set --project Frontend/CO.CDP.OrganisationApp/CO.CDP.OrganisationApp.csproj OneLogin:ClientId "client-id"
+dotnet user-secrets set --project Frontend/CO.CDP.OrganisationApp/CO.CDP.OrganisationApp.csproj OneLogin:PrivateKey "-----BEGIN RSA PRIVATE KEY-----SECRET KEY-----END RSA PRIVATE KEY-----"
+----
+
+For Docker, the following environment variables need to be updated in `compose.override.yml`
+for the `organisation-app` service:
+
+[source,yaml]
+----
+  organisation-app:
+    environment:
+      OneLogin__Authority: "https://oidc.example.com"
+      OneLogin__ClientId: "client-id"
+      OneLogin__PrivateKey: "-----BEGIN RSA PRIVATE KEY-----SECRET KEY-----END RSA PRIVATE KEY-----"
+----
+
+=== Authority API
+
+The `Authority` API depends on the following secrets / environment variables:
+
+* `OneLogin:Authority` / `OneLogin__Authority`
+* `PublicKey` / `PublicKey`
+* `PrivateKey` / `PrivateKey`
+
+To set them in the secrets manager, run:
+
+[source,bash]
+----
+dotnet user-secrets set --project Services/CO.CDP.Organisation.Authority OneLogin:Authority "https://oidc.example.com"
+dotnet user-secrets set --project Services/CO.CDP.Organisation.Authority PublicKey "-----BEGIN RSA PUBLIC KEY-----"
+dotnet user-secrets set --project Services/CO.CDP.Organisation.Authority PrivateKey "-----BEGIN RSA PRIVATE KEY----"
+----
+
+NOTE: The `make generate-authority-keys` command generates a pair of public and private keys that
+can be used with `PublicKey` and `PrivateKey`. Make sure to copy the contents of both files and not the path.
+
+For Docker, update the `authority` service in `compose.override.yml`:
+
+[source,yaml]
+----
+  authority:
+    environment:
+      PublicKey: "-----BEGIN RSA PUBLIC KEY-----"
+      PrivateKey: "-----BEGIN RSA PRIVATE KEY-----"
+      OneLogin__Authority: "https://oidc.example.com"
+----
+
+== Setting up the IDE
+
+Import the project to your favourite IDE to build and run tests from there.
+
+.Running tests in an IDE
+image::../images/development/run-all-tests.png[Runing all tests in the IDE]
+
+Alternatively, use the `dotnet` command or the following make targets to build and run tests:
+
+[source,bash]
+----
+make build
+make test
+----
+
+Any dotnet tools used by the project are
+https://learn.microsoft.com/en-us/dotnet/core/tools/global-tools#install-a-local-tool[installed locally]
+and will be restored by the above commands.
+
+== Setting Up Docker
+
+While local development is done within the IDE of our choice, the Docker Compose configuration is provided
+to conveniently start all (or some) services at once.
+
+First, make sure you configured environment variables in `compose.override.yml` (see <<Configuration>>).
+
+Next, build all the Docker containers with the `build-docker` Make target:
+
+[source,bash]
+----
+make build-docker
+----
+
+Finally, we can start all Docker services with:
+
+[source,bash]
+----
+make up
+----
+
+By default, service and application ports are mapped as follows:
+
+* OrganisationApp - - http://localhost:8090/
+* Authority - - http://localhost:8092/swagger/
+* Tenant - http://localhost:8080/swagger/
+* Organisation - http://localhost:8082/swagger/
+* Person - http://localhost:8084/swagger/
+* Forms - http://localhost:8086/swagger/
+* Data Sharing - http://localhost:8088/swagger/
+* PostgreSQL database - :5432
+
+.All services started in Docker
+image::../images/development/cookbooks/dev-environment-all-in-docker.svg[All services started in Docker]
+
+Later, all services can be stopped and destroyed with:
+
+[source,bash]
+----
+make down
+----
+
+== Make targets
+
+There's a number of Make targets that provide shortcuts during development.
+Run `make help` to get an up-to-date list.
+
+.Make targets
+|===
+|Target | Description
+
+|help   | Shows available commands
+|build  | Builds the solution
+|test   | Runs all tests
+|up | Starts all the Docker containers
+|down | Stops and removes all Docker containers
+|stop | Stops all Docker containers
+|ps | Lists all running Docker containers
+|db | Starts the database Docker container only and runs migrations
+|generate-authority-keys | Generates the private/public key pair for the authority service
+|===
