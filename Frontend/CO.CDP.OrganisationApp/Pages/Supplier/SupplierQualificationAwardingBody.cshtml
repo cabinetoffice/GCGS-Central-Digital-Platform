@@ -2,9 +2,17 @@
 @model CO.CDP.OrganisationApp.Pages.Supplier.SupplierQualificationAwardingBodyModel
 @{
     var hasError = ((TagBuilder)Html.ValidationMessageFor(m => m.AwardedByPersonOrBodyName)).HasInnerHtml;
+
+    var backLink = $"/organisation/{Model.Id}/supplier-information/supplier-qualification-summary{(Model.QualificationId.HasValue ? "" : "?selected=true")}";
+
+    if (Request.Query.ContainsKey("frm-chk-answer"))
+    {
+        backLink = $"/organisation/{Model.Id}/supplier-information/qualification-check-answer";
+        Model.RedirectToCheckYourAnswer = true;
+    }
 }
-<a href="/organisation/@Model.Id/supplier-information/supplier-qualification-summary@(Model.QualificationId.HasValue ? "" : "?selected=true")"
-   class="govuk-back-link">Back</a>
+
+<a href="@backLink" class="govuk-back-link">Back</a>
 
 <main class="govuk-main-wrapper">
     <div class="govuk-grid-row">
@@ -13,6 +21,10 @@
             <fieldset class="govuk-fieldset" data-required="" data-error="Enter the qualification" aria-required="true">
 
                 <form method="post">
+                    @if (Request.Query.ContainsKey("frm-chk-answer"))
+                    {
+                        <input type="hidden" name="RedirectToCheckYourAnswer" value="true" />
+                    }
                     <div class="govuk-form-group @(hasError ? "govuk-form-group--error" : "")">
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                             <h1 class="govuk-heading-l">Enter the name of the person or body which awarded the qualification</h1>

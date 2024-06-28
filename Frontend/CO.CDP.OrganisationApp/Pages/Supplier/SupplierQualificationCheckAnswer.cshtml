@@ -2,7 +2,7 @@
 @model CO.CDP.OrganisationApp.Pages.Supplier.SupplierQualificationCheckAnswerModel
 
 
-<a href="/organisation/@Model.Id/supplier-information/qualification-awarded-date" class="govuk-back-link">Back</a>
+<a href="/organisation/@Model.Id/supplier-information/supplier-qualification-name" class="govuk-back-link">Back</a>
 
 <main class="govuk-main-wrapper">
     <div class="govuk-grid-row">
@@ -22,7 +22,7 @@
                             @Model.Qualification!.AwardedByPersonOrBodyName
                         </dd>
                         <dd class="govuk-summary-list__actions">
-                            <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/supplier-qualification-awarding-body">
+                            <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/supplier-qualification-awarding-body?frm-chk-answer">
                                 Change<span class="govuk-visually-hidden">
                                     the qualification awarding body
                                 </span>
@@ -38,7 +38,7 @@
                             @Model.Qualification!.DateAwarded!.Value.ToString("dd/MM/yyyy")
                         </dd>
                         <dd class="govuk-summary-list__actions">
-                            <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/supplier-qualification-awarded-date">
+                            <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/supplier-qualification-awarded-date?frm-chk-answer">
                                 Change<span class="govuk-visually-hidden">
                                     Date awarded
                                 </span>
@@ -54,7 +54,7 @@
                             @Model.Qualification!.Name
                         </dd>
                         <dd class="govuk-summary-list__actions">
-                            <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/supplier-qualification-name">
+                            <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/supplier-qualification-name?frm-chk-answer">
                                 Change<span class="govuk-visually-hidden">
                                     the qualification name
                                 </span>
