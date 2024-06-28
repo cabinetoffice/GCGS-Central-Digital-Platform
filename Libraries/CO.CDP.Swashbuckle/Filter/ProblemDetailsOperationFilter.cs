@@ -35,8 +35,6 @@ public class ProblemDetailsOperationFilter(Dictionary<string, List<string>> erro
         ["type"] = new OpenApiString("https://tools.ietf.org/html/rfc7235#section-3.1"),
         ["title"] = new OpenApiString(ReasonPhrases.GetReasonPhrase(StatusCodes.Status401Unauthorized)),
         ["status"] = new OpenApiInteger(StatusCodes.Status401Unauthorized),
-        ["detail"] = new OpenApiString("Error details."),
-        ["code"] = new OpenApiString(code),
     };
 
     private static OpenApiObject Status403ProblemDetails(string code) => new()
@@ -87,6 +85,7 @@ public class ProblemDetailsOperationFilter(Dictionary<string, List<string>> erro
         ["title"] = new OpenApiString(ReasonPhrases.GetReasonPhrase(StatusCodes.Status422UnprocessableEntity)),
         ["status"] = new OpenApiInteger(StatusCodes.Status422UnprocessableEntity),
         ["detail"] = new OpenApiString("Error details."),
+        ["code"] = new OpenApiString(code),
     };
 
     private static OpenApiObject Status500ProblemDetails(string code) => new()

@@ -69,6 +69,8 @@ public class ServiceCollectionExtensionsTests
         Assert.Equal("GENERIC_ERROR", result.error);
     }
 
+
+
     [Fact]
     public void MapException_Should_Return_BadRequest_For_InvalidQueryException()
     {
@@ -88,5 +90,11 @@ public class ServiceCollectionExtensionsTests
         result["400"].Should().Contain("ORGANISATION_ALREADY_EXISTS");
         result["400"].Should().Contain("INVALID_BUYER_INFORMATION_UPDATE_ENTITY");
         result["400"].Should().Contain("INVALID_SUPPLIER_INFORMATION_UPDATE_ENTITY");
+
+        result.Should().ContainKey("404");
+        result["404"].Should().Contain("PERSON_DOES_NOT_EXIST");
+
+        result.Should().ContainKey("422");
+        result["422"].Should().Contain("UNPROCESSABLE_ENTITY");
     }
 }
