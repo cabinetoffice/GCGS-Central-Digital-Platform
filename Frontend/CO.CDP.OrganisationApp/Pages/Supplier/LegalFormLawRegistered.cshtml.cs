@@ -1,3 +1,5 @@
+using CO.CDP.Organisation.WebApiClient;
+using CO.CDP.OrganisationApp.WebApiClients;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -6,7 +8,9 @@ using System.ComponentModel.DataAnnotations;
 namespace CO.CDP.OrganisationApp.Pages.Supplier;
 
 [Authorize]
-public class LegalFormLawRegisteredModel(ITempDataService tempDataService) : PageModel
+public class LegalFormLawRegisteredModel(
+    ITempDataService tempDataService,
+    IOrganisationClient organisationClient) : PageModel
 {
     [BindProperty]
     [Required(ErrorMessage = "Please enter the law under which your organisation is registered")]
@@ -18,8 +22,17 @@ public class LegalFormLawRegisteredModel(ITempDataService tempDataService) : Pag
     [BindProperty(SupportsGet = true)]
     public Guid Id { get; set; }
 
-    public IActionResult OnGet(Guid id)
+    public async Task<IActionResult> OnGet(Guid id)
     {
+        try
+        {
+            await organisationClient.GetOrganisationAsync(Id);
+        }
+        catch (ApiException ex) when (ex.StatusCode == 404)
+        {
+            return Redirect("/page-not-found");
+        }
+
         var lf = tempDataService.PeekOrDefault<LegalForm>(LegalForm.TempDataKey);
 
         LawRegistered = lf.LawRegistered;
