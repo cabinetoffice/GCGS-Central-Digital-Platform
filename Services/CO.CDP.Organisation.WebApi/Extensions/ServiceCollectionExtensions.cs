@@ -18,8 +18,7 @@ public static class ServiceCollectionExtensions
         { typeof(BuyerInfoNotExistException), (StatusCodes.Status404NotFound, "BUYER_INFO_NOT_EXISTS") },
         { typeof(InvalidUpdateBuyerInformationCommand), (StatusCodes.Status400BadRequest, "INVALID_BUYER_INFORMATION_UPDATE_ENTITY") },
         { typeof(InvalidUpdateSupplierInformationCommand), (StatusCodes.Status400BadRequest, "INVALID_SUPPLIER_INFORMATION_UPDATE_ENTITY") },
-        { typeof(InvalidUpdateSupplierInformationCommand), (StatusCodes.Status400BadRequest, "MISSING_QUERY_PARAMETERS") },
-
+        { typeof(InvalidQueryException), (StatusCodes.Status400BadRequest, "MISSING_QUERY_PARAMETERS") },
     };
 
     public static IServiceCollection AddOrganisationProblemDetails(this IServiceCollection services)
