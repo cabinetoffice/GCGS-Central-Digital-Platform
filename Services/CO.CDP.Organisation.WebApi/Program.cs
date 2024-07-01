@@ -1,5 +1,6 @@
 using CO.CDP.Configuration.ForwardedHeaders;
 using CO.CDP.Organisation.WebApi.Api;
+using CO.CDP.Organisation.WebApi.ApiKeyAuthentication;
 using CO.CDP.Organisation.WebApi.AutoMapper;
 using CO.CDP.Organisation.WebApi.Extensions;
 using CO.CDP.Organisation.WebApi.Model;
@@ -34,13 +35,15 @@ builder.Services.AddScoped<IUseCase<(Guid, UpdateOrganisation), bool>, UpdateOrg
 builder.Services.AddScoped<IUseCase<(Guid, UpdateBuyerInformation), bool>, UpdateBuyerInformationUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, UpdateSupplierInformation), bool>, UpdateSupplierInformationUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, DeleteSupplierInformation), bool>, DeleteSupplierInformationUseCase>();
+builder.Services.AddScoped<IApiKeyValidator, ApiKeyValidator>();
 builder.Services.AddOrganisationProblemDetails();
 
 var authority = builder.Configuration["Organisation:Authority"]
     ?? throw new Exception("Missing configuration key: Organisation:Authority.");
+var defaultAuthenticationScheme = "Bearer_Or_ApiKey";
 
 builder.Services
-    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddAuthentication(defaultAuthenticationScheme)
     .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
     {
         options.Authority = authority;
@@ -50,13 +53,26 @@ builder.Services
             ValidateAudience = false,
             ValidateIssuerSigningKey = true
         };
+    })
+    .AddApiKey()
+    .AddPolicyScheme(defaultAuthenticationScheme, defaultAuthenticationScheme, options =>
+    {
+        options.ForwardDefaultSelector = context =>
+        {
+            if (context.Request.Headers.ContainsKey(ApiKeyAuthenticationHandler.ApiKeyHeaderName))
+            {
+                return ApiKeyAuthenticationHandler.AuthenticationScheme;
+            }
+            return JwtBearerDefaults.AuthenticationScheme;
+        };
     });
+
 //builder.Services.AddAuthorization();
 builder.Services
     .AddAuthorizationBuilder()
     .SetFallbackPolicy(
         new AuthorizationPolicyBuilder()
-            .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
+            .AddAuthenticationSchemes(defaultAuthenticationScheme)
             .RequireAuthenticatedUser()
             .Build());
 
