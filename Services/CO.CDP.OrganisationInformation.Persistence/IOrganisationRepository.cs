@@ -10,6 +10,8 @@ public interface IOrganisationRepository : IDisposable
 
     public Task<IEnumerable<Organisation>> FindByUserUrn(string userUrn);
 
+    public Task<Organisation?> FindByIdentifier(string scheme, string identifierId);
+
     public class OrganisationRepositoryException(string message, Exception? cause = null) : Exception(message, cause)
     {
         public class DuplicateOrganisationException(string message, Exception? cause = null)

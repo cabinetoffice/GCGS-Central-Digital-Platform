@@ -1,6 +1,6 @@
-using static CO.CDP.OrganisationInformation.Persistence.IOrganisationRepository.OrganisationRepositoryException;
-using static CO.CDP.Organisation.WebApi.UseCase.RegisterOrganisationUseCase.RegisterOrganisationException;
 using CO.CDP.Organisation.WebApi.Model;
+using static CO.CDP.Organisation.WebApi.UseCase.RegisterOrganisationUseCase.RegisterOrganisationException;
+using static CO.CDP.OrganisationInformation.Persistence.IOrganisationRepository.OrganisationRepositoryException;
 
 namespace CO.CDP.Organisation.WebApi.Extensions;
 
@@ -47,6 +47,8 @@ public static class ServiceCollectionExtensions
                 return (StatusCodes.Status400BadRequest, "INVALID_BUYER_INFORMATION_UPDATE_ENTITY");
             case InvalidUpdateSupplierInformationCommand:
                 return (StatusCodes.Status400BadRequest, "INVALID_SUPPLIER_INFORMATION_UPDATE_ENTITY");
+            case InvalidQueryException:
+                return (StatusCodes.Status400BadRequest, "MISSING_QUERY_PARAMETERS");
             default:
                 return (StatusCodes.Status500InternalServerError, "GENERIC_ERROR");
         }
