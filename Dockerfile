@@ -15,6 +15,8 @@ FROM mcr.microsoft.com/dotnet/sdk:${ASPNET_VERSION} AS solution-dependencies
 ARG NUGET_PACKAGES
 ENV NUGET_PACKAGES="${NUGET_PACKAGES}"
 WORKDIR /src
+COPY --link Libraries/CO.CDP.Authentication/CO.CDP.Authentication.csproj Libraries/CO.CDP.Authentication/
+COPY --link Libraries/CO.CDP.Authentication.Tests/CO.CDP.Authentication.Tests.csproj Libraries/CO.CDP.Authentication.Tests/
 COPY --link Libraries/CO.CDP.Configuration/CO.CDP.Configuration.csproj Libraries/CO.CDP.Configuration/
 COPY --link Libraries/CO.CDP.Configuration.Tests/CO.CDP.Configuration.Tests.csproj Libraries/CO.CDP.Configuration.Tests/
 COPY --link Libraries/CO.CDP.Functional/CO.CDP.Functional.csproj Libraries/CO.CDP.Functional/

@@ -1,3 +1,4 @@
+using CO.CDP.Authentication;
 using CO.CDP.Configuration.ForwardedHeaders;
 using CO.CDP.Organisation.WebApi.Api;
 using CO.CDP.Organisation.WebApi.AutoMapper;
@@ -5,10 +6,7 @@ using CO.CDP.Organisation.WebApi.Extensions;
 using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.Organisation.WebApi.UseCase;
 using CO.CDP.OrganisationInformation.Persistence;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using Organisation = CO.CDP.Organisation.WebApi.Model.Organisation;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -36,29 +34,9 @@ builder.Services.AddScoped<IUseCase<(Guid, UpdateSupplierInformation), bool>, Up
 builder.Services.AddScoped<IUseCase<(Guid, DeleteSupplierInformation), bool>, DeleteSupplierInformationUseCase>();
 builder.Services.AddOrganisationProblemDetails();
 
-var authority = builder.Configuration["Organisation:Authority"]
-    ?? throw new Exception("Missing configuration key: Organisation:Authority.");
-
-builder.Services
-    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
-    {
-        options.Authority = authority;
-        options.RequireHttpsMetadata = !builder.Environment.IsDevelopment();
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateAudience = false,
-            ValidateIssuerSigningKey = true
-        };
-    });
+builder.Services.AddJwtBearerAndApiKeyAuthentication(builder.Configuration, builder.Environment);
 //builder.Services.AddAuthorization();
-builder.Services
-    .AddAuthorizationBuilder()
-    .SetFallbackPolicy(
-        new AuthorizationPolicyBuilder()
-            .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
-            .RequireAuthenticatedUser()
-            .Build());
+builder.Services.AddFallbackAuthorizationPolicy();
 
 var app = builder.Build();
 app.UseForwardedHeaders();
