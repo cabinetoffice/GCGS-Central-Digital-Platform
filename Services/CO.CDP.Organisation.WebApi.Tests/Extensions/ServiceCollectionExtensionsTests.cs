@@ -1,9 +1,8 @@
-using System.Reflection;
-using Microsoft.AspNetCore.Http;
 using CO.CDP.Organisation.WebApi.Extensions;
+using CO.CDP.Organisation.WebApi.Model;
+using Microsoft.AspNetCore.Http;
 using static CO.CDP.Organisation.WebApi.UseCase.RegisterOrganisationUseCase.RegisterOrganisationException;
 using static CO.CDP.OrganisationInformation.Persistence.IOrganisationRepository.OrganisationRepositoryException;
-using static CO.CDP.OrganisationInformation.Persistence.ITenantRepository.TenantRepositoryException;
 
 namespace CO.CDP.Organisation.WebApi.Tests.Extensions;
 
@@ -67,5 +66,15 @@ public class ServiceCollectionExtensionsTests
 
         Assert.Equal(StatusCodes.Status500InternalServerError, result.status);
         Assert.Equal("GENERIC_ERROR", result.error);
+    }
+
+    [Fact]
+    public void MapException_Should_Return_BadRequest_For_InvalidQueryException()
+    {
+        var exception = new InvalidQueryException("Missing query parameters");
+        var result = ServiceCollectionExtensions.MapException(exception);
+
+        Assert.Equal(StatusCodes.Status400BadRequest, result.status);
+        Assert.Equal("MISSING_QUERY_PARAMETERS", result.error);
     }
 }
