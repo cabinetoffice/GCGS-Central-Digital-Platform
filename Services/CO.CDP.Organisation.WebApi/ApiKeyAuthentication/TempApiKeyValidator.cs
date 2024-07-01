@@ -1,6 +1,6 @@
 namespace CO.CDP.Organisation.WebApi.ApiKeyAuthentication;
 
-public class ApiKeyValidator : IApiKeyValidator
+public class TempApiKeyValidator : IApiKeyValidator
 {
     public Task<bool> Validate(string apiKey)
     {

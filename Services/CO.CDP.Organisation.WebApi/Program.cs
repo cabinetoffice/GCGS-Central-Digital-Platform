@@ -35,7 +35,7 @@ builder.Services.AddScoped<IUseCase<(Guid, UpdateOrganisation), bool>, UpdateOrg
 builder.Services.AddScoped<IUseCase<(Guid, UpdateBuyerInformation), bool>, UpdateBuyerInformationUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, UpdateSupplierInformation), bool>, UpdateSupplierInformationUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, DeleteSupplierInformation), bool>, DeleteSupplierInformationUseCase>();
-builder.Services.AddScoped<IApiKeyValidator, ApiKeyValidator>();
+builder.Services.AddScoped<IApiKeyValidator, TempApiKeyValidator>();
 builder.Services.AddOrganisationProblemDetails();
 
 var authority = builder.Configuration["Organisation:Authority"]
