@@ -183,6 +183,45 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql) : 
     }
 
     [Fact]
+    public async Task FindByIdentifier_WhenFound_ReturnsOrganisation()
+    {
+        using var repository = OrganisationRepository();
+
+        var organisationId = Guid.NewGuid();
+        var organisation = GivenOrganisation(
+            guid: organisationId,
+            identifiers:
+            [
+            new Organisation.Identifier
+            {
+                Primary = true,
+                Scheme = "Scheme",
+                IdentifierId = "123456",
+                LegalName = "Acme Ltd",
+                Uri = "https://example.com"
+            }
+            ]
+        );
+        repository.Save(organisation);
+
+        var found = await repository.FindByIdentifier("Scheme", "123456");
+
+        found.Should().BeEquivalentTo(organisation, options => options.ComparingByMembers<Organisation>());
+        found.As<Organisation>().Id.Should().BePositive();
+        found.As<Organisation>().Tenant.Should().Be(organisation.Tenant);
+    }
+
+    [Fact]
+    public async Task FindByIdentifier_WhenNotFound_ReturnsNull()
+    {
+        using var repository = OrganisationRepository();
+
+        var found = await repository.FindByIdentifier("NonExistentScheme", "NonExistentId");
+
+        found.Should().BeNull();
+    }
+
+    [Fact]
     public async Task FindByName_WhenNotFound_ReturnsNull()
     {
         using var repository = OrganisationRepository();

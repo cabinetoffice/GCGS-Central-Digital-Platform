@@ -82,6 +82,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.Configuration", "Lib
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.Configuration.Tests", "Libraries\CO.CDP.Configuration.Tests\CO.CDP.Configuration.Tests.csproj", "{C3372E9A-4B5B-4BEF-9A06-464669316098}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.Authentication", "Libraries\CO.CDP.Authentication\CO.CDP.Authentication.csproj", "{582717C8-897B-4580-97F0-120C7CDD82DC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.Authentication.Tests", "Libraries\CO.CDP.Authentication.Tests\CO.CDP.Authentication.Tests.csproj", "{C882BBF8-B8EF-4FF4-95E4-159DBA9F87E7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -228,6 +232,14 @@ Global
 		{C3372E9A-4B5B-4BEF-9A06-464669316098}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C3372E9A-4B5B-4BEF-9A06-464669316098}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C3372E9A-4B5B-4BEF-9A06-464669316098}.Release|Any CPU.Build.0 = Release|Any CPU
+		{582717C8-897B-4580-97F0-120C7CDD82DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{582717C8-897B-4580-97F0-120C7CDD82DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{582717C8-897B-4580-97F0-120C7CDD82DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{582717C8-897B-4580-97F0-120C7CDD82DC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C882BBF8-B8EF-4FF4-95E4-159DBA9F87E7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C882BBF8-B8EF-4FF4-95E4-159DBA9F87E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C882BBF8-B8EF-4FF4-95E4-159DBA9F87E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C882BBF8-B8EF-4FF4-95E4-159DBA9F87E7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
