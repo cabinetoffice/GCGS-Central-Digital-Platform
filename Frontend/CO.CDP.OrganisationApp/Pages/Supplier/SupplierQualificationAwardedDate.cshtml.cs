@@ -71,13 +71,8 @@ public class SupplierQualificationAwardedDateModel(
         qa.DateAwarded = new DateTimeOffset(parsedDate, TimeSpan.FromHours(0));
         tempDataService.Put(Qualification.TempDataKey, qa);
 
-        if (RedirectToCheckYourAnswer == true)
-        {
-            return RedirectToPage("SupplierQualificationCheckAnswer", new { Id });
-        }
-        else
-        {
-            return RedirectToPage("SupplierQualificationName", new { Id });
-        }
+        return RedirectToPage(
+                RedirectToCheckYourAnswer == true ? "SupplierQualificationCheckAnswer" : "SupplierQualificationName",
+                new { Id });
     }
 }

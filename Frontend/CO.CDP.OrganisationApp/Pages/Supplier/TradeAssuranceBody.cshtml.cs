@@ -40,14 +40,9 @@ public class TradeAssuranceBodyModel(
         ta.AwardedByPersonOrBodyName = AwardedByPersonOrBodyName;
         tempDataService.Put(TradeAssurance.TempDataKey, ta);
 
-        if (RedirectToCheckYourAnswer == true)
-        {
-            return RedirectToPage("TradeAssuranceCheckAnswer", new { Id });
-        }
-        else
-        {
-            return RedirectToPage("TradeAssuranceReferenceNumber", new { Id });
-        }
+        return RedirectToPage(
+                RedirectToCheckYourAnswer == true ? "TradeAssuranceCheckAnswer" : "TradeAssuranceReferenceNumber",
+                new { Id });
     }
 }
 

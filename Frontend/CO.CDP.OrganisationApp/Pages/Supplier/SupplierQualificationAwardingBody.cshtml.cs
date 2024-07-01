@@ -39,14 +39,9 @@ public class SupplierQualificationAwardingBodyModel(
         qa.AwardedByPersonOrBodyName = AwardedByPersonOrBodyName;
         tempDataService.Put(Qualification.TempDataKey, qa);
 
-        if (RedirectToCheckYourAnswer == true)
-        {
-            return RedirectToPage("SupplierQualificationCheckAnswer", new { Id });
-        }
-        else
-        {
-            return RedirectToPage("SupplierQualificationAwardedDate", new { Id });
-        }
+        return RedirectToPage(
+                RedirectToCheckYourAnswer == true ? "SupplierQualificationCheckAnswer" : "SupplierQualificationAwardedDate",
+                new { Id });
     }
 }
 

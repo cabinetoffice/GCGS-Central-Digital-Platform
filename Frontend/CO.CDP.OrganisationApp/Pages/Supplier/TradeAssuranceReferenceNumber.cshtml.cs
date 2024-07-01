@@ -37,13 +37,8 @@ public class TradeAssuranceReferenceNumberModel(
         ta.ReferenceNumber = ReferenceNumber;
         tempDataService.Put(TradeAssurance.TempDataKey, ta);
 
-        if (RedirectToCheckYourAnswer == true)
-        {
-            return RedirectToPage("TradeAssuranceCheckAnswer", new { Id });
-        }
-        else
-        {
-            return RedirectToPage("TradeAssuranceAwardedDate", new { Id });
-        }
+        return RedirectToPage(
+                RedirectToCheckYourAnswer == true ? "TradeAssuranceCheckAnswer" : "TradeAssuranceAwardedDate",
+                new { Id });        
     }
 }
