@@ -1,15 +1,12 @@
+using CO.CDP.Authentication;
 using CO.CDP.Configuration.ForwardedHeaders;
 using CO.CDP.Organisation.WebApi.Api;
-using CO.CDP.Organisation.WebApi.ApiKeyAuthentication;
 using CO.CDP.Organisation.WebApi.AutoMapper;
 using CO.CDP.Organisation.WebApi.Extensions;
 using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.Organisation.WebApi.UseCase;
 using CO.CDP.OrganisationInformation.Persistence;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using Organisation = CO.CDP.Organisation.WebApi.Model.Organisation;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -35,46 +32,11 @@ builder.Services.AddScoped<IUseCase<(Guid, UpdateOrganisation), bool>, UpdateOrg
 builder.Services.AddScoped<IUseCase<(Guid, UpdateBuyerInformation), bool>, UpdateBuyerInformationUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, UpdateSupplierInformation), bool>, UpdateSupplierInformationUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, DeleteSupplierInformation), bool>, DeleteSupplierInformationUseCase>();
-builder.Services.AddScoped<IApiKeyValidator, TempApiKeyValidator>();
 builder.Services.AddOrganisationProblemDetails();
 
-var authority = builder.Configuration["Organisation:Authority"]
-    ?? throw new Exception("Missing configuration key: Organisation:Authority.");
-var defaultAuthenticationScheme = "Bearer_Or_ApiKey";
-
-builder.Services
-    .AddAuthentication(defaultAuthenticationScheme)
-    .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
-    {
-        options.Authority = authority;
-        options.RequireHttpsMetadata = !builder.Environment.IsDevelopment();
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateAudience = false,
-            ValidateIssuerSigningKey = true
-        };
-    })
-    .AddApiKey()
-    .AddPolicyScheme(defaultAuthenticationScheme, defaultAuthenticationScheme, options =>
-    {
-        options.ForwardDefaultSelector = context =>
-        {
-            if (context.Request.Headers.ContainsKey(ApiKeyAuthenticationHandler.ApiKeyHeaderName))
-            {
-                return ApiKeyAuthenticationHandler.AuthenticationScheme;
-            }
-            return JwtBearerDefaults.AuthenticationScheme;
-        };
-    });
-
+builder.Services.AddJwtBearerAndApiKeyAuthentication(builder.Configuration, builder.Environment);
 //builder.Services.AddAuthorization();
-builder.Services
-    .AddAuthorizationBuilder()
-    .SetFallbackPolicy(
-        new AuthorizationPolicyBuilder()
-            .AddAuthenticationSchemes(defaultAuthenticationScheme)
-            .RequireAuthenticatedUser()
-            .Build());
+builder.Services.AddFallbackAuthorizationPolicy();
 
 var app = builder.Build();
 app.UseForwardedHeaders();

@@ -1,17 +1,10 @@
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Security.Claims;
 using System.Text.Encodings.Web;
 
-namespace CO.CDP.Organisation.WebApi.ApiKeyAuthentication;
-
-public static class ApiKeyAuthAppBuilderExtensions
-{
-    public static AuthenticationBuilder AddApiKey(this AuthenticationBuilder builder, Action<ApiKeyAuthenticationOptions>? configureOptions = null)
-    {
-        return builder.AddScheme<ApiKeyAuthenticationOptions, ApiKeyAuthenticationHandler>(ApiKeyAuthenticationHandler.AuthenticationScheme, configureOptions);
-    }
-}
+namespace CO.CDP.Authentication;
 
 public class ApiKeyAuthenticationHandler(
     IOptionsMonitor<ApiKeyAuthenticationOptions> options,
