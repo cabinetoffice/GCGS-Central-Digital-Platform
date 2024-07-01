@@ -57,79 +57,8 @@ OpenAPI: build ## Create OpenAPI folder and copy relevant files in
 	cp ./Services/CO.CDP.Person.WebApi/OpenAPI/CO.CDP.Person.WebApi.json OpenAPI/Person.json
 	cp ./Services/CO.CDP.Forms.WebApi/OpenAPI/CO.CDP.Forms.WebApi.json OpenAPI/Forms.json
 
-define COMPOSE_OVERRIDE_YML
-services:
-  gateway:
-    ports:
-      - "$${CDP_ORGANISATION_APP_PORT:-8090}:8090"
-      - "$${CDP_AUTHORITY_PORT:-8092}:8092"
-      - "$${CDP_TENANT_PORT:-8080}:8080"
-      - '$${CDP_ORGANISATION_PORT:-8082}:8082'
-      - '$${CDP_PERSON_PORT:-8084}:8084'
-      - '$${CDP_FORMS_PORT:-8086}:8086'
-      - '$${CDP_DATA_SHARING_PORT:-8088}:8088'
-    environment:
-#      CDP_ORGANISATION_APP_HOST: 'http://host.docker.internal:58090'
-#      CDP_AUTHORITY_HOST: 'http://host.docker.internal:5050'
-#      CDP_TENANT_HOST: 'http://host.docker.internal:58080'
-#      CDP_ORGANISATION_HOST: 'http://host.docker.internal:58082'
-#      CDP_PERSON_HOST: 'http://host.docker.internal:58084'
-#      CDP_FORMS_HOST: 'http://host.docker.internal:58086'
-#      CDP_DATA_SHARING_HOST: 'http://host.docker.internal:58088'
-    deploy:
-      replicas: 1
-  db:
-    ports:
-      - "$${CDP_DB_PORT:-5432}:5432"
-    deploy:
-      replicas: 1
-  organisation-app:
-    environment:
-      ASPNETCORE_ENVIRONMENT: Development
-      OneLogin__Authority: "https://oidc.example.com"
-      OneLogin__ClientId: "client-id"
-      OneLogin__PrivateKey: "RSA PRIVATE KEY"
-    deploy:
-      replicas: 1
-  authority:
-    environment:
-      ASPNETCORE_ENVIRONMENT: Development
-      PublicKey: "-----BEGIN RSA PUBLIC KEY-----"
-      PrivateKey: "-----BEGIN RSA PRIVATE KEY-----"
-      OneLogin__Authority: "https://oidc.example.com"
-    deploy:
-      replicas: 1
-  tenant:
-    environment:
-      ASPNETCORE_ENVIRONMENT: Development
-    deploy:
-      replicas: 1
-  organisation:
-    environment:
-      ASPNETCORE_ENVIRONMENT: Development
-    deploy:
-      replicas: 1
-  person:
-    environment:
-      ASPNETCORE_ENVIRONMENT: Development
-    deploy:
-      replicas: 1
-  forms:
-    environment:
-      ASPNETCORE_ENVIRONMENT: Development
-    deploy:
-      replicas: 1
-  data-sharing:
-    environment:
-      ASPNETCORE_ENVIRONMENT: Development
-    deploy:
-      replicas: 1
-endef
-
-export COMPOSE_OVERRIDE_YML
 compose.override.yml:
-	@echo "$$COMPOSE_OVERRIDE_YML" > compose.override.yml
-
+	cp compose.override.yml.template compose.override.yml
 
 generate-authority-keys: ## Generate authority's private and public keys and store in ./terragrunt/secrets/ folder
 	openssl genpkey -algorithm RSA -out ./terragrunt/secrets/authority-private-key.pem -pkeyopt rsa_keygen_bits:2048
