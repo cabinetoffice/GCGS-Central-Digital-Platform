@@ -1,10 +1,15 @@
 using CO.CDP.Functional;
 using CO.CDP.Person.WebApi.Model;
 using CO.CDP.Person.WebApi.UseCase;
+using CO.CDP.OrganisationInformation;
+using CO.CDP.Swashbuckle.Filter;
 using CO.CDP.Swashbuckle.Security;
+using CO.CDP.Swashbuckle.SwaggerGen;
 using DotSwashbuckle.AspNetCore.SwaggerGen;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
+using System.Reflection;
+using Microsoft.OpenApi.Any;
 
 namespace CO.CDP.Person.WebApi.Api;
 
@@ -28,11 +33,11 @@ public static class EndpointExtensions
                     Results.Created(new Uri($"/persons/{person.Id}", UriKind.Relative), person))
          )
         .Produces<Model.Person>(201, "application/json")
-        .ProducesProblem(StatusCodes.Status500InternalServerError)
-        .ProducesProblem(StatusCodes.Status400BadRequest)
+        .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError)
+        .Produces<ProblemDetails>(StatusCodes.Status400BadRequest)
         .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
-        .ProducesProblem(StatusCodes.Status422UnprocessableEntity)
-        .ProducesProblem(StatusCodes.Status404NotFound)
+        .Produces<ProblemDetails>(StatusCodes.Status422UnprocessableEntity)
+        .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
         .WithOpenApi(operation =>
         {
             operation.OperationId = "CreatePerson";
@@ -41,6 +46,7 @@ public static class EndpointExtensions
             operation.Responses["201"].Description = "Person created successfully.";
             operation.Responses["400"].Description = "Bad request.";
             operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
+            operation.Responses["404"].Description = "Person not found.";
             operation.Responses["422"].Description = "Unprocessable entity.";
             operation.Responses["500"].Description = "Internal server error.";
             return operation;
@@ -50,13 +56,14 @@ public static class EndpointExtensions
                 await useCase.Execute(personId)
                     .AndThen(person => person != null ? Results.Ok(person) : Results.NotFound()))
             .Produces<Model.Person>(200, "application/json")
-            .Produces(404)
+            .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
             .WithOpenApi(operation =>
             {
                 operation.OperationId = "GetPerson";
                 operation.Description = "Get a person by ID.";
                 operation.Summary = "Get a person by ID.";
                 operation.Responses["200"].Description = "Person details.";
+                operation.Responses["404"].Description = "Person not found.";
                 return operation;
             });
 
@@ -73,8 +80,8 @@ public static class EndpointExtensions
                     return Results.Ok(_persons[personId]);
                 })
             .Produces<Model.Person>(200, "application/json")
-            .Produces(404)
-            .Produces(400)
+            .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
+            .Produces<ProblemDetails>(StatusCodes.Status400BadRequest)
             .WithOpenApi(operation =>
             {
                 operation.OperationId = "UpdatePerson";
@@ -106,7 +113,7 @@ public static class EndpointExtensions
                 await useCase.Execute(urn)
                     .AndThen(persons => persons != null ? Results.Ok(persons) : Results.NotFound()))
             .Produces<Model.Person>(200, "application/json")
-            .Produces(404)
+            .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
             .WithOpenApi(operation =>
             {
                 operation.OperationId = "LookupPerson";
@@ -149,6 +156,9 @@ public static class ApiExtensions
                 };
             return typeMap.GetValueOrDefault(type, type.Name);
         });
+        options.OperationFilter<ProblemDetailsOperationFilter>(Extensions.ServiceCollectionExtensions.ErrorCodes());
         options.ConfigureBearerSecurity();
+        options.ConfigureApiKeySecurity();
+        options.UseAllOfToExtendReferenceSchemas();
     }
 }

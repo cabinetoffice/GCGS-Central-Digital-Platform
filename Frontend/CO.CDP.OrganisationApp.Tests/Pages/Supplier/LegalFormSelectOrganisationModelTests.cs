@@ -10,15 +10,17 @@ public class LegalFormSelectOrganisationModelTests
 {
     private readonly Mock<ITempDataService> _mockTempDataService;
     private readonly LegalFormSelectOrganisationModel _model;
+    private readonly Mock<Organisation.WebApiClient.IOrganisationClient> _mockOrganisationClient;
 
     public LegalFormSelectOrganisationModelTests()
     {
         _mockTempDataService = new Mock<ITempDataService>();
-        _model = new LegalFormSelectOrganisationModel(_mockTempDataService.Object);
+        _mockOrganisationClient = new Mock<Organisation.WebApiClient.IOrganisationClient>();
+        _model = new LegalFormSelectOrganisationModel(_mockTempDataService.Object, _mockOrganisationClient.Object);
     }
 
     [Fact]
-    public void OnGet_SetsRegisteredOrg_FromTempData()
+    public async Task OnGet_SetsRegisteredOrg_FromTempData()
     {
         var id = Guid.NewGuid();
         var legalForm = new LegalForm
@@ -27,10 +29,42 @@ public class LegalFormSelectOrganisationModelTests
         };
         _mockTempDataService.Setup(s => s.PeekOrDefault<LegalForm>(LegalForm.TempDataKey)).Returns(legalForm);
 
-        var result = _model.OnGet(id);
+        var result = await _model.OnGet(id);
 
         _model.RegisteredOrg.Should().Be("LimitedCompany");
         result.Should().BeOfType<PageResult>();
+    }
+
+    [Fact]
+    public async Task OnGet_WithValidId_CallsGetOrganisationAsync()
+    {
+        _model.Id = Guid.NewGuid();
+        var legalForm = new LegalForm
+        {
+            RegisteredLegalForm = "LimitedCompany"
+        };
+
+        _mockOrganisationClient.Setup(o => o.GetOrganisationAsync(_model.Id))
+            .ReturnsAsync(GivenOrganisationClientModel(_model.Id));
+
+        _mockTempDataService.Setup(s => s.PeekOrDefault<LegalForm>(LegalForm.TempDataKey)).Returns(legalForm);
+
+        var result = await _model.OnGet(_model.Id);
+
+        _mockOrganisationClient.Verify(c => c.GetOrganisationAsync(_model.Id), Times.Once);
+    }
+
+    [Fact]
+    public async Task OnGet_ReturnsNotFound_WhenSupplierInfoNotFound()
+    {
+        var id = Guid.NewGuid();
+        _mockOrganisationClient.Setup(o => o.GetOrganisationAsync(It.IsAny<Guid>()))
+             .ThrowsAsync(new Organisation.WebApiClient.ApiException("Unexpected error", 404, "", default, null));
+
+        var result = await _model.OnGet(id);
+
+        result.Should().BeOfType<RedirectResult>()
+            .Which.Url.Should().Be("/page-not-found");
     }
 
     [Fact]
@@ -70,5 +104,10 @@ public class LegalFormSelectOrganisationModelTests
         orgLegalForm.Should().ContainKey("LLP").WhoseValue.Should().Be("Limited liability partnership (LLP)");
         orgLegalForm.Should().ContainKey("LimitedPartnership").WhoseValue.Should().Be("Limited partnership");
         orgLegalForm.Should().ContainKey("Other").WhoseValue.Should().Be("Other");
+    }
+
+    private static Organisation.WebApiClient.Organisation GivenOrganisationClientModel(Guid? id)
+    {
+        return new Organisation.WebApiClient.Organisation(null, null, null, id!.Value, null, "Test Org", []);
     }
 }

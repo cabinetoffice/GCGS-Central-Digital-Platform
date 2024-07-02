@@ -16,6 +16,9 @@ public class TradeAssuranceReferenceNumberModel(
     [Required(ErrorMessage = "Enter the trade assurance reference number")]
     public string? ReferenceNumber { get; set; }
 
+    [BindProperty]
+    public bool? RedirectToCheckYourAnswer { get; set; }
+
     public IActionResult OnGet()
     {
         var ta = tempDataService.PeekOrDefault<TradeAssurance>(TradeAssurance.TempDataKey);
@@ -34,6 +37,8 @@ public class TradeAssuranceReferenceNumberModel(
         ta.ReferenceNumber = ReferenceNumber;
         tempDataService.Put(TradeAssurance.TempDataKey, ta);
 
-        return RedirectToPage("TradeAssuranceAwardedDate", new { Id });
+        return RedirectToPage(
+                RedirectToCheckYourAnswer == true ? "TradeAssuranceCheckAnswer" : "TradeAssuranceAwardedDate",
+                new { Id });        
     }
 }

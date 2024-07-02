@@ -35,8 +35,17 @@ public class LegalFormFormationDateModel(
     [BindProperty]
     public string? RegistrationDate { get; set; }
 
-    public IActionResult OnGet()
-    {
+    public async Task<IActionResult> OnGet()
+    {        
+        try
+        {
+            await organisationClient.GetOrganisationAsync(Id);
+        }
+        catch (ApiException ex) when (ex.StatusCode == 404)
+        {
+            return Redirect("/page-not-found");
+        }
+
         var lf = tempDataService.PeekOrDefault<LegalForm>(LegalForm.TempDataKey);
         if (lf.RegistrationDate.HasValue)
         {
@@ -67,9 +76,14 @@ public class LegalFormFormationDateModel(
             return Page();
         }
 
-        var lf = tempDataService.PeekOrDefault<LegalForm>(LegalForm.TempDataKey);
+        var lf = tempDataService.GetOrDefault<LegalForm>(LegalForm.TempDataKey);
         lf.RegistrationDate = new DateTimeOffset(parsedDate, TimeSpan.FromHours(0));
         tempDataService.Put(LegalForm.TempDataKey, lf);
+
+        if (!Validate(lf))
+        {
+            return RedirectToPage("LegalFormCompanyActQuestion", new { Id });
+        }
 
         var legalform = new Organisation.WebApiClient.LegalForm
                         (
@@ -90,5 +104,12 @@ public class LegalFormFormationDateModel(
         }
 
         return RedirectToPage("SupplierBasicInformation", new { Id });
+    }
+
+    private static bool Validate(LegalForm legalForm)
+    {
+        return !string.IsNullOrEmpty(legalForm.LawRegistered)
+            && !string.IsNullOrEmpty(legalForm.RegisteredLegalForm)
+            && legalForm.RegistrationDate.HasValue;
     }
 }

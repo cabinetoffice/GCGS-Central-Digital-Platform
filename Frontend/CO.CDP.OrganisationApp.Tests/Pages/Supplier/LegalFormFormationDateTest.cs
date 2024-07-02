@@ -20,13 +20,31 @@ public class LegalFormFormationDateTest
     }
 
     [Fact]
-    public void OnGet_ShouldPopulateFields_WhenDateAwardedIsPresent()
+    public async Task OnGet_OrganisationNotFound_ShouldRedirectToPageNotFound()
+    {
+        _model.Id = Guid.NewGuid();
+
+        _mockOrganisationClient.Setup(client => client.GetOrganisationAsync(_model.Id))
+            .ThrowsAsync(new Organisation.WebApiClient.ApiException("Unexpected error", 404, "", default, null));
+
+        var result = await _model.OnGet();
+
+        result.Should().BeOfType<RedirectResult>()
+            .Which.Url.Should().Be("/page-not-found");
+    }
+
+    [Fact]
+    public async Task OnGet_ShouldPopulateFields_WhenDateAwardedIsPresent()
     {
         var dateAwarded = new DateTime(2023, 6, 15);
         var legalForm = new LegalForm { RegistrationDate = dateAwarded };
+
+        _mockOrganisationClient.Setup(o => o.GetOrganisationAsync(_model.Id))
+            .ReturnsAsync(GivenOrganisationClientModel(_model.Id));
+
         _mockTempDataService.Setup(t => t.PeekOrDefault<LegalForm>(LegalForm.TempDataKey)).Returns(legalForm);
 
-        var result = _model.OnGet();
+        var result = await _model.OnGet();
 
         _model.Day.Should().Be("15");
         _model.Month.Should().Be("6");
@@ -35,12 +53,12 @@ public class LegalFormFormationDateTest
     }
 
     [Fact]
-    public void OnGet_ShouldNotPopulateFields_WhenDateAwardedIsNotPresent()
+    public async Task OnGet_ShouldNotPopulateFields_WhenDateAwardedIsNotPresent()
     {
         var legalForm = new LegalForm();
         _mockTempDataService.Setup(t => t.PeekOrDefault<LegalForm>(LegalForm.TempDataKey)).Returns(legalForm);
 
-        var result = _model.OnGet();
+        var result = await _model.OnGet();
 
         _model.Day.Should().BeNull();
         _model.Month.Should().BeNull();
@@ -107,8 +125,14 @@ public class LegalFormFormationDateTest
         SetDateFields(validDate.Day.ToString("D2"), validDate.Month.ToString("D2"), validDate.Year.ToString());
         _model.Id = Guid.NewGuid();
 
-        var legalForm = new LegalForm() { RegisteredUnderAct2006 = true };
-        _mockTempDataService.Setup(s => s.PeekOrDefault<LegalForm>(LegalForm.TempDataKey)).Returns(legalForm);
+        var legalForm = new LegalForm()
+        {
+            LawRegistered = "law",
+            RegisteredLegalForm = "legal form",
+            RegistrationDate = new DateTimeOffset(2023, 6, 15, 0, 0, 0, TimeSpan.FromHours(0)),
+            RegisteredUnderAct2006 = true
+        };
+        _mockTempDataService.Setup(s => s.GetOrDefault<LegalForm>(LegalForm.TempDataKey)).Returns(legalForm);
 
         var result = await _model.OnPost();
 
@@ -126,13 +150,13 @@ public class LegalFormFormationDateTest
         _model.Id = Guid.NewGuid();
 
         var legalForm = new LegalForm() { RegisteredUnderAct2006 = false };
-        _mockTempDataService.Setup(s => s.PeekOrDefault<LegalForm>(LegalForm.TempDataKey)).Returns(legalForm);
+        _mockTempDataService.Setup(s => s.GetOrDefault<LegalForm>(LegalForm.TempDataKey)).Returns(legalForm);
         _mockOrganisationClient.Setup(c => c.UpdateSupplierInformationAsync(It.IsAny<Guid>(), It.IsAny<Organisation.WebApiClient.UpdateSupplierInformation>()))
                                .ThrowsAsync(new Organisation.WebApiClient.ApiException("Not Found", 404, null, null, null));
 
         var result = await _model.OnPost();
 
-        result.Should().BeOfType<RedirectResult>().Which.Url.Should().Be("/page-not-found");
+        result.Should().BeOfType<RedirectToPageResult>().Which.PageName.Should().Be("LegalFormCompanyActQuestion");
     }
 
     [Fact]
@@ -140,8 +164,13 @@ public class LegalFormFormationDateTest
     {
         SetValidDate();
         _model.Id = Guid.NewGuid();
-        var legalForm = new LegalForm() { RegisteredUnderAct2006 = true };
-        _mockTempDataService.Setup(t => t.PeekOrDefault<LegalForm>(LegalForm.TempDataKey)).Returns(legalForm);
+        var legalForm = new LegalForm() {
+                            LawRegistered = "law",
+                            RegisteredLegalForm = "legal form",
+                            RegistrationDate = new DateTimeOffset(2023, 6, 15, 0, 0, 0, TimeSpan.FromHours(0)),
+                            RegisteredUnderAct2006 = true
+                        };
+        _mockTempDataService.Setup(t => t.GetOrDefault<LegalForm>(LegalForm.TempDataKey)).Returns(legalForm);
 
         var result = await _model.OnPost();
 
@@ -170,5 +199,10 @@ public class LegalFormFormationDateTest
         _model.Day = futureDate.Day.ToString();
         _model.Month = futureDate.Month.ToString();
         _model.Year = futureDate.Year.ToString();
+    }
+
+    private static Organisation.WebApiClient.Organisation GivenOrganisationClientModel(Guid? id)
+    {
+        return new Organisation.WebApiClient.Organisation(null, null, null, id!.Value, null, "Test Org", []);
     }
 }
