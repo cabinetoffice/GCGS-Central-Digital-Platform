@@ -1,5 +1,6 @@
 using System.Text.Json;
 using CO.CDP.OrganisationInformation.Persistence.EntityFrameworkCore;
+using CO.CDP.OrganisationInformation.Persistence.Forms;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -13,6 +14,8 @@ public class OrganisationInformationContext(DbContextOptions<OrganisationInforma
     public DbSet<Tenant> Tenants { get; set; } = null!;
     public DbSet<Organisation> Organisations { get; set; } = null!;
     public DbSet<Person> Persons { get; set; } = null!;
+    public DbSet<Form> Forms { get; set; } = null!;
+    public DbSet<SharedConsent> SharedConsents { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -117,7 +120,74 @@ public class OrganisationInformationContext(DbContextOptions<OrganisationInforma
             }
         }
 
+        OnFormModelCreating(modelBuilder);
+
         base.OnModelCreating(modelBuilder);
+    }
+
+    private void OnFormModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Form>()
+            .HasMany<FormSection>(e => e.Sections);
+        modelBuilder.Entity<FormSection>()
+            .ToTable("form_sections");
+        modelBuilder.Entity<FormQuestion>(e =>
+        {
+            e.ToTable("form_questions");
+            e.HasOne<FormQuestion>(fq => fq.NextQuestion);
+            e.HasOne<FormQuestion>(fq => fq.NextQuestionAlternative);
+            e.Property(p => p.Options).IsRequired()
+                .HasJsonColumn(new FormQuestionOptions(),
+                    PropertyBuilderExtensions.RecordComparer<FormQuestionOptions>());
+        });
+
+        /**
+                     modelBuilder.Entity("CO.CDP.OrganisationInformation.Persistence.Forms.FormAnswer", b =>
+                {
+                    b.HasOne("CO.CDP.OrganisationInformation.Persistence.Forms.FormAnswerSet", "FormAnswerSet")
+                        .WithMany("Answers")
+                        .HasForeignKey("FormAnswerSetId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_form_answer_form_answer_set_form_answer_set_id");
+
+                    b.HasOne("CO.CDP.OrganisationInformation.Persistence.Forms.FormQuestion", "Question")
+                        .WithMany()
+                        .HasForeignKey("QuestionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_form_answer_form_question_question_id");
+
+                    b.Navigation("FormAnswerSet");
+
+                    b.Navigation("Question");
+                });
+
+            modelBuilder.Entity("CO.CDP.OrganisationInformation.Persistence.Forms.FormAnswerSet", b =>
+                {
+                    b.HasOne("CO.CDP.OrganisationInformation.Persistence.Forms.FormSection", "Section")
+                        .WithMany()
+                        .HasForeignKey("SectionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_form_answer_set_form_section_section_id");
+
+                    b.HasOne("CO.CDP.OrganisationInformation.Persistence.Forms.SharedConsent", null)
+                        .WithMany("AnswerSets")
+                        .HasForeignKey("SharedConsentId")
+                        .HasConstraintName("fk_form_answer_set_shared_consents_shared_consent_id");
+
+                    b.Navigation("Section");
+                });
+         */
+        modelBuilder.Entity<FormAnswerSet>(e =>
+        {
+            e.ToTable("form_answer_sets");
+        });
+        modelBuilder.Entity<FormAnswer>(e =>
+        {
+            e.ToTable("form_answers");
+        });
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -164,6 +234,13 @@ internal static class PropertyBuilderExtensions
             (c1, c2) => c1 != null && c2 != null && c1.SequenceEqual(c2),
             c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v != null ? v.GetHashCode() : 0)),
             c => c.ToList()
+        );
+
+    public static ValueComparer<T> RecordComparer<T>() where T : notnull =>
+        new(
+            (c1, c2) => c1 != null && c2 != null && c1.Equals(c2),
+            c => c.GetHashCode(),
+            c => c
         );
 
     public static PropertyBuilder<TProperty> HasJsonColumn<TProperty>(
