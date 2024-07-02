@@ -83,14 +83,19 @@ image::../images/development/cookbooks/dev-environment-organisation-app-and-orga
 == Starting everything in the IDE
 
 In case you preferred to run all the dotnet services in the IDE, you can disable them all in Docker by setting replicas to 0.
-Use the `http` launch profile in your IDE.
 
-Alternatively, you can run the db and migrations containers only with:
+Alternatively to setting replicas to 0, you can run the db and migrations containers only with:
 
 [source,bash]
 ----
 make db
 ----
+
+Use the `http` launch profile in your IDE to start each service. All services can be run together by using a multi-launch
+profile (has to be created manually).
+
+.Multi-launch profile
+image::../images/development/cookbooks/ide-multi-launch-profile.png[Multi-launch profile]
 
 == IDE profiles
 
