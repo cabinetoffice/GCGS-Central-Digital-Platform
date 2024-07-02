@@ -10,12 +10,12 @@ public class RequiredIfAttributeTests
         [Fact]
         public void Should_Fail_Validation_When_OrganisationType_Matches_And_IdentificationNumber_IsNull()
         {
-            var model = new OrganisationTestModel { OrganisationType = "CCNI" };
+            var model = new OrganisationTestModel { OrganisationType = "GB-NIC" };
             var validationContext = new ValidationContext(model, null, null)
             {
                 MemberName = nameof(OrganisationTestModel.CharityCommissionNorthernIrelandNumber)
             };
-            var attribute = new RequiredIfAttribute("OrganisationType", "CCNI");
+            var attribute = new RequiredIfAttribute("OrganisationType", "GB-NIC");
 
             var result = attribute.GetValidationResult(null, validationContext);
 
@@ -30,14 +30,14 @@ public class RequiredIfAttributeTests
     {
         var model = new OrganisationTestModel
         {
-            OrganisationType = "CCNI",
+            OrganisationType = "GB-NIC",
             CharityCommissionNorthernIrelandNumber = "12345"
         };
         var context = new ValidationContext(model, null, null)
         {
             MemberName = nameof(OrganisationTestModel.CharityCommissionNorthernIrelandNumber)
         };
-        var attribute = new RequiredIfAttribute("OrganisationType", "CCNI");
+        var attribute = new RequiredIfAttribute("OrganisationType", "GB-NIC");
 
         var result = attribute.GetValidationResult(model.CharityCommissionNorthernIrelandNumber, context);
 
