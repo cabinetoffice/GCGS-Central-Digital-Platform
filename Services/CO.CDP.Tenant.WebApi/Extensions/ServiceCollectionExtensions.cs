@@ -9,7 +9,8 @@ public static class ServiceCollectionExtensions
         { typeof(BadHttpRequestException), (StatusCodes.Status422UnprocessableEntity, "UNPROCESSABLE_ENTITY") },
         { typeof(DuplicateTenantException), (StatusCodes.Status400BadRequest, "TENANT_ALREADY_EXISTS") },
         { typeof(ArgumentNullException), (StatusCodes.Status400BadRequest, "ARGUMENT_NULL") },
-        { typeof(InvalidOperationException), (StatusCodes.Status400BadRequest, "INVALID_OPERATION") }
+        { typeof(InvalidOperationException), (StatusCodes.Status400BadRequest, "INVALID_OPERATION") },
+        { typeof(TenantNotFoundException), (StatusCodes.Status404NotFound, "TENANT_DOES_NOT_EXIST") }
     };
 
     public static IServiceCollection AddTenantProblemDetails(this IServiceCollection services)

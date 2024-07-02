@@ -60,6 +60,16 @@ public class ServiceCollectionExtensionsTests
     }
 
     [Fact]
+    public void MapException_Should_Return_NotFound_For_TenantNotFoundException()
+    {
+        var exception = new TenantNotFoundException("Tenant not found");
+        var result = ServiceCollectionExtensions.MapException(exception);
+
+        Assert.Equal(StatusCodes.Status404NotFound, result.status);
+        Assert.Equal("TENANT_DOES_NOT_EXIST", result.error);
+    }
+
+    [Fact]
     public void ErrorCodes_ShouldReturn_ListOfStatusesMappedToErrorCodes()
     {
         var result = ServiceCollectionExtensions.ErrorCodes();
@@ -68,6 +78,9 @@ public class ServiceCollectionExtensionsTests
         result["400"].Should().Contain("TENANT_ALREADY_EXISTS");
         result["400"].Should().Contain("ARGUMENT_NULL");
         result["400"].Should().Contain("INVALID_OPERATION");
+
+        result.Should().ContainKey("404");
+        result["404"].Should().Contain("TENANT_DOES_NOT_EXIST");
 
         result.Should().ContainKey("422");
         result["422"].Should().Contain("UNPROCESSABLE_ENTITY");
