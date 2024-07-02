@@ -108,14 +108,11 @@ public class ProblemDetailsOperationFilter(Dictionary<string, List<string>> erro
         {
             if (errorCodes.TryGetValue(operationResponse.Key, out var codes))
             {
-                foreach (var code in codes)
+                content.Value.Examples = codes.Select(code => (code, new OpenApiExample
                 {
-                    content.Value.Examples.Add(code, new OpenApiExample
-                    {
-                        Summary = code,
-                        Value = problemDetail?.Invoke(code)
-                    });
-                }
+                    Summary = code,
+                    Value = problemDetail?.Invoke(code)
+                })).ToDictionary();
             }
             else
             {
