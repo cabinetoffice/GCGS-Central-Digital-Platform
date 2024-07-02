@@ -2,6 +2,10 @@
 
 During development, testing, or debugging it's often useful to run some services with Docker,
 while others with an IDE.
+Others, prefer to run everything in the IDE, but infrastructure dependencies, like a database, with Docker.
+Both scenarios are supported.
+
+== Mixing services started on Docker and IDE
 
 By default, Docker Compose will start all services defined in the Compose configuration.
 
@@ -43,7 +47,8 @@ Next, point the gateway to where the Organisation App is running (outside of Doc
 
 We use `host.docker.internal` to point to the host machine from Docker containers.
 
-Now, we can start all Docker services (but the Organisation App) with `make up` and run the Organisation App with the IDE.
+Now, we can start all Docker services (but the Organisation App) with `make up`
+and run the Organisation App with the IDE (choose `http-for-docker` launch profile).
 
 .Organisation App running in the IDE
 image::../images/development/cookbooks/dev-environment-organisation-app-in-ide.svg[Organisation App running in the IDE]
@@ -75,4 +80,34 @@ Next, start selected services in the IDE, while Docker takes care of the other o
 .Organisation App and Organisation service running in the IDE
 image::../images/development/cookbooks/dev-environment-organisation-app-and-organisation-in-ide.svg[Organisation App and Organisation service running in the IDE]
 
-// Image source: https://excalidraw.com/#json=6jR07tyNlNJS7iHlclzu1,GH1rMRK-Q_kGWF85rhnoyQ
+== Starting everything in the IDE
+
+In case you preferred to run all the dotnet services in the IDE, you can disable them all in Docker by setting replicas to 0.
+
+Alternatively to setting replicas to 0, you can run the db and migrations containers only with:
+
+[source,bash]
+----
+make db
+----
+
+Use the `http` launch profile in your IDE to start each service. All services can be run together by using a multi-launch
+profile (has to be created manually).
+
+.Multi-launch profile
+image::../images/development/cookbooks/ide-multi-launch-profile.png[Multi-launch profile]
+
+== IDE profiles
+
+.Recent launch profiles
+image::../images/development/cookbooks/ide-recent-launch-profiles.png[Recent launch profiles]
+
+Each service has two launch profiles pre-configured:
+
+* `http-for-docker` - the service will be proxied by the gateway service in Docker - good if we want to run most services on Docker, while few selected ones in IDE.
+* `http` - the service will be called directly - good if we only want to start db in Docker, but run everything else in the IDE.
+
+.Launch profiles
+image::../images/development/cookbooks/ide-launch-profiles.png[Launch profiles]
+
+// Image source: https://excalidraw.com/#json=_ph_7aW5NakOh2umNmL9E,4Nuynj2H3l6AV_oCTjSXOQ

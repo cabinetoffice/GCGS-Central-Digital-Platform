@@ -1,41 +1,26 @@
 {
   "$schema": "http://json.schemastore.org/launchsettings.json",
-  "iisSettings": {
-    "windowsAuthentication": false,
-    "anonymousAuthentication": true,
-    "iisExpress": {
-      "applicationUrl": "http://localhost:52847",
-      "sslPort": 44387
-    }
-  },
   "profiles": {
-    "http": {
+    "http-for-docker": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,
-      "launchUrl": "swagger",
+      "launchUrl": "http://localhost:8082/swagger",
       "applicationUrl": "http://localhost:58082",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "ConnectionStrings__OrganisationInformationDatabase": "Server=localhost;Database=cdp;Username=cdp_user;Password=cdp123;"
       }
     },
-    "https": {
+    "http": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,
       "launchUrl": "swagger",
-      "applicationUrl": "https://localhost:7208;http://localhost:58082",
+      "applicationUrl": "http://localhost:8082",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
-      }
-    },
-    "IIS Express": {
-      "commandName": "IISExpress",
-      "launchBrowser": true,
-      "launchUrl": "swagger",
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ConnectionStrings__OrganisationInformationDatabase": "Server=localhost;Database=cdp;Username=cdp_user;Password=cdp123;"
       }
     }
   }
