@@ -13,5 +13,7 @@ public interface ITenantRepository : IDisposable
     {
         public class DuplicateTenantException(string message, Exception? cause = null)
             : TenantRepositoryException(message, cause);
+        public class TenantNotFoundException(string message, Exception? cause = null)
+            : TenantRepositoryException(message, cause);
     }
 }

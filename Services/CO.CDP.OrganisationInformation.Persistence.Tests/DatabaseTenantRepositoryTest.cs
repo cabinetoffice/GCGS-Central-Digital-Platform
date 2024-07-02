@@ -129,6 +129,36 @@ public class DatabaseTenantRepositoryTest(PostgreSqlFixture postgreSql) : IClass
         found.As<Tenant>().Persons.Should().Contain(p => p.Guid == person2.Guid);
     }
 
+    [Fact]
+    public async Task LookupTenant_WhenFound_ReturnsTenantLookup()
+    {
+        using var repository = TenantRepository();
+
+        var person = GivenPerson();
+        var organisation = GivenOrganisation();
+        var tenant = GivenTenant(guid: Guid.NewGuid(), person: person, organisation: organisation);
+        person.UserUrn = "urn:fdc:gov.uk:2022:43af5a8b-f4c0-414b-b341-d4f1fa894301";
+
+        repository.Save(tenant);
+
+        var tenantLookup = await repository.LookupTenant(person.UserUrn);
+
+        tenantLookup.Should().NotBeNull();
+        tenantLookup.As<TenantLookup>().User.Urn.Should().Be(person.UserUrn);
+        tenantLookup.As<TenantLookup>().Tenants.Should().Contain(t => t.Id == tenant.Guid);
+    }
+
+    [Fact]
+    public async Task LookupTenant_WhenNotFound_ThrowsTenantNotFoundException()
+    {
+        using var repository = TenantRepository();
+
+        Func<Task> action = async () => await repository.LookupTenant("urn:nonexistent");
+
+        await action.Should().ThrowAsync<ITenantRepository.TenantRepositoryException.TenantNotFoundException>()
+            .WithMessage("Tenant not found for the given URN: urn:nonexistent");
+    }
+
     private ITenantRepository TenantRepository()
     {
         return new DatabaseTenantRepository(postgreSql.OrganisationInformationContext());
