@@ -18,6 +18,9 @@ public class TradeAssuranceBodyModel(
 
     public Guid? TradeAssuranceId { get; set; }
 
+    [BindProperty]
+    public bool? RedirectToCheckYourAnswer { get; set; }
+
     public IActionResult OnGet()
     {
         var ta = tempDataService.PeekOrDefault<TradeAssurance>(TradeAssurance.TempDataKey);
@@ -37,7 +40,9 @@ public class TradeAssuranceBodyModel(
         ta.AwardedByPersonOrBodyName = AwardedByPersonOrBodyName;
         tempDataService.Put(TradeAssurance.TempDataKey, ta);
 
-        return RedirectToPage("TradeAssuranceReferenceNumber", new { Id });
+        return RedirectToPage(
+                RedirectToCheckYourAnswer == true ? "TradeAssuranceCheckAnswer" : "TradeAssuranceReferenceNumber",
+                new { Id });
     }
 }
 

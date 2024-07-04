@@ -1,5 +1,6 @@
 using System.Reflection;
 using CO.CDP.Tenant.WebApi.Extensions;
+using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using static CO.CDP.OrganisationInformation.Persistence.ITenantRepository.TenantRepositoryException;
 
@@ -57,4 +58,32 @@ public class ServiceCollectionExtensionsTests
         Assert.Equal(StatusCodes.Status500InternalServerError, result.status);
         Assert.Equal("GENERIC_ERROR", result.error);
     }
+
+    [Fact]
+    public void MapException_Should_Return_NotFound_For_TenantNotFoundException()
+    {
+        var exception = new TenantNotFoundException("Tenant not found");
+        var result = ServiceCollectionExtensions.MapException(exception);
+
+        Assert.Equal(StatusCodes.Status404NotFound, result.status);
+        Assert.Equal("TENANT_DOES_NOT_EXIST", result.error);
+    }
+
+    [Fact]
+    public void ErrorCodes_ShouldReturn_ListOfStatusesMappedToErrorCodes()
+    {
+        var result = ServiceCollectionExtensions.ErrorCodes();
+
+        result.Should().ContainKey("400");
+        result["400"].Should().Contain("TENANT_ALREADY_EXISTS");
+        result["400"].Should().Contain("ARGUMENT_NULL");
+        result["400"].Should().Contain("INVALID_OPERATION");
+
+        result.Should().ContainKey("404");
+        result["404"].Should().Contain("TENANT_DOES_NOT_EXIST");
+
+        result.Should().ContainKey("422");
+        result["422"].Should().Contain("UNPROCESSABLE_ENTITY");
+    }
+
 }

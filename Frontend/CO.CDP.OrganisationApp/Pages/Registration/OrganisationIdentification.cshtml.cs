@@ -24,7 +24,7 @@ public class OrganisationIdentificationModel(ISession session) : RegistrationSte
 
     [BindProperty]
     [DisplayName("Charity Commission for England & Wales Number")]
-    [RequiredIf(nameof(OrganisationScheme), "CCEW", ErrorMessage = "Please enter the Charity Commission for England & Wales number.")]
+    [RequiredIf(nameof(OrganisationScheme), "GB-CHC", ErrorMessage = "Please enter the Charity Commission for England & Wales number.")]
     public string? CharityCommissionEnglandWalesNumber { get; set; }
 
     [BindProperty]
@@ -33,7 +33,7 @@ public class OrganisationIdentificationModel(ISession session) : RegistrationSte
 
     [BindProperty]
     [DisplayName("Scottish Charity Regulator Number")]
-    [RequiredIf(nameof(OrganisationScheme), "SCR", ErrorMessage = "Please enter the Scottish Charity Regulator number.")]
+    [RequiredIf(nameof(OrganisationScheme), "GB-SC", ErrorMessage = "Please enter the Scottish Charity Regulator number.")]
     public string? ScottishCharityRegulatorNumber { get; set; }
 
     [BindProperty]
@@ -42,7 +42,7 @@ public class OrganisationIdentificationModel(ISession session) : RegistrationSte
 
     [BindProperty]
     [DisplayName("Charity Commission for Northren Ireland Number")]
-    [RequiredIf(nameof(OrganisationScheme), "CCNI", ErrorMessage = "Please enter the Charity Commission for Northren Ireland number.")]
+    [RequiredIf(nameof(OrganisationScheme), "GB-NIC", ErrorMessage = "Please enter the Charity Commission for Northren Ireland number.")]
     public string? CharityCommissionNorthernIrelandNumber { get; set; }
 
     [BindProperty]
@@ -51,7 +51,7 @@ public class OrganisationIdentificationModel(ISession session) : RegistrationSte
 
     [BindProperty]
     [DisplayName("Mutuals Public Register Number")]
-    [RequiredIf(nameof(OrganisationScheme), "MPR", ErrorMessage = "Please enter the Mutuals Public Register number .")]
+    [RequiredIf(nameof(OrganisationScheme), "GB-MPR", ErrorMessage = "Please enter the Mutuals Public Register number .")]
     public string? MutualsPublicRegisterNumber { get; set; }
 
     [BindProperty]
@@ -60,7 +60,7 @@ public class OrganisationIdentificationModel(ISession session) : RegistrationSte
 
     [BindProperty]
     [DisplayName("Guernsey Registry Number")]
-    [RequiredIf(nameof(OrganisationScheme), "GRN", ErrorMessage = "Please enter the Guernsey Registry number.")]
+    [RequiredIf(nameof(OrganisationScheme), "GG-RCE", ErrorMessage = "Please enter the Guernsey Registry number.")]
     public string? GuernseyRegistryNumber { get; set; }
 
     [BindProperty]
@@ -69,7 +69,7 @@ public class OrganisationIdentificationModel(ISession session) : RegistrationSte
 
     [BindProperty]
     [DisplayName("Jersey Financial Services Commission Registry Number")]
-    [RequiredIf(nameof(OrganisationScheme), "JFSC", ErrorMessage = "Please enter Jersey Financial Services Commission Registry number")]
+    [RequiredIf(nameof(OrganisationScheme), "JE-FSC", ErrorMessage = "Please enter Jersey Financial Services Commission Registry number")]
     public string? JerseyFinancialServicesCommissionRegistryNumber { get; set; }
 
     [BindProperty]
@@ -78,7 +78,7 @@ public class OrganisationIdentificationModel(ISession session) : RegistrationSte
 
     [BindProperty]
     [DisplayName("Isle of Man Companies Registry Number")]
-    [RequiredIf(nameof(OrganisationScheme), "IMCR", ErrorMessage = "Please enter the Isle of Man Companies Registry number.")]
+    [RequiredIf(nameof(OrganisationScheme), "IM-CR", ErrorMessage = "Please enter the Isle of Man Companies Registry number.")]
     public string? IsleofManCompaniesRegistryNumber { get; set; }
 
     [BindProperty]
@@ -87,16 +87,16 @@ public class OrganisationIdentificationModel(ISession session) : RegistrationSte
 
     [BindProperty]
     [DisplayName("NHS Organisation Data Service (ODS)")]
-    [RequiredIf(nameof(OrganisationScheme), "NHOR", ErrorMessage = "Please enter the NHS Organisation Data Service number.")]
+    [RequiredIf(nameof(OrganisationScheme), "GB-NHS", ErrorMessage = "Please enter the NHS Organisation Data Service number.")]
     public string? NationalHealthServiceOrganisationsRegistryNumber { get; set; }
 
     [BindProperty]
-    [DisplayName("UK Register of Learning Providers (UKPRN)")]
+    [DisplayName("UK Register of Learning Providers (GB-UKPRN)")]
     public string? UKLearningProviderReference { get; set; }
 
     [BindProperty]
-    [DisplayName("UK Register of Learning Providers (UKPRN)")]
-    [RequiredIf(nameof(OrganisationScheme), "UKPRN", ErrorMessage = "Please enter the UK Register of Learning Providers number.")]
+    [DisplayName("UK Register of Learning Providers (GB-UKPRN)")]
+    [RequiredIf(nameof(OrganisationScheme), "GB-UKPRN", ErrorMessage = "Please enter the UK Register of Learning Providers number.")]
     public string? UKLearningProviderReferenceNumber { get; set; }
 
     [BindProperty]
@@ -121,32 +121,32 @@ public class OrganisationIdentificationModel(ISession session) : RegistrationSte
 
         switch (OrganisationScheme)
         {
-            case "CCEW":
+            case "GB-CHC":
                 CharityCommissionEnglandWalesNumber = RegistrationDetails.OrganisationIdentificationNumber;
                 break;
-            case "SCR":
+            case "GB-SC":
                 ScottishCharityRegulatorNumber = RegistrationDetails.OrganisationIdentificationNumber;
                 break;
-            case "CCNI":
+            case "GB-NIC":
                 CharityCommissionNorthernIrelandNumber = RegistrationDetails.OrganisationIdentificationNumber;
                 break;
-            case "MPR":
+            case "GB-MPR":
                 MutualsPublicRegisterNumber = RegistrationDetails.OrganisationIdentificationNumber;
                 break;
-            case "GRN":
+            case "GG-RCE":
                 GuernseyRegistryNumber = RegistrationDetails.OrganisationIdentificationNumber;
                 break;
 
-            case "JFSC":
+            case "JE-FSC":
                 JerseyFinancialServicesCommissionRegistryNumber = RegistrationDetails.OrganisationIdentificationNumber;
                 break;
-            case "IMCR":
+            case "IM-CR":
                 IsleofManCompaniesRegistryNumber = RegistrationDetails.OrganisationIdentificationNumber;
                 break;
-            case "NHOR":
+            case "GB-NHS":
                 NationalHealthServiceOrganisationsRegistryNumber = RegistrationDetails.OrganisationIdentificationNumber;
                 break;
-            case "UKPRN":
+            case "GB-UKPRN":
                 UKLearningProviderReferenceNumber = RegistrationDetails.OrganisationIdentificationNumber;
                 break;
             case "VAT":
@@ -169,15 +169,15 @@ public class OrganisationIdentificationModel(ISession session) : RegistrationSte
 
         RegistrationDetails.OrganisationIdentificationNumber = OrganisationScheme switch
         {
-            "CCEW" => CharityCommissionEnglandWalesNumber,
-            "SCR" => ScottishCharityRegulatorNumber,
-            "CCNI" => CharityCommissionNorthernIrelandNumber,
-            "MPR" => MutualsPublicRegisterNumber,
-            "GRN" => GuernseyRegistryNumber,
-            "JFSC" => JerseyFinancialServicesCommissionRegistryNumber,
-            "IMCR" => IsleofManCompaniesRegistryNumber,
-            "NHOR" => NationalHealthServiceOrganisationsRegistryNumber,
-            "UKPRN" => UKLearningProviderReferenceNumber,
+            "GB-CHC" => CharityCommissionEnglandWalesNumber,
+            "GB-SC" => ScottishCharityRegulatorNumber,
+            "GB-NIC" => CharityCommissionNorthernIrelandNumber,
+            "GB-MPR" => MutualsPublicRegisterNumber,
+            "GG-RCE" => GuernseyRegistryNumber,
+            "JE-FSC" => JerseyFinancialServicesCommissionRegistryNumber,
+            "IM-CR" => IsleofManCompaniesRegistryNumber,
+            "GB-NHS" => NationalHealthServiceOrganisationsRegistryNumber,
+            "GB-UKPRN" => UKLearningProviderReferenceNumber,
             "VAT" => VATNumber,
             "Other" => string.Empty,
             _ => string.Empty,

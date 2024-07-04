@@ -159,6 +159,47 @@ public record DeleteSupplierInformation
     public Guid? QualificationId { get; init; }
 }
 
+public record OrganisationQuery
+{
+    public string? Name { get; }
+    public string? Identifier { get; }
+    public OrganisationQuery(string? name = null, string? identifier = null)
+    {
+        Name = name;
+        Identifier = identifier;
+    }
+
+    public bool TryGetIdentifier(out string scheme, out string id)
+    {
+        if (!string.IsNullOrEmpty(Identifier))
+        {
+            var parts = Identifier.Split(':');
+            if (parts.Length == 2)
+            {
+                scheme = parts[0];
+                id = parts[1];
+                return true;
+            }
+        }
+
+        scheme = string.Empty;
+        id = string.Empty;
+        return false;
+    }
+
+    public bool TryGetName(out string name)
+    {
+        if (!string.IsNullOrEmpty(Name))
+        {
+            name = Name;
+            return true;
+        }
+
+        name = string.Empty;
+        return false;
+    }
+}
+
 [JsonConverter(typeof(JsonStringEnumConverter))]
 public enum SupplierInformationDeleteType
 {

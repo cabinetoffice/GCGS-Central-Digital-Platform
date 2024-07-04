@@ -1,8 +1,6 @@
+using CO.CDP.Authentication;
 using CO.CDP.Configuration.ForwardedHeaders;
 using CO.CDP.Forms.WebApi.Api;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.ConfigureForwardedHeaders();
@@ -16,29 +14,9 @@ builder.Services.AddHealthChecks();
 
 builder.Services.AddProblemDetails();
 
-var authority = builder.Configuration["Organisation:Authority"]
-    ?? throw new Exception("Missing configuration key: Organisation:Authority.");
-
-builder.Services
-    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
-    {
-        options.Authority = authority;
-        options.RequireHttpsMetadata = !builder.Environment.IsDevelopment();
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateAudience = false,
-            ValidateIssuerSigningKey = true
-        };
-    });
-
-builder.Services
-    .AddAuthorizationBuilder()
-    .SetFallbackPolicy(
-        new AuthorizationPolicyBuilder()
-            .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
-            .RequireAuthenticatedUser()
-            .Build());
+builder.Services.AddJwtBearerAndApiKeyAuthentication(builder.Configuration, builder.Environment);
+//builder.Services.AddAuthorization();
+builder.Services.AddFallbackAuthorizationPolicy();
 
 var app = builder.Build();
 app.UseForwardedHeaders();

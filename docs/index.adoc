@@ -1,7 +1,7 @@
 = Central Digital Platform
 :doctype: book
 :toc: left
-:toclevels: 2
+:toclevels: 3
 :data-uri:
 :imagesdir: images
 :source-highlighter: rouge

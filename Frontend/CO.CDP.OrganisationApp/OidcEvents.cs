@@ -45,23 +45,18 @@ public class OidcEvents(IConfiguration configuration) : OpenIdConnectEvents
 
         using var rsa = RSA.Create();
         rsa.ImportFromPem(privateKey);
-
-        var credential = new SigningCredentials(new RsaSecurityKey(rsa), SecurityAlgorithms.RsaSha256)
-        {
-            CryptoProviderFactory = new CryptoProviderFactory { CacheSignatureProviders = false }
-        };
+        var credential = new SigningCredentials(new RsaSecurityKey(rsa), SecurityAlgorithms.RsaSha256);
 
         var now = DateTime.UtcNow;
 
         var token = new JwtSecurityToken(
             clientId,
             $"{authority}/token",
-            new List<Claim>()
-            {
+            [
                 new Claim(JwtClaimTypes.JwtId, Guid.NewGuid().ToString()),
                 new Claim(JwtClaimTypes.Subject, clientId),
                 new Claim(JwtClaimTypes.IssuedAt, now.ToEpochTime().ToString(), ClaimValueTypes.Integer64)
-            },
+            ],
             now,
             now.AddMinutes(5),
             credential

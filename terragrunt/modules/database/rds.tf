@@ -28,7 +28,7 @@ resource "aws_db_parameter_group" "postgres" {
 resource "aws_db_instance" "postgres" {
   allocated_storage                   = 20
   apply_immediately                   = true
-  auto_minor_version_upgrade          = true
+  auto_minor_version_upgrade          = false
   backup_retention_period             = var.environment == "production" ? 14 : 0
   character_set_name                  = ""
   db_name                             = replace(local.name_prefix, "-", "_")

@@ -1,3 +1,4 @@
+using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.Organisation.WebApi.Tests.AutoMapper;
 using CO.CDP.Organisation.WebApi.UseCase;
 using CO.CDP.OrganisationInformation;
@@ -15,18 +16,70 @@ public class LookupOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
     [Fact]
     public async Task Execute_IfNoOrganisationIsFound_ReturnsNull()
     {
-        var name = "Test Organisation";
+        var foundRecord = await UseCase.Execute(new OrganisationQuery(name: "Test Organisation"));
 
-        var found = await UseCase.Execute(name);
-
-        found.Should().BeNull();
+        foundRecord.Should().BeNull();
     }
 
     [Fact]
-    public async Task Execute_IfOrganisationIsFound_ReturnsOrganisation()
+    public async Task Execute_IfOrganisationIsFoundByName_ReturnsOrganisation()
     {
         var organisationId = Guid.NewGuid();
-        var persistenceOrganisation = new OrganisationInformation.Persistence.Organisation
+
+        var persistenceOrganisation = GivenPersistenceOrganisationInfo(organisationId);
+
+        _repository.Setup(r => r.FindByName(persistenceOrganisation.Name)).ReturnsAsync(persistenceOrganisation);
+
+        var foundRecord = await UseCase.Execute(new OrganisationQuery(name: "Test Organisation"));
+
+        foundRecord.Should().BeEquivalentTo(GivenModelOrganisationInfo(organisationId), options => options.ComparingByMembers<Model.Organisation>());
+
+    }
+
+    [Fact]
+    public async Task Execute_IfNoOrganisationIsFoundByIdentifier_ReturnsNull()
+    {
+        var foundRecord = await UseCase.Execute(new OrganisationQuery(identifier: "Scheme:123456"));
+
+        foundRecord.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task Execute_IfOrganisationIsFoundByIdentifier_ReturnsOrganisation()
+    {
+        var organisationId = Guid.NewGuid();
+
+        var persistenceOrganisation = GivenPersistenceOrganisationInfo(organisationId);
+
+        _repository.Setup(r => r.FindByIdentifier("Scheme", "123456")).ReturnsAsync(persistenceOrganisation);
+
+        var foundRecord = await UseCase.Execute(new OrganisationQuery(identifier: "Scheme:123456"));
+
+        foundRecord.Should().BeEquivalentTo(GivenModelOrganisationInfo(organisationId), options => options.ComparingByMembers<Model.Organisation>());
+
+    }
+
+    [Fact]
+    public async Task Execute_IfBothNameAndIdentifierAreMissing_ThrowsInvalidQueryException()
+    {
+        Func<Task> act = async () => await UseCase.Execute(new OrganisationQuery());
+
+        await act.Should().ThrowAsync<InvalidQueryException>().WithMessage("Both name and identifier are missing from the request.");
+    }
+
+    [Fact]
+    public async Task Execute_IfInvalidIdentifierFormat_ThrowsInvalidQueryException()
+    {
+        var query = new OrganisationQuery(identifier: "InvalidIdentifier");
+
+        Func<Task> act = async () => await UseCase.Execute(query);
+
+        await act.Should().ThrowAsync<InvalidQueryException>().WithMessage("Both name and identifier are missing from the request.");
+    }
+
+    private OrganisationInformation.Persistence.Organisation GivenPersistenceOrganisationInfo(Guid organisationId)
+    {
+        return new OrganisationInformation.Persistence.Organisation
         {
             Id = 1,
             Guid = organisationId,
@@ -75,11 +128,11 @@ public class LookupOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
             Roles = [PartyRole.Supplier]
         };
 
-        _repository.Setup(r => r.FindByName(persistenceOrganisation.Name)).ReturnsAsync(persistenceOrganisation);
+    }
 
-        var found = await UseCase.Execute("Test Organisation");
-
-        found.Should().BeEquivalentTo(new Model.Organisation
+    private Model.Organisation GivenModelOrganisationInfo(Guid organisationId)
+    {
+        return new Model.Organisation
         {
             Id = organisationId,
             Name = "Test Organisation",
@@ -118,6 +171,6 @@ public class LookupOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
                 Url = new Uri("https://contact.test.org")
             },
             Roles = [PartyRole.Supplier]
-        }, options => options.ComparingByMembers<Model.Organisation>());
+        };
     }
 }
