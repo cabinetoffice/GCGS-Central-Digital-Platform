@@ -84,7 +84,7 @@ public class EndpointTest
     public async Task PostTokenEndpoint_ValidRequest_ShouldReturn200AndToken()
     {
         var clientSecret = "valid-secret";
-        var urn = "urn:test:user";
+        var urn = "urn:fdc:gov.uk:2022:6fTvD1cMhQNJxrLZSyBgo5";
         var formData = new Dictionary<string, string>
         {
             { "grant_type", GrantTypes.ClientCredentials },

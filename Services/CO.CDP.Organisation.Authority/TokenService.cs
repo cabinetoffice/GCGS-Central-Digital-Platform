@@ -122,10 +122,6 @@ public class TokenService(
             {
                 tenant.Organisations.RemoveRange(numberOfOrgsToAdd, tenantOrgCount - numberOfOrgsToAdd);
             }
-            else if (numberOfOrgsToAdd == 0)
-            {
-                tenant.Organisations.RemoveAll(_ => true);
-            }
 
             numberOfOrgsToKeep -= numberOfOrgsToAdd;
         }
