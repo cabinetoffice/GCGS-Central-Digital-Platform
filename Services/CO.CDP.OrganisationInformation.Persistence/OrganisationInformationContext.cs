@@ -141,45 +141,6 @@ public class OrganisationInformationContext(DbContextOptions<OrganisationInforma
                     PropertyBuilderExtensions.RecordComparer<FormQuestionOptions>());
         });
 
-        /**
-                     modelBuilder.Entity("CO.CDP.OrganisationInformation.Persistence.Forms.FormAnswer", b =>
-                {
-                    b.HasOne("CO.CDP.OrganisationInformation.Persistence.Forms.FormAnswerSet", "FormAnswerSet")
-                        .WithMany("Answers")
-                        .HasForeignKey("FormAnswerSetId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_form_answer_form_answer_set_form_answer_set_id");
-
-                    b.HasOne("CO.CDP.OrganisationInformation.Persistence.Forms.FormQuestion", "Question")
-                        .WithMany()
-                        .HasForeignKey("QuestionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_form_answer_form_question_question_id");
-
-                    b.Navigation("FormAnswerSet");
-
-                    b.Navigation("Question");
-                });
-
-            modelBuilder.Entity("CO.CDP.OrganisationInformation.Persistence.Forms.FormAnswerSet", b =>
-                {
-                    b.HasOne("CO.CDP.OrganisationInformation.Persistence.Forms.FormSection", "Section")
-                        .WithMany()
-                        .HasForeignKey("SectionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_form_answer_set_form_section_section_id");
-
-                    b.HasOne("CO.CDP.OrganisationInformation.Persistence.Forms.SharedConsent", null)
-                        .WithMany("AnswerSets")
-                        .HasForeignKey("SharedConsentId")
-                        .HasConstraintName("fk_form_answer_set_shared_consents_shared_consent_id");
-
-                    b.Navigation("Section");
-                });
-         */
         modelBuilder.Entity<FormAnswerSet>(e =>
         {
             e.ToTable("form_answer_sets");
