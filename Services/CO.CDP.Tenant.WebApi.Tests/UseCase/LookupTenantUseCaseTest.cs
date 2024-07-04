@@ -61,7 +61,7 @@ public class LookupTenantUseCaseTest(AutoMapperFixture mapperFixture) : IClassFi
 
         var found = await UseCase.Execute("urn:fdc:gov.uk:2022:43af5a8b-f4c0-414b-b341-d4f1fa894302");
 
-        found.Should().BeEquivalentTo(new Model.TenantLookup
+        found.Should().BeEquivalentTo(new OrganisationInformation.TenantLookup
         {
             User = new UserDetails
             {
