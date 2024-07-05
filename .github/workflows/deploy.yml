@@ -1,36 +1,45 @@
 name: Deploy
 
 on:
-  workflow_run:
-    workflows: ["Build"]
-    types:
-      - completed
+  push:
+    branches: [DP-189-deployment-workflow]
+  pull_request:
+    branches: [DP-189-deployment-workflow]
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    env:
+      CDP_ORGANISATION_APP_PORT: 8888
+      CDP_TENANT_PORT: 8811
+      CDP_ORGANISATION_PORT: 8822
+      CDP_PERSON_PORT: 8833
+      CDP_FORMS_PORT: 8844
+      CDP_DATA_SHARING_PORT: 8855
+
     steps:
       - uses: actions/checkout@v4
 
-      - name: Download Docker Images
-        uses: actions/download-artifact@v4
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
         with:
-          name: docker-images
-          path: .
+          dotnet-version: '8.0.x'
 
-      - name: Debug - List downloaded files
-        run: ls -al
-
-      - name: Load Docker Images
+      - name: Build and Test .NET Project
         run: |
-          docker load -i cdp-organisation-information-migrations.tar
-          docker load -i cdp-data-sharing.tar
-          docker load -i cdp-forms.tar
-          docker load -i cdp-organisation-app.tar
-          docker load -i cdp-organisation.tar
-          docker load -i cdp-person.tar
-          docker load -i cdp-tenant.tar
-          docker load -i cdp-authority.tar
+          dotnet tool restore
+          dotnet restore
+          dotnet build
+          dotnet test --logger trx --results-directory TestResults
+
+      - name: Build Docker Images
+        run: make build-docker
+
+      - name: Start services
+        run: make up
+
+      - name: Stop services
+        run: make down
 
       - name: Set up AWS CLI
         uses: aws-actions/configure-aws-credentials@v1
