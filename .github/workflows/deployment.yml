@@ -38,8 +38,8 @@ jobs:
       - name: Tag and Push Docker Images
         run: |
           IMAGE_VERSION=$(date +%Y%m%d%H%M%S)
-          for image in co-cdp-organisation-information-migrations co-cdp-data-sharing cdp-forms co-cdp-organisation-app co-cdp-organisation co-cdp-person co-cdp-tenant co-cdp-authority; do
-            CLEAN_IMAGE_NAME=$(echo $image | sed 's/^co-//')
+          for image in cabinetoffice/cdp-organisation-information-migrations cabinetoffice/cdp-data-sharing cdp-forms cabinetoffice/cdp-organisation-app cabinetoffice/cdp-organisation cabinetoffice/cdp-person cabinetoffice/cdp-tenant cabinetoffice/cdp-authority; do
+            CLEAN_IMAGE_NAME=$(echo $image | sed 's/^cabinetoffice\///')
             docker tag $image:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.eu-west-2.amazonaws.com/$CLEAN_IMAGE_NAME:$IMAGE_VERSION
             docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.eu-west-2.amazonaws.com/$CLEAN_IMAGE_NAME:$IMAGE_VERSION
           done
