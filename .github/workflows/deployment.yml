@@ -1,8 +1,6 @@
 name: Deploy
 
 on:
-  push:
-    branches: [DP-189-deployment-workflow]
   workflow_run:
     workflows: ["Build"]
     types:
