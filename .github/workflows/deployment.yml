@@ -11,8 +11,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Debug - Print current branch
-        run: echo "Current branch: ${{ github.ref }}"
 
       - name: Download Docker Images
         uses: actions/download-artifact@v4
