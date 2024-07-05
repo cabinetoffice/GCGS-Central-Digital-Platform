@@ -74,7 +74,7 @@ public class TokenService(
     {
         var config = configService.GetAuthorityConfiguration();
 
-        List<Claim> claims = [new Claim("sub", urn)];
+        List<Claim> claims = [new Claim(JwtClaimTypes.Subject, urn)];
 
         var tenantLookup = await GetTenant(urn);
         if (tenantLookup != null)
