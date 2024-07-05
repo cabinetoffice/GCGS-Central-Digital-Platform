@@ -10,12 +10,21 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Debugging - Print current branch
+        run: echo "Current branch: ${{ github.ref }}"
+
       - name: Download Docker Images
         uses: actions/download-artifact@v4
         with:
           name: docker-images
           path: .
+
+      - name: Debugging - List downloaded files
+        run: ls -al
+
       - name: Load Docker Images
         run: |
           docker load -i cdp-organisation-information-migrations.tar
@@ -26,23 +35,27 @@ jobs:
           docker load -i cdp-person.tar
           docker load -i cdp-tenant.tar
           docker load -i cdp-authority.tar
+
       - name: Set up AWS CLI
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: eu-west-2
+
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
+
       - name: Tag and Push Docker Images
         run: |
           IMAGE_VERSION=$(date +%Y%m%d%H%M%S)
-          for image in cabinetoffice/cdp-organisation-information-migrations cabinetoffice/cdp-data-sharing cdp-forms cabinetoffice/cdp-organisation-app cabinetoffice/cdp-organisation cabinetoffice/cdp-person cabinetoffice/cdp-tenant cabinetoffice/cdp-authority; do
+          for image in cabinetoffice/cdp-organisation-information-migrations cabinetoffice/cdp-data-sharing cabinetoffice/cdp-forms cabinetoffice/cdp-organisation-app cabinetoffice/cdp-organisation cabinetoffice/cdp-person cabinetoffice/cdp-tenant cabinetoffice/cdp-authority; do
             CLEAN_IMAGE_NAME=$(echo $image | sed 's/^cabinetoffice\///')
             docker tag $image:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.eu-west-2.amazonaws.com/$CLEAN_IMAGE_NAME:$IMAGE_VERSION
             docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.eu-west-2.amazonaws.com/$CLEAN_IMAGE_NAME:$IMAGE_VERSION
           done
+
       - name: Create Git Tag
         run: |
           IMAGE_VERSION=$(date +%Y%m%d%H%M%S)
@@ -50,6 +63,7 @@ jobs:
           git config --global user.email "github-actions@github.com"
           git tag ${IMAGE_VERSION}
           git push origin ${IMAGE_VERSION}
+
       - name: Store Version in SSM Parameter Store
         run: |
           IMAGE_VERSION=$(date +%Y%m%d%H%M%S)
