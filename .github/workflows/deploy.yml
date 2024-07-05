@@ -17,7 +17,6 @@ jobs:
       CDP_FORMS_PORT: 8844
       CDP_DATA_SHARING_PORT: 8855
 
-
     steps:
       - uses: actions/checkout@v4
 
