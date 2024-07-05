@@ -10,10 +10,8 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Debugging - Print current branch
+      - uses: actions/checkout@v4
+      - name: Debug - Print current branch
         run: echo "Current branch: ${{ github.ref }}"
 
       - name: Download Docker Images
@@ -22,7 +20,7 @@ jobs:
           name: docker-images
           path: .
 
-      - name: Debugging - List downloaded files
+      - name: Debug - List downloaded files
         run: ls -al
 
       - name: Load Docker Images
