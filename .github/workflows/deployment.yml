@@ -1,0 +1,55 @@
+name: Deploy
+
+on:
+  workflow_run:
+    workflows: ["Build"]
+    types:
+      - completed
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download Docker Images
+        uses: actions/download-artifact@v4
+        with:
+          name: docker-images
+          path: .
+      - name: Load Docker Images
+        run: |
+          docker load -i cdp-organisation-information-migrations.tar
+          docker load -i cdp-data-sharing.tar
+          docker load -i cdp-forms.tar
+          docker load -i cdp-organisation-app.tar
+          docker load -i cdp-organisation.tar
+          docker load -i cdp-person.tar
+          docker load -i cdp-tenant.tar
+          docker load -i cdp-authority.tar
+      - name: Set up AWS CLI
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-west-2
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+      - name: Tag and Push Docker Images
+        run: |
+          IMAGE_VERSION=$(date +%Y%m%d%H%M%S)
+          for image in cdp-organisation-information-migrations cdp-data-sharing cdp-forms cdp-organisation-app cdp-organisation cdp-person cdp-tenant cdp-authority; do
+            docker tag $image:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.eu-west-2.amazonaws.com/$image:$IMAGE_VERSION
+            docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.eu-west-2.amazonaws.com/$image:$IMAGE_VERSION
+          done
+      - name: Create Git Tag
+        run: |
+          IMAGE_VERSION=$(date +%Y%m%d%H%M%S)
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+          git tag ${IMAGE_VERSION}
+          git push origin ${IMAGE_VERSION}
+      - name: Store Version in SSM Parameter Store
+        run: |
+          IMAGE_VERSION=$(date +%Y%m%d%H%M%S)
+          aws ssm put-parameter --name "cdp-sirsi-service-version" --value "${IMAGE_VERSION}" --type String --overwrite
