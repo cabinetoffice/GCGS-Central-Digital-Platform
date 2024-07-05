@@ -61,14 +61,14 @@ jobs:
         run: make down
       - name: Save Docker Image
         run: |
-          docker save -o cdp-organisation-information-migrations.tar cdp-organisation-information-migrations
-          docker save -o cdp-data-sharing.tar cdp-data-sharing
+          docker save -o cdp-organisation-information-migrations.tar co-cdp-organisation-information-migrations
+          docker save -o cdp-data-sharing.tar co-cdp-data-sharing
           docker save -o cdp-forms.tar cdp-forms
-          docker save -o cdp-organisation-app.tar cdp-organisation-app
-          docker save -o cdp-organisation.tar cdp-organisation
-          docker save -o cdp-person.tar cdp-person
-          docker save -o cdp-tenant.tar cdp-tenant
-          docker save -o cdp-authority.tar cdp-authority
+          docker save -o cdp-organisation-app.tar co-cdp-organisation-app
+          docker save -o cdp-organisation.tar co-cdp-organisation
+          docker save -o cdp-person.tar co-cdp-person
+          docker save -o cdp-tenant.tar co-cdp-tenant
+          docker save -o cdp-authority.tar co-cdp-authority
       - name: Upload Docker Images
         uses: actions/upload-artifact@v4
         with:
