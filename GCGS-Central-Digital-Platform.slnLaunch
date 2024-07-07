@@ -1,0 +1,21 @@
+[
+  {
+    "Name": "New Profile",
+    "Projects": [
+      {
+        "Name": "Services\\CO.CDP.Tenant.WebApi\\CO.CDP.Tenant.WebApi.csproj",
+        "Action": "Start",
+        "DebugTarget": "http-for-docker"
+      },
+      {
+        "Name": "Frontend\\CO.CDP.OrganisationApp\\CO.CDP.OrganisationApp.csproj",
+        "Action": "Start",
+        "DebugTarget": "http-for-docker"
+      },
+      {
+        "Name": "Libraries\\CO.CDP.Authentication\\CO.CDP.Authentication.csproj",
+        "Action": "Start"
+      }
+    ]
+  }
+]

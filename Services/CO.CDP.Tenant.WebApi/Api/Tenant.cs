@@ -1,4 +1,3 @@
-using System.Reflection;
 using CO.CDP.Functional;
 using CO.CDP.OrganisationInformation;
 using CO.CDP.Swashbuckle.Filter;
@@ -9,6 +8,7 @@ using CO.CDP.Tenant.WebApi.UseCase;
 using DotSwashbuckle.AspNetCore.SwaggerGen;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
+using System.Reflection;
 
 namespace CO.CDP.Tenant.WebApi.Api;
 
@@ -64,13 +64,14 @@ public static class EndpointExtensions
         var openApiTags = new List<OpenApiTag> { new() { Name = "Tenant Lookup" } };
 
         app.MapGet("/tenant/lookup",
-                async ([FromQuery] string urn, IUseCase<string, Model.TenantLookup?> useCase) =>
-                await useCase.Execute(urn)
+                async (IUseCase<Model.TenantLookup?> useCase) =>
+                await useCase.Execute()
                     .AndThen(tenant => tenant != null ? Results.Ok(tenant) : Results.NotFound()))
             .Produces<TenantLookup>(StatusCodes.Status200OK, "application/json")
             .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
             .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
             .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError)
+            .Produces<ProblemDetails>(StatusCodes.Status417ExpectationFailed)
             .WithOpenApi(operation =>
             {
                 operation.OperationId = "LookupTenant";
@@ -80,6 +81,7 @@ public static class EndpointExtensions
                 operation.Responses["200"].Description = "Tenants associated with the the user.";
                 operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
                 operation.Responses["404"].Description = "Tenant not found.";
+                operation.Responses["417"].Description = "Token sub is not found";
                 operation.Responses["500"].Description = "Internal server error.";
                 return operation;
             });
