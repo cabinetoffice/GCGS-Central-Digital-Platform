@@ -5,7 +5,6 @@ module "ecs_service_authority" {
     "${path.module}/templates/task-definitions/${var.service_configs.authority.name}.json.tftpl",
     {
       authority_private_key   = "${data.aws_secretsmanager_secret.authority_keys.arn}:PRIVATE::"
-      authority_public_key    = "${data.aws_secretsmanager_secret.authority_keys.arn}:PUBLIC::"
       container_port          = var.service_configs.authority.port
       cpu                     = var.service_configs.authority.cpu
       conn_string_location    = var.db_connection_secret_arn
