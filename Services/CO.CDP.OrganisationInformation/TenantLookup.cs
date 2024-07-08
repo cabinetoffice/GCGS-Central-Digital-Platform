@@ -1,7 +1,6 @@
 using System.ComponentModel.DataAnnotations;
-using CO.CDP.OrganisationInformation;
 
-namespace CO.CDP.Tenant.WebApi.Model;
+namespace CO.CDP.OrganisationInformation;
 
 public record TenantLookup
 {

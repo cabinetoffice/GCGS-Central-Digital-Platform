@@ -66,7 +66,7 @@ public class LookupTenantUseCaseTest(AutoMapperFixture mapperFixture) : IClassFi
 
         var found = await UseCase.Execute();
 
-        found.Should().BeEquivalentTo(new Model.TenantLookup
+        found.Should().BeEquivalentTo(new OrganisationInformation.TenantLookup
         {
             User = new UserDetails
             {
@@ -103,8 +103,8 @@ public class LookupTenantUseCaseTest(AutoMapperFixture mapperFixture) : IClassFi
 
         Func<Task> act = UseCase.Execute;
 
-        await act.Should().ThrowAsync<UnknownTokenException>()
-            .WithMessage("Cannot find sub or urn from JWT token.");
+        await act.Should().ThrowAsync<MissingUserUrnException>()
+            .WithMessage("Ensure the token is valid and contains the necessary claims.");
     }
 
     [Fact]
@@ -114,8 +114,8 @@ public class LookupTenantUseCaseTest(AutoMapperFixture mapperFixture) : IClassFi
 
         Func<Task> act = UseCase.Execute;
 
-        await act.Should().ThrowAsync<UnknownTokenException>()
-            .WithMessage("Cannot find sub or urn from JWT token.");
+        await act.Should().ThrowAsync<MissingUserUrnException>()
+            .WithMessage("Ensure the token is valid and contains the necessary claims.");
     }
 
 }

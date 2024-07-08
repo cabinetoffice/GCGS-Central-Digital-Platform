@@ -11,5 +11,5 @@ public class TokenResponse
     public required string TokenType { get; init; }
 
     [JsonPropertyName("expires_in")]
-    public double? ExpiresIn { get; init; }
+    public double ExpiresIn { get; init; }
 }

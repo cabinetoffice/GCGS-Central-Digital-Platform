@@ -7,18 +7,18 @@ using CO.CDP.Tenant.WebApi.Model;
 namespace CO.CDP.Tenant.WebApi.UseCase;
 
 public class LookupTenantUseCase(ITenantRepository tenantRepository, IMapper mapper, IClaimService claimService)
-    : IUseCase<Model.TenantLookup?>
+    : IUseCase<OrganisationInformation.TenantLookup?>
 {
-    public async Task<Model.TenantLookup?> Execute()
+    public async Task<OrganisationInformation.TenantLookup?> Execute()
     {
         var userUrn = claimService.GetUserUrn();
 
         if (string.IsNullOrEmpty(userUrn))
         {
-            throw new UnknownTokenException("Cannot find sub or urn from JWT token.");
+            throw new MissingUserUrnException("Ensure the token is valid and contains the necessary claims.");
         }
 
         return await tenantRepository.LookupTenant(userUrn)
-            .AndThen(mapper.Map<Model.TenantLookup>);
+            .AndThen(mapper.Map<OrganisationInformation.TenantLookup>);
     }
 }

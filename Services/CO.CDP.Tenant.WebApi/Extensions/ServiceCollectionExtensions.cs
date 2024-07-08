@@ -12,7 +12,7 @@ public static class ServiceCollectionExtensions
         { typeof(ArgumentNullException), (StatusCodes.Status400BadRequest, "ARGUMENT_NULL") },
         { typeof(InvalidOperationException), (StatusCodes.Status400BadRequest, "INVALID_OPERATION") },
         { typeof(TenantNotFoundException), (StatusCodes.Status404NotFound, "TENANT_DOES_NOT_EXIST") },
-        { typeof(UnknownTokenException), (StatusCodes.Status417ExpectationFailed, "TOKEN_SUB_DOES_NOT_EXIST") },
+        { typeof(MissingUserUrnException), (StatusCodes.Status417ExpectationFailed, "TOKEN_SUB_DOES_NOT_EXIST") },
 
     };
 

@@ -1,7 +1,8 @@
-using CO.CDP.Organisation.Authority;
-using Microsoft.IdentityModel.Tokens;
-using System.Security.Cryptography;
 using CO.CDP.Configuration.ForwardedHeaders;
+using CO.CDP.Organisation.Authority;
+using CO.CDP.Organisation.Authority.AutoMapper;
+using CO.CDP.OrganisationInformation.Persistence;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,11 +11,19 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(o => { o.DocumentApi(); });
 builder.Services.AddHealthChecks();
 builder.Services.AddProblemDetails();
-builder.Services.AddSingleton<IOpenIdConfiguration, OneLoginConfiguration>();
+
+builder.Services.AddAutoMapper(typeof(WebApiToPersistenceProfile));
+
+builder.Services.AddDbContext<OrganisationInformationContext>(o =>
+    o.UseNpgsql(builder.Configuration.GetConnectionString("OrganisationInformationDatabase") ?? ""));
+builder.Services.AddScoped<ITenantRepository, DatabaseTenantRepository>();
+builder.Services.AddSingleton<IConfigurationService, ConfigurationService>();
+builder.Services.AddScoped<ITokenService, TokenService>();
 
 var app = builder.Build();
 app.UseForwardedHeaders();
 app.MapHealthChecks("/health");
+app.UseHttpsRedirection();
 
 if (app.Environment.IsDevelopment())
 {
@@ -27,22 +36,7 @@ else
     app.UseHsts();
 }
 
-var issuer = builder.Configuration["Issuer"]
-    ?? throw new Exception("Missing configuration key: Issuer.");
-var publicKey = builder.Configuration["PublicKey"]
-    ?? throw new Exception("Missing configuration key: PublicKey.");
-var privateKey = builder.Configuration["PrivateKey"]
-    ?? throw new Exception("Missing configuration key: PrivateKey.");
-
-var rsaPrivate = RSA.Create();
-rsaPrivate.ImportFromPem(privateKey);
-var rsaPrivateKey = new RsaSecurityKey(rsaPrivate);
-
-var rsaPublic = RSA.Create();
-rsaPublic.ImportFromPem(publicKey);
-var resPublicParams = rsaPublic.ExportParameters(false);
-
-app.UseIdentity(issuer, rsaPrivateKey, resPublicParams);
+app.UseIdentity();
 
 app.Run();
 public abstract partial class Program;

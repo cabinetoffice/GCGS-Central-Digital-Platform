@@ -72,7 +72,7 @@ public class ServiceCollectionExtensionsTests
     [Fact]
     public void MapException_Should_Return_NotFound_For_UnknownTokenException()
     {
-        var exception = new UnknownTokenException("Unknown token");
+        var exception = new MissingUserUrnException("Unknown token");
         var result = ServiceCollectionExtensions.MapException(exception);
 
         Assert.Equal(StatusCodes.Status417ExpectationFailed, result.status);
