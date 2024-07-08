@@ -38,9 +38,8 @@ public static class EndpointExtensions
                     new FormQuestion
                     {
                         Id = Guid.NewGuid(),
-                        Title = "Provide a summary of your financial performance.",
-                        Description = "Include key metrics such as revenue, profit margins, and any significant changes in financial health over the past 2 years.",
-                        Type = FormQuestionType.NoInput,
+                        Title = "Were your accounts audited?",
+                        Type = FormQuestionType.YesOrNo,
                         IsRequired = true,
                         Options = new FormQuestionOptions()
                     }
