@@ -64,7 +64,7 @@ public static class EndpointExtensions
         var openApiTags = new List<OpenApiTag> { new() { Name = "Tenant Lookup" } };
 
         app.MapGet("/tenant/lookup",
-                async ([FromQuery] string urn, IUseCase<string, Model.TenantLookup?> useCase) =>
+                async ([FromQuery] string urn, IUseCase<string, TenantLookup?> useCase) =>
                 await useCase.Execute(urn)
                     .AndThen(tenant => tenant != null ? Results.Ok(tenant) : Results.NotFound()))
             .Produces<TenantLookup>(StatusCodes.Status200OK, "application/json")

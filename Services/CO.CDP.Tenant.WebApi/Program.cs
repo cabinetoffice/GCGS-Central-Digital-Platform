@@ -8,7 +8,7 @@ using CO.CDP.Tenant.WebApi.Model;
 using CO.CDP.Tenant.WebApi.UseCase;
 using Microsoft.EntityFrameworkCore;
 using Tenant = CO.CDP.Tenant.WebApi.Model.Tenant;
-using TenantLookup = CO.CDP.Tenant.WebApi.Model.TenantLookup;
+using TenantLookup = CO.CDP.OrganisationInformation.TenantLookup;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.ConfigureForwardedHeaders();
