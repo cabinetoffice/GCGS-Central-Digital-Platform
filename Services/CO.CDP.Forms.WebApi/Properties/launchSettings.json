@@ -4,8 +4,8 @@
     "http-for-docker": {
       "commandName": "Project",
       "dotnetRunMessages": true,
-      "launchBrowser": true,
-      "launchUrl": "http://localhost:8086/swagger",
+      "launchBrowser": false,
+      "launchUrl": "http://localhost:58086/swagger",
       "applicationUrl": "http://localhost:58086",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
