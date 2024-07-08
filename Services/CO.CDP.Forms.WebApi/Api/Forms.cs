@@ -51,6 +51,14 @@ public static class EndpointExtensions
                         Type = FormQuestionType.FileUpload,
                         IsRequired = true,
                         Options = new FormQuestionOptions()
+                    },
+                    new FormQuestion
+                    {
+                        Id = Guid.NewGuid(),
+                        Title = "What is the financial year end date for the information you uploaded?",
+                        Type = FormQuestionType.Date,
+                        IsRequired = true,
+                        Options = new FormQuestionOptions()
                     }
                 });
             });
