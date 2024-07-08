@@ -130,7 +130,7 @@ compose.override.yml:
 	@echo "$$COMPOSE_OVERRIDE_YML" > compose.override.yml
 
 
-generate-authority-keys: ## Generate authority's private and public keys and store in ./terragrunt/secrets/ folder
+generate-authority-keys: ## Generate authority's private key and store in ./terragrunt/secrets/ folder
 	openssl genpkey -algorithm RSA -out ./terragrunt/secrets/authority-private-key.pem -pkeyopt rsa_keygen_bits:2048
 .PHONY: generate-authority-keys
 
