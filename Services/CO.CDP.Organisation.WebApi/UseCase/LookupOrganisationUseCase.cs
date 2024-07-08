@@ -9,6 +9,11 @@ public class LookupOrganisationUseCase(IOrganisationRepository organisationRepos
 {
     public async Task<Model.Organisation?> Execute(OrganisationQuery query)
     {
+        if (!string.IsNullOrEmpty(query.Name) && !string.IsNullOrEmpty(query.Identifier))
+        {
+            throw new InvalidQueryException("Both name and identifier cannot be provided together.");
+        }
+
         if (query.TryGetIdentifier(out var scheme, out var id))
         {
             return await organisationRepository.FindByIdentifier(scheme, id)
