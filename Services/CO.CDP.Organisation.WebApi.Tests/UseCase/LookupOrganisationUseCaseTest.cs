@@ -77,6 +77,16 @@ public class LookupOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
         await act.Should().ThrowAsync<InvalidQueryException>().WithMessage("Both name and identifier are missing from the request.");
     }
 
+    [Fact]
+    public async Task Execute_IfBothNameAndIdentifierAreProvided_ThrowsInvalidQueryException()
+    {
+        var query = new OrganisationQuery(name: "Test Organisation", identifier: "Scheme:123456");
+
+        Func<Task> act = async () => await UseCase.Execute(query);
+
+        await act.Should().ThrowAsync<InvalidQueryException>().WithMessage("Both name and identifier cannot be provided together.");
+    }
+
     private OrganisationInformation.Persistence.Organisation GivenPersistenceOrganisationInfo(Guid organisationId)
     {
         return new OrganisationInformation.Persistence.Organisation
