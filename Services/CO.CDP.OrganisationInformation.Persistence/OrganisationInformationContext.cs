@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore.Migrations;
+using static CO.CDP.OrganisationInformation.Persistence.ConnectedEntity;
 
 namespace CO.CDP.OrganisationInformation.Persistence;
 
@@ -16,9 +17,38 @@ public class OrganisationInformationContext(DbContextOptions<OrganisationInforma
     public DbSet<Person> Persons { get; set; } = null!;
     public DbSet<Form> Forms { get; set; } = null!;
     public DbSet<SharedConsent> SharedConsents { get; set; } = null!;
+    public DbSet<ConnectedEntity> ConnectedEntities { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.HasPostgresEnum<ControlCondition>();
+        modelBuilder.HasPostgresEnum<ConnectedEntityType>();
+        modelBuilder.HasPostgresEnum<ConnectedPersonType>();
+        modelBuilder.HasPostgresEnum<ConnectedPersonCategory>();
+        modelBuilder.HasPostgresEnum<ConnectedOrganisationCategory>();
+
+        modelBuilder.Entity<ConnectedEntity>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.OwnsOne(e => e.Organisation, a =>
+            {
+                a.HasKey(e => e.Id);
+                a.Property(ai => ai.Id).HasColumnName("connected_organisation_id");                
+                a.Property(z => z.CreatedOn).IsRequired().HasDefaultValueSql("CURRENT_TIMESTAMP");
+                a.Property(z => z.UpdatedOn).IsRequired().HasDefaultValueSql("CURRENT_TIMESTAMP");                
+                a.ToTable("connected_organisation");
+            });
+
+            entity.OwnsOne(e => e.IndividualOrTrust, a =>
+            {
+                a.HasKey(e => e.Id);
+                a.Property(ai => ai.Id).HasColumnName("connected_individual_trust_id");                
+                a.Property(z => z.CreatedOn).IsRequired().HasDefaultValueSql("CURRENT_TIMESTAMP");
+                a.Property(z => z.UpdatedOn).IsRequired().HasDefaultValueSql("CURRENT_TIMESTAMP");
+                a.ToTable("connected_individual_trust");
+            });
+        });
+
         modelBuilder.Entity<Organisation>(entity =>
         {
             entity.HasKey(e => e.Id);
