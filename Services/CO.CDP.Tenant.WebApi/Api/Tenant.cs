@@ -71,7 +71,6 @@ public static class EndpointExtensions
             .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
             .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
             .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError)
-            .Produces<ProblemDetails>(StatusCodes.Status417ExpectationFailed)
             .WithOpenApi(operation =>
             {
                 operation.OperationId = "LookupTenant";
@@ -81,7 +80,6 @@ public static class EndpointExtensions
                 operation.Responses["200"].Description = "Tenants associated with the the user.";
                 operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
                 operation.Responses["404"].Description = "Tenant not found.";
-                operation.Responses["417"].Description = "Token sub is not found";
                 operation.Responses["500"].Description = "Internal server error.";
                 return operation;
             });

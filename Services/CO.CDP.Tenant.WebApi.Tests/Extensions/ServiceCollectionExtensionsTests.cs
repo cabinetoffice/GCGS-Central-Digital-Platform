@@ -75,8 +75,8 @@ public class ServiceCollectionExtensionsTests
         var exception = new MissingUserUrnException("Unknown token");
         var result = ServiceCollectionExtensions.MapException(exception);
 
-        Assert.Equal(StatusCodes.Status417ExpectationFailed, result.status);
-        Assert.Equal("TOKEN_SUB_DOES_NOT_EXIST", result.error);
+        Assert.Equal(StatusCodes.Status401Unauthorized, result.status);
+        Assert.Equal("NOT_AUTHENTICATED", result.error);
     }
 
     [Fact]
@@ -91,8 +91,8 @@ public class ServiceCollectionExtensionsTests
 
         result.Should().ContainKey("404");
         result["404"].Should().Contain("TENANT_DOES_NOT_EXIST");
-        result.Should().ContainKey("417");
-        result["417"].Should().Contain("TOKEN_SUB_DOES_NOT_EXIST");
+        result.Should().ContainKey("401");
+        result["401"].Should().Contain("NOT_AUTHENTICATED");
 
         result.Should().ContainKey("422");
         result["422"].Should().Contain("UNPROCESSABLE_ENTITY");

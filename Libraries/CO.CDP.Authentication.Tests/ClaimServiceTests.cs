@@ -11,11 +11,7 @@ public class ClaimServiceTests
     {
         var userUrn = "urn:fdc:gov.uk:2022:rynbwxUssDAcmU38U5gxd7dBfu9N7KFP9_nqDuZ66Hg";
         var claims = new List<Claim> { new Claim("sub", userUrn) };
-        var identity = new ClaimsIdentity(claims, "TestAuthType");
-        var claimsPrincipal = new ClaimsPrincipal(identity);
-        var httpContext = new DefaultHttpContext { User = claimsPrincipal };
-        var httpContextAccessor = new Mock<IHttpContextAccessor>();
-        httpContextAccessor.Setup(x => x.HttpContext).Returns(httpContext);
+        var httpContextAccessor = GivenHttpContextWith(claims);
 
         var claimService = new ClaimService(httpContextAccessor.Object);
 
@@ -27,15 +23,22 @@ public class ClaimServiceTests
     public void GetUserUrn_ShouldReturnNull_WhenUserHasNoSubClaim()
     {
         var claims = new List<Claim>();
+        var httpContextAccessor = GivenHttpContextWith(claims);
+
+        var claimService = new ClaimService(httpContextAccessor.Object);
+        var result = claimService.GetUserUrn();
+
+        result.Should().BeNull();
+    }
+
+    private static Mock<IHttpContextAccessor> GivenHttpContextWith(List<Claim> claims)
+    {
         var identity = new ClaimsIdentity(claims, "TestAuthType");
         var claimsPrincipal = new ClaimsPrincipal(identity);
         var httpContext = new DefaultHttpContext { User = claimsPrincipal };
         var httpContextAccessor = new Mock<IHttpContextAccessor>();
         httpContextAccessor.Setup(x => x.HttpContext).Returns(httpContext);
 
-        var claimService = new ClaimService(httpContextAccessor.Object);
-        var result = claimService.GetUserUrn();
-
-        result.Should().BeNull();
+        return httpContextAccessor;
     }
 }
