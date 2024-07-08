@@ -42,6 +42,15 @@ public static class EndpointExtensions
                         Type = FormQuestionType.YesOrNo,
                         IsRequired = true,
                         Options = new FormQuestionOptions()
+                    },
+                    new FormQuestion
+                    {
+                        Id = Guid.NewGuid(),
+                        Title = "Upload your accounts",
+                        Description = "Upload your most recent 2 financial years. If you do not have 2, upload your most recent financial year.",
+                        Type = FormQuestionType.FileUpload,
+                        IsRequired = true,
+                        Options = new FormQuestionOptions()
                     }
                 });
             });
