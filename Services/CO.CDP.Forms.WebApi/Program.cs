@@ -41,3 +41,4 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.UseFormsEndpoints();
 app.Run();
+public abstract partial class Program;
