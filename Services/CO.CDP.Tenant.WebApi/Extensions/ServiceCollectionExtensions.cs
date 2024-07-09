@@ -1,3 +1,4 @@
+using CO.CDP.Tenant.WebApi.Model;
 using static CO.CDP.OrganisationInformation.Persistence.ITenantRepository.TenantRepositoryException;
 
 namespace CO.CDP.Tenant.WebApi.Extensions;
@@ -10,7 +11,9 @@ public static class ServiceCollectionExtensions
         { typeof(DuplicateTenantException), (StatusCodes.Status400BadRequest, "TENANT_ALREADY_EXISTS") },
         { typeof(ArgumentNullException), (StatusCodes.Status400BadRequest, "ARGUMENT_NULL") },
         { typeof(InvalidOperationException), (StatusCodes.Status400BadRequest, "INVALID_OPERATION") },
-        { typeof(TenantNotFoundException), (StatusCodes.Status404NotFound, "TENANT_DOES_NOT_EXIST") }
+        { typeof(TenantNotFoundException), (StatusCodes.Status404NotFound, "TENANT_DOES_NOT_EXIST") },
+        { typeof(MissingUserUrnException), (StatusCodes.Status401Unauthorized, "NOT_AUTHENTICATED") },
+
     };
 
     public static IServiceCollection AddTenantProblemDetails(this IServiceCollection services)

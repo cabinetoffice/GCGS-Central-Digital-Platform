@@ -63,7 +63,6 @@ for the `organisation-app` service:
 The `Authority` API depends on the following secrets / environment variables:
 
 * `OneLogin:Authority` / `OneLogin__Authority`
-* `PublicKey` / `PublicKey`
 * `PrivateKey` / `PrivateKey`
 
 To set them in the secrets manager, run:
@@ -71,12 +70,11 @@ To set them in the secrets manager, run:
 [source,bash]
 ----
 dotnet user-secrets set --project Services/CO.CDP.Organisation.Authority OneLogin:Authority "https://oidc.example.com"
-dotnet user-secrets set --project Services/CO.CDP.Organisation.Authority PublicKey "-----BEGIN RSA PUBLIC KEY-----"
 dotnet user-secrets set --project Services/CO.CDP.Organisation.Authority PrivateKey "-----BEGIN RSA PRIVATE KEY----"
 ----
 
-NOTE: The `make generate-authority-keys` command generates a pair of public and private keys that
-can be used with `PublicKey` and `PrivateKey`. Make sure to copy the contents of both files and not the path.
+NOTE: The `make generate-authority-keys` command generates a private key that
+can be used with `PrivateKey`. Make sure to copy the contents of file and not the path.
 
 For Docker, update the `authority` service in `compose.override.yml`:
 
@@ -84,7 +82,6 @@ For Docker, update the `authority` service in `compose.override.yml`:
 ----
   authority:
     environment:
-      PublicKey: "-----BEGIN RSA PUBLIC KEY-----"
       PrivateKey: "-----BEGIN RSA PRIVATE KEY-----"
       OneLogin__Authority: "https://oidc.example.com"
 ----

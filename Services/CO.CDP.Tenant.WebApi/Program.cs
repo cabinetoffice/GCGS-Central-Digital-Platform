@@ -27,12 +27,15 @@ builder.Services.AddScoped<ITenantRepository, DatabaseTenantRepository>();
 
 builder.Services.AddScoped<IUseCase<RegisterTenant, Tenant>, RegisterTenantUseCase>();
 builder.Services.AddScoped<IUseCase<Guid, Tenant?>, GetTenantUseCase>();
-builder.Services.AddScoped<IUseCase<string, TenantLookup?>, LookupTenantUseCase>();
+builder.Services.AddScoped<IUseCase<TenantLookup?>, LookupTenantUseCase>();
+builder.Services.AddScoped<IClaimService, ClaimService>();
 builder.Services.AddTenantProblemDetails();
 
 builder.Services.AddJwtBearerAndApiKeyAuthentication(builder.Configuration, builder.Environment);
 //builder.Services.AddAuthorization();
 builder.Services.AddFallbackAuthorizationPolicy();
+builder.Services.AddHttpContextAccessor();
+
 
 var app = builder.Build();
 app.UseForwardedHeaders();

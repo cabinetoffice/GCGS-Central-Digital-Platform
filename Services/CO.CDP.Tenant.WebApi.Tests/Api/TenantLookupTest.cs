@@ -1,4 +1,3 @@
-using System.Net.Http.Json;
 using CO.CDP.OrganisationInformation;
 using CO.CDP.Tenant.WebApi.Model;
 using CO.CDP.Tenant.WebApi.UseCase;
@@ -7,6 +6,7 @@ using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Moq;
+using System.Net.Http.Json;
 using static System.Net.HttpStatusCode;
 
 namespace CO.CDP.Tenant.WebApi.Tests.Api;
@@ -14,7 +14,7 @@ namespace CO.CDP.Tenant.WebApi.Tests.Api;
 public class TenantLookupTest
 {
     private readonly HttpClient _httpClient;
-    private readonly Mock<IUseCase<string, TenantLookup?>> _getTenantUseCase = new();
+    private readonly Mock<IUseCase<TenantLookup?>> _getTenantUseCase = new();
 
     public TenantLookupTest()
     {
@@ -30,12 +30,11 @@ public class TenantLookupTest
     [Fact]
     public async Task IfNoTenantIsFound_ReturnsNotFound()
     {
-        var urn = "urn:fdc:gov.uk:2022:43af5a8b-f4c0-414b-b341-d4f1fa894302";
 
-        _getTenantUseCase.Setup(useCase => useCase.Execute(urn))
+        _getTenantUseCase.Setup(useCase => useCase.Execute())
             .Returns(Task.FromResult<TenantLookup?>(null));
 
-        var response = await _httpClient.GetAsync($"/tenant/lookup?urn={urn}");
+        var response = await _httpClient.GetAsync($"/tenant/lookup");
 
         response.Should().HaveStatusCode(NotFound);
     }
@@ -43,29 +42,24 @@ public class TenantLookupTest
     [Fact]
     public async Task IfTenantIsFound_ReturnsTenant()
     {
-        var userUrn = "urn:fdc:gov.uk:2022:43af5a8bf4c0414bb341d4f1fa894302";
-        var lookup = GivenTenantLookup(
-            userUrn: userUrn
-        );
+        var lookup = GivenTenantLookup();
 
-        _getTenantUseCase.Setup(useCase => useCase.Execute(userUrn))
+        _getTenantUseCase.Setup(useCase => useCase.Execute())
             .Returns(Task.FromResult<TenantLookup?>(lookup));
 
-        var response = await _httpClient.GetAsync($"/tenant/lookup?urn={userUrn}");
+        var response = await _httpClient.GetAsync($"/tenant/lookup");
 
         response.Should().HaveStatusCode(OK);
         (await response.Content.ReadFromJsonAsync<TenantLookup>()).Should().BeEquivalentTo(lookup);
     }
 
-    private static TenantLookup GivenTenantLookup(
-        string userUrn = "urn:fdc:gov.uk:2022:43af5a8bf4c0414bb341d4f1fa894302"
-    )
+    private static TenantLookup GivenTenantLookup()
     {
         return new TenantLookup
         {
             User = new UserDetails
             {
-                Urn = userUrn,
+                Urn = "urn:fdc:gov.uk:2022:43af5a8bf4c0414bb341d4f1fa894302",
                 Name = "Alice Cooper",
                 Email = "person@example.com"
             },
