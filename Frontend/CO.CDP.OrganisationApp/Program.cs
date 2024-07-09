@@ -6,10 +6,8 @@ using CO.CDP.Tenant.WebApiClient;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
-using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
-using Microsoft.IdentityModel.Tokens;
 using static IdentityModel.OidcConstants;
 using ISession = CO.CDP.OrganisationApp.ISession;
 
@@ -44,6 +42,7 @@ builder.Services.AddTransient(provider =>
     return factory.GetTempData(context);
 });
 builder.Services.AddScoped<ITempDataService, TempDataService>();
+builder.Services.AddTransient<IFormsEngine, FormsEngine>();
 
 builder.Services.AddTransient<ApiBearerTokenHandler>();
 
