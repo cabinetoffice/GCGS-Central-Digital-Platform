@@ -1,4 +1,3 @@
-using System.Reflection;
 using CO.CDP.Functional;
 using CO.CDP.OrganisationInformation;
 using CO.CDP.Swashbuckle.Filter;
@@ -9,6 +8,7 @@ using CO.CDP.Tenant.WebApi.UseCase;
 using DotSwashbuckle.AspNetCore.SwaggerGen;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
+using System.Reflection;
 
 namespace CO.CDP.Tenant.WebApi.Api;
 
@@ -64,8 +64,8 @@ public static class EndpointExtensions
         var openApiTags = new List<OpenApiTag> { new() { Name = "Tenant Lookup" } };
 
         app.MapGet("/tenant/lookup",
-                async ([FromQuery] string urn, IUseCase<string, TenantLookup?> useCase) =>
-                await useCase.Execute(urn)
+                async (IUseCase<TenantLookup?> useCase) =>
+                await useCase.Execute()
                     .AndThen(tenant => tenant != null ? Results.Ok(tenant) : Results.NotFound()))
             .Produces<TenantLookup>(StatusCodes.Status200OK, "application/json")
             .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)

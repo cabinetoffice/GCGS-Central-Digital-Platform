@@ -1,3 +1,4 @@
+using CO.CDP.Authentication;
 using CO.CDP.OrganisationInformation;
 using CO.CDP.OrganisationInformation.Persistence;
 using CO.CDP.Tenant.WebApi.Model;
@@ -12,14 +13,17 @@ namespace CO.CDP.Tenant.WebApi.Tests.UseCase;
 public class LookupTenantUseCaseTest(AutoMapperFixture mapperFixture) : IClassFixture<AutoMapperFixture>
 {
     private readonly Mock<ITenantRepository> _repository = new();
-    private LookupTenantUseCase UseCase => new(_repository.Object, mapperFixture.Mapper);
+    private readonly Mock<IClaimService> _claimService = new();
+    private LookupTenantUseCase UseCase => new(_repository.Object, mapperFixture.Mapper, _claimService.Object);
 
     [Fact]
     public async Task Execute_IfNoTenantIsFound_ReturnsNull()
     {
-        var name = "urn:fdc:gov.uk:2022:43af5a8b-f4c0-414b-b341-d4f1fa894302";
+        var userUrn = "urn:fdc:gov.uk:2022:43af5a8b-f4c0-414b-b341-d4f1fa894302";
+        _claimService.Setup(cs => cs.GetUserUrn()).Returns(userUrn);
+        _repository.Setup(r => r.LookupTenant(userUrn)).ReturnsAsync((TenantLookup?)null);
 
-        var found = await UseCase.Execute(name);
+        var found = await UseCase.Execute();
 
         found.Should().BeNull();
     }
@@ -57,9 +61,10 @@ public class LookupTenantUseCaseTest(AutoMapperFixture mapperFixture) : IClassFi
             ]
         };
 
+        _claimService.Setup(cs => cs.GetUserUrn()).Returns(userUrn);
         _repository.Setup(r => r.LookupTenant(userUrn)).ReturnsAsync(userTenantLookup);
 
-        var found = await UseCase.Execute("urn:fdc:gov.uk:2022:43af5a8b-f4c0-414b-b341-d4f1fa894302");
+        var found = await UseCase.Execute();
 
         found.Should().BeEquivalentTo(new OrganisationInformation.TenantLookup
         {
@@ -90,4 +95,27 @@ public class LookupTenantUseCaseTest(AutoMapperFixture mapperFixture) : IClassFi
             ]
         });
     }
+
+    [Fact]
+    public async Task Execute_IfUserUrnIsNull_ThrowsUnknownTokenException()
+    {
+        _claimService.Setup(cs => cs.GetUserUrn()).Returns((string?)null);
+
+        Func<Task> act = UseCase.Execute;
+
+        await act.Should().ThrowAsync<MissingUserUrnException>()
+            .WithMessage("Ensure the token is valid and contains the necessary claims.");
+    }
+
+    [Fact]
+    public async Task Execute_IfUserUrnIsEmpty_ThrowsUnknownTokenException()
+    {
+        _claimService.Setup(cs => cs.GetUserUrn()).Returns(string.Empty);
+
+        Func<Task> act = UseCase.Execute;
+
+        await act.Should().ThrowAsync<MissingUserUrnException>()
+            .WithMessage("Ensure the token is valid and contains the necessary claims.");
+    }
+
 }
