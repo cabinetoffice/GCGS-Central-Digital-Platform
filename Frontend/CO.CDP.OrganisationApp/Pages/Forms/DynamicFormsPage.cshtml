@@ -1,0 +1,53 @@
+@page "/forms/{formId:guid}/{sectionId:guid}"
+
+@model CO.CDP.OrganisationApp.Pages.Forms.DynamicFormsPageModel
+@* @inject FormsEngine FormsEngine *@
+@inject CO.CDP.OrganisationApp.IFormsEngine FormsEngine
+
+@{
+    var sectionWithQuestions = Model.SectionWithQuestions;
+}
+
+<a href="/organisation/d972b5ab-6caf-4153-b5de-e856e3a4055f/supplier-information" class="govuk-back-link">Back</a>
+
+<main class="govuk-main-wrapper">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <partial name="_ErrorSummary" model="@ModelState" />
+
+            
+
+            <form method="post">
+                <fieldset class="govuk-fieldset">
+                    @foreach (var question in sectionWithQuestions.Questions)
+                    {
+                        if (question.Type == CO.CDP.OrganisationApp.Models.FormQuestionType.NoInput)
+                        {
+                            @await Html.PartialAsync("_FormElementNoInput", question)
+                        }
+                       @*  else if (question.Type == CO.CDP.OrganisationApp.Models.FormQuestionType.Text)
+                        {
+                            @await Html.PartialAsync("_FormElementTextInput", question)
+                        }
+                        else if (question.Type == CO.CDP.OrganisationApp.Models.FormQuestionType.YesOrNo)
+                        {
+                            @await Html.PartialAsync("_FormElementYesNoInput", question)
+                        }
+                        else if (question.Type == CO.CDP.OrganisationApp.Models.FormQuestionType.FileUpload)
+                        {
+                            @await Html.PartialAsync("_FormElementFileUpload", question)
+                        }
+                        else if (question.Type == CO.CDP.OrganisationApp.Models.FormQuestionType.Date)
+                        {
+                            @await Html.PartialAsync("_FormElementDateInput", question)
+                        } *@
+                    }
+                </fieldset>
+
+                <button type="submit" class="govuk-button" data-module="govuk-button">
+                    Continue
+                </button>
+            </form>
+        </div>
+    </div>
+</main>
