@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CO.CDP.OrganisationInformation.Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class ConnectedPerson : Migration
+    public partial class ConnectedEntity : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -32,6 +32,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    guid = table.Column<Guid>(type: "uuid", nullable: false),
                     entity_type = table.Column<int>(type: "integer", nullable: false),
                     has_compnay_house_number = table.Column<bool>(type: "boolean", nullable: false),
                     company_house_number = table.Column<string>(type: "text", nullable: true),
@@ -134,6 +135,12 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "ix_connected_entities_guid",
+                table: "connected_entities",
+                column: "guid",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "ix_connected_entities_supplier_organisation_id",

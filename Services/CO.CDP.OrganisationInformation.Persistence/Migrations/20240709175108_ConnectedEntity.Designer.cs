@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CO.CDP.OrganisationInformation.Persistence.Migrations
 {
     [DbContext(typeof(OrganisationInformationContext))]
-    [Migration("20240708184546_ConnectedPerson")]
-    partial class ConnectedPerson
+    [Migration("20240709175108_ConnectedEntity")]
+    partial class ConnectedEntity
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -112,6 +112,10 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("entity_type");
 
+                    b.Property<Guid>("Guid")
+                        .HasColumnType("uuid")
+                        .HasColumnName("guid");
+
                     b.Property<bool>("HasCompnayHouseNumber")
                         .HasColumnType("boolean")
                         .HasColumnName("has_compnay_house_number");
@@ -144,6 +148,10 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
 
                     b.HasKey("Id")
                         .HasName("pk_connected_entities");
+
+                    b.HasIndex("Guid")
+                        .IsUnique()
+                        .HasDatabaseName("ix_connected_entities_guid");
 
                     b.HasIndex("SupplierOrganisationId")
                         .HasDatabaseName("ix_connected_entities_supplier_organisation_id");

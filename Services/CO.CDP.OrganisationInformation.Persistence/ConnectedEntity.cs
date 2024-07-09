@@ -4,9 +4,11 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CO.CDP.OrganisationInformation.Persistence;
 
+[Index(nameof(Guid), IsUnique = true)]
 public class ConnectedEntity : IEntityDate
 {
     public int Id { get; set; }
+    public required Guid Guid { get; set; }
     public required ConnectedEntityType EntityType { get; set; }
     public bool HasCompnayHouseNumber { get; set; }
     public string? CompanyHouseNumber { get; set; }
