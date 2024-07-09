@@ -4,7 +4,7 @@ namespace CO.CDP.OrganisationInformation.Persistence;
 
 [Index(nameof(Guid), IsUnique = true)]
 [Index(nameof(Name), IsUnique = true)]
-public partial class Organisation : IEntityDate
+public class Organisation : IEntityDate
 {
     public int Id { get; set; }
     public required Guid Guid { get; set; }
