@@ -33,6 +33,7 @@ public static class Extensions
             });
 
         services.AddApiKeyAuthenticationServices();
+        services.AddJwtClaimExtractor();
 
         return services;
     }
@@ -46,6 +47,7 @@ public static class Extensions
         {
             options.Authority = authority;
             options.RequireHttpsMetadata = !webHostEnvironment.IsDevelopment();
+            options.MapInboundClaims = false;
             options.TokenValidationParameters = new TokenValidationParameters
             {
                 ValidateAudience = false,
@@ -74,5 +76,12 @@ public static class Extensions
                     .AddAuthenticationSchemes(JwtBearerOrApiKeyScheme)
                     .RequireAuthenticatedUser()
                     .Build());
+    }
+
+    public static IServiceCollection AddJwtClaimExtractor(this IServiceCollection services)
+    {
+        services.AddHttpContextAccessor();
+        services.AddScoped<IClaimService, ClaimService>();
+        return services;
     }
 }

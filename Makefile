@@ -94,7 +94,6 @@ services:
   authority:
     environment:
       ASPNETCORE_ENVIRONMENT: Development
-      PublicKey: "-----BEGIN RSA PUBLIC KEY-----"
       PrivateKey: "-----BEGIN RSA PRIVATE KEY-----"
       OneLogin__Authority: "https://oidc.example.com"
     deploy:
@@ -131,18 +130,17 @@ compose.override.yml:
 	@echo "$$COMPOSE_OVERRIDE_YML" > compose.override.yml
 
 
-generate-authority-keys: ## Generate authority's private and public keys and store in ./terragrunt/secrets/ folder
+generate-authority-keys: ## Generate authority's private key and store in ./terragrunt/secrets/ folder
 	openssl genpkey -algorithm RSA -out ./terragrunt/secrets/authority-private-key.pem -pkeyopt rsa_keygen_bits:2048
-	openssl rsa -pubout -in ./terragrunt/secrets/authority-private-key.pem -outform PEM -out ./terragrunt/secrets/authority-public-key.pem
 .PHONY: generate-authority-keys
 
-aws-push-authority-keys: ## Push Authority's keys to the target AWS account
+aws-push-authority-private-key: ## Push Authority's private key to the target AWS account
 	@if aws secretsmanager describe-secret --secret-id cdp-sirsi-authority-keys > /dev/null 2>&1; then \
 		echo "Secret exists, updating..."; \
-		aws secretsmanager update-secret --secret-id cdp-sirsi-authority-keys --secret-string "$$(jq -n --arg priv "$$(cat ./terragrunt/secrets/authority-private-key.pem)" --arg pub "$$(cat ./terragrunt/secrets/authority-public-key.pem)" '{PRIVATE: $$priv, PUBLIC: $$pub}')"; \
+		aws secretsmanager update-secret --secret-id cdp-sirsi-authority-keys --secret-string "$$(jq -n --arg priv "$$(cat ./terragrunt/secrets/authority-private-key.pem)" '{PRIVATE: $$priv}')"; \
 	else \
 		echo "Secret does not exist, creating..."; \
-		aws secretsmanager create-secret --name cdp-sirsi-authority-keys --secret-string "$$(jq -n --arg priv "$$(cat ./terragrunt/secrets/authority-private-key.pem)" --arg pub "$$(cat ./terragrunt/secrets/authority-public-key.pem)" '{PRIVATE: $$priv, PUBLIC: $$pub}')"; \
+		aws secretsmanager create-secret --name cdp-sirsi-authority-keys --secret-string "$$(jq -n --arg priv "$$(cat ./terragrunt/secrets/authority-private-key.pem)" '{PRIVATE: $$priv}')"; \
 	fi
 
 aws-push-to-ecr: build-docker ## Build, tag and push Docker images to ECR
