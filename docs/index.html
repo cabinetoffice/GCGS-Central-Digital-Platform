@@ -766,9 +766,6 @@ for the <code>organisation-app</code> service:</p>
 <p><code>OneLogin:Authority</code> / <code>OneLogin__Authority</code></p>
 </li>
 <li>
-<p><code>PublicKey</code> / <code>PublicKey</code></p>
-</li>
-<li>
 <p><code>PrivateKey</code> / <code>PrivateKey</code></p>
 </li>
 </ul>
@@ -779,7 +776,6 @@ for the <code>organisation-app</code> service:</p>
 <div class="listingblock">
 <div class="content">
 <pre class="rouge highlight"><code data-lang="bash">dotnet user-secrets <span class="nb">set</span> <span class="nt">--project</span> Services/CO.CDP.Organisation.Authority OneLogin:Authority <span class="s2">"https://oidc.example.com"</span>
-dotnet user-secrets <span class="nb">set</span> <span class="nt">--project</span> Services/CO.CDP.Organisation.Authority PublicKey <span class="s2">"-----BEGIN RSA PUBLIC KEY-----"</span>
 dotnet user-secrets <span class="nb">set</span> <span class="nt">--project</span> Services/CO.CDP.Organisation.Authority PrivateKey <span class="s2">"-----BEGIN RSA PRIVATE KEY----"</span></code></pre>
 </div>
 </div>
@@ -790,8 +786,8 @@ dotnet user-secrets <span class="nb">set</span> <span class="nt">--project</span
 <div class="title">Note</div>
 </td>
 <td class="content">
-The <code>make generate-authority-keys</code> command generates a pair of public and private keys that
-can be used with <code>PublicKey</code> and <code>PrivateKey</code>. Make sure to copy the contents of both files and not the path.
+The <code>make generate-authority-keys</code> command generates a private key that
+can be used with <code>PrivateKey</code>. Make sure to copy the contents of file and not the path.
 </td>
 </tr>
 </table>
@@ -803,7 +799,6 @@ can be used with <code>PublicKey</code> and <code>PrivateKey</code>. Make sure t
 <div class="content">
 <pre class="rouge highlight"><code data-lang="yaml">  <span class="na">authority</span><span class="pi">:</span>
     <span class="na">environment</span><span class="pi">:</span>
-      <span class="na">PublicKey</span><span class="pi">:</span> <span class="s2">"</span><span class="s">-----BEGIN</span><span class="nv"> </span><span class="s">RSA</span><span class="nv"> </span><span class="s">PUBLIC</span><span class="nv"> </span><span class="s">KEY-----"</span>
       <span class="na">PrivateKey</span><span class="pi">:</span> <span class="s2">"</span><span class="s">-----BEGIN</span><span class="nv"> </span><span class="s">RSA</span><span class="nv"> </span><span class="s">PRIVATE</span><span class="nv"> </span><span class="s">KEY-----"</span>
       <span class="na">OneLogin__Authority</span><span class="pi">:</span> <span class="s2">"</span><span class="s">https://oidc.example.com"</span></code></pre>
 </div>
@@ -2079,7 +2074,7 @@ if they&#8217;re not lower-cased:</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2024-07-09 08:03:35 UTC
+Last updated 2024-07-09 08:21:38 UTC
 </div>
 </div>
 </body>
