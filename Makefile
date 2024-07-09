@@ -94,7 +94,6 @@ services:
   authority:
     environment:
       ASPNETCORE_ENVIRONMENT: Development
-      PublicKey: "-----BEGIN RSA PUBLIC KEY-----"
       PrivateKey: "-----BEGIN RSA PRIVATE KEY-----"
       OneLogin__Authority: "https://oidc.example.com"
     deploy:
@@ -131,9 +130,8 @@ compose.override.yml:
 	@echo "$$COMPOSE_OVERRIDE_YML" > compose.override.yml
 
 
-generate-authority-keys: ## Generate authority's private and public keys and store in ./terragrunt/secrets/ folder
+generate-authority-keys: ## Generate authority's private key and store in ./terragrunt/secrets/ folder
 	openssl genpkey -algorithm RSA -out ./terragrunt/secrets/authority-private-key.pem -pkeyopt rsa_keygen_bits:2048
-	openssl rsa -pubout -in ./terragrunt/secrets/authority-private-key.pem -outform PEM -out ./terragrunt/secrets/authority-public-key.pem
 .PHONY: generate-authority-keys
 
 aws-push-authority-private-key: ## Push Authority's private key to the target AWS account
