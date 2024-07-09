@@ -134,7 +134,7 @@ generate-authority-keys: ## Generate authority's private key and store in ./terr
 	openssl genpkey -algorithm RSA -out ./terragrunt/secrets/authority-private-key.pem -pkeyopt rsa_keygen_bits:2048
 .PHONY: generate-authority-keys
 
-aws-push-authority-keys: ## Push Authority's keys to the target AWS account
+aws-push-authority-private-key: ## Push Authority's private key to the target AWS account
 	@if aws secretsmanager describe-secret --secret-id cdp-sirsi-authority-keys > /dev/null 2>&1; then \
 		echo "Secret exists, updating..."; \
 		aws secretsmanager update-secret --secret-id cdp-sirsi-authority-keys --secret-string "$$(jq -n --arg priv "$$(cat ./terragrunt/secrets/authority-private-key.pem)" '{PRIVATE: $$priv}')"; \

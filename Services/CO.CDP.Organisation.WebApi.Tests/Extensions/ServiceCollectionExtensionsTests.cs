@@ -78,7 +78,7 @@ public class ServiceCollectionExtensionsTests
         var result = ServiceCollectionExtensions.MapException(exception);
 
         Assert.Equal(StatusCodes.Status400BadRequest, result.status);
-        Assert.Equal("MISSING_QUERY_PARAMETERS", result.error);
+        Assert.Equal("ISSUE_WITH_QUERY_PARAMETERS", result.error);
     }
 
     [Fact]
