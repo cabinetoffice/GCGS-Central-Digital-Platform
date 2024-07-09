@@ -83,7 +83,7 @@ public static class EndpointExtensions
            .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError)
            .WithOpenApi(operation =>
            {
-               operation.OperationId = "[STUB] GetFormSectionQuestions [STUB]";
+               operation.OperationId = "GetFormSectionQuestions";
                operation.Description = "[STUB] Get Form Section and Its Questions. [STUB]";
                operation.Summary = "Get a form section with questions.";
                operation.Responses["200"].Description = "A section and question.";
@@ -102,8 +102,8 @@ public static class ApiExtensions
         options.SwaggerDoc("v1", new OpenApiInfo
         {
             Version = "1.0.0",
-            Title = "Organisation Management API",
-            Description = "API for creating, updating, deleting, and listing organisations, including a lookup feature against organisation identifiers.",
+            Title = "Forms API",
+            Description = "API to support dynamic forms questions and for Financial Information.",
             TermsOfService = new Uri("https://example.com/terms"),
             Contact = new OpenApiContact
             {
