@@ -18,7 +18,7 @@ public class UpdateConnectedEntityUseCase(
     {
     }
 
-    public async Task<bool> Execute((Guid organisationId, UpdateConnectedEntity updateConnectedEntity) command)    
+    public async Task<bool> Execute((Guid organisationId, UpdateConnectedEntity updateConnectedEntity) command)
     {
         var connectedEntity = CreateConnectedEntity(command.updateConnectedEntity);
 
@@ -30,21 +30,15 @@ public class UpdateConnectedEntityUseCase(
     private OrganisationInformation.Persistence.ConnectedEntity
         CreateConnectedEntity(UpdateConnectedEntity command)
     {
-        var connectedEntity = MapRequestToConnectedEntity(command);
+        var connectedEntity = MapRequestToConnectedEntity(command.ConnectedEntity);
 
         return connectedEntity;
     }
 
-    private OrganisationInformation.Persistence.ConnectedEntity MapRequestToConnectedEntity(
-        UpdateConnectedEntity command) =>
+    private OrganisationInformation.Persistence.ConnectedEntity
+        MapRequestToConnectedEntity(Model.ConnectedEntity command) =>
         mapper.Map<OrganisationInformation.Persistence.ConnectedEntity>(command, o =>
         {
             o.Items["Guid"] = guidFactory();
         });
-
-    public abstract class UpdateConnectedEntityException(string message, Exception? cause = null)
-        : Exception(message, cause)
-    {
-        public class UnknownConnectedEntityException(string message, Exception? cause = null) : Exception(message, cause);
-    }
 }

@@ -51,6 +51,15 @@ public class WebApiToPersistenceProfile : Profile
             .ForMember(m => m.PostalCode, o => o.MapFrom(m => m.Address.PostalCode))
             .ForMember(m => m.CountryName, o => o.MapFrom(m => m.Address.CountryName));
 
+        CreateMap<Persistence.ConnectedEntity.ConnectedEntityAddress, Address>()
+            .ForMember(m => m.Type, o => o.MapFrom(m => m.Type))
+            .ForMember(m => m.StreetAddress, o => o.MapFrom(m => m.Address.StreetAddress))
+            .ForMember(m => m.StreetAddress2, o => o.MapFrom(m => m.Address.StreetAddress2))
+            .ForMember(m => m.Locality, o => o.MapFrom(m => m.Address.Locality))
+            .ForMember(m => m.Region, o => o.MapFrom(m => m.Address.Region))
+            .ForMember(m => m.PostalCode, o => o.MapFrom(m => m.Address.PostalCode))
+            .ForMember(m => m.CountryName, o => o.MapFrom(m => m.Address.CountryName));
+
         CreateMap<OrganisationContactPoint, Persistence.Organisation.ContactPoint>()
             .ForMember(m => m.Id, o => o.Ignore())
             .ForMember(m => m.CreatedOn, o => o.Ignore())
@@ -62,6 +71,23 @@ public class WebApiToPersistenceProfile : Profile
             .ForMember(m => m.CreatedOn, o => o.Ignore())
             .ForMember(m => m.UpdatedOn, o => o.Ignore())
             .ReverseMap();
+
+        CreateMap<UpdateConnectedEntity, Persistence.ConnectedEntity>()
+            .ForMember(m => m.Guid, o => o.MapFrom((_, _, _, context) => context.Items["Guid"]))
+            .ForMember(m => m.Id, o => o.Ignore())
+            .ForMember(m => m.Organisation, o => o.Ignore())
+            .ForMember(m => m.IndividualOrTrust, o => o.Ignore())
+            .ForMember(m => m.SupplierOrganisation, o => o.Ignore())
+            .ForMember(m => m.CreatedOn, o => o.Ignore())
+            .ForMember(m => m.UpdatedOn, o => o.Ignore());
+
+        CreateMap<ConnectedEntity, Persistence.ConnectedEntity>()
+            .ForMember(m => m.Id, o => o.Ignore())
+            .ForMember(m => m.Guid, o => o.MapFrom(_ => Guid.NewGuid()))
+            .ForMember(m => m.CreatedOn, o => o.Ignore())
+            .ForMember(m => m.UpdatedOn, o => o.Ignore())
+            .ReverseMap()
+            .ForMember(m => m.Id, o => o.MapFrom(m => m.Guid));
 
         CreateMap<RegisterOrganisation, Persistence.Organisation>()
             .ForMember(m => m.Guid, o => o.MapFrom((_, _, _, context) => context.Items["Guid"]))

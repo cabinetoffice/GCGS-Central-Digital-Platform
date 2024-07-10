@@ -336,29 +336,32 @@ public static class EndpointExtensions
                 return operation;
             });
 
-        //app.MapPost("/{organisationId}/connected-entities",
-        //    async (Guid organisationId, UpdateConnectedEntity updateConnectedEntity,
-        //        IUseCase< (Guid, UpdateConnectedEntity) , bool> useCase)
-        //    => await useCase.Execute((organisationId, updateConnectedEntity))
-        //       .AndThen(_ => Results.NoContent()))
-        //    .Produces(StatusCodes.Status201Created)
-        //    .ProducesProblem(StatusCodes.Status500InternalServerError)
-        //    .ProducesProblem(StatusCodes.Status400BadRequest)
-        //    .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
-        //    .ProducesProblem(StatusCodes.Status422UnprocessableEntity)
-        //    .ProducesProblem(StatusCodes.Status404NotFound)
-        //    .WithOpenApi(operation =>
-        //    {
-        //        operation.OperationId = "CreateConnectedEntity";
-        //        operation.Description = "Create a new connected entity.";
-        //        operation.Summary = "Create a new connected entity.";
-        //        operation.Responses["201"].Description = "Connected entity created successfully.";
-        //        operation.Responses["400"].Description = "Bad request.";
-        //        operation.Responses["422"].Description = "Unprocessable entity.";
-        //        operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
-        //        operation.Responses["500"].Description = "Internal server error.";
-        //        return operation;
-        //    });
+        app.MapPost("/{organisationId}/connected-entities",
+            async (Guid organisationId, UpdateConnectedEntity updateConnectedEntity,
+                IUseCase<(Guid, UpdateConnectedEntity), bool> useCase) =>
+
+                await useCase.Execute((organisationId, updateConnectedEntity))
+                    .AndThen(_ => Results.NoContent())
+            )
+            .Produces(StatusCodes.Status201Created)
+            .ProducesProblem(StatusCodes.Status400BadRequest)
+            .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
+            .ProducesProblem(StatusCodes.Status404NotFound)
+            .ProducesProblem(StatusCodes.Status422UnprocessableEntity)            
+            .ProducesProblem(StatusCodes.Status500InternalServerError)
+            .WithOpenApi(operation =>
+            {
+                operation.OperationId = "CreateConnectedEntity";
+                operation.Description = "Create a new connected entity.";
+                operation.Summary = "Create a new connected entity.";
+                operation.Responses["201"].Description = "Connected entity created successfully.";
+                operation.Responses["400"].Description = "Bad request.";
+                operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
+                operation.Responses["404"].Description = "Connected entity not found.";
+                operation.Responses["422"].Description = "Unprocessable entity.";
+                operation.Responses["500"].Description = "Internal server error.";
+                return operation;
+            });
 
         return app;
     }
