@@ -1,4 +1,5 @@
 using CO.CDP.Configuration.ForwardedHeaders;
+using CO.CDP.Forms.WebApiClient;
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp;
 using CO.CDP.Person.WebApiClient;
@@ -42,6 +43,15 @@ builder.Services.AddTransient(provider =>
     return factory.GetTempData(context);
 });
 builder.Services.AddScoped<ITempDataService, TempDataService>();
+
+var formsServiceUrl = builder.Configuration.GetValue<string>("FormsService")
+            ?? throw new Exception("Missing configuration key: FormsService.");
+builder.Services.AddHttpClient("FormsHttpClient")
+    .AddHttpMessageHandler<ApiBearerTokenHandler>();
+builder.Services.AddTransient<IFormsClient, FormsClient>(
+    sc => new FormsClient(formsServiceUrl,
+        sc.GetRequiredService<IHttpClientFactory>().CreateClient("FormsHttpClient")));
+
 builder.Services.AddTransient<IFormsEngine, FormsEngine>();
 
 builder.Services.AddTransient<ApiBearerTokenHandler>();
