@@ -105,25 +105,15 @@ public class WebApiToPersistenceProfile : Profile
 
     private void ConnectedEntityMapping()
     {
-        CreateMap<Persistence.ConnectedEntity, ConnectedEntity>()
-            .ForMember(m => m.Id, o => o.MapFrom(m => m.Guid))
-            .ReverseMap()
+        CreateMap<RegisterConnectedEntity, Persistence.ConnectedEntity>()
             .ForMember(m => m.Guid, o => o.MapFrom((_, _, _, context) => context.Items["Guid"]))
             .ForMember(m => m.Id, o => o.Ignore())
-            // .ForMember(m => m.SupplierOrganisation, o => o.MapFrom(m => m.Organisation)) <--- Wrong
             .ForMember(m => m.SupplierOrganisation, o => o.Ignore())
             .ForMember(m => m.CreatedOn, o => o.Ignore())
             .ForMember(m => m.UpdatedOn, o => o.Ignore());
 
-        CreateMap<ConnectedEntityAddress, Persistence.ConnectedEntity.ConnectedEntityAddress>()
-            .ReverseMap();
-
-        CreateMap<Address, Persistence.Address>()
-           .ForMember(m => m.Id, o => o.Ignore())
-           .ForMember(m => m.CreatedOn, o => o.Ignore())
-           .ForMember(m => m.UpdatedOn, o => o.Ignore())
-           .ReverseMap()
-           .ForMember(m => m.Type, o => o.Ignore()); // <--- Wrong
+        CreateMap<Persistence.ConnectedEntity, ConnectedEntity>()
+            .ForMember(m => m.Id, o => o.MapFrom(m => m.Guid));
 
         CreateMap<ConnectedIndividualTrust, Persistence.ConnectedEntity.ConnectedIndividualTrust>()
             .ForMember(m => m.Id, o => o.Ignore())
@@ -136,7 +126,25 @@ public class WebApiToPersistenceProfile : Profile
             .ForMember(m => m.CreatedOn, o => o.Ignore())
             .ForMember(m => m.UpdatedOn, o => o.Ignore())
             .ReverseMap();
+
+        CreateMap<Address, Persistence.Address>(MemberList.Source)
+            .ForSourceMember(m => m.Type, o => o.DoNotValidate());
+
+        CreateMap<Address, Persistence.ConnectedEntity.ConnectedEntityAddress>()
+            .ForMember(m => m.Id, o => o.Ignore())
+            .ForMember(m => m.Type, o => o.MapFrom(m => m.Type))
+            .ForMember(m => m.Address, o => o.MapFrom(m => m));
+
+        CreateMap<Persistence.ConnectedEntity.ConnectedEntityAddress, Address>()
+            .ForMember(m => m.Type, o => o.MapFrom(m => m.Type))
+            .ForMember(m => m.StreetAddress, o => o.MapFrom(m => m.Address.StreetAddress))
+            .ForMember(m => m.StreetAddress2, o => o.MapFrom(m => m.Address.StreetAddress2))
+            .ForMember(m => m.Locality, o => o.MapFrom(m => m.Address.Locality))
+            .ForMember(m => m.Region, o => o.MapFrom(m => m.Address.Region))
+            .ForMember(m => m.PostalCode, o => o.MapFrom(m => m.Address.PostalCode))
+            .ForMember(m => m.CountryName, o => o.MapFrom(m => m.Address.CountryName));
     }
+
     public class IdentifiersResolver : IValueResolver<RegisterOrganisation, Persistence.Organisation,
         ICollection<Persistence.Organisation.Identifier>>
     {

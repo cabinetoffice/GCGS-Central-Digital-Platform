@@ -337,8 +337,8 @@ public static class EndpointExtensions
             });
 
         app.MapPost("/{organisationId}/connected-entities",
-            async (Guid organisationId, ConnectedEntity updateConnectedEntity,
-                IUseCase<(Guid, ConnectedEntity), bool> useCase) =>
+            async (Guid organisationId, RegisterConnectedEntity updateConnectedEntity,
+                IUseCase<(Guid, RegisterConnectedEntity), bool> useCase) =>
 
                 await useCase.Execute((organisationId, updateConnectedEntity))
                     .AndThen(_ => Results.NoContent())

@@ -20,6 +20,8 @@ public class DatabaseConnectedEntityRepository(OrganisationInformationContext co
     public async Task<IEnumerable<ConnectedEntity?>> FindByOrganisation(Guid organisationId)
     {
         return await context.ConnectedEntities
+            .Include(p => p.Addresses)
+            .ThenInclude(p => p.Address)
             .Where(t => t.SupplierOrganisation.Guid == organisationId)
             .ToArrayAsync();
     }

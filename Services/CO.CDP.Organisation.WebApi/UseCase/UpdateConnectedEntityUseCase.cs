@@ -1,26 +1,32 @@
 using AutoMapper;
 using CO.CDP.Organisation.WebApi.Model;
-using CO.CDP.OrganisationInformation;
 using CO.CDP.OrganisationInformation.Persistence;
 
 namespace CO.CDP.Organisation.WebApi.UseCase;
 
 public class UpdateConnectedEntityUseCase(
     IConnectedEntityRepository connectedEntityRepository,
+    IOrganisationRepository organisationRepository,
     IMapper mapper,
     Func<Guid> guidFactory)
-    : IUseCase<(Guid organisationId, Model.ConnectedEntity updateConnectedEntity), bool>
+    : IUseCase<(Guid organisationId, RegisterConnectedEntity updateConnectedEntity), bool>
 {
     public UpdateConnectedEntityUseCase(
         IConnectedEntityRepository connectedEntityRepository,
+        IOrganisationRepository organisationRepository,
         IMapper mapper)
-        : this(connectedEntityRepository, mapper, Guid.NewGuid)
+        : this(connectedEntityRepository, organisationRepository, mapper, Guid.NewGuid)
     {
     }
 
-    public async Task<bool> Execute((Guid organisationId, Model.ConnectedEntity updateConnectedEntity) command)
+    public async Task<bool> Execute((Guid organisationId, RegisterConnectedEntity updateConnectedEntity) command)
     {
-        var connectedEntity = CreateConnectedEntity(command.updateConnectedEntity);
+        var connectedEntity = MapRequestToConnectedEntity(command.updateConnectedEntity);
+
+        var supplierOrganisation = await organisationRepository.Find(command.organisationId)
+            ?? throw new UnknownOrganisationException($"Unknown organisation {command.organisationId}.");
+
+        connectedEntity.SupplierOrganisation = supplierOrganisation;
 
         await connectedEntityRepository.Save(connectedEntity);
 
@@ -28,15 +34,7 @@ public class UpdateConnectedEntityUseCase(
     }
 
     private OrganisationInformation.Persistence.ConnectedEntity
-        CreateConnectedEntity(Model.ConnectedEntity command)
-    {
-        var connectedEntity = MapRequestToConnectedEntity(command);
-
-        return connectedEntity;
-    }
-
-    private OrganisationInformation.Persistence.ConnectedEntity
-        MapRequestToConnectedEntity(Model.ConnectedEntity command) =>
+        MapRequestToConnectedEntity(RegisterConnectedEntity command) =>
         mapper.Map<OrganisationInformation.Persistence.ConnectedEntity>(command, o =>
         {
             o.Items["Guid"] = guidFactory();

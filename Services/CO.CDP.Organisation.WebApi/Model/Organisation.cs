@@ -79,20 +79,13 @@ public record ConnectedEntity
 
     public ConnectedOrganisation? Organisation { get; set; }
     public ConnectedIndividualTrust? IndividualOrTrust { get; set; }
-    public ICollection<ConnectedEntityAddress> Addresses { get; set; } = [];
+    public ICollection<Address> Addresses { get; set; } = [];
 
     public DateTimeOffset? RegisteredDate { get; set; }
     public string? RegisterName { get; set; }
 
     public DateTimeOffset? StartDate { get; set; }
     public DateTimeOffset? EndDate { get; set; }
-}
-
-public record ConnectedEntityAddress
-{
-    public int Id { get; set; }
-    public required AddressType Type { get; set; }
-    public required Address Address { get; set; }
 }
 
 public record ConnectedIndividualTrust

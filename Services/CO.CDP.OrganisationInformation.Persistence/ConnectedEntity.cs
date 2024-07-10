@@ -1,6 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Query.Internal;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CO.CDP.OrganisationInformation.Persistence;
 
@@ -47,7 +45,7 @@ public class ConnectedEntity : IEntityDate
         public required string LastName { get; set; }
         public DateTimeOffset? DateOfBirth { get; set; }
         public string? Nationality { get; set; }
-        public ICollection<ControlCondition> ControlCondition { get; set; } = [];
+        public List<ControlCondition> ControlCondition { get; set; } = [];
         public ConnectedPersonType ConnectedType { get; set; }
         public Guid? PersonId { get; set; }
         public DateTimeOffset CreatedOn { get; set; }
@@ -63,7 +61,7 @@ public class ConnectedEntity : IEntityDate
         public DateTimeOffset? InsolvencyDate { get; set; }
         public string? RegisteredLegalForm { get; set; }
         public string? LawRegistered { get; set; }
-        public ICollection<ControlCondition> ControlCondition { get; set; } = [];
+        public List<ControlCondition> ControlCondition { get; set; } = [];
         public Guid? OrganisationId { get; set; }
         public DateTimeOffset CreatedOn { get; set; }
         public DateTimeOffset UpdatedOn { get; set; }
