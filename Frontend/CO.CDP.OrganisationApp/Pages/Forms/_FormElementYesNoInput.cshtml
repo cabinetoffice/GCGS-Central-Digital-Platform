@@ -1,6 +1,22 @@
 @model CO.CDP.OrganisationApp.Models.FormQuestion
 
-<div>
-    <h3>@Model.Title</h3>
-    <input type="checkbox" name="@Model.Id" /> Yes
+<div class="govuk-form-group">
+    <h1 class="govuk-heading-l">
+        @Model.Title
+    </h1>
+
+    <div class="govuk-radios govuk-!-margin-top-6" data-module="govuk-radios">
+        <div class="govuk-radios__item">
+            <input class="govuk-radios__input" id="fileState" name="fileState" type="radio" value="Yes">
+            <label class="govuk-label govuk-radios__label" for="fileState">
+                Yes
+            </label>
+        </div>
+        <div class="govuk-radios__item">
+            <input class="govuk-radios__input" id="fileState-2" name="fileState" type="radio" value="No">
+            <label class="govuk-label govuk-radios__label" for="fileState-2">
+                No
+            </label>
+        </div>
+    </div>
 </div>

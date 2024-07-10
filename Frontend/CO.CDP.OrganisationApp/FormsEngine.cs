@@ -3,14 +3,19 @@ using SectionQuestionsResponse = CO.CDP.OrganisationApp.Models.SectionQuestionsR
 
 namespace CO.CDP.OrganisationApp;
 
-public class FormsEngine(IFormsClient formsApiClient) : IFormsEngine
+public class FormsEngine(IFormsClient formsApiClient, ITempDataService tempDataService) : IFormsEngine
 {
     public async Task<SectionQuestionsResponse> LoadFormSectionAsync(Guid formId, Guid sectionId)
     {
-        var response = await formsApiClient.GetFormSectionQuestionsAsync(formId, sectionId);
+        var sessionKey = $"SectionQuestionsResponse_{formId}_{sectionId}";
+        var cachedResponse = tempDataService.Get<SectionQuestionsResponse>(sessionKey);
 
-        // NOTE: we need to store in session the API data SectionQuestionsResponse
-        // So we do not have to call the API again again
+        if (cachedResponse != null)
+        {
+            return cachedResponse;
+        }
+
+        var response = await formsApiClient.GetFormSectionQuestionsAsync(formId, sectionId);
 
         var sectionQuestionsResponse = new SectionQuestionsResponse
         {
@@ -37,6 +42,7 @@ public class FormsEngine(IFormsClient formsApiClient) : IFormsEngine
             }).ToList()
         };
 
+        tempDataService.Put(sessionKey, sectionQuestionsResponse);
         return sectionQuestionsResponse;
     }
 

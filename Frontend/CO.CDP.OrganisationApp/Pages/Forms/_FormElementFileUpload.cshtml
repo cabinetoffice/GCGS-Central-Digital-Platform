@@ -1,7 +1,9 @@
 @model CO.CDP.OrganisationApp.Models.FormQuestion
 
-<div>
-    <h3>@Model.Title</h3>
-    <p>@Model.Description</p>
-    <input type="file" name="@Model.Id" class="form-control" />
+<div class="govuk-form-group">
+    <h1 class="govuk-heading-l">
+        @Model.Title
+    </h1>
+    <p class="govuk-body">@Model.Description</p>    
+    <input class="govuk-file-upload" id="@Model.Id" name="fileUpload" type="file">
 </div>

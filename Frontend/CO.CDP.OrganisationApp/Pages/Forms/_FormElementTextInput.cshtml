@@ -1,7 +1,11 @@
 @model CO.CDP.OrganisationApp.Models.FormQuestion
 
-<div>
-    <h3>@Model.Title</h3>
-    <p>@Model.Description</p>
+<div class="govuk-form-group">
+    <h1 class="govuk-heading-l">
+        @Model.Title
+    </h1>
+    <p class="govuk-body">@Model.Description</p>
     <input type="text" name="@Model.Id" class="form-control" />
+    <input class="govuk-input govuk-!-width-two-thirds"
+           name="textInputType" id="@Model.Id" type="text">
 </div>
