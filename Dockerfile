@@ -54,6 +54,8 @@ COPY --link Services/CO.CDP.Forms.WebApi/CO.CDP.Forms.WebApi.csproj Services/CO.
 COPY --link Services/CO.CDP.Forms.WebApi.Tests/CO.CDP.Forms.WebApi.Tests.csproj Services/CO.CDP.Forms.WebApi.Tests/
 COPY --link Services/CO.CDP.Organisation.Authority/CO.CDP.Organisation.Authority.csproj Services/CO.CDP.Organisation.Authority/
 COPY --link Services/CO.CDP.Organisation.Authority.Tests/CO.CDP.Organisation.Authority.Tests.csproj Services/CO.CDP.Organisation.Authority.Tests/
+COPY --link Services/CO.CDP.EntityVerification.WebApi/CO.CDP.EntityVerification.WebApi.csproj Services/CO.CDP.EntityVerification.WebApi/
+COPY --link Services/CO.CDP.EntityVerification.WebApi.Tests/CO.CDP.Forms.WebApi.Tests.csproj Services/CO.CDP.EntityVerification.WebApi.Tests/
 COPY --link GCGS-Central-Digital-Platform.sln .
 RUN dotnet restore "GCGS-Central-Digital-Platform.sln"
 
