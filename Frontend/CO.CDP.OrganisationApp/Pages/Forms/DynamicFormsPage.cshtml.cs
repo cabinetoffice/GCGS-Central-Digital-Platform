@@ -10,11 +10,9 @@ public class DynamicFormsPageModel(IFormsEngine formsEngine, ITempDataService te
     public Models.FormQuestion? CurrentQuestion { get; set; }
     public Guid FormId { get; set; }
     public Guid SectionId { get; set; }
+    public Guid OrganisationId { get; set; }
     public bool IsFirstQuestion => CurrentQuestion?.Id == SectionWithQuestions?.Questions.FirstOrDefault()?.Id;
     public Guid? PreviousQuestionId { get; private set; }
-
-    [BindProperty(SupportsGet = true)]
-    public Guid Id { get; set; }
 
     private static readonly Dictionary<FormQuestionType, string> FormQuestionPartials = new()
     {
@@ -24,8 +22,9 @@ public class DynamicFormsPageModel(IFormsEngine formsEngine, ITempDataService te
         { FormQuestionType.Date, "_FormElementDateInput" }
     };
 
-    public async Task OnGetAsync(Guid formId, Guid sectionId, Guid? questionId)
+    public async Task OnGetAsync(Guid organisationId, Guid formId, Guid sectionId, Guid? questionId)
     {
+        OrganisationId = organisationId;
         FormId = formId;
         SectionId = sectionId;
         SectionWithQuestions = await formsEngine.LoadFormSectionAsync(formId, sectionId);
@@ -43,8 +42,9 @@ public class DynamicFormsPageModel(IFormsEngine formsEngine, ITempDataService te
         SetPreviousQuestionId();
     }
 
-    public async Task<IActionResult> OnPostAsync(Guid formId, Guid sectionId, Guid currentQuestionId, string action)
+    public async Task<IActionResult> OnPostAsync(Guid organisationId, Guid formId, Guid sectionId, Guid currentQuestionId, string action)
     {
+        OrganisationId = organisationId;
         FormId = formId;
         SectionId = sectionId;
         SectionWithQuestions = await formsEngine.LoadFormSectionAsync(formId, sectionId);

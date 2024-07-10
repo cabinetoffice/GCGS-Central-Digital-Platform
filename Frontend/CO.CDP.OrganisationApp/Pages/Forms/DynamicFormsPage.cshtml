@@ -1,13 +1,13 @@
-@page "/forms/{formId:guid}/{sectionId:guid}/{questionId:guid?}"
+@page "/forms/{organisationId:guid}/{formId:guid}/{sectionId:guid}/{questionId:guid?}"
 @model CO.CDP.OrganisationApp.Pages.Forms.DynamicFormsPageModel
 @inject CO.CDP.OrganisationApp.IFormsEngine FormsEngine
 
 @{
-    var backUrl = $"/organisation/{Model.Id}/supplier-information";
+    var backUrl = $"/organisation/{Model.OrganisationId}/supplier-information";
 
     if (!Model.IsFirstQuestion && Model.PreviousQuestionId.HasValue)
     {
-        backUrl = $"/forms/{Model.FormId}/{Model.SectionId}/{Model.PreviousQuestionId}";
+        backUrl = $"/forms/{Model.OrganisationId}/{Model.FormId}/{Model.SectionId}/{Model.PreviousQuestionId}";
     }
 }
 
@@ -18,6 +18,7 @@
         <div class="govuk-grid-column-two-thirds">
             <partial name="_ErrorSummary" model="@ModelState" />
             <form method="post">
+                <input type="hidden" name="OrganisationId" value="@Model.OrganisationId" />
                 <input type="hidden" name="FormId" value="@Model.FormId" />
                 <input type="hidden" name="SectionId" value="@Model.SectionId" />
                 <input type="hidden" name="CurrentQuestionId" value="@Model.CurrentQuestion?.Id" />

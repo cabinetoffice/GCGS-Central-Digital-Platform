@@ -20,6 +20,9 @@ public class SupplierInformationSummaryModel(IOrganisationClient organisationCli
     [BindProperty]
     public bool HasSupplierType { get; set; }
 
+    public Guid FormId { get; set; }
+    public Guid SectionId { get; set; }
+
     public async Task<IActionResult> OnGet(Guid id)
     {
         SupplierInformation? supplierInfo;
@@ -41,7 +44,8 @@ public class SupplierInformationSummaryModel(IOrganisationClient organisationCli
 
     private static StepStatus GetBasicInfoStepStatus(SupplierInformation info)
     {
-        if (info.SupplierType == null) return StepStatus.NotStarted;
+        if (info.SupplierType == null)
+            return StepStatus.NotStarted;
 
         return info.SupplierType.Value switch
         {
