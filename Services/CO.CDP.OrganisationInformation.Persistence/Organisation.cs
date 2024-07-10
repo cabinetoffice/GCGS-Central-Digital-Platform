@@ -53,7 +53,7 @@ public class Organisation : IEntityDate
         public DateTimeOffset CreatedOn { get; set; }
         public DateTimeOffset UpdatedOn { get; set; }
     }
-
+    
     [Owned]
     public record SupplierInformation : IEntityDate
     {
@@ -68,6 +68,7 @@ public class Organisation : IEntityDate
         public bool CompletedTradeAssurance { get; set; }
         public bool CompletedOperationType { get; set; }
         public bool CompletedLegalForm { get; set; }
+        public bool CompletedConnectedPerson { get; set; }
         public List<Qualification> Qualifications { get; set; } = [];
         public List<TradeAssurance> TradeAssurances { get; set; } = [];
         public LegalForm? LegalForm { get; set; }
