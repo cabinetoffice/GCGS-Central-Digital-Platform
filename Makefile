@@ -85,6 +85,12 @@ services:
       - "$${CDP_DB_PORT:-5432}:5432"
     deploy:
       replicas: 1
+  localstack:
+    ports:
+      - "4566:4566"
+      - "4510-4559:4510-4559"
+    deploy:
+      replicas: 1
   organisation-app:
     environment:
       ASPNETCORE_ENVIRONMENT: Development
