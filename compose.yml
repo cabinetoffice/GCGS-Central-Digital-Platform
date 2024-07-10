@@ -33,7 +33,7 @@ services:
 
   db:
     container_name: co-cdp-db
-    image: postgres:16.2
+    image: postgres:16.3
     expose:
       - '5432'
     healthcheck:
