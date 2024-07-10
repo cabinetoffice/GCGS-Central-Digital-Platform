@@ -32,6 +32,13 @@ services:
       POSTGRES_DB: cdp
       POSTGRES_USER: cdp_user
       POSTGRES_PASSWORD: cdp123
+  localstack:
+    extends:
+      file: compose.common.yml
+      service: localstack
+    environment:
+      # LocalStack configuration: https://docs.localstack.cloud/references/configuration/
+      DEBUG: 0
   organisation-information-migrations:
     extends:
       file: compose.common.yml
