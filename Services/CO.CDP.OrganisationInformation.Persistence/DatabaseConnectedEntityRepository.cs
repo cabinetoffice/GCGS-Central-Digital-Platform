@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
 
 namespace CO.CDP.OrganisationInformation.Persistence;
 
@@ -24,6 +25,35 @@ public class DatabaseConnectedEntityRepository(OrganisationInformationContext co
             .ThenInclude(p => p.Address)
             .Where(t => t.SupplierOrganisation.Guid == organisationId)
             .ToArrayAsync();
+    }
+
+    public async Task<IEnumerable<ConnectedEntityLookup?>> GetSummary(Guid organisationId)
+    {
+        return await context.ConnectedEntities
+            .Where(t => t.SupplierOrganisation.Guid == organisationId)
+            .Select(t => new ConnectedEntityLookup
+            {
+                Name = t.EntityType == ConnectedEntity.ConnectedEntityType.Organisation
+                                ? (t.Organisation!.Name ?? "")
+                                : (t.IndividualOrTrust!.FirstName ?? ""),
+                EntityId = t.Guid
+
+            })
+        .ToArrayAsync();
+
+        //var list = new List<ConnectedEntityLookup>();
+
+        //foreach (var entity in entities)
+        //{
+        //    list.Add(new ConnectedEntityLookup
+        //    {
+        //        Name = entity.EntityType == ConnectedEntity.ConnectedEntityType.Organisation
+        //                        ? (entity.Organisation?.Name ?? "")
+        //                        : (entity.IndividualOrTrust?.FirstName ?? ""),
+        //        EntityId = entity.Guid
+
+        //    });
+        //}
     }
 
     public async Task Save(ConnectedEntity connectedEntity)

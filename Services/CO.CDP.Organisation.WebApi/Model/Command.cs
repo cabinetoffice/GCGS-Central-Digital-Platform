@@ -177,6 +177,12 @@ public record RegisterConnectedEntity
     public DateTimeOffset? EndDate { get; init; }
 }
 
+public record ConnectedEntityLookup
+{
+    public required string Name { get; init; }
+    public required Guid EntityId { get; init; }
+}
+
 public record OrganisationQuery
 {
     public string? Name { get; }

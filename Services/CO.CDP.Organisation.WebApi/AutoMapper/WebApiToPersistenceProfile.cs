@@ -143,6 +143,8 @@ public class WebApiToPersistenceProfile : Profile
             .ForMember(m => m.Region, o => o.MapFrom(m => m.Address.Region))
             .ForMember(m => m.PostalCode, o => o.MapFrom(m => m.Address.PostalCode))
             .ForMember(m => m.CountryName, o => o.MapFrom(m => m.Address.CountryName));
+
+        CreateMap<Persistence.ConnectedEntityLookup, Model.ConnectedEntityLookup>().ReverseMap();
     }
 
     public class IdentifiersResolver : IValueResolver<RegisterOrganisation, Persistence.Organisation,

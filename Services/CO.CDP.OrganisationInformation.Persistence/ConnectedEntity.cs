@@ -18,7 +18,7 @@ public class ConnectedEntity : IEntityDate
 
     public DateTimeOffset? RegisteredDate { get; set; }
     public string? RegisterName { get; set; }
-        
+
     public required Organisation SupplierOrganisation { get; set; }
 
     public DateTimeOffset? StartDate { get; set; }
@@ -69,7 +69,7 @@ public class ConnectedEntity : IEntityDate
 
     public enum ControlCondition
     {
-        OwnsShares,
+        OwnsShares = 1,
         HasVotingRights,
         CanAppointOrRemoveDirectors,
         HasOtherSignificantInfluenceOrControl
@@ -77,27 +77,27 @@ public class ConnectedEntity : IEntityDate
 
     public enum ConnectedEntityType
     {
-        Organisation,
+        Organisation = 1,
         Individual,
         TrustOrTrustee
     }
 
     public enum ConnectedPersonType
     {
-        Individual,
+        Individual = 1,
         TrustOrTrustee
     }
 
     public enum ConnectedPersonCategory
     {
-        PersonWithSignificantControl,
+        PersonWithSignificantControl = 1,
         DirectorOrIndividualWithTheSameResponsibilities,
         AnyOtherIndividualWithSignificantInfluenceOrControl
     }
 
     public enum ConnectedOrganisationCategory
     {
-        RegisteredCompany,
+        RegisteredCompany = 1,
         DirectorOrTheSameResponsibilities,
         ParentOrSubsidiaryCompany,
         ACompanyYourOrganisationHasTakenOver,

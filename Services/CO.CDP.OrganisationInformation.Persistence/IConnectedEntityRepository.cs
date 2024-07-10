@@ -8,6 +8,8 @@ public interface IConnectedEntityRepository : IDisposable
 
     public Task<IEnumerable<ConnectedEntity?>> FindByOrganisation(Guid organisationId);
 
+    public Task<IEnumerable<ConnectedEntityLookup?>> GetSummary(Guid organisationId);
+
     public class ConnectedEntityRepositoryException(string message, Exception? cause = null) : Exception(message, cause)
     {
         public class DuplicateConnectedEntityException(string message, Exception? cause = null)

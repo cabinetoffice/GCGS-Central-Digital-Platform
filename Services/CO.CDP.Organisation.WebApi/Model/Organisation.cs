@@ -116,7 +116,7 @@ public record ConnectedOrganisation
 [JsonConverter(typeof(JsonStringEnumConverter))]
 public enum ConnectedEntityType
 {
-    Organisation,
+    Organisation = 1,
     Individual,
     TrustOrTrustee
 }
@@ -124,7 +124,7 @@ public enum ConnectedEntityType
 [JsonConverter(typeof(JsonStringEnumConverter))]
 public enum ControlCondition
 {
-    OwnsShares,
+    OwnsShares = 1,
     HasVotingRights,
     CanAppointOrRemoveDirectors,
     HasOtherSignificantInfluenceOrControl
@@ -133,14 +133,14 @@ public enum ControlCondition
 [JsonConverter(typeof(JsonStringEnumConverter))]
 public enum ConnectedPersonType
 {
-    Individual,
+    Individual = 1,
     TrustOrTrustee
 }
 
 [JsonConverter(typeof(JsonStringEnumConverter))]
 public enum ConnectedPersonCategory
 {
-    PersonWithSignificantControl,
+    PersonWithSignificantControl = 1,
     DirectorOrIndividualWithTheSameResponsibilities,
     AnyOtherIndividualWithSignificantInfluenceOrControl
 }
@@ -148,7 +148,7 @@ public enum ConnectedPersonCategory
 [JsonConverter(typeof(JsonStringEnumConverter))]
 public enum ConnectedOrganisationCategory
 {
-    RegisteredCompany,
+    RegisteredCompany = 1,
     DirectorOrTheSameResponsibilities,
     ParentOrSubsidiaryCompany,
     ACompanyYourOrganisationHasTakenOver,

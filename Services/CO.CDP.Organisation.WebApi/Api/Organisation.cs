@@ -316,6 +316,28 @@ public static class EndpointExtensions
                return operation;
            });
 
+        app.MapGet("/{organisationId}/connected-entities-summary",
+            async (Guid organisationId, IUseCase<Guid, IEnumerable<ConnectedEntityLookup>> useCase) =>
+               await useCase.Execute(organisationId)
+                   .AndThen(entities => entities != null ? Results.Ok(entities) : Results.NotFound()))
+           .Produces<List<ConnectedEntityLookup>>(StatusCodes.Status200OK, "application/json")
+           .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
+           .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
+           .ProducesProblem(StatusCodes.Status422UnprocessableEntity)
+           .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError)
+           .WithOpenApi(operation =>
+           {
+               operation.OperationId = "GetConnectedEntitiesSummary";
+               operation.Description = "Get connected entities summary by Organisation ID.";
+               operation.Summary = "Get connected entities information by Organisation ID.";
+               operation.Responses["200"].Description = "Connected entities details.";
+               operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
+               operation.Responses["404"].Description = "Connected entities information not found.";
+               operation.Responses["422"].Description = "Unprocessable entity.";
+               operation.Responses["500"].Description = "Internal server error.";
+               return operation;
+           });
+
         app.MapGet("/{organisationId}/connected-entities/{connectedEntityId}",
             async (Guid connectedEntityId, IUseCase<Guid, ConnectedEntity?> useCase) =>
                await useCase.Execute(connectedEntityId)
