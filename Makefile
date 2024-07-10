@@ -68,6 +68,7 @@ services:
       - '$${CDP_PERSON_PORT:-8084}:8084'
       - '$${CDP_FORMS_PORT:-8086}:8086'
       - '$${CDP_DATA_SHARING_PORT:-8088}:8088'
+      - '$${CDP_ENTITY_VERIFICATION_PORT:-8094}:8094'
     environment:
 #      CDP_ORGANISATION_APP_HOST: 'http://host.docker.internal:58090'
 #      CDP_AUTHORITY_HOST: 'http://host.docker.internal:5050'
@@ -76,11 +77,18 @@ services:
 #      CDP_PERSON_HOST: 'http://host.docker.internal:58084'
 #      CDP_FORMS_HOST: 'http://host.docker.internal:58086'
 #      CDP_DATA_SHARING_HOST: 'http://host.docker.internal:58088'
+#      CDP_ENTITY_VERIFICATION_HOST: 'http://host.docker.internal:58094'
     deploy:
       replicas: 1
   db:
     ports:
       - "$${CDP_DB_PORT:-5432}:5432"
+    deploy:
+      replicas: 1
+  localstack:
+    ports:
+      - "4566:4566"
+      - "4510-4559:4510-4559"
     deploy:
       replicas: 1
   organisation-app:
@@ -119,6 +127,11 @@ services:
     deploy:
       replicas: 1
   data-sharing:
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+    deploy:
+      replicas: 1
+  entity-verification:
     environment:
       ASPNETCORE_ENVIRONMENT: Development
     deploy:
