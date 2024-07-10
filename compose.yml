@@ -11,6 +11,7 @@ services:
       - person
       - forms
       - data-sharing
+      - entity-verification
     volumes:
       - './docker/gateway/nginx.conf:/etc/nginx/nginx.conf:ro'
       - './docker/gateway/templates:/etc/nginx/templates:ro'
@@ -22,6 +23,7 @@ services:
       CDP_PERSON_HOST: 'http://person:8080'
       CDP_FORMS_HOST: 'http://forms:8080'
       CDP_DATA_SHARING_HOST: 'http://data-sharing:8080'
+      CDP_ENTITY_VERIFICATION_HOST: 'http://entity-verification:8080'
   db:
     extends:
       file: compose.common.yml
@@ -99,3 +101,7 @@ services:
       service: data-sharing
     depends_on:
       - db
+  entity-verification:
+    extends:
+      file: compose.common.yml
+      service: entity-verification
