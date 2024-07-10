@@ -246,8 +246,3 @@ public static class MappingExtensions
             Url = command.Url != null ? new Uri(command.Url) : null
         } : new ContactPoint();
 }
-
-public record UpdateConnectedEntity
-{
-    public required ConnectedEntity ConnectedEntity { get; init; }
-}

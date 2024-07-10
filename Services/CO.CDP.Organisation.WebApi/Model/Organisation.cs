@@ -71,7 +71,7 @@ public record Qualification
 
 public record ConnectedEntity
 {
-    public int Id { get; set; }
+    public Guid Id { get; set; }
     public required ConnectedEntityType EntityType { get; set; }
     public bool HasCompnayHouseNumber { get; set; }
     public string? CompanyHouseNumber { get; set; }

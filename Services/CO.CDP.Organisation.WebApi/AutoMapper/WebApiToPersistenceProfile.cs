@@ -51,15 +51,6 @@ public class WebApiToPersistenceProfile : Profile
             .ForMember(m => m.PostalCode, o => o.MapFrom(m => m.Address.PostalCode))
             .ForMember(m => m.CountryName, o => o.MapFrom(m => m.Address.CountryName));
 
-        CreateMap<Persistence.ConnectedEntity.ConnectedEntityAddress, Address>()
-            .ForMember(m => m.Type, o => o.MapFrom(m => m.Type))
-            .ForMember(m => m.StreetAddress, o => o.MapFrom(m => m.Address.StreetAddress))
-            .ForMember(m => m.StreetAddress2, o => o.MapFrom(m => m.Address.StreetAddress2))
-            .ForMember(m => m.Locality, o => o.MapFrom(m => m.Address.Locality))
-            .ForMember(m => m.Region, o => o.MapFrom(m => m.Address.Region))
-            .ForMember(m => m.PostalCode, o => o.MapFrom(m => m.Address.PostalCode))
-            .ForMember(m => m.CountryName, o => o.MapFrom(m => m.Address.CountryName));
-
         CreateMap<OrganisationContactPoint, Persistence.Organisation.ContactPoint>()
             .ForMember(m => m.Id, o => o.Ignore())
             .ForMember(m => m.CreatedOn, o => o.Ignore())
@@ -70,24 +61,7 @@ public class WebApiToPersistenceProfile : Profile
             .ForMember(m => m.Id, o => o.Ignore())
             .ForMember(m => m.CreatedOn, o => o.Ignore())
             .ForMember(m => m.UpdatedOn, o => o.Ignore())
-            .ReverseMap();
-
-        CreateMap<UpdateConnectedEntity, Persistence.ConnectedEntity>()
-            .ForMember(m => m.Guid, o => o.MapFrom((_, _, _, context) => context.Items["Guid"]))
-            .ForMember(m => m.Id, o => o.Ignore())
-            .ForMember(m => m.Organisation, o => o.Ignore())
-            .ForMember(m => m.IndividualOrTrust, o => o.Ignore())
-            .ForMember(m => m.SupplierOrganisation, o => o.Ignore())
-            .ForMember(m => m.CreatedOn, o => o.Ignore())
-            .ForMember(m => m.UpdatedOn, o => o.Ignore());
-
-        CreateMap<ConnectedEntity, Persistence.ConnectedEntity>()
-            .ForMember(m => m.Id, o => o.Ignore())
-            .ForMember(m => m.Guid, o => o.MapFrom(_ => Guid.NewGuid()))
-            .ForMember(m => m.CreatedOn, o => o.Ignore())
-            .ForMember(m => m.UpdatedOn, o => o.Ignore())
-            .ReverseMap()
-            .ForMember(m => m.Id, o => o.MapFrom(m => m.Guid));
+            .ReverseMap();        
 
         CreateMap<RegisterOrganisation, Persistence.Organisation>()
             .ForMember(m => m.Guid, o => o.MapFrom((_, _, _, context) => context.Items["Guid"]))
@@ -125,8 +99,65 @@ public class WebApiToPersistenceProfile : Profile
            .ForMember(m => m.UpdatedOn, o => o.Ignore())
            .ReverseMap()
            .ForMember(m => m.Id, o => o.MapFrom(m => m.Guid));
+
+        ConnectedEntityMapping();
     }
 
+    private void ConnectedEntityMapping()
+    {
+        CreateMap<Persistence.ConnectedEntity, ConnectedEntity>()
+            .ForMember(m => m.Id, o => o.MapFrom(m => m.Guid));
+
+        CreateMap<ConnectedEntityAddress, Persistence.Address>(MemberList.Source)
+            .ForSourceMember(m => m.Type, o => o.DoNotValidate());
+
+        CreateMap<ConnectedEntityAddress, Persistence.ConnectedEntity.ConnectedEntityAddress>()
+            .ForMember(m => m.Id, o => o.Ignore())
+            .ForMember(m => m.Type, o => o.MapFrom(m => m.Type))
+            .ForMember(m => m.Address, o => o.MapFrom(m => m))
+            .ReverseMap();
+
+        CreateMap<Persistence.ConnectedEntity.ConnectedEntityAddress, Address>()
+            .ForMember(m => m.Type, o => o.MapFrom(m => m.Type))
+            .ForMember(m => m.StreetAddress, o => o.MapFrom(m => m.Address.StreetAddress))
+            .ForMember(m => m.StreetAddress2, o => o.MapFrom(m => m.Address.StreetAddress2))
+            .ForMember(m => m.Locality, o => o.MapFrom(m => m.Address.Locality))
+            .ForMember(m => m.Region, o => o.MapFrom(m => m.Address.Region))
+            .ForMember(m => m.PostalCode, o => o.MapFrom(m => m.Address.PostalCode))
+            .ForMember(m => m.CountryName, o => o.MapFrom(m => m.Address.CountryName))
+            .ReverseMap()
+            .ForMember(m => m.Address, o => o.MapFrom(m => m))
+            .ForMember(m => m.Type, o => o.Ignore())
+            .ForMember(m => m.Id, o => o.Ignore());
+
+        CreateMap<ConnectedIndividualTrust, Persistence.ConnectedEntity.ConnectedIndividualTrust>()
+            .ForMember(m => m.Id, o => o.Ignore())
+            .ForMember(m => m.CreatedOn, o => o.Ignore())
+            .ForMember(m => m.UpdatedOn, o => o.Ignore())
+            .ReverseMap();
+
+        CreateMap<ConnectedOrganisation, Persistence.ConnectedEntity.ConnectedOrganisation>()
+            .ForMember(m => m.Id, o => o.Ignore())
+            .ForMember(m => m.CreatedOn, o => o.Ignore())
+            .ForMember(m => m.UpdatedOn, o => o.Ignore())
+            .ReverseMap();
+
+        CreateMap<ConnectedEntity, Persistence.ConnectedEntity>()
+            .ForMember(m => m.Guid, o => o.MapFrom((_, _, _, context) => context.Items["Guid"]))
+            .ForMember(m => m.Id, o => o.Ignore())
+            .ForMember(m => m.Addresses, o => o.MapFrom(m => m.Addresses))
+            .ForMember(m => m.SupplierOrganisation, o => o.MapFrom(m => m.Organisation))
+            .ForMember(m => m.CreatedOn, o => o.Ignore())
+            .ForMember(m => m.UpdatedOn, o => o.Ignore());
+
+        //CreateMap<ConnectedEntity, Persistence.ConnectedEntity>()
+        //    .ForMember(m => m.Id, o => o.Ignore())
+        //    .ForMember(m => m.CreatedOn, o => o.Ignore())
+        //    .ForMember(m => m.UpdatedOn, o => o.Ignore())
+        //    .ReverseMap()
+        //    .ForMember(m => m.Id, o => o.MapFrom(m => m.Guid));
+
+    }
     public class IdentifiersResolver : IValueResolver<RegisterOrganisation, Persistence.Organisation,
         ICollection<Persistence.Organisation.Identifier>>
     {

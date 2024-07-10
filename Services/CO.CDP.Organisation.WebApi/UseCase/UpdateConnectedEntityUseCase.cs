@@ -9,7 +9,7 @@ public class UpdateConnectedEntityUseCase(
     IConnectedEntityRepository connectedEntityRepository,
     IMapper mapper,
     Func<Guid> guidFactory)
-    : IUseCase<(Guid organisationId, UpdateConnectedEntity updateConnectedEntity), bool>
+    : IUseCase<(Guid organisationId, Model.ConnectedEntity updateConnectedEntity), bool>
 {
     public UpdateConnectedEntityUseCase(
         IConnectedEntityRepository connectedEntityRepository,
@@ -18,7 +18,7 @@ public class UpdateConnectedEntityUseCase(
     {
     }
 
-    public async Task<bool> Execute((Guid organisationId, UpdateConnectedEntity updateConnectedEntity) command)
+    public async Task<bool> Execute((Guid organisationId, Model.ConnectedEntity updateConnectedEntity) command)
     {
         var connectedEntity = CreateConnectedEntity(command.updateConnectedEntity);
 
@@ -28,9 +28,9 @@ public class UpdateConnectedEntityUseCase(
     }
 
     private OrganisationInformation.Persistence.ConnectedEntity
-        CreateConnectedEntity(UpdateConnectedEntity command)
+        CreateConnectedEntity(Model.ConnectedEntity command)
     {
-        var connectedEntity = MapRequestToConnectedEntity(command.ConnectedEntity);
+        var connectedEntity = MapRequestToConnectedEntity(command);
 
         return connectedEntity;
     }
