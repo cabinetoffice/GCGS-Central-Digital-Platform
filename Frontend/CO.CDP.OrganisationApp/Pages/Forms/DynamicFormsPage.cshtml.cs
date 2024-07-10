@@ -11,16 +11,9 @@ public class DynamicFormsPageModel(IFormsEngine formsEngine, ITempDataService te
     public Guid FormId { get; set; }
     public Guid SectionId { get; set; }
     public Guid OrganisationId { get; set; }
-    public bool IsFirstQuestion => CurrentQuestion?.Id == SectionWithQuestions?.Questions.FirstOrDefault()?.Id;
-    public Guid? PreviousQuestionId { get; private set; }
+    public bool IsFirstQuestion => IsCurrentQuestionFirst();
 
-    private static readonly Dictionary<FormQuestionType, string> FormQuestionPartials = new()
-    {
-        { FormQuestionType.NoInput, "_FormElementNoInput" },
-        { FormQuestionType.YesOrNo, "_FormElementYesNoInput" },
-        { FormQuestionType.FileUpload, "_FormElementFileUpload" },
-        { FormQuestionType.Date, "_FormElementDateInput" }
-    };
+    public Guid? PreviousQuestionId { get; private set; }
 
     public async Task OnGetAsync(Guid organisationId, Guid formId, Guid sectionId, Guid? questionId)
     {
@@ -29,17 +22,20 @@ public class DynamicFormsPageModel(IFormsEngine formsEngine, ITempDataService te
         SectionId = sectionId;
         SectionWithQuestions = await formsEngine.LoadFormSectionAsync(formId, sectionId);
 
-        if (questionId.HasValue)
+        if (SectionWithQuestions?.Questions != null && SectionWithQuestions.Questions.Any())
         {
-            CurrentQuestion = await formsEngine.GetCurrentQuestion(formId, sectionId, questionId.Value);
-        }
-        else
-        {
-            CurrentQuestion = SectionWithQuestions.Questions.FirstOrDefault();
-        }
+            if (questionId.HasValue)
+            {
+                CurrentQuestion = await formsEngine.GetCurrentQuestion(formId, sectionId, questionId.Value);
+            }
+            else
+            {
+                CurrentQuestion = SectionWithQuestions.Questions.FirstOrDefault();
+            }
 
-        SaveCurrentQuestionIdToTempData(CurrentQuestion?.Id);
-        SetPreviousQuestionId();
+            SaveCurrentQuestionIdToTempData(CurrentQuestion?.Id);
+            SetPreviousQuestionId();
+        }
     }
 
     public async Task<IActionResult> OnPostAsync(Guid organisationId, Guid formId, Guid sectionId, Guid currentQuestionId, string action)
@@ -49,31 +45,41 @@ public class DynamicFormsPageModel(IFormsEngine formsEngine, ITempDataService te
         SectionId = sectionId;
         SectionWithQuestions = await formsEngine.LoadFormSectionAsync(formId, sectionId);
 
-        if (action == "next")
+        if (SectionWithQuestions?.Questions != null && SectionWithQuestions.Questions.Any())
         {
-            CurrentQuestion = await formsEngine.GetNextQuestion(FormId, SectionId, currentQuestionId);
-        }
-        else if (action == "back")
-        {
-            CurrentQuestion = await formsEngine.GetPreviousQuestion(FormId, SectionId, currentQuestionId);
+            if (action == "next")
+            {
+                CurrentQuestion = await formsEngine.GetNextQuestion(FormId, SectionId, currentQuestionId);
+            }
+            else if (action == "back")
+            {
+                CurrentQuestion = await formsEngine.GetPreviousQuestion(FormId, SectionId, currentQuestionId);
+            }
+
+            SaveCurrentQuestionIdToTempData(CurrentQuestion?.Id);
+            SetPreviousQuestionId();
         }
 
-        SaveCurrentQuestionIdToTempData(CurrentQuestion?.Id);
-        SetPreviousQuestionId();
         return Page();
     }
+
+    public string? GetPartialViewName(FormQuestionType questionType)
+    {
+        return FormQuestionPartials.TryGetValue(questionType, out var partialView) ? partialView : null;
+    }
+
+    private static readonly Dictionary<FormQuestionType, string> FormQuestionPartials = new()
+    {
+        { FormQuestionType.NoInput, "_FormElementNoInput" },
+        { FormQuestionType.YesOrNo, "_FormElementYesNoInput" },
+        { FormQuestionType.FileUpload, "_FormElementFileUpload" },
+        { FormQuestionType.Date, "_FormElementDateInput" }
+    };
 
     private void SaveCurrentQuestionIdToTempData(Guid? questionId)
     {
         var key = $"CurrentQuestionId_{FormId}_{SectionId}";
         tempDataService.Put(key, questionId);
-    }
-
-    private Guid GetCurrentQuestionIdFromTempData()
-    {
-        var key = $"CurrentQuestionId_{FormId}_{SectionId}";
-        var questionId = tempDataService.Get<Guid>(key);
-        return questionId;
     }
 
     private void SetPreviousQuestionId()
@@ -96,8 +102,8 @@ public class DynamicFormsPageModel(IFormsEngine formsEngine, ITempDataService te
         }
     }
 
-    public string? GetPartialViewName(FormQuestionType questionType)
+    private bool IsCurrentQuestionFirst()
     {
-        return FormQuestionPartials.TryGetValue(questionType, out var partialView) ? partialView : null;
+        return CurrentQuestion?.Id == SectionWithQuestions?.Questions?.FirstOrDefault()?.Id;
     }
 }
