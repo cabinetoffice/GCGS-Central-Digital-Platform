@@ -20,6 +20,12 @@ services:
       timeout: 5s
       retries: 5
 
+  localstack:
+    container_name: co-cdp-localstack
+    image: localstack/localstack:3.5
+    healthcheck:
+      test: [ "CMD-SHELL", "bash", "-c", "awslocal sqs list-queues && awslocal s3 ls"]
+
   organisation-information-migrations:
     container_name: co-cdp-organisation-information-migrations
     restart: no
