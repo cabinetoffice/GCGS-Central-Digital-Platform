@@ -53,7 +53,7 @@ public class Organisation : IEntityDate
         public DateTimeOffset CreatedOn { get; set; }
         public DateTimeOffset UpdatedOn { get; set; }
     }
-    
+
     [Owned]
     public record SupplierInformation : IEntityDate
     {
