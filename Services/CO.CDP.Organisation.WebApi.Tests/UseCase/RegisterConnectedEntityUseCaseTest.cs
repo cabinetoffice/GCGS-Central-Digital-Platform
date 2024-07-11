@@ -139,3 +139,4 @@ public class RegisterConnectedEntityUseCaseTest(AutoMapperFixture mapperFixture)
 
         return entity;
     }
+}
