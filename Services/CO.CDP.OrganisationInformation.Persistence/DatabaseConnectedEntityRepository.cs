@@ -34,8 +34,8 @@ public class DatabaseConnectedEntityRepository(OrganisationInformationContext co
             .Select(t => new ConnectedEntityLookup
             {
                 Name = t.EntityType == ConnectedEntity.ConnectedEntityType.Organisation
-                                ? (t.Organisation!.Name ?? "")
-                                : (t.IndividualOrTrust!.FirstName ?? ""),
+                                ? (t.Organisation == null ? "" : t.Organisation.Name)
+                                : (t.IndividualOrTrust == null ? "" : t.IndividualOrTrust.FirstName),
                 EntityId = t.Guid
 
             })
