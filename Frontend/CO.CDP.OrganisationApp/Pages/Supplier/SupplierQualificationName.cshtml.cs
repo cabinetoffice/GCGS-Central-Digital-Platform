@@ -34,6 +34,6 @@ public class SupplierQualificationNameModel(
         qa.Name = QualificationName;
         tempDataService.Put(Qualification.TempDataKey, qa);
 
-        return RedirectToPage("SupplierQualificationCheckAnswer", new { Id });        
+        return RedirectToPage("SupplierQualificationCheckAnswer", new { Id });
     }
 }
