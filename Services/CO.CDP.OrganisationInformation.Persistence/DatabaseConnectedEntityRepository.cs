@@ -40,20 +40,6 @@ public class DatabaseConnectedEntityRepository(OrganisationInformationContext co
 
             })
         .ToArrayAsync();
-
-        //var list = new List<ConnectedEntityLookup>();
-
-        //foreach (var entity in entities)
-        //{
-        //    list.Add(new ConnectedEntityLookup
-        //    {
-        //        Name = entity.EntityType == ConnectedEntity.ConnectedEntityType.Organisation
-        //                        ? (entity.Organisation?.Name ?? "")
-        //                        : (entity.IndividualOrTrust?.FirstName ?? ""),
-        //        EntityId = entity.Guid
-
-        //    });
-        //}
     }
 
     public async Task Save(ConnectedEntity connectedEntity)
