@@ -30,18 +30,17 @@ builder.Services.AddScoped<IUseCase<OrganisationQuery, Organisation?>, LookupOrg
 builder.Services.AddScoped<IUseCase<string, IEnumerable<Organisation>>, GetOrganisationsUseCase>();
 builder.Services.AddScoped<IUseCase<Guid, SupplierInformation?>, GetSupplierInformationUseCase>();
 builder.Services.AddScoped<IUseCase<Guid, CO.CDP.Organisation.WebApi.Model.ConnectedEntity?>, GetConnectedEntityUseCase>();
-builder.Services.AddScoped<IUseCase<Guid, IEnumerable<CO.CDP.Organisation.WebApi.Model.ConnectedEntity>>, GetConnectedEntitiesUseCase>();
-builder.Services.AddScoped<IUseCase<Guid, IEnumerable<CO.CDP.Organisation.WebApi.Model.ConnectedEntityLookup>>, GetConnectedEntitiesSummaryUseCase>();
+builder.Services.AddScoped<IUseCase<Guid, IEnumerable<CO.CDP.Organisation.WebApi.Model.ConnectedEntityLookup>>, GetConnectedEntitiesUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, UpdateOrganisation), bool>, UpdateOrganisationUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, UpdateBuyerInformation), bool>, UpdateBuyerInformationUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, UpdateSupplierInformation), bool>, UpdateSupplierInformationUseCase>();
-builder.Services.AddScoped<IUseCase<(Guid, RegisterConnectedEntity), bool>, UpdateConnectedEntityUseCase>();
+builder.Services.AddScoped<IUseCase<(Guid, RegisterConnectedEntity), bool>, RegisterConnectedEntityUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, DeleteSupplierInformation), bool>, DeleteSupplierInformationUseCase>();
 builder.Services.AddOrganisationProblemDetails();
 
 builder.Services.AddJwtBearerAndApiKeyAuthentication(builder.Configuration, builder.Environment);
-//builder.Services.AddAuthorization();
-builder.Services.AddFallbackAuthorizationPolicy();
+builder.Services.AddAuthorization();
+//builder.Services.AddFallbackAuthorizationPolicy();
 
 var app = builder.Build();
 app.UseForwardedHeaders();
