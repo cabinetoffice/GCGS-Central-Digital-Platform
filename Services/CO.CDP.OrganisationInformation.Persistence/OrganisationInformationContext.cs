@@ -33,16 +33,16 @@ public class OrganisationInformationContext(DbContextOptions<OrganisationInforma
             entity.OwnsOne(e => e.Organisation, a =>
             {
                 a.HasKey(e => e.Id);
-                a.Property(ai => ai.Id).HasColumnName("connected_organisation_id");                
+                a.Property(ai => ai.Id).HasColumnName("connected_organisation_id");
                 a.Property(z => z.CreatedOn).IsRequired().HasDefaultValueSql("CURRENT_TIMESTAMP");
-                a.Property(z => z.UpdatedOn).IsRequired().HasDefaultValueSql("CURRENT_TIMESTAMP");                
+                a.Property(z => z.UpdatedOn).IsRequired().HasDefaultValueSql("CURRENT_TIMESTAMP");
                 a.ToTable("connected_organisation");
             });
 
             entity.OwnsOne(e => e.IndividualOrTrust, a =>
             {
                 a.HasKey(e => e.Id);
-                a.Property(ai => ai.Id).HasColumnName("connected_individual_trust_id");                
+                a.Property(ai => ai.Id).HasColumnName("connected_individual_trust_id");
                 a.Property(z => z.CreatedOn).IsRequired().HasDefaultValueSql("CURRENT_TIMESTAMP");
                 a.Property(z => z.UpdatedOn).IsRequired().HasDefaultValueSql("CURRENT_TIMESTAMP");
                 a.ToTable("connected_individual_trust");

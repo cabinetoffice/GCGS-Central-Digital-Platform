@@ -14,12 +14,12 @@ public class ProblemDetailsOperationFilter(Dictionary<string, List<string>> erro
     {
     }
 
-     private static OpenApiObject Status400ProblemDetails(string code) => CreateProblemDetails(
-        "https://tools.ietf.org/html/rfc7231#section-6.5.1",
-        ReasonPhrases.GetReasonPhrase(StatusCodes.Status400BadRequest),
-        StatusCodes.Status400BadRequest,
-        code
-    );
+    private static OpenApiObject Status400ProblemDetails(string code) => CreateProblemDetails(
+       "https://tools.ietf.org/html/rfc7231#section-6.5.1",
+       ReasonPhrases.GetReasonPhrase(StatusCodes.Status400BadRequest),
+       StatusCodes.Status400BadRequest,
+       code
+   );
 
     private static OpenApiObject Status401ProblemDetails(string code) => CreateProblemDetails(
         "https://tools.ietf.org/html/rfc7235#section-3.1",

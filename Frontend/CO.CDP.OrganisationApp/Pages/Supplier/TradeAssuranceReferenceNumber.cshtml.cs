@@ -39,6 +39,6 @@ public class TradeAssuranceReferenceNumberModel(
 
         return RedirectToPage(
                 RedirectToCheckYourAnswer == true ? "TradeAssuranceCheckAnswer" : "TradeAssuranceAwardedDate",
-                new { Id });        
+                new { Id });
     }
 }
