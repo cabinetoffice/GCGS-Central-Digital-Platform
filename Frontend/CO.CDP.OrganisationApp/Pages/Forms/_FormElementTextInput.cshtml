@@ -1,11 +1,16 @@
-@model CO.CDP.OrganisationApp.Models.FormQuestion
+@model CO.CDP.OrganisationApp.Models.FormQuestionViewModel
+
+@{
+    var question = Model.FormQuestion;
+    var answer = Model.Answer;
+    var hasError = ViewData.ModelState["Answer"]?.Errors?.Count > 0;
+}
 
 <div class="govuk-form-group">
     <h1 class="govuk-heading-l">
-        @Model.Title
+        @question.Title
     </h1>
-    <p class="govuk-body">@Model.Description</p>
-    <input type="text" name="@Model.Id" class="form-control" />
+    <p class="govuk-body">@question.Description</p>    
     <input class="govuk-input govuk-!-width-two-thirds"
-           name="textInputType" id="@Model.Id" type="text">
+           name="textInputType" id="@question.Id" type="text">
 </div>

@@ -15,7 +15,7 @@ public class DynamicFormsPageModel(IFormsEngine formsEngine, ITempDataService te
     public Guid? PreviousQuestionId { get; private set; }
 
     [BindProperty]
-    public string? YesNoAnswer { get; set; }
+    public string? Answer { get; set; }
 
     public async Task OnGetAsync(Guid organisationId, Guid formId, Guid sectionId, Guid? questionId)
     {
@@ -30,6 +30,11 @@ public class DynamicFormsPageModel(IFormsEngine formsEngine, ITempDataService te
             CurrentQuestion = questionId.HasValue
                 ? await formsEngine.GetCurrentQuestion(formId, sectionId, questionId.Value)
                 : SectionWithQuestions.Questions.FirstOrDefault();
+
+            if (CurrentQuestion != null)
+            {
+                RetrieveAnswerFromTempData();
+            }
 
             SaveCurrentQuestionIdToTempData(CurrentQuestion?.Id);
             SetPreviousQuestionId();
@@ -48,6 +53,11 @@ public class DynamicFormsPageModel(IFormsEngine formsEngine, ITempDataService te
         {
             CurrentQuestion = SectionWithQuestions.Questions.FirstOrDefault(q => q.Id == currentQuestionId);
 
+            if (CurrentQuestion == null)
+            {
+                return Page();
+            }
+
             if (action == "next")
             {
                 if (!ValidateCurrentQuestion())
@@ -55,6 +65,7 @@ public class DynamicFormsPageModel(IFormsEngine formsEngine, ITempDataService te
                     return Page();
                 }
 
+                SaveAnswerToTempData();
                 CurrentQuestion = await formsEngine.GetNextQuestion(FormId, SectionId, currentQuestionId);
             }
             else if (action == "back")
@@ -79,7 +90,8 @@ public class DynamicFormsPageModel(IFormsEngine formsEngine, ITempDataService te
             { FormQuestionType.NoInput, "_FormElementNoInput" },
             { FormQuestionType.YesOrNo, "_FormElementYesNoInput" },
             { FormQuestionType.FileUpload, "_FormElementFileUpload" },
-            { FormQuestionType.Date, "_FormElementDateInput" }
+            { FormQuestionType.Date, "_FormElementDateInput" },
+            { FormQuestionType.Text, "_FormElementTextInput" }
         };
 
     private async Task LoadSectionWithQuestionsAsync(Guid formId, Guid sectionId)
@@ -120,6 +132,11 @@ public class DynamicFormsPageModel(IFormsEngine formsEngine, ITempDataService te
             return ValidateYesNoAnswer();
         }
 
+        if (CurrentQuestion?.Type == FormQuestionType.Text)
+        {
+            return ValidateTextAnswer();
+        }
+
         // Future validation for other question types can be added here
 
         return true;
@@ -127,12 +144,48 @@ public class DynamicFormsPageModel(IFormsEngine formsEngine, ITempDataService te
 
     private bool ValidateYesNoAnswer()
     {
-        if (string.IsNullOrEmpty(YesNoAnswer))
+        if (string.IsNullOrEmpty(Answer))
         {
-            ModelState.AddModelError("YesNoAnswer", "Please select an option.");
+            ModelState.AddModelError("Answer", "Please select an option.");
             return false;
         }
 
         return true;
+    }
+
+    private bool ValidateTextAnswer()
+    {
+        if (string.IsNullOrEmpty(Answer))
+        {
+            ModelState.AddModelError("Answer", "Please enter a value.");
+            return false;
+        }
+
+        return true;
+    }
+
+    private void SaveAnswerToTempData()
+    {
+        if (CurrentQuestion != null)
+        {
+            var questionAnswer = new QuestionAnswer
+            {
+                QuestionId = CurrentQuestion.Id,
+                Answer = Answer
+            };
+
+            var key = $"Answer_{FormId}_{SectionId}_{CurrentQuestion.Id}";
+            tempDataService.Put(key, questionAnswer);
+        }
+    }
+
+    private void RetrieveAnswerFromTempData()
+    {
+        if (CurrentQuestion != null)
+        {
+            var key = $"Answer_{FormId}_{SectionId}_{CurrentQuestion.Id}";
+            var questionAnswer = tempDataService.Get<QuestionAnswer>(key);
+            Answer = questionAnswer?.Answer ?? string.Empty;
+        }
     }
 }

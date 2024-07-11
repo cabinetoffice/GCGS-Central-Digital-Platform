@@ -31,6 +31,12 @@ public class FormQuestionOptions
     public string? ChoiceProviderStrategy { get; set; }
 }
 
+public class QuestionAnswer
+{
+    public Guid QuestionId { get; set; }
+    public string? Answer { get; set; }
+}
+
 public enum FormQuestionType
 {
     NoInput,

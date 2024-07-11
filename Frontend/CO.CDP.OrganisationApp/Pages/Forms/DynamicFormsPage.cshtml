@@ -30,7 +30,12 @@
                         var partialViewName = Model.GetPartialViewName(Model.CurrentQuestion.Type);
                         if (partialViewName != null)
                         {
-                            @await Html.PartialAsync(partialViewName, Model.CurrentQuestion)
+                            var viewModel = new CO.CDP.OrganisationApp.Models.FormQuestionViewModel
+                            {
+                                FormQuestion = Model.CurrentQuestion,
+                                Answer = Model.Answer
+                            };
+                            @await Html.PartialAsync(partialViewName, viewModel)
                         }
                         else
                         {

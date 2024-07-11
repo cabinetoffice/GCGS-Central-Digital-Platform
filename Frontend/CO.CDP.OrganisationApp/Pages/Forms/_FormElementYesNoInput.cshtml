@@ -1,26 +1,28 @@
-@model CO.CDP.OrganisationApp.Models.FormQuestion
+@model CO.CDP.OrganisationApp.Models.FormQuestionViewModel
 @{
-    var hasError = ViewData.ModelState["YesNoAnswer"]?.Errors?.Count > 0;
+    var question = Model.FormQuestion;
+    var answer = Model.Answer;
+    var hasError = ViewData.ModelState["Answer"]?.Errors?.Count > 0;
 }
 
 <div class="govuk-form-group @(hasError ? "govuk-form-group--error" : "")">
     <fieldset class="govuk-fieldset" aria-required="true">
         <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
-            <h2 class="govuk-fieldset__heading">@Model.Title</h2>
+            <h2 class="govuk-fieldset__heading">@question.Title</h2>
         </legend>
         @if (hasError)
         {
-            <p id="YesNoAnswer-error" class="govuk-error-message">
+            <p id="Answer-error" class="govuk-error-message">
                 <span class="govuk-visually-hidden">Error:</span> Please select an option.
             </p>
         }
         <div class="govuk-radios" data-module="govuk-radios">
             <div class="govuk-radios__item">
-                <input class="govuk-radios__input" id="yes" name="YesNoAnswer" type="radio" value="yes">
+                <input class="govuk-radios__input" id="yes" name="Answer" type="radio" value="yes" @(answer == "yes" ? "checked" : "")>
                 <label class="govuk-label govuk-radios__label" for="yes">Yes</label>
             </div>
             <div class="govuk-radios__item">
-                <input class="govuk-radios__input" id="no" name="YesNoAnswer" type="radio" value="no">
+                <input class="govuk-radios__input" id="no" name="Answer" type="radio" value="no" @(answer == "no" ? "checked" : "")>
                 <label class="govuk-label govuk-radios__label" for="no">No</label>
             </div>
         </div>

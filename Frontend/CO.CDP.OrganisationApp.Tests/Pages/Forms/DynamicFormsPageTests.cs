@@ -52,10 +52,13 @@ public class DynamicFormsPageTests
     [Fact]
     public async Task OnPostAsync_ShouldSetCurrentQuestionToNext_WhenActionIsNext()
     {
-        var currentQuestionId = Guid.NewGuid();
         var sectionQuestionsResponse = SetupMockLoadFormSectionAsync();
+        var currentQuestionId = sectionQuestionsResponse.Questions!.First().Id;
         var nextQuestion = sectionQuestionsResponse.Questions!.Skip(1).First();
         SetupMockGetNextQuestion(nextQuestion);
+
+        _pageModel.CurrentQuestion = sectionQuestionsResponse.Questions!.First();
+        _pageModel.Answer = "some answer";
 
         await _pageModel.OnPostAsync(_organisationId, _formId, _sectionId, currentQuestionId, "next");
 
@@ -65,10 +68,13 @@ public class DynamicFormsPageTests
     [Fact]
     public async Task OnPostAsync_ShouldSetCurrentQuestionToPrevious_WhenActionIsBack()
     {
-        var currentQuestionId = Guid.NewGuid();
         var sectionQuestionsResponse = SetupMockLoadFormSectionAsync();
+        var currentQuestionId = sectionQuestionsResponse.Questions!.Skip(1).First().Id;
         var previousQuestion = sectionQuestionsResponse.Questions!.First();
         SetupMockGetPreviousQuestion(previousQuestion);
+
+        _pageModel.CurrentQuestion = sectionQuestionsResponse.Questions!.Skip(1).First();
+        _pageModel.Answer = "some answer";
 
         await _pageModel.OnPostAsync(_organisationId, _formId, _sectionId, currentQuestionId, "back");
 
@@ -87,7 +93,7 @@ public class DynamicFormsPageTests
 
         SetupMockGetCurrentQuestion(currentQuestion);
 
-        _pageModel.YesNoAnswer = null;
+        _pageModel.Answer = null;
 
         var result = await _pageModel.OnPostAsync(_organisationId, _formId, _sectionId, currentQuestionId, "next");
 
@@ -147,10 +153,10 @@ public class DynamicFormsPageTests
         {
             Section = new FormSection { Id = Guid.NewGuid(), Title = "SectionTitle", AllowsMultipleAnswerSets = true },
             Questions = new List<FormQuestion>
-                {
-                    new FormQuestion { Id = Guid.NewGuid(), Title = "Question1", Type = FormQuestionType.YesOrNo, IsRequired = true },
-                    new FormQuestion { Id = Guid.NewGuid(), Title = "Question2", Type = FormQuestionType.Text, IsRequired = true }
-                }
+                    {
+                        new FormQuestion { Id = Guid.NewGuid(), Title = "Question1", Type = FormQuestionType.YesOrNo, IsRequired = true },
+                        new FormQuestion { Id = Guid.NewGuid(), Title = "Question2", Type = FormQuestionType.Text, IsRequired = true }
+                    }
         };
     }
 }
