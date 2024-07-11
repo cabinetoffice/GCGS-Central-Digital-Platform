@@ -1,8 +1,14 @@
 services:
+
   gateway:
-    extends:
-      file: compose.common.yml
-      service: gateway
+    container_name: co-cdp-gateway
+    image: nginx:1.27
+    healthcheck:
+      test: ["CMD-SHELL", "curl --fail --silent --write-out '{\"status\":%{http_code}}' --output /dev/null http://127.0.0.1:8080/health"]
+      start_period: 10s
+      interval: 60s
+      timeout: 10s
+      retries: 10
     depends_on:
       - organisation-app
       - authority
@@ -24,91 +30,196 @@ services:
       CDP_FORMS_HOST: 'http://forms:8080'
       CDP_DATA_SHARING_HOST: 'http://data-sharing:8080'
       CDP_ENTITY_VERIFICATION_HOST: 'http://entity-verification:8080'
+
   db:
-    extends:
-      file: compose.common.yml
-      service: db
+    container_name: co-cdp-db
+    image: postgres:16.3
+    expose:
+      - '5432'
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U$${POSTGRES_USER:-} -d $${POSTGRES_DB:-}" ]
+      interval: 3s
+      timeout: 5s
+      retries: 5
     environment:
       POSTGRES_DB: cdp
       POSTGRES_USER: cdp_user
       POSTGRES_PASSWORD: cdp123
+
   localstack:
-    extends:
-      file: compose.common.yml
-      service: localstack
+    container_name: co-cdp-localstack
+    image: localstack/localstack:3.5
+    healthcheck:
+      test: [ "CMD-SHELL", "bash", "-c", "awslocal sqs list-queues && awslocal s3 ls"]
     environment:
       # LocalStack configuration: https://docs.localstack.cloud/references/configuration/
       DEBUG: 0
+
   organisation-information-migrations:
-    extends:
-      file: compose.common.yml
-      service: organisation-information-migrations
+    container_name: co-cdp-organisation-information-migrations
+    restart: no
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: migrations-organisation-information
+    image: 'cabinetoffice/cdp-organisation-information-migrations:${IMAGE_VERSION:-latest}'
     depends_on:
       db:
         condition: service_healthy
     environment:
+      ASPNETCORE_ENVIRONMENT: Production
       MIGRATIONS_CONNECTION_STRING: "Server=db;Database=cdp;Username=cdp_user;Password=cdp123;"
       Organisation__Authority: '${Organisation__Authority:-http://gateway:${CDP_AUTHORITY_PORT:-8092}}'
+
   organisation-app:
-    extends:
-      file: compose.common.yml
-      service: organisation-app
+    container_name: co-cdp-organisation-app
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: final-organisation-app
+    image: 'cabinetoffice/cdp-organisation-app:${IMAGE_VERSION:-latest}'
+    healthcheck:
+      test: ["CMD-SHELL", "curl --fail --silent --write-out '{\"status\":%{http_code}}' --output /dev/null http://127.0.0.1:8080/health"]
+      start_period: 10s
+      interval: 60s
+      timeout: 10s
+      retries: 10
     environment:
+      ASPNETCORE_ENVIRONMENT: Production
       TenantService: '${TenantService:-http://gateway:${CDP_TENANT_PORT:-8080}}'
       OrganisationService: '${OrganisationService:-http://gateway:${CDP_ORGANISATION_PORT:-8082}}'
       PersonService: '${PersonService:-http://gateway:${CDP_PERSON_PORT:-8084}}'
       Organisation__Authority: '${Organisation__Authority:-http://gateway:${CDP_AUTHORITY_PORT:-8092}}'
+
   authority:
-    extends:
-      file: compose.common.yml
-      service: authority
+    container_name: co-cdp-authority
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: final-authority
+    image: 'cabinetoffice/cdp-authority:${IMAGE_VERSION:-latest}'
+    healthcheck:
+      test: ["CMD-SHELL", "curl --fail --silent --write-out '{\"status\":%{http_code}}' --output /dev/null http://127.0.0.1:8080/health"]
+      start_period: 10s
+      interval: 60s
+      timeout: 10s
+      retries: 10
     depends_on:
       - db
     environment:
+      ASPNETCORE_ENVIRONMENT: Production
       ConnectionStrings__OrganisationInformationDatabase: 'Server=db;Database=cdp;Username=cdp_user;Password=cdp123;'
       Issuer: 'http://gateway:${CDP_AUTHORITY_PORT:-8092}'
+
   tenant:
-    extends:
-      file: compose.common.yml
-      service: tenant
+    container_name: co-cdp-tenant
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: final-tenant
+    image: 'cabinetoffice/cdp-tenant:${IMAGE_VERSION:-latest}'
+    healthcheck:
+      test: ["CMD-SHELL", "curl --fail --silent --write-out '{\"status\":%{http_code}}' --output /dev/null http://127.0.0.1:8080/health"]
+      start_period: 10s
+      interval: 60s
+      timeout: 10s
+      retries: 10
     depends_on:
       - db
     environment:
+      ASPNETCORE_ENVIRONMENT: Production
       ConnectionStrings__OrganisationInformationDatabase: 'Server=db;Database=cdp;Username=cdp_user;Password=cdp123;'
       Organisation__Authority: '${Organisation__Authority:-http://gateway:${CDP_AUTHORITY_PORT:-8092}}'
+
   organisation:
-    extends:
-      file: compose.common.yml
-      service: organisation
+    container_name: co-cdp-organisation
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: final-organisation
+    image: 'cabinetoffice/cdp-organisation:${IMAGE_VERSION:-latest}'
+    healthcheck:
+      test: ["CMD-SHELL", "curl --fail --silent --write-out '{\"status\":%{http_code}}' --output /dev/null http://127.0.0.1:8080/health"]
+      start_period: 10s
+      interval: 60s
+      timeout: 10s
+      retries: 10
     depends_on:
       - db
     environment:
+      ASPNETCORE_ENVIRONMENT: Production
       ConnectionStrings__OrganisationInformationDatabase: 'Server=db;Database=cdp;Username=cdp_user;Password=cdp123;'
       Organisation__Authority: '${Organisation__Authority:-http://gateway:${CDP_AUTHORITY_PORT:-8092}}'
+
   person:
-    extends:
-      file: compose.common.yml
-      service: person
+    container_name: co-cdp-person
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: final-person
+    image: 'cabinetoffice/cdp-person:${IMAGE_VERSION:-latest}'
+    healthcheck:
+      test: ["CMD-SHELL", "curl --fail --silent --write-out '{\"status\":%{http_code}}' --output /dev/null http://127.0.0.1:8080/health"]
+      start_period: 10s
+      interval: 60s
+      timeout: 10s
+      retries: 10
     depends_on:
       - db
     environment:
+      ASPNETCORE_ENVIRONMENT: Production
       ConnectionStrings__OrganisationInformationDatabase: 'Server=db;Database=cdp;Username=cdp_user;Password=cdp123;'
       Organisation__Authority: '${Organisation__Authority:-http://gateway:${CDP_AUTHORITY_PORT:-8092}}'
+
   forms:
-    extends:
-      file: compose.common.yml
-      service: forms
+    container_name: co-cdp-forms
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: final-forms
+    image: 'cabinetoffice/cdp-forms:${IMAGE_VERSION:-latest}'
+    healthcheck:
+      test: ["CMD-SHELL", "curl --fail --silent --write-out '{\"status\":%{http_code}}' --output /dev/null http://127.0.0.1:8080/health"]
+      start_period: 10s
+      interval: 60s
+      timeout: 10s
+      retries: 10
     depends_on:
       - db
     environment:
+      ASPNETCORE_ENVIRONMENT: Production
       Organisation__Authority: '${Organisation__Authority:-http://gateway:${CDP_AUTHORITY_PORT:-8092}}'
+
   data-sharing:
-    extends:
-      file: compose.common.yml
-      service: data-sharing
+    container_name: co-cdp-data-sharing
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: final-data-sharing
+    image: 'cabinetoffice/cdp-data-sharing:${IMAGE_VERSION:-latest}'
+    healthcheck:
+      test: ["CMD-SHELL", "curl --fail --silent --write-out '{\"status\":%{http_code}}' --output /dev/null http://127.0.0.1:8080/health"]
+      start_period: 10s
+      interval: 60s
+      timeout: 10s
+      retries: 10
     depends_on:
       - db
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+
   entity-verification:
-    extends:
-      file: compose.common.yml
-      service: entity-verification
+    container_name: co-cdp-entity-verification
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: final-entity-verification
+    image: 'cabinetoffice/cdp-entity-verification:${IMAGE_VERSION:-latest}'
+    healthcheck:
+      test: ["CMD-SHELL", "curl --fail --silent --write-out '{\"status\":%{http_code}}' --output /dev/null http://127.0.0.1:8080/health"]
+      start_period: 10s
+      interval: 60s
+      timeout: 10s
+      retries: 10
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
