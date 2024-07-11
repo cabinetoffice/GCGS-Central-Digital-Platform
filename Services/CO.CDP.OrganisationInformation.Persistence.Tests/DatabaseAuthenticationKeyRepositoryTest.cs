@@ -15,8 +15,6 @@ public class DatabaseAuthenticationKeyRepositoryTest(PostgreSqlFixture postgreSq
         await repository.Save(authenticationKey);
 
         var found = await repository.Find(authenticationKey.Key);
-
-        //found.Should().Be(authenticationKey);
         found.As<AuthenticationKey>().Id.Should().BePositive();
     }
 
@@ -41,8 +39,7 @@ public class DatabaseAuthenticationKeyRepositoryTest(PostgreSqlFixture postgreSq
         await repository.Save(authenticationKey);
 
         var found = await repository.Find(authenticationKey.Key);
-        //found.Should().Be(authenticationKey);
-        found.Organisation.Id.Should().Be(authenticationKey.Organisation.Id);
+        found.As<AuthenticationKey>().OrganisationId.Should().Be(authenticationKey.Organisation.Id);
     }
 
     private static AuthenticationKey GivenAuthenticationKey(
