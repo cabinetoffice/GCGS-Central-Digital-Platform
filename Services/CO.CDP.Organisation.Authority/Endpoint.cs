@@ -40,7 +40,8 @@ public static class EndpointExtensions
                 var config = service.GetAuthorityConfiguration();
                 return new Model.JsonWebKeySet
                 {
-                    Keys = [new() {
+                    Keys = [new()
+                    {
                         Kty = "RSA",
                         Use = "sig",
                         Kid = "c2c3b22ac07f425eb893123de395464e",

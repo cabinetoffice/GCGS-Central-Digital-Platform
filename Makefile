@@ -1,7 +1,7 @@
 # Define Docker/ECR attributes
 AWS_ACCOUNT_ID=$$(aws sts get-caller-identity | jq -r '.Account')
 REPO_URL := $(AWS_ACCOUNT_ID).dkr.ecr.eu-west-2.amazonaws.com
-IMAGES := cdp-organisation-information-migrations cdp-data-sharing cdp-forms cdp-organisation-app cdp-organisation cdp-person cdp-tenant cdp-authority
+IMAGES := cdp-organisation-information-migrations cdp-data-sharing cdp-entity-verification cdp-forms cdp-organisation-app cdp-organisation cdp-person cdp-tenant cdp-authority
 TAGGED_IMAGES := $(addprefix cabinetoffice/,$(addsuffix :latest,$(IMAGES)))
 TAGGED_REPO_IMAGES := $(addprefix $(REPO_URL)/,$(TAGGED_IMAGES))
 

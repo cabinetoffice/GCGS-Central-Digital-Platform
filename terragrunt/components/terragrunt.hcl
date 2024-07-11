@@ -95,6 +95,13 @@ locals {
             port          = 8088
             port_host     = 8088
         }
+        entity_verification = {
+            cpu           = 256
+            memory        = 512
+            name          = "entity-verification"
+            port          = 8094
+            port_host     = 8094
+        }
         forms = {
             cpu           = 256
             memory        = 512
@@ -165,7 +172,7 @@ locals {
     }
 
     versions = {
-        postgres_engine = "16.2"
+        postgres_engine = "16.3"
     }
 
 }

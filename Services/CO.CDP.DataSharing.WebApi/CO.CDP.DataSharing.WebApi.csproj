@@ -15,7 +15,7 @@
   </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.6" />
+        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.7" />
         <PackageReference Include="DotSwashbuckle.AspNetCore" Version="3.0.10" />
         <ProjectReference Include="..\..\Libraries\CO.CDP.Swashbuckle\CO.CDP.Swashbuckle.csproj" />
         <ProjectReference Include="..\..\Libraries\CO.CDP.Configuration\CO.CDP.Configuration.csproj" />
