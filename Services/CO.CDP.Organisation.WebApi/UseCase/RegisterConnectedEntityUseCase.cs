@@ -4,14 +4,14 @@ using CO.CDP.OrganisationInformation.Persistence;
 
 namespace CO.CDP.Organisation.WebApi.UseCase;
 
-public class UpdateConnectedEntityUseCase(
+public class RegisterConnectedEntityUseCase(
     IConnectedEntityRepository connectedEntityRepository,
     IOrganisationRepository organisationRepository,
     IMapper mapper,
     Func<Guid> guidFactory)
     : IUseCase<(Guid organisationId, RegisterConnectedEntity updateConnectedEntity), bool>
 {
-    public UpdateConnectedEntityUseCase(
+    public RegisterConnectedEntityUseCase(
         IConnectedEntityRepository connectedEntityRepository,
         IOrganisationRepository organisationRepository,
         IMapper mapper)
