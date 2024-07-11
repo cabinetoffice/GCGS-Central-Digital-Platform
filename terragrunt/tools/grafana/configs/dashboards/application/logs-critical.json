@@ -304,6 +304,11 @@
           },
           {
             "selected": false,
+            "text": "/ecs/entity-verification",
+            "value": "/ecs/entity-verification"
+          },
+          {
+            "selected": false,
             "text": "/ecs/forms",
             "value": "/ecs/forms"
           },
@@ -333,7 +338,7 @@
             "value": "/ecs/tenant"
           }
         ],
-        "query": "/ecs/data-sharing, /ecs/forms, /ecs/organisation, /ecs/organisation-app, /ecs/organisation-information-migrations, /ecs/person, /ecs/tenant",
+        "query": "/ecs/data-sharing, /ecs/entity-verification, /ecs/forms, /ecs/organisation, /ecs/organisation-app, /ecs/organisation-information-migrations, /ecs/person, /ecs/tenant",
         "queryValue": "",
         "skipUrlSync": false,
         "type": "custom"
