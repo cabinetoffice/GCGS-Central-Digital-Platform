@@ -9,7 +9,7 @@ public class ApiKeyValidator(
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(apiKey);
 
-        var authKey = await repository.Find(SecretHasher.Hash(apiKey));
+        var authKey = await repository.Find(apiKey);
 
         return (authKey != null, authKey?.Organisation?.Guid, authKey?.Scopes ?? []);
     }
