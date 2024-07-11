@@ -1,5 +1,6 @@
 using CO.CDP.EntityVerification.Api;
 using CO.CDP.EntityVerification.Extensions;
+using CO.CDP.EntityVerification.SQS;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +11,7 @@ builder.Services.AddSwaggerGen(o => o.DocumentPponApi());
 
 builder.Services.AddHealthChecks();
 builder.Services.AddEntityVerificationProblemDetails();
+builder.Services.AddQueueProcessor();
 
 var app = builder.Build();
 app.UseForwardedHeaders();

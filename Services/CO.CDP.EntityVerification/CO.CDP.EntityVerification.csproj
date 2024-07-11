@@ -11,11 +11,14 @@
         <OpenApiGenerateDocumentsOnBuild>true</OpenApiGenerateDocumentsOnBuild>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <NoWarn>$(NoWarn);1591</NoWarn>
+        <UserSecretsId>bbfb8426-17cc-46a3-997f-93b4f9a01f20</UserSecretsId>
     </PropertyGroup>
 
     <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.7" />
         <PackageReference Include="DotSwashbuckle.AspNetCore" Version="3.0.10" />
+        <PackageReference Include="Amazon.Sqs" Version="0.33.0" />
+        <PackageReference Include="AWSSDK.SQS" Version="3.7.301.31" />
         <ProjectReference Include="..\..\Libraries\CO.CDP.Functional\CO.CDP.Functional.csproj" />
         <ProjectReference Include="..\..\Libraries\CO.CDP.Swashbuckle\CO.CDP.Swashbuckle.csproj" />
     </ItemGroup>

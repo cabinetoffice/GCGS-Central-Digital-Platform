@@ -1,3 +1,7 @@
+using CO.CDP.EntityVerification.Events;
+using CO.CDP.EntityVerification.Services;
+using CO.CDP.EntityVerification.SQS;
+
 namespace CO.CDP.EntityVerification.Extensions;
 
 public static class ServiceCollectionExtensions
@@ -6,6 +10,17 @@ public static class ServiceCollectionExtensions
     {
         { typeof(BadHttpRequestException), (StatusCodes.Status422UnprocessableEntity, "UNPROCESSABLE_ENTITY") },
     };
+
+    public static IServiceCollection AddQueueProcessor(this IServiceCollection services)
+    {
+        services.AddSingleton<IRequestListener, RequestListener>();
+        services.AddSingleton<IPponService, PponService>();
+        services.AddSingleton<OrganisationRegisteredEvent>();
+        services.AddSingleton<IQueueProcessor, QueueProcessor>();
+
+        services.AddHostedService<QueueBackgroundService>();
+        return services;
+    }
 
     public static IServiceCollection AddEntityVerificationProblemDetails(this IServiceCollection services)
     {
