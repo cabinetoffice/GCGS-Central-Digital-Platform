@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CO.CDP.OrganisationInformation.Persistence;
 
-public class AuthenticationKeyRepository(OrganisationInformationContext context) : IAuthenticationKeyRepository
+public class DatabaseAuthenticationKeyRepository(OrganisationInformationContext context) : IAuthenticationKeyRepository
 {
     public async Task<AuthenticationKey?> Find(string key)
     {

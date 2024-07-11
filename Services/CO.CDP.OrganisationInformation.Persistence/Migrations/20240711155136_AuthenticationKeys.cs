@@ -36,12 +36,6 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "ix_authentication_keys_key",
-                table: "authentication_keys",
-                column: "key",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
                 name: "ix_authentication_keys_organisation_id",
                 table: "authentication_keys",
                 column: "organisation_id");

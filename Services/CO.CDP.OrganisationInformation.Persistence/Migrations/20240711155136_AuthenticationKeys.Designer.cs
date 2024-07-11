@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CO.CDP.OrganisationInformation.Persistence.Migrations
 {
     [DbContext(typeof(OrganisationInformationContext))]
-    [Migration("20240710152448_AuthenticationKeys")]
+    [Migration("20240711155136_AuthenticationKeys")]
     partial class AuthenticationKeys
     {
         /// <inheritdoc />
@@ -20,7 +20,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.6")
+                .HasAnnotation("ProductVersion", "8.0.7")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "connected_entity_type", new[] { "organisation", "individual", "trust_or_trustee" });
@@ -127,10 +127,6 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
 
                     b.HasKey("Id")
                         .HasName("pk_authentication_keys");
-
-                    b.HasIndex("Key")
-                        .IsUnique()
-                        .HasDatabaseName("ix_authentication_keys_key");
 
                     b.HasIndex("OrganisationId")
                         .HasDatabaseName("ix_authentication_keys_organisation_id");

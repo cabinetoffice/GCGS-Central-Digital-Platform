@@ -66,7 +66,7 @@ public static class Extensions
     public static IServiceCollection AddApiKeyAuthenticationServices(this IServiceCollection services)
     {
         services.AddScoped<IApiKeyValidator, ApiKeyValidator>();
-        services.AddScoped<IAuthenticationKeyRepository, AuthenticationKeyRepository>();
+        services.AddScoped<IAuthenticationKeyRepository, DatabaseAuthenticationKeyRepository>();
         return services;
     }
 
