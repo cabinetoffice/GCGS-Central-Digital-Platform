@@ -1,0 +1,27 @@
+@page "/organisation/{id}/supplier-information/connected-entity-start"
+@model CO.CDP.OrganisationApp.Pages.Supplier.ConnectedEntityStartModel
+
+<a href="/organisation/@Model.Id/supplier-information" class="govuk-back-link">Back</a>
+
+<main class="govuk-main-wrapper">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <form class="form" method="post">
+                <h1 class="govuk-heading-l">
+                    Connected person
+                </h1>
+                <p class="govuk-body">
+                    A ‘connected person’ is someone who influences or controls your company.
+                </p>
+                <p class="govuk-body">
+                    It includes <a href="https://www.gov.uk/guidance/people-with-significant-control-pscs" target="_blank" >people with significant control (opens in new tab)</a> and any other individual or company other than yourself that has a declarable interest in your organisation.
+                </p>
+                <p class="govuk-body">
+                    For example, a director, a trust, a majority shareholder or a parent or subsidiary company.
+                </p>
+
+                <button class="govuk-button govuk-!-margin-top-4" type="submit">Continue</button>
+            </form>
+        </div>
+    </div>
+</main>
