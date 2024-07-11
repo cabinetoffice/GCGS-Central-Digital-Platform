@@ -68,12 +68,12 @@ variable "public_subnets_cidr_blocks" {
 }
 
 variable "role_cloudwatch_events_arn" {
-  description = ""
+  description = "ARN of the IAM role used by CloudWatch Events"
   type        = string
 }
 
 variable "role_cloudwatch_events_name" {
-  description = ""
+  description = "Name of the IAM role used by CloudWatch Events"
   type        = string
 }
 
@@ -93,12 +93,12 @@ variable "role_ecs_task_exec_name" {
 }
 
 variable "role_service_deployer_step_function_arn" {
-  description = ""
+  description = "ARN of the IAM role used by the Service Deployer Step Function"
   type        = string
 }
 
 variable "role_service_deployer_step_function_name" {
-  description = ""
+  description = "Name of the IAM role used by the Service Deployer Step Function"
   type        = string
 }
 
