@@ -161,3 +161,8 @@ aws-push-to-ecr: build-docker ## Build, tag and push Docker images to ECR
 	aws ecr get-login-password --region eu-west-2 | docker login --username AWS --password-stdin $(REPO_URL)
 	$(foreach image,$(IMAGES),docker push $(REPO_URL)/$(image);)
 .PHONY: aws-push-to-ecr
+
+COMMIT_REF ?= "HEAD"
+version-commit: ## Determines the last commit hash
+	@git rev-parse --short "$(COMMIT_REF)"
+.PHONY: version-commit

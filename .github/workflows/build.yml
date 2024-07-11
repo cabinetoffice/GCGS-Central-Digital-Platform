@@ -54,8 +54,23 @@ jobs:
       CDP_DATA_SHARING_PORT: 8855
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Determine the version
+        id: version
+        run: |
+          COMMIT_REF=$(if [ "$GITHUB_EVENT_NAME" == "pull_request" ]; then echo "${{ github.event.pull_request.head.sha }}"; else echo "${GITHUB_SHA:-HEAD}"; fi)
+          CURRENT_COMMIT=$(make version-commit COMMIT_REF=$COMMIT_REF)
+          DATE=$(date +%Y%m%d%H%M%S)
+          echo "Current commit: $CURRENT_COMMIT"
+          echo "Date: $DATE"
+          echo "date_version=${DATE}" >> $GITHUB_OUTPUT
+          echo "image_version=${CURRENT_COMMIT}" >> $GITHUB_OUTPUT
+          echo "image_additional_versions=${DATE}" >> $GITHUB_OUTPUT
       - name: Build
         run: make build-docker
+        env:
+          IMAGE_VERSION: ${{ steps.version.outputs.image_version }}
       - name: Start services
         run: make up
       - name: Stop services
