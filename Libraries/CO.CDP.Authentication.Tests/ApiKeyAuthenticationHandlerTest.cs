@@ -65,7 +65,7 @@ public class ApiKeyAuthenticationHandlerTest
     }
 
     [Fact]
-    public async Task AuthenticateAsync_ValidApiKey_ReturnsSuccessWithEsenderClaimType()
+    public async Task AuthenticateAsync_ValidApiKey_ReturnsSuccessWithOrganisationKeyClaimType()
     {
         var orgId = Guid.NewGuid();
         await SetHandlerAndApiKeyHeader(ValidApiKey);
