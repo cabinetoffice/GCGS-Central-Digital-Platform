@@ -12,26 +12,24 @@ public class DynamicFormsPageModel(IFormsEngine formsEngine, ITempDataService te
     public Guid SectionId { get; set; }
     public Guid OrganisationId { get; set; }
     public bool IsFirstQuestion => IsCurrentQuestionFirst();
-
     public Guid? PreviousQuestionId { get; private set; }
+
+    [BindProperty]
+    public string? YesNoAnswer { get; set; }
 
     public async Task OnGetAsync(Guid organisationId, Guid formId, Guid sectionId, Guid? questionId)
     {
         OrganisationId = organisationId;
         FormId = formId;
         SectionId = sectionId;
-        SectionWithQuestions = await formsEngine.LoadFormSectionAsync(formId, sectionId);
+
+        await LoadSectionWithQuestionsAsync(formId, sectionId);
 
         if (SectionWithQuestions?.Questions != null && SectionWithQuestions.Questions.Any())
         {
-            if (questionId.HasValue)
-            {
-                CurrentQuestion = await formsEngine.GetCurrentQuestion(formId, sectionId, questionId.Value);
-            }
-            else
-            {
-                CurrentQuestion = SectionWithQuestions.Questions.FirstOrDefault();
-            }
+            CurrentQuestion = questionId.HasValue
+                ? await formsEngine.GetCurrentQuestion(formId, sectionId, questionId.Value)
+                : SectionWithQuestions.Questions.FirstOrDefault();
 
             SaveCurrentQuestionIdToTempData(CurrentQuestion?.Id);
             SetPreviousQuestionId();
@@ -43,12 +41,20 @@ public class DynamicFormsPageModel(IFormsEngine formsEngine, ITempDataService te
         OrganisationId = organisationId;
         FormId = formId;
         SectionId = sectionId;
-        SectionWithQuestions = await formsEngine.LoadFormSectionAsync(formId, sectionId);
+
+        await LoadSectionWithQuestionsAsync(formId, sectionId);
 
         if (SectionWithQuestions?.Questions != null && SectionWithQuestions.Questions.Any())
         {
+            CurrentQuestion = SectionWithQuestions.Questions.FirstOrDefault(q => q.Id == currentQuestionId);
+
             if (action == "next")
             {
+                if (!ValidateCurrentQuestion())
+                {
+                    return Page();
+                }
+
                 CurrentQuestion = await formsEngine.GetNextQuestion(FormId, SectionId, currentQuestionId);
             }
             else if (action == "back")
@@ -69,12 +75,17 @@ public class DynamicFormsPageModel(IFormsEngine formsEngine, ITempDataService te
     }
 
     private static readonly Dictionary<FormQuestionType, string> FormQuestionPartials = new()
+        {
+            { FormQuestionType.NoInput, "_FormElementNoInput" },
+            { FormQuestionType.YesOrNo, "_FormElementYesNoInput" },
+            { FormQuestionType.FileUpload, "_FormElementFileUpload" },
+            { FormQuestionType.Date, "_FormElementDateInput" }
+        };
+
+    private async Task LoadSectionWithQuestionsAsync(Guid formId, Guid sectionId)
     {
-        { FormQuestionType.NoInput, "_FormElementNoInput" },
-        { FormQuestionType.YesOrNo, "_FormElementYesNoInput" },
-        { FormQuestionType.FileUpload, "_FormElementFileUpload" },
-        { FormQuestionType.Date, "_FormElementDateInput" }
-    };
+        SectionWithQuestions = await formsEngine.LoadFormSectionAsync(formId, sectionId);
+    }
 
     private void SaveCurrentQuestionIdToTempData(Guid? questionId)
     {
@@ -92,18 +103,36 @@ public class DynamicFormsPageModel(IFormsEngine formsEngine, ITempDataService te
 
         var currentIndex = SectionWithQuestions.Questions.FindIndex(q => q.Id == CurrentQuestion.Id);
 
-        if (currentIndex > 0)
-        {
-            PreviousQuestionId = SectionWithQuestions.Questions[currentIndex - 1].Id;
-        }
-        else
-        {
-            PreviousQuestionId = null;
-        }
+        PreviousQuestionId = currentIndex > 0
+            ? SectionWithQuestions.Questions[currentIndex - 1].Id
+            : (Guid?)null;
     }
 
     private bool IsCurrentQuestionFirst()
     {
         return CurrentQuestion?.Id == SectionWithQuestions?.Questions?.FirstOrDefault()?.Id;
+    }
+
+    private bool ValidateCurrentQuestion()
+    {
+        if (CurrentQuestion?.Type == FormQuestionType.YesOrNo)
+        {
+            return ValidateYesNoAnswer();
+        }
+
+        // Future validation for other question types can be added here
+
+        return true;
+    }
+
+    private bool ValidateYesNoAnswer()
+    {
+        if (string.IsNullOrEmpty(YesNoAnswer))
+        {
+            ModelState.AddModelError("YesNoAnswer", "Please select an option.");
+            return false;
+        }
+
+        return true;
     }
 }

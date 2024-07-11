@@ -1,6 +1,7 @@
 using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.Pages.Forms;
 using FluentAssertions;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moq;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages.Forms;
@@ -34,8 +35,7 @@ public class DynamicFormsPageTests
 
         await _pageModel.OnGetAsync(_organisationId, _formId, _sectionId, questionId);
 
-        _pageModel.SectionWithQuestions.Should().BeEquivalentTo(sectionQuestionsResponse);
-        _pageModel.CurrentQuestion.Should().BeEquivalentTo(currentQuestion);
+        VerifySectionAndCurrentQuestion(sectionQuestionsResponse, currentQuestion);
     }
 
     [Fact]
@@ -46,8 +46,7 @@ public class DynamicFormsPageTests
 
         await _pageModel.OnGetAsync(_organisationId, _formId, _sectionId, null);
 
-        _pageModel.SectionWithQuestions.Should().BeEquivalentTo(sectionQuestionsResponse);
-        _pageModel.CurrentQuestion.Should().BeEquivalentTo(firstQuestion);
+        VerifySectionAndCurrentQuestion(sectionQuestionsResponse, firstQuestion);
     }
 
     [Fact]
@@ -75,6 +74,28 @@ public class DynamicFormsPageTests
 
         _pageModel.CurrentQuestion.Should().BeEquivalentTo(previousQuestion);
     }
+
+    [Fact]
+    public async Task OnPostAsync_ShouldReturnPageWithErrors_WhenYesNoAnswerIsNotProvided()
+    {
+        var sectionQuestionsResponse = SetupMockLoadFormSectionAsync();
+        var currentQuestion = sectionQuestionsResponse.Questions!.First(q => q.Type == FormQuestionType.YesOrNo);
+        var currentQuestionId = currentQuestion.Id;
+
+        _pageModel.SectionWithQuestions = sectionQuestionsResponse;
+        _pageModel.CurrentQuestion = currentQuestion;
+
+        SetupMockGetCurrentQuestion(currentQuestion);
+
+        _pageModel.YesNoAnswer = null;
+
+        var result = await _pageModel.OnPostAsync(_organisationId, _formId, _sectionId, currentQuestionId, "next");
+
+        result.Should().BeOfType<PageResult>();
+        _pageModel.ModelState.IsValid.Should().BeFalse();
+        _pageModel.ModelState["YesNoAnswer"]?.Errors.Should().ContainSingle(e => e.ErrorMessage == "Please select an option.");
+    }
+
 
     [Fact]
     public void GetPartialViewName_ShouldReturnCorrectPartialViewName_WhenQuestionTypeIsProvided()
@@ -112,6 +133,12 @@ public class DynamicFormsPageTests
         _formsEngineMock
             .Setup(f => f.GetPreviousQuestion(_formId, _sectionId, It.IsAny<Guid>()))
             .ReturnsAsync(previousQuestion);
+    }
+
+    private void VerifySectionAndCurrentQuestion(SectionQuestionsResponse sectionQuestionsResponse, FormQuestion currentQuestion)
+    {
+        _pageModel.SectionWithQuestions.Should().BeEquivalentTo(sectionQuestionsResponse);
+        _pageModel.CurrentQuestion.Should().BeEquivalentTo(currentQuestion);
     }
 
     private SectionQuestionsResponse CreateSectionQuestionsResponse()

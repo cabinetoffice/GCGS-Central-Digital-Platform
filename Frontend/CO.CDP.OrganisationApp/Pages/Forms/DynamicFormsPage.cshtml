@@ -1,4 +1,4 @@
-@page "/forms/{organisationId:guid}/{formId:guid}/{sectionId:guid}/{questionId:guid?}"
+@page "/{organisationId:guid}/forms/{formId:guid}/sections/{sectionId:guid}/{questionId:guid?}"
 @model CO.CDP.OrganisationApp.Pages.Forms.DynamicFormsPageModel
 @inject CO.CDP.OrganisationApp.IFormsEngine FormsEngine
 
@@ -7,7 +7,7 @@
 
     if (!Model.IsFirstQuestion && Model.PreviousQuestionId.HasValue)
     {
-        backUrl = $"/forms/{Model.OrganisationId}/{Model.FormId}/{Model.SectionId}/{Model.PreviousQuestionId}";
+        backUrl = $"/{Model.OrganisationId}/forms/{Model.FormId}/sections/{Model.SectionId}/{Model.PreviousQuestionId}";
     }
 }
 
