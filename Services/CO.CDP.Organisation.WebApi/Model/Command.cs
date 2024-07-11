@@ -181,6 +181,7 @@ public record ConnectedEntityLookup
 {
     public required string Name { get; init; }
     public required Guid EntityId { get; init; }
+    public required Uri Uri { get; init; }
 }
 
 public record OrganisationQuery

@@ -144,7 +144,9 @@ public class WebApiToPersistenceProfile : Profile
             .ForMember(m => m.PostalCode, o => o.MapFrom(m => m.Address.PostalCode))
             .ForMember(m => m.CountryName, o => o.MapFrom(m => m.Address.CountryName));
 
-        CreateMap<Persistence.ConnectedEntityLookup, Model.ConnectedEntityLookup>().ReverseMap();
+        CreateMap<Persistence.ConnectedEntityLookup, Model.ConnectedEntityLookup>()
+            .ForMember(m => m.Uri, o => o.MapFrom((src, _, _, context) => new Uri($"https://cdp.cabinetoffice.gov.uk/organisations/{context.Items["OrganisationId"]}/connected-entities/{src.EntityId}")))
+            .ReverseMap();
     }
 
     public class IdentifiersResolver : IValueResolver<RegisterOrganisation, Persistence.Organisation,

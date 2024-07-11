@@ -293,30 +293,7 @@ public static class EndpointExtensions
 
     public static RouteGroupBuilder UseConnectedEntityEndpoints(this RouteGroupBuilder app)
     {
-
         app.MapGet("/{organisationId}/connected-entities",
-            async (Guid organisationId, IUseCase<Guid, IEnumerable<ConnectedEntity>> useCase) =>
-               await useCase.Execute(organisationId)
-                   .AndThen(entities => entities != null ? Results.Ok(entities) : Results.NotFound()))
-           .Produces<List<ConnectedEntity>>(StatusCodes.Status200OK, "application/json")
-           .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
-           .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
-           .ProducesProblem(StatusCodes.Status422UnprocessableEntity)
-           .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError)
-           .WithOpenApi(operation =>
-           {
-               operation.OperationId = "GetConnectedEntities";
-               operation.Description = "Get connected entities information by Organisation ID.";
-               operation.Summary = "Get connected entities information by Organisation ID.";
-               operation.Responses["200"].Description = "Connected entities details.";
-               operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
-               operation.Responses["404"].Description = "Connected entities information not found.";
-               operation.Responses["422"].Description = "Unprocessable entity.";
-               operation.Responses["500"].Description = "Internal server error.";
-               return operation;
-           });
-
-        app.MapGet("/{organisationId}/connected-entities-summary",
             async (Guid organisationId, IUseCase<Guid, IEnumerable<ConnectedEntityLookup>> useCase) =>
                await useCase.Execute(organisationId)
                    .AndThen(entities => entities != null ? Results.Ok(entities) : Results.NotFound()))
@@ -327,7 +304,7 @@ public static class EndpointExtensions
            .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError)
            .WithOpenApi(operation =>
            {
-               operation.OperationId = "GetConnectedEntitiesSummary";
+               operation.OperationId = "GetConnectedEntities";
                operation.Description = "Get connected entities summary by Organisation ID.";
                operation.Summary = "Get connected entities information by Organisation ID.";
                operation.Responses["200"].Description = "Connected entities details.";
@@ -369,7 +346,7 @@ public static class EndpointExtensions
             .ProducesProblem(StatusCodes.Status400BadRequest)
             .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
             .ProducesProblem(StatusCodes.Status404NotFound)
-            .ProducesProblem(StatusCodes.Status422UnprocessableEntity)            
+            .ProducesProblem(StatusCodes.Status422UnprocessableEntity)
             .ProducesProblem(StatusCodes.Status500InternalServerError)
             .WithOpenApi(operation =>
             {
