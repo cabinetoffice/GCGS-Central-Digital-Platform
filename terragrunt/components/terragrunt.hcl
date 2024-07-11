@@ -95,6 +95,13 @@ locals {
             port          = 8088
             port_host     = 8088
         }
+        entity_verification = {
+            cpu           = 256
+            memory        = 512
+            name          = "entity-verification"
+            port          = 8094
+            port_host     = 8094
+        }
         forms = {
             cpu           = 256
             memory        = 512
