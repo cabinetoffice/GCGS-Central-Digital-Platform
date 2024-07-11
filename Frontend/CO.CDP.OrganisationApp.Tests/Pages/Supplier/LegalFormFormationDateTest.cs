@@ -164,12 +164,13 @@ public class LegalFormFormationDateTest
     {
         SetValidDate();
         _model.Id = Guid.NewGuid();
-        var legalForm = new LegalForm() {
-                            LawRegistered = "law",
-                            RegisteredLegalForm = "legal form",
-                            RegistrationDate = new DateTimeOffset(2023, 6, 15, 0, 0, 0, TimeSpan.FromHours(0)),
-                            RegisteredUnderAct2006 = true
-                        };
+        var legalForm = new LegalForm()
+        {
+            LawRegistered = "law",
+            RegisteredLegalForm = "legal form",
+            RegistrationDate = new DateTimeOffset(2023, 6, 15, 0, 0, 0, TimeSpan.FromHours(0)),
+            RegisteredUnderAct2006 = true
+        };
         _mockTempDataService.Setup(t => t.GetOrDefault<LegalForm>(LegalForm.TempDataKey)).Returns(legalForm);
 
         var result = await _model.OnPost();

@@ -35,7 +35,7 @@ public class SupplierBasicInformationModel(IOrganisationClient organisationClien
         ComposedOrganisation composed;
         try
         {
-            composed = await organisationClient.GetComposedOrganisation(id);            
+            composed = await organisationClient.GetComposedOrganisation(id);
         }
         catch (ApiException ex) when (ex.StatusCode == 404)
         {

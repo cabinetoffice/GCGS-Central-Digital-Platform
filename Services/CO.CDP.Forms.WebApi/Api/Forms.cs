@@ -13,19 +13,19 @@ namespace CO.CDP.Forms.WebApi.Api;
 
 public static class EndpointExtensions
 {
-     private static Dictionary<Guid, (FormSection section, List<FormQuestion> questions)> _sections = Enumerable.Range(1, 5)
-            .Select(_ => Guid.NewGuid())
-            .ToDictionary(id => id, id =>
-            {
-                var sectionId = Guid.NewGuid();
-                return (new FormSection
-                {
-                    Id = sectionId,
-                    Title = "Financial Information",
-                    AllowsMultipleAnswerSets = true,
-                },
-                new List<FormQuestion>
-                {
+    private static Dictionary<Guid, (FormSection section, List<FormQuestion> questions)> _sections = Enumerable.Range(1, 5)
+           .Select(_ => Guid.NewGuid())
+           .ToDictionary(id => id, id =>
+           {
+               var sectionId = Guid.NewGuid();
+               return (new FormSection
+               {
+                   Id = sectionId,
+                   Title = "Financial Information",
+                   AllowsMultipleAnswerSets = true,
+               },
+               new List<FormQuestion>
+               {
                     new FormQuestion
                     {
                         Id = Guid.NewGuid(),
@@ -60,8 +60,8 @@ public static class EndpointExtensions
                         IsRequired = true,
                         Options = new FormQuestionOptions()
                     }
-                });
-            });
+               });
+           });
 
     public static void UseFormsEndpoints(this WebApplication app)
     {

@@ -20,7 +20,7 @@ public class ConnectedEntity : IEntityDate
 
     public DateTimeOffset? RegisteredDate { get; set; }
     public string? RegisterName { get; set; }
-        
+
     public required Organisation SupplierOrganisation { get; set; }
 
     public DateTimeOffset? StartDate { get; set; }

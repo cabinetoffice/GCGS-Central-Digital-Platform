@@ -36,7 +36,7 @@ public class LegalFormFormationDateModel(
     public string? RegistrationDate { get; set; }
 
     public async Task<IActionResult> OnGet()
-    {        
+    {
         try
         {
             await organisationClient.GetOrganisationAsync(Id);

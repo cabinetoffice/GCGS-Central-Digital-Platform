@@ -1,6 +1,6 @@
 namespace CO.CDP.OrganisationInformation.Persistence.Forms;
 
-public class SharedConsent: IEntityDate
+public class SharedConsent : IEntityDate
 {
     public int Id { get; set; }
     public required Guid Guid { get; set; }
