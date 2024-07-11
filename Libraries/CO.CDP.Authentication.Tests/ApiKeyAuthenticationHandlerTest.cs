@@ -52,7 +52,8 @@ public class ApiKeyAuthenticationHandlerTest
     public async Task AuthenticateAsync_InvalidApiKey_ReturnsFail()
     {
         await SetHandlerAndApiKeyHeader(InvalidApiKey);
-        _apiKeyValidatorMock.Setup(v => v.Validate(InvalidApiKey)).ReturnsAsync(false);
+        _apiKeyValidatorMock.Setup(v => v.Validate(InvalidApiKey))
+            .ReturnsAsync((false, null, []));
 
         var result = await _handler.AuthenticateAsync();
 
@@ -64,10 +65,31 @@ public class ApiKeyAuthenticationHandlerTest
     }
 
     [Fact]
-    public async Task AuthenticateAsync_ValidApiKey_ReturnsSuccess()
+    public async Task AuthenticateAsync_ValidApiKey_ReturnsSuccessWithEsenderClaimType()
     {
+        var orgId = Guid.NewGuid();
         await SetHandlerAndApiKeyHeader(ValidApiKey);
-        _apiKeyValidatorMock.Setup(v => v.Validate(ValidApiKey)).ReturnsAsync(true);
+        _apiKeyValidatorMock.Setup(v => v.Validate(ValidApiKey))
+            .ReturnsAsync((true, orgId, ["ADMIN", "MANAGER"]));
+
+        var result = await _handler.AuthenticateAsync();
+
+        result.Succeeded.Should().BeTrue();
+
+        var claims = result.Principal?.Claims;
+        claims.Should().NotBeNull();
+        claims.Should().Contain(c => c.Type == "type" && c.Value == "e-senders");
+        claims.Should().Contain(c => c.Type == "org" && c.Value == orgId.ToString());
+        claims.Should().Contain(c => c.Type == "scope" && c.Value == "ADMIN MANAGER");
+    }
+
+    [Fact]
+    public async Task AuthenticateAsync_ValidApiKey_ReturnsSuccessWithServiceKeyClaimType()
+    {
+        var orgId = Guid.NewGuid();
+        await SetHandlerAndApiKeyHeader(ValidApiKey);
+        _apiKeyValidatorMock.Setup(v => v.Validate(ValidApiKey))
+            .ReturnsAsync((true, null, []));
 
         var result = await _handler.AuthenticateAsync();
 
@@ -76,6 +98,6 @@ public class ApiKeyAuthenticationHandlerTest
         result.Principal.Should().NotBeNull()
             .And.BeOfType<ClaimsPrincipal>()
             .Which.Identity.Should().BeAssignableTo<ClaimsIdentity>()
-            .And.BeOfType<ClaimsIdentity>().Which.Claims.Should().ContainSingle(c => c.Type == "ApiKey" && c.Value == ValidApiKey);
+            .And.BeOfType<ClaimsIdentity>().Which.Claims.Should().ContainSingle(c => c.Type == "type" && c.Value == "service-key");
     }
 }

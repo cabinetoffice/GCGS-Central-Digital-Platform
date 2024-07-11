@@ -1,16 +1,16 @@
-using Microsoft.Extensions.Configuration;
+using CO.CDP.OrganisationInformation.Persistence;
 
 namespace CO.CDP.Authentication;
 
-public class ApiKeyValidator(IConfiguration configuration) : IApiKeyValidator
+public class ApiKeyValidator(
+    IAuthenticationKeyRepository repository) : IApiKeyValidator
 {
-    public Task<bool> Validate(string? apiKey)
+    public async Task<(bool valid, Guid? organisation, List<string> scopes)> Validate(string? apiKey)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(apiKey);
 
-        var cdpApiKeys = configuration.GetSection("CdpApiKeys").Get<string[]>()
-            ?? throw new Exception("Missing configuration key: CdpApiKeys");
+        var authKey = await repository.Find(SecretHasher.Hash(apiKey));
 
-        return Task.FromResult(cdpApiKeys.Contains(apiKey));
+        return (authKey != null, authKey?.Organisation?.Guid, authKey?.Scopes ?? []);
     }
 }

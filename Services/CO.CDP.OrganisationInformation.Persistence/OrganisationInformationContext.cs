@@ -18,6 +18,7 @@ public class OrganisationInformationContext(DbContextOptions<OrganisationInforma
     public DbSet<Form> Forms { get; set; } = null!;
     public DbSet<SharedConsent> SharedConsents { get; set; } = null!;
     public DbSet<ConnectedEntity> ConnectedEntities { get; set; } = null!;
+    public DbSet<AuthenticationKey> AuthenticationKeys { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -133,6 +134,11 @@ public class OrganisationInformationContext(DbContextOptions<OrganisationInforma
 
         modelBuilder.Entity<Address>()
             .ToTable("addresses");
+
+        modelBuilder.Entity<AuthenticationKey>(e =>
+        {
+            e.Property(e => e.Scopes).HasJsonColumn([], PropertyBuilderExtensions.ListComparer<string>());
+        });
 
         modelBuilder.Entity<Person>()
             .HasMany(p => p.Tenants)

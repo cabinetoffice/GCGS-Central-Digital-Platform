@@ -1,3 +1,5 @@
+using CO.CDP.Authentication.AuthorizationPolicy;
+using CO.CDP.OrganisationInformation.Persistence;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -64,13 +66,19 @@ public static class Extensions
     public static IServiceCollection AddApiKeyAuthenticationServices(this IServiceCollection services)
     {
         services.AddScoped<IApiKeyValidator, ApiKeyValidator>();
+        services.AddScoped<IAuthenticationKeyRepository, AuthenticationKeyRepository>();
         return services;
     }
 
-    public static AuthorizationBuilder AddFallbackAuthorizationPolicy(this IServiceCollection services)
+    public static AuthorizationBuilder AddOrganisationAuthorization(this IServiceCollection services)
     {
         return services
             .AddAuthorizationBuilder()
+            .AddPolicy(Constants.ESenderPolicy, policy =>
+            {
+                policy.RequireAuthenticatedUser();
+                policy.RequireClaim("type", "e-senders");
+            })
             .SetFallbackPolicy(
                 new AuthorizationPolicyBuilder()
                     .AddAuthenticationSchemes(JwtBearerOrApiKeyScheme)
