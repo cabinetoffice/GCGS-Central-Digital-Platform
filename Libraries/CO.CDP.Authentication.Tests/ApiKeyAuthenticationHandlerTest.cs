@@ -78,7 +78,7 @@ public class ApiKeyAuthenticationHandlerTest
 
         var claims = result.Principal?.Claims;
         claims.Should().NotBeNull();
-        claims.Should().Contain(c => c.Type == "type" && c.Value == "e-senders");
+        claims.Should().Contain(c => c.Type == "channel" && c.Value == "organisation-key");
         claims.Should().Contain(c => c.Type == "org" && c.Value == orgId.ToString());
         claims.Should().Contain(c => c.Type == "scope" && c.Value == "ADMIN MANAGER");
     }
@@ -98,6 +98,6 @@ public class ApiKeyAuthenticationHandlerTest
         result.Principal.Should().NotBeNull()
             .And.BeOfType<ClaimsPrincipal>()
             .Which.Identity.Should().BeAssignableTo<ClaimsIdentity>()
-            .And.BeOfType<ClaimsIdentity>().Which.Claims.Should().ContainSingle(c => c.Type == "type" && c.Value == "service-key");
+            .And.BeOfType<ClaimsIdentity>().Which.Claims.Should().ContainSingle(c => c.Type == "channel" && c.Value == "service-key");
     }
 }

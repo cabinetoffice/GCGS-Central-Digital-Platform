@@ -74,10 +74,10 @@ public static class Extensions
     {
         return services
             .AddAuthorizationBuilder()
-            .AddPolicy(Constants.ESenderPolicy, policy =>
+            .AddPolicy(Constants.OrganisationKeyPolicy, policy =>
             {
                 policy.RequireAuthenticatedUser();
-                policy.RequireClaim("type", "e-senders");
+                policy.RequireClaim("channel", "organisation-key");
             })
             .SetFallbackPolicy(
                 new AuthorizationPolicyBuilder()

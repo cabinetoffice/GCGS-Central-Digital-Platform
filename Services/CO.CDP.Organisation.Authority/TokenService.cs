@@ -76,7 +76,7 @@ public class TokenService(
 
         List<Claim> claims = [
             new Claim(JwtClaimTypes.Subject, urn),
-            new Claim("type", "one-login")
+            new Claim("channel", "one-login")
         ];
 
         var tenantLookup = await GetTenant(urn);

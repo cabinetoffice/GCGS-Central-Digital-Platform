@@ -157,7 +157,7 @@ public static class EndpointExtensions
                 operation.Responses["404"].Description = "Organisation matching the API key was not found.";
                 operation.Responses["500"].Description = "Internal server error.";
                 return operation;
-            }).RequireAuthorization(AuthorizationPolicyConstants.ESenderPolicy);
+            }).RequireAuthorization(AuthorizationPolicyConstants.OrganisationKeyPolicy);
 
         app.MapGet("/lookup",
              async ([FromQuery] string? name, [FromQuery] string? identifier, IUseCase<OrganisationQuery, Model.Organisation?> useCase) =>

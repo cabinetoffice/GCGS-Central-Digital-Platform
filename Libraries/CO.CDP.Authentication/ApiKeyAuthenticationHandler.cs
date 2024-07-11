@@ -33,7 +33,7 @@ public class ApiKeyAuthenticationHandler(
         var (valid, organisation, scopes) = await apiKeyValidator.Validate(providedApiKey!);
         if (valid)
         {
-            List<Claim> claims = [new Claim("type", organisation == null ? "service-key" : "e-senders")];
+            List<Claim> claims = [new Claim("channel", organisation == null ? "service-key" : "organisation-key")];
             if (organisation.HasValue)
             {
                 claims.Add(new Claim("org", organisation.Value.ToString()));
