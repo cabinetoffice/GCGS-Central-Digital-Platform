@@ -7,19 +7,19 @@ using Moq;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages.Supplier.ConnectedEntity;
 
-public class ConnectedEntityStartTest
+public class ConnectedPersonDeclarationTest
 {
-    private readonly ConnectedEntityStartModel _model;
+    private readonly ConnectedPersonDeclarationModel _model;
 
-    public ConnectedEntityStartTest()
+    public ConnectedPersonDeclarationTest()
     {
-        _model = new ConnectedEntityStartModel();
+        _model = new ConnectedPersonDeclarationModel();
     }
 
     [Fact]
     public void OnGet_ShouldReturnPageResult()
     {
-        var model = new ConnectedEntityStartModel();
+        var model = new ConnectedPersonDeclarationModel();
 
         var result = model.OnGet();
 
@@ -29,7 +29,7 @@ public class ConnectedEntityStartTest
     [Fact]
     public void OnPost_ShouldRedirectToConnectedQuestionPageWithId()
     {
-        var model = new ConnectedEntityStartModel { Id = Guid.NewGuid() };
+        var model = new ConnectedPersonDeclarationModel { Id = Guid.NewGuid() };
 
         var result = model.OnPost();
 

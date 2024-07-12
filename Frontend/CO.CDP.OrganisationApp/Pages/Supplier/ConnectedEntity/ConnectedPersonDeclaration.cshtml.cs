@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 namespace CO.CDP.OrganisationApp.Pages.Supplier;
 
 [Authorize]
-public class ConnectedEntityStartModel() : PageModel
+public class ConnectedPersonDeclarationModel() : PageModel
 {
 
     [BindProperty(SupportsGet = true)]
