@@ -45,7 +45,10 @@ public class OidcEvents(IConfiguration configuration) : OpenIdConnectEvents
 
         using var rsa = RSA.Create();
         rsa.ImportFromPem(privateKey);
-        var credential = new SigningCredentials(new RsaSecurityKey(rsa), SecurityAlgorithms.RsaSha256);
+        var credential = new SigningCredentials(new RsaSecurityKey(rsa), SecurityAlgorithms.RsaSha256)
+        {
+            CryptoProviderFactory = new CryptoProviderFactory { CacheSignatureProviders = false }
+        };
 
         var now = DateTime.UtcNow;
 
