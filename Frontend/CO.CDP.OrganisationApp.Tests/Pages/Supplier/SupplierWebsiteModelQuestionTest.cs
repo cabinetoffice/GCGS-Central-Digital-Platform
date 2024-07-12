@@ -107,6 +107,7 @@ public class SupplierWebsiteModelQuestionTest
             completedTradeAssurance: false,
             completedOperationType: false,
             completedLegalForm: false,
+            completedConnectedPerson: false,
             tradeAssurances: null,
             legalForm: null,
             qualifications: null);
