@@ -16,6 +16,18 @@
 
     var basicInformationLink = $"/organisation/{Model.Id}/supplier-information/{(Model.HasSupplierType ? "basic-information" : "individual-or-org")}";
     var connectedEntityLink = $"/organisation/{Model.Id}/supplier-information/connected-person-declaration";
+
+    string NoOfConnectedPersonText()
+    {
+        int count = Model.ConnectedEntities.Count;
+
+        if (count == 0)
+        {
+            return string.Empty;
+        }
+
+        return $"{count} Connected person{(count > 1 ? "s" : "")}";
+    }
 }
 
 <a href="/organisation/@Model.Id" class="govuk-back-link">
@@ -48,10 +60,10 @@
                         <a class="govuk-link govuk-link--no-visited-state" href="@connectedEntityLink">Connected persons</a>
                     </dt>
                     <dd class="govuk-summary-list__value">
-
+                        @NoOfConnectedPersonText()
                     </dd>
                     <dd class="govuk-summary-list__actions">
-                        <strong class="govuk-tag">Not started</strong>
+                        <strong class="govuk-tag">@GetStepStatusDescription(Model.ConnectedPersonStepStatus)</strong>
                     </dd>
                 </div>
 

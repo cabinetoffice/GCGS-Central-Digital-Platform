@@ -18,10 +18,10 @@ public class SupplierInformationSummaryTest
     }
 
     [Theory]
-    [InlineData(null, false, false, false, false, false, false, false, false, false, StepStatus.NotStarted)]
-    [InlineData(SupplierType.Individual, true, false, false, false, false, false, false, false, false, StepStatus.InProcess)]
-    [InlineData(SupplierType.Individual, true, true, true, true, true, true, true, false, false, StepStatus.Completed)]
-    [InlineData(SupplierType.Organisation, true, true, true, true, true, true, true, true, true, StepStatus.Completed)]
+    [InlineData(null, false, false, false, false, false, false, false, false, false, false, StepStatus.NotStarted, StepStatus.NotStarted)]
+    [InlineData(SupplierType.Individual, true, false, false, false, false, false, false, false, false, false, StepStatus.InProcess, StepStatus.NotStarted)]
+    [InlineData(SupplierType.Individual, true, true, true, true, true, true, true, false, false, false, StepStatus.Completed, StepStatus.NotStarted)]
+    [InlineData(SupplierType.Organisation, true, true, true, true, true, true, true, true, true, true, StepStatus.Completed, StepStatus.Completed)]
     public async Task OnGet_BasicInformationStepStatus(
             SupplierType? supplierType,
             bool completedRegAddress,
@@ -33,7 +33,9 @@ public class SupplierInformationSummaryTest
             bool completedTradeAssurance,
             bool completedOperationType,
             bool completedLegalForm,
-            StepStatus expectedStatus)
+            bool completedConnectedPerson,
+            StepStatus expectedStatusSupplier,
+            StepStatus expectedStatusConnectedPerson)
     {
         var supplierInformation = new SupplierInformation(
             organisationName: "FakeOrg",
@@ -48,6 +50,7 @@ public class SupplierInformationSummaryTest
             completedTradeAssurance: completedTradeAssurance,
             completedOperationType: completedOperationType,
             completedLegalForm: completedLegalForm,
+            completedConnectedPerson: completedConnectedPerson,
             tradeAssurances: null,
             legalForm: null,
             qualifications: null);
@@ -58,13 +61,26 @@ public class SupplierInformationSummaryTest
         await _model.OnGet(Guid.NewGuid());
 
         _model.Name.Should().Be("FakeOrg");
-        _model.BasicInformationStepStatus.Should().Be(expectedStatus);
+        _model.BasicInformationStepStatus.Should().Be(expectedStatusSupplier);
+        _model.ConnectedPersonStepStatus.Should().Be(expectedStatusConnectedPerson);
     }
 
     [Fact]
     public async Task OnGet_PageNotFound()
     {
         _organisationClientMock.Setup(o => o.GetOrganisationSupplierInformationAsync(It.IsAny<Guid>()))
+            .ThrowsAsync(new ApiException("Unexpected error", 404, "", default, null));
+
+        var result = await _model.OnGet(Guid.NewGuid());
+
+        result.Should().BeOfType<RedirectResult>()
+            .Which.Url.Should().Be("/page-not-found");
+    }
+
+    [Fact]
+    public async Task OnGet_PageNotFoundOnConnectedEntities()
+    {
+        _organisationClientMock.Setup(o => o.GetConnectedEntitiesAsync(It.IsAny<Guid>()))
             .ThrowsAsync(new ApiException("Unexpected error", 404, "", default, null));
 
         var result = await _model.OnGet(Guid.NewGuid());
