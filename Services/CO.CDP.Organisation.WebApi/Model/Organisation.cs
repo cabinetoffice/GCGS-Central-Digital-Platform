@@ -40,6 +40,7 @@ public record SupplierInformation
     public bool CompletedTradeAssurance { get; set; }
     public bool CompletedOperationType { get; set; }
     public bool CompletedLegalForm { get; set; }
+    public bool CompletedConnectedPerson { get; set; }
     public List<TradeAssurance> TradeAssurances { get; set; } = [];
     public LegalForm? LegalForm { get; set; }
     public List<Qualification> Qualifications { get; set; } = [];

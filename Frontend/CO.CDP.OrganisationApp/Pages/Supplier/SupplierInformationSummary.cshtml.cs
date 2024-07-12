@@ -14,6 +14,12 @@ public class SupplierInformationSummaryModel(IOrganisationClient organisationCli
     [BindProperty]
     public StepStatus BasicInformationStepStatus { get; set; }
 
+    [BindProperty]
+    public StepStatus ConnectedPersonStepStatus { get; set; }
+
+    [BindProperty]
+    public ICollection<ConnectedEntityLookup> ConnectedEntities { get; set; } = [];
+
     [BindProperty(SupportsGet = true)]
     public Guid Id { get; set; }
 
@@ -25,7 +31,14 @@ public class SupplierInformationSummaryModel(IOrganisationClient organisationCli
         SupplierInformation? supplierInfo;
         try
         {
-            supplierInfo = await organisationClient.GetOrganisationSupplierInformationAsync(id);
+            var getSupplierInfoTask = organisationClient.GetOrganisationSupplierInformationAsync(id);
+            var getConnectedEntitiesTask = organisationClient.GetConnectedEntitiesAsync(id);
+
+            await Task.WhenAll(getSupplierInfoTask, getConnectedEntitiesTask);
+
+            supplierInfo = getSupplierInfoTask.Result;
+            ConnectedEntities = getConnectedEntitiesTask.Result;
+
             HasSupplierType = supplierInfo.SupplierType.HasValue;
         }
         catch (ApiException ex) when (ex.StatusCode == 404)
@@ -35,7 +48,7 @@ public class SupplierInformationSummaryModel(IOrganisationClient organisationCli
 
         Name = supplierInfo.OrganisationName;
         BasicInformationStepStatus = GetBasicInfoStepStatus(supplierInfo);
-
+        ConnectedPersonStepStatus = GetConnectedPersonStepStatus(supplierInfo);
         return Page();
     }
 
@@ -57,6 +70,13 @@ public class SupplierInformationSummaryModel(IOrganisationClient organisationCli
 
             _ => StepStatus.NotStarted,
         };
+    }
+
+    private static StepStatus GetConnectedPersonStepStatus(SupplierInformation info)
+    {
+        if (info == null) return StepStatus.NotStarted;
+
+        return info.CompletedConnectedPerson != true ? StepStatus.NotStarted : StepStatus.Completed;
     }
 }
 
