@@ -10,7 +10,7 @@ resource "aws_iam_role_policy_attachment" "ecs_task_access_secrets" {
 }
 
 resource "aws_iam_policy" "cloudwatch_event_invoke_deployer_step_function" {
-  name        = "${local.name_prefix}-cloudwatch-start-step-function"
+  name        = "${local.name_prefix}-invoke-deployer-step-function"
   description = "Policy for CloudWatch Events to invoke Step Functions"
   policy      = data.aws_iam_policy_document.cloudwatch_event_invoke_deployer_step_function.json
 }
