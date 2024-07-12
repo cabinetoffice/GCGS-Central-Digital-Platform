@@ -29,7 +29,7 @@ public static class EndpointExtensions
                     GrantTypesSupported = [GrantTypes.ClientCredentials],
                     SubjectTypesSupported = ["public"],
                     ClaimTypesSupported = ["normal"],
-                    ClaimsSupported = [JwtClaimTypes.Subject, "ten"]
+                    ClaimsSupported = [JwtClaimTypes.Subject, "channel", "ten"]
                 };
             })
             .Produces<OpenIdConfiguration>(StatusCodes.Status200OK);

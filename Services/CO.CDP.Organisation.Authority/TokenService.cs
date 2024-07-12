@@ -74,7 +74,10 @@ public class TokenService(
     {
         var config = configService.GetAuthorityConfiguration();
 
-        List<Claim> claims = [new Claim(JwtClaimTypes.Subject, urn)];
+        List<Claim> claims = [
+            new Claim(JwtClaimTypes.Subject, urn),
+            new Claim("channel", "one-login")
+        ];
 
         var tenantLookup = await GetTenant(urn);
         if (tenantLookup != null)
