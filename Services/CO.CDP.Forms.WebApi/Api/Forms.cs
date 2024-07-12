@@ -1,19 +1,18 @@
-using System.Reflection;
-using CO.CDP.Functional;
+using CO.CDP.Forms.WebApi.Model;
 using CO.CDP.OrganisationInformation;
 using CO.CDP.Swashbuckle.Filter;
 using CO.CDP.Swashbuckle.Security;
 using CO.CDP.Swashbuckle.SwaggerGen;
-using CO.CDP.Forms.WebApi.Model;
 using DotSwashbuckle.AspNetCore.SwaggerGen;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
+using System.Reflection;
 
 namespace CO.CDP.Forms.WebApi.Api;
 
 public static class EndpointExtensions
 {
-    private static Dictionary<Guid, (FormSection section, List<FormQuestion> questions)> _sections = Enumerable.Range(1, 5)
+    private static readonly Dictionary<Guid, (FormSection section, List<FormQuestion> questions)> _sections = Enumerable.Range(1, 5)
            .Select(_ => Guid.NewGuid())
            .ToDictionary(id => id, id =>
            {
@@ -26,8 +25,7 @@ public static class EndpointExtensions
                },
                new List<FormQuestion>
                {
-                    new FormQuestion
-                    {
+                    new() {
                         Id = Guid.NewGuid(),
                         Title = "Upload accounts or statements for your 2 most recent financial years.",
                         Description = "If you do not have 2 years, you can upload your most recent financial year. You will need to enter the financial year end date.",
@@ -35,16 +33,14 @@ public static class EndpointExtensions
                         IsRequired = true,
                         Options = new FormQuestionOptions()
                     },
-                    new FormQuestion
-                    {
+                    new() {
                         Id = Guid.NewGuid(),
                         Title = "Were your accounts audited?",
                         Type = FormQuestionType.YesOrNo,
                         IsRequired = true,
                         Options = new FormQuestionOptions()
                     },
-                    new FormQuestion
-                    {
+                    new() {
                         Id = Guid.NewGuid(),
                         Title = "Upload your accounts",
                         Description = "Upload your most recent 2 financial years. If you do not have 2, upload your most recent financial year.",
@@ -52,8 +48,7 @@ public static class EndpointExtensions
                         IsRequired = true,
                         Options = new FormQuestionOptions()
                     },
-                    new FormQuestion
-                    {
+                    new() {
                         Id = Guid.NewGuid(),
                         Title = "What is the financial year end date for the information you uploaded?",
                         Type = FormQuestionType.Date,
@@ -72,7 +67,7 @@ public static class EndpointExtensions
                     var response = new SectionQuestionsResponse
                     {
                         Section = section,
-                        Questions = questions.ToList()
+                        Questions = [.. questions]
                     };
 
                     return Results.Ok(response);

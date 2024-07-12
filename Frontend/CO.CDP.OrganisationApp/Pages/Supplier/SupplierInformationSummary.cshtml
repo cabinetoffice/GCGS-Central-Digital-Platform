@@ -1,4 +1,5 @@
 @page "/organisation/{id}/supplier-information"
+@using CO.CDP.OrganisationApp.Pages.Forms
 @model CO.CDP.OrganisationApp.Pages.Supplier.SupplierInformationSummaryModel
 
 @{
@@ -98,7 +99,7 @@
             <dl class="govuk-summary-list">
                 <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">
-                        <a class="govuk-link govuk-link--no-visited-state" href="#">Financial information</a>
+                        <a class="govuk-link govuk-link--no-visited-state" href="/@Model.Id/forms/@FormsTemporaryIds.FORMID/sections/@FormsTemporaryIds.SECTIONID">Financial information</a>
                     </dt>
                     <dd class="govuk-summary-list__value">
 

@@ -1,4 +1,5 @@
 using CO.CDP.Configuration.ForwardedHeaders;
+using CO.CDP.Forms.WebApiClient;
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp;
 using CO.CDP.Person.WebApiClient;
@@ -6,10 +7,8 @@ using CO.CDP.Tenant.WebApiClient;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
-using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
-using Microsoft.IdentityModel.Tokens;
 using static IdentityModel.OidcConstants;
 using ISession = CO.CDP.OrganisationApp.ISession;
 
@@ -44,6 +43,17 @@ builder.Services.AddTransient(provider =>
     return factory.GetTempData(context);
 });
 builder.Services.AddScoped<ITempDataService, TempDataService>();
+builder.Services.AddTransient<IFormsEngine, FormsEngine>();
+
+var formsServiceUrl = builder.Configuration.GetValue<string>("FormsService")
+            ?? throw new Exception("Missing configuration key: FormsService.");
+builder.Services.AddHttpClient("FormsHttpClient")
+    .AddHttpMessageHandler<ApiBearerTokenHandler>();
+builder.Services.AddTransient<IFormsClient, FormsClient>(
+    sc => new FormsClient(formsServiceUrl,
+        sc.GetRequiredService<IHttpClientFactory>().CreateClient("FormsHttpClient")));
+
+builder.Services.AddTransient<IFormsEngine, FormsEngine>();
 
 builder.Services.AddTransient<ApiBearerTokenHandler>();
 
