@@ -1,0 +1,53 @@
+@page "/{organisationId:guid}/forms/{formId:guid}/sections/{sectionId:guid}/{questionId:guid?}"
+@model CO.CDP.OrganisationApp.Pages.Forms.DynamicFormsPageModel
+@inject CO.CDP.OrganisationApp.IFormsEngine FormsEngine
+
+@{
+    var backUrl = $"/organisation/{Model.OrganisationId}/supplier-information";
+
+    if (!Model.IsFirstQuestion && Model.PreviousQuestionId.HasValue)
+    {
+        backUrl = $"/{Model.OrganisationId}/forms/{Model.FormId}/sections/{Model.SectionId}/{Model.PreviousQuestionId}";
+    }
+}
+
+<a href="@backUrl" class="govuk-back-link">Back</a>
+
+<main class="govuk-main-wrapper">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <partial name="_ErrorSummary" model="@ModelState" />
+            <form method="post">
+                <input type="hidden" name="OrganisationId" value="@Model.OrganisationId" />
+                <input type="hidden" name="FormId" value="@Model.FormId" />
+                <input type="hidden" name="SectionId" value="@Model.SectionId" />
+                <input type="hidden" name="CurrentQuestionId" value="@Model.CurrentQuestion?.Id" />
+                <input type="hidden" name="Action" value="next" id="action" />
+
+                <fieldset class="govuk-fieldset">
+                    @if (Model.CurrentQuestion != null)
+                    {
+                        var partialViewName = Model.GetPartialViewName(Model.CurrentQuestion.Type);
+                        if (partialViewName != null)
+                        {
+                            var viewModel = new CO.CDP.OrganisationApp.Models.FormQuestionViewModel
+                            {
+                                FormQuestion = Model.CurrentQuestion,
+                                Answer = Model.Answer
+                            };
+                            @await Html.PartialAsync(partialViewName, viewModel)
+                        }
+                        else
+                        {
+                            <p>Unsupported question type: @Model.CurrentQuestion.Type</p>
+                        }
+                    }
+                </fieldset>
+
+                <button type="submit" class="govuk-button" data-module="govuk-button">
+                    Continue
+                </button>
+            </form>
+        </div>
+    </div>
+</main>
