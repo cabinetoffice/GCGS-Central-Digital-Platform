@@ -33,7 +33,7 @@ builder.Services.AddTenantProblemDetails();
 
 builder.Services.AddJwtBearerAndApiKeyAuthentication(builder.Configuration, builder.Environment);
 //builder.Services.AddAuthorization();
-builder.Services.AddFallbackAuthorizationPolicy();
+builder.Services.AddOrganisationAuthorization();
 builder.Services.AddHttpContextAccessor();
 
 

@@ -1,6 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Query.Internal;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CO.CDP.OrganisationInformation.Persistence;
 
@@ -47,7 +45,7 @@ public class ConnectedEntity : IEntityDate
         public required string LastName { get; set; }
         public DateTimeOffset? DateOfBirth { get; set; }
         public string? Nationality { get; set; }
-        public ICollection<ControlCondition> ControlCondition { get; set; } = [];
+        public List<ControlCondition> ControlCondition { get; set; } = [];
         public ConnectedPersonType ConnectedType { get; set; }
         public Guid? PersonId { get; set; }
         public DateTimeOffset CreatedOn { get; set; }
@@ -63,7 +61,7 @@ public class ConnectedEntity : IEntityDate
         public DateTimeOffset? InsolvencyDate { get; set; }
         public string? RegisteredLegalForm { get; set; }
         public string? LawRegistered { get; set; }
-        public ICollection<ControlCondition> ControlCondition { get; set; } = [];
+        public List<ControlCondition> ControlCondition { get; set; } = [];
         public Guid? OrganisationId { get; set; }
         public DateTimeOffset CreatedOn { get; set; }
         public DateTimeOffset UpdatedOn { get; set; }
@@ -71,7 +69,7 @@ public class ConnectedEntity : IEntityDate
 
     public enum ControlCondition
     {
-        OwnsShares,
+        OwnsShares = 1,
         HasVotingRights,
         CanAppointOrRemoveDirectors,
         HasOtherSignificantInfluenceOrControl
@@ -79,27 +77,27 @@ public class ConnectedEntity : IEntityDate
 
     public enum ConnectedEntityType
     {
-        Organisation,
+        Organisation = 1,
         Individual,
         TrustOrTrustee
     }
 
     public enum ConnectedPersonType
     {
-        Individual,
+        Individual = 1,
         TrustOrTrustee
     }
 
     public enum ConnectedPersonCategory
     {
-        PersonWithSignificantControl,
+        PersonWithSignificantControl = 1,
         DirectorOrIndividualWithTheSameResponsibilities,
         AnyOtherIndividualWithSignificantInfluenceOrControl
     }
 
     public enum ConnectedOrganisationCategory
     {
-        RegisteredCompany,
+        RegisteredCompany = 1,
         DirectorOrTheSameResponsibilities,
         ParentOrSubsidiaryCompany,
         ACompanyYourOrganisationHasTakenOver,

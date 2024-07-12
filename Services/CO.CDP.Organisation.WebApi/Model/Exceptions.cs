@@ -7,3 +7,4 @@ public class InvalidUpdateBuyerInformationCommand(string message, Exception? cau
 public class SupplierInfoNotExistException(string message, Exception? cause = null) : Exception(message, cause);
 public class InvalidUpdateSupplierInformationCommand(string message, Exception? cause = null) : Exception(message, cause);
 public class InvalidQueryException(string message, Exception? cause = null) : Exception(message, cause);
+public class InvalidUpdateConnectedEntityCommand(string message, Exception? cause = null) : Exception(message, cause);

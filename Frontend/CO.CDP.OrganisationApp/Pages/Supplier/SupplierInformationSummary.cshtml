@@ -13,7 +13,8 @@
         };
     }
 
-    var basicInformationLink = $"/organisation/{Model.Id}/supplier-information/{(Model.HasSupplierType ? "basic-information" : "individual-or-org")}";    
+    var basicInformationLink = $"/organisation/{Model.Id}/supplier-information/{(Model.HasSupplierType ? "basic-information" : "individual-or-org")}";
+    var connectedEntityLink = $"/organisation/{Model.Id}/supplier-information/connected-person-declaration";
 }
 
 <a href="/organisation/@Model.Id" class="govuk-back-link">
@@ -43,7 +44,7 @@
             <dl class="govuk-summary-list">
                 <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">
-                        <a class="govuk-link govuk-link--no-visited-state" href="#">Connected persons</a>
+                        <a class="govuk-link govuk-link--no-visited-state" href="@connectedEntityLink">Connected persons</a>
                     </dt>
                     <dd class="govuk-summary-list__value">
 
