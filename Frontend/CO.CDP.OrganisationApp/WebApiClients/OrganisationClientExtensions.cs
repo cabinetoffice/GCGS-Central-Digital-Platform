@@ -20,6 +20,11 @@ internal static class OrganisationClientExtensions
         };
     }
 
+    internal static async Task<ICollection<ConnectedEntityLookup>> GetConnectedEntities(this IOrganisationClient organisationClient, Guid organisationId)
+    {
+        return await organisationClient.GetConnectedEntitiesAsync(organisationId);
+    }
+
     internal static Task UpdateBuyerOrganisationType(this IOrganisationClient organisationClient,
         Guid organisationId,
         string buyerOrganisationType)

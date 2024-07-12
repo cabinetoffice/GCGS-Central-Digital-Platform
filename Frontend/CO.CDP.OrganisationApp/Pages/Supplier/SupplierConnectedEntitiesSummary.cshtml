@@ -1,0 +1,79 @@
+@page "/organisation/{id}/supplier-information/connected-entities-summary"
+@model CO.CDP.OrganisationApp.Pages.Supplier.ConnectedEntitiesSummaryModel
+
+@{
+    var hasError = ((TagBuilder)Html.ValidationMessageFor(m => m.HasConnectedEntity)).HasInnerHtml;
+}
+
+<a href="/organisation/@Model.Id/supplier-information/basic-information" class="govuk-back-link">Back</a>
+
+<main class="govuk-main-wrapper">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <partial name="_ErrorSummary" model="@Model.ModelState" />
+        </div>
+        <div class="govuk-grid-column-full">
+            <h1 class="govuk-heading-l">
+                You have added @(Model.ConnectedEntities.Count == 1 ? "1 connected person" : $"{Model.ConnectedEntities.Count} connected persons")
+            </h1>
+
+            @foreach (var ce in Model.ConnectedEntities)
+            {
+                <dl class="govuk-summary-list ros-add-to-a-list">
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            @ce.Name
+                        </dt>
+                        <dd class="govuk-summary-list__value"></dd>
+                        <dd class="govuk-summary-list__actions">
+                            <ul class="govuk-summary-list__actions-list">
+                                <li class="govuk-summary-list__actions-list-item">
+                                    <a class="govuk-link" href="#">Change</a>
+                                </li>
+                                <li class="govuk-summary-list__actions-list-item">
+                                    <a class="govuk-link" href="#">Remove</a>
+                                </li>
+                            </ul>
+                        </dd>
+                    </div>
+                </dl>
+            }
+
+            <div class="govuk-form-group @(hasError ? "govuk-form-group--error" : "")">
+                <form class="form" method="post">
+                    <fieldset class="govuk-fieldset" data-required="" data-error="Select yes if you need to add another connected person" aria-required="true">
+                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                            <h2 class="govuk-fieldset__heading">
+                                Add another connected person?
+                            </h2>
+                        </legend>
+                        @if (hasError)
+                        {
+                            <p id="qualification-option-error" class="govuk-error-message">
+                                <span class="govuk-visually-hidden">Error:</span> Select an option
+                            </p>
+                        }
+                        <div class="govuk-radios govuk-radios--inline" data-module="govuk-radios">
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input" id="conditional-YES" name="HasConnectedEntity" type="radio"
+                                        value="true" data-aria-controls="conditional-YES" @(Model.HasConnectedEntity == true ? "checked" : "")>
+                                <label class="govuk-label govuk-radios__label" for="conditional-YES">Yes</label>
+                            </div>
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input" id="conditional-NO" name="HasConnectedEntity" type="radio"
+                                        value="false" data-aria-controls="conditional-NO" @(Model.HasConnectedEntity == false ? "checked" : "")>
+                                <label class="govuk-label govuk-radios__label" for="conditional-NO">No</label>
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    <div class="govuk-button-group govuk-!-margin-top-6">
+                        <button class="govuk-button" data-module="govuk-button">
+                            Continue
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</main>
