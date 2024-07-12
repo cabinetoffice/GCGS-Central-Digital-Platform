@@ -1,7 +1,6 @@
 using CO.CDP.EntityVerification.Api;
 using CO.CDP.EntityVerification.Extensions;
 using CO.CDP.EntityVerification.Persistence;
-using CO.CDP.EntityVerification.SQS;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);

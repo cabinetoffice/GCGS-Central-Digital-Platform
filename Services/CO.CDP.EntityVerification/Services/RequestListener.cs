@@ -1,8 +1,6 @@
 using Amazon.SQS.Model;
 using CO.CDP.EntityVerification.Events;
 using CO.CDP.EntityVerification.Model;
-using CO.CDP.EntityVerification.SQS;
-using Microsoft.Extensions.Primitives;
 using System.Text.Json;
 
 namespace CO.CDP.EntityVerification.Services;
@@ -20,7 +18,7 @@ public class RequestListener : IRequestListener
         _logger = logger;
     }
 
-    public void Register(IQueueProcessor messageReceiver)
+    public void Register(QueueBackgroundService messageReceiver)
     {
         messageReceiver.OnNewMessage += NewMessage;
     }
@@ -29,12 +27,12 @@ public class RequestListener : IRequestListener
     {
         _logger.LogInformation("New Message Received.");
 
-        if (msg.MessageAttributes.ContainsKey("TypeOfMessage"))
+        if (msg.MessageAttributes.TryGetValue("TypeOfMessage", out MessageAttributeValue? value))
         {
-            if (msg.MessageAttributes["TypeOfMessage"].StringValue == OrganisationRegisteredMessageType)
+            if (value.StringValue == OrganisationRegisteredMessageType)
             {
                 var newOrg = JsonSerializer.Deserialize<OrganisationRegisteredMessage>(msg.Body);
-                _newOrgProcessor.Action(newOrg);
+                _newOrgProcessor.Action(newOrg!);
             }
         }
     }

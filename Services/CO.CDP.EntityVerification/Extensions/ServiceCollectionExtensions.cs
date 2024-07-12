@@ -1,6 +1,6 @@
 using CO.CDP.EntityVerification.Events;
+using CO.CDP.EntityVerification.Persistence;
 using CO.CDP.EntityVerification.Services;
-using CO.CDP.EntityVerification.SQS;
 
 namespace CO.CDP.EntityVerification.Extensions;
 
@@ -16,7 +16,7 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<IRequestListener, RequestListener>();
         services.AddSingleton<IPponService, PponService>();
         services.AddSingleton<OrganisationRegisteredEventHandler>();
-        services.AddSingleton<IQueueProcessor, QueueProcessor>();
+        services.AddSingleton<IServiceProviderWrapper, ServiceProviderWrapper>();
         services.AddHostedService<QueueBackgroundService>();
 
         return services;

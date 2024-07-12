@@ -8,11 +8,15 @@ public class OrganisationRegisteredEventHandler : IEventHandler
 {
     private readonly IPponService _pponService;
     private readonly IServiceProvider _serviceProvider;
+    private readonly IServiceProviderWrapper _spWrapper;
 
-    public OrganisationRegisteredEventHandler(IPponService pponService, IServiceProvider serviceProvider)
+    public OrganisationRegisteredEventHandler(IPponService pponService,
+        IServiceProvider serviceProvider,
+        IServiceProviderWrapper spWrapper)
     {
         _pponService = pponService;
         _serviceProvider = serviceProvider;
+        _spWrapper = spWrapper;
     }
 
     public void Action(EvMessage msg)
@@ -20,11 +24,11 @@ public class OrganisationRegisteredEventHandler : IEventHandler
         OrganisationRegisteredMessage newOrg = (OrganisationRegisteredMessage)msg;
         var pponid = _pponService.GeneratePponId(newOrg.Scheme, newOrg.GovIdentifier);
 
-        Ppon newIdentifier = new Ppon() { PponId  = pponid };
+        Ppon newIdentifier = new() { PponId  = pponid };
 
         using (var scope = _serviceProvider.CreateScope())
         {
-            var dbContext = scope.ServiceProvider.GetRequiredService<EntityValidationContext>();
+            var dbContext = _spWrapper.GetRequiredService(scope.ServiceProvider);
             DatabasePponRepository db = new DatabasePponRepository(dbContext);
 
             db.Save(newIdentifier);
