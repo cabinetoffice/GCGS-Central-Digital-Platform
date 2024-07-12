@@ -30,9 +30,18 @@ public class ApiKeyAuthenticationHandler(
             return AuthenticateResult.NoResult();
         }
 
-        if (await apiKeyValidator.Validate(providedApiKey!))
+        var (valid, organisation, scopes) = await apiKeyValidator.Validate(providedApiKey!);
+        if (valid)
         {
-            List<Claim> claims = [new Claim("ApiKey", providedApiKey)];
+            List<Claim> claims = [new Claim("channel", organisation == null ? "service-key" : "organisation-key")];
+            if (organisation.HasValue)
+            {
+                claims.Add(new Claim("org", organisation.Value.ToString()));
+            }
+            if (scopes.Count > 0)
+            {
+                claims.Add(new Claim("scope", string.Join(" ", scopes)));
+            }
             var identity = new ClaimsIdentity(claims, Scheme.Name);
             var ticket = new AuthenticationTicket(new ClaimsPrincipal(identity), Scheme.Name);
             return AuthenticateResult.Success(ticket);
