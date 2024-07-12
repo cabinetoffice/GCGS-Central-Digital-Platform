@@ -57,6 +57,8 @@ public class SupplierInformationSummaryTest
 
         _organisationClientMock.Setup(o => o.GetOrganisationSupplierInformationAsync(It.IsAny<Guid>()))
             .ReturnsAsync(supplierInformation);
+        _organisationClientMock.Setup(o => o.GetConnectedEntitiesAsync(It.IsAny<Guid>()))
+            .ReturnsAsync(ConnectedEntities);
 
         await _model.OnGet(Guid.NewGuid());
 
@@ -88,4 +90,10 @@ public class SupplierInformationSummaryTest
         result.Should().BeOfType<RedirectResult>()
             .Which.Url.Should().Be("/page-not-found");
     }
+
+    private static List<ConnectedEntityLookup> ConnectedEntities =>
+    [
+         new(Guid.NewGuid(), "e1",It.IsAny<Uri>()),
+         new(Guid.NewGuid(), "e2",It.IsAny<Uri>()),
+    ];
 }
