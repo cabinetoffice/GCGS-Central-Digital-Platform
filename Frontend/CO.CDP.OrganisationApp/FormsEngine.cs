@@ -48,25 +48,15 @@ public class FormsEngine(IFormsClient formsApiClient, ITempDataService tempDataS
 
     public async Task<Models.FormQuestion?> GetNextQuestion(Guid formId, Guid sectionId, Guid currentQuestionId)
     {
-        var section = await LoadFormSectionAsync(formId, sectionId);
-        var questions = section.Questions;
-
-        if (questions == null)
-        {
-            return null;
-        }
-
-        var currentIndex = questions.FindIndex(q => q.Id == currentQuestionId);
-
-        if (currentIndex >= 0 && currentIndex < questions.Count - 1)
-        {
-            return questions[currentIndex + 1];
-        }
-
-        return null;
+        return await GetAdjacentQuestion(formId, sectionId, currentQuestionId, 1);
     }
 
     public async Task<Models.FormQuestion?> GetPreviousQuestion(Guid formId, Guid sectionId, Guid currentQuestionId)
+    {
+        return await GetAdjacentQuestion(formId, sectionId, currentQuestionId, -1);
+    }
+
+    private async Task<Models.FormQuestion?> GetAdjacentQuestion(Guid formId, Guid sectionId, Guid currentQuestionId, int offset)
     {
         var section = await LoadFormSectionAsync(formId, sectionId);
         var questions = section.Questions;
@@ -78,9 +68,13 @@ public class FormsEngine(IFormsClient formsApiClient, ITempDataService tempDataS
 
         var currentIndex = questions.FindIndex(q => q.Id == currentQuestionId);
 
-        if (currentIndex > 0)
+        if (currentIndex >= 0)
         {
-            return questions[currentIndex - 1];
+            var newIndex = currentIndex + offset;
+            if (newIndex >= 0 && newIndex < questions.Count)
+            {
+                return questions[newIndex];
+            }
         }
 
         return null;
