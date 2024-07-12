@@ -8,7 +8,7 @@ using System.ComponentModel.DataAnnotations;
 namespace CO.CDP.OrganisationApp.Pages.Supplier;
 
 [Authorize]
-public class ConnectedEntitiesSummaryModel(
+public class ConnectedPersonSummaryModel(
     IOrganisationClient organisationClient) : PageModel
 {
     [BindProperty(SupportsGet = true)]
@@ -45,6 +45,6 @@ public class ConnectedEntitiesSummaryModel(
             return Page();
         }
 
-        return RedirectToPage(HasConnectedEntity == true ? "TODO" : "SupplierBasicInformation", new { Id });
+        return RedirectToPage(HasConnectedEntity == true ? "TODO" : "/Supplier/SupplierInformationSummary", new { Id });
     }
 }
