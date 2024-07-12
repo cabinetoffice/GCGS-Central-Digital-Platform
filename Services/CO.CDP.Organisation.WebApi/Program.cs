@@ -22,15 +22,19 @@ builder.Services.AddAutoMapper(typeof(WebApiToPersistenceProfile));
 builder.Services.AddDbContext<OrganisationInformationContext>(o =>
     o.UseNpgsql(builder.Configuration.GetConnectionString("OrganisationInformationDatabase") ?? ""));
 builder.Services.AddScoped<IOrganisationRepository, DatabaseOrganisationRepository>();
+builder.Services.AddScoped<IConnectedEntityRepository, DatabaseConnectedEntityRepository>();
 builder.Services.AddScoped<IPersonRepository, DatabasePersonRepository>();
 builder.Services.AddScoped<IUseCase<RegisterOrganisation, Organisation>, RegisterOrganisationUseCase>();
 builder.Services.AddScoped<IUseCase<Guid, Organisation?>, GetOrganisationUseCase>();
 builder.Services.AddScoped<IUseCase<OrganisationQuery, Organisation?>, LookupOrganisationUseCase>();
 builder.Services.AddScoped<IUseCase<string, IEnumerable<Organisation>>, GetOrganisationsUseCase>();
 builder.Services.AddScoped<IUseCase<Guid, SupplierInformation?>, GetSupplierInformationUseCase>();
+builder.Services.AddScoped<IUseCase<Guid, CO.CDP.Organisation.WebApi.Model.ConnectedEntity?>, GetConnectedEntityUseCase>();
+builder.Services.AddScoped<IUseCase<Guid, IEnumerable<CO.CDP.Organisation.WebApi.Model.ConnectedEntityLookup>>, GetConnectedEntitiesUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, UpdateOrganisation), bool>, UpdateOrganisationUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, UpdateBuyerInformation), bool>, UpdateBuyerInformationUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, UpdateSupplierInformation), bool>, UpdateSupplierInformationUseCase>();
+builder.Services.AddScoped<IUseCase<(Guid, RegisterConnectedEntity), bool>, RegisterConnectedEntityUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, DeleteSupplierInformation), bool>, DeleteSupplierInformationUseCase>();
 builder.Services.AddOrganisationProblemDetails();
 
@@ -72,6 +76,11 @@ app.MapGroup("/organisations")
 app.MapGroup("/organisations")
     .UseSupplierInformationEndpoints()
     .WithTags("Organisation - Supplier Information");
+
+app.MapGroup("/organisations")
+    .UseConnectedEntityEndpoints()
+    .WithTags("Organisation - Connected Entity");
+
 
 app.Run();
 public abstract partial class Program;

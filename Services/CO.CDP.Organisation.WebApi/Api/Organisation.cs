@@ -8,6 +8,7 @@ using CO.CDP.Swashbuckle.SwaggerGen;
 using DotSwashbuckle.AspNetCore.SwaggerGen;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
+using System.Data.SqlTypes;
 using System.Reflection;
 using AuthorizationPolicyConstants = CO.CDP.Authentication.AuthorizationPolicy.Constants;
 
@@ -290,8 +291,81 @@ public static class EndpointExtensions
 
         return app;
     }
-}
 
+    public static RouteGroupBuilder UseConnectedEntityEndpoints(this RouteGroupBuilder app)
+    {
+        app.MapGet("/{organisationId}/connected-entities",
+            async (Guid organisationId, IUseCase<Guid, IEnumerable<ConnectedEntityLookup>> useCase) =>
+               await useCase.Execute(organisationId)
+                   .AndThen(entities => entities != null ? Results.Ok(entities) : Results.NotFound()))
+           .Produces<List<ConnectedEntityLookup>>(StatusCodes.Status200OK, "application/json")
+           .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
+           .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
+           .ProducesProblem(StatusCodes.Status422UnprocessableEntity)
+           .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError)
+           .WithOpenApi(operation =>
+           {
+               operation.OperationId = "GetConnectedEntities";
+               operation.Description = "Get connected entities summary by Organisation ID.";
+               operation.Summary = "Get connected entities information by Organisation ID.";
+               operation.Responses["200"].Description = "Connected entities details.";
+               operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
+               operation.Responses["404"].Description = "Connected entities information not found.";
+               operation.Responses["422"].Description = "Unprocessable entity.";
+               operation.Responses["500"].Description = "Internal server error.";
+               return operation;
+           });
+
+        app.MapGet("/{organisationId}/connected-entities/{connectedEntityId}",
+            async (Guid connectedEntityId, IUseCase<Guid, ConnectedEntity?> useCase) =>
+               await useCase.Execute(connectedEntityId)
+                   .AndThen(entity => entity != null ? Results.Ok(entity) : Results.NotFound()))
+            .Produces<ConnectedEntity>(StatusCodes.Status200OK, "application/json")
+            .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
+            .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
+            .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError)
+            .WithOpenApi(operation =>
+            {
+                operation.OperationId = "GetConnectedEntity";
+                operation.Description = "Get connected entity by ID.";
+                operation.Summary = "Get connected entity by ID.";
+                operation.Responses["200"].Description = "Connected entity details.";
+                operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
+                operation.Responses["404"].Description = "Connected entity not found.";
+                operation.Responses["500"].Description = "Internal server error.";
+                return operation;
+            });
+
+        app.MapPost("/{organisationId}/connected-entities",
+            async (Guid organisationId, RegisterConnectedEntity updateConnectedEntity,
+                IUseCase<(Guid, RegisterConnectedEntity), bool> useCase) =>
+
+                await useCase.Execute((organisationId, updateConnectedEntity))
+                    .AndThen(_ => Results.NoContent())
+            )
+            .Produces(StatusCodes.Status201Created)
+            .ProducesProblem(StatusCodes.Status400BadRequest)
+            .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
+            .ProducesProblem(StatusCodes.Status404NotFound)
+            .ProducesProblem(StatusCodes.Status422UnprocessableEntity)
+            .ProducesProblem(StatusCodes.Status500InternalServerError)
+            .WithOpenApi(operation =>
+            {
+                operation.OperationId = "CreateConnectedEntity";
+                operation.Description = "Create a new connected entity.";
+                operation.Summary = "Create a new connected entity.";
+                operation.Responses["201"].Description = "Connected entity created successfully.";
+                operation.Responses["400"].Description = "Bad request.";
+                operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
+                operation.Responses["404"].Description = "Connected entity not found.";
+                operation.Responses["422"].Description = "Unprocessable entity.";
+                operation.Responses["500"].Description = "Internal server error.";
+                return operation;
+            });
+
+        return app;
+    }
+}
 
 public static class ApiExtensions
 {
