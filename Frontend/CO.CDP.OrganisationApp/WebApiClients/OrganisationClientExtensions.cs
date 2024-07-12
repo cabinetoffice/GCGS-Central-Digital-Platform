@@ -125,6 +125,14 @@ internal static class OrganisationClientExtensions
               type: SupplierInformationDeleteType.Qualification,
               tradeAssuranceId: null,
               qualificationId: qualificationId));
+
+    internal static Task UpdateSupplierCompletedConnectedPerson(this IOrganisationClient organisationClient, Guid organisationId)
+        => organisationClient.UpdateSupplierInformationAsync(
+            organisationId,
+            new UpdateSupplierInformation(
+                type: SupplierInformationUpdateType.CompletedConnectedPerson,
+                supplierInformation: new SupplierInfo(supplierType: null, operationTypes: null, tradeAssurance: null, legalForm: null, qualification: null)));
+
 }
 
 public class ComposedOrganisation

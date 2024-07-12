@@ -100,6 +100,11 @@ public class UpdateSupplierInformationUseCase(IOrganisationRepository organisati
                 }
                 organisation.SupplierInfo.CompletedQualification = true;
                 break;
+
+            case SupplierInformationUpdateType.CompletedConnectedPerson:
+                organisation.SupplierInfo.CompletedConnectedPerson = true;
+                break;
+
             default:
                 throw new InvalidUpdateSupplierInformationCommand("Unknown supplier information update type.");
         }

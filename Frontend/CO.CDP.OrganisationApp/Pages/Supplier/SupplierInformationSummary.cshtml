@@ -23,7 +23,7 @@
 
         if (count == 0)
         {
-            return string.Empty;
+            return Model.ConnectedPersonStepStatus == StepStatus.Completed ? "No connected persons" : string.Empty;
         }
 
         return $"{count} Connected person{(count > 1 ? "s" : "")}";

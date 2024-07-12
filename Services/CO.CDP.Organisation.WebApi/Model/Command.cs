@@ -138,6 +138,7 @@ public enum SupplierInformationUpdateType
     LegalForm,
     OperationType,
     Qualification,
+    CompletedConnectedPerson
 }
 
 public record SupplierInfo
