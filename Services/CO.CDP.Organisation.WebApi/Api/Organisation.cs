@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
 using System.Data.SqlTypes;
 using System.Reflection;
+using AuthorizationPolicyConstants = CO.CDP.Authentication.AuthorizationPolicy.Constants;
 
 namespace CO.CDP.Organisation.WebApi.Api;
 
@@ -157,7 +158,7 @@ public static class EndpointExtensions
                 operation.Responses["404"].Description = "Organisation matching the API key was not found.";
                 operation.Responses["500"].Description = "Internal server error.";
                 return operation;
-            });
+            }).RequireAuthorization(AuthorizationPolicyConstants.OrganisationKeyPolicy);
 
         app.MapGet("/lookup",
              async ([FromQuery] string? name, [FromQuery] string? identifier, IUseCase<OrganisationQuery, Model.Organisation?> useCase) =>

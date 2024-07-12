@@ -40,7 +40,7 @@ builder.Services.AddOrganisationProblemDetails();
 
 builder.Services.AddJwtBearerAndApiKeyAuthentication(builder.Configuration, builder.Environment);
 //builder.Services.AddAuthorization();
-builder.Services.AddFallbackAuthorizationPolicy();
+builder.Services.AddOrganisationAuthorization();
 
 var app = builder.Build();
 app.UseForwardedHeaders();
