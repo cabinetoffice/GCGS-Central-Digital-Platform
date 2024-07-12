@@ -1,5 +1,6 @@
+using CO.CDP.OrganisationInformation.Persistence;
 using FluentAssertions;
-using Microsoft.Extensions.Configuration;
+using Moq;
 
 namespace CO.CDP.Authentication.Tests;
 
@@ -8,17 +9,11 @@ public class ApiKeyValidatorTest
     private readonly ApiKeyValidator _validator;
     private const string ValidApiKey = "valid-api-key";
     private const string InvalidApiKey = "invalid-api-key";
+    private readonly Mock<IAuthenticationKeyRepository> _repository = new();
 
     public ApiKeyValidatorTest()
     {
-        IConfiguration configRoot = new ConfigurationBuilder()
-            .AddInMemoryCollection(
-            [
-                new KeyValuePair<string, string?>("CdpApiKeys:0", ValidApiKey)
-            ])
-            .Build();
-
-        _validator = new ApiKeyValidator(configRoot);
+        _validator = new ApiKeyValidator(_repository.Object);
     }
 
     [Theory]
@@ -35,27 +30,26 @@ public class ApiKeyValidatorTest
     [Fact]
     public async Task Validate_ValidApiKey_ReturnsTrue()
     {
-        var result = await _validator.Validate(ValidApiKey);
+        _repository.Setup(r => r.Find(It.IsAny<string>()))
+            .ReturnsAsync(new AuthenticationKey { Name = "FTS", Key = ValidApiKey, Scopes = ["ADMIN"] });
 
-        result.Should().BeTrue();
+        var (valid, organisation, scopes) = await _validator.Validate(ValidApiKey);
+
+        valid.Should().BeTrue();
+        organisation.Should().BeNull();
+        scopes.Should().Contain("ADMIN");
     }
 
     [Fact]
     public async Task Validate_InvalidApiKey_ReturnsFalse()
     {
-        var result = await _validator.Validate(InvalidApiKey);
+        _repository.Setup(r => r.Find(It.IsAny<string>()))
+            .ReturnsAsync((AuthenticationKey?)null);
 
-        result.Should().BeFalse();
-    }
+        var (valid, organisation, scopes) = await _validator.Validate(InvalidApiKey);
 
-    [Fact]
-    public async Task Validate_MissingConfiguration_ThrowsException()
-    {
-        IConfiguration configRoot = new ConfigurationBuilder().Build();
-
-        Func<Task> act = async () => await new ApiKeyValidator(configRoot).Validate("any-api-key");
-
-        await act.Should().ThrowAsync<Exception>()
-                 .WithMessage("Missing configuration key: CdpApiKeys");
+        valid.Should().BeFalse();
+        organisation.Should().BeNull();
+        scopes.Should().BeEmpty();
     }
 }
