@@ -5,17 +5,18 @@ namespace CO.CDP.EntityVerification.Services;
 public class QueueBackgroundService : BackgroundService
 {
     private readonly IRequestListener _listener;
-    private readonly IQueueProcessor _processor;
+    private readonly IQueueProcessor _messageProcessor;
 
-    public QueueBackgroundService(IRequestListener listener, IQueueProcessor messageReceiver)
+    public QueueBackgroundService(IRequestListener listener,
+        IQueueProcessor messageProcessor)
     {
         _listener = listener;
-        _processor = messageReceiver;
+        _messageProcessor = messageProcessor;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     { 
-        _listener.Register(_processor);
-        _processor.Start(stoppingToken);
+        _listener.Register(_messageProcessor);
+        _messageProcessor.Start(stoppingToken);
     }
 }

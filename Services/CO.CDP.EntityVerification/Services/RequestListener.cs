@@ -10,11 +10,11 @@ namespace CO.CDP.EntityVerification.Services;
 public class RequestListener : IRequestListener
 {
     private readonly ILogger<RequestListener> _logger;
-    private readonly OrganisationRegisteredEvent _newOrgProcessor;
+    private readonly OrganisationRegisteredEventHandler _newOrgProcessor;
 
     private const string OrganisationRegisteredMessageType = "OrganisationRegistered";
 
-    public RequestListener(OrganisationRegisteredEvent newOrgProcessor, ILogger<RequestListener> logger)
+    public RequestListener(OrganisationRegisteredEventHandler newOrgProcessor, ILogger<RequestListener> logger)
     {
         _newOrgProcessor = newOrgProcessor;
         _logger = logger;
@@ -27,7 +27,7 @@ public class RequestListener : IRequestListener
 
     void NewMessage(Message msg)
     {
-        _logger.LogInformation("RequestListener: New Message Received.");
+        _logger.LogInformation("New Message Received.");
 
         if (msg.MessageAttributes.ContainsKey("TypeOfMessage"))
         {

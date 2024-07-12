@@ -11,14 +11,14 @@ public static class ServiceCollectionExtensions
         { typeof(BadHttpRequestException), (StatusCodes.Status422UnprocessableEntity, "UNPROCESSABLE_ENTITY") },
     };
 
-    public static IServiceCollection AddQueueProcessor(this IServiceCollection services)
+    public static IServiceCollection AddBackgroundServices(this IServiceCollection services)
     {
         services.AddSingleton<IRequestListener, RequestListener>();
         services.AddSingleton<IPponService, PponService>();
-        services.AddSingleton<OrganisationRegisteredEvent>();
+        services.AddSingleton<OrganisationRegisteredEventHandler>();
         services.AddSingleton<IQueueProcessor, QueueProcessor>();
-
         services.AddHostedService<QueueBackgroundService>();
+
         return services;
     }
 

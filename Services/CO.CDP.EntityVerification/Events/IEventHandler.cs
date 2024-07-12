@@ -1,9 +1,8 @@
 using CO.CDP.EntityVerification.Model;
-using CO.CDP.EntityVerification.Services;
 
 namespace CO.CDP.EntityVerification.Events;
 
-public interface IEvEvent
+public interface IEventHandler
 {
     void Action(EvMessage msg);
 }
