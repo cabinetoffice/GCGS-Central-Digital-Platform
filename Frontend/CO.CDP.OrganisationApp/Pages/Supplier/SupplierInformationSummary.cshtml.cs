@@ -28,7 +28,7 @@ public class SupplierInformationSummaryModel(IOrganisationClient organisationCli
 
     public Guid FormId { get; set; }
     public Guid SectionId { get; set; }
-
+    
     public async Task<IActionResult> OnGet(Guid id)
     {
         SupplierInformation? supplierInfo;
@@ -51,7 +51,7 @@ public class SupplierInformationSummaryModel(IOrganisationClient organisationCli
 
         Name = supplierInfo.OrganisationName;
         BasicInformationStepStatus = GetBasicInfoStepStatus(supplierInfo);
-        ConnectedPersonStepStatus = GetConnectedPersonStepStatus(supplierInfo);
+        ConnectedPersonStepStatus = GetConnectedPersonStepStatus(supplierInfo, ConnectedEntities.Count);
         return Page();
     }
 
@@ -76,9 +76,13 @@ public class SupplierInformationSummaryModel(IOrganisationClient organisationCli
         };
     }
 
-    private static StepStatus GetConnectedPersonStepStatus(SupplierInformation info)
+    private static StepStatus GetConnectedPersonStepStatus(SupplierInformation info, int entityCount)
     {
-        if (info == null) return StepStatus.NotStarted;
+        if (info == null)
+            return StepStatus.NotStarted;
+                
+        if (info.CompletedConnectedPerson == false && entityCount == 0)
+            return StepStatus.NotStarted;
 
         return info.CompletedConnectedPerson != true ? StepStatus.NotStarted : StepStatus.Completed;
     }
