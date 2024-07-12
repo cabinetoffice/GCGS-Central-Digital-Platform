@@ -62,19 +62,25 @@ jobs:
           COMMIT_REF=$(if [ "$GITHUB_EVENT_NAME" == "pull_request" ]; then echo "${{ github.event.pull_request.head.sha }}"; else echo "${GITHUB_SHA:-HEAD}"; fi)
           CURRENT_COMMIT=$(make version-commit COMMIT_REF=$COMMIT_REF)
           DATE=$(date +%Y%m%d%H%M%S)
-          echo "Current commit: $CURRENT_COMMIT"
-          echo "Date: $DATE"
-          echo "date_version=${DATE}" >> $GITHUB_OUTPUT
-          echo "image_version=${CURRENT_COMMIT}" >> $GITHUB_OUTPUT
-          echo "image_additional_versions=${DATE}" >> $GITHUB_OUTPUT
+          IMAGE_VERSION=${CURRENT_COMMIT}
+          IMAGE_VERSION_ALIASES=${DATE}
+          echo "Image version: $IMAGE_VERSION"
+          echo "Image version aliases: $IMAGE_VERSION_ALIASES"
+          echo "image_version=${IMAGE_VERSION}" >> $GITHUB_OUTPUT
+          echo "image_version_aliases=${IMAGE_VERSION_ALIASES}" >> $GITHUB_OUTPUT
       - name: Build
-        run: make build-docker
+        run: make build-docker docker-tag-images
         env:
           IMAGE_VERSION: ${{ steps.version.outputs.image_version }}
+          IMAGE_VERSION_ALIASES: ${{ steps.version.outputs.image_version_aliases }}
       - name: Start services
         run: make up
+        env:
+            IMAGE_VERSION: ${{ steps.version.outputs.image_version }}
       - name: Stop services
         run: make down
+        env:
+            IMAGE_VERSION: ${{ steps.version.outputs.image_version }}
 
   docs:
     runs-on: ubuntu-latest

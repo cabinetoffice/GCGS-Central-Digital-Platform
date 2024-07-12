@@ -4,6 +4,7 @@ REPO_URL := $(AWS_ACCOUNT_ID).dkr.ecr.eu-west-2.amazonaws.com
 IMAGES := cdp-organisation-information-migrations cdp-data-sharing cdp-entity-verification cdp-forms cdp-organisation-app cdp-organisation cdp-person cdp-tenant cdp-authority
 TAGGED_IMAGES := $(addprefix cabinetoffice/,$(addsuffix :latest,$(IMAGES)))
 TAGGED_REPO_IMAGES := $(addprefix $(REPO_URL)/,$(TAGGED_IMAGES))
+DOCKER_COMPOSE_CMD=IMAGE_VERSION=$(IMAGE_VERSION) docker compose
 
 # Extracts targets and their comments
 help: ## List available commands
@@ -23,30 +24,36 @@ test: ## Run tests
 	@dotnet test $(TEST_OPTIONS)
 .PHONY: test
 
+build-docker: IMAGE_VERSION ?= latest
 build-docker: ## Build Docker images
-	@docker compose build
+	@$(DOCKER_COMPOSE_CMD) build
 .PHONY: build-docker
 
+up: IMAGE_VERSION ?= latest
 up: compose.override.yml ## Start Docker containers
-	@docker compose up -d
-	@docker compose ps
+	@$(DOCKER_COMPOSE_CMD) up -d
+	@$(DOCKER_COMPOSE_CMD) ps
 .PHONY: up
 
+down: IMAGE_VERSION ?= latest
 down: ## Destroy Docker containers
-	@docker compose down
+	@$(DOCKER_COMPOSE_CMD) down
 .PHONY: down
 
+stop: IMAGE_VERSION ?= latest
 stop: ## Stop Docker containers
-	@docker compose stop
+	@$(DOCKER_COMPOSE_CMD) stop
 .PHONY: down
 
+ps: IMAGE_VERSION ?= latest
 ps: ## Show Docker container status
-	@docker compose ps
+	@$(DOCKER_COMPOSE_CMD) ps
 .PHONY: ps
 
+db: IMAGE_VERSION ?= latest
 db: compose.override.yml ## Start DB and organisation-information-migrations services and follow organisation-information-migrations logs
-	@docker compose up -d db organisation-information-migrations
-	@docker compose logs -f organisation-information-migrations
+	@$(DOCKER_COMPOSE_CMD) up -d db organisation-information-migrations
+	@$(DOCKER_COMPOSE_CMD) logs -f organisation-information-migrations
 .PHONY: db
 
 OpenAPI: build ## Create OpenAPI folder and copy relevant files in
@@ -162,7 +169,16 @@ aws-push-to-ecr: build-docker ## Build, tag and push Docker images to ECR
 	$(foreach image,$(IMAGES),docker push $(REPO_URL)/$(image);)
 .PHONY: aws-push-to-ecr
 
-COMMIT_REF ?= "HEAD"
+version-commit: COMMIT_REF ?= HEAD
 version-commit: ## Determines the last commit hash
 	@git rev-parse --short "$(COMMIT_REF)"
 .PHONY: version-commit
+
+docker-tag-images: IMAGE_VERSION ?= latest
+docker-tag-images: IMAGE_VERSION_ALIASES ?= latest
+docker-tag-images: ## Tag images
+	@$(foreach alias,$(IMAGE_VERSION_ALIASES),\
+		$(foreach image,$(IMAGES),docker tag cabinetoffice/$(image):$(IMAGE_VERSION) cabinetoffice/$(image):$(alias);))
+	@docker images | grep cabinetoffice/ | grep $(IMAGE_VERSION)
+	@$(foreach alias,$(IMAGE_VERSION_ALIASES),docker images | grep cabinetoffice/ | grep " $(alias) ";)
+.PHONY: docker-tag-images
