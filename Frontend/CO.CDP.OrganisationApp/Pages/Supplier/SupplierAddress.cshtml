@@ -1,0 +1,24 @@
+@page "/organisation/{id}/supplier-information/{addressType}-address/{UkOrNonUk}"
+@using CO.CDP.OrganisationApp.Pages.Shared
+@model CO.CDP.OrganisationApp.Pages.Supplier.SupplierAddressModel
+
+@if (Model.Address.IsNonUkAddress)
+{
+    <a href="/organisation/@Model.Id/supplier-information/@Model.AddressType.ToString().ToLower()-address/uk" class="govuk-back-link">Back</a>
+}
+else
+{
+    <a href="/organisation/@Model.Id/supplier-information/basic-information" class="govuk-back-link">Back</a>
+}
+
+<main class="govuk-main-wrapper">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <partial name="_ErrorSummary" model="@ModelState" />
+
+            <form method="post">
+                <partial name="_Address" model="@Model.Address" />
+            </form>
+        </div>
+    </div>
+</main>

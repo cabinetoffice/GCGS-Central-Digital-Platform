@@ -25,9 +25,9 @@ public class OrganisationRegisteredAddressModelTest
     {
         var model = GivenOrganisationAddressModel();
 
-        var results = ModelValidationHelper.Validate(model);
+        var results = ModelValidationHelper.Validate(model.Address);
 
-        results.Count.Should().Be(3);
+        results.Count.Should().Be(4);
     }
 
     [Fact]
@@ -35,7 +35,7 @@ public class OrganisationRegisteredAddressModelTest
     {
         var model = GivenOrganisationAddressModel();
 
-        var results = ModelValidationHelper.Validate(model);
+        var results = ModelValidationHelper.Validate(model.Address);
 
         results.Any(c => c.MemberNames.Contains("AddressLine1")).Should().BeTrue();
 
@@ -47,22 +47,11 @@ public class OrganisationRegisteredAddressModelTest
     public void WhenAddressLine1IsNotEmpty_ShouldNotRaiseAddressLine1ValidationError()
     {
         var model = GivenOrganisationAddressModel();
-        model.AddressLine1 = "dummay";
+        model.Address.AddressLine1 = "dummay";
 
-        var results = ModelValidationHelper.Validate(model);
+        var results = ModelValidationHelper.Validate(model.Address);
 
         results.Any(c => c.MemberNames.Contains("AddressLine1")).Should().BeFalse();
-    }
-
-    [Fact]
-    public void WhenAddressLine2IsNotEmpty_ShouldNotRaiseAddressLine2ValidationError()
-    {
-        var model = GivenOrganisationAddressModel();
-        model.AddressLine2 = "dummay";
-
-        var results = ModelValidationHelper.Validate(model);
-
-        results.Any(c => c.MemberNames.Contains("AddressLine2")).Should().BeFalse();
     }
 
     [Fact]
@@ -70,7 +59,7 @@ public class OrganisationRegisteredAddressModelTest
     {
         var model = GivenOrganisationAddressModel();
 
-        var results = ModelValidationHelper.Validate(model);
+        var results = ModelValidationHelper.Validate(model.Address);
 
         results.Any(c => c.MemberNames.Contains("TownOrCity")).Should().BeTrue();
 
@@ -82,33 +71,20 @@ public class OrganisationRegisteredAddressModelTest
     public void WhenTownOrCityIsNotEmpty_ShouldNotRaiseTownOrCityValidationError()
     {
         var model = GivenOrganisationAddressModel();
-        model.TownOrCity = "dummay";
+        model.Address.TownOrCity = "dummay";
 
-        var results = ModelValidationHelper.Validate(model);
+        var results = ModelValidationHelper.Validate(model.Address);
 
         results.Any(c => c.MemberNames.Contains("TownOrCity")).Should().BeFalse();
-    }
-
-    [Fact]
-    public void WhenPostcodeIsEmpty_ShouldRaisePostcodeValidationError()
-    {
-        var model = GivenOrganisationAddressModel();
-
-        var results = ModelValidationHelper.Validate(model);
-
-        results.Any(c => c.MemberNames.Contains("Postcode")).Should().BeTrue();
-
-        results.Where(c => c.MemberNames.Contains("Postcode")).First()
-            .ErrorMessage.Should().Be("Enter your postcode");
     }
 
     [Fact]
     public void WhenPostcodeIsNotEmpty_ShouldNotRaisePostcodeValidationError()
     {
         var model = GivenOrganisationAddressModel();
-        model.Postcode = "dummay";
+        model.Address.Postcode = "dummay";
 
-        var results = ModelValidationHelper.Validate(model);
+        var results = ModelValidationHelper.Validate(model.Address);
 
         results.Any(c => c.MemberNames.Contains("Postcode")).Should().BeFalse();
     }
@@ -117,9 +93,9 @@ public class OrganisationRegisteredAddressModelTest
     public void WhenCountryIsNotEmpty_ShouldNotRaiseCountryValidationError()
     {
         var model = GivenOrganisationAddressModel();
-        model.Country = "england";
+        model.Address.Country = "england";
 
-        var results = ModelValidationHelper.Validate(model);
+        var results = ModelValidationHelper.Validate(model.Address);
 
         results.Any(c => c.MemberNames.Contains("Country")).Should().BeFalse();
     }
@@ -199,10 +175,9 @@ public class OrganisationRegisteredAddressModelTest
 
         model.OnGet();
 
-        model.AddressLine1.Should().Be(registrationDetails.OrganisationAddressLine1);
-        model.AddressLine2.Should().Be(registrationDetails.OrganisationAddressLine2);
-        model.TownOrCity.Should().Be(registrationDetails.OrganisationCityOrTown);
-        model.Postcode.Should().Be(registrationDetails.OrganisationPostcode);
+        model.Address.AddressLine1.Should().Be(registrationDetails.OrganisationAddressLine1);
+        model.Address.TownOrCity.Should().Be(registrationDetails.OrganisationCityOrTown);
+        model.Address.Postcode.Should().Be(registrationDetails.OrganisationPostcode);
         //model.Country.Should().Be(registrationDetails.OrganisationCountry);
     }
 
@@ -211,7 +186,6 @@ public class OrganisationRegisteredAddressModelTest
         var registrationDetails = new RegistrationDetails
         {
             OrganisationAddressLine1 = "address line 1",
-            OrganisationAddressLine2 = "address line 2",
             OrganisationCityOrTown = "london",
             OrganisationPostcode = "SW1A 2AA",
             OrganisationCountry = "United Kingdom"
@@ -222,6 +196,6 @@ public class OrganisationRegisteredAddressModelTest
 
     private OrganisationRegisteredAddressModel GivenOrganisationAddressModel()
     {
-        return new OrganisationRegisteredAddressModel(sessionMock.Object);
+        return new OrganisationRegisteredAddressModel(sessionMock.Object) { Address = new()};
     }
 }
