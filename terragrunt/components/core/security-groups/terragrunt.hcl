@@ -1,5 +1,5 @@
 terraform {
-  source = "../../../modules//core-security-groups"
+  source = local.global_vars.locals.environment != "orchestrator" ? "../../../modules//core-security-groups" : null
 }
 
 include {

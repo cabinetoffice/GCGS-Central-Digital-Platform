@@ -1,5 +1,5 @@
 terraform {
-  source = "../../../modules//ecs"
+  source = local.global_vars.locals.environment != "orchestrator" ? "../../../modules//ecs" : null
 }
 
 include {

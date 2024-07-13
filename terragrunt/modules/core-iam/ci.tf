@@ -1,3 +1,6 @@
+# Note!
+# Resources in this file are shared with orchestrator/iam module
+
 resource "aws_iam_role" "terraform" {
   assume_role_policy = data.aws_iam_policy_document.terraform_assume.json
   name               = "${local.name_prefix}-${var.environment}-terraform"

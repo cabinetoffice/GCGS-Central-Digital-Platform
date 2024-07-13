@@ -1,3 +1,6 @@
+# Note!
+# Resources in this file are shared with orchestrator/iam module
+
 data "aws_iam_policy_document" "terraform_assume" {
   statement {
     actions = ["sts:AssumeRole"]

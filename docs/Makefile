@@ -15,6 +15,14 @@ publish: build/cdp.html
 	git add index.html && git commit -m 'Update the documentation' && git push origin gh-pages
 .PHONY: publish
 
+publish-docs-during-cd: build/cdp.html
+	git config --global user.name 'github-actions'
+	git config --global user.email 'github-actions@github.com'
+	git checkout gh-pages
+	cp build/cdp.html index.html
+	git add index.html && git commit -m 'Update the documentation' && git push origin gh-pages
+.PHONY: publish-docs-during-cd
+
 build-docker:
 	docker build -t cabinetoffice/asciidoctor .
 .PHONY: build-docker

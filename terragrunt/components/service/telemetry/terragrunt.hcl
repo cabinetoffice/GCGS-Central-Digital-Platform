@@ -1,5 +1,5 @@
 terraform {
-  source = "../../../modules//telemetry"
+  source = local.global_vars.locals.environment != "orchestrator" ? "../../../modules//telemetry" : null
 }
 
 include {
