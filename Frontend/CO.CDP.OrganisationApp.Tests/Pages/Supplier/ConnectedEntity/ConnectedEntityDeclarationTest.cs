@@ -8,16 +8,6 @@ namespace CO.CDP.OrganisationApp.Tests.Pages.Supplier.ConnectedEntity;
 public class ConnectedEntityDeclarationTest
 {
     [Fact]
-    public void OnGet_ShouldReturnPageResult()
-    {
-        var model = new ConnectedEntityDeclarationModel();
-
-        var result = model.OnGet();
-
-        result.Should().BeOfType<PageResult>();
-    }
-
-    [Fact]
     public void OnPost_ShouldRedirectToConnectedQuestionPageWithId()
     {
         var model = new ConnectedEntityDeclarationModel { Id = Guid.NewGuid() };
@@ -27,7 +17,7 @@ public class ConnectedEntityDeclarationTest
         var redirectToPageResult = result.Should().BeOfType<RedirectToPageResult>().Subject;
 
         result.Should().BeOfType<RedirectToPageResult>()
-            .Which.PageName.Should().Be("ConnectedQuestion");
+            .Which.PageName.Should().Be("ConnectedEntityQuestion");
 
     }
 }

@@ -56,7 +56,6 @@ public class ConnectedEntityQuestionTest
     [Fact]
     public async Task OnGet_ReturnsNotFound_WhenSupplierInfoNotFoundWithOutConnectedEntityId()
     {
-        _model.ConnectedEntityId = null;
         _sessionMock.Setup(s => s.Get<ConnectedEntityState>(Session.ConnectedPersonKey)).
             Returns(DummyConnectedPersonDetails());
 
@@ -72,7 +71,6 @@ public class ConnectedEntityQuestionTest
     [Fact]
     public async Task OnGet_ReturnsNotFound_WhenSupplierInfoNotFoundWithConnectedEntityId()
     {
-        _model.ConnectedEntityId = _entityId;
         _sessionMock.Setup(s => s.Get<ConnectedEntityState>(Session.ConnectedPersonKey)).
             Returns(DummyConnectedPersonDetails());
 

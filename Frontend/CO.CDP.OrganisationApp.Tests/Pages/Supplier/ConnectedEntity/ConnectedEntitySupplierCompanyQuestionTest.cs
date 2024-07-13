@@ -11,33 +11,31 @@ public class ConnectedEntitySupplierCompanyQuestionTest
 {
     private readonly ConnectedEntitySupplierCompanyQuestionModel _model;
     private readonly Mock<ISession> _sessionMock;
-    private readonly Mock<IOrganisationClient> _mockOrganisationClient;
     private readonly Guid _organisationId = Guid.NewGuid();
     private readonly Guid _entityId = Guid.NewGuid();
 
     public ConnectedEntitySupplierCompanyQuestionTest()
     {
         _sessionMock = new Mock<ISession>();
-        _mockOrganisationClient = new Mock<IOrganisationClient>();
-        _model = new ConnectedEntitySupplierCompanyQuestionModel(_mockOrganisationClient.Object, _sessionMock.Object);
+        _model = new ConnectedEntitySupplierCompanyQuestionModel(_sessionMock.Object);
         _model.Id = Guid.NewGuid();
     }
 
     [Fact]
-    public async Task OnGet_ShouldReturnPageResult()
+    public void OnGet_ShouldReturnPageResult()
     {
-        var result = await _model.OnGet(null);
+        var result =  _model.OnGet(null);
 
         result.Should().BeOfType<PageResult>();
     }
 
     [Fact]
-    public async Task OnPost_ShouldReturnPage_WhenModelStateIsInvalid()
+    public void OnPost_ShouldReturnPage_WhenModelStateIsInvalid()
     {
         _model.RegisteredWithCh = null;
         _model.ModelState.AddModelError("Error", "Model state is invalid");
 
-        var result = await _model.OnPost();
+        var result = _model.OnPost();
 
         result.Should().BeOfType<PageResult>();
     }
@@ -55,48 +53,36 @@ public class ConnectedEntitySupplierCompanyQuestionTest
     }
 
     [Fact]
-    public async Task OnGet_ReturnsNotFound_WhenSupplierInfoNotFoundWithOutConnectedEntityId()
+    public void OnGet_ReturnsNotFound_WhenSupplierInfoNotFoundWithOutConnectedEntityId()
     {
-        _model.ConnectedEntityId = null;
         _sessionMock.Setup(s => s.Get<ConnectedEntityState>(Session.ConnectedPersonKey)).
             Returns(DummyConnectedPersonDetails());
 
-        _mockOrganisationClient.Setup(x => x.GetOrganisationAsync(_model.Id))
-            .ThrowsAsync(new ApiException("", 404, "", default, null));
 
-        var result = await _model.OnGet(true);
+        var result =  _model.OnGet(true);
 
         result.Should().BeOfType<RedirectResult>()
             .Which.Url.Should().Be("/page-not-found");
     }
 
     [Fact]
-    public async Task OnGet_ReturnsNotFound_WhenSupplierInfoNotFoundWithConnectedEntityId()
+    public void OnGet_ReturnsNotFound_WhenSupplierInfoNotFoundWithConnectedEntityId()
     {
-        _model.ConnectedEntityId = _entityId;
         _sessionMock.Setup(s => s.Get<ConnectedEntityState>(Session.ConnectedPersonKey)).
             Returns(DummyConnectedPersonDetails());
 
-        _mockOrganisationClient.Setup(x => x.GetOrganisationAsync(_model.Id))
-            .ThrowsAsync(new ApiException("", 404, "", default, null));
-
-        var result = await _model.OnGet(true);
+        var result = _model.OnGet(true);
 
         result.Should().BeOfType<RedirectResult>()
             .Which.Url.Should().Be("/page-not-found");
     }
 
     [Fact]
-    public async Task OnPost_ShouldRedirectToConnectedEntitySelectType()
+    public void OnPost_ShouldRedirectToConnectedEntitySelectType()
     {
         _model.RegisteredWithCh = false;
-        _mockOrganisationClient.Setup(client => client.GetOrganisationAsync(_model.Id))
-           .ReturnsAsync(OrganisationClientModel(_model.Id));
-
-        _mockOrganisationClient.Setup(client => client.GetConnectedEntitiesAsync(_model.Id))
-           .ReturnsAsync(ConnectedEntities);
-
-        var result = await _model.OnPost();
+        
+        var result = _model.OnPost();
 
         var redirectToPageResult = result.Should().BeOfType<RedirectToPageResult>().Subject;
 
@@ -106,10 +92,10 @@ public class ConnectedEntitySupplierCompanyQuestionTest
     }
 
     [Fact]
-    public async Task OnPost_ShouldRedirectToConnectedConnectedEntitySelectType()
+    public void OnPost_ShouldRedirectToConnectedConnectedEntitySelectType()
     {
         _model.RegisteredWithCh = true;
-        var result = await _model.OnPost();
+        var result = _model.OnPost();
 
         var redirectToPageResult = result.Should().BeOfType<RedirectToPageResult>().Subject;
 
