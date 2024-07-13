@@ -6,16 +6,16 @@ using System.ComponentModel.DataAnnotations;
 namespace CO.CDP.OrganisationApp.Pages.Supplier;
 
 [Authorize]
-public class ConnectedEntitySelectTypeModel(ISession session) : PageModel
+public class ConnectedEntitySupplierCompanyQuestionModel(ISession session) : PageModel
 {
     [BindProperty]
     [Required(ErrorMessage = "Please select an option")]
-    public Constants.ConnectedEntityType? ConnectedEntityType { get; set; }
+    public bool? RegisteredWithCh { get; set; }
 
     [BindProperty(SupportsGet = true)]
     public Guid Id { get; set; }
 
-    public IActionResult OnGet()
+    public IActionResult OnGet(bool? selected)
     {
         var state = session.Get<ConnectedEntityState>(Session.ConnectedPersonKey);
         if (state == null)
@@ -23,7 +23,7 @@ public class ConnectedEntitySelectTypeModel(ISession session) : PageModel
             return RedirectToPage("ConnectedEntityQuestion", new { Id });
         }
 
-        ConnectedEntityType = state.ConnectedEntityType;
+        RegisteredWithCh = selected.HasValue ? selected : state.SupplierHasCompanyHouseNumber;
         return Page();
     }
 
@@ -35,9 +35,9 @@ public class ConnectedEntitySelectTypeModel(ISession session) : PageModel
             return Page();
         }
 
-        state.ConnectedEntityType = ConnectedEntityType;
+        state.SupplierHasCompanyHouseNumber = RegisteredWithCh ?? false;
         session.Set(Session.ConnectedPersonKey, state);
 
-        return RedirectToPage("ConnectedEntitySelectCategory", new { Id });
+        return RedirectToPage("ConnectedEntitySelectType", new { Id });
     }
 }

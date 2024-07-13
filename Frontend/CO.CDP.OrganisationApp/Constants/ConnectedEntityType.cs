@@ -21,6 +21,16 @@ public static class ConnectedEntityTypeExtensions
             _ => WebApiClient.ConnectedEntityType.Organisation,
         };
     }
+    public static ConnectedEntityType AsConnectedEntityType(this WebApiClient.ConnectedEntityType connectedEntityType)
+    {
+        return connectedEntityType switch
+        {
+            WebApiClient.ConnectedEntityType.Organisation => ConnectedEntityType.Organisation,
+            WebApiClient.ConnectedEntityType.Individual => ConnectedEntityType.Individual,
+            WebApiClient.ConnectedEntityType.TrustOrTrustee => ConnectedEntityType.TrustOrTrustee,
+            _ => ConnectedEntityType.Organisation,
+        };
+    }
 
     public static string Description(this ConnectedEntityType connectedEntityType)
     {

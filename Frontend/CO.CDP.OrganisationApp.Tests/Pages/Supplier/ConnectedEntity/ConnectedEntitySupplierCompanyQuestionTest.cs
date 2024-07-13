@@ -7,19 +7,19 @@ using Moq;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages.Supplier.ConnectedEntity;
 
-public class ConnectedCompaniesQuestionTest
+public class ConnectedEntitySupplierCompanyQuestionTest
 {
-    private readonly ConnectedCompaniesQuestionModel _model;
+    private readonly ConnectedEntitySupplierCompanyQuestionModel _model;
     private readonly Mock<ISession> _sessionMock;
     private readonly Mock<IOrganisationClient> _mockOrganisationClient;
     private readonly Guid _organisationId = Guid.NewGuid();
     private readonly Guid _entityId = Guid.NewGuid();
 
-    public ConnectedCompaniesQuestionTest()
+    public ConnectedEntitySupplierCompanyQuestionTest()
     {
         _sessionMock = new Mock<ISession>();
         _mockOrganisationClient = new Mock<IOrganisationClient>();
-        _model = new ConnectedCompaniesQuestionModel(_mockOrganisationClient.Object, _sessionMock.Object);
+        _model = new ConnectedEntitySupplierCompanyQuestionModel(_mockOrganisationClient.Object, _sessionMock.Object);
         _model.Id = Guid.NewGuid();
     }
 
@@ -42,13 +42,13 @@ public class ConnectedCompaniesQuestionTest
         result.Should().BeOfType<PageResult>();
     }
 
-    private ConnectedPerson DummyConnectedPersonDetails()
+    private ConnectedEntityState DummyConnectedPersonDetails()
     {
-        var connectedPersonDetails = new ConnectedPerson
+        var connectedPersonDetails = new ConnectedEntityState
         {
             ConnectedEntityId = _entityId,
             SupplierHasCompanyHouseNumber = true,
-            SupplierInformationOrganisationId = _organisationId
+            SupplierOrganisationId = _organisationId
         };
 
         return connectedPersonDetails;
@@ -58,7 +58,7 @@ public class ConnectedCompaniesQuestionTest
     public async Task OnGet_ReturnsNotFound_WhenSupplierInfoNotFoundWithOutConnectedEntityId()
     {
         _model.ConnectedEntityId = null;
-        _sessionMock.Setup(s => s.Get<ConnectedPerson>(Session.ConnectedPersonKey)).
+        _sessionMock.Setup(s => s.Get<ConnectedEntityState>(Session.ConnectedPersonKey)).
             Returns(DummyConnectedPersonDetails());
 
         _mockOrganisationClient.Setup(x => x.GetOrganisationAsync(_model.Id))
@@ -74,7 +74,7 @@ public class ConnectedCompaniesQuestionTest
     public async Task OnGet_ReturnsNotFound_WhenSupplierInfoNotFoundWithConnectedEntityId()
     {
         _model.ConnectedEntityId = _entityId;
-        _sessionMock.Setup(s => s.Get<ConnectedPerson>(Session.ConnectedPersonKey)).
+        _sessionMock.Setup(s => s.Get<ConnectedEntityState>(Session.ConnectedPersonKey)).
             Returns(DummyConnectedPersonDetails());
 
         _mockOrganisationClient.Setup(x => x.GetOrganisationAsync(_model.Id))

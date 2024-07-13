@@ -42,13 +42,13 @@ public class ConnectedEntitySelectTypeTest
         result.Should().BeOfType<PageResult>();
     }
 
-    private ConnectedPerson DummyConnectedPersonDetails()
+    private ConnectedEntityState DummyConnectedPersonDetails()
     {
-        var connectedPersonDetails = new ConnectedPerson
+        var connectedPersonDetails = new ConnectedEntityState
         {
             ConnectedEntityId = _entityId,
             SupplierHasCompanyHouseNumber = true,
-            SupplierInformationOrganisationId = _organisationId
+            SupplierOrganisationId = _organisationId
         };
 
         return connectedPersonDetails;
@@ -58,7 +58,7 @@ public class ConnectedEntitySelectTypeTest
     public async Task OnGet_ReturnsNotFound_WhenSupplierInfoNotFoundWithOutConnectedEntityId()
     {
         _model.ConnectedEntityId = null;
-        _sessionMock.Setup(s => s.Get<ConnectedPerson>(Session.ConnectedPersonKey)).
+        _sessionMock.Setup(s => s.Get<ConnectedEntityState>(Session.ConnectedPersonKey)).
             Returns(DummyConnectedPersonDetails());
 
         _mockOrganisationClient.Setup(x => x.GetOrganisationAsync(_model.Id))
@@ -74,7 +74,7 @@ public class ConnectedEntitySelectTypeTest
     public async Task OnGet_ReturnsNotFound_WhenSupplierInfoNotFoundWithConnectedEntityId()
     {
         _model.ConnectedEntityId = _entityId;
-        _sessionMock.Setup(s => s.Get<ConnectedPerson>(Session.ConnectedPersonKey)).
+        _sessionMock.Setup(s => s.Get<ConnectedEntityState>(Session.ConnectedPersonKey)).
             Returns(DummyConnectedPersonDetails());
 
         _mockOrganisationClient.Setup(x => x.GetOrganisationAsync(_model.Id))
