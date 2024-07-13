@@ -103,6 +103,6 @@ public class AddressPostalSameAsRegisteredQuestionTest
         var result = await _model.OnPost();
 
         result.Should().BeOfType<RedirectToPageResult>()
-            .Which.PageName.Should().Be("AddressTypeQuestion");
+            .Which.PageName.Should().Be("SupplierAddress");
     }
 }

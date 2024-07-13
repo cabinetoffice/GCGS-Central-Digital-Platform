@@ -1,7 +1,6 @@
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
+using CO.CDP.OrganisationApp.Pages.Shared;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CO.CDP.OrganisationApp.Pages.Registration;
@@ -13,58 +12,42 @@ public class OrganisationRegisteredAddressModel(ISession session) : Registration
     public override string CurrentPage => OrganisationAddressPage;
     public override ISession SessionContext => session;
 
-    [BindProperty]
-    [DisplayName("Address line 1")]
-    [Required(ErrorMessage = "Enter your address line 1")]
-    public string? AddressLine1 { get; set; }
+    [BindProperty(SupportsGet = true)]
+    public string UkOrNonUk { get; set; } = "uk";
 
     [BindProperty]
-    [DisplayName("Address line 2 (optional)")]
-    public string? AddressLine2 { get; set; }
-
-    [BindProperty]
-    [DisplayName("Town or city")]
-    [Required(ErrorMessage = "Enter your town or city")]
-    public string? TownOrCity { get; set; }
-
-    [BindProperty]
-    [DisplayName("Postcode")]
-    [Required(ErrorMessage = "Enter your postcode")]
-    public string? Postcode { get; set; }
-
-    [BindProperty]
-    [DisplayName("Country")]
-    [Required(ErrorMessage = "Enter your country")]
-    public string Country { get; set; } = Constants.Country.UnitedKingdom;
+    public AddressPartialModel Address { get; set; } = new();
 
     [BindProperty]
     public bool? RedirectToSummary { get; set; }
 
     public void OnGet()
     {
-        if (RegistrationDetails.OrganisationCountry == Constants.Country.UnitedKingdom)
+        SetupAddress(true);
+
+        if ((Address.IsNonUkAddress && RegistrationDetails.OrganisationCountry != Country.UnitedKingdom)
+            || (!Address.IsNonUkAddress && RegistrationDetails.OrganisationCountry == Country.UnitedKingdom))
         {
-            AddressLine1 = RegistrationDetails.OrganisationAddressLine1;
-            AddressLine2 = RegistrationDetails.OrganisationAddressLine2;
-            TownOrCity = RegistrationDetails.OrganisationCityOrTown;
-            Postcode = RegistrationDetails.OrganisationPostcode;
-            Country = RegistrationDetails.OrganisationCountry;
+            Address.AddressLine1 = RegistrationDetails.OrganisationAddressLine1;
+            Address.TownOrCity = RegistrationDetails.OrganisationCityOrTown;
+            Address.Postcode = RegistrationDetails.OrganisationPostcode;
+            Address.Country = RegistrationDetails.OrganisationCountry;
         }
     }
 
     public IActionResult OnPost()
     {
+        SetupAddress();
         if (!ModelState.IsValid)
         {
             return Page();
         }
 
-        RegistrationDetails.OrganisationAddressLine1 = AddressLine1;
-        RegistrationDetails.OrganisationAddressLine2 = AddressLine2;
-        RegistrationDetails.OrganisationCityOrTown = TownOrCity;
-        RegistrationDetails.OrganisationPostcode = Postcode;
-        RegistrationDetails.OrganisationRegion = "";
-        RegistrationDetails.OrganisationCountry = Country;
+        RegistrationDetails.OrganisationAddressLine1 = Address.AddressLine1;
+        RegistrationDetails.OrganisationCityOrTown = Address.TownOrCity;
+        RegistrationDetails.OrganisationPostcode = Address.Postcode;
+        RegistrationDetails.OrganisationRegion = null;
+        RegistrationDetails.OrganisationCountry = Address.Country ?? RegistrationDetails.OrganisationCountry;
 
         session.Set(Session.RegistrationDetailsKey, RegistrationDetails);
 
@@ -79,5 +62,17 @@ public class OrganisationRegisteredAddressModel(ISession session) : Registration
         }
 
         return RedirectToPage("OrganisationDetailsSummary");
+    }
+
+    private void SetupAddress(bool reset = false)
+    {
+        if (reset) Address = new AddressPartialModel { UkOrNonUk = UkOrNonUk };
+
+        Address.Heading = Address.IsNonUkAddress ?
+            "Enter the organisation's registered non-UK address" : "Enter the organisation's registered UK address";
+
+        Address.AddressHint = "The address of the company or organisation which is recorded on public records or within the public domain. This will be displayed on notices.";
+
+        Address.NonUkAddressLink = $"/registration/organisation-registered-address/non-uk{(RedirectToSummary == true ? "?frm-summary" : "")}";
     }
 }
