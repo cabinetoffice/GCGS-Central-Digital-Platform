@@ -8,13 +8,13 @@ using System.ComponentModel.DataAnnotations;
 namespace CO.CDP.OrganisationApp.Pages.Supplier;
 
 [Authorize]
-public class ConnectedQuestionModel(
+public class ConnectedCompaniesQuestionModel(
     IOrganisationClient organisationClient,
     ISession session) : PageModel
 {
     [BindProperty]
-    [Required(ErrorMessage = "Select if your organisation influenced or controlled by another person or company")]
-    public bool? ControlledByPersonOrCompany { get; set; }
+    [Required(ErrorMessage = "Please select an option")]
+    public bool? RegisteredWithCh { get; set; }
 
     [BindProperty(SupportsGet = true)]
     public Guid Id { get; set; }
@@ -22,27 +22,26 @@ public class ConnectedQuestionModel(
     [BindProperty(SupportsGet = true)]
     public Guid? ConnectedEntityId { get; set; }
 
-
     public async Task<IActionResult> OnGet(bool? selected)
     {
         try
-        {            
+        {
+            var getSupplierInfoTask = await organisationClient.GetOrganisationSupplierInformationAsync(Id);
+
             var cp = session.Get<ConnectedPerson>(Session.ConnectedPersonKey) ?? new ConnectedPerson();
 
             if (ConnectedEntityId.HasValue == true && cp.ConnectedEntityId != ConnectedEntityId)
             {
                 var connectedEnity = await organisationClient.GetConnectedEntityAsync(Id, ConnectedEntityId.Value);
-                
-                cp.SupplierInformationOrganisationId = Id;
-                cp.SupplierHasCompanyHouseNumber = cp.SupplierHasCompanyHouseNumber;
-                cp.ConnectedEntityId = ConnectedEntityId;
+
+                return RedirectToPage("ConnectedQuestion", new { Id });
             }
             else
             {
                 await organisationClient.GetOrganisationAsync(Id);
             }
 
-            session.Set(Session.ConnectedPersonKey, cp);
+            RegisteredWithCh = cp.SupplierHasCompanyHouseNumber;
         }
         catch (ApiException ex) when (ex.StatusCode == 404)
         {
@@ -51,7 +50,7 @@ public class ConnectedQuestionModel(
 
         if (selected.HasValue)
         {
-            ControlledByPersonOrCompany = selected.Value;
+            RegisteredWithCh = selected.Value;
         }
 
         return Page();
@@ -68,32 +67,21 @@ public class ConnectedQuestionModel(
         {
             var supplierInfo = await organisationClient.GetOrganisationSupplierInformationAsync(Id);
 
-            if (ControlledByPersonOrCompany == true)
-            {
-                return RedirectToPage("ConnectedCompaniesQuestion", new { Id });
-            }
-            else
-            {
-                var connectedEntity = await organisationClient.GetConnectedEntitiesAsync(Id);
+            var cp = session.Get<ConnectedPerson>(Session.ConnectedPersonKey) ?? new ConnectedPerson();
 
-                if (connectedEntity.Count == 0)
-                    await organisationClient.UpdateSupplierCompletedConnectedPerson(Id);
-
+            if (ConnectedEntityId.HasValue == true && cp.ConnectedEntityId != ConnectedEntityId)
+            {
                 session.Remove(Session.ConnectedPersonKey);
-                return RedirectToPage("/Supplier/SupplierInformationSummary", new { Id });
+                return RedirectToPage("ConnectedQuestion", new { Id });
             }
+
+            cp.SupplierHasCompanyHouseNumber = (RegisteredWithCh ?? false);
+
+            return RedirectToPage("ConnectedEntitySelectType", new { Id });
         }
         catch (ApiException ex) when (ex.StatusCode == 404)
         {
             return Redirect("/page-not-found");
         }
     }
-}
-
-public class ConnectedPerson
-{
-    public Guid? SupplierInformationOrganisationId { get; set; }
-    public Guid? ConnectedEntityId { get; set; }
-    public bool? SupplierHasCompanyHouseNumber { get; set; }
-    public Constants.ConnectedEntityType? ConnectedEntityType { get; set; }
 }

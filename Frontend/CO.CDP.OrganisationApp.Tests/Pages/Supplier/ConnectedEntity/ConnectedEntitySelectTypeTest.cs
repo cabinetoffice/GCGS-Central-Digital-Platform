@@ -7,26 +7,26 @@ using Moq;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages.Supplier.ConnectedEntity;
 
-public class ConnectedQuestionTest
+public class ConnectedEntitySelectTypeTest
 {
-    private readonly ConnectedQuestionModel _model;
+    private readonly ConnectedEntitySelectTypeModel _model;
     private readonly Mock<ISession> _sessionMock;
     private readonly Mock<IOrganisationClient> _mockOrganisationClient;
     private readonly Guid _organisationId = Guid.NewGuid();
     private readonly Guid _entityId = Guid.NewGuid();
 
-    public ConnectedQuestionTest()
+    public ConnectedEntitySelectTypeTest()
     {
         _sessionMock = new Mock<ISession>();
         _mockOrganisationClient = new Mock<IOrganisationClient>();
-        _model = new ConnectedQuestionModel(_mockOrganisationClient.Object, _sessionMock.Object);
+        _model = new ConnectedEntitySelectTypeModel(_mockOrganisationClient.Object, _sessionMock.Object);
         _model.Id = Guid.NewGuid();
     }
 
     [Fact]
     public async Task OnGet_ShouldReturnPageResult()
     {
-        var result = await _model.OnGet(null);
+        var result = await _model.OnGet();
 
         result.Should().BeOfType<PageResult>();
     }
@@ -34,6 +34,7 @@ public class ConnectedQuestionTest
     [Fact]
     public async Task OnPost_ShouldReturnPage_WhenModelStateIsInvalid()
     {
+        
         _model.ModelState.AddModelError("Error", "Model state is invalid");
 
         var result = await _model.OnPost();
@@ -63,7 +64,7 @@ public class ConnectedQuestionTest
         _mockOrganisationClient.Setup(x => x.GetOrganisationAsync(_model.Id))
             .ThrowsAsync(new ApiException("", 404, "", default, null));
 
-        var result = await _model.OnGet(true);
+        var result = await _model.OnGet();
 
         result.Should().BeOfType<RedirectResult>()
             .Which.Url.Should().Be("/page-not-found");
@@ -79,16 +80,16 @@ public class ConnectedQuestionTest
         _mockOrganisationClient.Setup(x => x.GetOrganisationAsync(_model.Id))
             .ThrowsAsync(new ApiException("", 404, "", default, null));
 
-        var result = await _model.OnGet(true);
+        var result = await _model.OnGet();
 
         result.Should().BeOfType<RedirectResult>()
             .Which.Url.Should().Be("/page-not-found");
     }
 
     [Fact]
-    public async Task OnPost_ShouldRedirectToSupplierInformationSummaryPageWithId()
+    public async Task OnPost_ShouldRedirectToConnectedEntitySelectCategoryPage()
     {
-        _model.ControlledByPersonOrCompany = false;
+        _model.ConnectedEntityType = Constants.ConnectedEntityType.Organisation;
         _mockOrganisationClient.Setup(client => client.GetOrganisationAsync(_model.Id))
            .ReturnsAsync(OrganisationClientModel(_model.Id));
 
@@ -100,43 +101,21 @@ public class ConnectedQuestionTest
         var redirectToPageResult = result.Should().BeOfType<RedirectToPageResult>().Subject;
 
         result.Should().BeOfType<RedirectToPageResult>()
-            .Which.PageName.Should().Be("/Supplier/SupplierInformationSummary");
+            .Which.PageName.Should().Be("ConnectedEntitySelectCategory");
 
     }
 
     [Fact]
-    public async Task OnPost_ShouldRedirectToConnectedCompaniesQuestionPageWithId()
+    public async Task OnPost_ShouldRedirectToConnectedEntitySelectCategory()
     {
-        _model.ControlledByPersonOrCompany = true;
+        _model.ConnectedEntityType = Constants.ConnectedEntityType.Organisation;
         var result = await _model.OnPost();
 
         var redirectToPageResult = result.Should().BeOfType<RedirectToPageResult>().Subject;
 
         result.Should().BeOfType<RedirectToPageResult>()
-            .Which.PageName.Should().Be("ConnectedCompaniesQuestion");
+            .Which.PageName.Should().Be("ConnectedEntitySelectCategory");
 
-    }
-
-    [Fact]
-    public async Task OnPost_ShouldUpdateSupplierCompletedConnectedPerson_WhenNoConnectedEntitiesExist()
-    {
-        _model.ControlledByPersonOrCompany = false;
-       
-        _mockOrganisationClient.Setup(client => client.GetOrganisationAsync(_model.Id))
-           .ReturnsAsync(OrganisationClientModel(_model.Id));
-                
-        _mockOrganisationClient.Setup(client => client.GetConnectedEntitiesAsync(_model.Id))
-           .ReturnsAsync(new List<ConnectedEntityLookup>());
-
-        _mockOrganisationClient.Setup(client => client.UpdateSupplierInformationAsync(_model.Id,
-            It.IsAny<UpdateSupplierInformation>())).Returns(Task.CompletedTask);
-
-        var result = await _model.OnPost();
-
-        _mockOrganisationClient.Verify(c => c.UpdateSupplierInformationAsync(_model.Id, It.IsAny<UpdateSupplierInformation>()), Times.Once);
-
-        result.Should().BeOfType<RedirectToPageResult>()
-            .Which.PageName.Should().Be("/Supplier/SupplierInformationSummary");
     }
 
     private static List<ConnectedEntityLookup> ConnectedEntities =>

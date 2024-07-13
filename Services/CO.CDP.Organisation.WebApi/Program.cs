@@ -29,7 +29,7 @@ builder.Services.AddScoped<IUseCase<Guid, Organisation?>, GetOrganisationUseCase
 builder.Services.AddScoped<IUseCase<OrganisationQuery, Organisation?>, LookupOrganisationUseCase>();
 builder.Services.AddScoped<IUseCase<string, IEnumerable<Organisation>>, GetOrganisationsUseCase>();
 builder.Services.AddScoped<IUseCase<Guid, SupplierInformation?>, GetSupplierInformationUseCase>();
-builder.Services.AddScoped<IUseCase<Guid, CO.CDP.Organisation.WebApi.Model.ConnectedEntity?>, GetConnectedEntityUseCase>();
+builder.Services.AddScoped<IUseCase<(Guid, Guid), CO.CDP.Organisation.WebApi.Model.ConnectedEntity?>, GetConnectedEntityUseCase>();
 builder.Services.AddScoped<IUseCase<Guid, IEnumerable<CO.CDP.Organisation.WebApi.Model.ConnectedEntityLookup>>, GetConnectedEntitiesUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, UpdateOrganisation), bool>, UpdateOrganisationUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, UpdateBuyerInformation), bool>, UpdateBuyerInformationUseCase>();
