@@ -83,7 +83,7 @@ public class AddressPostalSameAsRegisteredQuestionModel
             return RedirectToPage("SupplierBasicInformation", new { Id });
         }
 
-        return RedirectToPage("AddressTypeQuestion", new { Id, AddressType = Constants.AddressType.Postal.ToString().ToLower() });
+        return RedirectToPage("SupplierAddress", new { Id, AddressType = Constants.AddressType.Postal.ToString().ToLower(), UkOrNonUk = "uk" });
     }
 
     private static bool AreSameAddress(Address? registeredAddress, Address? postalAddress)

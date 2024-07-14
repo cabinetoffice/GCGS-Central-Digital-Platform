@@ -10,8 +10,8 @@ public abstract class RegistrationStepModel : LoggedInUserAwareModel
     public const string OrganisationIdentifierPage = "/registration/organisation-identification";
     public const string OrganisationNamePage = "/registration/organisation-name";
     public const string OrganisationEmailPage = "/registration/organisation-email";
-    public const string OrganisationAddressPage = "/registration/organisation-registered-address";
-    public const string OrganisationNonUKAddressPage = "/registration/organisation-non-uk-address";
+    public const string OrganisationAddressPage = "/registration/organisation-registered-address/uk";
+    public const string OrganisationNonUKAddressPage = "/registration/organisation-registered-address/non-uk";
     public const string OrganisationSummaryPage = "/registration/organisation-details-summary";
 
     public const string BuyerOrganisationTypePage = "/registration/buyer-organisation-type";

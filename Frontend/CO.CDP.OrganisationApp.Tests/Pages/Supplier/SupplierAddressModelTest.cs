@@ -6,15 +6,15 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moq;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages.Supplier;
-public class AddressUkModelTests
+public class SupplierAddressModelTest
 {
     private readonly Mock<IOrganisationClient> _organisationClientMock;
-    private readonly AddressUkModel _model;
+    private readonly SupplierAddressModel _model;
 
-    public AddressUkModelTests()
+    public SupplierAddressModelTest()
     {
         _organisationClientMock = SupplierDetailsFactory.CreateOrganisationClientMock();
-        _model = new AddressUkModel(_organisationClientMock.Object)
+        _model = new SupplierAddressModel(_organisationClientMock.Object)
         {
             Id = Guid.NewGuid(),
             AddressType = Constants.AddressType.Registered
@@ -23,11 +23,13 @@ public class AddressUkModelTests
 
     private void SetupModelWithUkAddress()
     {
-        _model.AddressLine1 = "1 London Street";
-        _model.AddressLine2 = "";
-        _model.TownOrCity = "London";
-        _model.Postcode = "L1";
-        _model.Country = "United Kingdom";
+        _model.Address = new OrganisationApp.Pages.Shared.AddressPartialModel
+        {
+            AddressLine1 = "1 London Street",
+            TownOrCity = "London",
+            Postcode = "L1",
+            Country = "United Kingdom"
+        };
     }
 
     private void SetupMockForValidGet()
@@ -51,10 +53,10 @@ public class AddressUkModelTests
         var result = await _model.OnGet();
 
         result.Should().BeOfType<PageResult>();
-        _model.AddressLine1.Should().Be("1 London Street");
-        _model.TownOrCity.Should().Be("London");
-        _model.Postcode.Should().Be("L1");
-        _model.Country.Should().Be("United Kingdom");
+        _model.Address.AddressLine1.Should().Be("1 London Street");
+        _model.Address.TownOrCity.Should().Be("London");
+        _model.Address.Postcode.Should().Be("L1");
+        _model.Address.Country.Should().Be("United Kingdom");
     }
 
     [Fact]
