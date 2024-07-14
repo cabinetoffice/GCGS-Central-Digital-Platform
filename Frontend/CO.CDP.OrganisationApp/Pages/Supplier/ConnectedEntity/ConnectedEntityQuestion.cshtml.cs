@@ -56,13 +56,20 @@ public class ConnectedEntityQuestionModel(
         }
         else
         {
-            var connectedEntity = await organisationClient.GetConnectedEntitiesAsync(Id);
+            try
+            {
+                var connectedEntity = await organisationClient.GetConnectedEntitiesAsync(Id);
 
-            if (connectedEntity.Count == 0)
-                await organisationClient.UpdateSupplierCompletedConnectedPerson(Id);
+                if (connectedEntity.Count == 0)
+                    await organisationClient.UpdateSupplierCompletedConnectedPerson(Id);
 
-            session.Remove(Session.ConnectedPersonKey);
-            return RedirectToPage("/Supplier/SupplierInformationSummary", new { Id });
+                session.Remove(Session.ConnectedPersonKey);
+                return RedirectToPage("/Supplier/SupplierInformationSummary", new { Id });
+            }
+            catch (ApiException ex) when (ex.StatusCode == 404)
+            {
+                return Redirect("/page-not-found");
+            }
         }
     }
 }

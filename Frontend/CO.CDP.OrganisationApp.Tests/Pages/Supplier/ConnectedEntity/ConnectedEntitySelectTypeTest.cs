@@ -24,20 +24,93 @@ public class ConnectedEntitySelectTypeTest
     [Fact]
     public void OnGet_ShouldReturnPageResult()
     {
+        _sessionMock
+            .Setup(s => s.Get<ConnectedEntityState>(Session.ConnectedPersonKey))
+            .Returns(DummyConnectedPersonDetails());
+
         var result = _model.OnGet();
 
         result.Should().BeOfType<PageResult>();
     }
 
     [Fact]
+    public void OnGet_ShouldRedirectToConnectedEntityQuestion_WhenSessionStateIsNull()
+    {
+        _sessionMock
+            .Setup(s => s.Get<ConnectedEntityState>(Session.ConnectedPersonKey))
+            .Returns((ConnectedEntityState?)null);
+
+        var result = _model.OnGet();
+
+        result.Should().BeOfType<RedirectToPageResult>()
+            .Which.PageName.Should().Be("ConnectedEntityQuestion");
+    }
+
+    [Fact]
     public void OnPost_ShouldReturnPage_WhenModelStateIsInvalid()
     {
+        _sessionMock
+           .Setup(s => s.Get<ConnectedEntityState>(Session.ConnectedPersonKey))
+           .Returns((ConnectedEntityState?)null);
 
         _model.ModelState.AddModelError("Error", "Model state is invalid");
 
         var result = _model.OnPost();
 
         result.Should().BeOfType<PageResult>();
+    }
+    
+    [Fact]
+    public void OnPost_ShouldRedirectToConnectedEntitySelectCategoryPage()
+    {
+        var state = DummyConnectedPersonDetails();
+        state.ConnectedEntityType = null;
+
+        _sessionMock.Setup(s => s.Get<ConnectedEntityState>(Session.ConnectedPersonKey)).
+            Returns(state);
+
+        var result = _model.OnPost();
+
+        var redirectToPageResult = result.Should().BeOfType<RedirectToPageResult>().Subject;
+
+        result.Should().BeOfType<RedirectToPageResult>()
+            .Which.PageName.Should().Be("ConnectedEntitySelectCategory");
+
+    }
+
+    [Fact]
+    public void OnPost_ShouldRedirectToConnectedEntitySelectCategory_WhenModelStateIsValid()
+    {
+        var state = DummyConnectedPersonDetails();
+
+        _sessionMock.Setup(s => s.Get<ConnectedEntityState>(Session.ConnectedPersonKey)).
+            Returns(state);
+
+        var result =  _model.OnPost();
+
+        var redirectToPageResult = result.Should().BeOfType<RedirectToPageResult>().Subject;
+
+        result.Should().BeOfType<RedirectToPageResult>()
+            .Which.PageName.Should().Be("ConnectedEntitySelectCategory");
+
+    }
+
+    [Fact]
+    public void OnPost_ShouldUpdateSessionState_WhenModelStateIsValid()
+    {
+        var state = DummyConnectedPersonDetails();
+
+        _model.ConnectedEntityType = Constants.ConnectedEntityType.Organisation;
+
+        _sessionMock
+            .Setup(s => s.Get<ConnectedEntityState>(Session.ConnectedPersonKey))
+            .Returns(state);
+
+        // Act
+        _model.OnPost();
+
+        // Assert
+        _sessionMock.Verify(s => s.Set(Session.ConnectedPersonKey, It.Is<ConnectedEntityState>(st => st.ConnectedEntityType == Constants.ConnectedEntityType.Organisation)), Times.Once);
     }
 
     private ConnectedEntityState DummyConnectedPersonDetails()
@@ -46,61 +119,11 @@ public class ConnectedEntitySelectTypeTest
         {
             ConnectedEntityId = _entityId,
             SupplierHasCompanyHouseNumber = true,
-            SupplierOrganisationId = _organisationId
+            SupplierOrganisationId = _organisationId,
+            ConnectedEntityType = Constants.ConnectedEntityType.Organisation,
         };
 
         return connectedPersonDetails;
-    }
-
-    [Fact]
-    public void OnGet_ReturnsNotFound_WhenSupplierInfoNotFoundWithOutConnectedEntityId()
-    {
-        _sessionMock.Setup(s => s.Get<ConnectedEntityState>(Session.ConnectedPersonKey)).
-            Returns(DummyConnectedPersonDetails());
-
-        var result = _model.OnGet();
-
-        result.Should().BeOfType<RedirectResult>()
-            .Which.Url.Should().Be("/page-not-found");
-    }
-
-    [Fact]
-    public void OnGet_ReturnsNotFound_WhenSupplierInfoNotFoundWithConnectedEntityId()
-    {
-        _sessionMock.Setup(s => s.Get<ConnectedEntityState>(Session.ConnectedPersonKey)).
-            Returns(DummyConnectedPersonDetails());
-                
-        var result = _model.OnGet();
-
-        result.Should().BeOfType<RedirectResult>()
-            .Which.Url.Should().Be("/page-not-found");
-    }
-
-    [Fact]
-    public void OnPost_ShouldRedirectToConnectedEntitySelectCategoryPage()
-    {
-        _model.ConnectedEntityType = Constants.ConnectedEntityType.Organisation;
-        
-        var result = _model.OnPost();
-
-        var redirectToPageResult = result.Should().BeOfType<RedirectToPageResult>().Subject;
-
-        result.Should().BeOfType<RedirectToPageResult>()
-            .Which.PageName.Should().Be("ConnectedEntitySelectCategory");
-
-    }
-
-    [Fact]
-    public void OnPost_ShouldRedirectToConnectedEntitySelectCategory()
-    {
-        _model.ConnectedEntityType = Constants.ConnectedEntityType.Organisation;
-        var result =  _model.OnPost();
-
-        var redirectToPageResult = result.Should().BeOfType<RedirectToPageResult>().Subject;
-
-        result.Should().BeOfType<RedirectToPageResult>()
-            .Which.PageName.Should().Be("ConnectedEntitySelectCategory");
-
     }
 
     private static List<ConnectedEntityLookup> ConnectedEntities =>

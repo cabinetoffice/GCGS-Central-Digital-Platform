@@ -24,7 +24,40 @@ public class ConnectedEntitySupplierCompanyQuestionTest
     [Fact]
     public void OnGet_ShouldReturnPageResult()
     {
+        _sessionMock
+            .Setup(s => s.Get<ConnectedEntityState>(Session.ConnectedPersonKey))
+            .Returns(DummyConnectedPersonDetails());
+
         var result =  _model.OnGet(null);
+
+        result.Should().BeOfType<PageResult>();
+    }
+
+    [Fact]
+    public void OnGet_ShouldRedirectToConnectedEntityQuestion_WhenSessionStateIsNull()
+    {
+        _model.Id = Guid.NewGuid();
+
+        _sessionMock
+            .Setup(s => s.Get<ConnectedEntityState>(Session.ConnectedPersonKey))
+            .Returns((ConnectedEntityState?)null);
+
+        var result = _model.OnGet(null);
+
+        result.Should().BeOfType<RedirectToPageResult>()
+            .Which.PageName.Should().Be("ConnectedEntityQuestion");
+    }
+
+    [Fact]
+    public void OnGet_ShouldSetConnectedEntityType_WhenSessionStateIsNotNull()
+    {
+        var state = DummyConnectedPersonDetails();
+
+        _sessionMock
+            .Setup(s => s.Get<ConnectedEntityState>(Session.ConnectedPersonKey))
+            .Returns(state);
+
+        var result = _model.OnGet(null);
 
         result.Should().BeOfType<PageResult>();
     }
@@ -40,68 +73,32 @@ public class ConnectedEntitySupplierCompanyQuestionTest
         result.Should().BeOfType<PageResult>();
     }
 
+    [Fact]
+    public void OnPost_ShouldRedirectToConnectedEntitySelectType()
+    {        
+        _sessionMock.Setup(s => s.Get<ConnectedEntityState>(Session.ConnectedPersonKey)).
+            Returns(DummyConnectedPersonDetails());
+
+        var result = _model.OnPost();
+
+        var redirectToPageResult = result.Should().BeOfType<RedirectToPageResult>().Subject;
+
+        result.Should().BeOfType<RedirectToPageResult>()
+            .Which.PageName.Should().Be("ConnectedEntitySelectType");
+
+    }
+    
     private ConnectedEntityState DummyConnectedPersonDetails()
     {
         var connectedPersonDetails = new ConnectedEntityState
         {
             ConnectedEntityId = _entityId,
             SupplierHasCompanyHouseNumber = true,
-            SupplierOrganisationId = _organisationId
+            SupplierOrganisationId = _organisationId,
+            ConnectedEntityType = Constants.ConnectedEntityType.Organisation
         };
 
         return connectedPersonDetails;
-    }
-
-    [Fact]
-    public void OnGet_ReturnsNotFound_WhenSupplierInfoNotFoundWithOutConnectedEntityId()
-    {
-        _sessionMock.Setup(s => s.Get<ConnectedEntityState>(Session.ConnectedPersonKey)).
-            Returns(DummyConnectedPersonDetails());
-
-
-        var result =  _model.OnGet(true);
-
-        result.Should().BeOfType<RedirectResult>()
-            .Which.Url.Should().Be("/page-not-found");
-    }
-
-    [Fact]
-    public void OnGet_ReturnsNotFound_WhenSupplierInfoNotFoundWithConnectedEntityId()
-    {
-        _sessionMock.Setup(s => s.Get<ConnectedEntityState>(Session.ConnectedPersonKey)).
-            Returns(DummyConnectedPersonDetails());
-
-        var result = _model.OnGet(true);
-
-        result.Should().BeOfType<RedirectResult>()
-            .Which.Url.Should().Be("/page-not-found");
-    }
-
-    [Fact]
-    public void OnPost_ShouldRedirectToConnectedEntitySelectType()
-    {
-        _model.RegisteredWithCh = false;
-        
-        var result = _model.OnPost();
-
-        var redirectToPageResult = result.Should().BeOfType<RedirectToPageResult>().Subject;
-
-        result.Should().BeOfType<RedirectToPageResult>()
-            .Which.PageName.Should().Be("ConnectedEntitySelectType");
-
-    }
-
-    [Fact]
-    public void OnPost_ShouldRedirectToConnectedConnectedEntitySelectType()
-    {
-        _model.RegisteredWithCh = true;
-        var result = _model.OnPost();
-
-        var redirectToPageResult = result.Should().BeOfType<RedirectToPageResult>().Subject;
-
-        result.Should().BeOfType<RedirectToPageResult>()
-            .Which.PageName.Should().Be("ConnectedEntitySelectType");
-
     }
 
     private static List<ConnectedEntityLookup> ConnectedEntities =>
