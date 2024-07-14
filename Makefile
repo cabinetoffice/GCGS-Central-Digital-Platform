@@ -2,8 +2,11 @@
 AWS_ACCOUNT_ID=$$(aws sts get-caller-identity | jq -r '.Account')
 REPO_URL := $(AWS_ACCOUNT_ID).dkr.ecr.eu-west-2.amazonaws.com
 IMAGES := cdp-organisation-information-migrations cdp-data-sharing cdp-entity-verification cdp-forms cdp-organisation-app cdp-organisation cdp-person cdp-tenant cdp-authority
-TAGGED_IMAGES := $(addprefix cabinetoffice/,$(addsuffix :latest,$(IMAGES)))
-TAGGED_REPO_IMAGES := $(addprefix $(REPO_URL)/,$(TAGGED_IMAGES))
+DATE := $(shell date +%Y%m%d)
+TIME := $(shell date +%H%M)
+COMMIT_REVISION := $(shell git rev-parse --short HEAD)
+TAG := $(DATE)-localbuild-$(TIME)-$(COMMIT_REVISION)
+TAGGED_IMAGES := $(addsuffix :$(TAG),$(IMAGES))
 
 # Extracts targets and their comments
 help: ## List available commands
@@ -156,8 +159,11 @@ aws-push-authority-private-key: ## Push Authority's private key to the target AW
 		aws secretsmanager create-secret --name cdp-sirsi-authority-keys --secret-string "$$(jq -n --arg priv "$$(cat ./terragrunt/secrets/authority-private-key.pem)" '{PRIVATE: $$priv}')"; \
 	fi
 
-aws-push-to-ecr: build-docker ## Build, tag and push Docker images to ECR
-	$(foreach image,$(TAGGED_IMAGES),docker tag $(image) $(REPO_URL)/$(notdir $(basename $(image)));)
+aws-push-to-ecr: ## Tag latest built Docker images and push to ECR
+	$(foreach image,$(IMAGES),docker tag cabinetoffice/$(image):latest $(REPO_URL)/$(image):$(TAG);)
 	aws ecr get-login-password --region eu-west-2 | docker login --username AWS --password-stdin $(REPO_URL)
-	$(foreach image,$(IMAGES),docker push $(REPO_URL)/$(image);)
+	$(foreach image,$(IMAGES),docker push $(REPO_URL)/$(image):$(TAG);)
 .PHONY: aws-push-to-ecr
+
+aws-build-and-push-ecr: build-docker aws-push-to-ecr ## Build, tag and push Docker images to ECR
+.PHONY: aws-build-and-push-ecr
