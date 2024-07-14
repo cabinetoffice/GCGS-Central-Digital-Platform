@@ -14,6 +14,14 @@ output "cloudwatch_events_name" {
   value = aws_iam_role.cloudwatch_events.name
 }
 
+output "db_connection_step_function_arn" {
+  value = aws_iam_role.db_connection_step_function.arn
+}
+
+output "db_connection_step_function_name" {
+  value = aws_iam_role.db_connection_step_function.name
+}
+
 output "ecs_task_arn" {
   value = aws_iam_role.ecs_task.arn
 }
@@ -28,14 +36,6 @@ output "ecs_task_exec_name" {
 
 output "ecs_task_name" {
   value = aws_iam_role.ecs_task.name
-}
-
-output "db_connection_step_function_arn" {
-  value = aws_iam_role.db_connection_step_function.arn
-}
-
-output "db_connection_step_function_name" {
-  value = aws_iam_role.db_connection_step_function.name
 }
 
 output "service_deployer_step_function_arn" {

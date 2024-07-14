@@ -17,12 +17,12 @@ variable "product" {
   })
 }
 
-variable "terraform_operators" {
-  description = "List of IAM user ARNs allowed to assume terraform roles"
-  type        = list(string)
-}
-
 variable "tags" {
   description = "Tags to apply to all resources in this module"
   type        = map(string)
+}
+
+variable "terraform_operators" {
+  description = "List of IAM user ARNs allowed to assume terraform roles"
+  type        = list(string)
 }
