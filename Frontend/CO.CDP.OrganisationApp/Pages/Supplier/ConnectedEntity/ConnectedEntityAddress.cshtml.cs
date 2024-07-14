@@ -37,7 +37,8 @@ public class ConnectedEntityAddressModel(ISession session) : PageModel
         var (valid, state) = ValidatePage();
         if (!valid)
         {
-            return RedirectToPage(ConnectedEntityId.HasValue ? "ConnectedEntityCheckAnswers" : "ConnectedEntityQuestion", new { Id, ConnectedEntityId });
+            return RedirectToPage(ConnectedEntityId.HasValue ?
+                "ConnectedEntityCheckAnswers" : "ConnectedEntityQuestion", new { Id, ConnectedEntityId });
         }
         ConnectedEntityState.Address? stateAddress = null;
         if (AddressType == AddressType.Registered) stateAddress = state.RegisteredAddress;
@@ -61,33 +62,31 @@ public class ConnectedEntityAddressModel(ISession session) : PageModel
         var (valid, state) = ValidatePage();
         if (!valid)
         {
-            return RedirectToPage(ConnectedEntityId.HasValue ? "ConnectedEntityCheckAnswers" : "ConnectedEntityQuestion", new { Id, ConnectedEntityId });
+            return RedirectToPage(ConnectedEntityId.HasValue ?
+                "ConnectedEntityCheckAnswers" : "ConnectedEntityQuestion", new { Id, ConnectedEntityId });
         }
 
         SetupAddress();
 
         if (!ModelState.IsValid) return Page();
 
+        var address = new ConnectedEntityState.Address()
+        {
+            AddressLine1 = Address.AddressLine1,
+            TownOrCity = Address.TownOrCity,
+            Postcode = Address.Postcode,
+            Country = Address.Country
+        };
+
         if (AddressType == AddressType.Registered)
         {
-            state.RegisteredAddress = new()
-            {
-                AddressLine1 = Address.AddressLine1,
-                TownOrCity = Address.TownOrCity,
-                Postcode = Address.Postcode,
-                Country = Address.Country
-            };
+            state.RegisteredAddress = address;
         }
-        else
+        else if (AddressType == AddressType.Postal)
         {
-            state.PostalAddress = new()
-            {
-                AddressLine1 = Address.AddressLine1,
-                TownOrCity = Address.TownOrCity,
-                Postcode = Address.Postcode,
-                Country = Address.Country
-            };
+            state.PostalAddress = address;
         }
+        session.Set(Session.ConnectedPersonKey, state);
 
         //TODO 2: different page if different indivisual/trust category;
         return RedirectToPage("ConnectedEntityPostalSameAsRegisteredAddress", new { Id, ConnectedEntityId });
