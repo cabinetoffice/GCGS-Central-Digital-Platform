@@ -28,6 +28,12 @@ resource "aws_iam_policy" "terraform_product" {
   tags        = var.tags
 }
 
+resource "aws_iam_policy" "terraform_assume_orchestrator_role" {
+  name        = "${local.name_prefix}-terraform-assume-orchestrator-role"
+  description = "Policy to allow assuming the orchestrator role"
+  policy      = data.aws_iam_policy_document.terraform_assume_orchestrator_role.json
+}
+
 resource "aws_iam_role_policy_attachment" "terraform" {
   policy_arn = aws_iam_policy.terraform.arn
   role       = aws_iam_role.terraform.name
@@ -41,4 +47,9 @@ resource "aws_iam_role_policy_attachment" "terraform_global" {
 resource "aws_iam_role_policy_attachment" "terraform_production" {
   policy_arn = aws_iam_policy.terraform_product.arn
   role       = aws_iam_role.terraform.name
+}
+
+resource "aws_iam_role_policy_attachment" "terraform_assume_orchestrator_role" {
+  role       = aws_iam_role.terraform.name
+  policy_arn = aws_iam_policy.terraform_assume_orchestrator_role.arn
 }

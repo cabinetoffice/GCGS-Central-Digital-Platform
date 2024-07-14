@@ -1,5 +1,5 @@
 resource "aws_iam_user" "github_user" {
-  name = "github-user"
+  name = "${local.name_prefix}-github-user"
   tags = var.tags
 }
 

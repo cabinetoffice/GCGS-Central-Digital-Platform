@@ -1,5 +1,9 @@
 locals {
 
+    account_ids = {
+        for name, env in local.environments : name => env.account_id
+    }
+
     cidr_b_development = 3
     cidr_b_integration = 4
     cidr_b_orchestrator = 5

@@ -72,7 +72,7 @@ jobs:
       - name: Stop services
         run: make down
 
-  deploy:
+  publish:
     runs-on: ubuntu-latest
     needs: test
     if: github.ref == 'refs/heads/DP-187' && github.repository_owner == 'cabinetoffice'

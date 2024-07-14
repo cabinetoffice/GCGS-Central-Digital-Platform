@@ -10,7 +10,7 @@ module "ecs_service_authority" {
       conn_string_location    = var.db_connection_secret_arn
       environment             = local.service_environment
       host_port               = var.service_configs.authority.port
-      image                   = "${local.ecr_urls[var.service_configs.authority.name]}:latest"
+      image                   = "${local.ecr_urls[var.service_configs.authority.name]}:${local.orchestrator_service_version}"
       lg_name                 = aws_cloudwatch_log_group.tasks[var.service_configs.authority.name].name
       lg_prefix               = "app"
       lg_region               = data.aws_region.current.name

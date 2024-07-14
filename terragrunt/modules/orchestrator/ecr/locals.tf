@@ -9,6 +9,6 @@ locals {
       for name, config in var.service_configs :
       config.name
     ],
-  ["cdp-grafana"])
+  ["grafana"])
 
 }
