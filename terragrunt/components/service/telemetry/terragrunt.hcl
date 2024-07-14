@@ -58,6 +58,7 @@ dependency service_ecs {
 }
 
 inputs = {
+  account_ids     = local.global_vars.locals.account_ids
   grafana_config  = local.global_vars.locals.tools_configs.grafana
   service_configs = local.global_vars.locals.service_configs
   tags            = local.tags
