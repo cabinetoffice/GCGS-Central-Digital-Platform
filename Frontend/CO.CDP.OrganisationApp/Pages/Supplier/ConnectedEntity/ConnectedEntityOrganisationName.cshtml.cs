@@ -1,19 +1,23 @@
-using Microsoft.AspNetCore.Authorization;
+using CO.CDP.OrganisationApp.Constants;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace CO.CDP.OrganisationApp.Pages.Supplier;
 
-[Authorize]
-public class ConnectedEntitySelectTypeModel(ISession session) : PageModel
+public class ConnectedEntityOrganisationNameModel(ISession session) : PageModel
 {
     [BindProperty]
-    [Required(ErrorMessage = "Please select an option")]
-    public Constants.ConnectedEntityType? ConnectedEntityType { get; set; }
+    [DisplayName("Enter the organisation's name")]
+    [Required(ErrorMessage = "Enter the organisation's name")]
+    public string? OrganisationName { get; set; }
 
     [BindProperty(SupportsGet = true)]
     public Guid Id { get; set; }
+
+    [BindProperty]
+    public ConnectedEntityType? ConnectedEntityType { get; set; }
 
     public IActionResult OnGet()
     {
@@ -24,6 +28,7 @@ public class ConnectedEntitySelectTypeModel(ISession session) : PageModel
         }
 
         ConnectedEntityType = state.ConnectedEntityType;
+        OrganisationName = state.OrganisationName;
         return Page();
     }
 
@@ -35,11 +40,8 @@ public class ConnectedEntitySelectTypeModel(ISession session) : PageModel
             return Page();
         }
 
-        state.ConnectedEntityType = ConnectedEntityType;
+        state.OrganisationName = OrganisationName;
         session.Set(Session.ConnectedPersonKey, state);
-
-        return RedirectToPage(
-            (state.ConnectedEntityType == Constants.ConnectedEntityType.Organisation ? "ConnectedEntityOrganisationCategory" : "")
-            , new { Id });
+        return RedirectToPage("", new { Id });
     }
 }

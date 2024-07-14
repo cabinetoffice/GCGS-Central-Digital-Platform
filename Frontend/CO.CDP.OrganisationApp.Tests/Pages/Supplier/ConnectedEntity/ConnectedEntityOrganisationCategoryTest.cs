@@ -7,17 +7,17 @@ using Moq;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages.Supplier.ConnectedEntity;
 
-public class ConnectedEntitySelectTypeTest
+public class ConnectedEntityOrganisationCategoryTest
 {
-    private readonly ConnectedEntitySelectTypeModel _model;
+    private readonly ConnectedEntityOrganisationCategoryModel _model;
     private readonly Mock<ISession> _sessionMock;
     private readonly Guid _organisationId = Guid.NewGuid();
     private readonly Guid _entityId = Guid.NewGuid();
 
-    public ConnectedEntitySelectTypeTest()
+    public ConnectedEntityOrganisationCategoryTest()
     {
         _sessionMock = new Mock<ISession>();
-        _model = new ConnectedEntitySelectTypeModel(_sessionMock.Object);
+        _model = new ConnectedEntityOrganisationCategoryModel(_sessionMock.Object);
         _model.Id = Guid.NewGuid();
     }
 
@@ -62,13 +62,13 @@ public class ConnectedEntitySelectTypeTest
 
 
     [Theory]
-    [InlineData(Constants.ConnectedEntityType.Organisation, "ConnectedEntityOrganisationCategory")]
-    [InlineData(Constants.ConnectedEntityType.Individual, "")]
-    [InlineData(Constants.ConnectedEntityType.TrustOrTrustee, "")]
-    public void OnPost_ShouldRedirectToConnectedEntityCategoryPage(Constants.ConnectedEntityType connectedEntityType, string expectedRedirectPage)
+    [InlineData(Constants.ConnectedEntityType.Organisation, "ConnectedEntityOrganisationName")]
+    [InlineData(Constants.ConnectedEntityType.Individual, "ConnectedEntityOrganisationName")]
+    [InlineData(Constants.ConnectedEntityType.TrustOrTrustee, "ConnectedEntityOrganisationName")]
+    public void OnPost_ShouldRedirectToConnectedEntityOrganisationNamePage(Constants.ConnectedEntityType connectedEntityType, string expectedRedirectPage)
     {
         var state = DummyConnectedPersonDetails();
-        _model.ConnectedEntityType = connectedEntityType;
+        state.ConnectedEntityType = connectedEntityType;
 
         _sessionMock.Setup(s => s.Get<ConnectedEntityState>(Session.ConnectedPersonKey)).
             Returns(state);
@@ -86,16 +86,14 @@ public class ConnectedEntitySelectTypeTest
     {
         var state = DummyConnectedPersonDetails();
 
-        _model.ConnectedEntityType = Constants.ConnectedEntityType.Organisation;
+        state.ConnectedEntityType = Constants.ConnectedEntityType.Organisation;
 
         _sessionMock
             .Setup(s => s.Get<ConnectedEntityState>(Session.ConnectedPersonKey))
             .Returns(state);
 
-        // Act
         _model.OnPost();
 
-        // Assert
         _sessionMock.Verify(s => s.Set(Session.ConnectedPersonKey, It.Is<ConnectedEntityState>(st => st.ConnectedEntityType == Constants.ConnectedEntityType.Organisation)), Times.Once);
     }
 

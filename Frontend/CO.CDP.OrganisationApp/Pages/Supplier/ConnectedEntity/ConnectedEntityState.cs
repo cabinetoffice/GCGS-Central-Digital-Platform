@@ -8,7 +8,8 @@ public class ConnectedEntityState
     public Guid? ConnectedEntityId { get; set; }
     public bool? SupplierHasCompanyHouseNumber { get; set; }
     public ConnectedEntityType? ConnectedEntityType { get; set; }
-
+    public ConnectedEntityOrganisationCategoryType? ConnectedEntityOrganisationCategoryType { get; set; }
+    public string? OrganisationName { get; set; }
     public Address? RegisteredAddress { get; set; }
     public Address? PostalAddress { get; set; }
 
