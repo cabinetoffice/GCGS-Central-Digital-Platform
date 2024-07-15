@@ -148,10 +148,22 @@ COPY .config/dotnet-tools.json .config/
 RUN dotnet tool restore
 RUN dotnet ef migrations bundle -p /src/Services/CO.CDP.OrganisationInformation.Persistence -s /src/Services/CO.CDP.Tenant.WebApi --self-contained -o /app/migrations/efbundle
 
+FROM build-entity-verification AS build-migrations-entity-verification
+WORKDIR /src
+COPY .config/dotnet-tools.json .config/
+RUN dotnet tool restore
+RUN dotnet ef migrations bundle -p /src/Services/CO.CDP.EntityVerification --self-contained -o /app/migrations/efbundle
+
 FROM base AS migrations-organisation-information
 ENV MIGRATIONS_CONNECTION_STRING=""
 WORKDIR /app
 COPY --from=build-migrations-organisation-information /app/migrations/efbundle .
+ENTRYPOINT /app/efbundle --connection "$MIGRATIONS_CONNECTION_STRING"
+
+FROM base AS migrations-entity-verification
+ENV MIGRATIONS_CONNECTION_STRING=""
+WORKDIR /app
+COPY --from=build-migrations-entity-verification /app/migrations/efbundle .
 ENTRYPOINT /app/efbundle --connection "$MIGRATIONS_CONNECTION_STRING"
 
 FROM base AS final-authority
