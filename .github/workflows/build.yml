@@ -61,9 +61,10 @@ jobs:
         run: |
           COMMIT_REF=$(if [ "$GITHUB_EVENT_NAME" == "pull_request" ]; then echo "${{ github.event.pull_request.head.sha }}"; else echo "${GITHUB_SHA:-HEAD}"; fi)
           CURRENT_COMMIT=$(make version-commit COMMIT_REF=$COMMIT_REF)
+          LAST_TAG=$(make last-tag)
           DATE=$(date +%Y%m%d%H%M%S)
           IMAGE_VERSION=${CURRENT_COMMIT}
-          IMAGE_VERSION_ALIASES=${DATE}
+          IMAGE_VERSION_ALIASES="${DATE} ${LAST_TAG}-${CURRENT_COMMIT}"
           echo "Image version: $IMAGE_VERSION"
           echo "Image version aliases: $IMAGE_VERSION_ALIASES"
           echo "image_version=${IMAGE_VERSION}" >> $GITHUB_OUTPUT

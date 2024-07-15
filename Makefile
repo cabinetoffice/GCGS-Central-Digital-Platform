@@ -174,6 +174,10 @@ version-commit: ## Determines the last commit hash
 	@git rev-parse --short "$(COMMIT_REF)"
 .PHONY: version-commit
 
+last-tag: ## Determines the last created tag on the repository
+	@git for-each-ref refs/tags --sort=-refname --format='%(refname:short)' --count=1
+.PHONY: last-tag
+
 docker-tag-images: IMAGE_VERSION ?= latest
 docker-tag-images: IMAGE_VERSION_ALIASES ?= latest
 docker-tag-images: ## Tag images
