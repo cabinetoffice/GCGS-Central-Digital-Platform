@@ -137,6 +137,11 @@ public class DynamicFormsPageModel(IFormsEngine formsEngine, ITempDataService te
             return ValidateTextAnswer();
         }
 
+        if (CurrentQuestion?.Type == FormQuestionType.FileUpload)
+        {
+            return ValidateFileUpload();
+        }
+
         // Future validation for other question types can be added here
 
         return true;
@@ -158,6 +163,37 @@ public class DynamicFormsPageModel(IFormsEngine formsEngine, ITempDataService te
         if (string.IsNullOrEmpty(Answer))
         {
             ModelState.AddModelError("Answer", "Please enter a value.");
+            return false;
+        }
+
+        return true;
+    }
+
+    public bool ValidateFileUpload()
+    {
+        var file = Request.Form.Files["fileUpload"];
+        
+        var allowedFileSizeMB = 5;
+        var allowedExtensions = new List<string> { ".pdf", ".docx", ".csv", ".jpg", ".bmp", ".png", ".tif" };
+
+        // File cannot be null or empty
+        if (file == null)
+        {
+            return false;
+        }
+
+        // Check file size
+        if (file.Length > allowedFileSizeMB * 1024 * 1024)
+        {
+            ModelState.AddModelError("Answer", "The file size must not exceed " + allowedFileSizeMB + "MB.");
+            return false;
+        }
+
+        // Check the file extension
+        var fileExtension = Path.GetExtension(file.FileName).ToLowerInvariant();
+        if (!allowedExtensions.Contains(fileExtension))
+        {
+            ModelState.AddModelError("Answer", "Please upload a file which has one of the following extensions." + string.Join(", ", allowedExtensions));
             return false;
         }
 

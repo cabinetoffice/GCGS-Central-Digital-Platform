@@ -6,10 +6,20 @@
     var hasError = ViewData.ModelState["Answer"]?.Errors?.Count > 0;
 }
 
-<div class="govuk-form-group">
+<div class="govuk-form-group @(hasError ? "govuk-form-group--error" : "")">
     <h1 class="govuk-heading-l">
         @question.Title
     </h1>
     <p class="govuk-body">@question.Description</p>
+    @if (hasError)
+    {
+        <p id="Answer-error" class="govuk-error-message">
+            <span class="govuk-visually-hidden">Error:</span>
+            @foreach (var error in ViewData.ModelState["Answer"].Errors)
+            {
+                <span>@error.ErrorMessage</span>
+            }
+        </p>
+    }
     <input class="govuk-file-upload" id="@question.Id" name="fileUpload" type="file">
 </div>
