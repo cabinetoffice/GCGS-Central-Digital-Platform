@@ -59,13 +59,14 @@ public class RegisterConnectedEntityUseCaseTest(AutoMapperFixture mapperFixture)
     public async Task ItSavesNewConnectedEntityInTheRepository()
     {
         var organisationId = Guid.NewGuid();
+        var entityId = Guid.NewGuid();
         var registerConnectedEntity = GivenRegisterConnectedEntity(organisationId);
 
         var command = (organisationId, registerConnectedEntity);
 
         Persistence.ConnectedEntity? persistanceConnectedEntity = null;
 
-        var ce = GivenConnectedEntityExists(organisationId);
+        var ce = GivenConnectedEntityExists(organisationId, entityId);
 
         _connectedEntityRepo
             .Setup(x => x.Save(It.IsAny<Persistence.ConnectedEntity>()))
@@ -125,16 +126,16 @@ public class RegisterConnectedEntityUseCaseTest(AutoMapperFixture mapperFixture)
         };
     }
 
-    private Persistence.ConnectedEntity GivenConnectedEntityExists(Guid guid)
+    private Persistence.ConnectedEntity GivenConnectedEntityExists(Guid guid, Guid entityId)
     {
         Persistence.ConnectedEntity entity = new Persistence.ConnectedEntity
         {
-            Guid = guid,
+            Guid = entityId,
             EntityType = Persistence.ConnectedEntity.ConnectedEntityType.Organisation,
             SupplierOrganisation = GivenOrganisationExist(guid)
         };
 
-        _connectedEntityRepo.Setup(repo => repo.Find(guid))
+        _connectedEntityRepo.Setup(repo => repo.Find(guid, entityId))
             .ReturnsAsync(entity);
 
         return entity;

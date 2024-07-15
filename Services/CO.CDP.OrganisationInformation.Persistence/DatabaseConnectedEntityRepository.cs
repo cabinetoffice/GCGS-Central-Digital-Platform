@@ -10,12 +10,12 @@ public class DatabaseConnectedEntityRepository(OrganisationInformationContext co
         context.Dispose();
     }
 
-    public async Task<ConnectedEntity?> Find(Guid id)
+    public async Task<ConnectedEntity?> Find(Guid organisationId, Guid id)
     {
         return await context.ConnectedEntities
             .Include(p => p.Addresses)
             .ThenInclude(p => p.Address)
-            .FirstOrDefaultAsync(t => t.Guid == id);
+            .FirstOrDefaultAsync(t => t.Guid == id && t.SupplierOrganisation.Guid == organisationId);
     }
 
     public async Task<IEnumerable<ConnectedEntity?>> FindByOrganisation(Guid organisationId)

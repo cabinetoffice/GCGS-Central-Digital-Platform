@@ -1,0 +1,98 @@
+@page "/organisation/{id}/supplier-information/connected-person/organisation-category"
+@model CO.CDP.OrganisationApp.Pages.Supplier.ConnectedEntityOrganisationCategoryModel
+
+@{
+    var personQuestionHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.ConnectedEntityCategory)).HasInnerHtml;
+    string IsSelected(Constants.ConnectedEntityOrganisationCategoryType radioValue)
+    {
+        return Model.ConnectedEntityCategory == radioValue ? "checked='checked'" : string.Empty;
+    }
+}
+
+<a href="/organisation/@Model.Id/supplier-information/connected-person/person-type" class="govuk-back-link">Back</a>
+
+<main class="govuk-main-wrapper">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <partial name="_ErrorSummary" model="@Model.ModelState" />
+            <form class="form" method="post">
+                <div class="govuk-form-group @(personQuestionHasError ? "govuk-form-group--error": "")">
+                    <fieldset class="govuk-fieldset" data-required="" data-error="Select the category that best describes the 'connected person'" aria-required="true">
+                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                            <h1 class="govuk-fieldset__heading">
+                                Select the category that best describes the 'connected person'
+                            </h1>
+                        </legend>
+                        <div id="connected-hint" class="govuk-hint">
+                            The ‘connected person’ that has control or influence over your organisation should fall into one of these categories.
+                        </div>
+                        <div class="govuk-radios govuk-!-margin-top-6" data-module="govuk-radios">
+                            @if (personQuestionHasError)
+                            {
+                                <p id="registered-org-error" class="govuk-error-message">
+                                    <span class="govuk-visually-hidden">Error:</span> @Html.ValidationMessageFor(m => m.ConnectedEntityCategory)
+                                </p>
+                            }
+
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input" id="entityCategory" name="ConnectedEntityCategory" type="radio"
+                                       value="@Constants.ConnectedEntityOrganisationCategoryType.RegisteredCompany"
+                                       data-aria-controls="conditional-entityCategory"
+                                @IsSelected(Constants.ConnectedEntityOrganisationCategoryType.RegisteredCompany)>
+
+                                <label class="govuk-label govuk-radios__label" for="entityCategory">
+                                    @ConnectedEntityOrganisationCategoryModel.ConnectedEntityCategoryOption["RegisteredCompany"]
+                                </label>
+                            </div>
+
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input" id="entityCategory-2" name="ConnectedEntityCategory" type="radio"
+                                       value="@Constants.ConnectedEntityOrganisationCategoryType.DirectorOrTheSameResponsibilities"
+                                       data-aria-controls="conditional-entityCategory-2"
+                                @IsSelected(Constants.ConnectedEntityOrganisationCategoryType.DirectorOrTheSameResponsibilities)>
+
+                                <label class="govuk-label govuk-radios__label" for="entityCategory-2">
+                                    @ConnectedEntityOrganisationCategoryModel.ConnectedEntityCategoryOption["Director"]
+                                </label>
+                            </div>
+
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input" id="entityCategory-3" name="ConnectedEntityCategory" type="radio"
+                                       value="@Constants.ConnectedEntityOrganisationCategoryType.ParentOrSubsidiaryCompany"
+                                       data-aria-controls="conditional-entityCategory-3"
+                                @IsSelected(Constants.ConnectedEntityOrganisationCategoryType.ParentOrSubsidiaryCompany)>
+
+                                <label class="govuk-label govuk-radios__label" for="entityCategory-3">
+                                    @ConnectedEntityOrganisationCategoryModel.ConnectedEntityCategoryOption["ParentOrSubCompany"]
+                                </label>
+                            </div>
+
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input" id="entityCategory-4" name="ConnectedEntityCategory" type="radio"
+                                       value="@Constants.ConnectedEntityOrganisationCategoryType.ACompanyYourOrganisationHasTakenOver"
+                                       data-aria-controls="conditional-entityCategory-4"
+                                @IsSelected(Constants.ConnectedEntityOrganisationCategoryType.ACompanyYourOrganisationHasTakenOver)>
+
+                                <label class="govuk-label govuk-radios__label" for="entityCategory-4">
+                                    @ConnectedEntityOrganisationCategoryModel.ConnectedEntityCategoryOption["CompanyOverTaken"]
+                                </label>
+                            </div>
+
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input" id="entityCategory-5" name="ConnectedEntityCategory" type="radio"
+                                       value="@Constants.ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl"
+                                       data-aria-controls="conditional-entityCategory-5"
+                                       @IsSelected(Constants.ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl)>
+                                <label class="govuk-label govuk-radios__label" for="entityCategory-5">
+                                    @ConnectedEntityOrganisationCategoryModel.ConnectedEntityCategoryOption["OrgWithSignificantControl"]
+                                </label>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+
+                <button class="govuk-button govuk-!-margin-top-4" type="submit">Continue</button>
+            </form>
+        </div>
+    </div>
+</main>

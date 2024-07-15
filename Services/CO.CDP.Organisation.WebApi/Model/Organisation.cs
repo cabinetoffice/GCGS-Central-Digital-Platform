@@ -92,7 +92,7 @@ public record ConnectedEntity
 public record ConnectedIndividualTrust
 {
     public int Id { get; set; }
-    public required ConnectedPersonCategory Category { get; set; }
+    public required ConnectedIndividualAndTrustCategory Category { get; set; }
     public required string FirstName { get; set; }
     public required string LastName { get; set; }
     public DateTimeOffset? DateOfBirth { get; set; }
@@ -139,11 +139,14 @@ public enum ConnectedPersonType
 }
 
 [JsonConverter(typeof(JsonStringEnumConverter))]
-public enum ConnectedPersonCategory
+public enum ConnectedIndividualAndTrustCategory
 {
-    PersonWithSignificantControl = 1,
-    DirectorOrIndividualWithTheSameResponsibilities,
-    AnyOtherIndividualWithSignificantInfluenceOrControl
+    PersonWithSignificantControlForIndividual = 1,
+    DirectorOrIndividualWithTheSameResponsibilitiesForIndividual,
+    AnyOtherIndividualWithSignificantInfluenceOrControlForIndividual,
+    PersonWithSignificantControlForTrust ,
+    DirectorOrIndividualWithTheSameResponsibilitiesForTrust,
+    AnyOtherIndividualWithSignificantInfluenceOrControlForTrust
 }
 
 [JsonConverter(typeof(JsonStringEnumConverter))]

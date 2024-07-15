@@ -8,9 +8,9 @@ using System.ComponentModel.DataAnnotations;
 namespace CO.CDP.OrganisationApp.Pages.Supplier;
 
 [Authorize]
-public class ConnectedQuestionModel(
+public class ConnectedEntitySupplierHasControlModel(
     IOrganisationClient organisationClient,
-    ITempDataService tempDataService) : PageModel
+    ISession session) : PageModel
 {
     [BindProperty]
     [Required(ErrorMessage = "Select if your organisation influenced or controlled by another person or company")]
@@ -19,16 +19,20 @@ public class ConnectedQuestionModel(
     [BindProperty(SupportsGet = true)]
     public Guid Id { get; set; }
 
+
     public async Task<IActionResult> OnGet(bool? selected)
     {
         try
         {
-            var getSupplierInfoTask = await organisationClient.GetOrganisationSupplierInformationAsync(Id);
+            await organisationClient.GetOrganisationAsync(Id);
         }
         catch (ApiException ex) when (ex.StatusCode == 404)
         {
             return Redirect("/page-not-found");
         }
+
+        var cp = session.Get<ConnectedEntityState>(Session.ConnectedPersonKey) ?? new ConnectedEntityState { SupplierOrganisationId = Id };
+        session.Set(Session.ConnectedPersonKey, cp);
 
         if (selected.HasValue)
         {
@@ -40,44 +44,32 @@ public class ConnectedQuestionModel(
 
     public async Task<IActionResult> OnPost()
     {
-        if (!ModelState.IsValid)
+        var cp = session.Get<ConnectedEntityState>(Session.ConnectedPersonKey);
+        if (cp == null || !ModelState.IsValid)
         {
             return Page();
         }
 
-        try
+        if (ControlledByPersonOrCompany == true)
         {
-            var supplierInfo = await organisationClient.GetOrganisationSupplierInformationAsync(Id);
-
-            tempDataService.Put(ConnectedPerson.TempDataKey, new ConnectedPerson
-            {
-                SupplierInformationOrganisationId = Id
-            });
-
-            if (ControlledByPersonOrCompany == true)
-            {
-                return RedirectToPage("ConnectedCompaniesQuestion", new { Id });
-            }
-            else
+            return RedirectToPage("ConnectedEntitySupplierCompanyQuestion", new { Id });
+        }
+        else
+        {
+            try
             {
                 var connectedEntity = await organisationClient.GetConnectedEntitiesAsync(Id);
 
                 if (connectedEntity.Count == 0)
                     await organisationClient.UpdateSupplierCompletedConnectedPerson(Id);
 
+                session.Remove(Session.ConnectedPersonKey);
                 return RedirectToPage("/Supplier/SupplierInformationSummary", new { Id });
             }
-
-        }
-        catch (ApiException ex) when (ex.StatusCode == 404)
-        {
-            return Redirect("/page-not-found");
+            catch (ApiException ex) when (ex.StatusCode == 404)
+            {
+                return Redirect("/page-not-found");
+            }
         }
     }
-}
-
-public class ConnectedPerson
-{
-    public const string TempDataKey = "ConnectedEntityTempData";
-    public Guid? SupplierInformationOrganisationId { get; set; }
 }
