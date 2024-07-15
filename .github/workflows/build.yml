@@ -78,6 +78,17 @@ jobs:
         run: make down
         env:
           IMAGE_VERSION: ${{ steps.version.outputs.version }}
+      - name: Save Docker Images
+        run: |
+          IMAGES=$(docker images | awk '$1 ~ /cabinetoffice\/cdp-/ && $2 ~ /^'$IMAGE_VERSION'$/ { print $1":"$2}')
+          docker save -o cdp-images.tar $IMAGES
+        env:
+          IMAGE_VERSION: ${{ steps.version.outputs.version }}
+      - name: Upload Docker Images as Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: docker-images
+          path: cdp-images.tar
 
   docs:
     runs-on: ubuntu-latest
