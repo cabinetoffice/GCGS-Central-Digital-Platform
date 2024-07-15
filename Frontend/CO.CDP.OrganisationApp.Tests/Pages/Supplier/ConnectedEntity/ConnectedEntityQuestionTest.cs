@@ -9,7 +9,7 @@ namespace CO.CDP.OrganisationApp.Tests.Pages.Supplier.ConnectedEntity;
 
 public class ConnectedEntityQuestionTest
 {
-    private readonly ConnectedEntityQuestionModel _model;
+    private readonly ConnectedEntitySupplierHasControlModel _model;
     private readonly Mock<ISession> _sessionMock;
     private readonly Mock<IOrganisationClient> _mockOrganisationClient;
     private readonly Guid _organisationId = Guid.NewGuid();
@@ -19,7 +19,7 @@ public class ConnectedEntityQuestionTest
     {
         _sessionMock = new Mock<ISession>();
         _mockOrganisationClient = new Mock<IOrganisationClient>();
-        _model = new ConnectedEntityQuestionModel(_mockOrganisationClient.Object, _sessionMock.Object);
+        _model = new ConnectedEntitySupplierHasControlModel(_mockOrganisationClient.Object, _sessionMock.Object);
         _model.Id = Guid.NewGuid();
     }
 

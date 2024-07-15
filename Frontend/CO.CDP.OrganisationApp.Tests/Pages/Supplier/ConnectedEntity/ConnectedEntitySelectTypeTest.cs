@@ -9,7 +9,7 @@ namespace CO.CDP.OrganisationApp.Tests.Pages.Supplier.ConnectedEntity;
 
 public class ConnectedEntitySelectTypeTest
 {
-    private readonly ConnectedEntitySelectTypeModel _model;
+    private readonly ConnectedEntityPersonTypeModel _model;
     private readonly Mock<ISession> _sessionMock;
     private readonly Guid _organisationId = Guid.NewGuid();
     private readonly Guid _entityId = Guid.NewGuid();
@@ -17,7 +17,7 @@ public class ConnectedEntitySelectTypeTest
     public ConnectedEntitySelectTypeTest()
     {
         _sessionMock = new Mock<ISession>();
-        _model = new ConnectedEntitySelectTypeModel(_sessionMock.Object);
+        _model = new ConnectedEntityPersonTypeModel(_sessionMock.Object);
         _model.Id = Guid.NewGuid();
     }
 
@@ -43,7 +43,7 @@ public class ConnectedEntitySelectTypeTest
         var result = _model.OnGet();
 
         result.Should().BeOfType<RedirectToPageResult>()
-            .Which.PageName.Should().Be("ConnectedEntityQuestion");
+            .Which.PageName.Should().Be("ConnectedEntitySupplierCompanyQuestion");
     }
 
     [Fact]

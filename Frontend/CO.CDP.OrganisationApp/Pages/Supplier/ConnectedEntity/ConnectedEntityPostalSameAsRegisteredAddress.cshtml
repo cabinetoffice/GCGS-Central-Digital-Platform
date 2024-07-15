@@ -3,7 +3,7 @@
 @model ConnectedEntityPostalSameAsRegisteredAddressModel
 
 @{
-    var hasError = ((TagBuilder)Html.ValidationMessageFor(m => m.SameAsRegiseterdAddress)).HasInnerHtml;
+    var hasError = ((TagBuilder)Html.ValidationMessageFor(m => m.DifferentThanRegiseterdAddress)).HasInnerHtml;
 }
 
 @* // TODO 6: Previous page link?? *@
@@ -14,27 +14,32 @@
         <div class="govuk-grid-column-two-thirds">
             <partial name="_ErrorSummary" model="@Model.ModelState" />
 
-            <h1 class="govuk-heading-l">
-                Is your organisation's postal address the same as its registered address?
-            </h1>
-
-            <div id="hint" class="govuk-hint">
-                The place where an organisation receives official post, also known as the 'service address', can be different from its registered address. For example, a branch office.
-            </div>
+            <span class="govuk-caption-xl">@Model.Caption</span>
 
             <form method="post">
                 <div class="govuk-form-group">
                     <fieldset class="govuk-fieldset">
+
+                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                            <h1 class="govuk-fieldset__heading">
+                                Does @(Model.OrganisationName) have a different postal address?
+                            </h1>
+                        </legend>
+
+                        <div class="govuk-hint">
+                            The place where an organisation receives official post can be different from its registered address. For example, a branch office.
+                        </div>
+
                         <div class="govuk-radios" data-module="govuk-radios">
                             <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="YES" name="SameAsRegiseterdAddress" type="radio"
-                                       value="true" data-aria-controls="conditional-YES" @(Model.SameAsRegiseterdAddress == true ? "checked" : "")>
+                                <input class="govuk-radios__input" id="YES" name="DifferentThanRegiseterdAddress" type="radio"
+                                       value="true" data-aria-controls="conditional-YES" @(Model.DifferentThanRegiseterdAddress == true ? "checked" : "")>
                                 <label class="govuk-label govuk-radios__label" for="YES">Yes</label>
                             </div>
 
                             <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="NO" name="SameAsRegiseterdAddress" type="radio"
-                                       value="false" data-aria-controls="conditional-NO" @(Model.SameAsRegiseterdAddress == false ? "checked" : "")>
+                                <input class="govuk-radios__input" id="NO" name="DifferentThanRegiseterdAddress" type="radio"
+                                       value="false" data-aria-controls="conditional-NO" @(Model.DifferentThanRegiseterdAddress == false ? "checked" : "")>
                                 <label class="govuk-label govuk-radios__label" for="NO">No</label>
                                 <div class="govuk-radios__conditional--hidden" id="conditional-NO"></div>
                             </div>

@@ -37,9 +37,9 @@ public static class ConnectedEntityOrganisationCategoryTypeTypeExtensions
             _ => ConnectedEntityOrganisationCategoryType.RegisteredCompany,
         };
     }
-    public static string Description(this ConnectedEntityOrganisationCategoryType connectedEntityOrganisationCategoryType, bool registeredWithCompanyHouse)
+    public static string Description(this ConnectedEntityOrganisationCategoryType categoryType, bool registeredWithCompanyHouse)
     {
-        string GetBaseDescription(ConnectedEntityOrganisationCategoryType type) => type switch
+        var baseDescription = categoryType switch
         {
             ConnectedEntityOrganisationCategoryType.RegisteredCompany => "a registered company",
             ConnectedEntityOrganisationCategoryType.DirectorOrTheSameResponsibilities => "a director or the same responsibilities",
@@ -49,23 +49,20 @@ public static class ConnectedEntityOrganisationCategoryTypeTypeExtensions
             _ => throw new NotImplementedException()
         };
 
-        string baseDescription = GetBaseDescription(connectedEntityOrganisationCategoryType);
         return registeredWithCompanyHouse ? baseDescription.Substring(2) : $"equivalent to {baseDescription}";
     }
 
-    public static string Catption(this ConnectedEntityOrganisationCategoryType connectedEntityOrganisationCategoryType, bool registeredWithCompanyHouse)
+    public static string Catption(this ConnectedEntityOrganisationCategoryType categoryType, bool registeredWithCompanyHouse)
     {
-        string GetBaseCaption(ConnectedEntityOrganisationCategoryType type) => type switch
+        var baseCaption = categoryType switch
         {
             ConnectedEntityOrganisationCategoryType.RegisteredCompany => "Registered company",
             ConnectedEntityOrganisationCategoryType.DirectorOrTheSameResponsibilities => "Director or the same responsibilities",
             ConnectedEntityOrganisationCategoryType.ParentOrSubsidiaryCompany => "Parent or subsidiary company",
-            ConnectedEntityOrganisationCategoryType.ACompanyYourOrganisationHasTakenOver => "Taken over",
+            ConnectedEntityOrganisationCategoryType.ACompanyYourOrganisationHasTakenOver => "Taken over company",
             ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl => "Other organisation with significant influence or control",
             _ => throw new NotImplementedException()
         };
-
-        string baseCaption = GetBaseCaption(connectedEntityOrganisationCategoryType);
         return registeredWithCompanyHouse ? baseCaption : $"Equivalent to {baseCaption.ToLower()}";
     }
 }

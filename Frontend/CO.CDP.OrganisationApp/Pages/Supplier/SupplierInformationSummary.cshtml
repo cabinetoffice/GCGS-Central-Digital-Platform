@@ -15,7 +15,7 @@
     }
 
     var basicInformationLink = $"/organisation/{Model.Id}/supplier-information/{(Model.HasSupplierType ? "basic-information" : "individual-or-org")}";
-    var connectedEntityLink = $"/organisation/{Model.Id}/supplier-information/connected-person-declaration";
+    var connectedEntityLink = $"/organisation/{Model.Id}/supplier-information/connected-person/declaration";
 
     string NoOfConnectedPersonText()
     {

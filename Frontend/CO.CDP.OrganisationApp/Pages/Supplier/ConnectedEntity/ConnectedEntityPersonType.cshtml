@@ -1,5 +1,5 @@
-@page "/organisation/{id}/supplier-information/connected-person-type/{connectedEntityId?}"
-@model CO.CDP.OrganisationApp.Pages.Supplier.ConnectedEntitySelectTypeModel
+@page "/organisation/{id}/supplier-information/connected-person/person-type"
+@model CO.CDP.OrganisationApp.Pages.Supplier.ConnectedEntityPersonTypeModel
 
 @{
     var personQuestionHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.ConnectedEntityType)).HasInnerHtml;
@@ -10,7 +10,7 @@
     }
 }
 
-<a href="/organisation/@Model.Id/supplier-information/connected-person-company-question?selected=true" class="govuk-back-link">Back</a>
+<a href="/organisation/@Model.Id/supplier-information/connected-person/supplier-company-question?selectd=@(Model.SupplierHasCompanyHouseNumber == true)" class="govuk-back-link">Back</a>
 
 <main class="govuk-main-wrapper">
     <div class="govuk-grid-row">

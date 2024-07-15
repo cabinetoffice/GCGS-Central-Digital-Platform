@@ -1,12 +1,12 @@
-@page "/organisation/{id}/supplier-information/connected-person-org-name"
+@page "/organisation/{id}/supplier-information/connected-person/organisation-name/{ConnectedEntityId?}"
 @model CO.CDP.OrganisationApp.Pages.Supplier.ConnectedEntityOrganisationNameModel
 
 @{
     var organisationNameHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.OrganisationName)).HasInnerHtml;
 
     var categoryPage = (Model.ConnectedEntityType == Constants.ConnectedEntityType.Organisation
-                            ? "connected-person-org-category" : "");
-    var backLink = $"/organisation/{@Model.Id}/supplier-information/{categoryPage}";
+                            ? "organisation-category" : "");
+    var backLink = $"/organisation/{@Model.Id}/supplier-information/connected-person/{categoryPage}";
 }
 
 <a href="@backLink" class="govuk-back-link">

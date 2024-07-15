@@ -1,11 +1,11 @@
-@page "/organisation/{id}/supplier-information/connected-person-company-question"
+@page "/organisation/{id}/supplier-information/connected-person/supplier-company-question"
 @model CO.CDP.OrganisationApp.Pages.Supplier.ConnectedEntitySupplierCompanyQuestionModel
 
 @{
     var registeredWithChHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.RegisteredWithCh)).HasInnerHtml;
 }
 
-<a href="/organisation/@Model.Id/supplier-information/connected-person-question?selected=true" class="govuk-back-link">Back</a>
+<a href="/organisation/@Model.Id/supplier-information/connected-person/supplier-has-control?selected=true" class="govuk-back-link">Back</a>
 
 <main class="govuk-main-wrapper">
     <div class="govuk-grid-row">

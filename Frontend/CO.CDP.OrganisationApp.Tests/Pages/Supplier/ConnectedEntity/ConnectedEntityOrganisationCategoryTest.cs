@@ -43,7 +43,7 @@ public class ConnectedEntityOrganisationCategoryTest
         var result = _model.OnGet();
 
         result.Should().BeOfType<RedirectToPageResult>()
-            .Which.PageName.Should().Be("ConnectedEntityQuestion");
+            .Which.PageName.Should().Be("ConnectedEntitySupplierCompanyQuestion");
     }
 
     [Fact]

@@ -12,6 +12,6 @@ public class ConnectedEntityDeclarationModel() : PageModel
 
     public IActionResult OnPost()
     {
-        return RedirectToPage("ConnectedEntityQuestion", new { Id });
+        return RedirectToPage("ConnectedEntitySupplierHasControl", new { Id });
     }
 }

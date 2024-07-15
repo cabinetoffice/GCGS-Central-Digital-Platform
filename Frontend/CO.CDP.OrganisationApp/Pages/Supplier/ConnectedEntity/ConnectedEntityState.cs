@@ -1,4 +1,5 @@
 using CO.CDP.OrganisationApp.Constants;
+using System;
 
 namespace CO.CDP.OrganisationApp.Pages.Supplier;
 
@@ -19,13 +20,25 @@ public class ConnectedEntityState
         public string? TownOrCity { get; set; }
         public string? Postcode { get; set; }
         public string? Country { get; set; }
+        public bool IsNonUk => Country != Constants.Country.UnitedKingdom;
     }
 
     public void UpdateState(Guid supplierOrganisationId, Organisation.WebApiClient.ConnectedEntity connectedEntity)
     {
         SupplierOrganisationId = supplierOrganisationId;
-        SupplierHasCompanyHouseNumber = connectedEntity.HasCompnayHouseNumber;
         ConnectedEntityId = connectedEntity.Id;
+        SupplierHasCompanyHouseNumber = connectedEntity.HasCompnayHouseNumber;
         ConnectedEntityType = connectedEntity.EntityType.AsConnectedEntityType();
+    }
+
+    public string GetCaption()
+    {
+        return ConnectedEntityType switch
+        {
+            Constants.ConnectedEntityType.Organisation => ConnectedEntityOrganisationCategoryType?.Catption(SupplierHasCompanyHouseNumber ?? false) ?? "",
+            Constants.ConnectedEntityType.Individual => "",
+            Constants.ConnectedEntityType.TrustOrTrustee => "",
+            _ => "",
+        };
     }
 }

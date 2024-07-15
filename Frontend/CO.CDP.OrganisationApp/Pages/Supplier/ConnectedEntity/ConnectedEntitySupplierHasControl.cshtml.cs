@@ -8,7 +8,7 @@ using System.ComponentModel.DataAnnotations;
 namespace CO.CDP.OrganisationApp.Pages.Supplier;
 
 [Authorize]
-public class ConnectedEntityQuestionModel(
+public class ConnectedEntitySupplierHasControlModel(
     IOrganisationClient organisationClient,
     ISession session) : PageModel
 {

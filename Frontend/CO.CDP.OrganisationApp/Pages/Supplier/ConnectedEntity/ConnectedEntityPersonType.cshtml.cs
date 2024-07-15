@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations;
 namespace CO.CDP.OrganisationApp.Pages.Supplier;
 
 [Authorize]
-public class ConnectedEntitySelectTypeModel(ISession session) : PageModel
+public class ConnectedEntityPersonTypeModel(ISession session) : PageModel
 {
     [BindProperty]
     [Required(ErrorMessage = "Please select an option")]
@@ -15,22 +15,32 @@ public class ConnectedEntitySelectTypeModel(ISession session) : PageModel
     [BindProperty(SupportsGet = true)]
     public Guid Id { get; set; }
 
+    public bool? SupplierHasCompanyHouseNumber { get; set; }
+
     public IActionResult OnGet()
     {
         var state = session.Get<ConnectedEntityState>(Session.ConnectedPersonKey);
         if (state == null)
         {
-            return RedirectToPage("ConnectedEntityQuestion", new { Id });
+            return RedirectToPage("ConnectedEntitySupplierCompanyQuestion", new { Id });
         }
 
         ConnectedEntityType = state.ConnectedEntityType;
+        SupplierHasCompanyHouseNumber = state.SupplierHasCompanyHouseNumber;
         return Page();
     }
 
     public IActionResult OnPost()
     {
         var state = session.Get<ConnectedEntityState>(Session.ConnectedPersonKey);
-        if (state == null || !ModelState.IsValid)
+        if (state == null)
+        {
+            return RedirectToPage("ConnectedEntitySupplierCompanyQuestion", new { Id });
+        }
+
+        SupplierHasCompanyHouseNumber = state.SupplierHasCompanyHouseNumber;
+
+        if (!ModelState.IsValid)
         {
             return Page();
         }
@@ -39,7 +49,7 @@ public class ConnectedEntitySelectTypeModel(ISession session) : PageModel
         session.Set(Session.ConnectedPersonKey, state);
 
         return RedirectToPage(
-            (state.ConnectedEntityType == Constants.ConnectedEntityType.Organisation ? "ConnectedEntityOrganisationCategory" : "")
+            state.ConnectedEntityType == Constants.ConnectedEntityType.Organisation ? "ConnectedEntityOrganisationCategory" : ""
             , new { Id });
     }
 }

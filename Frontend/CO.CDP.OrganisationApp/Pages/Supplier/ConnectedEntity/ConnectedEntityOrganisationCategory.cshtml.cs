@@ -21,7 +21,7 @@ public class ConnectedEntityOrganisationCategoryModel(ISession session) : PageMo
         var state = session.Get<ConnectedEntityState>(Session.ConnectedPersonKey);
         if (state == null)
         {
-            return RedirectToPage("ConnectedEntityQuestion", new { Id });
+            return RedirectToPage("ConnectedEntitySupplierCompanyQuestion", new { Id });
         }
 
         ConnectedEntityCategory = state.ConnectedEntityOrganisationCategoryType;

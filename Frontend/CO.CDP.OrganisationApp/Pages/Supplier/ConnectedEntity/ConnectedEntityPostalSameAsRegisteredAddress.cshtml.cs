@@ -1,4 +1,4 @@
-using CO.CDP.OrganisationApp.WebApiClients;
+using CO.CDP.OrganisationApp.Constants;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -17,7 +17,11 @@ public class ConnectedEntityPostalSameAsRegisteredAddressModel(ISession session)
 
     [BindProperty]
     [Required(ErrorMessage = "Please select an option")]
-    public bool? SameAsRegiseterdAddress { get; set; }
+    public bool? DifferentThanRegiseterdAddress { get; set; }
+
+    public string? Caption { get; set; }
+
+    public string? OrganisationName { get; set; }
 
     public IActionResult OnGet(bool? selected)
     {
@@ -25,11 +29,12 @@ public class ConnectedEntityPostalSameAsRegisteredAddressModel(ISession session)
         if (!valid)
         {
             return RedirectToPage(ConnectedEntityId.HasValue ?
-                "ConnectedEntityCheckAnswers" : "ConnectedEntityQuestion", new { Id, ConnectedEntityId });
+                "ConnectedEntityCheckAnswers" : "ConnectedEntitySupplierCompanyQuestion", new { Id, ConnectedEntityId });
         }
 
-        SameAsRegiseterdAddress = selected.HasValue ? selected : AreSameAddress(state.RegisteredAddress, state.PostalAddress);
+        DifferentThanRegiseterdAddress = selected.HasValue ? selected : AreSameAddress(state.RegisteredAddress, state.PostalAddress);
 
+        InitModal(state);
         return Page();
     }
 
@@ -39,15 +44,16 @@ public class ConnectedEntityPostalSameAsRegisteredAddressModel(ISession session)
         if (!valid)
         {
             return RedirectToPage(ConnectedEntityId.HasValue ?
-                "ConnectedEntityCheckAnswers" : "ConnectedEntityQuestion", new { Id, ConnectedEntityId });
+                "ConnectedEntityCheckAnswers" : "ConnectedEntitySupplierCompanyQuestion", new { Id, ConnectedEntityId });
         }
 
+        InitModal(state);
         if (!ModelState.IsValid)
         {
             return Page();
         }
 
-        if (SameAsRegiseterdAddress == true)
+        if (DifferentThanRegiseterdAddress == false)
         {
             state.PostalAddress = state.RegisteredAddress;
             session.Set(Session.ConnectedPersonKey, state);
@@ -57,7 +63,7 @@ public class ConnectedEntityPostalSameAsRegisteredAddressModel(ISession session)
         }
 
         return RedirectToPage("ConnectedEntityAddress",
-            new { Id, ConnectedEntityId, AddressType = Constants.AddressType.Registered, UkOrNonUk = "uk" });
+            new { Id, ConnectedEntityId, AddressType = AddressType.Postal, UkOrNonUk = "uk" });
     }
 
     private (bool valid, ConnectedEntityState state) ValidatePage()
@@ -72,13 +78,18 @@ public class ConnectedEntityPostalSameAsRegisteredAddressModel(ISession session)
         return (true, cp);
     }
 
-    private static bool AreSameAddress(ConnectedEntityState.Address? registeredAddress, ConnectedEntityState.Address? postalAddress)
+    private static bool? AreSameAddress(ConnectedEntityState.Address? registeredAddress, ConnectedEntityState.Address? postalAddress)
     {
-        return registeredAddress != null
-                && postalAddress != null
-                && registeredAddress.AddressLine1 == postalAddress.AddressLine1
+        if (registeredAddress == null || postalAddress == null) return null;
+        return registeredAddress.AddressLine1 == postalAddress.AddressLine1
                 && registeredAddress.TownOrCity == postalAddress.TownOrCity
                 && registeredAddress.Postcode == postalAddress.Postcode
                 && registeredAddress.Country == postalAddress.Country;
+    }
+
+    private void InitModal(ConnectedEntityState state)
+    {
+        OrganisationName = state.OrganisationName;
+        Caption = state.GetCaption();
     }
 }

@@ -24,13 +24,7 @@ public class ConnectedEntityAddressModel(ISession session) : PageModel
     [BindProperty]
     public AddressPartialModel Address { get; set; } = new();
 
-    public string? Caption
-    {
-        get
-        {
-            return ""; //TODO 1: populate values;
-        }
-    }
+    public string? Caption { get; set; }
 
     public IActionResult OnGet()
     {
@@ -38,21 +32,21 @@ public class ConnectedEntityAddressModel(ISession session) : PageModel
         if (!valid)
         {
             return RedirectToPage(ConnectedEntityId.HasValue ?
-                "ConnectedEntityCheckAnswers" : "ConnectedEntityQuestion", new { Id, ConnectedEntityId });
+                "ConnectedEntityCheckAnswers" : "ConnectedEntitySupplierCompanyQuestion", new { Id, ConnectedEntityId });
         }
+
+        InitModal(state, true);
         ConnectedEntityState.Address? stateAddress = null;
         if (AddressType == AddressType.Registered) stateAddress = state.RegisteredAddress;
         if (AddressType == AddressType.Postal) stateAddress = state.PostalAddress;
 
-        if (stateAddress != null)
+        if (stateAddress != null && stateAddress.IsNonUk == Address.IsNonUkAddress)
         {
             Address.AddressLine1 = stateAddress.AddressLine1;
             Address.TownOrCity = stateAddress.TownOrCity;
             Address.Postcode = stateAddress.Postcode;
             Address.Country = stateAddress.Country;
         }
-
-        SetupAddress(true);
 
         return Page();
     }
@@ -63,10 +57,10 @@ public class ConnectedEntityAddressModel(ISession session) : PageModel
         if (!valid)
         {
             return RedirectToPage(ConnectedEntityId.HasValue ?
-                "ConnectedEntityCheckAnswers" : "ConnectedEntityQuestion", new { Id, ConnectedEntityId });
+                "ConnectedEntityCheckAnswers" : "ConnectedEntitySupplierCompanyQuestion", new { Id, ConnectedEntityId });
         }
 
-        SetupAddress();
+        InitModal(state);
 
         if (!ModelState.IsValid) return Page();
 
@@ -88,8 +82,26 @@ public class ConnectedEntityAddressModel(ISession session) : PageModel
         }
         session.Set(Session.ConnectedPersonKey, state);
 
-        //TODO 2: different page if different indivisual/trust category;
-        return RedirectToPage("ConnectedEntityPostalSameAsRegisteredAddress", new { Id, ConnectedEntityId });
+        IActionResult? actionResult = null;
+        switch (state.ConnectedEntityType)
+        {
+            case ConnectedEntityType.Organisation:
+                switch (state.ConnectedEntityOrganisationCategoryType)
+                {
+                    case ConnectedEntityOrganisationCategoryType.ACompanyYourOrganisationHasTakenOver:
+                        actionResult = RedirectToPage("ConnectedEntityTakenOverCompanyRegisteredWithCompaniesHouse?", new { Id, ConnectedEntityId });
+                        break;
+                }
+                break;
+            case ConnectedEntityType.Individual:
+                //TODO 4: modify value of actionResult when working on Individual
+                break;
+            case ConnectedEntityType.TrustOrTrustee:
+                //TODO 43: modify value of actionResult when working on Trust
+                break;
+        }
+
+        return actionResult ?? RedirectToPage("ConnectedEntityPostalSameAsRegisteredAddress", new { Id, ConnectedEntityId });
     }
 
     private (bool valid, ConnectedEntityState state) ValidatePage()
@@ -104,38 +116,47 @@ public class ConnectedEntityAddressModel(ISession session) : PageModel
         return (true, cp);
     }
 
-    public enum CategoryBlah
+    private void InitModal(ConnectedEntityState state, bool reset = false)
     {
-        Cat1,
-        Cat2,
-        Cat3
-    }
-
-    //TODO 3: modify value of heading & hint
-    private void SetupAddress(bool reset = false)
-    {
+        Caption = state.GetCaption();
         if (reset) Address = new AddressPartialModel { UkOrNonUk = UkOrNonUk };
 
-        CategoryBlah ss = CategoryBlah.Cat1;
         var heading = "";
         var hintValue = "";
-        switch (ss)
+        switch (state.ConnectedEntityType)
         {
-            case CategoryBlah.Cat1:
-                if (AddressType == AddressType.Registered)
+            case ConnectedEntityType.Organisation:
+                switch (state.ConnectedEntityOrganisationCategoryType)
                 {
-                    heading = "Enter {sadsa's} registered address";
-                    hintValue = "The address registered with the equivalent to Companies House, or the principal address the business conducts its activities. For example, a head office.";
+                    case ConnectedEntityOrganisationCategoryType.RegisteredCompany:
+                    case ConnectedEntityOrganisationCategoryType.DirectorOrTheSameResponsibilities:
+                    case ConnectedEntityOrganisationCategoryType.ParentOrSubsidiaryCompany:
+                        if (AddressType == AddressType.Registered)
+                        {
+                            heading = $"Enter {state.OrganisationName}'s registered address";
+                            hintValue = "The address registered with Companies House, or the principal address the business conducts its activities. For example, a head office.";
+                        }
+                        else if (AddressType == AddressType.Postal)
+                        {
+                            heading = $"Enter {state.OrganisationName}'s postal address";
+                        }
+                        break;
+                    case ConnectedEntityOrganisationCategoryType.ACompanyYourOrganisationHasTakenOver:
+                        if (AddressType == AddressType.Registered)
+                        {
+                            heading = $"Enter {state.OrganisationName}'s last known registered UK address";
+                        }
+                        break;
+                    case ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl:
+                        heading = $"Enter {state.OrganisationName}'s address";
+                        break;
                 }
-                else if (AddressType == AddressType.Postal)
-                {
-                }
                 break;
-            case CategoryBlah.Cat2:
+            case ConnectedEntityType.Individual:
+                //TODO 3: modify value of heading & hint when working on Individual
                 break;
-            case CategoryBlah.Cat3:
-                break;
-            default:
+            case ConnectedEntityType.TrustOrTrustee:
+                //TODO 3: modify value of heading & hint when working on Trust
                 break;
         }
 

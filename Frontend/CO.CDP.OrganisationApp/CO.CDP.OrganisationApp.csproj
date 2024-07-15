@@ -30,7 +30,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Content Update="Pages\Supplier\ConnectedEntity\ConnectedEntitySelectType.cshtml">
+      <Content Update="Pages\Supplier\ConnectedEntity\ConnectedEntityPersonType.cshtml">
         <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
         <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       </Content>

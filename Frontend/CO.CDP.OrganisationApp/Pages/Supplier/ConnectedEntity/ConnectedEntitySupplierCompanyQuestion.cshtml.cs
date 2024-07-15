@@ -20,7 +20,7 @@ public class ConnectedEntitySupplierCompanyQuestionModel(ISession session) : Pag
         var state = session.Get<ConnectedEntityState>(Session.ConnectedPersonKey);
         if (state == null)
         {
-            return RedirectToPage("ConnectedEntityQuestion", new { Id });
+            return RedirectToPage("ConnectedEntitySupplierHasControl", new { Id });
         }
 
         RegisteredWithCh = selected.HasValue ? selected : state.SupplierHasCompanyHouseNumber;
@@ -30,7 +30,12 @@ public class ConnectedEntitySupplierCompanyQuestionModel(ISession session) : Pag
     public IActionResult OnPost()
     {
         var state = session.Get<ConnectedEntityState>(Session.ConnectedPersonKey);
-        if (state == null || !ModelState.IsValid)
+        if (state == null)
+        {
+            return RedirectToPage("ConnectedEntitySupplierHasControl", new { Id });
+        }
+
+        if (!ModelState.IsValid)
         {
             return Page();
         }
@@ -38,6 +43,6 @@ public class ConnectedEntitySupplierCompanyQuestionModel(ISession session) : Pag
         state.SupplierHasCompanyHouseNumber = RegisteredWithCh ?? false;
         session.Set(Session.ConnectedPersonKey, state);
 
-        return RedirectToPage("ConnectedEntitySelectType", new { Id });
+        return RedirectToPage("ConnectedEntityPersonType", new { Id });
     }
 }
