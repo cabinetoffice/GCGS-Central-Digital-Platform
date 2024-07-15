@@ -54,12 +54,30 @@ jobs:
       CDP_DATA_SHARING_PORT: 8855
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Determine the version
+        id: version
+        run: |
+          COMMIT_REF=$(if [ "$GITHUB_EVENT_NAME" == "pull_request" ]; then echo "${{ github.event.pull_request.head.sha }}"; else echo "${GITHUB_SHA:-HEAD}"; fi)
+          CURRENT_COMMIT=$(make version-commit COMMIT_REF=$COMMIT_REF)
+          CURRENT_TAG=$([[ "${GITHUB_REF:0:10}" = "refs/tags/" ]] && echo ${GITHUB_REF#refs/tags/} || echo "")
+          LAST_TAG=$(make last-tag)
+          VERSION=$([[ "${CURRENT_TAG}" = "" ]] && echo "${LAST_TAG}-${CURRENT_COMMIT}" || echo "$CURRENT_TAG")
+          echo "Version: $VERSION"
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
       - name: Build
         run: make build-docker
+        env:
+          IMAGE_VERSION: ${{ steps.version.outputs.version }}
       - name: Start services
         run: make up
+        env:
+          IMAGE_VERSION: ${{ steps.version.outputs.version }}
       - name: Stop services
         run: make down
+        env:
+          IMAGE_VERSION: ${{ steps.version.outputs.version }}
 
   docs:
     runs-on: ubuntu-latest
