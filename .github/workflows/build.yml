@@ -123,5 +123,5 @@ jobs:
       - name: Generate Image Version
         id: image_version
         run: |
-          IMAGE_VERSION=${{ needs.package.outputs.push }}
+          IMAGE_VERSION=${{ needs.package.outputs.version }}
           echo "IMAGE_VERSION=$IMAGE_VERSION" >> $GITHUB_ENV
