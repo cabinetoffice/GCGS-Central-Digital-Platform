@@ -89,6 +89,7 @@ services:
       TenantService: '${TenantService:-http://gateway:${CDP_TENANT_PORT:-8080}}'
       OrganisationService: '${OrganisationService:-http://gateway:${CDP_ORGANISATION_PORT:-8082}}'
       PersonService: '${PersonService:-http://gateway:${CDP_PERSON_PORT:-8084}}'
+      FormsService: '${FormsService:-http://gateway:${CDP_FORMS_PORT:-8086}}'
       Organisation__Authority: '${Organisation__Authority:-http://gateway:${CDP_AUTHORITY_PORT:-8092}}'
 
   authority:
@@ -188,6 +189,7 @@ services:
       - db
     environment:
       ASPNETCORE_ENVIRONMENT: Production
+      ConnectionStrings__OrganisationInformationDatabase: 'Server=db;Database=cdp;Username=cdp_user;Password=cdp123;'
       Organisation__Authority: '${Organisation__Authority:-http://gateway:${CDP_AUTHORITY_PORT:-8092}}'
 
   data-sharing:

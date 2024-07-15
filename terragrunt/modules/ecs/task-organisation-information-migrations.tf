@@ -7,7 +7,7 @@ module "ecs_service_organisation_information_migrations" {
       cpu                     = var.service_configs.organisation_information_migrations.cpu
       conn_string_location    = var.db_connection_secret_arn
       environment             = local.service_environment
-      image                   = "${local.ecr_urls[var.service_configs.organisation_information_migrations.name]}:latest"
+      image                   = "${local.ecr_urls[var.service_configs.organisation_information_migrations.name]}:${local.orchestrator_service_version}"
       lg_name                 = aws_cloudwatch_log_group.tasks[var.service_configs.organisation_information_migrations.name].name
       lg_prefix               = "db"
       lg_region               = data.aws_region.current.name

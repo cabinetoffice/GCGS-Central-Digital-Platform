@@ -42,7 +42,7 @@ jobs:
           name: OpenAPI
           path: OpenAPI
 
-  docker:
+  package:
     runs-on: ubuntu-latest
     name: Build containers
     env:
@@ -52,29 +52,84 @@ jobs:
       CDP_PERSON_PORT: 8833
       CDP_FORMS_PORT: 8844
       CDP_DATA_SHARING_PORT: 8855
-    steps:
-      - uses: actions/checkout@v4
-      - name: Build
-        run: make build-docker
-      - name: Start services
-        run: make up
-      - name: Stop services
-        run: make down
-
-  docs:
-    runs-on: ubuntu-latest
-    name: Build documentation
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+      images: ${{ steps.save.outputs.images }}
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+      - name: Determine the version
+        id: version
+        run: |
+          COMMIT_REF=$(if [ "$GITHUB_EVENT_NAME" == "pull_request" ]; then echo "${{ github.event.pull_request.head.sha }}"; else echo "${GITHUB_SHA:-HEAD}"; fi)
+          CURRENT_COMMIT=$(make version-commit COMMIT_REF=$COMMIT_REF)
+          CURRENT_TAG=$([[ "${GITHUB_REF:0:10}" = "refs/tags/" ]] && echo ${GITHUB_REF#refs/tags/} || echo "")
+          LAST_TAG=$(make last-tag)
+          VERSION=$([[ "${CURRENT_TAG}" = "" ]] && echo "${LAST_TAG}-${CURRENT_COMMIT}" || echo "$CURRENT_TAG")
+          echo "Version: $VERSION"
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
       - name: Build
-        run: cd docs && make build
-      - name: Publish
-        if: github.ref == 'refs/heads/main' && github.repository_owner == 'cabinetoffice'
-        run: cd docs && make publish
-      - name: Upload Documentation
+        run: make build-docker
+        env:
+          IMAGE_VERSION: ${{ steps.version.outputs.version }}
+      - name: Start services
+        run: make up
+        env:
+          IMAGE_VERSION: ${{ steps.version.outputs.version }}
+      - name: Stop services
+        run: make down
+        env:
+          IMAGE_VERSION: ${{ steps.version.outputs.version }}
+      - name: Save Docker Images
+        id: save
+        run: |
+          IMAGES=$(docker images | awk '$1 ~ /cabinetoffice\/cdp-/ && $2 ~ /^'$IMAGE_VERSION'$/ { print $1":"$2}' | tr '\n' ' ')
+          echo "Images to be saved: $IMAGES"
+          docker save -o cdp-images.tar $IMAGES
+          echo "images=${IMAGES}" >> $GITHUB_OUTPUT
+        env:
+          IMAGE_VERSION: ${{ steps.version.outputs.version }}
+      - name: Upload Docker Images as Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: Documentation
-          path: docs/build/*
+          name: docker-images
+          path: cdp-images.tar
+
+  publish:
+    if: github.ref == 'refs/heads/main' && github.repository_owner == 'cabinetoffice'
+    runs-on: ubuntu-latest
+    name: Publish containers
+    needs: [test, package]
+    env:
+      IMAGE_VERSION: ${{ needs.package.outputs.version }}
+      IMAGES: ${{ needs.package.outputs.images }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download Docker Images
+        uses: actions/download-artifact@v4
+        with:
+          name: docker-images
+
+      - name: Load Docker Images
+        run: docker load -i cdp-images.tar
+
+      - name: Set up AWS CLI
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-west-2
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Tag and Push Docker Images
+        run: make aws-push-to-ecr AWS_ACCOUNT_ID="${{ secrets.AWS_ACCOUNT_ID }}" IMAGES="${{ env.IMAGES }}"
+
+      - name: Store Version in SSM Parameter Store
+        run: |
+          aws ssm put-parameter --name "cdp-sirsi-service-version" --value "${{ env.IMAGE_VERSION }}" --type String --overwrite

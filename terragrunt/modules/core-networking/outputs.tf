@@ -43,6 +43,11 @@ output "public_subnets_cidr_blocks" {
   value       = aws_subnet.public.*.cidr_block
 }
 
+output "vpc_cider" {
+  description = "ID of the VPC"
+  value       = aws_vpc.this.cidr_block
+}
+
 output "vpc_cidr_block" {
   description = "VPC CIDR block"
   value       = aws_vpc.this.cidr_block
@@ -51,9 +56,4 @@ output "vpc_cidr_block" {
 output "vpc_id" {
   description = "ID of the VPC"
   value       = aws_vpc.this.id
-}
-
-output "vpc_cider" {
-  description = "ID of the VPC"
-  value       = aws_vpc.this.cidr_block
 }
