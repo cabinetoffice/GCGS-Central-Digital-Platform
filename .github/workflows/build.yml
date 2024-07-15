@@ -67,7 +67,6 @@ jobs:
           IMAGE_VERSION=${CURRENT_COMMIT}
           echo "Version: $VERSION"
           echo "Image version: $IMAGE_VERSION"
-          echo "Image version for relase: $VERSION"
           echo "version=${VERSION}" >> $GITHUB_OUTPUT
           echo "image_version=${IMAGE_VERSION}" >> $GITHUB_OUTPUT
       - name: Build

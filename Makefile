@@ -175,5 +175,5 @@ version-commit: ## Determines the last commit hash
 .PHONY: version-commit
 
 last-tag: ## Determines the last created tag on the repository
-	@git for-each-ref refs/tags --sort=-refname --format='%(refname:short)' --count=1
+	@git for-each-ref refs/tags --sort=-taggerdate --format='%(refname:short)' --count=1
 .PHONY: last-tag
