@@ -63,17 +63,19 @@ jobs:
           CURRENT_COMMIT=$(make version-commit COMMIT_REF=$COMMIT_REF)
           CURRENT_TAG=$([[ "${GITHUB_REF:0:10}" = "refs/tags/" ]] && echo ${GITHUB_REF#refs/tags/} || echo "")
           LAST_TAG=$(make last-tag)
+          VERSION=$([[ "${CURRENT_TAG}" = "" ]] && echo "${LAST_TAG}-${CURRENT_COMMIT}" || echo "$CURRENT_TAG")
           IMAGE_VERSION=${CURRENT_COMMIT}
-          IMAGE_VERSION_ALIASES="${LAST_TAG}-${CURRENT_COMMIT} ${CURRENT_TAG}"
+          echo "Version: $VERSION"
           echo "Image version: $IMAGE_VERSION"
-          echo "Image version aliases: $IMAGE_VERSION_ALIASES"
+          echo "Image version for relase: $VERSION"
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
           echo "image_version=${IMAGE_VERSION}" >> $GITHUB_OUTPUT
-          echo "image_version_aliases=${IMAGE_VERSION_ALIASES}" >> $GITHUB_OUTPUT
+          echo "image_version_for_release=${VERSION}" >> $GITHUB_OUTPUT
       - name: Build
         run: make build-docker docker-tag-images
         env:
           IMAGE_VERSION: ${{ steps.version.outputs.image_version }}
-          IMAGE_VERSION_ALIASES: ${{ steps.version.outputs.image_version_aliases }}
+          IMAGE_VERSION_ALIASES: ${{ steps.version.outputs.image_version_for_release }}
       - name: Start services
         run: make up
         env:
