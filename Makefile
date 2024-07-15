@@ -6,7 +6,7 @@ DATE := $(shell date +%Y%m%d)
 TIME := $(shell date +%H%M)
 COMMIT_REVISION := $(shell git rev-parse --short HEAD)
 TAG := $(DATE)-localbuild-$(TIME)-$(COMMIT_REVISION)
-TAGGED_IMAGES := $(addsuffix :$(TAG),$(IMAGES))
+DOCKER_COMPOSE_CMD=IMAGE_VERSION=$(IMAGE_VERSION) docker compose
 
 # Extracts targets and their comments
 help: ## List available commands
@@ -26,30 +26,36 @@ test: ## Run tests
 	@dotnet test $(TEST_OPTIONS)
 .PHONY: test
 
+build-docker: IMAGE_VERSION ?= latest
 build-docker: ## Build Docker images
-	@docker compose build
+	@$(DOCKER_COMPOSE_CMD) build
 .PHONY: build-docker
 
+up: IMAGE_VERSION ?= latest
 up: compose.override.yml ## Start Docker containers
-	@docker compose up -d
-	@docker compose ps
+	@$(DOCKER_COMPOSE_CMD) up -d
+	@$(DOCKER_COMPOSE_CMD) ps
 .PHONY: up
 
+down: IMAGE_VERSION ?= latest
 down: ## Destroy Docker containers
-	@docker compose down
+	@$(DOCKER_COMPOSE_CMD) down
 .PHONY: down
 
+stop: IMAGE_VERSION ?= latest
 stop: ## Stop Docker containers
-	@docker compose stop
+	@$(DOCKER_COMPOSE_CMD) stop
 .PHONY: down
 
+ps: IMAGE_VERSION ?= latest
 ps: ## Show Docker container status
-	@docker compose ps
+	@$(DOCKER_COMPOSE_CMD) ps
 .PHONY: ps
 
+db: IMAGE_VERSION ?= latest
 db: compose.override.yml ## Start DB and organisation-information-migrations services and follow organisation-information-migrations logs
-	@docker compose up -d db organisation-information-migrations
-	@docker compose logs -f organisation-information-migrations
+	@$(DOCKER_COMPOSE_CMD) up -d db organisation-information-migrations
+	@$(DOCKER_COMPOSE_CMD) logs -f organisation-information-migrations
 .PHONY: db
 
 OpenAPI: build ## Create OpenAPI folder and copy relevant files in
@@ -167,3 +173,12 @@ aws-push-to-ecr: ## Tag latest built Docker images and push to ECR
 
 aws-build-and-push-ecr: build-docker aws-push-to-ecr ## Build, tag and push Docker images to ECR
 .PHONY: aws-build-and-push-ecr
+
+version-commit: COMMIT_REF ?= HEAD
+version-commit: ## Determines the last commit hash
+	@git rev-parse --short "$(COMMIT_REF)"
+.PHONY: version-commit
+
+last-tag: ## Determines the last created tag on the repository
+	@git for-each-ref refs/tags --sort=-taggerdate --format='%(refname:short)' --count=1
+.PHONY: last-tag
