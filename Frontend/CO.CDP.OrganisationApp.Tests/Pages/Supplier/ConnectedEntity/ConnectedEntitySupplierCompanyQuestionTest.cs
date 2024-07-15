@@ -45,7 +45,7 @@ public class ConnectedEntitySupplierCompanyQuestionTest
         var result = _model.OnGet(null);
 
         result.Should().BeOfType<RedirectToPageResult>()
-            .Which.PageName.Should().Be("ConnectedEntitySupplierCompanyQuestion");
+            .Which.PageName.Should().Be("ConnectedEntitySupplierHasControl");
     }
 
     [Fact]
@@ -63,18 +63,19 @@ public class ConnectedEntitySupplierCompanyQuestionTest
     }
 
     [Fact]
-    public void OnPost_ShouldReturnPage_WhenModelStateIsInvalid()
+    public void OnPost_ShouldRedirectToConnectedEntitySupplierHasControl_WhenModelStateIsInvalid()
     {
         _model.RegisteredWithCh = null;
         _model.ModelState.AddModelError("Error", "Model state is invalid");
 
         var result = _model.OnPost();
 
-        result.Should().BeOfType<PageResult>();
+        result.Should().BeOfType<RedirectToPageResult>()
+            .Which.PageName.Should().Be("ConnectedEntitySupplierHasControl");
     }
 
     [Fact]
-    public void OnPost_ShouldRedirectToConnectedEntitySelectType()
+    public void OnPost_ShouldRedirectToConnectedEntityPersonType()
     {        
         _sessionMock.Setup(s => s.Get<ConnectedEntityState>(Session.ConnectedPersonKey)).
             Returns(DummyConnectedPersonDetails());
@@ -84,7 +85,7 @@ public class ConnectedEntitySupplierCompanyQuestionTest
         var redirectToPageResult = result.Should().BeOfType<RedirectToPageResult>().Subject;
 
         result.Should().BeOfType<RedirectToPageResult>()
-            .Which.PageName.Should().Be("ConnectedEntitySelectType");
+            .Which.PageName.Should().Be("ConnectedEntityPersonType");
 
     }
     

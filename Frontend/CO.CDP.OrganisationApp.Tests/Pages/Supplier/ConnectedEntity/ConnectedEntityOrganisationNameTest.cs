@@ -18,13 +18,30 @@ public class ConnectedEntityOrganisationNameTest
     {
         _sessionMock = new Mock<ISession>();
         _model = new ConnectedEntityOrganisationNameModel(_sessionMock.Object);
-        _model.Id = Guid.NewGuid();
+        _model.Id = _organisationId;
+    }
+        
+    [Fact]
+    public void OnGet_ShouldRedirectToConnectedEntitySupplierHasControl_WhenModelStateIsInvalid()
+    {
+        ConnectedEntityState? state = null;
+        _sessionMock
+            .Setup(s => s.Get<ConnectedEntityState>(Session.ConnectedPersonKey))
+            .Returns(state);
+
+        _model.ModelState.AddModelError("Error", "Model state is invalid");
+
+        var result = _model.OnGet();
+
+        result.Should().BeOfType<RedirectToPageResult>()
+            .Which.PageName.Should().Be("ConnectedEntitySupplierCompanyQuestion");
     }
 
     [Fact]
     public void OnGet_ShouldReturnPageResult()
     {
         var state = DummyConnectedPersonDetails();
+        _model.ConnectedEntityId = _entityId;        
         state.OrganisationName = "Org_name";
         _sessionMock
             .Setup(s => s.Get<ConnectedEntityState>(Session.ConnectedPersonKey))
@@ -60,12 +77,12 @@ public class ConnectedEntityOrganisationNameTest
 
         var result = _model.OnPost();
 
-        result.Should().BeOfType<PageResult>();
+        result.Should().BeOfType<RedirectToPageResult>();
     }
 
 
     [Theory]
-    [InlineData(Constants.ConnectedEntityType.Organisation, "")]
+    [InlineData(Constants.ConnectedEntityType.Organisation, "ConnectedEntityAddress")]
     public void OnPost_ShouldRedirectToConnectedEntityCategoryPage(Constants.ConnectedEntityType connectedEntityType, string expectedRedirectPage)
     {
         var state = DummyConnectedPersonDetails();

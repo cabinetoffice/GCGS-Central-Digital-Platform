@@ -47,7 +47,7 @@ public class ConnectedEntitySelectTypeTest
     }
 
     [Fact]
-    public void OnPost_ShouldReturnPage_WhenModelStateIsInvalid()
+    public void OnPost_ShouldRedirectToConnectedEntitySupplierCompanyQuestion_WhenModelStateIsInvalid()
     {
         _sessionMock
            .Setup(s => s.Get<ConnectedEntityState>(Session.ConnectedPersonKey))
@@ -57,7 +57,8 @@ public class ConnectedEntitySelectTypeTest
 
         var result = _model.OnPost();
 
-        result.Should().BeOfType<PageResult>();
+        result.Should().BeOfType<RedirectToPageResult>()
+            .Which.PageName.Should().Be("ConnectedEntitySupplierCompanyQuestion");
     }
 
 
