@@ -16,18 +16,18 @@ public class OrganisationRegisteredEventHandlerTests
     {
         // Arrange
         var mockPponService = new Mock<IPponService>();
-        var serviceProvider = new Mock<IServiceProvider>(); 
+        var serviceProvider = new Mock<IServiceProvider>();
         var serviceScopeFactory = new Mock<IServiceScopeFactory>();
         var serviceScope = new Mock<IServiceScope>();
-        var serviceProviderWrapper = new Mock<IServiceProviderWrapper>();
         var context = new Mock<EntityVerificationContext>();
         var pponRepository = new Mock<IPponRepository>();
 
-        serviceProviderWrapper.Setup(m => m.GetRequiredService(It.IsAny<IServiceProvider>())).Returns(context.Object);
         serviceProvider.Setup(x => x.GetService(typeof(IServiceScopeFactory))).Returns(serviceScopeFactory.Object);
+        serviceScope.Setup(x => x.ServiceProvider.GetService(typeof(EntityVerificationContext)))
+            .Returns(context.Object);
         serviceScopeFactory.Setup(x => x.CreateScope()).Returns(serviceScope.Object);
-        
-        var handler = new OrganisationRegisteredEventHandler(mockPponService.Object, serviceProvider.Object, serviceProviderWrapper.Object, pponRepository.Object);
+
+        var handler = new OrganisationRegisteredEventHandler(mockPponService.Object, pponRepository.Object, serviceProvider.Object);
         var message = new OrganisationRegisteredMessage
         {
             Name = "MyOrg",
