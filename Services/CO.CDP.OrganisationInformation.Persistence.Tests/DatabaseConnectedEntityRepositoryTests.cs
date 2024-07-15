@@ -17,7 +17,7 @@ public class DatabaseConnectedEntityRepositoryTests(PostgreSqlFixture postgreSql
     {
         using var repository = ConnectedEntityRepository();
 
-        var found = await repository.Find(Guid.NewGuid());
+        var found = await repository.Find(Guid.NewGuid(), Guid.NewGuid());
 
         found.Should().BeNull();
     }
@@ -51,7 +51,7 @@ public class DatabaseConnectedEntityRepositoryTests(PostgreSqlFixture postgreSql
 
         await repositoryCE.Save(expectedEntity);
 
-        var result = await repositoryCE.Find(guid);
+        var result = await repositoryCE.Find(orgId, guid);
 
         result.Should().BeEquivalentTo(expectedEntity);
     }

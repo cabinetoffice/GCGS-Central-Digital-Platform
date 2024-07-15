@@ -16,7 +16,7 @@ public class GetConnectedEntityUseCaseTest(AutoMapperFixture mapperFixture) : IC
     {
         var entityId = Guid.NewGuid();
 
-        var found = await UseCase.Execute(entityId);
+        var found = await UseCase.Execute((Guid.NewGuid(), entityId));
 
         found.Should().BeNull();
     }
@@ -35,9 +35,9 @@ public class GetConnectedEntityUseCaseTest(AutoMapperFixture mapperFixture) : IC
             Organisation = It.IsAny<OrganisationInformation.Persistence.ConnectedEntity.ConnectedOrganisation>()            
         };
 
-        _repository.Setup(r => r.Find(organisationId)).ReturnsAsync(persistenceConnectedEntity);
+        _repository.Setup(r => r.Find(organisationId, eid1)).ReturnsAsync(persistenceConnectedEntity);
 
-        var found = await UseCase.Execute(organisationId);
+        var found = await UseCase.Execute((organisationId, eid1));
 
         var expectedModelConnectedEntity = new Model.ConnectedEntity
         {
