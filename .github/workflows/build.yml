@@ -69,6 +69,15 @@ jobs:
           VERSION=$([[ "${CURRENT_TAG}" = "" ]] && echo "${LAST_TAG}-${CURRENT_COMMIT}" || echo "$CURRENT_TAG")
           echo "Version: $VERSION"
           echo "version=${VERSION}" >> $GITHUB_OUTPUT
+      - name: Cache
+        id: cache-docker-images
+        uses: actions/cache@v4
+        with:
+          path: cdp-images.tar
+          key: ${{ runner.os }}-docker-images-${{ github.ref_name }}-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-docker-images-main
+            ${{ runner.os }}-docker-images-${{ github.ref_name }}
       - name: Build
         run: make build-docker
         env:
