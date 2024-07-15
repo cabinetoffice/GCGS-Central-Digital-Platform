@@ -16,7 +16,7 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<IRequestListener, RequestListener>();
         services.AddSingleton<IPponService, PponService>();
         services.AddSingleton<OrganisationRegisteredEventHandler>();
-        services.AddSingleton<IPponRepository, DatabasePponRepository>();
+        services.AddScoped<IPponRepository, DatabasePponRepository>();
 
         services.AddHostedService<QueueBackgroundService>();
 
