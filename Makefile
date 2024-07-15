@@ -3,6 +3,9 @@ AWS_ACCOUNT_ID=$$(aws sts get-caller-identity | jq -r '.Account')
 REPO_URL := $(AWS_ACCOUNT_ID).dkr.ecr.eu-west-2.amazonaws.com
 DOCKER_COMPOSE_CMD=IMAGE_VERSION=$(IMAGE_VERSION) docker compose
 
+export DOCKER_BUILDKIT=1
+export COMPOSE_DOCKER_CLI_BUILD=1
+
 # Extracts targets and their comments
 help: ## List available commands
 	@echo "Available commands:"
