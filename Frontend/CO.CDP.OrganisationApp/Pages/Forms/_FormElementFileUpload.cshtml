@@ -11,7 +11,7 @@
         @question.Title
     </h1>
     <p class="govuk-body">@question.Description</p>
-    @if (hasError)
+    @if (hasError && ViewData.ModelState["Answer"]?.Errors?.Count > 0)
     {
         <p id="Answer-error" class="govuk-error-message">
             <span class="govuk-visually-hidden">Error:</span>
