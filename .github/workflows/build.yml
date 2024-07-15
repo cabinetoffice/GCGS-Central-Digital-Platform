@@ -97,6 +97,7 @@ jobs:
           path: cdp-images.tar
 
   publish:
+    if: github.ref == 'refs/heads/main' && github.repository_owner == 'cabinetoffice'
     runs-on: ubuntu-latest
     name: Publish containers
     needs: [test, package]
