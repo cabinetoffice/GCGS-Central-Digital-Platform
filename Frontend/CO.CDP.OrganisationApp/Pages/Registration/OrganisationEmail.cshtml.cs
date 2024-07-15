@@ -43,7 +43,7 @@ public class OrganisationEmailModel(ISession session) : RegistrationStepModel
         }
         else
         {
-            return RedirectToPage("OrganisationRegisteredAddress");
+            return RedirectToPage("OrganisationRegisteredAddress", new { UkOrNonUk = "uk" });
         }
     }
 }

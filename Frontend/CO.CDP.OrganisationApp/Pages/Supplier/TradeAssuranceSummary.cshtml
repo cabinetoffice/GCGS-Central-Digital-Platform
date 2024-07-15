@@ -14,7 +14,7 @@
             <partial name="_ErrorSummary" model="@Model.ModelState" />
         </div>
         <div class="govuk-grid-column-full">
-            @if (Model.CompletedTradeAssurance)
+            @if (Model.TradeAssurances.Count > 0)
             {
                 <h1 class="govuk-heading-l">
                     You have added @Model.TradeAssurances.Count trade assurances

@@ -8,7 +8,7 @@ using CO.CDP.Tenant.WebApi.Model;
 using CO.CDP.Tenant.WebApi.UseCase;
 using Microsoft.EntityFrameworkCore;
 using Tenant = CO.CDP.Tenant.WebApi.Model.Tenant;
-using TenantLookup = CO.CDP.Tenant.WebApi.Model.TenantLookup;
+using TenantLookup = CO.CDP.OrganisationInformation.TenantLookup;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.ConfigureForwardedHeaders();
@@ -27,12 +27,15 @@ builder.Services.AddScoped<ITenantRepository, DatabaseTenantRepository>();
 
 builder.Services.AddScoped<IUseCase<RegisterTenant, Tenant>, RegisterTenantUseCase>();
 builder.Services.AddScoped<IUseCase<Guid, Tenant?>, GetTenantUseCase>();
-builder.Services.AddScoped<IUseCase<string, TenantLookup?>, LookupTenantUseCase>();
+builder.Services.AddScoped<IUseCase<TenantLookup?>, LookupTenantUseCase>();
+builder.Services.AddScoped<IClaimService, ClaimService>();
 builder.Services.AddTenantProblemDetails();
 
 builder.Services.AddJwtBearerAndApiKeyAuthentication(builder.Configuration, builder.Environment);
 //builder.Services.AddAuthorization();
-builder.Services.AddFallbackAuthorizationPolicy();
+builder.Services.AddOrganisationAuthorization();
+builder.Services.AddHttpContextAccessor();
+
 
 var app = builder.Build();
 app.UseForwardedHeaders();

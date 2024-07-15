@@ -1,9 +1,11 @@
 using System.Text.Json;
+using CO.CDP.OrganisationInformation.Persistence.EntityFrameworkCore;
+using CO.CDP.OrganisationInformation.Persistence.Forms;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore.Migrations;
-using Npgsql.EntityFrameworkCore.PostgreSQL.Migrations.Internal;
+using static CO.CDP.OrganisationInformation.Persistence.ConnectedEntity;
 
 namespace CO.CDP.OrganisationInformation.Persistence;
 
@@ -13,9 +15,41 @@ public class OrganisationInformationContext(DbContextOptions<OrganisationInforma
     public DbSet<Tenant> Tenants { get; set; } = null!;
     public DbSet<Organisation> Organisations { get; set; } = null!;
     public DbSet<Person> Persons { get; set; } = null!;
+    public DbSet<Form> Forms { get; set; } = null!;
+    public DbSet<SharedConsent> SharedConsents { get; set; } = null!;
+    public DbSet<ConnectedEntity> ConnectedEntities { get; set; } = null!;
+    public DbSet<AuthenticationKey> AuthenticationKeys { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.HasPostgresEnum<ControlCondition>();
+        modelBuilder.HasPostgresEnum<ConnectedEntityType>();
+        modelBuilder.HasPostgresEnum<ConnectedPersonType>();
+        modelBuilder.HasPostgresEnum<ConnectedPersonCategory>();
+        modelBuilder.HasPostgresEnum<ConnectedOrganisationCategory>();
+
+        modelBuilder.Entity<ConnectedEntity>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.OwnsOne(e => e.Organisation, a =>
+            {
+                a.HasKey(e => e.Id);
+                a.Property(ai => ai.Id).HasColumnName("connected_organisation_id");
+                a.Property(z => z.CreatedOn).IsRequired().HasDefaultValueSql("CURRENT_TIMESTAMP");
+                a.Property(z => z.UpdatedOn).IsRequired().HasDefaultValueSql("CURRENT_TIMESTAMP");
+                a.ToTable("connected_organisation");
+            });
+
+            entity.OwnsOne(e => e.IndividualOrTrust, a =>
+            {
+                a.HasKey(e => e.Id);
+                a.Property(ai => ai.Id).HasColumnName("connected_individual_trust_id");
+                a.Property(z => z.CreatedOn).IsRequired().HasDefaultValueSql("CURRENT_TIMESTAMP");
+                a.Property(z => z.UpdatedOn).IsRequired().HasDefaultValueSql("CURRENT_TIMESTAMP");
+                a.ToTable("connected_individual_trust");
+            });
+        });
+
         modelBuilder.Entity<Organisation>(entity =>
         {
             entity.HasKey(e => e.Id);
@@ -101,6 +135,11 @@ public class OrganisationInformationContext(DbContextOptions<OrganisationInforma
         modelBuilder.Entity<Address>()
             .ToTable("addresses");
 
+        modelBuilder.Entity<AuthenticationKey>(e =>
+        {
+            e.Property(e => e.Scopes).HasJsonColumn([], PropertyBuilderExtensions.ListComparer<string>());
+        });
+
         modelBuilder.Entity<Person>()
             .HasMany(p => p.Tenants)
             .WithMany(t => t.Persons)
@@ -117,7 +156,35 @@ public class OrganisationInformationContext(DbContextOptions<OrganisationInforma
             }
         }
 
+        OnFormModelCreating(modelBuilder);
+
         base.OnModelCreating(modelBuilder);
+    }
+
+    private void OnFormModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Form>()
+            .HasMany<FormSection>(e => e.Sections);
+        modelBuilder.Entity<FormSection>()
+            .ToTable("form_sections");
+        modelBuilder.Entity<FormQuestion>(e =>
+        {
+            e.ToTable("form_questions");
+            e.HasOne<FormQuestion>(fq => fq.NextQuestion);
+            e.HasOne<FormQuestion>(fq => fq.NextQuestionAlternative);
+            e.Property(p => p.Options).IsRequired()
+                .HasJsonColumn(new FormQuestionOptions(),
+                    PropertyBuilderExtensions.RecordComparer<FormQuestionOptions>());
+        });
+
+        modelBuilder.Entity<FormAnswerSet>(e =>
+        {
+            e.ToTable("form_answer_sets");
+        });
+        modelBuilder.Entity<FormAnswer>(e =>
+        {
+            e.ToTable("form_answers");
+        });
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -166,6 +233,13 @@ internal static class PropertyBuilderExtensions
             c => c.ToList()
         );
 
+    public static ValueComparer<T> RecordComparer<T>() where T : notnull =>
+        new(
+            (c1, c2) => c1 != null && c2 != null && c1.Equals(c2),
+            c => c.GetHashCode(),
+            c => c
+        );
+
     public static PropertyBuilder<TProperty> HasJsonColumn<TProperty>(
         this PropertyBuilder<TProperty> propertyBuilder,
         TProperty defaultValue,
@@ -177,22 +251,4 @@ internal static class PropertyBuilderExtensions
             v => JsonSerializer.Deserialize<TProperty>(v, JsonSerializerOptions.Default) ?? defaultValue,
             valueComparer
         );
-}
-
-/// <a href="https://github.com/efcore/EFCore.NamingConventions/issues/1">Keep history columns CamelCased</a>
-// Remove this class at the time we squash migrations.
-// ReSharper disable once ClassNeverInstantiated.Global
-#pragma warning disable EF1001
-internal class CamelCaseHistoryContext(HistoryRepositoryDependencies dependencies) : NpgsqlHistoryRepository(dependencies)
-#pragma warning restore EF1001
-{
-    protected override void ConfigureTable(EntityTypeBuilder<HistoryRow> history)
-    {
-        base.ConfigureTable(history);
-
-        // Ensure that previously created migrations table continues to work.
-        // Otherwise, EF will try to access these columns by their snake_names.
-        history.Property(h => h.MigrationId).HasColumnName("MigrationId");
-        history.Property(h => h.ProductVersion).HasColumnName("ProductVersion");
-    }
 }

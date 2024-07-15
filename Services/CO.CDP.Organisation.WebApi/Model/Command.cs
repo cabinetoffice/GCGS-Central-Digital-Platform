@@ -138,6 +138,7 @@ public enum SupplierInformationUpdateType
     LegalForm,
     OperationType,
     Qualification,
+    CompletedConnectedPerson
 }
 
 public record SupplierInfo
@@ -157,6 +158,31 @@ public record DeleteSupplierInformation
 
     public Guid? TradeAssuranceId { get; init; }
     public Guid? QualificationId { get; init; }
+}
+
+public record RegisterConnectedEntity
+{
+    public required ConnectedEntityType EntityType { get; init; }
+    public bool HasCompnayHouseNumber { get; init; }
+    public string? CompanyHouseNumber { get; init; }
+    public string? OverseasCompanyNumber { get; init; }
+
+    public ConnectedOrganisation? Organisation { get; init; }
+    public ConnectedIndividualTrust? IndividualOrTrust { get; init; }
+    public ICollection<Address> Addresses { get; init; } = [];
+
+    public DateTimeOffset? RegisteredDate { get; init; }
+    public string? RegisterName { get; init; }
+
+    public DateTimeOffset? StartDate { get; init; }
+    public DateTimeOffset? EndDate { get; init; }
+}
+
+public record ConnectedEntityLookup
+{
+    public required string Name { get; init; }
+    public required Guid EntityId { get; init; }
+    public required Uri Uri { get; init; }
 }
 
 public record OrganisationQuery

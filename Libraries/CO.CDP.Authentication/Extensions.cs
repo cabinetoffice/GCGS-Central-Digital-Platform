@@ -1,3 +1,5 @@
+using CO.CDP.Authentication.AuthorizationPolicy;
+using CO.CDP.OrganisationInformation.Persistence;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -33,6 +35,7 @@ public static class Extensions
             });
 
         services.AddApiKeyAuthenticationServices();
+        services.AddJwtClaimExtractor();
 
         return services;
     }
@@ -46,6 +49,7 @@ public static class Extensions
         {
             options.Authority = authority;
             options.RequireHttpsMetadata = !webHostEnvironment.IsDevelopment();
+            options.MapInboundClaims = false;
             options.TokenValidationParameters = new TokenValidationParameters
             {
                 ValidateAudience = false,
@@ -62,17 +66,30 @@ public static class Extensions
     public static IServiceCollection AddApiKeyAuthenticationServices(this IServiceCollection services)
     {
         services.AddScoped<IApiKeyValidator, ApiKeyValidator>();
+        services.AddScoped<IAuthenticationKeyRepository, DatabaseAuthenticationKeyRepository>();
         return services;
     }
 
-    public static AuthorizationBuilder AddFallbackAuthorizationPolicy(this IServiceCollection services)
+    public static AuthorizationBuilder AddOrganisationAuthorization(this IServiceCollection services)
     {
         return services
             .AddAuthorizationBuilder()
+            .AddPolicy(Constants.OrganisationKeyPolicy, policy =>
+            {
+                policy.RequireAuthenticatedUser();
+                policy.RequireClaim("channel", "organisation-key");
+            })
             .SetFallbackPolicy(
                 new AuthorizationPolicyBuilder()
                     .AddAuthenticationSchemes(JwtBearerOrApiKeyScheme)
                     .RequireAuthenticatedUser()
                     .Build());
+    }
+
+    public static IServiceCollection AddJwtClaimExtractor(this IServiceCollection services)
+    {
+        services.AddHttpContextAccessor();
+        services.AddScoped<IClaimService, ClaimService>();
+        return services;
     }
 }

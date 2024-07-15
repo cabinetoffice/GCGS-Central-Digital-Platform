@@ -1,0 +1,52 @@
+@model CO.CDP.OrganisationApp.Models.FormQuestionViewModel
+
+@{
+    var question = Model.FormQuestion;
+    var answer = Model.Answer;
+    var hasError = ViewData.ModelState["Answer"]?.Errors?.Count > 0;
+}
+
+<div class="govuk-form-group">
+    <fieldset class="govuk-fieldset" data-required="" data-error="Upload the latest accounts" aria-required="true">
+
+        <div class="govuk-form-group">
+            <fieldset class="govuk-fieldset" role="group" aria-describedby="financialhint">
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                    <h1 class="govuk-fieldset__heading">
+                        @question.Title
+                    </h1>
+                </legend>
+                <div id="date-hint" class="govuk-hint">
+                    For example, 05 04 2022
+                </div>
+                <div class="govuk-date-input" id="financial">
+                    <div class="govuk-date-input__item">
+                        <div class="govuk-form-group">
+                            <label class="govuk-label govuk-date-input__label" for="financialDay">
+                                Day
+                            </label>
+                            <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="financialDay" name="financialDay" type="text" inputmode="numeric">
+                        </div>
+                    </div>
+                    <div class="govuk-date-input__item">
+                        <div class="govuk-form-group">
+                            <label class="govuk-label govuk-date-input__label" for="financialMonth">
+                                Month
+                            </label>
+                            <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="financialMonth" name="financialMonth" type="text" inputmode="numeric">
+                        </div>
+                    </div>
+                    <div class="govuk-date-input__item">
+                        <div class="govuk-form-group">
+                            <label class="govuk-label govuk-date-input__label" for="financialYear">
+                                Year
+                            </label>
+                            <input class="govuk-input govuk-date-input__input govuk-input--width-4" id="financialYear" name="financialYear" type="text" inputmode="numeric">
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+
+    </fieldset>
+</div>

@@ -1,4 +1,5 @@
 using CO.CDP.OrganisationInformation;
+using System.Text.Json.Serialization;
 
 namespace CO.CDP.Organisation.WebApi.Model;
 
@@ -39,6 +40,7 @@ public record SupplierInformation
     public bool CompletedTradeAssurance { get; set; }
     public bool CompletedOperationType { get; set; }
     public bool CompletedLegalForm { get; set; }
+    public bool CompletedConnectedPerson { get; set; }
     public List<TradeAssurance> TradeAssurances { get; set; } = [];
     public LegalForm? LegalForm { get; set; }
     public List<Qualification> Qualifications { get; set; } = [];
@@ -66,4 +68,90 @@ public record Qualification
     public required string AwardedByPersonOrBodyName { get; set; }
     public required string Name { get; set; }
     public required DateTimeOffset DateAwarded { get; set; }
+}
+
+public record ConnectedEntity
+{
+    public Guid Id { get; set; }
+    public required ConnectedEntityType EntityType { get; set; }
+    public bool HasCompnayHouseNumber { get; set; }
+    public string? CompanyHouseNumber { get; set; }
+    public string? OverseasCompanyNumber { get; set; }
+
+    public ConnectedOrganisation? Organisation { get; set; }
+    public ConnectedIndividualTrust? IndividualOrTrust { get; set; }
+    public ICollection<Address> Addresses { get; set; } = [];
+
+    public DateTimeOffset? RegisteredDate { get; set; }
+    public string? RegisterName { get; set; }
+
+    public DateTimeOffset? StartDate { get; set; }
+    public DateTimeOffset? EndDate { get; set; }
+}
+
+public record ConnectedIndividualTrust
+{
+    public int Id { get; set; }
+    public required ConnectedPersonCategory Category { get; set; }
+    public required string FirstName { get; set; }
+    public required string LastName { get; set; }
+    public DateTimeOffset? DateOfBirth { get; set; }
+    public string? Nationality { get; set; }
+    public ICollection<ControlCondition> ControlCondition { get; set; } = [];
+    public ConnectedPersonType ConnectedType { get; set; }
+    public Guid? PersonId { get; set; }
+}
+
+public record ConnectedOrganisation
+{
+    public int Id { get; set; }
+    public required ConnectedOrganisationCategory Category { get; set; }
+    public required string Name { get; set; }
+    public DateTimeOffset? InsolvencyDate { get; set; }
+    public string? RegisteredLegalForm { get; set; }
+    public string? LawRegistered { get; set; }
+    public ICollection<ControlCondition> ControlCondition { get; set; } = [];
+    public Guid? OrganisationId { get; set; }
+}
+
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum ConnectedEntityType
+{
+    Organisation = 1,
+    Individual,
+    TrustOrTrustee
+}
+
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum ControlCondition
+{
+    OwnsShares = 1,
+    HasVotingRights,
+    CanAppointOrRemoveDirectors,
+    HasOtherSignificantInfluenceOrControl
+}
+
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum ConnectedPersonType
+{
+    Individual = 1,
+    TrustOrTrustee
+}
+
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum ConnectedPersonCategory
+{
+    PersonWithSignificantControl = 1,
+    DirectorOrIndividualWithTheSameResponsibilities,
+    AnyOtherIndividualWithSignificantInfluenceOrControl
+}
+
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum ConnectedOrganisationCategory
+{
+    RegisteredCompany = 1,
+    DirectorOrTheSameResponsibilities,
+    ParentOrSubsidiaryCompany,
+    ACompanyYourOrganisationHasTakenOver,
+    AnyOtherOrganisationWithSignificantInfluenceOrControl,
 }

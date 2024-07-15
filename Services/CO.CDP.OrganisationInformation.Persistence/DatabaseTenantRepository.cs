@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using static CO.CDP.OrganisationInformation.Persistence.ITenantRepository;
 
 namespace CO.CDP.OrganisationInformation.Persistence;
 
@@ -29,31 +30,47 @@ public class DatabaseTenantRepository(OrganisationInformationContext context) : 
 
     public async Task<TenantLookup?> LookupTenant(string userUrn)
     {
-        return await context.Persons
-            .Where(p => p.UserUrn == userUrn)
-            .Select(p => new TenantLookup
-            {
-                User = new TenantLookup.PersonUser
-                {
-                    Email = p.Email,
-                    Urn = p.UserUrn ?? "",
-                    Name = $"{p.FirstName} {p.LastName}"
-                },
-                Tenants = p.Tenants.Select(t => new TenantLookup.Tenant
-                {
-                    Id = t.Guid,
-                    Name = t.Name,
-                    Organisations = t.Organisations.Select(o => new TenantLookup.Organisation
-                    {
-                        Id = o.Guid,
-                        Name = o.Name,
-                        Roles = o.Roles,
-                        // ReSharper disable once NullCoalescingConditionIsAlwaysNotNullAccordingToAPIContract
-                        Scopes = o.OrganisationPersons.Single(op => op.PersonId == p.Id).Scopes ?? new List<string>()
-                    }).ToList()
-                }).ToList()
-            })
-            .SingleAsync();
+        try
+        {
+            return await context.Persons
+                 .Where(p => p.UserUrn == userUrn)
+                 .Select(p => new TenantLookup
+                 {
+                     User = new TenantLookup.PersonUser
+                     {
+                         Email = p.Email,
+                         Urn = p.UserUrn ?? "",
+                         Name = $"{p.FirstName} {p.LastName}"
+                     },
+                     Tenants = p.Tenants.Select(t => new TenantLookup.Tenant
+                     {
+                         Id = t.Guid,
+                         Name = t.Name,
+                         Organisations = t.Organisations.Select(o => new TenantLookup.Organisation
+                         {
+                             Id = o.Guid,
+                             Name = o.Name,
+                             Roles = o.Roles,
+                             // ReSharper disable once NullCoalescingConditionIsAlwaysNotNullAccordingToAPIContract
+                             Scopes = o.OrganisationPersons.Single(op => op.PersonId == p.Id).Scopes ?? new List<string>()
+                         }).ToList()
+                     }).ToList()
+                 })
+                 .SingleAsync();
+
+        }
+        catch (InvalidOperationException ex)
+        {
+            throw new TenantRepositoryException.TenantNotFoundException($"Tenant not found for the given URN: {userUrn}", ex);
+        }
+        catch (DbUpdateException ex)
+        {
+            throw new TenantRepositoryException("An error occurred while looking up the tenant.", ex);
+        }
+        catch (Exception ex)
+        {
+            throw new TenantRepositoryException("An unexpected error occurred while looking up the tenant.", ex);
+        }
     }
 
     public void Dispose()

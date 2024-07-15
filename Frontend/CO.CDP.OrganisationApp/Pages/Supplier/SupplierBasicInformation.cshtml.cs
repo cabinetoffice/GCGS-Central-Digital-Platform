@@ -28,38 +28,35 @@ public class SupplierBasicInformationModel(IOrganisationClient organisationClien
     public Address? PostalAddress { get; set; }
 
     [BindProperty]
-    public Organisation.WebApiClient.LegalForm? LegalForm { get; set; }
-
-    [BindProperty]
     public required List<OperationType>? OperationTypes { get; set; }
 
     public async Task<IActionResult> OnGet(Guid id)
     {
+        ComposedOrganisation composed;
         try
         {
-            var composed = await organisationClient.GetComposedOrganisation(id);
-
-            SupplierInformation = composed.SupplierInfo;
-            WebsiteAddress = composed.Organisation.ContactPoint.Url?.ToString();
-            EmailAddress = composed.Organisation.ContactPoint.Email;
-            this.LegalForm = composed.SupplierInfo.LegalForm;
-
-            var vatIdentifier = composed.Organisation.AdditionalIdentifiers.FirstOrDefault(i => i.Scheme == "VAT");
-            if (vatIdentifier != null) VatNumber = vatIdentifier.Id;
-
-            var registeredAddrress = composed.Organisation.Addresses.FirstOrDefault(i => i.Type == AddressType.Registered);
-            if (registeredAddrress != null) RegisteredAddress = registeredAddrress;
-
-            var postalAddrress = composed.Organisation.Addresses.FirstOrDefault(i => i.Type == AddressType.Postal);
-            if (postalAddrress != null) PostalAddress = postalAddrress;
-
-            var operationTypes = composed.SupplierInfo.OperationTypes.ToList();
-            if (operationTypes != null) OperationTypes = operationTypes;
+            composed = await organisationClient.GetComposedOrganisation(id);
         }
         catch (ApiException ex) when (ex.StatusCode == 404)
         {
             return Redirect("/page-not-found");
         }
+
+        SupplierInformation = composed.SupplierInfo;
+        WebsiteAddress = composed.Organisation.ContactPoint.Url?.ToString();
+        EmailAddress = composed.Organisation.ContactPoint.Email;
+
+        var vatIdentifier = composed.Organisation.AdditionalIdentifiers.FirstOrDefault(i => i.Scheme == "VAT");
+        if (vatIdentifier != null) VatNumber = vatIdentifier.Id;
+
+        var registeredAddrress = composed.Organisation.Addresses.FirstOrDefault(i => i.Type == AddressType.Registered);
+        if (registeredAddrress != null) RegisteredAddress = registeredAddrress;
+
+        var postalAddrress = composed.Organisation.Addresses.FirstOrDefault(i => i.Type == AddressType.Postal);
+        if (postalAddrress != null) PostalAddress = postalAddrress;
+
+        var operationTypes = composed.SupplierInfo.OperationTypes.ToList();
+        if (operationTypes != null) OperationTypes = operationTypes;
 
         return Page();
     }

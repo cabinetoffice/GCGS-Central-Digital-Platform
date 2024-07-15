@@ -1,0 +1,40 @@
+{
+  "Comment": "Update the secret holding the DB connection string for services",
+  "StartAt": "GetDBCredentials",
+  "States": {
+    "GetDBCredentials": {
+      "Type": "Task",
+      "Parameters": {
+        "SecretId": "${secret_database_creds_arn}"
+      },
+      "Resource": "arn:aws:states:::aws-sdk:secretsmanager:getSecretValue",
+      "ResultPath": "$.DBCredentialsSecret",
+      "Next": "ParseDBCredentials"
+    },
+    "ParseDBCredentials": {
+      "Type": "Pass",
+      "Parameters": {
+        "ParsedSecret.$": "States.StringToJson($.DBCredentialsSecret.SecretString)"
+      },
+      "ResultPath": "$.ParsedDBCredentials",
+      "Next": "ConstructUpdatedSecretString"
+    },
+    "ConstructUpdatedSecretString": {
+      "Type": "Pass",
+      "Parameters": {
+        "SecretString.$": "States.Format('Server={};Database={};Username={};Password={}', '${db_server}', '${db_database}', '${db_username}', $.ParsedDBCredentials.ParsedSecret.password)"
+      },
+      "ResultPath": "$.UpdatedSecretString",
+      "Next": "UpdateDBConnectionString"
+    },
+    "UpdateDBConnectionString": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::aws-sdk:secretsmanager:putSecretValue",
+      "Parameters": {
+        "SecretId": "${secret_connection_string_arn}",
+        "SecretString.$": "$.UpdatedSecretString"
+      },
+      "End": true
+    }
+  }
+}

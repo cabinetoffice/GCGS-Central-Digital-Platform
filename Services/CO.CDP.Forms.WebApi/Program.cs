@@ -1,6 +1,8 @@
 using CO.CDP.Authentication;
 using CO.CDP.Configuration.ForwardedHeaders;
 using CO.CDP.Forms.WebApi.Api;
+using CO.CDP.OrganisationInformation.Persistence;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.ConfigureForwardedHeaders();
@@ -9,14 +11,15 @@ builder.ConfigureForwardedHeaders();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options => { options.DocumentFormsApi(); });
-
 builder.Services.AddHealthChecks();
-
 builder.Services.AddProblemDetails();
+
+builder.Services.AddDbContext<OrganisationInformationContext>(o =>
+    o.UseNpgsql(builder.Configuration.GetConnectionString("OrganisationInformationDatabase") ?? ""));
 
 builder.Services.AddJwtBearerAndApiKeyAuthentication(builder.Configuration, builder.Environment);
 //builder.Services.AddAuthorization();
-builder.Services.AddFallbackAuthorizationPolicy();
+builder.Services.AddOrganisationAuthorization();
 
 var app = builder.Build();
 app.UseForwardedHeaders();
@@ -41,3 +44,4 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.UseFormsEndpoints();
 app.Run();
+public abstract partial class Program;

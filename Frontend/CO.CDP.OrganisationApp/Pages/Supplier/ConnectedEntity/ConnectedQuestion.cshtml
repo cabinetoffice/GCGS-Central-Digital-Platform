@@ -1,0 +1,52 @@
+@page "/organisation/{id}/supplier-information/connected-question"
+@model CO.CDP.OrganisationApp.Pages.Supplier.ConnectedQuestionModel
+@{
+    var controlledByPersonOrCompanyHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.ControlledByPersonOrCompany)).HasInnerHtml;
+}
+
+<a href="/organisation/@Model.Id/supplier-information/connected-person-declaration" class="govuk-back-link">Back</a>
+
+<main class="govuk-main-wrapper">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <partial name="_ErrorSummary" model="@Model.ModelState" />
+            <form class="form" method="post">
+                <div class="govuk-form-group @(controlledByPersonOrCompanyHasError ? "govuk-form-group--error": "")">
+                    <fieldset class="govuk-fieldset" data-required="" data-error="Select yes if your organisation influenced or controlled by another person or company" aria-required="true">
+
+                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                            Is your organisation influenced or controlled by another person or company?
+                        </legend>
+
+                        <div class="govuk-radios govuk-!-margin-top-6" data-module="govuk-radios">
+                            @if (controlledByPersonOrCompanyHasError)
+                            {
+                                <p id="devolved-error" class="govuk-error-message">
+                                    <span class="govuk-visually-hidden">Error:</span> @Html.ValidationMessageFor(m => m.ControlledByPersonOrCompany)
+                                </p>
+                            }
+
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input" id="controlledBy" name="ControlledByPersonOrCompany" type="radio"
+                                       value="true" aria-controls="conditional-vat-yes" aria-expanded="false" @(Model.ControlledByPersonOrCompany == true ? "checked" : "")>
+                                <label class="govuk-label govuk-radios__label" for="controlledBy">
+                                    Yes
+                                </label>
+                            </div>
+
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input" id="controlledBy-2" name="ControlledByPersonOrCompany" type="radio" value="false"
+                                @(Model.ControlledByPersonOrCompany == false ? "checked" : "")>
+                                <label class="govuk-label govuk-radios__label" for="controlledBy-2">No</label>
+                            </div>
+
+                        </div>
+
+                    </fieldset>
+                </div>
+
+                <button class="govuk-button govuk-!-margin-top-4" type="submit">Continue</button>
+            </form>
+        </div>
+    </div>
+</main>

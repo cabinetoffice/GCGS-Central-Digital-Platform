@@ -7,6 +7,26 @@
     string GetActionString(bool completed) => completed ? "Change" : "Add";
     string GetActionStringWithItems(bool completed, int itemCount) => completed && itemCount > 0 ? "View" : "Add";
 
+    string GetActionStringWithoutItems(bool completed, int itemCount)
+    {
+        var text = "Add";
+
+        if (completed && itemCount == 0)
+        {
+            text = "Change";
+        }
+        else if (completed && itemCount > 0)
+        {
+            text = "View";
+        }
+        else if (completed == false && itemCount == 0)
+        {
+            text = "Add";
+        }
+
+        return text;
+    } 
+
     void RenderAddress(CO.CDP.Organisation.WebApiClient.Address address)
     {
         <p class="govuk-body">@address.StreetAddress</p>
@@ -84,7 +104,7 @@
                             }
                         </dd>
                         <dd class="govuk-summary-list__actions">
-                            <a class="govuk-link" href="@(Constants.AddressType.Registered.ToString().ToLower())-address-type-question">
+                            <a class="govuk-link" href="@(Constants.AddressType.Registered.ToString().ToLower())-address/uk">
                                 @GetActionString(details.CompletedRegAddress)<span class="govuk-visually-hidden"> Change</span>
                             </a>
                         </dd>
@@ -196,8 +216,8 @@
                         }
                     </dt>
                     <dd class="govuk-summary-list__actions">
-                        <a class="govuk-link" href="supplier-qualification-summary">
-                            @GetActionStringWithItems(details.CompletedQualification, details.Qualifications.Count)<span class="govuk-visually-hidden"> Change</span>
+                        <a class="govuk-link" href="supplier-qualification-summary">                            
+                            @GetActionStringWithoutItems(details.CompletedQualification, details.Qualifications.Count)<span class="govuk-visually-hidden"> Change</span>
                         </a>
                     </dd>
                 </div>
@@ -250,9 +270,9 @@
                             Legal form
                         </dt>
                         <dt class="govuk-summary-list__value">
-                            @if (details.CompletedLegalForm && Model.LegalForm != null)
+                            @if (details.CompletedLegalForm && Model.SupplierInformation?.LegalForm != null)
                             {
-                                RenderLegalForm(Model.LegalForm);
+                                RenderLegalForm(Model.SupplierInformation.LegalForm);
                             }
                         </dt>
                         <dd class="govuk-summary-list__actions">

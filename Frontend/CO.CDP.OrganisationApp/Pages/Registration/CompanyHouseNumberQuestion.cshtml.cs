@@ -42,7 +42,7 @@ public class CompanyHouseNumberQuestionModel(ISession session) : RegistrationSte
         if (HasCompaniesHouseNumber ?? false)
         {
             RegistrationDetails.OrganisationIdentificationNumber = CompaniesHouseNumber;
-            RegistrationDetails.OrganisationScheme = "CHN";
+            RegistrationDetails.OrganisationScheme = "GB-COH";
         }
 
         session.Set(Session.RegistrationDetailsKey, RegistrationDetails);

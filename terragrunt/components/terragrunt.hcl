@@ -1,15 +1,38 @@
 locals {
 
+    account_ids = {
+        for name, env in local.environments : name => env.account_id
+    }
+
     cidr_b_development = 3
     cidr_b_integration = 4
+    cidr_b_orchestrator = 5
     cidr_b_production = 1
     cidr_b_staging = 2
 
     environment = get_env("TG_ENVIRONMENT", "development")
 
     environments = {
+        orchestrator = {
+            cidr_block             = "10.${local.cidr_b_orchestrator}.0.0/16"
+            account_id             = 891377225335
+            name                   = "orchestrator"
+            postgres_instance_type = "db.t4g.micro"
+            private_subnets        = [
+                "10.${local.cidr_b_orchestrator}.101.0/24",
+                "10.${local.cidr_b_orchestrator}.102.0/24",
+                "10.${local.cidr_b_orchestrator}.103.0/24"
+            ]
+            public_subnets = [
+                "10.${local.cidr_b_orchestrator}.1.0/24",
+                "10.${local.cidr_b_orchestrator}.2.0/24",
+                "10.${local.cidr_b_orchestrator}.3.0/24"
+            ]
+            top_level_domain = "findatender.codatt.net"
+        }
         development = {
             cidr_block             = "10.${local.cidr_b_development}.0.0/16"
+            account_id             = 471112892058
             name                   = "dev"
             postgres_instance_type = "db.t4g.micro"
             private_subnets        = [
@@ -26,6 +49,7 @@ locals {
         }
         staging = {
             cidr_block             = "10.${local.cidr_b_staging}.0.0/16"
+            account_id             = 905418042182
             name                   = "staging"
             postgres_instance_type = "db.t4g.micro"
             private_subnets        = [
@@ -42,6 +66,7 @@ locals {
         }
         integration = {
             cidr_block             = "10.${local.cidr_b_integration}.0.0/16"
+            account_id             = 767397666448
             name                   = "integration"
             postgres_instance_type = "db.t4g.micro"
             private_subnets        = [
@@ -58,6 +83,7 @@ locals {
         }
         production = {
             cidr_block             = "10.${local.cidr_b_production}.0.0/16"
+            account_id             = 471112843276
             name                   = "production"
             postgres_instance_type = "db.t4g.micro"
             private_subnets        = [
@@ -94,6 +120,13 @@ locals {
             name          = "data-sharing"
             port          = 8088
             port_host     = 8088
+        }
+        entity_verification = {
+            cpu           = 256
+            memory        = 512
+            name          = "entity-verification"
+            port          = 8094
+            port_host     = 8094
         }
         forms = {
             cpu           = 256
@@ -165,7 +198,7 @@ locals {
     }
 
     versions = {
-        postgres_engine = "16.2"
+        postgres_engine = "16.3"
     }
 
 }

@@ -33,6 +33,8 @@ COPY --link Libraries/CO.CDP.Organisation.WebApiClient/CO.CDP.Organisation.WebAp
 COPY --link Libraries/CO.CDP.Organisation.WebApiClient.Tests/CO.CDP.Organisation.WebApiClient.Tests.csproj Libraries/CO.CDP.Organisation.WebApiClient.Tests/
 COPY --link Libraries/CO.CDP.Person.WebApiClient/CO.CDP.Person.WebApiClient.csproj Libraries/CO.CDP.Person.WebApiClient/
 COPY --link Libraries/CO.CDP.Person.WebApiClient.Tests/CO.CDP.Person.WebApiClient.Tests.csproj Libraries/CO.CDP.Person.WebApiClient.Tests/
+COPY --link Libraries/CO.CDP.Forms.WebApiClient/CO.CDP.Forms.WebApiClient.csproj Libraries/CO.CDP.Forms.WebApiClient/
+COPY --link Libraries/CO.CDP.Forms.WebApiClient.Tests/CO.CDP.Forms.WebApiClient.Tests.csproj Libraries/CO.CDP.Forms.WebApiClient.Tests/
 COPY --link TestKit/CO.CDP.TestKit.Mvc/CO.CDP.TestKit.Mvc.csproj TestKit/CO.CDP.TestKit.Mvc/
 COPY --link TestKit/CO.CDP.TestKit.Mvc.Tests/CO.CDP.TestKit.Mvc.Tests.csproj TestKit/CO.CDP.TestKit.Mvc.Tests/
 COPY --link TestKit/CO.CDP.Testcontainers.PostgreSql/CO.CDP.Testcontainers.PostgreSql.csproj TestKit/CO.CDP.Testcontainers.PostgreSql/
@@ -52,6 +54,8 @@ COPY --link Services/CO.CDP.Forms.WebApi/CO.CDP.Forms.WebApi.csproj Services/CO.
 COPY --link Services/CO.CDP.Forms.WebApi.Tests/CO.CDP.Forms.WebApi.Tests.csproj Services/CO.CDP.Forms.WebApi.Tests/
 COPY --link Services/CO.CDP.Organisation.Authority/CO.CDP.Organisation.Authority.csproj Services/CO.CDP.Organisation.Authority/
 COPY --link Services/CO.CDP.Organisation.Authority.Tests/CO.CDP.Organisation.Authority.Tests.csproj Services/CO.CDP.Organisation.Authority.Tests/
+COPY --link Services/CO.CDP.EntityVerification/CO.CDP.EntityVerification.csproj Services/CO.CDP.EntityVerification/
+COPY --link Services/CO.CDP.EntityVerification.Tests/CO.CDP.EntityVerification.Tests.csproj Services/CO.CDP.EntityVerification.Tests/
 COPY --link GCGS-Central-Digital-Platform.sln .
 RUN dotnet restore "GCGS-Central-Digital-Platform.sln"
 
@@ -96,6 +100,11 @@ ARG BUILD_CONFIGURATION
 WORKDIR /src/Services/CO.CDP.DataSharing.WebApi
 RUN dotnet build -c $BUILD_CONFIGURATION -o /app/build
 
+FROM build AS build-entity-verification
+ARG BUILD_CONFIGURATION
+WORKDIR /src/Services/CO.CDP.EntityVerification
+RUN dotnet build -c $BUILD_CONFIGURATION -o /app/build
+
 FROM build AS build-organisation-app
 ARG BUILD_CONFIGURATION
 WORKDIR /src/Frontend/CO.CDP.OrganisationApp
@@ -124,6 +133,10 @@ RUN dotnet publish "CO.CDP.Forms.WebApi.csproj" -c $BUILD_CONFIGURATION -o /app/
 FROM build-data-sharing AS publish-data-sharing
 ARG BUILD_CONFIGURATION
 RUN dotnet publish "CO.CDP.DataSharing.WebApi.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+
+FROM build-entity-verification AS publish-entity-verification
+ARG BUILD_CONFIGURATION
+RUN dotnet publish "CO.CDP.EntityVerification.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 FROM build-organisation-app AS publish-organisation-app
 ARG BUILD_CONFIGURATION
@@ -170,6 +183,11 @@ FROM base AS final-data-sharing
 WORKDIR /app
 COPY --from=publish-data-sharing /app/publish .
 ENTRYPOINT ["dotnet", "CO.CDP.DataSharing.WebApi.dll"]
+
+FROM base AS final-entity-verification
+WORKDIR /app
+COPY --from=publish-entity-verification /app/publish .
+ENTRYPOINT ["dotnet", "CO.CDP.EntityVerification.dll"]
 
 FROM base AS final-organisation-app
 WORKDIR /app

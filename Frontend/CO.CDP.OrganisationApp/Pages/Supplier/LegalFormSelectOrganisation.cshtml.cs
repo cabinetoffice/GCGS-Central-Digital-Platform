@@ -1,3 +1,4 @@
+using CO.CDP.Organisation.WebApiClient;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -7,7 +8,8 @@ namespace CO.CDP.OrganisationApp.Pages.Supplier;
 
 [Authorize]
 public class LegalFormSelectOrganisationModel(
-    ITempDataService tempDataService) : PageModel
+    ITempDataService tempDataService,
+    IOrganisationClient organisationClient) : PageModel
 {
 
     [BindProperty]
@@ -18,8 +20,17 @@ public class LegalFormSelectOrganisationModel(
     [BindProperty(SupportsGet = true)]
     public Guid Id { get; set; }
 
-    public IActionResult OnGet(Guid id)
+    public async Task<IActionResult> OnGet(Guid id)
     {
+        try
+        {
+            await organisationClient.GetOrganisationAsync(Id);
+        }
+        catch (ApiException ex) when (ex.StatusCode == 404)
+        {
+            return Redirect("/page-not-found");
+        }
+
         var lf = tempDataService.PeekOrDefault<LegalForm>(LegalForm.TempDataKey);
         RegisteredOrg = lf.RegisteredLegalForm;
         return Page();

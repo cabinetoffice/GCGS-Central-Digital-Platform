@@ -30,34 +30,34 @@ public class OrganisationIdentificationModelTests
 
         switch (registrationDetails.OrganisationScheme)
         {
-            case "CCEW":
+            case "GB-CHC":
                 model.CharityCommissionEnglandWalesNumber.Should().Be(registrationDetails.OrganisationIdentificationNumber);
                 break;
-            case "SCR":
+            case "GB-SC":
                 model.ScottishCharityRegulatorNumber.Should().Be(registrationDetails.OrganisationIdentificationNumber);
                 break;
-            case "CCNI":
+            case "GB-NIC":
                 model.CharityCommissionNorthernIrelandNumber.Should().Be(registrationDetails.OrganisationIdentificationNumber);
                 break;
 
-            case "MPR":
+            case "GB-MPR":
                 model.MutualsPublicRegisterNumber.Should().Be(registrationDetails.OrganisationIdentificationNumber);
                 break;
-            case "GRN":
+            case "GG-RCE":
                 model.GuernseyRegistryNumber.Should().Be(registrationDetails.OrganisationIdentificationNumber);
                 break;
-            case "JFSC":
+            case "JE-FSC":
                 model.JerseyFinancialServicesCommissionRegistryNumber.Should().Be(registrationDetails.OrganisationIdentificationNumber);
                 break;
-            case "IMCR":
+            case "IM-CR":
                 model.IsleofManCompaniesRegistryNumber.Should().Be(registrationDetails.OrganisationIdentificationNumber);
                 break;
 
-            case "NHOR":
+            case "GB-NHS":
                 model.NationalHealthServiceOrganisationsRegistryNumber.Should().Be(registrationDetails.OrganisationIdentificationNumber);
                 break;
 
-            case "UKPRN":
+            case "GB-UKPRN":
                 model.UKLearningProviderReferenceNumber.Should().Be(registrationDetails.OrganisationIdentificationNumber);
                 break;
             case "VAT":
@@ -86,8 +86,8 @@ public class OrganisationIdentificationModelTests
     }
 
     [Theory]
-    [InlineData("CCEW", null)]
-    [InlineData("CCEW", "")]
+    [InlineData("GB-CHC", null)]
+    [InlineData("GB-CHC", "")]
     public void OnPost_WhenOrganisationTypeIsCCEWAndCharityCommissionEnglandWalesNumberIsNullOrEmpty_ShouldReturnPageWithModelStateError(string organisationType, string? charityCommissionEnglandWalesNumber)
     {
         var model = new OrganisationIdentificationModel(sessionMock.Object)
@@ -104,8 +104,8 @@ public class OrganisationIdentificationModelTests
     }
 
     [Theory]
-    [InlineData("SCR", null)]
-    [InlineData("SCR", "")]
+    [InlineData("GB-SC", null)]
+    [InlineData("GB-SC", "")]
     public void OnPost_WhenOrganisationTypeIsOSCRAndScottishCharityRegulatorNumberIsNullOrEmpty_ShouldReturnPageWithModelStateError(string organisationType, string? scottishCharityRegulatorNumber)
     {
         var model = new OrganisationIdentificationModel(sessionMock.Object)
@@ -122,9 +122,9 @@ public class OrganisationIdentificationModelTests
     }
 
     [Theory]
-    [InlineData("CCNI", null)]
-    [InlineData("CCNI", "")]
-    public void OnPost_WhenOrganisationTypeIsCCNIAndCharityCommissionNorthernIrelandNumberIsNullOrEmpty_ShouldReturnPageWithModelStateError(string organisationType, string? charityCommissionNorthernIrelandNumber)
+    [InlineData("GB-NIC", null)]
+    [InlineData("GB-NIC", "")]
+    public void OnPost_WhenOrganisationTypeIsGbNicAndCharityCommissionNorthernIrelandNumberIsNullOrEmpty_ShouldReturnPageWithModelStateError(string organisationType, string? charityCommissionNorthernIrelandNumber)
     {
         var model = new OrganisationIdentificationModel(sessionMock.Object)
         {
@@ -140,8 +140,8 @@ public class OrganisationIdentificationModelTests
     }
 
     [Theory]
-    [InlineData("MPR", null)]
-    [InlineData("MPR", "")]
+    [InlineData("GB-MPR", null)]
+    [InlineData("GB-MPR", "")]
     public void OnPost_WhenOrganisationTypeIsMPRAndMutualsPublicRegisterNumberIsNullOrEmpty_ShouldReturnPageWithModelStateError(string organisationType, string? mutualsPublicRegisterNumber)
     {
         var model = new OrganisationIdentificationModel(sessionMock.Object)
@@ -158,8 +158,8 @@ public class OrganisationIdentificationModelTests
     }
 
     [Theory]
-    [InlineData("GRN", null)]
-    [InlineData("GRN", "")]
+    [InlineData("GG-RCE", null)]
+    [InlineData("GG-RCE", "")]
     public void OnPost_WhenOrganisationTypeIsGRNAndGuernseyRegistryNumberIsNullOrEmpty_ShouldReturnPageWithModelStateError(string organisationType, string? guernseyRegistryNumber)
     {
         var model = new OrganisationIdentificationModel(sessionMock.Object)
@@ -176,8 +176,8 @@ public class OrganisationIdentificationModelTests
     }
 
     [Theory]
-    [InlineData("JFSC", null)]
-    [InlineData("JFSC", "")]
+    [InlineData("JE-FSC", null)]
+    [InlineData("JE-FSC", "")]
     public void OnPost_WhenOrganisationTypeIsJFSCAndJerseyFinancialServicesCommissionRegistryNumberIsNullOrEmpty_ShouldReturnPageWithModelStateError(string organisationType, string? jerseyFinancialServicesCommissionRegistryNumber)
     {
         var model = new OrganisationIdentificationModel(sessionMock.Object)
@@ -194,8 +194,8 @@ public class OrganisationIdentificationModelTests
     }
 
     [Theory]
-    [InlineData("IMCR", null)]
-    [InlineData("IMCR", "")]
+    [InlineData("IM-CR", null)]
+    [InlineData("IM-CR", "")]
     public void OnPost_WhenOrganisationTypeIsIMCRAndIsleofManCompaniesRegistryNumberIsNullOrEmpty_ShouldReturnPageWithModelStateError(string organisationType, string? isleofManCompaniesRegistryNumber)
     {
         var model = new OrganisationIdentificationModel(sessionMock.Object)
@@ -212,8 +212,8 @@ public class OrganisationIdentificationModelTests
     }
 
     [Theory]
-    [InlineData("NHOR", null)]
-    [InlineData("NHOR", "")]
+    [InlineData("GB-NHS", null)]
+    [InlineData("GB-NHS", "")]
     public void OnPost_WhenOrganisationTypeIsNHORAndNationalHealthServiceOrganisationsRegistryNumberIsNullOrEmpty_ShouldReturnPageWithModelStateError(string organisationType, string? nationalHealthServiceOrganisationsRegistryNumber)
     {
         var model = new OrganisationIdentificationModel(sessionMock.Object)
@@ -230,8 +230,8 @@ public class OrganisationIdentificationModelTests
     }
 
     [Theory]
-    [InlineData("UKPRN", null)]
-    [InlineData("UKPRN", "")]
+    [InlineData("GB-UKPRN", null)]
+    [InlineData("GB-UKPRN", "")]
     public void OnPost_WhenOrganisationTypeIsUKPRNAndUKLearningProviderReferenceNumberIsNullOrEmpty_ShouldReturnPageWithModelStateError(string organisationType, string? ukLearningProviderReferenceNumber)
     {
         var model = new OrganisationIdentificationModel(sessionMock.Object)
@@ -296,15 +296,15 @@ public class OrganisationIdentificationModelTests
     }
 
     [Theory]
-    [InlineData("CCEW", "ABCDEF")]
-    [InlineData("SCR", "GHIJKL")]
-    [InlineData("CCNI", "MNOPQR")]
-    [InlineData("MPR", "MPR123")]
-    [InlineData("GRN", "GRN123")]
-    [InlineData("JFSC", "JFSC123")]
-    [InlineData("IMCR", "IMCR123")]
-    [InlineData("NHOR", "STUVWX")]
-    [InlineData("UKPRN", "PRN1234")]
+    [InlineData("GB-CHC", "ABCDEF")]
+    [InlineData("GB-SC", "GHIJKL")]
+    [InlineData("GB-NIC", "MNOPQR")]
+    [InlineData("GB-MPR", "MPR123")]
+    [InlineData("GG-RCE", "GRN123")]
+    [InlineData("JE-FSC", "JFSC123")]
+    [InlineData("IM-CR", "IMCR123")]
+    [InlineData("GB-NHS", "STUVWX")]
+    [InlineData("GB-UKPRN", "PRN1234")]
     [InlineData("VAT", "GB1234")]
     public void OnPost_WhenModelStateIsValid_ShouldStoreOrganisationTypeAndIdentificationNumberInSession(string organisationType, string identificationNumber)
     {
@@ -328,31 +328,31 @@ public class OrganisationIdentificationModelTests
     {
         switch (organisationType)
         {
-            case "CCEW":
+            case "GB-CHC":
                 model.CharityCommissionEnglandWalesNumber = identificationNumber;
                 break;
-            case "SCR":
+            case "GB-SC":
                 model.ScottishCharityRegulatorNumber = identificationNumber;
                 break;
-            case "CCNI":
+            case "GB-NIC":
                 model.CharityCommissionNorthernIrelandNumber = identificationNumber;
                 break;
-            case "MPR":
+            case "GB-MPR":
                 model.MutualsPublicRegisterNumber = identificationNumber;
                 break;
-            case "GRN":
+            case "GG-RCE":
                 model.GuernseyRegistryNumber = identificationNumber;
                 break;
-            case "JFSC":
+            case "JE-FSC":
                 model.JerseyFinancialServicesCommissionRegistryNumber = identificationNumber;
                 break;
-            case "IMCR":
+            case "IM-CR":
                 model.IsleofManCompaniesRegistryNumber = identificationNumber;
                 break;
-            case "NHOR":
+            case "GB-NHS":
                 model.NationalHealthServiceOrganisationsRegistryNumber = identificationNumber;
                 break;
-            case "UKPRN":
+            case "GB-UKPRN":
                 model.UKLearningProviderReferenceNumber = identificationNumber;
                 break;
             case "VAT":
@@ -372,7 +372,7 @@ public class OrganisationIdentificationModelTests
     {
         var registrationDetails = new RegistrationDetails
         {
-            OrganisationScheme = "CHN",
+            OrganisationScheme = "GB-COH",
             OrganisationIdentificationNumber = "12345678",
         };
 

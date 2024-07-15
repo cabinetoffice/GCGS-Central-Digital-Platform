@@ -8,88 +8,77 @@ using Microsoft.OpenApi.Models;
 namespace CO.CDP.Swashbuckle.Filter;
 
 /// Inspired by the <a href="https://stackoverflow.com/a/75673373">StackOverflow answer</a>.
-public class ProblemDetailsOperationFilter : IOperationFilter
+public class ProblemDetailsOperationFilter(Dictionary<string, List<string>> errorCodes) : IOperationFilter
 {
-    private static readonly OpenApiObject Status400ProblemDetails = new()
+    public ProblemDetailsOperationFilter() : this([])
     {
-        ["type"] = new OpenApiString("https://tools.ietf.org/html/rfc7231#section-6.5.1"),
-        ["title"] = new OpenApiString(ReasonPhrases.GetReasonPhrase(StatusCodes.Status400BadRequest)),
-        ["status"] = new OpenApiInteger(StatusCodes.Status400BadRequest),
-        ["detail"] = new OpenApiString("Error details."),
-        ["errors"] = new OpenApiObject
-        {
-            ["property1"] = new OpenApiArray
-            {
-                new OpenApiString("The property field is required"),
-            },
-        },
-    };
+    }
 
-    private static readonly OpenApiObject Status401ProblemDetails = new()
-    {
-        ["type"] = new OpenApiString("https://tools.ietf.org/html/rfc7235#section-3.1"),
-        ["title"] = new OpenApiString(ReasonPhrases.GetReasonPhrase(StatusCodes.Status401Unauthorized)),
-        ["status"] = new OpenApiInteger(StatusCodes.Status401Unauthorized),
-        ["detail"] = new OpenApiString("Error details."),
-    };
+    private static OpenApiObject Status400ProblemDetails(string code) => CreateProblemDetails(
+       "https://tools.ietf.org/html/rfc7231#section-6.5.1",
+       ReasonPhrases.GetReasonPhrase(StatusCodes.Status400BadRequest),
+       StatusCodes.Status400BadRequest,
+       code
+   );
 
-    private static readonly OpenApiObject Status403ProblemDetails = new()
-    {
-        ["type"] = new OpenApiString("https://tools.ietf.org/html/rfc7231#section-6.5.3"),
-        ["title"] = new OpenApiString(ReasonPhrases.GetReasonPhrase(StatusCodes.Status403Forbidden)),
-        ["status"] = new OpenApiInteger(StatusCodes.Status403Forbidden),
-        ["detail"] = new OpenApiString("Error details."),
-    };
+    private static OpenApiObject Status401ProblemDetails(string code) => CreateProblemDetails(
+        "https://tools.ietf.org/html/rfc7235#section-3.1",
+        ReasonPhrases.GetReasonPhrase(StatusCodes.Status401Unauthorized),
+        StatusCodes.Status401Unauthorized,
+        code
+    );
 
-    private static readonly OpenApiObject Status404ProblemDetails = new()
-    {
-        ["type"] = new OpenApiString("https://tools.ietf.org/html/rfc7231#section-6.5.4"),
-        ["title"] = new OpenApiString(ReasonPhrases.GetReasonPhrase(StatusCodes.Status404NotFound)),
-        ["status"] = new OpenApiInteger(StatusCodes.Status404NotFound),
-        ["detail"] = new OpenApiString("Error details."),
-    };
+    private static OpenApiObject Status403ProblemDetails(string code) => CreateProblemDetails(
+        "https://tools.ietf.org/html/rfc7231#section-6.5.3",
+        ReasonPhrases.GetReasonPhrase(StatusCodes.Status403Forbidden),
+        StatusCodes.Status403Forbidden,
+        code
+    );
 
-    private static readonly OpenApiObject Status406ProblemDetails = new()
-    {
-        ["type"] = new OpenApiString("https://tools.ietf.org/html/rfc7231#section-6.5.6"),
-        ["title"] = new OpenApiString(ReasonPhrases.GetReasonPhrase(StatusCodes.Status406NotAcceptable)),
-        ["status"] = new OpenApiInteger(StatusCodes.Status406NotAcceptable),
-        ["detail"] = new OpenApiString("Error details."),
-    };
+    private static OpenApiObject Status404ProblemDetails(string code) => CreateProblemDetails(
+        "https://tools.ietf.org/html/rfc7231#section-6.5.4",
+        ReasonPhrases.GetReasonPhrase(StatusCodes.Status404NotFound),
+        StatusCodes.Status404NotFound,
+        code
+    );
 
-    private static readonly OpenApiObject Status409ProblemDetails = new()
-    {
-        ["type"] = new OpenApiString("https://tools.ietf.org/html/rfc7231#section-6.5.8"),
-        ["title"] = new OpenApiString(ReasonPhrases.GetReasonPhrase(StatusCodes.Status409Conflict)),
-        ["status"] = new OpenApiInteger(StatusCodes.Status409Conflict),
-        ["detail"] = new OpenApiString("Error details."),
-    };
+    private static OpenApiObject Status406ProblemDetails(string code) => CreateProblemDetails(
+        "https://tools.ietf.org/html/rfc7231#section-6.5.6",
+        ReasonPhrases.GetReasonPhrase(StatusCodes.Status406NotAcceptable),
+        StatusCodes.Status406NotAcceptable,
+        code
+    );
 
-    private static readonly OpenApiObject Status415ProblemDetails = new()
-    {
-        ["type"] = new OpenApiString("https://tools.ietf.org/html/rfc7231#section-6.5.13"),
-        ["title"] = new OpenApiString(ReasonPhrases.GetReasonPhrase(StatusCodes.Status415UnsupportedMediaType)),
-        ["status"] = new OpenApiInteger(StatusCodes.Status415UnsupportedMediaType),
-        ["detail"] = new OpenApiString("Error details."),
-    };
+    private static OpenApiObject Status409ProblemDetails(string code) => CreateProblemDetails(
+        "https://tools.ietf.org/html/rfc7231#section-6.5.8",
+        ReasonPhrases.GetReasonPhrase(StatusCodes.Status409Conflict),
+        StatusCodes.Status409Conflict,
+        code
+    );
 
-    private static readonly OpenApiObject Status422ProblemDetails = new()
-    {
-        ["type"] = new OpenApiString("https://tools.ietf.org/html/rfc4918#section-11.2"),
-        ["title"] = new OpenApiString(ReasonPhrases.GetReasonPhrase(StatusCodes.Status422UnprocessableEntity)),
-        ["status"] = new OpenApiInteger(StatusCodes.Status422UnprocessableEntity),
-        ["detail"] = new OpenApiString("Error details."),
-    };
+    private static OpenApiObject Status415ProblemDetails(string code) => CreateProblemDetails(
+        "https://tools.ietf.org/html/rfc7231#section-6.5.13",
+        ReasonPhrases.GetReasonPhrase(StatusCodes.Status415UnsupportedMediaType),
+        StatusCodes.Status415UnsupportedMediaType,
+        code,
+        "Error details."
+    );
 
-    private static readonly OpenApiObject Status500ProblemDetails = new()
-    {
-        ["type"] = new OpenApiString("https://tools.ietf.org/html/rfc7231#section-6.6.1"),
-        ["title"] = new OpenApiString(ReasonPhrases.GetReasonPhrase(StatusCodes.Status500InternalServerError)),
-        ["status"] = new OpenApiInteger(StatusCodes.Status500InternalServerError),
-        ["detail"] = new OpenApiString("Error details."),
-    };
+    private static OpenApiObject Status422ProblemDetails(string code) => CreateProblemDetails(
+        "https://tools.ietf.org/html/rfc4918#section-11.2",
+        ReasonPhrases.GetReasonPhrase(StatusCodes.Status422UnprocessableEntity),
+        StatusCodes.Status422UnprocessableEntity,
+        code
+    );
 
-    private readonly Dictionary<string, IOpenApiAny> _problemDetails = new()
+    private static OpenApiObject Status500ProblemDetails(string code) => CreateProblemDetails(
+        "https://tools.ietf.org/html/rfc7231#section-6.6.1",
+        ReasonPhrases.GetReasonPhrase(StatusCodes.Status500InternalServerError),
+        StatusCodes.Status500InternalServerError,
+        code
+    );
+
+    private readonly Dictionary<string, Func<string, OpenApiObject>> _problemDetails = new()
     {
         { StatusCodes.Status400BadRequest.ToString(), Status400ProblemDetails },
         { StatusCodes.Status401Unauthorized.ToString(), Status401ProblemDetails },
@@ -107,10 +96,50 @@ public class ProblemDetailsOperationFilter : IOperationFilter
         foreach (var operationResponse in operation.Responses)
         {
             _problemDetails.TryGetValue(operationResponse.Key, out var problemDetail);
-            foreach (var content in operationResponse.Value.Content)
+            UpdateExamples(operationResponse, problemDetail);
+        }
+    }
+
+    private void UpdateExamples(
+        KeyValuePair<string, OpenApiResponse> operationResponse,
+        Func<string, OpenApiObject>? problemDetail)
+    {
+        foreach (var content in operationResponse.Value.Content)
+        {
+            if (errorCodes.TryGetValue(operationResponse.Key, out var codes))
             {
-                content.Value.Example = problemDetail;
+                content.Value.Examples = codes.Select(code => (code, new OpenApiExample
+                {
+                    Summary = code,
+                    Value = problemDetail?.Invoke(code)
+                })).ToDictionary();
+            }
+            else
+            {
+                content.Value.Example = problemDetail?.Invoke("");
             }
         }
+    }
+
+    private static OpenApiObject CreateProblemDetails(string type, string title, int status, string code = "", string detail = "")
+    {
+        var problemDetails = new OpenApiObject
+        {
+            ["type"] = new OpenApiString(type),
+            ["title"] = new OpenApiString(title),
+            ["status"] = new OpenApiInteger(status)
+        };
+
+        if (!string.IsNullOrEmpty(code))
+        {
+            problemDetails["code"] = new OpenApiString(code);
+        }
+
+        if (!string.IsNullOrEmpty(detail))
+        {
+            problemDetails["detail"] = new OpenApiString(detail);
+        }
+
+        return problemDetails;
     }
 }

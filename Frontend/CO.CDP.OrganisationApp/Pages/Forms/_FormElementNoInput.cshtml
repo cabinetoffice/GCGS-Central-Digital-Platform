@@ -1,0 +1,14 @@
+@model CO.CDP.OrganisationApp.Models.FormQuestionViewModel
+
+@{
+    var question = Model.FormQuestion;
+    var answer = Model.Answer;
+    var hasError = ViewData.ModelState["Answer"]?.Errors?.Count > 0;
+}
+
+<div class="govuk-form-group">
+    <h1 class="govuk-heading-l">
+        @question.Title
+    </h1>
+    <p class="govuk-body">@question.Description</p>
+</div>

@@ -1,3 +1,8 @@
+variable "account_ids" {
+  description = "Map of all accounts and their IDs"
+  type        = map(string)
+}
+
 variable "alb_sg_id" {
   description = "Application load-balancer security group ID"
   type        = string
@@ -68,12 +73,12 @@ variable "public_subnets_cidr_blocks" {
 }
 
 variable "role_cloudwatch_events_arn" {
-  description = ""
+  description = "ARN of the IAM role used by CloudWatch Events"
   type        = string
 }
 
 variable "role_cloudwatch_events_name" {
-  description = ""
+  description = "Name of the IAM role used by CloudWatch Events"
   type        = string
 }
 
@@ -93,12 +98,12 @@ variable "role_ecs_task_exec_name" {
 }
 
 variable "role_service_deployer_step_function_arn" {
-  description = ""
+  description = "ARN of the IAM role used by the Service Deployer Step Function"
   type        = string
 }
 
 variable "role_service_deployer_step_function_name" {
-  description = ""
+  description = "Name of the IAM role used by the Service Deployer Step Function"
   type        = string
 }
 
@@ -118,13 +123,13 @@ variable "tags" {
   type        = map(string)
 }
 
-variable "vpc_id" {
-  description = "The ID of the VPC"
+variable "vpc_cider" {
+  description = "VPC's IPv4 CIDR"
   type        = string
 }
 
-variable "vpc_cider" {
-  description = "VPC's IPv4 CIDR"
+variable "vpc_id" {
+  description = "The ID of the VPC"
   type        = string
 }
 

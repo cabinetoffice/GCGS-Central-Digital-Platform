@@ -11,10 +11,10 @@ public class WebApiToPersistenceProfile : Profile
         CreateMap<OrganisationInformation.Persistence.Tenant, Model.Tenant>()
             .ForMember(m => m.Id, o => o.MapFrom(m => m.Guid));
 
-        CreateMap<TenantLookup, Model.TenantLookup>();
-        CreateMap<TenantLookup.PersonUser, UserDetails>();
-        CreateMap<TenantLookup.Tenant, UserTenant>();
-        CreateMap<TenantLookup.Organisation, UserOrganisation>()
+        CreateMap<TenantLookup, OrganisationInformation.TenantLookup>();
+        CreateMap<TenantLookup.PersonUser, OrganisationInformation.UserDetails>();
+        CreateMap<TenantLookup.Tenant, OrganisationInformation.UserTenant>();
+        CreateMap<TenantLookup.Organisation, OrganisationInformation.UserOrganisation>()
             .ForMember(m => m.Uri, o => o.MapFrom(src => new Uri($"https://cdp.cabinetoffice.gov.uk/organisations/{src.Id}")));
 
         CreateMap<RegisterTenant, OrganisationInformation.Persistence.Tenant>()
