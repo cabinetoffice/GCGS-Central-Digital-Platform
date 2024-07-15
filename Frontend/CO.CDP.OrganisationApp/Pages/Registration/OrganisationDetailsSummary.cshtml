@@ -99,7 +99,7 @@
                         </dd>
                         <dd class="govuk-summary-list__actions">
                             <a class="govuk-link"
-                               href="/registration/@(details.OrganisationCountry == Country.UnitedKingdom ? "organisation-registered-address" : "organisation-non-uk-address")?frm-summary">
+                               href="/registration/organisation-registered-address/@(details.OrganisationCountry == Country.UnitedKingdom ? "uk" : "non-uk")?frm-summary">
                                 Change<span class="govuk-visually-hidden"> organisation address</span>
                             </a>
                         </dd>
