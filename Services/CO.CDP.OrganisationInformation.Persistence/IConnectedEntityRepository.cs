@@ -4,7 +4,7 @@ public interface IConnectedEntityRepository : IDisposable
 {
     public Task Save(ConnectedEntity connectedEntity);
 
-    public Task<ConnectedEntity?> Find(Guid id);
+    public Task<ConnectedEntity?> Find(Guid organisationId, Guid id);
 
     public Task<IEnumerable<ConnectedEntity?>> FindByOrganisation(Guid organisationId);
 

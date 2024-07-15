@@ -86,16 +86,16 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.Authentication", "Li
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.Authentication.Tests", "Libraries\CO.CDP.Authentication.Tests\CO.CDP.Authentication.Tests.csproj", "{C882BBF8-B8EF-4FF4-95E4-159DBA9F87E7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.Forms.WebApiClient.Tests", "Libraries\CO.CDP.Forms.WebApiClient.Tests\CO.CDP.Forms.WebApiClient.Tests.csproj", "{10DA49F2-1723-44DC-AC9D-78C8C557653B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.Forms.WebApiClient.Tests", "Libraries\CO.CDP.Forms.WebApiClient.Tests\CO.CDP.Forms.WebApiClient.Tests.csproj", "{10DA49F2-1723-44DC-AC9D-78C8C557653B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.Forms.WebApiClient", "Libraries\CO.CDP.Forms.WebApiClient\CO.CDP.Forms.WebApiClient.csproj", "{EB6B7ADD-13BD-47C4-9391-96AAC33AF51D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.Forms.WebApiClient", "Libraries\CO.CDP.Forms.WebApiClient\CO.CDP.Forms.WebApiClient.csproj", "{EB6B7ADD-13BD-47C4-9391-96AAC33AF51D}"
 	ProjectSection(ProjectDependencies) = postProject
 		{4298A4EF-B336-4809-95F0-AF5D73266A18} = {4298A4EF-B336-4809-95F0-AF5D73266A18}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.EntityVerification", "Services\CO.CDP.EntityVerification\CO.CDP.EntityVerification.csproj", "{4C4D9150-9625-4782-885F-3C516BE54FB9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.EntityVerification", "Services\CO.CDP.EntityVerification\CO.CDP.EntityVerification.csproj", "{4C4D9150-9625-4782-885F-3C516BE54FB9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.EntityVerification.Tests", "Services\CO.CDP.EntityVerification.Tests\CO.CDP.EntityVerification.Tests.csproj", "{70F6E641-BB6C-4784-A19D-B83700FBA770}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.EntityVerification.Tests", "Services\CO.CDP.EntityVerification.Tests\CO.CDP.EntityVerification.Tests.csproj", "{70F6E641-BB6C-4784-A19D-B83700FBA770}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
