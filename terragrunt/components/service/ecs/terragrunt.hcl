@@ -1,5 +1,5 @@
 terraform {
-  source = "../../../modules//ecs"
+  source = local.global_vars.locals.environment != "orchestrator" ? "../../../modules//ecs" : null
 }
 
 include {
@@ -76,6 +76,8 @@ dependency service_database {
 }
 
 inputs = {
+
+  account_ids     = local.global_vars.locals.account_ids
   service_configs = local.global_vars.locals.service_configs
   tags            = local.tags
 

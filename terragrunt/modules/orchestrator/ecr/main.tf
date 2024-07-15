@@ -1,8 +1,8 @@
 resource "aws_ecr_repository" "this" {
-  for_each = toset(local.tasks)
+  for_each = toset(local.repositories)
 
   name                 = "cdp-${each.value}"
-  image_tag_mutability = "MUTABLE"
+  image_tag_mutability = contains(["grafana", "codebuild"], each.value) ? "MUTABLE" : "IMMUTABLE"
 
   image_scanning_configuration {
     scan_on_push = true

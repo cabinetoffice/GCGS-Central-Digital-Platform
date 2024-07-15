@@ -1,0 +1,26 @@
+name: Docs
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+
+  docs:
+    runs-on: ubuntu-latest
+    name: Build documentation
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Build
+        run: cd docs && make build
+      - name: Publish
+        if: github.ref == 'refs/heads/main' && github.repository_owner == 'cabinetoffice'
+        run: cd docs && make publish
+      - name: Upload Documentation
+        uses: actions/upload-artifact@v4
+        with:
+          name: Documentation
+          path: docs/build/*

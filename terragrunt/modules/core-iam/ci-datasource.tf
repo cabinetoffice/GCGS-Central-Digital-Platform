@@ -1,3 +1,6 @@
+# Note!
+# Resources in this file are shared with orchestrator/iam module
+
 data "aws_iam_policy_document" "terraform_assume" {
   statement {
     actions = ["sts:AssumeRole"]
@@ -10,6 +13,14 @@ data "aws_iam_policy_document" "terraform_assume" {
       values   = [true]
       variable = "aws:MultiFactorAuthPresent"
     }
+  }
+}
+
+data "aws_iam_policy_document" "terraform_assume_orchestrator_role" {
+  statement {
+    effect    = "Allow"
+    actions   = ["sts:AssumeRole"]
+    resources = ["arn:aws:iam::${local.orchestrator_account_id}:role/cdp-sirsi-orchestrator-read-service-version"]
   }
 }
 
@@ -202,8 +213,9 @@ data "aws_iam_policy_document" "terraform_global" {
 
   statement {
     actions = [
-      "ecr:CreateRepository",
+      "ecr:BatchGetImage",
       "ecr:GetAuthorizationToken",
+      "ecr:GetDownloadUrlForLayer",
       "ecs:Create*",
       "ecs:DeregisterTaskDefinition",
       "ecs:DescribeTaskDefinition",
@@ -268,7 +280,8 @@ data "aws_iam_policy_document" "terraform_product" {
     resources = [
       "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/cdp-sirsi-*",
       "arn:aws:iam::${data.aws_caller_identity.current.account_id}:policy/cdp-sirsi-*",
-      "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/aws-service-role/*"
+      "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/aws-service-role/*",
+      "arn:aws:iam::${data.aws_caller_identity.current.account_id}:user/cdp-sirsi-*"
     ]
     sid = "ManageProductIAMs"
   }
@@ -290,9 +303,7 @@ data "aws_iam_policy_document" "terraform_product" {
     actions = ["ec2:*"]
     effect  = "Allow"
     resources = [
-      "arn:aws:ec2:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:*/cdp-sirsi-*",
-      "arn:aws:ec2:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:vpc/cdp-sirsi-*",
-      "arn:aws:ec2:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:elastic-ip/cdp-sirsi-*"
+      "arn:aws:ec2:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:*/cdp-sirsi-*"
     ]
     sid = "ManageProductEC2"
   }

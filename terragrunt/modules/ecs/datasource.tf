@@ -83,3 +83,33 @@ data "aws_iam_policy_document" "step_function_manage_services" {
     sid = "MangeIAM"
   }
 }
+
+data "aws_iam_policy_document" "ecr_pull_from_orchestrator" {
+  statement {
+    actions = [
+      "ecr:GetDownloadUrlForLayer",
+      "ecr:BatchGetImage",
+      "ecr:GetAuthorizationToken"
+    ]
+    resources = ["*"]
+  }
+}
+
+# Configure the provider to assume the role in the orchestrator account and fetch the latest service version
+provider "aws" {
+  alias  = "orchestrator"
+  region = "eu-west-2"
+}
+
+provider "aws" {
+  alias  = "orchestrator_assume_role"
+  region = "eu-west-2"
+  assume_role {
+    role_arn = "arn:aws:iam::${local.orchestrator_account_id}:role/cdp-sirsi-orchestrator-read-service-version"
+  }
+}
+
+data "aws_ssm_parameter" "orchestrator_service_version" {
+  provider = aws.orchestrator_assume_role
+  name     = "/cdp-sirsi-service-version"
+}

@@ -9,6 +9,17 @@ resource "aws_iam_role_policy_attachment" "ecs_task_access_secrets" {
   role       = var.role_ecs_task_exec_name
 }
 
+resource "aws_iam_policy" "ecr_pull_from_orchestrator" {
+  name   = "${local.name_prefix}-ecr-pull-from-orchestrator"
+  policy = data.aws_iam_policy_document.ecr_pull_from_orchestrator.json
+  tags   = var.tags
+}
+
+resource "aws_iam_role_policy_attachment" "ecr_pull_from_orchestrator" {
+  policy_arn = aws_iam_policy.ecr_pull_from_orchestrator.arn
+  role       = var.role_ecs_task_exec_name
+}
+
 resource "aws_iam_policy" "cloudwatch_event_invoke_deployer_step_function" {
   name        = "${local.name_prefix}-invoke-deployer-step-function"
   description = "Policy for CloudWatch Events to invoke Step Functions"

@@ -8,7 +8,7 @@ module "ecs_service_data_sharing" {
       cpu                     = var.service_configs.data_sharing.cpu
       environment             = local.service_environment
       host_port               = var.service_configs.data_sharing.port
-      image                   = "${local.ecr_urls[var.service_configs.data_sharing.name]}:latest"
+      image                   = "${local.ecr_urls[var.service_configs.data_sharing.name]}:${local.orchestrator_service_version}"
       lg_name                 = aws_cloudwatch_log_group.tasks[var.service_configs.data_sharing.name].name
       lg_prefix               = "app"
       lg_region               = data.aws_region.current.name

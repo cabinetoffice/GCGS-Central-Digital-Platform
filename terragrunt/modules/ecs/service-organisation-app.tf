@@ -8,7 +8,7 @@ module "ecs_service_organisation_app" {
       cpu                     = var.service_configs.organisation_app.cpu
       environment             = local.service_environment
       host_port               = var.service_configs.organisation_app.port
-      image                   = "${local.ecr_urls[var.service_configs.organisation_app.name]}:latest"
+      image                   = "${local.ecr_urls[var.service_configs.organisation_app.name]}:${local.orchestrator_service_version}"
       lg_name                 = aws_cloudwatch_log_group.tasks[var.service_configs.organisation_app.name].name
       lg_prefix               = "app"
       lg_region               = data.aws_region.current.name

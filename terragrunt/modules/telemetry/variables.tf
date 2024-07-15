@@ -1,3 +1,8 @@
+variable "account_ids" {
+  description = "Map of all accounts and their IDs"
+  type        = map(string)
+}
+
 variable "ecs_alb_sg_id" {
   description = "Application load-balancer security group ID"
   type        = string
