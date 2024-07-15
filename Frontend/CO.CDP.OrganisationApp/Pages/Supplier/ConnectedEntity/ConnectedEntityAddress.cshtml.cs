@@ -97,11 +97,17 @@ public class ConnectedEntityAddressModel(ISession session) : PageModel
                 //TODO 4: modify value of actionResult when working on Individual
                 break;
             case ConnectedEntityType.TrustOrTrustee:
-                //TODO 43: modify value of actionResult when working on Trust
+                //TODO 4: modify value of actionResult when working on Trust
                 break;
         }
 
-        return actionResult ?? RedirectToPage("ConnectedEntityPostalSameAsRegisteredAddress", new { Id, ConnectedEntityId });
+        if (actionResult != null)
+            return actionResult;
+
+        if (AddressType == AddressType.Postal)
+            return RedirectToPage("ConnectedEntityNextPageAfterPostal", new { Id, ConnectedEntityId }); //TODO 5: Figure out page
+
+        return RedirectToPage("ConnectedEntityPostalSameAsRegisteredAddress", new { Id, ConnectedEntityId });
     }
 
     private (bool valid, ConnectedEntityState state) ValidatePage()
