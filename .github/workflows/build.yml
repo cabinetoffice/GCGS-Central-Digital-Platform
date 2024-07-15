@@ -54,6 +54,7 @@ jobs:
       CDP_DATA_SHARING_PORT: 8855
     outputs:
       version: ${{ steps.version.outputs.version }}
+      images: ${{ steps.save.outputs.images }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -81,10 +82,12 @@ jobs:
         env:
           IMAGE_VERSION: ${{ steps.version.outputs.version }}
       - name: Save Docker Images
+        id: save
         run: |
           IMAGES=$(docker images | awk '$1 ~ /cabinetoffice\/cdp-/ && $2 ~ /^'$IMAGE_VERSION'$/ { print $1":"$2}' | tr '\n' ' ')
           echo "Images to be saved: $IMAGES"
           docker save -o cdp-images.tar $IMAGES
+          echo "images=${IMAGES}" >> $GITHUB_OUTPUT
         env:
           IMAGE_VERSION: ${{ steps.version.outputs.version }}
       - name: Upload Docker Images as Artifacts
@@ -99,6 +102,7 @@ jobs:
     needs: [test, package]
     env:
       IMAGE_VERSION: ${{ needs.package.outputs.version }}
+      IMAGES: ${{ needs.package.outputs.images }}
 
     steps:
       - uses: actions/checkout@v4
@@ -121,3 +125,6 @@ jobs:
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Debug
+        run: echo ${{ env.IMAGES }} ${{ env.IMAGE_VERSION }}
