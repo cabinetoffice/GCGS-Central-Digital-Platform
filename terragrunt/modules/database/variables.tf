@@ -42,13 +42,13 @@ variable "role_cloudwatch_events_name" {
   type        = string
 }
 
-variable "role_db_connection_step_function_name" {
-  description = "Name of the IAM role used by the Step Function in charge of updating DB connection secret"
+variable "role_db_connection_step_function_arn" {
+  description = "ARN of the IAM role used by the Step Function in charge of updating DB connection secret"
   type        = string
 }
 
-variable "role_db_connection_step_function_arn" {
-  description = "ARN of the IAM role used by the Step Function in charge of updating DB connection secret"
+variable "role_db_connection_step_function_name" {
+  description = "Name of the IAM role used by the Step Function in charge of updating DB connection secret"
   type        = string
 }
 

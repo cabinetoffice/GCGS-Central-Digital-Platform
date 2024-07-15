@@ -1,5 +1,5 @@
 terraform {
-  source = "../../../modules//api-gateway"
+  source = local.global_vars.locals.environment != "orchestrator" ? "../../../modules//api-gateway" : null
 }
 
 include {

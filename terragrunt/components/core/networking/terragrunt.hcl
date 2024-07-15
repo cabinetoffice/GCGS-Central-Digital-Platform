@@ -1,5 +1,5 @@
 terraform {
-  source = "../../../modules//core-networking"
+  source = local.global_vars.locals.environment != "orchestrator" ? "../../../modules//core-networking" : null
 }
 
 include {

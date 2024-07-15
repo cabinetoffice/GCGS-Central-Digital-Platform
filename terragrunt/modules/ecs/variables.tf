@@ -1,3 +1,8 @@
+variable "account_ids" {
+  description = "Map of all accounts and their IDs"
+  type        = map(string)
+}
+
 variable "alb_sg_id" {
   description = "Application load-balancer security group ID"
   type        = string
@@ -118,13 +123,13 @@ variable "tags" {
   type        = map(string)
 }
 
-variable "vpc_id" {
-  description = "The ID of the VPC"
+variable "vpc_cider" {
+  description = "VPC's IPv4 CIDR"
   type        = string
 }
 
-variable "vpc_cider" {
-  description = "VPC's IPv4 CIDR"
+variable "vpc_id" {
+  description = "The ID of the VPC"
   type        = string
 }
 
