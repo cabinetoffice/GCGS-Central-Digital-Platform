@@ -1,0 +1,78 @@
+services:
+  gateway:
+    ports:
+      - "${CDP_ORGANISATION_APP_PORT:-8090}:8090"
+      - "${CDP_AUTHORITY_PORT:-8092}:8092"
+      - "${CDP_TENANT_PORT:-8080}:8080"
+      - '${CDP_ORGANISATION_PORT:-8082}:8082'
+      - '${CDP_PERSON_PORT:-8084}:8084'
+      - '${CDP_FORMS_PORT:-8086}:8086'
+      - '${CDP_DATA_SHARING_PORT:-8088}:8088'
+      - '${CDP_ENTITY_VERIFICATION_PORT:-8094}:8094'
+    environment:
+#      CDP_ORGANISATION_APP_HOST: 'http://host.docker.internal:58090'
+#      CDP_AUTHORITY_HOST: 'http://host.docker.internal:5050'
+#      CDP_TENANT_HOST: 'http://host.docker.internal:58080'
+#      CDP_ORGANISATION_HOST: 'http://host.docker.internal:58082'
+#      CDP_PERSON_HOST: 'http://host.docker.internal:58084'
+#      CDP_FORMS_HOST: 'http://host.docker.internal:58086'
+#      CDP_DATA_SHARING_HOST: 'http://host.docker.internal:58088'
+#      CDP_ENTITY_VERIFICATION_HOST: 'http://host.docker.internal:58094'
+    deploy:
+      replicas: 1
+  db:
+    ports:
+      - "${CDP_DB_PORT:-5432}:5432"
+    deploy:
+      replicas: 1
+  localstack:
+    ports:
+      - "4566:4566"
+      - "4510-4559:4510-4559"
+    deploy:
+      replicas: 1
+  organisation-app:
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      OneLogin__Authority: "https://oidc.example.com"
+      OneLogin__ClientId: "client-id"
+      OneLogin__PrivateKey: "RSA PRIVATE KEY"
+    deploy:
+      replicas: 1
+  authority:
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      PrivateKey: "-----BEGIN RSA PRIVATE KEY-----"
+      OneLogin__Authority: "https://oidc.example.com"
+    deploy:
+      replicas: 1
+  tenant:
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+    deploy:
+      replicas: 1
+  organisation:
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+    deploy:
+      replicas: 1
+  person:
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+    deploy:
+      replicas: 1
+  forms:
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+    deploy:
+      replicas: 1
+  data-sharing:
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+    deploy:
+      replicas: 1
+  entity-verification:
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+    deploy:
+      replicas: 1

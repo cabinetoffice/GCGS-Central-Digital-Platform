@@ -20,9 +20,9 @@ public class AddressPostalSameAsRegisteredQuestionModel
 
     public async Task<IActionResult> OnGet(bool? selected)
     {
-        if (selected == false)
+        if (selected.HasValue)
         {
-            SameAsRegiseterdAddress = false;
+            SameAsRegiseterdAddress = selected;
         }
         else
         {

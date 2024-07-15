@@ -317,8 +317,8 @@ public static class EndpointExtensions
            });
 
         app.MapGet("/{organisationId}/connected-entities/{connectedEntityId}",
-            async (Guid connectedEntityId, IUseCase<Guid, ConnectedEntity?> useCase) =>
-               await useCase.Execute(connectedEntityId)
+            async (Guid organisationId, Guid connectedEntityId, IUseCase<(Guid, Guid), ConnectedEntity?> useCase) =>
+               await useCase.Execute((organisationId, connectedEntityId))
                    .AndThen(entity => entity != null ? Results.Ok(entity) : Results.NotFound()))
             .Produces<ConnectedEntity>(StatusCodes.Status200OK, "application/json")
             .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
