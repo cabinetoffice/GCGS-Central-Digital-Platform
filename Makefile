@@ -177,12 +177,3 @@ version-commit: ## Determines the last commit hash
 last-tag: ## Determines the last created tag on the repository
 	@git for-each-ref refs/tags --sort=-refname --format='%(refname:short)' --count=1
 .PHONY: last-tag
-
-docker-tag-images: IMAGE_VERSION ?= latest
-docker-tag-images: IMAGE_VERSION_ALIASES ?= latest
-docker-tag-images: ## Tag images
-	@$(foreach alias,$(IMAGE_VERSION_ALIASES),\
-		$(foreach image,$(IMAGES),docker tag cabinetoffice/$(image):$(IMAGE_VERSION) cabinetoffice/$(image):$(alias);))
-	@docker images | grep cabinetoffice/ | grep $(IMAGE_VERSION)
-	@$(foreach alias,$(IMAGE_VERSION_ALIASES),docker images | grep cabinetoffice/ | grep " $(alias) ";)
-.PHONY: docker-tag-images

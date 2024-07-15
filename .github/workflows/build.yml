@@ -70,20 +70,18 @@ jobs:
           echo "Image version for relase: $VERSION"
           echo "version=${VERSION}" >> $GITHUB_OUTPUT
           echo "image_version=${IMAGE_VERSION}" >> $GITHUB_OUTPUT
-          echo "image_version_for_release=${VERSION}" >> $GITHUB_OUTPUT
       - name: Build
-        run: make build-docker docker-tag-images
+        run: make build-docker
         env:
           IMAGE_VERSION: ${{ steps.version.outputs.image_version }}
-          IMAGE_VERSION_ALIASES: ${{ steps.version.outputs.image_version_for_release }}
       - name: Start services
         run: make up
         env:
-            IMAGE_VERSION: ${{ steps.version.outputs.image_version }}
+          IMAGE_VERSION: ${{ steps.version.outputs.image_version }}
       - name: Stop services
         run: make down
         env:
-            IMAGE_VERSION: ${{ steps.version.outputs.image_version }}
+          IMAGE_VERSION: ${{ steps.version.outputs.image_version }}
 
   docs:
     runs-on: ubuntu-latest
