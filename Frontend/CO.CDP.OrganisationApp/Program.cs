@@ -12,6 +12,7 @@ using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using static IdentityModel.OidcConstants;
 using ISession = CO.CDP.OrganisationApp.ISession;
 
+const string FormsHttpClientName = "FormsHttpClient";
 const string TenantHttpClientName = "TenantHttpClient";
 const string OrganisationHttpClientName = "OrganisationHttpClient";
 const string PersonHttpClientName = "PersonHttpClient";
@@ -43,19 +44,16 @@ builder.Services.AddTransient(provider =>
     return factory.GetTempData(context);
 });
 builder.Services.AddScoped<ITempDataService, TempDataService>();
+builder.Services.AddTransient<ApiBearerTokenHandler>();
 builder.Services.AddTransient<IFormsEngine, FormsEngine>();
 
 var formsServiceUrl = builder.Configuration.GetValue<string>("FormsService")
             ?? throw new Exception("Missing configuration key: FormsService.");
-builder.Services.AddHttpClient("FormsHttpClient")
+builder.Services.AddHttpClient(FormsHttpClientName)
     .AddHttpMessageHandler<ApiBearerTokenHandler>();
 builder.Services.AddTransient<IFormsClient, FormsClient>(
     sc => new FormsClient(formsServiceUrl,
-        sc.GetRequiredService<IHttpClientFactory>().CreateClient("FormsHttpClient")));
-
-builder.Services.AddTransient<IFormsEngine, FormsEngine>();
-
-builder.Services.AddTransient<ApiBearerTokenHandler>();
+        sc.GetRequiredService<IHttpClientFactory>().CreateClient(FormsHttpClientName)));
 
 var tenantServiceUrl = builder.Configuration.GetValue<string>("TenantService")
             ?? throw new Exception("Missing configuration key: TenantService.");
