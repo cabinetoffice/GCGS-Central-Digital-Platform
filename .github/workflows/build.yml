@@ -54,6 +54,7 @@ jobs:
       CDP_DATA_SHARING_PORT: 8855
     outputs:
       version: ${{ steps.version.outputs.version }}
+      images: ${{ steps.save.outputs.images }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -81,10 +82,12 @@ jobs:
         env:
           IMAGE_VERSION: ${{ steps.version.outputs.version }}
       - name: Save Docker Images
+        id: save
         run: |
           IMAGES=$(docker images | awk '$1 ~ /cabinetoffice\/cdp-/ && $2 ~ /^'$IMAGE_VERSION'$/ { print $1":"$2}' | tr '\n' ' ')
           echo "Images to be saved: $IMAGES"
           docker save -o cdp-images.tar $IMAGES
+          echo "images=${IMAGES}" >> $GITHUB_OUTPUT
         env:
           IMAGE_VERSION: ${{ steps.version.outputs.version }}
       - name: Upload Docker Images as Artifacts
@@ -94,9 +97,13 @@ jobs:
           path: cdp-images.tar
 
   publish:
+    if: github.ref == 'refs/heads/main' && github.repository_owner == 'cabinetoffice'
     runs-on: ubuntu-latest
     name: Publish containers
     needs: [test, package]
+    env:
+      IMAGE_VERSION: ${{ needs.package.outputs.version }}
+      IMAGES: ${{ needs.package.outputs.images }}
 
     steps:
       - uses: actions/checkout@v4
@@ -120,8 +127,9 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
-      - name: Generate Image Version
-        id: image_version
+      - name: Tag and Push Docker Images
+        run: make aws-push-to-ecr AWS_ACCOUNT_ID="${{ secrets.AWS_ACCOUNT_ID }}" IMAGES="${{ env.IMAGES }}"
+
+      - name: Store Version in SSM Parameter Store
         run: |
-          IMAGE_VERSION=${{ needs.package.outputs.version }}
-          echo "IMAGE_VERSION=$IMAGE_VERSION" >> $GITHUB_ENV
+          aws ssm put-parameter --name "cdp-sirsi-service-version" --value "${{ env.IMAGE_VERSION }}" --type String --overwrite
