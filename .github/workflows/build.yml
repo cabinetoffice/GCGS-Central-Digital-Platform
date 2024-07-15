@@ -126,5 +126,9 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
-      - name: Debug
-        run: echo ${{ env.IMAGES }} ${{ env.IMAGE_VERSION }}
+      - name: Tag and Push Docker Images
+        run: make aws-push-to-ecr AWS_ACCOUNT_ID="${{ secrets.AWS_ACCOUNT_ID }}" IMAGES="${{ env.IMAGES }}"
+
+      - name: Store Version in SSM Parameter Store
+        run: |
+          aws ssm put-parameter --name "cdp-sirsi-service-version" --value "${{ env.IMAGE_VERSION }}" --type String --overwrite

@@ -1,7 +1,6 @@
 # Define Docker/ECR attributes
 AWS_ACCOUNT_ID=$$(aws sts get-caller-identity | jq -r '.Account')
 REPO_URL := $(AWS_ACCOUNT_ID).dkr.ecr.eu-west-2.amazonaws.com
-IMAGES := cdp-organisation-information-migrations cdp-data-sharing cdp-entity-verification cdp-forms cdp-organisation-app cdp-organisation cdp-person cdp-tenant cdp-authority
 DOCKER_COMPOSE_CMD=IMAGE_VERSION=$(IMAGE_VERSION) docker compose
 
 # Extracts targets and their comments
@@ -161,11 +160,10 @@ aws-push-authority-private-key: ## Push Authority's private key to the target AW
 		aws secretsmanager create-secret --name cdp-sirsi-authority-keys --secret-string "$$(jq -n --arg priv "$$(cat ./terragrunt/secrets/authority-private-key.pem)" '{PRIVATE: $$priv}')"; \
 	fi
 
-aws-push-to-ecr: IMAGE_VERSION ?= latest
-aws-push-to-ecr: ## Tag latest built Docker images and push to ECR
-	$(foreach image,$(IMAGES),docker tag cabinetoffice/$(image):$(IMAGE_VERSION) $(REPO_URL)/$(image):$(IMAGE_VERSION);)
-	aws ecr get-login-password --region eu-west-2 | docker login --username AWS --password-stdin $(REPO_URL)
-	$(foreach image,$(IMAGES),docker push $(REPO_URL)/$(image):$(IMAGE_VERSION);)
+aws-push-to-ecr: IMAGES ?= $(shell cat compose.yml | grep image: | grep cabinetoffice/ | sed -e 's/.*\(cabinetoffice\/[^:]*\).*/\1:latest/g')
+aws-push-to-ecr: ## Tag previously built Docker images and push to ECR
+	$(foreach image,$(IMAGES),docker tag $(image) $(REPO_URL)/$(image:cabinetoffice/%=%);)
+	$(foreach image,$(IMAGES),docker push $(REPO_URL)/$(image:cabinetoffice/%=%);)
 .PHONY: aws-push-to-ecr
 
 aws-build-and-push-ecr: build-docker aws-push-to-ecr ## Build, tag and push Docker images to ECR
