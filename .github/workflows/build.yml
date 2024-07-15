@@ -42,7 +42,7 @@ jobs:
           name: OpenAPI
           path: OpenAPI
 
-  docker:
+  package:
     runs-on: ubuntu-latest
     name: Build containers
     env:
@@ -52,6 +52,8 @@ jobs:
       CDP_PERSON_PORT: 8833
       CDP_FORMS_PORT: 8844
       CDP_DATA_SHARING_PORT: 8855
+    outputs:
+      version: ${{ steps.version.outputs.version }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -90,3 +92,36 @@ jobs:
         with:
           name: docker-images
           path: cdp-images.tar
+
+  publish:
+    runs-on: ubuntu-latest
+    name: Publish containers
+    needs: [test, package]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download Docker Images
+        uses: actions/download-artifact@v4
+        with:
+          name: docker-images
+
+      - name: Load Docker Images
+        run: docker load -i cdp-images.tar
+
+      - name: Set up AWS CLI
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-west-2
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Generate Image Version
+        id: image_version
+        run: |
+          IMAGE_VERSION=${{ needs.build.outputs.push }}
+          echo "IMAGE_VERSION=$IMAGE_VERSION" >> $GITHUB_ENV
