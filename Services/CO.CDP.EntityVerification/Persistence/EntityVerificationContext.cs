@@ -7,21 +7,21 @@ using System.Text.Json;
 
 namespace CO.CDP.EntityVerification.Persistence;
 
-public class EntityValidationContext : DbContext
+public class EntityVerificationContext : DbContext
 {
     public DbSet<Ppon> Ppons { get; set; } = null!;
 
-    public EntityValidationContext()
+    public EntityVerificationContext()
     {
     }
 
-    public EntityValidationContext(DbContextOptions<EntityValidationContext> options) : base(options)
+    public EntityVerificationContext(DbContextOptions<EntityVerificationContext> options) : base(options)
     {
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.HasDefaultSchema("entity_validation");
+        modelBuilder.HasDefaultSchema("entity_verification");
 
         modelBuilder.Entity<Ppon>()
             .ToTable("ppon");

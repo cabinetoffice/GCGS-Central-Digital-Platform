@@ -2,10 +2,10 @@ namespace CO.CDP.EntityVerification.Services;
 
 public class PponService : IPponService
 {
-    public string GeneratePponId(string scheme, string departmentIdentifier)
+    public string GeneratePponId()
     {
         var id = Guid.NewGuid().ToString().Replace("-", string.Empty);
 
-        return $"{scheme}-{id}-{departmentIdentifier}";
+        return $"{id}";
     }
 }

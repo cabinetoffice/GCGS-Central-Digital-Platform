@@ -14,7 +14,7 @@ builder.Services.AddHealthChecks();
 builder.Services.AddEntityVerificationProblemDetails();
 builder.Services.AddBackgroundServices();
 
-builder.Services.AddDbContext<EntityValidationContext>(o =>
+builder.Services.AddDbContext<EntityVerificationContext>(o =>
     o.UseNpgsql(builder.Configuration.GetConnectionString("EvDatabase")));
 
 var app = builder.Build();

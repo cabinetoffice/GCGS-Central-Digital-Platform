@@ -12,7 +12,7 @@ namespace CO.CDP.EntityVerification.Tests;
 public class OrganisationRegisteredEventHandlerTests
 {
     [Fact]
-    public void Action_GeneratesPponId_CallsGeneratePponIdWithCorrectParameters()
+    public void Action_GeneratesPponIdAndPersists_CallsGeneratePponIdAndSaveOnce()
     {
         // Arrange
         var mockPponService = new Mock<IPponService>();
@@ -20,17 +20,16 @@ public class OrganisationRegisteredEventHandlerTests
         var serviceScopeFactory = new Mock<IServiceScopeFactory>();
         var serviceScope = new Mock<IServiceScope>();
         var serviceProviderWrapper = new Mock<IServiceProviderWrapper>();
-        var context = new Mock<EntityValidationContext>();
+        var context = new Mock<EntityVerificationContext>();
+        var pponRepository = new Mock<IPponRepository>();
 
         serviceProviderWrapper.Setup(m => m.GetRequiredService(It.IsAny<IServiceProvider>())).Returns(context.Object);
         serviceProvider.Setup(x => x.GetService(typeof(IServiceScopeFactory))).Returns(serviceScopeFactory.Object);
         serviceScopeFactory.Setup(x => x.CreateScope()).Returns(serviceScope.Object);
         
-        var handler = new OrganisationRegisteredEventHandler(mockPponService.Object, serviceProvider.Object, serviceProviderWrapper.Object);
+        var handler = new OrganisationRegisteredEventHandler(mockPponService.Object, serviceProvider.Object, serviceProviderWrapper.Object, pponRepository.Object);
         var message = new OrganisationRegisteredMessage
         {
-            Scheme = "TestScheme",
-            GovIdentifier = "TestGovId",
             Name = "MyOrg",
         };
 
@@ -38,7 +37,7 @@ public class OrganisationRegisteredEventHandlerTests
         handler.Action(message);
 
         // Assert
-        mockPponService.Verify(s => s.GeneratePponId("TestScheme", "TestGovId"), Times.Once);
-        context.Verify(s => s.SaveChanges(), Times.Once);
+        mockPponService.Verify(s => s.GeneratePponId(), Times.Once);
+        pponRepository.Verify(s => s.Save(It.IsAny<EntityVerificationContext>(), It.IsAny<Ppon>()), Times.Once);
     }
 }

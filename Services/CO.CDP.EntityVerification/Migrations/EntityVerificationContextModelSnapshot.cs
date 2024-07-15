@@ -9,14 +9,14 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace CO.CDP.EntityVerification.Migrations
 {
-    [DbContext(typeof(EntityValidationContext))]
-    partial class EntityValidationContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(EntityVerificationContext))]
+    partial class EntityVerificationContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasDefaultSchema("entity_validation")
+                .HasDefaultSchema("entity_verification")
                 .HasAnnotation("ProductVersion", "8.0.7")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
@@ -43,7 +43,7 @@ namespace CO.CDP.EntityVerification.Migrations
                         .IsUnique()
                         .HasDatabaseName("ix_ppon_ppon_id");
 
-                    b.ToTable("ppon", "entity_validation");
+                    b.ToTable("ppon", "entity_verification");
                 });
 #pragma warning restore 612, 618
         }

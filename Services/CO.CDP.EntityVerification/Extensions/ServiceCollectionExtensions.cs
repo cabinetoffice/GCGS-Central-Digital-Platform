@@ -17,6 +17,8 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<IPponService, PponService>();
         services.AddSingleton<OrganisationRegisteredEventHandler>();
         services.AddSingleton<IServiceProviderWrapper, ServiceProviderWrapper>();
+        services.AddSingleton<IPponRepository, DatabasePponRepository>();
+
         services.AddHostedService<QueueBackgroundService>();
 
         return services;

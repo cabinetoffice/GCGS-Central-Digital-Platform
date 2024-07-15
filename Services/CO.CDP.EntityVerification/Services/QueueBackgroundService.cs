@@ -33,8 +33,7 @@ public class QueueBackgroundService : BackgroundService
             AuthenticationRegion = _config["AuthenticationRegion"]
         };
 
-        // TODO: replace credentials with correct implementation.
-        var credentials = new BasicAWSCredentials("test", "test");
+        var credentials = new BasicAWSCredentials(_config["accessKey"], _config["secretKey"]);
         var sqsClient = new AmazonSQSClient(credentials, config);
         var queueUrl = _config["QueueUrl"];
 

@@ -2,14 +2,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CO.CDP.EntityVerification.Persistence;
 
-public class DatabasePponRepository(EntityValidationContext context) : IDatabasePponRepository
+public class DatabasePponRepository : IPponRepository
 {
-    public void Dispose()
-    {
-        context.Dispose();
-    }
-
-    public void Save(Ppon identifier)
+    public void Save(EntityVerificationContext context, Ppon identifier)
     {
         try
         {

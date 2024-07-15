@@ -1,8 +1,8 @@
 namespace CO.CDP.EntityVerification.Persistence;
 
-public interface IDatabasePponRepository : IDisposable
+public interface IPponRepository 
 {
-    public void Save(Ppon identifier);
+    public void Save(EntityVerificationContext context, Ppon identifier);
 
     public class PponRepositoryException(string message, Exception? cause = null) : Exception(message, cause)
     {

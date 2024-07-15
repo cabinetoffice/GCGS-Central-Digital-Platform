@@ -6,17 +6,17 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CO.CDP.EntityVerification.Migrations
 {
     /// <inheritdoc />
-    public partial class CreateEVSchema : Migration
+    public partial class CreateEvSchema : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.EnsureSchema(
-                name: "entity_validation");
+                name: "entity_verification");
 
             migrationBuilder.CreateTable(
                 name: "ppon",
-                schema: "entity_validation",
+                schema: "entity_verification",
                 columns: table => new
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
@@ -30,7 +30,7 @@ namespace CO.CDP.EntityVerification.Migrations
 
             migrationBuilder.CreateIndex(
                 name: "ix_ppon_ppon_id",
-                schema: "entity_validation",
+                schema: "entity_verification",
                 table: "ppon",
                 column: "ppon_id",
                 unique: true);
@@ -41,7 +41,7 @@ namespace CO.CDP.EntityVerification.Migrations
         {
             migrationBuilder.DropTable(
                 name: "ppon",
-                schema: "entity_validation");
+                schema: "entity_verification");
         }
     }
 }
