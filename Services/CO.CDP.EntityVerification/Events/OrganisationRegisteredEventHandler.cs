@@ -4,11 +4,7 @@ using CO.CDP.EntityVerification.Services;
 
 namespace CO.CDP.EntityVerification.Events;
 
-public class OrganisationRegisteredEventHandler(
-    IPponService pponService,
-    IPponRepository pponRepository,
-    IServiceProvider services)
-    : IEventHandler
+public class OrganisationRegisteredEventHandler(IPponService pponService, IServiceProvider services) : IEventHandler
 {
     public void Action(EvMessage msg)
     {
@@ -18,7 +14,7 @@ public class OrganisationRegisteredEventHandler(
         Ppon newIdentifier = new() { PponId = pponid };
 
         using var scope = services.CreateScope();
-        using var dbContext = scope.ServiceProvider.GetRequiredService<EntityVerificationContext>();
-        pponRepository.Save(dbContext, newIdentifier);
+        using var pponRepository = scope.ServiceProvider.GetRequiredService<IPponRepository>();
+        pponRepository.Save(newIdentifier);
     }
 }
