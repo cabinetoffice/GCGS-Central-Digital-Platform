@@ -21,6 +21,7 @@ COPY --link Libraries/CO.CDP.Configuration/CO.CDP.Configuration.csproj Libraries
 COPY --link Libraries/CO.CDP.Configuration.Tests/CO.CDP.Configuration.Tests.csproj Libraries/CO.CDP.Configuration.Tests/
 COPY --link Libraries/CO.CDP.Functional/CO.CDP.Functional.csproj Libraries/CO.CDP.Functional/
 COPY --link Libraries/CO.CDP.Functional.Tests/CO.CDP.Functional.Tests.csproj Libraries/CO.CDP.Functional.Tests/
+COPY --link Libraries/CO.CDP.MQ.Tests/CO.CDP.MQ.Tests.csproj Libraries/CO.CDP.MQ.Tests/
 COPY --link Libraries/CO.CDP.Mvc.Validation/CO.CDP.Mvc.Validation.csproj Libraries/CO.CDP.Mvc.Validation/
 COPY --link Libraries/CO.CDP.Mvc.Validation.Tests/CO.CDP.Mvc.Validation.Tests.csproj Libraries/CO.CDP.Mvc.Validation.Tests/
 COPY --link Libraries/CO.CDP.Swashbuckle/CO.CDP.Swashbuckle.csproj Libraries/CO.CDP.Swashbuckle/
