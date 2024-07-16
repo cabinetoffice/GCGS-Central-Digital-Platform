@@ -26,10 +26,10 @@ public class SqsPublisherTest : PublisherContractTest, IClassFixture<LocalStackF
         {
             QueueUrl = queue.QueueUrl,
             MaxNumberOfMessages = 1,
-            MessageAttributeNames = ["type"]
+            MessageAttributeNames = ["Type"]
         });
         var message = messages.Messages.First<Message>();
-        var type = message.MessageAttributes.GetValueOrDefault("type")?.StringValue;
+        var type = message.MessageAttributes.GetValueOrDefault("Type")?.StringValue;
         type.Should().Be(typeof(T).Name);
         return JsonSerializer.Deserialize<T>(message.Body) ??
                throw new Exception($"Unable to deserialize {message.Body} into {typeof(T).FullName}");

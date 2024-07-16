@@ -15,7 +15,7 @@ public class SqsPublisher(
     Serializer serializer,
     TypeMapper typeMapper) : IPublisher
 {
-    private const string TypeAttribute = "type";
+    private const string TypeAttribute = "Type";
 
     public SqsPublisher(AmazonSQSClient sqsClient, MessageRouter messageRouter, Serializer serializer) : this(
         sqsClient, messageRouter, serializer, type => type.Name)
