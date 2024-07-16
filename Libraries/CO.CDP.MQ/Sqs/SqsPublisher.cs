@@ -3,10 +3,21 @@ using Amazon.SQS.Model;
 
 namespace CO.CDP.MQ.Sqs;
 
-public class SqsPublisher(AmazonSQSClient sqsClient, Func<Type, string> messageRouter, Func<object, string> serializer, Func<Type, string> typeMapper) : IPublisher
+public delegate string MessageRouter(Type type);
+
+public delegate string Serializer(object message);
+
+public delegate string TypeMapper(Type type);
+
+public class SqsPublisher(
+    AmazonSQSClient sqsClient,
+    MessageRouter messageRouter,
+    Serializer serializer,
+    TypeMapper typeMapper) : IPublisher
 {
-    public SqsPublisher(AmazonSQSClient sqsClient, Func<Type, string> messageRouter,
-        Func<object, string> serializer) : this(
+    private const string TypeAttribute = "type";
+
+    public SqsPublisher(AmazonSQSClient sqsClient, MessageRouter messageRouter, Serializer serializer) : this(
         sqsClient, messageRouter, serializer, type => type.Name)
     {
     }
@@ -19,7 +30,10 @@ public class SqsPublisher(AmazonSQSClient sqsClient, Func<Type, string> messageR
             MessageBody = serializer(message),
             MessageAttributes = new Dictionary<string, MessageAttributeValue>
             {
-                { "type", new MessageAttributeValue { StringValue = typeMapper(typeof(TM)), DataType = "String" } }
+                {
+                    TypeAttribute,
+                    new MessageAttributeValue { StringValue = typeMapper(typeof(TM)), DataType = "String" }
+                }
             }
         });
     }
