@@ -13,7 +13,7 @@ public class DynamicFormsPageModel(IFormsEngine formsEngine, ITempDataService te
     public Guid OrganisationId { get; set; }
     public bool IsFirstQuestion => IsCurrentQuestionFirst();
     public Guid? PreviousQuestionId { get; private set; }
-    public new HttpRequest Request { get; set; }
+    public new HttpRequest? Request { get; set; }
 
     [BindProperty]
     public string? Answer { get; set; }
@@ -179,8 +179,7 @@ public class DynamicFormsPageModel(IFormsEngine formsEngine, ITempDataService te
         var allowedFileSizeMB = 10;
         var allowedExtensions = new List<string> { ".pdf", ".docx", ".csv", ".jpg", ".bmp", ".png", ".tif" };
 
-        // Make sure files are present
-        if (Request.Form == null || Request.Form.Files == null || Request.Form.Files.Count == 0)
+        if (Request?.Form == null || Request.Form.Files == null || Request.Form.Files.Count == 0)
         {
             ModelState.AddModelError("Answer", "No file selected.");
             return false;
@@ -196,14 +195,12 @@ public class DynamicFormsPageModel(IFormsEngine formsEngine, ITempDataService te
 
         var maxFileLength = allowedFileSizeMB * 1024 * 1024;
 
-        // Check file size
         if (file.Length > maxFileLength)
         {
             ModelState.AddModelError("Answer", "The file size must not exceed " + allowedFileSizeMB + "MB.");
             return false;
         }
 
-        // Check the file extension
         var fileExtension = Path.GetExtension(file.FileName).ToLowerInvariant();
         
         if (!allowedExtensions.Contains(fileExtension))

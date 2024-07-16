@@ -135,7 +135,7 @@ public class DynamicFormsPageTests
         var currentQuestionId = currentQuestion.Id;
 
         var fileMock = new Mock<IFormFile>();
-        fileMock.Setup(f => f.Length).Returns(11 * 1024 * 1024); // 11 MB file
+        fileMock.Setup(f => f.Length).Returns(11 * 1024 * 1024);
         fileMock.Setup(f => f.Name).Returns("UploadedFile");
 
         var formFileCollection = new FormFileCollection { fileMock.Object };
@@ -160,7 +160,7 @@ public class DynamicFormsPageTests
         var currentQuestionId = currentQuestion.Id;
 
         var fileMock = new Mock<IFormFile>();
-        fileMock.Setup(f => f.Length).Returns(5 * 1024 * 1024); // 11 MB file
+        fileMock.Setup(f => f.Length).Returns(5 * 1024 * 1024);
         fileMock.Setup(f => f.Name).Returns("UploadedFile");
         fileMock.Setup(f => f.FileName).Returns("badfile.exe");
         var formFileCollection = new FormFileCollection { fileMock.Object };
