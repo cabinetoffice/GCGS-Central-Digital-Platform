@@ -13,6 +13,7 @@ public class DynamicFormsPageModel(IFormsEngine formsEngine, ITempDataService te
     public Guid OrganisationId { get; set; }
     public bool IsFirstQuestion => IsCurrentQuestionFirst();
     public Guid? PreviousQuestionId { get; private set; }
+    public new HttpRequest Request { get; set; }
 
     [BindProperty]
     public string? Answer { get; set; }

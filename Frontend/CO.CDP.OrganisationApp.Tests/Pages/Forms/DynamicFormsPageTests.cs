@@ -10,8 +10,9 @@ public class DynamicFormsPageTests
 {
     private readonly Mock<IFormsEngine> _formsEngineMock;
     private readonly Mock<ITempDataService> _tempDataServiceMock;
+    private readonly Mock<HttpRequest> _requestMock;
+    private readonly Mock<HttpContext> _httpContextMock;
     private readonly DynamicFormsPageModel _pageModel;
-    private readonly HttpContext _httpContext = new DefaultHttpContext();
     private readonly Guid _organisationId;
     private readonly Guid _formId;
     private readonly Guid _sectionId;
@@ -20,8 +21,9 @@ public class DynamicFormsPageTests
     {
         _formsEngineMock = new Mock<IFormsEngine>();
         _tempDataServiceMock = new Mock<ITempDataService>();
-        _pageModel = new DynamicFormsPageModel(_formsEngineMock.Object, _tempDataServiceMock.Object);
-        _httpContext = new DefaultHttpContext();
+        _requestMock = new Mock<HttpRequest>();
+        _httpContextMock = new Mock<HttpContext>();
+        _pageModel = new DynamicFormsPageModel(_formsEngineMock.Object, _tempDataServiceMock.Object);        
         _organisationId = Guid.NewGuid();
         _formId = Guid.NewGuid();
         _sectionId = Guid.NewGuid();
@@ -105,19 +107,18 @@ public class DynamicFormsPageTests
     }
 
     [Fact]
-    public async Task OnPostAsync_ShouldReturnPageWithErrors_WhenFileUploadAnswerIsNotProvided()
+    public async Task OnPostAsync_ShouldReturnPageWithErrors_WhenFileUploadIsNotProvided()
     {
         var sectionQuestionsResponse = SetupMockLoadFormSectionAsync();
         var currentQuestion = sectionQuestionsResponse.Questions!.First(q => q.Type == FormQuestionType.FileUpload);
         var currentQuestionId = currentQuestion.Id;
 
-        var formCollection = new FormCollection(new Dictionary<string, Microsoft.Extensions.Primitives.StringValues>());
-        _httpContext.Request.Form = formCollection;
-        // _pageModel.Request.Form = formCollection;
+        _requestMock.Setup(x => x.Form).Returns((IFormCollection)null);
+        
+        _pageModel.Request = _requestMock.Object;
 
         var result = _pageModel.ValidateFileUpload();
 
-        // Assert
         Assert.False(result);
         Assert.True(_pageModel.ModelState.ContainsKey("Answer"));
         Assert.Equal("No file selected.", _pageModel.ModelState["Answer"].Errors[0].ErrorMessage);
