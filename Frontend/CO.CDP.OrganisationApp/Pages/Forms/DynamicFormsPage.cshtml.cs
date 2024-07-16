@@ -17,6 +17,10 @@ public class DynamicFormsPageModel(IFormsEngine formsEngine, ITempDataService te
     [BindProperty]
     public string? Answer { get; set; }
 
+    [BindProperty]
+    public string? UploadedFile { get; set; }
+    
+
     public async Task OnGetAsync(Guid organisationId, Guid formId, Guid sectionId, Guid? questionId)
     {
         OrganisationId = organisationId;
@@ -170,7 +174,20 @@ public class DynamicFormsPageModel(IFormsEngine formsEngine, ITempDataService te
     }
 
     public bool ValidateFileUpload()
-    {
+    {       
+        // Console.WriteLine(Answer);
+
+        // if (string.IsNullOrEmpty(Answer)) {
+        //     ModelState.AddModelError("Answer", "Please select a file.");
+        //     return false;
+        // }
+
+        if (Request.Form == null || Request.Form.Files == null || Request.Form.Files.Count == 0)
+        {
+            ModelState.AddModelError("Answer", "No file selected.");
+            return false;
+        }
+
         var file = Request.Form.Files["fileUpload"];
         
         var allowedFileSizeMB = 5;
@@ -179,6 +196,7 @@ public class DynamicFormsPageModel(IFormsEngine formsEngine, ITempDataService te
         // File cannot be null or empty
         if (file == null)
         {
+            ModelState.AddModelError("Answer", "No file selected.");
             return false;
         }
 
