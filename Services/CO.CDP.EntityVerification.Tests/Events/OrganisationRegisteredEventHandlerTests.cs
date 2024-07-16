@@ -3,6 +3,7 @@ using CO.CDP.EntityVerification.Model;
 using CO.CDP.EntityVerification.Persistence;
 using CO.CDP.EntityVerification.Services;
 using CO.CDP.TestKit.Mvc;
+using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Moq;
@@ -16,12 +17,12 @@ public class OrganisationRegisteredEventHandlerTests
     {
         var pponRepository = new Mock<IPponRepository>();
         var pponService = new Mock<IPponService>();
-        var services = GivenServices(s => s.AddScoped<IPponRepository>(_ => pponRepository.Object));
+        var app = GivenApp(s => s.AddScoped<IPponRepository>(_ => pponRepository.Object));
         var generatedPpon = "92be415e5985421087bc8fee8c97d338";
 
         pponService.Setup(x => x.GeneratePponId()).Returns(generatedPpon);
 
-        var handler = new OrganisationRegisteredEventHandler(pponService.Object, services);
+        var handler = new OrganisationRegisteredEventHandler(pponService.Object, app.Services);
         var message = new OrganisationRegisteredMessage
         {
             Name = "MyOrg",
@@ -32,8 +33,8 @@ public class OrganisationRegisteredEventHandlerTests
         pponRepository.Verify(s => s.Save(It.Is<Ppon>(p => p.PponId == generatedPpon)), Times.Once);
     }
 
-    private IServiceProvider GivenServices(Action<IServiceCollection> configurator)
+    private TestWebApplicationFactory<Program> GivenApp(Action<IServiceCollection> configurator)
     {
-        return new TestWebApplicationFactory<Program>(builder => builder.ConfigureServices(configurator)).Services;
+        return new TestWebApplicationFactory<Program>(builder => builder.ConfigureServices(configurator));
     }
 }
