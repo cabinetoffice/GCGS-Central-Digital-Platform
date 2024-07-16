@@ -3,7 +3,7 @@ using Amazon.SQS;
 using Amazon.SQS.Model;
 using FluentAssertions;
 
-namespace CO.CDP.MQ.Tests;
+namespace CO.CDP.MQ.Tests.Sqs;
 
 public class LearnSqsTest(LocalStackFixture localStack) : IClassFixture<LocalStackFixture>
 {
