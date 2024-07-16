@@ -11,6 +11,7 @@ public class SqsPublisherTest : PublisherContractTest, IClassFixture<LocalStackF
 {
     private readonly LocalStackFixture _localStack;
     private readonly AmazonSQSClient _sqsClient;
+    private const string TestQueue = "test-queue-1";
 
     public SqsPublisherTest(LocalStackFixture localStack)
     {
@@ -20,9 +21,8 @@ public class SqsPublisherTest : PublisherContractTest, IClassFixture<LocalStackF
 
     protected override async Task<T> waitForOneMessage<T>() where T : class
     {
-        var sqsClient = SqsClient();
-        var queue = await sqsClient.GetQueueUrlAsync("test-queue-1");
-        var messages = await sqsClient.ReceiveMessageAsync(new ReceiveMessageRequest
+        var queue = await _sqsClient.GetQueueUrlAsync(TestQueue);
+        var messages = await _sqsClient.ReceiveMessageAsync(new ReceiveMessageRequest
         {
             QueueUrl = queue.QueueUrl,
             MaxNumberOfMessages = 1,
@@ -37,10 +37,9 @@ public class SqsPublisherTest : PublisherContractTest, IClassFixture<LocalStackF
 
     protected override async Task<IPublisher> CreatePublisher()
     {
-        var sqsClient = SqsClient();
-        var queue = await _sqsClient.CreateQueueAsync(new CreateQueueRequest { QueueName = "test-queue-1" });
+        var queue = await _sqsClient.CreateQueueAsync(new CreateQueueRequest { QueueName = TestQueue });
         var queueUrl = queue.QueueUrl;
-        return new SqsPublisher(sqsClient, _ => queueUrl, o => JsonSerializer.Serialize(o));
+        return new SqsPublisher(_sqsClient, _ => queueUrl, o => JsonSerializer.Serialize(o));
     }
 
     private AmazonSQSClient SqsClient()
