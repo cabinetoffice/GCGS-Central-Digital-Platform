@@ -107,21 +107,73 @@ public class DynamicFormsPageTests
     }
 
     [Fact]
-    public async Task OnPostAsync_ShouldReturnPageWithErrors_WhenFileUploadIsNotProvided()
+    public void OnPostAsync_ShouldReturnPageWithErrors_WhenFileUploadIsNotProvided()
     {
         var sectionQuestionsResponse = SetupMockLoadFormSectionAsync();
         var currentQuestion = sectionQuestionsResponse.Questions!.First(q => q.Type == FormQuestionType.FileUpload);
         var currentQuestionId = currentQuestion.Id;
 
-        _requestMock.Setup(x => x.Form).Returns((IFormCollection)null);
-        
+        var formFileCollection = new FormFileCollection();
+        var formCollection = new FormCollection(new Dictionary<string, Microsoft.Extensions.Primitives.StringValues>(), formFileCollection);
+
+        _requestMock.Setup(x => x.Form).Returns(formCollection);
+
         _pageModel.Request = _requestMock.Object;
 
         var result = _pageModel.ValidateFileUpload();
 
         Assert.False(result);
         Assert.True(_pageModel.ModelState.ContainsKey("Answer"));
-        Assert.Equal("No file selected.", _pageModel.ModelState["Answer"].Errors[0].ErrorMessage);
+        Assert.Equal("No file selected.", _pageModel.ModelState["Answer"]?.Errors?[0].ErrorMessage);
+    }
+
+    [Fact]
+    public void OnPostAsync_ShouldReturnPageWithErrors_WhenFileUploadSizeInvalid()
+    {
+        var sectionQuestionsResponse = SetupMockLoadFormSectionAsync();
+        var currentQuestion = sectionQuestionsResponse.Questions!.First(q => q.Type == FormQuestionType.FileUpload);
+        var currentQuestionId = currentQuestion.Id;
+
+        var fileMock = new Mock<IFormFile>();
+        fileMock.Setup(f => f.Length).Returns(11 * 1024 * 1024); // 11 MB file
+        fileMock.Setup(f => f.Name).Returns("UploadedFile");
+
+        var formFileCollection = new FormFileCollection { fileMock.Object };
+        var formCollection = new FormCollection(new Dictionary<string, Microsoft.Extensions.Primitives.StringValues>(), formFileCollection);
+
+        _requestMock.Setup(x => x.Form).Returns(formCollection);
+
+        _pageModel.Request = _requestMock.Object;
+
+        var result = _pageModel.ValidateFileUpload();
+
+        Assert.False(result);
+        Assert.True(_pageModel.ModelState.ContainsKey("Answer"));
+        Assert.Equal("The file size must not exceed 10MB.", _pageModel.ModelState["Answer"]?.Errors?[0].ErrorMessage);
+    }
+
+    [Fact]
+    public void OnPostAsync_ShouldReturnPageWithErrors_WhenFileUploadTypeInvalid()
+    {
+        var sectionQuestionsResponse = SetupMockLoadFormSectionAsync();
+        var currentQuestion = sectionQuestionsResponse.Questions!.First(q => q.Type == FormQuestionType.FileUpload);
+        var currentQuestionId = currentQuestion.Id;
+
+        var fileMock = new Mock<IFormFile>();
+        fileMock.Setup(f => f.Length).Returns(5 * 1024 * 1024); // 11 MB file
+        fileMock.Setup(f => f.Name).Returns("UploadedFile");
+        fileMock.Setup(f => f.FileName).Returns("badfile.exe");
+        var formFileCollection = new FormFileCollection { fileMock.Object };
+        var formCollection = new FormCollection(new Dictionary<string, Microsoft.Extensions.Primitives.StringValues>(), formFileCollection);
+
+        _requestMock.Setup(x => x.Form).Returns(formCollection);
+        _pageModel.Request = _requestMock.Object;
+
+        var result = _pageModel.ValidateFileUpload();
+
+        Assert.False(result);
+        Assert.True(_pageModel.ModelState.ContainsKey("Answer"));
+        Assert.Equal("Please upload a file which has one of the following extensions: .pdf, .docx, .csv, .jpg, .bmp, .png, .tif", _pageModel.ModelState["Answer"]?.Errors?[0].ErrorMessage);
     }
 
     [Fact]
