@@ -23,8 +23,7 @@
         <PackageReference Include="FluentAssertions" Version="6.12.0" />
         <PackageReference Include="Testcontainers" Version="3.9.0" />
         <PackageReference Include="Testcontainers.LocalStack" Version="3.9.0" />
-        <PackageReference Include="Amazon.Sqs" Version="0.33.0" />
-        <PackageReference Include="AWSSDK.SQS" Version="3.7.301.31" />
+        <ProjectReference Include="..\CO.CDP.MQ\CO.CDP.MQ.csproj" />
     </ItemGroup>
 
     <ItemGroup>
