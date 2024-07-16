@@ -1,3 +1,4 @@
+using CO.CDP.OrganisationInformation.Persistence;
 using CO.CDP.TestKit.Mvc;
 using FluentAssertions;
 using Xunit.Abstractions;
@@ -8,6 +9,7 @@ public class FormsClientIntegrationTest(ITestOutputHelper testOutputHelper)
 {
     private readonly TestWebApplicationFactory<Program> _factory = new(builder =>
     {
+        builder.ConfigureInMemoryDbContext<OrganisationInformationContext>();
         builder.ConfigureLogging(testOutputHelper);
     });
 
