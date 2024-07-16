@@ -17,7 +17,8 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <partial name="_ErrorSummary" model="@ModelState" />
-            <form method="post" enctype="multipart/form-data">
+            
+            <form method="post" enctype="@Model.EncType">
                 <input type="hidden" name="OrganisationId" value="@Model.OrganisationId" />
                 <input type="hidden" name="FormId" value="@Model.FormId" />
                 <input type="hidden" name="SectionId" value="@Model.SectionId" />

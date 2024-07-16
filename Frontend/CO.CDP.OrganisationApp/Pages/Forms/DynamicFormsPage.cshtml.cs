@@ -12,6 +12,8 @@ public class DynamicFormsPageModel(IFormsEngine formsEngine, ITempDataService te
     public Guid SectionId { get; set; }
     public Guid OrganisationId { get; set; }
     public bool IsFirstQuestion => IsCurrentQuestionFirst();
+
+    public string EncType => GetEncType();
     public Guid? PreviousQuestionId { get; private set; }
     public new HttpRequest? Request { get; set; }
 
@@ -128,6 +130,11 @@ public class DynamicFormsPageModel(IFormsEngine formsEngine, ITempDataService te
     private bool IsCurrentQuestionFirst()
     {
         return CurrentQuestion?.Id == SectionWithQuestions?.Questions?.FirstOrDefault()?.Id;
+    }
+
+    private string GetEncType()
+    {
+        return CurrentQuestion?.Type == FormQuestionType.FileUpload ? "multipart/form-data" : "application/x-www-form-urlencoded";
     }
 
     private bool ValidateCurrentQuestion()
