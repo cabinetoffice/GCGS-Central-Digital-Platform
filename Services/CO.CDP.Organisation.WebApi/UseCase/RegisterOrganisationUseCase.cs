@@ -12,7 +12,7 @@ public class RegisterOrganisationUseCase(
     Func<Guid> guidFactory)
     : IUseCase<RegisterOrganisation, Model.Organisation>
 {
-    private readonly List<string> _defaultScopes = ["ADMIN"];
+    private readonly List<string> _defaultScopes = ["ADMIN", "RESPONDER"];
 
     public RegisterOrganisationUseCase(IOrganisationRepository organisationRepository,
         IPersonRepository personRepository, IMapper mapper)
