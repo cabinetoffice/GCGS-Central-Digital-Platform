@@ -24,7 +24,7 @@ resource "aws_codepipeline" "update_ecs_services" {
       configuration = {
         ConnectionArn    = data.aws_codestarconnections_connection.cabinet_office.arn
         FullRepositoryId = "cabinetoffice/GCGS-Central-Digital-Platform"
-        BranchName       = "DP-187-CI-CD"
+        BranchName       = "main"
       }
     }
   }
