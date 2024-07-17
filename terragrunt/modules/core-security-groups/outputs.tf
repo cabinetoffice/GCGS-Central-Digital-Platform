@@ -1,3 +1,7 @@
+output "ci_sg_id" {
+  value = aws_security_group.ci.id
+}
+
 output "db_postgres_sg_id" {
   value = aws_security_group.db_postgres.id
 }

@@ -34,6 +34,8 @@ data "aws_iam_policy_document" "tfstate" {
       type = "AWS"
       identifiers = [
         "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root",
+        aws_iam_role.ci_build.arn,
+        aws_iam_role.ci_pipeline.arn,
         aws_iam_role.terraform.arn
       ]
     }

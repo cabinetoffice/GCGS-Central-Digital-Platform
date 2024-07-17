@@ -43,3 +43,20 @@ data "aws_iam_policy_document" "ssm_update_policy" {
 }
 
 
+data "aws_iam_policy_document" "orchestrator_read_service_version_assume_role" {
+  statement {
+    actions = ["sts:AssumeRole"]
+    principals {
+      type        = "AWS"
+      identifiers = local.combined_roles
+    }
+  }
+}
+
+
+data "aws_iam_policy_document" "orchestrator_read_service_version" {
+  statement {
+    actions   = ["ssm:GetParameter"]
+    resources = ["arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter/cdp-sirsi-service-version"]
+  }
+}
