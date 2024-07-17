@@ -9,6 +9,6 @@ phases:
 
   build:
     commands:
-      - cd terragrunt/components/service/ecs
-      - terragrunt apply --auto-approve
+      - cd terragrunt/components
+      - terragrunt run-all apply -auto-approve -terragrunt-non-interactive
 

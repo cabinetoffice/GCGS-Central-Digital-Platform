@@ -1,5 +1,5 @@
 resource "aws_codepipeline" "update_ecs_services" {
-  name     = "${local.name_prefix}-update-ecs-service"
+  name     = "${local.name_prefix}-${local.update_ecs_service_cb_name}"
   role_arn = var.ci_pipeline_role_arn
 
   artifact_store {
@@ -32,16 +32,16 @@ resource "aws_codepipeline" "update_ecs_services" {
   stage {
     name = "Build"
     action {
-      name     = "update-ecs-service"
-      category = "Build"
-      owner    = "AWS"
-      provider = "CodeBuild"
-      input_artifacts = ["source_output"]
+      name             = aws_codebuild_project.update_ecs_services.name
+      category         = "Build"
+      owner            = "AWS"
+      provider         = "CodeBuild"
+      input_artifacts  = ["source_output"]
       output_artifacts = []
-      version  = "1"
+      version          = "1"
 
       configuration = {
-        ProjectName = "${local.name_prefix}-update-ecs-service",
+        ProjectName = aws_codebuild_project.update_ecs_services.name,
       }
     }
   }
