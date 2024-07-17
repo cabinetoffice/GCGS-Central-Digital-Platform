@@ -12,7 +12,7 @@ builder.Services.AddSwaggerGen(o => o.DocumentPponApi());
 
 builder.Services.AddHealthChecks();
 builder.Services.AddEntityVerificationProblemDetails();
-builder.Services.AddBackgroundServices();
+builder.Services.AddBackgroundServices(builder.Configuration);
 
 builder.Services.AddDbContext<EntityVerificationContext>(o =>
     o.UseNpgsql(builder.Configuration.GetConnectionString("EvDatabase")));

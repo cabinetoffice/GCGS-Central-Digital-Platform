@@ -27,10 +27,12 @@
         <PackageReference Include="AWSSDK.SQS" Version="3.7.301.31" />
         <ProjectReference Include="..\..\Libraries\CO.CDP.Functional\CO.CDP.Functional.csproj" />
         <ProjectReference Include="..\..\Libraries\CO.CDP.Swashbuckle\CO.CDP.Swashbuckle.csproj" />
+        <ProjectReference Include="..\..\Libraries\CO.CDP.MQ\CO.CDP.MQ.csproj" />
     </ItemGroup>
 
     <ItemGroup>
       <Folder Include="Migrations\" />
+      <Folder Include="Model\" />
     </ItemGroup>
 
 </Project>

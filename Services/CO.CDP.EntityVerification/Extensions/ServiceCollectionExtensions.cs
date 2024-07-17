@@ -1,6 +1,10 @@
+using Amazon.Runtime;
+using Amazon.SQS;
 using CO.CDP.EntityVerification.Events;
 using CO.CDP.EntityVerification.Persistence;
 using CO.CDP.EntityVerification.Services;
+using CO.CDP.MQ;
+using CO.CDP.MQ.Sqs;
 
 namespace CO.CDP.EntityVerification.Extensions;
 
@@ -11,11 +15,37 @@ public static class ServiceCollectionExtensions
         { typeof(BadHttpRequestException), (StatusCodes.Status422UnprocessableEntity, "UNPROCESSABLE_ENTITY") },
     };
 
-    public static IServiceCollection AddBackgroundServices(this IServiceCollection services)
+    public static IServiceCollection AddBackgroundServices(
+        this IServiceCollection services,
+        ConfigurationManager config)
     {
-        services.AddSingleton<IRequestListener, RequestListener>();
-        services.AddSingleton<IPponService, PponService>();
-        services.AddSingleton<OrganisationRegisteredEventHandler>();
+        services.AddScoped<AmazonSQSClient>(s =>
+        {
+            var sqsConfig = new AmazonSQSConfig
+            {
+                ServiceURL = config["ServiceURL"],
+                UseHttp = false,
+                AuthenticationRegion = config["AuthenticationRegion"]
+            };
+
+            var credentials = new BasicAWSCredentials(config["accessKey"], config["secretKey"]);
+            return new AmazonSQSClient(credentials, sqsConfig);
+        });
+        services.AddScoped<IDispatcher, SqsDispatcher>(s =>
+        {
+            var dispatcher = new SqsDispatcher(
+                s.GetRequiredService<AmazonSQSClient>(),
+                config["QueueUrl"],
+                EventDeserializer.Deserializer);
+            dispatcher.Subscribe<OrganisationRegistered>(message =>
+            {
+                s.GetRequiredService<OrganisationRegisteredEventHandler>().Action(message);
+                return Task.CompletedTask;
+            });
+            return dispatcher;
+        });
+        services.AddScoped<IPponService, PponService>();
+        services.AddScoped<OrganisationRegisteredEventHandler>();
         services.AddScoped<IPponRepository, DatabasePponRepository>();
 
         services.AddHostedService<QueueBackgroundService>();
