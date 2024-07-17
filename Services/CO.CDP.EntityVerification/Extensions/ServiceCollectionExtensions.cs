@@ -1,4 +1,6 @@
+using Amazon;
 using Amazon.Runtime;
+using Amazon.Sqs;
 using Amazon.SQS;
 using CO.CDP.EntityVerification.Events;
 using CO.CDP.EntityVerification.MQ;
@@ -6,6 +8,9 @@ using CO.CDP.EntityVerification.Persistence;
 using CO.CDP.EntityVerification.Ppon;
 using CO.CDP.MQ;
 using CO.CDP.MQ.Sqs;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using System.Text.Json;
 
 namespace CO.CDP.EntityVerification.Extensions;
 
@@ -48,6 +53,20 @@ public static class ServiceCollectionExtensions
             dispatcher.Subscribe<OrganisationRegistered>(message =>
                 s.GetRequiredService<IEventHandler<OrganisationRegistered>>().Handle(message));
             return dispatcher;
+        });
+        services.AddScoped<IPublisher, SqsPublisher>(s =>
+        {
+            var sqsClient = s.GetRequiredService<AmazonSQSClient>();
+            var queueUrl = sqsClient.GetQueueUrlAsync(config.GetValue("OutboundQueue:Name", "") ?? "")
+                .GetAwaiter()
+                .GetResult();
+            var publisher = new SqsPublisher(
+                sqsClient,
+                _ => queueUrl.QueueUrl,
+                o => JsonSerializer.Serialize(o)
+            );
+
+            return publisher;
         });
         services.AddScoped<IPponService, PponService>();
         services.AddScoped<OrganisationRegisteredEventHandler>();
