@@ -13,6 +13,10 @@ public class ConnectedEntityState
     public string? OrganisationName { get; set; }
     public Address? RegisteredAddress { get; set; }
     public Address? PostalAddress { get; set; }
+    public string? LegalForm {  get; set; }
+    public string? LawRegistered { get; set; }
+    public bool? HasCompaniesHouseNumber { get; set; }
+    public string? CompaniesHouseNumber { get; set; }
 
     public class Address
     {
@@ -21,6 +25,15 @@ public class ConnectedEntityState
         public string? Postcode { get; set; }
         public string? Country { get; set; }
         public bool IsNonUk => Country != Constants.Country.UnitedKingdom;
+
+        public bool? AreSameAddress(Address? address)
+        {
+            if (address == null) return null;
+            return AddressLine1 == address.AddressLine1
+                    && TownOrCity == address.TownOrCity
+                    && Postcode == address.Postcode
+                    && Country == address.Country;
+        }
     }
 
     public void UpdateState(Guid supplierOrganisationId, Organisation.WebApiClient.ConnectedEntity connectedEntity)
