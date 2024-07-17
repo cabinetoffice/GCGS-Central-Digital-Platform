@@ -1,7 +1,10 @@
 # Define Docker/ECR attributes
 AWS_ACCOUNT_ID=$$(aws sts get-caller-identity | jq -r '.Account')
 REPO_URL := $(AWS_ACCOUNT_ID).dkr.ecr.eu-west-2.amazonaws.com
-DOCKER_COMPOSE_CMD=IMAGE_VERSION=$(IMAGE_VERSION) docker compose
+IMAGE_VERSION ?= latest
+
+export DOCKER_BUILDKIT=1
+export COMPOSE_DOCKER_CLI_BUILD=1
 
 # Extracts targets and their comments
 help: ## List available commands
@@ -21,36 +24,30 @@ test: ## Run tests
 	@dotnet test $(TEST_OPTIONS)
 .PHONY: test
 
-build-docker: IMAGE_VERSION ?= latest
 build-docker: ## Build Docker images
-	@$(DOCKER_COMPOSE_CMD) build
+	@docker compose build
 .PHONY: build-docker
 
-up: IMAGE_VERSION ?= latest
 up: compose.override.yml ## Start Docker containers
-	@$(DOCKER_COMPOSE_CMD) up -d
-	@$(DOCKER_COMPOSE_CMD) ps
+	@docker compose up -d
+	@docker compose ps
 .PHONY: up
 
-down: IMAGE_VERSION ?= latest
 down: ## Destroy Docker containers
-	@$(DOCKER_COMPOSE_CMD) down
+	@docker compose down
 .PHONY: down
 
-stop: IMAGE_VERSION ?= latest
 stop: ## Stop Docker containers
-	@$(DOCKER_COMPOSE_CMD) stop
+	@docker compose stop
 .PHONY: down
 
-ps: IMAGE_VERSION ?= latest
 ps: ## Show Docker container status
-	@$(DOCKER_COMPOSE_CMD) ps
+	@docker compose ps
 .PHONY: ps
 
-db: IMAGE_VERSION ?= latest
 db: compose.override.yml ## Start DB and organisation-information-migrations services and follow organisation-information-migrations logs
-	@$(DOCKER_COMPOSE_CMD) up -d db organisation-information-migrations
-	@$(DOCKER_COMPOSE_CMD) logs -f organisation-information-migrations
+	@docker compose up -d db organisation-information-migrations
+	@docker compose logs -f organisation-information-migrations
 .PHONY: db
 
 OpenAPI: build ## Create OpenAPI folder and copy relevant files in
