@@ -1,6 +1,7 @@
 using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.Pages.Forms;
 using FluentAssertions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moq;
 
@@ -9,6 +10,8 @@ public class DynamicFormsPageTests
 {
     private readonly Mock<IFormsEngine> _formsEngineMock;
     private readonly Mock<ITempDataService> _tempDataServiceMock;
+    private readonly Mock<HttpRequest> _requestMock;
+    private readonly Mock<HttpContext> _httpContextMock;
     private readonly DynamicFormsPageModel _pageModel;
     private readonly Guid _organisationId;
     private readonly Guid _formId;
@@ -18,8 +21,9 @@ public class DynamicFormsPageTests
     {
         _formsEngineMock = new Mock<IFormsEngine>();
         _tempDataServiceMock = new Mock<ITempDataService>();
-        _pageModel = new DynamicFormsPageModel(_formsEngineMock.Object, _tempDataServiceMock.Object);
-
+        _requestMock = new Mock<HttpRequest>();
+        _httpContextMock = new Mock<HttpContext>();
+        _pageModel = new DynamicFormsPageModel(_formsEngineMock.Object, _tempDataServiceMock.Object);        
         _organisationId = Guid.NewGuid();
         _formId = Guid.NewGuid();
         _sectionId = Guid.NewGuid();
@@ -102,6 +106,75 @@ public class DynamicFormsPageTests
         _pageModel.ModelState["YesNoAnswer"]?.Errors.Should().ContainSingle(e => e.ErrorMessage == "Please select an option.");
     }
 
+    [Fact]
+    public void OnPostAsync_ShouldReturnPageWithErrors_WhenFileUploadIsNotProvided()
+    {
+        var sectionQuestionsResponse = SetupMockLoadFormSectionAsync();
+        var currentQuestion = sectionQuestionsResponse.Questions!.First(q => q.Type == FormQuestionType.FileUpload);
+        var currentQuestionId = currentQuestion.Id;
+
+        var formFileCollection = new FormFileCollection();
+        var formCollection = new FormCollection(new Dictionary<string, Microsoft.Extensions.Primitives.StringValues>(), formFileCollection);
+
+        _requestMock.Setup(x => x.Form).Returns(formCollection);
+
+        _pageModel.Request = _requestMock.Object;
+
+        var result = _pageModel.ValidateFileUpload();
+
+        Assert.False(result);
+        Assert.True(_pageModel.ModelState.ContainsKey("Answer"));
+        Assert.Equal("No file selected.", _pageModel.ModelState["Answer"]?.Errors?[0].ErrorMessage);
+    }
+
+    [Fact]
+    public void OnPostAsync_ShouldReturnPageWithErrors_WhenFileUploadSizeInvalid()
+    {
+        var sectionQuestionsResponse = SetupMockLoadFormSectionAsync();
+        var currentQuestion = sectionQuestionsResponse.Questions!.First(q => q.Type == FormQuestionType.FileUpload);
+        var currentQuestionId = currentQuestion.Id;
+
+        var fileMock = new Mock<IFormFile>();
+        fileMock.Setup(f => f.Length).Returns(11 * 1024 * 1024);
+        fileMock.Setup(f => f.Name).Returns("UploadedFile");
+
+        var formFileCollection = new FormFileCollection { fileMock.Object };
+        var formCollection = new FormCollection(new Dictionary<string, Microsoft.Extensions.Primitives.StringValues>(), formFileCollection);
+
+        _requestMock.Setup(x => x.Form).Returns(formCollection);
+
+        _pageModel.Request = _requestMock.Object;
+
+        var result = _pageModel.ValidateFileUpload();
+
+        Assert.False(result);
+        Assert.True(_pageModel.ModelState.ContainsKey("Answer"));
+        Assert.Equal("The file size must not exceed 10MB.", _pageModel.ModelState["Answer"]?.Errors?[0].ErrorMessage);
+    }
+
+    [Fact]
+    public void OnPostAsync_ShouldReturnPageWithErrors_WhenFileUploadTypeInvalid()
+    {
+        var sectionQuestionsResponse = SetupMockLoadFormSectionAsync();
+        var currentQuestion = sectionQuestionsResponse.Questions!.First(q => q.Type == FormQuestionType.FileUpload);
+        var currentQuestionId = currentQuestion.Id;
+
+        var fileMock = new Mock<IFormFile>();
+        fileMock.Setup(f => f.Length).Returns(5 * 1024 * 1024);
+        fileMock.Setup(f => f.Name).Returns("UploadedFile");
+        fileMock.Setup(f => f.FileName).Returns("badfile.exe");
+        var formFileCollection = new FormFileCollection { fileMock.Object };
+        var formCollection = new FormCollection(new Dictionary<string, Microsoft.Extensions.Primitives.StringValues>(), formFileCollection);
+
+        _requestMock.Setup(x => x.Form).Returns(formCollection);
+        _pageModel.Request = _requestMock.Object;
+
+        var result = _pageModel.ValidateFileUpload();
+
+        Assert.False(result);
+        Assert.True(_pageModel.ModelState.ContainsKey("Answer"));
+        Assert.Equal("Please upload a file which has one of the following extensions: .pdf, .docx, .csv, .jpg, .bmp, .png, .tif", _pageModel.ModelState["Answer"]?.Errors?[0].ErrorMessage);
+    }
 
     [Fact]
     public void GetPartialViewName_ShouldReturnCorrectPartialViewName_WhenQuestionTypeIsProvided()
@@ -155,7 +228,8 @@ public class DynamicFormsPageTests
             Questions = new List<FormQuestion>
                     {
                         new FormQuestion { Id = Guid.NewGuid(), Title = "Question1", Type = FormQuestionType.YesOrNo, IsRequired = true },
-                        new FormQuestion { Id = Guid.NewGuid(), Title = "Question2", Type = FormQuestionType.Text, IsRequired = true }
+                        new FormQuestion { Id = Guid.NewGuid(), Title = "Question2", Type = FormQuestionType.Text, IsRequired = true },
+                        new FormQuestion { Id = Guid.NewGuid(), Title = "Question3", Type = FormQuestionType.FileUpload, IsRequired = true }
                     }
         };
     }
