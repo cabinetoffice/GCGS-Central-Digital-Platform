@@ -21,8 +21,6 @@ public class GetFormSectionQuestionsUseCase(IFormRepository formRepository, IMap
         if (section == null)
             return null;
 
-        // var questions = await formRepository.GetQuestionsAsync(sectionId);
-
         return new SectionQuestionsResponse
         {
             Section = mapper.Map<FormSection>(section),
