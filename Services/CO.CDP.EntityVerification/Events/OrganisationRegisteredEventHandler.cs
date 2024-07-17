@@ -3,15 +3,16 @@ using CO.CDP.EntityVerification.Services;
 
 namespace CO.CDP.EntityVerification.Events;
 
-public class OrganisationRegisteredEventHandler(IPponService pponService, IPponRepository pponRepository) : IEventHandler
+public class OrganisationRegisteredEventHandler(IPponService pponService, IPponRepository pponRepository)
+    : IEventHandler<OrganisationRegistered, Task>
 {
-    public void Action(IEvent msg)
+    public Task Handle(OrganisationRegistered @event)
     {
-        OrganisationRegistered newOrg = (OrganisationRegistered)msg;
         var pponid = pponService.GeneratePponId();
 
         Ppon newIdentifier = new() { PponId = pponid };
 
         pponRepository.Save(newIdentifier);
+        return Task.CompletedTask;
     }
 }

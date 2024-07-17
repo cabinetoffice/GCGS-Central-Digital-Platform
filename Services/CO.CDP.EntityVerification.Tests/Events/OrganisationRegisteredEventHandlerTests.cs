@@ -8,7 +8,7 @@ namespace CO.CDP.EntityVerification.Tests.Events;
 public class OrganisationRegisteredEventHandlerTests
 {
     [Fact]
-    public void Action_GeneratesPponIdAndPersists()
+    public async Task Action_GeneratesPponIdAndPersists()
     {
         var pponRepository = new Mock<IPponRepository>();
         var pponService = new Mock<IPponService>();
@@ -17,12 +17,12 @@ public class OrganisationRegisteredEventHandlerTests
         pponService.Setup(x => x.GeneratePponId()).Returns(generatedPpon);
 
         var handler = new OrganisationRegisteredEventHandler(pponService.Object, pponRepository.Object);
-        var message = new OrganisationRegistered
+        var @event = new OrganisationRegistered
         {
             Name = "MyOrg",
         };
 
-        handler.Action(message);
+        await handler.Handle(@event);
 
         pponRepository.Verify(s => s.Save(It.Is<Ppon>(p => p.PponId == generatedPpon)), Times.Once);
     }
