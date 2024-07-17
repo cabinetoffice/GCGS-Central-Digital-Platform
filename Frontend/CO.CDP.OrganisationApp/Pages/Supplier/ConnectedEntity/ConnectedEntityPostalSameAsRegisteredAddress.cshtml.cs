@@ -32,9 +32,12 @@ public class ConnectedEntityPostalSameAsRegisteredAddressModel(ISession session)
                 "ConnectedEntityCheckAnswers" : "ConnectedEntitySupplierCompanyQuestion", new { Id, ConnectedEntityId });
         }
 
-        DifferentThanRegiseterdAddress = selected.HasValue ? selected : AreSameAddress(state.RegisteredAddress, state.PostalAddress);
+        var sameAddress = state.RegisteredAddress?.AreSameAddress(state.PostalAddress);
+
+        DifferentThanRegiseterdAddress = selected.HasValue ? selected : (sameAddress.HasValue ? !sameAddress : sameAddress);
 
         InitModal(state);
+
         return Page();
     }
 
@@ -59,7 +62,7 @@ public class ConnectedEntityPostalSameAsRegisteredAddressModel(ISession session)
             session.Set(Session.ConnectedPersonKey, state);
 
             //TODO 5: Next page link??;
-            return RedirectToPage("ConnectedEntityDeclaration", new { Id });
+            return RedirectToPage("ConnectedEntityLawRegister", new { Id, ConnectedEntityId });
         }
 
         return RedirectToPage("ConnectedEntityAddress",
@@ -77,16 +80,7 @@ public class ConnectedEntityPostalSameAsRegisteredAddressModel(ISession session)
         }
         return (true, cp);
     }
-
-    private static bool? AreSameAddress(ConnectedEntityState.Address? registeredAddress, ConnectedEntityState.Address? postalAddress)
-    {
-        if (registeredAddress == null || postalAddress == null) return null;
-        return registeredAddress.AddressLine1 == postalAddress.AddressLine1
-                && registeredAddress.TownOrCity == postalAddress.TownOrCity
-                && registeredAddress.Postcode == postalAddress.Postcode
-                && registeredAddress.Country == postalAddress.Country;
-    }
-
+        
     private void InitModal(ConnectedEntityState state)
     {
         OrganisationName = state.OrganisationName;
