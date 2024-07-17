@@ -23,12 +23,13 @@ public static class ServiceCollectionExtensions
         {
             var sqsConfig = new AmazonSQSConfig
             {
-                ServiceURL = config["ServiceURL"],
+                ServiceURL = config.GetValue("Sqs:ServiceURL", ""),
                 UseHttp = false,
-                AuthenticationRegion = config["AuthenticationRegion"]
+                AuthenticationRegion = config.GetValue("Sqs:AuthenticationRegion", "")
             };
-
-            var credentials = new BasicAWSCredentials(config["accessKey"], config["secretKey"]);
+            var credentials = new BasicAWSCredentials(
+                config.GetValue("Sqs:AccessKey", ""),
+                config.GetValue("Sqs:SecretKey", ""));
             return new AmazonSQSClient(credentials, sqsConfig);
         });
         services.AddScoped<IDispatcher, SqsDispatcher>(s =>

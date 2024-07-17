@@ -238,9 +238,9 @@ services:
       interval: 60s
       timeout: 10s
       retries: 10
+    depends_on:
+      - db
     environment:
       ASPNETCORE_ENVIRONMENT: Production
-      ServiceURL: "http://localstack:4566"
-      ConnectionStrings__EvDatabase": 'Server=db;Database=cdp;Username=cdp_user;Password=cdp123;'
-      accessKey: test
-      secretKey: test
+      ConnectionStrings__EvDatabase: 'Server=db;Database=cdp;Username=cdp_user;Password=cdp123;'
+      Sqs__ServiceURL: "http://localstack:4566"
