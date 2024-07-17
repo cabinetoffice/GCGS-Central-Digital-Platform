@@ -3,6 +3,7 @@ using Amazon.SQS;
 using CO.CDP.EntityVerification.Events;
 using CO.CDP.EntityVerification.Persistence;
 using CO.CDP.EntityVerification.Services;
+using CO.CDP.EntityVerification.Sqs;
 using CO.CDP.MQ;
 using CO.CDP.MQ.Sqs;
 

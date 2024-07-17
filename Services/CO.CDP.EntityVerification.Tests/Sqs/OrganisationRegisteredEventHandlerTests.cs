@@ -1,9 +1,9 @@
 using CO.CDP.EntityVerification.Events;
 using CO.CDP.EntityVerification.Persistence;
-using CO.CDP.EntityVerification.Services;
+using CO.CDP.EntityVerification.Sqs;
 using Moq;
 
-namespace CO.CDP.EntityVerification.Tests.Events;
+namespace CO.CDP.EntityVerification.Tests.Sqs;
 
 public class OrganisationRegisteredEventHandlerTests
 {

@@ -1,6 +1,6 @@
-using CO.CDP.EntityVerification.Services;
+using CO.CDP.EntityVerification.Sqs;
 
-namespace CO.CDP.EntityVerification.Tests.Services;
+namespace CO.CDP.EntityVerification.Tests.Sqs;
 
 public class PponServiceTests
 {

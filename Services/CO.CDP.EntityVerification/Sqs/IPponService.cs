@@ -1,4 +1,4 @@
-namespace CO.CDP.EntityVerification.Services;
+namespace CO.CDP.EntityVerification.Sqs;
 
 public interface IPponService
 {
