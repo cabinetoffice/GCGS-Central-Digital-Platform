@@ -45,10 +45,14 @@ ps: ## Show Docker container status
 	@docker compose ps
 .PHONY: ps
 
-db: compose.override.yml ## Start DB and organisation-information-migrations services and follow organisation-information-migrations logs
+db: compose.override.yml ## Start DB and DB migration services
 	@docker compose up -d db organisation-information-migrations entity-verification-migrations
 	@docker compose logs -f organisation-information-migrations entity-verification-migrations
 .PHONY: db
+
+localstack: compose.override.yml ## Start the localstack service for AWS services available locally
+	@docker compose up -d localstack
+.PHONY: localstack
 
 OpenAPI: build ## Create OpenAPI folder and copy relevant files in
 	@mkdir -p OpenAPI
