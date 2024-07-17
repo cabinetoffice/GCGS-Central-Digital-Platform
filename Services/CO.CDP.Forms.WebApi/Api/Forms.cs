@@ -1,4 +1,5 @@
-using CO.CDP.Forms.WebApi.Model;
+using CO.CDP.Functional;
+using CO.CDP.Forms.WebApi.UseCase;
 using CO.CDP.OrganisationInformation;
 using CO.CDP.Swashbuckle.Filter;
 using CO.CDP.Swashbuckle.Security;
@@ -12,71 +13,16 @@ namespace CO.CDP.Forms.WebApi.Api;
 
 public static class EndpointExtensions
 {
-    private static readonly Dictionary<Guid, (FormSection section, List<FormQuestion> questions)> _sections = Enumerable.Range(1, 5)
-           .Select(_ => Guid.NewGuid())
-           .ToDictionary(id => id, id =>
-           {
-               var sectionId = Guid.NewGuid();
-               return (new FormSection
-               {
-                   Id = sectionId,
-                   Title = "Financial Information",
-                   AllowsMultipleAnswerSets = true,
-               },
-               new List<FormQuestion>
-               {
-                    new() {
-                        Id = Guid.NewGuid(),
-                        Title = "Upload accounts or statements for your 2 most recent financial years.",
-                        Description = "If you do not have 2 years, you can upload your most recent financial year. You will need to enter the financial year end date.",
-                        Type = FormQuestionType.NoInput,
-                        IsRequired = true,
-                        Options = new FormQuestionOptions()
-                    },
-                    new() {
-                        Id = Guid.NewGuid(),
-                        Title = "Were your accounts audited?",
-                        Type = FormQuestionType.YesOrNo,
-                        IsRequired = true,
-                        Options = new FormQuestionOptions()
-                    },
-                    new() {
-                        Id = Guid.NewGuid(),
-                        Title = "Upload your accounts",
-                        Description = "Upload your most recent 2 financial years. If you do not have 2, upload your most recent financial year.",
-                        Type = FormQuestionType.FileUpload,
-                        IsRequired = true,
-                        Options = new FormQuestionOptions()
-                    },
-                    new() {
-                        Id = Guid.NewGuid(),
-                        Title = "What is the financial year end date for the information you uploaded?",
-                        Type = FormQuestionType.Date,
-                        IsRequired = true,
-                        Options = new FormQuestionOptions()
-                    }
-               });
-           });
-
     public static void UseFormsEndpoints(this WebApplication app)
     {
-        app.MapGet("/forms/{formId}/sections/{sectionId}/questions",
-                (Guid formId, Guid sectionId) =>
-                {
-                    var (section, questions) = _sections.Values.First();
-                    var response = new SectionQuestionsResponse
-                    {
-                        Section = section,
-                        Questions = [.. questions]
-                    };
-
-                    return Results.Ok(response);
-                })
-           .Produces<SectionQuestionsResponse>(StatusCodes.Status200OK, "application/json")
-            .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
-            .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
-           .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError)
-           .WithOpenApi(operation =>
+        app.MapGet("/forms/{formId}/sections/{sectionId}/questions", async (Guid formId, Guid sectionId, IUseCase<(Guid,Guid), Model.SectionQuestionsResponse?> useCase) =>
+                await useCase.Execute((formId, sectionId))
+                    .AndThen(sectionQuestions => sectionQuestions != null ? Results.Ok(sectionQuestions) : Results.NotFound()))
+                    .Produces<Model.SectionQuestionsResponse>(StatusCodes.Status200OK, "application/json")
+                    .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
+                    .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
+                    .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError)
+                    .WithOpenApi(operation =>
            {
                operation.OperationId = "GetFormSectionQuestions";
                operation.Description = "[STUB] Get Form Section and Its Questions. [STUB]";
