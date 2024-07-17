@@ -204,7 +204,7 @@ public class DynamicFormsPageModel(IFormsEngine formsEngine, ITempDataService te
 
         if (file.Length > maxFileLength)
         {
-            ModelState.AddModelError("Answer", "The file size must not exceed " + allowedFileSizeMB + "MB.");
+            ModelState.AddModelError("Answer", $"The file size must not exceed {allowedFileSizeMB}MB.");
             return false;
         }
 
@@ -212,7 +212,7 @@ public class DynamicFormsPageModel(IFormsEngine formsEngine, ITempDataService te
         
         if (!allowedExtensions.Contains(fileExtension))
         {
-            ModelState.AddModelError("Answer", "Please upload a file which has one of the following extensions: " + string.Join(", ", allowedExtensions));
+            ModelState.AddModelError("Answer", $"Please upload a file which has one of the following extensions: {string.Join(", ", allowedExtensions)}");
             return false;
         }
 
