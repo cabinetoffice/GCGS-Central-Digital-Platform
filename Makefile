@@ -46,8 +46,8 @@ ps: ## Show Docker container status
 .PHONY: ps
 
 db: compose.override.yml ## Start DB and organisation-information-migrations services and follow organisation-information-migrations logs
-	@docker compose up -d db organisation-information-migrations
-	@docker compose logs -f organisation-information-migrations
+	@docker compose up -d db organisation-information-migrations entity-verification-migrations
+	@docker compose logs -f organisation-information-migrations entity-verification-migrations
 .PHONY: db
 
 OpenAPI: build ## Create OpenAPI folder and copy relevant files in
