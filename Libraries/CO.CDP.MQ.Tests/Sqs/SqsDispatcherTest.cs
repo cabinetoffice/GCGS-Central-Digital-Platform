@@ -33,7 +33,7 @@ public class SqsDispatcherTest : DispatcherContractTest, IClassFixture<LocalStac
 
     protected override async Task<IDispatcher> CreateDispatcher()
     {
-        var queue = await _sqsClient.CreateQueueAsync(new CreateQueueRequest
+        await _sqsClient.CreateQueueAsync(new CreateQueueRequest
         {
             QueueName = TestQueue,
             Attributes =
