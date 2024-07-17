@@ -1,6 +1,6 @@
 namespace CO.CDP.EntityVerification.Events;
 
-public interface IEventHandler<in TEvent, out TOutcome>
+public interface IEventHandler<in TEvent>
 {
-    TOutcome Handle(TEvent @event);
+    Task Handle(TEvent @event);
 }

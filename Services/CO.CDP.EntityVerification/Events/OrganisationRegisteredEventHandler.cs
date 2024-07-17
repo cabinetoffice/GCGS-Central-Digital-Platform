@@ -4,7 +4,7 @@ using CO.CDP.EntityVerification.Services;
 namespace CO.CDP.EntityVerification.Events;
 
 public class OrganisationRegisteredEventHandler(IPponService pponService, IPponRepository pponRepository)
-    : IEventHandler<OrganisationRegistered, Task>
+    : IEventHandler<OrganisationRegistered>
 {
     public Task Handle(OrganisationRegistered @event)
     {
