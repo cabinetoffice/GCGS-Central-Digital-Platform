@@ -105,7 +105,7 @@ public class ConnectedEntityAddressModel(ISession session) : PageModel
             return actionResult;
 
         if (AddressType == AddressType.Postal)
-            return RedirectToPage("ConnectedEntityNextPageAfterPostal", new { Id, ConnectedEntityId }); //TODO 5: Figure out page
+            return RedirectToPage("ConnectedEntityLawRegister", new { Id, ConnectedEntityId }); //TODO 5: Figure out page
 
         return RedirectToPage("ConnectedEntityPostalSameAsRegisteredAddress", new { Id, ConnectedEntityId });
     }

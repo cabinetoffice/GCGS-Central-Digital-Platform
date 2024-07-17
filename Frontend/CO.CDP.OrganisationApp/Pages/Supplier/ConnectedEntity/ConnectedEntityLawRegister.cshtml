@@ -1,0 +1,84 @@
+@page "/organisation/{id}/supplier-information/connected-person/law-register/{ConnectedEntityId?}"
+@model CO.CDP.OrganisationApp.Pages.Supplier.ConnectedEntityLawRegisterModel
+
+@{
+    var legalFormHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.LegalForm)).HasInnerHtml;
+
+    var lawRegister = ((TagBuilder)Html.ValidationMessageFor(m => m.LawRegistered)).HasInnerHtml;
+
+    var backLink = $"/organisation/{@Model.Id}/supplier-information/connected-person/{Model.BackPageLink}";
+}
+
+<a href="@backLink" class="govuk-back-link">
+    Back
+</a>
+
+<main class="govuk-main-wrapper">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <span class="govuk-caption-xl">@Model.Caption</span>
+            <partial name="_ErrorSummary" model="@ModelState" />
+
+            <form method="post">
+                <fieldset class="govuk-fieldset" data-required="" data-error="Enter the legal form of the organisation" aria-required="true">
+                    @if (Request.Query.ContainsKey("frm-summary"))
+                    {
+                        <input type="hidden" name="RedirectToSummary" value="true" />
+                    }
+                    <h1 class="govuk-heading-l">
+                        @Model.LegalFormDisplayText
+                    </h1>
+                    <div class="govuk-form-group">
+                        <label class="govuk-label" for="legalFormation-1">
+                            Legal formation
+                        </label>
+                        <div id="legalFormation-hint-1" class="govuk-hint">
+                            When it was set up and registered, what structure was used. Also called trading status. For example, a limited company or limited liability partnership.
+                        </div>
+
+                        <div class="govuk-form-group @(legalFormHasError ? "govuk-form-group--error" : "")">
+                            @if (legalFormHasError)
+                            {
+                                <p id="organisation-name-error" class="govuk-error-message">
+                                    <span class="govuk-visually-hidden">Error:</span>
+                                    @Html.ValidationMessageFor(m => m.LegalForm)
+                                </p>
+                            }
+                            <input class="govuk-input @(legalFormHasError ? "govuk-input--error" : "")" id="@nameof(Model.LegalForm)"
+                                   value="@Model.LegalForm" name="@nameof(Model.LegalForm)" type="text"
+                                   spellcheck="false" @(legalFormHasError ? "aria-describedby=organisation-name-error" : "")>
+                        </div>
+                    </div>
+
+                    <div class="govuk-form-group">
+
+                        <label class="govuk-label" for="legalFormation-2">
+                            Which law enforces it?
+                        </label>
+                        <div id="legalFormation-hint-2" class="govuk-hint">
+                            For example, Companies Act 2006.
+                        </div>
+                        <div class="govuk-form-group @(lawRegister ? "govuk-form-group--error" : "")">
+                            @if (lawRegister)
+                            {
+                                <p id="organisation-name-error" class="govuk-error-message">
+                                    <span class="govuk-visually-hidden">Error:</span>
+                                    @Html.ValidationMessageFor(m => m.LawRegistered)
+                                </p>
+                            }
+                            <input class="govuk-input @(lawRegister ? "govuk-input--error" : "")" id="@nameof(Model.LawRegistered)"
+                                   value="@Model.LawRegistered" name="@nameof(Model.LawRegistered)" type="text"
+                                   spellcheck="false" @(lawRegister ? "aria-describedby=organisation-name-error" : "")>
+                        </div>
+                    </div>
+
+                    <button type="submit"
+                            class="govuk-button"
+                            data-module="govuk-button">
+                        Continue
+                    </button>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+</main>
