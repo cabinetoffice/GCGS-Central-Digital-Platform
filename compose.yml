@@ -240,7 +240,6 @@ services:
       retries: 10
     environment:
       ASPNETCORE_ENVIRONMENT: Production
-      QueueUrl: 'https://localhost.localstack.cloud:4566/000000000000/create-organisation'
       ServiceURL: "http://localstack:4566"
       ConnectionStrings__EvDatabase": 'Server=db;Database=cdp;Username=cdp_user;Password=cdp123;'
       accessKey: test

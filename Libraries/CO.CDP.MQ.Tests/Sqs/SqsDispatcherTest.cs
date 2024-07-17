@@ -41,7 +41,13 @@ public class SqsDispatcherTest : DispatcherContractTest, IClassFixture<LocalStac
                 { "VisibilityTimeout", "0" }
             }
         });
-        return new SqsDispatcher(SqsClient(), queue.QueueUrl,
+        return new SqsDispatcher(SqsClient(),
+            new SqsDispatcherConfiguration
+            {
+                MaxNumberOfMessages = 1,
+                QueueName = TestQueue,
+                WaitTimeSeconds = 1
+            },
             (type, body) =>
             {
                 if (type == "TestMessage")

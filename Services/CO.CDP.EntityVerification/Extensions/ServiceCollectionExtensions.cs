@@ -35,7 +35,12 @@ public static class ServiceCollectionExtensions
         {
             var dispatcher = new SqsDispatcher(
                 s.GetRequiredService<AmazonSQSClient>(),
-                config["QueueUrl"],
+                new SqsDispatcherConfiguration
+                {
+                    QueueName = config.GetValue("InboundQueue:Name", "") ?? "",
+                    WaitTimeSeconds = config.GetValue("InboundQueue:WaitTimeSeconds", 20),
+                    MaxNumberOfMessages = config.GetValue("InboundQueue:MaxNumberOfMessages", 10)
+                },
                 EventDeserializer.Deserializer);
             dispatcher.Subscribe<OrganisationRegistered>(message =>
             {

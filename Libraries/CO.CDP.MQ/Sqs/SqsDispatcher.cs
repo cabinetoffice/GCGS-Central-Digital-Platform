@@ -7,15 +7,23 @@ public delegate object Deserializer(string type, string body);
 
 public delegate bool TypeMatcher(Type type, string typeName);
 
+public record SqsDispatcherConfiguration
+{
+    public required string QueueName { get; init; }
+    public required int MaxNumberOfMessages { get; init; } = 1;
+    public required int WaitTimeSeconds { get; init; } = 30;
+}
+
 public class SqsDispatcher(
     AmazonSQSClient sqsClient,
-    string queueUrl,
+    SqsDispatcherConfiguration configuration,
     Deserializer deserializer,
     TypeMatcher typeMatcher)
     : IDispatcher
 {
-    public SqsDispatcher(AmazonSQSClient sqsClient, string queueUrl, Deserializer deserializer) : this(
-        sqsClient, queueUrl, deserializer, (type, typeName) => type.Name == typeName)
+    public SqsDispatcher(
+        AmazonSQSClient sqsClient, SqsDispatcherConfiguration configuration, Deserializer deserializer)
+        : this(sqsClient, configuration, deserializer, (type, typeName) => type.Name == typeName)
     {
     }
 
@@ -33,18 +41,25 @@ public class SqsDispatcher(
     {
         return Task.Run(async () =>
         {
+            var queueUrl = await GetQueueUrl(cancellationToken);
             while (!cancellationToken.IsCancellationRequested)
             {
-                foreach (var message in await ReceiveMessagesAsync(cancellationToken))
+                foreach (var message in await ReceiveMessagesAsync(queueUrl, cancellationToken))
                 {
                     await HandleMessage(message);
-                    await DeleteMessage(message);
+                    await DeleteMessage(queueUrl, message);
                 }
             }
         }, cancellationToken);
     }
 
-    private async Task<List<Message>> ReceiveMessagesAsync(CancellationToken cancellationToken)
+    private async Task<string> GetQueueUrl(CancellationToken cancellationToken)
+    {
+        var queue = await sqsClient.GetQueueUrlAsync(configuration.QueueName, cancellationToken);
+        return queue.QueueUrl;
+    }
+
+    private async Task<List<Message>> ReceiveMessagesAsync(string queueUrl, CancellationToken cancellationToken)
     {
         var response = await sqsClient.ReceiveMessageAsync(new ReceiveMessageRequest
         {
@@ -71,7 +86,7 @@ public class SqsDispatcher(
         }
     }
 
-    private async Task DeleteMessage(Message message)
+    private async Task DeleteMessage(string queueUrl, Message message)
     {
         await sqsClient.DeleteMessageAsync(new DeleteMessageRequest
         {
