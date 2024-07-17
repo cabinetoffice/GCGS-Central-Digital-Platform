@@ -1,7 +1,7 @@
 using CO.CDP.EntityVerification.Events;
 using CO.CDP.EntityVerification.Persistence;
 
-namespace CO.CDP.EntityVerification.Sqs;
+namespace CO.CDP.EntityVerification.Ppon;
 
 public class OrganisationRegisteredEventHandler(IPponService pponService, IPponRepository pponRepository)
     : IEventHandler<OrganisationRegistered>
@@ -10,7 +10,7 @@ public class OrganisationRegisteredEventHandler(IPponService pponService, IPponR
     {
         var pponId = pponService.GeneratePponId();
 
-        Ppon newIdentifier = new() { PponId = pponId };
+        Persistence.Ppon newIdentifier = new() { PponId = pponId };
 
         pponRepository.Save(newIdentifier);
         return Task.CompletedTask;

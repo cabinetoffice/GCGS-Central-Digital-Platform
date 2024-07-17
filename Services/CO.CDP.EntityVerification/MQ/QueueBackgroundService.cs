@@ -1,6 +1,6 @@
 using CO.CDP.MQ;
 
-namespace CO.CDP.EntityVerification.Services;
+namespace CO.CDP.EntityVerification.MQ;
 
 public class QueueBackgroundService(IServiceProvider services) : BackgroundService
 {

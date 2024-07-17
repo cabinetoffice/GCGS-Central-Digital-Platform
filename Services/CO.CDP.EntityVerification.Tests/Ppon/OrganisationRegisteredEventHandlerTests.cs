@@ -1,9 +1,9 @@
 using CO.CDP.EntityVerification.Events;
 using CO.CDP.EntityVerification.Persistence;
-using CO.CDP.EntityVerification.Sqs;
+using CO.CDP.EntityVerification.Ppon;
 using Moq;
 
-namespace CO.CDP.EntityVerification.Tests.Sqs;
+namespace CO.CDP.EntityVerification.Tests.Ppon;
 
 public class OrganisationRegisteredEventHandlerTests
 {
@@ -24,6 +24,7 @@ public class OrganisationRegisteredEventHandlerTests
 
         await handler.Handle(@event);
 
-        pponRepository.Verify(s => s.Save(It.Is<Ppon>(p => p.PponId == generatedPpon)), Times.Once);
+        pponRepository.Verify(
+            s => s.Save(It.Is<EntityVerification.Persistence.Ppon>(p => p.PponId == generatedPpon)), Times.Once);
     }
 }
