@@ -67,21 +67,3 @@ data "aws_iam_policy_document" "ecr_repo_policy_document" {
     }
   }
 }
-
-data "aws_iam_policy_document" "orchestrator_read_service_version_assume_role" {
-  statement {
-    actions = ["sts:AssumeRole"]
-    principals {
-      type        = "AWS"
-      identifiers = [for name, id in var.account_ids : "arn:aws:iam::${id}:role/cdp-sirsi-${name}-terraform"]
-    }
-  }
-}
-
-
-data "aws_iam_policy_document" "orchestrator_read_service_version" {
-  statement {
-    actions   = ["ssm:GetParameter"]
-    resources = ["arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter/cdp-sirsi-service-version"]
-  }
-}
