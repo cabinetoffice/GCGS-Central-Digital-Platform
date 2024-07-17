@@ -26,7 +26,8 @@ public enum FormQuestionType
     YesOrNo,
     SingleChoice,
     MultipleChoice,
-    CheckYourAnswers
+    CheckYourAnswers,
+    Date
 }
 
 public record FormQuestionOptions

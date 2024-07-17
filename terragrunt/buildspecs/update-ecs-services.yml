@@ -1,0 +1,17 @@
+version: 0.2
+
+phases:
+
+  pre_build:
+    commands:
+      - terraform version
+      - terragrunt --version
+
+  build:
+    commands:
+      - cd terragrunt/components/service/ecs
+      - pwd
+      - ls -la
+      - echo $TG_ENVIRONMENT
+      - terragrunt apply --auto-approve
+
