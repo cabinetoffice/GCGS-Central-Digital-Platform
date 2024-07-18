@@ -46,43 +46,59 @@ public class FormsEngine(IFormsClient formsApiClient, ITempDataService tempDataS
         return sectionQuestionsResponse;
     }
 
-    public async Task<Models.FormQuestion?> GetNextQuestion(Guid formId, Guid sectionId, Guid currentQuestionId)
+    public async Task<Models.FormQuestion?> GetNextQuestion(Guid formId, Guid sectionId, Guid? currentQuestionId)
     {
         return await GetAdjacentQuestion(formId, sectionId, currentQuestionId, 1);
     }
 
-    public async Task<Models.FormQuestion?> GetPreviousQuestion(Guid formId, Guid sectionId, Guid currentQuestionId)
+    public async Task<Models.FormQuestion?> GetPreviousQuestion(Guid formId, Guid sectionId, Guid? currentQuestionId)
     {
         return await GetAdjacentQuestion(formId, sectionId, currentQuestionId, -1);
     }
 
-    private async Task<Models.FormQuestion?> GetAdjacentQuestion(Guid formId, Guid sectionId, Guid currentQuestionId, int offset)
+    private async Task<Models.FormQuestion?> GetAdjacentQuestion(Guid formId, Guid sectionId, Guid? currentQuestionId, int offset)
     {
         var section = await LoadFormSectionAsync(formId, sectionId);
-        var questions = section.Questions;
-
-        if (questions == null)
+        if (section.Questions == null)
         {
             return null;
         }
 
-        var currentIndex = questions.FindIndex(q => q.Id == currentQuestionId);
-
-        if (currentIndex >= 0)
+        var currentIndex = 0;
+        if (currentQuestionId == null)
         {
-            var newIndex = currentIndex + offset;
-            if (newIndex >= 0 && newIndex < questions.Count)
+            if (offset == -1)
             {
-                return questions[newIndex];
+                return null;
             }
+            currentIndex = 0;
+        }
+        else
+        {
+            currentIndex = section.Questions.FindIndex(q => q.Id == currentQuestionId);
+        }
+
+        var newIndex = currentIndex + offset;
+        if (newIndex >= 0 && newIndex < section.Questions.Count)
+        {
+            return section.Questions[newIndex];
         }
 
         return null;
     }
 
-    public async Task<Models.FormQuestion?> GetCurrentQuestion(Guid formId, Guid sectionId, Guid questionId)
+    public async Task<Models.FormQuestion?> GetCurrentQuestion(Guid formId, Guid sectionId, Guid? questionId)
     {
-        var section = await LoadFormSectionAsync(formId, sectionId);
-        return section.Questions?.FirstOrDefault(q => q.Id == questionId);
+        return await GetAdjacentQuestion(formId, sectionId, questionId, 0);
+        //var section = await LoadFormSectionAsync(formId, sectionId);
+
+        //if (questionId.HasValue)
+        //{
+        //    return section.Questions?.FirstOrDefault(q => q.Id == questionId);
+        //}
+        //else
+        //{
+        //    return section.Questions?.FirstOrDefault();
+        //}
     }
 }

@@ -31,6 +31,11 @@ public class FormQuestionOptions
     public string? ChoiceProviderStrategy { get; set; }
 }
 
+public class FormQuestionAnswerState
+{
+    public List<QuestionAnswer> Answers { get; set; } = [];
+}
+
 public class QuestionAnswer
 {
     public Guid QuestionId { get; set; }

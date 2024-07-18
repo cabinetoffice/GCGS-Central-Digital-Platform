@@ -1,27 +1,28 @@
-@model CO.CDP.OrganisationApp.Models.FormQuestionViewModel
+@model FormElementFileUploadModel
 
 @{
-    var question = Model.FormQuestion;
-    var answer = Model.Answer;
-    var modelErrorCollection = ViewData?.ModelState?["Answer"]?.Errors;
-    var hasError = modelErrorCollection?.Count > 0;
+    var hasError = ((TagBuilder)Html.ValidationMessageFor(m => m.UploadedFile)).HasInnerHtml;
 }
+
+<input type="hidden" name="UploadedFileName" value="@Model.UploadedFileName" />
 
 <div class="govuk-form-group @(hasError ? "govuk-form-group--error" : "")">
     <h1 class="govuk-heading-l">
-        @question.Title
+        @Model.Heading
     </h1>
-    <p class="govuk-body">@question.Description</p>
-    @if (modelErrorCollection?.Count > 0)
-    {
-        <p id="Answer-error" class="govuk-error-message">
-            <span class="govuk-visually-hidden">Error:</span>
 
-            @foreach (var error in modelErrorCollection)
-            {
-                <span>@error.ErrorMessage</span>
-            }
+    <p class="govuk-body">@Model.Description</p>
+
+
+    <p class="govuk-body">Uploaded file: @Model.UploadedFileName </p>
+
+    @if (hasError)
+    {
+        <p class="govuk-error-message">
+            <span class="govuk-visually-hidden">Error:</span>
+            @Html.ValidationMessageFor(m => m.UploadedFile)
         </p>
     }
-    <input class="govuk-file-upload" id="@question.Id" name="UploadedFile" type="file">
+
+    <input class="govuk-file-upload" name="UploadedFile" type="file">
 </div>

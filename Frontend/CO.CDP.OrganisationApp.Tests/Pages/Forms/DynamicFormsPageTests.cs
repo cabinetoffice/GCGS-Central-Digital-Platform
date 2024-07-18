@@ -179,7 +179,7 @@ public class DynamicFormsPageTests
     [Fact]
     public void GetPartialViewName_ShouldReturnCorrectPartialViewName_WhenQuestionTypeIsProvided()
     {
-        var partialViewName = _pageModel.GetPartialViewName(FormQuestionType.YesOrNo);
+        var partialViewName = _pageModel.GetPartialView(FormQuestionType.YesOrNo);
 
         partialViewName.Should().Be("_FormElementYesNoInput");
     }

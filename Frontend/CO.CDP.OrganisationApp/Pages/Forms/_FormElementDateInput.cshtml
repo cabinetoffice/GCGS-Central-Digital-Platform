@@ -1,49 +1,83 @@
-@model CO.CDP.OrganisationApp.Models.FormQuestionViewModel
+@model FormElementDateInputModel
 
 @{
-    var question = Model.FormQuestion;
-    var answer = Model.Answer;
-    var hasError = ViewData.ModelState["Answer"]?.Errors?.Count > 0;
+    var dayHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Day)).HasInnerHtml;
+    var monthHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Month)).HasInnerHtml;
+    var yearHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Year)).HasInnerHtml;
+    var dateStringHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.DateString)).HasInnerHtml;
+    var hasError = dateStringHasError || dayHasError || monthHasError || yearHasError;
 }
 
 <div class="govuk-form-group">
     <fieldset class="govuk-fieldset" data-required="" data-error="Upload the latest accounts" aria-required="true">
 
-        <div class="govuk-form-group">
+        <div class="govuk-form-group @(hasError ? "govuk-form-group--error" : "")">
             <fieldset class="govuk-fieldset" role="group" aria-describedby="financialhint">
                 <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                    <h1 class="govuk-fieldset__heading">
-                        @question.Title
+                    <h1 class="govuk-heading-l">
+                        @Model.Heading
                     </h1>
                 </legend>
                 <div id="date-hint" class="govuk-hint">
                     For example, 05 04 2022
                 </div>
-                <div class="govuk-date-input" id="financial">
+                @if (dayHasError)
+                {
+                    <p class="govuk-error-message">
+                        <span class="govuk-visually-hidden">Error:</span>
+                        @Html.ValidationMessageFor(m => m.Day)
+                    </p>
+                }
+                @if (monthHasError)
+                {
+                    <p class="govuk-error-message">
+                        <span class="govuk-visually-hidden">Error:</span>
+                        @Html.ValidationMessageFor(m => m.Month)
+                    </p>
+                }
+                @if (yearHasError)
+                {
+                    <p class="govuk-error-message">
+                        <span class="govuk-visually-hidden">Error:</span>
+                        @Html.ValidationMessageFor(m => m.Year)
+                    </p>
+                }
+                @if (dateStringHasError)
+                {
+                    <p class="govuk-error-message">
+                        <span class="govuk-visually-hidden">Error:</span>
+                        @Html.ValidationMessageFor(m => m.DateString)
+                    </p>
+                }
+                <div class="govuk-date-input">
                     <div class="govuk-date-input__item">
                         <div class="govuk-form-group">
-                            <label class="govuk-label govuk-date-input__label" for="financialDay">
+                            <label class="govuk-label govuk-date-input__label" for="formDay">
                                 Day
                             </label>
-                            <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="financialDay" name="financialDay" type="text" inputmode="numeric">
+                            <input class="govuk-input govuk-date-input__input govuk-input--width-2 @(dayHasError || dateStringHasError ? "govuk-input--error" : "")"
+                                   id="formDay" name="Day" type="text" inputmode="numeric" value="@Model.Day">
                         </div>
                     </div>
                     <div class="govuk-date-input__item">
                         <div class="govuk-form-group">
-                            <label class="govuk-label govuk-date-input__label" for="financialMonth">
+                            <label class="govuk-label govuk-date-input__label" for="formMonth">
                                 Month
                             </label>
-                            <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="financialMonth" name="financialMonth" type="text" inputmode="numeric">
+                            <input class="govuk-input govuk-date-input__input govuk-input--width-2 @(monthHasError || dateStringHasError ? "govuk-input--error" : "")"
+                                   id="formMonth" name="Month" type="text" inputmode="numeric" value="@Model.Month">
                         </div>
                     </div>
                     <div class="govuk-date-input__item">
                         <div class="govuk-form-group">
-                            <label class="govuk-label govuk-date-input__label" for="financialYear">
+                            <label class="govuk-label govuk-date-input__label" for="formYear">
                                 Year
                             </label>
-                            <input class="govuk-input govuk-date-input__input govuk-input--width-4" id="financialYear" name="financialYear" type="text" inputmode="numeric">
+                            <input class="govuk-input govuk-date-input__input govuk-input--width-4 @(yearHasError || dateStringHasError ? "govuk-input--error" : "")"
+                                   id="formYear" name="Year" type="text" inputmode="numeric" value="@Model.Year">
                         </div>
                     </div>
+
                 </div>
             </fieldset>
         </div>

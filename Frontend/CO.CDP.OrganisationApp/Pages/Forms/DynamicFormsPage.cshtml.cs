@@ -1,99 +1,98 @@
+using CO.CDP.AwsServices;
 using CO.CDP.OrganisationApp.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.StaticFiles;
+using System.Net.Mime;
 
 namespace CO.CDP.OrganisationApp.Pages.Forms;
 
-public class DynamicFormsPageModel(IFormsEngine formsEngine, ITempDataService tempDataService) : PageModel
+public class DynamicFormsPageModel(
+    IFormsEngine formsEngine,
+    ITempDataService tempDataService,
+    IFileHostManager fileHostManager) : PageModel
 {
-    public SectionQuestionsResponse? SectionWithQuestions { get; set; }
-    public Models.FormQuestion? CurrentQuestion { get; set; }
-    public Guid FormId { get; set; }
-    public Guid SectionId { get; set; }
+    [BindProperty(SupportsGet = true)]
     public Guid OrganisationId { get; set; }
-    public bool IsFirstQuestion => IsCurrentQuestionFirst();
 
-    public string EncType => GetEncType();
+    [BindProperty(SupportsGet = true)]
+    public Guid FormId { get; set; }
+
+    [BindProperty(SupportsGet = true)]
+    public Guid SectionId { get; set; }
+
+    [BindProperty(SupportsGet = true)]
+    public Guid? CurrentQuestionId { get; set; }
+
+    [BindProperty]
+    public FormElementDateInputModel? DateInputModel { get; set; }
+
+    [BindProperty]
+    public FormElementFileUploadModel? FileUploadModel { get; set; }
+
+    [BindProperty]
+    public FormElementNoInputModel? NoInputModel { get; set; }
+
+    [BindProperty]
+    public FormElementTextInputModel? TextInputModel { get; set; }
+
+    [BindProperty]
+    public FormElementYesNoInputModel? YesNoInputModel { get; set; }
+
+    public FormQuestion? CurrentQuestion { get; set; }
+
+    public IFormElementModel? FormElementModel { get; set; }
+
     public Guid? PreviousQuestionId { get; private set; }
-    public new HttpRequest? Request { get; set; }
 
-    [BindProperty]
-    public string? Answer { get; set; }
+    public string EncType => CurrentQuestion?.Type == FormQuestionType.FileUpload ? "multipart/form-data" : "application/x-www-form-urlencoded";
 
-    [BindProperty]
-    public string? UploadedFile { get; set; }
-    
+    private string FormQuestionAnswerStateKey => $"Forms_{OrganisationId}_{FormId}_{SectionId}";
 
-    public async Task OnGetAsync(Guid organisationId, Guid formId, Guid sectionId, Guid? questionId)
+    public async Task<IActionResult> OnGetAsync()
     {
-        OrganisationId = organisationId;
-        FormId = formId;
-        SectionId = sectionId;
+        await InitModel(true);
 
-        await LoadSectionWithQuestionsAsync(formId, sectionId);
-
-        if (SectionWithQuestions?.Questions != null && SectionWithQuestions.Questions.Any())
-        {
-            CurrentQuestion = questionId.HasValue
-                ? await formsEngine.GetCurrentQuestion(formId, sectionId, questionId.Value)
-                : SectionWithQuestions.Questions.FirstOrDefault();
-
-            if (CurrentQuestion != null)
-            {
-                RetrieveAnswerFromTempData();
-            }
-
-            SaveCurrentQuestionIdToTempData(CurrentQuestion?.Id);
-            SetPreviousQuestionId();
-        }
+        return Page();
     }
 
-    public async Task<IActionResult> OnPostAsync(Guid organisationId, Guid formId, Guid sectionId, Guid currentQuestionId, string action)
+    public async Task<IActionResult> OnPostAsync()
     {
-        OrganisationId = organisationId;
-        FormId = formId;
-        SectionId = sectionId;
-
-        await LoadSectionWithQuestionsAsync(formId, sectionId);
-
-        if (SectionWithQuestions?.Questions != null && SectionWithQuestions.Questions.Any())
+        var success = await InitModel();
+        if (!success || !ModelState.IsValid)
         {
-            CurrentQuestion = SectionWithQuestions.Questions.FirstOrDefault(q => q.Id == currentQuestionId);
+            return Page();
+        }
 
-            if (CurrentQuestion == null)
-            {
-                return Page();
-            }
-
-            if (action == "next")
-            {
-                if (!ValidateCurrentQuestion())
-                {
-                    return Page();
-                }
-
-                SaveAnswerToTempData();
-                CurrentQuestion = await formsEngine.GetNextQuestion(FormId, SectionId, currentQuestionId);
-            }
-            else if (action == "back")
-            {
-                CurrentQuestion = await formsEngine.GetPreviousQuestion(FormId, SectionId, currentQuestionId);
-            }
-
-            SaveCurrentQuestionIdToTempData(CurrentQuestion?.Id);
-            SetPreviousQuestionId();
+        var nextQuestion = await formsEngine.GetNextQuestion(FormId, SectionId, CurrentQuestionId);
+        if (nextQuestion != null)
+        {
+            return RedirectToPage("DynamicFormsPage", new { OrganisationId, FormId, SectionId, CurrentQuestionId = nextQuestion.Id });
         }
 
         return Page();
     }
 
-    public string? GetPartialViewName(FormQuestionType questionType)
+    private async Task<bool> InitModel(bool reset = false)
     {
-        return FormQuestionPartials.TryGetValue(questionType, out var partialView) ? partialView : null;
+        CurrentQuestion = await formsEngine.GetCurrentQuestion(FormId, SectionId, CurrentQuestionId);
+
+        if (CurrentQuestion != null)
+        {
+            await SetPartialViewModel(CurrentQuestion.Type, reset);
+
+            PreviousQuestionId = (await formsEngine.GetPreviousQuestion(FormId, SectionId, CurrentQuestionId))?.Id;
+
+            return true;
+        }
+
+        return false;
     }
 
-    private static readonly Dictionary<FormQuestionType, string> FormQuestionPartials = new()
-        {
+    public (string?, IFormElementModel?) GetPartialView(FormQuestionType questionType)
+    {
+        Dictionary<FormQuestionType, string> formQuestionPartials = new(){
             { FormQuestionType.NoInput, "_FormElementNoInput" },
             { FormQuestionType.YesOrNo, "_FormElementYesNoInput" },
             { FormQuestionType.FileUpload, "_FormElementFileUpload" },
@@ -101,146 +100,80 @@ public class DynamicFormsPageModel(IFormsEngine formsEngine, ITempDataService te
             { FormQuestionType.Text, "_FormElementTextInput" }
         };
 
-    private async Task LoadSectionWithQuestionsAsync(Guid formId, Guid sectionId)
-    {
-        SectionWithQuestions = await formsEngine.LoadFormSectionAsync(formId, sectionId);
+        if (formQuestionPartials.TryGetValue(questionType, out var partialView))
+        {
+            return (partialView, FormElementModel);
+        }
+        else
+        {
+            return (null, FormElementModel);
+        }
     }
 
-    private void SaveCurrentQuestionIdToTempData(Guid? questionId)
+    private async Task SetPartialViewModel(FormQuestionType questionType, bool reset = false)
     {
-        var key = $"CurrentQuestionId_{FormId}_{SectionId}";
-        tempDataService.Put(key, questionId);
-    }
-
-    private void SetPreviousQuestionId()
-    {
-        if (CurrentQuestion == null || SectionWithQuestions?.Questions == null)
+        IFormElementModel model = questionType switch
         {
-            PreviousQuestionId = null;
-            return;
+            FormQuestionType.NoInput => NoInputModel ?? new FormElementNoInputModel(),
+            FormQuestionType.Text => TextInputModel ?? new FormElementTextInputModel(),
+            FormQuestionType.FileUpload => FileUploadModel ?? new FormElementFileUploadModel(),
+            FormQuestionType.YesOrNo => YesNoInputModel ?? new FormElementYesNoInputModel(),
+            FormQuestionType.Date => DateInputModel ?? new FormElementDateInputModel(),
+            _ => throw new NotImplementedException(),
+        };
+
+        model.FormQuestionType = questionType;
+        model.Heading = CurrentQuestion!.Title;
+        model.Description = CurrentQuestion.Description;
+        model.IsRequired = CurrentQuestion.IsRequired;
+
+        if (reset)
+        {
+            model.SetAnswer(RetrieveAnswerFromTempData());
         }
-
-        var currentIndex = SectionWithQuestions.Questions.FindIndex(q => q.Id == CurrentQuestion.Id);
-
-        PreviousQuestionId = currentIndex > 0
-            ? SectionWithQuestions.Questions[currentIndex - 1].Id
-            : (Guid?)null;
-    }
-
-    private bool IsCurrentQuestionFirst()
-    {
-        return CurrentQuestion?.Id == SectionWithQuestions?.Questions?.FirstOrDefault()?.Id;
-    }
-
-    private string GetEncType()
-    {
-        return CurrentQuestion?.Type == FormQuestionType.FileUpload ? "multipart/form-data" : "application/x-www-form-urlencoded";
-    }
-
-    private bool ValidateCurrentQuestion()
-    {
-        if (CurrentQuestion?.Type == FormQuestionType.YesOrNo)
+        else
         {
-            return ValidateYesNoAnswer();
-        }
+            var answer = model.GetAnswer();
 
-        if (CurrentQuestion?.Type == FormQuestionType.Text)
-        {
-            return ValidateTextAnswer();
-        }
-
-        if (CurrentQuestion?.Type == FormQuestionType.FileUpload)
-        {
-            return ValidateFileUpload();
-        }
-
-        // Future validation for other question types can be added here
-
-        return true;
-    }
-
-    private bool ValidateYesNoAnswer()
-    {
-        if (string.IsNullOrEmpty(Answer))
-        {
-            ModelState.AddModelError("Answer", "Please select an option.");
-            return false;
-        }
-
-        return true;
-    }
-
-    private bool ValidateTextAnswer()
-    {
-        if (string.IsNullOrEmpty(Answer))
-        {
-            ModelState.AddModelError("Answer", "Please enter a value.");
-            return false;
-        }
-
-        return true;
-    }
-
-    public bool ValidateFileUpload()
-    {           
-        var allowedFileSizeMB = 10;
-        var allowedExtensions = new List<string> { ".pdf", ".docx", ".csv", ".jpg", ".bmp", ".png", ".tif" };
-
-        if (Request?.Form == null || Request.Form.Files == null || Request.Form.Files.Count == 0)
-        {
-            ModelState.AddModelError("Answer", "No file selected.");
-            return false;
-        }
-
-        var file = Request.Form.Files["UploadedFile"];
-
-        if (file == null)
-        {
-            ModelState.AddModelError("Answer", "No file selected.");
-            return false;
-        }
-
-        var maxFileLength = allowedFileSizeMB * 1024 * 1024;
-
-        if (file.Length > maxFileLength)
-        {
-            ModelState.AddModelError("Answer", $"The file size must not exceed {allowedFileSizeMB}MB.");
-            return false;
-        }
-
-        var fileExtension = Path.GetExtension(file.FileName).ToLowerInvariant();
-        
-        if (!allowedExtensions.Contains(fileExtension))
-        {
-            ModelState.AddModelError("Answer", $"Please upload a file which has one of the following extensions: {string.Join(", ", allowedExtensions)}");
-            return false;
-        }
-
-        return true;
-    }
-
-    private void SaveAnswerToTempData()
-    {
-        if (CurrentQuestion != null)
-        {
-            var questionAnswer = new QuestionAnswer
+            if (questionType == FormQuestionType.FileUpload)
             {
-                QuestionId = CurrentQuestion.Id,
-                Answer = Answer
-            };
+                var response = FileUploadModel?.GetUploadedFileInfo();
+                if (response != null)
+                {
+                    using var stream = response.Value.formFile.OpenReadStream();
+                    await fileHostManager.UploadFile(stream, response.Value.filename, response.Value.contentType);
+                    answer = response.Value.filename;
+                }
+            }
 
-            var key = $"Answer_{FormId}_{SectionId}_{CurrentQuestion.Id}";
-            tempDataService.Put(key, questionAnswer);
+            SaveAnswerToTempData(answer);
         }
+
+        FormElementModel = model;
     }
 
-    private void RetrieveAnswerFromTempData()
+    private void SaveAnswerToTempData(string? answer)
     {
         if (CurrentQuestion != null)
         {
-            var key = $"Answer_{FormId}_{SectionId}_{CurrentQuestion.Id}";
-            var questionAnswer = tempDataService.Get<QuestionAnswer>(key);
-            Answer = questionAnswer?.Answer ?? string.Empty;
+            var state = tempDataService.PeekOrDefault<FormQuestionAnswerState>(FormQuestionAnswerStateKey);
+
+            var questionAnswer = state.Answers.FirstOrDefault(a => a.QuestionId == CurrentQuestion.Id);
+            if (questionAnswer == null)
+            {
+                questionAnswer = new QuestionAnswer { QuestionId = CurrentQuestion.Id };
+                state.Answers.Add(questionAnswer);
+            }
+
+            questionAnswer.Answer = answer;
+
+            tempDataService.Put(FormQuestionAnswerStateKey, state);
         }
+    }
+
+    private string? RetrieveAnswerFromTempData()
+    {
+        var state = tempDataService.PeekOrDefault<FormQuestionAnswerState>(FormQuestionAnswerStateKey);
+        return state.Answers?.FirstOrDefault(a => a.QuestionId == CurrentQuestion?.Id)?.Answer ?? string.Empty;
     }
 }
