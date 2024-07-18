@@ -1,6 +1,9 @@
+using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.ComponentModel.DataAnnotations;
+using System.Globalization;
 
 namespace CO.CDP.OrganisationApp.Pages.Forms;
 
@@ -16,6 +19,18 @@ public class DynamicFormsPageModel(IFormsEngine formsEngine, ITempDataService te
 
     [BindProperty]
     public string? Answer { get; set; }
+
+    [BindProperty]
+    [RegularExpression(RegExPatterns.Day, ErrorMessage = "Day must be a valid number")]
+    public string? FinancialDay { get; set; }
+
+    [BindProperty]
+    [RegularExpression(RegExPatterns.Month, ErrorMessage = "Month must be a valid number")]
+    public string? FinancialMonth { get; set; }
+
+    [BindProperty]
+    [RegularExpression(RegExPatterns.Year, ErrorMessage = "Year must be a valid number")]
+    public string? FinancialYear { get; set; }
 
     public async Task OnGetAsync(Guid organisationId, Guid formId, Guid sectionId, Guid? questionId)
     {
@@ -137,6 +152,11 @@ public class DynamicFormsPageModel(IFormsEngine formsEngine, ITempDataService te
             return ValidateTextAnswer();
         }
 
+        if (CurrentQuestion?.Type == FormQuestionType.Date)
+        {
+            return ValidateDateAnswer();
+        }
+
         // Future validation for other question types can be added here
 
         return true;
@@ -163,6 +183,26 @@ public class DynamicFormsPageModel(IFormsEngine formsEngine, ITempDataService te
 
         return true;
     }
+
+    private bool ValidateDateAnswer()
+    {
+        if (!ModelState.IsValid)
+        {
+            ModelState.AddModelError("Answer", "Please enter a valid date.");
+            return false;
+        }
+
+        if (string.IsNullOrEmpty(FinancialDay) || string.IsNullOrEmpty(FinancialMonth) || string.IsNullOrEmpty(FinancialYear))
+        {
+            ModelState.AddModelError("Answer", "Please enter the date.");
+            return false;
+        }
+
+        Answer = $"{FinancialYear}-{FinancialMonth}-{FinancialDay}";
+
+        return true;
+    }
+
 
     private void SaveAnswerToTempData()
     {
