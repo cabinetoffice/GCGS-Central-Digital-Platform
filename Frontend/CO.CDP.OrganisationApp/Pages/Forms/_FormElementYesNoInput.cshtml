@@ -1,28 +1,29 @@
-@model CO.CDP.OrganisationApp.Models.FormQuestionViewModel
+@model FormElementYesNoInputModel
 @{
-    var question = Model.FormQuestion;
-    var answer = Model.Answer;
-    var hasError = ViewData.ModelState["Answer"]?.Errors?.Count > 0;
+    var hasError = ((TagBuilder)Html.ValidationMessageFor(m => m.YesNoInput)).HasInnerHtml;
 }
 
 <div class="govuk-form-group @(hasError ? "govuk-form-group--error" : "")">
     <fieldset class="govuk-fieldset" aria-required="true">
         <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
-            <h2 class="govuk-fieldset__heading">@question.Title</h2>
+            <h2 class="govuk-fieldset__heading"> @Model.Heading</h2>
         </legend>
+
         @if (hasError)
         {
-            <p id="Answer-error" class="govuk-error-message">
-                <span class="govuk-visually-hidden">Error:</span> Please select an option.
+            <p class="govuk-error-message">
+                <span class="govuk-visually-hidden">Error:</span>
+                @Html.ValidationMessageFor(m => m.YesNoInput)
             </p>
         }
+
         <div class="govuk-radios" data-module="govuk-radios">
             <div class="govuk-radios__item">
-                <input class="govuk-radios__input" id="yes" name="Answer" type="radio" value="yes" @(answer == "yes" ? "checked" : "")>
+                <input class="govuk-radios__input" id="yes" name="YesNoInput" type="radio" value="yes" @(Model.YesNoInput == "yes" ? "checked" : "")>
                 <label class="govuk-label govuk-radios__label" for="yes">Yes</label>
             </div>
             <div class="govuk-radios__item">
-                <input class="govuk-radios__input" id="no" name="Answer" type="radio" value="no" @(answer == "no" ? "checked" : "")>
+                <input class="govuk-radios__input" id="no" name="YesNoInput" type="radio" value="no" @(Model.YesNoInput == "no" ? "checked" : "")>
                 <label class="govuk-label govuk-radios__label" for="no">No</label>
             </div>
         </div>

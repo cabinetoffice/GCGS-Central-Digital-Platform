@@ -31,10 +31,26 @@ public class FormQuestionOptions
     public string? ChoiceProviderStrategy { get; set; }
 }
 
+public class FormQuestionAnswerState
+{
+    public List<QuestionAnswer> Answers { get; set; } = [];
+}
+
 public class QuestionAnswer
 {
     public Guid QuestionId { get; set; }
-    public string? Answer { get; set; }
+    public FormAnswer? Answer { get; set; }
+}
+
+public class FormAnswer
+{
+    public bool? BoolValue { get; init; }
+    public double? NumericValue { get; init; }
+    public DateTime? DateValue { get; init; }
+    public DateTime? StartValue { get; init; }
+    public DateTime? EndValue { get; init; }
+    public string? TextValue { get; init; }
+    public string? OptionValue { get; init; }
 }
 
 public enum FormQuestionType
