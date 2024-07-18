@@ -192,7 +192,8 @@ public class DynamicFormsPageModel(IFormsEngine formsEngine, ITempDataService te
             return false;
         }
 
-        if (string.IsNullOrEmpty(FinancialDay) || string.IsNullOrEmpty(FinancialMonth) || string.IsNullOrEmpty(FinancialYear))
+        if (CurrentQuestion?.IsRequired == true &&
+            (string.IsNullOrEmpty(FinancialDay) || string.IsNullOrEmpty(FinancialMonth) || string.IsNullOrEmpty(FinancialYear)))
         {
             ModelState.AddModelError("Answer", "Please enter the date.");
             return false;
