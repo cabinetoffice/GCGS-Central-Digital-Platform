@@ -25,6 +25,7 @@
         </PackageReference>
         <ProjectReference Include="..\CO.CDP.EntityVerification\CO.CDP.EntityVerification.csproj" />
         <ProjectReference Include="..\..\TestKit\CO.CDP.TestKit.Mvc\CO.CDP.TestKit.Mvc.csproj" />
+        <ProjectReference Include="..\..\TestKit\CO.CDP.Testcontainers.PostgreSql\CO.CDP.Testcontainers.PostgreSql.csproj" />
     </ItemGroup>
 
     <ItemGroup>

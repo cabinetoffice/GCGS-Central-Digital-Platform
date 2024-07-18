@@ -1,3 +1,12 @@
+using Amazon.Runtime;
+using Amazon.SQS;
+using CO.CDP.EntityVerification.Events;
+using CO.CDP.EntityVerification.MQ;
+using CO.CDP.EntityVerification.Persistence;
+using CO.CDP.EntityVerification.Ppon;
+using CO.CDP.MQ;
+using CO.CDP.MQ.Sqs;
+
 namespace CO.CDP.EntityVerification.Extensions;
 
 public static class ServiceCollectionExtensions
@@ -6,6 +15,48 @@ public static class ServiceCollectionExtensions
     {
         { typeof(BadHttpRequestException), (StatusCodes.Status422UnprocessableEntity, "UNPROCESSABLE_ENTITY") },
     };
+
+    public static IServiceCollection AddBackgroundServices(
+        this IServiceCollection services,
+        ConfigurationManager config)
+    {
+        services.AddScoped<IEventHandler<OrganisationRegistered>, OrganisationRegisteredEventHandler>();
+        services.AddScoped<AmazonSQSClient>(s =>
+        {
+            var sqsConfig = new AmazonSQSConfig
+            {
+                ServiceURL = config.GetValue("Sqs:ServiceURL", ""),
+                UseHttp = false,
+                AuthenticationRegion = config.GetValue("Sqs:AuthenticationRegion", "")
+            };
+            var credentials = new BasicAWSCredentials(
+                config.GetValue("Sqs:AccessKey", ""),
+                config.GetValue("Sqs:SecretKey", ""));
+            return new AmazonSQSClient(credentials, sqsConfig);
+        });
+        services.AddScoped<IDispatcher, SqsDispatcher>(s =>
+        {
+            var dispatcher = new SqsDispatcher(
+                s.GetRequiredService<AmazonSQSClient>(),
+                new SqsDispatcherConfiguration
+                {
+                    QueueName = config.GetValue("InboundQueue:Name", "") ?? "",
+                    WaitTimeSeconds = config.GetValue("InboundQueue:WaitTimeSeconds", 20),
+                    MaxNumberOfMessages = config.GetValue("InboundQueue:MaxNumberOfMessages", 10)
+                },
+                EventDeserializer.Deserializer);
+            dispatcher.Subscribe<OrganisationRegistered>(message =>
+                s.GetRequiredService<IEventHandler<OrganisationRegistered>>().Handle(message));
+            return dispatcher;
+        });
+        services.AddScoped<IPponService, PponService>();
+        services.AddScoped<OrganisationRegisteredEventHandler>();
+        services.AddScoped<IPponRepository, DatabasePponRepository>();
+
+        services.AddHostedService<QueueBackgroundService>();
+
+        return services;
+    }
 
     public static IServiceCollection AddEntityVerificationProblemDetails(this IServiceCollection services)
     {
