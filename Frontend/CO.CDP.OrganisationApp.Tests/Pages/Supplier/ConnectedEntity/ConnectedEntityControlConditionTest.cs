@@ -7,37 +7,18 @@ using Moq;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages.Supplier.ConnectedEntity;
 
-public class ConnectedEntityCompanyQuestionTest
+public class ConnectedEntityControlConditionTest
 {
-    private readonly ConnectedEntityCompanyQuestionModel _model;
+    private readonly ConnectedEntityControlConditionModel _model;
     private readonly Mock<ISession> _sessionMock;
     private readonly Guid _organisationId = Guid.NewGuid();
     private readonly Guid _entityId = Guid.NewGuid();
 
-    public ConnectedEntityCompanyQuestionTest()
+    public ConnectedEntityControlConditionTest()
     {
         _sessionMock = new Mock<ISession>();
-        _model = new ConnectedEntityCompanyQuestionModel(_sessionMock.Object);
+        _model = new ConnectedEntityControlConditionModel(_sessionMock.Object) { ControlConditions = [] };
         _model.Id = _organisationId;
-    }
-
-    [Theory]
-    [InlineData(null)]
-    [InlineData(false)]
-    public void OnPost_WhenOptionIsNullOrEmpty_ShouldReturnPageWithModelStateError(bool? hasNumber)
-    {
-        var state = DummyConnectedPersonDetails();
-        _sessionMock
-            .Setup(s => s.Get<ConnectedEntityState>(Session.ConnectedPersonKey))
-            .Returns(state);
-        _model.HasCompaniesHouseNumber = hasNumber;
-        _model.CompaniesHouseNumber = "";
-        _model.ModelState.AddModelError("Question", "Please select an option");
-
-        var result = _model.OnPost();
-
-        result.Should().BeOfType<PageResult>();
-        _model.ModelState.IsValid.Should().BeFalse();
     }
 
     [Fact]
@@ -54,42 +35,53 @@ public class ConnectedEntityCompanyQuestionTest
         result.Should().BeOfType<RedirectToPageResult>();
     }
 
-    [Fact]
-    public void OnGet_ShouldRedirectToConnectedEntitySupplierHasControl_WhenModelStateIsInvalid()
+    public static IEnumerable<object[]> Guids
+    {
+        get
+        {
+            var v = (Guid?)null;
+            yield return new object[] { v!, "ConnectedEntitySupplierCompanyQuestion" };
+            yield return new object[] { Guid.NewGuid(), "ConnectedEntityCheckAnswers" };
+        }
+    }
+
+    [Theory, MemberData(nameof(Guids))]
+    public void OnGet_ShouldRedirectToExpectedRedirectPage_WhenModelStateIsInvalid
+        (Guid? connectedEntityId, string expectedRedirectPage )
     {
         ConnectedEntityState? state = null;
         _sessionMock
             .Setup(s => s.Get<ConnectedEntityState>(Session.ConnectedPersonKey))
             .Returns(state);
+        _model.ConnectedEntityId = connectedEntityId;
 
         _model.ModelState.AddModelError("Error", "Model state is invalid");
 
-        var result = _model.OnGet(null);
+        var result = _model.OnGet();
 
         result.Should().BeOfType<RedirectToPageResult>()
-            .Which.PageName.Should().Be("ConnectedEntitySupplierHasControl");
+            .Which.PageName.Should().Be(expectedRedirectPage);
     }
 
     [Fact]
     public void OnGet_ShouldReturnPageResult()
     {
         var state = DummyConnectedPersonDetails();
-        state.CompaniesHouseNumber = "12345678";
 
         _sessionMock
             .Setup(s => s.Get<ConnectedEntityState>(Session.ConnectedPersonKey))
             .Returns(state);
 
-        var result = _model.OnGet(null);
+        var result = _model.OnGet();
 
         result.Should().BeOfType<PageResult>();
-        _model.CompaniesHouseNumber.Should().Be("12345678");
+        _model.ControlConditions.Should().Contain(Constants.ConnectedEntityControlCondition.OwnsShares);
     }
 
 
     [Theory]
-    [InlineData("ConnectedEntityControlCondition")]
-    public void OnPost_ShouldRedirectToExpectedPage(string expectedRedirectPage)
+    [InlineData("ConnectedEntityCompanyRegistrationDate")]
+    public void OnPost_ShouldRedirectToExpectedPage_WhenModelStateIsValid(string expectedRedirectPage)
     {
         var state = DummyConnectedPersonDetails();
 
@@ -112,11 +104,13 @@ public class ConnectedEntityCompanyQuestionTest
         _sessionMock
             .Setup(s => s.Get<ConnectedEntityState>(Session.ConnectedPersonKey))
             .Returns(state);
-
+        _model.ControlConditions = [Constants.ConnectedEntityControlCondition.OwnsShares];
         _model.OnPost();
 
-        _sessionMock.Verify(s => s.Set(Session.ConnectedPersonKey, It.Is<ConnectedEntityState>(st => st.ConnectedEntityType == Constants.ConnectedEntityType.Organisation)), Times.Once);
-
+        _sessionMock.Verify(v => v.Set(Session.ConnectedPersonKey,
+            It.Is<ConnectedEntityState>(rd =>
+                rd.ControlConditions!.Contains(Constants.ConnectedEntityControlCondition.OwnsShares)
+            )), Times.Once);        
     }
 
     private ConnectedEntityState DummyConnectedPersonDetails()
@@ -129,7 +123,8 @@ public class ConnectedEntityCompanyQuestionTest
             ConnectedEntityType = Constants.ConnectedEntityType.Organisation,
             OrganisationName = "Org_name",
             HasCompaniesHouseNumber = true,
-            CompaniesHouseNumber = "12345678"
+            CompaniesHouseNumber = "12345678",
+            ControlConditions = [Constants.ConnectedEntityControlCondition.OwnsShares]
         };
 
         return connectedPersonDetails;

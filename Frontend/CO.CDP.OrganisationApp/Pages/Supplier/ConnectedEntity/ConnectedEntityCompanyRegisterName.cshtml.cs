@@ -1,13 +1,13 @@
-using CO.CDP.OrganisationApp.Constants;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel;
 
-namespace CO.CDP.OrganisationApp.Pages.Supplier.ConnectedEntity;
+namespace CO.CDP.OrganisationApp.Pages.Supplier;
 
 [Authorize]
-public class ConnectedEntityPostalSameAsRegisteredAddressModel(ISession session) : PageModel
+public class ConnectedEntityCompanyRegisterNameModel(ISession session) : PageModel
 {
     [BindProperty(SupportsGet = true)]
     public Guid Id { get; set; }
@@ -16,16 +16,12 @@ public class ConnectedEntityPostalSameAsRegisteredAddressModel(ISession session)
     public Guid? ConnectedEntityId { get; set; }
 
     [BindProperty]
-    [Required(ErrorMessage = "Please select an option")]
-    public bool? DifferentThanRegiseterdAddress { get; set; }
-
+    [Required(ErrorMessage = "Enter the register name")]
+    public string? RegisterName { get; set; }
     public string? Caption { get; set; }
+    public string? Heading { get; set; }
 
-    public string? OrganisationName { get; set; }
-
-    public bool? IsNonUkAddress { get; set; }
-
-    public IActionResult OnGet(bool? selected)
+    public IActionResult OnGet()
     {
         var (valid, state) = ValidatePage();
         if (!valid)
@@ -34,11 +30,7 @@ public class ConnectedEntityPostalSameAsRegisteredAddressModel(ISession session)
                 "ConnectedEntityCheckAnswers" : "ConnectedEntitySupplierCompanyQuestion", new { Id, ConnectedEntityId });
         }
 
-        var sameAddress = state.RegisteredAddress?.AreSameAddress(state.PostalAddress);
-
-        DifferentThanRegiseterdAddress = selected.HasValue ? selected : (sameAddress.HasValue ? !sameAddress : sameAddress);
-
-        InitModal(state);
+        InitModal(state, true);
 
         return Page();
     }
@@ -53,22 +45,24 @@ public class ConnectedEntityPostalSameAsRegisteredAddressModel(ISession session)
         }
 
         InitModal(state);
-        if (!ModelState.IsValid)
+
+        if (!ModelState.IsValid) return Page();
+
+        state.RegisterName = RegisterName;
+        session.Set(Session.ConnectedPersonKey, state);
+
+        return RedirectToPage("ConnectedEntityCheckAnswers", new { Id });
+    }
+
+    private void InitModal(ConnectedEntityState state, bool reset = false)
+    {
+        Caption = state.GetCaption();
+        Heading = $"What register is {state.OrganisationName} declared on?";
+
+        if (reset)
         {
-            return Page();
+            RegisterName = state.RegisterName;
         }
-
-        if (DifferentThanRegiseterdAddress == false)
-        {
-            state.PostalAddress = state.RegisteredAddress;
-            session.Set(Session.ConnectedPersonKey, state);
-
-            //TODO 5: Next page link??;
-            return RedirectToPage("ConnectedEntityLawRegister", new { Id, ConnectedEntityId });
-        }
-
-        return RedirectToPage("ConnectedEntityAddress",
-            new { Id, ConnectedEntityId, AddressType = AddressType.Postal, UkOrNonUk = "uk" });
     }
 
     private (bool valid, ConnectedEntityState state) ValidatePage()
@@ -81,12 +75,5 @@ public class ConnectedEntityPostalSameAsRegisteredAddressModel(ISession session)
             return (false, new());
         }
         return (true, cp);
-    }
-        
-    private void InitModal(ConnectedEntityState state)
-    {
-        OrganisationName = state.OrganisationName;
-        Caption = state.GetCaption();
-        IsNonUkAddress = state.RegisteredAddress?.IsNonUk;
     }
 }
