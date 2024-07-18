@@ -164,5 +164,6 @@ Run `make help` to get an up-to-date list.
 |stop | Stops all Docker containers
 |ps | Lists all running Docker containers
 |db | Starts the database Docker container only and runs migrations
+|localstack | Starts the localstack Docker container for AWS services available locally
 |generate-authority-keys | Generates the private/public key pair for the authority service
 |===

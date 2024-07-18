@@ -71,6 +71,21 @@ services:
       MIGRATIONS_CONNECTION_STRING: "Server=db;Database=cdp;Username=cdp_user;Password=cdp123;"
       Organisation__Authority: '${Organisation__Authority:-http://gateway:${CDP_AUTHORITY_PORT:-8092}}'
 
+  entity-verification-migrations:
+      container_name: co-cdp-entity-verification-migrations
+      restart: no
+      build:
+        context: .
+        dockerfile: Dockerfile
+        target: migrations-entity-verification
+      image: 'cabinetoffice/cdp-entity-verification-migrations:${IMAGE_VERSION:-latest}'
+      depends_on:
+        db:
+          condition: service_healthy
+      environment:
+        ASPNETCORE_ENVIRONMENT: Production
+        MIGRATIONS_CONNECTION_STRING: "Server=db;Database=cdp;Username=cdp_user;Password=cdp123;"
+
   organisation-app:
     container_name: co-cdp-organisation-app
     build:
@@ -223,5 +238,9 @@ services:
       interval: 60s
       timeout: 10s
       retries: 10
+    depends_on:
+      - db
     environment:
       ASPNETCORE_ENVIRONMENT: Production
+      ConnectionStrings__EvDatabase: 'Server=db;Database=cdp;Username=cdp_user;Password=cdp123;'
+      Sqs__ServiceURL: "http://localstack:4566"

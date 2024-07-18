@@ -1,0 +1,59 @@
+@page "/organisation/{id}/supplier-information/connected-person/company-question/{ConnectedEntityId?}"
+@model CO.CDP.OrganisationApp.Pages.Supplier.ConnectedEntityCompanyQuestionModel
+
+@{
+    var companiesHouseNumberHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.HasCompaniesHouseNumber)).HasInnerHtml
+        || ((TagBuilder)Html.ValidationMessageFor(m => m.CompaniesHouseNumber)).HasInnerHtml;
+
+}
+
+<a href="/organisation/@Model.Id/supplier-information/connected-person/law-register/@Model.ConnectedEntityId" class="govuk-back-link">Back</a>
+
+<main class="govuk-main-wrapper">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <partial name="_ErrorSummary" model="@Model.ModelState" />
+            <span class="govuk-caption-l">@Model.Caption</span>
+            <form class="form" method="post">
+                <div class="govuk-form-group">
+                    <fieldset class="govuk-fieldset" data-required="" data-error="Select yes if the organisation registered with Companies House" aria-required="true">
+
+                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                            <h1 class="govuk-fieldset__heading">@Model.Heading</h1>
+                        </legend>
+                        <div id="hasCompaniesHouseNumber-hint" class="govuk-hint">
+                            @Model.Hint
+                        </div>
+
+                        <div class="govuk-radios" data-module="govuk-radios">
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input" id="YES" name="HasCompaniesHouseNumber" type="radio"
+                                       value="true" data-aria-controls="conditional-YES" @(Model.HasCompaniesHouseNumber == true ? "checked" : "")>
+                                <label class="govuk-label govuk-radios__label" for="YES">Yes</label>
+                            </div>
+
+                            <div class="govuk-radios__conditional" id="conditional-YES">
+                                <div class="govuk-form-group @(companiesHouseNumberHasError ? "govuk-form-group--error" : "")">
+                                    <label class="govuk-label" for="CompaniesHouseNumber">Company House Number</label>
+                                    <input class="govuk-input govuk-!-width-one-half @(companiesHouseNumberHasError ? "govuk-input--error" : "")"
+                                           id="CompaniesHouseNumber" name="CompaniesHouseNumber" type="text" spellcheck="false" autocomplete="off"
+                                           value="@(Model.HasCompaniesHouseNumber == true ? Model.CompaniesHouseNumber : "")">
+                                </div>
+                            </div>
+
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input" id="NO" name="HasCompaniesHouseNumber" type="radio"
+                                       value="false" data-aria-controls="conditional-NO" @(Model.HasCompaniesHouseNumber == false ? "checked" : "")>
+                                <label class="govuk-label govuk-radios__label" for="NO">No</label>
+                                <div class="govuk-radios__conditional--hidden" id="conditional-NO"></div>
+                            </div>
+                        </div>
+
+                    </fieldset>
+                </div>
+
+                <button class="govuk-button" type="submit">Continue</button>
+            </form>
+        </div>
+    </div>
+</main>

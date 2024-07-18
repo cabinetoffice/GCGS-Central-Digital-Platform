@@ -1,5 +1,7 @@
 using CO.CDP.EntityVerification.Api;
 using CO.CDP.EntityVerification.Extensions;
+using CO.CDP.EntityVerification.Persistence;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +12,10 @@ builder.Services.AddSwaggerGen(o => o.DocumentPponApi());
 
 builder.Services.AddHealthChecks();
 builder.Services.AddEntityVerificationProblemDetails();
+builder.Services.AddBackgroundServices(builder.Configuration);
+
+builder.Services.AddDbContext<EntityVerificationContext>(o =>
+    o.UseNpgsql(builder.Configuration.GetConnectionString("EvDatabase")));
 
 var app = builder.Build();
 app.UseForwardedHeaders();

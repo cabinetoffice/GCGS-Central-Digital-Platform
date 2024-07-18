@@ -21,6 +21,8 @@ COPY --link Libraries/CO.CDP.Configuration/CO.CDP.Configuration.csproj Libraries
 COPY --link Libraries/CO.CDP.Configuration.Tests/CO.CDP.Configuration.Tests.csproj Libraries/CO.CDP.Configuration.Tests/
 COPY --link Libraries/CO.CDP.Functional/CO.CDP.Functional.csproj Libraries/CO.CDP.Functional/
 COPY --link Libraries/CO.CDP.Functional.Tests/CO.CDP.Functional.Tests.csproj Libraries/CO.CDP.Functional.Tests/
+COPY --link Libraries/CO.CDP.MQ/CO.CDP.MQ.csproj Libraries/CO.CDP.MQ/
+COPY --link Libraries/CO.CDP.MQ.Tests/CO.CDP.MQ.Tests.csproj Libraries/CO.CDP.MQ.Tests/
 COPY --link Libraries/CO.CDP.Mvc.Validation/CO.CDP.Mvc.Validation.csproj Libraries/CO.CDP.Mvc.Validation/
 COPY --link Libraries/CO.CDP.Mvc.Validation.Tests/CO.CDP.Mvc.Validation.Tests.csproj Libraries/CO.CDP.Mvc.Validation.Tests/
 COPY --link Libraries/CO.CDP.Swashbuckle/CO.CDP.Swashbuckle.csproj Libraries/CO.CDP.Swashbuckle/
@@ -148,10 +150,22 @@ COPY .config/dotnet-tools.json .config/
 RUN dotnet tool restore
 RUN dotnet ef migrations bundle -p /src/Services/CO.CDP.OrganisationInformation.Persistence -s /src/Services/CO.CDP.Tenant.WebApi --self-contained -o /app/migrations/efbundle
 
+FROM build-entity-verification AS build-migrations-entity-verification
+WORKDIR /src
+COPY .config/dotnet-tools.json .config/
+RUN dotnet tool restore
+RUN dotnet ef migrations bundle -p /src/Services/CO.CDP.EntityVerification --self-contained -o /app/migrations/efbundle
+
 FROM base AS migrations-organisation-information
 ENV MIGRATIONS_CONNECTION_STRING=""
 WORKDIR /app
 COPY --from=build-migrations-organisation-information /app/migrations/efbundle .
+ENTRYPOINT /app/efbundle --connection "$MIGRATIONS_CONNECTION_STRING"
+
+FROM base AS migrations-entity-verification
+ENV MIGRATIONS_CONNECTION_STRING=""
+WORKDIR /app
+COPY --from=build-migrations-entity-verification /app/migrations/efbundle .
 ENTRYPOINT /app/efbundle --connection "$MIGRATIONS_CONNECTION_STRING"
 
 FROM base AS final-authority

@@ -15,7 +15,10 @@ public class DynamicFormsPageModel(IFormsEngine formsEngine, ITempDataService te
     public Guid SectionId { get; set; }
     public Guid OrganisationId { get; set; }
     public bool IsFirstQuestion => IsCurrentQuestionFirst();
+
+    public string EncType => GetEncType();
     public Guid? PreviousQuestionId { get; private set; }
+    public new HttpRequest? Request { get; set; }
 
     [BindProperty]
     public string? Answer { get; set; }
@@ -31,6 +34,10 @@ public class DynamicFormsPageModel(IFormsEngine formsEngine, ITempDataService te
     [BindProperty]
     [RegularExpression(RegExPatterns.Year, ErrorMessage = "Year must be a valid number")]
     public string? FinancialYear { get; set; }
+
+    [BindProperty]
+    public string? UploadedFile { get; set; }
+    
 
     public async Task OnGetAsync(Guid organisationId, Guid formId, Guid sectionId, Guid? questionId)
     {
@@ -140,6 +147,11 @@ public class DynamicFormsPageModel(IFormsEngine formsEngine, ITempDataService te
         return CurrentQuestion?.Id == SectionWithQuestions?.Questions?.FirstOrDefault()?.Id;
     }
 
+    private string GetEncType()
+    {
+        return CurrentQuestion?.Type == FormQuestionType.FileUpload ? "multipart/form-data" : "application/x-www-form-urlencoded";
+    }
+
     private bool ValidateCurrentQuestion()
     {
         if (CurrentQuestion?.Type == FormQuestionType.YesOrNo)
@@ -155,6 +167,11 @@ public class DynamicFormsPageModel(IFormsEngine formsEngine, ITempDataService te
         if (CurrentQuestion?.Type == FormQuestionType.Date)
         {
             return ValidateDateAnswer();
+        }
+
+        if (CurrentQuestion?.Type == FormQuestionType.FileUpload)
+        {
+            return ValidateFileUpload();
         }
 
         // Future validation for other question types can be added here
@@ -178,6 +195,44 @@ public class DynamicFormsPageModel(IFormsEngine formsEngine, ITempDataService te
         if (string.IsNullOrEmpty(Answer))
         {
             ModelState.AddModelError("Answer", "Please enter a value.");
+            return false;
+        }
+
+        return true;
+    }
+
+    public bool ValidateFileUpload()
+    {           
+        var allowedFileSizeMB = 10;
+        var allowedExtensions = new List<string> { ".pdf", ".docx", ".csv", ".jpg", ".bmp", ".png", ".tif" };
+
+        if (Request?.Form == null || Request.Form.Files == null || Request.Form.Files.Count == 0)
+        {
+            ModelState.AddModelError("Answer", "No file selected.");
+            return false;
+        }
+
+        var file = Request.Form.Files["UploadedFile"];
+
+        if (file == null)
+        {
+            ModelState.AddModelError("Answer", "No file selected.");
+            return false;
+        }
+
+        var maxFileLength = allowedFileSizeMB * 1024 * 1024;
+
+        if (file.Length > maxFileLength)
+        {
+            ModelState.AddModelError("Answer", $"The file size must not exceed {allowedFileSizeMB}MB.");
+            return false;
+        }
+
+        var fileExtension = Path.GetExtension(file.FileName).ToLowerInvariant();
+        
+        if (!allowedExtensions.Contains(fileExtension))
+        {
+            ModelState.AddModelError("Answer", $"Please upload a file which has one of the following extensions: {string.Join(", ", allowedExtensions)}");
             return false;
         }
 

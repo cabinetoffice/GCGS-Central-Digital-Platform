@@ -11,9 +11,12 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            var formsGuid = Guid.Parse("0618b13e-eaf2-46e3-a7d2-6f2c44be7022");
+            var sectonGuid = Guid.Parse("13511cb1-9ed4-4d72-ba9e-05b4a0be880c");
+
             migrationBuilder.Sql($@"
                 INSERT INTO forms (guid, name, version, is_required, type, scope)
-                VALUES ('{Guid.NewGuid()}', 'Financial Information Form', '1.0', TRUE, 0, 0);
+                VALUES ('{formsGuid}', 'Financial Information Form', '1.0', TRUE, 0, 0);
             ");
 
             migrationBuilder.Sql($@"
@@ -25,7 +28,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
 
                     -- Insert into form_sections
                     INSERT INTO form_sections (guid, title, form_id)
-                    VALUES ('{Guid.NewGuid()}', 'Financial Information', formId);
+                    VALUES ('{sectonGuid}', 'Financial Information', formId);
 
                     -- Retrieve the inserted form_section ID
                     SELECT currval(pg_get_serial_sequence('form_sections', 'id')) INTO formId;
@@ -36,7 +39,11 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                     ('{Guid.NewGuid()}', formId, {(int)FormQuestionType.NoInput}, TRUE, 'The financial information you will need.', 'You will need to upload accounts or statements for your 2 most recent financial years. If you do not have 2 years, you can upload your most recent financial year. You will need to enter the financial year end date for the information you upload.', '{{}}'),
                     ('{Guid.NewGuid()}', formId, {(int)FormQuestionType.YesOrNo}, TRUE, 'Were your accounts audited?', NULL, '{{}}'),
                     ('{Guid.NewGuid()}', formId, {(int)FormQuestionType.FileUpload}, TRUE, 'Upload your accounts', 'Upload your most recent 2 financial years. If you do not have 2, upload your most recent financial year.', '{{}}'),
-                    ('{Guid.NewGuid()}', formId, {(int)FormQuestionType.Date}, TRUE, 'What is the financial year end date for the information you uploaded?', NULL, '{{}}');
+                    ('{Guid.NewGuid()}', formId, {(int)FormQuestionType.Date}, TRUE, 'What is the financial year end date for the information you uploaded?', NULL, '{{}}'),
+                    ('{Guid.NewGuid()}', formId, {(int)FormQuestionType.Text}, TRUE, 'Enter a description of your financial status.', 'Please provide detailed information about your financial status.', '{{}}'),
+                    ('{Guid.NewGuid()}', formId, {(int)FormQuestionType.SingleChoice}, TRUE, 'Were your accounts audited?.', NULL, '[""Yes"",""No""]'),
+                    ('{Guid.NewGuid()}', formId, {(int)FormQuestionType.MultipleChoice}, TRUE, 'Which of the following statements applies to your accounts or financial statements?.', NULL, '[""Accounts submitted for our last two financial years were required to be audited."",""Accounts submitted for only our most recent financial year were required to be audited."",""Financial information for our most recent financial year. Our accounts did not require an audit.""]'),
+                    ('{Guid.NewGuid()}', formId, {(int)FormQuestionType.CheckYourAnswers}, TRUE, 'Check your answers', NULL, '{{}}');
                 END $$;
             ");
         }

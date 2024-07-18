@@ -1,0 +1,14 @@
+version: 0.2
+
+phases:
+
+  pre_build:
+    commands:
+      - terraform version
+      - terragrunt --version
+
+  build:
+    commands:
+      - cd terragrunt/components
+      - terragrunt run-all apply -auto-approve -terragrunt-non-interactive
+
