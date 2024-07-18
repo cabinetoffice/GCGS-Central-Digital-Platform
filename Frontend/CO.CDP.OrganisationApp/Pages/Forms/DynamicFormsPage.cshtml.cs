@@ -21,8 +21,8 @@ public class DynamicFormsPageModel(IFormsEngine formsEngine, ITempDataService te
     public string? Answer { get; set; }
 
     [BindProperty]
-    public string? UploadedFile { get; set; }
-    
+    public IFormFile? UploadedFile { get; set; }
+
 
     public async Task OnGetAsync(Guid organisationId, Guid formId, Guid sectionId, Guid? questionId)
     {
@@ -182,19 +182,11 @@ public class DynamicFormsPageModel(IFormsEngine formsEngine, ITempDataService te
     }
 
     public bool ValidateFileUpload()
-    {           
+    {
         var allowedFileSizeMB = 10;
-        var allowedExtensions = new List<string> { ".pdf", ".docx", ".csv", ".jpg", ".bmp", ".png", ".tif" };
+        var allowedExtensions = new List<string> { ".pdf", ".docx", ".csv", ".jpg", ".bmp", ".png", ".tif", ".adoc" }; // Added .adoc for this example
 
-        if (Request?.Form == null || Request.Form.Files == null || Request.Form.Files.Count == 0)
-        {
-            ModelState.AddModelError("Answer", "No file selected.");
-            return false;
-        }
-
-        var file = Request.Form.Files["UploadedFile"];
-
-        if (file == null)
+        if (UploadedFile == null)
         {
             ModelState.AddModelError("Answer", "No file selected.");
             return false;
@@ -202,14 +194,14 @@ public class DynamicFormsPageModel(IFormsEngine formsEngine, ITempDataService te
 
         var maxFileLength = allowedFileSizeMB * 1024 * 1024;
 
-        if (file.Length > maxFileLength)
+        if (UploadedFile.Length > maxFileLength)
         {
             ModelState.AddModelError("Answer", $"The file size must not exceed {allowedFileSizeMB}MB.");
             return false;
         }
 
-        var fileExtension = Path.GetExtension(file.FileName).ToLowerInvariant();
-        
+        var fileExtension = Path.GetExtension(UploadedFile.FileName).ToLowerInvariant();
+
         if (!allowedExtensions.Contains(fileExtension))
         {
             ModelState.AddModelError("Answer", $"Please upload a file which has one of the following extensions: {string.Join(", ", allowedExtensions)}");
@@ -221,26 +213,45 @@ public class DynamicFormsPageModel(IFormsEngine formsEngine, ITempDataService te
 
     private void SaveAnswerToTempData()
     {
-        if (CurrentQuestion != null)
+        if (CurrentQuestion == null)
         {
-            var questionAnswer = new QuestionAnswer
-            {
-                QuestionId = CurrentQuestion.Id,
-                Answer = Answer
-            };
-
-            var key = $"Answer_{FormId}_{SectionId}_{CurrentQuestion.Id}";
-            tempDataService.Put(key, questionAnswer);
+            return;
         }
+
+        Answer = GetAnswerForCurrentQuestion();
+
+        var questionAnswer = new QuestionAnswer
+        {
+            QuestionId = CurrentQuestion.Id,
+            Answer = Answer
+        };
+
+        var key = GenerateTempDataKey(FormId, SectionId, CurrentQuestion.Id);
+        tempDataService.Put(key, questionAnswer);
     }
 
     private void RetrieveAnswerFromTempData()
     {
         if (CurrentQuestion != null)
         {
-            var key = $"Answer_{FormId}_{SectionId}_{CurrentQuestion.Id}";
+            var key = GenerateTempDataKey(FormId, SectionId, CurrentQuestion.Id);
             var questionAnswer = tempDataService.Get<QuestionAnswer>(key);
             Answer = questionAnswer?.Answer ?? string.Empty;
         }
+    }
+
+    private string GetAnswerForCurrentQuestion()
+    {
+        if (CurrentQuestion?.Type == FormQuestionType.FileUpload && UploadedFile != null)
+        {
+            return UploadedFile.FileName;
+        }
+
+        return Answer ?? string.Empty;
+    }
+
+    private string GenerateTempDataKey(Guid formId, Guid sectionId, Guid questionId)
+    {
+        return $"Answer_{formId}_{sectionId}_{questionId}";
     }
 }

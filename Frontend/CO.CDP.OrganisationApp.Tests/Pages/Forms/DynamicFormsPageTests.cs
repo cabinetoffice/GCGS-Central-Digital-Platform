@@ -23,7 +23,7 @@ public class DynamicFormsPageTests
         _tempDataServiceMock = new Mock<ITempDataService>();
         _requestMock = new Mock<HttpRequest>();
         _httpContextMock = new Mock<HttpContext>();
-        _pageModel = new DynamicFormsPageModel(_formsEngineMock.Object, _tempDataServiceMock.Object);        
+        _pageModel = new DynamicFormsPageModel(_formsEngineMock.Object, _tempDataServiceMock.Object);
         _organisationId = Guid.NewGuid();
         _formId = Guid.NewGuid();
         _sectionId = Guid.NewGuid();
@@ -136,14 +136,10 @@ public class DynamicFormsPageTests
 
         var fileMock = new Mock<IFormFile>();
         fileMock.Setup(f => f.Length).Returns(11 * 1024 * 1024);
+        fileMock.Setup(f => f.FileName).Returns("testfile.pdf");
         fileMock.Setup(f => f.Name).Returns("UploadedFile");
 
-        var formFileCollection = new FormFileCollection { fileMock.Object };
-        var formCollection = new FormCollection(new Dictionary<string, Microsoft.Extensions.Primitives.StringValues>(), formFileCollection);
-
-        _requestMock.Setup(x => x.Form).Returns(formCollection);
-
-        _pageModel.Request = _requestMock.Object;
+        _pageModel.UploadedFile = fileMock.Object;
 
         var result = _pageModel.ValidateFileUpload();
 
@@ -163,17 +159,14 @@ public class DynamicFormsPageTests
         fileMock.Setup(f => f.Length).Returns(5 * 1024 * 1024);
         fileMock.Setup(f => f.Name).Returns("UploadedFile");
         fileMock.Setup(f => f.FileName).Returns("badfile.exe");
-        var formFileCollection = new FormFileCollection { fileMock.Object };
-        var formCollection = new FormCollection(new Dictionary<string, Microsoft.Extensions.Primitives.StringValues>(), formFileCollection);
 
-        _requestMock.Setup(x => x.Form).Returns(formCollection);
-        _pageModel.Request = _requestMock.Object;
+        _pageModel.UploadedFile = fileMock.Object;
 
         var result = _pageModel.ValidateFileUpload();
 
         Assert.False(result);
         Assert.True(_pageModel.ModelState.ContainsKey("Answer"));
-        Assert.Equal("Please upload a file which has one of the following extensions: .pdf, .docx, .csv, .jpg, .bmp, .png, .tif", _pageModel.ModelState["Answer"]?.Errors?[0].ErrorMessage);
+        Assert.Equal("Please upload a file which has one of the following extensions: .pdf, .docx, .csv, .jpg, .bmp, .png, .tif, .adoc", _pageModel.ModelState["Answer"]?.Errors?[0].ErrorMessage);
     }
 
     [Fact]

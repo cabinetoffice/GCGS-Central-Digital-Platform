@@ -24,4 +24,9 @@
         </p>
     }
     <input class="govuk-file-upload" id="@question.Id" name="UploadedFile" type="file">
+    @if (!string.IsNullOrEmpty(@answer))
+    {
+        <p class="govuk-body">@answer</p>
+    }
+
 </div>
