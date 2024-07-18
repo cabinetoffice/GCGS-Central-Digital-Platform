@@ -1,4 +1,5 @@
 using CO.CDP.EntityVerification.EntityFramework;
+using CO.CDP.OrganisationInformation.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -10,6 +11,7 @@ namespace CO.CDP.EntityVerification.Persistence;
 public class EntityVerificationContext : DbContext
 {
     public DbSet<Ppon> Ppons { get; set; } = null!;
+    public DbSet<Identifier> Identifiers { get; set; } = null!;
 
     public EntityVerificationContext()
     {
@@ -23,8 +25,25 @@ public class EntityVerificationContext : DbContext
     {
         modelBuilder.HasDefaultSchema("entity_verification");
 
+        modelBuilder.Entity<Identifier>()
+            .ToTable("identifier");
+
         modelBuilder.Entity<Ppon>()
-            .ToTable("ppon");
+            .ToTable("ppon")
+            .HasOne(u => u.Identifier)
+            .WithOne(p => p.Ppon)
+            .HasForeignKey<Identifier>(p => p.Id);
+
+        foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+        {
+            if (typeof(IEntityDate).IsAssignableFrom(entityType.ClrType) && !entityType.IsOwned())
+            {
+                modelBuilder.Entity(entityType.ClrType).Property<DateTimeOffset>("CreatedOn").IsRequired()
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                modelBuilder.Entity(entityType.ClrType).Property<DateTimeOffset>("UpdatedOn").IsRequired()
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP");
+            }
+        }
 
         base.OnModelCreating(modelBuilder);
     }
@@ -38,12 +57,31 @@ public class EntityVerificationContext : DbContext
 
     public override int SaveChanges()
     {
+        UpdateTimestamps();
         return base.SaveChanges();
     }
 
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
+        UpdateTimestamps();
         return base.SaveChangesAsync(cancellationToken);
+    }
+
+    private void UpdateTimestamps()
+    {
+        var entries = ChangeTracker
+            .Entries<IEntityDate>()
+            .Where(e => e.State == EntityState.Added || e.State == EntityState.Modified);
+
+        foreach (var entityEntry in entries)
+        {
+            if (entityEntry.State == EntityState.Added)
+            {
+                entityEntry.Entity.CreatedOn = DateTimeOffset.UtcNow;
+            }
+
+            entityEntry.Entity.UpdatedOn = DateTimeOffset.UtcNow;
+        }
     }
 }
 
