@@ -1,0 +1,85 @@
+@page "/organisation/{id}/supplier-information/connected-person/nature-of-control/{ConnectedEntityId?}"
+@model CO.CDP.OrganisationApp.Pages.Supplier.ConnectedEntityControlConditionModel
+@using CO.CDP.OrganisationApp.Constants
+
+@{
+    var controlConditionsHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.ControlConditions)).HasInnerHtml;
+
+    string IsSelected(ConnectedEntityControlCondition entityControlCondition)
+    {
+        return Model.ControlConditions.Contains(entityControlCondition) ? "checked='checked'" : string.Empty;
+    }
+}
+
+<a href="/organisation/@Model.Id/supplier-information/connected-person/company-question/@Model.ConnectedEntityId" class="govuk-back-link">Back</a>
+
+<main class="govuk-main-wrapper">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <partial name="_ErrorSummary" model="@ModelState" />
+            <form class="form" method="post">
+                <div class="govuk-form-group @(controlConditionsHasError ? "govuk-form-group--error" : "")">
+                    <fieldset class="govuk-fieldset" aria-describedby="natureOfControlHint">
+                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                            <span class="govuk-caption-l">@Model.Caption</span>
+                            <h1 class="govuk-fieldset__heading">@Model.Heading</h1>
+                        </legend>
+                        <div id="natureOfControl-hint" class="govuk-hint">
+                            As defined in <a href="https://www.legislation.gov.uk/ukpga/2006/46/schedule/1A/part/1?timeline=false" target="_blank">part 1 schedule 1a of the Companies Act 2006</a>. Select all that apply.
+                        </div>
+                        @if (controlConditionsHasError)
+                        {
+                            <p id="natureOfControl-error" class="govuk-error-message">
+                                <span class="govuk-visually-hidden">Error:</span> @Html.ValidationMessageFor(m => m.ControlConditions)
+                            </p>
+                        }
+                        <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+                            <div class="govuk-checkboxes__item">
+                                <input class="govuk-checkboxes__input" id="natureOfControl-0" name="ControlConditions" type="checkbox"
+                                       value="@ConnectedEntityControlCondition.OwnsShares" @IsSelected(ConnectedEntityControlCondition.OwnsShares)>
+                                <label class="govuk-label govuk-checkboxes__label" for="natureOfControl-0">
+                                    Owns shares
+                                </label>
+                                <div id="natureOfControlHint-0" class="govuk-hint govuk-checkboxes__hint">
+                                    Directly or indirectly holds more than 25% of the company's shares
+                                </div>
+                            </div>
+                            <div class="govuk-checkboxes__item">
+                                <input class="govuk-checkboxes__input" id="natureOfControl-1" name="ControlConditions" type="checkbox"
+                                       value="@ConnectedEntityControlCondition.HasVotingRights" @IsSelected(ConnectedEntityControlCondition.HasVotingRights)>
+                                <label class="govuk-label govuk-checkboxes__label" for="natureOfControl-1">
+                                    Has voting rights
+                                </label>
+                                <div id="natureOfControlHint-1" class="govuk-hint govuk-checkboxes__hint">
+                                    Directly or indirectly holds more than 25% of the voting rights in the company
+                                </div>
+                            </div>
+                            <div class="govuk-checkboxes__item">
+                                <input class="govuk-checkboxes__input" id="natureOfControl-2" name="ControlConditions" type="checkbox"
+                                       value="@ConnectedEntityControlCondition.CanAppointOrRemoveDirectors" @IsSelected(ConnectedEntityControlCondition.CanAppointOrRemoveDirectors)>
+                                <label class="govuk-label govuk-checkboxes__label" for="natureOfControl-2">
+                                    Can appoint or remove directors
+                                </label>
+                                <div id="natureOfControlHint-2" class="govuk-hint govuk-checkboxes__hint">
+                                    Directly or indirectly holds the right to appoint or remove a majority of the company's board of directors
+                                </div>
+                            </div>
+                            <div class="govuk-checkboxes__item">
+                                <input class="govuk-checkboxes__input" id="natureOfControl-3" name="ControlConditions" type="checkbox"
+                                       value="@ConnectedEntityControlCondition.HasOtherSignificantInfluenceOrControl" @IsSelected(ConnectedEntityControlCondition.HasOtherSignificantInfluenceOrControl)>
+                                <label class="govuk-label govuk-checkboxes__label" for="natureOfControl-3">
+                                    Has other significant influence or control
+                                </label>
+                                <div id="natureOfControlHint-3" class="govuk-hint govuk-checkboxes__hint">
+                                    Has the right to exercise, or exercises, significant influence or control over company. As defined in the
+                                    <a href="https://www.gov.uk/government/publications/guidance-to-the-people-with-significant-control-requirements-for-companies-and-limited-liability-partnerships" target="_blank">person of significant control (PSC) guidance</a>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+                <button class="govuk-button" type="submit">Continue</button>
+            </form>
+        </div>
+    </div>
+</main>
