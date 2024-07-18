@@ -20,11 +20,47 @@
                                 Are you sure you want to remove this connected person?
                             </h2>
                         </legend>
-                        <div class="govuk-radios govuk-radios--inline" data-module="govuk-radios">
+                        <div class="govuk-radios" data-module="govuk-radios">
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input" id="conditional-YES" name="ConfirmRemove" type="radio"
-                                       value="true" @(Model.ConfirmRemove == true ? "checked" : "")>
+                                       value="true" @(Model.ConfirmRemove == true ? "checked" : "") data-aria-controls="conditional-end-date">
                                 <label class="govuk-label govuk-radios__label" for="conditional-YES">Yes</label>
+                            </div>
+                            <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-end-date">
+                                <div class="govuk-form-group">
+                                    <label class="govuk-label" for="end-date">
+                                        When was the connected person no longer associated to your organisation?
+                                    </label>
+                                    <div id="end-date-hint" class="govuk-hint">
+                                        For example, 27 3 2007
+                                    </div>
+                                    <div class="govuk-date-input" id="end-date">
+                                        <div class="govuk-date-input__item">
+                                            <div class="govuk-form-group">
+                                                <label class="govuk-label govuk-date-input__label" for="end-date-day">
+                                                    Day
+                                                </label>
+                                                <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="end-date-day" name="end-date-day" type="text" inputmode="numeric">
+                                            </div>
+                                        </div>
+                                        <div class="govuk-date-input__item">
+                                            <div class="govuk-form-group">
+                                                <label class="govuk-label govuk-date-input__label" for="end-date-month">
+                                                    Month
+                                                </label>
+                                                <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="end-date-month" name="end-date-month" type="text" inputmode="numeric">
+                                            </div>
+                                        </div>
+                                        <div class="govuk-date-input__item">
+                                            <div class="govuk-form-group">
+                                                <label class="govuk-label govuk-date-input__label" for="end-date-year">
+                                                    Year
+                                                </label>
+                                                <input class="govuk-input govuk-date-input__input govuk-input--width-4" id="end-date-year" name="end-date-year" type="text" inputmode="numeric">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input" id="conditional-NO" name="ConfirmRemove" type="radio"
