@@ -13,9 +13,9 @@ public interface IFormElementModel
 
     FormQuestionType? FormQuestionType { get; set; }
 
-    string? GetAnswer();
+    FormAnswer? GetAnswer();
 
-    void SetAnswer(string? answer);
+    void SetAnswer(FormAnswer? answer);
 }
 
 public abstract class FormElementModel : IFormElementModel
@@ -30,7 +30,7 @@ public abstract class FormElementModel : IFormElementModel
     [BindProperty]
     public bool IsRequired { get; set; }
 
-    public abstract string? GetAnswer();
+    public abstract FormAnswer? GetAnswer();
 
-    public abstract void SetAnswer(string? answer);
+    public abstract void SetAnswer(FormAnswer? answer);
 }

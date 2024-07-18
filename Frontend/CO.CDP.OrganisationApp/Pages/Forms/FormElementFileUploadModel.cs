@@ -1,3 +1,4 @@
+using CO.CDP.OrganisationApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.StaticFiles;
 using System.ComponentModel.DataAnnotations;
@@ -14,14 +15,17 @@ public class FormElementFileUploadModel : FormElementModel, IValidatableObject
 
     public string? UploadedFileName { get; set; }
 
-    public override string? GetAnswer()
+    public override FormAnswer? GetAnswer()
     {
-        return UploadedFile?.FileName ?? UploadedFileName;
+        return string.IsNullOrWhiteSpace(UploadedFileName) ? null : new FormAnswer { TextValue = UploadedFileName };
     }
 
-    public override void SetAnswer(string? answer)
+    public override void SetAnswer(FormAnswer? answer)
     {
-        UploadedFileName = answer;
+        if (answer?.TextValue != null)
+        {
+            UploadedFileName = answer.TextValue;
+        }
     }
 
     public (IFormFile formFile, string filename, string contentType)? GetUploadedFileInfo()

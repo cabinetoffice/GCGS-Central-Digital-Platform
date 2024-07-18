@@ -1,4 +1,5 @@
 using CO.CDP.OrganisationApp.Constants;
+using CO.CDP.OrganisationApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
@@ -20,24 +21,26 @@ public class FormElementDateInputModel : FormElementModel, IValidatableObject
     [BindProperty]
     public string? Year { get; set; }
 
-    public override string? GetAnswer()
+    public override FormAnswer? GetAnswer()
     {
-        string? dateString = null;
-        if (Day != null && Month != null && Year != null)
+        if (!string.IsNullOrWhiteSpace(Day) && !string.IsNullOrWhiteSpace(Month) && !string.IsNullOrWhiteSpace(Year))
         {
-            dateString = $"{Day}/{Month}/{Year}";
+            var dateString = $"{Year}-{Month!.PadLeft(2, '0')}-{Day!.PadLeft(2, '0')}";
+            if (DateTime.TryParseExact(dateString, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
+            {
+                return new FormAnswer { DateValue = parsedDate };
+            }
         }
-        return dateString;
+        return null;
     }
 
-    public override void SetAnswer(string? answer)
+    public override void SetAnswer(FormAnswer? answer)
     {
-        if (!string.IsNullOrWhiteSpace(answer))
+        if (answer?.DateValue != null)
         {
-            var splits = answer.Split("/");
-            Day = splits[0];
-            Month = splits[1];
-            Year = splits[2];
+            Day = answer.DateValue.Value.Day.ToString();
+            Month = answer.DateValue.Value.Month.ToString();
+            Year = answer.DateValue.Value.Year.ToString();
         }
     }
 

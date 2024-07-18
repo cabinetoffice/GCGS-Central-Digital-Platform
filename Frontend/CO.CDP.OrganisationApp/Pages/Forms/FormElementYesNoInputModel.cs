@@ -1,3 +1,4 @@
+using CO.CDP.OrganisationApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 
@@ -8,14 +9,17 @@ public class FormElementYesNoInputModel : FormElementModel, IValidatableObject
     [BindProperty]
     public string? YesNoInput { get; set; }
 
-    public override string? GetAnswer()
+    public override FormAnswer? GetAnswer()
     {
-        return YesNoInput;
+        return string.IsNullOrWhiteSpace(YesNoInput) ? null : new FormAnswer { BoolValue = YesNoInput == "yes" };
     }
 
-    public override void SetAnswer(string? answer)
+    public override void SetAnswer(FormAnswer? answer)
     {
-        YesNoInput = answer;
+        if (answer?.BoolValue != null)
+        {
+            YesNoInput = answer.BoolValue.Value ? "yes" : "no";
+        }
     }
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)

@@ -13,8 +13,10 @@
 
     <p class="govuk-body">@Model.Description</p>
 
-
-    <p class="govuk-body">Uploaded file: @Model.UploadedFileName </p>
+    @if (!string.IsNullOrWhiteSpace(@Model.UploadedFileName))
+    {
+        <p class="govuk-body">Uploaded file: @Model.UploadedFileName</p>
+    }
 
     @if (hasError)
     {

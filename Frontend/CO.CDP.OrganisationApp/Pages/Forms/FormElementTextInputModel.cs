@@ -1,3 +1,4 @@
+using CO.CDP.OrganisationApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 
@@ -8,14 +9,17 @@ public class FormElementTextInputModel : FormElementModel, IValidatableObject
     [BindProperty]
     public string? TextInput { get; set; }
 
-    public override string? GetAnswer()
+    public override FormAnswer? GetAnswer()
     {
-        return TextInput;
+        return string.IsNullOrWhiteSpace(TextInput) ? null : new FormAnswer { TextValue = TextInput };
     }
 
-    public override void SetAnswer(string? answer)
+    public override void SetAnswer(FormAnswer? answer)
     {
-        TextInput = answer;
+        if (answer?.TextValue != null)
+        {
+            TextInput = answer.TextValue;
+        }
     }
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)

@@ -1,10 +1,7 @@
 using CO.CDP.AwsServices;
 using CO.CDP.OrganisationApp.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.StaticFiles;
-using System.Net.Mime;
 
 namespace CO.CDP.OrganisationApp.Pages.Forms;
 
@@ -142,7 +139,7 @@ public class DynamicFormsPageModel(
                 {
                     using var stream = response.Value.formFile.OpenReadStream();
                     await fileHostManager.UploadFile(stream, response.Value.filename, response.Value.contentType);
-                    answer = response.Value.filename;
+                    answer = new FormAnswer { TextValue = response.Value.filename };
                 }
             }
 
@@ -152,7 +149,7 @@ public class DynamicFormsPageModel(
         FormElementModel = model;
     }
 
-    private void SaveAnswerToTempData(string? answer)
+    private void SaveAnswerToTempData(FormAnswer? answer)
     {
         if (CurrentQuestion != null)
         {
@@ -171,9 +168,9 @@ public class DynamicFormsPageModel(
         }
     }
 
-    private string? RetrieveAnswerFromTempData()
+    private FormAnswer? RetrieveAnswerFromTempData()
     {
         var state = tempDataService.PeekOrDefault<FormQuestionAnswerState>(FormQuestionAnswerStateKey);
-        return state.Answers?.FirstOrDefault(a => a.QuestionId == CurrentQuestion?.Id)?.Answer ?? string.Empty;
+        return state.Answers?.FirstOrDefault(a => a.QuestionId == CurrentQuestion?.Id)?.Answer;
     }
 }
