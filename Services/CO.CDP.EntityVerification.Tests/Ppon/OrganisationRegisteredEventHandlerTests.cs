@@ -19,10 +19,7 @@ public class OrganisationRegisteredEventHandlerTests
         pponService.Setup(x => x.GeneratePponId()).Returns(generatedPpon);
 
         var handler = new OrganisationRegisteredEventHandler(pponService.Object, pponRepository.Object, publisher.Object);
-        var @event = new OrganisationRegistered
-        {
-            Name = "MyOrg",
-        };
+        var @event = GivenOrganisationRegisteredEvent();
 
         await handler.Handle(@event);
 
@@ -30,5 +27,35 @@ public class OrganisationRegisteredEventHandlerTests
             s => s.Save(It.Is<EntityVerification.Persistence.Ppon>(p => p.PponId == generatedPpon)), Times.Once);
         publisher.Verify(
               s => s.Publish(It.Is<EntityVerification.Persistence.Ppon>(p => p.PponId == generatedPpon)), Times.Once);
+    }
+
+    private static OrganisationRegistered GivenOrganisationRegisteredEvent(
+        Guid? id = null,
+        string name = "Acme Ltd"
+    )
+    {
+        return new OrganisationRegistered
+        {
+            Id = id ?? Guid.NewGuid(),
+            Name = name,
+            Identifier = new Identifier
+            {
+                Id = "93433423432",
+                LegalName = name,
+                Scheme = "GB-COH",
+                Uri = null
+            },
+            AdditionalIdentifiers =
+            [
+                new Identifier
+                {
+                    Id = "GB123123123",
+                    LegalName = name,
+                    Scheme = "VAT",
+                    Uri = null
+                }
+            ],
+            Roles = ["Supplier"]
+        };
     }
 }
