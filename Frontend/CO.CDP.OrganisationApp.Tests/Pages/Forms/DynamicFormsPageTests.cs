@@ -3,6 +3,7 @@ using CO.CDP.OrganisationApp.Pages.Forms;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moq;
+using System.ComponentModel.DataAnnotations;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages.Forms;
 public class DynamicFormsPageTests
@@ -102,6 +103,59 @@ public class DynamicFormsPageTests
         _pageModel.ModelState["YesNoAnswer"]?.Errors.Should().ContainSingle(e => e.ErrorMessage == "Please select an option.");
     }
 
+    [Fact]
+    public async Task OnPostAsync_ShouldReturnPageWithErrors_WhenDateIsNotProvided()
+    {
+        var sectionQuestionsResponse = SetupMockLoadFormSectionAsync();
+        var currentQuestion = sectionQuestionsResponse.Questions!.First(q => q.Type == FormQuestionType.Date);
+        var currentQuestionId = currentQuestion.Id;
+
+        _pageModel.SectionWithQuestions = sectionQuestionsResponse;
+        _pageModel.CurrentQuestion = currentQuestion;
+
+        SetupMockGetCurrentQuestion(currentQuestion);
+
+        _pageModel.Answer = null;      
+
+        var result = await _pageModel.OnPostAsync(_organisationId, _formId, _sectionId, currentQuestionId, "next");
+
+        result.Should().BeOfType<PageResult>();
+        _pageModel.ModelState.IsValid.Should().BeFalse();
+        _pageModel.ModelState["Answer"]?.Errors.Should().ContainSingle(e => e.ErrorMessage == "Please enter the date.");
+    }
+
+    [Fact]
+
+    public async Task OnPostAsync_ShouldReturnPageWithErrors_WhenInvalidDateIsProvided()
+    {
+        var sectionQuestionsResponse = SetupMockLoadFormSectionAsync();
+        var currentQuestion = sectionQuestionsResponse.Questions!.First(q => q.Type == FormQuestionType.Date);
+        var currentQuestionId = currentQuestion.Id;
+
+        _pageModel.SectionWithQuestions = sectionQuestionsResponse;
+        _pageModel.CurrentQuestion = currentQuestion;
+
+        SetupMockGetCurrentQuestion(currentQuestion);
+
+        //_pageModel.Answer = null;
+        _pageModel.FinancialDay = "10";
+        _pageModel.FinancialMonth = "60";
+        _pageModel.FinancialDay = "2020";
+
+        
+        Assert.True(ValidateModel(_pageModel).Any(
+        v => v.MemberNames.Contains("FinancialMonth") &&
+             v.ErrorMessage.Contains("Month must be a valid number")));
+
+    }
+
+    private IList<ValidationResult> ValidateModel(object model)
+    {
+        var validationResults = new List<ValidationResult>();
+        var ctx = new ValidationContext(model, null, null);
+        Validator.TryValidateObject(model, ctx, validationResults, true);
+        return validationResults;
+    }
 
     [Fact]
     public void GetPartialViewName_ShouldReturnCorrectPartialViewName_WhenQuestionTypeIsProvided()
@@ -155,7 +209,8 @@ public class DynamicFormsPageTests
             Questions = new List<FormQuestion>
                     {
                         new FormQuestion { Id = Guid.NewGuid(), Title = "Question1", Type = FormQuestionType.YesOrNo, IsRequired = true },
-                        new FormQuestion { Id = Guid.NewGuid(), Title = "Question2", Type = FormQuestionType.Text, IsRequired = true }
+                        new FormQuestion { Id = Guid.NewGuid(), Title = "Question2", Type = FormQuestionType.Text, IsRequired = true },
+                        new FormQuestion { Id = Guid.NewGuid(), Title = "Question4", Type = FormQuestionType.Date, IsRequired = true },
                     }
         };
     }
