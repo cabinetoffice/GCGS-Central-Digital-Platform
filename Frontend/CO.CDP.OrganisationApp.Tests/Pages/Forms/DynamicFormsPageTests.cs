@@ -159,12 +159,7 @@ public class DynamicFormsPageTests
         var sectionQuestionsResponse = SetupMockLoadFormSectionAsync();
         var currentQuestion = sectionQuestionsResponse.Questions!.First(q => q.Type == FormQuestionType.FileUpload);
         var currentQuestionId = currentQuestion.Id;
-    [Fact]
-    public async Task OnPostAsync_ShouldReturnPageWithErrors_WhenDateIsNotProvided()
-    {
-        var sectionQuestionsResponse = SetupMockLoadFormSectionAsync();
-        var currentQuestion = sectionQuestionsResponse.Questions!.First(q => q.Type == FormQuestionType.Date);
-        var currentQuestionId = currentQuestion.Id;
+   
 
         var fileMock = new Mock<IFormFile>();
         fileMock.Setup(f => f.Length).Returns(5 * 1024 * 1024);
@@ -183,6 +178,12 @@ public class DynamicFormsPageTests
         Assert.Equal("Please upload a file which has one of the following extensions: .pdf, .docx, .csv, .jpg, .bmp, .png, .tif", _pageModel.ModelState["Answer"]?.Errors?[0].ErrorMessage);
     }
 
+    [Fact]
+    public async Task OnPostAsync_ShouldReturnPageWithErrors_WhenDateIsNotProvided()
+    {
+        var sectionQuestionsResponse = SetupMockLoadFormSectionAsync();
+        var currentQuestion = sectionQuestionsResponse.Questions!.First(q => q.Type == FormQuestionType.Date);
+        var currentQuestionId = currentQuestion.Id;
         _pageModel.SectionWithQuestions = sectionQuestionsResponse;
         _pageModel.CurrentQuestion = currentQuestion;
 
@@ -198,7 +199,6 @@ public class DynamicFormsPageTests
     }
 
     [Fact]
-
     public async Task OnPostAsync_ShouldReturnPageWithErrors_WhenInvalidDateIsProvided()
     {
         var sectionQuestionsResponse = SetupMockLoadFormSectionAsync();
@@ -283,7 +283,7 @@ public class DynamicFormsPageTests
                     {
                         new FormQuestion { Id = Guid.NewGuid(), Title = "Question1", Type = FormQuestionType.YesOrNo, IsRequired = true },
                         new FormQuestion { Id = Guid.NewGuid(), Title = "Question2", Type = FormQuestionType.Text, IsRequired = true },
-                        new FormQuestion { Id = Guid.NewGuid(), Title = "Question3", Type = FormQuestionType.FileUpload, IsRequired = true }                  
+                        new FormQuestion { Id = Guid.NewGuid(), Title = "Question3", Type = FormQuestionType.FileUpload, IsRequired = true },                  
                         new FormQuestion { Id = Guid.NewGuid(), Title = "Question4", Type = FormQuestionType.Date, IsRequired = true },
                     }
         };
