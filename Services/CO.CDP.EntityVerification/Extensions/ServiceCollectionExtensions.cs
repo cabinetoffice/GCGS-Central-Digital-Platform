@@ -1,6 +1,4 @@
-using Amazon;
 using Amazon.Runtime;
-using Amazon.Sqs;
 using Amazon.SQS;
 using CO.CDP.EntityVerification.Events;
 using CO.CDP.EntityVerification.MQ;
@@ -8,8 +6,6 @@ using CO.CDP.EntityVerification.Persistence;
 using CO.CDP.EntityVerification.Ppon;
 using CO.CDP.MQ;
 using CO.CDP.MQ.Sqs;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using System.Text.Json;
 
 namespace CO.CDP.EntityVerification.Extensions;
