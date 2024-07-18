@@ -1,5 +1,5 @@
 terraform {
-  source = local.global_vars.locals.environment != "orchestrator" ? "../../../modules//telemetry" : null
+  source = contains(["development", "staging", "integration"], local.global_vars.locals.environment) ? "../../../modules//tools" : null
 }
 
 include {
@@ -14,7 +14,7 @@ locals {
     local.global_vars.inputs.tags,
     local.service_vars.inputs.tags,
     {
-      component = "telemetry"
+      component = "tools"
     }
   )
 
@@ -26,7 +26,6 @@ dependency core_iam {
     ecs_task_arn      = "mock"
     ecs_task_name     = "mock"
     ecs_task_exec_arn = "mock"
-    telemetry_arn     = "mock"
   }
 }
 
@@ -57,16 +56,26 @@ dependency service_ecs {
   }
 }
 
+dependency service_database {
+  config_path = "../../service/database"
+  mock_outputs = {
+    db_connection_secret_arn = "mock"
+    db_kms_arn               = "mock"
+    db_address               = "mock"
+    db_credentials           = "mock"
+    db_name                  = "mock"
+
+  }
+}
+
 inputs = {
   account_ids     = local.global_vars.locals.account_ids
-  grafana_config  = local.global_vars.locals.tools_configs.grafana
-  service_configs = local.global_vars.locals.service_configs
+  pgadmin_config  = local.global_vars.locals.tools_configs.pgadmin
   tags            = local.tags
 
   role_ecs_task_arn      = dependency.core_iam.outputs.ecs_task_arn
   role_ecs_task_name      = dependency.core_iam.outputs.ecs_task_name
   role_ecs_task_exec_arn = dependency.core_iam.outputs.ecs_task_exec_arn
-  role_telemetry_arn     = dependency.core_iam.outputs.telemetry_arn
 
   private_subnet_ids      = dependency.core_networking.outputs.private_subnet_ids
   public_hosted_zone_fqdn = dependency.core_networking.outputs.public_hosted_zone_fqdn
@@ -79,4 +88,9 @@ inputs = {
   ecs_cluster_id   = dependency.service_ecs.outputs.ecs_cluster_id
   ecs_lb_dns_name  = dependency.service_ecs.outputs.ecs_lb_dns_name
   ecs_listener_arn = dependency.service_ecs.outputs.ecs_listener_arn
+
+  db_address               = dependency.service_database.outputs.db_address
+  db_credentials           = dependency.service_database.outputs.db_credentials
+  db_name                  = dependency.service_database.outputs.db_name
+  db_kms_arn               = dependency.service_database.outputs.db_kms_arn
 }
