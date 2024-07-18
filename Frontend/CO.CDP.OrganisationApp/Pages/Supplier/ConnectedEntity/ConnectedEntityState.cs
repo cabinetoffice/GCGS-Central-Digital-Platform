@@ -17,6 +17,9 @@ public class ConnectedEntityState
     public string? LawRegistered { get; set; }
     public bool? HasCompaniesHouseNumber { get; set; }
     public string? CompaniesHouseNumber { get; set; }
+    public List<ConnectedEntityControlCondition> ControlConditions { get; set; } = [];
+    public DateTimeOffset? RegistrationDate { get; set; }
+    public string? RegisterName { get; set; }
 
     public class Address
     {
