@@ -10,15 +10,12 @@ public class EventDeserializerTest
     [Fact]
     public void ItDeserializesOrganisationRegisteredEvent()
     {
-        var organisationRegistered = new OrganisationRegistered
-        {
-            Name = "Acme Ltd"
-        };
+        var organisationRegistered = GvienOrganisationRegisteredEvent();
         var serialized = JsonSerializer.Serialize(organisationRegistered);
 
         var deserialized = EventDeserializer.Deserializer("OrganisationRegistered", serialized);
 
-        deserialized.Should().Be(organisationRegistered);
+        deserialized.Should().BeEquivalentTo(organisationRegistered);
     }
 
     [Fact]
@@ -36,4 +33,29 @@ public class EventDeserializerTest
 
         action.Should().Throw<DeserializationFailedException>();
     }
+
+    private static OrganisationRegistered GvienOrganisationRegisteredEvent() =>
+        new()
+        {
+            Id = Guid.NewGuid(),
+            Name = "Acme Ltd",
+            Identifier = new Identifier
+            {
+                Id = "93433423432",
+                LegalName = "Acme Ltd",
+                Scheme = "GB-COH",
+                Uri = null
+            },
+            AdditionalIdentifiers =
+            [
+                new Identifier
+                {
+                    Id = "GB123123123",
+                    LegalName = "Acme Ltd",
+                    Scheme = "VAT",
+                    Uri = null
+                }
+            ],
+            Roles = ["Supplier"]
+        };
 }
