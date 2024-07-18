@@ -56,6 +56,11 @@ public class FormsEngine(IFormsClient formsApiClient, ITempDataService tempDataS
         return await GetAdjacentQuestion(formId, sectionId, currentQuestionId, -1);
     }
 
+    public async Task<Models.FormQuestion?> GetCurrentQuestion(Guid formId, Guid sectionId, Guid? questionId)
+    {
+        return await GetAdjacentQuestion(formId, sectionId, questionId, 0);
+    }
+
     private async Task<Models.FormQuestion?> GetAdjacentQuestion(Guid formId, Guid sectionId, Guid? currentQuestionId, int offset)
     {
         var section = await LoadFormSectionAsync(formId, sectionId);
@@ -71,7 +76,6 @@ public class FormsEngine(IFormsClient formsApiClient, ITempDataService tempDataS
             {
                 return null;
             }
-            currentIndex = 0;
         }
         else
         {
@@ -85,20 +89,5 @@ public class FormsEngine(IFormsClient formsApiClient, ITempDataService tempDataS
         }
 
         return null;
-    }
-
-    public async Task<Models.FormQuestion?> GetCurrentQuestion(Guid formId, Guid sectionId, Guid? questionId)
-    {
-        return await GetAdjacentQuestion(formId, sectionId, questionId, 0);
-        //var section = await LoadFormSectionAsync(formId, sectionId);
-
-        //if (questionId.HasValue)
-        //{
-        //    return section.Questions?.FirstOrDefault(q => q.Id == questionId);
-        //}
-        //else
-        //{
-        //    return section.Questions?.FirstOrDefault();
-        //}
     }
 }
