@@ -77,3 +77,11 @@ output "terraform_arn" {
 output "terraform_name" {
   value = aws_iam_role.terraform.name
 }
+
+output "tools_arn" {
+  value = aws_iam_role.tools.arn
+}
+
+output "tools_name" {
+  value = aws_iam_role.tools.name
+}

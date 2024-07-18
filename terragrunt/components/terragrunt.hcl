@@ -185,6 +185,13 @@ locals {
             port      = 3000
             port_host = 3000
         }
+        pgadmin = {
+            cpu       = 256
+            memory    = 512
+            name      = "pgadmin"
+            port      = 5050
+            port_host = 5050
+        }
     }
 
     terraform_operators = [
