@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk.Web">
 
     <PropertyGroup>
         <TargetFramework>net8.0</TargetFramework>
@@ -22,12 +22,13 @@
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.2" />
+        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.4" />
         <PackageReference Include="Amazon.Sqs" Version="0.33.0" />
         <PackageReference Include="AWSSDK.SQS" Version="3.7.301.31" />
         <ProjectReference Include="..\..\Libraries\CO.CDP.Functional\CO.CDP.Functional.csproj" />
         <ProjectReference Include="..\..\Libraries\CO.CDP.Swashbuckle\CO.CDP.Swashbuckle.csproj" />
         <ProjectReference Include="..\..\Libraries\CO.CDP.MQ\CO.CDP.MQ.csproj" />
+        <ProjectReference Include="..\CO.CDP.OrganisationInformation.Persistence\CO.CDP.OrganisationInformation.Persistence.csproj" />
     </ItemGroup>
 
     <ItemGroup>

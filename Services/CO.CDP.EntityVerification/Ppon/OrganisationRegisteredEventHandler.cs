@@ -1,8 +1,6 @@
 using CO.CDP.EntityVerification.Events;
 using CO.CDP.EntityVerification.Persistence;
 using CO.CDP.MQ;
-using Microsoft.AspNetCore.Components;
-using System.Transactions;
 
 namespace CO.CDP.EntityVerification.Ppon;
 
@@ -13,10 +11,11 @@ public class OrganisationRegisteredEventHandler(IPponService pponService, IPponR
     {
         var pponId = pponService.GeneratePponId();
 
-        Persistence.Ppon newIdentifier = new() { PponId = pponId };
+        Identifier newIdentifier = new () { Name  = "", Scheme = "" };
+        Persistence.Ppon newPpon = new() { PponId = pponId, Name = @event.Name, Identifier = newIdentifier };
 
-        pponRepository.Save(newIdentifier);
-        publisher.Publish(newIdentifier);
+        pponRepository.Save(newPpon);
+        publisher.Publish(newPpon);
 
         return Task.CompletedTask;
     }
