@@ -97,6 +97,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.EntityVerification",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.EntityVerification.Tests", "Services\CO.CDP.EntityVerification.Tests\CO.CDP.EntityVerification.Tests.csproj", "{70F6E641-BB6C-4784-A19D-B83700FBA770}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.MQ.Tests", "Libraries\CO.CDP.MQ.Tests\CO.CDP.MQ.Tests.csproj", "{CEB94404-A41E-4D62-93E7-C3C67FAD35DE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.MQ", "Libraries\CO.CDP.MQ\CO.CDP.MQ.csproj", "{EC663061-6ABE-4831-BE93-E2651D929795}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -267,6 +271,14 @@ Global
 		{70F6E641-BB6C-4784-A19D-B83700FBA770}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{70F6E641-BB6C-4784-A19D-B83700FBA770}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{70F6E641-BB6C-4784-A19D-B83700FBA770}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CEB94404-A41E-4D62-93E7-C3C67FAD35DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CEB94404-A41E-4D62-93E7-C3C67FAD35DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CEB94404-A41E-4D62-93E7-C3C67FAD35DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CEB94404-A41E-4D62-93E7-C3C67FAD35DE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EC663061-6ABE-4831-BE93-E2651D929795}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EC663061-6ABE-4831-BE93-E2651D929795}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EC663061-6ABE-4831-BE93-E2651D929795}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EC663061-6ABE-4831-BE93-E2651D929795}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
