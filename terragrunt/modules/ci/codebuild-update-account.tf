@@ -1,6 +1,6 @@
-resource "aws_codebuild_project" "update_ecs_services" {
-  name          = "${local.name_prefix}-${local.update_ecs_service_cb_name}"
-  description   = "Run terraform in service/ecs component to only update ECS services"
+resource "aws_codebuild_project" "update_account" {
+  name          = "${local.name_prefix}-${local.update_account_cb_name}"
+  description   = "Run terraform in components updating entire account"
   service_role  = var.ci_build_role_arn
   build_timeout = 5
 
@@ -30,14 +30,14 @@ resource "aws_codebuild_project" "update_ecs_services" {
 
   logs_config {
     cloudwatch_logs {
-      group_name  = aws_cloudwatch_log_group.update_ecs_services.name
+      group_name  = aws_cloudwatch_log_group.update_account.name
       stream_name = local.name_prefix
     }
   }
 
   source {
     type      = "CODEPIPELINE"
-    buildspec = "./terragrunt/buildspecs/${local.update_ecs_service_cb_name}.yml"
+    buildspec = "./terragrunt/buildspecs/${local.update_account_cb_name}.yml"
   }
 
   vpc_config {

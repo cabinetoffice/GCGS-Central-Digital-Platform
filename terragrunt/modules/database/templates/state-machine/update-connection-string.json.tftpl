@@ -32,7 +32,7 @@
       "Resource": "arn:aws:states:::aws-sdk:secretsmanager:putSecretValue",
       "Parameters": {
         "SecretId": "${secret_connection_string_arn}",
-        "SecretString.$": "$.UpdatedSecretString"
+        "SecretString.$": "$.UpdatedSecretString.SecretString"
       },
       "End": true
     }

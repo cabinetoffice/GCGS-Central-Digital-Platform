@@ -3,7 +3,7 @@
 
 data "aws_codestarconnections_connection" "cabinet_office" {
   count = local.use_codestar_connection ? 1 : 0
-  name = "CabinetOffice"
+  name  = "CabinetOffice"
 }
 
 data "aws_iam_policy_document" "ci_codebuild_assume_role_policy" {
@@ -29,7 +29,7 @@ data "aws_iam_policy_document" "ci_pipeline_assume_role_policy" {
 data "aws_iam_policy_document" "ci_build_generic" {
 
   statement {
-    actions = ["sts:AssumeRole"]
+    actions   = ["sts:AssumeRole"]
     resources = ["arn:aws:iam::${local.orchestrator_account_id}:role/cdp-sirsi-orchestrator-read-service-version"]
   }
 
