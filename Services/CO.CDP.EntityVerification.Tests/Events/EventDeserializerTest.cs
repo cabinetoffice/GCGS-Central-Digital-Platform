@@ -10,6 +10,18 @@ public class EventDeserializerTest
     [Fact]
     public void ItDeserializesOrganisationRegisteredEvent()
     {
+        var organisationRegistered1 = new OrganisationRegistered()
+        {
+            Id = Guid.NewGuid(),
+            Name = "name",
+            Identifier = new Identifier() { Id = "1234", LegalName = "name", Scheme = "test" },
+            Roles = new List<string>(),
+            AdditionalIdentifiers = new List<Identifier>()
+        };
+
+        string s = JsonSerializer.Serialize(organisationRegistered1);
+
+
         var organisationRegistered = GvienOrganisationRegisteredEvent();
         var serialized = JsonSerializer.Serialize(organisationRegistered);
 

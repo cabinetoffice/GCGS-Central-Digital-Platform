@@ -8,6 +8,7 @@ using System.Text.Json;
 
 namespace CO.CDP.EntityVerification.Persistence;
 
+
 public class EntityVerificationContext : DbContext
 {
     public DbSet<Ppon> Ppons { get; set; } = null!;
@@ -25,14 +26,11 @@ public class EntityVerificationContext : DbContext
     {
         modelBuilder.HasDefaultSchema("entity_verification");
 
-        modelBuilder.Entity<Identifier>()
-            .ToTable("identifier");
-
         modelBuilder.Entity<Ppon>()
-            .ToTable("ppon")
-            .HasOne(u => u.Identifier)
+            .HasMany(p => p.Identifiers)
             .WithOne(p => p.Ppon)
-            .HasForeignKey<Identifier>(p => p.Id);
+            .HasForeignKey(i => i.PponId)
+            .HasPrincipalKey(i => i.Id);
 
         foreach (var entityType in modelBuilder.Model.GetEntityTypes())
         {

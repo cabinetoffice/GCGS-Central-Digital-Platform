@@ -8,8 +8,8 @@ public class Ppon : IEntityDate
 {
     public int Id { get; set; }
     public required string PponId { get; set; }
-    public int IdentifierId { get; set; }
-    public required Identifier Identifier { get; set; }
+    public required Guid OrganisationId { get; set; }
+    public ICollection<Identifier> Identifiers { get; set; } = [];
     public required string Name { get; set; }
     public DateTimeOffset CreatedOn { get; set; }
     public DateTimeOffset UpdatedOn { get; set; }

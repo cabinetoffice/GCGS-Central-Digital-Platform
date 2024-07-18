@@ -12,7 +12,7 @@ public class DatabasePponRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
     public async Task ItFindsSavedPpon()
     {
         using var repository = PponRepository();
-        var ppon = GivenPpon(pponId: "b69ffded365449f6aa4c340f5997fd2e");
+        var ppon = GivenPpon("Acme Corp Ltd", pponId: "b69ffded365449f6aa4c340f5997fd2e");
 
         repository.Save(ppon);
 
@@ -27,8 +27,8 @@ public class DatabasePponRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
     public void ItRejectsAnAlreadyKnownPponId()
     {
         using var repository = PponRepository();
-        var ppon = GivenPpon(pponId: "d73c9fef3c8549e2b3999fa9ec0a5aea");
-        var anotherPpon = GivenPpon(pponId: "d73c9fef3c8549e2b3999fa9ec0a5aea");
+        var ppon = GivenPpon("Acme Corp Ltd", pponId: "d73c9fef3c8549e2b3999fa9ec0a5aea");
+        var anotherPpon = GivenPpon("Acme Corp Ltd", pponId: "d73c9fef3c8549e2b3999fa9ec0a5aea");
 
         repository.Save(ppon);
 
@@ -36,11 +36,15 @@ public class DatabasePponRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
             .Should().Throw<DuplicatePponException>();
     }
 
-    private static EntityVerification.Persistence.Ppon GivenPpon(string? pponId = null)
+    private static EntityVerification.Persistence.Ppon GivenPpon(string orgName, string? pponId = null)
     {
+        var ppon = GivenPpon("Acme Corp Ltd", pponId: "d73c9fef3c8549e2b3999fa9ec0a5aea");
+        var newIdentifier = new Identifier { Ppon = ppon, LegalName = orgName, Scheme = "" };
         return new EntityVerification.Persistence.Ppon
         {
-            PponId = pponId ?? Guid.NewGuid().ToString().Replace("-", "")
+            PponId = pponId ?? Guid.NewGuid().ToString().Replace("-", ""),
+            Name = orgName,
+            OrganisationId = Guid.NewGuid()
         };
     }
 
