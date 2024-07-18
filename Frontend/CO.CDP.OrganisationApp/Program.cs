@@ -1,3 +1,4 @@
+using CO.CDP.AwsServices;
 using CO.CDP.Configuration.ForwardedHeaders;
 using CO.CDP.Forms.WebApiClient;
 using CO.CDP.Organisation.WebApiClient;
@@ -33,7 +34,7 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
-builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddSingleton<ISession, Session>();
 
 builder.Services.AddTransient(provider =>
@@ -114,6 +115,9 @@ builder.Services.AddAuthentication(options =>
 });
 
 builder.Services.AddHealthChecks();
+builder.Services
+    .AddAwsCofiguration(builder.Configuration)
+    .AddAwsS3Service();
 
 var app = builder.Build();
 app.UseForwardedHeaders();
