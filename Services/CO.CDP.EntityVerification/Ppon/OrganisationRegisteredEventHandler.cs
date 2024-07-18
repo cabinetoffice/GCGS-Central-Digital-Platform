@@ -15,13 +15,8 @@ public class OrganisationRegisteredEventHandler(IPponService pponService, IPponR
 
         Persistence.Ppon newIdentifier = new() { PponId = pponId };
 
-        using (TransactionScope txn = new TransactionScope())
-        {
-            pponRepository.Save(newIdentifier);
-            publisher.Publish(newIdentifier);
-
-            txn.Complete();
-        }
+        pponRepository.Save(newIdentifier);
+        publisher.Publish(newIdentifier);
 
         return Task.CompletedTask;
     }
