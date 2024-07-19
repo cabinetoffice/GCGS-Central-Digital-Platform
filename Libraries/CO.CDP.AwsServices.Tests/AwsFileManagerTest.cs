@@ -1,12 +1,10 @@
 using Amazon.Runtime;
-using Amazon.Runtime.Internal;
 using Amazon.S3;
 using Amazon.S3.Model;
 using CO.CDP.AwsServices.S3;
 using FluentAssertions;
 using Microsoft.Extensions.Options;
 using Moq;
-using Xunit;
 
 namespace CO.CDP.AwsServices.Tests;
 
