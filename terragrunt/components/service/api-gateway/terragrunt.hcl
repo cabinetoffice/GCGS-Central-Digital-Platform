@@ -23,7 +23,9 @@ locals {
 dependency core_iam {
   config_path = "../../core/iam"
   mock_outputs = {
-    api_gateway_cloudwatch_arn = "mock"
+    api_gateway_cloudwatch_arn              = "mock"
+    api_gateway_deployer_step_function_arn  = "mock"
+    api_gateway_deployer_step_function_name = "mock"
   }
 }
 
@@ -48,6 +50,8 @@ inputs = {
   tags            = local.tags
 
   role_api_gateway_cloudwatch_arn = dependency.core_iam.outputs.api_gateway_cloudwatch_arn
+  role_api_gateway_deployer_step_function_arn = dependency.core_iam.outputs.api_gateway_deployer_step_function_arn
+  role_api_gateway_deployer_step_function_name = dependency.core_iam.outputs.api_gateway_deployer_step_function_name
 
   public_hosted_zone_fqdn = dependency.core_networking.outputs.public_hosted_zone_fqdn
   public_hosted_zone_id   = dependency.core_networking.outputs.public_hosted_zone_id
