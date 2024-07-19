@@ -244,3 +244,5 @@ services:
       ASPNETCORE_ENVIRONMENT: Production
       ConnectionStrings__EvDatabase: 'Server=db;Database=cdp;Username=cdp_user;Password=cdp123;'
       Sqs__ServiceURL: "http://localstack:4566"
+
+      

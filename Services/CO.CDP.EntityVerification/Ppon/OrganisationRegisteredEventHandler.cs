@@ -6,7 +6,8 @@ using Identifier = CO.CDP.EntityVerification.Persistence.Identifier;
 namespace CO.CDP.EntityVerification.Ppon;
 
 public class OrganisationRegisteredEventHandler(IPponService pponService,
-    IPponRepository pponRepository)
+    IPponRepository pponRepository,
+    IPublisher publisher)
     : IEventHandler<OrganisationRegistered>
 {
     public async Task Handle(OrganisationRegistered @event)
@@ -29,5 +30,6 @@ public class OrganisationRegisteredEventHandler(IPponService pponService,
         newPpon.Identifiers = ids;
 
         pponRepository.Save(newPpon);
+        await publisher.Publish(newPpon.PponId);
     }
 }
