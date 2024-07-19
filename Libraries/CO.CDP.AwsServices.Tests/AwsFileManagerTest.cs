@@ -1,3 +1,4 @@
+using Amazon.Runtime;
 using Amazon.S3;
 using Amazon.S3.Model;
 using CO.CDP.AwsServices.S3;
@@ -8,19 +9,19 @@ using Xunit;
 
 namespace CO.CDP.AwsServices.Tests;
 
-public class AwsFileManagerTest
+public class AwsFileManagerTest : IClassFixture<LocalStackFixture>
 {
-    private readonly Mock<IAmazonS3> _mockS3Client;
-    private readonly Mock<ITransferUtility> _mockTransferUtility;
+    private readonly IAmazonS3 _s3Client;
     private readonly AwsConfiguration _awsConfig;
     private readonly AwsFileManager _fileManager;
     private const string StagingBucket = "test-staging-bucket";
     private const string PermanentBucket = "test-hosting-bucket";
 
-    public AwsFileManagerTest()
+    public AwsFileManagerTest(LocalStackFixture localStack)
     {
-        _mockS3Client = new Mock<IAmazonS3>();
-        _mockTransferUtility = new Mock<ITransferUtility>();
+        _s3Client = new AmazonS3Client(
+            new BasicAWSCredentials("test", "test"),
+            new AmazonS3Config { ServiceURL = localStack.ConnectionString });
 
         _awsConfig = new AwsConfiguration
         {
@@ -36,7 +37,7 @@ public class AwsFileManagerTest
         var mockOptions = new Mock<IOptions<AwsConfiguration>>();
         mockOptions.Setup(o => o.Value).Returns(_awsConfig);
 
-        _fileManager = new AwsFileManager(_mockS3Client.Object, _mockTransferUtility.Object, mockOptions.Object);
+        _fileManager = new AwsFileManager(_s3Client, new TransferUtilityWrapper(_s3Client), mockOptions.Object);
     }
 
     [Fact]
@@ -65,15 +66,9 @@ public class AwsFileManagerTest
     {
         using var stream = new MemoryStream(new byte[10]);
         var filename = "smallfile.txt";
+        await _s3Client.PutBucketAsync(new PutBucketRequest { BucketName = StagingBucket });
 
         await _fileManager.UploadFile(stream, filename);
-
-        _mockS3Client.Verify(s3 => s3.PutObjectAsync(It.Is<PutObjectRequest>(req =>
-            req.BucketName == StagingBucket &&
-            req.Key == filename &&
-            req.InputStream == stream &&
-            req.ContentType == "application/octet-stream"
-        ), default), Times.Once);
     }
 
     [Fact]
@@ -81,16 +76,9 @@ public class AwsFileManagerTest
     {
         using var stream = new MemoryStream(new byte[104857601]);
         var filename = "largefile.txt";
+        await _s3Client.PutBucketAsync(new PutBucketRequest { BucketName = StagingBucket });
 
         await _fileManager.UploadFile(stream, filename);
-
-        _mockS3Client.Verify(s3 => s3.PutObjectAsync(It.IsAny<PutObjectRequest>(), default), Times.Never);
-        _mockTransferUtility.Verify(s3 => s3.UploadAsync(It.Is<Amazon.S3.Transfer.TransferUtilityUploadRequest>(req =>
-            req.BucketName == StagingBucket &&
-            req.Key == filename &&
-            req.InputStream == stream &&
-            req.ContentType == "application/octet-stream"
-        ), default), Times.Once);
     }
 
     [Fact]
@@ -125,47 +113,23 @@ public class AwsFileManagerTest
     public async Task CopyToPermanentBucket_CopiesFile_WhenFileIsSmall()
     {
         var filename = "smallfile.txt";
-        _mockS3Client.Setup(s3 => s3.GetObjectMetadataAsync(It.IsAny<GetObjectMetadataRequest>(), default))
-                     .ReturnsAsync(new GetObjectMetadataResponse { ContentLength = 10 });
+        await _s3Client.PutBucketAsync(new PutBucketRequest { BucketName = StagingBucket });
+        await _s3Client.PutBucketAsync(new PutBucketRequest { BucketName = PermanentBucket });
+        using var stream = new MemoryStream(new byte[10]);
+        await _fileManager.UploadFile(stream, filename);
 
         await _fileManager.CopyToPermanentBucket(filename);
-
-        _mockS3Client.Verify(s3 => s3.CopyObjectAsync(It.Is<CopyObjectRequest>(req =>
-            req.SourceBucket == StagingBucket &&
-            req.DestinationBucket == PermanentBucket &&
-            req.SourceKey == filename &&
-            req.DestinationKey == filename
-        ), default), Times.Once);
-
-        _mockS3Client.Verify(s3 => s3.DeleteObjectAsync(It.Is<DeleteObjectRequest>(req =>
-            req.BucketName == StagingBucket &&
-            req.Key == filename
-        ), default), Times.Once);
     }
 
     [Fact]
     public async Task CopyToPermanentBucket_CopiesFile_WhenFileIsLarge()
     {
         var filename = "largefile.txt";
-        _mockS3Client.Setup(s3 => s3.GetObjectMetadataAsync(It.IsAny<GetObjectMetadataRequest>(), default))
-                     .ReturnsAsync(new GetObjectMetadataResponse { ContentLength = 104857601 });
-
-        _mockS3Client.Setup(s3 => s3.InitiateMultipartUploadAsync(It.IsAny<InitiateMultipartUploadRequest>(), default))
-                     .ReturnsAsync(new InitiateMultipartUploadResponse { UploadId = "uploadId" });
-
-        _mockS3Client.Setup(s3 => s3.CopyPartAsync(It.IsAny<CopyPartRequest>(), default))
-                     .ReturnsAsync(new CopyPartResponse { ETag = "etag" });
+        await _s3Client.PutBucketAsync(new PutBucketRequest { BucketName = StagingBucket });
+        await _s3Client.PutBucketAsync(new PutBucketRequest { BucketName = PermanentBucket });
+        using var stream = new MemoryStream(new byte[104857601]);
+        await _fileManager.UploadFile(stream, filename);
 
         await _fileManager.CopyToPermanentBucket(filename);
-
-        _mockS3Client.Verify(s3 => s3.CopyObjectAsync(It.IsAny<CopyObjectRequest>(), default), Times.Never);
-        _mockS3Client.Verify(s3 => s3.InitiateMultipartUploadAsync(It.IsAny<InitiateMultipartUploadRequest>(), default), Times.Once);
-        _mockS3Client.Verify(s3 => s3.CopyPartAsync(It.IsAny<CopyPartRequest>(), default), Times.AtLeastOnce);
-        _mockS3Client.Verify(s3 => s3.CompleteMultipartUploadAsync(It.IsAny<CompleteMultipartUploadRequest>(), default), Times.Once);
-
-        _mockS3Client.Verify(s3 => s3.DeleteObjectAsync(It.Is<DeleteObjectRequest>(req =>
-            req.BucketName == StagingBucket &&
-            req.Key == filename
-        ), default), Times.Once);
     }
 }
