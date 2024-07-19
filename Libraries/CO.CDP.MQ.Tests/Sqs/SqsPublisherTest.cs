@@ -39,7 +39,7 @@ public class SqsPublisherTest : PublisherContractTest, IClassFixture<LocalStackF
     {
         var queue = await _sqsClient.CreateQueueAsync(new CreateQueueRequest { QueueName = TestQueue });
         var queueUrl = queue.QueueUrl;
-        return new SqsPublisher(_sqsClient, _ => queueUrl, o => JsonSerializer.Serialize(o));
+        return new SqsPublisher(_sqsClient, _ => Task.FromResult(queueUrl), o => JsonSerializer.Serialize(o));
     }
 
     private AmazonSQSClient SqsClient()
