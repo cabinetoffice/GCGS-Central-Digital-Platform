@@ -1,4 +1,5 @@
 using Amazon.Runtime;
+using Amazon.Runtime.Internal;
 using Amazon.S3;
 using Amazon.S3.Model;
 using CO.CDP.AwsServices.S3;
@@ -69,6 +70,9 @@ public class AwsFileManagerTest : IClassFixture<LocalStackFixture>
         await _s3Client.PutBucketAsync(new PutBucketRequest { BucketName = StagingBucket });
 
         await _fileManager.UploadFile(stream, filename);
+
+        var contentLength = await GetObjectSize(StagingBucket, filename);
+        contentLength.Should().Be(10);
     }
 
     [Fact]
@@ -79,6 +83,9 @@ public class AwsFileManagerTest : IClassFixture<LocalStackFixture>
         await _s3Client.PutBucketAsync(new PutBucketRequest { BucketName = StagingBucket });
 
         await _fileManager.UploadFile(stream, filename);
+
+        var contentLength = await GetObjectSize(StagingBucket, filename);
+        contentLength.Should().Be(104857601);
     }
 
     [Fact]
@@ -119,6 +126,12 @@ public class AwsFileManagerTest : IClassFixture<LocalStackFixture>
         await _fileManager.UploadFile(stream, filename);
 
         await _fileManager.CopyToPermanentBucket(filename);
+
+        Func<Task> act = async () => await GetObjectSize(StagingBucket, filename);
+        var error = await act.Should().ThrowAsync<AmazonS3Exception>();
+        error.Which.ErrorCode.Should().Be("NotFound");
+        var contentLength = await GetObjectSize(PermanentBucket, filename);
+        contentLength.Should().Be(10);
     }
 
     [Fact]
@@ -131,5 +144,23 @@ public class AwsFileManagerTest : IClassFixture<LocalStackFixture>
         await _fileManager.UploadFile(stream, filename);
 
         await _fileManager.CopyToPermanentBucket(filename);
+
+        Func<Task> act = async () => await GetObjectSize(StagingBucket, filename);
+        var error = await act.Should().ThrowAsync<AmazonS3Exception>();
+        error.Which.ErrorCode.Should().Be("NotFound");
+        var contentLength = await GetObjectSize(PermanentBucket, filename);
+        contentLength.Should().Be(104857601);
+    }
+
+    private async Task<long> GetObjectSize(string bucketName, string filename)
+    {
+        var metadataResponse = await _s3Client.GetObjectMetadataAsync(
+                new GetObjectMetadataRequest
+                {
+                    BucketName = bucketName,
+                    Key = filename
+                });
+
+        return metadataResponse.ContentLength; // Length in bytes.
     }
 }
