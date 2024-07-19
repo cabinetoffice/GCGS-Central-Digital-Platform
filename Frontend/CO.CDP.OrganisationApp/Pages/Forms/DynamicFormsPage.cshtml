@@ -1,6 +1,5 @@
 @page "/organisation/{organisationId:guid}/forms/{formId:guid}/sections/{sectionId:guid}/{currentQuestionId:guid?}"
-@model CO.CDP.OrganisationApp.Pages.Forms.DynamicFormsPageModel
-@inject CO.CDP.OrganisationApp.IFormsEngine FormsEngine
+@model DynamicFormsPageModel
 
 @{
     var backUrl = $"/organisation/{Model.OrganisationId}/supplier-information";
