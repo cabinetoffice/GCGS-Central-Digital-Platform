@@ -36,7 +36,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                     -- Insert into form_questions
                     INSERT INTO form_questions (guid, section_id, type, is_required, title, description, options)
                     VALUES
-        ('{Guid.NewGuid()}', formId, {(int)FormQuestionType.NoInput}, TRUE, 'The financial information you will need.', 'You will need to upload accounts or statements for your 2 most recent financial years. If you do not have 2 years, you can upload your most recent financial year. You will need to enter the financial year end date for the information you upload.', '{{}}'),
+        ('{Guid.NewGuid()}', formId, {(int)FormQuestionType.NoInput}, TRUE, 'The financial information you will need.', '<p class=""govuk-body"">You will need to upload accounts or statements for your 2 most recent financial years.</p><p class=""govuk-body"">If you do not have 2 years, you can upload your most recent financial year.</p><p class=""govuk-body"">You will need to enter the financial year end date for the information you upload.</p>', '{{}}'),
         ('{Guid.NewGuid()}', formId, {(int)FormQuestionType.YesOrNo}, TRUE, 'Were your accounts audited?', NULL, '{{}}'),
         ('{Guid.NewGuid()}', formId, {(int)FormQuestionType.FileUpload}, TRUE, 'Upload your accounts', 'Upload your most recent 2 financial years. If you do not have 2, upload your most recent financial year.', '{{}}'),
         ('{Guid.NewGuid()}', formId, {(int)FormQuestionType.Date}, TRUE, 'What is the financial year end date for the information you uploaded?', NULL, '{{}}'),
