@@ -20,6 +20,7 @@ public class ConnectedEntityState
     public List<ConnectedEntityControlCondition> ControlConditions { get; set; } = [];
     public DateTimeOffset? RegistrationDate { get; set; }
     public string? RegisterName { get; set; }
+    public DateTimeOffset? InsolvencyDate { get; set; }
 
     public class Address
     {
