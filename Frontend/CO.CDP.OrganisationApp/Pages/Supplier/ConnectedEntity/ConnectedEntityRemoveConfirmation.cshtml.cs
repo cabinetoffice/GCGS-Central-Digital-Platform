@@ -3,6 +3,8 @@ using CO.CDP.OrganisationApp.WebApiClients;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
+using System.Globalization;
+using CO.CDP.OrganisationApp.Constants;
 
 namespace CO.CDP.OrganisationApp.Pages.Supplier.ConnectedEntity;
 
@@ -18,6 +20,24 @@ IOrganisationClient organisationClient) : PageModel
     [BindProperty]
     [Required(ErrorMessage = "Please confirm remove connected person option")]
     public bool? ConfirmRemove { get; set; }
+
+    [BindProperty]
+    [Required(ErrorMessage = "Date of removal must include a day")]
+    [RegularExpression(RegExPatterns.Day, ErrorMessage = "Day must be a valid number")]
+    public string? EndDay { get; set; }
+
+    [BindProperty]
+    [Required(ErrorMessage = "Date of removal must include a month")]
+    [RegularExpression(RegExPatterns.Month, ErrorMessage = "Month must be a valid number")]
+    public string? EndMonth { get; set; }
+
+    [BindProperty]
+    [Required(ErrorMessage = "Date of removal must include a year")]
+    [RegularExpression(RegExPatterns.Year, ErrorMessage = "Year must be a valid number")]
+    public string? EndYear { get; set; }
+
+    [BindProperty]
+    public string? EndDate { get; set; }
 
     public async Task<IActionResult> OnGet()
     {
@@ -41,6 +61,12 @@ IOrganisationClient organisationClient) : PageModel
             if (ce == null)
                 return Redirect("/page-not-found");
 
+            var dateString = $"{EndYear}-{EndMonth!.PadLeft(2, '0')}-{EndDay!.PadLeft(2, '0')}";
+            if (!DateTime.TryParseExact(dateString, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
+            {
+                ModelState.AddModelError(nameof(EndDate), "Date of removal must be a real date");
+                return Page();
+            }
             // TODO
             // await organisationClient.DeleteConnectedPerson(Id, ConnectedPersonId);
         }

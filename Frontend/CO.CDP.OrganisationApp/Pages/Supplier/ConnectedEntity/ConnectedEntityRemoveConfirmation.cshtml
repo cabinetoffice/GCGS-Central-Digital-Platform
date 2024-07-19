@@ -1,7 +1,11 @@
 @page "/organisation/{id}/supplier-information/connected-person/{connectedPersonId}/remove"
 @model CO.CDP.OrganisationApp.Pages.Supplier.ConnectedEntity.ConnectedEntityRemoveConfirmationModel
 @{
-    var hasError = ((TagBuilder)Html.ValidationMessageFor(m => m.ConfirmRemove)).HasInnerHtml;
+    var dayHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.EndDay)).HasInnerHtml;
+    var monthHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.EndMonth)).HasInnerHtml;
+    var yearHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.EndYear)).HasInnerHtml;
+    var endDateHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.EndDate)).HasInnerHtml;
+    var hasError = endDateHasError || dayHasError || monthHasError || yearHasError;
 }
 
 <a href="/organisation/@Model.Id/supplier-information/connected-person-summary" class="govuk-back-link">Back</a>
@@ -34,13 +38,41 @@
                                     <div id="end-date-hint" class="govuk-hint">
                                         For example, 27 3 2007
                                     </div>
+                                    @if (dayHasError)
+                                    {
+                                    <p id="day-error" class="govuk-error-message">
+                                        <span class="govuk-visually-hidden">Error:</span>
+                                        @Html.ValidationMessageFor(m => m.EndDay)
+                                    </p>
+                                    }
+                                    @if (monthHasError)
+                                    {
+                                    <p id="month-error" class="govuk-error-message">
+                                        <span class="govuk-visually-hidden">Error:</span>
+                                        @Html.ValidationMessageFor(m => m.EndMonth)
+                                    </p>
+                                    }
+                                    @if (yearHasError)
+                                    {
+                                    <p id="year-error" class="govuk-error-message">
+                                        <span class="govuk-visually-hidden">Error:</span>
+                                        @Html.ValidationMessageFor(m => m.EndYear)
+                                    </p>
+                                    }
+                                    @if (endDateHasError)
+                                    {
+                                    <p id="date-of-formation-error" class="govuk-error-message">
+                                        <span class="govuk-visually-hidden">Error:</span>
+                                        @Html.ValidationMessageFor(m => m.EndDate)
+                                    </p>
+                                    }
                                     <div class="govuk-date-input" id="end-date">
                                         <div class="govuk-date-input__item">
                                             <div class="govuk-form-group">
                                                 <label class="govuk-label govuk-date-input__label" for="end-date-day">
                                                     Day
                                                 </label>
-                                                <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="end-date-day" name="end-date-day" type="text" inputmode="numeric">
+                                                <input class="govuk-input govuk-date-input__input govuk-input--width-2 @(dayHasError || endDateHasError ? "govuk-input--error" : "")"  id="end-date-day" name="end-date-day" type="text" inputmode="numeric" value="@Model.EndDay">
                                             </div>
                                         </div>
                                         <div class="govuk-date-input__item">
@@ -48,15 +80,15 @@
                                                 <label class="govuk-label govuk-date-input__label" for="end-date-month">
                                                     Month
                                                 </label>
-                                                <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="end-date-month" name="end-date-month" type="text" inputmode="numeric">
+                                                <input class="govuk-input govuk-date-input__input govuk-input--width-2 @(dayHasError || endDateHasError ? "govuk-input--error" : "")" id="end-date-month" name="end-date-month" type="text" inputmode="numeric" value="@Model.EndMonth">
                                             </div>
                                         </div>
                                         <div class="govuk-date-input__item">
                                             <div class="govuk-form-group">
-                                                <label class="govuk-label govuk-date-input__label" for="end-date-year">
+                                                <label class="govuk-label govuk-date-input__label" for="end-date-year @(dayHasError || endDateHasError ? "govuk-input--error" : "")">
                                                     Year
                                                 </label>
-                                                <input class="govuk-input govuk-date-input__input govuk-input--width-4" id="end-date-year" name="end-date-year" type="text" inputmode="numeric">
+                                                <input class="govuk-input govuk-date-input__input govuk-input--width-4" id="end-date-year" name="end-date-year" type="text" inputmode="numeric" value="@Model.EndYear">
                                             </div>
                                         </div>
                                     </div>
