@@ -3,7 +3,7 @@ using Amazon.SQS.Model;
 
 namespace CO.CDP.MQ.Sqs;
 
-public delegate string MessageRouter(Type type);
+public delegate Task<string> MessageRouter(Type type);
 
 public delegate string Serializer(object message);
 
@@ -22,11 +22,11 @@ public class SqsPublisher(
     {
     }
 
-    public void Publish<TM>(TM message) where TM : notnull
+    public async Task Publish<TM>(TM message) where TM : notnull
     {
-        sqsClient.SendMessageAsync(new SendMessageRequest
+        await sqsClient.SendMessageAsync(new SendMessageRequest
         {
-            QueueUrl = messageRouter(typeof(TM)),
+            QueueUrl = await messageRouter(typeof(TM)),
             MessageBody = serializer(message),
             MessageAttributes = new Dictionary<string, MessageAttributeValue>
             {

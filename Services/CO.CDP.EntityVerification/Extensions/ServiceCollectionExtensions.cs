@@ -53,12 +53,9 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IPublisher, SqsPublisher>(s =>
         {
             var sqsClient = s.GetRequiredService<AmazonSQSClient>();
-            var queueUrl = sqsClient.GetQueueUrlAsync(config.GetValue("OutboundQueue:Name", "") ?? "")
-                .GetAwaiter()
-                .GetResult();
             var publisher = new SqsPublisher(
                 sqsClient,
-                _ => queueUrl.QueueUrl,
+                new SingleQueueMessageRouter(sqsClient, config.GetValue("OutboundQueue:Name", "") ?? "").QueueUrl,
                 o => JsonSerializer.Serialize(o)
             );
 

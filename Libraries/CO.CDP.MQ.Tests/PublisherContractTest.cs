@@ -9,7 +9,7 @@ public abstract class PublisherContractTest
     {
         var publisher = await CreatePublisher();
 
-        publisher.Publish(new TestMessage(42, "Hello, Earth!"));
+        await publisher.Publish(new TestMessage(42, "Hello, Earth!"));
 
         var message = await waitForOneMessage<TestMessage>();
 
