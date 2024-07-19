@@ -3,16 +3,6 @@ variable "account_ids" {
   type        = map(string)
 }
 
-variable "ci_role_arn" {
-  description = "IAM role ARN for CI/CD"
-  type        = string
-}
-
-variable "ci_role_name" {
-  description = "IAM role Name for CI/CD"
-  type        = string
-}
-
 variable "ci_build_role_arn" {
   description = "CodeBuild IAM role ARN to be assigned to the CodeBuild job"
   type        = string
@@ -25,6 +15,16 @@ variable "ci_build_role_name" {
 
 variable "ci_pipeline_role_arn" {
   description = "IAM role ARN to be assigned to the CodePipeline job"
+  type        = string
+}
+
+variable "ci_role_arn" {
+  description = "IAM role ARN for CI/CD"
+  type        = string
+}
+
+variable "ci_role_name" {
+  description = "IAM role Name for CI/CD"
   type        = string
 }
 

@@ -9,15 +9,13 @@ namespace CO.CDP.EntityVerification.Ppon;
 public class OrganisationRegisteredEventHandler(IPponService pponService, IPponRepository pponRepository, IPublisher publisher)
     : IEventHandler<OrganisationRegistered>
 {
-    public Task Handle(OrganisationRegistered @event)
+    public async Task Handle(OrganisationRegistered @event)
     {
         var pponId = pponService.GeneratePponId();
 
         Persistence.Ppon newIdentifier = new() { PponId = pponId };
 
         pponRepository.Save(newIdentifier);
-        publisher.Publish(newIdentifier);
-
-        return Task.CompletedTask;
+        await publisher.Publish(newIdentifier);
     }
 }

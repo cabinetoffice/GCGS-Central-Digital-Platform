@@ -1,13 +1,13 @@
-@page "/{organisationId:guid}/forms/{formId:guid}/sections/{sectionId:guid}/{questionId:guid?}"
+@page "/organisation/{organisationId:guid}/forms/{formId:guid}/sections/{sectionId:guid}/{currentQuestionId:guid?}"
 @model CO.CDP.OrganisationApp.Pages.Forms.DynamicFormsPageModel
 @inject CO.CDP.OrganisationApp.IFormsEngine FormsEngine
 
 @{
     var backUrl = $"/organisation/{Model.OrganisationId}/supplier-information";
 
-    if (!Model.IsFirstQuestion && Model.PreviousQuestionId.HasValue)
+    if (Model.PreviousQuestionId.HasValue)
     {
-        backUrl = $"/{Model.OrganisationId}/forms/{Model.FormId}/sections/{Model.SectionId}/{Model.PreviousQuestionId}";
+        backUrl = $"/organisation/{Model.OrganisationId}/forms/{Model.FormId}/sections/{Model.SectionId}/{Model.PreviousQuestionId}";
     }
 }
 
@@ -17,25 +17,18 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <partial name="_ErrorSummary" model="@ModelState" />
-            
+
             <form method="post" enctype="@Model.EncType">
-                <input type="hidden" name="OrganisationId" value="@Model.OrganisationId" />
-                <input type="hidden" name="FormId" value="@Model.FormId" />
-                <input type="hidden" name="SectionId" value="@Model.SectionId" />
-                <input type="hidden" name="CurrentQuestionId" value="@Model.CurrentQuestion?.Id" />
-                <input type="hidden" name="Action" value="next" id="action" />
 
                 <fieldset class="govuk-fieldset">
                     @if (Model.CurrentQuestion != null)
                     {
-                        var partialViewName = Model.GetPartialViewName(Model.CurrentQuestion.Type);
-                        if (partialViewName != null)
+                        var (partialViewName, viewModel) = Model.GetPartialView(Model.CurrentQuestion.Type);
+                        if (partialViewName != null && viewModel != null)
                         {
-                            var viewModel = new CO.CDP.OrganisationApp.Models.FormQuestionViewModel
-                            {
-                                FormQuestion = Model.CurrentQuestion,
-                                Answer = Model.Answer
-                            };
+                            <input type="hidden" name="IsRequired" value="@viewModel.IsRequired.ToString().ToLower()" />
+                            <input type="hidden" name="FormQuestionType" value="@viewModel.FormQuestionType" />
+
                             @await Html.PartialAsync(partialViewName, viewModel)
                         }
                         else

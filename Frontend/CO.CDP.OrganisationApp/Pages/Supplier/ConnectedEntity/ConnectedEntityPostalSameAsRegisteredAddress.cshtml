@@ -4,10 +4,11 @@
 
 @{
     var hasError = ((TagBuilder)Html.ValidationMessageFor(m => m.DifferentThanRegiseterdAddress)).HasInnerHtml;
+    var ukNonUkAddress = Model.IsNonUkAddress.GetValueOrDefault() ? "non-uk" : "uk";
 }
 
 @* // TODO 6: Previous page link?? *@
-<a href="/organisation/@Model.Id/supplier-information/connected-person/registered-address/uk/@Model.ConnectedEntityId" class="govuk-back-link">Back</a>
+<a href="/organisation/@Model.Id/supplier-information/connected-person/registered-address/@ukNonUkAddress/@Model.ConnectedEntityId" class="govuk-back-link">Back</a>
 
 <main class="govuk-main-wrapper">
     <div class="govuk-grid-row">

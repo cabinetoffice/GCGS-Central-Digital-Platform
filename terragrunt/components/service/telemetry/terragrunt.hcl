@@ -26,7 +26,7 @@ dependency core_iam {
     ecs_task_arn      = "mock"
     ecs_task_name     = "mock"
     ecs_task_exec_arn = "mock"
-    telemetry         = "mock"
+    telemetry_arn     = "mock"
   }
 }
 
