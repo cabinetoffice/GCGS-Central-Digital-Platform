@@ -4,6 +4,7 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moq;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages.Supplier.ConnectedEntity;
 
@@ -135,7 +136,7 @@ public class ConnectedEntityCompanyInsolvencyDateTest
         result.Should().BeOfType<PageResult>();
     }
 
-    [Theory]
+    [Theory]    
     [InlineData("31", "02", "2021", "Date of Insolvency must be a real date")]
     [InlineData("01", "01", "2100", "Date of Insolvency must be today or in the past")]
     public void OnPost_AddsModelError_WhenDateIsInvalid(string day, string month, string year, string expectedError)

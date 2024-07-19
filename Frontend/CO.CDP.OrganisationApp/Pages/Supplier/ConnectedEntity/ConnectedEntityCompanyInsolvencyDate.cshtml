@@ -9,7 +9,8 @@
     var hasError = dateOfInsolvencyHasError || dayHasError || monthHasError || yearHasError;
 }
 
-<a href="/organisation/@Model.Id/supplier-information/connected-person/nature-of-control/@Model.ConnectedEntityId" class="govuk-back-link">Back</a>
+<a href="/organisation/@Model.Id/supplier-information/connected-person/company-question/@Model.ConnectedEntityId">Back</a>
+
 
 <main class="govuk-main-wrapper">
     <div class="govuk-grid-row">
@@ -26,28 +27,7 @@
                             The date it stopped trading under its own name.
                             <br><br>
                             For example, 27 03 2007
-                        </div>
-                        @if (dayHasError)
-                        {
-                            <p id="day-error" class="govuk-error-message">
-                                <span class="govuk-visually-hidden">Error:</span>
-                                @Html.ValidationMessageFor(m => m.Day)
-                            </p>
-                        }
-                        @if (monthHasError)
-                        {
-                            <p id="month-error" class="govuk-error-message">
-                                <span class="govuk-visually-hidden">Error:</span>
-                                @Html.ValidationMessageFor(m => m.Month)
-                            </p>
-                        }
-                        @if (yearHasError)
-                        {
-                            <p id="year-error" class="govuk-error-message">
-                                <span class="govuk-visually-hidden">Error:</span>
-                                @Html.ValidationMessageFor(m => m.Year)
-                            </p>
-                        }
+                        </div>                      
                         @if (dateOfInsolvencyHasError)
                         {
                             <p id="date-of-formation-error" class="govuk-error-message">
