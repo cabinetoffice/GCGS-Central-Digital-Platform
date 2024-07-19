@@ -7,17 +7,17 @@ using Moq;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages.Supplier.ConnectedEntity;
 
-public class ConnectedEntityCompanyInsolvencyDateTest
+public class ConnectedEntityCompanyRegistrationDateTest
 {
-    private readonly ConnectedEntityCompanyInsolvencyDateModel _model;
+    private readonly ConnectedEntityCompanyRegistrationDateModel _model;
     private readonly Mock<ISession> _sessionMock;
     private readonly Guid _organisationId = Guid.NewGuid();
     private readonly Guid _entityId = Guid.NewGuid();
 
-    public ConnectedEntityCompanyInsolvencyDateTest()
+    public ConnectedEntityCompanyRegistrationDateTest()
     {
         _sessionMock = new Mock<ISession>();
-        _model = new ConnectedEntityCompanyInsolvencyDateModel(_sessionMock.Object);
+        _model = new ConnectedEntityCompanyRegistrationDateModel(_sessionMock.Object);
         _model.Id = _organisationId;
     }
 
@@ -40,8 +40,8 @@ public class ConnectedEntityCompanyInsolvencyDateTest
         get
         {
             var v = (Guid?)null;
-            yield return new object[] { v!, "ConnectedPersonSummary" };
-            yield return new object[] { Guid.NewGuid(), "ConnectedPersonSummary" };
+            yield return new object[] { v!, "ConnectedEntitySupplierCompanyQuestion" };
+            yield return new object[] { Guid.NewGuid(), "ConnectedEntityCheckAnswers" };
         }
     }
 
@@ -64,10 +64,10 @@ public class ConnectedEntityCompanyInsolvencyDateTest
     }
 
     [Fact]
-    public void OnGet_ShouldPopulateFields_WhenDateInsolvencyIsPresent()
+    public void OnGet_ShouldPopulateFields_WhenDateRegisteredIsPresent()
     {
         var state = DummyConnectedPersonDetails();
-        state.InsolvencyDate = new DateTime(2010, 6, 11);
+        state.RegistrationDate = new DateTime(2023, 6, 15);
 
         _sessionMock
             .Setup(s => s.Get<ConnectedEntityState>(Session.ConnectedPersonKey))
@@ -75,9 +75,9 @@ public class ConnectedEntityCompanyInsolvencyDateTest
 
         var result = _model.OnGet();
 
-        _model.Day.Should().Be("11");
+        _model.Day.Should().Be("15");
         _model.Month.Should().Be("6");
-        _model.Year.Should().Be("2010");
+        _model.Year.Should().Be("2023");
         result.Should().BeOfType<PageResult>();
     }
 
@@ -100,7 +100,7 @@ public class ConnectedEntityCompanyInsolvencyDateTest
     }
 
     [Theory]
-    [InlineData("ConnectedPersonSummary")]
+    [InlineData("ConnectedEntityCompanyRegisterName")]
     public void OnPost_ShouldRedirectToExpectedPage_WhenModelStateIsValid(string expectedRedirectPage)
     {
         SetValidDate();
@@ -131,13 +131,13 @@ public class ConnectedEntityCompanyInsolvencyDateTest
         var result = _model.OnPost();
 
         _model.ModelState.IsValid.Should().BeFalse();
-        _model.ModelState.Should().ContainKey(nameof(_model.InsolvencyDate));
+        _model.ModelState.Should().ContainKey(nameof(_model.RegistrationDate));
         result.Should().BeOfType<PageResult>();
     }
 
     [Theory]
-    [InlineData("31", "02", "2021", "Date of Insolvency must be a real date")]
-    [InlineData("01", "01", "2100", "Date of Insolvency must be today or in the past")]
+    [InlineData("31", "02", "2021", "Date of registration must be a real date")]
+    [InlineData("01", "01", "2100", "Date of registration must be today or in the past")]
     public void OnPost_AddsModelError_WhenDateIsInvalid(string day, string month, string year, string expectedError)
     {
         SetDateFields(day, month, year);
@@ -148,8 +148,8 @@ public class ConnectedEntityCompanyInsolvencyDateTest
             .Returns(state);
         var result = _model.OnPost();
 
-        _model.ModelState.ContainsKey(nameof(_model.InsolvencyDate)).Should().BeTrue();
-        _model.ModelState[nameof(_model.InsolvencyDate)]?.Errors[0].ErrorMessage.Should().Be(expectedError);
+        _model.ModelState.ContainsKey(nameof(_model.RegistrationDate)).Should().BeTrue();
+        _model.ModelState[nameof(_model.RegistrationDate)]?.Errors[0].ErrorMessage.Should().Be(expectedError);
         result.Should().BeOfType<PageResult>();
     }
 
@@ -184,8 +184,7 @@ public class ConnectedEntityCompanyInsolvencyDateTest
             HasCompaniesHouseNumber = true,
             CompaniesHouseNumber = "12345678",
             ControlConditions = [Constants.ConnectedEntityControlCondition.OwnsShares],
-            RegistrationDate = new DateTimeOffset(2011, 7, 15, 0, 0, 0, TimeSpan.FromHours(0)),
-            InsolvencyDate = new DateTimeOffset(2010, 6, 11, 0, 0, 0, TimeSpan.FromHours(0)),
+            RegistrationDate = new DateTimeOffset(2011, 7, 15, 0, 0, 0, TimeSpan.FromHours(0))
         };
 
         return connectedPersonDetails;

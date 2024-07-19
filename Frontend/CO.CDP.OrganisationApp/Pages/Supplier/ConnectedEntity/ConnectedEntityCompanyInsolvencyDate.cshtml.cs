@@ -44,7 +44,7 @@ public class ConnectedEntityCompanyInsolvencyDateModel(ISession session) : PageM
         if (!valid)
         {
             return RedirectToPage(ConnectedEntityId.HasValue ?
-                "ConnectedPersonSummary" : "ConnectedPersonSummary", new { Id, ConnectedEntityId });
+                "ConnectedEntityCheckAnswers" : "ConnectedPersonSummary", new { Id, ConnectedEntityId });
         }
 
         InitModal(state, true);
@@ -58,7 +58,7 @@ public class ConnectedEntityCompanyInsolvencyDateModel(ISession session) : PageM
         if (!valid)
         {
             return RedirectToPage(ConnectedEntityId.HasValue ?
-                "ConnectedPersonSummary" : "ConnectedPersonSummary", new { Id, ConnectedEntityId });
+                "ConnectedEntityCheckAnswers" : "ConnectedPersonSummary", new { Id, ConnectedEntityId });
         }
 
         InitModal(state);
@@ -71,17 +71,17 @@ public class ConnectedEntityCompanyInsolvencyDateModel(ISession session) : PageM
         var dateString = $"{Year}-{Month!.PadLeft(2, '0')}-{Day!.PadLeft(2, '0')}";
         if (!DateTime.TryParseExact(dateString, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
         {
-            ModelState.AddModelError(nameof(InsolvencyDate), "Date of Insolvency must be a real date");
+            ModelState.AddModelError(nameof(InsolvencyDate), "Date of insolvency must be a real date");
             return Page();
         }
 
         if (parsedDate > DateTime.Today)
         {
-            ModelState.AddModelError(nameof(InsolvencyDate), "Date of Insolvency must be today or in the past");
+            ModelState.AddModelError(nameof(InsolvencyDate), "Date of insolvency must be today or in the past");
             return Page();
         }
 
-        state.InsolvencyDate = new DateTimeOffset(parsedDate, TimeSpan.FromHours(0));
+        state.RegistrationDate = new DateTimeOffset(parsedDate, TimeSpan.FromHours(0));
 
         session.Set(Session.ConnectedPersonKey, state);
 
@@ -103,11 +103,11 @@ public class ConnectedEntityCompanyInsolvencyDateModel(ISession session) : PageM
         Caption = state.GetCaption();
         Heading = $"When did {state.OrganisationName} become insolvent?";
 
-        if (reset && state.InsolvencyDate.HasValue)
+        if (reset && state.RegistrationDate.HasValue)
         {
-            Day = state.InsolvencyDate.Value.Day.ToString();
-            Month = state.InsolvencyDate.Value.Month.ToString();
-            Year = state.InsolvencyDate.Value.Year.ToString();
+            Day = state.RegistrationDate.Value.Day.ToString();
+            Month = state.RegistrationDate.Value.Month.ToString();
+            Year = state.RegistrationDate.Value.Year.ToString();
         }
     }
 }
