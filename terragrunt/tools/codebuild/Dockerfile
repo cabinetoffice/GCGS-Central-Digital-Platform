@@ -14,21 +14,27 @@ RUN yum-config-manager --add-repo https://rpm.releases.hashicorp.com/AmazonLinux
 RUN yum install -y terraform-${TERRAFORM_VERSION}
 
 # Install necessary tools
-RUN yum install -y wget unzip
+RUN yum install -y wget unzip jq
 
 # Download and install Terragrunt
 RUN wget https://github.com/gruntwork-io/terragrunt/releases/download/v${TERRAGRUNT_VERSION}/terragrunt_linux_amd64
 RUN mv terragrunt_linux_amd64 /usr/local/bin/terragrunt
 RUN chmod +x /usr/local/bin/terragrunt
 
-# Verify Terraform and Terragrunt are installed
-RUN terraform --version
-RUN terragrunt --version
+
 
 # Install AWS CLI
 RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
 RUN unzip awscliv2.zip
 RUN ./aws/install
 
-# Verify AWS CLI is installed
+# Verify tools are installed
+RUN terraform --version
+RUN terragrunt --version
 RUN aws --version
+RUN jq -V
+
+# Coppy terraform code @TODO (ABN) Decide if we want to remove this approach once the GitHub connection established
+COPY ./components /terragrunt/components
+COPY ./modules /terragrunt/modules
+COPY ./providers.tf /terragrunt/providers.tf

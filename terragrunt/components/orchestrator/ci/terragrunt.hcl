@@ -1,5 +1,5 @@
 terraform {
-  source = local.global_vars.locals.environment != "orchestrator" ? "../../../modules//ci" : null
+  source = local.global_vars.locals.environment == "orchestrator" ? "../../../modules//orchestrator/ci" : null
 }
 
 include {
@@ -8,11 +8,11 @@ include {
 
 locals {
   global_vars = read_terragrunt_config(find_in_parent_folders("terragrunt.hcl"))
-  service_vars = read_terragrunt_config(find_in_parent_folders("service.hcl"))
+  orchestrator_vars = read_terragrunt_config(find_in_parent_folders("orchestrator.hcl"))
 
   tags = merge(
     local.global_vars.inputs.tags,
-    local.service_vars.inputs.tags,
+    local.orchestrator_vars.inputs.tags,
     {
       component = "ci"
     }
