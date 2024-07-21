@@ -16,13 +16,13 @@ resource "aws_cloudwatch_event_rule" "service_version_ssm_update" {
   description = "CloudWatch Event rule to detect updating service version"
 
   event_pattern = jsonencode({
-    "source": ["aws.ssm"],
-    "detail-type": ["AWS API Call via CloudTrail"],
-    "detail": {
-      "eventSource": ["ssm.amazonaws.com"],
-      "eventName": ["PutParameter"],
-      "requestParameters": {
-        "name": ["cdp-sirsi-service-version"]
+    "source" : ["aws.ssm"],
+    "detail-type" : ["AWS API Call via CloudTrail"],
+    "detail" : {
+      "eventSource" : ["ssm.amazonaws.com"],
+      "eventName" : ["PutParameter"],
+      "requestParameters" : {
+        "name" : ["cdp-sirsi-service-version"]
       }
     }
   })

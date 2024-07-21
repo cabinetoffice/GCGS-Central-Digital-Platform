@@ -35,3 +35,8 @@ resource "aws_iam_role_policy_attachment" "orchestrator_read_service_version" {
   policy_arn = aws_iam_policy.orchestrator_read_service_version.arn
   role       = aws_iam_role.orchestrator_read_service_version.name
 }
+
+resource "aws_iam_role_policy_attachment" "orchestrator_terraform_read_service_version" {
+  policy_arn = aws_iam_policy.orchestrator_read_service_version.arn
+  role       = data.aws_iam_role.terraform.name
+}
