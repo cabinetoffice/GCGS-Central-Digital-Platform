@@ -58,6 +58,16 @@ variable "product" {
   })
 }
 
+variable "role_cloudwatch_events_arn" {
+  description = "ARN of the IAM role used by CloudWatch Events"
+  type        = string
+}
+
+variable "role_cloudwatch_events_name" {
+  description = "Name of the IAM role used by CloudWatch Events"
+  type        = string
+}
+
 variable "tags" {
   description = "Tags to apply to all resources in this module"
   type        = map(string)

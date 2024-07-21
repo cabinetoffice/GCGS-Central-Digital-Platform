@@ -29,12 +29,14 @@ dependency common_networking {
 dependency core_iam {
   config_path = "../../core/iam"
   mock_outputs = {
-    ci_role_arn      = "mock"
-    ci_role_name     = "mock"
-    ci_build_arn     = "mock"
-    ci_build_name    = "mock"
-    ci_pipeline_arn  = "mock"
-    ci_pipeline_name = "mock"
+    ci_role_arn            = "mock"
+    ci_role_name           = "mock"
+    ci_build_arn           = "mock"
+    ci_build_name          = "mock"
+    ci_pipeline_arn        = "mock"
+    ci_pipeline_name       = "mock"
+    cloudwatch_events_arn  = "mock"
+    cloudwatch_events_name = "mock"
   }
 }
 
@@ -63,12 +65,14 @@ inputs = {
   tags                = local.tags
   tfstate_bucket_name = local.global_vars.locals.tg.state_bucket
 
-  ci_role_arn           = dependency.core_iam.outputs.terraform_arn
-  ci_role_name          = dependency.core_iam.outputs.terraform_name
-  ci_build_role_arn     = dependency.core_iam.outputs.ci_build_arn
-  ci_build_role_name    = dependency.core_iam.outputs.ci_build_name
-  ci_pipeline_role_arn  = dependency.core_iam.outputs.ci_pipeline_arn
-  ci_pipeline_role_name = dependency.core_iam.outputs.ci_pipeline_name
+  ci_role_arn                 = dependency.core_iam.outputs.terraform_arn
+  ci_role_name                = dependency.core_iam.outputs.terraform_name
+  ci_build_role_arn           = dependency.core_iam.outputs.ci_build_arn
+  ci_build_role_name          = dependency.core_iam.outputs.ci_build_name
+  ci_pipeline_role_arn        = dependency.core_iam.outputs.ci_pipeline_arn
+  ci_pipeline_role_name       = dependency.core_iam.outputs.ci_pipeline_name
+  role_cloudwatch_events_arn  = dependency.core_iam.outputs.cloudwatch_events_arn
+  role_cloudwatch_events_name = dependency.core_iam.outputs.cloudwatch_events_name
 
   vpce_s3_prefix_list_id = dependency.common_networking.outputs.vpce_s3_prefix_list_id
 
