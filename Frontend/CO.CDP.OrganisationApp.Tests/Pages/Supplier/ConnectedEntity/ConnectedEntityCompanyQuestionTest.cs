@@ -88,7 +88,7 @@ public class ConnectedEntityCompanyQuestionTest
 
 
     [Theory]
-    [InlineData("ConnectedEntityControlCondition")]
+    [InlineData("ConnectedEntityCompanyInsolvencyDate")]
     public void OnPost_ShouldRedirectToExpectedPage(string expectedRedirectPage)
     {
         var state = DummyConnectedPersonDetails();
