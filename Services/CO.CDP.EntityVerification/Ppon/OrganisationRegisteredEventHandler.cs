@@ -18,16 +18,7 @@ public class OrganisationRegisteredEventHandler(IPponService pponService,
             OrganisationId = @event.Id
         };
 
-        List<Identifier> ids = [];
-        foreach (var e in @event.AllIdentifiers())
-        {
-            ids.Add(new Identifier { Ppon = newPpon,
-                LegalName = e.LegalName,
-                Scheme = e.Scheme,
-                Uri = e.Uri });
-        }
-
-        newPpon.Identifiers = ids;
+        newPpon.Identifiers = Identifier.GetPersistenceIdentifiers(@event.AllIdentifiers(), newPpon);
 
         pponRepository.Save(newPpon);
         await publisher.Publish(newPpon.PponId);

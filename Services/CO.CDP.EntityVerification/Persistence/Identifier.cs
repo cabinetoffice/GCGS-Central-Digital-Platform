@@ -12,4 +12,21 @@ public class Identifier : IEntityDate
     public int PponId { get; set; }
     public DateTimeOffset CreatedOn { get; set; }
     public DateTimeOffset UpdatedOn { get; set; }
+
+    public static ICollection<Identifier> GetPersistenceIdentifiers(IEnumerable<Events.Identifier> evIds, Ppon newPpon)
+    {
+        List<Identifier> ids = [];
+
+        foreach (var e in evIds)
+        {
+            ids.Add(new Identifier { Ppon = newPpon,
+                LegalName = e.LegalName,
+                Scheme = e.Scheme,
+                Uri = e.Uri
+            });
+        }
+
+        return ids;
+    }
+
 }
