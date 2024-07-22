@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using CO.CDP.OrganisationInformation.Persistence.EntityFrameworkCore;
 using CO.CDP.OrganisationInformation.Persistence.Forms;
 using Microsoft.EntityFrameworkCore;
@@ -175,7 +176,13 @@ public class OrganisationInformationContext(DbContextOptions<OrganisationInforma
             e.Property(p => p.Options).IsRequired()
                 .HasJsonColumn(new FormQuestionOptions(),
                     PropertyBuilderExtensions.RecordComparer<FormQuestionOptions>());
+            e.Property(p => p.Options)
+            .HasConversion(
+                v => JsonSerializer.Serialize(v, JsonOptions.SerializerOptions),
+                v => JsonSerializer.Deserialize<FormQuestionOptions>(v, JsonOptions.SerializerOptions) ?? new FormQuestionOptions())
+            .HasColumnType("jsonb");
         });
+
 
         modelBuilder.Entity<FormAnswerSet>(e =>
         {
@@ -185,6 +192,15 @@ public class OrganisationInformationContext(DbContextOptions<OrganisationInforma
         {
             e.ToTable("form_answers");
         });
+    }
+
+    public static class JsonOptions
+    {
+        public static readonly JsonSerializerOptions SerializerOptions = new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true,
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+        };
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

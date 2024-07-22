@@ -6,6 +6,7 @@ resource "aws_api_gateway_method" "root" {
 }
 
 resource "aws_api_gateway_integration" "root" {
+  cache_key_parameters    = []
   http_method             = aws_api_gateway_method.root.http_method
   integration_http_method = "GET"
   passthrough_behavior    = "WHEN_NO_MATCH"

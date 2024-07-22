@@ -27,6 +27,16 @@ variable "role_api_gateway_cloudwatch_arn" {
   type        = string
 }
 
+variable "role_api_gateway_deployer_step_function_arn" {
+  description = "ARN of the IAM role used by the API Gateway Deployer Step Function"
+  type        = string
+}
+
+variable "role_api_gateway_deployer_step_function_name" {
+  description = "Name of the IAM role used by the API Gateway Deployer Step Function"
+  type        = string
+}
+
 variable "service_configs" {
   description = "Map of services to their ports"
   type = map(object({
