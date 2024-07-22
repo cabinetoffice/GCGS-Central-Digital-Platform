@@ -31,10 +31,10 @@ resource "aws_api_gateway_deployment" "ecs_api" {
   }
 
   depends_on = [
-    aws_api_gateway_rest_api.ecs_api,
     aws_api_gateway_integration.ecs_service,
     aws_api_gateway_integration.ecs_service_proxy,
     aws_api_gateway_integration.root,
+    aws_api_gateway_integration_response.root,
     aws_api_gateway_integration_response.root,
     aws_api_gateway_method.ecs_service,
     aws_api_gateway_method.ecs_service_proxy,
@@ -43,6 +43,7 @@ resource "aws_api_gateway_deployment" "ecs_api" {
     aws_api_gateway_method_response.root,
     aws_api_gateway_resource.ecs_service,
     aws_api_gateway_resource.ecs_service_proxy,
+    aws_api_gateway_rest_api.ecs_api,
   ]
 }
 
