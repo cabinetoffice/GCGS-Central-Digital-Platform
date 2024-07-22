@@ -1,13 +1,20 @@
+using AutoMapper;
+using CO.CDP.MQ;
+using CO.CDP.Organisation.WebApi.Events;
 using CO.CDP.OrganisationInformation.Persistence;
 
 namespace CO.CDP.Organisation.WebApi.MQ;
 
-public class MqOrganisationRepository(IOrganisationRepository organisationRepository)
+public class MqOrganisationRepository(
+    IOrganisationRepository organisationRepository,
+    IPublisher publisher,
+    IMapper mapper)
     : IOrganisationRepository
 {
     public void Save(OrganisationInformation.Persistence.Organisation organisation)
     {
         organisationRepository.Save(organisation);
+        publisher.Publish(mapper.Map<OrganisationRegistered>(organisation));
     }
 
     public Task<OrganisationInformation.Persistence.Organisation?> Find(Guid organisationId)

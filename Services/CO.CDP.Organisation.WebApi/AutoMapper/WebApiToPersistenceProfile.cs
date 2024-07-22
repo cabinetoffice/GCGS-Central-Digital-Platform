@@ -1,6 +1,10 @@
 using AutoMapper;
+using CO.CDP.Organisation.WebApi.Events;
 using CO.CDP.Organisation.WebApi.Model;
-using CO.CDP.OrganisationInformation;
+using Microsoft.OpenApi.Extensions;
+using Address = CO.CDP.OrganisationInformation.Address;
+using ContactPoint = CO.CDP.OrganisationInformation.ContactPoint;
+using Identifier = CO.CDP.OrganisationInformation.Identifier;
 using Persistence = CO.CDP.OrganisationInformation.Persistence;
 
 namespace CO.CDP.Organisation.WebApi.AutoMapper;
@@ -101,6 +105,7 @@ public class WebApiToPersistenceProfile : Profile
            .ForMember(m => m.Id, o => o.MapFrom(m => m.Guid));
 
         ConnectedEntityMapping();
+        OrganisationEventsMapping();
     }
 
     private void ConnectedEntityMapping()
@@ -147,6 +152,27 @@ public class WebApiToPersistenceProfile : Profile
         CreateMap<Persistence.ConnectedEntityLookup, Model.ConnectedEntityLookup>()
             .ForMember(m => m.Uri, o => o.MapFrom((src, _, _, context) => new Uri($"https://cdp.cabinetoffice.gov.uk/organisations/{context.Items["OrganisationId"]}/connected-entities/{src.EntityId}")))
             .ReverseMap();
+    }
+
+    private void OrganisationEventsMapping()
+    {
+        CreateMap<Persistence.Organisation, OrganisationRegistered>()
+            .ForMember(m => m.Id, o => o.MapFrom(m => m.Guid))
+            .ForMember(m => m.Identifier, o => o.MapFrom(m => m.Identifiers.FirstOrDefault(i => i.Primary)))
+            .ForMember(m => m.AdditionalIdentifiers, o => o.MapFrom(m => m.Identifiers.Where(i => !i.Primary)))
+            .ForMember(m => m.ContactPoint, o => o.MapFrom(m => m.ContactPoints.FirstOrDefault() ?? new Persistence.Organisation.ContactPoint()))
+            .ForMember(m => m.Addresses, o => o.MapFrom(m => m.Addresses))
+            .ForMember(m => m.Roles, o => o.MapFrom(m => m.Roles));
+        CreateMap<Persistence.Organisation.OrganisationAddress, Events.Address>()
+            .ForMember(m => m.Type, o => o.MapFrom(m => m.Type.GetDisplayName()))
+            .ForMember(m => m.StreetAddress, o => o.MapFrom(m => m.Address.StreetAddress))
+            .ForMember(m => m.Locality, o => o.MapFrom(m => m.Address.Locality))
+            .ForMember(m => m.Region, o => o.MapFrom(m => m.Address.Region))
+            .ForMember(m => m.PostalCode, o => o.MapFrom(m => m.Address.PostalCode))
+            .ForMember(m => m.CountryName, o => o.MapFrom(m => m.Address.CountryName));
+        CreateMap<Persistence.Organisation.Identifier, Events.Identifier>()
+            .ForMember(m => m.Id, o => o.MapFrom(m => m.IdentifierId));
+        CreateMap<Persistence.Organisation.ContactPoint, Events.ContactPoint>();
     }
 
     public class IdentifiersResolver : IValueResolver<RegisterOrganisation, Persistence.Organisation,
