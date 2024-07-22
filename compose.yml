@@ -50,10 +50,17 @@ services:
     container_name: co-cdp-localstack
     image: localstack/localstack:3.5
     healthcheck:
-      test: [ "CMD-SHELL", "bash", "-c", "awslocal sqs list-queues && awslocal s3 ls"]
+      test: ["CMD-SHELL", "awslocal sqs list-queues | grep -E 'ev-inbound|ev-outbound' || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
     environment:
       # LocalStack configuration: https://docs.localstack.cloud/references/configuration/
-      DEBUG: 0
+      - SERVICES=sqs
+      - START_WEB=0
+      - DEBUG=0
+    volumes:
+      - './localstack-init/create-queues.sh:/etc/localstack/init/ready.d/init-aws.sh'
 
   organisation-information-migrations:
     container_name: co-cdp-organisation-information-migrations
@@ -239,10 +246,18 @@ services:
       timeout: 10s
       retries: 10
     depends_on:
-      - db
+      db: 
+        condition: "service_healthy"
+      localstack:
+        condition: "service_healthy"
     environment:
       ASPNETCORE_ENVIRONMENT: Production
       ConnectionStrings__EvDatabase: 'Server=db;Database=cdp;Username=cdp_user;Password=cdp123;'
       Sqs__ServiceURL: "http://localstack:4566"
-
-      
+      Sqs__AuthenticationRegion": "eu-west-1"
+      Sqs__AccessKey": "test"
+      Sqs__SecretKey":  "test"
+      InboundQueue__Name": "ev-inbound"
+      InboundQueue__MaxNumberOfMessages": 10
+      InboundQueue__WaitTimeSeconds": 20
+      OutboundQueue__Name": "ev-outbound"
