@@ -1,6 +1,6 @@
 namespace CO.CDP.EntityVerification.Tests.Ppon;
 
-public class PponTestHelper
+public class PponFactories
 {
     public static EntityVerification.Persistence.Ppon GivenPpon(string? pponId = null)
     {
