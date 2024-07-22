@@ -109,6 +109,16 @@ public class MqOrganisationRepositoryTest(AutoMapperFixture mapperFixture) : ICl
     }
 
     [Fact]
+    public void ItDoesNotPublishTheOrganisationRegisteredEventIfOrganisationIsNotNew()
+    {
+        var organisation = GivenOrganisation(id: 42);
+
+        Repository.Save(organisation);
+
+        _publisher.Verify(p => p.Publish(It.IsAny<OrganisationRegistered>()), Times.Never);
+    }
+
+    [Fact]
     public async Task ItDelegatesFindToTheDecoratedRepository()
     {
         var organisation = GivenOrganisation(guid: Guid.NewGuid());
