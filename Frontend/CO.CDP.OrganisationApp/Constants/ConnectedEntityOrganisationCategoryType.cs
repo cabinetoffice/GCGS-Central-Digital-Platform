@@ -59,7 +59,7 @@ public static class ConnectedEntityOrganisationCategoryTypeTypeExtensions
             ConnectedEntityOrganisationCategoryType.RegisteredCompany => "Registered company",
             ConnectedEntityOrganisationCategoryType.DirectorOrTheSameResponsibilities => "Director or the same responsibilities",
             ConnectedEntityOrganisationCategoryType.ParentOrSubsidiaryCompany => "Parent or subsidiary company",
-            ConnectedEntityOrganisationCategoryType.ACompanyYourOrganisationHasTakenOver => "Taken over company",
+            ConnectedEntityOrganisationCategoryType.ACompanyYourOrganisationHasTakenOver => "a company your organisation has taken over",
             ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl => "Other organisation with significant influence or control",
             _ => throw new NotImplementedException()
         };
