@@ -1,1 +1,0 @@
-../../core-iam/ci.tf
