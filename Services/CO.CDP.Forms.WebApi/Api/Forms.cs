@@ -34,7 +34,7 @@ public static class EndpointExtensions
                return operation;
            });
 
-        app.MapPut("/forms/{formId}/sections/{sectionId}/answers/{answerSetId}", async (Guid formId, Guid sectionId, Guid answerSetId) =>
+        app.MapPut("/forms/{formId}/sections/{sectionId}/answers/{answerSetId}", (Guid formId, Guid sectionId, Guid answerSetId) =>
             {
                 return Results.NoContent();
             })
@@ -54,7 +54,7 @@ public static class EndpointExtensions
                 return operation;
             });
 
-        app.MapPost("/forms/{formId}/sections/{sectionId}/answers/{answerSetId}/files", async (Guid formId, Guid sectionId, Guid answerSetId) =>
+        app.MapPost("/forms/{formId}/sections/{sectionId}/answers/{answerSetId}/files", (Guid formId, Guid sectionId, Guid answerSetId) =>
             {
             return Results.NoContent();
             })
@@ -74,7 +74,7 @@ public static class EndpointExtensions
                 return operation;
             });
 
-        app.MapDelete("/forms/{formId}/sections/{sectionId}/answers/{answerSetId}", async (Guid formId, Guid sectionId, Guid answerSetId) =>
+        app.MapDelete("/forms/{formId}/sections/{sectionId}/answers/{answerSetId}", (Guid formId, Guid sectionId, Guid answerSetId) =>
             {
                 return Results.NoContent();
             })
