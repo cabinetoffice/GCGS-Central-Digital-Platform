@@ -37,6 +37,8 @@ dependency core_iam {
     ci_pipeline_name       = "mock"
     cloudwatch_events_arn  = "mock"
     cloudwatch_events_name = "mock"
+    terraform_arn          = "mock"
+    terraform_name         = "mock"
   }
 }
 
@@ -73,6 +75,8 @@ inputs = {
   ci_pipeline_role_name       = dependency.core_iam.outputs.ci_pipeline_name
   role_cloudwatch_events_arn  = dependency.core_iam.outputs.cloudwatch_events_arn
   role_cloudwatch_events_name = dependency.core_iam.outputs.cloudwatch_events_name
+  role_terraform_arn          = dependency.core_iam.outputs.terraform_arn
+  role_terraform_name         = dependency.core_iam.outputs.terraform_name
 
   vpce_s3_prefix_list_id = dependency.common_networking.outputs.vpce_s3_prefix_list_id
 
