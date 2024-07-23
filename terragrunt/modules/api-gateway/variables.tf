@@ -1,3 +1,8 @@
+variable "account_ids" {
+  description = "Map of all accounts and their IDs"
+  type        = map(string)
+}
+
 variable "environment" {
   description = "The environment we are provisioning"
   type        = string
@@ -24,6 +29,16 @@ variable "public_hosted_zone_id" {
 
 variable "role_api_gateway_cloudwatch_arn" {
   description = "IAM role ID for API Gateway to use when interacting with Cloudwatch"
+  type        = string
+}
+
+variable "role_api_gateway_deployer_step_function_arn" {
+  description = "ARN of the IAM role used by the API Gateway Deployer Step Function"
+  type        = string
+}
+
+variable "role_api_gateway_deployer_step_function_name" {
+  description = "Name of the IAM role used by the API Gateway Deployer Step Function"
   type        = string
 }
 

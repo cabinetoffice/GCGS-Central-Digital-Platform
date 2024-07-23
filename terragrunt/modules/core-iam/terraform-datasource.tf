@@ -3,6 +3,7 @@
 
 data "aws_iam_policy_document" "terraform_assume" {
   statement {
+    sid     = "AllowTerraformOperatorsAssumeRole"
     actions = ["sts:AssumeRole"]
     principals {
       type        = "AWS"
@@ -12,6 +13,15 @@ data "aws_iam_policy_document" "terraform_assume" {
       test     = "Bool"
       values   = [true]
       variable = "aws:MultiFactorAuthPresent"
+    }
+  }
+
+  statement {
+    sid     = "AllowOrchestratorCodebuildAssumeRole"
+    actions = ["sts:AssumeRole"]
+    principals {
+      type        = "AWS"
+      identifiers = ["arn:aws:iam::${local.orchestrator_account_id}:role/cdp-sirsi-orchestrator-ci-codebuild"]
     }
   }
 }

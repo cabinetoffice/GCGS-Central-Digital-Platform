@@ -6,6 +6,14 @@ output "api_gateway_cloudwatch_name" {
   value = aws_iam_role.api_gateway_cloudwatch.name
 }
 
+output "api_gateway_deployer_step_function_arn" {
+  value = aws_iam_role.api_gateway_deployer_step_function.arn
+}
+
+output "api_gateway_deployer_step_function_name" {
+  value = aws_iam_role.api_gateway_deployer_step_function.name
+}
+
 output "ci_build_arn" {
   value = aws_iam_role.ci_build.arn
 }
