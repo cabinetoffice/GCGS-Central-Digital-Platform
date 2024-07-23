@@ -25,6 +25,11 @@ internal static class OrganisationClientExtensions
         return await organisationClient.GetConnectedEntitiesAsync(organisationId);
     }
 
+    internal static async Task RegisterConnectedPerson(this IOrganisationClient organisationClient,
+        Guid organisationId,
+        RegisterConnectedEntity? registerConnectedEntity)
+            => await organisationClient.CreateConnectedEntityAsync(organisationId, registerConnectedEntity);
+
     internal static Task UpdateBuyerOrganisationType(this IOrganisationClient organisationClient,
         Guid organisationId,
         string buyerOrganisationType)

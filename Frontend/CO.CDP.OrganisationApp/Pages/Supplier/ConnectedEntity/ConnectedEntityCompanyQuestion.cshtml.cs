@@ -63,7 +63,7 @@ public class ConnectedEntityCompanyQuestionModel(ISession session) : PageModel
 
         session.Set(Session.ConnectedPersonKey, state);
 
-        return RedirectToPage("ConnectedEntityCompanyInsolvencyDate", new { Id, ConnectedEntityId });
+        return RedirectToPage("ConnectedEntityControlCondition", new { Id, ConnectedEntityId });
     }
 
     private void InitModal(ConnectedEntityState state)
