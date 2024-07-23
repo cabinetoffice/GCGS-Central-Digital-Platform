@@ -1,4 +1,5 @@
 using CO.CDP.Mvc.Validation;
+using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -63,9 +64,40 @@ public class ConnectedEntityCompanyQuestionModel(ISession session) : PageModel
 
         session.Set(Session.ConnectedPersonKey, state);
 
-        return RedirectToPage("ConnectedEntityControlCondition", new { Id, ConnectedEntityId });
+        var redirectPage = GetRedirectLinkPageName(state);
+        return RedirectToPage(redirectPage, new { Id, ConnectedEntityId });
     }
+    private string GetRedirectLinkPageName(ConnectedEntityState state)
+    {
+        var redirectPage = "";
+        switch (state.ConnectedEntityType)
+        {
+            case Constants.ConnectedEntityType.Organisation:
+                switch (state.ConnectedEntityOrganisationCategoryType)
+                {
+                    case ConnectedEntityOrganisationCategoryType.RegisteredCompany:
+                        redirectPage = "ConnectedEntityControlCondition";
+                        break;
+                    case ConnectedEntityOrganisationCategoryType.DirectorOrTheSameResponsibilities:
+                    case ConnectedEntityOrganisationCategoryType.ParentOrSubsidiaryCompany:
+                        redirectPage = "ConnectedEntityCheckAnswers";
+                        break;
+                    case ConnectedEntityOrganisationCategoryType.ACompanyYourOrganisationHasTakenOver:
+                        redirectPage = "ConnectedEntityCompanyInsolvencyDate";
+                        break;
+                    case ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl:
+                        redirectPage = "ConnectedEntityControlCondition";
+                        break;
+                }
+                break;
+            case Constants.ConnectedEntityType.Individual:
+                break;
+            case Constants.ConnectedEntityType.TrustOrTrustee:
+                break;
+        }
 
+        return redirectPage;
+    }
     private void InitModal(ConnectedEntityState state)
     {
         Caption = state.GetCaption();
