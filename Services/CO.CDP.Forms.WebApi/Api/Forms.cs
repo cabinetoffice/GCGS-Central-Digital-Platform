@@ -15,7 +15,7 @@ public static class EndpointExtensions
 {
     public static void UseFormsEndpoints(this WebApplication app)
     {
-        app.MapGet("/forms/{formId}/sections/{sectionId}/questions", async (Guid formId, Guid sectionId, IUseCase<(Guid,Guid), Model.SectionQuestionsResponse?> useCase) =>
+        app.MapGet("/forms/{formId}/sections/{sectionId}/questions", async (Guid formId, Guid sectionId, IUseCase<(Guid, Guid), Model.SectionQuestionsResponse?> useCase) =>
                 await useCase.Execute((formId, sectionId))
                     .AndThen(sectionQuestions => sectionQuestions != null ? Results.Ok(sectionQuestions) : Results.NotFound()))
                     .Produces<Model.SectionQuestionsResponse>(StatusCodes.Status200OK, "application/json")
@@ -25,7 +25,7 @@ public static class EndpointExtensions
                     .WithOpenApi(operation =>
            {
                operation.OperationId = "GetFormSectionQuestions";
-               operation.Description = "[STUB] Get Form Section and Its Questions. [STUB]";
+               operation.Description = "Get Form Section and Its Questions.";
                operation.Summary = "Get a form section with questions.";
                operation.Responses["200"].Description = "A section and question.";
                operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
@@ -33,6 +33,66 @@ public static class EndpointExtensions
                operation.Responses["500"].Description = "Internal server error.";
                return operation;
            });
+
+        app.MapPut("/forms/{formId}/sections/{sectionId}/answers/{answerSetId}", (Guid formId, Guid sectionId, Guid answerSetId) =>
+            {
+                return Results.NoContent();
+            })
+            .Produces(StatusCodes.Status204NoContent)
+            .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
+            .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
+            .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError)
+            .WithOpenApi(operation =>
+            {
+                operation.OperationId = "PutFormSectionAnswers";
+                operation.Description = "[STUB] Update answers for a form section. [STUB]";
+                operation.Summary = "Update answers for a form section.";
+                operation.Responses["204"].Description = "Answers updated.";
+                operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
+                operation.Responses["404"].Description = "Organisation or answer set not found.";
+                operation.Responses["500"].Description = "Internal server error.";
+                return operation;
+            });
+
+        app.MapPost("/forms/{formId}/sections/{sectionId}/answers/{answerSetId}/files", (Guid formId, Guid sectionId, Guid answerSetId) =>
+            {
+            return Results.NoContent();
+            })
+            .Produces(StatusCodes.Status201Created)
+            .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
+            .Produces<ProblemDetails>(StatusCodes.Status400BadRequest)
+            .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError)
+            .WithOpenApi(operation =>
+            {
+                operation.OperationId = "PostFormSectionAnswerFiles";
+                operation.Description = "[STUB] Upload files for form section answers. [STUB]";
+                operation.Summary = "Upload files for form section answers.";
+                operation.Responses["201"].Description = "File uploaded.";
+                operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
+                operation.Responses["400"].Description = "Bad request.";
+                operation.Responses["500"].Description = "Internal server error.";
+                return operation;
+            });
+
+        app.MapDelete("/forms/{formId}/sections/{sectionId}/answers/{answerSetId}", (Guid formId, Guid sectionId, Guid answerSetId) =>
+            {
+                return Results.NoContent();
+            })
+            .Produces(StatusCodes.Status204NoContent)
+            .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
+            .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
+            .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError)
+            .WithOpenApi(operation =>
+            {
+                operation.OperationId = "DeleteFormSectionAnswers";
+                operation.Description = "[STUB] Delete answers for a form section. [STUB]";
+                operation.Summary = "Delete answers for a form section.";
+                operation.Responses["204"].Description = "Answers deleted.";
+                operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
+                operation.Responses["404"].Description = "Organisation or answer set not found.";
+                operation.Responses["500"].Description = "Internal server error.";
+                return operation;
+            });
     }
 }
 
