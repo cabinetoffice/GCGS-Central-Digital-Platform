@@ -1,10 +1,10 @@
 using CO.CDP.EntityVerification.EntityFramework;
-using CO.CDP.OrganisationInformation.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore.Migrations;
 using System.Text.Json;
+using CO.CDP.EntityFrameworkCore.Timestamps;
 
 namespace CO.CDP.EntityVerification.Persistence;
 
@@ -36,10 +36,8 @@ public class EntityVerificationContext : DbContext
         {
             if (typeof(IEntityDate).IsAssignableFrom(entityType.ClrType) && !entityType.IsOwned())
             {
-                modelBuilder.Entity(entityType.ClrType).Property<DateTimeOffset>("CreatedOn").IsRequired()
-                    .HasDefaultValueSql("CURRENT_TIMESTAMP");
-                modelBuilder.Entity(entityType.ClrType).Property<DateTimeOffset>("UpdatedOn").IsRequired()
-                    .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                modelBuilder.Entity(entityType.ClrType).Property<DateTimeOffset>("CreatedOn").HasTimestampDefault();
+                modelBuilder.Entity(entityType.ClrType).Property<DateTimeOffset>("UpdatedOn").HasTimestampDefault();
             }
         }
 
@@ -49,6 +47,7 @@ public class EntityVerificationContext : DbContext
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         optionsBuilder.UseSnakeCaseNamingConvention();
+        optionsBuilder.AddInterceptors(new EntityDateInterceptor());
         optionsBuilder.ReplaceService<IHistoryRepository, CamelCaseHistoryContext>();
         base.OnConfiguring(optionsBuilder);
     }

@@ -1,4 +1,4 @@
-using CO.CDP.OrganisationInformation.Persistence;
+using CO.CDP.EntityFrameworkCore.Timestamps;
 
 namespace CO.CDP.EntityVerification.Persistence;
 
