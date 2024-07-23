@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using CO.CDP.OrganisationInformation.Serialisation;
 
 namespace CO.CDP.OrganisationInformation;
 

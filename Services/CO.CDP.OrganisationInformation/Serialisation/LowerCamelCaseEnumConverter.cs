@@ -1,7 +1,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace CO.CDP.OrganisationInformation;
+namespace CO.CDP.OrganisationInformation.Serialisation;
 
 public class LowerCamelCaseEnumConverter<T> : JsonConverter<T> where T : struct, Enum
 {
