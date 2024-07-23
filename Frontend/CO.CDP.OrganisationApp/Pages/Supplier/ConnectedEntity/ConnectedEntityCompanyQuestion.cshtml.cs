@@ -1,4 +1,5 @@
 using CO.CDP.Mvc.Validation;
+using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -63,7 +64,29 @@ public class ConnectedEntityCompanyQuestionModel(ISession session) : PageModel
 
         session.Set(Session.ConnectedPersonKey, state);
 
-        return RedirectToPage("ConnectedEntityCompanyInsolvencyDate", new { Id, ConnectedEntityId });
+        IActionResult? actionResult = null;
+        switch (state.ConnectedEntityType)
+        {
+            case ConnectedEntityType.Organisation:
+                switch (state.ConnectedEntityOrganisationCategoryType)
+                {                    
+                    case ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl:
+                        actionResult = RedirectToPage("ConnectedEntityOscCompanyQuestion", new { Id, ConnectedEntityId });
+                        break;
+                }
+                break;
+            case ConnectedEntityType.Individual:
+                //TODO 4: modify value of actionResult when working on Individual
+                break;
+            case ConnectedEntityType.TrustOrTrustee:
+                //TODO 4: modify value of actionResult when working on Trust
+                break;
+        }
+
+        if (actionResult != null)
+            return actionResult;
+
+        return RedirectToPage("ConnectedEntitySupplierHasControl", new { Id, ConnectedEntityId });
     }
 
     private void InitModal(ConnectedEntityState state)
