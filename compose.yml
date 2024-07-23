@@ -48,12 +48,21 @@ services:
 
   localstack:
     container_name: co-cdp-localstack
-    image: localstack/localstack:3.5
+    # image: localstack/localstack:3.5
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: localstack
     healthcheck:
-      test: [ "CMD-SHELL", "bash", "-c", "awslocal sqs list-queues && awslocal s3 ls"]
+      test: ["CMD-SHELL", "awslocal sqs list-queues --region eu-west-1 | grep -E 'ev-inbound|ev-outbound' || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
     environment:
       # LocalStack configuration: https://docs.localstack.cloud/references/configuration/
-      DEBUG: 0
+      - SERVICES=sqs
+      - START_WEB=0
+      - DEBUG=0
 
   organisation-information-migrations:
     container_name: co-cdp-organisation-information-migrations
@@ -235,14 +244,20 @@ services:
     healthcheck:
       test: ["CMD-SHELL", "curl --fail --silent --write-out '{\"status\":%{http_code}}' --output /dev/null http://127.0.0.1:8080/health"]
       start_period: 10s
-      interval: 60s
+      interval: 10s
       timeout: 10s
       retries: 10
     depends_on:
-      - db
+      db: 
+        condition: "service_healthy"
+      localstack:
+        condition: "service_healthy"
     environment:
       ASPNETCORE_ENVIRONMENT: Production
       ConnectionStrings__EvDatabase: 'Server=db;Database=cdp;Username=cdp_user;Password=cdp123;'
       Sqs__ServiceURL: "http://localstack:4566"
-
-      
+      Sqs__AuthenticationRegion: "eu-west-1"
+      InboundQueue__Name: "ev-inbound"
+      InboundQueue__MaxNumberOfMessages: 10
+      InboundQueue__WaitTimeSeconds: 20
+      OutboundQueue__Name: "ev-outbound"

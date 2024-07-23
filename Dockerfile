@@ -211,3 +211,7 @@ FROM base AS final-organisation-app
 WORKDIR /app
 COPY --from=publish-organisation-app /app/publish .
 ENTRYPOINT ["dotnet", "CO.CDP.OrganisationApp.dll"]
+
+FROM localstack/localstack:3.5 AS localstack
+COPY --chown=localstack ./localstack-init/create-queues.sh /etc/localstack/init/ready.d/init-aws.sh
+RUN chmod +x /etc/localstack/init/ready.d/init-aws.sh
