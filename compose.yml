@@ -48,11 +48,11 @@ services:
 
   localstack:
     container_name: co-cdp-localstack
-    # image: localstack/localstack:3.5
-    build:
-      context: .
-      dockerfile: Dockerfile
-      target: localstack
+    image: localstack/localstack:3.5
+    # build:
+    #   context: .
+    #   dockerfile: Dockerfile
+    #   target: localstack
     healthcheck:
       test: ["CMD-SHELL", "awslocal sqs list-queues --region eu-west-1 | grep -E 'ev-inbound|ev-outbound' || exit 1"]
       interval: 5s
@@ -63,6 +63,8 @@ services:
       - SERVICES=sqs
       - START_WEB=0
       - DEBUG=0
+    volumes:
+      - './docker/localstack/:/etc/localstack/init/ready.d/init-aws.sh'
 
   organisation-information-migrations:
     container_name: co-cdp-organisation-information-migrations
