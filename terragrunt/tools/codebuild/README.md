@@ -28,7 +28,7 @@ echo -e "Built completed, and the new image contains:\n $(docker run --rm cabine
 
 ### Push to ECR
 
-There are individual ECR repositories in each account. Using the following commands, we can push the built image to different accounts.
+There is ECR repositories in orchestrator account. Using the following commands, we can push the built image.
 
 ```shell
 ACCOUNT_ID=$(ave aws sts get-caller-identity | jq -r '.Account')

@@ -26,7 +26,7 @@ dependency core_iam {
     ecs_task_arn      = "mock"
     ecs_task_name     = "mock"
     ecs_task_exec_arn = "mock"
-    telemetry         = "mock"
+    telemetry_arn     = "mock"
   }
 }
 
@@ -66,7 +66,7 @@ inputs = {
   role_ecs_task_arn      = dependency.core_iam.outputs.ecs_task_arn
   role_ecs_task_name      = dependency.core_iam.outputs.ecs_task_name
   role_ecs_task_exec_arn = dependency.core_iam.outputs.ecs_task_exec_arn
-  role_telemetry_arn     = dependency.core_iam.outputs.telemetry
+  role_telemetry_arn     = dependency.core_iam.outputs.telemetry_arn
 
   private_subnet_ids      = dependency.core_networking.outputs.private_subnet_ids
   public_hosted_zone_fqdn = dependency.core_networking.outputs.public_hosted_zone_fqdn

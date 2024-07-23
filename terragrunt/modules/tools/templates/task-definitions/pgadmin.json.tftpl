@@ -1,0 +1,36 @@
+[
+  {
+    "name": "${name}",
+    "image": "${image}",
+    "cpu": ${cpu},
+    "memory": ${memory},
+    "portMappings": [
+      {
+        "containerPort": ${container_port},
+        "hostPort": ${host_port},
+        "protocol": "tcp"
+      }
+    ],
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-group": "${lg_name}",
+        "awslogs-region": "${lg_region}",
+        "awslogs-stream-prefix": "${lg_prefix}"
+      }
+    },
+    "environment": [
+        {"name": "DB_ADDRESS", "value": "${db_address}"},
+        {"name": "DB_NAME", "value": "${db_name}"},
+        {"name": "PGADMIN_LISTEN_PORT", "value": "${host_port}"}
+    ],
+    "secrets": [
+        {"name": "DB_USERNAME", "valueFrom": "${db_username}"},
+        {"name": "PGADMIN_DEFAULT_EMAIL", "valueFrom": "${pgadmin_admin_user}"},
+        {"name": "PGADMIN_DEFAULT_PASSWORD", "valueFrom": "${pgadmin_admin_password}"}
+    ],
+    "volumesFrom": [],
+    "mountPoints": [],
+    "essential": true
+  }
+]

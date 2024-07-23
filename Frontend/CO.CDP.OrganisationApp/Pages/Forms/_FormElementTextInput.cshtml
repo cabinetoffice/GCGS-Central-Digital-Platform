@@ -1,16 +1,23 @@
-@model CO.CDP.OrganisationApp.Models.FormQuestionViewModel
+@model FormElementTextInputModel
 
 @{
-    var question = Model.FormQuestion;
-    var answer = Model.Answer;
-    var hasError = ViewData.ModelState["Answer"]?.Errors?.Count > 0;
+    var hasError = ((TagBuilder)Html.ValidationMessageFor(m => m.TextInput)).HasInnerHtml;
 }
 
 <div class="govuk-form-group">
     <h1 class="govuk-heading-l">
-        @question.Title
+        @Model.Heading
     </h1>
-    <p class="govuk-body">@question.Description</p>    
-    <input class="govuk-input govuk-!-width-two-thirds"
-           name="textInputType" id="@question.Id" type="text">
+
+    <p class="govuk-body">@Model.Description</p>
+
+    @if (hasError)
+    {
+        <p class="govuk-error-message">
+            <span class="govuk-visually-hidden">Error:</span>
+            @Html.ValidationMessageFor(m => m.TextInput)
+        </p>
+    }
+
+    <input class="govuk-input govuk-!-width-two-thirds" name="TextInput" type="text">
 </div>

@@ -15,12 +15,16 @@ FROM mcr.microsoft.com/dotnet/sdk:${ASPNET_VERSION} AS solution-dependencies
 ARG NUGET_PACKAGES
 ENV NUGET_PACKAGES="${NUGET_PACKAGES}"
 WORKDIR /src
+COPY --link Libraries/CO.CDP.AwsServices/CO.CDP.AwsServices.csproj Libraries/CO.CDP.AwsServices/
+COPY --link Libraries/CO.CDP.AwsServices.Tests/CO.CDP.AwsServices.Tests.csproj Libraries/CO.CDP.AwsServices.Tests/
 COPY --link Libraries/CO.CDP.Authentication/CO.CDP.Authentication.csproj Libraries/CO.CDP.Authentication/
 COPY --link Libraries/CO.CDP.Authentication.Tests/CO.CDP.Authentication.Tests.csproj Libraries/CO.CDP.Authentication.Tests/
 COPY --link Libraries/CO.CDP.Configuration/CO.CDP.Configuration.csproj Libraries/CO.CDP.Configuration/
 COPY --link Libraries/CO.CDP.Configuration.Tests/CO.CDP.Configuration.Tests.csproj Libraries/CO.CDP.Configuration.Tests/
 COPY --link Libraries/CO.CDP.Functional/CO.CDP.Functional.csproj Libraries/CO.CDP.Functional/
 COPY --link Libraries/CO.CDP.Functional.Tests/CO.CDP.Functional.Tests.csproj Libraries/CO.CDP.Functional.Tests/
+COPY --link Libraries/CO.CDP.MQ/CO.CDP.MQ.csproj Libraries/CO.CDP.MQ/
+COPY --link Libraries/CO.CDP.MQ.Tests/CO.CDP.MQ.Tests.csproj Libraries/CO.CDP.MQ.Tests/
 COPY --link Libraries/CO.CDP.Mvc.Validation/CO.CDP.Mvc.Validation.csproj Libraries/CO.CDP.Mvc.Validation/
 COPY --link Libraries/CO.CDP.Mvc.Validation.Tests/CO.CDP.Mvc.Validation.Tests.csproj Libraries/CO.CDP.Mvc.Validation.Tests/
 COPY --link Libraries/CO.CDP.Swashbuckle/CO.CDP.Swashbuckle.csproj Libraries/CO.CDP.Swashbuckle/
@@ -148,10 +152,22 @@ COPY .config/dotnet-tools.json .config/
 RUN dotnet tool restore
 RUN dotnet ef migrations bundle -p /src/Services/CO.CDP.OrganisationInformation.Persistence -s /src/Services/CO.CDP.Tenant.WebApi --self-contained -o /app/migrations/efbundle
 
+FROM build-entity-verification AS build-migrations-entity-verification
+WORKDIR /src
+COPY .config/dotnet-tools.json .config/
+RUN dotnet tool restore
+RUN dotnet ef migrations bundle -p /src/Services/CO.CDP.EntityVerification --self-contained -o /app/migrations/efbundle
+
 FROM base AS migrations-organisation-information
 ENV MIGRATIONS_CONNECTION_STRING=""
 WORKDIR /app
 COPY --from=build-migrations-organisation-information /app/migrations/efbundle .
+ENTRYPOINT /app/efbundle --connection "$MIGRATIONS_CONNECTION_STRING"
+
+FROM base AS migrations-entity-verification
+ENV MIGRATIONS_CONNECTION_STRING=""
+WORKDIR /app
+COPY --from=build-migrations-entity-verification /app/migrations/efbundle .
 ENTRYPOINT /app/efbundle --connection "$MIGRATIONS_CONNECTION_STRING"
 
 FROM base AS final-authority

@@ -23,6 +23,8 @@ public class ConnectedEntityPostalSameAsRegisteredAddressModel(ISession session)
 
     public string? OrganisationName { get; set; }
 
+    public bool? IsNonUkAddress { get; set; }
+
     public IActionResult OnGet(bool? selected)
     {
         var (valid, state) = ValidatePage();
@@ -85,5 +87,6 @@ public class ConnectedEntityPostalSameAsRegisteredAddressModel(ISession session)
     {
         OrganisationName = state.OrganisationName;
         Caption = state.GetCaption();
+        IsNonUkAddress = state.RegisteredAddress?.IsNonUk;
     }
 }
