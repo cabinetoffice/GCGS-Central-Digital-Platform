@@ -1,9 +1,5 @@
 #!/bin/bash
 
-echo "Waiting for localstack to be ready...."
-sleep 5
-echo "LocalStack is ready."
-
 # Create an SQS queue
 echo "Creating SQS queues..."
 

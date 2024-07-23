@@ -56,7 +56,7 @@ services:
       retries: 5
     environment:
       # LocalStack configuration: https://docs.localstack.cloud/references/configuration/
-      - SERVICES=sqs
+      - SERVICES=sqs,s3
       - START_WEB=0
       - DEBUG=0
     volumes:
@@ -254,8 +254,3 @@ services:
       ASPNETCORE_ENVIRONMENT: Production
       ConnectionStrings__EvDatabase: 'Server=db;Database=cdp;Username=cdp_user;Password=cdp123;'
       Sqs__ServiceURL: "http://localstack:4566"
-      Sqs__AuthenticationRegion: "eu-west-1"
-      InboundQueue__Name: "ev-inbound"
-      InboundQueue__MaxNumberOfMessages: 10
-      InboundQueue__WaitTimeSeconds: 20
-      OutboundQueue__Name: "ev-outbound"
