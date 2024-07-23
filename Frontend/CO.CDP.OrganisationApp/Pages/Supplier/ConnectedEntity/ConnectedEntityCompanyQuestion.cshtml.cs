@@ -40,7 +40,7 @@ public class ConnectedEntityCompanyQuestionModel(ISession session) : PageModel
 
         HasCompaniesHouseNumber = selected.HasValue ? selected : state.HasCompaniesHouseNumber;
         CompaniesHouseNumber = state.CompaniesHouseNumber;
-        
+
         return Page();
     }
 
@@ -69,7 +69,7 @@ public class ConnectedEntityCompanyQuestionModel(ISession session) : PageModel
         {
             case ConnectedEntityType.Organisation:
                 switch (state.ConnectedEntityOrganisationCategoryType)
-                {                    
+                {
                     case ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl:
                         actionResult = RedirectToPage("ConnectedEntityOscCompanyQuestion", new { Id, ConnectedEntityId });
                         break;
@@ -93,6 +93,6 @@ public class ConnectedEntityCompanyQuestionModel(ISession session) : PageModel
     {
         Caption = state.GetCaption();
         Heading = $"Is {state.OrganisationName} registered with Companies House?";
-        Hint = "Is the ‘connected person’ registered with Companies House as required by the Companies Act 2006.";        
+        Hint = "Is the ‘connected person’ registered with Companies House as required by the Companies Act 2006.";
     }
 }

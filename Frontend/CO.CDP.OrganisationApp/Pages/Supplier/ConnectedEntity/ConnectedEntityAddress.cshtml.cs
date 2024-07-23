@@ -91,7 +91,7 @@ public class ConnectedEntityAddressModel(ISession session) : PageModel
                     case ConnectedEntityOrganisationCategoryType.ACompanyYourOrganisationHasTakenOver:
                     case ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl:
                         actionResult = RedirectToPage("ConnectedEntityCompanyQuestion", new { Id, ConnectedEntityId });
-                        break;                    
+                        break;
                 }
                 break;
             case ConnectedEntityType.Individual:
