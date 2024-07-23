@@ -8,9 +8,6 @@
 
     <ItemGroup>
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.4" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.7">
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
         <PackageReference Include="EFCore.NamingConventions" Version="8.0.3" />
         <ProjectReference Include="..\..\Libraries\CO.CDP.Functional\CO.CDP.Functional.csproj" />
         <ProjectReference Include="..\CO.CDP.OrganisationInformation\CO.CDP.OrganisationInformation.csproj" />
