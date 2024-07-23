@@ -1,10 +1,10 @@
+using System.Text.Json;
+using CO.CDP.EntityFrameworkCore.Timestamps;
 using CO.CDP.EntityVerification.EntityFramework;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore.Migrations;
-using System.Text.Json;
-using CO.CDP.EntityFrameworkCore.Timestamps;
 
 namespace CO.CDP.EntityVerification.Persistence;
 
@@ -50,35 +50,6 @@ public class EntityVerificationContext : DbContext
         optionsBuilder.AddInterceptors(new EntityDateInterceptor());
         optionsBuilder.ReplaceService<IHistoryRepository, CamelCaseHistoryContext>();
         base.OnConfiguring(optionsBuilder);
-    }
-
-    public override int SaveChanges()
-    {
-        UpdateTimestamps();
-        return base.SaveChanges();
-    }
-
-    public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
-    {
-        UpdateTimestamps();
-        return base.SaveChangesAsync(cancellationToken);
-    }
-
-    private void UpdateTimestamps()
-    {
-        var entries = ChangeTracker
-            .Entries<IEntityDate>()
-            .Where(e => e.State == EntityState.Added || e.State == EntityState.Modified);
-
-        foreach (var entityEntry in entries)
-        {
-            if (entityEntry.State == EntityState.Added)
-            {
-                entityEntry.Entity.CreatedOn = DateTimeOffset.UtcNow;
-            }
-
-            entityEntry.Entity.UpdatedOn = DateTimeOffset.UtcNow;
-        }
     }
 }
 
