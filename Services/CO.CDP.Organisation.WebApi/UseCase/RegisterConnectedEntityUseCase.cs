@@ -28,6 +28,13 @@ public class RegisterConnectedEntityUseCase(
 
         connectedEntity.SupplierOrganisation = supplierOrganisation;
 
+        if (supplierOrganisation.SupplierInfo == null)
+        {
+            throw new SupplierInfoNotExistException($"Supplier information for organisation {command.organisationId} not exist.");
+        }
+
+        supplierOrganisation.SupplierInfo.CompletedConnectedPerson = true;
+
         await connectedEntityRepository.Save(connectedEntity);
 
         return await Task.FromResult(true);

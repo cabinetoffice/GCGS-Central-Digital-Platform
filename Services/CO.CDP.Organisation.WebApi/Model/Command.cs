@@ -167,8 +167,8 @@ public record RegisterConnectedEntity
     public string? CompanyHouseNumber { get; init; }
     public string? OverseasCompanyNumber { get; init; }
 
-    public ConnectedOrganisation? Organisation { get; init; }
-    public ConnectedIndividualTrust? IndividualOrTrust { get; init; }
+    public CreateConnectedOrganisation? Organisation { get; init; }
+    public CreateConnectedIndividualTrust? IndividualOrTrust { get; init; }
     public ICollection<Address> Addresses { get; init; } = [];
 
     public DateTimeOffset? RegisteredDate { get; init; }
@@ -176,6 +176,29 @@ public record RegisterConnectedEntity
 
     public DateTimeOffset? StartDate { get; init; }
     public DateTimeOffset? EndDate { get; init; }
+}
+
+public record CreateConnectedIndividualTrust
+{
+    public required ConnectedIndividualAndTrustCategory Category { get; set; }
+    public required string FirstName { get; set; }
+    public required string LastName { get; set; }
+    public DateTimeOffset? DateOfBirth { get; set; }
+    public string? Nationality { get; set; }
+    public ICollection<ControlCondition> ControlCondition { get; set; } = [];
+    public ConnectedPersonType ConnectedType { get; set; }
+    public Guid? PersonId { get; set; }
+}
+
+public record CreateConnectedOrganisation
+{
+    public required ConnectedOrganisationCategory Category { get; set; }
+    public required string Name { get; set; }
+    public DateTimeOffset? InsolvencyDate { get; set; }
+    public string? RegisteredLegalForm { get; set; }
+    public string? LawRegistered { get; set; }
+    public ICollection<ControlCondition> ControlCondition { get; set; } = [];
+    public Guid? OrganisationId { get; set; }
 }
 
 public record ConnectedEntityLookup
