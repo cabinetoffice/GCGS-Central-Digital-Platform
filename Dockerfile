@@ -21,6 +21,8 @@ COPY --link Libraries/CO.CDP.Authentication/CO.CDP.Authentication.csproj Librari
 COPY --link Libraries/CO.CDP.Authentication.Tests/CO.CDP.Authentication.Tests.csproj Libraries/CO.CDP.Authentication.Tests/
 COPY --link Libraries/CO.CDP.Configuration/CO.CDP.Configuration.csproj Libraries/CO.CDP.Configuration/
 COPY --link Libraries/CO.CDP.Configuration.Tests/CO.CDP.Configuration.Tests.csproj Libraries/CO.CDP.Configuration.Tests/
+COPY --link Libraries/CO.CDP.EntityFrameworkCore/CO.CDP.EntityFrameworkCore.csproj Libraries/CO.CDP.EntityFrameworkCore/
+COPY --link Libraries/CO.CDP.EntityFrameworkCore.Tests/CO.CDP.EntityFrameworkCore.Tests.csproj Libraries/CO.CDP.EntityFrameworkCore.Tests/
 COPY --link Libraries/CO.CDP.Functional/CO.CDP.Functional.csproj Libraries/CO.CDP.Functional/
 COPY --link Libraries/CO.CDP.Functional.Tests/CO.CDP.Functional.Tests.csproj Libraries/CO.CDP.Functional.Tests/
 COPY --link Libraries/CO.CDP.MQ/CO.CDP.MQ.csproj Libraries/CO.CDP.MQ/

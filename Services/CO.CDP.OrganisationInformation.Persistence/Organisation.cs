@@ -1,3 +1,4 @@
+using CO.CDP.EntityFrameworkCore.Timestamps;
 using Microsoft.EntityFrameworkCore;
 
 namespace CO.CDP.OrganisationInformation.Persistence;
@@ -135,7 +136,7 @@ public class Organisation : IEntityDate
 
     public void UpdateSupplierInformation()
     {
-        if (!Roles.Contains(PartyRole.Supplier))
+        if (!Roles.Contains(PartyRole.Tenderer))
         {
             return;
         }

@@ -47,7 +47,7 @@ public static class EndpointExtensions
                 Telephone = "07925123123",
                 Url = new Uri("https://example.com")
             },
-            Roles = [PartyRole.Supplier],
+            Roles = [PartyRole.Tenderer],
         });
 
     public static void UseOrganisationEndpoints(this WebApplication app)
@@ -344,6 +344,7 @@ public static class EndpointExtensions
                     .AndThen(_ => Results.NoContent())
             )
             .Produces(StatusCodes.Status201Created)
+            .Produces(StatusCodes.Status204NoContent)
             .ProducesProblem(StatusCodes.Status400BadRequest)
             .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
             .ProducesProblem(StatusCodes.Status404NotFound)
@@ -355,6 +356,7 @@ public static class EndpointExtensions
                 operation.Description = "Create a new connected entity.";
                 operation.Summary = "Create a new connected entity.";
                 operation.Responses["201"].Description = "Connected entity created successfully.";
+                operation.Responses["204"].Description = "Connected entity created successfully.";
                 operation.Responses["400"].Description = "Bad request.";
                 operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
                 operation.Responses["404"].Description = "Connected entity not found.";

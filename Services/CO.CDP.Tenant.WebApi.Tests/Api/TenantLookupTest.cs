@@ -75,7 +75,7 @@ public class TenantLookupTest
                         {
                             Id = Guid.Parse("dfd0c5d3-0740-4be4-aa42-e42ec9c00bad"),
                             Name = "Acme Ltd",
-                            Roles = [PartyRole.Supplier],
+                            Roles = [PartyRole.Tenderer],
                             Scopes = ["ADMIN"],
                             Uri = new Uri("file:///organisations/dfd0c5d3-0740-4be4-aa42-e42ec9c00bad")
                         }

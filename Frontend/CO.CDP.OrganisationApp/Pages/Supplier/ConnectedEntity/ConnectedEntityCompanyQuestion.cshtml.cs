@@ -40,7 +40,7 @@ public class ConnectedEntityCompanyQuestionModel(ISession session) : PageModel
 
         HasCompaniesHouseNumber = selected.HasValue ? selected : state.HasCompaniesHouseNumber;
         CompaniesHouseNumber = state.CompaniesHouseNumber;
-
+        
         return Page();
     }
 

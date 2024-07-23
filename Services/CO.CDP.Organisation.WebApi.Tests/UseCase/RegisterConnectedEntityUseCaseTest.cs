@@ -100,7 +100,8 @@ public class RegisterConnectedEntityUseCaseTest(AutoMapperFixture mapperFixture)
                         CountryName = "Exampleland"
                     }
                 }],
-            Tenant = It.IsAny<Tenant>()
+            Tenant = It.IsAny<Tenant>(),
+            SupplierInfo = new Persistence.Organisation.SupplierInformation()
         };
 
         _organisationRepo.Setup(repo => repo.Find(organisationId))
@@ -114,7 +115,7 @@ public class RegisterConnectedEntityUseCaseTest(AutoMapperFixture mapperFixture)
         return new RegisterConnectedEntity
         {
             EntityType = ConnectedEntityType.Organisation,
-            Organisation = new ConnectedOrganisation
+            Organisation = new CreateConnectedOrganisation
             {
                 Category = ConnectedOrganisationCategory.RegisteredCompany,
                 Name = "Org1",
