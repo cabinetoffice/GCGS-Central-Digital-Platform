@@ -1,5 +1,6 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using CO.CDP.EntityFrameworkCore.Timestamps;
 using CO.CDP.OrganisationInformation.Persistence.EntityFrameworkCore;
 using CO.CDP.OrganisationInformation.Persistence.Forms;
 using Microsoft.EntityFrameworkCore;
@@ -206,37 +207,9 @@ public class OrganisationInformationContext(DbContextOptions<OrganisationInforma
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         optionsBuilder.UseSnakeCaseNamingConvention();
+        optionsBuilder.AddInterceptors(new EntityDateInterceptor());
         optionsBuilder.ReplaceService<IHistoryRepository, CamelCaseHistoryContext>();
         base.OnConfiguring(optionsBuilder);
-    }
-
-    public override int SaveChanges()
-    {
-        UpdateTimestamps();
-        return base.SaveChanges();
-    }
-
-    public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
-    {
-        UpdateTimestamps();
-        return base.SaveChangesAsync(cancellationToken);
-    }
-
-    private void UpdateTimestamps()
-    {
-        var entries = ChangeTracker
-            .Entries<IEntityDate>()
-            .Where(e => e.State == EntityState.Added || e.State == EntityState.Modified);
-
-        foreach (var entityEntry in entries)
-        {
-            if (entityEntry.State == EntityState.Added)
-            {
-                entityEntry.Entity.CreatedOn = DateTimeOffset.UtcNow;
-            }
-
-            entityEntry.Entity.UpdatedOn = DateTimeOffset.UtcNow;
-        }
     }
 }
 
