@@ -19,7 +19,7 @@ internal record SupplierInformation
     [Required] public required List<Identifier> AdditionalIdentifiers { get; init; }
     [Required] public required Address Address { get; init; }
     [Required] public required ContactPoint ContactPoint { get; init; }
-    /// <example>["Supplier"]</example>
+    /// <example>["supplier"]</example>
     [Required] public required List<PartyRole> Roles { get; init; }
     [Required] public required Details Details { get; init; }
     [Required] public required SupplierInformationData SupplierInformationData { get; init; }
