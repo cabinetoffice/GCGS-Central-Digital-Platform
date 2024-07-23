@@ -6,7 +6,7 @@ resource "aws_api_gateway_method" "root" {
 }
 
 resource "aws_api_gateway_integration" "root" {
-  cache_key_parameters = []
+  cache_key_parameters    = []
   http_method             = aws_api_gateway_method.root.http_method
   integration_http_method = "GET"
   passthrough_behavior    = "WHEN_NO_MATCH"
@@ -47,7 +47,7 @@ resource "aws_api_gateway_integration_response" "root" {
   response_templates = {
     "text/html" = templatefile("${path.module}/templates/landing-page.html.tftpl",
       {
-        api_gateway_deployment_time = formatdate("DD-MM-YYYY hh:mm:ss", timestamp())
+        api_gateway_deployment_time = local.formatted_date
         endpoints                   = local.endpoints
         frontend_url                = var.public_hosted_zone_fqdn
         service_version             = data.aws_ssm_parameter.orchestrator_service_version.value
