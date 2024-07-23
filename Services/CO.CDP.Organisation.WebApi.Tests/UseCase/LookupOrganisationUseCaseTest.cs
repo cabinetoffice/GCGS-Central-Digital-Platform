@@ -135,7 +135,7 @@ public class LookupOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
                 Telephone = "123-456-7890",
                 Url = "https://contact.test.org"
             }],
-            Roles = [PartyRole.Supplier]
+            Roles = [PartyRole.Tenderer]
         };
 
     }
@@ -180,7 +180,7 @@ public class LookupOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
                 Telephone = "123-456-7890",
                 Url = new Uri("https://contact.test.org")
             },
-            Roles = [PartyRole.Supplier]
+            Roles = [PartyRole.Tenderer]
         };
     }
 }

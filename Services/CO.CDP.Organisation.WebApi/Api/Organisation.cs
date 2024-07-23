@@ -47,7 +47,7 @@ public static class EndpointExtensions
                 Telephone = "07925123123",
                 Url = new Uri("https://example.com")
             },
-            Roles = [PartyRole.Supplier],
+            Roles = [PartyRole.Tenderer],
         });
 
     public static void UseOrganisationEndpoints(this WebApplication app)
