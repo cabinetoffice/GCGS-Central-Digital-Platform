@@ -1,9 +1,16 @@
+using System.Text.Json;
+using Amazon.Runtime;
+using Amazon.SQS;
+using AutoMapper;
 using CO.CDP.Authentication;
 using CO.CDP.Configuration.ForwardedHeaders;
+using CO.CDP.MQ;
+using CO.CDP.MQ.Sqs;
 using CO.CDP.Organisation.WebApi.Api;
 using CO.CDP.Organisation.WebApi.AutoMapper;
 using CO.CDP.Organisation.WebApi.Extensions;
 using CO.CDP.Organisation.WebApi.Model;
+using CO.CDP.Organisation.WebApi.MQ;
 using CO.CDP.Organisation.WebApi.UseCase;
 using CO.CDP.OrganisationInformation.Persistence;
 using Microsoft.EntityFrameworkCore;
@@ -21,7 +28,34 @@ builder.Services.AddAutoMapper(typeof(WebApiToPersistenceProfile));
 
 builder.Services.AddDbContext<OrganisationInformationContext>(o =>
     o.UseNpgsql(builder.Configuration.GetConnectionString("OrganisationInformationDatabase") ?? ""));
-builder.Services.AddScoped<IOrganisationRepository, DatabaseOrganisationRepository>();
+builder.Services.AddScoped<AmazonSQSClient>(s =>
+{
+    var sqsConfig = new AmazonSQSConfig
+    {
+        ServiceURL = builder.Configuration.GetValue("Sqs:ServiceURL", ""),
+        UseHttp = false,
+        AuthenticationRegion = builder.Configuration.GetValue("Sqs:AuthenticationRegion", "")
+    };
+    var credentials = new BasicAWSCredentials(
+        builder.Configuration.GetValue("Sqs:AccessKey", ""),
+        builder.Configuration.GetValue("Sqs:SecretKey", ""));
+    return new AmazonSQSClient(credentials, sqsConfig);
+});
+builder.Services.AddScoped<IPublisher, SqsPublisher>(s =>
+{
+    var sqsClient = s.GetRequiredService<AmazonSQSClient>();
+    var publisher = new SqsPublisher(
+        sqsClient,
+        new SingleQueueMessageRouter(sqsClient, builder.Configuration.GetValue("OutboundQueue:Name", "") ?? "").QueueUrl,
+        o => JsonSerializer.Serialize(o)
+    );
+
+    return publisher;
+});
+builder.Services.AddScoped<IOrganisationRepository>(s =>
+    new MqOrganisationRepository(
+        new DatabaseOrganisationRepository(s.GetRequiredService<OrganisationInformationContext>()),
+        s.GetRequiredService<IPublisher>(), s.GetRequiredService<IMapper>()));
 builder.Services.AddScoped<IConnectedEntityRepository, DatabaseConnectedEntityRepository>();
 builder.Services.AddScoped<IPersonRepository, DatabasePersonRepository>();
 builder.Services.AddScoped<IUseCase<RegisterOrganisation, Organisation>, RegisterOrganisationUseCase>();

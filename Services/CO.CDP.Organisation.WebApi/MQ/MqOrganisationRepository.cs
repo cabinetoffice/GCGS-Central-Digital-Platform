@@ -13,8 +13,9 @@ public class MqOrganisationRepository(
 {
     public void Save(OrganisationInformation.Persistence.Organisation organisation)
     {
+        var organisationId = organisation.Id;
         organisationRepository.Save(organisation);
-        if (organisation.Id < 1)
+        if (organisationId < 1)
         {
             publisher.Publish(mapper.Map<OrganisationRegistered>(organisation));
         }

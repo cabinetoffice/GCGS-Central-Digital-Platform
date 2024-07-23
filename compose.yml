@@ -166,6 +166,7 @@ services:
       ASPNETCORE_ENVIRONMENT: Production
       ConnectionStrings__OrganisationInformationDatabase: 'Server=db;Database=cdp;Username=cdp_user;Password=cdp123;'
       Organisation__Authority: '${Organisation__Authority:-http://gateway:${CDP_AUTHORITY_PORT:-8092}}'
+      Sqs__ServiceURL: "http://localstack:4566"
 
   person:
     container_name: co-cdp-person
