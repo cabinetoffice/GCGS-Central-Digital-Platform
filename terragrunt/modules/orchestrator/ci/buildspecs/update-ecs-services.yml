@@ -15,3 +15,5 @@ phases:
     commands:
       - cd /terragrunt/components/service/ecs
       - terragrunt apply --auto-approve
+      - cd /terragrunt/components/service/api-gateway
+      - terragrunt apply --auto-approve
