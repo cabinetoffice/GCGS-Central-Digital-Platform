@@ -6,7 +6,7 @@ public class PponFactories
     {
         return new EntityVerification.Persistence.Ppon
         {
-            PponId = pponId ?? Guid.NewGuid().ToString().Replace("-", ""),
+            IdentifierId = pponId ?? Guid.NewGuid().ToString().Replace("-", ""),
             Name = string.Empty,
             OrganisationId = Guid.NewGuid()
         };

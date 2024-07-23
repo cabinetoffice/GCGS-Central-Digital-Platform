@@ -17,11 +17,11 @@ public class DatabasePponRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
 
         repository.Save(ppon);
 
-        var found = await FindPponByPponId(ppon.PponId);
+        var found = await FindPponByPponId(ppon.IdentifierId);
 
         found.Should().NotBeNull();
         found.As<EntityVerification.Persistence.Ppon>().Id.Should().BePositive();
-        found.As<EntityVerification.Persistence.Ppon>().PponId.Should().Be(ppon.PponId);
+        found.As<EntityVerification.Persistence.Ppon>().IdentifierId.Should().Be(ppon.IdentifierId);
     }
 
     [Fact]
@@ -41,7 +41,7 @@ public class DatabasePponRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
     {
         return await postgreSql.EntityVerificationContext()
             .Ppons
-            .FirstOrDefaultAsync(p => p.PponId == pponId);
+            .FirstOrDefaultAsync(p => p.IdentifierId == pponId);
     }
 
     private IPponRepository PponRepository()

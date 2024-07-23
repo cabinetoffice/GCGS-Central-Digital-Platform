@@ -13,7 +13,7 @@ public class OrganisationRegisteredEventHandler(IPponService pponService,
     public async Task Handle(OrganisationRegistered @event)
     {
         Persistence.Ppon newPpon = new() {
-            PponId = pponService.GeneratePponId(),
+            IdentifierId = pponService.GeneratePponId(),
             Name = @event.Name,
             OrganisationId = @event.Id
         };
@@ -21,6 +21,6 @@ public class OrganisationRegisteredEventHandler(IPponService pponService,
         newPpon.Identifiers = Identifier.GetPersistenceIdentifiers(@event.AllIdentifiers(), newPpon);
 
         pponRepository.Save(newPpon);
-        await publisher.Publish(newPpon.PponId);
+        await publisher.Publish(newPpon.IdentifierId);
     }
 }

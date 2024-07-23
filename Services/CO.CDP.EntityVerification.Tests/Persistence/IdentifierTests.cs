@@ -49,6 +49,9 @@ public class IdentifierTests
 
         // Assert
         result.Should().ContainSingle(i =>
-            i.LegalName == evIds[0].LegalName && i.Scheme == evIds[0].Scheme && i.Uri == evIds[0].Uri);
+            i.IdentifierId == "GB123123123" &&
+            i.LegalName == evIds[0].LegalName &&
+            i.Scheme == evIds[0].Scheme &&
+            i.Uri == evIds[0].Uri);
     }
 }

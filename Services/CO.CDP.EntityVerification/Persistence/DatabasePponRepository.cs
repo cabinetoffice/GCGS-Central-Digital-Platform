@@ -27,8 +27,8 @@ public class DatabasePponRepository(EntityVerificationContext context) : IPponRe
     {
         switch (cause.InnerException)
         {
-            case { } e when e.ContainsDuplicateKey("_ppons_ppon_id"):
-                throw new DuplicatePponException($"PPON with PPON Id `{identifier.PponId}` already exists.", cause);
+            case { } e when e.ContainsDuplicateKey("_ppons_identifier_id"):
+                throw new DuplicatePponException($"PPON with PPON Id `{identifier.IdentifierId}` already exists.", cause);
             default:
                 throw cause;
         }

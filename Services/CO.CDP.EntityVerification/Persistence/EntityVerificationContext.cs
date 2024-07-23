@@ -26,20 +26,23 @@ public class EntityVerificationContext : DbContext
     {
         modelBuilder.HasDefaultSchema("entity_verification");
 
-        modelBuilder.Entity<Ppon>()
-            .HasMany(p => p.Identifiers)
-            .WithOne(p => p.Ppon)
-            .HasForeignKey(i => i.PponId)
-            .HasPrincipalKey(i => i.Id);
-
-        foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+        modelBuilder.Entity<Ppon>(ppon =>
         {
-            if (typeof(IEntityDate).IsAssignableFrom(entityType.ClrType) && !entityType.IsOwned())
+            ppon.HasIndex(p => p.IdentifierId).IsUnique();
+            ppon.HasIndex(p => p.OrganisationId);
+            ppon.HasIndex(p => p.Name);
+            ppon.Property(p => p.CreatedOn).HasTimestampDefault();
+            ppon.Property(p => p.UpdatedOn).HasTimestampDefault();
+            ppon.OwnsMany(e => e.Identifiers, i =>
             {
-                modelBuilder.Entity(entityType.ClrType).Property<DateTimeOffset>("CreatedOn").HasTimestampDefault();
-                modelBuilder.Entity(entityType.ClrType).Property<DateTimeOffset>("UpdatedOn").HasTimestampDefault();
-            }
-        }
+                i.WithOwner().HasForeignKey("ppon_id");
+                i.HasKey(p => p.Id);
+                i.HasIndex(p => p.IdentifierId);
+                i.HasIndex(p => p.Scheme);
+                i.Property(p => p.CreatedOn).HasTimestampDefault();
+                i.Property(p => p.UpdatedOn).HasTimestampDefault();
+            });
+        });
 
         base.OnModelCreating(modelBuilder);
     }

@@ -17,17 +17,22 @@ namespace CO.CDP.EntityVerification.Migrations
                 schema: "entity_verification",
                 table: "ppon");
 
+            migrationBuilder.DropIndex(
+                name: "ix_ppon_ppon_id",
+                schema: "entity_verification",
+                table: "ppon");
+
             migrationBuilder.RenameTable(
                 name: "ppon",
                 schema: "entity_verification",
                 newName: "ppons",
                 newSchema: "entity_verification");
 
-            migrationBuilder.RenameIndex(
-                name: "ix_ppon_ppon_id",
+            migrationBuilder.RenameColumn(
+                name: "ppon_id",
                 schema: "entity_verification",
                 table: "ppons",
-                newName: "ix_ppons_ppon_id");
+                newName: "identifier_id");
 
             migrationBuilder.AddColumn<DateTimeOffset>(
                 name: "created_on",
@@ -74,12 +79,13 @@ namespace CO.CDP.EntityVerification.Migrations
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    identifier_id = table.Column<string>(type: "text", nullable: false),
                     scheme = table.Column<string>(type: "text", nullable: false),
                     legal_name = table.Column<string>(type: "text", nullable: false),
                     uri = table.Column<string>(type: "text", nullable: true),
-                    ppon_id = table.Column<int>(type: "integer", nullable: false),
                     created_on = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP"),
-                    updated_on = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP")
+                    updated_on = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP"),
+                    ppon_id = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -94,10 +100,41 @@ namespace CO.CDP.EntityVerification.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "ix_ppons_identifier_id",
+                schema: "entity_verification",
+                table: "ppons",
+                column: "identifier_id",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "ix_ppons_name",
+                schema: "entity_verification",
+                table: "ppons",
+                column: "name");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_ppons_organisation_id",
+                schema: "entity_verification",
+                table: "ppons",
+                column: "organisation_id");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_identifiers_identifier_id",
+                schema: "entity_verification",
+                table: "identifiers",
+                column: "identifier_id");
+
+            migrationBuilder.CreateIndex(
                 name: "ix_identifiers_ppon_id",
                 schema: "entity_verification",
                 table: "identifiers",
                 column: "ppon_id");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_identifiers_scheme",
+                schema: "entity_verification",
+                table: "identifiers",
+                column: "scheme");
         }
 
         /// <inheritdoc />
@@ -109,6 +146,21 @@ namespace CO.CDP.EntityVerification.Migrations
 
             migrationBuilder.DropPrimaryKey(
                 name: "pk_ppons",
+                schema: "entity_verification",
+                table: "ppons");
+
+            migrationBuilder.DropIndex(
+                name: "ix_ppons_identifier_id",
+                schema: "entity_verification",
+                table: "ppons");
+
+            migrationBuilder.DropIndex(
+                name: "ix_ppons_name",
+                schema: "entity_verification",
+                table: "ppons");
+
+            migrationBuilder.DropIndex(
+                name: "ix_ppons_organisation_id",
                 schema: "entity_verification",
                 table: "ppons");
 
@@ -138,17 +190,24 @@ namespace CO.CDP.EntityVerification.Migrations
                 newName: "ppon",
                 newSchema: "entity_verification");
 
-            migrationBuilder.RenameIndex(
-                name: "ix_ppons_ppon_id",
+            migrationBuilder.RenameColumn(
+                name: "identifier_id",
                 schema: "entity_verification",
                 table: "ppon",
-                newName: "ix_ppon_ppon_id");
+                newName: "ppon_id");
 
             migrationBuilder.AddPrimaryKey(
                 name: "pk_ppon",
                 schema: "entity_verification",
                 table: "ppon",
                 column: "id");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_ppon_ppon_id",
+                schema: "entity_verification",
+                table: "ppon",
+                column: "ppon_id",
+                unique: true);
         }
     }
 }
