@@ -1,3 +1,5 @@
+using CO.CDP.EntityFrameworkCore.Timestamps;
+
 namespace CO.CDP.OrganisationInformation.Persistence.Forms;
 
 public class SharedConsent : IEntityDate
