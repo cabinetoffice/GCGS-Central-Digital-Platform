@@ -291,6 +291,20 @@ data "aws_iam_policy_document" "terraform_global" {
     sid = "ManageCodestar"
   }
 
+  statement {
+    actions = [
+      "S3:PutBucketPolicy",
+      "s3:DeleteBucketPolicy",
+      "s3:GetBucketPolicy",
+      "s3:GetBucketPolicyStatus",
+    ]
+    effect = "Allow"
+    resources = [
+      "*"
+    ]
+    sid = "ManageBucketPolicy"
+  }
+
 }
 
 data "aws_iam_policy_document" "terraform_product" {
