@@ -22,7 +22,7 @@ public class BuyerInformationTest
     public void ItDoesNotInitialiseBuyerInformationIfBuyerRoleIsNotPresent()
     {
         var organisation = GivenOrganisation(
-            roles: [PartyRole.Supplier]
+            roles: [PartyRole.Tenderer]
         );
 
         organisation.UpdateBuyerInformation();

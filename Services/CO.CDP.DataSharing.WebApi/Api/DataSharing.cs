@@ -27,7 +27,7 @@ public static class EndpointExtensions
                         Relationship = "Company Director",
                         Uri = new Uri(
                             "https://cdp.cabinetoffice.gov.uk/persons/c16f9f7b-3f10-42db-86f8-93607b034a4c"),
-                        Roles = [PartyRole.Supplier]
+                        Roles = [PartyRole.Tenderer]
                     }
                 ],
             AdditionalParties =
@@ -36,7 +36,7 @@ public static class EndpointExtensions
                     {
                         Id = Guid.Parse("f4596cdd-12e5-4f25-9db1-4312474e516f"),
                         Name = "Acme Group Ltd",
-                        Roles = [PartyRole.Supplier],
+                        Roles = [PartyRole.Tenderer],
                         Uri = new Uri(
                             "https://cdp.cabinetoffice.gov.uk/organisations/f4596cdd-12e5-4f25-9db1-4312474e516f")
                     }
@@ -47,7 +47,7 @@ public static class EndpointExtensions
                     {
                         Id = Guid.Parse("f4596cdd-12e5-4f25-9db1-4312474e516f"),
                         Name = "Acme Group Ltd",
-                        Roles = [PartyRole.Supplier],
+                        Roles = [PartyRole.Tenderer],
                         Uri = new Uri(
                             "https://cdp.cabinetoffice.gov.uk/organisations/f4596cdd-12e5-4f25-9db1-4312474e516f")
                     }
@@ -86,7 +86,7 @@ public static class EndpointExtensions
                 Email = "info@example.com",
                 Telephone = "+441234567890"
             },
-            Roles = [PartyRole.Supplier],
+            Roles = [PartyRole.Tenderer],
             Details = new Details(),
             SupplierInformationData = new SupplierInformationData
             {
