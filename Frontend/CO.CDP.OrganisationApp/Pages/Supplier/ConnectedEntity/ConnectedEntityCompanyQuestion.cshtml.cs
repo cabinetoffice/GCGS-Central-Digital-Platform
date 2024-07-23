@@ -49,7 +49,7 @@ public class ConnectedEntityCompanyQuestionModel(ISession session) : PageModel
         var state = session.Get<ConnectedEntityState>(Session.ConnectedPersonKey);
         if (state == null)
         {
-            return RedirectToPage("ConnectedEntitySupplierHasControl", new { Id });
+            return RedirectToPage("ConnectedEntityControlCondition", new { Id });
         }
 
         InitModal(state);
@@ -86,7 +86,7 @@ public class ConnectedEntityCompanyQuestionModel(ISession session) : PageModel
         if (actionResult != null)
             return actionResult;
 
-        return RedirectToPage("ConnectedEntitySupplierHasControl", new { Id, ConnectedEntityId });
+        return RedirectToPage("ConnectedEntityControlCondition", new { Id, ConnectedEntityId });
     }
 
     private void InitModal(ConnectedEntityState state)
