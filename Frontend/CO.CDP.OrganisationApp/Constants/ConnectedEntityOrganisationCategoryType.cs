@@ -11,7 +11,7 @@ public enum ConnectedEntityOrganisationCategoryType
     AnyOtherOrganisationWithSignificantInfluenceOrControl,
 }
 
-public static class ConnectedEntityOrganisationCategoryTypeTypeExtensions
+public static class ConnectedEntityOrganisationCategoryTypeExtensions
 {
     public static WebApiClient.ConnectedOrganisationCategory AsApiClientConnectedEntityOrganisationCategoryType(this ConnectedEntityOrganisationCategoryType connectedEntityOrganisationCategoryType)
     {
