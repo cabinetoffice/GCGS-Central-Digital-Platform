@@ -274,7 +274,7 @@ public class RegisterOrganisationTest
                 Telephone = "123-456-7890",
                 Url = "http://example.org/contact"
             },
-            Roles = [PartyRole.Supplier]
+            Roles = [PartyRole.Tenderer]
         };
     }
 }

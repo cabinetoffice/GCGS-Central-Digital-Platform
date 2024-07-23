@@ -1,5 +1,6 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using CO.CDP.EntityFrameworkCore.Timestamps;
 using CO.CDP.OrganisationInformation.Persistence.EntityFrameworkCore;
 using CO.CDP.OrganisationInformation.Persistence.Forms;
 using Microsoft.EntityFrameworkCore;
@@ -36,8 +37,8 @@ public class OrganisationInformationContext(DbContextOptions<OrganisationInforma
             {
                 a.HasKey(e => e.Id);
                 a.Property(ai => ai.Id).HasColumnName("connected_organisation_id");
-                a.Property(z => z.CreatedOn).IsRequired().HasDefaultValueSql("CURRENT_TIMESTAMP");
-                a.Property(z => z.UpdatedOn).IsRequired().HasDefaultValueSql("CURRENT_TIMESTAMP");
+                a.Property(z => z.CreatedOn).HasTimestampDefault();
+                a.Property(z => z.UpdatedOn).HasTimestampDefault();
                 a.ToTable("connected_organisation");
             });
 
@@ -45,8 +46,8 @@ public class OrganisationInformationContext(DbContextOptions<OrganisationInforma
             {
                 a.HasKey(e => e.Id);
                 a.Property(ai => ai.Id).HasColumnName("connected_individual_trust_id");
-                a.Property(z => z.CreatedOn).IsRequired().HasDefaultValueSql("CURRENT_TIMESTAMP");
-                a.Property(z => z.UpdatedOn).IsRequired().HasDefaultValueSql("CURRENT_TIMESTAMP");
+                a.Property(z => z.CreatedOn).HasTimestampDefault();
+                a.Property(z => z.UpdatedOn).HasTimestampDefault();
                 a.ToTable("connected_individual_trust");
             });
         });
@@ -63,8 +64,8 @@ public class OrganisationInformationContext(DbContextOptions<OrganisationInforma
                 a.Property(ai => ai.Scheme);
                 a.Property(ai => ai.LegalName);
                 a.Property(ai => ai.Uri);
-                a.Property(ai => ai.CreatedOn).IsRequired().HasDefaultValueSql("CURRENT_TIMESTAMP");
-                a.Property(ai => ai.UpdatedOn).IsRequired().HasDefaultValueSql("CURRENT_TIMESTAMP");
+                a.Property(ai => ai.CreatedOn).HasTimestampDefault();
+                a.Property(ai => ai.UpdatedOn).HasTimestampDefault();
                 a.ToTable("identifiers");
             });
 
@@ -75,44 +76,44 @@ public class OrganisationInformationContext(DbContextOptions<OrganisationInforma
                 a.Property(ai => ai.Email);
                 a.Property(ai => ai.Telephone);
                 a.Property(ai => ai.Url);
-                a.Property(ai => ai.CreatedOn).IsRequired().HasDefaultValueSql("CURRENT_TIMESTAMP");
-                a.Property(ai => ai.UpdatedOn).IsRequired().HasDefaultValueSql("CURRENT_TIMESTAMP");
+                a.Property(ai => ai.CreatedOn).HasTimestampDefault();
+                a.Property(ai => ai.UpdatedOn).HasTimestampDefault();
                 a.ToTable("contact_points");
             });
 
             entity.OwnsOne(e => e.SupplierInfo, a =>
             {
-                a.Property(z => z.CreatedOn).IsRequired().HasDefaultValueSql("CURRENT_TIMESTAMP");
-                a.Property(z => z.UpdatedOn).IsRequired().HasDefaultValueSql("CURRENT_TIMESTAMP");
+                a.Property(z => z.CreatedOn).HasTimestampDefault();
+                a.Property(z => z.UpdatedOn).HasTimestampDefault();
                 a.ToTable("supplier_information");
 
                 a.OwnsMany(x => x.Qualifications, y =>
                 {
                     y.HasKey(z => z.Id);
-                    y.Property(z => z.CreatedOn).IsRequired().HasDefaultValueSql("CURRENT_TIMESTAMP");
-                    y.Property(z => z.UpdatedOn).IsRequired().HasDefaultValueSql("CURRENT_TIMESTAMP");
+                    y.Property(z => z.CreatedOn).HasTimestampDefault();
+                    y.Property(z => z.UpdatedOn).HasTimestampDefault();
                     y.ToTable("qualifications");
                 });
 
                 a.OwnsMany(x => x.TradeAssurances, y =>
                 {
                     y.HasKey(z => z.Id);
-                    y.Property(z => z.CreatedOn).IsRequired().HasDefaultValueSql("CURRENT_TIMESTAMP");
-                    y.Property(z => z.UpdatedOn).IsRequired().HasDefaultValueSql("CURRENT_TIMESTAMP");
+                    y.Property(z => z.CreatedOn).HasTimestampDefault();
+                    y.Property(z => z.UpdatedOn).HasTimestampDefault();
                     y.ToTable("trade_assurances");
                 });
                 a.OwnsOne(x => x.LegalForm, y =>
                 {
-                    y.Property(z => z.CreatedOn).IsRequired().HasDefaultValueSql("CURRENT_TIMESTAMP");
-                    y.Property(z => z.UpdatedOn).IsRequired().HasDefaultValueSql("CURRENT_TIMESTAMP");
+                    y.Property(z => z.CreatedOn).HasTimestampDefault();
+                    y.Property(z => z.UpdatedOn).HasTimestampDefault();
                     y.ToTable("legal_forms");
                 });
             });
 
             entity.OwnsOne(e => e.BuyerInfo, a =>
             {
-                a.Property(z => z.CreatedOn).IsRequired().HasDefaultValueSql("CURRENT_TIMESTAMP");
-                a.Property(z => z.UpdatedOn).IsRequired().HasDefaultValueSql("CURRENT_TIMESTAMP");
+                a.Property(z => z.CreatedOn).HasTimestampDefault();
+                a.Property(z => z.UpdatedOn).HasTimestampDefault();
                 a.ToTable("buyer_information");
             });
 
@@ -123,8 +124,8 @@ public class OrganisationInformationContext(DbContextOptions<OrganisationInforma
                 {
                     j.Property(op => op.Scopes).IsRequired()
                         .HasJsonColumn([], PropertyBuilderExtensions.ListComparer<string>());
-                    j.Property(op => op.CreatedOn).IsRequired().HasDefaultValueSql("CURRENT_TIMESTAMP");
-                    j.Property(op => op.UpdatedOn).IsRequired().HasDefaultValueSql("CURRENT_TIMESTAMP");
+                    j.Property(op => op.CreatedOn).HasTimestampDefault();
+                    j.Property(op => op.UpdatedOn).HasTimestampDefault();
                 });
 
             entity.OwnsMany(e => e.Addresses, a =>
@@ -150,10 +151,8 @@ public class OrganisationInformationContext(DbContextOptions<OrganisationInforma
         {
             if (typeof(IEntityDate).IsAssignableFrom(entityType.ClrType) && !entityType.IsOwned())
             {
-                modelBuilder.Entity(entityType.ClrType).Property<DateTimeOffset>("CreatedOn").IsRequired()
-                    .HasDefaultValueSql("CURRENT_TIMESTAMP");
-                modelBuilder.Entity(entityType.ClrType).Property<DateTimeOffset>("UpdatedOn").IsRequired()
-                    .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                modelBuilder.Entity(entityType.ClrType).Property<DateTimeOffset>("CreatedOn").HasTimestampDefault();
+                modelBuilder.Entity(entityType.ClrType).Property<DateTimeOffset>("UpdatedOn").HasTimestampDefault();
             }
         }
 
@@ -206,37 +205,9 @@ public class OrganisationInformationContext(DbContextOptions<OrganisationInforma
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         optionsBuilder.UseSnakeCaseNamingConvention();
+        optionsBuilder.AddInterceptors(new EntityDateInterceptor());
         optionsBuilder.ReplaceService<IHistoryRepository, CamelCaseHistoryContext>();
         base.OnConfiguring(optionsBuilder);
-    }
-
-    public override int SaveChanges()
-    {
-        UpdateTimestamps();
-        return base.SaveChanges();
-    }
-
-    public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
-    {
-        UpdateTimestamps();
-        return base.SaveChangesAsync(cancellationToken);
-    }
-
-    private void UpdateTimestamps()
-    {
-        var entries = ChangeTracker
-            .Entries<IEntityDate>()
-            .Where(e => e.State == EntityState.Added || e.State == EntityState.Modified);
-
-        foreach (var entityEntry in entries)
-        {
-            if (entityEntry.State == EntityState.Added)
-            {
-                entityEntry.Entity.CreatedOn = DateTimeOffset.UtcNow;
-            }
-
-            entityEntry.Entity.UpdatedOn = DateTimeOffset.UtcNow;
-        }
     }
 }
 

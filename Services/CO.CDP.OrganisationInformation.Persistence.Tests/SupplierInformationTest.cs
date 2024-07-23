@@ -9,7 +9,7 @@ public class SupplierInformationTest
     public void ItInitialisesSupplierInformationIfSupplierRoleIsPresent()
     {
         var organisation = GivenOrganisation(
-            roles: [PartyRole.Supplier],
+            roles: [PartyRole.Tenderer],
             addresses: []
         );
 
@@ -45,7 +45,7 @@ public class SupplierInformationTest
     public void ItDoesNotCreateNewSupplierInformationIfItIsAlreadyPresent()
     {
         var organisation = GivenOrganisation(
-            roles: [PartyRole.Supplier],
+            roles: [PartyRole.Tenderer],
             supplierInformation: GivenSupplierInformation(type: SupplierType.Individual)
         );
 
@@ -59,7 +59,7 @@ public class SupplierInformationTest
     public void ItMarksRegistrationAddressAsCompletedInSupplierInformationIfGiven()
     {
         var organisation = GivenOrganisation(
-            roles: [PartyRole.Supplier],
+            roles: [PartyRole.Tenderer],
             addresses: [GivenOrganisationAddress(type: AddressType.Registered)]
         );
 
@@ -73,7 +73,7 @@ public class SupplierInformationTest
     public void ItMarksPostalAddressAsCompletedInSupplierInformationIfGiven()
     {
         var organisation = GivenOrganisation(
-            roles: [PartyRole.Supplier],
+            roles: [PartyRole.Tenderer],
             addresses: [GivenOrganisationAddress(type: AddressType.Postal)]
         );
 
@@ -87,7 +87,7 @@ public class SupplierInformationTest
     public void ItMarksVatAsCompletedInSupplierInformationIfGiven()
     {
         var organisation = GivenOrganisation(
-            roles: [PartyRole.Supplier],
+            roles: [PartyRole.Tenderer],
             identifiers: [GivenIdentifier(scheme: "VAT")]
         );
 
@@ -101,7 +101,7 @@ public class SupplierInformationTest
     public void ItMarksQualificationAsCompletedIfGiven()
     {
         var organisation = GivenOrganisation(
-            roles: [PartyRole.Supplier],
+            roles: [PartyRole.Tenderer],
             supplierInformation: GivenSupplierInformation(
                 qualifications: [GivenSupplierQualification(name: "Qualification 1")]
             )
@@ -117,7 +117,7 @@ public class SupplierInformationTest
     public void ItMarksTradeAssuranceAsCompletedIfGiven()
     {
         var organisation = GivenOrganisation(
-            roles: [PartyRole.Supplier],
+            roles: [PartyRole.Tenderer],
             supplierInformation: GivenSupplierInformation(
                 tradeAssurances: [GivenSupplierTradeAssurance()]
             )
@@ -133,7 +133,7 @@ public class SupplierInformationTest
     public void ItMarksLegalFormAsCompletedIfGiven()
     {
         var organisation = GivenOrganisation(
-            roles: [PartyRole.Supplier],
+            roles: [PartyRole.Tenderer],
             supplierInformation: GivenSupplierInformation(
                 legalForm: GivenSupplierLegalForm(registeredLegalForm: "Limited company")
             )
@@ -150,7 +150,7 @@ public class SupplierInformationTest
     public void ItDoesNotRemoveTheCompletedRegAddressFlagIfItWasExplicitlySet()
     {
         var organisation = GivenOrganisation(
-            roles: [PartyRole.Supplier],
+            roles: [PartyRole.Tenderer],
             addresses: [],
             supplierInformation: GivenSupplierInformation(completedRegAddress: true)
         );
@@ -165,7 +165,7 @@ public class SupplierInformationTest
     public void ItDoesNotRemoveTheCompletedPostalAddressFlagIfItWasExplicitlySet()
     {
         var organisation = GivenOrganisation(
-            roles: [PartyRole.Supplier],
+            roles: [PartyRole.Tenderer],
             addresses: [],
             supplierInformation: GivenSupplierInformation(completedPostalAddress: true)
         );
@@ -181,7 +181,7 @@ public class SupplierInformationTest
     public void ItDoesNotRemoveTheVatFlagIfItWasExplicitlySet()
     {
         var organisation = GivenOrganisation(
-            roles: [PartyRole.Supplier],
+            roles: [PartyRole.Tenderer],
             supplierInformation: GivenSupplierInformation(completedVat: true)
         );
 
@@ -195,7 +195,7 @@ public class SupplierInformationTest
     public void ItDoesNotRemoveTheCompletedQualificationFlagIfItWasExplicitlySet()
     {
         var organisation = GivenOrganisation(
-            roles: [PartyRole.Supplier],
+            roles: [PartyRole.Tenderer],
             supplierInformation: GivenSupplierInformation(completedQualification: true)
         );
 
@@ -210,7 +210,7 @@ public class SupplierInformationTest
     public void ItDoesNotRemoveTheCompletedTradeAssuranceFlagIfItWasExplicitlySet()
     {
         var organisation = GivenOrganisation(
-            roles: [PartyRole.Supplier],
+            roles: [PartyRole.Tenderer],
             supplierInformation: GivenSupplierInformation(completedTradeAssurance: true)
         );
 
@@ -225,7 +225,7 @@ public class SupplierInformationTest
     public void ItDoesNotRemoveTheCompletedLegalFormFlagIfItWasExplicitlySet()
     {
         var organisation = GivenOrganisation(
-            roles: [PartyRole.Supplier],
+            roles: [PartyRole.Tenderer],
             supplierInformation: GivenSupplierInformation(completedLegalForm: true)
         );
 

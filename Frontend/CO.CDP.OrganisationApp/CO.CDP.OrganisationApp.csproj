@@ -24,11 +24,4 @@
       <ProjectReference Include="..\..\Libraries\CO.CDP.Configuration\CO.CDP.Configuration.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Content Update="Pages\Supplier\ConnectedEntity\ConnectedEntityCompanyInsolvencyDate.cshtml">
-        <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-      </Content>
-    </ItemGroup>
-
 </Project>

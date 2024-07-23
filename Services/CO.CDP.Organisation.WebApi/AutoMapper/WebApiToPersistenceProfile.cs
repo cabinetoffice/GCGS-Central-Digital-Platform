@@ -115,6 +115,18 @@ public class WebApiToPersistenceProfile : Profile
         CreateMap<Persistence.ConnectedEntity, ConnectedEntity>()
             .ForMember(m => m.Id, o => o.MapFrom(m => m.Guid));
 
+        CreateMap<CreateConnectedIndividualTrust, Persistence.ConnectedEntity.ConnectedIndividualTrust>()
+            .ForMember(m => m.Id, o => o.Ignore())
+            .ForMember(m => m.CreatedOn, o => o.Ignore())
+            .ForMember(m => m.UpdatedOn, o => o.Ignore())
+            .ReverseMap();
+
+        CreateMap<CreateConnectedOrganisation, Persistence.ConnectedEntity.ConnectedOrganisation>()
+            .ForMember(m => m.Id, o => o.Ignore())
+            .ForMember(m => m.CreatedOn, o => o.Ignore())
+            .ForMember(m => m.UpdatedOn, o => o.Ignore())
+            .ReverseMap();
+
         CreateMap<ConnectedIndividualTrust, Persistence.ConnectedEntity.ConnectedIndividualTrust>()
             .ForMember(m => m.Id, o => o.Ignore())
             .ForMember(m => m.CreatedOn, o => o.Ignore())
