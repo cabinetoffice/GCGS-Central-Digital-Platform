@@ -135,7 +135,7 @@ public class Organisation : IEntityDate
 
     public void UpdateSupplierInformation()
     {
-        if (!Roles.Contains(PartyRole.Supplier))
+        if (!Roles.Contains(PartyRole.Tenderer))
         {
             return;
         }

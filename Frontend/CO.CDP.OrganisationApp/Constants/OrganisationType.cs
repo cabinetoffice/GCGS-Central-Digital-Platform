@@ -15,8 +15,8 @@ public static class OrganisationTypeExtensions
         switch (organisationType)
         {
             case OrganisationType.Buyer: return PartyRole.Buyer;
-            case OrganisationType.Supplier: return PartyRole.Supplier;
-            default: return PartyRole.Supplier;
+            case OrganisationType.Supplier: return PartyRole.Tenderer;
+            default: return PartyRole.Tenderer;
         }
     }
 }
