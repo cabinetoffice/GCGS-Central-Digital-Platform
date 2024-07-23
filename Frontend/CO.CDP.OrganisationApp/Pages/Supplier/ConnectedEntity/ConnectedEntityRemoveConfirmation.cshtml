@@ -69,26 +69,26 @@
                                     <div class="govuk-date-input" id="end-date">
                                         <div class="govuk-date-input__item">
                                             <div class="govuk-form-group">
-                                                <label class="govuk-label govuk-date-input__label" for="end-date-day">
+                                                <label class="govuk-label govuk-date-input__label" for="end-day">
                                                     Day
                                                 </label>
-                                                <input class="govuk-input govuk-date-input__input govuk-input--width-2 @(dayHasError || endDateHasError ? "govuk-input--error" : "")"  id="end-date-day" name="end-date-day" type="text" inputmode="numeric" value="@Model.EndDay">
+                                                <input class="govuk-input govuk-date-input__input govuk-input--width-2 @(dayHasError ? "govuk-input--error" : "")"  id="end-day" name="EndDay" type="text" inputmode="numeric" value="@Model.EndDay">
                                             </div>
                                         </div>
                                         <div class="govuk-date-input__item">
                                             <div class="govuk-form-group">
-                                                <label class="govuk-label govuk-date-input__label" for="end-date-month">
+                                                <label class="govuk-label govuk-date-input__label" for="end-month">
                                                     Month
                                                 </label>
-                                                <input class="govuk-input govuk-date-input__input govuk-input--width-2 @(dayHasError || endDateHasError ? "govuk-input--error" : "")" id="end-date-month" name="end-date-month" type="text" inputmode="numeric" value="@Model.EndMonth">
+                                                <input class="govuk-input govuk-date-input__input govuk-input--width-2 @(monthHasError ? "govuk-input--error" : "")" id="end-month" name="EndMonth" type="text" inputmode="numeric" value="@Model.EndMonth">
                                             </div>
                                         </div>
                                         <div class="govuk-date-input__item">
                                             <div class="govuk-form-group">
-                                                <label class="govuk-label govuk-date-input__label" for="end-date-year @(dayHasError || endDateHasError ? "govuk-input--error" : "")">
+                                                <label class="govuk-label govuk-date-input__label" for="end-year">
                                                     Year
                                                 </label>
-                                                <input class="govuk-input govuk-date-input__input govuk-input--width-4" id="end-date-year" name="end-date-year" type="text" inputmode="numeric" value="@Model.EndYear">
+                                                <input class="govuk-input govuk-date-input__input govuk-input--width-4 @(yearHasError ? "govuk-input--error" : "")" id="end-year" name="EndYear" type="text" inputmode="numeric" value="@Model.EndYear">
                                             </div>
                                         </div>
                                     </div>

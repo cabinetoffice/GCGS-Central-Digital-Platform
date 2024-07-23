@@ -4,7 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
+using CO.CDP.Mvc.Validation;
 using CO.CDP.OrganisationApp.Constants;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace CO.CDP.OrganisationApp.Pages.Supplier.ConnectedEntity;
 
@@ -22,17 +24,17 @@ IOrganisationClient organisationClient) : PageModel
     public bool? ConfirmRemove { get; set; }
 
     [BindProperty]
-    [Required(ErrorMessage = "Date of removal must include a day")]
+    [RequiredIf("ConfirmRemove", true, ErrorMessage = "Date of removal must include a day")]
     [RegularExpression(RegExPatterns.Day, ErrorMessage = "Day must be a valid number")]
     public string? EndDay { get; set; }
 
     [BindProperty]
-    [Required(ErrorMessage = "Date of removal must include a month")]
+    [RequiredIf("ConfirmRemove", true, ErrorMessage = "Date of removal must include a month")]
     [RegularExpression(RegExPatterns.Month, ErrorMessage = "Month must be a valid number")]
     public string? EndMonth { get; set; }
 
     [BindProperty]
-    [Required(ErrorMessage = "Date of removal must include a year")]
+    [RequiredIf("ConfirmRemove", true, ErrorMessage = "Date of removal must include a year")]
     [RegularExpression(RegExPatterns.Year, ErrorMessage = "Year must be a valid number")]
     public string? EndYear { get; set; }
 
@@ -62,13 +64,13 @@ IOrganisationClient organisationClient) : PageModel
                 return Redirect("/page-not-found");
 
             var dateString = $"{EndYear}-{EndMonth!.PadLeft(2, '0')}-{EndDay!.PadLeft(2, '0')}";
-            if (!DateTime.TryParseExact(dateString, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
+            if (!DateTime.TryParseExact(dateString, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var endDate))
             {
                 ModelState.AddModelError(nameof(EndDate), "Date of removal must be a real date");
                 return Page();
             }
-            // TODO
-            // await organisationClient.DeleteConnectedPerson(Id, ConnectedPersonId);
+
+            await organisationClient.DeleteConnectedEntityAsync(Id, ConnectedPersonId, new DeleteConnectedEntity(endDate));
         }
 
         return RedirectToPage("ConnectedPersonSummary", new { Id });

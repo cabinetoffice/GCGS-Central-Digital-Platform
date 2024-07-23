@@ -363,6 +363,31 @@ public static class EndpointExtensions
                 return operation;
             });
 
+        app.MapDelete("/{organisationId}/connected-entities/{connectedEntityId}",
+                async (Guid organisationId, Guid connectedEntityId, [FromBody] DeleteConnectedEntity deleteConnectedEntity,
+                        IUseCase<(Guid, Guid, DeleteConnectedEntity), bool> useCase) =>
+                    await useCase.Execute((organisationId, connectedEntityId, deleteConnectedEntity))
+                        .AndThen(_ => Results.NoContent()))
+            .Produces(StatusCodes.Status204NoContent)
+            .ProducesProblem(StatusCodes.Status400BadRequest)
+            .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
+            .ProducesProblem(StatusCodes.Status404NotFound)
+            .ProducesProblem(StatusCodes.Status422UnprocessableEntity)
+            .ProducesProblem(StatusCodes.Status500InternalServerError)
+            .WithOpenApi(operation =>
+            {
+                operation.OperationId = "DeleteConnectedEntity";
+                operation.Description = "Delete Connected Entity.";
+                operation.Summary = "Delete Connected Entity.";
+                operation.Responses["204"].Description = "Connected Entity deleted successfully.";
+                operation.Responses["400"].Description = "Bad request.";
+                operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
+                operation.Responses["404"].Description = "Connected Entity not found.";
+                operation.Responses["422"].Description = "Unprocessable entity.";
+                operation.Responses["500"].Description = "Internal server error.";
+                return operation;
+            });
+
         return app;
     }
 }
