@@ -64,8 +64,9 @@ public class SqsDispatcher(
         var response = await sqsClient.ReceiveMessageAsync(new ReceiveMessageRequest
         {
             QueueUrl = queueUrl,
-            MaxNumberOfMessages = 1,
-            MessageAttributeNames = [TypeAttribute]
+            MaxNumberOfMessages = configuration.MaxNumberOfMessages,
+            MessageAttributeNames = [TypeAttribute],
+            WaitTimeSeconds = configuration.WaitTimeSeconds,
         }, cancellationToken);
         return response.Messages ?? [];
     }

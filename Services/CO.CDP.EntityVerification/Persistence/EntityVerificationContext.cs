@@ -1,15 +1,18 @@
+using System.Text.Json;
+using CO.CDP.EntityFrameworkCore.Timestamps;
 using CO.CDP.EntityVerification.EntityFramework;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore.Migrations;
-using System.Text.Json;
 
 namespace CO.CDP.EntityVerification.Persistence;
+
 
 public class EntityVerificationContext : DbContext
 {
     public DbSet<Ppon> Ppons { get; set; } = null!;
+    public DbSet<Identifier> Identifiers { get; set; } = null!;
 
     public EntityVerificationContext()
     {
@@ -23,8 +26,23 @@ public class EntityVerificationContext : DbContext
     {
         modelBuilder.HasDefaultSchema("entity_verification");
 
-        modelBuilder.Entity<Ppon>()
-            .ToTable("ppon");
+        modelBuilder.Entity<Ppon>(ppon =>
+        {
+            ppon.HasIndex(p => p.IdentifierId).IsUnique();
+            ppon.HasIndex(p => p.OrganisationId);
+            ppon.HasIndex(p => p.Name);
+            ppon.Property(p => p.CreatedOn).HasTimestampDefault();
+            ppon.Property(p => p.UpdatedOn).HasTimestampDefault();
+            ppon.OwnsMany(e => e.Identifiers, i =>
+            {
+                i.WithOwner().HasForeignKey("ppon_id");
+                i.HasKey(p => p.Id);
+                i.HasIndex(p => p.IdentifierId);
+                i.HasIndex(p => p.Scheme);
+                i.Property(p => p.CreatedOn).HasTimestampDefault();
+                i.Property(p => p.UpdatedOn).HasTimestampDefault();
+            });
+        });
 
         base.OnModelCreating(modelBuilder);
     }
@@ -32,18 +50,9 @@ public class EntityVerificationContext : DbContext
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         optionsBuilder.UseSnakeCaseNamingConvention();
+        optionsBuilder.AddInterceptors(new EntityDateInterceptor());
         optionsBuilder.ReplaceService<IHistoryRepository, CamelCaseHistoryContext>();
         base.OnConfiguring(optionsBuilder);
-    }
-
-    public override int SaveChanges()
-    {
-        return base.SaveChanges();
-    }
-
-    public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
-    {
-        return base.SaveChangesAsync(cancellationToken);
     }
 }
 
