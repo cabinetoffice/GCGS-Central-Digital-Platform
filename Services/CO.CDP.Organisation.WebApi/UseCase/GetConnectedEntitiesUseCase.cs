@@ -1,7 +1,5 @@
 using AutoMapper;
-using CO.CDP.Functional;
 using CO.CDP.OrganisationInformation.Persistence;
-using System.Collections.Generic;
 
 namespace CO.CDP.Organisation.WebApi.UseCase;
 public class GetConnectedEntitiesUseCase(IConnectedEntityRepository connectedEntityRepository, IMapper mapper)

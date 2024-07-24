@@ -1,4 +1,3 @@
-using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
 namespace CO.CDP.DataSharing.WebApi.Model;

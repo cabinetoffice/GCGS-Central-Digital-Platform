@@ -1,4 +1,3 @@
-using System.Security.Cryptography;
 using Amazon.Runtime;
 using Amazon.SQS;
 using Amazon.SQS.Model;

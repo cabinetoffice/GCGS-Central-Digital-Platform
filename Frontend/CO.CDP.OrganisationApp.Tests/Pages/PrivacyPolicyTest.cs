@@ -1,5 +1,4 @@
 using CO.CDP.OrganisationApp.Pages;
-using CO.CDP.Person.WebApiClient;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;

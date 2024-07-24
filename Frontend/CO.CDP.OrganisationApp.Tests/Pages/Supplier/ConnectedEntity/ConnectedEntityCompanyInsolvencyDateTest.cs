@@ -4,7 +4,6 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moq;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages.Supplier.ConnectedEntity;
 
