@@ -70,7 +70,17 @@ public class FormElementFileUploadModel : FormElementModel, IValidatableObject
 
     private static string SanitizeFilename(string filename)
     {
-        var invalidRegStr = string.Format(@"([{0}]*\.+$)|([{0}]+)", Regex.Escape(new string([.. Path.GetInvalidFileNameChars(), ' ', '-'])));
+        // local copy of Path.GetInvalidFileNameChars(), test failing on git pipeline
+        var invalidFileNameChars = new char[]
+        {
+            '\"', '<', '>', '|', '\0',
+            (char)1, (char)2, (char)3, (char)4, (char)5, (char)6, (char)7, (char)8, (char)9, (char)10,
+            (char)11, (char)12, (char)13, (char)14, (char)15, (char)16, (char)17, (char)18, (char)19, (char)20,
+            (char)21, (char)22, (char)23, (char)24, (char)25, (char)26, (char)27, (char)28, (char)29, (char)30,
+            (char)31, ':', '*', '?', '\\', '/'
+        };
+
+        var invalidRegStr = string.Format(@"([{0}]*\.+$)|([{0}]+)", Regex.Escape(new string([.. invalidFileNameChars, ' ', '-'])));
 
         var newname = Regex.Replace(Path.GetFileNameWithoutExtension(filename), invalidRegStr, "_");
 
