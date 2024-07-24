@@ -25,4 +25,6 @@ public record Queues
 public record Queue
 {
     public string Name { get; init; }
+    public int? WaitTimeSeconds { get; init; }
+    public int? MaxNumberOfMessages { get; init; }
 }

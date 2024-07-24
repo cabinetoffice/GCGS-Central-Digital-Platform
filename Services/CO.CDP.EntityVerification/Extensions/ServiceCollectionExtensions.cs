@@ -24,22 +24,27 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IEventHandler<OrganisationRegistered>, OrganisationRegisteredEventHandler>();
         services.AddScoped<IDispatcher, SqsDispatcher>(s =>
         {
+            var awsConfig = config.GetSection("Aws").Get<AwsConfiguration>();
             var dispatcher = new SqsDispatcher(
                 s.GetRequiredService<IAmazonSQS>(),
                 new SqsDispatcherConfiguration
                 {
-                    QueueName = config.GetValue("InboundQueue:Name", "") ?? "",
-                    WaitTimeSeconds = config.GetValue("InboundQueue:WaitTimeSeconds", 20),
-                    MaxNumberOfMessages = config.GetValue("InboundQueue:MaxNumberOfMessages", 10)
+                    QueueName = awsConfig?.Queues?.InboundQueue?.Name ?? "",
+                    WaitTimeSeconds = awsConfig?.Queues?.InboundQueue?.WaitTimeSeconds ?? 20,
+                    MaxNumberOfMessages = awsConfig?.Queues?.InboundQueue?.MaxNumberOfMessages ?? 10
                 },
                 EventDeserializer.Deserializer);
             dispatcher.Subscribe<OrganisationRegistered>(message =>
                 s.GetRequiredService<IEventHandler<OrganisationRegistered>>().Handle(message));
             return dispatcher;
         });
-        services.AddScoped<MessageRouter>(s => new SingleQueueMessageRouter(
-            s.GetRequiredService<IAmazonSQS>(),
-            config.GetValue("OutboundQueue:Name", "") ?? "").QueueUrl);
+        services.AddScoped<MessageRouter>(s =>
+        {
+            var awsConfig = config.GetSection("Aws").Get<AwsConfiguration>();
+            return new SingleQueueMessageRouter(
+                s.GetRequiredService<IAmazonSQS>(),
+                awsConfig?.Queues?.OutboundQueue?.Name ?? "").QueueUrl;
+        });
         services.AddScoped<IPublisher, SqsPublisher>(s => new SqsPublisher(
             s.GetRequiredService<IAmazonSQS>(),
             s.GetRequiredService<MessageRouter>()
