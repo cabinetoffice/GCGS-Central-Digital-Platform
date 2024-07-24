@@ -1,4 +1,3 @@
-using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Pages.Supplier;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
@@ -7,17 +6,17 @@ using Moq;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages.Supplier.ConnectedEntity;
 
-public class ConnectedEntitySelectTypeTest
+public class ConnectedEntityIndividualCategoryTest
 {
-    private readonly ConnectedEntityPersonTypeModel _model;
+    private readonly ConnectedEntityIndividualCategoryModel _model;
     private readonly Mock<ISession> _sessionMock;
     private readonly Guid _organisationId = Guid.NewGuid();
     private readonly Guid _entityId = Guid.NewGuid();
 
-    public ConnectedEntitySelectTypeTest()
+    public ConnectedEntityIndividualCategoryTest()
     {
         _sessionMock = new Mock<ISession>();
-        _model = new ConnectedEntityPersonTypeModel(_sessionMock.Object);
+        _model = new ConnectedEntityIndividualCategoryModel(_sessionMock.Object);
         _model.Id = Guid.NewGuid();
     }
 
@@ -34,7 +33,7 @@ public class ConnectedEntitySelectTypeTest
     }
 
     [Fact]
-    public void OnGet_ShouldRedirectToConnectedEntityQuestion_WhenSessionStateIsNull()
+    public void OnGet_ShouldRedirectToConnectedEntitySupplierCompanyQuestion_WhenSessionStateIsNull()
     {
         _sessionMock
             .Setup(s => s.Get<ConnectedEntityState>(Session.ConnectedPersonKey))
@@ -47,7 +46,7 @@ public class ConnectedEntitySelectTypeTest
     }
 
     [Fact]
-    public void OnPost_ShouldRedirectToConnectedEntitySupplierCompanyQuestion_WhenModelStateIsInvalid()
+    public void OnPost_ShouldReturnPage_WhenModelStateIsInvalid()
     {
         _sessionMock
            .Setup(s => s.Get<ConnectedEntityState>(Session.ConnectedPersonKey))
@@ -57,19 +56,17 @@ public class ConnectedEntitySelectTypeTest
 
         var result = _model.OnPost();
 
-        result.Should().BeOfType<RedirectToPageResult>()
-            .Which.PageName.Should().Be("ConnectedEntitySupplierCompanyQuestion");
+        result.Should().BeOfType<PageResult>();
     }
 
 
-    [Theory]
-    [InlineData(Constants.ConnectedEntityType.Organisation, "ConnectedEntityOrganisationCategory")]
-    [InlineData(Constants.ConnectedEntityType.Individual, "ConnectedEntityIndividualCategory")]
-    [InlineData(Constants.ConnectedEntityType.TrustOrTrustee, "ConnectedEntityIndividualCategory")]
-    public void OnPost_ShouldRedirectToConnectedEntityCategoryPage(Constants.ConnectedEntityType connectedEntityType, string expectedRedirectPage)
+    [Theory]    
+    [InlineData(Constants.ConnectedEntityType.Individual, "ConnectedEntityPscDetails")]
+    public void OnPost_ShouldRedirectToConnectedEntityPscDetailsPage(Constants.ConnectedEntityType connectedEntityType, string expectedRedirectPage)
     {
         var state = DummyConnectedPersonDetails();
-        _model.ConnectedEntityType = connectedEntityType;
+        state.ConnectedEntityType = connectedEntityType;
+        _model.ConnectedEntityCategory = Constants.ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndividual;
 
         _sessionMock.Setup(s => s.Get<ConnectedEntityState>(Session.ConnectedPersonKey)).
             Returns(state);
@@ -87,16 +84,14 @@ public class ConnectedEntitySelectTypeTest
     {
         var state = DummyConnectedPersonDetails();
 
-        _model.ConnectedEntityType = Constants.ConnectedEntityType.Organisation;
+        state.ConnectedEntityType = Constants.ConnectedEntityType.Organisation;
 
         _sessionMock
             .Setup(s => s.Get<ConnectedEntityState>(Session.ConnectedPersonKey))
             .Returns(state);
 
-        // Act
         _model.OnPost();
 
-        // Assert
         _sessionMock.Verify(s => s.Set(Session.ConnectedPersonKey, It.Is<ConnectedEntityState>(st => st.ConnectedEntityType == Constants.ConnectedEntityType.Organisation)), Times.Once);
     }
 
@@ -107,43 +102,10 @@ public class ConnectedEntitySelectTypeTest
             ConnectedEntityId = _entityId,
             SupplierHasCompanyHouseNumber = true,
             SupplierOrganisationId = _organisationId,
-            ConnectedEntityType = Constants.ConnectedEntityType.Organisation,
+            ConnectedEntityType = Constants.ConnectedEntityType.Individual,
+            ConnectedEntityIndividualAndTrustCategoryType = Constants.ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndividual,
         };
 
         return connectedPersonDetails;
     }
-
-    private static List<ConnectedEntityLookup> ConnectedEntities =>
-    [
-         new(Guid.NewGuid(), "e1",It.IsAny<Uri>()),
-         new(Guid.NewGuid(), "e2",It.IsAny<Uri>()),
-    ];
-
-    private static SupplierInformation SupplierInformationClientModel => new(
-            organisationName: "FakeOrg",
-            supplierType: SupplierType.Organisation,
-            operationTypes: null,
-            completedRegAddress: true,
-            completedPostalAddress: false,
-            completedVat: false,
-            completedWebsiteAddress: false,
-            completedEmailAddress: true,
-            completedQualification: false,
-            completedTradeAssurance: false,
-            completedOperationType: false,
-            completedLegalForm: false,
-            completedConnectedPerson: false,
-            tradeAssurances: null,
-            legalForm: null,
-            qualifications: null);
-
-    private static Organisation.WebApiClient.Organisation OrganisationClientModel(Guid id) =>
-        new(
-            additionalIdentifiers: [new Identifier(id: "FakeId", legalName: "FakeOrg", scheme: "VAT", uri: null)],
-            addresses: null,
-            contactPoint: new ContactPoint(email: "test@test.com", faxNumber: null, name: null, telephone: null, url: new Uri("https://xyz.com")),
-            id: id,
-            identifier: null,
-            name: "Test Org",
-            roles: [PartyRole.Supplier]);
 }
