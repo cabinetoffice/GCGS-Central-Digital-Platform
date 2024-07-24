@@ -31,7 +31,7 @@ public class DatabaseConnectedEntityRepository(OrganisationInformationContext co
     {
         var now = DateTimeOffset.UtcNow;
         return await context.ConnectedEntities
-            .Where(t => t.SupplierOrganisation.Guid == organisationId && t.EndDate > now)
+            .Where(t => t.SupplierOrganisation.Guid == organisationId && (t.EndDate > now || t.EndDate == null))
             .Select(t => new ConnectedEntityLookup
             {
                 Name = t.EntityType == ConnectedEntity.ConnectedEntityType.Organisation

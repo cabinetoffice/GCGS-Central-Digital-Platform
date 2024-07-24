@@ -63,13 +63,15 @@ IOrganisationClient organisationClient) : PageModel
             if (ce == null)
                 return Redirect("/page-not-found");
 
-            var dateString = $"{EndYear}-{EndMonth!.PadLeft(2, '0')}-{EndDay!.PadLeft(2, '0')}";
-            if (!DateTime.TryParseExact(dateString, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var endDate))
+            var dateString = $"{EndYear}-{EndMonth!.PadLeft(2, '0')}-{EndDay!.PadLeft(2, '0')} 23:59:59+00";
+
+            if (!DateTime.TryParse(dateString, out var endDate))
             {
                 ModelState.AddModelError(nameof(EndDate), "Date of removal must be a real date");
                 return Page();
             }
 
+            endDate = endDate.ToUniversalTime();
             await organisationClient.DeleteConnectedEntityAsync(Id, ConnectedPersonId, new DeleteConnectedEntity(endDate));
         }
 
