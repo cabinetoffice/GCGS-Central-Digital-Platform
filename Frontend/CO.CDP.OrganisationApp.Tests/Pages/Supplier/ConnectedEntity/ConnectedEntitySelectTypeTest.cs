@@ -64,8 +64,8 @@ public class ConnectedEntitySelectTypeTest
 
     [Theory]
     [InlineData(Constants.ConnectedEntityType.Organisation, "ConnectedEntityOrganisationCategory")]
-    [InlineData(Constants.ConnectedEntityType.Individual, "")]
-    [InlineData(Constants.ConnectedEntityType.TrustOrTrustee, "")]
+    [InlineData(Constants.ConnectedEntityType.Individual, "ConnectedEntityIndividualCategory")]
+    [InlineData(Constants.ConnectedEntityType.TrustOrTrustee, "ConnectedEntityIndividualCategory")]
     public void OnPost_ShouldRedirectToConnectedEntityCategoryPage(Constants.ConnectedEntityType connectedEntityType, string expectedRedirectPage)
     {
         var state = DummyConnectedPersonDetails();
