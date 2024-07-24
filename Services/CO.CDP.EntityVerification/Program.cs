@@ -13,13 +13,12 @@ builder.Services.AddSwaggerGen(o => o.DocumentPponApi());
 
 builder.Services.AddHealthChecks();
 builder.Services.AddEntityVerificationProblemDetails();
-builder.Services
-    .AddAwsCofiguration(builder.Configuration)
-    .AddAwsSqsService();
-builder.Services.AddBackgroundServices(builder.Configuration);
-
 builder.Services.AddDbContext<EntityVerificationContext>(o =>
     o.UseNpgsql(builder.Configuration.GetConnectionString("EvDatabase")));
+builder.Services
+     .AddAwsCofiguration(builder.Configuration)
+     .AddAwsSqsService();
+builder.Services.AddBackgroundServices(builder.Configuration);
 
 var app = builder.Build();
 app.UseForwardedHeaders();

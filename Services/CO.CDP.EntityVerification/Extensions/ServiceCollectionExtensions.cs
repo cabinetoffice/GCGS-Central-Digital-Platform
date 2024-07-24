@@ -37,17 +37,13 @@ public static class ServiceCollectionExtensions
                 s.GetRequiredService<IEventHandler<OrganisationRegistered>>().Handle(message));
             return dispatcher;
         });
-        services.AddScoped<IPublisher, SqsPublisher>(s =>
-        {
-            var sqsClient = s.GetRequiredService<IAmazonSQS>();
-            var publisher = new SqsPublisher(
-                sqsClient,
-                new SingleQueueMessageRouter(sqsClient, config.GetValue("OutboundQueue:Name", "") ?? "").QueueUrl,
-                o => JsonSerializer.Serialize(o)
-            );
-
-            return publisher;
-        });
+        services.AddScoped<MessageRouter>(s => new SingleQueueMessageRouter(
+            s.GetRequiredService<IAmazonSQS>(),
+            config.GetValue("OutboundQueue:Name", "") ?? "").QueueUrl);
+        services.AddScoped<IPublisher, SqsPublisher>(s => new SqsPublisher(
+            s.GetRequiredService<IAmazonSQS>(),
+            s.GetRequiredService<MessageRouter>()
+        ));
         services.AddScoped<IPponService, PponService>();
         services.AddScoped<OrganisationRegisteredEventHandler>();
         services.AddScoped<IPponRepository, DatabasePponRepository>();

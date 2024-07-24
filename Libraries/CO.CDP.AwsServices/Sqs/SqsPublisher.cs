@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Amazon.SQS;
 using Amazon.SQS.Model;
 using CO.CDP.MQ;
@@ -18,8 +19,8 @@ public class SqsPublisher(
 {
     private const string TypeAttribute = "Type";
 
-    public SqsPublisher(IAmazonSQS sqsClient, MessageRouter messageRouter, Serializer serializer) : this(
-        sqsClient, messageRouter, serializer, type => type.Name)
+    public SqsPublisher(IAmazonSQS sqsClient, MessageRouter messageRouter) : this(
+        sqsClient, messageRouter, o => JsonSerializer.Serialize(o), type => type.Name)
     {
     }
 
