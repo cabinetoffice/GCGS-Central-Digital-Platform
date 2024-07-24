@@ -102,6 +102,6 @@ public class ConnectedEntityCompanyQuestionModel(ISession session) : PageModel
     {
         Caption = state.GetCaption();
         Heading = $"Is {state.OrganisationName} registered with Companies House?";
-        Hint = "Is the ‘connected person’ registered with Companies House as required by the Companies Act 2006.";        
+        Hint = "Is the ‘connected person’ registered with Companies House as required by the Companies Act 2006.";
     }
 }

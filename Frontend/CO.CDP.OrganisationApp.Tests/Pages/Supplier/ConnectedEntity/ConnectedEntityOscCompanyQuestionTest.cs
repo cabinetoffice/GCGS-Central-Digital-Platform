@@ -7,17 +7,17 @@ using Moq;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages.Supplier.ConnectedEntity;
 
-public class ConnectedEntityCompanyQuestionTest
+public class ConnectedEntityOscCompanyQuestionTest
 {
-    private readonly ConnectedEntityCompanyQuestionModel _model;
+    private readonly ConnectedEntityOscCompanyQuestionModel _model;
     private readonly Mock<ISession> _sessionMock;
     private readonly Guid _organisationId = Guid.NewGuid();
     private readonly Guid _entityId = Guid.NewGuid();
 
-    public ConnectedEntityCompanyQuestionTest()
+    public ConnectedEntityOscCompanyQuestionTest()
     {
         _sessionMock = new Mock<ISession>();
-        _model = new ConnectedEntityCompanyQuestionModel(_sessionMock.Object);
+        _model = new ConnectedEntityOscCompanyQuestionModel(_sessionMock.Object);
         _model.Id = _organisationId;
     }
 
@@ -30,8 +30,8 @@ public class ConnectedEntityCompanyQuestionTest
         _sessionMock
             .Setup(s => s.Get<ConnectedEntityState>(Session.ConnectedPersonKey))
             .Returns(state);
-        _model.HasCompaniesHouseNumber = hasNumber;
-        _model.CompaniesHouseNumber = "";
+        _model.HasOscCompaniesHouseNumber = hasNumber;
+        _model.OscCompaniesHouseNumber = "";
         _model.ModelState.AddModelError("Question", "Please select an option");
 
         var result = _model.OnPost();
@@ -74,7 +74,7 @@ public class ConnectedEntityCompanyQuestionTest
     public void OnGet_ShouldReturnPageResult()
     {
         var state = DummyConnectedPersonDetails();
-        state.CompaniesHouseNumber = "12345678";
+        state.OscCompaniesHouseNumber = "12345678";
 
         _sessionMock
             .Setup(s => s.Get<ConnectedEntityState>(Session.ConnectedPersonKey))
@@ -83,13 +83,12 @@ public class ConnectedEntityCompanyQuestionTest
         var result = _model.OnGet(null);
 
         result.Should().BeOfType<PageResult>();
-        _model.CompaniesHouseNumber.Should().Be("12345678");
+        _model.OscCompaniesHouseNumber.Should().Be("12345678");
     }
 
 
     [Theory]
-   [InlineData("ConnectedEntityControlCondition")]
-   // [InlineData("ConnectedEntitySupplierHasControl")]    
+    [InlineData("ConnectedEntityControlCondition")]
     public void OnPost_ShouldRedirectToExpectedPage(string expectedRedirectPage)
     {
         var state = DummyConnectedPersonDetails();
@@ -128,10 +127,10 @@ public class ConnectedEntityCompanyQuestionTest
             SupplierHasCompanyHouseNumber = true,
             SupplierOrganisationId = _organisationId,
             ConnectedEntityType = Constants.ConnectedEntityType.Organisation,
-            ConnectedEntityOrganisationCategoryType = Constants.ConnectedEntityOrganisationCategoryType.RegisteredCompany,
             OrganisationName = "Org_name",
-            HasCompaniesHouseNumber = true,
-            CompaniesHouseNumber = "12345678"
+            HasCompaniesHouseNumber = false,
+            HasOscCompaniesHouseNumber = true,
+            OscCompaniesHouseNumber = "12345678"
         };
 
         return connectedPersonDetails;
