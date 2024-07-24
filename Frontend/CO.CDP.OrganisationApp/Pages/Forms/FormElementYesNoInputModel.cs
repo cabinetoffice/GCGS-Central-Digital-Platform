@@ -24,7 +24,7 @@ public class FormElementYesNoInputModel : FormElementModel, IValidatableObject
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
-        if (FormQuestionType == Models.FormQuestionType.YesOrNo && IsRequired == true && string.IsNullOrWhiteSpace(YesNoInput))
+        if (CurrentFormQuestionType == FormQuestionType.YesOrNo && IsRequired == true && string.IsNullOrWhiteSpace(YesNoInput))
         {
             yield return new ValidationResult("Please select an option.", [nameof(YesNoInput)]);
         }

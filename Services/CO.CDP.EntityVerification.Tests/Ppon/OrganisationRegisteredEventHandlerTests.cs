@@ -62,7 +62,7 @@ public class OrganisationRegisteredEventHandlerTests
                     Uri = null
                 }
             ],
-            Roles = ["Supplier"]
+            Roles = ["supplier"]
         };
     }
 }

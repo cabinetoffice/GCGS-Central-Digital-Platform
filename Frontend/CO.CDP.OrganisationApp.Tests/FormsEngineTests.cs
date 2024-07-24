@@ -20,9 +20,10 @@ public class FormsEngineTests
     [Fact]
     public async Task LoadFormSectionAsync_ShouldReturnCachedResponse_WhenCachedResponseExists()
     {
+        var organisationId = Guid.NewGuid();
         var formId = Guid.NewGuid();
         var sectionId = Guid.NewGuid();
-        var sessionKey = $"SectionQuestionsResponse_{formId}_{sectionId}";
+        var sessionKey = $"Form_{organisationId}_{formId}_{sectionId}_Questions";
 
         var cachedResponse = new Models.SectionQuestionsResponse
         {
@@ -31,10 +32,10 @@ public class FormsEngineTests
         };
 
         _tempDataServiceMock
-            .Setup(t => t.Get<Models.SectionQuestionsResponse>(sessionKey))
+            .Setup(t => t.Peek<Models.SectionQuestionsResponse>(sessionKey))
             .Returns(cachedResponse);
 
-        var result = await _formsEngine.LoadFormSectionAsync(formId, sectionId);
+        var result = await _formsEngine.LoadFormSectionAsync(organisationId, formId, sectionId);
 
         result.Should().BeEquivalentTo(cachedResponse);
         _formsApiClientMock.Verify(c => c.GetFormSectionQuestionsAsync(It.IsAny<Guid>(), It.IsAny<Guid>()), Times.Never);
