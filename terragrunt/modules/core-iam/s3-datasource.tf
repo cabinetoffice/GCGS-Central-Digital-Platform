@@ -15,8 +15,8 @@ data "aws_iam_policy_document" "tfstate" {
     actions = ["s3:*"]
 
     resources = [
-      "arn:aws:s3:::tfstate-cdp-sirsi-${var.environment}-${data.aws_caller_identity.current.account_id}",
-      "arn:aws:s3:::tfstate-cdp-sirsi-${var.environment}-${data.aws_caller_identity.current.account_id}/*",
+      "arn:aws:s3:::tfstate-${local.name_prefix}-${var.environment}-${data.aws_caller_identity.current.account_id}",
+      "arn:aws:s3:::tfstate-${local.name_prefix}-${var.environment}-${data.aws_caller_identity.current.account_id}/*",
     ]
 
     condition {
@@ -43,8 +43,8 @@ data "aws_iam_policy_document" "tfstate" {
     actions = ["s3:*"]
 
     resources = [
-      "arn:aws:s3:::tfstate-cdp-sirsi-${var.environment}-${data.aws_caller_identity.current.account_id}",
-      "arn:aws:s3:::tfstate-cdp-sirsi-${var.environment}-${data.aws_caller_identity.current.account_id}/*",
+      "arn:aws:s3:::tfstate-${local.name_prefix}-${var.environment}-${data.aws_caller_identity.current.account_id}",
+      "arn:aws:s3:::tfstate-${local.name_prefix}-${var.environment}-${data.aws_caller_identity.current.account_id}/*",
     ]
   }
 }
