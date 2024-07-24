@@ -9,7 +9,7 @@ public class LowerCamelCaseEnumConverter<T> : JsonConverter<T> where T : struct,
     {
         var enumString = reader.GetString();
 
-        if (Enum.TryParse(enumString, out T value))
+        if (Enum.TryParse(enumString, true, out T value))
         {
             return value;
         }
