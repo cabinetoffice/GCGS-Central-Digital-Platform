@@ -57,7 +57,7 @@ public class ConnectedEntityPostalSameAsRegisteredAddressModel(ISession session)
         {
             return Page();
         }
-
+        state.PostalAddress = null;
         if (DifferentThanRegiseterdAddress == false)
         {
             state.PostalAddress = state.RegisteredAddress;
@@ -66,6 +66,7 @@ public class ConnectedEntityPostalSameAsRegisteredAddressModel(ISession session)
             var redirectLink = GetRedirectLinkPageName(state);
             return RedirectToPage(redirectLink, new { Id, ConnectedEntityId });
         }
+       
 
         return RedirectToPage("ConnectedEntityAddress",
             new { Id, ConnectedEntityId, AddressType = AddressType.Postal, UkOrNonUk = "uk" });
