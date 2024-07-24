@@ -22,7 +22,7 @@ resource "aws_cloudwatch_event_rule" "service_version_ssm_update" {
       "eventSource" : ["ssm.amazonaws.com"],
       "eventName" : ["PutParameter"],
       "requestParameters" : {
-        "name" : ["cdp-sirsi-service-version"]
+        "name" : ["${local.name_prefix}-service-version"]
       }
     }
   })
@@ -32,6 +32,6 @@ resource "aws_cloudwatch_event_rule" "service_version_ssm_update" {
 
 resource "aws_cloudwatch_event_target" "trigger_service_deployment" {
   rule     = aws_cloudwatch_event_rule.service_version_ssm_update.name
-  arn      = "arn:aws:codepipeline:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:cdp-sirsi-trigger-update-ecs-services"
+  arn      = "arn:aws:codepipeline:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:${local.name_prefix}-trigger-update-ecs-services"
   role_arn = var.role_cloudwatch_events_arn
 }

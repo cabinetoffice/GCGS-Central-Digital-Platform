@@ -82,33 +82,33 @@ public class ConnectedEntityAddressModel(ISession session) : PageModel
         }
         session.Set(Session.ConnectedPersonKey, state);
 
-        IActionResult? actionResult = null;
+        var redirectPage = GetRedirectLinkPageName(state);
+
+        return RedirectToPage(redirectPage, new { Id, ConnectedEntityId });        
+    }
+
+    private string GetRedirectLinkPageName(ConnectedEntityState state)
+    {
+        var redirectPage = "";
         switch (state.ConnectedEntityType)
         {
-            case ConnectedEntityType.Organisation:
+            case Constants.ConnectedEntityType.Organisation:
                 switch (state.ConnectedEntityOrganisationCategoryType)
                 {
                     case ConnectedEntityOrganisationCategoryType.ACompanyYourOrganisationHasTakenOver:
                     case ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl:
-                        actionResult = RedirectToPage("ConnectedEntityCompanyQuestion", new { Id, ConnectedEntityId });
+                        redirectPage = (AddressType == AddressType.Postal && state.PostalAddress != null) ?
+                            "ConnectedEntityCompanyQuestion" : "ConnectedEntityPostalSameAsRegisteredAddress";
                         break;
                 }
                 break;
-            case ConnectedEntityType.Individual:
-                //TODO 4: modify value of actionResult when working on Individual
+            case Constants.ConnectedEntityType.Individual:
                 break;
-            case ConnectedEntityType.TrustOrTrustee:
-                //TODO 4: modify value of actionResult when working on Trust
+            case Constants.ConnectedEntityType.TrustOrTrustee:
                 break;
         }
 
-        if (actionResult != null)
-            return actionResult;
-
-        if (AddressType == AddressType.Postal)
-            return RedirectToPage("ConnectedEntityLawRegister", new { Id, ConnectedEntityId }); //TODO 5: Figure out page
-
-        return RedirectToPage("ConnectedEntityPostalSameAsRegisteredAddress", new { Id, ConnectedEntityId });
+        return redirectPage;
     }
 
     private (bool valid, ConnectedEntityState state) ValidatePage()

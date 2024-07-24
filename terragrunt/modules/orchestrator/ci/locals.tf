@@ -8,6 +8,6 @@ locals {
   update_ecs_service_cb_name         = "update-ecs-services"
 
   pipelines_update_ecs_services = [
-    for name, id in var.account_ids : "arn:aws:iam::${id}:role/cdp-sirsi-${name}-terraform"
+    for name, id in var.account_ids : "arn:aws:iam::${id}:role/${local.name_prefix}-${name}-terraform"
   ]
 }
