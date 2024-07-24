@@ -11,7 +11,7 @@ public interface IFormElementModel
 
     bool IsRequired { get; set; }
 
-    FormQuestionType? FormQuestionType { get; set; }
+    FormQuestionType? CurrentFormQuestionType { get; set; }
 
     FormAnswer? GetAnswer();
 
@@ -25,7 +25,7 @@ public abstract class FormElementModel : IFormElementModel
     public string? Description { get; set; }
 
     [BindProperty]
-    public FormQuestionType? FormQuestionType { get; set; }
+    public FormQuestionType? CurrentFormQuestionType { get; set; }
 
     [BindProperty]
     public bool IsRequired { get; set; }

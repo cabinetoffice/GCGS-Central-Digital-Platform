@@ -87,33 +87,44 @@ public class GetFormSectionQuestionsUseCaseTest(AutoMapperFixture mapperFixture)
         var result = await UseCase.Execute((formId, sectionId));
 
         result?.Questions.Should().HaveCount(2);
-        result?.Should().BeEquivalentTo(new SectionQuestionsResponse
+
+        result?.Section.Should().BeEquivalentTo(new FormSection
         {
-            Section = new FormSection
+            Id = sectionId,
+            Title = "Financial Information",
+            AllowsMultipleAnswerSets = true
+        });
+
+        result?.Questions.Should().BeEquivalentTo(new List<FormQuestion>
+        {
+            new FormQuestion
             {
-                Id = sectionId,
-                Title = "Financial Information",
-                AllowsMultipleAnswerSets = true
+                Id = questions[0].Guid,
+                Title = questions[0].Title,
+                Description = questions[0].Description,
+                Type = FormQuestionType.NoInput,
+                IsRequired = questions[0].IsRequired,
+                Options = new FormQuestionOptions(),
+                Section = new FormSection
+                {
+                    Id = section.Guid,
+                    Title = section.Title,
+                    AllowsMultipleAnswerSets = section.AllowsMultipleAnswerSets
+                }
             },
-            Questions = new List<FormQuestion>
+            new FormQuestion
             {
-                new FormQuestion
+                Id = questions[1].Guid,
+                Title = questions[1].Title,
+                Description = questions[1].Description,
+                Type = FormQuestionType.YesOrNo,
+                IsRequired = questions[1].IsRequired,
+                Options = new FormQuestionOptions(),
+                Section = new FormSection
                 {
-                    Id = questions[0].Guid,
-                    Title = questions[0].Title,
-                    Description = questions[0].Description,
-                    Type = FormQuestionType.NoInput,
-                    IsRequired = questions[0].IsRequired,
-                    Options = new FormQuestionOptions()
-                },
-                new FormQuestion
-                {
-                    Id = questions[1].Guid,
-                    Title = questions[1].Title,
-                    Description = questions[1].Description,
-                    Type = FormQuestionType.YesOrNo,
-                    IsRequired = questions[1].IsRequired,
-                    Options = new FormQuestionOptions()
+                    Id = section.Guid,
+                    Title = section.Title,
+                    AllowsMultipleAnswerSets = section.AllowsMultipleAnswerSets
                 }
             }
         });

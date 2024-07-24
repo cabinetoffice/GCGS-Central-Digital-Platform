@@ -30,7 +30,6 @@ services:
       CDP_FORMS_HOST: 'http://forms:8080'
       CDP_DATA_SHARING_HOST: 'http://data-sharing:8080'
       CDP_ENTITY_VERIFICATION_HOST: 'http://entity-verification:8080'
-
   db:
     container_name: co-cdp-db
     image: postgres:16.3

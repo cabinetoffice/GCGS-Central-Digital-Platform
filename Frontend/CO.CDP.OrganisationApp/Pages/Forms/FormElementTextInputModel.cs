@@ -24,7 +24,7 @@ public class FormElementTextInputModel : FormElementModel, IValidatableObject
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
-        if (FormQuestionType == Models.FormQuestionType.Text && IsRequired == true && string.IsNullOrWhiteSpace(TextInput))
+        if (CurrentFormQuestionType == FormQuestionType.Text && IsRequired == true && string.IsNullOrWhiteSpace(TextInput))
         {
             yield return new ValidationResult("Please provide a value.", [nameof(TextInput)]);
         }

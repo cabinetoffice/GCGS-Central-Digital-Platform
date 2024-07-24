@@ -105,6 +105,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.MQ.Tests", "Librarie
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.MQ", "Libraries\CO.CDP.MQ\CO.CDP.MQ.csproj", "{EC663061-6ABE-4831-BE93-E2651D929795}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.OrganisationInformation.Tests", "Services\CO.CDP.OrganisationInformation.Tests\CO.CDP.OrganisationInformation.Tests.csproj", "{CD239B09-0DB7-4C62-A840-95FEE50E06B9}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.EntityFrameworkCore", "Libraries\CO.CDP.EntityFrameworkCore\CO.CDP.EntityFrameworkCore.csproj", "{0D3BF90A-AB95-4C86-8344-C6953E5D3A0A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.EntityFrameworkCore.Tests", "Libraries\CO.CDP.EntityFrameworkCore.Tests\CO.CDP.EntityFrameworkCore.Tests.csproj", "{0374C116-084D-4797-B9B0-0C74F1A3CBDB}"
@@ -299,6 +301,10 @@ Global
 		{0D3BF90A-AB95-4C86-8344-C6953E5D3A0A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0D3BF90A-AB95-4C86-8344-C6953E5D3A0A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0D3BF90A-AB95-4C86-8344-C6953E5D3A0A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CD239B09-0DB7-4C62-A840-95FEE50E06B9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CD239B09-0DB7-4C62-A840-95FEE50E06B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CD239B09-0DB7-4C62-A840-95FEE50E06B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CD239B09-0DB7-4C62-A840-95FEE50E06B9}.Release|Any CPU.Build.0 = Release|Any CPU
 		{0374C116-084D-4797-B9B0-0C74F1A3CBDB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{0374C116-084D-4797-B9B0-0C74F1A3CBDB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0374C116-084D-4797-B9B0-0C74F1A3CBDB}.Release|Any CPU.ActiveCfg = Release|Any CPU
