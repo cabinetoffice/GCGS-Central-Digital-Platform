@@ -1,7 +1,8 @@
 using Amazon.SQS;
 using Amazon.SQS.Model;
+using CO.CDP.MQ;
 
-namespace CO.CDP.MQ.Sqs;
+namespace CO.CDP.AwsServices.Sqs;
 
 public delegate object Deserializer(string type, string body);
 
