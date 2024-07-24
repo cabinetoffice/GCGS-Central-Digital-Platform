@@ -50,7 +50,7 @@ services:
     container_name: co-cdp-localstack
     image: localstack/localstack:3.5
     healthcheck:
-      test: ["CMD-SHELL", "awslocal sqs list-queues --region \"$${REGION}\" | grep -E \"ev-inbound|ev-outbound\" || exit 1"]
+      test: ["CMD", "/etc/localstack/healthcheck.sh"]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -62,6 +62,7 @@ services:
       QUEUES: ev-inbound,ev-outbound
     volumes:
       - './docker/localstack/ready.d:/etc/localstack/init/ready.d:ro'
+      - './docker/localstack/healthcheck.sh:/etc/localstack/healthcheck.sh:ro'
 
   organisation-information-migrations:
     container_name: co-cdp-organisation-information-migrations
