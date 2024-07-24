@@ -12,11 +12,11 @@ provider "aws" {
   alias  = "orchestrator_assume_role"
   region = "eu-west-2"
   assume_role {
-    role_arn = "arn:aws:iam::${local.orchestrator_account_id}:role/cdp-sirsi-orchestrator-read-service-version"
+    role_arn = "arn:aws:iam::${local.orchestrator_account_id}:role/${local.name_prefix}-orchestrator-read-service-version"
   }
 }
 
 data "aws_ssm_parameter" "orchestrator_service_version" {
   provider = aws.orchestrator_assume_role
-  name     = "/cdp-sirsi-service-version"
+  name     = "/${local.name_prefix}-service-version"
 }
