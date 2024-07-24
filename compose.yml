@@ -58,7 +58,6 @@ services:
       # LocalStack configuration: https://docs.localstack.cloud/references/configuration/
       SERVICES: sqs,s3
       DEBUG: 0
-      REGION: eu-west-1
       QUEUES: ev-inbound,ev-outbound
       S3_BUCKETS: cdp-staging-bucket.s3,cdp-permanent-bucket.s3
     volumes:
@@ -256,4 +255,4 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: Production
       ConnectionStrings__EvDatabase: 'Server=db;Database=cdp;Username=cdp_user;Password=cdp123;'
-      Sqs__ServiceURL: "http://localstack:4566"
+      Aws__ServiceURL: "http://localstack:4566"

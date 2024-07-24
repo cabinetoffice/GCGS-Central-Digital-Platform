@@ -23,7 +23,7 @@ public class SqsDispatcher(
     : IDispatcher
 {
     public SqsDispatcher(
-        AmazonSQSClient sqsClient, SqsDispatcherConfiguration configuration, Deserializer deserializer)
+        IAmazonSQS sqsClient, SqsDispatcherConfiguration configuration, Deserializer deserializer)
         : this(sqsClient, configuration, deserializer, (type, typeName) => type.Name == typeName)
     {
     }
