@@ -1,5 +1,4 @@
 using CO.CDP.EntityFrameworkCore.Timestamps;
-using Microsoft.EntityFrameworkCore;
 
 namespace CO.CDP.EntityVerification.Persistence;
 
