@@ -53,7 +53,8 @@ public class ConnectedEntityControlConditionModel(ISession session) : PageModel
 
         session.Set(Session.ConnectedPersonKey, state);
 
-        return RedirectToPage("ConnectedEntityCompanyRegistrationDate", new { Id });
+        var redirectPage = GetRedirectLinkPageName(state);
+        return RedirectToPage(redirectPage, new { Id, ConnectedEntityId });
     }
 
     private (bool valid, ConnectedEntityState state) ValidatePage()
@@ -77,5 +78,39 @@ public class ConnectedEntityControlConditionModel(ISession session) : PageModel
         {
             ControlConditions = state.ControlConditions;            
         }
+    }
+
+    private string GetRedirectLinkPageName(ConnectedEntityState state)
+    {
+        var redirectPage = "";
+        switch (state.ConnectedEntityType)
+        {
+            case Constants.ConnectedEntityType.Organisation:
+                switch (state.ConnectedEntityOrganisationCategoryType)
+                {
+                    case ConnectedEntityOrganisationCategoryType.RegisteredCompany:
+                        redirectPage = "ConnectedEntityCompanyRegistrationDate";
+                        break;
+                    case ConnectedEntityOrganisationCategoryType.DirectorOrTheSameResponsibilities:
+                        redirectPage = "";
+                        break;
+                    case ConnectedEntityOrganisationCategoryType.ParentOrSubsidiaryCompany:
+                        redirectPage = "";
+                        break;
+                    case ConnectedEntityOrganisationCategoryType.ACompanyYourOrganisationHasTakenOver:
+                        redirectPage = "";
+                        break;
+                    case ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl:
+                        redirectPage = "ConnectedEntityCompanyRegistrationDate";
+                        break;
+                }
+                break;
+            case Constants.ConnectedEntityType.Individual:
+                break;
+            case Constants.ConnectedEntityType.TrustOrTrustee:
+                break;
+        }
+
+        return redirectPage;
     }
 }
