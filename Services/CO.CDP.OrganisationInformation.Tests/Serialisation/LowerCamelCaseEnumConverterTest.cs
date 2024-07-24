@@ -11,7 +11,7 @@ public class LowerCamelCaseEnumConverterTest
     private readonly List<PartyRole> _multiplePartyRolesList = [PartyRole.Supplier, PartyRole.ProcuringEntity];
 
     [Fact]
-    public void Read_ShouldReadSinglePartyRoleEnum_WhenProvidedSerialisedLowerCamelCasedPartyRoles()
+    public void Serialize_ShouldReadSinglePartyRoleEnum_WhenProvidedSerialisedLowerCamelCasedPartyRoles()
     {
         var jsonString = JsonSerializer.Serialize(_singlePartyRoleList);
 
@@ -19,7 +19,7 @@ public class LowerCamelCaseEnumConverterTest
     }
 
     [Fact]
-    public void Write_ShouldSerialiseSinglePartyRole_WhenProvidedPartyRolesEnum()
+    public void Deserialize_ShouldSerialiseSinglePartyRole_WhenProvidedPartyRolesEnum()
     {
         var partyRole = JsonSerializer.Deserialize<List<PartyRole>>(_serialisedSinglePartyRoleString);
 
@@ -27,15 +27,15 @@ public class LowerCamelCaseEnumConverterTest
     }
 
     [Fact]
-    public void Read_ShouldReadMultiplePartyRolesEnum_WhenProvidedSerialisedLowerCamelCasedPartyRoles()
+    public void Serialize_ShouldReadMultiplePartyRolesEnum_WhenProvidedSerialisedLowerCamelCasedPartyRoles()
     {
-        var jsonString = JsonSerializer.Serialize(new List<PartyRole> { PartyRole.Supplier, PartyRole.ProcuringEntity });
+        var jsonString = JsonSerializer.Serialize(_multiplePartyRolesList);
 
         Assert.Equal(_serialisedMultiplePartyRolesString, jsonString);
     }
 
     [Fact]
-    public void Write_ShouldSerialiseMultiplePartyRoles_WhenProvidedPartyRolesEnum()
+    public void Deserialize_ShouldSerialiseMultiplePartyRoles_WhenProvidedPartyRolesEnum()
     {
         var partyRoles = JsonSerializer.Deserialize<List<PartyRole>>(_serialisedMultiplePartyRolesString);
 
