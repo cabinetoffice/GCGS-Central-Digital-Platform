@@ -56,6 +56,6 @@ public class EventDeserializerTest
                     Uri = null
                 }
             ],
-            Roles = ["Supplier"]
+            Roles = ["supplier"]
         };
 }

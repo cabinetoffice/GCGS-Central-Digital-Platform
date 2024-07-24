@@ -48,6 +48,7 @@ COPY --link TestKit/CO.CDP.Testcontainers.PostgreSql.Tests/CO.CDP.Testcontainers
 COPY --link Services/CO.CDP.OrganisationInformation/CO.CDP.OrganisationInformation.csproj Services/CO.CDP.OrganisationInformation/
 COPY --link Services/CO.CDP.OrganisationInformation.Persistence/CO.CDP.OrganisationInformation.Persistence.csproj Services/CO.CDP.OrganisationInformation.Persistence/
 COPY --link Services/CO.CDP.OrganisationInformation.Persistence.Tests/CO.CDP.OrganisationInformation.Persistence.Tests.csproj Services/CO.CDP.OrganisationInformation.Persistence.Tests/
+COPY --link Services/CO.CDP.OrganisationInformation.Tests/CO.CDP.OrganisationInformation.Tests.csproj Services/CO.CDP.OrganisationInformation.Tests/
 COPY --link Services/CO.CDP.Tenant.WebApi/CO.CDP.Tenant.WebApi.csproj Services/CO.CDP.Tenant.WebApi/
 COPY --link Services/CO.CDP.Tenant.WebApi.Tests/CO.CDP.Tenant.WebApi.Tests.csproj Services/CO.CDP.Tenant.WebApi.Tests/
 COPY --link Services/CO.CDP.DataSharing.WebApi/CO.CDP.DataSharing.WebApi.csproj Services/CO.CDP.DataSharing.WebApi/
