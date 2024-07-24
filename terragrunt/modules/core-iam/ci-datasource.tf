@@ -30,7 +30,7 @@ data "aws_iam_policy_document" "ci_build_generic" {
 
   statement {
     actions   = ["sts:AssumeRole"]
-    resources = ["arn:aws:iam::${local.orchestrator_account_id}:role/cdp-sirsi-orchestrator-read-service-version"]
+    resources = ["arn:aws:iam::${local.orchestrator_account_id}:role/${local.name_prefix}-orchestrator-read-service-version"]
   }
 
   statement {
@@ -135,8 +135,8 @@ data "aws_iam_policy_document" "ci_build_generic" {
     ]
     effect = "Allow"
     resources = [
-      "arn:aws:s3:::cdp-sirsi-*",
-      "arn:aws:s3:::cdp-sirsi-*/*"
+      "arn:aws:s3:::${local.name_prefix}-*",
+      "arn:aws:s3:::${local.name_prefix}-*/*"
     ]
     sid = "ManageProductS3Buckets"
   }

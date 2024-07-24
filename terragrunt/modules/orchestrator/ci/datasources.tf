@@ -22,7 +22,7 @@ data "aws_iam_policy_document" "orchestrator_codebuild" {
       "sts:AssumeRole"
     ]
     effect    = "Allow"
-    resources = [for name, id in var.account_ids : "arn:aws:iam::${id}:role/cdp-sirsi-${name}-terraform"]
+    resources = [for name, id in var.account_ids : "arn:aws:iam::${id}:role/${local.name_prefix}-${name}-terraform"]
   }
 }
 
@@ -33,7 +33,7 @@ data "aws_iam_policy_document" "cloudwatch_events_policy" {
     actions = ["codepipeline:StartPipelineExecution"]
 
     resources = [
-      "arn:aws:codepipeline:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:cdp-sirsi-trigger-update-ecs-services"
+      "arn:aws:codepipeline:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:${local.name_prefix}-trigger-update-ecs-services"
     ]
   }
 }
