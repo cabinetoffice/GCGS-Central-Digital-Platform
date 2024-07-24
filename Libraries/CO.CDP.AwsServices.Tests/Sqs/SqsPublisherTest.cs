@@ -2,10 +2,12 @@ using System.Text.Json;
 using Amazon.Runtime;
 using Amazon.SQS;
 using Amazon.SQS.Model;
-using CO.CDP.MQ.Sqs;
+using CO.CDP.AwsServices.Sqs;
+using CO.CDP.MQ;
+using CO.CDP.MQ.Tests;
 using FluentAssertions;
 
-namespace CO.CDP.MQ.Tests.Sqs;
+namespace CO.CDP.AwsServices.Tests.Sqs;
 
 public class SqsPublisherTest : PublisherContractTest, IClassFixture<LocalStackFixture>
 {
