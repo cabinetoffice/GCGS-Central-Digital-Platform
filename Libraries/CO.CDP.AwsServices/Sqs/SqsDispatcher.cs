@@ -29,13 +29,11 @@ public class SqsDispatcher(
     }
 
     private const string TypeAttribute = "Type";
-    private readonly Dictionary<Type, List<Func<object, Task>>> _subscribers = [];
+    private readonly SqsSubscribers _subscribers = new();
 
     public void Subscribe<TM>(Func<TM, Task> subscriber) where TM : class
     {
-        var subscribers = _subscribers.GetValueOrDefault(typeof(TM), []);
-        subscribers.Add(o => subscriber((TM)o));
-        _subscribers[typeof(TM)] = subscribers;
+        _subscribers.Subscribe(subscriber);
     }
 
     public Task ExecuteAsync(CancellationToken cancellationToken = default)
@@ -75,15 +73,13 @@ public class SqsDispatcher(
     private async Task HandleMessage(Message message)
     {
         var type = message.MessageAttributes.GetValueOrDefault(TypeAttribute)?.StringValue ?? "";
-        foreach (var subscribers in _subscribers)
+        var subscribers = _subscribers.AllMatching((t) => typeMatcher(t, type)).ToList();
+        if (subscribers.Any())
         {
-            if (typeMatcher(subscribers.Key, type))
+            var deserialized = deserializer(type, message.Body);
+            foreach (var subscriber in subscribers)
             {
-                var deserialized = deserializer(type, message.Body);
-                foreach (var subscriber in subscribers.Value)
-                {
-                    await subscriber(deserialized);
-                }
+                await subscriber(deserialized);
             }
         }
     }

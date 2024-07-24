@@ -60,7 +60,8 @@ public class SqsDispatcherTest : DispatcherContractTest, IClassFixture<LocalStac
                 }
 
                 throw new Exception($"Could not deserialize type `{type}` from body `{body}`.");
-            });
+            },
+            (type, typeName) => type.Name == typeName);
     }
 
     private AmazonSQSClient SqsClient()
