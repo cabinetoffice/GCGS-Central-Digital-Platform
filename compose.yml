@@ -57,7 +57,7 @@ services:
       # LocalStack configuration: https://docs.localstack.cloud/references/configuration/
       SERVICES: sqs,s3
       DEBUG: 0
-      QUEUES: ev-inbound,ev-outbound
+      SQS_QUEUES: ev-inbound,ev-outbound
       S3_BUCKETS: cdp-staging-bucket.s3,cdp-permanent-bucket.s3
     volumes:
       - './docker/localstack/ready.d:/etc/localstack/init/ready.d:ro'
