@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using CO.CDP.OrganisationInformation.Persistence.Forms;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,6 +9,7 @@ public class DatabaseFormRepository(OrganisationInformationContext context) : IF
     {
         context.Dispose();
     }
+
     public async Task<FormSection?> GetSectionAsync(Guid formId, Guid sectionId)
     {
         return await context.Set<FormSection>()

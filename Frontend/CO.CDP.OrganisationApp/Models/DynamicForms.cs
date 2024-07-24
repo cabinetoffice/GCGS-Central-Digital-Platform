@@ -16,8 +16,8 @@ public class FormSection
 public class FormQuestion
 {
     public Guid Id { get; set; }
-    public FormQuestion? NextQuestion { get; set; }
-    public FormQuestion? NextQuestionAlternative { get; set; }
+    public Guid? NextQuestion { get; set; }
+    public Guid? NextQuestionAlternative { get; set; }
     public FormQuestionType Type { get; set; }
     public bool IsRequired { get; set; }
     public string? Title { get; set; }

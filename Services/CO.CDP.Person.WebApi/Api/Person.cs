@@ -1,15 +1,11 @@
 using CO.CDP.Functional;
 using CO.CDP.Person.WebApi.Model;
 using CO.CDP.Person.WebApi.UseCase;
-using CO.CDP.OrganisationInformation;
 using CO.CDP.Swashbuckle.Filter;
 using CO.CDP.Swashbuckle.Security;
-using CO.CDP.Swashbuckle.SwaggerGen;
 using DotSwashbuckle.AspNetCore.SwaggerGen;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
-using System.Reflection;
-using Microsoft.OpenApi.Any;
 
 namespace CO.CDP.Person.WebApi.Api;
 

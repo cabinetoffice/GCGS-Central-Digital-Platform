@@ -1,6 +1,5 @@
 using AutoMapper;
 using CO.CDP.Organisation.WebApi.Model;
-using CO.CDP.OrganisationInformation;
 using CO.CDP.OrganisationInformation.Persistence;
 
 namespace CO.CDP.Organisation.WebApi.UseCase;

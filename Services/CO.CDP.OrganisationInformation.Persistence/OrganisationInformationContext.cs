@@ -198,7 +198,8 @@ public class OrganisationInformationContext(DbContextOptions<OrganisationInforma
         public static readonly JsonSerializerOptions SerializerOptions = new JsonSerializerOptions
         {
             PropertyNameCaseInsensitive = true,
-            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+            ReferenceHandler = ReferenceHandler.Preserve
         };
     }
 
