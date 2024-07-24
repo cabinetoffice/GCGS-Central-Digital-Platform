@@ -85,9 +85,44 @@ public class ConnectedEntityCompanyRegistrationDateModel(ISession session) : Pag
 
         session.Set(Session.ConnectedPersonKey, state);
 
-        return RedirectToPage("ConnectedEntityCompanyRegisterName", new { Id });
+        var redirectPage = GetRedirectLinkPageName(state);
+        return RedirectToPage(redirectPage, new { Id, ConnectedEntityId });
     }
-        private (bool valid, ConnectedEntityState state) ValidatePage()
+
+    private string GetRedirectLinkPageName(ConnectedEntityState state)
+    {
+        var redirectPage = "";
+        switch (state.ConnectedEntityType)
+        {
+            case Constants.ConnectedEntityType.Organisation:
+                switch (state.ConnectedEntityOrganisationCategoryType)
+                {
+                    case ConnectedEntityOrganisationCategoryType.RegisteredCompany:
+                        redirectPage = "ConnectedEntityCompanyRegisterName";
+                        break;
+                    case ConnectedEntityOrganisationCategoryType.DirectorOrTheSameResponsibilities:
+                        redirectPage = "";
+                        break;
+                    case ConnectedEntityOrganisationCategoryType.ParentOrSubsidiaryCompany:
+                        redirectPage = "";
+                        break;
+                    case ConnectedEntityOrganisationCategoryType.ACompanyYourOrganisationHasTakenOver:
+                        redirectPage = "";
+                        break;
+                    case ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl:
+                        redirectPage = "ConnectedEntityLawRegister";
+                        break;
+                }
+                break;
+            case Constants.ConnectedEntityType.Individual:
+                break;
+            case Constants.ConnectedEntityType.TrustOrTrustee:
+                break;
+        }
+
+        return redirectPage;
+    }
+    private (bool valid, ConnectedEntityState state) ValidatePage()
     {
         var cp = session.Get<ConnectedEntityState>(Session.ConnectedPersonKey);
         if (cp == null ||

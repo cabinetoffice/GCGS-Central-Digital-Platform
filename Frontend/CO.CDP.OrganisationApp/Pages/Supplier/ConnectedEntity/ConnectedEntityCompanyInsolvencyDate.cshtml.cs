@@ -85,7 +85,7 @@ public class ConnectedEntityCompanyInsolvencyDateModel(ISession session) : PageM
 
         session.Set(Session.ConnectedPersonKey, state);
 
-        return RedirectToPage("ConnectedPersonSummary", new { Id });
+        return RedirectToPage("ConnectedEntityCheckAnswers", new { Id });
     }
     private (bool valid, ConnectedEntityState state) ValidatePage()
     {

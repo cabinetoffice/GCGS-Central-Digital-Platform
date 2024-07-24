@@ -63,8 +63,8 @@ public class ConnectedEntityPostalSameAsRegisteredAddressModel(ISession session)
             state.PostalAddress = state.RegisteredAddress;
             session.Set(Session.ConnectedPersonKey, state);
 
-            //TODO 5: Next page link??;
-            return RedirectToPage("ConnectedEntityLawRegister", new { Id, ConnectedEntityId });
+            var redirectLink = GetRedirectLinkPageName(state);
+            return RedirectToPage(redirectLink, new { Id, ConnectedEntityId });
         }
 
         return RedirectToPage("ConnectedEntityAddress",
@@ -82,11 +82,42 @@ public class ConnectedEntityPostalSameAsRegisteredAddressModel(ISession session)
         }
         return (true, cp);
     }
-        
+
     private void InitModal(ConnectedEntityState state)
     {
         OrganisationName = state.OrganisationName;
         Caption = state.GetCaption();
         IsNonUkAddress = state.RegisteredAddress?.IsNonUk;
+    }
+
+    private string GetRedirectLinkPageName(ConnectedEntityState state)
+    {
+        var redirectPage = "";
+        switch (state.ConnectedEntityType)
+        {
+            case Constants.ConnectedEntityType.Organisation:
+                switch (state.ConnectedEntityOrganisationCategoryType)
+                {
+                    case ConnectedEntityOrganisationCategoryType.RegisteredCompany:
+                    case ConnectedEntityOrganisationCategoryType.DirectorOrTheSameResponsibilities:
+                        redirectPage = "ConnectedEntityLawRegister";
+                        break;
+                    case ConnectedEntityOrganisationCategoryType.ParentOrSubsidiaryCompany:
+                        redirectPage = "ConnectedEntityCompanyQuestion";
+                        break;
+                    case ConnectedEntityOrganisationCategoryType.ACompanyYourOrganisationHasTakenOver:
+                        break;
+                    case ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl:                        
+                        redirectPage = "ConnectedEntityCompanyQuestion";
+                        break;
+                }
+                break;
+            case Constants.ConnectedEntityType.Individual:
+                break;
+            case Constants.ConnectedEntityType.TrustOrTrustee:
+                break;
+        }
+
+        return redirectPage;
     }
 }

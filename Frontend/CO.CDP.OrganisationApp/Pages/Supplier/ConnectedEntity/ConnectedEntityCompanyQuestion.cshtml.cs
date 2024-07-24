@@ -49,7 +49,7 @@ public class ConnectedEntityCompanyQuestionModel(ISession session) : PageModel
         var state = session.Get<ConnectedEntityState>(Session.ConnectedPersonKey);
         if (state == null)
         {
-            return RedirectToPage("ConnectedEntityControlCondition", new { Id });
+            return RedirectToPage("ConnectedEntitySupplierHasControl", new { Id });
         }
 
         InitModal(state);
@@ -64,31 +64,40 @@ public class ConnectedEntityCompanyQuestionModel(ISession session) : PageModel
 
         session.Set(Session.ConnectedPersonKey, state);
 
-        IActionResult? actionResult = null;
+        var redirectPage = GetRedirectLinkPageName(state);
+        return RedirectToPage(redirectPage, new { Id, ConnectedEntityId });
+    }
+    private string GetRedirectLinkPageName(ConnectedEntityState state)
+    {
+        var redirectPage = "";
         switch (state.ConnectedEntityType)
         {
-            case ConnectedEntityType.Organisation:
+            case Constants.ConnectedEntityType.Organisation:
                 switch (state.ConnectedEntityOrganisationCategoryType)
                 {
+                    case ConnectedEntityOrganisationCategoryType.RegisteredCompany:
+                        redirectPage = "ConnectedEntityControlCondition";
+                        break;
+                    case ConnectedEntityOrganisationCategoryType.DirectorOrTheSameResponsibilities:
+                    case ConnectedEntityOrganisationCategoryType.ParentOrSubsidiaryCompany:
+                        redirectPage = "ConnectedEntityCheckAnswers";
+                        break;
+                    case ConnectedEntityOrganisationCategoryType.ACompanyYourOrganisationHasTakenOver:
+                        redirectPage = "ConnectedEntityCompanyInsolvencyDate";
+                        break;
                     case ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl:
-                        actionResult = RedirectToPage("ConnectedEntityOscCompanyQuestion", new { Id, ConnectedEntityId });
+                        redirectPage = "ConnectedEntityControlCondition";
                         break;
                 }
                 break;
-            case ConnectedEntityType.Individual:
-                //TODO 4: modify value of actionResult when working on Individual
+            case Constants.ConnectedEntityType.Individual:
                 break;
-            case ConnectedEntityType.TrustOrTrustee:
-                //TODO 4: modify value of actionResult when working on Trust
+            case Constants.ConnectedEntityType.TrustOrTrustee:
                 break;
         }
 
-        if (actionResult != null)
-            return actionResult;
-
-        return RedirectToPage("ConnectedEntityControlCondition", new { Id, ConnectedEntityId });
+        return redirectPage;
     }
-
     private void InitModal(ConnectedEntityState state)
     {
         Caption = state.GetCaption();

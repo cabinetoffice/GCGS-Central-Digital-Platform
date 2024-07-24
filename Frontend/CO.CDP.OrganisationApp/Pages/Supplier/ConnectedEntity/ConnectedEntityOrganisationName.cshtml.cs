@@ -21,6 +21,7 @@ public class ConnectedEntityOrganisationNameModel(ISession session) : PageModel
 
     [BindProperty]
     public ConnectedEntityType? ConnectedEntityType { get; set; }
+    public string? Caption { get; set; }
 
     public IActionResult OnGet()
     {
@@ -30,8 +31,9 @@ public class ConnectedEntityOrganisationNameModel(ISession session) : PageModel
             return RedirectToPage(ConnectedEntityId.HasValue ?
                 "ConnectedEntityCheckAnswers" : "ConnectedEntitySupplierCompanyQuestion", new { Id, ConnectedEntityId });
         }
-        ConnectedEntityType = state.ConnectedEntityType;
-        OrganisationName = state.OrganisationName;
+
+        InitModal(state, true);
+        
         return Page();
     }
 
@@ -44,14 +46,22 @@ public class ConnectedEntityOrganisationNameModel(ISession session) : PageModel
                 "ConnectedEntityCheckAnswers" : "ConnectedEntitySupplierCompanyQuestion", new { Id, ConnectedEntityId });
         }
 
-        ConnectedEntityType = state.ConnectedEntityType;
+        InitModal(state);
         if (!ModelState.IsValid) return Page();
 
         state.OrganisationName = OrganisationName;
         session.Set(Session.ConnectedPersonKey, state);
         return RedirectToPage("ConnectedEntityAddress", new { Id, ConnectedEntityId, AddressType = AddressType.Registered, UkOrNonUk = "uk" });
     }
-
+    private void InitModal(ConnectedEntityState state, bool reset = false)
+    {
+        Caption = state.GetCaption();
+        ConnectedEntityType = state.ConnectedEntityType;
+        if (reset)
+        {
+            OrganisationName = state.OrganisationName;
+        }
+    }
     private (bool valid, ConnectedEntityState state) ValidatePage()
     {
         var cp = session.Get<ConnectedEntityState>(Session.ConnectedPersonKey);
