@@ -1,5 +1,3 @@
-using System.Text.Json.Serialization;
-
 namespace CO.CDP.Forms.WebApi.Model;
 
 public record FormAnswer
