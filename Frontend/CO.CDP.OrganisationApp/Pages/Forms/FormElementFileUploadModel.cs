@@ -2,13 +2,14 @@ using CO.CDP.OrganisationApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.StaticFiles;
 using System.ComponentModel.DataAnnotations;
+using System.Text.RegularExpressions;
 
 namespace CO.CDP.OrganisationApp.Pages.Forms;
 
 public class FormElementFileUploadModel : FormElementModel, IValidatableObject
 {
     private const int AllowedMaxFileSizeMB = 10;
-    private readonly string[] AllowedExtensions = [".pdf", ".docx", ".csv", ".jpg", ".bmp", ".png", ".tif"];
+    private readonly string[] AllowedExtensions = [".jpg", ".jpeg", ".png", ".pdf", ".txt", ".xls", ".xlsx", ".csv", ".docx", ".doc"];
 
     [BindProperty]
     public IFormFile? UploadedFile { get; set; }
@@ -32,14 +33,12 @@ public class FormElementFileUploadModel : FormElementModel, IValidatableObject
     {
         if (UploadedFile != null)
         {
-            var filename = $"{DateTime.UtcNow:yyyyMMddHHmmss}_{Guid.NewGuid()}{Path.GetExtension(UploadedFile.FileName)}";
-
-            if (!new FileExtensionContentTypeProvider().TryGetContentType(UploadedFile.Name, out var contentType))
+            if (!new FileExtensionContentTypeProvider().TryGetContentType(UploadedFile.FileName, out var contentType))
             {
                 contentType = "application/octet-stream";
             }
 
-            return (UploadedFile, filename, contentType);
+            return (UploadedFile, SanitizeFilename(UploadedFile.FileName), contentType);
         }
 
         return null;
@@ -47,7 +46,7 @@ public class FormElementFileUploadModel : FormElementModel, IValidatableObject
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
-        if (FormQuestionType == Models.FormQuestionType.FileUpload && IsRequired == true && string.IsNullOrWhiteSpace(UploadedFileName))
+        if (CurrentFormQuestionType == FormQuestionType.FileUpload && IsRequired == true && string.IsNullOrWhiteSpace(UploadedFileName))
         {
             if (UploadedFile == null)
             {
@@ -67,5 +66,16 @@ public class FormElementFileUploadModel : FormElementModel, IValidatableObject
                 }
             }
         }
+    }
+
+    private static string SanitizeFilename(string filename)
+    {
+        var invalidRegStr = string.Format(@"([{0}]*\.+$)|([{0}]+)", Regex.Escape(new string([.. Path.GetInvalidFileNameChars(), ' ', '-'])));
+
+        var newname = Regex.Replace(Path.GetFileNameWithoutExtension(filename), invalidRegStr, "_");
+
+        newname = string.Join("_", newname.Split("_", StringSplitOptions.RemoveEmptyEntries));
+
+        return $"{newname}_{DateTime.UtcNow:yyyyMMddHHmmssfff}{Path.GetExtension(filename)}";
     }
 }
