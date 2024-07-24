@@ -86,8 +86,18 @@ public class ConnectedEntityCompanyQuestionModel(ISession session) : PageModel
                         redirectPage = "ConnectedEntityCompanyInsolvencyDate";
                         break;
                     case ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl:
-                        redirectPage = "ConnectedEntityControlCondition";
-                        break;
+                        {
+                            switch (state.HasCompaniesHouseNumber)
+                            {
+                                case true:
+                                    redirectPage = "ConnectedEntityControlCondition";
+                                    break;
+                                default:
+                                    redirectPage = "ConnectedEntityOscCompanyQuestion";
+                                    break;
+                            }
+                            break;
+                        }                        
                 }
                 break;
             case Constants.ConnectedEntityType.Individual:
