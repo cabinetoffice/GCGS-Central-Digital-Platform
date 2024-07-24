@@ -208,6 +208,11 @@ public record ConnectedEntityLookup
     public required Uri Uri { get; init; }
 }
 
+public record DeleteConnectedEntity
+{
+    public required DateTimeOffset EndDate { get; init; }
+}
+
 public record OrganisationQuery
 {
     public string? Name { get; }

@@ -1,0 +1,115 @@
+@page "/organisation/{id}/supplier-information/connected-person/{connectedPersonId}/remove"
+@model CO.CDP.OrganisationApp.Pages.Supplier.ConnectedEntity.ConnectedEntityRemoveConfirmationModel
+@{
+    var dayHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.EndDay)).HasInnerHtml;
+    var monthHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.EndMonth)).HasInnerHtml;
+    var yearHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.EndYear)).HasInnerHtml;
+    var endDateHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.EndDate)).HasInnerHtml;
+    var hasError = endDateHasError || dayHasError || monthHasError || yearHasError;
+}
+
+<a href="/organisation/@Model.Id/supplier-information/connected-person-summary" class="govuk-back-link">Back</a>
+
+<main class="govuk-main-wrapper">
+    <div class="govuk-grid-row">
+
+        <div class="govuk-grid-column-two-thirds">
+            <partial name="_ErrorSummary" model="@Model.ModelState" />
+            <form method="post">
+                <fieldset class="govuk-fieldset" data-required="" data-error="Select yes if you want to remove this connected person" aria-required="true">
+                    <div class="govuk-form-group @(hasError ? "govuk-form-group--error" : "")">
+
+                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                            <h2 class="govuk-fieldset__heading">
+                                Are you sure you want to remove this connected person?
+                            </h2>
+                        </legend>
+                        <div class="govuk-radios" data-module="govuk-radios">
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input" id="conditional-YES" name="ConfirmRemove" type="radio"
+                                       value="true" @(Model.ConfirmRemove == true ? "checked" : "") data-aria-controls="conditional-end-date">
+                                <label class="govuk-label govuk-radios__label" for="conditional-YES">Yes</label>
+                            </div>
+                            <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-end-date">
+                                <div class="govuk-form-group">
+                                    <label class="govuk-label" for="end-date">
+                                        When was the connected person no longer associated to your organisation?
+                                    </label>
+                                    <div id="end-date-hint" class="govuk-hint">
+                                        For example, 27 3 2007
+                                    </div>
+                                    @if (dayHasError)
+                                    {
+                                    <p id="day-error" class="govuk-error-message">
+                                        <span class="govuk-visually-hidden">Error:</span>
+                                        @Html.ValidationMessageFor(m => m.EndDay)
+                                    </p>
+                                    }
+                                    @if (monthHasError)
+                                    {
+                                    <p id="month-error" class="govuk-error-message">
+                                        <span class="govuk-visually-hidden">Error:</span>
+                                        @Html.ValidationMessageFor(m => m.EndMonth)
+                                    </p>
+                                    }
+                                    @if (yearHasError)
+                                    {
+                                    <p id="year-error" class="govuk-error-message">
+                                        <span class="govuk-visually-hidden">Error:</span>
+                                        @Html.ValidationMessageFor(m => m.EndYear)
+                                    </p>
+                                    }
+                                    @if (endDateHasError)
+                                    {
+                                    <p id="date-of-formation-error" class="govuk-error-message">
+                                        <span class="govuk-visually-hidden">Error:</span>
+                                        @Html.ValidationMessageFor(m => m.EndDate)
+                                    </p>
+                                    }
+                                    <div class="govuk-date-input" id="end-date">
+                                        <div class="govuk-date-input__item">
+                                            <div class="govuk-form-group">
+                                                <label class="govuk-label govuk-date-input__label" for="end-day">
+                                                    Day
+                                                </label>
+                                                <input class="govuk-input govuk-date-input__input govuk-input--width-2 @(dayHasError ? "govuk-input--error" : "")"  id="end-day" name="EndDay" type="text" inputmode="numeric" value="@Model.EndDay">
+                                            </div>
+                                        </div>
+                                        <div class="govuk-date-input__item">
+                                            <div class="govuk-form-group">
+                                                <label class="govuk-label govuk-date-input__label" for="end-month">
+                                                    Month
+                                                </label>
+                                                <input class="govuk-input govuk-date-input__input govuk-input--width-2 @(monthHasError ? "govuk-input--error" : "")" id="end-month" name="EndMonth" type="text" inputmode="numeric" value="@Model.EndMonth">
+                                            </div>
+                                        </div>
+                                        <div class="govuk-date-input__item">
+                                            <div class="govuk-form-group">
+                                                <label class="govuk-label govuk-date-input__label" for="end-year">
+                                                    Year
+                                                </label>
+                                                <input class="govuk-input govuk-date-input__input govuk-input--width-4 @(yearHasError ? "govuk-input--error" : "")" id="end-year" name="EndYear" type="text" inputmode="numeric" value="@Model.EndYear">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input" id="conditional-NO" name="ConfirmRemove" type="radio"
+                                       value="false" @(Model.ConfirmRemove == false ? "checked" : "")>
+                                <label class="govuk-label govuk-radios__label" for="conditional-NO">No</label>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <div class="govuk-button-group govuk-!-margin-top-6">
+                    <button class="govuk-button" data-module="govuk-button">
+                        Continue
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</main>
