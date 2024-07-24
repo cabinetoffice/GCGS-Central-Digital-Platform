@@ -2,7 +2,7 @@ using Amazon.SQS;
 
 namespace CO.CDP.AwsServices.Sqs;
 
-public class SingleQueueMessageRouter(AmazonSQSClient sqsClient, string queueName)
+public class SingleQueueMessageRouter(IAmazonSQS sqsClient, string queueName)
 {
     private string? _queueUrl;
 

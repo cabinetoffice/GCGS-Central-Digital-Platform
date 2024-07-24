@@ -16,7 +16,7 @@ public record SqsDispatcherConfiguration
 }
 
 public class SqsDispatcher(
-    AmazonSQSClient sqsClient,
+    IAmazonSQS sqsClient,
     SqsDispatcherConfiguration configuration,
     Deserializer deserializer,
     TypeMatcher typeMatcher)

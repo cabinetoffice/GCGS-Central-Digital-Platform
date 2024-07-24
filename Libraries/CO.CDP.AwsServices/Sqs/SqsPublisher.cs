@@ -11,7 +11,7 @@ public delegate string Serializer(object message);
 public delegate string TypeMapper(Type type);
 
 public class SqsPublisher(
-    AmazonSQSClient sqsClient,
+    IAmazonSQS sqsClient,
     MessageRouter messageRouter,
     Serializer serializer,
     TypeMapper typeMapper) : IPublisher
