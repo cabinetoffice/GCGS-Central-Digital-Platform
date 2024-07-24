@@ -29,12 +29,13 @@
 
             <div class="govuk-grid-row">
                 <div class="govuk-grid-column-two-thirds govuk-body">
-                    <h4>API Endpoints:</h4>
+                    <h4>API Endpoints: V${service_version}</h4>
                     <ul class="govuk-list govuk-list--bullet">
                     %{ for endpoint in endpoints }
                         <li><a href="${endpoint.url}">${endpoint.name}</a></li>
                     %{ endfor }
                     </ul>
+                    <h6>API Gateway Deployed at: ${api_gateway_deployment_time}</h6>
                 </div>
             </div>
         </main>

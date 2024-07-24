@@ -15,4 +15,17 @@ locals {
     }
   ]
 
+  orchestrator_account_id = var.account_ids["orchestrator"]
+
+  now            = timestamp()
+  year           = substr(local.now, 0, 4)
+  month          = substr(local.now, 5, 2)
+  day            = substr(local.now, 8, 2)
+  hour           = substr(local.now, 11, 2)
+  minute         = substr(local.now, 14, 2)
+  second         = substr(local.now, 17, 2)
+  uk_hour        = tonumber(local.hour) + 1
+  formatted_hour = format("%02d", local.uk_hour % 24)
+  formatted_date = "${local.day}-${local.month}-${local.year} ${local.formatted_hour}:${local.minute}:${local.second}"
+
 }

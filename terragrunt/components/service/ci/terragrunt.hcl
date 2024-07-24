@@ -29,10 +29,10 @@ dependency common_networking {
 dependency core_iam {
   config_path = "../../core/iam"
   mock_outputs = {
-    ci_role_arn  = "mock"
-    ci_role_name = "mock"
-    ci_build_arn  = "mock"
-    ci_build_name = "mock"
+    ci_role_arn      = "mock"
+    ci_role_name     = "mock"
+    ci_build_arn     = "mock"
+    ci_build_name    = "mock"
     ci_pipeline_arn  = "mock"
     ci_pipeline_name = "mock"
   }
@@ -63,8 +63,8 @@ inputs = {
   tags                = local.tags
   tfstate_bucket_name = local.global_vars.locals.tg.state_bucket
 
-  ci_role_arn  = dependency.core_iam.outputs.terraform_arn
-  ci_role_name = dependency.core_iam.outputs.terraform_name
+  ci_role_arn           = dependency.core_iam.outputs.terraform_arn
+  ci_role_name          = dependency.core_iam.outputs.terraform_name
   ci_build_role_arn     = dependency.core_iam.outputs.ci_build_arn
   ci_build_role_name    = dependency.core_iam.outputs.ci_build_name
   ci_pipeline_role_arn  = dependency.core_iam.outputs.ci_pipeline_arn

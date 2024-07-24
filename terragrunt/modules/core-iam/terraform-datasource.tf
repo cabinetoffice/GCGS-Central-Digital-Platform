@@ -3,6 +3,7 @@
 
 data "aws_iam_policy_document" "terraform_assume" {
   statement {
+    sid     = "AllowTerraformOperatorsAssumeRole"
     actions = ["sts:AssumeRole"]
     principals {
       type        = "AWS"
@@ -14,13 +15,22 @@ data "aws_iam_policy_document" "terraform_assume" {
       variable = "aws:MultiFactorAuthPresent"
     }
   }
+
+  statement {
+    sid     = "AllowOrchestratorCodebuildAssumeRole"
+    actions = ["sts:AssumeRole"]
+    principals {
+      type        = "AWS"
+      identifiers = ["arn:aws:iam::${local.orchestrator_account_id}:role/${local.name_prefix}-orchestrator-ci-codebuild"]
+    }
+  }
 }
 
 data "aws_iam_policy_document" "terraform_assume_orchestrator_role" {
   statement {
     effect    = "Allow"
     actions   = ["sts:AssumeRole"]
-    resources = ["arn:aws:iam::${local.orchestrator_account_id}:role/cdp-sirsi-orchestrator-read-service-version"]
+    resources = ["arn:aws:iam::${local.orchestrator_account_id}:role/${local.name_prefix}-orchestrator-read-service-version"]
   }
 }
 
@@ -281,6 +291,20 @@ data "aws_iam_policy_document" "terraform_global" {
     sid = "ManageCodestar"
   }
 
+  statement {
+    actions = [
+      "S3:PutBucketPolicy",
+      "s3:DeleteBucketPolicy",
+      "s3:GetBucketPolicy",
+      "s3:GetBucketPolicyStatus",
+    ]
+    effect = "Allow"
+    resources = [
+      "*"
+    ]
+    sid = "ManageBucketPolicy"
+  }
+
 }
 
 data "aws_iam_policy_document" "terraform_product" {
@@ -292,10 +316,10 @@ data "aws_iam_policy_document" "terraform_product" {
     ]
     effect = "Allow"
     resources = [
-      "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/cdp-sirsi-*",
-      "arn:aws:iam::${data.aws_caller_identity.current.account_id}:policy/cdp-sirsi-*",
+      "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${local.name_prefix}-*",
+      "arn:aws:iam::${data.aws_caller_identity.current.account_id}:policy/${local.name_prefix}-*",
       "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/aws-service-role/*",
-      "arn:aws:iam::${data.aws_caller_identity.current.account_id}:user/cdp-sirsi-*"
+      "arn:aws:iam::${data.aws_caller_identity.current.account_id}:user/${local.name_prefix}-*"
     ]
     sid = "ManageProductIAMs"
   }
@@ -308,7 +332,7 @@ data "aws_iam_policy_document" "terraform_product" {
     ]
     effect = "Allow"
     resources = [
-      "arn:aws:cloudwatch::${data.aws_caller_identity.current.account_id}:dashboard/cdp-sirsi-*"
+      "arn:aws:cloudwatch::${data.aws_caller_identity.current.account_id}:dashboard/${local.name_prefix}-*"
     ]
     sid = "ManageProductCloudwatch"
   }
@@ -317,7 +341,7 @@ data "aws_iam_policy_document" "terraform_product" {
     actions = ["ec2:*"]
     effect  = "Allow"
     resources = [
-      "arn:aws:ec2:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:*/cdp-sirsi-*"
+      "arn:aws:ec2:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:*/${local.name_prefix}-*"
     ]
     sid = "ManageProductEC2"
   }
@@ -370,7 +394,7 @@ data "aws_iam_policy_document" "terraform_product" {
     ]
     effect = "Allow"
     resources = [
-      "arn:aws:events:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:rule/cdp-sirsi-*",
+      "arn:aws:events:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:rule/${local.name_prefix}-*",
       "arn:aws:events:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:rule/StepFunctionsGetEventsForStepFunctionsExecutionRule"
     ]
     sid = "ManageProductEvents"
@@ -407,7 +431,7 @@ data "aws_iam_policy_document" "terraform_product" {
     resources = [
       "arn:aws:kms:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:key*",
       "arn:aws:secretsmanager:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:secret:rds!db*",
-      "arn:aws:secretsmanager:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:secret:cdp-sirsi*",
+      "arn:aws:secretsmanager:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:secret:${local.name_prefix}*",
     ]
     sid = "ManageProductSecrets"
   }
@@ -442,7 +466,7 @@ data "aws_iam_policy_document" "terraform_product" {
     ]
     effect = "Allow"
     resources = [
-      "arn:aws:states:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:stateMachine:cdp-sirsi-*"
+      "arn:aws:states:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:stateMachine:${local.name_prefix}-*"
     ]
     sid = "ManageProductStateMachines"
   }
@@ -454,8 +478,8 @@ data "aws_iam_policy_document" "terraform_product" {
     ]
     effect = "Allow"
     resources = [
-      "arn:aws:codebuild:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:project/cdp-sirsi-*",
-      "arn:aws:codepipeline:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:cdp-sirsi-*"
+      "arn:aws:codebuild:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:project/${local.name_prefix}-*",
+      "arn:aws:codepipeline:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:${local.name_prefix}-*"
     ]
     sid = "ManageProductCodebuild"
   }
@@ -470,21 +494,21 @@ data "aws_iam_policy_document" "terraform_product" {
     ]
     effect = "Allow"
     resources = [
-      "arn:aws:s3:::cdp-sirsi-*",
-      "arn:aws:s3:::cdp-sirsi-*/*"
+      "arn:aws:s3:::${local.name_prefix}-*",
+      "arn:aws:s3:::${local.name_prefix}-*/*"
     ]
     sid = "ManageProductS3Buckets"
   }
 
   statement {
     actions = [
-      "S3:PutBucketPolicy",
+      "sqs:*",
     ]
     effect = "Allow"
     resources = [
-      "arn:aws:s3:::${local.name_prefix}-${var.environment}-ci-artifact-${data.aws_caller_identity.current.account_id}"
+      "arn:aws:sqs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:${local.name_prefix}-*"
     ]
-    sid = "ManageS3Buckets"
+    sid = "ManageProductSQS"
   }
 
 }

@@ -2,6 +2,10 @@ data "aws_caller_identity" "current" {}
 
 data "aws_region" "current" {}
 
+data "aws_iam_role" "terraform" {
+  name = "${local.name_prefix}-${var.environment}-terraform"
+}
+
 data "aws_iam_policy_document" "ecr_push_policy" {
   statement {
     actions = [

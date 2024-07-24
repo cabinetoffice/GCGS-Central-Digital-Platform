@@ -15,6 +15,7 @@ resource "aws_api_gateway_deployment" "ecs_api" {
     redeployment = sha1(jsonencode(
       flatten([
         for service_key in keys(local.services) : [
+          aws_api_gateway_integration.root,
           aws_api_gateway_resource.ecs_service[service_key].id,
           aws_api_gateway_method.ecs_service[service_key].id,
           aws_api_gateway_integration.ecs_service[service_key].id,
@@ -30,12 +31,19 @@ resource "aws_api_gateway_deployment" "ecs_api" {
   }
 
   depends_on = [
-    aws_api_gateway_rest_api.ecs_api,
-    aws_api_gateway_resource.ecs_service,
-    aws_api_gateway_method.ecs_service,
     aws_api_gateway_integration.ecs_service,
+    aws_api_gateway_integration.ecs_service_proxy,
+    aws_api_gateway_integration.root,
+    aws_api_gateway_integration_response.root,
+    aws_api_gateway_integration_response.root,
+    aws_api_gateway_method.ecs_service,
     aws_api_gateway_method.ecs_service_proxy,
-    aws_api_gateway_integration.ecs_service_proxy
+    aws_api_gateway_method.root,
+    aws_api_gateway_method_response.ecs_service,
+    aws_api_gateway_method_response.root,
+    aws_api_gateway_resource.ecs_service,
+    aws_api_gateway_resource.ecs_service_proxy,
+    aws_api_gateway_rest_api.ecs_api,
   ]
 }
 

@@ -53,7 +53,7 @@ public class LookupTenantUseCaseTest(AutoMapperFixture mapperFixture) : IClassFi
                         {
                             Id = Guid.Parse("dfd0c5d3-0740-4be4-aa42-e42ec9c00bad"),
                             Name = "Acme Ltd",
-                            Roles = [PartyRole.Supplier],
+                            Roles = [PartyRole.Tenderer],
                             Scopes = ["ADMIN"]
                         }
                     ]
@@ -86,7 +86,7 @@ public class LookupTenantUseCaseTest(AutoMapperFixture mapperFixture) : IClassFi
                         {
                             Id = Guid.Parse("dfd0c5d3-0740-4be4-aa42-e42ec9c00bad"),
                             Name = "Acme Ltd",
-                            Roles = [PartyRole.Supplier],
+                            Roles = [PartyRole.Tenderer],
                             Scopes = ["ADMIN"],
                             Uri = new Uri($"https://cdp.cabinetoffice.gov.uk/organisations/dfd0c5d3-0740-4be4-aa42-e42ec9c00bad")
                         }

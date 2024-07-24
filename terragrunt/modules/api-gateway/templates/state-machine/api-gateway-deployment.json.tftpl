@@ -1,0 +1,15 @@
+{
+  "Comment": "Force a new deployment",
+  "StartAt": "CreateDeployment",
+  "States": {
+    "CreateDeployment": {
+      "Type": "Task",
+      "Parameters": {
+        "RestApiId": "${rest_api_id}",
+        "StageName": "${stage_name}"
+      },
+      "Resource": "arn:aws:states:::aws-sdk:apigateway:createDeployment",
+      "End": true
+    }
+  }
+}

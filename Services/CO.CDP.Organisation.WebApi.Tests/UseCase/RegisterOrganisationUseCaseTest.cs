@@ -56,7 +56,7 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
                 Telephone = "123-456-7890",
                 Url = "https://example.org/contact"
             },
-            Roles = [PartyRole.Supplier]
+            Roles = [PartyRole.Tenderer]
         };
 
         var createdOrganisation = await UseCase.Execute(command);
@@ -121,13 +121,13 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
                 Telephone = "123-456-7890",
                 Url = "https://example.org/contact"
             },
-            Roles = [PartyRole.Supplier]
+            Roles = [PartyRole.Tenderer]
         });
 
         _repository.Verify(r => r.Save(It.Is<Persistence.Organisation>(o =>
             o.Guid == _generatedGuid &&
             o.Name == "TheOrganisation" &&
-            o.Roles.SequenceEqual(new List<PartyRole> { PartyRole.Supplier }) &&
+            o.Roles.SequenceEqual(new List<PartyRole> { PartyRole.Tenderer }) &&
             o.OrganisationPersons.First().Scopes.Count == 2 &&
             o.OrganisationPersons.First().Scopes[0] == "ADMIN" &&
             o.OrganisationPersons.First().Scopes[1] == "RESPONDER"
@@ -265,7 +265,7 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
         var person = GivenPersonExists(guid: Guid.NewGuid());
         var command = GivenRegisterOrganisationCommand(
             personId: person.Guid,
-            roles: [PartyRole.Supplier]
+            roles: [PartyRole.Tenderer]
         );
 
         await UseCase.Execute(command);
@@ -317,7 +317,7 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
                 Telephone = "123-456-7890",
                 Url = "https://example.org/contact"
             },
-            Roles = roles ?? [PartyRole.Supplier]
+            Roles = roles ?? [PartyRole.Tenderer]
         };
     }
 

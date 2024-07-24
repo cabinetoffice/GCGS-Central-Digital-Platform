@@ -88,7 +88,8 @@ public class ConnectedEntityCompanyQuestionTest
 
 
     [Theory]
-    [InlineData("ConnectedEntityControlCondition")]
+   [InlineData("ConnectedEntityControlCondition")]
+   // [InlineData("ConnectedEntitySupplierHasControl")]    
     public void OnPost_ShouldRedirectToExpectedPage(string expectedRedirectPage)
     {
         var state = DummyConnectedPersonDetails();

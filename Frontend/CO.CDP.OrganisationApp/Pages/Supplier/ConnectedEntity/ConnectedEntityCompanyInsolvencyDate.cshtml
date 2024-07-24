@@ -1,0 +1,73 @@
+@page "/organisation/{id}/supplier-information/connected-person/date-insolvency/{ConnectedEntityId?}"
+@model CO.CDP.OrganisationApp.Pages.Supplier.ConnectedEntityCompanyInsolvencyDateModel
+
+@{
+    var dayHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Day)).HasInnerHtml;
+    var monthHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Month)).HasInnerHtml;
+    var yearHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Year)).HasInnerHtml;
+    var dateOfInsolvencyHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.InsolvencyDate)).HasInnerHtml;
+    var hasError = dateOfInsolvencyHasError || dayHasError || monthHasError || yearHasError;
+}
+
+<a href="/organisation/@Model.Id/supplier-information/connected-person/company-question/@Model.ConnectedEntityId">Back</a>
+
+
+<main class="govuk-main-wrapper">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <partial name="_ErrorSummary" model="@Model.ModelState" />
+            <form class="form" method="post">
+                <div class="govuk-form-group @(hasError ? "govuk-form-group--error" : "")">
+                    <fieldset class="govuk-fieldset" role="group" aria-describedby="connectedPersonDateHint">
+                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                            <span class="govuk-caption-l">@Model.Caption</span>
+                            <h1 class="govuk-fieldset__heading">@Model.Heading</h1>
+                        </legend>
+                        <div id="connectedPersonDate-hint" class="govuk-hint">
+                            The date it stopped trading under its own name.
+                            <br><br>
+                            For example, 27 03 2007
+                        </div>                      
+                        @if (dateOfInsolvencyHasError)
+                        {
+                            <p id="date-of-formation-error" class="govuk-error-message">
+                                <span class="govuk-visually-hidden">Error:</span>
+                                @Html.ValidationMessageFor(m => m.InsolvencyDate)
+                            </p>
+                        }
+                        <div class="govuk-date-input" id="connectedPersonDate">
+                            <div class="govuk-date-input__item">
+                                <div class="govuk-form-group">
+                                    <label class="govuk-label govuk-date-input__label" for="connectedPersonInsolvencyDateDay">
+                                        Day
+                                    </label>
+                                    <input class="govuk-input govuk-date-input__input govuk-input--width-2 @(dayHasError || dateOfInsolvencyHasError ? "govuk-input--error" : "")"
+                                           id="connectedPersonInsolvencyDateDay" name="Day" type="text" inputmode="numeric" value="@Model.Day">
+                                </div>
+                            </div>
+                            <div class="govuk-date-input__item">
+                                <div class="govuk-form-group">
+                                    <label class="govuk-label govuk-date-input__label" for="connectedPersonInsolvencyDateMonth">
+                                        Month
+                                    </label>
+                                    <input class="govuk-input govuk-date-input__input govuk-input--width-2 @(monthHasError || dateOfInsolvencyHasError ? "govuk-input--error" : "")"
+                                           id="connectedPersonInsolvencyDateMonth" name="Month" type="text" inputmode="numeric" value="@Model.Month">
+                                </div>
+                            </div>
+                            <div class="govuk-date-input__item">
+                                <div class="govuk-form-group">
+                                    <label class="govuk-label govuk-date-input__label" for="connectedPersonInsolvencyDateYear">
+                                        Year
+                                    </label>
+                                    <input class="govuk-input govuk-date-input__input govuk-input--width-4 @(yearHasError || dateOfInsolvencyHasError ? "govuk-input--error" : "")"
+                                           id="connectedPersonInsolvencyDateYear" name="Year" type="text" inputmode="numeric" value="@Model.Year">
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+                <button class="govuk-button" type="submit">Continue</button>
+            </form>
+        </div>
+    </div>
+</main>

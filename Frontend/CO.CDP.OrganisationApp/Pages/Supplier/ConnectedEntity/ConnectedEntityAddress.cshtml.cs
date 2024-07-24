@@ -89,7 +89,8 @@ public class ConnectedEntityAddressModel(ISession session) : PageModel
                 switch (state.ConnectedEntityOrganisationCategoryType)
                 {
                     case ConnectedEntityOrganisationCategoryType.ACompanyYourOrganisationHasTakenOver:
-                        actionResult = RedirectToPage("ConnectedEntityTakenOverCompanyRegisteredWithCompaniesHouse?", new { Id, ConnectedEntityId });
+                    case ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl:
+                        actionResult = RedirectToPage("ConnectedEntityCompanyQuestion", new { Id, ConnectedEntityId });
                         break;
                 }
                 break;
