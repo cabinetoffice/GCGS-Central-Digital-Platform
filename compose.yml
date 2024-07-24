@@ -51,7 +51,7 @@ services:
     image: localstack/localstack:3.5
     healthcheck:
       test: ["CMD", "/etc/localstack/healthcheck.sh"]
-      interval: 5s
+      interval: 60s
       timeout: 5s
       retries: 5
     environment:
@@ -60,6 +60,7 @@ services:
       DEBUG: 0
       REGION: eu-west-1
       QUEUES: ev-inbound,ev-outbound
+      S3_BUCKETS: cdp-staging-bucket.s3,cdp-permanent-bucket.s3
     volumes:
       - './docker/localstack/ready.d:/etc/localstack/init/ready.d:ro'
       - './docker/localstack/healthcheck.sh:/etc/localstack/healthcheck.sh:ro'
