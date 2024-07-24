@@ -1,5 +1,4 @@
 using CO.CDP.OrganisationInformation;
-using CO.CDP.Tenant.WebApi.Model;
 using CO.CDP.Tenant.WebApi.UseCase;
 using CO.CDP.TestKit.Mvc;
 using FluentAssertions;

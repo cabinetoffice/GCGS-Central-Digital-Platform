@@ -1,4 +1,3 @@
-using CO.CDP.OrganisationInformation;
 using CO.CDP.OrganisationInformation.Persistence;
 using CO.CDP.TestKit.Mvc;
 using Xunit.Abstractions;

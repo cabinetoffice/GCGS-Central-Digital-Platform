@@ -8,7 +8,6 @@ using CO.CDP.Swashbuckle.SwaggerGen;
 using DotSwashbuckle.AspNetCore.SwaggerGen;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
-using System.Data.SqlTypes;
 using System.Reflection;
 using AuthorizationPolicyConstants = CO.CDP.Authentication.AuthorizationPolicy.Constants;
 

@@ -1,4 +1,3 @@
-using System.Net.Mime;
 using DotNet.Testcontainers.Images;
 using Testcontainers.LocalStack;
 

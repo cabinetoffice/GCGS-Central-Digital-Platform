@@ -7,7 +7,6 @@ namespace CO.CDP.Forms.WebApi.UseCase;
 public class GetFormSectionQuestionsUseCase(IFormRepository formRepository, IMapper mapper)
     : IUseCase<(Guid formId, Guid sectionId), SectionQuestionsResponse?>
 {
-
     public async Task<SectionQuestionsResponse?> Execute((Guid formId, Guid sectionId) input)
     {
         var (formId, sectionId) = input;
@@ -18,17 +17,16 @@ public class GetFormSectionQuestionsUseCase(IFormRepository formRepository, IMap
             return null;
 
         var questions = mapper.Map<List<FormQuestion>>(section.Questions);
-        var answers = GetMockAnswers(questions);
 
         return new SectionQuestionsResponse
         {
             Section = mapper.Map<FormSection>(section),
             Questions = questions,
-            AnswerSet = answers
+            AnswerSets = [GetMockAnswers(questions)]
         };
     }
 
-    private FormAnswerSet GetMockAnswers(List<FormQuestion> questions)
+    private static FormAnswerSet GetMockAnswers(List<FormQuestion> questions)
     {
         var answers = new List<FormAnswer>();
 

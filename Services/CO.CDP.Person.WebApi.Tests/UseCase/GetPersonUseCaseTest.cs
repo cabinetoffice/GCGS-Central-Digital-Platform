@@ -1,5 +1,4 @@
 using CO.CDP.OrganisationInformation.Persistence;
-using CO.CDP.Person.WebApi.Model;
 using CO.CDP.Person.WebApi.Tests.AutoMapper;
 using CO.CDP.Person.WebApi.UseCase;
 using FluentAssertions;
