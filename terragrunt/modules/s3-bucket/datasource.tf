@@ -22,20 +22,4 @@ data "aws_iam_policy_document" "bucket" {
       "${aws_s3_bucket.bucket.arn}/*"
     ]
   }
-
-  statement {
-    sid    = "PublicAccess"
-    effect = "Allow"
-    principals {
-      type        = "AWS"
-      identifiers = ["*"]
-    }
-    actions = [
-      "s3:GetObject",
-    ]
-    resources = [
-      aws_s3_bucket.bucket.arn,
-      "${aws_s3_bucket.bucket.arn}/*"
-    ]
-  }
 }
