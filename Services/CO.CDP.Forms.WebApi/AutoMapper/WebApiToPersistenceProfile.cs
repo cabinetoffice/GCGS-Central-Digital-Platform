@@ -13,6 +13,8 @@ public class WebApiToPersistenceProfile : Profile
 
         CreateMap<Persistence.FormQuestion, CO.CDP.Forms.WebApi.Model.FormQuestion>()
             .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Guid))
+            .ForMember(dest => dest.NextQuestion, opt => opt.MapFrom(src => src.NextQuestion.Guid))
+            .ForMember(dest => dest.NextQuestionAlternative, opt => opt.MapFrom(src => src.NextQuestionAlternative.Guid))
             .ForMember(dest => dest.Type, opt => opt.MapFrom(src => (CO.CDP.Forms.WebApi.Model.FormQuestionType)src.Type))
             .ForMember(dest => dest.Options, opt => opt.MapFrom(src => src.Options));
 

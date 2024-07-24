@@ -32,8 +32,8 @@ public class FormsEngine(IFormsClient formsApiClient, ITempDataService tempDataS
                 Description = q.Description,
                 Type = (Models.FormQuestionType)q.Type,
                 IsRequired = q.IsRequired,
-                NextQuestion = q.NextQuestion != null ? new Models.FormQuestion { Id = q.NextQuestion.Id } : null,
-                NextQuestionAlternative = q.NextQuestionAlternative != null ? new Models.FormQuestion { Id = q.NextQuestionAlternative.Id } : null,
+                NextQuestion = q.NextQuestion,
+                NextQuestionAlternative = q.NextQuestionAlternative,
                 Options = new Models.FormQuestionOptions
                 {
                     Choices = q.Options.Choices.Select(c => c.Title).ToList(),
