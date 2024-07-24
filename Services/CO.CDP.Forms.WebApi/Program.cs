@@ -27,7 +27,7 @@ builder.Services.AddScoped<IFormRepository, DatabaseFormRepository>();
 builder.Services.AddScoped<IUseCase<(Guid,Guid), CO.CDP.Forms.WebApi.Model.SectionQuestionsResponse?>, GetFormSectionQuestionsUseCase>();
 
 builder.Services.AddJwtBearerAndApiKeyAuthentication(builder.Configuration, builder.Environment);
-
+//builder.Services.AddAuthorization();
 builder.Services.AddOrganisationAuthorization();
 
 var app = builder.Build();

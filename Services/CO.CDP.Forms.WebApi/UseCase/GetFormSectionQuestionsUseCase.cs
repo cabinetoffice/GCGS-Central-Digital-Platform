@@ -1,9 +1,5 @@
 using AutoMapper;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using CO.CDP.Forms.WebApi.Model;
-using CO.CDP.Authentication;
 using CO.CDP.OrganisationInformation.Persistence;
 
 namespace CO.CDP.Forms.WebApi.UseCase;
@@ -28,20 +24,12 @@ public class GetFormSectionQuestionsUseCase(IFormRepository formRepository, IMap
         {
             Section = mapper.Map<FormSection>(section),
             Questions = questions,
-            Answers = answers
+            AnswerSet = answers
         };
     }
 
-    private List<FormAnswer> GetMockAnswers(List<FormQuestion> questions)
+    private FormAnswerSet GetMockAnswers(List<FormQuestion> questions)
     {
-        var answerSetGuid = Guid.NewGuid();
-        var formAnswerSet = new FormAnswerSet
-        {
-            Id = answerSetGuid,
-            Section = questions.First().Section,
-            Answers = new List<FormAnswer>()
-        };
-
         var answers = new List<FormAnswer>();
 
         foreach (var question in questions)
@@ -51,56 +39,49 @@ public class GetFormSectionQuestionsUseCase(IFormRepository formRepository, IMap
                 FormQuestionType.YesOrNo => new FormAnswer
                 {
                     Id = Guid.NewGuid(),
-                    Question = question,
-                    FormAnswerSet = formAnswerSet,
+                    QuestionId = question.Id,
                     BoolValue = true
                 },
 
                 FormQuestionType.Text => new FormAnswer
                 {
                     Id = Guid.NewGuid(),
-                    Question = question,
-                    FormAnswerSet = formAnswerSet,
+                    QuestionId = question.Id,
                     TextValue = "Our financial status is stable with a steady growth."
                 },
 
                 FormQuestionType.FileUpload => new FormAnswer
                 {
                     Id = Guid.NewGuid(),
-                    Question = question,
-                    FormAnswerSet = formAnswerSet,
+                    QuestionId = question.Id,
                     TextValue = "file://path/to/uploaded/accounts.pdf"
                 },
 
                 FormQuestionType.Date => new FormAnswer
                 {
                     Id = Guid.NewGuid(),
-                    Question = question,
-                    FormAnswerSet = formAnswerSet,
+                    QuestionId = question.Id,
                     DateValue = DateTime.Today
                 },
 
                 FormQuestionType.SingleChoice => new FormAnswer
                 {
                     Id = Guid.NewGuid(),
-                    Question = question,
-                    FormAnswerSet = formAnswerSet,
+                    QuestionId = question.Id,
                     OptionValue = "Yes"
                 },
 
                 FormQuestionType.MultipleChoice => new FormAnswer
                 {
                     Id = Guid.NewGuid(),
-                    Question = question,
-                    FormAnswerSet = formAnswerSet,
+                    QuestionId = question.Id,
                     OptionValue = "accountsLastTwoYearsAudited"
                 },
 
                 FormQuestionType.CheckYourAnswers => new FormAnswer
                 {
                     Id = Guid.NewGuid(),
-                    Question = question,
-                    FormAnswerSet = formAnswerSet,
+                    QuestionId = question.Id,
                     TextValue = "Please check your answers"
                 },
 
@@ -113,10 +94,10 @@ public class GetFormSectionQuestionsUseCase(IFormRepository formRepository, IMap
             }
         }
 
-        formAnswerSet.Answers.AddRange(answers);
-
-        return answers;
+        return new FormAnswerSet
+        {
+            Id = Guid.NewGuid(),
+            Answers = answers
+        };
     }
-
 }
-
