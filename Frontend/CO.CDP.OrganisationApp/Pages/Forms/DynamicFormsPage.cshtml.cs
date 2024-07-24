@@ -21,6 +21,7 @@ public class DynamicFormsPageModel(
 
     [BindProperty(SupportsGet = true)]
     public Guid? CurrentQuestionId { get; set; }
+    public bool IsCheckYourAnswers { get; private set; }
 
     [BindProperty]
     public FormElementDateInputModel? DateInputModel { get; set; }
@@ -38,6 +39,9 @@ public class DynamicFormsPageModel(
     public FormElementYesNoInputModel? YesNoInputModel { get; set; }
 
     public string? PartialViewName { get; private set; }
+    [BindProperty]
+    public FormElementCheckYourAnswersModel? CheckYourAnswers { get; set; }
+
 
     public IFormElementModel? PartialViewModel { get; private set; }
 
@@ -55,6 +59,8 @@ public class DynamicFormsPageModel(
         {
             return Redirect("/page-not-found");
         }
+
+        IsCheckYourAnswers = await formsEngine.IsCheckYourAnswersPage(OrganisationId, FormId, SectionId, CurrentQuestionId);
 
         return Page();
     }
@@ -97,13 +103,16 @@ public class DynamicFormsPageModel(
             return RedirectToPage("DynamicFormsPage", new { OrganisationId, FormId, SectionId, CurrentQuestionId = nextQuestion.Id });
         }
 
+        IsCheckYourAnswers = await formsEngine.IsCheckYourAnswersPage(OrganisationId, FormId, SectionId, CurrentQuestionId);
+
         return Page();
     }
 
     private async Task<FormQuestion?> InitModel(bool reset = false)
     {
         var currentQuestion = await formsEngine.GetCurrentQuestion(OrganisationId, FormId, SectionId, CurrentQuestionId);
-        if (currentQuestion == null) return null;
+        if (currentQuestion == null)
+            return null;
 
         PartialViewName = GetPartialViewName(currentQuestion);
 
@@ -121,7 +130,8 @@ public class DynamicFormsPageModel(
             { FormQuestionType.YesOrNo, "_FormElementYesNoInput" },
             { FormQuestionType.FileUpload, "_FormElementFileUpload" },
             { FormQuestionType.Date, "_FormElementDateInput" },
-            { FormQuestionType.Text, "_FormElementTextInput" }
+            { FormQuestionType.Text, "_FormElementTextInput" },
+            { FormQuestionType.CheckYourAnswers, "_FormElementCheckYourAnswer" }
         };
 
         if (formQuestionPartials.TryGetValue(currentQuestion.Type, out var partialView))
@@ -141,6 +151,12 @@ public class DynamicFormsPageModel(
             FormQuestionType.FileUpload => FileUploadModel ?? new FormElementFileUploadModel(),
             FormQuestionType.YesOrNo => YesNoInputModel ?? new FormElementYesNoInputModel(),
             FormQuestionType.Date => DateInputModel ?? new FormElementDateInputModel(),
+            FormQuestionType.CheckYourAnswers => CheckYourAnswers ?? new FormElementCheckYourAnswersModel
+            {
+                OrganisationId = OrganisationId,
+                FormId = FormId,
+                SectionId = SectionId
+            },
             _ => throw new NotImplementedException($"Forms question: {currentQuestion.Type} is not supported"),
         };
 
@@ -161,17 +177,21 @@ public class DynamicFormsPageModel(
 
     private void SaveAnswerToTempData(FormQuestion question, FormAnswer? answer)
     {
-        var state = tempDataService.PeekOrDefault<FormQuestionAnswerState>(FormQuestionAnswerStateKey);
-
-        var questionAnswer = state.Answers.FirstOrDefault(a => a.QuestionId == question.Id);
-        if (questionAnswer == null)
+        if (question != null)
         {
-            questionAnswer = new QuestionAnswer { QuestionId = question.Id };
-            state.Answers.Add(questionAnswer);
+            var state = tempDataService.PeekOrDefault<FormQuestionAnswerState>(FormQuestionAnswerStateKey);
+
+            var questionAnswer = state.Answers.FirstOrDefault(a => a.QuestionId == question.Id);
+            if (questionAnswer == null)
+            {
+                questionAnswer = new QuestionAnswer { QuestionId = question.Id };
+                state.Answers.Add(questionAnswer);
+            }
+
+            questionAnswer.Answer = answer;
+            questionAnswer.QuestionTitle = question.Title;
+
+            tempDataService.Put(FormQuestionAnswerStateKey, state);
         }
-
-        questionAnswer.Answer = answer;
-
-        tempDataService.Put(FormQuestionAnswerStateKey, state);
     }
 }

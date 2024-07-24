@@ -5,6 +5,7 @@ namespace CO.CDP.OrganisationApp;
 
 public class FormsEngine(IFormsClient formsApiClient, ITempDataService tempDataService) : IFormsEngine
 {
+    //private readonly Guid SpecialQuestionId = new Guid("e2dce4aa-fc5e-4471-be32-1124d7221aaf");
     public async Task<SectionQuestionsResponse> LoadFormSectionAsync(Guid organisationId, Guid formId, Guid sectionId)
     {
         var sessionKey = $"Form_{organisationId}_{formId}_{sectionId}_Questions";
@@ -59,6 +60,12 @@ public class FormsEngine(IFormsClient formsApiClient, ITempDataService tempDataS
     public async Task<Models.FormQuestion?> GetCurrentQuestion(Guid organisationId, Guid formId, Guid sectionId, Guid? questionId)
     {
         return await GetAdjacentQuestion(organisationId, formId, sectionId, questionId, 0);
+    }
+
+    public async Task<bool> IsCheckYourAnswersPage(Guid organisationId, Guid formId, Guid sectionId, Guid? questionId)
+    {
+        var currentQuestion = await GetCurrentQuestion(organisationId, formId, sectionId, questionId);
+        return currentQuestion?.IsCheckYourAnswers ?? false;
     }
 
     private async Task<Models.FormQuestion?> GetAdjacentQuestion(Guid organisationId, Guid formId, Guid sectionId, Guid? currentQuestionId, int offset)

@@ -26,9 +26,14 @@
                     }
                 </fieldset>
 
-                <button type="submit" class="govuk-button" data-module="govuk-button">
-                    Continue
-                </button>
+                @if (!Model.IsCheckYourAnswers)
+                {
+                    <button type="submit" class="govuk-button">Continue</button>
+                } else {
+                    <button type="submit" class="govuk-button" data-module="govuk-button">
+                        Save
+                    </button>
+                }
             </form>
         </div>
     </div>

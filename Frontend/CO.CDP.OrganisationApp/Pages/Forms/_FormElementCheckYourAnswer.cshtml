@@ -1,0 +1,37 @@
+@using CO.CDP.OrganisationApp.Models
+@model FormElementCheckYourAnswersModel
+
+@{
+    Model.LoadAnswers(TempData);
+}
+
+<div class="govuk-grid-column-full">
+    <h1 class="govuk-heading-l">Check your answers</h1>
+    <dl class="govuk-summary-list govuk-!-margin-bottom-3">
+        @if (Model.Answers.Any())
+        {
+            foreach (var answer in Model.Answers)
+            {
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        @answer.QuestionTitle
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        @answer.Answer?.TextValue ?? "No answer provided"
+                    </dd>
+                    <dd class="govuk-summary-list__actions">
+                        <a class="govuk-link" href="@Model.GetEditUrl(answer.QuestionId)">
+                            Change<span class="govuk-visually-hidden">
+                                @($"the {answer.QuestionTitle?.ToLower()}")
+                            </span>
+                        </a>
+                    </dd>
+                </div>
+            }
+        }
+        else
+        {
+            <p class="govuk-body">No answers to display.</p>
+        }
+    </dl>
+</div>

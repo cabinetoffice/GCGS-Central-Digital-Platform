@@ -9,7 +9,7 @@
         @Model.Heading
     </h1>
 
-    <p class="govuk-body">@Model.Description</p>
+    <p class="govuk-body">@Html.Raw(@Model.Description)</p>
 
     @if (hasError)
     {

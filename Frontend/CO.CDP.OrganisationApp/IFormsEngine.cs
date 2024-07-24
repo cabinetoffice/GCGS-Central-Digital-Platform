@@ -11,4 +11,6 @@ public interface IFormsEngine
     Task<FormQuestion?> GetPreviousQuestion(Guid organisationId, Guid formId, Guid sectionId, Guid? currentQuestionId);
 
     Task<FormQuestion?> GetCurrentQuestion(Guid organisationId, Guid formId, Guid sectionId, Guid? questionId);
+
+    Task<bool> IsCheckYourAnswersPage(Guid organisationId, Guid formId, Guid sectionId, Guid? questionId);
 }
