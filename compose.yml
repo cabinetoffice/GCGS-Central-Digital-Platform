@@ -56,10 +56,10 @@ services:
       retries: 5
     environment:
       # LocalStack configuration: https://docs.localstack.cloud/references/configuration/
-      - SERVICES=sqs,s3
-      - DEBUG=0
-      - DEFAULT_REGION=eu-west-1
-      - QUEUES=ev-inbound,ev-outbound
+      SERVICES: sqs,s3
+      DEBUG: 0
+      DEFAULT_REGION: eu-west-1
+      QUEUES: ev-inbound,ev-outbound
     volumes:
       - './docker/localstack/ready.d:/etc/localstack/init/ready.d:ro'
 
