@@ -10,6 +10,7 @@ public class ConnectedEntityState
     public bool? SupplierHasCompanyHouseNumber { get; set; }
     public ConnectedEntityType? ConnectedEntityType { get; set; }
     public ConnectedEntityOrganisationCategoryType? ConnectedEntityOrganisationCategoryType { get; set; }
+    public ConnectedEntityIndividualAndTrustCategoryType? ConnectedEntityIndividualAndTrustCategoryType { get; set; }
     public string? OrganisationName { get; set; }
     public Address? RegisteredAddress { get; set; }
     public Address? PostalAddress { get; set; }
@@ -21,6 +22,9 @@ public class ConnectedEntityState
     public DateTimeOffset? RegistrationDate { get; set; }
     public string? RegisterName { get; set; }
     public DateTimeOffset? InsolvencyDate { get; set; }
+    public bool? HasOscCompaniesHouseNumber { get; set; }
+    public string? OscCompaniesHouseNumber { get; set; }
+
 
     public class Address
     {

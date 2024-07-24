@@ -11,7 +11,7 @@ public enum ConnectedEntityOrganisationCategoryType
     AnyOtherOrganisationWithSignificantInfluenceOrControl,
 }
 
-public static class ConnectedEntityOrganisationCategoryTypeTypeExtensions
+public static class ConnectedEntityOrganisationCategoryTypeExtensions
 {
     public static WebApiClient.ConnectedOrganisationCategory AsApiClientConnectedEntityOrganisationCategoryType(this ConnectedEntityOrganisationCategoryType connectedEntityOrganisationCategoryType)
     {
@@ -60,7 +60,7 @@ public static class ConnectedEntityOrganisationCategoryTypeTypeExtensions
             ConnectedEntityOrganisationCategoryType.DirectorOrTheSameResponsibilities => "Director or the same responsibilities",
             ConnectedEntityOrganisationCategoryType.ParentOrSubsidiaryCompany => "Parent or subsidiary company",
             ConnectedEntityOrganisationCategoryType.ACompanyYourOrganisationHasTakenOver => "a company your organisation has taken over",
-            ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl => "Other organisation with significant influence or control",
+            ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl => "any other organisation with significant influence or control\r\n",
             _ => throw new NotImplementedException()
         };
         return registeredWithCompanyHouse ? baseCaption : $"Equivalent to {baseCaption.ToLower()}";

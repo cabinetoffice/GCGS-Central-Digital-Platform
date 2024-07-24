@@ -47,9 +47,10 @@ resource "aws_api_gateway_integration_response" "root" {
   response_templates = {
     "text/html" = templatefile("${path.module}/templates/landing-page.html.tftpl",
       {
-        endpoints       = local.endpoints
-        frontend_url    = var.public_hosted_zone_fqdn
-        service_version = data.aws_ssm_parameter.orchestrator_service_version.value
+        api_gateway_deployment_time = local.formatted_date
+        endpoints                   = local.endpoints
+        frontend_url                = var.public_hosted_zone_fqdn
+        service_version             = data.aws_ssm_parameter.orchestrator_service_version.value
       }
     )
   }

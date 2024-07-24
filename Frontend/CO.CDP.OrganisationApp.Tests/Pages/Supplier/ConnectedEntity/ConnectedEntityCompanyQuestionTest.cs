@@ -88,7 +88,8 @@ public class ConnectedEntityCompanyQuestionTest
 
 
     [Theory]
-    [InlineData("ConnectedEntityCompanyInsolvencyDate")]
+   [InlineData("ConnectedEntityControlCondition")]
+   // [InlineData("ConnectedEntitySupplierHasControl")]    
     public void OnPost_ShouldRedirectToExpectedPage(string expectedRedirectPage)
     {
         var state = DummyConnectedPersonDetails();
@@ -127,6 +128,7 @@ public class ConnectedEntityCompanyQuestionTest
             SupplierHasCompanyHouseNumber = true,
             SupplierOrganisationId = _organisationId,
             ConnectedEntityType = Constants.ConnectedEntityType.Organisation,
+            ConnectedEntityOrganisationCategoryType = Constants.ConnectedEntityOrganisationCategoryType.RegisteredCompany,
             OrganisationName = "Org_name",
             HasCompaniesHouseNumber = true,
             CompaniesHouseNumber = "12345678"

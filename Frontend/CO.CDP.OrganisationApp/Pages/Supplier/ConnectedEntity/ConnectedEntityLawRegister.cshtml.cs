@@ -65,7 +65,8 @@ public class ConnectedEntityLawRegisterModel(ISession session) : PageModel
 
         session.Set(Session.ConnectedPersonKey, state);
 
-        return RedirectToPage("ConnectedEntityCompanyQuestion", new { Id, ConnectedEntityId });
+        var redirectPage = GetRedirectLinkPageName(state);
+        return RedirectToPage(redirectPage, new { Id, ConnectedEntityId });
     }
 
     private void InitModal(ConnectedEntityState state, bool reset = false)
@@ -126,5 +127,37 @@ public class ConnectedEntityLawRegisterModel(ISession session) : PageModel
         }
 
         return backPage;
+    }
+
+    private string GetRedirectLinkPageName(ConnectedEntityState state)
+    {
+        var redirectPage = "";
+        switch (state.ConnectedEntityType)
+        {
+            case Constants.ConnectedEntityType.Organisation:
+                switch (state.ConnectedEntityOrganisationCategoryType)
+                {
+                    case ConnectedEntityOrganisationCategoryType.RegisteredCompany:
+                    case ConnectedEntityOrganisationCategoryType.DirectorOrTheSameResponsibilities:
+                        redirectPage = "ConnectedEntityCompanyQuestion";
+                        break;
+                    case ConnectedEntityOrganisationCategoryType.ParentOrSubsidiaryCompany:
+                        redirectPage = "";
+                        break;
+                    case ConnectedEntityOrganisationCategoryType.ACompanyYourOrganisationHasTakenOver:
+                        redirectPage = "";
+                        break;
+                    case ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl:
+                        redirectPage = "ConnectedEntityCheckAnswers";
+                        break;
+                }
+                break;
+            case Constants.ConnectedEntityType.Individual:
+                break;
+            case Constants.ConnectedEntityType.TrustOrTrustee:
+                break;
+        }
+
+        return redirectPage;
     }
 }

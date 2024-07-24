@@ -1,21 +1,26 @@
 using CO.CDP.EntityVerification.Events;
 using CO.CDP.EntityVerification.Persistence;
 using CO.CDP.MQ;
-using Microsoft.AspNetCore.Components;
-using System.Transactions;
+using Identifier = CO.CDP.EntityVerification.Persistence.Identifier;
 
 namespace CO.CDP.EntityVerification.Ppon;
 
-public class OrganisationRegisteredEventHandler(IPponService pponService, IPponRepository pponRepository, IPublisher publisher)
+public class OrganisationRegisteredEventHandler(IPponService pponService,
+    IPponRepository pponRepository,
+    IPublisher publisher)
     : IEventHandler<OrganisationRegistered>
 {
     public async Task Handle(OrganisationRegistered @event)
     {
-        var pponId = pponService.GeneratePponId();
+        Persistence.Ppon newPpon = new() {
+            IdentifierId = pponService.GeneratePponId(),
+            Name = @event.Name,
+            OrganisationId = @event.Id
+        };
 
-        Persistence.Ppon newIdentifier = new() { PponId = pponId };
+        newPpon.Identifiers = Identifier.GetPersistenceIdentifiers(@event.AllIdentifiers(), newPpon);
 
-        pponRepository.Save(newIdentifier);
-        await publisher.Publish(newIdentifier);
+        pponRepository.Save(newPpon);
+        await publisher.Publish(newPpon.IdentifierId);
     }
 }

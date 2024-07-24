@@ -3,10 +3,22 @@ variable "bucket_name" {
   type        = string
 }
 
+variable "kms_key_admin_role" {
+  default     = "bootstrap"
+  description = "IAM role name to administrate the key"
+  type        = string
+}
+
+variable "kms_key_description" {
+  default     = ""
+  description = "The description of the KMS used to encrypt S3 bucket contents"
+  type        = string
+}
+
 variable "read_roles" {
+  default     = []
   description = "A list of ARNs to allow actions for reading files"
   type        = list(string)
-  default     = []
 }
 
 variable "tags" {
@@ -15,7 +27,7 @@ variable "tags" {
 }
 
 variable "write_roles" {
+  default     = []
   description = "A list of ARNs to allow actions for writing files"
   type        = list(string)
-  default     = []
 }
