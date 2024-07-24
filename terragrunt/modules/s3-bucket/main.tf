@@ -29,11 +29,11 @@ resource "aws_s3_bucket_public_access_block" "block" {
   restrict_public_buckets = true
 }
 
-# resource "aws_s3_bucket_policy" "bucket" {
-#   bucket     = aws_s3_bucket.bucket.id
-#   depends_on = [aws_s3_bucket_public_access_block.block]
-#   policy     = data.aws_iam_policy_document.bucket.json
-# }
+resource "aws_s3_bucket_policy" "bucket" {
+  bucket     = aws_s3_bucket.bucket.id
+  depends_on = [aws_s3_bucket_public_access_block.block]
+  policy     = data.aws_iam_policy_document.bucket.json
+}
 
 resource "aws_s3_bucket_versioning" "bucket" {
   bucket = aws_s3_bucket.bucket.id
@@ -43,14 +43,14 @@ resource "aws_s3_bucket_versioning" "bucket" {
   }
 }
 
-#resource "aws_s3_bucket_server_side_encryption_configuration" "encrypted_bucket" {
-#  bucket = aws_s3_bucket.bucket.id
-#
-#  rule {
-#    apply_server_side_encryption_by_default {
-#      kms_master_key_id = module.s3_kms_key.key_arn
-#      sse_algorithm     = "aws:kms"
-#    }
-#    bucket_key_enabled = true
-#  }
-#}
+resource "aws_s3_bucket_server_side_encryption_configuration" "encrypted_bucket" {
+  bucket = aws_s3_bucket.bucket.id
+
+  rule {
+    apply_server_side_encryption_by_default {
+      kms_master_key_id = module.s3_kms_key.key_arn
+      sse_algorithm     = "aws:kms"
+    }
+    bucket_key_enabled = true
+  }
+}

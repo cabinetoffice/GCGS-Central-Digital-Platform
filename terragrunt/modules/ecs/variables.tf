@@ -97,6 +97,16 @@ variable "role_ecs_task_exec_name" {
   type        = string
 }
 
+variable "role_terraform_arn" {
+  description = "Terraform IAM role ARN"
+  type        = string
+}
+
+variable "role_terraform_name" {
+  description = "Terraform IAM role name"
+  type        = string
+}
+
 variable "role_service_deployer_step_function_arn" {
   description = "ARN of the IAM role used by the Service Deployer Step Function"
   type        = string
