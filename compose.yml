@@ -114,6 +114,7 @@ services:
       PersonService: '${PersonService:-http://gateway:${CDP_PERSON_PORT:-8084}}'
       FormsService: '${FormsService:-http://gateway:${CDP_FORMS_PORT:-8086}}'
       Organisation__Authority: '${Organisation__Authority:-http://gateway:${CDP_AUTHORITY_PORT:-8092}}'
+      Aws__ServiceURL: "http://localstack:4566"
 
   authority:
     container_name: co-cdp-authority
