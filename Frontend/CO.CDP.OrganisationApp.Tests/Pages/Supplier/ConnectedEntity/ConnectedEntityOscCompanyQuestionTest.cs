@@ -1,4 +1,5 @@
 using CO.CDP.Organisation.WebApiClient;
+using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Pages.Supplier;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
@@ -130,7 +131,8 @@ public class ConnectedEntityOscCompanyQuestionTest
             OrganisationName = "Org_name",
             HasCompaniesHouseNumber = false,
             HasOscCompaniesHouseNumber = true,
-            OscCompaniesHouseNumber = "12345678"
+            OscCompaniesHouseNumber = "12345678",
+            ConnectedEntityOrganisationCategoryType= ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl
         };
 
         return connectedPersonDetails;
