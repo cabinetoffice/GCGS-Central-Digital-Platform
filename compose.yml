@@ -50,7 +50,7 @@ services:
     container_name: co-cdp-localstack
     image: localstack/localstack:3.5
     healthcheck:
-      test: ["CMD-SHELL", "awslocal sqs list-queues --region \"$${REGION}\" | grep -E \"$${QUEUES//,/|}\" || exit 1"]
+      test: ["CMD-SHELL", "awslocal sqs list-queues --region \"$${REGION}\" | grep -E \"ev-inbound|ev-outbound\" || exit 1"]
       interval: 5s
       timeout: 5s
       retries: 5
