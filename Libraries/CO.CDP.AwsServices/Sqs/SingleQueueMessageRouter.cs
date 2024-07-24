@@ -1,10 +1,10 @@
 using Amazon.SQS;
 
-namespace CO.CDP.MQ.Sqs;
+namespace CO.CDP.AwsServices.Sqs;
 
 public class SingleQueueMessageRouter(AmazonSQSClient sqsClient, string queueName)
 {
-    private string? _queueUrl = null;
+    private string? _queueUrl;
 
     public async Task<string> QueueUrl(Type type)
     {

@@ -5,7 +5,6 @@ using CO.CDP.EntityVerification.MQ;
 using CO.CDP.EntityVerification.Persistence;
 using CO.CDP.EntityVerification.Ppon;
 using CO.CDP.MQ;
-using CO.CDP.MQ.Sqs;
 using System.Text.Json;
 using CO.CDP.AwsServices.Sqs;
 

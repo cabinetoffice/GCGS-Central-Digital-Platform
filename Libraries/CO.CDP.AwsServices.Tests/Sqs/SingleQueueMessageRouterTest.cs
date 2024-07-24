@@ -1,11 +1,10 @@
-using System.Security.Cryptography;
 using Amazon.Runtime;
 using Amazon.SQS;
 using Amazon.SQS.Model;
-using CO.CDP.MQ.Sqs;
+using CO.CDP.AwsServices.Sqs;
 using FluentAssertions;
 
-namespace CO.CDP.MQ.Tests.Sqs;
+namespace CO.CDP.AwsServices.Tests.Sqs;
 
 public class SingleQueueMessageRouterTest(LocalStackFixture localStack) : IClassFixture<LocalStackFixture>
 {
