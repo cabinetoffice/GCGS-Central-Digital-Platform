@@ -1,4 +1,5 @@
 using CO.CDP.Mvc.Validation;
+using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -48,7 +49,7 @@ public class ConnectedEntityCompanyQuestionModel(ISession session) : PageModel
         var state = session.Get<ConnectedEntityState>(Session.ConnectedPersonKey);
         if (state == null)
         {
-            return RedirectToPage("ConnectedEntitySupplierHasControl", new { Id });
+            return RedirectToPage("ConnectedEntityControlCondition", new { Id });
         }
 
         InitModal(state);
@@ -63,6 +64,28 @@ public class ConnectedEntityCompanyQuestionModel(ISession session) : PageModel
 
         session.Set(Session.ConnectedPersonKey, state);
 
+        IActionResult? actionResult = null;
+        switch (state.ConnectedEntityType)
+        {
+            case ConnectedEntityType.Organisation:
+                switch (state.ConnectedEntityOrganisationCategoryType)
+                {
+                    case ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl:
+                        actionResult = RedirectToPage("ConnectedEntityOscCompanyQuestion", new { Id, ConnectedEntityId });
+                        break;
+                }
+                break;
+            case ConnectedEntityType.Individual:
+                //TODO 4: modify value of actionResult when working on Individual
+                break;
+            case ConnectedEntityType.TrustOrTrustee:
+                //TODO 4: modify value of actionResult when working on Trust
+                break;
+        }
+
+        if (actionResult != null)
+            return actionResult;
+
         return RedirectToPage("ConnectedEntityControlCondition", new { Id, ConnectedEntityId });
     }
 
@@ -70,6 +93,6 @@ public class ConnectedEntityCompanyQuestionModel(ISession session) : PageModel
     {
         Caption = state.GetCaption();
         Heading = $"Is {state.OrganisationName} registered with Companies House?";
-        Hint = "Is the ‘connected person’ registered with Companies House as required by the Companies Act 2006.";        
+        Hint = "Is the ‘connected person’ registered with Companies House as required by the Companies Act 2006.";
     }
 }

@@ -30,7 +30,8 @@ dependency core_iam {
     ecs_task_exec_name                  = "mock"
     service_deployer_step_function_arn  = "mock"
     service_deployer_step_function_name = "mock"
-
+    terraform_arn                       = "mock"
+    terraform_name                      = "mock"
   }
 }
 
@@ -88,6 +89,8 @@ inputs = {
   role_ecs_task_exec_name                  = dependency.core_iam.outputs.ecs_task_exec_name
   role_service_deployer_step_function_arn  = dependency.core_iam.outputs.service_deployer_step_function_arn
   role_service_deployer_step_function_name = dependency.core_iam.outputs.service_deployer_step_function_name
+  role_terraform_arn                       = dependency.core_iam.outputs.terraform_arn
+  role_terraform_name                      = dependency.core_iam.outputs.terraform_name
 
   vpce_s3_prefix_list_id = dependency.common_networking.outputs.vpce_s3_prefix_list_id
 

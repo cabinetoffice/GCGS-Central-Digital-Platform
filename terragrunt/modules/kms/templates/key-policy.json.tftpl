@@ -1,0 +1,89 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "Enable IAM User Permissions",
+            "Effect": "Allow",
+            "Principal": {
+                "AWS": "arn:aws:iam::${account_id}:root"
+            },
+            "Action": "kms:*",
+            "Resource": "*"
+        },
+        {
+            "Sid": "Allow access for Key Administrators",
+            "Effect": "Allow",
+            "Principal": {
+                "AWS": "${admin_role}"
+            },
+            "Action": [
+                "kms:CancelKeyDeletion",
+                "kms:Create*",
+                "kms:Decrypt*",
+                "kms:Delete*",
+                "kms:Describe*",
+                "kms:Disable*",
+                "kms:Enable*",
+                "kms:Encrypt*",
+                "kms:GenerateDataKey*",
+                "kms:Get*",
+                "kms:List*",
+                "kms:Put*",
+                "kms:ReEncrypt*",
+                "kms:Revoke*",
+                "kms:ScheduleKeyDeletion",
+                "kms:TagResource",
+                "kms:UntagResource",
+                "kms:Update*"
+            ],
+            "Resource": "*"
+        }
+
+        %{ if length(other_aws_accounts) > 0 }
+        ,{
+            "Sid": "Allow use of the key from other AWS accounts",
+            "Effect": "Allow",
+            "Principal": {
+                "AWS": ${other_aws_accounts_json}
+            },
+            "Action": [
+                "kms:ReEncrypt*",
+                "kms:GenerateDataKey*",
+                "kms:Encrypt",
+                "kms:DescribeKey",
+                "kms:Decrypt"
+            ],
+            "Resource": "*"
+        }
+        %{ endif }
+
+        %{ if key_user_arns_length != 0 }
+        ,{
+            "Sid": "Allow use of the key by roles passed into the module",
+            "Effect": "Allow",
+            "Principal": {
+                "AWS": ${key_user_arns_json}
+            },
+            "Action": [
+                "kms:ReEncrypt*",
+                "kms:GenerateDataKey*",
+                "kms:Encrypt",
+                "kms:DescribeKey",
+                "kms:Decrypt"
+            ],
+            "Resource": "*"
+        }
+        %{ endif }
+
+        %{ if length(custom_policies) > 0 }
+          %{ for custom_policy in custom_policies ~}
+            %{ if can(jsondecode(custom_policy)) }
+
+        ,${custom_policy}
+
+            %{ endif }
+          %{ endfor ~}
+        %{ endif }
+
+    ]
+}
