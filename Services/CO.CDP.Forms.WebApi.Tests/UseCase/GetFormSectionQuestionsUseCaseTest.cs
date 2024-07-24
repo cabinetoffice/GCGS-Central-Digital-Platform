@@ -104,13 +104,7 @@ public class GetFormSectionQuestionsUseCaseTest(AutoMapperFixture mapperFixture)
                 Description = questions[0].Description,
                 Type = FormQuestionType.NoInput,
                 IsRequired = questions[0].IsRequired,
-                Options = new FormQuestionOptions(),
-                Section = new FormSection
-                {
-                    Id = section.Guid,
-                    Title = section.Title,
-                    AllowsMultipleAnswerSets = section.AllowsMultipleAnswerSets
-                }
+                Options = new FormQuestionOptions()
             },
             new FormQuestion
             {
@@ -119,13 +113,7 @@ public class GetFormSectionQuestionsUseCaseTest(AutoMapperFixture mapperFixture)
                 Description = questions[1].Description,
                 Type = FormQuestionType.YesOrNo,
                 IsRequired = questions[1].IsRequired,
-                Options = new FormQuestionOptions(),
-                Section = new FormSection
-                {
-                    Id = section.Guid,
-                    Title = section.Title,
-                    AllowsMultipleAnswerSets = section.AllowsMultipleAnswerSets
-                }
+                Options = new FormQuestionOptions()
             }
         });
     }
