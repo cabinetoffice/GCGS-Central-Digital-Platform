@@ -110,7 +110,6 @@ public class ConnectedEntityLawRegisterTest
         _model.OnPost();
 
         _sessionMock.Verify(s => s.Set(Session.ConnectedPersonKey, It.Is<ConnectedEntityState>(st => st.ConnectedEntityType == Constants.ConnectedEntityType.Organisation)), Times.Once);
-
     }
 
     private ConnectedEntityState DummyConnectedPersonDetails()
@@ -121,6 +120,7 @@ public class ConnectedEntityLawRegisterTest
             SupplierHasCompanyHouseNumber = true,
             SupplierOrganisationId = _organisationId,
             ConnectedEntityType = Constants.ConnectedEntityType.Organisation,
+            ConnectedEntityOrganisationCategoryType = Constants.ConnectedEntityOrganisationCategoryType.RegisteredCompany,
             OrganisationName = "Org_name",
             LegalForm = "Legal-Form",
             LawRegistered = "Law-Registered"

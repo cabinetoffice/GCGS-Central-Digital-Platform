@@ -128,6 +128,7 @@ public class ConnectedEntityCompanyQuestionTest
             SupplierHasCompanyHouseNumber = true,
             SupplierOrganisationId = _organisationId,
             ConnectedEntityType = Constants.ConnectedEntityType.Organisation,
+            ConnectedEntityOrganisationCategoryType = Constants.ConnectedEntityOrganisationCategoryType.RegisteredCompany,
             OrganisationName = "Org_name",
             HasCompaniesHouseNumber = true,
             CompaniesHouseNumber = "12345678"

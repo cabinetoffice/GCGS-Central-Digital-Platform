@@ -101,7 +101,7 @@ public class ConnectedEntityCompanyInsolvencyDateTest
     }
 
     [Theory]
-    [InlineData("ConnectedPersonSummary")]
+    [InlineData("ConnectedEntityCheckAnswers")]
     public void OnPost_ShouldRedirectToExpectedPage_WhenModelStateIsValid(string expectedRedirectPage)
     {
         SetValidDate();

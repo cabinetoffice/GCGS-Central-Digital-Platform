@@ -61,6 +61,6 @@ data "aws_iam_policy_document" "orchestrator_read_service_version_assume_role" {
 data "aws_iam_policy_document" "orchestrator_read_service_version" {
   statement {
     actions   = ["ssm:GetParameter"]
-    resources = ["arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter/cdp-sirsi-service-version"]
+    resources = ["arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter/${local.name_prefix}-service-version"]
   }
 }

@@ -20,7 +20,7 @@ data "aws_iam_policy_document" "ecs_task_exec" {
     ]
     resources = [
       "arn:aws:secretsmanager:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:secret:rds!*",
-      "arn:aws:secretsmanager:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:secret:cdp-sirsi-*"
+      "arn:aws:secretsmanager:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:secret:${local.name_prefix}-*"
     ]
   }
   statement {
@@ -106,11 +106,11 @@ provider "aws" {
   alias  = "orchestrator_assume_role"
   region = "eu-west-2"
   assume_role {
-    role_arn = "arn:aws:iam::${local.orchestrator_account_id}:role/cdp-sirsi-orchestrator-read-service-version"
+    role_arn = "arn:aws:iam::${local.orchestrator_account_id}:role/${local.name_prefix}-orchestrator-read-service-version"
   }
 }
 
 data "aws_ssm_parameter" "orchestrator_service_version" {
   provider = aws.orchestrator_assume_role
-  name     = "/cdp-sirsi-service-version"
+  name     = "/${local.name_prefix}-service-version"
 }

@@ -14,5 +14,7 @@ public record OrganisationRegistered : IEvent
 
     public List<Identifier> AdditionalIdentifiers { get; init; } = [];
 
+    public IEnumerable<Identifier> AllIdentifiers() => AdditionalIdentifiers.Prepend(Identifier);
+
     public required List<string> Roles { get; init; }
 }

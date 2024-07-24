@@ -30,7 +30,6 @@ services:
       CDP_FORMS_HOST: 'http://forms:8080'
       CDP_DATA_SHARING_HOST: 'http://data-sharing:8080'
       CDP_ENTITY_VERIFICATION_HOST: 'http://entity-verification:8080'
-
   db:
     container_name: co-cdp-db
     image: postgres:16.3
@@ -50,10 +49,20 @@ services:
     container_name: co-cdp-localstack
     image: localstack/localstack:3.5
     healthcheck:
-      test: [ "CMD-SHELL", "bash", "-c", "awslocal sqs list-queues && awslocal s3 ls"]
+      test: ["CMD", "/etc/localstack/healthcheck.sh"]
+      interval: 60s
+      timeout: 5s
+      retries: 5
     environment:
       # LocalStack configuration: https://docs.localstack.cloud/references/configuration/
+      SERVICES: sqs,s3
       DEBUG: 0
+      REGION: eu-west-1
+      QUEUES: ev-inbound,ev-outbound
+      S3_BUCKETS: cdp-staging-bucket.s3,cdp-permanent-bucket.s3
+    volumes:
+      - './docker/localstack/ready.d:/etc/localstack/init/ready.d:ro'
+      - './docker/localstack/healthcheck.sh:/etc/localstack/healthcheck.sh:ro'
 
   organisation-information-migrations:
     container_name: co-cdp-organisation-information-migrations
@@ -235,11 +244,14 @@ services:
     healthcheck:
       test: ["CMD-SHELL", "curl --fail --silent --write-out '{\"status\":%{http_code}}' --output /dev/null http://127.0.0.1:8080/health"]
       start_period: 10s
-      interval: 60s
+      interval: 10s
       timeout: 10s
       retries: 10
     depends_on:
-      - db
+      db:
+        condition: "service_healthy"
+      localstack:
+        condition: "service_healthy"
     environment:
       ASPNETCORE_ENVIRONMENT: Production
       ConnectionStrings__EvDatabase: 'Server=db;Database=cdp;Username=cdp_user;Password=cdp123;'
