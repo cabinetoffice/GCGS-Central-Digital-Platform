@@ -40,7 +40,7 @@ public class ConnectedEntityCompanyQuestionModel(ISession session) : PageModel
 
         HasCompaniesHouseNumber = selected.HasValue ? selected : state.HasCompaniesHouseNumber;
         CompaniesHouseNumber = state.CompaniesHouseNumber;
-        
+
         return Page();
     }
 
@@ -86,18 +86,8 @@ public class ConnectedEntityCompanyQuestionModel(ISession session) : PageModel
                         redirectPage = "ConnectedEntityCompanyInsolvencyDate";
                         break;
                     case ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl:
-                        {
-                            switch (state.HasCompaniesHouseNumber)
-                            {
-                                case true:
-                                    redirectPage = "ConnectedEntityControlCondition";
-                                    break;
-                                default:
-                                    redirectPage = "ConnectedEntityOscCompanyQuestion";
-                                    break;
-                            }
-                            break;
-                        }                        
+                        redirectPage = state.HasCompaniesHouseNumber == true ? "ConnectedEntityControlCondition" : "ConnectedEntityOscCompanyQuestion";
+                        break;
                 }
                 break;
             case Constants.ConnectedEntityType.Individual:
