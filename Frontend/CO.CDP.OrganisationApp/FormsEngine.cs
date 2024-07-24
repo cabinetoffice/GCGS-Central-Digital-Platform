@@ -5,10 +5,10 @@ namespace CO.CDP.OrganisationApp;
 
 public class FormsEngine(IFormsClient formsApiClient, ITempDataService tempDataService) : IFormsEngine
 {
-    public async Task<SectionQuestionsResponse> LoadFormSectionAsync(Guid formId, Guid sectionId)
+    public async Task<SectionQuestionsResponse> LoadFormSectionAsync(Guid organisationId, Guid formId, Guid sectionId)
     {
-        var sessionKey = $"SectionQuestionsResponse_{formId}_{sectionId}";
-        var cachedResponse = tempDataService.Get<SectionQuestionsResponse>(sessionKey);
+        var sessionKey = $"Form_{organisationId}_{formId}_{sectionId}_Questions";
+        var cachedResponse = tempDataService.Peek<SectionQuestionsResponse>(sessionKey);
 
         if (cachedResponse != null)
         {
@@ -46,24 +46,24 @@ public class FormsEngine(IFormsClient formsApiClient, ITempDataService tempDataS
         return sectionQuestionsResponse;
     }
 
-    public async Task<Models.FormQuestion?> GetNextQuestion(Guid formId, Guid sectionId, Guid? currentQuestionId)
+    public async Task<Models.FormQuestion?> GetNextQuestion(Guid organisationId, Guid formId, Guid sectionId, Guid? currentQuestionId)
     {
-        return await GetAdjacentQuestion(formId, sectionId, currentQuestionId, 1);
+        return await GetAdjacentQuestion(organisationId, formId, sectionId, currentQuestionId, 1);
     }
 
-    public async Task<Models.FormQuestion?> GetPreviousQuestion(Guid formId, Guid sectionId, Guid? currentQuestionId)
+    public async Task<Models.FormQuestion?> GetPreviousQuestion(Guid organisationId, Guid formId, Guid sectionId, Guid? currentQuestionId)
     {
-        return await GetAdjacentQuestion(formId, sectionId, currentQuestionId, -1);
+        return await GetAdjacentQuestion(organisationId, formId, sectionId, currentQuestionId, -1);
     }
 
-    public async Task<Models.FormQuestion?> GetCurrentQuestion(Guid formId, Guid sectionId, Guid? questionId)
+    public async Task<Models.FormQuestion?> GetCurrentQuestion(Guid organisationId, Guid formId, Guid sectionId, Guid? questionId)
     {
-        return await GetAdjacentQuestion(formId, sectionId, questionId, 0);
+        return await GetAdjacentQuestion(organisationId, formId, sectionId, questionId, 0);
     }
 
-    private async Task<Models.FormQuestion?> GetAdjacentQuestion(Guid formId, Guid sectionId, Guid? currentQuestionId, int offset)
+    private async Task<Models.FormQuestion?> GetAdjacentQuestion(Guid organisationId, Guid formId, Guid sectionId, Guid? currentQuestionId, int offset)
     {
-        var section = await LoadFormSectionAsync(formId, sectionId);
+        var section = await LoadFormSectionAsync(organisationId, formId, sectionId);
         if (section.Questions == null)
         {
             return null;
