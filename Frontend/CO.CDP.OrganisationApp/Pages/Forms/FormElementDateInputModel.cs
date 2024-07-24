@@ -46,7 +46,7 @@ public class FormElementDateInputModel : FormElementModel, IValidatableObject
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
-        if (FormQuestionType == Models.FormQuestionType.Date && IsRequired == true && string.IsNullOrWhiteSpace(DateString))
+        if (CurrentFormQuestionType == FormQuestionType.Date && IsRequired == true && string.IsNullOrWhiteSpace(DateString))
         {
             if (string.IsNullOrWhiteSpace(Day))
             {
