@@ -20,20 +20,9 @@
             <form method="post" enctype="@Model.EncType">
 
                 <fieldset class="govuk-fieldset">
-                    @if (Model.CurrentQuestion != null)
+                    @if (Model.PartialViewName != null && Model.PartialViewModel != null)
                     {
-                        var (partialViewName, viewModel) = Model.GetPartialView(Model.CurrentQuestion.Type);
-                        if (partialViewName != null && viewModel != null)
-                        {
-                            <input type="hidden" name="IsRequired" value="@viewModel.IsRequired.ToString().ToLower()" />
-                            <input type="hidden" name="FormQuestionType" value="@viewModel.FormQuestionType" />
-
-                            @await Html.PartialAsync(partialViewName, viewModel)
-                        }
-                        else
-                        {
-                            <p>Unsupported question type: @Model.CurrentQuestion.Type</p>
-                        }
+                        @await Html.PartialAsync(Model.PartialViewName, Model.PartialViewModel)
                     }
                 </fieldset>
 
