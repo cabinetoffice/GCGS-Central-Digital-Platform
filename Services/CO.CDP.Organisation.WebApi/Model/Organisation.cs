@@ -22,7 +22,7 @@ public record Organisation
 
     public required ContactPoint ContactPoint { get; init; }
 
-    /// <example>["Supplier"]</example>
+    /// <example>["supplier"]</example>
     public required List<PartyRole> Roles { get; init; }
 }
 
