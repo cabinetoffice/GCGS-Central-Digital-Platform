@@ -1,4 +1,4 @@
-﻿using CO.CDP.OrganisationInformation.Persistence.Forms;
+using CO.CDP.OrganisationInformation.Persistence.Forms;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable

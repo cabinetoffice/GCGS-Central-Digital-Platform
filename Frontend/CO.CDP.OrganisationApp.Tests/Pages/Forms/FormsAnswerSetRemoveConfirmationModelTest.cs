@@ -36,7 +36,11 @@ public class FormsAnswerSetRemoveConfirmationModelTest
         _pageModel.AnswerSetId = Guid.NewGuid();
 
         var response = new SectionQuestionsResponse(
-             section: new FormSection(title: "Test Title", allowsMultipleAnswerSets: true, id: Guid.NewGuid()),
+             section: new FormSection(
+                 title: "Test Title",
+                 allowsMultipleAnswerSets: true,
+                 id: Guid.NewGuid(),
+                 configuration: new FormSectionConfiguration(null, null, null, null, null)),
              questions: [],
              answerSets: [new FormAnswerSet(id: _pageModel.AnswerSetId, answers: [])]
              );
@@ -66,7 +70,11 @@ public class FormsAnswerSetRemoveConfirmationModelTest
         _pageModel.AnswerSetId = Guid.NewGuid();
 
         var response = new SectionQuestionsResponse(
-             section: new FormSection(title: "Test Title", allowsMultipleAnswerSets: true, id: Guid.NewGuid()),
+             section: new FormSection(
+                 title: "Test Title",
+                 allowsMultipleAnswerSets: true,
+                 id: Guid.NewGuid(),
+                 configuration: new FormSectionConfiguration(null, null, null, null, null)),
              questions: [],
              answerSets: [new FormAnswerSet(id: _pageModel.AnswerSetId, answers: [])]
              );
@@ -76,7 +84,7 @@ public class FormsAnswerSetRemoveConfirmationModelTest
 
         var result = await _pageModel.OnPost();
 
-        _formsClientMock.Verify(client => client.DeleteFormSectionAnswersAsync(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid>()), Times.Once);
+        _formsClientMock.Verify(client => client.DeleteFormSectionAnswersAsync(It.IsAny<Guid>(), It.IsAny<Guid>()), Times.Once);
 
         result.Should().BeOfType<RedirectToPageResult>().Which.PageName.Should().Be("FormsAddAnotherAnswerSet");
     }
@@ -88,7 +96,11 @@ public class FormsAnswerSetRemoveConfirmationModelTest
         _pageModel.AnswerSetId = Guid.NewGuid();
 
         var response = new SectionQuestionsResponse(
-            section: new FormSection(title: "Test Title", allowsMultipleAnswerSets: true, id: Guid.NewGuid()),
+            section: new FormSection(
+                title: "Test Title",
+                allowsMultipleAnswerSets: true,
+                id: Guid.NewGuid(),
+                configuration: new FormSectionConfiguration(null, null, null, null, null)),
             questions: [],
             answerSets: [new FormAnswerSet(id: _pageModel.AnswerSetId, answers: [])]
             );
@@ -99,7 +111,7 @@ public class FormsAnswerSetRemoveConfirmationModelTest
         var result = await _pageModel.OnPost();
 
 
-        _formsClientMock.Verify(client => client.DeleteFormSectionAnswersAsync(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid>()), Times.Never);
+        _formsClientMock.Verify(client => client.DeleteFormSectionAnswersAsync(It.IsAny<Guid>(), It.IsAny<Guid>()), Times.Never);
         result.Should().BeOfType<RedirectToPageResult>().Which.PageName.Should().Be("FormsAddAnotherAnswerSet");
     }
 }

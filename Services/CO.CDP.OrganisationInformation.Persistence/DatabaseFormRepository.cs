@@ -21,4 +21,20 @@ public class DatabaseFormRepository(OrganisationInformationContext context) : IF
     {
         return await context.Set<FormQuestion>().Where(q => q.Section.Guid == sectionId).ToListAsync();
     }
+
+    public async Task<bool> DeleteAnswerSetAsync(Guid organisationId, Guid answerSetId)
+    {
+        var anserSet = await context.Set<FormAnswerSet>().FirstOrDefaultAsync(a => a.Organisation.Guid == organisationId && a.Guid == answerSetId);
+        if (anserSet == null) return false;
+
+        anserSet.Deleted = true;
+        await context.SaveChangesAsync();
+        return true;
+    }
+
+    public async Task SaveFormAsync(Form form)
+    {
+        context.Update(form);
+        await context.SaveChangesAsync();
+    }
 }

@@ -161,46 +161,38 @@ public class OrganisationInformationContext(DbContextOptions<OrganisationInforma
         base.OnModelCreating(modelBuilder);
     }
 
-    private void OnFormModelCreating(ModelBuilder modelBuilder)
+    private static void OnFormModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Form>()
-            .HasMany<FormSection>(e => e.Sections);
-        modelBuilder.Entity<FormSection>()
-            .ToTable("form_sections");
+            .HasMany(e => e.Sections);
+
+        modelBuilder.Entity<FormSection>(e =>
+        {
+            e.ToTable("form_sections");
+            e.Property(p => p.Configuration)
+                .IsRequired()
+                .HasJsonColumn(new(), PropertyBuilderExtensions.RecordComparer<FormSectionConfiguration>());
+        });
+
         modelBuilder.Entity<FormQuestion>(e =>
         {
             e.ToTable("form_questions");
-            e.HasOne<FormQuestion>(fq => fq.NextQuestion);
-            e.HasOne<FormQuestion>(fq => fq.NextQuestionAlternative);
-            e.Property(p => p.Options).IsRequired()
-                .HasJsonColumn(new FormQuestionOptions(),
-                    PropertyBuilderExtensions.RecordComparer<FormQuestionOptions>());
+            e.HasOne(fq => fq.NextQuestion);
+            e.HasOne(fq => fq.NextQuestionAlternative);
             e.Property(p => p.Options)
-            .HasConversion(
-                v => JsonSerializer.Serialize(v, JsonOptions.SerializerOptions),
-                v => JsonSerializer.Deserialize<FormQuestionOptions>(v, JsonOptions.SerializerOptions) ?? new FormQuestionOptions())
-            .HasColumnType("jsonb");
+                .IsRequired()
+                .HasJsonColumn(new(), PropertyBuilderExtensions.RecordComparer<FormQuestionOptions>());
         });
-
 
         modelBuilder.Entity<FormAnswerSet>(e =>
         {
             e.ToTable("form_answer_sets");
+            e.Property(p => p.Deleted)
+                .IsRequired()
+                .HasDefaultValue(false);
         });
-        modelBuilder.Entity<FormAnswer>(e =>
-        {
-            e.ToTable("form_answers");
-        });
-    }
 
-    public static class JsonOptions
-    {
-        public static readonly JsonSerializerOptions SerializerOptions = new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true,
-            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-            ReferenceHandler = ReferenceHandler.Preserve
-        };
+        modelBuilder.Entity<FormAnswer>().ToTable("form_answers");
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

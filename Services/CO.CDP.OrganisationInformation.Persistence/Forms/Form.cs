@@ -43,6 +43,16 @@ public class FormSection : IEntityDate
     public required Form Form { get; set; }
     public required ICollection<FormQuestion> Questions { get; set; } = [];
     public required bool AllowsMultipleAnswerSets = false;
+    public required FormSectionConfiguration Configuration;
     public DateTimeOffset CreatedOn { get; set; }
     public DateTimeOffset UpdatedOn { get; set; }
+}
+
+public record FormSectionConfiguration
+{
+    public string? SingularSummaryHeading { get; set; }
+    public string? PluralSummaryHeadingFormat { get; set; }
+    public string? AddAnotherAnswerLabel { get; set; }
+    public string? RemoveConfirmationCaption { get; set; }
+    public string? RemoveConfirmationHeading { get; set; }
 }
