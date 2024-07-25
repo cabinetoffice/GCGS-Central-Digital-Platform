@@ -84,7 +84,7 @@ public class ConnectedEntityAddressModel(ISession session) : PageModel
 
         var redirectPage = GetRedirectLinkPageName(state);
 
-        return RedirectToPage(redirectPage, new { Id, ConnectedEntityId });        
+        return RedirectToPage(redirectPage, new { Id, ConnectedEntityId });
     }
 
     private string GetRedirectLinkPageName(ConnectedEntityState state)
@@ -95,17 +95,45 @@ public class ConnectedEntityAddressModel(ISession session) : PageModel
             case Constants.ConnectedEntityType.Organisation:
                 switch (state.ConnectedEntityOrganisationCategoryType)
                 {
+                    case ConnectedEntityOrganisationCategoryType.RegisteredCompany:
+                    case ConnectedEntityOrganisationCategoryType.ParentOrSubsidiaryCompany:
                     case ConnectedEntityOrganisationCategoryType.ACompanyYourOrganisationHasTakenOver:
                     case ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl:
                         redirectPage = (AddressType == AddressType.Postal && state.PostalAddress != null) ?
                             "ConnectedEntityCompanyQuestion" : "ConnectedEntityPostalSameAsRegisteredAddress";
                         break;
+                    case ConnectedEntityOrganisationCategoryType.DirectorOrTheSameResponsibilities:
+                        redirectPage = "ConnectedEntityLawRegister";
+                        break;
                 }
                 break;
             case Constants.ConnectedEntityType.Individual:
-                redirectPage= "ConnectedEntityControlCondition";
+                switch (state.ConnectedEntityIndividualAndTrustCategoryType)
+                {
+                    case ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndividual:
+                        redirectPage = (AddressType == AddressType.Postal && state.PostalAddress != null) ?
+                            "ConnectedEntityControlCondition" : "ConnectedEntityPostalSameAsRegisteredAddress";
+                        break;
+                    case ConnectedEntityIndividualAndTrustCategoryType.DirectorOrIndividualWithTheSameResponsibilitiesForIndividual:
+                        break;
+                    case ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndividualWithSignificantInfluenceOrControlForIndividual:
+                        redirectPage = "";
+                        break;
+                }
                 break;
             case Constants.ConnectedEntityType.TrustOrTrustee:
+                switch (state.ConnectedEntityIndividualAndTrustCategoryType)
+                {
+                    case ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForTrust:
+                        redirectPage = (AddressType == AddressType.Postal && state.PostalAddress != null) ?
+                            "ConnectedEntityControlCondition" : "ConnectedEntityPostalSameAsRegisteredAddress";
+                        break;
+                    case ConnectedEntityIndividualAndTrustCategoryType.DirectorOrIndividualWithTheSameResponsibilitiesForTrust:
+                        break;
+                    case ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndividualWithSignificantInfluenceOrControlForTrust:
+                        redirectPage = "";
+                        break;
+                }
                 break;
         }
 
@@ -165,18 +193,34 @@ public class ConnectedEntityAddressModel(ISession session) : PageModel
                 }
                 break;
             case ConnectedEntityType.Individual:
-                if (AddressType == AddressType.Registered)
+                switch (state.ConnectedEntityIndividualAndTrustCategoryType)
                 {
-                    heading = $"Enter {state.OrganisationName}'s registered address";
-                    hintValue = "The address registered with Companies House, or the principal address the business conducts its activities. For example, a head office.";
+                    case ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndividual:
+                        heading = $"Enter {state.FirstName}'s registered address";
+                        hintValue = "The address registered with Companies House, or the principal address the business conducts its activities. For example, a head office.";
+                        break;
+                    case ConnectedEntityIndividualAndTrustCategoryType.DirectorOrIndividualWithTheSameResponsibilitiesForIndividual:
+                        break;
+                    case ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndividualWithSignificantInfluenceOrControlForIndividual:
+                        heading = $"Enter {state.FirstName}'s registered address";
+                        hintValue = "The address registered with Companies House, or the principal address the business conducts its activities. For example, a head office.";
+                        break;
                 }
-                else if (AddressType == AddressType.Postal)
-                {
-                    heading = $"Enter {state.OrganisationName}'s postal address";
-                }
-                break;              
+                break;
             case ConnectedEntityType.TrustOrTrustee:
-                //TODO 3: modify value of heading & hint when working on Trust
+                switch (state.ConnectedEntityIndividualAndTrustCategoryType)
+                {
+                    case ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForTrust:
+                        heading = $"Enter {state.FirstName}'s registered address";
+                        hintValue = "The address registered with Companies House, or the principal address the business conducts its activities. For example, a head office.";
+                        break;
+                    case ConnectedEntityIndividualAndTrustCategoryType.DirectorOrIndividualWithTheSameResponsibilitiesForTrust:
+                        break;
+                    case ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndividualWithSignificantInfluenceOrControlForTrust:
+                        heading = $"Enter {state.FirstName}'s registered address";
+                        hintValue = "The address registered with Companies House, or the principal address the business conducts its activities. For example, a head office.";
+                        break;
+                }
                 break;
         }
 

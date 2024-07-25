@@ -43,12 +43,7 @@ public class ConnectedEntityIndividualCategoryModel(ISession session) : PageMode
         state.ConnectedEntityIndividualAndTrustCategoryType = ConnectedEntityCategory;
         session.Set(Session.ConnectedPersonKey, state);
 
-        /// To do: This needs to be updated when all the screens in this flow are done
-        //return RedirectToPage(GetRedirectLinkPageName(state), new { Id });
-
-        return RedirectToPage("ConnectedEntityAddress",
-            new { Id, ConnectedEntityId, AddressType = AddressType.Registered, UkOrNonUk = "uk" });
-        ///------------------------------------------------------------------------------------
+        return RedirectToPage(GetRedirectLinkPageName(state), new { Id });
     }
 
     public static Dictionary<string, string> ConnectedEntityCategoryOption => new()
@@ -69,11 +64,9 @@ public class ConnectedEntityIndividualCategoryModel(ISession session) : PageMode
                 switch (state.ConnectedEntityIndividualAndTrustCategoryType)
                 {
                     case ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndividual:
-                        redirectPage = "ConnectedEntityAddress";
-                        break;
                     case ConnectedEntityIndividualAndTrustCategoryType.DirectorOrIndividualWithTheSameResponsibilitiesForIndividual:
-                        break;
                     case ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndividualWithSignificantInfluenceOrControlForIndividual:
+                        redirectPage = "ConnectedEntityPscDetails";
                         break;
                 }
                 break;
@@ -81,10 +74,9 @@ public class ConnectedEntityIndividualCategoryModel(ISession session) : PageMode
                 switch (state.ConnectedEntityIndividualAndTrustCategoryType)
                 {
                     case ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForTrust:
-                        break;
                     case ConnectedEntityIndividualAndTrustCategoryType.DirectorOrIndividualWithTheSameResponsibilitiesForTrust:
-                        break;
                     case ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndividualWithSignificantInfluenceOrControlForTrust:
+                        redirectPage = "ConnectedEntityPscDetails";
                         break;
                 }
                 break;
