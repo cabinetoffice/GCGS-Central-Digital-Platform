@@ -56,7 +56,7 @@ public class ConnectedEntityState
         return ConnectedEntityType switch
         {
             Constants.ConnectedEntityType.Organisation => ConnectedEntityOrganisationCategoryType?.Catption(SupplierHasCompanyHouseNumber ?? false) ?? "",
-            Constants.ConnectedEntityType.Individual => "",
+            Constants.ConnectedEntityType.Individual => "person with significant control",
             Constants.ConnectedEntityType.TrustOrTrustee => "",
             _ => "",
         };

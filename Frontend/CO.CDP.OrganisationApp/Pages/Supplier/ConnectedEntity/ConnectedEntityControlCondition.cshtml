@@ -75,6 +75,15 @@
                                     <a href="https://www.gov.uk/government/publications/guidance-to-the-people-with-significant-control-requirements-for-companies-and-limited-liability-partnerships" target="_blank">person of significant control (PSC) guidance</a>
                                 </div>
                             </div>
+                            <div class="govuk-checkboxes__divider">or</div>
+                            <div class="govuk-checkboxes__item">
+                                <input class="govuk-checkboxes__input" id="natureOfControl-4" name="ControlConditions" type="checkbox"
+                                       value="@ConnectedEntityControlCondition.None" @IsSelected(ConnectedEntityControlCondition.None)
+                                       data-behaviour="exclusive">                                
+                                <label class="govuk-label govuk-checkboxes__label" for="natureOfControl-4">
+                                    None apply
+                                </label>
+                            </div>
                         </div>
                     </fieldset>
                 </div>

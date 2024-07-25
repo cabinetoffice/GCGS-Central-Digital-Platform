@@ -22,7 +22,7 @@ public class ConnectedEntityControlConditionModel(ISession session) : PageModel
     public string? Caption { get; set; }
 
     public string? Heading { get; set; }
-        
+
     public IActionResult OnGet()
     {
         var (valid, state) = ValidatePage();
@@ -76,7 +76,7 @@ public class ConnectedEntityControlConditionModel(ISession session) : PageModel
 
         if (reset)
         {
-            ControlConditions = state.ControlConditions;            
+            ControlConditions = state.ControlConditions;
         }
     }
 
@@ -105,7 +105,14 @@ public class ConnectedEntityControlConditionModel(ISession session) : PageModel
                         break;
                 }
                 break;
-            case Constants.ConnectedEntityType.Individual:
+            case ConnectedEntityType.Individual:
+                switch (state.ConnectedEntityIndividualAndTrustCategoryType)
+                {
+                    case ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndividual:
+                    case ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndividualWithSignificantInfluenceOrControlForIndividual:
+                        redirectPage = "ConnectedEntityCompanyRegistrationDate";
+                        break;
+                }
                 break;
             case Constants.ConnectedEntityType.TrustOrTrustee:
                 break;
