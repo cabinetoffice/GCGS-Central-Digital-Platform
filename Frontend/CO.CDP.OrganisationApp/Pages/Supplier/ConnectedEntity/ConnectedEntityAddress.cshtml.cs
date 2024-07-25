@@ -103,6 +103,7 @@ public class ConnectedEntityAddressModel(ISession session) : PageModel
                 }
                 break;
             case Constants.ConnectedEntityType.Individual:
+                redirectPage= "ConnectedEntityControlCondition";
                 break;
             case Constants.ConnectedEntityType.TrustOrTrustee:
                 break;
@@ -153,6 +154,10 @@ public class ConnectedEntityAddressModel(ISession session) : PageModel
                         {
                             heading = $"Enter {state.OrganisationName}'s last known registered UK address";
                         }
+                        else if (AddressType == AddressType.Postal)
+                        {
+                            heading = $"Enter {state.OrganisationName}'s postal address";
+                        }
                         break;
                     case ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl:
                         heading = $"Enter {state.OrganisationName}'s address";
@@ -160,8 +165,16 @@ public class ConnectedEntityAddressModel(ISession session) : PageModel
                 }
                 break;
             case ConnectedEntityType.Individual:
-                //TODO 3: modify value of heading & hint when working on Individual
-                break;
+                if (AddressType == AddressType.Registered)
+                {
+                    heading = $"Enter {state.OrganisationName}'s registered address";
+                    hintValue = "The address registered with Companies House, or the principal address the business conducts its activities. For example, a head office.";
+                }
+                else if (AddressType == AddressType.Postal)
+                {
+                    heading = $"Enter {state.OrganisationName}'s postal address";
+                }
+                break;              
             case ConnectedEntityType.TrustOrTrustee:
                 //TODO 3: modify value of heading & hint when working on Trust
                 break;

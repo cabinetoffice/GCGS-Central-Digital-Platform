@@ -61,7 +61,7 @@ public class ConnectedEntityIndividualCategoryTest
 
 
     [Theory]    
-    [InlineData(Constants.ConnectedEntityType.Individual, "ConnectedEntityPscDetails")]
+    [InlineData(Constants.ConnectedEntityType.Individual, "ConnectedEntityAddress")]
     public void OnPost_ShouldRedirectToConnectedEntityPscDetailsPage(Constants.ConnectedEntityType connectedEntityType, string expectedRedirectPage)
     {
         var state = DummyConnectedPersonDetails();
