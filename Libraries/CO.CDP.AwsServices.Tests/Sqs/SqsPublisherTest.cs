@@ -2,10 +2,12 @@ using System.Text.Json;
 using Amazon.Runtime;
 using Amazon.SQS;
 using Amazon.SQS.Model;
-using CO.CDP.MQ.Sqs;
+using CO.CDP.AwsServices.Sqs;
+using CO.CDP.MQ;
+using CO.CDP.MQ.Tests;
 using FluentAssertions;
 
-namespace CO.CDP.MQ.Tests.Sqs;
+namespace CO.CDP.AwsServices.Tests.Sqs;
 
 public class SqsPublisherTest : PublisherContractTest, IClassFixture<LocalStackFixture>
 {
@@ -38,8 +40,8 @@ public class SqsPublisherTest : PublisherContractTest, IClassFixture<LocalStackF
     protected override async Task<IPublisher> CreatePublisher()
     {
         var queue = await _sqsClient.CreateQueueAsync(new CreateQueueRequest { QueueName = TestQueue });
-        var queueUrl = queue.QueueUrl;
-        return new SqsPublisher(_sqsClient, _ => Task.FromResult(queueUrl), o => JsonSerializer.Serialize(o));
+        var queueUrl = queue.QueueUrl ?? "";
+        return new SqsPublisher(_sqsClient, new SqsPublisherConfiguration { QueueUrl = queueUrl });
     }
 
     private AmazonSQSClient SqsClient()
