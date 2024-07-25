@@ -20,7 +20,14 @@ public class OrganisationRegisteredEventHandler(IPponService pponService,
 
         newPpon.Identifiers = Identifier.GetPersistenceIdentifiers(@event.AllIdentifiers(), newPpon);
 
+        PponGenerated pponGenerated = new()
+        {
+            Id = newPpon.IdentifierId,
+            LegalName = @event.Identifier.LegalName,
+            Scheme = @event.Identifier.Scheme
+        };
+
         pponRepository.Save(newPpon);
-        await publisher.Publish(newPpon.IdentifierId);
+        await publisher.Publish(pponGenerated);
     }
 }
