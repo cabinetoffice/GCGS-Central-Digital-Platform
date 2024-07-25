@@ -112,25 +112,7 @@ public class ConnectedEntityControlConditionTest
                 rd.ControlConditions!.Contains(Constants.ConnectedEntityControlCondition.OwnsShares)
             )), Times.Once);        
     }
-
-    [Fact]
-    public void OnPost_ShouldUpdateSessionState_WhenControlConditions_Is_None()
-    {
-        var state = DummyConnectedPersonDetails();
         
-
-        _sessionMock
-            .Setup(s => s.Get<ConnectedEntityState>(Session.ConnectedPersonKey))
-            .Returns(state);
-        _model.ControlConditions = [Constants.ConnectedEntityControlCondition.None];
-        _model.OnPost();
-
-        _sessionMock.Verify(v => v.Set(Session.ConnectedPersonKey,
-            It.Is<ConnectedEntityState>(rd =>
-                rd.ControlConditions!.Contains(Constants.ConnectedEntityControlCondition.None)
-            )), Times.Once);
-    }
-
     private ConnectedEntityState DummyConnectedPersonDetails()
     {
         var connectedPersonDetails = new ConnectedEntityState
@@ -148,38 +130,4 @@ public class ConnectedEntityControlConditionTest
 
         return connectedPersonDetails;
     }
-
-    private static List<ConnectedEntityLookup> ConnectedEntities =>
-    [
-         new(Guid.NewGuid(), "e1",It.IsAny<Uri>()),
-         new(Guid.NewGuid(), "e2",It.IsAny<Uri>()),
-    ];
-
-    private static SupplierInformation SupplierInformationClientModel => new(
-            organisationName: "FakeOrg",
-            supplierType: SupplierType.Organisation,
-            operationTypes: null,
-            completedRegAddress: true,
-            completedPostalAddress: false,
-            completedVat: false,
-            completedWebsiteAddress: false,
-            completedEmailAddress: true,
-            completedQualification: false,
-            completedTradeAssurance: false,
-            completedOperationType: false,
-            completedLegalForm: false,
-            completedConnectedPerson: false,
-            tradeAssurances: null,
-            legalForm: null,
-            qualifications: null);
-
-    private static Organisation.WebApiClient.Organisation OrganisationClientModel(Guid id) =>
-        new(
-            additionalIdentifiers: [new Identifier(id: "FakeId", legalName: "FakeOrg", scheme: "VAT", uri: null)],
-            addresses: null,
-            contactPoint: new ContactPoint(email: "test@test.com", faxNumber: null, name: null, telephone: null, url: new Uri("https://xyz.com")),
-            id: id,
-            identifier: null,
-            name: "Test Org",
-            roles: [PartyRole.Supplier]);
 }

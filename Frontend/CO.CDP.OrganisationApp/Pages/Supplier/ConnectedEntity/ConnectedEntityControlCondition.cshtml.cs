@@ -105,16 +105,27 @@ public class ConnectedEntityControlConditionModel(ISession session) : PageModel
                         break;
                 }
                 break;
-            case ConnectedEntityType.Individual:
+            case Constants.ConnectedEntityType.Individual:
                 switch (state.ConnectedEntityIndividualAndTrustCategoryType)
                 {
                     case ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndividual:
+                        redirectPage = "ConnectedEntityCompanyRegistrationDate";
+                        break;
                     case ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndividualWithSignificantInfluenceOrControlForIndividual:
                         redirectPage = "ConnectedEntityCompanyRegistrationDate";
                         break;
                 }
                 break;
             case Constants.ConnectedEntityType.TrustOrTrustee:
+                switch (state.ConnectedEntityIndividualAndTrustCategoryType)
+                {
+                    case ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForTrust:
+                        redirectPage = "ConnectedEntityCompanyRegistrationDate";
+                        break;
+                    case ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndividualWithSignificantInfluenceOrControlForTrust:
+                        redirectPage = "ConnectedEntityCompanyRegistrationDate";
+                        break;
+                }
                 break;
         }
 
