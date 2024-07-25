@@ -119,7 +119,7 @@ public class ConnectedEntityCompanyRegistrationDateModel(ISession session) : Pag
                 {
                     case ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndividual:
                     case ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndividualWithSignificantInfluenceOrControlForIndividual:
-                        redirectPage = "<<Check Answer>>";
+                        redirectPage = "ConnectedEntityCheckAnswersIndividualOrTrust";
                         break;
                 }
                 break;
@@ -128,7 +128,7 @@ public class ConnectedEntityCompanyRegistrationDateModel(ISession session) : Pag
                 {
                     case ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForTrust:
                     case ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndividualWithSignificantInfluenceOrControlForTrust:
-                        redirectPage = "<<Check Answer>>";
+                        redirectPage = "ConnectedEntityCheckAnswersIndividualOrTrust";
                         break;
                 }
                 break;
