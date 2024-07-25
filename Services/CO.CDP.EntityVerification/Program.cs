@@ -35,10 +35,12 @@ if (Assembly.GetEntryAssembly().IsRunAs("CO.CDP.EntityVerification"))
             services =>
             {
                 services.AddScoped<ISubscriber<OrganisationRegistered>, OrganisationRegisteredSubscriber>();
+                services.AddScoped<ISubscriber<OrganisationUpdated>, OrganisationUpdatedSubscriber>();
             },
             (services, dispatcher) =>
             {
                 dispatcher.Subscribe<OrganisationRegistered>(services);
+                dispatcher.Subscribe<OrganisationUpdated>(services);
             }
         );
     builder.Services.AddHostedService<QueueBackgroundService>();

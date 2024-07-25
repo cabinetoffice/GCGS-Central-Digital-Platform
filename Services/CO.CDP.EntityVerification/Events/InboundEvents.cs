@@ -18,3 +18,17 @@ public record OrganisationRegistered : IEvent
 
     public required List<string> Roles { get; init; }
 }
+
+public record OrganisationUpdated : IEvent
+{
+    /// <example>"d2dab085ec23481cb970ee6b372f9f57"</example>
+    public required string PponId { get; init; }
+
+    public required Identifier Identifier { get; init; }
+
+    public List<Identifier> AdditionalIdentifiers { get; init; } = [];
+
+    public IEnumerable<Identifier> AllIdentifiers() => Identifier != null ? AdditionalIdentifiers.Prepend(Identifier) : AdditionalIdentifiers;
+
+    public required List<string> Roles { get; init; }
+}

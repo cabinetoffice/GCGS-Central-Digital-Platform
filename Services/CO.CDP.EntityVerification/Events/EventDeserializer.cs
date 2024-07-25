@@ -13,6 +13,11 @@ public static class EventDeserializer
             return Deserialize<OrganisationRegistered>(type, body);
         }
 
+        if (type == "OrganisationUpdated")
+        {
+            return Deserialize<OrganisationUpdated>(type, body);
+        }
+
         throw new UnknownEventException($"Unrecognised type `{type}` for event `{body}`.");
     };
 
