@@ -84,7 +84,7 @@ public class FormsAnswerSetRemoveConfirmationModelTest
 
         var result = await _pageModel.OnPost();
 
-        _formsClientMock.Verify(client => client.DeleteFormSectionAnswersAsync(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid>()), Times.Once);
+        _formsClientMock.Verify(client => client.DeleteFormSectionAnswersAsync(It.IsAny<Guid>(), It.IsAny<Guid>()), Times.Once);
 
         result.Should().BeOfType<RedirectToPageResult>().Which.PageName.Should().Be("FormsAddAnotherAnswerSet");
     }
@@ -111,7 +111,7 @@ public class FormsAnswerSetRemoveConfirmationModelTest
         var result = await _pageModel.OnPost();
 
 
-        _formsClientMock.Verify(client => client.DeleteFormSectionAnswersAsync(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid>()), Times.Never);
+        _formsClientMock.Verify(client => client.DeleteFormSectionAnswersAsync(It.IsAny<Guid>(), It.IsAny<Guid>()), Times.Never);
         result.Should().BeOfType<RedirectToPageResult>().Which.PageName.Should().Be("FormsAddAnotherAnswerSet");
     }
 }

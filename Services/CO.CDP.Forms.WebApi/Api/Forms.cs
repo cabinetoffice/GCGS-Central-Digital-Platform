@@ -56,7 +56,7 @@ public static class EndpointExtensions
 
         app.MapPost("/forms/{formId}/sections/{sectionId}/answers/{answerSetId}/files", (Guid formId, Guid sectionId, Guid answerSetId) =>
             {
-            return Results.NoContent();
+                return Results.NoContent();
             })
             .Produces(StatusCodes.Status201Created)
             .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
@@ -74,10 +74,10 @@ public static class EndpointExtensions
                 return operation;
             });
 
-        app.MapDelete("/forms/{formId}/sections/{sectionId}/answers/{answerSetId}", (Guid formId, Guid sectionId, Guid answerSetId) =>
-            {
-                return Results.NoContent();
-            })
+        app.MapDelete("/forms/answer-sets/{answerSetId}",
+                async (Guid answerSetId, [FromQuery(Name = "organisation-id")] Guid organisationId, IUseCase<(Guid, Guid), bool> useCase) =>
+                 await useCase.Execute((organisationId, answerSetId))
+                    .AndThen(success => success ? Results.NoContent() : Results.NotFound()))
             .Produces(StatusCodes.Status204NoContent)
             .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
             .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
