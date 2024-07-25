@@ -4,6 +4,8 @@ using Amazon.Runtime;
 using Amazon.S3;
 using Amazon.SQS;
 using CO.CDP.AwsServices.S3;
+using CO.CDP.AwsServices.Sqs;
+using CO.CDP.MQ;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -50,5 +52,10 @@ public static class Extensions
     {
         return services
             .AddAWSService<IAmazonSQS>();
+    }
+
+    public static IServiceCollection AddSqsPublisher(this IServiceCollection services)
+    {
+        return services.AddScoped<IPublisher, SqsPublisher>();
     }
 }

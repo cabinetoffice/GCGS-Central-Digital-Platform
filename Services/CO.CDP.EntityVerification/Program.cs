@@ -31,9 +31,9 @@ if (Assembly.GetEntryAssembly().IsRunAs("CO.CDP.EntityVerification"))
 {
     builder.Services
         .AddAwsCofiguration(builder.Configuration)
-        .AddAwsSqsService();
+        .AddAwsSqsService()
+        .AddSqsPublisher();
     builder.Services.AddScoped<OrganisationRegisteredEventHandler>();
-    builder.Services.AddScoped<IPublisher, SqsPublisher>();
     builder.Services.AddScoped<IEventHandler<OrganisationRegistered>, OrganisationRegisteredEventHandler>();
     builder.Services.AddScoped<IDispatcher, SqsDispatcher>(s =>
     {
