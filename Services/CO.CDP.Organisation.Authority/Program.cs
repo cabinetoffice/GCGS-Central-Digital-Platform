@@ -9,7 +9,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.ConfigureForwardedHeaders();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(o => { o.DocumentApi(); });
-builder.Services.AddHealthChecks();
+builder.Services.AddHealthChecks()
+    .AddNpgSql(builder.Configuration.GetConnectionString("OrganisationInformationDatabase") ?? "");
 builder.Services.AddProblemDetails();
 
 builder.Services.AddAutoMapper(typeof(WebApiToPersistenceProfile));

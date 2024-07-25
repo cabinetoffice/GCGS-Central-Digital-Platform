@@ -113,6 +113,24 @@ public class ConnectedEntityControlConditionTest
             )), Times.Once);        
     }
 
+    [Fact]
+    public void OnPost_ShouldUpdateSessionState_WhenControlConditions_Is_None()
+    {
+        var state = DummyConnectedPersonDetails();
+        
+
+        _sessionMock
+            .Setup(s => s.Get<ConnectedEntityState>(Session.ConnectedPersonKey))
+            .Returns(state);
+        _model.ControlConditions = [Constants.ConnectedEntityControlCondition.None];
+        _model.OnPost();
+
+        _sessionMock.Verify(v => v.Set(Session.ConnectedPersonKey,
+            It.Is<ConnectedEntityState>(rd =>
+                rd.ControlConditions!.Contains(Constants.ConnectedEntityControlCondition.None)
+            )), Times.Once);
+    }
+
     private ConnectedEntityState DummyConnectedPersonDetails()
     {
         var connectedPersonDetails = new ConnectedEntityState
