@@ -1,7 +1,5 @@
 using System.Reflection;
-using Amazon.SQS;
 using CO.CDP.AwsServices;
-using CO.CDP.AwsServices.Sqs;
 using CO.CDP.Configuration.Assembly;
 using CO.CDP.EntityVerification.Api;
 using CO.CDP.EntityVerification.Events;
@@ -11,7 +9,6 @@ using CO.CDP.EntityVerification.Persistence;
 using CO.CDP.EntityVerification.Ppon;
 using CO.CDP.MQ;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,18 +29,18 @@ if (Assembly.GetEntryAssembly().IsRunAs("CO.CDP.EntityVerification"))
     builder.Services
         .AddAwsCofiguration(builder.Configuration)
         .AddAwsSqsService()
-        .AddSqsPublisher();
-    builder.Services.AddScoped<ISubscriber<OrganisationRegistered>, OrganisationRegisteredSubscriber>();
-    builder.Services.AddScoped<Deserializer>(_ => EventDeserializer.Deserializer);
-    builder.Services.AddScoped<IDispatcher, SqsDispatcher>(s =>
-    {
-        var dispatcher = new SqsDispatcher(
-            s.GetRequiredService<IAmazonSQS>(),
-            s.GetRequiredService<IOptions<AwsConfiguration>>(),
-            s.GetRequiredService<Deserializer>());
-        dispatcher.Subscribe(s.GetRequiredService<ISubscriber<OrganisationRegistered>>());
-        return dispatcher;
-    });
+        .AddSqsPublisher()
+        .AddSqsDispatcher(
+            EventDeserializer.Deserializer,
+            services =>
+            {
+                services.AddScoped<ISubscriber<OrganisationRegistered>, OrganisationRegisteredSubscriber>();
+            },
+            (services, dispatcher) =>
+            {
+                dispatcher.Subscribe<OrganisationRegistered>(services);
+            }
+        );
     builder.Services.AddHostedService<QueueBackgroundService>();
 }
 
