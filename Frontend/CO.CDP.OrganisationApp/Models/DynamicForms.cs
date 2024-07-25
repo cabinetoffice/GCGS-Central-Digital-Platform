@@ -23,7 +23,6 @@ public class FormQuestion
     public string? Title { get; set; }
     public string? Description { get; set; }
     public FormQuestionOptions Options { get; set; } = new();
-    public bool IsCheckYourAnswers => Type == FormQuestionType.CheckYourAnswers;
 }
 
 public class FormQuestionOptions
