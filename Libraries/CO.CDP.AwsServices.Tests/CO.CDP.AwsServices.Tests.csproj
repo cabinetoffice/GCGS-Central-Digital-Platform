@@ -22,6 +22,7 @@
         <PackageReference Include="Testcontainers" Version="3.9.0" />
         <PackageReference Include="Testcontainers.LocalStack" Version="3.9.0" />
         <ProjectReference Include="..\CO.CDP.AwsServices\CO.CDP.AwsServices.csproj" />
+        <ProjectReference Include="..\CO.CDP.MQ.Tests\CO.CDP.MQ.Tests.csproj" />
     </ItemGroup>
 
     <ItemGroup>

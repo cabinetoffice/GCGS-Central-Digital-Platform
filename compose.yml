@@ -57,8 +57,7 @@ services:
       # LocalStack configuration: https://docs.localstack.cloud/references/configuration/
       SERVICES: sqs,s3
       DEBUG: 0
-      REGION: eu-west-1
-      QUEUES: ev-inbound,ev-outbound
+      SQS_QUEUES: ev-inbound,ev-outbound
       S3_BUCKETS: cdp-staging-bucket.s3,cdp-permanent-bucket.s3
     volumes:
       - './docker/localstack/ready.d:/etc/localstack/init/ready.d:ro'
@@ -115,6 +114,7 @@ services:
       PersonService: '${PersonService:-http://gateway:${CDP_PERSON_PORT:-8084}}'
       FormsService: '${FormsService:-http://gateway:${CDP_FORMS_PORT:-8086}}'
       Organisation__Authority: '${Organisation__Authority:-http://gateway:${CDP_AUTHORITY_PORT:-8092}}'
+      Aws__ServiceURL: "http://localstack:4566"
 
   authority:
     container_name: co-cdp-authority
@@ -255,4 +255,4 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: Production
       ConnectionStrings__EvDatabase: 'Server=db;Database=cdp;Username=cdp_user;Password=cdp123;'
-      Sqs__ServiceURL: "http://localstack:4566"
+      Aws__ServiceURL: "http://localstack:4566"

@@ -21,8 +21,6 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="FluentAssertions" Version="6.12.0" />
-        <PackageReference Include="Testcontainers" Version="3.9.0" />
-        <PackageReference Include="Testcontainers.LocalStack" Version="3.9.0" />
         <ProjectReference Include="..\CO.CDP.MQ\CO.CDP.MQ.csproj" />
     </ItemGroup>
 
