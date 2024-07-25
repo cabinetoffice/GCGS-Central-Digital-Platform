@@ -1,4 +1,6 @@
+using System.Reflection;
 using CO.CDP.Authentication;
+using CO.CDP.Configuration.Assembly;
 using CO.CDP.Configuration.ForwardedHeaders;
 using CO.CDP.OrganisationInformation.Persistence;
 using CO.CDP.Tenant.WebApi.Api;
@@ -17,9 +19,8 @@ builder.ConfigureForwardedHeaders();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options => { options.DocumentTenantApi(); });
+builder.Services.AddHealthChecks();
 
-builder.Services.AddHealthChecks()
-    .AddNpgSql(builder.Configuration.GetConnectionString("OrganisationInformationDatabase") ?? "");
 builder.Services.AddAutoMapper(typeof(WebApiToPersistenceProfile));
 
 builder.Services.AddDbContext<OrganisationInformationContext>(o =>
@@ -37,6 +38,11 @@ builder.Services.AddJwtBearerAndApiKeyAuthentication(builder.Configuration, buil
 builder.Services.AddOrganisationAuthorization();
 builder.Services.AddHttpContextAccessor();
 
+if (Assembly.GetEntryAssembly().IsRunAs("CO.CDP.Tenant.WebApi"))
+{
+    builder.Services.AddHealthChecks()
+        .AddNpgSql(builder.Configuration.GetConnectionString("OrganisationInformationDatabase") ?? "");
+}
 
 var app = builder.Build();
 app.UseForwardedHeaders();
