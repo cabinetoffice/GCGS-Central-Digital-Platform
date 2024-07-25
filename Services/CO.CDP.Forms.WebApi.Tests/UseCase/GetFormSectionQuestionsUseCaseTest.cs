@@ -47,7 +47,14 @@ public class GetFormSectionQuestionsUseCaseTest(AutoMapperFixture mapperFixture)
             Questions = new List<CO.CDP.OrganisationInformation.Persistence.Forms.FormQuestion>(),
             AllowsMultipleAnswerSets = true,
             CreatedOn = DateTimeOffset.UtcNow,
-            UpdatedOn = DateTimeOffset.UtcNow
+            UpdatedOn = DateTimeOffset.UtcNow,
+            Configuration = new OrganisationInformation.Persistence.Forms.FormSectionConfiguration {
+                PluralSummaryHeadingFormat = "You have added {0} files",
+                SingularSummaryHeading = "You have added 1 file",
+                AddAnotherAnswerLabel = "Add another file?",
+                RemoveConfirmationCaption = "Economic and Financial Standing",
+                RemoveConfirmationHeading = "Are you sure you want to remove this file?"
+            }
         };
 
         var questions = new List<CO.CDP.OrganisationInformation.Persistence.Forms.FormQuestion>
@@ -92,7 +99,15 @@ public class GetFormSectionQuestionsUseCaseTest(AutoMapperFixture mapperFixture)
         {
             Id = sectionId,
             Title = "Financial Information",
-            AllowsMultipleAnswerSets = true
+            AllowsMultipleAnswerSets = true,
+            Configuration = new FormSectionConfiguration
+            {
+                PluralSummaryHeadingFormat = "You have added {0} files",
+                SingularSummaryHeading = "You have added 1 file",
+                AddAnotherAnswerLabel = "Add another file?",
+                RemoveConfirmationCaption = "Economic and Financial Standing",
+                RemoveConfirmationHeading = "Are you sure you want to remove this file?"
+            }
         });
 
         result?.Questions.Should().BeEquivalentTo(new List<FormQuestion>

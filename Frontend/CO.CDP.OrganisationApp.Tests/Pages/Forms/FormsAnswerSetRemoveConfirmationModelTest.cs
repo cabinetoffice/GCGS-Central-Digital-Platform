@@ -36,7 +36,11 @@ public class FormsAnswerSetRemoveConfirmationModelTest
         _pageModel.AnswerSetId = Guid.NewGuid();
 
         var response = new SectionQuestionsResponse(
-             section: new FormSection(title: "Test Title", allowsMultipleAnswerSets: true, id: Guid.NewGuid()),
+             section: new FormSection(
+                 title: "Test Title",
+                 allowsMultipleAnswerSets: true,
+                 id: Guid.NewGuid(),
+                 configuration: new FormSectionConfiguration(null, null, null, null, null)),
              questions: [],
              answerSets: [new FormAnswerSet(id: _pageModel.AnswerSetId, answers: [])]
              );
@@ -66,7 +70,11 @@ public class FormsAnswerSetRemoveConfirmationModelTest
         _pageModel.AnswerSetId = Guid.NewGuid();
 
         var response = new SectionQuestionsResponse(
-             section: new FormSection(title: "Test Title", allowsMultipleAnswerSets: true, id: Guid.NewGuid()),
+             section: new FormSection(
+                 title: "Test Title",
+                 allowsMultipleAnswerSets: true,
+                 id: Guid.NewGuid(),
+                 configuration: new FormSectionConfiguration(null, null, null, null, null)),
              questions: [],
              answerSets: [new FormAnswerSet(id: _pageModel.AnswerSetId, answers: [])]
              );
@@ -88,7 +96,11 @@ public class FormsAnswerSetRemoveConfirmationModelTest
         _pageModel.AnswerSetId = Guid.NewGuid();
 
         var response = new SectionQuestionsResponse(
-            section: new FormSection(title: "Test Title", allowsMultipleAnswerSets: true, id: Guid.NewGuid()),
+            section: new FormSection(
+                title: "Test Title",
+                allowsMultipleAnswerSets: true,
+                id: Guid.NewGuid(),
+                configuration: new FormSectionConfiguration(null, null, null, null, null)),
             questions: [],
             answerSets: [new FormAnswerSet(id: _pageModel.AnswerSetId, answers: [])]
             );
