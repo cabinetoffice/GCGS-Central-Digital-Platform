@@ -154,6 +154,10 @@ public class ConnectedEntityAddressModel(ISession session) : PageModel
                         {
                             heading = $"Enter {state.OrganisationName}'s last known registered UK address";
                         }
+                        else if (AddressType == AddressType.Postal)
+                        {
+                            heading = $"Enter {state.OrganisationName}'s postal address";
+                        }
                         break;
                     case ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl:
                         heading = $"Enter {state.OrganisationName}'s address";
