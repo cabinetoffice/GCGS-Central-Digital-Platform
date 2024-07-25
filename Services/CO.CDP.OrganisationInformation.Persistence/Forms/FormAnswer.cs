@@ -51,7 +51,7 @@ public class FormAnswerSet : IEntityDate
 
     public required FormSection Section { get; init; }
     public required ICollection<FormAnswer> Answers { get; init; }
-    public required bool Deleted { get; init; }
+    public required bool Deleted { get; set; }
     public DateTimeOffset CreatedOn { get; set; }
     public DateTimeOffset UpdatedOn { get; set; }
 }

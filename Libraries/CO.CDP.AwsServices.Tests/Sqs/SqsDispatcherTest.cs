@@ -2,9 +2,11 @@ using System.Text.Json;
 using Amazon.Runtime;
 using Amazon.SQS;
 using Amazon.SQS.Model;
-using CO.CDP.MQ.Sqs;
+using CO.CDP.AwsServices.Sqs;
+using CO.CDP.MQ;
+using CO.CDP.MQ.Tests;
 
-namespace CO.CDP.MQ.Tests.Sqs;
+namespace CO.CDP.AwsServices.Tests.Sqs;
 
 public class SqsDispatcherTest : DispatcherContractTest, IClassFixture<LocalStackFixture>
 {
@@ -33,7 +35,7 @@ public class SqsDispatcherTest : DispatcherContractTest, IClassFixture<LocalStac
 
     protected override async Task<IDispatcher> CreateDispatcher()
     {
-        await _sqsClient.CreateQueueAsync(new CreateQueueRequest
+        var queue = await _sqsClient.CreateQueueAsync(new CreateQueueRequest
         {
             QueueName = TestQueue,
             Attributes =
@@ -45,7 +47,7 @@ public class SqsDispatcherTest : DispatcherContractTest, IClassFixture<LocalStac
             new SqsDispatcherConfiguration
             {
                 MaxNumberOfMessages = 1,
-                QueueName = TestQueue,
+                QueueUrl = queue.QueueUrl,
                 WaitTimeSeconds = 1
             },
             (type, body) =>
@@ -58,7 +60,8 @@ public class SqsDispatcherTest : DispatcherContractTest, IClassFixture<LocalStac
                 }
 
                 throw new Exception($"Could not deserialize type `{type}` from body `{body}`.");
-            });
+            },
+            (type, typeName) => type.Name == typeName);
     }
 
     private AmazonSQSClient SqsClient()

@@ -56,7 +56,7 @@ public class FormsAnswerSetRemoveConfirmationModel(
 
         if (ConfirmRemove == true)
         {
-            await formsClient.DeleteFormSectionAnswersAsync(FormId, SectionId, AnswerSetId);
+            await formsClient.DeleteFormSectionAnswersAsync(AnswerSetId, OrganisationId);
         }
 
         return RedirectToPage("FormsAddAnotherAnswerSet", new { OrganisationId, FormId, SectionId });
@@ -71,9 +71,8 @@ public class FormsAnswerSetRemoveConfirmationModel(
 
             if (valid)
             {
-                // TODO: Set Caption and Heading from Forms response object
-                Caption = response.Section.Title;
-                Heading = "Are you sure you want to remove this file?";
+                Caption = response.Section.Configuration.RemoveConfirmationCaption ?? response.Section.Title;
+                Heading = response.Section.Configuration.RemoveConfirmationHeading ?? "Are you sure you want to remove this?";
             }
 
             return valid;
