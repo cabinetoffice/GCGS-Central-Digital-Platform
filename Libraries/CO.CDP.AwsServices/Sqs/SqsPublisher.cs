@@ -12,31 +12,40 @@ public delegate string TypeMapper(Type type);
 
 public class SqsPublisher(
     IAmazonSQS sqsClient,
-    string queueUrl,
+    SqsPublisherConfiguration configuration,
     Serializer serializer,
     TypeMapper typeMapper) : IPublisher
 {
     private const string TypeAttribute = "Type";
 
-    public SqsPublisher(IAmazonSQS sqsClient, IOptions<AwsConfiguration> configuration) : this(
-        sqsClient,
-        configuration.Value.SqsPublisher?.QueueUrl ?? "")
+    public SqsPublisher(IAmazonSQS sqsClient, IOptions<AwsConfiguration> configuration)
+        : this(sqsClient, SqsPublisherConfiguration(configuration))
     {
     }
 
-    public SqsPublisher(IAmazonSQS sqsClient, string queueUrl) : this(
+    public SqsPublisher(IAmazonSQS sqsClient, SqsPublisherConfiguration configuration) : this(
         sqsClient,
-        queueUrl,
+        configuration,
         o => JsonSerializer.Serialize(o),
         type => type.Name)
     {
+    }
+
+    private static SqsPublisherConfiguration SqsPublisherConfiguration(IOptions<AwsConfiguration> configuration)
+    {
+        if (configuration.Value.SqsPublisher == null)
+        {
+            throw new ArgumentNullException(nameof(configuration), "AqsPublisher configuration is missing.");
+        }
+
+        return configuration.Value.SqsPublisher;
     }
 
     public async Task Publish<TM>(TM message) where TM : notnull
     {
         await sqsClient.SendMessageAsync(new SendMessageRequest
         {
-            QueueUrl = queueUrl,
+            QueueUrl = configuration.QueueUrl,
             MessageBody = serializer(message),
             MessageAttributes = new Dictionary<string, MessageAttributeValue>
             {
