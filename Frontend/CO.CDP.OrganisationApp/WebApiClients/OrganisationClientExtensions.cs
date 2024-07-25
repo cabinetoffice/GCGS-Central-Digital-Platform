@@ -142,6 +142,11 @@ internal static class OrganisationClientExtensions
             new UpdateSupplierInformation(
                 type: SupplierInformationUpdateType.CompletedConnectedPerson,
                 supplierInformation: new SupplierInfo(supplierType: null, operationTypes: null, tradeAssurance: null, legalForm: null, qualification: null)));
+
+    internal static bool IsTenderer(this Organisation.WebApiClient.Organisation organisation)
+    {
+        return organisation.Roles.Contains(PartyRole.Tenderer);
+    }
 }
 
 public class ComposedOrganisation
