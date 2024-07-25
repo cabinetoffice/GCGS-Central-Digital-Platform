@@ -6,7 +6,8 @@ public enum ConnectedEntityControlCondition
     OwnsShares = 1,
     HasVotingRights,
     CanAppointOrRemoveDirectors,
-    HasOtherSignificantInfluenceOrControl
+    HasOtherSignificantInfluenceOrControl,
+    None
 }
 
 public static class ConnectedEntityControlConditionExtensions

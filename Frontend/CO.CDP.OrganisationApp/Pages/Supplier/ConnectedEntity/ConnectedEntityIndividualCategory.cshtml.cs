@@ -14,6 +14,9 @@ public class ConnectedEntityIndividualCategoryModel(ISession session) : PageMode
     [BindProperty(SupportsGet = true)]
     public Guid Id { get; set; }
 
+    [BindProperty(SupportsGet = true)]
+    public Guid? ConnectedEntityId { get; set; }
+
     public bool RegisteredWithCh { get; set; }
 
     public IActionResult OnGet()
@@ -39,7 +42,9 @@ public class ConnectedEntityIndividualCategoryModel(ISession session) : PageMode
 
         state.ConnectedEntityIndividualAndTrustCategoryType = ConnectedEntityCategory;
         session.Set(Session.ConnectedPersonKey, state);
-        return RedirectToPage(GetRedirectLinkPageName(state), new { Id });
+       // return RedirectToPage(GetRedirectLinkPageName(state), new { Id });
+
+        return RedirectToPage("ConnectedEntityAddress", new { Id, ConnectedEntityId, AddressType = AddressType.Registered, UkOrNonUk = "uk" });
     }
 
     public static Dictionary<string, string> ConnectedEntityCategoryOption => new()
@@ -60,7 +65,7 @@ public class ConnectedEntityIndividualCategoryModel(ISession session) : PageMode
                 switch (state.ConnectedEntityIndividualAndTrustCategoryType)
                 {
                     case ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndividual:
-                        redirectPage = "ConnectedEntityPscDetails";
+                        redirectPage = "ConnectedEntityAddress";
                         break;
                     case ConnectedEntityIndividualAndTrustCategoryType.DirectorOrIndividualWithTheSameResponsibilitiesForIndividual:
                         break;
