@@ -22,6 +22,7 @@ public static class ServiceCollectionExtensions
         ConfigurationManager config)
     {
         services.AddScoped<IEventHandler<OrganisationRegistered>, OrganisationRegisteredEventHandler>();
+        services.AddScoped<IEventHandler<OrganisationUpdated>, OrganisationUpdatedEventHandler>();
         services.AddScoped<AmazonSQSClient>(s =>
         {
             var sqsConfig = new AmazonSQSConfig
@@ -48,6 +49,8 @@ public static class ServiceCollectionExtensions
                 EventDeserializer.Deserializer);
             dispatcher.Subscribe<OrganisationRegistered>(message =>
                 s.GetRequiredService<IEventHandler<OrganisationRegistered>>().Handle(message));
+            dispatcher.Subscribe<OrganisationUpdated>(message =>
+                s.GetRequiredService<IEventHandler<OrganisationUpdated>>().Handle(message));
             return dispatcher;
         });
         services.AddScoped<IPublisher, SqsPublisher>(s =>
@@ -63,6 +66,7 @@ public static class ServiceCollectionExtensions
         });
         services.AddScoped<IPponService, PponService>();
         services.AddScoped<OrganisationRegisteredEventHandler>();
+        services.AddScoped<OrganisationUpdatedEventHandler>();
         services.AddScoped<IPponRepository, DatabasePponRepository>();
 
         services.AddHostedService<QueueBackgroundService>();

@@ -1,8 +1,10 @@
 using CO.CDP.EntityFrameworkCore.Timestamps;
+using System.Reflection;
+using System.Text;
 
 namespace CO.CDP.EntityVerification.Persistence;
 
-public class Identifier : IEntityDate
+public class Identifier : PersistenceBase, IEntityDate
 {
     public int Id { get; set; }
     public required string IdentifierId { get; set; }
@@ -28,5 +30,4 @@ public class Identifier : IEntityDate
 
         return ids;
     }
-
 }
