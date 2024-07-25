@@ -42,9 +42,13 @@ public class ConnectedEntityIndividualCategoryModel(ISession session) : PageMode
 
         state.ConnectedEntityIndividualAndTrustCategoryType = ConnectedEntityCategory;
         session.Set(Session.ConnectedPersonKey, state);
-       // return RedirectToPage(GetRedirectLinkPageName(state), new { Id });
 
-        return RedirectToPage("ConnectedEntityAddress", new { Id, ConnectedEntityId, AddressType = AddressType.Registered, UkOrNonUk = "uk" });
+        /// To do: This needs to be updated when all the screens in this flow are done
+        //return RedirectToPage(GetRedirectLinkPageName(state), new { Id });
+
+        return RedirectToPage("ConnectedEntityAddress",
+            new { Id, ConnectedEntityId, AddressType = AddressType.Registered, UkOrNonUk = "uk" });
+        ///------------------------------------------------------------------------------------
     }
 
     public static Dictionary<string, string> ConnectedEntityCategoryOption => new()
