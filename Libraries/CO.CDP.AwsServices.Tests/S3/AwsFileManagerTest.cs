@@ -6,7 +6,7 @@ using FluentAssertions;
 using Microsoft.Extensions.Options;
 using Moq;
 
-namespace CO.CDP.AwsServices.Tests;
+namespace CO.CDP.AwsServices.Tests.S3;
 
 public class AwsFileManagerTest : IClassFixture<LocalStackFixture>
 {
