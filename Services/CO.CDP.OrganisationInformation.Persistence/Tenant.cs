@@ -1,4 +1,3 @@
-using System.ComponentModel.DataAnnotations.Schema;
 using CO.CDP.EntityFrameworkCore.Timestamps;
 using Microsoft.EntityFrameworkCore;
 
