@@ -5,7 +5,6 @@ namespace CO.CDP.OrganisationApp;
 
 public class FormsEngine(IFormsClient formsApiClient, ITempDataService tempDataService) : IFormsEngine
 {
-    //private readonly Guid SpecialQuestionId = new Guid("e2dce4aa-fc5e-4471-be32-1124d7221aaf");
     public async Task<SectionQuestionsResponse> LoadFormSectionAsync(Guid organisationId, Guid formId, Guid sectionId)
     {
         var sessionKey = $"Form_{organisationId}_{formId}_{sectionId}_Questions";
@@ -47,28 +46,7 @@ public class FormsEngine(IFormsClient formsApiClient, ITempDataService tempDataS
         return sectionQuestionsResponse;
     }
 
-    public async Task<Models.FormQuestion?> GetNextQuestion(Guid organisationId, Guid formId, Guid sectionId, Guid? currentQuestionId)
-    {
-        return await GetAdjacentQuestion(organisationId, formId, sectionId, currentQuestionId, 1);
-    }
-
-    public async Task<Models.FormQuestion?> GetPreviousQuestion(Guid organisationId, Guid formId, Guid sectionId, Guid? currentQuestionId)
-    {
-        return await GetAdjacentQuestion(organisationId, formId, sectionId, currentQuestionId, -1);
-    }
-
-    public async Task<Models.FormQuestion?> GetCurrentQuestion(Guid organisationId, Guid formId, Guid sectionId, Guid? questionId)
-    {
-        return await GetAdjacentQuestion(organisationId, formId, sectionId, questionId, 0);
-    }
-
-    public async Task<bool> IsCheckYourAnswersPage(Guid organisationId, Guid formId, Guid sectionId, Guid? questionId)
-    {
-        var currentQuestion = await GetCurrentQuestion(organisationId, formId, sectionId, questionId);
-        return currentQuestion?.IsCheckYourAnswers ?? false;
-    }
-
-    private async Task<Models.FormQuestion?> GetAdjacentQuestion(Guid organisationId, Guid formId, Guid sectionId, Guid? currentQuestionId, int offset)
+    public async Task<Models.FormQuestion?> GetNextQuestion(Guid organisationId, Guid formId, Guid sectionId, Guid currentQuestionId)
     {
         var section = await LoadFormSectionAsync(organisationId, formId, sectionId);
         if (section.Questions == null)
@@ -76,25 +54,44 @@ public class FormsEngine(IFormsClient formsApiClient, ITempDataService tempDataS
             return null;
         }
 
-        var currentIndex = 0;
-        if (currentQuestionId == null)
+        var nextQuestionId = section.Questions.FirstOrDefault(q => q.Id == currentQuestionId)?.NextQuestion;
+        return section.Questions.FirstOrDefault(q => q.Id == nextQuestionId);
+    }
+
+    public async Task<Models.FormQuestion?> GetPreviousQuestion(Guid organisationId, Guid formId, Guid sectionId, Guid currentQuestionId)
+    {
+
+        var section = await LoadFormSectionAsync(organisationId, formId, sectionId);
+        if (section.Questions == null)
         {
-            if (offset == -1)
-            {
-                return null;
-            }
-        }
-        else
-        {
-            currentIndex = section.Questions.FindIndex(q => q.Id == currentQuestionId);
+            return null;
         }
 
-        var newIndex = currentIndex + offset;
-        if (newIndex >= 0 && newIndex < section.Questions.Count)
+        var previousQuestionId = section.Questions.FirstOrDefault(q => q.NextQuestion == currentQuestionId)?.Id;
+        return section.Questions.FirstOrDefault(q => q.Id == previousQuestionId);
+    }
+
+    public async Task<Models.FormQuestion?> GetCurrentQuestion(Guid organisationId, Guid formId, Guid sectionId, Guid? questionId)
+    {
+        var section = await LoadFormSectionAsync(organisationId, formId, sectionId);
+        if (section.Questions == null)
         {
-            return section.Questions[newIndex];
+            return null;
         }
 
-        return null;
+        if (questionId == null)
+        {
+            var firstQuestion = section.Questions.FirstOrDefault(q => q.Type == Models.FormQuestionType.NoInput);
+            questionId = firstQuestion?.Id;
+        }
+
+        var currentQuestion = section.Questions.FirstOrDefault(q => q.Id == questionId);
+
+        if (currentQuestion != null && currentQuestion.IsCheckYourAnswers)
+        {
+            return currentQuestion;
+        }
+
+        return currentQuestion;
     }
 }

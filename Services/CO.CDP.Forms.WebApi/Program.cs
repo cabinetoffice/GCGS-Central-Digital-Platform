@@ -3,7 +3,6 @@ using CO.CDP.Configuration.ForwardedHeaders;
 using CO.CDP.Forms.WebApi.Api;
 using CO.CDP.Forms.WebApi.AutoMapper;
 using CO.CDP.Forms.WebApi.UseCase;
-using CO.CDP.Forms.WebApi.Extensions;
 using CO.CDP.OrganisationInformation.Persistence;
 using Microsoft.EntityFrameworkCore;
 

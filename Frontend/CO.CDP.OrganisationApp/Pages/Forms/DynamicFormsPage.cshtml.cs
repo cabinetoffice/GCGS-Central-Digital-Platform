@@ -21,7 +21,6 @@ public class DynamicFormsPageModel(
 
     [BindProperty(SupportsGet = true)]
     public Guid? CurrentQuestionId { get; set; }
-    public bool IsCheckYourAnswers { get; private set; }
 
     [BindProperty]
     public FormElementDateInputModel? DateInputModel { get; set; }
@@ -60,8 +59,6 @@ public class DynamicFormsPageModel(
             return Redirect("/page-not-found");
         }
 
-        IsCheckYourAnswers = await formsEngine.IsCheckYourAnswersPage(OrganisationId, FormId, SectionId, CurrentQuestionId);
-
         return Page();
     }
 
@@ -97,13 +94,11 @@ public class DynamicFormsPageModel(
             SaveAnswerToTempData(currentQuestion, answer);
         }
 
-        var nextQuestion = await formsEngine.GetNextQuestion(OrganisationId, FormId, SectionId, CurrentQuestionId);
+        var nextQuestion = await formsEngine.GetNextQuestion(OrganisationId, FormId, SectionId, currentQuestion.Id);
         if (nextQuestion != null)
         {
             return RedirectToPage("DynamicFormsPage", new { OrganisationId, FormId, SectionId, CurrentQuestionId = nextQuestion.Id });
         }
-
-        IsCheckYourAnswers = await formsEngine.IsCheckYourAnswersPage(OrganisationId, FormId, SectionId, CurrentQuestionId);
 
         return Page();
     }
@@ -118,7 +113,7 @@ public class DynamicFormsPageModel(
 
         PartialViewModel = GetPartialViewModel(currentQuestion, reset);
 
-        PreviousQuestionId = (await formsEngine.GetPreviousQuestion(OrganisationId, FormId, SectionId, CurrentQuestionId))?.Id;
+        PreviousQuestionId = (await formsEngine.GetPreviousQuestion(OrganisationId, FormId, SectionId, currentQuestion.Id))?.Id;
 
         return currentQuestion;
     }
