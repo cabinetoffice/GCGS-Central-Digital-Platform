@@ -33,7 +33,7 @@ if (Assembly.GetEntryAssembly().IsRunAs("CO.CDP.EntityVerification"))
         .AddAwsCofiguration(builder.Configuration)
         .AddAwsSqsService()
         .AddSqsPublisher();
-    builder.Services.AddScoped<IEventHandler<OrganisationRegistered>, OrganisationRegisteredEventHandler>();
+    builder.Services.AddScoped<ISubscriber<OrganisationRegistered>, OrganisationRegisteredSubscriber>();
     builder.Services.AddScoped<Deserializer>(_ => EventDeserializer.Deserializer);
     builder.Services.AddScoped<IDispatcher, SqsDispatcher>(s =>
     {
@@ -41,8 +41,7 @@ if (Assembly.GetEntryAssembly().IsRunAs("CO.CDP.EntityVerification"))
             s.GetRequiredService<IAmazonSQS>(),
             s.GetRequiredService<IOptions<AwsConfiguration>>(),
             s.GetRequiredService<Deserializer>());
-        dispatcher.Subscribe<OrganisationRegistered>(s.GetRequiredService<IEventHandler<OrganisationRegistered>>()
-            .Handle);
+        dispatcher.Subscribe(s.GetRequiredService<ISubscriber<OrganisationRegistered>>());
         return dispatcher;
     });
     builder.Services.AddHostedService<QueueBackgroundService>();

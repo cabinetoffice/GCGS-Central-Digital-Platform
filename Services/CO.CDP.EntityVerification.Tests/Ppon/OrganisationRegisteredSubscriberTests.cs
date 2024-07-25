@@ -6,7 +6,7 @@ using Moq;
 
 namespace CO.CDP.EntityVerification.Tests.Ppon;
 
-public class OrganisationRegisteredEventHandlerTests
+public class OrganisationRegisteredSubscriberTests
 {
     [Fact]
     public async Task Action_GeneratesPponIdAndPersistsAndPublishes()
@@ -18,14 +18,14 @@ public class OrganisationRegisteredEventHandlerTests
 
         pponService.Setup(x => x.GeneratePponId()).Returns(generatedPpon);
 
-        var handler = new OrganisationRegisteredEventHandler(pponService.Object, pponRepository.Object, publisher.Object);
+        var handler = new OrganisationRegisteredSubscriber(pponService.Object, pponRepository.Object, publisher.Object);
         var @event = GivenOrganisationRegisteredEvent();
 
         await handler.Handle(@event);
 
         pponRepository.Verify(
-            s => s.Save(It.Is<EntityVerification.Persistence.Ppon>(p => 
-                (p.IdentifierId == generatedPpon))), 
+            s => s.Save(It.Is<EntityVerification.Persistence.Ppon>(p =>
+                (p.IdentifierId == generatedPpon))),
             Times.Once);
 
         publisher.Verify(

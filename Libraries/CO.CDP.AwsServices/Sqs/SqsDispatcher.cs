@@ -34,7 +34,7 @@ public class SqsDispatcher(
     private const string TypeAttribute = "Type";
     private readonly SqsSubscribers _subscribers = new();
 
-    public void Subscribe<TM>(Func<TM, Task> subscriber) where TM : class
+    public void Subscribe<TM>(ISubscriber<TM> subscriber) where TM : class
     {
         _subscribers.Subscribe(subscriber);
     }
@@ -52,12 +52,6 @@ public class SqsDispatcher(
                 }
             }
         }, cancellationToken);
-    }
-
-    private async Task<string> GetQueueUrl(CancellationToken cancellationToken)
-    {
-        var queue = await sqsClient.GetQueueUrlAsync(configuration.QueueUrl, cancellationToken);
-        return queue.QueueUrl;
     }
 
     private async Task<List<Message>> ReceiveMessagesAsync(string queueUrl, CancellationToken cancellationToken)
@@ -81,7 +75,7 @@ public class SqsDispatcher(
             var deserialized = deserializer(type, message.Body);
             foreach (var subscriber in matchingSubscribers)
             {
-                await subscriber(deserialized);
+                await subscriber.Handle(deserialized);
             }
         }
     }

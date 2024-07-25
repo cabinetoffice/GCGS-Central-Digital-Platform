@@ -5,14 +5,16 @@ using Identifier = CO.CDP.EntityVerification.Persistence.Identifier;
 
 namespace CO.CDP.EntityVerification.Ppon;
 
-public class OrganisationRegisteredEventHandler(IPponService pponService,
+public class OrganisationRegisteredSubscriber(
+    IPponService pponService,
     IPponRepository pponRepository,
     IPublisher publisher)
-    : IEventHandler<OrganisationRegistered>
+    : ISubscriber<OrganisationRegistered>
 {
     public async Task Handle(OrganisationRegistered @event)
     {
-        Persistence.Ppon newPpon = new() {
+        Persistence.Ppon newPpon = new()
+        {
             IdentifierId = pponService.GeneratePponId(),
             Name = @event.Name,
             OrganisationId = @event.Id
