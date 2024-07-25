@@ -59,6 +59,5 @@ public class SqsPublisher(
 
     public void Dispose()
     {
-        sqsClient.Dispose();
     }
 }
