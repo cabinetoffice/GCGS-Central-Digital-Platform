@@ -81,17 +81,10 @@ public class FormsEngine(IFormsClient formsApiClient, ITempDataService tempDataS
 
         if (questionId == null)
         {
-            var firstQuestion = section.Questions.FirstOrDefault(q => q.Type == Models.FormQuestionType.NoInput);
-            questionId = firstQuestion?.Id;
+            var nextQuestionGuids = section.Questions.Select(sq => sq.NextQuestion);
+            questionId = section.Questions.FirstOrDefault(q => !nextQuestionGuids.Contains(q.Id))?.Id;
         }
 
-        var currentQuestion = section.Questions.FirstOrDefault(q => q.Id == questionId);
-
-        if (currentQuestion != null && currentQuestion.IsCheckYourAnswers)
-        {
-            return currentQuestion;
-        }
-
-        return currentQuestion;
+        return section.Questions.FirstOrDefault(q => q.Id == questionId);
     }
 }
