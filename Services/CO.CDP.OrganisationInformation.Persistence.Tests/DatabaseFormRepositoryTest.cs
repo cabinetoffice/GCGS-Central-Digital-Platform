@@ -36,11 +36,8 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
         var sectionId = Guid.NewGuid();
 
         var form = GivenForm(formId);
-
         var section = GivenSection(sectionId, form);
-
         form.Sections.Add(section);
-
         await repository.SaveFormAsync(form);
 
         var foundSection = await repository.GetSectionAsync(formId, sectionId);
@@ -52,6 +49,18 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
             .Excluding(ctx => ctx.CreatedOn)
             .Excluding(ctx => ctx.UpdatedOn)
           );
+    }
+
+    [Fact]
+    public async Task DeleteAnswerSetAsync_ShouldReturnFalse_WhenAnswerSetNotFound()
+    {
+        var organisationId = Guid.NewGuid();
+        var answerSetId = Guid.NewGuid();
+        var repository = FormRepository();
+
+        var result = await repository.DeleteAnswerSetAsync(organisationId, answerSetId);
+
+        result.Should().BeFalse();
     }
 
     private static FormSection GivenSection(Guid sectionId, Form form)
