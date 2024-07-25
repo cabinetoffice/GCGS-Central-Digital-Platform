@@ -1,6 +1,13 @@
+using System.Reflection;
+using CO.CDP.AwsServices;
+using CO.CDP.Configuration.Assembly;
 using CO.CDP.EntityVerification.Api;
+using CO.CDP.EntityVerification.Events;
 using CO.CDP.EntityVerification.Extensions;
+using CO.CDP.EntityVerification.MQ;
 using CO.CDP.EntityVerification.Persistence;
+using CO.CDP.EntityVerification.Ppon;
+using CO.CDP.MQ;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,10 +19,30 @@ builder.Services.AddSwaggerGen(o => o.DocumentPponApi());
 
 builder.Services.AddHealthChecks();
 builder.Services.AddEntityVerificationProblemDetails();
-builder.Services.AddBackgroundServices(builder.Configuration);
-
 builder.Services.AddDbContext<EntityVerificationContext>(o =>
     o.UseNpgsql(builder.Configuration.GetConnectionString("EvDatabase")));
+builder.Services.AddScoped<IPponRepository, DatabasePponRepository>();
+builder.Services.AddScoped<IPponService, PponService>();
+
+if (Assembly.GetEntryAssembly().IsRunAs("CO.CDP.EntityVerification"))
+{
+    builder.Services
+        .AddAwsCofiguration(builder.Configuration)
+        .AddAwsSqsService()
+        .AddSqsPublisher()
+        .AddSqsDispatcher(
+            EventDeserializer.Deserializer,
+            services =>
+            {
+                services.AddScoped<ISubscriber<OrganisationRegistered>, OrganisationRegisteredSubscriber>();
+            },
+            (services, dispatcher) =>
+            {
+                dispatcher.Subscribe<OrganisationRegistered>(services);
+            }
+        );
+    builder.Services.AddHostedService<QueueBackgroundService>();
+}
 
 var app = builder.Build();
 app.UseForwardedHeaders();

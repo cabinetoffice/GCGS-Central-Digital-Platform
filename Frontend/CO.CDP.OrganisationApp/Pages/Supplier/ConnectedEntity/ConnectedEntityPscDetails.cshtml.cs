@@ -1,14 +1,15 @@
 using CO.CDP.OrganisationApp.Constants;
-using Microsoft.AspNetCore.Authorization;
+using CO.CDP.OrganisationApp.Models;
+using CO.CDP.OrganisationApp.Pages.Supplier.ConnectedEntity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 
 namespace CO.CDP.OrganisationApp.Pages.Supplier;
 
-[Authorize]
-public class ConnectedEntityCompanyRegistrationDateModel(ISession session) : PageModel
+public class ConnectedEntityPscDetailsModel(ISession session) : PageModel
 {
     [BindProperty(SupportsGet = true)]
     public Guid Id { get; set; }
@@ -17,26 +18,45 @@ public class ConnectedEntityCompanyRegistrationDateModel(ISession session) : Pag
     public Guid? ConnectedEntityId { get; set; }
 
     [BindProperty]
-    [Required(ErrorMessage = "Date of registration must include a day")]
+    [DisplayName("First name")]
+    [Required(ErrorMessage = "Enter first name")]
+    public string? FirstName { get; set; }
+
+    [BindProperty]
+    [DisplayName("Last name")]
+    [Required(ErrorMessage = "Enter last name")]
+    public string? LastName { get; set; }
+
+    [BindProperty]
+    [Required(ErrorMessage = "Date of birth must include a day")]
     [RegularExpression(RegExPatterns.Day, ErrorMessage = "Day must be a valid number")]
     public string? Day { get; set; }
 
     [BindProperty]
-    [Required(ErrorMessage = "Date of registration must include a month")]
+    [Required(ErrorMessage = "Date of birth must include a month")]
     [RegularExpression(RegExPatterns.Month, ErrorMessage = "Month must be a valid number")]
     public string? Month { get; set; }
 
     [BindProperty]
-    [Required(ErrorMessage = "Date of registration must include a year")]
+    [Required(ErrorMessage = "Date of birth must include a year")]
     [RegularExpression(RegExPatterns.Year, ErrorMessage = "Year must be a valid number")]
     public string? Year { get; set; }
 
     [BindProperty]
-    public string? RegistrationDate { get; set; }
+    public string? DateOfBirth { get; set; }
 
+    [BindProperty]
+    [DisplayName("Nationality")]
+    [Required(ErrorMessage = "Enter your nationality")]
+    public string? Nationality { get; set; }
+
+    [BindProperty]
+    public ConnectedEntityType? ConnectedEntityType { get; set; }
     public string? Caption { get; set; }
 
     public string? Heading { get; set; }
+
+    public string? BackPageLink { get; set; }
 
     public IActionResult OnGet()
     {
@@ -71,71 +91,48 @@ public class ConnectedEntityCompanyRegistrationDateModel(ISession session) : Pag
         var dateString = $"{Year}-{Month!.PadLeft(2, '0')}-{Day!.PadLeft(2, '0')}";
         if (!DateTime.TryParseExact(dateString, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
         {
-            ModelState.AddModelError(nameof(RegistrationDate), "Date of registration must be a real date");
+            ModelState.AddModelError(nameof(DateOfBirth), "Date of registration must be a real date");
             return Page();
         }
 
         if (parsedDate > DateTime.Today)
         {
-            ModelState.AddModelError(nameof(RegistrationDate), "Date of registration must be today or in the past");
+            ModelState.AddModelError(nameof(DateOfBirth), "Date of registration must be today or in the past");
             return Page();
         }
 
-        state.RegistrationDate = new DateTimeOffset(parsedDate, TimeSpan.FromHours(0));
+        state.DateOfBirth = new DateTimeOffset(parsedDate, TimeSpan.FromHours(0));
+
+        state.FirstName = FirstName;
+        state.LastName = LastName;
+        state.Nationality = Nationality;
 
         session.Set(Session.ConnectedPersonKey, state);
 
         var redirectPage = GetRedirectLinkPageName(state);
-        return RedirectToPage(redirectPage, new { Id, ConnectedEntityId });
+        return RedirectToPage(redirectPage, new { Id, ConnectedEntityId, AddressType = AddressType.Registered, UkOrNonUk = "uk" });
     }
 
-    private string GetRedirectLinkPageName(ConnectedEntityState state)
+    private void InitModal(ConnectedEntityState state, bool reset = false)
     {
-        var redirectPage = "";
-        switch (state.ConnectedEntityType)
+        Caption = state.GetCaption();
+        Heading = $"Enter the person with significant control's details";
+        ConnectedEntityType = state.ConnectedEntityType;
+        if (reset)
         {
-            case Constants.ConnectedEntityType.Organisation:
-                switch (state.ConnectedEntityOrganisationCategoryType)
-                {
-                    case ConnectedEntityOrganisationCategoryType.RegisteredCompany:
-                        redirectPage = "ConnectedEntityCompanyRegisterName";
-                        break;
-                    case ConnectedEntityOrganisationCategoryType.DirectorOrTheSameResponsibilities:
-                        redirectPage = "";
-                        break;
-                    case ConnectedEntityOrganisationCategoryType.ParentOrSubsidiaryCompany:
-                        redirectPage = "";
-                        break;
-                    case ConnectedEntityOrganisationCategoryType.ACompanyYourOrganisationHasTakenOver:
-                        redirectPage = "";
-                        break;
-                    case ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl:
-                        redirectPage = "ConnectedEntityLawRegister";
-                        break;
-                }
-                break;
-            case Constants.ConnectedEntityType.Individual:
-                switch (state.ConnectedEntityIndividualAndTrustCategoryType)
-                {
-                    case ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndividual:
-                    case ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndividualWithSignificantInfluenceOrControlForIndividual:
-                        redirectPage = "ConnectedEntityCheckAnswersIndividualOrTrust";
-                        break;
-                }
-                break;
-            case Constants.ConnectedEntityType.TrustOrTrustee:
-                switch (state.ConnectedEntityIndividualAndTrustCategoryType)
-                {
-                    case ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForTrust:
-                    case ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndividualWithSignificantInfluenceOrControlForTrust:
-                        redirectPage = "ConnectedEntityCheckAnswersIndividualOrTrust";
-                        break;
-                }
-                break;
-        }
+            FirstName = state.FirstName;
+            LastName = state.LastName;
+            Nationality = state.Nationality;
 
-        return redirectPage;
+            if (state.DateOfBirth.HasValue)
+            {
+                Day = state.DateOfBirth.Value.Day.ToString();
+                Month = state.DateOfBirth.Value.Month.ToString();
+                Year = state.DateOfBirth.Value.Year.ToString();
+            }
+        }       
     }
+
     private (bool valid, ConnectedEntityState state) ValidatePage()
     {
         var cp = session.Get<ConnectedEntityState>(Session.ConnectedPersonKey);
@@ -147,18 +144,42 @@ public class ConnectedEntityCompanyRegistrationDateModel(ISession session) : Pag
         }
         return (true, cp);
     }
-    private void InitModal(ConnectedEntityState state, bool reset = false)
+        
+    private string GetRedirectLinkPageName(ConnectedEntityState state)
     {
-        Caption = state.GetCaption();
-        Heading = $"What date was {(state.ConnectedEntityType == ConnectedEntityType.Organisation
-                                    ? state.OrganisationName
-                                    : state.FirstName)} registered as a 'connected person'?";
-
-        if (reset && state.RegistrationDate.HasValue)
+        var redirectPage = "";
+        switch (state.ConnectedEntityType)
         {
-            Day = state.RegistrationDate.Value.Day.ToString();
-            Month = state.RegistrationDate.Value.Month.ToString();
-            Year = state.RegistrationDate.Value.Year.ToString();
+            case Constants.ConnectedEntityType.Organisation:
+                break;
+            case Constants.ConnectedEntityType.Individual:
+                switch (state.ConnectedEntityIndividualAndTrustCategoryType)
+                {
+                    case ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndividual:
+                        redirectPage = "ConnectedEntityAddress";
+                        break;
+                    case ConnectedEntityIndividualAndTrustCategoryType.DirectorOrIndividualWithTheSameResponsibilitiesForIndividual:
+                        break;
+                    case ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndividualWithSignificantInfluenceOrControlForIndividual:
+                        redirectPage = "ConnectedEntityAddress";
+                        break;
+                }
+                break;
+            case Constants.ConnectedEntityType.TrustOrTrustee:
+                switch (state.ConnectedEntityIndividualAndTrustCategoryType)
+                {
+                    case ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForTrust:
+                        redirectPage = "ConnectedEntityAddress";
+                        break;
+                    case ConnectedEntityIndividualAndTrustCategoryType.DirectorOrIndividualWithTheSameResponsibilitiesForTrust:
+                        break;
+                    case ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndividualWithSignificantInfluenceOrControlForTrust:
+                        redirectPage = "ConnectedEntityAddress";
+                        break;
+                }
+                break;
         }
+
+        return redirectPage;
     }
 }

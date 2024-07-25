@@ -23,8 +23,10 @@ public class ConnectedEntityState
     public DateTimeOffset? InsolvencyDate { get; set; }
     public bool? HasOscCompaniesHouseNumber { get; set; }
     public string? OscCompaniesHouseNumber { get; set; }
-
-
+    public string? FirstName { get; set; }
+    public string? LastName { get; set; }
+    public string? Nationality { get; set; }
+    public DateTimeOffset? DateOfBirth { get; set; }
     public class Address
     {
         public string? AddressLine1 { get; set; }
@@ -56,8 +58,8 @@ public class ConnectedEntityState
         return ConnectedEntityType switch
         {
             Constants.ConnectedEntityType.Organisation => ConnectedEntityOrganisationCategoryType?.Catption(SupplierHasCompanyHouseNumber ?? false) ?? "",
-            Constants.ConnectedEntityType.Individual => "person with significant control",
-            Constants.ConnectedEntityType.TrustOrTrustee => "",
+            Constants.ConnectedEntityType.Individual => ConnectedEntityIndividualAndTrustCategoryType?.Catption(SupplierHasCompanyHouseNumber ?? false) ?? "",
+            Constants.ConnectedEntityType.TrustOrTrustee => ConnectedEntityIndividualAndTrustCategoryType?.Catption(SupplierHasCompanyHouseNumber ?? false) ?? "",
             _ => "",
         };
     }

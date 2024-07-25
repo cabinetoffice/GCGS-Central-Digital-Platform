@@ -6,8 +6,4 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
-    <ItemGroup>
-        <PackageReference Include="Amazon.Sqs" Version="0.33.0" />
-        <PackageReference Include="AWSSDK.SQS" Version="3.7.301.31" />
-    </ItemGroup>
 </Project>
