@@ -39,11 +39,12 @@ public class DatabaseFormRepository(OrganisationInformationContext context) : IF
         await context.SaveChangesAsync();
     }
 
-    public async Task<FormAnswerSet?> GetFormAnswerSetAsync(Guid sectionId, Guid oranisationId)
+    public async Task<List<FormAnswerSet>> GetFormAnswerSetsAsync(Guid sectionId, Guid organisationId)
     {
         return await context.Set<FormAnswerSet>()
             .Include(a => a.Answers)
-            .FirstOrDefaultAsync(a => a.Section.Guid == sectionId && a.Organisation.Guid == oranisationId);
+            .Where(a => a.Section.Guid == sectionId && a.Organisation.Guid == organisationId)
+            .ToListAsync();
     }
 
     public async Task<FormSection?> GetFormSectionAsync(Guid sectionId)

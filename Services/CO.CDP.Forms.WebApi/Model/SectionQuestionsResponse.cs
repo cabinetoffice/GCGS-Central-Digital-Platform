@@ -6,5 +6,5 @@ public class SectionQuestionsResponse
 
     public List<FormQuestion> Questions { get; init; } = [];
 
-    public List<FormAnswer> Answers { get; init; } = [];
+    public List<FormAnswerSet> AnswerSets { get; init; } = [];
 }
