@@ -11,21 +11,12 @@ public abstract class DispatcherContractTest
     public async Task ItInvokesSubscribersForMatchingMessageType()
     {
         var tokenSource = new CancellationTokenSource();
-        var messagesPublishedBySubscriber1 = new ConcurrentBag<object>();
-        var messagesPublishedBySubscriber2 = new ConcurrentBag<object>();
+        var subscriber1 = new TestSubscriber<TestMessage>();
+        var subscriber2 = new TestSubscriber<TestMessage>(tokenSource);
 
         var dispatcher = await CreateDispatcher();
-        dispatcher.Subscribe<TestMessage>(message =>
-        {
-            messagesPublishedBySubscriber1.Add(message);
-            return Task.CompletedTask;
-        });
-        dispatcher.Subscribe<TestMessage>(message =>
-        {
-            messagesPublishedBySubscriber2.Add(message);
-            tokenSource.Cancel();
-            return Task.CompletedTask;
-        });
+        dispatcher.Subscribe(subscriber1);
+        dispatcher.Subscribe(subscriber2);
 
         var task = dispatcher.ExecuteAsync(tokenSource.Token);
 
@@ -34,23 +25,18 @@ public abstract class DispatcherContractTest
 
         await task;
 
-        messagesPublishedBySubscriber1.Should().Equal([new TestMessage(13, "Hello.")]);
-        messagesPublishedBySubscriber2.Should().Equal([new TestMessage(13, "Hello.")]);
+        subscriber1.PublishedMessages.Should().Equal([new TestMessage(13, "Hello.")]);
+        subscriber2.PublishedMessages.Should().Equal([new TestMessage(13, "Hello.")]);
     }
 
     [Fact]
     public async Task ItRemovesHandledMessages()
     {
         var tokenSource = new CancellationTokenSource();
-        var messagesPublishedBySubscriber = new ConcurrentBag<object>();
+        var subscriber = new TestSubscriber<TestMessage>(tokenSource);
 
         var dispatcher = await CreateDispatcher();
-        dispatcher.Subscribe<TestMessage>(message =>
-        {
-            messagesPublishedBySubscriber.Add(message);
-            tokenSource.Cancel();
-            return Task.CompletedTask;
-        });
+        dispatcher.Subscribe(subscriber);
 
         var task = dispatcher.ExecuteAsync(tokenSource.Token);
 
@@ -68,4 +54,15 @@ public abstract class DispatcherContractTest
     protected record TestMessage(int Id, String Name);
 
     private record UnexpectedTestMessage(int Id, String Name);
+
+    private class TestSubscriber<TEvent>(CancellationTokenSource? tokenSource = null) : ISubscriber<TEvent> where TEvent : class
+    {
+        public readonly ConcurrentBag<object> PublishedMessages = new();
+        public Task Handle(TEvent @event)
+        {
+            PublishedMessages.Add(@event);
+            tokenSource?.Cancel();
+            return Task.CompletedTask;
+        }
+    }
 }
