@@ -19,7 +19,7 @@ public record Buckets
 
 public record SqsDispatcherConfiguration
 {
-    public required string QueueName { get; init; }
+    public required string QueueUrl { get; init; }
     public required int MaxNumberOfMessages { get; init; } = 1;
     public required int WaitTimeSeconds { get; init; } = 30;
 }

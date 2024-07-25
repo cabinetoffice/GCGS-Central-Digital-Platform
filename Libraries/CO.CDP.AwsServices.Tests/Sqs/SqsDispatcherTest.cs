@@ -35,7 +35,7 @@ public class SqsDispatcherTest : DispatcherContractTest, IClassFixture<LocalStac
 
     protected override async Task<IDispatcher> CreateDispatcher()
     {
-        await _sqsClient.CreateQueueAsync(new CreateQueueRequest
+        var queue = await _sqsClient.CreateQueueAsync(new CreateQueueRequest
         {
             QueueName = TestQueue,
             Attributes =
@@ -47,7 +47,7 @@ public class SqsDispatcherTest : DispatcherContractTest, IClassFixture<LocalStac
             new SqsDispatcherConfiguration
             {
                 MaxNumberOfMessages = 1,
-                QueueName = TestQueue,
+                QueueUrl = queue.QueueUrl,
                 WaitTimeSeconds = 1
             },
             (type, body) =>

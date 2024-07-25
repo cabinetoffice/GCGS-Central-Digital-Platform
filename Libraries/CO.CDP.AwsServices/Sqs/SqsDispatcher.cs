@@ -34,13 +34,12 @@ public class SqsDispatcher(
     {
         return Task.Run(async () =>
         {
-            var queueUrl = await GetQueueUrl(cancellationToken);
             while (!cancellationToken.IsCancellationRequested)
             {
-                foreach (var message in await ReceiveMessagesAsync(queueUrl, cancellationToken))
+                foreach (var message in await ReceiveMessagesAsync(configuration.QueueUrl, cancellationToken))
                 {
                     await HandleMessage(message);
-                    await DeleteMessage(queueUrl, message);
+                    await DeleteMessage(message);
                 }
             }
         }, cancellationToken);
@@ -48,7 +47,7 @@ public class SqsDispatcher(
 
     private async Task<string> GetQueueUrl(CancellationToken cancellationToken)
     {
-        var queue = await sqsClient.GetQueueUrlAsync(configuration.QueueName, cancellationToken);
+        var queue = await sqsClient.GetQueueUrlAsync(configuration.QueueUrl, cancellationToken);
         return queue.QueueUrl;
     }
 
@@ -78,11 +77,11 @@ public class SqsDispatcher(
         }
     }
 
-    private async Task DeleteMessage(string queueUrl, Message message)
+    private async Task DeleteMessage(Message message)
     {
         await sqsClient.DeleteMessageAsync(new DeleteMessageRequest
         {
-            QueueUrl = queueUrl,
+            QueueUrl = configuration.QueueUrl,
             ReceiptHandle = message.ReceiptHandle
         });
     }
