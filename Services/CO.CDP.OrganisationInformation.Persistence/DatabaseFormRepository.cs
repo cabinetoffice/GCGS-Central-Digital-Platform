@@ -14,6 +14,7 @@ public class DatabaseFormRepository(OrganisationInformationContext context) : IF
     {
         return await context.Set<FormSection>()
             .Include(s => s.Questions)
+
             .FirstOrDefaultAsync(s => s.Form.Guid == formId && s.Guid == sectionId);
     }
 
@@ -38,17 +39,17 @@ public class DatabaseFormRepository(OrganisationInformationContext context) : IF
         await context.SaveChangesAsync();
     }
 
-    public async Task<FormAnswerSet?> GetFormAnswerSetAsync(Guid answerSetId)
+    public async Task<FormAnswerSet?> GetFormAnswerSetAsync(Guid sectionId, Guid oranisationId)
     {
         return await context.Set<FormAnswerSet>()
             .Include(a => a.Answers)
-            .FirstOrDefaultAsync(a => a.Guid == answerSetId);
+            .FirstOrDefaultAsync(a => a.Section.Guid == sectionId && a.Organisation.Guid == oranisationId);
     }
 
     public async Task<FormSection?> GetFormSectionAsync(Guid sectionId)
     {
-            return await context.Set<FormSection>()
-                .FirstOrDefaultAsync(s => s.Guid == sectionId);
+        return await context.Set<FormSection>()
+            .FirstOrDefaultAsync(s => s.Guid == sectionId);
     }
 
     public Task<bool> Save(Guid sectionId, Guid answerSetId, IEnumerable<FormAnswer> updatedAnswers)

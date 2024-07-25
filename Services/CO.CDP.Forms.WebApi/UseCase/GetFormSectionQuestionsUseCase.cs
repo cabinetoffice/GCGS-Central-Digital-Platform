@@ -14,15 +14,18 @@ public class GetFormSectionQuestionsUseCase(IFormRepository formRepository, IMap
         var section = await formRepository.GetSectionAsync(formId, sectionId);
 
         if (section == null)
-            return null;
+            return null;        
 
-        var questions = mapper.Map<List<FormQuestion>>(section.Questions);
+        var organisationId = Guid.NewGuid();// mocked id, will retrieve based on logged in user
+
+        var answerset = await formRepository.GetFormAnswerSetAsync(sectionId, organisationId);
+
 
         return new SectionQuestionsResponse
         {
             Section = mapper.Map<FormSection>(section),
-            Questions = questions,
-            AnswerSets = [GetMockAnswers(questions)]
+            Questions = mapper.Map<List<FormQuestion>>(section.Questions),
+            Answers = mapper.Map<List<FormAnswer>>(answerset?.Answers)
         };
     }
 

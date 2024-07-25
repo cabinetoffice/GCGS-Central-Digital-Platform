@@ -9,7 +9,7 @@ public interface IFormRepository : IDisposable
     Task<bool> DeleteAnswerSetAsync(Guid organisationId, Guid answerSetId);
     Task SaveFormAsync(Form formSection);
     Task<FormSection?> GetFormSectionAsync(Guid sectionId);
-    Task<FormAnswerSet?> GetFormAnswerSetAsync(Guid answerSetId);
+    Task<FormAnswerSet?> GetFormAnswerSetAsync(Guid sectionId, Guid organisationId);
     Task<bool> Save(Guid sectionId, Guid answerSetId, IEnumerable<FormAnswer> updatedAnswers);
 
     public class FormRepositoryException(string message, Exception? cause = null) : Exception(message, cause)
