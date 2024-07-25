@@ -16,10 +16,19 @@ public class SqsDispatcher(
     TypeMatcher typeMatcher)
     : IDispatcher
 {
-    public SqsDispatcher(
-        IAmazonSQS sqsClient, IOptions<AwsConfiguration> configuration, Deserializer deserializer)
-        : this(sqsClient, configuration.Value.SqsDispatcher!, deserializer, (type, typeName) => type.Name == typeName)
+    public SqsDispatcher(IAmazonSQS sqsClient, IOptions<AwsConfiguration> configuration, Deserializer deserializer)
+        : this(sqsClient, SqsDispatcherConfiguration(configuration), deserializer, (type, typeName) => type.Name == typeName)
     {
+    }
+
+    private static SqsDispatcherConfiguration SqsDispatcherConfiguration(IOptions<AwsConfiguration> configuration)
+    {
+        if (configuration.Value.SqsDispatcher == null)
+        {
+            throw new ArgumentNullException(nameof(configuration), "SqsDispatcher configuration is missing.");
+        }
+
+        return configuration.Value.SqsDispatcher;
     }
 
     private const string TypeAttribute = "Type";
