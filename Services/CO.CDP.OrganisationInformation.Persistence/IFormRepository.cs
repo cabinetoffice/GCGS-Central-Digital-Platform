@@ -6,4 +6,5 @@ public interface IFormRepository : IDisposable
 {
     Task<FormSection?> GetSectionAsync(Guid formId, Guid sectionId);
     Task<IEnumerable<FormQuestion>> GetQuestionsAsync(Guid sectionId);
+    Task SaveFormAsync(Form formSection);
 }

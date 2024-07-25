@@ -6,4 +6,14 @@ public record FormSection
     public required Guid Id { get; init; }
     public required string Title { get; init; }
     public required bool AllowsMultipleAnswerSets { get; init; }
+    public required FormSectionConfiguration Configuration { get; init; }
+}
+
+public record FormSectionConfiguration
+{
+    public string? SingularSummaryHeading { get; set; }
+    public string? PluralSummaryHeadingFormat { get; set; }
+    public string? AddAnotherAnswerLabel { get; set; }
+    public string? RemoveConfirmationCaption { get; set; }
+    public string? RemoveConfirmationHeading { get; set; }
 }
