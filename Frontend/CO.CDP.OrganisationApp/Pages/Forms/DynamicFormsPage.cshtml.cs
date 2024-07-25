@@ -178,7 +178,8 @@ public class DynamicFormsPageModel(
 
     private static string? GetPartialViewName(FormQuestion currentQuestion)
     {
-        if (currentQuestion.Type == FormQuestionType.CheckYourAnswers) return null;
+        if (currentQuestion.Type == FormQuestionType.CheckYourAnswers)
+            return null;
 
         Dictionary<FormQuestionType, string> formQuestionPartials = new(){
             { FormQuestionType.NoInput, "_FormElementNoInput" },
@@ -198,7 +199,8 @@ public class DynamicFormsPageModel(
 
     private IFormElementModel? GetPartialViewModel(FormQuestion currentQuestion, bool reset)
     {
-        if (currentQuestion.Type == FormQuestionType.CheckYourAnswers) return null;
+        if (currentQuestion.Type == FormQuestionType.CheckYourAnswers)
+            return null;
 
         IFormElementModel model = currentQuestion.Type switch
         {
