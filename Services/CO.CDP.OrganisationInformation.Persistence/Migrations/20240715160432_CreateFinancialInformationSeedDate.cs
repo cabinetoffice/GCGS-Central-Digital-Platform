@@ -12,7 +12,12 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             var formsGuid = Guid.Parse("0618b13e-eaf2-46e3-a7d2-6f2c44be7022");
-            var sectonGuid = Guid.Parse("13511cb1-9ed4-4d72-ba9e-05b4a0be880c");
+            var sectionGuid = Guid.Parse("13511cb1-9ed4-4d72-ba9e-05b4a0be880c");
+            var noInputGuid = Guid.Parse("c1e2e3f4-5a6b-7c8d-9e0f-123456789abc");
+            var yesOrNoGuid = Guid.Parse("d2e3f4a5-6b7c-8d9e-0f1a-23456789bcd0");
+            var fileUploadGuid = Guid.Parse("e3f4a5b6-7c8d-9e0f-1a2b-3456789cdef1");
+            var dateGuid = Guid.Parse("f4a5b6c7-8d9e-0f1a-2b3c-456789def012");
+            var checkYourAnswersGuid = Guid.Parse("a5b6c7d8-9e0f-1a2b-3c4d-56789ef01234");
 
             migrationBuilder.Sql($@"
                 INSERT INTO forms (guid, name, version, is_required, type, scope)
@@ -23,28 +28,51 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                 DO $$
                 DECLARE
                     formId INT;
+                    sectionId INT;
+                    questionId INT;
+                    previousQuestionId INT;
                 BEGIN
                     SELECT currval(pg_get_serial_sequence('forms', 'id')) INTO formId;
 
                     -- Insert into form_sections
                     INSERT INTO form_sections (guid, title, form_id)
-                    VALUES ('{sectonGuid}', 'Financial Information', formId);
+                    VALUES ('{sectionGuid}', 'Financial Information', formId);
 
                     -- Retrieve the inserted form_section ID
-                    SELECT currval(pg_get_serial_sequence('form_sections', 'id')) INTO formId;
+                    SELECT currval(pg_get_serial_sequence('form_sections', 'id')) INTO sectionId;
 
-                    -- Insert into form_questions
-                    INSERT INTO form_questions (guid, section_id, type, is_required, title, description, options)
-                    VALUES
-        ('{Guid.NewGuid()}', formId, {(int)FormQuestionType.NoInput}, TRUE, 'The financial information you will need.', '<p class=""govuk-body"">You will need to upload accounts or statements for your 2 most recent financial years.</p><p class=""govuk-body"">If you do not have 2 years, you can upload your most recent financial year.</p><p class=""govuk-body"">You will need to enter the financial year end date for the information you upload.</p>', '{{}}'),
-        ('{Guid.NewGuid()}', formId, {(int)FormQuestionType.YesOrNo}, TRUE, 'Were your accounts audited?', NULL, '{{}}'),
-        ('{Guid.NewGuid()}', formId, {(int)FormQuestionType.FileUpload}, TRUE, 'Upload your accounts', 'Upload your most recent 2 financial years. If you do not have 2, upload your most recent financial year.', '{{}}'),
-        ('{Guid.NewGuid()}', formId, {(int)FormQuestionType.Date}, TRUE, 'What is the financial year end date for the information you uploaded?', NULL, '{{}}'),
-        ('{Guid.NewGuid()}', formId, {(int)FormQuestionType.Text}, TRUE, 'Enter a description of your financial status.', 'Please provide detailed information about your financial status.', '{{}}'),
-        ('{Guid.NewGuid()}', formId, {(int)FormQuestionType.SingleChoice}, TRUE, 'Were your accounts audited?.', NULL, '{{""choices"": [{{""id"": ""2687c252-236d-4804-b3a4-e3be396aa949"", ""title"": ""Yes"", ""groupName"": null, ""hint"": null, ""value"": ""Yes""}}, {{""id"": ""a7167886-0017-4f9d-978b-a845bacac9f9"", ""title"": ""No"", ""groupName"": null, ""hint"": null, ""value"": ""No""}}], ""choiceProviderStrategy"": null}}'),
-        ('{Guid.NewGuid()}', formId, {(int)FormQuestionType.MultipleChoice}, TRUE, 'Which of the following statements applies to your accounts or financial statements?.', NULL, '{{""choices"": [{{""id"": ""df7f9ab0-7b59-4fee-8dd7-74fde0348039"", ""title"": ""Accounts submitted for our last two financial years were required to be audited."", ""groupName"": null, ""hint"": {{""title"": null, ""description"": ""This means your accounts were audited for the last two years.""}}, ""value"": ""accountsLastTwoYearsAudited""}}, {{""id"": ""cf94e70b-aa5e-457f-bfcd-bf5f3150e688"", ""title"": ""Accounts submitted for only our most recent financial year were required to be audited."", ""groupName"": null, ""hint"": {{""title"": null, ""description"": ""This means your accounts were audited only for the most recent year.""}}, ""value"": ""accountsRecentYearAudited""}}, {{""id"": ""b97d4dd8-1437-4ddb-8778-d6807de558ff"", ""title"": ""Financial information for our most recent financial year. Our accounts did not require an audit."", ""groupName"": null, ""hint"": {{""title"": null, ""description"": ""This means your accounts were not audited for the most recent year.""}}, ""value"": ""recentYearNotAudited""}}], ""choiceProviderStrategy"": null}}'),
-        ('{Guid.NewGuid()}', formId, {(int)FormQuestionType.CheckYourAnswers}, TRUE, 'Check your answers', NULL, '{{}}');
-    END $$;
+                    -- Insert fifth question (CheckYourAnswers)
+                    INSERT INTO form_questions (guid, section_id, type, next_question_id, is_required, title, description, options)
+                    VALUES ('{checkYourAnswersGuid}', sectionId, {(int)FormQuestionType.CheckYourAnswers}, NULL, TRUE, 'Check your answers', NULL, '{{}}');
+
+                    -- Retrieve the inserted question ID
+                    SELECT currval(pg_get_serial_sequence('form_questions', 'id')) INTO previousQuestionId;
+
+                    -- Insert fourth question (Date)
+                    INSERT INTO form_questions (guid, section_id, type, next_question_id, is_required, title, description, options)
+                    VALUES ('{dateGuid}', sectionId, {(int)FormQuestionType.Date}, previousQuestionId, TRUE, 'What is the financial year end date for the information you uploaded?', NULL, '{{}}');
+
+                    -- Retrieve the inserted question ID
+                    SELECT currval(pg_get_serial_sequence('form_questions', 'id')) INTO previousQuestionId;
+
+                    -- Insert third question (FileUpload)
+                    INSERT INTO form_questions (guid, section_id, type, next_question_id, is_required, title, description, options)
+                    VALUES ('{fileUploadGuid}', sectionId, {(int)FormQuestionType.FileUpload}, previousQuestionId, TRUE, 'Upload your accounts', '<p class=""govuk-body"">Upload your most recent 2 financial years. If you do not have 2, upload your most recent financial year.</p>', '{{}}');
+
+                    -- Retrieve the inserted question ID
+                    SELECT currval(pg_get_serial_sequence('form_questions', 'id')) INTO previousQuestionId;
+
+                    -- Insert second question (YesOrNo)
+                    INSERT INTO form_questions (guid, section_id, type, next_question_id, is_required, title, description, options)
+                    VALUES ('{yesOrNoGuid}', sectionId, {(int)FormQuestionType.YesOrNo}, previousQuestionId, TRUE, 'Were your accounts audited?', NULL, '{{}}');
+
+                    -- Retrieve the inserted question ID
+                    SELECT currval(pg_get_serial_sequence('form_questions', 'id')) INTO previousQuestionId;
+
+                    -- Insert first question (NoInput)
+                    INSERT INTO form_questions (guid, section_id, type, next_question_id, is_required, title, description, options)
+                    VALUES ('{noInputGuid}', sectionId, {(int)FormQuestionType.NoInput}, previousQuestionId, TRUE, 'The financial information you will need.', '<p class=""govuk-body"">You will need to upload accounts or statements for your 2 most recent financial years.</p><p class=""govuk-body"">If you do not have 2 years, you can upload your most recent financial year.</p><p class=""govuk-body"">You will need to enter the financial year end date for the information you upload.</p>', '{{}}');
+                END $$;
             ");
         }
 
