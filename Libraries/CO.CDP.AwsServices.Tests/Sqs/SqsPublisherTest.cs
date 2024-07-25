@@ -40,8 +40,8 @@ public class SqsPublisherTest : PublisherContractTest, IClassFixture<LocalStackF
     protected override async Task<IPublisher> CreatePublisher()
     {
         var queue = await _sqsClient.CreateQueueAsync(new CreateQueueRequest { QueueName = TestQueue });
-        var queueUrl = queue.QueueUrl;
-        return new SqsPublisher(_sqsClient, _ => Task.FromResult(queueUrl));
+        var queueUrl = queue.QueueUrl ?? "";
+        return new SqsPublisher(_sqsClient, queueUrl);
     }
 
     private AmazonSQSClient SqsClient()

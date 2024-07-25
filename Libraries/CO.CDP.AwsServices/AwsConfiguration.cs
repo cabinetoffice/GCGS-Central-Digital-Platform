@@ -7,7 +7,8 @@ public record AwsConfiguration
     public string? Region { get; init; }
     public string? ServiceURL { get; init; }
     public Buckets? Buckets { get; init; }
-    public Queues? Queues { get; init; }
+    public SqsDispatcherConfiguration? SqsDispatcher { get; init; }
+    public SqsPublisherConfiguration? SqsPublisher { get; init; }
 }
 
 public record Buckets
@@ -16,15 +17,14 @@ public record Buckets
     public string? PermanentBucket { get; set; }
 }
 
-public record Queues
+public record SqsDispatcherConfiguration
 {
-    public Queue? InboundQueue { get; init; }
-    public Queue? OutboundQueue { get; init; }
+    public required string QueueName { get; init; }
+    public required int MaxNumberOfMessages { get; init; } = 1;
+    public required int WaitTimeSeconds { get; init; } = 30;
 }
 
-public record Queue
+public record SqsPublisherConfiguration
 {
-    public string Name { get; init; }
-    public int? WaitTimeSeconds { get; init; }
-    public int? MaxNumberOfMessages { get; init; }
+    public required string QueueUrl { get; init; }
 }

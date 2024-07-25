@@ -1,19 +1,13 @@
 using Amazon.SQS;
 using Amazon.SQS.Model;
 using CO.CDP.MQ;
+using Microsoft.Extensions.Options;
 
 namespace CO.CDP.AwsServices.Sqs;
 
 public delegate object Deserializer(string type, string body);
 
 public delegate bool TypeMatcher(Type type, string typeName);
-
-public record SqsDispatcherConfiguration
-{
-    public required string QueueName { get; init; }
-    public required int MaxNumberOfMessages { get; init; } = 1;
-    public required int WaitTimeSeconds { get; init; } = 30;
-}
 
 public class SqsDispatcher(
     IAmazonSQS sqsClient,
@@ -23,8 +17,8 @@ public class SqsDispatcher(
     : IDispatcher
 {
     public SqsDispatcher(
-        IAmazonSQS sqsClient, SqsDispatcherConfiguration configuration, Deserializer deserializer)
-        : this(sqsClient, configuration, deserializer, (type, typeName) => type.Name == typeName)
+        IAmazonSQS sqsClient, IOptions<AwsConfiguration> configuration, Deserializer deserializer)
+        : this(sqsClient, configuration.Value.SqsDispatcher!, deserializer, (type, typeName) => type.Name == typeName)
     {
     }
 
@@ -73,11 +67,11 @@ public class SqsDispatcher(
     private async Task HandleMessage(Message message)
     {
         var type = message.MessageAttributes.GetValueOrDefault(TypeAttribute)?.StringValue ?? "";
-        var subscribers = _subscribers.AllMatching((t) => typeMatcher(t, type)).ToList();
-        if (subscribers.Any())
+        var matchingSubscribers = _subscribers.AllMatching((t) => typeMatcher(t, type)).ToList();
+        if (matchingSubscribers.Any())
         {
             var deserialized = deserializer(type, message.Body);
-            foreach (var subscriber in subscribers)
+            foreach (var subscriber in matchingSubscribers)
             {
                 await subscriber(deserialized);
             }

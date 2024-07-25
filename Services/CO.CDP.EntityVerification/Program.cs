@@ -1,8 +1,17 @@
+using System.Reflection;
+using Amazon.SQS;
 using CO.CDP.AwsServices;
+using CO.CDP.AwsServices.Sqs;
+using CO.CDP.Configuration.Assembly;
 using CO.CDP.EntityVerification.Api;
+using CO.CDP.EntityVerification.Events;
 using CO.CDP.EntityVerification.Extensions;
+using CO.CDP.EntityVerification.MQ;
 using CO.CDP.EntityVerification.Persistence;
+using CO.CDP.EntityVerification.Ppon;
+using CO.CDP.MQ;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,10 +24,30 @@ builder.Services.AddHealthChecks();
 builder.Services.AddEntityVerificationProblemDetails();
 builder.Services.AddDbContext<EntityVerificationContext>(o =>
     o.UseNpgsql(builder.Configuration.GetConnectionString("EvDatabase")));
-builder.Services
-     .AddAwsCofiguration(builder.Configuration)
-     .AddAwsSqsService();
-builder.Services.AddBackgroundServices(builder.Configuration);
+builder.Services.AddScoped<IPponRepository, DatabasePponRepository>();
+builder.Services.AddScoped<IPponService, PponService>();
+
+if (Assembly.GetEntryAssembly().IsRunAs("CO.CDP.EntityVerification"))
+{
+    builder.Services
+        .AddAwsCofiguration(builder.Configuration)
+        .AddAwsSqsService();
+    builder.Services.AddScoped<OrganisationRegisteredEventHandler>();
+    builder.Services.AddScoped<IPublisher, SqsPublisher>();
+    builder.Services.AddScoped<IEventHandler<OrganisationRegistered>, OrganisationRegisteredEventHandler>();
+    builder.Services.AddScoped<IDispatcher, SqsDispatcher>(s =>
+    {
+        var awsConfig = builder.Configuration.GetSection("Aws").Get<AwsConfiguration>();
+        var dispatcher = new SqsDispatcher(
+            s.GetRequiredService<IAmazonSQS>(),
+            Options.Create(awsConfig),
+            EventDeserializer.Deserializer);
+        dispatcher.Subscribe<OrganisationRegistered>(s.GetRequiredService<IEventHandler<OrganisationRegistered>>()
+            .Handle);
+        return dispatcher;
+    });
+    builder.Services.AddHostedService<QueueBackgroundService>();
+}
 
 var app = builder.Build();
 app.UseForwardedHeaders();

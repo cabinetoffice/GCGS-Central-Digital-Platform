@@ -169,8 +169,6 @@ ENTRYPOINT /app/efbundle --connection "$MIGRATIONS_CONNECTION_STRING"
 
 FROM base AS migrations-entity-verification
 ENV MIGRATIONS_CONNECTION_STRING=""
-# Only here to workaround the problem with AWS configuration being required for the app, while migrations do not need it
-ENV Aws__Region=""
 WORKDIR /app
 COPY --from=build-migrations-entity-verification /app/migrations/efbundle .
 ENTRYPOINT /app/efbundle --connection "$MIGRATIONS_CONNECTION_STRING"

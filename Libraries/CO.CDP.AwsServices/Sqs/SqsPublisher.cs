@@ -2,10 +2,9 @@ using System.Text.Json;
 using Amazon.SQS;
 using Amazon.SQS.Model;
 using CO.CDP.MQ;
+using Microsoft.Extensions.Options;
 
 namespace CO.CDP.AwsServices.Sqs;
-
-public delegate Task<string> MessageRouter(Type type);
 
 public delegate string Serializer(object message);
 
@@ -13,14 +12,23 @@ public delegate string TypeMapper(Type type);
 
 public class SqsPublisher(
     IAmazonSQS sqsClient,
-    MessageRouter messageRouter,
+    string queueUrl,
     Serializer serializer,
     TypeMapper typeMapper) : IPublisher
 {
     private const string TypeAttribute = "Type";
 
-    public SqsPublisher(IAmazonSQS sqsClient, MessageRouter messageRouter) : this(
-        sqsClient, messageRouter, o => JsonSerializer.Serialize(o), type => type.Name)
+    public SqsPublisher(IAmazonSQS sqsClient, IOptions<AwsConfiguration> configuration) : this(
+        sqsClient,
+        configuration.Value.SqsPublisher?.QueueUrl ?? "")
+    {
+    }
+
+    public SqsPublisher(IAmazonSQS sqsClient, string queueUrl) : this(
+        sqsClient,
+        queueUrl,
+        o => JsonSerializer.Serialize(o),
+        type => type.Name)
     {
     }
 
@@ -28,7 +36,7 @@ public class SqsPublisher(
     {
         await sqsClient.SendMessageAsync(new SendMessageRequest
         {
-            QueueUrl = await messageRouter(typeof(TM)),
+            QueueUrl = queueUrl,
             MessageBody = serializer(message),
             MessageAttributes = new Dictionary<string, MessageAttributeValue>
             {
