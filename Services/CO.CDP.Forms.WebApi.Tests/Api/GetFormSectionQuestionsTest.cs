@@ -65,7 +65,15 @@ public class GetFormSectionQuestionsTest
             {
                 Id = Guid.NewGuid(),
                 Title = "Financial Information",
-                AllowsMultipleAnswerSets = true
+                AllowsMultipleAnswerSets = true,
+                Configuration = new FormSectionConfiguration
+                {
+                    PluralSummaryHeadingFormat = "You have added {0} files",
+                    SingularSummaryHeading = "You have added 1 file",
+                    AddAnotherAnswerLabel = "Add another file?",
+                    RemoveConfirmationCaption = "Economic and Financial Standing",
+                    RemoveConfirmationHeading = "Are you sure you want to remove this file?"
+                }
             },
             Questions = new List<FormQuestion>
                 {

@@ -21,4 +21,10 @@ public class DatabaseFormRepository(OrganisationInformationContext context) : IF
     {
         return await context.Set<FormQuestion>().Where(q => q.Section.Guid == sectionId).ToListAsync();
     }
+
+    public async Task SaveFormAsync(Form form)
+    {
+        context.Update(form);
+        await context.SaveChangesAsync();
+    }
 }
