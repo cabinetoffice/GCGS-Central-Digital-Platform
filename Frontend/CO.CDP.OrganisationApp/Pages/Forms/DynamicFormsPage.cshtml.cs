@@ -91,7 +91,7 @@ public class DynamicFormsPageModel(
             SaveAnswerToTempData(currentQuestion, answer);
         }
 
-        var nextQuestion = await formsEngine.GetNextQuestion(OrganisationId, FormId, SectionId, CurrentQuestionId);
+        var nextQuestion = await formsEngine.GetNextQuestion(OrganisationId, FormId, SectionId, currentQuestion.Id);
         if (nextQuestion != null)
         {
             return RedirectToPage("DynamicFormsPage", new { OrganisationId, FormId, SectionId, CurrentQuestionId = nextQuestion.Id });
@@ -109,7 +109,7 @@ public class DynamicFormsPageModel(
 
         PartialViewModel = GetPartialViewModel(currentQuestion, reset);
 
-        PreviousQuestionId = (await formsEngine.GetPreviousQuestion(OrganisationId, FormId, SectionId, CurrentQuestionId))?.Id;
+        PreviousQuestionId = (await formsEngine.GetPreviousQuestion(OrganisationId, FormId, SectionId, currentQuestion.Id))?.Id;
 
         return currentQuestion;
     }

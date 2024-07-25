@@ -49,7 +49,9 @@ public class ConnectedEntityPersonTypeModel(ISession session) : PageModel
         session.Set(Session.ConnectedPersonKey, state);
 
         return RedirectToPage(
-            state.ConnectedEntityType == Constants.ConnectedEntityType.Organisation ? "ConnectedEntityOrganisationCategory" : ""
+            state.ConnectedEntityType == Constants.ConnectedEntityType.Organisation
+                                            ? "ConnectedEntityOrganisationCategory"
+                                            : "ConnectedEntityIndividualCategory"
             , new { Id });
     }
 }

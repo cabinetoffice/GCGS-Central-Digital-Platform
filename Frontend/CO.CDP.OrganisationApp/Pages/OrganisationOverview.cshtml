@@ -1,5 +1,6 @@
 @page "/organisation/{id}"
 @using CO.CDP.OrganisationApp.Constants
+@using CO.CDP.OrganisationApp.WebApiClients
 @model OrganisationOverviewModel
 
 @{
@@ -83,7 +84,7 @@
 
                 </dl>
 
-                @if (organisationDetails.Roles.Contains(Organisation.WebApiClient.PartyRole.Supplier))
+                @if (organisationDetails.IsTenderer())
                 {
                     <h3 class="govuk-!-margin-top-3">
                         <a class="govuk-link" href="/organisation/@RouteData.Values["id"]/supplier-information">Supplier information</a>

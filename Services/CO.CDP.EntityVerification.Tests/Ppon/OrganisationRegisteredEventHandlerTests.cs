@@ -24,9 +24,16 @@ public class OrganisationRegisteredEventHandlerTests
         await handler.Handle(@event);
 
         pponRepository.Verify(
-            s => s.Save(It.Is<EntityVerification.Persistence.Ppon>(p => p.IdentifierId == generatedPpon)), Times.Once);
+            s => s.Save(It.Is<EntityVerification.Persistence.Ppon>(p => 
+                (p.IdentifierId == generatedPpon))), 
+            Times.Once);
+
         publisher.Verify(
-               s => s.Publish(It.IsAny<String>()), Times.Once);
+               s => s.Publish(It.Is<PponGenerated>(e =>
+                (e.Id == generatedPpon) &&
+                (e.Scheme == @event.Identifier.Scheme) &&
+                (e.LegalName == @event.Identifier.LegalName))),
+            Times.Once);
     }
 
     private static OrganisationRegistered GivenOrganisationRegisteredEvent(
