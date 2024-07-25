@@ -104,11 +104,8 @@ public class ConnectedEntityPostalSameAsRegisteredAddressModel(ISession session)
                         redirectPage = "ConnectedEntityLawRegister";
                         break;
                     case ConnectedEntityOrganisationCategoryType.ParentOrSubsidiaryCompany:
-                        redirectPage = "ConnectedEntityCompanyQuestion";
-                        break;
                     case ConnectedEntityOrganisationCategoryType.ACompanyYourOrganisationHasTakenOver:
-                        break;
-                    case ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl:                        
+                    case ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl:
                         redirectPage = "ConnectedEntityCompanyQuestion";
                         break;
                 }
