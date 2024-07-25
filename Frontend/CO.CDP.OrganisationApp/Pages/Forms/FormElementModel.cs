@@ -11,14 +11,11 @@ public interface IFormElementModel
 
     bool IsRequired { get; set; }
 
-    List<QuestionAnswer>? Answers { get; set; }
-
     FormQuestionType? CurrentFormQuestionType { get; set; }
 
     FormAnswer? GetAnswer();
 
     void SetAnswer(FormAnswer? answer);
-    void SetAnswers(List<QuestionAnswer>? answers);
 }
 
 public abstract class FormElementModel : IFormElementModel
@@ -26,8 +23,6 @@ public abstract class FormElementModel : IFormElementModel
     public string? Heading { get; set; }
 
     public string? Description { get; set; }
-
-    public List<QuestionAnswer>? Answers { get; set; }
 
     [BindProperty]
     public FormQuestionType? CurrentFormQuestionType { get; set; }
@@ -38,6 +33,4 @@ public abstract class FormElementModel : IFormElementModel
     public abstract FormAnswer? GetAnswer();
 
     public abstract void SetAnswer(FormAnswer? answer);
-    public virtual void SetAnswers(List<QuestionAnswer>? answers) { }
-
 }

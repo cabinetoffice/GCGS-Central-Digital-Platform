@@ -3,7 +3,7 @@ namespace CO.CDP.OrganisationApp.Models;
 public class SectionQuestionsResponse
 {
     public FormSection? Section { get; set; }
-    public List<FormQuestion>? Questions { get; set; }
+    public List<FormQuestion> Questions { get; set; } = [];
 }
 
 public class FormSection
@@ -34,6 +34,7 @@ public class FormQuestionOptions
 
 public class FormQuestionAnswerState
 {
+    public Guid? AnswerSetId { get; set; }
     public List<QuestionAnswer> Answers { get; set; } = [];
 }
 
@@ -41,7 +42,6 @@ public class QuestionAnswer
 {
     public Guid QuestionId { get; set; }
     public FormAnswer? Answer { get; set; }
-    public string? QuestionTitle { get; set; }
 }
 
 public class FormAnswer
