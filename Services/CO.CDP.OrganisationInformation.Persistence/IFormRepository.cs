@@ -8,4 +8,13 @@ public interface IFormRepository : IDisposable
     Task<IEnumerable<FormQuestion>> GetQuestionsAsync(Guid sectionId);
     Task<bool> DeleteAnswerSetAsync(Guid organisationId, Guid answerSetId);
     Task SaveFormAsync(Form formSection);
+    Task<FormSection?> GetFormSectionAsync(Guid sectionId);
+    Task<FormAnswerSet?> GetFormAnswerSetAsync(Guid answerSetId);
+    Task<bool> Save(Guid sectionId, Guid answerSetId, IEnumerable<FormAnswer> updatedAnswers);
+
+    public class FormRepositoryException(string message, Exception? cause = null) : Exception(message, cause)
+    {
+        public class DuplicateFormAnswerSetException(string message, Exception? cause = null)
+            : FormRepositoryException(message, cause);
+    }
 }

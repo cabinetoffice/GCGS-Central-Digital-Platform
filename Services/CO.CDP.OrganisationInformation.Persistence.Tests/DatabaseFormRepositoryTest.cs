@@ -4,7 +4,7 @@ using FluentAssertions;
 
 namespace CO.CDP.OrganisationInformation.Persistence.Tests;
 
-public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFixture<PostgreSqlFixture>
+  public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFixture<PostgreSqlFixture>
 {
     [Fact]
     public async Task GetSectionAsync_WhenSectionDoesNotExist_ReturnsNull()
@@ -96,6 +96,30 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
             Type = FormType.Standard
         };
     }
+    public async Task GetFormAnswerSetAsync_WhenFormAnswerSetDoesNotExist_ReturnsNull()
+    {
+        using var repository = FormRepository();
+
+        var nonExistentAnswerSetId = Guid.NewGuid();
+
+        var foundAnswerSet = await repository.GetFormAnswerSetAsync(nonExistentAnswerSetId);
+
+        foundAnswerSet.Should().BeNull();
+    }
+
+
+    [Fact]
+    public async Task GetFormSectionAsync_WhenFormSectionDoesNotExist_ReturnsNull()
+    {
+        using var repository = FormRepository();
+
+        var nonExistentSectionId = Guid.NewGuid();
+
+        var foundSection = await repository.GetFormSectionAsync(nonExistentSectionId);
+
+        foundSection.Should().BeNull();
+    }
+
 
     private IFormRepository FormRepository()
     {

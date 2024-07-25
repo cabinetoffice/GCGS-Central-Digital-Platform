@@ -37,4 +37,34 @@ public class DatabaseFormRepository(OrganisationInformationContext context) : IF
         context.Update(form);
         await context.SaveChangesAsync();
     }
+
+    public async Task<FormAnswerSet?> GetFormAnswerSetAsync(Guid answerSetId)
+    {
+        return await context.Set<FormAnswerSet>()
+            .Include(a => a.Answers)
+            .FirstOrDefaultAsync(a => a.Guid == answerSetId);
+    }
+
+    public async Task<FormSection?> GetFormSectionAsync(Guid sectionId)
+    {
+            return await context.Set<FormSection>()
+                .FirstOrDefaultAsync(s => s.Guid == sectionId);
+    }
+
+    public Task<bool> Save(Guid sectionId, Guid answerSetId, IEnumerable<FormAnswer> updatedAnswers)
+    {
+        throw new NotImplementedException();
+    }
+
+    private static void HandleDbUpdateException(FormAnswerSet answerSet, DbUpdateException cause)
+    {
+        switch (cause.InnerException)
+        {
+            case { } e when e.Message.Contains("_form_answer_sets_guid"):
+                throw new IConnectedEntityRepository.ConnectedEntityRepositoryException.DuplicateConnectedEntityException(
+                    $"Form answer set with guid `{answerSet.Guid}` already exists.", cause);
+            default:
+                throw cause;
+        }
+    }
 }
