@@ -35,8 +35,8 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                     SELECT currval(pg_get_serial_sequence('forms', 'id')) INTO formId;
 
                     -- Insert into form_sections
-                    INSERT INTO form_sections (guid, title, form_id, configuration)
-                    VALUES ('{sectionGuid}', 'Financial Information', formId, '{{""AddAnotherAnswerLabel"": ""Add another file?"", ""SingularSummaryHeading"": ""You have added 1 file"", ""RemoveConfirmationCaption"": ""Economic and Financial Standing"", ""RemoveConfirmationHeading"": ""Are you sure you want to remove this file?"", ""PluralSummaryHeadingFormat"": ""You have added {{0}} files""}}');
+                    INSERT INTO form_sections (guid, title, form_id)
+                    VALUES ('{sectionGuid}', 'Financial Information', formId);
 
                     -- Retrieve the inserted form_section ID
                     SELECT currval(pg_get_serial_sequence('form_sections', 'id')) INTO sectionId;
