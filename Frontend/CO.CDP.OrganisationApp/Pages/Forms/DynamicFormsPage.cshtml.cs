@@ -160,7 +160,15 @@ public class DynamicFormsPageModel(
         model.Description = currentQuestion.Description;
         model.IsRequired = currentQuestion.IsRequired;
 
-        if (reset)
+        if (currentQuestion.IsCheckYourAnswers)
+        {
+            var state = tempDataService.PeekOrDefault<FormQuestionAnswerState>(FormQuestionAnswerStateKey);
+            if (state.Answers != null)
+            {
+                model.SetAnswers(state.Answers);
+            }
+        }
+        else if (reset)
         {
             var state = tempDataService.PeekOrDefault<FormQuestionAnswerState>(FormQuestionAnswerStateKey);
             var answer = state.Answers?.FirstOrDefault(a => a.QuestionId == currentQuestion.Id)?.Answer;

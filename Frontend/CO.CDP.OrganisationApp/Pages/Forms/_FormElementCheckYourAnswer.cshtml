@@ -1,17 +1,15 @@
 @using CO.CDP.OrganisationApp.Models
 @model FormElementCheckYourAnswersModel
 
-@{
-    Model.LoadAnswers(TempData);
-}
-
 <div class="govuk-grid-column-full">
     <h1 class="govuk-heading-l">Check your answers</h1>
     <dl class="govuk-summary-list govuk-!-margin-bottom-3">
-        @if (Model.Answers.Any())
+        @if (Model.Answers != null && Model.Answers.Any())
         {
             foreach (var answer in Model.Answers)
             {
+                if (answer. != FormQuestionType.NoInput)
+                {
                 <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">
                         @answer.QuestionTitle
@@ -27,6 +25,7 @@
                         </a>
                     </dd>
                 </div>
+                }
             }
         }
         else

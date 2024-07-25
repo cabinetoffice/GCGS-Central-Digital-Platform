@@ -1,5 +1,4 @@
 using CO.CDP.OrganisationApp.Models;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
 namespace CO.CDP.OrganisationApp.Pages.Forms;
 
@@ -9,15 +8,16 @@ public class FormElementCheckYourAnswersModel : FormElementModel
     public Guid FormId { get; set; }
     public Guid SectionId { get; set; }
 
-    public List<QuestionAnswer> Answers { get; private set; } = new();
+    public List<QuestionAnswer>? ListOfAnswers { get; set; }
 
     public override FormAnswer? GetAnswer()
     {
         return null;
     }
 
-    public override void SetAnswer(FormAnswer? answer)
+    public override void SetAnswers(List<QuestionAnswer>? answers)
     {
+        Answers = answers;
     }
 
     public string GetEditUrl(Guid questionId)
@@ -25,13 +25,8 @@ public class FormElementCheckYourAnswersModel : FormElementModel
         return $"/organisation/{OrganisationId}/form/{FormId}/section/{SectionId}/question/{questionId}/edit";
     }
 
-    public void LoadAnswers(ITempDataDictionary tempData)
+    public override void SetAnswer(FormAnswer? answer)
     {
-        var answerStateKey = $"Forms_{OrganisationId}_{FormId}_{SectionId}";
-        var state = tempData.Peek(answerStateKey) as FormQuestionAnswerState;
-        if (state != null)
-        {
-            Answers = state.Answers;
-        }
+
     }
 }

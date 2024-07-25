@@ -4,7 +4,7 @@ using DevolvedRegulation = CO.CDP.OrganisationApp.Constants.DevolvedRegulation;
 
 namespace CO.CDP.OrganisationApp.WebApiClients;
 
-internal static class OrganisationClientExtensions
+public static class OrganisationClientExtensions
 {
     internal static async Task<ComposedOrganisation> GetComposedOrganisation(this IOrganisationClient organisationClient, Guid organisationId)
     {
@@ -143,7 +143,7 @@ internal static class OrganisationClientExtensions
                 type: SupplierInformationUpdateType.CompletedConnectedPerson,
                 supplierInformation: new SupplierInfo(supplierType: null, operationTypes: null, tradeAssurance: null, legalForm: null, qualification: null)));
 
-    internal static bool IsTenderer(this Organisation.WebApiClient.Organisation organisation)
+    public static bool IsTenderer(this Organisation.WebApiClient.Organisation organisation)
     {
         return organisation.Roles.Contains(PartyRole.Tenderer);
     }
