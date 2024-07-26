@@ -12,8 +12,8 @@ public class WebApiToPersistenceProfile : Profile
 
         CreateMap<Persistence.FormQuestion, Model.FormQuestion>()
             .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Guid))
-            .ForMember(dest => dest.NextQuestion, opt => opt.MapFrom(src => src.NextQuestion.Guid))
-            .ForMember(dest => dest.NextQuestionAlternative, opt => opt.MapFrom(src => src.NextQuestionAlternative.Guid))
+            .ForMember(dest => dest.NextQuestion, opt => opt.MapFrom(src => src.NextQuestion != null ? src.NextQuestion.Guid : (Guid?)null))
+            .ForMember(dest => dest.NextQuestionAlternative, opt => opt.MapFrom(src => src.NextQuestionAlternative != null ? src.NextQuestionAlternative.Guid : (Guid?)null))
             .ForMember(dest => dest.Type, opt => opt.MapFrom(src => (Model.FormQuestionType)src.Type))
             .ForMember(dest => dest.Options, opt => opt.MapFrom(src => src.Options));
 
@@ -24,5 +24,12 @@ public class WebApiToPersistenceProfile : Profile
         CreateMap<Persistence.FormQuestionChoiceHint, Model.FormQuestionChoiceHint>();
 
         CreateMap<Persistence.FormSectionConfiguration, Model.FormSectionConfiguration>();
+
+        CreateMap<Model.FormAnswer, Persistence.FormAnswer>()
+            .ForMember(dest => dest.Question, opt => opt.Ignore())
+            .ForMember(dest => dest.FormAnswerSet, opt => opt.Ignore())
+            .ForMember(dest => dest.CreatedOn, opt => opt.Ignore())
+            .ForMember(dest => dest.UpdatedOn, opt => opt.Ignore())
+            .ForMember(dest => dest.Id, opt => opt.Ignore());
     }
 }
