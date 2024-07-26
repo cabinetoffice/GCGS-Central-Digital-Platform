@@ -45,6 +45,6 @@ public class ConnectedPersonSummaryModel(
             return Page();
         }
 
-        return RedirectToPage(HasConnectedEntity == true ? "TODO" : "/Supplier/SupplierInformationSummary", new { Id });
+        return RedirectToPage(HasConnectedEntity == true ? "/Supplier/ConnectedEntity/ConnectedEntityDeclaration" : "/Supplier/SupplierInformationSummary", new { Id });
     }
 }
