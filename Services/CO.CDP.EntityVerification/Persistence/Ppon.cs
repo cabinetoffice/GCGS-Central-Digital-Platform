@@ -2,7 +2,7 @@ using CO.CDP.EntityFrameworkCore.Timestamps;
 
 namespace CO.CDP.EntityVerification.Persistence;
 
-public class Ppon : PersistenceBase, IEntityDate
+public class Ppon : IEntityDate
 {
     public int Id { get; set; }
     public required string IdentifierId { get; set; }

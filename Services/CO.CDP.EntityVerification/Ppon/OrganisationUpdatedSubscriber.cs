@@ -1,45 +1,38 @@
 using CO.CDP.EntityVerification.Events;
 using CO.CDP.EntityVerification.Persistence;
 using CO.CDP.MQ;
+using static CO.CDP.EntityVerification.Ppon.OrganisationUpdatedSubscriber.OrganisationUpdatedException;
 
 namespace CO.CDP.EntityVerification.Ppon;
 
 public class OrganisationUpdatedSubscriber(
-    IPponRepository pponRepository,
-    ILogger<OrganisationUpdatedSubscriber> logger)
+    IPponRepository pponRepository)
     : ISubscriber<OrganisationUpdated>
 {
+    public class OrganisationUpdatedException(string message, Exception? cause = null) : Exception(message, cause)
+    {
+        public class NotFoundPponException(string message, Exception? cause = null)
+            : Exception(message, cause);
+    }
+
     public async Task Handle(OrganisationUpdated @event)
     {
-        // Find org based on Ppon id
-        // Update identitfiers for organisation
-
         var pponToUpdate  = await pponRepository.FindPponByPponIdAsync(@event.PponId);
 
         if (pponToUpdate != null)
         {
-            // Update identifiers
-            pponRepository.UpdatePponIdentifiersAsync(pponToUpdate, @event.AllIdentifiers());
+            var identifiersToPersist = Persistence.Identifier.GetPersistenceIdentifiers(@event.AllIdentifiers());
+
+            foreach (var identifier in identifiersToPersist)
+            {
+                pponToUpdate.Identifiers.Add(identifier);
+            }
+
+            pponRepository.Save(pponToUpdate);
         }
         else
         {
-            pponToUpdate = await pponRepository.FindPponByIdentifierAsync(@event.AllIdentifiers());
-
-            if (pponToUpdate != null)
-            {
-                pponToUpdate.IdentifierId = @event.PponId;
-
-                pponRepository.UpdatePponIdentifiersAsync(pponToUpdate, @event.AllIdentifiers());
-            }
-            else
-            {
-                logger.LogError("Organisation not found by Ppon Id or any supplied Identifier(s).");
-            }
-        }
-
-        if (pponToUpdate != null)
-        {
-            pponRepository.Save(pponToUpdate);
+            throw new NotFoundPponException($"Not found Ppon for id: {@event.PponId}");
         }
     }
 }

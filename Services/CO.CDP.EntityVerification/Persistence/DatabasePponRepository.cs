@@ -31,42 +31,6 @@ public class DatabasePponRepository(EntityVerificationContext context) : IPponRe
             .FirstOrDefaultAsync(p => p.IdentifierId == pponId);
     }
 
-    public async Task<Ppon?> FindPponByIdentifierAsync(IEnumerable<Events.Identifier> pponIdentifiers)
-    {
-        var ppons = await context.Ppons
-            .Include(p => p.Identifiers)
-            .ToListAsync();
-
-        return ppons.FirstOrDefault(p => p.Identifiers.Any(i =>
-            pponIdentifiers.Any(pi =>
-                i.IdentifierId == pi.Id &&
-                i.Scheme == pi.Scheme)));
-    }
-
-    public void UpdatePponIdentifiersAsync(Ppon pponToUpdate, IEnumerable<Events.Identifier> identifiers)
-    {
-        // Find the matching identifiers for the pponToUpdate
-        foreach (var idToUpdate in identifiers)
-        {
-            var existingIdentifier = context.Identifiers.FirstOrDefault(i => i.IdentifierId == idToUpdate.Id && i.Scheme == idToUpdate.Scheme);
-            if (existingIdentifier != null)
-            {
-                existingIdentifier.Uri = idToUpdate.Uri;
-                existingIdentifier.LegalName = idToUpdate.LegalName;
-            }
-        }
-
-        // Find the new identifiers to add.
-        var newIdentifiers = identifiers
-            .Where(pi => !pponToUpdate.Identifiers.Any(i => i.IdentifierId == pi.Id && i.Scheme == pi.Scheme))
-            .ToList();
-
-        foreach (var identifier in Identifier.GetPersistenceIdentifiers(newIdentifiers, pponToUpdate))
-        {
-            pponToUpdate.Identifiers.Add(identifier);
-        }
-    }
-
     private static void HandleDbUpdateException(Ppon identifier, DbUpdateException cause)
     {
         switch (cause.InnerException)

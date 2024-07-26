@@ -25,7 +25,7 @@ public class IdentifierTests
         var newPpon = GivenPpon(pponId: "b69ffded365449f6aa4c340f5997fd2e");
 
         // Act
-        var result = EntityVerification.Persistence.Identifier.GetPersistenceIdentifiers(evIds, newPpon);
+        var result = EntityVerification.Persistence.Identifier.GetPersistenceIdentifiers(evIds);
 
         // Assert
         result.Should().HaveCount(2);
@@ -45,7 +45,7 @@ public class IdentifierTests
         var newPpon = GivenPpon(pponId: "b69ffded365449f6aa4c340f5997fd2e");
 
         // Act
-        var result = EntityVerification.Persistence.Identifier.GetPersistenceIdentifiers(evIds, newPpon);
+        var result = EntityVerification.Persistence.Identifier.GetPersistenceIdentifiers(evIds);
 
         // Assert
         result.Should().ContainSingle(i =>

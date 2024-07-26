@@ -47,24 +47,6 @@ public class EntityVerificationContext : DbContext
                 .HasForeignKey("PponId");
         });
 
-        //modelBuilder.Entity<Ppon>(ppon =>
-        //{
-        //    ppon.HasIndex(p => p.IdentifierId).IsUnique();
-        //    ppon.HasIndex(p => p.OrganisationId);
-        //    ppon.HasIndex(p => p.Name);
-        //    ppon.Property(p => p.CreatedOn).HasTimestampDefault();
-        //    ppon.Property(p => p.UpdatedOn).HasTimestampDefault();
-        //    ppon.OwnsMany(e => e.Identifiers, i =>
-        //    {
-        //        i.WithOwner().HasForeignKey("ppon_id");
-        //        i.HasKey(p => p.Id);
-        //        i.HasIndex(p => p.IdentifierId);
-        //        i.HasIndex(p => p.Scheme);
-        //        i.Property(p => p.CreatedOn).HasTimestampDefault();
-        //        i.Property(p => p.UpdatedOn).HasTimestampDefault();
-        //    });
-        //});
-
         base.OnModelCreating(modelBuilder);
     }
 

@@ -20,7 +20,7 @@ public class OrganisationRegisteredSubscriber(
             OrganisationId = @event.Id
         };
 
-        newPpon.Identifiers = Identifier.GetPersistenceIdentifiers(@event.AllIdentifiers(), newPpon);
+        newPpon.Identifiers = Identifier.GetPersistenceIdentifiers(@event.AllIdentifiers());
 
         PponGenerated pponGenerated = new()
         {

@@ -19,6 +19,17 @@ public class EventDeserializerTest
     }
 
     [Fact]
+    public void ItDeserializesOrganisationUpdateEvent()
+    {
+        var organisationUpdate = GvienOrganisationUpdatedEvent();
+        var serialized = JsonSerializer.Serialize(organisationUpdate);
+
+        var deserialized = EventDeserializer.Deserializer("OrganisationUpdated", serialized);
+
+        deserialized.Should().BeEquivalentTo(organisationUpdate);
+    }
+
+    [Fact]
     public void ItThrowsAnExceptionIfTheEventIsUnknown()
     {
         var action = () => EventDeserializer.Deserializer("UnknownEvent", "{}");
@@ -39,6 +50,30 @@ public class EventDeserializerTest
         {
             Id = Guid.NewGuid(),
             Name = "Acme Ltd",
+            Identifier = new Identifier
+            {
+                Id = "93433423432",
+                LegalName = "Acme Ltd",
+                Scheme = "GB-COH",
+                Uri = null
+            },
+            AdditionalIdentifiers =
+            [
+                new Identifier
+                {
+                    Id = "GB123123123",
+                    LegalName = "Acme Ltd",
+                    Scheme = "VAT",
+                    Uri = null
+                }
+            ],
+            Roles = ["supplier"]
+        };
+
+    private static OrganisationUpdated GvienOrganisationUpdatedEvent() =>
+        new()
+        {
+            PponId = "2e1230b94ced4fa9aac76895f122e9f0",
             Identifier = new Identifier
             {
                 Id = "93433423432",
