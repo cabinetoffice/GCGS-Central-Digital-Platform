@@ -55,25 +55,41 @@ public class ConnectedEntityCheckAnswersModel(
             return RedirectToPage("ConnectedEntitySupplierHasControl", new { Id });
         }
 
-        var payload = RegisterConnectedEntityPayload(state);
-
-        if (payload == null)
-        {
-            ModelState.AddModelError(string.Empty, ErrorMessagesList.PayLoadIssueOrNullAurgument);
-            return Page();
-        }
-
         try
         {
-            await organisationClient.RegisterConnectedPerson(Id, payload);
+            if (ConnectedEntityId.HasValue)
+            {
+                var payload = UpdateConnectedEntityPayload(state);
+
+                if (payload == null)
+                {
+                    ModelState.AddModelError(string.Empty, ErrorMessagesList.PayLoadIssueOrNullAurgument);
+                    return Page();
+                }
+
+                await organisationClient.UpdateConnectedPerson(Id, ConnectedEntityId.Value, payload);
+            }
+            else
+            {
+                var payload = RegisterConnectedEntityPayload(state);
+
+                if (payload == null)
+                {
+                    ModelState.AddModelError(string.Empty, ErrorMessagesList.PayLoadIssueOrNullAurgument);
+                    return Page();
+                }
+
+                await organisationClient.RegisterConnectedPerson(Id, payload);
+            }
 
             session.Remove(Session.ConnectedPersonKey);
+
         }
         catch (ApiException ex) when (ex.StatusCode == 404)
         {
             return Redirect("/page-not-found");
         }
-        
+
         return RedirectToPage("ConnectedPersonSummary", new { Id });
     }
 
@@ -139,6 +155,70 @@ public class ConnectedEntityCheckAnswersModel(
         );
 
         return registerConnectedEntity;
+    }
+
+    private UpdateConnectedEntity? UpdateConnectedEntityPayload(ConnectedEntityState state)
+    {
+        CreateConnectedOrganisation? connectedOrganisation = null;
+        CreateConnectedIndividualTrust? connectedIndividualTrust = null;
+
+        if (state.ConnectedEntityType == Constants.ConnectedEntityType.Organisation)
+        {
+            connectedOrganisation = new CreateConnectedOrganisation
+            (
+                category: state.ConnectedEntityOrganisationCategoryType!.Value.AsApiClientConnectedEntityOrganisationCategoryType(),
+                controlCondition: state.ControlConditions.AsApiClientControlConditionList(),
+                insolvencyDate: state.InsolvencyDate,
+                lawRegistered: state.LawRegistered,
+                name: state.OrganisationName,
+                organisationId: null,
+                registeredLegalForm: state.LegalForm
+            );
+        }
+        else
+        {
+            connectedIndividualTrust = new CreateConnectedIndividualTrust
+            (
+                category: state.ConnectedEntityIndividualAndTrustCategoryType!.Value.AsApiClientConnectedIndividualAndTrustCategory(),
+                connectedType: (state.ConnectedEntityType == Constants.ConnectedEntityType.Individual
+                                    ? ConnectedPersonType.Individual : ConnectedPersonType.TrustOrTrustee),
+                controlCondition: state.ControlConditions.AsApiClientControlConditionList(),
+                dateOfBirth: null,
+                firstName: "",
+                lastName: "",
+                nationality: "",
+                personId: null
+            );
+        }
+
+        List<Address> addresses = new();
+
+        if (state.RegisteredAddress != null)
+        {
+            addresses.Add(AddAddress(state.RegisteredAddress, Organisation.WebApiClient.AddressType.Registered));
+        }
+
+        if (state.PostalAddress != null)
+        {
+            addresses.Add(AddAddress(state.PostalAddress, Organisation.WebApiClient.AddressType.Postal));
+        }
+
+        var updateConnectedEntity = new UpdateConnectedEntity
+        (
+            addresses: addresses,
+            companyHouseNumber: state.CompaniesHouseNumber,
+            endDate: null,
+            entityType: state.ConnectedEntityType!.Value.AsApiClientConnectedEntityType(),
+            hasCompnayHouseNumber: state.HasCompaniesHouseNumber!.Value,
+            individualOrTrust: connectedIndividualTrust,
+            organisation: connectedOrganisation,
+            overseasCompanyNumber: "",
+            registeredDate: state.RegistrationDate!.Value,
+            registerName: state.RegisterName,
+            startDate: null
+        );
+
+        return updateConnectedEntity;
     }
 
     private Address AddAddress(ConnectedEntityState.Address addressDetails, Organisation.WebApiClient.AddressType addressType)
