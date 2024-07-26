@@ -1,6 +1,7 @@
 using AutoMapper;
 using CO.CDP.Organisation.WebApi.Events;
 using CO.CDP.Organisation.WebApi.Model;
+using CO.CDP.OrganisationInformation;
 using Microsoft.OpenApi.Extensions;
 using Address = CO.CDP.OrganisationInformation.Address;
 using ContactPoint = CO.CDP.OrganisationInformation.ContactPoint;
@@ -174,7 +175,7 @@ public class WebApiToPersistenceProfile : Profile
             .ForMember(m => m.AdditionalIdentifiers, o => o.MapFrom(m => m.Identifiers.Where(i => !i.Primary)))
             .ForMember(m => m.ContactPoint, o => o.MapFrom(m => m.ContactPoints.FirstOrDefault() ?? new Persistence.Organisation.ContactPoint()))
             .ForMember(m => m.Addresses, o => o.MapFrom(m => m.Addresses))
-            .ForMember(m => m.Roles, o => o.MapFrom(m => m.Roles));
+            .ForMember(m => m.Roles, o => o.MapFrom(m => m.Roles.Select(r => r.AsCode())));
         CreateMap<Persistence.Organisation.OrganisationAddress, Events.Address>()
             .ForMember(m => m.Type, o => o.MapFrom(m => m.Type.GetDisplayName()))
             .ForMember(m => m.StreetAddress, o => o.MapFrom(m => m.Address.StreetAddress))

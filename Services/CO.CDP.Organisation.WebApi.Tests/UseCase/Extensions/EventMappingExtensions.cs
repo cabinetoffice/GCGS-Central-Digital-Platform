@@ -38,5 +38,5 @@ internal static class EventMappingExtensions
     };
 
     internal static List<string> AsEventValue(this List<PartyRole> command) =>
-        command.Select(r => r.ToString()).ToList();
+        command.Select(r => r.ToString()).Select(r => char.ToLowerInvariant(r[0]) + r[1..]).ToList();
 }
