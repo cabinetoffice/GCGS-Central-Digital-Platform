@@ -130,7 +130,7 @@ public class ConnectedEntityPscDetailsModel(ISession session) : PageModel
                 Month = state.DateOfBirth.Value.Month.ToString();
                 Year = state.DateOfBirth.Value.Year.ToString();
             }
-        }       
+        }
     }
 
     private (bool valid, ConnectedEntityState state) ValidatePage()
@@ -144,7 +144,7 @@ public class ConnectedEntityPscDetailsModel(ISession session) : PageModel
         }
         return (true, cp);
     }
-        
+
     private string GetRedirectLinkPageName(ConnectedEntityState state)
     {
         var redirectPage = "";
@@ -156,12 +156,11 @@ public class ConnectedEntityPscDetailsModel(ISession session) : PageModel
                 switch (state.ConnectedEntityIndividualAndTrustCategoryType)
                 {
                     case ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndividual:
+                    case ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndividualWithSignificantInfluenceOrControlForIndividual:
                         redirectPage = "ConnectedEntityAddress";
                         break;
                     case ConnectedEntityIndividualAndTrustCategoryType.DirectorOrIndividualWithTheSameResponsibilitiesForIndividual:
-                        break;
-                    case ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndividualWithSignificantInfluenceOrControlForIndividual:
-                        redirectPage = "ConnectedEntityAddress";
+                        redirectPage = "ConnectedEntityDirectorResidency";
                         break;
                 }
                 break;
@@ -169,12 +168,11 @@ public class ConnectedEntityPscDetailsModel(ISession session) : PageModel
                 switch (state.ConnectedEntityIndividualAndTrustCategoryType)
                 {
                     case ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForTrust:
-                        redirectPage = "ConnectedEntityAddress";
-                        break;
-                    case ConnectedEntityIndividualAndTrustCategoryType.DirectorOrIndividualWithTheSameResponsibilitiesForTrust:
-                        break;
                     case ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndividualWithSignificantInfluenceOrControlForTrust:
                         redirectPage = "ConnectedEntityAddress";
+                        break;
+
+                    case ConnectedEntityIndividualAndTrustCategoryType.DirectorOrIndividualWithTheSameResponsibilitiesForTrust:
                         break;
                 }
                 break;

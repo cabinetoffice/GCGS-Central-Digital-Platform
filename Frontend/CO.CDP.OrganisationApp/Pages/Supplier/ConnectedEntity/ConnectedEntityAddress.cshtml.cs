@@ -115,6 +115,7 @@ public class ConnectedEntityAddressModel(ISession session) : PageModel
                             "ConnectedEntityControlCondition" : "ConnectedEntityPostalSameAsRegisteredAddress";
                         break;
                     case ConnectedEntityIndividualAndTrustCategoryType.DirectorOrIndividualWithTheSameResponsibilitiesForIndividual:
+                        redirectPage = "ConnectedEntityCheckAnswersIndividualOrTrust";
                         break;
                     case ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndividualWithSignificantInfluenceOrControlForIndividual:
                         redirectPage = "";
@@ -129,6 +130,7 @@ public class ConnectedEntityAddressModel(ISession session) : PageModel
                             "ConnectedEntityControlCondition" : "ConnectedEntityPostalSameAsRegisteredAddress";
                         break;
                     case ConnectedEntityIndividualAndTrustCategoryType.DirectorOrIndividualWithTheSameResponsibilitiesForTrust:
+                        redirectPage = "ConnectedEntityCheckAnswersIndividualOrTrust";
                         break;
                     case ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndividualWithSignificantInfluenceOrControlForTrust:
                         redirectPage = "";
@@ -196,11 +198,7 @@ public class ConnectedEntityAddressModel(ISession session) : PageModel
                 switch (state.ConnectedEntityIndividualAndTrustCategoryType)
                 {
                     case ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndividual:
-                        heading = $"Enter {state.FirstName}'s registered address";
-                        hintValue = "The address registered with Companies House, or the principal address the business conducts its activities. For example, a head office.";
-                        break;
                     case ConnectedEntityIndividualAndTrustCategoryType.DirectorOrIndividualWithTheSameResponsibilitiesForIndividual:
-                        break;
                     case ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndividualWithSignificantInfluenceOrControlForIndividual:
                         heading = $"Enter {state.FirstName}'s registered address";
                         hintValue = "The address registered with Companies House, or the principal address the business conducts its activities. For example, a head office.";
@@ -211,11 +209,7 @@ public class ConnectedEntityAddressModel(ISession session) : PageModel
                 switch (state.ConnectedEntityIndividualAndTrustCategoryType)
                 {
                     case ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForTrust:
-                        heading = $"Enter {state.FirstName}'s registered address";
-                        hintValue = "The address registered with Companies House, or the principal address the business conducts its activities. For example, a head office.";
-                        break;
                     case ConnectedEntityIndividualAndTrustCategoryType.DirectorOrIndividualWithTheSameResponsibilitiesForTrust:
-                        break;
                     case ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndividualWithSignificantInfluenceOrControlForTrust:
                         heading = $"Enter {state.FirstName}'s registered address";
                         hintValue = "The address registered with Companies House, or the principal address the business conducts its activities. For example, a head office.";
