@@ -27,6 +27,7 @@ public class ConnectedEntityState
     public string? LastName { get; set; }
     public string? Nationality { get; set; }
     public DateTimeOffset? DateOfBirth { get; set; }
+    public string? DirectorLocation { get; set; }
     public class Address
     {
         public string? AddressLine1 { get; set; }

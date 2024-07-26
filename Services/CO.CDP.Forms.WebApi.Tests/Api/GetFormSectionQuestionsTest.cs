@@ -12,14 +12,14 @@ namespace CO.CDP.Forms.WebApi.Tests.Api;
 public class GetFormSectionQuestionsTest
 {
     private readonly HttpClient _httpClient;
-    private readonly Mock<IUseCase<(Guid formId, Guid sectionId), SectionQuestionsResponse?>> _getFormSectionQuestionsUseCase = new();
+    private readonly Mock<IUseCase<(Guid formId, Guid sectionId, Guid organisationId), SectionQuestionsResponse?>> _getFormSectionQuestionsUseCase = new();
 
     public GetFormSectionQuestionsTest()
     {
         TestWebApplicationFactory<Program> factory = new(builder =>
         {
             builder.ConfigureServices(services =>
-                services.AddScoped<IUseCase<(Guid formId, Guid sectionId), SectionQuestionsResponse?>>(_ => _getFormSectionQuestionsUseCase.Object)
+                services.AddScoped<IUseCase<(Guid formId, Guid sectionId, Guid organisationId), SectionQuestionsResponse?>>(_ => _getFormSectionQuestionsUseCase.Object)
             );
         });
         _httpClient = factory.CreateClient();
@@ -30,12 +30,13 @@ public class GetFormSectionQuestionsTest
     {
         var formId = Guid.NewGuid();
         var sectionId = Guid.NewGuid();
-        var tuple = (formId, sectionId);
+        var organisationId = Guid.NewGuid();
+        var tuple = (formId, sectionId, organisationId);
 
         _getFormSectionQuestionsUseCase.Setup(useCase => useCase.Execute(tuple))
             .ReturnsAsync((SectionQuestionsResponse?)null);
 
-        var response = await _httpClient.GetAsync($"/forms/{formId}/sections/{sectionId}/questions");
+        var response = await _httpClient.GetAsync($"/forms/{formId}/sections/{sectionId}/questions?organisation-id={organisationId}");
 
         response.Should().HaveStatusCode(NotFound);
     }
@@ -45,13 +46,14 @@ public class GetFormSectionQuestionsTest
     {
         var formId = Guid.NewGuid();
         var sectionId = Guid.NewGuid();
-        var tuple = (formId, sectionId);
+        var organisationId = Guid.NewGuid();
+        var tuple = (formId, sectionId, organisationId);
         var sectionQuestionsResponse = GivenSectionQuestionsResponse();
 
         _getFormSectionQuestionsUseCase.Setup(useCase => useCase.Execute(tuple))
                 .ReturnsAsync(sectionQuestionsResponse);
 
-        var response = await _httpClient.GetAsync($"/forms/{formId}/sections/{sectionId}/questions");
+        var response = await _httpClient.GetAsync($"/forms/{formId}/sections/{sectionId}/questions?organisation-id={organisationId}");
 
         response.Should().HaveStatusCode(OK);
         await response.Should().HaveContent(sectionQuestionsResponse);

@@ -66,7 +66,7 @@ public class FormsAnswerSetRemoveConfirmationModel(
     {
         try
         {
-            var response = await formsClient.GetFormSectionQuestionsAsync(FormId, SectionId);
+            var response = await formsClient.GetFormSectionQuestionsAsync(FormId, SectionId, OrganisationId);
             var valid = response.AnswerSets.FirstOrDefault(a => a.Id == AnswerSetId) != null;
 
             if (valid)

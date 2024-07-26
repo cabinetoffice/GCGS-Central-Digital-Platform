@@ -15,7 +15,7 @@ public class FormsEngine(IFormsClient formsApiClient, ITempDataService tempDataS
             return cachedResponse;
         }
 
-        var response = await formsApiClient.GetFormSectionQuestionsAsync(formId, sectionId);
+        var response = await formsApiClient.GetFormSectionQuestionsAsync(formId, sectionId, organisationId);
 
         var sectionQuestionsResponse = new SectionQuestionsResponse
         {
