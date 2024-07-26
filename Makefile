@@ -46,8 +46,8 @@ ps: ## Show Docker container status
 .PHONY: ps
 
 db: compose.override.yml ## Start DB and DB migration services
-	@docker compose up -d db organisation-information-migrations entity-verification-migrations
-	@docker compose logs -f organisation-information-migrations entity-verification-migrations
+	@docker compose up -d db
+	@docker compose up organisation-information-migrations entity-verification-migrations --abort-on-container-failure
 .PHONY: db
 
 localstack: compose.override.yml ## Start the localstack service for AWS services available locally

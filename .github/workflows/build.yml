@@ -79,6 +79,10 @@ jobs:
         run: make up
         env:
           IMAGE_VERSION: ${{ steps.version.outputs.version }}
+      - name: Test migrations
+        run: make db
+        env:
+          IMAGE_VERSION: ${{ steps.version.outputs.version }}
       - name: Stop services
         run: make down
         env:
