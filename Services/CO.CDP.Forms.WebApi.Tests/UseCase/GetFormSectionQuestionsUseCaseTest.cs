@@ -15,7 +15,7 @@ public class GetFormSectionQuestionsUseCaseTest(AutoMapperFixture mapperFixture)
     [Fact]
     public async Task ItReturnsNullIfNoSectionIsFound()
     {
-        var found = await UseCase.Execute((It.IsAny<Guid>(), It.IsAny<Guid>()));
+        var found = await UseCase.Execute((It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid>()));
 
         found.Should().BeNull();
     }
@@ -25,6 +25,7 @@ public class GetFormSectionQuestionsUseCaseTest(AutoMapperFixture mapperFixture)
     {
         var formId = Guid.NewGuid();
         var sectionId = Guid.NewGuid();
+        var organisationId = Guid.NewGuid();
 
         var form = new CO.CDP.OrganisationInformation.Persistence.Forms.Form
         {
@@ -91,7 +92,7 @@ public class GetFormSectionQuestionsUseCaseTest(AutoMapperFixture mapperFixture)
 
         _repository.Setup(r => r.GetSectionAsync(It.IsAny<Guid>(), It.IsAny<Guid>())).ReturnsAsync(section);
 
-        var result = await UseCase.Execute((formId, sectionId));
+        var result = await UseCase.Execute((formId, sectionId, organisationId));
 
         result?.Questions.Should().HaveCount(2);
 
