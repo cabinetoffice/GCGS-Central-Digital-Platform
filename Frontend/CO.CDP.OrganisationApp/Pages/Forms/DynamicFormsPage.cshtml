@@ -4,7 +4,13 @@
 @{
     var backUrl = $"/organisation/{Model.OrganisationId}/supplier-information";
 
-    if (Model.PreviousQuestionId.HasValue)
+    if (Request.Query.ContainsKey("frm-chk-answer"))
+    {
+        var checkYourAnswerQuestionId = await Model.CheckYourAnswerQuestionId();
+        backUrl = $"/organisation/{Model.OrganisationId}/forms/{Model.FormId}/sections/{Model.SectionId}/{checkYourAnswerQuestionId}";
+        Model.RedirectToCheckYourAnswer = true;
+    }
+    else if (Model.PreviousQuestionId.HasValue)
     {
         backUrl = $"/organisation/{Model.OrganisationId}/forms/{Model.FormId}/sections/{Model.SectionId}/{Model.PreviousQuestionId}";
     }
@@ -18,17 +24,47 @@
             <partial name="_ErrorSummary" model="@ModelState" />
 
             <form method="post" enctype="@Model.EncType">
+                @if (Request.Query.ContainsKey("frm-chk-answer"))
+                {
+                    <input type="hidden" name="RedirectToCheckYourAnswer" value="true" />
+                }
 
                 <fieldset class="govuk-fieldset">
                     @if (Model.PartialViewName != null && Model.PartialViewModel != null)
                     {
                         @await Html.PartialAsync(Model.PartialViewName, Model.PartialViewModel)
                     }
+
+                    @if (Model.CurrentFormQuestionType == Models.FormQuestionType.CheckYourAnswers)
+                    {
+                        var answers = await Model.GetAnswers();
+
+                        <h1 class="govuk-heading-l">Check your answers</h1>
+                        <dl class="govuk-summary-list govuk-!-margin-bottom-3">
+                            @foreach (var answer in answers)
+                            {
+                                <div class="govuk-summary-list__row">
+                                    <dt class="govuk-summary-list__key">
+                                        @answer.Title
+                                    </dt>
+                                    <dd class="govuk-summary-list__value">
+                                        @answer.Answer
+                                    </dd>
+                                    <dd class="govuk-summary-list__actions">
+                                        <a class="govuk-link" href="/organisation/@Model.OrganisationId/forms/@Model.FormId/sections/@Model.SectionId/@answer.QuestionId?frm-chk-answer">
+                                            Change<span class="govuk-visually-hidden">
+                                                @($"the {answer.Title?.ToLower()}")
+                                            </span>
+                                        </a>
+                                    </dd>
+                                </div>
+                            }
+                        </dl>
+                    }
                 </fieldset>
 
-                <button type="submit" class="govuk-button" data-module="govuk-button">
-                    Continue
-                </button>
+                <button type="submit" class="govuk-button">Continue</button>
+
             </form>
         </div>
     </div>

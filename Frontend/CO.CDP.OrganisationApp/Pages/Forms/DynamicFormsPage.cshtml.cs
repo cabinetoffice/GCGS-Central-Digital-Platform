@@ -37,13 +37,18 @@ public class DynamicFormsPageModel(
     [BindProperty]
     public FormElementYesNoInputModel? YesNoInputModel { get; set; }
 
+    public FormQuestionType? CurrentFormQuestionType { get; private set; }
+
     public string? PartialViewName { get; private set; }
 
     public IFormElementModel? PartialViewModel { get; private set; }
 
     public Guid? PreviousQuestionId { get; private set; }
 
-    public string EncType => PartialViewModel?.CurrentFormQuestionType == FormQuestionType.FileUpload
+    [BindProperty]
+    public bool? RedirectToCheckYourAnswer { get; set; }
+
+    public string EncType => CurrentFormQuestionType == FormQuestionType.FileUpload
         ? "multipart/form-data" : "application/x-www-form-urlencoded";
 
     private string FormQuestionAnswerStateKey => $"Form_{OrganisationId}_{FormId}_{SectionId}_Answers";
@@ -62,7 +67,7 @@ public class DynamicFormsPageModel(
     public async Task<IActionResult> OnPostAsync()
     {
         var currentQuestion = await InitModel();
-        if (currentQuestion == null || PartialViewModel == null)
+        if (currentQuestion == null)
         {
             return Redirect("/page-not-found");
         }
@@ -91,31 +96,91 @@ public class DynamicFormsPageModel(
             SaveAnswerToTempData(currentQuestion, answer);
         }
 
-        var nextQuestion = await formsEngine.GetNextQuestion(OrganisationId, FormId, SectionId, currentQuestion.Id);
-        if (nextQuestion != null)
+        var checkYourAnswerQuestionId = await CheckYourAnswerQuestionId();
+        if (currentQuestion.Id == checkYourAnswerQuestionId)
         {
-            return RedirectToPage("DynamicFormsPage", new { OrganisationId, FormId, SectionId, CurrentQuestionId = nextQuestion.Id });
+            // TODO: Call API Save
+
+            return RedirectToPage("FormsAddAnotherAnswerSet", new { OrganisationId, FormId, SectionId });
+        }
+
+        Guid? nextQuestionId;
+        if (RedirectToCheckYourAnswer == true)
+        {
+            nextQuestionId = await CheckYourAnswerQuestionId();
+        }
+        else
+        {
+            nextQuestionId = (await formsEngine.GetNextQuestion(OrganisationId, FormId, SectionId, currentQuestion.Id))?.Id;
+        }
+
+        if (nextQuestionId != null)
+        {
+            return RedirectToPage("DynamicFormsPage", new { OrganisationId, FormId, SectionId, CurrentQuestionId = nextQuestionId });
         }
 
         return Page();
     }
 
+    public async Task<IEnumerable<AnswerSummary>> GetAnswers()
+    {
+        var answerSet = tempDataService.PeekOrDefault<FormQuestionAnswerState>(FormQuestionAnswerStateKey);
+
+        var form = await formsEngine.LoadFormSectionAsync(OrganisationId, FormId, SectionId);
+
+        List<AnswerSummary> summaryList = new();
+        foreach (var answer in answerSet.Answers)
+        {
+            var question = form.Questions.FirstOrDefault(q => q.Id == answer.QuestionId);
+            if (question != null && question.Type != FormQuestionType.NoInput && question.Type != FormQuestionType.CheckYourAnswers)
+            {
+                var answerString = question.Type switch
+                {
+                    FormQuestionType.Text => answer.Answer?.TextValue ?? "",
+                    FormQuestionType.FileUpload => answer.Answer?.TextValue ?? "",
+                    FormQuestionType.YesOrNo => question.IsRequired && answer.Answer?.BoolValue.HasValue == true ? (answer.Answer?.BoolValue == true ? "yes" : "no") : "",
+                    FormQuestionType.Date => question.IsRequired && answer.Answer?.DateValue.HasValue == true ? answer.Answer?.DateValue.Value.ToString("dd/MM/yyyy") : "",
+                    _ => ""
+                };
+
+                summaryList.Add(new AnswerSummary
+                {
+                    QuestionId = answer.QuestionId,
+                    Title = question.Title,
+                    Answer = answerString ?? ""
+                });
+            }
+        }
+
+        return summaryList;
+    }
+
+    public async Task<Guid?> CheckYourAnswerQuestionId()
+    {
+        var form = await formsEngine.LoadFormSectionAsync(OrganisationId, FormId, SectionId);
+
+        return form.Questions.FirstOrDefault(q => q.Type == FormQuestionType.CheckYourAnswers)?.Id;
+    }
+
     private async Task<FormQuestion?> InitModel(bool reset = false)
     {
         var currentQuestion = await formsEngine.GetCurrentQuestion(OrganisationId, FormId, SectionId, CurrentQuestionId);
-        if (currentQuestion == null) return null;
+        if (currentQuestion == null)
+            return null;
 
+        CurrentFormQuestionType = currentQuestion.Type;
         PartialViewName = GetPartialViewName(currentQuestion);
-
         PartialViewModel = GetPartialViewModel(currentQuestion, reset);
-
         PreviousQuestionId = (await formsEngine.GetPreviousQuestion(OrganisationId, FormId, SectionId, currentQuestion.Id))?.Id;
 
         return currentQuestion;
     }
 
-    private static string GetPartialViewName(FormQuestion currentQuestion)
+    private static string? GetPartialViewName(FormQuestion currentQuestion)
     {
+        if (currentQuestion.Type == FormQuestionType.CheckYourAnswers)
+            return null;
+
         Dictionary<FormQuestionType, string> formQuestionPartials = new(){
             { FormQuestionType.NoInput, "_FormElementNoInput" },
             { FormQuestionType.YesOrNo, "_FormElementYesNoInput" },
@@ -132,8 +197,11 @@ public class DynamicFormsPageModel(
         throw new NotImplementedException($"Forms question: {currentQuestion.Type} is not supported");
     }
 
-    private IFormElementModel GetPartialViewModel(FormQuestion currentQuestion, bool reset)
+    private IFormElementModel? GetPartialViewModel(FormQuestion currentQuestion, bool reset)
     {
+        if (currentQuestion.Type == FormQuestionType.CheckYourAnswers)
+            return null;
+
         IFormElementModel model = currentQuestion.Type switch
         {
             FormQuestionType.NoInput => NoInputModel ?? new FormElementNoInputModel(),
@@ -161,17 +229,27 @@ public class DynamicFormsPageModel(
 
     private void SaveAnswerToTempData(FormQuestion question, FormAnswer? answer)
     {
-        var state = tempDataService.PeekOrDefault<FormQuestionAnswerState>(FormQuestionAnswerStateKey);
-
-        var questionAnswer = state.Answers.FirstOrDefault(a => a.QuestionId == question.Id);
-        if (questionAnswer == null)
+        if (question != null)
         {
-            questionAnswer = new QuestionAnswer { QuestionId = question.Id };
-            state.Answers.Add(questionAnswer);
+            var state = tempDataService.PeekOrDefault<FormQuestionAnswerState>(FormQuestionAnswerStateKey);
+
+            var questionAnswer = state.Answers.FirstOrDefault(a => a.QuestionId == question.Id);
+            if (questionAnswer == null)
+            {
+                questionAnswer = new QuestionAnswer { QuestionId = question.Id };
+                state.Answers.Add(questionAnswer);
+            }
+
+            questionAnswer.Answer = answer;
+
+            tempDataService.Put(FormQuestionAnswerStateKey, state);
         }
-
-        questionAnswer.Answer = answer;
-
-        tempDataService.Put(FormQuestionAnswerStateKey, state);
     }
+}
+
+public class AnswerSummary
+{
+    public required Guid QuestionId { get; set; }
+    public required string Answer { get; set; }
+    public string? Title { get; set; }
 }
