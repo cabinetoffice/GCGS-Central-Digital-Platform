@@ -41,7 +41,7 @@ public class ConnectedEntityControlConditionTest
         {
             var v = (Guid?)null;
             yield return new object[] { v!, "ConnectedEntitySupplierCompanyQuestion" };
-            yield return new object[] { Guid.NewGuid(), "ConnectedEntityCheckAnswers" };
+            yield return new object[] { Guid.NewGuid(), "ConnectedEntityCheckAnswersOrganisation" };
         }
     }
 
@@ -80,13 +80,15 @@ public class ConnectedEntityControlConditionTest
 
 
     [Theory]
-    [InlineData("ConnectedEntityCompanyRegistrationDate")]
-    public void OnPost_ShouldRedirectToExpectedPage_WhenModelStateIsValid(string expectedRedirectPage)
+    [InlineData("ConnectedEntityCompanyRegistrationDate", false)]
+    [InlineData("ConnectedEntityCheckAnswersOrganisation", true)]
+    public void OnPost_ShouldRedirectToExpectedPage_WhenModelStateIsValid(string expectedRedirectPage, bool redirectToCheckYourAnswer)
     {
         var state = DummyConnectedPersonDetails();
 
         _sessionMock.Setup(s => s.Get<ConnectedEntityState>(Session.ConnectedPersonKey)).
             Returns(state);
+        _model.RedirectToCheckYourAnswer = redirectToCheckYourAnswer;
 
         var result = _model.OnPost();
 

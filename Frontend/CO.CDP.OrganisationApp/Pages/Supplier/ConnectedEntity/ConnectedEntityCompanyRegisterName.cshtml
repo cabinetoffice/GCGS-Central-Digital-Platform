@@ -2,9 +2,16 @@
 @model CO.CDP.OrganisationApp.Pages.Supplier.ConnectedEntityCompanyRegisterNameModel
 @{
     var registerNameHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.RegisterName)).HasInnerHtml;
+
+    var backLink = $"/organisation/{Model.Id}/supplier-information/connected-person/date-registered/{Model.ConnectedEntityId}";
+    if (Request.Query.ContainsKey("frm-chk-answer"))
+    {
+        backLink = $"/organisation/{Model.Id}/supplier-information/connected-person/check-answers-organisation/{Model.ConnectedEntityId}";
+        Model.RedirectToCheckYourAnswer = true;
+    }
 }
 
-<a href="/organisation/@Model.Id/supplier-information/connected-person/date-registered/@Model.ConnectedEntityId" class="govuk-back-link">Back</a>
+<a href="@backLink" class="govuk-back-link">Back</a>
 
 <main class="govuk-main-wrapper">
     <div class="govuk-grid-row">

@@ -28,7 +28,7 @@ public class ConnectedEntityDirectorResidencyTest
         {
             var v = (Guid?)null;
             yield return new object[] { v!, "ConnectedEntitySupplierCompanyQuestion" };
-            yield return new object[] { Guid.NewGuid(), "ConnectedEntityCheckAnswers" };
+            yield return new object[] { Guid.NewGuid(), "ConnectedEntityCheckAnswersIndividualOrTrust" };
         }
     }
 

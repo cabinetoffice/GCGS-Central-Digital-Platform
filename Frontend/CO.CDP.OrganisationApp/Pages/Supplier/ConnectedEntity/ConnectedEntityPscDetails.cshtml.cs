@@ -63,8 +63,11 @@ public class ConnectedEntityPscDetailsModel(ISession session) : PageModel
         var (valid, state) = ValidatePage();
         if (!valid)
         {
-            return RedirectToPage(ConnectedEntityId.HasValue ?
-                "ConnectedEntityCheckAnswers" : "ConnectedEntitySupplierCompanyQuestion", new { Id, ConnectedEntityId });
+            return RedirectToPage(ConnectedEntityId.HasValue
+                ? (state.ConnectedEntityType == Constants.ConnectedEntityType.Organisation
+                    ? "ConnectedEntityCheckAnswersOrganisation"
+                    : "ConnectedEntityCheckAnswersIndividualOrTrust")
+                : "ConnectedEntitySupplierCompanyQuestion", new { Id, ConnectedEntityId });
         }
 
         InitModal(state, true);
@@ -77,8 +80,11 @@ public class ConnectedEntityPscDetailsModel(ISession session) : PageModel
         var (valid, state) = ValidatePage();
         if (!valid)
         {
-            return RedirectToPage(ConnectedEntityId.HasValue ?
-                "ConnectedEntityCheckAnswers" : "ConnectedEntitySupplierCompanyQuestion", new { Id, ConnectedEntityId });
+            return RedirectToPage(ConnectedEntityId.HasValue
+                ? (state.ConnectedEntityType == Constants.ConnectedEntityType.Organisation
+                    ? "ConnectedEntityCheckAnswersOrganisation"
+                    : "ConnectedEntityCheckAnswersIndividualOrTrust")
+                : "ConnectedEntitySupplierCompanyQuestion", new { Id, ConnectedEntityId });
         }
 
         InitModal(state);
@@ -91,13 +97,13 @@ public class ConnectedEntityPscDetailsModel(ISession session) : PageModel
         var dateString = $"{Year}-{Month!.PadLeft(2, '0')}-{Day!.PadLeft(2, '0')}";
         if (!DateTime.TryParseExact(dateString, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
         {
-            ModelState.AddModelError(nameof(DateOfBirth), "Date of registration must be a real date");
+            ModelState.AddModelError(nameof(DateOfBirth), "Date of birth must be a real date");
             return Page();
         }
 
         if (parsedDate > DateTime.Today)
         {
-            ModelState.AddModelError(nameof(DateOfBirth), "Date of registration must be today or in the past");
+            ModelState.AddModelError(nameof(DateOfBirth), "Date of birth must be today or in the past");
             return Page();
         }
 
