@@ -9,6 +9,8 @@
             <h2 class="govuk-fieldset__heading"> @Model.Heading</h2>
         </legend>
 
+        <p class="govuk-body">@Html.Raw(@Model.Description)</p>
+
         @if (hasError)
         {
             <p class="govuk-error-message">

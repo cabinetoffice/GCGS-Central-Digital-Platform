@@ -84,4 +84,62 @@ public class DynamicFormsPageModelTest
 
         _pageModel.EncType.Should().Be("application/x-www-form-urlencoded");
     }
+
+    [Fact]
+    public async Task CheckYourAnswerQuestionId_ShouldReturnCheckYourAnswerQuestionId()
+    {
+        var checkYourAnswerQuestionId = Guid.NewGuid();
+        var form = new SectionQuestionsResponse
+        {
+            Questions = new List<FormQuestion>
+        {
+            new FormQuestion { Id = checkYourAnswerQuestionId, Type = FormQuestionType.CheckYourAnswers }
+        }
+        };
+
+        _formsEngineMock.Setup(f => f.LoadFormSectionAsync(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid>()))
+            .ReturnsAsync(form);
+
+        var result = await _pageModel.CheckYourAnswerQuestionId();
+
+        result.Should().Be(checkYourAnswerQuestionId);
+    }
+
+    [Fact]
+    public async Task GetAnswers_ShouldReturnCheckYouAnswersSummaries()
+    {
+        var questionId = Guid.NewGuid();
+        var answerSet = new FormQuestionAnswerState
+        {
+            Answers = new List<QuestionAnswer>
+        {
+            new QuestionAnswer
+            {
+                QuestionId = questionId,
+                Answer = new FormAnswer { TextValue = "Sample Answer" }
+            }
+        }
+        };
+
+        _tempDataServiceMock.Setup(t => t.PeekOrDefault<FormQuestionAnswerState>(It.IsAny<string>()))
+            .Returns(answerSet);
+
+        var form = new SectionQuestionsResponse
+        {
+            Questions = new List<FormQuestion>
+        {
+            new FormQuestion { Id = questionId, Type = FormQuestionType.Text, Title = "Sample Question" }
+        }
+        };
+
+        _formsEngineMock.Setup(f => f.LoadFormSectionAsync(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid>()))
+            .ReturnsAsync(form);
+
+        var answers = await _pageModel.GetAnswers();
+
+        answers.Should().HaveCount(1);
+        answers.First().QuestionId.Should().Be(questionId);
+        answers.First().Answer.Should().Be("Sample Answer");
+        answers.First().Title.Should().Be("Sample Question");
+    }
 }
