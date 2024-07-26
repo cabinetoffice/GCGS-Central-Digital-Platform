@@ -2,18 +2,28 @@
 @using CO.CDP.OrganisationApp.Pages.Shared
 @model CO.CDP.OrganisationApp.Pages.Supplier.ConnectedEntityAddressModel
 
-@if (Model.Address.IsNonUkAddress)
-{
-    <a href="/organisation/@Model.Id/supplier-information/connected-person/@Model.AddressType.ToString().ToLower()-address/uk" class="govuk-back-link">Back</a>
+@{
+    var backLink = "";
+    if (Request.Query.ContainsKey("frm-chk-answer"))
+    {
+        backLink = $"/organisation/{Model.Id}/supplier-information/connected-person/check-answers-organisation/{Model.ConnectedEntityId}";
+        Model.RedirectToCheckYourAnswer = true;
+    }
+    else if (Model.Address.IsNonUkAddress)
+    {
+        backLink = "/organisation/@Model.Id/supplier-information/connected-person/@Model.AddressType.ToString().ToLower()-address/uk";
+    }
+    else if (Model.AddressType == Constants.AddressType.Postal) // TODO 4: add another if for different indivisual/trust category
+    {
+        backLink = $"/organisation/{Model.Id}/supplier-information/connected-person/postal-address-same-as-registered/{Model.ConnectedEntityId}";
+    }
+    else
+    {
+        backLink = $"/organisation/{Model.Id}/supplier-information/connected-person/organisation-name/{Model.ConnectedEntityId}";
+    }
 }
-else if (Model.AddressType == Constants.AddressType.Postal) // TODO 4: add another if for different indivisual/trust category
-{
-    <a href="/organisation/@Model.Id/supplier-information/connected-person/postal-address-same-as-registered" class="govuk-back-link">Back</a>
-}
-else
-{
-    <a href="/organisation/@Model.Id/supplier-information/connected-person/organisation-name" class="govuk-back-link">Back</a>
-}
+
+<a href="@backLink" class="govuk-back-link">Back</a>
 
 <main class="govuk-main-wrapper">
     <div class="govuk-grid-row">
@@ -23,6 +33,10 @@ else
             <span class="govuk-caption-l">@Model.Caption</span>
 
             <form method="post">
+                @if (Request.Query.ContainsKey("frm-chk-answer"))
+                {
+                    <input type="hidden" name="RedirectToCheckYourAnswer" value="true" />
+                }
                 <partial name="_Address" model="@Model.Address" />
             </form>
         </div>

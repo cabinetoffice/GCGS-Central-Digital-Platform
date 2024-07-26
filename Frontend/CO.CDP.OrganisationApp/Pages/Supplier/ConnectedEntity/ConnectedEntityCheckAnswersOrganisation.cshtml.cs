@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 namespace CO.CDP.OrganisationApp.Pages.Supplier;
 
 [Authorize]
-public class ConnectedEntityCheckAnswersModel(
+public class ConnectedEntityCheckAnswersOrganisationModel(
     ISession session,
     IOrganisationClient organisationClient) : PageModel
 {
@@ -30,8 +30,10 @@ public class ConnectedEntityCheckAnswersModel(
         if (!valid)
         {
             return RedirectToPage(ConnectedEntityId.HasValue ?
-                "ConnectedEntityCheckAnswers" : "ConnectedEntitySupplierCompanyQuestion", new { Id, ConnectedEntityId });
+                "ConnectedEntityCheckAnswersOrganisation" : "ConnectedEntitySupplierCompanyQuestion", new { Id, ConnectedEntityId });
         }
+
+        InitModal(state);
 
         try
         {
@@ -55,6 +57,8 @@ public class ConnectedEntityCheckAnswersModel(
             return RedirectToPage("ConnectedEntitySupplierHasControl", new { Id });
         }
 
+        InitModal(state);
+
         var payload = RegisterConnectedEntityPayload(state);
 
         if (payload == null)
@@ -76,7 +80,12 @@ public class ConnectedEntityCheckAnswersModel(
         
         return RedirectToPage("ConnectedPersonSummary", new { Id });
     }
-
+    private void InitModal(ConnectedEntityState state)
+    {
+        Caption = state.GetCaption();
+        Heading = $"Check your answers";
+        
+    }
     private RegisterConnectedEntity? RegisterConnectedEntityPayload(ConnectedEntityState state)
     {
         CreateConnectedOrganisation? connectedOrganisation = null;

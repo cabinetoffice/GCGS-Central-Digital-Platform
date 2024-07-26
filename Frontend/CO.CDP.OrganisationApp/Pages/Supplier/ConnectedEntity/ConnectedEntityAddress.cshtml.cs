@@ -24,6 +24,9 @@ public class ConnectedEntityAddressModel(ISession session) : PageModel
     [BindProperty]
     public AddressPartialModel Address { get; set; } = new();
 
+    [BindProperty]
+    public bool? RedirectToCheckYourAnswer { get; set; }
+
     public string? Caption { get; set; }
 
     public IActionResult OnGet()
@@ -31,8 +34,11 @@ public class ConnectedEntityAddressModel(ISession session) : PageModel
         var (valid, state) = ValidatePage();
         if (!valid)
         {
-            return RedirectToPage(ConnectedEntityId.HasValue ?
-                "ConnectedEntityCheckAnswers" : "ConnectedEntitySupplierCompanyQuestion", new { Id, ConnectedEntityId });
+            return RedirectToPage(ConnectedEntityId.HasValue
+                ? (state.ConnectedEntityType == Constants.ConnectedEntityType.Organisation
+                    ? "ConnectedEntityCheckAnswersOrganisation"
+                    : "ConnectedEntityCheckAnswersIndividualOrTrust")
+                : "ConnectedEntitySupplierCompanyQuestion", new { Id, ConnectedEntityId });
         }
 
         InitModal(state, true);
@@ -56,8 +62,11 @@ public class ConnectedEntityAddressModel(ISession session) : PageModel
         var (valid, state) = ValidatePage();
         if (!valid)
         {
-            return RedirectToPage(ConnectedEntityId.HasValue ?
-                "ConnectedEntityCheckAnswers" : "ConnectedEntitySupplierCompanyQuestion", new { Id, ConnectedEntityId });
+            return RedirectToPage(ConnectedEntityId.HasValue
+                ? (state.ConnectedEntityType == Constants.ConnectedEntityType.Organisation
+                    ? "ConnectedEntityCheckAnswersOrganisation"
+                    : "ConnectedEntityCheckAnswersIndividualOrTrust")
+            : "ConnectedEntitySupplierCompanyQuestion", new { Id, ConnectedEntityId });
         }
 
         InitModal(state);
@@ -82,7 +91,9 @@ public class ConnectedEntityAddressModel(ISession session) : PageModel
         }
         session.Set(Session.ConnectedPersonKey, state);
 
-        var redirectPage = GetRedirectLinkPageName(state);
+        var redirectPage = (RedirectToCheckYourAnswer == true
+                        ? "ConnectedEntityCheckAnswersOrganisation"
+                        : GetRedirectLinkPageName(state));
 
         return RedirectToPage(redirectPage, new { Id, ConnectedEntityId });
     }
@@ -96,14 +107,17 @@ public class ConnectedEntityAddressModel(ISession session) : PageModel
                 switch (state.ConnectedEntityOrganisationCategoryType)
                 {
                     case ConnectedEntityOrganisationCategoryType.RegisteredCompany:
+                    case ConnectedEntityOrganisationCategoryType.DirectorOrTheSameResponsibilities:
+                        redirectPage = (AddressType == AddressType.Postal && state.PostalAddress != null)
+                            ? "ConnectedEntityLawRegister"
+                            : "ConnectedEntityPostalSameAsRegisteredAddress";
+                        break;
                     case ConnectedEntityOrganisationCategoryType.ParentOrSubsidiaryCompany:
                     case ConnectedEntityOrganisationCategoryType.ACompanyYourOrganisationHasTakenOver:
                     case ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl:
-                        redirectPage = (AddressType == AddressType.Postal && state.PostalAddress != null) ?
-                            "ConnectedEntityCompanyQuestion" : "ConnectedEntityPostalSameAsRegisteredAddress";
-                        break;
-                    case ConnectedEntityOrganisationCategoryType.DirectorOrTheSameResponsibilities:
-                        redirectPage = "ConnectedEntityLawRegister";
+                        redirectPage = (AddressType == AddressType.Postal && state.PostalAddress != null)
+                            ? "ConnectedEntityCompanyQuestion"
+                            : "ConnectedEntityPostalSameAsRegisteredAddress";
                         break;
                 }
                 break;
@@ -111,8 +125,7 @@ public class ConnectedEntityAddressModel(ISession session) : PageModel
                 switch (state.ConnectedEntityIndividualAndTrustCategoryType)
                 {
                     case ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndividual:
-                        redirectPage = (AddressType == AddressType.Postal && state.PostalAddress != null) ?
-                            "ConnectedEntityControlCondition" : "ConnectedEntityPostalSameAsRegisteredAddress";
+                        redirectPage = "ConnectedEntityControlCondition";
                         break;
                     case ConnectedEntityIndividualAndTrustCategoryType.DirectorOrIndividualWithTheSameResponsibilitiesForIndividual:
                         redirectPage = "ConnectedEntityCheckAnswersIndividualOrTrust";
@@ -126,8 +139,7 @@ public class ConnectedEntityAddressModel(ISession session) : PageModel
                 switch (state.ConnectedEntityIndividualAndTrustCategoryType)
                 {
                     case ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForTrust:
-                        redirectPage = (AddressType == AddressType.Postal && state.PostalAddress != null) ?
-                            "ConnectedEntityControlCondition" : "ConnectedEntityPostalSameAsRegisteredAddress";
+                        redirectPage = "ConnectedEntityControlCondition";
                         break;
                     case ConnectedEntityIndividualAndTrustCategoryType.DirectorOrIndividualWithTheSameResponsibilitiesForTrust:
                         redirectPage = "ConnectedEntityCheckAnswersIndividualOrTrust";

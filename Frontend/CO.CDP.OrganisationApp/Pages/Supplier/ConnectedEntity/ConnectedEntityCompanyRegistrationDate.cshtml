@@ -7,15 +7,26 @@
     var yearHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Year)).HasInnerHtml;
     var dateOfRegistrationHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.RegistrationDate)).HasInnerHtml;
     var hasError = dateOfRegistrationHasError || dayHasError || monthHasError || yearHasError;
+
+    var backLink = $"/organisation/{Model.Id}/supplier-information/connected-person/nature-of-control/{Model.ConnectedEntityId}";
+    if (Request.Query.ContainsKey("frm-chk-answer"))
+    {
+        backLink = $"/organisation/{Model.Id}/supplier-information/connected-person/check-answers-organisation/{Model.ConnectedEntityId}";
+        Model.RedirectToCheckYourAnswer = true;
+    }
 }
 
-<a href="/organisation/@Model.Id/supplier-information/connected-person/nature-of-control/@Model.ConnectedEntityId" class="govuk-back-link">Back</a>
+<a href="@backLink" class="govuk-back-link">Back</a>
 
 <main class="govuk-main-wrapper">
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <partial name="_ErrorSummary" model="@Model.ModelState" />
             <form class="form" method="post">
+                @if (Request.Query.ContainsKey("frm-chk-answer"))
+                {
+                    <input type="hidden" name="RedirectToCheckYourAnswer" value="true" />
+                }
                 <div class="govuk-form-group @(hasError ? "govuk-form-group--error" : "")">
                     <fieldset class="govuk-fieldset" role="group" aria-describedby="connectedPersonDateHint">
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">

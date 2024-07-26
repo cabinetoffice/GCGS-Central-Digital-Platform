@@ -19,6 +19,9 @@ public class ConnectedEntityControlConditionModel(ISession session) : PageModel
     [NotEmpty(ErrorMessage = "Select the Which specified conditions of control does your organisation have?")]
     public required List<ConnectedEntityControlCondition> ControlConditions { get; set; } = [];
 
+    [BindProperty]
+    public bool? RedirectToCheckYourAnswer { get; set; }
+
     public string? Caption { get; set; }
 
     public string? Heading { get; set; }
@@ -28,8 +31,9 @@ public class ConnectedEntityControlConditionModel(ISession session) : PageModel
         var (valid, state) = ValidatePage();
         if (!valid)
         {
-            return RedirectToPage(ConnectedEntityId.HasValue ?
-                "ConnectedEntityCheckAnswers" : "ConnectedEntitySupplierCompanyQuestion", new { Id, ConnectedEntityId });
+            return RedirectToPage(ConnectedEntityId.HasValue
+                ? "ConnectedEntityCheckAnswersOrganisation"
+                : "ConnectedEntitySupplierCompanyQuestion", new { Id, ConnectedEntityId });
         }
 
         InitModal(state, true);
@@ -41,8 +45,11 @@ public class ConnectedEntityControlConditionModel(ISession session) : PageModel
         var (valid, state) = ValidatePage();
         if (!valid)
         {
-            return RedirectToPage(ConnectedEntityId.HasValue ?
-                "ConnectedEntityCheckAnswers" : "ConnectedEntitySupplierCompanyQuestion", new { Id, ConnectedEntityId });
+            return RedirectToPage(ConnectedEntityId.HasValue
+                ? (state.ConnectedEntityType == ConnectedEntityType.Organisation
+                    ? "ConnectedEntityCheckAnswersOrganisation"
+                    : "ConnectedEntityCheckAnswersIndividualOrTrust")
+                : "ConnectedEntitySupplierCompanyQuestion", new { Id, ConnectedEntityId });
         }
 
         InitModal(state);
@@ -53,7 +60,14 @@ public class ConnectedEntityControlConditionModel(ISession session) : PageModel
 
         session.Set(Session.ConnectedPersonKey, state);
 
-        var redirectPage = GetRedirectLinkPageName(state);
+        var checkAnswerPage = (state.ConnectedEntityType == ConnectedEntityType.Organisation
+                    ? "ConnectedEntityCheckAnswersOrganisation"
+                    : "ConnectedEntityCheckAnswersIndividualOrTrust");
+
+        var redirectPage = (RedirectToCheckYourAnswer == true
+                        ? checkAnswerPage
+                        : GetRedirectLinkPageName(state));
+
         return RedirectToPage(redirectPage, new { Id, ConnectedEntityId });
     }
 
