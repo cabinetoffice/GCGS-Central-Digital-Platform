@@ -201,6 +201,8 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
             Type = FormType.Standard
         };
     }
+
+    [Fact]
     public async Task GetFormAnswerSetAsync_WhenFormAnswerSetDoesNotExist_ReturnsNull()
     {
         using var repository = FormRepository();
@@ -210,7 +212,7 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
 
         var foundAnswerSet = await repository.GetFormAnswerSetsAsync(nonExistentAnswerSetId, organisationId);
 
-        foundAnswerSet.Should().BeNull();
+        foundAnswerSet.Should().BeNullOrEmpty();
     }
 
 
