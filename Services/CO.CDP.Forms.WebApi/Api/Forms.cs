@@ -15,8 +15,8 @@ public static class EndpointExtensions
 {
     public static void UseFormsEndpoints(this WebApplication app)
     {
-        app.MapGet("/forms/{formId}/sections/{sectionId}/questions", async (Guid formId, Guid sectionId, IUseCase<(Guid, Guid), Model.SectionQuestionsResponse?> useCase) =>
-                await useCase.Execute((formId, sectionId))
+        app.MapGet("/forms/{formId}/sections/{sectionId}/questions", async (Guid formId, Guid sectionId, [FromQuery(Name = "organisation-id")] Guid organisationId, IUseCase<(Guid, Guid, Guid), Model.SectionQuestionsResponse?> useCase) =>
+            await useCase.Execute((formId, sectionId, organisationId))
                     .AndThen(sectionQuestions => sectionQuestions != null ? Results.Ok(sectionQuestions) : Results.NotFound()))
                     .Produces<Model.SectionQuestionsResponse>(StatusCodes.Status200OK, "application/json")
                     .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)

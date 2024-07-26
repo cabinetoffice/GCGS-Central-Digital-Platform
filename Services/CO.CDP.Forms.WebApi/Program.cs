@@ -24,8 +24,8 @@ builder.Services.AddDbContext<OrganisationInformationContext>(o =>
     o.UseNpgsql(builder.Configuration.GetConnectionString("OrganisationInformationDatabase") ?? ""));
 builder.Services.AddScoped<IFormRepository, DatabaseFormRepository>();
 
-builder.Services.AddScoped<IUseCase<(Guid,Guid), CO.CDP.Forms.WebApi.Model.SectionQuestionsResponse?>, GetFormSectionQuestionsUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, Guid), bool>, DeleteAnswerSetUseCase>();
+builder.Services.AddScoped<IUseCase<(Guid,Guid,Guid), CO.CDP.Forms.WebApi.Model.SectionQuestionsResponse?>, GetFormSectionQuestionsUseCase>();
 
 builder.Services.AddJwtBearerAndApiKeyAuthentication(builder.Configuration, builder.Environment);
 //builder.Services.AddAuthorization();

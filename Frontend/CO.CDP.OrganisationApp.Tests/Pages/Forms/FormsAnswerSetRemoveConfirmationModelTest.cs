@@ -21,7 +21,7 @@ public class FormsAnswerSetRemoveConfirmationModelTest
     [Fact]
     public async Task OnGet_InvalidPageRedirectsToNotFound()
     {
-        _formsClientMock.Setup(client => client.GetFormSectionQuestionsAsync(It.IsAny<Guid>(), It.IsAny<Guid>()))
+        _formsClientMock.Setup(client => client.GetFormSectionQuestionsAsync(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid>()))
             .ThrowsAsync(new ApiException("Unexpected error", 404, "", default, null));
 
         var result = await _pageModel.OnGet();
@@ -45,7 +45,7 @@ public class FormsAnswerSetRemoveConfirmationModelTest
              answerSets: [new FormAnswerSet(id: _pageModel.AnswerSetId, answers: [])]
              );
 
-        _formsClientMock.Setup(client => client.GetFormSectionQuestionsAsync(It.IsAny<Guid>(), It.IsAny<Guid>()))
+        _formsClientMock.Setup(client => client.GetFormSectionQuestionsAsync(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid>()))
                         .ReturnsAsync(response);
 
         var result = await _pageModel.OnGet();
@@ -79,7 +79,7 @@ public class FormsAnswerSetRemoveConfirmationModelTest
              answerSets: [new FormAnswerSet(id: _pageModel.AnswerSetId, answers: [])]
              );
 
-        _formsClientMock.Setup(client => client.GetFormSectionQuestionsAsync(It.IsAny<Guid>(), It.IsAny<Guid>()))
+        _formsClientMock.Setup(client => client.GetFormSectionQuestionsAsync(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid>()))
                         .ReturnsAsync(response);
 
         var result = await _pageModel.OnPost();
@@ -105,7 +105,7 @@ public class FormsAnswerSetRemoveConfirmationModelTest
             answerSets: [new FormAnswerSet(id: _pageModel.AnswerSetId, answers: [])]
             );
 
-        _formsClientMock.Setup(client => client.GetFormSectionQuestionsAsync(It.IsAny<Guid>(), It.IsAny<Guid>()))
+        _formsClientMock.Setup(client => client.GetFormSectionQuestionsAsync(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid>()))
                         .ReturnsAsync(response);
 
         var result = await _pageModel.OnPost();
