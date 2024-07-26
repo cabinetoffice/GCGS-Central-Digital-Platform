@@ -1,3 +1,6 @@
+using CO.CDP.Forms.WebApi.Model;
+using static CO.CDP.OrganisationInformation.Persistence.IOrganisationRepository.OrganisationRepositoryException;
+
 namespace CO.CDP.Forms.WebApi.Extensions;
 
 public static class ServiceCollectionExtensions
@@ -5,6 +8,10 @@ public static class ServiceCollectionExtensions
     private static readonly Dictionary<Type, (int, string)> ExceptionMap = new()
     {
         { typeof(BadHttpRequestException), (StatusCodes.Status422UnprocessableEntity, "UNPROCESSABLE_ENTITY") },
+        { typeof(UnknownOrganisationException), (StatusCodes.Status404NotFound, "UNKNOWN_ORGANISATION") },
+        { typeof(UnknownSectionException), (StatusCodes.Status404NotFound, "UNKNOWN_SECTION") },
+        { typeof(UnknownQuestionsException), (StatusCodes.Status400BadRequest, "UNKNOWN_QUESTIONS") },
+        { typeof(DuplicateOrganisationException), (StatusCodes.Status400BadRequest, "ORGANISATION_ALREADY_EXISTS") }
     };
 
     public static IServiceCollection AddTenantProblemDetails(this IServiceCollection services)
