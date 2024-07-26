@@ -5,8 +5,6 @@ public static class ServiceCollectionExtensions
     private static readonly Dictionary<Type, (int, string)> ExceptionMap = new()
     {
         { typeof(BadHttpRequestException), (StatusCodes.Status422UnprocessableEntity, "UNPROCESSABLE_ENTITY") },
-        { typeof(ArgumentNullException), (StatusCodes.Status400BadRequest, "ARGUMENT_NULL") },
-        { typeof(InvalidOperationException), (StatusCodes.Status400BadRequest, "INVALID_OPERATION") },
     };
 
     public static IServiceCollection AddTenantProblemDetails(this IServiceCollection services)
