@@ -72,14 +72,14 @@ public class DynamicFormsPageModel(
             return Redirect("/page-not-found");
         }
 
-        ModelState.Clear();
-        if (!TryValidateModel(this))
-        {
-            return Page();
-        }
-
         if (PartialViewModel != null)
         {
+            ModelState.Clear();
+            if (!TryValidateModel(PartialViewModel))
+            {
+                return Page();
+            }
+
             var answer = PartialViewModel.GetAnswer();
 
             if (PartialViewModel.CurrentFormQuestionType == FormQuestionType.FileUpload)
@@ -114,12 +114,7 @@ public class DynamicFormsPageModel(
             nextQuestionId = (await formsEngine.GetNextQuestion(OrganisationId, FormId, SectionId, currentQuestion.Id))?.Id;
         }
 
-        if (nextQuestionId != null)
-        {
-            return RedirectToPage("DynamicFormsPage", new { OrganisationId, FormId, SectionId, CurrentQuestionId = nextQuestionId });
-        }
-
-        return Page();
+        return RedirectToPage("DynamicFormsPage", new { OrganisationId, FormId, SectionId, CurrentQuestionId = nextQuestionId });
     }
 
     public async Task<IEnumerable<AnswerSummary>> GetAnswers()
