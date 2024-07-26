@@ -43,6 +43,25 @@ public class EntityDateInterceptorTest
     }
 
     [Fact]
+    public void ItDoesNotUpdateTheUpdatedOnPropertyIfTheEntityWasNotChanged()
+    {
+        var now = DateTimeOffset.Parse("2024-07-22T12:00:44.333");
+        var context = DbContext(() => now);
+
+        var user = new User { Name = "Bob" };
+        context.Update(user);
+        context.SaveChanges();
+
+        now = DateTimeOffset.Parse("2024-08-22T13:00:00.999");
+        context.SaveChanges();
+
+        var foundUser = context.Users.FirstOrDefault(s => s.Name == "Bob");
+        foundUser.Should().NotBeNull();
+        foundUser.As<User>().CreatedOn.Should().BeExactly(DateTimeOffset.Parse("2024-07-22T12:00:44.333"));
+        foundUser.As<User>().UpdatedOn.Should().BeExactly(DateTimeOffset.Parse("2024-07-22T12:00:44.333"));
+    }
+
+    [Fact]
     public async Task ItSetsTimestampPropertiesInAsyncCall()
     {
         var now = DateTimeOffset.Parse("2024-07-22T12:00:44.333");

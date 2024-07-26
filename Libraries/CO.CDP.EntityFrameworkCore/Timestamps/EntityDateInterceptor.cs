@@ -33,9 +33,13 @@ public class EntityDateInterceptor(Func<DateTimeOffset> clock) : SaveChangesInte
             if (entry.State == EntityState.Added)
             {
                 entry.Entity.CreatedOn = now;
+                entry.Entity.UpdatedOn = now;
             }
 
-            entry.Entity.UpdatedOn = now;
+            if (entry.State == EntityState.Modified)
+            {
+                entry.Entity.UpdatedOn = now;
+            }
         }
     }
 }
