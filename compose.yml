@@ -179,6 +179,10 @@ services:
       ASPNETCORE_ENVIRONMENT: Production
       ConnectionStrings__OrganisationInformationDatabase: 'Server=db;Database=cdp;Username=cdp_user;Password=cdp123;'
       Organisation__Authority: '${Organisation__Authority:-http://gateway:${CDP_AUTHORITY_PORT:-8092}}'
+      Aws__AccessKeyId: test
+      Aws__SecretAccessKey: test
+      Aws__ServiceURL: "http://localstack:4566"
+      Aws__SqsPublisher__QueueUrl: "http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/ev-inbound"
 
   person:
     container_name: co-cdp-person
