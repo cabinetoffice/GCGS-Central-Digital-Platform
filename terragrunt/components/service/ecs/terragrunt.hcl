@@ -7,7 +7,7 @@ include {
 }
 
 locals {
-  global_vars  = read_terragrunt_config(find_in_parent_folders("terragrunt.hcl"))
+  global_vars = read_terragrunt_config(find_in_parent_folders("terragrunt.hcl"))
   service_vars = read_terragrunt_config(find_in_parent_folders("service.hcl"))
 
   tags = merge(
@@ -76,6 +76,14 @@ dependency service_database {
   }
 }
 
+dependency service_queue {
+  config_path = "../../service/queue"
+  mock_outputs = {
+    inbound_queue_url  = "mock"
+    outbound_queue_url = "mock"
+  }
+}
+
 inputs = {
 
   account_ids     = local.global_vars.locals.account_ids
@@ -116,4 +124,6 @@ inputs = {
   db_connection_secret_arn = dependency.service_database.outputs.db_connection_secret_arn
   db_kms_arn               = dependency.service_database.outputs.db_kms_arn
 
+  queue_inbound_url  = dependency.service_queue.outputs.inbound_queue_url
+  queue_outbound_url = dependency.service_queue.outputs.outbound_queue_url
 }

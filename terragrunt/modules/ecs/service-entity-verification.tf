@@ -14,6 +14,8 @@ module "ecs_service_entity_verification" {
       lg_region               = data.aws_region.current.name
       memory                  = var.service_configs.entity_verification.memory
       name                    = var.service_configs.entity_verification.name
+      queue_inbound_url       = var.queue_inbound_url
+      queue_inbound_url       = var.queue_outbound_url
       public_hosted_zone_fqdn = var.public_hosted_zone_fqdn
       vpc_cidr                = var.vpc_cider
     }

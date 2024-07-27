@@ -16,10 +16,11 @@ module "ecs_service_organisation" {
       memory                  = var.service_configs.organisation.memory
       name                    = var.service_configs.organisation.name
       public_hosted_zone_fqdn = var.public_hosted_zone_fqdn
+      queue_inbound_url       = var.queue_inbound_url
+      queue_inbound_url       = var.queue_outbound_url
       vpc_cidr                = var.vpc_cider
     }
   )
-
   cluster_id             = aws_ecs_cluster.this.id
   container_port         = var.service_configs.organisation.port
   cpu                    = var.service_configs.organisation.cpu
