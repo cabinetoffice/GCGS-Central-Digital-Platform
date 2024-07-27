@@ -26,6 +26,7 @@ dependency core_iam {
     cloudwatch_events_arn               = "mock"
     cloudwatch_events_name              = "mock"
     ecs_task_arn                        = "mock"
+    ecs_task_name                       = "mock"
     ecs_task_exec_arn                   = "mock"
     ecs_task_exec_name                  = "mock"
     service_deployer_step_function_arn  = "mock"
@@ -93,6 +94,7 @@ inputs = {
   role_cloudwatch_events_arn               = dependency.core_iam.outputs.cloudwatch_events_arn
   role_cloudwatch_events_name              = dependency.core_iam.outputs.cloudwatch_events_name
   role_ecs_task_arn                        = dependency.core_iam.outputs.ecs_task_arn
+  role_ecs_task_name                       = dependency.core_iam.outputs.ecs_task_name
   role_ecs_task_exec_arn                   = dependency.core_iam.outputs.ecs_task_exec_arn
   role_ecs_task_exec_name                  = dependency.core_iam.outputs.ecs_task_exec_name
   role_service_deployer_step_function_arn  = dependency.core_iam.outputs.service_deployer_step_function_arn
@@ -124,6 +126,8 @@ inputs = {
   db_connection_secret_arn = dependency.service_database.outputs.db_connection_secret_arn
   db_kms_arn               = dependency.service_database.outputs.db_kms_arn
 
+  queue_inbound_arn  = dependency.service_queue.outputs.inbound_queue_arn
   queue_inbound_url  = dependency.service_queue.outputs.inbound_queue_url
+  queue_outbound_arn = dependency.service_queue.outputs.outbound_queue_arn
   queue_outbound_url = dependency.service_queue.outputs.outbound_queue_url
 }

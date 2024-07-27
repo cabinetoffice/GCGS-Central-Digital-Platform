@@ -2,6 +2,24 @@ data "aws_caller_identity" "current" {}
 
 data "aws_region" "current" {}
 
+# Configure the provider to assume the role in the orchestrator account and fetch the latest service version
+provider "aws" {
+  alias  = "orchestrator"
+  region = "eu-west-2"
+}
+provider "aws" {
+  alias  = "orchestrator_assume_role"
+  region = "eu-west-2"
+  assume_role {
+    role_arn = "arn:aws:iam::${local.orchestrator_account_id}:role/${local.name_prefix}-orchestrator-read-service-version"
+  }
+}
+
+data "aws_ssm_parameter" "orchestrator_service_version" {
+  provider = aws.orchestrator_assume_role
+  name     = "/${local.name_prefix}-service-version"
+}
+
 data "aws_secretsmanager_secret" "authority_keys" {
   name = "${local.name_prefix}-authority-keys"
 }
@@ -10,7 +28,7 @@ data "aws_secretsmanager_secret" "one_login" {
   name = "${local.name_prefix}-one-login-credentials"
 }
 
-data "aws_iam_policy_document" "ecs_task_exec" {
+data "aws_iam_policy_document" "ecs_task_access_secrets" {
   statement {
     sid    = "AllowAccessToProductSecrets"
     effect = "Allow"
@@ -32,6 +50,24 @@ data "aws_iam_policy_document" "ecs_task_exec" {
     ]
     resources = [
       var.db_kms_arn
+    ]
+  }
+}
+
+data "aws_iam_policy_document" "ecs_task_access_queue" {
+  statement {
+    sid    = "AllowAccessToProductSQS"
+    effect = "Allow"
+    actions = [
+      "sqs:DeleteMessage",
+      "sqs:GetQueueAttributes",
+      "sqs:GetQueueUrl",
+      "sqs:ReceiveMessage",
+      "sqs:SendMessage",
+    ]
+    resources = [
+      var.queue_inbound_arn,
+      var.queue_outbound_arn
     ]
   }
 }
@@ -96,21 +132,3 @@ data "aws_iam_policy_document" "ecr_pull_from_orchestrator" {
   }
 }
 
-# Configure the provider to assume the role in the orchestrator account and fetch the latest service version
-provider "aws" {
-  alias  = "orchestrator"
-  region = "eu-west-2"
-}
-
-provider "aws" {
-  alias  = "orchestrator_assume_role"
-  region = "eu-west-2"
-  assume_role {
-    role_arn = "arn:aws:iam::${local.orchestrator_account_id}:role/${local.name_prefix}-orchestrator-read-service-version"
-  }
-}
-
-data "aws_ssm_parameter" "orchestrator_service_version" {
-  provider = aws.orchestrator_assume_role
-  name     = "/${local.name_prefix}-service-version"
-}

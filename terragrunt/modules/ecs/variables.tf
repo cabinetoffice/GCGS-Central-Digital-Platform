@@ -72,8 +72,18 @@ variable "public_subnets_cidr_blocks" {
   type        = list(string)
 }
 
+variable "queue_inbound_arn" {
+  description = "ARN of the Entity Verification's inbound SQS queue"
+  type        = string
+}
+
 variable "queue_inbound_url" {
   description = "URL of the Entity Verification's inbound SQS queue"
+  type        = string
+}
+
+variable "queue_outbound_arn" {
+  description = "ARN of the Entity Verification's outbound SQS queue"
   type        = string
 }
 
@@ -94,6 +104,11 @@ variable "role_cloudwatch_events_name" {
 
 variable "role_ecs_task_arn" {
   description = "Task IAM role ARN"
+  type        = string
+}
+
+variable "role_ecs_task_name" {
+  description = "Task IAM role Name"
   type        = string
 }
 
