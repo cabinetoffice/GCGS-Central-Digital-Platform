@@ -61,6 +61,20 @@ dependency core_security_groups {
   }
 }
 
+dependency orchestrator_iam {
+  config_path = "../iam"
+  mock_outputs = {
+    github_user_access_key_id = "mock"
+  }
+}
+
+dependency orchestrator_ecr {
+  config_path = "../ecr"
+  mock_outputs = {
+    repository_urls = "repository_urls"
+  }
+}
+
 
 inputs = {
   account_ids         = local.global_vars.locals.account_ids
@@ -89,4 +103,6 @@ inputs = {
   vpce_logs_sg_id           = dependency.core_security_groups.outputs.vpce_logs_sg_id
   vpce_s3_sg_id             = dependency.core_security_groups.outputs.vpce_s3_sg_id
   vpce_secretsmanager_sg_id = dependency.core_security_groups.outputs.vpce_secretsmanager_sg_id
+
+  repository_urls = dependency.orchestrator_ecr.outputs.repository_urls
 }
