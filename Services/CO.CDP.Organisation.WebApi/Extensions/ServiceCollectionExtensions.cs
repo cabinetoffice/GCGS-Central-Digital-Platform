@@ -12,8 +12,6 @@ public static class ServiceCollectionExtensions
         { typeof(DuplicateOrganisationException), (StatusCodes.Status400BadRequest, "ORGANISATION_ALREADY_EXISTS") },
         { typeof(UnknownPersonException), (StatusCodes.Status404NotFound, "PERSON_DOES_NOT_EXIST") },
         { typeof(SupplierInfoNotExistException), (StatusCodes.Status422UnprocessableEntity, "UNPROCESSABLE_ENTITY") },
-        { typeof(ArgumentNullException), (StatusCodes.Status400BadRequest, "ARGUMENT_NULL") },
-        { typeof(InvalidOperationException), (StatusCodes.Status400BadRequest, "INVALID_OPERATION") },
         { typeof(UnknownOrganisationException), (StatusCodes.Status404NotFound, "UNKNOWN_ORGANISATION") },
         { typeof(BuyerInfoNotExistException), (StatusCodes.Status404NotFound, "BUYER_INFO_NOT_EXISTS") },
         { typeof(InvalidUpdateBuyerInformationCommand), (StatusCodes.Status400BadRequest, "INVALID_BUYER_INFORMATION_UPDATE_ENTITY") },

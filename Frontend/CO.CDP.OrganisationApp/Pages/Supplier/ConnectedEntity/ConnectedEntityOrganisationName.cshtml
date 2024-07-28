@@ -7,6 +7,12 @@
     var categoryPage = (Model.ConnectedEntityType == Constants.ConnectedEntityType.Organisation
                             ? "organisation-category" : "");
     var backLink = $"/organisation/{@Model.Id}/supplier-information/connected-person/{categoryPage}";
+
+    if (Request.Query.ContainsKey("frm-chk-answer"))
+    {
+        backLink = $"/organisation/{Model.Id}/supplier-information/connected-person/check-answers-organisation/{Model.ConnectedEntityId}";
+        Model.RedirectToCheckYourAnswer = true;
+    }
 }
 
 <a href="@backLink" class="govuk-back-link">
@@ -20,7 +26,10 @@
             <partial name="_ErrorSummary" model="@ModelState" />
 
             <form method="post">
-
+                @if (Request.Query.ContainsKey("frm-chk-answer"))
+                {
+                    <input type="hidden" name="RedirectToCheckYourAnswer" value="true" />
+                }
                 <div class="govuk-form-group">
                     <fieldset class="govuk-fieldset">
 

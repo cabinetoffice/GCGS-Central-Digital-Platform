@@ -79,7 +79,7 @@ public class ConnectedEntityCompanyQuestionModel(ISession session) : PageModel
                         break;
                     case ConnectedEntityOrganisationCategoryType.DirectorOrTheSameResponsibilities:
                     case ConnectedEntityOrganisationCategoryType.ParentOrSubsidiaryCompany:
-                        redirectPage = "ConnectedEntityCheckAnswers";
+                        redirectPage = "ConnectedEntityCheckAnswersOrganisation";
                         break;
                     case ConnectedEntityOrganisationCategoryType.ACompanyYourOrganisationHasTakenOver:
                         redirectPage = "ConnectedEntityCompanyInsolvencyDate";

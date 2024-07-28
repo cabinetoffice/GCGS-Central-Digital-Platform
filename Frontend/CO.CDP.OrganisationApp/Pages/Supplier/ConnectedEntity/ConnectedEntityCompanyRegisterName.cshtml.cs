@@ -17,6 +17,10 @@ public class ConnectedEntityCompanyRegisterNameModel(ISession session) : PageMod
     [BindProperty]
     [Required(ErrorMessage = "Enter the register name")]
     public string? RegisterName { get; set; }
+
+    [BindProperty]
+    public bool? RedirectToCheckYourAnswer { get; set; }
+
     public string? Caption { get; set; }
     public string? Heading { get; set; }
 
@@ -26,7 +30,7 @@ public class ConnectedEntityCompanyRegisterNameModel(ISession session) : PageMod
         if (!valid)
         {
             return RedirectToPage(ConnectedEntityId.HasValue ?
-                "ConnectedEntityCheckAnswers" : "ConnectedEntitySupplierCompanyQuestion", new { Id, ConnectedEntityId });
+                "ConnectedEntityCheckAnswersOrganisation" : "ConnectedEntitySupplierCompanyQuestion", new { Id, ConnectedEntityId });
         }
 
         InitModal(state, true);
@@ -40,7 +44,7 @@ public class ConnectedEntityCompanyRegisterNameModel(ISession session) : PageMod
         if (!valid)
         {
             return RedirectToPage(ConnectedEntityId.HasValue ?
-                "ConnectedEntityCheckAnswers" : "ConnectedEntitySupplierCompanyQuestion", new { Id, ConnectedEntityId });
+                "ConnectedEntityCheckAnswersOrganisation" : "ConnectedEntitySupplierCompanyQuestion", new { Id, ConnectedEntityId });
         }
 
         InitModal(state);
@@ -50,7 +54,7 @@ public class ConnectedEntityCompanyRegisterNameModel(ISession session) : PageMod
         state.RegisterName = RegisterName;
         session.Set(Session.ConnectedPersonKey, state);
 
-        return RedirectToPage("ConnectedEntityCheckAnswers", new { Id });
+        return RedirectToPage("ConnectedEntityCheckAnswersOrganisation", new { Id });
     }
 
     private void InitModal(ConnectedEntityState state, bool reset = false)

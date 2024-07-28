@@ -88,8 +88,8 @@ public class ConnectedEntityPscDetailsTests
     }
 
     [Theory]
-    [InlineData("31", "02", "2021", "Date of registration must be a real date")]
-    [InlineData("01", "01", "2100", "Date of registration must be today or in the past")]
+    [InlineData("31", "02", "2021", "Date of birth must be a real date")]
+    [InlineData("01", "01", "2100", "Date of birth must be today or in the past")]
     public void OnPost_AddsModelError_WhenDateIsInvalid(string day, string month, string year, string expectedError)
     {
         SetDateFields(day, month, year);

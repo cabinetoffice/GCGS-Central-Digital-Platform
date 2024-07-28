@@ -7,6 +7,12 @@
     var lawRegister = ((TagBuilder)Html.ValidationMessageFor(m => m.LawRegistered)).HasInnerHtml;
 
     var backLink = $"/organisation/{@Model.Id}/supplier-information/connected-person/{Model.BackPageLink}";
+
+    if (Request.Query.ContainsKey("frm-chk-answer"))
+    {
+        backLink = $"/organisation/{Model.Id}/supplier-information/connected-person/check-answers-organisation/{Model.ConnectedEntityId}";
+        Model.RedirectToCheckYourAnswer = true;
+    }
 }
 
 <a href="@backLink" class="govuk-back-link">
@@ -21,9 +27,9 @@
 
             <form method="post">
                 <fieldset class="govuk-fieldset" data-required="" data-error="Enter the legal form of the organisation" aria-required="true">
-                    @if (Request.Query.ContainsKey("frm-summary"))
+                    @if (Request.Query.ContainsKey("frm-chk-answer"))
                     {
-                        <input type="hidden" name="RedirectToSummary" value="true" />
+                        <input type="hidden" name="RedirectToCheckYourAnswer" value="true" />
                     }
                     <h1 class="govuk-heading-l">
                         @Model.LegalFormDisplayText

@@ -21,6 +21,10 @@ public class ConnectedEntityOrganisationNameModel(ISession session) : PageModel
 
     [BindProperty]
     public ConnectedEntityType? ConnectedEntityType { get; set; }
+
+    [BindProperty]
+    public bool? RedirectToCheckYourAnswer { get; set; }
+
     public string? Caption { get; set; }
 
     public IActionResult OnGet()
@@ -28,12 +32,15 @@ public class ConnectedEntityOrganisationNameModel(ISession session) : PageModel
         var (valid, state) = ValidatePage();
         if (!valid)
         {
-            return RedirectToPage(ConnectedEntityId.HasValue ?
-                "ConnectedEntityCheckAnswers" : "ConnectedEntitySupplierCompanyQuestion", new { Id, ConnectedEntityId });
+            return RedirectToPage(ConnectedEntityId.HasValue
+                ? (state.ConnectedEntityType == Constants.ConnectedEntityType.Organisation
+                    ? "ConnectedEntityCheckAnswersOrganisation"
+                    : "ConnectedEntityCheckAnswersIndividualOrTrust")
+            : "ConnectedEntitySupplierCompanyQuestion", new { Id, ConnectedEntityId });
         }
 
         InitModal(state, true);
-        
+
         return Page();
     }
 
@@ -42,8 +49,11 @@ public class ConnectedEntityOrganisationNameModel(ISession session) : PageModel
         var (valid, state) = ValidatePage();
         if (!valid)
         {
-            return RedirectToPage(ConnectedEntityId.HasValue ?
-                "ConnectedEntityCheckAnswers" : "ConnectedEntitySupplierCompanyQuestion", new { Id, ConnectedEntityId });
+            return RedirectToPage(ConnectedEntityId.HasValue
+                ? (state.ConnectedEntityType == Constants.ConnectedEntityType.Organisation
+                    ? "ConnectedEntityCheckAnswersOrganisation"
+                    : "ConnectedEntityCheckAnswersIndividualOrTrust")
+                : "ConnectedEntitySupplierCompanyQuestion", new { Id, ConnectedEntityId });
         }
 
         InitModal(state);
@@ -51,7 +61,15 @@ public class ConnectedEntityOrganisationNameModel(ISession session) : PageModel
 
         state.OrganisationName = OrganisationName;
         session.Set(Session.ConnectedPersonKey, state);
-        return RedirectToPage("ConnectedEntityAddress", new { Id, ConnectedEntityId, AddressType = AddressType.Registered, UkOrNonUk = "uk" });
+
+        var checkAnswerPage = (state.ConnectedEntityType == Constants.ConnectedEntityType.Organisation
+            ? "ConnectedEntityCheckAnswersOrganisation"
+            : "ConnectedEntityCheckAnswersIndividualOrTrust");
+
+        return RedirectToPage(RedirectToCheckYourAnswer == true
+                ? checkAnswerPage
+                : "ConnectedEntityAddress",
+                    new { Id, ConnectedEntityId, AddressType = AddressType.Registered, UkOrNonUk = "uk" });
     }
     private void InitModal(ConnectedEntityState state, bool reset = false)
     {
