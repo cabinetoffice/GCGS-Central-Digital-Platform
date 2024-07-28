@@ -72,23 +72,23 @@ variable "public_subnets_cidr_blocks" {
   type        = list(string)
 }
 
-variable "queue_inbound_arn" {
-  description = "ARN of the Entity Verification's inbound SQS queue"
+variable "queue_entity_verification_queue_arn" {
+  description = "ARN of the Entity Verification's SQS queue"
   type        = string
 }
 
-variable "queue_inbound_url" {
-  description = "URL of the Entity Verification's inbound SQS queue"
+variable "queue_entity_verification_queue_url" {
+  description = "URL of the Entity Verification's SQS queue"
   type        = string
 }
 
-variable "queue_outbound_arn" {
-  description = "ARN of the Entity Verification's outbound SQS queue"
+variable "queue_organisation_queue_arn" {
+  description = "ARN of the Organisation's SQS queue"
   type        = string
 }
 
-variable "queue_outbound_url" {
-  description = "URL of the Entity Verification's outbound SQS queue"
+variable "queue_organisation_queue_url" {
+  description = "URL of the Organisation's outbound SQS queue"
   type        = string
 }
 

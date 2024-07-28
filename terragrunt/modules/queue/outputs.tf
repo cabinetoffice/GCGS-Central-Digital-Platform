@@ -1,19 +1,19 @@
-output "inbound_queue_arn" {
-  description = "ARN of the inbound SQS queue"
-  value       = aws_sqs_queue.ev_inbound.arn
+output "organisation_queue_arn" {
+  description = "ARN of the organisation SQS queue"
+  value       = aws_sqs_queue.organisation.arn
 }
 
-output "inbound_queue_url" {
-  description = "URL of the inbound SQS queue"
-  value       = aws_sqs_queue.ev_inbound.url
+output "organisation_queue_url" {
+  description = "URL of the organisation SQS queue"
+  value       = aws_sqs_queue.organisation.url
 }
 
-output "outbound_queue_arn" {
-  description = "ARN of the inbound SQS queue"
-  value       = aws_sqs_queue.ev_outbound.arn
+output "entity_verification_queue_arn" {
+  description = "ARN of the entity-verification SQS queue"
+  value       = aws_sqs_queue.entity_verification.arn
 }
 
-output "outbound_queue_url" {
-  description = "URL of the outbound SQS queue"
-  value       = aws_sqs_queue.ev_outbound.url
+output "entity_verification_queue_url" {
+  description = "URL of the entity-verification SQS queue"
+  value       = aws_sqs_queue.entity_verification.url
 }

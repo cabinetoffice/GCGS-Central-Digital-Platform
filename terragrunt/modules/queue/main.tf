@@ -1,5 +1,5 @@
-resource "aws_sqs_queue" "ev_inbound" {
-  name = local.name_inbound
+resource "aws_sqs_queue" "organisation" {
+  name = local.name_organisation_queue
 
   delay_seconds              = var.delay_seconds
   max_message_size           = var.max_message_size
@@ -12,8 +12,8 @@ resource "aws_sqs_queue" "ev_inbound" {
   tags = var.tags
 }
 
-resource "aws_sqs_queue" "ev_outbound" {
-  name = local.name_outbound
+resource "aws_sqs_queue" "entity_verification" {
+  name = local.name_entity_verification_queue
 
   delay_seconds              = var.delay_seconds
   max_message_size           = var.max_message_size

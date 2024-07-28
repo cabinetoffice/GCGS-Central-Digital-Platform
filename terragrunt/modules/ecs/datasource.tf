@@ -66,8 +66,8 @@ data "aws_iam_policy_document" "ecs_task_access_queue" {
       "sqs:SendMessage",
     ]
     resources = [
-      var.queue_inbound_arn,
-      var.queue_outbound_arn
+      var.queue_entity_verification_queue_arn,
+      var.queue_organisation_queue_arn
     ]
   }
 }

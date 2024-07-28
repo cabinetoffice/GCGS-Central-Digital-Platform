@@ -80,8 +80,10 @@ dependency service_database {
 dependency service_queue {
   config_path = "../../service/queue"
   mock_outputs = {
-    inbound_queue_url  = "mock"
-    outbound_queue_url = "mock"
+    entity_verification_queue_arn = "mock"
+    entity_verification_queue_url = "mock"
+    organisation_queue_arn        = "mock"
+    organisation_queue_url        = "mock"
   }
 }
 
@@ -126,8 +128,8 @@ inputs = {
   db_connection_secret_arn = dependency.service_database.outputs.db_connection_secret_arn
   db_kms_arn               = dependency.service_database.outputs.db_kms_arn
 
-  queue_inbound_arn  = dependency.service_queue.outputs.inbound_queue_arn
-  queue_inbound_url  = dependency.service_queue.outputs.inbound_queue_url
-  queue_outbound_arn = dependency.service_queue.outputs.outbound_queue_arn
-  queue_outbound_url = dependency.service_queue.outputs.outbound_queue_url
+  queue_entity_verification_queue_arn  = dependency.service_queue.outputs.entity_verification_queue_arn
+  queue_entity_verification_queue_url  = dependency.service_queue.outputs.entity_verification_queue_url
+  queue_organisation_queue_arn = dependency.service_queue.outputs.organisation_queue_arn
+  queue_organisation_queue_url = dependency.service_queue.outputs.organisation_queue_url
 }

@@ -17,7 +17,7 @@ data "aws_iam_policy_document" "inbound_queue_policy" {
       "sqs:ReceiveMessage",
       "sqs:SendMessage"
     ]
-    resources = ["arn:aws:sqs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:${local.name_outbound}"]
+    resources = ["arn:aws:sqs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:${local.name_entity_verification_queue}"]
   }
 }
 
@@ -36,6 +36,6 @@ data "aws_iam_policy_document" "outbound_queue_policy" {
       "sqs:ReceiveMessage",
       "sqs:SendMessage"
     ]
-    resources = ["arn:aws:sqs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:${local.name_outbound}"]
+    resources = ["arn:aws:sqs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:${local.name_entity_verification_queue}"]
   }
 }

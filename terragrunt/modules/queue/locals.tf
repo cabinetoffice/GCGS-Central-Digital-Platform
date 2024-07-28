@@ -1,6 +1,6 @@
 locals {
   name_prefix = var.product.resource_name
 
-  name_inbound  = "${local.name_prefix}-${var.environment}-ev-inbound"
-  name_outbound = "${local.name_prefix}-${var.environment}-ev-outbound"
+  name_organisation_queue  = "${local.name_prefix}-${var.environment}-organisation"
+  name_entity_verification_queue = "${local.name_prefix}-${var.environment}-entity-verification"
 }
