@@ -192,6 +192,13 @@ locals {
             port      = 3000
             port_host = 3000
         }
+        healthcheck = {
+            cpu       = 256
+            memory    = 512
+            name      = "healthcheck"
+            port      = 3030
+            port_host = 3030
+        }
         pgadmin = {
             cpu       = 256
             memory    = 512

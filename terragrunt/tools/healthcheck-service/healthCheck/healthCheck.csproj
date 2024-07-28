@@ -9,7 +9,7 @@
   <ItemGroup>
     <PackageReference Include="AWSSDK.SQS" Version="3.7.400" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.5" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
   </ItemGroup>
 
 </Project>
