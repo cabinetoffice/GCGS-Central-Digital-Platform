@@ -1,6 +1,13 @@
-@healthCheck_HostAddress = http://localhost:5037
+@healthCheck_HostAddress = http://localhost:3030
 
-GET {{healthCheck_HostAddress}}/weatherforecast/
+### Get Health Status
+GET {{healthCheck_HostAddress}}/health
 Accept: application/json
 
-###
+### Test SQS Connectivity
+GET {{healthCheck_HostAddress}}/sqs/test
+Accept: application/json
+
+### Test SQS Connectivity
+GET {{healthCheck_HostAddress}}/swagger/v1/swagger.json
+Accept: application/json
