@@ -36,7 +36,7 @@ public class SupplierAddressModelTest
     {
         var supplierInformation = SupplierDetailsFactory.CreateSupplierInformationClientModel();
         var organisation = SupplierDetailsFactory.GivenOrganisationClientModel(_model.Id);
-        organisation.Addresses.Add(new Address(countryName: "United Kingdom", locality: "London", postalCode: "L1", region: "South", streetAddress: "1 London Street", streetAddress2: "", type: AddressType.Registered));
+        organisation.Addresses.Add(new Address(countryName: "United Kingdom", locality: "London", postalCode: "L1", region: "South", streetAddress: "1 London Street", type: AddressType.Registered));
 
         _organisationClientMock.Setup(client => client.GetOrganisationSupplierInformationAsync(_model.Id))
             .ReturnsAsync(supplierInformation);
