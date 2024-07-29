@@ -1,6 +1,6 @@
-@page "/organisation/{id}/supplier-information/connected-person/check-answer"
+@page "/organisation/{id}/supplier-information/connected-person/check-answers-organisation/{ConnectedEntityId?}"
 @using CO.CDP.OrganisationApp.Constants
-@model CO.CDP.OrganisationApp.Pages.Supplier.ConnectedEntityCheckAnswersModel
+@model CO.CDP.OrganisationApp.Pages.Supplier.ConnectedEntityCheckAnswersOrganisationModel
 @{
     var details = Model.ConnectedEntityDetails!;
     var ukNonUkRegisterAddress = details.RegisteredAddress!.IsNonUk ? "non-uk" : "uk";
@@ -24,7 +24,7 @@
                             @details.OrganisationName
                         </dd>
                         <dd class="govuk-summary-list__actions">
-                            <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/organisation-name">
+                            <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/organisation-name/@Model.ConnectedEntityId?frm-chk-answer">
                                 Change<span class="govuk-visually-hidden">
                                     the organisation name
                                 </span>
@@ -42,7 +42,7 @@
                             <p class="govuk-body">@details.RegisteredAddress.Country</p>
                         </dd>
                         <dd class="govuk-summary-list__actions">
-                            <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/registered-address/@ukNonUkRegisterAddress">
+                            <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/registered-address/@ukNonUkRegisterAddress/@Model.ConnectedEntityId?frm-chk-answer">
                                 Change<span class="govuk-visually-hidden">
                                     the organisation's address
                                 </span>
@@ -60,7 +60,7 @@
                             <p class="govuk-body">@details.PostalAddress.Country</p>
                         </dd>
                         <dd class="govuk-summary-list__actions">
-                            <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/postal-address/@ukNonUkPostalAddress/@Model.ConnectedEntityId">
+                            <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/postal-address/@ukNonUkPostalAddress/@Model.ConnectedEntityId?frm-chk-answer">
                                 Change<span class="govuk-visually-hidden">
                                     the organisation's address
                                 </span>
@@ -76,7 +76,7 @@
                             @details.LawRegistered
                         </dd>
                         <dd class="govuk-summary-list__actions">
-                            <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/law-register/@Model.ConnectedEntityId">
+                            <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/law-register/@Model.ConnectedEntityId?frm-chk-answer">
                                 Change<span class="govuk-visually-hidden">
                                     the Legal form
                                 </span>
@@ -91,7 +91,7 @@
                             @Html.Raw(string.Join("", details.ControlConditions.Select(x => $"<li>{x.Description()}</li>")))
                         </dd>
                         <dd class="govuk-summary-list__actions">
-                            <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/nature-of-control/@Model.ConnectedEntityId">
+                            <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/nature-of-control/@Model.ConnectedEntityId?frm-chk-answer">
                                 Change<span class="govuk-visually-hidden">
                                     the nature of control
                                 </span>
@@ -106,7 +106,7 @@
                             @details.RegistrationDate!.Value.ToString("dd/MM/yyyy")
                         </dd>
                         <dd class="govuk-summary-list__actions">
-                            <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/date-registered/@Model.ConnectedEntityId">
+                            <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/date-registered/@Model.ConnectedEntityId?frm-chk-answer">
                                 Change<span class="govuk-visually-hidden">
                                     the registered date
                                 </span>
@@ -121,7 +121,7 @@
                             @details.RegisterName
                         </dd>
                         <dd class="govuk-summary-list__actions">
-                            <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/company-register-name/@Model.ConnectedEntityId">
+                            <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/company-register-name/@Model.ConnectedEntityId?frm-chk-answer">
                                 Change<span class="govuk-visually-hidden">
                                     the registered name
                                 </span>

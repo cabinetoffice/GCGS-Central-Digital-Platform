@@ -30,26 +30,6 @@ public class ServiceCollectionExtensionsTests
     }
 
     [Fact]
-    public void MapException_Should_Return_BadRequest_For_ArgumentNullException()
-    {
-        var exception = new ArgumentNullException();
-        var result = ServiceCollectionExtensions.MapException(exception);
-
-        Assert.Equal(StatusCodes.Status400BadRequest, result.status);
-        Assert.Equal("ARGUMENT_NULL", result.error);
-    }
-
-    [Fact]
-    public void MapException_Should_Return_BadRequest_For_InvalidOperationException()
-    {
-        var exception = new InvalidOperationException();
-        var result = ServiceCollectionExtensions.MapException(exception);
-
-        Assert.Equal(StatusCodes.Status400BadRequest, result.status);
-        Assert.Equal("INVALID_OPERATION", result.error);
-    }
-
-    [Fact]
     public void MapException_Should_Return_InternalServerError_For_GenericException()
     {
         var exception = new Exception();
@@ -86,8 +66,6 @@ public class ServiceCollectionExtensionsTests
 
         result.Should().ContainKey("400");
         result["400"].Should().Contain("TENANT_ALREADY_EXISTS");
-        result["400"].Should().Contain("ARGUMENT_NULL");
-        result["400"].Should().Contain("INVALID_OPERATION");
 
         result.Should().ContainKey("404");
         result["404"].Should().Contain("TENANT_DOES_NOT_EXIST");

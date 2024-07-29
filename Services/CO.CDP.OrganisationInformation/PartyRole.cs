@@ -21,3 +21,12 @@ public enum PartyRole
     InterestedParty = 10,
     Consortium = 11
 }
+
+public static class PartyRoleExtensions
+{
+    public static string AsCode(this PartyRole role)
+    {
+        var r = role.ToString();
+        return char.ToLowerInvariant(r[0]) + r[1..];
+    }
+}

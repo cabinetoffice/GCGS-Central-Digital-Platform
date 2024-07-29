@@ -30,8 +30,11 @@ public class ConnectedEntityPostalSameAsRegisteredAddressModel(ISession session)
         var (valid, state) = ValidatePage();
         if (!valid)
         {
-            return RedirectToPage(ConnectedEntityId.HasValue ?
-                "ConnectedEntityCheckAnswers" : "ConnectedEntitySupplierCompanyQuestion", new { Id, ConnectedEntityId });
+            return RedirectToPage(ConnectedEntityId.HasValue
+                ? (state.ConnectedEntityType == Constants.ConnectedEntityType.Organisation
+                    ? "ConnectedEntityCheckAnswersOrganisation"
+                    : "ConnectedEntityCheckAnswersIndividualOrTrust")
+                : "ConnectedEntitySupplierCompanyQuestion", new { Id, ConnectedEntityId });
         }
 
         var sameAddress = state.RegisteredAddress?.AreSameAddress(state.PostalAddress);
@@ -48,8 +51,11 @@ public class ConnectedEntityPostalSameAsRegisteredAddressModel(ISession session)
         var (valid, state) = ValidatePage();
         if (!valid)
         {
-            return RedirectToPage(ConnectedEntityId.HasValue ?
-                "ConnectedEntityCheckAnswers" : "ConnectedEntitySupplierCompanyQuestion", new { Id, ConnectedEntityId });
+            return RedirectToPage(ConnectedEntityId.HasValue
+                ? (state.ConnectedEntityType == Constants.ConnectedEntityType.Organisation
+                    ? "ConnectedEntityCheckAnswersOrganisation"
+                    : "ConnectedEntityCheckAnswersIndividualOrTrust")
+                : "ConnectedEntitySupplierCompanyQuestion", new { Id, ConnectedEntityId });
         }
 
         InitModal(state);
@@ -66,7 +72,7 @@ public class ConnectedEntityPostalSameAsRegisteredAddressModel(ISession session)
             var redirectLink = GetRedirectLinkPageName(state);
             return RedirectToPage(redirectLink, new { Id, ConnectedEntityId });
         }
-       
+
 
         return RedirectToPage("ConnectedEntityAddress",
             new { Id, ConnectedEntityId, AddressType = AddressType.Postal, UkOrNonUk = "uk" });

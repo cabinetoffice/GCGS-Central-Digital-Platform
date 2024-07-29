@@ -1,8 +1,12 @@
+using CO.CDP.MQ;
+using CO.CDP.Organisation.WebApi.Events;
 using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.Organisation.WebApi.Tests.AutoMapper;
+using CO.CDP.Organisation.WebApi.Tests.UseCase.Extensions;
 using CO.CDP.Organisation.WebApi.UseCase;
 using CO.CDP.OrganisationInformation;
 using FluentAssertions;
+using FluentAssertions.Execution;
 using Moq;
 using Persistence = CO.CDP.OrganisationInformation.Persistence;
 
@@ -12,8 +16,11 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
 {
     private readonly Mock<Persistence.IOrganisationRepository> _repository = new();
     private readonly Mock<Persistence.IPersonRepository> _persons = new();
+    private readonly Mock<IPublisher> _publisher = new();
     private readonly Guid _generatedGuid = Guid.NewGuid();
-    private RegisterOrganisationUseCase UseCase => new(_repository.Object, _persons.Object, mapperFixture.Mapper, () => _generatedGuid);
+
+    private RegisterOrganisationUseCase UseCase => new(
+        _repository.Object, _persons.Object, _publisher.Object, mapperFixture.Mapper, () => _generatedGuid);
 
     [Fact]
     public async Task ItReturnsTheRegisteredOrganisation()
@@ -39,16 +46,19 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
                     LegalName = "AnotherOrganisationName"
                 }
             },
-            Addresses = [new OrganisationAddress
-            {
-                Type = AddressType.Registered,
-                StreetAddress = "1234 Example St",
-                StreetAddress2 = "",
-                Locality = "Example City",
-                Region = "Test Region",
-                PostalCode = "12345",
-                CountryName = "Exampleland"
-            }],
+            Addresses =
+            [
+                new OrganisationAddress
+                {
+                    Type = AddressType.Registered,
+                    StreetAddress = "1234 Example St",
+                    StreetAddress2 = "",
+                    Locality = "Example City",
+                    Region = "Test Region",
+                    PostalCode = "12345",
+                    CountryName = "Exampleland"
+                }
+            ],
             ContactPoint = new OrganisationContactPoint
             {
                 Name = "Contact Name",
@@ -72,7 +82,8 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
             Roles = command.Roles
         };
 
-        createdOrganisation.Should().BeEquivalentTo(expectedOrganisation, options => options.ComparingByMembers<Model.Organisation>());
+        createdOrganisation.Should().BeEquivalentTo(expectedOrganisation,
+            options => options.ComparingByMembers<Model.Organisation>());
     }
 
     [Fact]
@@ -104,16 +115,19 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
                     LegalName = "AnotherOrganisationName"
                 }
             },
-            Addresses = [new OrganisationAddress
-            {
-                Type = AddressType.Registered,
-                StreetAddress = "1234 Example St",
-                StreetAddress2 = "",
-                Locality = "Example City",
-                Region = "Test Region",
-                PostalCode = "12345",
-                CountryName = "Exampleland"
-            }],
+            Addresses =
+            [
+                new OrganisationAddress
+                {
+                    Type = AddressType.Registered,
+                    StreetAddress = "1234 Example St",
+                    StreetAddress2 = "",
+                    Locality = "Example City",
+                    Region = "Test Region",
+                    PostalCode = "12345",
+                    CountryName = "Exampleland"
+                }
+            ],
             ContactPoint = new OrganisationContactPoint
             {
                 Name = "Contact Name",
@@ -131,7 +145,7 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
             o.OrganisationPersons.First().Scopes.Count == 2 &&
             o.OrganisationPersons.First().Scopes[0] == "ADMIN" &&
             o.OrganisationPersons.First().Scopes[1] == "RESPONDER"
-         )), Times.Once);
+        )), Times.Once);
 
         persistanceOrganisation.Should().NotBeNull();
         persistanceOrganisation.As<Persistence.Organisation>().Identifiers.Should().HaveCount(2);
@@ -275,6 +289,27 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
         )), Times.Once);
     }
 
+    [Fact]
+    public async Task ItPublishesOrganisationRegisteredEvent()
+    {
+        var person = GivenPersonExists();
+        var command = GivenRegisterOrganisationCommand(name: "Acme Ltd", personId: person.Guid);
+
+        await UseCase.Execute(command);
+
+        _publisher.Verify(p => p.Publish(It.IsAny<OrganisationRegistered>()), Times.Once);
+        _publisher.Invocations[0].Arguments[0].Should().BeEquivalentTo(new OrganisationRegistered
+        {
+            Id = _generatedGuid.ToString(),
+            Name = "Acme Ltd",
+            Identifier = command.Identifier.AsEventValue(),
+            AdditionalIdentifiers = command.AdditionalIdentifiers.AsEventValue(),
+            Addresses = command.Addresses.AsEventValue(),
+            ContactPoint = command.ContactPoint.AsEventValue(),
+            Roles = command.Roles.AsEventValue()
+        });
+    }
+
     private static RegisterOrganisation GivenRegisterOrganisationCommand(
         string name = "TheOrganisation",
         Guid? personId = null,
@@ -300,16 +335,19 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
                     LegalName = "AnotherOrganisationName"
                 }
             },
-            Addresses = [new OrganisationAddress
-            {
-                Type = AddressType.Registered,
-                StreetAddress = "1234 Example St",
-                StreetAddress2 = "",
-                Locality = "Example City",
-                Region = "Test Region",
-                PostalCode = "12345",
-                CountryName = "Exampleland"
-            }],
+            Addresses =
+            [
+                new OrganisationAddress
+                {
+                    Type = AddressType.Registered,
+                    StreetAddress = "1234 Example St",
+                    StreetAddress2 = "",
+                    Locality = "Example City",
+                    Region = "Test Region",
+                    PostalCode = "12345",
+                    CountryName = "Exampleland"
+                }
+            ],
             ContactPoint = new OrganisationContactPoint
             {
                 Name = "Contact Name",
@@ -321,17 +359,18 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
         };
     }
 
-    private Persistence.Person GivenPersonExists(Guid guid)
+    private Persistence.Person GivenPersonExists(Guid? guid = null)
     {
+        var theGuid = guid ?? Guid.NewGuid();
         Persistence.Person person = new Persistence.Person
         {
             Id = 13,
-            Guid = guid,
+            Guid = theGuid,
             FirstName = "Bob",
             LastName = "Smith",
             Email = "contact@example.com"
         };
-        _persons.Setup(r => r.Find(guid)).ReturnsAsync(person);
+        _persons.Setup(r => r.Find(theGuid)).ReturnsAsync(person);
         return person;
     }
 }

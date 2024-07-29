@@ -8,6 +8,7 @@ using DotSwashbuckle.AspNetCore.SwaggerGen;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
+using CO.CDP.Forms.WebApi.Model;
 
 namespace CO.CDP.Forms.WebApi.Api;
 
@@ -15,8 +16,8 @@ public static class EndpointExtensions
 {
     public static void UseFormsEndpoints(this WebApplication app)
     {
-        app.MapGet("/forms/{formId}/sections/{sectionId}/questions", async (Guid formId, Guid sectionId, IUseCase<(Guid, Guid), Model.SectionQuestionsResponse?> useCase) =>
-                await useCase.Execute((formId, sectionId))
+        app.MapGet("/forms/{formId}/sections/{sectionId}/questions", async (Guid formId, Guid sectionId, [FromQuery(Name = "organisation-id")] Guid organisationId, IUseCase<(Guid, Guid, Guid), Model.SectionQuestionsResponse?> useCase) =>
+            await useCase.Execute((formId, sectionId, organisationId))
                     .AndThen(sectionQuestions => sectionQuestions != null ? Results.Ok(sectionQuestions) : Results.NotFound()))
                     .Produces<Model.SectionQuestionsResponse>(StatusCodes.Status200OK, "application/json")
                     .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
@@ -34,9 +35,15 @@ public static class EndpointExtensions
                return operation;
            });
 
-        app.MapPut("/forms/{formId}/sections/{sectionId}/answers/{answerSetId}", (Guid formId, Guid sectionId, Guid answerSetId) =>
+
+        app.MapPut("/forms/{formId}/sections/{sectionId}/answers/{answerSetId}", async (
+            Guid formId, Guid sectionId, Guid answerSetId,
+            [FromQuery(Name = "organisation-id")] Guid organisationId,
+            [FromBody] UpdateFormSectionAnswers updateFormSectionAnswers,
+            IUseCase<(Guid formId, Guid sectionId, Guid answerSetId, Guid organisationId, List<FormAnswer> answers), bool> updateFormSectionAnswersUseCase) =>
             {
-                return Results.NoContent();
+                var result = await updateFormSectionAnswersUseCase.Execute((formId, sectionId, answerSetId, organisationId, updateFormSectionAnswers.Answers ?? new List<FormAnswer>()));
+                return result ? Results.NoContent() : Results.Problem();
             })
             .Produces(StatusCodes.Status204NoContent)
             .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
@@ -45,7 +52,7 @@ public static class EndpointExtensions
             .WithOpenApi(operation =>
             {
                 operation.OperationId = "PutFormSectionAnswers";
-                operation.Description = "[STUB] Update answers for a form section. [STUB]";
+                operation.Description = "Update answers for a form section.";
                 operation.Summary = "Update answers for a form section.";
                 operation.Responses["204"].Description = "Answers updated.";
                 operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";

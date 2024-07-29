@@ -41,7 +41,7 @@ public class ConnectedEntityCompanyRegistrationDateTest
         {
             var v = (Guid?)null;
             yield return new object[] { v!, "ConnectedEntitySupplierCompanyQuestion" };
-            yield return new object[] { Guid.NewGuid(), "ConnectedEntityCheckAnswers" };
+            yield return new object[] { Guid.NewGuid(), "ConnectedEntityCheckAnswersIndividualOrTrust" };
         }
     }
 
@@ -100,8 +100,9 @@ public class ConnectedEntityCompanyRegistrationDateTest
     }
 
     [Theory]
-    [InlineData("ConnectedEntityCompanyRegisterName")]
-    public void OnPost_ShouldRedirectToExpectedPage_WhenModelStateIsValid(string expectedRedirectPage)
+    [InlineData("ConnectedEntityCompanyRegisterName", false)]
+    [InlineData("ConnectedEntityCheckAnswersOrganisation", true)]
+    public void OnPost_ShouldRedirectToExpectedPage_WhenModelStateIsValid(string expectedRedirectPage, bool redirectToCheckYourAnswer)
     {
         SetValidDate();
 
@@ -109,6 +110,7 @@ public class ConnectedEntityCompanyRegistrationDateTest
 
         _sessionMock.Setup(s => s.Get<ConnectedEntityState>(Session.ConnectedPersonKey)).
             Returns(state);
+        _model.RedirectToCheckYourAnswer = redirectToCheckYourAnswer;
 
         var result = _model.OnPost();
 
@@ -211,37 +213,4 @@ public class ConnectedEntityCompanyRegistrationDateTest
         _model.Month = futureDate.Month.ToString();
         _model.Year = futureDate.Year.ToString();
     }
-    private static List<ConnectedEntityLookup> ConnectedEntities =>
-    [
-         new(Guid.NewGuid(), "e1",It.IsAny<Uri>()),
-         new(Guid.NewGuid(), "e2",It.IsAny<Uri>()),
-    ];
-
-    private static SupplierInformation SupplierInformationClientModel => new(
-            organisationName: "FakeOrg",
-            supplierType: SupplierType.Organisation,
-            operationTypes: null,
-            completedRegAddress: true,
-            completedPostalAddress: false,
-            completedVat: false,
-            completedWebsiteAddress: false,
-            completedEmailAddress: true,
-            completedQualification: false,
-            completedTradeAssurance: false,
-            completedOperationType: false,
-            completedLegalForm: false,
-            completedConnectedPerson: false,
-            tradeAssurances: null,
-            legalForm: null,
-            qualifications: null);
-
-    private static Organisation.WebApiClient.Organisation OrganisationClientModel(Guid id) =>
-        new(
-            additionalIdentifiers: [new Identifier(id: "FakeId", legalName: "FakeOrg", scheme: "VAT", uri: null)],
-            addresses: null,
-            contactPoint: new ContactPoint(email: "test@test.com", faxNumber: null, name: null, telephone: null, url: new Uri("https://xyz.com")),
-            id: id,
-            identifier: null,
-            name: "Test Org",
-            roles: [PartyRole.Supplier]);
 }

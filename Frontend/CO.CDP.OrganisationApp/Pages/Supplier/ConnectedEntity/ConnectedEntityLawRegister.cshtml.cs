@@ -25,6 +25,10 @@ public class ConnectedEntityLawRegisterModel(ISession session) : PageModel
 
     [BindProperty]
     public ConnectedEntityType? ConnectedEntityType { get; set; }
+
+    [BindProperty]
+    public bool? RedirectToCheckYourAnswer { get; set; }
+
     public string? Caption { get; set; }
 
     public string? LegalFormDisplayText { get; set; }
@@ -36,8 +40,11 @@ public class ConnectedEntityLawRegisterModel(ISession session) : PageModel
         var (valid, state) = ValidatePage();
         if (!valid)
         {
-            return RedirectToPage(ConnectedEntityId.HasValue ?
-                "ConnectedEntityCheckAnswers" : "ConnectedEntitySupplierCompanyQuestion", new { Id, ConnectedEntityId });
+            return RedirectToPage(ConnectedEntityId.HasValue
+                ? (state.ConnectedEntityType == Constants.ConnectedEntityType.Organisation
+                    ? "ConnectedEntityCheckAnswersOrganisation"
+                    : "ConnectedEntityCheckAnswersIndividualOrTrust")
+                : "ConnectedEntitySupplierCompanyQuestion", new { Id, ConnectedEntityId });
         }
 
         InitModal(state, true);
@@ -50,8 +57,11 @@ public class ConnectedEntityLawRegisterModel(ISession session) : PageModel
         var (valid, state) = ValidatePage();
         if (!valid)
         {
-            return RedirectToPage(ConnectedEntityId.HasValue ?
-                "ConnectedEntityCheckAnswers" : "ConnectedEntitySupplierCompanyQuestion", new { Id, ConnectedEntityId });
+            return RedirectToPage(ConnectedEntityId.HasValue
+                ? (state.ConnectedEntityType == Constants.ConnectedEntityType.Organisation
+                    ? "ConnectedEntityCheckAnswersOrganisation"
+                    : "ConnectedEntityCheckAnswersIndividualOrTrust")
+                : "ConnectedEntitySupplierCompanyQuestion", new { Id, ConnectedEntityId });
         }
 
         InitModal(state);
@@ -63,7 +73,12 @@ public class ConnectedEntityLawRegisterModel(ISession session) : PageModel
 
         session.Set(Session.ConnectedPersonKey, state);
 
-        var redirectPage = GetRedirectLinkPageName(state);
+        var checkAnswerPage = (state.ConnectedEntityType == Constants.ConnectedEntityType.Organisation
+            ? "ConnectedEntityCheckAnswersOrganisation"
+            : "ConnectedEntityCheckAnswersIndividualOrTrust");
+
+        var redirectPage = (RedirectToCheckYourAnswer == true ? checkAnswerPage : GetRedirectLinkPageName(state));
+
         return RedirectToPage(redirectPage, new { Id, ConnectedEntityId });
     }
 
@@ -146,7 +161,7 @@ public class ConnectedEntityLawRegisterModel(ISession session) : PageModel
                         redirectPage = "";
                         break;
                     case ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl:
-                        redirectPage = "ConnectedEntityCheckAnswers";
+                        redirectPage = "ConnectedEntityCheckAnswersOrganisation";
                         break;
                 }
                 break;

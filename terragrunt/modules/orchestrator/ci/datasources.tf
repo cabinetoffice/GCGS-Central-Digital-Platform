@@ -2,6 +2,10 @@ data "aws_caller_identity" "current" {}
 
 data "aws_region" "current" {}
 
+data "aws_codestarconnections_connection" "cabinet_office" {
+  name = "CabinetOffice"
+}
+
 data "aws_iam_policy_document" "orchestrator_pipeline" {
 
   statement {
