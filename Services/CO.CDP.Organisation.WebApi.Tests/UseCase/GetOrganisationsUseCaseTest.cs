@@ -50,7 +50,6 @@ public class GetOrganisationsUseCaseTest(AutoMapperFixture mapperFixture) : ICla
                 Address = new Address
                 {
                     StreetAddress = "1234 Test St",
-                    StreetAddress2 = "High Tower",
                     Locality = "Test City",
                     PostalCode = "12345",
                     CountryName = "Testland"
@@ -83,7 +82,6 @@ public class GetOrganisationsUseCaseTest(AutoMapperFixture mapperFixture) : ICla
                 Address = new Address
                 {
                     StreetAddress = "1234 Test St",
-                    StreetAddress2 = "High Tower",
                     Locality = "Test City",
                     PostalCode = "12345",
                     CountryName = "Testland"

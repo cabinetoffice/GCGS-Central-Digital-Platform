@@ -1,4 +1,4 @@
-@page "/organisation/{id}/supplier-information/connected-person-summary"
+@page "/organisation/{id}/supplier-information/connected-person/connected-person-summary"
 @model CO.CDP.OrganisationApp.Pages.Supplier.ConnectedPersonSummaryModel
 
 @{
@@ -19,6 +19,9 @@
 
             @foreach (var ce in Model.ConnectedEntities)
             {
+                var entityTypePage = (ce.EntityType == Organisation.WebApiClient.ConnectedEntityType.Organisation
+                ? "check-answers-organisation" : "check-answer-individual-trust");
+
                 <dl class="govuk-summary-list ros-add-to-a-list">
                     <div class="govuk-summary-list__row">
                         <dt class="govuk-summary-list__key">
@@ -28,7 +31,7 @@
                         <dd class="govuk-summary-list__actions">
                             <ul class="govuk-summary-list__actions-list">
                                 <li class="govuk-summary-list__actions-list-item">
-                                    <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/@ce.EntityId/declar/organisation/@Model.Id/supplier-information/connected-person/@ce.EntityId/check-your-answers">Change</a>
+                                    <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/@entityTypePage/@ce.EntityId">Change</a>
                                 </li>
                                 <li class="govuk-summary-list__actions-list-item">
                                     <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/@ce.EntityId/remove">Remove</a>
@@ -56,12 +59,12 @@
                         <div class="govuk-radios govuk-radios--inline" data-module="govuk-radios">
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input" id="conditional-YES" name="HasConnectedEntity" type="radio"
-                                        value="true" data-aria-controls="conditional-YES" @(Model.HasConnectedEntity == true ? "checked" : "")>
+                                       value="true" data-aria-controls="conditional-YES" @(Model.HasConnectedEntity == true ? "checked" : "")>
                                 <label class="govuk-label govuk-radios__label" for="conditional-YES">Yes</label>
                             </div>
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input" id="conditional-NO" name="HasConnectedEntity" type="radio"
-                                        value="false" data-aria-controls="conditional-NO" @(Model.HasConnectedEntity == false ? "checked" : "")>
+                                       value="false" data-aria-controls="conditional-NO" @(Model.HasConnectedEntity == false ? "checked" : "")>
                                 <label class="govuk-label govuk-radios__label" for="conditional-NO">No</label>
                             </div>
                         </div>

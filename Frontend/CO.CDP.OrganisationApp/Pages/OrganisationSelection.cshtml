@@ -6,7 +6,7 @@
     string GetAddress(IEnumerable<Address> addresses)
     {
         var add = addresses.First(a => a.Type == AddressType.Registered);
-        return string.Join(", ", new[] { add.StreetAddress, add.StreetAddress2, add.Locality, add.CountryName, add.PostalCode }
+        return string.Join(", ", new[] { add.StreetAddress, add.Locality, add.CountryName, add.PostalCode }
             .Where(t => !string.IsNullOrWhiteSpace(t)));
     }
 }
