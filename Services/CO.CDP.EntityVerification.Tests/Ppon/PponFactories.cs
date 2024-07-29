@@ -1,4 +1,4 @@
-namespace CO.CDP.EntityVerification.Tests.Ppon;
+namespace CO.CDP.EntityVerification.Tests.Events;
 
 public class PponFactories
 {

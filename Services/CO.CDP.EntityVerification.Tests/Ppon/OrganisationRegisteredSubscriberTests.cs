@@ -4,7 +4,7 @@ using CO.CDP.EntityVerification.Ppon;
 using CO.CDP.MQ;
 using Moq;
 
-namespace CO.CDP.EntityVerification.Tests.Ppon;
+namespace CO.CDP.EntityVerification.Tests.Events;
 
 public class OrganisationRegisteredSubscriberTests
 {

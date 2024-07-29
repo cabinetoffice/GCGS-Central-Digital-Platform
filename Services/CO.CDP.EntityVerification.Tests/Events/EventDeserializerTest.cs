@@ -1,8 +1,8 @@
-using System.Text.Json;
 using CO.CDP.EntityVerification.Events;
-using CO.CDP.EntityVerification.Tests.Ppon;
 using FluentAssertions;
+using System.Text.Json;
 using static CO.CDP.EntityVerification.Events.EventDeserializer.EventDeserializerException;
+using static CO.CDP.EntityVerification.Tests.Events.EventsFactories;
 
 namespace CO.CDP.EntityVerification.Tests.Events;
 
@@ -11,7 +11,7 @@ public class EventDeserializerTest
     [Fact]
     public void ItDeserializesOrganisationRegisteredEvent()
     {
-        var organisationRegistered = EventsFactories.GivenOrganisationRegisteredEvent();
+        var organisationRegistered = GivenOrganisationRegisteredEvent();
         var serialized = JsonSerializer.Serialize(organisationRegistered);
 
         var deserialized = EventDeserializer.Deserializer("OrganisationRegistered", serialized);
@@ -22,7 +22,7 @@ public class EventDeserializerTest
     [Fact]
     public void ItDeserializesOrganisationUpdateEvent()
     {
-        var organisationUpdate = EventsFactories.GivenOrganisationUpdatedEvent();
+        var organisationUpdate = GivenOrganisationUpdatedEvent();
         var serialized = JsonSerializer.Serialize(organisationUpdate);
 
         var deserialized = EventDeserializer.Deserializer("OrganisationUpdated", serialized);

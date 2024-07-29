@@ -1,6 +1,7 @@
 using CO.CDP.EntityVerification.Events;
-using CO.CDP.EntityVerification.Tests.Ppon;
+using CO.CDP.EntityVerification.Tests.Events;
 using FluentAssertions;
+using static CO.CDP.EntityVerification.Tests.Events.EventsFactories;
 
 namespace CO.CDP.EntityVerification.Tests.Events;
 
@@ -11,7 +12,7 @@ public class InboundEventsTests
     {
         var sicIdentifier = new Identifier { Scheme = "SIC", Id = "01230", LegalName = "Acme Ltd" };
         var identifiers = new List<Identifier>() { sicIdentifier };
-        var inboundEvents = EventsFactories.GivenOrganisationUpdatedEvent();
+        var inboundEvents = GivenOrganisationUpdatedEvent();
 
         inboundEvents.AdditionalIdentifiers.AddRange(identifiers);
 
@@ -31,7 +32,7 @@ public class InboundEventsTests
             new Identifier { Scheme = "SIC", Id = "01230", LegalName = "Acme Ltd" }
         };
 
-        var inboundEvents = EventsFactories.GivenOrganisationUpdatedEvent();
+        var inboundEvents = GivenOrganisationUpdatedEvent();
         var result = inboundEvents.FindIdentifierByScheme("NonExistentScheme");
 
         result.Should().BeNull();

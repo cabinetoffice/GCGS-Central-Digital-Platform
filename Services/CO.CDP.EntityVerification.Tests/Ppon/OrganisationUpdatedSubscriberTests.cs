@@ -3,7 +3,10 @@ using CO.CDP.EntityVerification.Ppon;
 using FluentAssertions;
 using Moq;
 
-namespace CO.CDP.EntityVerification.Tests.Ppon;
+using static CO.CDP.EntityVerification.Tests.Events.EventsFactories;
+using static CO.CDP.EntityVerification.Tests.Events.PponFactories;
+
+namespace CO.CDP.EntityVerification.Tests.Events;
 public class OrganisationUpdatedSubscriberTests
 {
     [Fact]
@@ -11,9 +14,9 @@ public class OrganisationUpdatedSubscriberTests
     {
         var mockPponRepository = new Mock<IPponRepository>();
         var subscriber = new OrganisationUpdatedSubscriber(mockPponRepository.Object);
-        var mockEvent = EventsFactories.GivenOrganisationUpdatedEvent();
-        var testPpon = PponFactories.GivenPpon();
-        var pponIdentifier = EventsFactories.CreatePponIdentifier();
+        var mockEvent = GivenOrganisationUpdatedEvent();
+        var testPpon = GivenPpon();
+        var pponIdentifier = CreatePponIdentifier();
 
         mockEvent.AdditionalIdentifiers.Add(pponIdentifier);
 
@@ -37,8 +40,8 @@ public class OrganisationUpdatedSubscriberTests
     {
         var mockPponRepository = new Mock<IPponRepository>();
         var subscriber = new OrganisationUpdatedSubscriber(mockPponRepository.Object);
-        var mockEvent = EventsFactories.GivenOrganisationUpdatedEvent();
-        var testPpon = PponFactories.GivenPpon();
+        var mockEvent = GivenOrganisationUpdatedEvent();
+        var testPpon = GivenPpon();
 
         testPpon.Identifiers.Should().BeEmpty();
 
@@ -53,9 +56,9 @@ public class OrganisationUpdatedSubscriberTests
     {
         var mockPponRepository = new Mock<IPponRepository>();
         var subscriber = new OrganisationUpdatedSubscriber(mockPponRepository.Object);
-        var mockEvent = EventsFactories.GivenOrganisationUpdatedEvent();
-        var testPpon = PponFactories.GivenPpon();
-        var pponIdentifier = EventsFactories.CreatePponIdentifier();
+        var mockEvent = GivenOrganisationUpdatedEvent();
+        var testPpon = GivenPpon();
+        var pponIdentifier = CreatePponIdentifier();
 
         mockEvent.AdditionalIdentifiers.Add(pponIdentifier);
         testPpon.Identifiers.Should().BeEmpty();

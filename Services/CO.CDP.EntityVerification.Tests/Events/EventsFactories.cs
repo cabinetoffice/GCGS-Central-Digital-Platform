@@ -1,6 +1,6 @@
 using CO.CDP.EntityVerification.Events;
 
-namespace CO.CDP.EntityVerification.Tests.Ppon;
+namespace CO.CDP.EntityVerification.Tests.Events;
 
 public class EventsFactories
 {
