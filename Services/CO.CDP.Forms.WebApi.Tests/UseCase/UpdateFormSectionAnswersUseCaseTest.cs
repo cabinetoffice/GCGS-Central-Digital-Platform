@@ -6,7 +6,6 @@ using FluentAssertions;
 using Moq;
 using Persistence = CO.CDP.OrganisationInformation.Persistence.Forms;
 
-
 namespace CO.CDP.Forms.WebApi.Tests.UseCase;
 
 public class UpdateFormSectionAnswersUseCaseTest(AutoMapperFixture mapperFixture) : IClassFixture<AutoMapperFixture>
@@ -25,7 +24,6 @@ public class UpdateFormSectionAnswersUseCaseTest(AutoMapperFixture mapperFixture
 
         await act.Should().ThrowAsync<UnknownOrganisationException>();
     }
-
 
     [Fact]
     public async Task Execute_ShouldThrowUnknownSectionException_WhenSectionIsNotFound()
@@ -185,7 +183,17 @@ public class UpdateFormSectionAnswersUseCaseTest(AutoMapperFixture mapperFixture
         {
             Guid = answerSetId,
             OrganisationId = 1,
-            Organisation = null,
+            Organisation = new Organisation
+            {
+                Guid = organisationId,
+                Name = "Test Organisation",
+                Tenant = new Tenant
+                {
+                    Id = 1,
+                    Guid = Guid.NewGuid(),
+                    Name = "Test Tenant"
+                }
+            },
             Section = section,
             Answers = new List<Persistence.FormAnswer>()
         };
