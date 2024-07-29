@@ -17,9 +17,17 @@ locals {
       component = "queue"
     }
   )
+}
 
+dependency core_iam {
+  config_path = "../../core/iam"
+  mock_outputs = {
+    ecs_task_arn = "mock"
+  }
 }
 
 inputs = {
   tags = local.tags
+
+  role_ecs_task_arn = dependency.core_iam.outputs.ecs_task_arn
 }
