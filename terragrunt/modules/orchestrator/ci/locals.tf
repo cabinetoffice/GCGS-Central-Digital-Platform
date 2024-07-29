@@ -3,7 +3,8 @@ locals {
 
   orchestrator_account_id = var.account_ids["orchestrator"]
 
-  trigger_update_ecs_service_cb_name = "trigger-update-ecs-services"
+  trigger_update_ecs_service_cp_name = "trigger-${local.update_ecs_service_cb_name}"
+  trigger_update_account_cp_name     = "trigger-${local.update_account_cb_name}"
   update_account_cb_name             = "update-account"
   update_ecs_service_cb_name         = "update-ecs-services"
 
