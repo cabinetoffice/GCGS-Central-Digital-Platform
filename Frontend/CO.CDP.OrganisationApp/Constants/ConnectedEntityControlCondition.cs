@@ -6,7 +6,7 @@ public enum ConnectedEntityControlCondition
     OwnsShares = 1,
     HasVotingRights,
     CanAppointOrRemoveDirectors,
-    HasOtherSignificantInfluenceOrControl,    
+    HasOtherSignificantInfluenceOrControl,
 }
 
 public static class ConnectedEntityControlConditionExtensions
@@ -32,6 +32,18 @@ public static class ConnectedEntityControlConditionExtensions
             case ConnectedEntityControlCondition.CanAppointOrRemoveDirectors: return WebApiClient.ControlCondition.CanAppointOrRemoveDirectors;
             case ConnectedEntityControlCondition.HasOtherSignificantInfluenceOrControl: return WebApiClient.ControlCondition.HasOtherSignificantInfluenceOrControl;
             default: return WebApiClient.ControlCondition.OwnsShares;
+        }
+    }
+
+    public static ConnectedEntityControlCondition AsConnectedEntityClientControlCondition(this WebApiClient.ControlCondition entityControlCondition)
+    {
+        switch (entityControlCondition)
+        {
+            case WebApiClient.ControlCondition.OwnsShares: return ConnectedEntityControlCondition.OwnsShares;
+            case WebApiClient.ControlCondition.HasOtherSignificantInfluenceOrControl: return ConnectedEntityControlCondition.HasOtherSignificantInfluenceOrControl;
+            case WebApiClient.ControlCondition.HasVotingRights: return ConnectedEntityControlCondition.HasVotingRights;
+            case WebApiClient.ControlCondition.CanAppointOrRemoveDirectors: return ConnectedEntityControlCondition.CanAppointOrRemoveDirectors;
+            default: return ConnectedEntityControlCondition.OwnsShares;
         }
     }
 
