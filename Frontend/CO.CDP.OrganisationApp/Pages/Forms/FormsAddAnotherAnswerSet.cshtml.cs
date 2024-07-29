@@ -21,7 +21,6 @@ public class FormsAddAnotherAnswerSetModel(
     public Guid SectionId { get; set; }
 
     [BindProperty]
-    [RequiredIf(nameof(AllowsMultipleAnswerSets), true, ErrorMessage = "Please select an option")]
     public bool? AddAnotherAnswerSet { get; set; }
 
     public List<(Guid answerSetId, IEnumerable<AnswerSummary> answers)> FormAnswerSets { get; set; } = [];
@@ -51,8 +50,10 @@ public class FormsAddAnotherAnswerSetModel(
             return Redirect("/page-not-found");
         }
 
-        ModelState.Clear();
-        if (!TryValidateModel(this))
+        if (AllowsMultipleAnswerSets && !AddAnotherAnswerSet.HasValue)
+            ModelState.AddModelError(nameof(AddAnotherAnswerSet), "Please select an option");
+
+        if (!ModelState.IsValid)
         {
             return Page();
         }

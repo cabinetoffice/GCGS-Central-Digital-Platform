@@ -82,7 +82,7 @@ public class FormsAddAnotherAnswerSetModelTest
         var result = await _model.OnPost();
 
         var redirectToPageResult = result.Should().BeOfType<RedirectToPageResult>().Subject;
-        redirectToPageResult.PageName.Should().Be("SupplierBasicInformation");
+        redirectToPageResult.PageName.Should().Be("../Supplier/SupplierInformationSummary");
     }
 
     [Fact]
