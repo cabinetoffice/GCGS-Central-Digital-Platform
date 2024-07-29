@@ -4,6 +4,7 @@ using CO.CDP.OrganisationApp.WebApiClients;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using ConnectedEntityType = CO.CDP.OrganisationApp.Constants.ConnectedEntityType;
 
 namespace CO.CDP.OrganisationApp.Pages.Supplier;
 
@@ -174,13 +175,18 @@ public class ConnectedEntityCheckAnswersOrganisationModel(
 
     private ConnectedEntityState GetConnectedEntityStateFromEntity(CO.CDP.Organisation.WebApiClient.ConnectedEntity connectedEntity)
     {
+        var connectedEntityType = connectedEntity.EntityType.AsConnectedEntityType();
+        var controlConditions = connectedEntityType == ConnectedEntityType.Organisation
+            ? connectedEntity.Organisation?.ControlCondition
+            : connectedEntity.IndividualOrTrust?.ControlCondition;
+
         var state = new ConnectedEntityState()
         {
             CompaniesHouseNumber = connectedEntity.CompanyHouseNumber,
             ConnectedEntityId = connectedEntity.Id,
             ConnectedEntityIndividualAndTrustCategoryType = connectedEntity.IndividualOrTrust?.Category.AsConnectedEntityIndividualAndTrustCategoryType(),
             ConnectedEntityOrganisationCategoryType = connectedEntity.Organisation?.Category.AsConnectedEntityOrganisationCategoryType(),
-            ConnectedEntityType = connectedEntity.EntityType.AsConnectedEntityType(),
+            ConnectedEntityType = connectedEntityType,
             HasCompaniesHouseNumber = connectedEntity.HasCompnayHouseNumber,
             InsolvencyDate = connectedEntity.Organisation?.InsolvencyDate,
             LawRegistered = connectedEntity.Organisation?.LawRegistered,
@@ -202,7 +208,7 @@ public class ConnectedEntityCheckAnswersOrganisationModel(
                 Postcode = connectedEntity.Addresses?.FirstOrDefault(a => a.Type == Organisation.WebApiClient.AddressType.Registered)?.PostalCode,
                 TownOrCity = connectedEntity.Addresses?.FirstOrDefault(a => a.Type == Organisation.WebApiClient.AddressType.Registered)?.Locality
             },
-            ControlConditions = ControlConditionCollectionToList(connectedEntity.IndividualOrTrust?.ControlCondition),
+            ControlConditions = ControlConditionCollectionToList(controlConditions),
             Nationality = connectedEntity.IndividualOrTrust?.Nationality,
             SupplierOrganisationId = Id,
             FirstName = connectedEntity.IndividualOrTrust?.FirstName,
