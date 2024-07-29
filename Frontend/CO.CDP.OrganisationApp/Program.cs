@@ -116,7 +116,7 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddHealthChecks();
 builder.Services
-    .AddAwsCofiguration(builder.Configuration)
+    .AddAwsConfiguration(builder.Configuration)
     .AddAwsS3Service();
 
 var app = builder.Build();
