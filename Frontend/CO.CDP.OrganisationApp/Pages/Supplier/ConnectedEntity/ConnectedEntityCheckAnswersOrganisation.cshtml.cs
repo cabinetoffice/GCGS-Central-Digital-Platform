@@ -117,7 +117,8 @@ public class ConnectedEntityCheckAnswersOrganisationModel(
                 firstName: "",
                 lastName: "",
                 nationality: "",
-                personId: null
+                personId: null,
+                residentCountry: state.DirectorLocation
             );
         }
 
