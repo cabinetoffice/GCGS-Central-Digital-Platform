@@ -92,7 +92,6 @@ public class RegisterConnectedEntityUseCaseTest(AutoMapperFixture mapperFixture)
                     Address = new Persistence.Address
                     {
                         StreetAddress = "1234 Example St",
-                        StreetAddress2 = "",
                         Locality = "Example City",
                         Region = "Test Region",
                         PostalCode = "12345",

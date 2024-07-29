@@ -13,9 +13,12 @@
     var hasError = dateOfBirthHasError || dayHasError || monthHasError || yearHasError;
     var nationalityHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Nationality)).HasInnerHtml;
 
-    var backLink = $"/organisation/{@Model.Id}/supplier-information/connected-person/individual-category";
+    var backLink = $"/organisation/{Model.Id}/supplier-information/connected-person/individual-category/{Model.ConnectedEntityId}";
+    if (Request.Query.ContainsKey("frm-chk-answer"))
+    {
+        backLink = $"/organisation/{Model.Id}/supplier-information/connected-person/check-answer-individual-trust/{Model.ConnectedEntityId}";
+    }
 }
-
 <a href="@backLink" class="govuk-back-link">
     Back
 </a>
@@ -27,8 +30,11 @@
             <partial name="_ErrorSummary" model="@ModelState" />
 
             <form method="post">
+                @if (Request.Query.ContainsKey("frm-chk-answer"))
+                {
+                    <input type="hidden" name="RedirectToCheckYourAnswer" value="true" />
+                }
                 <fieldset class="govuk-fieldset" data-required="" data-error="Enter the person with significant control's details" aria-required="true">
-
                     <h1 class="govuk-heading-l">
                         @Model.Heading
                     </h1>
@@ -69,92 +75,95 @@
                                    spellcheck="false" @(lastNameHasError ? "aria-describedby=last-name-error" : "")>
                         </div>
                     </div>
-                    <div class="govuk-form-group">
-                        <fieldset class="govuk-fieldset" role="group" aria-describedby="Hint">
-                            <legend class="govuk-fieldset__legend">
-                                Date of birth
-                            </legend>
-                            <div id="-hint" class="govuk-hint">
-                                For example, 27 3 2007
-                            </div>
-                            @if (dayHasError)
-                            {
-                                <p id="day-error" class="govuk-error-message">
-                                    <span class="govuk-visually-hidden">Error:</span>
-                                    @Html.ValidationMessageFor(m => m.Day)
-                                </p>
-                            }
-                            @if (monthHasError)
-                            {
-                                <p id="month-error" class="govuk-error-message">
-                                    <span class="govuk-visually-hidden">Error:</span>
-                                    @Html.ValidationMessageFor(m => m.Month)
-                                </p>
-                            }
-                            @if (yearHasError)
-                            {
-                                <p id="year-error" class="govuk-error-message">
-                                    <span class="govuk-visually-hidden">Error:</span>
-                                    @Html.ValidationMessageFor(m => m.Year)
-                                </p>
-                            }
-                            @if (dateOfBirthHasError)
-                            {
-                                <p id="date-of-formation-error" class="govuk-error-message">
-                                    <span class="govuk-visually-hidden">Error:</span>
-                                    @Html.ValidationMessageFor(m => m.DateOfBirth)
-                                </p>
-                            }
-                            <div class="govuk-date-input" id="pscDateOfBirth">
-                                <div class="govuk-date-input__item">
-                                    <div class="govuk-form-group">
-                                        <label class="govuk-label govuk-date-input__label" for="pscDateOfBirthDay">
-                                            Day
-                                        </label>
-                                        <input class="govuk-input govuk-date-input__input govuk-input--width-2 @(dayHasError || dateOfBirthHasError ? "govuk-input--error" : "")"
-                                               id="pscDateOfBirthDay" name="Day" type="text" inputmode="numeric" value="@Model.Day">
+                    @if (Model.ShowDobAndNationality == true)
+                    {
+                        <div class="govuk-form-group">
+                            <fieldset class="govuk-fieldset" role="group" aria-describedby="Hint">
+                                <legend class="govuk-fieldset__legend">
+                                    Date of birth
+                                </legend>
+                                <div id="-hint" class="govuk-hint">
+                                    For example, 27 3 2007
+                                </div>
+                                @if (dayHasError)
+                                {
+                                    <p id="day-error" class="govuk-error-message">
+                                        <span class="govuk-visually-hidden">Error:</span>
+                                        @Html.ValidationMessageFor(m => m.Day)
+                                    </p>
+                                }
+                                @if (monthHasError)
+                                {
+                                    <p id="month-error" class="govuk-error-message">
+                                        <span class="govuk-visually-hidden">Error:</span>
+                                        @Html.ValidationMessageFor(m => m.Month)
+                                    </p>
+                                }
+                                @if (yearHasError)
+                                {
+                                    <p id="year-error" class="govuk-error-message">
+                                        <span class="govuk-visually-hidden">Error:</span>
+                                        @Html.ValidationMessageFor(m => m.Year)
+                                    </p>
+                                }
+                                @if (dateOfBirthHasError)
+                                {
+                                    <p id="date-of-formation-error" class="govuk-error-message">
+                                        <span class="govuk-visually-hidden">Error:</span>
+                                        @Html.ValidationMessageFor(m => m.DateOfBirth)
+                                    </p>
+                                }
+                                <div class="govuk-date-input" id="pscDateOfBirth">
+                                    <div class="govuk-date-input__item">
+                                        <div class="govuk-form-group">
+                                            <label class="govuk-label govuk-date-input__label" for="pscDateOfBirthDay">
+                                                Day
+                                            </label>
+                                            <input class="govuk-input govuk-date-input__input govuk-input--width-2 @(dayHasError || dateOfBirthHasError ? "govuk-input--error" : "")"
+                                                   id="pscDateOfBirthDay" name="Day" type="text" inputmode="numeric" value="@Model.Day">
+                                        </div>
+                                    </div>
+                                    <div class="govuk-date-input__item">
+                                        <div class="govuk-form-group">
+                                            <label class="govuk-label govuk-date-input__label" for="pscDateOfBirthMonth">
+                                                Month
+                                            </label>
+                                            <input class="govuk-input govuk-date-input__input govuk-input--width-2 @(monthHasError || dateOfBirthHasError ? "govuk-input--error" : "")"
+                                                   id="pscDateOfBirthMonth" name="Month" type="text" inputmode="numeric" value="@Model.Month">
+                                        </div>
+                                    </div>
+                                    <div class="govuk-date-input__item">
+                                        <div class="govuk-form-group">
+                                            <label class="govuk-label govuk-date-input__label" for="pscDateOfBirthYear">
+                                                Year
+                                            </label>
+                                            <input class="govuk-input govuk-date-input__input govuk-input--width-4 @(yearHasError || dateOfBirthHasError ? "govuk-input--error" : "")"
+                                                   id="pscDateOfBirthYear" name="Year" type="text" inputmode="numeric" value="@Model.Year">
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="govuk-date-input__item">
-                                    <div class="govuk-form-group">
-                                        <label class="govuk-label govuk-date-input__label" for="pscDateOfBirthMonth">
-                                            Month
-                                        </label>
-                                        <input class="govuk-input govuk-date-input__input govuk-input--width-2 @(monthHasError || dateOfBirthHasError ? "govuk-input--error" : "")"
-                                               id="pscDateOfBirthMonth" name="Month" type="text" inputmode="numeric" value="@Model.Month">
-                                    </div>
-                                </div>
-                                <div class="govuk-date-input__item">
-                                    <div class="govuk-form-group">
-                                        <label class="govuk-label govuk-date-input__label" for="pscDateOfBirthYear">
-                                            Year
-                                        </label>
-                                        <input class="govuk-input govuk-date-input__input govuk-input--width-4 @(yearHasError || dateOfBirthHasError ? "govuk-input--error" : "")"
-                                               id="pscDateOfBirthYear" name="Year" type="text" inputmode="numeric" value="@Model.Year">
-                                    </div>
-                                </div>
-                            </div>
-                        </fieldset>
-                    </div>
-                    <div class="govuk-form-group @(nationalityHasError ? "govuk-form-group--error" : "")">
-                        <label class="govuk-label" for="@nameof(Model.Nationality)">
-                            @Html.DisplayNameFor(m => m.Nationality)
-                        </label>
-                        @if (nationalityHasError)
-                        {
-                            <p id="country-error" class="govuk-error-message">
-                                <span class="govuk-visually-hidden">Error:</span>
-                                @Html.ValidationMessageFor(m => m.Nationality)
-                            </p>
-                        }
-                        <select asp-for="Nationality" class="govuk-select @(nationalityHasError ? "govuk-select--error" : "")">
-                            <option value="">Please select</option>
-                            @foreach (var cnt in Constants.Country.Nationalities)
+                            </fieldset>
+                        </div>
+                        <div class="govuk-form-group @(nationalityHasError ? "govuk-form-group--error" : "")">
+                            <label class="govuk-label" for="@nameof(Model.Nationality)">
+                                @Html.DisplayNameFor(m => m.Nationality)
+                            </label>
+                            @if (nationalityHasError)
                             {
-                                <option value="@cnt">@cnt</option>
+                                <p id="country-error" class="govuk-error-message">
+                                    <span class="govuk-visually-hidden">Error:</span>
+                                    @Html.ValidationMessageFor(m => m.Nationality)
+                                </p>
                             }
-                        </select>
-                    </div>
+                            <select asp-for="Nationality" class="govuk-select @(nationalityHasError ? "govuk-select--error" : "")">
+                                <option value="">Please select</option>
+                                @foreach (var cnt in Constants.Country.Nationalities)
+                                {
+                                    <option value="@cnt">@cnt</option>
+                                }
+                            </select>
+                        </div>
+                    }
                     <button type="submit"
                             class="govuk-button"
                             data-module="govuk-button">

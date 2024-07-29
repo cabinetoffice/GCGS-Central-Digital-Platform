@@ -155,7 +155,6 @@ public class ConnectedEntityCheckAnswersOrganisationTest
             postalCode: "LS1 2AE",
             region: null,
             streetAddress: "1 street lane",
-            streetAddress2: null,
             type: Organisation.WebApiClient.AddressType.Registered));
 
         addresses.Add(new Address(
@@ -164,7 +163,6 @@ public class ConnectedEntityCheckAnswersOrganisationTest
             postalCode: "LS1 2AE",
             region: null,
             streetAddress: "1 street lane",
-            streetAddress2: null,
             type: Organisation.WebApiClient.AddressType.Postal));
 
         var registerConnectedEntity = new RegisterConnectedEntity

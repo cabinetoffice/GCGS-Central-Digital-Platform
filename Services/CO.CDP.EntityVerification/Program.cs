@@ -4,10 +4,10 @@ using CO.CDP.Configuration.Assembly;
 using CO.CDP.EntityVerification.Api;
 using CO.CDP.EntityVerification.Events;
 using CO.CDP.EntityVerification.Extensions;
-using CO.CDP.EntityVerification.MQ;
 using CO.CDP.EntityVerification.Persistence;
 using CO.CDP.EntityVerification.Ppon;
 using CO.CDP.MQ;
+using CO.CDP.MQ.Hosting;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -41,7 +41,7 @@ if (Assembly.GetEntryAssembly().IsRunAs("CO.CDP.EntityVerification"))
                 dispatcher.Subscribe<OrganisationRegistered>(services);
             }
         );
-    builder.Services.AddHostedService<QueueBackgroundService>();
+    builder.Services.AddHostedService<DispatcherBackgroundService>();
 }
 
 var app = builder.Build();
