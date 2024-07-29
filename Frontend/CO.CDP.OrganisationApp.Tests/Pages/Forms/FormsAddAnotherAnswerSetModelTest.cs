@@ -78,7 +78,7 @@ public class FormsAddAnotherAnswerSetModelTest
         var sectionQuestionsResponse = CreateApiSectionQuestionsResponse(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid());
 
         _formsClientMock
-            .Setup(client => client.GetFormSectionQuestionsAsync(It.IsAny<Guid>(), It.IsAny<Guid>()))
+            .Setup(client => client.GetFormSectionQuestionsAsync(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid>()))
             .ReturnsAsync(sectionQuestionsResponse);
 
         // Act
@@ -93,7 +93,7 @@ public class FormsAddAnotherAnswerSetModelTest
     {
         // Arrange
         _formsClientMock
-            .Setup(client => client.GetFormSectionQuestionsAsync(It.IsAny<Guid>(), It.IsAny<Guid>()))
+            .Setup(client => client.GetFormSectionQuestionsAsync(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid>()))
             .ThrowsAsync(new WebApiClient.ApiException("Unexpected error", 404, "", default, null));
 
         // Act
@@ -113,7 +113,7 @@ public class FormsAddAnotherAnswerSetModelTest
         var sectionQuestionsResponse = CreateApiSectionQuestionsResponse(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid());
 
         _formsClientMock
-            .Setup(client => client.GetFormSectionQuestionsAsync(It.IsAny<Guid>(), It.IsAny<Guid>()))
+            .Setup(client => client.GetFormSectionQuestionsAsync(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid>()))
             .ReturnsAsync(sectionQuestionsResponse);
 
         // Act
@@ -133,7 +133,7 @@ public class FormsAddAnotherAnswerSetModelTest
         var sectionQuestionsResponse = CreateApiSectionQuestionsResponse(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid());
 
         _formsClientMock
-            .Setup(client => client.GetFormSectionQuestionsAsync(It.IsAny<Guid>(), It.IsAny<Guid>()))
+            .Setup(client => client.GetFormSectionQuestionsAsync(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid>()))
             .ReturnsAsync(sectionQuestionsResponse);
 
         // Act
@@ -153,7 +153,7 @@ public class FormsAddAnotherAnswerSetModelTest
         var sectionQuestionsResponse = CreateApiSectionQuestionsResponse(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid());
 
         _formsClientMock
-            .Setup(client => client.GetFormSectionQuestionsAsync(It.IsAny<Guid>(), It.IsAny<Guid>()))
+            .Setup(client => client.GetFormSectionQuestionsAsync(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid>()))
             .ReturnsAsync(sectionQuestionsResponse);
 
         // Act
@@ -171,7 +171,7 @@ public class FormsAddAnotherAnswerSetModelTest
         var sectionQuestionsResponse = CreateApiSectionQuestionsResponse(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid());
 
         _formsClientMock
-            .Setup(client => client.GetFormSectionQuestionsAsync(It.IsAny<Guid>(), It.IsAny<Guid>()))
+            .Setup(client => client.GetFormSectionQuestionsAsync(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid>()))
             .ReturnsAsync(sectionQuestionsResponse);
 
         // Act
@@ -190,7 +190,7 @@ public class FormsAddAnotherAnswerSetModelTest
         var sectionQuestionsResponse = CreateApiSectionQuestionsResponse(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid());
 
         _formsClientMock
-            .Setup(client => client.GetFormSectionQuestionsAsync(It.IsAny<Guid>(), It.IsAny<Guid>()))
+            .Setup(client => client.GetFormSectionQuestionsAsync(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid>()))
             .ReturnsAsync(sectionQuestionsResponse);
 
         // Act

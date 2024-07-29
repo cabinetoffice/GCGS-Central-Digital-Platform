@@ -25,15 +25,18 @@
                     <dl class="govuk-summary-list ros-add-to-a-list">
                         <div class="govuk-summary-list__row">
                             <dt class="govuk-summary-list__key">
-                                Unaudited accounts - year ending 5 April 2023
+                                @foreach (var item in formAnswerSet.answers)
+                                {
+                                    <p class="govuk-!-margin-top-0">@item.Title : @item.Answer</p>
+                                }
                             </dt>
                             <dd class="govuk-summary-list__actions">
                                 <ul class="govuk-summary-list__actions-list">
                                     <li class="govuk-summary-list__actions-list-item">
-                                        <a class="govuk-link" href="?handler=change&answer-set-id=@formAnswerSet.Id">Change</a>
+                                        <a class="govuk-link" href="?handler=change&answer-set-id=@formAnswerSet.answerSetId">Change</a>
                                     </li>
                                     <li class="govuk-summary-list__actions-list-item">
-                                        <a class="govuk-link" href="/organisation/@Model.OrganisationId/forms/@Model.FormId/sections/@Model.SectionId/answers/@formAnswerSet.Id/remove-confirmation">Remove</a>
+                                        <a class="govuk-link" href="/organisation/@Model.OrganisationId/forms/@Model.FormId/sections/@Model.SectionId/answers/@formAnswerSet.answerSetId/remove-confirmation">Remove</a>
                                     </li>
                                 </ul>
                             </dd>
@@ -62,12 +65,12 @@
                             }
                             <div class="govuk-radios govuk-radios--inline" data-module="govuk-radios">
                                 <div class="govuk-radios__item">
-                                    <input class="govuk-radios__input" id="conditional-YES" name="HasQualification" type="radio"
+                                    <input class="govuk-radios__input" id="conditional-YES" name="AddAnotherAnswerSet" type="radio"
                                            value="true" data-aria-controls="conditional-YES" @(Model.AddAnotherAnswerSet == true ? "checked" : "")>
                                     <label class="govuk-label govuk-radios__label" for="conditional-YES">Yes</label>
                                 </div>
                                 <div class="govuk-radios__item">
-                                    <input class="govuk-radios__input" id="conditional-NO" name="HasQualification" type="radio"
+                                    <input class="govuk-radios__input" id="conditional-NO" name="AddAnotherAnswerSet" type="radio"
                                            value="false" data-aria-controls="conditional-NO" @(Model.AddAnotherAnswerSet == false ? "checked" : "")>
                                     <label class="govuk-label govuk-radios__label" for="conditional-NO">No</label>
                                 </div>

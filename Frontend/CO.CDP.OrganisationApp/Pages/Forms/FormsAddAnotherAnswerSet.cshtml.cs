@@ -24,7 +24,7 @@ public class FormsAddAnotherAnswerSetModel(
     [RequiredIf(nameof(AllowsMultipleAnswerSets), true, ErrorMessage = "Please select an option")]
     public bool? AddAnotherAnswerSet { get; set; }
 
-    public ICollection<FormAnswerSet> FormAnswerSets { get; set; } = [];
+    public List<(Guid answerSetId, IEnumerable<AnswerSummary> answers)> FormAnswerSets { get; set; } = [];
 
     public string? Heading { get; set; }
 
@@ -63,23 +63,23 @@ public class FormsAddAnotherAnswerSetModel(
         }
         else
         {
-            return RedirectToPage("SupplierBasicInformation", new { OrganisationId });
+            return RedirectToPage("../Supplier/SupplierInformationSummary", new { Id = OrganisationId });
         }
     }
 
     public async Task<IActionResult> OnGetChange([FromQuery(Name = "answer-set-id")] Guid answerSetId)
     {
-        SectionQuestionsResponse? response;
+        SectionQuestionsResponse response;
         try
         {
-            response = await formsClient.GetFormSectionQuestionsAsync(FormId, SectionId);
+            response = await formsClient.GetFormSectionQuestionsAsync(FormId, SectionId, OrganisationId);
         }
         catch (ApiException ex) when (ex.StatusCode == 404)
         {
             return Redirect("/page-not-found");
         }
 
-        var answerSet = response?.AnswerSets.FirstOrDefault(a => a.Id == answerSetId);
+        var answerSet = response.AnswerSets.FirstOrDefault(a => a.Id == answerSetId);
         if (answerSet == null)
         {
             return Redirect("/page-not-found");
@@ -113,29 +113,64 @@ public class FormsAddAnotherAnswerSetModel(
 
     private async Task<bool> InitAndVerifyPage()
     {
+        SectionQuestionsResponse form;
         try
         {
-            var response = await formsClient.GetFormSectionQuestionsAsync(FormId, SectionId);
-            FormAnswerSets = response.AnswerSets;
-            var valid = response != null;
-
-            if (valid)
-            {
-                AllowsMultipleAnswerSets = response!.Section.AllowsMultipleAnswerSets;
-                AddAnotherAnswerLabel = response.Section.Configuration.AddAnotherAnswerLabel;
-                Heading = response.Section.Configuration.SingularSummaryHeading;
-
-                if (FormAnswerSets.Count > 1)
-                {
-                    Heading = string.Format(response.Section.Configuration.PluralSummaryHeadingFormat, FormAnswerSets.Count);
-                }
-            }
-
-            return valid;
+            form = await formsClient.GetFormSectionQuestionsAsync(FormId, SectionId, OrganisationId);
         }
         catch (ApiException ex) when (ex.StatusCode == 404)
         {
             return false;
         }
+
+        FormAnswerSets = GetAnswers(form);
+        // TODO : change when API response is fixed
+        //AllowsMultipleAnswerSets = response.Section.AllowsMultipleAnswerSets;
+        AllowsMultipleAnswerSets = true;
+        AddAnotherAnswerLabel = form.Section.Configuration.AddAnotherAnswerLabel;
+        Heading = form.Section.Configuration.SingularSummaryHeading;
+
+        if (FormAnswerSets.Count > 1)
+        {
+            Heading = string.Format(form.Section.Configuration.PluralSummaryHeadingFormat, FormAnswerSets.Count);
+        }
+
+        return true;
+    }
+
+    private static List<(Guid answerSetId, IEnumerable<AnswerSummary> answers)> GetAnswers(SectionQuestionsResponse form)
+    {
+        List<(Guid answerSetId, IEnumerable<AnswerSummary> answers)> summaryList = [];
+
+        foreach (var answerSet in form.AnswerSets)
+        {
+            List<AnswerSummary> answerSummaries = [];
+            foreach (var answer in answerSet.Answers)
+            {
+                var question = form.Questions.FirstOrDefault(q => q.Id == answer.QuestionId);
+                if (question != null && question.Type != FormQuestionType.NoInput && question.Type != FormQuestionType.CheckYourAnswers)
+                {
+                    var answerString = question.Type switch
+                    {
+                        FormQuestionType.Text => answer.TextValue ?? "",
+                        FormQuestionType.FileUpload => answer.TextValue ?? "",
+                        FormQuestionType.YesOrNo => question.IsRequired && answer.BoolValue.HasValue == true ? (answer.BoolValue == true ? "yes" : "no") : "",
+                        FormQuestionType.Date => question.IsRequired && answer.DateValue.HasValue == true ? answer.DateValue.Value.ToString("dd/MM/yyyy") : "",
+                        _ => ""
+                    };
+
+                    answerSummaries.Add(new AnswerSummary
+                    {
+                        QuestionId = answer.QuestionId,
+                        Title = question.Title,
+                        Answer = answerString ?? ""
+                    });
+                }
+            }
+
+            summaryList.Add((answerSet.Id, answerSummaries));
+        }
+
+        return summaryList;
     }
 }
