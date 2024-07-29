@@ -1,9 +1,10 @@
 using CO.CDP.EntityVerification.Persistence;
+using CO.CDP.EntityVerification.Tests.Ppon;
 using CO.CDP.Testcontainers.PostgreSql;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using static CO.CDP.EntityVerification.Persistence.IPponRepository.PponRepositoryException;
-using static CO.CDP.EntityVerification.Tests.Ppon.PponFactories;
+using static CO.CDP.EntityVerification.Tests.Ppon.EventsFactories;
 
 namespace CO.CDP.EntityVerification.Tests.Persistence;
 
@@ -13,7 +14,7 @@ public class DatabasePponRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
     public async Task ItFindsSavedPpon()
     {
         using var repository = PponRepository();
-        var ppon = GivenPpon(pponId: "b69ffded365449f6aa4c340f5997fd2e");
+        var ppon = PponFactories.GivenPpon(pponId: "b69ffded365449f6aa4c340f5997fd2e");
 
         repository.Save(ppon);
 
@@ -28,8 +29,8 @@ public class DatabasePponRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
     public void ItRejectsAnAlreadyKnownPponId()
     {
         using var repository = PponRepository();
-        var ppon = GivenPpon(pponId: "d73c9fef3c8549e2b3999fa9ec0a5aea");
-        var anotherPpon = GivenPpon(pponId: "d73c9fef3c8549e2b3999fa9ec0a5aea");
+        var ppon = PponFactories.GivenPpon(pponId: "d73c9fef3c8549e2b3999fa9ec0a5aea");
+        var anotherPpon = PponFactories.GivenPpon(pponId: "d73c9fef3c8549e2b3999fa9ec0a5aea");
 
         repository.Save(ppon);
 

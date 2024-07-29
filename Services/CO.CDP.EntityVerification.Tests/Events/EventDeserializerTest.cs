@@ -1,5 +1,6 @@
 using System.Text.Json;
 using CO.CDP.EntityVerification.Events;
+using CO.CDP.EntityVerification.Tests.Ppon;
 using FluentAssertions;
 using static CO.CDP.EntityVerification.Events.EventDeserializer.EventDeserializerException;
 
@@ -10,7 +11,7 @@ public class EventDeserializerTest
     [Fact]
     public void ItDeserializesOrganisationRegisteredEvent()
     {
-        var organisationRegistered = GvienOrganisationRegisteredEvent();
+        var organisationRegistered = EventsFactories.GivenOrganisationRegisteredEvent();
         var serialized = JsonSerializer.Serialize(organisationRegistered);
 
         var deserialized = EventDeserializer.Deserializer("OrganisationRegistered", serialized);
@@ -21,7 +22,7 @@ public class EventDeserializerTest
     [Fact]
     public void ItDeserializesOrganisationUpdateEvent()
     {
-        var organisationUpdate = GvienOrganisationUpdatedEvent();
+        var organisationUpdate = EventsFactories.GivenOrganisationUpdatedEvent();
         var serialized = JsonSerializer.Serialize(organisationUpdate);
 
         var deserialized = EventDeserializer.Deserializer("OrganisationUpdated", serialized);
@@ -44,53 +45,4 @@ public class EventDeserializerTest
 
         action.Should().Throw<DeserializationFailedException>();
     }
-
-    private static OrganisationRegistered GvienOrganisationRegisteredEvent() =>
-        new()
-        {
-            Id = Guid.NewGuid(),
-            Name = "Acme Ltd",
-            Identifier = new Identifier
-            {
-                Id = "93433423432",
-                LegalName = "Acme Ltd",
-                Scheme = "GB-COH",
-                Uri = null
-            },
-            AdditionalIdentifiers =
-            [
-                new Identifier
-                {
-                    Id = "GB123123123",
-                    LegalName = "Acme Ltd",
-                    Scheme = "VAT",
-                    Uri = null
-                }
-            ],
-            Roles = ["supplier"]
-        };
-
-    private static OrganisationUpdated GvienOrganisationUpdatedEvent() =>
-        new()
-        {
-            PponId = "2e1230b94ced4fa9aac76895f122e9f0",
-            Identifier = new Identifier
-            {
-                Id = "93433423432",
-                LegalName = "Acme Ltd",
-                Scheme = "GB-COH",
-                Uri = null
-            },
-            AdditionalIdentifiers =
-            [
-                new Identifier
-                {
-                    Id = "GB123123123",
-                    LegalName = "Acme Ltd",
-                    Scheme = "VAT",
-                    Uri = null
-                }
-            ],
-            Roles = ["supplier"]
-        };
 }

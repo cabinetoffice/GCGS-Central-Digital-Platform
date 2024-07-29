@@ -1,6 +1,7 @@
 using CO.CDP.EntityVerification.Events;
+using CO.CDP.EntityVerification.Tests.Ppon;
 using FluentAssertions;
-using static CO.CDP.EntityVerification.Tests.Ppon.PponFactories;
+using static CO.CDP.EntityVerification.Tests.Ppon.EventsFactories;
 
 namespace CO.CDP.EntityVerification.Tests.Persistence;
 
@@ -22,7 +23,7 @@ public class IdentifierTests
                 Uri = new Uri("https://www.acme-org.com")
             }
         };
-        var newPpon = GivenPpon(pponId: "b69ffded365449f6aa4c340f5997fd2e");
+        var newPpon = PponFactories.GivenPpon(pponId: "b69ffded365449f6aa4c340f5997fd2e");
 
         // Act
         var result = EntityVerification.Persistence.Identifier.GetPersistenceIdentifiers(evIds);
@@ -42,7 +43,7 @@ public class IdentifierTests
                 Id = "GB123123123", LegalName = "Acme Ltd", Scheme = "GB-COH", Uri = new Uri("https://www.acme-org.com")
             }
         };
-        var newPpon = GivenPpon(pponId: "b69ffded365449f6aa4c340f5997fd2e");
+        var newPpon = PponFactories.GivenPpon(pponId: "b69ffded365449f6aa4c340f5997fd2e");
 
         // Act
         var result = EntityVerification.Persistence.Identifier.GetPersistenceIdentifiers(evIds);

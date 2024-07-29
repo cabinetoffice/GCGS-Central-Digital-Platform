@@ -1,7 +1,6 @@
 using CO.CDP.EntityVerification.Events;
 using CO.CDP.EntityVerification.Persistence;
 using CO.CDP.MQ;
-using static CO.CDP.EntityVerification.Ppon.OrganisationUpdatedSubscriber.OrganisationUpdatedException;
 
 namespace CO.CDP.EntityVerification.Ppon;
 
@@ -17,22 +16,23 @@ public class OrganisationUpdatedSubscriber(
 
     public async Task Handle(OrganisationUpdated @event)
     {
-        var pponToUpdate  = await pponRepository.FindPponByPponIdAsync(@event.PponId);
+        var pponIdentifier = @event.FindIdentifierByScheme(Events.Identifier.PponSchemeName);
 
-        if (pponToUpdate != null)
+        if (pponIdentifier != null)
         {
-            var identifiersToPersist = Persistence.Identifier.GetPersistenceIdentifiers(@event.AllIdentifiers());
+            var pponToUpdate = await pponRepository.FindPponByPponIdAsync(pponIdentifier.Id);
 
-            foreach (var identifier in identifiersToPersist)
+            if (pponToUpdate != null)
             {
-                pponToUpdate.Identifiers.Add(identifier);
-            }
+                var identifiersToPersist = Persistence.Identifier.GetPersistenceIdentifiers(@event.AllIdentifiers());
 
-            pponRepository.Save(pponToUpdate);
-        }
-        else
-        {
-            throw new NotFoundPponException($"Not found Ppon for id: {@event.PponId}");
+                foreach (var identifier in identifiersToPersist)
+                {
+                    pponToUpdate.Identifiers.Add(identifier);
+                }
+
+                pponRepository.Save(pponToUpdate);
+            }
         }
     }
 }
