@@ -1,8 +1,8 @@
 resource "aws_route53_record" "ecs_alb" {
-  for_each = toset(local.services)
+  for_each = local.service_configs
 
   zone_id = var.public_hosted_zone_id
-  name    = each.value
+  name    = each.value.name
   type    = "CNAME"
   ttl     = 60
 
