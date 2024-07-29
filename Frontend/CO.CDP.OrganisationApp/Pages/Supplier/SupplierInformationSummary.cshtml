@@ -14,8 +14,8 @@
         };
     }
 
-    var basicInformationLink = $"/organisation/{Model.Id}/supplier-information/{(Model.HasSupplierType ? "basic-information" : "individual-or-org")}";
-    var connectedEntityLink = $"/organisation/{Model.Id}/supplier-information/connected-person/declaration";
+    var basicInformationLink = $"/organisation/{Model.Id}/supplier-information/{(Model.HasSupplierType ? "basic-information" : "individual-or-org")}";    
+    var connectedEntityLink = $"/organisation/{Model.Id}/supplier-information/connected-person/{(Model.ConnectedEntities.Count > 0 ? "connected-person-summary" : "declaration")}";
 
     string NoOfConnectedPersonText()
     {

@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 namespace CO.CDP.OrganisationApp.Pages.Supplier;
 
 [Authorize]
-public class ConnectedEntityCheckAnswersOrganisationModel(
+public class ConnectedEntityCheckAnswersIndividualOrTrustModel(
     ISession session,
     IOrganisationClient organisationClient) : PageModel
 {
@@ -30,7 +30,7 @@ public class ConnectedEntityCheckAnswersOrganisationModel(
         if (!valid)
         {
             return RedirectToPage(ConnectedEntityId.HasValue ?
-                "ConnectedEntityCheckAnswersOrganisation" : "ConnectedEntitySupplierCompanyQuestion", new { Id, ConnectedEntityId });
+                "ConnectedEntityCheckAnswersIndividualOrTrust" : "ConnectedEntitySupplierCompanyQuestion", new { Id, ConnectedEntityId });
         }
 
         InitModal(state);
@@ -92,20 +92,8 @@ public class ConnectedEntityCheckAnswersOrganisationModel(
         CreateConnectedOrganisation? connectedOrganisation = null;
         CreateConnectedIndividualTrust? connectedIndividualTrust = null;
 
-        if (state.ConnectedEntityType == Constants.ConnectedEntityType.Organisation)
-        {
-            connectedOrganisation = new CreateConnectedOrganisation
-            (
-                category: state.ConnectedEntityOrganisationCategoryType!.Value.AsApiClientConnectedEntityOrganisationCategoryType(),
-                controlCondition: state.ControlConditions.AsApiClientControlConditionList(),
-                insolvencyDate: state.InsolvencyDate,
-                lawRegistered: state.LawRegistered,
-                name: state.OrganisationName,
-                organisationId: null,
-                registeredLegalForm: state.LegalForm
-            );
-        }
-        else
+        if (state.ConnectedEntityType == Constants.ConnectedEntityType.Individual ||
+            state.ConnectedEntityType == Constants.ConnectedEntityType.TrustOrTrustee)
         {
             connectedIndividualTrust = new CreateConnectedIndividualTrust
             (
@@ -113,10 +101,10 @@ public class ConnectedEntityCheckAnswersOrganisationModel(
                 connectedType: (state.ConnectedEntityType == Constants.ConnectedEntityType.Individual
                                     ? ConnectedPersonType.Individual : ConnectedPersonType.TrustOrTrustee),
                 controlCondition: state.ControlConditions.AsApiClientControlConditionList(),
-                dateOfBirth: null,
-                firstName: "",
-                lastName: "",
-                nationality: "",
+                dateOfBirth: (state.DateOfBirth.HasValue ? state.DateOfBirth.Value : null),
+                firstName: state.FirstName,
+                lastName: state.LastName,
+                nationality: state.Nationality,
                 personId: null
             );
         }
@@ -139,11 +127,11 @@ public class ConnectedEntityCheckAnswersOrganisationModel(
             companyHouseNumber: state.CompaniesHouseNumber,
             endDate: null,
             entityType: state.ConnectedEntityType!.Value.AsApiClientConnectedEntityType(),
-            hasCompnayHouseNumber: state.SupplierHasCompanyHouseNumber!.Value,
+            hasCompnayHouseNumber: (state.HasCompaniesHouseNumber ?? false),
             individualOrTrust: connectedIndividualTrust,
             organisation: connectedOrganisation,
-            overseasCompanyNumber: "",
-            registeredDate: state.RegistrationDate!.Value,
+            overseasCompanyNumber: state.OscCompaniesHouseNumber,
+            registeredDate: (state.RegistrationDate.HasValue ? state.RegistrationDate.Value : null),
             registerName: state.RegisterName,
             startDate: null
         );
@@ -163,6 +151,7 @@ public class ConnectedEntityCheckAnswersOrganisationModel(
             type: addressType);
 
     }
+
     private (bool valid, ConnectedEntityState state) ValidatePage()
     {
         var cp = session.Get<ConnectedEntityState>(Session.ConnectedPersonKey);

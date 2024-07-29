@@ -72,7 +72,7 @@ public class ConnectedEntityQuestionTest
     public async Task OnPost_ShouldReturnPageResult_WhenSessionStateIsInvalid()
     {
         _model.Id = Guid.NewGuid();
-        
+
         _sessionMock
             .Setup(s => s.Get<ConnectedEntityState>(Session.ConnectedPersonKey))
             .Returns((ConnectedEntityState?)null);
@@ -131,7 +131,7 @@ public class ConnectedEntityQuestionTest
 
         _mockOrganisationClient.Setup(client => client.GetOrganisationAsync(_model.Id))
            .ReturnsAsync(OrganisationClientModel(_model.Id));
-                
+
         _mockOrganisationClient.Setup(client => client.GetConnectedEntitiesAsync(_model.Id))
            .ReturnsAsync(new List<ConnectedEntityLookup>());
 
@@ -148,8 +148,8 @@ public class ConnectedEntityQuestionTest
 
     private static List<ConnectedEntityLookup> ConnectedEntities =>
     [
-         new(Guid.NewGuid(), "e1",It.IsAny<Uri>()),
-         new(Guid.NewGuid(), "e2",It.IsAny<Uri>()),
+         new(Guid.NewGuid(), ConnectedEntityType.Organisation, "e1", It.IsAny<Uri>()),
+         new(Guid.NewGuid(), ConnectedEntityType.Organisation, "e2", It.IsAny<Uri>()),
     ];
 
     private static SupplierInformation SupplierInformationClientModel => new(
