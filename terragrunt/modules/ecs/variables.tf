@@ -72,6 +72,26 @@ variable "public_subnets_cidr_blocks" {
   type        = list(string)
 }
 
+variable "queue_entity_verification_queue_arn" {
+  description = "ARN of the Entity Verification's SQS queue"
+  type        = string
+}
+
+variable "queue_entity_verification_queue_url" {
+  description = "URL of the Entity Verification's SQS queue"
+  type        = string
+}
+
+variable "queue_organisation_queue_arn" {
+  description = "ARN of the Organisation's SQS queue"
+  type        = string
+}
+
+variable "queue_organisation_queue_url" {
+  description = "URL of the Organisation's outbound SQS queue"
+  type        = string
+}
+
 variable "role_cloudwatch_events_arn" {
   description = "ARN of the IAM role used by CloudWatch Events"
   type        = string
@@ -87,6 +107,11 @@ variable "role_ecs_task_arn" {
   type        = string
 }
 
+variable "role_ecs_task_name" {
+  description = "Task IAM role Name"
+  type        = string
+}
+
 variable "role_ecs_task_exec_arn" {
   description = "Task execution IAM role ARN"
   type        = string
@@ -97,16 +122,6 @@ variable "role_ecs_task_exec_name" {
   type        = string
 }
 
-variable "role_terraform_arn" {
-  description = "Terraform IAM role ARN"
-  type        = string
-}
-
-variable "role_terraform_name" {
-  description = "Terraform IAM role name"
-  type        = string
-}
-
 variable "role_service_deployer_step_function_arn" {
   description = "ARN of the IAM role used by the Service Deployer Step Function"
   type        = string
@@ -114,6 +129,16 @@ variable "role_service_deployer_step_function_arn" {
 
 variable "role_service_deployer_step_function_name" {
   description = "Name of the IAM role used by the Service Deployer Step Function"
+  type        = string
+}
+
+variable "role_terraform_arn" {
+  description = "Terraform IAM role ARN"
+  type        = string
+}
+
+variable "role_terraform_name" {
+  description = "Terraform IAM role name"
   type        = string
 }
 
