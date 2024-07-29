@@ -75,7 +75,10 @@ data "aws_iam_policy_document" "ecs_task_access_queue" {
 data "aws_iam_policy_document" "cloudwatch_event_invoke_deployer_step_function" {
   statement {
     actions   = ["states:StartExecution"]
-    resources = concat([for sm in aws_sfn_state_machine.ecs_force_deploy : sm.arn], [aws_sfn_state_machine.ecs_run_migration.arn])
+    resources = concat(
+      [for fd in aws_sfn_state_machine.ecs_force_deploy : fd.arn],
+      [for rm in aws_sfn_state_machine.ecs_run_migration : rm.arn]
+    )
   }
 }
 
@@ -83,7 +86,7 @@ data "aws_iam_policy_document" "step_function_manage_services" {
   statement {
     actions = ["ecs:UpdateService"]
     resources = [
-      for service in local.services :
+      for service, config in local.service_configs :
       "arn:aws:ecs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:service/${aws_ecs_cluster.this.name}/${service}"
     ]
     sid = "MangeECSService"

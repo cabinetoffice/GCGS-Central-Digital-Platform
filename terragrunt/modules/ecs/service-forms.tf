@@ -6,6 +6,7 @@ module "ecs_service_forms" {
     {
       container_port          = var.service_configs.forms.port
       cpu                     = var.service_configs.forms.cpu
+      conn_string_location    = var.db_connection_secret_arn
       environment             = local.service_environment
       host_port               = var.service_configs.forms.port
       image                   = "${local.ecr_urls[var.service_configs.forms.name]}:${local.orchestrator_service_version}"
