@@ -88,9 +88,6 @@ public record OrganisationAddress
     [Required(AllowEmptyStrings = false)]
     public required string StreetAddress { get; init; }
 
-    /// <example>"Green Tower"</example>
-    public string? StreetAddress2 { get; init; }
-
     /// <example>"CHESTER"</example>
     [Required(AllowEmptyStrings = false)]
     public required string Locality { get; init; }
@@ -212,6 +209,7 @@ public record ConnectedEntityLookup
     public required string Name { get; init; }
     public required Guid EntityId { get; init; }
     public required Uri Uri { get; init; }
+    public required ConnectedEntityType EntityType { get; init; }
 }
 
 public record DeleteConnectedEntity
@@ -287,7 +285,6 @@ public static class MappingExtensions
         {
             Type = command.Type,
             StreetAddress = command.StreetAddress,
-            StreetAddress2 = command.StreetAddress2,
             Locality = command.Locality,
             Region = command.Region,
             PostalCode = command.PostalCode,

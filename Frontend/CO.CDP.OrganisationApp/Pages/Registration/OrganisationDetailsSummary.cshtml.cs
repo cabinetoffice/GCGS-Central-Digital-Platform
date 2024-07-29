@@ -82,7 +82,6 @@ public class OrganisationDetailsSummaryModel(
             addresses: [new OrganisationAddress(
                 type: Constants.AddressType.Registered.AsApiClientAddressType(),
                 streetAddress: details.OrganisationAddressLine1,
-                streetAddress2: details.OrganisationAddressLine2,
                 locality: details.OrganisationCityOrTown,
                 region: details.OrganisationRegion,
                 countryName: details.OrganisationCountry,

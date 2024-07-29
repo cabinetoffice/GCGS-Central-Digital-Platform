@@ -65,7 +65,6 @@ public class SupplierAddressModel(IOrganisationClient organisationClient) : Page
             ICollection<OrganisationAddress> addresses = [
                             new OrganisationAddress(
                             streetAddress: Address.AddressLine1,
-                            streetAddress2: null,
                             postalCode: Address.Postcode,
                             locality: Address.TownOrCity,
                             countryName: Address.Country,

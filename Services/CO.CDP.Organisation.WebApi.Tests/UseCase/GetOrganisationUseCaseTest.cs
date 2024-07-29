@@ -59,7 +59,6 @@ public class GetOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IClas
                 Address = new Address
                 {
                     StreetAddress = "1234 Test St",
-                    StreetAddress2 = "Green Tower",
                     Locality = "Test City",
                     PostalCode = "12345",
                     CountryName = "Testland",
@@ -104,7 +103,6 @@ public class GetOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IClas
             {
                 Type = AddressType.Registered,
                 StreetAddress = "1234 Test St",
-                StreetAddress2 = "Green Tower",
                 Locality = "Test City",
                 PostalCode = "12345",
                 CountryName = "Testland",
