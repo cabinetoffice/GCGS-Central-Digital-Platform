@@ -3,6 +3,8 @@ using CO.CDP.OrganisationInformation;
 
 namespace CO.CDP.Organisation.WebApi.Tests.UseCase.Extensions;
 
+using Events = WebApi.Events;
+
 internal static class EventMappingExtensions
 {
     internal static Events.Identifier AsEventValue(this OrganisationIdentifier command) => new()
