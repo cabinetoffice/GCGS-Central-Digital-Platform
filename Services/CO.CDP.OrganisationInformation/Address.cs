@@ -8,9 +8,6 @@ public record Address
     /// <example>"82 St. John’s Road"</example>
     public required string StreetAddress { get; init; }
 
-    /// <example>"Green Tower"</example>
-    public string? StreetAddress2 { get; init; }
-
     /// <example>"CHESTER"</example>
     public required string Locality { get; init; }
 

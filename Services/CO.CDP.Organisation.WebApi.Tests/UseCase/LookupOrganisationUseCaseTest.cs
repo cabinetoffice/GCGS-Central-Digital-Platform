@@ -121,7 +121,6 @@ public class LookupOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
                 Type = AddressType.Registered,
                 Address = new Address{
                     StreetAddress = "1234 Test St",
-                    StreetAddress2 = "",
                     Locality = "Test City",
                     PostalCode = "12345",
                     CountryName = "Testland",
@@ -167,7 +166,6 @@ public class LookupOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
             {
                 Type = AddressType.Registered,
                 StreetAddress = "1234 Test St",
-                StreetAddress2 = "",
                 Locality = "Test City",
                 PostalCode = "12345",
                 CountryName = "Testland",

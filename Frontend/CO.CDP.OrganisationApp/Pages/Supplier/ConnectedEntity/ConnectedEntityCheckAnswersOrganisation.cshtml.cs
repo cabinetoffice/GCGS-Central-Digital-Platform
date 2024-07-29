@@ -159,7 +159,6 @@ public class ConnectedEntityCheckAnswersOrganisationModel(
             postalCode: addressDetails.Postcode,
             region: null,
             streetAddress: addressDetails.AddressLine1,
-            streetAddress2: null,
             type: addressType);
 
     }

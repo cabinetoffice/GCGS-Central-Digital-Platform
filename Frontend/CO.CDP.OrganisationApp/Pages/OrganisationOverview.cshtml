@@ -64,10 +64,6 @@
                             </dt>
                             <dd class="govuk-summary-list__value">
                                 <p class="govuk-body">@registeredAddress.StreetAddress</p>
-                                @if (!string.IsNullOrWhiteSpace(registeredAddress.StreetAddress2))
-                                {
-                                    <p class="govuk-body">@registeredAddress.StreetAddress2</p>
-                                }
                                 <p class="govuk-body">@registeredAddress.Locality</p>
                                 @if (!string.IsNullOrWhiteSpace(registeredAddress.Region))
                                 {
