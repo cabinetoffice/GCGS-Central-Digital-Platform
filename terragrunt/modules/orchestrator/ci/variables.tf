@@ -58,6 +58,11 @@ variable "product" {
   })
 }
 
+variable "repository_urls" {
+  description = "Map of all ECR and their URLs"
+  type        = map(string)
+}
+
 variable "role_cloudwatch_events_arn" {
   description = "ARN of the IAM role used by CloudWatch Events"
   type        = string

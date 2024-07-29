@@ -297,7 +297,7 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
 
         await UseCase.Execute(command);
 
-        _publisher.Verify(p => p.Publish(It.IsAny<OrganisationRegistered>()));
+        _publisher.Verify(p => p.Publish(It.IsAny<OrganisationRegistered>()), Times.Once);
         _publisher.Invocations[0].Arguments[0].Should().BeEquivalentTo(new OrganisationRegistered
         {
             Id = _generatedGuid.ToString(),

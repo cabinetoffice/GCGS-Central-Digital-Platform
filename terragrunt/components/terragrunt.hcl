@@ -196,7 +196,9 @@ locals {
 
     terraform_operators = [
         "arn:aws:iam::525593800265:user/ali.bahman@goaco.com",
-        "arn:aws:iam::525593800265:user/jakub.zalas@goaco.com"
+        "arn:aws:iam::525593800265:user/dorian.stefan@goaco.com",
+        "arn:aws:iam::525593800265:user/jakub.zalas@goaco.com",
+        "arn:aws:iam::525593800265:user/richard.rees@goaco.com",
     ]
 
     tg = {
