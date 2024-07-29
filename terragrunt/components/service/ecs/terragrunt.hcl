@@ -7,7 +7,7 @@ include {
 }
 
 locals {
-  global_vars  = read_terragrunt_config(find_in_parent_folders("terragrunt.hcl"))
+  global_vars = read_terragrunt_config(find_in_parent_folders("terragrunt.hcl"))
   service_vars = read_terragrunt_config(find_in_parent_folders("service.hcl"))
 
   tags = merge(
@@ -26,6 +26,7 @@ dependency core_iam {
     cloudwatch_events_arn               = "mock"
     cloudwatch_events_name              = "mock"
     ecs_task_arn                        = "mock"
+    ecs_task_name                       = "mock"
     ecs_task_exec_arn                   = "mock"
     ecs_task_exec_name                  = "mock"
     service_deployer_step_function_arn  = "mock"
@@ -76,6 +77,16 @@ dependency service_database {
   }
 }
 
+dependency service_queue {
+  config_path = "../../service/queue"
+  mock_outputs = {
+    entity_verification_queue_arn = "mock"
+    entity_verification_queue_url = "mock"
+    organisation_queue_arn        = "mock"
+    organisation_queue_url        = "mock"
+  }
+}
+
 inputs = {
 
   account_ids     = local.global_vars.locals.account_ids
@@ -85,6 +96,7 @@ inputs = {
   role_cloudwatch_events_arn               = dependency.core_iam.outputs.cloudwatch_events_arn
   role_cloudwatch_events_name              = dependency.core_iam.outputs.cloudwatch_events_name
   role_ecs_task_arn                        = dependency.core_iam.outputs.ecs_task_arn
+  role_ecs_task_name                       = dependency.core_iam.outputs.ecs_task_name
   role_ecs_task_exec_arn                   = dependency.core_iam.outputs.ecs_task_exec_arn
   role_ecs_task_exec_name                  = dependency.core_iam.outputs.ecs_task_exec_name
   role_service_deployer_step_function_arn  = dependency.core_iam.outputs.service_deployer_step_function_arn
@@ -116,4 +128,8 @@ inputs = {
   db_connection_secret_arn = dependency.service_database.outputs.db_connection_secret_arn
   db_kms_arn               = dependency.service_database.outputs.db_kms_arn
 
+  queue_entity_verification_queue_arn  = dependency.service_queue.outputs.entity_verification_queue_arn
+  queue_entity_verification_queue_url  = dependency.service_queue.outputs.entity_verification_queue_url
+  queue_organisation_queue_arn = dependency.service_queue.outputs.organisation_queue_arn
+  queue_organisation_queue_url = dependency.service_queue.outputs.organisation_queue_url
 }

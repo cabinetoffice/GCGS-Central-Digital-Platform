@@ -27,8 +27,8 @@ public enum SubmissionState
 public class FormAnswer : IEntityDate
 {
     public int Id { get; set; }
-    public required FormQuestion Question { get; init; }
-    public required FormAnswerSet FormAnswerSet { get; init; }
+    public required FormQuestion Question { get; set; }
+    public required FormAnswerSet FormAnswerSet { get; set; }
     public bool? BoolValue { get; init; } = null;
     public double? NumericValue { get; init; } = null;
     public DateTime? DateValue { get; init; } = null;
@@ -50,8 +50,8 @@ public class FormAnswerSet : IEntityDate
     public required Organisation Organisation { get; set; }
 
     public required FormSection Section { get; init; }
-    public required ICollection<FormAnswer> Answers { get; init; }
-    public required bool Deleted { get; set; }
+    public required ICollection<FormAnswer> Answers { get; set; }
+    public bool Deleted { get; set; } = false;
     public DateTimeOffset CreatedOn { get; set; }
     public DateTimeOffset UpdatedOn { get; set; }
 }

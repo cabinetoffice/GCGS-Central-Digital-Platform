@@ -1,11 +1,17 @@
 using AutoMapper;
+using CO.CDP.MQ;
+using CO.CDP.Organisation.WebApi.Events;
 using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.OrganisationInformation.Persistence;
+using Address = CO.CDP.OrganisationInformation.Persistence.Address;
 
 namespace CO.CDP.Organisation.WebApi.UseCase;
 
-public class UpdateOrganisationUseCase(IOrganisationRepository organisationRepository, IMapper mapper)
-            : IUseCase<(Guid organisationId, UpdateOrganisation updateOrganisation), bool>
+public class UpdateOrganisationUseCase(
+    IOrganisationRepository organisationRepository,
+    IPublisher publisher,
+    IMapper mapper
+) : IUseCase<(Guid organisationId, UpdateOrganisation updateOrganisation), bool>
 {
     public async Task<bool> Execute((Guid organisationId, UpdateOrganisation updateOrganisation) command)
     {
@@ -105,6 +111,7 @@ public class UpdateOrganisationUseCase(IOrganisationRepository organisationRepos
 
         organisation.UpdateSupplierInformation();
         organisationRepository.Save(organisation);
+        await publisher.Publish(mapper.Map<OrganisationUpdated>(organisation));
 
         return await Task.FromResult(true);
     }

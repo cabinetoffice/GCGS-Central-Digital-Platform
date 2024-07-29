@@ -1,8 +1,9 @@
-using CO.CDP.MQ;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
-namespace CO.CDP.EntityVerification.MQ;
+namespace CO.CDP.MQ.Hosting;
 
-public class QueueBackgroundService(IServiceProvider services) : BackgroundService
+public class DispatcherBackgroundService(IServiceProvider services) : BackgroundService
 {
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {

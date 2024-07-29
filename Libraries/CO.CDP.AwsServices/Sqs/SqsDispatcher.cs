@@ -91,6 +91,5 @@ public class SqsDispatcher(
 
     public void Dispose()
     {
-        sqsClient.Dispose();
     }
 }

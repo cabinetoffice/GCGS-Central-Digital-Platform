@@ -36,6 +36,11 @@ variable "receive_wait_time_seconds" {
   default     = 0
 }
 
+variable "role_ecs_task_arn" {
+  description = "Task IAM role ARN"
+  type        = string
+}
+
 variable "tags" {
   description = "Tags to apply to all resources in this module"
   type        = map(string)
