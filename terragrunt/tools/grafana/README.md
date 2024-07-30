@@ -18,6 +18,7 @@ docker build -t cabinetoffice/cdp-grafana .
 There is ECR repositories in orchestrator account. Using the following commands, we can push the built image.
 
 ```shell
+aws-switch-to-cdp-sirsi-orchestrator-goaco-terraform
 ACCOUNT_ID=$(ave aws sts get-caller-identity | jq -r '.Account')
 ave aws ecr get-login-password --region eu-west-2 | docker login --username AWS --password-stdin ${ACCOUNT_ID}.dkr.ecr.eu-west-2.amazonaws.com
 docker tag cabinetoffice/cdp-grafana:latest ${ACCOUNT_ID}.dkr.ecr.eu-west-2.amazonaws.com/cdp-grafana:latest

@@ -128,8 +128,8 @@ inputs = {
   db_connection_secret_arn = dependency.service_database.outputs.db_connection_secret_arn
   db_kms_arn               = dependency.service_database.outputs.db_kms_arn
 
-  queue_entity_verification_queue_arn  = dependency.service_queue.outputs.entity_verification_queue_arn
-  queue_entity_verification_queue_url  = dependency.service_queue.outputs.entity_verification_queue_url
-  queue_organisation_queue_arn = dependency.service_queue.outputs.organisation_queue_arn
-  queue_organisation_queue_url = dependency.service_queue.outputs.organisation_queue_url
+  queue_entity_verification_queue_arn = dependency.service_queue.outputs.entity_verification_queue_arn
+  queue_entity_verification_queue_url = dependency.service_queue.outputs.entity_verification_queue_url
+  queue_organisation_queue_arn        = dependency.service_queue.outputs.organisation_queue_arn
+  queue_organisation_queue_url        = dependency.service_queue.outputs.organisation_queue_url
 }
