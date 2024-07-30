@@ -98,6 +98,34 @@ public class AssignIdentifierUseCaseTest
         result.Should().BeTrue();
     }
 
+    [Fact]
+    public async Task ItThrowsAnExceptionIfIdentifierIsAlreadyAssigned()
+    {
+        var organisation = GivenOrganisationExist(
+            organisationId: Guid.NewGuid(),
+            identifiers:
+            [
+                new Persistence.Organisation.Identifier
+                {
+                    Primary = true,
+                    Scheme = "CDP-PPON",
+                    IdentifierId = "c0777aeb968b4113a27d94e55b10c1b4",
+                    LegalName = "Acme Ltd"
+                }
+            ]);
+
+        await UseCase.Invoking(u => u.Execute(new AssignOrganisationIdentifier
+        {
+            OrganisationId = organisation.Guid,
+            Identifier = new OrganisationIdentifier
+            {
+                Id = "c0777aeb968b4113a27d94e55b10c1b4",
+                Scheme = "CDP-PPON",
+                LegalName = "Acme Ltd"
+            }
+        })).Should().ThrowAsync<IdentifierAlreadyAssigned>();
+    }
+
     private Persistence.Organisation GivenOrganisationExist(
         Guid organisationId,
         List<Persistence.Organisation.Identifier>? identifiers = null)
