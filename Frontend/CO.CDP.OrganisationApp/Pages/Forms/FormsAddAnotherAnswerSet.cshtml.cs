@@ -1,5 +1,4 @@
 using CO.CDP.Forms.WebApiClient;
-using CO.CDP.Mvc.Validation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -125,9 +124,7 @@ public class FormsAddAnotherAnswerSetModel(
         }
 
         FormAnswerSets = GetAnswers(form);
-        // TODO : change when API response is fixed
-        //AllowsMultipleAnswerSets = response.Section.AllowsMultipleAnswerSets;
-        AllowsMultipleAnswerSets = true;
+        AllowsMultipleAnswerSets = form.Section.AllowsMultipleAnswerSets;
         AddAnotherAnswerLabel = form.Section.Configuration.AddAnotherAnswerLabel;
         Heading = form.Section.Configuration.SingularSummaryHeading;
 
