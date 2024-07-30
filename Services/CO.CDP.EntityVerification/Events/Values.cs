@@ -1,7 +1,12 @@
 namespace CO.CDP.EntityVerification.Events;
 
-public record Identifier
+public class IdentifierSchemes
 {
+    public const string Ppon = "CDP-PPON";
+}
+
+public record Identifier
+{ 
     /// <example>"CDP-PPON"</example>
     public required string Scheme { get; init; }
 

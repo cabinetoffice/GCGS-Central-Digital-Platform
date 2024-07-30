@@ -3,6 +3,7 @@ using CO.CDP.EntityVerification.Persistence;
 using CO.CDP.EntityVerification.Ppon;
 using CO.CDP.MQ;
 using Moq;
+using static CO.CDP.EntityVerification.Tests.Events.EventsFactories;
 
 namespace CO.CDP.EntityVerification.Tests.Ppon;
 
@@ -19,7 +20,8 @@ public class OrganisationRegisteredSubscriberTests
         pponService.Setup(x => x.GeneratePponId()).Returns(generatedPpon);
 
         var handler = new OrganisationRegisteredSubscriber(pponService.Object, pponRepository.Object, publisher.Object);
-        var @event = GivenOrganisationRegisteredEvent();
+        var orgId = Guid.NewGuid();
+        var @event = GivenOrganisationRegisteredEvent(orgId);
 
         await handler.Handle(@event);
 
@@ -32,37 +34,8 @@ public class OrganisationRegisteredSubscriberTests
                s => s.Publish(It.Is<PponGenerated>(e =>
                 (e.Id == generatedPpon) &&
                 (e.Scheme == "CDP-PPON") &&
-                (e.LegalName == @event.Identifier.LegalName))),
+                (e.LegalName == @event.Identifier.LegalName) &&
+                (e.OrganisationId == orgId))),
             Times.Once);
-    }
-
-    private static OrganisationRegistered GivenOrganisationRegisteredEvent(
-        Guid? id = null,
-        string name = "Acme Ltd"
-    )
-    {
-        return new OrganisationRegistered
-        {
-            Id = id ?? Guid.NewGuid(),
-            Name = name,
-            Identifier = new EntityVerification.Events.Identifier
-            {
-                Id = "93433423432",
-                LegalName = name,
-                Scheme = "GB-COH",
-                Uri = null
-            },
-            AdditionalIdentifiers =
-            [
-                new EntityVerification.Events.Identifier
-                {
-                    Id = "GB123123123",
-                    LegalName = name,
-                    Scheme = "VAT",
-                    Uri = null
-                }
-            ],
-            Roles = ["supplier"]
-        };
     }
 }
