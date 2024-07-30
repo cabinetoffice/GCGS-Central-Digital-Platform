@@ -13,7 +13,7 @@ public class ConnectedEntityState
     public string? OrganisationName { get; set; }
     public Address? RegisteredAddress { get; set; }
     public Address? PostalAddress { get; set; }
-    public string? LegalForm {  get; set; }
+    public string? LegalForm { get; set; }
     public string? LawRegistered { get; set; }
     public bool? HasCompaniesHouseNumber { get; set; }
     public string? CompaniesHouseNumber { get; set; }

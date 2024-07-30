@@ -87,17 +87,17 @@ public class RegisterConnectedEntityUseCaseTest(AutoMapperFixture mapperFixture)
             Name = "TheOrganisation",
             Guid = organisationId,
             Addresses = [new Persistence.Organisation.OrganisationAddress
+            {
+                Type = AddressType.Registered,
+                Address = new Persistence.Address
                 {
-                    Type = AddressType.Registered,
-                    Address = new Persistence.Address
-                    {
-                        StreetAddress = "1234 Example St",
-                        Locality = "Example City",
-                        Region = "Test Region",
-                        PostalCode = "12345",
-                        CountryName = "Exampleland"
-                    }
-                }],
+                    StreetAddress = "1234 Example St",
+                    Locality = "Example City",
+                    Region = "Test Region",
+                    PostalCode = "12345",
+                    CountryName = "Exampleland"
+                }
+            }],
             Tenant = It.IsAny<Tenant>(),
             SupplierInfo = new Persistence.Organisation.SupplierInformation()
         };

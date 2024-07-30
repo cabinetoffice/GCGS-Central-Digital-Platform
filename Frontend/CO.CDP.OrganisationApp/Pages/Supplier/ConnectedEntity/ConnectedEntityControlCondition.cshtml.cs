@@ -167,7 +167,7 @@ public class ConnectedEntityControlConditionModel(ISession session) : PageModel
                 {
                     case ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndividual:
                     case ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndividualWithSignificantInfluenceOrControlForIndividual:
-                        backPage = $"{AddressType.Registered}-address/{(state.RegisteredAddress?.Country == Country.UnitedKingdom ? "uk" : "non-uk")}/{ConnectedEntityId}";                        
+                        backPage = $"{AddressType.Registered}-address/{(state.RegisteredAddress?.Country == Country.UnitedKingdom ? "uk" : "non-uk")}/{ConnectedEntityId}";
                         break;
                 }
                 break;
@@ -186,8 +186,6 @@ public class ConnectedEntityControlConditionModel(ISession session) : PageModel
                 }
                 break;
         }
-
         return backPage;
     }
-
 }

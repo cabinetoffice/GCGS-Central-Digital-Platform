@@ -3,6 +3,7 @@ using System;
 using CO.CDP.OrganisationInformation.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CO.CDP.OrganisationInformation.Persistence.Migrations
 {
     [DbContext(typeof(OrganisationInformationContext))]
-    partial class OrganisationInformationContextModelSnapshot : ModelSnapshot
+    [Migration("20240729135311_FormAnswerGuid")]
+    partial class FormAnswerGuid
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -65,6 +68,10 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("street_address");
+
+                    b.Property<string>("StreetAddress2")
+                        .HasColumnType("text")
+                        .HasColumnName("street_address2");
 
                     b.Property<DateTimeOffset>("UpdatedOn")
                         .ValueGeneratedOnAdd()
@@ -895,10 +902,6 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                             b1.Property<Guid?>("PersonId")
                                 .HasColumnType("uuid")
                                 .HasColumnName("person_id");
-
-                            b1.Property<string>("ResidentCountry")
-                                .HasColumnType("text")
-                                .HasColumnName("resident_country");
 
                             b1.Property<DateTimeOffset>("UpdatedOn")
                                 .ValueGeneratedOnAdd()

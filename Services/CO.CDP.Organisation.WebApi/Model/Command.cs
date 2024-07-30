@@ -191,6 +191,7 @@ public record CreateConnectedIndividualTrust
     public ICollection<ControlCondition> ControlCondition { get; set; } = [];
     public ConnectedPersonType ConnectedType { get; set; }
     public Guid? PersonId { get; set; }
+    public string? ResidentCountry { get; set; }
 }
 
 public record CreateConnectedOrganisation

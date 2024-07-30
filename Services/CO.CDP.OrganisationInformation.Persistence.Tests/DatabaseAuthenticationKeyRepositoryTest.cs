@@ -16,6 +16,7 @@ public class DatabaseAuthenticationKeyRepositoryTest(PostgreSqlFixture postgreSq
 
         var found = await repository.Find(authenticationKey.Key);
         found.As<AuthenticationKey>().Id.Should().BePositive();
+        found.As<AuthenticationKey>().OrganisationId.Should().BePositive();
     }
 
     [Fact]

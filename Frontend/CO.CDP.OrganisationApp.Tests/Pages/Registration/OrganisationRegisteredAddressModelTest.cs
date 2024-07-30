@@ -196,6 +196,6 @@ public class OrganisationRegisteredAddressModelTest
 
     private OrganisationRegisteredAddressModel GivenOrganisationAddressModel()
     {
-        return new OrganisationRegisteredAddressModel(sessionMock.Object) { Address = new()};
+        return new OrganisationRegisteredAddressModel(sessionMock.Object) { Address = new() };
     }
 }

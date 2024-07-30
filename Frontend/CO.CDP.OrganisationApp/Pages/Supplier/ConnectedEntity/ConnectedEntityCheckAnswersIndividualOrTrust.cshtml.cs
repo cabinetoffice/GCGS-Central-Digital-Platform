@@ -24,6 +24,8 @@ public class ConnectedEntityCheckAnswersIndividualOrTrustModel(
 
     public ConnectedEntityState? ConnectedEntityDetails { get; set; }
 
+    [BindProperty]
+    public string? BackPageLink { get; set; }
     public async Task<IActionResult> OnGet()
     {
         var (valid, state) = ValidatePage();
@@ -85,6 +87,40 @@ public class ConnectedEntityCheckAnswersIndividualOrTrustModel(
     {
         Caption = state.GetCaption();
         Heading = $"Check your answers";
+        BackPageLink = GetBackLinkPageName(state);
+    }
+    private string GetBackLinkPageName(ConnectedEntityState state)
+    {
+        var backPage = "";
+        switch (state.ConnectedEntityType)
+        {
+            case Constants.ConnectedEntityType.Individual:
+                switch (state.ConnectedEntityIndividualAndTrustCategoryType)
+                {
+                    case ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndividual:
+                    case ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndividualWithSignificantInfluenceOrControlForIndividual:
+                        backPage = $"date-registered/{ConnectedEntityId}";
+                        break;
+                    case ConnectedEntityIndividualAndTrustCategoryType.DirectorOrIndividualWithTheSameResponsibilitiesForIndividual:
+                        backPage = $"{Constants.AddressType.Registered}-address/{(state.RegisteredAddress?.Country == Country.UnitedKingdom ? "uk" : "non-uk")}/{ConnectedEntityId}";
+                        break;
+                }
+                break;
+            case Constants.ConnectedEntityType.TrustOrTrustee:
+                switch (state.ConnectedEntityIndividualAndTrustCategoryType)
+                {
+                    case ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForTrust:
+                    case ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndividualWithSignificantInfluenceOrControlForTrust:
+                        backPage = $"date-registered/{ConnectedEntityId}";
+                        break;
+                    case ConnectedEntityIndividualAndTrustCategoryType.DirectorOrIndividualWithTheSameResponsibilitiesForTrust:
+                        backPage = $"{Constants.AddressType.Registered}-address/{(state.RegisteredAddress?.Country == Country.UnitedKingdom ? "uk" : "non-uk")}/{ConnectedEntityId}";
+                        break;
+                }
+                break;
+        }
+
+        return backPage;
     }
 
     private RegisterConnectedEntity? RegisterConnectedEntityPayload(ConnectedEntityState state)
@@ -105,7 +141,8 @@ public class ConnectedEntityCheckAnswersIndividualOrTrustModel(
                 firstName: state.FirstName,
                 lastName: state.LastName,
                 nationality: state.Nationality,
-                personId: null
+                personId: null,
+                residentCountry: state.DirectorLocation
             );
         }
 

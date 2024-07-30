@@ -31,6 +31,8 @@ public class ConnectedEntityAddressModel(ISession session) : PageModel
 
     public ConnectedEntityType? ConnectedEntityType { get; set; }
 
+    public string? BackPageName { get; set; }
+
     public IActionResult OnGet()
     {
         var (valid, state) = ValidatePage();
@@ -160,6 +162,53 @@ public class ConnectedEntityAddressModel(ISession session) : PageModel
         return redirectPage;
     }
 
+    private string GetBackLinkPageName(ConnectedEntityState state)
+    {
+        var backPage = "";
+        switch (state.ConnectedEntityType)
+        {
+            case Constants.ConnectedEntityType.Organisation:
+                switch (state.ConnectedEntityOrganisationCategoryType)
+                {
+                    case ConnectedEntityOrganisationCategoryType.RegisteredCompany:
+                    case ConnectedEntityOrganisationCategoryType.DirectorOrTheSameResponsibilities:
+                    case ConnectedEntityOrganisationCategoryType.ParentOrSubsidiaryCompany:
+                    case ConnectedEntityOrganisationCategoryType.ACompanyYourOrganisationHasTakenOver:
+                    case ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl:
+                        backPage = $"organisation-name/{ConnectedEntityId}";
+                        break;
+                }
+                break;
+            case Constants.ConnectedEntityType.Individual:
+                switch (state.ConnectedEntityIndividualAndTrustCategoryType)
+                {
+                    case ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndividual:
+                    case ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndividualWithSignificantInfluenceOrControlForIndividual:
+                        backPage = $"individual-psc-details/{ConnectedEntityId}";
+                        break;
+
+                    case ConnectedEntityIndividualAndTrustCategoryType.DirectorOrIndividualWithTheSameResponsibilitiesForIndividual:
+                        backPage = $"director-residency/{ConnectedEntityId}";
+                        break;
+                }
+                break;
+            case Constants.ConnectedEntityType.TrustOrTrustee:
+                switch (state.ConnectedEntityIndividualAndTrustCategoryType)
+                {
+                    case ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForTrust:
+                    case ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndividualWithSignificantInfluenceOrControlForTrust:
+                        backPage = $"individual-psc-details/{ConnectedEntityId}";
+                        break;
+                    case ConnectedEntityIndividualAndTrustCategoryType.DirectorOrIndividualWithTheSameResponsibilitiesForTrust:
+                        backPage = $"director-residency/{ConnectedEntityId}";
+                        break;
+                }
+                break;
+        }
+
+        return backPage;
+    }
+
     private (bool valid, ConnectedEntityState state) ValidatePage()
     {
         var cp = session.Get<ConnectedEntityState>(Session.ConnectedPersonKey);
@@ -176,6 +225,8 @@ public class ConnectedEntityAddressModel(ISession session) : PageModel
     {
         Caption = state.GetCaption();
         ConnectedEntityType = state.ConnectedEntityType;
+        BackPageName = GetBackLinkPageName(state);
+
         if (reset) Address = new AddressPartialModel { UkOrNonUk = UkOrNonUk };
 
         var heading = "";

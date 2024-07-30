@@ -36,7 +36,7 @@ public class ApiKeyAuthenticationHandler(
             List<Claim> claims = [new Claim("channel", organisation == null ? "service-key" : "organisation-key")];
             if (organisation.HasValue)
             {
-                claims.Add(new Claim("org", organisation.Value.ToString()));
+                claims.Add(new Claim("org", organisation.Value.ToString(), ClaimValueTypes.Integer));
             }
             if (scopes.Count > 0)
             {
