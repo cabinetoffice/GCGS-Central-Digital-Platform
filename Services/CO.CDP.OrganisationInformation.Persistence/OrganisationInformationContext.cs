@@ -1,5 +1,4 @@
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using CO.CDP.EntityFrameworkCore.Timestamps;
 using CO.CDP.OrganisationInformation.Persistence.EntityFrameworkCore;
 using CO.CDP.OrganisationInformation.Persistence.Forms;

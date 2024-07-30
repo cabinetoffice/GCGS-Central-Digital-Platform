@@ -33,7 +33,6 @@ public static class EndpointExtensions
             {
                 Type = AddressType.Registered,
                 StreetAddress = $"Green Lane {id}",
-                StreetAddress2 = "",
                 Locality = "London",
                 Region = "",
                 PostalCode = "BR8 7AA",

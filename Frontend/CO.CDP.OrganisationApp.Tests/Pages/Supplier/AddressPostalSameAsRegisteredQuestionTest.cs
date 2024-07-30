@@ -85,7 +85,6 @@ public class AddressPostalSameAsRegisteredQuestionTest
                 usi.Type == OrganisationUpdateType.Address &&
                 usi.Organisation.Addresses.First().Type == AddressType.Postal &&
                 usi.Organisation.Addresses.First().StreetAddress == "1 London Street" &&
-                usi.Organisation.Addresses.First().StreetAddress2 == "" &&
                 usi.Organisation.Addresses.First().Region == "South" &&
                 usi.Organisation.Addresses.First().PostalCode == "L1" &&
                 usi.Organisation.Addresses.First().Locality == "London" &&

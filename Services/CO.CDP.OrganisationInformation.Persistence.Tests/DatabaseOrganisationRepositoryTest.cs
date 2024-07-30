@@ -120,7 +120,6 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql) : 
                 Type = AddressType.Registered,
                 Address = new Address{
                     StreetAddress = "1234 Default St",
-                    StreetAddress2 = "High Tower",
                     Locality = "London",
                     PostalCode = "12345",
                     CountryName = "Defaultland"

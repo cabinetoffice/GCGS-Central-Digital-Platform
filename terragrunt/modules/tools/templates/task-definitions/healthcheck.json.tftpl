@@ -1,0 +1,35 @@
+[
+  {
+    "name": "${name}",
+    "image": "${image}",
+    "cpu": ${cpu},
+    "memory": ${memory},
+    "portMappings": [
+      {
+        "containerPort": ${container_port},
+        "hostPort": ${host_port},
+        "protocol": "tcp"
+      }
+    ],
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-group": "${lg_name}",
+        "awslogs-region": "${lg_region}",
+        "awslogs-stream-prefix": "${lg_prefix}"
+      }
+    },
+    "environment": [
+        {"name": "ASPNETCORE_ENVIRONMENT", "value": "${environment}"},
+        {"name": "ASPNETCORE_HTTP_PORTS", "value": "${host_port}"},
+        {"name": "queue_url_publisher", "value": "${queue_entity_verification_queue_url}"},
+        {"name": "queue_url_dispatcher", "value": "${queue_organisation_queue_url}"}
+    ],
+    "secrets": [
+        {"name": "DB_USERNAME", "valueFrom": "${db_username}"}
+    ],
+    "volumesFrom": [],
+    "mountPoints": [],
+    "essential": true
+  }
+]

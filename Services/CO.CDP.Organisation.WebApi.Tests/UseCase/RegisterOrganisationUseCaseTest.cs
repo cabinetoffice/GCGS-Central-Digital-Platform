@@ -6,7 +6,6 @@ using CO.CDP.Organisation.WebApi.Tests.UseCase.Extensions;
 using CO.CDP.Organisation.WebApi.UseCase;
 using CO.CDP.OrganisationInformation;
 using FluentAssertions;
-using FluentAssertions.Execution;
 using Moq;
 using Persistence = CO.CDP.OrganisationInformation.Persistence;
 
@@ -52,7 +51,6 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
                 {
                     Type = AddressType.Registered,
                     StreetAddress = "1234 Example St",
-                    StreetAddress2 = "",
                     Locality = "Example City",
                     Region = "Test Region",
                     PostalCode = "12345",
@@ -121,7 +119,6 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
                 {
                     Type = AddressType.Registered,
                     StreetAddress = "1234 Example St",
-                    StreetAddress2 = "",
                     Locality = "Example City",
                     Region = "Test Region",
                     PostalCode = "12345",
@@ -185,7 +182,6 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
                 Address = new Persistence.Address
                 {
                     StreetAddress = "1234 Example St",
-                    StreetAddress2 = "",
                     Locality = "Example City",
                     Region = "Test Region",
                     PostalCode = "12345",
@@ -341,7 +337,6 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
                 {
                     Type = AddressType.Registered,
                     StreetAddress = "1234 Example St",
-                    StreetAddress2 = "",
                     Locality = "Example City",
                     Region = "Test Region",
                     PostalCode = "12345",

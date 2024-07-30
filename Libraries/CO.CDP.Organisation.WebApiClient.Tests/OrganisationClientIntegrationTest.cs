@@ -26,7 +26,6 @@ public class OrganisationClientIntegrationTest(ITestOutputHelper testOutputHelpe
         var address = new OrganisationAddress(
             type: AddressType.Registered,
             streetAddress: "1234 New St",
-            streetAddress2: "",
             locality: "New City",
             region: "W.Yorkshire",
             postalCode: "123456",

@@ -31,7 +31,7 @@ public class GetConnectedEntityUseCaseTest(AutoMapperFixture mapperFixture) : IC
             EntityType = ConnectedEntity.ConnectedEntityType.Organisation,
             Guid = eid1,
             SupplierOrganisation = It.IsAny<OrganisationInformation.Persistence.Organisation>(),
-            Organisation = It.IsAny<OrganisationInformation.Persistence.ConnectedEntity.ConnectedOrganisation>()            
+            Organisation = It.IsAny<OrganisationInformation.Persistence.ConnectedEntity.ConnectedOrganisation>()
         };
 
         _repository.Setup(r => r.Find(organisationId, eid1)).ReturnsAsync(persistenceConnectedEntity);

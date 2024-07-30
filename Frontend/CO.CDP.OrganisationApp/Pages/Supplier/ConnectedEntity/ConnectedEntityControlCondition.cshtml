@@ -10,11 +10,17 @@
         return Model.ControlConditions.Contains(entityControlCondition) ? "checked='checked'" : string.Empty;
     }
 
-    var backLink = $"/organisation/{Model.Id}/supplier-information/connected-person/osc-company-question/{Model.ConnectedEntityId}";
+    var backLink = $"/organisation/{Model.Id}/supplier-information/connected-person/{Model.BackPageLink}";
 
     if (Request.Query.ContainsKey("frm-chk-answer"))
     {
-        backLink = $"/organisation/{Model.Id}/supplier-information/connected-person/check-answers-organisation/{Model.ConnectedEntityId}";
+        var InduvOrOrg = "check-answers-organisation";
+        if (Model.ConnectedEntityType != Constants.ConnectedEntityType.Organisation)
+        {
+            InduvOrOrg = "check-answer-individual-trust";
+        }
+
+        backLink = $"/organisation/{Model.Id}/supplier-information/connected-person/{InduvOrOrg}/{Model.ConnectedEntityId}";
         Model.RedirectToCheckYourAnswer = true;
     }
 }
