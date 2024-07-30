@@ -285,6 +285,10 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("form_answer_set_id");
 
+                    b.Property<Guid>("Guid")
+                        .HasColumnType("uuid")
+                        .HasColumnName("guid");
+
                     b.Property<double?>("NumericValue")
                         .HasColumnType("double precision")
                         .HasColumnName("numeric_value");

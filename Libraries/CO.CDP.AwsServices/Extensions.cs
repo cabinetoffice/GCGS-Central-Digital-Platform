@@ -14,7 +14,7 @@ namespace CO.CDP.AwsServices;
 
 public static class Extensions
 {
-    public static IServiceCollection AddAwsCofiguration(
+    public static IServiceCollection AddAwsConfiguration(
         this IServiceCollection services, IConfiguration configuration)
     {
         var awsSection = configuration.GetSection("Aws");
@@ -22,23 +22,38 @@ public static class Extensions
         var awsConfig = awsSection.Get<AwsConfiguration>()
             ?? throw new Exception("Aws environment configuration missing.");
 
-        if (!string.IsNullOrWhiteSpace(awsConfig.ServiceURL) && !string.IsNullOrWhiteSpace(awsConfig.Region))
-            throw new Exception("Either provide aws service url or aws region endpoint configuration.");
+        AddAwsOptions(services, awsConfig);
 
-        var awsOptions = new AWSOptions
+        services.Configure<AwsConfiguration>(awsSection);
+        return services;
+    }
+
+    /**
+     * Only adds AWS Options if Credentials or ServiceURL were defined.
+     * This is mostly to support local development environment based on localstack.
+     * In production, the default process for finding credentials kicks in,
+     * and finds them in IAM Roles for tasks.
+     * See https://docs.aws.amazon.com/sdk-for-net/v3/developer-guide/creds-assign.html
+     */
+    private static void AddAwsOptions(IServiceCollection services, AwsConfiguration awsConfig)
+    {
+        var awsOptions = new AWSOptions();
+
+        if (awsConfig.Credentials is not null)
         {
-            Credentials = new BasicAWSCredentials(awsConfig.AccessKeyId, awsConfig.SecretAccessKey)
-        };
+            awsOptions.Credentials =
+                new BasicAWSCredentials(awsConfig.Credentials.AccessKeyId, awsConfig.Credentials.SecretAccessKey);
+        }
 
         if (!string.IsNullOrWhiteSpace(awsConfig.ServiceURL))
+        {
             awsOptions.DefaultClientConfig.ServiceURL = awsConfig.ServiceURL;
+        }
 
-        if (!string.IsNullOrWhiteSpace(awsConfig.Region))
-            awsOptions.Region = RegionEndpoint.GetBySystemName(awsConfig.Region);
-
-        return services
-            .Configure<AwsConfiguration>(awsSection)
-            .AddDefaultAWSOptions(awsOptions);
+        if (awsOptions.Credentials is not null || awsOptions.DefaultClientConfig.ServiceURL is not null)
+        {
+            services.AddDefaultAWSOptions(awsOptions);
+        }
     }
 
     public static IServiceCollection AddAwsS3Service(this IServiceCollection services)

@@ -27,7 +27,7 @@ builder.Services.AddScoped<IPponService, PponService>();
 if (Assembly.GetEntryAssembly().IsRunAs("CO.CDP.EntityVerification"))
 {
     builder.Services
-        .AddAwsCofiguration(builder.Configuration)
+        .AddAwsConfiguration(builder.Configuration)
         .AddAwsSqsService()
         .AddSqsPublisher()
         .AddSqsDispatcher(
