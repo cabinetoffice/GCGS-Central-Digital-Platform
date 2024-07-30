@@ -31,7 +31,7 @@ public class OrganisationRegisteredSubscriberTests
         publisher.Verify(
                s => s.Publish(It.Is<PponGenerated>(e =>
                 (e.Id == generatedPpon) &&
-                (e.Scheme == @event.Identifier.Scheme) &&
+                (e.Scheme == "CDP-PPON") &&
                 (e.LegalName == @event.Identifier.LegalName))),
             Times.Once);
     }
