@@ -293,26 +293,22 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
             OrganisationId = organisation.Id,
             Organisation = organisation,
             Section = section,
-            Answers = new List<FormAnswer>
-            {
-                new FormAnswer
-                {
-                    Question = question,
-                    FormAnswerSet = null,
-                    BoolValue = true,
-                    CreatedOn = DateTimeOffset.UtcNow,
-                    UpdatedOn = DateTimeOffset.UtcNow
-                }
-            },
+            Answers = new List<FormAnswer>(),
             Deleted = false,
             CreatedOn = DateTimeOffset.UtcNow,
             UpdatedOn = DateTimeOffset.UtcNow
         };
 
-        foreach (var answer in answerSet.Answers)
+        var answer = new FormAnswer
         {
-            answer.FormAnswerSet = answerSet;
-        }
+            Question = question,
+            FormAnswerSet = answerSet,
+            BoolValue = true,
+            CreatedOn = DateTimeOffset.UtcNow,
+            UpdatedOn = DateTimeOffset.UtcNow
+        };
+
+        answerSet.Answers.Add(answer);
 
         await repository.SaveAnswerSet(answerSet);
 
@@ -369,26 +365,22 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
             OrganisationId = organisation.Id,
             Organisation = organisation,
             Section = section,
-            Answers = new List<FormAnswer>
-            {
-                new FormAnswer
-                {
-                    Question = question,
-                    FormAnswerSet = null,
-                    BoolValue = true,
-                    CreatedOn = DateTimeOffset.UtcNow,
-                    UpdatedOn = DateTimeOffset.UtcNow
-                }
-            },
+            Answers = new List<FormAnswer>(),
             Deleted = false,
             CreatedOn = DateTimeOffset.UtcNow,
             UpdatedOn = DateTimeOffset.UtcNow
         };
 
-        foreach (var answer in answerSet.Answers)
+        var answer = new FormAnswer
         {
-            answer.FormAnswerSet = answerSet;
-        }
+            Question = question,
+            FormAnswerSet = answerSet,
+            BoolValue = true,
+            CreatedOn = DateTimeOffset.UtcNow,
+            UpdatedOn = DateTimeOffset.UtcNow
+        };
+
+        answerSet.Answers.Add(answer);
 
         await repository.SaveAnswerSet(answerSet);
 
@@ -412,8 +404,6 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
         foundAnswer.Question.Should().Be(question);
         foundAnswer.BoolValue.Should().BeFalse();
     }
-
-
     private static Form GivenForm(Guid formId)
     {
         return new Form
