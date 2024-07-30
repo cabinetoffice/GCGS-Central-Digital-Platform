@@ -193,12 +193,12 @@ public class ConnectedEntityCheckAnswersOrganisationModel(
 
     private UpdateConnectedEntity? UpdateConnectedEntityPayload(ConnectedEntityState state)
     {
-        CreateConnectedOrganisation? connectedOrganisation = null;
-        CreateConnectedIndividualTrust? connectedIndividualTrust = null;
+        UpdateConnectedOrganisation? connectedOrganisation = null;
+        UpdateConnectedIndividualTrust? connectedIndividualTrust = null;
 
         if (state.ConnectedEntityType == Constants.ConnectedEntityType.Organisation)
         {
-            connectedOrganisation = new CreateConnectedOrganisation
+            connectedOrganisation = new UpdateConnectedOrganisation
             (
                 category: state.ConnectedEntityOrganisationCategoryType!.Value.AsApiClientConnectedEntityOrganisationCategoryType(),
                 controlCondition: state.ControlConditions.AsApiClientControlConditionList(),
@@ -211,7 +211,7 @@ public class ConnectedEntityCheckAnswersOrganisationModel(
         }
         else
         {
-            connectedIndividualTrust = new CreateConnectedIndividualTrust
+            connectedIndividualTrust = new UpdateConnectedIndividualTrust
             (
                 category: state.ConnectedEntityIndividualAndTrustCategoryType!.Value.AsApiClientConnectedIndividualAndTrustCategory(),
                 connectedType: (state.ConnectedEntityType == Constants.ConnectedEntityType.Individual
@@ -221,7 +221,8 @@ public class ConnectedEntityCheckAnswersOrganisationModel(
                 firstName: "",
                 lastName: "",
                 nationality: "",
-                personId: null
+                personId: null,
+                residentCountry: state.DirectorLocation
             );
         }
 
@@ -239,6 +240,7 @@ public class ConnectedEntityCheckAnswersOrganisationModel(
 
         var updateConnectedEntity = new UpdateConnectedEntity
         (
+            id: ConnectedEntityId.ToString(),
             addresses: addresses,
             companyHouseNumber: state.CompaniesHouseNumber,
             endDate: null,
@@ -300,8 +302,6 @@ public class ConnectedEntityCheckAnswersOrganisationModel(
             HasOscCompaniesHouseNumber = connectedEntity.OverseasCompanyNumber != null,
             SupplierHasCompanyHouseNumber = connectedEntity.HasCompnayHouseNumber,
         };
-
-        // TODO - Add DirectorLocation
 
         return state;
     }
