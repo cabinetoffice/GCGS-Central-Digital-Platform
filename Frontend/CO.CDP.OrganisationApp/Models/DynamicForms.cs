@@ -45,6 +45,7 @@ public class QuestionAnswer
 
 public class FormAnswer
 {
+    public Guid Id { get; set; }
     public bool? BoolValue { get; init; }
     public double? NumericValue { get; init; }
     public DateTime? DateValue { get; init; }
