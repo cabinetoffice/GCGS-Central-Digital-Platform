@@ -104,8 +104,8 @@ public class ConnectedEntitySupplierCompanyQuestionTest
 
     private static List<ConnectedEntityLookup> ConnectedEntities =>
     [
-         new(Guid.NewGuid(), "e1",It.IsAny<Uri>()),
-         new(Guid.NewGuid(), "e2",It.IsAny<Uri>()),
+         new(Guid.NewGuid(), ConnectedEntityType.Organisation, "e1", It.IsAny<Uri>()),
+         new(Guid.NewGuid(), ConnectedEntityType.Organisation, "e2", It.IsAny<Uri>()),
     ];
 
     private static SupplierInformation SupplierInformationClientModel => new(
