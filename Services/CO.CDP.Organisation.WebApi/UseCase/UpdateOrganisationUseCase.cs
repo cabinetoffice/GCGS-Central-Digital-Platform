@@ -80,7 +80,6 @@ public class UpdateOrganisationUseCase(
                     if (existing != null)
                     {
                         existing.Address.StreetAddress = address.StreetAddress;
-                        existing.Address.StreetAddress2 = address.StreetAddress2;
                         existing.Address.PostalCode = address.PostalCode;
                         existing.Address.Locality = address.Locality;
                         existing.Address.Region = address.Region;
@@ -94,7 +93,6 @@ public class UpdateOrganisationUseCase(
                             Address = new Address
                             {
                                 StreetAddress = address.StreetAddress,
-                                StreetAddress2 = address.StreetAddress2,
                                 PostalCode = address.PostalCode,
                                 Locality = address.Locality,
                                 Region = address.Region,

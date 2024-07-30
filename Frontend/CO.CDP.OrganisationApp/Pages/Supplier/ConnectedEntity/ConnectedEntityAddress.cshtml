@@ -6,12 +6,18 @@
     var backLink = "";
     if (Request.Query.ContainsKey("frm-chk-answer"))
     {
-        backLink = $"/organisation/{Model.Id}/supplier-information/connected-person/check-answers-organisation/{Model.ConnectedEntityId}";
-        Model.RedirectToCheckYourAnswer = true;
+        var InduvOrOrg = "check-answers-organisation";
+
+        if (Model.ConnectedEntityType != Constants.ConnectedEntityType.Organisation)
+        {
+            InduvOrOrg = "check-answer-individual-trust";
+        }
+
+        backLink = $"/organisation/{Model.Id}/supplier-information/connected-person/{InduvOrOrg}/{Model.ConnectedEntityId}";        
     }
     else if (Model.Address.IsNonUkAddress)
     {
-        backLink = "/organisation/@Model.Id/supplier-information/connected-person/@Model.AddressType.ToString().ToLower()-address/uk";
+        backLink = $"/organisation/{Model.Id}/supplier-information/connected-person/{Model.AddressType.ToString().ToLower()}-address/uk";
     }
     else if (Model.AddressType == Constants.AddressType.Postal) // TODO 4: add another if for different indivisual/trust category
     {
@@ -19,7 +25,7 @@
     }
     else
     {
-        backLink = $"/organisation/{Model.Id}/supplier-information/connected-person/organisation-name/{Model.ConnectedEntityId}";
+        backLink = $"/organisation/{Model.Id}/supplier-information/connected-person/{Model.BackPageName}";
     }
 }
 

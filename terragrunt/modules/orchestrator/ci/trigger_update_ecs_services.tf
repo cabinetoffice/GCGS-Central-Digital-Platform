@@ -1,5 +1,5 @@
 resource "aws_codepipeline" "trigger_update_ecs_services" {
-  name = "${local.name_prefix}-${local.trigger_update_ecs_service_cb_name}"
+  name = "${local.name_prefix}-${local.trigger_update_ecs_service_cp_name}"
 
   role_arn = var.ci_pipeline_role_arn
 

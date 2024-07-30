@@ -24,7 +24,7 @@ builder.Services.AddHealthChecks()
 builder.Services.AddAutoMapper(typeof(WebApiToPersistenceProfile));
 
 builder.Services
-    .AddAwsCofiguration(builder.Configuration)
+    .AddAwsConfiguration(builder.Configuration)
     .AddAwsSqsService()
     .AddSqsPublisher();
 builder.Services.AddDbContext<OrganisationInformationContext>(o =>

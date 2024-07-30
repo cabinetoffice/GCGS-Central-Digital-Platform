@@ -261,7 +261,6 @@ public class RegisterOrganisationTest
             {
                 Type = AddressType.Registered,
                 StreetAddress = "1234 Example St",
-                StreetAddress2 = "",
                 Locality = "Example City",
                 Region = "Test Region",
                 PostalCode = "12345",

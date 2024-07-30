@@ -100,6 +100,7 @@ public record ConnectedIndividualTrust
     public ICollection<ControlCondition> ControlCondition { get; set; } = [];
     public ConnectedPersonType ConnectedType { get; set; }
     public Guid? PersonId { get; set; }
+    public string? ResidentCountry { get; set; }
 }
 
 public record ConnectedOrganisation
@@ -144,7 +145,7 @@ public enum ConnectedIndividualAndTrustCategory
     PersonWithSignificantControlForIndividual = 1,
     DirectorOrIndividualWithTheSameResponsibilitiesForIndividual,
     AnyOtherIndividualWithSignificantInfluenceOrControlForIndividual,
-    PersonWithSignificantControlForTrust ,
+    PersonWithSignificantControlForTrust,
     DirectorOrIndividualWithTheSameResponsibilitiesForTrust,
     AnyOtherIndividualWithSignificantInfluenceOrControlForTrust
 }

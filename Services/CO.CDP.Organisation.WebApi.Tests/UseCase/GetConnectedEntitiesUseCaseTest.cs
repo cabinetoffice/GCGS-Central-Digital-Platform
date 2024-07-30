@@ -32,12 +32,14 @@ public class GetConnectedEntitiesUseCaseTest(AutoMapperFixture mapperFixture) : 
             new OrganisationInformation.Persistence.ConnectedEntityLookup
             {
                 EntityId = eid1,
-                Name = "CHN_123"
+                Name = "CHN_123",
+                EntityType = ConnectedEntity.ConnectedEntityType.Organisation
             },
             new OrganisationInformation.Persistence.ConnectedEntityLookup
             {
                 EntityId = eid2,
-                Name = "First Name"
+                Name = "First Name",
+                EntityType = ConnectedEntity.ConnectedEntityType.Organisation
             }
         };
 
@@ -52,13 +54,15 @@ public class GetConnectedEntitiesUseCaseTest(AutoMapperFixture mapperFixture) : 
             {
                 EntityId = eid1,
                 Name = "CHN_123",
-                Uri = new Uri($"https://cdp.cabinetoffice.gov.uk/organisations/{organisationId}/connected-entities/{eid1}")
+                Uri = new Uri($"https://cdp.cabinetoffice.gov.uk/organisations/{organisationId}/connected-entities/{eid1}"),
+                EntityType = Model.ConnectedEntityType.Organisation
             },
             new Model.ConnectedEntityLookup
             {
                 EntityId = eid2,
                 Name = "First Name",
-                Uri = new Uri($"https://cdp.cabinetoffice.gov.uk/organisations/{organisationId}/connected-entities/{eid2}")
+                Uri = new Uri($"https://cdp.cabinetoffice.gov.uk/organisations/{organisationId}/connected-entities/{eid2}"),
+                EntityType = Model.ConnectedEntityType.Organisation
             }
         };
 

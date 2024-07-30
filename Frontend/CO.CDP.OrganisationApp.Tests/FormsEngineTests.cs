@@ -119,13 +119,13 @@ public class FormsEngineTests
     {
         var (organisationId, formId, sectionId, sessionKey) = CreateTestGuids();
         var questionId = Guid.NewGuid();
-        var nextQuestionId = Guid.NewGuid();        
+        var nextQuestionId = Guid.NewGuid();
         var apiResponse = CreateApiSectionQuestionsResponse(sectionId, questionId, nextQuestionId);
         var expectedResponse = CreateModelSectionQuestionsResponse(sectionId, questionId, nextQuestionId);
 
         _tempDataServiceMock.Setup(t => t.Peek<SectionQuestionsResponse>(sessionKey))
             .Returns((SectionQuestionsResponse?)null);
-        _formsApiClientMock.Setup(c => c.GetFormSectionQuestionsAsync(formId, sectionId,organisationId))
+        _formsApiClientMock.Setup(c => c.GetFormSectionQuestionsAsync(formId, sectionId, organisationId))
             .ReturnsAsync(apiResponse);
 
         var result = await _formsEngine.LoadFormSectionAsync(organisationId, formId, sectionId);
