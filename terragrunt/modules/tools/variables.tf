@@ -53,6 +53,17 @@ variable "environment" {
   type        = string
 }
 
+variable "healthcheck_config" {
+  description = "Health-check services configuration"
+  type = object({
+    cpu       = number
+    memory    = number
+    name      = string
+    port      = number
+    port_host = number
+  })
+}
+
 variable "pgadmin_config" {
   description = "Pgadmin services configuration"
   type = object({
@@ -85,6 +96,26 @@ variable "public_hosted_zone_fqdn" {
 
 variable "public_hosted_zone_id" {
   description = "ID of the public hosted zone"
+  type        = string
+}
+
+variable "queue_entity_verification_queue_arn" {
+  description = "ARN of the Entity Verification's SQS queue"
+  type        = string
+}
+
+variable "queue_entity_verification_queue_url" {
+  description = "URL of the Entity Verification's SQS queue"
+  type        = string
+}
+
+variable "queue_organisation_queue_arn" {
+  description = "ARN of the Organisation's SQS queue"
+  type        = string
+}
+
+variable "queue_organisation_queue_url" {
+  description = "URL of the Organisation's outbound SQS queue"
   type        = string
 }
 
