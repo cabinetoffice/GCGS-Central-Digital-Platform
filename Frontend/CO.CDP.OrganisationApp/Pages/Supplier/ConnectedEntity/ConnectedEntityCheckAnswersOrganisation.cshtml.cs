@@ -92,9 +92,24 @@ public class ConnectedEntityCheckAnswersOrganisationModel(
 
         try
         {
-            await organisationClient.RegisterConnectedPerson(Id, payload);
+            if (ConnectedEntityId.HasValue)
+            {
+                var updatePayload = UpdateConnectedEntityPayload(state);
 
-            session.Remove(Session.ConnectedPersonKey);
+                if (updatePayload == null)
+                {
+                    ModelState.AddModelError(string.Empty, ErrorMessagesList.PayLoadIssueOrNullAurgument);
+                    return Page();
+                }
+
+                await organisationClient.UpdateConnectedPerson(Id, ConnectedEntityId.Value, updatePayload);
+            }
+            else
+            {
+                await organisationClient.RegisterConnectedPerson(Id, payload);
+
+                session.Remove(Session.ConnectedPersonKey);
+            }
         }
         catch (ApiException ex) when (ex.StatusCode == 404)
         {
@@ -171,6 +186,70 @@ public class ConnectedEntityCheckAnswersOrganisationModel(
         );
 
         return registerConnectedEntity;
+    }
+
+    private UpdateConnectedEntity? UpdateConnectedEntityPayload(ConnectedEntityState state)
+    {
+        CreateConnectedOrganisation? connectedOrganisation = null;
+        CreateConnectedIndividualTrust? connectedIndividualTrust = null;
+
+        if (state.ConnectedEntityType == Constants.ConnectedEntityType.Organisation)
+        {
+            connectedOrganisation = new CreateConnectedOrganisation
+            (
+                category: state.ConnectedEntityOrganisationCategoryType!.Value.AsApiClientConnectedEntityOrganisationCategoryType(),
+                controlCondition: state.ControlConditions.AsApiClientControlConditionList(),
+                insolvencyDate: state.InsolvencyDate,
+                lawRegistered: state.LawRegistered,
+                name: state.OrganisationName,
+                organisationId: null,
+                registeredLegalForm: state.LegalForm
+            );
+        }
+        else
+        {
+            connectedIndividualTrust = new CreateConnectedIndividualTrust
+            (
+                category: state.ConnectedEntityIndividualAndTrustCategoryType!.Value.AsApiClientConnectedIndividualAndTrustCategory(),
+                connectedType: (state.ConnectedEntityType == Constants.ConnectedEntityType.Individual
+                                    ? ConnectedPersonType.Individual : ConnectedPersonType.TrustOrTrustee),
+                controlCondition: state.ControlConditions.AsApiClientControlConditionList(),
+                dateOfBirth: null,
+                firstName: "",
+                lastName: "",
+                nationality: "",
+                personId: null
+            );
+        }
+
+        List<Address> addresses = new();
+
+        if (state.RegisteredAddress != null)
+        {
+            addresses.Add(AddAddress(state.RegisteredAddress, Organisation.WebApiClient.AddressType.Registered));
+        }
+
+        if (state.PostalAddress != null)
+        {
+            addresses.Add(AddAddress(state.PostalAddress, Organisation.WebApiClient.AddressType.Postal));
+        }
+
+        var updateConnectedEntity = new UpdateConnectedEntity
+        (
+            addresses: addresses,
+            companyHouseNumber: state.CompaniesHouseNumber,
+            endDate: null,
+            entityType: state.ConnectedEntityType!.Value.AsApiClientConnectedEntityType(),
+            hasCompnayHouseNumber: state.HasCompaniesHouseNumber!.Value,
+            individualOrTrust: connectedIndividualTrust,
+            organisation: connectedOrganisation,
+            overseasCompanyNumber: "",
+            registeredDate: state.RegistrationDate!.Value,
+            registerName: state.RegisterName,
+            startDate: null
+        );
+
+        return updateConnectedEntity;
     }
 
     private ConnectedEntityState GetConnectedEntityStateFromEntity(CO.CDP.Organisation.WebApiClient.ConnectedEntity connectedEntity)

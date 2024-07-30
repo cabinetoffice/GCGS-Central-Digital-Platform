@@ -180,13 +180,14 @@ public record RegisterConnectedEntity
 
 public record UpdateConnectedEntity
 {
+    public string Id { get; init; }
     public required ConnectedEntityType EntityType { get; init; }
     public bool HasCompnayHouseNumber { get; init; }
     public string? CompanyHouseNumber { get; init; }
     public string? OverseasCompanyNumber { get; init; }
 
-    public CreateConnectedOrganisation? Organisation { get; init; }
-    public CreateConnectedIndividualTrust? IndividualOrTrust { get; init; }
+    public UpdateConnectedOrganisation? Organisation { get; init; }
+    public UpdateConnectedIndividualTrust? IndividualOrTrust { get; init; }
     public ICollection<Address> Addresses { get; init; } = [];
 
     public DateTimeOffset? RegisteredDate { get; init; }
