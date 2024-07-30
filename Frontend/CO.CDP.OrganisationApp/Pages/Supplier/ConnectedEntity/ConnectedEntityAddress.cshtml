@@ -13,8 +13,7 @@
             InduvOrOrg = "check-answer-individual-trust";
         }
 
-        backLink = $"/organisation/{Model.Id}/supplier-information/connected-person/{InduvOrOrg}/{Model.ConnectedEntityId}";
-        Model.RedirectToCheckYourAnswer = true;
+        backLink = $"/organisation/{Model.Id}/supplier-information/connected-person/{InduvOrOrg}/{Model.ConnectedEntityId}";        
     }
     else if (Model.Address.IsNonUkAddress)
     {
@@ -26,13 +25,7 @@
     }
     else
     {
-        var backPageName = "organisation-name";
-        if (Model.ConnectedEntityType != Constants.ConnectedEntityType.Organisation)
-        {
-            backPageName = "individual-psc-details";
-        }
-
-        backLink = $"/organisation/{Model.Id}/supplier-information/connected-person/{backPageName}/{Model.ConnectedEntityId}";
+        backLink = $"/organisation/{Model.Id}/supplier-information/connected-person/{Model.BackPageName}";
     }
 }
 
