@@ -28,7 +28,7 @@ public static class SupplierDetailsFactory
             completedTradeAssurance: completedTradeAssurance,
             completedOperationType: false,
             completedLegalForm: completedLegalForm,
-            completedConnectedPerson:false,
+            completedConnectedPerson: false,
             tradeAssurances: [],
             legalForm: legalForm,
             qualifications: []

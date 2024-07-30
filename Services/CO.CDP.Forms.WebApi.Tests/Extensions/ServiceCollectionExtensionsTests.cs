@@ -4,7 +4,6 @@ using CO.CDP.Forms.WebApi.Model;
 
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
-using static CO.CDP.OrganisationInformation.Persistence.IFormRepository.FormRepositoryException;
 using static CO.CDP.OrganisationInformation.Persistence.IOrganisationRepository.OrganisationRepositoryException;
 
 namespace CO.CDP.Forms.WebApi.Tests.Extensions;

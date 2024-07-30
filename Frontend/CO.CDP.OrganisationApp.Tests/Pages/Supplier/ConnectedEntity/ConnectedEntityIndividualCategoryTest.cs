@@ -60,7 +60,7 @@ public class ConnectedEntityIndividualCategoryTest
     }
 
 
-    [Theory]    
+    [Theory]
     [InlineData(Constants.ConnectedEntityType.Individual, "ConnectedEntityPscDetails")]
     public void OnPost_ShouldRedirectToConnectedEntityPscDetailsPage(Constants.ConnectedEntityType connectedEntityType, string expectedRedirectPage)
     {

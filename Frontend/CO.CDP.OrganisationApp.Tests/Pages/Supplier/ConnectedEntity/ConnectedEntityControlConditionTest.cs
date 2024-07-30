@@ -1,4 +1,3 @@
-using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Pages.Supplier;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
@@ -47,7 +46,7 @@ public class ConnectedEntityControlConditionTest
 
     [Theory, MemberData(nameof(Guids))]
     public void OnGet_ShouldRedirectToExpectedRedirectPage_WhenModelStateIsInvalid
-        (Guid? connectedEntityId, string expectedRedirectPage )
+        (Guid? connectedEntityId, string expectedRedirectPage)
     {
         ConnectedEntityState? state = null;
         _sessionMock
@@ -112,9 +111,9 @@ public class ConnectedEntityControlConditionTest
         _sessionMock.Verify(v => v.Set(Session.ConnectedPersonKey,
             It.Is<ConnectedEntityState>(rd =>
                 rd.ControlConditions!.Contains(Constants.ConnectedEntityControlCondition.OwnsShares)
-            )), Times.Once);        
+            )), Times.Once);
     }
-        
+
     private ConnectedEntityState DummyConnectedPersonDetails()
     {
         var connectedPersonDetails = new ConnectedEntityState

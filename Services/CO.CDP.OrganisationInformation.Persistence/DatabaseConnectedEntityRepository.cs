@@ -37,7 +37,7 @@ public class DatabaseConnectedEntityRepository(OrganisationInformationContext co
                     ? (t.Organisation == null ? "" : t.Organisation.Name)
                     : (t.IndividualOrTrust == null ? "" : t.IndividualOrTrust.FirstName),
                 EntityId = t.Guid,
-                EntityType = t.EntityType,               
+                EntityType = t.EntityType,
             })
             .ToArrayAsync();
     }

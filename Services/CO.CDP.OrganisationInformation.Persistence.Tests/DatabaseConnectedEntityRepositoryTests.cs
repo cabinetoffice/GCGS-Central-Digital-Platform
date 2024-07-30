@@ -80,7 +80,7 @@ public class DatabaseConnectedEntityRepositoryTests(PostgreSqlFixture postgreSql
             Guid = Guid.NewGuid(),
             EntityType = ConnectedEntity.ConnectedEntityType.TrustOrTrustee,
             IndividualOrTrust = new ConnectedEntity.ConnectedIndividualTrust
-            {   
+            {
                 FirstName = "First Name",
                 LastName = "Last Name",
                 Category = ConnectedEntity.ConnectedPersonCategory.DirectorOrIndividualWithTheSameResponsibilities,
