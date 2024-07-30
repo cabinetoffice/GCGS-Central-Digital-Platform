@@ -1,63 +1,90 @@
 @page "/organisation/{organisationId:guid}/forms/{formId:guid}/sections/{sectionId:guid}/add-another-answer-set"
-
 @model FormsAddAnotherAnswerSetModel
+
+@{
+    var hasError = ((TagBuilder)Html.ValidationMessageFor(m => m.AddAnotherAnswerSet)).HasInnerHtml;
+}
 
 <main class="govuk-main-wrapper" id="main-content">
     <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <partial name="_ErrorSummary" model="@Model.ModelState" />
+        </div>
         <div class="govuk-grid-column-full">
-            <form class="form" method="post">
-                <h1 class="govuk-heading-l">
-                    You have added 1 file
-                </h1>
 
-                <div class="govuk-form-group">
+            @if (Model.FormAnswerSets.Count > 0 && !string.IsNullOrWhiteSpace(Model.Heading))
+            {
+                <h1 class="govuk-heading-l">
+                    @Model.Heading
+                </h1>
+            }
+
+            <div class="govuk-form-group">
+                @foreach (var formAnswerSet in Model.FormAnswerSets)
+                {
                     <dl class="govuk-summary-list ros-add-to-a-list">
                         <div class="govuk-summary-list__row">
                             <dt class="govuk-summary-list__key">
-                                Unaudited accounts - year ending 5 April 2023
+                                @foreach (var item in formAnswerSet.answers)
+                                {
+                                    <p class="govuk-!-margin-top-0">@item.Title : @item.Answer</p>
+                                }
                             </dt>
                             <dd class="govuk-summary-list__actions">
                                 <ul class="govuk-summary-list__actions-list">
                                     <li class="govuk-summary-list__actions-list-item">
-                                        <a class="govuk-link">Change</a>
+                                        <a class="govuk-link" href="?handler=change&answer-set-id=@formAnswerSet.answerSetId">Change</a>
                                     </li>
                                     <li class="govuk-summary-list__actions-list-item">
-                                        <a class="govuk-link" href="/organisation/@Model.OrganisationId/forms/@Model.FormId/sections/@Model.SectionId/answers/@Guid.NewGuid()/remove-confirmation">Remove</a>
+                                        <a class="govuk-link" href="/organisation/@Model.OrganisationId/forms/@Model.FormId/sections/@Model.SectionId/answers/@formAnswerSet.answerSetId/remove-confirmation">Remove</a>
                                     </li>
                                 </ul>
                             </dd>
                         </div>
                     </dl>
+                }
 
-                    <fieldset class="govuk-fieldset" data-required="" data-error="Select yes if you need to add another option" aria-required="true">
-                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
-                            <h2 class="govuk-fieldset__heading">
-                                Add another file?
-                            </h2>
-                        </legend>
-                        <div class="govuk-radios govuk-radios--inline" data-module="govuk-radios">
-                            <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="addAnotherFile" name="addAnotherFile" type="radio" value="Yes">
-                                <label class="govuk-label govuk-radios__label" for="addAnotherFile">
-                                    Yes
-                                </label>
+                <form class="form" method="post">
+                    @if (Model.AllowsMultipleAnswerSets)
+                    {
+                        <fieldset class="govuk-fieldset" data-required="" data-error="Select yes if you need to add another answer set" aria-required="true">
+                            <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+
+                                @if (!string.IsNullOrWhiteSpace(Model.AddAnotherAnswerLabel))
+                                {
+                                    <h2 class="govuk-fieldset__heading">
+                                        @Model.AddAnotherAnswerLabel
+                                    </h2>
+                                }
+                            </legend>
+                            @if (hasError)
+                            {
+                                <p id="qualification-option-error" class="govuk-error-message">
+                                    <span class="govuk-visually-hidden">Error:</span> Select an option
+                                </p>
+                            }
+                            <div class="govuk-radios govuk-radios--inline" data-module="govuk-radios">
+                                <div class="govuk-radios__item">
+                                    <input class="govuk-radios__input" id="conditional-YES" name="AddAnotherAnswerSet" type="radio"
+                                           value="true" data-aria-controls="conditional-YES" @(Model.AddAnotherAnswerSet == true ? "checked" : "")>
+                                    <label class="govuk-label govuk-radios__label" for="conditional-YES">Yes</label>
+                                </div>
+                                <div class="govuk-radios__item">
+                                    <input class="govuk-radios__input" id="conditional-NO" name="AddAnotherAnswerSet" type="radio"
+                                           value="false" data-aria-controls="conditional-NO" @(Model.AddAnotherAnswerSet == false ? "checked" : "")>
+                                    <label class="govuk-label govuk-radios__label" for="conditional-NO">No</label>
+                                </div>
                             </div>
-                            <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="addAnotherfile-1" name="addAnotherFile" type="radio" value="No">
-                                <label class="govuk-label govuk-radios__label" for="addAnotherFile">
-                                    No
-                                </label>
-                            </div>
-                        </div>
-                    </fieldset>
+                        </fieldset>
+                    }
 
                     <div class="govuk-button-group govuk-!-margin-top-6">
                         <button class="govuk-button" data-module="govuk-button">
                             Continue
                         </button>
                     </div>
-                </div>
-            </form>
+                </form>
+            </div>
         </div>
     </div>
 </main>

@@ -43,15 +43,15 @@ public class FormsAnswerSetRemoveConfirmationModel(
 
     public async Task<IActionResult> OnPost()
     {
-        if (!ModelState.IsValid)
-        {
-            return Page();
-        }
-
         var verify = await InitAndVerifyPage();
         if (!verify)
         {
             return Redirect("/page-not-found");
+        }
+
+        if (!ModelState.IsValid)
+        {
+            return Page();
         }
 
         if (ConfirmRemove == true)

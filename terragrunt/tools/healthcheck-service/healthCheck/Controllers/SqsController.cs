@@ -14,8 +14,8 @@ namespace healthCheck.Controllers
     public class SqsController : ControllerBase
     {
         private readonly IAmazonSQS _sqsClient;
-        private readonly string _dispatcherQueueUrl;
-        private readonly string _publisherQueueUrl;
+        private readonly string? _dispatcherQueueUrl;
+        private readonly string? _publisherQueueUrl;
 
         public SqsController(IAmazonSQS sqsClient, IConfiguration configuration)
         {
@@ -28,8 +28,8 @@ namespace healthCheck.Controllers
         {
             return queue switch
             {
-                QueueNames.DispatcherQueue => _dispatcherQueueUrl,
-                QueueNames.PublisherQueue => _publisherQueueUrl,
+                QueueNames.DispatcherQueue => _dispatcherQueueUrl ?? throw new InvalidOperationException("Dispatcher queue URL not configured."),
+                QueueNames.PublisherQueue => _publisherQueueUrl ?? throw new InvalidOperationException("Publisher queue URL not configured."),
                 _ => throw new ArgumentOutOfRangeException(nameof(queue), queue, null),
             };
         }

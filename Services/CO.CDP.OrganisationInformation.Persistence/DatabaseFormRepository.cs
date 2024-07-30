@@ -48,7 +48,7 @@ public class DatabaseFormRepository(OrganisationInformationContext context) : IF
     {
         return await context.Set<FormAnswerSet>()
             .Include(a => a.Answers)
-            .Where(a => a.Section.Guid == sectionId && a.Organisation.Guid == organisationId)
+            .Where(a => a.Section.Guid == sectionId && a.Organisation.Guid == organisationId && a.Deleted == false)
             .ToListAsync();
     }
 
