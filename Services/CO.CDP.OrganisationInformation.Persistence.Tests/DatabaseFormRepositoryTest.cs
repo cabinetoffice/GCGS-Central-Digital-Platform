@@ -1,15 +1,6 @@
-using CO.CDP.OrganisationInformation.Persistence;
 using CO.CDP.OrganisationInformation.Persistence.Forms;
 using CO.CDP.Testcontainers.PostgreSql;
 using FluentAssertions;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using static CO.CDP.OrganisationInformation.Persistence.Forms.Form;
-using static CO.CDP.OrganisationInformation.Persistence.Forms.FormQuestion;
-using static CO.CDP.OrganisationInformation.Persistence.Forms.FormAnswer;
-using static CO.CDP.OrganisationInformation.Persistence.Organisation;
 using static CO.CDP.OrganisationInformation.Persistence.Tests.EntityFactory;
 
 namespace CO.CDP.OrganisationInformation.Persistence.Tests;

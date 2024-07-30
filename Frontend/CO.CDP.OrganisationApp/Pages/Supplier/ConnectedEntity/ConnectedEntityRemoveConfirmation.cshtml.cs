@@ -1,12 +1,9 @@
 using CO.CDP.Organisation.WebApiClient;
-using CO.CDP.OrganisationApp.WebApiClients;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
-using System.Globalization;
 using CO.CDP.Mvc.Validation;
 using CO.CDP.OrganisationApp.Constants;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace CO.CDP.OrganisationApp.Pages.Supplier.ConnectedEntity;
 

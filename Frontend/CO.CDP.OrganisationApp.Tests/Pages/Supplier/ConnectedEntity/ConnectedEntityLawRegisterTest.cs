@@ -1,4 +1,3 @@
-using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Pages.Supplier;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
@@ -41,7 +40,7 @@ public class ConnectedEntityLawRegisterTest
     public void OnGet_ShouldReturnPageResult()
     {
         var state = DummyConnectedPersonDetails();
-        
+
         _sessionMock
             .Setup(s => s.Get<ConnectedEntityState>(Session.ConnectedPersonKey))
             .Returns(state);

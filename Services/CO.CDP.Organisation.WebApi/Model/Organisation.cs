@@ -145,7 +145,7 @@ public enum ConnectedIndividualAndTrustCategory
     PersonWithSignificantControlForIndividual = 1,
     DirectorOrIndividualWithTheSameResponsibilitiesForIndividual,
     AnyOtherIndividualWithSignificantInfluenceOrControlForIndividual,
-    PersonWithSignificantControlForTrust ,
+    PersonWithSignificantControlForTrust,
     DirectorOrIndividualWithTheSameResponsibilitiesForTrust,
     AnyOtherIndividualWithSignificantInfluenceOrControlForTrust
 }
