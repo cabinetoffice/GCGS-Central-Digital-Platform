@@ -27,6 +27,7 @@ public enum SubmissionState
 public class FormAnswer : IEntityDate
 {
     public int Id { get; set; }
+    public required Guid Guid { get; set; }
     public required FormQuestion Question { get; set; }
     public required FormAnswerSet FormAnswerSet { get; set; }
     public bool? BoolValue { get; init; } = null;

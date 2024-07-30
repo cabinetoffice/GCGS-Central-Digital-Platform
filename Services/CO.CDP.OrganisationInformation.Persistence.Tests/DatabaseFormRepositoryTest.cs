@@ -195,6 +195,79 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
     }
 
     [Fact]
+    public async Task GetFormAnswerSetAsync_WhenFormAnswerSetsExists_ReturnsFormAnswerSet()
+    {
+       using var context = postgreSql.OrganisationInformationContext();
+        var repository = new DatabaseFormRepository(context);
+
+        var formId = Guid.NewGuid();
+        var sectionId = Guid.NewGuid();
+        var organisationId = Guid.NewGuid();
+        var answerSetId = Guid.NewGuid();
+        var questionId = Guid.NewGuid();
+
+        var form = GivenForm(formId);
+        var section = GivenSection(sectionId, form);
+        form.Sections.Add(section);
+        var question = new FormQuestion
+        {
+            Guid = questionId,
+            Section = section,
+            Title = "Question 1",
+            Description = "Question 1 desc",
+            Type = FormQuestionType.YesOrNo,
+            IsRequired = true,
+            Options = new FormQuestionOptions(),
+            NextQuestion = null,
+            NextQuestionAlternative = null,
+            CreatedOn = DateTimeOffset.UtcNow,
+            UpdatedOn = DateTimeOffset.UtcNow
+        };
+        section.Questions.Add(question);
+
+        context.Forms.Add(form);
+        await context.SaveChangesAsync();
+
+        var organisation = GivenOrganisation(organisationId);
+        context.Organisations.Add(organisation);
+        await context.SaveChangesAsync();
+
+        var answerSet = new FormAnswerSet
+        {
+            Guid = answerSetId,
+            OrganisationId = organisation.Id,
+            Organisation = organisation,
+            Section = section,
+            Answers = new List<FormAnswer>
+            {
+                new FormAnswer
+                {
+                    Guid= Guid.NewGuid(),
+                    Question = question,
+                    FormAnswerSet = null,
+                    BoolValue = true,
+                    CreatedOn = DateTimeOffset.UtcNow,
+                    UpdatedOn = DateTimeOffset.UtcNow
+                }
+            },
+            CreatedOn = DateTimeOffset.UtcNow,
+            UpdatedOn = DateTimeOffset.UtcNow
+        };
+
+        context.FormAnswerSets.Add(answerSet);
+        await context.SaveChangesAsync();
+
+        var foundAnswerSet = await repository.GetFormAnswerSetsAsync(sectionId, organisation.Guid);
+
+        foundAnswerSet.Should().NotBeNull();
+        foundAnswerSet!.Should().HaveCount(1);
+        foundAnswerSet[0].Answers.Should().HaveCount(1);
+        var foundAnswer = foundAnswerSet[0].Answers.First();
+        foundAnswer.Question.Should().Be(question);
+        foundAnswer.BoolValue.Should().BeTrue();
+    }
+
+    [Fact]
     public async Task GetFormAnswerSetAsync_WhenFormAnswerSetExists_ReturnsFormAnswerSet()
     {
         using var context = postgreSql.OrganisationInformationContext();
@@ -239,9 +312,7 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
             .Excluding(ctx => ctx.UpdatedOn));
     }
 
-
-
-
+   
 
     [Fact]
     public async Task SaveAnswerSet_ShouldSaveNewAnswerSet()
@@ -284,22 +355,22 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
             OrganisationId = organisation.Id,
             Organisation = organisation,
             Section = section,
-            Answers = new List<FormAnswer>(),
+            Answers = new List<FormAnswer>
+            {
+                new FormAnswer
+                {
+                    Guid= Guid.NewGuid(),
+                    Question = question,
+                    FormAnswerSet = null,
+                    BoolValue = true,
+                    CreatedOn = DateTimeOffset.UtcNow,
+                    UpdatedOn = DateTimeOffset.UtcNow
+                }
+            },
             Deleted = false,
             CreatedOn = DateTimeOffset.UtcNow,
             UpdatedOn = DateTimeOffset.UtcNow
-        };
-
-        var answer = new FormAnswer
-        {
-            Question = question,
-            FormAnswerSet = answerSet,
-            BoolValue = true,
-            CreatedOn = DateTimeOffset.UtcNow,
-            UpdatedOn = DateTimeOffset.UtcNow
-        };
-
-        answerSet.Answers.Add(answer);
+        };        
 
         await repository.SaveAnswerSet(answerSet);
 
@@ -356,27 +427,28 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
             OrganisationId = organisation.Id,
             Organisation = organisation,
             Section = section,
-            Answers = new List<FormAnswer>(),
+            Answers = new List<FormAnswer>
+            {
+                new FormAnswer
+                {
+                    Guid=Guid.NewGuid(),
+                    Question = question,
+                    FormAnswerSet = null,
+                    BoolValue = true,
+                    CreatedOn = DateTimeOffset.UtcNow,
+                    UpdatedOn = DateTimeOffset.UtcNow
+                }
+            },
             Deleted = false,
             CreatedOn = DateTimeOffset.UtcNow,
             UpdatedOn = DateTimeOffset.UtcNow
-        };
-
-        var answer = new FormAnswer
-        {
-            Question = question,
-            FormAnswerSet = answerSet,
-            BoolValue = true,
-            CreatedOn = DateTimeOffset.UtcNow,
-            UpdatedOn = DateTimeOffset.UtcNow
-        };
-
-        answerSet.Answers.Add(answer);
+        };              
 
         await repository.SaveAnswerSet(answerSet);
 
         var newAnswer = new FormAnswer
         {
+            Guid = Guid.NewGuid(),
             Question = question,
             FormAnswerSet = answerSet,
             BoolValue = false,
