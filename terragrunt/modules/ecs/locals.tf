@@ -30,8 +30,6 @@ locals {
     config.name => config if !contains(local.migrations, config.name)
   }
 
-  service_environment = var.environment == "production" ? "Production" : "Development"
-
   tasks = [
     for name, config in var.service_configs :
     config.name
