@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using System;
 
 namespace healthCheck
 {
@@ -8,6 +9,10 @@ namespace healthCheck
     {
         public static void Main(string[] args)
         {
+            // Log debugging stuff
+            var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+            Console.WriteLine($"ASPNETCORE_ENVIRONMENT: {env}");
+
             CreateHostBuilder(args).Build().Run();
         }
 
