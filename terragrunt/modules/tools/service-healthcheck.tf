@@ -10,7 +10,7 @@ module "ecs_service_healthcheck" {
       db_address             = var.db_address
       db_name                = var.db_name
       db_username            = "${var.db_credentials}:username::"
-      environment            = local.service_environment
+      environment            = title(var.environment)
       host_port              = var.healthcheck_config.port
       image                  = "${local.orchestrator_account_id}.dkr.ecr.${data.aws_region.current.name}.amazonaws.com/cdp-healthcheck:latest"
       lg_name                = aws_cloudwatch_log_group.healthcheck.name
