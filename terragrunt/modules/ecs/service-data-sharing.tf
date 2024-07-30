@@ -6,7 +6,7 @@ module "ecs_service_data_sharing" {
     {
       container_port          = var.service_configs.data_sharing.port
       cpu                     = var.service_configs.data_sharing.cpu
-      environment             = local.service_environment
+      environment             = var.environment
       host_port               = var.service_configs.data_sharing.port
       image                   = "${local.ecr_urls[var.service_configs.data_sharing.name]}:${local.orchestrator_service_version}"
       lg_name                 = aws_cloudwatch_log_group.tasks[var.service_configs.data_sharing.name].name
