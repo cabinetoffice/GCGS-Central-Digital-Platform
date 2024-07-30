@@ -2,7 +2,7 @@ using CO.CDP.EntityVerification.Events;
 
 namespace CO.CDP.EntityVerification.Tests.Events;
 
-public class EventsFactories
+public static class EventsFactories
 {
     public static OrganisationRegistered GivenOrganisationRegisteredEvent(
         Guid? id = null,

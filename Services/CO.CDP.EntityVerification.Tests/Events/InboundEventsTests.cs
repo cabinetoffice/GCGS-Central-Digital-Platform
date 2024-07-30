@@ -1,5 +1,4 @@
 using CO.CDP.EntityVerification.Events;
-using CO.CDP.EntityVerification.Tests.Events;
 using FluentAssertions;
 using static CO.CDP.EntityVerification.Tests.Events.EventsFactories;
 
@@ -27,11 +26,6 @@ public class InboundEventsTests
     [Fact]
     public void FindIdentifierByScheme_ShouldReturnNull_WhenSchemeNotFound()
     {
-        var identifiers = new List<Identifier>
-        {
-            new Identifier { Scheme = "SIC", Id = "01230", LegalName = "Acme Ltd" }
-        };
-
         var inboundEvents = GivenOrganisationUpdatedEvent();
         var result = inboundEvents.FindIdentifierByScheme("NonExistentScheme");
 
