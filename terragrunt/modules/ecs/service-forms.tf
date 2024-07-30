@@ -7,7 +7,7 @@ module "ecs_service_forms" {
       container_port          = var.service_configs.forms.port
       cpu                     = var.service_configs.forms.cpu
       conn_string_location    = var.db_connection_secret_arn
-      environment             = var.environment
+      environment             = title(var.environment)
       host_port               = var.service_configs.forms.port
       image                   = "${local.ecr_urls[var.service_configs.forms.name]}:${local.orchestrator_service_version}"
       lg_name                 = aws_cloudwatch_log_group.tasks[var.service_configs.forms.name].name
