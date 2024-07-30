@@ -131,7 +131,7 @@ public class ConnectedEntityOscCompanyQuestionTest
             HasCompaniesHouseNumber = false,
             HasOscCompaniesHouseNumber = true,
             OscCompaniesHouseNumber = "12345678",
-            ConnectedEntityOrganisationCategoryType= ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl
+            ConnectedEntityOrganisationCategoryType = ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl
         };
 
         return connectedPersonDetails;

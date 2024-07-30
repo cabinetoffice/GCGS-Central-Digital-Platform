@@ -40,7 +40,7 @@ public class ConnectedEntityLawRegisterTest
     public void OnGet_ShouldReturnPageResult()
     {
         var state = DummyConnectedPersonDetails();
-        
+
         _sessionMock
             .Setup(s => s.Get<ConnectedEntityState>(Session.ConnectedPersonKey))
             .Returns(state);

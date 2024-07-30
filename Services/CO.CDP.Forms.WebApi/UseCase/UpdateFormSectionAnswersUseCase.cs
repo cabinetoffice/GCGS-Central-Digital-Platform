@@ -65,5 +65,3 @@ public class UpdateFormSectionAnswersUseCase(IFormRepository formRepository, IOr
         }).ToList();
     }
 }
-
-

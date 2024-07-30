@@ -49,7 +49,8 @@ public class GetFormSectionQuestionsUseCaseTest(AutoMapperFixture mapperFixture)
             AllowsMultipleAnswerSets = true,
             CreatedOn = DateTimeOffset.UtcNow,
             UpdatedOn = DateTimeOffset.UtcNow,
-            Configuration = new OrganisationInformation.Persistence.Forms.FormSectionConfiguration {
+            Configuration = new OrganisationInformation.Persistence.Forms.FormSectionConfiguration
+            {
                 PluralSummaryHeadingFormat = "You have added {0} files",
                 SingularSummaryHeading = "You have added 1 file",
                 AddAnotherAnswerLabel = "Add another file?",

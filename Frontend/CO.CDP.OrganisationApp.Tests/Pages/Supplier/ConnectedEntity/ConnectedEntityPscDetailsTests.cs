@@ -15,9 +15,9 @@ public class ConnectedEntityPscDetailsTests
 
     public ConnectedEntityPscDetailsTests()
     {
-        _sessionMock = new Mock<ISession>();        
+        _sessionMock = new Mock<ISession>();
         _model = new ConnectedEntityPscDetailsModel(_sessionMock.Object);
-        
+
         _model.Id = _organisationId;
         _model.Day = "1";
         _model.Month = "1";
