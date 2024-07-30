@@ -19,7 +19,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
 
             migrationBuilder.Sql($@"
                 UPDATE form_sections
-                SET allows_multiple_answer_sets = true
+                SET allows_multiple_answer_sets = 1
                 WHERE guid = '13511cb1-9ed4-4d72-ba9e-05b4a0be880c';
             ");
         }
