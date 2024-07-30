@@ -9,6 +9,7 @@ public static class ServiceCollectionExtensions
     private static readonly Dictionary<Type, (int, string)> ExceptionMap = new()
     {
         { typeof(BadHttpRequestException), (StatusCodes.Status422UnprocessableEntity, "UNPROCESSABLE_ENTITY") },
+        { typeof(MissingOrganisationIdException), (StatusCodes.Status422UnprocessableEntity, "UNPROCESSABLE_ENTITY") },
         { typeof(DuplicateOrganisationException), (StatusCodes.Status400BadRequest, "ORGANISATION_ALREADY_EXISTS") },
         { typeof(UnknownPersonException), (StatusCodes.Status404NotFound, "PERSON_DOES_NOT_EXIST") },
         { typeof(SupplierInfoNotExistException), (StatusCodes.Status422UnprocessableEntity, "UNPROCESSABLE_ENTITY") },

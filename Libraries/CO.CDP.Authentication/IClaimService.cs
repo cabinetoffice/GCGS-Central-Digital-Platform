@@ -3,5 +3,5 @@ public interface IClaimService
 {
     string? GetUserUrn();
 
-    string? GetOrganisationId();
+    int? GetOrganisationId();
 }

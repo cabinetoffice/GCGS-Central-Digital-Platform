@@ -8,8 +8,12 @@ public class ClaimService(IHttpContextAccessor httpContextAccessor) : IClaimServ
         return httpContextAccessor.HttpContext?.User?.FindFirst("sub")?.Value;
     }
 
-    public string? GetOrganisationId()
+    public int? GetOrganisationId()
     {
-        return httpContextAccessor.HttpContext?.User?.FindFirst("org")?.Value;
+        if(int.TryParse(httpContextAccessor.HttpContext?.User?.FindFirst("org")?.Value, out int result))
+        {
+            return result;
+        }
+        return null;
     }
 }
