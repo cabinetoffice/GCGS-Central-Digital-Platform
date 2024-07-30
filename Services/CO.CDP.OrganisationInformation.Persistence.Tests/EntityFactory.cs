@@ -116,7 +116,6 @@ public static class EntityFactory
                 Address = new Address
                 {
                     StreetAddress = "1234 Default St",
-                    StreetAddress2 = "",
                     Locality = "Default City",
                     Region = "",
                     PostalCode = "12345",
@@ -189,7 +188,6 @@ public static class EntityFactory
             Address = new Address
             {
                 StreetAddress = "10 Green Lane",
-                StreetAddress2 = "Blue House",
                 Locality = "London",
                 Region = "",
                 PostalCode = "SW19 8AR",

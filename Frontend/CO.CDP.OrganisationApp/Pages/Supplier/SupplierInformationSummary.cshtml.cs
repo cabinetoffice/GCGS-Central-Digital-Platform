@@ -28,7 +28,7 @@ public class SupplierInformationSummaryModel(IOrganisationClient organisationCli
 
     public Guid FormId { get; set; }
     public Guid SectionId { get; set; }
-    
+
     public async Task<IActionResult> OnGet(Guid id)
     {
         SupplierInformation? supplierInfo;
@@ -80,7 +80,7 @@ public class SupplierInformationSummaryModel(IOrganisationClient organisationCli
     {
         if (info == null)
             return StepStatus.NotStarted;
-                
+
         if (info.CompletedConnectedPerson == false && entityCount == 0)
             return StepStatus.NotStarted;
 

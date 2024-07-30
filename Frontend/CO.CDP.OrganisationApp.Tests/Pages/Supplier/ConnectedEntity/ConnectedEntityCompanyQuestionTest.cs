@@ -1,4 +1,3 @@
-using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Pages.Supplier;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
@@ -88,7 +87,7 @@ public class ConnectedEntityCompanyQuestionTest
 
 
     [Theory]
-    [InlineData("ConnectedEntityControlCondition")]   
+    [InlineData("ConnectedEntityControlCondition")]
     public void OnPost_ShouldRedirectToExpectedPage(string expectedRedirectPage)
     {
         var state = DummyConnectedPersonDetails();

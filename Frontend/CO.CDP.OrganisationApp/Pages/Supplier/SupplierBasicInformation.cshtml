@@ -25,16 +25,12 @@
         }
 
         return text;
-    } 
+    }
 
     void RenderAddress(CO.CDP.Organisation.WebApiClient.Address address)
     {
         <p class="govuk-body">@address.StreetAddress</p>
 
-        @if (!string.IsNullOrWhiteSpace(address.StreetAddress2))
-        {
-            <p class="govuk-body">@address.StreetAddress2</p>
-        }
         <p class="govuk-body">@address.Locality</p>
         @if (!string.IsNullOrWhiteSpace(address.Region))
         {
@@ -216,7 +212,7 @@
                         }
                     </dt>
                     <dd class="govuk-summary-list__actions">
-                        <a class="govuk-link" href="supplier-qualification-summary">                            
+                        <a class="govuk-link" href="supplier-qualification-summary">
                             @GetActionStringWithoutItems(details.CompletedQualification, details.Qualifications.Count)<span class="govuk-visually-hidden"> Change</span>
                         </a>
                     </dd>
