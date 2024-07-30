@@ -20,6 +20,10 @@ public class PponGeneratedSubscriber(
         {
             logger.LogError(cause.Message, cause);
         }
+        catch (IdentifierAlreadyAssigned cause)
+        {
+            logger.LogError(cause.Message, cause);
+        }
     }
 
     private async Task AssignIdentifier(PponGenerated @event)

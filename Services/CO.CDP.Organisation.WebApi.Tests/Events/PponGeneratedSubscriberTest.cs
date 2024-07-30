@@ -38,7 +38,7 @@ public class PponGeneratedSubscriberTest
     }
 
     [Fact]
-    public void ItIgnoresTheOrganisationNotFoundException()
+    public async Task ItIgnoresTheOrganisationNotFoundException()
     {
         var organisationId = Guid.Parse("36a98954-f9d3-4695-a29b-b8b97318f3ac");
         var exception = new OrganisationNotFoundException(organisationId);
@@ -46,19 +46,42 @@ public class PponGeneratedSubscriberTest
         _useCase.Setup(u => u.Execute(It.IsAny<AssignOrganisationIdentifier>()))
             .Throws(exception);
 
-        var result = Subscriber.Handle(PponGenerated(organisationId: organisationId));
+        await Subscriber.Handle(PponGenerated(organisationId: organisationId));
 
-        result.Should().BeAssignableTo<Task>();
+        _logger.Invocations.Count.Should().BePositive();
     }
 
-    private static PponGenerated PponGenerated(Guid organisationId)
+    [Fact]
+    public async Task ItIgnoresTheIdentifierAlreadyAssignedException()
+    {
+        var organisationId = Guid.Parse("36a98954-f9d3-4695-a29b-b8b97318f3ac");
+        var exception = new IdentifierAlreadyAssigned(organisationId, new OrganisationIdentifier
+        {
+            Id = "123945", LegalName = "Acme Ltd", Scheme = "CDP-PPON"
+        });
+
+        _useCase.Setup(u => u.Execute(It.IsAny<AssignOrganisationIdentifier>()))
+            .Throws(exception);
+
+        await Subscriber.Handle(PponGenerated(
+            organisationId: organisationId, id: "123945", legalName: "Acme Ltd", scheme: "CDP-PPON"
+        ));
+
+        _logger.Invocations.Count.Should().BePositive();
+    }
+
+    private static PponGenerated PponGenerated(
+        Guid organisationId,
+        string? id = null,
+        string? scheme = null,
+        string? legalName = null)
     {
         return new PponGenerated
         {
             OrganisationId = organisationId,
-            Id = "c0777aeb968b4113a27d94e55b10c1b4",
-            Scheme = "CDP-PPON",
-            LegalName = "Acme Ltd"
+            Id = id ?? "c0777aeb968b4113a27d94e55b10c1b4",
+            Scheme = scheme ?? "CDP-PPON",
+            LegalName = legalName ?? "Acme Ltd"
         };
     }
 }
