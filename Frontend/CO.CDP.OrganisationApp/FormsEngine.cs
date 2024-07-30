@@ -111,10 +111,10 @@ public class FormsEngine(IFormsClient formsApiClient, ITempDataService tempDataS
     {
         return new UpdateFormSectionAnswers(
             answers: answers.Select(a => new Forms.WebApiClient.FormAnswer(
-                id: answerSetId,
+                id: Guid.NewGuid(),
                 boolValue: a.Answer?.BoolValue,
                 numericValue: a.Answer?.NumericValue,
-                dateValue: new DateTimeOffset(2024, 1, 1, 0, 0, 0, TimeSpan.FromHours(0)),
+                dateValue: a.Answer?.DateValue != null ? a.Answer?.DateValue.Value.ToUniversalTime() : null,
                 startValue: a.Answer?.StartValue,
                 endValue: a.Answer?.EndValue,
                 textValue: a.Answer?.TextValue,
