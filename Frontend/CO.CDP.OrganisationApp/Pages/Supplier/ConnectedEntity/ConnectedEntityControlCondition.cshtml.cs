@@ -186,8 +186,6 @@ public class ConnectedEntityControlConditionModel(ISession session) : PageModel
                 }
                 break;
         }
-
         return backPage;
     }
-
 }

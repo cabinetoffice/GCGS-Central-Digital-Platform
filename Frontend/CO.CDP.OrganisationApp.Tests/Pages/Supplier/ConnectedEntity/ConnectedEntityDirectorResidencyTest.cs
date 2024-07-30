@@ -91,20 +91,23 @@ public class ConnectedEntityDirectorResidencyTest
         result.Should().BeOfType<RedirectToPageResult>();
     }
 
-    [Fact]
-    public void OnPost_ShouldRedirectToConnectedEntityAddressPage()
+    [Theory]
+    [InlineData("ConnectedEntityAddress", false)]
+    [InlineData("ConnectedEntityCheckAnswersIndividualOrTrust", true)]
+    public void OnPost_ShouldRedirectToExpectedPagePage(string expectedPage, bool redirectToCheckYourAnswer)
     {
         var state = DummyConnectedPersonDetails();
 
         _sessionMock.Setup(s => s.Get<ConnectedEntityState>(Session.ConnectedPersonKey)).
             Returns(state);
+        _model.RedirectToCheckYourAnswer = redirectToCheckYourAnswer;
 
         var result = _model.OnPost();
 
         var redirectToPageResult = result.Should().BeOfType<RedirectToPageResult>().Subject;
 
         result.Should().BeOfType<RedirectToPageResult>()
-            .Which.PageName.Should().Be("ConnectedEntityAddress");
+            .Which.PageName.Should().Be(expectedPage);
     }
 
     [Fact]
