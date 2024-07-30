@@ -144,7 +144,7 @@ public class ConnectedEntityCheckAnswersOrganisationModel(
             individualOrTrust: connectedIndividualTrust,
             organisation: connectedOrganisation,
             overseasCompanyNumber: "",
-            registeredDate: state.RegistrationDate!.Value,
+            registeredDate: (state.RegistrationDate.HasValue ? state.RegistrationDate.Value : null),
             registerName: state.RegisterName,
             startDate: null
         );
