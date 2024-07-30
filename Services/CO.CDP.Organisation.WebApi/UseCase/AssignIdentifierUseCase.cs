@@ -5,7 +5,7 @@ using CO.CDP.OrganisationInformation.Persistence;
 namespace CO.CDP.Organisation.WebApi.UseCase;
 
 public class AssignIdentifierUseCase(IOrganisationRepository organisations)
-    : IUseCase<AssignOrganisationIdentifier, Boolean>
+    : IUseCase<AssignOrganisationIdentifier, bool>
 {
     public async Task<bool> Execute(AssignOrganisationIdentifier command)
     {
