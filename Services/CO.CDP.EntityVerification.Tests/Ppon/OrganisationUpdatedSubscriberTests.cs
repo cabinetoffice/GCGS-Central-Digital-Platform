@@ -10,7 +10,7 @@ namespace CO.CDP.EntityVerification.Tests.Events;
 public class OrganisationUpdatedSubscriberTests
 {
     [Fact]
-    public async Task Handle_InsertsNewIdentifiers_WhenPponExists()
+    public async Task Handle_InsertsNewIdentifiersThatDoNotExist_WhenPponExists()
     {
         var mockPponRepository = new Mock<IPponRepository>();
         var subscriber = new OrganisationUpdatedSubscriber(mockPponRepository.Object);
@@ -32,6 +32,27 @@ public class OrganisationUpdatedSubscriberTests
             s => s.Save(It.Is<EntityVerification.Persistence.Ppon>(p =>
                 (p.IdentifierId == testPpon.IdentifierId))),
             Times.Once);
+        testPpon.Identifiers.Count.Should().Be(mockEvent.AllIdentifiers().Count());
+    }
+
+    [Fact]
+    public async Task Handle_DoesNotInsertExistingIdentifiers_WhenPponExists()
+    {
+        var mockPponRepository = new Mock<IPponRepository>();
+        var subscriber = new OrganisationUpdatedSubscriber(mockPponRepository.Object);
+        var mockEvent = GivenOrganisationUpdatedEvent();
+        var testPpon = GivenPpon();
+        var pponIdentifier = CreatePponIdentifier();
+
+        mockEvent.AdditionalIdentifiers.Add(pponIdentifier);
+
+        mockPponRepository
+            .Setup(repo => repo.FindPponByPponIdAsync(pponIdentifier!.Id))
+            .ReturnsAsync(testPpon);
+        testPpon.Identifiers = Identifier.GetPersistenceIdentifiers(mockEvent.AllIdentifiers());
+
+        await subscriber.Handle(mockEvent);
+
         testPpon.Identifiers.Count.Should().Be(mockEvent.AllIdentifiers().Count());
     }
 

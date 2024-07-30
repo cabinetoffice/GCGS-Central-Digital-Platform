@@ -16,7 +16,7 @@ public class OrganisationUpdatedSubscriber(
 
     public async Task Handle(OrganisationUpdated @event)
     {
-        var pponIdentifier = @event.FindIdentifierByScheme(Events.Identifier.PponSchemeName);
+        var pponIdentifier = @event.FindIdentifierByScheme(IdentifierSchemes.Ppon);
 
         if (pponIdentifier != null)
         {
@@ -24,7 +24,11 @@ public class OrganisationUpdatedSubscriber(
 
             if (pponToUpdate != null)
             {
-                var identifiersToPersist = Persistence.Identifier.GetPersistenceIdentifiers(@event.AllIdentifiers());
+                // Add new identifiers that do not already exist.
+                var newEventIdentifiers = @event.AllIdentifiers()
+                    .Where(pi => !pponToUpdate.Identifiers.Any(i => i.IdentifierId == pi.Id && i.Scheme == pi.Scheme))
+                    .ToList();
+                var identifiersToPersist = Persistence.Identifier.GetPersistenceIdentifiers(newEventIdentifiers);
 
                 foreach (var identifier in identifiersToPersist)
                 {

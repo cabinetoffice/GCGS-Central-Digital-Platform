@@ -40,7 +40,7 @@ public class EventsFactories
         {
             Id = "GB123123123",
             LegalName = "Acme Ltd",
-            Scheme = Identifier.PponSchemeName,
+            Scheme = IdentifierSchemes.Ppon,
             Uri = null
         };
     }
