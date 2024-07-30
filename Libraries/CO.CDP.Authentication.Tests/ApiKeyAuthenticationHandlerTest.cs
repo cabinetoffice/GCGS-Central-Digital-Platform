@@ -1,11 +1,11 @@
+using System.Security.Claims;
+using System.Text.Encodings.Web;
 using FluentAssertions;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moq;
-using System.Security.Claims;
-using System.Text.Encodings.Web;
 
 namespace CO.CDP.Authentication.Tests;
 
@@ -67,7 +67,7 @@ public class ApiKeyAuthenticationHandlerTest
     [Fact]
     public async Task AuthenticateAsync_ValidApiKey_ReturnsSuccessWithOrganisationKeyClaimType()
     {
-        var orgId = Guid.NewGuid();
+        var orgId = 42;
         await SetHandlerAndApiKeyHeader(ValidApiKey);
         _apiKeyValidatorMock.Setup(v => v.Validate(ValidApiKey))
             .ReturnsAsync((true, orgId, ["ADMIN", "MANAGER"]));
@@ -79,14 +79,14 @@ public class ApiKeyAuthenticationHandlerTest
         var claims = result.Principal?.Claims;
         claims.Should().NotBeNull();
         claims.Should().Contain(c => c.Type == "channel" && c.Value == "organisation-key");
-        claims.Should().Contain(c => c.Type == "org" && c.Value == orgId.ToString());
+        claims.Should()
+            .Contain(c => c.Type == "org" && c.Value == orgId.ToString() && c.ValueType == ClaimValueTypes.Integer);
         claims.Should().Contain(c => c.Type == "scope" && c.Value == "ADMIN MANAGER");
     }
 
     [Fact]
     public async Task AuthenticateAsync_ValidApiKey_ReturnsSuccessWithServiceKeyClaimType()
     {
-        var orgId = Guid.NewGuid();
         await SetHandlerAndApiKeyHeader(ValidApiKey);
         _apiKeyValidatorMock.Setup(v => v.Validate(ValidApiKey))
             .ReturnsAsync((true, null, []));
