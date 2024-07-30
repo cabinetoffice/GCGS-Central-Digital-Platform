@@ -4,7 +4,7 @@ using CO.CDP.Testcontainers.PostgreSql;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using static CO.CDP.EntityVerification.Persistence.IPponRepository.PponRepositoryException;
-using static CO.CDP.EntityVerification.Tests.Events.PponFactories;
+using static CO.CDP.EntityVerification.Tests.Ppon.PponFactories;
 
 namespace CO.CDP.EntityVerification.Tests.Persistence;
 

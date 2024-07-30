@@ -3,8 +3,9 @@ using CO.CDP.EntityVerification.Persistence;
 using CO.CDP.EntityVerification.Ppon;
 using CO.CDP.MQ;
 using Moq;
+using static CO.CDP.EntityVerification.Tests.Events.EventsFactories;
 
-namespace CO.CDP.EntityVerification.Tests.Events;
+namespace CO.CDP.EntityVerification.Tests.Ppon;
 
 public class OrganisationRegisteredSubscriberTests
 {
@@ -20,7 +21,7 @@ public class OrganisationRegisteredSubscriberTests
 
         var handler = new OrganisationRegisteredSubscriber(pponService.Object, pponRepository.Object, publisher.Object);
         var orgId = Guid.NewGuid();
-        var @event = EventsFactories.GivenOrganisationRegisteredEvent(orgId);
+        var @event = GivenOrganisationRegisteredEvent(orgId);
 
         await handler.Handle(@event);
 

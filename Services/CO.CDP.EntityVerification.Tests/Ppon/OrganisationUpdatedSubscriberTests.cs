@@ -2,11 +2,10 @@ using CO.CDP.EntityVerification.Persistence;
 using CO.CDP.EntityVerification.Ppon;
 using FluentAssertions;
 using Moq;
-
 using static CO.CDP.EntityVerification.Tests.Events.EventsFactories;
-using static CO.CDP.EntityVerification.Tests.Events.PponFactories;
+using static CO.CDP.EntityVerification.Tests.Ppon.PponFactories;
 
-namespace CO.CDP.EntityVerification.Tests.Events;
+namespace CO.CDP.EntityVerification.Tests.Ppon;
 public class OrganisationUpdatedSubscriberTests
 {
     [Fact]
@@ -21,7 +20,7 @@ public class OrganisationUpdatedSubscriberTests
         mockEvent.AdditionalIdentifiers.Add(pponIdentifier);
 
         mockPponRepository
-            .Setup(repo => repo.FindPponByPponIdAsync(pponIdentifier!.Id))
+            .Setup(repo => repo.FindPponByPponIdAsync(pponIdentifier.Id))
             .ReturnsAsync(testPpon);
 
         testPpon.Identifiers.Should().BeEmpty();
@@ -47,7 +46,7 @@ public class OrganisationUpdatedSubscriberTests
         mockEvent.AdditionalIdentifiers.Add(pponIdentifier);
 
         mockPponRepository
-            .Setup(repo => repo.FindPponByPponIdAsync(pponIdentifier!.Id))
+            .Setup(repo => repo.FindPponByPponIdAsync(pponIdentifier.Id))
             .ReturnsAsync(testPpon);
         testPpon.Identifiers = Identifier.GetPersistenceIdentifiers(mockEvent.AllIdentifiers());
 
