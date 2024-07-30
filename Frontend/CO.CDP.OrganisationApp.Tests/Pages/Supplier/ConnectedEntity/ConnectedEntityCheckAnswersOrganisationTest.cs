@@ -70,6 +70,21 @@ public class ConnectedEntityCheckAnswersOrganisationTest
     }
 
     [Fact]
+    public async Task OnGetChange_ShouldGetConnectedEntityAndLoadIntoSession_WhenIdAndConnectedIdSet()
+    {
+        _mockOrganisationClient
+            .Setup(c => c.GetConnectedEntityAsync(_organisationId, _entityId))
+            .ReturnsAsync(DummyConnectedEntity());
+
+        _model.ConnectedEntityId = _entityId;
+
+        await _model.OnGetChange(_entityId);
+
+        _sessionMock.Verify(s => s.Set(Session.ConnectedPersonKey, It.Is<ConnectedEntityState>(v =>
+            v.CompaniesHouseNumber == "012345")), Times.Once);
+    }
+
+    [Fact]
     public async Task OnPost_ShouldReturnPage_WhenModelStateIsInvalid()
     {
         _sessionMock
@@ -126,7 +141,21 @@ public class ConnectedEntityCheckAnswersOrganisationTest
         await _model.OnPost();
 
         _sessionMock.Verify(s => s.Remove(Session.ConnectedPersonKey), Times.Once);
+    }
 
+    [Fact]
+    public async Task OnPost_ShouldUpdateConnectedPerson_WhenConnectedEntityIdIsSet()
+    {
+        var state = DummyConnectedPersonDetails();
+
+        _model.ConnectedEntityId = _entityId;
+
+        _sessionMock.Setup(s => s.Get<ConnectedEntityState>(Session.ConnectedPersonKey))
+            .Returns(state);
+
+        await _model.OnPost();
+
+        _mockOrganisationClient.Verify(c => c.UpdateConnectedEntityAsync(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<UpdateConnectedEntity>()), Times.Once());
     }
 
     private RegisterConnectedEntity DummyPayload()
@@ -201,5 +230,36 @@ public class ConnectedEntityCheckAnswersOrganisationTest
         };
 
         return connectedPersonDetails;
+    }
+
+    private Organisation.WebApiClient.ConnectedEntity DummyConnectedEntity()
+    {
+        var connectedOrganisation = new Organisation.WebApiClient.ConnectedOrganisation(
+            ConnectedOrganisationCategory.RegisteredCompany,
+            [ControlCondition.OwnsShares, ControlCondition.HasVotingRights],
+            1,
+            new DateTimeOffset?(),
+            "Law registered text",
+            "Name text",
+            new Guid(),
+            "registeredLegalForm text"
+        );
+
+        var connectedEntity = new Organisation.WebApiClient.ConnectedEntity(
+            new List<Address>(),
+            "012345",
+            new DateTimeOffset?(),
+            Organisation.WebApiClient.ConnectedEntityType.Organisation,
+            true,
+            new Guid(),
+            null,
+            connectedOrganisation,
+            "org name",
+            null,
+            null,
+            null
+        );
+
+        return connectedEntity;
     }
 }

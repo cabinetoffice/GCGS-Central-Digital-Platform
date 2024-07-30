@@ -107,9 +107,9 @@ public class ConnectedEntityCheckAnswersOrganisationModel(
             else
             {
                 await organisationClient.RegisterConnectedPerson(Id, payload);
-
-                session.Remove(Session.ConnectedPersonKey);
             }
+
+            session.Remove(Session.ConnectedPersonKey);
         }
         catch (ApiException ex) when (ex.StatusCode == 404)
         {
