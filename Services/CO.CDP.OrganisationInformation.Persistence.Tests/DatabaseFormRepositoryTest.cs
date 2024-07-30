@@ -368,6 +368,7 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
             {
                 new FormAnswer
                 {
+                    Guid= Guid.NewGuid(),
                     Question = question,
                     FormAnswerSet = null,
                     BoolValue = true,
@@ -378,9 +379,7 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
             Deleted = false,
             CreatedOn = DateTimeOffset.UtcNow,
             UpdatedOn = DateTimeOffset.UtcNow
-        };
-
-        answerSet.Answers.Add(answer);
+        };        
 
         await repository.SaveAnswerSet(answerSet);
 
@@ -452,9 +451,7 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
             Deleted = false,
             CreatedOn = DateTimeOffset.UtcNow,
             UpdatedOn = DateTimeOffset.UtcNow
-        };
-
-        answerSet.Answers.Add(answer);
+        };              
 
         await repository.SaveAnswerSet(answerSet);
 
