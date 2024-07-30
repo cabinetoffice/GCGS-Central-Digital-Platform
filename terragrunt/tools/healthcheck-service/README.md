@@ -36,5 +36,15 @@ docker push ${ACCOUNT_ID}.dkr.ecr.eu-west-2.amazonaws.com/cdp-healthcheck:latest
 
 ```shell
 aws-switch-to-cdp-sirsi-development-goaco-terraform
-ave aws ecs update-service --cluster cdp-sirsi --service healthcheck --force-new-deployment
+ave aws ecs update-service --cluster cdp-sirsi --service healthcheck --force-new-deployment | jq .
+```
+
+```shell
+aws-switch-to-cdp-sirsi-staging-goaco-terraform
+ave aws ecs update-service --cluster cdp-sirsi --service healthcheck --force-new-deployment | jq .
+```
+
+```shell
+aws-switch-to-cdp-sirsi-integration-goaco-terraform
+ave aws ecs update-service --cluster cdp-sirsi --service healthcheck --force-new-deployment | jq .
 ```
