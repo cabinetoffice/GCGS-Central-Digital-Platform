@@ -24,8 +24,11 @@ public class AwsFileManagerTest : IClassFixture<LocalStackFixture>
 
         _awsConfig = new AwsConfiguration
         {
-            AccessKeyId = "test",
-            SecretAccessKey = "test",
+            Credentials = new Credentials
+            {
+                AccessKeyId = "test",
+                SecretAccessKey = "test"
+            },
             Buckets = new Buckets
             {
                 StagingBucket = StagingBucket,

@@ -24,10 +24,10 @@ public class OrganisationRegisteredSubscriber(
 
         PponGenerated pponGenerated = new()
         {
+            OrganisationId = @event.Id,
             Id = newPpon.IdentifierId,
             LegalName = @event.Identifier.LegalName,
-            Scheme = @event.Identifier.Scheme,
-            OrganisationId = @event.Id
+            Scheme = "CDP-PPON"
         };
 
         pponRepository.Save(newPpon);

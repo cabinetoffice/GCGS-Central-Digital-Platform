@@ -20,6 +20,8 @@ public class ConnectedEntityDirectorResidencyModel(ISession session) : PageModel
     public string? DirectorLocation { get; set; }
     public string? Caption { get; set; }
     public string? Heading { get; set; }
+    [BindProperty]
+    public bool? RedirectToCheckYourAnswer { get; set; }
 
     public IActionResult OnGet()
     {
@@ -51,9 +53,14 @@ public class ConnectedEntityDirectorResidencyModel(ISession session) : PageModel
         if (!ModelState.IsValid) return Page();
 
         state.DirectorLocation = DirectorLocation;
+
         session.Set(Session.ConnectedPersonKey, state);
 
-        return RedirectToPage("ConnectedEntityAddress", new { Id, ConnectedEntityId, AddressType = AddressType.Registered, UkOrNonUk = "uk" });
+        var redirectPage = (RedirectToCheckYourAnswer == true
+                            ? "ConnectedEntityCheckAnswersIndividualOrTrust"
+                            : "ConnectedEntityAddress");
+
+        return RedirectToPage(redirectPage, new { Id, ConnectedEntityId, AddressType = AddressType.Registered, UkOrNonUk = "uk" });
     }
 
     private void InitModal(ConnectedEntityState state, bool reset = false)
