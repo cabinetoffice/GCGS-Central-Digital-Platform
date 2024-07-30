@@ -11,8 +11,8 @@ internal static class HttpResponseMessageAssertionsExtensions
     {
         using (new AssertionScope("Content"))
         {
-                var actualContent = await assertions.Subject.Content.ReadFromJsonAsync<T>();
-                actualContent.Should().BeEquivalentTo(content);
+            var actualContent = await assertions.Subject.Content.ReadFromJsonAsync<T>();
+            actualContent.Should().BeEquivalentTo(content);
         }
     }
 }

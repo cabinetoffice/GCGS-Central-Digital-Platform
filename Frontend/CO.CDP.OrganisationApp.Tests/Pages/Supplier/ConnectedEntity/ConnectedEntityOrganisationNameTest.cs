@@ -1,4 +1,3 @@
-using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Pages.Supplier;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;

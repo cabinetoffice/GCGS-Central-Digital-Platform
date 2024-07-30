@@ -28,7 +28,7 @@ public class ConnectedEntitySupplierCompanyQuestionTest
             .Setup(s => s.Get<ConnectedEntityState>(Session.ConnectedPersonKey))
             .Returns(DummyConnectedPersonDetails());
 
-        var result =  _model.OnGet(null);
+        var result = _model.OnGet(null);
 
         result.Should().BeOfType<PageResult>();
     }
@@ -76,7 +76,7 @@ public class ConnectedEntitySupplierCompanyQuestionTest
 
     [Fact]
     public void OnPost_ShouldRedirectToConnectedEntityPersonType()
-    {        
+    {
         _sessionMock.Setup(s => s.Get<ConnectedEntityState>(Session.ConnectedPersonKey)).
             Returns(DummyConnectedPersonDetails());
 
@@ -88,7 +88,7 @@ public class ConnectedEntitySupplierCompanyQuestionTest
             .Which.PageName.Should().Be("ConnectedEntityPersonType");
 
     }
-    
+
     private ConnectedEntityState DummyConnectedPersonDetails()
     {
         var connectedPersonDetails = new ConnectedEntityState
@@ -104,8 +104,8 @@ public class ConnectedEntitySupplierCompanyQuestionTest
 
     private static List<ConnectedEntityLookup> ConnectedEntities =>
     [
-         new(Guid.NewGuid(), "e1",It.IsAny<Uri>()),
-         new(Guid.NewGuid(), "e2",It.IsAny<Uri>()),
+         new(Guid.NewGuid(), ConnectedEntityType.Organisation, "e1", It.IsAny<Uri>()),
+        new(Guid.NewGuid(), ConnectedEntityType.Organisation, "e2", It.IsAny<Uri>()),
     ];
 
     private static SupplierInformation SupplierInformationClientModel => new(

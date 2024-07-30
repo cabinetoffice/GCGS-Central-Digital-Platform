@@ -20,7 +20,8 @@ public class Identifier : IEntityDate
 
         foreach (var e in evIds)
         {
-            ids.Add(new Identifier {
+            ids.Add(new Identifier
+            {
                 IdentifierId = e.Id,
                 LegalName = e.LegalName,
                 Scheme = e.Scheme,

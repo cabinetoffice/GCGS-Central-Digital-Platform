@@ -66,10 +66,6 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                         .HasColumnType("text")
                         .HasColumnName("street_address");
 
-                    b.Property<string>("StreetAddress2")
-                        .HasColumnType("text")
-                        .HasColumnName("street_address2");
-
                     b.Property<DateTimeOffset>("UpdatedOn")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
@@ -895,6 +891,10 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                             b1.Property<Guid?>("PersonId")
                                 .HasColumnType("uuid")
                                 .HasColumnName("person_id");
+
+                            b1.Property<string>("ResidentCountry")
+                                .HasColumnType("text")
+                                .HasColumnName("resident_country");
 
                             b1.Property<DateTimeOffset>("UpdatedOn")
                                 .ValueGeneratedOnAdd()

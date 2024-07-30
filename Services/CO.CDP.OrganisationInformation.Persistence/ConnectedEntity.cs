@@ -49,6 +49,7 @@ public class ConnectedEntity : IEntityDate
         public List<ControlCondition> ControlCondition { get; set; } = [];
         public ConnectedPersonType ConnectedType { get; set; }
         public Guid? PersonId { get; set; }
+        public string? ResidentCountry { get; set; }
         public DateTimeOffset CreatedOn { get; set; }
         public DateTimeOffset UpdatedOn { get; set; }
     }

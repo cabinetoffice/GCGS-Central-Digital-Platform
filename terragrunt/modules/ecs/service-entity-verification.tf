@@ -6,6 +6,7 @@ module "ecs_service_entity_verification" {
     {
       container_port                      = var.service_configs.entity_verification.port
       cpu                                 = var.service_configs.entity_verification.cpu
+      conn_string_location                = var.db_connection_secret_arn
       environment                         = local.service_environment
       host_port                           = var.service_configs.entity_verification.port
       image                               = "${local.ecr_urls[var.service_configs.entity_verification.name]}:${local.orchestrator_service_version}"

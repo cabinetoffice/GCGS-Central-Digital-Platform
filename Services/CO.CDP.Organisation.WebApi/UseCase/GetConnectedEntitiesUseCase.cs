@@ -10,7 +10,7 @@ public class GetConnectedEntitiesUseCase(IConnectedEntityRepository connectedEnt
         var entities = await connectedEntityRepository.GetSummary(organisationId);
         return mapper.Map<IEnumerable<Model.ConnectedEntityLookup>>(entities, o =>
         {
-            o.Items["OrganisationId"] = organisationId;            
+            o.Items["OrganisationId"] = organisationId;
         });
     }
 }

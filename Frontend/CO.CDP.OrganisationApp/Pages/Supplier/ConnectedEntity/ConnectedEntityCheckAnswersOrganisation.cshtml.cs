@@ -77,15 +77,16 @@ public class ConnectedEntityCheckAnswersOrganisationModel(
         {
             return Redirect("/page-not-found");
         }
-        
+
         return RedirectToPage("ConnectedPersonSummary", new { Id });
     }
+
     private void InitModal(ConnectedEntityState state)
     {
         Caption = state.GetCaption();
         Heading = $"Check your answers";
-        
     }
+
     private RegisterConnectedEntity? RegisterConnectedEntityPayload(ConnectedEntityState state)
     {
         CreateConnectedOrganisation? connectedOrganisation = null;
@@ -116,7 +117,8 @@ public class ConnectedEntityCheckAnswersOrganisationModel(
                 firstName: "",
                 lastName: "",
                 nationality: "",
-                personId: null
+                personId: null,
+                residentCountry: state.DirectorLocation
             );
         }
 
@@ -138,7 +140,7 @@ public class ConnectedEntityCheckAnswersOrganisationModel(
             companyHouseNumber: state.CompaniesHouseNumber,
             endDate: null,
             entityType: state.ConnectedEntityType!.Value.AsApiClientConnectedEntityType(),
-            hasCompnayHouseNumber: state.HasCompaniesHouseNumber!.Value,
+            hasCompnayHouseNumber: state.SupplierHasCompanyHouseNumber!.Value,
             individualOrTrust: connectedIndividualTrust,
             organisation: connectedOrganisation,
             overseasCompanyNumber: "",
@@ -158,11 +160,9 @@ public class ConnectedEntityCheckAnswersOrganisationModel(
             postalCode: addressDetails.Postcode,
             region: null,
             streetAddress: addressDetails.AddressLine1,
-            streetAddress2: null,
             type: addressType);
 
     }
-
     private (bool valid, ConnectedEntityState state) ValidatePage()
     {
         var cp = session.Get<ConnectedEntityState>(Session.ConnectedPersonKey);
