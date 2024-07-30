@@ -268,6 +268,50 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
     }
 
     [Fact]
+    public async Task GetFormAnswerSetAsync_WhenFormAnswerSetDeleted_DoesNotReturnsFormAnswerSet()
+    {
+        using var context = postgreSql.OrganisationInformationContext();
+        var repository = new DatabaseFormRepository(context);
+
+        var formId = Guid.NewGuid();
+        var sectionId = Guid.NewGuid();
+        var organisationId = Guid.NewGuid();
+        var answerSetId = Guid.NewGuid();
+        var questionId = Guid.NewGuid();
+
+        var form = GivenForm(formId);
+        var section = GivenSection(sectionId, form);
+        form.Sections.Add(section);
+
+        context.Forms.Add(form);
+        await context.SaveChangesAsync();
+
+        var organisation = GivenOrganisation(organisationId);
+        context.Organisations.Add(organisation);
+        await context.SaveChangesAsync();
+
+        var answerSet = new FormAnswerSet
+        {
+            Guid = answerSetId,
+            OrganisationId = organisation.Id,
+            Organisation = organisation,
+            Section = section,
+            Answers = [],
+            Deleted = true,
+            CreatedOn = DateTimeOffset.UtcNow,
+            UpdatedOn = DateTimeOffset.UtcNow
+        };
+
+        context.FormAnswerSets.Add(answerSet);
+        await context.SaveChangesAsync();
+
+        var foundAnswerSet = await repository.GetFormAnswerSetsAsync(sectionId, organisation.Guid);
+
+        foundAnswerSet.Should().NotBeNull();
+        foundAnswerSet!.Should().HaveCount(0);
+    }
+
+    [Fact]
     public async Task GetFormAnswerSetAsync_WhenFormAnswerSetExists_ReturnsFormAnswerSet()
     {
         using var context = postgreSql.OrganisationInformationContext();
