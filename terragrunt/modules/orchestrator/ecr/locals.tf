@@ -4,11 +4,13 @@ locals {
 
   read_principals = [for name, id in var.account_ids : "arn:aws:iam::${id}:root"]
 
+  tools_repositories = ["grafana", "codebuild", "pgadmin", "healthcheck"]
+
   repositories = concat(
     [
       for name, config in var.service_configs :
       config.name
     ],
-  ["grafana", "codebuild", "pgadmin"])
+  local.tools_repositories)
 
 }
