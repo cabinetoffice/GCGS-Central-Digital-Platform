@@ -105,7 +105,8 @@ public class ConnectedEntityCheckAnswersIndividualOrTrustModel(
                 firstName: state.FirstName,
                 lastName: state.LastName,
                 nationality: state.Nationality,
-                personId: null
+                personId: null,
+                residentCountry: state.DirectorLocation
             );
         }
 
