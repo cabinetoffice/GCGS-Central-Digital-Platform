@@ -1,5 +1,3 @@
-using System.ComponentModel.DataAnnotations;
-
 namespace CO.CDP.Forms.WebApi.Model;
 
 public record UpdateFormSectionAnswers

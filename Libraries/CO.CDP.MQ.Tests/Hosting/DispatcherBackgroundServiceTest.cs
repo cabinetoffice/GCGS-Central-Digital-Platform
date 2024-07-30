@@ -1,6 +1,5 @@
 using CO.CDP.MQ.Hosting;
 using FluentAssertions;
-using FluentAssertions.Common;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 

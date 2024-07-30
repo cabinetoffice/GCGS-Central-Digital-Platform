@@ -6,7 +6,6 @@ using CO.CDP.Organisation.WebApi.Tests.UseCase.Extensions;
 using CO.CDP.Organisation.WebApi.UseCase;
 using CO.CDP.OrganisationInformation;
 using FluentAssertions;
-using FluentAssertions.Execution;
 using Moq;
 using Persistence = CO.CDP.OrganisationInformation.Persistence;
 
