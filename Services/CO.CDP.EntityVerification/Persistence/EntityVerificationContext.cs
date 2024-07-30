@@ -33,15 +33,18 @@ public class EntityVerificationContext : DbContext
             ppon.HasIndex(p => p.Name);
             ppon.Property(p => p.CreatedOn).HasTimestampDefault();
             ppon.Property(p => p.UpdatedOn).HasTimestampDefault();
-            ppon.OwnsMany(e => e.Identifiers, i =>
-            {
-                i.WithOwner().HasForeignKey("ppon_id");
-                i.HasKey(p => p.Id);
-                i.HasIndex(p => p.IdentifierId);
-                i.HasIndex(p => p.Scheme);
-                i.Property(p => p.CreatedOn).HasTimestampDefault();
-                i.Property(p => p.UpdatedOn).HasTimestampDefault();
-            });
+        });
+
+        modelBuilder.Entity<Identifier>(identifier =>
+        {
+            identifier.HasKey(p => p.Id);
+            identifier.HasIndex(p => p.IdentifierId);
+            identifier.HasIndex(p => p.Scheme);
+            identifier.Property(p => p.CreatedOn).HasTimestampDefault();
+            identifier.Property(p => p.UpdatedOn).HasTimestampDefault();
+            identifier.HasOne<Ppon>()
+                .WithMany(p => p.Identifiers)
+                .HasForeignKey("PponId");
         });
 
         base.OnModelCreating(modelBuilder);

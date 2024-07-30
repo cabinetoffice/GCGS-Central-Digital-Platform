@@ -8,7 +8,7 @@ module "ecs_migration_tasks" {
     {
       cpu                     = var.service_configs.entity_verification_migrations.cpu
       conn_string_location    = var.db_connection_secret_arn
-      environment             = local.service_environment
+      environment             = title(var.environment)
       image                   = "${local.ecr_urls[each.value.name]}:${local.orchestrator_service_version}"
       lg_name                 = aws_cloudwatch_log_group.tasks[each.value.name].name
       lg_prefix               = "db"

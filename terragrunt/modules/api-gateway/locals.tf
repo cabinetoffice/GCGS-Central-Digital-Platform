@@ -4,7 +4,10 @@ locals {
 
   services = {
     for name, config in var.service_configs :
-    name => config if !contains(["organisation-information-migrations", "organisation-app"], config.name)
+    name => config if !contains([
+      "entity-verification-migrations",
+      "organisation-information-migrations",
+      "organisation-app"], config.name)
   }
 
   endpoints = [
