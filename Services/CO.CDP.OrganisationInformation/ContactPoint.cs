@@ -14,9 +14,6 @@ public record ContactPoint
     /// <example>"079256123321"</example>
     public string? Telephone { get; init; }
 
-    /// <example>"02080776644"</example>
-    public string? FaxNumber { get; init; }
-
     /// <example>"https://example.com"</example>
     public Uri? Url { get; init; }
 }
