@@ -167,7 +167,7 @@ public class ConnectedEntityCheckAnswersIndividualOrTrustModel(
             hasCompnayHouseNumber: (state.HasCompaniesHouseNumber ?? false),
             individualOrTrust: connectedIndividualTrust,
             organisation: connectedOrganisation,
-            overseasCompanyNumber: state.OscCompaniesHouseNumber,
+            overseasCompanyNumber: state.OverseasCompaniesHouseNumber,
             registeredDate: (state.RegistrationDate.HasValue ? state.RegistrationDate.Value : null),
             registerName: state.RegisterName,
             startDate: null

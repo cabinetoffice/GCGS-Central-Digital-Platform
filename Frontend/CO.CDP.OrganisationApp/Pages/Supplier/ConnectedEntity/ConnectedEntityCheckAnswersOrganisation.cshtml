@@ -5,8 +5,10 @@
     var details = Model.ConnectedEntityDetails!;
     var ukNonUkRegisterAddress = details.RegisteredAddress!.IsNonUk ? "non-uk" : "uk";
     var ukNonUkPostalAddress = details.PostalAddress!.IsNonUk ? "non-uk" : "uk";
+    var backLink = $"/organisation/{Model.Id}/supplier-information/connected-person/{Model.BackPageLink}/{Model.ConnectedEntityId}";
 }
-<a href="/organisation/@Model.Id/supplier-information/connected-person/company-register-name" class="govuk-back-link">Back</a>
+
+<a href="@backLink" class="govuk-back-link">Back</a>
 
 <main class="govuk-main-wrapper">
     <div class="govuk-grid-row">
@@ -106,6 +108,46 @@
                                 <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/nature-of-control/@Model.ConnectedEntityId?frm-chk-answer">
                                     Change<span class="govuk-visually-hidden">
                                         the nature of control
+                                    </span>
+                                </a>
+                            </dd>
+                        </div>
+                    }
+
+                    @if (details.HasCompaniesHouseNumber.HasValue)
+                    {
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">
+                                Companies House registered:
+                            </dt>
+                            <dd class="govuk-summary-list__value">
+                                @Html.Raw((details.HasCompaniesHouseNumber == true ?
+                                         $"Yes<br>Company House no. {details.CompaniesHouseNumber}"
+                                         : "No"))
+                            </dd>
+                            <dd class="govuk-summary-list__actions">
+                                <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/company-question/@Model.ConnectedEntityId?frm-chk-answer">
+                                    Change<span class="govuk-visually-hidden">
+                                        the company house number
+                                    </span>
+                                </a>
+                            </dd>
+                        </div>
+                    }
+
+                    @if (details.HasOverseasCompaniesHouseNumber.HasValue)
+                    {
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">
+                                Registered with overseas equivalent:
+                            </dt>
+                            <dd class="govuk-summary-list__value">
+                                @(details.HasOverseasCompaniesHouseNumber == true ? details.OverseasCompaniesHouseNumber : "No")
+                            </dd>
+                            <dd class="govuk-summary-list__actions">
+                                <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/overseas-company-question/@Model.ConnectedEntityId?frm-chk-answer">
+                                    Change<span class="govuk-visually-hidden">
+                                        the company house number
                                     </span>
                                 </a>
                             </dd>

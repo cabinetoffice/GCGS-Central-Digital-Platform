@@ -252,7 +252,8 @@ public class ConnectedEntityAddressModel(ISession session) : PageModel
                     case ConnectedEntityOrganisationCategoryType.ACompanyYourOrganisationHasTakenOver:
                         if (AddressType == AddressType.Registered)
                         {
-                            heading = $"Enter {state.OrganisationName}'s last known registered UK address";
+                            heading = $"Enter {state.OrganisationName}'s registered address";
+                            hintValue = "The address registered with Companies House, or the principal address the business conducts its activities. For example, a head office.";
                         }
                         else if (AddressType == AddressType.Postal)
                         {
