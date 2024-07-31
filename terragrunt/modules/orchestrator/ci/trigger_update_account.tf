@@ -22,7 +22,7 @@ resource "aws_codepipeline" "trigger_update_account" {
       configuration = {
         ConnectionArn    = data.aws_codestarconnections_connection.cabinet_office.arn
         FullRepositoryId = "cabinetoffice/GCGS-Central-Digital-Platform"
-        BranchName       = "DP-191-pull-from-repo"
+        BranchName       = "main"
       }
     }
   }
