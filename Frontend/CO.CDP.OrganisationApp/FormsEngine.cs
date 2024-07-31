@@ -96,7 +96,7 @@ public class FormsEngine(IFormsClient formsApiClient, ITempDataService tempDataS
                 id: a.AnswerId,
                 boolValue: a.Answer?.BoolValue,
                 numericValue: a.Answer?.NumericValue,
-                dateValue: a.Answer?.DateValue != null ? a.Answer?.DateValue.Value.ToUniversalTime() : null,
+                dateValue: a.Answer?.DateValue,
                 startValue: a.Answer?.StartValue,
                 endValue: a.Answer?.EndValue,
                 textValue: a.Answer?.TextValue,
