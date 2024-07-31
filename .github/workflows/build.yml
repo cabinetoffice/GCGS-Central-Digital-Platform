@@ -56,6 +56,7 @@ jobs:
       CDP_DATA_SHARING_PORT: 8855
     outputs:
       version: ${{ steps.version.outputs.version }}
+      version_reference: ${{ steps.version.outputs.version_reference }}
       images: ${{ steps.save.outputs.images }}
     steps:
       - uses: actions/checkout@v4
@@ -69,12 +70,16 @@ jobs:
           CURRENT_TAG=$([[ "${GITHUB_REF:0:10}" = "refs/tags/" ]] && echo ${GITHUB_REF#refs/tags/} || echo "")
           LAST_TAG=$(make last-tag)
           VERSION=$([[ "${CURRENT_TAG}" = "" ]] && echo "${LAST_TAG}-${CURRENT_COMMIT}" || echo "$CURRENT_TAG")
+          VERSION_REFERENCE="${CURRENT_COMMIT}"
           echo "Version: $VERSION"
+          echo "Reference version: $VERSION_REFERENCE"
           echo "version=${VERSION}" >> $GITHUB_OUTPUT
+          echo "version_reference=${VERSION_REFERENCE}" >> $GITHUB_OUTPUT
       - name: Build
         run: make build-docker
         env:
           IMAGE_VERSION: ${{ steps.version.outputs.version }}
+          IMAGE_ALIASES: ${{ steps.version.outputs.version_reference }}
       - name: Start services
         run: make up
         env:
@@ -91,11 +96,14 @@ jobs:
         id: save
         run: |
           IMAGES=$(docker images | awk '$1 ~ /cabinetoffice\/cdp-/ && $2 ~ /^'$IMAGE_VERSION'$/ { print $1":"$2}' | tr '\n' ' ')
+          IMAGE_ALIASES=$(docker images | awk '$1 ~ /cabinetoffice\/cdp-/ && $2 ~ /^'$VERSION_REFERENCE'$/ { print $1":"$2}' | tr '\n' ' ')
+          IMAGES="$IMAGES $IMAGE_ALIASES"
           echo "Images to be saved: $IMAGES"
           docker save -o cdp-images.tar $IMAGES
           echo "images=${IMAGES}" >> $GITHUB_OUTPUT
         env:
           IMAGE_VERSION: ${{ steps.version.outputs.version }}
+          VERSION_REFERENCE: ${{ steps.version.outputs.version_reference }}
       - name: Upload Docker Images as Artifacts
         uses: actions/upload-artifact@v4
         with:

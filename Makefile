@@ -24,8 +24,10 @@ test: ## Run tests
 	@dotnet test $(TEST_OPTIONS)
 .PHONY: test
 
+build-docker: IMAGE_ALIASES ?= ""
 build-docker: ## Build Docker images
 	@docker compose build
+	@[ $(IMAGE_ALIASES) == "" ] || $(foreach alias,$(IMAGE_ALIASES),IMAGE_VERSION=$(alias) docker compose build;)
 .PHONY: build-docker
 
 up: compose.override.yml ## Start Docker containers
