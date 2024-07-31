@@ -8,6 +8,8 @@ using CO.CDP.EntityVerification.Persistence;
 using CO.CDP.EntityVerification.Ppon;
 using CO.CDP.MQ;
 using CO.CDP.MQ.Hosting;
+using CO.CDP.EntityVerification.UseCase;
+
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -23,6 +25,8 @@ builder.Services.AddDbContext<EntityVerificationContext>(o =>
     o.UseNpgsql(builder.Configuration.GetConnectionString("EvDatabase")));
 builder.Services.AddScoped<IPponRepository, DatabasePponRepository>();
 builder.Services.AddScoped<IPponService, PponService>();
+
+builder.Services.AddScoped<IUseCase<string, IEnumerable<CO.CDP.EntityVerification.Model.Identifier>>, LookupOrganisationUseCase>();
 
 if (Assembly.GetEntryAssembly().IsRunAs("CO.CDP.EntityVerification"))
 {
