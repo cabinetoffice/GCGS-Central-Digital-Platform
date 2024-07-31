@@ -14,7 +14,7 @@ docker build -t cabinetoffice/cdp-healthcheck .
 ## run
 
 ```shell
-docker run -d -p 3030:3030 -e ASPNETCORE_URLS=http://+:3030 -e ASPNETCORE_PORT=3030 -e QUEUE_URL_ORGANISATION="TQ_Dispatcher" -e QUEUE_URL_ENTITY_VERIFICATION="TQ_Publisher" cabinetoffice/cdp-healthcheck
+docker run -d -p 3030:3030 -e ASPNETCORE_URLS=http://+:3030 -e ASPNETCORE_PORT=3030 -e QUEUE_URL_ORGANISATION="TQ_Organisation" -e QUEUE_URL_ENTITY_VERIFICATION="TQ_EntityVerification" cabinetoffice/cdp-healthcheck
 
 ```
 
