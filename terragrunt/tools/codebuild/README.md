@@ -8,10 +8,8 @@ Feel free to use any convenient AWS profiler instead.
 ## build
 
 ```shell
-pushd ../../
-./tools/scripts/delete_tf_cache.sh
-TERRAFORM_VERSION=$(grep -Po '(?<=terraform = ")[^"]*' ../.mise.toml)
-TERRAGRUNT_VERSION=$(grep -Po '(?<=terragrunt = ")[^"]*' ../.mise.toml)
+TERRAFORM_VERSION=$(grep -Po '(?<=terraform = ")[^"]*' ../../../.mise.toml)
+TERRAGRUNT_VERSION=$(grep -Po '(?<=terragrunt = ")[^"]*' ../../../.mise.toml)
 
 if [ -z "$TERRAFORM_VERSION" ] || [ -z "$TERRAGRUNT_VERSION" ]; then
   echo "Error: Could not find Terraform or Terragrunt versions in .mise.toml"
@@ -25,8 +23,6 @@ docker build --build-arg TERRAFORM_VERSION=$TERRAFORM_VERSION\
 
 echo -e "Built completed, and the new image contains:"
 docker run --rm cabinetoffice/cdp-codebuild sh -c 'echo "{\"AWS\": \"`aws --version| head -n 1`\", \"JQ \": \"`jq --version`\", \"TF \": \"`terraform version| head -n 1`\", \"TG \": \"`terragrunt --version`\"}" | jq .' 
-
-popd 
 ```
 
 ## Deploy

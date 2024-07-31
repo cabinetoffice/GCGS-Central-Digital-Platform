@@ -7,7 +7,7 @@ locals {
     name => config if !contains([
       "entity-verification-migrations",
       "organisation-information-migrations",
-      "organisation-app"], config.name)
+    "organisation-app"], config.name)
   }
 
   endpoints = [
