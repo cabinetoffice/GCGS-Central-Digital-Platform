@@ -6,6 +6,7 @@ using System.Linq;
 
 using CO.CDP.EntityVerification.UseCase;
 using CO.CDP.Functional;
+using CO.CDP.EntityVerification.Model;
 
 namespace CO.CDP.EntityVerification.Api;
 
@@ -14,9 +15,9 @@ public static class PponEndpointExtensions
     public static void UsePponEndpoints(this WebApplication app)
     {
         app.MapGet("/identifiers/{identifier}",
-            async (string identifier, IUseCase<string, IEnumerable<Model.Identifier>> useCase) =>
-            await useCase.Execute(identifier)
-                .AndThen(identifier => identifier != null ? Results.Ok(identifier) : Results.NotFound()))
+            async ([FromQuery] string? identifier, IUseCase<LookupIdentifierQuery, IEnumerable<Model.Identifier>> useCase) =>
+                await useCase.Execute(new LookupIdentifierQuery(identifier))
+                    .AndThen(identifier => identifier != null ? Results.Ok(identifier) : Results.NotFound()))
             .Produces<IEnumerable<Model.Identifier>>(StatusCodes.Status200OK, "application/json")
             .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
             .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
@@ -25,7 +26,7 @@ public static class PponEndpointExtensions
             {
                 operation.OperationId = "GetIdentifiers";
                 operation.Description = "Get related identifiers.";
-                operation.Summary = "[STUB] Get related identifiers.";
+                operation.Summary = "Get related identifiers.";
                 operation.Responses["200"].Description = "List of identifiers.";
                 operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
                 operation.Responses["404"].Description = "Identifier not found.";

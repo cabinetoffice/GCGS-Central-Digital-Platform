@@ -1,3 +1,5 @@
+using static CO.CDP.EntityVerification.UseCase.LookupIdentifierUseCase.LookupIdentifierException;
+
 namespace CO.CDP.EntityVerification.Extensions;
 
 public static class ServiceCollectionExtensions
@@ -5,6 +7,7 @@ public static class ServiceCollectionExtensions
     private static readonly Dictionary<Type, (int, string)> ExceptionMap = new()
     {
         { typeof(BadHttpRequestException), (StatusCodes.Status422UnprocessableEntity, "UNPROCESSABLE_ENTITY") },
+        { typeof(InvalidIdentifierFormatException), (StatusCodes.Status400BadRequest, "INVALID_IDENTIFIER_FORMAT") },
     };
 
     public static IServiceCollection AddEntityVerificationProblemDetails(this IServiceCollection services)
