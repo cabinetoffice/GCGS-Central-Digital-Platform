@@ -140,7 +140,9 @@ public static class EndpointExtensions
 
     public static RouteGroupBuilder UseOrganisationLookupEndpoints(this RouteGroupBuilder app)
     {
-        app.MapGet("/me", () => Results.Ok(_organisations.First().Value))
+        app.MapGet("/me", async (IUseCase<Model.Organisation?> useCase) =>
+                await useCase.Execute()
+                    .AndThen(organisation => organisation != null ? Results.Ok(organisation) : Results.NotFound()))
             .Produces<List<Model.Organisation>>(StatusCodes.Status200OK, "application/json")
             .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
             .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
@@ -148,8 +150,8 @@ public static class EndpointExtensions
             .WithOpenApi(operation =>
             {
                 operation.OperationId = "MyOrganisation";
-                operation.Description = "[STUB] The organisation details of the organisation the API key was issued for. [STUB]";
-                operation.Summary = "[STUB] The organisation details of the organisation the API key was issued for. [STUB]";
+                operation.Description = "The organisation details of the organisation the API key was issued for.";
+                operation.Summary = "The organisation details of the organisation the API key was issued for.";
                 operation.Tags = new List<OpenApiTag> { new() { Name = "Organisation - Lookup" } };
                 operation.Responses["200"].Description = "Organisation details.";
                 operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
