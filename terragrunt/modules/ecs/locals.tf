@@ -1,5 +1,7 @@
 locals {
 
+  aspcore_environment = "Aws${title(var.environment)}"
+
   ecr_urls = {
     for task in local.tasks : task => "${local.orchestrator_account_id}.dkr.ecr.eu-west-2.amazonaws.com/cdp-${task}"
   }
