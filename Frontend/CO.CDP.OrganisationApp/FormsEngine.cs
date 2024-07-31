@@ -102,7 +102,7 @@ public class FormsEngine(IFormsClient formsApiClient, ITempDataService tempDataS
             await formsApiClient.PutFormSectionAnswersAsync(formId, sectionId, answerSet.AnswerSetId.Value, organisationId, answersPayload);
             return true;
         }
-        catch (Exception ex)
+        catch
         {
             return false;
         }
