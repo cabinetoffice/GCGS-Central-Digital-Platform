@@ -20,13 +20,14 @@ public class OrganisationRegisteredSubscriber(
             OrganisationId = @event.Id
         };
 
-        newPpon.Identifiers = Identifier.GetPersistenceIdentifiers(@event.AllIdentifiers(), newPpon);
+        newPpon.Identifiers = Identifier.GetPersistenceIdentifiers(@event.AllIdentifiers());
 
         PponGenerated pponGenerated = new()
         {
+            OrganisationId = @event.Id,
             Id = newPpon.IdentifierId,
             LegalName = @event.Identifier.LegalName,
-            Scheme = @event.Identifier.Scheme
+            Scheme = "CDP-PPON"
         };
 
         pponRepository.Save(newPpon);

@@ -1,4 +1,3 @@
-using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Pages.Supplier;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
@@ -18,6 +17,7 @@ public class ConnectedEntityPscDetailsTests
     {
         _sessionMock = new Mock<ISession>();
         _model = new ConnectedEntityPscDetailsModel(_sessionMock.Object);
+
         _model.Id = _organisationId;
         _model.Day = "1";
         _model.Month = "1";
@@ -94,7 +94,12 @@ public class ConnectedEntityPscDetailsTests
     {
         SetDateFields(day, month, year);
         var state = DummyConnectedPersonDetails();
-
+        _model.FirstName = state.FirstName;
+        _model.LastName = state.LastName;
+        _model.Day = day;
+        _model.Month = month;
+        _model.Year = year;
+        _model.Nationality = state.Nationality;
         _sessionMock
             .Setup(s => s.Get<ConnectedEntityState>(Session.ConnectedPersonKey))
             .Returns(state);
@@ -122,7 +127,10 @@ public class ConnectedEntityPscDetailsTests
     public void OnPost_ShouldRedirectToConnectedEntityAddressPage()
     {
         var state = DummyConnectedPersonDetails();
-
+        _model.FirstName = state.FirstName;
+        _model.LastName = state.LastName;
+        _model.DateOfBirth = state.DateOfBirth.ToString();
+        _model.Nationality = state.Nationality;
         _sessionMock.Setup(s => s.Get<ConnectedEntityState>(Session.ConnectedPersonKey)).
             Returns(state);
 
@@ -139,10 +147,15 @@ public class ConnectedEntityPscDetailsTests
     {
         SetDateFields("31", "2", "2023");
         var state = DummyConnectedPersonDetails();
+        _model.FirstName = state.FirstName;
+        _model.LastName = state.LastName;
+        _model.DateOfBirth = state.DateOfBirth.ToString();
+        _model.Nationality = state.Nationality;
 
         _sessionMock
             .Setup(s => s.Get<ConnectedEntityState>(Session.ConnectedPersonKey))
             .Returns(state);
+
 
         var result = _model.OnPost();
 
@@ -155,7 +168,13 @@ public class ConnectedEntityPscDetailsTests
     public void OnPost_ShouldUpdateSessionState_WhenModelStateIsValid()
     {
         var state = DummyConnectedPersonDetails();
-
+        _model.FirstName = state.FirstName;
+        _model.LastName = state.LastName;
+        _model.DateOfBirth = state.DateOfBirth.ToString();
+        _model.Day = state.DateOfBirth!.Value.Day.ToString();
+        _model.Month = state.DateOfBirth!.Value.Month.ToString();
+        _model.Year = state.DateOfBirth!.Value.Year.ToString();
+        _model.Nationality = state.Nationality;
         _sessionMock
             .Setup(s => s.Get<ConnectedEntityState>(Session.ConnectedPersonKey))
             .Returns(state);

@@ -10,4 +10,7 @@ public record PponGenerated : IEvent
 
     /// <example>"Acme Ltd"</example>
     public required string LegalName { get; init; }
+
+    /// <example>"588be0d7-7a61-4ed4-bcc6-f1bd9b1533cf"</example>
+    public required Guid OrganisationId { get; init; }
 }

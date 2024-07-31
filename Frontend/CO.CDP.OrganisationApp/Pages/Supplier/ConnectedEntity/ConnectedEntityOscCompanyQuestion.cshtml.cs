@@ -64,7 +64,7 @@ public class ConnectedEntityOscCompanyQuestionModel(ISession session) : PageMode
         session.Set(Session.ConnectedPersonKey, state);
 
         var redirectPage = GetRedirectLinkPageName(state);
-        return RedirectToPage(redirectPage, new { Id, ConnectedEntityId });        
+        return RedirectToPage(redirectPage, new { Id, ConnectedEntityId });
     }
 
     private string GetRedirectLinkPageName(ConnectedEntityState state)
@@ -85,7 +85,7 @@ public class ConnectedEntityOscCompanyQuestionModel(ISession session) : PageMode
                     case ConnectedEntityOrganisationCategoryType.ACompanyYourOrganisationHasTakenOver:
                         redirectPage = "ConnectedEntityCompanyInsolvencyDate";
                         break;
-                    case ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl:                        
+                    case ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl:
                         redirectPage = "ConnectedEntityControlCondition";
                         break;
                 }

@@ -38,6 +38,16 @@ resource "aws_security_group_rule" "ecs_service_to_public_https" {
   type              = "egress"
 }
 
+resource "aws_security_group_rule" "ecs_service_to_sqs" {
+  description       = "SQS access from ${local.name_prefix} service"
+  from_port         = 4566
+  protocol          = "TCP"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = var.ecs_sg_id
+  to_port           = 4566
+  type              = "egress"
+}
+
 resource "aws_security_group_rule" "postgres_from_ecs_service" {
   description              = "From ECS Service"
   from_port                = 5432

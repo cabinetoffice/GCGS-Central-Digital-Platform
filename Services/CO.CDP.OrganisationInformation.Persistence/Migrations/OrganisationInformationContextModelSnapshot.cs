@@ -66,10 +66,6 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                         .HasColumnType("text")
                         .HasColumnName("street_address");
 
-                    b.Property<string>("StreetAddress2")
-                        .HasColumnType("text")
-                        .HasColumnName("street_address2");
-
                     b.Property<DateTimeOffset>("UpdatedOn")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
@@ -289,6 +285,10 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("form_answer_set_id");
 
+                    b.Property<Guid>("Guid")
+                        .HasColumnType("uuid")
+                        .HasColumnName("guid");
+
                     b.Property<double?>("NumericValue")
                         .HasColumnType("double precision")
                         .HasColumnName("numeric_value");
@@ -467,6 +467,10 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                         .HasColumnName("id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("AllowsMultipleAnswerSets")
+                        .HasColumnType("boolean")
+                        .HasColumnName("allows_multiple_answer_sets");
 
                     b.Property<string>("Configuration")
                         .IsRequired()
@@ -896,6 +900,10 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                                 .HasColumnType("uuid")
                                 .HasColumnName("person_id");
 
+                            b1.Property<string>("ResidentCountry")
+                                .HasColumnType("text")
+                                .HasColumnName("resident_country");
+
                             b1.Property<DateTimeOffset>("UpdatedOn")
                                 .ValueGeneratedOnAdd()
                                 .HasColumnType("timestamp with time zone")
@@ -1014,7 +1022,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                         .HasForeignKey("SectionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_form_answer_sets_form_sections_section_id");
+                        .HasConstraintName("fk_form_answer_sets_form_section_section_id");
 
                     b.HasOne("CO.CDP.OrganisationInformation.Persistence.Forms.SharedConsent", null)
                         .WithMany("AnswerSets")

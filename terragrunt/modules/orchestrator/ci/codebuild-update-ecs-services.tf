@@ -12,7 +12,7 @@ resource "aws_codebuild_project" "update_ecs_services" {
   environment {
     compute_type                = "BUILD_GENERAL1_SMALL"
     image_pull_credentials_type = "SERVICE_ROLE"
-    image                       = "${data.aws_caller_identity.current.account_id}.dkr.ecr.${data.aws_region.current.name}.amazonaws.com/cdp-codebuild:latest"
+    image                       = "${var.repository_urls["codebuild"]}:latest"
     type                        = "LINUX_CONTAINER"
     privileged_mode             = true
     environment_variable {

@@ -75,7 +75,7 @@ public class DeleteConnectedEntityUseCaseTest
 
     private Persistence.ConnectedEntity ConnectedEntity(Persistence.Organisation organisation)
     {
-        return new Persistence.ConnectedEntity() { Guid = _connectedEntityId, EntityType = Persistence.ConnectedEntity.ConnectedEntityType.Organisation, SupplierOrganisation = organisation};
+        return new Persistence.ConnectedEntity() { Guid = _connectedEntityId, EntityType = Persistence.ConnectedEntity.ConnectedEntityType.Organisation, SupplierOrganisation = organisation };
     }
 
     private void SetupOrganisationRepository(Persistence.Organisation? organisation)

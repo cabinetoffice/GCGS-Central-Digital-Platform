@@ -18,12 +18,17 @@ locals {
 
   orchestrator_service_version = data.aws_ssm_parameter.orchestrator_service_version.value
 
-  services = [
-    for name, config in var.service_configs :
-    config.name if config.name != "organisation-information-migrations"
-  ]
+  migrations = ["organisation-information-migrations", "entity-verification-migrations"]
 
-  service_environment = var.environment == "production" ? "Production" : "Development"
+  migration_configs = {
+    for name, config in var.service_configs :
+    config.name => config if contains(local.migrations, config.name)
+  }
+
+  service_configs = {
+    for name, config in var.service_configs :
+    config.name => config if !contains(local.migrations, config.name)
+  }
 
   tasks = [
     for name, config in var.service_configs :

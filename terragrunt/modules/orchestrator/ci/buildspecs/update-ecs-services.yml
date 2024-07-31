@@ -13,7 +13,8 @@ phases:
 
   build:
     commands:
-      - cd /terragrunt/components/service/ecs
+      - cd $CODEBUILD_SRC_DIR/terragrunt/components/service/ecs
       - terragrunt apply --auto-approve
-      - cd /terragrunt/components/service/api-gateway
+      - cd $CODEBUILD_SRC_DIR/terragrunt/components/service/api-gateway
       - terragrunt apply --auto-approve
+

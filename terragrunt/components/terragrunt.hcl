@@ -128,6 +128,13 @@ locals {
             port          = 8094
             port_host     = 8094
         }
+        entity_verification_migrations = {
+            cpu           = 256
+            memory        = 512
+            name          = "entity-verification-migrations"
+            port          = 9191
+            port_host     = null
+        }
         forms = {
             cpu           = 256
             memory        = 512
@@ -185,6 +192,13 @@ locals {
             port      = 3000
             port_host = 3000
         }
+        healthcheck = {
+            cpu       = 256
+            memory    = 512
+            name      = "healthcheck"
+            port      = 3030
+            port_host = 3030
+        }
         pgadmin = {
             cpu       = 256
             memory    = 512
@@ -196,7 +210,9 @@ locals {
 
     terraform_operators = [
         "arn:aws:iam::525593800265:user/ali.bahman@goaco.com",
-        "arn:aws:iam::525593800265:user/jakub.zalas@goaco.com"
+        "arn:aws:iam::525593800265:user/dorian.stefan@goaco.com",
+        "arn:aws:iam::525593800265:user/jakub.zalas@goaco.com",
+        "arn:aws:iam::525593800265:user/richard.rees@goaco.com",
     ]
 
     tg = {

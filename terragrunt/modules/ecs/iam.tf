@@ -1,12 +1,23 @@
 resource "aws_iam_policy" "ecs_task_access_secrets" {
-  name   = "${local.name_prefix}-ecs-task-exec-secrets"
-  policy = data.aws_iam_policy_document.ecs_task_exec.json
+  name   = "${local.name_prefix}-ecs-task-exec-access-secrets"
+  policy = data.aws_iam_policy_document.ecs_task_access_secrets.json
   tags   = var.tags
 }
 
 resource "aws_iam_role_policy_attachment" "ecs_task_access_secrets" {
   policy_arn = aws_iam_policy.ecs_task_access_secrets.arn
   role       = var.role_ecs_task_exec_name
+}
+
+resource "aws_iam_policy" "ecs_task_access_queue" {
+  name   = "${local.name_prefix}-ecs-task-access-queue"
+  policy = data.aws_iam_policy_document.ecs_task_access_queue.json
+  tags   = var.tags
+}
+
+resource "aws_iam_role_policy_attachment" "ecs_task_access_queue" {
+  policy_arn = aws_iam_policy.ecs_task_access_queue.arn
+  role       = var.role_ecs_task_name
 }
 
 resource "aws_iam_policy" "ecr_pull_from_orchestrator" {

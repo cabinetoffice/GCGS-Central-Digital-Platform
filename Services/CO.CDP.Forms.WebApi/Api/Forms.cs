@@ -61,26 +61,6 @@ public static class EndpointExtensions
                 return operation;
             });
 
-        app.MapPost("/forms/{formId}/sections/{sectionId}/answers/{answerSetId}/files", (Guid formId, Guid sectionId, Guid answerSetId) =>
-            {
-                return Results.NoContent();
-            })
-            .Produces(StatusCodes.Status201Created)
-            .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
-            .Produces<ProblemDetails>(StatusCodes.Status400BadRequest)
-            .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError)
-            .WithOpenApi(operation =>
-            {
-                operation.OperationId = "PostFormSectionAnswerFiles";
-                operation.Description = "[STUB] Upload files for form section answers. [STUB]";
-                operation.Summary = "Upload files for form section answers.";
-                operation.Responses["201"].Description = "File uploaded.";
-                operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
-                operation.Responses["400"].Description = "Bad request.";
-                operation.Responses["500"].Description = "Internal server error.";
-                return operation;
-            });
-
         app.MapDelete("/forms/answer-sets/{answerSetId}",
                 async (Guid answerSetId, [FromQuery(Name = "organisation-id")] Guid organisationId, IUseCase<(Guid, Guid), bool> useCase) =>
                  await useCase.Execute((organisationId, answerSetId))
@@ -92,7 +72,7 @@ public static class EndpointExtensions
             .WithOpenApi(operation =>
             {
                 operation.OperationId = "DeleteFormSectionAnswers";
-                operation.Description = "[STUB] Delete answers for a form section. [STUB]";
+                operation.Description = "Delete answers for a form section.";
                 operation.Summary = "Delete answers for a form section.";
                 operation.Responses["204"].Description = "Answers deleted.";
                 operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";

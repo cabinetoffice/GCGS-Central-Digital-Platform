@@ -4,10 +4,10 @@ using CO.CDP.Configuration.Assembly;
 using CO.CDP.EntityVerification.Api;
 using CO.CDP.EntityVerification.Events;
 using CO.CDP.EntityVerification.Extensions;
-using CO.CDP.EntityVerification.MQ;
 using CO.CDP.EntityVerification.Persistence;
 using CO.CDP.EntityVerification.Ppon;
 using CO.CDP.MQ;
+using CO.CDP.MQ.Hosting;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -27,7 +27,7 @@ builder.Services.AddScoped<IPponService, PponService>();
 if (Assembly.GetEntryAssembly().IsRunAs("CO.CDP.EntityVerification"))
 {
     builder.Services
-        .AddAwsCofiguration(builder.Configuration)
+        .AddAwsConfiguration(builder.Configuration)
         .AddAwsSqsService()
         .AddSqsPublisher()
         .AddSqsDispatcher(
@@ -35,13 +35,15 @@ if (Assembly.GetEntryAssembly().IsRunAs("CO.CDP.EntityVerification"))
             services =>
             {
                 services.AddScoped<ISubscriber<OrganisationRegistered>, OrganisationRegisteredSubscriber>();
+                services.AddScoped<ISubscriber<OrganisationUpdated>, OrganisationUpdatedSubscriber>();
             },
             (services, dispatcher) =>
             {
                 dispatcher.Subscribe<OrganisationRegistered>(services);
+                dispatcher.Subscribe<OrganisationUpdated>(services);
             }
         );
-    builder.Services.AddHostedService<QueueBackgroundService>();
+    builder.Services.AddHostedService<DispatcherBackgroundService>();
 }
 
 var app = builder.Build();

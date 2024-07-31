@@ -16,6 +16,8 @@ public class ConnectedEntityCompanyRegistrationDateModel(ISession session) : Pag
     [BindProperty(SupportsGet = true)]
     public Guid? ConnectedEntityId { get; set; }
 
+    public ConnectedEntityType? ConnectedEntityType { get; set; }
+
     [BindProperty]
     [Required(ErrorMessage = "Date of registration must include a day")]
     [RegularExpression(RegExPatterns.Day, ErrorMessage = "Day must be a valid number")]
@@ -47,7 +49,7 @@ public class ConnectedEntityCompanyRegistrationDateModel(ISession session) : Pag
         if (!valid)
         {
             return RedirectToPage(ConnectedEntityId.HasValue
-                ? (state.ConnectedEntityType == ConnectedEntityType.Organisation
+                ? (state.ConnectedEntityType == Constants.ConnectedEntityType.Organisation
                     ? "ConnectedEntityCheckAnswersOrganisation"
                     : "ConnectedEntityCheckAnswersIndividualOrTrust")
                 : "ConnectedEntitySupplierCompanyQuestion", new { Id, ConnectedEntityId });
@@ -64,7 +66,7 @@ public class ConnectedEntityCompanyRegistrationDateModel(ISession session) : Pag
         if (!valid)
         {
             return RedirectToPage(ConnectedEntityId.HasValue
-                ? (state.ConnectedEntityType == ConnectedEntityType.Organisation
+                ? (state.ConnectedEntityType == Constants.ConnectedEntityType.Organisation
                     ? "ConnectedEntityCheckAnswersOrganisation"
                     : "ConnectedEntityCheckAnswersIndividualOrTrust")
                 : "ConnectedEntitySupplierCompanyQuestion", new { Id, ConnectedEntityId });
@@ -94,8 +96,12 @@ public class ConnectedEntityCompanyRegistrationDateModel(ISession session) : Pag
 
         session.Set(Session.ConnectedPersonKey, state);
 
+        var checkAnswerPage = (state.ConnectedEntityType == Constants.ConnectedEntityType.Organisation
+                    ? "ConnectedEntityCheckAnswersOrganisation"
+                    : "ConnectedEntityCheckAnswersIndividualOrTrust");
+
         var redirectPage = (RedirectToCheckYourAnswer == true
-                        ? "ConnectedEntityCheckAnswersOrganisation"
+                        ? checkAnswerPage
                         : GetRedirectLinkPageName(state));
 
         return RedirectToPage(redirectPage, new { Id, ConnectedEntityId });
@@ -162,9 +168,11 @@ public class ConnectedEntityCompanyRegistrationDateModel(ISession session) : Pag
     private void InitModal(ConnectedEntityState state, bool reset = false)
     {
         Caption = state.GetCaption();
-        Heading = $"What date was {(state.ConnectedEntityType == ConnectedEntityType.Organisation
+        Heading = $"What date was {(state.ConnectedEntityType == Constants.ConnectedEntityType.Organisation
                                     ? state.OrganisationName
                                     : state.FirstName)} registered as a 'connected person'?";
+
+        ConnectedEntityType = state.ConnectedEntityType;
 
         if (reset && state.RegistrationDate.HasValue)
         {

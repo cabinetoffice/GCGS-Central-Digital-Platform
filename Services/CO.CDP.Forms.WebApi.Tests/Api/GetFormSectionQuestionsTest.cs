@@ -61,6 +61,11 @@ public class GetFormSectionQuestionsTest
 
     private static SectionQuestionsResponse GivenSectionQuestionsResponse()
     {
+        var question1 = Guid.NewGuid();
+        var question2 = Guid.NewGuid();
+        var question3 = Guid.NewGuid();
+        var question4 = Guid.NewGuid();
+
         return new SectionQuestionsResponse
         {
             Section = new FormSection
@@ -81,7 +86,7 @@ public class GetFormSectionQuestionsTest
                 {
                     new FormQuestion
                     {
-                        Id = Guid.NewGuid(),
+                        Id = question1,
                         Title = "The financial information you will need.",
                         Description = "You will need to upload accounts or statements for your 2 most recent financial years. If you do not have 2 years, you can upload your most recent financial year. You will need to enter the financial year end date for the information you upload.",
                         Type = FormQuestionType.NoInput,
@@ -90,7 +95,7 @@ public class GetFormSectionQuestionsTest
                     },
                     new FormQuestion
                     {
-                        Id = Guid.NewGuid(),
+                        Id = question2,
                         Title = "Were your accounts audited?",
                         Type = FormQuestionType.YesOrNo,
                         IsRequired = true,
@@ -98,7 +103,7 @@ public class GetFormSectionQuestionsTest
                     },
                     new FormQuestion
                     {
-                        Id = Guid.NewGuid(),
+                        Id = question3,
                         Title = "Upload your accounts",
                         Description = "Upload your most recent 2 financial years. If you do not have 2, upload your most recent financial year.",
                         Type = FormQuestionType.FileUpload,
@@ -107,13 +112,51 @@ public class GetFormSectionQuestionsTest
                     },
                     new FormQuestion
                     {
-                        Id = Guid.NewGuid(),
+                        Id = question4,
                         Title = "What is the financial year end date for the information you uploaded?",
                         Type = FormQuestionType.Date,
                         IsRequired = true,
                         Options = new FormQuestionOptions()
                     }
+                },
+            AnswerSets = new List<FormAnswerSet>
+            {
+                new FormAnswerSet
+                {
+                    Id= Guid.NewGuid(),
+                    Answers= new List<FormAnswer>
+                    {
+                        new FormAnswer
+                        {
+                            Id=Guid.NewGuid(),
+                            QuestionId=question1,
+                            BoolValue=true
+                        },
+                          new FormAnswer
+                        {
+                            Id=Guid.NewGuid(),
+                            QuestionId=question2,
+                            OptionValue="yes"
+                            
+                        },
+                            new FormAnswer
+                        {
+                            Id=Guid.NewGuid(),
+                            QuestionId=question3,
+                            BoolValue=true
+                        },
+                        new FormAnswer
+                        {
+                            Id=Guid.NewGuid(),
+                            QuestionId=question4,                            
+                            DateValue=DateTime.Now
+
+                        }
+                    }
                 }
+
+            }
+
         };
     }
 }
