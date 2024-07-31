@@ -91,6 +91,7 @@ public class FormsAddAnotherAnswerSetModel(
             Answers = answerSet.Answers.Select(a => new Models.QuestionAnswer
             {
                 QuestionId = a.QuestionId,
+                AnswerId = a.Id,
                 Answer = new Models.FormAnswer
                 {
                     BoolValue = a.BoolValue,
