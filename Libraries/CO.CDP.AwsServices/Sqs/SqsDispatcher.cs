@@ -58,13 +58,25 @@ public class SqsDispatcher(
 
             while (!cancellationToken.IsCancellationRequested)
             {
-                foreach (var message in await ReceiveMessagesAsync(configuration.QueueUrl, cancellationToken))
+                try
                 {
-                    await HandleMessage(message);
-                    await DeleteMessage(message);
+                    await HandleMessages(cancellationToken);
+                }
+                catch (Exception cause)
+                {
+                    logger.LogError(cause, "Message handling failed");
                 }
             }
         }, cancellationToken);
+    }
+
+    private async Task HandleMessages(CancellationToken cancellationToken)
+    {
+        foreach (var message in await ReceiveMessagesAsync(configuration.QueueUrl, cancellationToken))
+        {
+            await HandleMessage(message);
+            await DeleteMessage(message);
+        }
     }
 
     private async Task<List<Message>> ReceiveMessagesAsync(string queueUrl, CancellationToken cancellationToken)
