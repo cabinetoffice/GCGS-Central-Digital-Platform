@@ -6,6 +6,7 @@ using CO.CDP.AwsServices.Sqs;
 using CO.CDP.MQ;
 using CO.CDP.MQ.Tests;
 using FluentAssertions;
+using Microsoft.Extensions.Logging;
 
 namespace CO.CDP.AwsServices.Tests.Sqs;
 
@@ -41,7 +42,10 @@ public class SqsPublisherTest : PublisherContractTest, IClassFixture<LocalStackF
     {
         var queue = await _sqsClient.CreateQueueAsync(new CreateQueueRequest { QueueName = TestQueue });
         var queueUrl = queue.QueueUrl ?? "";
-        return new SqsPublisher(_sqsClient, new SqsPublisherConfiguration { QueueUrl = queueUrl });
+        return new SqsPublisher(
+            _sqsClient,
+            new SqsPublisherConfiguration { QueueUrl = queueUrl },
+            LoggerFactory.Create(_ => {}).CreateLogger<SqsPublisher>());
     }
 
     private AmazonSQSClient SqsClient()
