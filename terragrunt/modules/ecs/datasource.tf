@@ -74,7 +74,7 @@ data "aws_iam_policy_document" "ecs_task_access_queue" {
 
 data "aws_iam_policy_document" "cloudwatch_event_invoke_deployer_step_function" {
   statement {
-    actions   = ["states:StartExecution"]
+    actions = ["states:StartExecution"]
     resources = concat(
       [for fd in aws_sfn_state_machine.ecs_force_deploy : fd.arn],
       [for rm in aws_sfn_state_machine.ecs_run_migration : rm.arn]

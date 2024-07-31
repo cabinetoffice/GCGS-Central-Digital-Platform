@@ -10,3 +10,5 @@ public class InvalidQueryException(string message, Exception? cause = null) : Ex
 public class InvalidUpdateConnectedEntityCommand(string message, Exception? cause = null) : Exception(message, cause);
 
 public class UnknownConnectedEntityException(string message, Exception? cause = null) : Exception(message, cause);
+
+public class MissingOrganisationIdException(string message, Exception? cause = null) : Exception(message, cause);

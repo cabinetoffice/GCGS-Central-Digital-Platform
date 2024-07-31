@@ -2,8 +2,7 @@
 # Resources in this file are shared with orchestrator/iam module
 
 data "aws_codestarconnections_connection" "cabinet_office" {
-  count = local.use_codestar_connection ? 1 : 0
-  name  = "CabinetOffice"
+  name = "CabinetOffice"
 }
 
 data "aws_iam_policy_document" "ci_codebuild_assume_role_policy" {
@@ -29,8 +28,10 @@ data "aws_iam_policy_document" "ci_pipeline_assume_role_policy" {
 data "aws_iam_policy_document" "ci_build_generic" {
 
   statement {
-    actions   = ["sts:AssumeRole"]
-    resources = ["arn:aws:iam::${local.orchestrator_account_id}:role/${local.name_prefix}-orchestrator-read-service-version"]
+    actions = ["sts:AssumeRole"]
+    resources = [
+      "arn:aws:iam::${local.orchestrator_account_id}:role/${local.name_prefix}-orchestrator-read-service-version"
+    ]
   }
 
   statement {
@@ -45,18 +46,18 @@ data "aws_iam_policy_document" "ci_build_generic" {
     sid = "ManageKms"
   }
 
-  dynamic "statement" {
-    for_each = local.use_codestar_connection ? [1] : []
-    content {
-      actions = [
-        "codestar-connections:GetConnection",
-        "codestar-connections:ListConnections",
-        "codestar-connections:UseConnection"
-      ]
-      effect    = "Allow"
-      resources = [data.aws_codestarconnections_connection.cabinet_office[0].arn]
-    }
+
+  statement {
+    sid = "AllowFetchingCode"
+    actions = [
+      "codestar-connections:GetConnection",
+      "codestar-connections:ListConnections",
+      "codestar-connections:UseConnection"
+    ]
+    effect    = "Allow"
+    resources = [data.aws_codestarconnections_connection.cabinet_office.arn]
   }
+
 
   statement {
     sid = "AllowCloudWatchLogAccess"

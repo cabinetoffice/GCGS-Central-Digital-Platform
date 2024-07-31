@@ -8,7 +8,7 @@ module "ecs_service_authority" {
       container_port          = var.service_configs.authority.port
       cpu                     = var.service_configs.authority.cpu
       conn_string_location    = var.db_connection_secret_arn
-      environment             = title(var.environment)
+      aspcore_environment     = local.aspcore_environment
       host_port               = var.service_configs.authority.port
       image                   = "${local.ecr_urls[var.service_configs.authority.name]}:${local.orchestrator_service_version}"
       lg_name                 = aws_cloudwatch_log_group.tasks[var.service_configs.authority.name].name
