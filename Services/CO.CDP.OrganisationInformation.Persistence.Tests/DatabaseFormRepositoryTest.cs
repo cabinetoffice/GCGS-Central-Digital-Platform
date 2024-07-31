@@ -181,6 +181,7 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
 
         foundAnswerSets.Should().BeEmpty();
     }
+
     [Fact]
     public async Task GetFormAnswerSetAsync_WhenFormAnswerSetDoesNotExist_ReturnsNull()
     {
@@ -197,7 +198,7 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
     [Fact]
     public async Task GetFormAnswerSetAsync_WhenFormAnswerSetsExists_ReturnsFormAnswerSet()
     {
-       using var context = postgreSql.OrganisationInformationContext();
+        using var context = postgreSql.OrganisationInformationContext();
         var repository = new DatabaseFormRepository(context);
 
         var formId = Guid.NewGuid();
@@ -234,25 +235,27 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
 
         var answerSet = new FormAnswerSet
         {
-            Guid = answerSetId,
+            Guid = Guid.NewGuid(),
             OrganisationId = organisation.Id,
             Organisation = organisation,
             Section = section,
-            Answers = new List<FormAnswer>
-            {
-                new FormAnswer
-                {
-                    Guid= Guid.NewGuid(),
-                    Question = question,
-                    FormAnswerSet = null,
-                    BoolValue = true,
-                    CreatedOn = DateTimeOffset.UtcNow,
-                    UpdatedOn = DateTimeOffset.UtcNow
-                }
-            },
+            Answers = new List<FormAnswer>(),
+            Deleted = false,
             CreatedOn = DateTimeOffset.UtcNow,
             UpdatedOn = DateTimeOffset.UtcNow
         };
+
+        var formAnswer = new FormAnswer
+        {
+            Guid = Guid.NewGuid(),
+            Question = question,
+            FormAnswerSet = answerSet,
+            BoolValue = true,
+            CreatedOn = DateTimeOffset.UtcNow,
+            UpdatedOn = DateTimeOffset.UtcNow
+        };
+
+        answerSet.Answers.Add(formAnswer);
 
         context.FormAnswerSets.Add(answerSet);
         await context.SaveChangesAsync();
@@ -265,6 +268,50 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
         var foundAnswer = foundAnswerSet[0].Answers.First();
         foundAnswer.Question.Should().Be(question);
         foundAnswer.BoolValue.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task GetFormAnswerSetAsync_WhenFormAnswerSetDeleted_DoesNotReturnsFormAnswerSet()
+    {
+        using var context = postgreSql.OrganisationInformationContext();
+        var repository = new DatabaseFormRepository(context);
+
+        var formId = Guid.NewGuid();
+        var sectionId = Guid.NewGuid();
+        var organisationId = Guid.NewGuid();
+        var answerSetId = Guid.NewGuid();
+        var questionId = Guid.NewGuid();
+
+        var form = GivenForm(formId);
+        var section = GivenSection(sectionId, form);
+        form.Sections.Add(section);
+
+        context.Forms.Add(form);
+        await context.SaveChangesAsync();
+
+        var organisation = GivenOrganisation(organisationId);
+        context.Organisations.Add(organisation);
+        await context.SaveChangesAsync();
+
+        var answerSet = new FormAnswerSet
+        {
+            Guid = answerSetId,
+            OrganisationId = organisation.Id,
+            Organisation = organisation,
+            Section = section,
+            Answers = [],
+            Deleted = true,
+            CreatedOn = DateTimeOffset.UtcNow,
+            UpdatedOn = DateTimeOffset.UtcNow
+        };
+
+        context.FormAnswerSets.Add(answerSet);
+        await context.SaveChangesAsync();
+
+        var foundAnswerSet = await repository.GetFormAnswerSetsAsync(sectionId, organisation.Guid);
+
+        foundAnswerSet.Should().NotBeNull();
+        foundAnswerSet!.Should().HaveCount(0);
     }
 
     [Fact]
@@ -312,8 +359,6 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
             .Excluding(ctx => ctx.UpdatedOn));
     }
 
-   
-
     [Fact]
     public async Task SaveAnswerSet_ShouldSaveNewAnswerSet()
     {
@@ -324,7 +369,6 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
         var sectionId = Guid.NewGuid();
         var organisationId = Guid.NewGuid();
         var questionId = Guid.NewGuid();
-
 
         var guid = Guid.NewGuid();
         var organisation = GivenOrganisation(guid: guid, name: "Organisation1");
@@ -355,22 +399,23 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
             OrganisationId = organisation.Id,
             Organisation = organisation,
             Section = section,
-            Answers = new List<FormAnswer>
-            {
-                new FormAnswer
-                {
-                    Guid= Guid.NewGuid(),
-                    Question = question,
-                    FormAnswerSet = null,
-                    BoolValue = true,
-                    CreatedOn = DateTimeOffset.UtcNow,
-                    UpdatedOn = DateTimeOffset.UtcNow
-                }
-            },
+            Answers = new List<FormAnswer>(),
             Deleted = false,
             CreatedOn = DateTimeOffset.UtcNow,
             UpdatedOn = DateTimeOffset.UtcNow
-        };        
+        };
+
+        var formAnswer = new FormAnswer
+        {
+            Guid = Guid.NewGuid(),
+            Question = question,
+            FormAnswerSet = answerSet,
+            BoolValue = true,
+            CreatedOn = DateTimeOffset.UtcNow,
+            UpdatedOn = DateTimeOffset.UtcNow
+        };
+
+        answerSet.Answers.Add(formAnswer);
 
         await repository.SaveAnswerSet(answerSet);
 
@@ -383,9 +428,6 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
         foundAnswer.BoolValue.Should().BeTrue();
     }
 
-
-
-
     [Fact]
     public async Task UpdateFormAnswerSet_ShouldUpdateExistingAnswerSet()
     {
@@ -396,7 +438,6 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
         var sectionId = Guid.NewGuid();
         var organisationId = Guid.NewGuid();
         var questionId = Guid.NewGuid();
-
 
         var guid = Guid.NewGuid();
         var organisation = GivenOrganisation(guid: guid, name: "Organisation2");
@@ -427,24 +468,23 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
             OrganisationId = organisation.Id,
             Organisation = organisation,
             Section = section,
-            Answers = new List<FormAnswer>
-            {
-                new FormAnswer
-                {
-                    Guid=Guid.NewGuid(),
-                    Question = question,
-                    FormAnswerSet = null,
-                    BoolValue = true,
-                    CreatedOn = DateTimeOffset.UtcNow,
-                    UpdatedOn = DateTimeOffset.UtcNow
-                }
-            },
+            Answers = new List<FormAnswer>(),
             Deleted = false,
             CreatedOn = DateTimeOffset.UtcNow,
             UpdatedOn = DateTimeOffset.UtcNow
-        };              
+        };
 
-        await repository.SaveAnswerSet(answerSet);
+        var formAnswer = new FormAnswer
+        {
+            Guid = Guid.NewGuid(),
+            Question = question,
+            FormAnswerSet = answerSet,
+            BoolValue = true,
+            CreatedOn = DateTimeOffset.UtcNow,
+            UpdatedOn = DateTimeOffset.UtcNow
+        };
+
+        answerSet.Answers.Add(formAnswer);
 
         var newAnswer = new FormAnswer
         {
@@ -467,6 +507,7 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
         foundAnswer.Question.Should().Be(question);
         foundAnswer.BoolValue.Should().BeFalse();
     }
+
     private static Form GivenForm(Guid formId)
     {
         return new Form
@@ -500,6 +541,7 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
             }
         };
     }
+
     private IFormRepository FormRepository()
     {
         return new DatabaseFormRepository(postgreSql.OrganisationInformationContext());
@@ -509,6 +551,7 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
     {
         return new DatabaseOrganisationRepository(postgreSql.OrganisationInformationContext());
     }
+
     private async Task<Organisation?> FindOrganisationAsync(IOrganisationRepository organisationRepository, Guid organisationGuid)
     {
         return await organisationRepository.Find(organisationGuid);

@@ -118,6 +118,12 @@ public record OrganisationContactPoint
     public string? Url { get; init; }
 }
 
+public record AssignOrganisationIdentifier
+{
+    public required Guid OrganisationId { get; init; }
+    public required OrganisationIdentifier Identifier { get; init; }
+}
+
 public record UpdateSupplierInformation
 {
     public required SupplierInformationUpdateType Type { get; init; }

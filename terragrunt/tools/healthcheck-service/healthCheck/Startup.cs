@@ -9,17 +9,20 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Linq;
 using healthCheck.Models;
 using Microsoft.OpenApi.Any;
+using YourProject.Middleware; // Ensure the namespace for the middleware is correct
 
 namespace healthCheck
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
             Configuration = configuration;
+            Environment = env;
         }
 
         public IConfiguration Configuration { get; }
+        public IWebHostEnvironment Environment { get; }
 
         public void ConfigureServices(IServiceCollection services)
         {
@@ -29,19 +32,35 @@ namespace healthCheck
 
             services.AddHealthChecks();
 
-            services.AddSwaggerGen(c =>
+            bool enableSwaggerUI = Configuration.GetSection("Features").GetValue<bool>("SwaggerUI");
+
+            // Log the value of the SwaggerUI feature flag
+            Console.WriteLine($"SwaggerUI Enabled: {enableSwaggerUI}");
+
+            if (enableSwaggerUI)
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "HealthCheck API", Version = "v1" });
-                c.MapType<QueueNames>(() => new OpenApiSchema
+                services.AddSwaggerGen(c =>
                 {
-                    Type = "string",
-                    Enum = Enum.GetNames(typeof(QueueNames)).Select(name => new OpenApiString(name) as IOpenApiAny).ToList()
+                    c.SwaggerDoc("v1", new OpenApiInfo { Title = "HealthCheck API", Version = "v1" });
+                    c.MapType<QueueNames>(() => new OpenApiSchema
+                    {
+                        Type = "string",
+                        Enum = Enum.GetNames(typeof(QueueNames)).Select(name => new OpenApiString(name) as IOpenApiAny).ToList()
+                    });
                 });
-            });
+            }
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            // Log the environment to verify
+            Console.WriteLine($"Environment: {env.EnvironmentName}");
+
+            bool enableSwaggerUI = Configuration.GetSection("Features").GetValue<bool>("SwaggerUI");
+
+            // Log the value of the SwaggerUI feature flag
+            Console.WriteLine($"SwaggerUI Enabled: {enableSwaggerUI}");
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -59,13 +78,19 @@ namespace healthCheck
 
             app.UseAuthorization();
 
-            app.UseSwagger();
-
-            app.UseSwaggerUI(c =>
+            if (enableSwaggerUI)
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "HealthCheck API V1");
-                c.RoutePrefix = "swagger";
-            });
+                app.UseSwagger();
+                app.UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "HealthCheck API V1");
+                    c.RoutePrefix = "swagger";
+                });
+            }
+            else
+            {
+                app.UseMiddleware<SwaggerDisabledMiddleware>();
+            }
 
             app.UseEndpoints(endpoints =>
             {

@@ -1,8 +1,13 @@
+using System.Reflection;
 using CO.CDP.Authentication;
 using CO.CDP.AwsServices;
+using CO.CDP.Configuration.Assembly;
 using CO.CDP.Configuration.ForwardedHeaders;
+using CO.CDP.MQ;
+using CO.CDP.MQ.Hosting;
 using CO.CDP.Organisation.WebApi.Api;
 using CO.CDP.Organisation.WebApi.AutoMapper;
+using CO.CDP.Organisation.WebApi.Events;
 using CO.CDP.Organisation.WebApi.Extensions;
 using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.Organisation.WebApi.UseCase;
@@ -26,12 +31,28 @@ builder.Services.AddAutoMapper(typeof(WebApiToPersistenceProfile));
 builder.Services
     .AddAwsConfiguration(builder.Configuration)
     .AddAwsSqsService()
-    .AddSqsPublisher();
+    .AddSqsPublisher()
+    .AddSqsDispatcher(
+        EventDeserializer.Deserializer,
+        (services) =>
+        {
+            services.AddScoped<ISubscriber<PponGenerated>, PponGeneratedSubscriber>();
+        },
+        (services, dispatcher) =>
+        {
+            dispatcher.Subscribe<PponGenerated>(services);
+        }
+    );
+if (Assembly.GetEntryAssembly().IsRunAs("CO.CDP.Organisation.WebApi"))
+{
+    builder.Services.AddHostedService<DispatcherBackgroundService>();
+}
 builder.Services.AddDbContext<OrganisationInformationContext>(o =>
     o.UseNpgsql(builder.Configuration.GetConnectionString("OrganisationInformationDatabase") ?? ""));
 builder.Services.AddScoped<IOrganisationRepository, DatabaseOrganisationRepository>();
 builder.Services.AddScoped<IConnectedEntityRepository, DatabaseConnectedEntityRepository>();
 builder.Services.AddScoped<IPersonRepository, DatabasePersonRepository>();
+builder.Services.AddScoped<IUseCase<AssignOrganisationIdentifier, bool>, AssignIdentifierUseCase>();
 builder.Services.AddScoped<IUseCase<RegisterOrganisation, Organisation>, RegisterOrganisationUseCase>();
 builder.Services.AddScoped<IUseCase<Guid, Organisation?>, GetOrganisationUseCase>();
 builder.Services.AddScoped<IUseCase<OrganisationQuery, Organisation?>, LookupOrganisationUseCase>();

@@ -1,4 +1,6 @@
 using CO.CDP.EntityFrameworkCore.Timestamps;
+using System.Reflection;
+using System.Text;
 
 namespace CO.CDP.EntityVerification.Persistence;
 
@@ -12,7 +14,7 @@ public class Identifier : IEntityDate
     public DateTimeOffset CreatedOn { get; set; }
     public DateTimeOffset UpdatedOn { get; set; }
 
-    public static ICollection<Identifier> GetPersistenceIdentifiers(IEnumerable<Events.Identifier> evIds, Ppon newPpon)
+    public static ICollection<Identifier> GetPersistenceIdentifiers(IEnumerable<Events.Identifier> evIds)
     {
         List<Identifier> ids = [];
 
@@ -29,5 +31,4 @@ public class Identifier : IEntityDate
 
         return ids;
     }
-
 }

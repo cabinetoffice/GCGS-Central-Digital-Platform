@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 using static CO.CDP.EntityVerification.Persistence.IPponRepository.PponRepositoryException;
 
 namespace CO.CDP.EntityVerification.Persistence;
@@ -21,6 +22,13 @@ public class DatabasePponRepository(EntityVerificationContext context) : IPponRe
     public void Dispose()
     {
         context.Dispose();
+    }
+
+    public async Task<Ppon?> FindPponByPponIdAsync(string pponId)
+    {
+        return await context.Ppons
+            .Include(p => p.Identifiers)
+            .FirstOrDefaultAsync(p => p.IdentifierId == pponId);
     }
 
     private static void HandleDbUpdateException(Ppon identifier, DbUpdateException cause)

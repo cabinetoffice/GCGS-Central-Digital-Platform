@@ -1,4 +1,5 @@
 using CO.CDP.EntityVerification.Persistence;
+using CO.CDP.EntityVerification.Tests.Events;
 using CO.CDP.Testcontainers.PostgreSql;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
@@ -17,7 +18,7 @@ public class DatabasePponRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
 
         repository.Save(ppon);
 
-        var found = await FindPponByPponId(ppon.IdentifierId);
+        var found = await repository.FindPponByPponIdAsync(ppon.IdentifierId);
 
         found.Should().NotBeNull();
         found.As<EntityVerification.Persistence.Ppon>().Id.Should().BePositive();
@@ -35,13 +36,6 @@ public class DatabasePponRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
 
         repository.Invoking(r => r.Save(anotherPpon))
             .Should().Throw<DuplicatePponException>();
-    }
-
-    private async Task<EntityVerification.Persistence.Ppon?> FindPponByPponId(string pponId)
-    {
-        return await postgreSql.EntityVerificationContext()
-            .Ppons
-            .FirstOrDefaultAsync(p => p.IdentifierId == pponId);
     }
 
     private IPponRepository PponRepository()

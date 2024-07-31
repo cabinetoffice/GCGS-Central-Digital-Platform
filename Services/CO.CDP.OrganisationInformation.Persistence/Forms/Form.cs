@@ -42,7 +42,7 @@ public class FormSection : IEntityDate
     public required string Title { get; set; }
     public required Form Form { get; set; }
     public required ICollection<FormQuestion> Questions { get; set; } = [];
-    public required bool AllowsMultipleAnswerSets = false;
+    public required bool AllowsMultipleAnswerSets { get; set; }
     public required FormSectionConfiguration Configuration;
     public DateTimeOffset CreatedOn { get; set; }
     public DateTimeOffset UpdatedOn { get; set; }

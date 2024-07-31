@@ -1,21 +1,16 @@
 using System.Text.Json;
 using CO.CDP.AwsServices.Sqs;
-using static CO.CDP.EntityVerification.Events.EventDeserializer.EventDeserializerException;
+using static CO.CDP.Organisation.WebApi.Events.EventDeserializer.EventDeserializerException;
 
-namespace CO.CDP.EntityVerification.Events;
+namespace CO.CDP.Organisation.WebApi.Events;
 
 public static class EventDeserializer
 {
     public static Deserializer Deserializer => (type, body) =>
     {
-        if (type == "OrganisationRegistered")
+        if (type == "PponGenerated")
         {
-            return Deserialize<OrganisationRegistered>(type, body);
-        }
-
-        if (type == "OrganisationUpdated")
-        {
-            return Deserialize<OrganisationUpdated>(type, body);
+            return Deserialize<PponGenerated>(type, body);
         }
 
         throw new UnknownEventException($"Unrecognised type `{type}` for event `{body}`.");
