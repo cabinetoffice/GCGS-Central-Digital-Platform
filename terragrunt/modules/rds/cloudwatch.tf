@@ -1,6 +1,6 @@
 resource "aws_cloudwatch_event_rule" "rds_credentials_rotation" {
-  name        = "${local.name_prefix}-rds-credentials-rotation"
-  description = "CloudWatch Event rule to detect rotation of the RDS credentials"
+  name        = "${var.db_name}-rds-creds-rotation"
+  description = "CloudWatch Event rule to detect rotation of the RDS credentials for ${var.db_name}"
 
   event_pattern = jsonencode(
     {

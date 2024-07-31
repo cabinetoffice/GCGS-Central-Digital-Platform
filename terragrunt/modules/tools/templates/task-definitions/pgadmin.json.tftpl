@@ -20,12 +20,15 @@
       }
     },
     "environment": [
-        {"name": "DB_ADDRESS", "value": "${db_address}"},
-        {"name": "DB_NAME", "value": "${db_name}"},
+        {"name": "DB_ENTITY_VERIFICATION_ADDRESS", "value": "${db_entity_verification_address}"},
+        {"name": "DB_ENTITY_VERIFICATION_NAME", "value": "${db_entity_verification_name}"},
+        {"name": "DB_SIRSI_ADDRESS", "value": "${db_sirsi_address}"},
+        {"name": "DB_SIRSI_NAME", "value": "${db_sirsi_name}"},
         {"name": "PGADMIN_LISTEN_PORT", "value": "${host_port}"}
     ],
     "secrets": [
-        {"name": "DB_USERNAME", "valueFrom": "${db_username}"},
+        {"name": "DB_ENTITY_VERIFICATION_USERNAME", "valueFrom": "${db_entity_verification_username}"},
+        {"name": "DB_SIRSI_USERNAME", "valueFrom": "${db_sirsi_username}"},
         {"name": "PGADMIN_DEFAULT_EMAIL", "valueFrom": "${pgadmin_admin_user}"},
         {"name": "PGADMIN_DEFAULT_PASSWORD", "valueFrom": "${pgadmin_admin_password}"}
     ],

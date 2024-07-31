@@ -72,8 +72,11 @@ dependency common_networking {
 dependency service_database {
   config_path = "../../service/database"
   mock_outputs = {
-    db_connection_secret_arn = "mock"
-    db_kms_arn               = "mock"
+    entity_verification_connection_secret_arn = "mock"
+    entity_verification_kms_arn               = "mock"
+    sirsi_connection_secret_arn               = "mock"
+    sirsi_kms_arn                             = "mock"
+
   }
 }
 
@@ -125,8 +128,11 @@ inputs = {
   vpce_s3_sg_id             = dependency.core_security_groups.outputs.vpce_s3_sg_id
   vpce_secretsmanager_sg_id = dependency.core_security_groups.outputs.vpce_secretsmanager_sg_id
 
-  db_connection_secret_arn = dependency.service_database.outputs.db_connection_secret_arn
-  db_kms_arn               = dependency.service_database.outputs.db_kms_arn
+  db_entity_verification_connection_secret_arn = dependency.service_database.outputs.entity_verification_connection_secret_arn
+  db_entity_verification_kms_arn               = dependency.service_database.outputs.entity_verification_kms_arn
+  db_sirsi_connection_secret_arn               = dependency.service_database.outputs.sirsi_connection_secret_arn
+  db_sirsi_kms_arn                             = dependency.service_database.outputs.sirsi_kms_arn
+
 
   queue_entity_verification_queue_arn = dependency.service_queue.outputs.entity_verification_queue_arn
   queue_entity_verification_queue_url = dependency.service_queue.outputs.entity_verification_queue_url

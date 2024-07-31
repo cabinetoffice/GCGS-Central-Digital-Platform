@@ -1,17 +1,17 @@
 resource "aws_db_subnet_group" "postgres" {
-  name       = "${local.name_prefix}-db-private-subnet-group"
+  name       = "${var.db_name}-private-subnet-group"
   subnet_ids = var.private_subnet_ids
 
   tags = merge(
     var.tags,
     {
-      Name = "${local.name_prefix}-db-private-subnet-group"
+      Name = "${var.db_name}-private-subnet-group"
     }
   )
 }
 
 resource "aws_db_parameter_group" "postgres" {
-  name   = "${local.name_prefix}-${floor(var.postgres_engine_version)}"
+  name   = "${var.db_name}-${floor(var.postgres_engine_version)}"
   family = "postgres${floor(var.postgres_engine_version)}"
 
   parameter {
@@ -31,19 +31,19 @@ resource "aws_db_instance" "postgres" {
   auto_minor_version_upgrade          = false
   backup_retention_period             = var.environment == "production" ? 14 : 0
   character_set_name                  = ""
-  db_name                             = replace(local.name_prefix, "-", "_")
+  db_name                             = replace(var.db_name, "-", "_")
   db_subnet_group_name                = aws_db_subnet_group.postgres.name
   engine                              = "postgres"
   engine_version                      = var.postgres_engine_version
   iam_database_authentication_enabled = true
-  identifier                          = local.name_prefix
+  identifier                          = var.db_name
   instance_class                      = var.postgres_instance_type
   manage_master_user_password         = true
-  master_user_secret_kms_key_id       = aws_kms_key.rds.id
+  master_user_secret_kms_key_id       = module.kms.key_id
   multi_az                            = var.environment == "production"
   skip_final_snapshot                 = true
   storage_encrypted                   = true
-  username                            = "${replace(local.name_prefix, "-", "_")}_main_db_user"
+  username                            = "${replace(var.db_name, "-", "_")}_user"
   vpc_security_group_ids              = [var.db_postgres_sg_id]
 
   depends_on = [
@@ -53,7 +53,7 @@ resource "aws_db_instance" "postgres" {
   tags = merge(
     var.tags,
     {
-      Name = replace(local.name_prefix, "-", "_")
+      Name = replace(var.db_name, "-", "_")
     }
   )
 }

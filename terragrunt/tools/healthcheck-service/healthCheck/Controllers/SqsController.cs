@@ -20,8 +20,8 @@ namespace healthCheck.Controllers
         public SqsController(IAmazonSQS sqsClient, IConfiguration configuration)
         {
             _sqsClient = sqsClient;
-            _dispatcherQueueUrl = configuration["queue_url_dispatcher"];
-            _publisherQueueUrl = configuration["queue_url_publisher"];
+            _dispatcherQueueUrl = configuration["QUEUE_URL_ORGANISATION"];
+            _publisherQueueUrl = configuration["QUEUE_URL_ENTITY_VERIFICATION"];
         }
 
         private string GetQueueUrl(QueueNames queue)

@@ -7,7 +7,7 @@ module "ecs_migration_tasks" {
     "${path.module}/templates/task-definitions/${each.value.name}.json.tftpl",
     {
       cpu                     = var.service_configs.entity_verification_migrations.cpu
-      conn_string_location    = var.db_connection_secret_arn
+      conn_string_location    = each.value.name == "entity-verification-migrations" ? var.db_entity_verification_connection_secret_arn : var.db_sirsi_connection_secret_arn
       aspcore_environment     = local.aspcore_environment
       image                   = "${local.ecr_urls[each.value.name]}:${local.orchestrator_service_version}"
       lg_name                 = aws_cloudwatch_log_group.tasks[each.value.name].name

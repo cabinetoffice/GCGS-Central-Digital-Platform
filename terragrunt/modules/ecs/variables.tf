@@ -8,18 +8,28 @@ variable "alb_sg_id" {
   type        = string
 }
 
-variable "db_connection_secret_arn" {
-  description = "ARN of the secret holding Postgres DB connection string"
+variable "db_entity_verification_connection_secret_arn" {
+  description = "ARN of the secret holding Entity Verification DB connection string"
   type        = string
 }
 
-variable "db_kms_arn" {
-  description = "ARN of the KMS used to encrypt database secrets"
+variable "db_entity_verification_kms_arn" {
+  description = "ARN of the KMS used to encrypt Entity Verification secrets"
   type        = string
 }
 
 variable "db_postgres_sg_id" {
   description = "Postgres DB security group ID"
+  type        = string
+}
+
+variable "db_sirsi_connection_secret_arn" {
+  description = "ARN of the secret holding Sirsi DB connection string"
+  type        = string
+}
+
+variable "db_sirsi_kms_arn" {
+  description = "ARN of the KMS used to encrypt Sirsi secrets"
   type        = string
 }
 
@@ -107,11 +117,6 @@ variable "role_ecs_task_arn" {
   type        = string
 }
 
-variable "role_ecs_task_name" {
-  description = "Task IAM role Name"
-  type        = string
-}
-
 variable "role_ecs_task_exec_arn" {
   description = "Task execution IAM role ARN"
   type        = string
@@ -119,6 +124,11 @@ variable "role_ecs_task_exec_arn" {
 
 variable "role_ecs_task_exec_name" {
   description = "Task execution IAM role name"
+  type        = string
+}
+
+variable "role_ecs_task_name" {
+  description = "Task IAM role Name"
   type        = string
 }
 

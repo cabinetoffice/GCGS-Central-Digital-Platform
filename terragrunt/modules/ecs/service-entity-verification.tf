@@ -4,10 +4,10 @@ module "ecs_service_entity_verification" {
   container_definitions = templatefile(
     "${path.module}/templates/task-definitions/${var.service_configs.entity_verification.name}.json.tftpl",
     {
+      aspcore_environment                 = local.aspcore_environment
+      conn_string_location                = var.db_entity_verification_connection_secret_arn
       container_port                      = var.service_configs.entity_verification.port
       cpu                                 = var.service_configs.entity_verification.cpu
-      conn_string_location                = var.db_connection_secret_arn
-      aspcore_environment                 = local.aspcore_environment
       host_port                           = var.service_configs.entity_verification.port
       image                               = "${local.ecr_urls[var.service_configs.entity_verification.name]}:${local.orchestrator_service_version}"
       lg_name                             = aws_cloudwatch_log_group.tasks[var.service_configs.entity_verification.name].name
@@ -15,9 +15,9 @@ module "ecs_service_entity_verification" {
       lg_region                           = data.aws_region.current.name
       memory                              = var.service_configs.entity_verification.memory
       name                                = var.service_configs.entity_verification.name
+      public_hosted_zone_fqdn             = var.public_hosted_zone_fqdn
       queue_entity_verification_queue_url = var.queue_entity_verification_queue_url
       queue_organisation_queue_url        = var.queue_organisation_queue_url
-      public_hosted_zone_fqdn             = var.public_hosted_zone_fqdn
       vpc_cidr                            = var.vpc_cider
     }
   )
