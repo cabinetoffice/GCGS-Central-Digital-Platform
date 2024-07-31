@@ -1,7 +1,8 @@
-using System.Text.Json;
 using CO.CDP.EntityVerification.Events;
 using FluentAssertions;
+using System.Text.Json;
 using static CO.CDP.EntityVerification.Events.EventDeserializer.EventDeserializerException;
+using static CO.CDP.EntityVerification.Tests.Events.EventsFactories;
 
 namespace CO.CDP.EntityVerification.Tests.Events;
 
@@ -10,12 +11,23 @@ public class EventDeserializerTest
     [Fact]
     public void ItDeserializesOrganisationRegisteredEvent()
     {
-        var organisationRegistered = GvienOrganisationRegisteredEvent();
+        var organisationRegistered = GivenOrganisationRegisteredEvent();
         var serialized = JsonSerializer.Serialize(organisationRegistered);
 
         var deserialized = EventDeserializer.Deserializer("OrganisationRegistered", serialized);
 
         deserialized.Should().BeEquivalentTo(organisationRegistered);
+    }
+
+    [Fact]
+    public void ItDeserializesOrganisationUpdateEvent()
+    {
+        var organisationUpdate = GivenOrganisationUpdatedEvent();
+        var serialized = JsonSerializer.Serialize(organisationUpdate);
+
+        var deserialized = EventDeserializer.Deserializer("OrganisationUpdated", serialized);
+
+        deserialized.Should().BeEquivalentTo(organisationUpdate);
     }
 
     [Fact]
@@ -33,29 +45,4 @@ public class EventDeserializerTest
 
         action.Should().Throw<DeserializationFailedException>();
     }
-
-    private static OrganisationRegistered GvienOrganisationRegisteredEvent() =>
-        new()
-        {
-            Id = Guid.NewGuid(),
-            Name = "Acme Ltd",
-            Identifier = new Identifier
-            {
-                Id = "93433423432",
-                LegalName = "Acme Ltd",
-                Scheme = "GB-COH",
-                Uri = null
-            },
-            AdditionalIdentifiers =
-            [
-                new Identifier
-                {
-                    Id = "GB123123123",
-                    LegalName = "Acme Ltd",
-                    Scheme = "VAT",
-                    Uri = null
-                }
-            ],
-            Roles = ["supplier"]
-        };
 }
