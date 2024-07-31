@@ -6,6 +6,8 @@ public interface IOrganisationRepository : IDisposable
 
     public Task<Organisation?> Find(Guid organisationId);
 
+    public Task<Organisation?> Find(int organisationId);
+
     public Task<Organisation?> FindByName(string name);
 
     public Task<IEnumerable<Organisation>> FindByUserUrn(string userUrn);
