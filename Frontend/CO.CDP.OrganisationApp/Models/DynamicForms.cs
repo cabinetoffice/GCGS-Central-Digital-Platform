@@ -40,12 +40,12 @@ public class FormQuestionAnswerState
 public class QuestionAnswer
 {
     public Guid QuestionId { get; set; }
+    public Guid AnswerId { get; set; }
     public FormAnswer? Answer { get; set; }
 }
 
 public class FormAnswer
 {
-    public Guid Id { get; set; }
     public bool? BoolValue { get; init; }
     public double? NumericValue { get; init; }
     public DateTimeOffset? DateValue { get; init; }

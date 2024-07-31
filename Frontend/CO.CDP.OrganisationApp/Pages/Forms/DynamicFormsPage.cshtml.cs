@@ -233,7 +233,10 @@ public class DynamicFormsPageModel(
             var questionAnswer = state.Answers.FirstOrDefault(a => a.QuestionId == question.Id);
             if (questionAnswer == null)
             {
-                questionAnswer = new QuestionAnswer { QuestionId = question.Id };
+                questionAnswer = new QuestionAnswer {
+                    QuestionId = question.Id,
+                    AnswerId = Guid.NewGuid()
+                };
                 state.Answers.Add(questionAnswer);
             }
 

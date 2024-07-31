@@ -119,11 +119,6 @@ builder.Services
     .AddAwsConfiguration(builder.Configuration)
     .AddAwsS3Service();
 
-builder.Services.AddControllers().AddNewtonsoftJson(options =>
-{
-    options.SerializerSettings.DateFormatString = "yyyy-MM-ddTHH:mm:ssZ";
-});
-
 var app = builder.Build();
 app.UseForwardedHeaders();
 app.UseMiddleware<ExceptionMiddleware>();
