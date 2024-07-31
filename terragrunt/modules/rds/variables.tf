@@ -1,3 +1,8 @@
+variable "db_name" {
+  description = "Data base name"
+  type        = string
+}
+
 variable "db_postgres_sg_id" {
   description = "Postgres DB security group ID"
   type        = string
@@ -21,15 +26,6 @@ variable "postgres_instance_type" {
 variable "private_subnet_ids" {
   description = "List of private subnet IDs"
   type        = list(string)
-}
-
-variable "product" {
-  description = "product's common attributes"
-  type = object({
-    name               = string
-    resource_name      = string
-    public_hosted_zone = string
-  })
 }
 
 variable "role_cloudwatch_events_arn" {

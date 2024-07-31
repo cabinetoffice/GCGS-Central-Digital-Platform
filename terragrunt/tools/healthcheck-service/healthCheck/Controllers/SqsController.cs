@@ -14,22 +14,22 @@ namespace healthCheck.Controllers
     public class SqsController : ControllerBase
     {
         private readonly IAmazonSQS _sqsClient;
-        private readonly string? _dispatcherQueueUrl;
-        private readonly string? _publisherQueueUrl;
+        private readonly string? _OrganisationQueueUrl;
+        private readonly string? _EntityVerificationQueueUrl;
 
         public SqsController(IAmazonSQS sqsClient, IConfiguration configuration)
         {
             _sqsClient = sqsClient;
-            _dispatcherQueueUrl = configuration["queue_url_dispatcher"];
-            _publisherQueueUrl = configuration["queue_url_publisher"];
+            _OrganisationQueueUrl = configuration["QUEUE_URL_ORGANISATION"];
+            _EntityVerificationQueueUrl = configuration["QUEUE_URL_ENTITY_VERIFICATION"];
         }
 
         private string GetQueueUrl(QueueNames queue)
         {
             return queue switch
             {
-                QueueNames.DispatcherQueue => _dispatcherQueueUrl ?? throw new InvalidOperationException("Dispatcher queue URL not configured."),
-                QueueNames.PublisherQueue => _publisherQueueUrl ?? throw new InvalidOperationException("Publisher queue URL not configured."),
+                QueueNames.OrganisationQueue => _OrganisationQueueUrl ?? throw new InvalidOperationException("Organisation queue URL not configured."),
+                QueueNames.EntityVerificationQueue => _EntityVerificationQueueUrl ?? throw new InvalidOperationException("EntityVerification queue URL not configured."),
                 _ => throw new ArgumentOutOfRangeException(nameof(queue), queue, null),
             };
         }

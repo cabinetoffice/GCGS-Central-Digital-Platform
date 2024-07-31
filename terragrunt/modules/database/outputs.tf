@@ -1,19 +1,39 @@
-output "db_address" {
-  value = aws_db_instance.postgres.address
+output "entity_verification_address" {
+  value = module.rds_entity_verification.db_address
 }
 
-output "db_connection_secret_arn" {
-  value = aws_secretsmanager_secret.db_connection_string.arn
+output "entity_verification_connection_secret_arn" {
+  value = module.rds_entity_verification.db_connection_secret_arn
 }
 
-output "db_credentials" {
-  value = data.aws_secretsmanager_secret.postgres.arn
+output "entity_verification_credentials" {
+  value = module.rds_entity_verification.db_credentials
 }
 
-output "db_kms_arn" {
-  value = aws_kms_key.rds.arn
+output "entity_verification_kms_arn" {
+  value = module.rds_entity_verification.db_kms_arn
 }
 
-output "db_name" {
-  value = aws_db_instance.postgres.db_name
+output "entity_verification_name" {
+  value = module.rds_entity_verification.db_name
+}
+
+output "sirsi_address" {
+  value = module.rds_sirsi.db_address
+}
+
+output "sirsi_connection_secret_arn" {
+  value = module.rds_sirsi.db_connection_secret_arn
+}
+
+output "sirsi_credentials" {
+  value = module.rds_sirsi.db_credentials
+}
+
+output "sirsi_kms_arn" {
+  value = module.rds_sirsi.db_kms_arn
+}
+
+output "sirsi_name" {
+  value = module.rds_sirsi.db_name
 }

@@ -7,7 +7,7 @@ include {
 }
 
 locals {
-  global_vars  = read_terragrunt_config(find_in_parent_folders("terragrunt.hcl"))
+  global_vars = read_terragrunt_config(find_in_parent_folders("terragrunt.hcl"))
   service_vars = read_terragrunt_config(find_in_parent_folders("service.hcl"))
 
   tags = merge(
@@ -59,12 +59,16 @@ dependency service_ecs {
 dependency service_database {
   config_path = "../../service/database"
   mock_outputs = {
-    db_connection_secret_arn = "mock"
-    db_kms_arn               = "mock"
-    db_address               = "mock"
-    db_credentials           = "mock"
-    db_name                  = "mock"
-
+    entity_verification_address               = "mock"
+    entity_verification_connection_secret_arn = "mock"
+    entity_verification_credentials           = "mock"
+    entity_verification_kms_arn               = "mock"
+    entity_verification_name                  = "mock"
+    sirsi_address                             = "mock"
+    sirsi_connection_secret_arn               = "mock"
+    sirsi_credentials                         = "mock"
+    sirsi_kms_arn                             = "mock"
+    sirsi_name                                = "mock"
   }
 }
 
@@ -85,7 +89,7 @@ inputs = {
   tags               = local.tags
 
   role_ecs_task_arn      = dependency.core_iam.outputs.ecs_task_arn
-  role_ecs_task_name      = dependency.core_iam.outputs.ecs_task_name
+  role_ecs_task_name     = dependency.core_iam.outputs.ecs_task_name
   role_ecs_task_exec_arn = dependency.core_iam.outputs.ecs_task_exec_arn
 
   private_subnet_ids      = dependency.core_networking.outputs.private_subnet_ids
@@ -100,10 +104,14 @@ inputs = {
   ecs_lb_dns_name  = dependency.service_ecs.outputs.ecs_lb_dns_name
   ecs_listener_arn = dependency.service_ecs.outputs.ecs_listener_arn
 
-  db_address               = dependency.service_database.outputs.db_address
-  db_credentials           = dependency.service_database.outputs.db_credentials
-  db_name                  = dependency.service_database.outputs.db_name
-  db_kms_arn               = dependency.service_database.outputs.db_kms_arn
+  db_entity_verification_address               = dependency.service_database.outputs.entity_verification_address
+  db_entity_verification_credentials           = dependency.service_database.outputs.entity_verification_credentials
+  db_entity_verification_kms_arn               = dependency.service_database.outputs.entity_verification_kms_arn
+  db_entity_verification_name                  = dependency.service_database.outputs.entity_verification_name
+  db_sirsi_address                             = dependency.service_database.outputs.sirsi_address
+  db_sirsi_credentials                         = dependency.service_database.outputs.sirsi_credentials
+  db_sirsi_kms_arn                             = dependency.service_database.outputs.sirsi_kms_arn
+  db_sirsi_name                                = dependency.service_database.outputs.sirsi_name
 
   queue_entity_verification_queue_arn = dependency.service_queue.outputs.entity_verification_queue_arn
   queue_entity_verification_queue_url = dependency.service_queue.outputs.entity_verification_queue_url

@@ -1,13 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HealthCheck API</title>
+    <meta charset="utf-8" />
+    <link rel="icon" href="https://${frontend_url}/assets/images/favicon.ico" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+    <meta name="theme-color" content="#000000" />
+    <meta name="description" content="GOV.UK Central Digital Platform" />
+    <link rel="manifest" href="https://${frontend_url}/manifest.json" />
+    <link rel="stylesheet" href="https://${frontend_url}/css/govuk-frontend-5.4.1.min.css">
+    <link rel="stylesheet" href="https://${frontend_url}/css/site.css">
+    <title>Central Digital Platform - GOV.UK</title>
 </head>
-<body>
-<h1>Welcome to the HealthCheck API</h1>
-<p>Use the /health endpoint to check the service health.</p>
-<p>Use the /sqs/test endpoint to test SQS connectivity.</p>
+<body class="govuk-template__body">
+
+<div class="govuk-width-container">
+    <div class="govuk-phase-banner">
+        <p class="govuk-phase-banner__content">
+            <strong class="govuk-tag govuk-phase-banner__content__tag">
+                Prototype
+            </strong>
+            <span class="govuk-phase-banner__text">
+                    This is a prototype of a service in development.
+                </span>
+        </p>
+    </div>
+
+    <main class="govuk-main-wrapper">
+
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-two-thirds govuk-body">
+                <h4>CDP Health-check</h4>
+                <ul class="govuk-list govuk-list--bullet">
+                    <li><a href="/health">Health</a></li>
+                    <li><a href="/sqs/test">SQS status</a></li>
+                    <li><a href="/swagger">Swagger</a></li>
+                </ul>
+            </div>
+        </div>
+    </main>
+</div>
+
+
 </body>
 </html>
