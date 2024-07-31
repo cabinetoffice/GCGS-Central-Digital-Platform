@@ -33,8 +33,3 @@ RUN terraform --version
 RUN terragrunt --version
 RUN aws --version
 RUN jq -V
-
-# Coppy terraform code @TODO (ABN) Decide if we want to remove this approach once the GitHub connection established
-COPY ./components /terragrunt/components
-COPY ./modules /terragrunt/modules
-COPY ./providers.tf /terragrunt/providers.tf
