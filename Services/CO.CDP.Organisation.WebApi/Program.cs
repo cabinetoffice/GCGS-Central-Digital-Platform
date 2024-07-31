@@ -23,7 +23,7 @@ builder.ConfigureForwardedHeaders();
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(options => { options.DocumentOrganisationApi(); });
+builder.Services.AddSwaggerGen(options => { options.DocumentOrganisationApi(builder.Configuration); });
 builder.Services.AddHealthChecks()
     .AddNpgSql(builder.Configuration.GetConnectionString("OrganisationInformationDatabase") ?? "");
 builder.Services.AddAutoMapper(typeof(WebApiToPersistenceProfile));

@@ -396,24 +396,13 @@ public static class EndpointExtensions
 
 public static class ApiExtensions
 {
-    public static void DocumentOrganisationApi(this SwaggerGenOptions options)
+    public static void DocumentOrganisationApi(this SwaggerGenOptions options, IConfigurationManager configuration)
     {
         options.SwaggerDoc("v1", new OpenApiInfo
         {
-            Version = "1.0.0",
+            Version = configuration.GetValue("Version", "dev"),
             Title = "Organisation Management API",
-            Description = "API for creating, updating, deleting, and listing organisations, including a lookup feature against organisation identifiers.",
-            TermsOfService = new Uri("https://example.com/terms"),
-            Contact = new OpenApiContact
-            {
-                Name = "Example Contact",
-                Url = new Uri("https://example.com/contact")
-            },
-            License = new OpenApiLicense
-            {
-                Name = "Example License",
-                Url = new Uri("https://example.com/license")
-            }
+            Description = "API for creating, updating, deleting, and listing organisations, including a lookup feature against organisation identifiers."
         });
         options.CustomSchemaIds(type =>
         {

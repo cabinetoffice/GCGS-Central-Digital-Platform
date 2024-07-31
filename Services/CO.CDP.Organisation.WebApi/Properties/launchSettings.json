@@ -9,7 +9,8 @@
       "applicationUrl": "http://localhost:58082",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "ConnectionStrings__OrganisationInformationDatabase": "Server=localhost;Database=cdp;Username=cdp_user;Password=cdp123;"
+        "ConnectionStrings__OrganisationInformationDatabase": "Server=localhost;Database=cdp;Username=cdp_user;Password=cdp123;",
+        "VERSION": "dev-docker"
       }
     },
     "http": {
