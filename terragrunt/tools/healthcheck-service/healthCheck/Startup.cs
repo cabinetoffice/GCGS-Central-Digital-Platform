@@ -12,6 +12,8 @@ using healthCheck.Models;
 using Microsoft.OpenApi.Any;
 using System.IO;
 using System.Threading.Tasks;
+using System.Collections.Generic;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace healthCheck
 {
@@ -36,32 +38,25 @@ namespace healthCheck
 
             bool enableSwaggerUI = Configuration.GetSection("Features").GetValue<bool>("SwaggerUI");
 
-            // Log the value of the SwaggerUI feature flag
-            Console.WriteLine($"SwaggerUI Enabled: {enableSwaggerUI}");
-
             if (enableSwaggerUI)
             {
                 services.AddSwaggerGen(c =>
                 {
                     c.SwaggerDoc("v1", new OpenApiInfo { Title = "HealthCheck API", Version = "v1" });
+                    c.EnableAnnotations(); // Enable Swagger Annotations
                     c.MapType<QueueNames>(() => new OpenApiSchema
                     {
                         Type = "string",
                         Enum = Enum.GetNames(typeof(QueueNames)).Select(name => new OpenApiString(name) as IOpenApiAny).ToList()
                     });
+                    c.SchemaFilter<DefaultSchemaFilter>();
                 });
             }
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            // Log the environment to verify
-            Console.WriteLine($"Environment: {env.EnvironmentName}");
-
             bool enableSwaggerUI = Configuration.GetSection("Features").GetValue<bool>("SwaggerUI");
-
-            // Log the value of the SwaggerUI feature flag
-            Console.WriteLine($"SwaggerUI Enabled: {enableSwaggerUI}");
 
             if (env.IsDevelopment())
             {
@@ -121,6 +116,20 @@ namespace healthCheck
                 endpoints.MapHealthChecks("/health");
                 endpoints.MapControllers();
             });
+        }
+    }
+
+    public class DefaultSchemaFilter : ISchemaFilter
+    {
+        public void Apply(OpenApiSchema schema, SchemaFilterContext context)
+        {
+            if (context.Type == typeof(SendMessageRequestModel))
+            {
+                schema.Properties["messageGroupId"].Default = new OpenApiString("health-check-test-group");
+                schema.Properties["messageGroupId"].Description = "Message group ID for FIFO queues (default: health-check-test-group)";
+                schema.Properties["message"].Description = "The content of the message to be sent";
+                schema.Properties["queue"].Description = "The name of the queue";
+            }
         }
     }
 }

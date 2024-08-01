@@ -4,6 +4,11 @@ data "aws_region" "current" {}
 
 data "aws_iam_policy_document" "access_policy" {
 
+  for_each = {
+    queue = local.arn,
+    queue_dlq = local.dlq_arn
+  }
+
   statement {
     sid    = "AllowAccessToQueue"
     effect = "Allow"
@@ -18,24 +23,7 @@ data "aws_iam_policy_document" "access_policy" {
       "sqs:ReceiveMessage",
       "sqs:SendMessage"
     ]
-    resources = [local.arn]
-  }
-
-  statement {
-    sid    = "AllowAccessToDLQ"
-    effect = "Allow"
-    principals {
-      identifiers = concat(var.role_consumer_arn, var.role_publisher_arn)
-      type        = "AWS"
-    }
-    actions = [
-      "sqs:DeleteMessage",
-      "sqs:GetQueueAttributes",
-      "sqs:GetQueueUrl",
-      "sqs:ReceiveMessage",
-      "sqs:SendMessage"
-    ]
-    resources = [local.dlq_arn]
+    resources = [each.value]
   }
 
   statement {
@@ -49,21 +37,7 @@ data "aws_iam_policy_document" "access_policy" {
       "sqs:DeleteMessage",
       "sqs:ReceiveMessage",
     ]
-    resources = [local.arn]
-  }
-
-  statement {
-    sid    = "AllowConsumeFromDLQ"
-    effect = "Allow"
-    principals {
-      identifiers = var.role_consumer_arn
-      type        = "AWS"
-    }
-    actions = [
-      "sqs:DeleteMessage",
-      "sqs:ReceiveMessage",
-    ]
-    resources = [local.dlq_arn]
+    resources = [each.value]
   }
 
   statement {
@@ -76,7 +50,7 @@ data "aws_iam_policy_document" "access_policy" {
     actions = [
       "sqs:ReceiveMessage",
     ]
-    resources = [local.arn]
+    resources = [each.value]
   }
 
 }

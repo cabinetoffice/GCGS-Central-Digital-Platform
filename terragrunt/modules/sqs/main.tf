@@ -5,6 +5,8 @@ resource "aws_sqs_queue" "this_dlq" {
 
   message_retention_seconds = var.message_retention_seconds
 
+  policy = data.aws_iam_policy_document.access_policy["queue_dlq"].json
+
   tags = var.tags
 }
 
@@ -25,7 +27,7 @@ resource "aws_sqs_queue" "this" {
     maxReceiveCount     = var.max_receive_count
   })
 
-  policy = data.aws_iam_policy_document.access_policy.json
+  policy = data.aws_iam_policy_document.access_policy["queue"].json
 
   tags = var.tags
 }
