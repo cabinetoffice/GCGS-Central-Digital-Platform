@@ -4,6 +4,7 @@ using CO.CDP.OrganisationApp.WebApiClients;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using ConnectedEntityType = CO.CDP.OrganisationApp.Constants.ConnectedEntityType;
 
 namespace CO.CDP.OrganisationApp.Pages.Supplier;
 
@@ -50,6 +51,28 @@ public class ConnectedEntityCheckAnswersOrganisationModel(
         return Page();
     }
 
+    public async Task<IActionResult> OnGetChange(Guid connectedEntityId)
+    {
+        try
+        {
+            await organisationClient.GetOrganisationAsync(Id);
+
+            var connectedEntity = await organisationClient.GetConnectedEntityAsync(Id, connectedEntityId);
+
+            ConnectedEntityDetails = GetConnectedEntityStateFromEntity(connectedEntity);
+
+            InitModal(ConnectedEntityDetails);
+
+            session.Set<ConnectedEntityState?>(Session.ConnectedPersonKey, ConnectedEntityDetails);
+
+            return Page();
+        }
+        catch (ApiException ex) when (ex.StatusCode == 404)
+        {
+            return Redirect("/page-not-found");
+        }
+    }
+
     public async Task<IActionResult> OnPost()
     {
         var state = session.Get<ConnectedEntityState>(Session.ConnectedPersonKey);
@@ -70,12 +93,29 @@ public class ConnectedEntityCheckAnswersOrganisationModel(
 
         try
         {
-            await organisationClient.RegisterConnectedPerson(Id, payload);
+            if (ConnectedEntityId.HasValue)
+            {
+                var updatePayload = UpdateConnectedEntityPayload(state);
+
+                if (updatePayload == null)
+                {
+                    ModelState.AddModelError(string.Empty, ErrorMessagesList.PayLoadIssueOrNullAurgument);
+                    return Page();
+                }
+
+                await organisationClient.UpdateConnectedPerson(Id, ConnectedEntityId.Value, updatePayload);
+            }
+            else
+            {
+                await organisationClient.RegisterConnectedPerson(Id, payload);
+            }
 
             session.Remove(Session.ConnectedPersonKey);
         }
         catch (ApiException ex) when (ex.StatusCode == 404)
         {
+            session.Remove(Session.ConnectedPersonKey);
+
             return Redirect("/page-not-found");
         }
 
@@ -152,6 +192,120 @@ public class ConnectedEntityCheckAnswersOrganisationModel(
         );
 
         return registerConnectedEntity;
+    }
+
+    private UpdateConnectedEntity? UpdateConnectedEntityPayload(ConnectedEntityState state)
+    {
+        UpdateConnectedOrganisation? connectedOrganisation = null;
+        UpdateConnectedIndividualTrust? connectedIndividualTrust = null;
+
+        connectedOrganisation = new UpdateConnectedOrganisation
+        (
+            category: state.ConnectedEntityOrganisationCategoryType!.Value.AsApiClientConnectedEntityOrganisationCategoryType(),
+            controlCondition: state.ControlConditions.AsApiClientControlConditionList(),
+            insolvencyDate: state.InsolvencyDate,
+            lawRegistered: state.LawRegistered,
+            name: state.OrganisationName,
+            organisationId: null,
+            registeredLegalForm: state.LegalForm
+        );
+
+        List<Address> addresses = new();
+
+        if (state.RegisteredAddress != null)
+        {
+            addresses.Add(AddAddress(state.RegisteredAddress, Organisation.WebApiClient.AddressType.Registered));
+        }
+
+        if (state.PostalAddress != null)
+        {
+            addresses.Add(AddAddress(state.PostalAddress, Organisation.WebApiClient.AddressType.Postal));
+        }
+
+        var updateConnectedEntity = new UpdateConnectedEntity
+        (
+            id: ConnectedEntityId.ToString(),
+            addresses: addresses,
+            companyHouseNumber: state.CompaniesHouseNumber,
+            endDate: null,
+            entityType: state.ConnectedEntityType!.Value.AsApiClientConnectedEntityType(),
+            hasCompnayHouseNumber: state.SupplierHasCompanyHouseNumber!.Value,
+            individualOrTrust: connectedIndividualTrust,
+            organisation: connectedOrganisation,
+            overseasCompanyNumber: "",
+            registeredDate: state.RegistrationDate!.Value,
+            registerName: state.RegisterName,
+            startDate: null
+        );
+
+        return updateConnectedEntity;
+    }
+
+    private ConnectedEntityState GetConnectedEntityStateFromEntity(CO.CDP.Organisation.WebApiClient.ConnectedEntity connectedEntity)
+    {
+        var connectedEntityType = connectedEntity.EntityType.AsConnectedEntityType();
+        var controlConditions = connectedEntityType == ConnectedEntityType.Organisation
+            ? connectedEntity.Organisation?.ControlCondition
+            : connectedEntity.IndividualOrTrust?.ControlCondition;
+
+        var state = new ConnectedEntityState()
+        {
+            CompaniesHouseNumber = connectedEntity.CompanyHouseNumber,
+            ConnectedEntityId = connectedEntity.Id,
+            ConnectedEntityIndividualAndTrustCategoryType = connectedEntity.IndividualOrTrust?.Category.AsConnectedEntityIndividualAndTrustCategoryType(),
+            ConnectedEntityOrganisationCategoryType = connectedEntity.Organisation?.Category.AsConnectedEntityOrganisationCategoryType(),
+            ConnectedEntityType = connectedEntityType,
+            HasCompaniesHouseNumber = connectedEntity.CompanyHouseNumber != null,
+            InsolvencyDate = connectedEntity.Organisation?.InsolvencyDate,
+            LawRegistered = connectedEntity.Organisation?.LawRegistered,
+            LegalForm = connectedEntity.Organisation?.RegisteredLegalForm,
+            OrganisationName = connectedEntity.Organisation?.Name,
+            PostalAddress = new ConnectedEntityState.Address
+            {
+                AddressLine1 = connectedEntity.Addresses?.FirstOrDefault(a => a.Type == Organisation.WebApiClient.AddressType.Postal)?.StreetAddress,
+                Country = connectedEntity.Addresses?.FirstOrDefault(a => a.Type == Organisation.WebApiClient.AddressType.Postal)?.CountryName,
+                Postcode = connectedEntity.Addresses?.FirstOrDefault(a => a.Type == Organisation.WebApiClient.AddressType.Postal)?.PostalCode,
+                TownOrCity = connectedEntity.Addresses?.FirstOrDefault(a => a.Type == Organisation.WebApiClient.AddressType.Postal)?.Locality
+            },
+            RegistrationDate = connectedEntity.RegisteredDate,
+            RegisterName = connectedEntity.RegisterName,
+            RegisteredAddress = new ConnectedEntityState.Address
+            {
+                AddressLine1 = connectedEntity.Addresses?.FirstOrDefault(a => a.Type == Organisation.WebApiClient.AddressType.Registered)?.StreetAddress,
+                Country = connectedEntity.Addresses?.FirstOrDefault(a => a.Type == Organisation.WebApiClient.AddressType.Registered)?.CountryName,
+                Postcode = connectedEntity.Addresses?.FirstOrDefault(a => a.Type == Organisation.WebApiClient.AddressType.Registered)?.PostalCode,
+                TownOrCity = connectedEntity.Addresses?.FirstOrDefault(a => a.Type == Organisation.WebApiClient.AddressType.Registered)?.Locality
+            },
+            ControlConditions = ControlConditionCollectionToList(controlConditions),
+            Nationality = connectedEntity.IndividualOrTrust?.Nationality,
+            SupplierOrganisationId = Id,
+            FirstName = connectedEntity.IndividualOrTrust?.FirstName,
+            LastName = connectedEntity.IndividualOrTrust?.LastName,
+            DateOfBirth = connectedEntity.IndividualOrTrust?.DateOfBirth,
+            OverseasCompaniesHouseNumber = connectedEntity.OverseasCompanyNumber,
+            HasOverseasCompaniesHouseNumber = connectedEntity.OverseasCompanyNumber != null,
+            SupplierHasCompanyHouseNumber = connectedEntity.HasCompnayHouseNumber,
+        };
+
+        return state;
+    }
+
+    private List<ConnectedEntityControlCondition> ControlConditionCollectionToList(ICollection<ControlCondition>? controlConditionCollection)
+    {
+        List<ConnectedEntityControlCondition> controlConditions = new();
+
+        if (controlConditionCollection == null)
+        {
+            return controlConditions;
+        }
+
+        foreach (var cc in controlConditionCollection)
+        {
+            var controlConditionCe = cc.AsConnectedEntityClientControlCondition();
+            controlConditions.Add(controlConditionCe);
+        }
+
+        return controlConditions;
     }
 
     private Address AddAddress(ConnectedEntityState.Address addressDetails, Organisation.WebApiClient.AddressType addressType)

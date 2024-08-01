@@ -35,6 +35,18 @@ public static class ConnectedEntityControlConditionExtensions
         }
     }
 
+    public static ConnectedEntityControlCondition AsConnectedEntityClientControlCondition(this WebApiClient.ControlCondition entityControlCondition)
+    {
+        switch (entityControlCondition)
+        {
+            case WebApiClient.ControlCondition.OwnsShares: return ConnectedEntityControlCondition.OwnsShares;
+            case WebApiClient.ControlCondition.HasOtherSignificantInfluenceOrControl: return ConnectedEntityControlCondition.HasOtherSignificantInfluenceOrControl;
+            case WebApiClient.ControlCondition.HasVotingRights: return ConnectedEntityControlCondition.HasVotingRights;
+            case WebApiClient.ControlCondition.CanAppointOrRemoveDirectors: return ConnectedEntityControlCondition.CanAppointOrRemoveDirectors;
+            default: return ConnectedEntityControlCondition.OwnsShares;
+        }
+    }
+
     public static ICollection<WebApiClient.ControlCondition> AsApiClientControlConditionList(this List<ConnectedEntityControlCondition> entityControlConditions)
     {
         var list = new List<WebApiClient.ControlCondition>();
