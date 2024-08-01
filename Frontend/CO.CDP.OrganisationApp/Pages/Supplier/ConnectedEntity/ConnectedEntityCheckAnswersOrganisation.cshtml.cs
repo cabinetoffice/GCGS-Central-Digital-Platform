@@ -272,7 +272,7 @@ public class ConnectedEntityCheckAnswersOrganisationModel(
             ConnectedEntityIndividualAndTrustCategoryType = connectedEntity.IndividualOrTrust?.Category.AsConnectedEntityIndividualAndTrustCategoryType(),
             ConnectedEntityOrganisationCategoryType = connectedEntity.Organisation?.Category.AsConnectedEntityOrganisationCategoryType(),
             ConnectedEntityType = connectedEntityType,
-            HasCompaniesHouseNumber = connectedEntity.HasCompnayHouseNumber,
+            HasCompaniesHouseNumber = connectedEntity.CompanyHouseNumber != null,
             InsolvencyDate = connectedEntity.Organisation?.InsolvencyDate,
             LawRegistered = connectedEntity.Organisation?.LawRegistered,
             LegalForm = connectedEntity.Organisation?.RegisteredLegalForm,
@@ -299,8 +299,8 @@ public class ConnectedEntityCheckAnswersOrganisationModel(
             FirstName = connectedEntity.IndividualOrTrust?.FirstName,
             LastName = connectedEntity.IndividualOrTrust?.LastName,
             DateOfBirth = connectedEntity.IndividualOrTrust?.DateOfBirth,
-            OscCompaniesHouseNumber = connectedEntity.OverseasCompanyNumber,
-            HasOscCompaniesHouseNumber = connectedEntity.OverseasCompanyNumber != null,
+            OverseasCompaniesHouseNumber = connectedEntity.OverseasCompanyNumber,
+            HasOverseasCompaniesHouseNumber = connectedEntity.OverseasCompanyNumber != null,
             SupplierHasCompanyHouseNumber = connectedEntity.HasCompnayHouseNumber,
         };
 
