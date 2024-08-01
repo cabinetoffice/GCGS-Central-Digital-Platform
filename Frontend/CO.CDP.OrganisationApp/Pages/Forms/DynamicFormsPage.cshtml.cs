@@ -102,6 +102,8 @@ public class DynamicFormsPageModel(
             var answerSet = tempDataService.PeekOrDefault<FormQuestionAnswerState>(FormQuestionAnswerStateKey);
             await formsEngine.SaveUpdateAnswers(FormId, SectionId, OrganisationId, answerSet);
 
+            tempDataService.Remove(FormQuestionAnswerStateKey);
+
             return RedirectToPage("FormsAddAnotherAnswerSet", new { OrganisationId, FormId, SectionId });
         }
 
@@ -123,9 +125,9 @@ public class DynamicFormsPageModel(
     {
         var answerSet = tempDataService.PeekOrDefault<FormQuestionAnswerState>(FormQuestionAnswerStateKey);
 
-        var form = await formsEngine.LoadFormSectionAsync(OrganisationId, FormId, SectionId);
+        var form = await formsEngine.GetFormSectionAsync(OrganisationId, FormId, SectionId);
 
-        List<AnswerSummary> summaryList = new();
+        List<AnswerSummary> summaryList = [];
         foreach (var answer in answerSet.Answers)
         {
             var question = form.Questions.FirstOrDefault(q => q.Id == answer.QuestionId);
@@ -154,7 +156,7 @@ public class DynamicFormsPageModel(
 
     public async Task<Guid?> CheckYourAnswerQuestionId()
     {
-        var form = await formsEngine.LoadFormSectionAsync(OrganisationId, FormId, SectionId);
+        var form = await formsEngine.GetFormSectionAsync(OrganisationId, FormId, SectionId);
 
         return form.Questions.FirstOrDefault(q => q.Type == FormQuestionType.CheckYourAnswers)?.Id;
     }
