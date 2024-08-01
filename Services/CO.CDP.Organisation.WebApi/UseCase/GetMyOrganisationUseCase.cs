@@ -1,7 +1,6 @@
 using AutoMapper;
 using CO.CDP.Authentication;
 using CO.CDP.Functional;
-using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.OrganisationInformation.Persistence;
 
 namespace CO.CDP.Organisation.WebApi.UseCase;

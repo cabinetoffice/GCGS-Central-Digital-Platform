@@ -142,4 +142,32 @@ public class DynamicFormsPageModelTest
         answers.First().Answer.Should().Be("Sample Answer");
         answers.First().Title.Should().Be("Sample Question");
     }
+
+    [Fact]
+    public async Task OnPostAsync_ShouldCallSaveUpdateAnswersAndRedirectToFormsAddAnotherAnswerSet_WhenCurrentQuestionIsCheckYourAnswerQuestion()
+    {
+        var currentQuestionId = Guid.NewGuid();
+        var checkYourAnswerQuestionId = currentQuestionId;
+        var formQuestion = new FormQuestion { Id = currentQuestionId, Type = FormQuestionType.CheckYourAnswers };
+
+        _formsEngineMock.Setup(f => f.GetCurrentQuestion(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid?>()))
+            .ReturnsAsync(formQuestion);
+
+        _formsEngineMock.Setup(f => f.GetFormSectionAsync(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid>()))
+            .ReturnsAsync(new SectionQuestionsResponse
+            {
+                Questions = new List<FormQuestion>
+                {
+                new FormQuestion { Id = checkYourAnswerQuestionId, Type = FormQuestionType.CheckYourAnswers }
+                }
+            });
+
+        _tempDataServiceMock.Setup(t => t.PeekOrDefault<FormQuestionAnswerState>(It.IsAny<string>()))
+            .Returns(new FormQuestionAnswerState());
+        var result = await _pageModel.OnPostAsync();
+        _formsEngineMock.Verify(f => f.SaveUpdateAnswers(_pageModel.FormId, _pageModel.SectionId, _pageModel.OrganisationId, It.IsAny<FormQuestionAnswerState>()), Times.Once);
+
+        result.Should().BeOfType<RedirectToPageResult>()
+              .Which.PageName.Should().Be("FormsAddAnotherAnswerSet");
+    }
 }
