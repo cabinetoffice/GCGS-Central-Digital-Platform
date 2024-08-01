@@ -87,41 +87,41 @@ public abstract class DispatcherContractTest
 
         await task;
 
-        subscriber.ReceivedMessages.Reverse().Should()
-            .Equal([
+        subscriber.ReceivedMessages.Should()
+            .BeEquivalentTo([
                 new TestMessage(13, "Hello."),
                 new TestMessage(14, "Hello."),
                 new TestMessage(14, "Hello."),
                 new TestMessage(15, "Hello.")
             ]);
-        subscriber.HandledMessages.Reverse().Should()
-            .Equal([
+        subscriber.HandledMessages.Should()
+            .BeEquivalentTo([
                 new TestMessage(13, "Hello."),
                 new TestMessage(14, "Hello."),
                 new TestMessage(14, "Hello."),
                 new TestMessage(15, "Hello.")
             ]);
-        failingSubscriber.ReceivedMessages.Reverse().Should()
-            .Equal([
+        failingSubscriber.ReceivedMessages.Should()
+            .BeEquivalentTo([
                 new TestMessage(13, "Hello."),
                 new TestMessage(14, "Hello."),
                 new TestMessage(14, "Hello."),
                 new TestMessage(15, "Hello.")
             ]);
-        failingSubscriber.HandledMessages.Reverse().Should()
-            .Equal([
+        failingSubscriber.HandledMessages.Should()
+            .BeEquivalentTo([
                 new TestMessage(13, "Hello."),
                 new TestMessage(14, "Hello."),
                 new TestMessage(15, "Hello.")
             ]);
-        lastSubscriber.ReceivedMessages.Reverse().Should()
-            .Equal([
+        lastSubscriber.ReceivedMessages.Should()
+            .BeEquivalentTo([
                 new TestMessage(13, "Hello."),
                 new TestMessage(14, "Hello."),
                 new TestMessage(15, "Hello.")
             ]);
-        lastSubscriber.HandledMessages.Reverse().Should()
-            .Equal([
+        lastSubscriber.HandledMessages.Should()
+            .BeEquivalentTo([
                 new TestMessage(13, "Hello."),
                 new TestMessage(14, "Hello."),
                 new TestMessage(15, "Hello.")
