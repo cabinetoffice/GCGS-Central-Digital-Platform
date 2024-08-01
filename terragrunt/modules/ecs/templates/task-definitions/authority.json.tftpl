@@ -20,7 +20,7 @@
       }
     },
     "environment": [
-        {"name": "ASPNETCORE_ENVIRONMENT", "value": "${environment}"},
+        {"name": "ASPNETCORE_ENVIRONMENT", "value": "${aspcore_environment}"},
         {"name": "ASPNETCORE_HTTP_PORTS", "value": "${host_port}"},
         {"name": "ForwardedHeaders__KnownNetwork", "value": "${vpc_cidr}"},
         {"name": "Issuer", "value": "https://authority.${public_hosted_zone_fqdn}"}

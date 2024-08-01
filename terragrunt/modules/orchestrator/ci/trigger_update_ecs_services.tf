@@ -1,7 +1,10 @@
 resource "aws_codepipeline" "trigger_update_ecs_services" {
-  name = "${local.name_prefix}-${local.trigger_update_ecs_service_cp_name}"
 
-  role_arn = var.ci_pipeline_role_arn
+  execution_mode = "QUEUED"
+  name           = "${local.name_prefix}-${local.trigger_update_ecs_service_cp_name}"
+  pipeline_type  = "V2"
+  role_arn       = var.ci_pipeline_role_arn
+
 
   artifact_store {
     type     = "S3"
@@ -14,12 +17,14 @@ resource "aws_codepipeline" "trigger_update_ecs_services" {
       name             = "Source"
       category         = "Source"
       owner            = "AWS"
-      provider         = "ECR"
+      provider         = "CodeStarSourceConnection"
       version          = "1"
       output_artifacts = ["source_output"]
       configuration = {
-        RepositoryName = "cdp-codebuild"
-        ImageTag       = "latest"
+
+        ConnectionArn    = data.aws_codestarconnections_connection.cabinet_office.arn
+        FullRepositoryId = "cabinetoffice/GCGS-Central-Digital-Platform"
+        BranchName       = "main"
       }
     }
   }
