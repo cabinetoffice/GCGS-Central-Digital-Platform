@@ -1,19 +1,19 @@
 output "entity_verification_queue_arn" {
   description = "ARN of the entity-verification SQS queue"
-  value       = aws_sqs_queue.entity_verification.arn
+  value       = module.entity_verification_queue.queue_arn
 }
 
 output "entity_verification_queue_url" {
   description = "URL of the entity-verification SQS queue"
-  value       = aws_sqs_queue.entity_verification.url
+  value       = module.entity_verification_queue.queue_url
 }
 
 output "organisation_queue_arn" {
   description = "ARN of the organisation SQS queue"
-  value       = aws_sqs_queue.organisation.arn
+  value       = module.organisation_queue.queue_arn
 }
 
 output "organisation_queue_url" {
   description = "URL of the organisation SQS queue"
-  value       = aws_sqs_queue.organisation.url
+  value       = module.organisation_queue.queue_url
 }
