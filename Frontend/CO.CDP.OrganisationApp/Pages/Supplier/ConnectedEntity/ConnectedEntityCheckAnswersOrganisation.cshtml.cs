@@ -167,12 +167,12 @@ public class ConnectedEntityCheckAnswersOrganisationModel(
 
         List<Address> addresses = new();
 
-        if (state.RegisteredAddress != null)
+        if (state.RegisteredAddress?.AddressLine1 != null)
         {
             addresses.Add(AddAddress(state.RegisteredAddress, Organisation.WebApiClient.AddressType.Registered));
         }
 
-        if (state.PostalAddress != null)
+        if (state.PostalAddress?.AddressLine1 != null)
         {
             addresses.Add(AddAddress(state.PostalAddress, Organisation.WebApiClient.AddressType.Postal));
         }

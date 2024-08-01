@@ -253,22 +253,22 @@ public class ConnectedEntityCheckAnswersIndividualOrTrustModel(
             connectedType: (state.ConnectedEntityType == Constants.ConnectedEntityType.Individual
                 ? ConnectedPersonType.Individual : ConnectedPersonType.TrustOrTrustee),
             controlCondition: state.ControlConditions.AsApiClientControlConditionList(),
-            dateOfBirth: null,
-            firstName: "",
-            lastName: "",
-            nationality: "",
+            dateOfBirth: state.DateOfBirth,
+            firstName: state.FirstName,
+            lastName: state.LastName,
+            nationality: state.Nationality,
             personId: null,
             residentCountry: state.DirectorLocation
         );
 
         List<Address> addresses = new();
 
-        if (state.RegisteredAddress != null)
+        if (state.RegisteredAddress?.AddressLine1 != null)
         {
             addresses.Add(AddAddress(state.RegisteredAddress, Organisation.WebApiClient.AddressType.Registered));
         }
 
-        if (state.PostalAddress != null)
+        if (state.PostalAddress?.AddressLine1 != null)
         {
             addresses.Add(AddAddress(state.PostalAddress, Organisation.WebApiClient.AddressType.Postal));
         }
