@@ -13,7 +13,7 @@ public static class PponEndpointExtensions
     public static void UsePponEndpoints(this WebApplication app)
     {
         app.MapGet("/identifiers/{identifier}",
-            async (string? identifier, IUseCase<LookupIdentifierQuery, IEnumerable<Identifier>> useCase) =>
+            async (string identifier, IUseCase<LookupIdentifierQuery, IEnumerable<Identifier>> useCase) =>
                 await useCase.Execute(new LookupIdentifierQuery(identifier))
                     .AndThen(identifier => identifier != null ? Results.Ok(identifier) : Results.NotFound()))
             .Produces<IEnumerable<Identifier>>(StatusCodes.Status200OK, "application/json")

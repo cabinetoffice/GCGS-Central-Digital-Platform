@@ -2,7 +2,7 @@ namespace CO.CDP.EntityVerification.Model;
 
 public record LookupIdentifierQuery
 {
-    public string? Identifier { get; }
+    public string Identifier { get; }
 
     public LookupIdentifierQuery(string? identifier = null)
     {
