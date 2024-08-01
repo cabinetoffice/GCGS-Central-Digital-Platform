@@ -114,6 +114,8 @@ public class ConnectedEntityCheckAnswersOrganisationModel(
         }
         catch (ApiException ex) when (ex.StatusCode == 404)
         {
+            session.Remove(Session.ConnectedPersonKey);
+
             return Redirect("/page-not-found");
         }
 
