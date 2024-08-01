@@ -1,3 +1,4 @@
+using CO.CDP.EntityVerification.Events;
 using CO.CDP.EntityVerification.Persistence;
 using CO.CDP.MQ;
 
