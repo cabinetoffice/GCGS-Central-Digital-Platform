@@ -48,44 +48,87 @@ public abstract class DispatcherContractTest
     }
 
     [Fact]
-    public async Task ItAttemptsToRecoverFromFailures()
+    public async Task ItRetriesAllSubscribersInCaseOneHasFailed()
     {
         var tokenSource = new CancellationTokenSource();
         var failingSubscriberCallCount = 0;
 
         var subscriber = new TestSubscriber<TestMessage>(_ => Task.CompletedTask);
-        var failingSubscriber = new TestSubscriber<TestMessage>(_ =>
+        var failingSubscriber = new TestSubscriber<TestMessage>(message =>
         {
-            failingSubscriberCallCount++;
-            if (failingSubscriberCallCount == 1)
+            if (message.Id == 14 && failingSubscriberCallCount == 0)
             {
+                failingSubscriberCallCount++;
                 throw new Exception("Failure in subscriber.");
             }
-            tokenSource.Cancel();
+
+            return Task.CompletedTask;
+        });
+        var lastSubscriber = new TestSubscriber<TestMessage>(message =>
+        {
+            if (message.Id == 15)
+            {
+                tokenSource.Cancel();
+            }
+
             return Task.CompletedTask;
         });
 
         var dispatcher = await CreateDispatcher();
         dispatcher.Subscribe(subscriber);
         dispatcher.Subscribe(failingSubscriber);
+        dispatcher.Subscribe(lastSubscriber);
 
         var task = dispatcher.ExecuteAsync(tokenSource.Token);
 
         await PublishMessage(new TestMessage(13, "Hello."));
+        await PublishMessage(new TestMessage(14, "Hello."));
+        await PublishMessage(new TestMessage(15, "Hello."));
 
         await task;
 
-        subscriber.ReceivedMessages.Should()
-            .Equal([new TestMessage(13, "Hello."), new TestMessage(13, "Hello.")]);
-        failingSubscriber.ReceivedMessages.Should()
-            .Equal([new TestMessage(13, "Hello."), new TestMessage(13, "Hello.")]);
-        subscriber.HandledMessages.Should()
-            .Equal([new TestMessage(13, "Hello."), new TestMessage(13, "Hello.")]);
-        failingSubscriber.HandledMessages.Should()
-            .Equal([new TestMessage(13, "Hello.")]);
+        subscriber.ReceivedMessages.Reverse().Should()
+            .Equal([
+                new TestMessage(13, "Hello."),
+                new TestMessage(14, "Hello."),
+                new TestMessage(14, "Hello."),
+                new TestMessage(15, "Hello.")
+            ]);
+        subscriber.HandledMessages.Reverse().Should()
+            .Equal([
+                new TestMessage(13, "Hello."),
+                new TestMessage(14, "Hello."),
+                new TestMessage(14, "Hello."),
+                new TestMessage(15, "Hello.")
+            ]);
+        failingSubscriber.ReceivedMessages.Reverse().Should()
+            .Equal([
+                new TestMessage(13, "Hello."),
+                new TestMessage(14, "Hello."),
+                new TestMessage(14, "Hello."),
+                new TestMessage(15, "Hello.")
+            ]);
+        failingSubscriber.HandledMessages.Reverse().Should()
+            .Equal([
+                new TestMessage(13, "Hello."),
+                new TestMessage(14, "Hello."),
+                new TestMessage(15, "Hello.")
+            ]);
+        lastSubscriber.ReceivedMessages.Reverse().Should()
+            .Equal([
+                new TestMessage(13, "Hello."),
+                new TestMessage(14, "Hello."),
+                new TestMessage(15, "Hello.")
+            ]);
+        lastSubscriber.HandledMessages.Reverse().Should()
+            .Equal([
+                new TestMessage(13, "Hello."),
+                new TestMessage(14, "Hello."),
+                new TestMessage(15, "Hello.")
+            ]);
     }
 
-    protected abstract Task<IDispatcher> CreateDispatcher();
+    protected abstract Task<IDispatcher> CreateDispatcher(string? queueUrl = null);
     protected abstract Task PublishMessage<TM>(TM message) where TM : class;
     protected abstract Task<int> CountMessagesInQueue();
 
@@ -93,7 +136,7 @@ public abstract class DispatcherContractTest
 
     private record UnexpectedTestMessage(int Id, String Name);
 
-    private class TestSubscriber<TEvent>(Func<TEvent, Task> handler)
+    protected class TestSubscriber<TEvent>(Func<TEvent, Task> handler)
         : ISubscriber<TEvent> where TEvent : class
     {
         public readonly ConcurrentBag<object> HandledMessages = new();

@@ -64,7 +64,7 @@ public class SqsDispatcher(
                 }
                 catch (Exception cause)
                 {
-                    logger.LogError(cause, "Message handling failed");
+                    logger.LogError(cause, "Failed to handle messages");
                 }
             }
         }, cancellationToken);
@@ -74,8 +74,15 @@ public class SqsDispatcher(
     {
         foreach (var message in await ReceiveMessagesAsync(configuration.QueueUrl, cancellationToken))
         {
-            await HandleMessage(message);
-            await DeleteMessage(message);
+            try
+            {
+                await HandleMessage(message);
+                await DeleteMessage(message);
+            }
+            catch (Exception cause)
+            {
+                logger.LogError(cause, "Failed to handle the message with MessageId={MessageId}", message.MessageId);
+            }
         }
     }
 
