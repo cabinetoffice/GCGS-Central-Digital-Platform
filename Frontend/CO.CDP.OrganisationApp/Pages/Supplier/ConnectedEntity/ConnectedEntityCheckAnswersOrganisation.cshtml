@@ -6,6 +6,11 @@
     var ukNonUkRegisterAddress = details.RegisteredAddress!.IsNonUk ? "non-uk" : "uk";
     var ukNonUkPostalAddress = details.PostalAddress!.IsNonUk ? "non-uk" : "uk";
     var backLink = $"/organisation/{Model.Id}/supplier-information/connected-person/{Model.BackPageLink}/{Model.ConnectedEntityId}";
+
+    if (Model.ConnectedEntityId != null)
+    {
+        backLink = $"/organisation/{Model.Id}/supplier-information/connected-person/connected-person-summary";
+    }
 }
 
 <a href="@backLink" class="govuk-back-link">Back</a>
