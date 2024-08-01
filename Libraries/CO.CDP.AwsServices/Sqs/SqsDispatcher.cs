@@ -58,50 +58,40 @@ public class SqsDispatcher(
 
             while (!cancellationToken.IsCancellationRequested)
             {
-                try
-                {
-                    await HandleMessages(cancellationToken);
-                }
-                catch (Exception cause)
-                {
-                    logger.LogError(cause, "Failed to handle messages");
-                }
+                await HandleMessages(cancellationToken);
             }
         }, cancellationToken);
     }
 
     private async Task HandleMessages(CancellationToken cancellationToken)
     {
-        foreach (var message in await ReceiveMessagesAsync(configuration.QueueUrl, cancellationToken))
+        try
         {
-            try
+            foreach (var message in await ReceiveMessages(configuration.QueueUrl, cancellationToken))
             {
                 await HandleMessage(message);
-                await DeleteMessage(message);
             }
-            catch (Exception cause)
-            {
-                logger.LogError(cause, "Failed to handle the message with MessageId={MessageId}", message.MessageId);
-            }
+        }
+        catch (Exception cause)
+        {
+            logger.LogError(cause, "Failed to handle messages");
         }
     }
 
-    private async Task<List<Message>> ReceiveMessagesAsync(string queueUrl, CancellationToken cancellationToken)
+    private async Task HandleMessage(Message message)
     {
-        var response = await sqsClient.ReceiveMessageAsync(new ReceiveMessageRequest
+        try
         {
-            QueueUrl = queueUrl,
-            MaxNumberOfMessages = configuration.MaxNumberOfMessages,
-            MessageAttributeNames = [TypeAttribute],
-            WaitTimeSeconds = configuration.WaitTimeSeconds,
-        }, cancellationToken);
-
-        logger.LogInformation("Received {COUNT} message(s)", response.Messages.Count);
-
-        return response.Messages;
+            await InvokeSubscribers(message);
+            await DeleteMessage(message);
+        }
+        catch (Exception cause)
+        {
+            logger.LogError(cause, "Failed to handle the message with MessageId={MessageId}", message.MessageId);
+        }
     }
 
-    private async Task HandleMessage(Message message)
+    private async Task InvokeSubscribers(Message message)
     {
         logger.LogDebug("Handling the message with MessageId={MessageId}", message.MessageId);
 
@@ -121,6 +111,21 @@ public class SqsDispatcher(
                 await subscriber.Handle(deserialized);
             }
         }
+    }
+
+    private async Task<List<Message>> ReceiveMessages(string queueUrl, CancellationToken cancellationToken)
+    {
+        var response = await sqsClient.ReceiveMessageAsync(new ReceiveMessageRequest
+        {
+            QueueUrl = queueUrl,
+            MaxNumberOfMessages = configuration.MaxNumberOfMessages,
+            MessageAttributeNames = [TypeAttribute],
+            WaitTimeSeconds = configuration.WaitTimeSeconds,
+        }, cancellationToken);
+
+        logger.LogInformation("Received {COUNT} message(s)", response.Messages.Count);
+
+        return response.Messages;
     }
 
     private async Task DeleteMessage(Message message)
