@@ -1,12 +1,10 @@
+using CO.CDP.EntityVerification.Model;
+using CO.CDP.EntityVerification.UseCase;
+using CO.CDP.Functional;
 using CO.CDP.Swashbuckle.Filter;
 using DotSwashbuckle.AspNetCore.SwaggerGen;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
-using System.Linq;
-
-using CO.CDP.EntityVerification.UseCase;
-using CO.CDP.Functional;
-using CO.CDP.EntityVerification.Model;
 
 namespace CO.CDP.EntityVerification.Api;
 
@@ -15,10 +13,10 @@ public static class PponEndpointExtensions
     public static void UsePponEndpoints(this WebApplication app)
     {
         app.MapGet("/identifiers/{identifier}",
-            async ([FromQuery] string? identifier, IUseCase<LookupIdentifierQuery, IEnumerable<Model.Identifier>> useCase) =>
+            async ([FromQuery] string? identifier, IUseCase<LookupIdentifierQuery, IEnumerable<Identifier>> useCase) =>
                 await useCase.Execute(new LookupIdentifierQuery(identifier))
                     .AndThen(identifier => identifier != null ? Results.Ok(identifier) : Results.NotFound()))
-            .Produces<IEnumerable<Model.Identifier>>(StatusCodes.Status200OK, "application/json")
+            .Produces<IEnumerable<Identifier>>(StatusCodes.Status200OK, "application/json")
             .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
             .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
             .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError)

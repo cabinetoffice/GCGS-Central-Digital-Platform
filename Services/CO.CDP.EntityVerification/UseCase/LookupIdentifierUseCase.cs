@@ -13,7 +13,7 @@ public class LookupIdentifierUseCase(IPponRepository repo) : IUseCase<LookupIden
 
         if (query.TryGetIdentifier(out var scheme, out var id))
         {
-            if ((query.Identifier == "PPON:ac73982be54e456c888d495b6c2c997f") || ((query.Identifier == "GB-COH:9443242")))
+            if ((query.Identifier == "CDP-PPON:ac73982be54e456c888d495b6c2c997f") || ((query.Identifier == "GB-COH:9443242")))
             {
                 foundIdentifiers = new List<Model.Identifier>
                 {
