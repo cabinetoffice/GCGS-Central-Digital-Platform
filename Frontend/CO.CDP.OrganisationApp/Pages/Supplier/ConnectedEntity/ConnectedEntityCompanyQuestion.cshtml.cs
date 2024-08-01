@@ -26,6 +26,9 @@ public class ConnectedEntityCompanyQuestionModel(ISession session) : PageModel
     public string? Caption { get; set; }
     public string? Heading { get; set; }
     public string? Hint { get; set; }
+    [BindProperty]
+    public bool? RedirectToCheckYourAnswer { get; set; }
+    public string? BackPageLink { get; set; }
 
     public IActionResult OnGet(bool? selected)
     {
@@ -63,7 +66,13 @@ public class ConnectedEntityCompanyQuestionModel(ISession session) : PageModel
 
         session.Set(Session.ConnectedPersonKey, state);
 
-        var redirectPage = GetRedirectLinkPageName(state);
+        var checkAnswerPage = (state.ConnectedEntityType == Constants.ConnectedEntityType.Organisation
+            ? "ConnectedEntityCheckAnswersOrganisation"
+            : "ConnectedEntityCheckAnswersIndividualOrTrust");
+
+        var redirectPage = (RedirectToCheckYourAnswer == true
+                        ? checkAnswerPage
+                        : GetRedirectLinkPageName(state));
         return RedirectToPage(redirectPage, new { Id, ConnectedEntityId });
     }
     private string GetRedirectLinkPageName(ConnectedEntityState state)
@@ -85,7 +94,7 @@ public class ConnectedEntityCompanyQuestionModel(ISession session) : PageModel
                         redirectPage = "ConnectedEntityCompanyInsolvencyDate";
                         break;
                     case ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl:
-                        redirectPage = state.HasCompaniesHouseNumber == true ? "ConnectedEntityControlCondition" : "ConnectedEntityOscCompanyQuestion";
+                        redirectPage = state.HasCompaniesHouseNumber == true ? "ConnectedEntityControlCondition" : "ConnectedEntityOverseasCompanyQuestion";
                         break;
                 }
                 break;
@@ -97,10 +106,51 @@ public class ConnectedEntityCompanyQuestionModel(ISession session) : PageModel
 
         return redirectPage;
     }
+
     private void InitModal(ConnectedEntityState state)
     {
         Caption = state.GetCaption();
         Heading = $"Is {state.OrganisationName} registered with Companies House?";
         Hint = "Is the ‘connected person’ registered with Companies House as required by the Companies Act 2006.";
+        BackPageLink = GetBackLinkPageName(state);
+    }
+
+    private string GetBackLinkPageName(ConnectedEntityState state)
+    {
+        var backPage = "";
+        switch (state.ConnectedEntityType)
+        {
+            case ConnectedEntityType.Organisation:
+                switch (state.ConnectedEntityOrganisationCategoryType)
+                {
+                    case ConnectedEntityOrganisationCategoryType.RegisteredCompany:                        
+                    case ConnectedEntityOrganisationCategoryType.DirectorOrTheSameResponsibilities:
+                        backPage = $"law-register";
+                        break;
+                    case ConnectedEntityOrganisationCategoryType.ParentOrSubsidiaryCompany:
+                    case ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl:                        
+                        //Check if postal is same as register and decide                       
+                        if ((state.RegisteredAddress?.AreSameAddress(state.PostalAddress) ?? false) == true)
+                        {
+                            backPage = $"postal-address-same-as-registered";
+                        }
+                        else
+                        {
+                            backPage = $"{AddressType.Postal}-address/{(state.PostalAddress?.Country == Country.UnitedKingdom ? "uk" : "non-uk")}";
+                        }
+                        break;
+                    case ConnectedEntityOrganisationCategoryType.ACompanyYourOrganisationHasTakenOver:
+                        backPage = $"{AddressType.Registered}-address/{(state.PostalAddress?.Country == Country.UnitedKingdom ? "uk" : "non-uk")}";
+                        break;
+                    
+                }
+                break;
+            case ConnectedEntityType.Individual:
+                break;
+            case ConnectedEntityType.TrustOrTrustee:
+                break;
+        }
+
+        return backPage;
     }
 }

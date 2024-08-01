@@ -5,9 +5,11 @@
     var companiesHouseNumberHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.HasCompaniesHouseNumber)).HasInnerHtml
         || ((TagBuilder)Html.ValidationMessageFor(m => m.CompaniesHouseNumber)).HasInnerHtml;
 
+    var backPage = Request.Query.ContainsKey("frm-chk-answer") ? "check-answers-organisation" : Model.BackPageLink;
+    var backLink = $"/organisation/{Model.Id}/supplier-information/connected-person/{backPage}/{Model.ConnectedEntityId}";
 }
 
-<a href="/organisation/@Model.Id/supplier-information/connected-person/law-register/@Model.ConnectedEntityId" class="govuk-back-link">Back</a>
+<a href="@backLink" class="govuk-back-link">Back</a>
 
 <main class="govuk-main-wrapper">
     <div class="govuk-grid-row">
@@ -15,9 +17,12 @@
             <partial name="_ErrorSummary" model="@Model.ModelState" />
             <span class="govuk-caption-l">@Model.Caption</span>
             <form class="form" method="post">
+                @if (Request.Query.ContainsKey("frm-chk-answer"))
+                {
+                    <input type="hidden" name="RedirectToCheckYourAnswer" value="true" />
+                }
                 <div class="govuk-form-group">
                     <fieldset class="govuk-fieldset" data-required="" data-error="Select yes if the organisation registered with Companies House" aria-required="true">
-
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                             <h1 class="govuk-fieldset__heading">@Model.Heading</h1>
                         </legend>

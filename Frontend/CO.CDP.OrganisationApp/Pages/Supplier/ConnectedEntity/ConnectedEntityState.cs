@@ -21,8 +21,8 @@ public class ConnectedEntityState
     public DateTimeOffset? RegistrationDate { get; set; }
     public string? RegisterName { get; set; }
     public DateTimeOffset? InsolvencyDate { get; set; }
-    public bool? HasOscCompaniesHouseNumber { get; set; }
-    public string? OscCompaniesHouseNumber { get; set; }
+    public bool? HasOverseasCompaniesHouseNumber { get; set; }
+    public string? OverseasCompaniesHouseNumber { get; set; }
     public string? FirstName { get; set; }
     public string? LastName { get; set; }
     public string? Nationality { get; set; }

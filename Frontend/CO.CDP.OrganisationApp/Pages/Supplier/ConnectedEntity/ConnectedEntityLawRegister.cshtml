@@ -5,14 +5,10 @@
     var legalFormHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.LegalForm)).HasInnerHtml;
 
     var lawRegister = ((TagBuilder)Html.ValidationMessageFor(m => m.LawRegistered)).HasInnerHtml;
+        
+    var backPage = Request.Query.ContainsKey("frm-chk-answer") ? "check-answers-organisation" : Model.BackPageLink;
+    var backLink = $"/organisation/{Model.Id}/supplier-information/connected-person/{backPage}/{Model.ConnectedEntityId}";
 
-    var backLink = $"/organisation/{@Model.Id}/supplier-information/connected-person/{Model.BackPageLink}";
-
-    if (Request.Query.ContainsKey("frm-chk-answer"))
-    {
-        backLink = $"/organisation/{Model.Id}/supplier-information/connected-person/check-answers-organisation/{Model.ConnectedEntityId}";
-        Model.RedirectToCheckYourAnswer = true;
-    }
 }
 
 <a href="@backLink" class="govuk-back-link">
@@ -22,7 +18,7 @@
 <main class="govuk-main-wrapper">
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-            <span class="govuk-caption-xl">@Model.Caption</span>
+            <span class="govuk-caption-l">@Model.Caption</span>
             <partial name="_ErrorSummary" model="@ModelState" />
 
             <form method="post">
