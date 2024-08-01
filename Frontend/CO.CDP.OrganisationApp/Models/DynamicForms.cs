@@ -40,6 +40,7 @@ public class FormQuestionAnswerState
 public class QuestionAnswer
 {
     public Guid QuestionId { get; set; }
+    public Guid AnswerId { get; set; }
     public FormAnswer? Answer { get; set; }
 }
 

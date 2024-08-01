@@ -23,7 +23,7 @@ public class WebApiToPersistenceProfile : Profile
 
         CreateMap<Persistence.FormQuestionChoiceHint, Model.FormQuestionChoiceHint>();
 
-        CreateMap<Persistence.FormSectionConfiguration, Model.FormSectionConfiguration>();        
+        CreateMap<Persistence.FormSectionConfiguration, Model.FormSectionConfiguration>();
 
         CreateMap<Model.FormAnswer, Persistence.FormAnswer>()
             .ForMember(dest => dest.Guid, opt => opt.MapFrom(src => src.Id))
@@ -31,15 +31,18 @@ public class WebApiToPersistenceProfile : Profile
             .ForMember(dest => dest.FormAnswerSet, opt => opt.Ignore())
             .ForMember(dest => dest.CreatedOn, opt => opt.Ignore())
             .ForMember(dest => dest.UpdatedOn, opt => opt.Ignore())
-            .ForMember(dest => dest.Id, opt => opt.Ignore());
+            .ForMember(dest => dest.Id, opt => opt.Ignore())
+            .ForMember(dest => dest.StartValue, opt => opt.MapFrom(src => ToUtc(src.StartValue)))
+            .ForMember(dest => dest.EndValue, opt => opt.MapFrom(src => ToUtc(src.EndValue)))
+            .ForMember(dest => dest.DateValue, opt => opt.MapFrom(src => ToUtc(src.DateValue)));
 
         CreateMap<Persistence.FormAnswer, Model.FormAnswer>()
             .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Guid))
             .ForMember(dest => dest.QuestionId, opt => opt.MapFrom(src => src.Question.Guid));
-            
 
         CreateMap<Persistence.FormAnswerSet, Model.FormAnswerSet>()
-              .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Guid))
-              .ForMember(dest => dest.Answers, opt => opt.MapFrom(src => src.Answers.ToList()));
+              .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Guid));
     }
+
+    private static DateTime? ToUtc(DateTime? dateTime) => dateTime?.ToUniversalTime();
 }
