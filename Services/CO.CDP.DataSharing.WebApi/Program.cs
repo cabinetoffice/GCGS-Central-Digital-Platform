@@ -9,7 +9,7 @@ builder.ConfigureForwardedHeaders();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
-    options.DocumentDataSharingApi();
+    options.DocumentDataSharingApi(builder.Configuration);
 });
 
 builder.Services.AddHealthChecks();

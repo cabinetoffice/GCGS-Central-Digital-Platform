@@ -77,24 +77,13 @@ public static class EndpointExtensions
             .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError);
     }
 
-    public static void DocumentApi(this SwaggerGenOptions options)
+    public static void DocumentApi(this SwaggerGenOptions options, IConfigurationManager configuration)
     {
         options.SwaggerDoc("v1", new OpenApiInfo
         {
-            Version = "1.0.0",
+            Version = configuration.GetValue("Version", "dev"),
             Title = "Organisation Authority API",
-            Description = "API for generating token using OpenId Connect Client Credentials flow.",
-            TermsOfService = new Uri("https://example.com/terms"),
-            Contact = new OpenApiContact
-            {
-                Name = "Example Contact",
-                Url = new Uri("https://example.com/contact")
-            },
-            License = new OpenApiLicense
-            {
-                Name = "Example License",
-                Url = new Uri("https://example.com/license")
-            }
+            Description = "API for generating token using OpenId Connect Client Credentials flow."
         });
     }
 }

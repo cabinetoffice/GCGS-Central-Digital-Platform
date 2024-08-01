@@ -137,6 +137,7 @@ services:
       - db
     environment:
       ASPNETCORE_ENVIRONMENT: Production
+      VERSION: dev-docker
       ConnectionStrings__OrganisationInformationDatabase: 'Server=db;Database=cdp;Username=cdp_user;Password=cdp123;'
       Issuer: 'http://gateway:${CDP_AUTHORITY_PORT:-8092}'
 
@@ -157,6 +158,7 @@ services:
       - db
     environment:
       ASPNETCORE_ENVIRONMENT: Production
+      VERSION: dev-docker
       ConnectionStrings__OrganisationInformationDatabase: 'Server=db;Database=cdp;Username=cdp_user;Password=cdp123;'
       Organisation__Authority: '${Organisation__Authority:-http://gateway:${CDP_AUTHORITY_PORT:-8092}}'
 
@@ -177,6 +179,7 @@ services:
       - db
     environment:
       ASPNETCORE_ENVIRONMENT: Production
+      VERSION: dev-docker
       ConnectionStrings__OrganisationInformationDatabase: 'Server=db;Database=cdp;Username=cdp_user;Password=cdp123;'
       Organisation__Authority: '${Organisation__Authority:-http://gateway:${CDP_AUTHORITY_PORT:-8092}}'
       Aws__Credentials__AccessKeyId: test
@@ -202,6 +205,7 @@ services:
       - db
     environment:
       ASPNETCORE_ENVIRONMENT: Production
+      VERSION: dev-docker
       ConnectionStrings__OrganisationInformationDatabase: 'Server=db;Database=cdp;Username=cdp_user;Password=cdp123;'
       Organisation__Authority: '${Organisation__Authority:-http://gateway:${CDP_AUTHORITY_PORT:-8092}}'
 
@@ -222,6 +226,7 @@ services:
       - db
     environment:
       ASPNETCORE_ENVIRONMENT: Production
+      VERSION: dev-docker
       ConnectionStrings__OrganisationInformationDatabase: 'Server=db;Database=cdp;Username=cdp_user;Password=cdp123;'
       Organisation__Authority: '${Organisation__Authority:-http://gateway:${CDP_AUTHORITY_PORT:-8092}}'
 
@@ -242,6 +247,7 @@ services:
       - db
     environment:
       ASPNETCORE_ENVIRONMENT: Production
+      VERSION: dev-docker
 
   entity-verification:
     container_name: co-cdp-entity-verification
@@ -263,6 +269,7 @@ services:
         condition: "service_healthy"
     environment:
       ASPNETCORE_ENVIRONMENT: Production
+      VERSION: dev-docker
       ConnectionStrings__EvDatabase: 'Server=db;Database=cdp;Username=cdp_user;Password=cdp123;'
       Aws__ServiceURL: "http://localstack:4566"
       Aws__Credentials__AccessKeyId: test

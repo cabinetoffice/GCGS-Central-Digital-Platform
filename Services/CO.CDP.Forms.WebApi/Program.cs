@@ -12,7 +12,7 @@ builder.ConfigureForwardedHeaders();
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(options => { options.DocumentFormsApi(); });
+builder.Services.AddSwaggerGen(options => { options.DocumentFormsApi(builder.Configuration); });
 
 builder.Services.AddHealthChecks()
     .AddNpgSql(builder.Configuration.GetConnectionString("OrganisationInformationDatabase") ?? "");
