@@ -129,7 +129,7 @@ public class ConnectedEntityLawRegisterModel(ISession session) : PageModel
                         break;
 
                     case ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl:
-                        //What date was registered as a 'connected person'? (Date)
+                        backPage = "date-registered";
                         break;
                 }
                 break;

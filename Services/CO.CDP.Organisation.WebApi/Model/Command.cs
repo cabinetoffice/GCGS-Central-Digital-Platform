@@ -181,6 +181,25 @@ public record RegisterConnectedEntity
     public DateTimeOffset? EndDate { get; init; }
 }
 
+public record UpdateConnectedEntity
+{
+    public string? Id { get; init; }
+    public required ConnectedEntityType EntityType { get; init; }
+    public bool HasCompnayHouseNumber { get; init; }
+    public string? CompanyHouseNumber { get; init; }
+    public string? OverseasCompanyNumber { get; init; }
+
+    public UpdateConnectedOrganisation? Organisation { get; init; }
+    public UpdateConnectedIndividualTrust? IndividualOrTrust { get; init; }
+    public ICollection<Address> Addresses { get; init; } = [];
+
+    public DateTimeOffset? RegisteredDate { get; init; }
+    public string? RegisterName { get; init; }
+
+    public DateTimeOffset? StartDate { get; init; }
+    public DateTimeOffset? EndDate { get; init; }
+}
+
 public record CreateConnectedIndividualTrust
 {
     public required ConnectedIndividualAndTrustCategory Category { get; set; }
@@ -194,7 +213,32 @@ public record CreateConnectedIndividualTrust
     public string? ResidentCountry { get; set; }
 }
 
+public record UpdateConnectedIndividualTrust
+{
+    public required ConnectedIndividualAndTrustCategory Category { get; set; }
+    public required string FirstName { get; set; }
+    public required string LastName { get; set; }
+    public DateTimeOffset? DateOfBirth { get; set; }
+    public string? Nationality { get; set; }
+    public ICollection<ControlCondition> ControlCondition { get; set; } = [];
+    public ConnectedPersonType ConnectedType { get; set; }
+    public Guid? PersonId { get; set; }
+    public string? ResidentCountry { get; set; }
+
+}
+
 public record CreateConnectedOrganisation
+{
+    public required ConnectedOrganisationCategory Category { get; set; }
+    public required string Name { get; set; }
+    public DateTimeOffset? InsolvencyDate { get; set; }
+    public string? RegisteredLegalForm { get; set; }
+    public string? LawRegistered { get; set; }
+    public ICollection<ControlCondition> ControlCondition { get; set; } = [];
+    public Guid? OrganisationId { get; set; }
+}
+
+public record UpdateConnectedOrganisation
 {
     public required ConnectedOrganisationCategory Category { get; set; }
     public required string Name { get; set; }

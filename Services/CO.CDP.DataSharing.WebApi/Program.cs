@@ -9,7 +9,7 @@ builder.ConfigureForwardedHeaders();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
-    options.DocumentDataSharingApi();
+    options.DocumentDataSharingApi(builder.Configuration);
 });
 
 builder.Services.AddHealthChecks();
@@ -20,12 +20,13 @@ var app = builder.Build();
 app.UseForwardedHeaders();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+if (builder.Configuration.GetValue("Features:SwaggerUI", false))
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-else
+
+if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler();
     app.UseHsts();

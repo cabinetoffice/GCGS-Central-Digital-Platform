@@ -52,6 +52,11 @@ variable "role_db_connection_step_function_name" {
   type        = string
 }
 
+variable "role_terraform_arn" {
+  description = "Terraform IAM role ARN"
+  type        = string
+}
+
 variable "tags" {
   description = "Tags to apply to all resources in this module"
   type        = map(string)

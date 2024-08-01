@@ -8,7 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.ConfigureForwardedHeaders();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(o => { o.DocumentApi(); });
+builder.Services.AddSwaggerGen(o => { o.DocumentApi(builder.Configuration); });
 builder.Services.AddHealthChecks()
     .AddNpgSql(builder.Configuration.GetConnectionString("OrganisationInformationDatabase") ?? "");
 builder.Services.AddProblemDetails();
@@ -26,12 +26,13 @@ app.UseForwardedHeaders();
 app.MapHealthChecks("/health");
 app.UseHttpsRedirection();
 
-if (app.Environment.IsDevelopment())
+if (builder.Configuration.GetValue("Features:SwaggerUI", false))
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-else
+
+if(!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler();
     app.UseHsts();

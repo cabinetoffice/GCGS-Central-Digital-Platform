@@ -84,13 +84,7 @@ public class ConnectedEntityCompanyRegistrationDateModel(ISession session) : Pag
         {
             ModelState.AddModelError(nameof(RegistrationDate), "Date of registration must be a real date");
             return Page();
-        }
-
-        if (parsedDate > DateTime.Today)
-        {
-            ModelState.AddModelError(nameof(RegistrationDate), "Date of registration must be today or in the past");
-            return Page();
-        }
+        }        
 
         state.RegistrationDate = new DateTimeOffset(parsedDate, TimeSpan.FromHours(0));
 

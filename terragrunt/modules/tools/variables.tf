@@ -3,23 +3,44 @@ variable "account_ids" {
   type        = map(string)
 }
 
-variable "db_address" {
-  description = "Database endpoint address"
+variable "db_entity_verification_address" {
+  description = "Entity Verification database endpoint address"
   type        = string
 }
 
-variable "db_credentials" {
-  description = "Database secret ARN"
+variable "db_entity_verification_credentials" {
+  description = "Entity Verification database secret ARN"
   type        = string
 }
 
-variable "db_kms_arn" {
-  description = "ARN of the KMS used to encrypt database secrets"
+variable "db_entity_verification_kms_arn" {
+  description = "ARN of the KMS used to encrypt Entity Verification database secrets"
   type        = string
 }
 
-variable "db_name" {
-  description = "Database name"
+variable "db_entity_verification_name" {
+  description = "Entity Verification database name"
+  type        = string
+}
+
+
+variable "db_sirsi_address" {
+  description = "Sirsi database endpoint address"
+  type        = string
+}
+
+variable "db_sirsi_credentials" {
+  description = "Sirsi database secret ARN"
+  type        = string
+}
+
+variable "db_sirsi_kms_arn" {
+  description = "ARN of the KMS used to encrypt Sirsi database secrets"
+  type        = string
+}
+
+variable "db_sirsi_name" {
+  description = "Sirsi database name"
   type        = string
 }
 

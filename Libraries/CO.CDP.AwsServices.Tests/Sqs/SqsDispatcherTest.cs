@@ -5,6 +5,7 @@ using Amazon.SQS.Model;
 using CO.CDP.AwsServices.Sqs;
 using CO.CDP.MQ;
 using CO.CDP.MQ.Tests;
+using Microsoft.Extensions.Logging;
 
 namespace CO.CDP.AwsServices.Tests.Sqs;
 
@@ -61,7 +62,8 @@ public class SqsDispatcherTest : DispatcherContractTest, IClassFixture<LocalStac
 
                 throw new Exception($"Could not deserialize type `{type}` from body `{body}`.");
             },
-            (type, typeName) => type.Name == typeName);
+            (type, typeName) => type.Name == typeName,
+            LoggerFactory.Create(_ => {}).CreateLogger<SqsDispatcher>());
     }
 
     private AmazonSQSClient SqsClient()

@@ -8,7 +8,7 @@ using System.ComponentModel.DataAnnotations;
 namespace CO.CDP.OrganisationApp.Pages.Supplier;
 
 [Authorize]
-public class ConnectedEntityOscCompanyQuestionModel(ISession session) : PageModel
+public class ConnectedEntityOverseasCompanyQuestionModel(ISession session) : PageModel
 {
     [BindProperty(SupportsGet = true)]
     public Guid Id { get; set; }
@@ -18,14 +18,15 @@ public class ConnectedEntityOscCompanyQuestionModel(ISession session) : PageMode
 
     [BindProperty]
     [Required(ErrorMessage = "Please select an option")]
-    public bool? HasOscCompaniesHouseNumber { get; set; }
+    public bool? HasOverseasCompaniesHouseNumber { get; set; }
 
     [BindProperty]
-    [RequiredIf(nameof(HasOscCompaniesHouseNumber), true, ErrorMessage = "Please enter the Company registration number.")]
-    public string? OscCompaniesHouseNumber { get; set; }
+    [RequiredIf(nameof(HasOverseasCompaniesHouseNumber), true, ErrorMessage = "Please enter the Company registration number.")]
+    public string? OverseasCompaniesHouseNumber { get; set; }
     public string? Caption { get; set; }
     public string? Heading { get; set; }
     public string? Hint { get; set; }
+    public string? BackPageLink { get; set; }
 
     public IActionResult OnGet(bool? selected)
     {
@@ -37,8 +38,8 @@ public class ConnectedEntityOscCompanyQuestionModel(ISession session) : PageMode
 
         InitModal(state);
 
-        HasOscCompaniesHouseNumber = selected.HasValue ? selected : state.HasOscCompaniesHouseNumber;
-        OscCompaniesHouseNumber = state.OscCompaniesHouseNumber;
+        HasOverseasCompaniesHouseNumber = selected.HasValue ? selected : state.HasOverseasCompaniesHouseNumber;
+        OverseasCompaniesHouseNumber = state.OverseasCompaniesHouseNumber;
 
         return Page();
     }
@@ -58,8 +59,8 @@ public class ConnectedEntityOscCompanyQuestionModel(ISession session) : PageMode
             return Page();
         }
 
-        state.HasOscCompaniesHouseNumber = HasOscCompaniesHouseNumber;
-        state.OscCompaniesHouseNumber = OscCompaniesHouseNumber;
+        state.HasOverseasCompaniesHouseNumber = HasOverseasCompaniesHouseNumber;
+        state.OverseasCompaniesHouseNumber = OverseasCompaniesHouseNumber;
 
         session.Set(Session.ConnectedPersonKey, state);
 
@@ -104,5 +105,27 @@ public class ConnectedEntityOscCompanyQuestionModel(ISession session) : PageMode
         Caption = state.GetCaption();
         Heading = $"Is {state.OrganisationName} registered with an overseas equivalent to Companies House?";
         Hint = "Is the 'connected person' registered with a similar non-UK body that incorporates companies?";
+        BackPageLink = GetBackLinkPageName(state);
+    }
+    private string GetBackLinkPageName(ConnectedEntityState state)
+    {
+        var backPage = "";
+        switch (state.ConnectedEntityType)
+        {
+            case Constants.ConnectedEntityType.Organisation:
+                switch (state.ConnectedEntityOrganisationCategoryType)
+                {
+                    case ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl:
+                        backPage = $"company-question";
+                        break;
+                }
+                break;
+            case Constants.ConnectedEntityType.Individual:
+                break;
+            case Constants.ConnectedEntityType.TrustOrTrustee:
+                break;
+        }
+
+        return backPage;
     }
 }

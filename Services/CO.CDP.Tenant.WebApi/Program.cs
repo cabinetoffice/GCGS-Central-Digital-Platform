@@ -18,7 +18,7 @@ builder.ConfigureForwardedHeaders();
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(options => { options.DocumentTenantApi(); });
+builder.Services.AddSwaggerGen(options => { options.DocumentTenantApi(builder.Configuration); });
 builder.Services.AddHealthChecks();
 
 builder.Services.AddAutoMapper(typeof(WebApiToPersistenceProfile));
@@ -48,12 +48,13 @@ var app = builder.Build();
 app.UseForwardedHeaders();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+if (builder.Configuration.GetValue("Features:SwaggerUI", false))
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-else
+
+if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler();
     app.UseHsts();

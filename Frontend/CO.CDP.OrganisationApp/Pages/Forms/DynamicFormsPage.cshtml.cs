@@ -99,12 +99,16 @@ public class DynamicFormsPageModel(
         var checkYourAnswerQuestionId = await CheckYourAnswerQuestionId();
         if (currentQuestion.Id == checkYourAnswerQuestionId)
         {
-            // TODO: Call API Save
+            var answerSet = tempDataService.PeekOrDefault<FormQuestionAnswerState>(FormQuestionAnswerStateKey);
+            await formsEngine.SaveUpdateAnswers(FormId, SectionId, OrganisationId, answerSet);
+
+            tempDataService.Remove(FormQuestionAnswerStateKey);
 
             return RedirectToPage("FormsAddAnotherAnswerSet", new { OrganisationId, FormId, SectionId });
         }
 
         Guid? nextQuestionId;
+
         if (RedirectToCheckYourAnswer == true)
         {
             nextQuestionId = await CheckYourAnswerQuestionId();
@@ -121,9 +125,9 @@ public class DynamicFormsPageModel(
     {
         var answerSet = tempDataService.PeekOrDefault<FormQuestionAnswerState>(FormQuestionAnswerStateKey);
 
-        var form = await formsEngine.LoadFormSectionAsync(OrganisationId, FormId, SectionId);
+        var form = await formsEngine.GetFormSectionAsync(OrganisationId, FormId, SectionId);
 
-        List<AnswerSummary> summaryList = new();
+        List<AnswerSummary> summaryList = [];
         foreach (var answer in answerSet.Answers)
         {
             var question = form.Questions.FirstOrDefault(q => q.Id == answer.QuestionId);
@@ -152,7 +156,7 @@ public class DynamicFormsPageModel(
 
     public async Task<Guid?> CheckYourAnswerQuestionId()
     {
-        var form = await formsEngine.LoadFormSectionAsync(OrganisationId, FormId, SectionId);
+        var form = await formsEngine.GetFormSectionAsync(OrganisationId, FormId, SectionId);
 
         return form.Questions.FirstOrDefault(q => q.Type == FormQuestionType.CheckYourAnswers)?.Id;
     }
@@ -231,7 +235,10 @@ public class DynamicFormsPageModel(
             var questionAnswer = state.Answers.FirstOrDefault(a => a.QuestionId == question.Id);
             if (questionAnswer == null)
             {
-                questionAnswer = new QuestionAnswer { QuestionId = question.Id };
+                questionAnswer = new QuestionAnswer {
+                    QuestionId = question.Id,
+                    AnswerId = Guid.NewGuid()
+                };
                 state.Answers.Add(questionAnswer);
             }
 

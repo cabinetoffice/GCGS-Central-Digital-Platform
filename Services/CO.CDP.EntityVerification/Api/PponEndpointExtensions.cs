@@ -36,20 +36,11 @@ public static class PponEndpointExtensions
 
 public static class PponApiExtensions
 {
-    public static Model.Identifier _identifier =
-        new Model.Identifier()
-        { 
-                Scheme = "CH",
-                Id = $"123945123",
-                LegalName = "TheOrganisation",
-                Uri = new Uri("https://example.com")
-        };
-
-    public static void DocumentPponApi(this SwaggerGenOptions options)
+    public static void DocumentPponApi(this SwaggerGenOptions options, IConfigurationManager configuration)
     {
         options.SwaggerDoc("v1", new OpenApiInfo
         {
-            Version = "1.0.0",
+            Version = configuration.GetValue("Version", "dev"),
             Title = "PPON Service API",
             Description = "API for organisation identifier queries.",
         });

@@ -1,9 +1,9 @@
 resource "aws_codepipeline" "trigger_update_account" {
 
   execution_mode = "QUEUED"
-  name = "${local.name_prefix}-${local.trigger_update_account_cp_name}"
+  name           = "${local.name_prefix}-${local.trigger_update_account_cp_name}"
   pipeline_type  = "V2"
-  role_arn = var.ci_pipeline_role_arn
+  role_arn       = var.ci_pipeline_role_arn
 
   artifact_store {
     type     = "S3"
@@ -22,7 +22,7 @@ resource "aws_codepipeline" "trigger_update_account" {
       configuration = {
         ConnectionArn    = data.aws_codestarconnections_connection.cabinet_office.arn
         FullRepositoryId = "cabinetoffice/GCGS-Central-Digital-Platform"
-        BranchName       = "DP-191-pull-from-repo"
+        BranchName       = "main"
       }
     }
   }

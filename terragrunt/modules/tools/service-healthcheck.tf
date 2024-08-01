@@ -7,9 +7,12 @@ module "ecs_service_healthcheck" {
       account_id                          = data.aws_caller_identity.current.account_id
       container_port                      = var.healthcheck_config.port
       cpu                                 = var.healthcheck_config.cpu
-      db_address                          = var.db_address
-      db_name                             = var.db_name
-      db_username                         = "${var.db_credentials}:username::"
+      db_entity_verification_address      = var.db_entity_verification_address
+      db_entity_verification_name         = var.db_entity_verification_name
+      db_entity_verification_username     = "${var.db_entity_verification_credentials}:username::"
+      db_sirsi_address                    = var.db_sirsi_address
+      db_sirsi_name                       = var.db_sirsi_name
+      db_sirsi_username                   = "${var.db_sirsi_credentials}:username::"
       environment                         = title(var.environment)
       host_port                           = var.healthcheck_config.port
       image                               = "${local.orchestrator_account_id}.dkr.ecr.${data.aws_region.current.name}.amazonaws.com/cdp-healthcheck:latest"

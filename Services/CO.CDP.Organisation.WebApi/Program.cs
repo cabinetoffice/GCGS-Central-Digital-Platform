@@ -23,7 +23,7 @@ builder.ConfigureForwardedHeaders();
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(options => { options.DocumentOrganisationApi(); });
+builder.Services.AddSwaggerGen(options => { options.DocumentOrganisationApi(builder.Configuration); });
 builder.Services.AddHealthChecks()
     .AddNpgSql(builder.Configuration.GetConnectionString("OrganisationInformationDatabase") ?? "");
 builder.Services.AddAutoMapper(typeof(WebApiToPersistenceProfile));
@@ -55,6 +55,7 @@ builder.Services.AddScoped<IPersonRepository, DatabasePersonRepository>();
 builder.Services.AddScoped<IUseCase<AssignOrganisationIdentifier, bool>, AssignIdentifierUseCase>();
 builder.Services.AddScoped<IUseCase<RegisterOrganisation, Organisation>, RegisterOrganisationUseCase>();
 builder.Services.AddScoped<IUseCase<Guid, Organisation?>, GetOrganisationUseCase>();
+builder.Services.AddScoped<IUseCase<Organisation?>, GetMyOrganisationUseCase>();
 builder.Services.AddScoped<IUseCase<OrganisationQuery, Organisation?>, LookupOrganisationUseCase>();
 builder.Services.AddScoped<IUseCase<string, IEnumerable<Organisation>>, GetOrganisationsUseCase>();
 builder.Services.AddScoped<IUseCase<Guid, SupplierInformation?>, GetSupplierInformationUseCase>();
@@ -64,6 +65,7 @@ builder.Services.AddScoped<IUseCase<(Guid, UpdateOrganisation), bool>, UpdateOrg
 builder.Services.AddScoped<IUseCase<(Guid, UpdateBuyerInformation), bool>, UpdateBuyerInformationUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, UpdateSupplierInformation), bool>, UpdateSupplierInformationUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, RegisterConnectedEntity), bool>, RegisterConnectedEntityUseCase>();
+builder.Services.AddScoped<IUseCase<(Guid, Guid, UpdateConnectedEntity), bool>, UpdateConnectedEntityUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, DeleteSupplierInformation), bool>, DeleteSupplierInformationUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, Guid, DeleteConnectedEntity), bool>, DeleteConnectedEntityUseCase>();
 builder.Services.AddOrganisationProblemDetails();
@@ -76,12 +78,13 @@ var app = builder.Build();
 app.UseForwardedHeaders();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+if (builder.Configuration.GetValue("Features:SwaggerUI", false))
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-else
+
+if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler();
     app.UseHsts();

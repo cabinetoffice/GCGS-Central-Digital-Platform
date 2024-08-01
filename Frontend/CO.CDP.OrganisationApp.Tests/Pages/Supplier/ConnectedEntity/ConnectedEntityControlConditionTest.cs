@@ -1,3 +1,4 @@
+using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Pages.Supplier;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
@@ -77,6 +78,29 @@ public class ConnectedEntityControlConditionTest
         _model.ControlConditions.Should().Contain(Constants.ConnectedEntityControlCondition.OwnsShares);
     }
 
+    [Theory]
+    [InlineData("overseas-company-question", ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl, null)]
+    [InlineData("company-question", ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl, true)]
+    [InlineData("company-question", ConnectedEntityOrganisationCategoryType.RegisteredCompany, null)]
+    public void OnGet_ShouldReturnBackPageResult(
+            string expectedBackPage,
+            ConnectedEntityOrganisationCategoryType categoryType,
+            bool? hasCompaniesHouseNumber)
+    {
+        var state = DummyConnectedPersonDetails();
+
+        state.ConnectedEntityOrganisationCategoryType = categoryType;
+        state.HasCompaniesHouseNumber = hasCompaniesHouseNumber;
+
+        _sessionMock
+            .Setup(s => s.Get<ConnectedEntityState>(Session.ConnectedPersonKey))
+            .Returns(state);
+
+        var result = _model.OnGet();
+
+        result.Should().BeOfType<PageResult>();
+        _model.BackPageLink.Should().Contain(expectedBackPage);
+    }
 
     [Theory]
     [InlineData("ConnectedEntityCompanyRegistrationDate", false)]

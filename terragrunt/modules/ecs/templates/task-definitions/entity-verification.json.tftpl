@@ -1,7 +1,7 @@
 [
   {
     "name": "${name}",
-    "image": "${image}",
+    "image": "${image}:${service_version}",
     "cpu": ${cpu},
     "memory": ${memory},
     "portMappings": [
@@ -20,7 +20,7 @@
       }
     },
     "environment": [
-        {"name": "ASPNETCORE_ENVIRONMENT", "value": "${environment}"},
+        {"name": "ASPNETCORE_ENVIRONMENT", "value": "${aspcore_environment}"},
         {"name": "ASPNETCORE_HTTP_PORTS", "value": "${host_port}"},
         {"name": "Aws__SqsDispatcher__QueueUrl", "value": "${queue_entity_verification_queue_url}"},
         {"name": "Aws__SqsPublisher__QueueUrl", "value": "${queue_organisation_queue_url}"},

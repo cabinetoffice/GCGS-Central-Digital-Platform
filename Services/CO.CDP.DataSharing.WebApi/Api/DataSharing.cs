@@ -228,11 +228,11 @@ public static class EndpointExtensions
 
 public static class ApiExtensions
 {
-    public static void DocumentDataSharingApi(this SwaggerGenOptions options)
+    public static void DocumentDataSharingApi(this SwaggerGenOptions options, IConfigurationManager configuration)
     {
         options.SwaggerDoc("v1", new OpenApiInfo
         {
-            Version = "1.0.0",
+            Version = configuration.GetValue("Version", "dev"),
             Title = "Data Sharing API",
             Description = "",
         });

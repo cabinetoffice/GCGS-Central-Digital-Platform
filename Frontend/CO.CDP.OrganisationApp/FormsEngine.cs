@@ -1,11 +1,12 @@
 using CO.CDP.Forms.WebApiClient;
+using CO.CDP.OrganisationApp.Models;
 using SectionQuestionsResponse = CO.CDP.OrganisationApp.Models.SectionQuestionsResponse;
 
 namespace CO.CDP.OrganisationApp;
 
 public class FormsEngine(IFormsClient formsApiClient, ITempDataService tempDataService) : IFormsEngine
 {
-    public async Task<SectionQuestionsResponse> LoadFormSectionAsync(Guid organisationId, Guid formId, Guid sectionId)
+    public async Task<SectionQuestionsResponse> GetFormSectionAsync(Guid organisationId, Guid formId, Guid sectionId)
     {
         var sessionKey = $"Form_{organisationId}_{formId}_{sectionId}_Questions";
         var cachedResponse = tempDataService.Peek<SectionQuestionsResponse>(sessionKey);
@@ -48,7 +49,7 @@ public class FormsEngine(IFormsClient formsApiClient, ITempDataService tempDataS
 
     public async Task<Models.FormQuestion?> GetNextQuestion(Guid organisationId, Guid formId, Guid sectionId, Guid currentQuestionId)
     {
-        var section = await LoadFormSectionAsync(organisationId, formId, sectionId);
+        var section = await GetFormSectionAsync(organisationId, formId, sectionId);
         if (section.Questions == null)
         {
             return null;
@@ -61,7 +62,7 @@ public class FormsEngine(IFormsClient formsApiClient, ITempDataService tempDataS
     public async Task<Models.FormQuestion?> GetPreviousQuestion(Guid organisationId, Guid formId, Guid sectionId, Guid currentQuestionId)
     {
 
-        var section = await LoadFormSectionAsync(organisationId, formId, sectionId);
+        var section = await GetFormSectionAsync(organisationId, formId, sectionId);
         if (section.Questions == null)
         {
             return null;
@@ -73,7 +74,7 @@ public class FormsEngine(IFormsClient formsApiClient, ITempDataService tempDataS
 
     public async Task<Models.FormQuestion?> GetCurrentQuestion(Guid organisationId, Guid formId, Guid sectionId, Guid? questionId)
     {
-        var section = await LoadFormSectionAsync(organisationId, formId, sectionId);
+        var section = await GetFormSectionAsync(organisationId, formId, sectionId);
         if (section.Questions == null)
         {
             return null;
@@ -86,5 +87,29 @@ public class FormsEngine(IFormsClient formsApiClient, ITempDataService tempDataS
         }
 
         return section.Questions.FirstOrDefault(q => q.Id == questionId);
+    }
+
+    public async Task SaveUpdateAnswers(Guid formId, Guid sectionId, Guid organisationId, FormQuestionAnswerState answerSet)
+    {
+        var answersPayload = new UpdateFormSectionAnswers(
+            answers: answerSet.Answers.Select(a => new Forms.WebApiClient.FormAnswer(
+                id: a.AnswerId,
+                boolValue: a.Answer?.BoolValue,
+                numericValue: a.Answer?.NumericValue,
+                dateValue: a.Answer?.DateValue,
+                startValue: a.Answer?.StartValue,
+                endValue: a.Answer?.EndValue,
+                textValue: a.Answer?.TextValue,
+                optionValue: a.Answer?.OptionValue,
+                questionId: a.QuestionId
+            )).ToArray()
+        );
+
+        await formsApiClient.PutFormSectionAnswersAsync(
+            formId,
+            sectionId,
+            answerSet.AnswerSetId ?? Guid.NewGuid(),
+            organisationId,
+            answersPayload);
     }
 }
