@@ -1,9 +1,11 @@
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Constants;
+using CO.CDP.OrganisationApp.Pages.Supplier.ConnectedEntity;
 using CO.CDP.OrganisationApp.WebApiClients;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using ConnectedEntityType = CO.CDP.OrganisationApp.Constants.ConnectedEntityType;
 
 namespace CO.CDP.OrganisationApp.Pages.Supplier;
 
@@ -51,6 +53,29 @@ public class ConnectedEntityCheckAnswersIndividualOrTrustModel(
         return Page();
     }
 
+    public async Task<IActionResult> OnGetChange(Guid connectedEntityId)
+    {
+        try
+        {
+            await organisationClient.GetOrganisationAsync(Id);
+
+            var connectedEntity = await organisationClient.GetConnectedEntityAsync(Id, connectedEntityId);
+
+            ConnectedEntityDetails =
+                ConnectedEntityCheckAnswersCommon.GetConnectedEntityStateFromEntity(Id, connectedEntity);
+
+            InitModal(ConnectedEntityDetails);
+
+            session.Set<ConnectedEntityState?>(Session.ConnectedPersonKey, ConnectedEntityDetails);
+
+            return Page();
+        }
+        catch (ApiException ex) when (ex.StatusCode == 404)
+        {
+            return Redirect("/page-not-found");
+        }
+    }
+
     public async Task<IActionResult> OnPost()
     {
         var state = session.Get<ConnectedEntityState>(Session.ConnectedPersonKey);
@@ -61,22 +86,39 @@ public class ConnectedEntityCheckAnswersIndividualOrTrustModel(
 
         InitModal(state);
 
-        var payload = RegisterConnectedEntityPayload(state);
-
-        if (payload == null)
-        {
-            ModelState.AddModelError(string.Empty, ErrorMessagesList.PayLoadIssueOrNullAurgument);
-            return Page();
-        }
-
         try
         {
-            await organisationClient.RegisterConnectedPerson(Id, payload);
+            if (ConnectedEntityId.HasValue)
+            {
+                var updatePayload = UpdateConnectedEntityPayload(state);
+
+                if (updatePayload == null)
+                {
+                    ModelState.AddModelError(string.Empty, ErrorMessagesList.PayLoadIssueOrNullAurgument);
+                    return Page();
+                }
+
+                await organisationClient.UpdateConnectedPerson(Id, ConnectedEntityId.Value, updatePayload);
+            }
+            else
+            {
+                var payload = RegisterConnectedEntityPayload(state);
+
+                if (payload == null)
+                {
+                    ModelState.AddModelError(string.Empty, ErrorMessagesList.PayLoadIssueOrNullAurgument);
+                    return Page();
+                }
+
+                await organisationClient.RegisterConnectedPerson(Id, payload);
+            }
 
             session.Remove(Session.ConnectedPersonKey);
         }
         catch (ApiException ex) when (ex.StatusCode == 404)
         {
+            session.Remove(Session.ConnectedPersonKey);
+
             return Redirect("/page-not-found");
         }
 
@@ -198,5 +240,55 @@ public class ConnectedEntityCheckAnswersIndividualOrTrustModel(
             return (false, new());
         }
         return (true, cp);
+    }
+
+    private UpdateConnectedEntity? UpdateConnectedEntityPayload(ConnectedEntityState state)
+    {
+        UpdateConnectedOrganisation? connectedOrganisation = null;
+        UpdateConnectedIndividualTrust? connectedIndividualTrust = null;
+
+        connectedIndividualTrust = new UpdateConnectedIndividualTrust
+        (
+            category: state.ConnectedEntityIndividualAndTrustCategoryType!.Value.AsApiClientConnectedIndividualAndTrustCategory(),
+            connectedType: (state.ConnectedEntityType == Constants.ConnectedEntityType.Individual
+                ? ConnectedPersonType.Individual : ConnectedPersonType.TrustOrTrustee),
+            controlCondition: state.ControlConditions.AsApiClientControlConditionList(),
+            dateOfBirth: null,
+            firstName: "",
+            lastName: "",
+            nationality: "",
+            personId: null,
+            residentCountry: state.DirectorLocation
+        );
+
+        List<Address> addresses = new();
+
+        if (state.RegisteredAddress != null)
+        {
+            addresses.Add(AddAddress(state.RegisteredAddress, Organisation.WebApiClient.AddressType.Registered));
+        }
+
+        if (state.PostalAddress != null)
+        {
+            addresses.Add(AddAddress(state.PostalAddress, Organisation.WebApiClient.AddressType.Postal));
+        }
+
+        var updateConnectedEntity = new UpdateConnectedEntity
+        (
+            id: ConnectedEntityId.ToString(),
+            addresses: addresses,
+            companyHouseNumber: state.CompaniesHouseNumber,
+            endDate: null,
+            entityType: state.ConnectedEntityType!.Value.AsApiClientConnectedEntityType(),
+            hasCompnayHouseNumber: state.SupplierHasCompanyHouseNumber!.Value,
+            individualOrTrust: connectedIndividualTrust,
+            organisation: connectedOrganisation,
+            overseasCompanyNumber: "",
+            registeredDate: state.RegistrationDate!.Value,
+            registerName: state.RegisterName,
+            startDate: null
+        );
+
+        return updateConnectedEntity;
     }
 }
