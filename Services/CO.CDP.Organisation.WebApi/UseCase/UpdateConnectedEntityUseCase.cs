@@ -8,18 +8,9 @@ namespace CO.CDP.Organisation.WebApi.UseCase;
 public class UpdateConnectedEntityUseCase(
     IConnectedEntityRepository connectedEntityRepository,
     IOrganisationRepository organisationRepository,
-    IMapper mapper,
-    Func<Guid> guidFactory)
+    IMapper mapper)
     : IUseCase<(Guid organisationId, Guid connectedEntityId, UpdateConnectedEntity updateConnectedEntity), bool>
 {
-    public UpdateConnectedEntityUseCase(
-        IConnectedEntityRepository connectedEntityRepository,
-        IOrganisationRepository organisationRepository,
-        IMapper mapper)
-        : this(connectedEntityRepository, organisationRepository, mapper, Guid.NewGuid)
-    {
-    }
-
     public async Task<bool> Execute((Guid organisationId, Guid connectedEntityId, UpdateConnectedEntity updateConnectedEntity) command)
     {
         var organisation = await organisationRepository.Find(command.organisationId)

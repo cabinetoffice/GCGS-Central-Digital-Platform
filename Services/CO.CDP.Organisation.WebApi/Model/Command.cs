@@ -183,7 +183,7 @@ public record RegisterConnectedEntity
 
 public record UpdateConnectedEntity
 {
-    public string Id { get; init; }
+    public string? Id { get; init; }
     public required ConnectedEntityType EntityType { get; init; }
     public bool HasCompnayHouseNumber { get; init; }
     public string? CompanyHouseNumber { get; init; }

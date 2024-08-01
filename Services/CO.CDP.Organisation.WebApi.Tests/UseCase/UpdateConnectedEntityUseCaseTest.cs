@@ -35,7 +35,7 @@ public class UpdateConnectedEntityUseCaseTests
         {
             EntityType = (ConnectedEntityType)0
         });
-        _mockOrganisationRepository.Setup(repo => repo.Find(command.organisationId)).ReturnsAsync((Persistence.Organisation)null);
+        _mockOrganisationRepository.Setup(repo => repo.Find(command.organisationId)).ReturnsAsync((Persistence.Organisation?)null);
 
         await Assert.ThrowsAsync<UnknownOrganisationException>(() => _useCase.Execute(command));
     }
@@ -93,7 +93,7 @@ public class UpdateConnectedEntityUseCaseTests
         var organisation = FakeOrganisation();
 
         _mockOrganisationRepository.Setup(repo => repo.Find(organisationId)).ReturnsAsync(organisation);
-        _mockConnectedEntityRepository.Setup(repo => repo.Find(organisationId, connectedEntityId)).ReturnsAsync((Persistence.ConnectedEntity)null);
+        _mockConnectedEntityRepository.Setup(repo => repo.Find(organisationId, connectedEntityId)).ReturnsAsync((Persistence.ConnectedEntity?)null);
 
         await Assert.ThrowsAsync<UnknownConnectedEntityException>(() => _useCase.Execute(command));
     }
