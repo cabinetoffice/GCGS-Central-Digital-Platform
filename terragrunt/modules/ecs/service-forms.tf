@@ -9,13 +9,14 @@ module "ecs_service_forms" {
       container_port          = var.service_configs.forms.port
       cpu                     = var.service_configs.forms.cpu
       host_port               = var.service_configs.forms.port
-      image                   = "${local.ecr_urls[var.service_configs.forms.name]}:${local.orchestrator_service_version}"
+      image                   = local.ecr_urls[var.service_configs.forms.name]
       lg_name                 = aws_cloudwatch_log_group.tasks[var.service_configs.forms.name].name
       lg_prefix               = "app"
       lg_region               = data.aws_region.current.name
       memory                  = var.service_configs.forms.memory
       name                    = var.service_configs.forms.name
       public_hosted_zone_fqdn = var.public_hosted_zone_fqdn
+      service_version         = local.orchestrator_service_version
       vpc_cidr                = var.vpc_cider
     }
   )
