@@ -1,4 +1,3 @@
-using Amazon;
 using Amazon.Extensions.NETCore.Setup;
 using Amazon.Runtime;
 using Amazon.S3;
@@ -8,6 +7,7 @@ using CO.CDP.AwsServices.Sqs;
 using CO.CDP.MQ;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace CO.CDP.AwsServices;
@@ -20,7 +20,7 @@ public static class Extensions
         var awsSection = configuration.GetSection("Aws");
 
         var awsConfig = awsSection.Get<AwsConfiguration>()
-            ?? throw new Exception("Aws environment configuration missing.");
+                        ?? throw new Exception("Aws environment configuration missing.");
 
         AddAwsOptions(services, awsConfig);
 
@@ -89,7 +89,8 @@ public static class Extensions
             var dispatcher = new SqsDispatcher(
                 serviceProvider.GetRequiredService<IAmazonSQS>(),
                 serviceProvider.GetRequiredService<IOptions<AwsConfiguration>>(),
-                serviceProvider.GetRequiredService<Deserializer>());
+                serviceProvider.GetRequiredService<Deserializer>(),
+                serviceProvider.GetRequiredService<ILogger<SqsDispatcher>>());
             registerSubscribers(serviceProvider, dispatcher);
             return dispatcher;
         });

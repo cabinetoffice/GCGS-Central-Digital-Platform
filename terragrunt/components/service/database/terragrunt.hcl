@@ -27,6 +27,7 @@ dependency core_iam {
     cloudwatch_events_name           = "mock"
     db_connection_step_function_arn  = "mock"
     db_connection_step_function_name = "mock"
+    terraform_arn                    = "mock"
   }
 }
 
@@ -59,4 +60,5 @@ inputs = {
   role_cloudwatch_events_name           = dependency.core_iam.outputs.cloudwatch_events_name
   role_db_connection_step_function_arn  = dependency.core_iam.outputs.db_connection_step_function_arn
   role_db_connection_step_function_name = dependency.core_iam.outputs.db_connection_step_function_name
+  role_terraform_arn                    = dependency.core_iam.outputs.terraform_arn
 }

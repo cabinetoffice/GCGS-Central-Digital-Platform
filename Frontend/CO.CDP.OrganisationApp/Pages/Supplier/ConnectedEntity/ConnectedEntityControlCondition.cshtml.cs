@@ -157,8 +157,13 @@ public class ConnectedEntityControlConditionModel(ISession session) : PageModel
                 switch (state.ConnectedEntityOrganisationCategoryType)
                 {
                     case ConnectedEntityOrganisationCategoryType.RegisteredCompany:
+                        backPage = $"company-question";
+                        break;
                     case ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl:
-                        backPage = $"company-question/{ConnectedEntityId}";
+                        backPage = (state.HasCompaniesHouseNumber.HasValue &&
+                                    state.HasCompaniesHouseNumber == true)
+                                    ? "company-question"
+                                    : "overseas-company-question";
                         break;
                 }
                 break;
@@ -167,7 +172,7 @@ public class ConnectedEntityControlConditionModel(ISession session) : PageModel
                 {
                     case ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndividual:
                     case ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndividualWithSignificantInfluenceOrControlForIndividual:
-                        backPage = $"{AddressType.Registered}-address/{(state.RegisteredAddress?.Country == Country.UnitedKingdom ? "uk" : "non-uk")}/{ConnectedEntityId}";
+                        backPage = $"{AddressType.Registered}-address/{(state.RegisteredAddress?.Country == Country.UnitedKingdom ? "uk" : "non-uk")}";
                         break;
                 }
                 break;

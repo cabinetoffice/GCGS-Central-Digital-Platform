@@ -4,11 +4,11 @@ module "ecs_service_authority" {
   container_definitions = templatefile(
     "${path.module}/templates/task-definitions/${var.service_configs.authority.name}.json.tftpl",
     {
+      aspcore_environment     = local.aspcore_environment
       authority_private_key   = "${data.aws_secretsmanager_secret.authority_keys.arn}:PRIVATE::"
+      conn_string_location    = var.db_sirsi_connection_secret_arn
       container_port          = var.service_configs.authority.port
       cpu                     = var.service_configs.authority.cpu
-      conn_string_location    = var.db_connection_secret_arn
-      aspcore_environment     = local.aspcore_environment
       host_port               = var.service_configs.authority.port
       image                   = "${local.ecr_urls[var.service_configs.authority.name]}:${local.orchestrator_service_version}"
       lg_name                 = aws_cloudwatch_log_group.tasks[var.service_configs.authority.name].name

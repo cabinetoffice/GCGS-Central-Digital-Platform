@@ -35,6 +35,33 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql) : 
     }
 
     [Fact]
+    public async Task ItFindsSavedOrganisationById()
+    {
+        using var repository = OrganisationRepository();
+
+        var person = GivenPerson();
+        var organisation = GivenOrganisation(personsWithScope: [(person, ["ADMIN"])]);
+
+        repository.Save(organisation);
+
+        var found = await repository.Find(organisation.Id);
+
+        found.Should().Be(organisation);
+        found.As<Organisation>().Id.Should().BePositive();
+        found.As<Organisation>().OrganisationPersons.First().Scopes.Should().Equal(["ADMIN"]);
+    }
+
+    [Fact]
+    public async Task ItReturnsNullIfOrganisationIsNotFoundById()
+    {
+        using var repository = OrganisationRepository();
+
+        var found = await repository.Find(0);
+
+        found.Should().BeNull();
+    }
+
+    [Fact]
     public void ItRejectsTwoOrganisationsWithTheSameName()
     {
         using var repository = OrganisationRepository();

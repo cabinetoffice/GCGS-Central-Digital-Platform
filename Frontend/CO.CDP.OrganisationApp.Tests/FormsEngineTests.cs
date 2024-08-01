@@ -225,4 +225,102 @@ public class FormsEngineTests
 
         result.Should().BeEquivalentTo(sectionResponse.Questions.First(q => q.Id == questionId));
     }
+
+    [Fact]
+    public async Task SaveUpdateAnswers_ShouldCallApiWithCorrectPayload_WhenAnswerSetIdIsNull()
+    {
+        var (formId, sectionId, organisationId, answerSet, expectedAnswer) = SetupTestData();
+        await _formsEngine.SaveUpdateAnswers(formId, sectionId, organisationId, answerSet);
+
+        _formsApiClientMock.Verify(api => api.PutFormSectionAnswersAsync(
+            formId,
+            sectionId,
+            It.IsAny<Guid>(),
+            organisationId,
+            It.Is<WebApiClient.UpdateFormSectionAnswers>(payload =>
+                payload.Answers.Count == 1 &&
+                payload.Answers.Any(a =>
+                    (!expectedAnswer.BoolValue.HasValue || a.BoolValue == expectedAnswer.BoolValue.Value) &&
+                    (!expectedAnswer.NumericValue.HasValue || a.NumericValue == expectedAnswer.NumericValue.Value) &&
+                    (!expectedAnswer.DateValue.HasValue || a.DateValue == expectedAnswer.DateValue.Value) &&
+                    (expectedAnswer.TextValue == null || a.TextValue == expectedAnswer.TextValue) &&
+                    (expectedAnswer.OptionValue == null || a.OptionValue == expectedAnswer.OptionValue)
+                )
+            )
+        ), Times.Once);
+    }
+
+    [Fact]
+    public async Task SaveUpdateAnswers_ShouldCallApiWithCorrectPayload_WhenAnswerSetIdIsProvided()
+    {
+        var (formId, sectionId, organisationId, answerSet, expectedAnswer) = SetupTestData();
+        var existingAnswerSetId = Guid.NewGuid();
+        answerSet.AnswerSetId = existingAnswerSetId;
+        await _formsEngine.SaveUpdateAnswers(formId, sectionId, organisationId, answerSet);
+
+        _formsApiClientMock.Verify(api => api.PutFormSectionAnswersAsync(
+            formId,
+            sectionId,
+            existingAnswerSetId,
+            organisationId,
+            It.Is<WebApiClient.UpdateFormSectionAnswers>(payload =>
+                payload.Answers.Count == 1 &&
+                payload.Answers.Any(a =>
+                    (!expectedAnswer.BoolValue.HasValue || a.BoolValue == expectedAnswer.BoolValue.Value) &&
+                    (!expectedAnswer.NumericValue.HasValue || a.NumericValue == expectedAnswer.NumericValue.Value) &&
+                    (!expectedAnswer.DateValue.HasValue || a.DateValue == expectedAnswer.DateValue.Value) &&
+                    (expectedAnswer.TextValue == null || a.TextValue == expectedAnswer.TextValue) &&
+                    (expectedAnswer.OptionValue == null || a.OptionValue == expectedAnswer.OptionValue)
+                )
+            )
+        ), Times.Once);
+    }
+
+    [Fact]
+    public async Task SaveUpdateAnswers_ShouldThrowException_WhenApiCallFails()
+    {
+        var (formId, sectionId, organisationId, answerSet, _) = SetupTestData();
+
+        _formsApiClientMock.Setup(api => api.PutFormSectionAnswersAsync(
+            It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<WebApiClient.UpdateFormSectionAnswers>()))
+            .ThrowsAsync(new Exception("API call failed"));
+
+        Func<Task> act = async () => await _formsEngine.SaveUpdateAnswers(formId, sectionId, organisationId, answerSet);
+        await act.Should().ThrowAsync<Exception>().WithMessage("API call failed");
+    }
+
+    private (Guid formId, Guid sectionId, Guid organisationId, FormQuestionAnswerState answerSet, FormAnswer expectedAnswer) SetupTestData()
+    {
+        var formId = Guid.NewGuid();
+        var sectionId = Guid.NewGuid();
+        var organisationId = Guid.NewGuid();
+        var answerSet = new FormQuestionAnswerState
+        {
+            Answers = new List<QuestionAnswer>
+                {
+                    new QuestionAnswer
+                    {
+                        QuestionId = Guid.NewGuid(),
+                        Answer = new FormAnswer
+                        {
+                            BoolValue = true,
+                            NumericValue = 42,
+                            DateValue = DateTimeOffset.UtcNow,
+                            TextValue = "Sample Answer",
+                            OptionValue = "Option1"
+                        }
+                    }
+                }
+        };
+
+        var expectedAnswer = answerSet.Answers[0].Answer;
+
+        if (expectedAnswer == null)
+        {
+            throw new InvalidOperationException("Expected answer should not be null for this test case.");
+        }
+
+        return (formId, sectionId, organisationId, answerSet, expectedAnswer);
+    }
+
 }

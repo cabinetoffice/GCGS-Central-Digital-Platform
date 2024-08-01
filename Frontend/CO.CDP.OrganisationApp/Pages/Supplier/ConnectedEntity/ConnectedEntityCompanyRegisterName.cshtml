@@ -4,10 +4,10 @@
     var registerNameHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.RegisterName)).HasInnerHtml;
 
     var backLink = $"/organisation/{Model.Id}/supplier-information/connected-person/date-registered/{Model.ConnectedEntityId}";
+
     if (Request.Query.ContainsKey("frm-chk-answer"))
     {
-        backLink = $"/organisation/{Model.Id}/supplier-information/connected-person/check-answers-organisation/{Model.ConnectedEntityId}";
-        Model.RedirectToCheckYourAnswer = true;
+        backLink = $"/organisation/{Model.Id}/supplier-information/connected-person/check-answers-organisation/{Model.ConnectedEntityId}";        
     }
 }
 
@@ -17,6 +17,10 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <form class="form" method="post">
+                @if (Request.Query.ContainsKey("frm-chk-answer"))
+                {
+                    <input type="hidden" name="RedirectToCheckYourAnswer" value="true" />
+                }
                 <div class="govuk-form-group @(registerNameHasError ? "govuk-form-group--error" : "")">
                     <span class="govuk-caption-l">@Model.Caption</span>
                     <h1 class="govuk-label-wrapper">

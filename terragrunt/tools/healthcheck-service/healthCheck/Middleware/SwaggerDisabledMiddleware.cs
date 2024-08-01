@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
 
-namespace YourProject.Middleware
+namespace healthCheck.Middleware
 {
     public class SwaggerDisabledMiddleware
     {

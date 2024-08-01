@@ -22,11 +22,16 @@
     "environment": [
         {"name": "ASPNETCORE_ENVIRONMENT", "value": "${environment}"},
         {"name": "ASPNETCORE_HTTP_PORTS", "value": "${host_port}"},
-        {"name": "queue_url_publisher", "value": "${queue_entity_verification_queue_url}"},
-        {"name": "queue_url_dispatcher", "value": "${queue_organisation_queue_url}"}
+        {"name": "DB_ENTITY_VERIFICATION_ADDRESS", "value": "${db_entity_verification_address}"},
+        {"name": "DB_ENTITY_VERIFICATION_NAME", "value": "${db_entity_verification_name}"},
+        {"name": "DB_SIRSI_ADDRESS", "value": "${db_sirsi_address}"},
+        {"name": "DB_SIRSI_NAME", "value": "${db_sirsi_name}"},
+        {"name": "QUEUE_URL_ENTITY_VERIFICATION", "value": "${queue_entity_verification_queue_url}"},
+        {"name": "QUEUE_URL_ORGANISATION", "value": "${queue_organisation_queue_url}"}
     ],
     "secrets": [
-        {"name": "DB_USERNAME", "valueFrom": "${db_username}"}
+        {"name": "DB_ENTITY_VERIFICATION_USERNAME", "valueFrom": "${db_entity_verification_username}"},
+        {"name": "DB_SIRSI_USERNAME", "valueFrom": "${db_sirsi_username}"}
     ],
     "volumesFrom": [],
     "mountPoints": [],

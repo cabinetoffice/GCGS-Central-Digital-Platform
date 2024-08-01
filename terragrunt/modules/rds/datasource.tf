@@ -16,7 +16,7 @@ data "aws_iam_policy_document" "step_function_manage_secrets" {
       "kms:Encrypt",
       "kms:GenerateDataKey"
     ]
-    resources = [aws_kms_key.rds.arn]
+    resources = [module.kms.key_arn]
     sid       = "AccessToDBKey"
   }
   statement {

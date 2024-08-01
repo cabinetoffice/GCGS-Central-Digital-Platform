@@ -99,12 +99,14 @@ public class DynamicFormsPageModel(
         var checkYourAnswerQuestionId = await CheckYourAnswerQuestionId();
         if (currentQuestion.Id == checkYourAnswerQuestionId)
         {
-            // TODO: Call API Save
+            var answerSet = tempDataService.PeekOrDefault<FormQuestionAnswerState>(FormQuestionAnswerStateKey);
+            await formsEngine.SaveUpdateAnswers(FormId, SectionId, OrganisationId, answerSet);
 
             return RedirectToPage("FormsAddAnotherAnswerSet", new { OrganisationId, FormId, SectionId });
         }
 
         Guid? nextQuestionId;
+
         if (RedirectToCheckYourAnswer == true)
         {
             nextQuestionId = await CheckYourAnswerQuestionId();
@@ -231,7 +233,10 @@ public class DynamicFormsPageModel(
             var questionAnswer = state.Answers.FirstOrDefault(a => a.QuestionId == question.Id);
             if (questionAnswer == null)
             {
-                questionAnswer = new QuestionAnswer { QuestionId = question.Id };
+                questionAnswer = new QuestionAnswer {
+                    QuestionId = question.Id,
+                    AnswerId = Guid.NewGuid()
+                };
                 state.Answers.Add(questionAnswer);
             }
 

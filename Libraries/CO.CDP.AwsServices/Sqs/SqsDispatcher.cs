@@ -1,6 +1,7 @@
 using Amazon.SQS;
 using Amazon.SQS.Model;
 using CO.CDP.MQ;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace CO.CDP.AwsServices.Sqs;
@@ -13,11 +14,21 @@ public class SqsDispatcher(
     IAmazonSQS sqsClient,
     SqsDispatcherConfiguration configuration,
     Deserializer deserializer,
-    TypeMatcher typeMatcher)
-    : IDispatcher
+    TypeMatcher typeMatcher,
+    ILogger<SqsDispatcher> logger
+) : IDispatcher
 {
-    public SqsDispatcher(IAmazonSQS sqsClient, IOptions<AwsConfiguration> configuration, Deserializer deserializer)
-        : this(sqsClient, SqsDispatcherConfiguration(configuration), deserializer, (type, typeName) => type.Name == typeName)
+    public SqsDispatcher(
+        IAmazonSQS sqsClient,
+        IOptions<AwsConfiguration>
+            configuration, Deserializer deserializer,
+        ILogger<SqsDispatcher> logger
+    ) : this(
+        sqsClient,
+        SqsDispatcherConfiguration(configuration),
+        deserializer,
+        (type, typeName) => type.Name == typeName,
+        logger)
     {
     }
 
@@ -43,6 +54,8 @@ public class SqsDispatcher(
     {
         return Task.Run(async () =>
         {
+            logger.LogInformation("Started the SQS message dispatcher");
+
             while (!cancellationToken.IsCancellationRequested)
             {
                 foreach (var message in await ReceiveMessagesAsync(configuration.QueueUrl, cancellationToken))
@@ -63,16 +76,27 @@ public class SqsDispatcher(
             MessageAttributeNames = [TypeAttribute],
             WaitTimeSeconds = configuration.WaitTimeSeconds,
         }, cancellationToken);
-        return response.Messages ?? [];
+
+        logger.LogInformation("Received {COUNT} message(s)", response.Messages.Count);
+
+        return response.Messages;
     }
 
     private async Task HandleMessage(Message message)
     {
+        logger.LogDebug("Handling the message with MessageId={MessageId}", message.MessageId);
+
         var type = message.MessageAttributes.GetValueOrDefault(TypeAttribute)?.StringValue ?? "";
         var matchingSubscribers = _subscribers.AllMatching((t) => typeMatcher(t, type)).ToList();
+
+        logger.LogDebug("Found {CNT} subscribers to handle the `{TYPE}` message", matchingSubscribers.Count, type);
+
         if (matchingSubscribers.Any())
         {
             var deserialized = deserializer(type, message.Body);
+
+            logger.LogDebug("Handling the `{TYPE}` message: `{MESSAGE}`", type, message.Body);
+
             foreach (var subscriber in matchingSubscribers)
             {
                 await subscriber.Handle(deserialized);
@@ -82,6 +106,8 @@ public class SqsDispatcher(
 
     private async Task DeleteMessage(Message message)
     {
+        logger.LogDebug("Deleting the message with MessageId={MessageId}", message.MessageId);
+
         await sqsClient.DeleteMessageAsync(new DeleteMessageRequest
         {
             QueueUrl = configuration.QueueUrl,

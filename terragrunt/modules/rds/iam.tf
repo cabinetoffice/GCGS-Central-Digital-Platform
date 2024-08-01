@@ -1,6 +1,6 @@
 resource "aws_iam_policy" "step_function_manage_secrets" {
-  name        = "${local.name_prefix}-step-function-manage-secrets"
-  description = "To allow updating DB connection string when creds rotated"
+  name        = "${var.db_name}-sf-manage-secrets"
+  description = "To allow updating DB connection string when ${var.db_name} creds rotated"
   policy      = data.aws_iam_policy_document.step_function_manage_secrets.json
 }
 
@@ -10,8 +10,8 @@ resource "aws_iam_role_policy_attachment" "secret_deployer_step_function" {
 }
 
 resource "aws_iam_policy" "cloudwatch_event_invoke_db_connection_string_step_function" {
-  name        = "${local.name_prefix}-invoke-db-connection-string-step-function"
-  description = "Policy for CloudWatch Events to invoke Step Functions"
+  name        = "${var.db_name}-invoke-sf-update-connection-string"
+  description = "Policy for CloudWatch Events to invoke Step Function updating ${var.db_name} Connection string"
   policy      = data.aws_iam_policy_document.cloudwatch_event_invoke_db_connection_string_step_function.json
 }
 

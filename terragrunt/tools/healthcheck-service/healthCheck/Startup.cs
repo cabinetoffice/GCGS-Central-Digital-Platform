@@ -7,9 +7,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Linq;
+using healthCheck.Middleware;
 using healthCheck.Models;
 using Microsoft.OpenApi.Any;
-using YourProject.Middleware; // Ensure the namespace for the middleware is correct
+using System.IO;
+using System.Threading.Tasks;
 
 namespace healthCheck
 {
@@ -73,6 +75,25 @@ namespace healthCheck
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+
+            app.Use(async (context, next) =>
+            {
+                var configuration = context.RequestServices.GetRequiredService<IConfiguration>();
+                var frontendUrl = configuration["FrontendUrl"];
+
+                if (context.Request.Path == "/" || context.Request.Path == "/index.html")
+                {
+                    var indexPath = Path.Combine(env.WebRootPath, "index.html");
+                    var html = await File.ReadAllTextAsync(indexPath);
+                    html = html.Replace("${frontend_url}", frontendUrl);
+                    context.Response.ContentType = "text/html";
+                    await context.Response.WriteAsync(html);
+                }
+                else
+                {
+                    await next();
+                }
+            });
 
             app.UseRouting();
 

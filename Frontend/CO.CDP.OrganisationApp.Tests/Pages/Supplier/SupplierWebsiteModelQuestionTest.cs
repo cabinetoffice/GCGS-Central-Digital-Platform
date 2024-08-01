@@ -116,7 +116,7 @@ public class SupplierWebsiteModelQuestionTest
         new(
             additionalIdentifiers: [new Identifier(id: "FakeId", legalName: "FakeOrg", scheme: "VAT", uri: null)],
             addresses: null,
-            contactPoint: new ContactPoint(email: null, faxNumber: null, name: null, telephone: null, url: new Uri("https://xyz.com")),
+            contactPoint: new ContactPoint(email: null, name: null, telephone: null, url: new Uri("https://xyz.com")),
             id: id,
             identifier: null,
             name: "Test Org",

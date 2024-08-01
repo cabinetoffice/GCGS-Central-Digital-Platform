@@ -1,5 +1,5 @@
 resource "aws_sfn_state_machine" "update_connection_string" {
-  name     = "${local.name_prefix}-update_connection_string"
+  name     = "${var.db_name}-update-connection-string"
   role_arn = var.role_db_connection_step_function_arn
   tags     = var.tags
 

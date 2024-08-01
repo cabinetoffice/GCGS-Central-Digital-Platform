@@ -1,3 +1,4 @@
+using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Pages.Supplier;
 using FluentAssertions;
@@ -7,17 +8,17 @@ using Moq;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages.Supplier.ConnectedEntity;
 
-public class ConnectedEntityOscCompanyQuestionTest
+public class ConnectedEntityOverseasCompanyQuestionTest
 {
-    private readonly ConnectedEntityOscCompanyQuestionModel _model;
+    private readonly ConnectedEntityOverseasCompanyQuestionModel _model;
     private readonly Mock<ISession> _sessionMock;
     private readonly Guid _organisationId = Guid.NewGuid();
     private readonly Guid _entityId = Guid.NewGuid();
 
-    public ConnectedEntityOscCompanyQuestionTest()
+    public ConnectedEntityOverseasCompanyQuestionTest()
     {
         _sessionMock = new Mock<ISession>();
-        _model = new ConnectedEntityOscCompanyQuestionModel(_sessionMock.Object);
+        _model = new ConnectedEntityOverseasCompanyQuestionModel(_sessionMock.Object);
         _model.Id = _organisationId;
     }
 
@@ -30,8 +31,8 @@ public class ConnectedEntityOscCompanyQuestionTest
         _sessionMock
             .Setup(s => s.Get<ConnectedEntityState>(Session.ConnectedPersonKey))
             .Returns(state);
-        _model.HasOscCompaniesHouseNumber = hasNumber;
-        _model.OscCompaniesHouseNumber = "";
+        _model.HasOverseasCompaniesHouseNumber = hasNumber;
+        _model.OverseasCompaniesHouseNumber = "";
         _model.ModelState.AddModelError("Question", "Please select an option");
 
         var result = _model.OnPost();
@@ -74,7 +75,7 @@ public class ConnectedEntityOscCompanyQuestionTest
     public void OnGet_ShouldReturnPageResult()
     {
         var state = DummyConnectedPersonDetails();
-        state.OscCompaniesHouseNumber = "12345678";
+        state.OverseasCompaniesHouseNumber = "12345678";
 
         _sessionMock
             .Setup(s => s.Get<ConnectedEntityState>(Session.ConnectedPersonKey))
@@ -83,7 +84,7 @@ public class ConnectedEntityOscCompanyQuestionTest
         var result = _model.OnGet(null);
 
         result.Should().BeOfType<PageResult>();
-        _model.OscCompaniesHouseNumber.Should().Be("12345678");
+        _model.OverseasCompaniesHouseNumber.Should().Be("12345678");
     }
 
 
@@ -129,9 +130,9 @@ public class ConnectedEntityOscCompanyQuestionTest
             ConnectedEntityType = Constants.ConnectedEntityType.Organisation,
             OrganisationName = "Org_name",
             HasCompaniesHouseNumber = false,
-            HasOscCompaniesHouseNumber = true,
-            OscCompaniesHouseNumber = "12345678",
-            ConnectedEntityOrganisationCategoryType = ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl
+            HasOverseasCompaniesHouseNumber = true,
+            OverseasCompaniesHouseNumber = "12345678",
+            ConnectedEntityOrganisationCategoryType= ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl
         };
 
         return connectedPersonDetails;
