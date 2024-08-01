@@ -88,25 +88,14 @@ public static class EndpointExtensions
 
 public static class ApiExtensions
 {
-    public static void DocumentTenantApi(this SwaggerGenOptions options)
+    public static void DocumentTenantApi(this SwaggerGenOptions options, IConfigurationManager configuration)
     {
         options.SwaggerDoc("v1", new OpenApiInfo
         {
-            Version = "1.0.0",
+            Version = configuration.GetValue("Version", "dev"),
             Title = "Tenant Management API",
             Description =
-                "API for creating, updating, deleting, and listing tenants, including a lookup feature against person identifiers.",
-            TermsOfService = new Uri("https://example.com/terms"),
-            Contact = new OpenApiContact
-            {
-                Name = "Example Contact",
-                Url = new Uri("https://example.com/contact")
-            },
-            License = new OpenApiLicense
-            {
-                Name = "Example License",
-                Url = new Uri("https://example.com/license")
-            }
+                "API for creating, updating, deleting, and listing tenants, including a lookup feature against person identifiers."
         });
         options.CustomSchemaIds(type =>
             {
