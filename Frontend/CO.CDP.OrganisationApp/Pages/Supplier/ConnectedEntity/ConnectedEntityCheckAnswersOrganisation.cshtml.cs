@@ -23,6 +23,7 @@ public class ConnectedEntityCheckAnswersOrganisationModel(
     public string? Heading { get; set; }
 
     public ConnectedEntityState? ConnectedEntityDetails { get; set; }
+    public string? BackPageLink { get; set; }
 
     public async Task<IActionResult> OnGet()
     {
@@ -85,6 +86,7 @@ public class ConnectedEntityCheckAnswersOrganisationModel(
     {
         Caption = state.GetCaption();
         Heading = $"Check your answers";
+        BackPageLink = GetBackLinkPageName(state);
     }
 
     private RegisterConnectedEntity? RegisterConnectedEntityPayload(ConnectedEntityState state)
@@ -173,5 +175,33 @@ public class ConnectedEntityCheckAnswersOrganisationModel(
             return (false, new());
         }
         return (true, cp);
+    }
+    private string GetBackLinkPageName(ConnectedEntityState state)
+    {
+        var backPage = "";
+        switch (state.ConnectedEntityType)
+        {
+            case Constants.ConnectedEntityType.Organisation:
+                switch (state.ConnectedEntityOrganisationCategoryType)
+                {
+                    case ConnectedEntityOrganisationCategoryType.RegisteredCompany:
+                        backPage = "company-register-name";
+                        break;
+                    case ConnectedEntityOrganisationCategoryType.DirectorOrTheSameResponsibilities:
+                    case ConnectedEntityOrganisationCategoryType.ParentOrSubsidiaryCompany:
+                        backPage = "company-question";
+                        break;
+                    case ConnectedEntityOrganisationCategoryType.ACompanyYourOrganisationHasTakenOver:
+                        backPage = "date-insolvency";
+                        break;
+                    case ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl:
+                        backPage = "law-register";
+                        break;
+
+                }
+                break;
+        }
+
+        return backPage;
     }
 }
