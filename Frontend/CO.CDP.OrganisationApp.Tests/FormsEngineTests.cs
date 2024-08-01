@@ -98,7 +98,7 @@ public class FormsEngineTests
     }
 
     [Fact]
-    public async Task LoadFormSectionAsync_ShouldReturnCachedResponse_WhenCachedResponseExists()
+    public async Task GetFormSectionAsync_ShouldReturnCachedResponse_WhenCachedResponseExists()
     {
         var (organisationId, formId, sectionId, sessionKey) = CreateTestGuids();
         var questionId = Guid.NewGuid();
@@ -108,14 +108,14 @@ public class FormsEngineTests
         _tempDataServiceMock.Setup(t => t.Peek<SectionQuestionsResponse>(sessionKey))
             .Returns(cachedResponse);
 
-        var result = await _formsEngine.LoadFormSectionAsync(organisationId, formId, sectionId);
+        var result = await _formsEngine.GetFormSectionAsync(organisationId, formId, sectionId);
 
         result.Should().BeEquivalentTo(cachedResponse);
         _formsApiClientMock.Verify(c => c.GetFormSectionQuestionsAsync(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid>()), Times.Never);
     }
 
     [Fact]
-    public async Task LoadFormSectionAsync_ShouldFetchAndCacheResponse_WhenCachedResponseDoesNotExist()
+    public async Task GetFormSectionAsync_ShouldFetchAndCacheResponse_WhenCachedResponseDoesNotExist()
     {
         var (organisationId, formId, sectionId, sessionKey) = CreateTestGuids();
         var questionId = Guid.NewGuid();
@@ -128,7 +128,7 @@ public class FormsEngineTests
         _formsApiClientMock.Setup(c => c.GetFormSectionQuestionsAsync(formId, sectionId, organisationId))
             .ReturnsAsync(apiResponse);
 
-        var result = await _formsEngine.LoadFormSectionAsync(organisationId, formId, sectionId);
+        var result = await _formsEngine.GetFormSectionAsync(organisationId, formId, sectionId);
 
         result.Should().BeEquivalentTo(expectedResponse);
         _tempDataServiceMock.Verify(t => t.Put(sessionKey, It.IsAny<SectionQuestionsResponse>()), Times.Once);
