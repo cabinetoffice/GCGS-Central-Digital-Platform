@@ -54,7 +54,7 @@ public class ConnectedEntityCompanyRegisterNameModel(ISession session) : PageMod
         state.RegisterName = RegisterName;
         session.Set(Session.ConnectedPersonKey, state);
 
-        return RedirectToPage("ConnectedEntityCheckAnswersOrganisation", new { Id });
+        return RedirectToPage("ConnectedEntityCheckAnswersOrganisation", new { Id, ConnectedEntityId });
     }
 
     private void InitModal(ConnectedEntityState state, bool reset = false)

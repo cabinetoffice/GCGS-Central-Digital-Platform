@@ -197,35 +197,16 @@ public class ConnectedEntityCheckAnswersOrganisationModel(
         UpdateConnectedOrganisation? connectedOrganisation = null;
         UpdateConnectedIndividualTrust? connectedIndividualTrust = null;
 
-        if (state.ConnectedEntityType == Constants.ConnectedEntityType.Organisation)
-        {
-            connectedOrganisation = new UpdateConnectedOrganisation
-            (
-                category: state.ConnectedEntityOrganisationCategoryType!.Value.AsApiClientConnectedEntityOrganisationCategoryType(),
-                controlCondition: state.ControlConditions.AsApiClientControlConditionList(),
-                insolvencyDate: state.InsolvencyDate,
-                lawRegistered: state.LawRegistered,
-                name: state.OrganisationName,
-                organisationId: null,
-                registeredLegalForm: state.LegalForm
-            );
-        }
-        else
-        {
-            connectedIndividualTrust = new UpdateConnectedIndividualTrust
-            (
-                category: state.ConnectedEntityIndividualAndTrustCategoryType!.Value.AsApiClientConnectedIndividualAndTrustCategory(),
-                connectedType: (state.ConnectedEntityType == Constants.ConnectedEntityType.Individual
-                                    ? ConnectedPersonType.Individual : ConnectedPersonType.TrustOrTrustee),
-                controlCondition: state.ControlConditions.AsApiClientControlConditionList(),
-                dateOfBirth: null,
-                firstName: "",
-                lastName: "",
-                nationality: "",
-                personId: null,
-                residentCountry: state.DirectorLocation
-            );
-        }
+        connectedOrganisation = new UpdateConnectedOrganisation
+        (
+            category: state.ConnectedEntityOrganisationCategoryType!.Value.AsApiClientConnectedEntityOrganisationCategoryType(),
+            controlCondition: state.ControlConditions.AsApiClientControlConditionList(),
+            insolvencyDate: state.InsolvencyDate,
+            lawRegistered: state.LawRegistered,
+            name: state.OrganisationName,
+            organisationId: null,
+            registeredLegalForm: state.LegalForm
+        );
 
         List<Address> addresses = new();
 
@@ -246,7 +227,7 @@ public class ConnectedEntityCheckAnswersOrganisationModel(
             companyHouseNumber: state.CompaniesHouseNumber,
             endDate: null,
             entityType: state.ConnectedEntityType!.Value.AsApiClientConnectedEntityType(),
-            hasCompnayHouseNumber: state.HasCompaniesHouseNumber!.Value,
+            hasCompnayHouseNumber: state.SupplierHasCompanyHouseNumber!.Value,
             individualOrTrust: connectedIndividualTrust,
             organisation: connectedOrganisation,
             overseasCompanyNumber: "",
