@@ -14,62 +14,74 @@ namespace healthCheck.Controllers
     public class SqsController : ControllerBase
     {
         private readonly IAmazonSQS _sqsClient;
-        private readonly string? _OrganisationQueueUrl;
-        private readonly string? _EntityVerificationQueueUrl;
+        private readonly string? _healthCheckQueueUrl;
+        private readonly string? _healthCheckDeadLetterQueueUrl;
 
         public SqsController(IAmazonSQS sqsClient, IConfiguration configuration)
         {
             _sqsClient = sqsClient;
-            _OrganisationQueueUrl = configuration["QUEUE_URL_ORGANISATION"];
-            _EntityVerificationQueueUrl = configuration["QUEUE_URL_ENTITY_VERIFICATION"];
+            _healthCheckQueueUrl = configuration["QUEUE_URL_HEALTHCHECK"];
+            _healthCheckDeadLetterQueueUrl = _healthCheckQueueUrl?.Replace(".fifo", "-deadletter.fifo");
         }
 
         private string GetQueueUrl(QueueNames queue)
         {
             return queue switch
             {
-                QueueNames.OrganisationQueue => _OrganisationQueueUrl ?? throw new InvalidOperationException("Organisation queue URL not configured."),
-                QueueNames.EntityVerificationQueue => _EntityVerificationQueueUrl ?? throw new InvalidOperationException("EntityVerification queue URL not configured."),
+                QueueNames.HealthCheckQueue => _healthCheckQueueUrl ?? throw new InvalidOperationException("Health check queue URL not configured."),
+                QueueNames.HealthCheckDeadLetterQueue => _healthCheckDeadLetterQueueUrl ?? throw new InvalidOperationException("Health check dead-letter queue URL not configured."),
                 _ => throw new ArgumentOutOfRangeException(nameof(queue), queue, null),
             };
         }
 
-        [HttpPost("send")]
-        public async Task<IActionResult> SendMessage([FromQuery] string message, [FromQuery] QueueNames queue)
+        [HttpPost("publish")]
+        public async Task<IActionResult> PublishMessage([FromQuery] string message, [FromQuery] string? messageGroupId = "health-check-test-group")
         {
-            var queueUrl = GetQueueUrl(queue);
+            var queueUrl = GetQueueUrl(QueueNames.HealthCheckQueue);
             var sendMessageRequest = new SendMessageRequest
             {
                 QueueUrl = queueUrl,
-                MessageBody = message
+                MessageBody = message,
+                MessageGroupId = messageGroupId ?? "health-check-test-group"
             };
 
             var response = await _sqsClient.SendMessageAsync(sendMessageRequest);
 
-            return Ok(new { QueueName = queue.ToString(), QueueUrl = queueUrl, Status = "Success", MessageId = response.MessageId });
+            return Ok(new { QueueName = "HealthCheckQueue", QueueUrl = queueUrl, Status = "Success", MessageId = response.MessageId });
         }
 
-        [HttpGet("receive")]
-        public async Task<IActionResult> ReceiveMessages([FromQuery] QueueNames queue)
+        [HttpGet("consume")]
+        public async Task<IActionResult> ConsumeMessages([FromQuery] string? messageGroupId = null)
         {
-            var queueUrl = GetQueueUrl(queue);
+            var queueUrl = GetQueueUrl(QueueNames.HealthCheckQueue);
             var receiveMessageRequest = new ReceiveMessageRequest
             {
                 QueueUrl = queueUrl,
-                MaxNumberOfMessages = 10
+                MaxNumberOfMessages = 10,
+                MessageAttributeNames = new List<string> { "All" }
             };
+
+            if (!string.IsNullOrEmpty(messageGroupId))
+            {
+                receiveMessageRequest.MessageAttributeNames.Add("MessageGroupId");
+            }
 
             var response = await _sqsClient.ReceiveMessageAsync(receiveMessageRequest);
 
-            return Ok(new { QueueName = queue.ToString(), QueueUrl = queueUrl, Messages = response.Messages });
+            var messages = string.IsNullOrEmpty(messageGroupId)
+                ? response.Messages
+                : response.Messages.FindAll(msg => msg.Attributes["MessageGroupId"] == messageGroupId);
+
+            return Ok(new { QueueName = "HealthCheckQueue", QueueUrl = queueUrl, Messages = messages });
         }
 
         [HttpGet("test")]
         public async Task<IActionResult> TestQueues()
         {
             var testResults = new List<object>();
+            var queues = new QueueNames[] { QueueNames.HealthCheckQueue, QueueNames.HealthCheckDeadLetterQueue };
 
-            foreach (QueueNames queue in Enum.GetValues(typeof(QueueNames)))
+            foreach (var queue in queues)
             {
                 try
                 {
@@ -77,7 +89,9 @@ namespace healthCheck.Controllers
                     var sendMessageRequest = new SendMessageRequest
                     {
                         QueueUrl = queueUrl,
-                        MessageBody = "Test message"
+                        MessageBody = "Test message",
+                        MessageGroupId = "health-check-test-group",
+                        MessageDeduplicationId = Guid.NewGuid().ToString()
                     };
 
                     var response = await _sqsClient.SendMessageAsync(sendMessageRequest);

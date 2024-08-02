@@ -120,25 +120,16 @@ variable "public_hosted_zone_id" {
   type        = string
 }
 
-variable "queue_entity_verification_queue_arn" {
-  description = "ARN of the Entity Verification's SQS queue"
+variable "queue_healthcheck_queue_arn" {
+  description = "ARN of the Health Check's SQS queue"
   type        = string
 }
 
-variable "queue_entity_verification_queue_url" {
-  description = "URL of the Entity Verification's SQS queue"
+variable "queue_healthcheck_queue_url" {
+  description = "URL of the Health Check's SQS queue"
   type        = string
 }
 
-variable "queue_organisation_queue_arn" {
-  description = "ARN of the Organisation's SQS queue"
-  type        = string
-}
-
-variable "queue_organisation_queue_url" {
-  description = "URL of the Organisation's outbound SQS queue"
-  type        = string
-}
 
 variable "role_ecs_task_arn" {
   description = "Task IAM role ARN"
