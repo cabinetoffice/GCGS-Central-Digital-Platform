@@ -47,7 +47,7 @@ public class FormAnswerSet : IEntityDate
 {
     public int Id { get; set; }
     public required Guid Guid { get; set; }
-    
+    public required SharedConsent SharedConsent{ get; init; }
     public required FormSection Section { get; init; }
     public required ICollection<FormAnswer> Answers { get; set; }
     public bool Deleted { get; set; } = false;

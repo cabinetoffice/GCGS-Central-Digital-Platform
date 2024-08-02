@@ -25,18 +25,28 @@ public class UpdateFormSectionAnswersUseCase(IFormRepository formRepository, IOr
 
         var existingAnswerSet = await formRepository.GetFormAnswerSetAsync(sectionId, organisationId, answerSetId);
 
+        // If SharedConsent for this orgnaisation exists
+        var existingShareConsent = await formRepository.GetFormSharedConsentsAsync(organisationId, formId);
+
         if (existingAnswerSet != null)
         {
             existingAnswerSet.Answers = MapAnswers(answers, questionDictionary);
         }
         else
         {
+            if (existingShareConsent == null) // cretae entry if there is no entry for selected org and form id.
+            {
+                existingShareConsent = new Persistence.SharedConsent
+                {
+                    Guid=Guid.NewGuid()                    
+                };
+            }
+
             existingAnswerSet = new Persistence.FormAnswerSet
             {
-                Guid = answerSetId,              
-               
+                Guid = answerSetId,
                 Section = section,
-                Answers = MapAnswers(answers, questionDictionary),
+                Answers = MapAnswers(answers, questionDictionary)              
             };
         }
 

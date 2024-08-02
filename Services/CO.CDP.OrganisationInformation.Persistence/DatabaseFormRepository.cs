@@ -1,5 +1,6 @@
 using CO.CDP.OrganisationInformation.Persistence.Forms;
 using Microsoft.EntityFrameworkCore;
+using static System.Collections.Specialized.BitVector32;
 
 namespace CO.CDP.OrganisationInformation.Persistence;
 
@@ -44,23 +45,25 @@ public class DatabaseFormRepository(OrganisationInformationContext context) : IF
 
     #region Answer Set Methods
 
-    public async Task<List<FormAnswerSet>> GetFormAnswerSetsAsync(Guid sectionId, Guid organisationId)
-    {
-        return await context.Set<FormAnswerSet>()
-            .Include(a => a.Answers)
-            .Where(a => a.Section.Guid == sectionId
-            //&& a.Organisation.Guid == organisationId
-            && a.Deleted == false)
-            .ToListAsync();
-    }
+    //public async Task<List<FormAnswerSet>> GetFormAnswerSetsAsync(Guid sectionId, Guid organisationId)
+    //{
+    //    return await context.Set<FormAnswerSet>()
+    //        .Include(a => a.Answers)
+    //         .Include(b => b.SharedConsent)
+    //        .Where(a => a.Section.Guid == sectionId
+    //        && a.SharedConsent.Organisation.Guid == organisationId
+    //        && a.Deleted == false)
+    //        .ToListAsync();
+    //}
 
     public async Task<FormAnswerSet?> GetFormAnswerSetAsync(Guid sectionId, Guid organisationId, Guid answerSetId)
     {
         return await context.Set<FormAnswerSet>()
             .Include(a => a.Answers)
+            .Include(b => b.SharedConsent)
             .FirstOrDefaultAsync(a => a.Guid == answerSetId
             && a.Section.Guid == sectionId
-            //&& a.Organisation.Guid == organisationId
+            && a.SharedConsent.Organisation.Guid == organisationId
             );
     }
 
@@ -68,7 +71,7 @@ public class DatabaseFormRepository(OrganisationInformationContext context) : IF
     {
         var answerSet = await context.Set<FormAnswerSet>().FirstOrDefaultAsync(
             a =>
-            //a.Organisation.Guid == organisationId &&
+            a.SharedConsent.Organisation.Guid == organisationId &&
             a.Guid == answerSetId);
         if (answerSet == null) return false;
 
@@ -104,9 +107,12 @@ public class DatabaseFormRepository(OrganisationInformationContext context) : IF
     #endregion
 
     #region SharedConsent
-    public Task<List<SharedConsent>> GetFormSharedConsentsAsync(Guid organisationId)
+    public async Task<SharedConsent?> GetFormSharedConsentsAsync(Guid organisationId, Guid formId)
     {
-        throw new NotImplementedException();
+        return await context.Set<SharedConsent>().FirstOrDefaultAsync
+          (a => a.Organisation.Guid == organisationId
+          && a.Form.Guid == formId
+          && a.BookingReference == null);
     }
     #endregion
 

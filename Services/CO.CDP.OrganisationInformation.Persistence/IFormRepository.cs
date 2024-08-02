@@ -15,14 +15,14 @@ public interface IFormRepository : IDisposable
     #endregion
 
     #region Answer Set Methods
-    Task<List<FormAnswerSet>> GetFormAnswerSetsAsync(Guid sectionId, Guid organisationId);
+    //Task<List<FormAnswerSet>> GetFormAnswerSetsAsync(Guid sectionId, Guid organisationId);
     Task<FormAnswerSet?> GetFormAnswerSetAsync(Guid sectionId, Guid organisationId, Guid answerSetId);
     Task<bool> DeleteAnswerSetAsync(Guid organisationId, Guid answerSetId);
     Task SaveAnswerSet(FormAnswerSet answerSet);
     #endregion
 
     #region Shared Consents Methods
-    Task<List<SharedConsent>> GetFormSharedConsentsAsync(Guid organisationId);
+    Task<SharedConsent?> GetFormSharedConsentsAsync(Guid organisationId, Guid formId);
     #endregion
 
     public class FormRepositoryException(string message, Exception? cause = null) : Exception(message, cause)
