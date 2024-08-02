@@ -4,7 +4,7 @@
 @{
     var details = Model.ConnectedEntityDetails!;
     var ukNonUkRegisterAddress = details.RegisteredAddress!.IsNonUk ? "non-uk" : "uk";
-    var ukNonUkPostalAddress = details.PostalAddress!.IsNonUk ? "non-uk" : "uk";
+    var ukNonUkPostalAddress = details.PostalAddress != null ? (details.PostalAddress.IsNonUk ? "non-uk" : "uk") : "uk";
     var backLink = $"/organisation/{Model.Id}/supplier-information/connected-person/{Model.BackPageLink}/{Model.ConnectedEntityId}";
 
     if (Model.ConnectedEntityId != null)
@@ -140,7 +140,7 @@
                         </div>
                     }
 
-                    @if (details.HasOverseasCompaniesHouseNumber.HasValue)
+                    @if (!string.IsNullOrEmpty(details.OverseasCompaniesHouseNumber))
                     {
                         <div class="govuk-summary-list__row">
                             <dt class="govuk-summary-list__key">
