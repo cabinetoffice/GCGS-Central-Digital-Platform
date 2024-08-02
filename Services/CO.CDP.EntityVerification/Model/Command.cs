@@ -1,14 +1,7 @@
 namespace CO.CDP.EntityVerification.Model;
 
-public record LookupIdentifierQuery
+public record LookupIdentifierQuery(string Identifier)
 {
-    public string Identifier { get; }
-
-    public LookupIdentifierQuery(string? identifier = null)
-    {
-        Identifier = identifier;
-    }
-
     public bool TryGetIdentifier(out string scheme, out string id)
     {
         if (!string.IsNullOrEmpty(Identifier))
