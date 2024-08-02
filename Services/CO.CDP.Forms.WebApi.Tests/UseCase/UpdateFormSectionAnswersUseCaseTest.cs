@@ -181,19 +181,18 @@ public class UpdateFormSectionAnswersUseCaseTest(AutoMapperFixture mapperFixture
 
         var existingAnswerSet = new Persistence.FormAnswerSet
         {
-            Guid = answerSetId,
-            OrganisationId = 1,
-            Organisation = new Organisation
-            {
-                Guid = organisationId,
-                Name = "Test Organisation",
-                Tenant = new Tenant
-                {
-                    Id = 1,
-                    Guid = Guid.NewGuid(),
-                    Name = "Test Tenant"
-                }
-            },
+            Guid = answerSetId,           
+            //Organisation = new Organisation
+            //{
+            //    Guid = organisationId,
+            //    Name = "Test Organisation",
+            //    Tenant = new Tenant
+            //    {
+            //        Id = 1,
+            //        Guid = Guid.NewGuid(),
+            //        Name = "Test Tenant"
+            //    }
+            //},
             Section = section,
             Answers = new List<Persistence.FormAnswer>()
         };

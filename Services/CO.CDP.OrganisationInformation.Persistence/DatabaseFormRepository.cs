@@ -48,7 +48,9 @@ public class DatabaseFormRepository(OrganisationInformationContext context) : IF
     {
         return await context.Set<FormAnswerSet>()
             .Include(a => a.Answers)
-            .Where(a => a.Section.Guid == sectionId && a.Organisation.Guid == organisationId && a.Deleted == false)
+            .Where(a => a.Section.Guid == sectionId
+            //&& a.Organisation.Guid == organisationId
+            && a.Deleted == false)
             .ToListAsync();
     }
 
@@ -56,12 +58,18 @@ public class DatabaseFormRepository(OrganisationInformationContext context) : IF
     {
         return await context.Set<FormAnswerSet>()
             .Include(a => a.Answers)
-            .FirstOrDefaultAsync(a => a.Guid == answerSetId && a.Section.Guid == sectionId && a.Organisation.Guid == organisationId);
+            .FirstOrDefaultAsync(a => a.Guid == answerSetId
+            && a.Section.Guid == sectionId
+            //&& a.Organisation.Guid == organisationId
+            );
     }
 
     public async Task<bool> DeleteAnswerSetAsync(Guid organisationId, Guid answerSetId)
     {
-        var answerSet = await context.Set<FormAnswerSet>().FirstOrDefaultAsync(a => a.Organisation.Guid == organisationId && a.Guid == answerSetId);
+        var answerSet = await context.Set<FormAnswerSet>().FirstOrDefaultAsync(
+            a =>
+            //a.Organisation.Guid == organisationId &&
+            a.Guid == answerSetId);
         if (answerSet == null) return false;
 
         answerSet.Deleted = true;

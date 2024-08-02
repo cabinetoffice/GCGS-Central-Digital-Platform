@@ -33,9 +33,8 @@ public class UpdateFormSectionAnswersUseCase(IFormRepository formRepository, IOr
         {
             existingAnswerSet = new Persistence.FormAnswerSet
             {
-                Guid = answerSetId,
-                OrganisationId = organisation.Id,
-                Organisation = organisation,
+                Guid = answerSetId,              
+               
                 Section = section,
                 Answers = MapAnswers(answers, questionDictionary),
             };

@@ -236,8 +236,6 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
         var answerSet = new FormAnswerSet
         {
             Guid = Guid.NewGuid(),
-            OrganisationId = organisation.Id,
-            Organisation = organisation,
             Section = section,
             Answers = new List<FormAnswer>(),
             Deleted = false,
@@ -295,9 +293,7 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
 
         var answerSet = new FormAnswerSet
         {
-            Guid = answerSetId,
-            OrganisationId = organisation.Id,
-            Organisation = organisation,
+            Guid = answerSetId,          
             Section = section,
             Answers = [],
             Deleted = true,
@@ -338,9 +334,7 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
 
         var answerSet = new FormAnswerSet
         {
-            Guid = answerSetId,
-            OrganisationId = organisation.Id,
-            Organisation = organisation,
+            Guid = answerSetId,           
             Section = section,
             Answers = new List<FormAnswer>(),
             CreatedOn = DateTimeOffset.UtcNow,
@@ -395,9 +389,7 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
 
         var answerSet = new FormAnswerSet
         {
-            Guid = Guid.NewGuid(),
-            OrganisationId = organisation.Id,
-            Organisation = organisation,
+            Guid = Guid.NewGuid(),           
             Section = section,
             Answers = new List<FormAnswer>(),
             Deleted = false,
@@ -464,9 +456,7 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
 
         var answerSet = new FormAnswerSet
         {
-            Guid = Guid.NewGuid(),
-            OrganisationId = organisation.Id,
-            Organisation = organisation,
+            Guid = Guid.NewGuid(),           
             Section = section,
             Answers = new List<FormAnswer>(),
             Deleted = false,
