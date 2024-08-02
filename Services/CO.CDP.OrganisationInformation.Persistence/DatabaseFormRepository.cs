@@ -1,5 +1,6 @@
 using CO.CDP.OrganisationInformation.Persistence.Forms;
 using Microsoft.EntityFrameworkCore;
+using static System.Collections.Specialized.BitVector32;
 
 namespace CO.CDP.OrganisationInformation.Persistence;
 
@@ -25,10 +26,26 @@ public class DatabaseFormRepository(OrganisationInformationContext context) : IF
         await context.SaveChangesAsync();
     }
 
+    public async Task SaveSharedConsentAsync(SharedConsent sharedConsent)
+    {
+        context.Update(sharedConsent);
+        await context.SaveChangesAsync();
+    }
+
     public async Task<FormSection?> GetFormSectionAsync(Guid sectionId)
     {
         return await context.Set<FormSection>()
             .FirstOrDefaultAsync(s => s.Guid == sectionId);
+    }
+
+    #endregion
+
+    #region Shared Consents Methods
+
+    public async Task<SharedConsent?> GetSharedConsentAsync(Guid formId, Guid organisationId)
+    {
+        return await context.Set<SharedConsent>()
+            .FirstOrDefaultAsync(s => s.Form.Guid == formId && s.Organisation.Guid == organisationId);
     }
 
     #endregion

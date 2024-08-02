@@ -9,7 +9,7 @@ public class ShareCodeTests
     [Fact]
     public void GenerateShareCode_IsNotNullEmptyOrWhiteSpace()
     {
-        var shareCode = ShareCodeExtensions.GenerateShareCodeString();
+        var shareCode = ShareCodeExtensions.GenerateShareCode();
 
         shareCode.Should().NotBeNullOrWhiteSpace();
     }
@@ -17,7 +17,7 @@ public class ShareCodeTests
     [Fact]
     public void GenerateValidShareCode_HasValidLength()
     {
-        var shareCode = ShareCodeExtensions.GenerateShareCodeString();
+        var shareCode = ShareCodeExtensions.GenerateShareCode();
 
         shareCode.Should().HaveLength(8);
     }
@@ -25,7 +25,7 @@ public class ShareCodeTests
     [Fact]
     public void GenerateValidShareCode_ContainsValidCharsOnly()
     {
-        var shareCode = ShareCodeExtensions.GenerateShareCodeString();
+        var shareCode = ShareCodeExtensions.GenerateShareCode();
 
         shareCode.All(x => Nanoid.Alphabets.NoLookAlikesSafe.Contains(x));
     }

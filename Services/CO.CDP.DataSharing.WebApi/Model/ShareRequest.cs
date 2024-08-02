@@ -2,17 +2,13 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CO.CDP.DataSharing.WebApi.Model;
 
-internal record ShareRequest
+public record ShareRequest
 {
+    /// <example>"3032d31a-c3d9-45a7-a271-cc4f24d2fc03"</example>
+    [Required]
+    public required Guid FormId { get; init; }
+
     /// <example>"3b3a269a-c1fa-4bfa-8892-7c6a9aef03bb"</example>
     [Required]
-    public required Guid SupplierFormId { get; init; }
-
-    /// <example>"2024-05-21T14:45:19.783Z"</example>
-    [Required]
-    public required DateTime ExpiresAt { get; init; }
-
-    /// <example>[]</example>
-    [Required]
-    public required List<string> Permissions { get; init; } = new();
+    public required Guid OrganisationId { get; init; }
 }
