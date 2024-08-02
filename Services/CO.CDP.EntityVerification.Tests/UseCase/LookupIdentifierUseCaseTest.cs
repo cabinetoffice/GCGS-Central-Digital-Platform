@@ -25,7 +25,7 @@ public class LookupIdentifierUseCaseTest
     public async Task Execute_IfIdentifierNotFound_ReturnsNull()
     {
         var act = await UseCase.Execute(new LookupIdentifierQuery("UNKNOWN-SCHEME:12345"));
-        act.Should().BeNull();
+        act.Should().BeEmpty();
     }
 
     [Fact]

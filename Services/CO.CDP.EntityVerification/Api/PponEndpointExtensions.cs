@@ -15,7 +15,7 @@ public static class PponEndpointExtensions
         app.MapGet("/identifiers/{identifier}",
             async (string identifier, IUseCase<LookupIdentifierQuery, IEnumerable<Identifier>> useCase) =>
                 await useCase.Execute(new LookupIdentifierQuery(identifier))
-                    .AndThen(identifier => identifier != null ? Results.Ok(identifier) : Results.NotFound()))
+                    .AndThen(identifier => identifier.Any() ? Results.Ok(identifier) : Results.NotFound()))
             .Produces<IEnumerable<Identifier>>(StatusCodes.Status200OK, "application/json")
             .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
             .Produces<ProblemDetails>(StatusCodes.Status404NotFound)

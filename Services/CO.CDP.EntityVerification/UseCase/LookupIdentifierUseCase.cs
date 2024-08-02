@@ -7,9 +7,9 @@ namespace CO.CDP.EntityVerification.UseCase;
 
 public class LookupIdentifierUseCase : IUseCase<LookupIdentifierQuery, IEnumerable<Model.Identifier>?>
 {
-    public async Task<IEnumerable<Model.Identifier>?> Execute(LookupIdentifierQuery query)
+    public async Task<IEnumerable<Model.Identifier>> Execute(LookupIdentifierQuery query)
     {
-        IEnumerable<Model.Identifier>? foundIdentifiers = null;
+        List<Model.Identifier> foundIdentifiers = new List<Model.Identifier>();
 
         if (query.TryGetIdentifier(out var scheme, out var id))
         {
