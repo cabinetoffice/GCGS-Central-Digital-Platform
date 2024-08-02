@@ -55,6 +55,7 @@ public class SqsPublisher(
         await sqsClient.SendMessageAsync(new SendMessageRequest
         {
             QueueUrl = configuration.QueueUrl,
+            MessageGroupId = configuration.MessageGroupId,
             MessageBody = serialized,
             MessageAttributes = new Dictionary<string, MessageAttributeValue>
             {

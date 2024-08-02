@@ -4,11 +4,17 @@ echo "Creating SQS queues..."
 
 for queue in ${SQS_QUEUES//,/ }
 do
-    echo "Creating the $queue queue..."
-    deadletter_queue_url=$(awslocal sqs create-queue --queue-name "${queue}-deadletter" --output text --query QueueUrl)
+    deadletter_queue=${queue/.fifo/}-deadletter.fifo
+
+    echo "Creating the $queue queue with $deadletter_queue DLQ..."
+
+    deadletter_queue_url=$(awslocal sqs create-queue --queue-name "${deadletter_queue}" \
+        --attributes '{"FifoQueue": "true"}' \
+        --output text --query QueueUrl)
     deadletter_queue_arn=$(awslocal sqs get-queue-attributes --queue-url "$deadletter_queue_url" --attribute-names QueueArn --output text --query Attributes.QueueArn)
+
     queue_url=$(awslocal sqs create-queue --queue-name "${queue}" \
-        --attributes '{"RedrivePolicy": "{\"deadLetterTargetArn\":\"'$deadletter_queue_arn'\",\"maxReceiveCount\":\"10\"}"}'\
+        --attributes '{"FifoQueue": "true", "ContentBasedDeduplication": "true", "RedrivePolicy": "{\"deadLetterTargetArn\":\"'$deadletter_queue_arn'\",\"maxReceiveCount\":\"10\"}"}' \
         --output text --query QueueUrl)
     queue_arn=$(awslocal sqs get-queue-attributes --queue-url "$queue_url" --attribute-names QueueArn --output text --query Attributes.QueueArn)
 
