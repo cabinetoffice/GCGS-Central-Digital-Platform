@@ -21,6 +21,10 @@ public interface IFormRepository : IDisposable
     Task SaveAnswerSet(FormAnswerSet answerSet);
     #endregion
 
+    #region Shared Consents Methods
+    Task<List<SharedConsent>> GetFormSharedConsentsAsync(Guid organisationId);
+    #endregion
+
     public class FormRepositoryException(string message, Exception? cause = null) : Exception(message, cause)
     {
         public class DuplicateFormAnswerSetException(string message, Exception? cause = null)

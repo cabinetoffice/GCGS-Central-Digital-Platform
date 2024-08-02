@@ -103,6 +103,13 @@ public class DatabaseFormRepository(OrganisationInformationContext context) : IF
 
     #endregion
 
+    #region SharedConsent
+    public Task<List<SharedConsent>> GetFormSharedConsentsAsync(Guid organisationId)
+    {
+        throw new NotImplementedException();
+    }
+    #endregion
+
     private static void HandleDbUpdateException(FormAnswerSet answerSet, DbUpdateException cause)
     {
         switch (cause.InnerException)
@@ -114,4 +121,6 @@ public class DatabaseFormRepository(OrganisationInformationContext context) : IF
                 throw cause;
         }
     }
+
+
 }
