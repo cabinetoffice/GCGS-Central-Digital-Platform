@@ -1,24 +1,34 @@
 using CO.CDP.EntityVerification.Model;
 using CO.CDP.EntityVerification.Persistence;
+using CO.CDP.EntityVerification.Tests.Persistence;
 using CO.CDP.EntityVerification.UseCase;
+using CO.CDP.Testcontainers.PostgreSql;
 using FluentAssertions;
 using Moq;
 using static CO.CDP.EntityVerification.UseCase.LookupIdentifierUseCase.LookupIdentifierException;
+using static CO.CDP.EntityVerification.Tests.Ppon.PponFactories;
+using CO.CDP.EntityVerification;
 
 namespace CO.CDP.EntityVerification.Tests.UseCase;
 
-public class LookupIdentifierUseCaseTest
+public class LookupIdentifierUseCaseTest(PostgreSqlFixture postgreSql) : IClassFixture<PostgreSqlFixture>
 {
-    private LookupIdentifierUseCase UseCase => new();
+    private readonly IPponRepository _repository = new DatabasePponRepository(postgreSql.EntityVerificationContext());
+    private LookupIdentifierUseCase UseCase => new(_repository);
 
     [Fact]
     public async Task Execute_IfIdentifierFound_ReturnsAllIdentifiers()
     {
-        string testPponIdentifier = "CDP-PPON:ac73982be54e456c888d495b6c2c997f";
+        var ppon = GivenPpon(pponId: "b69ffded365449f6aa4c340f5997fd2e");
+        ppon.Identifiers = EntityVerification.Persistence.Identifier.GetPersistenceIdentifiers(GivenPersistenceOrganisationInfo());
+
+        _repository.Save(ppon);
+
+        string testPponIdentifier = $"{ppon.Identifiers.First().Scheme}:{ppon.Identifiers.First().IdentifierId}";
         LookupIdentifierQuery query = new LookupIdentifierQuery(testPponIdentifier);
         var foundRecord = await UseCase.Execute(query);
 
-        foundRecord.Should().BeEquivalentTo(GivenPersistenceOrganisationInfo(testPponIdentifier), options => options.ComparingByMembers<IEnumerable<Model.Identifier?>>());
+        foundRecord.Should().BeEquivalentTo(GivenPersistenceOrganisationInfo(), options => options.ComparingByMembers<IEnumerable<Model.Identifier?>>());
     }
 
     [Fact]
@@ -36,18 +46,18 @@ public class LookupIdentifierUseCaseTest
         await act.Should().ThrowAsync<InvalidIdentifierFormatException>().WithMessage("Both scheme and identifier are required in the format: scheme:identifier");
     }
 
-    private IEnumerable<Model.Identifier?> GivenPersistenceOrganisationInfo(string identifier)
+    private IEnumerable<EntityVerification.Events.Identifier> GivenPersistenceOrganisationInfo()
     {
-        return new List<Model.Identifier?>
+        return new List<EntityVerification.Events.Identifier>
         {
-            new Model.Identifier
+            new EntityVerification.Events.Identifier
             {
                 Id = "ac73982be54e456c888d495b6c2c997f",
                 LegalName = "Acme",
                 Scheme = "CDP-PPON",
                 Uri = new Uri("https://www.acme-ltd.com")
             },
-            new Model.Identifier
+            new EntityVerification.Events.Identifier
             {
                 Id = "12345678",
                 LegalName = "Acme",

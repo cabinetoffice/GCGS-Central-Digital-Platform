@@ -26,6 +26,28 @@ public class DatabasePponRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
     }
 
     [Fact]
+    public async Task ItFindsPponByIdentifierPpon()
+    {
+        using var repository = PponRepository();
+        var ppon = GivenPpon(pponId: "b69ffded365449f6aa4c340f5997fd2e");
+        var identifier = new Identifier() {
+            IdentifierId = "GB123123123",
+            Scheme = "GB-COH",
+            Id = 0,
+            LegalName = "Acme Ltd",
+            Uri = new Uri("https://www.acme-org.com") };
+        ppon.Identifiers = [identifier];
+
+        repository.Save(ppon);
+
+        var found = await repository.FindPponByIdentifierAsync(identifier.Scheme, identifier.IdentifierId);
+
+        found.Should().NotBeNull();
+        found.As<EntityVerification.Persistence.Ppon>().Identifiers.Should().ContainSingle();
+        found.As<EntityVerification.Persistence.Ppon>().Identifiers.First().IdentifierId.Should().Be("GB123123123");
+    }
+
+    [Fact]
     public void ItRejectsAnAlreadyKnownPponId()
     {
         using var repository = PponRepository();
