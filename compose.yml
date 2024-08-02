@@ -57,7 +57,7 @@ services:
       # LocalStack configuration: https://docs.localstack.cloud/references/configuration/
       SERVICES: sqs,s3
       DEBUG: 0
-      SQS_QUEUES: ev-inbound.fifo,ev-outbound.fifo
+      SQS_QUEUES: entity-verification.fifo,organisation.fifo
       S3_BUCKETS: cdp-staging-bucket.s3,cdp-permanent-bucket.s3
     volumes:
       - './docker/localstack/ready.d:/etc/localstack/init/ready.d:ro'
@@ -188,8 +188,8 @@ services:
       Aws__Credentials__AccessKeyId: test
       Aws__Credentials__SecretAccessKey: test
       Aws__ServiceURL: "http://localstack:4566"
-      Aws__SqsPublisher__QueueUrl: "http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/ev-inbound.fifo"
-      Aws__SqsDispatcher__QueueUrl: "http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/ev-outbound.fifo"
+      Aws__SqsPublisher__QueueUrl: "http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/organisation.fifo"
+      Aws__SqsDispatcher__QueueUrl: "http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/entity-verification.fifo"
 
   person:
     container_name: co-cdp-person
@@ -277,5 +277,5 @@ services:
       Aws__ServiceURL: "http://localstack:4566"
       Aws__Credentials__AccessKeyId: test
       Aws__Credentials__SecretAccessKey: test
-      Aws__SqsDispatcher__QueueUrl: "http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/ev-inbound.fifo"
-      Aws__SqsPublisher__QueueUrl: "http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/ev-outbound.fifo"
+      Aws__SqsPublisher__QueueUrl: "http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/entity-verification.fifo"
+      Aws__SqsDispatcher__QueueUrl: "http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/organisation.fifo"
