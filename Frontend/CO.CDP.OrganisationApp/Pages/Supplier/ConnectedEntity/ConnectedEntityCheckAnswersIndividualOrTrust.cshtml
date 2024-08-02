@@ -4,7 +4,7 @@
 @{
     var details = Model.ConnectedEntityDetails!;
     var ukNonUkRegisterAddress = details.RegisteredAddress!.IsNonUk ? "non-uk" : "uk";
-    var backLink = $"/organisation/{Model.Id}/supplier-information/connected-person/{Model.BackPageLink}";
+    var backLink = $"/organisation/{Model.Id}/supplier-information/connected-person/{Model.BackPageLink}/{Model.ConnectedEntityId}";
 }
 
 <a href="@backLink" class="govuk-back-link">Back</a>
@@ -24,8 +24,14 @@
                         <dd class="govuk-summary-list__value">
                             <p class="govuk-body">@details.FirstName</p>
                             <p class="govuk-body">@details.LastName</p>
-                            <p class="govuk-body">DoB: @details.DateOfBirth?.ToString("dd/MM/yyyy")</p>
-                            <p class="govuk-body">@details.Nationality</p>
+                            @if (details.DateOfBirth.HasValue)
+                            {
+                                <p class="govuk-body">DoB: @details.DateOfBirth?.ToString("dd/MM/yyyy")</p>
+                            }
+                            @if (!string.IsNullOrEmpty(@details.Nationality))
+                            {
+                                <p class="govuk-body">@details.Nationality</p>
+                            }
                         </dd>
                         <dd class="govuk-summary-list__actions">
                             <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/individual-psc-details/@Model.ConnectedEntityId?frm-chk-answer">
