@@ -26,7 +26,7 @@ builder.Services.AddDbContext<EntityVerificationContext>(o =>
     o.UseNpgsql(builder.Configuration.GetConnectionString("EvDatabase")));
 builder.Services.AddScoped<IPponRepository, DatabasePponRepository>();
 builder.Services.AddScoped<IPponService, PponService>();
-builder.Services.AddScoped<IUseCase<LookupIdentifierQuery, IEnumerable<CO.CDP.EntityVerification.Model.Identifier>?>, LookupIdentifierUseCase>();
+builder.Services.AddScoped<IUseCase<LookupIdentifierQuery, IEnumerable<CO.CDP.EntityVerification.Model.Identifier>>, LookupIdentifierUseCase>();
 
 if (Assembly.GetEntryAssembly().IsRunAs("CO.CDP.EntityVerification"))
 {

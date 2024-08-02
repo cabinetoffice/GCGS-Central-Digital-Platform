@@ -5,7 +5,7 @@ using static CO.CDP.EntityVerification.UseCase.LookupIdentifierUseCase.LookupIde
 
 namespace CO.CDP.EntityVerification.UseCase;
 
-public class LookupIdentifierUseCase : IUseCase<LookupIdentifierQuery, IEnumerable<Model.Identifier>?>
+public class LookupIdentifierUseCase : IUseCase<LookupIdentifierQuery, IEnumerable<Model.Identifier>>
 {
     public async Task<IEnumerable<Model.Identifier>> Execute(LookupIdentifierQuery query)
     {
