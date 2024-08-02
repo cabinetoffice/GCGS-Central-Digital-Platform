@@ -14,7 +14,7 @@ do
     deadletter_queue_arn=$(awslocal sqs get-queue-attributes --queue-url "$deadletter_queue_url" --attribute-names QueueArn --output text --query Attributes.QueueArn)
 
     queue_url=$(awslocal sqs create-queue --queue-name "${queue}" \
-        --attributes '{"FifoQueue": "true", "RedrivePolicy": "{\"deadLetterTargetArn\":\"'$deadletter_queue_arn'\",\"maxReceiveCount\":\"10\"}"}' \
+        --attributes '{"FifoQueue": "true", "ContentBasedDeduplication": "true", "RedrivePolicy": "{\"deadLetterTargetArn\":\"'$deadletter_queue_arn'\",\"maxReceiveCount\":\"10\"}"}' \
         --output text --query QueueUrl)
     queue_arn=$(awslocal sqs get-queue-attributes --queue-url "$queue_url" --attribute-names QueueArn --output text --query Attributes.QueueArn)
 
