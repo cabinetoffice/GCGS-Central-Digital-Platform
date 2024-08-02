@@ -9,8 +9,7 @@ namespace CO.CDP.EntityVerification.Tests.UseCase;
 
 public class LookupIdentifierUseCaseTest
 {
-    private readonly Mock<IPponRepository> _repository = new();
-    private LookupIdentifierUseCase UseCase => new(_repository.Object);
+    private LookupIdentifierUseCase UseCase => new();
 
     [Fact]
     public async Task Execute_IfIdentifierFound_ReturnsAllIdentifiers()
