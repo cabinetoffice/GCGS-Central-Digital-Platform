@@ -148,22 +148,6 @@ public class ConnectedEntityCheckAnswersOrganisationModel(
                 registeredLegalForm: state.LegalForm
             );
         }
-        else
-        {
-            connectedIndividualTrust = new CreateConnectedIndividualTrust
-            (
-                category: state.ConnectedEntityIndividualAndTrustCategoryType!.Value.AsApiClientConnectedIndividualAndTrustCategory(),
-                connectedType: (state.ConnectedEntityType == Constants.ConnectedEntityType.Individual
-                                    ? ConnectedPersonType.Individual : ConnectedPersonType.TrustOrTrustee),
-                controlCondition: state.ControlConditions.AsApiClientControlConditionList(),
-                dateOfBirth: null,
-                firstName: "",
-                lastName: "",
-                nationality: "",
-                personId: null,
-                residentCountry: state.DirectorLocation
-            );
-        }
 
         List<Address> addresses = new();
 
@@ -180,13 +164,13 @@ public class ConnectedEntityCheckAnswersOrganisationModel(
         var registerConnectedEntity = new RegisterConnectedEntity
         (
             addresses: addresses,
-            companyHouseNumber: state.CompaniesHouseNumber,
+            companyHouseNumber: (state.HasCompaniesHouseNumber == null ? null : (state.CompaniesHouseNumber ?? "")),
             endDate: null,
             entityType: state.ConnectedEntityType!.Value.AsApiClientConnectedEntityType(),
             hasCompnayHouseNumber: state.SupplierHasCompanyHouseNumber!.Value,
             individualOrTrust: connectedIndividualTrust,
             organisation: connectedOrganisation,
-            overseasCompanyNumber: "",
+            overseasCompanyNumber: state.OverseasCompaniesHouseNumber,
             registeredDate: (state.RegistrationDate.HasValue ? state.RegistrationDate.Value : null),
             registerName: state.RegisterName,
             startDate: null
@@ -233,13 +217,84 @@ public class ConnectedEntityCheckAnswersOrganisationModel(
             hasCompnayHouseNumber: state.SupplierHasCompanyHouseNumber!.Value,
             individualOrTrust: connectedIndividualTrust,
             organisation: connectedOrganisation,
-            overseasCompanyNumber: "",
-            registeredDate: state.RegistrationDate!.Value,
+            overseasCompanyNumber: state.OverseasCompaniesHouseNumber,
+            registeredDate: (state.RegistrationDate.HasValue ? state.RegistrationDate.Value : null),
             registerName: state.RegisterName,
             startDate: null
         );
 
         return updateConnectedEntity;
+    }
+
+    private ConnectedEntityState GetConnectedEntityStateFromEntity(CO.CDP.Organisation.WebApiClient.ConnectedEntity connectedEntity)
+    {
+        var connectedEntityType = connectedEntity.EntityType.AsConnectedEntityType();
+        var controlConditions = connectedEntityType == ConnectedEntityType.Organisation
+            ? connectedEntity.Organisation?.ControlCondition
+            : connectedEntity.IndividualOrTrust?.ControlCondition;
+
+        var registerAddress = connectedEntity.Addresses?.FirstOrDefault(a => a.Type == Organisation.WebApiClient.AddressType.Registered);
+        var postalAddress = connectedEntity.Addresses?.FirstOrDefault(a => a.Type == Organisation.WebApiClient.AddressType.Postal);
+
+
+        var state = new ConnectedEntityState()
+        {
+            CompaniesHouseNumber = connectedEntity.CompanyHouseNumber,
+            ConnectedEntityId = connectedEntity.Id,
+            ConnectedEntityIndividualAndTrustCategoryType = connectedEntity.IndividualOrTrust?.Category.AsConnectedEntityIndividualAndTrustCategoryType(),
+            ConnectedEntityOrganisationCategoryType = connectedEntity.Organisation?.Category.AsConnectedEntityOrganisationCategoryType(),
+            ConnectedEntityType = connectedEntityType,
+            HasCompaniesHouseNumber = (connectedEntity.CompanyHouseNumber == null ? null : (!string.IsNullOrEmpty(connectedEntity.CompanyHouseNumber))),
+            InsolvencyDate = connectedEntity.Organisation?.InsolvencyDate,
+            LawRegistered = connectedEntity.Organisation?.LawRegistered,
+            LegalForm = connectedEntity.Organisation?.RegisteredLegalForm,
+            OrganisationName = connectedEntity.Organisation?.Name,
+            PostalAddress = (postalAddress != null ? new ConnectedEntityState.Address
+            {
+                AddressLine1 = connectedEntity.Addresses?.FirstOrDefault(a => a.Type == Organisation.WebApiClient.AddressType.Postal)?.StreetAddress,
+                Country = connectedEntity.Addresses?.FirstOrDefault(a => a.Type == Organisation.WebApiClient.AddressType.Postal)?.CountryName,
+                Postcode = connectedEntity.Addresses?.FirstOrDefault(a => a.Type == Organisation.WebApiClient.AddressType.Postal)?.PostalCode,
+                TownOrCity = connectedEntity.Addresses?.FirstOrDefault(a => a.Type == Organisation.WebApiClient.AddressType.Postal)?.Locality
+            } : null),
+            RegistrationDate = connectedEntity.RegisteredDate,
+            RegisterName = connectedEntity.RegisterName,
+            RegisteredAddress = (registerAddress != null ? new ConnectedEntityState.Address
+            {
+                AddressLine1 = connectedEntity.Addresses?.FirstOrDefault(a => a.Type == Organisation.WebApiClient.AddressType.Registered)?.StreetAddress,
+                Country = connectedEntity.Addresses?.FirstOrDefault(a => a.Type == Organisation.WebApiClient.AddressType.Registered)?.CountryName,
+                Postcode = connectedEntity.Addresses?.FirstOrDefault(a => a.Type == Organisation.WebApiClient.AddressType.Registered)?.PostalCode,
+                TownOrCity = connectedEntity.Addresses?.FirstOrDefault(a => a.Type == Organisation.WebApiClient.AddressType.Registered)?.Locality
+            } : null),
+            ControlConditions = ControlConditionCollectionToList(controlConditions),
+            Nationality = connectedEntity.IndividualOrTrust?.Nationality,
+            SupplierOrganisationId = Id,
+            FirstName = connectedEntity.IndividualOrTrust?.FirstName,
+            LastName = connectedEntity.IndividualOrTrust?.LastName,
+            DateOfBirth = connectedEntity.IndividualOrTrust?.DateOfBirth,
+            OverseasCompaniesHouseNumber = connectedEntity.OverseasCompanyNumber,
+            HasOverseasCompaniesHouseNumber = (connectedEntity.OverseasCompanyNumber == null ? null : (!string.IsNullOrEmpty(connectedEntity.OverseasCompanyNumber))),
+            SupplierHasCompanyHouseNumber = connectedEntity.HasCompnayHouseNumber,
+        };
+
+        return state;
+    }
+
+    private List<ConnectedEntityControlCondition> ControlConditionCollectionToList(ICollection<ControlCondition>? controlConditionCollection)
+    {
+        List<ConnectedEntityControlCondition> controlConditions = new();
+
+        if (controlConditionCollection == null)
+        {
+            return controlConditions;
+        }
+
+        foreach (var cc in controlConditionCollection)
+        {
+            var controlConditionCe = cc.AsConnectedEntityClientControlCondition();
+            controlConditions.Add(controlConditionCe);
+        }
+
+        return controlConditions;
     }
 
     private Address AddAddress(ConnectedEntityState.Address addressDetails, Organisation.WebApiClient.AddressType addressType)

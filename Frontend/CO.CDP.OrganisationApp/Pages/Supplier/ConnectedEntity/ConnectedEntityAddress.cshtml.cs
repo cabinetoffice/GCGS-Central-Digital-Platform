@@ -120,8 +120,12 @@ public class ConnectedEntityAddressModel(ISession session) : PageModel
                             ? "ConnectedEntityLawRegister"
                             : "ConnectedEntityPostalSameAsRegisteredAddress";
                         break;
-                    case ConnectedEntityOrganisationCategoryType.ParentOrSubsidiaryCompany:
+
                     case ConnectedEntityOrganisationCategoryType.ACompanyYourOrganisationHasTakenOver:
+                        redirectPage = "ConnectedEntityCompanyQuestion";
+                        break;
+
+                    case ConnectedEntityOrganisationCategoryType.ParentOrSubsidiaryCompany:                    
                     case ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl:
                         redirectPage = (AddressType == AddressType.Postal && state.PostalAddress != null)
                             ? "ConnectedEntityCompanyQuestion"
