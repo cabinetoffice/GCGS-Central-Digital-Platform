@@ -169,11 +169,11 @@ public class ConnectedEntityCheckAnswersIndividualOrTrustTest
             connectedType: ConnectedPersonType.Individual,
             dateOfBirth: new DateTimeOffset(1973, 6, 11, 0, 0, 0, TimeSpan.FromHours(0)),
             controlCondition: [ControlCondition.OwnsShares, ControlCondition.HasVotingRights],
-            firstName: "Bill",
-            lastName: "Billson",
-            nationality: "Womble",
+            firstName: "John",
+            lastName: "Smith",
+            nationality: "British",
             personId: null,
-            residentCountry: "Wimbledon"
+            residentCountry: "United Kingdom"
         );
 
         List<Address> addresses = new();
@@ -226,7 +226,7 @@ public class ConnectedEntityCheckAnswersIndividualOrTrustTest
             ControlConditions = [Constants.ConnectedEntityControlCondition.OwnsShares],
             RegistrationDate = new DateTimeOffset(2011, 7, 15, 0, 0, 0, TimeSpan.FromHours(0)),
             InsolvencyDate = new DateTimeOffset(2010, 6, 11, 0, 0, 0, TimeSpan.FromHours(0)),
-            DirectorLocation = "Wimbledon",
+            DirectorLocation = "United Kingdom",
             ConnectedEntityIndividualAndTrustCategoryType = ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndividual
         };
 
@@ -240,11 +240,11 @@ public class ConnectedEntityCheckAnswersIndividualOrTrustTest
             connectedType: ConnectedPersonType.Individual,
             dateOfBirth: new DateTimeOffset(1973, 6, 11, 0, 0, 0, TimeSpan.FromHours(0)),
             controlCondition: [ControlCondition.OwnsShares, ControlCondition.HasVotingRights],
-            firstName: "Bill",
-            lastName: "Billson",
-            nationality: "Womble",
+            firstName: "John",
+            lastName: "Smith",
+            nationality: "British",
             personId: null,
-            residentCountry: "Wimbledon",
+            residentCountry: "United Kingdom",
             id: 1
         );
 
