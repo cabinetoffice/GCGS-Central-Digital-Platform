@@ -31,4 +31,5 @@ public record SqsDispatcherConfiguration
 public record SqsPublisherConfiguration
 {
     public required string QueueUrl { get; init; }
+    public required string? MessageGroupId { get; init; }
 }
