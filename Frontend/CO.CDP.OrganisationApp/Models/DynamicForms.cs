@@ -53,6 +53,7 @@ public class FormAnswer
     public DateTimeOffset? EndValue { get; init; }
     public string? TextValue { get; init; }
     public string? OptionValue { get; init; }
+    public Address? AddressValue { get; init; }
 }
 
 public enum FormQuestionType
@@ -64,5 +65,7 @@ public enum FormQuestionType
     SingleChoice,
     MultipleChoice,
     CheckYourAnswers,
-    Date
+    Date,
+    CheckBox,
+    Address
 }
