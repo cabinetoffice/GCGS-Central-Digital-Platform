@@ -56,8 +56,6 @@ public class ConnectedEntityPscDetailsModel(ISession session) : PageModel
 
     public string? Heading { get; set; }
 
-    public string? BackPageLink { get; set; }
-
     [BindProperty]
     public bool? ShowDobAndNationality { get; set; }
     [BindProperty]
@@ -272,6 +270,7 @@ public class ConnectedEntityPscDetailsModel(ISession session) : PageModel
                         break;
 
                     case ConnectedEntityIndividualAndTrustCategoryType.DirectorOrIndividualWithTheSameResponsibilitiesForTrust:
+                        redirectPage = "ConnectedEntityDirectorResidency";
                         break;
                 }
                 break;

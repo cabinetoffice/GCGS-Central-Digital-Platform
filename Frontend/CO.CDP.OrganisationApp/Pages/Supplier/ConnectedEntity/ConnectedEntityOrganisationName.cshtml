@@ -6,13 +6,10 @@
 
     var categoryPage = (Model.ConnectedEntityType == Constants.ConnectedEntityType.Organisation
                             ? "organisation-category" : "");
-    var backLink = $"/organisation/{@Model.Id}/supplier-information/connected-person/{categoryPage}";
+    
+    var backPage = Request.Query.ContainsKey("frm-chk-answer") ? "check-answers-organisation" : categoryPage;
 
-    if (Request.Query.ContainsKey("frm-chk-answer"))
-    {
-        backLink = $"/organisation/{Model.Id}/supplier-information/connected-person/check-answers-organisation/{Model.ConnectedEntityId}";
-        Model.RedirectToCheckYourAnswer = true;
-    }
+    var backLink = $"/organisation/{@Model.Id}/supplier-information/connected-person/{backPage}";
 }
 
 <a href="@backLink" class="govuk-back-link">
