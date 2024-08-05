@@ -508,6 +508,69 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
         foundAnswer.BoolValue.Should().BeFalse();
     }
 
+    [Fact]
+    public async Task GetQuestionsAsync_WhenOptionsAreSimple_ReturnsCorrectOptions()
+    {
+        using var repository = FormRepository();
+        var formId = Guid.NewGuid();
+        var sectionId = Guid.NewGuid();
+
+        var form = GivenForm(formId);
+        var section = GivenSection(sectionId, form);
+        form.Sections.Add(section);
+
+        var questionId = Guid.NewGuid();
+        var choiceId = Guid.NewGuid();
+
+        var simpleOptions = new FormQuestionOptions
+        {
+            Choices = new List<FormQuestionChoice>
+        {
+            new FormQuestionChoice
+            {
+                Id = choiceId,
+                Title = "Choice 1",
+                GroupName = "Group 1",
+                Hint = new FormQuestionChoiceHint
+                {
+                    Title = "Hint Title",
+                    Description = "Hint Description"
+                }
+            }
+        },
+            ChoiceProviderStrategy = "SimpleStrategy"
+        };
+
+        var question = new FormQuestion
+        {
+            Guid = questionId,
+            Section = section,
+            Title = "Question with Simple Options",
+            Description = "This is a test question with simple options.",
+            Type = FormQuestionType.SingleChoice,
+            IsRequired = true,
+            NextQuestion = null,
+            NextQuestionAlternative = null,
+            Options = simpleOptions
+        };
+
+        section.Questions.Add(question);
+        await repository.SaveFormAsync(form);
+
+        var foundQuestions = await repository.GetQuestionsAsync(sectionId);
+
+        foundQuestions.Should().NotBeEmpty();
+        foundQuestions.Should().HaveCount(1);
+
+        var foundQuestion = foundQuestions.First();
+        foundQuestion.Options.Should().NotBeNull();
+
+        foundQuestion.Options!.Choices.Should().NotBeNull().And.HaveCount(1);
+
+        var foundChoice = foundQuestion?.Options?.Choices?.First();
+        foundChoice.Should().BeEquivalentTo(simpleOptions.Choices.First(), config => config.Excluding(ctx => ctx.Id));
+    }
+
     private static Form GivenForm(Guid formId)
     {
         return new Form

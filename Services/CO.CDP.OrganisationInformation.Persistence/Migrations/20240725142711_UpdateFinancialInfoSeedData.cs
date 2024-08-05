@@ -7,15 +7,14 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
     /// <inheritdoc />
     public partial class UpdateFinancialInfoSeedData : Migration
     {
+        private readonly Guid formsGuid = Guid.Parse("0618b13e-eaf2-46e3-a7d2-6f2c44be7022");
+        private readonly Guid sectionGuid = Guid.Parse("13511cb1-9ed4-4d72-ba9e-05b4a0be880c");
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.Sql("TRUNCATE TABLE form_questions CASCADE;");
             migrationBuilder.Sql("TRUNCATE TABLE form_sections CASCADE;");
             migrationBuilder.Sql("TRUNCATE TABLE forms CASCADE;");
-
-            var formsGuid = Guid.Parse("0618b13e-eaf2-46e3-a7d2-6f2c44be7022");
-            var sectionGuid = Guid.Parse("13511cb1-9ed4-4d72-ba9e-05b4a0be880c");
             var noInputGuid = Guid.Parse("c1e2e3f4-5a6b-7c8d-9e0f-123456789abc");
             var yesOrNoGuid = Guid.Parse("d2e3f4a5-6b7c-8d9e-0f1a-23456789bcd0");
             var fileUploadGuid = Guid.Parse("e3f4a5b6-7c8d-9e0f-1a2b-3456789cdef1");
@@ -89,9 +88,9 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.Sql($@"
-                UPDATE form_sections
-                SET configuration = '{{}}'
-                WHERE guid = '13511cb1-9ed4-4d72-ba9e-05b4a0be880c';
+                DELETE FROM form_questions WHERE section_id IN (SELECT id FROM form_sections WHERE form_id = (SELECT id FROM forms WHERE guid = '{formsGuid}'));
+                DELETE FROM form_sections WHERE form_id = (SELECT id FROM forms WHERE guid = '{formsGuid}');
+                DELETE FROM forms WHERE guid = '{formsGuid}';
             ");
         }
     }
