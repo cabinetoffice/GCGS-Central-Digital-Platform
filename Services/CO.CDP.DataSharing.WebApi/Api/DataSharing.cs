@@ -233,7 +233,7 @@ public static class ApiExtensions
             Description = "",
         });
         options.IncludeXmlComments(Assembly.GetExecutingAssembly(), Assembly.GetAssembly(typeof(Address)));
-        options.OperationFilter<ProblemDetailsOperationFilter>();
+        options.OperationFilter<ProblemDetailsOperationFilter>(Extensions.ServiceCollectionExtensions.ErrorCodes());
         options.ConfigureApiKeySecurity();
     }
 }

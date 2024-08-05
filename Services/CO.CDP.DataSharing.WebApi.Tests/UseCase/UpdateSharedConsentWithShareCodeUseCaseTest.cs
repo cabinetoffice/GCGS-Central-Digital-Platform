@@ -11,7 +11,7 @@ namespace DataSharing.Tests.UseCase;
 public class UpdateSharedConsentWithShareCodeUseCaseTest(AutoMapperFixture mapperFixture) : IClassFixture<AutoMapperFixture>
 {
     private readonly Mock<IFormRepository> _repository = new();
-    private UpdateSharedConsentWithShareCodeUseCase UseCase => new(_repository.Object, mapperFixture.Mapper);
+    private GenerateShareCodeUseCase UseCase => new(_repository.Object, mapperFixture.Mapper);
 
     [Fact]
     public async Task ReturnsNullWhenNoRelevantSharedConsentFound()
@@ -22,9 +22,9 @@ public class UpdateSharedConsentWithShareCodeUseCaseTest(AutoMapperFixture mappe
             OrganisationId = default
         };
 
-        var shareReceipt = await UseCase.Execute(shareRequest);
+        var shareReceipt = async () => await UseCase.Execute(shareRequest);
 
-        shareReceipt.Should().BeNull();
+        await shareReceipt.Should().ThrowAsync<SharedConsentNotFoundException>();
     }
 
     [Fact]

@@ -6,7 +6,7 @@ using CO.CDP.OrganisationInformation.Persistence.Forms;
 
 namespace CO.CDP.DataSharing.WebApi.UseCase;
 
-public class UpdateSharedConsentWithShareCodeUseCase(IFormRepository formRepository, IMapper mapper)
+public class GenerateShareCodeUseCase(IFormRepository formRepository, IMapper mapper)
     : IUseCase<ShareRequest, ShareReceipt>
 {
     public async Task<ShareReceipt> Execute(ShareRequest shareRequest)
@@ -14,12 +14,14 @@ public class UpdateSharedConsentWithShareCodeUseCase(IFormRepository formReposit
         var result = await formRepository.GetSharedConsentAsync(shareRequest.FormId, shareRequest.OrganisationId);
         if(result == null)
         {
-            return null;
+            throw new SharedConsentNotFoundException("Shared Consent not found.");
         }
 
         var shareCode = ShareCodeExtensions.GenerateShareCode();
         result.BookingReference = shareCode;
-        result.UpdatedOn = DateTime.Now;
+        result.SubmittedAt = DateTime.UtcNow;
+        result.SubmissionState = SubmissionState.Submitted;
+
         await formRepository.SaveSharedConsentAsync(result);
 
         return mapper.Map<SharedConsent, ShareReceipt>(result);
