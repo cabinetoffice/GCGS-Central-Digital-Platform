@@ -176,7 +176,7 @@ public static class EndpointExtensions
                 return operation;
             });
 
-        app.MapPost("/share/data", async (ShareRequest shareRequest, IUseCase<ShareRequest, ShareReceipt?> useCase) =>
+        app.MapPost("/share/data", async (ShareRequest shareRequest, IUseCase<ShareRequest, ShareReceipt> useCase) =>
                 await useCase.Execute(shareRequest)
                     .AndThen(supplierInfo => Results.Ok(supplierInfo)))
             .Produces<ShareReceipt>(StatusCodes.Status200OK, "application/json")

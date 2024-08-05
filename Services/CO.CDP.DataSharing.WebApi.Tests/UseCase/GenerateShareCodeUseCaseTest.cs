@@ -8,7 +8,7 @@ using Moq;
 
 namespace DataSharing.Tests.UseCase;
 
-public class UpdateSharedConsentWithShareCodeUseCaseTest(AutoMapperFixture mapperFixture) : IClassFixture<AutoMapperFixture>
+public class GenerateShareCodeUseCaseTest(AutoMapperFixture mapperFixture) : IClassFixture<AutoMapperFixture>
 {
     private readonly Mock<IFormRepository> _repository = new();
     private GenerateShareCodeUseCase UseCase => new(_repository.Object, mapperFixture.Mapper);
