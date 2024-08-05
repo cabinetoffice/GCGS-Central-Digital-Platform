@@ -65,8 +65,8 @@ public class GenerateShareCodeUseCaseTest(AutoMapperFixture mapperFixture) : ICl
             },
             Form = form,
             AnswerSets = new List<FormAnswerSet> { },
-            SubmissionState = default,
-            SubmittedAt = default,
+            SubmissionState = SubmissionState.Submitted,
+            SubmittedAt = DateTime.UtcNow,
             FormVersionId = formVersionId,
             BookingReference = string.Empty
         };
@@ -78,7 +78,7 @@ public class GenerateShareCodeUseCaseTest(AutoMapperFixture mapperFixture) : ICl
         {
             FormId = formId,
             FormVersionId = formVersionId,
-            ShareCode = default
+            ShareCode = string.Empty
         };
 
         found.FormId.Should().Be(formId);
