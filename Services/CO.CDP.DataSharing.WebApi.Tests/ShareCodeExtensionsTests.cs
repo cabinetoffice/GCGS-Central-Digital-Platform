@@ -4,7 +4,7 @@ using NanoidDotNet;
 
 namespace DataSharing.Tests;
 
-public class ShareCodeTests
+public class ShareCodeExtensionsTests
 {
     [Fact]
     public void GenerateShareCode_IsNotNullEmptyOrWhiteSpace()
