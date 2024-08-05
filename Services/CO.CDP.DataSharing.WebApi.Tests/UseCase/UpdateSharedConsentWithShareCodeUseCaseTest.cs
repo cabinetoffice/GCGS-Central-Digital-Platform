@@ -1,6 +1,6 @@
-using AutoMapper;
 using CO.CDP.DataSharing.WebApi.Model;
 using CO.CDP.DataSharing.WebApi.UseCase;
+using CO.CDP.DataSharing.Tests.AutoMapper;
 using CO.CDP.OrganisationInformation.Persistence;
 using CO.CDP.OrganisationInformation.Persistence.Forms;
 using FluentAssertions;
@@ -8,32 +8,13 @@ using Moq;
 
 namespace DataSharing.Tests.UseCase;
 
-public class DataSharingProfile : Profile
-{
-    public DataSharingProfile()
-    {
-        CreateMap<SharedConsent, ShareReceipt>()
-           .ForMember(m => m.FormId, o => o.MapFrom(m => m.Guid))
-           .ForMember(m => m.FormVersionId, o => o.MapFrom(m => m.FormVersionId))
-           .ForMember(m => m.ShareCode, o => o.MapFrom(m => m.BookingReference));
-    }
-}
-
-public class AutoMapperFixture
-{
-    public readonly MapperConfiguration Configuration = new(
-        config => config.AddProfile<DataSharingProfile>()
-    );
-    public IMapper Mapper => Configuration.CreateMapper();
-}
-
 public class UpdateSharedConsentWithShareCodeUseCaseTest(AutoMapperFixture mapperFixture) : IClassFixture<AutoMapperFixture>
 {
     private readonly Mock<IFormRepository> _repository = new();
     private UpdateSharedConsentWithShareCodeUseCase UseCase => new(_repository.Object, mapperFixture.Mapper);
 
     [Fact]
-    public async Task ItReturnsNullIfNoOrganisationIsFound()
+    public async Task ReturnsNullWhenNoRelevantSharedConsentFound()
     {
         var shareRequest = new ShareRequest
         {
@@ -47,7 +28,7 @@ public class UpdateSharedConsentWithShareCodeUseCaseTest(AutoMapperFixture mappe
     }
 
     [Fact]
-    public async Task ItReturnsTheFoundOrganisation()
+    public async Task ReturnsRelevantShareReceipt()
     {
         var formId = Guid.NewGuid();
         var formVersionId = string.Empty;
