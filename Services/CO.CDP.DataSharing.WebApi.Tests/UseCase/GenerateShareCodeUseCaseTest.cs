@@ -36,8 +36,8 @@ public class GenerateShareCodeUseCaseTest(AutoMapperFixture mapperFixture) : ICl
         var form = new Form
         {
             Guid = formId,
-            Name = default,
-            Version = default,
+            Name = string.Empty,
+            Version = string.Empty,
             IsRequired = default,
             Type = default,
             Scope = default,
@@ -53,13 +53,22 @@ public class GenerateShareCodeUseCaseTest(AutoMapperFixture mapperFixture) : ICl
         var sharedConsent = new SharedConsent()
         {
             Guid = formId,
-            Organisation = default,
+            Organisation = new Organisation
+            {
+                Guid = Guid.NewGuid(),
+                Name = string.Empty,
+                Tenant = new Tenant
+                {
+                    Guid = Guid.NewGuid(),
+                    Name = string.Empty
+                }
+            },
             Form = form,
-            AnswerSets = default,
+            AnswerSets = new List<FormAnswerSet> { },
             SubmissionState = default,
             SubmittedAt = default,
             FormVersionId = formVersionId,
-            BookingReference = default
+            BookingReference = string.Empty
         };
 
         _repository.Setup(r => r.GetSharedConsentAsync(shareRequest.FormId, shareRequest.OrganisationId)).ReturnsAsync(sharedConsent);
