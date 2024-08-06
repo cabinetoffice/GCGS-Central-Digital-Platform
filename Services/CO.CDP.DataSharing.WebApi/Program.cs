@@ -1,8 +1,11 @@
 using CO.CDP.Configuration.ForwardedHeaders;
 using CO.CDP.DataSharing.WebApi.Api;
+using CO.CDP.DataSharing.WebApi.AutoMapper;
 using CO.CDP.DataSharing.WebApi.Extensions;
 using CO.CDP.DataSharing.WebApi.Model;
 using CO.CDP.DataSharing.WebApi.UseCase;
+using CO.CDP.OrganisationInformation.Persistence;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.ConfigureForwardedHeaders();
@@ -15,10 +18,15 @@ builder.Services.AddSwaggerGen(options =>
     options.DocumentDataSharingApi(builder.Configuration);
 });
 
-builder.Services.AddHealthChecks();
+builder.Services.AddHealthChecks()
+    .AddNpgSql(builder.Configuration.GetConnectionString("OrganisationInformationDatabase") ?? "");
+builder.Services.AddAutoMapper(typeof(DataSharingProfile));
 
 builder.Services.AddProblemDetails();
 
+builder.Services.AddDbContext<OrganisationInformationContext>(o =>
+    o.UseNpgsql(builder.Configuration.GetConnectionString("OrganisationInformationDatabase") ?? ""));
+builder.Services.AddScoped<IFormRepository, DatabaseFormRepository>();
 builder.Services.AddScoped<IUseCase<ShareRequest, ShareReceipt>, GenerateShareCodeUseCase>();
 builder.Services.AddDataSharingProblemDetails();
 
