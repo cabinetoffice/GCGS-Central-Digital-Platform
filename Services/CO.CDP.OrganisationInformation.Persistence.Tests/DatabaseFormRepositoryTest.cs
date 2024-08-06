@@ -212,8 +212,8 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
         var found = await repository.GetSharedConsentDraftAsync(sharedConsent.Form.Guid, sharedConsent.Organisation.Guid);
 
         found.Should().NotBeNull();
-        found.SubmissionState.Should().Be(SubmissionState.Draft);
-        found.BookingReference.Should().Be(string.Empty);
+        found.As<SharedConsent>().SubmissionState.Should().Be(SubmissionState.Draft);
+        found.As<SharedConsent>().BookingReference.Should().Be(string.Empty);
     }
 
     [Fact]
