@@ -13,6 +13,8 @@ public interface IFormElementModel
 
     FormQuestionType? CurrentFormQuestionType { get; set; }
 
+    void Initialize(FormQuestion question);
+
     FormAnswer? GetAnswer();
 
     void SetAnswer(FormAnswer? answer);
@@ -29,6 +31,14 @@ public abstract class FormElementModel : IFormElementModel
 
     [BindProperty]
     public bool IsRequired { get; set; }
+
+    public virtual void Initialize(FormQuestion question)
+    {
+        Heading = question.Title;
+        Description = question.Description;
+        CurrentFormQuestionType = question.Type;
+        IsRequired = question.IsRequired;
+    }
 
     public abstract FormAnswer? GetAnswer();
 

@@ -101,6 +101,7 @@ public class FormsAddAnotherAnswerSetModel(
                     OptionValue = a.OptionValue,
                     StartValue = a.StartValue,
                     TextValue = a.TextValue
+                    // TODO : Add address mapping once api response exposed with AddressValue
                 }
             }).ToList()
         };
@@ -153,14 +154,14 @@ public class FormsAddAnotherAnswerSetModel(
                     {
                         FormQuestionType.Text => answer.TextValue ?? "",
                         FormQuestionType.FileUpload => answer.TextValue ?? "",
-                        FormQuestionType.YesOrNo => question.IsRequired && answer.BoolValue.HasValue == true ? (answer.BoolValue == true ? "yes" : "no") : "",
-                        FormQuestionType.Date => question.IsRequired && answer.DateValue.HasValue == true ? answer.DateValue.Value.ToString("dd/MM/yyyy") : "",
+                        FormQuestionType.YesOrNo => answer.BoolValue.HasValue == true ? (answer.BoolValue == true ? "yes" : "no") : "",
+                        FormQuestionType.Date => answer.DateValue.HasValue == true ? answer.DateValue.Value.ToString("dd/MM/yyyy") : "",
+                        // TODO : Add address mapping once api response exposed with AddressValue
                         _ => ""
                     };
 
                     answerSummaries.Add(new AnswerSummary
                     {
-                        QuestionId = answer.QuestionId,
                         Title = question.Title,
                         Answer = answerString ?? ""
                     });
