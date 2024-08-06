@@ -25,5 +25,7 @@ public enum FormQuestionType
     SingleChoice,
     MultipleChoice,
     CheckYourAnswers,
-    Date
+    Date,
+    CheckBox,
+    Address
 }

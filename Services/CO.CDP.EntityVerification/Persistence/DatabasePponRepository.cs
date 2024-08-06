@@ -31,6 +31,17 @@ public class DatabasePponRepository(EntityVerificationContext context) : IPponRe
             .FirstOrDefaultAsync(p => p.IdentifierId == pponId);
     }
 
+    public async Task<Ppon?> FindPponByIdentifierAsync(string scheme, string  id)
+    {
+        var ppons = await context.Ppons
+            .Include(p => p.Identifiers)
+            .ToListAsync();
+
+        return ppons.FirstOrDefault(p => p.Identifiers.Any(i =>
+                i.IdentifierId == id &&
+                i.Scheme == scheme));
+    }
+
     private static void HandleDbUpdateException(Ppon identifier, DbUpdateException cause)
     {
         switch (cause.InnerException)

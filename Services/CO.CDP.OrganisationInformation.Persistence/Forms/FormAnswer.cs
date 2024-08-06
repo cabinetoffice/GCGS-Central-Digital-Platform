@@ -13,7 +13,7 @@ public class SharedConsent : IEntityDate
     public required SubmissionState SubmissionState { get; set; } = SubmissionState.Draft;
     public required DateTimeOffset SubmittedAt { get; set; }
     public required string FormVersionId { get; init; }
-    public required string BookingReference { get; init; }
+    public required string BookingReference { get; set; }
     public DateTimeOffset CreatedOn { get; set; }
     public DateTimeOffset UpdatedOn { get; set; }
 }
