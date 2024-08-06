@@ -22,6 +22,8 @@ public class ConnectedEntityControlConditionModel(ISession session) : PageModel
     [BindProperty]
     public bool? RedirectToCheckYourAnswer { get; set; }
 
+    public bool SupplierHasCompanyHouseNumber { get; set; }
+
     public string? Caption { get; set; }
 
     public string? Heading { get; set; }
@@ -36,6 +38,8 @@ public class ConnectedEntityControlConditionModel(ISession session) : PageModel
                 ? "ConnectedEntityCheckAnswersOrganisation"
                 : "ConnectedEntitySupplierCompanyQuestion", new { Id, ConnectedEntityId });
         }
+
+        SupplierHasCompanyHouseNumber = state.SupplierHasCompanyHouseNumber ?? false;
 
         InitModal(state, true);
 
