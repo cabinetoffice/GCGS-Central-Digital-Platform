@@ -1,37 +1,28 @@
 using CO.CDP.EntityVerification.Model;
 using CO.CDP.EntityVerification.Persistence;
-using System.Collections.Generic;
 using static CO.CDP.EntityVerification.UseCase.LookupIdentifierUseCase.LookupIdentifierException;
 
 namespace CO.CDP.EntityVerification.UseCase;
 
-public class LookupIdentifierUseCase : IUseCase<LookupIdentifierQuery, IEnumerable<Model.Identifier>>
+public class LookupIdentifierUseCase(IPponRepository repo) : IUseCase<LookupIdentifierQuery, IEnumerable<Model.Identifier>>
 {
     public async Task<IEnumerable<Model.Identifier>> Execute(LookupIdentifierQuery query)
     {
-        List<Model.Identifier> foundIdentifiers = new List<Model.Identifier>();
+        List<Model.Identifier> foundIdentifiers = [];
 
         if (query.TryGetIdentifier(out var scheme, out var id))
         {
-            if ((query.Identifier == "CDP-PPON:ac73982be54e456c888d495b6c2c997f") || ((query.Identifier == "GB-COH:9443242")))
+            var ppon = await repo.FindPponByIdentifierAsync(scheme, id);
+
+            if (ppon != null)
             {
-                foundIdentifiers = new List<Model.Identifier>
+                foundIdentifiers = ppon.Identifiers.Select(item => new Model.Identifier
                 {
-                    new Model.Identifier
-                    {
-                        Id = "ac73982be54e456c888d495b6c2c997f",
-                        LegalName = "Acme",
-                        Scheme = "CDP-PPON",
-                        Uri = new Uri("https://www.acme-ltd.com")
-                    },
-                    new Model.Identifier
-                    {
-                        Id = "12345678",
-                        LegalName = "Acme",
-                        Scheme = "GB-COH",
-                        Uri = new Uri("https://www.acme-ltd.com")
-                    }
-                };
+                    Id = item.IdentifierId,
+                    LegalName = item.LegalName,
+                    Scheme = item.Scheme,
+                    Uri = item.Uri
+                }).ToList();
             }
         }
         else
