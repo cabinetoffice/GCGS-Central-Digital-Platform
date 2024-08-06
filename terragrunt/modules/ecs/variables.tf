@@ -168,6 +168,18 @@ variable "tags" {
   type        = map(string)
 }
 
+variable "user_pool_arn" {
+  type = string
+}
+
+variable "user_pool_client_id" {
+  type = string
+}
+
+variable "user_pool_domain" {
+  type = string
+}
+
 variable "vpc_cider" {
   description = "VPC's IPv4 CIDR"
   type        = string
@@ -207,3 +219,4 @@ variable "vpce_secretsmanager_sg_id" {
   description = "Security group ID of the Secrets Manager VPC endpoint"
   type        = string
 }
+

@@ -31,9 +31,27 @@ resource "aws_lb_listener_rule" "this" {
   listener_arn = var.ecs_listener_arn
   priority     = var.family == "app" ? var.host_port - 8000 : var.host_port
 
+  dynamic "action" {
+    for_each = var.user_pool_arn != null && var.user_pool_client_id != null && var.user_pool_domain != null ? [1] : []
+
+    content {
+      type = "authenticate-cognito"
+      authenticate_cognito {
+        user_pool_arn              = var.user_pool_arn
+        user_pool_client_id        = var.user_pool_client_id
+        user_pool_domain           = var.user_pool_domain
+        session_cookie_name        = "AWSELBAuthSessionCookie"
+        scope                      = "openid"
+        on_unauthenticated_request = "authenticate"
+      }
+      order = 1
+    }
+  }
+
   action {
     type             = "forward"
     target_group_arn = aws_lb_target_group.this[0].arn
+    order            = 2
   }
 
   condition {

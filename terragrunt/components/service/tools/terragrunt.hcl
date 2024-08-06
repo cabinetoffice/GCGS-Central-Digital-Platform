@@ -47,6 +47,15 @@ dependency core_security_groups {
   }
 }
 
+dependency service_auth {
+  config_path = "../../service/auth"
+  mock_outputs = {
+    healthcheck_user_pool_arn           = "mock"
+    healthcheck_user_pool_client_id     = "mock"
+    healthcheck_user_pool_client_secret = "mock"
+  }
+}
+
 dependency service_ecs {
   config_path = "../../service/ecs"
   mock_outputs = {
@@ -98,18 +107,22 @@ inputs = {
   ecs_alb_sg_id = dependency.core_security_groups.outputs.alb_sg_id
   ecs_sg_id     = dependency.core_security_groups.outputs.ecs_sg_id
 
+  user_pool_arn           = dependency.service_auth.outputs.healthcheck_user_pool_arn
+  user_pool_client_id     = dependency.service_auth.outputs.healthcheck_user_pool_client_id
+  user_pool_domain        = dependency.service_auth.outputs.healthcheck_user_pool_domain
+
   ecs_cluster_id   = dependency.service_ecs.outputs.ecs_cluster_id
   ecs_lb_dns_name  = dependency.service_ecs.outputs.ecs_lb_dns_name
   ecs_listener_arn = dependency.service_ecs.outputs.ecs_listener_arn
 
-  db_entity_verification_address               = dependency.service_database.outputs.entity_verification_address
-  db_entity_verification_credentials           = dependency.service_database.outputs.entity_verification_credentials
-  db_entity_verification_kms_arn               = dependency.service_database.outputs.entity_verification_kms_arn
-  db_entity_verification_name                  = dependency.service_database.outputs.entity_verification_name
-  db_sirsi_address                             = dependency.service_database.outputs.sirsi_address
-  db_sirsi_credentials                         = dependency.service_database.outputs.sirsi_credentials
-  db_sirsi_kms_arn                             = dependency.service_database.outputs.sirsi_kms_arn
-  db_sirsi_name                                = dependency.service_database.outputs.sirsi_name
+  db_entity_verification_address     = dependency.service_database.outputs.entity_verification_address
+  db_entity_verification_credentials = dependency.service_database.outputs.entity_verification_credentials
+  db_entity_verification_kms_arn     = dependency.service_database.outputs.entity_verification_kms_arn
+  db_entity_verification_name        = dependency.service_database.outputs.entity_verification_name
+  db_sirsi_address                   = dependency.service_database.outputs.sirsi_address
+  db_sirsi_credentials               = dependency.service_database.outputs.sirsi_credentials
+  db_sirsi_kms_arn                   = dependency.service_database.outputs.sirsi_kms_arn
+  db_sirsi_name                      = dependency.service_database.outputs.sirsi_name
 
   queue_healthcheck_queue_arn = dependency.service_queue.outputs.healthcheck_queue_arn
   queue_healthcheck_queue_url = dependency.service_queue.outputs.healthcheck_queue_url
