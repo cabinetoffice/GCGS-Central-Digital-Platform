@@ -22,7 +22,6 @@ builder.Services.AddHealthChecks();
 
 builder.Services.AddProblemDetails();
 
-//builder.Services.AddProblemDetails();
 builder.Services.AddAutoMapper(typeof(DataSharingProfile));
 builder.Services.AddDbContext<OrganisationInformationContext>(o =>
     o.UseNpgsql(builder.Configuration.GetConnectionString("OrganisationInformationDatabase") ?? ""));
