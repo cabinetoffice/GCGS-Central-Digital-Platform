@@ -57,7 +57,7 @@ services:
       # LocalStack configuration: https://docs.localstack.cloud/references/configuration/
       SERVICES: sqs,s3
       DEBUG: 0
-      SQS_QUEUES: ev-inbound,ev-outbound
+      SQS_QUEUES: entity-verification.fifo,organisation.fifo
       S3_BUCKETS: cdp-staging-bucket.s3,cdp-permanent-bucket.s3
     volumes:
       - './docker/localstack/ready.d:/etc/localstack/init/ready.d:ro'
@@ -109,16 +109,16 @@ services:
       retries: 3
     environment:
       ASPNETCORE_ENVIRONMENT: Production
-      TenantService: '${TenantService:-http://gateway:${CDP_TENANT_PORT:-8080}}'
-      OrganisationService: '${OrganisationService:-http://gateway:${CDP_ORGANISATION_PORT:-8082}}'
-      PersonService: '${PersonService:-http://gateway:${CDP_PERSON_PORT:-8084}}'
-      FormsService: '${FormsService:-http://gateway:${CDP_FORMS_PORT:-8086}}'
-      Organisation__Authority: '${Organisation__Authority:-http://gateway:${CDP_AUTHORITY_PORT:-8092}}'
+      Aws__Buckets__PermanentBucket: cdp-permanent-bucket.s3
+      Aws__Buckets__StagingBucket: cdp-staging-bucket.s3
       Aws__Credentials__AccessKeyId: test
       Aws__Credentials__SecretAccessKey: test
       Aws__ServiceURL: "http://localstack:4566"
-      Aws__Buckets__StagingBucket: cdp-staging-bucket.s3
-      Aws__Buckets__PermanentBucket: cdp-permanent-bucket.s3
+      FormsService: '${FormsService:-http://gateway:${CDP_FORMS_PORT:-8086}}'
+      OrganisationService: '${OrganisationService:-http://gateway:${CDP_ORGANISATION_PORT:-8082}}'
+      Organisation__Authority: '${Organisation__Authority:-http://gateway:${CDP_AUTHORITY_PORT:-8092}}'
+      PersonService: '${PersonService:-http://gateway:${CDP_PERSON_PORT:-8084}}'
+      TenantService: '${TenantService:-http://gateway:${CDP_TENANT_PORT:-8080}}'
 
   authority:
     container_name: co-cdp-authority
@@ -137,9 +137,9 @@ services:
       - db
     environment:
       ASPNETCORE_ENVIRONMENT: Production
-      VERSION: dev-docker
       ConnectionStrings__OrganisationInformationDatabase: 'Server=db;Database=cdp;Username=cdp_user;Password=cdp123;'
       Issuer: 'http://gateway:${CDP_AUTHORITY_PORT:-8092}'
+      VERSION: dev-docker
 
   tenant:
     container_name: co-cdp-tenant
@@ -158,9 +158,9 @@ services:
       - db
     environment:
       ASPNETCORE_ENVIRONMENT: Production
-      VERSION: dev-docker
       ConnectionStrings__OrganisationInformationDatabase: 'Server=db;Database=cdp;Username=cdp_user;Password=cdp123;'
       Organisation__Authority: '${Organisation__Authority:-http://gateway:${CDP_AUTHORITY_PORT:-8092}}'
+      VERSION: dev-docker
 
   organisation:
     container_name: co-cdp-organisation
@@ -176,17 +176,20 @@ services:
       timeout: 10s
       retries: 3
     depends_on:
-      - db
+      db:
+        condition: "service_healthy"
+      localstack:
+        condition: "service_healthy"
     environment:
       ASPNETCORE_ENVIRONMENT: Production
-      VERSION: dev-docker
-      ConnectionStrings__OrganisationInformationDatabase: 'Server=db;Database=cdp;Username=cdp_user;Password=cdp123;'
-      Organisation__Authority: '${Organisation__Authority:-http://gateway:${CDP_AUTHORITY_PORT:-8092}}'
       Aws__Credentials__AccessKeyId: test
       Aws__Credentials__SecretAccessKey: test
       Aws__ServiceURL: "http://localstack:4566"
-      Aws__SqsPublisher__QueueUrl: "http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/ev-inbound"
-      Aws__SqsDispatcher__QueueUrl: "http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/ev-outbound"
+      Aws__SqsDispatcher__QueueUrl: "http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/entity-verification.fifo"
+      Aws__SqsPublisher__QueueUrl: "http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/organisation.fifo"
+      ConnectionStrings__OrganisationInformationDatabase: 'Server=db;Database=cdp;Username=cdp_user;Password=cdp123;'
+      Organisation__Authority: '${Organisation__Authority:-http://gateway:${CDP_AUTHORITY_PORT:-8092}}'
+      VERSION: dev-docker
 
   person:
     container_name: co-cdp-person
@@ -205,9 +208,9 @@ services:
       - db
     environment:
       ASPNETCORE_ENVIRONMENT: Production
-      VERSION: dev-docker
       ConnectionStrings__OrganisationInformationDatabase: 'Server=db;Database=cdp;Username=cdp_user;Password=cdp123;'
       Organisation__Authority: '${Organisation__Authority:-http://gateway:${CDP_AUTHORITY_PORT:-8092}}'
+      VERSION: dev-docker
 
   forms:
     container_name: co-cdp-forms
@@ -226,9 +229,9 @@ services:
       - db
     environment:
       ASPNETCORE_ENVIRONMENT: Production
-      VERSION: dev-docker
       ConnectionStrings__OrganisationInformationDatabase: 'Server=db;Database=cdp;Username=cdp_user;Password=cdp123;'
       Organisation__Authority: '${Organisation__Authority:-http://gateway:${CDP_AUTHORITY_PORT:-8092}}'
+      VERSION: dev-docker
 
   data-sharing:
     container_name: co-cdp-data-sharing
@@ -269,10 +272,10 @@ services:
         condition: "service_healthy"
     environment:
       ASPNETCORE_ENVIRONMENT: Production
-      VERSION: dev-docker
-      ConnectionStrings__EvDatabase: 'Server=db;Database=cdp;Username=cdp_user;Password=cdp123;'
-      Aws__ServiceURL: "http://localstack:4566"
       Aws__Credentials__AccessKeyId: test
       Aws__Credentials__SecretAccessKey: test
-      Aws__SqsDispatcher__QueueUrl: "http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/ev-inbound"
-      Aws__SqsPublisher__QueueUrl: "http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/ev-outbound"
+      Aws__ServiceURL: "http://localstack:4566"
+      Aws__SqsDispatcher__QueueUrl: "http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/organisation.fifo"
+      Aws__SqsPublisher__QueueUrl: "http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/entity-verification.fifo"
+      ConnectionStrings__EvDatabase: 'Server=db;Database=cdp;Username=cdp_user;Password=cdp123;'
+      VERSION: dev-docker

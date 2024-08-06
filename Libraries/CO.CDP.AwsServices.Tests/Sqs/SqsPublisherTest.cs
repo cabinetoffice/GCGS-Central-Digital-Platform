@@ -14,7 +14,7 @@ public class SqsPublisherTest : PublisherContractTest, IClassFixture<LocalStackF
 {
     private readonly LocalStackFixture _localStack;
     private readonly AmazonSQSClient _sqsClient;
-    private const string TestQueue = "test-queue-1";
+    private const string TestQueue = "test-queue-1.fifo";
 
     public SqsPublisherTest(LocalStackFixture localStack)
     {
@@ -40,11 +40,19 @@ public class SqsPublisherTest : PublisherContractTest, IClassFixture<LocalStackF
 
     protected override async Task<IPublisher> CreatePublisher()
     {
-        var queue = await _sqsClient.CreateQueueAsync(new CreateQueueRequest { QueueName = TestQueue });
+        var queue = await _sqsClient.CreateQueueAsync(new CreateQueueRequest
+        {
+            QueueName = TestQueue,
+            Attributes = new Dictionary<string, string>
+            {
+                { "FifoQueue", "true" },
+                { "ContentBasedDeduplication", "true" }
+            }
+        });
         var queueUrl = queue.QueueUrl ?? "";
         return new SqsPublisher(
             _sqsClient,
-            new SqsPublisherConfiguration { QueueUrl = queueUrl },
+            new SqsPublisherConfiguration { QueueUrl = queueUrl, MessageGroupId = "test-messages"},
             LoggerFactory.Create(_ => {}).CreateLogger<SqsPublisher>());
     }
 

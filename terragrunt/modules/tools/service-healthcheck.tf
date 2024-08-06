@@ -4,25 +4,24 @@ module "ecs_service_healthcheck" {
   container_definitions = templatefile(
     "${path.module}/templates/task-definitions/healthcheck.json.tftpl",
     {
-      account_id                          = data.aws_caller_identity.current.account_id
-      container_port                      = var.healthcheck_config.port
-      cpu                                 = var.healthcheck_config.cpu
-      db_entity_verification_address      = var.db_entity_verification_address
-      db_entity_verification_name         = var.db_entity_verification_name
-      db_entity_verification_username     = "${var.db_entity_verification_credentials}:username::"
-      db_sirsi_address                    = var.db_sirsi_address
-      db_sirsi_name                       = var.db_sirsi_name
-      db_sirsi_username                   = "${var.db_sirsi_credentials}:username::"
-      environment                         = title(var.environment)
-      host_port                           = var.healthcheck_config.port
-      image                               = "${local.orchestrator_account_id}.dkr.ecr.${data.aws_region.current.name}.amazonaws.com/cdp-healthcheck:latest"
-      lg_name                             = aws_cloudwatch_log_group.healthcheck.name
-      lg_prefix                           = "tools"
-      lg_region                           = data.aws_region.current.name
-      memory                              = var.healthcheck_config.memory
-      name                                = var.healthcheck_config.name
-      queue_entity_verification_queue_url = var.queue_entity_verification_queue_url
-      queue_organisation_queue_url        = var.queue_organisation_queue_url
+      account_id                      = data.aws_caller_identity.current.account_id
+      container_port                  = var.healthcheck_config.port
+      cpu                             = var.healthcheck_config.cpu
+      db_entity_verification_address  = var.db_entity_verification_address
+      db_entity_verification_name     = var.db_entity_verification_name
+      db_entity_verification_username = "${var.db_entity_verification_credentials}:username::"
+      db_sirsi_address                = var.db_sirsi_address
+      db_sirsi_name                   = var.db_sirsi_name
+      db_sirsi_username               = "${var.db_sirsi_credentials}:username::"
+      environment                     = title(var.environment)
+      host_port                       = var.healthcheck_config.port
+      image                           = "${local.orchestrator_account_id}.dkr.ecr.${data.aws_region.current.name}.amazonaws.com/cdp-healthcheck:latest"
+      lg_name                         = aws_cloudwatch_log_group.healthcheck.name
+      lg_prefix                       = "tools"
+      lg_region                       = data.aws_region.current.name
+      memory                          = var.healthcheck_config.memory
+      name                            = var.healthcheck_config.name
+      queue_healthcheck_queue_url     = var.queue_healthcheck_queue_url
     }
   )
 
