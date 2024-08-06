@@ -37,6 +37,12 @@ public class DynamicFormsPageModel(
     [BindProperty]
     public FormElementYesNoInputModel? YesNoInputModel { get; set; }
 
+    [BindProperty]
+    public FormElementCheckBoxInputModel? CheckBoxModel { get; set; }
+
+    [BindProperty]
+    public FormElementNameInputModel? NameInputModel { get; set; }
+
     public FormQuestionType? CurrentFormQuestionType { get; private set; }
 
     public string? PartialViewName { get; private set; }
@@ -183,7 +189,9 @@ public class DynamicFormsPageModel(
             { FormQuestionType.YesOrNo, "_FormElementYesNoInput" },
             { FormQuestionType.FileUpload, "_FormElementFileUpload" },
             { FormQuestionType.Date, "_FormElementDateInput" },
-            { FormQuestionType.Text, "_FormElementTextInput" }
+            { FormQuestionType.Text, "_FormElementTextInput" },
+            { FormQuestionType.CheckBox, "_FormElementCheckBoxInput" },
+            { FormQuestionType.NameInput, "_FormElementNameInput" }
         };
 
         if (formQuestionPartials.TryGetValue(currentQuestion.Type, out var partialView))
@@ -206,6 +214,8 @@ public class DynamicFormsPageModel(
             FormQuestionType.FileUpload => FileUploadModel ?? new FormElementFileUploadModel(),
             FormQuestionType.YesOrNo => YesNoInputModel ?? new FormElementYesNoInputModel(),
             FormQuestionType.Date => DateInputModel ?? new FormElementDateInputModel(),
+            FormQuestionType.CheckBox => CheckBoxModel ?? new FormElementCheckBoxInputModel(),
+            FormQuestionType.NameInput => NameInputModel ?? new FormElementNameInputModel(),
             _ => throw new NotImplementedException($"Forms question: {currentQuestion.Type} is not supported"),
         };
 
@@ -233,7 +243,8 @@ public class DynamicFormsPageModel(
             var questionAnswer = state.Answers.FirstOrDefault(a => a.QuestionId == question.Id);
             if (questionAnswer == null)
             {
-                questionAnswer = new QuestionAnswer {
+                questionAnswer = new QuestionAnswer
+                {
                     QuestionId = question.Id,
                     AnswerId = Guid.NewGuid()
                 };
