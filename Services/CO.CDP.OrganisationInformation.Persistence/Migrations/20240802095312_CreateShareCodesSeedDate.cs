@@ -27,8 +27,8 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                 DECLARE
                     formId INT;
                     sectionId INT;
-                    questionId INT;
                     previousQuestionId INT;
+                    declarationQuestionId INT;
                 BEGIN
                     SELECT currval(pg_get_serial_sequence('forms', 'id')) INTO formId;
 
@@ -37,33 +37,29 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
 
                     SELECT currval(pg_get_serial_sequence('form_sections', 'id')) INTO sectionId;
 
-                    INSERT INTO form_questions (guid, section_id, type, next_question_id, is_required, title, description, options)
-                    VALUES ('{Guid.NewGuid()}', sectionId, {(int)FormQuestionType.Text}, NULL, TRUE, 'Enter your name', 'Your name as the person authorised to declare the supplier information.', '{{}}'
-                    );
-
-                    SELECT currval(pg_get_serial_sequence('form_questions', 'id')) INTO previousQuestionId;
+                    INSERT INTO form_questions (guid, section_id, type, is_required, title, description, options)
+                    VALUES ('{Guid.NewGuid()}', sectionId, {(int)FormQuestionType.CheckYourAnswers}, TRUE, 'Check your answers', NULL, '{{}}')
+                    RETURNING id INTO previousQuestionId;
 
                     INSERT INTO form_questions (guid, section_id, type, next_question_id, is_required, title, description, options)
-                    VALUES ('{Guid.NewGuid()}', sectionId, {(int)FormQuestionType.Text}, previousQuestionId, TRUE, 'Enter your job title', NULL, '{{}}'
-                    );
-
-                    SELECT currval(pg_get_serial_sequence('form_questions', 'id')) INTO previousQuestionId;
+                    VALUES ('{Guid.NewGuid()}', sectionId, {(int)FormQuestionType.Address}, previousQuestionId, TRUE, 'Enter your postal address', 'So the contracting authority can contact you.', '{{""choices"": [{{""id"": ""bd4fe649-1f52-429e-978c-472e0a2cf11c"", ""title"": ""Address line 1"", ""groupName"": null, ""hint"": {{""title"": null, ""description"": ""Enter the first line of your address.""}}, ""value"": ""addressLine1""}}, {{""id"": ""a4edc9cd-f198-4e74-88e4-d981b09d30ed"", ""title"": ""Town or city"", ""groupName"": null, ""hint"": {{""title"": null, ""description"": ""Enter the name of your town or city.""}}, ""value"": ""townOrCity""}}, {{""id"": ""ef806205-6e38-4496-9a3e-8bb7a37b48ba"", ""title"": ""Post code"", ""groupName"": null, ""hint"": {{""title"": null, ""description"": ""Enter your postal code.""}}, ""value"": ""postCode""}}], ""choiceProviderStrategy"": null}}')
+                    RETURNING id INTO previousQuestionId;
 
                     INSERT INTO form_questions (guid, section_id, type, next_question_id, is_required, title, description, options)
-                    VALUES ('{Guid.NewGuid()}', sectionId, {(int)FormQuestionType.Text}, previousQuestionId, TRUE, 'Enter your email address', 'So the contracting authority can contact you.', '{{}}'
-                    );
-
-                    SELECT currval(pg_get_serial_sequence('form_questions', 'id')) INTO previousQuestionId;
+                    VALUES ('{Guid.NewGuid()}', sectionId, {(int)FormQuestionType.Text}, previousQuestionId, TRUE, 'Enter your email address', 'So the contracting authority can contact you.', '{{}}')
+                    RETURNING id INTO previousQuestionId;
 
                     INSERT INTO form_questions (guid, section_id, type, next_question_id, is_required, title, description, options)
-                    VALUES ('{Guid.NewGuid()}', sectionId, {(int)FormQuestionType.Address}, previousQuestionId, TRUE, 'Enter your postal address', 'So the contracting authority can contact you.', '{{""choices"": [{{""id"": ""bd4fe649-1f52-429e-978c-472e0a2cf11c"", ""title"": ""Address line 1"", ""groupName"": null, ""hint"": {{""title"": null, ""description"": ""Enter the first line of your address.""}}, ""value"": ""addressLine1""}}, {{""id"": ""a4edc9cd-f198-4e74-88e4-d981b09d30ed"", ""title"": ""Town or city"", ""groupName"": null, ""hint"": {{""title"": null, ""description"": ""Enter the name of your town or city.""}}, ""value"": ""townOrCity""}}, {{""id"": ""ef806205-6e38-4496-9a3e-8bb7a37b48ba"", ""title"": ""Post code"", ""groupName"": null, ""hint"": {{""title"": null, ""description"": ""Enter your postal code.""}}, ""value"": ""postCode""}}], ""choiceProviderStrategy"": null}}'
-                    );
-
-                    SELECT currval(pg_get_serial_sequence('form_questions', 'id')) INTO previousQuestionId;
+                    VALUES ('{Guid.NewGuid()}', sectionId, {(int)FormQuestionType.Text}, previousQuestionId, TRUE, 'Enter your job title', NULL, '{{}}')
+                    RETURNING id INTO previousQuestionId;
 
                     INSERT INTO form_questions (guid, section_id, type, next_question_id, is_required, title, description, options)
-                    VALUES ('{Guid.NewGuid()}', sectionId, {(int)FormQuestionType.CheckYourAnswers}, previousQuestionId, TRUE, 'Check your answers', NULL, '{{}}'
-                    );
+                    VALUES ('{Guid.NewGuid()}', sectionId, {(int)FormQuestionType.Text}, previousQuestionId, TRUE, 'Enter your name', 'Your name as the person authorised to declare the supplier information.', '{{}}')
+                    RETURNING id INTO previousQuestionId;
+
+                    INSERT INTO form_questions (guid, section_id, type, next_question_id, is_required, title, description, options)
+                    VALUES ('{Guid.NewGuid()}', sectionId, {(int)FormQuestionType.CheckBox}, previousQuestionId, TRUE, 'Declaration', '<ul class=""govuk-list govuk-list--bullet""><li>I am authorised to make this declaration on behalf of the supplier and declare that to the best of my knowledge the answers submitted and information contained is correct and accurate at the time of declaration.</li><br><li>I declare that, upon request from the Contracting Authority and without delay I will provide the certificates or documentary evidence referred to in this information.</li><br><li>I understand that the information is required as per the regulations of the Procurement Act 2023 and may be used in the selection process to assess my suitability to participate further in this procurement.</li><br><li>I understand that a contracting authority with whom this information is shared may request further clarity or detail on information provided in this submission.</li></ul>', '{{""choices"": [{{""id"": ""bd4fe649-1f52-429e-978c-472e0a2cf11c"", ""title"": ""I understand and agree to the above statements"", ""groupName"": null, ""hint"": null, ""value"": ""agree""}}], ""choiceProviderStrategy"": null}}')
+                    RETURNING id INTO declarationQuestionId;
                 END $$;
             ");
         }
