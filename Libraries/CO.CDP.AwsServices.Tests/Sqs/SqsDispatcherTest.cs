@@ -5,6 +5,7 @@ using Amazon.SQS.Model;
 using CO.CDP.AwsServices.Sqs;
 using CO.CDP.MQ;
 using CO.CDP.MQ.Tests;
+using FluentAssertions;
 using Microsoft.Extensions.Logging;
 
 namespace CO.CDP.AwsServices.Tests.Sqs;
@@ -18,6 +19,23 @@ public class SqsDispatcherTest : DispatcherContractTest, IClassFixture<LocalStac
     {
         _localStack = localStack;
         _sqsClient = SqsClient();
+    }
+
+    [Fact]
+    public async Task ItAttemptsToRecoverFromSqsClientFailures()
+    {
+        var tokenSource = new CancellationTokenSource();
+        var subscriber = new TestSubscriber<TestMessage>(tokenSource);
+
+        var dispatcher = await CreateDispatcher("http://invalid.queue/");
+        dispatcher.Subscribe(subscriber);
+
+        var task = dispatcher.ExecuteAsync(tokenSource.Token);
+
+        await PublishMessage(new TestMessage(13, "Hello."));
+
+        task.Exception.Should().BeNull();
+        task.IsFaulted.Should().BeFalse();
     }
 
     protected override async Task PublishMessage<TM>(TM message)
@@ -34,7 +52,7 @@ public class SqsDispatcherTest : DispatcherContractTest, IClassFixture<LocalStac
         });
     }
 
-    protected override async Task<IDispatcher> CreateDispatcher()
+    protected override async Task<IDispatcher> CreateDispatcher(string? queueUrl = null)
     {
         var queue = await _sqsClient.CreateQueueAsync(new CreateQueueRequest
         {
@@ -44,11 +62,12 @@ public class SqsDispatcherTest : DispatcherContractTest, IClassFixture<LocalStac
                 { "VisibilityTimeout", "0" }
             }
         });
-        return new SqsDispatcher(SqsClient(),
+        return new SqsDispatcher(
+            SqsClient(),
             new SqsDispatcherConfiguration
             {
                 MaxNumberOfMessages = 1,
-                QueueUrl = queue.QueueUrl,
+                QueueUrl = queueUrl ?? queue.QueueUrl,
                 WaitTimeSeconds = 1
             },
             (type, body) =>

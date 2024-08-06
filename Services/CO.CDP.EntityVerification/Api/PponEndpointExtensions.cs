@@ -1,3 +1,6 @@
+using CO.CDP.EntityVerification.Model;
+using CO.CDP.EntityVerification.UseCase;
+using CO.CDP.Functional;
 using CO.CDP.Swashbuckle.Filter;
 using DotSwashbuckle.AspNetCore.SwaggerGen;
 using Microsoft.AspNetCore.Mvc;
@@ -9,8 +12,11 @@ public static class PponEndpointExtensions
 {
     public static void UsePponEndpoints(this WebApplication app)
     {
-        app.MapGet("/identifiers/{identifier}", (string _) => Task.FromResult(Results.NotFound()))
-            .Produces<string>(StatusCodes.Status200OK, "application/json")
+        app.MapGet("/identifiers/{identifier}",
+            async (string identifier, IUseCase<LookupIdentifierQuery, IEnumerable<Identifier>> useCase) =>
+                await useCase.Execute(new LookupIdentifierQuery(identifier))
+                    .AndThen(identifier => identifier.Any() ? Results.Ok(identifier) : Results.NotFound()))
+            .Produces<IEnumerable<Identifier>>(StatusCodes.Status200OK, "application/json")
             .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
             .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
             .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError)
@@ -30,11 +36,11 @@ public static class PponEndpointExtensions
 
 public static class PponApiExtensions
 {
-    public static void DocumentPponApi(this SwaggerGenOptions options)
+    public static void DocumentPponApi(this SwaggerGenOptions options, IConfigurationManager configuration)
     {
         options.SwaggerDoc("v1", new OpenApiInfo
         {
-            Version = "1.0.0",
+            Version = configuration.GetValue("Version", "dev"),
             Title = "PPON Service API",
             Description = "API for organisation identifier queries.",
         });

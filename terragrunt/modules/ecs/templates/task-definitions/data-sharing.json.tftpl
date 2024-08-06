@@ -1,7 +1,7 @@
 [
   {
     "name": "${name}",
-    "image": "${image}",
+    "image": "${image}:${service_version}",
     "cpu": ${cpu},
     "memory": ${memory},
     "portMappings": [
@@ -23,7 +23,8 @@
         {"name": "ASPNETCORE_ENVIRONMENT", "value": "${aspcore_environment}"},
         {"name": "ASPNETCORE_HTTP_PORTS", "value": "${host_port}"},
         {"name": "ForwardedHeaders__KnownNetwork", "value": "${vpc_cidr}"},
-        {"name": "Organisation__Authority", "value": "https://authority.${public_hosted_zone_fqdn}"}
+        {"name": "Organisation__Authority", "value": "https://authority.${public_hosted_zone_fqdn}"},
+        {"name": "VERSION", "value": "${service_version}"}
     ],
     "secrets": [],
     "volumesFrom": [],

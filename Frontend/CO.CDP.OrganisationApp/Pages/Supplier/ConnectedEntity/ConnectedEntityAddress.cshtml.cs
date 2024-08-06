@@ -120,8 +120,12 @@ public class ConnectedEntityAddressModel(ISession session) : PageModel
                             ? "ConnectedEntityLawRegister"
                             : "ConnectedEntityPostalSameAsRegisteredAddress";
                         break;
-                    case ConnectedEntityOrganisationCategoryType.ParentOrSubsidiaryCompany:
+
                     case ConnectedEntityOrganisationCategoryType.ACompanyYourOrganisationHasTakenOver:
+                        redirectPage = "ConnectedEntityCompanyQuestion";
+                        break;
+
+                    case ConnectedEntityOrganisationCategoryType.ParentOrSubsidiaryCompany:                    
                     case ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl:
                         redirectPage = (AddressType == AddressType.Postal && state.PostalAddress != null)
                             ? "ConnectedEntityCompanyQuestion"
@@ -153,7 +157,7 @@ public class ConnectedEntityAddressModel(ISession session) : PageModel
                         redirectPage = "ConnectedEntityCheckAnswersIndividualOrTrust";
                         break;
                     case ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndividualWithSignificantInfluenceOrControlForTrust:
-                        redirectPage = "";
+                        redirectPage = "ConnectedEntityControlCondition";
                         break;
                 }
                 break;
@@ -175,7 +179,7 @@ public class ConnectedEntityAddressModel(ISession session) : PageModel
                     case ConnectedEntityOrganisationCategoryType.ParentOrSubsidiaryCompany:
                     case ConnectedEntityOrganisationCategoryType.ACompanyYourOrganisationHasTakenOver:
                     case ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl:
-                        backPage = $"organisation-name/{ConnectedEntityId}";
+                        backPage = $"organisation-name";
                         break;
                 }
                 break;
@@ -184,11 +188,11 @@ public class ConnectedEntityAddressModel(ISession session) : PageModel
                 {
                     case ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndividual:
                     case ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndividualWithSignificantInfluenceOrControlForIndividual:
-                        backPage = $"individual-psc-details/{ConnectedEntityId}";
+                        backPage = $"individual-psc-details";
                         break;
 
                     case ConnectedEntityIndividualAndTrustCategoryType.DirectorOrIndividualWithTheSameResponsibilitiesForIndividual:
-                        backPage = $"director-residency/{ConnectedEntityId}";
+                        backPage = $"director-residency";
                         break;
                 }
                 break;
@@ -197,10 +201,10 @@ public class ConnectedEntityAddressModel(ISession session) : PageModel
                 {
                     case ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForTrust:
                     case ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndividualWithSignificantInfluenceOrControlForTrust:
-                        backPage = $"individual-psc-details/{ConnectedEntityId}";
+                        backPage = $"individual-psc-details";
                         break;
                     case ConnectedEntityIndividualAndTrustCategoryType.DirectorOrIndividualWithTheSameResponsibilitiesForTrust:
-                        backPage = $"director-residency/{ConnectedEntityId}";
+                        backPage = $"director-residency";
                         break;
                 }
                 break;

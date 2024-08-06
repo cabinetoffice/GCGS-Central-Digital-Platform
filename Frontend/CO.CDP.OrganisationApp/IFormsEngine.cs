@@ -4,7 +4,7 @@ namespace CO.CDP.OrganisationApp;
 
 public interface IFormsEngine
 {
-    Task<SectionQuestionsResponse> LoadFormSectionAsync(Guid organisationId, Guid formId, Guid sectionId);
+    Task<SectionQuestionsResponse> GetFormSectionAsync(Guid organisationId, Guid formId, Guid sectionId);
 
     Task<FormQuestion?> GetNextQuestion(Guid organisationId, Guid formId, Guid sectionId, Guid currentQuestionId);
 

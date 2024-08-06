@@ -9,7 +9,7 @@ module "ecs_service_organisation" {
       container_port                      = var.service_configs.organisation.port
       cpu                                 = var.service_configs.organisation.cpu
       host_port                           = var.service_configs.organisation.port
-      image                               = "${local.ecr_urls[var.service_configs.organisation.name]}:${local.orchestrator_service_version}"
+      image                               = local.ecr_urls[var.service_configs.organisation.name]
       lg_name                             = aws_cloudwatch_log_group.tasks[var.service_configs.organisation.name].name
       lg_prefix                           = "app"
       lg_region                           = data.aws_region.current.name
@@ -18,6 +18,7 @@ module "ecs_service_organisation" {
       public_hosted_zone_fqdn             = var.public_hosted_zone_fqdn
       queue_entity_verification_queue_url = var.queue_entity_verification_queue_url
       queue_organisation_queue_url        = var.queue_organisation_queue_url
+      service_version                     = local.orchestrator_service_version
       vpc_cidr                            = var.vpc_cider
     }
   )

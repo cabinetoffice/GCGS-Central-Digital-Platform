@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using CO.CDP.EntityFrameworkCore.Timestamps;
 using CO.CDP.OrganisationInformation.Persistence.EntityFrameworkCore;
 using CO.CDP.OrganisationInformation.Persistence.Forms;
@@ -7,6 +8,7 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore.Migrations;
 using static CO.CDP.OrganisationInformation.Persistence.ConnectedEntity;
+using static CO.CDP.OrganisationInformation.Persistence.OrganisationInformationContext;
 
 namespace CO.CDP.OrganisationInformation.Persistence;
 
@@ -21,6 +23,7 @@ public class OrganisationInformationContext(DbContextOptions<OrganisationInforma
     public DbSet<ConnectedEntity> ConnectedEntities { get; set; } = null!;
     public DbSet<AuthenticationKey> AuthenticationKeys { get; set; } = null!;
     public DbSet<FormAnswerSet> FormAnswerSets { get; set; } = null!;
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.HasPostgresEnum<ControlCondition>();
@@ -180,7 +183,13 @@ public class OrganisationInformationContext(DbContextOptions<OrganisationInforma
             e.HasOne(fq => fq.NextQuestionAlternative);
             e.Property(p => p.Options)
                 .IsRequired()
-                .HasJsonColumn(new(), PropertyBuilderExtensions.RecordComparer<FormQuestionOptions>());
+                .HasJsonColumn(new FormQuestionOptions(),
+                    PropertyBuilderExtensions.RecordComparer<FormQuestionOptions>());
+            e.Property(p => p.Options)
+            .HasConversion(
+                v => JsonSerializer.Serialize(v, JsonOptions.SerializerOptions),
+                v => JsonSerializer.Deserialize<FormQuestionOptions>(v, JsonOptions.SerializerOptions) ?? new FormQuestionOptions())
+            .HasColumnType("jsonb");
         });
 
         modelBuilder.Entity<FormAnswerSet>(e =>
@@ -192,6 +201,16 @@ public class OrganisationInformationContext(DbContextOptions<OrganisationInforma
         });
 
         modelBuilder.Entity<FormAnswer>().ToTable("form_answers");
+    }
+
+    public static class JsonOptions
+    {
+        public static readonly JsonSerializerOptions SerializerOptions = new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true,
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+            ReferenceHandler = ReferenceHandler.Preserve
+        };
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

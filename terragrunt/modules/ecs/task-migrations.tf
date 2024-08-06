@@ -9,13 +9,14 @@ module "ecs_migration_tasks" {
       cpu                     = var.service_configs.entity_verification_migrations.cpu
       conn_string_location    = each.value.name == "entity-verification-migrations" ? var.db_entity_verification_connection_secret_arn : var.db_sirsi_connection_secret_arn
       aspcore_environment     = local.aspcore_environment
-      image                   = "${local.ecr_urls[each.value.name]}:${local.orchestrator_service_version}"
+      image                   = local.ecr_urls[each.value.name]
       lg_name                 = aws_cloudwatch_log_group.tasks[each.value.name].name
       lg_prefix               = "db"
       lg_region               = data.aws_region.current.name
       memory                  = each.value.memory
       name                    = each.value.name
       public_hosted_zone_fqdn = var.public_hosted_zone_fqdn
+      service_version         = local.orchestrator_service_version
     }
   )
 

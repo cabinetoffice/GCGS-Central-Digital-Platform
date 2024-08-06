@@ -1,27 +1,28 @@
-resource "aws_sqs_queue" "organisation" {
-  name = local.name_organisation_queue
+module "entity_verification_queue" {
+  source = "../sqs"
 
-  delay_seconds              = var.delay_seconds
-  max_message_size           = var.max_message_size
-  message_retention_seconds  = var.message_retention_seconds
-  receive_wait_time_seconds  = var.receive_wait_time_seconds
-  visibility_timeout_seconds = var.visibility_timeout_seconds
-
-  policy = data.aws_iam_policy_document.inbound_queue_policy.json
-
-  tags = var.tags
+  message_retention_seconds = 1209600 # 14 days
+  name                      = local.name_entity_verification_queue
+  role_consumer_arn         = [var.role_ecs_task_arn]
+  role_publisher_arn        = [var.role_ecs_task_arn]
+  tags                      = var.tags
 }
 
-resource "aws_sqs_queue" "entity_verification" {
-  name = local.name_entity_verification_queue
+module "organisation_queue" {
+  source = "../sqs"
 
-  delay_seconds              = var.delay_seconds
-  max_message_size           = var.max_message_size
-  message_retention_seconds  = var.message_retention_seconds
-  receive_wait_time_seconds  = var.receive_wait_time_seconds
-  visibility_timeout_seconds = var.visibility_timeout_seconds
+  message_retention_seconds = 1209600 # 14 days
+  name                      = local.name_organisation_queue
+  role_consumer_arn         = [var.role_ecs_task_arn]
+  role_publisher_arn        = [var.role_ecs_task_arn]
+  tags                      = var.tags
+}
 
-  policy = data.aws_iam_policy_document.outbound_queue_policy.json
 
-  tags = var.tags
+module "healthcheck_queue" {
+  source             = "../sqs"
+  name               = local.name_entity_healthcheck_queue
+  role_consumer_arn  = [var.role_ecs_task_arn]
+  role_publisher_arn = [var.role_ecs_task_arn]
+  tags               = var.tags
 }

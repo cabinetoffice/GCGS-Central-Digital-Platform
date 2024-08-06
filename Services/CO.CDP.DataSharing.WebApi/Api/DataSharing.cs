@@ -1,5 +1,7 @@
 using System.Reflection;
 using CO.CDP.DataSharing.WebApi.Model;
+using CO.CDP.DataSharing.WebApi.UseCase;
+using CO.CDP.Functional;
 using CO.CDP.OrganisationInformation;
 using CO.CDP.Swashbuckle.Filter;
 using CO.CDP.Swashbuckle.Security;
@@ -174,15 +176,9 @@ public static class EndpointExtensions
                 return operation;
             });
 
-        app.MapPost("/share/data", (ShareRequest shareRequest) => Results.Ok(new ShareReceipt
-        {
-            ShareCode = Guid.NewGuid().ToString(),
-            ExpiresAt = shareRequest.ExpiresAt,
-            FormId = shareRequest.SupplierFormId,
-            FormVersionId = "20240317",
-            Permissions = shareRequest.Permissions
-        }
-            ))
+        app.MapPost("/share/data", async (ShareRequest shareRequest, IUseCase<ShareRequest, ShareReceipt> useCase) =>
+                await useCase.Execute(shareRequest)
+                    .AndThen(shareReceipt => Results.Ok(shareReceipt)))
             .Produces<ShareReceipt>(StatusCodes.Status200OK, "application/json")
             .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
             .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError)
@@ -190,8 +186,8 @@ public static class EndpointExtensions
             {
                 operation.OperationId = "CreateSharedData";
                 operation.Description =
-                    "[STUB] Operation to obtain Supplier information which has been shared as part of a notice. [STUB]";
-                operation.Summary = "[STUB] Create Supplier Submitted Information. [STUB]";
+                    "Operation to obtain Supplier information which has been shared as part of a notice.";
+                operation.Summary = "Create Supplier Submitted Information.";
                 operation.Responses["200"].Description = "Organisation Information created.";
                 operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
                 operation.Responses["500"].Description = "Internal server error.";
@@ -228,16 +224,16 @@ public static class EndpointExtensions
 
 public static class ApiExtensions
 {
-    public static void DocumentDataSharingApi(this SwaggerGenOptions options)
+    public static void DocumentDataSharingApi(this SwaggerGenOptions options, IConfigurationManager configuration)
     {
         options.SwaggerDoc("v1", new OpenApiInfo
         {
-            Version = "1.0.0",
+            Version = configuration.GetValue("Version", "dev"),
             Title = "Data Sharing API",
             Description = "",
         });
         options.IncludeXmlComments(Assembly.GetExecutingAssembly(), Assembly.GetAssembly(typeof(Address)));
-        options.OperationFilter<ProblemDetailsOperationFilter>();
+        options.OperationFilter<ProblemDetailsOperationFilter>(Extensions.ServiceCollectionExtensions.ErrorCodes());
         options.ConfigureApiKeySecurity();
     }
 }

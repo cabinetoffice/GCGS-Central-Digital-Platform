@@ -15,10 +15,14 @@
   </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="AutoMapper" Version="13.0.1" />
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.7" />
         <PackageReference Include="DotSwashbuckle.AspNetCore" Version="3.0.10" />
+        <PackageReference Include="Nanoid" Version="3.1.0" />
+        <ProjectReference Include="..\..\Libraries\CO.CDP.Functional\CO.CDP.Functional.csproj" />
         <ProjectReference Include="..\..\Libraries\CO.CDP.Swashbuckle\CO.CDP.Swashbuckle.csproj" />
         <ProjectReference Include="..\..\Libraries\CO.CDP.Configuration\CO.CDP.Configuration.csproj" />
+        <ProjectReference Include="..\CO.CDP.OrganisationInformation.Persistence\CO.CDP.OrganisationInformation.Persistence.csproj" />
         <ProjectReference Include="..\CO.CDP.OrganisationInformation\CO.CDP.OrganisationInformation.csproj" />
     </ItemGroup>
 

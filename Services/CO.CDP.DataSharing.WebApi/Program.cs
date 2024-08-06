@@ -1,5 +1,8 @@
 using CO.CDP.Configuration.ForwardedHeaders;
 using CO.CDP.DataSharing.WebApi.Api;
+using CO.CDP.DataSharing.WebApi.Extensions;
+using CO.CDP.DataSharing.WebApi.Model;
+using CO.CDP.DataSharing.WebApi.UseCase;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.ConfigureForwardedHeaders();
@@ -9,12 +12,15 @@ builder.ConfigureForwardedHeaders();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
-    options.DocumentDataSharingApi();
+    options.DocumentDataSharingApi(builder.Configuration);
 });
 
 builder.Services.AddHealthChecks();
 
 builder.Services.AddProblemDetails();
+
+builder.Services.AddScoped<IUseCase<ShareRequest, ShareReceipt>, GenerateShareCodeUseCase>();
+builder.Services.AddDataSharingProblemDetails();
 
 var app = builder.Build();
 app.UseForwardedHeaders();

@@ -23,7 +23,7 @@ builder.ConfigureForwardedHeaders();
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(options => { options.DocumentOrganisationApi(); });
+builder.Services.AddSwaggerGen(options => { options.DocumentOrganisationApi(builder.Configuration); });
 builder.Services.AddHealthChecks()
     .AddNpgSql(builder.Configuration.GetConnectionString("OrganisationInformationDatabase") ?? "");
 builder.Services.AddAutoMapper(typeof(WebApiToPersistenceProfile));
@@ -65,6 +65,7 @@ builder.Services.AddScoped<IUseCase<(Guid, UpdateOrganisation), bool>, UpdateOrg
 builder.Services.AddScoped<IUseCase<(Guid, UpdateBuyerInformation), bool>, UpdateBuyerInformationUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, UpdateSupplierInformation), bool>, UpdateSupplierInformationUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, RegisterConnectedEntity), bool>, RegisterConnectedEntityUseCase>();
+builder.Services.AddScoped<IUseCase<(Guid, Guid, UpdateConnectedEntity), bool>, UpdateConnectedEntityUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, DeleteSupplierInformation), bool>, DeleteSupplierInformationUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, Guid, DeleteConnectedEntity), bool>, DeleteConnectedEntityUseCase>();
 builder.Services.AddOrganisationProblemDetails();

@@ -25,10 +25,27 @@ public class DatabaseFormRepository(OrganisationInformationContext context) : IF
         await context.SaveChangesAsync();
     }
 
+    public async Task SaveSharedConsentAsync(SharedConsent sharedConsent)
+    {
+        context.Update(sharedConsent);
+        await context.SaveChangesAsync();
+    }
+
     public async Task<FormSection?> GetFormSectionAsync(Guid sectionId)
     {
         return await context.Set<FormSection>()
             .FirstOrDefaultAsync(s => s.Guid == sectionId);
+    }
+
+    #endregion
+
+    #region Shared Consents Methods
+
+    public async Task<SharedConsent?> GetSharedConsentDraftAsync(Guid formId, Guid organisationId)
+    {
+        return await context.Set<SharedConsent>()
+            .Where(x => x.SubmissionState == SubmissionState.Draft && x.BookingReference == string.Empty)
+            .FirstOrDefaultAsync(s => s.Form.Guid == formId && s.Organisation.Guid == organisationId);
     }
 
     #endregion

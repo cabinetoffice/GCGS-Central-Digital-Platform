@@ -6,7 +6,7 @@ namespace CO.CDP.OrganisationApp;
 
 public class FormsEngine(IFormsClient formsApiClient, ITempDataService tempDataService) : IFormsEngine
 {
-    public async Task<SectionQuestionsResponse> LoadFormSectionAsync(Guid organisationId, Guid formId, Guid sectionId)
+    public async Task<SectionQuestionsResponse> GetFormSectionAsync(Guid organisationId, Guid formId, Guid sectionId)
     {
         var sessionKey = $"Form_{organisationId}_{formId}_{sectionId}_Questions";
         var cachedResponse = tempDataService.Peek<SectionQuestionsResponse>(sessionKey);
@@ -49,7 +49,7 @@ public class FormsEngine(IFormsClient formsApiClient, ITempDataService tempDataS
 
     public async Task<Models.FormQuestion?> GetNextQuestion(Guid organisationId, Guid formId, Guid sectionId, Guid currentQuestionId)
     {
-        var section = await LoadFormSectionAsync(organisationId, formId, sectionId);
+        var section = await GetFormSectionAsync(organisationId, formId, sectionId);
         if (section.Questions == null)
         {
             return null;
@@ -62,7 +62,7 @@ public class FormsEngine(IFormsClient formsApiClient, ITempDataService tempDataS
     public async Task<Models.FormQuestion?> GetPreviousQuestion(Guid organisationId, Guid formId, Guid sectionId, Guid currentQuestionId)
     {
 
-        var section = await LoadFormSectionAsync(organisationId, formId, sectionId);
+        var section = await GetFormSectionAsync(organisationId, formId, sectionId);
         if (section.Questions == null)
         {
             return null;
@@ -74,7 +74,7 @@ public class FormsEngine(IFormsClient formsApiClient, ITempDataService tempDataS
 
     public async Task<Models.FormQuestion?> GetCurrentQuestion(Guid organisationId, Guid formId, Guid sectionId, Guid? questionId)
     {
-        var section = await LoadFormSectionAsync(organisationId, formId, sectionId);
+        var section = await GetFormSectionAsync(organisationId, formId, sectionId);
         if (section.Questions == null)
         {
             return null;

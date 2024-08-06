@@ -158,6 +158,65 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
     }
 
     [Fact]
+    public async Task GetSharedConsentDraftAsync_WhenSharedConsentDoesNotExist_ReturnsNull()
+    {
+        using var repository = FormRepository();
+
+        var foundSection = await repository.GetSharedConsentDraftAsync(Guid.NewGuid(), Guid.NewGuid());
+
+        foundSection.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task GetSharedConsentDraftAsync_WhenSectionDoesNotExist_ReturnsEmptyList()
+    {
+        var formId = Guid.NewGuid();
+        var formVersionId = string.Empty;
+
+        var sharedConsent = new SharedConsent()
+        {
+            Guid = formId,
+            Organisation = new Organisation
+            {
+                Guid = Guid.NewGuid(),
+                Name = string.Empty,
+                Tenant = new Tenant
+                {
+                    Guid = Guid.NewGuid(),
+                    Name = string.Empty
+                }
+            },
+            Form = new Form
+            {
+                Guid = formId,
+                Name = string.Empty,
+                Version = string.Empty,
+                IsRequired = default,
+                Type = default,
+                Scope = default,
+                Sections = new List<FormSection> { }
+            },
+            AnswerSets = new List<FormAnswerSet> { },
+            SubmissionState = SubmissionState.Draft,
+            SubmittedAt = DateTime.UtcNow,
+            FormVersionId = formVersionId,
+            BookingReference = string.Empty
+        };
+
+        using var context = postgreSql.OrganisationInformationContext();
+        await context.SharedConsents.AddAsync(sharedConsent);
+        await context.SaveChangesAsync();
+
+        using var repository = FormRepository();
+
+        var found = await repository.GetSharedConsentDraftAsync(sharedConsent.Form.Guid, sharedConsent.Organisation.Guid);
+
+        found.Should().NotBeNull();
+        found.As<SharedConsent>().SubmissionState.Should().Be(SubmissionState.Draft);
+        found.As<SharedConsent>().BookingReference.Should().Be(string.Empty);
+    }
+
+    [Fact]
     public async Task DeleteAnswerSetAsync_ShouldReturnFalse_WhenAnswerSetNotFound()
     {
         var organisationId = Guid.NewGuid();
@@ -506,6 +565,69 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
         var foundAnswer = foundAnswerSet.Answers.First();
         foundAnswer.Question.Should().Be(question);
         foundAnswer.BoolValue.Should().BeFalse();
+    }
+
+    [Fact]
+    public async Task GetQuestionsAsync_WhenOptionsAreSimple_ReturnsCorrectOptions()
+    {
+        using var repository = FormRepository();
+        var formId = Guid.NewGuid();
+        var sectionId = Guid.NewGuid();
+
+        var form = GivenForm(formId);
+        var section = GivenSection(sectionId, form);
+        form.Sections.Add(section);
+
+        var questionId = Guid.NewGuid();
+        var choiceId = Guid.NewGuid();
+
+        var simpleOptions = new FormQuestionOptions
+        {
+            Choices = new List<FormQuestionChoice>
+        {
+            new FormQuestionChoice
+            {
+                Id = choiceId,
+                Title = "Choice 1",
+                GroupName = "Group 1",
+                Hint = new FormQuestionChoiceHint
+                {
+                    Title = "Hint Title",
+                    Description = "Hint Description"
+                }
+            }
+        },
+            ChoiceProviderStrategy = "SimpleStrategy"
+        };
+
+        var question = new FormQuestion
+        {
+            Guid = questionId,
+            Section = section,
+            Title = "Question with Simple Options",
+            Description = "This is a test question with simple options.",
+            Type = FormQuestionType.SingleChoice,
+            IsRequired = true,
+            NextQuestion = null,
+            NextQuestionAlternative = null,
+            Options = simpleOptions
+        };
+
+        section.Questions.Add(question);
+        await repository.SaveFormAsync(form);
+
+        var foundQuestions = await repository.GetQuestionsAsync(sectionId);
+
+        foundQuestions.Should().NotBeEmpty();
+        foundQuestions.Should().HaveCount(1);
+
+        var foundQuestion = foundQuestions.First();
+        foundQuestion.Options.Should().NotBeNull();
+
+        foundQuestion.Options!.Choices.Should().NotBeNull().And.HaveCount(1);
+
+        var foundChoice = foundQuestion?.Options?.Choices?.First();
+        foundChoice.Should().BeEquivalentTo(simpleOptions.Choices.First(), config => config.Excluding(ctx => ctx.Id));
     }
 
     private static Form GivenForm(Guid formId)

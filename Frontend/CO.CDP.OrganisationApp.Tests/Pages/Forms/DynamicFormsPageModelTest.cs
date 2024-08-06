@@ -97,7 +97,7 @@ public class DynamicFormsPageModelTest
         }
         };
 
-        _formsEngineMock.Setup(f => f.LoadFormSectionAsync(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid>()))
+        _formsEngineMock.Setup(f => f.GetFormSectionAsync(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid>()))
             .ReturnsAsync(form);
 
         var result = await _pageModel.CheckYourAnswerQuestionId();
@@ -132,7 +132,7 @@ public class DynamicFormsPageModelTest
         }
         };
 
-        _formsEngineMock.Setup(f => f.LoadFormSectionAsync(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid>()))
+        _formsEngineMock.Setup(f => f.GetFormSectionAsync(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid>()))
             .ReturnsAsync(form);
 
         var answers = await _pageModel.GetAnswers();
@@ -153,7 +153,7 @@ public class DynamicFormsPageModelTest
         _formsEngineMock.Setup(f => f.GetCurrentQuestion(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid?>()))
             .ReturnsAsync(formQuestion);
 
-        _formsEngineMock.Setup(f => f.LoadFormSectionAsync(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid>()))
+        _formsEngineMock.Setup(f => f.GetFormSectionAsync(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid>()))
             .ReturnsAsync(new SectionQuestionsResponse
             {
                 Questions = new List<FormQuestion>
@@ -170,5 +170,4 @@ public class DynamicFormsPageModelTest
         result.Should().BeOfType<RedirectToPageResult>()
               .Which.PageName.Should().Be("FormsAddAnotherAnswerSet");
     }
-
 }

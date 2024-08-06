@@ -65,6 +65,8 @@ public class GetFormSectionQuestionsTest
         var question2 = Guid.NewGuid();
         var question3 = Guid.NewGuid();
         var question4 = Guid.NewGuid();
+        var question5 = Guid.NewGuid();
+        var question6 = Guid.NewGuid();
 
         return new SectionQuestionsResponse
         {
@@ -117,6 +119,22 @@ public class GetFormSectionQuestionsTest
                         Type = FormQuestionType.Date,
                         IsRequired = true,
                         Options = new FormQuestionOptions()
+                    },
+                    new FormQuestion
+                    {
+                        Id = question5,
+                        Title = "Check your answers",
+                        Type = FormQuestionType.CheckYourAnswers,
+                        IsRequired = true,
+                        Options = new FormQuestionOptions()
+                    },
+                    new FormQuestion
+                    {
+                        Id = question6,
+                        Title = "Enter your postal address",
+                        Type = FormQuestionType.Address,
+                        IsRequired = true,
+                        Options = new FormQuestionOptions()
                     }
                 },
             AnswerSets = new List<FormAnswerSet>
@@ -137,7 +155,6 @@ public class GetFormSectionQuestionsTest
                             Id=Guid.NewGuid(),
                             QuestionId=question2,
                             OptionValue="yes"
-                            
                         },
                             new FormAnswer
                         {
@@ -148,9 +165,8 @@ public class GetFormSectionQuestionsTest
                         new FormAnswer
                         {
                             Id=Guid.NewGuid(),
-                            QuestionId=question4,                            
+                            QuestionId=question4,
                             DateValue=DateTime.Now
-
                         }
                     }
                 }

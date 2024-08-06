@@ -365,6 +365,35 @@ public static class EndpointExtensions
                 return operation;
             });
 
+        app.MapPut("/{organisationId}/connected-entities/{connectedEntityId}",
+                async (Guid organisationId, Guid connectedEntityId, UpdateConnectedEntity updateConnectedEntity,
+                        IUseCase<(Guid, Guid, UpdateConnectedEntity), bool> useCase) =>
+
+                    await useCase.Execute((organisationId, connectedEntityId, updateConnectedEntity))
+                        .AndThen(_ => Results.NoContent())
+            )
+            .Produces(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status204NoContent)
+            .ProducesProblem(StatusCodes.Status400BadRequest)
+            .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
+            .ProducesProblem(StatusCodes.Status404NotFound)
+            .ProducesProblem(StatusCodes.Status422UnprocessableEntity)
+            .ProducesProblem(StatusCodes.Status500InternalServerError)
+            .WithOpenApi(operation =>
+            {
+                operation.OperationId = "UpdateConnectedEntity";
+                operation.Description = "Updates a connected entity.";
+                operation.Summary = "Update a connected entity.";
+                operation.Responses["200"].Description = "Connected entity updated successfully.";
+                operation.Responses["204"].Description = "Connected entity updated successfully.";
+                operation.Responses["400"].Description = "Bad request.";
+                operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
+                operation.Responses["404"].Description = "Connected entity not found.";
+                operation.Responses["422"].Description = "Unprocessable entity.";
+                operation.Responses["500"].Description = "Internal server error.";
+                return operation;
+            });
+
         app.MapDelete("/{organisationId}/connected-entities/{connectedEntityId}",
                 async (Guid organisationId, Guid connectedEntityId, [FromBody] DeleteConnectedEntity deleteConnectedEntity,
                         IUseCase<(Guid, Guid, DeleteConnectedEntity), bool> useCase) =>
@@ -396,24 +425,13 @@ public static class EndpointExtensions
 
 public static class ApiExtensions
 {
-    public static void DocumentOrganisationApi(this SwaggerGenOptions options)
+    public static void DocumentOrganisationApi(this SwaggerGenOptions options, IConfigurationManager configuration)
     {
         options.SwaggerDoc("v1", new OpenApiInfo
         {
-            Version = "1.0.0",
+            Version = configuration.GetValue("Version", "dev"),
             Title = "Organisation Management API",
-            Description = "API for creating, updating, deleting, and listing organisations, including a lookup feature against organisation identifiers.",
-            TermsOfService = new Uri("https://example.com/terms"),
-            Contact = new OpenApiContact
-            {
-                Name = "Example Contact",
-                Url = new Uri("https://example.com/contact")
-            },
-            License = new OpenApiLicense
-            {
-                Name = "Example License",
-                Url = new Uri("https://example.com/license")
-            }
+            Description = "API for creating, updating, deleting, and listing organisations, including a lookup feature against organisation identifiers."
         });
         options.CustomSchemaIds(type =>
         {

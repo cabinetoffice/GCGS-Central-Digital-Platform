@@ -1,7 +1,7 @@
 [
   {
     "name": "${name}",
-    "image": "${image}",
+    "image": "${image}:${service_version}",
     "cpu": ${cpu},
     "memory": ${memory},
     "portMappings": [
@@ -22,11 +22,12 @@
     "environment": [
         {"name": "ASPNETCORE_ENVIRONMENT", "value": "${aspcore_environment}"},
         {"name": "ASPNETCORE_HTTP_PORTS", "value": "${host_port}"},
+        {"name": "FormsService", "value": "https://forms.${public_hosted_zone_fqdn}"},
         {"name": "ForwardedHeaders__KnownNetwork", "value": "${vpc_cidr}"},
-        {"name": "TenantService", "value": "https://tenant.${public_hosted_zone_fqdn}"},
-        {"name": "Organisation__Authority", "value": "https://authority.${public_hosted_zone_fqdn}"},
         {"name": "OrganisationService", "value": "https://organisation.${public_hosted_zone_fqdn}"},
-        {"name": "PersonService", "value": "https://person.${public_hosted_zone_fqdn}"}
+        {"name": "Organisation__Authority", "value": "https://authority.${public_hosted_zone_fqdn}"},
+        {"name": "PersonService", "value": "https://person.${public_hosted_zone_fqdn}"},
+        {"name": "TenantService", "value": "https://tenant.${public_hosted_zone_fqdn}"}
     ],
     "secrets": [
         {"name": "OneLogin__Authority", "valueFrom": "${onelogin_authority}"},
