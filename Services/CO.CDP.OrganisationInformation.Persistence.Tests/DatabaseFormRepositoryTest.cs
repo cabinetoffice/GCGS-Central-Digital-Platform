@@ -158,6 +158,65 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
     }
 
     [Fact]
+    public async Task GetSharedConsentDraftAsync_WhenSharedConsentDoesNotExist_ReturnsNull()
+    {
+        using var repository = FormRepository();
+
+        var foundSection = await repository.GetSharedConsentDraftAsync(Guid.NewGuid(), Guid.NewGuid());
+
+        foundSection.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task GetSharedConsentDraftAsync_WhenSectionDoesNotExist_ReturnsEmptyList()
+    {
+        var formId = Guid.NewGuid();
+        var formVersionId = string.Empty;
+
+        var sharedConsent = new SharedConsent()
+        {
+            Guid = formId,
+            Organisation = new Organisation
+            {
+                Guid = Guid.NewGuid(),
+                Name = string.Empty,
+                Tenant = new Tenant
+                {
+                    Guid = Guid.NewGuid(),
+                    Name = string.Empty
+                }
+            },
+            Form = new Form
+            {
+                Guid = formId,
+                Name = string.Empty,
+                Version = string.Empty,
+                IsRequired = default,
+                Type = default,
+                Scope = default,
+                Sections = new List<FormSection> { }
+            },
+            AnswerSets = new List<FormAnswerSet> { },
+            SubmissionState = SubmissionState.Draft,
+            SubmittedAt = DateTime.UtcNow,
+            FormVersionId = formVersionId,
+            BookingReference = string.Empty
+        };
+
+        using var context = postgreSql.OrganisationInformationContext();
+        await context.SharedConsents.AddAsync(sharedConsent);
+        await context.SaveChangesAsync();
+
+        using var repository = FormRepository();
+
+        var found = await repository.GetSharedConsentDraftAsync(sharedConsent.Form.Guid, sharedConsent.Organisation.Guid);
+
+        found.Should().NotBeNull();
+        found.As<SharedConsent>().SubmissionState.Should().Be(SubmissionState.Draft);
+        found.As<SharedConsent>().BookingReference.Should().Be(string.Empty);
+    }
+
+    [Fact]
     public async Task DeleteAnswerSetAsync_ShouldReturnFalse_WhenAnswerSetNotFound()
     {
         var organisationId = Guid.NewGuid();
