@@ -1,4 +1,5 @@
 using CO.CDP.Forms.WebApiClient;
+using CO.CDP.OrganisationApp.Constants;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -100,8 +101,8 @@ public class FormsAddAnotherAnswerSetModel(
                     NumericValue = a.NumericValue,
                     OptionValue = a.OptionValue,
                     StartValue = a.StartValue,
-                    TextValue = a.TextValue
-                    // TODO : Add address mapping once api response exposed with AddressValue
+                    TextValue = a.TextValue,
+                    AddressValue = MapAddress(a.AddressValue)
                 }
             }).ToList()
         };
@@ -111,6 +112,18 @@ public class FormsAddAnotherAnswerSetModel(
         var checkYourAnswersQuestionId = response?.Questions?.FirstOrDefault(q => q.Type == FormQuestionType.CheckYourAnswers)?.Id;
 
         return RedirectToPage("DynamicFormsPage", new { OrganisationId, FormId, SectionId, CurrentQuestionId = checkYourAnswersQuestionId });
+    }
+
+    private static Models.Address? MapAddress(FormAddress? formAdddress)
+    {
+        if (formAdddress == null) return null;
+        return new Models.Address
+        {
+            AddressLine1 = formAdddress.StreetAddress,
+            TownOrCity = formAdddress.Locality,
+            Postcode = formAdddress.PostalCode,
+            Country = formAdddress.CountryName
+        };
     }
 
     private async Task<bool> InitAndVerifyPage()
@@ -156,7 +169,7 @@ public class FormsAddAnotherAnswerSetModel(
                         FormQuestionType.FileUpload => answer.TextValue ?? "",
                         FormQuestionType.YesOrNo => answer.BoolValue.HasValue == true ? (answer.BoolValue == true ? "yes" : "no") : "",
                         FormQuestionType.Date => answer.DateValue.HasValue == true ? answer.DateValue.Value.ToString("dd/MM/yyyy") : "",
-                        // TODO : Add address mapping once api response exposed with AddressValue
+                        FormQuestionType.Address => answer.AddressValue != null ? $"{answer.AddressValue.StreetAddress}<br/>{answer.AddressValue.Locality}<br/>{answer.AddressValue.PostalCode}<br/>{answer.AddressValue.CountryName}" : "",
                         _ => ""
                     };
 
