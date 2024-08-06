@@ -1,5 +1,4 @@
 using CO.CDP.Forms.WebApiClient;
-using CO.CDP.OrganisationApp.Constants;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -169,7 +168,7 @@ public class FormsAddAnotherAnswerSetModel(
                         FormQuestionType.FileUpload => answer.TextValue ?? "",
                         FormQuestionType.YesOrNo => answer.BoolValue.HasValue == true ? (answer.BoolValue == true ? "yes" : "no") : "",
                         FormQuestionType.Date => answer.DateValue.HasValue == true ? answer.DateValue.Value.ToString("dd/MM/yyyy") : "",
-                        FormQuestionType.Address => answer.AddressValue != null ? $"{answer.AddressValue.StreetAddress}<br/>{answer.AddressValue.Locality}<br/>{answer.AddressValue.PostalCode}<br/>{answer.AddressValue.CountryName}" : "",
+                        FormQuestionType.Address => answer.AddressValue != null ? $"{answer.AddressValue.StreetAddress}, {answer.AddressValue.Locality}, {answer.AddressValue.PostalCode}, {answer.AddressValue.CountryName}" : "",
                         _ => ""
                     };
 
