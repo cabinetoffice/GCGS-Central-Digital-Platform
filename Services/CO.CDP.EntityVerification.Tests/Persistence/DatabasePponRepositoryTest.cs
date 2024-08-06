@@ -29,7 +29,7 @@ public class DatabasePponRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
     public async Task ItFindsPponByIdentifierPpon()
     {
         using var repository = PponRepository();
-        var ppon = GivenPpon(pponId: "b69ffded365449f6aa4c340f5997fd2e");
+        var ppon = GivenPpon(pponId: "dba3fb78c1f3401fa44774c0ad2ba6bc");
         var identifier = new Identifier() {
             IdentifierId = "GB123123123",
             Scheme = "GB-COH",
