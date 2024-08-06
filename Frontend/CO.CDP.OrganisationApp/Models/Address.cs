@@ -10,8 +10,8 @@ public class Address
 
     public required string Country { get; set; }
 
-    public override string ToString()
+    public string ToHtmlString()
     {
-        return $"{AddressLine1}, {TownOrCity}, {Postcode}, {Country}";
+        return $"{AddressLine1}<br/>{TownOrCity}<br/>{Postcode}<br/>{Country}";
     }
 }

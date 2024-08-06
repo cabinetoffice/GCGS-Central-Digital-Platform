@@ -151,7 +151,7 @@ public class DynamicFormsPageModel(
                     FormQuestionType.FileUpload => answer.Answer?.TextValue ?? "",
                     FormQuestionType.YesOrNo => answer.Answer?.BoolValue.HasValue == true ? (answer.Answer.BoolValue == true ? "yes" : "no") : "",
                     FormQuestionType.Date => answer.Answer?.DateValue.HasValue == true ? answer.Answer.DateValue.Value.ToString("dd/MM/yyyy") : "",
-                    FormQuestionType.Address => answer.Answer?.AddressValue != null ? answer.Answer.AddressValue.ToString() : "",
+                    FormQuestionType.Address => answer.Answer?.AddressValue != null ? answer.Answer.AddressValue.ToHtmlString() : "",
                     _ => ""
                 };
 
@@ -162,7 +162,8 @@ public class DynamicFormsPageModel(
                     ChangeLink = $"/organisation/{OrganisationId}/forms/{FormId}/sections/{SectionId}/{answer.QuestionId}?frm-chk-answer"
                 };
 
-                if (question.Type == FormQuestionType.Address && answer.Answer?.AddressValue != null)
+                if (question.Type == FormQuestionType.Address && answer.Answer?.AddressValue != null
+                    && answer.Answer.AddressValue.Country != Constants.Country.UnitedKingdom)
                 {
                     summary.ChangeLink += "&UkOrNonUk=non-uk";
                 }

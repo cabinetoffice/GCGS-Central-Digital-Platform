@@ -11,4 +11,14 @@ public record FormAnswer
     public DateTime? EndValue { get; init; }
     public string? TextValue { get; init; }
     public string? OptionValue { get; init; }
+    public FormAddress? AddressValue { get; init; }
+}
+
+public record FormAddress
+{
+    public required string StreetAddress { get; init; }
+    public required string Locality { get; init; }
+    public string? Region { get; init; }
+    public required string PostalCode { get; init; }
+    public required string CountryName { get; init; }
 }
