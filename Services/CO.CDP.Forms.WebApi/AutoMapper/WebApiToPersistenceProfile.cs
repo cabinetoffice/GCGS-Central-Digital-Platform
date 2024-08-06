@@ -40,6 +40,8 @@ public class WebApiToPersistenceProfile : Profile
             .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Guid))
             .ForMember(dest => dest.QuestionId, opt => opt.MapFrom(src => src.Question.Guid));
 
+        CreateMap<Persistence.FormAddress, Model.FormAddress>().ReverseMap();
+
         CreateMap<Persistence.FormAnswerSet, Model.FormAnswerSet>()
               .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Guid));
     }

@@ -1,5 +1,3 @@
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using CO.CDP.EntityFrameworkCore.Timestamps;
 using CO.CDP.OrganisationInformation.Persistence.EntityFrameworkCore;
 using CO.CDP.OrganisationInformation.Persistence.Forms;
@@ -7,8 +5,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore.Migrations;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using static CO.CDP.OrganisationInformation.Persistence.ConnectedEntity;
-using static CO.CDP.OrganisationInformation.Persistence.OrganisationInformationContext;
 
 namespace CO.CDP.OrganisationInformation.Persistence;
 
@@ -183,13 +182,9 @@ public class OrganisationInformationContext(DbContextOptions<OrganisationInforma
             e.HasOne(fq => fq.NextQuestionAlternative);
             e.Property(p => p.Options)
                 .IsRequired()
-                .HasJsonColumn(new FormQuestionOptions(),
-                    PropertyBuilderExtensions.RecordComparer<FormQuestionOptions>());
-            e.Property(p => p.Options)
-            .HasConversion(
-                v => JsonSerializer.Serialize(v, JsonOptions.SerializerOptions),
-                v => JsonSerializer.Deserialize<FormQuestionOptions>(v, JsonOptions.SerializerOptions) ?? new FormQuestionOptions())
-            .HasColumnType("jsonb");
+                .HasJsonColumn(new(),
+                    PropertyBuilderExtensions.RecordComparer<FormQuestionOptions>(),
+                    JsonOptions.SerializerOptions);
         });
 
         modelBuilder.Entity<FormAnswerSet>(e =>
@@ -200,7 +195,13 @@ public class OrganisationInformationContext(DbContextOptions<OrganisationInforma
                 .HasDefaultValue(false);
         });
 
-        modelBuilder.Entity<FormAnswer>().ToTable("form_answers");
+        modelBuilder.Entity<FormAnswer>(e =>
+        {
+            e.ToTable("form_answers");
+            e.Property(p => p.AddressValue)
+                .HasJsonColumn(PropertyBuilderExtensions.RecordComparer<FormAddress>(),
+                    JsonOptions.SerializerOptions);
+        });
     }
 
     public static class JsonOptions
@@ -238,15 +239,28 @@ internal static class PropertyBuilderExtensions
             c => c
         );
 
-    public static PropertyBuilder<TProperty> HasJsonColumn<TProperty>(
-        this PropertyBuilder<TProperty> propertyBuilder,
-        TProperty defaultValue,
-        ValueComparer<TProperty> valueComparer
+    public static PropertyBuilder<TProperty?> HasJsonColumn<TProperty>(
+        this PropertyBuilder<TProperty?> propertyBuilder,
+        ValueComparer<TProperty> valueComparer,
+        JsonSerializerOptions? jsonSerializerOptions = null
     ) => propertyBuilder
         .HasColumnType("jsonb")
         .HasConversion(
-            v => JsonSerializer.Serialize(v, JsonSerializerOptions.Default),
-            v => JsonSerializer.Deserialize<TProperty>(v, JsonSerializerOptions.Default) ?? defaultValue,
+            v => JsonSerializer.Serialize(v, jsonSerializerOptions ?? JsonSerializerOptions.Default),
+            v => JsonSerializer.Deserialize<TProperty?>(v, jsonSerializerOptions ?? JsonSerializerOptions.Default),
+            valueComparer
+        );
+
+    public static PropertyBuilder<TProperty> HasJsonColumn<TProperty>(
+        this PropertyBuilder<TProperty> propertyBuilder,
+        TProperty defaultValue,
+        ValueComparer<TProperty> valueComparer,
+        JsonSerializerOptions? jsonSerializerOptions = null
+    ) => propertyBuilder
+        .HasColumnType("jsonb")
+        .HasConversion(
+            v => JsonSerializer.Serialize(v, jsonSerializerOptions ?? JsonSerializerOptions.Default),
+            v => JsonSerializer.Deserialize<TProperty>(v, jsonSerializerOptions ?? JsonSerializerOptions.Default) ?? defaultValue,
             valueComparer
         );
 }
