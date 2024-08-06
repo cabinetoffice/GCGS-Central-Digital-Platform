@@ -1,7 +1,7 @@
 @model FormElementCheckBoxInputModel
 
 @{
-    var hasError = ((TagBuilder)Html.ValidationMessageFor(m => m.CheckBoxInput)).HasInnerHtml;
+    var hasError = ((TagBuilder)Html.ValidationMessageFor(m => m.CheckBoxInput)).HasInnerHtml;    
 }
 
 
@@ -28,7 +28,7 @@
             <div class="govuk-checkboxes__item">
                 <input class="govuk-checkboxes__input" id="declarationStatement" name="CheckBoxInput" type="checkbox" value="true" @(Model.CheckBoxInput == true ? "checked" : "")>
                 <label class="govuk-label govuk-checkboxes__label" for="declarationStatement">
-                    I understand and agree to the above statements
+                    @Html.Raw(Model.Options?.Choices?.FirstOrDefault())
                 </label>
             </div>
         </div>

@@ -46,9 +46,6 @@ public class DynamicFormsPageModel(
     [BindProperty]
     public FormElementCheckBoxInputModel? CheckBoxModel { get; set; }
 
-    [BindProperty]
-    public FormElementNameInputModel? NameInputModel { get; set; }
-
     public FormQuestionType? CurrentFormQuestionType { get; private set; }
 
     public string? PartialViewName { get; private set; }
@@ -222,7 +219,6 @@ public class DynamicFormsPageModel(
             { FormQuestionType.Date, "_FormElementDateInput" },
             { FormQuestionType.Text, "_FormElementTextInput" },
             { FormQuestionType.CheckBox, "_FormElementCheckBoxInput" },
-            { FormQuestionType.NameInput, "_FormElementNameInput" },
             { FormQuestionType.Address, "_FormElementAddress" }
         };
 
@@ -247,7 +243,6 @@ public class DynamicFormsPageModel(
             FormQuestionType.YesOrNo => YesNoInputModel ?? new FormElementYesNoInputModel(),
             FormQuestionType.Date => DateInputModel ?? new FormElementDateInputModel(),
             FormQuestionType.CheckBox => CheckBoxModel ?? new FormElementCheckBoxInputModel(),
-            FormQuestionType.NameInput => NameInputModel ?? new FormElementNameInputModel(),
             FormQuestionType.Address => AddressModel ?? new FormElementAddressModel(),
             _ => throw new NotImplementedException($"Forms question: {question.Type} is not supported"),
         };

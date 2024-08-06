@@ -67,6 +67,5 @@ public enum FormQuestionType
     CheckYourAnswers,
     Date,
     CheckBox,
-    Address,
-    NameInput
+    Address
 }
