@@ -33,17 +33,6 @@ public class GenerateShareCodeUseCaseTest(AutoMapperFixture mapperFixture) : ICl
         var formId = Guid.NewGuid();
         var formVersionId = string.Empty;
 
-        var form = new Form
-        {
-            Guid = formId,
-            Name = string.Empty,
-            Version = string.Empty,
-            IsRequired = default,
-            Type = default,
-            Scope = default,
-            Sections = new List<FormSection> { }
-        };
-
         var shareRequest = new ShareRequest
         {
             FormId = formId,
@@ -63,7 +52,16 @@ public class GenerateShareCodeUseCaseTest(AutoMapperFixture mapperFixture) : ICl
                     Name = string.Empty
                 }
             },
-            Form = form,
+            Form = new Form
+            {
+                Guid = formId,
+                Name = string.Empty,
+                Version = string.Empty,
+                IsRequired = default,
+                Type = default,
+                Scope = default,
+                Sections = new List<FormSection> { }
+            },
             AnswerSets = new List<FormAnswerSet> { },
             SubmissionState = SubmissionState.Submitted,
             SubmittedAt = DateTime.UtcNow,
@@ -71,15 +69,9 @@ public class GenerateShareCodeUseCaseTest(AutoMapperFixture mapperFixture) : ICl
             BookingReference = string.Empty
         };
 
-        _repository.Setup(r => r.GetSharedConsentAsync(shareRequest.FormId, shareRequest.OrganisationId)).ReturnsAsync(sharedConsent);
+        _repository.Setup(r => r.GetSharedConsentDraftAsync(shareRequest.FormId, shareRequest.OrganisationId)).ReturnsAsync(sharedConsent);
 
         var found = await UseCase.Execute(shareRequest);
-        var expectedShareReceipt = new ShareReceipt()
-        {
-            FormId = formId,
-            FormVersionId = formVersionId,
-            ShareCode = string.Empty
-        };
 
         found.FormId.Should().Be(formId);
         found.FormVersionId.Should().Be(formVersionId);

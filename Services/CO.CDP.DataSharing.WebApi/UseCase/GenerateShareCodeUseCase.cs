@@ -11,7 +11,7 @@ public class GenerateShareCodeUseCase(IFormRepository formRepository, IMapper ma
 {
     public async Task<ShareReceipt> Execute(ShareRequest shareRequest)
     {
-        var result = await formRepository.GetSharedConsentAsync(shareRequest.FormId, shareRequest.OrganisationId);
+        var result = await formRepository.GetSharedConsentDraftAsync(shareRequest.FormId, shareRequest.OrganisationId);
         if(result == null)
         {
             throw new SharedConsentNotFoundException("Shared Consent not found.");

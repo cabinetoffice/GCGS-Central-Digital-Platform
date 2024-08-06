@@ -178,7 +178,7 @@ public static class EndpointExtensions
 
         app.MapPost("/share/data", async (ShareRequest shareRequest, IUseCase<ShareRequest, ShareReceipt> useCase) =>
                 await useCase.Execute(shareRequest)
-                    .AndThen(supplierInfo => Results.Ok(supplierInfo)))
+                    .AndThen(shareReceipt => Results.Ok(shareReceipt)))
             .Produces<ShareReceipt>(StatusCodes.Status200OK, "application/json")
             .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
             .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError)

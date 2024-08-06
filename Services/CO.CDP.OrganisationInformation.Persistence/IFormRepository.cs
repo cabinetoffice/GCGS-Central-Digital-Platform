@@ -12,7 +12,7 @@ public interface IFormRepository : IDisposable
     #endregion
 
     #region Shared Consents Methods
-    Task<SharedConsent?> GetSharedConsentAsync(Guid formId, Guid organisationId);
+    Task<SharedConsent?> GetSharedConsentDraftAsync(Guid formId, Guid organisationId);
     #endregion
 
     #region Question Methods
