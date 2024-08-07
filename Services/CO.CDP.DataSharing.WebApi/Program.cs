@@ -1,3 +1,4 @@
+using CO.CDP.AwsServices;
 using CO.CDP.Configuration.ForwardedHeaders;
 using CO.CDP.DataSharing.WebApi.Api;
 using CO.CDP.DataSharing.WebApi.AutoMapper;
@@ -29,6 +30,10 @@ builder.Services.AddDbContext<OrganisationInformationContext>(o =>
 builder.Services.AddScoped<IFormRepository, DatabaseFormRepository>();
 builder.Services.AddScoped<IUseCase<ShareRequest, ShareReceipt>, GenerateShareCodeUseCase>();
 builder.Services.AddDataSharingProblemDetails();
+
+builder.Services
+    .AddAwsConfiguration(builder.Configuration)
+    .AddAwsS3Service();
 
 var app = builder.Build();
 app.UseForwardedHeaders();
