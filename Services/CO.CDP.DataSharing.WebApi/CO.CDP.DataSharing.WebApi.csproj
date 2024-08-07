@@ -20,6 +20,7 @@
         <PackageReference Include="DotSwashbuckle.AspNetCore" Version="3.0.10" />
         <PackageReference Include="Nanoid" Version="3.1.0" />
         <PackageReference Include="AspNetCore.HealthChecks.NpgSql" Version="8.0.1" />
+        <ProjectReference Include="..\..\Libraries\CO.CDP.Authentication\CO.CDP.Authentication.csproj" />
         <ProjectReference Include="..\..\Libraries\CO.CDP.Functional\CO.CDP.Functional.csproj" />
         <ProjectReference Include="..\..\Libraries\CO.CDP.Swashbuckle\CO.CDP.Swashbuckle.csproj" />
         <ProjectReference Include="..\..\Libraries\CO.CDP.Configuration\CO.CDP.Configuration.csproj" />
