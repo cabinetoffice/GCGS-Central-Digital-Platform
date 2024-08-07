@@ -170,6 +170,7 @@ public class UpdateFormSectionAnswersUseCaseTest(AutoMapperFixture mapperFixture
         {
             Guid = questionId,
             Title = "Were your accounts audited?",
+            Caption = "",
             Description = "",
             Type = Persistence.FormQuestionType.YesOrNo,
             IsRequired = true,
@@ -273,6 +274,7 @@ public class UpdateFormSectionAnswersUseCaseTest(AutoMapperFixture mapperFixture
         {
             Guid = questionId,
             Title = "Were your accounts audited?",
+            Caption = "",
             Description = "",
             Type = Persistence.FormQuestionType.YesOrNo,
             IsRequired = true,

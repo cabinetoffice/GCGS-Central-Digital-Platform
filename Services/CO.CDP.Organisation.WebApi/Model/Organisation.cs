@@ -126,7 +126,8 @@ public enum ConnectedEntityType
 [JsonConverter(typeof(JsonStringEnumConverter))]
 public enum ControlCondition
 {
-    OwnsShares = 1,
+    None,
+    OwnsShares,
     HasVotingRights,
     CanAppointOrRemoveDirectors,
     HasOtherSignificantInfluenceOrControl

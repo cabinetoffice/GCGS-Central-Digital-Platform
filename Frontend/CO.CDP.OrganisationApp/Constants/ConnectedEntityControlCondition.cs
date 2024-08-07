@@ -3,7 +3,8 @@ namespace CO.CDP.OrganisationApp.Constants;
 
 public enum ConnectedEntityControlCondition
 {
-    OwnsShares = 1,
+    None,
+    OwnsShares,
     HasVotingRights,
     CanAppointOrRemoveDirectors,
     HasOtherSignificantInfluenceOrControl,
@@ -19,6 +20,7 @@ public static class ConnectedEntityControlConditionExtensions
             ConnectedEntityControlCondition.HasVotingRights => "Has voting rights",
             ConnectedEntityControlCondition.CanAppointOrRemoveDirectors => "Can appoint or remove directors",
             ConnectedEntityControlCondition.HasOtherSignificantInfluenceOrControl => "Has other significant influence or control",
+            ConnectedEntityControlCondition.None => "None apply",
             _ => throw new NotImplementedException()
         };
     }
@@ -31,6 +33,7 @@ public static class ConnectedEntityControlConditionExtensions
             case ConnectedEntityControlCondition.HasVotingRights: return WebApiClient.ControlCondition.HasVotingRights;
             case ConnectedEntityControlCondition.CanAppointOrRemoveDirectors: return WebApiClient.ControlCondition.CanAppointOrRemoveDirectors;
             case ConnectedEntityControlCondition.HasOtherSignificantInfluenceOrControl: return WebApiClient.ControlCondition.HasOtherSignificantInfluenceOrControl;
+            case ConnectedEntityControlCondition.None: return WebApiClient.ControlCondition.None;
             default: return WebApiClient.ControlCondition.OwnsShares;
         }
     }
@@ -43,6 +46,7 @@ public static class ConnectedEntityControlConditionExtensions
             case WebApiClient.ControlCondition.HasOtherSignificantInfluenceOrControl: return ConnectedEntityControlCondition.HasOtherSignificantInfluenceOrControl;
             case WebApiClient.ControlCondition.HasVotingRights: return ConnectedEntityControlCondition.HasVotingRights;
             case WebApiClient.ControlCondition.CanAppointOrRemoveDirectors: return ConnectedEntityControlCondition.CanAppointOrRemoveDirectors;
+            case WebApiClient.ControlCondition.None: return ConnectedEntityControlCondition.None;
             default: return ConnectedEntityControlCondition.OwnsShares;
         }
     }

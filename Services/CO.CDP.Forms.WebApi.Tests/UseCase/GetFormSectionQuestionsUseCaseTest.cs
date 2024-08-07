@@ -65,6 +65,7 @@ public class GetFormSectionQuestionsUseCaseTest(AutoMapperFixture mapperFixture)
             {
                 Id = 1,
                 Guid = Guid.NewGuid(),
+                Caption = "Page caption",
                 Title = "The financial information you will need.",
                 Description = "You will need to upload accounts or statements for your 2 most recent financial years. If you do not have 2 years, you can upload your most recent financial year. You will need to enter the financial year end date for the information you upload.",
                 Type = CO.CDP.OrganisationInformation.Persistence.Forms.FormQuestionType.NoInput,
@@ -78,6 +79,7 @@ public class GetFormSectionQuestionsUseCaseTest(AutoMapperFixture mapperFixture)
             {
                 Id = 2,
                 Guid = Guid.NewGuid(),
+                Caption = "Page caption",
                 Title = "Were your accounts audited?.",
                 Description = "",
                 Type = CO.CDP.OrganisationInformation.Persistence.Forms.FormQuestionType.YesOrNo,
@@ -118,6 +120,7 @@ public class GetFormSectionQuestionsUseCaseTest(AutoMapperFixture mapperFixture)
             {
                 Id = questions[0].Guid,
                 Title = questions[0].Title,
+                Caption = questions[0].Caption,
                 Description = questions[0].Description,
                 Type = FormQuestionType.NoInput,
                 IsRequired = questions[0].IsRequired,
@@ -127,6 +130,7 @@ public class GetFormSectionQuestionsUseCaseTest(AutoMapperFixture mapperFixture)
             {
                 Id = questions[1].Guid,
                 Title = questions[1].Title,
+                Caption = questions[0].Caption,
                 Description = questions[1].Description,
                 Type = FormQuestionType.YesOrNo,
                 IsRequired = questions[1].IsRequired,
