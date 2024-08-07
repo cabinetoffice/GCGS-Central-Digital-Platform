@@ -29,6 +29,7 @@ public class ConnectedEntityIndividualCategoryModel(ISession session) : PageMode
         }
 
         ConnectedEntityCategory = state.ConnectedEntityIndividualAndTrustCategoryType;
+        ConnectedEntityType = state.ConnectedEntityType;
         RegisteredWithCh = state.SupplierHasCompanyHouseNumber ?? false;
         return Page();
     }
