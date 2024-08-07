@@ -39,8 +39,6 @@ public class ConnectedEntityControlConditionModel(ISession session) : PageModel
                 : "ConnectedEntitySupplierCompanyQuestion", new { Id, ConnectedEntityId });
         }
 
-        SupplierHasCompanyHouseNumber = state.SupplierHasCompanyHouseNumber ?? false;
-
         InitModal(state, true);
 
         return Page();
@@ -94,6 +92,7 @@ public class ConnectedEntityControlConditionModel(ISession session) : PageModel
         Heading = $"Which specified conditions of control does {state.OrganisationName} have?";
         BackPageLink = GetBackLinkPageName(state);
         ConnectedEntityType = state.ConnectedEntityType;
+        SupplierHasCompanyHouseNumber = state.SupplierHasCompanyHouseNumber ?? false;
         if (reset)
         {
             ControlConditions = state.ControlConditions;
@@ -179,7 +178,7 @@ public class ConnectedEntityControlConditionModel(ISession session) : PageModel
             case Constants.ConnectedEntityType.TrustOrTrustee:
                 switch (state.ConnectedEntityIndividualAndTrustCategoryType)
                 {
-                    case ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForTrust:                        
+                    case ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForTrust:
                     case ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndividualWithSignificantInfluenceOrControlForTrust:
                         backPage = $"{AddressType.Registered}-address/{(state.RegisteredAddress?.Country == Country.UnitedKingdom ? "uk" : "non-uk")}";
                         break;
