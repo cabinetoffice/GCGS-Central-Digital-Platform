@@ -48,6 +48,7 @@ public class FormsEngineTests
                 id: questionId,
                 title: "Question1",
                 description: "Description1",
+                caption: "Caption1",
                 type: WebApiClient.FormQuestionType.Text,
                 isRequired: true,
                 nextQuestion: nextQuestionId,
