@@ -307,6 +307,7 @@ data "aws_iam_policy_document" "terraform_global" {
 
   statement {
     actions = [
+      "cognito-idp:Admin*",
       "cognito-idp:Create*",
       "cognito-idp:Delete*",
       "cognito-idp:Describe*",
@@ -324,6 +325,7 @@ data "aws_iam_policy_document" "terraform_global" {
   statement {
     actions = [
       "cognito-idp:DescribeUserPoolDomain",
+      "cognito-idp:ListUserPools",
     ]
     effect = "Allow"
     resources = [

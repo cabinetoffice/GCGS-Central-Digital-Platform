@@ -74,7 +74,7 @@ dependency service_auth {
   mock_outputs = {
     organisation_app_user_pool_arn       = "mock"
     organisation_app_user_pool_client_id = "mock"
-    organisation_app_user_pool_domain    = "mock"
+    user_pool_domain                     = "mock"
   }
 }
 
@@ -139,7 +139,7 @@ inputs = {
 
   user_pool_arn       = dependency.service_auth.outputs.organisation_app_user_pool_arn
   user_pool_client_id = dependency.service_auth.outputs.organisation_app_user_pool_client_id
-  user_pool_domain    = dependency.service_auth.outputs.organisation_app_user_pool_domain
+  user_pool_domain    = dependency.service_auth.outputs.user_pool_domain
 
   db_entity_verification_connection_secret_arn = dependency.service_database.outputs.entity_verification_connection_secret_arn
   db_entity_verification_kms_arn               = dependency.service_database.outputs.entity_verification_kms_arn

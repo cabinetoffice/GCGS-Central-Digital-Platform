@@ -50,9 +50,9 @@ dependency core_security_groups {
 dependency service_auth {
   config_path = "../../service/auth"
   mock_outputs = {
-    healthcheck_user_pool_arn           = "mock"
-    healthcheck_user_pool_client_id     = "mock"
-    healthcheck_user_pool_client_secret = "mock"
+    healthcheck_user_pool_arn       = "mock"
+    healthcheck_user_pool_client_id = "mock"
+    user_pool_domain                = "mock"
   }
 }
 
@@ -107,9 +107,9 @@ inputs = {
   ecs_alb_sg_id = dependency.core_security_groups.outputs.alb_sg_id
   ecs_sg_id     = dependency.core_security_groups.outputs.ecs_sg_id
 
-  user_pool_arn           = dependency.service_auth.outputs.healthcheck_user_pool_arn
-  user_pool_client_id     = dependency.service_auth.outputs.healthcheck_user_pool_client_id
-  user_pool_domain        = dependency.service_auth.outputs.healthcheck_user_pool_domain
+  user_pool_arn       = dependency.service_auth.outputs.healthcheck_user_pool_arn
+  user_pool_client_id = dependency.service_auth.outputs.healthcheck_user_pool_client_id
+  user_pool_domain    = dependency.service_auth.outputs.user_pool_domain
 
   ecs_cluster_id   = dependency.service_ecs.outputs.ecs_cluster_id
   ecs_lb_dns_name  = dependency.service_ecs.outputs.ecs_lb_dns_name
