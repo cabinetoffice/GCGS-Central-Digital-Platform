@@ -151,6 +151,26 @@ variable "tags" {
   type        = map(string)
 }
 
+variable "user_pool_arn" {
+  default = null
+  type    = string
+}
+
+variable "user_pool_client_id" {
+  default = null
+  type    = string
+}
+
+variable "user_pool_client_secret" {
+  default = null
+  type    = string
+}
+
+variable "user_pool_domain" {
+  default = null
+  type    = string
+}
+
 variable "vpc_id" {
   description = "The ID of the VPC"
   type        = string

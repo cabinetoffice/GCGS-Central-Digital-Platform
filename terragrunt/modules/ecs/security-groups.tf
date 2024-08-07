@@ -8,6 +8,16 @@ resource "aws_security_group_rule" "public_access_to_alb" {
   type              = "ingress"
 }
 
+resource "aws_security_group_rule" "alb_to_public" {
+  description       = "Public access from ${local.name_prefix} ALB, needed for Cognito authentication"
+  from_port         = 443
+  protocol          = "TCP"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = var.alb_sg_id
+  to_port           = 443
+  type              = "egress"
+}
+
 resource "aws_security_group_rule" "public_access_to_alb_http" {
   description       = "Public access to ${local.name_prefix} service via ALB port 80"
   from_port         = 80

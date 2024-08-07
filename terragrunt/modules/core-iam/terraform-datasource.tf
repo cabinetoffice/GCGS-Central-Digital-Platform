@@ -305,6 +305,35 @@ data "aws_iam_policy_document" "terraform_global" {
     sid = "ManageBucketPolicy"
   }
 
+  statement {
+    actions = [
+      "cognito-idp:Admin*",
+      "cognito-idp:Create*",
+      "cognito-idp:Delete*",
+      "cognito-idp:Describe*",
+      "cognito-idp:Get*",
+      "cognito-idp:Set*",
+      "cognito-idp:Update*",
+    ]
+    effect = "Allow"
+    resources = [
+      "arn:aws:cognito-idp:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:userpool/*"
+    ]
+    sid = "ManageCognito"
+  }
+
+  statement {
+    actions = [
+      "cognito-idp:DescribeUserPoolDomain",
+      "cognito-idp:ListUserPools",
+    ]
+    effect = "Allow"
+    resources = [
+      "*"
+    ]
+    sid = "ManageCognitoGlobal"
+  }
+
 }
 
 data "aws_iam_policy_document" "terraform_product" {
