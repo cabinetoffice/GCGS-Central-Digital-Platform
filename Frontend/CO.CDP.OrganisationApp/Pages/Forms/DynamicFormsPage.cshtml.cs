@@ -43,6 +43,9 @@ public class DynamicFormsPageModel(
     [BindProperty(SupportsGet = true)]
     public string? UkOrNonUk { get; set; }
 
+    [BindProperty]
+    public FormElementCheckBoxInputModel? CheckBoxModel { get; set; }
+
     public FormQuestionType? CurrentFormQuestionType { get; private set; }
 
     public string? PartialViewName { get; private set; }
@@ -145,7 +148,7 @@ public class DynamicFormsPageModel(
                     FormQuestionType.FileUpload => answer.Answer?.TextValue ?? "",
                     FormQuestionType.YesOrNo => answer.Answer?.BoolValue.HasValue == true ? (answer.Answer.BoolValue == true ? "yes" : "no") : "",
                     FormQuestionType.Date => answer.Answer?.DateValue.HasValue == true ? answer.Answer.DateValue.Value.ToString("dd/MM/yyyy") : "",
-                    FormQuestionType.Address => answer.Answer?.AddressValue != null ? answer.Answer.AddressValue.ToString() : "",
+                    FormQuestionType.Address => answer.Answer?.AddressValue != null ? answer.Answer.AddressValue.ToHtmlString() : "",
                     _ => ""
                 };
 
@@ -156,7 +159,8 @@ public class DynamicFormsPageModel(
                     ChangeLink = $"/organisation/{OrganisationId}/forms/{FormId}/sections/{SectionId}/{answer.QuestionId}?frm-chk-answer"
                 };
 
-                if (question.Type == FormQuestionType.Address && answer.Answer?.AddressValue != null)
+                if (question.Type == FormQuestionType.Address && answer.Answer?.AddressValue != null
+                    && answer.Answer.AddressValue.Country != Constants.Country.UnitedKingdom)
                 {
                     summary.ChangeLink += "&UkOrNonUk=non-uk";
                 }
@@ -214,6 +218,7 @@ public class DynamicFormsPageModel(
             { FormQuestionType.FileUpload, "_FormElementFileUpload" },
             { FormQuestionType.Date, "_FormElementDateInput" },
             { FormQuestionType.Text, "_FormElementTextInput" },
+            { FormQuestionType.CheckBox, "_FormElementCheckBoxInput" },
             { FormQuestionType.Address, "_FormElementAddress" }
         };
 
@@ -237,6 +242,7 @@ public class DynamicFormsPageModel(
             FormQuestionType.FileUpload => FileUploadModel ?? new FormElementFileUploadModel(),
             FormQuestionType.YesOrNo => YesNoInputModel ?? new FormElementYesNoInputModel(),
             FormQuestionType.Date => DateInputModel ?? new FormElementDateInputModel(),
+            FormQuestionType.CheckBox => CheckBoxModel ?? new FormElementCheckBoxInputModel(),
             FormQuestionType.Address => AddressModel ?? new FormElementAddressModel(),
             _ => throw new NotImplementedException($"Forms question: {question.Type} is not supported"),
         };
@@ -247,7 +253,8 @@ public class DynamicFormsPageModel(
             addressModel.UkOrNonUk = UkOrNonUk ?? addressModel.UkOrNonUk;
         }
 
-        if (reset) model.SetAnswer(GetAnswerFromTempData(question));
+        if (reset)
+            model.SetAnswer(GetAnswerFromTempData(question));
 
         return model;
     }
