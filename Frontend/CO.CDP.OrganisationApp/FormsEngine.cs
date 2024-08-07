@@ -101,7 +101,8 @@ public class FormsEngine(IFormsClient formsApiClient, ITempDataService tempDataS
                 endValue: a.Answer?.EndValue,
                 textValue: a.Answer?.TextValue,
                 optionValue: a.Answer?.OptionValue,
-                questionId: a.QuestionId
+                questionId: a.QuestionId,
+                addressValue: MapAddress(a.Answer?.AddressValue)
             )).ToArray()
         );
 
@@ -111,5 +112,17 @@ public class FormsEngine(IFormsClient formsApiClient, ITempDataService tempDataS
             answerSet.AnswerSetId ?? Guid.NewGuid(),
             organisationId,
             answersPayload);
+    }
+
+    private static FormAddress? MapAddress(Address? formAdddress)
+    {
+        if (formAdddress == null) return null;
+        return new FormAddress(
+            streetAddress: formAdddress.AddressLine1,
+            locality: formAdddress.TownOrCity,
+            region: null,
+            postalCode: formAdddress.Postcode,
+            countryName: formAdddress.Country
+        );
     }
 }
