@@ -11,7 +11,18 @@ public class AwsFileManager(
         IOptions<AwsConfiguration> awsConfigurationOption) : IFileHostManager
 {
     private readonly AwsConfiguration awsConfig = awsConfigurationOption.Value;
-    private const int MinMultipartSize = 104857600; // 100MB https://docs.aws.amazon.com/AmazonS3/latest/userguide/mpuoverview.html
+
+    /// <summary>
+    /// https://docs.aws.amazon.com/AmazonS3/latest/userguide/mpuoverview.html
+    /// Recommended PartSize = 100MB
+    /// </summary>
+    private const int MinMultipartSize = 104857600;
+
+    /// <summary>
+    /// https://docs.aws.amazon.com/AmazonS3/latest/userguide/ShareObjectPreSignedURL.html
+    /// Maximum expiration time assigned can be 7 days (24*7*60 minutes)
+    /// </summary>
+    private const int MaxPresignedUrlExpiryInMinutes = 10080;
 
     public async Task UploadFile(Stream fileStream, string filename, string contentType = "application/octet-stream")
     {
@@ -84,6 +95,41 @@ public class AwsFileManager(
                     Key = filename
                 });
         }
+    }
+
+    public async Task RemoveFromPermanentBucket(string filename)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(filename);
+
+        var permanentBucket = awsConfig.Buckets?.PermanentBucket
+            ?? throw new Exception($"Missing Aws configuration '{nameof(awsConfig.Buckets.PermanentBucket)}' key.");
+
+        await s3Client.DeleteObjectAsync(
+                new DeleteObjectRequest
+                {
+                    BucketName = permanentBucket,
+                    Key = filename
+                });
+    }
+
+    public async Task<string> GeneratePresignedUrl(string filename, int urlExpiryInMinutes)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(filename);
+
+        if (urlExpiryInMinutes < 1 || urlExpiryInMinutes > MaxPresignedUrlExpiryInMinutes)
+            throw new ArgumentException($"'{nameof(urlExpiryInMinutes)}' can only be between 1 to {MaxPresignedUrlExpiryInMinutes}.");
+
+        var bucketName = awsConfig.Buckets?.PermanentBucket
+            ?? throw new Exception($"Missing Aws configuration '{nameof(awsConfig.Buckets.PermanentBucket)}' key.");
+
+        var urlString = await s3Client.GetPreSignedURLAsync(new GetPreSignedUrlRequest
+        {
+            BucketName = bucketName,
+            Key = filename,
+            Expires = DateTime.UtcNow.AddMinutes(urlExpiryInMinutes),
+        });
+
+        return urlString;
     }
 
     private async Task CopyLargeObjectAsync(string sourceBucketName, string destBucketName, string filename, long objectSize)

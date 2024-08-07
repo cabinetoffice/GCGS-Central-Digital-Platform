@@ -1,4 +1,5 @@
 using CO.CDP.Authentication;
+using CO.CDP.AwsServices;
 using CO.CDP.Configuration.ForwardedHeaders;
 using CO.CDP.DataSharing.WebApi.Api;
 using CO.CDP.DataSharing.WebApi.AutoMapper;
@@ -22,12 +23,18 @@ builder.Services.AddAutoMapper(typeof(DataSharingProfile));
 builder.Services.AddDbContext<OrganisationInformationContext>(o =>
     o.UseNpgsql(builder.Configuration.GetConnectionString("OrganisationInformationDatabase") ?? ""));
 
+builder.Services.AddScoped<IClaimService, ClaimService>();
+builder.Services.AddScoped<IOrganisationRepository, DatabaseOrganisationRepository>();
 builder.Services.AddScoped<IFormRepository, DatabaseFormRepository>();
 builder.Services.AddScoped<IUseCase<ShareRequest, ShareReceipt>, GenerateShareCodeUseCase>();
 
 builder.Services.AddDataSharingProblemDetails();
 builder.Services.AddJwtBearerAndApiKeyAuthentication(builder.Configuration, builder.Environment);
 builder.Services.AddOrganisationAuthorization();
+
+builder.Services
+    .AddAwsConfiguration(builder.Configuration)
+    .AddAwsS3Service();
 
 var app = builder.Build();
 app.UseForwardedHeaders();

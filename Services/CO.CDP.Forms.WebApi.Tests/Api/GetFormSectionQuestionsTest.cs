@@ -89,6 +89,7 @@ public class GetFormSectionQuestionsTest
                     new FormQuestion
                     {
                         Id = question1,
+                        Caption = "Page caption",
                         Title = "The financial information you will need.",
                         Description = "You will need to upload accounts or statements for your 2 most recent financial years. If you do not have 2 years, you can upload your most recent financial year. You will need to enter the financial year end date for the information you upload.",
                         Type = FormQuestionType.NoInput,
@@ -98,6 +99,7 @@ public class GetFormSectionQuestionsTest
                     new FormQuestion
                     {
                         Id = question2,
+                        Caption = "Page caption",
                         Title = "Were your accounts audited?",
                         Type = FormQuestionType.YesOrNo,
                         IsRequired = true,
@@ -106,6 +108,7 @@ public class GetFormSectionQuestionsTest
                     new FormQuestion
                     {
                         Id = question3,
+                        Caption = "Page caption",
                         Title = "Upload your accounts",
                         Description = "Upload your most recent 2 financial years. If you do not have 2, upload your most recent financial year.",
                         Type = FormQuestionType.FileUpload,
@@ -115,6 +118,7 @@ public class GetFormSectionQuestionsTest
                     new FormQuestion
                     {
                         Id = question4,
+                        Caption = "Page caption",
                         Title = "What is the financial year end date for the information you uploaded?",
                         Type = FormQuestionType.Date,
                         IsRequired = true,
@@ -123,6 +127,7 @@ public class GetFormSectionQuestionsTest
                     new FormQuestion
                     {
                         Id = question5,
+                        Caption = "Page caption",
                         Title = "Check your answers",
                         Type = FormQuestionType.CheckYourAnswers,
                         IsRequired = true,
@@ -131,6 +136,7 @@ public class GetFormSectionQuestionsTest
                     new FormQuestion
                     {
                         Id = question6,
+                        Caption = "Page caption",
                         Title = "Enter your postal address",
                         Type = FormQuestionType.Address,
                         IsRequired = true,

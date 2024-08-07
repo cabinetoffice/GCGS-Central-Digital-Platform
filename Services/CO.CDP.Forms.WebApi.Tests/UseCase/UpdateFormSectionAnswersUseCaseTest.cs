@@ -1,7 +1,8 @@
-using CO.CDP.OrganisationInformation.Persistence;
+using CO.CDP.AwsServices;
 using CO.CDP.Forms.WebApi.Model;
 using CO.CDP.Forms.WebApi.Tests.AutoMapper;
 using CO.CDP.Forms.WebApi.UseCase;
+using CO.CDP.OrganisationInformation.Persistence;
 using FluentAssertions;
 using Moq;
 using Persistence = CO.CDP.OrganisationInformation.Persistence.Forms;
@@ -12,7 +13,8 @@ public class UpdateFormSectionAnswersUseCaseTest(AutoMapperFixture mapperFixture
 {
     private readonly Mock<IFormRepository> _repository = new();
     private readonly Mock<IOrganisationRepository> _organisationRepository = new();
-    private UpdateFormSectionAnswersUseCase UseCase => new(_repository.Object, _organisationRepository.Object, mapperFixture.Mapper);
+    private readonly Mock<IFileHostManager> _fileHostManager = new();
+    private UpdateFormSectionAnswersUseCase UseCase => new(_repository.Object, _organisationRepository.Object, mapperFixture.Mapper, _fileHostManager.Object);
 
 
     [Fact]
@@ -168,6 +170,7 @@ public class UpdateFormSectionAnswersUseCaseTest(AutoMapperFixture mapperFixture
         {
             Guid = questionId,
             Title = "Were your accounts audited?",
+            Caption = "",
             Description = "",
             Type = Persistence.FormQuestionType.YesOrNo,
             IsRequired = true,
@@ -271,6 +274,7 @@ public class UpdateFormSectionAnswersUseCaseTest(AutoMapperFixture mapperFixture
         {
             Guid = questionId,
             Title = "Were your accounts audited?",
+            Caption = "",
             Description = "",
             Type = Persistence.FormQuestionType.YesOrNo,
             IsRequired = true,

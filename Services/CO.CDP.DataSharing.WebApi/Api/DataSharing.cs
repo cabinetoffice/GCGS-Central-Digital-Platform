@@ -156,7 +156,14 @@ public static class EndpointExtensions
                         {
                             QuestionName = "_CarbonNetZero01",
                             BoolValue = true
-                        }
+                        },
+
+                        // Use GeneratePresignedUrl method from IFileHostManager to Get PresignedUrl for a file
+                        //new FormAnswer
+                        //{
+                        //    QuestionName = "_FinancialAccountFile",
+                        //    TextValue = CO.CDP.AwsServices.IFileHostManager.GeneratePresignedUrl(fileName, urlExpiryInMinutes)
+                        //}
                     ]
             },
         })

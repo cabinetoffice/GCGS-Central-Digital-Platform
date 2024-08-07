@@ -56,7 +56,7 @@
                                         @answer.Title
                                     </dt>
                                     <dd class="govuk-summary-list__value">
-                                        @answer.Answer
+                                        @Html.Raw(answer.Answer)
                                     </dd>
                                     <dd class="govuk-summary-list__actions">
                                         <a class="govuk-link" href="@answer.ChangeLink">

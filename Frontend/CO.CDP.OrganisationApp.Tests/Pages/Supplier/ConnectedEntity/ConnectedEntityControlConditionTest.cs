@@ -102,6 +102,40 @@ public class ConnectedEntityControlConditionTest
         _model.BackPageLink.Should().Contain(expectedBackPage);
     }
 
+    [Fact]
+    public void OnGet_ShouldSetSupplierHasCompanyHouseNumberToTrue_WhenSupplierHasCompanyHouseNumberIsTrueInSession()
+    {
+        var state = DummyConnectedPersonDetails();
+
+        state.SupplierHasCompanyHouseNumber = true;
+
+        _sessionMock
+            .Setup(s => s.Get<ConnectedEntityState>(Session.ConnectedPersonKey))
+            .Returns(state);
+
+        var result = _model.OnGet();
+
+        result.Should().BeOfType<PageResult>();
+        _model.SupplierHasCompanyHouseNumber.Should().Be(true);
+    }
+
+    [Fact]
+    public void OnGet_ShouldSetSupplierHasCompanyHouseNumberToFalse_WhenSupplierHasCompanyHouseNumberIsFalseInSession()
+    {
+        var state = DummyConnectedPersonDetails();
+
+        state.SupplierHasCompanyHouseNumber = false;
+
+        _sessionMock
+            .Setup(s => s.Get<ConnectedEntityState>(Session.ConnectedPersonKey))
+            .Returns(state);
+
+        var result = _model.OnGet();
+
+        result.Should().BeOfType<PageResult>();
+        _model.SupplierHasCompanyHouseNumber.Should().Be(false);
+    }
+
     [Theory]
     [InlineData("ConnectedEntityCompanyRegistrationDate", false)]
     [InlineData("ConnectedEntityCheckAnswersOrganisation", true)]
@@ -136,6 +170,38 @@ public class ConnectedEntityControlConditionTest
             It.Is<ConnectedEntityState>(rd =>
                 rd.ControlConditions!.Contains(Constants.ConnectedEntityControlCondition.OwnsShares)
             )), Times.Once);
+    }
+
+    [Fact]
+    public void OnPost_ShouldSetSupplierHasCompanyHouseNumberToTrue_WhenSupplierHasCompanyHouseNumberIsTrueInSession()
+    {
+        var state = DummyConnectedPersonDetails();
+
+        state.SupplierHasCompanyHouseNumber = true;
+
+        _sessionMock
+            .Setup(s => s.Get<ConnectedEntityState>(Session.ConnectedPersonKey))
+            .Returns(state);
+
+        _model.OnPost();
+
+        _model.SupplierHasCompanyHouseNumber.Should().Be(true);
+    }
+
+    [Fact]
+    public void OnPost_ShouldSetSupplierHasCompanyHouseNumberToFalse_WhenSupplierHasCompanyHouseNumberIsFalseInSession()
+    {
+        var state = DummyConnectedPersonDetails();
+
+        state.SupplierHasCompanyHouseNumber = false;
+
+        _sessionMock
+            .Setup(s => s.Get<ConnectedEntityState>(Session.ConnectedPersonKey))
+            .Returns(state);
+
+        _model.OnPost();
+
+        _model.SupplierHasCompanyHouseNumber.Should().Be(false);
     }
 
     private ConnectedEntityState DummyConnectedPersonDetails()

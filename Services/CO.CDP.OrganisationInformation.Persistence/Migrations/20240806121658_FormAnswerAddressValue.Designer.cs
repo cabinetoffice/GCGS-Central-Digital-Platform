@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CO.CDP.OrganisationInformation.Persistence.Migrations
 {
     [DbContext(typeof(OrganisationInformationContext))]
-    [Migration("20240802095312_CreateShareCodesSeedDate")]
-    partial class CreateShareCodesSeedDate
+    [Migration("20240806121658_FormAnswerAddressValue")]
+    partial class FormAnswerAddressValue
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -266,6 +266,10 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("AddressValue")
+                        .HasColumnType("jsonb")
+                        .HasColumnName("address_value");
+
                     b.Property<bool?>("BoolValue")
                         .HasColumnType("boolean")
                         .HasColumnName("bool_value");
@@ -396,10 +400,6 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                         .HasColumnName("id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Caption")
-                        .HasColumnType("text")
-                        .HasColumnName("caption");
 
                     b.Property<DateTimeOffset>("CreatedOn")
                         .ValueGeneratedOnAdd()

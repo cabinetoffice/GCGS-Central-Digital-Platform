@@ -1,4 +1,5 @@
 using CO.CDP.Authentication;
+using CO.CDP.AwsServices;
 using CO.CDP.Configuration.ForwardedHeaders;
 using CO.CDP.Forms.WebApi.Api;
 using CO.CDP.Forms.WebApi.AutoMapper;
@@ -32,6 +33,10 @@ builder.Services.AddScoped<IUseCase<(Guid formId, Guid sectionId, Guid answerSet
 builder.Services.AddJwtBearerAndApiKeyAuthentication(builder.Configuration, builder.Environment);
 //builder.Services.AddAuthorization();
 builder.Services.AddOrganisationAuthorization();
+
+builder.Services
+    .AddAwsConfiguration(builder.Configuration)
+    .AddAwsS3Service();
 
 var app = builder.Build();
 app.UseForwardedHeaders();

@@ -5,13 +5,16 @@ using CO.CDP.OrganisationInformation.Persistence;
 using CO.CDP.OrganisationInformation.Persistence.Forms;
 using FluentAssertions;
 using Moq;
+using CO.CDP.Authentication;
 
 namespace DataSharing.Tests.UseCase;
 
 public class GenerateShareCodeUseCaseTest(AutoMapperFixture mapperFixture) : IClassFixture<AutoMapperFixture>
 {
-    private readonly Mock<IFormRepository> _repository = new();
-    private GenerateShareCodeUseCase UseCase => new(_repository.Object, mapperFixture.Mapper);
+    private readonly Mock<IClaimService> _claimService = new();
+    private readonly Mock<IOrganisationRepository> _organisationRepository = new();
+    private readonly Mock<IFormRepository> _formRepository = new();
+    private GenerateShareCodeUseCase UseCase => new(_claimService.Object, _organisationRepository.Object, _formRepository.Object, mapperFixture.Mapper);
 
     [Fact]
     public async Task ReturnsNullWhenNoRelevantSharedConsentFound()
@@ -69,7 +72,7 @@ public class GenerateShareCodeUseCaseTest(AutoMapperFixture mapperFixture) : ICl
             BookingReference = string.Empty
         };
 
-        _repository.Setup(r => r.GetSharedConsentDraftAsync(shareRequest.FormId, shareRequest.OrganisationId)).ReturnsAsync(sharedConsent);
+        _formRepository.Setup(r => r.GetSharedConsentDraftAsync(shareRequest.FormId, shareRequest.OrganisationId)).ReturnsAsync(sharedConsent);
 
         var found = await UseCase.Execute(shareRequest);
 

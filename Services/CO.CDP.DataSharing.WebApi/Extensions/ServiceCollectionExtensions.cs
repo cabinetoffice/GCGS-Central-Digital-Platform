@@ -6,6 +6,7 @@ public static class ServiceCollectionExtensions
 {
     private static readonly Dictionary<Type, (int, string)> ExceptionMap = new()
     {
+        { typeof(InvalidOrganisationRequestedException), (StatusCodes.Status500InternalServerError, "INVALID_ORGANISATION_REQUESTED") },
         { typeof(SharedConsentNotFoundException), (StatusCodes.Status500InternalServerError, "SHARED_CONSENT_NOT_FOUND") }
     };
 
