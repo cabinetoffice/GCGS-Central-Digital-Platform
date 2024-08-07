@@ -71,7 +71,8 @@ public class ConnectedEntity : IEntityDate
 
     public enum ControlCondition
     {
-        OwnsShares = 1,
+        None,
+        OwnsShares,
         HasVotingRights,
         CanAppointOrRemoveDirectors,
         HasOtherSignificantInfluenceOrControl

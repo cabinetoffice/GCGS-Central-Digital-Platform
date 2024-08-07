@@ -153,6 +153,85 @@ public class AwsFileManagerTest : IClassFixture<LocalStackFixture>
         contentLength.Should().Be(104857601);
     }
 
+    [Fact]
+    public void RemoveFromPermanentBucket_ThrowsException_ForEmptyFilename()
+    {
+        Func<Task> act = async () => await _fileManager.RemoveFromPermanentBucket(" ");
+
+        act.Should().ThrowAsync<ArgumentNullException>().WithParameterName("filename");
+    }
+
+    [Fact]
+    public void RemoveFromPermanentBucket_ThrowsException_ForMissingPermanentBucketConfigKey()
+    {
+        if (_awsConfig.Buckets != null) _awsConfig.Buckets.PermanentBucket = null;
+
+        Func<Task> act = async () => await _fileManager.RemoveFromPermanentBucket("file.text");
+
+        act.Should().ThrowAsync<Exception>().WithMessage($"Missing Aws configuration 'PermanentBucket' key.");
+    }
+
+    [Fact]
+    public async Task RemoveFromPermanentBucket_DeletesFile_WhenExists()
+    {
+        var filename = "smallfile.txt";
+        await _s3Client.PutBucketAsync(new PutBucketRequest { BucketName = StagingBucket });
+        await _s3Client.PutBucketAsync(new PutBucketRequest { BucketName = PermanentBucket });
+        using var stream = new MemoryStream(new byte[10]);
+        await _fileManager.UploadFile(stream, filename);
+        await _fileManager.CopyToPermanentBucket(filename);
+
+        await _fileManager.RemoveFromPermanentBucket(filename);
+
+        Func<Task> act = async () => await GetObjectSize(PermanentBucket, filename);
+        var error = await act.Should().ThrowAsync<AmazonS3Exception>();
+        error.Which.ErrorCode.Should().Be("NotFound");
+    }
+
+    [Fact]
+    public void GeneratePresignedUrl_ThrowsException_ForEmptyFilename()
+    {
+        Func<Task> act = async () => await _fileManager.GeneratePresignedUrl(" ", 1);
+
+        act.Should().ThrowAsync<ArgumentNullException>().WithParameterName("filename");
+    }
+
+    [Fact]
+    public void GeneratePresignedUrl_ThrowsException_ForMissingPermanentBucketConfigKey()
+    {
+        if (_awsConfig.Buckets != null) _awsConfig.Buckets.PermanentBucket = null;
+
+        Func<Task> act = async () => await _fileManager.GeneratePresignedUrl("file.text", 1);
+
+        act.Should().ThrowAsync<Exception>().WithMessage($"Missing Aws configuration 'PermanentBucket' key.");
+    }
+
+    [Theory]
+    [InlineData(0)]
+    [InlineData(7*24*60+1)]
+    public void GeneratePresignedUrl_ShouldThrowArgumentExceptopm(int urlExpiryInMinutes)
+    {
+        Func<Task> act = async () => await _fileManager.GeneratePresignedUrl("file.text", urlExpiryInMinutes);
+
+        act.Should().ThrowAsync<ArgumentException>().WithMessage("'urlExpiryInMinutes' can only be between 1 to 10080.");
+    }
+
+    [Fact]
+    public async Task GeneratePresignedUrl_CreatesUrl_WhenFileExists()
+    {
+        var filename = "smallfile.txt";
+        await _s3Client.PutBucketAsync(new PutBucketRequest { BucketName = StagingBucket });
+        await _s3Client.PutBucketAsync(new PutBucketRequest { BucketName = PermanentBucket });
+        using var stream = new MemoryStream(new byte[10]);
+        await _fileManager.UploadFile(stream, filename);
+        await _fileManager.CopyToPermanentBucket(filename);
+
+        var preSignedUrl = await _fileManager.GeneratePresignedUrl(filename, 1);
+
+        preSignedUrl.Should().NotBeNull();
+        Uri.TryCreate(preSignedUrl, UriKind.Absolute, out _).Should().BeTrue();
+    }
+
     private async Task<long> GetObjectSize(string bucketName, string filename)
     {
         var metadataResponse = await _s3Client.GetObjectMetadataAsync(

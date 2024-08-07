@@ -14,6 +14,13 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+
+            migrationBuilder.AddColumn<string>(
+                name: "caption",
+                table: "form_questions",
+                type: "text",
+                nullable: true);
+
             var formsGuid = Guid.Parse("049df96e-f6ea-423c-9361-ecb20c0250ea");
             var sectionGuid = Guid.Parse("936096b3-c3bb-4475-ad7d-73b44ff61e76");
 
@@ -41,20 +48,20 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                     VALUES ('{Guid.NewGuid()}', sectionId, {(int)FormQuestionType.CheckYourAnswers}, TRUE, 'Check your answers', NULL, '{{}}')
                     RETURNING id INTO previousQuestionId;
 
-                    INSERT INTO form_questions (guid, section_id, type, next_question_id, is_required, title, description, options)
-                    VALUES ('{Guid.NewGuid()}', sectionId, {(int)FormQuestionType.Address}, previousQuestionId, TRUE, 'Enter your postal address', 'So the contracting authority can contact you.', '{{""choices"": [{{""id"": ""bd4fe649-1f52-429e-978c-472e0a2cf11c"", ""title"": ""Address line 1"", ""groupName"": null, ""hint"": {{""title"": null, ""description"": ""Enter the first line of your address.""}}, ""value"": ""addressLine1""}}, {{""id"": ""a4edc9cd-f198-4e74-88e4-d981b09d30ed"", ""title"": ""Town or city"", ""groupName"": null, ""hint"": {{""title"": null, ""description"": ""Enter the name of your town or city.""}}, ""value"": ""townOrCity""}}, {{""id"": ""ef806205-6e38-4496-9a3e-8bb7a37b48ba"", ""title"": ""Post code"", ""groupName"": null, ""hint"": {{""title"": null, ""description"": ""Enter your postal code.""}}, ""value"": ""postCode""}}], ""choiceProviderStrategy"": null}}')
+                    INSERT INTO form_questions (guid, section_id, type, next_question_id, is_required, title, description, caption, options)
+                    VALUES ('{Guid.NewGuid()}', sectionId, {(int)FormQuestionType.Address}, previousQuestionId, TRUE, 'Enter your postal address', 'Your declaration details', '<div id=""declarationNameHint"" class=""govuk-hint"">So the contracting authority can contact you.</div>', '{{""choices"": [{{""id"": ""bd4fe649-1f52-429e-978c-472e0a2cf11c"", ""title"": ""Address line 1"", ""groupName"": null, ""hint"": {{""title"": null, ""description"": ""Enter the first line of your address.""}}, ""value"": ""addressLine1""}}, {{""id"": ""a4edc9cd-f198-4e74-88e4-d981b09d30ed"", ""title"": ""Town or city"", ""groupName"": null, ""hint"": {{""title"": null, ""description"": ""Enter the name of your town or city.""}}, ""value"": ""townOrCity""}}, {{""id"": ""ef806205-6e38-4496-9a3e-8bb7a37b48ba"", ""title"": ""Post code"", ""groupName"": null, ""hint"": {{""title"": null, ""description"": ""Enter your postal code.""}}, ""value"": ""postCode""}}], ""choiceProviderStrategy"": null}}')
                     RETURNING id INTO previousQuestionId;
 
-                    INSERT INTO form_questions (guid, section_id, type, next_question_id, is_required, title, description, options)
-                    VALUES ('{Guid.NewGuid()}', sectionId, {(int)FormQuestionType.Text}, previousQuestionId, TRUE, 'Enter your email address', 'So the contracting authority can contact you.', '{{}}')
+                    INSERT INTO form_questions (guid, section_id, type, next_question_id, is_required, title, description, caption, options)
+                    VALUES ('{Guid.NewGuid()}', sectionId, {(int)FormQuestionType.Text}, previousQuestionId, TRUE, 'Enter your email address', 'Your declaration details', '<div id=""declarationNameHint"" class=""govuk-hint"">So the contracting authority can contact you.</div>', '{{}}')
                     RETURNING id INTO previousQuestionId;
 
-                    INSERT INTO form_questions (guid, section_id, type, next_question_id, is_required, title, description, options)
-                    VALUES ('{Guid.NewGuid()}', sectionId, {(int)FormQuestionType.Text}, previousQuestionId, TRUE, 'Enter your job title', NULL, '{{}}')
+                    INSERT INTO form_questions (guid, section_id, type, next_question_id, is_required, title, description, caption, options)
+                    VALUES ('{Guid.NewGuid()}', sectionId, {(int)FormQuestionType.Text}, previousQuestionId, TRUE, 'Enter your job title', 'Your declaration details', NULL, '{{}}')
                     RETURNING id INTO previousQuestionId;
 
-                    INSERT INTO form_questions (guid, section_id, type, next_question_id, is_required, title, description, options)
-                    VALUES ('{Guid.NewGuid()}', sectionId, {(int)FormQuestionType.Text}, previousQuestionId, TRUE, 'Enter your name', 'Your name as the person authorised to declare the supplier information.', '{{}}')
+                    INSERT INTO form_questions (guid, section_id, type, next_question_id, is_required, title, description, caption, options)
+                    VALUES ('{Guid.NewGuid()}', sectionId, {(int)FormQuestionType.Text}, previousQuestionId, TRUE, 'Enter your name', 'Your declaration details', '<div id=""declarationNameHint"" class=""govuk-hint"">Your name as the person authorised to declare the supplier information.</div>', '{{}}')
                     RETURNING id INTO previousQuestionId;
 
                     INSERT INTO form_questions (guid, section_id, type, next_question_id, is_required, title, description, options)
@@ -72,6 +79,10 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                 DELETE FROM form_sections WHERE form_id = (SELECT id FROM forms WHERE guid = '{formsGuid}');
                 DELETE FROM forms WHERE guid = '{formsGuid}';
             ");
+
+            migrationBuilder.DropColumn(
+                name: "caption",
+                table: "form_questions");
         }
     }
 }

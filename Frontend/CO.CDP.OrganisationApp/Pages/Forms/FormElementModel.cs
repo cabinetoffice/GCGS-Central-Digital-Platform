@@ -32,12 +32,16 @@ public abstract class FormElementModel : IFormElementModel
     [BindProperty]
     public bool IsRequired { get; set; }
 
+    [BindProperty]
+    public FormQuestionOptions? Options { get; set; }
+
     public virtual void Initialize(FormQuestion question)
     {
         Heading = question.Title;
         Description = question.Description;
         CurrentFormQuestionType = question.Type;
         IsRequired = question.IsRequired;
+        Options = question.Options;
     }
 
     public abstract FormAnswer? GetAnswer();
