@@ -45,7 +45,7 @@ public class ConnectedEntityOrganisationCategoryModel(ISession session) : PageMo
     public static Dictionary<string, string> ConnectedEntityCategoryOption => new()
     {
         { "RegisteredCompany", "registered company" },
-        { "Director", "director or the same responsibilities"},
+        { "Director", "director or organisation with the same responsibilities"},
         { "ParentOrSubCompany", "parent or subsidiary company"},
         { "CompanyOverTaken", "a company your organisation has taken over"},
         { "OrgWithSignificantControl", "any other organisation with significant influence or control"}
