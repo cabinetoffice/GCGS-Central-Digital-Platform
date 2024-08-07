@@ -119,6 +119,7 @@ services:
       Organisation__Authority: '${Organisation__Authority:-http://gateway:${CDP_AUTHORITY_PORT:-8092}}'
       PersonService: '${PersonService:-http://gateway:${CDP_PERSON_PORT:-8084}}'
       TenantService: '${TenantService:-http://gateway:${CDP_TENANT_PORT:-8080}}'
+      EvService: '${EntityVerificationService:-http://gateway:${CDP_ENTITY_VERIFICATION_PORT:-8094}}'
 
   authority:
     container_name: co-cdp-authority

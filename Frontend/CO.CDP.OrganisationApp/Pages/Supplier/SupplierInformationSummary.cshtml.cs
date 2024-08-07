@@ -1,3 +1,4 @@
+using CO.CDP.EntityVerificationClient;
 using CO.CDP.Organisation.WebApiClient;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -6,7 +7,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 namespace CO.CDP.OrganisationApp.Pages.Supplier;
 
 [Authorize]
-public class SupplierInformationSummaryModel(IOrganisationClient organisationClient) : PageModel
+public class SupplierInformationSummaryModel(IPponClient ppon, IOrganisationClient organisationClient) : PageModel
 {
     [BindProperty]
     public string? Name { get; set; }
@@ -29,6 +30,9 @@ public class SupplierInformationSummaryModel(IOrganisationClient organisationCli
     public Guid FormId { get; set; }
     public Guid SectionId { get; set; }
 
+    [BindProperty]
+    public string? Ppon { get; set; }
+
     public async Task<IActionResult> OnGet(Guid id)
     {
         SupplierInformation? supplierInfo;
@@ -36,6 +40,9 @@ public class SupplierInformationSummaryModel(IOrganisationClient organisationCli
         {
             var getSupplierInfoTask = organisationClient.GetOrganisationSupplierInformationAsync(id);
             var getConnectedEntitiesTask = organisationClient.GetConnectedEntitiesAsync(id);
+            var ppn = await ppon.GetIdentifiersAsync("VAT:12345678");
+
+            Ppon = ppn.First().Id;
 
             await Task.WhenAll(getSupplierInfoTask, getConnectedEntitiesTask);
 
@@ -44,7 +51,7 @@ public class SupplierInformationSummaryModel(IOrganisationClient organisationCli
 
             HasSupplierType = supplierInfo.SupplierType.HasValue;
         }
-        catch (ApiException ex) when (ex.StatusCode == 404)
+        catch (CDP.Forms.WebApiClient.ApiException ex) when (ex.StatusCode == 404)
         {
             return Redirect("/page-not-found");
         }

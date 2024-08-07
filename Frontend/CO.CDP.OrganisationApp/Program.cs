@@ -1,5 +1,6 @@
 using CO.CDP.AwsServices;
 using CO.CDP.Configuration.ForwardedHeaders;
+using CO.CDP.EntityVerificationClient;
 using CO.CDP.Forms.WebApiClient;
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp;
@@ -18,6 +19,8 @@ const string TenantHttpClientName = "TenantHttpClient";
 const string OrganisationHttpClientName = "OrganisationHttpClient";
 const string PersonHttpClientName = "PersonHttpClient";
 const string OrganisationAuthorityHttpClientName = "OrganisationAuthorityHttpClient";
+const string EvHttpClient = "EvHttpClient";
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -79,6 +82,14 @@ builder.Services.AddHttpClient(OrganisationHttpClientName)
 builder.Services.AddTransient<IOrganisationClient, OrganisationClient>(
     sc => new OrganisationClient(organisationServiceUrl,
         sc.GetRequiredService<IHttpClientFactory>().CreateClient(OrganisationHttpClientName)));
+
+var evServiceUrl = builder.Configuration.GetValue<string>("EvService")
+            ?? throw new Exception("Missing configuration key: EvService.");
+builder.Services.AddHttpClient(EvHttpClient)
+    .AddHttpMessageHandler<ApiBearerTokenHandler>();
+builder.Services.AddTransient<IPponClient, PponClient>(
+    sc => new PponClient(evServiceUrl,
+        sc.GetRequiredService<IHttpClientFactory>().CreateClient(EvHttpClient)));
 
 var organisationAuthority = builder.Configuration.GetValue<Uri>("Organisation:Authority")
             ?? throw new Exception("Missing configuration key: Organisation:Authority.");

@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
     <PropertyGroup>
         <TargetFramework>net8.0</TargetFramework>
@@ -16,6 +16,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\Libraries\CO.CDP.AwsServices\CO.CDP.AwsServices.csproj" />
+      <ProjectReference Include="..\..\Libraries\CO.CDP.EntityVerificationClient\CO.CDP.EntityVerificationClient.csproj" />
       <ProjectReference Include="..\..\Libraries\CO.CDP.Forms.WebApiClient\CO.CDP.Forms.WebApiClient.csproj" />
       <ProjectReference Include="..\..\Libraries\CO.CDP.Organisation.WebApiClient\CO.CDP.Organisation.WebApiClient.csproj" />
       <ProjectReference Include="..\..\Libraries\CO.CDP.Person.WebApiClient\CO.CDP.Person.WebApiClient.csproj" />

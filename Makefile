@@ -61,6 +61,7 @@ OpenAPI: build ## Create OpenAPI folder and copy relevant files in
 	cp ./Services/CO.CDP.Organisation.WebApi/OpenAPI/CO.CDP.Organisation.WebApi.json OpenAPI/Organisation.json
 	cp ./Services/CO.CDP.Person.WebApi/OpenAPI/CO.CDP.Person.WebApi.json OpenAPI/Person.json
 	cp ./Services/CO.CDP.Forms.WebApi/OpenAPI/CO.CDP.Forms.WebApi.json OpenAPI/Forms.json
+	cp ./Services/CO.CDP.EntityVerification/OpenAPI/CO.CDP.EntityVerification.json OpenAPI/EV.json
 
 compose.override.yml:
 	cp compose.override.yml.template compose.override.yml

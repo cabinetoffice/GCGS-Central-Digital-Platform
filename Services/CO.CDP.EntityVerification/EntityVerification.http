@@ -1,0 +1,6 @@
+@ev_HostAddress = http://localhost:8094
+
+GET {{ev_HostAddress}}/identifiers/
+Accept: application/json
+
+###
