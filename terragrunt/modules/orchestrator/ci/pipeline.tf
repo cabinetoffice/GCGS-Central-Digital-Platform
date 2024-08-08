@@ -1,8 +1,8 @@
-resource "aws_codepipeline" "trigger_update_account" {
+resource "aws_codepipeline" "this" {
 
-  execution_mode = "QUEUED"
-  name           = "${local.name_prefix}-${local.trigger_update_account_cp_name}"
-  pipeline_type  = "V2"
+  execution_mode = "SUPERSEDED"
+  name           = "${local.name_prefix}-deployment"
+  pipeline_type  = "V1"
   role_arn       = var.ci_pipeline_role_arn
 
   artifact_store {
@@ -21,6 +21,7 @@ resource "aws_codepipeline" "trigger_update_account" {
       output_artifacts = ["source_output"]
       configuration = {
         ConnectionArn    = data.aws_codestarconnections_connection.cabinet_office.arn
+        DetectChanges    = false
         FullRepositoryId = "cabinetoffice/GCGS-Central-Digital-Platform"
         BranchName       = "main"
       }
@@ -28,17 +29,17 @@ resource "aws_codepipeline" "trigger_update_account" {
   }
 
   stage {
-    name = "Update-Orchestrator-Account"
+    name = "Orchestrator"
     action {
       category         = "Build"
       input_artifacts  = ["source_output"]
-      name             = "${local.name_prefix}-update-account-in-orchestrator"
+      name             = "${local.name_prefix}-deployment-to-orchestrator"
       output_artifacts = ["output_update_account_orchestrator"]
       owner            = "AWS"
       provider         = "CodeBuild"
       version          = "1"
       configuration = {
-        ProjectName = "${local.name_prefix}-update-account-in-orchestrator"
+        ProjectName = "${local.name_prefix}-deployment-to-orchestrator"
         EnvironmentVariables = jsonencode([
           {
             name  = "ENABLE_STATUS_CHECKS"
@@ -51,17 +52,17 @@ resource "aws_codepipeline" "trigger_update_account" {
   }
 
   stage {
-    name = "Update-Development-Account"
+    name = "Development"
     action {
       category         = "Build"
       input_artifacts  = ["source_output"]
-      name             = "${local.name_prefix}-update-account-in-development"
+      name             = "${local.name_prefix}-deployment-to-development"
       output_artifacts = ["output_update_account_development"]
       owner            = "AWS"
       provider         = "CodeBuild"
       version          = "1"
       configuration = {
-        ProjectName = "${local.name_prefix}-update-account-in-development"
+        ProjectName = "${local.name_prefix}-deployment-to-development"
         EnvironmentVariables = jsonencode([
           {
             name  = "ENABLE_STATUS_CHECKS"
@@ -85,17 +86,17 @@ resource "aws_codepipeline" "trigger_update_account" {
   }
 
   stage {
-    name = "Update-Staging-Account"
+    name = "Staging"
     action {
       category         = "Build"
       input_artifacts  = ["source_output"]
-      name             = "${local.name_prefix}-update-account-in-staging"
+      name             = "${local.name_prefix}-deployment-to-staging"
       output_artifacts = ["output_update_account_staging"]
       owner            = "AWS"
       provider         = "CodeBuild"
       version          = "1"
       configuration = {
-        ProjectName = "${local.name_prefix}-update-account-in-staging"
+        ProjectName = "${local.name_prefix}-deployment-to-staging"
         EnvironmentVariables = jsonencode([
           {
             name  = "ENABLE_STATUS_CHECKS"
@@ -119,17 +120,17 @@ resource "aws_codepipeline" "trigger_update_account" {
   }
 
   stage {
-    name = "Update-Integration-Account"
+    name = "Integration"
     action {
       category         = "Build"
       input_artifacts  = ["source_output"]
-      name             = "${local.name_prefix}-update-account-in-integration"
+      name             = "${local.name_prefix}-deployment-to-integration"
       output_artifacts = ["output_update_account_integration"]
       owner            = "AWS"
       provider         = "CodeBuild"
       version          = "1"
       configuration = {
-        ProjectName = "${local.name_prefix}-update-account-in-integration"
+        ProjectName = "${local.name_prefix}-deployment-to-integration"
         EnvironmentVariables = jsonencode([
           {
             name  = "ENABLE_STATUS_CHECKS"
