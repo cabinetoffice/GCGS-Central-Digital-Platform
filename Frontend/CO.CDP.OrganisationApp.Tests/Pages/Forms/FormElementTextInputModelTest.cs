@@ -79,4 +79,54 @@ public class FormElementTextInputModelTest
             validationResults.Should().BeEmpty();
         }
     }
+
+    [Theory]
+    [InlineData("invalid-email", "Enter an email address in the correct format, like name@example.com.")]
+    [InlineData("valid.email@example.com", null)]
+    public void Validate_EmailValidation_ReturnsExpectedResults(string? email, string? expectedErrorMessage)
+    {
+        _model.IsRequired = false;
+        _model.CurrentFormQuestionType = FormQuestionType.Text;
+        _model.Heading = "Email Address";
+        _model.TextInput = email;
+
+        var validationResults = _model.Validate(new ValidationContext(_model)).ToList();
+
+        if (expectedErrorMessage != null)
+        {
+            validationResults.Should().ContainSingle();
+            validationResults.First().ErrorMessage.Should().Be(expectedErrorMessage);
+        }
+        else
+        {
+            validationResults.Should().BeEmpty();
+        }
+    }
+
+    [Theory]
+    [InlineData(true, "Email Address", null, "Please provide a value.")]
+    [InlineData(true, "Email Address", "invalid-email", "Enter an email address in the correct format, like name@example.com.")]
+    [InlineData(true, "Email Address", "valid.email@example.com", null)]
+    [InlineData(false, "Email Address", "somevalue", "Enter an email address in the correct format, like name@example.com.")]
+    [InlineData(false, "Email Address", null, null)]
+    [InlineData(false, "Name", "invalid-email", null)]
+    public void Validate_EmailFieldValidationBasedOnHeading_ReturnsExpectedResults(bool isRequired, string heading, string? textInput, string? expectedErrorMessage)
+    {
+        _model.IsRequired = isRequired;
+        _model.CurrentFormQuestionType = FormQuestionType.Text;
+        _model.Heading = heading;
+        _model.TextInput = textInput;
+
+        var validationResults = _model.Validate(new ValidationContext(_model)).ToList();
+
+        if (expectedErrorMessage != null)
+        {
+            validationResults.Should().ContainSingle();
+            validationResults.First().ErrorMessage.Should().Be(expectedErrorMessage);
+        }
+        else
+        {
+            validationResults.Should().BeEmpty();
+        }
+    }
 }

@@ -7,13 +7,6 @@
     {
         return Model.ConnectedEntityCategory == radioValue ? "checked='checked'" : string.Empty;
     }
-
-    string GetDescriptionIfNotRegisteredWithCH(string value)
-    {
-        return value;
-        // To be used in next stage of development
-        // return Model.RegisteredWithCh ? value.Substring(2) : $"equivalent to {value}";
-    }
 }
 
 <a href="/organisation/@Model.Id/supplier-information/connected-person/person-type" class="govuk-back-link">Back</a>
@@ -48,7 +41,7 @@
                                 @IsSelected(Constants.ConnectedEntityOrganisationCategoryType.RegisteredCompany)>
 
                                 <label class="govuk-label govuk-radios__label" for="entityCategory">
-                                    @GetDescriptionIfNotRegisteredWithCH(ConnectedEntityOrganisationCategoryModel.ConnectedEntityCategoryOption["RegisteredCompany"])
+                                    @ConnectedEntityOrganisationCategoryModel.ConnectedEntityCategoryOption["RegisteredCompany"] @(Model.RegisteredWithCh == false ? " or equivalent" : "")
                                 </label>
                             </div>
 
@@ -59,7 +52,7 @@
                                 @IsSelected(Constants.ConnectedEntityOrganisationCategoryType.DirectorOrTheSameResponsibilities)>
 
                                 <label class="govuk-label govuk-radios__label" for="entityCategory-2">
-                                    @GetDescriptionIfNotRegisteredWithCH(ConnectedEntityOrganisationCategoryModel.ConnectedEntityCategoryOption["Director"])
+                                    @ConnectedEntityOrganisationCategoryModel.ConnectedEntityCategoryOption["Director"]
                                 </label>
                             </div>
 
@@ -70,7 +63,7 @@
                                 @IsSelected(Constants.ConnectedEntityOrganisationCategoryType.ParentOrSubsidiaryCompany)>
 
                                 <label class="govuk-label govuk-radios__label" for="entityCategory-3">
-                                    @GetDescriptionIfNotRegisteredWithCH(ConnectedEntityOrganisationCategoryModel.ConnectedEntityCategoryOption["ParentOrSubCompany"])
+                                    @ConnectedEntityOrganisationCategoryModel.ConnectedEntityCategoryOption["ParentOrSubCompany"]
                                 </label>
                             </div>
 
@@ -81,7 +74,7 @@
                                 @IsSelected(Constants.ConnectedEntityOrganisationCategoryType.ACompanyYourOrganisationHasTakenOver)>
 
                                 <label class="govuk-label govuk-radios__label" for="entityCategory-4">
-                                    @GetDescriptionIfNotRegisteredWithCH(ConnectedEntityOrganisationCategoryModel.ConnectedEntityCategoryOption["CompanyOverTaken"])
+                                    @ConnectedEntityOrganisationCategoryModel.ConnectedEntityCategoryOption["CompanyOverTaken"]
                                 </label>
                             </div>
 
@@ -91,7 +84,7 @@
                                        data-aria-controls="conditional-entityCategory-5"
                                 @IsSelected(Constants.ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl)>
                                 <label class="govuk-label govuk-radios__label" for="entityCategory-5">
-                                    @GetDescriptionIfNotRegisteredWithCH(ConnectedEntityOrganisationCategoryModel.ConnectedEntityCategoryOption["OrgWithSignificantControl"])
+                                    @ConnectedEntityOrganisationCategoryModel.ConnectedEntityCategoryOption["OrgWithSignificantControl"]
                                 </label>
                             </div>
                         </div>
