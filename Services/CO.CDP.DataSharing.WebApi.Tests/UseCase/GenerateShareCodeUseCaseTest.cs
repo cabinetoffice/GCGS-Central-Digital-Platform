@@ -19,12 +19,13 @@ public class GenerateShareCodeUseCaseTest(AutoMapperFixture mapperFixture) : ICl
     [Fact]
     public async Task ThrowsInvalidOrganisationRequestedException_WhenShareCodeRequestedForNonExistentOrganisation()
     {
-        var shareRequest = new ShareRequest
-        {
-            FormId = default,
-            OrganisationId = default
-        };
-        
+        var organisationId = (int)default;
+        var organisationGuid = (Guid)default;
+        var formId = (Guid)default;
+
+        var (shareRequest, sharedConsent) = EntityFactory.GenerateSharedConsent(organisationId: organisationId, organisationGuid: organisationGuid, formId: formId);
+
+
         var shareReceipt = async () => await UseCase.Execute(shareRequest);
 
         await shareReceipt.Should().ThrowAsync<InvalidOrganisationRequestedException>();
@@ -36,26 +37,12 @@ public class GenerateShareCodeUseCaseTest(AutoMapperFixture mapperFixture) : ICl
         var apiKeyOrganisationId = 1;
         var organisationId = 2;
         var organisationGuid = Guid.NewGuid();
-        var foundOrganisation = new Organisation
-        {
-            Id = organisationId,
-            Guid = organisationGuid,
-            Name = string.Empty,
-            Tenant = new Tenant
-            {
-                Guid = Guid.NewGuid(),
-                Name = string.Empty
-            }
-        };
+        var formId = (Guid)default;
 
-        var shareRequest = new ShareRequest
-        {
-            FormId = default,
-            OrganisationId = organisationGuid
-        };
+        var (shareRequest, sharedConsent) = EntityFactory.GenerateSharedConsent(organisationId: organisationId, organisationGuid: organisationGuid, formId: formId);
 
         _claimService.Setup(x => x.GetOrganisationId()).Returns(apiKeyOrganisationId);
-        _organisationRepository.Setup(x => x.Find(organisationGuid)).ReturnsAsync(foundOrganisation);
+        _organisationRepository.Setup(x => x.Find(organisationGuid)).ReturnsAsync(sharedConsent.Organisation);
 
         var shareReceipt = async () => await UseCase.Execute(shareRequest);
 
@@ -68,29 +55,12 @@ public class GenerateShareCodeUseCaseTest(AutoMapperFixture mapperFixture) : ICl
         var apiKeyOrganisationId = 1;
         var organisationId = apiKeyOrganisationId;
         var organisationGuid = Guid.NewGuid();
-        var foundOrganisation = new Organisation
-        {
-            Id = organisationId,
-            Guid = organisationGuid,
-            Name = string.Empty,
-            Tenant = new Tenant
-            {
-                Guid = Guid.NewGuid(),
-                Name = string.Empty
-            }
-        };
-
         var formId = Guid.NewGuid();
-        var formVersionId = string.Empty;
 
-        var shareRequest = new ShareRequest
-        {
-            FormId = formId,
-            OrganisationId = organisationGuid
-        };
+        var (shareRequest, sharedConsent) = EntityFactory.GenerateSharedConsent(organisationId: organisationId, organisationGuid: organisationGuid, formId: formId);
 
         _claimService.Setup(x => x.GetOrganisationId()).Returns(apiKeyOrganisationId);
-        _organisationRepository.Setup(x => x.Find(organisationGuid)).ReturnsAsync(foundOrganisation);
+        _organisationRepository.Setup(x => x.Find(organisationGuid)).ReturnsAsync(sharedConsent.Organisation);
         _formRepository.Setup(r => r.GetSharedConsentDraftAsync(shareRequest.FormId, shareRequest.OrganisationId)).ReturnsAsync((SharedConsent?)null);
 
         var shareReceipt = async () => await UseCase.Execute(shareRequest);
@@ -104,56 +74,18 @@ public class GenerateShareCodeUseCaseTest(AutoMapperFixture mapperFixture) : ICl
         var apiKeyOrganisationId = 1;
         var organisationId = apiKeyOrganisationId;
         var organisationGuid = Guid.NewGuid();
-        var foundOrganisation = new Organisation
-        {
-            Id = organisationId,
-            Guid = organisationGuid,
-            Name = string.Empty,
-            Tenant = new Tenant
-            {
-                Guid = Guid.NewGuid(),
-                Name = string.Empty
-            }
-        };
-
         var formId = Guid.NewGuid();
-        var formVersionId = string.Empty;
 
-        var shareRequest = new ShareRequest
-        {
-            FormId = formId,
-            OrganisationId = organisationGuid
-        };
-
-        var sharedConsent = new SharedConsent()
-        {
-            Guid = formId,
-            Organisation = foundOrganisation,
-            Form = new Form
-            {
-                Guid = formId,
-                Name = string.Empty,
-                Version = string.Empty,
-                IsRequired = default,
-                Type = default,
-                Scope = default,
-                Sections = new List<FormSection> { }
-            },
-            AnswerSets = new List<FormAnswerSet> { },
-            SubmissionState = SubmissionState.Draft,
-            SubmittedAt = DateTime.UtcNow,
-            FormVersionId = formVersionId,
-            BookingReference = string.Empty
-        };
+        var (shareRequest, sharedConsent) = EntityFactory.GenerateSharedConsent(organisationId: organisationId, organisationGuid: organisationGuid, formId: formId);
 
         _claimService.Setup(x => x.GetOrganisationId()).Returns(apiKeyOrganisationId);
-        _organisationRepository.Setup(x => x.Find(organisationGuid)).ReturnsAsync(foundOrganisation);
+        _organisationRepository.Setup(x => x.Find(organisationGuid)).ReturnsAsync(sharedConsent.Organisation);
         _formRepository.Setup(r => r.GetSharedConsentDraftAsync(shareRequest.FormId, shareRequest.OrganisationId)).ReturnsAsync(sharedConsent);
 
         var found = await UseCase.Execute(shareRequest);
 
-        found.FormId.Should().Be(formId);
-        found.FormVersionId.Should().Be(formVersionId);
+        found.FormId.Should().Be(shareRequest.FormId);
+        found.FormVersionId.Should().Be(sharedConsent.FormVersionId);
         found.ShareCode.Should().NotBeNullOrWhiteSpace();
     }
 }
