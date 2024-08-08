@@ -1,6 +1,7 @@
 using CO.CDP.OrganisationApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
+using System.Text.RegularExpressions;
 
 namespace CO.CDP.OrganisationApp.Pages.Forms;
 
@@ -24,9 +25,29 @@ public class FormElementTextInputModel : FormElementModel, IValidatableObject
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
-        if (CurrentFormQuestionType == FormQuestionType.Text && IsRequired == true && string.IsNullOrWhiteSpace(TextInput))
+
+        if (IsRequired == true && string.IsNullOrWhiteSpace(TextInput))
         {
-            yield return new ValidationResult("Please provide a value.", [nameof(TextInput)]);
+            yield return new ValidationResult("Please provide a value.", new[] { nameof(TextInput) });
         }
+        else if (!string.IsNullOrWhiteSpace(TextInput) && IsEmailValidationRequired() && !IsValidEmail(TextInput))
+        {
+            yield return new ValidationResult("Enter an email address in the correct format, like name@example.com.", new[] { nameof(TextInput) });
+        }
+    }
+    private bool IsEmailValidationRequired()
+    {
+        return Heading?.Contains("email", StringComparison.OrdinalIgnoreCase) == true;
+    }
+
+    private bool IsValidEmail(string? email)
+    {
+        if (string.IsNullOrWhiteSpace(email))
+        {
+            return false;
+        }
+
+        var emailRegex = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
+        return Regex.IsMatch(email, emailRegex);
     }
 }
