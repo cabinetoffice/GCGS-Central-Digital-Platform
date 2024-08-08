@@ -1,4 +1,5 @@
 using System.Reflection;
+using CO.CDP.Authentication.AuthorizationPolicy;
 using CO.CDP.DataSharing.WebApi.Model;
 using CO.CDP.DataSharing.WebApi.UseCase;
 using CO.CDP.Functional;
@@ -199,7 +200,7 @@ public static class EndpointExtensions
                 operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
                 operation.Responses["500"].Description = "Internal server error.";
                 return operation;
-            });
+            }).RequireAuthorization(Constants.OrganisationKeyPolicy);
 
         app.MapPost("/share/data/verify", (ShareVerificationRequest request) => Results.Ok(
                     new ShareVerificationReceipt
