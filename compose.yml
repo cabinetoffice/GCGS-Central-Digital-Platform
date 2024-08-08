@@ -261,6 +261,7 @@ services:
       Aws__Credentials__SecretAccessKey: test
       Aws__ServiceURL: "http://localstack:4566"
       ConnectionStrings__OrganisationInformationDatabase: 'Server=db;Database=cdp;Username=cdp_user;Password=cdp123;'
+      Organisation__Authority: '${Organisation__Authority:-http://gateway:${CDP_AUTHORITY_PORT:-8092}}'
       VERSION: dev-docker
 
   entity-verification:

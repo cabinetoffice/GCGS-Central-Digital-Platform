@@ -5,32 +5,31 @@ using CO.CDP.OrganisationInformation.Persistence.Forms;
 namespace DataSharing.Tests;
 internal static class EntityFactory
 {
-    internal static (ShareRequest, SharedConsent) GenerateSharedConsent(int organisationId, Guid organisationGuid, Guid formId)
+    internal static ShareRequest GetShareRequest(Guid organisationGuid, Guid formId)
     {
-        var foundOrganisation = new Organisation
-        {
-            Id = organisationId,
-            Guid = organisationGuid,
-            Name = string.Empty,
-            Tenant = new Tenant
-            {
-                Guid = Guid.NewGuid(),
-                Name = string.Empty
-            }
-        };
-;
-        var formVersionId = string.Empty;
-
-        var shareRequest = new ShareRequest
+        return new ShareRequest
         {
             FormId = formId,
             OrganisationId = organisationGuid
         };
+    }
 
-        var sharedConsent = new SharedConsent()
+    internal static SharedConsent GetSharedConsent(int organisationId, Guid organisationGuid, Guid formId)
+    {
+        return new SharedConsent()
         {
             Guid = formId,
-            Organisation = foundOrganisation,
+            Organisation = new Organisation
+            {
+                Id = organisationId,
+                Guid = organisationGuid,
+                Name = string.Empty,
+                Tenant = new Tenant
+                {
+                    Guid = Guid.NewGuid(),
+                    Name = string.Empty
+                }
+            },
             Form = new Form
             {
                 Guid = formId,
@@ -44,10 +43,8 @@ internal static class EntityFactory
             AnswerSets = new List<FormAnswerSet> { },
             SubmissionState = SubmissionState.Draft,
             SubmittedAt = DateTime.UtcNow,
-            FormVersionId = formVersionId,
+            FormVersionId = string.Empty,
             BookingReference = string.Empty
         };
-
-        return (shareRequest, sharedConsent);
     }
 }
