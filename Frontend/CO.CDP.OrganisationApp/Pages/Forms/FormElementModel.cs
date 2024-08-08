@@ -8,6 +8,7 @@ public interface IFormElementModel
     string? Heading { get; set; }
 
     string? Description { get; set; }
+    string? Caption { get; set; }
 
     bool IsRequired { get; set; }
 
@@ -26,6 +27,8 @@ public abstract class FormElementModel : IFormElementModel
 
     public string? Description { get; set; }
 
+    public string? Caption { get; set; }
+
     [BindProperty]
     public FormQuestionType? CurrentFormQuestionType { get; set; }
 
@@ -39,6 +42,7 @@ public abstract class FormElementModel : IFormElementModel
     {
         Heading = question.Title;
         Description = question.Description;
+        Caption = question.Caption;
         CurrentFormQuestionType = question.Type;
         IsRequired = question.IsRequired;
         Options = question.Options;

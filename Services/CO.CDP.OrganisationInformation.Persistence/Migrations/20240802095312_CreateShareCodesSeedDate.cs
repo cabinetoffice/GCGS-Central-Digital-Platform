@@ -1,4 +1,4 @@
-﻿using CO.CDP.OrganisationInformation.Persistence.Forms;
+using CO.CDP.OrganisationInformation.Persistence.Forms;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
@@ -48,19 +48,19 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                     VALUES ('{Guid.NewGuid()}', sectionId, {(int)FormQuestionType.CheckYourAnswers}, TRUE, 'Check your answers', NULL, '{{}}')
                     RETURNING id INTO previousQuestionId;
 
-                    INSERT INTO form_questions (guid, section_id, type, next_question_id, is_required, title, description, caption, options)
+                    INSERT INTO form_questions (guid, section_id, type, next_question_id, is_required, title, caption, description, options)
                     VALUES ('{Guid.NewGuid()}', sectionId, {(int)FormQuestionType.Address}, previousQuestionId, TRUE, 'Enter your postal address', 'Your declaration details', '<div id=""declarationNameHint"" class=""govuk-hint"">So the contracting authority can contact you.</div>', '{{""choices"": [{{""id"": ""bd4fe649-1f52-429e-978c-472e0a2cf11c"", ""title"": ""Address line 1"", ""groupName"": null, ""hint"": {{""title"": null, ""description"": ""Enter the first line of your address.""}}, ""value"": ""addressLine1""}}, {{""id"": ""a4edc9cd-f198-4e74-88e4-d981b09d30ed"", ""title"": ""Town or city"", ""groupName"": null, ""hint"": {{""title"": null, ""description"": ""Enter the name of your town or city.""}}, ""value"": ""townOrCity""}}, {{""id"": ""ef806205-6e38-4496-9a3e-8bb7a37b48ba"", ""title"": ""Post code"", ""groupName"": null, ""hint"": {{""title"": null, ""description"": ""Enter your postal code.""}}, ""value"": ""postCode""}}], ""choiceProviderStrategy"": null}}')
                     RETURNING id INTO previousQuestionId;
 
-                    INSERT INTO form_questions (guid, section_id, type, next_question_id, is_required, title, description, caption, options)
+                    INSERT INTO form_questions (guid, section_id, type, next_question_id, is_required, title, caption, description, options)
                     VALUES ('{Guid.NewGuid()}', sectionId, {(int)FormQuestionType.Text}, previousQuestionId, TRUE, 'Enter your email address', 'Your declaration details', '<div id=""declarationNameHint"" class=""govuk-hint"">So the contracting authority can contact you.</div>', '{{}}')
                     RETURNING id INTO previousQuestionId;
 
-                    INSERT INTO form_questions (guid, section_id, type, next_question_id, is_required, title, description, caption, options)
+                    INSERT INTO form_questions (guid, section_id, type, next_question_id, is_required, title, caption, description, options)
                     VALUES ('{Guid.NewGuid()}', sectionId, {(int)FormQuestionType.Text}, previousQuestionId, TRUE, 'Enter your job title', 'Your declaration details', NULL, '{{}}')
                     RETURNING id INTO previousQuestionId;
 
-                    INSERT INTO form_questions (guid, section_id, type, next_question_id, is_required, title, description, caption, options)
+                    INSERT INTO form_questions (guid, section_id, type, next_question_id, is_required, title, caption, description, options)
                     VALUES ('{Guid.NewGuid()}', sectionId, {(int)FormQuestionType.Text}, previousQuestionId, TRUE, 'Enter your name', 'Your declaration details', '<div id=""declarationNameHint"" class=""govuk-hint"">Your name as the person authorised to declare the supplier information.</div>', '{{}}')
                     RETURNING id INTO previousQuestionId;
 
