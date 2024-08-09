@@ -3,7 +3,7 @@
 @{
     var registerNameHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.RegisterName)).HasInnerHtml;
 
-    var backLink = $"/organisation/{Model.Id}/supplier-information/connected-person/date-registered/{Model.ConnectedEntityId}";
+    var backLink = $"/organisation/{Model.Id}/supplier-information/connected-person/date-registered-question/{Model.ConnectedEntityId}";
 
     if (Request.Query.ContainsKey("frm-chk-answer"))
     {
