@@ -1,16 +1,12 @@
-resource "aws_cloudwatch_log_group" "update_account" {
-  name              = "/${local.name_prefix}/build/${local.update_account_cb_name}"
+resource "aws_cloudwatch_log_group" "this" {
+  for_each      = local.deployment_environments
+
+  name              = "/${local.name_prefix}/deploymen/${each.key}"
   retention_in_days = var.environment == "production" ? 0 : 90
   tags              = var.tags
 }
 
-resource "aws_cloudwatch_log_group" "update_ecs_services" {
-  name              = "/${local.name_prefix}/build/${local.update_ecs_service_cb_name}"
-  retention_in_days = var.environment == "production" ? 0 : 90
-  tags              = var.tags
-}
-
-resource "aws_cloudwatch_event_rule" "service_version_ssm_update" {
+resource "aws_cloudwatch_event_rule" "this" {
 
   name        = "${local.name_prefix}-service-version-updated"
   description = "CloudWatch Event rule to detect updating service version"
@@ -30,8 +26,8 @@ resource "aws_cloudwatch_event_rule" "service_version_ssm_update" {
   tags = var.tags
 }
 
-resource "aws_cloudwatch_event_target" "trigger_service_deployment" {
-  rule     = aws_cloudwatch_event_rule.service_version_ssm_update.name
-  arn      = "arn:aws:codepipeline:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:${local.name_prefix}-trigger-update-ecs-services"
+resource "aws_cloudwatch_event_target" "this" {
+  rule     = aws_cloudwatch_event_rule.this.name
+  arn      = aws_codepipeline.this.arn
   role_arn = var.role_cloudwatch_events_arn
 }

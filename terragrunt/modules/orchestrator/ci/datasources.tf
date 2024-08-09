@@ -37,7 +37,7 @@ data "aws_iam_policy_document" "cloudwatch_events_policy" {
     actions = ["codepipeline:StartPipelineExecution"]
 
     resources = [
-      "arn:aws:codepipeline:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:${local.name_prefix}-trigger-update-ecs-services"
+      aws_codepipeline.this.arn
     ]
   }
 }

@@ -334,6 +334,21 @@ data "aws_iam_policy_document" "terraform_global" {
     sid = "ManageCognitoGlobal"
   }
 
+  statement {
+    actions = [
+      "ssm:AddTagsToResource",
+      "ssm:Describe*",
+      "ssm:Get*",
+      "ssm:List*",
+      "ssm:PutParameter",
+    ]
+    effect = "Allow"
+    resources = [
+      "*"
+    ]
+    sid = "ManageSSMGlobal"
+  }
+
 }
 
 data "aws_iam_policy_document" "terraform_product" {
