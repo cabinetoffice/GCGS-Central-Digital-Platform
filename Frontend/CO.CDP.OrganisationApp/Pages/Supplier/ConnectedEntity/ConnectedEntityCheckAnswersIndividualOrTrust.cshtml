@@ -39,7 +39,7 @@
                             }
                         </dd>
                         <dd class="govuk-summary-list__actions">
-                            <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/individual-psc-details/@Model.ConnectedEntityId?frm-chk-answer">
+                            <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/individual-psc-details/@Model.ConnectedEntityId?frm-chk-answer=true">
                                 Change<span class="govuk-visually-hidden">
                                     the person of significant control's details
                                 </span>
@@ -56,7 +56,7 @@
                                 @details.DirectorLocation
                             </dd>
                             <dd class="govuk-summary-list__actions">
-                                <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/director-residency/@Model.ConnectedEntityId?frm-chk-answer">
+                                <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/director-residency/@Model.ConnectedEntityId?frm-chk-answer=true">
                                     Change<span class="govuk-visually-hidden">
                                         the registered date
                                     </span>
@@ -78,7 +78,7 @@
                                 <p class="govuk-body">@details.RegisteredAddress.Country</p>
                             </dd>
                             <dd class="govuk-summary-list__actions">
-                                <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/registered-address/@ukNonUkRegisterAddress/@Model.ConnectedEntityId?frm-chk-answer">
+                                <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/registered-address/@ukNonUkRegisterAddress/@Model.ConnectedEntityId?frm-chk-answer=true">
                                     Change<span class="govuk-visually-hidden">
                                         the person's address
                                     </span>
@@ -104,7 +104,7 @@
 
                             </dd>
                             <dd class="govuk-summary-list__actions">
-                                <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/postal-address/@ukNonUkPostalAddress/@Model.ConnectedEntityId?frm-chk-answer">
+                                <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/postal-address/@ukNonUkPostalAddress/@Model.ConnectedEntityId?frm-chk-answer=true">
                                     Change<span class="govuk-visually-hidden">
                                         the person's address
                                     </span>
@@ -123,7 +123,7 @@
                                 @Html.Raw(string.Join("", details.ControlConditions.Select(x => $"<li>{x.Description()}</li>")))
                             </dd>
                             <dd class="govuk-summary-list__actions">
-                                <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/nature-of-control/@Model.ConnectedEntityId?frm-chk-answer">
+                                <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/nature-of-control/@Model.ConnectedEntityId?frm-chk-answer=true">
                                     Change<span class="govuk-visually-hidden">
                                         the nature of control
                                     </span>
@@ -142,7 +142,7 @@
                                 @details.RegistrationDate.Value.ToString("dd/MM/yyyy")
                             </dd>
                             <dd class="govuk-summary-list__actions">
-                                <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/date-registered/@Model.ConnectedEntityId?frm-chk-answer">
+                                <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/date-registered/@Model.ConnectedEntityId?frm-chk-answer=true">
                                     Change<span class="govuk-visually-hidden">
                                         the registered date
                                     </span>
