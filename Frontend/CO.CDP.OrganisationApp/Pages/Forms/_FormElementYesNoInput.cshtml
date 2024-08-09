@@ -6,10 +6,16 @@
 <div class="govuk-form-group @(hasError ? "govuk-form-group--error" : "")">
     <fieldset class="govuk-fieldset" aria-required="true">
         <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
-            <h2 class="govuk-fieldset__heading"> @Model.Heading</h2>
+            @if (!string.IsNullOrWhiteSpace(Model.Heading))
+            {
+                <h2 class="govuk-fieldset__heading">@Model.Heading</h2>
+            }
         </legend>
 
-        <p class="govuk-body">@Html.Raw(@Model.Description)</p>
+        @if (!string.IsNullOrWhiteSpace(Model.Description))
+        {
+            @Html.Raw(Model.Description)
+        }
 
         @if (hasError)
         {

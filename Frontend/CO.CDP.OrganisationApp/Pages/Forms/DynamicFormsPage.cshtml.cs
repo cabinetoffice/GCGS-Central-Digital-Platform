@@ -155,7 +155,7 @@ public class DynamicFormsPageModel(
 
                 var summary = new AnswerSummary
                 {
-                    Title = question.Title,
+                    Title = question.SummaryTitle ?? question.Title,
                     Answer = answerString,
                     ChangeLink = $"/organisation/{OrganisationId}/forms/{FormId}/sections/{SectionId}/{answer.QuestionId}?frm-chk-answer"
                 };
