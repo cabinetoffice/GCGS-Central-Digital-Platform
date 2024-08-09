@@ -15,7 +15,8 @@ public static class OrganisationSchemeType
             { "GB-NHS", "National health Service Organisations Registry Number"},
             { "GB-UKPRN", "UK Register of Learning Provider Number"},
             { "VAT", "VAT number"},
-            { "Other", "Other / None"}
+            { "Other", "Other / None"},
+            { "CDP-PPON", "Ppon" }
         };
 
     public static string? SchemeDescription(this string? scheme)
