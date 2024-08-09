@@ -1,5 +1,6 @@
 using CO.CDP.Testcontainers.PostgreSql;
 using FluentAssertions;
+using System;
 using static CO.CDP.OrganisationInformation.Persistence.Tests.EntityFactory;
 
 namespace CO.CDP.OrganisationInformation.Persistence.Tests;
@@ -11,7 +12,7 @@ public class DatabaseAuthenticationKeyRepositoryTest(PostgreSqlFixture postgreSq
     {
         using var repository = AuthenticationKeyRepository();
         var organisation = GivenOrganisation();
-        var authenticationKey = GivenAuthenticationKey(organisation: organisation);
+        var authenticationKey = GivenAuthenticationKey(key: Guid.NewGuid().ToString(), organisation: organisation);
         await repository.Save(authenticationKey);
 
         var found = await repository.Find(authenticationKey.Key);
@@ -34,7 +35,7 @@ public class DatabaseAuthenticationKeyRepositoryTest(PostgreSqlFixture postgreSq
     {
         using var repository = AuthenticationKeyRepository();
         var organisation = GivenOrganisation();
-        var authenticationKey = GivenAuthenticationKey(organisation: organisation);
+        var authenticationKey = GivenAuthenticationKey(key: Guid.NewGuid().ToString(), organisation: organisation);
         authenticationKey.Organisation = GivenOrganisation();
 
         await repository.Save(authenticationKey);
