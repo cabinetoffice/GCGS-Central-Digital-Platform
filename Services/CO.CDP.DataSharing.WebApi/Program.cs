@@ -1,3 +1,4 @@
+using CO.CDP.Authentication;
 using CO.CDP.AwsServices;
 using CO.CDP.Configuration.ForwardedHeaders;
 using CO.CDP.DataSharing.WebApi.Api;
@@ -14,22 +15,22 @@ builder.ConfigureForwardedHeaders();
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(options =>
-{
-    options.DocumentDataSharingApi(builder.Configuration);
-});
-
+builder.Services.AddSwaggerGen(options => { options.DocumentDataSharingApi(builder.Configuration); });
 builder.Services.AddHealthChecks()
     .AddNpgSql(builder.Configuration.GetConnectionString("OrganisationInformationDatabase") ?? "");
 builder.Services.AddAutoMapper(typeof(DataSharingProfile));
 
-builder.Services.AddProblemDetails();
-
 builder.Services.AddDbContext<OrganisationInformationContext>(o =>
     o.UseNpgsql(builder.Configuration.GetConnectionString("OrganisationInformationDatabase") ?? ""));
+
+builder.Services.AddScoped<IClaimService, ClaimService>();
+builder.Services.AddScoped<IOrganisationRepository, DatabaseOrganisationRepository>();
 builder.Services.AddScoped<IFormRepository, DatabaseFormRepository>();
 builder.Services.AddScoped<IUseCase<ShareRequest, ShareReceipt>, GenerateShareCodeUseCase>();
+
 builder.Services.AddDataSharingProblemDetails();
+builder.Services.AddJwtBearerAndApiKeyAuthentication(builder.Configuration, builder.Environment);
+builder.Services.AddOrganisationAuthorization();
 
 builder.Services
     .AddAwsConfiguration(builder.Configuration)
@@ -55,5 +56,8 @@ app.UseStatusCodePages();
 
 app.MapHealthChecks("/health");
 app.UseHttpsRedirection();
+app.UseAuthentication();
+app.UseAuthorization();
 app.UseDataSharingEndpoints();
+
 app.Run();

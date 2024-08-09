@@ -12,7 +12,7 @@ public class ServiceCollectionExtensionsTests
         var exception = new SharedConsentNotFoundException("Shared Consent not found.");
         var result = ServiceCollectionExtensions.MapException(exception);
 
-        Assert.Equal(StatusCodes.Status500InternalServerError, result.status);
+        Assert.Equal(StatusCodes.Status404NotFound, result.status);
         Assert.Equal("SHARED_CONSENT_NOT_FOUND", result.error);
     }
 }
