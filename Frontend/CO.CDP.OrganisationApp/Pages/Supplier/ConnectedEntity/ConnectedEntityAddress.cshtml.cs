@@ -24,7 +24,7 @@ public class ConnectedEntityAddressModel(ISession session) : PageModel
     [BindProperty]
     public AddressPartialModel Address { get; set; } = new();
 
-    [BindProperty]
+    [BindProperty(SupportsGet = true, Name = "frm-chk-answer")]
     public bool? RedirectToCheckYourAnswer { get; set; }
 
     public string? Caption { get; set; }
@@ -295,6 +295,6 @@ public class ConnectedEntityAddressModel(ISession session) : PageModel
 
         Address.Heading = heading;
         Address.AddressHint = hintValue;
-        Address.NonUkAddressLink = $"/organisation/{Id}/supplier-information/connected-person/{AddressType.ToString().ToLower()}-address/non-uk";
+        Address.NonUkAddressLink = $"/organisation/{Id}/supplier-information/connected-person/{AddressType.ToString().ToLower()}-address/non-uk/{ConnectedEntityId}{(RedirectToCheckYourAnswer == true ? "?frm-chk-answer=true" : "")}";
     }
 }

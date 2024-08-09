@@ -1,0 +1,128 @@
+@page "/organisation/{id}/supplier-information/connected-person/date-registered-question/{ConnectedEntityId?}"
+@model CO.CDP.OrganisationApp.Pages.Supplier.ConnectedEntityRegistrationDateQuestionModel
+
+@{
+    var dayHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Day)).HasInnerHtml;
+    var monthHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Month)).HasInnerHtml;
+    var yearHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Year)).HasInnerHtml;
+    var dateOfRegistrationHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.RegistrationDate)).HasInnerHtml;
+    var hasError = dateOfRegistrationHasError || dayHasError || monthHasError || yearHasError;
+
+    var backPage = Request.Query.ContainsKey("frm-chk-answer") ? "check-answers-organisation" : Model.BackPageLink;
+    var backLink = $"/organisation/{Model.Id}/supplier-information/connected-person/{backPage}/{Model.ConnectedEntityId}";
+}
+
+<a href="@backLink" class="govuk-back-link">Back</a>
+
+<main class="govuk-main-wrapper">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <partial name="_ErrorSummary" model="@Model.ModelState" />
+            <span class="govuk-caption-l">@Model.Caption</span>
+            <form class="form" method="post">
+                @if (Request.Query.ContainsKey("frm-chk-answer"))
+                {
+                    <input type="hidden" name="RedirectToCheckYourAnswer" value="true" />
+                }
+                <div class="govuk-form-group">
+                    <fieldset class="govuk-fieldset" data-required="" data-error="Select yes if you required to register person or organistaion as a person with significant control?" aria-required="true">
+                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                            <h1 class="govuk-fieldset__heading">@Model.Heading</h1>
+                        </legend>
+                        <div id="isRequiredToRegisterAsPSC-hint" class="govuk-hint">
+                            In the UK this is defined by <a href="https://www.legislation.gov.uk/ukpga/2006/46/section/790C" target="_blank">section 790C(4) of the Companies Act 2006 (opens in new tab)</a>
+                        </div>
+
+                        <div class="govuk-radios" data-module="govuk-radios">
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input" id="YES" name="HasRegistartionDate" type="radio"
+                                       value="true" data-aria-controls="conditional-YES" @(Model.HasRegistartionDate == true ? "checked" : "")>
+                                <label class="govuk-label govuk-radios__label" for="YES">Yes</label>
+                            </div>
+
+                            <div class="govuk-radios__conditional" id="conditional-YES">
+                                <div class="govuk-form-group">
+                                    <fieldset class="govuk-fieldset" role="group" aria-describedby="isRequiredToRegisterAsPSCHint">
+                                        <legend class="govuk-fieldset__legend">
+                                            Date registered
+                                        </legend>
+                                        <div id="isRequiredToRegisterAsPSC-hint" class="govuk-hint">
+                                            For example, 27 3 2007
+                                        </div>
+                                        @if (dayHasError)
+                                        {
+                                            <p id="day-error" class="govuk-error-message">
+                                                <span class="govuk-visually-hidden">Error:</span>
+                                                @Html.ValidationMessageFor(m => m.Day)
+                                            </p>
+                                        }
+                                        @if (monthHasError)
+                                        {
+                                            <p id="month-error" class="govuk-error-message">
+                                                <span class="govuk-visually-hidden">Error:</span>
+                                                @Html.ValidationMessageFor(m => m.Month)
+                                            </p>
+                                        }
+                                        @if (yearHasError)
+                                        {
+                                            <p id="year-error" class="govuk-error-message">
+                                                <span class="govuk-visually-hidden">Error:</span>
+                                                @Html.ValidationMessageFor(m => m.Year)
+                                            </p>
+                                        }
+                                        @if (dateOfRegistrationHasError)
+                                        {
+                                            <p id="date-of-formation-error" class="govuk-error-message">
+                                                <span class="govuk-visually-hidden">Error:</span>
+                                                @Html.ValidationMessageFor(m => m.RegistrationDate)
+                                            </p>
+                                        }
+                                        <div class="govuk-date-input" id="isRequiredToRegisterAsPSC">
+                                            <div class="govuk-date-input__item">
+                                                <div class="govuk-form-group">
+                                                    <label class="govuk-label govuk-date-input__label" for="isRequiredToRegisterAsPSCDay">
+                                                        Day
+                                                    </label>
+                                                    <input class="govuk-input govuk-date-input__input govuk-input--width-2 @(dayHasError || dateOfRegistrationHasError ? "govuk-input--error" : "")"
+                                                           id="isRequiredToRegisterAsPSCDay" name="Day" type="text" inputmode="numeric" value="@Model.Day">
+                                                </div>
+                                            </div>
+                                            <div class="govuk-date-input__item">
+                                                <div class="govuk-form-group">
+                                                    <label class="govuk-label govuk-date-input__label" for="isRequiredToRegisterAsPSCMonth">
+                                                        Month
+                                                    </label>
+                                                    <input class="govuk-input govuk-date-input__input govuk-input--width-2 @(monthHasError || dateOfRegistrationHasError ? "govuk-input--error" : "")"
+                                                           id="isRequiredToRegisterAsPSCMonth" name="Month" type="text" inputmode="numeric" value="@Model.Month">
+                                                </div>
+                                            </div>
+                                            <div class="govuk-date-input__item">
+                                                <div class="govuk-form-group">
+                                                    <label class="govuk-label govuk-date-input__label" for="isRequiredToRegisterAsPSCYear">
+                                                        Year
+                                                    </label>
+                                                    <input class="govuk-input govuk-date-input__input govuk-input--width-4 @(yearHasError || dateOfRegistrationHasError ? "govuk-input--error" : "")"
+                                                           id="isRequiredToRegisterAsPSCYear" name="Year" type="text" inputmode="numeric" value="@Model.Year">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </fieldset>
+                                </div>
+                            </div>
+
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input" id="NO" name="HasRegistartionDate" type="radio"
+                                       value="false" data-aria-controls="conditional-NO" @(Model.HasRegistartionDate == false ? "checked" : "")>
+                                <label class="govuk-label govuk-radios__label" for="NO">No</label>
+                                <div class="govuk-radios__conditional--hidden" id="conditional-NO"></div>
+                            </div>
+                        </div>
+
+                    </fieldset>
+                </div>
+
+                <button class="govuk-button" type="submit">Continue</button>
+            </form>
+        </div>
+    </div>
+</main>
