@@ -6,8 +6,9 @@
 @{
     var organisationDetails = Model.OrganisationDetails!;
     var registeredAddress = organisationDetails.Addresses.FirstOrDefault(a => a.Type == Organisation.WebApiClient.AddressType.Registered);
-    var pponIndentifier = @organisationDetails.AdditionalIdentifiers.First(i => i.Scheme == "CDP-PPON");
-    var showPpon = pponIndentifier != null && organisationDetails.Identifier.Scheme == "Other";
+    var pponIndentifier = organisationDetails.AdditionalIdentifiers.Prepend(organisationDetails.Identifier).FirstOrDefault(i => i.Scheme == "CDP-PPON");
+    var otherIdentifier = organisationDetails.AdditionalIdentifiers.Prepend(organisationDetails.Identifier).FirstOrDefault(i => i.Scheme == "Other");
+    var showPpon = pponIndentifier != null && otherIdentifier != null;
 }
 
 <main class="govuk-main-wrapper">
