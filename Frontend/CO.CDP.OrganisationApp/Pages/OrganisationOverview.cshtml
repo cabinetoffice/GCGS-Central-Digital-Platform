@@ -6,6 +6,8 @@
 @{
     var organisationDetails = Model.OrganisationDetails!;
     var registeredAddress = organisationDetails.Addresses.FirstOrDefault(a => a.Type == Organisation.WebApiClient.AddressType.Registered);
+    var pponIndentifier = @organisationDetails.AdditionalIdentifiers.First(i => i.Scheme == "CDP-PPON");
+    var showPpon = pponIndentifier != null && organisationDetails.Identifier.Scheme == "Other";
 }
 
 <main class="govuk-main-wrapper">
@@ -35,9 +37,25 @@
                         </dt>
                         <dd class="govuk-summary-list__value">
                             <p class="govuk-body">
-                                @organisationDetails.Identifier.Scheme.SchemeDescription()
+                                @if (showPpon)
+                                {
+                                    @pponIndentifier!.Scheme.SchemeDescription()
+                                }
+                                else
+                                {
+                                    @organisationDetails.Identifier.Scheme.SchemeDescription()
+                                }
                             </p>
-                            <p class="govuk-body">@organisationDetails.Identifier.Id</p>
+                            <p class="govuk-body">
+                                @if (showPpon)
+                                {
+                                    @pponIndentifier!.Id
+                                }
+                                else
+                                {
+                                    @organisationDetails.Identifier.Id
+                                }
+                             </p>
                         </dd>
                         <dd class="govuk-summary-list__actions">
                             <a class="govuk-link govuk-link--no-visited-state" href="#">Change<span class="govuk-visually-hidden"> address</span></a>
