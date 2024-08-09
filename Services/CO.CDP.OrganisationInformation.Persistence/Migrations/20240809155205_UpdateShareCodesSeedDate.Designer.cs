@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CO.CDP.OrganisationInformation.Persistence.Migrations
 {
     [DbContext(typeof(OrganisationInformationContext))]
-    [Migration("20240809121410_UpdateShareCodesSeedDate")]
+    [Migration("20240809155205_UpdateShareCodesSeedDate")]
     partial class UpdateShareCodesSeedDate
     {
         /// <inheritdoc />
@@ -123,6 +123,10 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
 
                     b.HasKey("Id")
                         .HasName("pk_authentication_keys");
+
+                    b.HasIndex("Key")
+                        .IsUnique()
+                        .HasDatabaseName("ix_authentication_keys_key");
 
                     b.HasIndex("OrganisationId")
                         .HasDatabaseName("ix_authentication_keys_organisation_id");
