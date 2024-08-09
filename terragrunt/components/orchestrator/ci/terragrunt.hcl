@@ -71,7 +71,7 @@ dependency orchestrator_iam {
 dependency orchestrator_ecr {
   config_path = "../ecr"
   mock_outputs = {
-    repository_urls = "repository_urls"
+    repository_urls = "mock"
   }
 }
 

@@ -1,4 +1,4 @@
-resource "aws_cloudwatch_log_group" "this" {
+resource "aws_cloudwatch_log_group" "deployments" {
   for_each      = local.deployment_environments
 
   name              = "/${local.name_prefix}/deploymen/${each.key}"
@@ -6,9 +6,9 @@ resource "aws_cloudwatch_log_group" "this" {
   tags              = var.tags
 }
 
-resource "aws_cloudwatch_event_rule" "this" {
+resource "aws_cloudwatch_event_rule" "ci_service_version_updated" {
 
-  name        = "${local.name_prefix}-service-version-updated"
+  name        = "${local.name_prefix}-ci-service-version-updated"
   description = "CloudWatch Event rule to detect updating service version"
 
   event_pattern = jsonencode({
@@ -27,7 +27,7 @@ resource "aws_cloudwatch_event_rule" "this" {
 }
 
 resource "aws_cloudwatch_event_target" "this" {
-  rule     = aws_cloudwatch_event_rule.this.name
+  rule     = aws_cloudwatch_event_rule.ci_service_version_updated.name
   arn      = aws_codepipeline.this.arn
   role_arn = var.role_cloudwatch_events_arn
 }

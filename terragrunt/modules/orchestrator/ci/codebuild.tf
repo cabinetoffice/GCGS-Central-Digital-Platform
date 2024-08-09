@@ -37,7 +37,7 @@ resource "aws_codebuild_project" "this" {
 
   logs_config {
     cloudwatch_logs {
-      group_name  = aws_cloudwatch_log_group.this[each.key].name
+      group_name  = aws_cloudwatch_log_group.deployments[each.key].name
       stream_name = local.name_prefix
     }
   }
