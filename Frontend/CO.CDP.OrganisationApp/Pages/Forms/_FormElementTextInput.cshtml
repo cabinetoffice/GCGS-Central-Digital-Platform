@@ -5,13 +5,20 @@
 }
 
 <div class="govuk-form-group">
-    <span class="govuk-caption-l">@Html.Raw(@Model.Caption)</span>
-    <label class="govuk-label govuk-label--l" for="declarationInput">
-        @Model.Heading
-    </label>
-    <div id="inputHint" class="govuk-hint">
-        Your name as the person authorised to declare the supplier information.
-    </div>
+    @if (!string.IsNullOrWhiteSpace(Model.Caption))
+    {
+        <span class="govuk-caption-l">@Model.Caption</span>
+    }
+
+    @if (!string.IsNullOrWhiteSpace(Model.Heading))
+    {
+        <label class="govuk-label govuk-label--l" for="declarationInput">@Model.Heading</label>
+    }
+
+    @if (!string.IsNullOrWhiteSpace(Model.Description))
+    {
+        @Html.Raw(Model.Description)
+    }
 
     @if (hasError)
     {

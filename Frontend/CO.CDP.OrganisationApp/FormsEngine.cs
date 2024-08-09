@@ -31,6 +31,8 @@ public class FormsEngine(IFormsClient formsApiClient, ITempDataService tempDataS
                 Id = q.Id,
                 Title = q.Title,
                 Description = q.Description,
+                Caption = q.Caption,
+                SummaryTitle = q.SummaryTitle,
                 Type = (Models.FormQuestionType)q.Type,
                 IsRequired = q.IsRequired,
                 NextQuestion = q.NextQuestion,

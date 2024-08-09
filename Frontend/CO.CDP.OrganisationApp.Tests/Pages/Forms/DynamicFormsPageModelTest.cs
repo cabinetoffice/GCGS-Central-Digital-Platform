@@ -128,7 +128,7 @@ public class DynamicFormsPageModelTest
         {
             Questions = new List<FormQuestion>
         {
-            new FormQuestion { Id = questionId, Type = FormQuestionType.Text, Title = "Sample Question" }
+            new FormQuestion { Id = questionId, Type = FormQuestionType.Text, SummaryTitle = "Sample Question" }
         }
         };
 
