@@ -92,3 +92,6 @@ ave aws secretsmanager put-secret-value --secret-id cdp-sirsi-one-login-credenti
 We are using Cognito user pools to restrict access to non-production accounts. The [cognito_create_user.sh](./tools/scripts/cognito_create_user.sh) script allows us to create new users with a randomly generated password.
 
 The credentials will also be stored in AWS Secrets Manager under the same account, within the cdp-sirsi-cognito/users/* namespace, for future use, such as sharing with third-party users.
+
+## Slack Notifications
+
