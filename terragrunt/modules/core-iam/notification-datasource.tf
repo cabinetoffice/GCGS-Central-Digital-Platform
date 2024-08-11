@@ -7,7 +7,7 @@ data "aws_iam_policy_document" "notification_step_function_assume" {
     }
     condition {
       test     = "StringEquals"
-      values = [local.orchestrator_account_id]
+      values   = [local.orchestrator_account_id]
       variable = "aws:SourceAccount"
     }
     condition {

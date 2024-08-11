@@ -24,8 +24,8 @@ resource "aws_cloudwatch_event_rule" "deployment_pipeline" {
   description = "CloudWatch Event rule to detect deployment Pipeline events"
 
   event_pattern = jsonencode({
-    "source": ["aws.codepipeline"],
-    "detail-type": [
+    "source" : ["aws.codepipeline"],
+    "detail-type" : [
       "CodePipeline Stage Execution State Change",
     ],
   })
@@ -45,10 +45,10 @@ resource "aws_cloudwatch_event_rule" "deployment_codebuild" {
   description = "CloudWatch Event rule to detect deployment Codebuild events"
 
   event_pattern = jsonencode({
-    "source": ["aws.codebuild"],
-    "detail-type": ["CodeBuild Build State Change"],
-    "detail": {
-      "build-status": ["IN_PROGRESS", "SUCCEEDED", "STOPPED", "FAILED"],
+    "source" : ["aws.codebuild"],
+    "detail-type" : ["CodeBuild Build State Change"],
+    "detail" : {
+      "build-status" : ["IN_PROGRESS", "SUCCEEDED", "STOPPED", "FAILED"],
     }
   })
 
@@ -67,8 +67,8 @@ resource "aws_cloudwatch_event_rule" "deployment_ecs" {
   description = "CloudWatch Event rule to detect deployment ECS events"
 
   event_pattern = jsonencode({
-    "source": ["aws.ecs"],
-    "detail-type": ["ECS Task State Change", "ECS Container Instance State Change", "ECS Deployment State Change"],
+    "source" : ["aws.ecs"],
+    "detail-type" : ["ECS Task State Change", "ECS Container Instance State Change", "ECS Deployment State Change"],
   })
 
   tags = var.tags

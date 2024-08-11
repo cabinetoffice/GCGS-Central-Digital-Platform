@@ -9,7 +9,7 @@ data "aws_secretsmanager_secret_version" "slack_api_endpoint" {
 data "aws_iam_policy_document" "notification_step_function" {
   statement {
     effect = "Allow"
-    sid = "InvokeHttpEndpoint"
+    sid    = "InvokeHttpEndpoint"
 
     actions = [
       "states:InvokeHTTPEndpoint"
@@ -22,7 +22,7 @@ data "aws_iam_policy_document" "notification_step_function" {
 
   statement {
     effect = "Allow"
-    sid = "RetrieveConnectionCredentials"
+    sid    = "RetrieveConnectionCredentials"
 
     actions = [
       "events:RetrieveConnectionCredentials"
@@ -35,7 +35,7 @@ data "aws_iam_policy_document" "notification_step_function" {
 
   statement {
     effect = "Allow"
-    sid = "FetchSecretValue"
+    sid    = "FetchSecretValue"
 
     actions = [
       "secretsmanager:GetSecretValue",
@@ -49,7 +49,7 @@ data "aws_iam_policy_document" "notification_step_function" {
 
   statement {
     effect = "Allow"
-    sid = "FetchServiceVersionValue"
+    sid    = "FetchServiceVersionValue"
 
     actions = [
       "ssm:GetParameter"
@@ -62,7 +62,7 @@ data "aws_iam_policy_document" "notification_step_function" {
 
   statement {
     effect = "Allow"
-    sid = "XRay"
+    sid    = "XRay"
 
     actions = [
       "xray:GetSamplingRules",

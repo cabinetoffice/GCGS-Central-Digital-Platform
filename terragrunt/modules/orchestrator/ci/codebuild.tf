@@ -1,5 +1,5 @@
 resource "aws_codebuild_project" "this" {
-  for_each      = local.deployment_environments
+  for_each = local.deployment_environments
 
   build_timeout = 5
   description   = "Deploy infra and application changes into ${each.key}"

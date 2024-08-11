@@ -1,15 +1,15 @@
 variable "account_ids" {
   description = "Map of all accounts and their IDs"
-  type = map(string)
-}
-
-variable "event_rule_ci_service_version_updated_name" {
-  description = "Name of the event rule in charge of picking up on updating the service-version"
-  type        = string
+  type        = map(string)
 }
 
 variable "deployment_pipeline_name" {
   description = "Deployment pipeline name"
+  type        = string
+}
+
+variable "event_rule_ci_service_version_updated_name" {
+  description = "Name of the event rule in charge of picking up on updating the service-version"
   type        = string
 }
 
@@ -24,7 +24,7 @@ variable "product" {
 
 variable "repository_urls" {
   description = "Map of all ECR and their URLs"
-  type = map(string)
+  type        = map(string)
 }
 
 variable "role_cloudwatch_events_arn" {
@@ -59,5 +59,5 @@ variable "ssm_service_version_name" {
 
 variable "tags" {
   description = "Tags to apply to all resources in this module"
-  type = map(string)
+  type        = map(string)
 }
