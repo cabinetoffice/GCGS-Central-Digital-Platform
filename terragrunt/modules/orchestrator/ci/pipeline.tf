@@ -23,7 +23,7 @@ resource "aws_codepipeline" "this" {
         ConnectionArn    = data.aws_codestarconnections_connection.cabinet_office.arn
         DetectChanges    = false
         FullRepositoryId = "cabinetoffice/GCGS-Central-Digital-Platform"
-        BranchName       = "BAU-slack-notifications"
+        BranchName       = "main"
       }
     }
   }
