@@ -8,7 +8,7 @@
     var registeredAddress = organisationDetails.Addresses.FirstOrDefault(a => a.Type == Organisation.WebApiClient.AddressType.Registered);
     var pponIndentifier = organisationDetails.AdditionalIdentifiers.Prepend(organisationDetails.Identifier).FirstOrDefault(i => i.Scheme == "CDP-PPON");
     var otherIdentifier = organisationDetails.AdditionalIdentifiers.Prepend(organisationDetails.Identifier).FirstOrDefault(i => i.Scheme == "Other");
-    var showPpon = pponIndentifier != null && otherIdentifier != null;
+    var identifierToShow = (pponIndentifier != null && otherIdentifier != null) ? pponIndentifier : @organisationDetails.Identifier;
 }
 
 <main class="govuk-main-wrapper">
@@ -38,24 +38,10 @@
                         </dt>
                         <dd class="govuk-summary-list__value">
                             <p class="govuk-body">
-                                @if (showPpon)
-                                {
-                                    @pponIndentifier!.Scheme.SchemeDescription()
-                                }
-                                else
-                                {
-                                    @organisationDetails.Identifier.Scheme.SchemeDescription()
-                                }
+                                @identifierToShow.Scheme.SchemeDescription()
                             </p>
                             <p class="govuk-body">
-                                @if (showPpon)
-                                {
-                                    @pponIndentifier!.Id
-                                }
-                                else
-                                {
-                                    @organisationDetails.Identifier.Id
-                                }
+                                @identifierToShow.Id
                              </p>
                         </dd>
                         <dd class="govuk-summary-list__actions">
