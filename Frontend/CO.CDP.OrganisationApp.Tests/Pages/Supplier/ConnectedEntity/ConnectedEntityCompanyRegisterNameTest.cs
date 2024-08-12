@@ -49,7 +49,7 @@ public class ConnectedEntityCompanyRegisterNameTest
     }
 
     [Fact]
-    public void OnGet_ShouldReturnPageResult()
+    public void OnGet_ShouldReturnPageResultAndSetRegisterNameInput_WhenOtherSelected()
     {
         var state = DummyConnectedPersonDetails();
         _model.ConnectedEntityId = _entityId;
@@ -61,7 +61,25 @@ public class ConnectedEntityCompanyRegisterNameTest
         var result = _model.OnGet();
 
         result.Should().BeOfType<PageResult>();
-        _model.RegisterName.Should().Be("reg_name");
+        _model.RegisterName.Should().Be("other");
+        _model.RegisterNameInput.Should().Be("reg_name");
+    }
+
+    [Fact]
+    public void OnGet_ShouldReturnPageResultAndUseCompaniesHouse_WhenCompaniesHouseSelected()
+    {
+        var state = DummyConnectedPersonDetails();
+        _model.ConnectedEntityId = _entityId;
+        state.RegisterName = "Companies House";
+        _sessionMock
+            .Setup(s => s.Get<ConnectedEntityState>(Session.ConnectedPersonKey))
+            .Returns(state);
+
+        var result = _model.OnGet();
+
+        result.Should().BeOfType<PageResult>();
+        _model.RegisterName.Should().Be("Companies House");
+        _model.RegisterNameInput.Should().Be(null);
     }
 
     [Fact]

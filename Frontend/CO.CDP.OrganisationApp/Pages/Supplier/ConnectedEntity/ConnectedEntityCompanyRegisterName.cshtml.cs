@@ -8,6 +8,9 @@ namespace CO.CDP.OrganisationApp.Pages.Supplier;
 [Authorize]
 public class ConnectedEntityCompanyRegisterNameModel(ISession session) : PageModel
 {
+    private const string OPTION_COMPANIES_HOUSE = "Companies House";
+    private const string OPTION_OTHER = "other";
+
     [BindProperty(SupportsGet = true)]
     public Guid Id { get; set; }
 
@@ -17,6 +20,12 @@ public class ConnectedEntityCompanyRegisterNameModel(ISession session) : PageMod
     [BindProperty]
     [Required(ErrorMessage = "Enter the register name")]
     public string? RegisterName { get; set; }
+
+    [BindProperty]
+    public string? RegisterNameInput { get; set; }
+
+    [BindProperty]
+    public bool SupplierHasCompanyHouseNumber { get; set; }
 
     [BindProperty]
     public bool? RedirectToCheckYourAnswer { get; set; }
@@ -52,6 +61,12 @@ public class ConnectedEntityCompanyRegisterNameModel(ISession session) : PageMod
         if (!ModelState.IsValid) return Page();
 
         state.RegisterName = RegisterName;
+
+        if (RegisterName == OPTION_OTHER)
+        {
+            state.RegisterName = RegisterNameInput;
+        }
+
         session.Set(Session.ConnectedPersonKey, state);
 
         return RedirectToPage("ConnectedEntityCheckAnswersOrganisation", new { Id, ConnectedEntityId });
@@ -59,13 +74,20 @@ public class ConnectedEntityCompanyRegisterNameModel(ISession session) : PageMod
 
     private void InitModal(ConnectedEntityState state, bool reset = false)
     {
-        Caption = state.GetCaption();
-        Heading = $"What register is {state.OrganisationName} declared on?";
+        Heading = $"Select where {state.OrganisationName} is registered as person with significant control";
 
         if (reset)
         {
             RegisterName = state.RegisterName;
+
+            if (RegisterName != OPTION_COMPANIES_HOUSE)
+            {
+                RegisterName = OPTION_OTHER;
+                RegisterNameInput = state.RegisterName;
+            }
         }
+
+        SupplierHasCompanyHouseNumber = state.SupplierHasCompanyHouseNumber ?? false;
     }
 
     private (bool valid, ConnectedEntityState state) ValidatePage()

@@ -6,11 +6,14 @@
     var ukNonUkRegisterAddress = details.RegisteredAddress!.IsNonUk ? "non-uk" : "uk";
     var ukNonUkPostalAddress = details.PostalAddress != null ? (details.PostalAddress.IsNonUk ? "non-uk" : "uk") : "uk";
     var backLink = $"/organisation/{Model.Id}/supplier-information/connected-person/{Model.BackPageLink}/{Model.ConnectedEntityId}";
+    var companyRegisterPage = "company-register-name";
 
     if (Model.ConnectedEntityId != null)
     {
         backLink = $"/organisation/{Model.Id}/supplier-information/connected-person/connected-person-summary";
     }
+
+
 }
 
 <a href="@backLink" class="govuk-back-link">Back</a>
@@ -207,7 +210,7 @@
                                 @details.RegisterName
                             </dd>
                             <dd class="govuk-summary-list__actions">
-                                <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/company-register-name/@Model.ConnectedEntityId?frm-chk-answer">
+                                <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/@companyRegisterPage/@Model.ConnectedEntityId?frm-chk-answer">
                                     Change<span class="govuk-visually-hidden">
                                         the registered name
                                     </span>

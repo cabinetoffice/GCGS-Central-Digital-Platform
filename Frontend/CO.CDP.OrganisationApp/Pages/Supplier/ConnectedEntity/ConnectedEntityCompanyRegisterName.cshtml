@@ -5,9 +5,14 @@
 
     var backLink = $"/organisation/{Model.Id}/supplier-information/connected-person/date-registered/{Model.ConnectedEntityId}";
 
+    if (Model.SupplierHasCompanyHouseNumber)
+    {
+        backLink = $"/organisation/{Model.Id}/supplier-information/connected-person/date-registered-question/{Model.ConnectedEntityId}";
+    }
+
     if (Request.Query.ContainsKey("frm-chk-answer"))
     {
-        backLink = $"/organisation/{Model.Id}/supplier-information/connected-person/check-answers-organisation/{Model.ConnectedEntityId}";        
+        backLink = $"/organisation/{Model.Id}/supplier-information/connected-person/check-answers-organisation/{Model.ConnectedEntityId}";
     }
 }
 
@@ -19,26 +24,41 @@
             <form class="form" method="post">
                 @if (Request.Query.ContainsKey("frm-chk-answer"))
                 {
-                    <input type="hidden" name="RedirectToCheckYourAnswer" value="true" />
+                <input type="hidden" name="RedirectToCheckYourAnswer" value="true" />
                 }
                 <div class="govuk-form-group @(registerNameHasError ? "govuk-form-group--error" : "")">
-                    <span class="govuk-caption-l">@Model.Caption</span>
                     <h1 class="govuk-label-wrapper">
                         <label class="govuk-label govuk-label--l" for="registerName">@Model.Heading</label>
                     </h1>
-                    <div id="registerName-hint" class="govuk-hint">
-                        For example, the Companies House persons with significant control register.
-                    </div>
                     @if (registerNameHasError)
                     {
-                        <p id="organisation-name-error" class="govuk-error-message">
-                            <span class="govuk-visually-hidden">Error:</span>
-                            @Html.ValidationMessageFor(m => m.RegisterName)
-                        </p>
+                    <p id="organisation-name-error" class="govuk-error-message">
+                        <span class="govuk-visually-hidden">Error:</span>
+                        @Html.ValidationMessageFor(m => m.RegisterName)
+                    </p>
                     }
-                    <input class="govuk-input govuk-!-width-two-thirds @(registerNameHasError ? "govuk-input--error" : "")"
-                           id="@nameof(Model.RegisterName)" value="@Model.RegisterName"
-                           name="@nameof(Model.RegisterName)" type="text" @(registerNameHasError ? $"aria-describedby={nameof(Model.RegisterName)}-error" : "")>
+                    <div class="govuk-radios" data-module="govuk-radios">
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="registerNameCompaniesHouse" name="registerName" type="radio" value="Companies House" @(Model.RegisterName == "Companies House" ? "checked" : "")>
+                            <label class="govuk-label govuk-radios__label" for="registerNameCompaniesHouse">
+                                People with significant control register on Companies House
+                            </label>
+                        </div>
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="registerNameOther" name="registerName" type="radio" value="other" data-aria-controls="conditional-other" @(Model.RegisterName == "other" ? "checked" : "")>
+                            <label class="govuk-label govuk-radios__label" for="registerNameOther">
+                                Other
+                            </label>
+                        </div>
+                        <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-other">
+                            <div class="govuk-form-group">
+                                <label class="govuk-label" for="registerNameInput">
+                                    Register name
+                                </label>
+                                <input class="govuk-input govuk-!-width-one-third" id="registerNameInput" name="registerNameInput" value="@Model.RegisterNameInput">
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <button class="govuk-button" type="submit">Continue</button>
             </form>
