@@ -142,7 +142,7 @@ public class FormsAddAnotherAnswerSetModel(
         AddAnotherAnswerLabel = form.Section.Configuration.AddAnotherAnswerLabel;
         Heading = form.Section.Configuration.SingularSummaryHeading;
 
-        if (FormAnswerSets.Count > 1)
+        if (FormAnswerSets.Count > 1 && form.Section.Configuration.PluralSummaryHeadingFormat != null)
         {
             Heading = string.Format(form.Section.Configuration.PluralSummaryHeadingFormat, FormAnswerSets.Count);
         }
@@ -165,16 +165,17 @@ public class FormsAddAnotherAnswerSetModel(
                     var answerString = question.Type switch
                     {
                         FormQuestionType.Text => answer.TextValue ?? "",
+                        FormQuestionType.CheckBox => answer.BoolValue.HasValue ? question.Options.Choices?.FirstOrDefault()?.Title ?? "" : "",
                         FormQuestionType.FileUpload => answer.TextValue ?? "",
-                        FormQuestionType.YesOrNo => answer.BoolValue.HasValue == true ? (answer.BoolValue == true ? "yes" : "no") : "",
-                        FormQuestionType.Date => answer.DateValue.HasValue == true ? answer.DateValue.Value.ToString("dd/MM/yyyy") : "",
+                        FormQuestionType.YesOrNo => answer.BoolValue.HasValue ? (answer.BoolValue == true ? "yes" : "no") : "",
+                        FormQuestionType.Date => answer.DateValue.HasValue ? answer.DateValue.Value.ToString("dd/MM/yyyy") : "",
                         FormQuestionType.Address => answer.AddressValue != null ? $"{answer.AddressValue.StreetAddress}, {answer.AddressValue.Locality}, {answer.AddressValue.PostalCode}, {answer.AddressValue.CountryName}" : "",
                         _ => ""
                     };
 
                     answerSummaries.Add(new AnswerSummary
                     {
-                        Title = question.Title,
+                        Title = question.SummaryTitle ?? question.Title,
                         Answer = answerString ?? ""
                     });
                 }

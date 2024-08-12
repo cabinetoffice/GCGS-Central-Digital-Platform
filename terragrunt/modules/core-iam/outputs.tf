@@ -62,6 +62,14 @@ output "ecs_task_name" {
   value = aws_iam_role.ecs_task.name
 }
 
+output "notification_step_function_arn" {
+  value = aws_iam_role.notification_step_function.arn
+}
+
+output "notification_step_function_name" {
+  value = aws_iam_role.notification_step_function.name
+}
+
 output "service_deployer_step_function_arn" {
   value = aws_iam_role.service_deployer_step_function.arn
 }

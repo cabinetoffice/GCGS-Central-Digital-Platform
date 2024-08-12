@@ -23,6 +23,7 @@ public class FormQuestion
     public string? Title { get; set; }
     public string? Description { get; set; }
     public string? Caption { get; set; }
+    public string? SummaryTitle { get; set; }
     public FormQuestionOptions Options { get; set; } = new();
 }
 

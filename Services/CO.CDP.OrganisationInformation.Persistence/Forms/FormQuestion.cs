@@ -17,6 +17,7 @@ public class FormQuestion : IEntityDate
     public required FormQuestionOptions Options { get; set; } = new FormQuestionOptions();
     public DateTimeOffset CreatedOn { get; set; }
     public DateTimeOffset UpdatedOn { get; set; }
+    public string? SummaryTitle { get; set; }
 }
 
 public enum FormQuestionType

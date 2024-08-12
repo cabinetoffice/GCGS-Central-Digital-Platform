@@ -8,10 +8,20 @@
 }
 
 <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-    <h1 class="govuk-fieldset__heading">@Model.Heading</h1>
+    @if (!string.IsNullOrWhiteSpace(Model.Caption))
+    {
+        <span class="govuk-caption-l">@Model.Caption</span>
+    }
+    @if (!string.IsNullOrWhiteSpace(Model.Heading))
+    {
+        <h1 class="govuk-fieldset__heading">@Model.Heading</h1>
+    }
 </legend>
 
-@Html.Raw(@Model.Description)
+@if (!string.IsNullOrWhiteSpace(Model.Description))
+{
+    @Html.Raw(Model.Description)
+}
 
 @if (!Model.IsNonUkAddress)
 {

@@ -14,9 +14,10 @@
         <div class="govuk-form-group @(hasError ? "govuk-form-group--error" : "")">
             <fieldset class="govuk-fieldset" role="group" aria-describedby="financialhint">
                 <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                    <h1 class="govuk-heading-l">
-                        @Model.Heading
-                    </h1>
+                    @if (!string.IsNullOrWhiteSpace(Model.Heading))
+                    {
+                        <h1 class="govuk-heading-l">@Model.Heading</h1>
+                    }
                 </legend>
                 <div id="date-hint" class="govuk-hint">
                     For example, 05 04 2022

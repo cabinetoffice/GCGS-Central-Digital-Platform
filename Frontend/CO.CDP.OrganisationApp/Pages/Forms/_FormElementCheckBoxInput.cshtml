@@ -1,14 +1,17 @@
 @model FormElementCheckBoxInputModel
 
 @{
-    var hasError = ((TagBuilder)Html.ValidationMessageFor(m => m.CheckBoxInput)).HasInnerHtml;    
+    var hasError = ((TagBuilder)Html.ValidationMessageFor(m => m.CheckBoxInput)).HasInnerHtml;
 }
 
 
 <div class="govuk-form-group @(hasError ? "govuk-form-group--error" : "")">
     <fieldset class="govuk-fieldset" aria-required="true">
         <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
-            <h2 class="govuk-fieldset__heading">@Model.Heading</h2>
+            @if (!string.IsNullOrWhiteSpace(Model.Heading))
+            {
+                <h2 class="govuk-fieldset__heading">@Model.Heading</h2>
+            }
         </legend>
 
         @if (!string.IsNullOrEmpty(Model.Description))

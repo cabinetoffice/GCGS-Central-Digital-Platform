@@ -11,7 +11,7 @@ resource "aws_codepipeline" "this" {
   }
 
   stage {
-    name = "Source"
+    name = "Pull"
     action {
       name             = "Source"
       category         = "Source"
@@ -29,7 +29,7 @@ resource "aws_codepipeline" "this" {
   }
 
   stage {
-    name = "Orchestrator"
+    name = "Update-Orchestrator"
     action {
       category         = "Build"
       input_artifacts  = ["source_output"]
@@ -52,7 +52,7 @@ resource "aws_codepipeline" "this" {
   }
 
   stage {
-    name = "Development"
+    name = "Update-Development"
     action {
       category         = "Build"
       input_artifacts  = ["source_output"]
@@ -75,7 +75,7 @@ resource "aws_codepipeline" "this" {
   }
 
   stage {
-    name = "Approve-Updating-Staging-Account"
+    name = "Wait-for-pproval-to-update-Staging"
     action {
       name     = "ManualApproval"
       category = "Approval"
@@ -86,7 +86,7 @@ resource "aws_codepipeline" "this" {
   }
 
   stage {
-    name = "Staging"
+    name = "Update-Staging"
     action {
       category         = "Build"
       input_artifacts  = ["source_output"]
@@ -109,7 +109,7 @@ resource "aws_codepipeline" "this" {
   }
 
   stage {
-    name = "Approve-Updating-Integration-Account"
+    name = "Wait-for-approval-to-update-Integration"
     action {
       name     = "ManualApproval"
       category = "Approval"
@@ -120,7 +120,7 @@ resource "aws_codepipeline" "this" {
   }
 
   stage {
-    name = "Integration"
+    name = "Update-Integration"
     action {
       category         = "Build"
       input_artifacts  = ["source_output"]
