@@ -1,6 +1,9 @@
+using CO.CDP.Mvc.Validation;
+using CO.CDP.OrganisationApp.Constants;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace CO.CDP.OrganisationApp.Pages.Supplier;
@@ -18,20 +21,23 @@ public class ConnectedEntityCompanyRegisterNameModel(ISession session) : PageMod
     public Guid? ConnectedEntityId { get; set; }
 
     [BindProperty]
-    [Required(ErrorMessage = "Enter the register name")]
+    [Required(ErrorMessage = "Select if organisation is registered as person with significant control")]
     public string? RegisterName { get; set; }
 
     [BindProperty]
+    [DisplayName("Please enter other register name")]
+    [RequiredIf("RegisterName", "other")]
     public string? RegisterNameInput { get; set; }
 
     [BindProperty]
     public bool SupplierHasCompanyHouseNumber { get; set; }
 
-    [BindProperty]
+    [BindProperty(SupportsGet = true, Name = "frm-chk-answer")]
     public bool? RedirectToCheckYourAnswer { get; set; }
-
+    public ConnectedEntityType? ConnectedEntityType { get; set; }
     public string? Caption { get; set; }
     public string? Heading { get; set; }
+    public string? BackPageLink { get; set; }
 
     public IActionResult OnGet()
     {
@@ -69,25 +75,32 @@ public class ConnectedEntityCompanyRegisterNameModel(ISession session) : PageMod
 
         session.Set(Session.ConnectedPersonKey, state);
 
-        return RedirectToPage("ConnectedEntityCheckAnswersOrganisation", new { Id, ConnectedEntityId });
+        var checkAnswerPage = (state.ConnectedEntityType == Constants.ConnectedEntityType.Organisation
+           ? "ConnectedEntityCheckAnswersOrganisation"
+           : "ConnectedEntityCheckAnswersIndividualOrTrust");
+
+        var redirectPage = (RedirectToCheckYourAnswer == true ? checkAnswerPage : GetRedirectLinkPageName(state));
+
+        return RedirectToPage(redirectPage, new { Id, ConnectedEntityId });
     }
 
     private void InitModal(ConnectedEntityState state, bool reset = false)
     {
         Heading = $"Select where {state.OrganisationName} is registered as person with significant control";
+        ConnectedEntityType = state.ConnectedEntityType;
+        SupplierHasCompanyHouseNumber = state.SupplierHasCompanyHouseNumber ?? false;
+        BackPageLink = GetBackLinkPageName(state);
 
         if (reset)
         {
             RegisterName = state.RegisterName;
 
-            if (RegisterName != OPTION_COMPANIES_HOUSE)
+            if (!string.IsNullOrEmpty(RegisterName) && RegisterName != OPTION_COMPANIES_HOUSE)
             {
                 RegisterName = OPTION_OTHER;
                 RegisterNameInput = state.RegisterName;
             }
         }
-
-        SupplierHasCompanyHouseNumber = state.SupplierHasCompanyHouseNumber ?? false;
     }
 
     private (bool valid, ConnectedEntityState state) ValidatePage()
@@ -100,5 +113,90 @@ public class ConnectedEntityCompanyRegisterNameModel(ISession session) : PageMod
             return (false, new());
         }
         return (true, cp);
+    }
+
+    private string GetRedirectLinkPageName(ConnectedEntityState state)
+    {
+        var redirectPage = "";
+        switch (state.ConnectedEntityType)
+        {
+            case Constants.ConnectedEntityType.Organisation:
+                switch (state.ConnectedEntityOrganisationCategoryType)
+                {
+                    case ConnectedEntityOrganisationCategoryType.RegisteredCompany:
+                        redirectPage = "ConnectedEntityCheckAnswersOrganisation";
+                        break;
+                    case ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl:
+                        redirectPage = state.SupplierHasCompanyHouseNumber == false
+                                        ? "ConnectedEntityLegalFormQuestion"
+                                        : "";
+                        break;
+                }
+                break;
+            case Constants.ConnectedEntityType.Individual:
+                switch (state.ConnectedEntityIndividualAndTrustCategoryType)
+                {
+                    case ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndividual:
+                        redirectPage = "ConnectedEntityCheckAnswersIndividualOrTrust";
+                        break;
+                }
+                break;
+            case Constants.ConnectedEntityType.TrustOrTrustee:
+                switch (state.ConnectedEntityIndividualAndTrustCategoryType)
+                {
+                    case ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForTrust:
+                        redirectPage = "ConnectedEntityCheckAnswersIndividualOrTrust";
+                        break;
+                }
+                break;
+        }
+
+        return redirectPage;
+    }
+
+    private string GetBackLinkPageName(ConnectedEntityState state)
+    {
+        var backPage = "";
+        switch (state.ConnectedEntityType)
+        {
+            case Constants.ConnectedEntityType.Organisation:
+                switch (state.ConnectedEntityOrganisationCategoryType)
+                {
+                    case ConnectedEntityOrganisationCategoryType.RegisteredCompany:
+                        backPage = state.SupplierHasCompanyHouseNumber == true
+                                    ? "date-registered"
+                                    : "date-registered-question";
+                        break;
+                    case ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl:
+                        backPage = state.SupplierHasCompanyHouseNumber == false
+                                    ? "date-registered-question"
+                                    : "";
+                        break;
+
+                }
+                break;
+            case Constants.ConnectedEntityType.Individual:
+                switch (state.ConnectedEntityIndividualAndTrustCategoryType)
+                {
+                    case ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndividual:
+                        backPage = state.SupplierHasCompanyHouseNumber == true
+                                    ? "date-registered"
+                                    : "date-registered-question";
+                        break;
+                }
+                break;
+            case Constants.ConnectedEntityType.TrustOrTrustee:
+                switch (state.ConnectedEntityIndividualAndTrustCategoryType)
+                {
+                    case ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForTrust:
+                        backPage = state.SupplierHasCompanyHouseNumber == true
+                                    ? "date-registered"
+                                    : "date-registered-question";
+                        break;
+                }
+                break;
+        }
+
+        return backPage;
     }
 }
