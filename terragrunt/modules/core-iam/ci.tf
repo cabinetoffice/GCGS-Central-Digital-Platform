@@ -1,11 +1,3 @@
-# Note!
-# Resources in this file are shared with orchestrator/iam module
-
-locals {
-  codebuild_iam_name = "${local.name_prefix}-${var.environment}-ci-codebuild"
-  pipeline_iam_name  = "${local.name_prefix}-${var.environment}-ci-pipeline"
-}
-
 import {
   to = aws_iam_role.ci_build
   id = local.codebuild_iam_name

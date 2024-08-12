@@ -1,5 +1,5 @@
 resource "aws_codebuild_project" "this" {
-  for_each      = local.deployment_environments
+  for_each = local.deployment_environments
 
   build_timeout = 5
   description   = "Deploy infra and application changes into ${each.key}"
@@ -37,7 +37,7 @@ resource "aws_codebuild_project" "this" {
 
   logs_config {
     cloudwatch_logs {
-      group_name  = aws_cloudwatch_log_group.this[each.key].name
+      group_name  = aws_cloudwatch_log_group.deployments[each.key].name
       stream_name = local.name_prefix
     }
   }

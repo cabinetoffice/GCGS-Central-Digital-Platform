@@ -1,0 +1,141 @@
+{
+  "Comment": "Send Slack notifications, keeping the team posted about deployment pipeline",
+  "StartAt": "CheckEventType",
+  "States": {
+    "CheckEventType": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "Variable": "$.detail-type",
+          "StringEquals": "AWS API Call via CloudTrail",
+          "Next": "CheckEventSource"
+        },
+        {
+          "Variable": "$.detail-type",
+          "StringEquals": "CodePipeline Stage Execution State Change",
+          "Next": "SetPipelineMessage"
+        }
+      ],
+      "Default": "DefaultMessage"
+    },
+    "CheckEventSource": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "Variable": "$.detail.eventSource",
+          "StringEquals": "ssm.amazonaws.com",
+          "Next": "CheckParameterName"
+        },
+        {
+          "Variable": "$.detail.eventSource",
+          "StringEquals": "codepipeline.amazonaws.com",
+          "Next": "IgnoreThisEvent"
+        }
+      ],
+      "Default": "DefaultMessage"
+    },
+    "CheckParameterName": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "Variable": "$.detail.requestParameters.name",
+          "StringEquals": "${ssm_service_version_name}",
+          "Next": "GetParameterValue"
+        }
+      ],
+      "Default": "DefaultMessage"
+    },
+    "GetParameterValue": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::aws-sdk:ssm:getParameter",
+      "Parameters": {
+        "Name.$": "$.detail.requestParameters.name"
+      },
+      "ResultSelector": {
+        "parameterValue.$": "$.Parameter.Value"
+      },
+      "ResultPath": "$.parameterDetails",
+      "Next": "SetServiceVersionUpdateMessage"
+    },
+    "SetServiceVersionUpdateMessage": {
+      "Type": "Pass",
+      "Parameters": {
+        "blocks": [
+          {
+            "type": "section",
+            "block_id": "service_version",
+            "text": {
+              "type": "mrkdwn",
+              "text.$": "States.Format(':building_construction: Parameter *service-version* has been updated to `{}` :abn-version:', $.parameterDetails.parameterValue)"
+            }
+          }
+        ]
+      },
+      "ResultPath": "$.constructedMessage",
+      "Next": "SendSlackNotification"
+    },
+    "SetPipelineMessage": {
+      "Type": "Pass",
+      "Parameters": {
+        "blocks": [
+          {
+            "type": "section",
+            "block_id": "pipeline_status",
+            "text": {
+              "type": "mrkdwn",
+              "text.$": "States.Format(':building_construction: `{}` *{}*.', $.detail.state, $.detail.stage)"
+            }
+          }
+        ]
+      },
+      "ResultPath": "$.constructedMessage",
+      "Next": "SendSlackNotification"
+    },
+    "DefaultMessage": {
+      "Type": "Pass",
+      "Result": {
+        "blocks": [
+          {
+            "type": "section",
+            "text": {
+              "type": "mrkdwn",
+              "text": "An event occurred that is not specifically handled."
+            }
+          }
+        ]
+      },
+      "ResultPath": "$.constructedMessage",
+      "Next": "SendSlackNotification"
+    },
+    "IgnoreThisEvent": {
+      "Type": "Pass",
+      "End": true
+    },
+    "SendSlackNotification": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::http:invoke",
+      "Parameters": {
+        "Method": "POST",
+        "ApiEndpoint": "${api_endpoint}",
+        "Authentication": {
+          "ConnectionArn": "${auth_connection_arn}"
+        },
+        "RequestBody": {
+          "blocks.$": "$.constructedMessage.blocks"
+        }
+      },
+      "Retry": [
+        {
+          "ErrorEquals": [
+            "States.ALL"
+          ],
+          "BackoffRate": 2,
+          "IntervalSeconds": 1,
+          "MaxAttempts": 3,
+          "JitterStrategy": "FULL"
+        }
+      ],
+      "End": true
+    }
+  }
+}
