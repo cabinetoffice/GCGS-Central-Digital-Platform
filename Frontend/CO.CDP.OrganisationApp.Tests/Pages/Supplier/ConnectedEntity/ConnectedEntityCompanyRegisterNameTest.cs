@@ -190,16 +190,6 @@ public class ConnectedEntityCompanyRegisterNameTest
 
     }
 
-    // [Theory]
-    // [InlineData(Constants.ConnectedEntityType.Organisation, Constants.ConnectedEntityOrganisationCategoryType.RegisteredCompany)]
-    // public void OnPostOrGet_BackLinkShouldBeCorrect(
-    //     Constants.ConnectedEntityType connectedEntityType,
-    //     Constants.ConnectedEntityOrganisationCategoryType connectedEntityOrganisationCategoryType
-    //     )
-    // {
-    //     var backlink =
-    // }
-
     private ConnectedEntityState DummyConnectedPersonDetails()
     {
         var connectedPersonDetails = new ConnectedEntityState
