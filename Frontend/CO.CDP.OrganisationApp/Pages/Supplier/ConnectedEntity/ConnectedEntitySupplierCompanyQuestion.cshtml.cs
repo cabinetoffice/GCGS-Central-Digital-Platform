@@ -9,7 +9,7 @@ namespace CO.CDP.OrganisationApp.Pages.Supplier;
 public class ConnectedEntitySupplierCompanyQuestionModel(ISession session) : PageModel
 {
     [BindProperty]
-    [Required(ErrorMessage = "Please select an option")]
+    [Required(ErrorMessage = "Select yes if supplier organisation registered with Companies House")]
     public bool? RegisteredWithCh { get; set; }
 
     [BindProperty(SupportsGet = true)]

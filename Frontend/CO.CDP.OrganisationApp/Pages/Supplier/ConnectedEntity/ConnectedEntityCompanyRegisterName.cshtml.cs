@@ -25,7 +25,7 @@ public class ConnectedEntityCompanyRegisterNameModel(ISession session) : PageMod
     public string? RegisterName { get; set; }
 
     [BindProperty]
-    [DisplayName("Please enter other register name")]
+    [DisplayName("Other register name cannot be blank")]
     [RequiredIf("RegisterName", "other")]
     public string? RegisterNameInput { get; set; }
 

@@ -106,8 +106,7 @@ public class ConnectedEntityDirectorResidencyTest
 
         var redirectToPageResult = result.Should().BeOfType<RedirectToPageResult>().Subject;
 
-        result.Should().BeOfType<RedirectToPageResult>()
-            .Which.PageName.Should().Be(expectedPage);
+        redirectToPageResult.PageName.Should().Be(expectedPage);
     }
 
     [Fact]

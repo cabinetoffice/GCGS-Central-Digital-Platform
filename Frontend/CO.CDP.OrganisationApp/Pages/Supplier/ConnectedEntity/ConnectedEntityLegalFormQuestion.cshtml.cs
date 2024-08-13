@@ -17,11 +17,11 @@ public class ConnectedEntityLegalFormQuestionModel(ISession session) : PageModel
     public Guid? ConnectedEntityId { get; set; }
 
     [BindProperty]
-    [Required(ErrorMessage = "Please select an option")]
+    [Required(ErrorMessage = "Select yes if organisation have a legal form")]
     public bool? HasLegalForm { get; set; }
 
     [BindProperty]
-    [RequiredIf(nameof(HasLegalForm), true, ErrorMessage = "Please enter the Legal form name.")]
+    [RequiredIf(nameof(HasLegalForm), true, ErrorMessage = "Enter the legal form name")]
     public string? LegalFormName { get; set; }
     public string? Caption { get; set; }
     public string? Heading { get; set; }

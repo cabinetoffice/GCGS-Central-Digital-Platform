@@ -17,7 +17,7 @@ public class ConnectedPersonSummaryModel(
     [BindProperty] public ICollection<ConnectedEntityLookup> ConnectedEntities { get; set; } = [];
 
     [BindProperty]
-    [Required(ErrorMessage = "Please select an option")]
+    [Required(ErrorMessage = "Select yes to add another connected person")]
     public bool? HasConnectedEntity { get; set; }
 
     public async Task<IActionResult> OnGet(bool? selected)
