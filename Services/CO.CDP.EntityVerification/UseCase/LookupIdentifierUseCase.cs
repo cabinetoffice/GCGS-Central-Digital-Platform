@@ -1,3 +1,4 @@
+using CO.CDP.EntityVerification.Events;
 using CO.CDP.EntityVerification.Model;
 using CO.CDP.EntityVerification.Persistence;
 using static CO.CDP.EntityVerification.UseCase.LookupIdentifierUseCase.LookupIdentifierException;
@@ -12,7 +13,16 @@ public class LookupIdentifierUseCase(IPponRepository repo) : IUseCase<LookupIden
 
         if (query.TryGetIdentifier(out var scheme, out var id))
         {
-            var ppon = await repo.FindPponByIdentifierAsync(scheme, id);
+            Persistence.Ppon? ppon = null;
+
+            if (scheme == IdentifierSchemes.Ppon)
+            {
+                ppon = await repo.FindPponByPponIdAsync(id);
+            }
+            else
+            {
+                ppon = await repo.FindPponByIdentifierAsync(scheme, id);
+            }
 
             if (ppon != null)
             {

@@ -1,13 +1,12 @@
+using CO.CDP.EntityVerification.Events;
 using CO.CDP.EntityVerification.Model;
 using CO.CDP.EntityVerification.Persistence;
 using CO.CDP.EntityVerification.Tests.Persistence;
 using CO.CDP.EntityVerification.UseCase;
 using CO.CDP.Testcontainers.PostgreSql;
 using FluentAssertions;
-using Moq;
-using static CO.CDP.EntityVerification.UseCase.LookupIdentifierUseCase.LookupIdentifierException;
 using static CO.CDP.EntityVerification.Tests.Ppon.PponFactories;
-using CO.CDP.EntityVerification;
+using static CO.CDP.EntityVerification.UseCase.LookupIdentifierUseCase.LookupIdentifierException;
 
 namespace CO.CDP.EntityVerification.Tests.UseCase;
 
@@ -17,10 +16,25 @@ public class LookupIdentifierUseCaseTest(PostgreSqlFixture postgreSql) : IClassF
     private LookupIdentifierUseCase UseCase => new(_repository);
 
     [Fact]
+    public async Task Execute_IfPponIdentifierFound_ReturnsAllIdentifiers()
+    {
+        var ppon = GivenPpon(pponId: "93bfe534-225a4de1a7531b69dac3afe3");
+        ppon.Identifiers = EntityVerification.Persistence.Identifier.GetPersistenceIdentifiers(GivenEventOrganisationInfo());
+
+        _repository.Save(ppon);
+
+        string testPponIdentifier = $"{IdentifierSchemes.Ppon}:{ppon.IdentifierId}";
+        LookupIdentifierQuery query = new LookupIdentifierQuery(testPponIdentifier);
+        var foundRecord = await UseCase.Execute(query);
+
+        foundRecord.Should().BeEquivalentTo(GivenEventOrganisationInfo(), options => options.ComparingByMembers<IEnumerable<Model.Identifier?>>());
+    }
+
+    [Fact]
     public async Task Execute_IfIdentifierFound_ReturnsAllIdentifiers()
     {
         var ppon = GivenPpon(pponId: "b69ffded365449f6aa4c340f5997fd2e");
-        ppon.Identifiers = EntityVerification.Persistence.Identifier.GetPersistenceIdentifiers(GivenPersistenceOrganisationInfo());
+        ppon.Identifiers = EntityVerification.Persistence.Identifier.GetPersistenceIdentifiers(GivenEventOrganisationInfo());
 
         _repository.Save(ppon);
 
@@ -28,7 +42,7 @@ public class LookupIdentifierUseCaseTest(PostgreSqlFixture postgreSql) : IClassF
         LookupIdentifierQuery query = new LookupIdentifierQuery(testPponIdentifier);
         var foundRecord = await UseCase.Execute(query);
 
-        foundRecord.Should().BeEquivalentTo(GivenPersistenceOrganisationInfo(), options => options.ComparingByMembers<IEnumerable<Model.Identifier?>>());
+        foundRecord.Should().BeEquivalentTo(GivenEventOrganisationInfo(), options => options.ComparingByMembers<IEnumerable<Model.Identifier?>>());
     }
 
     [Fact]
@@ -46,15 +60,15 @@ public class LookupIdentifierUseCaseTest(PostgreSqlFixture postgreSql) : IClassF
         await act.Should().ThrowAsync<InvalidIdentifierFormatException>().WithMessage("Both scheme and identifier are required in the format: scheme:identifier");
     }
 
-    private IEnumerable<EntityVerification.Events.Identifier> GivenPersistenceOrganisationInfo()
+    private IEnumerable<EntityVerification.Events.Identifier> GivenEventOrganisationInfo()
     {
         return new List<EntityVerification.Events.Identifier>
         {
             new EntityVerification.Events.Identifier
             {
-                Id = "ac73982be54e456c888d495b6c2c997f",
+                Id = "01110",
                 LegalName = "Acme",
-                Scheme = "CDP-PPON",
+                Scheme = "GB-SIC",
                 Uri = new Uri("https://www.acme-ltd.com")
             },
             new EntityVerification.Events.Identifier
