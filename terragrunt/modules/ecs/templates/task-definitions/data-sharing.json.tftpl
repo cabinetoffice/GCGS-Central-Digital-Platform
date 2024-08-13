@@ -28,7 +28,9 @@
         {"name": "Organisation__Authority", "value": "https://authority.${public_hosted_zone_fqdn}"},
         {"name": "VERSION", "value": "${service_version}"}
     ],
-    "secrets": [],
+    "secrets": [
+        {"name": "ConnectionStrings__OrganisationInformationDatabase", "valueFrom": "${conn_string_location}"}
+    ],
     "volumesFrom": [],
     "mountPoints": [],
     "essential": true
