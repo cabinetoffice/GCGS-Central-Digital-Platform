@@ -44,6 +44,15 @@ public class WebApiToPersistenceProfile : Profile
 
         CreateMap<Persistence.FormAnswerSet, Model.FormAnswerSet>()
               .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Guid));
+
+        CreateMap<Persistence.SharedConsent, Model.SharedConsent>()
+            .ForMember(dest => dest.Guid, opt => opt.MapFrom(src => src.Guid))
+            .ForMember(dest => dest.OrganisationId, opt => opt.MapFrom(src => src.OrganisationId))
+            .ForMember(dest => dest.AnswerSets, opt => opt.MapFrom(src => src.AnswerSets))
+            .ForMember(dest => dest.SubmissionState, opt => opt.MapFrom(src => src.SubmissionState))
+            .ForMember(dest => dest.SubmittedAt, opt => opt.MapFrom(src => src.SubmittedAt))
+            .ForMember(dest => dest.FormVersionId, opt => opt.MapFrom(src => src.FormVersionId))
+            .ForMember(dest => dest.BookingReference, opt => opt.MapFrom(src => src.BookingReference));
     }
 
     private static DateTime? ToUtc(DateTime? dateTime) => dateTime?.ToUniversalTime();

@@ -1,6 +1,7 @@
 using CO.CDP.OrganisationInformation.Persistence.Forms;
 using CO.CDP.Testcontainers.PostgreSql;
 using FluentAssertions;
+using Microsoft.EntityFrameworkCore;
 using static CO.CDP.OrganisationInformation.Persistence.Tests.EntityFactory;
 
 namespace CO.CDP.OrganisationInformation.Persistence.Tests;
@@ -104,6 +105,7 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
         var foundSection = await repository.GetSectionAsync(formId, sectionId);
 
         foundSection.Should().NotBeNull();
+        foundSection?.Form.Should().NotBeNull();
         foundSection.Should().BeEquivalentTo(section, config => config
             .Excluding(ctx => ctx.Id)
             .Excluding(ctx => ctx.CreatedOn)
@@ -178,8 +180,10 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
         var sharedConsent = new SharedConsent()
         {
             Guid = formId,
+            OrganisationId = 200,
             Organisation = new Organisation
             {
+                Id = 200,
                 Guid = Guid.NewGuid(),
                 Name = string.Empty,
                 Tenant = new Tenant
@@ -298,8 +302,20 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
         var answerSet = new FormAnswerSet
         {
             Guid = Guid.NewGuid(),
-            OrganisationId = organisation.Id,
-            Organisation = organisation,
+            SharedConsent = new SharedConsent
+            {
+                Guid = Guid.NewGuid(),
+                OrganisationId = organisation.Id,
+                Organisation = organisation,
+                Form = form,
+                AnswerSets = new List<FormAnswerSet>(),
+                SubmissionState = SubmissionState.Draft,
+                SubmittedAt = DateTimeOffset.UtcNow,
+                FormVersionId = "1.0",
+                BookingReference = string.Empty,
+                CreatedOn = DateTimeOffset.UtcNow,
+                UpdatedOn = DateTimeOffset.UtcNow
+            },
             Section = section,
             Answers = new List<FormAnswer>(),
             Deleted = false,
@@ -359,8 +375,20 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
         var answerSet = new FormAnswerSet
         {
             Guid = answerSetId,
-            OrganisationId = organisation.Id,
-            Organisation = organisation,
+            SharedConsent = new SharedConsent
+            {
+                Guid = Guid.NewGuid(),
+                OrganisationId = organisation.Id,
+                Organisation = organisation,
+                Form = form,
+                AnswerSets = new List<FormAnswerSet>(),
+                SubmissionState = SubmissionState.Draft,
+                SubmittedAt = DateTimeOffset.UtcNow,
+                FormVersionId = "1.0",
+                BookingReference = string.Empty,
+                CreatedOn = DateTimeOffset.UtcNow,
+                UpdatedOn = DateTimeOffset.UtcNow
+            },
             Section = section,
             Answers = [],
             Deleted = true,
@@ -402,8 +430,20 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
         var answerSet = new FormAnswerSet
         {
             Guid = answerSetId,
-            OrganisationId = organisation.Id,
-            Organisation = organisation,
+            SharedConsent = new SharedConsent
+            {
+                Guid = Guid.NewGuid(),
+                OrganisationId = organisation.Id,
+                Organisation = organisation,
+                Form = form,
+                AnswerSets = new List<FormAnswerSet>(),
+                SubmissionState = SubmissionState.Draft,
+                SubmittedAt = DateTimeOffset.UtcNow,
+                FormVersionId = "1.0",
+                BookingReference = string.Empty,
+                CreatedOn = DateTimeOffset.UtcNow,
+                UpdatedOn = DateTimeOffset.UtcNow
+            },
             Section = section,
             Answers = new List<FormAnswer>(),
             CreatedOn = DateTimeOffset.UtcNow,
@@ -460,8 +500,20 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
         var answerSet = new FormAnswerSet
         {
             Guid = Guid.NewGuid(),
-            OrganisationId = organisation.Id,
-            Organisation = organisation,
+            SharedConsent = new SharedConsent
+            {
+                Guid = Guid.NewGuid(),
+                OrganisationId = organisation.Id,
+                Organisation = organisation,
+                Form = form,
+                AnswerSets = new List<FormAnswerSet>(),
+                SubmissionState = SubmissionState.Draft,
+                SubmittedAt = DateTimeOffset.UtcNow,
+                FormVersionId = "1.0",
+                BookingReference = string.Empty,
+                CreatedOn = DateTimeOffset.UtcNow,
+                UpdatedOn = DateTimeOffset.UtcNow
+            },
             Section = section,
             Answers = new List<FormAnswer>(),
             Deleted = false,
@@ -530,8 +582,20 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
         var answerSet = new FormAnswerSet
         {
             Guid = Guid.NewGuid(),
-            OrganisationId = organisation.Id,
-            Organisation = organisation,
+            SharedConsent = new SharedConsent
+            {
+                Guid = Guid.NewGuid(),
+                OrganisationId = organisation.Id,
+                Organisation = organisation,
+                Form = form,
+                AnswerSets = new List<FormAnswerSet>(),
+                SubmissionState = SubmissionState.Draft,
+                SubmittedAt = DateTimeOffset.UtcNow,
+                FormVersionId = "1.0",
+                BookingReference = string.Empty,
+                CreatedOn = DateTimeOffset.UtcNow,
+                UpdatedOn = DateTimeOffset.UtcNow
+            },
             Section = section,
             Answers = new List<FormAnswer>(),
             Deleted = false,

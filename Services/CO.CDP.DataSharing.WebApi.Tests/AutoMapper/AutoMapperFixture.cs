@@ -1,7 +1,7 @@
 using AutoMapper;
 using CO.CDP.DataSharing.WebApi.AutoMapper;
 
-namespace CO.CDP.DataSharing.Tests.AutoMapper;
+namespace CO.CDP.DataSharing.WebApi.Tests.AutoMapper;
 
 public class AutoMapperFixture
 {

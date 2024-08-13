@@ -2,7 +2,7 @@ using CO.CDP.DataSharing.WebApi.Extensions;
 using FluentAssertions;
 using NanoidDotNet;
 
-namespace DataSharing.Tests;
+namespace CO.CDP.DataSharing.WebApi.Tests;
 
 public class ShareCodeExtensionsTests
 {

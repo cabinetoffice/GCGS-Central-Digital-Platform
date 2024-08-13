@@ -30,25 +30,46 @@ public class UpdateFormSectionAnswersUseCase(
 
         var existingAnswerSet = await formRepository.GetFormAnswerSetAsync(sectionId, organisationId, answerSetId);
 
-        await UploadFileIfRequired(answers, questionDictionary, existingAnswerSet);
-
         if (existingAnswerSet != null)
         {
             existingAnswerSet.Answers = MapAnswers(answers, questionDictionary, existingAnswerSet.Answers);
         }
         else
         {
+            if (section.Form == null)
+            {
+                throw new Exception($"Form not found.");
+            }
+            if (section.Form.Guid != formId)
+            {
+                throw new Exception($"Form with Guid {formId} not found.");
+            }
+
+
+            var sharedConsent = new Persistence.SharedConsent
+            {
+                Guid = Guid.NewGuid(),
+                OrganisationId = organisation.Id,
+                Organisation = organisation,
+                Form = section.Form,
+                SubmissionState = Persistence.SubmissionState.Draft,
+                SubmittedAt = DateTimeOffset.UtcNow,
+                FormVersionId = String.Empty,
+                BookingReference = string.Empty,
+                AnswerSets = new List<Persistence.FormAnswerSet>()
+            };
+
             existingAnswerSet = new Persistence.FormAnswerSet
             {
                 Guid = answerSetId,
-                OrganisationId = organisation.Id,
-                Organisation = organisation,
+                SharedConsent = sharedConsent,
                 Section = section,
-                Answers = MapAnswers(answers, questionDictionary, []),
+                Answers = MapAnswers(answers, questionDictionary, new List<Persistence.FormAnswer>()),
             };
         }
 
         await formRepository.SaveAnswerSet(existingAnswerSet);
+
 
         return true;
     }

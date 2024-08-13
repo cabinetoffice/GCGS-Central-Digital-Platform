@@ -185,17 +185,29 @@ public class UpdateFormSectionAnswersUseCaseTest(AutoMapperFixture mapperFixture
         var existingAnswerSet = new Persistence.FormAnswerSet
         {
             Guid = answerSetId,
-            OrganisationId = 1,
-            Organisation = new Organisation
+            SharedConsent = new Persistence.SharedConsent
             {
-                Guid = organisationId,
-                Name = "Test Organisation",
-                Tenant = new Tenant
+                Guid = Guid.NewGuid(),
+                OrganisationId = 1,
+                Organisation = new Organisation
                 {
-                    Id = 1,
-                    Guid = Guid.NewGuid(),
-                    Name = "Test Tenant"
-                }
+                    Guid = organisationId,
+                    Name = "Test Organisation",
+                    Tenant = new Tenant
+                    {
+                        Id = 1,
+                        Guid = Guid.NewGuid(),
+                        Name = "Test Tenant"
+                    }
+                },
+                Form = form,
+                AnswerSets = new List<Persistence.FormAnswerSet>(),
+                SubmissionState = Persistence.SubmissionState.Draft,
+                SubmittedAt = DateTimeOffset.UtcNow,
+                FormVersionId = "1.0",
+                BookingReference = string.Empty,
+                CreatedOn = DateTimeOffset.UtcNow,
+                UpdatedOn = DateTimeOffset.UtcNow
             },
             Section = section,
             Answers = new List<Persistence.FormAnswer>()
@@ -218,6 +230,9 @@ public class UpdateFormSectionAnswersUseCaseTest(AutoMapperFixture mapperFixture
         await UseCase.Execute((formId, sectionId, answerSetId, organisationId, answers));
 
         existingAnswerSet.Answers.Should().HaveCount(1);
+        existingAnswerSet.Answers.Should().ContainSingle(a => a.BoolValue == true);
+        existingAnswerSet.Section.Should().BeSameAs(section);
+
         var answer = existingAnswerSet.Answers.First();
         answer.Question.Should().Be(question);
         answer.BoolValue.Should().BeTrue();
@@ -241,7 +256,7 @@ public class UpdateFormSectionAnswersUseCaseTest(AutoMapperFixture mapperFixture
         var form = new Persistence.Form
         {
             Id = 1,
-            Guid = Guid.NewGuid(),
+            Guid = formId,  // Ensure the formId matches the one being used later
             Name = "Sample Form",
             Version = "1.0",
             IsRequired = true,
@@ -285,6 +300,32 @@ public class UpdateFormSectionAnswersUseCaseTest(AutoMapperFixture mapperFixture
         };
 
         section.Questions.Add(question);
+        form.Sections.Add(section);
+
+        var sharedConsent = new Persistence.SharedConsent
+        {
+            Guid = Guid.NewGuid(),
+            OrganisationId = 1,
+            Organisation = new Organisation
+            {
+                Guid = organisationId,
+                Name = "Test Organisation",
+                Tenant = new Tenant
+                {
+                    Id = 1,
+                    Guid = Guid.NewGuid(),
+                    Name = "Test Tenant"
+                }
+            },
+            Form = form,
+            AnswerSets = new List<Persistence.FormAnswerSet>(),
+            SubmissionState = Persistence.SubmissionState.Draft,
+            SubmittedAt = DateTimeOffset.UtcNow,
+            FormVersionId = "1.0",
+            BookingReference = string.Empty,
+            CreatedOn = DateTimeOffset.UtcNow,
+            UpdatedOn = DateTimeOffset.UtcNow
+        };
 
         _organisationRepository.Setup(r => r.Find(organisationId)).ReturnsAsync(new Organisation
         {
@@ -299,6 +340,7 @@ public class UpdateFormSectionAnswersUseCaseTest(AutoMapperFixture mapperFixture
         });
         _repository.Setup(r => r.GetSectionAsync(formId, sectionId)).ReturnsAsync(section);
         _repository.Setup(r => r.GetFormAnswerSetAsync(sectionId, organisationId, answerSetId)).ReturnsAsync((Persistence.FormAnswerSet?)null);
+        _repository.Setup(r => r.GetSharedConsentDraftAsync(formId, organisationId)).ReturnsAsync(sharedConsent);
 
         await UseCase.Execute((formId, sectionId, answerSetId, organisationId, answers));
 

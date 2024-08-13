@@ -16,6 +16,7 @@ public class DatabaseFormRepository(OrganisationInformationContext context) : IF
     {
         return await context.Set<FormSection>()
             .Include(s => s.Questions)
+            .Include(f => f.Form)
             .FirstOrDefaultAsync(s => s.Form.Guid == formId && s.Guid == sectionId);
     }
 
@@ -65,7 +66,8 @@ public class DatabaseFormRepository(OrganisationInformationContext context) : IF
     {
         return await context.Set<FormAnswerSet>()
             .Include(a => a.Answers)
-            .Where(a => a.Section.Guid == sectionId && a.Organisation.Guid == organisationId && a.Deleted == false)
+            .Include(a => a.SharedConsent)
+            .Where(a => a.Section.Guid == sectionId && a.SharedConsent.Organisation.Guid == organisationId && a.Deleted == false)
             .ToListAsync();
     }
 
@@ -73,12 +75,16 @@ public class DatabaseFormRepository(OrganisationInformationContext context) : IF
     {
         return await context.Set<FormAnswerSet>()
             .Include(a => a.Answers)
-            .FirstOrDefaultAsync(a => a.Guid == answerSetId && a.Section.Guid == sectionId && a.Organisation.Guid == organisationId);
+            .Include(b => b.SharedConsent)
+            .FirstOrDefaultAsync(a => a.Guid == answerSetId && a.Section.Guid == sectionId && a.SharedConsent.Organisation.Guid == organisationId);
     }
 
     public async Task<bool> DeleteAnswerSetAsync(Guid organisationId, Guid answerSetId)
     {
-        var answerSet = await context.Set<FormAnswerSet>().FirstOrDefaultAsync(a => a.Organisation.Guid == organisationId && a.Guid == answerSetId);
+        var answerSet = await context.Set<FormAnswerSet>()
+            .Include(a => a.SharedConsent)
+            .FirstOrDefaultAsync(a => a.SharedConsent.Organisation.Guid == organisationId && a.Guid == answerSetId);
+
         if (answerSet == null) return false;
 
         answerSet.Deleted = true;
