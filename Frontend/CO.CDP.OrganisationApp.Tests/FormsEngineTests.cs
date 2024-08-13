@@ -1,6 +1,7 @@
 using CO.CDP.OrganisationApp.Models;
 using FluentAssertions;
 using Moq;
+using System;
 using WebApiClient = CO.CDP.Forms.WebApiClient;
 
 namespace CO.CDP.OrganisationApp.Tests;
@@ -48,6 +49,8 @@ public class FormsEngineTests
                 id: questionId,
                 title: "Question1",
                 description: "Description1",
+                caption: "Caption1",
+                summaryTitle: "Question1 Title",
                 type: WebApiClient.FormQuestionType.Text,
                 isRequired: true,
                 nextQuestion: nextQuestionId,
@@ -85,6 +88,8 @@ public class FormsEngineTests
                 Id = questionId,
                 Title = "Question1",
                 Description = "Description1",
+                Caption= "Caption1",
+                SummaryTitle= "Question1 Title",
                 Type = FormQuestionType.Text,
                 IsRequired = true,
                 NextQuestion = nextQuestionId,

@@ -18,6 +18,8 @@ module "ecs_service_organisation_app" {
       onelogin_client_id      = local.one_loging.credential_locations.client_id
       onelogin_private_key    = local.one_loging.credential_locations.private_key
       public_hosted_zone_fqdn = var.public_hosted_zone_fqdn
+      s3_permanent_bucket     = module.s3_bucket_permanent.bucket
+      s3_staging_bucket       = module.s3_bucket_staging.bucket
       service_version         = local.orchestrator_service_version
       vpc_cidr                = var.vpc_cider
     }
@@ -39,5 +41,8 @@ module "ecs_service_organisation_app" {
   role_ecs_task_arn      = var.role_ecs_task_arn
   role_ecs_task_exec_arn = var.role_ecs_task_exec_arn
   tags                   = var.tags
+  user_pool_arn          = var.user_pool_arn
+  user_pool_client_id    = var.user_pool_client_id
+  user_pool_domain       = var.user_pool_domain
   vpc_id                 = var.vpc_id
 }

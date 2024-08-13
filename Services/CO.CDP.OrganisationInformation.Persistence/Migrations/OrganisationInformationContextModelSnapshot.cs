@@ -24,7 +24,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
             NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "connected_organisation_category", new[] { "registered_company", "director_or_the_same_responsibilities", "parent_or_subsidiary_company", "a_company_your_organisation_has_taken_over", "any_other_organisation_with_significant_influence_or_control" });
             NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "connected_person_category", new[] { "person_with_significant_control", "director_or_individual_with_the_same_responsibilities", "any_other_individual_with_significant_influence_or_control" });
             NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "connected_person_type", new[] { "individual", "trust_or_trustee" });
-            NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "control_condition", new[] { "owns_shares", "has_voting_rights", "can_appoint_or_remove_directors", "has_other_significant_influence_or_control" });
+            NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "control_condition", new[] { "none", "owns_shares", "has_voting_rights", "can_appoint_or_remove_directors", "has_other_significant_influence_or_control" });
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
             modelBuilder.Entity("CO.CDP.OrganisationInformation.Persistence.Address", b =>
@@ -120,6 +120,10 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
 
                     b.HasKey("Id")
                         .HasName("pk_authentication_keys");
+
+                    b.HasIndex("Key")
+                        .IsUnique()
+                        .HasDatabaseName("ix_authentication_keys_key");
 
                     b.HasIndex("OrganisationId")
                         .HasDatabaseName("ix_authentication_keys_organisation_id");
@@ -263,6 +267,10 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("AddressValue")
+                        .HasColumnType("jsonb")
+                        .HasColumnName("address_value");
+
                     b.Property<bool?>("BoolValue")
                         .HasColumnType("boolean")
                         .HasColumnName("bool_value");
@@ -394,6 +402,10 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("Caption")
+                        .HasColumnType("text")
+                        .HasColumnName("caption");
+
                     b.Property<DateTimeOffset>("CreatedOn")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
@@ -428,6 +440,10 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                     b.Property<int>("SectionId")
                         .HasColumnType("integer")
                         .HasColumnName("section_id");
+
+                    b.Property<string>("SummaryTitle")
+                        .HasColumnType("text")
+                        .HasColumnName("summary_title");
 
                     b.Property<string>("Title")
                         .IsRequired()

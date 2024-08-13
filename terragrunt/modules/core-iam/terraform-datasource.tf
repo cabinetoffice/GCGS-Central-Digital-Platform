@@ -305,6 +305,50 @@ data "aws_iam_policy_document" "terraform_global" {
     sid = "ManageBucketPolicy"
   }
 
+  statement {
+    actions = [
+      "cognito-idp:Admin*",
+      "cognito-idp:Create*",
+      "cognito-idp:Delete*",
+      "cognito-idp:Describe*",
+      "cognito-idp:Get*",
+      "cognito-idp:Set*",
+      "cognito-idp:Update*",
+    ]
+    effect = "Allow"
+    resources = [
+      "arn:aws:cognito-idp:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:userpool/*"
+    ]
+    sid = "ManageCognito"
+  }
+
+  statement {
+    actions = [
+      "cognito-idp:DescribeUserPoolDomain",
+      "cognito-idp:ListUserPools",
+    ]
+    effect = "Allow"
+    resources = [
+      "*"
+    ]
+    sid = "ManageCognitoGlobal"
+  }
+
+  statement {
+    actions = [
+      "ssm:AddTagsToResource",
+      "ssm:Describe*",
+      "ssm:Get*",
+      "ssm:List*",
+      "ssm:PutParameter",
+    ]
+    effect = "Allow"
+    resources = [
+      "*"
+    ]
+    sid = "ManageSSMGlobal"
+  }
+
 }
 
 data "aws_iam_policy_document" "terraform_product" {
@@ -382,6 +426,9 @@ data "aws_iam_policy_document" "terraform_product" {
 
   statement {
     actions = [
+      "events:CreateConnection",
+      "events:DescribeConnection",
+      "events:DeleteConnection",
       "events:DeleteRule",
       "events:DescribeRule",
       "events:ListTagsForResource",
@@ -394,8 +441,9 @@ data "aws_iam_policy_document" "terraform_product" {
     ]
     effect = "Allow"
     resources = [
+      "arn:aws:events:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:connection/${local.name_prefix}-*",
       "arn:aws:events:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:rule/${local.name_prefix}-*",
-      "arn:aws:events:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:rule/StepFunctionsGetEventsForStepFunctionsExecutionRule"
+      "arn:aws:events:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:rule/StepFunctionsGetEventsForStepFunctionsExecutionRule",
     ]
     sid = "ManageProductEvents"
   }
@@ -430,6 +478,7 @@ data "aws_iam_policy_document" "terraform_product" {
     effect = "Allow"
     resources = [
       "arn:aws:kms:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:key*",
+      "arn:aws:secretsmanager:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:secret:events!connection/cdp-sirsi-*",
       "arn:aws:secretsmanager:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:secret:rds!db*",
       "arn:aws:secretsmanager:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:secret:${local.name_prefix}*",
     ]
@@ -510,5 +559,7 @@ data "aws_iam_policy_document" "terraform_product" {
     ]
     sid = "ManageProductSQS"
   }
+
+
 
 }

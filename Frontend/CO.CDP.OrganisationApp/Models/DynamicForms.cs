@@ -22,6 +22,8 @@ public class FormQuestion
     public bool IsRequired { get; set; }
     public string? Title { get; set; }
     public string? Description { get; set; }
+    public string? Caption { get; set; }
+    public string? SummaryTitle { get; set; }
     public FormQuestionOptions Options { get; set; } = new();
 }
 
@@ -53,6 +55,7 @@ public class FormAnswer
     public DateTimeOffset? EndValue { get; init; }
     public string? TextValue { get; init; }
     public string? OptionValue { get; init; }
+    public Address? AddressValue { get; init; }
 }
 
 public enum FormQuestionType
@@ -64,5 +67,7 @@ public enum FormQuestionType
     SingleChoice,
     MultipleChoice,
     CheckYourAnswers,
-    Date
+    Date,
+    CheckBox,
+    Address
 }

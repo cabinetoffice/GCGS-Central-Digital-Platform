@@ -45,6 +45,7 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
             Guid = Guid.NewGuid(),
             Section = section,
             Title = "Question 1",
+            Caption = "Question Caption",
             Description = "Question 1 desc",
             Type = FormQuestionType.Text,
             IsRequired = true,
@@ -58,6 +59,7 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
             Guid = Guid.NewGuid(),
             Section = section,
             Title = "Question 2",
+            Caption = "Question Caption",
             Description = "Question 2 desc",
             Type = FormQuestionType.YesOrNo,
             IsRequired = true,
@@ -158,6 +160,65 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
     }
 
     [Fact]
+    public async Task GetSharedConsentDraftAsync_WhenSharedConsentDoesNotExist_ReturnsNull()
+    {
+        using var repository = FormRepository();
+
+        var foundSection = await repository.GetSharedConsentDraftAsync(Guid.NewGuid(), Guid.NewGuid());
+
+        foundSection.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task GetSharedConsentDraftAsync_WhenSectionDoesNotExist_ReturnsEmptyList()
+    {
+        var formId = Guid.NewGuid();
+        var formVersionId = string.Empty;
+
+        var sharedConsent = new SharedConsent()
+        {
+            Guid = formId,
+            Organisation = new Organisation
+            {
+                Guid = Guid.NewGuid(),
+                Name = string.Empty,
+                Tenant = new Tenant
+                {
+                    Guid = Guid.NewGuid(),
+                    Name = string.Empty
+                }
+            },
+            Form = new Form
+            {
+                Guid = formId,
+                Name = string.Empty,
+                Version = string.Empty,
+                IsRequired = default,
+                Type = default,
+                Scope = default,
+                Sections = new List<FormSection> { }
+            },
+            AnswerSets = new List<FormAnswerSet> { },
+            SubmissionState = SubmissionState.Draft,
+            SubmittedAt = DateTime.UtcNow,
+            FormVersionId = formVersionId,
+            BookingReference = string.Empty
+        };
+
+        using var context = postgreSql.OrganisationInformationContext();
+        await context.SharedConsents.AddAsync(sharedConsent);
+        await context.SaveChangesAsync();
+
+        using var repository = FormRepository();
+
+        var found = await repository.GetSharedConsentDraftAsync(sharedConsent.Form.Guid, sharedConsent.Organisation.Guid);
+
+        found.Should().NotBeNull();
+        found.As<SharedConsent>().SubmissionState.Should().Be(SubmissionState.Draft);
+        found.As<SharedConsent>().BookingReference.Should().Be(string.Empty);
+    }
+
+    [Fact]
     public async Task DeleteAnswerSetAsync_ShouldReturnFalse_WhenAnswerSetNotFound()
     {
         var organisationId = Guid.NewGuid();
@@ -215,6 +276,7 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
             Guid = questionId,
             Section = section,
             Title = "Question 1",
+            Caption = "Question Caption",
             Description = "Question 1 desc",
             Type = FormQuestionType.YesOrNo,
             IsRequired = true,
@@ -251,6 +313,7 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
             Question = question,
             FormAnswerSet = answerSet,
             BoolValue = true,
+            AddressValue = new FormAddress { StreetAddress = "456 Elm St", Locality = "London", PostalCode = "G67890", CountryName = "UK" },
             CreatedOn = DateTimeOffset.UtcNow,
             UpdatedOn = DateTimeOffset.UtcNow
         };
@@ -381,6 +444,7 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
             Guid = questionId,
             Section = section,
             Title = "Question 1",
+            Caption = "Question Caption",
             Description = "Question 1 desc",
             Type = FormQuestionType.YesOrNo,
             IsRequired = true,
@@ -450,6 +514,7 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
             Guid = questionId,
             Section = section,
             Title = "Question 1",
+            Caption = "Question Caption",
             Description = "Question 1 desc",
             Type = FormQuestionType.YesOrNo,
             IsRequired = true,
@@ -546,6 +611,7 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
             Guid = questionId,
             Section = section,
             Title = "Question with Simple Options",
+            Caption = "Question Caption",
             Description = "This is a test question with simple options.",
             Type = FormQuestionType.SingleChoice,
             IsRequired = true,

@@ -16,6 +16,8 @@ module "ecs_service_forms" {
       memory                  = var.service_configs.forms.memory
       name                    = var.service_configs.forms.name
       public_hosted_zone_fqdn = var.public_hosted_zone_fqdn
+      s3_permanent_bucket     = module.s3_bucket_permanent.bucket
+      s3_staging_bucket       = module.s3_bucket_staging.bucket
       service_version         = local.orchestrator_service_version
       vpc_cidr                = var.vpc_cider
     }

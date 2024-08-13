@@ -1,16 +1,22 @@
-resource "aws_codebuild_project" "update_ecs_services" {
-  for_each      = { for key, value in var.account_ids : key => value if !contains(["production", "orchestrator"], key) }
-  name          = "${local.name_prefix}-${local.update_ecs_service_cb_name}-in-${each.key}"
-  description   = "Run terraform in service/ecs component to only update ECS services"
-  service_role  = var.ci_build_role_arn
+resource "aws_codebuild_project" "this" {
+  for_each = local.deployment_environments
+
   build_timeout = 5
+  description   = "Deploy infra and application changes into ${each.key}"
+  name          = "${local.name_prefix}-deployment-to-${each.key}"
+  service_role  = var.ci_build_role_arn
+  tags          = var.tags
 
   artifacts {
     type = "CODEPIPELINE"
   }
 
+  cache {
+    type = "NO_CACHE"
+  }
+
   environment {
-    compute_type                = "BUILD_GENERAL1_SMALL"
+    compute_type                = "BUILD_GENERAL1_LARGE"
     image_pull_credentials_type = "SERVICE_ROLE"
     image                       = "${var.repository_urls["codebuild"]}:latest"
     type                        = "LINUX_CONTAINER"
@@ -31,14 +37,14 @@ resource "aws_codebuild_project" "update_ecs_services" {
 
   logs_config {
     cloudwatch_logs {
-      group_name  = aws_cloudwatch_log_group.update_ecs_services.name
+      group_name  = aws_cloudwatch_log_group.deployments[each.key].name
       stream_name = local.name_prefix
     }
   }
 
   source {
     type      = "CODEPIPELINE"
-    buildspec = file("${path.module}/buildspecs/${local.update_ecs_service_cb_name}.yml")
+    buildspec = file("${path.module}/buildspecs/deployment.yml")
   }
 
   vpc_config {
@@ -46,10 +52,4 @@ resource "aws_codebuild_project" "update_ecs_services" {
     security_group_ids = [var.ci_sg_id]
     subnets            = var.private_subnet_ids
   }
-
-  cache {
-    type = "NO_CACHE"
-  }
-
-  tags = var.tags
 }

@@ -128,7 +128,7 @@ public class DynamicFormsPageModelTest
         {
             Questions = new List<FormQuestion>
         {
-            new FormQuestion { Id = questionId, Type = FormQuestionType.Text, Title = "Sample Question" }
+            new FormQuestion { Id = questionId, Type = FormQuestionType.Text, SummaryTitle = "Sample Question" }
         }
         };
 
@@ -138,7 +138,6 @@ public class DynamicFormsPageModelTest
         var answers = await _pageModel.GetAnswers();
 
         answers.Should().HaveCount(1);
-        answers.First().QuestionId.Should().Be(questionId);
         answers.First().Answer.Should().Be("Sample Answer");
         answers.First().Title.Should().Be("Sample Question");
     }

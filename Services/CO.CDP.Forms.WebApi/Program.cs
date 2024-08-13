@@ -1,4 +1,5 @@
 using CO.CDP.Authentication;
+using CO.CDP.AwsServices;
 using CO.CDP.Configuration.ForwardedHeaders;
 using CO.CDP.Forms.WebApi.Api;
 using CO.CDP.Forms.WebApi.AutoMapper;
@@ -33,16 +34,21 @@ builder.Services.AddJwtBearerAndApiKeyAuthentication(builder.Configuration, buil
 //builder.Services.AddAuthorization();
 builder.Services.AddOrganisationAuthorization();
 
+builder.Services
+    .AddAwsConfiguration(builder.Configuration)
+    .AddAwsS3Service();
+
 var app = builder.Build();
 app.UseForwardedHeaders();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+if (builder.Configuration.GetValue("Features:SwaggerUI", false))
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-else
+
+if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler();
     app.UseHsts();

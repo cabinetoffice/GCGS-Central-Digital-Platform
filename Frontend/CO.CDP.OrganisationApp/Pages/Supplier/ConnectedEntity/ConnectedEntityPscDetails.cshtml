@@ -13,12 +13,10 @@
     var hasError = dateOfBirthHasError || dayHasError || monthHasError || yearHasError;
     var nationalityHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Nationality)).HasInnerHtml;
 
-    var backLink = $"/organisation/{Model.Id}/supplier-information/connected-person/individual-category/{Model.ConnectedEntityId}";
-    if (Request.Query.ContainsKey("frm-chk-answer"))
-    {
-        backLink = $"/organisation/{Model.Id}/supplier-information/connected-person/check-answer-individual-trust/{Model.ConnectedEntityId}";
-    }
+    var backPage = Request.Query.ContainsKey("frm-chk-answer") ? "check-answer-individual-trust" : "individual-category";        
+    var backLink = $"/organisation/{Model.Id}/supplier-information/connected-person/{backPage}/{Model.ConnectedEntityId}";
 }
+
 <a href="@backLink" class="govuk-back-link">
     Back
 </a>

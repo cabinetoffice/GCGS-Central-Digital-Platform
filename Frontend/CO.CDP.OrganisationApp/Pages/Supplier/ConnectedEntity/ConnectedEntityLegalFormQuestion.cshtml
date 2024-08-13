@@ -1,0 +1,65 @@
+@page "/organisation/{id}/supplier-information/connected-person/legal-form-question/{ConnectedEntityId?}"
+@model CO.CDP.OrganisationApp.Pages.Supplier.ConnectedEntityLegalFormQuestionModel
+
+@{
+    var selectionError = ((TagBuilder)Html.ValidationMessageFor(m => m.HasLegalForm)).HasInnerHtml;
+    var legalFormNameHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.HasLegalForm)).HasInnerHtml
+        || ((TagBuilder)Html.ValidationMessageFor(m => m.LegalFormName)).HasInnerHtml;
+
+    var backPage = Request.Query.ContainsKey("frm-chk-answer") ? "check-answers-organisation" : Model.BackPageLink;
+    var backLink = $"/organisation/{Model.Id}/supplier-information/connected-person/{backPage}/{Model.ConnectedEntityId}";
+}
+
+<a href="@backLink" class="govuk-back-link">Back</a>
+
+<main class="govuk-main-wrapper">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <partial name="_ErrorSummary" model="@Model.ModelState" />
+            <span class="govuk-caption-l">@Model.Caption</span>
+            <form class="form" method="post">
+                @if (Request.Query.ContainsKey("frm-chk-answer"))
+                {
+                    <input type="hidden" name="RedirectToCheckYourAnswer" value="true" />
+                }
+                <div class="govuk-form-group @(selectionError ? "govuk-form-group--error" : "")">
+                    <fieldset class="govuk-fieldset" data-required="" data-error="Select yes if the organisation have a legal form" aria-required="true">
+                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                            <h1 class="govuk-fieldset__heading">@Model.Heading</h1>
+                        </legend>
+                        <div id="hasLegalForm-hint" class="govuk-hint">
+                            @Model.Hint
+                        </div>
+
+                        <div class="govuk-radios" data-module="govuk-radios">
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input" id="YES" name="HasLegalForm" type="radio"
+                                       value="true" data-aria-controls="conditional-YES" @(Model.HasLegalForm == true ? "checked" : "")>
+                                <label class="govuk-label govuk-radios__label" for="YES">Yes</label>
+                            </div>
+
+                            <div class="govuk-radios__conditional" id="conditional-YES">
+                                <div class="govuk-form-group @(legalFormNameHasError ? "govuk-form-group--error" : "")">
+                                    <label class="govuk-label" for="HasLegalForm">Legal form name</label>
+                                    <input class="govuk-input govuk-!-width-one-half @(legalFormNameHasError ? "govuk-input--error" : "")"
+                                           id="LegalFormName" name="LegalFormName" type="text" spellcheck="false" autocomplete="off"
+                                           value="@(Model.HasLegalForm == true ? Model.LegalFormName : "")">
+                                </div>
+                            </div>
+
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input" id="NO" name="HasLegalForm" type="radio"
+                                       value="false" data-aria-controls="conditional-NO" @(Model.HasLegalForm == false ? "checked" : "")>
+                                <label class="govuk-label govuk-radios__label" for="NO">No</label>
+                                <div class="govuk-radios__conditional--hidden" id="conditional-NO"></div>
+                            </div>
+                        </div>
+
+                    </fieldset>
+                </div>
+
+                <button class="govuk-button" type="submit">Continue</button>
+            </form>
+        </div>
+    </div>
+</main>

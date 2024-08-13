@@ -12,6 +12,9 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.Person.WebApi", "Services\CO.CDP.Person.WebApi\CO.CDP.Person.WebApi.csproj", "{D9CC02AD-3031-496A-8E48-E736623D1B41}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.DataSharing.WebApi", "Services\CO.CDP.DataSharing.WebApi\CO.CDP.DataSharing.WebApi.csproj", "{C5DD309E-CA59-4C82-BFC4-9374026A2B21}"
+	ProjectSection(ProjectDependencies) = postProject
+		{266E1C53-5C6B-456A-BBB1-1EE60C6F477A} = {266E1C53-5C6B-456A-BBB1-1EE60C6F477A}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.Forms.WebApi", "Services\CO.CDP.Forms.WebApi\CO.CDP.Forms.WebApi.csproj", "{4298A4EF-B336-4809-95F0-AF5D73266A18}"
 EndProject
@@ -97,19 +100,19 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.EntityVerification",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.EntityVerification.Tests", "Services\CO.CDP.EntityVerification.Tests\CO.CDP.EntityVerification.Tests.csproj", "{70F6E641-BB6C-4784-A19D-B83700FBA770}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.AwsServices", "Libraries\CO.CDP.AwsServices\CO.CDP.AwsServices.csproj", "{486A6494-7414-4E59-BD06-D72E757C4797}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.AwsServices", "Libraries\CO.CDP.AwsServices\CO.CDP.AwsServices.csproj", "{486A6494-7414-4E59-BD06-D72E757C4797}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.AwsServices.Tests", "Libraries\CO.CDP.AwsServices.Tests\CO.CDP.AwsServices.Tests.csproj", "{FBCEFD6F-4B92-4A7F-B40E-B1460044D066}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.AwsServices.Tests", "Libraries\CO.CDP.AwsServices.Tests\CO.CDP.AwsServices.Tests.csproj", "{FBCEFD6F-4B92-4A7F-B40E-B1460044D066}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.MQ.Tests", "Libraries\CO.CDP.MQ.Tests\CO.CDP.MQ.Tests.csproj", "{CEB94404-A41E-4D62-93E7-C3C67FAD35DE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.MQ.Tests", "Libraries\CO.CDP.MQ.Tests\CO.CDP.MQ.Tests.csproj", "{CEB94404-A41E-4D62-93E7-C3C67FAD35DE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.MQ", "Libraries\CO.CDP.MQ\CO.CDP.MQ.csproj", "{EC663061-6ABE-4831-BE93-E2651D929795}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.MQ", "Libraries\CO.CDP.MQ\CO.CDP.MQ.csproj", "{EC663061-6ABE-4831-BE93-E2651D929795}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.OrganisationInformation.Tests", "Services\CO.CDP.OrganisationInformation.Tests\CO.CDP.OrganisationInformation.Tests.csproj", "{CD239B09-0DB7-4C62-A840-95FEE50E06B9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.OrganisationInformation.Tests", "Services\CO.CDP.OrganisationInformation.Tests\CO.CDP.OrganisationInformation.Tests.csproj", "{CD239B09-0DB7-4C62-A840-95FEE50E06B9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.EntityFrameworkCore", "Libraries\CO.CDP.EntityFrameworkCore\CO.CDP.EntityFrameworkCore.csproj", "{0D3BF90A-AB95-4C86-8344-C6953E5D3A0A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.EntityFrameworkCore", "Libraries\CO.CDP.EntityFrameworkCore\CO.CDP.EntityFrameworkCore.csproj", "{0D3BF90A-AB95-4C86-8344-C6953E5D3A0A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.EntityFrameworkCore.Tests", "Libraries\CO.CDP.EntityFrameworkCore.Tests\CO.CDP.EntityFrameworkCore.Tests.csproj", "{0374C116-084D-4797-B9B0-0C74F1A3CBDB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.EntityFrameworkCore.Tests", "Libraries\CO.CDP.EntityFrameworkCore.Tests\CO.CDP.EntityFrameworkCore.Tests.csproj", "{0374C116-084D-4797-B9B0-0C74F1A3CBDB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

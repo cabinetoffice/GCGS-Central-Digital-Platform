@@ -24,7 +24,7 @@ public class ConnectedEntityAddressModel(ISession session) : PageModel
     [BindProperty]
     public AddressPartialModel Address { get; set; } = new();
 
-    [BindProperty]
+    [BindProperty(SupportsGet = true, Name = "frm-chk-answer")]
     public bool? RedirectToCheckYourAnswer { get; set; }
 
     public string? Caption { get; set; }
@@ -117,7 +117,7 @@ public class ConnectedEntityAddressModel(ISession session) : PageModel
                     case ConnectedEntityOrganisationCategoryType.RegisteredCompany:
                     case ConnectedEntityOrganisationCategoryType.DirectorOrTheSameResponsibilities:
                         redirectPage = (AddressType == AddressType.Postal && state.PostalAddress != null)
-                            ? "ConnectedEntityLawRegister"
+                            ? (state.SupplierHasCompanyHouseNumber == true ? "ConnectedEntityLawRegister" : "ConnectedEntityLegalFormQuestion")
                             : "ConnectedEntityPostalSameAsRegisteredAddress";
                         break;
 
@@ -157,7 +157,7 @@ public class ConnectedEntityAddressModel(ISession session) : PageModel
                         redirectPage = "ConnectedEntityCheckAnswersIndividualOrTrust";
                         break;
                     case ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndividualWithSignificantInfluenceOrControlForTrust:
-                        redirectPage = "";
+                        redirectPage = "ConnectedEntityControlCondition";
                         break;
                 }
                 break;
@@ -179,7 +179,7 @@ public class ConnectedEntityAddressModel(ISession session) : PageModel
                     case ConnectedEntityOrganisationCategoryType.ParentOrSubsidiaryCompany:
                     case ConnectedEntityOrganisationCategoryType.ACompanyYourOrganisationHasTakenOver:
                     case ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl:
-                        backPage = $"organisation-name/{ConnectedEntityId}";
+                        backPage = $"organisation-name";
                         break;
                 }
                 break;
@@ -188,11 +188,11 @@ public class ConnectedEntityAddressModel(ISession session) : PageModel
                 {
                     case ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndividual:
                     case ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndividualWithSignificantInfluenceOrControlForIndividual:
-                        backPage = $"individual-psc-details/{ConnectedEntityId}";
+                        backPage = $"individual-psc-details";
                         break;
 
                     case ConnectedEntityIndividualAndTrustCategoryType.DirectorOrIndividualWithTheSameResponsibilitiesForIndividual:
-                        backPage = $"director-residency/{ConnectedEntityId}";
+                        backPage = $"director-residency";
                         break;
                 }
                 break;
@@ -201,10 +201,10 @@ public class ConnectedEntityAddressModel(ISession session) : PageModel
                 {
                     case ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForTrust:
                     case ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndividualWithSignificantInfluenceOrControlForTrust:
-                        backPage = $"individual-psc-details/{ConnectedEntityId}";
+                        backPage = $"individual-psc-details";
                         break;
                     case ConnectedEntityIndividualAndTrustCategoryType.DirectorOrIndividualWithTheSameResponsibilitiesForTrust:
-                        backPage = $"director-residency/{ConnectedEntityId}";
+                        backPage = $"director-residency";
                         break;
                 }
                 break;
@@ -295,6 +295,6 @@ public class ConnectedEntityAddressModel(ISession session) : PageModel
 
         Address.Heading = heading;
         Address.AddressHint = hintValue;
-        Address.NonUkAddressLink = $"/organisation/{Id}/supplier-information/connected-person/{AddressType.ToString().ToLower()}-address/non-uk";
+        Address.NonUkAddressLink = $"/organisation/{Id}/supplier-information/connected-person/{AddressType.ToString().ToLower()}-address/non-uk/{ConnectedEntityId}{(RedirectToCheckYourAnswer == true ? "?frm-chk-answer=true" : "")}";
     }
 }

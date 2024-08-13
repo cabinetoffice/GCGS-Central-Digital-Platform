@@ -3,16 +3,24 @@
 
 @{
     var backUrl = $"/organisation/{Model.OrganisationId}/supplier-information";
+    var fromCheckAnswerPage = Request.Query.ContainsKey("frm-chk-answer");
 
-    if (Request.Query.ContainsKey("frm-chk-answer"))
+    if (Request.Query["UkOrNonUk"] == "non-uk")
     {
-        var checkYourAnswerQuestionId = await Model.CheckYourAnswerQuestionId();
-        backUrl = $"/organisation/{Model.OrganisationId}/forms/{Model.FormId}/sections/{Model.SectionId}/{checkYourAnswerQuestionId}";
-        Model.RedirectToCheckYourAnswer = true;
+        backUrl = fromCheckAnswerPage ? "?frm-chk-answer" : "?";
     }
-    else if (Model.PreviousQuestionId.HasValue)
+    else
     {
-        backUrl = $"/organisation/{Model.OrganisationId}/forms/{Model.FormId}/sections/{Model.SectionId}/{Model.PreviousQuestionId}";
+        if (fromCheckAnswerPage)
+        {
+            var checkYourAnswerQuestionId = await Model.CheckYourAnswerQuestionId();
+            backUrl = $"/organisation/{Model.OrganisationId}/forms/{Model.FormId}/sections/{Model.SectionId}/{checkYourAnswerQuestionId}";
+            Model.RedirectToCheckYourAnswer = true;
+        }
+        else if (Model.PreviousQuestion != null)
+        {
+            backUrl = $"/organisation/{Model.OrganisationId}/forms/{Model.FormId}/sections/{Model.SectionId}/{Model.PreviousQuestion.Id}{(Model.PreviousQuestionHasNonUKAddressAnswer() ? "?UkOrNonUk=non-uk" : "")}";
+        }
     }
 }
 
@@ -48,10 +56,10 @@
                                         @answer.Title
                                     </dt>
                                     <dd class="govuk-summary-list__value">
-                                        @answer.Answer
+                                        @Html.Raw(answer.Answer)
                                     </dd>
                                     <dd class="govuk-summary-list__actions">
-                                        <a class="govuk-link" href="/organisation/@Model.OrganisationId/forms/@Model.FormId/sections/@Model.SectionId/@answer.QuestionId?frm-chk-answer">
+                                        <a class="govuk-link" href="@answer.ChangeLink">
                                             Change<span class="govuk-visually-hidden">
                                                 @($"the {answer.Title?.ToLower()}")
                                             </span>

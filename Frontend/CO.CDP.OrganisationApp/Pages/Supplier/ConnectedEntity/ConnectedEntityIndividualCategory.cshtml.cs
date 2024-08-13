@@ -16,7 +16,8 @@ public class ConnectedEntityIndividualCategoryModel(ISession session) : PageMode
 
     [BindProperty(SupportsGet = true)]
     public Guid? ConnectedEntityId { get; set; }
-
+    [BindProperty]
+    public ConnectedEntityType? ConnectedEntityType { get; set; }
     public bool RegisteredWithCh { get; set; }
 
     public IActionResult OnGet()
@@ -28,6 +29,7 @@ public class ConnectedEntityIndividualCategoryModel(ISession session) : PageMode
         }
 
         ConnectedEntityCategory = state.ConnectedEntityIndividualAndTrustCategoryType;
+        ConnectedEntityType = state.ConnectedEntityType;
         RegisteredWithCh = state.SupplierHasCompanyHouseNumber ?? false;
         return Page();
     }

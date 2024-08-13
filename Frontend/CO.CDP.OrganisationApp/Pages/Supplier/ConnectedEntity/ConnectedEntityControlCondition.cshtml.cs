@@ -22,6 +22,8 @@ public class ConnectedEntityControlConditionModel(ISession session) : PageModel
     [BindProperty]
     public bool? RedirectToCheckYourAnswer { get; set; }
 
+    public bool SupplierHasCompanyHouseNumber { get; set; }
+
     public string? Caption { get; set; }
 
     public string? Heading { get; set; }
@@ -90,6 +92,7 @@ public class ConnectedEntityControlConditionModel(ISession session) : PageModel
         Heading = $"Which specified conditions of control does {state.OrganisationName} have?";
         BackPageLink = GetBackLinkPageName(state);
         ConnectedEntityType = state.ConnectedEntityType;
+        SupplierHasCompanyHouseNumber = state.SupplierHasCompanyHouseNumber ?? false;
         if (reset)
         {
             ControlConditions = state.ControlConditions;
@@ -105,7 +108,9 @@ public class ConnectedEntityControlConditionModel(ISession session) : PageModel
                 switch (state.ConnectedEntityOrganisationCategoryType)
                 {
                     case ConnectedEntityOrganisationCategoryType.RegisteredCompany:
-                        redirectPage = "ConnectedEntityCompanyRegistrationDate";
+                        redirectPage = (state.SupplierHasCompanyHouseNumber == true
+                                            ? "ConnectedEntityCompanyRegistrationDate"
+                                            : "ConnectedEntityRegistrationDateQuestion");
                         break;
                     case ConnectedEntityOrganisationCategoryType.DirectorOrTheSameResponsibilities:
                         redirectPage = "";
@@ -125,8 +130,6 @@ public class ConnectedEntityControlConditionModel(ISession session) : PageModel
                 switch (state.ConnectedEntityIndividualAndTrustCategoryType)
                 {
                     case ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndividual:
-                        redirectPage = "ConnectedEntityCompanyRegistrationDate";
-                        break;
                     case ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndividualWithSignificantInfluenceOrControlForIndividual:
                         redirectPage = "ConnectedEntityCompanyRegistrationDate";
                         break;
@@ -136,8 +139,6 @@ public class ConnectedEntityControlConditionModel(ISession session) : PageModel
                 switch (state.ConnectedEntityIndividualAndTrustCategoryType)
                 {
                     case ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForTrust:
-                        redirectPage = "ConnectedEntityCompanyRegistrationDate";
-                        break;
                     case ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndividualWithSignificantInfluenceOrControlForTrust:
                         redirectPage = "ConnectedEntityCompanyRegistrationDate";
                         break;
@@ -157,7 +158,9 @@ public class ConnectedEntityControlConditionModel(ISession session) : PageModel
                 switch (state.ConnectedEntityOrganisationCategoryType)
                 {
                     case ConnectedEntityOrganisationCategoryType.RegisteredCompany:
-                        backPage = $"company-question";
+                        backPage = state.SupplierHasCompanyHouseNumber == true
+                                    ? "company-question"
+                                    : "overseas-company-question";
                         break;
                     case ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl:
                         backPage = (state.HasCompaniesHouseNumber.HasValue &&
@@ -180,13 +183,8 @@ public class ConnectedEntityControlConditionModel(ISession session) : PageModel
                 switch (state.ConnectedEntityIndividualAndTrustCategoryType)
                 {
                     case ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForTrust:
-                        backPage = "";
-                        break;
-                    case ConnectedEntityIndividualAndTrustCategoryType.DirectorOrIndividualWithTheSameResponsibilitiesForTrust:
-                        backPage = "";
-                        break;
                     case ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndividualWithSignificantInfluenceOrControlForTrust:
-                        backPage = "";
+                        backPage = $"{AddressType.Registered}-address/{(state.RegisteredAddress?.Country == Country.UnitedKingdom ? "uk" : "non-uk")}";
                         break;
                 }
                 break;

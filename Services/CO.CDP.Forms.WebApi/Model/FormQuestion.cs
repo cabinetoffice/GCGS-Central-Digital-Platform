@@ -12,6 +12,8 @@ public record FormQuestion
     public required bool IsRequired { get; init; }
     public required string Title { get; init; }
     public string? Description { get; init; }
+    public string? Caption { get; init; }
+    public string? SummaryTitle { get; set; }
     public required FormQuestionOptions Options { get; init; } = new();
 }
 

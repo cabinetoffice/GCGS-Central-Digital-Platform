@@ -13,9 +13,11 @@ public class FormQuestion : IEntityDate
     public required bool IsRequired { get; set; } = true;
     public required string Title { get; set; }
     public required string? Description { get; set; } = null;
+    public required string? Caption { get; set; } = null;
     public required FormQuestionOptions Options { get; set; } = new FormQuestionOptions();
     public DateTimeOffset CreatedOn { get; set; }
     public DateTimeOffset UpdatedOn { get; set; }
+    public string? SummaryTitle { get; set; }
 }
 
 public enum FormQuestionType

@@ -100,7 +100,8 @@ public class FormsAddAnotherAnswerSetModel(
                     NumericValue = a.NumericValue,
                     OptionValue = a.OptionValue,
                     StartValue = a.StartValue,
-                    TextValue = a.TextValue
+                    TextValue = a.TextValue,
+                    AddressValue = MapAddress(a.AddressValue)
                 }
             }).ToList()
         };
@@ -110,6 +111,18 @@ public class FormsAddAnotherAnswerSetModel(
         var checkYourAnswersQuestionId = response?.Questions?.FirstOrDefault(q => q.Type == FormQuestionType.CheckYourAnswers)?.Id;
 
         return RedirectToPage("DynamicFormsPage", new { OrganisationId, FormId, SectionId, CurrentQuestionId = checkYourAnswersQuestionId });
+    }
+
+    private static Models.Address? MapAddress(FormAddress? formAdddress)
+    {
+        if (formAdddress == null) return null;
+        return new Models.Address
+        {
+            AddressLine1 = formAdddress.StreetAddress,
+            TownOrCity = formAdddress.Locality,
+            Postcode = formAdddress.PostalCode,
+            Country = formAdddress.CountryName
+        };
     }
 
     private async Task<bool> InitAndVerifyPage()
@@ -129,7 +142,7 @@ public class FormsAddAnotherAnswerSetModel(
         AddAnotherAnswerLabel = form.Section.Configuration.AddAnotherAnswerLabel;
         Heading = form.Section.Configuration.SingularSummaryHeading;
 
-        if (FormAnswerSets.Count > 1)
+        if (FormAnswerSets.Count > 1 && form.Section.Configuration.PluralSummaryHeadingFormat != null)
         {
             Heading = string.Format(form.Section.Configuration.PluralSummaryHeadingFormat, FormAnswerSets.Count);
         }
@@ -152,16 +165,17 @@ public class FormsAddAnotherAnswerSetModel(
                     var answerString = question.Type switch
                     {
                         FormQuestionType.Text => answer.TextValue ?? "",
+                        FormQuestionType.CheckBox => answer.BoolValue.HasValue ? question.Options.Choices?.FirstOrDefault()?.Title ?? "" : "",
                         FormQuestionType.FileUpload => answer.TextValue ?? "",
-                        FormQuestionType.YesOrNo => question.IsRequired && answer.BoolValue.HasValue == true ? (answer.BoolValue == true ? "yes" : "no") : "",
-                        FormQuestionType.Date => question.IsRequired && answer.DateValue.HasValue == true ? answer.DateValue.Value.ToString("dd/MM/yyyy") : "",
+                        FormQuestionType.YesOrNo => answer.BoolValue.HasValue ? (answer.BoolValue == true ? "yes" : "no") : "",
+                        FormQuestionType.Date => answer.DateValue.HasValue ? answer.DateValue.Value.ToString("dd/MM/yyyy") : "",
+                        FormQuestionType.Address => answer.AddressValue != null ? $"{answer.AddressValue.StreetAddress}, {answer.AddressValue.Locality}, {answer.AddressValue.PostalCode}, {answer.AddressValue.CountryName}" : "",
                         _ => ""
                     };
 
                     answerSummaries.Add(new AnswerSummary
                     {
-                        QuestionId = answer.QuestionId,
-                        Title = question.Title,
+                        Title = question.SummaryTitle ?? question.Title,
                         Answer = answerString ?? ""
                     });
                 }

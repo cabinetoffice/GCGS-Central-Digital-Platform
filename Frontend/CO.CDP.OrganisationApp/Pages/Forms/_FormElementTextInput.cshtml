@@ -5,11 +5,20 @@
 }
 
 <div class="govuk-form-group">
-    <h1 class="govuk-heading-l">
-        @Model.Heading
-    </h1>
+    @if (!string.IsNullOrWhiteSpace(Model.Caption))
+    {
+        <span class="govuk-caption-l">@Model.Caption</span>
+    }
 
-    <p class="govuk-body">@Html.Raw(@Model.Description)</p>
+    @if (!string.IsNullOrWhiteSpace(Model.Heading))
+    {
+        <label class="govuk-label govuk-label--l" for="declarationInput">@Model.Heading</label>
+    }
+
+    @if (!string.IsNullOrWhiteSpace(Model.Description))
+    {
+        @Html.Raw(Model.Description)
+    }
 
     @if (hasError)
     {
@@ -19,5 +28,5 @@
         </p>
     }
 
-    <input class="govuk-input govuk-!-width-two-thirds" name="TextInput" type="text">
+    <input class="govuk-input govuk-!-width-two-thirds" name="TextInput" type="text" value="@Model.TextInput">
 </div>

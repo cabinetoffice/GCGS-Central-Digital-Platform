@@ -28,6 +28,9 @@ public class ConnectedEntityOverseasCompanyQuestionModel(ISession session) : Pag
     public string? Hint { get; set; }
     public string? BackPageLink { get; set; }
 
+    [BindProperty(SupportsGet = true, Name = "frm-chk-answer")]
+    public bool? RedirectToCheckYourAnswer { get; set; }
+
     public IActionResult OnGet(bool? selected)
     {
         var state = session.Get<ConnectedEntityState>(Session.ConnectedPersonKey);
@@ -61,10 +64,21 @@ public class ConnectedEntityOverseasCompanyQuestionModel(ISession session) : Pag
 
         state.HasOverseasCompaniesHouseNumber = HasOverseasCompaniesHouseNumber;
         state.OverseasCompaniesHouseNumber = OverseasCompaniesHouseNumber;
+        if (HasOverseasCompaniesHouseNumber == true)
+        {
+            state.CompaniesHouseNumber = null;
+            state.HasCompaniesHouseNumber = false;
+        }
 
         session.Set(Session.ConnectedPersonKey, state);
 
-        var redirectPage = GetRedirectLinkPageName(state);
+        var checkAnswerPage = (state.ConnectedEntityType == Constants.ConnectedEntityType.Organisation
+            ? "ConnectedEntityCheckAnswersOrganisation"
+            : "ConnectedEntityCheckAnswersIndividualOrTrust");
+
+        var redirectPage = (RedirectToCheckYourAnswer == true
+                        ? checkAnswerPage
+                        : GetRedirectLinkPageName(state));
         return RedirectToPage(redirectPage, new { Id, ConnectedEntityId });
     }
 
@@ -115,6 +129,10 @@ public class ConnectedEntityOverseasCompanyQuestionModel(ISession session) : Pag
             case Constants.ConnectedEntityType.Organisation:
                 switch (state.ConnectedEntityOrganisationCategoryType)
                 {
+                    case ConnectedEntityOrganisationCategoryType.RegisteredCompany:
+                    case ConnectedEntityOrganisationCategoryType.DirectorOrTheSameResponsibilities:
+                    case ConnectedEntityOrganisationCategoryType.ParentOrSubsidiaryCompany:
+                    case ConnectedEntityOrganisationCategoryType.ACompanyYourOrganisationHasTakenOver:
                     case ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl:
                         backPage = $"company-question";
                         break;

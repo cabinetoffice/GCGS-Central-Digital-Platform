@@ -229,6 +229,11 @@ services:
       - db
     environment:
       ASPNETCORE_ENVIRONMENT: Production
+      Aws__Buckets__PermanentBucket: cdp-permanent-bucket.s3
+      Aws__Buckets__StagingBucket: cdp-staging-bucket.s3
+      Aws__Credentials__AccessKeyId: test
+      Aws__Credentials__SecretAccessKey: test
+      Aws__ServiceURL: "http://localstack:4566"
       ConnectionStrings__OrganisationInformationDatabase: 'Server=db;Database=cdp;Username=cdp_user;Password=cdp123;'
       Organisation__Authority: '${Organisation__Authority:-http://gateway:${CDP_AUTHORITY_PORT:-8092}}'
       VERSION: dev-docker
@@ -250,6 +255,13 @@ services:
       - db
     environment:
       ASPNETCORE_ENVIRONMENT: Production
+      Aws__Buckets__PermanentBucket: cdp-permanent-bucket.s3
+      Aws__Buckets__StagingBucket: cdp-staging-bucket.s3
+      Aws__Credentials__AccessKeyId: test
+      Aws__Credentials__SecretAccessKey: test
+      Aws__ServiceURL: "http://localstack:4566"
+      ConnectionStrings__OrganisationInformationDatabase: 'Server=db;Database=cdp;Username=cdp_user;Password=cdp123;'
+      Organisation__Authority: '${Organisation__Authority:-http://gateway:${CDP_AUTHORITY_PORT:-8092}}'
       VERSION: dev-docker
 
   entity-verification:

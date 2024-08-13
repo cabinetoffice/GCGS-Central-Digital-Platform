@@ -27,7 +27,7 @@
                             <dt class="govuk-summary-list__key">
                                 @foreach (var item in formAnswerSet.answers)
                                 {
-                                    <p class="govuk-!-margin-top-0">@item.Title : @item.Answer</p>
+                                    <p class="govuk-!-margin-top-0">@item.Title : @Html.Raw(item.Answer)</p>
                                 }
                             </dt>
                             <dd class="govuk-summary-list__actions">

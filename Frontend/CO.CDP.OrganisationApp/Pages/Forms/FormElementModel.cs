@@ -8,10 +8,13 @@ public interface IFormElementModel
     string? Heading { get; set; }
 
     string? Description { get; set; }
+    string? Caption { get; set; }
 
     bool IsRequired { get; set; }
 
     FormQuestionType? CurrentFormQuestionType { get; set; }
+
+    void Initialize(FormQuestion question);
 
     FormAnswer? GetAnswer();
 
@@ -24,11 +27,26 @@ public abstract class FormElementModel : IFormElementModel
 
     public string? Description { get; set; }
 
+    public string? Caption { get; set; }
+
     [BindProperty]
     public FormQuestionType? CurrentFormQuestionType { get; set; }
 
     [BindProperty]
     public bool IsRequired { get; set; }
+
+    [BindProperty]
+    public FormQuestionOptions? Options { get; set; }
+
+    public virtual void Initialize(FormQuestion question)
+    {
+        Heading = question.Title;
+        Description = question.Description;
+        Caption = question.Caption;
+        CurrentFormQuestionType = question.Type;
+        IsRequired = question.IsRequired;
+        Options = question.Options;
+    }
 
     public abstract FormAnswer? GetAnswer();
 

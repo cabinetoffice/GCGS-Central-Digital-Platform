@@ -17,6 +17,7 @@ public class OrganisationUpdatedSubscriberTests
         var testPpon = GivenPpon();
         var pponIdentifier = CreatePponIdentifier();
 
+        var totalIdentifiersBeforeUpdate = mockEvent.AllIdentifiers().Count();
         mockEvent.AdditionalIdentifiers.Add(pponIdentifier);
 
         mockPponRepository
@@ -31,7 +32,7 @@ public class OrganisationUpdatedSubscriberTests
             s => s.Save(It.Is<EntityVerification.Persistence.Ppon>(p =>
                 (p.IdentifierId == testPpon.IdentifierId))),
             Times.Once);
-        testPpon.Identifiers.Count.Should().Be(mockEvent.AllIdentifiers().Count());
+        testPpon.Identifiers.Count.Should().Be(totalIdentifiersBeforeUpdate);
     }
 
     [Fact]
@@ -43,16 +44,18 @@ public class OrganisationUpdatedSubscriberTests
         var testPpon = GivenPpon();
         var pponIdentifier = CreatePponIdentifier();
 
-        mockEvent.AdditionalIdentifiers.Add(pponIdentifier);
-
         mockPponRepository
             .Setup(repo => repo.FindPponByPponIdAsync(pponIdentifier.Id))
             .ReturnsAsync(testPpon);
         testPpon.Identifiers = Identifier.GetPersistenceIdentifiers(mockEvent.AllIdentifiers());
 
+        var totalIdentifiersBeforeUpdate = testPpon.Identifiers.Count();
+
+        mockEvent.AdditionalIdentifiers.Add(pponIdentifier);
+
         await subscriber.Handle(mockEvent);
 
-        testPpon.Identifiers.Count.Should().Be(mockEvent.AllIdentifiers().Count());
+        testPpon.Identifiers.Count.Should().Be(totalIdentifiersBeforeUpdate);
     }
 
     [Fact]

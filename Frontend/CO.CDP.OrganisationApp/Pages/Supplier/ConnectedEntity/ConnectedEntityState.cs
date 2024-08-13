@@ -13,11 +13,13 @@ public class ConnectedEntityState
     public string? OrganisationName { get; set; }
     public Address? RegisteredAddress { get; set; }
     public Address? PostalAddress { get; set; }
+    public bool? HasLegalForm { get; set; }
     public string? LegalForm { get; set; }
     public string? LawRegistered { get; set; }
     public bool? HasCompaniesHouseNumber { get; set; }
     public string? CompaniesHouseNumber { get; set; }
     public List<ConnectedEntityControlCondition> ControlConditions { get; set; } = [];
+    public bool? HasRegistartionDate { get; set; }
     public DateTimeOffset? RegistrationDate { get; set; }
     public string? RegisterName { get; set; }
     public DateTimeOffset? InsolvencyDate { get; set; }

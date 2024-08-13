@@ -69,6 +69,15 @@ dependency common_networking {
   }
 }
 
+dependency service_auth {
+  config_path = "../../service/auth"
+  mock_outputs = {
+    organisation_app_user_pool_arn       = "mock"
+    organisation_app_user_pool_client_id = "mock"
+    user_pool_domain                     = "mock"
+  }
+}
+
 dependency service_database {
   config_path = "../../service/database"
   mock_outputs = {
@@ -127,6 +136,10 @@ inputs = {
   vpce_logs_sg_id           = dependency.core_security_groups.outputs.vpce_logs_sg_id
   vpce_s3_sg_id             = dependency.core_security_groups.outputs.vpce_s3_sg_id
   vpce_secretsmanager_sg_id = dependency.core_security_groups.outputs.vpce_secretsmanager_sg_id
+
+  user_pool_arn       = dependency.service_auth.outputs.organisation_app_user_pool_arn
+  user_pool_client_id = dependency.service_auth.outputs.organisation_app_user_pool_client_id
+  user_pool_domain    = dependency.service_auth.outputs.user_pool_domain
 
   db_entity_verification_connection_secret_arn = dependency.service_database.outputs.entity_verification_connection_secret_arn
   db_entity_verification_kms_arn               = dependency.service_database.outputs.entity_verification_kms_arn
