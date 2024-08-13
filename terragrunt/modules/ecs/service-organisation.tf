@@ -18,7 +18,7 @@ module "ecs_service_organisation" {
       public_hosted_zone_fqdn             = var.public_hosted_zone_fqdn
       queue_entity_verification_queue_url = var.queue_entity_verification_queue_url
       queue_organisation_queue_url        = var.queue_organisation_queue_url
-      service_version                     = local.orchestrator_service_version
+      service_version                     = local.service_version
       vpc_cidr                            = var.vpc_cider
     }
   )

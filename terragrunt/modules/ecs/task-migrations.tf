@@ -16,7 +16,7 @@ module "ecs_migration_tasks" {
       memory                  = each.value.memory
       name                    = each.value.name
       public_hosted_zone_fqdn = var.public_hosted_zone_fqdn
-      service_version         = local.orchestrator_service_version
+      service_version         = local.service_version
     }
   )
 

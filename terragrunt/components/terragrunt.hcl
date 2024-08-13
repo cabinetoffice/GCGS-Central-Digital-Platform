@@ -251,6 +251,7 @@ inputs = {
     environment             = local.environment
     product                 = local.product
     tags                    = local.tags
+    pinned_service_version  = try(local.environments[local.environment].pinned_service_version, null)
     postgres_engine_version = local.versions.postgres_engine
     postgres_instance_type  = local.environments[local.environment].postgres_instance_type
     vpc_cidr                = local.environments[local.environment].cidr_block
