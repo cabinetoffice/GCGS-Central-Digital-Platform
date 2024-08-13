@@ -15,8 +15,7 @@ public class ConnectedEntityDeclarationTest
 
         var redirectToPageResult = result.Should().BeOfType<RedirectToPageResult>().Subject;
 
-        result.Should().BeOfType<RedirectToPageResult>()
-            .Which.PageName.Should().Be("ConnectedEntitySupplierHasControl");
+        redirectToPageResult.PageName.Should().Be("ConnectedEntitySupplierHasControl");
 
     }
 }

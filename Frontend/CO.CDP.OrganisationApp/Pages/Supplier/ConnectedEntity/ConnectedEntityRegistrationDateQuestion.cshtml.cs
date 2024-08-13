@@ -18,7 +18,7 @@ public class ConnectedEntityRegistrationDateQuestionModel(ISession session) : Pa
     public Guid? ConnectedEntityId { get; set; }
 
     [BindProperty]
-    [Required(ErrorMessage = "Please select an option")]
+    [Required(ErrorMessage = "Select yes if you required to register organisation as a person with significant control")]
     public bool? HasRegistartionDate { get; set; }
 
     [BindProperty]

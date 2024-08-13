@@ -17,7 +17,7 @@ IOrganisationClient organisationClient) : PageModel
     public Guid ConnectedPersonId { get; set; }
 
     [BindProperty]
-    [Required(ErrorMessage = "Please confirm remove connected person option")]
+    [Required(ErrorMessage = "Select yes to confirm remove connected person")]
     public bool? ConfirmRemove { get; set; }
 
     [BindProperty]

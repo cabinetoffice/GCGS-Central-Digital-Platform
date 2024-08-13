@@ -17,11 +17,11 @@ public class ConnectedEntityCompanyQuestionModel(ISession session) : PageModel
     public Guid? ConnectedEntityId { get; set; }
 
     [BindProperty]
-    [Required(ErrorMessage = "Please select an option")]
+    [Required(ErrorMessage = "Select yes if an organisation is registered with Companies House")]
     public bool? HasCompaniesHouseNumber { get; set; }
 
     [BindProperty]
-    [RequiredIf(nameof(HasCompaniesHouseNumber), true, ErrorMessage = "Please enter the Companies House number.")]
+    [RequiredIf(nameof(HasCompaniesHouseNumber), true, ErrorMessage = "Enter the Companies House number.")]
     public string? CompaniesHouseNumber { get; set; }
     public string? Caption { get; set; }
     public string? Heading { get; set; }

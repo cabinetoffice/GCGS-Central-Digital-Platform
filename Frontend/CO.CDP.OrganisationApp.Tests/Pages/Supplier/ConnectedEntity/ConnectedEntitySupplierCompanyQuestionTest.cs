@@ -84,8 +84,7 @@ public class ConnectedEntitySupplierCompanyQuestionTest
 
         var redirectToPageResult = result.Should().BeOfType<RedirectToPageResult>().Subject;
 
-        result.Should().BeOfType<RedirectToPageResult>()
-            .Which.PageName.Should().Be("ConnectedEntityPersonType");
+        redirectToPageResult.PageName.Should().Be("ConnectedEntityPersonType");
 
     }
 

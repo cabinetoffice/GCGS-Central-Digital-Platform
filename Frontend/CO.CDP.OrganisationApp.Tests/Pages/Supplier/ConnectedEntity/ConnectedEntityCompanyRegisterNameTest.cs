@@ -135,8 +135,7 @@ public class ConnectedEntityCompanyRegisterNameTest
 
         var redirectToPageResult = result.Should().BeOfType<RedirectToPageResult>().Subject;
 
-        result.Should().BeOfType<RedirectToPageResult>()
-            .Which.PageName.Should().Be(expectedRedirectPage);
+        redirectToPageResult.PageName.Should().Be(expectedRedirectPage);
 
         _model.BackPageLink.Should().Be(expectedBackPageLink);
     }
@@ -167,8 +166,7 @@ public class ConnectedEntityCompanyRegisterNameTest
 
         var redirectToPageResult = result.Should().BeOfType<RedirectToPageResult>().Subject;
 
-        result.Should().BeOfType<RedirectToPageResult>()
-            .Which.PageName.Should().Be(expectedRedirectPage);
+        redirectToPageResult.PageName.Should().Be(expectedRedirectPage);
 
         _model.BackPageLink.Should().Be(expectedBackPageLink);
     }

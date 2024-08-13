@@ -101,8 +101,7 @@ public class ConnectedEntityQuestionTest
 
         _mockOrganisationClient.Verify(c => c.GetConnectedEntitiesAsync(_model.Id), Times.Once);
 
-        result.Should().BeOfType<RedirectToPageResult>()
-            .Which.PageName.Should().Be("/Supplier/SupplierInformationSummary");
+        redirectToPageResult.PageName.Should().Be("/Supplier/SupplierInformationSummary");
 
     }
 
@@ -117,8 +116,7 @@ public class ConnectedEntityQuestionTest
 
         var redirectToPageResult = result.Should().BeOfType<RedirectToPageResult>().Subject;
 
-        result.Should().BeOfType<RedirectToPageResult>()
-            .Which.PageName.Should().Be("ConnectedEntitySupplierCompanyQuestion");
+        redirectToPageResult.PageName.Should().Be("ConnectedEntitySupplierCompanyQuestion");
 
     }
 

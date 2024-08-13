@@ -95,8 +95,7 @@ public class ConnectedEntityLawRegisterTest
 
         var redirectToPageResult = result.Should().BeOfType<RedirectToPageResult>().Subject;
 
-        result.Should().BeOfType<RedirectToPageResult>()
-            .Which.PageName.Should().Be(expectedRedirectPage);
+        redirectToPageResult.PageName.Should().Be(expectedRedirectPage);
     }
 
     [Fact]

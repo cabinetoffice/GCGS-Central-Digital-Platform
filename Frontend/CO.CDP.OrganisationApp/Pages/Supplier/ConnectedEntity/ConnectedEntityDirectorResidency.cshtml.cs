@@ -16,7 +16,7 @@ public class ConnectedEntityDirectorResidencyModel(ISession session) : PageModel
     public Guid? ConnectedEntityId { get; set; }
 
     [BindProperty]
-    [Required(ErrorMessage = "Please select which country does person usually live in?")]
+    [Required(ErrorMessage = "Select country")]
     public string? DirectorLocation { get; set; }
     public string? Caption { get; set; }
     public string? Heading { get; set; }

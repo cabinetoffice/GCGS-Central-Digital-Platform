@@ -9,7 +9,7 @@ namespace CO.CDP.OrganisationApp.Pages.Supplier;
 public class ConnectedEntityPersonTypeModel(ISession session) : PageModel
 {
     [BindProperty]
-    [Required(ErrorMessage = "Please select an option")]
+    [Required(ErrorMessage = "Select the relevant option")]
     public Constants.ConnectedEntityType? ConnectedEntityType { get; set; }
 
     [BindProperty(SupportsGet = true)]
