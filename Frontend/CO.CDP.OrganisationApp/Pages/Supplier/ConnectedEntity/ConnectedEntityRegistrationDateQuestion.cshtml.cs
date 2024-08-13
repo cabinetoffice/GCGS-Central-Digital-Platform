@@ -22,17 +22,17 @@ public class ConnectedEntityRegistrationDateQuestionModel(ISession session) : Pa
     public bool? HasRegistartionDate { get; set; }
 
     [BindProperty]
-    [Required(ErrorMessage = "Date of registration must include a day")]
+    [RequiredIf(nameof(HasRegistartionDate), true, ErrorMessage = "Date of registration must include a day")]
     [RegularExpression(RegExPatterns.Day, ErrorMessage = "Day must be a valid number")]
     public string? Day { get; set; }
 
     [BindProperty]
-    [Required(ErrorMessage = "Date of registration must include a month")]
+    [RequiredIf(nameof(HasRegistartionDate), true, ErrorMessage = "Date of registration must include a month")]
     [RegularExpression(RegExPatterns.Month, ErrorMessage = "Month must be a valid number")]
     public string? Month { get; set; }
 
     [BindProperty]
-    [Required(ErrorMessage = "Date of registration must include a year")]
+    [RequiredIf(nameof(HasRegistartionDate), true, ErrorMessage = "Date of registration must include a year")]
     [RegularExpression(RegExPatterns.Year, ErrorMessage = "Year must be a valid number")]
     public string? Year { get; set; }
 
@@ -82,14 +82,21 @@ public class ConnectedEntityRegistrationDateQuestionModel(ISession session) : Pa
             return Page();
         }
 
-        var dateString = $"{Year}-{Month!.PadLeft(2, '0')}-{Day!.PadLeft(2, '0')}";
-        if (!DateTime.TryParseExact(dateString, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
+        if (HasRegistartionDate == true)
         {
-            ModelState.AddModelError(nameof(RegistrationDate), "Date of registration must be a real date");
-            return Page();
-        }
+            var dateString = $"{Year}-{Month!.PadLeft(2, '0')}-{Day!.PadLeft(2, '0')}";
+            if (!DateTime.TryParseExact(dateString, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
+            {
+                ModelState.AddModelError(nameof(RegistrationDate), "Date of registration must be a real date");
+                return Page();
+            }
 
-        state.RegistrationDate = new DateTimeOffset(parsedDate, TimeSpan.FromHours(0));
+            state.RegistrationDate = new DateTimeOffset(parsedDate, TimeSpan.FromHours(0));
+        }
+        else
+        { state.RegistrationDate = null; }
+
+        state.HasRegistartionDate = HasRegistartionDate;
 
         session.Set(Session.ConnectedPersonKey, state);
 
@@ -123,7 +130,7 @@ public class ConnectedEntityRegistrationDateQuestionModel(ISession session) : Pa
                 switch (state.ConnectedEntityOrganisationCategoryType)
                 {
                     case ConnectedEntityOrganisationCategoryType.RegisteredCompany:
-                        redirectPage = "ConnectedEntityCompanyRegisterName";
+                        redirectPage = HasRegistartionDate == true ? "ConnectedEntityCompanyRegisterName" : "ConnectedEntityCheckAnswersOrganisation";
                         break;
                     case ConnectedEntityOrganisationCategoryType.DirectorOrTheSameResponsibilities:
                     case ConnectedEntityOrganisationCategoryType.ParentOrSubsidiaryCompany:
@@ -170,7 +177,7 @@ public class ConnectedEntityRegistrationDateQuestionModel(ISession session) : Pa
                 {
                     case ConnectedEntityOrganisationCategoryType.RegisteredCompany:
                     case ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl:
-                        backPage = HasRegistartionDate == true ? "" : "ConnectedEntityCheckAnswersOrganisation";
+                        backPage = state.HasCompaniesHouseNumber == true ? "company-question" : "nature-of-control";
                         break;
 
                 }
@@ -180,11 +187,11 @@ public class ConnectedEntityRegistrationDateQuestionModel(ISession session) : Pa
                 {
                     case ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndividual:
                     case ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForTrust:
-                        backPage = HasRegistartionDate == true ? "" : "ConnectedEntityCheckAnswersIndividualOrTrust";
+                        backPage = "";
                         break;
                     case ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndividualWithSignificantInfluenceOrControlForIndividual:
                     case ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndividualWithSignificantInfluenceOrControlForTrust:
-                        backPage = "ConnectedEntityCheckAnswersIndividualOrTrust";
+                        backPage = "";
                         break;
                 }
                 break;

@@ -63,7 +63,11 @@ public class ConnectedEntityCompanyQuestionModel(ISession session) : PageModel
 
         state.HasCompaniesHouseNumber = HasCompaniesHouseNumber;
         state.CompaniesHouseNumber = CompaniesHouseNumber;
-
+        if (HasCompaniesHouseNumber == true)
+        {
+            state.OverseasCompaniesHouseNumber = null;
+            state.HasOverseasCompaniesHouseNumber = null;
+        }
         session.Set(Session.ConnectedPersonKey, state);
 
         var checkAnswerPage = (state.ConnectedEntityType == Constants.ConnectedEntityType.Organisation
@@ -84,14 +88,32 @@ public class ConnectedEntityCompanyQuestionModel(ISession session) : PageModel
                 switch (state.ConnectedEntityOrganisationCategoryType)
                 {
                     case ConnectedEntityOrganisationCategoryType.RegisteredCompany:
-                        redirectPage = "ConnectedEntityControlCondition";
+                        redirectPage = (state.SupplierHasCompanyHouseNumber == true
+                                            ? "ConnectedEntityControlCondition"
+                                            : (state.HasCompaniesHouseNumber == true
+                                                    ? "ConnectedEntityControlCondition"
+                                                    : "ConnectedEntityOverseasCompanyQuestion"));
                         break;
                     case ConnectedEntityOrganisationCategoryType.DirectorOrTheSameResponsibilities:
+                        redirectPage = (state.SupplierHasCompanyHouseNumber == true
+                                            ? "ConnectedEntityCheckAnswersOrganisation"
+                                            : (state.HasCompaniesHouseNumber == true
+                                                    ? "ConnectedEntityCheckAnswersOrganisation"
+                                                    : "ConnectedEntityOverseasCompanyQuestion"));
+                        break;
                     case ConnectedEntityOrganisationCategoryType.ParentOrSubsidiaryCompany:
-                        redirectPage = "ConnectedEntityCheckAnswersOrganisation";
+                        redirectPage = (state.SupplierHasCompanyHouseNumber == true
+                                            ? "ConnectedEntityCheckAnswersOrganisation"
+                                            : (state.HasCompaniesHouseNumber == true
+                                                    ? "ConnectedEntityCheckAnswersOrganisation"
+                                                    : "ConnectedEntityOverseasCompanyQuestion"));
                         break;
                     case ConnectedEntityOrganisationCategoryType.ACompanyYourOrganisationHasTakenOver:
-                        redirectPage = "ConnectedEntityCompanyInsolvencyDate";
+                        redirectPage = (state.SupplierHasCompanyHouseNumber == true
+                                            ? "ConnectedEntityCompanyInsolvencyDate"
+                                            : (state.HasCompaniesHouseNumber == true
+                                                    ? "ConnectedEntityCompanyInsolvencyDate"
+                                                    : "ConnectedEntityOverseasCompanyQuestion"));
                         break;
                     case ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl:
                         redirectPage = state.HasCompaniesHouseNumber == true ? "ConnectedEntityControlCondition" : "ConnectedEntityOverseasCompanyQuestion";
@@ -123,12 +145,14 @@ public class ConnectedEntityCompanyQuestionModel(ISession session) : PageModel
             case ConnectedEntityType.Organisation:
                 switch (state.ConnectedEntityOrganisationCategoryType)
                 {
-                    case ConnectedEntityOrganisationCategoryType.RegisteredCompany:                        
+                    case ConnectedEntityOrganisationCategoryType.RegisteredCompany:
                     case ConnectedEntityOrganisationCategoryType.DirectorOrTheSameResponsibilities:
-                        backPage = $"law-register";
+                        backPage = (state.SupplierHasCompanyHouseNumber == true
+                                    ? "law-register" :
+                                    (state.HasLegalForm == true ? "law-enforces" : "legal-form-question"));
                         break;
                     case ConnectedEntityOrganisationCategoryType.ParentOrSubsidiaryCompany:
-                    case ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl:                        
+                    case ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl:
                         //Check if postal is same as register and decide                       
                         if ((state.RegisteredAddress?.AreSameAddress(state.PostalAddress) ?? false) == true)
                         {
@@ -140,9 +164,9 @@ public class ConnectedEntityCompanyQuestionModel(ISession session) : PageModel
                         }
                         break;
                     case ConnectedEntityOrganisationCategoryType.ACompanyYourOrganisationHasTakenOver:
-                        backPage = $"{AddressType.Registered}-address/{(state.PostalAddress?.Country == Country.UnitedKingdom ? "uk" : "non-uk")}";
+                        backPage = $"{AddressType.Registered}-address/{(state.RegisteredAddress?.Country == Country.UnitedKingdom ? "uk" : "non-uk")}";
                         break;
-                    
+
                 }
                 break;
             case ConnectedEntityType.Individual:

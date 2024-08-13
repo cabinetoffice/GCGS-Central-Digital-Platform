@@ -1,3 +1,4 @@
+using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Pages.Supplier;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
@@ -39,8 +40,8 @@ public class ConnectedEntityCompanyInsolvencyDateTest
         get
         {
             var v = (Guid?)null;
-            yield return new object[] { v!, "ConnectedPersonSummary" };
-            yield return new object[] { Guid.NewGuid(), "ConnectedPersonSummary" };
+            yield return new object[] { v!, "ConnectedEntitySupplierCompanyQuestion" };
+            yield return new object[] { Guid.NewGuid(), "ConnectedEntityCheckAnswersIndividualOrTrust" };
         }
     }
 
@@ -169,6 +170,36 @@ public class ConnectedEntityCompanyInsolvencyDateTest
             It.Is<ConnectedEntityState>(rd =>
                 rd.ControlConditions!.Contains(Constants.ConnectedEntityControlCondition.OwnsShares)
             )), Times.Once);
+    }
+
+    [Theory]
+    [InlineData(true, Constants.ConnectedEntityType.Organisation, ConnectedEntityOrganisationCategoryType.ACompanyYourOrganisationHasTakenOver, "ConnectedEntityCheckAnswersOrganisation", "company-question")]
+    [InlineData(false, Constants.ConnectedEntityType.Organisation, ConnectedEntityOrganisationCategoryType.ACompanyYourOrganisationHasTakenOver, "ConnectedEntityCheckAnswersOrganisation", "company-question")]
+    [InlineData(false, Constants.ConnectedEntityType.Organisation, ConnectedEntityOrganisationCategoryType.ACompanyYourOrganisationHasTakenOver, "ConnectedEntityCheckAnswersOrganisation", "overseas-company-question", false)]
+    public void OnPost_ShouldSetBackPageLink_ToExpectedPage(
+            bool yesJourney,
+            Constants.ConnectedEntityType connectedEntityType,
+            Constants.ConnectedEntityOrganisationCategoryType organisationCategoryType,
+            string expectedRedirectPage, string expectedBackPageName, bool hasCompanyHouseNumber = true)
+    {
+        SetValidDate();
+
+        var state = DummyConnectedPersonDetails();
+        state.SupplierHasCompanyHouseNumber = yesJourney;
+        state.ConnectedEntityType = connectedEntityType;
+        state.ConnectedEntityOrganisationCategoryType = organisationCategoryType;
+        state.HasCompaniesHouseNumber = hasCompanyHouseNumber;
+        _sessionMock
+            .Setup(s => s.Get<ConnectedEntityState>(Session.ConnectedPersonKey))
+            .Returns(state);
+
+        var result = _model.OnPost();
+                
+        var pageResult = result.Should().BeOfType<RedirectToPageResult>();
+
+        pageResult.Which.PageName.Should().Be(expectedRedirectPage);
+
+        _model.BackPageLink.Should().Contain(expectedBackPageName);
     }
 
     private ConnectedEntityState DummyConnectedPersonDetails()

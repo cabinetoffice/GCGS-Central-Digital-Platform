@@ -158,6 +158,42 @@ public class ConnectedEntityCheckAnswersOrganisationTest
         _mockOrganisationClient.Verify(c => c.UpdateConnectedEntityAsync(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<UpdateConnectedEntity>()), Times.Once());
     }
 
+    [Theory]
+    [InlineData(true, Constants.ConnectedEntityType.Organisation, ConnectedEntityOrganisationCategoryType.RegisteredCompany, "ConnectedPersonSummary", "company-register-name")]
+    [InlineData(true, Constants.ConnectedEntityType.Organisation, ConnectedEntityOrganisationCategoryType.DirectorOrTheSameResponsibilities, "ConnectedPersonSummary", "company-question")]
+    [InlineData(true, Constants.ConnectedEntityType.Organisation, ConnectedEntityOrganisationCategoryType.ParentOrSubsidiaryCompany, "ConnectedPersonSummary", "company-question")]
+    [InlineData(true, Constants.ConnectedEntityType.Organisation, ConnectedEntityOrganisationCategoryType.ACompanyYourOrganisationHasTakenOver, "ConnectedPersonSummary", "date-insolvency")]
+    [InlineData(true, Constants.ConnectedEntityType.Organisation, ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl, "ConnectedPersonSummary", "law-register")]
+    [InlineData(false, Constants.ConnectedEntityType.Organisation, ConnectedEntityOrganisationCategoryType.RegisteredCompany, "ConnectedPersonSummary", "date-registered-question")]
+    [InlineData(false, Constants.ConnectedEntityType.Organisation, ConnectedEntityOrganisationCategoryType.DirectorOrTheSameResponsibilities, "ConnectedPersonSummary", "overseas-company-question", false)]
+    [InlineData(false, Constants.ConnectedEntityType.Organisation, ConnectedEntityOrganisationCategoryType.ParentOrSubsidiaryCompany, "ConnectedPersonSummary", "overseas-company-question", false)]
+    [InlineData(false, Constants.ConnectedEntityType.Organisation, ConnectedEntityOrganisationCategoryType.ACompanyYourOrganisationHasTakenOver, "ConnectedPersonSummary", "date-insolvency", false)]
+    [InlineData(false, Constants.ConnectedEntityType.Organisation, ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl, "ConnectedPersonSummary", "legal-form-question", false)]
+    public async Task OnPost_BackPageNameShouldBeExpectedPage(
+            bool yesJourney,            
+            Constants.ConnectedEntityType connectedEntityType,
+            Constants.ConnectedEntityOrganisationCategoryType organisationCategoryType,
+            string expectedRedirectPage, string expectedBackPageName, bool hasCompanyHouseNumber = true)
+    {
+        var state = DummyConnectedPersonDetails();
+
+        state.SupplierHasCompanyHouseNumber = yesJourney;
+        state.ConnectedEntityType = connectedEntityType;
+        state.ConnectedEntityOrganisationCategoryType = organisationCategoryType;
+        state.HasCompaniesHouseNumber = hasCompanyHouseNumber;
+        _sessionMock.Setup(s => s.Get<ConnectedEntityState>(Session.ConnectedPersonKey)).
+            Returns(state);
+
+        var result = await _model.OnPost();
+
+        var redirectToPageResult = result.Should().BeOfType<RedirectToPageResult>().Subject;
+
+        var pageResult = result.Should().BeOfType<RedirectToPageResult>();
+
+        pageResult.Which.PageName.Should().Be(expectedRedirectPage);
+        _model.BackPageLink.Should().Contain(expectedBackPageName);
+    }
+
     private RegisterConnectedEntity DummyPayload()
     {
         CreateConnectedOrganisation? connectedOrganisation = null;

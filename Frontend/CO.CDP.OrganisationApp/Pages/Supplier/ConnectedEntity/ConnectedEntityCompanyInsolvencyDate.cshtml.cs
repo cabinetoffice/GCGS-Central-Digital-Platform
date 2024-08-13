@@ -34,17 +34,24 @@ public class ConnectedEntityCompanyInsolvencyDateModel(ISession session) : PageM
     [BindProperty]
     public string? InsolvencyDate { get; set; }
 
+    [BindProperty(SupportsGet = true, Name = "frm-chk-answer")]
+    public bool? RedirectToCheckYourAnswer { get; set; }
+
     public string? Caption { get; set; }
 
     public string? Heading { get; set; }
+    public string? BackPageLink { get; set; }
 
     public IActionResult OnGet()
     {
         var (valid, state) = ValidatePage();
         if (!valid)
         {
-            return RedirectToPage(ConnectedEntityId.HasValue ?
-                "ConnectedPersonSummary" : "ConnectedPersonSummary", new { Id, ConnectedEntityId });
+            return RedirectToPage(ConnectedEntityId.HasValue
+                ? (state.ConnectedEntityType == Constants.ConnectedEntityType.Organisation
+                    ? "ConnectedEntityCheckAnswersOrganisation"
+                    : "ConnectedEntityCheckAnswersIndividualOrTrust")
+                : "ConnectedEntitySupplierCompanyQuestion", new { Id, ConnectedEntityId });
         }
 
         InitModal(state, true);
@@ -57,8 +64,11 @@ public class ConnectedEntityCompanyInsolvencyDateModel(ISession session) : PageM
         var (valid, state) = ValidatePage();
         if (!valid)
         {
-            return RedirectToPage(ConnectedEntityId.HasValue ?
-                "ConnectedPersonSummary" : "ConnectedPersonSummary", new { Id, ConnectedEntityId });
+            return RedirectToPage(ConnectedEntityId.HasValue
+                ? (state.ConnectedEntityType == Constants.ConnectedEntityType.Organisation
+                    ? "ConnectedEntityCheckAnswersOrganisation"
+                    : "ConnectedEntityCheckAnswersIndividualOrTrust")
+            : "ConnectedEntitySupplierCompanyQuestion", new { Id, ConnectedEntityId });
         }
 
         InitModal(state);
@@ -85,7 +95,11 @@ public class ConnectedEntityCompanyInsolvencyDateModel(ISession session) : PageM
 
         session.Set(Session.ConnectedPersonKey, state);
 
-        return RedirectToPage("ConnectedEntityCheckAnswersOrganisation", new { Id, ConnectedEntityId });
+        var checkAnswerPage = (state.ConnectedEntityType == Constants.ConnectedEntityType.Organisation
+            ? "ConnectedEntityCheckAnswersOrganisation"
+            : "ConnectedEntityCheckAnswersIndividualOrTrust");
+
+        return RedirectToPage(checkAnswerPage, new { Id, ConnectedEntityId });
     }
     private (bool valid, ConnectedEntityState state) ValidatePage()
     {
@@ -102,12 +116,38 @@ public class ConnectedEntityCompanyInsolvencyDateModel(ISession session) : PageM
     {
         Caption = state.GetCaption();
         Heading = $"When did {state.OrganisationName} become insolvent?";
+        BackPageLink = GetBackLinkPageName(state);
 
+        state.RegistrationDate = null;
+        state.RegisterName = null;
+        state.LawRegistered = null;
         if (reset && state.InsolvencyDate.HasValue)
         {
             Day = state.InsolvencyDate.Value.Day.ToString();
             Month = state.InsolvencyDate.Value.Month.ToString();
             Year = state.InsolvencyDate.Value.Year.ToString();
         }
+    }
+
+    private string GetBackLinkPageName(ConnectedEntityState state)
+    {
+        var backPage = "";
+        switch (state.ConnectedEntityType)
+        {
+            case Constants.ConnectedEntityType.Organisation:
+                switch (state.ConnectedEntityOrganisationCategoryType)
+                {
+                    case ConnectedEntityOrganisationCategoryType.ACompanyYourOrganisationHasTakenOver:
+                        backPage = state.SupplierHasCompanyHouseNumber == true
+                                    ? "company-question"
+                                    : (state.HasCompaniesHouseNumber == true
+                                        ? "company-question"
+                                        : "overseas-company-question");
+                        break;
+                }
+                break;
+        }
+
+        return backPage;
     }
 }

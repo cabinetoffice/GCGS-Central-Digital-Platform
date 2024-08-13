@@ -4,13 +4,11 @@
     var overseasCompaniesHouseNumberHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.HasOverseasCompaniesHouseNumber)).HasInnerHtml
         || ((TagBuilder)Html.ValidationMessageFor(m => m.OverseasCompaniesHouseNumber)).HasInnerHtml;
 
-    var backPageName = Model.BackPageLink;
-    if (Request.Query.ContainsKey("frm-chk-answer"))
-    {
-        backPageName = $"check-answers-organisation";
-    }
+    var backLink = $"/organisation/{Model.Id}/supplier-information/connected-person/" +
+               $"{(Model.RedirectToCheckYourAnswer == true ? "check-answers-organisation" : Model.BackPageLink)}/" +
+               $"{Model.ConnectedEntityId}" +
+               $"{(Model.RedirectToCheckYourAnswer == true ? "?frm-chk-answer=true" : string.Empty)}";
 
-    var backLink = $"/organisation/{Model.Id}/supplier-information/connected-person/{backPageName}/{Model.ConnectedEntityId}";
 }
 
 <a href="@backLink" class="govuk-back-link">Back</a>
