@@ -108,7 +108,9 @@ public class ConnectedEntityControlConditionModel(ISession session) : PageModel
                 switch (state.ConnectedEntityOrganisationCategoryType)
                 {
                     case ConnectedEntityOrganisationCategoryType.RegisteredCompany:
-                        redirectPage = "ConnectedEntityCompanyRegistrationDate";
+                        redirectPage = (state.SupplierHasCompanyHouseNumber == true
+                                            ? "ConnectedEntityCompanyRegistrationDate"
+                                            : "ConnectedEntityRegistrationDateQuestion");
                         break;
                     case ConnectedEntityOrganisationCategoryType.DirectorOrTheSameResponsibilities:
                         redirectPage = "";
@@ -156,7 +158,9 @@ public class ConnectedEntityControlConditionModel(ISession session) : PageModel
                 switch (state.ConnectedEntityOrganisationCategoryType)
                 {
                     case ConnectedEntityOrganisationCategoryType.RegisteredCompany:
-                        backPage = $"company-question";
+                        backPage = state.SupplierHasCompanyHouseNumber == true
+                                    ? "company-question"
+                                    : "overseas-company-question";
                         break;
                     case ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl:
                         backPage = (state.HasCompaniesHouseNumber.HasValue &&

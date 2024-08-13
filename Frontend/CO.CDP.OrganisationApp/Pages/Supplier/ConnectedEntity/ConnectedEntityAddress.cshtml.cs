@@ -117,7 +117,7 @@ public class ConnectedEntityAddressModel(ISession session) : PageModel
                     case ConnectedEntityOrganisationCategoryType.RegisteredCompany:
                     case ConnectedEntityOrganisationCategoryType.DirectorOrTheSameResponsibilities:
                         redirectPage = (AddressType == AddressType.Postal && state.PostalAddress != null)
-                            ? "ConnectedEntityLawRegister"
+                            ? (state.SupplierHasCompanyHouseNumber == true ? "ConnectedEntityLawRegister" : "ConnectedEntityLegalFormQuestion")
                             : "ConnectedEntityPostalSameAsRegisteredAddress";
                         break;
 

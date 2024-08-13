@@ -257,17 +257,25 @@ public class ConnectedEntityCheckAnswersOrganisationModel(
                 switch (state.ConnectedEntityOrganisationCategoryType)
                 {
                     case ConnectedEntityOrganisationCategoryType.RegisteredCompany:
-                        backPage = "company-register-name";
+                        backPage = state.SupplierHasCompanyHouseNumber == true
+                                    ? "company-register-name"
+                                    : "date-registered-question";
                         break;
                     case ConnectedEntityOrganisationCategoryType.DirectorOrTheSameResponsibilities:
                     case ConnectedEntityOrganisationCategoryType.ParentOrSubsidiaryCompany:
-                        backPage = "company-question";
+                        backPage = state.SupplierHasCompanyHouseNumber == true
+                                    ? "company-question"
+                                    : (state.HasCompaniesHouseNumber == true
+                                        ? "company-question"
+                                        : "overseas-company-question");
                         break;
                     case ConnectedEntityOrganisationCategoryType.ACompanyYourOrganisationHasTakenOver:
                         backPage = "date-insolvency";
                         break;
                     case ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl:
-                        backPage = "law-register";
+                        backPage = state.SupplierHasCompanyHouseNumber == true
+                                    ? "law-register"
+                                    : "legal-form-question";
                         break;
 
                 }

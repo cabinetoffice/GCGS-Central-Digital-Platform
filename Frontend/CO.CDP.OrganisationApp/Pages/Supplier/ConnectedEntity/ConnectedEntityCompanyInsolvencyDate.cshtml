@@ -8,7 +8,7 @@
     var dateOfInsolvencyHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.InsolvencyDate)).HasInnerHtml;
     var hasError = dateOfInsolvencyHasError || dayHasError || monthHasError || yearHasError;
 
-    var backLink = $"/organisation/{Model.Id}/supplier-information/connected-person/company-question/{Model.ConnectedEntityId}";
+    var backLink = $"/organisation/{Model.Id}/supplier-information/connected-person/{Model.BackPageLink}/{Model.ConnectedEntityId}";
     if (Request.Query.ContainsKey("frm-chk-answer"))
     {
         backLink = $"/organisation/{Model.Id}/supplier-information/connected-person/check-answers-organisation/{Model.ConnectedEntityId}";
