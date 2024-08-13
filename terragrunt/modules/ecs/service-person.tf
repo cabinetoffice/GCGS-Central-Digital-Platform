@@ -16,7 +16,7 @@ module "ecs_service_person" {
       memory                  = var.service_configs.person.memory
       name                    = var.service_configs.person.name
       public_hosted_zone_fqdn = var.public_hosted_zone_fqdn
-      service_version         = local.orchestrator_service_version
+      service_version         = local.service_version
       vpc_cidr                = var.vpc_cider
     }
   )
