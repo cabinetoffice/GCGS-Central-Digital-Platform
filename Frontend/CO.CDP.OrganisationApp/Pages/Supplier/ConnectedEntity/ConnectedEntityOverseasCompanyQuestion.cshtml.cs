@@ -17,11 +17,11 @@ public class ConnectedEntityOverseasCompanyQuestionModel(ISession session) : Pag
     public Guid? ConnectedEntityId { get; set; }
 
     [BindProperty]
-    [Required(ErrorMessage = "Please select an option")]
+    [Required(ErrorMessage = "Select yes if organisation registered with an overseas equivalent to Companies House")]
     public bool? HasOverseasCompaniesHouseNumber { get; set; }
 
     [BindProperty]
-    [RequiredIf(nameof(HasOverseasCompaniesHouseNumber), true, ErrorMessage = "Please enter the Company registration number.")]
+    [RequiredIf(nameof(HasOverseasCompaniesHouseNumber), true, ErrorMessage = "Enter the overseas company registration number.")]
     public string? OverseasCompaniesHouseNumber { get; set; }
     public string? Caption { get; set; }
     public string? Heading { get; set; }

@@ -188,9 +188,8 @@ public class ConnectedEntityCheckAnswersOrganisationTest
 
         var redirectToPageResult = result.Should().BeOfType<RedirectToPageResult>().Subject;
 
-        var pageResult = result.Should().BeOfType<RedirectToPageResult>();
+        redirectToPageResult.PageName.Should().Be(expectedRedirectPage);
 
-        pageResult.Which.PageName.Should().Be(expectedRedirectPage);
         _model.BackPageLink.Should().Contain(expectedBackPageName);
     }
 

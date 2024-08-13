@@ -16,7 +16,7 @@ public class ConnectedEntityPostalSameAsRegisteredAddressModel(ISession session)
     public Guid? ConnectedEntityId { get; set; }
 
     [BindProperty]
-    [Required(ErrorMessage = "Please select an option")]
+    [Required(ErrorMessage = "Select yes if organisation have a different postal address")]
     public bool? DifferentThanRegiseterdAddress { get; set; }
 
     public string? Caption { get; set; }

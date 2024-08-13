@@ -148,9 +148,7 @@ public class ConnectedEntityAddressTest
 
         var redirectToPageResult = result.Should().BeOfType<RedirectToPageResult>().Subject;
 
-        result.Should().BeOfType<RedirectToPageResult>()
-            .Which.PageName.Should().Be(expectedRedirectPage);
-        var pageResult = result.Should().BeOfType<RedirectToPageResult>();
+        redirectToPageResult.PageName.Should().Be(expectedRedirectPage);
 
         _model.BackPageName.Should().Contain(expectedBackPage);
     }

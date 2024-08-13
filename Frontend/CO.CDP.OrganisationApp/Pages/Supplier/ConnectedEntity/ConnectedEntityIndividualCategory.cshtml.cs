@@ -8,7 +8,7 @@ namespace CO.CDP.OrganisationApp.Pages.Supplier;
 public class ConnectedEntityIndividualCategoryModel(ISession session) : PageModel
 {
     [BindProperty]
-    [Required(ErrorMessage = "Please select the category that best describes the 'connected person'")]
+    [Required(ErrorMessage = "Select the category that best describes the 'connected person'")]
     public ConnectedEntityIndividualAndTrustCategoryType? ConnectedEntityCategory { get; set; }
 
     [BindProperty(SupportsGet = true)]
