@@ -34,6 +34,7 @@ locals {
             cidr_block             = "10.${local.cidr_b_development}.0.0/16"
             account_id             = 471112892058
             name                   = "dev"
+            pinned_service_version = null
             postgres_instance_type = "db.t4g.micro"
             private_subnets        = [
                 "10.${local.cidr_b_development}.101.0/24",
@@ -51,6 +52,7 @@ locals {
             cidr_block             = "10.${local.cidr_b_staging}.0.0/16"
             account_id             = 905418042182
             name                   = "staging"
+            pinned_service_version = null
             postgres_instance_type = "db.t4g.micro"
             private_subnets        = [
                 "10.${local.cidr_b_staging}.101.0/24",
@@ -68,6 +70,7 @@ locals {
             cidr_block             = "10.${local.cidr_b_integration}.0.0/16"
             account_id             = 767397666448
             name                   = "integration"
+            pinned_service_version = "0.1.1-703a6406"
             postgres_instance_type = "db.t4g.micro"
             private_subnets        = [
                 "10.${local.cidr_b_integration}.101.0/24",
