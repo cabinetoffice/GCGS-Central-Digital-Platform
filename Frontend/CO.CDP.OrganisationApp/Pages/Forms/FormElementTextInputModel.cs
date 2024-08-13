@@ -28,7 +28,7 @@ public class FormElementTextInputModel : FormElementModel, IValidatableObject
 
         if (IsRequired == true && string.IsNullOrWhiteSpace(TextInput))
         {
-            yield return new ValidationResult("All information is required on this page.", new[] { nameof(TextInput) });
+            yield return new ValidationResult("All information is required on this page", new[] { nameof(TextInput) });
         }
         else if (!string.IsNullOrWhiteSpace(TextInput) && IsEmailValidationRequired() && !IsValidEmail(TextInput))
         {

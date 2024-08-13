@@ -57,8 +57,8 @@ public class FormElementTextInputModelTest
     }
 
     [Theory]
-    [InlineData(true, null, "All information is required on this page.")]
-    [InlineData(true, " ", "All information is required on this page.")]
+    [InlineData(true, null, "All information is required on this page")]
+    [InlineData(true, " ", "All information is required on this page")]
     [InlineData(false, null, null)]
     [InlineData(false, "Some value", null)]
     public void Validate_ReturnsExpectedResults(bool isRequired, string? textInput, string? expectedErrorMessage)
@@ -104,7 +104,7 @@ public class FormElementTextInputModelTest
     }
 
     [Theory]
-    [InlineData(true, "Email Address", null, "All information is required on this page.")]
+    [InlineData(true, "Email Address", null, "All information is required on this page")]
     [InlineData(true, "Email Address", "invalid-email", "Enter an email address in the correct format, like name@example.com.")]
     [InlineData(true, "Email Address", "valid.email@example.com", null)]
     [InlineData(false, "Email Address", "somevalue", "Enter an email address in the correct format, like name@example.com.")]
