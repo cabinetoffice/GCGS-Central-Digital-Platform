@@ -63,6 +63,10 @@ public class ConnectedEntityLegalFormQuestionModel(ISession session) : PageModel
 
         state.HasLegalForm = HasLegalForm;
         state.LegalForm = LegalFormName;
+        if (state.HasLegalForm == false)
+        {
+            state.LawRegistered = null;
+        }
 
         session.Set(Session.ConnectedPersonKey, state);
 
@@ -84,9 +88,19 @@ public class ConnectedEntityLegalFormQuestionModel(ISession session) : PageModel
                 switch (state.ConnectedEntityOrganisationCategoryType)
                 {
                     case ConnectedEntityOrganisationCategoryType.RegisteredCompany:
-                        redirectPage = "ConnectedEntityControlCondition";
+                        redirectPage = (state.HasLegalForm == true ? "ConnectedEntityLawEnforce" : "ConnectedEntityCompanyQuestion");
                         break;
                     case ConnectedEntityOrganisationCategoryType.DirectorOrTheSameResponsibilities:
+                        
+                        if (state.SupplierHasCompanyHouseNumber == true)
+                        {
+                            redirectPage = "ConnectedEntityCheckAnswersOrganisation";
+                        }
+                        else
+                        {
+                            redirectPage = (state.HasLegalForm == true ? "ConnectedEntityLawEnforce" : "ConnectedEntityCompanyQuestion");
+                        }
+                        break;
                     case ConnectedEntityOrganisationCategoryType.ParentOrSubsidiaryCompany:
                         redirectPage = "ConnectedEntityCheckAnswersOrganisation";
                         break;

@@ -1,3 +1,4 @@
+using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Pages.Supplier;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
@@ -49,7 +50,7 @@ public class ConnectedEntityCompanyRegisterNameTest
     }
 
     [Fact]
-    public void OnGet_ShouldReturnPageResult()
+    public void OnGet_ShouldReturnPageResultAndSetRegisterNameInput_WhenOtherSelected()
     {
         var state = DummyConnectedPersonDetails();
         _model.ConnectedEntityId = _entityId;
@@ -61,7 +62,25 @@ public class ConnectedEntityCompanyRegisterNameTest
         var result = _model.OnGet();
 
         result.Should().BeOfType<PageResult>();
-        _model.RegisterName.Should().Be("reg_name");
+        _model.RegisterName.Should().Be("other");
+        _model.RegisterNameInput.Should().Be("reg_name");
+    }
+
+    [Fact]
+    public void OnGet_ShouldReturnPageResultAndUseCompaniesHouse_WhenCompaniesHouseSelected()
+    {
+        var state = DummyConnectedPersonDetails();
+        _model.ConnectedEntityId = _entityId;
+        state.RegisterName = "Companies House";
+        _sessionMock
+            .Setup(s => s.Get<ConnectedEntityState>(Session.ConnectedPersonKey))
+            .Returns(state);
+
+        var result = _model.OnGet();
+
+        result.Should().BeOfType<PageResult>();
+        _model.RegisterName.Should().Be("Companies House");
+        _model.RegisterNameInput.Should().Be(null);
     }
 
     [Fact]
@@ -92,11 +111,22 @@ public class ConnectedEntityCompanyRegisterNameTest
     }
 
     [Theory]
-    [InlineData("ConnectedEntityCheckAnswersOrganisation")]
-    public void OnPost_ShouldRedirectToConnectedEntityCategoryPage(string expectedRedirectPage)
+    [InlineData(Constants.ConnectedEntityType.Organisation, Constants.ConnectedEntityOrganisationCategoryType.RegisteredCompany, false,"ConnectedEntityCheckAnswersOrganisation", "date-registered-question")]
+    [InlineData(Constants.ConnectedEntityType.Organisation, Constants.ConnectedEntityOrganisationCategoryType.RegisteredCompany, true,"ConnectedEntityCheckAnswersOrganisation", "date-registered")]
+    [InlineData(Constants.ConnectedEntityType.Organisation, Constants.ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl, false, "ConnectedEntityLegalFormQuestion", "date-registered-question")]
+    public void OnPost_ShouldRedirectToConnectedEntityCategoryPageOrganisation(
+        Constants.ConnectedEntityType connectedEntityType,
+        Constants.ConnectedEntityOrganisationCategoryType orgCategoryType,
+        bool supplierHasCompanyNumber,
+        string expectedRedirectPage,
+        string expectedBackPageLink
+        )
     {
         var state = DummyConnectedPersonDetails();
         _model.RegisterName = "reg_name";
+        state.ConnectedEntityType = connectedEntityType;
+        state.ConnectedEntityOrganisationCategoryType = orgCategoryType;
+        state.SupplierHasCompanyHouseNumber = supplierHasCompanyNumber;
 
         _sessionMock.Setup(s => s.Get<ConnectedEntityState>(Session.ConnectedPersonKey)).
             Returns(state);
@@ -107,6 +137,40 @@ public class ConnectedEntityCompanyRegisterNameTest
 
         result.Should().BeOfType<RedirectToPageResult>()
             .Which.PageName.Should().Be(expectedRedirectPage);
+
+        _model.BackPageLink.Should().Be(expectedBackPageLink);
+    }
+
+    [Theory]
+    [InlineData(Constants.ConnectedEntityType.Individual, Constants.ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndividual, false,"ConnectedEntityCheckAnswersIndividualOrTrust", "date-registered-question")]
+    [InlineData(Constants.ConnectedEntityType.TrustOrTrustee, Constants.ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForTrust, false,"ConnectedEntityCheckAnswersIndividualOrTrust", "date-registered-question")]
+    [InlineData(Constants.ConnectedEntityType.Individual, Constants.ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndividual, true,"ConnectedEntityCheckAnswersIndividualOrTrust", "date-registered")]
+    [InlineData(Constants.ConnectedEntityType.TrustOrTrustee, Constants.ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForTrust, true,"ConnectedEntityCheckAnswersIndividualOrTrust", "date-registered")]
+    public void OnPost_ShouldRedirectToConnectedEntityCategoryPageIndividualTrust(
+        Constants.ConnectedEntityType connectedEntityType,
+        Constants.ConnectedEntityIndividualAndTrustCategoryType individualOTrustCategoryType,
+        bool supplierHasCompanyNumber,
+        string expectedRedirectPage,
+        string expectedBackPageLink
+        )
+    {
+        var state = DummyConnectedPersonDetails();
+        _model.RegisterName = "reg_name";
+        state.ConnectedEntityType = connectedEntityType;
+        state.ConnectedEntityIndividualAndTrustCategoryType = individualOTrustCategoryType;
+        state.SupplierHasCompanyHouseNumber = supplierHasCompanyNumber;
+
+        _sessionMock.Setup(s => s.Get<ConnectedEntityState>(Session.ConnectedPersonKey)).
+            Returns(state);
+
+        var result = _model.OnPost();
+
+        var redirectToPageResult = result.Should().BeOfType<RedirectToPageResult>().Subject;
+
+        result.Should().BeOfType<RedirectToPageResult>()
+            .Which.PageName.Should().Be(expectedRedirectPage);
+
+        _model.BackPageLink.Should().Be(expectedBackPageLink);
     }
 
     [Fact]
@@ -134,6 +198,7 @@ public class ConnectedEntityCompanyRegisterNameTest
             SupplierHasCompanyHouseNumber = true,
             SupplierOrganisationId = _organisationId,
             ConnectedEntityType = Constants.ConnectedEntityType.Organisation,
+            ConnectedEntityOrganisationCategoryType = Constants.ConnectedEntityOrganisationCategoryType.RegisteredCompany,
             OrganisationName = "Org_name",
             HasCompaniesHouseNumber = true,
             CompaniesHouseNumber = "12345678",

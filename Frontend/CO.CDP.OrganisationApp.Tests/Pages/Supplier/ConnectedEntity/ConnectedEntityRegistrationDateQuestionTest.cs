@@ -106,6 +106,7 @@ public class ConnectedEntityRegistrationDateQuestionTest
         SetValidDate();
 
         var state = DummyConnectedPersonDetails();
+        _model.HasRegistartionDate = true;
 
         _sessionMock.Setup(s => s.Get<ConnectedEntityState>(Session.ConnectedPersonKey)).
             Returns(state);
@@ -123,6 +124,8 @@ public class ConnectedEntityRegistrationDateQuestionTest
     public void OnPost_ShouldReturnPage_WhenDateIsInvalid()
     {
         SetDateFields("31", "2", "2023");
+
+        _model.HasRegistartionDate = true;
         var state = DummyConnectedPersonDetails();
 
         _sessionMock
@@ -142,6 +145,7 @@ public class ConnectedEntityRegistrationDateQuestionTest
     {
         SetDateFields(day, month, year);
         var state = DummyConnectedPersonDetails();
+        _model.HasRegistartionDate = true;
 
         _sessionMock
             .Setup(s => s.Get<ConnectedEntityState>(Session.ConnectedPersonKey))
@@ -177,7 +181,7 @@ public class ConnectedEntityRegistrationDateQuestionTest
         var connectedPersonDetails = new ConnectedEntityState
         {
             ConnectedEntityId = _entityId,
-            SupplierHasCompanyHouseNumber = true,
+            SupplierHasCompanyHouseNumber = false,
             SupplierOrganisationId = _organisationId,
             ConnectedEntityType = Constants.ConnectedEntityType.Organisation,
             ConnectedEntityOrganisationCategoryType = Constants.ConnectedEntityOrganisationCategoryType.RegisteredCompany,
@@ -185,7 +189,8 @@ public class ConnectedEntityRegistrationDateQuestionTest
             HasCompaniesHouseNumber = true,
             CompaniesHouseNumber = "12345678",
             ControlConditions = [Constants.ConnectedEntityControlCondition.OwnsShares],
-            RegistrationDate = new DateTimeOffset(2011, 7, 15, 0, 0, 0, TimeSpan.FromHours(0))
+            RegistrationDate = new DateTimeOffset(2011, 7, 15, 0, 0, 0, TimeSpan.FromHours(0)),
+            HasRegistartionDate = true,
         };
 
         return connectedPersonDetails;

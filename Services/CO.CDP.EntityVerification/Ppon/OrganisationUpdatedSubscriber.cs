@@ -27,6 +27,7 @@ public class OrganisationUpdatedSubscriber(
                 // Add new identifiers that do not already exist.
                 var newEventIdentifiers = @event.AllIdentifiers()
                     .Where(pi => !pponToUpdate.Identifiers.Any(i => i.IdentifierId == pi.Id && i.Scheme == pi.Scheme))
+                    .Where(pi => pi.Scheme != IdentifierSchemes.Ppon)
                     .ToList();
                 var identifiersToPersist = Persistence.Identifier.GetPersistenceIdentifiers(newEventIdentifiers);
 
