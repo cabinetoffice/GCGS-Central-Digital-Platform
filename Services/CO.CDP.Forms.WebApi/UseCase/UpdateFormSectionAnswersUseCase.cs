@@ -30,6 +30,8 @@ public class UpdateFormSectionAnswersUseCase(
 
         var existingAnswerSet = await formRepository.GetFormAnswerSetAsync(sectionId, organisationId, answerSetId);
 
+        await UploadFileIfRequired(answers, questionDictionary, existingAnswerSet);
+
         if (existingAnswerSet != null)
         {
             existingAnswerSet.Answers = MapAnswers(answers, questionDictionary, existingAnswerSet.Answers);
