@@ -10,6 +10,12 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.Sql("TRUNCATE TABLE form_answer_sets CASCADE;");
+            migrationBuilder.Sql("TRUNCATE TABLE shared_consents CASCADE;");
+            migrationBuilder.Sql("TRUNCATE TABLE form_questions CASCADE;");
+            migrationBuilder.Sql("TRUNCATE TABLE form_sections CASCADE;");
+            migrationBuilder.Sql("TRUNCATE TABLE forms CASCADE;");
+
             migrationBuilder.DropForeignKey(
                 name: "fk_form_answer_sets_organisations_organisation_id",
                 table: "form_answer_sets");
@@ -48,6 +54,12 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.Sql("TRUNCATE TABLE form_answer_sets CASCADE;");
+            migrationBuilder.Sql("TRUNCATE TABLE shared_consents CASCADE;");
+            migrationBuilder.Sql("TRUNCATE TABLE form_questions CASCADE;");
+            migrationBuilder.Sql("TRUNCATE TABLE form_sections CASCADE;");
+            migrationBuilder.Sql("TRUNCATE TABLE forms CASCADE;");
+
             migrationBuilder.DropForeignKey(
                 name: "fk_form_answer_sets_shared_consents_shared_consent_id",
                 table: "form_answer_sets");
