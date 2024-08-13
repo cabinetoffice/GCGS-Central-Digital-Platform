@@ -2,6 +2,7 @@
 @model CO.CDP.OrganisationApp.Pages.Supplier.ConnectedEntityRegistrationDateQuestionModel
 
 @{
+    var selectionError = ((TagBuilder)Html.ValidationMessageFor(m => m.HasRegistartionDate)).HasInnerHtml;
     var dayHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Day)).HasInnerHtml;
     var monthHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Month)).HasInnerHtml;
     var yearHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Year)).HasInnerHtml;
@@ -24,7 +25,7 @@
                 {
                     <input type="hidden" name="RedirectToCheckYourAnswer" value="true" />
                 }
-                <div class="govuk-form-group">
+                <div class="govuk-form-group @(selectionError ? "govuk-form-group--error" : "")">
                     <fieldset class="govuk-fieldset" data-required="" data-error="Select yes if you required to register person or organistaion as a person with significant control?" aria-required="true">
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                             <h1 class="govuk-fieldset__heading">@Model.Heading</h1>
@@ -41,7 +42,7 @@
                             </div>
 
                             <div class="govuk-radios__conditional" id="conditional-YES">
-                                <div class="govuk-form-group">
+                                <div class="govuk-form-group @(hasError ? "govuk-form-group--error" : "")">
                                     <fieldset class="govuk-fieldset" role="group" aria-describedby="isRequiredToRegisterAsPSCHint">
                                         <legend class="govuk-fieldset__legend">
                                             Date registered

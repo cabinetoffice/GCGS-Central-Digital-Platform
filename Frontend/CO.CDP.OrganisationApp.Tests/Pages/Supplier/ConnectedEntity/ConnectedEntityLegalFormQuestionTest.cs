@@ -87,11 +87,13 @@ public class ConnectedEntityLegalFormQuestionTest
 
 
     [Theory]
-    [InlineData("ConnectedEntityControlCondition")]
-    public void OnPost_ShouldRedirectToExpectedPage(string expectedRedirectPage)
+    [InlineData(true, "ConnectedEntityLawEnforce", Constants.ConnectedEntityOrganisationCategoryType.RegisteredCompany)]
+    [InlineData(false, "ConnectedEntityCompanyQuestion", Constants.ConnectedEntityOrganisationCategoryType.RegisteredCompany)]
+    public void OnPost_ShouldRedirectToExpectedPage(bool hasLegalForm, string expectedRedirectPage, Constants.ConnectedEntityOrganisationCategoryType organisationCategoryType)
     {
         var state = DummyConnectedPersonDetails();
-
+        _model.HasLegalForm = hasLegalForm;
+        state.ConnectedEntityOrganisationCategoryType = organisationCategoryType;
         _sessionMock.Setup(s => s.Get<ConnectedEntityState>(Session.ConnectedPersonKey)).
             Returns(state);
 

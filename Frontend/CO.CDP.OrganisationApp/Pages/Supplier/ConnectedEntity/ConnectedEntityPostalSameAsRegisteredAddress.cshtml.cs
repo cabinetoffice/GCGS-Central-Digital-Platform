@@ -107,7 +107,9 @@ public class ConnectedEntityPostalSameAsRegisteredAddressModel(ISession session)
                 {
                     case ConnectedEntityOrganisationCategoryType.RegisteredCompany:
                     case ConnectedEntityOrganisationCategoryType.DirectorOrTheSameResponsibilities:
-                        redirectPage = "ConnectedEntityLawRegister";
+                        redirectPage = state.SupplierHasCompanyHouseNumber == true
+                                        ? "ConnectedEntityLawRegister"
+                                        : "ConnectedEntityLegalFormQuestion";
                         break;
                     case ConnectedEntityOrganisationCategoryType.ParentOrSubsidiaryCompany:
                     case ConnectedEntityOrganisationCategoryType.ACompanyYourOrganisationHasTakenOver:
