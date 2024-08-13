@@ -290,4 +290,5 @@ services:
       Aws__SqsDispatcher__QueueUrl: "http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/organisation.fifo"
       Aws__SqsPublisher__QueueUrl: "http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/entity-verification.fifo"
       ConnectionStrings__EvDatabase: 'Server=db;Database=cdp;Username=cdp_user;Password=cdp123;'
+      Organisation__Authority: '${Organisation__Authority:-http://gateway:${CDP_AUTHORITY_PORT:-8092}}'
       VERSION: dev-docker

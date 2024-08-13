@@ -40,6 +40,29 @@ public static class Extensions
         return services;
     }
 
+    public static IServiceCollection AddJwtBearerAuthentication(
+        this IServiceCollection services, IConfiguration configuration, IWebHostEnvironment webHostEnvironment)
+    {
+        services
+            .AddAuthentication(JwtBearerOrApiKeyScheme)
+            .AddJwtBearerAuthentication(configuration, webHostEnvironment)
+            .AddPolicyScheme(JwtBearerOrApiKeyScheme, JwtBearerOrApiKeyScheme, options =>
+            {
+                options.ForwardDefaultSelector = context =>
+                {
+                    if (context.Request.Headers.ContainsKey(ApiKeyAuthenticationHandler.ApiKeyHeaderName))
+                    {
+                        return ApiKeyAuthenticationHandler.AuthenticationScheme;
+                    }
+                    return JwtBearerDefaults.AuthenticationScheme;
+                };
+            });
+
+        services.AddJwtClaimExtractor();
+
+        return services;
+    }
+
     public static AuthenticationBuilder AddJwtBearerAuthentication(this AuthenticationBuilder builder, IConfiguration configuration, IWebHostEnvironment webHostEnvironment)
     {
         var authority = configuration["Organisation:Authority"]
@@ -79,6 +102,17 @@ public static class Extensions
                 policy.RequireAuthenticatedUser();
                 policy.RequireClaim("channel", "organisation-key");
             })
+            .SetFallbackPolicy(
+                new AuthorizationPolicyBuilder()
+                    .AddAuthenticationSchemes(JwtBearerOrApiKeyScheme)
+                    .RequireAuthenticatedUser()
+                    .Build());
+    }
+
+    public static AuthorizationBuilder AddEntityVerificationAuthorization(this IServiceCollection services)
+    {
+        return services
+            .AddAuthorizationBuilder()
             .SetFallbackPolicy(
                 new AuthorizationPolicyBuilder()
                     .AddAuthenticationSchemes(JwtBearerOrApiKeyScheme)
