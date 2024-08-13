@@ -1,3 +1,4 @@
+using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Pages.Supplier;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
@@ -110,15 +111,15 @@ public class ConnectedEntityCompanyRegisterNameTest
     }
 
     [Theory]
-    [InlineData(Constants.ConnectedEntityType.Organisation, Constants.ConnectedEntityOrganisationCategoryType.RegisteredCompany, false,"ConnectedEntityCheckAnswersOrganisation")]
-    [InlineData(Constants.ConnectedEntityType.Organisation, Constants.ConnectedEntityOrganisationCategoryType.RegisteredCompany, true,"ConnectedEntityCheckAnswersOrganisation")]
-    [InlineData(Constants.ConnectedEntityType.Organisation, Constants.ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl, true, "")]
-    [InlineData(Constants.ConnectedEntityType.Organisation, Constants.ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl, false, "ConnectedEntityLegalFormQuestion")]
+    [InlineData(Constants.ConnectedEntityType.Organisation, Constants.ConnectedEntityOrganisationCategoryType.RegisteredCompany, false,"ConnectedEntityCheckAnswersOrganisation", "date-registered-question")]
+    [InlineData(Constants.ConnectedEntityType.Organisation, Constants.ConnectedEntityOrganisationCategoryType.RegisteredCompany, true,"ConnectedEntityCheckAnswersOrganisation", "date-registered")]
+    [InlineData(Constants.ConnectedEntityType.Organisation, Constants.ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl, false, "ConnectedEntityLegalFormQuestion", "date-registered-question")]
     public void OnPost_ShouldRedirectToConnectedEntityCategoryPageOrganisation(
         Constants.ConnectedEntityType connectedEntityType,
         Constants.ConnectedEntityOrganisationCategoryType orgCategoryType,
         bool supplierHasCompanyNumber,
-        string expectedRedirectPage
+        string expectedRedirectPage,
+        string expectedBackPageLink
         )
     {
         var state = DummyConnectedPersonDetails();
@@ -136,16 +137,21 @@ public class ConnectedEntityCompanyRegisterNameTest
 
         result.Should().BeOfType<RedirectToPageResult>()
             .Which.PageName.Should().Be(expectedRedirectPage);
+
+        _model.BackPageLink.Should().Be(expectedBackPageLink);
     }
 
     [Theory]
-    [InlineData(Constants.ConnectedEntityType.Individual, Constants.ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndividual, false,"ConnectedEntityCheckAnswersIndividualOrTrust")]
-    [InlineData(Constants.ConnectedEntityType.TrustOrTrustee, Constants.ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForTrust, false,"ConnectedEntityCheckAnswersIndividualOrTrust")]
+    [InlineData(Constants.ConnectedEntityType.Individual, Constants.ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndividual, false,"ConnectedEntityCheckAnswersIndividualOrTrust", "date-registered-question")]
+    [InlineData(Constants.ConnectedEntityType.TrustOrTrustee, Constants.ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForTrust, false,"ConnectedEntityCheckAnswersIndividualOrTrust", "date-registered-question")]
+    [InlineData(Constants.ConnectedEntityType.Individual, Constants.ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndividual, true,"ConnectedEntityCheckAnswersIndividualOrTrust", "date-registered")]
+    [InlineData(Constants.ConnectedEntityType.TrustOrTrustee, Constants.ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForTrust, true,"ConnectedEntityCheckAnswersIndividualOrTrust", "date-registered")]
     public void OnPost_ShouldRedirectToConnectedEntityCategoryPageIndividualTrust(
         Constants.ConnectedEntityType connectedEntityType,
         Constants.ConnectedEntityIndividualAndTrustCategoryType individualOTrustCategoryType,
         bool supplierHasCompanyNumber,
-        string expectedRedirectPage
+        string expectedRedirectPage,
+        string expectedBackPageLink
         )
     {
         var state = DummyConnectedPersonDetails();
@@ -163,6 +169,8 @@ public class ConnectedEntityCompanyRegisterNameTest
 
         result.Should().BeOfType<RedirectToPageResult>()
             .Which.PageName.Should().Be(expectedRedirectPage);
+
+        _model.BackPageLink.Should().Be(expectedBackPageLink);
     }
 
     [Fact]
@@ -181,6 +189,16 @@ public class ConnectedEntityCompanyRegisterNameTest
         _sessionMock.Verify(s => s.Set(Session.ConnectedPersonKey, It.Is<ConnectedEntityState>(st => st.ConnectedEntityType == Constants.ConnectedEntityType.Organisation)), Times.Once);
 
     }
+
+    // [Theory]
+    // [InlineData(Constants.ConnectedEntityType.Organisation, Constants.ConnectedEntityOrganisationCategoryType.RegisteredCompany)]
+    // public void OnPostOrGet_BackLinkShouldBeCorrect(
+    //     Constants.ConnectedEntityType connectedEntityType,
+    //     Constants.ConnectedEntityOrganisationCategoryType connectedEntityOrganisationCategoryType
+    //     )
+    // {
+    //     var backlink =
+    // }
 
     private ConnectedEntityState DummyConnectedPersonDetails()
     {
