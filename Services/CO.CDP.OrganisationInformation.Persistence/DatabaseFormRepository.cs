@@ -45,7 +45,16 @@ public class DatabaseFormRepository(OrganisationInformationContext context) : IF
     public async Task<SharedConsent?> GetSharedConsentDraftAsync(Guid formId, Guid organisationId)
     {
         return await context.Set<SharedConsent>()
-            .Where(x => x.SubmissionState == SubmissionState.Draft && x.BookingReference == string.Empty)
+            .Where(x => x.SubmissionState == SubmissionState.Draft)
+            .FirstOrDefaultAsync(s => s.Form.Guid == formId && s.Organisation.Guid == organisationId);
+    }
+
+    public async Task<SharedConsent?> GetSharedConsentDraftWithAnswersAsync(Guid formId, Guid organisationId)
+    {
+        return await context.Set<SharedConsent>()
+            .Include(c => c.AnswerSets)
+            .ThenInclude(a => a.Answers)
+            .Where(x => x.SubmissionState == SubmissionState.Draft)
             .FirstOrDefaultAsync(s => s.Form.Guid == formId && s.Organisation.Guid == organisationId);
     }
 

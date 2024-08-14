@@ -9,7 +9,7 @@ public class SharedConsent : IEntityDate
     public required Guid Guid { get; set; }
 
     [ForeignKey(nameof(Organisation))]
-    public required int OrganisationId { get; set; }
+    public int OrganisationId { get; set; }
     public required Organisation Organisation { get; set; }
     public required Form Form { get; init; }
     public required ICollection<FormAnswerSet> AnswerSets { get; init; }

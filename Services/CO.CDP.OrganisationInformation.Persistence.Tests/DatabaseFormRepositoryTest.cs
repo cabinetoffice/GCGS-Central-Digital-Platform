@@ -218,8 +218,70 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
         var found = await repository.GetSharedConsentDraftAsync(sharedConsent.Form.Guid, sharedConsent.Organisation.Guid);
 
         found.Should().NotBeNull();
+        found.As<SharedConsent>().OrganisationId.Should().Be(sharedConsent.OrganisationId);
         found.As<SharedConsent>().SubmissionState.Should().Be(SubmissionState.Draft);
-        found.As<SharedConsent>().BookingReference.Should().Be(string.Empty);
+        found.As<SharedConsent>().BookingReference.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task GetSharedConsentDraftWithAnswersAsync_WhenSharedConsentDoesNotExist_ReturnsNull()
+    {
+        using var repository = FormRepository();
+
+        var foundConsent = await repository.GetSharedConsentDraftWithAnswersAsync(Guid.NewGuid(), Guid.NewGuid());
+
+        foundConsent.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task GetSharedConsentDraftWithAnswersAsync_WhenSharedConsentDoesExist_ReturnsIt()
+    {
+        var formId = Guid.NewGuid();
+
+        var sharedConsent = GivenSharedConsent(formId: formId);
+
+        await using var context = postgreSql.OrganisationInformationContext();
+        await context.SharedConsents.AddAsync(sharedConsent);
+        await context.SaveChangesAsync();
+
+        using var repository = FormRepository();
+
+        var found = await repository.GetSharedConsentDraftWithAnswersAsync(sharedConsent.Form.Guid, sharedConsent.Organisation.Guid);
+
+        found.Should().NotBeNull();
+        found.As<SharedConsent>().OrganisationId.Should().Be(sharedConsent.OrganisationId);
+        found.As<SharedConsent>().SubmissionState.Should().Be(SubmissionState.Draft);
+        found.As<SharedConsent>().BookingReference.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task GetSharedConsentDraftWithAnswersAsync_WhenSharedConsentWithAnswersExists_ReturnsIt()
+    {
+        var formId = Guid.NewGuid();
+
+        var form = GivenForm(formId: formId);
+        var sharedConsent = GivenSharedConsent(formId: formId);
+        var section = GivenSection(sectionId: Guid.NewGuid(), form: form);
+        var question = GivenYesOrNoQuestion(section: section);
+        var answerSet = GivenAnswerSet(sharedConsent: sharedConsent, section: section);
+        var answer = GivenAnswer(question: question, answerSet: answerSet);
+
+        await using var context = postgreSql.OrganisationInformationContext();
+        await context.Forms.AddAsync(form);
+        await context.SharedConsents.AddAsync(sharedConsent);
+        await context.SaveChangesAsync();
+
+        using var repository = FormRepository();
+
+        var found = await repository.GetSharedConsentDraftWithAnswersAsync(sharedConsent.Form.Guid, sharedConsent.Organisation.Guid);
+
+        found.Should().NotBeNull();
+        found.As<SharedConsent>().OrganisationId.Should().Be(sharedConsent.OrganisationId);
+        found.As<SharedConsent>().SubmissionState.Should().Be(SubmissionState.Draft);
+        found.As<SharedConsent>().AnswerSets.Should().NotBeEmpty();
+        found.As<SharedConsent>().AnswerSets.First().Guid.Should().Be(answerSet.Guid);
+        found.As<SharedConsent>().AnswerSets.First().Answers.Should().NotBeEmpty();
+        found.As<SharedConsent>().AnswerSets.First().Answers.First().Guid.Should().Be(answer.Guid);
     }
 
     [Fact]
@@ -733,6 +795,69 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
                 RemoveConfirmationHeading = "Are you sure you want to remove this file?"
             }
         };
+    }
+
+    private static SharedConsent GivenSharedConsent(
+        Guid formId,
+        List<FormAnswerSet>? answerSets = null
+        )
+    {
+        return new SharedConsent()
+        {
+            Guid = formId,
+            Organisation = GivenOrganisation(),
+            Form = GivenForm(formId: formId),
+            AnswerSets = answerSets ?? [],
+            SubmissionState = SubmissionState.Draft,
+            SubmittedAt = null,
+            FormVersionId = "202404",
+            BookingReference = null
+        };
+    }
+
+    private static FormAnswer GivenAnswer(FormQuestion question, FormAnswerSet answerSet)
+    {
+        var answer = new FormAnswer
+        {
+            Guid = Guid.NewGuid(),
+            Question = question,
+            FormAnswerSet = answerSet,
+            BoolValue = true
+        };
+        answerSet.Answers.Add(answer);
+        return answer;
+    }
+
+    private static FormAnswerSet GivenAnswerSet(SharedConsent sharedConsent, FormSection section)
+    {
+        var answerSet = new FormAnswerSet
+        {
+            Guid = Guid.NewGuid(),
+            SharedConsent = sharedConsent,
+            Section = section,
+            Answers = [],
+        };
+        sharedConsent.AnswerSets.Add(answerSet);
+        return answerSet;
+    }
+
+    private static FormQuestion GivenYesOrNoQuestion(FormSection section)
+    {
+        var question = new FormQuestion
+        {
+            Guid = Guid.NewGuid(),
+            Section = section,
+            Type = FormQuestionType.YesOrNo,
+            IsRequired = true,
+            Title = "Yes or no?",
+            Description = "Please answer.",
+            NextQuestion = null,
+            NextQuestionAlternative = null,
+            Caption = null,
+            Options = new()
+        };
+        section.Questions.Add(question);
+        return question;
     }
 
     private IFormRepository FormRepository()
