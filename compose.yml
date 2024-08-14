@@ -93,6 +93,7 @@ services:
       environment:
         ASPNETCORE_ENVIRONMENT: Production
         MIGRATIONS_CONNECTION_STRING: "Server=db;Database=cdp;Username=cdp_user;Password=cdp123;"
+        Organisation__Authority: '${Organisation__Authority:-http://gateway:${CDP_AUTHORITY_PORT:-8092}}'
 
   organisation-app:
     container_name: co-cdp-organisation-app
