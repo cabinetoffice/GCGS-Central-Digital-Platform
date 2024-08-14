@@ -55,6 +55,14 @@
         "parameterValue.$": "$.Parameter.Value"
       },
       "ResultPath": "$.parameterDetails",
+      "Next": "ExtractCommitRevision"
+    },
+    "ExtractCommitRevision": {
+      "Type": "Pass",
+      "Parameters": {
+        "commitRevision.$": "States.ArrayGetItem(States.StringSplit($.parameterDetails.parameterValue, '-'), 1)"
+      },
+      "ResultPath": "$.commitRevisionDetails",
       "Next": "SetServiceVersionUpdateMessage"
     },
     "SetServiceVersionUpdateMessage": {
@@ -66,7 +74,7 @@
             "block_id": "service_version",
             "text": {
               "type": "mrkdwn",
-              "text.$": "States.Format(':building_construction: Parameter *service-version* has been updated to `{}` :abn-version:', $.parameterDetails.parameterValue)"
+              "text.$": "States.Format(':abn-version: New *service-version* `{}` published. <https://github.com/cabinetoffice/GCGS-Central-Digital-Platform/commit/{}|view commit {}> :me-looking:', $.parameterDetails.parameterValue, $.commitRevisionDetails.commitRevision, $.commitRevisionDetails.commitRevision)"
             }
           }
         ]
