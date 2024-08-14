@@ -157,7 +157,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
             migrationBuilder.Sql($@"
                 UPDATE form_sections
                 SET configuration = '{{""AddAnotherAnswerLabel"": ""Add another file?"", ""SingularSummaryHeading"": ""You have added 1 file"", ""RemoveConfirmationCaption"": ""Economic and Financial Standing"", ""RemoveConfirmationHeading"": ""Are you sure you want to remove this file?"", ""PluralSummaryHeadingFormat"": ""You have added {{0}} files""}}'
-                WHERE guid = '{shareCodesSectionGuid}';
+                WHERE guid = '{financialInformationSectionGuid}';
             ");
 
             migrationBuilder.Sql($@"
@@ -215,7 +215,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
             migrationBuilder.Sql($@"
                 UPDATE form_sections
                 SET allows_multiple_answer_sets = true
-                WHERE guid = '{shareCodesSectionGuid}';
+                WHERE guid = '{financialInformationSectionGuid}';
             ");
         }
 
