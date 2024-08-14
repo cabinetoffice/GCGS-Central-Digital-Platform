@@ -350,4 +350,89 @@ public class UpdateFormSectionAnswersUseCaseTest(AutoMapperFixture mapperFixture
             aset.Answers.First().Question.Guid == questionId &&
             aset.Answers.First().BoolValue == true)), Times.Once);
     }
+
+    [Fact]
+    public async Task Execute_ShouldCreateNewSharedConsent_WhenNoDraftSharedConsentExists()
+    {
+        var organisationId = Guid.NewGuid();
+        var formId = Guid.NewGuid();
+        var sectionId = Guid.NewGuid();
+        var answerSetId = Guid.NewGuid();
+        var questionId = Guid.NewGuid();
+        var answers = new List<FormAnswer>
+    {
+        new FormAnswer { Id = Guid.NewGuid(), QuestionId = questionId, BoolValue = true }
+    };
+
+        var form = new Persistence.Form
+        {
+            Id = 1,
+            Guid = formId,
+            Name = "Sample Form",
+            Version = "1.0",
+            IsRequired = true,
+            Type = Persistence.FormType.Standard,
+            Scope = Persistence.FormScope.SupplierInformation,
+            Sections = new List<Persistence.FormSection>()
+        };
+
+        var section = new Persistence.FormSection
+        {
+            Id = 1,
+            Guid = sectionId,
+            Title = "Financial Information",
+            Form = form,
+            Questions = new List<Persistence.FormQuestion>(),
+            AllowsMultipleAnswerSets = true,
+            Configuration = new Persistence.FormSectionConfiguration
+            {
+                PluralSummaryHeadingFormat = "You have added {0} files",
+                SingularSummaryHeading = "You have added 1 file",
+                AddAnotherAnswerLabel = "Add another file?",
+                RemoveConfirmationCaption = "Economic and Financial Standing",
+                RemoveConfirmationHeading = "Are you sure you want to remove this file?"
+            }
+        };
+
+        var question = new Persistence.FormQuestion
+        {
+            Guid = questionId,
+            Title = "Were your accounts audited?",
+            Type = Persistence.FormQuestionType.YesOrNo,
+            IsRequired = true,
+            Section = section,
+            NextQuestion = null,
+            NextQuestionAlternative = null,
+            Description = "",
+            Caption = "",
+            Options = new Persistence.FormQuestionOptions()
+        };
+
+        section.Questions.Add(question);
+        form.Sections.Add(section);
+
+        var organisation = new Organisation
+        {
+            Guid = organisationId,
+            Name = "Test Organisation",
+            Tenant = new Tenant
+            {
+                Id = 1,
+                Guid = Guid.NewGuid(),
+                Name = "Test Tenant"
+            }
+        };
+
+        _organisationRepository.Setup(r => r.Find(organisationId)).ReturnsAsync(organisation);
+        _repository.Setup(r => r.GetSectionAsync(formId, sectionId)).ReturnsAsync(section);
+        _repository.Setup(r => r.GetFormAnswerSetAsync(sectionId, organisationId, answerSetId)).ReturnsAsync((Persistence.FormAnswerSet?)null);
+        _repository.Setup(r => r.GetSharedConsentDraftAsync(formId, organisationId)).ReturnsAsync((Persistence.SharedConsent?)null);
+
+        await UseCase.Execute((formId, sectionId, answerSetId, organisationId, answers));
+
+        _repository.Verify(r => r.SaveAnswerSet(It.Is<Persistence.FormAnswerSet>(aset =>
+            aset.Guid == answerSetId &&
+            aset.Answers.Count == 1 &&
+            aset.SharedConsent != null)), Times.Once);
+    }
 }

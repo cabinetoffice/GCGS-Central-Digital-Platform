@@ -47,31 +47,19 @@ public class UpdateFormSectionAnswersUseCase(
                 throw new Exception($"Form with Guid {formId} not found.");
             }
 
-
-            var sharedConsent = new Persistence.SharedConsent
-            {
-                Guid = Guid.NewGuid(),
-                OrganisationId = organisation.Id,
-                Organisation = organisation,
-                Form = section.Form,
-                SubmissionState = Persistence.SubmissionState.Draft,
-                SubmittedAt = DateTimeOffset.UtcNow,
-                FormVersionId = String.Empty,
-                BookingReference = string.Empty,
-                AnswerSets = new List<Persistence.FormAnswerSet>()
-            };
+            var sharedConsent = await formRepository.GetSharedConsentDraftAsync(formId, organisationId)
+                              ?? CreateSharedConsent(organisation, section.Form);
 
             existingAnswerSet = new Persistence.FormAnswerSet
             {
                 Guid = answerSetId,
                 SharedConsent = sharedConsent,
                 Section = section,
-                Answers = MapAnswers(answers, questionDictionary, new List<Persistence.FormAnswer>()),
+                Answers = MapAnswers(answers, questionDictionary, []),
             };
         }
 
         await formRepository.SaveAnswerSet(existingAnswerSet);
-
 
         return true;
     }
@@ -159,5 +147,18 @@ public class UpdateFormSectionAnswersUseCase(
         }
 
         return answersList;
+    }
+
+    private Persistence.SharedConsent CreateSharedConsent(Organisation organisation, Persistence.Form form)
+    {
+        return new Persistence.SharedConsent
+        {
+            Guid = Guid.NewGuid(),
+            OrganisationId = organisation.Id,
+            Organisation = organisation,
+            Form = form,
+            SubmissionState = Persistence.SubmissionState.Draft,
+            AnswerSets = new List<Persistence.FormAnswerSet>()
+        };
     }
 }
