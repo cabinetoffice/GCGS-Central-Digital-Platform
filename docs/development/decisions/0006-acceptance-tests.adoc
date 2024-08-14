@@ -1,4 +1,4 @@
-= 6. Database naming conventions
+= 6. Acceptance tests
 
 Date: 2024-05-28
 
