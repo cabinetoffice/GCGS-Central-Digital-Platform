@@ -166,50 +166,19 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
     {
         using var repository = FormRepository();
 
-        var foundSection = await repository.GetSharedConsentDraftAsync(Guid.NewGuid(), Guid.NewGuid());
+        var foundConsent = await repository.GetSharedConsentDraftAsync(Guid.NewGuid(), Guid.NewGuid());
 
-        foundSection.Should().BeNull();
+        foundConsent.Should().BeNull();
     }
 
     [Fact]
-    public async Task GetSharedConsentDraftAsync_WhenSectionDoesNotExist_ReturnsEmptyList()
+    public async Task GetSharedConsentDraftAsync_WhenItDoesExist_ReturnsIt()
     {
         var formId = Guid.NewGuid();
-        var formVersionId = string.Empty;
 
-        var sharedConsent = new SharedConsent()
-        {
-            Guid = formId,
-            OrganisationId = 200,
-            Organisation = new Organisation
-            {
-                Id = 200,
-                Guid = Guid.NewGuid(),
-                Name = string.Empty,
-                Tenant = new Tenant
-                {
-                    Guid = Guid.NewGuid(),
-                    Name = string.Empty
-                }
-            },
-            Form = new Form
-            {
-                Guid = formId,
-                Name = string.Empty,
-                Version = string.Empty,
-                IsRequired = default,
-                Type = default,
-                Scope = default,
-                Sections = new List<FormSection> { }
-            },
-            AnswerSets = new List<FormAnswerSet> { },
-            SubmissionState = SubmissionState.Draft,
-            SubmittedAt = DateTime.UtcNow,
-            FormVersionId = formVersionId,
-            BookingReference = string.Empty
-        };
+        var sharedConsent = GivenSharedConsent(formId: formId);
 
-        using var context = postgreSql.OrganisationInformationContext();
+        await using var context = postgreSql.OrganisationInformationContext();
         await context.SharedConsents.AddAsync(sharedConsent);
         await context.SaveChangesAsync();
 
@@ -804,7 +773,7 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
     {
         return new SharedConsent()
         {
-            Guid = formId,
+            Guid = Guid.NewGuid(),
             Organisation = GivenOrganisation(),
             Form = GivenForm(formId: formId),
             AnswerSets = answerSets ?? [],
