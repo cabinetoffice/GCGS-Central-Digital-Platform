@@ -3,6 +3,7 @@ using System;
 using CO.CDP.OrganisationInformation.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CO.CDP.OrganisationInformation.Persistence.Migrations
 {
     [DbContext(typeof(OrganisationInformationContext))]
-    partial class OrganisationInformationContextModelSnapshot : ModelSnapshot
+    [Migration("20240807073912_MoveOrganisationToSharedConsent")]
+    partial class MoveOrganisationToSharedConsent
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -530,6 +533,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("BookingReference")
+                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("booking_reference");
 
@@ -544,6 +548,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                         .HasColumnName("form_id");
 
                     b.Property<string>("FormVersionId")
+                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("form_version_id");
 
@@ -559,7 +564,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("submission_state");
 
-                    b.Property<DateTimeOffset?>("SubmittedAt")
+                    b.Property<DateTimeOffset>("SubmittedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("submitted_at");
 

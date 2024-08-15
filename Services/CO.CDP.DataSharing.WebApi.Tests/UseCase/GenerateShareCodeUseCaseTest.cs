@@ -1,13 +1,13 @@
 using CO.CDP.DataSharing.WebApi.Model;
 using CO.CDP.DataSharing.WebApi.UseCase;
-using CO.CDP.DataSharing.Tests.AutoMapper;
+using CO.CDP.DataSharing.WebApi.Tests.AutoMapper;
 using CO.CDP.OrganisationInformation.Persistence;
 using CO.CDP.OrganisationInformation.Persistence.Forms;
 using FluentAssertions;
 using Moq;
 using CO.CDP.Authentication;
 
-namespace DataSharing.Tests.UseCase;
+namespace CO.CDP.DataSharing.WebApi.Tests.UseCase;
 
 public class GenerateShareCodeUseCaseTest(AutoMapperFixture mapperFixture) : IClassFixture<AutoMapperFixture>
 {

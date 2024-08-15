@@ -7,13 +7,16 @@ public class SharedConsent : IEntityDate
 {
     public int Id { get; set; }
     public required Guid Guid { get; set; }
-    public required Organisation Organisation { get; init; }
+
+    [ForeignKey(nameof(Organisation))]
+    public int OrganisationId { get; set; }
+    public required Organisation Organisation { get; set; }
     public required Form Form { get; init; }
-    public required ICollection<FormAnswerSet> AnswerSets { get; init; }
+    public required ICollection<FormAnswerSet> AnswerSets { get; init; } = [];
     public required SubmissionState SubmissionState { get; set; } = SubmissionState.Draft;
-    public required DateTimeOffset SubmittedAt { get; set; }
-    public required string FormVersionId { get; init; }
-    public required string BookingReference { get; set; }
+    public DateTimeOffset? SubmittedAt { get; set; }
+    public string? FormVersionId { get; init; }
+    public string? BookingReference { get; set; }
     public DateTimeOffset CreatedOn { get; set; }
     public DateTimeOffset UpdatedOn { get; set; }
 }
@@ -55,13 +58,9 @@ public class FormAnswerSet : IEntityDate
 {
     public int Id { get; set; }
     public required Guid Guid { get; set; }
-
-    [ForeignKey(nameof(Organisation))]
-    public required int OrganisationId { get; set; }
-    public required Organisation Organisation { get; set; }
-
+    public required SharedConsent SharedConsent { get; set; }
     public required FormSection Section { get; init; }
-    public required ICollection<FormAnswer> Answers { get; set; }
+    public required ICollection<FormAnswer> Answers { get; set; } = [];
     public bool Deleted { get; set; } = false;
     public DateTimeOffset CreatedOn { get; set; }
     public DateTimeOffset UpdatedOn { get; set; }
