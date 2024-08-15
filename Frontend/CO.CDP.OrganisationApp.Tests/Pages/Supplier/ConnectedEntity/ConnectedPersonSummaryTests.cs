@@ -10,6 +10,7 @@ namespace CO.CDP.OrganisationApp.Tests.Pages.Supplier;
 public class ConnectedPersonSummaryTests
 {
     private readonly Mock<WebApiClient.IOrganisationClient> _mockOrganisationClient;
+    private readonly Mock<ISession> _sessionMock;
     private readonly ConnectedPersonSummaryModel _model;
 
     private static readonly System.Guid EntityId = new Guid();
@@ -17,7 +18,8 @@ public class ConnectedPersonSummaryTests
     public ConnectedPersonSummaryTests()
     {
         _mockOrganisationClient = new Mock<WebApiClient.IOrganisationClient>();
-        _model = new ConnectedPersonSummaryModel(_mockOrganisationClient.Object)
+        _sessionMock = new Mock<ISession>();
+        _model = new ConnectedPersonSummaryModel(_mockOrganisationClient.Object, _sessionMock.Object)
         {
             Id = Guid.NewGuid()
         };
@@ -28,7 +30,13 @@ public class ConnectedPersonSummaryTests
     {
         SetupOrganisationClientMock();
 
+        _sessionMock
+            .Setup(s => s.Get<ConnectedEntityState>(Session.ConnectedPersonKey))
+            .Returns(new ConnectedEntityState());
+
         var result = await _model.OnGet(true);
+
+        _sessionMock.Verify(s => s.Remove(Session.ConnectedPersonKey), Times.Once);
 
         result.Should().BeOfType<PageResult>();
         _model.HasConnectedEntity.Should().BeTrue();

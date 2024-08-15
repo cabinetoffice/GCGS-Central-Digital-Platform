@@ -3,7 +3,7 @@
 @{
     var registerNameHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.RegisterName)).HasInnerHtml;
     var otherHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.RegisterNameInput)).HasInnerHtml;
-        
+
     var backPage = Model.RedirectToCheckYourAnswer == true
                     ? (Model.ConnectedEntityType == Constants.ConnectedEntityType.Organisation
                         ? "check-answers-organisation" : "check-answer-individual-trust")
@@ -35,24 +35,24 @@
                             @Html.ValidationMessageFor(m => m.RegisterName)
                         </p>
                     }
-                    
+
                     <div class="govuk-radios" data-module="govuk-radios">
                         <div class="govuk-radios__item">
                             <input class="govuk-radios__input" id="registerNameCompaniesHouse" name="registerName" type="radio"
-                                   value="Companies House" @(Model.RegisterName == "Companies House" ? "checked" : "")>
+                                   value="CompaniesHouse" @(Model.RegisterName == "CompaniesHouse" ? "checked" : "")>
                             <label class="govuk-label govuk-radios__label" for="registerNameCompaniesHouse">
-                                People with significant control register on Companies House
+                                @ConnectedEntityCompanyRegisterNameModel.RegisterNameType["CompaniesHouse"]
                             </label>
                         </div>
                         <div class="govuk-radios__item">
                             <input class="govuk-radios__input" id="registerNameOther" name="registerName" type="radio"
-                                   value="other" data-aria-controls="conditional-other" @(Model.RegisterName == "other" ? "checked" : "")>
+                                   value="Other" data-aria-controls="conditional-Other" @(Model.RegisterName == "Other" ? "checked" : "")>
                             <label class="govuk-label govuk-radios__label" for="registerNameOther">
                                 Other
                             </label>
 
                         </div>
-                        <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-other">
+                        <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-Other">
                             @if (otherHasError)
                             {
                                 <p id="organisation-name-error" class="govuk-error-message">
@@ -66,8 +66,8 @@
                                     Register name
                                 </label>
                                 <input class="govuk-input govuk-!-width-one-half @(otherHasError ? "govuk-input--error" : "")"
-                                       id="RegisterNameInput" name="RegisterNameInput" type="number"
-                                       value="@(Model.RegisterName == "other" ? Model.RegisterNameInput : "")">
+                                       id="RegisterNameInput" name="RegisterNameInput"
+                                       value="@(Model.RegisterName == "Other" ? Model.RegisterNameInput : "")">
                             </div>
                         </div>
                     </div>
