@@ -22,10 +22,18 @@ to run these tests in a browser most of the time.
 
 === Option 1: xUnit
 
-Use a library like https://github.com/JasperFx/alba[Alba] directly in xUnit tests
-to exercise the Frontend application. Start all the application services with the
+Use a library like https://github.com/JasperFx/alba[Alba] or https://playwright.dev/dotnet/docs/intro[Playwright]
+directly in xUnit tests to exercise the Frontend application.
+Start all the application services with the
 https://learn.microsoft.com/en-us/aspnet/core/test/integration-tests?view=aspnetcore-8.0[dotnet web application factory],
 and any external dependencies (like the database) with https://github.com/testcontainers/testcontainers-dotnet[Testcontainers].
+
+Alba integrates very well with dotnet core applications out of the box. It's possible to run and customise the application
+in-memory, without a need to execute tests in a browser.
+
+Playwright is a very well established tool.
+With a https://www.innovensa.co.uk/blog/in-memory-automated-ui-testing-aspnetcore[little bit of customisation] it should also
+be possible to run it against the application run in-memory, but it's not available out of the box.
 
 Advantages:
 
@@ -68,6 +76,7 @@ Advantages:
 
 * Human-readable tests, a separation of "How" from "What".
 * Tests could be written by QAs (to some extent).
+* Nice reports available out of the box.
 
 Disadvantages:
 
