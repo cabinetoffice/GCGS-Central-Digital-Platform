@@ -92,10 +92,8 @@ public class ConnectedEntitySelectTypeTest
             .Setup(s => s.Get<ConnectedEntityState>(Session.ConnectedPersonKey))
             .Returns(state);
 
-        // Act
         _model.OnPost();
 
-        // Assert
         _sessionMock.Verify(s => s.Set(Session.ConnectedPersonKey, It.Is<ConnectedEntityState>(st => st.ConnectedEntityType == Constants.ConnectedEntityType.Organisation)), Times.Once);
     }
 
