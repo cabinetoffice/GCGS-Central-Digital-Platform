@@ -32,9 +32,11 @@ public class UpdateFormSectionAnswersUseCase(
 
         var answerSet = sharedConsent.AnswerSets.FirstOrDefault(a => a.Guid == answerSetId)
             ?? CreateAnswerSet(answerSetId, sharedConsent, section);
-        answerSet.Answers = MapAnswers(answers, questionDictionary, answerSet.Answers);
 
         await UploadFileIfRequired(answers, questionDictionary, answerSet);
+
+        answerSet.Answers = MapAnswers(answers, questionDictionary, answerSet.Answers);
+
         await formRepository.SaveSharedConsentAsync(sharedConsent);
 
         return true;
