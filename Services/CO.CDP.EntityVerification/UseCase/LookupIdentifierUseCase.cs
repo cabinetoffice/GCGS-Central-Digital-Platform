@@ -13,16 +13,7 @@ public class LookupIdentifierUseCase(IPponRepository repo) : IUseCase<LookupIden
 
         if (query.TryGetIdentifier(out var scheme, out var id))
         {
-            Persistence.Ppon? ppon = null;
-
-            if (scheme == IdentifierSchemes.Ppon)
-            {
-                ppon = await repo.FindPponByPponIdAsync(id);
-            }
-            else
-            {
-                ppon = await repo.FindPponByIdentifierAsync(scheme, id);
-            }
+            Persistence.Ppon? ppon = ppon = await repo.FindPponByIdentifierAsync(scheme, id);
 
             if (ppon != null)
             {
