@@ -8,6 +8,18 @@ variable "environment" {
   type        = string
 }
 
+variable "pen_testing_allowed_ips" {
+  description = "List of IP addresses to allow access for pen testing"
+  type        = list(string)
+  default     = []
+}
+
+variable "pen_testing_user_arns" {
+  description = "List of user ARNs to grant access for pen testing"
+  type        = list(string)
+  default     = []
+}
+
 variable "product" {
   description = "product's common attributes"
   type = object({
