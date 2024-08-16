@@ -23,10 +23,11 @@ public class Organisation : IEntityDate
     public DateTimeOffset UpdatedOn { get; set; }
 
     [Owned]
+    [Index(nameof(IdentifierId), [nameof(Scheme)], IsUnique = true)]
     public record Identifier : IEntityDate
     {
         public int Id { get; set; }
-        public required string IdentifierId { get; set; }
+        public string? IdentifierId { get; set; }
         public required string Scheme { get; set; }
         public required string LegalName { get; set; }
         public string? Uri { get; set; }

@@ -129,16 +129,16 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql) : 
             Identifiers = [new Organisation.Identifier
             {
                 Primary = true,
-                Scheme = "ISO9001",
-                IdentifierId = "1",
+                Scheme = "GB-COH",
+                IdentifierId = Guid.NewGuid().ToString(),
                 LegalName = "DefaultLegalName",
                 Uri = "http://default.org"
             },
                 new Organisation.Identifier
                 {
                     Primary = false,
-                    Scheme = "ISO9001",
-                    IdentifierId = "1",
+                    Scheme = "CDP-PPON",
+                    IdentifierId = Guid.NewGuid().ToString(),
                     LegalName = "DefaultLegalName",
                     Uri = "http://default.org"
                 }],
