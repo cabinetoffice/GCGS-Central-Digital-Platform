@@ -44,7 +44,8 @@ public class EntityVerificationContext : DbContext
             identifier.Property(p => p.UpdatedOn).HasTimestampDefault();
             identifier.HasOne<Ppon>()
                 .WithMany(p => p.Identifiers)
-                .HasForeignKey("PponId");
+                .HasForeignKey("PponId")
+                .IsRequired();
         });
 
         base.OnModelCreating(modelBuilder);
