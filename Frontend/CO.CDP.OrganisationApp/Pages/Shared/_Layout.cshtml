@@ -3,11 +3,14 @@
 <html lang="en" class="govuk-template">
 <head>
     @{
-        var googleTagId = config["GoogleTagId"] ?? throw new Exception("Missing configuration key: GoogleTagId");
+        var googleTagId = config["GoogleTagId"];
+        if (!string.IsNullOrWhiteSpace(googleTagId))
+        {
+            <!-- Google tag (gtag.js) -->
+            <script async src="https://www.googletagmanager.com/gtag/js?id=@googleTagId"></script>
+            <script>window.dataLayer = window.dataLayer || []; function gtag() { dataLayer.push(arguments); } gtag('js', new Date()); gtag('config', '@googleTagId');</script>
+        }
     }
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=@googleTagId"></script>
-    <script>window.dataLayer = window.dataLayer || []; function gtag() { dataLayer.push(arguments); } gtag('js', new Date()); gtag('config', '@googleTagId');</script>
     <meta charset="utf-8" />
     <meta name="robots" content="noindex,nofollow">
     <link rel="icon" href="/assets/images/favicon.ico" />
