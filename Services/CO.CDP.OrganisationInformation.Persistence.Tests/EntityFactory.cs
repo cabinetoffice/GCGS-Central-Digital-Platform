@@ -96,16 +96,16 @@ public static class EntityFactory
                 new Organisation.Identifier
                 {
                     Primary = true,
-                    Scheme = "ISO9001",
-                    IdentifierId = "1",
+                    Scheme = "CDP-PPON",
+                    IdentifierId = $"{theGuid}",
                     LegalName = "DefaultLegalName",
                     Uri = "https://default.org"
                 },
                 new Organisation.Identifier
                 {
                     Primary = false,
-                    Scheme = "ISO14001",
-                    IdentifierId = "2",
+                    Scheme = "GB-COH",
+                    IdentifierId = Guid.NewGuid().ToString(),
                     LegalName = "AnotherLegalName",
                     Uri = "http://example.com"
                 }
