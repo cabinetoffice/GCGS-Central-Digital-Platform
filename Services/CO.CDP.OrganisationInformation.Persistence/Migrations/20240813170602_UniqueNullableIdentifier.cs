@@ -23,6 +23,8 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                 table: "identifiers",
                 columns: new[] { "identifier_id", "scheme" },
                 unique: true);
+
+            migrationBuilder.Sql("UPDATE identifiers SET identifier_id=null WHERE identifier_id='';");
         }
 
         /// <inheritdoc />
@@ -41,6 +43,8 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                 oldClrType: typeof(string),
                 oldType: "text",
                 oldNullable: true);
+
+            migrationBuilder.Sql("UPDATE identifiers SET identifier_id='' WHERE identifier_id IS NULL;");
         }
     }
 }
