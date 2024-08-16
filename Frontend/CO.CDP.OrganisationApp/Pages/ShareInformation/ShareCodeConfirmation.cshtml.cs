@@ -16,7 +16,8 @@ public class ShareCodeConfirmationModel(IDataSharingClient dataSharingClient) : 
     {
         try
         {
-            var getDataSharingTask = await dataSharingClient.GetSharedDataAsync("ABC");
+            var sharRequest = new ShareRequest(FormId, OrganisationId);
+            var getDataSharingTask = await dataSharingClient.CreateSharedDataAsync(sharRequest);
 
         }
         catch (ApiException ex) when (ex.StatusCode == 404)
