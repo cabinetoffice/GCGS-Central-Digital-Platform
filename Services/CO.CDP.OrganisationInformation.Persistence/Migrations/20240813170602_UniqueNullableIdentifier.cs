@@ -18,13 +18,13 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                 oldClrType: typeof(string),
                 oldType: "text");
 
+            migrationBuilder.Sql("UPDATE identifiers SET identifier_id=null WHERE identifier_id='';");
+
             migrationBuilder.CreateIndex(
                 name: "ix_identifiers_identifier_id_scheme",
                 table: "identifiers",
                 columns: new[] { "identifier_id", "scheme" },
                 unique: true);
-
-            migrationBuilder.Sql("UPDATE identifiers SET identifier_id=null WHERE identifier_id='';");
         }
 
         /// <inheritdoc />
@@ -33,6 +33,8 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
             migrationBuilder.DropIndex(
                 name: "ix_identifiers_identifier_id_scheme",
                 table: "identifiers");
+
+            migrationBuilder.Sql("UPDATE identifiers SET identifier_id='' WHERE identifier_id IS NULL;");
 
             migrationBuilder.AlterColumn<string>(
                 name: "identifier_id",
@@ -43,8 +45,6 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                 oldClrType: typeof(string),
                 oldType: "text",
                 oldNullable: true);
-
-            migrationBuilder.Sql("UPDATE identifiers SET identifier_id='' WHERE identifier_id IS NULL;");
         }
     }
 }
