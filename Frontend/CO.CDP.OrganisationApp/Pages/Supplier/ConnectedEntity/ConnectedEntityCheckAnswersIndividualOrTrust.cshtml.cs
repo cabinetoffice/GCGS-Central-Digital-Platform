@@ -5,6 +5,7 @@ using CO.CDP.OrganisationApp.WebApiClients;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.Resources;
 using ConnectedEntityType = CO.CDP.OrganisationApp.Constants.ConnectedEntityType;
 
 namespace CO.CDP.OrganisationApp.Pages.Supplier;
@@ -28,6 +29,8 @@ public class ConnectedEntityCheckAnswersIndividualOrTrustModel(
 
     [BindProperty]
     public string? BackPageLink { get; set; }
+    public bool ShowRegisterDate { get; set; }
+
     public async Task<IActionResult> OnGet()
     {
         var (valid, state) = ValidatePage();
@@ -125,11 +128,20 @@ public class ConnectedEntityCheckAnswersIndividualOrTrustModel(
         return RedirectToPage("ConnectedPersonSummary", new { Id });
     }
 
+    private bool SetShowRegisterDate(ConnectedEntityState state)
+    {
+        return state.ConnectedEntityIndividualAndTrustCategoryType == ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndividual
+            || state.ConnectedEntityIndividualAndTrustCategoryType == ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndividualWithSignificantInfluenceOrControlForIndividual
+            || state.ConnectedEntityIndividualAndTrustCategoryType == ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForTrust
+            || state.ConnectedEntityIndividualAndTrustCategoryType == ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndividualWithSignificantInfluenceOrControlForTrust;
+    }
+
     private void InitModal(ConnectedEntityState state)
     {
         Caption = state.GetCaption();
         Heading = $"Check your answers";
         BackPageLink = GetBackLinkPageName(state);
+        ShowRegisterDate = SetShowRegisterDate(state);
     }
     private string GetBackLinkPageName(ConnectedEntityState state)
     {
@@ -140,8 +152,16 @@ public class ConnectedEntityCheckAnswersIndividualOrTrustModel(
                 switch (state.ConnectedEntityIndividualAndTrustCategoryType)
                 {
                     case ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndividual:
+                        backPage = state.SupplierHasCompanyHouseNumber == true
+                                    ? "company-register-name"
+                                    : (state.RegistrationDate.HasValue == true
+                                            ? "company-register-name"
+                                            : "date-registered-question");
+                        break;
                     case ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndividualWithSignificantInfluenceOrControlForIndividual:
-                        backPage = $"date-registered";
+                        backPage = state.SupplierHasCompanyHouseNumber == true
+                                    ? "date-registered"
+                                    : "date-registered-question";
                         break;
                     case ConnectedEntityIndividualAndTrustCategoryType.DirectorOrIndividualWithTheSameResponsibilitiesForIndividual:
                         backPage = $"{Constants.AddressType.Registered}-address/{(state.RegisteredAddress?.Country == Country.UnitedKingdom ? "uk" : "non-uk")}";
@@ -152,8 +172,16 @@ public class ConnectedEntityCheckAnswersIndividualOrTrustModel(
                 switch (state.ConnectedEntityIndividualAndTrustCategoryType)
                 {
                     case ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForTrust:
+                        backPage = state.SupplierHasCompanyHouseNumber == true
+                                    ? "company-register-name"
+                                    : (state.RegistrationDate.HasValue == true
+                                            ? "company-register-name"
+                                            : "date-registered-question");
+                        break;
                     case ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndividualWithSignificantInfluenceOrControlForTrust:
-                        backPage = $"date-registered";
+                        backPage = state.SupplierHasCompanyHouseNumber == true
+                                    ? "date-registered"
+                                    :  "date-registered-question";
                         break;
                     case ConnectedEntityIndividualAndTrustCategoryType.DirectorOrIndividualWithTheSameResponsibilitiesForTrust:
                         backPage = $"{Constants.AddressType.Registered}-address/{(state.RegisteredAddress?.Country == Country.UnitedKingdom ? "uk" : "non-uk")}";
