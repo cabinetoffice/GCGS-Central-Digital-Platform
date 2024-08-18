@@ -12,6 +12,9 @@ public class ShareCodeConfirmationModel(IDataSharingClient dataSharingClient) : 
     [BindProperty(SupportsGet = true)]
     public Guid FormId { get; set; }
 
+    [BindProperty(SupportsGet = true)]
+    public Guid SectionId { get; set; }
+
     public async Task<IActionResult> OnGetAsync()
     {
         try

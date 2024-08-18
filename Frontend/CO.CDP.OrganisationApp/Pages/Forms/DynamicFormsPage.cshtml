@@ -70,8 +70,14 @@
                         </dl>
                     }
                 </fieldset>
-
-                <button type="submit" class="govuk-button">Continue</button>
+                @if (Model.SectionTitle == "Declaration Information")
+                {
+                    <input type="hidden" name="SectionTitle" value="Declaration Information" />
+                    <button type="submit" class="govuk-button">Confirm and get share code</button>
+                } else
+                {
+                    <button type="submit" class="govuk-button">Continue</button>
+                }
 
             </form>
         </div>

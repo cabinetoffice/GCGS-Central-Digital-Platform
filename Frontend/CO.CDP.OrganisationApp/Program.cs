@@ -1,5 +1,6 @@
 using CO.CDP.AwsServices;
 using CO.CDP.Configuration.ForwardedHeaders;
+using CO.CDP.DataSharing.WebApiClient;
 using CO.CDP.Forms.WebApiClient;
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp;
@@ -16,6 +17,7 @@ using ISession = CO.CDP.OrganisationApp.ISession;
 const string FormsHttpClientName = "FormsHttpClient";
 const string TenantHttpClientName = "TenantHttpClient";
 const string OrganisationHttpClientName = "OrganisationHttpClient";
+const string DataSharingHttpClientName = "DataSharingHttpClient";
 const string PersonHttpClientName = "PersonHttpClient";
 const string OrganisationAuthorityHttpClientName = "OrganisationAuthorityHttpClient";
 
@@ -79,6 +81,14 @@ builder.Services.AddHttpClient(OrganisationHttpClientName)
 builder.Services.AddTransient<IOrganisationClient, OrganisationClient>(
     sc => new OrganisationClient(organisationServiceUrl,
         sc.GetRequiredService<IHttpClientFactory>().CreateClient(OrganisationHttpClientName)));
+
+var dataSharingServiceUrl = builder.Configuration.GetValue<string>("DataSharingService")
+            ?? throw new Exception("Missing configuration key: DataSharingService.");
+builder.Services.AddHttpClient(DataSharingHttpClientName)
+    .AddHttpMessageHandler<ApiBearerTokenHandler>();
+builder.Services.AddTransient<IDataSharingClient, DataSharingClient>(
+    sc => new DataSharingClient(dataSharingServiceUrl,
+        sc.GetRequiredService<IHttpClientFactory>().CreateClient(DataSharingHttpClientName)));
 
 var organisationAuthority = builder.Configuration.GetValue<Uri>("Organisation:Authority")
             ?? throw new Exception("Missing configuration key: Organisation:Authority.");
