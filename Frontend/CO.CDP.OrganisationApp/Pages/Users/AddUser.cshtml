@@ -1,0 +1,136 @@
+@page "/organisation/{id}/users/add-user/{personId?}"
+@model CO.CDP.OrganisationApp.Pages.Users.AddUserModel
+
+@{
+    var firstNameHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.FirstName)).HasInnerHtml;
+    var lastNameHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.LastName)).HasInnerHtml;
+    var emailHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Email)).HasInnerHtml;
+    var roleHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Role)).HasInnerHtml;
+}
+
+<a href="/organisation/users" class="govuk-back-link">Back</a>
+
+<main class="govuk-main-wrapper">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <partial name="_ErrorSummary" model="@Model.ModelState" />
+        </div>
+        <div class="govuk-grid-column-full">
+            <h1 class="govuk-heading-l">
+                Add a user
+            </h1>
+
+            <div class="govuk-form-group">
+                <label class="govuk-label" for="firstName">
+                    First name
+                </label>
+
+                <div class="govuk-form-group @(firstNameHasError ? "govuk-form-group--error" : "")">
+                    @if (firstNameHasError)
+                    {
+                    <p id="first-name-error" class="govuk-error-message">
+                        <span class="govuk-visually-hidden">Error:</span>
+                        @Html.ValidationMessageFor(m => m.FirstName)
+                    </p>
+                    }
+                    <input class="govuk-input govuk-input--width-20 @(firstNameHasError ? "govuk-input--error" : "")" id="@nameof(Model.FirstName)"
+                           value="@Model.FirstName" name="@nameof(Model.FirstName)" type="text"
+                           spellcheck="false" @(firstNameHasError ? "aria-describedby=first-name-error" : "")>
+                </div>
+            </div>
+
+            <div class="govuk-form-group">
+
+                <label class="govuk-label" for="lastName">
+                    Last name
+                </label>
+                <div class="govuk-form-group @(lastNameHasError ? "govuk-form-group--error" : "")">
+                    @if (lastNameHasError)
+                    {
+                    <p id="last-name-error" class="govuk-error-message">
+                        <span class="govuk-visually-hidden">Error:</span>
+                        @Html.ValidationMessageFor(m => m.LastName)
+                    </p>
+                    }
+                    <input class="govuk-input govuk-input--width-20 @(lastNameHasError ? "govuk-input--error" : "")" id="@nameof(Model.LastName)"
+                           value="@Model.LastName" name="@nameof(Model.LastName)" type="text"
+                           spellcheck="false" @(lastNameHasError ? "aria-describedby=last-name-error" : "")>
+                </div>
+            </div>
+
+            <div class="govuk-form-group">
+
+                <label class="govuk-label" for="email">
+                    Email address
+                </label>
+                <div class="govuk-form-group @(emailHasError ? "govuk-form-group--error" : "")">
+                    @if (emailHasError)
+                    {
+                        <p id="email-error" class="govuk-error-message">
+                            <span class="govuk-visually-hidden">Error:</span>
+                            @Html.ValidationMessageFor(m => m.Email)
+                        </p>
+                    }
+                    <input class="govuk-input govuk-input--width-20 @(emailHasError ? "govuk-input--error" : "")" id="@nameof(Model.Email)"
+                           value="@Model.Email" name="@nameof(Model.Email)" type="text"
+                           spellcheck="false" @(emailHasError ? "aria-describedby=email-error" : "")>
+                </div>
+            </div>
+
+            <div class="govuk-form-group" @(roleHasError ? "govuk-form-group--error" : "")>
+                <fieldset class="govuk-fieldset" aria-describedby="role-hint">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                        <h1 class="govuk-fieldset__heading">
+                            Select user role
+                        </h1>
+                    </legend>
+                    @if (roleHasError)
+                    {
+                        <p id="role-error" class="govuk-error-message">
+                            <span class="govuk-visually-hidden">Error:</span>
+                            @Html.ValidationMessageFor(m => m.Role)
+                        </p>
+                    }
+                    <div id="role-hint" class="govuk-hint">
+                        Select the one that applies
+                    </div>
+                    <div class="govuk-radios" data-module="govuk-radios">
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="role-admin" name="role" type="radio" value="role-admin" aria-describedby="role-admin-hint">
+                            <label class="govuk-label govuk-radios__label" for="role-admin">
+                                User admin
+                            </label>
+                            <div id="role-admin-hint" class="govuk-hint govuk-radios__hint">
+                                Can add, remove and edit users
+                            </div>
+                        </div>
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="role-editor" name="role" type="radio" value="role-editor" aria-describedby="role-editor-hint">
+                            <label class="govuk-label govuk-radios__label" for="role-editor">
+                                Editor
+                            </label>
+                            <div id="role-editor-hint" class="govuk-hint govuk-radios__hint">
+                                Can view, add and edit organisation information, view supplier information and create API keys
+                            </div>
+                        </div>
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="role-viewer" name="role" type="radio" value="role-viewer" aria-describedby="role-viewer-hint">
+                            <label class="govuk-label govuk-radios__label" for="role-viewer">
+                                Viewer
+                            </label>
+                            <div id="role-viewer-hint" class="govuk-hint govuk-radios__hint">
+                                Can view organisation and supplier information
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+
+            <div class="govuk-button-group govuk-!-margin-top-6">
+                <button class="govuk-button" data-module="govuk-button">
+                    Continue
+                </button>
+            </div>
+        </div>
+    </div>
+</main>

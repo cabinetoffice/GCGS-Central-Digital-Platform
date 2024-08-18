@@ -18,4 +18,9 @@
         <Folder Include="Migrations\" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Compile Remove="Migrations\20240818202741_CreatePersonInvite.cs" />
+      <Compile Remove="Migrations\20240818202741_CreatePersonInvite.Designer.cs" />
+    </ItemGroup>
+
 </Project>

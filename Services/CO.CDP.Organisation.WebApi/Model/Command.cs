@@ -1,6 +1,8 @@
 using CO.CDP.OrganisationInformation;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
+using CO.CDP.OrganisationInformation.Persistence;
+using Address = CO.CDP.OrganisationInformation.Address;
 
 namespace CO.CDP.Organisation.WebApi.Model;
 
@@ -260,6 +262,12 @@ public record ConnectedEntityLookup
 public record DeleteConnectedEntity
 {
     public required DateTimeOffset EndDate { get; init; }
+}
+
+public record RemovePersonFromOrganisation
+{
+    public required Guid OrganisationId { get; init; }
+    public required Guid PersonId { get; init; }
 }
 
 public record OrganisationQuery

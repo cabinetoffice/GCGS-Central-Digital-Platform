@@ -421,6 +421,57 @@ public static class EndpointExtensions
 
         return app;
     }
+
+    public static RouteGroupBuilder UsePersonsEndpoints(this RouteGroupBuilder app)
+    {
+        app.MapGet("/{organisationId}/persons",
+                async (Guid organisationId, IUseCase<Guid, IEnumerable<Person>> useCase) =>
+                    await useCase.Execute(organisationId)
+                        .AndThen(persons => persons != null ? Results.Ok(persons) : Results.NotFound()))
+            .Produces<List<Model.Person>>(StatusCodes.Status200OK, "application/json")
+            .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
+            .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
+            .ProducesProblem(StatusCodes.Status422UnprocessableEntity)
+            .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError)
+            .WithOpenApi(operation =>
+            {
+                operation.OperationId = "GetOrganisationPersons";
+                operation.Description = "Get persons by Organisation ID.";
+                operation.Summary = "Get persons by Organisation ID.";
+                operation.Responses["200"].Description = "Persons details.";
+                operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
+                operation.Responses["404"].Description = "Persons information not found.";
+                operation.Responses["422"].Description = "Unprocessable entity.";
+                operation.Responses["500"].Description = "Internal server error.";
+                return operation;
+            }).RequireAuthorization(AuthorizationPolicyConstants.OrganisationKeyPolicy);
+
+        app.MapDelete("/{organisationId}/persons/{personId}",
+                async (Guid organisationId, Guid personId, IUseCase<(Guid, Guid), bool> useCase) =>
+                    await useCase.Execute((organisationId, personId))
+            .AndThen(_ => Results.NoContent()))
+            .Produces(StatusCodes.Status204NoContent)
+            .ProducesProblem(StatusCodes.Status400BadRequest)
+            .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
+            .ProducesProblem(StatusCodes.Status404NotFound)
+            .ProducesProblem(StatusCodes.Status422UnprocessableEntity)
+            .ProducesProblem(StatusCodes.Status500InternalServerError)
+            .WithOpenApi(operation =>
+            {
+                operation.OperationId = "RemovePersonFromOrganisation";
+                operation.Description = "Remove person from organisation.";
+                operation.Summary = "Remove person from organisation.";
+                operation.Responses["204"].Description = "Person removed from organisation successfully.";
+                operation.Responses["400"].Description = "Bad request.";
+                operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
+                operation.Responses["404"].Description = "Connected Entity not found.";
+                operation.Responses["422"].Description = "Unprocessable entity.";
+                operation.Responses["500"].Description = "Internal server error.";
+                return operation;
+            }).RequireAuthorization(AuthorizationPolicyConstants.OrganisationKeyPolicy);
+
+        return app;
+    }
 }
 
 public static class ApiExtensions

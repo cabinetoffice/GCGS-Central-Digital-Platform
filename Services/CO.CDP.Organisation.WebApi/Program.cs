@@ -16,6 +16,7 @@ using Microsoft.EntityFrameworkCore;
 using ConnectedEntity = CO.CDP.Organisation.WebApi.Model.ConnectedEntity;
 using ConnectedEntityLookup = CO.CDP.Organisation.WebApi.Model.ConnectedEntityLookup;
 using Organisation = CO.CDP.Organisation.WebApi.Model.Organisation;
+using Person = CO.CDP.Organisation.WebApi.Model.Person;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.ConfigureForwardedHeaders();
@@ -68,6 +69,9 @@ builder.Services.AddScoped<IUseCase<(Guid, RegisterConnectedEntity), bool>, Regi
 builder.Services.AddScoped<IUseCase<(Guid, Guid, UpdateConnectedEntity), bool>, UpdateConnectedEntityUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, DeleteSupplierInformation), bool>, DeleteSupplierInformationUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, Guid, DeleteConnectedEntity), bool>, DeleteConnectedEntityUseCase>();
+builder.Services.AddScoped<IUseCase<Guid, IEnumerable<Person>>, GetPersonsUseCase>();
+builder.Services.AddScoped<IUseCase<(Guid, Guid), bool>, RemovePersonFromOrganisationUseCase>();
+
 builder.Services.AddOrganisationProblemDetails();
 
 builder.Services.AddJwtBearerAndApiKeyAuthentication(builder.Configuration, builder.Environment);
@@ -114,6 +118,9 @@ app.MapGroup("/organisations")
     .UseConnectedEntityEndpoints()
     .WithTags("Organisation - Connected Entity");
 
+app.MapGroup("/organisations")
+    .UsePersonsEndpoints()
+    .WithTags("Organisation - Persons");
 
 app.Run();
 public abstract partial class Program;
