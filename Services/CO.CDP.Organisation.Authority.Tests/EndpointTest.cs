@@ -46,7 +46,7 @@ public class EndpointTest
             ScopesSupported = ["openid"],
             TokenEndpointAuthMethodsSupported = ["client_secret_post"],
             TokenEndpointAuthSigningAlgValuesSupported = ["RS256"],
-            GrantTypesSupported = ["client_credentials"],
+            GrantTypesSupported = ["client_credentials", "refresh_token"],
             SubjectTypesSupported = ["public"],
             ClaimTypesSupported = ["normal"],
             ClaimsSupported = ["sub", "channel", "ten"]
@@ -81,7 +81,7 @@ public class EndpointTest
     }
 
     [Fact]
-    public async Task PostTokenEndpoint_ValidRequest_ShouldReturn200AndToken()
+    public async Task PostTokenEndpoint_ValidClientCredentials_ShouldReturn200AndToken()
     {
         var clientSecret = "valid-secret";
         var urn = "urn:fdc:gov.uk:2022:6fTvD1cMhQNJxrLZSyBgo5";
@@ -94,10 +94,43 @@ public class EndpointTest
         {
             AccessToken = "tempToken",
             ExpiresIn = 3600,
-            TokenType = "Bearer"
+            TokenType = "Bearer",
+            RefreshToken = "refreshToken",
+            RefreshTokenExpiresIn = 36000,
         };
 
         _tokenService.Setup(c => c.ValidateOneLoginToken(clientSecret)).ReturnsAsync((true, urn));
+        _tokenService.Setup(c => c.CreateToken(urn)).ReturnsAsync(tokenResponse);
+
+        var response = await _client.PostAsync("/token", new FormUrlEncodedContent(formData));
+
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        var content = await response.Content.ReadFromJsonAsync<Model.TokenResponse>();
+        content.Should().NotBeNull()
+            .And.BeOfType<Model.TokenResponse>()
+            .Which.Should().BeEquivalentTo(tokenResponse);
+    }
+
+    [Fact]
+    public async Task PostTokenEndpoint_ValidRefreshToken_ShouldReturn200AndToken()
+    {
+        var refreshToken = "valid-refresh-token";
+        var urn = "urn:fdc:gov.uk:2022:6fTvD1cMhQNJxrLZSyBgo5";
+        var formData = new Dictionary<string, string>
+        {
+            { "grant_type", GrantTypes.RefreshToken },
+            { "refresh_token", refreshToken }
+        };
+        var tokenResponse = new Model.TokenResponse
+        {
+            AccessToken = "tempToken",
+            ExpiresIn = 3600,
+            TokenType = "Bearer",
+            RefreshToken = "refreshToken",
+            RefreshTokenExpiresIn = 36000,
+        };
+
+        _tokenService.Setup(c => c.ValidateRefreshToken(refreshToken)).ReturnsAsync((true, urn));
         _tokenService.Setup(c => c.CreateToken(urn)).ReturnsAsync(tokenResponse);
 
         var response = await _client.PostAsync("/token", new FormUrlEncodedContent(formData));
@@ -135,6 +168,26 @@ public class EndpointTest
         problemDetails.Should().NotBeNull()
             .And.BeOfType<ProblemDetails>()
             .Which.Detail.Should().Be("Invalid client secret");
+    }
+
+    [Fact]
+    public async Task PostTokenEndpoint_InvalidRefreshToken_ShouldReturn400()
+    {
+        var refreshToken = "invalid-refresh-token";
+        var formData = new Dictionary<string, string>
+        {
+            { "grant_type", GrantTypes.RefreshToken },
+            { "refresh_token", refreshToken }
+        };
+        _tokenService.Setup(c => c.ValidateRefreshToken(refreshToken)).ReturnsAsync((false, null));
+
+        var response = await _client.PostAsync("/token", new FormUrlEncodedContent(formData));
+
+        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        var problemDetails = await response.Content.ReadFromJsonAsync<ProblemDetails>();
+        problemDetails.Should().NotBeNull()
+            .And.BeOfType<ProblemDetails>()
+            .Which.Detail.Should().Be("Invalid refresh token");
     }
 
     [Fact]

@@ -18,6 +18,7 @@ builder.Services.AddAutoMapper(typeof(WebApiToPersistenceProfile));
 builder.Services.AddDbContext<OrganisationInformationContext>(o =>
     o.UseNpgsql(builder.Configuration.GetConnectionString("OrganisationInformationDatabase") ?? ""));
 builder.Services.AddScoped<ITenantRepository, DatabaseTenantRepository>();
+builder.Services.AddScoped<IAuthorityRepository, DatabaseAuthorityRepository>();
 builder.Services.AddSingleton<IConfigurationService, ConfigurationService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 

@@ -26,7 +26,7 @@ public static class EndpointExtensions
                     ScopesSupported = [StandardScopes.OpenId],
                     TokenEndpointAuthMethodsSupported = [EndpointAuthenticationMethods.PostBody],
                     TokenEndpointAuthSigningAlgValuesSupported = [SecurityAlgorithms.RsaSha256],
-                    GrantTypesSupported = [GrantTypes.ClientCredentials],
+                    GrantTypesSupported = [GrantTypes.ClientCredentials, GrantTypes.RefreshToken],
                     SubjectTypesSupported = ["public"],
                     ClaimTypesSupported = ["normal"],
                     ClaimsSupported = [JwtClaimTypes.Subject, "channel", "ten"]
@@ -65,6 +65,14 @@ public static class EndpointExtensions
                             return Results.Ok(await service.CreateToken(urn!));
                         }
                         return Results.Problem(statusCode: StatusCodes.Status400BadRequest, detail: "Invalid client secret");
+
+                    case GrantTypes.RefreshToken:
+                        (valid, urn) = await service.ValidateRefreshToken(request.RefreshToken);
+                        if (valid)
+                        {
+                            return Results.Ok(await service.CreateToken(urn!));
+                        }
+                        return Results.Problem(statusCode: StatusCodes.Status400BadRequest, detail: "Invalid refresh token");
 
                     default:
                         return Results.Problem(statusCode: StatusCodes.Status400BadRequest, detail: "Invalid grant type");

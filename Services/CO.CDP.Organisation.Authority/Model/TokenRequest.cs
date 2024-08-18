@@ -9,4 +9,7 @@ public class TokenRequest
 
     [FromForm(Name = "client_secret")]
     public string? ClientSecret { get; set; }
+
+    [FromForm(Name = "refresh_token")]
+    public string? RefreshToken { get; set; }
 }
