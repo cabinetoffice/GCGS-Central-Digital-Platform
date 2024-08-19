@@ -78,20 +78,57 @@ public class ConnectedEntityControlConditionTest
         _model.ControlConditions.Should().Contain(Constants.ConnectedEntityControlCondition.OwnsShares);
     }
 
-    [Theory]
-    [InlineData("overseas-company-question", ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl, null)]
-    [InlineData("company-question", ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl, true)]
-    [InlineData("company-question", ConnectedEntityOrganisationCategoryType.RegisteredCompany, null)]
+    [Theory]    
+    [InlineData(true, ConnectedEntityType.Organisation, "overseas-company-question", ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl, null, null)]
+    [InlineData(true, ConnectedEntityType.Organisation, "company-question", ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl, null, true)]
+    [InlineData(true, ConnectedEntityType.Organisation, "company-question", ConnectedEntityOrganisationCategoryType.RegisteredCompany, null, null)]
+    [InlineData(false, ConnectedEntityType.Organisation, "company-question", ConnectedEntityOrganisationCategoryType.RegisteredCompany, null, true)]
+    [InlineData(false, ConnectedEntityType.Organisation, "overseas-company-question", ConnectedEntityOrganisationCategoryType.RegisteredCompany, null, false)]
+    [InlineData(false, ConnectedEntityType.Individual, "Registered-address/uk", null, ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndividual, false)]
+    [InlineData(false, ConnectedEntityType.Individual, "Registered-address/uk", null, ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndividual, true)]
+    [InlineData(true, ConnectedEntityType.Individual, "Registered-address/uk", null, ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndividual, false)]
+    [InlineData(true, ConnectedEntityType.Individual, "Registered-address/uk", null, ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndividual, true)]
+    [InlineData(false, ConnectedEntityType.Individual, "Registered-address/uk", null, ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndividualWithSignificantInfluenceOrControlForIndividual, false)]
+    [InlineData(false, ConnectedEntityType.Individual, "Registered-address/uk", null, ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndividualWithSignificantInfluenceOrControlForIndividual, true)]
+    [InlineData(true, ConnectedEntityType.Individual, "Registered-address/uk", null, ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndividualWithSignificantInfluenceOrControlForIndividual, false)]
+    [InlineData(true, ConnectedEntityType.Individual, "Registered-address/uk", null, ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndividualWithSignificantInfluenceOrControlForIndividual, true)]
+    [InlineData(false, ConnectedEntityType.TrustOrTrustee, "Registered-address/uk", null, ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForTrust, false)]
+    [InlineData(false, ConnectedEntityType.TrustOrTrustee, "Registered-address/uk", null, ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForTrust, true)]
+    [InlineData(true, ConnectedEntityType.TrustOrTrustee, "Registered-address/uk", null, ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForTrust, false)]
+    [InlineData(true, ConnectedEntityType.TrustOrTrustee, "Registered-address/uk", null, ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForTrust, true)]
+    [InlineData(false, ConnectedEntityType.TrustOrTrustee, "Registered-address/uk", null, ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndividualWithSignificantInfluenceOrControlForTrust, false)]
+    [InlineData(false, ConnectedEntityType.TrustOrTrustee, "Registered-address/uk", null, ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndividualWithSignificantInfluenceOrControlForTrust, true)]
+    [InlineData(true, ConnectedEntityType.TrustOrTrustee, "Registered-address/uk", null, ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndividualWithSignificantInfluenceOrControlForTrust, false)]
+    [InlineData(true, ConnectedEntityType.TrustOrTrustee, "Registered-address/uk", null, ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndividualWithSignificantInfluenceOrControlForTrust, true)]
+    [InlineData(false, ConnectedEntityType.Organisation, "", ConnectedEntityOrganisationCategoryType.DirectorOrTheSameResponsibilities, null, null)]
+    [InlineData(true, ConnectedEntityType.Organisation, "", ConnectedEntityOrganisationCategoryType.DirectorOrTheSameResponsibilities, null, null)]
+    [InlineData(false, ConnectedEntityType.Organisation, "", ConnectedEntityOrganisationCategoryType.ParentOrSubsidiaryCompany, null, null)]
+    [InlineData(true, ConnectedEntityType.Organisation, "", ConnectedEntityOrganisationCategoryType.ParentOrSubsidiaryCompany, null, null)]
+    [InlineData(false, ConnectedEntityType.Organisation, "", ConnectedEntityOrganisationCategoryType.ACompanyYourOrganisationHasTakenOver, null, null)]
+    [InlineData(true, ConnectedEntityType.Organisation, "", ConnectedEntityOrganisationCategoryType.ACompanyYourOrganisationHasTakenOver, null, null)]
+    [InlineData(false, ConnectedEntityType.Individual, "", null, ConnectedEntityIndividualAndTrustCategoryType.DirectorOrIndividualWithTheSameResponsibilitiesForIndividual, false)]
+    [InlineData(false, ConnectedEntityType.Individual, "", null, ConnectedEntityIndividualAndTrustCategoryType.DirectorOrIndividualWithTheSameResponsibilitiesForIndividual, true)]
+    [InlineData(true, ConnectedEntityType.Individual, "", null, ConnectedEntityIndividualAndTrustCategoryType.DirectorOrIndividualWithTheSameResponsibilitiesForIndividual, false)]
+    [InlineData(true, ConnectedEntityType.Individual, "", null, ConnectedEntityIndividualAndTrustCategoryType.DirectorOrIndividualWithTheSameResponsibilitiesForIndividual, true)]
+    [InlineData(false, ConnectedEntityType.TrustOrTrustee, "", null, ConnectedEntityIndividualAndTrustCategoryType.DirectorOrIndividualWithTheSameResponsibilitiesForTrust, false)]
+    [InlineData(false, ConnectedEntityType.TrustOrTrustee, "", null, ConnectedEntityIndividualAndTrustCategoryType.DirectorOrIndividualWithTheSameResponsibilitiesForTrust, true)]
+    [InlineData(true, ConnectedEntityType.TrustOrTrustee, "", null, ConnectedEntityIndividualAndTrustCategoryType.DirectorOrIndividualWithTheSameResponsibilitiesForTrust, false)]
+    [InlineData(true, ConnectedEntityType.TrustOrTrustee, "", null, ConnectedEntityIndividualAndTrustCategoryType.DirectorOrIndividualWithTheSameResponsibilitiesForTrust, true)]
+
     public void OnGet_ShouldReturnBackPageResult(
+            bool yesJourney,
+            ConnectedEntityType connectedEntityType,
             string expectedBackPage,
-            ConnectedEntityOrganisationCategoryType categoryType,
+            ConnectedEntityOrganisationCategoryType? categoryType,
+            ConnectedEntityIndividualAndTrustCategoryType? individualAndTrustCategoryType,
             bool? hasCompaniesHouseNumber)
     {
         var state = DummyConnectedPersonDetails();
-
+        state.SupplierHasCompanyHouseNumber = yesJourney;
+        state.ConnectedEntityType = connectedEntityType;
         state.ConnectedEntityOrganisationCategoryType = categoryType;
+        state.ConnectedEntityIndividualAndTrustCategoryType = individualAndTrustCategoryType;
         state.HasCompaniesHouseNumber = hasCompaniesHouseNumber;
-
         _sessionMock
             .Setup(s => s.Get<ConnectedEntityState>(Session.ConnectedPersonKey))
             .Returns(state);
@@ -99,7 +136,7 @@ public class ConnectedEntityControlConditionTest
         var result = _model.OnGet();
 
         result.Should().BeOfType<PageResult>();
-        _model.BackPageLink.Should().Contain(expectedBackPage);
+        _model.BackPageLink.Should().Be(expectedBackPage);
     }
 
     [Fact]
@@ -215,9 +252,15 @@ public class ConnectedEntityControlConditionTest
             OrganisationName = "Org_name",
             HasCompaniesHouseNumber = true,
             CompaniesHouseNumber = "12345678",
+            RegisteredAddress = GetDummyAddress(),
             ControlConditions = [Constants.ConnectedEntityControlCondition.OwnsShares]
         };
 
         return connectedPersonDetails;
+    }
+
+    private ConnectedEntityState.Address GetDummyAddress()
+    {
+        return new ConnectedEntityState.Address { AddressLine1 = "Address Line 1", TownOrCity = "London", Postcode = "SW1Y 5ED", Country = "United kingdom" };
     }
 }

@@ -91,15 +91,11 @@ public class ConnectedEntityLegalFormQuestionModel(ISession session) : PageModel
                         redirectPage = (state.HasLegalForm == true ? "ConnectedEntityLawEnforce" : "ConnectedEntityCompanyQuestion");
                         break;
                     case ConnectedEntityOrganisationCategoryType.DirectorOrTheSameResponsibilities:
-                        
-                        if (state.SupplierHasCompanyHouseNumber == true)
-                        {
-                            redirectPage = "ConnectedEntityCheckAnswersOrganisation";
-                        }
-                        else
-                        {
-                            redirectPage = (state.HasLegalForm == true ? "ConnectedEntityLawEnforce" : "ConnectedEntityCompanyQuestion");
-                        }
+                        redirectPage = state.SupplierHasCompanyHouseNumber == true
+                            ? "ConnectedEntityCheckAnswersOrganisation"
+                            : (state.HasLegalForm == true
+                                ? "ConnectedEntityLawEnforce"
+                                : "ConnectedEntityCompanyQuestion");
                         break;
                     case ConnectedEntityOrganisationCategoryType.ParentOrSubsidiaryCompany:
                         redirectPage = "ConnectedEntityCheckAnswersOrganisation";
@@ -137,7 +133,7 @@ public class ConnectedEntityLegalFormQuestionModel(ISession session) : PageModel
             case ConnectedEntityType.Organisation:
                 switch (state.ConnectedEntityOrganisationCategoryType)
                 {
-                    case ConnectedEntityOrganisationCategoryType.RegisteredCompany:                        
+                    case ConnectedEntityOrganisationCategoryType.RegisteredCompany:
                     case ConnectedEntityOrganisationCategoryType.DirectorOrTheSameResponsibilities:
                         //backPage = $"law-register";
                         if ((state.RegisteredAddress?.AreSameAddress(state.PostalAddress) ?? false) == true)
@@ -146,13 +142,13 @@ public class ConnectedEntityLegalFormQuestionModel(ISession session) : PageModel
                         }
                         else
                         {
-                            backPage = $"{AddressType.Postal}-address/{(state.PostalAddress?.Country == Country.UnitedKingdom ? "uk" : "non-uk")}";
+                            backPage = $"{AddressType.Postal}-address/{(string.Equals(state.PostalAddress?.Country, Country.UnitedKingdom, StringComparison.OrdinalIgnoreCase) ? "uk" : "non-uk")}";
                         }
                         break;
                     case ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl:
                         backPage = $"";
                         break;
-                    
+
                 }
                 break;
             case ConnectedEntityType.Individual:

@@ -1,3 +1,4 @@
+using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Pages.Supplier;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
@@ -89,7 +90,7 @@ public class ConnectedEntityLegalFormQuestionTest
     [Theory]
     [InlineData(true, "ConnectedEntityLawEnforce", Constants.ConnectedEntityOrganisationCategoryType.RegisteredCompany)]
     [InlineData(false, "ConnectedEntityCompanyQuestion", Constants.ConnectedEntityOrganisationCategoryType.RegisteredCompany)]
-    public void OnPost_ShouldRedirectToExpectedPage(bool hasLegalForm, string expectedRedirectPage, Constants.ConnectedEntityOrganisationCategoryType organisationCategoryType)
+    public void OnPost_ShouldRedirectToExpectedPageWithSummary(bool hasLegalForm, string expectedRedirectPage, Constants.ConnectedEntityOrganisationCategoryType organisationCategoryType)
     {
         var state = DummyConnectedPersonDetails();
         _model.HasLegalForm = hasLegalForm;
@@ -119,6 +120,74 @@ public class ConnectedEntityLegalFormQuestionTest
 
     }
 
+    [Theory]
+    [InlineData(ConnectedEntityType.Organisation, ConnectedEntityOrganisationCategoryType.RegisteredCompany, "postal-address-same-as-registered")]
+    [InlineData(ConnectedEntityType.Organisation, ConnectedEntityOrganisationCategoryType.DirectorOrTheSameResponsibilities, "postal-address-same-as-registered")]
+    [InlineData(ConnectedEntityType.Organisation, ConnectedEntityOrganisationCategoryType.RegisteredCompany, "Postal-address/uk", false)]
+    [InlineData(ConnectedEntityType.Organisation, ConnectedEntityOrganisationCategoryType.DirectorOrTheSameResponsibilities, "Postal-address/uk", false)]
+    public void OnPost_BackPageLinkNameShouldExpectedPage(
+        ConnectedEntityType connectedEntityType,
+        ConnectedEntityOrganisationCategoryType? organisationCategoryType,
+        string expectedBackPageLinkName,
+        bool areSameAddress = true)
+    {
+        var state = DummyConnectedPersonDetails();
+        state.ConnectedEntityType = connectedEntityType;
+        state.ConnectedEntityOrganisationCategoryType = organisationCategoryType;
+        if (areSameAddress == false)
+        {
+            state.PostalAddress!.AddressLine1 = "New Street";
+        }
+        _sessionMock.Setup(s => s.Get<ConnectedEntityState>(Session.ConnectedPersonKey)).
+            Returns(state);
+
+
+        var result = _model.OnPost();
+
+        var redirectToPageResult = result.Should().BeOfType<RedirectToPageResult>().Subject;
+
+        _model.BackPageLink.Should().Be(expectedBackPageLinkName);
+    }
+
+    [Theory]
+    [InlineData(ConnectedEntityType.Organisation, ConnectedEntityOrganisationCategoryType.RegisteredCompany, "ConnectedEntityCompanyQuestion")]
+    [InlineData(ConnectedEntityType.Organisation, ConnectedEntityOrganisationCategoryType.RegisteredCompany, "ConnectedEntityLawEnforce", true)]
+    [InlineData(ConnectedEntityType.Organisation, ConnectedEntityOrganisationCategoryType.DirectorOrTheSameResponsibilities, "ConnectedEntityCompanyQuestion", false)]
+    [InlineData(ConnectedEntityType.Organisation, ConnectedEntityOrganisationCategoryType.DirectorOrTheSameResponsibilities, "ConnectedEntityLawEnforce", true)]
+    [InlineData(ConnectedEntityType.Organisation, ConnectedEntityOrganisationCategoryType.DirectorOrTheSameResponsibilities, "ConnectedEntityCheckAnswersOrganisation", null, true)]
+    [InlineData(ConnectedEntityType.Organisation, ConnectedEntityOrganisationCategoryType.DirectorOrTheSameResponsibilities, "ConnectedEntityCheckAnswersOrganisation", true, true)]
+    [InlineData(ConnectedEntityType.Organisation, ConnectedEntityOrganisationCategoryType.ParentOrSubsidiaryCompany, "ConnectedEntityCheckAnswersOrganisation")]
+    [InlineData(ConnectedEntityType.Organisation, ConnectedEntityOrganisationCategoryType.ACompanyYourOrganisationHasTakenOver, "ConnectedEntityCompanyInsolvencyDate")]
+    [InlineData(ConnectedEntityType.Organisation, ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl, "ConnectedEntityOverseasCompanyQuestion", null, false, false)]
+    [InlineData(ConnectedEntityType.Organisation, ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl, "ConnectedEntityControlCondition", null, false, true)]
+    [InlineData(ConnectedEntityType.Organisation, ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl, "ConnectedEntityOverseasCompanyQuestion", true, false, false)]
+    [InlineData(ConnectedEntityType.Organisation, ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl, "ConnectedEntityOverseasCompanyQuestion", false, true, false)]    
+    public void OnPost_ShouldRedirectToExpectedPage(
+        ConnectedEntityType connectedEntityType,
+        ConnectedEntityOrganisationCategoryType? organisationCategoryType,
+        string expectedRedirectPage,
+        bool? hasLegalForm = false,
+        bool yesJourney = false,
+        bool hasCompanyHouseNumber = false)
+    {
+        var state = DummyConnectedPersonDetails();
+        state.SupplierHasCompanyHouseNumber = yesJourney;
+        state.ConnectedEntityType = connectedEntityType;
+        state.ConnectedEntityOrganisationCategoryType = organisationCategoryType;
+        state.HasCompaniesHouseNumber = hasCompanyHouseNumber;
+        state.HasLegalForm = hasLegalForm;
+        _model.HasLegalForm = hasLegalForm;
+        _sessionMock.Setup(s => s.Get<ConnectedEntityState>(Session.ConnectedPersonKey)).
+            Returns(state);
+
+
+        var result = _model.OnPost();
+
+        var redirectToPageResult = result.Should().BeOfType<RedirectToPageResult>().Subject;
+
+        redirectToPageResult.PageName.Should().Be(expectedRedirectPage);
+    }
+
     private ConnectedEntityState DummyConnectedPersonDetails()
     {
         var connectedPersonDetails = new ConnectedEntityState
@@ -130,9 +199,16 @@ public class ConnectedEntityLegalFormQuestionTest
             ConnectedEntityOrganisationCategoryType = Constants.ConnectedEntityOrganisationCategoryType.RegisteredCompany,
             OrganisationName = "Org_name",
             HasCompaniesHouseNumber = true,
-            CompaniesHouseNumber = "12345678"
+            CompaniesHouseNumber = "12345678",
+            RegisteredAddress = GetDummyAddress(),
+            PostalAddress = GetDummyAddress(),
         };
 
         return connectedPersonDetails;
+    }
+
+    private ConnectedEntityState.Address GetDummyAddress()
+    {
+        return new ConnectedEntityState.Address { AddressLine1 = "Address Line 1", TownOrCity = "London", Postcode = "SW1Y 5ED", Country = "United kingdom" };
     }
 }

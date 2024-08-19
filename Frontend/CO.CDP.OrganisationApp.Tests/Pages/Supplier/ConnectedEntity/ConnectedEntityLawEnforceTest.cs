@@ -1,3 +1,4 @@
+using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Pages.Supplier;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
@@ -109,6 +110,32 @@ public class ConnectedEntityLawEnforceTest
         _model.OnPost();
 
         _sessionMock.Verify(s => s.Set(Session.ConnectedPersonKey, It.Is<ConnectedEntityState>(st => st.ConnectedEntityType == Constants.ConnectedEntityType.Organisation)), Times.Once);
+    }
+
+    [Theory]
+    [InlineData(ConnectedEntityType.Organisation, ConnectedEntityOrganisationCategoryType.RegisteredCompany, "ConnectedEntityCompanyQuestion", "legal-form-question")]
+    [InlineData(ConnectedEntityType.Organisation, ConnectedEntityOrganisationCategoryType.DirectorOrTheSameResponsibilities, "ConnectedEntityCompanyQuestion", "legal-form-question")]
+    [InlineData(ConnectedEntityType.Organisation, ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl, "ConnectedEntityCheckAnswersOrganisation", "legal-form-question")]
+    public void OnPost_ShouldRedirectToExpectedPage_AndShouldSetExpectedBackPage(
+        ConnectedEntityType connectedEntityType,
+        ConnectedEntityOrganisationCategoryType? organisationCategoryType,
+        string expectedRedirectPage,
+        string expectedBackPage)
+    {
+        var state = DummyConnectedPersonDetails();
+        state.ConnectedEntityType = connectedEntityType;
+        state.ConnectedEntityOrganisationCategoryType = organisationCategoryType;
+        _sessionMock.Setup(s => s.Get<ConnectedEntityState>(Session.ConnectedPersonKey)).
+            Returns(state);
+
+
+        var result = _model.OnPost();
+
+        var redirectToPageResult = result.Should().BeOfType<RedirectToPageResult>().Subject;
+
+        redirectToPageResult.PageName.Should().Be(expectedRedirectPage);
+
+        _model.BackPageLink.Should().Be(expectedBackPage);
     }
 
     private ConnectedEntityState DummyConnectedPersonDetails()

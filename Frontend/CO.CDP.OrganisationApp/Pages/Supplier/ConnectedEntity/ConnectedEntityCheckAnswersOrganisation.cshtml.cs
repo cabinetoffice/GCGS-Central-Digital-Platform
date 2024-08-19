@@ -259,7 +259,9 @@ public class ConnectedEntityCheckAnswersOrganisationModel(
                     case ConnectedEntityOrganisationCategoryType.RegisteredCompany:
                         backPage = state.SupplierHasCompanyHouseNumber == true
                                     ? "company-register-name"
-                                    : "date-registered-question";
+                                    : (state.RegistrationDate.HasValue == true
+                                            ? "company-register-name"
+                                            : "date-registered-question");
                         break;
                     case ConnectedEntityOrganisationCategoryType.DirectorOrTheSameResponsibilities:
                     case ConnectedEntityOrganisationCategoryType.ParentOrSubsidiaryCompany:
