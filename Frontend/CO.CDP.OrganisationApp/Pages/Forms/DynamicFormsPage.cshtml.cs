@@ -1,4 +1,5 @@
 using CO.CDP.AwsServices;
+using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -115,9 +116,8 @@ public class DynamicFormsPageModel(
             await formsEngine.SaveUpdateAnswers(FormId, SectionId, OrganisationId, answerSet);
 
             tempDataService.Remove(FormQuestionAnswerStateKey);
-            if (SectionTitle == "Declaration Information")
+            if (SectionTitle == SectionTitles.DECLARATIONINFORMATION)
             {
-                //var dataShareCodePage = $"/organisation/{OrganisationId}/forms/{FormId}/sections/{SectionId}/share-code-information";
                 return RedirectToPage("/ShareInformation/ShareCodeConfirmation", new { OrganisationId, FormId, SectionId });
             }
             else
