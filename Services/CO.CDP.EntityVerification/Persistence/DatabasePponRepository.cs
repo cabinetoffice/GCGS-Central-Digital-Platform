@@ -1,3 +1,4 @@
+using CO.CDP.EntityVerification.Events;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using static CO.CDP.EntityVerification.Persistence.IPponRepository.PponRepositoryException;
@@ -37,9 +38,9 @@ public class DatabasePponRepository(EntityVerificationContext context) : IPponRe
             .Include(p => p.Identifiers)
             .ToListAsync();
 
-        return ppons.FirstOrDefault(p => p.Identifiers.Any(i =>
-                i.IdentifierId == id &&
-                i.Scheme == scheme));
+        return ppons.FirstOrDefault(p =>
+                p.Identifiers.Any(i => i.IdentifierId == id && i.Scheme == scheme) ||
+                (scheme == IdentifierSchemes.Ppon && p.IdentifierId == id));
     }
 
     private static void HandleDbUpdateException(Ppon identifier, DbUpdateException cause)
