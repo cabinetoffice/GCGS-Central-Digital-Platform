@@ -81,6 +81,7 @@ public class ConnectedEntityCompanyRegisterNameModel(ISession session) : PageMod
 
     private void InitModal(ConnectedEntityState state, bool reset = false)
     {
+        Caption = state.GetCaption();
         Heading = $"Select where {state.OrganisationName} is registered as person with significant control";
         ConnectedEntityType = state.ConnectedEntityType;
         SupplierHasCompanyHouseNumber = state.SupplierHasCompanyHouseNumber ?? false;
