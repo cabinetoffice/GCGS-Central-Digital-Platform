@@ -164,7 +164,7 @@ public class ConnectedEntityCheckAnswersIndividualOrTrustModel(
                                     : "date-registered-question";
                         break;
                     case ConnectedEntityIndividualAndTrustCategoryType.DirectorOrIndividualWithTheSameResponsibilitiesForIndividual:
-                        backPage = $"{Constants.AddressType.Registered}-address/{(state.RegisteredAddress?.Country == Country.UnitedKingdom ? "uk" : "non-uk")}";
+                        backPage = $"{Constants.AddressType.Registered}-address/{(string.Equals(state.RegisteredAddress?.Country, Country.UnitedKingdom, StringComparison.OrdinalIgnoreCase) ? "uk" : "non-uk")}";
                         break;
                 }
                 break;
@@ -184,7 +184,7 @@ public class ConnectedEntityCheckAnswersIndividualOrTrustModel(
                                     :  "date-registered-question";
                         break;
                     case ConnectedEntityIndividualAndTrustCategoryType.DirectorOrIndividualWithTheSameResponsibilitiesForTrust:
-                        backPage = $"{Constants.AddressType.Registered}-address/{(state.RegisteredAddress?.Country == Country.UnitedKingdom ? "uk" : "non-uk")}";
+                        backPage = $"{Constants.AddressType.Registered}-address/{(string.Equals(state.RegisteredAddress?.Country, Country.UnitedKingdom, StringComparison.OrdinalIgnoreCase) ? "uk" : "non-uk")}";
                         break;
                 }
                 break;
