@@ -1,7 +1,10 @@
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Moq;
+using System.IO.Compression;
 using System.Security.Claims;
+using System.Text;
+using System.Text.Json;
 
 namespace CO.CDP.Authentication.Tests;
 
@@ -44,8 +47,7 @@ public class ClaimServiceTests
     [Fact]
     public void HaveAccessToOrganisation_ShouldReturnFalse_WhenDoesNotHaveAccessToOrganisation()
     {
-        var tenValue = "H4sIAAAAAAAAA42QS2/CMBCE/0rlM87DJGD71Fa0KAeoSkKrtkLI2E5wIXZwEh5C/Pc64lCkXqo97czqm9WcwbyWFtAzmFsNKGitprngtDB7r91QFCBEh4ds9zGePL8ei3aTpVWaoLERk4Mkyz0aLd93avZ5TL+zx1MCemDKSulAozWz5d2btCVz4lPJ1NapolOlFpbtOwej+6JzPG5KcOmBTGqmmxrQrzNIhLuPh4LnEeYQkzCAURhgSHgeQo5IP44wZgGOfzMzWTdue7EF06pmjTL6hkUGggd5P4Y8iAmMBCaQhDmDbLBisYzwIGToD2tmtrJjgLStqq1yVS16rirlLtZNU9XU97moPM5WSsvG5Lni0ruW55vbP/x/xqfcVNfEh9EkmYLFpZsfgDXIV6cBAAA=";
-        var httpContextAccessor = GivenHttpContextWith([new("ten", tenValue)]);
+        var httpContextAccessor = GivenHttpContextWith([new("ten", BuildTenTokenValue())]);
 
         var claimService = new ClaimService(httpContextAccessor.Object);
         var result = claimService.HaveAccessToOrganisation(new Guid("57dcf48c-8910-4108-9cf1-c2935488a085"));
@@ -56,13 +58,44 @@ public class ClaimServiceTests
     [Fact]
     public void HaveAccessToOrganisation_ShouldReturnTrue_WhenDoesHaveAccessToOrganisation()
     {
-        var tenValue = "H4sIAAAAAAAAA42QS2/CMBCE/0rlM87DJGD71Fa0KAeoSkKrtkLI2E5wIXZwEh5C/Pc64lCkXqo97czqm9WcwbyWFtAzmFsNKGitprngtDB7r91QFCBEh4ds9zGePL8ei3aTpVWaoLERk4Mkyz0aLd93avZ5TL+zx1MCemDKSulAozWz5d2btCVz4lPJ1NapolOlFpbtOwej+6JzPG5KcOmBTGqmmxrQrzNIhLuPh4LnEeYQkzCAURhgSHgeQo5IP44wZgGOfzMzWTdue7EF06pmjTL6hkUGggd5P4Y8iAmMBCaQhDmDbLBisYzwIGToD2tmtrJjgLStqq1yVS16rirlLtZNU9XU97moPM5WSsvG5Lni0ruW55vbP/x/xqfcVNfEh9EkmYLFpZsfgDXIV6cBAAA=";
-        var httpContextAccessor = GivenHttpContextWith([new("ten", tenValue)]);
+        var organisationId = new Guid("96dc0f35-c059-4d89-91fa-a6ba5e4861a2");
+        var httpContextAccessor = GivenHttpContextWith([new("ten", BuildTenTokenValue(organisationId))]);
 
         var claimService = new ClaimService(httpContextAccessor.Object);
-        var result = claimService.HaveAccessToOrganisation(new Guid("96dc0f35-c059-4d89-91fa-a6ba5e4861a2"));
+        var result = claimService.HaveAccessToOrganisation(organisationId);
 
         result.Should().BeTrue();
+    }
+
+    private string BuildTenTokenValue(Guid? organisationToAdd = null)
+    {
+        var tenantLookup = new OrganisationInformation.TenantLookup
+        {
+            User = new OrganisationInformation.UserDetails { Email = "t@t", Name = "Dave", Urn = "urn:fdc:gov.uk:2022:43af5a8b" },
+            Tenants = [new OrganisationInformation.UserTenant {
+             Id = Guid.NewGuid(),
+             Name = "Ten1",
+             Organisations = [new OrganisationInformation.UserOrganisation {
+                 Id = organisationToAdd ?? Guid.NewGuid(),
+                 Name = "org",
+                 Roles = [],
+                 Scopes = [],
+                 Uri = new Uri("http://test.com"),
+             }] }]
+        };
+
+        return Convert.ToBase64String(Compress(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(tenantLookup))));
+    }
+
+    private static byte[] Compress(byte[] data)
+    {
+        using var compressedStream = new MemoryStream();
+        using (var gzipStream = new GZipStream(compressedStream, CompressionLevel.Optimal, false))
+        {
+            gzipStream.Write(data);
+        }
+
+        return compressedStream.ToArray();
     }
 
     private static Mock<IHttpContextAccessor> GivenHttpContextWith(List<Claim> claims)
