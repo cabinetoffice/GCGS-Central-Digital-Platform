@@ -74,10 +74,25 @@ public static class Extensions
     {
         return services
             .AddAuthorizationBuilder()
-            .AddPolicy(Constants.OrganisationKeyPolicy, policy =>
+            .AddPolicy(Constants.ApiKeyPolicy, policy =>
+            {
+                policy.RequireAuthenticatedUser();
+                policy.RequireClaim("channel", ["service-key", "organisation-key"]);
+            })
+            .AddPolicy(Constants.OrganisationApiKeyPolicy, policy =>
             {
                 policy.RequireAuthenticatedUser();
                 policy.RequireClaim("channel", "organisation-key");
+            })
+            .AddPolicy(Constants.ServiceApiKeyPolicy, policy =>
+            {
+                policy.RequireAuthenticatedUser();
+                policy.RequireClaim("channel", "service-key");
+            })
+            .AddPolicy(Constants.OneLoginPolicy, policy =>
+            {
+                policy.RequireAuthenticatedUser();
+                policy.RequireClaim("channel", "one-login");
             })
             .SetFallbackPolicy(
                 new AuthorizationPolicyBuilder()
