@@ -13,6 +13,7 @@ public abstract class RegistrationStepModel : LoggedInUserAwareModel
     public const string OrganisationAddressPage = "/registration/organisation-registered-address/uk";
     public const string OrganisationNonUKAddressPage = "/registration/organisation-registered-address/non-uk";
     public const string OrganisationSummaryPage = "/registration/organisation-details-summary";
+    public const string OrganisationAlreadyRegisteredPage = "/organisation-already-registered";
 
     public const string BuyerOrganisationTypePage = "/registration/buyer-organisation-type";
     public const string BuyerDevolvedRegulationPage = "/registration/buyer-devolved-regulations";

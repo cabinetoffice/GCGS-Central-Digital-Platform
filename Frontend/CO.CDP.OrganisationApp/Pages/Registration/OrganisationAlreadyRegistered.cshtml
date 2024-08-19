@@ -1,0 +1,46 @@
+@page "/registration/OrganisationAlreadyRegistered"
+
+@* @attribute [RazorCompiledItemMetadata("RouteTemplate", RegistrationStepModel.OrganisationAlreadyRegisteredPage)] *@
+@model CO.CDP.OrganisationApp.Pages.Registration.OrganisationNameModel
+
+@{
+    // var backLink = RegistrationStepModel.OrganisationIdentifierPage;
+    // if (Request.Query.ContainsKey("frm-summary"))
+    // {
+    //     backLink = RegistrationStepModel.OrganisationSummaryPage;
+    //     Model.RedirectToSummary = true;
+    // }
+    // else if (Model.HasCompaniesHouseNumber)
+    // {
+    //     backLink = RegistrationStepModel.OrganisationHasCompanyHouseNumberPage;
+    // }
+}
+
+@* <a href="@backLink" class="govuk-back-link">
+    Back
+</a> *@
+
+<main class="govuk-main-wrapper">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <partial name="_ErrorSummary" model="@ModelState" />
+
+            <form method="post">
+                <h1 class="govuk-heading-l">
+                    <span class="govuk-label--l">This organisation has already registered</span>
+                </h1>
+
+                The organisation's details are already registered with the service.
+
+                If you know the person who registered the organisation, they can invite you to join. Or you can request to join below.
+
+                <button type="submit"
+                        class="govuk-button"
+                        data-module="govuk-button">
+                    Request to Join
+                </button>
+
+            </form>
+        </div>
+    </div>
+</main>

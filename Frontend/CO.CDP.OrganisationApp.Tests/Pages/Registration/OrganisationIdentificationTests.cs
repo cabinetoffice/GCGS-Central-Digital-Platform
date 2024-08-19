@@ -1,3 +1,4 @@
+using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.Pages.Registration;
 using FluentAssertions;
@@ -10,10 +11,13 @@ namespace CO.CDP.OrganisationApp.Tests.Pages.Registration;
 public class OrganisationIdentificationModelTests
 {
     private readonly Mock<ISession> sessionMock;
+    private readonly Mock<IOrganisationClient> organisationClientMock;
+    private static readonly Guid _organisationId = Guid.NewGuid();
 
     public OrganisationIdentificationModelTests()
     {
         sessionMock = new Mock<ISession>();
+        organisationClientMock = new Mock<IOrganisationClient>();
     }
 
     [Fact]
@@ -23,7 +27,7 @@ public class OrganisationIdentificationModelTests
 
         sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(registrationDetails);
 
-        var model = new OrganisationIdentificationModel(sessionMock.Object);
+        var model = new OrganisationIdentificationModel(sessionMock.Object, organisationClientMock.Object);
         model.OnGet();
 
         model.OrganisationScheme.Should().Be(registrationDetails.OrganisationScheme);
@@ -73,7 +77,7 @@ public class OrganisationIdentificationModelTests
     public void OnPost_WhenOrganisationTypeIsNullOrEmpty_ShouldReturnPageWithModelStateError(string? organisationType)
     {
 
-        var model = new OrganisationIdentificationModel(sessionMock.Object)
+        var model = new OrganisationIdentificationModel(sessionMock.Object, organisationClientMock.Object)
         {
             OrganisationScheme = organisationType
         };
@@ -90,7 +94,7 @@ public class OrganisationIdentificationModelTests
     [InlineData("GB-CHC", "")]
     public void OnPost_WhenOrganisationTypeIsCCEWAndCharityCommissionEnglandWalesNumberIsNullOrEmpty_ShouldReturnPageWithModelStateError(string organisationType, string? charityCommissionEnglandWalesNumber)
     {
-        var model = new OrganisationIdentificationModel(sessionMock.Object)
+        var model = new OrganisationIdentificationModel(sessionMock.Object, organisationClientMock.Object)
         {
             OrganisationScheme = organisationType,
             CharityCommissionEnglandWalesNumber = charityCommissionEnglandWalesNumber
@@ -108,7 +112,7 @@ public class OrganisationIdentificationModelTests
     [InlineData("GB-SC", "")]
     public void OnPost_WhenOrganisationTypeIsOSCRAndScottishCharityRegulatorNumberIsNullOrEmpty_ShouldReturnPageWithModelStateError(string organisationType, string? scottishCharityRegulatorNumber)
     {
-        var model = new OrganisationIdentificationModel(sessionMock.Object)
+        var model = new OrganisationIdentificationModel(sessionMock.Object, organisationClientMock.Object)
         {
             OrganisationScheme = organisationType,
             ScottishCharityRegulatorNumber = scottishCharityRegulatorNumber
@@ -126,7 +130,7 @@ public class OrganisationIdentificationModelTests
     [InlineData("GB-NIC", "")]
     public void OnPost_WhenOrganisationTypeIsGbNicAndCharityCommissionNorthernIrelandNumberIsNullOrEmpty_ShouldReturnPageWithModelStateError(string organisationType, string? charityCommissionNorthernIrelandNumber)
     {
-        var model = new OrganisationIdentificationModel(sessionMock.Object)
+        var model = new OrganisationIdentificationModel(sessionMock.Object, organisationClientMock.Object)
         {
             OrganisationScheme = organisationType,
             CharityCommissionNorthernIrelandNumber = charityCommissionNorthernIrelandNumber
@@ -144,7 +148,7 @@ public class OrganisationIdentificationModelTests
     [InlineData("GB-MPR", "")]
     public void OnPost_WhenOrganisationTypeIsMPRAndMutualsPublicRegisterNumberIsNullOrEmpty_ShouldReturnPageWithModelStateError(string organisationType, string? mutualsPublicRegisterNumber)
     {
-        var model = new OrganisationIdentificationModel(sessionMock.Object)
+        var model = new OrganisationIdentificationModel(sessionMock.Object, organisationClientMock.Object)
         {
             OrganisationScheme = organisationType,
             MutualsPublicRegisterNumber = mutualsPublicRegisterNumber
@@ -162,7 +166,7 @@ public class OrganisationIdentificationModelTests
     [InlineData("GG-RCE", "")]
     public void OnPost_WhenOrganisationTypeIsGRNAndGuernseyRegistryNumberIsNullOrEmpty_ShouldReturnPageWithModelStateError(string organisationType, string? guernseyRegistryNumber)
     {
-        var model = new OrganisationIdentificationModel(sessionMock.Object)
+        var model = new OrganisationIdentificationModel(sessionMock.Object, organisationClientMock.Object)
         {
             OrganisationScheme = organisationType,
             GuernseyRegistryNumber = guernseyRegistryNumber
@@ -180,7 +184,7 @@ public class OrganisationIdentificationModelTests
     [InlineData("JE-FSC", "")]
     public void OnPost_WhenOrganisationTypeIsJFSCAndJerseyFinancialServicesCommissionRegistryNumberIsNullOrEmpty_ShouldReturnPageWithModelStateError(string organisationType, string? jerseyFinancialServicesCommissionRegistryNumber)
     {
-        var model = new OrganisationIdentificationModel(sessionMock.Object)
+        var model = new OrganisationIdentificationModel(sessionMock.Object, organisationClientMock.Object)
         {
             OrganisationScheme = organisationType,
             JerseyFinancialServicesCommissionRegistryNumber = jerseyFinancialServicesCommissionRegistryNumber
@@ -198,7 +202,7 @@ public class OrganisationIdentificationModelTests
     [InlineData("IM-CR", "")]
     public void OnPost_WhenOrganisationTypeIsIMCRAndIsleofManCompaniesRegistryNumberIsNullOrEmpty_ShouldReturnPageWithModelStateError(string organisationType, string? isleofManCompaniesRegistryNumber)
     {
-        var model = new OrganisationIdentificationModel(sessionMock.Object)
+        var model = new OrganisationIdentificationModel(sessionMock.Object, organisationClientMock.Object)
         {
             OrganisationScheme = organisationType,
             IsleofManCompaniesRegistryNumber = isleofManCompaniesRegistryNumber
@@ -216,7 +220,7 @@ public class OrganisationIdentificationModelTests
     [InlineData("GB-NHS", "")]
     public void OnPost_WhenOrganisationTypeIsNHORAndNationalHealthServiceOrganisationsRegistryNumberIsNullOrEmpty_ShouldReturnPageWithModelStateError(string organisationType, string? nationalHealthServiceOrganisationsRegistryNumber)
     {
-        var model = new OrganisationIdentificationModel(sessionMock.Object)
+        var model = new OrganisationIdentificationModel(sessionMock.Object, organisationClientMock.Object)
         {
             OrganisationScheme = organisationType,
             NationalHealthServiceOrganisationsRegistryNumber = nationalHealthServiceOrganisationsRegistryNumber
@@ -234,7 +238,7 @@ public class OrganisationIdentificationModelTests
     [InlineData("GB-UKPRN", "")]
     public void OnPost_WhenOrganisationTypeIsUKPRNAndUKLearningProviderReferenceNumberIsNullOrEmpty_ShouldReturnPageWithModelStateError(string organisationType, string? ukLearningProviderReferenceNumber)
     {
-        var model = new OrganisationIdentificationModel(sessionMock.Object)
+        var model = new OrganisationIdentificationModel(sessionMock.Object, organisationClientMock.Object)
         {
             OrganisationScheme = organisationType,
             UKLearningProviderReferenceNumber = ukLearningProviderReferenceNumber
@@ -252,7 +256,7 @@ public class OrganisationIdentificationModelTests
     [InlineData("VAT", "")]
     public void OnPost_WhenOrganisationTypeIsVATAndVATNumberIsNullOrEmpty_ShouldReturnPageWithModelStateError(string organisationType, string? vatNumber)
     {
-        var model = new OrganisationIdentificationModel(sessionMock.Object)
+        var model = new OrganisationIdentificationModel(sessionMock.Object, organisationClientMock.Object)
         {
             OrganisationScheme = organisationType,
             VATNumber = vatNumber
@@ -266,31 +270,31 @@ public class OrganisationIdentificationModelTests
     }
 
     [Fact]
-    public void OnPost_WhenModelStateIsValid_ShouldRedirectToOrganisationName()
+    public async Task OnPost_WhenModelStateIsValid_ShouldRedirectToOrganisationName()
     {
-        var model = new OrganisationIdentificationModel(sessionMock.Object)
+        var model = new OrganisationIdentificationModel(sessionMock.Object, organisationClientMock.Object)
         {
             OrganisationScheme = "Other"
         };
 
         GivenRegistrationIsInProgress();
 
-        var result = model.OnPost();
+        var result = await model.OnPost();
         result.Should().BeOfType<RedirectToPageResult>();
         (result as RedirectToPageResult)?.PageName.Should().Be("OrganisationName");
     }
 
     [Fact]
-    public void OnPost_WhenModelStateIsValidAndRedirectToSummary_ShouldRedirectToOrganisationDetailSummaryPage()
+    public async Task OnPost_WhenModelStateIsValidAndRedirectToSummary_ShouldRedirectToOrganisationDetailSummaryPage()
     {
-        var model = new OrganisationIdentificationModel(sessionMock.Object)
+        var model = new OrganisationIdentificationModel(sessionMock.Object, organisationClientMock.Object)
         {
             OrganisationScheme = "Other",
             RedirectToSummary = true
         };
         GivenRegistrationIsInProgress();
 
-        var result = model.OnPost();
+        var result = await model.OnPost();
         result.Should().BeOfType<RedirectToPageResult>();
         (result as RedirectToPageResult)?.PageName.Should().Be("OrganisationDetailsSummary");
     }
@@ -308,7 +312,7 @@ public class OrganisationIdentificationModelTests
     [InlineData("VAT", "GB1234")]
     public void OnPost_WhenModelStateIsValid_ShouldStoreOrganisationTypeAndIdentificationNumberInSession(string organisationType, string identificationNumber)
     {
-        var model = new OrganisationIdentificationModel(sessionMock.Object)
+        var model = new OrganisationIdentificationModel(sessionMock.Object, organisationClientMock.Object)
         {
             OrganisationScheme = organisationType
         };
@@ -359,6 +363,11 @@ public class OrganisationIdentificationModelTests
                 model.VATNumber = identificationNumber;
                 break;
         }
+    }
+
+    private static Organisation.WebApiClient.Organisation GivenOrganisationClientModel()
+    {
+        return new Organisation.WebApiClient.Organisation(null, null, null, _organisationId, null, "Test Org", []);
     }
 
     private void GivenRegistrationIsInProgress()

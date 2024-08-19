@@ -1,4 +1,5 @@
 using CO.CDP.Mvc.Validation;
+using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
@@ -44,6 +45,14 @@ public class CompanyHouseNumberQuestionModel(ISession session) : RegistrationSte
             RegistrationDetails.OrganisationIdentificationNumber = CompaniesHouseNumber;
             RegistrationDetails.OrganisationScheme = "GB-COH";
         }
+
+        //var orgExists = await organisationClient.LookupOrganisationAsync(string.Empty,
+        //    $"{RegistrationDetails.OrganisationScheme}:{RegistrationDetails.OrganisationIdentificationNumber}");
+
+        //if (orgExists != null)
+        //{
+        //    return RedirectToPage("OrganisationAlreadyRegistered");
+        //}
 
         session.Set(Session.RegistrationDetailsKey, RegistrationDetails);
 

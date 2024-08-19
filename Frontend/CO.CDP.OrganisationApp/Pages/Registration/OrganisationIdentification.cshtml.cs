@@ -1,5 +1,7 @@
 using CO.CDP.Mvc.Validation;
+using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Models;
+using CO.CDP.OrganisationApp.WebApiClients;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -8,7 +10,8 @@ namespace CO.CDP.OrganisationApp.Pages.Registration;
 
 [AuthorisedSession]
 [ValidateRegistrationStep]
-public class OrganisationIdentificationModel(ISession session) : RegistrationStepModel
+public class OrganisationIdentificationModel(ISession session,
+    IOrganisationClient organisationClient) : RegistrationStepModel
 {
     public override string CurrentPage => OrganisationIdentifierPage;
     public override ISession SessionContext => session;
@@ -158,7 +161,7 @@ public class OrganisationIdentificationModel(ISession session) : RegistrationSte
 
     }
 
-    public IActionResult OnPost()
+    public async Task<IActionResult> OnPost()
     {
         if (!ModelState.IsValid)
         {
@@ -182,15 +185,31 @@ public class OrganisationIdentificationModel(ISession session) : RegistrationSte
             "Other" => null,
             _ => null,
         };
-        session.Set(Session.RegistrationDetailsKey, RegistrationDetails);
 
-        if (RedirectToSummary == true)
+        try
         {
-            return RedirectToPage("OrganisationDetailsSummary");
+            var orgExists = await LookupOrganisationAsync();
         }
-        else
+        catch (ApiException ex) when (ex.StatusCode == 404)
         {
-            return RedirectToPage("OrganisationName");
+            session.Set(Session.RegistrationDetailsKey, RegistrationDetails);
+
+            if (RedirectToSummary == true)
+            {
+                return RedirectToPage("OrganisationDetailsSummary");
+            }
+            else
+            {
+                return RedirectToPage("OrganisationName");
+            }
         }
+
+        return RedirectToPage("OrganisationAlreadyRegistered");
+    }
+
+    private async Task<Organisation.WebApiClient.Organisation> LookupOrganisationAsync()
+    {
+        return await organisationClient.LookupOrganisationAsync(string.Empty,
+                    $"{OrganisationScheme}:{RegistrationDetails.OrganisationIdentificationNumber}");
     }
 }
