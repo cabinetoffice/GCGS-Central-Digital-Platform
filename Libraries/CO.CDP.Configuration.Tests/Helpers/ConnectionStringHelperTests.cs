@@ -10,7 +10,7 @@ namespace CO.CDP.Configuration.Tests.Helpers;
 public class ConnectionStringHelperTests
 {
     [Fact]
-    public void GetConnectionString_ReturnsCorrectConnectionString_WhenAllValuesAreProvidedx()
+    public void GetConnectionString_ReturnsCorrectConnectionString_WhenAllValuesAreProvided()
     {
         var configuration = GivenConfiguration(new()
         {
