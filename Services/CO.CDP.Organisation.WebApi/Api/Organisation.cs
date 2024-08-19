@@ -444,7 +444,7 @@ public static class EndpointExtensions
                 operation.Responses["422"].Description = "Unprocessable entity.";
                 operation.Responses["500"].Description = "Internal server error.";
                 return operation;
-            }).RequireAuthorization(AuthorizationPolicyConstants.OrganisationKeyPolicy);
+            });
 
         app.MapDelete("/{organisationId}/persons/{personId}",
                 async (Guid organisationId, Guid personId, IUseCase<(Guid, Guid), bool> useCase) =>
@@ -468,7 +468,7 @@ public static class EndpointExtensions
                 operation.Responses["422"].Description = "Unprocessable entity.";
                 operation.Responses["500"].Description = "Internal server error.";
                 return operation;
-            }).RequireAuthorization(AuthorizationPolicyConstants.OrganisationKeyPolicy);
+            });
 
         return app;
     }

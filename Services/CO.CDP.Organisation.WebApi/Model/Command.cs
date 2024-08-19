@@ -270,6 +270,15 @@ public record RemovePersonFromOrganisation
     public required Guid PersonId { get; init; }
 }
 
+public record InvitePersonToOrganisation
+{
+    public required Guid OrganisationId { get; init; }
+    public required string FirstName { get; init; }
+    public required string LastName { get; init; }
+    public required string Email { get; init; }
+    public required List<string> Scopes { get; init; }
+}
+
 public record OrganisationQuery
 {
     public string? Name { get; }

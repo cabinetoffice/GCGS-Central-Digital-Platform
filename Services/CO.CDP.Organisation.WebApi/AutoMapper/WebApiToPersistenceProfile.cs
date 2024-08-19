@@ -104,6 +104,9 @@ public class WebApiToPersistenceProfile : Profile
            .ReverseMap()
            .ForMember(m => m.Id, o => o.MapFrom(m => m.Guid));
 
+        CreateMap<OrganisationInformation.Persistence.Person, Model.Person>()
+            .ForMember(m => m.Id, o => o.MapFrom(m => m.Guid));
+
         ConnectedEntityMapping();
         OrganisationEventsMapping();
     }
