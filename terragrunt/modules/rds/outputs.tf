@@ -6,7 +6,7 @@ output "db_connection_secret_arn" {
   value = aws_secretsmanager_secret.db_connection_string.arn
 }
 
-output "db_credentials" {
+output "db_credentials_arn" {
   value = data.aws_secretsmanager_secret.postgres.arn
 }
 

@@ -8,8 +8,18 @@ variable "alb_sg_id" {
   type        = string
 }
 
+variable "db_entity_verification_address" {
+  description = "Entity Verification DB address"
+  type        = string
+}
+
 variable "db_entity_verification_connection_secret_arn" {
   description = "ARN of the secret holding Entity Verification DB connection string"
+  type        = string
+}
+
+variable "db_entity_verification_credentials_arn" {
+  description = "ARN of the secret holding Entity Verification DB credentials"
   type        = string
 }
 
@@ -18,8 +28,18 @@ variable "db_entity_verification_kms_arn" {
   type        = string
 }
 
+variable "db_entity_verification_name" {
+  description = "Entity Verification DB name"
+  type        = string
+}
+
 variable "db_postgres_sg_id" {
   description = "Postgres DB security group ID"
+  type        = string
+}
+
+variable "db_sirsi_address" {
+  description = "Sirsi DB address"
   type        = string
 }
 
@@ -28,8 +48,18 @@ variable "db_sirsi_connection_secret_arn" {
   type        = string
 }
 
+variable "db_sirsi_credentials_arn" {
+  description = "ARN of the secret holding Sirsi DB credentials"
+  type        = string
+}
+
 variable "db_sirsi_kms_arn" {
   description = "ARN of the KMS used to encrypt Sirsi secrets"
+  type        = string
+}
+
+variable "db_sirsi_name" {
+  description = "Sirsi DB name"
   type        = string
 }
 
@@ -225,4 +255,3 @@ variable "vpce_secretsmanager_sg_id" {
   description = "Security group ID of the Secrets Manager VPC endpoint"
   type        = string
 }
-

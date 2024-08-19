@@ -15,6 +15,10 @@ module "ecs_service_person" {
       lg_region               = data.aws_region.current.name
       memory                  = var.service_configs.person.memory
       name                    = var.service_configs.person.name
+      oi_db_address           = var.db_sirsi_address
+      oi_db_name              = var.db_sirsi_name
+      oi_db_password          = "${var.db_sirsi_credentials_arn}:username::"
+      oi_db_username          = "${var.db_sirsi_credentials_arn}:password::"
       public_hosted_zone_fqdn = var.public_hosted_zone_fqdn
       service_version         = local.service_version
       vpc_cidr                = var.vpc_cider

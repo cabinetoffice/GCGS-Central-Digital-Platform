@@ -9,7 +9,7 @@ using CO.CDP.EntityVerification.Ppon;
 using CO.CDP.MQ;
 using CO.CDP.MQ.Hosting;
 using CO.CDP.EntityVerification.UseCase;
-
+using CO.CDP.Configuration.Helpers;
 using Microsoft.EntityFrameworkCore;
 using CO.CDP.EntityVerification.Model;
 
@@ -23,7 +23,7 @@ builder.Services.AddSwaggerGen(o => o.DocumentPponApi(builder.Configuration));
 builder.Services.AddHealthChecks();
 builder.Services.AddEntityVerificationProblemDetails();
 builder.Services.AddDbContext<EntityVerificationContext>(o =>
-    o.UseNpgsql(builder.Configuration.GetConnectionString("EvDatabase")));
+    o.UseNpgsql(ConnectionStringHelper.GetConnectionString(builder.Configuration, "EntityVerificationDatabase")));
 builder.Services.AddScoped<IPponRepository, DatabasePponRepository>();
 builder.Services.AddScoped<IPponService, PponService>();
 builder.Services.AddScoped<IUseCase<LookupIdentifierQuery, IEnumerable<CO.CDP.EntityVerification.Model.Identifier>>, LookupIdentifierUseCase>();
