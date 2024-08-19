@@ -275,7 +275,7 @@ public class ConnectedEntityAddressModel(ISession session) : PageModel
                     case ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndividual:
                     case ConnectedEntityIndividualAndTrustCategoryType.DirectorOrIndividualWithTheSameResponsibilitiesForIndividual:
                     case ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndividualWithSignificantInfluenceOrControlForIndividual:
-                        heading = $"Enter {state.FirstName}'s registered address";
+                        heading = $"Enter {state.FirstName}'s postal address";
                         hintValue = "The address registered with Companies House, or the principal address the business conducts its activities. For example, a head office.";
                         break;
                 }
@@ -286,7 +286,7 @@ public class ConnectedEntityAddressModel(ISession session) : PageModel
                     case ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForTrust:
                     case ConnectedEntityIndividualAndTrustCategoryType.DirectorOrIndividualWithTheSameResponsibilitiesForTrust:
                     case ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndividualWithSignificantInfluenceOrControlForTrust:
-                        heading = $"Enter {state.FirstName}'s registered address";
+                        heading = $"Enter {state.FirstName}'s postal address";
                         hintValue = "The address registered with Companies House, or the principal address the business conducts its activities. For example, a head office.";
                         break;
                 }
