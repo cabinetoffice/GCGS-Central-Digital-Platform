@@ -182,7 +182,8 @@ public static class EndpointExtensions
                 operation.Responses["404"].Description = "Share code not found or the caller is not authorised to use it.";
                 operation.Responses["500"].Description = "Internal server error.";
                 return operation;
-            });
+            })
+            .RequireAuthorization(Constants.OrganisationApiKeyPolicy);
 
         app.MapPost("/share/data", async (ShareRequest shareRequest, IUseCase<ShareRequest, ShareReceipt> useCase) =>
                 await useCase.Execute(shareRequest)
@@ -200,7 +201,8 @@ public static class EndpointExtensions
                 operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
                 operation.Responses["500"].Description = "Internal server error.";
                 return operation;
-            }).RequireAuthorization(Constants.OrganisationKeyPolicy);
+            })
+            .RequireAuthorization(Constants.OneLoginPolicy);
 
         app.MapPost("/share/data/verify", (ShareVerificationRequest request) => Results.Ok(
                     new ShareVerificationReceipt
@@ -226,7 +228,8 @@ public static class EndpointExtensions
                 operation.Responses["404"].Description = "Share code not found or the caller is not authorised to use it.";
                 operation.Responses["500"].Description = "Internal server error.";
                 return operation;
-            });
+            })
+            .RequireAuthorization(Constants.OrganisationApiKeyPolicy);
     }
 }
 
@@ -242,6 +245,7 @@ public static class ApiExtensions
         });
         options.IncludeXmlComments(Assembly.GetExecutingAssembly(), Assembly.GetAssembly(typeof(Address)));
         options.OperationFilter<ProblemDetailsOperationFilter>(Extensions.ServiceCollectionExtensions.ErrorCodes());
+        options.ConfigureBearerSecurity();
         options.ConfigureApiKeySecurity();
     }
 }
