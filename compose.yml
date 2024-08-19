@@ -287,7 +287,7 @@ services:
       OrganisationInformationDatabase__Database: 'cdp'
       OrganisationInformationDatabase__Username: 'dp_user'
       OrganisationInformationDatabase__Password: 'cdp123'
-      wOrganisation__Authority: '${Organisation__Authority:-http://gateway:${CDP_AUTHORITY_PORT:-8092}}'
+      Organisation__Authority: '${Organisation__Authority:-http://gateway:${CDP_AUTHORITY_PORT:-8092}}'
       VERSION: dev-docker
 
   entity-verification:
