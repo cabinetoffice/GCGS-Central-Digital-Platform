@@ -18,8 +18,9 @@ public class LookupIdentifierUseCaseTest(PostgreSqlFixture postgreSql) : IClassF
     [Fact]
     public async Task Execute_IfPponIdentifierFound_ReturnsAllIdentifiers()
     {
-        var ppon = GivenPpon(pponId: "93bfe534-225a4de1a7531b69dac3afe3");
-        ppon.Identifiers = EntityVerification.Persistence.Identifier.GetPersistenceIdentifiers(GivenEventOrganisationInfo());
+        var ppon = GivenPpon(pponId: "93bfe534225a4de1a7531b69dac3afe3");
+        List<EntityVerification.Events.Identifier> givenIdentifiers = new List<EntityVerification.Events.Identifier>(GivenEventOrganisationInfo());
+        ppon.Identifiers = EntityVerification.Persistence.Identifier.GetPersistenceIdentifiers(givenIdentifiers);
 
         _repository.Save(ppon);
 
@@ -27,14 +28,16 @@ public class LookupIdentifierUseCaseTest(PostgreSqlFixture postgreSql) : IClassF
         LookupIdentifierQuery query = new LookupIdentifierQuery(testPponIdentifier);
         var foundRecord = await UseCase.Execute(query);
 
-        foundRecord.Should().BeEquivalentTo(GivenEventOrganisationInfo(), options => options.ComparingByMembers<IEnumerable<Model.Identifier?>>());
+        givenIdentifiers.Add(GetPponAsIdentifier(ppon));
+        foundRecord.Should().BeEquivalentTo(givenIdentifiers, options => options.ComparingByMembers<IEnumerable<Model.Identifier?>>());
     }
 
     [Fact]
     public async Task Execute_IfIdentifierFound_ReturnsAllIdentifiers()
     {
         var ppon = GivenPpon(pponId: "b69ffded365449f6aa4c340f5997fd2e");
-        ppon.Identifiers = EntityVerification.Persistence.Identifier.GetPersistenceIdentifiers(GivenEventOrganisationInfo());
+        List<EntityVerification.Events.Identifier> givenIdentifiers = new List<EntityVerification.Events.Identifier>(GivenEventOrganisationInfo());
+        ppon.Identifiers = EntityVerification.Persistence.Identifier.GetPersistenceIdentifiers(givenIdentifiers);
 
         _repository.Save(ppon);
 
@@ -42,7 +45,8 @@ public class LookupIdentifierUseCaseTest(PostgreSqlFixture postgreSql) : IClassF
         LookupIdentifierQuery query = new LookupIdentifierQuery(testPponIdentifier);
         var foundRecord = await UseCase.Execute(query);
 
-        foundRecord.Should().BeEquivalentTo(GivenEventOrganisationInfo(), options => options.ComparingByMembers<IEnumerable<Model.Identifier?>>());
+        givenIdentifiers.Add(GetPponAsIdentifier(ppon));
+        foundRecord.Should().BeEquivalentTo(givenIdentifiers, options => options.ComparingByMembers<IEnumerable<Model.Identifier?>>());
     }
 
     [Fact]
@@ -66,18 +70,23 @@ public class LookupIdentifierUseCaseTest(PostgreSqlFixture postgreSql) : IClassF
         {
             new EntityVerification.Events.Identifier
             {
-                Id = "01110",
+                Id = Guid.NewGuid().ToString(),
                 LegalName = "Acme",
                 Scheme = "GB-SIC",
                 Uri = new Uri("https://www.acme-ltd.com")
             },
             new EntityVerification.Events.Identifier
             {
-                Id = "12345678",
+                Id = Guid.NewGuid().ToString(),
                 LegalName = "Acme",
                 Scheme = "GB-COH",
                 Uri = new Uri("https://www.acme-ltd.com")
             }
         };
+    }
+
+    private EntityVerification.Events.Identifier GetPponAsIdentifier(EntityVerification.Persistence.Ppon ppon)
+    {
+        return new EntityVerification.Events.Identifier { Id = ppon.IdentifierId, LegalName = ppon.Name, Scheme = IdentifierSchemes.Ppon };
     }
 }
