@@ -45,7 +45,6 @@ public class ApiBearerTokenHandler(
         if (context != null)
         {
             var oneLogintoken = await context.GetTokenAsync("access_token");
-            // var expiresAt = DateTimeOffset.Parse(await context.GetTokenAsync("expires_at")).ToLocalTime();
 
             if (!string.IsNullOrWhiteSpace(oneLogintoken))
             {

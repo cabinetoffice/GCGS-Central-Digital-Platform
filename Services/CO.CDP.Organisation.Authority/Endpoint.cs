@@ -60,17 +60,17 @@ public static class EndpointExtensions
                 {
                     case GrantTypes.ClientCredentials:
                         var (valid, urn) = await service.ValidateOneLoginToken(request.ClientSecret);
-                        if (valid)
+                        if (valid && !string.IsNullOrWhiteSpace(urn))
                         {
-                            return Results.Ok(await service.CreateToken(urn!));
+                            return Results.Ok(await service.CreateToken(urn));
                         }
                         return Results.Problem(statusCode: StatusCodes.Status400BadRequest, detail: "Invalid client secret");
 
                     case GrantTypes.RefreshToken:
                         (valid, urn) = await service.ValidateRefreshToken(request.RefreshToken);
-                        if (valid)
+                        if (valid && !string.IsNullOrWhiteSpace(urn))
                         {
-                            return Results.Ok(await service.CreateToken(urn!));
+                            return Results.Ok(await service.CreateToken(urn));
                         }
                         return Results.Problem(statusCode: StatusCodes.Status400BadRequest, detail: "Invalid refresh token");
 
