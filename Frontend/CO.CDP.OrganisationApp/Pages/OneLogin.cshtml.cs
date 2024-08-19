@@ -55,11 +55,15 @@ public class OneLogin(
         try
         {
             person = await personClient.LookupPersonAsync(urn);
-            ud.PersonId = person.Id;
-            ud.FirstName = person.FirstName;
-            ud.LastName = person.LastName;
 
-            session.Set(Session.UserDetailsKey, ud);
+            ud = session.Get<UserDetails>(Session.UserDetailsKey);
+            if (ud != null)
+            {
+                ud.PersonId = person.Id;
+                ud.FirstName = person.FirstName;
+                ud.LastName = person.LastName;
+                session.Set(Session.UserDetailsKey, ud);
+            }
 
             return RedirectToPage("OrganisationSelection");
         }

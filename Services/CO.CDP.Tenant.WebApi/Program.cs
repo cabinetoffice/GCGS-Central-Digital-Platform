@@ -2,6 +2,7 @@ using System.Reflection;
 using CO.CDP.Authentication;
 using CO.CDP.Configuration.Assembly;
 using CO.CDP.Configuration.ForwardedHeaders;
+using CO.CDP.Configuration.Helpers;
 using CO.CDP.OrganisationInformation.Persistence;
 using CO.CDP.Tenant.WebApi.Api;
 using CO.CDP.Tenant.WebApi.AutoMapper;
@@ -24,7 +25,8 @@ builder.Services.AddHealthChecks();
 builder.Services.AddAutoMapper(typeof(WebApiToPersistenceProfile));
 
 builder.Services.AddDbContext<OrganisationInformationContext>(o =>
-    o.UseNpgsql(builder.Configuration.GetConnectionString("OrganisationInformationDatabase") ?? ""));
+    o.UseNpgsql(ConnectionStringHelper.GetConnectionString(builder.Configuration, "OrganisationInformationDatabase")));
+
 builder.Services.AddScoped<ITenantRepository, DatabaseTenantRepository>();
 
 builder.Services.AddScoped<IUseCase<RegisterTenant, Tenant>, RegisterTenantUseCase>();
@@ -41,7 +43,7 @@ builder.Services.AddHttpContextAccessor();
 if (Assembly.GetEntryAssembly().IsRunAs("CO.CDP.Tenant.WebApi"))
 {
     builder.Services.AddHealthChecks()
-        .AddNpgSql(builder.Configuration.GetConnectionString("OrganisationInformationDatabase") ?? "");
+        .AddNpgSql(ConnectionStringHelper.GetConnectionString(builder.Configuration, "OrganisationInformationDatabase"));
 }
 
 var app = builder.Build();

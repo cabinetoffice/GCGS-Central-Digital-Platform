@@ -15,10 +15,14 @@
     },
     "environment": [
         {"name": "ASPNETCORE_ENVIRONMENT", "value": "${aspcore_environment}"},
-        {"name": "Organisation__Authority", "value": "https://authority.${public_hosted_zone_fqdn}"}
+        {"name": "Organisation__Authority", "value": "https://authority.${public_hosted_zone_fqdn}"},
+        {"name": "OrganisationInformationDatabase__Host", "value": "${db_address}"},
+        {"name": "OrganisationInformationDatabase__Server", "value": "${db_address}"},
+        {"name": "OrganisationInformationDatabase__Database", "value": "${db_name}"}
     ],
     "secrets": [
-        {"name": "MIGRATIONS_CONNECTION_STRING", "valueFrom": "${conn_string_location}"}
+        {"name": "OrganisationInformationDatabase__Password", "valueFrom": "${db_username}"},
+        {"name": "OrganisationInformationDatabase__Username", "valueFrom": "${db_password}"}
     ],
     "volumesFrom": [],
     "mountPoints": [],

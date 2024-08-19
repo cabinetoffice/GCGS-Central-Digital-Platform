@@ -249,7 +249,14 @@
                                 Register name:
                             </dt>
                             <dd class="govuk-summary-list__value">
-                                @details.RegisterName
+                                @if (ConnectedEntityCompanyRegisterNameModel.RegisterNameType.Keys.Contains(details.RegisterName!))
+                                {
+                                    @(ConnectedEntityCompanyRegisterNameModel.RegisterNameType[details.RegisterName!])
+                                }
+                                else
+                                {
+                                    @Html.Raw($"Other<br>{details.RegisterName}")                                    
+                                }                                
                             </dd>
                             <dd class="govuk-summary-list__actions">
                                 <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/company-register-name/@Model.ConnectedEntityId?frm-chk-answer=true">

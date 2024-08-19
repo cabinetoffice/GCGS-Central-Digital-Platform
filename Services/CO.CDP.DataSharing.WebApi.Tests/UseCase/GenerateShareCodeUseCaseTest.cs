@@ -33,7 +33,6 @@ public class GenerateShareCodeUseCaseTest(AutoMapperFixture mapperFixture) : ICl
     [Fact]
     public async Task ThrowsInvalidOrganisationRequestedException_WhenShareCodeRequestedForNotAuthorisedOrganisation()
     {
-        var apiKeyOrganisationId = 1;
         var organisationId = 2;
         var organisationGuid = Guid.NewGuid();
         var formId = (Guid)default;
@@ -41,7 +40,7 @@ public class GenerateShareCodeUseCaseTest(AutoMapperFixture mapperFixture) : ICl
         var shareRequest = EntityFactory.GetShareRequest(organisationGuid: organisationGuid, formId: formId);
         var sharedConsent = EntityFactory.GetSharedConsent(organisationId: organisationId, organisationGuid: organisationGuid, formId: formId);
 
-        _claimService.Setup(x => x.GetOrganisationId()).Returns(apiKeyOrganisationId);
+        _claimService.Setup(x => x.HaveAccessToOrganisation(organisationGuid)).Returns(false);
         _organisationRepository.Setup(x => x.Find(organisationGuid)).ReturnsAsync(sharedConsent.Organisation);
 
         var shareReceipt = async () => await UseCase.Execute(shareRequest);
@@ -60,7 +59,7 @@ public class GenerateShareCodeUseCaseTest(AutoMapperFixture mapperFixture) : ICl
         var shareRequest = EntityFactory.GetShareRequest(organisationGuid: organisationGuid, formId: formId);
         var sharedConsent = EntityFactory.GetSharedConsent(organisationId: organisationId, organisationGuid: organisationGuid, formId: formId);
 
-        _claimService.Setup(x => x.GetOrganisationId()).Returns(apiKeyOrganisationId);
+        _claimService.Setup(x => x.HaveAccessToOrganisation(organisationGuid)).Returns(true);
         _organisationRepository.Setup(x => x.Find(organisationGuid)).ReturnsAsync(sharedConsent.Organisation);
         _formRepository.Setup(r => r.GetSharedConsentDraftAsync(shareRequest.FormId, shareRequest.OrganisationId)).ReturnsAsync((OrganisationInformation.Persistence.Forms.SharedConsent?)null);
 
@@ -80,7 +79,7 @@ public class GenerateShareCodeUseCaseTest(AutoMapperFixture mapperFixture) : ICl
         var shareRequest = EntityFactory.GetShareRequest(organisationGuid: organisationGuid, formId: formId);
         var sharedConsent = EntityFactory.GetSharedConsent(organisationId: organisationId, organisationGuid: organisationGuid, formId: formId);
 
-        _claimService.Setup(x => x.GetOrganisationId()).Returns(apiKeyOrganisationId);
+        _claimService.Setup(x => x.HaveAccessToOrganisation(organisationGuid)).Returns(true);
         _organisationRepository.Setup(x => x.Find(organisationGuid)).ReturnsAsync(sharedConsent.Organisation);
         _formRepository.Setup(r => r.GetSharedConsentDraftAsync(shareRequest.FormId, shareRequest.OrganisationId)).ReturnsAsync(sharedConsent);
 

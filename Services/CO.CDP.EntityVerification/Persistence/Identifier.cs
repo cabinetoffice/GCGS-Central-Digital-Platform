@@ -7,7 +7,7 @@ namespace CO.CDP.EntityVerification.Persistence;
 public class Identifier : IEntityDate
 {
     public int Id { get; set; }
-    public required string IdentifierId { get; set; }
+    public string? IdentifierId { get; set; }
     public required string Scheme { get; set; }
     public required string LegalName { get; set; }
     public Uri? Uri { get; set; }

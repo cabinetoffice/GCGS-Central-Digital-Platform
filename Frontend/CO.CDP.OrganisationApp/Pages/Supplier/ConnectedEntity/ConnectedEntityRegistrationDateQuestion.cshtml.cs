@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
+using System.Resources;
 
 namespace CO.CDP.OrganisationApp.Pages.Supplier;
 
@@ -44,6 +45,7 @@ public class ConnectedEntityRegistrationDateQuestionModel(ISession session) : Pa
     [BindProperty]
     public bool? RedirectToCheckYourAnswer { get; set; }
     public string? BackPageLink { get; set; }
+    public ConnectedEntityType? ConnectedEntityType { get; set; }
 
     public IActionResult OnGet(bool? selected)
     {
@@ -59,6 +61,8 @@ public class ConnectedEntityRegistrationDateQuestionModel(ISession session) : Pa
         }
 
         InitModal(state, true);
+
+        HasRegistartionDate = selected.HasValue ? selected : state.HasRegistartionDate;
 
         return Page();
     }
@@ -97,7 +101,10 @@ public class ConnectedEntityRegistrationDateQuestionModel(ISession session) : Pa
         { state.RegistrationDate = null; }
 
         state.HasRegistartionDate = HasRegistartionDate;
-
+        if (HasRegistartionDate == false)
+        {
+            state.RegisterName = null;
+        }
         session.Set(Session.ConnectedPersonKey, state);
 
         var checkAnswerPage = (state.ConnectedEntityType == Constants.ConnectedEntityType.Organisation
@@ -145,8 +152,34 @@ public class ConnectedEntityRegistrationDateQuestionModel(ISession session) : Pa
                 }
                 break;
             case Constants.ConnectedEntityType.Individual:
+                switch (state.ConnectedEntityIndividualAndTrustCategoryType)
+                {
+                    case ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndividual:
+                        redirectPage = HasRegistartionDate == true
+                                        ? "ConnectedEntityCompanyRegisterName"
+                                        : "ConnectedEntityCheckAnswersIndividualOrTrust";
+                        break;
+                    case ConnectedEntityIndividualAndTrustCategoryType.DirectorOrIndividualWithTheSameResponsibilitiesForIndividual:
+                        break;
+                    case ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndividualWithSignificantInfluenceOrControlForIndividual:
+                        redirectPage = "ConnectedEntityCheckAnswersIndividualOrTrust";
+                        break;
+                }
                 break;
             case Constants.ConnectedEntityType.TrustOrTrustee:
+                switch (state.ConnectedEntityIndividualAndTrustCategoryType)
+                {
+                    case ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForTrust:
+                        redirectPage = HasRegistartionDate == true
+                                        ? "ConnectedEntityCompanyRegisterName"
+                                        : "ConnectedEntityCheckAnswersIndividualOrTrust";
+                        break;
+                    case ConnectedEntityIndividualAndTrustCategoryType.DirectorOrIndividualWithTheSameResponsibilitiesForTrust:
+                        break;
+                    case ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndividualWithSignificantInfluenceOrControlForTrust:
+                        redirectPage = "ConnectedEntityCheckAnswersIndividualOrTrust";
+                        break;
+                }
                 break;
         }
 
@@ -158,7 +191,7 @@ public class ConnectedEntityRegistrationDateQuestionModel(ISession session) : Pa
         Caption = state.GetCaption();
         Heading = $"Were you required to register {state.OrganisationName} as a person with significant control?";
         BackPageLink = GetBackLinkPageName(state);
-
+        ConnectedEntityType = state.ConnectedEntityType;
         if (reset && state.RegistrationDate.HasValue)
         {
             Day = state.RegistrationDate.Value.Day.ToString();
@@ -172,7 +205,7 @@ public class ConnectedEntityRegistrationDateQuestionModel(ISession session) : Pa
         var backPage = "";
         switch (state.ConnectedEntityType)
         {
-            case ConnectedEntityType.Organisation:
+            case Constants.ConnectedEntityType.Organisation:
                 switch (state.ConnectedEntityOrganisationCategoryType)
                 {
                     case ConnectedEntityOrganisationCategoryType.RegisteredCompany:
@@ -182,20 +215,23 @@ public class ConnectedEntityRegistrationDateQuestionModel(ISession session) : Pa
 
                 }
                 break;
-            case ConnectedEntityType.Individual:
+            case Constants.ConnectedEntityType.Individual:
                 switch (state.ConnectedEntityIndividualAndTrustCategoryType)
                 {
                     case ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndividual:
-                    case ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForTrust:
-                        backPage = "";
-                        break;
                     case ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndividualWithSignificantInfluenceOrControlForIndividual:
-                    case ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndividualWithSignificantInfluenceOrControlForTrust:
-                        backPage = "";
+                        backPage = "nature-of-control";                        
                         break;
                 }
                 break;
-            case ConnectedEntityType.TrustOrTrustee:
+            case Constants.ConnectedEntityType.TrustOrTrustee:
+                switch (state.ConnectedEntityIndividualAndTrustCategoryType)
+                {
+                    case ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForTrust:                        
+                    case ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndividualWithSignificantInfluenceOrControlForTrust:
+                        backPage = "nature-of-control";
+                        break;
+                }
                 break;
         }
 
