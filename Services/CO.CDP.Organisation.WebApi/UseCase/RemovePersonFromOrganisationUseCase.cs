@@ -19,6 +19,7 @@ public class RemovePersonFromOrganisationUseCase(IOrganisationRepository organis
 
         if (person == null) return await Task.FromResult(false);
 
+        // We need to remove the person and the person invite ---- or just one if only that exists
 
         // TODO: Ask how adding and removing relationships works - Also prevent removal of own person record
         // organisation.OrganisationPersons.Remove(organisationPerson);

@@ -41,7 +41,14 @@ public class UserCheckAnswersModel(
             return RedirectToPage("AddUser", new { Id });
         }
 
-        // TODO: Create person invite
+        var personInviteCommand = new InvitePersonToOrganisation(
+            PersonInviteStateData.Email,
+            PersonInviteStateData.FirstName,
+            PersonInviteStateData.LastName,
+            PersonInviteStateData.Scopes
+        );
+
+        await organisationClient.CreatePersonInviteAsync(Id, personInviteCommand);
 
         session.Remove(PersonInviteState.TempDataKey);
 

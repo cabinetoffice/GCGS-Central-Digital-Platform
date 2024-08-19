@@ -9,13 +9,22 @@ public class InvitePersonToOrganisationUseCase(
     IPersonInviteRepository personInviteRepository,
     IMapper mapper,
     Func<Guid> guidFactory)
-    : IUseCase<InvitePersonToOrganisation, PersonInvite>
+    : IUseCase<(Guid organisationId, InvitePersonToOrganisation invitePersonData), PersonInvite>
 {
-    public async Task<PersonInvite> Execute(InvitePersonToOrganisation command)
+    public InvitePersonToOrganisationUseCase(
+        IOrganisationRepository organisationRepository,
+        IPersonInviteRepository personInviteRepository,
+        IMapper mapper
+    ) : this(organisationRepository, personInviteRepository, mapper, Guid.NewGuid)
     {
-        var organisation = await organisationRepository.Find(command.OrganisationId);
 
-        var personInvite = CreatePersonInvite(command, organisation);
+    }
+
+    public async Task<PersonInvite> Execute((Guid organisationId, InvitePersonToOrganisation invitePersonData) command)
+    {
+        var organisation = await organisationRepository.Find(command.organisationId);
+
+        var personInvite = CreatePersonInvite(command.invitePersonData, organisation);
 
         personInvite = EmailPersonInvite(personInvite);
 
@@ -24,17 +33,23 @@ public class InvitePersonToOrganisationUseCase(
         return personInvite;
     }
 
-    private OrganisationInformation.Persistence.PersonInvite CreatePersonInvite(
+    private PersonInvite CreatePersonInvite(
         InvitePersonToOrganisation command,
         CO.CDP.OrganisationInformation.Persistence.Organisation organisation
     )
     {
-        var personInvite = mapper.Map<OrganisationInformation.Persistence.PersonInvite>(command, o =>
+        var personInvite = new PersonInvite
         {
-            o.Items["Guid"] = guidFactory();
-        });
+            Guid = guidFactory(),
+            FirstName = command.FirstName,
+            LastName = command.LastName,
+            Email = command.Email,
+            Organisation = organisation,
+            Scopes = command.Scopes,
+            CreatedOn = DateTimeOffset.UtcNow,
+            UpdatedOn = DateTimeOffset.UtcNow
+        };
 
-        personInvite.Organisation = organisation;
         return personInvite;
     }
 

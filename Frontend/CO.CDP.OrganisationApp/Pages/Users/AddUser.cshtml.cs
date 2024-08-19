@@ -9,8 +9,7 @@ namespace CO.CDP.OrganisationApp.Pages.Users;
 
 [Authorize]
 public class AddUserModel(
-    ISession session,
-    IOrganisationClient organisationClient) : PageModel
+    ISession session) : PageModel
 {
     public const string ScopeAdmin = "ADMIN";
     public const string ScopeEditor = "EDITOR";

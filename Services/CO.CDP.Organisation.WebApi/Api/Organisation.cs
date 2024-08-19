@@ -9,7 +9,13 @@ using DotSwashbuckle.AspNetCore.SwaggerGen;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
+using CO.CDP.OrganisationInformation.Persistence;
+using Address = CO.CDP.OrganisationInformation.Address;
 using AuthorizationPolicyConstants = CO.CDP.Authentication.AuthorizationPolicy.Constants;
+using ConnectedEntity = CO.CDP.Organisation.WebApi.Model.ConnectedEntity;
+using ConnectedEntityLookup = CO.CDP.Organisation.WebApi.Model.ConnectedEntityLookup;
+using Person = CO.CDP.Organisation.WebApi.Model.Person;
+using PersonInvite = CO.CDP.OrganisationInformation.Persistence.PersonInvite;
 
 namespace CO.CDP.Organisation.WebApi.Api;
 
@@ -465,6 +471,34 @@ public static class EndpointExtensions
                 operation.Responses["400"].Description = "Bad request.";
                 operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
                 operation.Responses["404"].Description = "Connected Entity not found.";
+                operation.Responses["422"].Description = "Unprocessable entity.";
+                operation.Responses["500"].Description = "Internal server error.";
+                return operation;
+            });
+
+        app.MapPost("/{organisationId}/persons/person-invite",
+                async (Guid organisationId, InvitePersonToOrganisation invitePersonToOrganisation, IUseCase<(Guid, InvitePersonToOrganisation), PersonInvite> useCase) =>
+
+                    await useCase.Execute((organisationId, invitePersonToOrganisation))
+                        .AndThen(_ => Results.NoContent())
+            )
+            .Produces(StatusCodes.Status201Created)
+            .Produces(StatusCodes.Status204NoContent)
+            .ProducesProblem(StatusCodes.Status400BadRequest)
+            .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
+            .ProducesProblem(StatusCodes.Status404NotFound)
+            .ProducesProblem(StatusCodes.Status422UnprocessableEntity)
+            .ProducesProblem(StatusCodes.Status500InternalServerError)
+            .WithOpenApi(operation =>
+            {
+                operation.OperationId = "CreatePersonInvite";
+                operation.Description = "Create a new person invite.";
+                operation.Summary = "Create a new person invite.";
+                operation.Responses["201"].Description = "Person invite created successfully.";
+                operation.Responses["204"].Description = "Person invite created successfully.";
+                operation.Responses["400"].Description = "Bad request.";
+                operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
+                operation.Responses["404"].Description = "Organisation not found.";
                 operation.Responses["422"].Description = "Unprocessable entity.";
                 operation.Responses["500"].Description = "Internal server error.";
                 return operation;
