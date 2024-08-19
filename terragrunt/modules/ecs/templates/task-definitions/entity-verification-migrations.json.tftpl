@@ -15,13 +15,12 @@
     },
     "environment": [
         {"name": "ASPNETCORE_ENVIRONMENT", "value": "${aspcore_environment}"},
-        {"name": "EntityVerificationDatabase_Server", "value": "${db_address}"},
-        {"name": "EntityVerificationDatabase_Database", "value": "${db_name}"}
+        {"name": "EntityVerificationDatabase__Server", "value": "${db_address}"},
+        {"name": "EntityVerificationDatabase__Database", "value": "${db_name}"}
     ],
     "secrets": [
-        {"name": "MIGRATIONS_CONNECTION_STRING", "valueFrom": "${conn_string_location}"},
-        {"name": "EntityVerificationDatabase_Password", "valueFrom": "${db_username}"},
-        {"name": "EntityVerificationDatabase_Username", "valueFrom": "${db_password}"}
+        {"name": "EntityVerificationDatabase__Password", "valueFrom": "${db_username}"},
+        {"name": "EntityVerificationDatabase__Username", "valueFrom": "${db_password}"}
     ],
     "volumesFrom": [],
     "mountPoints": [],

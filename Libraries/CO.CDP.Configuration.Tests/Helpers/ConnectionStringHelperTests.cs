@@ -1,69 +1,88 @@
-using Moq;
 using Microsoft.Extensions.Configuration;
 using CO.CDP.Configuration.Helpers;
 using Xunit;
+using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Text.Json;
 
 namespace CO.CDP.Configuration.Tests.Helpers;
 public class ConnectionStringHelperTests
 {
     [Fact]
-    public void GetConnectionString_ReturnsCorrectConnectionString_WhenAllValuesAreProvided()
+    public void GetConnectionString_ReturnsCorrectConnectionString_WhenAllValuesAreProvidedx()
     {
-        // Arrange
-        var mockConfiguration = new Mock<IConfiguration>();
-        var connectionSection = new Mock<IConfigurationSection>();
+        var configuration = GivenConfiguration(new()
+        {
+            {"OrganisationInformationDatabase", new()
+            {
+                {"Server", "localhost"},
+                {"Database", "cdp"},
+                {"Username", "cdp_user"},
+                {"Password", "password"},
+            }}
+        });
 
-        connectionSection.Setup(x => x["Server"]).Returns("localhost");
-        connectionSection.Setup(x => x["Database"]).Returns("cdp");
-        connectionSection.Setup(x => x["Username"]).Returns("cdp_user");
-        connectionSection.Setup(x => x["Password"]).Returns("password");
+        var connectionString = ConnectionStringHelper.GetConnectionString(configuration, "OrganisationInformationDatabase");
 
-        mockConfiguration.Setup(x => x.GetSection("OrganisationInformationDatabase"))
-                         .Returns(connectionSection.Object);
-
-        // Act
-        var connectionString = ConnectionStringHelper.GetConnectionString(mockConfiguration.Object, "OrganisationInformationDatabase");
-
-        // Assert
         Assert.Equal("Server=localhost;Database=cdp;Username=cdp_user;Password=password;", connectionString);
     }
 
     [Fact]
     public void GetConnectionString_ThrowsArgumentNullException_WhenConfigurationIsNull()
     {
-        // Act & Assert
         Assert.Throws<ArgumentNullException>(() =>
-            ConnectionStringHelper.GetConnectionString(null, "OrganisationInformationDatabase"));
+            ConnectionStringHelper.GetConnectionString(null!, "OrganisationInformationDatabase"));
+    }
+
+    [Theory]
+    [InlineData("")]
+    [InlineData(null)]
+    public void GetConnectionString_ThrowsArgumentException_WhenNameIsNullOrEmpty(string? name)
+    {
+        var configuration = GivenConfiguration(new());
+        Assert.ThrowsAny<ArgumentException>(() =>
+            ConnectionStringHelper.GetConnectionString(configuration, name!));
     }
 
     [Fact]
     public void GetConnectionString_ThrowsInvalidOperationException_WhenSectionIsMissing()
     {
-        // Arrange
-        var mockConfiguration = new Mock<IConfiguration>();
-
-        mockConfiguration.Setup(x => x.GetSection("NonExistentSection")).Returns((IConfigurationSection?)null);
-
-        // Act & Assert
-        Assert.Throws<InvalidOperationException>(() =>
-            ConnectionStringHelper.GetConnectionString(mockConfiguration.Object, "NonExistentSection"));
+        var configuration = GivenConfiguration(new());
+        var ex = Assert.Throws<InvalidOperationException>(() =>
+            ConnectionStringHelper.GetConnectionString(configuration, "NonExistentSection"));
+        Assert.Equal("Connection string section 'NonExistentSection' is missing.", ex.Message);
     }
 
-    [Fact]
-    public void GetConnectionString_ThrowsInvalidOperationException_WhenPasswordIsMissing()
+    [Theory]
+    [InlineData("Server")]
+    [InlineData("Database")]
+    [InlineData("Username")]
+    [InlineData("Password")]
+    public void GetConnectionString_ThrowsInvalidOperationException_WhenRequiredKeyIsMissing(string missingKey)
     {
-        // Arrange
-        var mockConfiguration = new Mock<IConfiguration>();
-        var connectionSection = new Mock<IConfigurationSection>();
+        var configData = new Dictionary<string, string>
+            {
+                {"Server", "localhost"},
+                {"Database", "testdb"},
+                {"Username", "testuser"},
+                {"Password", "testpass"}
+            };
+        configData.Remove(missingKey);
 
-        connectionSection.Setup(x => x["Host"]).Returns("localhost");
-        connectionSection.Setup(x => x["Database"]).Returns("cdp");
-        connectionSection.Setup(x => x["Username"]).Returns("cdp_user");
+        var configuration = GivenConfiguration(new() { { "TestDatabase", configData } });
 
-        mockConfiguration.Setup(x => x.GetSection("OrganisationInformationDatabase")).Returns(connectionSection.Object);
-
-        // Act & Assert
-        Assert.Throws<InvalidOperationException>(() =>
-            ConnectionStringHelper.GetConnectionString(mockConfiguration.Object, "OrganisationInformationDatabase"));
+        var ex = Assert.Throws<InvalidOperationException>(() =>
+            ConnectionStringHelper.GetConnectionString(configuration, "TestDatabase"));
+        Assert.Equal($"Missing required connection string parameters: {missingKey}.", ex.Message);
     }
+
+
+    private static IConfiguration GivenConfiguration(Dictionary<string, Dictionary<string, string>> configuration)
+    {
+        return new ConfigurationBuilder()
+            .AddJsonStream(new MemoryStream(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(configuration))))
+            .Build();
+    }
+
 }

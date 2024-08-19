@@ -9,7 +9,10 @@
       "applicationUrl": "http://localhost:58080",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "ConnectionStrings__OrganisationInformationDatabase": "Server=localhost;Database=cdp;Username=cdp_user;Password=cdp123;"
+        "OrganisationInformationDatabase_Server": "localhost",
+        "OrganisationInformationDatabase_Database": "cdp",
+        "OrganisationInformationDatabase_Username": "cdp_user",
+        "OrganisationInformationDatabase_Password": "cdp123"
       }
     },
     "http": {
@@ -20,7 +23,10 @@
       "applicationUrl": "http://localhost:8080",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "ConnectionStrings__OrganisationInformationDatabase": "Server=localhost;Database=cdp;Username=cdp_user;Password=cdp123;"
+        "OrganisationInformationDatabase_Server": "localhost",
+        "OrganisationInformationDatabase_Database": "cdp",
+        "OrganisationInformationDatabase_Username": "cdp_user",
+        "OrganisationInformationDatabase_Password": "cdp123"
       }
     }
   }

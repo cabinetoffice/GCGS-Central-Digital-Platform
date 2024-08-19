@@ -4,20 +4,20 @@ namespace CO.CDP.Configuration.Helpers;
 
 public static class ConnectionStringHelper
 {
+    private static readonly string[] requiredKeys = new[] { "Server", "Database", "Username", "Password" };
+
     public static string GetConnectionString(IConfiguration configuration, string name)
     {
         ArgumentNullException.ThrowIfNull(configuration);
-        if (string.IsNullOrEmpty(name)) throw new ArgumentException("Connection string name cannot be null or empty.", nameof(name));
+        ArgumentException.ThrowIfNullOrEmpty(name);
 
         var connectionSettings = configuration.GetSection(name);
-        if (connectionSettings == null)
+        if (!connectionSettings.Exists())
         {
             throw new InvalidOperationException($"Connection string section '{name}' is missing.");
         }
 
-        var requiredKeys = new[] { "Server", "Database", "Username", "Password" };
         var missingKeys = requiredKeys.Where(key => string.IsNullOrEmpty(connectionSettings[key])).ToList();
-
         if (missingKeys.Any())
         {
             throw new InvalidOperationException($"Missing required connection string parameters: {string.Join(", ", missingKeys)}.");
