@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CO.CDP.OrganisationInformation.Persistence.Migrations
 {
     [DbContext(typeof(OrganisationInformationContext))]
-    [Migration("20240815121944_RefreshToken")]
+    [Migration("20240819085154_RefreshToken")]
     partial class RefreshToken
     {
         /// <inheritdoc />
@@ -363,15 +363,11 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("guid");
 
-                    b.Property<int>("OrganisationId")
-                        .HasColumnType("integer")
-                        .HasColumnName("organisation_id");
-
                     b.Property<int>("SectionId")
                         .HasColumnType("integer")
                         .HasColumnName("section_id");
 
-                    b.Property<int?>("SharedConsentId")
+                    b.Property<int>("SharedConsentId")
                         .HasColumnType("integer")
                         .HasColumnName("shared_consent_id");
 
@@ -383,9 +379,6 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
 
                     b.HasKey("Id")
                         .HasName("pk_form_answer_sets");
-
-                    b.HasIndex("OrganisationId")
-                        .HasDatabaseName("ix_form_answer_sets_organisation_id");
 
                     b.HasIndex("SectionId")
                         .HasDatabaseName("ix_form_answer_sets_section_id");
@@ -540,7 +533,6 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("BookingReference")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("booking_reference");
 
@@ -555,7 +547,6 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                         .HasColumnName("form_id");
 
                     b.Property<string>("FormVersionId")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("form_version_id");
 
@@ -571,7 +562,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("submission_state");
 
-                    b.Property<DateTimeOffset>("SubmittedAt")
+                    b.Property<DateTimeOffset?>("SubmittedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("submitted_at");
 
@@ -1073,13 +1064,6 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
 
             modelBuilder.Entity("CO.CDP.OrganisationInformation.Persistence.Forms.FormAnswerSet", b =>
                 {
-                    b.HasOne("CO.CDP.OrganisationInformation.Persistence.Organisation", "Organisation")
-                        .WithMany()
-                        .HasForeignKey("OrganisationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_form_answer_sets_organisations_organisation_id");
-
                     b.HasOne("CO.CDP.OrganisationInformation.Persistence.Forms.FormSection", "Section")
                         .WithMany()
                         .HasForeignKey("SectionId")
@@ -1087,14 +1071,16 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                         .IsRequired()
                         .HasConstraintName("fk_form_answer_sets_form_section_section_id");
 
-                    b.HasOne("CO.CDP.OrganisationInformation.Persistence.Forms.SharedConsent", null)
+                    b.HasOne("CO.CDP.OrganisationInformation.Persistence.Forms.SharedConsent", "SharedConsent")
                         .WithMany("AnswerSets")
                         .HasForeignKey("SharedConsentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
                         .HasConstraintName("fk_form_answer_sets_shared_consents_shared_consent_id");
 
-                    b.Navigation("Organisation");
-
                     b.Navigation("Section");
+
+                    b.Navigation("SharedConsent");
                 });
 
             modelBuilder.Entity("CO.CDP.OrganisationInformation.Persistence.Forms.FormQuestion", b =>
@@ -1272,7 +1258,6 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                                 .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                             b1.Property<string>("IdentifierId")
-                                .IsRequired()
                                 .HasColumnType("text")
                                 .HasColumnName("identifier_id");
 
@@ -1309,6 +1294,10 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
 
                             b1.HasIndex("OrganisationId")
                                 .HasDatabaseName("ix_identifiers_organisation_id");
+
+                            b1.HasIndex("IdentifierId", "Scheme")
+                                .IsUnique()
+                                .HasDatabaseName("ix_identifiers_identifier_id_scheme");
 
                             b1.ToTable("identifiers", (string)null);
 
