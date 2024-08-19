@@ -3,6 +3,7 @@
 
 @{
     var hasError = ((TagBuilder)Html.ValidationMessageFor(m => m.HasPerson)).HasInnerHtml;
+    var totalPersons = Model.Persons.Count + Model.PersonInvites.Count;
 }
 
 <a href="/organisation" class="govuk-back-link">Back</a>
@@ -14,7 +15,7 @@
         </div>
         <div class="govuk-grid-column-full">
             <h1 class="govuk-heading-l">
-                Organisation has @(Model.Persons.Count == 1 ? "1 user" : $"{Model.Persons.Count} users")
+                Organisation has @(totalPersons == 1 ? "1 user" : $"{totalPersons} users")
             </h1>
 
             @foreach (var p in Model.Persons)
@@ -23,8 +24,27 @@
                     <div class="govuk-summary-list__row">
                         <dt class="govuk-summary-list__key">
                             @p.FirstName @p.LastName
+                            @foreach(var scope in p.Scopes)
+                            {
+                                if (scope == "ADMIN")
+                                {
+                                    <span class="govuk-tag">Admin</span>
+                                }
+
+                                if (scope == "EDITOR")
+                                {
+                                    <span class="govuk-tag govuk-tag--green">Editor</span>
+                                }
+
+                                if (scope == "VIEWER")
+                                {
+                                    <span class="govuk-tag govuk-tag--yellow">Viewer</span>
+                                }
+                            }
                         </dt>
-                        <dd class="govuk-summary-list__value"></dd>
+                        <dd class="govuk-summary-list__value">
+                            @p.Email
+                        </dd>
                         <dd class="govuk-summary-list__actions">
                             <ul class="govuk-summary-list__actions-list">
                                 <li class="govuk-summary-list__actions-list-item">
@@ -45,8 +65,28 @@
                     <div class="govuk-summary-list__row">
                         <dt class="govuk-summary-list__key">
                             @p.FirstName @p.LastName
+                            @foreach(var scope in p.Scopes)
+                            {
+                                if (scope == "ADMIN")
+                                {
+                                    <span class="govuk-tag">Admin</span>
+                                }
+
+                                if (scope == "EDITOR")
+                                {
+                                    <span class="govuk-tag govuk-tag--green">Editor</span>
+                                }
+
+                                if (scope == "VIEWER")
+                                {
+                                    <span class="govuk-tag govuk-tag--yellow">Viewer</span>
+                                }
+                            }
+                            <div class="govuk-hint">Invite sent</div>
                         </dt>
-                        <dd class="govuk-summary-list__value"></dd>
+                        <dd class="govuk-summary-list__value">
+                            @p.Email
+                        </dd>
                         <dd class="govuk-summary-list__actions">
                             <ul class="govuk-summary-list__actions-list">
                                 <li class="govuk-summary-list__actions-list-item">
