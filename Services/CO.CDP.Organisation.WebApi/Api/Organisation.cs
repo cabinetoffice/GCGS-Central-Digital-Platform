@@ -476,6 +476,28 @@ public static class EndpointExtensions
                 return operation;
             });
 
+        app.MapGet("/{organisationId}/persons/person-invites",
+                async (Guid organisationId, IUseCase<Guid, IEnumerable<PersonInviteModel>> useCase) =>
+                    await useCase.Execute(organisationId)
+                        .AndThen(personInvites => personInvites != null ? Results.Ok(personInvites) : Results.NotFound()))
+            .Produces<List<PersonInviteModel>>(StatusCodes.Status200OK, "application/json")
+            .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
+            .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
+            .ProducesProblem(StatusCodes.Status422UnprocessableEntity)
+            .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError)
+            .WithOpenApi(operation =>
+            {
+                operation.OperationId = "GetOrganisationPersonInvites";
+                operation.Description = "Get person invites by Organisation ID.";
+                operation.Summary = "Get person invites by Organisation ID.";
+                operation.Responses["200"].Description = "Person invite details.";
+                operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
+                operation.Responses["404"].Description = "Person invite information not found.";
+                operation.Responses["422"].Description = "Unprocessable entity.";
+                operation.Responses["500"].Description = "Internal server error.";
+                return operation;
+            });
+
         app.MapPost("/{organisationId}/persons/person-invite",
                 async (Guid organisationId, InvitePersonToOrganisation invitePersonToOrganisation, IUseCase<(Guid, InvitePersonToOrganisation), PersonInvite> useCase) =>
 

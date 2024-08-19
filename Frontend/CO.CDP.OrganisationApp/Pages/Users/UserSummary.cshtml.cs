@@ -15,6 +15,8 @@ public class UserSummaryModel(
 
     [BindProperty] public ICollection<Organisation.WebApiClient.Person> Persons { get; set; } = [];
 
+    [BindProperty] public ICollection<PersonInviteModel> PersonInvites { get; set; } = [];
+
     [BindProperty]
     [Required(ErrorMessage = "Select yes to add another user")]
     public bool? HasPerson { get; set; }
@@ -29,7 +31,11 @@ public class UserSummaryModel(
 
         try
         {
+            // These are the ones that have been fully added
             Persons = await organisationClient.GetOrganisationPersonsAsync(Id);
+
+            // These are the invites
+            PersonInvites = await organisationClient.GetOrganisationPersonInvitesAsync(Id);
         }
         catch (ApiException ex) when (ex.StatusCode == 404)
         {
