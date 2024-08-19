@@ -58,6 +58,12 @@ public class DatabaseFormRepository(OrganisationInformationContext context) : IF
             .FirstOrDefaultAsync(s => s.Form.Guid == formId && s.Organisation.Guid == organisationId);
     }
 
+   public async Task<IEnumerable<SharedConsent>> GetShareCodesAsync(Guid organisationId)
+    {
+        return await context.Set<SharedConsent>()
+            .Where(x => x.SubmissionState == SubmissionState.Submitted && x.Organisation.Guid == organisationId).ToListAsync();            
+    }
+
     #endregion
 
     #region Question Methods
