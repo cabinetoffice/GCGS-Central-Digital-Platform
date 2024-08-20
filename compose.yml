@@ -101,6 +101,7 @@ services:
         EntityVerificationDatabase__Database: 'cdp'
         EntityVerificationDatabase__Username: 'cdp_user'
         EntityVerificationDatabase__Password: 'cdp123'
+        Organisation__Authority: '${Organisation__Authority:-http://gateway:${CDP_AUTHORITY_PORT:-8092}}'
 
   organisation-app:
     container_name: co-cdp-organisation-app
@@ -319,4 +320,6 @@ services:
       EntityVerificationDatabase__Database: 'cdp'
       EntityVerificationDatabase__Username: 'cdp_user'
       EntityVerificationDatabase__Password: 'cdp123'
+      Organisation__Authority: '${Organisation__Authority:-http://gateway:${CDP_AUTHORITY_PORT:-8092}}'
       VERSION: dev-docker
+      
