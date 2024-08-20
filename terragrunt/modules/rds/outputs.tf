@@ -2,10 +2,6 @@ output "db_address" {
   value = aws_db_instance.postgres.address
 }
 
-output "db_connection_secret_arn" {
-  value = aws_secretsmanager_secret.db_connection_string.arn
-}
-
 output "db_credentials_arn" {
   value = data.aws_secretsmanager_secret.postgres.arn
 }
