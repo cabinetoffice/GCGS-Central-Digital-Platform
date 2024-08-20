@@ -198,7 +198,7 @@ public class ConnectedEntityCheckAnswersIndividualOrTrustTest
 
         redirectToPageResult.PageName.Should().Be(expectedRedirectPage);
 
-        _model.BackPageLink.Should().Contain(expectedBackPageName);
+        _model.BackPageLink.Should().Be(expectedBackPageName);
     }
 
     private ConnectedEntityState DummyConnectedPersonDetails()
