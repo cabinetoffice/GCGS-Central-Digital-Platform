@@ -9,8 +9,11 @@ public class SharedConsent : IEntityDate
     public required Guid Guid { get; set; }
 
     [ForeignKey(nameof(Organisation))]
-    public int OrganisationId { get; set; }
+    public required int OrganisationId { get; set; }
     public required Organisation Organisation { get; set; }
+
+    [ForeignKey(nameof(Form))]
+    public required int FormId { get; set; }
     public required Form Form { get; init; }
     public required ICollection<FormAnswerSet> AnswerSets { get; init; } = [];
     public required SubmissionState SubmissionState { get; set; } = SubmissionState.Draft;
@@ -58,7 +61,11 @@ public class FormAnswerSet : IEntityDate
 {
     public int Id { get; set; }
     public required Guid Guid { get; set; }
+    [ForeignKey(nameof(SharedConsent))]
+    public required int SharedConsentId { get; set; }
     public required SharedConsent SharedConsent { get; set; }
+    [ForeignKey(nameof(Section))]
+    public required int SectionId { get; set; }
     public required FormSection Section { get; init; }
     public required ICollection<FormAnswer> Answers { get; set; } = [];
     public bool Deleted { get; set; } = false;

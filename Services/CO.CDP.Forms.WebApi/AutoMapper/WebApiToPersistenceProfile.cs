@@ -44,6 +44,8 @@ public class WebApiToPersistenceProfile : Profile
 
         CreateMap<Persistence.FormAnswerSet, Model.FormAnswerSet>()
               .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Guid));
+
+        CreateMap<Persistence.FormSectionSummary, Model.FormSectionSummary>();
     }
 
     private static DateTime? ToUtc(DateTime? dateTime) => dateTime?.ToUniversalTime();

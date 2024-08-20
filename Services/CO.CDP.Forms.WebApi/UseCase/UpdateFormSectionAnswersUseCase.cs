@@ -135,6 +135,7 @@ public class UpdateFormSectionAnswersUseCase(
             OrganisationId = organisation.Id,
             Organisation = organisation,
             Form = form,
+            FormId = form.Id,
             FormVersionId = form.Version,
             SubmissionState = Persistence.SubmissionState.Draft,
             SubmittedAt = DateTimeOffset.UtcNow,
@@ -148,7 +149,9 @@ public class UpdateFormSectionAnswersUseCase(
         answerSet = new Persistence.FormAnswerSet
         {
             Guid = answerSetId,
+            SharedConsentId = sharedConsent.Id,
             SharedConsent = sharedConsent,
+            SectionId = section.Id,
             Section = section,
             Answers = [],
         };

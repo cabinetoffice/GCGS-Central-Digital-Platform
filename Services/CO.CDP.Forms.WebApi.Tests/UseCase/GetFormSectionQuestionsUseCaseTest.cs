@@ -44,6 +44,7 @@ public class GetFormSectionQuestionsUseCaseTest(AutoMapperFixture mapperFixture)
             Id = 1,
             Guid = sectionId,
             Title = "Financial Information",
+            FormId = form.Id,
             Form = form,
             Questions = new List<CO.CDP.OrganisationInformation.Persistence.Forms.FormQuestion>(),
             AllowsMultipleAnswerSets = true,
