@@ -35,6 +35,6 @@ public class GenerateShareCodeUseCase(
 
         await formRepository.SaveSharedConsentAsync(result);
 
-        return mapper.Map<SharedConsent, ShareReceipt>(result);
+        return mapper.Map<OrganisationInformation.Persistence.Forms.SharedConsent, ShareReceipt>(result);
     }
 }

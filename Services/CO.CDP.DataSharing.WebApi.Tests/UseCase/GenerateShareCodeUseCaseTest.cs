@@ -2,7 +2,6 @@ using CO.CDP.DataSharing.WebApi.Model;
 using CO.CDP.DataSharing.WebApi.UseCase;
 using CO.CDP.DataSharing.WebApi.Tests.AutoMapper;
 using CO.CDP.OrganisationInformation.Persistence;
-using CO.CDP.OrganisationInformation.Persistence.Forms;
 using FluentAssertions;
 using Moq;
 using CO.CDP.Authentication;
@@ -62,7 +61,7 @@ public class GenerateShareCodeUseCaseTest(AutoMapperFixture mapperFixture) : ICl
 
         _claimService.Setup(x => x.HaveAccessToOrganisation(organisationGuid)).Returns(true);
         _organisationRepository.Setup(x => x.Find(organisationGuid)).ReturnsAsync(sharedConsent.Organisation);
-        _formRepository.Setup(r => r.GetSharedConsentDraftAsync(shareRequest.FormId, shareRequest.OrganisationId)).ReturnsAsync((SharedConsent?)null);
+        _formRepository.Setup(r => r.GetSharedConsentDraftAsync(shareRequest.FormId, shareRequest.OrganisationId)).ReturnsAsync((OrganisationInformation.Persistence.Forms.SharedConsent?)null);
 
         var shareReceipt = async () => await UseCase.Execute(shareRequest);
 

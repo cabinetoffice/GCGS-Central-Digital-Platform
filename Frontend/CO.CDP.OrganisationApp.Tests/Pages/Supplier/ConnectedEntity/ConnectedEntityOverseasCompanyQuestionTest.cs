@@ -117,7 +117,34 @@ public class ConnectedEntityOverseasCompanyQuestionTest
         _sessionMock.Verify(s => s.Set(Session.ConnectedPersonKey, It.Is<ConnectedEntityState>(st => st.ConnectedEntityType == Constants.ConnectedEntityType.Organisation)), Times.Once);
 
     }
+    [Theory]
+    [InlineData(false, ConnectedEntityType.Organisation, ConnectedEntityOrganisationCategoryType.RegisteredCompany, "ConnectedEntityControlCondition", "company-question")]
+    [InlineData(false, ConnectedEntityType.Organisation, ConnectedEntityOrganisationCategoryType.DirectorOrTheSameResponsibilities, "ConnectedEntityCheckAnswersOrganisation", "company-question")]
+    [InlineData(false, ConnectedEntityType.Organisation, ConnectedEntityOrganisationCategoryType.ParentOrSubsidiaryCompany, "ConnectedEntityCheckAnswersOrganisation", "company-question")]
+    [InlineData(false, ConnectedEntityType.Organisation, ConnectedEntityOrganisationCategoryType.ACompanyYourOrganisationHasTakenOver, "ConnectedEntityCompanyInsolvencyDate", "company-question")]
+    [InlineData(false, ConnectedEntityType.Organisation, ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl, "ConnectedEntityControlCondition", "company-question")]
+    public void OnPost_BackPageNameShouldBeExpectedPage(
+            bool yesJourney,
+            ConnectedEntityType connectedEntityType,
+            ConnectedEntityOrganisationCategoryType organisationCategoryType,
+            string expectedRedirectPage,
+            string expectedBackPageName)
+    {
+        var state = DummyConnectedPersonDetails();
 
+        state.SupplierHasCompanyHouseNumber = yesJourney;
+        state.ConnectedEntityType = connectedEntityType;
+        state.ConnectedEntityOrganisationCategoryType = organisationCategoryType;
+        
+        _sessionMock.Setup(s => s.Get<ConnectedEntityState>(Session.ConnectedPersonKey)).
+            Returns(state);
+
+        var result = _model.OnPost();
+
+        var redirectToPageResult = result.Should().BeOfType<RedirectToPageResult>().Subject;
+        redirectToPageResult.PageName.Should().Be(expectedRedirectPage);
+        _model.BackPageLink.Should().Be(expectedBackPageName);
+    }
     private ConnectedEntityState DummyConnectedPersonDetails()
     {
         var connectedPersonDetails = new ConnectedEntityState

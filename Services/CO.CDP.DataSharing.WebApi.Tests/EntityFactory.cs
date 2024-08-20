@@ -15,9 +15,9 @@ internal static class EntityFactory
         };
     }
 
-    internal static SharedConsent GetSharedConsent(int organisationId, Guid organisationGuid, Guid formId)
+    internal static OrganisationInformation.Persistence.Forms.SharedConsent GetSharedConsent(int organisationId, Guid organisationGuid, Guid formId)
     {
-        return new SharedConsent()
+        return new OrganisationInformation.Persistence.Forms.SharedConsent()
         {
             Guid = formId,
             OrganisationId = organisationId,
