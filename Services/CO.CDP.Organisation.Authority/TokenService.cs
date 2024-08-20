@@ -146,7 +146,7 @@ public class TokenService(
         await authorityRepository.Save(new RefreshToken
         {
             TokenHash = tokenHash,
-            ExpiryDate = DateTime.Now.AddSeconds(tokenExpiry)
+            ExpiryDate = DateTime.UtcNow.AddSeconds(tokenExpiry)
         });
 
         return $"{password}:{Convert.ToBase64String(salt)}";
