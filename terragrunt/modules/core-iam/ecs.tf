@@ -17,13 +17,6 @@ resource "aws_iam_role_policy_attachment" "ecs_task_exec_generic" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 
-resource "aws_iam_role" "db_connection_step_function" {
-  name               = "${local.name_prefix}-step-function-manage-secret"
-  assume_role_policy = data.aws_iam_policy_document.states_assume.json
-
-  tags = var.tags
-}
-
 resource "aws_iam_role" "service_deployer_step_function" {
   name               = "${local.name_prefix}-step-function-manage-services"
   assume_role_policy = data.aws_iam_policy_document.states_assume.json
