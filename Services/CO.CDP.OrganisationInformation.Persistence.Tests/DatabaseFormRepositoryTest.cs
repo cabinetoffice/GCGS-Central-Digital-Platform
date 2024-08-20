@@ -8,6 +8,64 @@ namespace CO.CDP.OrganisationInformation.Persistence.Tests;
 public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFixture<PostgreSqlFixture>
 {
     [Fact]
+    public async Task GetFormSummaryAsync_WhenFormDoesNotExists_ReturnsEmptyCollection()
+    {
+        using var repository = FormRepository();
+
+        var summaries = await repository.GetFormSummaryAsync(Guid.NewGuid(), Guid.NewGuid());
+
+        summaries.Should().HaveCount(0);
+    }
+
+    [Fact]
+    public async Task GetFormSummaryAsync_WhenAnswerSetNotExists_ReturnsAnswerSetCountAsZero()
+    {
+        var formId = Guid.NewGuid();
+        var sectionId = Guid.NewGuid();
+        var form = GivenForm(formId: formId);
+        var sharedConsent = GivenSharedConsent(form);
+        var section = GivenSection(sectionId, form);
+
+        await using var context = postgreSql.OrganisationInformationContext();
+        await context.Forms.AddAsync(form);
+        await context.Set<FormSection>().AddAsync(section);
+        await context.SharedConsents.AddAsync(sharedConsent);
+        await context.SaveChangesAsync();
+
+        using var repository = FormRepository();
+
+        var summaries = await repository.GetFormSummaryAsync(formId, sharedConsent.Organisation.Guid);
+
+        summaries.Should().HaveCount(1);
+        summaries.First().SectionId.Should().Be(sectionId);
+        summaries.First().AnswerSetCount.Should().Be(0);
+    }
+
+    [Fact]
+    public async Task GetFormSummaryAsync_WhenAnswerSetExists_ReturnsCorrectAnswerSetCount()
+    {
+        var formId = Guid.NewGuid();
+        var sectionId = Guid.NewGuid();
+        var form = GivenForm(formId: formId);
+        var sharedConsent = GivenSharedConsent(form);
+        var section = GivenSection(sectionId, form);
+        GivenAnswerSet(sharedConsent: sharedConsent, section: section);
+
+        await using var context = postgreSql.OrganisationInformationContext();
+        await context.Forms.AddAsync(form);
+        await context.SharedConsents.AddAsync(sharedConsent);
+        await context.SaveChangesAsync();
+
+        using var repository = FormRepository();
+
+        var summaries = await repository.GetFormSummaryAsync(formId, sharedConsent.Organisation.Guid);
+
+        summaries.Should().HaveCount(1);
+        summaries.First().SectionId.Should().Be(sectionId);
+        summaries.First().AnswerSetCount.Should().Be(1);
+    }
+
+    [Fact]
     public async Task GetSectionAsync_WhenSectionDoesNotExist_ReturnsNull()
     {
         using var repository = FormRepository();
