@@ -592,6 +592,7 @@ pre.rouge .gs {
 <li><a href="#_3_applying_database_migrations">3. Applying database migrations</a></li>
 <li><a href="#_4_error_handling_and_validation">4. Error Handling and Validation</a></li>
 <li><a href="#_5_database_naming_conventions">5. Database naming conventions</a></li>
+<li><a href="#_6_acceptance_tests">6. Acceptance tests</a></li>
 </ul>
 </li>
 </ul>
@@ -2072,13 +2073,189 @@ if they&#8217;re not lower-cased:</p>
 </div>
 </div>
 </div>
+<div class="sect3">
+<h4 id="_6_acceptance_tests">6. Acceptance tests</h4>
+<div class="paragraph">
+<p>Date: 2024-05-28</p>
+</div>
+<div class="sect4">
+<h5 id="_status_6">Status</h5>
+<div class="paragraph">
+<p>Draft</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_context_7">Context</h5>
+<div class="paragraph">
+<p>We heavily rely on developer tests for small units of isolated code.
+For various reasons, we have not developed an acceptance test suite so far.
+As the project and the team matures, acceptance tests would be helpful
+to clearly state business requirements and make them self-verifiable as tests.</p>
+</div>
+<div class="paragraph">
+<p>These tests would be run end-to-end as much as possible and therefore verify
+user journeys better.</p>
+</div>
+<div class="paragraph">
+<p>We should still be conscious of costs that such tests bring and attempt to make them
+as lightweight as possible. The frontend is not javascript heavy and there&#8217;s no need
+to run these tests in a browser most of the time.</p>
+</div>
+<div class="sect5">
+<h6 id="_option_1_xunit">Option 1: xUnit</h6>
+<div class="paragraph">
+<p>Use a library like <a href="https://github.com/JasperFx/alba">Alba</a> or <a href="https://playwright.dev/dotnet/docs/intro">Playwright</a>
+directly in xUnit tests to exercise the Frontend application.
+Start all the application services with the
+<a href="https://learn.microsoft.com/en-us/aspnet/core/test/integration-tests?view=aspnetcore-8.0">dotnet web application factory</a>,
+and any external dependencies (like the database) with <a href="https://github.com/testcontainers/testcontainers-dotnet">Testcontainers</a>.</p>
+</div>
+<div class="paragraph">
+<p>Alba integrates very well with dotnet core applications out of the box. It&#8217;s possible to run and customise the application
+in-memory, without a need to execute tests in a browser.</p>
+</div>
+<div class="paragraph">
+<p>Playwright is a very well established tool.
+With a <a href="https://www.innovensa.co.uk/blog/in-memory-automated-ui-testing-aspnetcore">little bit of customisation</a> it should also
+be possible to run it against the application run in-memory, but it&#8217;s not available out of the box.</p>
+</div>
+<div class="paragraph">
+<p>Advantages:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>We continue using the technology we&#8217;re familiar with</p>
+</li>
+<li>
+<p>It&#8217;s fast to write tests</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Disadvantages:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Tests focus on "How" rather than "What", i.e. tests describe visiting pages and filling out forms, rather
+than tasks that users try to accomplish (i.e. Provide company information). This could be improved by introducing
+a layer of abstraction on top of user actions.</p>
+</li>
+<li>
+<p>Tests are only readable by developers and can only be maintained by developers.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect5">
+<h6 id="_option_2_specflow">Option 2: SpecFlow</h6>
+<div class="paragraph">
+<p><a href="https://specflow.org/">SpecFlow</a> is the industry standard for acceptance tests in dotnet.</p>
+</div>
+<div class="paragraph">
+<p>It&#8217;s great advantage is a separation of "What" from the "How". Tests can be expressed in a business language:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="gherkin"><span class="kd">Feature</span><span class="p">:</span> Confirming Personal Name on Supplier Information Portal
+
+    As a representative of an organisation
+    I want to confirm my first and last name
+    So that my personal identity is correctly associated with the organisation's profile.
+
+    <span class="kn">Scenario</span><span class="p">:</span> Successfully confirming a user's name
+        <span class="nf">Given </span>the user is on the 'Confirm your name' page
+        <span class="nf">When </span>the user enters their first and last name into the input fields
+        <span class="nf">And </span>clicks the 'Continue' button
+        <span class="nf">Then </span>the user should be taken to the next step in the registration process</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>It&#8217;s a structured language, called Gherkin.</p>
+</div>
+<div class="paragraph">
+<p>Scenarios like the one above are then translated to actions (navigating to a page, making an api call etc).</p>
+</div>
+<div class="paragraph">
+<p>Advantages:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Human-readable tests, a separation of "How" from "What".</p>
+</li>
+<li>
+<p>Tests could be written by QAs (to some extent).</p>
+</li>
+<li>
+<p>Nice reports available out of the box.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Disadvantages:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>SpecFlow requires an IDE plugin that is not kept up to date for some IDEs (like Rider)</p>
+</li>
+<li>
+<p>Tests can be executed with xunit, but the IDE plugin is required.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect5">
+<h6 id="_option_3_xunit_gherkin_quick">Option 3: Xunit.Gherkin.Quick</h6>
+<div class="paragraph">
+<p><a href="https://github.com/ttutisani/Xunit.Gherkin.Quick">Quick</a> is a lightweight "BDD" framework, similar to SpecFlow.
+It also enables us write tests as human-readable scenarios in Gherkin.
+The main difference to SpecFlow is that it&#8217;s built on top of xUnit.</p>
+</div>
+<div class="paragraph">
+<p>Advantages:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Human-readable tests, a separation of "How" from "What".</p>
+</li>
+<li>
+<p>Tests could be written by QAs (to some extent).</p>
+</li>
+<li>
+<p>xUnit integration. All the tools we use in xUnit can be used here (like testcontainers).</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Disadvantages:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>It&#8217;s less popular than SpecFlow.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_decision_5">Decision</h5>
+<div class="paragraph">
+<p>TBD</p>
+</div>
+</div>
+</div>
 </div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2024-08-20 11:29:57 UTC
+Last updated 2024-08-20 11:47:12 UTC
 </div>
 </div>
 </body>
