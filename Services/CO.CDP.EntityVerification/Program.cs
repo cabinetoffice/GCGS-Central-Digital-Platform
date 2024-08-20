@@ -51,7 +51,9 @@ if (Assembly.GetEntryAssembly().IsRunAs("CO.CDP.EntityVerification"))
     builder.Services.AddHostedService<DispatcherBackgroundService>();
 }
 
-builder.Services.AddJwtBearerAuthentication(builder.Configuration, builder.Environment);
+builder.Services
+    .AddAuthentication()
+    .AddJwtBearerAuthentication(builder.Configuration, builder.Environment);
 builder.Services.AddEntityVerificationAuthorization();
 
 var app = builder.Build();
