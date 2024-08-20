@@ -61,7 +61,8 @@ public class DatabaseFormRepository(OrganisationInformationContext context) : IF
    public async Task<IEnumerable<SharedConsent>> GetShareCodesAsync(Guid organisationId)
     {
         return await context.Set<SharedConsent>()
-            .Where(x => x.SubmissionState == SubmissionState.Submitted && x.Organisation.Guid == organisationId).ToListAsync();            
+            .Where(x => x.SubmissionState == SubmissionState.Submitted && x.Organisation.Guid == organisationId)
+            .OrderByDescending(y=>y.SubmittedAt).ToListAsync();            
     }
 
     #endregion
