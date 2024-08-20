@@ -135,7 +135,6 @@ public class ConnectedEntityLegalFormQuestionModel(ISession session) : PageModel
                 {
                     case ConnectedEntityOrganisationCategoryType.RegisteredCompany:
                     case ConnectedEntityOrganisationCategoryType.DirectorOrTheSameResponsibilities:
-                        //backPage = $"law-register";
                         if ((state.RegisteredAddress?.AreSameAddress(state.PostalAddress) ?? false) == true)
                         {
                             backPage = $"postal-address-same-as-registered";
