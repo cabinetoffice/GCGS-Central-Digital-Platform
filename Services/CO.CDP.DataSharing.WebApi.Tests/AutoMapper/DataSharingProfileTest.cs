@@ -1,4 +1,5 @@
-namespace CO.CDP.DataSharing.Tests.AutoMapper;
+namespace CO.CDP.DataSharing.WebApi.Tests.AutoMapper;
+
 public class DataSharingProfileTest(AutoMapperFixture mapperFixture) : IClassFixture<AutoMapperFixture>
 {
     [Fact]

@@ -131,7 +131,9 @@ public class ConnectedEntityControlConditionModel(ISession session) : PageModel
                 {
                     case ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndividual:
                     case ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndividualWithSignificantInfluenceOrControlForIndividual:
-                        redirectPage = "ConnectedEntityCompanyRegistrationDate";
+                        redirectPage = state.SupplierHasCompanyHouseNumber == true
+                                        ? "ConnectedEntityCompanyRegistrationDate"
+                                        : "ConnectedEntityRegistrationDateQuestion";
                         break;
                 }
                 break;
@@ -140,7 +142,9 @@ public class ConnectedEntityControlConditionModel(ISession session) : PageModel
                 {
                     case ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForTrust:
                     case ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndividualWithSignificantInfluenceOrControlForTrust:
-                        redirectPage = "ConnectedEntityCompanyRegistrationDate";
+                        redirectPage = state.SupplierHasCompanyHouseNumber == true
+                                        ? "ConnectedEntityCompanyRegistrationDate"
+                                        : "ConnectedEntityRegistrationDateQuestion";
                         break;
                 }
                 break;
@@ -160,7 +164,9 @@ public class ConnectedEntityControlConditionModel(ISession session) : PageModel
                     case ConnectedEntityOrganisationCategoryType.RegisteredCompany:
                         backPage = state.SupplierHasCompanyHouseNumber == true
                                     ? "company-question"
-                                    : "overseas-company-question";
+                                    : (state.HasCompaniesHouseNumber.HasValue && state.HasCompaniesHouseNumber == true)
+                                        ? "company-question"
+                                        : "overseas-company-question";
                         break;
                     case ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl:
                         backPage = (state.HasCompaniesHouseNumber.HasValue &&
@@ -175,7 +181,7 @@ public class ConnectedEntityControlConditionModel(ISession session) : PageModel
                 {
                     case ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndividual:
                     case ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndividualWithSignificantInfluenceOrControlForIndividual:
-                        backPage = $"{AddressType.Registered}-address/{(state.RegisteredAddress?.Country == Country.UnitedKingdom ? "uk" : "non-uk")}";
+                        backPage = $"{AddressType.Registered}-address/{(string.Equals(state.RegisteredAddress?.Country, Country.UnitedKingdom, StringComparison.OrdinalIgnoreCase) ? "uk" : "non-uk")}";
                         break;
                 }
                 break;
@@ -184,7 +190,7 @@ public class ConnectedEntityControlConditionModel(ISession session) : PageModel
                 {
                     case ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForTrust:
                     case ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndividualWithSignificantInfluenceOrControlForTrust:
-                        backPage = $"{AddressType.Registered}-address/{(state.RegisteredAddress?.Country == Country.UnitedKingdom ? "uk" : "non-uk")}";
+                        backPage = $"{AddressType.Registered}-address/{(string.Equals(state.RegisteredAddress?.Country, Country.UnitedKingdom, StringComparison.OrdinalIgnoreCase) ? "uk" : "non-uk")}";
                         break;
                 }
                 break;

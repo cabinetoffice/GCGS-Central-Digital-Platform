@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Http;
 using CO.CDP.DataSharing.WebApi.Extensions;
 using CO.CDP.DataSharing.WebApi.Model;
 
-namespace DataSharing.Tests.Extensions;
+namespace CO.CDP.DataSharing.WebApi.Tests.Extensions;
 
 public class ServiceCollectionExtensionsTests
 {

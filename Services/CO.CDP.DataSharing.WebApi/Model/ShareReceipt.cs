@@ -9,8 +9,7 @@ public record ShareReceipt
     public required Guid FormId { get; init; }
 
     /// <example>"20240429"</example>
-    [Required]
-    public required string FormVersionId { get; init; }
+    public string? FormVersionId { get; init; }
 
     /// <example>"f53dee53-cf59-4725-9285-44f8960507b9"</example>
     [Required]

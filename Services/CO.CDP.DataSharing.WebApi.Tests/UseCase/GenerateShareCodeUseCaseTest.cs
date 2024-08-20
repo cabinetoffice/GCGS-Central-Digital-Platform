@@ -1,13 +1,12 @@
 using CO.CDP.DataSharing.WebApi.Model;
 using CO.CDP.DataSharing.WebApi.UseCase;
-using CO.CDP.DataSharing.Tests.AutoMapper;
+using CO.CDP.DataSharing.WebApi.Tests.AutoMapper;
 using CO.CDP.OrganisationInformation.Persistence;
-using CO.CDP.OrganisationInformation.Persistence.Forms;
 using FluentAssertions;
 using Moq;
 using CO.CDP.Authentication;
 
-namespace DataSharing.Tests.UseCase;
+namespace CO.CDP.DataSharing.WebApi.Tests.UseCase;
 
 public class GenerateShareCodeUseCaseTest(AutoMapperFixture mapperFixture) : IClassFixture<AutoMapperFixture>
 {
@@ -34,7 +33,6 @@ public class GenerateShareCodeUseCaseTest(AutoMapperFixture mapperFixture) : ICl
     [Fact]
     public async Task ThrowsInvalidOrganisationRequestedException_WhenShareCodeRequestedForNotAuthorisedOrganisation()
     {
-        var apiKeyOrganisationId = 1;
         var organisationId = 2;
         var organisationGuid = Guid.NewGuid();
         var formId = (Guid)default;
@@ -42,7 +40,7 @@ public class GenerateShareCodeUseCaseTest(AutoMapperFixture mapperFixture) : ICl
         var shareRequest = EntityFactory.GetShareRequest(organisationGuid: organisationGuid, formId: formId);
         var sharedConsent = EntityFactory.GetSharedConsent(organisationId: organisationId, organisationGuid: organisationGuid, formId: formId);
 
-        _claimService.Setup(x => x.GetOrganisationId()).Returns(apiKeyOrganisationId);
+        _claimService.Setup(x => x.HaveAccessToOrganisation(organisationGuid)).Returns(false);
         _organisationRepository.Setup(x => x.Find(organisationGuid)).ReturnsAsync(sharedConsent.Organisation);
 
         var shareReceipt = async () => await UseCase.Execute(shareRequest);
@@ -61,9 +59,9 @@ public class GenerateShareCodeUseCaseTest(AutoMapperFixture mapperFixture) : ICl
         var shareRequest = EntityFactory.GetShareRequest(organisationGuid: organisationGuid, formId: formId);
         var sharedConsent = EntityFactory.GetSharedConsent(organisationId: organisationId, organisationGuid: organisationGuid, formId: formId);
 
-        _claimService.Setup(x => x.GetOrganisationId()).Returns(apiKeyOrganisationId);
+        _claimService.Setup(x => x.HaveAccessToOrganisation(organisationGuid)).Returns(true);
         _organisationRepository.Setup(x => x.Find(organisationGuid)).ReturnsAsync(sharedConsent.Organisation);
-        _formRepository.Setup(r => r.GetSharedConsentDraftAsync(shareRequest.FormId, shareRequest.OrganisationId)).ReturnsAsync((SharedConsent?)null);
+        _formRepository.Setup(r => r.GetSharedConsentDraftAsync(shareRequest.FormId, shareRequest.OrganisationId)).ReturnsAsync((OrganisationInformation.Persistence.Forms.SharedConsent?)null);
 
         var shareReceipt = async () => await UseCase.Execute(shareRequest);
 
@@ -81,7 +79,7 @@ public class GenerateShareCodeUseCaseTest(AutoMapperFixture mapperFixture) : ICl
         var shareRequest = EntityFactory.GetShareRequest(organisationGuid: organisationGuid, formId: formId);
         var sharedConsent = EntityFactory.GetSharedConsent(organisationId: organisationId, organisationGuid: organisationGuid, formId: formId);
 
-        _claimService.Setup(x => x.GetOrganisationId()).Returns(apiKeyOrganisationId);
+        _claimService.Setup(x => x.HaveAccessToOrganisation(organisationGuid)).Returns(true);
         _organisationRepository.Setup(x => x.Find(organisationGuid)).ReturnsAsync(sharedConsent.Organisation);
         _formRepository.Setup(r => r.GetSharedConsentDraftAsync(shareRequest.FormId, shareRequest.OrganisationId)).ReturnsAsync(sharedConsent);
 

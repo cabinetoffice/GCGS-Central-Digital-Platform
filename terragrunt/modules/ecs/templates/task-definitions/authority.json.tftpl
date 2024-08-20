@@ -23,13 +23,17 @@
         {"name": "ASPNETCORE_ENVIRONMENT", "value": "${aspcore_environment}"},
         {"name": "ASPNETCORE_HTTP_PORTS", "value": "${host_port}"},
         {"name": "ForwardedHeaders__KnownNetwork", "value": "${vpc_cidr}"},
+        {"name": "OrganisationInformationDatabase__Host", "value": "${oi_db_address}"},
+        {"name": "OrganisationInformationDatabase__Server", "value": "${oi_db_address}"},
+        {"name": "OrganisationInformationDatabase__Database", "value": "${oi_db_name}"},
         {"name": "Issuer", "value": "https://authority.${public_hosted_zone_fqdn}"},
         {"name": "VERSION", "value": "${service_version}"}
     ],
     "secrets": [
-        {"name": "ConnectionStrings__OrganisationInformationDatabase", "valueFrom": "${conn_string_location}"},
         {"name": "OneLogin__Authority", "valueFrom": "${onelogin_authority}"},
         {"name": "OneLogin__ClientId", "valueFrom": "${onelogin_client_id}"},
+        {"name": "OrganisationInformationDatabase__Password", "valueFrom": "${oi_db_username}"},
+        {"name": "OrganisationInformationDatabase__Username", "valueFrom": "${oi_db_password}"},
         {"name": "PrivateKey", "valueFrom": "${authority_private_key}"}
     ],
     "volumesFrom": [],

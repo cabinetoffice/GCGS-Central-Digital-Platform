@@ -1,5 +1,6 @@
 using CO.CDP.Mvc.Validation;
 using CO.CDP.OrganisationApp.Constants;
+using CO.CDP.OrganisationApp.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -11,8 +12,7 @@ namespace CO.CDP.OrganisationApp.Pages.Supplier;
 [Authorize]
 public class ConnectedEntityCompanyRegisterNameModel(ISession session) : PageModel
 {
-    private const string OPTION_COMPANIES_HOUSE = "Companies House";
-    private const string OPTION_OTHER = "other";
+    private const string OPTION_OTHER = "Other";
 
     [BindProperty(SupportsGet = true)]
     public Guid Id { get; set; }
@@ -25,8 +25,8 @@ public class ConnectedEntityCompanyRegisterNameModel(ISession session) : PageMod
     public string? RegisterName { get; set; }
 
     [BindProperty]
-    [DisplayName("Other register name cannot be blank")]
-    [RequiredIf("RegisterName", "other")]
+    [DisplayName("Other register name")]
+    [RequiredIf("RegisterName", "Other")]
     public string? RegisterNameInput { get; set; }
 
     [BindProperty]
@@ -66,12 +66,7 @@ public class ConnectedEntityCompanyRegisterNameModel(ISession session) : PageMod
 
         if (!ModelState.IsValid) return Page();
 
-        state.RegisterName = RegisterName;
-
-        if (RegisterName == OPTION_OTHER)
-        {
-            state.RegisterName = RegisterNameInput;
-        }
+        state.RegisterName = RegisterName != OPTION_OTHER ? RegisterName : RegisterNameInput;
 
         session.Set(Session.ConnectedPersonKey, state);
 
@@ -86,6 +81,7 @@ public class ConnectedEntityCompanyRegisterNameModel(ISession session) : PageMod
 
     private void InitModal(ConnectedEntityState state, bool reset = false)
     {
+        Caption = state.GetCaption();
         Heading = $"Select where {state.OrganisationName} is registered as person with significant control";
         ConnectedEntityType = state.ConnectedEntityType;
         SupplierHasCompanyHouseNumber = state.SupplierHasCompanyHouseNumber ?? false;
@@ -95,7 +91,7 @@ public class ConnectedEntityCompanyRegisterNameModel(ISession session) : PageMod
         {
             RegisterName = state.RegisterName;
 
-            if (!string.IsNullOrEmpty(RegisterName) && RegisterName != OPTION_COMPANIES_HOUSE)
+            if (!string.IsNullOrEmpty(RegisterName) && !RegisterNameType.ContainsKey(RegisterName))
             {
                 RegisterName = OPTION_OTHER;
                 RegisterNameInput = state.RegisterName;
@@ -199,4 +195,9 @@ public class ConnectedEntityCompanyRegisterNameModel(ISession session) : PageMod
 
         return backPage;
     }
+
+    public static Dictionary<string, string> RegisterNameType => new()
+    {
+        { "CompaniesHouse", "People with significant control register on Companies House" }
+    };
 }

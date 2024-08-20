@@ -1,3 +1,4 @@
+using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Pages.Supplier;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
@@ -116,7 +117,66 @@ public class ConnectedEntityRegistrationDateQuestionTest
 
         var redirectToPageResult = result.Should().BeOfType<RedirectToPageResult>().Subject;
 
+        redirectToPageResult.PageName.Should().Be(expectedRedirectPage);        
+    }
+
+    [Theory]
+    [InlineData(ConnectedEntityType.Organisation, ConnectedEntityOrganisationCategoryType.RegisteredCompany, null, true, "ConnectedEntityCompanyRegisterName", false, "nature-of-control")]    
+    [InlineData(ConnectedEntityType.Organisation, ConnectedEntityOrganisationCategoryType.RegisteredCompany, null, false, "ConnectedEntityCheckAnswersOrganisation", false, "nature-of-control")]    
+    [InlineData(ConnectedEntityType.Organisation, ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl, null, true, "ConnectedEntityControlCondition", false, "company-question", true)]
+    [InlineData(ConnectedEntityType.Organisation, ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl, null, false, "ConnectedEntityOverseasCompanyQuestion", false, "nature-of-control", false)]
+    [InlineData(ConnectedEntityType.Organisation, ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl, null, false, "ConnectedEntityControlCondition", false, "company-question", true)]
+    [InlineData(ConnectedEntityType.Individual, null, ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndividual, true, "ConnectedEntityCompanyRegisterName", false, "nature-of-control")]
+    [InlineData(ConnectedEntityType.Individual, null, ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndividual, false, "ConnectedEntityCheckAnswersIndividualOrTrust", false, "nature-of-control")]
+    [InlineData(ConnectedEntityType.Individual, null, ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndividualWithSignificantInfluenceOrControlForIndividual, false, "ConnectedEntityCheckAnswersIndividualOrTrust", false, "nature-of-control")]
+    [InlineData(ConnectedEntityType.Individual, null, ConnectedEntityIndividualAndTrustCategoryType.DirectorOrIndividualWithTheSameResponsibilitiesForIndividual, false, "", false, "")]
+    [InlineData(ConnectedEntityType.TrustOrTrustee, null, ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForTrust, true, "ConnectedEntityCompanyRegisterName", false, "nature-of-control")]
+    [InlineData(ConnectedEntityType.TrustOrTrustee, null, ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForTrust, false, "ConnectedEntityCheckAnswersIndividualOrTrust", false, "nature-of-control")]
+    [InlineData(ConnectedEntityType.TrustOrTrustee, null, ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndividualWithSignificantInfluenceOrControlForTrust, false, "ConnectedEntityCheckAnswersIndividualOrTrust", false, "nature-of-control")]
+    [InlineData(ConnectedEntityType.TrustOrTrustee, null, ConnectedEntityIndividualAndTrustCategoryType.DirectorOrIndividualWithTheSameResponsibilitiesForTrust, false, "", false, "")]
+    [InlineData(ConnectedEntityType.Organisation, ConnectedEntityOrganisationCategoryType.RegisteredCompany, null, true, "ConnectedEntityCheckAnswersOrganisation", true, "nature-of-control")]
+    [InlineData(ConnectedEntityType.Organisation, ConnectedEntityOrganisationCategoryType.RegisteredCompany, null, false, "ConnectedEntityCheckAnswersOrganisation", true, "nature-of-control")]
+    [InlineData(ConnectedEntityType.Organisation, ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl, null, true, "ConnectedEntityCheckAnswersOrganisation", true, "company-question", true)]
+    [InlineData(ConnectedEntityType.Organisation, ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl, null, false, "ConnectedEntityCheckAnswersOrganisation", true, "nature-of-control", false)]
+    [InlineData(ConnectedEntityType.Organisation, ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl, null, false, "ConnectedEntityCheckAnswersOrganisation", true, "company-question", true)]
+    [InlineData(ConnectedEntityType.Individual, null, ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndividual, true, "ConnectedEntityCheckAnswersIndividualOrTrust", true, "nature-of-control")]
+    [InlineData(ConnectedEntityType.Individual, null, ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndividual, false, "ConnectedEntityCheckAnswersIndividualOrTrust", true, "nature-of-control")]
+    [InlineData(ConnectedEntityType.Individual, null, ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndividualWithSignificantInfluenceOrControlForIndividual, false, "ConnectedEntityCheckAnswersIndividualOrTrust", true, "nature-of-control")]
+    [InlineData(ConnectedEntityType.TrustOrTrustee, null, ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForTrust, true, "ConnectedEntityCheckAnswersIndividualOrTrust", true, "nature-of-control")]
+    [InlineData(ConnectedEntityType.TrustOrTrustee, null, ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForTrust, false, "ConnectedEntityCheckAnswersIndividualOrTrust", true, "nature-of-control")]
+    [InlineData(ConnectedEntityType.TrustOrTrustee, null, ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndividualWithSignificantInfluenceOrControlForTrust, false, "ConnectedEntityCheckAnswersIndividualOrTrust", true, "nature-of-control")]
+    public void OnPost_ShouldRedirectToExpectedPage_AndSetBackPageLink_WhenModelStateIsValid(
+        ConnectedEntityType connectedEntityType,
+        ConnectedEntityOrganisationCategoryType? organisationCategoryType,
+        ConnectedEntityIndividualAndTrustCategoryType? individualAndTrustCategoryType,
+        bool hasRegistrationDate,
+        string expectedRedirectPage,
+        bool redirectToCheckYourAnswer,
+        string expectedBackPageLink,
+        bool hasCompanyHouseNumber = false)
+    {
+        SetValidDate();
+        _model.HasRegistartionDate = hasRegistrationDate;
+
+        var state = DummyConnectedPersonDetails();
+        state.HasCompaniesHouseNumber = hasCompanyHouseNumber;
+        state.ConnectedEntityType = connectedEntityType;
+        state.ConnectedEntityOrganisationCategoryType = organisationCategoryType;
+        state.ConnectedEntityIndividualAndTrustCategoryType = individualAndTrustCategoryType;
+        state.HasRegistartionDate = hasRegistrationDate;
+        state.RegistrationDate = hasRegistrationDate == true ? DateTime.UtcNow : null;
+        
+
+        _sessionMock.Setup(s => s.Get<ConnectedEntityState>(Session.ConnectedPersonKey)).
+            Returns(state);
+        _model.RedirectToCheckYourAnswer = redirectToCheckYourAnswer;
+
+        var result = _model.OnPost();
+
+        var redirectToPageResult = result.Should().BeOfType<RedirectToPageResult>().Subject;
+
         redirectToPageResult.PageName.Should().Be(expectedRedirectPage);
+        _model.BackPageLink.Should().Be(expectedBackPageLink);
     }
 
     [Fact]

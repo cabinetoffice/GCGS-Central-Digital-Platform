@@ -1,4 +1,5 @@
 using CO.CDP.AwsServices;
+using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -57,6 +58,9 @@ public class DynamicFormsPageModel(
     [BindProperty]
     public bool? RedirectToCheckYourAnswer { get; set; }
 
+    [BindProperty]
+    public string? SectionTitle { get; set; }
+
     public string EncType => CurrentFormQuestionType == FormQuestionType.FileUpload
         ? "multipart/form-data" : "application/x-www-form-urlencoded";
 
@@ -111,9 +115,16 @@ public class DynamicFormsPageModel(
             var answerSet = tempDataService.PeekOrDefault<FormQuestionAnswerState>(FormQuestionAnswerStateKey);
             await formsEngine.SaveUpdateAnswers(FormId, SectionId, OrganisationId, answerSet);
 
-            tempDataService.Remove(FormQuestionAnswerStateKey);
+            if (SectionTitle == SectionTitles.DECLARATIONINFORMATION)
+            {
+                return RedirectToPage("/ShareInformation/ShareCodeConfirmation", new { OrganisationId, FormId, SectionId });
+            }
+            else
+            {
+                tempDataService.Remove(FormQuestionAnswerStateKey);
+                return RedirectToPage("FormsAddAnotherAnswerSet", new { OrganisationId, FormId, SectionId });
+            }
 
-            return RedirectToPage("FormsAddAnotherAnswerSet", new { OrganisationId, FormId, SectionId });
         }
 
         Guid? nextQuestionId;
@@ -135,11 +146,12 @@ public class DynamicFormsPageModel(
         var answerSet = tempDataService.PeekOrDefault<FormQuestionAnswerState>(FormQuestionAnswerStateKey);
 
         var form = await formsEngine.GetFormSectionAsync(OrganisationId, FormId, SectionId);
+        SectionTitle = form?.Section?.Title;
 
         List<AnswerSummary> summaryList = [];
         foreach (var answer in answerSet.Answers)
         {
-            var question = form.Questions.FirstOrDefault(q => q.Id == answer.QuestionId);
+            var question = form?.Questions.FirstOrDefault(q => q.Id == answer.QuestionId);
             if (question != null && question.Type != FormQuestionType.NoInput && question.Type != FormQuestionType.CheckYourAnswers)
             {
                 string answerString = question.Type switch
@@ -196,6 +208,14 @@ public class DynamicFormsPageModel(
 
     private async Task<FormQuestion?> InitModel(bool reset = false)
     {
+        var isShareDataPage = tempDataService.PeekOrDefault<bool>($"ShareData_{OrganisationId}_{FormId}_{SectionId}_Page");
+
+        if (isShareDataPage)
+        {
+            CurrentQuestionId = await CheckYourAnswerQuestionId();
+            tempDataService.Remove($"ShareData_{OrganisationId}_{FormId}_{SectionId}_Page");
+        }
+
         var currentQuestion = await formsEngine.GetCurrentQuestion(OrganisationId, FormId, SectionId, CurrentQuestionId);
         if (currentQuestion == null)
             return null;

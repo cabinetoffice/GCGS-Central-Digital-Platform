@@ -6,9 +6,17 @@
     var ukNonUkRegisterAddress = details.RegisteredAddress!.IsNonUk ? "non-uk" : "uk";
     var backLink = $"/organisation/{Model.Id}/supplier-information/connected-person/{Model.BackPageLink}/{Model.ConnectedEntityId}";
 
+    var registerDatePage = details.SupplierHasCompanyHouseNumber == false ? "date-registered-question" : "date-registered";
+
     if (Model.ConnectedEntityId != null)
     {
         backLink = $"/organisation/{Model.Id}/supplier-information/connected-person/connected-person-summary";
+    }
+
+    var registrationLink = $"/organisation/{Model.Id}/supplier-information/connected-person/{registerDatePage}/{Model.ConnectedEntityId}?frm-chk-answer=true";
+    if (Model.ShowRegisterDate)
+    {        
+        registrationLink += details.HasRegistartionDate.HasValue ? "" : "&selected=false";
     }
 }
 
@@ -132,19 +140,47 @@
                         </div>
                     }
 
-                    @if (details.RegistrationDate.HasValue)
+                    @if (Model.ShowRegisterDate)
                     {
                         <div class="govuk-summary-list__row">
                             <dt class="govuk-summary-list__key">
-                                Registered date:
+                                Registered as PSC:
                             </dt>
                             <dd class="govuk-summary-list__value">
-                                @details.RegistrationDate.Value.ToString("dd/MM/yyyy")
+                                @Html.Raw(details.RegistrationDate.HasValue == true
+                                    ? $"Yes<br>On {details.RegistrationDate.Value.ToString("dd/MM/yyyy")}"
+                                    : "No")
                             </dd>
                             <dd class="govuk-summary-list__actions">
-                                <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/date-registered/@Model.ConnectedEntityId?frm-chk-answer=true">
+                                <a class="govuk-link" href="@registrationLink">
                                     Change<span class="govuk-visually-hidden">
                                         the registered date
+                                    </span>
+                                </a>
+                            </dd>
+                        </div>
+                    }
+
+                    @if (!string.IsNullOrWhiteSpace(details.RegisterName))
+                    {
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">
+                                Register name:
+                            </dt>
+                            <dd class="govuk-summary-list__value">
+                                @if (ConnectedEntityCompanyRegisterNameModel.RegisterNameType.Keys.Contains(details.RegisterName!))
+                                {
+                                    @(ConnectedEntityCompanyRegisterNameModel.RegisterNameType[details.RegisterName!])
+                                }
+                                else
+                                {
+                                    @Html.Raw($"Other<br>{details.RegisterName}")
+                                }
+                            </dd>
+                            <dd class="govuk-summary-list__actions">
+                                <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/company-register-name/@Model.ConnectedEntityId?frm-chk-answer=true">
+                                    Change<span class="govuk-visually-hidden">
+                                        the registered name
                                     </span>
                                 </a>
                             </dd>

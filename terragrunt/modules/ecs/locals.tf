@@ -20,6 +20,8 @@ locals {
 
   orchestrator_service_version = data.aws_ssm_parameter.orchestrator_service_version.value
 
+  service_version = var.pinned_service_version == null ? data.aws_ssm_parameter.orchestrator_service_version.value : var.pinned_service_version
+
   migrations = ["organisation-information-migrations", "entity-verification-migrations"]
 
   migration_configs = {

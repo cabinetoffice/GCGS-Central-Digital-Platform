@@ -8,7 +8,7 @@ module "kms" {
   key_admin_role           = var.role_terraform_arn
   key_alias                = "rds-${var.db_name}"
   key_usage                = "ENCRYPT_DECRYPT"
-  key_user_arns            = [var.role_cloudwatch_events_arn, var.role_db_connection_step_function_arn]
+  key_user_arns            = []
   other_aws_accounts       = {}
   tags                     = var.tags
 }

@@ -182,7 +182,8 @@ public static class EndpointExtensions
                 operation.Responses["404"].Description = "Share code not found or the caller is not authorised to use it.";
                 operation.Responses["500"].Description = "Internal server error.";
                 return operation;
-            });
+            })
+            .RequireAuthorization(Constants.OrganisationApiKeyPolicy);
 
         app.MapPost("/share/data", async (ShareRequest shareRequest, IUseCase<ShareRequest, ShareReceipt> useCase) =>
                 await useCase.Execute(shareRequest)
@@ -200,7 +201,8 @@ public static class EndpointExtensions
                 operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
                 operation.Responses["500"].Description = "Internal server error.";
                 return operation;
-            }).RequireAuthorization(Constants.OrganisationKeyPolicy);
+            })
+            .RequireAuthorization(Constants.OneLoginPolicy);
 
         app.MapPost("/share/data/verify", (ShareVerificationRequest request) => Results.Ok(
                     new ShareVerificationReceipt
@@ -226,7 +228,31 @@ public static class EndpointExtensions
                 operation.Responses["404"].Description = "Share code not found or the caller is not authorised to use it.";
                 operation.Responses["500"].Description = "Internal server error.";
                 return operation;
-            });
+            })
+            .RequireAuthorization(Constants.OrganisationApiKeyPolicy);
+
+
+        app.MapGet("/share/organisations/{organisationId}/codes", async (Guid organisationId,
+            IUseCase<Guid, List<Model.SharedConsent>?> useCase) =>
+        await useCase.Execute(organisationId)
+             .AndThen(sectionQuestions => sectionQuestions != null ? Results.Ok(sectionQuestions) : Results.NotFound()))
+             .Produces<List<Model.SharedConsent>>(StatusCodes.Status200OK, "application/json")
+             .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
+             .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
+             .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError)
+             .WithOpenApi(operation =>
+             {
+                 operation.OperationId = "GetShareCodeList";
+                 operation.Description = "Get Share Code List.";
+                 operation.Summary = "Get a list of Share Code for a Organisation.";
+                 operation.Responses["200"].Description = "List of Share Code.";
+                 operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
+                 operation.Responses["404"].Description = "Organisation not found.";
+                 operation.Responses["500"].Description = "Internal server error.";
+                 return operation;
+             })
+            .RequireAuthorization(Constants.OrganisationApiKeyPolicy);
+
     }
 }
 
@@ -242,6 +268,7 @@ public static class ApiExtensions
         });
         options.IncludeXmlComments(Assembly.GetExecutingAssembly(), Assembly.GetAssembly(typeof(Address)));
         options.OperationFilter<ProblemDetailsOperationFilter>(Extensions.ServiceCollectionExtensions.ErrorCodes());
+        options.ConfigureBearerSecurity();
         options.ConfigureApiKeySecurity();
     }
 }

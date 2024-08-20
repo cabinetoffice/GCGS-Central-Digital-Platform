@@ -84,7 +84,7 @@ public class ConnectedEntityCompanyRegistrationDateModel(ISession session) : Pag
         {
             ModelState.AddModelError(nameof(RegistrationDate), "Date of registration must be a real date");
             return Page();
-        }        
+        }
 
         state.RegistrationDate = new DateTimeOffset(parsedDate, TimeSpan.FromHours(0));
 
@@ -130,6 +130,8 @@ public class ConnectedEntityCompanyRegistrationDateModel(ISession session) : Pag
                 switch (state.ConnectedEntityIndividualAndTrustCategoryType)
                 {
                     case ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndividual:
+                        redirectPage = "ConnectedEntityCompanyRegisterName";
+                        break;
                     case ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndividualWithSignificantInfluenceOrControlForIndividual:
                         redirectPage = "ConnectedEntityCheckAnswersIndividualOrTrust";
                         break;
@@ -139,6 +141,8 @@ public class ConnectedEntityCompanyRegistrationDateModel(ISession session) : Pag
                 switch (state.ConnectedEntityIndividualAndTrustCategoryType)
                 {
                     case ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForTrust:
+                        redirectPage = "ConnectedEntityCompanyRegisterName";
+                        break;
                     case ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndividualWithSignificantInfluenceOrControlForTrust:
                         redirectPage = "ConnectedEntityCheckAnswersIndividualOrTrust";
                         break;

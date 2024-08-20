@@ -6,7 +6,6 @@ module "ecs_service_authority" {
     {
       aspcore_environment     = local.aspcore_environment
       authority_private_key   = "${data.aws_secretsmanager_secret.authority_keys.arn}:PRIVATE::"
-      conn_string_location    = var.db_sirsi_connection_secret_arn
       container_port          = var.service_configs.authority.port
       cpu                     = var.service_configs.authority.cpu
       host_port               = var.service_configs.authority.port
@@ -16,11 +15,15 @@ module "ecs_service_authority" {
       lg_region               = data.aws_region.current.name
       memory                  = var.service_configs.authority.memory
       name                    = var.service_configs.authority.name
+      oi_db_address           = var.db_sirsi_address
+      oi_db_name              = var.db_sirsi_name
+      oi_db_password          = "${var.db_sirsi_credentials_arn}:username::"
+      oi_db_username          = "${var.db_sirsi_credentials_arn}:password::"
       onelogin_authority      = local.one_loging.credential_locations.authority
       onelogin_client_id      = local.one_loging.credential_locations.client_id
       onelogin_private_key    = local.one_loging.credential_locations.private_key
       public_hosted_zone_fqdn = var.public_hosted_zone_fqdn
-      service_version         = local.orchestrator_service_version
+      service_version         = local.service_version
       vpc_cidr                = var.vpc_cider
     }
   )

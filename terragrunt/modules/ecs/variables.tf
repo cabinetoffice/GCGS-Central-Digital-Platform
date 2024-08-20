@@ -8,8 +8,13 @@ variable "alb_sg_id" {
   type        = string
 }
 
-variable "db_entity_verification_connection_secret_arn" {
-  description = "ARN of the secret holding Entity Verification DB connection string"
+variable "db_entity_verification_address" {
+  description = "Entity Verification DB address"
+  type        = string
+}
+
+variable "db_entity_verification_credentials_arn" {
+  description = "ARN of the secret holding Entity Verification DB credentials"
   type        = string
 }
 
@@ -18,18 +23,33 @@ variable "db_entity_verification_kms_arn" {
   type        = string
 }
 
+variable "db_entity_verification_name" {
+  description = "Entity Verification DB name"
+  type        = string
+}
+
 variable "db_postgres_sg_id" {
   description = "Postgres DB security group ID"
   type        = string
 }
 
-variable "db_sirsi_connection_secret_arn" {
-  description = "ARN of the secret holding Sirsi DB connection string"
+variable "db_sirsi_address" {
+  description = "Sirsi DB address"
+  type        = string
+}
+
+variable "db_sirsi_credentials_arn" {
+  description = "ARN of the secret holding Sirsi DB credentials"
   type        = string
 }
 
 variable "db_sirsi_kms_arn" {
   description = "ARN of the KMS used to encrypt Sirsi secrets"
+  type        = string
+}
+
+variable "db_sirsi_name" {
+  description = "Sirsi DB name"
   type        = string
 }
 
@@ -41,6 +61,12 @@ variable "ecs_sg_id" {
 variable "environment" {
   description = "The environment we are provisioning"
   type        = string
+}
+
+variable "pinned_service_version" {
+  description = "The service version for the this environment. If null, latest version from Orchestration will be used"
+  type        = string
+  default     = null
 }
 
 variable "private_subnet_ids" {
@@ -219,4 +245,3 @@ variable "vpce_secretsmanager_sg_id" {
   description = "Security group ID of the Secrets Manager VPC endpoint"
   type        = string
 }
-

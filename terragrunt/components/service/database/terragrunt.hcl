@@ -23,10 +23,6 @@ locals {
 dependency core_iam {
   config_path = "../../core/iam"
   mock_outputs = {
-    cloudwatch_events_arn            = "mock"
-    cloudwatch_events_name           = "mock"
-    db_connection_step_function_arn  = "mock"
-    db_connection_step_function_name = "mock"
     terraform_arn                    = "mock"
   }
 }
@@ -56,9 +52,5 @@ inputs = {
 
   db_postgres_sg_id = dependency.core_security_group.outputs.db_postgres_sg_id
 
-  role_cloudwatch_events_arn            = dependency.core_iam.outputs.cloudwatch_events_arn
-  role_cloudwatch_events_name           = dependency.core_iam.outputs.cloudwatch_events_name
-  role_db_connection_step_function_arn  = dependency.core_iam.outputs.db_connection_step_function_arn
-  role_db_connection_step_function_name = dependency.core_iam.outputs.db_connection_step_function_name
-  role_terraform_arn                    = dependency.core_iam.outputs.terraform_arn
+  role_terraform_arn = dependency.core_iam.outputs.terraform_arn
 }

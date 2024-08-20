@@ -5,7 +5,6 @@ module "ecs_service_entity_verification" {
     "${path.module}/templates/task-definitions/${var.service_configs.entity_verification.name}.json.tftpl",
     {
       aspcore_environment                 = local.aspcore_environment
-      conn_string_location                = var.db_entity_verification_connection_secret_arn
       container_port                      = var.service_configs.entity_verification.port
       cpu                                 = var.service_configs.entity_verification.cpu
       host_port                           = var.service_configs.entity_verification.port
@@ -15,10 +14,14 @@ module "ecs_service_entity_verification" {
       lg_region                           = data.aws_region.current.name
       memory                              = var.service_configs.entity_verification.memory
       name                                = var.service_configs.entity_verification.name
+      ev_db_address                       = var.db_entity_verification_address
+      ev_db_name                          = var.db_entity_verification_name
+      ev_db_password                      = "${var.db_entity_verification_credentials_arn}:username::"
+      ev_db_username                      = "${var.db_entity_verification_credentials_arn}:password::"
       public_hosted_zone_fqdn             = var.public_hosted_zone_fqdn
       queue_entity_verification_queue_url = var.queue_entity_verification_queue_url
       queue_organisation_queue_url        = var.queue_organisation_queue_url
-      service_version                     = local.orchestrator_service_version
+      service_version                     = local.service_version
       vpc_cidr                            = var.vpc_cider
     }
   )
