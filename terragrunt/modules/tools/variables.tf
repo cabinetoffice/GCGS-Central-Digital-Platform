@@ -8,7 +8,7 @@ variable "db_entity_verification_address" {
   type        = string
 }
 
-variable "db_entity_verification_credentials" {
+variable "db_entity_verification_credentials_arn" {
   description = "Entity Verification database secret ARN"
   type        = string
 }
@@ -29,7 +29,7 @@ variable "db_sirsi_address" {
   type        = string
 }
 
-variable "db_sirsi_credentials" {
+variable "db_sirsi_credentials_arn" {
   description = "Sirsi database secret ARN"
   type        = string
 }

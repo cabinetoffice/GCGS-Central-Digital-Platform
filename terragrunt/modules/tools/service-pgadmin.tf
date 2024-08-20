@@ -9,10 +9,10 @@ module "ecs_service_pgadmin" {
       cpu                             = var.pgadmin_config.cpu
       db_entity_verification_address  = var.db_entity_verification_address
       db_entity_verification_name     = var.db_entity_verification_name
-      db_entity_verification_username = "${var.db_entity_verification_credentials}:username::"
+      db_entity_verification_username = "${var.db_entity_verification_credentials_arn}:username::"
       db_sirsi_address                = var.db_sirsi_address
       db_sirsi_name                   = var.db_sirsi_name
-      db_sirsi_username               = "${var.db_sirsi_credentials}:username::"
+      db_sirsi_username               = "${var.db_sirsi_credentials_arn}:username::"
       pgadmin_admin_password          = "${aws_secretsmanager_secret.pgadmin_credentials.arn}:ADMIN_PASSWORD::"
       pgadmin_admin_user              = "${aws_secretsmanager_secret.pgadmin_credentials.arn}:ADMIN_USERNAME::"
       host_port                       = var.pgadmin_config.port

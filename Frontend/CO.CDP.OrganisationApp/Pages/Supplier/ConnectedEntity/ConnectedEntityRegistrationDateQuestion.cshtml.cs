@@ -139,13 +139,6 @@ public class ConnectedEntityRegistrationDateQuestionModel(ISession session) : Pa
                     case ConnectedEntityOrganisationCategoryType.RegisteredCompany:
                         redirectPage = HasRegistartionDate == true ? "ConnectedEntityCompanyRegisterName" : "ConnectedEntityCheckAnswersOrganisation";
                         break;
-                    case ConnectedEntityOrganisationCategoryType.DirectorOrTheSameResponsibilities:
-                    case ConnectedEntityOrganisationCategoryType.ParentOrSubsidiaryCompany:
-                        redirectPage = "ConnectedEntityCheckAnswersOrganisation";
-                        break;
-                    case ConnectedEntityOrganisationCategoryType.ACompanyYourOrganisationHasTakenOver:
-                        redirectPage = "ConnectedEntityCompanyInsolvencyDate";
-                        break;
                     case ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl:
                         redirectPage = state.HasCompaniesHouseNumber == true ? "ConnectedEntityControlCondition" : "ConnectedEntityOverseasCompanyQuestion";
                         break;
@@ -220,14 +213,14 @@ public class ConnectedEntityRegistrationDateQuestionModel(ISession session) : Pa
                 {
                     case ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndividual:
                     case ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndividualWithSignificantInfluenceOrControlForIndividual:
-                        backPage = "nature-of-control";                        
+                        backPage = "nature-of-control";
                         break;
                 }
                 break;
             case Constants.ConnectedEntityType.TrustOrTrustee:
                 switch (state.ConnectedEntityIndividualAndTrustCategoryType)
                 {
-                    case ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForTrust:                        
+                    case ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForTrust:
                     case ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndividualWithSignificantInfluenceOrControlForTrust:
                         backPage = "nature-of-control";
                         break;
