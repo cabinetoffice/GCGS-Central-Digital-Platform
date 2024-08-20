@@ -5,7 +5,6 @@ module "ecs_service_organisation" {
     "${path.module}/templates/task-definitions/${var.service_configs.organisation.name}.json.tftpl",
     {
       aspcore_environment                 = local.aspcore_environment
-      conn_string_location                = var.db_sirsi_connection_secret_arn
       container_port                      = var.service_configs.organisation.port
       cpu                                 = var.service_configs.organisation.cpu
       host_port                           = var.service_configs.organisation.port

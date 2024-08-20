@@ -5,7 +5,6 @@ module "ecs_service_tenant" {
     "${path.module}/templates/task-definitions/${var.service_configs.tenant.name}.json.tftpl",
     {
       aspcore_environment     = local.aspcore_environment
-      conn_string_location    = var.db_sirsi_connection_secret_arn
       container_port          = var.service_configs.tenant.port
       cpu                     = var.service_configs.tenant.cpu
       host_port               = var.service_configs.tenant.port

@@ -5,7 +5,6 @@ module "ecs_service_data_sharing" {
     "${path.module}/templates/task-definitions/${var.service_configs.data_sharing.name}.json.tftpl",
     {
       aspcore_environment     = local.aspcore_environment
-      conn_string_location    = var.db_sirsi_connection_secret_arn
       container_port          = var.service_configs.data_sharing.port
       cpu                     = var.service_configs.data_sharing.cpu
       host_port               = var.service_configs.data_sharing.port
