@@ -135,6 +135,7 @@ public class UpdateFormSectionAnswersUseCase(
             OrganisationId = organisation.Id,
             Organisation = organisation,
             Form = form,
+            FormVersionId = form.Version,
             SubmissionState = Persistence.SubmissionState.Draft,
             SubmittedAt = DateTimeOffset.UtcNow,
             AnswerSets = new List<Persistence.FormAnswerSet>()
