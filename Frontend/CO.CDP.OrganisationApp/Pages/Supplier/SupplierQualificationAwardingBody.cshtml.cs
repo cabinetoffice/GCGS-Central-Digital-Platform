@@ -51,5 +51,5 @@ public class Qualification
     public Guid? Id { get; set; }
     public string? AwardedByPersonOrBodyName { get; set; }
     public string? Name { get; set; }
-    public DateTimeOffset? DateAwarded { get; set; }
+    public DateTime? DateAwarded { get; set; }
 }

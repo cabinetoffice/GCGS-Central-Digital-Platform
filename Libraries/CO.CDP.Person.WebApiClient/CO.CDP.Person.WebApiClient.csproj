@@ -18,7 +18,7 @@
     </ItemGroup>
     <ItemGroup>
         <OpenApiReference Include="$(MSBuildProjectDirectory)/../../Services/CO.CDP.Person.WebApi/OpenAPI/CO.CDP.Person.WebApi.json" Namespace="CO.CDP.Person.WebApiClient" ClassName="PersonClient">
-            <Options>/GenerateClientInterfaces:true /ClassStyle:Record /GenerateNativeRecords:true</Options>
+            <Options>/GenerateClientInterfaces:true /ClassStyle:Record /GenerateNativeRecords:true /DateTimeType:"System.DateTime"</Options>
         </OpenApiReference>
     </ItemGroup>
 </Project>

@@ -12,6 +12,6 @@ public class Tenant : IEntityDate
     public required string Name { get; set; }
     public List<Organisation> Organisations { get; } = [];
     public List<Person> Persons { get; } = [];
-    public DateTimeOffset CreatedOn { get; set; }
-    public DateTimeOffset UpdatedOn { get; set; }
+    public DateTime CreatedOn { get; set; }
+    public DateTime UpdatedOn { get; set; }
 }

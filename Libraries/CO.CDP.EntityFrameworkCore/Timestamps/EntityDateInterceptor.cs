@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace CO.CDP.EntityFrameworkCore.Timestamps;
 
-public class EntityDateInterceptor(Func<DateTimeOffset> clock) : SaveChangesInterceptor
+public class EntityDateInterceptor(Func<DateTime> clock) : SaveChangesInterceptor
 {
-    public EntityDateInterceptor() : this(() => DateTimeOffset.UtcNow)
+    public EntityDateInterceptor() : this(() => DateTime.UtcNow)
     {
     }
 

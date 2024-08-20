@@ -20,15 +20,15 @@ public class ConnectedEntityState
     public string? CompaniesHouseNumber { get; set; }
     public List<ConnectedEntityControlCondition> ControlConditions { get; set; } = [];
     public bool? HasRegistartionDate { get; set; }
-    public DateTimeOffset? RegistrationDate { get; set; }
+    public DateTime? RegistrationDate { get; set; }
     public string? RegisterName { get; set; }
-    public DateTimeOffset? InsolvencyDate { get; set; }
+    public DateTime? InsolvencyDate { get; set; }
     public bool? HasOverseasCompaniesHouseNumber { get; set; }
     public string? OverseasCompaniesHouseNumber { get; set; }
     public string? FirstName { get; set; }
     public string? LastName { get; set; }
     public string? Nationality { get; set; }
-    public DateTimeOffset? DateOfBirth { get; set; }
+    public DateTime? DateOfBirth { get; set; }
     public string? DirectorLocation { get; set; }
     public class Address
     {

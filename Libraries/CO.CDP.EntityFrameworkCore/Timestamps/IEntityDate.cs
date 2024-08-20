@@ -2,6 +2,6 @@ namespace CO.CDP.EntityFrameworkCore.Timestamps;
 
 public interface IEntityDate
 {
-    DateTimeOffset CreatedOn { get; set; }
-    DateTimeOffset UpdatedOn { get; set; }
+    DateTime CreatedOn { get; set; }
+    DateTime UpdatedOn { get; set; }
 }

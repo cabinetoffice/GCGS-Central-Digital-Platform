@@ -77,7 +77,7 @@ public class LegalFormFormationDateModel(
         }
 
         var lf = tempDataService.GetOrDefault<LegalForm>(LegalForm.TempDataKey);
-        lf.RegistrationDate = new DateTimeOffset(parsedDate, TimeSpan.FromHours(0));
+        lf.RegistrationDate = parsedDate;
         tempDataService.Put(LegalForm.TempDataKey, lf);
 
         if (!Validate(lf))

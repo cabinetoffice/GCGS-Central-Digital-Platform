@@ -10,6 +10,6 @@ public class OrganisationPerson : IEntityDate
     public required Organisation Organisation { get; init; }
     public List<string> Scopes { get; init; } = [];
 
-    public DateTimeOffset CreatedOn { get; set; }
-    public DateTimeOffset UpdatedOn { get; set; }
+    public DateTime CreatedOn { get; set; }
+    public DateTime UpdatedOn { get; set; }
 }

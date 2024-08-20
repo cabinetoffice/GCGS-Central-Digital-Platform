@@ -196,7 +196,7 @@ public class ConnectedEntityPscDetailsTests
             FirstName = "John",
             LastName = "Doe",
             Nationality = "British",
-            DateOfBirth = new DateTimeOffset(new DateTime(1990, 1, 1)),
+            DateOfBirth = new DateTime(1990, 1, 1),
         };
 
         return connectedPersonDetails;

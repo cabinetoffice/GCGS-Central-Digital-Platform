@@ -1,7 +1,6 @@
 using CO.CDP.OrganisationInformation.Persistence.Forms;
 using CO.CDP.Testcontainers.PostgreSql;
 using FluentAssertions;
-using Microsoft.EntityFrameworkCore;
 using static CO.CDP.OrganisationInformation.Persistence.Tests.EntityFactory;
 
 namespace CO.CDP.OrganisationInformation.Persistence.Tests;
@@ -357,8 +356,8 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
             Options = new FormQuestionOptions(),
             NextQuestion = null,
             NextQuestionAlternative = null,
-            CreatedOn = DateTimeOffset.UtcNow,
-            UpdatedOn = DateTimeOffset.UtcNow
+            CreatedOn = DateTime.UtcNow,
+            UpdatedOn = DateTime.UtcNow
         };
         section.Questions.Add(question);
 
@@ -380,17 +379,17 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
                 Form = form,
                 AnswerSets = new List<FormAnswerSet>(),
                 SubmissionState = SubmissionState.Draft,
-                SubmittedAt = DateTimeOffset.UtcNow,
+                SubmittedAt = DateTime.UtcNow,
                 FormVersionId = "1.0",
                 BookingReference = string.Empty,
-                CreatedOn = DateTimeOffset.UtcNow,
-                UpdatedOn = DateTimeOffset.UtcNow
+                CreatedOn = DateTime.UtcNow,
+                UpdatedOn = DateTime.UtcNow
             },
             Section = section,
             Answers = new List<FormAnswer>(),
             Deleted = false,
-            CreatedOn = DateTimeOffset.UtcNow,
-            UpdatedOn = DateTimeOffset.UtcNow
+            CreatedOn = DateTime.UtcNow,
+            UpdatedOn = DateTime.UtcNow
         };
 
         var formAnswer = new FormAnswer
@@ -400,8 +399,8 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
             FormAnswerSet = answerSet,
             BoolValue = true,
             AddressValue = new FormAddress { StreetAddress = "456 Elm St", Locality = "London", PostalCode = "G67890", CountryName = "UK" },
-            CreatedOn = DateTimeOffset.UtcNow,
-            UpdatedOn = DateTimeOffset.UtcNow
+            CreatedOn = DateTime.UtcNow,
+            UpdatedOn = DateTime.UtcNow
         };
 
         answerSet.Answers.Add(formAnswer);
@@ -453,17 +452,17 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
                 Form = form,
                 AnswerSets = new List<FormAnswerSet>(),
                 SubmissionState = SubmissionState.Draft,
-                SubmittedAt = DateTimeOffset.UtcNow,
+                SubmittedAt = DateTime.UtcNow,
                 FormVersionId = "1.0",
                 BookingReference = string.Empty,
-                CreatedOn = DateTimeOffset.UtcNow,
-                UpdatedOn = DateTimeOffset.UtcNow
+                CreatedOn = DateTime.UtcNow,
+                UpdatedOn = DateTime.UtcNow
             },
             Section = section,
             Answers = [],
             Deleted = true,
-            CreatedOn = DateTimeOffset.UtcNow,
-            UpdatedOn = DateTimeOffset.UtcNow
+            CreatedOn = DateTime.UtcNow,
+            UpdatedOn = DateTime.UtcNow
         };
 
         context.FormAnswerSets.Add(answerSet);
@@ -508,16 +507,16 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
                 Form = form,
                 AnswerSets = new List<FormAnswerSet>(),
                 SubmissionState = SubmissionState.Draft,
-                SubmittedAt = DateTimeOffset.UtcNow,
+                SubmittedAt = DateTime.UtcNow,
                 FormVersionId = "1.0",
                 BookingReference = string.Empty,
-                CreatedOn = DateTimeOffset.UtcNow,
-                UpdatedOn = DateTimeOffset.UtcNow
+                CreatedOn = DateTime.UtcNow,
+                UpdatedOn = DateTime.UtcNow
             },
             Section = section,
             Answers = new List<FormAnswer>(),
-            CreatedOn = DateTimeOffset.UtcNow,
-            UpdatedOn = DateTimeOffset.UtcNow
+            CreatedOn = DateTime.UtcNow,
+            UpdatedOn = DateTime.UtcNow
         };
 
         context.FormAnswerSets.Add(answerSet);
@@ -561,8 +560,8 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
             Options = new FormQuestionOptions(),
             NextQuestion = null,
             NextQuestionAlternative = null,
-            CreatedOn = DateTimeOffset.UtcNow,
-            UpdatedOn = DateTimeOffset.UtcNow
+            CreatedOn = DateTime.UtcNow,
+            UpdatedOn = DateTime.UtcNow
         };
         section.Questions.Add(question);
         await repository.SaveFormAsync(form);
@@ -578,17 +577,17 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
                 Form = form,
                 AnswerSets = new List<FormAnswerSet>(),
                 SubmissionState = SubmissionState.Draft,
-                SubmittedAt = DateTimeOffset.UtcNow,
+                SubmittedAt = DateTime.UtcNow,
                 FormVersionId = "1.0",
                 BookingReference = string.Empty,
-                CreatedOn = DateTimeOffset.UtcNow,
-                UpdatedOn = DateTimeOffset.UtcNow
+                CreatedOn = DateTime.UtcNow,
+                UpdatedOn = DateTime.UtcNow
             },
             Section = section,
             Answers = new List<FormAnswer>(),
             Deleted = false,
-            CreatedOn = DateTimeOffset.UtcNow,
-            UpdatedOn = DateTimeOffset.UtcNow
+            CreatedOn = DateTime.UtcNow,
+            UpdatedOn = DateTime.UtcNow
         };
 
         var formAnswer = new FormAnswer
@@ -597,8 +596,8 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
             Question = question,
             FormAnswerSet = answerSet,
             BoolValue = true,
-            CreatedOn = DateTimeOffset.UtcNow,
-            UpdatedOn = DateTimeOffset.UtcNow
+            CreatedOn = DateTime.UtcNow,
+            UpdatedOn = DateTime.UtcNow
         };
 
         answerSet.Answers.Add(formAnswer);
@@ -643,8 +642,8 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
             Options = new FormQuestionOptions(),
             NextQuestion = null,
             NextQuestionAlternative = null,
-            CreatedOn = DateTimeOffset.UtcNow,
-            UpdatedOn = DateTimeOffset.UtcNow
+            CreatedOn = DateTime.UtcNow,
+            UpdatedOn = DateTime.UtcNow
         };
         section.Questions.Add(question);
         await repository.SaveFormAsync(form);
@@ -660,17 +659,17 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
                 Form = form,
                 AnswerSets = new List<FormAnswerSet>(),
                 SubmissionState = SubmissionState.Draft,
-                SubmittedAt = DateTimeOffset.UtcNow,
+                SubmittedAt = DateTime.UtcNow,
                 FormVersionId = "1.0",
                 BookingReference = string.Empty,
-                CreatedOn = DateTimeOffset.UtcNow,
-                UpdatedOn = DateTimeOffset.UtcNow
+                CreatedOn = DateTime.UtcNow,
+                UpdatedOn = DateTime.UtcNow
             },
             Section = section,
             Answers = new List<FormAnswer>(),
             Deleted = false,
-            CreatedOn = DateTimeOffset.UtcNow,
-            UpdatedOn = DateTimeOffset.UtcNow
+            CreatedOn = DateTime.UtcNow,
+            UpdatedOn = DateTime.UtcNow
         };
 
         var formAnswer = new FormAnswer
@@ -679,8 +678,8 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
             Question = question,
             FormAnswerSet = answerSet,
             BoolValue = true,
-            CreatedOn = DateTimeOffset.UtcNow,
-            UpdatedOn = DateTimeOffset.UtcNow
+            CreatedOn = DateTime.UtcNow,
+            UpdatedOn = DateTime.UtcNow
         };
 
         answerSet.Answers.Add(formAnswer);
@@ -691,8 +690,8 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
             Question = question,
             FormAnswerSet = answerSet,
             BoolValue = false,
-            CreatedOn = DateTimeOffset.UtcNow,
-            UpdatedOn = DateTimeOffset.UtcNow
+            CreatedOn = DateTime.UtcNow,
+            UpdatedOn = DateTime.UtcNow
         };
         answerSet.Answers.Clear();
         answerSet.Answers.Add(newAnswer);

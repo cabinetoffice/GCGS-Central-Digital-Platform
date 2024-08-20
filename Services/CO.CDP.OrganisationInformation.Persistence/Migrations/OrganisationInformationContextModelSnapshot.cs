@@ -41,7 +41,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                         .HasColumnType("text")
                         .HasColumnName("country_name");
 
-                    b.Property<DateTimeOffset>("CreatedOn")
+                    b.Property<DateTime>("CreatedOn")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_on")
@@ -66,7 +66,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                         .HasColumnType("text")
                         .HasColumnName("street_address");
 
-                    b.Property<DateTimeOffset>("UpdatedOn")
+                    b.Property<DateTime>("UpdatedOn")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_on")
@@ -87,7 +87,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTimeOffset>("CreatedOn")
+                    b.Property<DateTime>("CreatedOn")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_on")
@@ -112,7 +112,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                         .HasColumnType("jsonb")
                         .HasColumnName("scopes");
 
-                    b.Property<DateTimeOffset>("UpdatedOn")
+                    b.Property<DateTime>("UpdatedOn")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_on")
@@ -144,13 +144,13 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                         .HasColumnType("text")
                         .HasColumnName("company_house_number");
 
-                    b.Property<DateTimeOffset>("CreatedOn")
+                    b.Property<DateTime>("CreatedOn")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_on")
                         .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
-                    b.Property<DateTimeOffset?>("EndDate")
+                    b.Property<DateTime?>("EndDate")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("end_date");
 
@@ -174,11 +174,11 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                         .HasColumnType("text")
                         .HasColumnName("register_name");
 
-                    b.Property<DateTimeOffset?>("RegisteredDate")
+                    b.Property<DateTime?>("RegisteredDate")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("registered_date");
 
-                    b.Property<DateTimeOffset?>("StartDate")
+                    b.Property<DateTime?>("StartDate")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("start_date");
 
@@ -186,7 +186,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("supplier_organisation_id");
 
-                    b.Property<DateTimeOffset>("UpdatedOn")
+                    b.Property<DateTime>("UpdatedOn")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_on")
@@ -214,7 +214,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTimeOffset>("CreatedOn")
+                    b.Property<DateTime>("CreatedOn")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_on")
@@ -241,7 +241,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("type");
 
-                    b.Property<DateTimeOffset>("UpdatedOn")
+                    b.Property<DateTime>("UpdatedOn")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_on")
@@ -275,7 +275,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                         .HasColumnType("boolean")
                         .HasColumnName("bool_value");
 
-                    b.Property<DateTimeOffset>("CreatedOn")
+                    b.Property<DateTime>("CreatedOn")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_on")
@@ -317,7 +317,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                         .HasColumnType("text")
                         .HasColumnName("text_value");
 
-                    b.Property<DateTimeOffset>("UpdatedOn")
+                    b.Property<DateTime>("UpdatedOn")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_on")
@@ -344,7 +344,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTimeOffset>("CreatedOn")
+                    b.Property<DateTime>("CreatedOn")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_on")
@@ -368,7 +368,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("shared_consent_id");
 
-                    b.Property<DateTimeOffset>("UpdatedOn")
+                    b.Property<DateTime>("UpdatedOn")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_on")
@@ -399,7 +399,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                         .HasColumnType("text")
                         .HasColumnName("caption");
 
-                    b.Property<DateTimeOffset>("CreatedOn")
+                    b.Property<DateTime>("CreatedOn")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_on")
@@ -447,7 +447,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("type");
 
-                    b.Property<DateTimeOffset>("UpdatedOn")
+                    b.Property<DateTime>("UpdatedOn")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_on")
@@ -486,7 +486,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                         .HasColumnType("jsonb")
                         .HasColumnName("configuration");
 
-                    b.Property<DateTimeOffset>("CreatedOn")
+                    b.Property<DateTime>("CreatedOn")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_on")
@@ -505,7 +505,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                         .HasColumnType("text")
                         .HasColumnName("title");
 
-                    b.Property<DateTimeOffset>("UpdatedOn")
+                    b.Property<DateTime>("UpdatedOn")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_on")
@@ -533,7 +533,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                         .HasColumnType("text")
                         .HasColumnName("booking_reference");
 
-                    b.Property<DateTimeOffset>("CreatedOn")
+                    b.Property<DateTime>("CreatedOn")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_on")
@@ -560,11 +560,11 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("submission_state");
 
-                    b.Property<DateTimeOffset?>("SubmittedAt")
+                    b.Property<DateTime?>("SubmittedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("submitted_at");
 
-                    b.Property<DateTimeOffset>("UpdatedOn")
+                    b.Property<DateTime>("UpdatedOn")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_on")
@@ -591,7 +591,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTimeOffset>("CreatedOn")
+                    b.Property<DateTime>("CreatedOn")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_on")
@@ -615,7 +615,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("tenant_id");
 
-                    b.Property<DateTimeOffset>("UpdatedOn")
+                    b.Property<DateTime>("UpdatedOn")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_on")
@@ -648,7 +648,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("person_id");
 
-                    b.Property<DateTimeOffset>("CreatedOn")
+                    b.Property<DateTime>("CreatedOn")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_on")
@@ -659,7 +659,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                         .HasColumnType("jsonb")
                         .HasColumnName("scopes");
 
-                    b.Property<DateTimeOffset>("UpdatedOn")
+                    b.Property<DateTime>("UpdatedOn")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_on")
@@ -683,7 +683,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTimeOffset>("CreatedOn")
+                    b.Property<DateTime>("CreatedOn")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_on")
@@ -712,7 +712,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                         .HasColumnType("text")
                         .HasColumnName("phone");
 
-                    b.Property<DateTimeOffset>("UpdatedOn")
+                    b.Property<DateTime>("UpdatedOn")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_on")
@@ -745,13 +745,13 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTimeOffset>("CreatedOn")
+                    b.Property<DateTime>("CreatedOn")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_on")
                         .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
-                    b.Property<DateTimeOffset>("ExpiryDate")
+                    b.Property<DateTime>("ExpiryDate")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("expiry_date");
 
@@ -764,7 +764,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                         .HasColumnType("text")
                         .HasColumnName("token_hash");
 
-                    b.Property<DateTimeOffset>("UpdatedOn")
+                    b.Property<DateTime>("UpdatedOn")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_on")
@@ -789,7 +789,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTimeOffset>("CreatedOn")
+                    b.Property<DateTime>("CreatedOn")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_on")
@@ -804,7 +804,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                         .HasColumnType("text")
                         .HasColumnName("name");
 
-                    b.Property<DateTimeOffset>("UpdatedOn")
+                    b.Property<DateTime>("UpdatedOn")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_on")
@@ -924,13 +924,13 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                                 .HasColumnType("integer[]")
                                 .HasColumnName("control_condition");
 
-                            b1.Property<DateTimeOffset>("CreatedOn")
+                            b1.Property<DateTime>("CreatedOn")
                                 .ValueGeneratedOnAdd()
                                 .HasColumnType("timestamp with time zone")
                                 .HasColumnName("created_on")
                                 .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
-                            b1.Property<DateTimeOffset?>("DateOfBirth")
+                            b1.Property<DateTime?>("DateOfBirth")
                                 .HasColumnType("timestamp with time zone")
                                 .HasColumnName("date_of_birth");
 
@@ -956,7 +956,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                                 .HasColumnType("text")
                                 .HasColumnName("resident_country");
 
-                            b1.Property<DateTimeOffset>("UpdatedOn")
+                            b1.Property<DateTime>("UpdatedOn")
                                 .ValueGeneratedOnAdd()
                                 .HasColumnType("timestamp with time zone")
                                 .HasColumnName("updated_on")
@@ -987,13 +987,13 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                                 .HasColumnType("integer[]")
                                 .HasColumnName("control_condition");
 
-                            b1.Property<DateTimeOffset>("CreatedOn")
+                            b1.Property<DateTime>("CreatedOn")
                                 .ValueGeneratedOnAdd()
                                 .HasColumnType("timestamp with time zone")
                                 .HasColumnName("created_on")
                                 .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
-                            b1.Property<DateTimeOffset?>("InsolvencyDate")
+                            b1.Property<DateTime?>("InsolvencyDate")
                                 .HasColumnType("timestamp with time zone")
                                 .HasColumnName("insolvency_date");
 
@@ -1014,7 +1014,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                                 .HasColumnType("text")
                                 .HasColumnName("registered_legal_form");
 
-                            b1.Property<DateTimeOffset>("UpdatedOn")
+                            b1.Property<DateTime>("UpdatedOn")
                                 .ValueGeneratedOnAdd()
                                 .HasColumnType("timestamp with time zone")
                                 .HasColumnName("updated_on")
@@ -1159,7 +1159,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                                 .HasColumnType("text")
                                 .HasColumnName("buyer_type");
 
-                            b1.Property<DateTimeOffset>("CreatedOn")
+                            b1.Property<DateTime>("CreatedOn")
                                 .ValueGeneratedOnAdd()
                                 .HasColumnType("timestamp with time zone")
                                 .HasColumnName("created_on")
@@ -1170,7 +1170,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                                 .HasColumnType("integer[]")
                                 .HasColumnName("devolved_regulations");
 
-                            b1.Property<DateTimeOffset>("UpdatedOn")
+                            b1.Property<DateTime>("UpdatedOn")
                                 .ValueGeneratedOnAdd()
                                 .HasColumnType("timestamp with time zone")
                                 .HasColumnName("updated_on")
@@ -1195,7 +1195,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
 
                             NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b1.Property<int>("Id"));
 
-                            b1.Property<DateTimeOffset>("CreatedOn")
+                            b1.Property<DateTime>("CreatedOn")
                                 .ValueGeneratedOnAdd()
                                 .HasColumnType("timestamp with time zone")
                                 .HasColumnName("created_on")
@@ -1217,7 +1217,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                                 .HasColumnType("text")
                                 .HasColumnName("telephone");
 
-                            b1.Property<DateTimeOffset>("UpdatedOn")
+                            b1.Property<DateTime>("UpdatedOn")
                                 .ValueGeneratedOnAdd()
                                 .HasColumnType("timestamp with time zone")
                                 .HasColumnName("updated_on")
@@ -1249,7 +1249,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
 
                             NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b1.Property<int>("Id"));
 
-                            b1.Property<DateTimeOffset>("CreatedOn")
+                            b1.Property<DateTime>("CreatedOn")
                                 .ValueGeneratedOnAdd()
                                 .HasColumnType("timestamp with time zone")
                                 .HasColumnName("created_on")
@@ -1277,7 +1277,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                                 .HasColumnType("text")
                                 .HasColumnName("scheme");
 
-                            b1.Property<DateTimeOffset>("UpdatedOn")
+                            b1.Property<DateTime>("UpdatedOn")
                                 .ValueGeneratedOnAdd()
                                 .HasColumnType("timestamp with time zone")
                                 .HasColumnName("updated_on")
@@ -1396,7 +1396,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                                 .HasColumnType("boolean")
                                 .HasColumnName("completed_website_address");
 
-                            b1.Property<DateTimeOffset>("CreatedOn")
+                            b1.Property<DateTime>("CreatedOn")
                                 .ValueGeneratedOnAdd()
                                 .HasColumnType("timestamp with time zone")
                                 .HasColumnName("created_on")
@@ -1411,7 +1411,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                                 .HasColumnType("integer")
                                 .HasColumnName("supplier_type");
 
-                            b1.Property<DateTimeOffset>("UpdatedOn")
+                            b1.Property<DateTime>("UpdatedOn")
                                 .ValueGeneratedOnAdd()
                                 .HasColumnType("timestamp with time zone")
                                 .HasColumnName("updated_on")
@@ -1432,7 +1432,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                                         .HasColumnType("integer")
                                         .HasColumnName("id");
 
-                                    b2.Property<DateTimeOffset>("CreatedOn")
+                                    b2.Property<DateTime>("CreatedOn")
                                         .ValueGeneratedOnAdd()
                                         .HasColumnType("timestamp with time zone")
                                         .HasColumnName("created_on")
@@ -1452,11 +1452,11 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                                         .HasColumnType("boolean")
                                         .HasColumnName("registered_under_act2006");
 
-                                    b2.Property<DateTimeOffset>("RegistrationDate")
+                                    b2.Property<DateTime>("RegistrationDate")
                                         .HasColumnType("timestamp with time zone")
                                         .HasColumnName("registration_date");
 
-                                    b2.Property<DateTimeOffset>("UpdatedOn")
+                                    b2.Property<DateTime>("UpdatedOn")
                                         .ValueGeneratedOnAdd()
                                         .HasColumnType("timestamp with time zone")
                                         .HasColumnName("updated_on")
@@ -1486,13 +1486,13 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                                         .HasColumnType("text")
                                         .HasColumnName("awarded_by_person_or_body_name");
 
-                                    b2.Property<DateTimeOffset>("CreatedOn")
+                                    b2.Property<DateTime>("CreatedOn")
                                         .ValueGeneratedOnAdd()
                                         .HasColumnType("timestamp with time zone")
                                         .HasColumnName("created_on")
                                         .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
-                                    b2.Property<DateTimeOffset>("DateAwarded")
+                                    b2.Property<DateTime>("DateAwarded")
                                         .HasColumnType("timestamp with time zone")
                                         .HasColumnName("date_awarded");
 
@@ -1509,7 +1509,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                                         .HasColumnType("integer")
                                         .HasColumnName("supplier_information_organisation_id");
 
-                                    b2.Property<DateTimeOffset>("UpdatedOn")
+                                    b2.Property<DateTime>("UpdatedOn")
                                         .ValueGeneratedOnAdd()
                                         .HasColumnType("timestamp with time zone")
                                         .HasColumnName("updated_on")
@@ -1546,13 +1546,13 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                                         .HasColumnType("text")
                                         .HasColumnName("awarded_by_person_or_body_name");
 
-                                    b2.Property<DateTimeOffset>("CreatedOn")
+                                    b2.Property<DateTime>("CreatedOn")
                                         .ValueGeneratedOnAdd()
                                         .HasColumnType("timestamp with time zone")
                                         .HasColumnName("created_on")
                                         .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
-                                    b2.Property<DateTimeOffset>("DateAwarded")
+                                    b2.Property<DateTime>("DateAwarded")
                                         .HasColumnType("timestamp with time zone")
                                         .HasColumnName("date_awarded");
 
@@ -1569,7 +1569,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                                         .HasColumnType("integer")
                                         .HasColumnName("supplier_information_organisation_id");
 
-                                    b2.Property<DateTimeOffset>("UpdatedOn")
+                                    b2.Property<DateTime>("UpdatedOn")
                                         .ValueGeneratedOnAdd()
                                         .HasColumnType("timestamp with time zone")
                                         .HasColumnName("updated_on")

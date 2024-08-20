@@ -136,7 +136,7 @@ public class ConnectedEntityDirectorResidencyTest
             FirstName = "John",
             LastName = "Doe",
             DirectorLocation = "British",
-            DateOfBirth = new DateTimeOffset(new DateTime(1990, 1, 1)),
+            DateOfBirth = new DateTime(1990, 1, 1),
             HasCompaniesHouseNumber = true,
             CompaniesHouseNumber = "12345678",
             RegisterName = "reg_name"

@@ -86,7 +86,7 @@ public class ConnectedEntityCompanyRegistrationDateModel(ISession session) : Pag
             return Page();
         }
 
-        state.RegistrationDate = new DateTimeOffset(parsedDate, TimeSpan.FromHours(0));
+        state.RegistrationDate = parsedDate;
 
         session.Set(Session.ConnectedPersonKey, state);
 

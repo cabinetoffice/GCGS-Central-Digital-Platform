@@ -5,7 +5,7 @@ namespace CO.CDP.EntityFrameworkCore.Timestamps;
 
 public static class PropertyExtensions
 {
-    public static PropertyBuilder<DateTimeOffset> HasTimestampDefault(this PropertyBuilder<DateTimeOffset> builder)
+    public static PropertyBuilder<DateTime> HasTimestampDefault(this PropertyBuilder<DateTime> builder)
     {
         return builder.IsRequired().HasDefaultValueSql("CURRENT_TIMESTAMP");
     }

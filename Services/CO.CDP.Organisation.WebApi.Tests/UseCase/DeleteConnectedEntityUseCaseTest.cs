@@ -28,7 +28,7 @@ public class DeleteConnectedEntityUseCaseTest
         var connectedEntity = ConnectedEntity(organisation);
         SetupOrganisationRepository(organisation);
         SetupConnectedEntityRepository(connectedEntity);
-        var endDate = DateTimeOffset.Now;
+        var endDate = DateTime.Now;
         var deleteConnectedEntity = new DeleteConnectedEntity()
         {
             EndDate = endDate
@@ -46,7 +46,7 @@ public class DeleteConnectedEntityUseCaseTest
     {
         SetupOrganisationRepository(null);
         SetupConnectedEntityRepository(null);
-        var deleteConnectedEntity = new DeleteConnectedEntity() { EndDate = DateTimeOffset.Now };
+        var deleteConnectedEntity = new DeleteConnectedEntity() { EndDate = DateTime.Now };
 
         Func<Task> act = async () => await _useCase.Execute((_organisationId, _connectedEntityId, deleteConnectedEntity));
 
@@ -60,7 +60,7 @@ public class DeleteConnectedEntityUseCaseTest
         var organisation = Organisation();
         SetupOrganisationRepository(organisation);
         SetupConnectedEntityRepository(null);
-        var deleteConnectedEntity = new DeleteConnectedEntity() { EndDate = DateTimeOffset.Now };
+        var deleteConnectedEntity = new DeleteConnectedEntity() { EndDate = DateTime.Now };
 
         Func<Task> act = async () => await _useCase.Execute((_organisationId, _connectedEntityId, deleteConnectedEntity));
 

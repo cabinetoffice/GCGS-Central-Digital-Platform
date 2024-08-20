@@ -52,5 +52,5 @@ public class TradeAssurance
     public Guid? Id { get; set; }
     public string? AwardedByPersonOrBodyName { get; set; }
     public string? ReferenceNumber { get; set; }
-    public DateTimeOffset? DateAwarded { get; set; }
+    public DateTime? DateAwarded { get; set; }
 }

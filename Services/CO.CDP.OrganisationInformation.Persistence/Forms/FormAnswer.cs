@@ -1,5 +1,5 @@
-using CO.CDP.EntityFrameworkCore.Timestamps;
 using System.ComponentModel.DataAnnotations.Schema;
+using CO.CDP.EntityFrameworkCore.Timestamps;
 
 namespace CO.CDP.OrganisationInformation.Persistence.Forms;
 
@@ -14,11 +14,11 @@ public class SharedConsent : IEntityDate
     public required Form Form { get; init; }
     public required ICollection<FormAnswerSet> AnswerSets { get; init; } = [];
     public required SubmissionState SubmissionState { get; set; } = SubmissionState.Draft;
-    public DateTimeOffset? SubmittedAt { get; set; }
+    public DateTime? SubmittedAt { get; set; }
     public required string FormVersionId { get; init; }
     public string? BookingReference { get; set; }
-    public DateTimeOffset CreatedOn { get; set; }
-    public DateTimeOffset UpdatedOn { get; set; }
+    public DateTime CreatedOn { get; set; }
+    public DateTime UpdatedOn { get; set; }
 }
 
 public enum SubmissionState
@@ -41,8 +41,8 @@ public class FormAnswer : IEntityDate
     public string? TextValue { get; set; }
     public string? OptionValue { get; set; }
     public FormAddress? AddressValue { get; set; }
-    public DateTimeOffset CreatedOn { get; set; }
-    public DateTimeOffset UpdatedOn { get; set; }
+    public DateTime CreatedOn { get; set; }
+    public DateTime UpdatedOn { get; set; }
 }
 
 public class FormAddress
@@ -62,6 +62,6 @@ public class FormAnswerSet : IEntityDate
     public required FormSection Section { get; init; }
     public required ICollection<FormAnswer> Answers { get; set; } = [];
     public bool Deleted { get; set; } = false;
-    public DateTimeOffset CreatedOn { get; set; }
-    public DateTimeOffset UpdatedOn { get; set; }
+    public DateTime CreatedOn { get; set; }
+    public DateTime UpdatedOn { get; set; }
 }

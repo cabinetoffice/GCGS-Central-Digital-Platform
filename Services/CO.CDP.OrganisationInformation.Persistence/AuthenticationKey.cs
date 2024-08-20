@@ -15,6 +15,6 @@ public class AuthenticationKey : IEntityDate
     public int? OrganisationId { get; set; }
     public Organisation? Organisation { get; set; }
     public List<string> Scopes { get; set; } = [];
-    public DateTimeOffset CreatedOn { get; set; }
-    public DateTimeOffset UpdatedOn { get; set; }
+    public DateTime CreatedOn { get; set; }
+    public DateTime UpdatedOn { get; set; }
 }

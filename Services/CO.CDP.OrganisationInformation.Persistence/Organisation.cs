@@ -19,8 +19,8 @@ public class Organisation : IEntityDate
     public List<OrganisationPerson> OrganisationPersons { get; init; } = [];
     public SupplierInformation? SupplierInfo { get; set; }
     public BuyerInformation? BuyerInfo { get; set; }
-    public DateTimeOffset CreatedOn { get; set; }
-    public DateTimeOffset UpdatedOn { get; set; }
+    public DateTime CreatedOn { get; set; }
+    public DateTime UpdatedOn { get; set; }
 
     [Owned]
     [Index(nameof(IdentifierId), [nameof(Scheme)], IsUnique = true)]
@@ -32,8 +32,8 @@ public class Organisation : IEntityDate
         public required string LegalName { get; set; }
         public string? Uri { get; set; }
         public required bool Primary { get; set; }
-        public DateTimeOffset CreatedOn { get; set; }
-        public DateTimeOffset UpdatedOn { get; set; }
+        public DateTime CreatedOn { get; set; }
+        public DateTime UpdatedOn { get; set; }
     }
 
     [Owned]
@@ -52,8 +52,8 @@ public class Organisation : IEntityDate
         public string? Email { get; set; }
         public string? Telephone { get; set; }
         public string? Url { get; set; }
-        public DateTimeOffset CreatedOn { get; set; }
-        public DateTimeOffset UpdatedOn { get; set; }
+        public DateTime CreatedOn { get; set; }
+        public DateTime UpdatedOn { get; set; }
     }
 
     [Owned]
@@ -74,8 +74,8 @@ public class Organisation : IEntityDate
         public List<Qualification> Qualifications { get; set; } = [];
         public List<TradeAssurance> TradeAssurances { get; set; } = [];
         public LegalForm? LegalForm { get; set; }
-        public DateTimeOffset CreatedOn { get; set; }
-        public DateTimeOffset UpdatedOn { get; set; }
+        public DateTime CreatedOn { get; set; }
+        public DateTime UpdatedOn { get; set; }
     }
 
     [Owned]
@@ -84,8 +84,8 @@ public class Organisation : IEntityDate
         public int OrganisationId { get; set; }
         public string? BuyerType { get; set; }
         public List<DevolvedRegulation> DevolvedRegulations { get; set; } = [];
-        public DateTimeOffset CreatedOn { get; set; }
-        public DateTimeOffset UpdatedOn { get; set; }
+        public DateTime CreatedOn { get; set; }
+        public DateTime UpdatedOn { get; set; }
     }
 
     [Owned]
@@ -95,10 +95,10 @@ public class Organisation : IEntityDate
         public int Id { get; set; }
         public required Guid Guid { get; set; }
         public required string AwardedByPersonOrBodyName { get; set; }
-        public required DateTimeOffset DateAwarded { get; set; }
+        public required DateTime DateAwarded { get; set; }
         public required string Name { get; set; }
-        public DateTimeOffset CreatedOn { get; set; }
-        public DateTimeOffset UpdatedOn { get; set; }
+        public DateTime CreatedOn { get; set; }
+        public DateTime UpdatedOn { get; set; }
     }
 
     [Owned]
@@ -109,9 +109,9 @@ public class Organisation : IEntityDate
         public required Guid Guid { get; set; }
         public required string AwardedByPersonOrBodyName { get; set; }
         public required string ReferenceNumber { get; set; }
-        public required DateTimeOffset DateAwarded { get; set; }
-        public DateTimeOffset CreatedOn { get; set; }
-        public DateTimeOffset UpdatedOn { get; set; }
+        public required DateTime DateAwarded { get; set; }
+        public DateTime CreatedOn { get; set; }
+        public DateTime UpdatedOn { get; set; }
     }
 
     [Owned]
@@ -120,9 +120,9 @@ public class Organisation : IEntityDate
         public required bool RegisteredUnderAct2006 { get; set; }
         public required string RegisteredLegalForm { get; set; }
         public required string LawRegistered { get; set; }
-        public required DateTimeOffset RegistrationDate { get; set; }
-        public DateTimeOffset CreatedOn { get; set; }
-        public DateTimeOffset UpdatedOn { get; set; }
+        public required DateTime RegistrationDate { get; set; }
+        public DateTime CreatedOn { get; set; }
+        public DateTime UpdatedOn { get; set; }
     }
 
     public void UpdateBuyerInformation()

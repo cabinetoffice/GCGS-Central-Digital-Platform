@@ -8,7 +8,7 @@ public class SharedConsent
     public int OrganisationId { get; set; }
     public IList<FormAnswerSet> AnswerSets { get; set; } = [];
     public SubmissionState SubmissionState { get; set; }
-    public DateTimeOffset SubmittedAt { get; set; }
+    public DateTime SubmittedAt { get; set; }
     public string? FormVersionId { get; set; }
     public string? BookingReference { get; set; }
 

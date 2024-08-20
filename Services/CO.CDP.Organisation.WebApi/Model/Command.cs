@@ -174,11 +174,11 @@ public record RegisterConnectedEntity
     public CreateConnectedIndividualTrust? IndividualOrTrust { get; init; }
     public ICollection<Address> Addresses { get; init; } = [];
 
-    public DateTimeOffset? RegisteredDate { get; init; }
+    public DateTime? RegisteredDate { get; init; }
     public string? RegisterName { get; init; }
 
-    public DateTimeOffset? StartDate { get; init; }
-    public DateTimeOffset? EndDate { get; init; }
+    public DateTime? StartDate { get; init; }
+    public DateTime? EndDate { get; init; }
 }
 
 public record UpdateConnectedEntity
@@ -193,11 +193,11 @@ public record UpdateConnectedEntity
     public UpdateConnectedIndividualTrust? IndividualOrTrust { get; init; }
     public ICollection<Address> Addresses { get; init; } = [];
 
-    public DateTimeOffset? RegisteredDate { get; init; }
+    public DateTime? RegisteredDate { get; init; }
     public string? RegisterName { get; init; }
 
-    public DateTimeOffset? StartDate { get; init; }
-    public DateTimeOffset? EndDate { get; init; }
+    public DateTime? StartDate { get; init; }
+    public DateTime? EndDate { get; init; }
 }
 
 public record CreateConnectedIndividualTrust
@@ -205,7 +205,7 @@ public record CreateConnectedIndividualTrust
     public required ConnectedIndividualAndTrustCategory Category { get; set; }
     public required string FirstName { get; set; }
     public required string LastName { get; set; }
-    public DateTimeOffset? DateOfBirth { get; set; }
+    public DateTime? DateOfBirth { get; set; }
     public string? Nationality { get; set; }
     public ICollection<ControlCondition> ControlCondition { get; set; } = [];
     public ConnectedPersonType ConnectedType { get; set; }
@@ -218,7 +218,7 @@ public record UpdateConnectedIndividualTrust
     public required ConnectedIndividualAndTrustCategory Category { get; set; }
     public required string FirstName { get; set; }
     public required string LastName { get; set; }
-    public DateTimeOffset? DateOfBirth { get; set; }
+    public DateTime? DateOfBirth { get; set; }
     public string? Nationality { get; set; }
     public ICollection<ControlCondition> ControlCondition { get; set; } = [];
     public ConnectedPersonType ConnectedType { get; set; }
@@ -231,7 +231,7 @@ public record CreateConnectedOrganisation
 {
     public required ConnectedOrganisationCategory Category { get; set; }
     public required string Name { get; set; }
-    public DateTimeOffset? InsolvencyDate { get; set; }
+    public DateTime? InsolvencyDate { get; set; }
     public string? RegisteredLegalForm { get; set; }
     public string? LawRegistered { get; set; }
     public ICollection<ControlCondition> ControlCondition { get; set; } = [];
@@ -242,7 +242,7 @@ public record UpdateConnectedOrganisation
 {
     public required ConnectedOrganisationCategory Category { get; set; }
     public required string Name { get; set; }
-    public DateTimeOffset? InsolvencyDate { get; set; }
+    public DateTime? InsolvencyDate { get; set; }
     public string? RegisteredLegalForm { get; set; }
     public string? LawRegistered { get; set; }
     public ICollection<ControlCondition> ControlCondition { get; set; } = [];
@@ -259,7 +259,7 @@ public record ConnectedEntityLookup
 
 public record DeleteConnectedEntity
 {
-    public required DateTimeOffset EndDate { get; init; }
+    public required DateTime EndDate { get; init; }
 }
 
 public record OrganisationQuery

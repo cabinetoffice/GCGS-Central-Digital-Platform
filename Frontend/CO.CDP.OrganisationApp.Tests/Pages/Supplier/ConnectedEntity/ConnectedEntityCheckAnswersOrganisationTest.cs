@@ -264,8 +264,8 @@ public class ConnectedEntityCheckAnswersOrganisationTest
             HasCompaniesHouseNumber = true,
             CompaniesHouseNumber = "12345678",
             ControlConditions = [Constants.ConnectedEntityControlCondition.OwnsShares],
-            RegistrationDate = new DateTimeOffset(2011, 7, 15, 0, 0, 0, TimeSpan.FromHours(0)),
-            InsolvencyDate = new DateTimeOffset(2010, 6, 11, 0, 0, 0, TimeSpan.FromHours(0)),
+            RegistrationDate = new DateTime(2011, 7, 15, 0, 0, 0),
+            InsolvencyDate = new DateTime(2010, 6, 11, 0, 0, 0),
             ConnectedEntityOrganisationCategoryType = ConnectedEntityOrganisationCategoryType.RegisteredCompany,
         };
 
@@ -278,7 +278,7 @@ public class ConnectedEntityCheckAnswersOrganisationTest
             ConnectedOrganisationCategory.RegisteredCompany,
             [ControlCondition.OwnsShares, ControlCondition.HasVotingRights],
             1,
-            new DateTimeOffset?(),
+            new DateTime(),
             "Law registered text",
             "Name text",
             new Guid(),
@@ -288,7 +288,7 @@ public class ConnectedEntityCheckAnswersOrganisationTest
         var connectedEntity = new Organisation.WebApiClient.ConnectedEntity(
             new List<Address>(),
             "012345",
-            new DateTimeOffset?(),
+            new DateTime?(),
             Organisation.WebApiClient.ConnectedEntityType.Organisation,
             true,
             new Guid(),

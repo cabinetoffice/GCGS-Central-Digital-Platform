@@ -1,11 +1,8 @@
-using System;
-using System.Threading.Tasks;
 using AutoMapper;
 using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.Organisation.WebApi.UseCase;
-using Persistence = CO.CDP.OrganisationInformation.Persistence;
 using Moq;
-using Xunit;
+using Persistence = CO.CDP.OrganisationInformation.Persistence;
 
 namespace CO.CDP.Organisation.WebApi.Tests.UseCase;
 
@@ -72,8 +69,8 @@ public class UpdateConnectedEntityUseCaseTests
             Addresses = new List<Persistence.ConnectedEntity.ConnectedEntityAddress>(),
             Id = 1,
             HasCompnayHouseNumber = true,
-            CreatedOn = DateTimeOffset.UtcNow,
-            UpdatedOn = DateTimeOffset.UtcNow,
+            CreatedOn = DateTime.UtcNow,
+            UpdatedOn = DateTime.UtcNow,
         };
 
         return connectedEntity;

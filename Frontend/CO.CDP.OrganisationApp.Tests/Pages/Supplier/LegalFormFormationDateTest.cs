@@ -121,7 +121,7 @@ public class LegalFormFormationDateTest
     [Fact]
     public async Task OnPost_UpdatesLegalForm_WhenDateIsValid()
     {
-        var validDate = new DateTimeOffset(2023, 6, 15, 0, 0, 0, TimeSpan.FromHours(0));
+        var validDate = new DateTime(2023, 6, 15, 0, 0, 0);
         SetDateFields(validDate.Day.ToString("D2"), validDate.Month.ToString("D2"), validDate.Year.ToString());
         _model.Id = Guid.NewGuid();
 
@@ -129,7 +129,7 @@ public class LegalFormFormationDateTest
         {
             LawRegistered = "law",
             RegisteredLegalForm = "legal form",
-            RegistrationDate = new DateTimeOffset(2023, 6, 15, 0, 0, 0, TimeSpan.FromHours(0)),
+            RegistrationDate = new DateTime(2023, 6, 15, 0, 0, 0),
             RegisteredUnderAct2006 = true
         };
         _mockTempDataService.Setup(s => s.GetOrDefault<LegalForm>(LegalForm.TempDataKey)).Returns(legalForm);
@@ -145,7 +145,7 @@ public class LegalFormFormationDateTest
     [Fact]
     public async Task OnPost_RedirectsToPageNotFound_WhenApiExceptionIsThrown()
     {
-        var validDate = new DateTimeOffset(2023, 6, 15, 0, 0, 0, TimeSpan.FromHours(0));
+        var validDate = new DateTime(2023, 6, 15, 0, 0, 0);
         SetDateFields(validDate.Day.ToString("D2"), validDate.Month.ToString("D2"), validDate.Year.ToString());
         _model.Id = Guid.NewGuid();
 
@@ -168,14 +168,14 @@ public class LegalFormFormationDateTest
         {
             LawRegistered = "law",
             RegisteredLegalForm = "legal form",
-            RegistrationDate = new DateTimeOffset(2023, 6, 15, 0, 0, 0, TimeSpan.FromHours(0)),
+            RegistrationDate = new DateTime(2023, 6, 15, 0, 0, 0),
             RegisteredUnderAct2006 = true
         };
         _mockTempDataService.Setup(t => t.GetOrDefault<LegalForm>(LegalForm.TempDataKey)).Returns(legalForm);
 
         var result = await _model.OnPost();
 
-        _mockTempDataService.Verify(t => t.Put(LegalForm.TempDataKey, It.Is<LegalForm>(ta => ta.RegistrationDate == new DateTimeOffset(2023, 6, 15, 0, 0, 0, TimeSpan.FromHours(0)))), Times.Once);
+        _mockTempDataService.Verify(t => t.Put(LegalForm.TempDataKey, It.Is<LegalForm>(ta => ta.RegistrationDate == new DateTime(2023, 6, 15, 0, 0, 0))), Times.Once);
         result.Should().BeOfType<RedirectToPageResult>()
             .Which.PageName.Should().Be("SupplierBasicInformation");
     }

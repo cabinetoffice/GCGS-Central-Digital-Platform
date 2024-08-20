@@ -193,7 +193,7 @@ public class ConnectedEntityCompanyInsolvencyDateTest
             .Returns(state);
 
         var result = _model.OnPost();
-                
+
         var pageResult = result.Should().BeOfType<RedirectToPageResult>();
 
         pageResult.Which.PageName.Should().Be(expectedRedirectPage);
@@ -213,8 +213,8 @@ public class ConnectedEntityCompanyInsolvencyDateTest
             HasCompaniesHouseNumber = true,
             CompaniesHouseNumber = "12345678",
             ControlConditions = [Constants.ConnectedEntityControlCondition.OwnsShares],
-            RegistrationDate = new DateTimeOffset(2011, 7, 15, 0, 0, 0, TimeSpan.FromHours(0)),
-            InsolvencyDate = new DateTimeOffset(2010, 6, 11, 0, 0, 0, TimeSpan.FromHours(0)),
+            RegistrationDate = new DateTime(2011, 7, 15, 0, 0, 0),
+            InsolvencyDate = new DateTime(2010, 6, 11, 0, 0, 0),
         };
 
         return connectedPersonDetails;

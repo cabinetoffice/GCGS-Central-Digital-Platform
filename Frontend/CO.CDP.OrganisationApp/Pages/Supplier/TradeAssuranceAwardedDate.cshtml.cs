@@ -65,7 +65,7 @@ public class TradeAssuranceAwardedDateModel(
         }
 
         var ta = tempDataService.PeekOrDefault<TradeAssurance>(TradeAssurance.TempDataKey);
-        ta.DateAwarded = new DateTimeOffset(parsedDate, TimeSpan.FromHours(0));
+        ta.DateAwarded = parsedDate;
         tempDataService.Put(TradeAssurance.TempDataKey, ta);
 
         return RedirectToPage("TradeAssuranceCheckAnswer", new { Id });

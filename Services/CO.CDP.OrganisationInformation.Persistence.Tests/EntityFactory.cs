@@ -147,7 +147,7 @@ public static class EntityFactory
         return organisation;
     }
 
-    public static Organisation.BuyerInformation GivenBuyerInformation(
+    public static BuyerInformation GivenBuyerInformation(
         string? type = null
     ) => new()
     {
@@ -217,7 +217,7 @@ public static class EntityFactory
         Guid = Guid.NewGuid(),
         Name = name,
         AwardedByPersonOrBodyName = "Qualification Centre",
-        DateAwarded = DateTimeOffset.Parse("2018-02-20T00:00:00Z")
+        DateAwarded = DateTime.Parse("2018-02-20T00:00:00Z")
     };
 
     public static TradeAssurance GivenSupplierTradeAssurance()
@@ -226,7 +226,7 @@ public static class EntityFactory
             Guid = Guid.NewGuid(),
             AwardedByPersonOrBodyName = "Assurance Body",
             ReferenceNumber = "QA-12333",
-            DateAwarded = DateTimeOffset.Parse("2009-10-03T00:00:00Z")
+            DateAwarded = DateTime.Parse("2009-10-03T00:00:00Z")
         };
 
     public static LegalForm GivenSupplierLegalForm(
@@ -237,6 +237,6 @@ public static class EntityFactory
             RegisteredUnderAct2006 = true,
             RegisteredLegalForm = registeredLegalForm,
             LawRegistered = "England and Wales",
-            RegistrationDate = DateTimeOffset.Parse("2005-12-02T00:00:00Z")
+            RegistrationDate = DateTime.Parse("2005-12-02T00:00:00Z")
         };
 }

@@ -117,12 +117,12 @@ public class ConnectedEntityRegistrationDateQuestionTest
 
         var redirectToPageResult = result.Should().BeOfType<RedirectToPageResult>().Subject;
 
-        redirectToPageResult.PageName.Should().Be(expectedRedirectPage);        
+        redirectToPageResult.PageName.Should().Be(expectedRedirectPage);
     }
 
     [Theory]
-    [InlineData(ConnectedEntityType.Organisation, ConnectedEntityOrganisationCategoryType.RegisteredCompany, null, true, "ConnectedEntityCompanyRegisterName", false, "nature-of-control")]    
-    [InlineData(ConnectedEntityType.Organisation, ConnectedEntityOrganisationCategoryType.RegisteredCompany, null, false, "ConnectedEntityCheckAnswersOrganisation", false, "nature-of-control")]    
+    [InlineData(ConnectedEntityType.Organisation, ConnectedEntityOrganisationCategoryType.RegisteredCompany, null, true, "ConnectedEntityCompanyRegisterName", false, "nature-of-control")]
+    [InlineData(ConnectedEntityType.Organisation, ConnectedEntityOrganisationCategoryType.RegisteredCompany, null, false, "ConnectedEntityCheckAnswersOrganisation", false, "nature-of-control")]
     [InlineData(ConnectedEntityType.Organisation, ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl, null, true, "ConnectedEntityControlCondition", false, "company-question", true)]
     [InlineData(ConnectedEntityType.Organisation, ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl, null, false, "ConnectedEntityOverseasCompanyQuestion", false, "nature-of-control", false)]
     [InlineData(ConnectedEntityType.Organisation, ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl, null, false, "ConnectedEntityControlCondition", false, "company-question", true)]
@@ -165,7 +165,7 @@ public class ConnectedEntityRegistrationDateQuestionTest
         state.ConnectedEntityIndividualAndTrustCategoryType = individualAndTrustCategoryType;
         state.HasRegistartionDate = hasRegistrationDate;
         state.RegistrationDate = hasRegistrationDate == true ? DateTime.UtcNow : null;
-        
+
 
         _sessionMock.Setup(s => s.Get<ConnectedEntityState>(Session.ConnectedPersonKey)).
             Returns(state);
@@ -248,7 +248,7 @@ public class ConnectedEntityRegistrationDateQuestionTest
             HasCompaniesHouseNumber = true,
             CompaniesHouseNumber = "12345678",
             ControlConditions = [Constants.ConnectedEntityControlCondition.OwnsShares],
-            RegistrationDate = new DateTimeOffset(2011, 7, 15, 0, 0, 0, TimeSpan.FromHours(0)),
+            RegistrationDate = new DateTime(2011, 7, 15, 0, 0, 0),
             HasRegistartionDate = true,
         };
 

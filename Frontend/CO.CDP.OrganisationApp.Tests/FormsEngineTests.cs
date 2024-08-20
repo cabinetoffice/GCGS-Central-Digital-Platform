@@ -310,7 +310,7 @@ public class FormsEngineTests
                         {
                             BoolValue = true,
                             NumericValue = 42,
-                            DateValue = DateTimeOffset.UtcNow,
+                            DateValue = DateTime.UtcNow,
                             TextValue = "Sample Answer",
                             OptionValue = "Option1"
                         }

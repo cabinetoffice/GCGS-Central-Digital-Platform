@@ -91,5 +91,5 @@ public class LegalForm
     public bool? RegisteredUnderAct2006 { get; set; }
     public string? RegisteredLegalForm { get; set; }
     public string? LawRegistered { get; set; }
-    public DateTimeOffset? RegistrationDate { get; set; }
+    public DateTime? RegistrationDate { get; set; }
 }

@@ -50,9 +50,9 @@ public class FormAnswer
 {
     public bool? BoolValue { get; init; }
     public double? NumericValue { get; init; }
-    public DateTimeOffset? DateValue { get; init; }
-    public DateTimeOffset? StartValue { get; init; }
-    public DateTimeOffset? EndValue { get; init; }
+    public DateTime? DateValue { get; init; }
+    public DateTime? StartValue { get; init; }
+    public DateTime? EndValue { get; init; }
     public string? TextValue { get; init; }
     public string? OptionValue { get; init; }
     public Address? AddressValue { get; init; }

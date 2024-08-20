@@ -8,8 +8,8 @@ public class RefreshToken : IEntityDate
 {
     public int Id { get; set; }
     public required string TokenHash { get; set; }
-    public required DateTimeOffset ExpiryDate { get; set; }
+    public required DateTime ExpiryDate { get; set; }
     public bool? Revoked { get; set; }
-    public DateTimeOffset CreatedOn { get; set; }
-    public DateTimeOffset UpdatedOn { get; set; }
+    public DateTime CreatedOn { get; set; }
+    public DateTime UpdatedOn { get; set; }
 }

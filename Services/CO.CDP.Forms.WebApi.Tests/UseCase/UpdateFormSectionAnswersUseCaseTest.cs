@@ -228,8 +228,8 @@ public class UpdateFormSectionAnswersUseCaseTest(AutoMapperFixture mapperFixture
             Form = form,
             Questions = new List<Persistence.FormQuestion>(),
             AllowsMultipleAnswerSets = true,
-            CreatedOn = DateTimeOffset.UtcNow,
-            UpdatedOn = DateTimeOffset.UtcNow,
+            CreatedOn = DateTime.UtcNow,
+            UpdatedOn = DateTime.UtcNow,
             Configuration = new Persistence.FormSectionConfiguration
             {
                 PluralSummaryHeadingFormat = "You have added {0} files",

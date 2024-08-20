@@ -19,8 +19,8 @@ public class Form : IEntityDate
     public required FormScope Scope { get; set; }
 
     public required ICollection<FormSection> Sections { get; set; } = [];
-    public DateTimeOffset CreatedOn { get; set; }
-    public DateTimeOffset UpdatedOn { get; set; }
+    public DateTime CreatedOn { get; set; }
+    public DateTime UpdatedOn { get; set; }
 }
 
 public enum FormType
@@ -44,8 +44,8 @@ public class FormSection : IEntityDate
     public required ICollection<FormQuestion> Questions { get; set; } = [];
     public required bool AllowsMultipleAnswerSets { get; set; }
     public required FormSectionConfiguration Configuration;
-    public DateTimeOffset CreatedOn { get; set; }
-    public DateTimeOffset UpdatedOn { get; set; }
+    public DateTime CreatedOn { get; set; }
+    public DateTime UpdatedOn { get; set; }
 }
 
 public record FormSectionConfiguration

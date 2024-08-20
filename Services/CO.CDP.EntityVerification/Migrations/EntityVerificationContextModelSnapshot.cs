@@ -32,7 +32,7 @@ namespace CO.CDP.EntityVerification.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTimeOffset>("CreatedOn")
+                    b.Property<DateTime>("CreatedOn")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_on")
@@ -56,7 +56,7 @@ namespace CO.CDP.EntityVerification.Migrations
                         .HasColumnType("text")
                         .HasColumnName("scheme");
 
-                    b.Property<DateTimeOffset>("UpdatedOn")
+                    b.Property<DateTime>("UpdatedOn")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_on")
@@ -90,7 +90,7 @@ namespace CO.CDP.EntityVerification.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTimeOffset>("CreatedOn")
+                    b.Property<DateTime>("CreatedOn")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_on")
@@ -110,7 +110,7 @@ namespace CO.CDP.EntityVerification.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("organisation_id");
 
-                    b.Property<DateTimeOffset>("UpdatedOn")
+                    b.Property<DateTime>("UpdatedOn")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_on")

@@ -119,7 +119,7 @@ public class ConnectedEntityPscDetailsModel(ISession session) : PageModel
                 return Page();
             }
 
-            state.DateOfBirth = new DateTimeOffset(parsedDate, TimeSpan.FromHours(0));
+            state.DateOfBirth = parsedDate;
         }
 
         state.FirstName = FirstName;
@@ -278,5 +278,5 @@ public class ConnectedEntityPscDetailsModel(ISession session) : PageModel
 
         return redirectPage;
     }
-        
+
 }

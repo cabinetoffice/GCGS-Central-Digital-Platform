@@ -1,7 +1,7 @@
-using CO.CDP.OrganisationInformation.Persistence;
-using CO.CDP.Forms.WebApi.Model;
 using CO.CDP.Forms.WebApi.Tests.AutoMapper;
 using CO.CDP.Forms.WebApi.UseCase;
+using CO.CDP.OrganisationInformation.Persistence;
+using CO.CDP.OrganisationInformation.Persistence.Forms;
 using FluentAssertions;
 using Moq;
 
@@ -27,29 +27,29 @@ public class GetFormSectionQuestionsUseCaseTest(AutoMapperFixture mapperFixture)
         var sectionId = Guid.NewGuid();
         var organisationId = Guid.NewGuid();
 
-        var form = new CO.CDP.OrganisationInformation.Persistence.Forms.Form
+        var form = new Form
         {
             Id = 1,
             Guid = Guid.NewGuid(),
             Name = "Sample Form",
             Version = "1.0",
             IsRequired = true,
-            Type = CO.CDP.OrganisationInformation.Persistence.Forms.FormType.Standard,
-            Scope = CO.CDP.OrganisationInformation.Persistence.Forms.FormScope.SupplierInformation,
-            Sections = new List<CO.CDP.OrganisationInformation.Persistence.Forms.FormSection>()
+            Type = FormType.Standard,
+            Scope = FormScope.SupplierInformation,
+            Sections = new List<FormSection>()
         };
 
-        var section = new CO.CDP.OrganisationInformation.Persistence.Forms.FormSection
+        var section = new FormSection
         {
             Id = 1,
             Guid = sectionId,
             Title = "Financial Information",
             Form = form,
-            Questions = new List<CO.CDP.OrganisationInformation.Persistence.Forms.FormQuestion>(),
+            Questions = new List<FormQuestion>(),
             AllowsMultipleAnswerSets = true,
-            CreatedOn = DateTimeOffset.UtcNow,
-            UpdatedOn = DateTimeOffset.UtcNow,
-            Configuration = new OrganisationInformation.Persistence.Forms.FormSectionConfiguration
+            CreatedOn = DateTime.UtcNow,
+            UpdatedOn = DateTime.UtcNow,
+            Configuration = new FormSectionConfiguration
             {
                 PluralSummaryHeadingFormat = "You have added {0} files",
                 SingularSummaryHeading = "You have added 1 file",
@@ -59,34 +59,34 @@ public class GetFormSectionQuestionsUseCaseTest(AutoMapperFixture mapperFixture)
             }
         };
 
-        var questions = new List<CO.CDP.OrganisationInformation.Persistence.Forms.FormQuestion>
+        var questions = new List<FormQuestion>
         {
-            new CO.CDP.OrganisationInformation.Persistence.Forms.FormQuestion
+            new FormQuestion
             {
                 Id = 1,
                 Guid = Guid.NewGuid(),
                 Caption = "Page caption",
                 Title = "The financial information you will need.",
                 Description = "You will need to upload accounts or statements for your 2 most recent financial years. If you do not have 2 years, you can upload your most recent financial year. You will need to enter the financial year end date for the information you upload.",
-                Type = CO.CDP.OrganisationInformation.Persistence.Forms.FormQuestionType.NoInput,
+                Type = FormQuestionType.NoInput,
                 IsRequired = true,
                 NextQuestion = null,
                 NextQuestionAlternative = null,
-                Options = new CO.CDP.OrganisationInformation.Persistence.Forms.FormQuestionOptions(),
+                Options = new FormQuestionOptions(),
                 Section = section,
             },
-            new CO.CDP.OrganisationInformation.Persistence.Forms.FormQuestion
+            new FormQuestion
             {
                 Id = 2,
                 Guid = Guid.NewGuid(),
                 Caption = "Page caption",
                 Title = "Were your accounts audited?.",
                 Description = "",
-                Type = CO.CDP.OrganisationInformation.Persistence.Forms.FormQuestionType.YesOrNo,
+                Type = FormQuestionType.YesOrNo,
                 IsRequired = true,
                 NextQuestion = null,
                 NextQuestionAlternative = null,
-                Options = new CO.CDP.OrganisationInformation.Persistence.Forms.FormQuestionOptions(),
+                Options = new FormQuestionOptions(),
                 Section = section,
             }
         };
@@ -99,12 +99,12 @@ public class GetFormSectionQuestionsUseCaseTest(AutoMapperFixture mapperFixture)
 
         result?.Questions.Should().HaveCount(2);
 
-        result?.Section.Should().BeEquivalentTo(new FormSection
+        result?.Section.Should().BeEquivalentTo(new Model.FormSection
         {
             Id = sectionId,
             Title = "Financial Information",
             AllowsMultipleAnswerSets = true,
-            Configuration = new FormSectionConfiguration
+            Configuration = new Model.FormSectionConfiguration
             {
                 PluralSummaryHeadingFormat = "You have added {0} files",
                 SingularSummaryHeading = "You have added 1 file",
@@ -114,27 +114,27 @@ public class GetFormSectionQuestionsUseCaseTest(AutoMapperFixture mapperFixture)
             }
         });
 
-        result?.Questions.Should().BeEquivalentTo(new List<FormQuestion>
+        result?.Questions.Should().BeEquivalentTo(new List<Model.FormQuestion>
         {
-            new FormQuestion
+            new Model.FormQuestion
             {
                 Id = questions[0].Guid,
                 Title = questions[0].Title,
                 Caption = questions[0].Caption,
                 Description = questions[0].Description,
-                Type = FormQuestionType.NoInput,
+                Type = Model.FormQuestionType.NoInput,
                 IsRequired = questions[0].IsRequired,
-                Options = new FormQuestionOptions()
+                Options = new Model.FormQuestionOptions()
             },
-            new FormQuestion
+            new Model.FormQuestion
             {
                 Id = questions[1].Guid,
                 Title = questions[1].Title,
                 Caption = questions[0].Caption,
                 Description = questions[1].Description,
-                Type = FormQuestionType.YesOrNo,
+                Type = Model.FormQuestionType.YesOrNo,
                 IsRequired = questions[1].IsRequired,
-                Options = new FormQuestionOptions()
+                Options = new Model.FormQuestionOptions()
             }
         });
     }

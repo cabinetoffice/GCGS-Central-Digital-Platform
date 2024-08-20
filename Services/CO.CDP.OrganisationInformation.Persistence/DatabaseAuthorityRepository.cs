@@ -11,7 +11,7 @@ public class DatabaseAuthorityRepository(OrganisationInformationContext context)
         return await context.RefreshTokens
             .FirstOrDefaultAsync(rt =>
                 rt.TokenHash == tokenHash &&
-                rt.ExpiryDate > DateTime.Now &&
+                rt.ExpiryDate > DateTime.UtcNow &&
                 (rt.Revoked ?? false) == false);
     }
 

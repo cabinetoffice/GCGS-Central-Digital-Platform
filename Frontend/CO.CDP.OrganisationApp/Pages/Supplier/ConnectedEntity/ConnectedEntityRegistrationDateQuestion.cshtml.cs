@@ -95,7 +95,7 @@ public class ConnectedEntityRegistrationDateQuestionModel(ISession session) : Pa
                 return Page();
             }
 
-            state.RegistrationDate = new DateTimeOffset(parsedDate, TimeSpan.FromHours(0));
+            state.RegistrationDate = parsedDate;
         }
         else
         { state.RegistrationDate = null; }

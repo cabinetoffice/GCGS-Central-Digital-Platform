@@ -1,5 +1,12 @@
+using System.IdentityModel.Tokens.Jwt;
+using System.IO.Compression;
+using System.Security.Claims;
+using System.Security.Cryptography;
+using System.Text;
+using System.Text.Json;
 using CO.CDP.Organisation.Authority.Model;
 using CO.CDP.Organisation.Authority.Tests.AutoMapper;
+using CO.CDP.OrganisationInformation;
 using CO.CDP.OrganisationInformation.Persistence;
 using FluentAssertions;
 using IdentityModel;
@@ -7,12 +14,8 @@ using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.IdentityModel.Tokens;
 using Moq;
-using System.IdentityModel.Tokens.Jwt;
-using System.IO.Compression;
-using System.Security.Claims;
-using System.Security.Cryptography;
-using System.Text;
-using System.Text.Json;
+using JsonWebKey = Microsoft.IdentityModel.Tokens.JsonWebKey;
+using TenantLookup = CO.CDP.OrganisationInformation.Persistence.TenantLookup;
 
 namespace CO.CDP.Organisation.Authority.Tests;
 
@@ -164,7 +167,7 @@ public class TokenServiceTest : IClassFixture<AutoMapperFixture>
         string hashToValidate = "RfLTQtUMjxyhUSKTJOzTW6PIPv+zRvvWTM1ylJlnNS8=";
 
         _authorityRepositoryMock.Setup(x => x.Find(hashToValidate))
-            .ReturnsAsync(new RefreshToken { TokenHash = hashToValidate, ExpiryDate = DateTimeOffset.Now.AddMinutes(1) });
+            .ReturnsAsync(new RefreshToken { TokenHash = hashToValidate, ExpiryDate = DateTime.Now.AddMinutes(1) });
 
         var (valid, urn) = await _tokenService.ValidateRefreshToken(token);
 
@@ -217,7 +220,7 @@ public class TokenServiceTest : IClassFixture<AutoMapperFixture>
 
         if (rsaParams != null)
         {
-            signingKeys.Add(new Microsoft.IdentityModel.Tokens.JsonWebKey
+            signingKeys.Add(new JsonWebKey
             {
                 Kty = "RSA",
                 Use = "sig",
@@ -259,7 +262,7 @@ public class TokenServiceTest : IClassFixture<AutoMapperFixture>
                     {
                         Id = Guid.NewGuid(),
                         Name = $"Test Org{x}{y}",
-                        Roles = [OrganisationInformation.PartyRole.Buyer],
+                        Roles = [PartyRole.Buyer],
                         Scopes = ["Admin"]
                     }).ToList()
                 }).ToList()

@@ -181,7 +181,7 @@ public class ConnectedEntityAddressTest
             HasCompaniesHouseNumber = true,
             CompaniesHouseNumber = "12345678",
             ControlConditions = [Constants.ConnectedEntityControlCondition.OwnsShares],
-            RegistrationDate = new DateTimeOffset(2011, 7, 15, 0, 0, 0, TimeSpan.FromHours(0))
+            RegistrationDate = new DateTime(2011, 7, 15, 0, 0, 0)
         };
 
         return connectedPersonDetails;

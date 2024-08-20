@@ -51,7 +51,7 @@ public record TradeAssurance
     public Guid? Id { get; set; }
     public required string AwardedByPersonOrBodyName { get; set; }
     public required string ReferenceNumber { get; set; }
-    public required DateTimeOffset DateAwarded { get; set; }
+    public required DateTime DateAwarded { get; set; }
 }
 
 public record LegalForm
@@ -59,7 +59,7 @@ public record LegalForm
     public required bool RegisteredUnderAct2006 { get; set; }
     public required string RegisteredLegalForm { get; set; }
     public required string LawRegistered { get; set; }
-    public required DateTimeOffset RegistrationDate { get; set; }
+    public required DateTime RegistrationDate { get; set; }
 }
 
 public record Qualification
@@ -67,7 +67,7 @@ public record Qualification
     public Guid? Id { get; set; }
     public required string AwardedByPersonOrBodyName { get; set; }
     public required string Name { get; set; }
-    public required DateTimeOffset DateAwarded { get; set; }
+    public required DateTime DateAwarded { get; set; }
 }
 
 public record ConnectedEntity
@@ -82,11 +82,11 @@ public record ConnectedEntity
     public ConnectedIndividualTrust? IndividualOrTrust { get; set; }
     public ICollection<Address> Addresses { get; set; } = [];
 
-    public DateTimeOffset? RegisteredDate { get; set; }
+    public DateTime? RegisteredDate { get; set; }
     public string? RegisterName { get; set; }
 
-    public DateTimeOffset? StartDate { get; set; }
-    public DateTimeOffset? EndDate { get; set; }
+    public DateTime? StartDate { get; set; }
+    public DateTime? EndDate { get; set; }
 }
 
 public record ConnectedIndividualTrust
@@ -95,7 +95,7 @@ public record ConnectedIndividualTrust
     public required ConnectedIndividualAndTrustCategory Category { get; set; }
     public required string FirstName { get; set; }
     public required string LastName { get; set; }
-    public DateTimeOffset? DateOfBirth { get; set; }
+    public DateTime? DateOfBirth { get; set; }
     public string? Nationality { get; set; }
     public ICollection<ControlCondition> ControlCondition { get; set; } = [];
     public ConnectedPersonType ConnectedType { get; set; }
@@ -108,7 +108,7 @@ public record ConnectedOrganisation
     public int Id { get; set; }
     public required ConnectedOrganisationCategory Category { get; set; }
     public required string Name { get; set; }
-    public DateTimeOffset? InsolvencyDate { get; set; }
+    public DateTime? InsolvencyDate { get; set; }
     public string? RegisteredLegalForm { get; set; }
     public string? LawRegistered { get; set; }
     public ICollection<ControlCondition> ControlCondition { get; set; } = [];

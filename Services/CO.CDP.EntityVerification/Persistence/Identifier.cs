@@ -11,8 +11,8 @@ public class Identifier : IEntityDate
     public required string Scheme { get; set; }
     public required string LegalName { get; set; }
     public Uri? Uri { get; set; }
-    public DateTimeOffset CreatedOn { get; set; }
-    public DateTimeOffset UpdatedOn { get; set; }
+    public DateTime CreatedOn { get; set; }
+    public DateTime UpdatedOn { get; set; }
 
     public static ICollection<Identifier> GetPersistenceIdentifiers(IEnumerable<Events.Identifier> evIds)
     {

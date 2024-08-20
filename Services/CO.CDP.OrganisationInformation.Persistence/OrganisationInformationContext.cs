@@ -141,7 +141,7 @@ public class OrganisationInformationContext(DbContextOptions<OrganisationInforma
 
         modelBuilder.Entity<AuthenticationKey>(e =>
         {
-            e.Property(e => e.Scopes).HasJsonColumn([], PropertyBuilderExtensions.ListComparer<string>());
+            e.Property(a => a.Scopes).HasJsonColumn([], PropertyBuilderExtensions.ListComparer<string>());
         });
 
         modelBuilder.Entity<Person>()
@@ -153,8 +153,8 @@ public class OrganisationInformationContext(DbContextOptions<OrganisationInforma
         {
             if (typeof(IEntityDate).IsAssignableFrom(entityType.ClrType) && !entityType.IsOwned())
             {
-                modelBuilder.Entity(entityType.ClrType).Property<DateTimeOffset>("CreatedOn").HasTimestampDefault();
-                modelBuilder.Entity(entityType.ClrType).Property<DateTimeOffset>("UpdatedOn").HasTimestampDefault();
+                modelBuilder.Entity(entityType.ClrType).Property<DateTime>("CreatedOn").HasTimestampDefault();
+                modelBuilder.Entity(entityType.ClrType).Property<DateTime>("UpdatedOn").HasTimestampDefault();
             }
         }
 

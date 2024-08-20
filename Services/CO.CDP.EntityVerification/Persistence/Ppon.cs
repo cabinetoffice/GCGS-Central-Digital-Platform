@@ -9,6 +9,6 @@ public class Ppon : IEntityDate
     public required Guid OrganisationId { get; set; }
     public ICollection<Identifier> Identifiers { get; set; } = [];
     public required string Name { get; set; }
-    public DateTimeOffset CreatedOn { get; set; }
-    public DateTimeOffset UpdatedOn { get; set; }
+    public DateTime CreatedOn { get; set; }
+    public DateTime UpdatedOn { get; set; }
 }

@@ -94,7 +94,7 @@ public class SupplierQualificationAwardedDateTests
 
         var result = _model.OnPost();
 
-        _mockTempDataService.Verify(t => t.Put(Qualification.TempDataKey, It.Is<Qualification>(ta => ta.DateAwarded == new DateTimeOffset(2023, 6, 15, 0, 0, 0, TimeSpan.FromHours(0)))), Times.Once);
+        _mockTempDataService.Verify(t => t.Put(Qualification.TempDataKey, It.Is<Qualification>(ta => ta.DateAwarded == new DateTime(2023, 6, 15, 0, 0, 0))), Times.Once);
         result.Should().BeOfType<RedirectToPageResult>()
             .Which.PageName.Should().Be("SupplierQualificationName");
     }

@@ -91,7 +91,7 @@ public class ConnectedEntityCompanyInsolvencyDateModel(ISession session) : PageM
             return Page();
         }
 
-        state.InsolvencyDate = new DateTimeOffset(parsedDate, TimeSpan.FromHours(0));
+        state.InsolvencyDate = parsedDate;
 
         session.Set(Session.ConnectedPersonKey, state);
 

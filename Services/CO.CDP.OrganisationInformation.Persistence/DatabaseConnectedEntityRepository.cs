@@ -28,7 +28,7 @@ public class DatabaseConnectedEntityRepository(OrganisationInformationContext co
 
     public async Task<IEnumerable<ConnectedEntityLookup?>> GetSummary(Guid organisationId)
     {
-        var now = DateTimeOffset.UtcNow;
+        var now = DateTime.UtcNow;
         return await context.ConnectedEntities
             .Where(t => t.SupplierOrganisation.Guid == organisationId && (t.EndDate > now || t.EndDate == null))
             .Select(t => new ConnectedEntityLookup

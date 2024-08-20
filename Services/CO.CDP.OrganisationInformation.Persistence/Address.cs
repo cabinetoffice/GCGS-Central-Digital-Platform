@@ -10,6 +10,6 @@ public class Address : IEntityDate
     public string? Region { get; set; }
     public required string PostalCode { get; set; }
     public required string CountryName { get; set; }
-    public DateTimeOffset CreatedOn { get; set; }
-    public DateTimeOffset UpdatedOn { get; set; }
+    public DateTime CreatedOn { get; set; }
+    public DateTime UpdatedOn { get; set; }
 }
