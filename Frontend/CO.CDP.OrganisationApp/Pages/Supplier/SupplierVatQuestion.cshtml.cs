@@ -60,7 +60,7 @@ public class SupplierVatQuestionModel(IOrganisationClient organisationClient) : 
 
             ICollection<OrganisationIdentifier> identifiers = [
                                 new OrganisationIdentifier(
-                                    id: HasVatNumber == true ? VatNumber : "",
+                                    id: HasVatNumber == true ? VatNumber : null,
                                     legalName: organisation.Name,
                                     scheme: "VAT")];
 
