@@ -15,7 +15,7 @@ public class SharedConsent : IEntityDate
     public required ICollection<FormAnswerSet> AnswerSets { get; init; } = [];
     public required SubmissionState SubmissionState { get; set; } = SubmissionState.Draft;
     public DateTimeOffset? SubmittedAt { get; set; }
-    public string? FormVersionId { get; init; }
+    public required string FormVersionId { get; init; }
     public string? BookingReference { get; set; }
     public DateTimeOffset CreatedOn { get; set; }
     public DateTimeOffset UpdatedOn { get; set; }
