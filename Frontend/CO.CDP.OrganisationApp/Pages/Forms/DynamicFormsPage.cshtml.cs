@@ -1,5 +1,4 @@
 using CO.CDP.AwsServices;
-using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -58,9 +57,6 @@ public class DynamicFormsPageModel(
     [BindProperty]
     public bool? RedirectToCheckYourAnswer { get; set; }
 
-    [BindProperty]
-    public string? SectionTitle { get; set; }
-
     public string EncType => CurrentFormQuestionType == FormQuestionType.FileUpload
         ? "multipart/form-data" : "application/x-www-form-urlencoded";
 
@@ -115,7 +111,7 @@ public class DynamicFormsPageModel(
             var answerSet = tempDataService.PeekOrDefault<FormQuestionAnswerState>(FormQuestionAnswerStateKey);
             await formsEngine.SaveUpdateAnswers(FormId, SectionId, OrganisationId, answerSet);
 
-            if (SectionTitle == SectionTitles.DECLARATIONINFORMATION)
+            if (SectionId == new Guid(FormsEngine.SharedDataSectionId))
             {
                 return RedirectToPage("/ShareInformation/ShareCodeConfirmation", new { OrganisationId, FormId, SectionId });
             }
@@ -146,7 +142,6 @@ public class DynamicFormsPageModel(
         var answerSet = tempDataService.PeekOrDefault<FormQuestionAnswerState>(FormQuestionAnswerStateKey);
 
         var form = await formsEngine.GetFormSectionAsync(OrganisationId, FormId, SectionId);
-        SectionTitle = form?.Section?.Title;
 
         List<AnswerSummary> summaryList = [];
         foreach (var answer in answerSet.Answers)
