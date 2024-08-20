@@ -115,13 +115,13 @@ public class DynamicFormsPageModel(
             var answerSet = tempDataService.PeekOrDefault<FormQuestionAnswerState>(FormQuestionAnswerStateKey);
             await formsEngine.SaveUpdateAnswers(FormId, SectionId, OrganisationId, answerSet);
 
-            tempDataService.Remove(FormQuestionAnswerStateKey);
             if (SectionTitle == SectionTitles.DECLARATIONINFORMATION)
             {
                 return RedirectToPage("/ShareInformation/ShareCodeConfirmation", new { OrganisationId, FormId, SectionId });
             }
             else
             {
+                tempDataService.Remove(FormQuestionAnswerStateKey);
                 return RedirectToPage("FormsAddAnotherAnswerSet", new { OrganisationId, FormId, SectionId });
             }
 
@@ -208,6 +208,14 @@ public class DynamicFormsPageModel(
 
     private async Task<FormQuestion?> InitModel(bool reset = false)
     {
+        var isShareDataPage = tempDataService.PeekOrDefault<bool>($"ShareData_{OrganisationId}_{FormId}_{SectionId}_Page");
+
+        if (isShareDataPage)
+        {
+            CurrentQuestionId = await CheckYourAnswerQuestionId();
+            tempDataService.Remove($"ShareData_{OrganisationId}_{FormId}_{SectionId}_Page");
+        }
+
         var currentQuestion = await formsEngine.GetCurrentQuestion(OrganisationId, FormId, SectionId, CurrentQuestionId);
         if (currentQuestion == null)
             return null;

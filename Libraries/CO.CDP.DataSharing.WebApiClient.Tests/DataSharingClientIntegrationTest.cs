@@ -23,6 +23,5 @@ public class DataSharingClientIntegrationTest(ITestOutputHelper testOutputHelper
         var exception = await act.Should().NotThrowAsync<ApiException<ProblemDetails>>();
 
         exception.Should().NotBe(404);
-        //TODO: Make this test consistent with OrganisationClientIntegrationTest & PersonClientIntegrationTest as part of DP-319
     }
 }

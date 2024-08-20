@@ -4,7 +4,9 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace CO.CDP.OrganisationApp.Pages.ShareInformation;
 
-public class ShareCodeConfirmationModel(IDataSharingClient dataSharingClient) : PageModel
+public class ShareCodeConfirmationModel(
+    IDataSharingClient dataSharingClient,
+    ITempDataService tempDataService) : PageModel
 {
     [BindProperty(SupportsGet = true)]
     public Guid OrganisationId { get; set; }
@@ -15,13 +17,17 @@ public class ShareCodeConfirmationModel(IDataSharingClient dataSharingClient) : 
     [BindProperty(SupportsGet = true)]
     public Guid SectionId { get; set; }
 
+    [BindProperty]
+    public string? ShareCode { get; set; }
+    private string ShareDataStateKey => $"ShareData_{OrganisationId}_{FormId}_{SectionId}_Page";
+
     public async Task<IActionResult> OnGetAsync()
     {
         try
         {
-            var sharRequest = new ShareRequest(FormId, OrganisationId);
-            var getDataSharingTask = await dataSharingClient.CreateSharedDataAsync(sharRequest);
-
+            var sharingDataDetails = await dataSharingClient.CreateSharedDataAsync(new ShareRequest(FormId, OrganisationId));
+            ShareCode = sharingDataDetails.ShareCode;
+            tempDataService.Put(ShareDataStateKey, true);
         }
         catch (ApiException ex) when (ex.StatusCode == 404)
         {
