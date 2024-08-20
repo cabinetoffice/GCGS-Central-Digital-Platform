@@ -1,0 +1,36 @@
+= 7. Database timestamps
+
+Date: 2024-08-20
+
+== Status
+
+Accepted
+
+== Context
+
+On some environments we faced issues with datetime fields being of Local kind rather than UTC.
+
+[source]
+----
+---> System.InvalidCastException: Cannot write DateTime with Kind=Local to PostgreSQL type 'timestamp with time zone', only UTC is supported.
+Note that it's not possible to mix DateTimes with different Kinds in an array/range.
+See the Npgsql.EnableLegacyTimestampBehavior AppContext switch to enable legacy behavior.
+----
+
+This triggered us to understand PostgreSQL and EF Core datetime handling better.
+It turned out, our `DateTimeOffset` properties were mapped to `timestamp with timezone` by chance,
+probably because we've used the `CURRENT_TIMESTAMP` default.
+
+According to the documentation, `DateTimeOffset` is normally mapped to `time with timezone` rather
+than `timestamp with timezone`.
+
+See:
+
+* https://www.npgsql.org/doc/types/datetime.html#net-types-and-postgresql-types
+* https://www.npgsql.org/doc/release-notes/6.0.html#timestamp-rationalization-and-improvements
+
+== Decision
+
+* All database timestamps should be stored (and generated) in UTC.
+* We should use `DateTime` rather than `DateTimeOffset`.
+* We should use `DateTime.UtcNow` rather than `DateTime.Now`.

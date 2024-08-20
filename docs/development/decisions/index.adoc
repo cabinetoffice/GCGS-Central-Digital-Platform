@@ -22,4 +22,6 @@ include::0005-db-naming-conventions.adoc[]
 
 include::0006-acceptance-tests.adoc[]
 
+include::0007-database-timestamps.adoc[]
+
 :leveloffset: -1
