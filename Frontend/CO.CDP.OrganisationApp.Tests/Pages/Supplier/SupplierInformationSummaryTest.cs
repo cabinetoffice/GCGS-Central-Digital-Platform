@@ -17,6 +17,8 @@ public class SupplierInformationSummaryTest
     {
         _organisationClientMock = new Mock<IOrganisationClient>();
         _formClient = new();
+        _formClient.Setup(o => o.GetFormSectionsAsync(It.IsAny<Guid>(), It.IsAny<Guid>()))
+            .ReturnsAsync(new FormSectionResponse([]));
         _model = new SupplierInformationSummaryModel(_organisationClientMock.Object, _formClient.Object);
     }
 
