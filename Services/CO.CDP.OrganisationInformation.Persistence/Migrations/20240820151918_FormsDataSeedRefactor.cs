@@ -22,6 +22,8 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
 	                UPDATE shared_consents SET form_id = financial_info_form_id WHERE form_id = share_code_form_id;
 	                UPDATE form_sections SET form_id = financial_info_form_id WHERE form_id = share_code_form_id;
 	                DELETE FROM forms WHERE id = share_code_form_id;
+
+	                UPDATE form_sections SET title = 'Share my information' WHERE guid = '936096b3-c3bb-4475-ad7d-73b44ff61e76';
                 END $$;
             ");
         }
@@ -32,6 +34,8 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
             migrationBuilder.Sql($@"
                 INSERT INTO forms (guid, name, version, is_required, type, scope)
                 VALUES ('049df96e-f6ea-423c-9361-ecb20c0250ea', 'Declaration Information Form', '1.0', TRUE, 0, 0);
+
+                UPDATE form_sections SET title = 'Declaration Information' WHERE guid = '936096b3-c3bb-4475-ad7d-73b44ff61e76';
             ");
 
             migrationBuilder.Sql($@"
