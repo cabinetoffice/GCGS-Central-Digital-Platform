@@ -9,7 +9,15 @@
     var dateOfRegistrationHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.RegistrationDate)).HasInnerHtml;
     var hasError = dateOfRegistrationHasError || dayHasError || monthHasError || yearHasError;
 
-    var backPage = Request.Query.ContainsKey("frm-chk-answer") ? "check-answers-organisation" : Model.BackPageLink;
+    var InduvOrOrg = "check-answers-organisation";
+    if (Model.ConnectedEntityType != Constants.ConnectedEntityType.Organisation)
+    {
+        InduvOrOrg = "check-answer-individual-trust";
+    }
+
+    var backPage = Request.Query.ContainsKey("frm-chk-answer")
+                    ? InduvOrOrg
+                    : Model.BackPageLink;
     var backLink = $"/organisation/{Model.Id}/supplier-information/connected-person/{backPage}/{Model.ConnectedEntityId}";
 }
 

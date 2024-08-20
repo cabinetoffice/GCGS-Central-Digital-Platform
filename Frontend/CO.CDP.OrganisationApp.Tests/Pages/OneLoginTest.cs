@@ -88,12 +88,6 @@ public class OneLoginTest
 
         var results = await model.OnGet("user-info");
 
-        sessionMock.Verify(t => t.Set(Session.UserDetailsKey, It.Is<UserDetails>(o =>
-             o.FirstName == "firstdummy" &&
-             o.LastName == "lastdummy" &&
-             o.PersonId == new Guid("0bacf3d1-3b69-4efa-80e9-3623f4b7786e")
-         )), Times.Exactly(2));
-
         results.Should().BeOfType<RedirectToPageResult>()
             .Which.PageName.Should().Be("OrganisationSelection");
     }

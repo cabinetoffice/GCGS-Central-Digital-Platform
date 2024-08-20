@@ -47,7 +47,7 @@ builder.Services.AddTransient(provider =>
     return factory.GetTempData(context);
 });
 builder.Services.AddScoped<ITempDataService, TempDataService>();
-builder.Services.AddTransient<ApiBearerTokenHandler>();
+builder.Services.AddScoped<ApiBearerTokenHandler>();
 builder.Services.AddTransient<IFormsEngine, FormsEngine>();
 
 var formsServiceUrl = builder.Configuration.GetValue<string>("FormsService")
