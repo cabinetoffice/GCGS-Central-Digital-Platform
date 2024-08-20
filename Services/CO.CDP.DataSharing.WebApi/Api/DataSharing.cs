@@ -232,7 +232,7 @@ public static class EndpointExtensions
             .RequireAuthorization(Constants.OrganisationApiKeyPolicy);
 
 
-        app.MapGet("/share/organisations/{organisationId}/codes", async ([FromQuery(Name = "organisation-id")] Guid organisationId,
+        app.MapGet("/share/organisations/{organisationId}/codes", async (Guid organisationId,
             IUseCase<Guid, List<Model.SharedConsent>?> useCase) =>
         await useCase.Execute(organisationId)
              .AndThen(sectionQuestions => sectionQuestions != null ? Results.Ok(sectionQuestions) : Results.NotFound()))
@@ -252,6 +252,7 @@ public static class EndpointExtensions
                  return operation;
              })
             .RequireAuthorization(Constants.OrganisationApiKeyPolicy);
+
     }
 }
 
