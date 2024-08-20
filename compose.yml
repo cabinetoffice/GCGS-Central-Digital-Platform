@@ -145,10 +145,10 @@ services:
       - db
     environment:
       ASPNETCORE_ENVIRONMENT: Production
-      OrganisationInformationDatabase_Server: 'db'
-      OrganisationInformationDatabase_Database: 'cdp'
-      OrganisationInformationDatabase_Username: 'dp_user'
-      OrganisationInformationDatabase_Password: 'cdp123'
+      OrganisationInformationDatabase__Server: 'db'
+      OrganisationInformationDatabase__Database: 'cdp'
+      OrganisationInformationDatabase__Username: 'cdp_user'
+      OrganisationInformationDatabase__Password: 'cdp123'
       Issuer: 'http://gateway:${CDP_AUTHORITY_PORT:-8092}'
       VERSION: dev-docker
 
@@ -171,7 +171,7 @@ services:
       ASPNETCORE_ENVIRONMENT: Production
       OrganisationInformationDatabase__Server: 'db'
       OrganisationInformationDatabase__Database: 'cdp'
-      OrganisationInformationDatabase__Username: 'dp_user'
+      OrganisationInformationDatabase__Username: 'cdp_user'
       OrganisationInformationDatabase__Password: 'cdp123'
       Organisation__Authority: '${Organisation__Authority:-http://gateway:${CDP_AUTHORITY_PORT:-8092}}'
       VERSION: dev-docker
@@ -203,7 +203,7 @@ services:
       Aws__SqsPublisher__QueueUrl: "http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/organisation.fifo"
       OrganisationInformationDatabase__Server: 'db'
       OrganisationInformationDatabase__Database: 'cdp'
-      OrganisationInformationDatabase__Username: 'dp_user'
+      OrganisationInformationDatabase__Username: 'cdp_user'
       OrganisationInformationDatabase__Password: 'cdp123'
       Organisation__Authority: '${Organisation__Authority:-http://gateway:${CDP_AUTHORITY_PORT:-8092}}'
       VERSION: dev-docker
@@ -227,7 +227,7 @@ services:
       ASPNETCORE_ENVIRONMENT: Production
       OrganisationInformationDatabase__Server: 'db'
       OrganisationInformationDatabase__Database: 'cdp'
-      OrganisationInformationDatabase__Username: 'dp_user'
+      OrganisationInformationDatabase__Username: 'cdp_user'
       OrganisationInformationDatabase__Password: 'cdp123'
       Organisation__Authority: '${Organisation__Authority:-http://gateway:${CDP_AUTHORITY_PORT:-8092}}'
       VERSION: dev-docker
@@ -256,7 +256,7 @@ services:
       Aws__ServiceURL: "http://localstack:4566"
       OrganisationInformationDatabase__Server: 'db'
       OrganisationInformationDatabase__Database: 'cdp'
-      OrganisationInformationDatabase__Username: 'dp_user'
+      OrganisationInformationDatabase__Username: 'cdp_user'
       OrganisationInformationDatabase__Password: 'cdp123'
       Organisation__Authority: '${Organisation__Authority:-http://gateway:${CDP_AUTHORITY_PORT:-8092}}'
       VERSION: dev-docker
@@ -285,7 +285,7 @@ services:
       Aws__ServiceURL: "http://localstack:4566"
       OrganisationInformationDatabase__Server: 'db'
       OrganisationInformationDatabase__Database: 'cdp'
-      OrganisationInformationDatabase__Username: 'dp_user'
+      OrganisationInformationDatabase__Username: 'cdp_user'
       OrganisationInformationDatabase__Password: 'cdp123'
       Organisation__Authority: '${Organisation__Authority:-http://gateway:${CDP_AUTHORITY_PORT:-8092}}'
       VERSION: dev-docker
@@ -317,6 +317,6 @@ services:
       Aws__SqsPublisher__QueueUrl: "http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/entity-verification.fifo"
       EntityVerificationDatabase__Server: 'db'
       EntityVerificationDatabase__Database: 'cdp'
-      EntityVerificationDatabase__Username: 'dp_user'
+      EntityVerificationDatabase__Username: 'cdp_user'
       EntityVerificationDatabase__Password: 'cdp123'
       VERSION: dev-docker
