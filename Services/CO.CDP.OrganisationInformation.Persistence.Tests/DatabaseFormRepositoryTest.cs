@@ -254,6 +254,45 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
     }
 
     [Fact]
+    public async Task GetShareCodesAsync_WhenCodesDoesNotExist_ReturnsEmptyList()
+    {
+        using var repository = FormRepository();
+
+        var foundSection = await repository.GetShareCodesAsync(Guid.NewGuid());
+
+        foundSection.Should().BeEmpty();
+    }
+
+    [Fact]
+    public async Task GetShareCodesAsync_WhenCodesExist_ReturnsList()
+    {
+        var formId = Guid.NewGuid();
+
+        var sharedConsent = GivenSharedConsent(formId: formId);
+        Random rand = new Random();
+        var bookingref = rand.Next(10000000, 99999999).ToString();
+
+        sharedConsent.BookingReference = bookingref;
+        sharedConsent.SubmissionState = SubmissionState.Submitted;
+        sharedConsent.SubmittedAt = DateTime.UtcNow;
+
+        await using var context = postgreSql.OrganisationInformationContext();
+        await context.SharedConsents.AddAsync(sharedConsent);
+        await context.SaveChangesAsync();
+
+        using var repository = FormRepository();
+
+        var found = await repository.GetShareCodesAsync(sharedConsent.Organisation.Guid);
+
+        found.Should().NotBeEmpty();
+        found.Should().HaveCount(1);
+
+        found.First().As<SharedConsent>().OrganisationId.Should().Be(sharedConsent.OrganisationId);
+        found.First().As<SharedConsent>().SubmissionState.Should().Be(SubmissionState.Submitted);
+        found.First().As<SharedConsent>().BookingReference.Should().Be(bookingref);
+    }
+
+    [Fact]
     public async Task DeleteAnswerSetAsync_ShouldReturnFalse_WhenAnswerSetNotFound()
     {
         var organisationId = Guid.NewGuid();
