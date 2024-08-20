@@ -2,9 +2,11 @@ using CO.CDP.EntityVerification.Model;
 using CO.CDP.EntityVerification.UseCase;
 using CO.CDP.Functional;
 using CO.CDP.Swashbuckle.Filter;
+using CO.CDP.Swashbuckle.Security;
 using DotSwashbuckle.AspNetCore.SwaggerGen;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
+using System.Reflection;
 
 namespace CO.CDP.EntityVerification.Api;
 
@@ -45,5 +47,7 @@ public static class PponApiExtensions
             Description = "API for organisation identifier queries.",
         });
         options.OperationFilter<ProblemDetailsOperationFilter>(Extensions.ServiceCollectionExtensions.ErrorCodes());
+        options.ConfigureBearerSecurity();
+        options.UseAllOfToExtendReferenceSchemas();
     }
 }
