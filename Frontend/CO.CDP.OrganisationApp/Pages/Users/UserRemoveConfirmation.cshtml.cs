@@ -53,7 +53,7 @@ IOrganisationClient organisationClient) : PageModel
         return RedirectToPage("UserSummary", new { Id });
     }
 
-    private async Task<Organisation.WebApiClient.Person?> GetPerson(IOrganisationClient organisationClient)
+    public async Task<Organisation.WebApiClient.Person?> GetPerson(IOrganisationClient organisationClient)
     {
         try
         {

@@ -55,7 +55,7 @@ public class UserCheckAnswersModel(
         return RedirectToPage("UserSummary", new { Id });
     }
 
-    private static bool Validate(PersonInviteState personInviteStateData)
+    public static bool Validate(PersonInviteState personInviteStateData)
     {
         return !string.IsNullOrEmpty(personInviteStateData.FirstName)
                && !string.IsNullOrEmpty(personInviteStateData.LastName)

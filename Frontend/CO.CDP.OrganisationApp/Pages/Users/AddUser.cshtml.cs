@@ -72,7 +72,7 @@ public class AddUserModel(
         return RedirectToPage("UserCheckAnswers", new { Id });
     }
 
-    private PersonInviteState UpdateFields(PersonInviteState state)
+    public PersonInviteState UpdateFields(PersonInviteState state)
     {
         if (!FirstName.IsNullOrEmpty())
         {
@@ -92,7 +92,7 @@ public class AddUserModel(
         return state;
     }
 
-    private PersonInviteState UpdateScopes(PersonInviteState state)
+    public PersonInviteState UpdateScopes(PersonInviteState state)
     {
         var scopes = state.Scopes;
 
@@ -124,7 +124,7 @@ public class AddUserModel(
         return state;
     }
 
-    private void InitModel(PersonInviteState state)
+    public void InitModel(PersonInviteState state)
     {
         FirstName = state.FirstName;
         LastName = state.LastName;

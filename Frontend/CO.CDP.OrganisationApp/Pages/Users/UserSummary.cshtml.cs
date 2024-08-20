@@ -23,11 +23,7 @@ public class UserSummaryModel(
 
     public async Task<IActionResult> OnGet(bool? selected)
     {
-        // Check how to check roles
-
-        // Check for admin
-
-        // If not admin then 404
+        // TODO: Page should only be accessible to users with ADMIN scope - Agreed to otherwise display 404
 
         try
         {
