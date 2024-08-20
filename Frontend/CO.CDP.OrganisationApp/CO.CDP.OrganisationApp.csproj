@@ -16,6 +16,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\Libraries\CO.CDP.AwsServices\CO.CDP.AwsServices.csproj" />
+      <ProjectReference Include="..\..\Libraries\CO.CDP.DataSharing.WebApiClient\CO.CDP.DataSharing.WebApiClient.csproj" />
       <ProjectReference Include="..\..\Libraries\CO.CDP.Forms.WebApiClient\CO.CDP.Forms.WebApiClient.csproj" />
       <ProjectReference Include="..\..\Libraries\CO.CDP.Organisation.WebApiClient\CO.CDP.Organisation.WebApiClient.csproj" />
       <ProjectReference Include="..\..\Libraries\CO.CDP.Person.WebApiClient\CO.CDP.Person.WebApiClient.csproj" />

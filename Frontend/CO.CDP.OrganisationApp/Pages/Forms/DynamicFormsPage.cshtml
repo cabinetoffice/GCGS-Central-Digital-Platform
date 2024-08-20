@@ -1,4 +1,5 @@
 @page "/organisation/{organisationId:guid}/forms/{formId:guid}/sections/{sectionId:guid}/{currentQuestionId:guid?}"
+@using CO.CDP.OrganisationApp.Constants
 @model DynamicFormsPageModel
 
 @{
@@ -70,8 +71,14 @@
                         </dl>
                     }
                 </fieldset>
-
-                <button type="submit" class="govuk-button">Continue</button>
+                @if (Model.SectionTitle == SectionTitles.DECLARATIONINFORMATION)
+                {
+                    <input type="hidden" name="SectionTitle" value="Declaration Information" />
+                    <button type="submit" class="govuk-button">Confirm and get share code</button>
+                } else
+                {
+                    <button type="submit" class="govuk-button">Continue</button>
+                }
 
             </form>
         </div>
