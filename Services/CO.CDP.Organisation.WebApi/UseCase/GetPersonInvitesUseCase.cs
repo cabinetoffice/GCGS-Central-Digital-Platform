@@ -9,7 +9,10 @@ public class GetPersonInvitesUseCase(IPersonInviteRepository personInviteReposit
 {
     public async Task<IEnumerable<PersonInviteModel>> Execute(Guid organisationId)
     {
-        return await personInviteRepository.FindByOrganisation(organisationId)
-            .AndThen(mapper.Map<IEnumerable<PersonInviteModel>>);
+        var personInvites = await personInviteRepository.FindByOrganisation(organisationId);
+
+        var personInviteModels = mapper.Map<IEnumerable<PersonInviteModel>>(personInvites);
+
+        return personInviteModels;
     }
 }

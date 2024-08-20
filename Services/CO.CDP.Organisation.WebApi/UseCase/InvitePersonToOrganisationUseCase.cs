@@ -22,7 +22,8 @@ public class InvitePersonToOrganisationUseCase(
 
     public async Task<PersonInvite> Execute((Guid organisationId, InvitePersonToOrganisation invitePersonData) command)
     {
-        var organisation = await organisationRepository.Find(command.organisationId);
+        var organisation = await organisationRepository.Find(command.organisationId)
+                           ?? throw new UnknownOrganisationException($"Unknown organisation {command.organisationId}.");
 
         var personInvite = CreatePersonInvite(command.invitePersonData, organisation);
 
@@ -53,12 +54,11 @@ public class InvitePersonToOrganisationUseCase(
         return personInvite;
     }
 
-    private OrganisationInformation.Persistence.PersonInvite EmailPersonInvite(PersonInvite personInvite)
+    private PersonInvite EmailPersonInvite(PersonInvite personInvite)
     {
-        // TODO: Need to send out Notify email to the user
-
+        // TODO: Need to send out GOV Notify email to the user
         // This may need to be set elsewhere... We may use SQS to schedule the email to be sent
-        personInvite.InviteSentOn = DateTimeOffset.UtcNow;
+        // When the invite is emailed then update this field: personInvite.InviteSentOn;
 
         return personInvite;
     }
