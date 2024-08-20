@@ -507,11 +507,12 @@ data "aws_iam_policy_document" "terraform_product" {
   statement {
     actions = [
       "states:CreateStateMachine",
-      "states:UpdateStateMachine",
-      "states:TagResource",
       "states:Delete*",
       "states:Describe*",
       "states:List*",
+      "states:StartExecution",
+      "states:TagResource",
+      "states:UpdateStateMachine"
     ]
     effect = "Allow"
     resources = [
