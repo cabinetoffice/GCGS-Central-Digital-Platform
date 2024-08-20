@@ -105,9 +105,10 @@ dependency service_queue {
 
 inputs = {
 
-  account_ids     = local.global_vars.locals.account_ids
-  service_configs = local.global_vars.locals.service_configs
-  tags            = local.tags
+  account_ids            = local.global_vars.locals.account_ids
+  pinned_service_version = local.global_vars.locals.pinned_service_version
+  service_configs        = local.global_vars.locals.service_configs
+  tags                   = local.tags
 
   role_cloudwatch_events_arn               = dependency.core_iam.outputs.cloudwatch_events_arn
   role_cloudwatch_events_name              = dependency.core_iam.outputs.cloudwatch_events_name
