@@ -28,7 +28,7 @@ docker push ${ACCOUNT_ID}.dkr.ecr.eu-west-2.amazonaws.com/cdp-grafana:latest
 ### Re-deploy Grafana service
 
 ```shell
-ave aws ecs update-service --cluster cdp-sirsi --service grafana --force-new-deployment
+ave aws ecs update-service --cluster cdp-sirsi --service grafana --force-new-deployment | jq -r '.'
 ```
 
 ## Fetch Credentials

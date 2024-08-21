@@ -6,7 +6,6 @@ module "ecs_service_authority" {
     {
       aspcore_environment     = local.aspcore_environment
       authority_private_key   = "${data.aws_secretsmanager_secret.authority_keys.arn}:PRIVATE::"
-      conn_string_location    = var.db_sirsi_connection_secret_arn
       container_port          = var.service_configs.authority.port
       cpu                     = var.service_configs.authority.cpu
       host_port               = var.service_configs.authority.port

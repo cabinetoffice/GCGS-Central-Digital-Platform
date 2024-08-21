@@ -201,8 +201,8 @@
   },
   "timepicker": {},
   "timezone": "browser",
-  "title": "Organisation Information Migrations",
-  "uid": "organisation-information-migrations",
+  "title": "Migrations (Organisation Information)",
+  "uid": "migrations-organisation-information",
   "version": 1,
   "weekStart": ""
 }

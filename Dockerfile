@@ -41,6 +41,8 @@ COPY --link Libraries/CO.CDP.Person.WebApiClient/CO.CDP.Person.WebApiClient.cspr
 COPY --link Libraries/CO.CDP.Person.WebApiClient.Tests/CO.CDP.Person.WebApiClient.Tests.csproj Libraries/CO.CDP.Person.WebApiClient.Tests/
 COPY --link Libraries/CO.CDP.Forms.WebApiClient/CO.CDP.Forms.WebApiClient.csproj Libraries/CO.CDP.Forms.WebApiClient/
 COPY --link Libraries/CO.CDP.Forms.WebApiClient.Tests/CO.CDP.Forms.WebApiClient.Tests.csproj Libraries/CO.CDP.Forms.WebApiClient.Tests/
+COPY --link Libraries/CO.CDP.DataSharing.WebApiClient/CO.CDP.DataSharing.WebApiClient.csproj Libraries/CO.CDP.DataSharing.WebApiClient/
+COPY --link Libraries/CO.CDP.DataSharing.WebApiClient.Tests/CO.CDP.DataSharing.WebApiClient.Tests.csproj Libraries/CO.CDP.DataSharing.WebApiClient.Tests/
 COPY --link TestKit/CO.CDP.TestKit.Mvc/CO.CDP.TestKit.Mvc.csproj TestKit/CO.CDP.TestKit.Mvc/
 COPY --link TestKit/CO.CDP.TestKit.Mvc.Tests/CO.CDP.TestKit.Mvc.Tests.csproj TestKit/CO.CDP.TestKit.Mvc.Tests/
 COPY --link TestKit/CO.CDP.Testcontainers.PostgreSql/CO.CDP.Testcontainers.PostgreSql.csproj TestKit/CO.CDP.Testcontainers.PostgreSql/

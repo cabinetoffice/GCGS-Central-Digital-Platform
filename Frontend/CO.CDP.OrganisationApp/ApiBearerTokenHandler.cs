@@ -15,7 +15,7 @@ public class ApiBearerTokenHandler(
 
     protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
     {
-        await semaphore.WaitAsync();
+        await semaphore.WaitAsync(cancellationToken);
         try
         {
             var userDetails = session.Get<UserDetails>(Session.UserDetailsKey);

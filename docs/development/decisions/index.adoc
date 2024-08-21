@@ -20,4 +20,6 @@ include::0004-error-handing-and-validation.adoc[]
 
 include::0005-db-naming-conventions.adoc[]
 
+include::0006-acceptance-tests.adoc[]
+
 :leveloffset: -1

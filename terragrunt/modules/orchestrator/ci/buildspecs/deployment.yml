@@ -16,3 +16,17 @@ phases:
       - echo "Applying updates to all components..."
       - cd $CODEBUILD_SRC_DIR/terragrunt/components
       - terragrunt run-all apply -auto-approve -terragrunt-non-interactive
+
+  post_build:
+    commands:
+      - if [ "${AWS_ACCOUNT_ID}" = "${ORCHESTRATOR_ACCOUNT_ID}" ]; then
+          echo "No Step Functions triggered as the target is the orchestrator account.";
+        else
+          echo "Deployment successful, triggering Step Functions for ECS migration tasks...";
+          STEP_FUNCTION_ARN="arn:aws:states:${AWS_REGION}:${AWS_ACCOUNT_ID}:stateMachine:cdp-sirsi-run-organisation-information-migrations";
+          aws stepfunctions start-execution --state-machine-arn ${STEP_FUNCTION_ARN};
+          echo "Step Function ${STEP_FUNCTION_NAME} triggered successfully.";
+          STEP_FUNCTION_ARN="arn:aws:states:${AWS_REGION}:${AWS_ACCOUNT_ID}:stateMachine:cdp-sirsi-run-entity-verification-migrations";
+          aws stepfunctions start-execution --state-machine-arn ${STEP_FUNCTION_ARN};
+          echo "Step Function ${STEP_FUNCTION_NAME} triggered successfully.";
+        fi

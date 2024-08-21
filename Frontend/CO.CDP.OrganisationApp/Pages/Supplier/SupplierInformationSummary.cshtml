@@ -14,7 +14,7 @@
         };
     }
 
-    var basicInformationLink = $"/organisation/{Model.Id}/supplier-information/{(Model.HasSupplierType ? "basic-information" : "individual-or-org")}";    
+    var basicInformationLink = $"/organisation/{Model.Id}/supplier-information/{(Model.HasSupplierType ? "basic-information" : "individual-or-org")}";
     var connectedEntityLink = $"/organisation/{Model.Id}/supplier-information/connected-person/{(Model.ConnectedEntities.Count > 0 ? "connected-person-summary" : "declaration")}";
 
     string NoOfConnectedPersonText()
@@ -94,32 +94,40 @@
                         <strong class="govuk-tag">Not started</strong>
                     </dd>
                 </div>
-
-            </dl>
-            <dl class="govuk-summary-list">
-                <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">
-                        <a class="govuk-link govuk-link--no-visited-state" href="/organisation/@Model.Id/forms/@FormsTemporaryIds.FORMID/sections/@FormsTemporaryIds.SECTIONID">Financial information</a>
-                    </dt>
-                    <dd class="govuk-summary-list__value">
-
-                    </dd>
-                    <dd class="govuk-summary-list__actions">
-                        <strong class="govuk-tag">Not started</strong>
-                    </dd>
-                </div>
             </dl>
 
-            <dl class="govuk-summary-list">
-                <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">
-                        <a class="govuk-link govuk-link--no-visited-state" href="/organisation/@Model.Id/forms/@FormsTemporaryIds.SHAREDATA_FORMID/sections/@FormsTemporaryIds.SHAREDATA_SECTIONID">Share my information</a>
-                    </dt>
-                    <dd class="govuk-summary-list__value">
+            @foreach (var section in Model.FormSections)
+            {
+                var sharedDataSection = section.SectionId == new Guid(FormsEngine.SharedDataSectionId);
+                var redirectLink = $"/organisation/{Model.Id}/forms/{FormsEngine.OrganisationSupplierInfoFormId}/sections/{section.SectionId}";
 
-                    </dd>                    
-                </div>
-            </dl>
+                if (section.AnswerSetCount > 0 && section.AllowsMultipleAnswerSets == true)
+                {
+                    redirectLink += "/add-another-answer-set";
+                }
+
+                <dl class="govuk-summary-list">
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            <a class="govuk-link govuk-link--no-visited-state" href="@redirectLink">
+                                @(section.SectionName)
+                            </a>
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            @if (!sharedDataSection && section.AnswerSetCount > 0)
+                            {
+                                @(section.AnswerSetCount) @:records
+                            }
+                        </dd>
+                        <dd class="govuk-summary-list__actions">
+                            @if (!sharedDataSection)
+                            {
+                                <strong class="govuk-tag">@(section.AnswerSetCount > 0 ? $"Completed" : "Not started")</strong>
+                            }
+                        </dd>
+                    </div>
+                </dl>
+            }
 
             <div class="govuk-!-margin-top-3">
                 <a class="govuk-link" href="/organisation/@Model.Id">Back to organisation details</a>

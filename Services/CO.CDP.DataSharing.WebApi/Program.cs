@@ -65,3 +65,5 @@ app.UseAuthorization();
 app.UseDataSharingEndpoints();
 
 app.Run();
+
+public abstract partial class Program;

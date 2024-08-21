@@ -1,3 +1,4 @@
+using CO.CDP.Forms.WebApiClient;
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Pages.Supplier;
 using FluentAssertions;
@@ -9,12 +10,16 @@ namespace CO.CDP.OrganisationApp.Tests.Pages.Supplier;
 public class SupplierInformationSummaryTest
 {
     private readonly Mock<IOrganisationClient> _organisationClientMock;
+    private readonly Mock<IFormsClient> _formClient;
     private readonly SupplierInformationSummaryModel _model;
 
     public SupplierInformationSummaryTest()
     {
         _organisationClientMock = new Mock<IOrganisationClient>();
-        _model = new SupplierInformationSummaryModel(_organisationClientMock.Object);
+        _formClient = new();
+        _formClient.Setup(o => o.GetFormSectionsAsync(It.IsAny<Guid>(), It.IsAny<Guid>()))
+            .ReturnsAsync(new FormSectionResponse([]));
+        _model = new SupplierInformationSummaryModel(_organisationClientMock.Object, _formClient.Object);
     }
 
     [Theory]
@@ -68,10 +73,22 @@ public class SupplierInformationSummaryTest
     }
 
     [Fact]
-    public async Task OnGet_PageNotFound()
+    public async Task OnGet_WhenNoOrganisationFound_ShouldRedirectsToPageNotFound()
     {
         _organisationClientMock.Setup(o => o.GetOrganisationSupplierInformationAsync(It.IsAny<Guid>()))
-            .ThrowsAsync(new ApiException("Unexpected error", 404, "", default, null));
+            .ThrowsAsync(new Organisation.WebApiClient.ApiException("Unexpected error", 404, "", default, null));
+
+        var result = await _model.OnGet(Guid.NewGuid());
+
+        result.Should().BeOfType<RedirectResult>()
+            .Which.Url.Should().Be("/page-not-found");
+    }
+
+    [Fact]
+    public async Task OnGet_WhenNoFormFound_ShouldRedirectsToPageNotFound()
+    {
+        _formClient.Setup(o => o.GetFormSectionsAsync(It.IsAny<Guid>(), It.IsAny<Guid>()))
+            .ThrowsAsync(new CDP.Forms.WebApiClient.ApiException("Unexpected error", 404, "", default, null));
 
         var result = await _model.OnGet(Guid.NewGuid());
 
@@ -83,7 +100,7 @@ public class SupplierInformationSummaryTest
     public async Task OnGet_PageNotFoundOnConnectedEntities()
     {
         _organisationClientMock.Setup(o => o.GetConnectedEntitiesAsync(It.IsAny<Guid>()))
-            .ThrowsAsync(new ApiException("Unexpected error", 404, "", default, null));
+            .ThrowsAsync(new Organisation.WebApiClient.ApiException("Unexpected error", 404, "", default, null));
 
         var result = await _model.OnGet(Guid.NewGuid());
 

@@ -6,6 +6,9 @@ namespace CO.CDP.OrganisationApp;
 
 public class FormsEngine(IFormsClient formsApiClient, ITempDataService tempDataService) : IFormsEngine
 {
+    public const string OrganisationSupplierInfoFormId = "0618b13e-eaf2-46e3-a7d2-6f2c44be7022";
+    public const string SharedDataSectionId = "936096b3-c3bb-4475-ad7d-73b44ff61e76";
+
     public async Task<SectionQuestionsResponse> GetFormSectionAsync(Guid organisationId, Guid formId, Guid sectionId)
     {
         var sessionKey = $"Form_{organisationId}_{formId}_{sectionId}_Questions";

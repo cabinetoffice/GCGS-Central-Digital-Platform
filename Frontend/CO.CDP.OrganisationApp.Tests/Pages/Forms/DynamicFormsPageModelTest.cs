@@ -169,4 +169,58 @@ public class DynamicFormsPageModelTest
         result.Should().BeOfType<RedirectToPageResult>()
               .Which.PageName.Should().Be("FormsAddAnotherAnswerSet");
     }
+
+    [Fact]
+    public async Task InitModel_ShouldSetCurrentQuestionIdToCheckYourAnswer_WhenIsShareDataPageIsTrue()
+    {
+        _tempDataServiceMock.Setup(t => t.PeekOrDefault<bool>(It.IsAny<string>())).Returns(true);
+        var checkYourAnswerQuestionId = Guid.NewGuid();
+        _formsEngineMock.Setup(f => f.GetCurrentQuestion(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid?>()))
+            .ReturnsAsync(new FormQuestion { Id = checkYourAnswerQuestionId, Type = FormQuestionType.CheckYourAnswers });
+        _formsEngineMock.Setup(f => f.GetFormSectionAsync(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid>()))
+            .ReturnsAsync(new SectionQuestionsResponse
+            {
+                Questions = new List<FormQuestion>
+                {
+                new FormQuestion { Id = checkYourAnswerQuestionId, Type = FormQuestionType.CheckYourAnswers }
+                }
+            });
+
+        var result = await _pageModel.OnGetAsync();
+
+        result.Should().BeOfType<PageResult>();
+        _pageModel.CurrentQuestionId.Should().Be(checkYourAnswerQuestionId);
+        _tempDataServiceMock.Verify(t => t.Remove(It.IsAny<string>()), Times.Once);
+    }
+
+    [Fact]
+    public async Task OnPostAsync_ShouldRedirectToShareCodeConfirmation_WhenSectionTitleIsDeclarationInformation()
+    {
+        var checkYourAnswerQuestionId = Guid.NewGuid();
+        _pageModel.SectionId = new Guid(FormsEngine.SharedDataSectionId);
+        _pageModel.CurrentQuestionId = checkYourAnswerQuestionId;
+
+        var formResponse = new SectionQuestionsResponse
+        {
+            Questions = new List<FormQuestion>
+        {
+            new FormQuestion { Id = checkYourAnswerQuestionId, Type = FormQuestionType.CheckYourAnswers }
+        }
+        };
+
+        _formsEngineMock.Setup(f => f.GetCurrentQuestion(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid?>()))
+            .ReturnsAsync(new FormQuestion { Id = checkYourAnswerQuestionId, Type = FormQuestionType.CheckYourAnswers });
+
+        _formsEngineMock.Setup(f => f.GetFormSectionAsync(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid>()))
+            .ReturnsAsync(formResponse);
+
+        _tempDataServiceMock.Setup(t => t.PeekOrDefault<FormQuestionAnswerState>(It.IsAny<string>()))
+            .Returns(new FormQuestionAnswerState());
+
+        var result = await _pageModel.OnPostAsync();
+
+        _formsEngineMock.Verify(f => f.SaveUpdateAnswers(_pageModel.FormId, _pageModel.SectionId, _pageModel.OrganisationId, It.IsAny<FormQuestionAnswerState>()), Times.Once);
+        result.Should().BeOfType<RedirectToPageResult>()
+              .Which.PageName.Should().Be("/ShareInformation/ShareCodeConfirmation");
+    }
 }
