@@ -5,7 +5,6 @@ module "ecs_service_forms" {
     "${path.module}/templates/task-definitions/${var.service_configs.forms.name}.json.tftpl",
     {
       aspcore_environment     = local.aspcore_environment
-      conn_string_location    = var.db_sirsi_connection_secret_arn
       container_port          = var.service_configs.forms.port
       cpu                     = var.service_configs.forms.cpu
       host_port               = var.service_configs.forms.port
@@ -15,6 +14,10 @@ module "ecs_service_forms" {
       lg_region               = data.aws_region.current.name
       memory                  = var.service_configs.forms.memory
       name                    = var.service_configs.forms.name
+      oi_db_address           = var.db_sirsi_address
+      oi_db_name              = var.db_sirsi_name
+      oi_db_password          = "${var.db_sirsi_credentials_arn}:username::"
+      oi_db_username          = "${var.db_sirsi_credentials_arn}:password::"
       public_hosted_zone_fqdn = var.public_hosted_zone_fqdn
       s3_permanent_bucket     = module.s3_bucket_permanent.bucket
       s3_staging_bucket       = module.s3_bucket_staging.bucket

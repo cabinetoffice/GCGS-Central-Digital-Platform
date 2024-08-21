@@ -14,5 +14,16 @@ public class UserDetails
 
     public Guid? PersonId { get; set; }
 
-    public string? AccessToken { get; set; }
+    public AuthTokens? AuthTokens { get; set; }
+}
+
+public record AuthTokens
+{
+    public required string AccessToken { get; init; }
+
+    public required DateTime AccessTokenExpiry { get; init; }
+
+    public required string RefreshToken { get; init; }
+
+    public required DateTime RefreshTokenExpiry { get; init; }
 }

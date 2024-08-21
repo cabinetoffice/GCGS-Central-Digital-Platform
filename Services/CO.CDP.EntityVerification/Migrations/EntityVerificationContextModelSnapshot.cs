@@ -23,6 +23,64 @@ namespace CO.CDP.EntityVerification.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("CO.CDP.EntityVerification.Persistence.Identifier", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTimeOffset>("CreatedOn")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_on")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                    b.Property<string>("IdentifierId")
+                        .HasColumnType("text")
+                        .HasColumnName("identifier_id");
+
+                    b.Property<string>("LegalName")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("legal_name");
+
+                    b.Property<int>("PponId")
+                        .HasColumnType("integer")
+                        .HasColumnName("ppon_id");
+
+                    b.Property<string>("Scheme")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("scheme");
+
+                    b.Property<DateTimeOffset>("UpdatedOn")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_on")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                    b.Property<string>("Uri")
+                        .HasColumnType("text")
+                        .HasColumnName("uri");
+
+                    b.HasKey("Id")
+                        .HasName("pk_identifiers");
+
+                    b.HasIndex("IdentifierId")
+                        .HasDatabaseName("ix_identifiers_identifier_id");
+
+                    b.HasIndex("PponId")
+                        .HasDatabaseName("ix_identifiers_ppon_id");
+
+                    b.HasIndex("Scheme")
+                        .HasDatabaseName("ix_identifiers_scheme");
+
+                    b.ToTable("identifiers", "entity_verification");
+                });
+
             modelBuilder.Entity("CO.CDP.EntityVerification.Persistence.Ppon", b =>
                 {
                     b.Property<int>("Id")
@@ -74,71 +132,18 @@ namespace CO.CDP.EntityVerification.Migrations
                     b.ToTable("ppons", "entity_verification");
                 });
 
+            modelBuilder.Entity("CO.CDP.EntityVerification.Persistence.Identifier", b =>
+                {
+                    b.HasOne("CO.CDP.EntityVerification.Persistence.Ppon", null)
+                        .WithMany("Identifiers")
+                        .HasForeignKey("PponId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_identifiers_ppons_ppon_id");
+                });
+
             modelBuilder.Entity("CO.CDP.EntityVerification.Persistence.Ppon", b =>
                 {
-                    b.OwnsMany("CO.CDP.EntityVerification.Persistence.Identifier", "Identifiers", b1 =>
-                        {
-                            b1.Property<int>("Id")
-                                .ValueGeneratedOnAdd()
-                                .HasColumnType("integer")
-                                .HasColumnName("id");
-
-                            NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b1.Property<int>("Id"));
-
-                            b1.Property<DateTimeOffset>("CreatedOn")
-                                .ValueGeneratedOnAdd()
-                                .HasColumnType("timestamp with time zone")
-                                .HasColumnName("created_on")
-                                .HasDefaultValueSql("CURRENT_TIMESTAMP");
-
-                            b1.Property<string>("IdentifierId")
-                                .IsRequired()
-                                .HasColumnType("text")
-                                .HasColumnName("identifier_id");
-
-                            b1.Property<string>("LegalName")
-                                .IsRequired()
-                                .HasColumnType("text")
-                                .HasColumnName("legal_name");
-
-                            b1.Property<string>("Scheme")
-                                .IsRequired()
-                                .HasColumnType("text")
-                                .HasColumnName("scheme");
-
-                            b1.Property<DateTimeOffset>("UpdatedOn")
-                                .ValueGeneratedOnAdd()
-                                .HasColumnType("timestamp with time zone")
-                                .HasColumnName("updated_on")
-                                .HasDefaultValueSql("CURRENT_TIMESTAMP");
-
-                            b1.Property<string>("Uri")
-                                .HasColumnType("text")
-                                .HasColumnName("uri");
-
-                            b1.Property<int>("ppon_id")
-                                .HasColumnType("integer")
-                                .HasColumnName("ppon_id");
-
-                            b1.HasKey("Id")
-                                .HasName("pk_identifiers");
-
-                            b1.HasIndex("IdentifierId")
-                                .HasDatabaseName("ix_identifiers_identifier_id");
-
-                            b1.HasIndex("Scheme")
-                                .HasDatabaseName("ix_identifiers_scheme");
-
-                            b1.HasIndex("ppon_id")
-                                .HasDatabaseName("ix_identifiers_ppon_id");
-
-                            b1.ToTable("identifiers", "entity_verification");
-
-                            b1.WithOwner()
-                                .HasForeignKey("ppon_id")
-                                .HasConstraintName("fk_identifiers_ppons_ppon_id");
-                        });
-
                     b.Navigation("Identifiers");
                 });
 #pragma warning restore 612, 618

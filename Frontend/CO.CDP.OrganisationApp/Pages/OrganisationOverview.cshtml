@@ -41,7 +41,14 @@
                                 @identifierToShow.Scheme.SchemeDescription()
                             </p>
                             <p class="govuk-body">
-                                @identifierToShow.Id
+                                @if (@identifierToShow.Id == null)
+                                {
+                                    <p class="govuk-body">PPON generation pending.</p>
+                                }
+                                else
+                                {
+                                    @identifierToShow.Id
+                                }
                              </p>
                         </dd>
                         <dd class="govuk-summary-list__actions">

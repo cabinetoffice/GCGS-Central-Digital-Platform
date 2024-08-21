@@ -1,0 +1,104 @@
+= 6. Acceptance tests
+
+Date: 2024-05-28
+
+== Status
+
+Draft
+
+== Context
+
+We heavily rely on developer tests for small units of isolated code.
+For various reasons, we have not developed an acceptance test suite so far.
+As the project and the team matures, acceptance tests would be helpful
+to clearly state business requirements and make them self-verifiable as tests.
+
+These tests would be run end-to-end as much as possible and therefore verify
+user journeys better.
+
+We should still be conscious of costs that such tests bring and attempt to make them
+as lightweight as possible. The frontend is not javascript heavy and there's no need
+to run these tests in a browser most of the time.
+
+=== Option 1: xUnit
+
+Use a library like https://github.com/JasperFx/alba[Alba] or https://playwright.dev/dotnet/docs/intro[Playwright]
+directly in xUnit tests to exercise the Frontend application.
+Start all the application services with the
+https://learn.microsoft.com/en-us/aspnet/core/test/integration-tests?view=aspnetcore-8.0[dotnet web application factory],
+and any external dependencies (like the database) with https://github.com/testcontainers/testcontainers-dotnet[Testcontainers].
+
+Alba integrates very well with dotnet core applications out of the box. It's possible to run and customise the application
+in-memory, without a need to execute tests in a browser.
+
+Playwright is a very well established tool.
+With a https://www.innovensa.co.uk/blog/in-memory-automated-ui-testing-aspnetcore[little bit of customisation] it should also
+be possible to run it against the application run in-memory, but it's not available out of the box.
+
+Advantages:
+
+* We continue using the technology we're familiar with
+* It's fast to write tests
+
+Disadvantages:
+
+* Tests focus on "How" rather than "What", i.e. tests describe visiting pages and filling out forms, rather
+  than tasks that users try to accomplish (i.e. Provide company information). This could be improved by introducing
+  a layer of abstraction on top of user actions.
+* Tests are only readable by developers and can only be maintained by developers.
+
+=== Option 2: SpecFlow
+
+https://specflow.org/[SpecFlow] is the industry standard for acceptance tests in dotnet.
+
+It's great advantage is a separation of "What" from the "How". Tests can be expressed in a business language:
+
+[source,gherkin]
+----
+Feature: Confirming Personal Name on Supplier Information Portal
+
+    As a representative of an organisation
+    I want to confirm my first and last name
+    So that my personal identity is correctly associated with the organisation's profile.
+
+    Scenario: Successfully confirming a user's name
+        Given the user is on the 'Confirm your name' page
+        When the user enters their first and last name into the input fields
+        And clicks the 'Continue' button
+        Then the user should be taken to the next step in the registration process
+----
+
+It's a structured language, called Gherkin.
+
+Scenarios like the one above are then translated to actions (navigating to a page, making an api call etc).
+
+Advantages:
+
+* Human-readable tests, a separation of "How" from "What".
+* Tests could be written by QAs (to some extent).
+* Nice reports available out of the box.
+
+Disadvantages:
+
+* SpecFlow requires an IDE plugin that is not kept up to date for some IDEs (like Rider)
+* Tests can be executed with xunit, but the IDE plugin is required.
+
+=== Option 3: Xunit.Gherkin.Quick
+
+https://github.com/ttutisani/Xunit.Gherkin.Quick[Quick] is a lightweight "BDD" framework, similar to SpecFlow.
+It also enables us write tests as human-readable scenarios in Gherkin.
+The main difference to SpecFlow is that it's built on top of xUnit.
+
+Advantages:
+
+* Human-readable tests, a separation of "How" from "What".
+* Tests could be written by QAs (to some extent).
+* xUnit integration. All the tools we use in xUnit can be used here (like testcontainers).
+
+Disadvantages:
+
+* It's less popular than SpecFlow.
+
+== Decision
+
+TBD

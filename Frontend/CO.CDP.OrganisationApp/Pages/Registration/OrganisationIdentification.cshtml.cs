@@ -179,8 +179,8 @@ public class OrganisationIdentificationModel(ISession session) : RegistrationSte
             "GB-NHS" => NationalHealthServiceOrganisationsRegistryNumber,
             "GB-UKPRN" => UKLearningProviderReferenceNumber,
             "VAT" => VATNumber,
-            "Other" => string.Empty,
-            _ => string.Empty,
+            "Other" => null,
+            _ => null,
         };
         session.Set(Session.RegistrationDetailsKey, RegistrationDetails);
 

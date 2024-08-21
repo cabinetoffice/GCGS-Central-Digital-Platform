@@ -1,6 +1,7 @@
 using CO.CDP.Authentication;
 using CO.CDP.AwsServices;
 using CO.CDP.Configuration.ForwardedHeaders;
+using CO.CDP.Configuration.Helpers;
 using CO.CDP.DataSharing.WebApi.Api;
 using CO.CDP.DataSharing.WebApi.AutoMapper;
 using CO.CDP.DataSharing.WebApi.Extensions;
@@ -17,20 +18,23 @@ builder.ConfigureForwardedHeaders();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options => { options.DocumentDataSharingApi(builder.Configuration); });
 builder.Services.AddHealthChecks()
-    .AddNpgSql(builder.Configuration.GetConnectionString("OrganisationInformationDatabase") ?? "");
+    .AddNpgSql(ConnectionStringHelper.GetConnectionString(builder.Configuration, "OrganisationInformationDatabase"));
 builder.Services.AddAutoMapper(typeof(DataSharingProfile));
 
 builder.Services.AddDbContext<OrganisationInformationContext>(o =>
-    o.UseNpgsql(builder.Configuration.GetConnectionString("OrganisationInformationDatabase") ?? ""));
+    o.UseNpgsql(ConnectionStringHelper.GetConnectionString(builder.Configuration, "OrganisationInformationDatabase")));
 
 builder.Services.AddScoped<IClaimService, ClaimService>();
 builder.Services.AddScoped<IOrganisationRepository, DatabaseOrganisationRepository>();
 builder.Services.AddScoped<IFormRepository, DatabaseFormRepository>();
 builder.Services.AddScoped<IUseCase<ShareRequest, ShareReceipt>, GenerateShareCodeUseCase>();
 
+builder.Services.AddScoped<IUseCase<Guid, List<SharedConsent>?>, GetShareCodesUseCase>();
 builder.Services.AddDataSharingProblemDetails();
 builder.Services.AddJwtBearerAndApiKeyAuthentication(builder.Configuration, builder.Environment);
 builder.Services.AddOrganisationAuthorization();
+//builder.Services.AddAuthorization();
+
 
 builder.Services
     .AddAwsConfiguration(builder.Configuration)
@@ -61,3 +65,5 @@ app.UseAuthorization();
 app.UseDataSharingEndpoints();
 
 app.Run();
+
+public abstract partial class Program;

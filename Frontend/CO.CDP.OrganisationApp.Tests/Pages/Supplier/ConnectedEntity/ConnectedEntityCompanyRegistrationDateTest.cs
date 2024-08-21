@@ -1,3 +1,4 @@
+using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Pages.Supplier;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
@@ -99,13 +100,34 @@ public class ConnectedEntityCompanyRegistrationDateTest
     }
 
     [Theory]
-    [InlineData("ConnectedEntityCompanyRegisterName", false)]
-    [InlineData("ConnectedEntityCheckAnswersOrganisation", true)]
-    public void OnPost_ShouldRedirectToExpectedPage_WhenModelStateIsValid(string expectedRedirectPage, bool redirectToCheckYourAnswer)
+    [InlineData(ConnectedEntityType.Organisation, ConnectedEntityOrganisationCategoryType.RegisteredCompany, null, "ConnectedEntityCompanyRegisterName", false)]
+    [InlineData(ConnectedEntityType.Organisation, ConnectedEntityOrganisationCategoryType.RegisteredCompany, null, "ConnectedEntityCheckAnswersOrganisation", true)]
+    [InlineData(ConnectedEntityType.Organisation, ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl, null, "ConnectedEntityLawRegister", false)]
+    [InlineData(ConnectedEntityType.Organisation, ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl, null, "ConnectedEntityCheckAnswersOrganisation", true)]
+    [InlineData(ConnectedEntityType.Organisation, ConnectedEntityOrganisationCategoryType.DirectorOrTheSameResponsibilities, null, "", false)]
+    [InlineData(ConnectedEntityType.Organisation, ConnectedEntityOrganisationCategoryType.ParentOrSubsidiaryCompany, null, "", false)]
+    [InlineData(ConnectedEntityType.Organisation, ConnectedEntityOrganisationCategoryType.ACompanyYourOrganisationHasTakenOver, null, "", false)]
+    [InlineData(ConnectedEntityType.Individual, null, ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndividual, "ConnectedEntityCompanyRegisterName", false)]
+    [InlineData(ConnectedEntityType.Individual, null, ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndividual, "ConnectedEntityCheckAnswersIndividualOrTrust", true)]
+    [InlineData(ConnectedEntityType.Individual, null, ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndividualWithSignificantInfluenceOrControlForIndividual, "ConnectedEntityCheckAnswersIndividualOrTrust", false)]
+    [InlineData(ConnectedEntityType.Individual, null, ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndividualWithSignificantInfluenceOrControlForIndividual, "ConnectedEntityCheckAnswersIndividualOrTrust", true)]
+    [InlineData(ConnectedEntityType.TrustOrTrustee, null, ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForTrust, "ConnectedEntityCompanyRegisterName", false)]
+    [InlineData(ConnectedEntityType.Individual, null, ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForTrust, "ConnectedEntityCheckAnswersIndividualOrTrust", true)]
+    [InlineData(ConnectedEntityType.TrustOrTrustee, null, ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndividualWithSignificantInfluenceOrControlForTrust, "ConnectedEntityCheckAnswersIndividualOrTrust", false)]
+    [InlineData(ConnectedEntityType.TrustOrTrustee, null, ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndividualWithSignificantInfluenceOrControlForTrust, "ConnectedEntityCheckAnswersIndividualOrTrust", true)]
+    public void OnPost_ShouldRedirectToExpectedPage_WhenModelStateIsValid(
+        ConnectedEntityType connectedEntityType,
+        ConnectedEntityOrganisationCategoryType? organisationCategoryType,
+        ConnectedEntityIndividualAndTrustCategoryType? individualAndTrustCategoryType,
+        string expectedRedirectPage,
+        bool redirectToCheckYourAnswer)
     {
         SetValidDate();
 
         var state = DummyConnectedPersonDetails();
+        state.ConnectedEntityType = connectedEntityType;
+        state.ConnectedEntityOrganisationCategoryType = organisationCategoryType;
+        state.ConnectedEntityIndividualAndTrustCategoryType = individualAndTrustCategoryType;
 
         _sessionMock.Setup(s => s.Get<ConnectedEntityState>(Session.ConnectedPersonKey)).
             Returns(state);

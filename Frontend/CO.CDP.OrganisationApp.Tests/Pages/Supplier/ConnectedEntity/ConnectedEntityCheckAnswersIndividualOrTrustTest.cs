@@ -158,58 +158,47 @@ public class ConnectedEntityCheckAnswersIndividualOrTrustTest
         _mockOrganisationClient.Verify(c => c.UpdateConnectedEntityAsync(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<UpdateConnectedEntity>()), Times.Once());
     }
 
-    private RegisterConnectedEntity DummyPayload()
+    [Theory]
+    [InlineData(true, Constants.ConnectedEntityType.Individual, ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndividual, "ConnectedPersonSummary", "company-register-name")]
+    [InlineData(true, Constants.ConnectedEntityType.Individual, ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndividualWithSignificantInfluenceOrControlForIndividual, "ConnectedPersonSummary", "date-registered")]
+    [InlineData(true, Constants.ConnectedEntityType.Individual, ConnectedEntityIndividualAndTrustCategoryType.DirectorOrIndividualWithTheSameResponsibilitiesForIndividual, "ConnectedPersonSummary", "Registered-address/uk")]
+    [InlineData(true, Constants.ConnectedEntityType.TrustOrTrustee, ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForTrust, "ConnectedPersonSummary", "company-register-name")]
+    [InlineData(true, Constants.ConnectedEntityType.TrustOrTrustee, ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndividualWithSignificantInfluenceOrControlForTrust, "ConnectedPersonSummary", "date-registered")]
+    [InlineData(true, Constants.ConnectedEntityType.TrustOrTrustee, ConnectedEntityIndividualAndTrustCategoryType.DirectorOrIndividualWithTheSameResponsibilitiesForTrust, "ConnectedPersonSummary", "Registered-address/uk")]
+    [InlineData(false, Constants.ConnectedEntityType.Individual, ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndividual, "ConnectedPersonSummary", "date-registered-question")]
+    [InlineData(false, Constants.ConnectedEntityType.Individual, ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndividual, "ConnectedPersonSummary", "company-register-name", true)]
+    [InlineData(false, Constants.ConnectedEntityType.Individual, ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndividualWithSignificantInfluenceOrControlForIndividual, "ConnectedPersonSummary", "date-registered-question")]
+    [InlineData(false, Constants.ConnectedEntityType.Individual, ConnectedEntityIndividualAndTrustCategoryType.DirectorOrIndividualWithTheSameResponsibilitiesForIndividual, "ConnectedPersonSummary", "Registered-address/uk")]
+    [InlineData(false, Constants.ConnectedEntityType.TrustOrTrustee, ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForTrust, "ConnectedPersonSummary", "date-registered-question")]
+    [InlineData(false, Constants.ConnectedEntityType.TrustOrTrustee, ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForTrust, "ConnectedPersonSummary", "company-register-name", true)]
+    [InlineData(false, Constants.ConnectedEntityType.TrustOrTrustee, ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndividualWithSignificantInfluenceOrControlForTrust, "ConnectedPersonSummary", "date-registered-question")]
+    [InlineData(false, Constants.ConnectedEntityType.TrustOrTrustee, ConnectedEntityIndividualAndTrustCategoryType.DirectorOrIndividualWithTheSameResponsibilitiesForTrust, "ConnectedPersonSummary", "Registered-address/uk")]
+
+
+    public async Task OnPost_BackPageNameShouldBeExpectedPage(
+            bool yesJourney,
+            Constants.ConnectedEntityType connectedEntityType,
+            Constants.ConnectedEntityIndividualAndTrustCategoryType trustCategoryType,
+            string expectedRedirectPage, string expectedBackPageName,
+            bool registrationDateHasValue = false)
     {
-        CreateConnectedOrganisation? connectedOrganisation = null;
-        CreateConnectedIndividualTrust? connectedIndividualTrust = null;
         var state = DummyConnectedPersonDetails();
 
-        connectedIndividualTrust = new CreateConnectedIndividualTrust(
-            category: ConnectedIndividualAndTrustCategory.PersonWithSignificantControlForIndividual,
-            connectedType: ConnectedPersonType.Individual,
-            dateOfBirth: new DateTimeOffset(1973, 6, 11, 0, 0, 0, TimeSpan.FromHours(0)),
-            controlCondition: [ControlCondition.OwnsShares, ControlCondition.HasVotingRights],
-            firstName: "John",
-            lastName: "Smith",
-            nationality: "British",
-            personId: null,
-            residentCountry: "United Kingdom"
-        );
+        state.SupplierHasCompanyHouseNumber = yesJourney;
+        state.ConnectedEntityType = connectedEntityType;
+        state.ConnectedEntityIndividualAndTrustCategoryType = trustCategoryType;
+        state.HasRegistartionDate = registrationDateHasValue;
+        state.RegistrationDate = registrationDateHasValue == true ? DateTime.UtcNow : null;
+        _sessionMock.Setup(s => s.Get<ConnectedEntityState>(Session.ConnectedPersonKey)).
+            Returns(state);
 
-        List<Address> addresses = new();
+        var result = await _model.OnPost();
 
-        addresses.Add(new Address(
-            countryName: "United Kingdom",
-            locality: "Leeds",
-            postalCode: "LS1 2AE",
-            region: null,
-            streetAddress: "1 street lane",
-            type: Organisation.WebApiClient.AddressType.Registered));
+        var redirectToPageResult = result.Should().BeOfType<RedirectToPageResult>().Subject;
 
-        addresses.Add(new Address(
-            countryName: "United Kingdom",
-            locality: "Leeds",
-            postalCode: "LS1 2AE",
-            region: null,
-            streetAddress: "1 street lane",
-            type: Organisation.WebApiClient.AddressType.Postal));
+        redirectToPageResult.PageName.Should().Be(expectedRedirectPage);
 
-        var registerConnectedEntity = new RegisterConnectedEntity
-        (
-            addresses: addresses,
-            companyHouseNumber: "",
-            endDate: null,
-            entityType: state.ConnectedEntityType!.Value.AsApiClientConnectedEntityType(),
-            hasCompnayHouseNumber: state.HasCompaniesHouseNumber!.Value,
-            individualOrTrust: connectedIndividualTrust,
-            organisation: connectedOrganisation,
-            overseasCompanyNumber: "",
-            registeredDate: state.RegistrationDate!.Value,
-            registerName: state.RegisterName,
-            startDate: null
-        );
-
-        return registerConnectedEntity;
+        _model.BackPageLink.Should().Be(expectedBackPageName);
     }
 
     private ConnectedEntityState DummyConnectedPersonDetails()
@@ -227,7 +216,8 @@ public class ConnectedEntityCheckAnswersIndividualOrTrustTest
             RegistrationDate = new DateTimeOffset(2011, 7, 15, 0, 0, 0, TimeSpan.FromHours(0)),
             InsolvencyDate = new DateTimeOffset(2010, 6, 11, 0, 0, 0, TimeSpan.FromHours(0)),
             DirectorLocation = "United Kingdom",
-            ConnectedEntityIndividualAndTrustCategoryType = ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndividual
+            ConnectedEntityIndividualAndTrustCategoryType = ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndividual,
+            RegisteredAddress = GetDummyAddress()
         };
 
         return connectedPersonDetails;
@@ -247,9 +237,18 @@ public class ConnectedEntityCheckAnswersIndividualOrTrustTest
             residentCountry: "United Kingdom",
             id: 1
         );
+        List<Address> addresses = new();
+
+        addresses.Add(new Address(
+            countryName: "United Kingdom",
+            locality: "Leeds",
+            postalCode: "LS1 2AE",
+            region: null,
+            streetAddress: "1 street lane",
+            type: Organisation.WebApiClient.AddressType.Registered));
 
         var connectedEntity = new Organisation.WebApiClient.ConnectedEntity(
-            new List<Address>(),
+            addresses,
             "012345",
             new DateTimeOffset?(),
             Organisation.WebApiClient.ConnectedEntityType.Individual,
@@ -264,5 +263,9 @@ public class ConnectedEntityCheckAnswersIndividualOrTrustTest
         );
 
         return connectedEntity;
+    }
+    private ConnectedEntityState.Address GetDummyAddress()
+    {
+        return new ConnectedEntityState.Address { AddressLine1 = "Address Line 1", TownOrCity = "London", Postcode = "SW1Y 5ED", Country = "United kingdom" };
     }
 }

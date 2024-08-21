@@ -62,7 +62,7 @@ public class ConnectedEntityCompanyRegisterNameTest
         var result = _model.OnGet();
 
         result.Should().BeOfType<PageResult>();
-        _model.RegisterName.Should().Be("other");
+        _model.RegisterName.Should().Be("Other");
         _model.RegisterNameInput.Should().Be("reg_name");
     }
 
@@ -71,7 +71,7 @@ public class ConnectedEntityCompanyRegisterNameTest
     {
         var state = DummyConnectedPersonDetails();
         _model.ConnectedEntityId = _entityId;
-        state.RegisterName = "Companies House";
+        state.RegisterName = "CompaniesHouse";
         _sessionMock
             .Setup(s => s.Get<ConnectedEntityState>(Session.ConnectedPersonKey))
             .Returns(state);
@@ -79,7 +79,7 @@ public class ConnectedEntityCompanyRegisterNameTest
         var result = _model.OnGet();
 
         result.Should().BeOfType<PageResult>();
-        _model.RegisterName.Should().Be("Companies House");
+        _model.RegisterName.Should().Be("CompaniesHouse");
         _model.RegisterNameInput.Should().Be(null);
     }
 

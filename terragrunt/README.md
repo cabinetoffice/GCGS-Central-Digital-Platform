@@ -3,9 +3,10 @@
 This code base is responsible for provisioning the AWS infrastructure needed to support the CDP SIRSI application.
 
 ## Table of Contents
-1. [Bootstrap a new account](#bootstrap-a-new-account)
-2. [Update OneLogin secrets](#update-onelogin-secrets)
-3. [Create new user](#create-new-users)
+1. [Bootstrap New Account](#bootstrap-a-new-account)
+2. [Pin Service Version](#pin-service-version)
+3. [Update OneLogin Secrets](#update-onelogin-secrets)
+4. [Create New User](#create-new-users)
 
 ## Bootstrap a new account
 
@@ -55,13 +56,19 @@ ave make aws-push-authority-keys
 ```
 - Navigate to the root of components
 - Apply all, while terraform role is assumed
-![img.png](../docs/images/infra/terragrunt-apply-all.png)
+![terragrunt-apply-all](../docs/images/infra/terragrunt-apply-all.png)
 
 - Build and push images to ECR
 ```shell
 ave make aws-push-to-ecr
 ```
+---
 
+## Pin Service Version
+
+To pin services to a specific version in the given account, we can set the pinned_service_version in the [main configuration file](./components/terragrunt.hcl). If this value is left null, the system will default to using the latest published version, as specified in the service-version parameter within the Orchestrator account's SSM.
+
+![pin-service-version](../docs/images/infra/pin-service-version.png)
 
 ---
 

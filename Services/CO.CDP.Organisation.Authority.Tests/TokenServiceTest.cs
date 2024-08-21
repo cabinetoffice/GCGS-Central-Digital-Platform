@@ -25,19 +25,22 @@ public class TokenServiceTest : IClassFixture<AutoMapperFixture>
     private readonly Mock<ILogger<TokenService>> _loggerMock;
     private readonly Mock<IConfigurationService> _configServiceMock;
     private readonly Mock<ITenantRepository> _tenantRepositoryMock;
+    private readonly Mock<IAuthorityRepository> _authorityRepositoryMock;
     private readonly TokenService _tokenService;
 
     public TokenServiceTest(AutoMapperFixture mapperFixture)
     {
-        _loggerMock = new Mock<ILogger<TokenService>>();
-        _configServiceMock = new Mock<IConfigurationService>();
-        _tenantRepositoryMock = new Mock<ITenantRepository>();
+        _loggerMock = new();
+        _configServiceMock = new();
+        _tenantRepositoryMock = new();
+        _authorityRepositoryMock = new();
 
         _tokenService = new TokenService(
             _loggerMock.Object,
             _configServiceMock.Object,
              mapperFixture.Mapper,
-            _tenantRepositoryMock.Object);
+            _tenantRepositoryMock.Object,
+            _authorityRepositoryMock.Object);
     }
 
     [Fact]
@@ -55,6 +58,8 @@ public class TokenServiceTest : IClassFixture<AutoMapperFixture>
         result.TokenType.Should().Be(OidcConstants.TokenResponse.BearerTokenType);
         result.AccessToken.Should().NotBeNullOrWhiteSpace();
         result.ExpiresIn.Should().Be(3600);
+        result.RefreshToken.Should().NotBeNullOrWhiteSpace();
+        result.RefreshTokenExpiresIn.Should().Be(86400d);
 
         var claims = GetClaims(result.AccessToken);
         claims.FirstOrDefault(c => c.Type == "sub")?.Value.Should().Be(_userUrn);
@@ -77,6 +82,8 @@ public class TokenServiceTest : IClassFixture<AutoMapperFixture>
         result.TokenType.Should().Be(OidcConstants.TokenResponse.BearerTokenType);
         result.AccessToken.Should().NotBeNullOrWhiteSpace();
         result.ExpiresIn.Should().Be(3600);
+        result.RefreshToken.Should().NotBeNullOrWhiteSpace();
+        result.RefreshTokenExpiresIn.Should().Be(86400d);
 
         var claims = GetClaims(result.AccessToken);
         claims.FirstOrDefault(c => c.Type == "sub")?.Value.Should().Be(_userUrn);
@@ -99,6 +106,8 @@ public class TokenServiceTest : IClassFixture<AutoMapperFixture>
         result.TokenType.Should().Be(OidcConstants.TokenResponse.BearerTokenType);
         result.AccessToken.Should().NotBeNullOrWhiteSpace();
         result.ExpiresIn.Should().Be(3600);
+        result.RefreshToken.Should().NotBeNullOrWhiteSpace();
+        result.RefreshTokenExpiresIn.Should().Be(86400d);
 
         var claims = GetClaims(result.AccessToken);
         claims.FirstOrDefault(c => c.Type == "sub")?.Value.Should().Be(_userUrn);
@@ -146,6 +155,32 @@ public class TokenServiceTest : IClassFixture<AutoMapperFixture>
 
         valid.Should().BeFalse();
         urn.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task ValidateRefreshToken_ShouldReturnValidWhenTokenIsCorrect()
+    {
+        string token = "password:dmFsaWQtc2FsdA==";
+        string hashToValidate = "RfLTQtUMjxyhUSKTJOzTW6PIPv+zRvvWTM1ylJlnNS8=";
+
+        _authorityRepositoryMock.Setup(x => x.Find(hashToValidate))
+            .ReturnsAsync(new RefreshToken { TokenHash = hashToValidate, ExpiryDate = DateTimeOffset.Now.AddMinutes(1) });
+
+        var (valid, urn) = await _tokenService.ValidateRefreshToken(token);
+
+        valid.Should().BeTrue();
+        urn.Should().Be("valid-salt");
+    }
+
+    [Fact]
+    public async Task ValidateRefreshToken_ShouldReturnInvalidWhenTokenIsIncorrect()
+    {
+        string token = "invalid-token";
+
+        var result = await _tokenService.ValidateRefreshToken(token);
+
+        result.valid.Should().BeFalse();
+        result.urn.Should().BeNull();
     }
 
     private string GenerateOneLoginToken(RsaSecurityKey rsaPrivateKey, string? urn = null)

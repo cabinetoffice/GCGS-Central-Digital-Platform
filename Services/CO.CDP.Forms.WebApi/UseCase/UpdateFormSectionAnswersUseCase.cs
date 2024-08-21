@@ -23,32 +23,21 @@ public class UpdateFormSectionAnswersUseCase(
         var section = await formRepository.GetSectionAsync(formId, sectionId)
             ?? throw new UnknownSectionException($"Unknown section {sectionId} in form {formId}.");
 
+        var sharedConsent = await formRepository.GetSharedConsentDraftWithAnswersAsync(formId, organisationId)
+                            ?? CreateSharedConsent(organisation, section.Form);
 
         var questionDictionary = section.Questions.ToDictionary(q => q.Guid);
 
         ValidateQuestions(answers, questionDictionary);
 
-        var existingAnswerSet = await formRepository.GetFormAnswerSetAsync(sectionId, organisationId, answerSetId);
+        var answerSet = sharedConsent.AnswerSets.FirstOrDefault(a => a.Guid == answerSetId)
+            ?? CreateAnswerSet(answerSetId, sharedConsent, section);
 
-        await UploadFileIfRequired(answers, questionDictionary, existingAnswerSet);
+        await UploadFileIfRequired(answers, questionDictionary, answerSet);
 
-        if (existingAnswerSet != null)
-        {
-            existingAnswerSet.Answers = MapAnswers(answers, questionDictionary, existingAnswerSet.Answers);
-        }
-        else
-        {
-            existingAnswerSet = new Persistence.FormAnswerSet
-            {
-                Guid = answerSetId,
-                OrganisationId = organisation.Id,
-                Organisation = organisation,
-                Section = section,
-                Answers = MapAnswers(answers, questionDictionary, []),
-            };
-        }
+        answerSet.Answers = MapAnswers(answers, questionDictionary, answerSet.Answers);
 
-        await formRepository.SaveAnswerSet(existingAnswerSet);
+        await formRepository.SaveSharedConsentAsync(sharedConsent);
 
         return true;
     }
@@ -109,9 +98,9 @@ public class UpdateFormSectionAnswersUseCase(
             {
                 if (existingAnswer.BoolValue != answer.BoolValue) existingAnswer.BoolValue = answer.BoolValue;
                 if (existingAnswer.NumericValue != answer.NumericValue) existingAnswer.NumericValue = answer.NumericValue;
-                if (existingAnswer.DateValue != answer.DateValue) existingAnswer.DateValue = answer.DateValue;
-                if (existingAnswer.StartValue != answer.StartValue) existingAnswer.StartValue = answer.StartValue;
-                if (existingAnswer.EndValue != answer.EndValue) existingAnswer.EndValue = answer.EndValue;
+                if (existingAnswer.DateValue != answer.DateValue) existingAnswer.DateValue = answer.DateValue?.ToUniversalTime();
+                if (existingAnswer.StartValue != answer.StartValue) existingAnswer.StartValue = answer.StartValue?.ToUniversalTime();
+                if (existingAnswer.EndValue != answer.EndValue) existingAnswer.EndValue = answer.EndValue?.ToUniversalTime();
                 if (existingAnswer.TextValue != answer.TextValue) existingAnswer.TextValue = answer.TextValue;
                 if (existingAnswer.OptionValue != answer.OptionValue) existingAnswer.OptionValue = answer.OptionValue;
                 if (!areSameAddress(existingAnswer.AddressValue, answer.AddressValue))
@@ -137,4 +126,34 @@ public class UpdateFormSectionAnswersUseCase(
 
         return answersList;
     }
+
+    private Persistence.SharedConsent CreateSharedConsent(Organisation organisation, Persistence.Form form)
+    {
+        return new Persistence.SharedConsent
+        {
+            Guid = Guid.NewGuid(),
+            OrganisationId = organisation.Id,
+            Organisation = organisation,
+            Form = form,
+            FormVersionId = form.Version,
+            SubmissionState = Persistence.SubmissionState.Draft,
+            SubmittedAt = DateTimeOffset.UtcNow,
+            AnswerSets = new List<Persistence.FormAnswerSet>()
+        };
+    }
+
+    private static Persistence.FormAnswerSet CreateAnswerSet(Guid answerSetId, Persistence.SharedConsent sharedConsent, Persistence.FormSection section)
+    {
+        Persistence.FormAnswerSet answerSet;
+        answerSet = new Persistence.FormAnswerSet
+        {
+            Guid = answerSetId,
+            SharedConsent = sharedConsent,
+            Section = section,
+            Answers = [],
+        };
+        sharedConsent.AnswerSets.Add(answerSet);
+        return answerSet;
+    }
+
 }

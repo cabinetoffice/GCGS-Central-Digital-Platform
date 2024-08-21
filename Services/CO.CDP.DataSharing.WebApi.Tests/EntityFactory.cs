@@ -2,7 +2,8 @@ using CO.CDP.DataSharing.WebApi.Model;
 using CO.CDP.OrganisationInformation.Persistence;
 using CO.CDP.OrganisationInformation.Persistence.Forms;
 
-namespace DataSharing.Tests;
+namespace CO.CDP.DataSharing.WebApi.Tests;
+
 internal static class EntityFactory
 {
     internal static ShareRequest GetShareRequest(Guid organisationGuid, Guid formId)
@@ -14,11 +15,12 @@ internal static class EntityFactory
         };
     }
 
-    internal static SharedConsent GetSharedConsent(int organisationId, Guid organisationGuid, Guid formId)
+    internal static OrganisationInformation.Persistence.Forms.SharedConsent GetSharedConsent(int organisationId, Guid organisationGuid, Guid formId)
     {
-        return new SharedConsent()
+        return new OrganisationInformation.Persistence.Forms.SharedConsent()
         {
             Guid = formId,
+            OrganisationId = organisationId,
             Organisation = new Organisation
             {
                 Id = organisationId,

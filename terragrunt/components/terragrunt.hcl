@@ -88,6 +88,7 @@ locals {
             cidr_block             = "10.${local.cidr_b_production}.0.0/16"
             account_id             = 471112843276
             name                   = "production"
+            pinned_service_version = null
             postgres_instance_type = "db.t4g.micro"
             private_subnets        = [
                 "10.${local.cidr_b_production}.101.0/24",
@@ -102,6 +103,8 @@ locals {
             top_level_domain = "findatender.codatt.net"
         }
     }
+
+    pinned_service_version  = try(local.environments[local.environment].pinned_service_version, null)
 
     product = {
         name               = "CDP SIRSI"
@@ -211,9 +214,21 @@ locals {
         }
     }
 
+    pen_testing = {
+        allowed_ips = [
+            "212.139.19.138", #GOACO
+            "94.174.71.0/24", # Ali Bahman
+            "82.38.3.0/24", # Dorian Stefan
+        ]
+        user_arns = [
+            "arn:aws:iam::525593800265:user/ali.bahman@goaco.com",
+            "arn:aws:iam::525593800265:user/dorian.stefan@goaco.com",
+        ]
+    }
+
+
     terraform_operators = [
         "arn:aws:iam::525593800265:user/ali.bahman@goaco.com",
-        "arn:aws:iam::525593800265:user/dorian.stefan@goaco.com",
         "arn:aws:iam::525593800265:user/jakub.zalas@goaco.com",
     ]
 
@@ -254,7 +269,6 @@ inputs = {
     environment             = local.environment
     product                 = local.product
     tags                    = local.tags
-    pinned_service_version  = try(local.environments[local.environment].pinned_service_version, null)
     postgres_engine_version = local.versions.postgres_engine
     postgres_instance_type  = local.environments[local.environment].postgres_instance_type
     vpc_cidr                = local.environments[local.environment].cidr_block

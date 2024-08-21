@@ -111,9 +111,16 @@ public class DynamicFormsPageModel(
             var answerSet = tempDataService.PeekOrDefault<FormQuestionAnswerState>(FormQuestionAnswerStateKey);
             await formsEngine.SaveUpdateAnswers(FormId, SectionId, OrganisationId, answerSet);
 
-            tempDataService.Remove(FormQuestionAnswerStateKey);
+            if (SectionId == new Guid(FormsEngine.SharedDataSectionId))
+            {
+                return RedirectToPage("/ShareInformation/ShareCodeConfirmation", new { OrganisationId, FormId, SectionId });
+            }
+            else
+            {
+                tempDataService.Remove(FormQuestionAnswerStateKey);
+                return RedirectToPage("FormsAddAnotherAnswerSet", new { OrganisationId, FormId, SectionId });
+            }
 
-            return RedirectToPage("FormsAddAnotherAnswerSet", new { OrganisationId, FormId, SectionId });
         }
 
         Guid? nextQuestionId;
@@ -139,7 +146,7 @@ public class DynamicFormsPageModel(
         List<AnswerSummary> summaryList = [];
         foreach (var answer in answerSet.Answers)
         {
-            var question = form.Questions.FirstOrDefault(q => q.Id == answer.QuestionId);
+            var question = form?.Questions.FirstOrDefault(q => q.Id == answer.QuestionId);
             if (question != null && question.Type != FormQuestionType.NoInput && question.Type != FormQuestionType.CheckYourAnswers)
             {
                 string answerString = question.Type switch
@@ -196,6 +203,14 @@ public class DynamicFormsPageModel(
 
     private async Task<FormQuestion?> InitModel(bool reset = false)
     {
+        var isShareDataPage = tempDataService.PeekOrDefault<bool>($"ShareData_{OrganisationId}_{FormId}_{SectionId}_Page");
+
+        if (isShareDataPage)
+        {
+            CurrentQuestionId = await CheckYourAnswerQuestionId();
+            tempDataService.Remove($"ShareData_{OrganisationId}_{FormId}_{SectionId}_Page");
+        }
+
         var currentQuestion = await formsEngine.GetCurrentQuestion(OrganisationId, FormId, SectionId, CurrentQuestionId);
         if (currentQuestion == null)
             return null;

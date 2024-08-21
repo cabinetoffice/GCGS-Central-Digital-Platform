@@ -26,10 +26,14 @@
         {"name": "Aws__Buckets__StagingBucket", "value": "${s3_staging_bucket}"},
         {"name": "ForwardedHeaders__KnownNetwork", "value": "${vpc_cidr}"},
         {"name": "Organisation__Authority", "value": "https://authority.${public_hosted_zone_fqdn}"},
+        {"name": "OrganisationInformationDatabase__Host", "value": "${oi_db_address}"},
+        {"name": "OrganisationInformationDatabase__Server", "value": "${oi_db_address}"},
+        {"name": "OrganisationInformationDatabase__Database", "value": "${oi_db_name}"},
         {"name": "VERSION", "value": "${service_version}"}
     ],
     "secrets": [
-        {"name": "ConnectionStrings__OrganisationInformationDatabase", "valueFrom": "${conn_string_location}"}
+        {"name": "OrganisationInformationDatabase__Password", "valueFrom": "${oi_db_username}"},
+        {"name": "OrganisationInformationDatabase__Username", "valueFrom": "${oi_db_password}"}
     ],
     "volumesFrom": [],
     "mountPoints": [],

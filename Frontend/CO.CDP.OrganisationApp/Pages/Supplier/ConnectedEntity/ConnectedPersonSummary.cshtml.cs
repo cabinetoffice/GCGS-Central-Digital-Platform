@@ -9,7 +9,8 @@ namespace CO.CDP.OrganisationApp.Pages.Supplier;
 
 [Authorize]
 public class ConnectedPersonSummaryModel(
-    IOrganisationClient organisationClient) : PageModel
+    IOrganisationClient organisationClient,
+    ISession session) : PageModel
 {
     [BindProperty(SupportsGet = true)]
     public Guid Id { get; set; }
@@ -25,6 +26,7 @@ public class ConnectedPersonSummaryModel(
         try
         {
             ConnectedEntities = await organisationClient.GetConnectedEntities(Id);
+            session.Remove(Session.ConnectedPersonKey);
         }
         catch (ApiException ex) when (ex.StatusCode == 404)
         {

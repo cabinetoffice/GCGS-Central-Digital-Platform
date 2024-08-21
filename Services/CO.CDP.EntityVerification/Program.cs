@@ -9,9 +9,10 @@ using CO.CDP.EntityVerification.Ppon;
 using CO.CDP.MQ;
 using CO.CDP.MQ.Hosting;
 using CO.CDP.EntityVerification.UseCase;
-
+using CO.CDP.Configuration.Helpers;
 using Microsoft.EntityFrameworkCore;
 using CO.CDP.EntityVerification.Model;
+using CO.CDP.Authentication;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,7 +24,7 @@ builder.Services.AddSwaggerGen(o => o.DocumentPponApi(builder.Configuration));
 builder.Services.AddHealthChecks();
 builder.Services.AddEntityVerificationProblemDetails();
 builder.Services.AddDbContext<EntityVerificationContext>(o =>
-    o.UseNpgsql(builder.Configuration.GetConnectionString("EvDatabase")));
+    o.UseNpgsql(ConnectionStringHelper.GetConnectionString(builder.Configuration, "EntityVerificationDatabase")));
 builder.Services.AddScoped<IPponRepository, DatabasePponRepository>();
 builder.Services.AddScoped<IPponService, PponService>();
 builder.Services.AddScoped<IUseCase<LookupIdentifierQuery, IEnumerable<CO.CDP.EntityVerification.Model.Identifier>>, LookupIdentifierUseCase>();
@@ -50,6 +51,11 @@ if (Assembly.GetEntryAssembly().IsRunAs("CO.CDP.EntityVerification"))
     builder.Services.AddHostedService<DispatcherBackgroundService>();
 }
 
+builder.Services
+    .AddAuthentication()
+    .AddJwtBearerAuthentication(builder.Configuration, builder.Environment);
+builder.Services.AddEntityVerificationAuthorization();
+
 var app = builder.Build();
 app.UseForwardedHeaders();
 
@@ -69,6 +75,8 @@ if (!app.Environment.IsDevelopment())
 app.UseStatusCodePages();
 app.MapHealthChecks("/health").AllowAnonymous();
 app.UseHttpsRedirection();
+app.UseAuthentication();
+app.UseAuthorization();
 app.UsePponEndpoints();
 app.Run();
 
