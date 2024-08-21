@@ -20,7 +20,7 @@ public class DatabaseFormRepository(OrganisationInformationContext context) : IF
         var answersQuery = from sc in context.SharedConsents
                            join fas in context.FormAnswerSets on sc.Id equals fas.SharedConsentId
                            join o in context.Organisations on sc.OrganisationId equals o.Id
-                           where o.Guid == organisationId
+                           where o.Guid == organisationId && fas.Deleted == false
                            select new { sc.FormId, fas.SectionId };
 
         var query = from f in context.Forms
@@ -82,11 +82,11 @@ public class DatabaseFormRepository(OrganisationInformationContext context) : IF
             .FirstOrDefaultAsync(s => s.Form.Guid == formId && s.Organisation.Guid == organisationId);
     }
 
-   public async Task<IEnumerable<SharedConsent>> GetShareCodesAsync(Guid organisationId)
+    public async Task<IEnumerable<SharedConsent>> GetShareCodesAsync(Guid organisationId)
     {
         return await context.Set<SharedConsent>()
             .Where(x => x.SubmissionState == SubmissionState.Submitted && x.Organisation.Guid == organisationId)
-            .OrderByDescending(y=>y.SubmittedAt).ToListAsync();            
+            .OrderByDescending(y => y.SubmittedAt).ToListAsync();
     }
 
     public async Task<IEnumerable<FormQuestion>> GetQuestionsAsync(Guid sectionId)

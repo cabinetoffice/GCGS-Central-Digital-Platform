@@ -98,6 +98,7 @@
 
             @foreach (var section in Model.FormSections)
             {
+                var sharedDataSection = section.SectionId == new Guid(FormsEngine.SharedDataSectionId);
                 var redirectLink = $"/organisation/{Model.Id}/forms/{FormsEngine.OrganisationSupplierInfoFormId}/sections/{section.SectionId}";
 
                 if (section.AnswerSetCount > 0 && section.AllowsMultipleAnswerSets == true)
@@ -113,9 +114,13 @@
                             </a>
                         </dt>
                         <dd class="govuk-summary-list__value">
+                            @if (!sharedDataSection && section.AnswerSetCount > 0)
+                            {
+                                @(section.AnswerSetCount) @:records
+                            }
                         </dd>
                         <dd class="govuk-summary-list__actions">
-                            @if (section.SectionId != new Guid(FormsEngine.SharedDataSectionId))
+                            @if (!sharedDataSection)
                             {
                                 <strong class="govuk-tag">@(section.AnswerSetCount > 0 ? $"Completed" : "Not started")</strong>
                             }
