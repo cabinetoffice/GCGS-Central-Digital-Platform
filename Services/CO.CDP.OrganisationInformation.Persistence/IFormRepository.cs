@@ -15,6 +15,8 @@ public interface IFormRepository : IDisposable
     Task<SharedConsent?> GetSharedConsentDraftAsync(Guid formId, Guid organisationId);
     Task<SharedConsent?> GetSharedConsentDraftWithAnswersAsync(Guid formId, Guid organisationId);
     Task<IEnumerable<SharedConsent>> GetShareCodesAsync(Guid organisationId);
+    Task<SharedConsent?> GetShareCodeDetailsAsync(Guid organisationId, string shareCode);
+
     #endregion
 
     #region Question Methods

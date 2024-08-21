@@ -58,11 +58,20 @@ public class DatabaseFormRepository(OrganisationInformationContext context) : IF
             .FirstOrDefaultAsync(s => s.Form.Guid == formId && s.Organisation.Guid == organisationId);
     }
 
-   public async Task<IEnumerable<SharedConsent>> GetShareCodesAsync(Guid organisationId)
+    public async Task<IEnumerable<SharedConsent>> GetShareCodesAsync(Guid organisationId)
     {
         return await context.Set<SharedConsent>()
             .Where(x => x.SubmissionState == SubmissionState.Submitted && x.Organisation.Guid == organisationId)
-            .OrderByDescending(y=>y.SubmittedAt).ToListAsync();            
+            .OrderByDescending(y => y.SubmittedAt).ToListAsync();
+    }
+
+    public async Task<SharedConsent?> GetShareCodeDetailsAsync(Guid organisationId, string shareCode)
+    {
+        return await context.Set<SharedConsent>()
+            .Include(x => x.AnswerSets)
+            .ThenInclude(x => x.Answers)
+            .ThenInclude(x=>x.Question)
+           .Where(x => x.Organisation.Guid == organisationId && x.BookingReference == shareCode).FirstOrDefaultAsync();
     }
 
     #endregion
@@ -145,4 +154,6 @@ public class DatabaseFormRepository(OrganisationInformationContext context) : IF
                 throw cause;
         }
     }
+
+
 }
