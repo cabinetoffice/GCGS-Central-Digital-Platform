@@ -47,12 +47,15 @@
                         </dd>
                         <dd class="govuk-summary-list__actions">
                             <ul class="govuk-summary-list__actions-list">
-                                <li class="govuk-summary-list__actions-list-item">
-                                    <a class="govuk-link" href="/organisation/@Model.Id/users/add-user/@p.Id?handler=change">Change</a>
-                                </li>
-                                <li class="govuk-summary-list__actions-list-item">
-                                    <a class="govuk-link" href="/organisation/@Model.Id/users/@p.Id/remove">Remove</a>
-                                </li>
+                                @if (p.Id != @Model.UserDetails?.PersonId)
+                                {
+                                    <li class="govuk-summary-list__actions-list-item">
+                                        <a class="govuk-link" href="/organisation/@Model.Id/users/add-user/@p.Id?handler=change">Change</a>
+                                    </li>
+                                    <li class="govuk-summary-list__actions-list-item">
+                                        <a class="govuk-link" href="/organisation/@Model.Id/users/@p.Id/remove">Remove</a>
+                                    </li>
+                                }
                             </ul>
                         </dd>
                     </div>
@@ -93,7 +96,7 @@
                                     <a class="govuk-link" href="/organisation/@Model.Id/users/add-user/@p.Id?handler=change">Change</a>
                                 </li>
                                 <li class="govuk-summary-list__actions-list-item">
-                                    <a class="govuk-link" href="/organisation/@Model.Id/users/@p.Id/remove">Remove</a>
+                                    <a class="govuk-link" href="/organisation/@Model.Id/users/@p.Id/remove?handler=personInvite">Remove</a>
                                 </li>
                             </ul>
                         </dd>

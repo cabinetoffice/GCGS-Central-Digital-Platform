@@ -3,15 +3,23 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
+using System.Security;
+using CO.CDP.OrganisationApp.Models;
 
 namespace CO.CDP.OrganisationApp.Pages.Users;
 
 [Authorize]
 public class UserSummaryModel(
-    IOrganisationClient organisationClient) : PageModel
+    IOrganisationClient organisationClient,
+    ISession session) : PageModel
 {
+    private const string ScopeAdmin = "ADMIN";
+
     [BindProperty(SupportsGet = true)]
     public Guid Id { get; set; }
+
+    [BindProperty]
+    public UserDetails? UserDetails { get; set; }
 
     [BindProperty] public ICollection<Organisation.WebApiClient.Person> Persons { get; set; } = [];
 
@@ -23,17 +31,21 @@ public class UserSummaryModel(
 
     public async Task<IActionResult> OnGet(bool? selected)
     {
-        // TODO: Page should only be accessible to users with ADMIN scope - Agreed to otherwise display 404
+        UserDetails = session.Get<UserDetails>(Session.UserDetailsKey);
 
         try
         {
-            // These are the ones that have been fully added
             Persons = await organisationClient.GetOrganisationPersonsAsync(Id);
 
-            // These are the invites
+            AssertUserHasAdminScopeForOrganisation();
+
             PersonInvites = await organisationClient.GetOrganisationPersonInvitesAsync(Id);
         }
         catch (ApiException ex) when (ex.StatusCode == 404)
+        {
+            return Redirect("/page-not-found");
+        }
+        catch (SecurityException se)
         {
             return Redirect("/page-not-found");
         }
@@ -45,6 +57,8 @@ public class UserSummaryModel(
 
     public IActionResult OnPost()
     {
+        UserDetails = session.Get<UserDetails>(Session.UserDetailsKey);
+
         if (!ModelState.IsValid)
         {
             return Page();
@@ -56,5 +70,23 @@ public class UserSummaryModel(
         }
 
         return Redirect("/organisation/" + Id);
+    }
+
+    public void AssertUserHasAdminScopeForOrganisation()
+    {
+        bool userIsAdminForOrg = false;
+
+        foreach (var person in Persons)
+        {
+            if (person.Id == UserDetails?.PersonId && person.Scopes.Contains(ScopeAdmin))
+            {
+                userIsAdminForOrg = true;
+            }
+        }
+
+        if (!userIsAdminForOrg)
+        {
+            throw new SecurityException("User does not have the required admin privileges");
+        }
     }
 }
