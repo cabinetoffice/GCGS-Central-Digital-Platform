@@ -11,11 +11,11 @@ public class PersonInvite : IEntityDate
     public required string FirstName { get; set; }
     public required string LastName { get; set; }
     public required string Email { get; set; }
-    public Organisation Organisation { get; set; }
+    public required Organisation Organisation { get; set; }
 
     public Person? Person { get; set; }
 
-    public List<string> Scopes { get; init; } = [];
+    public required List<string> Scopes { get; init; } = [];
     public DateTimeOffset InviteSentOn { get; set; }
     public DateTimeOffset CreatedOn { get; set; }
     public DateTimeOffset UpdatedOn { get; set; }

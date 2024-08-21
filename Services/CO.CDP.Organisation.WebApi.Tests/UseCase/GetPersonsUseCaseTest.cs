@@ -35,7 +35,7 @@ public class GetPersonsUseCaseTest
     {
         var organisationId = Guid.NewGuid();
         _organisationRepositoryMock.Setup(repo => repo.Find(organisationId))
-            .ReturnsAsync((Organisation)null);
+            .ReturnsAsync((Organisation)null!);
 
         Func<Task> act = async () => await _useCase.Execute(organisationId);
 
@@ -65,8 +65,8 @@ public class GetPersonsUseCaseTest
         {
             Id = 1,
             Guid = organisationGuid,
-            Tenant = null,
-            Name = null
+            Tenant = null!,
+            Name = null!
         };
 
         var persons = new List<Person>
@@ -80,7 +80,7 @@ public class GetPersonsUseCaseTest
                     {
                         OrganisationId = 1,
                         Scopes = ["Scope1"],
-                        Person = null,
+                        Person = null!,
                         Organisation = organisation
                     }
                 },
@@ -98,7 +98,7 @@ public class GetPersonsUseCaseTest
                     {
                         OrganisationId = 1,
                         Scopes = ["Scope2"],
-                        Person = null,
+                        Person = null!,
                         Organisation = organisation
                     }
                 },
@@ -119,9 +119,9 @@ public class GetPersonsUseCaseTest
             .Returns((Person source) => new CO.CDP.Organisation.WebApi.Model.Person
             {
                 Id = Guid.NewGuid(),
-                FirstName = null,
-                LastName = null,
-                Email = null
+                FirstName = null!,
+                LastName = null!,
+                Email = null!
             });
 
         var result = await _useCase.Execute(organisationGuid);

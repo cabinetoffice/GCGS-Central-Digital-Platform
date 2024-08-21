@@ -7,15 +7,13 @@ namespace CO.CDP.Organisation.WebApi.UseCase;
 public class InvitePersonToOrganisationUseCase(
     IOrganisationRepository organisationRepository,
     IPersonInviteRepository personInviteRepository,
-    IMapper mapper,
     Func<Guid> guidFactory)
     : IUseCase<(Guid organisationId, InvitePersonToOrganisation invitePersonData), PersonInvite>
 {
     public InvitePersonToOrganisationUseCase(
         IOrganisationRepository organisationRepository,
-        IPersonInviteRepository personInviteRepository,
-        IMapper mapper
-    ) : this(organisationRepository, personInviteRepository, mapper, Guid.NewGuid)
+        IPersonInviteRepository personInviteRepository
+    ) : this(organisationRepository, personInviteRepository, Guid.NewGuid)
     {
 
     }
