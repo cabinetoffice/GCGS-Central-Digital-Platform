@@ -12,6 +12,7 @@ using CO.CDP.Tenant.WebApi.UseCase;
 using Microsoft.EntityFrameworkCore;
 using Tenant = CO.CDP.Tenant.WebApi.Model.Tenant;
 using TenantLookup = CO.CDP.OrganisationInformation.TenantLookup;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.ConfigureForwardedHeaders();
@@ -21,6 +22,7 @@ builder.ConfigureForwardedHeaders();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options => { options.DocumentTenantApi(builder.Configuration); });
 builder.Services.AddHealthChecks();
+builder.Services.AddSerilog();
 
 builder.Services.AddAutoMapper(typeof(WebApiToPersistenceProfile));
 
