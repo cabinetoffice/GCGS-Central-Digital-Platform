@@ -19,7 +19,7 @@ public class UserSummaryModel(
     public Guid Id { get; set; }
 
     [BindProperty]
-    public UserDetails? UserDetails { get; set; }
+    public Guid? SignedInPersonId { get; set; }
 
     [BindProperty] public ICollection<Organisation.WebApiClient.Person> Persons { get; set; } = [];
 
@@ -31,7 +31,9 @@ public class UserSummaryModel(
 
     public async Task<IActionResult> OnGet(bool? selected)
     {
-        UserDetails = session.Get<UserDetails>(Session.UserDetailsKey);
+        var userDetails = session.Get<UserDetails>(Session.UserDetailsKey);
+
+        SignedInPersonId = userDetails?.PersonId;
 
         try
         {
@@ -57,8 +59,6 @@ public class UserSummaryModel(
 
     public IActionResult OnPost()
     {
-        UserDetails = session.Get<UserDetails>(Session.UserDetailsKey);
-
         if (!ModelState.IsValid)
         {
             return Page();
@@ -78,7 +78,7 @@ public class UserSummaryModel(
 
         foreach (var person in Persons)
         {
-            if (person.Id == UserDetails?.PersonId && person.Scopes.Contains(ScopeAdmin))
+            if (person.Id == SignedInPersonId && person.Scopes.Contains(ScopeAdmin))
             {
                 userIsAdminForOrg = true;
             }
