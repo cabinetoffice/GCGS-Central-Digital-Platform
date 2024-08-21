@@ -7,9 +7,6 @@ namespace CO.CDP.OrganisationApp;
 public class FormsEngine(IFormsClient formsApiClient, ITempDataService tempDataService) : IFormsEngine
 {
     public const string OrganisationSupplierInfoFormId = "0618b13e-eaf2-46e3-a7d2-6f2c44be7022";
-
-    // TODO: Remove in next iteration when section id are coming from API
-    public const string FinancialInfoSectionId = "13511cb1-9ed4-4d72-ba9e-05b4a0be880c";
     public const string SharedDataSectionId = "936096b3-c3bb-4475-ad7d-73b44ff61e76";
 
     public async Task<SectionQuestionsResponse> GetFormSectionAsync(Guid organisationId, Guid formId, Guid sectionId)
