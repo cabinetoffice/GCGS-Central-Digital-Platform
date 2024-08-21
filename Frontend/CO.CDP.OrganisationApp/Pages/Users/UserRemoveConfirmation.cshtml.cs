@@ -74,7 +74,7 @@ ISession session
 
             UserFullName = person.FirstName + " " + person.LastName;
 
-            await organisationClient.RemovePersonFromOrganisationAsync(Id, UserId);
+            await organisationClient.RemovePersonFromOrganisationAsync(Id, new RemovePersonFromOrganisation(person.Id));
         }
 
         return RedirectToPage("UserSummary", new { Id });

@@ -453,9 +453,9 @@ public static class EndpointExtensions
                 return operation;
             });
 
-        app.MapDelete("/{organisationId}/persons/{personId}",
-                async (Guid organisationId, Guid personId, IUseCase<(Guid, Guid), bool> useCase) =>
-                    await useCase.Execute((organisationId, personId))
+        app.MapDelete("/{organisationId}/persons",
+                async (Guid organisationId, [FromBody] RemovePersonFromOrganisation removePersonFromOrganisation, IUseCase<(Guid, RemovePersonFromOrganisation), bool> useCase) =>
+                    await useCase.Execute((organisationId, removePersonFromOrganisation))
             .AndThen(_ => Results.NoContent()))
             .Produces(StatusCodes.Status204NoContent)
             .ProducesProblem(StatusCodes.Status400BadRequest)

@@ -266,8 +266,7 @@ public record DeleteConnectedEntity
 
 public record RemovePersonFromOrganisation
 {
-    public required Guid OrganisationId { get; init; }
-    public required Guid PersonId { get; init; }
+    public required Guid PersonId { get; set; }
 }
 
 public record InvitePersonToOrganisation
