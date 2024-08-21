@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace CO.CDP.Forms.WebApi.Model;
 
 public record FormSection
@@ -5,8 +7,16 @@ public record FormSection
     /// <example>"a3f828e7-93c4-4b44-82d3-ded3ab5f8b0d"</example>
     public required Guid Id { get; init; }
     public required string Title { get; init; }
+    public required FormSectionType Type { get; set; }
     public required bool AllowsMultipleAnswerSets { get; init; }
     public required FormSectionConfiguration Configuration { get; init; }
+}
+
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum FormSectionType
+{
+    Standard,
+    Declaration
 }
 
 public record FormSectionConfiguration

@@ -761,8 +761,7 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
             Version = "1.0",
             IsRequired = true,
             Scope = FormScope.SupplierInformation,
-            Sections = new List<FormSection>(),
-            Type = FormType.Standard
+            Sections = new List<FormSection>()
         };
     }
 
@@ -775,6 +774,7 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
             Form = form,
             Questions = new List<FormQuestion>(),
             Title = "Test Section",
+            Type = FormSectionType.Standard,
             AllowsMultipleAnswerSets = true,
             Configuration = new FormSectionConfiguration
             {

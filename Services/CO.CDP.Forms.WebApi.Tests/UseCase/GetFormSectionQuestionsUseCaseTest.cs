@@ -34,7 +34,6 @@ public class GetFormSectionQuestionsUseCaseTest(AutoMapperFixture mapperFixture)
             Name = "Sample Form",
             Version = "1.0",
             IsRequired = true,
-            Type = CO.CDP.OrganisationInformation.Persistence.Forms.FormType.Standard,
             Scope = CO.CDP.OrganisationInformation.Persistence.Forms.FormScope.SupplierInformation,
             Sections = new List<CO.CDP.OrganisationInformation.Persistence.Forms.FormSection>()
         };
@@ -47,6 +46,7 @@ public class GetFormSectionQuestionsUseCaseTest(AutoMapperFixture mapperFixture)
             FormId = form.Id,
             Form = form,
             Questions = new List<CO.CDP.OrganisationInformation.Persistence.Forms.FormQuestion>(),
+            Type = CO.CDP.OrganisationInformation.Persistence.Forms.FormSectionType.Standard,
             AllowsMultipleAnswerSets = true,
             CreatedOn = DateTimeOffset.UtcNow,
             UpdatedOn = DateTimeOffset.UtcNow,
@@ -104,6 +104,7 @@ public class GetFormSectionQuestionsUseCaseTest(AutoMapperFixture mapperFixture)
         {
             Id = sectionId,
             Title = "Financial Information",
+            Type = FormSectionType.Standard,
             AllowsMultipleAnswerSets = true,
             Configuration = new FormSectionConfiguration
             {
