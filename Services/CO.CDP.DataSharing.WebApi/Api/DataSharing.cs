@@ -233,9 +233,8 @@ public static class EndpointExtensions
 
 
         app.MapGet("/share/organisations/{organisationId}/codes", async (Guid organisationId,
-            IUseCase<Guid, List<Model.SharedConsent>?> useCase) =>
-        await useCase.Execute(organisationId)
-             .AndThen(sectionQuestions => sectionQuestions != null ? Results.Ok(sectionQuestions) : Results.NotFound()))
+            IUseCase<Guid, List<Model.SharedConsent>?> useCase) => await useCase.Execute(organisationId)
+             .AndThen(sharedCodes => sharedCodes != null ? Results.Ok(sharedCodes) : Results.NotFound()))
              .Produces<List<Model.SharedConsent>>(StatusCodes.Status200OK, "application/json")
              .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
              .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
@@ -244,15 +243,14 @@ public static class EndpointExtensions
              {
                  operation.OperationId = "GetShareCodeList";
                  operation.Description = "Get Share Code List.";
-                 operation.Summary = "Get a list of Share Code for a Organisation.";
+                 operation.Summary = "Get a List of Share Code for an Organisation.";
                  operation.Responses["200"].Description = "List of Share Code.";
                  operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
-                 operation.Responses["404"].Description = "Organisation not found.";
+                 operation.Responses["404"].Description = "Share Codes not found.";
                  operation.Responses["500"].Description = "Internal server error.";
                  return operation;
              })
-            .RequireAuthorization(Constants.OrganisationApiKeyPolicy);
-
+            .RequireAuthorization(Constants.OneLoginPolicy);
     }
 }
 
