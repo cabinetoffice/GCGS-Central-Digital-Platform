@@ -24,6 +24,14 @@ public class DatabasePersonInviteRepository(OrganisationInformationContext conte
             .ToArrayAsync();
     }
 
+    public async Task<bool> Delete(PersonInvite personInvite)
+    {
+        context.Remove(personInvite);
+        await context.SaveChangesAsync();
+
+        return true;
+    }
+
     public void Save(PersonInvite personInvite)
     {
         try

@@ -471,7 +471,7 @@ public static class EndpointExtensions
                 operation.Responses["204"].Description = "Person removed from organisation successfully.";
                 operation.Responses["400"].Description = "Bad request.";
                 operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
-                operation.Responses["404"].Description = "Connected Entity not found.";
+                operation.Responses["404"].Description = "Person not found.";
                 operation.Responses["422"].Description = "Unprocessable entity.";
                 operation.Responses["500"].Description = "Internal server error.";
                 return operation;
@@ -522,6 +522,30 @@ public static class EndpointExtensions
                 operation.Responses["400"].Description = "Bad request.";
                 operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
                 operation.Responses["404"].Description = "Organisation not found.";
+                operation.Responses["422"].Description = "Unprocessable entity.";
+                operation.Responses["500"].Description = "Internal server error.";
+                return operation;
+            });
+
+        app.MapDelete("/{organisationId}/person-invite/{personInviteId}",
+                async (Guid organisationId, Guid personInviteId, IUseCase<(Guid, Guid), bool> useCase) =>
+                    await useCase.Execute((organisationId, personInviteId))
+                        .AndThen(_ => Results.NoContent()))
+            .Produces(StatusCodes.Status204NoContent)
+            .ProducesProblem(StatusCodes.Status400BadRequest)
+            .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
+            .ProducesProblem(StatusCodes.Status404NotFound)
+            .ProducesProblem(StatusCodes.Status422UnprocessableEntity)
+            .ProducesProblem(StatusCodes.Status500InternalServerError)
+            .WithOpenApi(operation =>
+            {
+                operation.OperationId = "RemovePersonInviteFromOrganisation";
+                operation.Description = "Remove person invite from organisation.";
+                operation.Summary = "Remove person invite from organisation.";
+                operation.Responses["204"].Description = "Person invite removed from organisation successfully.";
+                operation.Responses["400"].Description = "Bad request.";
+                operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
+                operation.Responses["404"].Description = "Person invite not found.";
                 operation.Responses["422"].Description = "Unprocessable entity.";
                 operation.Responses["500"].Description = "Internal server error.";
                 return operation;

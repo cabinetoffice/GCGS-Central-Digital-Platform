@@ -1,4 +1,4 @@
-@page "/organisation/{id}/users/{personId}/remove"
+@page "/organisation/{id}/users/{userId}/remove"
 @model CO.CDP.OrganisationApp.Pages.Users.UserRemoveConfirmationModel
 @{
     var hasError = ((TagBuilder)Html.ValidationMessageFor(m => m.ConfirmRemove)).HasInnerHtml;;

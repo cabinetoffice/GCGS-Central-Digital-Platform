@@ -1,4 +1,5 @@
 using CO.CDP.Organisation.WebApiClient;
+using CO.CDP.OrganisationApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moq;
@@ -8,12 +9,26 @@ namespace CO.CDP.OrganisationApp.Pages.Users;
 public class UserSummaryModelTests
 {
     private readonly Mock<IOrganisationClient> _mockOrganisationClient;
+    private readonly Mock<ISession> _mockSession;
     private readonly UserSummaryModel _pageModel;
+    private readonly UserDetails _userDetails;
+    private readonly Guid _userGuid;
 
     public UserSummaryModelTests()
     {
         _mockOrganisationClient = new Mock<IOrganisationClient>();
-        _pageModel = new UserSummaryModel(_mockOrganisationClient.Object);
+        _mockSession = new Mock<ISession>();
+        _pageModel = new UserSummaryModel(_mockOrganisationClient.Object, _mockSession.Object);
+        _userGuid = new Guid();
+
+        _userDetails = new UserDetails
+        {
+            UserUrn = null!,
+            PersonId = _userGuid
+        };
+
+        _mockSession.Setup(session => session.Get<UserDetails>(It.IsAny<string>()))
+            .Returns(_userDetails);
     }
 
     [Fact]
@@ -22,9 +37,14 @@ public class UserSummaryModelTests
         var organisationId = Guid.NewGuid();
         _pageModel.Id = organisationId;
 
+        var person = new Organisation.WebApiClient.Person("john@johnson.com", "John", _userGuid, "Johnson", ["ADMIN"] );
+
         _mockOrganisationClient
             .Setup(client => client.GetOrganisationPersonsAsync(organisationId))
-            .ReturnsAsync(new List<Organisation.WebApiClient.Person>());
+            .ReturnsAsync(new List<Organisation.WebApiClient.Person>
+            {
+                person
+            });
 
         _mockOrganisationClient
             .Setup(client => client.GetOrganisationPersonInvitesAsync(organisationId))
@@ -33,8 +53,33 @@ public class UserSummaryModelTests
         var result = await _pageModel.OnGet(null);
 
         Assert.IsType<PageResult>(result);
-        Assert.Empty(_pageModel.Persons);
+        Assert.Contains(person, _pageModel.Persons);
         Assert.Empty(_pageModel.PersonInvites);
+    }
+
+    [Fact]
+    public async Task OnGet_RedirectsToPageNotFound_WhenUserDoesNotHaveAdminRole()
+    {
+        var organisationId = Guid.NewGuid();
+        _pageModel.Id = organisationId;
+
+        var person = new Organisation.WebApiClient.Person("john@johnson.com", "Johnny", _userGuid, "NoAdminJohnson", ["VIEWER"] );
+
+        _mockOrganisationClient
+            .Setup(client => client.GetOrganisationPersonsAsync(organisationId))
+            .ReturnsAsync(new List<Organisation.WebApiClient.Person>
+            {
+                person
+            });
+
+        _mockOrganisationClient
+            .Setup(client => client.GetOrganisationPersonInvitesAsync(organisationId))
+            .ReturnsAsync(new List<PersonInviteModel>());
+
+        var result = await _pageModel.OnGet(null);
+
+        var redirectResult = Assert.IsType<RedirectResult>(result);
+        Assert.Equal("/page-not-found", redirectResult.Url);
     }
 
     [Fact]
