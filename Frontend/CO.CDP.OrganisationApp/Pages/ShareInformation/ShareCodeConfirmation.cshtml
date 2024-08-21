@@ -1,10 +1,8 @@
 @page "/organisation/{organisationId:guid}/forms/{formId:guid}/sections/{sectionId:guid}/share-code-confirmation"
-@model CO.CDP.OrganisationApp.Pages.ShareInformation.ShareCodeConfirmationModel
-@{
-    var backUrl = $"/organisation/{Model.OrganisationId}/forms/{Model.FormId}/sections/{Model.SectionId}?frm-chk-answer";
-}
+@model ShareCodeConfirmationModel
 
-<a href="@backUrl" class="govuk-back-link">Back</a>
+@* TODO: take to list share code page, once developed *@
+<a href="#" class="govuk-back-link">Back</a>
 
 <main class="govuk-main-wrapper" id="main-content">
     <div class="govuk-grid-column-ful-width">
@@ -18,6 +16,6 @@
         </div>
         <p class="govuk-body">You can save your share code and <a href="#">download your supplier information file</a> or come back and get them when needed.</p>
         <p class="govuk-body">If your supplier information changes, you can update it and create a new share code and file to share the new information.</p>
-        <p class="govuk-body"><a href="@backUrl">Back to organisation details</a></p>
+        <p class="govuk-body"><a href="/organisation/@Model.OrganisationId/supplier-information">Back to organisation details</a></p>
     </div>
 </main>

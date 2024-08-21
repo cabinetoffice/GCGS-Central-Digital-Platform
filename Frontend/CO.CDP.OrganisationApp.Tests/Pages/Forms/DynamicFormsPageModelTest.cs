@@ -86,26 +86,6 @@ public class DynamicFormsPageModelTest
     }
 
     [Fact]
-    public async Task CheckYourAnswerQuestionId_ShouldReturnCheckYourAnswerQuestionId()
-    {
-        var checkYourAnswerQuestionId = Guid.NewGuid();
-        var form = new SectionQuestionsResponse
-        {
-            Questions = new List<FormQuestion>
-        {
-            new FormQuestion { Id = checkYourAnswerQuestionId, Type = FormQuestionType.CheckYourAnswers }
-        }
-        };
-
-        _formsEngineMock.Setup(f => f.GetFormSectionAsync(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid>()))
-            .ReturnsAsync(form);
-
-        var result = await _pageModel.CheckYourAnswerQuestionId();
-
-        result.Should().Be(checkYourAnswerQuestionId);
-    }
-
-    [Fact]
     public async Task GetAnswers_ShouldReturnCheckYouAnswersSummaries()
     {
         var questionId = Guid.NewGuid();
@@ -197,7 +177,7 @@ public class DynamicFormsPageModelTest
     public async Task OnPostAsync_ShouldRedirectToShareCodeConfirmation_WhenSectionTitleIsDeclarationInformation()
     {
         var checkYourAnswerQuestionId = Guid.NewGuid();
-        _pageModel.SectionId = new Guid(FormsEngine.SharedDataSectionId);
+        _pageModel.FormSectionType = FormSectionType.Declaration;
         _pageModel.CurrentQuestionId = checkYourAnswerQuestionId;
 
         var formResponse = new SectionQuestionsResponse

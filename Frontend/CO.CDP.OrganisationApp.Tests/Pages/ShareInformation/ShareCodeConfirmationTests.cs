@@ -9,14 +9,12 @@ namespace CO.CDP.OrganisationApp.Tests.Pages.ShareInformation;
 public class ShareCodeConfirmationTests
 {
     private readonly Mock<WebApiClient.IDataSharingClient> _dataSharingApiClientMock;
-    private readonly Mock<ITempDataService> _tempDataServiceMock;
     private readonly ShareCodeConfirmationModel _pageModel;
 
     public ShareCodeConfirmationTests()
     {
         _dataSharingApiClientMock = new Mock<WebApiClient.IDataSharingClient>();
-        _tempDataServiceMock = new Mock<ITempDataService>();
-        _pageModel = new ShareCodeConfirmationModel(_dataSharingApiClientMock.Object, _tempDataServiceMock.Object);
+        _pageModel = new ShareCodeConfirmationModel(_dataSharingApiClientMock.Object);
     }
 
     [Fact]
@@ -40,7 +38,6 @@ public class ShareCodeConfirmationTests
 
         result.Should().BeOfType<PageResult>();
         _pageModel.ShareCode.Should().Be(shareCode);
-        _tempDataServiceMock.Verify(t => t.Put(It.IsAny<string>(), true), Times.Once);
     }
 
     [Fact]
@@ -62,7 +59,6 @@ public class ShareCodeConfirmationTests
 
         result.Should().BeOfType<RedirectResult>().Which.Url.Should().Be("/page-not-found");
         _pageModel.ShareCode.Should().BeNull();
-        _tempDataServiceMock.Verify(t => t.Put(It.IsAny<string>(), It.IsAny<bool>()), Times.Never);
     }
 
     [Fact]
