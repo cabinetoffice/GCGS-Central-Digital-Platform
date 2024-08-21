@@ -13,11 +13,6 @@ variable "db_entity_verification_address" {
   type        = string
 }
 
-variable "db_entity_verification_connection_secret_arn" {
-  description = "ARN of the secret holding Entity Verification DB connection string"
-  type        = string
-}
-
 variable "db_entity_verification_credentials_arn" {
   description = "ARN of the secret holding Entity Verification DB credentials"
   type        = string
@@ -40,11 +35,6 @@ variable "db_postgres_sg_id" {
 
 variable "db_sirsi_address" {
   description = "Sirsi DB address"
-  type        = string
-}
-
-variable "db_sirsi_connection_secret_arn" {
-  description = "ARN of the secret holding Sirsi DB connection string"
   type        = string
 }
 

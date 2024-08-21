@@ -71,9 +71,8 @@
                         </dl>
                     }
                 </fieldset>
-                @if (Model.SectionTitle == SectionTitles.DECLARATIONINFORMATION)
+                @if (Model.CurrentFormQuestionType == Models.FormQuestionType.CheckYourAnswers && Model.SectionId == new Guid(FormsEngine.SharedDataSectionId))
                 {
-                    <input type="hidden" name="SectionTitle" value="Declaration Information" />
                     <button type="submit" class="govuk-button">Confirm and get share code</button>
                 } else
                 {

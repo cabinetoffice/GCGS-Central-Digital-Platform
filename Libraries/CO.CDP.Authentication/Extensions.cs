@@ -101,6 +101,17 @@ public static class Extensions
                     .Build());
     }
 
+    public static AuthorizationBuilder AddEntityVerificationAuthorization(this IServiceCollection services)
+    {
+        return services
+            .AddAuthorizationBuilder()
+            .SetFallbackPolicy(
+                new AuthorizationPolicyBuilder()
+                    .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
+                    .RequireAuthenticatedUser()
+                    .Build());
+    }
+
     public static IServiceCollection AddJwtClaimExtractor(this IServiceCollection services)
     {
         services.AddHttpContextAccessor();

@@ -30,6 +30,10 @@ resource "aws_codebuild_project" "this" {
       value = each.value
     }
     environment_variable {
+      name  = "ORCHESTRATOR_ACCOUNT_ID"
+      value = data.aws_caller_identity.current.account_id
+    }
+    environment_variable {
       name  = "TG_ENVIRONMENT"
       value = each.key
     }

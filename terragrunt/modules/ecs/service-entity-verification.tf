@@ -5,7 +5,6 @@ module "ecs_service_entity_verification" {
     "${path.module}/templates/task-definitions/${var.service_configs.entity_verification.name}.json.tftpl",
     {
       aspcore_environment                 = local.aspcore_environment
-      conn_string_location                = var.db_entity_verification_connection_secret_arn
       container_port                      = var.service_configs.entity_verification.port
       cpu                                 = var.service_configs.entity_verification.cpu
       host_port                           = var.service_configs.entity_verification.port

@@ -1,5 +1,4 @@
 using CO.CDP.AwsServices;
-using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.Pages.Forms;
 using FluentAssertions;
@@ -198,7 +197,7 @@ public class DynamicFormsPageModelTest
     public async Task OnPostAsync_ShouldRedirectToShareCodeConfirmation_WhenSectionTitleIsDeclarationInformation()
     {
         var checkYourAnswerQuestionId = Guid.NewGuid();
-        _pageModel.SectionTitle = SectionTitles.DECLARATIONINFORMATION;
+        _pageModel.SectionId = new Guid(FormsEngine.SharedDataSectionId);
         _pageModel.CurrentQuestionId = checkYourAnswerQuestionId;
 
         var formResponse = new SectionQuestionsResponse

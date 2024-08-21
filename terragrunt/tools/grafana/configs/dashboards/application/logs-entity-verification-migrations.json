@@ -56,8 +56,8 @@
           "logGroups": [
             {
               "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
-              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/organisation-information-migrations:*",
-              "name": "/ecs/organisation-information-migrations"
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/entity-verification-migrations:*",
+              "name": "/ecs/entity-verification-migrations"
             }
           ],
           "matchExact": true,
@@ -112,8 +112,8 @@
           "logGroups": [
             {
               "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
-              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/organisation-information-migrations:*",
-              "name": "/ecs/organisation-information-migrations"
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/entity-verification-migrations:*",
+              "name": "/ecs/entity-verification-migrations"
             }
           ],
           "matchExact": true,
@@ -168,8 +168,8 @@
           "logGroups": [
             {
               "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
-              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/organisation-information-migrations:*",
-              "name": "/ecs/organisation-information-migrations"
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/entity-verification-migrations:*",
+              "name": "/ecs/entity-verification-migrations"
             }
           ],
           "matchExact": true,
@@ -201,8 +201,8 @@
   },
   "timepicker": {},
   "timezone": "browser",
-  "title": "Migrations (Organisation Information)",
-  "uid": "migrations-organisation-information",
+  "title": "Migrations (Entity Verification)",
+  "uid": "migrations-entity-verification",
   "version": 1,
   "weekStart": ""
 }

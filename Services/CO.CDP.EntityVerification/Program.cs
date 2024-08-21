@@ -12,6 +12,7 @@ using CO.CDP.EntityVerification.UseCase;
 using CO.CDP.Configuration.Helpers;
 using Microsoft.EntityFrameworkCore;
 using CO.CDP.EntityVerification.Model;
+using CO.CDP.Authentication;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -50,6 +51,11 @@ if (Assembly.GetEntryAssembly().IsRunAs("CO.CDP.EntityVerification"))
     builder.Services.AddHostedService<DispatcherBackgroundService>();
 }
 
+builder.Services
+    .AddAuthentication()
+    .AddJwtBearerAuthentication(builder.Configuration, builder.Environment);
+builder.Services.AddEntityVerificationAuthorization();
+
 var app = builder.Build();
 app.UseForwardedHeaders();
 
@@ -69,6 +75,8 @@ if (!app.Environment.IsDevelopment())
 app.UseStatusCodePages();
 app.MapHealthChecks("/health").AllowAnonymous();
 app.UseHttpsRedirection();
+app.UseAuthentication();
+app.UseAuthorization();
 app.UsePponEndpoints();
 app.Run();
 
