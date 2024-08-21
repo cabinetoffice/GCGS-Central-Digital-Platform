@@ -50,7 +50,7 @@
                                 @if (p.Id != @Model.SignedInPersonId)
                                 {
                                     <li class="govuk-summary-list__actions-list-item">
-                                        <a class="govuk-link" href="/organisation/@Model.Id/users/add-user/@p.Id?handler=change">Change</a>
+                                        <a class="govuk-link" href="/organisation/@Model.Id/users/@p.Id/update/?handler=person">Change</a>
                                     </li>
                                     <li class="govuk-summary-list__actions-list-item">
                                         <a class="govuk-link" href="/organisation/@Model.Id/users/@p.Id/remove">Remove</a>
@@ -93,7 +93,7 @@
                         <dd class="govuk-summary-list__actions">
                             <ul class="govuk-summary-list__actions-list">
                                 <li class="govuk-summary-list__actions-list-item">
-                                    <a class="govuk-link" href="/organisation/@Model.Id/users/add-user/@p.Id?handler=change">Change</a>
+                                    <a class="govuk-link" href="/organisation/@Model.Id/users/@p.Id/update/?handler=personInvite">Change</a>
                                 </li>
                                 <li class="govuk-summary-list__actions-list-item">
                                     <a class="govuk-link" href="/organisation/@Model.Id/users/@p.Id/remove?handler=personInvite">Remove</a>
