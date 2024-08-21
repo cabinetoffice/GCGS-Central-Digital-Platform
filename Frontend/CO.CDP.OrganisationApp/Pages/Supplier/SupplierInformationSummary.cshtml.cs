@@ -1,3 +1,4 @@
+using CO.CDP.Forms.WebApiClient;
 using CO.CDP.Organisation.WebApiClient;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -6,7 +7,9 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 namespace CO.CDP.OrganisationApp.Pages.Supplier;
 
 [Authorize]
-public class SupplierInformationSummaryModel(IOrganisationClient organisationClient) : PageModel
+public class SupplierInformationSummaryModel(
+    IOrganisationClient organisationClient,
+    IFormsClient formsClient) : PageModel
 {
     [BindProperty]
     public string? Name { get; set; }
@@ -19,6 +22,8 @@ public class SupplierInformationSummaryModel(IOrganisationClient organisationCli
 
     [BindProperty]
     public ICollection<ConnectedEntityLookup> ConnectedEntities { get; set; } = [];
+
+    public ICollection<FormSectionSummary> FormSections { get; set; } = [];
 
     [BindProperty(SupportsGet = true)]
     public Guid Id { get; set; }
@@ -36,15 +41,19 @@ public class SupplierInformationSummaryModel(IOrganisationClient organisationCli
         {
             var getSupplierInfoTask = organisationClient.GetOrganisationSupplierInformationAsync(id);
             var getConnectedEntitiesTask = organisationClient.GetConnectedEntitiesAsync(id);
+            var formSectionsTask = formsClient.GetFormSectionsAsync(new Guid(FormsEngine.OrganisationSupplierInfoFormId), id);
 
-            await Task.WhenAll(getSupplierInfoTask, getConnectedEntitiesTask);
+            await Task.WhenAll(getSupplierInfoTask, getConnectedEntitiesTask, formSectionsTask);
 
             supplierInfo = getSupplierInfoTask.Result;
             ConnectedEntities = getConnectedEntitiesTask.Result;
+            FormSections = formSectionsTask.Result.FormSections;
 
             HasSupplierType = supplierInfo.SupplierType.HasValue;
         }
-        catch (ApiException ex) when (ex.StatusCode == 404)
+        catch (Exception ex)
+            when ((ex is Organisation.WebApiClient.ApiException oex && oex.StatusCode == 404)
+                || (ex is CDP.Forms.WebApiClient.ApiException wex && wex.StatusCode == 404))
         {
             return Redirect("/page-not-found");
         }

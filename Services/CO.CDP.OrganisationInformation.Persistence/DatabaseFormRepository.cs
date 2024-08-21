@@ -10,7 +10,35 @@ public class DatabaseFormRepository(OrganisationInformationContext context) : IF
         context.Dispose();
     }
 
-    #region Form Methods
+    private struct FormSectionGroupSelection
+    {
+        public int? FormId { get; set; }
+    }
+
+    public async Task<IEnumerable<FormSectionSummary>> GetFormSummaryAsync(Guid formId, Guid organisationId)
+    {
+        var answersQuery = from sc in context.SharedConsents
+                           join fas in context.FormAnswerSets on sc.Id equals fas.SharedConsentId
+                           join o in context.Organisations on sc.OrganisationId equals o.Id
+                           where o.Guid == organisationId && fas.Deleted == false
+                           select new { sc.FormId, fas.SectionId };
+
+        var query = from f in context.Forms
+                    join fss in context.Set<FormSection>() on f.Id equals fss.FormId
+                    join subQuery in answersQuery on new { FormId = f.Id, SectionId = fss.Id } equals new { subQuery.FormId, subQuery.SectionId } into answers
+                    from answer in answers.DefaultIfEmpty()
+                    where f.Guid == formId
+                    group new FormSectionGroupSelection { FormId = answer.FormId } by new { fss.Guid, fss.Title, fss.AllowsMultipleAnswerSets } into g
+                    select new FormSectionSummary
+                    {
+                        SectionId = g.Key.Guid,
+                        SectionName = g.Key.Title,
+                        AllowsMultipleAnswerSets = g.Key.AllowsMultipleAnswerSets,
+                        AnswerSetCount = g.Count(a => a.FormId != null)
+                    };
+
+        return await query.ToListAsync();
+    }
 
     public async Task<FormSection?> GetSectionAsync(Guid formId, Guid sectionId)
     {
@@ -38,10 +66,6 @@ public class DatabaseFormRepository(OrganisationInformationContext context) : IF
             .FirstOrDefaultAsync(s => s.Guid == sectionId);
     }
 
-    #endregion
-
-    #region Shared Consents Methods
-
     public async Task<SharedConsent?> GetSharedConsentDraftAsync(Guid formId, Guid organisationId)
     {
         return await context.Set<SharedConsent>()
@@ -58,25 +82,17 @@ public class DatabaseFormRepository(OrganisationInformationContext context) : IF
             .FirstOrDefaultAsync(s => s.Form.Guid == formId && s.Organisation.Guid == organisationId);
     }
 
-   public async Task<IEnumerable<SharedConsent>> GetShareCodesAsync(Guid organisationId)
+    public async Task<IEnumerable<SharedConsent>> GetShareCodesAsync(Guid organisationId)
     {
         return await context.Set<SharedConsent>()
             .Where(x => x.SubmissionState == SubmissionState.Submitted && x.Organisation.Guid == organisationId)
-            .OrderByDescending(y=>y.SubmittedAt).ToListAsync();            
+            .OrderByDescending(y => y.SubmittedAt).ToListAsync();
     }
-
-    #endregion
-
-    #region Question Methods
 
     public async Task<IEnumerable<FormQuestion>> GetQuestionsAsync(Guid sectionId)
     {
         return await context.Set<FormQuestion>().Where(q => q.Section.Guid == sectionId).ToListAsync();
     }
-
-    #endregion
-
-    #region Answer Set Methods
 
     public async Task<List<FormAnswerSet>> GetFormAnswerSetsAsync(Guid sectionId, Guid organisationId)
     {
@@ -131,8 +147,6 @@ public class DatabaseFormRepository(OrganisationInformationContext context) : IF
             HandleDbUpdateException(answerSet, ex);
         }
     }
-
-    #endregion
 
     private static void HandleDbUpdateException(FormAnswerSet answerSet, DbUpdateException cause)
     {
