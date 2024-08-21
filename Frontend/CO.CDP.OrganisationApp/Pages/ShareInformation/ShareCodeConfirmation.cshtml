@@ -1,7 +1,7 @@
 @page "/organisation/{organisationId:guid}/forms/{formId:guid}/sections/{sectionId:guid}/share-code-confirmation"
 @model CO.CDP.OrganisationApp.Pages.ShareInformation.ShareCodeConfirmationModel
 @{
-    var backUrl = $"/organisation/{Model.OrganisationId}/forms/{Model.FormId}/sections/{Model.SectionId}?frm-chk-answer";
+    var backUrl = $"/organisation/{Model.OrganisationId}/forms/{Model.FormId}/sections/{Model.SectionId}/share-codes-list-view";
 }
 
 <a href="@backUrl" class="govuk-back-link">Back</a>
