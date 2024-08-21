@@ -128,6 +128,7 @@ services:
       Organisation__Authority: '${Organisation__Authority:-http://gateway:${CDP_AUTHORITY_PORT:-8092}}'
       PersonService: '${PersonService:-http://gateway:${CDP_PERSON_PORT:-8084}}'
       TenantService: '${TenantService:-http://gateway:${CDP_TENANT_PORT:-8080}}'
+      DataSharingService: '${DataSharingService:-http://gateway:${CDP_DATA_SHARING_PORT:-8080}}'
 
   authority:
     container_name: co-cdp-authority
