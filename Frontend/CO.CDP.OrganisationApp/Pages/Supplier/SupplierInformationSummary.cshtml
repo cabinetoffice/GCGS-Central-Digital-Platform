@@ -99,7 +99,7 @@
             @foreach (var section in Model.FormSections)
             {
                 var sharedDataSection = section.SectionId == new Guid(FormsEngine.SharedDataSectionId);
-                var redirectLink = $"/organisation/{Model.Id}/forms/{FormsEngine.OrganisationSupplierInfoFormId}/sections/{section.SectionId}";
+                var redirectLink = $"/organisation/{Model.Id}/forms/{FormsEngine.OrganisationSupplierInfoFormId}/sections/{section.SectionId}/share-codes-list-view";
 
                 if (section.AnswerSetCount > 0 && section.AllowsMultipleAnswerSets == true)
                 {
