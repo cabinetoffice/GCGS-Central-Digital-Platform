@@ -122,7 +122,9 @@ public class ConnectedEntityControlConditionModel(ISession session) : PageModel
                         redirectPage = "";
                         break;
                     case ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl:
-                        redirectPage = "ConnectedEntityCompanyRegistrationDate";
+                        redirectPage = state.SupplierHasCompanyHouseNumber == true
+                                        ? "ConnectedEntityCompanyRegistrationDate"
+                                        : "ConnectedEntityRegistrationDateQuestion";
                         break;
                 }
                 break;
