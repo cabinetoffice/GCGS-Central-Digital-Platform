@@ -1,47 +1,47 @@
 using AutoMapper;
 using CO.CDP.DataSharing.WebApi.Model;
 using CO.CDP.OrganisationInformation.Persistence.Forms;
-
+using Persistence = CO.CDP.OrganisationInformation.Persistence.Forms;
 namespace CO.CDP.DataSharing.WebApi.AutoMapper;
 
 public class DataSharingProfile : Profile
 {
     public DataSharingProfile()
     {
-        CreateMap<OrganisationInformation.Persistence.Forms.SharedConsent, ShareReceipt>()
+        CreateMap<Persistence.SharedConsent, ShareReceipt>()
            .ForMember(m => m.FormId, o => o.MapFrom(m => m.Guid))
            .ForMember(m => m.FormVersionId, o => o.MapFrom(m => m.FormVersionId))
            .ForMember(m => m.ShareCode, o => o.MapFrom(m => m.BookingReference));
 
-        CreateMap<OrganisationInformation.Persistence.Forms.SharedConsent, Model.SharedConsent>()
+        CreateMap<Persistence.SharedConsent, Model.SharedConsent>()
           .ForMember(m => m.SubmittedAt, o => o.MapFrom(m => m.SubmittedAt))
           .ForMember(m => m.ShareCode, o => o.MapFrom(m => m.BookingReference));
 
-        CreateMap<OrganisationInformation.Persistence.Forms.SharedConsentQuestionAnswer, Model.SharedConsentQuestionAnswer>()
+        CreateMap<Persistence.SharedConsentQuestionAnswer, Model.SharedConsentQuestionAnswer>()
           .ForMember(m => m.QuestionId, o => o.MapFrom(m => m.QuestionId))
           .ForMember(m => m.Title, o => o.MapFrom(m => m.Title))
           .ForMember(m => m.Answer, o => o.MapFrom<CustomResolver>());
 
-        CreateMap<OrganisationInformation.Persistence.Forms.SharedConsentDetails, Model.SharedConsentDetails>()
+        CreateMap<Persistence.SharedConsentDetails, Model.SharedConsentDetails>()
           .ForMember(m => m.SubmittedAt, o => o.MapFrom(m => m.SubmittedAt))
           .ForMember(m => m.ShareCode, o => o.MapFrom(m => m.ShareCode));        
     }
 }
-public class CustomResolver : IValueResolver<OrganisationInformation.Persistence.Forms.SharedConsentQuestionAnswer, Model.SharedConsentQuestionAnswer, string?>
+public class CustomResolver : IValueResolver<Persistence.SharedConsentQuestionAnswer, Model.SharedConsentQuestionAnswer, string?>
 {
-    public string? Resolve(OrganisationInformation.Persistence.Forms.SharedConsentQuestionAnswer source, Model.SharedConsentQuestionAnswer destination, string? destMemb, ResolutionContext context)
+    public string? Resolve(Persistence.SharedConsentQuestionAnswer source, Model.SharedConsentQuestionAnswer destination, string? destMemb, ResolutionContext context)
     {
         switch (source.QuestionType)
         {
-            case CO.CDP.OrganisationInformation.Persistence.Forms.FormQuestionType.Text:
-            case CO.CDP.OrganisationInformation.Persistence.Forms.FormQuestionType.FileUpload:
+            case Persistence.FormQuestionType.Text:
+            case Persistence.FormQuestionType.FileUpload:
                 return source.Answer.TextValue;
-            case CO.CDP.OrganisationInformation.Persistence.Forms.FormQuestionType.YesOrNo:
-            case CO.CDP.OrganisationInformation.Persistence.Forms.FormQuestionType.CheckBox:
+            case Persistence.FormQuestionType.YesOrNo:
+            case Persistence.FormQuestionType.CheckBox:
                 return source.Answer.BoolValue.ToString();
-            case CO.CDP.OrganisationInformation.Persistence.Forms.FormQuestionType.Date:
+            case Persistence.FormQuestionType.Date:
                 return source.Answer.DateValue.ToString();
-            case CO.CDP.OrganisationInformation.Persistence.Forms.FormQuestionType.Address:
+            case Persistence.FormQuestionType.Address:
                 return source.Answer.AddressValue != null ? ToHtmlString(source.Answer.AddressValue) : "";
             default: return "";
         }
