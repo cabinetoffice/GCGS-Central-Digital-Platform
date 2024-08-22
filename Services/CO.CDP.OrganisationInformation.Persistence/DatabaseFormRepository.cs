@@ -99,22 +99,24 @@ public class DatabaseFormRepository(OrganisationInformationContext context) : IF
                     join fq in context.Set<FormQuestion>() on fa.QuestionId equals fq.Id
                     join o in context.Organisations on s.OrganisationId equals o.Id
                     where
-                        fs.Type != FormSectionType.Declaration
+                        fs.Type == FormSectionType.Declaration
                         && fas.Deleted == false
                         && o.Guid == organisationId
                         && s.BookingReference == shareCode
                     select new
                     {
+                        FormAnswerSetId = fas.Id,
+                        FormAnswerSetUpdate=fas.UpdatedOn,
                         s.BookingReference,
                         s.SubmittedAt,
-                        QuestionId = fas.Guid,
+                        QuestionId = fq.Guid,
                         QuestionType = fq.Type,
                         fq.SummaryTitle,
                         FormAnswer = fa
                     };
 
         var data = await query.ToListAsync();
-        var sharedCodeResult = data.GroupBy(g => new { g.BookingReference, g.SubmittedAt }).FirstOrDefault();
+        var sharedCodeResult = data.OrderByDescending(x=>x.FormAnswerSetUpdate).GroupBy(g => new { g.BookingReference, g.FormAnswerSetId, g.SubmittedAt }).FirstOrDefault();
         if (sharedCodeResult == null) return null;
 
         return new SharedConsentDetails

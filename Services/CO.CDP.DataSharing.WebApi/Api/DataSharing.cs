@@ -255,7 +255,7 @@ public static class EndpointExtensions
                 async (Guid organisationId, string shareCode, IUseCase<(Guid, string), SharedConsentDetails?> useCase)
                     => await useCase.Execute((organisationId, shareCode))
             .AndThen(sharedCodeDetails => sharedCodeDetails != null ? Results.Ok(sharedCodeDetails) : Results.NotFound()))
-            .Produces<Model.SharedConsentQuestionAnswer?>(StatusCodes.Status200OK, "application/json")
+            .Produces<Model.SharedConsentDetails?>(StatusCodes.Status200OK, "application/json")
             .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
             .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
             .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError)

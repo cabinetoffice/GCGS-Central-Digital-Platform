@@ -11,5 +11,5 @@ public class SharedConsentQuestionAnswer
 {
     public Guid QuestionId { get; set; }
     public required string Title { get; set; }
-    public required string Answer { get; set; }
+    public required string? Answer { get; set; }
 }
