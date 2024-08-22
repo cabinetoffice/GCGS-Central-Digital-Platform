@@ -14,10 +14,19 @@ public class DynamicFormsPageModelTest
     private readonly Mock<ITempDataService> _tempDataServiceMock;
     private readonly Mock<IFileHostManager> _fileHostManagerMock;
     private readonly DynamicFormsPageModel _pageModel;
+    private readonly Guid TextQuestionId = Guid.NewGuid();
 
     public DynamicFormsPageModelTest()
     {
         _formsEngineMock = new Mock<IFormsEngine>();
+
+        var form = new SectionQuestionsResponse
+        {
+            Questions = [new FormQuestion { Id = TextQuestionId, Type = FormQuestionType.Text, SummaryTitle = "Sample Question" }]
+        };
+
+        _formsEngineMock.Setup(f => f.GetFormSectionAsync(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid>()))
+            .ReturnsAsync(form);
         _tempDataServiceMock = new Mock<ITempDataService>();
         _fileHostManagerMock = new Mock<IFileHostManager>();
         _tempDataServiceMock.Setup(t => t.PeekOrDefault<FormQuestionAnswerState>(It.IsAny<string>()))
@@ -86,36 +95,15 @@ public class DynamicFormsPageModelTest
     }
 
     [Fact]
-    public async Task CheckYourAnswerQuestionId_ShouldReturnCheckYourAnswerQuestionId()
-    {
-        var checkYourAnswerQuestionId = Guid.NewGuid();
-        var form = new SectionQuestionsResponse
-        {
-            Questions = new List<FormQuestion>
-        {
-            new FormQuestion { Id = checkYourAnswerQuestionId, Type = FormQuestionType.CheckYourAnswers }
-        }
-        };
-
-        _formsEngineMock.Setup(f => f.GetFormSectionAsync(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid>()))
-            .ReturnsAsync(form);
-
-        var result = await _pageModel.CheckYourAnswerQuestionId();
-
-        result.Should().Be(checkYourAnswerQuestionId);
-    }
-
-    [Fact]
     public async Task GetAnswers_ShouldReturnCheckYouAnswersSummaries()
     {
-        var questionId = Guid.NewGuid();
         var answerSet = new FormQuestionAnswerState
         {
             Answers = new List<QuestionAnswer>
         {
             new QuestionAnswer
             {
-                QuestionId = questionId,
+                QuestionId = TextQuestionId,
                 Answer = new FormAnswer { TextValue = "Sample Answer" }
             }
         }
@@ -123,17 +111,6 @@ public class DynamicFormsPageModelTest
 
         _tempDataServiceMock.Setup(t => t.PeekOrDefault<FormQuestionAnswerState>(It.IsAny<string>()))
             .Returns(answerSet);
-
-        var form = new SectionQuestionsResponse
-        {
-            Questions = new List<FormQuestion>
-        {
-            new FormQuestion { Id = questionId, Type = FormQuestionType.Text, SummaryTitle = "Sample Question" }
-        }
-        };
-
-        _formsEngineMock.Setup(f => f.GetFormSectionAsync(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid>()))
-            .ReturnsAsync(form);
 
         var answers = await _pageModel.GetAnswers();
 
@@ -171,41 +148,16 @@ public class DynamicFormsPageModelTest
     }
 
     [Fact]
-    public async Task InitModel_ShouldSetCurrentQuestionIdToCheckYourAnswer_WhenIsShareDataPageIsTrue()
-    {
-        _tempDataServiceMock.Setup(t => t.PeekOrDefault<bool>(It.IsAny<string>())).Returns(true);
-        var checkYourAnswerQuestionId = Guid.NewGuid();
-        _formsEngineMock.Setup(f => f.GetCurrentQuestion(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid?>()))
-            .ReturnsAsync(new FormQuestion { Id = checkYourAnswerQuestionId, Type = FormQuestionType.CheckYourAnswers });
-        _formsEngineMock.Setup(f => f.GetFormSectionAsync(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid>()))
-            .ReturnsAsync(new SectionQuestionsResponse
-            {
-                Questions = new List<FormQuestion>
-                {
-                new FormQuestion { Id = checkYourAnswerQuestionId, Type = FormQuestionType.CheckYourAnswers }
-                }
-            });
-
-        var result = await _pageModel.OnGetAsync();
-
-        result.Should().BeOfType<PageResult>();
-        _pageModel.CurrentQuestionId.Should().Be(checkYourAnswerQuestionId);
-        _tempDataServiceMock.Verify(t => t.Remove(It.IsAny<string>()), Times.Once);
-    }
-
-    [Fact]
     public async Task OnPostAsync_ShouldRedirectToShareCodeConfirmation_WhenSectionTitleIsDeclarationInformation()
     {
         var checkYourAnswerQuestionId = Guid.NewGuid();
-        _pageModel.SectionId = new Guid(FormsEngine.SharedDataSectionId);
+        _pageModel.FormSectionType = FormSectionType.Declaration;
         _pageModel.CurrentQuestionId = checkYourAnswerQuestionId;
 
         var formResponse = new SectionQuestionsResponse
         {
-            Questions = new List<FormQuestion>
-        {
-            new FormQuestion { Id = checkYourAnswerQuestionId, Type = FormQuestionType.CheckYourAnswers }
-        }
+            Section = new FormSection { Type = FormSectionType.Declaration, Title = "Test Section" },
+            Questions = [new FormQuestion { Id = checkYourAnswerQuestionId, Type = FormQuestionType.CheckYourAnswers }]
         };
 
         _formsEngineMock.Setup(f => f.GetCurrentQuestion(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid?>()))
@@ -213,9 +165,6 @@ public class DynamicFormsPageModelTest
 
         _formsEngineMock.Setup(f => f.GetFormSectionAsync(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid>()))
             .ReturnsAsync(formResponse);
-
-        _tempDataServiceMock.Setup(t => t.PeekOrDefault<FormQuestionAnswerState>(It.IsAny<string>()))
-            .Returns(new FormQuestionAnswerState());
 
         var result = await _pageModel.OnPostAsync();
 
