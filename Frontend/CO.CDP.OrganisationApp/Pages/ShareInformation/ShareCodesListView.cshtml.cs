@@ -2,6 +2,7 @@ using CO.CDP.DataSharing.WebApiClient;
 using CO.CDP.OrganisationApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using SharedConsentDetails = CO.CDP.OrganisationApp.Models.SharedConsentDetails;
 
 namespace CO.CDP.OrganisationApp.Pages.ShareInformation;
 
