@@ -77,4 +77,20 @@ public class ConnectedEntityCheckAnswersCommon
 
         return controlConditions;
     }
+
+    public static bool SetShowRegisterDate(ConnectedEntityState state)
+    {
+        if (state.ConnectedEntityType == ConnectedEntityType.Organisation)
+        {
+            return state.ConnectedEntityOrganisationCategoryType == ConnectedEntityOrganisationCategoryType.RegisteredCompany
+                || state.ConnectedEntityOrganisationCategoryType == ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl;
+        }
+        else
+        {
+            return state.ConnectedEntityIndividualAndTrustCategoryType == ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndividual
+                || state.ConnectedEntityIndividualAndTrustCategoryType == ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndividualWithSignificantInfluenceOrControlForIndividual
+                || state.ConnectedEntityIndividualAndTrustCategoryType == ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForTrust
+                || state.ConnectedEntityIndividualAndTrustCategoryType == ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndividualWithSignificantInfluenceOrControlForTrust;
+        }
+    }
 }

@@ -6,7 +6,6 @@ using CO.CDP.Swashbuckle.Security;
 using DotSwashbuckle.AspNetCore.SwaggerGen;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
-using System.Reflection;
 
 namespace CO.CDP.EntityVerification.Api;
 

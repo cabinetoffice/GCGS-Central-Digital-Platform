@@ -19,6 +19,15 @@ public class DatabasePersonRepository(OrganisationInformationContext context) : 
         return await context.Persons.FirstOrDefaultAsync(t => t.UserUrn == urn);
     }
 
+    public async Task<IEnumerable<Person>> FindByOrganisation(Guid organisationId)
+    {
+        var organisation = await context.Organisations
+            .Include(o => o.Persons)
+            .Where(o => o.Guid == organisationId)
+            .FirstOrDefaultAsync();
+        return organisation?.Persons ?? [];
+    }
+
     public void Save(Person person)
     {
         try

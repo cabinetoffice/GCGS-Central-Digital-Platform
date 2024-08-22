@@ -1,9 +1,7 @@
 using AutoMapper;
-using CO.CDP.Authentication;
 using CO.CDP.DataSharing.WebApi.Model;
 using CO.CDP.Functional;
 using CO.CDP.OrganisationInformation.Persistence;
-using static System.Collections.Specialized.BitVector32;
 
 namespace CO.CDP.DataSharing.WebApi.UseCase;
 

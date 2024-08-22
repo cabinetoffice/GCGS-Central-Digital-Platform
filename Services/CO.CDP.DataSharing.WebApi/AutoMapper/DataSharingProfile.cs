@@ -1,6 +1,5 @@
 using AutoMapper;
 using CO.CDP.DataSharing.WebApi.Model;
-using CO.CDP.OrganisationInformation.Persistence.Forms;
 
 namespace CO.CDP.DataSharing.WebApi.AutoMapper;
 

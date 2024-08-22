@@ -1,5 +1,3 @@
-using System.Text.Json.Serialization;
-
 namespace CO.CDP.DataSharing.WebApi.Model;
 
 public class SharedConsent
