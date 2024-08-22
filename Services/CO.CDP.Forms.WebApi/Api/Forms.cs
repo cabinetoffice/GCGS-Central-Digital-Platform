@@ -1,5 +1,6 @@
-using CO.CDP.Functional;
+using CO.CDP.Forms.WebApi.Model;
 using CO.CDP.Forms.WebApi.UseCase;
+using CO.CDP.Functional;
 using CO.CDP.OrganisationInformation;
 using CO.CDP.Swashbuckle.Filter;
 using CO.CDP.Swashbuckle.Security;
@@ -8,7 +9,6 @@ using DotSwashbuckle.AspNetCore.SwaggerGen;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
-using CO.CDP.Forms.WebApi.Model;
 
 namespace CO.CDP.Forms.WebApi.Api;
 
@@ -16,10 +16,31 @@ public static class EndpointExtensions
 {
     public static void UseFormsEndpoints(this WebApplication app)
     {
-        app.MapGet("/forms/{formId}/sections/{sectionId}/questions", async (Guid formId, Guid sectionId, [FromQuery(Name = "organisation-id")] Guid organisationId, IUseCase<(Guid, Guid, Guid), Model.SectionQuestionsResponse?> useCase) =>
+        app.MapGet("/forms/{formId}/sections",
+            async (Guid formId, [FromQuery(Name = "organisation-id")] Guid organisationId, IUseCase<(Guid, Guid), FormSectionResponse?> useCase) =>
+            await useCase.Execute((formId, organisationId))
+                    .AndThen(res => res != null ? Results.Ok(res) : Results.NotFound()))
+                    .Produces<FormSectionResponse>(StatusCodes.Status200OK, "application/json")
+                    .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
+                    .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
+                    .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError)
+                    .WithOpenApi(operation =>
+                    {
+                        operation.OperationId = "GetFormSections";
+                        operation.Description = "Get Form Sections.";
+                        operation.Summary = "Get list of form section.";
+                        operation.Responses["200"].Description = "List of form section.";
+                        operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
+                        operation.Responses["404"].Description = "Form not found.";
+                        operation.Responses["500"].Description = "Internal server error.";
+                        return operation;
+                    });
+
+        app.MapGet("/forms/{formId}/sections/{sectionId}/questions",
+            async (Guid formId, Guid sectionId, [FromQuery(Name = "organisation-id")] Guid organisationId, IUseCase<(Guid, Guid, Guid), SectionQuestionsResponse?> useCase) =>
             await useCase.Execute((formId, sectionId, organisationId))
                     .AndThen(sectionQuestions => sectionQuestions != null ? Results.Ok(sectionQuestions) : Results.NotFound()))
-                    .Produces<Model.SectionQuestionsResponse>(StatusCodes.Status200OK, "application/json")
+                    .Produces<SectionQuestionsResponse>(StatusCodes.Status200OK, "application/json")
                     .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
                     .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
                     .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError)
@@ -34,7 +55,6 @@ public static class EndpointExtensions
                operation.Responses["500"].Description = "Internal server error.";
                return operation;
            });
-
 
         app.MapPut("/forms/{formId}/sections/{sectionId}/answers/{answerSetId}", async (
             Guid formId, Guid sectionId, Guid answerSetId,
