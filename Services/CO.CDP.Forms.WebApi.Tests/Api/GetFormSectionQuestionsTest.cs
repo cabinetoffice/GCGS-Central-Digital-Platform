@@ -74,6 +74,7 @@ public class GetFormSectionQuestionsTest
             {
                 Id = Guid.NewGuid(),
                 Title = "Financial Information",
+                Type = FormSectionType.Standard,
                 AllowsMultipleAnswerSets = true,
                 Configuration = new FormSectionConfiguration
                 {
