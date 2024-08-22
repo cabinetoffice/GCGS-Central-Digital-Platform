@@ -1,9 +1,6 @@
-using Amazon.Auth.AccessControlPolicy;
 using AutoMapper;
 using CO.CDP.DataSharing.WebApi.Model;
 using CO.CDP.OrganisationInformation.Persistence.Forms;
-using System.Data;
-using System.Text.Json;
 
 namespace CO.CDP.DataSharing.WebApi.AutoMapper;
 
