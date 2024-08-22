@@ -1,4 +1,5 @@
 using CO.CDP.EntityFrameworkCore.Timestamps;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CO.CDP.OrganisationInformation.Persistence.Forms;
 
@@ -14,8 +15,6 @@ public class Form : IEntityDate
 
     public required bool IsRequired { get; set; } = true;
 
-    public required FormType Type { get; set; }
-
     public required FormScope Scope { get; set; }
 
     public required ICollection<FormSection> Sections { get; set; } = [];
@@ -23,7 +22,7 @@ public class Form : IEntityDate
     public DateTimeOffset UpdatedOn { get; set; }
 }
 
-public enum FormType
+public enum FormSectionType
 {
     Standard,
     Declaration
@@ -40,6 +39,10 @@ public class FormSection : IEntityDate
     public int Id { get; set; }
     public required Guid Guid { get; set; }
     public required string Title { get; set; }
+    public required FormSectionType Type { get; set; }
+
+    [ForeignKey(nameof(Form))]
+    public required int FormId { get; set; }
     public required Form Form { get; set; }
     public required ICollection<FormQuestion> Questions { get; set; } = [];
     public required bool AllowsMultipleAnswerSets { get; set; }

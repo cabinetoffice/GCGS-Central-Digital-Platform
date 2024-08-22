@@ -17,6 +17,16 @@ internal static class EntityFactory
 
     internal static OrganisationInformation.Persistence.Forms.SharedConsent GetSharedConsent(int organisationId, Guid organisationGuid, Guid formId)
     {
+        var form = new Form
+        {
+            Guid = formId,
+            Name = string.Empty,
+            Version = string.Empty,
+            IsRequired = default,
+            Scope = default,
+            Sections = new List<FormSection> { }
+        };
+
         return new OrganisationInformation.Persistence.Forms.SharedConsent()
         {
             Guid = formId,
@@ -32,16 +42,8 @@ internal static class EntityFactory
                     Name = string.Empty
                 }
             },
-            Form = new Form
-            {
-                Guid = formId,
-                Name = string.Empty,
-                Version = string.Empty,
-                IsRequired = default,
-                Type = default,
-                Scope = default,
-                Sections = new List<FormSection> { }
-            },
+            FormId = form.Id,
+            Form = form,
             AnswerSets = new List<FormAnswerSet> { },
             SubmissionState = SubmissionState.Draft,
             SubmittedAt = DateTime.UtcNow,

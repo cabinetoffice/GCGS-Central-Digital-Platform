@@ -225,8 +225,10 @@ public class UpdateFormSectionAnswersUseCaseTest(AutoMapperFixture mapperFixture
             Id = 1,
             Guid = sectionId,
             Title = "Financial Information",
+            FormId = form.Id,
             Form = form,
-            Questions = new List<Persistence.FormQuestion>(),
+            Questions = [],
+            Type = Persistence.FormSectionType.Standard,
             AllowsMultipleAnswerSets = true,
             CreatedOn = DateTimeOffset.UtcNow,
             UpdatedOn = DateTimeOffset.UtcNow,
@@ -250,7 +252,6 @@ public class UpdateFormSectionAnswersUseCaseTest(AutoMapperFixture mapperFixture
             Name = "Sample Form",
             Version = "1.0",
             IsRequired = true,
-            Type = Persistence.FormType.Standard,
             Scope = Persistence.FormScope.SupplierInformation,
             Sections = new List<Persistence.FormSection>()
         };
@@ -265,7 +266,9 @@ public class UpdateFormSectionAnswersUseCaseTest(AutoMapperFixture mapperFixture
         var existingAnswerSet = new Persistence.FormAnswerSet
         {
             Guid = Guid.NewGuid(),
+            SharedConsentId = sharedConsent.Id,
             SharedConsent = sharedConsent,
+            SectionId = section.Id,
             Section = section,
             Answers = answers ?? []
         };
@@ -298,7 +301,9 @@ public class UpdateFormSectionAnswersUseCaseTest(AutoMapperFixture mapperFixture
         return new Persistence.SharedConsent()
         {
             Guid = Guid.NewGuid(),
+            OrganisationId = organisation.Id,
             Organisation = organisation,
+            FormId = form.Id,
             Form = form,
             AnswerSets = [],
             SubmissionState = Persistence.SubmissionState.Draft,

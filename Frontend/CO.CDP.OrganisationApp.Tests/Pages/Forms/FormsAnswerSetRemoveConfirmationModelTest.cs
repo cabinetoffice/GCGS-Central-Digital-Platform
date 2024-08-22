@@ -24,6 +24,7 @@ public class FormsAnswerSetRemoveConfirmationModelTest
                         .ReturnsAsync(new SectionQuestionsResponse(
              section: new FormSection(
                  title: "Test Title",
+                 type: FormSectionType.Standard,
                  allowsMultipleAnswerSets: true,
                  id: Guid.NewGuid(),
                  configuration: new FormSectionConfiguration(
