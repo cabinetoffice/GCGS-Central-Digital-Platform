@@ -16,11 +16,8 @@ public class DatabasePersonInviteRepository(OrganisationInformationContext conte
 
     public async Task<IEnumerable<PersonInvite>> FindByOrganisation(Guid organisationId)
     {
-        var organisation = await context.Organisations
-            .FirstOrDefaultAsync(o => o.Guid == organisationId);
-
         return await context.PersonInvites
-            .Where(pi => pi.Organisation == organisation)
+            .Where(pi => pi.Organisation.Guid == organisationId)
             .ToArrayAsync();
     }
 

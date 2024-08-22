@@ -3,7 +3,7 @@ using CO.CDP.OrganisationInformation.Persistence;
 
 namespace CO.CDP.Organisation.WebApi.UseCase;
 
-public class RemovePersonInviteFromOrganisationUseCase(IOrganisationRepository organisationRepository, IPersonInviteRepository personInviteRepository) : IUseCase<(Guid OrganisationId, Guid PersonInviteId), bool>
+public class RemovePersonInviteFromOrganisationUseCase(IPersonInviteRepository personInviteRepository) : IUseCase<(Guid OrganisationId, Guid PersonInviteId), bool>
 {
     public async Task<bool> Execute((Guid OrganisationId, Guid PersonInviteId) command)
     {

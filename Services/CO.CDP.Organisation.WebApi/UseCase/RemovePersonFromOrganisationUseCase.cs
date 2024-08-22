@@ -21,6 +21,8 @@ public class RemovePersonFromOrganisationUseCase(IOrganisationRepository organis
         var organisationPerson = organisation.OrganisationPersons.FindLast(op => op.PersonId == person.Id);
         organisation.OrganisationPersons.Remove(organisationPerson);
 
+        if (organisationPerson == null) return await Task.FromResult(false);
+
         organisationRepository.Save(organisation);
 
         return await Task.FromResult(true);

@@ -3,7 +3,7 @@
 @model CO.CDP.OrganisationApp.Pages.Users.UserCheckAnswersModel
 
 @{
-    var scopesCsvString = string.Join(", ", Model.PersonInviteStateData.Scopes);
+    var scopesCsvString = string.Join(", ", Model.PersonInviteStateData?.Scopes ?? []);
 }
 
 <a href="/organisation/@Model.Id/users/add-user" class="govuk-back-link">Back</a>

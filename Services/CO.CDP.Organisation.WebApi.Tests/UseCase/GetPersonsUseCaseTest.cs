@@ -1,15 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using AutoMapper;
-using CO.CDP.Functional;
 using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.OrganisationInformation.Persistence;
 using CO.CDP.Organisation.WebApi.UseCase;
 using FluentAssertions;
 using Moq;
-using Xunit;
 using Organisation = CO.CDP.OrganisationInformation.Persistence.Organisation;
 using Person = CO.CDP.OrganisationInformation.Persistence.Person;
 
@@ -127,7 +121,7 @@ public class GetPersonsUseCaseTest
         var result = await _useCase.Execute(organisationGuid);
 
         Assert.Equal(2, result.Count());
-        Assert.Contains("Scope1", result.First().Scopes);
-        Assert.Contains("Scope2", result.Last().Scopes);
+        result.First().Scopes.Should().Contain("Scope1");
+        result.Last().Scopes.Should().Contain("Scope2");
     }
 }

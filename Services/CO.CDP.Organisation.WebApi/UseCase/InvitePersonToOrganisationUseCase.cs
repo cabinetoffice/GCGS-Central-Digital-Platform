@@ -1,4 +1,3 @@
-using AutoMapper;
 using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.OrganisationInformation.Persistence;
 
@@ -44,9 +43,7 @@ public class InvitePersonToOrganisationUseCase(
             LastName = command.LastName,
             Email = command.Email,
             Organisation = organisation,
-            Scopes = command.Scopes,
-            CreatedOn = DateTimeOffset.UtcNow,
-            UpdatedOn = DateTimeOffset.UtcNow
+            Scopes = command.Scopes
         };
 
         return personInvite;
