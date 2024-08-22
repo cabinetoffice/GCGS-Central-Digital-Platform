@@ -4,6 +4,7 @@ using CO.CDP.Configuration.ForwardedHeaders;
 using CO.CDP.Configuration.Helpers;
 using CO.CDP.Forms.WebApi.Api;
 using CO.CDP.Forms.WebApi.AutoMapper;
+using CO.CDP.Forms.WebApi.Model;
 using CO.CDP.Forms.WebApi.UseCase;
 using CO.CDP.OrganisationInformation.Persistence;
 using Microsoft.EntityFrameworkCore;
@@ -27,9 +28,10 @@ builder.Services.AddDbContext<OrganisationInformationContext>(o =>
 builder.Services.AddScoped<IFormRepository, DatabaseFormRepository>();
 builder.Services.AddScoped<IOrganisationRepository, DatabaseOrganisationRepository>();
 
+builder.Services.AddScoped<IUseCase<(Guid, Guid), FormSectionResponse?>, GetFormSectionsUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, Guid), bool>, DeleteAnswerSetUseCase>();
-builder.Services.AddScoped<IUseCase<(Guid, Guid, Guid), CO.CDP.Forms.WebApi.Model.SectionQuestionsResponse?>, GetFormSectionQuestionsUseCase>();
-builder.Services.AddScoped<IUseCase<(Guid formId, Guid sectionId, Guid answerSetId, Guid organisationId, List<CO.CDP.Forms.WebApi.Model.FormAnswer> answers), bool>, UpdateFormSectionAnswersUseCase>();
+builder.Services.AddScoped<IUseCase<(Guid, Guid, Guid), SectionQuestionsResponse?>, GetFormSectionQuestionsUseCase>();
+builder.Services.AddScoped<IUseCase<(Guid formId, Guid sectionId, Guid answerSetId, Guid organisationId, List<FormAnswer> answers), bool>, UpdateFormSectionAnswersUseCase>();
 
 builder.Services.AddJwtBearerAndApiKeyAuthentication(builder.Configuration, builder.Environment);
 //builder.Services.AddAuthorization();
