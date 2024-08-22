@@ -307,6 +307,63 @@ public class OrganisationIdentificationModelTests
         (result as RedirectToPageResult)?.PageName.Should().Be("OrganisationDetailsSummary");
     }
 
+    [Fact]
+    public async Task OnPost_WhenOrganisationExistsInOganisationService_ShouldRedirectToOrganisationAlreadyRegisteredPage()
+    {
+        var model = new OrganisationIdentificationModel(sessionMock.Object, organisationClientMock.Object, _pponClientMock.Object)
+        {
+            OrganisationScheme = "Other",
+            RedirectToSummary = true
+        };
+        GivenRegistrationIsInProgress();
+
+        organisationClientMock.Setup
+            (api => api.LookupOrganisationAsync(It.IsAny<string>(), It.IsAny<string>()))
+            .ReturnsAsync(GivenOrganisationClientModel());
+
+        var result = await model.OnPost();
+        result.Should().BeOfType<RedirectToPageResult>();
+        (result as RedirectToPageResult)?.PageName.Should().Be("OrganisationAlreadyRegistered");
+    }
+
+    [Fact]
+    public async Task OnPost_WhenIdentifierExistsInEntityVerificationService_ShouldRedirectToOrganisationAlreadyRegisteredPage()
+    {
+        var model = new OrganisationIdentificationModel(sessionMock.Object, organisationClientMock.Object, _pponClientMock.Object)
+        {
+            OrganisationScheme = "Other",
+            RedirectToSummary = true
+        };
+        GivenRegistrationIsInProgress();
+
+        _pponClientMock.Setup
+            (api => api.GetIdentifiersAsync(It.IsAny<string>()))
+            .ReturnsAsync(GivenEntityVerificationIdentifiers());
+
+        var result = await model.OnPost();
+        result.Should().BeOfType<RedirectToPageResult>();
+        (result as RedirectToPageResult)?.PageName.Should().Be("OrganisationAlreadyRegistered");
+    }
+
+    [Fact]
+    public async Task OnPost_WhenEntityVerificationServiceOffLine_ShouldRedirectToOrganisationServiceUnavailablePage()
+    {
+        var model = new OrganisationIdentificationModel(sessionMock.Object, organisationClientMock.Object, _pponClientMock.Object)
+        {
+            OrganisationScheme = "Other",
+            RedirectToSummary = true
+        };
+
+        GivenRegistrationIsInProgress();
+
+        _pponClientMock.Setup(api => api.GetIdentifiersAsync(It.IsAny<string>()))
+            .ThrowsAsync(new Exception("Entity Verification service offline."));
+
+        var result = await model.OnPost();
+        result.Should().BeOfType<RedirectToPageResult>();
+        (result as RedirectToPageResult)?.PageName.Should().Be("OrganisationRegistrationUnavailable");
+    }
+
     [Theory]
     [InlineData("GB-CHC", "ABCDEF")]
     [InlineData("GB-SC", "GHIJKL")]
@@ -376,6 +433,12 @@ public class OrganisationIdentificationModelTests
     private static Organisation.WebApiClient.Organisation GivenOrganisationClientModel()
     {
         return new Organisation.WebApiClient.Organisation(null, null, null, _organisationId, null, "Test Org", []);
+    }
+
+    private static ICollection<EntityVerificationClient.Identifier> GivenEntityVerificationIdentifiers()
+    {
+        return new List<EntityVerificationClient.Identifier>() {
+            new EntityVerificationClient.Identifier("12345", "Acme Ltd", "VAT", new Uri("http://acme.org")) };
     }
 
     private void GivenRegistrationIsInProgress()
