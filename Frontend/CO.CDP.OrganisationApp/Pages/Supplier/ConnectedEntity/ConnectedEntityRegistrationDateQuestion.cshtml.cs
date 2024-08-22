@@ -42,7 +42,7 @@ public class ConnectedEntityRegistrationDateQuestionModel(ISession session) : Pa
     public string? Caption { get; set; }
     public string? Heading { get; set; }
     public string? Hint { get; set; }
-    [BindProperty]
+    [BindProperty(SupportsGet = true, Name = "frm-chk-answer")]
     public bool? RedirectToCheckYourAnswer { get; set; }
     public string? BackPageLink { get; set; }
     public ConnectedEntityType? ConnectedEntityType { get; set; }
@@ -114,6 +114,7 @@ public class ConnectedEntityRegistrationDateQuestionModel(ISession session) : Pa
         var redirectPage = (RedirectToCheckYourAnswer == true
                         ? checkAnswerPage
                         : GetRedirectLinkPageName(state));
+        
         return RedirectToPage(redirectPage, new { Id, ConnectedEntityId });
     }
     private (bool valid, ConnectedEntityState state) ValidatePage()
@@ -137,10 +138,14 @@ public class ConnectedEntityRegistrationDateQuestionModel(ISession session) : Pa
                 switch (state.ConnectedEntityOrganisationCategoryType)
                 {
                     case ConnectedEntityOrganisationCategoryType.RegisteredCompany:
-                        redirectPage = HasRegistartionDate == true ? "ConnectedEntityCompanyRegisterName" : "ConnectedEntityCheckAnswersOrganisation";
+                        redirectPage = HasRegistartionDate == true
+                                        ? "ConnectedEntityCompanyRegisterName"
+                                        : "ConnectedEntityCheckAnswersOrganisation";
                         break;
                     case ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl:
-                        redirectPage = state.HasCompaniesHouseNumber == true ? "ConnectedEntityControlCondition" : "ConnectedEntityOverseasCompanyQuestion";
+                        redirectPage = HasRegistartionDate == true
+                                        ? "ConnectedEntityCompanyRegisterName" 
+                                        : "ConnectedEntityLegalFormQuestion";
                         break;
                 }
                 break;
