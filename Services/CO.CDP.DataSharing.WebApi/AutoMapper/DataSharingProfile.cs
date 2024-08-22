@@ -27,10 +27,8 @@ public class DataSharingProfile : Profile
 
         CreateMap<OrganisationInformation.Persistence.Forms.SharedConsentDetails, Model.SharedConsentDetails>()
           .ForMember(m => m.SubmittedAt, o => o.MapFrom(m => m.SubmittedAt))
-          .ForMember(m => m.ShareCode, o => o.MapFrom(m => m.ShareCode));
+          .ForMember(m => m.ShareCode, o => o.MapFrom(m => m.ShareCode));        
     }
-
-
 }
 public class CustomResolver : IValueResolver<OrganisationInformation.Persistence.Forms.SharedConsentQuestionAnswer, Model.SharedConsentQuestionAnswer, string?>
 {
