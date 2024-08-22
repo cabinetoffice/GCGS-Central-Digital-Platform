@@ -45,7 +45,7 @@ public class AddUserModelTests
     [Fact]
     public void OnGet_ShouldNotInitializeModel_WhenPersonInviteStateDoesNotExist()
     {
-        _mockSession.Setup(s => s.Get<PersonInviteState>(PersonInviteState.TempDataKey)).Returns((PersonInviteState)null);
+        _mockSession.Setup(s => s.Get<PersonInviteState>(PersonInviteState.TempDataKey)).Returns((PersonInviteState)null!);
 
         var result = _addUserModel.OnGet();
 
@@ -82,6 +82,7 @@ public class AddUserModelTests
         var result = _addUserModel.OnPost();
 
         _mockSession.Verify(s => s.Set(PersonInviteState.TempDataKey, It.Is<PersonInviteState>(state =>
+            state.Scopes != null &&
             state.FirstName == "John" &&
             state.LastName == "Johnson" &&
             state.Email == "john@johnson.com" &&
@@ -91,7 +92,7 @@ public class AddUserModelTests
 
         var redirectResult = Assert.IsType<RedirectToPageResult>(result);
         Assert.Equal("UserCheckAnswers", redirectResult.PageName);
-        Assert.Equal(_addUserModel.Id, redirectResult.RouteValues["Id"]);
+        Assert.Equal(_addUserModel.Id, redirectResult.RouteValues?["Id"]);
     }
 
     [Fact]
@@ -123,9 +124,9 @@ public class AddUserModelTests
 
         var updatedState = _addUserModel.UpdateScopes(initialState);
 
-        Assert.Contains(AddUserModel.ScopeAdmin, updatedState.Scopes);
-        Assert.Contains(AddUserModel.ScopeEditor, updatedState.Scopes);
-        Assert.DoesNotContain(AddUserModel.ScopeViewer, updatedState.Scopes);
+        Assert.Contains(AddUserModel.ScopeAdmin, updatedState.Scopes ?? []);
+        Assert.Contains(AddUserModel.ScopeEditor, updatedState.Scopes ?? []);
+        Assert.DoesNotContain(AddUserModel.ScopeViewer, updatedState.Scopes ?? []);
     }
 
     [Fact]
