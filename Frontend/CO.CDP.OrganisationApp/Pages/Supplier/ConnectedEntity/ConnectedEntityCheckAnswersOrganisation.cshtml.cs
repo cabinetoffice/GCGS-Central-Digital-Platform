@@ -5,7 +5,6 @@ using CO.CDP.OrganisationApp.WebApiClients;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using ConnectedEntityType = CO.CDP.OrganisationApp.Constants.ConnectedEntityType;
 
 namespace CO.CDP.OrganisationApp.Pages.Supplier;
 

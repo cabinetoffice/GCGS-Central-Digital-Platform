@@ -1,7 +1,6 @@
 using Moq;
 using Microsoft.AspNetCore.Mvc;
 using CO.CDP.OrganisationApp.Pages.Users;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages.Users;
