@@ -17,17 +17,23 @@ public class ShareCodesListViewModel(IDataSharingClient dataSharingClient) : Pag
     public Guid SectionId { get; set; }
 
     [BindProperty]
-    public SharedConsentDetails? sharedConsentDetails { get; set; }
+    public List<SharedConsentDetails>? SharedConsentDetailsList { get; set; }
 
     public async Task<IActionResult> OnGet()
     {
         try
         {
             var sharedCodesList = await dataSharingClient.GetShareCodeListAsync(OrganisationId);
+
+            SharedConsentDetailsList = new List<SharedConsentDetails>();
+
             foreach (var sharedCode in sharedCodesList)
             {
-                sharedConsentDetails.ShareCode = sharedCode.ShareCode;
-                sharedConsentDetails.SubmittedAt = sharedCode.SubmittedAt;
+                SharedConsentDetailsList.Add(new SharedConsentDetails
+                {
+                    ShareCode = sharedCode.ShareCode,
+                    SubmittedAt = sharedCode.SubmittedAt
+                });
             }
         }
         catch (ApiException ex) when (ex.StatusCode == 404)
