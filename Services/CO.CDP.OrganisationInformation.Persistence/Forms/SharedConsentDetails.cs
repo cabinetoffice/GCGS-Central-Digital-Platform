@@ -1,4 +1,4 @@
-namespace CO.CDP.DataSharing.WebApi.Model;
+namespace CO.CDP.OrganisationInformation.Persistence.Forms;
 
 public class SharedConsentDetails
 {
@@ -10,6 +10,7 @@ public class SharedConsentDetails
 public class SharedConsentQuestionAnswer
 {
     public Guid QuestionId { get; set; }
+    public FormQuestionType QuestionType { get; set; }
     public required string Title { get; set; }
-    public required string Answer { get; set; }
+    public required FormAnswer Answer { get; set; }
 }

@@ -1,6 +1,5 @@
 using CO.CDP.OrganisationInformation.Persistence.Forms;
 using Microsoft.EntityFrameworkCore;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace CO.CDP.OrganisationInformation.Persistence;
 
@@ -91,14 +90,46 @@ public class DatabaseFormRepository(OrganisationInformationContext context) : IF
             .OrderByDescending(y => y.SubmittedAt).ToListAsync();
     }
 
-    public async Task<SharedConsent?> GetShareCodeDetailsAsync(Guid organisationId, string shareCode)
+    public async Task<SharedConsentDetails?> GetShareCodeDetailsAsync(Guid organisationId, string shareCode)
     {
-        return await context.Set<SharedConsent>()
-           .Where(x => x.Organisation.Guid == organisationId && x.BookingReference == shareCode)
-            .Include(x => x.AnswerSets.OrderByDescending(y => y.UpdatedOn).Take(1))
-            .ThenInclude(x => x.Answers)
-            .ThenInclude(x => x.Question)
-           .FirstOrDefaultAsync();
+        var query = from s in context.SharedConsents
+                    join fas in context.FormAnswerSets on s.Id equals fas.SharedConsentId
+                    join fs in context.Set<FormSection>() on fas.SectionId equals fs.Id
+                    join fa in context.Set<FormAnswer>() on fas.Id equals fa.FormAnswerSetId
+                    join fq in context.Set<FormQuestion>() on fa.QuestionId equals fq.Id
+                    join o in context.Organisations on s.OrganisationId equals o.Id
+                    where
+                        fs.Type != FormSectionType.Declaration
+                        && fas.Deleted == false
+                        && o.Guid == organisationId
+                        && s.BookingReference == shareCode
+                    select new
+                    {
+                        s.BookingReference,
+                        s.SubmittedAt,
+                        QuestionId = fas.Guid,
+                        QuestionType = fq.Type,
+                        fq.SummaryTitle,
+                        FormAnswer = fa
+                    };
+
+        var data = await query.ToListAsync();
+        var sharedCodeResult = data.GroupBy(g => new { g.BookingReference, g.SubmittedAt }).FirstOrDefault();
+        if (sharedCodeResult == null) return null;
+
+        return new SharedConsentDetails
+        {
+            ShareCode = sharedCodeResult.Key.BookingReference,
+            SubmittedAt = sharedCodeResult.Key.SubmittedAt!.Value,
+            QuestionAnswers = sharedCodeResult.Select(a =>
+            new SharedConsentQuestionAnswer
+            {
+                QuestionId = a.QuestionId,
+                QuestionType = a.QuestionType,
+                Title = a.SummaryTitle,
+                Answer = a.FormAnswer
+            })
+        };
     }
 
     public async Task<IEnumerable<FormQuestion>> GetQuestionsAsync(Guid sectionId)

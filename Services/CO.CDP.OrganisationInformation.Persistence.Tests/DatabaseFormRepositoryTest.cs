@@ -402,7 +402,9 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
         var formAnswer = new FormAnswer
         {
             Guid = Guid.NewGuid(),
+            QuestionId = question.Id,
             Question = question,
+            FormAnswerSetId = answerSet.Id,
             FormAnswerSet = answerSet,
             BoolValue = true,
             AddressValue = new FormAddress { StreetAddress = "456 Elm St", Locality = "London", PostalCode = "G67890", CountryName = "UK" },
@@ -570,7 +572,9 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
         var formAnswer = new FormAnswer
         {
             Guid = Guid.NewGuid(),
+            QuestionId = question.Id,
             Question = question,
+            FormAnswerSetId = answerSet.Id,
             FormAnswerSet = answerSet,
             BoolValue = true,
             CreatedOn = DateTimeOffset.UtcNow,
@@ -657,7 +661,9 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
         var formAnswer = new FormAnswer
         {
             Guid = Guid.NewGuid(),
+            QuestionId = question.Id,
             Question = question,
+            FormAnswerSetId = answerSet.Id,
             FormAnswerSet = answerSet,
             BoolValue = true,
             CreatedOn = DateTimeOffset.UtcNow,
@@ -669,7 +675,9 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
         var newAnswer = new FormAnswer
         {
             Guid = Guid.NewGuid(),
+            QuestionId = question.Id,
             Question = question,
+            FormAnswerSetId = answerSet.Id,
             FormAnswerSet = answerSet,
             BoolValue = false,
             CreatedOn = DateTimeOffset.UtcNow,
@@ -816,7 +824,9 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
         var answer = new FormAnswer
         {
             Guid = Guid.NewGuid(),
+            QuestionId = question.Id,
             Question = question,
+            FormAnswerSetId = answerSet.Id,
             FormAnswerSet = answerSet,
             BoolValue = true
         };

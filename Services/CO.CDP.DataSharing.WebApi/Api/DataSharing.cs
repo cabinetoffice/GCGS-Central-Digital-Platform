@@ -231,7 +231,6 @@ public static class EndpointExtensions
             })
             .RequireAuthorization(Constants.OrganisationApiKeyPolicy);
 
-
         app.MapGet("/share/organisations/{organisationId}/codes", async (Guid organisationId,
             IUseCase<Guid, List<Model.SharedConsent>?> useCase) => await useCase.Execute(organisationId)
              .AndThen(sharedCodes => sharedCodes != null ? Results.Ok(sharedCodes) : Results.NotFound()))
@@ -252,8 +251,9 @@ public static class EndpointExtensions
              });
         //.RequireAuthorization(Constants.OneLoginPolicy);
 
-        app.MapGet("/share/organisations/{organisationId}/codes/{sharecode}", async (Guid organisationId, string shareCode,
-            IUseCase<(Guid, string), Model.SharedConsentQuestionAnswer?> useCase) => await useCase.Execute((organisationId, shareCode))
+        app.MapGet("/share/organisations/{organisationId}/codes/{sharecode}",
+                async (Guid organisationId, string shareCode, IUseCase<(Guid, string), SharedConsentDetails?> useCase)
+                    => await useCase.Execute((organisationId, shareCode))
             .AndThen(sharedCodeDetails => sharedCodeDetails != null ? Results.Ok(sharedCodeDetails) : Results.NotFound()))
             .Produces<Model.SharedConsentQuestionAnswer?>(StatusCodes.Status200OK, "application/json")
             .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
@@ -270,7 +270,7 @@ public static class EndpointExtensions
                 operation.Responses["500"].Description = "Internal server error.";
                 return operation;
             });
-            //.RequireAuthorization(Constants.OneLoginPolicy);
+        //.RequireAuthorization(Constants.OneLoginPolicy);
     }
 }
 
