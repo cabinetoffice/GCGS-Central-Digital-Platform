@@ -104,6 +104,13 @@ public class WebApiToPersistenceProfile : Profile
            .ReverseMap()
            .ForMember(m => m.Id, o => o.MapFrom(m => m.Guid));
 
+        CreateMap<Persistence.Person, Person>()
+            .ForMember(m => m.Scopes, o => o.Ignore())
+            .ForMember(m => m.Id, o => o.MapFrom(m => m.Guid));
+
+        CreateMap<Persistence.PersonInvite, PersonInviteModel>()
+            .ForMember(m => m.Id, o => o.MapFrom(m => m.Guid));
+
         ConnectedEntityMapping();
         OrganisationEventsMapping();
     }
