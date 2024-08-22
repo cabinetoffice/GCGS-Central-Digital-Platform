@@ -1,5 +1,8 @@
+using CO.CDP.EntityVerificationClient;
 using CO.CDP.Mvc.Validation;
+using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Models;
+using CO.CDP.OrganisationApp.WebApiClients;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -8,7 +11,9 @@ namespace CO.CDP.OrganisationApp.Pages.Registration;
 
 [AuthorisedSession]
 [ValidateRegistrationStep]
-public class OrganisationIdentificationModel(ISession session) : RegistrationStepModel
+public class OrganisationIdentificationModel(ISession session,
+    IOrganisationClient organisationClient,
+    IPponClient pponClient) : RegistrationStepModel
 {
     public override string CurrentPage => OrganisationIdentifierPage;
     public override ISession SessionContext => session;
@@ -158,7 +163,7 @@ public class OrganisationIdentificationModel(ISession session) : RegistrationSte
 
     }
 
-    public IActionResult OnPost()
+    public async Task<IActionResult> OnPost()
     {
         if (!ModelState.IsValid)
         {
@@ -182,15 +187,46 @@ public class OrganisationIdentificationModel(ISession session) : RegistrationSte
             "Other" => null,
             _ => null,
         };
-        session.Set(Session.RegistrationDetailsKey, RegistrationDetails);
+        try
+        {
+            await LookupOrganisationAsync();
+        }
+        catch (Exception orgApiException) when(orgApiException is Organisation.WebApiClient.ApiException && ((Organisation.WebApiClient.ApiException)orgApiException).StatusCode == 404)
+        {
+            try
+            {
+                await LookupEntityVerificationAsync();
+            }
+            catch (Exception evApiException) when (evApiException is EntityVerificationClient.ApiException && ((EntityVerificationClient.ApiException)evApiException).StatusCode == 404)
+            {
+                session.Set(Session.RegistrationDetailsKey, RegistrationDetails);
 
-        if (RedirectToSummary == true)
-        {
-            return RedirectToPage("OrganisationDetailsSummary");
+                if (RedirectToSummary == true)
+                {
+                    return RedirectToPage("OrganisationDetailsSummary");
+                }
+                else
+                {
+                    return RedirectToPage("OrganisationName");
+                }
+            }
+            catch
+            {
+                return RedirectToPage("OrganisationRegistrationUnavailable");
+            }
         }
-        else
-        {
-            return RedirectToPage("OrganisationName");
-        }
+        
+        return RedirectToPage("OrganisationAlreadyRegistered");
+    }
+
+    private async Task<Organisation.WebApiClient.Organisation> LookupOrganisationAsync()
+    {
+        return await organisationClient.LookupOrganisationAsync(string.Empty,
+                    $"{OrganisationScheme}:{RegistrationDetails.OrganisationIdentificationNumber}");
+    }
+
+    private async Task<ICollection<EntityVerificationClient.Identifier>> LookupEntityVerificationAsync()
+    {
+        return await pponClient.GetIdentifiersAsync($"{OrganisationScheme}:{RegistrationDetails.OrganisationIdentificationNumber}");
     }
 }

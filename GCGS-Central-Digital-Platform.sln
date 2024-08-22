@@ -114,12 +114,17 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.EntityFrameworkCore"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.EntityFrameworkCore.Tests", "Libraries\CO.CDP.EntityFrameworkCore.Tests\CO.CDP.EntityFrameworkCore.Tests.csproj", "{0374C116-084D-4797-B9B0-0C74F1A3CBDB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.DataSharing.WebApiClient", "Libraries\CO.CDP.DataSharing.WebApiClient\CO.CDP.DataSharing.WebApiClient.csproj", "{EB64F872-C3ED-4128-8F2E-CD172C17CE89}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.DataSharing.WebApiClient", "Libraries\CO.CDP.DataSharing.WebApiClient\CO.CDP.DataSharing.WebApiClient.csproj", "{EB64F872-C3ED-4128-8F2E-CD172C17CE89}"
     ProjectSection(ProjectDependencies) = postProject
         {C5DD309E-CA59-4C82-BFC4-9374026A2B21} = {C5DD309E-CA59-4C82-BFC4-9374026A2B21}
     EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.DataSharing.WebApiClient.Tests", "Libraries\CO.CDP.DataSharing.WebApiClient.Tests\CO.CDP.DataSharing.WebApiClient.Tests.csproj", "{369BFFC0-FD86-4E8F-A7E2-1A96AAF618C5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.DataSharing.WebApiClient.Tests", "Libraries\CO.CDP.DataSharing.WebApiClient.Tests\CO.CDP.DataSharing.WebApiClient.Tests.csproj", "{369BFFC0-FD86-4E8F-A7E2-1A96AAF618C5}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.EntityVerificationClient", "Libraries\CO.CDP.EntityVerificationClient\CO.CDP.EntityVerificationClient.csproj", "{D7FB1AC5-10C8-4012-93A7-CC2FA3EEAF4C}"
+	ProjectSection(ProjectDependencies) = postProject
+		{4C4D9150-9625-4782-885F-3C516BE54FB9} = {4C4D9150-9625-4782-885F-3C516BE54FB9}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -327,6 +332,10 @@ Global
 		{369BFFC0-FD86-4E8F-A7E2-1A96AAF618C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{369BFFC0-FD86-4E8F-A7E2-1A96AAF618C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{369BFFC0-FD86-4E8F-A7E2-1A96AAF618C5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D7FB1AC5-10C8-4012-93A7-CC2FA3EEAF4C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D7FB1AC5-10C8-4012-93A7-CC2FA3EEAF4C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D7FB1AC5-10C8-4012-93A7-CC2FA3EEAF4C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D7FB1AC5-10C8-4012-93A7-CC2FA3EEAF4C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
