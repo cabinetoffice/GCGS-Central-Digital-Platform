@@ -21,6 +21,11 @@ public class OrganisationIdentificationModelTests
         sessionMock = new Mock<ISession>();
         _pponClientMock = new Mock<IPponClient>();
         organisationClientMock = new Mock<IOrganisationClient>();
+
+        organisationClientMock.Setup(api => api.LookupOrganisationAsync(It.IsAny<string>(), It.IsAny<string>()))
+                    .ThrowsAsync(new Organisation.WebApiClient.ApiException("Organisation does not exist", 404, "", null, null));
+        _pponClientMock.Setup(api => api.GetIdentifiersAsync(It.IsAny<string>()))
+            .ThrowsAsync(new EntityVerificationClient.ApiException("Organisation does not exist", 404, "", null, null));
     }
 
     [Fact]
@@ -77,7 +82,7 @@ public class OrganisationIdentificationModelTests
     [Theory]
     [InlineData(null)]
     [InlineData("")]
-    public void OnPost_WhenOrganisationTypeIsNullOrEmpty_ShouldReturnPageWithModelStateError(string? organisationType)
+    public async Task OnPost_WhenOrganisationTypeIsNullOrEmpty_ShouldReturnPageWithModelStateError(string? organisationType)
     {
 
         var model = new OrganisationIdentificationModel(sessionMock.Object, organisationClientMock.Object, _pponClientMock.Object)
@@ -86,7 +91,7 @@ public class OrganisationIdentificationModelTests
         };
         model.ModelState.AddModelError("OrganisationType", "Please select your organisation type");
 
-        var result = model.OnPost();
+        var result = await model.OnPost();
 
         result.Should().BeOfType<PageResult>();
         model.ModelState.IsValid.Should().BeFalse();
@@ -95,7 +100,7 @@ public class OrganisationIdentificationModelTests
     [Theory]
     [InlineData("GB-CHC", null)]
     [InlineData("GB-CHC", "")]
-    public void OnPost_WhenOrganisationTypeIsCCEWAndCharityCommissionEnglandWalesNumberIsNullOrEmpty_ShouldReturnPageWithModelStateError(string organisationType, string? charityCommissionEnglandWalesNumber)
+    public async Task OnPost_WhenOrganisationTypeIsCCEWAndCharityCommissionEnglandWalesNumberIsNullOrEmpty_ShouldReturnPageWithModelStateError(string organisationType, string? charityCommissionEnglandWalesNumber)
     {
         var model = new OrganisationIdentificationModel(sessionMock.Object, organisationClientMock.Object, _pponClientMock.Object)
         {
@@ -104,7 +109,7 @@ public class OrganisationIdentificationModelTests
         };
         model.ModelState.AddModelError("CharityCommissionEnglandWalesNumber", "The Charity Commission for England & Wales Number field is required.");
 
-        var result = model.OnPost();
+        var result = await model.OnPost();
 
         result.Should().BeOfType<PageResult>();
         model.ModelState.IsValid.Should().BeFalse();
@@ -113,7 +118,7 @@ public class OrganisationIdentificationModelTests
     [Theory]
     [InlineData("GB-SC", null)]
     [InlineData("GB-SC", "")]
-    public void OnPost_WhenOrganisationTypeIsOSCRAndScottishCharityRegulatorNumberIsNullOrEmpty_ShouldReturnPageWithModelStateError(string organisationType, string? scottishCharityRegulatorNumber)
+    public async Task OnPost_WhenOrganisationTypeIsOSCRAndScottishCharityRegulatorNumberIsNullOrEmpty_ShouldReturnPageWithModelStateError(string organisationType, string? scottishCharityRegulatorNumber)
     {
         var model = new OrganisationIdentificationModel(sessionMock.Object, organisationClientMock.Object, _pponClientMock.Object)
         {
@@ -122,7 +127,7 @@ public class OrganisationIdentificationModelTests
         };
         model.ModelState.AddModelError("ScottishCharityRegulatorNumber", "The Office of the Scottish Charity Regulator (OSCR) Number field is required.");
 
-        var result = model.OnPost();
+        var result = await model.OnPost();
 
         result.Should().BeOfType<PageResult>();
         model.ModelState.IsValid.Should().BeFalse();
@@ -131,7 +136,7 @@ public class OrganisationIdentificationModelTests
     [Theory]
     [InlineData("GB-NIC", null)]
     [InlineData("GB-NIC", "")]
-    public void OnPost_WhenOrganisationTypeIsGbNicAndCharityCommissionNorthernIrelandNumberIsNullOrEmpty_ShouldReturnPageWithModelStateError(string organisationType, string? charityCommissionNorthernIrelandNumber)
+    public async Task OnPost_WhenOrganisationTypeIsGbNicAndCharityCommissionNorthernIrelandNumberIsNullOrEmpty_ShouldReturnPageWithModelStateError(string organisationType, string? charityCommissionNorthernIrelandNumber)
     {
         var model = new OrganisationIdentificationModel(sessionMock.Object, organisationClientMock.Object, _pponClientMock.Object)
         {
@@ -140,7 +145,7 @@ public class OrganisationIdentificationModelTests
         };
         model.ModelState.AddModelError("CharityCommissionNorthernIrelandNumber", "The Charity Commission for Northren Ireland Number field is required.");
 
-        var result = model.OnPost();
+        var result = await model.OnPost();
 
         result.Should().BeOfType<PageResult>();
         model.ModelState.IsValid.Should().BeFalse();
@@ -149,7 +154,7 @@ public class OrganisationIdentificationModelTests
     [Theory]
     [InlineData("GB-MPR", null)]
     [InlineData("GB-MPR", "")]
-    public void OnPost_WhenOrganisationTypeIsMPRAndMutualsPublicRegisterNumberIsNullOrEmpty_ShouldReturnPageWithModelStateError(string organisationType, string? mutualsPublicRegisterNumber)
+    public async Task OnPost_WhenOrganisationTypeIsMPRAndMutualsPublicRegisterNumberIsNullOrEmpty_ShouldReturnPageWithModelStateError(string organisationType, string? mutualsPublicRegisterNumber)
     {
         var model = new OrganisationIdentificationModel(sessionMock.Object, organisationClientMock.Object, _pponClientMock.Object)
         {
@@ -158,7 +163,7 @@ public class OrganisationIdentificationModelTests
         };
         model.ModelState.AddModelError("MutualsPublicRegisterNumber", "Mutuals Public Register Number field is required.");
 
-        var result = model.OnPost();
+        var result = await model.OnPost();
 
         result.Should().BeOfType<PageResult>();
         model.ModelState.IsValid.Should().BeFalse();
@@ -167,7 +172,7 @@ public class OrganisationIdentificationModelTests
     [Theory]
     [InlineData("GG-RCE", null)]
     [InlineData("GG-RCE", "")]
-    public void OnPost_WhenOrganisationTypeIsGRNAndGuernseyRegistryNumberIsNullOrEmpty_ShouldReturnPageWithModelStateError(string organisationType, string? guernseyRegistryNumber)
+    public async Task OnPost_WhenOrganisationTypeIsGRNAndGuernseyRegistryNumberIsNullOrEmpty_ShouldReturnPageWithModelStateError(string organisationType, string? guernseyRegistryNumber)
     {
         var model = new OrganisationIdentificationModel(sessionMock.Object, organisationClientMock.Object, _pponClientMock.Object)
         {
@@ -176,7 +181,7 @@ public class OrganisationIdentificationModelTests
         };
         model.ModelState.AddModelError("GuernseyRegistryNumber", "Guernsey Registry Number field is required.");
 
-        var result = model.OnPost();
+        var result = await model.OnPost();
 
         result.Should().BeOfType<PageResult>();
         model.ModelState.IsValid.Should().BeFalse();
@@ -185,7 +190,7 @@ public class OrganisationIdentificationModelTests
     [Theory]
     [InlineData("JE-FSC", null)]
     [InlineData("JE-FSC", "")]
-    public void OnPost_WhenOrganisationTypeIsJFSCAndJerseyFinancialServicesCommissionRegistryNumberIsNullOrEmpty_ShouldReturnPageWithModelStateError(string organisationType, string? jerseyFinancialServicesCommissionRegistryNumber)
+    public async Task OnPost_WhenOrganisationTypeIsJFSCAndJerseyFinancialServicesCommissionRegistryNumberIsNullOrEmpty_ShouldReturnPageWithModelStateError(string organisationType, string? jerseyFinancialServicesCommissionRegistryNumber)
     {
         var model = new OrganisationIdentificationModel(sessionMock.Object, organisationClientMock.Object, _pponClientMock.Object)
         {
@@ -194,7 +199,7 @@ public class OrganisationIdentificationModelTests
         };
         model.ModelState.AddModelError("JerseyFinancialServicesCommissionRegistryNumber", "Jersey Financial Services Commission Registry Number field is required.");
 
-        var result = model.OnPost();
+        var result = await model.OnPost();
 
         result.Should().BeOfType<PageResult>();
         model.ModelState.IsValid.Should().BeFalse();
@@ -203,7 +208,7 @@ public class OrganisationIdentificationModelTests
     [Theory]
     [InlineData("IM-CR", null)]
     [InlineData("IM-CR", "")]
-    public void OnPost_WhenOrganisationTypeIsIMCRAndIsleofManCompaniesRegistryNumberIsNullOrEmpty_ShouldReturnPageWithModelStateError(string organisationType, string? isleofManCompaniesRegistryNumber)
+    public async Task OnPost_WhenOrganisationTypeIsIMCRAndIsleofManCompaniesRegistryNumberIsNullOrEmpty_ShouldReturnPageWithModelStateError(string organisationType, string? isleofManCompaniesRegistryNumber)
     {
         var model = new OrganisationIdentificationModel(sessionMock.Object, organisationClientMock.Object, _pponClientMock.Object)
         {
@@ -212,7 +217,7 @@ public class OrganisationIdentificationModelTests
         };
         model.ModelState.AddModelError("IsleofManCompaniesRegistryNumber", "Isle of Man Companies Registry Number field is required.");
 
-        var result = model.OnPost();
+        var result = await model.OnPost();
 
         result.Should().BeOfType<PageResult>();
         model.ModelState.IsValid.Should().BeFalse();
@@ -221,7 +226,7 @@ public class OrganisationIdentificationModelTests
     [Theory]
     [InlineData("GB-NHS", null)]
     [InlineData("GB-NHS", "")]
-    public void OnPost_WhenOrganisationTypeIsNHORAndNationalHealthServiceOrganisationsRegistryNumberIsNullOrEmpty_ShouldReturnPageWithModelStateError(string organisationType, string? nationalHealthServiceOrganisationsRegistryNumber)
+    public async Task OnPost_WhenOrganisationTypeIsNHORAndNationalHealthServiceOrganisationsRegistryNumberIsNullOrEmpty_ShouldReturnPageWithModelStateError(string organisationType, string? nationalHealthServiceOrganisationsRegistryNumber)
     {
         var model = new OrganisationIdentificationModel(sessionMock.Object, organisationClientMock.Object, _pponClientMock.Object)
         {
@@ -230,7 +235,7 @@ public class OrganisationIdentificationModelTests
         };
         model.ModelState.AddModelError("NationalHealthServiceOrganisationsRegistryNumber", "The National health Service Organisations Registry Number field is required.");
 
-        var result = model.OnPost();
+        var result = await model.OnPost();
 
         result.Should().BeOfType<PageResult>();
         model.ModelState.IsValid.Should().BeFalse();
@@ -239,7 +244,7 @@ public class OrganisationIdentificationModelTests
     [Theory]
     [InlineData("GB-UKPRN", null)]
     [InlineData("GB-UKPRN", "")]
-    public void OnPost_WhenOrganisationTypeIsUKPRNAndUKLearningProviderReferenceNumberIsNullOrEmpty_ShouldReturnPageWithModelStateError(string organisationType, string? ukLearningProviderReferenceNumber)
+    public async Task OnPost_WhenOrganisationTypeIsUKPRNAndUKLearningProviderReferenceNumberIsNullOrEmpty_ShouldReturnPageWithModelStateError(string organisationType, string? ukLearningProviderReferenceNumber)
     {
         var model = new OrganisationIdentificationModel(sessionMock.Object, organisationClientMock.Object, _pponClientMock.Object)
         {
@@ -248,7 +253,7 @@ public class OrganisationIdentificationModelTests
         };
         model.ModelState.AddModelError("UKLearningProviderReferenceNumber", "UK Register of Learning Provider Number field is required.");
 
-        var result = model.OnPost();
+        var result = await model.OnPost();
 
         result.Should().BeOfType<PageResult>();
         model.ModelState.IsValid.Should().BeFalse();
@@ -257,7 +262,7 @@ public class OrganisationIdentificationModelTests
     [Theory]
     [InlineData("VAT", null)]
     [InlineData("VAT", "")]
-    public void OnPost_WhenOrganisationTypeIsVATAndVATNumberIsNullOrEmpty_ShouldReturnPageWithModelStateError(string organisationType, string? vatNumber)
+    public async Task OnPost_WhenOrganisationTypeIsVATAndVATNumberIsNullOrEmpty_ShouldReturnPageWithModelStateError(string organisationType, string? vatNumber)
     {
         var model = new OrganisationIdentificationModel(sessionMock.Object, organisationClientMock.Object, _pponClientMock.Object)
         {
@@ -266,7 +271,7 @@ public class OrganisationIdentificationModelTests
         };
         model.ModelState.AddModelError("VATNumber", "VAT Number field is required.");
 
-        var result = model.OnPost();
+        var result = await model.OnPost();
 
         result.Should().BeOfType<PageResult>();
         model.ModelState.IsValid.Should().BeFalse();
@@ -313,7 +318,7 @@ public class OrganisationIdentificationModelTests
     [InlineData("GB-NHS", "STUVWX")]
     [InlineData("GB-UKPRN", "PRN1234")]
     [InlineData("VAT", "GB1234")]
-    public void OnPost_WhenModelStateIsValid_ShouldStoreOrganisationTypeAndIdentificationNumberInSession(string organisationType, string identificationNumber)
+    public async Task OnPost_WhenModelStateIsValid_ShouldStoreOrganisationTypeAndIdentificationNumberInSession(string organisationType, string identificationNumber)
     {
         var model = new OrganisationIdentificationModel(sessionMock.Object, organisationClientMock.Object, _pponClientMock.Object)
         {
@@ -323,7 +328,7 @@ public class OrganisationIdentificationModelTests
         SetIdentificationNumber(model, organisationType, identificationNumber);
         GivenRegistrationIsInProgress();
 
-        var result = model.OnPost();
+        var result = await model.OnPost();
 
         result.Should().BeOfType<RedirectToPageResult>();
         sessionMock.Verify(s => s.Set(It.IsAny<string>(), It.Is<RegistrationDetails>(rd =>

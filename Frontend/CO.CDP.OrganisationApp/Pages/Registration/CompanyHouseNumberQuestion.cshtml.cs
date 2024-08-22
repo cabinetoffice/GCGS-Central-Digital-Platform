@@ -46,14 +46,6 @@ public class CompanyHouseNumberQuestionModel(ISession session) : RegistrationSte
             RegistrationDetails.OrganisationScheme = "GB-COH";
         }
 
-        //var orgExists = await organisationClient.LookupOrganisationAsync(string.Empty,
-        //    $"{RegistrationDetails.OrganisationScheme}:{RegistrationDetails.OrganisationIdentificationNumber}");
-
-        //if (orgExists != null)
-        //{
-        //    return RedirectToPage("OrganisationAlreadyRegistered");
-        //}
-
         session.Set(Session.RegistrationDetailsKey, RegistrationDetails);
 
         if (HasCompaniesHouseNumber == false)

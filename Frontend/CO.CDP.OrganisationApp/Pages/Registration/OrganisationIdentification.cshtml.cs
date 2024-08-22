@@ -190,26 +190,30 @@ public class OrganisationIdentificationModel(ISession session,
         try
         {
             await LookupOrganisationAsync();
-            await LookupEntityVerificationAsync();
         }
-        catch (Exception exc) when(
-            (exc is Organisation.WebApiClient.ApiException && ((Organisation.WebApiClient.ApiException)exc).StatusCode == 404) ||
-            (exc is EntityVerificationClient.ApiException && ((EntityVerificationClient.ApiException)exc).StatusCode == 404))
+        catch (Exception orgApiException) when(orgApiException is Organisation.WebApiClient.ApiException && ((Organisation.WebApiClient.ApiException)orgApiException).StatusCode == 404)
         {
-            session.Set(Session.RegistrationDetailsKey, RegistrationDetails);
+            try
+            {
+                await LookupEntityVerificationAsync();
+            }
+            catch (Exception evApiException) when (evApiException is EntityVerificationClient.ApiException && ((EntityVerificationClient.ApiException)evApiException).StatusCode == 404)
+            {
+                session.Set(Session.RegistrationDetailsKey, RegistrationDetails);
 
-            if (RedirectToSummary == true)
-            {
-                return RedirectToPage("OrganisationDetailsSummary");
+                if (RedirectToSummary == true)
+                {
+                    return RedirectToPage("OrganisationDetailsSummary");
+                }
+                else
+                {
+                    return RedirectToPage("OrganisationName");
+                }
             }
-            else
+            catch
             {
-                return RedirectToPage("OrganisationName");
+                return RedirectToPage("OrganisationRegistrationUnavailable");
             }
-        }
-        catch
-        {
-            return RedirectToPage("OrganisationRegistrationUnavailable");
         }
         
         return RedirectToPage("OrganisationAlreadyRegistered");
@@ -221,7 +225,7 @@ public class OrganisationIdentificationModel(ISession session,
                     $"{OrganisationScheme}:{RegistrationDetails.OrganisationIdentificationNumber}");
     }
 
-    private async Task<System.Collections.Generic.ICollection<EntityVerificationClient.Identifier>> LookupEntityVerificationAsync()
+    private async Task<ICollection<EntityVerificationClient.Identifier>> LookupEntityVerificationAsync()
     {
         return await pponClient.GetIdentifiersAsync($"{OrganisationScheme}:{RegistrationDetails.OrganisationIdentificationNumber}");
     }
