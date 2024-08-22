@@ -28,11 +28,12 @@ public class DatabaseFormRepository(OrganisationInformationContext context) : IF
                     join subQuery in answersQuery on new { FormId = f.Id, SectionId = fss.Id } equals new { subQuery.FormId, subQuery.SectionId } into answers
                     from answer in answers.DefaultIfEmpty()
                     where f.Guid == formId
-                    group new FormSectionGroupSelection { FormId = answer.FormId } by new { fss.Guid, fss.Title, fss.AllowsMultipleAnswerSets } into g
+                    group new FormSectionGroupSelection { FormId = answer.FormId } by new { fss.Guid, fss.Title, fss.Type, fss.AllowsMultipleAnswerSets } into g
                     select new FormSectionSummary
                     {
                         SectionId = g.Key.Guid,
                         SectionName = g.Key.Title,
+                        Type = g.Key.Type,
                         AllowsMultipleAnswerSets = g.Key.AllowsMultipleAnswerSets,
                         AnswerSetCount = g.Count(a => a.FormId != null)
                     };

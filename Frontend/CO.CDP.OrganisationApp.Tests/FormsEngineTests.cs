@@ -1,7 +1,6 @@
 using CO.CDP.OrganisationApp.Models;
 using FluentAssertions;
 using Moq;
-using System;
 using WebApiClient = CO.CDP.Forms.WebApiClient;
 
 namespace CO.CDP.OrganisationApp.Tests;
@@ -32,6 +31,7 @@ public class FormsEngineTests
     {
         return new WebApiClient.SectionQuestionsResponse(
             section: new WebApiClient.FormSection(
+                type: WebApiClient.FormSectionType.Standard,
                 allowsMultipleAnswerSets: true,
                 configuration: new WebApiClient.FormSectionConfiguration(
                     singularSummaryHeading: null,

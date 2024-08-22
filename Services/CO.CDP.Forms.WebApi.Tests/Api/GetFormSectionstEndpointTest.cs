@@ -41,10 +41,11 @@ public class GetFormSectionstEndpointTest
         var formSections = new FormSectionResponse
         {
             FormSections = [new FormSectionSummary {
-            AllowsMultipleAnswerSets = true,
-            AnswerSetCount = 1,
-            SectionId = Guid.NewGuid(),
-            SectionName = "TestSection" }]
+                Type = FormSectionType.Standard,
+                AllowsMultipleAnswerSets = true,
+                AnswerSetCount = 1,
+                SectionId = Guid.NewGuid(),
+                SectionName = "TestSection" }]
         };
 
         _useCase.Setup(uc => uc.Execute(It.IsAny<(Guid, Guid)>()))

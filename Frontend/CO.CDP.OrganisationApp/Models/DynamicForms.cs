@@ -9,8 +9,14 @@ public class SectionQuestionsResponse
 public class FormSection
 {
     public Guid Id { get; set; }
-    public string? Title { get; set; }
+    public required string Title { get; set; }
+    public FormSectionType Type { get; set; }
     public bool AllowsMultipleAnswerSets { get; set; }
+}
+
+public enum FormSectionType {
+    Standard,
+    Declaration
 }
 
 public class FormQuestion

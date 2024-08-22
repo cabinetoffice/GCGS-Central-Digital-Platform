@@ -23,7 +23,6 @@ internal static class EntityFactory
             Name = string.Empty,
             Version = string.Empty,
             IsRequired = default,
-            Type = default,
             Scope = default,
             Sections = new List<FormSection> { }
         };

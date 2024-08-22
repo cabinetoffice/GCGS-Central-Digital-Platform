@@ -23,39 +23,33 @@ public class DynamicFormsPageModel(
     public Guid? CurrentQuestionId { get; set; }
 
     [BindProperty]
-    public FormElementDateInputModel? DateInputModel { get; set; }
+    public bool? RedirectToCheckYourAnswer { get; set; }
 
+    [BindProperty]
+    public FormElementDateInputModel? DateInputModel { get; set; }
     [BindProperty]
     public FormElementFileUploadModel? FileUploadModel { get; set; }
-
     [BindProperty]
     public FormElementNoInputModel? NoInputModel { get; set; }
-
     [BindProperty]
     public FormElementTextInputModel? TextInputModel { get; set; }
-
     [BindProperty]
     public FormElementYesNoInputModel? YesNoInputModel { get; set; }
-
     [BindProperty]
     public FormElementAddressModel? AddressModel { get; set; }
+    [BindProperty]
+    public FormElementCheckBoxInputModel? CheckBoxModel { get; set; }
 
     [BindProperty(SupportsGet = true)]
     public string? UkOrNonUk { get; set; }
 
-    [BindProperty]
-    public FormElementCheckBoxInputModel? CheckBoxModel { get; set; }
 
     public FormQuestionType? CurrentFormQuestionType { get; private set; }
-
     public string? PartialViewName { get; private set; }
-
     public IFormElementModel? PartialViewModel { get; private set; }
-
     public FormQuestion? PreviousQuestion { get; private set; }
-
-    [BindProperty]
-    public bool? RedirectToCheckYourAnswer { get; set; }
+    public Guid? CheckYourAnswerQuestionId { get; private set; }
+    public FormSectionType? FormSectionType { get; set; }
 
     public string EncType => CurrentFormQuestionType == FormQuestionType.FileUpload
         ? "multipart/form-data" : "application/x-www-form-urlencoded";
@@ -105,13 +99,12 @@ public class DynamicFormsPageModel(
             SaveAnswerToTempData(currentQuestion, answer);
         }
 
-        var checkYourAnswerQuestionId = await CheckYourAnswerQuestionId();
-        if (currentQuestion.Id == checkYourAnswerQuestionId)
+        if (currentQuestion.Id == CheckYourAnswerQuestionId)
         {
             var answerSet = tempDataService.PeekOrDefault<FormQuestionAnswerState>(FormQuestionAnswerStateKey);
             await formsEngine.SaveUpdateAnswers(FormId, SectionId, OrganisationId, answerSet);
 
-            if (SectionId == new Guid(FormsEngine.SharedDataSectionId))
+            if (FormSectionType == Models.FormSectionType.Declaration)
             {
                 return RedirectToPage("/ShareInformation/ShareCodeConfirmation", new { OrganisationId, FormId, SectionId });
             }
@@ -120,14 +113,13 @@ public class DynamicFormsPageModel(
                 tempDataService.Remove(FormQuestionAnswerStateKey);
                 return RedirectToPage("FormsAddAnotherAnswerSet", new { OrganisationId, FormId, SectionId });
             }
-
         }
 
         Guid? nextQuestionId;
 
         if (RedirectToCheckYourAnswer == true)
         {
-            nextQuestionId = await CheckYourAnswerQuestionId();
+            nextQuestionId = CheckYourAnswerQuestionId;
         }
         else
         {
@@ -194,31 +186,20 @@ public class DynamicFormsPageModel(
         return false;
     }
 
-    public async Task<Guid?> CheckYourAnswerQuestionId()
-    {
-        var form = await formsEngine.GetFormSectionAsync(OrganisationId, FormId, SectionId);
-
-        return form.Questions.FirstOrDefault(q => q.Type == FormQuestionType.CheckYourAnswers)?.Id;
-    }
-
     private async Task<FormQuestion?> InitModel(bool reset = false)
     {
-        var isShareDataPage = tempDataService.PeekOrDefault<bool>($"ShareData_{OrganisationId}_{FormId}_{SectionId}_Page");
-
-        if (isShareDataPage)
-        {
-            CurrentQuestionId = await CheckYourAnswerQuestionId();
-            tempDataService.Remove($"ShareData_{OrganisationId}_{FormId}_{SectionId}_Page");
-        }
+        var form = await formsEngine.GetFormSectionAsync(OrganisationId, FormId, SectionId);
 
         var currentQuestion = await formsEngine.GetCurrentQuestion(OrganisationId, FormId, SectionId, CurrentQuestionId);
         if (currentQuestion == null)
             return null;
 
+        FormSectionType = form.Section?.Type;
         CurrentFormQuestionType = currentQuestion.Type;
         PartialViewName = GetPartialViewName(currentQuestion);
         PartialViewModel = GetPartialViewModel(currentQuestion, reset);
         PreviousQuestion = await formsEngine.GetPreviousQuestion(OrganisationId, FormId, SectionId, currentQuestion.Id);
+        CheckYourAnswerQuestionId = form.Questions.FirstOrDefault(q => q.Type == FormQuestionType.CheckYourAnswers)?.Id;
 
         return currentQuestion;
     }
