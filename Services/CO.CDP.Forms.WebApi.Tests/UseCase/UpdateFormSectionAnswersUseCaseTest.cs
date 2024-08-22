@@ -227,7 +227,8 @@ public class UpdateFormSectionAnswersUseCaseTest(AutoMapperFixture mapperFixture
             Title = "Financial Information",
             FormId = form.Id,
             Form = form,
-            Questions = new List<Persistence.FormQuestion>(),
+            Questions = [],
+            Type = Persistence.FormSectionType.Standard,
             AllowsMultipleAnswerSets = true,
             CreatedOn = DateTimeOffset.UtcNow,
             UpdatedOn = DateTimeOffset.UtcNow,
@@ -251,7 +252,6 @@ public class UpdateFormSectionAnswersUseCaseTest(AutoMapperFixture mapperFixture
             Name = "Sample Form",
             Version = "1.0",
             IsRequired = true,
-            Type = Persistence.FormType.Standard,
             Scope = Persistence.FormScope.SupplierInformation,
             Sections = new List<Persistence.FormSection>()
         };

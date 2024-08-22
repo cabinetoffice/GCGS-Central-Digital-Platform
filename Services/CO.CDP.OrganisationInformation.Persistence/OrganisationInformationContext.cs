@@ -171,6 +171,7 @@ public class OrganisationInformationContext(DbContextOptions<OrganisationInforma
         modelBuilder.Entity<FormSection>(e =>
         {
             e.ToTable("form_sections");
+            e.Property(p => p.Type).HasDefaultValue(FormSectionType.Standard);
             e.Property(p => p.Configuration)
                 .IsRequired()
                 .HasJsonColumn(new(), PropertyBuilderExtensions.RecordComparer<FormSectionConfiguration>());

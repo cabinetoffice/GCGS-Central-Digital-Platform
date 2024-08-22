@@ -37,6 +37,7 @@ public class GetFormSectionsUseCaseTest(AutoMapperFixture mapperFixture) : IClas
         List<FormSectionSummary> formSummaries = [new FormSectionSummary {
             AllowsMultipleAnswerSets = true,
             AnswerSetCount = 1,
+            Type = FormSectionType.Standard,
             SectionId = sectionId,
             SectionName = "TestSection" }];
 

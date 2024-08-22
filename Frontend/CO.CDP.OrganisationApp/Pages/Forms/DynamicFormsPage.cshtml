@@ -14,7 +14,7 @@
     {
         if (fromCheckAnswerPage)
         {
-            var checkYourAnswerQuestionId = await Model.CheckYourAnswerQuestionId();
+            var checkYourAnswerQuestionId = Model.CheckYourAnswerQuestionId;
             backUrl = $"/organisation/{Model.OrganisationId}/forms/{Model.FormId}/sections/{Model.SectionId}/{checkYourAnswerQuestionId}";
             Model.RedirectToCheckYourAnswer = true;
         }
@@ -71,7 +71,7 @@
                         </dl>
                     }
                 </fieldset>
-                @if (Model.CurrentFormQuestionType == Models.FormQuestionType.CheckYourAnswers && Model.SectionId == new Guid(FormsEngine.SharedDataSectionId))
+                @if (Model.CurrentFormQuestionType == Models.FormQuestionType.CheckYourAnswers && Model.FormSectionType == Models.FormSectionType.Declaration)
                 {
                     <button type="submit" class="govuk-button">Confirm and get share code</button>
                 } else
