@@ -1,5 +1,6 @@
 using CO.CDP.OrganisationInformation.Persistence.Forms;
 using Microsoft.EntityFrameworkCore;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace CO.CDP.OrganisationInformation.Persistence;
 
@@ -92,10 +93,11 @@ public class DatabaseFormRepository(OrganisationInformationContext context) : IF
     public async Task<SharedConsent?> GetShareCodeDetailsAsync(Guid organisationId, string shareCode)
     {
         return await context.Set<SharedConsent>()
-            .Include(x => x.AnswerSets)
+           .Where(x => x.Organisation.Guid == organisationId && x.BookingReference == shareCode)
+            .Include(x => x.AnswerSets.OrderByDescending(y => y.UpdatedOn).Take(1))
             .ThenInclude(x => x.Answers)
-            .ThenInclude(x=>x.Question)
-           .Where(x => x.Organisation.Guid == organisationId && x.BookingReference == shareCode).FirstOrDefaultAsync();
+            .ThenInclude(x => x.Question)
+           .FirstOrDefaultAsync();
     }
 
     public async Task<IEnumerable<FormQuestion>> GetQuestionsAsync(Guid sectionId)

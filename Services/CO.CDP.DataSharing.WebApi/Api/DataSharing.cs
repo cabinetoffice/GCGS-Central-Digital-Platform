@@ -249,8 +249,8 @@ public static class EndpointExtensions
                  operation.Responses["404"].Description = "Share Codes not found.";
                  operation.Responses["500"].Description = "Internal server error.";
                  return operation;
-             })
-            .RequireAuthorization(Constants.OneLoginPolicy);
+             });
+        //.RequireAuthorization(Constants.OneLoginPolicy);
 
         app.MapGet("/share/organisations/{organisationId}/codes/{sharecode}", async (Guid organisationId, string shareCode,
             IUseCase<(Guid, string), Model.SharedConsentQuestionAnswer?> useCase) => await useCase.Execute((organisationId, shareCode))
@@ -269,8 +269,8 @@ public static class EndpointExtensions
                 operation.Responses["404"].Description = "Share Code Details not found.";
                 operation.Responses["500"].Description = "Internal server error.";
                 return operation;
-            })
-            .RequireAuthorization(Constants.OneLoginPolicy);
+            });
+            //.RequireAuthorization(Constants.OneLoginPolicy);
     }
 }
 
