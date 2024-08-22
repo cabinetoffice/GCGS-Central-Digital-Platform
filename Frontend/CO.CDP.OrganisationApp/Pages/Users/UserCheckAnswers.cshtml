@@ -22,7 +22,7 @@
                             First name
                         </dt>
                         <dd class="govuk-summary-list__value">
-                            @Model.PersonInviteStateData.FirstName
+                            @Model.PersonInviteStateData?.FirstName
                         </dd>
                         <dd class="govuk-summary-list__actions">
                             <a class="govuk-link" href="/organisation/@Model.Id/users/add-user?frm-chk-answer">
@@ -36,7 +36,7 @@
                             Last name
                         </dt>
                         <dd class="govuk-summary-list__value">
-                            @Model.PersonInviteStateData.LastName
+                            @Model.PersonInviteStateData?.LastName
                         </dd>
                         <dd class="govuk-summary-list__actions"></dd>
                     </div>
@@ -46,7 +46,7 @@
                             Email address
                         </dt>
                         <dd class="govuk-summary-list__value">
-                            @Model.PersonInviteStateData.Email
+                            @Model.PersonInviteStateData?.Email
                         </dd>
                         <dd class="govuk-summary-list__actions"></dd>
                     </div>

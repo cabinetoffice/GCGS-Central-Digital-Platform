@@ -100,7 +100,7 @@ public class UserRemoveConfirmationModelTests
 
         var redirectToPageResult = Assert.IsType<RedirectToPageResult>(result);
         Assert.Equal("UserSummary", redirectToPageResult.PageName);
-        Assert.Equal(_pageModel.Id, redirectToPageResult.RouteValues["Id"]);
+        Assert.Equal(_pageModel.Id, redirectToPageResult.RouteValues?["Id"]);
 
         _mockOrganisationClient.Verify(client => client.RemovePersonFromOrganisationAsync(_pageModel.Id, new RemovePersonFromOrganisation(_pageModel.UserId)), Times.Once);
     }
@@ -127,7 +127,7 @@ public class UserRemoveConfirmationModelTests
 
         var redirectToPageResult = Assert.IsType<RedirectToPageResult>(result);
         Assert.Equal("UserSummary", redirectToPageResult.PageName);
-        Assert.Equal(_pageModel.Id, redirectToPageResult.RouteValues["Id"]);
+        Assert.Equal(_pageModel.Id, redirectToPageResult.RouteValues?["Id"]);
         _mockOrganisationClient.Verify(client => client.RemovePersonFromOrganisationAsync(It.IsAny<Guid>(), It.IsAny<RemovePersonFromOrganisation>()), Times.Never);
     }
 

@@ -21,13 +21,13 @@ public class UserCheckAnswersModelTests
     [Fact]
     public void OnGet_PersonInviteStateDataIsNull_ShouldRedirectToAddUserPage()
     {
-        _mockSession.Setup(s => s.Get<PersonInviteState>(It.IsAny<string>())).Returns((PersonInviteState)null);
+        _mockSession.Setup(s => s.Get<PersonInviteState>(It.IsAny<string>())).Returns((PersonInviteState)null!);
 
         var result = _pageModel.OnGet();
 
         var redirectToPageResult = Assert.IsType<RedirectToPageResult>(result);
         Assert.Equal("AddUser", redirectToPageResult.PageName);
-        Assert.Equal(_pageModel.Id, redirectToPageResult.RouteValues["Id"]);
+        Assert.Equal(_pageModel.Id, redirectToPageResult.RouteValues?["Id"]);
     }
 
     [Fact]
@@ -40,7 +40,7 @@ public class UserCheckAnswersModelTests
 
         var redirectToPageResult = Assert.IsType<RedirectToPageResult>(result);
         Assert.Equal("AddUser", redirectToPageResult.PageName);
-        Assert.Equal(_pageModel.Id, redirectToPageResult.RouteValues["Id"]);
+        Assert.Equal(_pageModel.Id, redirectToPageResult.RouteValues?["Id"]);
     }
 
     [Fact]
@@ -69,13 +69,13 @@ public class UserCheckAnswersModelTests
     [Fact]
     public async Task OnPost_PersonInviteStateDataIsNull_ShouldRedirectToAddUserPage()
     {
-        _mockSession.Setup(s => s.Get<PersonInviteState>(It.IsAny<string>())).Returns((PersonInviteState)null);
+        _mockSession.Setup(s => s.Get<PersonInviteState>(It.IsAny<string>())).Returns((PersonInviteState)null!);
 
         var result = await _pageModel.OnPost();
 
         var redirectToPageResult = Assert.IsType<RedirectToPageResult>(result);
         Assert.Equal("AddUser", redirectToPageResult.PageName);
-        Assert.Equal(_pageModel.Id, redirectToPageResult.RouteValues["Id"]);
+        Assert.Equal(_pageModel.Id, redirectToPageResult.RouteValues?["Id"]);
     }
 
     [Fact]
@@ -90,7 +90,7 @@ public class UserCheckAnswersModelTests
         _mockSession.Verify(s => s.Remove(PersonInviteState.TempDataKey), Times.Once);
         var redirectToPageResult = Assert.IsType<RedirectToPageResult>(result);
         Assert.Equal("UserSummary", redirectToPageResult.PageName);
-        Assert.Equal(_pageModel.Id, redirectToPageResult.RouteValues["Id"]);
+        Assert.Equal(_pageModel.Id, redirectToPageResult.RouteValues?["Id"]);
     }
 
     [Fact]

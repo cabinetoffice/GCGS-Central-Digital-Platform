@@ -101,22 +101,22 @@ public class AddUserModel(
             scopes = [];
         }
 
-        if (scopes.Contains(ScopeAdmin)) scopes.Remove(ScopeAdmin);
-        if (scopes.Contains(ScopeEditor)) scopes.Remove(ScopeEditor);
-        if (scopes.Contains(ScopeViewer)) scopes.Remove(ScopeViewer);
+        if (scopes != null && scopes.Contains(ScopeAdmin)) scopes.Remove(ScopeAdmin);
+        if (scopes != null && scopes.Contains(ScopeEditor)) scopes.Remove(ScopeEditor);
+        if (scopes != null && scopes.Contains(ScopeViewer)) scopes.Remove(ScopeViewer);
 
         if (IsAdmin == true)
         {
-            scopes.Add(ScopeAdmin);
+            scopes?.Add(ScopeAdmin);
         }
 
         if (Role == ScopeEditor)
         {
-            scopes.Add(ScopeEditor);
+            scopes?.Add(ScopeEditor);
         }
         else
         {
-            scopes.Add(ScopeViewer);
+            scopes?.Add(ScopeViewer);
         }
 
         state.Scopes = scopes;
@@ -132,12 +132,12 @@ public class AddUserModel(
 
         if (!state.Scopes.IsNullOrEmpty())
         {
-            if (state.Scopes.Contains(ScopeAdmin))
+            if (state.Scopes != null && state.Scopes.Contains(ScopeAdmin))
             {
                 IsAdmin = true;
             }
 
-            if (state.Scopes.Contains(ScopeEditor))
+            if (state.Scopes != null && state.Scopes.Contains(ScopeEditor))
             {
                 Role = ScopeEditor;
             }
