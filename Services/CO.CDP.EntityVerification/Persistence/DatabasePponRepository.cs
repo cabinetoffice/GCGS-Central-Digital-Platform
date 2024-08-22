@@ -1,6 +1,5 @@
 using CO.CDP.EntityVerification.Events;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
 using static CO.CDP.EntityVerification.Persistence.IPponRepository.PponRepositoryException;
 
 namespace CO.CDP.EntityVerification.Persistence;

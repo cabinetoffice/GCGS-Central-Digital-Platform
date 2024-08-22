@@ -1,8 +1,5 @@
 using Microsoft.Extensions.Configuration;
 using CO.CDP.Configuration.Helpers;
-using Xunit;
-using System;
-using System.Collections.Generic;
 using System.Text;
 using System.Text.Json;
 

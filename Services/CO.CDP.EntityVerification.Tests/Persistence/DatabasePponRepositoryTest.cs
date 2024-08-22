@@ -1,8 +1,6 @@
 using CO.CDP.EntityVerification.Persistence;
-using CO.CDP.EntityVerification.Tests.Events;
 using CO.CDP.Testcontainers.PostgreSql;
 using FluentAssertions;
-using Microsoft.EntityFrameworkCore;
 using static CO.CDP.EntityVerification.Persistence.IPponRepository.PponRepositoryException;
 using static CO.CDP.EntityVerification.Tests.Ppon.PponFactories;
 
