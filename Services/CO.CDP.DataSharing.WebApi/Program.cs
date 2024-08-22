@@ -33,8 +33,8 @@ builder.Services.AddScoped<IUseCase<Guid, List<SharedConsent>?>, GetShareCodesUs
 builder.Services.AddScoped<IUseCase<(Guid, string), SharedConsentDetails?>, GetShareCodeDetailsUseCase>();
 builder.Services.AddDataSharingProblemDetails();
 builder.Services.AddJwtBearerAndApiKeyAuthentication(builder.Configuration, builder.Environment);
-builder.Services.AddAuthorization();
-//builder.Services.AddOrganisationAuthorization();
+//builder.Services.AddAuthorization();
+builder.Services.AddOrganisationAuthorization();
 
 
 builder.Services
