@@ -1,8 +1,10 @@
 @page "/organisation/{organisationId:guid}/forms/{formId:guid}/sections/{sectionId:guid}/share-code-confirmation"
 @model ShareCodeConfirmationModel
+@{
+    var backUrl = $"/organisation/{Model.OrganisationId}/forms/{Model.FormId}/sections/{Model.SectionId}/share-codes-list-view";
+}
 
-@* TODO: take to list share code page, once developed *@
-<a href="#" class="govuk-back-link">Back</a>
+<a href="@backUrl" class="govuk-back-link">Back</a>
 
 <main class="govuk-main-wrapper" id="main-content">
     <div class="govuk-grid-column-ful-width">
