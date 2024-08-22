@@ -39,15 +39,14 @@ public class UserSummaryModel(
         {
             Persons = await organisationClient.GetOrganisationPersonsAsync(Id);
 
-            AssertUserHasAdminScopeForOrganisation();
+            if (!UserHasAdminScopeForOrganisation())
+            {
+                return Redirect("/page-not-found");
+            }
 
             PersonInvites = await organisationClient.GetOrganisationPersonInvitesAsync(Id);
         }
         catch (ApiException ex) when (ex.StatusCode == 404)
-        {
-            return Redirect("/page-not-found");
-        }
-        catch (SecurityException se)
         {
             return Redirect("/page-not-found");
         }
@@ -72,7 +71,7 @@ public class UserSummaryModel(
         return Redirect("/organisation/" + Id);
     }
 
-    public void AssertUserHasAdminScopeForOrganisation()
+    public bool UserHasAdminScopeForOrganisation()
     {
         bool userIsAdminForOrg = false;
 
@@ -86,7 +85,9 @@ public class UserSummaryModel(
 
         if (!userIsAdminForOrg)
         {
-            throw new SecurityException("User does not have the required admin privileges");
+            return false;
         }
+
+        return true;
     }
 }
