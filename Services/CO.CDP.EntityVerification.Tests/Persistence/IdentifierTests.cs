@@ -1,5 +1,4 @@
 using CO.CDP.EntityVerification.Events;
-using CO.CDP.EntityVerification.Tests.Events;
 using FluentAssertions;
 using static CO.CDP.EntityVerification.Tests.Ppon.PponFactories;
 

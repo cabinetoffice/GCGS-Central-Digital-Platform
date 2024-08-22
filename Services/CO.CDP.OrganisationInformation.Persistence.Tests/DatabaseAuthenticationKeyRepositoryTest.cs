@@ -1,6 +1,5 @@
 using CO.CDP.Testcontainers.PostgreSql;
 using FluentAssertions;
-using System;
 using static CO.CDP.OrganisationInformation.Persistence.Tests.EntityFactory;
 
 namespace CO.CDP.OrganisationInformation.Persistence.Tests;

@@ -1,11 +1,8 @@
-using System;
-using System.Threading.Tasks;
 using AutoMapper;
 using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.Organisation.WebApi.UseCase;
 using Persistence = CO.CDP.OrganisationInformation.Persistence;
 using Moq;
-using Xunit;
 
 namespace CO.CDP.Organisation.WebApi.Tests.UseCase;
 
