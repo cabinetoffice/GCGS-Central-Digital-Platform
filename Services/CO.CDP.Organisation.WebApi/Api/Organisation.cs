@@ -42,7 +42,8 @@ public static class EndpointExtensions
                 Locality = "London",
                 Region = "",
                 PostalCode = "BR8 7AA",
-                CountryName = "United Kingdom"
+                CountryName = "United Kingdom",
+                Country = "GB"
             }],
             ContactPoint = new ContactPoint
             {

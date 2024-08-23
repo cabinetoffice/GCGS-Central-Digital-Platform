@@ -124,6 +124,7 @@ public class LookupOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
                     Locality = "Test City",
                     PostalCode = "12345",
                     CountryName = "Testland",
+                    Country = "AB",
                     Region = ""
                 }
             }},
@@ -169,6 +170,7 @@ public class LookupOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
                 Locality = "Test City",
                 PostalCode = "12345",
                 CountryName = "Testland",
+                Country = "AB",
                 Region = ""
             }],
             ContactPoint = new ContactPoint

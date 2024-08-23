@@ -8,10 +8,12 @@ public class Address
 
     public required string Postcode { get; set; }
 
+    public required string CountryName { get; set; }
+
     public required string Country { get; set; }
 
     public string ToHtmlString()
     {
-        return $"{AddressLine1}<br/>{TownOrCity}<br/>{Postcode}<br/>{Country}";
+        return $"{AddressLine1}<br/>{TownOrCity}<br/>{Postcode}<br/>{CountryName}";
     }
 }

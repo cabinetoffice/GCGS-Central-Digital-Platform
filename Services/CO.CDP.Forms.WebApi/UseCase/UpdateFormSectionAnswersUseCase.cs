@@ -87,8 +87,8 @@ public class UpdateFormSectionAnswersUseCase(
 
         static bool areSameAddress(Persistence.FormAddress? a, FormAddress? b) =>
             (a == null && b == null) || (a != null && b != null
-                && $"{a.StreetAddress}{a.Locality}{a.Region ?? ""}{a.PostalCode}{a.CountryName}"
-                    .Equals($"{b.StreetAddress}{b.Locality}{b.Region ?? ""}{b.PostalCode}{b.CountryName}"));
+                && $"{a.StreetAddress}{a.Locality}{a.Region ?? ""}{a.PostalCode}{a.Country}"
+                    .Equals($"{b.StreetAddress}{b.Locality}{b.Region ?? ""}{b.PostalCode}{b.Country}"));
 
         foreach (var answer in answers)
         {
@@ -111,7 +111,8 @@ public class UpdateFormSectionAnswersUseCase(
                         Locality = answer.AddressValue.Locality,
                         PostalCode = answer.AddressValue.PostalCode,
                         Region = answer.AddressValue.Region,
-                        CountryName = answer.AddressValue.CountryName
+                        CountryName = answer.AddressValue.CountryName,
+                        Country = answer.AddressValue.Country
                     };
                 }
                 answersList.Add(existingAnswer);

@@ -65,6 +65,7 @@ public class GetMyOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : ICl
                     Locality = "Test City",
                     PostalCode = "12345",
                     CountryName = "Testland",
+                    Country = "AB",
                     Region = ""
                 }
             }},
@@ -110,6 +111,7 @@ public class GetMyOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : ICl
                 Locality = "Test City",
                 PostalCode = "12345",
                 CountryName = "Testland",
+                Country = "AB",
                 Region = ""
             }],
             ContactPoint = new ContactPoint

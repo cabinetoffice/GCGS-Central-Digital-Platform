@@ -149,7 +149,8 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql) : 
                     StreetAddress = "1234 Default St",
                     Locality = "London",
                     PostalCode = "12345",
-                    CountryName = "Defaultland"
+                    CountryName = "Defaultland",
+                    Country = "AB"
                 }
             }},
             ContactPoints = [new Organisation.ContactPoint

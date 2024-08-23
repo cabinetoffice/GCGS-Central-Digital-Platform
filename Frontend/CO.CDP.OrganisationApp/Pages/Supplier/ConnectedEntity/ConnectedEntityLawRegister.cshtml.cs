@@ -124,7 +124,7 @@ public class ConnectedEntityLawRegisterModel(ISession session) : PageModel
                         }
                         else
                         {
-                            backPage = $"{AddressType.Postal}-address/{(string.Equals(state.PostalAddress?.Country, Country.UnitedKingdom, StringComparison.OrdinalIgnoreCase) ? "uk" : "non-uk")}/{ConnectedEntityId}";
+                            backPage = $"{AddressType.Postal}-address/{(string.Equals(state.PostalAddress?.Country, Country.UKCountryCode, StringComparison.OrdinalIgnoreCase) ? "uk" : "non-uk")}/{ConnectedEntityId}";
                         }
                         break;
 

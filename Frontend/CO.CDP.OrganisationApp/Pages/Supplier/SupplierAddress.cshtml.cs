@@ -34,14 +34,14 @@ public class SupplierAddressModel(IOrganisationClient organisationClient) : Page
                 || (composed.SupplierInfo.CompletedPostalAddress && AddressType == Constants.AddressType.Postal))
             {
                 var address = composed.Organisation.Addresses.FirstOrDefault(a =>
-                    a.Type == AddressType.AsApiClientAddressType() && (Address.IsNonUkAddress ? a.CountryName != Constants.Country.UnitedKingdom : a.CountryName == Constants.Country.UnitedKingdom));
+                    a.Type == AddressType.AsApiClientAddressType() && (Address.IsNonUkAddress ? a.Country != Country.UKCountryCode : a.Country == Country.UKCountryCode));
 
                 if (address != null)
                 {
                     Address.AddressLine1 = address.StreetAddress;
                     Address.TownOrCity = address.Locality;
                     Address.Postcode = address.PostalCode;
-                    Address.Country = address.CountryName;
+                    Address.Country = address.Country;
                 }
             }
         }
@@ -67,7 +67,8 @@ public class SupplierAddressModel(IOrganisationClient organisationClient) : Page
                             streetAddress: Address.AddressLine1,
                             postalCode: Address.Postcode,
                             locality: Address.TownOrCity,
-                            countryName: Address.Country,
+                            countryName: Address.CountryName,
+                            country: Address.Country,
                             type: AddressType.AsApiClientAddressType(),
                             region: null)];
 

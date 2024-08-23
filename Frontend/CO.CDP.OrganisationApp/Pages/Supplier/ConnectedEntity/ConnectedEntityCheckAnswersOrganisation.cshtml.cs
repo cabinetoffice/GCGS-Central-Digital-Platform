@@ -229,7 +229,8 @@ public class ConnectedEntityCheckAnswersOrganisationModel(
     private Address AddAddress(ConnectedEntityState.Address addressDetails, Organisation.WebApiClient.AddressType addressType)
     {
         return new Address(
-            countryName: addressDetails.Country,
+            countryName: addressDetails.CountryName,
+            country: addressDetails.Country,
             locality: addressDetails.TownOrCity,
             postalCode: addressDetails.Postcode,
             region: null,
