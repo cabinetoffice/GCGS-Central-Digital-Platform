@@ -5,7 +5,7 @@ using static CO.CDP.OrganisationInformation.Persistence.Tests.EntityFactory;
 
 namespace CO.CDP.OrganisationInformation.Persistence.Tests;
 
-public class ShareCodeRepositoryTest(PostgreSqlFixture postgreSql) : IClassFixture<PostgreSqlFixture>
+public class DatabaseShareCodeRepositoryTest(PostgreSqlFixture postgreSql) : IClassFixture<PostgreSqlFixture>
 {
 
     [Fact]
