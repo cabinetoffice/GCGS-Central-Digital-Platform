@@ -16,7 +16,7 @@ public class GetShareCodeDetailsUseCaseTest(AutoMapperFixture mapperFixture) : I
     private GetShareCodeDetailsUseCase UseCase => new(_formRepository.Object, mapperFixture.Mapper);
 
     [Fact]
-    public async Task ItReturnsEmptyIfNoSharedCodeIsFound()
+    public async Task ItReturnsNullIfNoSharedCodeIsFound()
     {
         var found = await UseCase.Execute((It.IsAny<Guid>(), It.IsAny<string>()));
 
@@ -42,9 +42,9 @@ public class GetShareCodeDetailsUseCaseTest(AutoMapperFixture mapperFixture) : I
 
         var result = await UseCase.Execute((organisationId, shareCode));
 
-        result?.Should().NotBeNull();
+        result.Should().NotBeNull();
 
-        result?.As<CO.CDP.DataSharing.WebApi.Model.SharedConsentDetails>().SubmittedAt.Should().Be(sharedConsentDetails.SubmittedAt);
-        result?.As<CO.CDP.DataSharing.WebApi.Model.SharedConsentDetails>().ShareCode.Should().Be(sharedConsentDetails.ShareCode);
+        result.As<CO.CDP.DataSharing.WebApi.Model.SharedConsentDetails>().SubmittedAt.Should().Be(sharedConsentDetails.SubmittedAt);
+        result.As<CO.CDP.DataSharing.WebApi.Model.SharedConsentDetails>().ShareCode.Should().Be(sharedConsentDetails.ShareCode);
     }
 }
