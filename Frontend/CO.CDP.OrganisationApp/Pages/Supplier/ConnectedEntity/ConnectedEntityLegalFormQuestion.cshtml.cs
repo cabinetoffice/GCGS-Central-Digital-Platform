@@ -61,6 +61,11 @@ public class ConnectedEntityLegalFormQuestionModel(ISession session) : PageModel
             return Page();
         }
 
+        if (state.HasLegalForm != HasLegalForm)
+        {
+            RedirectToCheckYourAnswer = false;
+        }
+
         state.HasLegalForm = HasLegalForm;
         state.LegalForm = LegalFormName;
         if (state.HasLegalForm == false)
