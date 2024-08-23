@@ -1,16 +1,20 @@
 using System.Text.Json;
 using CO.CDP.MQ.Database;
+using CO.CDP.Testcontainers.PostgreSql;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace CO.CDP.MQ.Tests.Database;
 
-public class DatabasePublisherContractTest : PublisherContractTest
+public class DatabasePublisherContractTest(PostgreSqlFixture postgreSql)
+    : PublisherContractTest, IClassFixture<PostgreSqlFixture>
 {
-    private readonly FakeOutboxMessageRepository _outboxMessageRepository = new();
+    private readonly DatabaseOutboxMessageRepository<TestDbContext> _outboxMessages = new(postgreSql.TestDbContext());
 
     protected override async Task<T> waitForOneMessage<T>()
     {
-        var message = await Task.Run(() => _outboxMessageRepository.Messages.First());
+        var messages = await _outboxMessages.FindOldest(count: 1);
+        var message = messages.First();
         return Deserialize<T>(message) ??
                throw new Exception($"Failed to deserialize the message: {message}.");
     }
@@ -18,7 +22,7 @@ public class DatabasePublisherContractTest : PublisherContractTest
     protected override Task<IPublisher> CreatePublisher()
     {
         return Task.FromResult<IPublisher>(new DatabasePublisher(
-            _outboxMessageRepository,
+            _outboxMessages,
             LoggerFactory.Create(_ => { }).CreateLogger<DatabasePublisher>()
         ));
     }
@@ -32,21 +36,5 @@ public class DatabasePublisherContractTest : PublisherContractTest
             default:
                 throw new NotImplementedException($"Message type not implemented: `{message.Type}`.");
         }
-    }
-}
-
-class FakeOutboxMessageRepository : IOutboxMessageRepository
-{
-    public List<OutboxMessage> Messages { get; set; } = new();
-
-    public Task SaveAsync(OutboxMessage message)
-    {
-        Messages.Add(message);
-        return Task.CompletedTask;
-    }
-
-    public Task<List<OutboxMessage>> FindOldest(int count = 10)
-    {
-        throw new NotImplementedException();
     }
 }
