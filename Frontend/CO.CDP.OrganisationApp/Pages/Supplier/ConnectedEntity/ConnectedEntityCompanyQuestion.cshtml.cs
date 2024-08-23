@@ -61,6 +61,11 @@ public class ConnectedEntityCompanyQuestionModel(ISession session) : PageModel
             return Page();
         }
 
+        if (state.HasCompaniesHouseNumber != HasCompaniesHouseNumber)
+        {
+            RedirectToCheckYourAnswer = false;
+        }
+
         state.HasCompaniesHouseNumber = HasCompaniesHouseNumber;
         state.CompaniesHouseNumber = CompaniesHouseNumber;
         if (HasCompaniesHouseNumber == true)

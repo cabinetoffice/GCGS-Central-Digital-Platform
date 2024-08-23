@@ -28,6 +28,7 @@ public class ConnectedEntityCheckAnswersCommon
             InsolvencyDate = connectedEntity.Organisation?.InsolvencyDate,
             LawRegistered = connectedEntity.Organisation?.LawRegistered,
             LegalForm = connectedEntity.Organisation?.RegisteredLegalForm,
+            HasLegalForm = (connectedEntity.Organisation?.RegisteredLegalForm == null ? null : (!string.IsNullOrEmpty(connectedEntity.Organisation?.RegisteredLegalForm))),
             OrganisationName = connectedEntity.Organisation?.Name,
             PostalAddress = (postalAddress != null ? new ConnectedEntityState.Address
             {
@@ -38,6 +39,7 @@ public class ConnectedEntityCheckAnswersCommon
                 TownOrCity = connectedEntity.Addresses?.FirstOrDefault(a => a.Type == Organisation.WebApiClient.AddressType.Postal)?.Locality
             } : null),
             RegistrationDate = connectedEntity.RegisteredDate,
+            HasRegistartionDate = connectedEntity.RegisteredDate.HasValue,
             RegisterName = connectedEntity.RegisterName,
             RegisteredAddress = (registerAddress != null ? new ConnectedEntityState.Address
             {
