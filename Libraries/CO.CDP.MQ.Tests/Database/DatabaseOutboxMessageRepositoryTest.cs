@@ -9,7 +9,7 @@ public class DatabaseOutboxMessageRepositoryTest(PostgreSqlFixture postgreSql) :
     [Fact]
     public async Task ItPersistsAnOutgoingMessage()
     {
-        var repository = new DatabaseOutboxMessageRepository();
+        var repository = CreateDatabaseOutboxMessageRepository();
 
         var message = new OutboxMessage
         {
@@ -26,53 +26,33 @@ public class DatabaseOutboxMessageRepositoryTest(PostgreSqlFixture postgreSql) :
     [Fact]
     public async Task ItFindsTheOldestOutgoingMessage()
     {
-        var repository = new DatabaseOutboxMessageRepository();
+        var repository = CreateDatabaseOutboxMessageRepository();
 
         List<OutboxMessage> messages =
         [
-            new OutboxMessage
-            {
-                Message = "Message 2",
-                Type = "String",
-                CreatedOn = DateTimeOffset.Parse("2021-04-05 11:11:11"),
-            },
-            new OutboxMessage
-            {
-                Message = "Message 3",
-                Type = "String",
-                CreatedOn = DateTimeOffset.Parse("2021-04-05 10:10:10"),
-            },
-            new OutboxMessage
-            {
-                Message = "Message 1",
-                Type = "String",
-                CreatedOn = DateTimeOffset.Parse("2021-04-05 09:09:09"),
-            },
+            new OutboxMessage { Message = "Message 3", CreatedOn = SameDayAt("11:11:11"), Type = "String" },
+            new OutboxMessage { Message = "Message 2", CreatedOn = SameDayAt("10:10:10"), Type = "String" },
+            new OutboxMessage { Message = "Message 1", CreatedOn = SameDayAt("09:09:09"), Type = "String" }
         ];
         foreach (var message in messages)
         {
             await repository.SaveAsync(message);
         }
 
-        var foundMessage = await repository.FindOldest(2);
+        var foundMessages = await repository.FindOldest(2);
 
-        foundMessage.Should().BeEquivalentTo([messages[2], messages[0]]);
-    }
-}
-
-class DatabaseOutboxMessageRepository : IOutboxMessageRepository
-{
-    private List<OutboxMessage> Messages { get; set; } = new();
-
-    public Task SaveAsync(OutboxMessage message)
-    {
-        Messages.Add(message);
-        Messages.Sort((l, r) => l.CreatedOn.CompareTo(l.UpdatedOn));
-        return Task.CompletedTask;
+        foundMessages.Count.Should().Be(2);
+        foundMessages[0].Message.Should().Be("Message 1");
+        foundMessages[1].Message.Should().Be("Message 2");
     }
 
-    public Task<List<OutboxMessage>> FindOldest(int count = 10)
+    private static DateTimeOffset SameDayAt(string time)
     {
-        return Task.FromResult(Messages.Slice(0, count));
+        return DateTimeOffset.Parse($"2021-04-05T{time}+00:00");
+    }
+
+    private DatabaseOutboxMessageRepository<TestDbContext> CreateDatabaseOutboxMessageRepository()
+    {
+        return new DatabaseOutboxMessageRepository<TestDbContext>(postgreSql.TestDbContext());
     }
 }

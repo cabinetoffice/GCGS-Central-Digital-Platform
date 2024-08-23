@@ -24,6 +24,7 @@
         <PackageReference Include="Moq" Version="4.20.70"/>
         <ProjectReference Include="..\CO.CDP.MQ\CO.CDP.MQ.csproj"/>
         <ProjectReference Include="..\..\TestKit\CO.CDP.Testcontainers.PostgreSql\CO.CDP.Testcontainers.PostgreSql.csproj"/>
+        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.4" />
     </ItemGroup>
 
     <ItemGroup>
