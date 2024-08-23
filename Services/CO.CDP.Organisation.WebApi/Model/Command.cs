@@ -1,7 +1,6 @@
 using CO.CDP.OrganisationInformation;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
-using CO.CDP.OrganisationInformation.Persistence;
 using Address = CO.CDP.OrganisationInformation.Address;
 
 namespace CO.CDP.Organisation.WebApi.Model;
