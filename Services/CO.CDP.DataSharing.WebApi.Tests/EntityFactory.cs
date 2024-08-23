@@ -48,7 +48,7 @@ internal static class EntityFactory
             SubmissionState = SubmissionState.Draft,
             SubmittedAt = DateTime.UtcNow,
             FormVersionId = string.Empty,
-            BookingReference = string.Empty
+            ShareCode = string.Empty
         };
     }
 }

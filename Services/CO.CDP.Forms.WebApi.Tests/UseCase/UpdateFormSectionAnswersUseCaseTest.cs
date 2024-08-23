@@ -301,7 +301,7 @@ public class UpdateFormSectionAnswersUseCaseTest(AutoMapperFixture mapperFixture
             SubmissionState = Persistence.SubmissionState.Draft,
             SubmittedAt = null,
             FormVersionId = "202405",
-            BookingReference = null
+            ShareCode = null
         };
     }
 }

@@ -10,12 +10,10 @@ public class DataSharingProfile : Profile
     {
         CreateMap<Persistence.SharedConsent, ShareReceipt>()
            .ForMember(m => m.FormId, o => o.MapFrom(m => m.Guid))
-           .ForMember(m => m.FormVersionId, o => o.MapFrom(m => m.FormVersionId))
-           .ForMember(m => m.ShareCode, o => o.MapFrom(m => m.BookingReference));
+           .ForMember(m => m.FormVersionId, o => o.MapFrom(m => m.FormVersionId));
 
         CreateMap<Persistence.SharedConsent, Model.SharedConsent>()
-          .ForMember(m => m.SubmittedAt, o => o.MapFrom(m => m.SubmittedAt))
-          .ForMember(m => m.ShareCode, o => o.MapFrom(m => m.BookingReference));
+          .ForMember(m => m.SubmittedAt, o => o.MapFrom(m => m.SubmittedAt));
 
         CreateMap<Persistence.SharedConsentQuestionAnswer, Model.SharedConsentQuestionAnswer>()
           .ForMember(m => m.QuestionId, o => o.MapFrom(m => m.QuestionId))

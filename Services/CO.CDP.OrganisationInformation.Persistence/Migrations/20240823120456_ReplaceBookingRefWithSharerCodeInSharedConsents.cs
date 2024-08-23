@@ -5,24 +5,24 @@
 namespace CO.CDP.OrganisationInformation.Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class AddSharerCodetoSharedConsents : Migration
+    public partial class ReplaceBookingRefWithSharerCodeInSharedConsents : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<string>(
-                name: "share_code",
+            migrationBuilder.RenameColumn(
+                name: "booking_reference",
                 table: "shared_consents",
-                type: "text",
-                nullable: true);
+                newName: "share_code");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
+            migrationBuilder.RenameColumn(
                 name: "share_code",
-                table: "shared_consents");
+                table: "shared_consents",
+                newName: "booking_reference");
         }
     }
 }

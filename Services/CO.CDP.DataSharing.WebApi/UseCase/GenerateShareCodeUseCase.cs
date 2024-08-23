@@ -30,7 +30,7 @@ public class GenerateShareCodeUseCase(
         }
 
         var shareCode = ShareCodeExtensions.GenerateShareCode();
-        result.BookingReference = shareCode;
+        result.ShareCode = shareCode;
         result.SubmittedAt = DateTime.UtcNow;
         result.SubmissionState = SubmissionState.Submitted;
 

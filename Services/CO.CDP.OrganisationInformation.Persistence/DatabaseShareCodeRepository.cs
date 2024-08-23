@@ -22,7 +22,7 @@ public class DatabaseShareCodeRepository(OrganisationInformationContext context)
     public async Task<SharedConsent?> GetByShareCode(string sharecode)
     {
         return await context.SharedConsents
-            .Where(sc => sc.BookingReference == sharecode)
+            .Where(sc => sc.ShareCode == sharecode)
             .Include(sc => sc.Organisation)
                 .ThenInclude(o => o.Identifiers)
             .Include(sc => sc.Organisation)
@@ -40,7 +40,6 @@ public class DatabaseShareCodeRepository(OrganisationInformationContext context)
                     .ThenInclude(s => s.Questions)
             .FirstOrDefaultAsync();
     }
-
 
     public void Dispose()
     {

@@ -32,7 +32,7 @@ public class GetShareCodesUseCaseTest(AutoMapperFixture mapperFixture) : IClassF
         var sharedConsent = EntityFactory.GetSharedConsent(organisationId: organisationId, organisationGuid: organisationGuid, formId: formId);
 
         var shareCode = ShareCodeExtensions.GenerateShareCode();
-        sharedConsent.BookingReference = shareCode;
+        sharedConsent.ShareCode = shareCode;
         sharedConsent.SubmissionState = SubmissionState.Submitted;
         sharedConsent.SubmittedAt = DateTime.UtcNow;
 
@@ -43,7 +43,7 @@ public class GetShareCodesUseCaseTest(AutoMapperFixture mapperFixture) : IClassF
         result?.Should().NotBeEmpty();
         result?.Should().HaveCount(1);
 
-        result?.First().As<CO.CDP.DataSharing.WebApi.Model.SharedConsent>().SubmittedAt.Should().Be(sharedConsent.SubmittedAt);
-        result?.First().As<CO.CDP.DataSharing.WebApi.Model.SharedConsent>().ShareCode.Should().Be(sharedConsent.BookingReference);
+        result?.First().As<Model.SharedConsent>().SubmittedAt.Should().Be(sharedConsent.SubmittedAt);
+        result?.First().As<Model.SharedConsent>().ShareCode.Should().Be(sharedConsent.ShareCode);
     }
 }

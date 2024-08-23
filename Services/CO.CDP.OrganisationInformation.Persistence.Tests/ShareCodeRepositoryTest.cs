@@ -34,7 +34,7 @@ public class ShareCodeRepositoryTest(PostgreSqlFixture postgreSql) : IClassFixtu
         found.Should().NotBeNull();
         found.As<SharedConsent>().OrganisationId.Should().Be(sharedConsent.OrganisationId);
         found.As<SharedConsent>().SubmissionState.Should().Be(SubmissionState.Draft);
-        found.As<SharedConsent>().BookingReference.Should().BeNull();
+        found.As<SharedConsent>().ShareCode.Should().BeNull();
     }
 
     [Fact]
@@ -54,7 +54,7 @@ public class ShareCodeRepositoryTest(PostgreSqlFixture postgreSql) : IClassFixtu
         Random rand = new Random();
         var bookingref = rand.Next(10000000, 99999999).ToString();
 
-        sharedConsent.BookingReference = bookingref;
+        sharedConsent.ShareCode = bookingref;
         sharedConsent.SubmissionState = SubmissionState.Submitted;
         sharedConsent.SubmittedAt = DateTime.UtcNow;
 
@@ -71,7 +71,7 @@ public class ShareCodeRepositoryTest(PostgreSqlFixture postgreSql) : IClassFixtu
 
         found.First().As<SharedConsent>().OrganisationId.Should().Be(sharedConsent.OrganisationId);
         found.First().As<SharedConsent>().SubmissionState.Should().Be(SubmissionState.Submitted);
-        found.First().As<SharedConsent>().BookingReference.Should().Be(bookingref);
+        found.First().As<SharedConsent>().ShareCode.Should().Be(bookingref);
     }
 
 
@@ -98,7 +98,7 @@ public class ShareCodeRepositoryTest(PostgreSqlFixture postgreSql) : IClassFixtu
         sharedConsent.SubmissionState = SubmissionState.Submitted;
         sharedConsent.SubmittedAt = DateTime.UtcNow;
         var shareCode = "EXISTENTCODE";
-        sharedConsent.BookingReference = shareCode;
+        sharedConsent.ShareCode = shareCode;
 
         await using var context = postgreSql.OrganisationInformationContext();
         await context.SharedConsents.AddAsync(sharedConsent);
@@ -109,9 +109,9 @@ public class ShareCodeRepositoryTest(PostgreSqlFixture postgreSql) : IClassFixtu
         var foundConsent = await repository.GetByShareCode(shareCode);
 
         foundConsent.Should().NotBeNull();
-        foundConsent!.BookingReference.Should().Be(shareCode);
-        foundConsent.Organisation.Name.Should().StartWith("Acme Corporation");
-        foundConsent.Organisation.Identifiers.Should().ContainSingle(i => i.LegalName == "Acme Corporation Ltd");
+        foundConsent!.ShareCode.Should().Be(shareCode);
+        foundConsent.Organisation.Name.Should().StartWith("New Corporation");
+        foundConsent.Organisation.Identifiers.Should().ContainSingle(i => i.LegalName == "New Corporation Ltd");
         foundConsent.Organisation.ContactPoints.Should().ContainSingle(cp => cp.Name == "Procurement Team");
 
         var registeredAddress = foundConsent.Organisation.Addresses.FirstOrDefault(a => a.Type == AddressType.Registered);
@@ -152,7 +152,7 @@ public class ShareCodeRepositoryTest(PostgreSqlFixture postgreSql) : IClassFixtu
             SubmissionState = SubmissionState.Draft,
             SubmittedAt = null,
             FormVersionId = "202404",
-            BookingReference = null
+            ShareCode = null
         };
     }
 
@@ -168,52 +168,6 @@ public class ShareCodeRepositoryTest(PostgreSqlFixture postgreSql) : IClassFixtu
             Sections = new List<FormSection>()
         };
     }
-
-    private static Organisation GivenOrganisation()
-    {
-        return new Organisation
-        {
-            Guid = Guid.NewGuid(),
-            Name = "Acme Corporation " + Guid.NewGuid().ToString(), // Ensure unique name
-            Tenant = GivenTenant(),
-            Identifiers = new List<Organisation.Identifier>
-        {
-            new Organisation.Identifier
-            {
-                IdentifierId = Guid.NewGuid().ToString(), // Generate a unique IdentifierId
-                Scheme = "CDP-PPON",
-                LegalName = "Acme Corporation Ltd",
-                Uri = "https://cdp.cabinetoffice.gov.uk/organisations/" + Guid.NewGuid().ToString(), // Ensure unique URI
-                Primary = true
-            }
-        },
-            ContactPoints = new List<Organisation.ContactPoint>
-        {
-            new Organisation.ContactPoint
-            {
-                Name = "Procurement Team",
-                Email = "info@example.com",
-                Telephone = "+441234567890"
-            }
-        },
-            Addresses = new List<Organisation.OrganisationAddress>
-        {
-            new Organisation.OrganisationAddress
-            {
-                Type = AddressType.Registered,
-                Address = new OrganisationInformation.Persistence.Address
-                {
-                    StreetAddress = "82 St. John’s Road",
-                    Locality = "CHESTER",
-                    Region = "Lancashire",
-                    PostalCode = "CH43 7UR",
-                    CountryName = "United Kingdom"
-                }
-            }
-        }
-        };
-    }
-
     private static Tenant GivenTenant()
     {
         return new Tenant
@@ -293,6 +247,52 @@ public class ShareCodeRepositoryTest(PostgreSqlFixture postgreSql) : IClassFixtu
         section.Questions.Add(question);
         return question;
     }
+
+    private static Organisation GivenOrganisation()
+    {
+        return new Organisation
+        {
+            Guid = Guid.NewGuid(),
+            Name = "New Corporation " + Guid.NewGuid().ToString(),
+            Tenant = GivenTenant(),
+            Identifiers = new List<Organisation.Identifier>
+        {
+            new Organisation.Identifier
+            {
+                IdentifierId = Guid.NewGuid().ToString(),
+                Scheme = "CDP-PPON",
+                LegalName = "New Corporation Ltd",
+                Uri = "https://cdp.cabinetoffice.gov.uk/organisations/" + Guid.NewGuid().ToString(),
+                Primary = true
+            }
+        },
+            ContactPoints = new List<Organisation.ContactPoint>
+        {
+            new Organisation.ContactPoint
+            {
+                Name = "Procurement Team",
+                Email = "info@example.com",
+                Telephone = "+441234567890"
+            }
+        },
+            Addresses = new List<Organisation.OrganisationAddress>
+        {
+            new Organisation.OrganisationAddress
+            {
+                Type = AddressType.Registered,
+                Address = new OrganisationInformation.Persistence.Address
+                {
+                    StreetAddress = "82 St. John’s Road",
+                    Locality = "CHESTER",
+                    Region = "Lancashire",
+                    PostalCode = "CH43 7UR",
+                    CountryName = "United Kingdom"
+                }
+            }
+        }
+        };
+    }
+
 
     private IShareCodeRepository ShareCodeRepository()
     {

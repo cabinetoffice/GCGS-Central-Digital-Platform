@@ -209,7 +209,7 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
         found.Should().NotBeNull();
         found.As<SharedConsent>().OrganisationId.Should().Be(sharedConsent.OrganisationId);
         found.As<SharedConsent>().SubmissionState.Should().Be(SubmissionState.Draft);
-        found.As<SharedConsent>().BookingReference.Should().BeNull();
+        found.As<SharedConsent>().ShareCode.Should().BeNull();
     }
 
     [Fact]
@@ -575,7 +575,7 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
             SubmissionState = SubmissionState.Draft,
             SubmittedAt = DateTimeOffset.UtcNow,
             FormVersionId = "1.0",
-            BookingReference = string.Empty,
+            ShareCode = string.Empty,
             CreatedOn = DateTimeOffset.UtcNow,
             UpdatedOn = DateTimeOffset.UtcNow
         };
@@ -750,7 +750,7 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
             SubmissionState = SubmissionState.Draft,
             SubmittedAt = null,
             FormVersionId = "202404",
-            BookingReference = null
+            ShareCode = null
         };
     }
 
