@@ -1,6 +1,5 @@
 using AutoMapper;
 using CO.CDP.DataSharing.WebApi.Model;
-using CO.CDP.OrganisationInformation.Persistence.Forms;
 using Persistence = CO.CDP.OrganisationInformation.Persistence.Forms;
 
 namespace CO.CDP.DataSharing.WebApi.AutoMapper;
@@ -48,7 +47,7 @@ public class CustomResolver : IValueResolver<Persistence.SharedConsentQuestionAn
         }
     }
 
-    private string ToHtmlString(FormAddress source)
+    private string ToHtmlString(Persistence.FormAddress source)
     {
         return $"{source.StreetAddress}<br/>{source.Locality}<br/>{source.PostalCode}<br/>{source.Region}<br/>{source.CountryName}";
     }

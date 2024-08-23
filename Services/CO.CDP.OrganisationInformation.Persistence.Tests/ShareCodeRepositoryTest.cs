@@ -250,7 +250,9 @@ public class ShareCodeRepositoryTest(PostgreSqlFixture postgreSql) : IClassFixtu
         var answer = new FormAnswer
         {
             Guid = Guid.NewGuid(),
+            QuestionId = question.Id,
             Question = question,
+            FormAnswerSetId = answerSet.Id,
             FormAnswerSet = answerSet,
             BoolValue = true
         };
