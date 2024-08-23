@@ -323,4 +323,3 @@ services:
       EntityVerificationDatabase__Password: 'cdp123'
       Organisation__Authority: '${Organisation__Authority:-http://gateway:${CDP_AUTHORITY_PORT:-8092}}'
       VERSION: dev-docker
-
