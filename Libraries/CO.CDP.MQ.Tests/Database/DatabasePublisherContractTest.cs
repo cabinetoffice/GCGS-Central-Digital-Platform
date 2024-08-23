@@ -44,4 +44,9 @@ class FakeOutboxMessageRepository : IOutboxMessageRepository
         Messages.Add(message);
         return Task.CompletedTask;
     }
+
+    public Task<List<OutboxMessage>> FindOldest(int count = 10)
+    {
+        throw new NotImplementedException();
+    }
 }
