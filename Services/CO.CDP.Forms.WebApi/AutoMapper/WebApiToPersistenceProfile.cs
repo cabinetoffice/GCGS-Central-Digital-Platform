@@ -27,7 +27,9 @@ public class WebApiToPersistenceProfile : Profile
 
         CreateMap<Model.FormAnswer, Persistence.FormAnswer>()
             .ForMember(dest => dest.Guid, opt => opt.MapFrom(src => src.Id))
+            .ForMember(dest => dest.QuestionId, opt => opt.Ignore())
             .ForMember(dest => dest.Question, opt => opt.Ignore())
+            .ForMember(dest => dest.FormAnswerSetId, opt => opt.Ignore())
             .ForMember(dest => dest.FormAnswerSet, opt => opt.Ignore())
             .ForMember(dest => dest.CreatedOn, opt => opt.Ignore())
             .ForMember(dest => dest.UpdatedOn, opt => opt.Ignore())

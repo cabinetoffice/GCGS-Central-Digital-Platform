@@ -231,7 +231,6 @@ public static class EndpointExtensions
             })
             .RequireAuthorization(Constants.OrganisationApiKeyPolicy);
 
-
         app.MapGet("/share/organisations/{organisationId}/codes", async (Guid organisationId,
             IUseCase<Guid, List<Model.SharedConsent>?> useCase) => await useCase.Execute(organisationId)
              .AndThen(sharedCodes => sharedCodes != null ? Results.Ok(sharedCodes) : Results.NotFound()))
@@ -250,6 +249,27 @@ public static class EndpointExtensions
                  operation.Responses["500"].Description = "Internal server error.";
                  return operation;
              })
+            .RequireAuthorization(Constants.OneLoginPolicy);
+
+        app.MapGet("/share/organisations/{organisationId}/codes/{sharecode}",
+                async (Guid organisationId, string shareCode, IUseCase<(Guid, string), SharedConsentDetails?> useCase)
+                    => await useCase.Execute((organisationId, shareCode))
+            .AndThen(sharedCodeDetails => sharedCodeDetails != null ? Results.Ok(sharedCodeDetails) : Results.NotFound()))
+            .Produces<Model.SharedConsentDetails?>(StatusCodes.Status200OK, "application/json")
+            .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
+            .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
+            .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError)
+            .WithOpenApi(operation =>
+            {
+                operation.OperationId = "GetShareCodeDetails";
+                operation.Description = "Get Share Code details.";
+                operation.Summary = "Get Share Code details for an Organisation and a Share code.";
+                operation.Responses["200"].Description = "Share Code Details.";
+                operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
+                operation.Responses["404"].Description = "Share Code Details not found.";
+                operation.Responses["500"].Description = "Internal server error.";
+                return operation;
+            })
             .RequireAuthorization(Constants.OneLoginPolicy);
     }
 }

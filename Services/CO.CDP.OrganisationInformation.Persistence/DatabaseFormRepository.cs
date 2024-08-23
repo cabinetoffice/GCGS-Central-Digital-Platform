@@ -90,6 +90,50 @@ public class DatabaseFormRepository(OrganisationInformationContext context) : IF
             .OrderByDescending(y => y.SubmittedAt).ToListAsync();
     }
 
+    public async Task<SharedConsentDetails?> GetShareCodeDetailsAsync(Guid organisationId, string shareCode)
+    {
+        var query = from s in context.SharedConsents
+                    join fas in context.FormAnswerSets on s.Id equals fas.SharedConsentId
+                    join fs in context.Set<FormSection>() on fas.SectionId equals fs.Id
+                    join fa in context.Set<FormAnswer>() on fas.Id equals fa.FormAnswerSetId
+                    join fq in context.Set<FormQuestion>() on fa.QuestionId equals fq.Id
+                    join o in context.Organisations on s.OrganisationId equals o.Id
+                    where
+                        fs.Type == FormSectionType.Declaration
+                        && fas.Deleted == false
+                        && o.Guid == organisationId
+                        && s.BookingReference == shareCode
+                    select new
+                    {
+                        FormAnswerSetId = fas.Id,
+                        FormAnswerSetUpdate=fas.UpdatedOn,
+                        s.BookingReference,
+                        s.SubmittedAt,
+                        QuestionId = fq.Guid,
+                        QuestionType = fq.Type,
+                        fq.SummaryTitle,
+                        FormAnswer = fa
+                    };
+
+        var data = await query.ToListAsync();
+        var sharedCodeResult = data.OrderByDescending(x=>x.FormAnswerSetUpdate).GroupBy(g => new { g.BookingReference, g.FormAnswerSetId, g.SubmittedAt }).FirstOrDefault();
+        if (sharedCodeResult == null) return null;
+
+        return new SharedConsentDetails
+        {
+            ShareCode = sharedCodeResult.Key.BookingReference,
+            SubmittedAt = sharedCodeResult.Key.SubmittedAt!.Value,
+            QuestionAnswers = sharedCodeResult.Select(a =>
+            new SharedConsentQuestionAnswer
+            {
+                QuestionId = a.QuestionId,
+                QuestionType = a.QuestionType,
+                Title = a.SummaryTitle,
+                Answer = a.FormAnswer
+            })
+        };
+    }
+
     public async Task<IEnumerable<FormQuestion>> GetQuestionsAsync(Guid sectionId)
     {
         return await context.Set<FormQuestion>().Where(q => q.Section.Guid == sectionId).ToListAsync();
