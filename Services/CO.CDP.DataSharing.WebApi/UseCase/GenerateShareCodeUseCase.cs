@@ -11,6 +11,7 @@ public class GenerateShareCodeUseCase(
     IClaimService claimService,
     IOrganisationRepository organisationRepository,
     IFormRepository formRepository,
+    IShareCodeRepository shareCodeRepository,
     IMapper mapper)
     : IUseCase<ShareRequest, ShareReceipt>
 {
@@ -22,7 +23,7 @@ public class GenerateShareCodeUseCase(
             throw new InvalidOrganisationRequestedException("Invalid Organisation requested.");
         }
 
-        var result = await formRepository.GetSharedConsentDraftAsync(shareRequest.FormId, shareRequest.OrganisationId);
+        var result = await shareCodeRepository.GetSharedConsentDraftAsync(shareRequest.FormId, shareRequest.OrganisationId);
         if (result == null)
         {
             throw new SharedConsentNotFoundException("Shared Consent not found.");

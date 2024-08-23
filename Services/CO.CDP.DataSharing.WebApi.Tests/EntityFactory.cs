@@ -17,7 +17,7 @@ internal static class EntityFactory
 
     internal static OrganisationInformation.Persistence.Forms.SharedConsent GetSharedConsent(int organisationId, Guid organisationGuid, Guid formId)
     {
-        var form = new Form
+        var form = new CO.CDP.OrganisationInformation.Persistence.Forms.Form
         {
             Guid = formId,
             Name = string.Empty,

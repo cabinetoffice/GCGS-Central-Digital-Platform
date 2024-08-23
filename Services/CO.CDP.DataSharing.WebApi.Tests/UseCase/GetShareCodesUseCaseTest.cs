@@ -10,8 +10,8 @@ namespace CO.CDP.DataSharing.WebApi.Tests.UseCase;
 
 public class GetShareCodesUseCaseTest(AutoMapperFixture mapperFixture) : IClassFixture<AutoMapperFixture>
 {
-    private readonly Mock<IFormRepository> _formRepository = new();
-    private GetShareCodesUseCase UseCase => new(_formRepository.Object, mapperFixture.Mapper);
+    private readonly Mock<IShareCodeRepository> _shareCodeRepository = new();
+    private GetShareCodesUseCase UseCase => new(_shareCodeRepository.Object, mapperFixture.Mapper);
 
     [Fact]
     public async Task ItReturnsEmptyIfNoSharedCodeIsFound()
@@ -36,7 +36,7 @@ public class GetShareCodesUseCaseTest(AutoMapperFixture mapperFixture) : IClassF
         sharedConsent.SubmissionState = SubmissionState.Submitted;
         sharedConsent.SubmittedAt = DateTime.UtcNow;
 
-        _formRepository.Setup(r => r.GetShareCodesAsync(shareRequest.OrganisationId)).ReturnsAsync(new List<OrganisationInformation.Persistence.Forms.SharedConsent> { sharedConsent });
+        _shareCodeRepository.Setup(r => r.GetShareCodesAsync(shareRequest.OrganisationId)).ReturnsAsync(new List<OrganisationInformation.Persistence.Forms.SharedConsent> { sharedConsent });
 
         var result = await UseCase.Execute(sharedConsent.Organisation.Guid);
 

@@ -67,13 +67,6 @@ public class DatabaseFormRepository(OrganisationInformationContext context) : IF
             .FirstOrDefaultAsync(s => s.Guid == sectionId);
     }
 
-    public async Task<SharedConsent?> GetSharedConsentDraftAsync(Guid formId, Guid organisationId)
-    {
-        return await context.Set<SharedConsent>()
-            .Where(x => x.SubmissionState == SubmissionState.Draft)
-            .FirstOrDefaultAsync(s => s.Form.Guid == formId && s.Organisation.Guid == organisationId);
-    }
-
     public async Task<SharedConsent?> GetSharedConsentDraftWithAnswersAsync(Guid formId, Guid organisationId)
     {
         return await context.Set<SharedConsent>()

@@ -20,6 +20,7 @@ public class SharedConsent : IEntityDate
     public DateTimeOffset? SubmittedAt { get; set; }
     public required string FormVersionId { get; init; }
     public string? BookingReference { get; set; }
+    public string? ShareCode { get; set; }
     public DateTimeOffset CreatedOn { get; set; }
     public DateTimeOffset UpdatedOn { get; set; }
 }

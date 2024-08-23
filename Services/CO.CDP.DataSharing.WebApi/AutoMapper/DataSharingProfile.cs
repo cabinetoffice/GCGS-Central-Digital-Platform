@@ -2,6 +2,7 @@ using AutoMapper;
 using CO.CDP.DataSharing.WebApi.Model;
 using CO.CDP.OrganisationInformation.Persistence.Forms;
 using Persistence = CO.CDP.OrganisationInformation.Persistence.Forms;
+
 namespace CO.CDP.DataSharing.WebApi.AutoMapper;
 
 public class DataSharingProfile : Profile
@@ -24,7 +25,7 @@ public class DataSharingProfile : Profile
 
         CreateMap<Persistence.SharedConsentDetails, Model.SharedConsentDetails>()
           .ForMember(m => m.SubmittedAt, o => o.MapFrom(m => m.SubmittedAt))
-          .ForMember(m => m.ShareCode, o => o.MapFrom(m => m.ShareCode));        
+          .ForMember(m => m.ShareCode, o => o.MapFrom(m => m.ShareCode));
     }
 }
 public class CustomResolver : IValueResolver<Persistence.SharedConsentQuestionAnswer, Model.SharedConsentQuestionAnswer, string?>

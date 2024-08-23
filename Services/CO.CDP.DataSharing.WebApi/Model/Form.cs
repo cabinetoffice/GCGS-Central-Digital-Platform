@@ -3,13 +3,13 @@ using System.Text.Json.Serialization;
 namespace CO.CDP.DataSharing.WebApi.Model;
 
 [JsonConverter(typeof(JsonStringEnumConverter))]
-internal enum FormSubmissionState
+public enum FormSubmissionState
 {
     Draft,
     Submitted
 }
 
-internal record Form
+public record Form
 {
     /// <example>"Standard Questions"</example>
     public required string Name { get; init; }

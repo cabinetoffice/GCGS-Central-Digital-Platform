@@ -184,35 +184,6 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
     }
 
     [Fact]
-    public async Task GetSharedConsentDraftAsync_WhenSharedConsentDoesNotExist_ReturnsNull()
-    {
-        using var repository = FormRepository();
-
-        var foundConsent = await repository.GetSharedConsentDraftAsync(Guid.NewGuid(), Guid.NewGuid());
-
-        foundConsent.Should().BeNull();
-    }
-
-    [Fact]
-    public async Task GetSharedConsentDraftAsync_WhenItDoesExist_ReturnsIt()
-    {
-        var sharedConsent = GivenSharedConsent();
-
-        await using var context = postgreSql.OrganisationInformationContext();
-        await context.SharedConsents.AddAsync(sharedConsent);
-        await context.SaveChangesAsync();
-
-        using var repository = FormRepository();
-
-        var found = await repository.GetSharedConsentDraftAsync(sharedConsent.Form.Guid, sharedConsent.Organisation.Guid);
-
-        found.Should().NotBeNull();
-        found.As<SharedConsent>().OrganisationId.Should().Be(sharedConsent.OrganisationId);
-        found.As<SharedConsent>().SubmissionState.Should().Be(SubmissionState.Draft);
-        found.As<SharedConsent>().BookingReference.Should().BeNull();
-    }
-
-    [Fact]
     public async Task GetSharedConsentDraftWithAnswersAsync_WhenSharedConsentDoesNotExist_ReturnsNull()
     {
         using var repository = FormRepository();
@@ -271,42 +242,6 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
         found.As<SharedConsent>().AnswerSets.First().Answers.First().Guid.Should().Be(answer.Guid);
     }
 
-    [Fact]
-    public async Task GetShareCodesAsync_WhenCodesDoesNotExist_ReturnsEmptyList()
-    {
-        using var repository = FormRepository();
-
-        var foundSection = await repository.GetShareCodesAsync(Guid.NewGuid());
-
-        foundSection.Should().BeEmpty();
-    }
-
-    [Fact]
-    public async Task GetShareCodesAsync_WhenCodesExist_ReturnsList()
-    {
-        var sharedConsent = GivenSharedConsent();
-        Random rand = new Random();
-        var bookingref = rand.Next(10000000, 99999999).ToString();
-
-        sharedConsent.BookingReference = bookingref;
-        sharedConsent.SubmissionState = SubmissionState.Submitted;
-        sharedConsent.SubmittedAt = DateTime.UtcNow;
-
-        await using var context = postgreSql.OrganisationInformationContext();
-        await context.SharedConsents.AddAsync(sharedConsent);
-        await context.SaveChangesAsync();
-
-        using var repository = FormRepository();
-
-        var found = await repository.GetShareCodesAsync(sharedConsent.Organisation.Guid);
-
-        found.Should().NotBeEmpty();
-        found.Should().HaveCount(1);
-
-        found.First().As<SharedConsent>().OrganisationId.Should().Be(sharedConsent.OrganisationId);
-        found.First().As<SharedConsent>().SubmissionState.Should().Be(SubmissionState.Submitted);
-        found.First().As<SharedConsent>().BookingReference.Should().Be(bookingref);
-    }
 
     [Fact]
     public async Task DeleteAnswerSetAsync_ShouldReturnFalse_WhenAnswerSetNotFound()
