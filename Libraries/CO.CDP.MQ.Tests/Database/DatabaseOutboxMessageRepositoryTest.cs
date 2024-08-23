@@ -6,10 +6,12 @@ namespace CO.CDP.MQ.Tests.Database;
 
 public class DatabaseOutboxMessageRepositoryTest(PostgreSqlFixture postgreSql) : IClassFixture<PostgreSqlFixture>
 {
+    private readonly TestDbContext _dbContext = postgreSql.TestDbContext();
+
     [Fact]
-    public async Task ItPersistsAnOutgoingMessage()
+    public async Task ItPersistsAnOutgoingMessage() => await _dbContext.InvokeIsolated(async () =>
     {
-        var repository = CreateDatabaseOutboxMessageRepository();
+        var repository = CreateDatabaseOutboxMessageRepository(_dbContext);
 
         var message = new OutboxMessage
         {
@@ -18,21 +20,26 @@ public class DatabaseOutboxMessageRepositoryTest(PostgreSqlFixture postgreSql) :
         };
         await repository.SaveAsync(message);
 
-        var foundMessage = await repository.FindOldest(1);
+        var foundMessages = await repository.FindOldest(1);
 
-        foundMessage.Should().BeEquivalentTo([message]);
-    }
+        foundMessages.Count.Should().Be(1);
+        foundMessages[0].Message.Should().Be("Hello World");
+        foundMessages[0].Type.Should().Be("String");
+        foundMessages[0].Published.Should().BeFalse();
+        foundMessages[0].CreatedOn.Should().BeWithin(TimeSpan.FromSeconds(5)).Before(DateTimeOffset.Now);
+        foundMessages[0].UpdatedOn.Should().BeWithin(TimeSpan.FromSeconds(5)).Before(DateTimeOffset.Now);
+    });
 
     [Fact]
-    public async Task ItFindsTheOldestOutgoingMessage()
+    public async Task ItFindsTheOldestOutgoingMessages() => await _dbContext.InvokeIsolated(async () =>
     {
-        var repository = CreateDatabaseOutboxMessageRepository();
+        var repository = CreateDatabaseOutboxMessageRepository(_dbContext);
 
         List<OutboxMessage> messages =
         [
-            new OutboxMessage { Message = "Message 3", CreatedOn = SameDayAt("11:11:11"), Type = "String" },
-            new OutboxMessage { Message = "Message 2", CreatedOn = SameDayAt("10:10:10"), Type = "String" },
-            new OutboxMessage { Message = "Message 1", CreatedOn = SameDayAt("09:09:09"), Type = "String" }
+            new OutboxMessage { Message = "Message 1", Type = "String" },
+            new OutboxMessage { Message = "Message 2", Type = "String" },
+            new OutboxMessage { Message = "Message 3", Type = "String" }
         ];
         foreach (var message in messages)
         {
@@ -44,15 +51,11 @@ public class DatabaseOutboxMessageRepositoryTest(PostgreSqlFixture postgreSql) :
         foundMessages.Count.Should().Be(2);
         foundMessages[0].Message.Should().Be("Message 1");
         foundMessages[1].Message.Should().Be("Message 2");
-    }
+    });
 
-    private static DateTimeOffset SameDayAt(string time)
+    private DatabaseOutboxMessageRepository<TestDbContext> CreateDatabaseOutboxMessageRepository(
+        TestDbContext dbContext)
     {
-        return DateTimeOffset.Parse($"2021-04-05T{time}+00:00");
-    }
-
-    private DatabaseOutboxMessageRepository<TestDbContext> CreateDatabaseOutboxMessageRepository()
-    {
-        return new DatabaseOutboxMessageRepository<TestDbContext>(postgreSql.TestDbContext());
+        return new DatabaseOutboxMessageRepository<TestDbContext>(dbContext);
     }
 }
