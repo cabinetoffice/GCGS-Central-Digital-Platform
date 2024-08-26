@@ -63,6 +63,11 @@ public class UpdateFormSectionAnswersUseCase(
 
     private async Task UpdateOrAddStandardAnswers(IFormRepository formRepository, Guid answerSetId, List<FormAnswer> answers, Persistence.FormSection section, Persistence.SharedConsent? sharedConsent)
     {
+        if (section.Type != Persistence.FormSectionType.Standard)
+        {
+            return;
+        }
+
         var questionDictionary = section.Questions.ToDictionary(q => q.Guid);
 
         ValidateQuestions(answers, questionDictionary);
@@ -71,11 +76,6 @@ public class UpdateFormSectionAnswersUseCase(
             ?? CreateAnswerSet(answerSetId, sharedConsent, section);
 
         await UploadFileIfRequired(answers, questionDictionary, answerSet);
-
-        if (section.Type != Persistence.FormSectionType.Standard)
-        {
-            return;
-        }
 
         answerSet.Answers = MapAnswers(answers, questionDictionary, answerSet.Answers);
     }
