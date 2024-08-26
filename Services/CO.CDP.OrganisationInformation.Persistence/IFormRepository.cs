@@ -10,6 +10,7 @@ public interface IFormRepository : IDisposable
     Task<FormSection?> GetSectionAsync(Guid formId, Guid sectionId);
 
     Task<SharedConsent?> GetSharedConsentDraftAsync(Guid formId, Guid organisationId);
+    Task<SharedConsent?> GetSharedConsentWithAnswersAsync(Guid formId, Guid organisationId);
     Task<SharedConsent?> GetSharedConsentDraftWithAnswersAsync(Guid formId, Guid organisationId);
     Task<IEnumerable<SharedConsent>> GetShareCodesAsync(Guid organisationId);
     Task<SharedConsentDetails?> GetShareCodeDetailsAsync(Guid organisationId, string shareCode);
@@ -20,6 +21,8 @@ public interface IFormRepository : IDisposable
     Task<FormAnswerSet?> GetFormAnswerSetAsync(Guid sectionId, Guid organisationId, Guid answerSetId);
     Task<bool> DeleteAnswerSetAsync(Guid organisationId, Guid answerSetId);
     Task SaveAnswerSet(FormAnswerSet answerSet);
+
+    Task<SharedConsent?> GetUntrackedSharedConsent(Guid formId, Guid organisationId);
 
     public class FormRepositoryException(string message, Exception? cause = null) : Exception(message, cause)
     {

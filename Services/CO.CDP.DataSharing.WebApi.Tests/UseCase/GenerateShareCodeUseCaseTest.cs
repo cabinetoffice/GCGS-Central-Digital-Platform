@@ -13,7 +13,7 @@ public class GenerateShareCodeUseCaseTest(AutoMapperFixture mapperFixture) : ICl
     private readonly Mock<IClaimService> _claimService = new();
     private readonly Mock<IOrganisationRepository> _organisationRepository = new();
     private readonly Mock<IFormRepository> _formRepository = new();
-    private GenerateShareCodeUseCase UseCase => new(_claimService.Object, _organisationRepository.Object, _formRepository.Object, mapperFixture.Mapper);
+    private GenerateShareCodeUseCase UseCase => new(_formRepository.Object, mapperFixture.Mapper);
 
     [Fact]
     public async Task ThrowsInvalidOrganisationRequestedException_WhenShareCodeRequestedForNonExistentOrganisation()

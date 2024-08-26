@@ -23,9 +23,46 @@ public class UpdateFormSectionAnswersUseCase(
         var section = await formRepository.GetSectionAsync(formId, sectionId)
             ?? throw new UnknownSectionException($"Unknown section {sectionId} in form {formId}.");
 
-        var sharedConsent = await formRepository.GetSharedConsentDraftWithAnswersAsync(formId, organisationId)
-                            ?? CreateSharedConsent(organisation, section.Form);
+        var sharedConsent = await formRepository.GetUntrackedSharedConsent(formId, organisationId);
+        if (sharedConsent == null)
+        {
+            sharedConsent = CreateSharedConsent(organisation, section.Form);
 
+            await UpdateOrAddStandardAnswers(formRepository, answerSetId, answers, section, sharedConsent);
+            await formRepository.SaveSharedConsentAsync(sharedConsent);
+
+            return true;
+        }
+
+        if (sharedConsent.SubmissionState == Persistence.SubmissionState.Submitted)
+        {
+            CleanSharedConsent(sharedConsent);
+
+            await UpdateOrAddStandardAnswers(formRepository, answerSetId, answers, section, sharedConsent);
+            await formRepository.SaveSharedConsentAsync(sharedConsent);
+        }
+        else
+        {
+            sharedConsent = await formRepository.GetSharedConsentWithAnswersAsync(formId, organisationId);
+
+            await UpdateOrAddStandardAnswers(formRepository, answerSetId, answers, section, sharedConsent);
+            await formRepository.SaveSharedConsentAsync(sharedConsent);
+        }
+
+        return true;
+    }
+
+    private static void CleanSharedConsent(Persistence.SharedConsent? sharedConsent)
+    {
+        sharedConsent.Id = default;
+        sharedConsent.Guid = Guid.NewGuid();
+        sharedConsent.SubmittedAt = default;
+        sharedConsent.BookingReference = default;
+        sharedConsent.SubmissionState = default;
+    }
+
+    private async Task UpdateOrAddStandardAnswers(IFormRepository formRepository, Guid answerSetId, List<FormAnswer> answers, Persistence.FormSection section, Persistence.SharedConsent? sharedConsent)
+    {
         var questionDictionary = section.Questions.ToDictionary(q => q.Guid);
 
         ValidateQuestions(answers, questionDictionary);
@@ -35,11 +72,12 @@ public class UpdateFormSectionAnswersUseCase(
 
         await UploadFileIfRequired(answers, questionDictionary, answerSet);
 
+        if (section.Type != Persistence.FormSectionType.Standard)
+        {
+            return;
+        }
+
         answerSet.Answers = MapAnswers(answers, questionDictionary, answerSet.Answers);
-
-        await formRepository.SaveSharedConsentAsync(sharedConsent);
-
-        return true;
     }
 
     private async Task UploadFileIfRequired(
