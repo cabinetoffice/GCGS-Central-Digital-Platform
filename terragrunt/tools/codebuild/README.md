@@ -11,7 +11,6 @@ Feel free to use any convenient AWS profiler instead.
 TERRAFORM_VERSION=$(grep -Po '(?<=terraform = ")[^"]*' ../../../.mise.toml)
 TERRAGRUNT_VERSION=$(grep -Po '(?<=terragrunt = ")[^"]*' ../../../.mise.toml)
 
-
 if [ -z "$TERRAFORM_VERSION" ] || [ -z "$TERRAGRUNT_VERSION" ]; then
   echo "Error: Could not find Terraform or Terragrunt versions in .mise.toml"
   exit 1
