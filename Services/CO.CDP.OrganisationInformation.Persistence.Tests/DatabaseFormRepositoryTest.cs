@@ -213,17 +213,17 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
     }
 
     [Fact]
-    public async Task GetSharedConsentDraftWithAnswersAsync_WhenSharedConsentDoesNotExist_ReturnsNull()
+    public async Task GetSharedConsentWithAnswersAsync_WhenSharedConsentDoesNotExist_ReturnsNull()
     {
         using var repository = FormRepository();
 
-        var foundConsent = await repository.GetSharedConsentDraftWithAnswersAsync(Guid.NewGuid(), Guid.NewGuid());
+        var foundConsent = await repository.GetSharedConsentWithAnswersAsync(Guid.NewGuid(), Guid.NewGuid());
 
         foundConsent.Should().BeNull();
     }
 
     [Fact]
-    public async Task GetSharedConsentDraftWithAnswersAsync_WhenSharedConsentDoesExist_ReturnsIt()
+    public async Task GetSharedConsentWithAnswersAsync_WhenSharedConsentDoesExist_ReturnsIt()
     {
         var sharedConsent = GivenSharedConsent();
 
@@ -233,16 +233,15 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
 
         using var repository = FormRepository();
 
-        var found = await repository.GetSharedConsentDraftWithAnswersAsync(sharedConsent.Form.Guid, sharedConsent.Organisation.Guid);
+        var found = await repository.GetSharedConsentWithAnswersAsync(sharedConsent.Form.Guid, sharedConsent.Organisation.Guid);
 
         found.Should().NotBeNull();
         found.As<SharedConsent>().OrganisationId.Should().Be(sharedConsent.OrganisationId);
-        found.As<SharedConsent>().SubmissionState.Should().Be(SubmissionState.Draft);
         found.As<SharedConsent>().BookingReference.Should().BeNull();
     }
 
     [Fact]
-    public async Task GetSharedConsentDraftWithAnswersAsync_WhenSharedConsentWithAnswersExists_ReturnsIt()
+    public async Task GetSharedConsentWithAnswersAsync_WhenSharedConsentWithAnswersExists_ReturnsIt()
     {
         var formId = Guid.NewGuid();
 
@@ -260,11 +259,10 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
 
         using var repository = FormRepository();
 
-        var found = await repository.GetSharedConsentDraftWithAnswersAsync(sharedConsent.Form.Guid, sharedConsent.Organisation.Guid);
+        var found = await repository.GetSharedConsentWithAnswersAsync(sharedConsent.Form.Guid, sharedConsent.Organisation.Guid);
 
         found.Should().NotBeNull();
         found.As<SharedConsent>().OrganisationId.Should().Be(sharedConsent.OrganisationId);
-        found.As<SharedConsent>().SubmissionState.Should().Be(SubmissionState.Draft);
         found.As<SharedConsent>().AnswerSets.Should().NotBeEmpty();
         found.As<SharedConsent>().AnswerSets.First().Guid.Should().Be(answerSet.Guid);
         found.As<SharedConsent>().AnswerSets.First().Answers.Should().NotBeEmpty();
