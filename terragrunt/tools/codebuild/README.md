@@ -11,17 +11,17 @@ Feel free to use any convenient AWS profiler instead.
 TERRAFORM_VERSION=$(grep -Po '(?<=terraform = ")[^"]*' ../../../.mise.toml)
 TERRAGRUNT_VERSION=$(grep -Po '(?<=terragrunt = ")[^"]*' ../../../.mise.toml)
 
+
 if [ -z "$TERRAFORM_VERSION" ] || [ -z "$TERRAGRUNT_VERSION" ]; then
   echo "Error: Could not find Terraform or Terragrunt versions in .mise.toml"
   exit 1
 fi
 
-docker build --build-arg TERRAFORM_VERSION=$TERRAFORM_VERSION\
+docker build --build-arg TERRAFORM_VERSION=$TERRAFORM_VERSION \
              --build-arg TERRAGRUNT_VERSION=$TERRAGRUNT_VERSION \
-             -t cabinetoffice/cdp-codebuild \
-             -f ./tools/codebuild/Dockerfile .
+             --tag cabinetoffice/cdp-codebuild .
 
-echo -e "Built completed, and the new image contains:"
+echo -e "Installed tools versions:"
 docker run --rm cabinetoffice/cdp-codebuild sh -c 'echo "{\"AWS\": \"`aws --version| head -n 1`\", \"JQ \": \"`jq --version`\", \"TF \": \"`terraform version| head -n 1`\", \"TG \": \"`terragrunt --version`\"}" | jq .' 
 ```
 
