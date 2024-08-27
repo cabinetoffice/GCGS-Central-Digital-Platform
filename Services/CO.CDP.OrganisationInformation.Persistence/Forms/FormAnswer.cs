@@ -19,7 +19,7 @@ public class SharedConsent : IEntityDate
     public required SubmissionState SubmissionState { get; set; } = SubmissionState.Draft;
     public DateTimeOffset? SubmittedAt { get; set; }
     public required string FormVersionId { get; init; }
-    public string? BookingReference { get; set; }
+    public string? ShareCode { get; set; }
     public DateTimeOffset CreatedOn { get; set; }
     public DateTimeOffset UpdatedOn { get; set; }
 }
@@ -34,7 +34,11 @@ public class FormAnswer : IEntityDate
 {
     public int Id { get; set; }
     public required Guid Guid { get; set; }
+    [ForeignKey(nameof(Question))]
+    public required int QuestionId { get; set; }
     public required FormQuestion Question { get; set; }
+    [ForeignKey(nameof(FormAnswerSet))]
+    public required int FormAnswerSetId { get; set; }
     public required FormAnswerSet FormAnswerSet { get; set; }
     public bool? BoolValue { get; set; }
     public double? NumericValue { get; set; }

@@ -26,7 +26,7 @@ public class ConnectedEntityCompanyQuestionModel(ISession session) : PageModel
     public string? Caption { get; set; }
     public string? Heading { get; set; }
     public string? Hint { get; set; }
-    [BindProperty]
+    [BindProperty(SupportsGet = true, Name = "frm-chk-answer")]
     public bool? RedirectToCheckYourAnswer { get; set; }
     public string? BackPageLink { get; set; }
 
@@ -61,6 +61,11 @@ public class ConnectedEntityCompanyQuestionModel(ISession session) : PageModel
             return Page();
         }
 
+        if (state.HasCompaniesHouseNumber != HasCompaniesHouseNumber)
+        {
+            RedirectToCheckYourAnswer = false;
+        }
+
         state.HasCompaniesHouseNumber = HasCompaniesHouseNumber;
         state.CompaniesHouseNumber = CompaniesHouseNumber;
         if (HasCompaniesHouseNumber == true)
@@ -77,6 +82,7 @@ public class ConnectedEntityCompanyQuestionModel(ISession session) : PageModel
         var redirectPage = (RedirectToCheckYourAnswer == true
                         ? checkAnswerPage
                         : GetRedirectLinkPageName(state));
+
         return RedirectToPage(redirectPage, new { Id, ConnectedEntityId });
     }
     private string GetRedirectLinkPageName(ConnectedEntityState state)

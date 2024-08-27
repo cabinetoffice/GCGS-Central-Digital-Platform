@@ -13,7 +13,8 @@ public class GenerateShareCodeUseCaseTest(AutoMapperFixture mapperFixture) : ICl
     private readonly Mock<IClaimService> _claimService = new();
     private readonly Mock<IOrganisationRepository> _organisationRepository = new();
     private readonly Mock<IFormRepository> _formRepository = new();
-    private GenerateShareCodeUseCase UseCase => new(_claimService.Object, _organisationRepository.Object, _formRepository.Object, mapperFixture.Mapper);
+    private readonly Mock<IShareCodeRepository> _shareCodeRepository = new();
+    private GenerateShareCodeUseCase UseCase => new(_claimService.Object, _organisationRepository.Object, _formRepository.Object, _shareCodeRepository.Object, mapperFixture.Mapper);
 
     [Fact]
     public async Task ThrowsInvalidOrganisationRequestedException_WhenShareCodeRequestedForNonExistentOrganisation()
@@ -61,7 +62,7 @@ public class GenerateShareCodeUseCaseTest(AutoMapperFixture mapperFixture) : ICl
 
         _claimService.Setup(x => x.HaveAccessToOrganisation(organisationGuid)).Returns(true);
         _organisationRepository.Setup(x => x.Find(organisationGuid)).ReturnsAsync(sharedConsent.Organisation);
-        _formRepository.Setup(r => r.GetSharedConsentDraftAsync(shareRequest.FormId, shareRequest.OrganisationId)).ReturnsAsync((OrganisationInformation.Persistence.Forms.SharedConsent?)null);
+        _shareCodeRepository.Setup(r => r.GetSharedConsentDraftAsync(shareRequest.FormId, shareRequest.OrganisationId)).ReturnsAsync((OrganisationInformation.Persistence.Forms.SharedConsent?)null);
 
         var shareReceipt = async () => await UseCase.Execute(shareRequest);
 
@@ -81,7 +82,7 @@ public class GenerateShareCodeUseCaseTest(AutoMapperFixture mapperFixture) : ICl
 
         _claimService.Setup(x => x.HaveAccessToOrganisation(organisationGuid)).Returns(true);
         _organisationRepository.Setup(x => x.Find(organisationGuid)).ReturnsAsync(sharedConsent.Organisation);
-        _formRepository.Setup(r => r.GetSharedConsentDraftAsync(shareRequest.FormId, shareRequest.OrganisationId)).ReturnsAsync(sharedConsent);
+        _shareCodeRepository.Setup(r => r.GetSharedConsentDraftAsync(shareRequest.FormId, shareRequest.OrganisationId)).ReturnsAsync(sharedConsent);
 
         var found = await UseCase.Execute(shareRequest);
 

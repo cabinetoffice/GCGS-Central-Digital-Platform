@@ -1,0 +1,47 @@
+@page "/organisation/{id}/users/{userId}/remove"
+@model CO.CDP.OrganisationApp.Pages.Users.UserRemoveConfirmationModel
+@{
+    var hasError = ((TagBuilder)Html.ValidationMessageFor(m => m.ConfirmRemove)).HasInnerHtml;;
+}
+
+<a href="/organisation/@Model.Id/users/user-summary" class="govuk-back-link">Back</a>
+
+<main class="govuk-main-wrapper">
+    <div class="govuk-grid-row">
+
+        <div class="govuk-grid-column-two-thirds">
+            <partial name="_ErrorSummary" model="@Model.ModelState" />
+            <form method="post">
+                <fieldset class="govuk-fieldset" data-required="" data-error="Select yes if you want to remove this connected person" aria-required="true">
+                    <div class="govuk-form-group @(hasError ? "govuk-form-group--error" : "")">
+
+                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                            <h2 class="govuk-fieldset__heading">
+                                Are you sure you want to remove <br/>[@Model.UserFullName]?
+                            </h2>
+                        </legend>
+                        <div class="govuk-radios" data-module="govuk-radios">
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input" id="conditional-YES" name="ConfirmRemove" type="radio"
+                                       value="true" @(Model.ConfirmRemove == true ? "checked" : "")>
+                                <label class="govuk-label govuk-radios__label" for="conditional-YES">Yes</label>
+                            </div>
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input" id="conditional-NO" name="ConfirmRemove" type="radio"
+                                       value="false" @(Model.ConfirmRemove == false ? "checked" : "")>
+                                <label class="govuk-label govuk-radios__label" for="conditional-NO">No</label>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <div class="govuk-button-group govuk-!-margin-top-6">
+                    <button class="govuk-button" data-module="govuk-button">
+                        Continue
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</main>

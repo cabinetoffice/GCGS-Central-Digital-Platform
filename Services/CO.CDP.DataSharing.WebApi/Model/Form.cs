@@ -3,13 +3,13 @@ using System.Text.Json.Serialization;
 namespace CO.CDP.DataSharing.WebApi.Model;
 
 [JsonConverter(typeof(JsonStringEnumConverter))]
-internal enum FormSubmissionState
+public enum FormSubmissionState
 {
     Draft,
     Submitted
 }
 
-internal record Form
+public record Form
 {
     /// <example>"Standard Questions"</example>
     public required string Name { get; init; }
@@ -33,7 +33,7 @@ internal record Form
     public required bool IsRequired { get; init; }
 
     /// <example>"AGMT-2024-XYZ"</example>
-    public required string BookingReference { get; init; }
+    public required string ShareCode { get; init; }
 
     /// <example>0</example>
     public required int Scope { get; init; }

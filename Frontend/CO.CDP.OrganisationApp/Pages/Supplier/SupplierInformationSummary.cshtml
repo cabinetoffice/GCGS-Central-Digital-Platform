@@ -98,10 +98,14 @@
 
             @foreach (var section in Model.FormSections)
             {
-                var sharedDataSection = section.SectionId == new Guid(FormsEngine.SharedDataSectionId);
+                var declarationSection = section.Type == CDP.Forms.WebApiClient.FormSectionType.Declaration;
                 var redirectLink = $"/organisation/{Model.Id}/forms/{FormsEngine.OrganisationSupplierInfoFormId}/sections/{section.SectionId}";
 
-                if (section.AnswerSetCount > 0 && section.AllowsMultipleAnswerSets == true)
+                if (declarationSection)
+                {
+                    redirectLink += "/share-codes-list-view";
+                }
+                else if (section.AnswerSetCount > 0 && section.AllowsMultipleAnswerSets == true)
                 {
                     redirectLink += "/add-another-answer-set";
                 }
@@ -114,13 +118,13 @@
                             </a>
                         </dt>
                         <dd class="govuk-summary-list__value">
-                            @if (!sharedDataSection && section.AnswerSetCount > 0)
+                            @if (!declarationSection && section.AnswerSetCount > 0)
                             {
                                 @(section.AnswerSetCount) @:records
                             }
                         </dd>
                         <dd class="govuk-summary-list__actions">
-                            @if (!sharedDataSection)
+                            @if (!declarationSection)
                             {
                                 <strong class="govuk-tag">@(section.AnswerSetCount > 0 ? $"Completed" : "Not started")</strong>
                             }

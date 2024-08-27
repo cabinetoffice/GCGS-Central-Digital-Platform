@@ -28,11 +28,12 @@ public class DatabaseFormRepository(OrganisationInformationContext context) : IF
                     join subQuery in answersQuery on new { FormId = f.Id, SectionId = fss.Id } equals new { subQuery.FormId, subQuery.SectionId } into answers
                     from answer in answers.DefaultIfEmpty()
                     where f.Guid == formId
-                    group new FormSectionGroupSelection { FormId = answer.FormId } by new { fss.Guid, fss.Title, fss.AllowsMultipleAnswerSets } into g
+                    group new FormSectionGroupSelection { FormId = answer.FormId } by new { fss.Guid, fss.Title, fss.Type, fss.AllowsMultipleAnswerSets } into g
                     select new FormSectionSummary
                     {
                         SectionId = g.Key.Guid,
                         SectionName = g.Key.Title,
+                        Type = g.Key.Type,
                         AllowsMultipleAnswerSets = g.Key.AllowsMultipleAnswerSets,
                         AnswerSetCount = g.Count(a => a.FormId != null)
                     };
@@ -66,13 +67,6 @@ public class DatabaseFormRepository(OrganisationInformationContext context) : IF
             .FirstOrDefaultAsync(s => s.Guid == sectionId);
     }
 
-    public async Task<SharedConsent?> GetSharedConsentDraftAsync(Guid formId, Guid organisationId)
-    {
-        return await context.Set<SharedConsent>()
-            .Where(x => x.SubmissionState == SubmissionState.Draft)
-            .FirstOrDefaultAsync(s => s.Form.Guid == formId && s.Organisation.Guid == organisationId);
-    }
-
     public async Task<SharedConsent?> GetSharedConsentDraftWithAnswersAsync(Guid formId, Guid organisationId)
     {
         return await context.Set<SharedConsent>()
@@ -87,6 +81,50 @@ public class DatabaseFormRepository(OrganisationInformationContext context) : IF
         return await context.Set<SharedConsent>()
             .Where(x => x.SubmissionState == SubmissionState.Submitted && x.Organisation.Guid == organisationId)
             .OrderByDescending(y => y.SubmittedAt).ToListAsync();
+    }
+
+    public async Task<SharedConsentDetails?> GetShareCodeDetailsAsync(Guid organisationId, string shareCode)
+    {
+        var query = from s in context.SharedConsents
+                    join fas in context.FormAnswerSets on s.Id equals fas.SharedConsentId
+                    join fs in context.Set<FormSection>() on fas.SectionId equals fs.Id
+                    join fa in context.Set<FormAnswer>() on fas.Id equals fa.FormAnswerSetId
+                    join fq in context.Set<FormQuestion>() on fa.QuestionId equals fq.Id
+                    join o in context.Organisations on s.OrganisationId equals o.Id
+                    where
+                        fs.Type == FormSectionType.Declaration
+                        && fas.Deleted == false
+                        && o.Guid == organisationId
+                        && s.ShareCode == shareCode
+                    select new
+                    {
+                        FormAnswerSetId = fas.Id,
+                        FormAnswerSetUpdate=fas.UpdatedOn,
+                        s.ShareCode,
+                        s.SubmittedAt,
+                        QuestionId = fq.Guid,
+                        QuestionType = fq.Type,
+                        fq.SummaryTitle,
+                        FormAnswer = fa
+                    };
+
+        var data = await query.ToListAsync();
+        var sharedCodeResult = data.OrderByDescending(x=>x.FormAnswerSetUpdate).GroupBy(g => new { g.ShareCode, g.FormAnswerSetId, g.SubmittedAt }).FirstOrDefault();
+        if (sharedCodeResult == null) return null;
+
+        return new SharedConsentDetails
+        {
+            ShareCode = sharedCodeResult.Key.ShareCode,
+            SubmittedAt = sharedCodeResult.Key.SubmittedAt!.Value,
+            QuestionAnswers = sharedCodeResult.Select(a =>
+            new SharedConsentQuestionAnswer
+            {
+                QuestionId = a.QuestionId,
+                QuestionType = a.QuestionType,
+                Title = a.SummaryTitle,
+                Answer = a.FormAnswer
+            })
+        };
     }
 
     public async Task<IEnumerable<FormQuestion>> GetQuestionsAsync(Guid sectionId)

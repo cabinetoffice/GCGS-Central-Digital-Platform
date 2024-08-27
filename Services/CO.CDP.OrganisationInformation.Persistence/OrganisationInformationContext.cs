@@ -23,6 +23,7 @@ public class OrganisationInformationContext(DbContextOptions<OrganisationInforma
     public DbSet<AuthenticationKey> AuthenticationKeys { get; set; } = null!;
     public DbSet<FormAnswerSet> FormAnswerSets { get; set; } = null!;
     public DbSet<RefreshToken> RefreshTokens { get; set; } = null!;
+    public DbSet<PersonInvite> PersonInvites { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -171,6 +172,7 @@ public class OrganisationInformationContext(DbContextOptions<OrganisationInforma
         modelBuilder.Entity<FormSection>(e =>
         {
             e.ToTable("form_sections");
+            e.Property(p => p.Type).HasDefaultValue(FormSectionType.Standard);
             e.Property(p => p.Configuration)
                 .IsRequired()
                 .HasJsonColumn(new(), PropertyBuilderExtensions.RecordComparer<FormSectionConfiguration>());

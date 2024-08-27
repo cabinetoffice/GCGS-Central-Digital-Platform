@@ -20,8 +20,9 @@ public class DataSharingClientIntegrationTest(ITestOutputHelper testOutputHelper
 
         Func<Task> act = async () => { await client.GetSharedDataAsync("HDJ2123F"); };
 
-        var exception = await act.Should().NotThrowAsync<ApiException<ProblemDetails>>();
+        var exception = await act.Should().ThrowAsync<ApiException<ProblemDetails>>();
 
-        exception.Should().NotBe(404);
+        exception.And.StatusCode.Should().Be(404);
+        exception.And.Result!.Title.Should().Contain("SharedConsentNotFoundException");
     }
 }

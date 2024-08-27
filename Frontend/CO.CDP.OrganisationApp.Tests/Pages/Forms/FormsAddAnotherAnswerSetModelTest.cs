@@ -1,15 +1,15 @@
+using CO.CDP.Forms.WebApiClient;
 using CO.CDP.OrganisationApp.Pages.Forms;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moq;
-using WebApiClient = CO.CDP.Forms.WebApiClient;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages.Forms;
 
 public class FormsAddAnotherAnswerSetModelTest
 {
-    private readonly Mock<WebApiClient.IFormsClient> _formsClientMock;
+    private readonly Mock<IFormsClient> _formsClientMock;
     private readonly Mock<ITempDataService> _tempDataServiceMock;
     private readonly FormsAddAnotherAnswerSetModel _model;
     private readonly Guid AnswerSetId = Guid.NewGuid();
@@ -18,21 +18,22 @@ public class FormsAddAnotherAnswerSetModelTest
     {
         _tempDataServiceMock = new Mock<ITempDataService>();
 
-        _formsClientMock = new Mock<WebApiClient.IFormsClient>();
+        _formsClientMock = new Mock<IFormsClient>();
         _formsClientMock.Setup(client => client.GetFormSectionQuestionsAsync(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid>()))
-                        .ReturnsAsync(new WebApiClient.SectionQuestionsResponse(
-             section: new WebApiClient.FormSection(
+                        .ReturnsAsync(new SectionQuestionsResponse(
+             section: new FormSection(
                  title: "Test Title",
+                 type: FormSectionType.Standard,
                  allowsMultipleAnswerSets: true,
                  id: Guid.NewGuid(),
-                 configuration: new WebApiClient.FormSectionConfiguration(
+                 configuration: new FormSectionConfiguration(
                      addAnotherAnswerLabel: null,
                      pluralSummaryHeadingFormat: null,
                      removeConfirmationCaption: "Test Caption",
                      removeConfirmationHeading: "Test confimration heading",
                      singularSummaryHeading: null)),
              questions: [],
-             answerSets: [new WebApiClient.FormAnswerSet(id: AnswerSetId, answers: [])]
+             answerSets: [new FormAnswerSet(id: AnswerSetId, answers: [])]
              ));
 
         _model = new FormsAddAnotherAnswerSetModel(_formsClientMock.Object, _tempDataServiceMock.Object)
@@ -55,7 +56,7 @@ public class FormsAddAnotherAnswerSetModelTest
     public async Task OnGet_ShouldRedirectToPageNotFound_WhenInitAndVerifyPageReturnsFalse()
     {
         _formsClientMock.Setup(client => client.GetFormSectionQuestionsAsync(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid>()))
-            .ThrowsAsync(new WebApiClient.ApiException("Unexpected error", 404, "", default, null));
+            .ThrowsAsync(new ApiException("Unexpected error", 404, "", default, null));
 
         var result = await _model.OnGet();
 
@@ -108,7 +109,7 @@ public class FormsAddAnotherAnswerSetModelTest
     public async Task OnGetChange_ShouldRedirectToPageNotFound_WhenAnswerSetIsNotFound()
     {
         _formsClientMock.Setup(client => client.GetFormSectionQuestionsAsync(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid>()))
-            .ThrowsAsync(new WebApiClient.ApiException("Unexpected error", 404, "", default, null));
+            .ThrowsAsync(new ApiException("Unexpected error", 404, "", default, null));
 
         var result = await _model.OnGetChange(AnswerSetId);
 

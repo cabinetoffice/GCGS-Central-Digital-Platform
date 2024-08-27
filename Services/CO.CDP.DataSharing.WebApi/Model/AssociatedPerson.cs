@@ -3,7 +3,7 @@ using CO.CDP.OrganisationInformation;
 
 namespace CO.CDP.DataSharing.WebApi.Model;
 
-internal record AssociatedPerson
+public record AssociatedPerson
 {
     /// <example>"c16f9f7b-3f10-42db-86f8-93607b034a4c"</example>
     [Required] public required Guid Id { get; init; }

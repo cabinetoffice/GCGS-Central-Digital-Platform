@@ -61,6 +61,11 @@ public class ConnectedEntityLegalFormQuestionModel(ISession session) : PageModel
             return Page();
         }
 
+        if (state.HasLegalForm != HasLegalForm)
+        {
+            RedirectToCheckYourAnswer = false;
+        }
+
         state.HasLegalForm = HasLegalForm;
         state.LegalForm = LegalFormName;
         if (state.HasLegalForm == false)
@@ -97,14 +102,8 @@ public class ConnectedEntityLegalFormQuestionModel(ISession session) : PageModel
                                 ? "ConnectedEntityLawEnforce"
                                 : "ConnectedEntityCompanyQuestion");
                         break;
-                    case ConnectedEntityOrganisationCategoryType.ParentOrSubsidiaryCompany:
-                        redirectPage = "ConnectedEntityCheckAnswersOrganisation";
-                        break;
-                    case ConnectedEntityOrganisationCategoryType.ACompanyYourOrganisationHasTakenOver:
-                        redirectPage = "ConnectedEntityCompanyInsolvencyDate";
-                        break;
                     case ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl:
-                        redirectPage = state.HasCompaniesHouseNumber == true ? "ConnectedEntityControlCondition" : "ConnectedEntityOverseasCompanyQuestion";
+                        redirectPage = "ConnectedEntityCheckAnswersOrganisation";
                         break;
                 }
                 break;
@@ -145,7 +144,9 @@ public class ConnectedEntityLegalFormQuestionModel(ISession session) : PageModel
                         }
                         break;
                     case ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl:
-                        backPage = $"";
+                        backPage = state.RegistrationDate.HasValue
+                                    ? "company-register-name"
+                                    : "date-registered-question";
                         break;
 
                 }

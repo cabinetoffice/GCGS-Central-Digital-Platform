@@ -5,7 +5,6 @@ using CO.CDP.OrganisationApp.WebApiClients;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using ConnectedEntityType = CO.CDP.OrganisationApp.Constants.ConnectedEntityType;
 
 namespace CO.CDP.OrganisationApp.Pages.Supplier;
 
@@ -26,7 +25,7 @@ public class ConnectedEntityCheckAnswersOrganisationModel(
 
     public ConnectedEntityState? ConnectedEntityDetails { get; set; }
     public string? BackPageLink { get; set; }
-
+    public bool ShowRegisterDate { get; set; }
     public async Task<IActionResult> OnGet()
     {
         var (valid, state) = ValidatePage();
@@ -128,6 +127,7 @@ public class ConnectedEntityCheckAnswersOrganisationModel(
         Caption = state.GetCaption();
         Heading = $"Check your answers";
         BackPageLink = GetBackLinkPageName(state);
+        ShowRegisterDate = ConnectedEntityCheckAnswersCommon.SetShowRegisterDate(state);
     }
 
     private RegisterConnectedEntity? RegisterConnectedEntityPayload(ConnectedEntityState state)

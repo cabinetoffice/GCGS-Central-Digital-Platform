@@ -1,6 +1,6 @@
 namespace CO.CDP.DataSharing.WebApi.Model;
 
-internal record FormAnswer
+public record FormAnswer
 {
     /// <example>"_Steel01"</example>
     public required string QuestionName { get; init; }

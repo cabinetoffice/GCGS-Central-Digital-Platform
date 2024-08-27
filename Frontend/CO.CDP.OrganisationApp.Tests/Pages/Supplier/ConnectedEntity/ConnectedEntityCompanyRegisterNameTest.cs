@@ -1,4 +1,3 @@
-using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Pages.Supplier;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;

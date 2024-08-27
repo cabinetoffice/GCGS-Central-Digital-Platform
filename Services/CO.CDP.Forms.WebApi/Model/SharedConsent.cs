@@ -10,7 +10,7 @@ public class SharedConsent
     public SubmissionState SubmissionState { get; set; }
     public DateTimeOffset SubmittedAt { get; set; }
     public string? FormVersionId { get; set; }
-    public string? BookingReference { get; set; }
+    public string? ShareCode { get; set; }
 
 }
 
