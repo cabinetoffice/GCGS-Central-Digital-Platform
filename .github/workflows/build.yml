@@ -55,6 +55,7 @@ jobs:
       CDP_PERSON_PORT: 8833
       CDP_FORMS_PORT: 8844
       CDP_DATA_SHARING_PORT: 8855
+      CDP_ENTITY_VERIFICATION_PORT: 8094
     outputs:
       version: ${{ steps.version.outputs.version }}
       images: ${{ steps.save.outputs.images }}

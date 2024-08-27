@@ -1,3 +1,3 @@
 namespace CO.CDP.DataSharing.WebApi.Model;
 
-internal record Details;
+public record Details;

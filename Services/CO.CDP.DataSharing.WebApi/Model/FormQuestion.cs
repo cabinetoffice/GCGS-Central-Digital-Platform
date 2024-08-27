@@ -1,6 +1,6 @@
 namespace CO.CDP.DataSharing.WebApi.Model;
 
-internal record FormQuestion
+public record FormQuestion
 {
     public required FormQuestionType Type { get; init; }
 

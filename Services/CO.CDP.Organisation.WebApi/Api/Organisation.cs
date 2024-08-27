@@ -1,7 +1,6 @@
 using CO.CDP.Functional;
 using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.Organisation.WebApi.UseCase;
-using CO.CDP.OrganisationInformation;
 using CO.CDP.Swashbuckle.Filter;
 using CO.CDP.Swashbuckle.Security;
 using CO.CDP.Swashbuckle.SwaggerGen;
@@ -9,7 +8,6 @@ using DotSwashbuckle.AspNetCore.SwaggerGen;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
-using CO.CDP.OrganisationInformation.Persistence;
 using Address = CO.CDP.OrganisationInformation.Address;
 using AuthorizationPolicyConstants = CO.CDP.Authentication.AuthorizationPolicy.Constants;
 using ConnectedEntity = CO.CDP.Organisation.WebApi.Model.ConnectedEntity;
@@ -21,39 +19,6 @@ namespace CO.CDP.Organisation.WebApi.Api;
 
 public static class EndpointExtensions
 {
-    private static Dictionary<Guid, Model.Organisation> _organisations = Enumerable.Range(1, 5)
-        .Select(_ => Guid.NewGuid())
-        .ToDictionary(id => id, id => new Model.Organisation
-        {
-            Id = id,
-            Identifier = new Identifier
-            {
-                Scheme = "CH",
-                Id = $"123945123{id}",
-                LegalName = "TheOrganisation",
-                Uri = new Uri("https://example.com")
-            },
-            Name = $"Tables Limited {id}",
-            AdditionalIdentifiers = [],
-            Addresses = [new Address
-            {
-                Type = AddressType.Registered,
-                StreetAddress = $"Green Lane {id}",
-                Locality = "London",
-                Region = "",
-                PostalCode = "BR8 7AA",
-                CountryName = "United Kingdom"
-            }],
-            ContactPoint = new ContactPoint
-            {
-                Name = "Bobby Tables",
-                Email = $"bobby+{id}@example.com",
-                Telephone = "07925123123",
-                Url = new Uri("https://example.com")
-            },
-            Roles = [PartyRole.Tenderer],
-        });
-
     public static void UseOrganisationEndpoints(this WebApplication app)
     {
         app.MapGet("/organisations",
