@@ -127,7 +127,8 @@ public class FormsEngine(IFormsClient formsApiClient, ITempDataService tempDataS
             locality: formAdddress.TownOrCity,
             region: null,
             postalCode: formAdddress.Postcode,
-            countryName: formAdddress.Country
+            countryName: formAdddress.CountryName,
+            country: formAdddress.Country
         );
     }
 }

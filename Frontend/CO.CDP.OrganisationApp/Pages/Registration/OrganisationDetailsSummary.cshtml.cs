@@ -84,7 +84,8 @@ public class OrganisationDetailsSummaryModel(
                 streetAddress: details.OrganisationAddressLine1,
                 locality: details.OrganisationCityOrTown,
                 region: details.OrganisationRegion,
-                countryName: details.OrganisationCountry,
+                country: details.OrganisationCountryCode,
+                countryName: details.OrganisationCountryName,
                 postalCode: details.OrganisationPostcode)],
             contactPoint: new OrganisationContactPoint(
                 email: details.OrganisationEmailAddress,

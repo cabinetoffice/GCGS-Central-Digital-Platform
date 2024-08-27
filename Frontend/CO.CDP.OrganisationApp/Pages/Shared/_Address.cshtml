@@ -92,7 +92,7 @@
                     <option value="">Please select</option>
                     @foreach (var cnt in Constants.Country.NonUKCountries)
                     {
-                        <option value="@cnt">@cnt</option>
+                        <option value="@cnt.Key">@cnt.Value</option>
                     }
                 </select>
             </div>
@@ -103,7 +103,7 @@
                 <label class="govuk-label" for="@nameof(Model.Country)">
                     @Html.DisplayNameFor(m => m.Country)
                 </label>
-                <input type="hidden" id="@nameof(Model.Country)" name="@nameof(Model.Country)" value="@Constants.Country.UnitedKingdom" />
+                <input type="hidden" id="@nameof(Model.Country)" name="@nameof(Model.Country)" value="@Constants.Country.UKCountryCode" />
             </div>
         }
     </div>

@@ -53,7 +53,8 @@ public class WebApiToPersistenceProfile : Profile
             .ForMember(m => m.Locality, o => o.MapFrom(m => m.Address.Locality))
             .ForMember(m => m.Region, o => o.MapFrom(m => m.Address.Region))
             .ForMember(m => m.PostalCode, o => o.MapFrom(m => m.Address.PostalCode))
-            .ForMember(m => m.CountryName, o => o.MapFrom(m => m.Address.CountryName));
+            .ForMember(m => m.CountryName, o => o.MapFrom(m => m.Address.CountryName))
+            .ForMember(m => m.Country, o => o.MapFrom(m => m.Address.Country));
 
         CreateMap<OrganisationContactPoint, Persistence.Organisation.ContactPoint>()
             .ForMember(m => m.Id, o => o.Ignore())
@@ -184,7 +185,8 @@ public class WebApiToPersistenceProfile : Profile
             .ForMember(m => m.Locality, o => o.MapFrom(m => m.Address.Locality))
             .ForMember(m => m.Region, o => o.MapFrom(m => m.Address.Region))
             .ForMember(m => m.PostalCode, o => o.MapFrom(m => m.Address.PostalCode))
-            .ForMember(m => m.CountryName, o => o.MapFrom(m => m.Address.CountryName));
+            .ForMember(m => m.CountryName, o => o.MapFrom(m => m.Address.CountryName))
+            .ForMember(m => m.Country, o => o.MapFrom(m => m.Address.Country));
 
         CreateMap<Persistence.ConnectedEntityLookup, Model.ConnectedEntityLookup>()
             .ForMember(m => m.Uri, o => o.MapFrom((src, _, _, context) => new Uri($"https://cdp.cabinetoffice.gov.uk/organisations/{context.Items["OrganisationId"]}/connected-entities/{src.EntityId}")))
@@ -213,7 +215,8 @@ public class WebApiToPersistenceProfile : Profile
             .ForMember(m => m.Locality, o => o.MapFrom(m => m.Address.Locality))
             .ForMember(m => m.Region, o => o.MapFrom(m => m.Address.Region))
             .ForMember(m => m.PostalCode, o => o.MapFrom(m => m.Address.PostalCode))
-            .ForMember(m => m.CountryName, o => o.MapFrom(m => m.Address.CountryName));
+            .ForMember(m => m.CountryName, o => o.MapFrom(m => m.Address.CountryName))
+            .ForMember(m => m.Country, o => o.MapFrom(m => m.Address.Country));
         CreateMap<Persistence.Organisation.Identifier, Events.Identifier>()
             .ForMember(m => m.Id, o => o.MapFrom(m => m.IdentifierId));
         CreateMap<Persistence.Organisation.ContactPoint, Events.ContactPoint>();

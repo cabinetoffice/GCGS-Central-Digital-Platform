@@ -121,7 +121,8 @@ public class FormsAddAnotherAnswerSetModel(
             AddressLine1 = formAdddress.StreetAddress,
             TownOrCity = formAdddress.Locality,
             Postcode = formAdddress.PostalCode,
-            Country = formAdddress.CountryName
+            CountryName = formAdddress.CountryName,
+            Country = formAdddress.Country
         };
     }
 

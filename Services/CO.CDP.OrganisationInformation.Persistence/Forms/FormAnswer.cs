@@ -59,6 +59,7 @@ public class FormAddress
     public string? Region { get; init; }
     public required string PostalCode { get; init; }
     public required string CountryName { get; init; }
+    public required string Country { get; init; }
 }
 
 public class FormAnswerSet : IEntityDate

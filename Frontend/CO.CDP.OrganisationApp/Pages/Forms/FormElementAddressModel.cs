@@ -28,6 +28,17 @@ public class FormElementAddressModel : FormElementModel, IValidatableObject
 
     public string PostcodeLabel => IsNonUkAddress ? "Postal or Zip code" : "Postcode";
 
+    public string? CountryName
+    {
+        get
+        {
+            if (Country == null) return null;
+            if (Country == Constants.Country.UKCountryCode) return Constants.Country.UnitedKingdom;
+            if (Constants.Country.NonUKCountries.ContainsKey(Country)) return Constants.Country.NonUKCountries[Country];
+            return null;
+        }
+    }
+
     public override FormAnswer? GetAnswer()
     {
         return string.IsNullOrWhiteSpace(AddressLine1) ? null :
@@ -38,7 +49,8 @@ public class FormElementAddressModel : FormElementModel, IValidatableObject
                     AddressLine1 = AddressLine1,
                     TownOrCity = TownOrCity!,
                     Postcode = Postcode!,
-                    Country = Country!
+                    CountryName = CountryName!,
+                    Country = Country!,
                 }
             };
     }
@@ -46,8 +58,8 @@ public class FormElementAddressModel : FormElementModel, IValidatableObject
     public override void SetAnswer(FormAnswer? answer)
     {
         if (answer?.AddressValue != null && (
-            (IsNonUkAddress && answer.AddressValue.Country != Constants.Country.UnitedKingdom)
-            || (!IsNonUkAddress && answer.AddressValue.Country == Constants.Country.UnitedKingdom)))
+            (IsNonUkAddress && answer.AddressValue.Country != Constants.Country.UKCountryCode)
+            || (!IsNonUkAddress && answer.AddressValue.Country == Constants.Country.UKCountryCode)))
         {
             AddressLine1 = answer.AddressValue.AddressLine1;
             TownOrCity = answer.AddressValue.TownOrCity;
@@ -81,7 +93,7 @@ public class FormElementAddressModel : FormElementModel, IValidatableObject
             }
             else
             {
-                var valid = Country == Constants.Country.UnitedKingdom || Constants.Country.NonUKCountries.Contains(Country);
+                var valid = Country == Constants.Country.UKCountryCode || Constants.Country.NonUKCountries.ContainsKey(Country);
                 if (!valid)
                 {
                     yield return new ValidationResult($"Invalid country name '{Country}'", [nameof(Country)]);

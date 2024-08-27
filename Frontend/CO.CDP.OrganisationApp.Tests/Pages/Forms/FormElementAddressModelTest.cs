@@ -43,20 +43,20 @@ public class FormElementAddressModelTest
             AddressLine1 = "123 Main St",
             TownOrCity = "Springfield",
             Postcode = "12345",
-            Country = "USA"
+            Country = "US"
         };
         var answer = model.GetAnswer();
         answer.Should().NotBeNull();
         answer?.AddressValue?.AddressLine1.Should().Be("123 Main St");
         answer?.AddressValue?.TownOrCity.Should().Be("Springfield");
         answer?.AddressValue?.Postcode.Should().Be("12345");
-        answer?.AddressValue?.Country.Should().Be("USA");
+        answer?.AddressValue?.Country.Should().Be("US");
     }
 
     [Theory]
-    [InlineData("non-uk", "India", "123 Main St", "Springfield", "12345")]
-    [InlineData("uk", "United Kingdom", "456 Elm St", "London", "67890")]
-    public void SetAnswer_ShouldSetPropertiesCorrectly(string ukOrNonUk, string country, string addressLine1, string townOrCity, string postcode)
+    [InlineData("non-uk", "India", "IN", "123 Main St", "Springfield", "12345")]
+    [InlineData("uk", "United Kingdom", "GB", "456 Elm St", "London", "67890")]
+    public void SetAnswer_ShouldSetPropertiesCorrectly(string ukOrNonUk, string countryName, string country, string addressLine1, string townOrCity, string postcode)
     {
         var model = new FormElementAddressModel { UkOrNonUk = ukOrNonUk };
         var answer = new FormAnswer
@@ -66,6 +66,7 @@ public class FormElementAddressModelTest
                 AddressLine1 = addressLine1,
                 TownOrCity = townOrCity,
                 Postcode = postcode,
+                CountryName = countryName,
                 Country = country
             }
         };
@@ -89,7 +90,8 @@ public class FormElementAddressModelTest
                 AddressLine1 = "123 Main St",
                 TownOrCity = "Springfield",
                 Postcode = "12345",
-                Country = "India"
+                CountryName = "India",
+                Country = "IN"
             }
         };
 
@@ -130,7 +132,7 @@ public class FormElementAddressModelTest
             AddressLine1 = "123 Main St",
             TownOrCity = "Springfield",
             Postcode = "12345",
-            Country = "United Kingdom"
+            Country = "GB"
         };
 
         var results = new List<ValidationResult>();

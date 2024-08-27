@@ -103,7 +103,7 @@ public abstract class RegistrationStepModel : LoggedInUserAwareModel
         if (RegistrationDetails.OrganisationAddressLine1 == null
             || RegistrationDetails.OrganisationCityOrTown == null
             || RegistrationDetails.OrganisationPostcode == null
-            || RegistrationDetails.OrganisationCountry == null)
+            || RegistrationDetails.OrganisationCountryCode == null)
         {
             ToRedirectPageUrl = OrganisationAddressPage;
             return false;

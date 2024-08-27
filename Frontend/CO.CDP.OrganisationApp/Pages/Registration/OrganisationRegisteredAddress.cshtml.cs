@@ -25,13 +25,13 @@ public class OrganisationRegisteredAddressModel(ISession session) : Registration
     {
         SetupAddress(true);
 
-        if ((Address.IsNonUkAddress && RegistrationDetails.OrganisationCountry != Country.UnitedKingdom)
-            || (!Address.IsNonUkAddress && RegistrationDetails.OrganisationCountry == Country.UnitedKingdom))
+        if ((Address.IsNonUkAddress && RegistrationDetails.OrganisationCountryCode != Country.UKCountryCode)
+            || (!Address.IsNonUkAddress && RegistrationDetails.OrganisationCountryCode == Country.UKCountryCode))
         {
             Address.AddressLine1 = RegistrationDetails.OrganisationAddressLine1;
             Address.TownOrCity = RegistrationDetails.OrganisationCityOrTown;
             Address.Postcode = RegistrationDetails.OrganisationPostcode;
-            Address.Country = RegistrationDetails.OrganisationCountry;
+            Address.Country = RegistrationDetails.OrganisationCountryCode;
         }
     }
 
@@ -47,7 +47,8 @@ public class OrganisationRegisteredAddressModel(ISession session) : Registration
         RegistrationDetails.OrganisationCityOrTown = Address.TownOrCity;
         RegistrationDetails.OrganisationPostcode = Address.Postcode;
         RegistrationDetails.OrganisationRegion = null;
-        RegistrationDetails.OrganisationCountry = Address.Country ?? RegistrationDetails.OrganisationCountry;
+        RegistrationDetails.OrganisationCountryName = Address.CountryName ?? RegistrationDetails.OrganisationCountryName;
+        RegistrationDetails.OrganisationCountryCode = Address.Country ?? RegistrationDetails.OrganisationCountryCode;
 
         session.Set(Session.RegistrationDetailsKey, RegistrationDetails);
 

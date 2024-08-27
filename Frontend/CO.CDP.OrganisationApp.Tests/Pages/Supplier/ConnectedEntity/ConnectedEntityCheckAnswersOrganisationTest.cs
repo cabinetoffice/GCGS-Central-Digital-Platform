@@ -216,23 +216,25 @@ public class ConnectedEntityCheckAnswersOrganisationTest
         );
 
 
-        List<Address> addresses = new();
-
-        addresses.Add(new Address(
-            countryName: "United Kingdom",
-            locality: "Leeds",
-            postalCode: "LS1 2AE",
-            region: null,
-            streetAddress: "1 street lane",
-            type: Organisation.WebApiClient.AddressType.Registered));
-
-        addresses.Add(new Address(
-            countryName: "United Kingdom",
-            locality: "Leeds",
-            postalCode: "LS1 2AE",
-            region: null,
-            streetAddress: "1 street lane",
-            type: Organisation.WebApiClient.AddressType.Postal));
+        List<Address> addresses =
+        [
+            new Address(
+                countryName: "United Kingdom",
+                country: "GB",
+                locality: "Leeds",
+                postalCode: "LS1 2AE",
+                region: null,
+                streetAddress: "1 street lane",
+                type: Organisation.WebApiClient.AddressType.Registered),
+            new Address(
+                countryName: "United Kingdom",
+                country: "GB",
+                locality: "Leeds",
+                postalCode: "LS1 2AE",
+                region: null,
+                streetAddress: "1 street lane",
+                type: Organisation.WebApiClient.AddressType.Postal),
+        ];
 
         var registerConnectedEntity = new RegisterConnectedEntity
         (

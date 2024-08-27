@@ -1,7 +1,6 @@
 using CO.CDP.OrganisationInformation.Persistence.Forms;
 using CO.CDP.Testcontainers.PostgreSql;
 using FluentAssertions;
-using static CO.CDP.OrganisationInformation.Persistence.Tests.EntityFactory;
 
 namespace CO.CDP.OrganisationInformation.Persistence.Tests;
 
@@ -286,7 +285,8 @@ public class DatabaseShareCodeRepositoryTest(PostgreSqlFixture postgreSql) : ICl
                     Locality = "CHESTER",
                     Region = "Lancashire",
                     PostalCode = "CH43 7UR",
-                    CountryName = "United Kingdom"
+                    CountryName = "United Kingdom",
+                    Country = "GB"
                 }
             }
         }

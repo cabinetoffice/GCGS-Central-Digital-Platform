@@ -241,6 +241,7 @@ public class ConnectedEntityCheckAnswersIndividualOrTrustTest
 
         addresses.Add(new Address(
             countryName: "United Kingdom",
+            country: "GB",
             locality: "Leeds",
             postalCode: "LS1 2AE",
             region: null,
@@ -266,6 +267,6 @@ public class ConnectedEntityCheckAnswersIndividualOrTrustTest
     }
     private ConnectedEntityState.Address GetDummyAddress()
     {
-        return new ConnectedEntityState.Address { AddressLine1 = "Address Line 1", TownOrCity = "London", Postcode = "SW1Y 5ED", Country = "United kingdom" };
+        return new ConnectedEntityState.Address { AddressLine1 = "Address Line 1", TownOrCity = "London", Postcode = "SW1Y 5ED", Country = "GB" };
     }
 }
