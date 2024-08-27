@@ -1,4 +1,4 @@
 [tools]
-dotnet = "8.0.300"
-terraform = "1.9.2"
-terragrunt = "0.62.0"
+dotnet = "8.0.401"
+terraform = "1.9.5"
+terragrunt = "0.66.9"
