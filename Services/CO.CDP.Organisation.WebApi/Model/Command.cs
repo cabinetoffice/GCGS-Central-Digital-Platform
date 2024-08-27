@@ -1,7 +1,6 @@
 using CO.CDP.OrganisationInformation;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
-using CO.CDP.OrganisationInformation.Persistence;
 using Address = CO.CDP.OrganisationInformation.Address;
 
 namespace CO.CDP.Organisation.WebApi.Model;
@@ -102,6 +101,9 @@ public record OrganisationAddress
 
     /// <example>"United Kingdom"</example>
     public required string CountryName { get; init; }
+
+    /// <example>"GB"</example>
+    public required string Country { get; init; }
 }
 
 public record OrganisationContactPoint
@@ -348,7 +350,8 @@ public static class MappingExtensions
             Locality = command.Locality,
             Region = command.Region,
             PostalCode = command.PostalCode,
-            CountryName = command.CountryName
+            CountryName = command.CountryName,
+            Country = command.Country
         };
 
     public static List<Address> AsView(this List<OrganisationAddress> command) =>

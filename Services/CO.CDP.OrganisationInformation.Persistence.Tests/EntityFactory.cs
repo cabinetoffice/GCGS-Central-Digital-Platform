@@ -119,7 +119,8 @@ public static class EntityFactory
                     Locality = "Default City",
                     Region = "",
                     PostalCode = "12345",
-                    CountryName = "Defaultland"
+                    CountryName = "Defaultland",
+                    Country = "AB"
                 }
             }],
             ContactPoints = contactPoint == null ? [new Organisation.ContactPoint
@@ -191,7 +192,8 @@ public static class EntityFactory
                 Locality = "London",
                 Region = "",
                 PostalCode = "SW19 8AR",
-                CountryName = "United Kingdom"
+                CountryName = "United Kingdom",
+                Country = "GB"
             }
         };
 

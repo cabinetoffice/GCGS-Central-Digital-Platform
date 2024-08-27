@@ -160,7 +160,7 @@ public class DynamicFormsPageModel(
                 };
 
                 if (question.Type == FormQuestionType.Address && answer.Answer?.AddressValue != null
-                    && answer.Answer.AddressValue.Country != Constants.Country.UnitedKingdom)
+                    && answer.Answer.AddressValue.Country != Constants.Country.UKCountryCode)
                 {
                     summary.ChangeLink += "&UkOrNonUk=non-uk";
                 }
@@ -179,7 +179,7 @@ public class DynamicFormsPageModel(
             var answer = GetAnswerFromTempData(PreviousQuestion);
             if (answer?.AddressValue != null)
             {
-                return answer.AddressValue.Country != Constants.Country.UnitedKingdom;
+                return answer.AddressValue.Country != Constants.Country.UKCountryCode;
             }
         }
 

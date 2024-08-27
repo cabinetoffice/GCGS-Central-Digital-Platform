@@ -93,7 +93,7 @@ public class OrganisationRegisteredAddressModelTest
     public void WhenCountryIsNotEmpty_ShouldNotRaiseCountryValidationError()
     {
         var model = GivenOrganisationAddressModel();
-        model.Address.Country = "england";
+        model.Address.Country = "EN";
 
         var results = ModelValidationHelper.Validate(model.Address);
 
@@ -188,7 +188,8 @@ public class OrganisationRegisteredAddressModelTest
             OrganisationAddressLine1 = "address line 1",
             OrganisationCityOrTown = "london",
             OrganisationPostcode = "SW1A 2AA",
-            OrganisationCountry = "United Kingdom"
+            OrganisationCountryName = "United Kingdom",
+            OrganisationCountryCode = "GB"
         };
 
         return registrationDetails;
