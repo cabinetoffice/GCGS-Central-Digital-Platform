@@ -112,7 +112,7 @@ public class ConnectedEntityRegistrationDateQuestionModel(ISession session) : Pa
         var checkAnswerPage = (state.ConnectedEntityType == Constants.ConnectedEntityType.Organisation
                     ? "ConnectedEntityCheckAnswersOrganisation"
                     : "ConnectedEntityCheckAnswersIndividualOrTrust");
-        
+
         var redirectPage = (RedirectToCheckYourAnswer == true
                         ? checkAnswerPage
                         : GetRedirectLinkPageName(state));
@@ -189,7 +189,9 @@ public class ConnectedEntityRegistrationDateQuestionModel(ISession session) : Pa
     private void InitModal(ConnectedEntityState state, bool reset = false)
     {
         Caption = state.GetCaption();
-        Heading = $"Were you required to register {state.OrganisationName} as a person with significant control?";
+        Heading = $"Were you required to register " +
+            $"{(state.ConnectedEntityType == Constants.ConnectedEntityType.Organisation ? state.OrganisationName : state.FirstName)}" +
+            $" as a person with significant control?";
         BackPageLink = GetBackLinkPageName(state);
         ConnectedEntityType = state.ConnectedEntityType;
         if (reset && state.RegistrationDate.HasValue)
