@@ -22,7 +22,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-
+            migrationBuilder.Sql(@"UPDATE form_answers SET address_value = address_value - 'Country' where address_value->> 'CountryName' != '';");
         }
     }
 }
