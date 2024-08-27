@@ -106,9 +106,11 @@ public class DynamicFormsPageModel(
 
             tempDataService.Remove(FormQuestionAnswerStateKey);
 
+            var shareCode = await formsEngine.CreateShareCodeAsync(FormId, OrganisationId);
             return RedirectToPage(FormSectionType == Models.FormSectionType.Declaration ?
-                "/ShareInformation/ShareCodeConfirmation" : "FormsAddAnotherAnswerSet",
-                new { OrganisationId, FormId, SectionId });
+            "/ShareInformation/ShareCodeConfirmation" : "FormsAddAnotherAnswerSet",
+            new { OrganisationId, FormId, SectionId, shareCode });
+
         }
 
         Guid? nextQuestionId;
