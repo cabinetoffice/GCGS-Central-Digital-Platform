@@ -35,8 +35,9 @@ public class ConnectedEntityState
         public string? AddressLine1 { get; set; }
         public string? TownOrCity { get; set; }
         public string? Postcode { get; set; }
+        public string? CountryName { get; set; }
         public string? Country { get; set; }
-        public bool IsNonUk => Country != Constants.Country.UnitedKingdom;
+        public bool IsNonUk => Country != Constants.Country.UKCountryCode;
 
         public bool? AreSameAddress(Address? address)
         {

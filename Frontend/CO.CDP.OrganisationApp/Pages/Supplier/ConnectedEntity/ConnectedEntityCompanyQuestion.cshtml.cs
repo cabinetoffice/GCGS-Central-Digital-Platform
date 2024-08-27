@@ -166,11 +166,11 @@ public class ConnectedEntityCompanyQuestionModel(ISession session) : PageModel
                         }
                         else
                         {
-                            backPage = $"{AddressType.Postal}-address/{(string.Equals(state.PostalAddress?.Country, Country.UnitedKingdom, StringComparison.OrdinalIgnoreCase) ? "uk" : "non-uk")}";
+                            backPage = $"{AddressType.Postal}-address/{(string.Equals(state.PostalAddress?.Country, Country.UKCountryCode, StringComparison.OrdinalIgnoreCase) ? "uk" : "non-uk")}";
                         }
                         break;
                     case ConnectedEntityOrganisationCategoryType.ACompanyYourOrganisationHasTakenOver:
-                        backPage = $"{AddressType.Registered}-address/{(string.Equals(state.RegisteredAddress?.Country, Country.UnitedKingdom, StringComparison.OrdinalIgnoreCase) ? "uk" : "non-uk")}";
+                        backPage = $"{AddressType.Registered}-address/{(string.Equals(state.RegisteredAddress?.Country, Country.UKCountryCode, StringComparison.OrdinalIgnoreCase) ? "uk" : "non-uk")}";
                         break;
 
                 }

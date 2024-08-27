@@ -33,6 +33,7 @@ internal static class EventMappingExtensions
 
     private static Events.Address AsEventValue(this OrganisationAddress command) => new()
     {
+        Country = command.Country,
         CountryName = command.CountryName,
         Locality = command.Locality,
         PostalCode = command.PostalCode,
@@ -44,6 +45,7 @@ internal static class EventMappingExtensions
     private static Events.Address AsEventValue(
         this OrganisationInformation.Persistence.Organisation.OrganisationAddress address) => new()
         {
+            Country = address.Address.Country,
             CountryName = address.Address.CountryName,
             Locality = address.Address.Locality,
             PostalCode = address.Address.PostalCode,

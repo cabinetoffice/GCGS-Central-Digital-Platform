@@ -209,6 +209,6 @@ public class ConnectedEntityLegalFormQuestionTest
 
     private ConnectedEntityState.Address GetDummyAddress()
     {
-        return new ConnectedEntityState.Address { AddressLine1 = "Address Line 1", TownOrCity = "London", Postcode = "SW1Y 5ED", Country = "United kingdom" };
+        return new ConnectedEntityState.Address { AddressLine1 = "Address Line 1", TownOrCity = "London", Postcode = "SW1Y 5ED", Country = "GB" };
     }
 }

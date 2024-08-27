@@ -84,6 +84,7 @@ public class UpdateOrganisationUseCase(
                         existing.Address.Locality = address.Locality;
                         existing.Address.Region = address.Region;
                         existing.Address.CountryName = address.CountryName;
+                        existing.Address.Country = address.Country;
                     }
                     else
                     {
@@ -96,7 +97,8 @@ public class UpdateOrganisationUseCase(
                                 PostalCode = address.PostalCode,
                                 Locality = address.Locality,
                                 Region = address.Region,
-                                CountryName = address.CountryName
+                                CountryName = address.CountryName,
+                                Country = address.Country
                             },
                         });
                     }

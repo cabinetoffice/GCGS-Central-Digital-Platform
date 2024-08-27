@@ -1,5 +1,4 @@
 using CO.CDP.Mvc.Validation;
-using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;

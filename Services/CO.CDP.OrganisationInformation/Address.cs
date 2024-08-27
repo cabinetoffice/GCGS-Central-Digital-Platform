@@ -20,5 +20,8 @@ public record Address
     /// <example>"United Kingdom"</example>
     public required string CountryName { get; init; }
 
+    /// <example>"GB"</example>
+    public required string Country { get; init; }
+
     public required AddressType Type { get; init; }
 }

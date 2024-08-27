@@ -82,6 +82,7 @@ public class ConnectedEntityAddressModel(ISession session) : PageModel
             AddressLine1 = Address.AddressLine1,
             TownOrCity = Address.TownOrCity,
             Postcode = Address.Postcode,
+            CountryName = Address.CountryName,
             Country = Address.Country
         };
 

@@ -54,7 +54,8 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
                     Locality = "Example City",
                     Region = "Test Region",
                     PostalCode = "12345",
-                    CountryName = "Exampleland"
+                    CountryName = "Exampleland",
+                    Country = "AB"
                 }
             ],
             ContactPoint = new OrganisationContactPoint
@@ -122,7 +123,8 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
                     Locality = "Example City",
                     Region = "Test Region",
                     PostalCode = "12345",
-                    CountryName = "Exampleland"
+                    CountryName = "Exampleland",
+                    Country = "AB"
                 }
             ],
             ContactPoint = new OrganisationContactPoint
@@ -185,7 +187,8 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
                     Locality = "Example City",
                     Region = "Test Region",
                     PostalCode = "12345",
-                    CountryName = "Exampleland"
+                    CountryName = "Exampleland",
+                    Country = "AB"
                 }
             });
     }
@@ -340,7 +343,8 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
                     Locality = "Example City",
                     Region = "Test Region",
                     PostalCode = "12345",
-                    CountryName = "Exampleland"
+                    CountryName = "Exampleland",
+                    Country = "AB"
                 }
             ],
             ContactPoint = new OrganisationContactPoint

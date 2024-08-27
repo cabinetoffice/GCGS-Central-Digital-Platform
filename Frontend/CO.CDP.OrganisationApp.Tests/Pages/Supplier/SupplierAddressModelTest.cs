@@ -28,7 +28,7 @@ public class SupplierAddressModelTest
             AddressLine1 = "1 London Street",
             TownOrCity = "London",
             Postcode = "L1",
-            Country = "United Kingdom"
+            Country = "GB"
         };
     }
 
@@ -36,7 +36,7 @@ public class SupplierAddressModelTest
     {
         var supplierInformation = SupplierDetailsFactory.CreateSupplierInformationClientModel();
         var organisation = SupplierDetailsFactory.GivenOrganisationClientModel(_model.Id);
-        organisation.Addresses.Add(new Address(countryName: "United Kingdom", locality: "London", postalCode: "L1", region: "South", streetAddress: "1 London Street", type: AddressType.Registered));
+        organisation.Addresses.Add(new Address(countryName: "United Kingdom", country: "GB", locality: "London", postalCode: "L1", region: "South", streetAddress: "1 London Street", type: AddressType.Registered));
 
         _organisationClientMock.Setup(client => client.GetOrganisationSupplierInformationAsync(_model.Id))
             .ReturnsAsync(supplierInformation);
@@ -56,7 +56,7 @@ public class SupplierAddressModelTest
         _model.Address.AddressLine1.Should().Be("1 London Street");
         _model.Address.TownOrCity.Should().Be("London");
         _model.Address.Postcode.Should().Be("L1");
-        _model.Address.Country.Should().Be("United Kingdom");
+        _model.Address.Country.Should().Be("GB");
     }
 
     [Fact]
