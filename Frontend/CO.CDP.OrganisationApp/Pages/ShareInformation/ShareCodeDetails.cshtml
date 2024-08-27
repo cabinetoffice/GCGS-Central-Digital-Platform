@@ -1,0 +1,53 @@
+@page "/organisation/{organisationId:guid}/forms/{formId:guid}/sections/{sectionId:guid}/share-code-details/{shareCode}"
+@model CO.CDP.OrganisationApp.Pages.ShareInformation.ShareCodeDetailsModel
+@{
+    var backUrl = $"/organisation/{Model.OrganisationId}/forms/{Model.FormId}/sections/{Model.SectionId}/share-codes-list-view";
+}
+
+<a href="@backUrl" class="govuk-back-link">Back</a>
+
+<main class="govuk-main-wrapper" id="main-content">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <div class="govuk-form-group">
+                <span class="govuk-caption-l">Share code</span>
+                <h1 class="govuk-heading-l">
+                    @Model.SharedConsentDetails?.ShareCode
+                </h1>
+                <dl class="govuk-summary-list">
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            Created on
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            @Model.SharedConsentDetails?.SubmittedAt.ToString("dd/MM/yyyy")
+                        </dd>
+                        <dd class="govuk-summary-list__actions">
+                            &nbsp;
+                        </dd>
+                    </div>
+
+                    @if (Model.SharedConsentDetails?.QuestionAnswers != null)
+                    {
+                        @foreach (var answer in Model.SharedConsentDetails.QuestionAnswers)
+                        {
+                            if (!string.IsNullOrEmpty(@answer.Title)){
+                                <div class="govuk-summary-list__row">
+                                    <dt class="govuk-summary-list__key">
+                                        @answer.Title
+                                    </dt>
+                                    <dd class="govuk-summary-list__value">
+                                         @Html.Raw(@answer.Answer)
+                                    </dd>                                   
+                                </div>
+                            }
+                        }
+                    }
+                </dl>
+                <a href="#" role="button" draggable="false" class="govuk-button" data-module="govuk-button">
+                    Download
+                </a>
+            </div>
+        </div>
+    </div>
+</main>
