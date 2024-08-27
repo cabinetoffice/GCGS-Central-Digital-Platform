@@ -74,12 +74,12 @@ public class DatabaseFormRepository(OrganisationInformationContext context) : IF
             .FirstOrDefaultAsync(s => s.Form.Guid == formId && s.Organisation.Guid == organisationId);
     }
 
-    public async Task<SharedConsent?> GetSharedConsentWithAnswersAsync(Guid formId, Guid organisationId)
+    public async Task<SharedConsent?> GetSharedConsentDraftWithAnswersAsync(Guid formId, Guid organisationId)
     {
         return await context.Set<SharedConsent>()
+            .Where(x => x.SubmissionState == SubmissionState.Draft)
             .Include(c => c.AnswerSets)
             .ThenInclude(a => a.Answers)
-            .OrderByDescending(x => x.UpdatedOn)
             .FirstOrDefaultAsync(x => x.Form.Guid == formId && x.Organisation.Guid == organisationId);
     }
 

@@ -24,32 +24,17 @@ public class UpdateFormSectionAnswersUseCase(
             ?? throw new UnknownSectionException($"Unknown section {sectionId} in form {formId}.");
 
         var sharedConsent = await formRepository.GetUntrackedSharedConsent(formId, organisationId);
-        if (sharedConsent == null)
-        {
-            sharedConsent = CreateSharedConsent(organisation, section.Form);
-
-            await UpdateOrAddStandardAnswers(formRepository, answerSetId, answers, section, sharedConsent);
-            await formRepository.SaveSharedConsentAsync(sharedConsent);
-
-            return true;
-        }
-
-        if (sharedConsent.SubmissionState == Persistence.SubmissionState.Submitted)
+        if (sharedConsent?.SubmissionState == Persistence.SubmissionState.Submitted)
         {
             CleanSharedConsent(sharedConsent);
-
-            await UpdateOrAddStandardAnswers(formRepository, answerSetId, answers, section, sharedConsent);
-            await formRepository.SaveSharedConsentAsync(sharedConsent);
         }
         else
         {
-            sharedConsent = await formRepository.GetSharedConsentWithAnswersAsync(formId, organisationId);
-            if (sharedConsent != null)
-            {
-                await UpdateOrAddStandardAnswers(formRepository, answerSetId, answers, section, sharedConsent);
-                await formRepository.SaveSharedConsentAsync(sharedConsent);
-            }
+            sharedConsent = await formRepository.GetSharedConsentDraftWithAnswersAsync(formId, organisationId)
+                ?? CreateSharedConsent(organisation, section.Form);
         }
+        await UpdateOrAddStandardAnswers(formRepository, answerSetId, answers, section, sharedConsent);
+        await formRepository.SaveSharedConsentAsync(sharedConsent);
 
         return true;
     }

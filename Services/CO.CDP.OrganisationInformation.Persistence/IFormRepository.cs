@@ -10,7 +10,7 @@ public interface IFormRepository : IDisposable
     Task<FormSection?> GetSectionAsync(Guid formId, Guid sectionId);
 
     Task<SharedConsent?> GetSharedConsentDraftAsync(Guid formId, Guid organisationId);
-    Task<SharedConsent?> GetSharedConsentWithAnswersAsync(Guid formId, Guid organisationId);
+    Task<SharedConsent?> GetSharedConsentDraftWithAnswersAsync(Guid formId, Guid organisationId);
     Task<IEnumerable<SharedConsent>> GetShareCodesAsync(Guid organisationId);
     Task<SharedConsentDetails?> GetShareCodeDetailsAsync(Guid organisationId, string shareCode);
 
