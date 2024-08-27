@@ -17,8 +17,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                 nullable: false,
                 defaultValue: "");
 
-            // set all country code to GB, this is okay for now as we havn't got to prod yet
-            migrationBuilder.Sql("UPDATE addresses SET country = 'GB', country_name = 'United Kingdom';");
+            migrationBuilder.Sql("UPDATE addresses SET country = 'GB' WHERE country_name = 'United Kingdom';");
         }
 
         /// <inheritdoc />
