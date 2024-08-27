@@ -6,7 +6,7 @@ namespace CO.CDP.DataSharing.WebApi.Model;
 /// <summary>
 /// Based on OCDS <a href="https://standard.open-contracting.org/latest/en/schema/reference/#parties">Parties</a>.
 /// </summary>
-internal record SupplierInformation
+public record SupplierInformation
 {
     /// <example>"47e6a363-11c0-4cf4-bce6-dea03034e4bb"</example>
     [Required] public required Guid Id { get; init; }
