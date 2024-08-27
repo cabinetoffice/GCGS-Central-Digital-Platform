@@ -141,7 +141,7 @@ public class DatabaseFormRepository(OrganisationInformationContext context) : IF
         if (query.Count() > 1) return false; // Scenario-1: if one sharecode with multiple answersets
 
         var data = await query.FirstOrDefaultAsync();
-        if (data == null) return null;
+        if (data == null) return null; // Scenario-2: if Sharecode not found
 
         // Get the latest SharedConsent records of the Organistaion and FormVersionId
         var latestShareCode = await (from s in context.SharedConsents
@@ -154,13 +154,13 @@ public class DatabaseFormRepository(OrganisationInformationContext context) : IF
                                      select s).Take(1).FirstOrDefaultAsync();
 
 
-        if (latestShareCode!.SubmissionState != SubmissionState.Submitted) return false; // Scenario-2: Sharecode is not submitted
+        if (latestShareCode!.SubmissionState != SubmissionState.Submitted) return false; // Scenario-3: Sharecode is not submitted
 
         if (data!.ShareCode == latestShareCode.ShareCode
             && data!.ShareCode == shareCode
-                && data!.SubmissionState == SubmissionState.Submitted) return true; //Scenario-3: if requested sharecode is latest Sharecode and stae is submitted
+                && data!.SubmissionState == SubmissionState.Submitted) return true; //Scenario-4: if requested sharecode is latest Sharecode and stae is submitted
 
-        return false; //Scenario-4: if scenario3 is not passed
+        return false; //Scenario-4: if scenario-4 is not passed
     }
 
     public async Task<IEnumerable<FormQuestion>> GetQuestionsAsync(Guid sectionId)
