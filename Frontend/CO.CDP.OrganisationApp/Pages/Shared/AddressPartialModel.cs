@@ -32,6 +32,16 @@ public class AddressPartialModel : IValidatableObject
 
     public string PostcodeLabel => IsNonUkAddress ? "Postal or Zip code" : "Postcode";
 
+    public string? CountryName
+    {
+        get
+        {
+            if (Country == null) return null;
+            if (Country == Constants.Country.UKCountryCode) return Constants.Country.UnitedKingdom;
+            if (Constants.Country.NonUKCountries.ContainsKey(Country)) return Constants.Country.NonUKCountries[Country];
+            return null;
+        }
+    }
 
     public string? Heading { get; set; }
 
@@ -42,10 +52,13 @@ public class AddressPartialModel : IValidatableObject
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
-        var valid = Country == Constants.Country.UnitedKingdom || Constants.Country.NonUKCountries.Contains(Country);
-        if (!valid)
+        if (!string.IsNullOrWhiteSpace(Country))
         {
-            yield return new ValidationResult($"Invalid country name '{Country}'", [nameof(Country)]);
+            var valid = Country == Constants.Country.UKCountryCode || Constants.Country.NonUKCountries.ContainsKey(Country);
+            if (!valid)
+            {
+                yield return new ValidationResult($"Invalid country name '{Country}'", [nameof(Country)]);
+            }
         }
     }
 

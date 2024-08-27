@@ -85,6 +85,9 @@ public class ConnectedEntityRegistrationDateQuestionModel(ISession session) : Pa
             return Page();
         }
 
+        if (state.HasRegistartionDate != HasRegistartionDate)
+        { RedirectToCheckYourAnswer = false; }
+
         if (HasRegistartionDate == true)
         {
             var dateString = $"{Year}-{Month!.PadLeft(2, '0')}-{Day!.PadLeft(2, '0')}";
@@ -109,11 +112,11 @@ public class ConnectedEntityRegistrationDateQuestionModel(ISession session) : Pa
         var checkAnswerPage = (state.ConnectedEntityType == Constants.ConnectedEntityType.Organisation
                     ? "ConnectedEntityCheckAnswersOrganisation"
                     : "ConnectedEntityCheckAnswersIndividualOrTrust");
-
+        
         var redirectPage = (RedirectToCheckYourAnswer == true
                         ? checkAnswerPage
                         : GetRedirectLinkPageName(state));
-        
+
         return RedirectToPage(redirectPage, new { Id, ConnectedEntityId });
     }
     private (bool valid, ConnectedEntityState state) ValidatePage()
@@ -143,7 +146,7 @@ public class ConnectedEntityRegistrationDateQuestionModel(ISession session) : Pa
                         break;
                     case ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl:
                         redirectPage = HasRegistartionDate == true
-                                        ? "ConnectedEntityCompanyRegisterName" 
+                                        ? "ConnectedEntityCompanyRegisterName"
                                         : "ConnectedEntityLegalFormQuestion";
                         break;
                 }

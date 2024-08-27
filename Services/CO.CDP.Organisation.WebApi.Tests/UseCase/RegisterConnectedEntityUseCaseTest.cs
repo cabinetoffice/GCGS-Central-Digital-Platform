@@ -95,7 +95,8 @@ public class RegisterConnectedEntityUseCaseTest(AutoMapperFixture mapperFixture)
                     Locality = "Example City",
                     Region = "Test Region",
                     PostalCode = "12345",
-                    CountryName = "Exampleland"
+                    CountryName = "Exampleland",
+                    Country = "AB"
                 }
             }],
             Tenant = It.IsAny<Tenant>(),

@@ -44,7 +44,7 @@ public class RegistrationStepModelTest
             OrganisationAddressLine1 = addressLine1,
             OrganisationCityOrTown = city,
             OrganisationPostcode = postcode,
-            OrganisationCountry = country ?? "UK",
+            OrganisationCountryCode = country ?? "UK",
             BuyerOrganisationType = buyerOrganisationType,
             Devolved = devolved,
             Regulations = regulations == null ? [] : regulations.ToList()
@@ -85,7 +85,7 @@ public class RegistrationStepModelTest
             OrganisationAddressLine1 = addressLine1,
             OrganisationCityOrTown = city,
             OrganisationPostcode = postcode,
-            OrganisationCountry = country ?? "UK",
+            OrganisationCountryCode = country ?? "UK",
             BuyerOrganisationType = buyerOrganisationType,
             Devolved = devolved,
             Regulations = regulations == null ? [] : regulations.ToList()

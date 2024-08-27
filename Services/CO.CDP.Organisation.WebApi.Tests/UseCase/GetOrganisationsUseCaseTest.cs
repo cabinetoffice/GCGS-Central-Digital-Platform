@@ -52,7 +52,8 @@ public class GetOrganisationsUseCaseTest(AutoMapperFixture mapperFixture) : ICla
                     StreetAddress = "1234 Test St",
                     Locality = "Test City",
                     PostalCode = "12345",
-                    CountryName = "Testland"
+                    CountryName = "Testland",
+                    Country = "AB"
                 }
             }},
             ContactPoints = [new OrganisationInformation.Persistence.Organisation.ContactPoint { Email = "contact@test.org" }],
@@ -84,7 +85,8 @@ public class GetOrganisationsUseCaseTest(AutoMapperFixture mapperFixture) : ICla
                     StreetAddress = "1234 Test St",
                     Locality = "Test City",
                     PostalCode = "12345",
-                    CountryName = "Testland"
+                    CountryName = "Testland",
+                    Country = "AB"
                 }
             }},
             ContactPoints = [],

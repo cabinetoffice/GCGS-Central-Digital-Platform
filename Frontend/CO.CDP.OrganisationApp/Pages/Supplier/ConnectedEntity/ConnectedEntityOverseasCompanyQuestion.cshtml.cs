@@ -62,6 +62,11 @@ public class ConnectedEntityOverseasCompanyQuestionModel(ISession session) : Pag
             return Page();
         }
 
+        if (state.HasOverseasCompaniesHouseNumber != HasOverseasCompaniesHouseNumber)
+        {
+            RedirectToCheckYourAnswer = false;
+        }
+
         state.HasOverseasCompaniesHouseNumber = HasOverseasCompaniesHouseNumber;
         state.OverseasCompaniesHouseNumber = OverseasCompaniesHouseNumber;
         if (HasOverseasCompaniesHouseNumber == true)

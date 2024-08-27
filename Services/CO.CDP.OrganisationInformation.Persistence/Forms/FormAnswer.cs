@@ -19,7 +19,7 @@ public class SharedConsent : IEntityDate
     public required SubmissionState SubmissionState { get; set; } = SubmissionState.Draft;
     public DateTimeOffset? SubmittedAt { get; set; }
     public required string FormVersionId { get; init; }
-    public string? BookingReference { get; set; }
+    public string? ShareCode { get; set; }
     public DateTimeOffset CreatedOn { get; set; }
     public DateTimeOffset UpdatedOn { get; set; }
 }
@@ -59,6 +59,7 @@ public class FormAddress
     public string? Region { get; init; }
     public required string PostalCode { get; init; }
     public required string CountryName { get; init; }
+    public required string Country { get; init; }
 }
 
 public class FormAnswerSet : IEntityDate
