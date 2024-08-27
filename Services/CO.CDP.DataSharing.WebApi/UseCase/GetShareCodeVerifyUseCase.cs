@@ -5,13 +5,13 @@ using CO.CDP.OrganisationInformation.Persistence;
 namespace CO.CDP.DataSharing.WebApi.UseCase;
 
 public class GetShareCodeVerifyUseCase(
-    IFormRepository formRepository)
+    IShareCodeRepository shareCodeRepository)
     : IUseCase<ShareVerificationRequest,
         ShareVerificationReceipt>
 {
     public async Task<ShareVerificationReceipt> Execute(ShareVerificationRequest shareRequest)
     {
-        var details = await formRepository.GetShareCodeVerifyAsync(shareRequest.FormVersionId, shareRequest.ShareCode);
+        var details = await shareCodeRepository.GetShareCodeVerifyAsync(shareRequest.FormVersionId, shareRequest.ShareCode);
 
         if (details == null)
         {

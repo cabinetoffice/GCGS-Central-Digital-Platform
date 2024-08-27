@@ -133,6 +133,36 @@ public class DatabaseShareCodeRepositoryTest(PostgreSqlFixture postgreSql) : ICl
         retrievedSection.Questions.Should().ContainSingle(q => q.Title == "Yes or no?");
     }
 
+
+    [Fact]
+    public async Task GetShareCodeVerifyAsync_WhenShareCodeIsLatest_ReturnsTrue()
+    {
+        var form = GivenForm(Guid.NewGuid());        
+        var section = GivenSection(Guid.NewGuid(), form);
+        var question = GivenYesOrNoQuestion(section);
+        var sharedConsent = GivenSharedConsent(form);
+        var answerSet = GivenAnswerSet(sharedConsent, section);
+        var answer = GivenAnswer(question, answerSet);
+
+        sharedConsent.SubmissionState = SubmissionState.Submitted;
+        sharedConsent.SubmittedAt = DateTime.UtcNow;
+
+        var shareCode = "EXISTENTCODE";
+        
+        sharedConsent.ShareCode = shareCode;        
+
+        await using var context = postgreSql.OrganisationInformationContext();
+        await context.SharedConsents.AddAsync(sharedConsent);
+        await context.SaveChangesAsync();
+
+        using var repository = ShareCodeRepository();        
+
+        var foundConsent = await repository.GetShareCodeVerifyAsync(form.Version, shareCode);
+
+        foundConsent.Should().NotBeNull();
+        foundConsent!.Should().Be(true);   
+    }
+
     private static SharedConsent GivenSharedConsent(
         Form? form = null,
         Organisation? organisation = null)
@@ -145,12 +175,12 @@ public class DatabaseShareCodeRepositoryTest(PostgreSqlFixture postgreSql) : ICl
             Guid = Guid.NewGuid(),
             OrganisationId = organisation.Id,
             Organisation = organisation,
-            FormId = form.Id,
+            FormId = form.Id,            
             Form = form,
             AnswerSets = [],
             SubmissionState = SubmissionState.Draft,
             SubmittedAt = null,
-            FormVersionId = "202404",
+            FormVersionId = form.Version,
             ShareCode = null
         };
     }
@@ -164,7 +194,7 @@ public class DatabaseShareCodeRepositoryTest(PostgreSqlFixture postgreSql) : ICl
             Version = "1.0",
             IsRequired = true,
             Scope = FormScope.SupplierInformation,
-            Sections = new List<FormSection>()
+            Sections = new List<FormSection>()           
         };
     }
     private static Tenant GivenTenant()
