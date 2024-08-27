@@ -13,7 +13,10 @@ public class GetShareCodeVerifyUseCase(
     {
         var details = await formRepository.GetShareCodeVerifyAsync(shareRequest.FormVersionId, shareRequest.ShareCode);
 
-        if (details == null) return null;
+        if (details == null)
+        {
+            throw new SharedConsentNotFoundException("Shared Code not found.");
+        }
 
         return new ShareVerificationReceipt
         {
