@@ -9,7 +9,7 @@ using CO.CDP.DataSharing.WebApi.Extensions;
 
 namespace CO.CDP.DataSharing.WebApi.Tests.UseCase;
 
-public class GetShareCodeVerifyUseCaseTest(AutoMapperFixture mapperFixture) : IClassFixture<AutoMapperFixture>
+public class GetShareCodeVerifyUseCaseTest() : IClassFixture<AutoMapperFixture>
 {
     private readonly Mock<IFormRepository> _formRepository = new();
     private readonly Mock<IShareCodeRepository> _shareCodeRepository = new();
