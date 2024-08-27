@@ -13,7 +13,7 @@ public interface IFormRepository : IDisposable
     Task<SharedConsent?> GetSharedConsentDraftWithAnswersAsync(Guid formId, Guid organisationId);
     Task<IEnumerable<SharedConsent>> GetShareCodesAsync(Guid organisationId);
     Task<SharedConsentDetails?> GetShareCodeDetailsAsync(Guid organisationId, string shareCode);
-
+    Task<Boolean?> GetShareCodeVerifyAsync(string formVersionId, string shareCode);
     Task<IEnumerable<FormQuestion>> GetQuestionsAsync(Guid sectionId);
 
     Task<List<FormAnswerSet>> GetFormAnswerSetsAsync(Guid sectionId, Guid organisationId);

@@ -31,6 +31,7 @@ builder.Services.AddScoped<IUseCase<ShareRequest, ShareReceipt>, GenerateShareCo
 
 builder.Services.AddScoped<IUseCase<Guid, List<SharedConsent>?>, GetShareCodesUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, string), SharedConsentDetails?>, GetShareCodeDetailsUseCase>();
+builder.Services.AddScoped<IUseCase<ShareVerificationRequest, ShareVerificationReceipt>, GetShareCodeVerifyUseCase>();
 builder.Services.AddDataSharingProblemDetails();
 builder.Services.AddJwtBearerAndApiKeyAuthentication(builder.Configuration, builder.Environment);
 //builder.Services.AddAuthorization();

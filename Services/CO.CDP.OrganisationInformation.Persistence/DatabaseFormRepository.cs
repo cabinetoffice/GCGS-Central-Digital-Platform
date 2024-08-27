@@ -1,5 +1,6 @@
 using CO.CDP.OrganisationInformation.Persistence.Forms;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Cryptography;
 
 namespace CO.CDP.OrganisationInformation.Persistence;
 
@@ -106,7 +107,7 @@ public class DatabaseFormRepository(OrganisationInformationContext context) : IF
                     select new
                     {
                         FormAnswerSetId = fas.Id,
-                        FormAnswerSetUpdate=fas.UpdatedOn,
+                        FormAnswerSetUpdate = fas.UpdatedOn,
                         s.BookingReference,
                         s.SubmittedAt,
                         QuestionId = fq.Guid,
@@ -116,7 +117,7 @@ public class DatabaseFormRepository(OrganisationInformationContext context) : IF
                     };
 
         var data = await query.ToListAsync();
-        var sharedCodeResult = data.OrderByDescending(x=>x.FormAnswerSetUpdate).GroupBy(g => new { g.BookingReference, g.FormAnswerSetId, g.SubmittedAt }).FirstOrDefault();
+        var sharedCodeResult = data.OrderByDescending(x => x.FormAnswerSetUpdate).GroupBy(g => new { g.BookingReference, g.FormAnswerSetId, g.SubmittedAt }).FirstOrDefault();
         if (sharedCodeResult == null) return null;
 
         return new SharedConsentDetails
@@ -132,6 +133,41 @@ public class DatabaseFormRepository(OrganisationInformationContext context) : IF
                 Answer = a.FormAnswer
             })
         };
+    }
+
+    public async Task<Boolean?> GetShareCodeVerifyAsync(string formVersionId, string shareCode)
+    {
+        var query = from s in context.SharedConsents
+                    join fas in context.FormAnswerSets on s.Id equals fas.SharedConsentId
+                    where
+                        fas.Deleted == false
+                        && s.FormVersionId == formVersionId
+                        && s.BookingReference == shareCode
+                    select s;
+
+        if (query.Count() > 1) return false; // Scenario1: if one sharecode with multiple answersets
+
+        var data = await query.FirstOrDefaultAsync();
+        if (data == null) return false;
+
+        // Get the latest SharedConsent records of the Organistaion and FormVersionId
+        var latestShareCode = await (from s in context.SharedConsents
+                                      join fas in context.FormAnswerSets on s.Id equals fas.SharedConsentId
+                                      where
+                                          fas.Deleted == false
+                                          && s.FormVersionId == data!.FormVersionId
+                                          && s.OrganisationId == data.OrganisationId
+                                      orderby s.SubmittedAt descending
+                                      select s).Take(1).FirstOrDefaultAsync();        
+
+
+        if (latestShareCode!.SubmissionState != SubmissionState.Submitted) return false; // Scenario2: Sharecode is not submitted
+
+        if (data!.BookingReference == latestShareCode.BookingReference
+            && data!.BookingReference == shareCode
+                && data!.SubmissionState == SubmissionState.Submitted) return true; //Scenario3: if requested sharecode is latest Sharecode and stae is submitted
+
+        return false; //Scenario: if scenario3 is not passed
     }
 
     public async Task<IEnumerable<FormQuestion>> GetQuestionsAsync(Guid sectionId)
