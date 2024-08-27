@@ -58,7 +58,7 @@ public static class EndpointExtensions
 
         app.MapPost("/share/data/verify", async (ShareVerificationRequest request, IUseCase<ShareVerificationRequest, ShareVerificationReceipt> useCase) =>
                 await useCase.Execute(request)
-                    .AndThen(shareVerificationReceipt => Results.Ok(shareVerificationReceipt)))
+                    .AndThen(shareVerificationReceipt => shareVerificationReceipt != null ? Results.Ok(shareVerificationReceipt) : Results.NotFound()))
             .Produces<ShareVerificationReceipt>(StatusCodes.Status200OK, "application/json")
             .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
             .Produces<ProblemDetails>(StatusCodes.Status404NotFound)

@@ -150,7 +150,7 @@ public class DatabaseFormRepository(OrganisationInformationContext context) : IF
                                          fas.Deleted == false
                                          && s.FormVersionId == data!.FormVersionId
                                          && s.OrganisationId == data.OrganisationId
-                                     orderby s.SubmittedAt descending
+                                     orderby s.UpdatedOn descending
                                      select s).Take(1).FirstOrDefaultAsync();
 
 
