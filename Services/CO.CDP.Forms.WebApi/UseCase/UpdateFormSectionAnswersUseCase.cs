@@ -44,7 +44,7 @@ public class UpdateFormSectionAnswersUseCase(
         sharedConsent.Id = default;
         sharedConsent.Guid = Guid.NewGuid();
         sharedConsent.SubmittedAt = default;
-        sharedConsent.BookingReference = default;
+        sharedConsent.ShareCode = default;
         sharedConsent.SubmissionState = default;
     }
 
