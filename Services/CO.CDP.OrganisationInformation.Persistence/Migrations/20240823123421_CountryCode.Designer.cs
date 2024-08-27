@@ -540,10 +540,6 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("BookingReference")
-                        .HasColumnType("text")
-                        .HasColumnName("booking_reference");
-
                     b.Property<DateTimeOffset>("CreatedOn")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
@@ -566,6 +562,10 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                     b.Property<int>("OrganisationId")
                         .HasColumnType("integer")
                         .HasColumnName("organisation_id");
+
+                    b.Property<string>("ShareCode")
+                        .HasColumnType("text")
+                        .HasColumnName("share_code");
 
                     b.Property<int>("SubmissionState")
                         .HasColumnType("integer")
