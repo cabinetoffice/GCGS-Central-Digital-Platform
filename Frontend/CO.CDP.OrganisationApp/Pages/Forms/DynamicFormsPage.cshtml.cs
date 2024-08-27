@@ -104,15 +104,11 @@ public class DynamicFormsPageModel(
             var answerSet = tempDataService.PeekOrDefault<FormQuestionAnswerState>(FormQuestionAnswerStateKey);
             await formsEngine.SaveUpdateAnswers(FormId, SectionId, OrganisationId, answerSet);
 
-            if (FormSectionType == Models.FormSectionType.Declaration)
-            {
-                return RedirectToPage("/ShareInformation/ShareCodeConfirmation", new { OrganisationId, FormId, SectionId });
-            }
-            else
-            {
-                tempDataService.Remove(FormQuestionAnswerStateKey);
-                return RedirectToPage("FormsAddAnotherAnswerSet", new { OrganisationId, FormId, SectionId });
-            }
+            tempDataService.Remove(FormQuestionAnswerStateKey);
+
+            return RedirectToPage(FormSectionType == Models.FormSectionType.Declaration ?
+                "/ShareInformation/ShareCodeConfirmation" : "FormsAddAnotherAnswerSet",
+                new { OrganisationId, FormId, SectionId });
         }
 
         Guid? nextQuestionId;
