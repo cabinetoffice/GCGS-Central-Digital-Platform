@@ -67,13 +67,6 @@ public class DatabaseFormRepository(OrganisationInformationContext context) : IF
             .FirstOrDefaultAsync(s => s.Guid == sectionId);
     }
 
-    public async Task<SharedConsent?> GetSharedConsentDraftAsync(Guid formId, Guid organisationId)
-    {
-        return await context.Set<SharedConsent>()
-            .Where(x => x.SubmissionState == SubmissionState.Draft)
-            .FirstOrDefaultAsync(s => s.Form.Guid == formId && s.Organisation.Guid == organisationId);
-    }
-
     public async Task<SharedConsent?> GetSharedConsentDraftWithAnswersAsync(Guid formId, Guid organisationId)
     {
         return await context.Set<SharedConsent>()
@@ -102,12 +95,12 @@ public class DatabaseFormRepository(OrganisationInformationContext context) : IF
                         fs.Type == FormSectionType.Declaration
                         && fas.Deleted == false
                         && o.Guid == organisationId
-                        && s.BookingReference == shareCode
+                        && s.ShareCode == shareCode
                     select new
                     {
                         FormAnswerSetId = fas.Id,
                         FormAnswerSetUpdate=fas.UpdatedOn,
-                        s.BookingReference,
+                        s.ShareCode,
                         s.SubmittedAt,
                         QuestionId = fq.Guid,
                         QuestionType = fq.Type,
@@ -116,12 +109,12 @@ public class DatabaseFormRepository(OrganisationInformationContext context) : IF
                     };
 
         var data = await query.ToListAsync();
-        var sharedCodeResult = data.OrderByDescending(x=>x.FormAnswerSetUpdate).GroupBy(g => new { g.BookingReference, g.FormAnswerSetId, g.SubmittedAt }).FirstOrDefault();
+        var sharedCodeResult = data.OrderByDescending(x=>x.FormAnswerSetUpdate).GroupBy(g => new { g.ShareCode, g.FormAnswerSetId, g.SubmittedAt }).FirstOrDefault();
         if (sharedCodeResult == null) return null;
 
         return new SharedConsentDetails
         {
-            ShareCode = sharedCodeResult.Key.BookingReference,
+            ShareCode = sharedCodeResult.Key.ShareCode,
             SubmittedAt = sharedCodeResult.Key.SubmittedAt!.Value,
             QuestionAnswers = sharedCodeResult.Select(a =>
             new SharedConsentQuestionAnswer

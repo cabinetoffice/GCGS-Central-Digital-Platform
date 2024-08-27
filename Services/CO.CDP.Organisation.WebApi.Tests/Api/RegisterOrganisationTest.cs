@@ -264,7 +264,8 @@ public class RegisterOrganisationTest
                 Locality = "Example City",
                 Region = "Test Region",
                 PostalCode = "12345",
-                CountryName = "Exampleland"
+                CountryName = "Exampleland",
+                Country = "AB"
             }],
             ContactPoint = new OrganisationContactPoint
             {

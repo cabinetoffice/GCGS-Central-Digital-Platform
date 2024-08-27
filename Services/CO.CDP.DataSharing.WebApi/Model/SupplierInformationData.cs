@@ -1,6 +1,6 @@
 namespace CO.CDP.DataSharing.WebApi.Model;
 
-internal record SupplierInformationData
+public record SupplierInformationData
 {
     public required Form Form { get; init; }
     public required List<FormAnswer> Answers { get; init; } = new();

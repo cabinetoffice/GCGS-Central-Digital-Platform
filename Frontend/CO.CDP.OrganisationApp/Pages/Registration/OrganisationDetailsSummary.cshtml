@@ -95,11 +95,11 @@
                                 <p class="govuk-body">@details.OrganisationRegion</p>
                             }
                             <p class="govuk-body">@details.OrganisationPostcode</p>
-                            <p class="govuk-body">@details.OrganisationCountry</p>
+                            <p class="govuk-body">@details.OrganisationCountryName</p>
                         </dd>
                         <dd class="govuk-summary-list__actions">
                             <a class="govuk-link"
-                               href="/registration/organisation-registered-address/@(details.OrganisationCountry == Country.UnitedKingdom ? "uk" : "non-uk")?frm-summary">
+                               href="/registration/organisation-registered-address/@(details.OrganisationCountryCode == Country.UKCountryCode ? "uk" : "non-uk")?frm-summary">
                                 Change<span class="govuk-visually-hidden"> organisation address</span>
                             </a>
                         </dd>

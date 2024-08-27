@@ -29,7 +29,8 @@ public class OrganisationClientIntegrationTest(ITestOutputHelper testOutputHelpe
             locality: "New City",
             region: "W.Yorkshire",
             postalCode: "123456",
-            countryName: "Newland"
+            countryName: "Newland",
+            country: "GB"
         );
         var contactPoint = new OrganisationContactPoint(
             name: "Main Contact",

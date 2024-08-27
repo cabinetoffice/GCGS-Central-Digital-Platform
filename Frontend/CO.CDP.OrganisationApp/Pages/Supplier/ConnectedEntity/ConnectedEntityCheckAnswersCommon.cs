@@ -28,20 +28,24 @@ public class ConnectedEntityCheckAnswersCommon
             InsolvencyDate = connectedEntity.Organisation?.InsolvencyDate,
             LawRegistered = connectedEntity.Organisation?.LawRegistered,
             LegalForm = connectedEntity.Organisation?.RegisteredLegalForm,
+            HasLegalForm = (connectedEntity.Organisation?.RegisteredLegalForm == null ? null : (!string.IsNullOrEmpty(connectedEntity.Organisation?.RegisteredLegalForm))),
             OrganisationName = connectedEntity.Organisation?.Name,
             PostalAddress = (postalAddress != null ? new ConnectedEntityState.Address
             {
                 AddressLine1 = connectedEntity.Addresses?.FirstOrDefault(a => a.Type == Organisation.WebApiClient.AddressType.Postal)?.StreetAddress,
-                Country = connectedEntity.Addresses?.FirstOrDefault(a => a.Type == Organisation.WebApiClient.AddressType.Postal)?.CountryName,
+                CountryName = connectedEntity.Addresses?.FirstOrDefault(a => a.Type == Organisation.WebApiClient.AddressType.Postal)?.CountryName,
+                Country = connectedEntity.Addresses?.FirstOrDefault(a => a.Type == Organisation.WebApiClient.AddressType.Postal)?.Country,
                 Postcode = connectedEntity.Addresses?.FirstOrDefault(a => a.Type == Organisation.WebApiClient.AddressType.Postal)?.PostalCode,
                 TownOrCity = connectedEntity.Addresses?.FirstOrDefault(a => a.Type == Organisation.WebApiClient.AddressType.Postal)?.Locality
             } : null),
             RegistrationDate = connectedEntity.RegisteredDate,
+            HasRegistartionDate = connectedEntity.RegisteredDate.HasValue,
             RegisterName = connectedEntity.RegisterName,
             RegisteredAddress = (registerAddress != null ? new ConnectedEntityState.Address
             {
                 AddressLine1 = connectedEntity.Addresses?.FirstOrDefault(a => a.Type == Organisation.WebApiClient.AddressType.Registered)?.StreetAddress,
-                Country = connectedEntity.Addresses?.FirstOrDefault(a => a.Type == Organisation.WebApiClient.AddressType.Registered)?.CountryName,
+                CountryName = connectedEntity.Addresses?.FirstOrDefault(a => a.Type == Organisation.WebApiClient.AddressType.Registered)?.CountryName,
+                Country = connectedEntity.Addresses?.FirstOrDefault(a => a.Type == Organisation.WebApiClient.AddressType.Registered)?.Country,
                 Postcode = connectedEntity.Addresses?.FirstOrDefault(a => a.Type == Organisation.WebApiClient.AddressType.Registered)?.PostalCode,
                 TownOrCity = connectedEntity.Addresses?.FirstOrDefault(a => a.Type == Organisation.WebApiClient.AddressType.Registered)?.Locality
             } : null),

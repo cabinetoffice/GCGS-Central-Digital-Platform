@@ -68,6 +68,7 @@ public class AddressPostalSameAsRegisteredQuestionModel
                                     postalCode: registeredAddress.PostalCode,
                                     locality: registeredAddress.Locality,
                                     countryName: registeredAddress.CountryName,
+                                    country: registeredAddress.Country,
                                     type: AddressType.Postal,
                                     region: registeredAddress.Region)];
 
@@ -93,6 +94,6 @@ public class AddressPostalSameAsRegisteredQuestionModel
                 && registeredAddress.Locality == postalAddress.Locality
                 && registeredAddress.Region == postalAddress.Region
                 && registeredAddress.PostalCode == postalAddress.PostalCode
-                && registeredAddress.CountryName == postalAddress.CountryName;
+                && registeredAddress.Country == postalAddress.Country;
     }
 }

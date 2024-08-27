@@ -148,8 +148,6 @@ public class UpdateFormSectionAnswersUseCaseTest(AutoMapperFixture mapperFixture
         var command = (formId: section.Form.Guid, sectionId: section.Guid, answerSetId,
             organisationId: organisation.Guid, answers);
 
-        GivenSharedConsentDoesNotExist(section.Form.Guid, organisation.Guid);
-
         await UseCase.Execute(command);
 
         _repository.Verify(r => r.SaveSharedConsentAsync(It.Is<Persistence.SharedConsent>(sc =>
@@ -292,12 +290,6 @@ public class UpdateFormSectionAnswersUseCaseTest(AutoMapperFixture mapperFixture
         return sharedConsent;
     }
 
-    private void GivenSharedConsentDoesNotExist(Guid formId, Guid organisationId)
-    {
-        _repository.Setup(r => r.GetSharedConsentDraftAsync(formId, organisationId))
-            .ReturnsAsync((Persistence.SharedConsent?)null);
-    }
-
     private Persistence.SharedConsent GivenSharedConsent(
         Organisation organisation,
         Persistence.Form form
@@ -314,7 +306,7 @@ public class UpdateFormSectionAnswersUseCaseTest(AutoMapperFixture mapperFixture
             SubmissionState = Persistence.SubmissionState.Draft,
             SubmittedAt = null,
             FormVersionId = "202405",
-            BookingReference = null
+            ShareCode = null
         };
     }
 }
