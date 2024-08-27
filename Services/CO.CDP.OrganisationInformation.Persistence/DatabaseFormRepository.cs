@@ -100,7 +100,7 @@ public class DatabaseFormRepository(OrganisationInformationContext context) : IF
                     select new
                     {
                         FormAnswerSetId = fas.Id,
-                        FormAnswerSetUpdate=fas.UpdatedOn,
+                        FormAnswerSetUpdate = fas.UpdatedOn,
                         s.ShareCode,
                         s.SubmittedAt,
                         QuestionId = fq.Guid,
@@ -110,7 +110,7 @@ public class DatabaseFormRepository(OrganisationInformationContext context) : IF
                     };
 
         var data = await query.ToListAsync();
-        var sharedCodeResult = data.OrderByDescending(x=>x.FormAnswerSetUpdate).GroupBy(g => new { g.ShareCode, g.FormAnswerSetId, g.SubmittedAt }).FirstOrDefault();
+        var sharedCodeResult = data.OrderByDescending(x => x.FormAnswerSetUpdate).GroupBy(g => new { g.ShareCode, g.FormAnswerSetId, g.SubmittedAt }).FirstOrDefault();
         if (sharedCodeResult == null) return null;
 
         return new SharedConsentDetails
@@ -135,7 +135,7 @@ public class DatabaseFormRepository(OrganisationInformationContext context) : IF
                     where
                         fas.Deleted == false
                         && s.FormVersionId == formVersionId
-                        && s.BookingReference == shareCode
+                        && s.ShareCode == shareCode
                     select s;
 
         if (query.Count() > 1) return false; // Scenario1: if one sharecode with multiple answersets
@@ -145,19 +145,19 @@ public class DatabaseFormRepository(OrganisationInformationContext context) : IF
 
         // Get the latest SharedConsent records of the Organistaion and FormVersionId
         var latestShareCode = await (from s in context.SharedConsents
-                                      join fas in context.FormAnswerSets on s.Id equals fas.SharedConsentId
-                                      where
-                                          fas.Deleted == false
-                                          && s.FormVersionId == data!.FormVersionId
-                                          && s.OrganisationId == data.OrganisationId
-                                      orderby s.SubmittedAt descending
-                                      select s).Take(1).FirstOrDefaultAsync();        
+                                     join fas in context.FormAnswerSets on s.Id equals fas.SharedConsentId
+                                     where
+                                         fas.Deleted == false
+                                         && s.FormVersionId == data!.FormVersionId
+                                         && s.OrganisationId == data.OrganisationId
+                                     orderby s.SubmittedAt descending
+                                     select s).Take(1).FirstOrDefaultAsync();
 
 
         if (latestShareCode!.SubmissionState != SubmissionState.Submitted) return false; // Scenario2: Sharecode is not submitted
 
-        if (data!.BookingReference == latestShareCode.BookingReference
-            && data!.BookingReference == shareCode
+        if (data!.ShareCode == latestShareCode.ShareCode
+            && data!.ShareCode == shareCode
                 && data!.SubmissionState == SubmissionState.Submitted) return true; //Scenario3: if requested sharecode is latest Sharecode and stae is submitted
 
         return false; //Scenario: if scenario3 is not passed
