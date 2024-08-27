@@ -44,15 +44,17 @@ public class UpdateFormSectionAnswersUseCase(
         else
         {
             sharedConsent = await formRepository.GetSharedConsentWithAnswersAsync(formId, organisationId);
-
-            await UpdateOrAddStandardAnswers(formRepository, answerSetId, answers, section, sharedConsent);
-            await formRepository.SaveSharedConsentAsync(sharedConsent);
+            if (sharedConsent != null)
+            {
+                await UpdateOrAddStandardAnswers(formRepository, answerSetId, answers, section, sharedConsent);
+                await formRepository.SaveSharedConsentAsync(sharedConsent);
+            }
         }
 
         return true;
     }
 
-    private static void CleanSharedConsent(Persistence.SharedConsent? sharedConsent)
+    private static void CleanSharedConsent(Persistence.SharedConsent sharedConsent)
     {
         sharedConsent.Id = default;
         sharedConsent.Guid = Guid.NewGuid();
@@ -61,7 +63,7 @@ public class UpdateFormSectionAnswersUseCase(
         sharedConsent.SubmissionState = default;
     }
 
-    private async Task UpdateOrAddStandardAnswers(IFormRepository formRepository, Guid answerSetId, List<FormAnswer> answers, Persistence.FormSection section, Persistence.SharedConsent? sharedConsent)
+    private async Task UpdateOrAddStandardAnswers(IFormRepository formRepository, Guid answerSetId, List<FormAnswer> answers, Persistence.FormSection section, Persistence.SharedConsent sharedConsent)
     {
         if (section.Type != Persistence.FormSectionType.Standard)
         {
