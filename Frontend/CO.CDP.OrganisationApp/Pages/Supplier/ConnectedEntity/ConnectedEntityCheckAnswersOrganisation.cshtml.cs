@@ -277,7 +277,7 @@ public class ConnectedEntityCheckAnswersOrganisationModel(
                     case ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl:
                         backPage = state.SupplierHasCompanyHouseNumber == true
                                     ? "law-register"
-                                    : "legal-form-question";
+                                    : (state.HasLegalForm == true ? "law-enforces" : "legal-form-question");
                         break;
 
                 }

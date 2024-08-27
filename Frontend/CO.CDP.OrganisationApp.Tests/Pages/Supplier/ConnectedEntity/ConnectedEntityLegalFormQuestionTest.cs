@@ -160,8 +160,8 @@ public class ConnectedEntityLegalFormQuestionTest
     [InlineData(ConnectedEntityType.Organisation, ConnectedEntityOrganisationCategoryType.ACompanyYourOrganisationHasTakenOver, "")]
     [InlineData(ConnectedEntityType.Organisation, ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl, "ConnectedEntityCheckAnswersOrganisation", null, false, false)]
     [InlineData(ConnectedEntityType.Organisation, ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl, "ConnectedEntityCheckAnswersOrganisation", null, false, true)]
-    [InlineData(ConnectedEntityType.Organisation, ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl, "ConnectedEntityCheckAnswersOrganisation", true, false, false)]
-    [InlineData(ConnectedEntityType.Organisation, ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl, "ConnectedEntityCheckAnswersOrganisation", false, true, false)]    
+    [InlineData(ConnectedEntityType.Organisation, ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl, "ConnectedEntityLawEnforce", true, false, false)]
+    [InlineData(ConnectedEntityType.Organisation, ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl, "ConnectedEntityCheckAnswersOrganisation", false, true, false)]
     public void OnPost_ShouldRedirectToExpectedPage(
         ConnectedEntityType connectedEntityType,
         ConnectedEntityOrganisationCategoryType? organisationCategoryType,
