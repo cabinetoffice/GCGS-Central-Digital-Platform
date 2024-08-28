@@ -22,11 +22,6 @@ builder.ConfigureForwardedHeaders();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options => { options.DocumentTenantApi(builder.Configuration); });
 builder.Services.AddHealthChecks();
-builder.Services.AddSerilog((services, lc) => lc
-    .ReadFrom.Configuration(builder.Configuration)
-    .ReadFrom.Services(services)
-    .Enrich.FromLogContext()
-);
 
 builder.Services.AddAutoMapper(typeof(WebApiToPersistenceProfile));
 
@@ -52,6 +47,11 @@ if (Assembly.GetEntryAssembly().IsRunAs("CO.CDP.Tenant.WebApi"))
     builder.Services.AddHealthChecks()
         .AddNpgSql(ConnectionStringHelper.GetConnectionString(builder.Configuration,
             "OrganisationInformationDatabase"));
+    builder.Services.AddSerilog((services, lc) => lc
+        .ReadFrom.Configuration(builder.Configuration)
+        .ReadFrom.Services(services)
+        .Enrich.FromLogContext()
+    );
 }
 
 var app = builder.Build();
@@ -71,9 +71,6 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseStatusCodePages();
-
-// Enable Serilog REQUEST logging
-app.UseSerilogRequestLogging();
 
 app.MapHealthChecks("/health").AllowAnonymous();
 app.UseHttpsRedirection();
