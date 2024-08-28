@@ -8,6 +8,12 @@ variable "environment" {
   type        = string
 }
 
+variable "pinned_service_version" {
+  description = "The service version for the this environment. If null, latest version from Orchestration will be used"
+  type        = string
+  default     = null
+}
+
 variable "product" {
   description = "product's common attributes"
   type = object({
