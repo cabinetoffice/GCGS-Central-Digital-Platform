@@ -10,13 +10,6 @@ public enum FormSubmissionState
     Submitted
 }
 
-[JsonConverter(typeof(JsonStringEnumConverter))]
-public enum FormScope
-{
-    SupplierInformation, //(Submission Scope of supplier information) example can have a Wales Specific form and a England Specific Form tells us on submission how to hand the Form answers and versions
-    LegalCompliance //Declarations for legal compliance. Declarations will not be shared with eSenders
-}
-
 public record Form
 {
     /// <example>"Standard Questions"</example>
@@ -42,7 +35,4 @@ public record Form
 
     /// <example>"AGMT-2024-XYZ"</example>
     public required string ShareCode { get; init; }
-
-    /// <example>SupplierInformation</example>
-    public required FormScope Scope { get; init; }
 }
