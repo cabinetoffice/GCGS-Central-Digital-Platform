@@ -126,7 +126,7 @@ public class ConnectedEntityAddressModel(ISession session) : PageModel
                         redirectPage = "ConnectedEntityCompanyQuestion";
                         break;
 
-                    case ConnectedEntityOrganisationCategoryType.ParentOrSubsidiaryCompany:                    
+                    case ConnectedEntityOrganisationCategoryType.ParentOrSubsidiaryCompany:
                     case ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl:
                         redirectPage = (AddressType == AddressType.Postal && state.PostalAddress != null)
                             ? "ConnectedEntityCompanyQuestion"

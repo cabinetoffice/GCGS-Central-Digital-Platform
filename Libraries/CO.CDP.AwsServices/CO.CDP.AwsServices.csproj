@@ -12,8 +12,8 @@
 
     <ItemGroup>
         <PackageReference Include="AWSSDK.Extensions.NETCore.Setup" Version="3.7.301" />
-        <PackageReference Include="AWSSDK.S3" Version="3.7.400.1" />
-        <PackageReference Include="AWSSDK.SQS" Version="3.7.400.1" />
+        <PackageReference Include="AWSSDK.S3" Version="3.7.402.2" />
+        <PackageReference Include="AWSSDK.SQS" Version="3.7.400.11" />
         <ProjectReference Include="..\CO.CDP.MQ\CO.CDP.MQ.csproj" />
     </ItemGroup>
 

@@ -72,16 +72,19 @@ public class ClaimServiceTests
         var tenantLookup = new OrganisationInformation.TenantLookup
         {
             User = new OrganisationInformation.UserDetails { Email = "t@t", Name = "Dave", Urn = "urn:fdc:gov.uk:2022:43af5a8b" },
-            Tenants = [new OrganisationInformation.UserTenant {
-             Id = Guid.NewGuid(),
-             Name = "Ten1",
-             Organisations = [new OrganisationInformation.UserOrganisation {
-                 Id = organisationToAdd ?? Guid.NewGuid(),
-                 Name = "org",
-                 Roles = [],
-                 Scopes = [],
-                 Uri = new Uri("http://test.com"),
-             }] }]
+            Tenants = [new OrganisationInformation.UserTenant
+            {
+                Id = Guid.NewGuid(),
+                Name = "Ten1",
+                Organisations = [new OrganisationInformation.UserOrganisation
+                {
+                    Id = organisationToAdd ?? Guid.NewGuid(),
+                    Name = "org",
+                    Roles = [],
+                    Scopes = [],
+                    Uri = new Uri("http://test.com"),
+                }]
+            }]
         };
 
         return Convert.ToBase64String(Compress(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(tenantLookup))));

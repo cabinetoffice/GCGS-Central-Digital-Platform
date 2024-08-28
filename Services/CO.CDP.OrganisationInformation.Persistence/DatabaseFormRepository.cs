@@ -1,6 +1,5 @@
 using CO.CDP.OrganisationInformation.Persistence.Forms;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Cryptography;
 
 namespace CO.CDP.OrganisationInformation.Persistence;
 
@@ -75,7 +74,7 @@ public class DatabaseFormRepository(OrganisationInformationContext context) : IF
             .ThenInclude(a => a.Answers)
             .Where(x => x.SubmissionState == SubmissionState.Draft)
             .FirstOrDefaultAsync(s => s.Form.Guid == formId && s.Organisation.Guid == organisationId);
-    }   
+    }
 
     public async Task<IEnumerable<FormQuestion>> GetQuestionsAsync(Guid sectionId)
     {

@@ -1,4 +1,3 @@
-using CO.CDP.MQ.Database;
 using CO.CDP.Testcontainers.PostgreSql;
 using Microsoft.EntityFrameworkCore;
 

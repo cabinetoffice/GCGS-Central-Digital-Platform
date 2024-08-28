@@ -14,7 +14,8 @@ public class FormSection
     public bool AllowsMultipleAnswerSets { get; set; }
 }
 
-public enum FormSectionType {
+public enum FormSectionType
+{
     Standard,
     Declaration
 }

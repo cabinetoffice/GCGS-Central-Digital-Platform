@@ -1,4 +1,3 @@
-using System.Runtime.CompilerServices;
 using CO.CDP.EntityFrameworkCore.Timestamps;
 using Microsoft.EntityFrameworkCore;
 

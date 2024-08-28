@@ -4,7 +4,6 @@ using CO.CDP.DataSharing.WebApi.Tests.AutoMapper;
 using CO.CDP.OrganisationInformation.Persistence;
 using FluentAssertions;
 using Moq;
-using CO.CDP.Authentication;
 using CO.CDP.DataSharing.WebApi.Extensions;
 
 namespace CO.CDP.DataSharing.WebApi.Tests.UseCase;
@@ -33,8 +32,8 @@ public class GetShareCodeVerifyUseCaseTest() : IClassFixture<AutoMapperFixture>
     {
         var formVersionId = "V1.0";
         var shareCode = ShareCodeExtensions.GenerateShareCode();
-        
-        var shareVerificationRequest = EntityFactory.GetShareVerificationRequest(formVersionId: formVersionId, shareCode: shareCode);      
+
+        var shareVerificationRequest = EntityFactory.GetShareVerificationRequest(formVersionId: formVersionId, shareCode: shareCode);
 
         _shareCodeRepository.Setup(r => r.GetShareCodeVerifyAsync(shareVerificationRequest.FormVersionId, shareVerificationRequest.ShareCode)).ReturnsAsync(true);
 
@@ -44,6 +43,6 @@ public class GetShareCodeVerifyUseCaseTest() : IClassFixture<AutoMapperFixture>
 
         response.As<CO.CDP.DataSharing.WebApi.Model.ShareVerificationReceipt>().ShareCode.Should().Be(shareVerificationRequest.ShareCode);
         response.As<CO.CDP.DataSharing.WebApi.Model.ShareVerificationReceipt>().FormVersionId.Should().Be(shareVerificationRequest.FormVersionId);
-        response.As<CO.CDP.DataSharing.WebApi.Model.ShareVerificationReceipt>().IsLatest.Should().Be(true);        
+        response.As<CO.CDP.DataSharing.WebApi.Model.ShareVerificationReceipt>().IsLatest.Should().Be(true);
     }
 }
