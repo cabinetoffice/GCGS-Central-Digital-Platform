@@ -39,7 +39,7 @@ public class DatabaseShareCodeRepository(OrganisationInformationContext context)
                 .ThenInclude(f => f.Sections)
                     .ThenInclude(s => s.Questions)
             .FirstOrDefaultAsync();
-    } 
+    }
 
     public async Task<SharedConsentDetails?> GetShareCodeDetailsAsync(Guid organisationId, string shareCode)
     {
@@ -63,6 +63,7 @@ public class DatabaseShareCodeRepository(OrganisationInformationContext context)
                         QuestionId = fq.Guid,
                         QuestionType = fq.Type,
                         fq.SummaryTitle,
+                        fq.Title,
                         FormAnswer = fa
                     };
 
@@ -79,7 +80,7 @@ public class DatabaseShareCodeRepository(OrganisationInformationContext context)
             {
                 QuestionId = a.QuestionId,
                 QuestionType = a.QuestionType,
-                Title = a.SummaryTitle,
+                Title = string.IsNullOrEmpty(a.SummaryTitle) ? a.Title : a.SummaryTitle,
                 Answer = a.FormAnswer
             })
         };
@@ -88,8 +89,8 @@ public class DatabaseShareCodeRepository(OrganisationInformationContext context)
     public async Task<Boolean?> GetShareCodeVerifyAsync(string formVersionId, string shareCode)
     {
         // Get FormId and Organisation based on ShareCode and FormVersionId
-        var query = from s in context.SharedConsents                    
-                    where                    
+        var query = from s in context.SharedConsents
+                    where
                         s.FormVersionId == formVersionId
                         && s.ShareCode == shareCode
                     select s;
