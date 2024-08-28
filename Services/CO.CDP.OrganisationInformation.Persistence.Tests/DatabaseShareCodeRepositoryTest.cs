@@ -65,12 +65,13 @@ public class DatabaseShareCodeRepositoryTest(PostgreSqlFixture postgreSql) : ICl
 
         var found = await repository.GetShareCodesAsync(sharedConsent.Organisation.Guid);
 
-        found.Should().NotBeEmpty();
-        found.Should().HaveCount(1);
+        var sharedConsents = found.ToList();
+        sharedConsents.Should().NotBeEmpty();
+        sharedConsents.Should().HaveCount(1);
 
-        found.First().As<SharedConsent>().OrganisationId.Should().Be(sharedConsent.OrganisationId);
-        found.First().As<SharedConsent>().SubmissionState.Should().Be(SubmissionState.Submitted);
-        found.First().As<SharedConsent>().ShareCode.Should().Be(bookingref);
+        sharedConsents.First().As<SharedConsent>().OrganisationId.Should().Be(sharedConsent.OrganisationId);
+        sharedConsents.First().As<SharedConsent>().SubmissionState.Should().Be(SubmissionState.Submitted);
+        sharedConsents.First().As<SharedConsent>().ShareCode.Should().Be(bookingref);
     }
 
 
@@ -92,11 +93,11 @@ public class DatabaseShareCodeRepositoryTest(PostgreSqlFixture postgreSql) : ICl
         var question = GivenYesOrNoQuestion(section);
         var sharedConsent = GivenSharedConsent(form);
         var answerSet = GivenAnswerSet(sharedConsent, section);
-        var answer = GivenAnswer(question, answerSet);
+        GivenAnswer(question, answerSet);
 
         sharedConsent.SubmissionState = SubmissionState.Submitted;
         sharedConsent.SubmittedAt = DateTime.UtcNow;
-        var shareCode = "EXISTENTCODE";
+        var shareCode = "EXISTING-CODE-2";
         sharedConsent.ShareCode = shareCode;
 
         await using var context = postgreSql.OrganisationInformationContext();
@@ -115,9 +116,9 @@ public class DatabaseShareCodeRepositoryTest(PostgreSqlFixture postgreSql) : ICl
 
         var registeredAddress = foundConsent.Organisation.Addresses.FirstOrDefault(a => a.Type == AddressType.Registered);
         registeredAddress.Should().NotBeNull();
-        registeredAddress!.Address.Should().NotBeNull();
-        registeredAddress!.Address.StreetAddress.Should().Be("82 St. John’s Road");
-        registeredAddress!.Address.PostalCode.Should().Be("CH43 7UR");
+        registeredAddress.As<Organisation.OrganisationAddress>().Address.Should().NotBeNull();
+        registeredAddress.As<Organisation.OrganisationAddress>().Address.StreetAddress.Should().Be("82 St. John’s Road");
+        registeredAddress.As<Organisation.OrganisationAddress>().Address.PostalCode.Should().Be("CH43 7UR");
 
         foundConsent.AnswerSets.Should().ContainSingle();
 
@@ -137,30 +138,30 @@ public class DatabaseShareCodeRepositoryTest(PostgreSqlFixture postgreSql) : ICl
     [Fact]
     public async Task GetShareCodeVerifyAsync_WhenShareCodeIsLatest_ReturnsTrue()
     {
-        var form = GivenForm(Guid.NewGuid());        
+        var form = GivenForm(Guid.NewGuid());
         var section = GivenSection(Guid.NewGuid(), form);
         var question = GivenYesOrNoQuestion(section);
         var sharedConsent = GivenSharedConsent(form);
         var answerSet = GivenAnswerSet(sharedConsent, section);
-        var answer = GivenAnswer(question, answerSet);
+        GivenAnswer(question, answerSet);
 
         sharedConsent.SubmissionState = SubmissionState.Submitted;
         sharedConsent.SubmittedAt = DateTime.UtcNow;
 
-        var shareCode = "EXISTENTCODE";
-        
-        sharedConsent.ShareCode = shareCode;        
+        var shareCode = "EXISTING-CODE-1";
+
+        sharedConsent.ShareCode = shareCode;
 
         await using var context = postgreSql.OrganisationInformationContext();
         await context.SharedConsents.AddAsync(sharedConsent);
         await context.SaveChangesAsync();
 
-        using var repository = ShareCodeRepository();        
+        using var repository = ShareCodeRepository();
 
         var foundConsent = await repository.GetShareCodeVerifyAsync(form.Version, shareCode);
 
         foundConsent.Should().NotBeNull();
-        foundConsent!.Should().Be(true);   
+        foundConsent.Should().Be(true);
     }
 
     private static SharedConsent GivenSharedConsent(
@@ -175,7 +176,7 @@ public class DatabaseShareCodeRepositoryTest(PostgreSqlFixture postgreSql) : ICl
             Guid = Guid.NewGuid(),
             OrganisationId = organisation.Id,
             Organisation = organisation,
-            FormId = form.Id,            
+            FormId = form.Id,
             Form = form,
             AnswerSets = [],
             SubmissionState = SubmissionState.Draft,
@@ -194,7 +195,7 @@ public class DatabaseShareCodeRepositoryTest(PostgreSqlFixture postgreSql) : ICl
             Version = "1.0",
             IsRequired = true,
             Scope = FormScope.SupplierInformation,
-            Sections = new List<FormSection>()           
+            Sections = new List<FormSection>()
         };
     }
     private static Tenant GivenTenant()
@@ -228,7 +229,7 @@ public class DatabaseShareCodeRepositoryTest(PostgreSqlFixture postgreSql) : ICl
         };
     }
 
-    private static FormAnswer GivenAnswer(FormQuestion question, FormAnswerSet answerSet)
+    private static void GivenAnswer(FormQuestion question, FormAnswerSet answerSet)
     {
         var answer = new FormAnswer
         {
@@ -240,7 +241,6 @@ public class DatabaseShareCodeRepositoryTest(PostgreSqlFixture postgreSql) : ICl
             BoolValue = true
         };
         answerSet.Answers.Add(answer);
-        return answer;
     }
 
     private static FormAnswerSet GivenAnswerSet(SharedConsent sharedConsent, FormSection section)
@@ -306,10 +306,10 @@ public class DatabaseShareCodeRepositoryTest(PostgreSqlFixture postgreSql) : ICl
         },
             Addresses = new List<Organisation.OrganisationAddress>
         {
-            new Organisation.OrganisationAddress
+            new()
             {
                 Type = AddressType.Registered,
-                Address = new OrganisationInformation.Persistence.Address
+                Address = new Address
                 {
                     StreetAddress = "82 St. John’s Road",
                     Locality = "CHESTER",
