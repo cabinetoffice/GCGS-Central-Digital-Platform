@@ -14,88 +14,73 @@ using Tenant = CO.CDP.Tenant.WebApi.Model.Tenant;
 using TenantLookup = CO.CDP.OrganisationInformation.TenantLookup;
 using Serilog;
 
-Log.Logger = new LoggerConfiguration()
-    .MinimumLevel.Verbose()
-    .WriteTo.Console()
-    .CreateBootstrapLogger();
+var builder = WebApplication.CreateBuilder(args);
+builder.ConfigureForwardedHeaders();
 
-Log.Logger.Information("Bootstrapping logging...");
+// Add services to the container.
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(options => { options.DocumentTenantApi(builder.Configuration); });
+builder.Services.AddHealthChecks();
+builder.Services.AddSerilog((services, lc) => lc
+    .ReadFrom.Configuration(builder.Configuration)
+    .ReadFrom.Services(services)
+    .Enrich.FromLogContext()
+);
 
-try
+builder.Services.AddAutoMapper(typeof(WebApiToPersistenceProfile));
+
+builder.Services.AddDbContext<OrganisationInformationContext>(o =>
+    o.UseNpgsql(
+        ConnectionStringHelper.GetConnectionString(builder.Configuration, "OrganisationInformationDatabase")));
+
+builder.Services.AddScoped<ITenantRepository, DatabaseTenantRepository>();
+
+builder.Services.AddScoped<IUseCase<RegisterTenant, Tenant>, RegisterTenantUseCase>();
+builder.Services.AddScoped<IUseCase<Guid, Tenant?>, GetTenantUseCase>();
+builder.Services.AddScoped<IUseCase<TenantLookup?>, LookupTenantUseCase>();
+builder.Services.AddScoped<IClaimService, ClaimService>();
+builder.Services.AddTenantProblemDetails();
+
+builder.Services.AddJwtBearerAndApiKeyAuthentication(builder.Configuration, builder.Environment);
+//builder.Services.AddAuthorization();
+builder.Services.AddOrganisationAuthorization();
+builder.Services.AddHttpContextAccessor();
+
+if (Assembly.GetEntryAssembly().IsRunAs("CO.CDP.Tenant.WebApi"))
 {
-    var builder = WebApplication.CreateBuilder(args);
-    builder.ConfigureForwardedHeaders();
-
-    Log.Logger.Information("Configuration builder started.");
-
-    // Add services to the container.
-    // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-    builder.Services.AddEndpointsApiExplorer();
-    builder.Services.AddSwaggerGen(options => { options.DocumentTenantApi(builder.Configuration); });
-    builder.Services.AddHealthChecks();
-    builder.Services.AddSerilog();
-
-    Log.Logger.Information("Serilog should be enabled now.");
-
-    builder.Services.AddAutoMapper(typeof(WebApiToPersistenceProfile));
-
-    builder.Services.AddDbContext<OrganisationInformationContext>(o =>
-        o.UseNpgsql(
-            ConnectionStringHelper.GetConnectionString(builder.Configuration, "OrganisationInformationDatabase")));
-
-    builder.Services.AddScoped<ITenantRepository, DatabaseTenantRepository>();
-
-    builder.Services.AddScoped<IUseCase<RegisterTenant, Tenant>, RegisterTenantUseCase>();
-    builder.Services.AddScoped<IUseCase<Guid, Tenant?>, GetTenantUseCase>();
-    builder.Services.AddScoped<IUseCase<TenantLookup?>, LookupTenantUseCase>();
-    builder.Services.AddScoped<IClaimService, ClaimService>();
-    builder.Services.AddTenantProblemDetails();
-
-    builder.Services.AddJwtBearerAndApiKeyAuthentication(builder.Configuration, builder.Environment);
-    //builder.Services.AddAuthorization();
-    builder.Services.AddOrganisationAuthorization();
-    builder.Services.AddHttpContextAccessor();
-
-    if (Assembly.GetEntryAssembly().IsRunAs("CO.CDP.Tenant.WebApi"))
-    {
-        builder.Services.AddHealthChecks()
-            .AddNpgSql(ConnectionStringHelper.GetConnectionString(builder.Configuration,
-                "OrganisationInformationDatabase"));
-    }
-
-    var app = builder.Build();
-    app.UseForwardedHeaders();
-
-    // Configure the HTTP request pipeline.
-    if (builder.Configuration.GetValue("Features:SwaggerUI", false))
-    {
-        app.UseSwagger();
-        app.UseSwaggerUI();
-    }
-
-    if (!app.Environment.IsDevelopment())
-    {
-        app.UseExceptionHandler();
-        app.UseHsts();
-    }
-
-    app.UseStatusCodePages();
-
-    app.MapHealthChecks("/health").AllowAnonymous();
-    app.UseHttpsRedirection();
-    app.UseAuthentication();
-    app.UseAuthorization();
-    app.UseTenantEndpoints();
-    app.UseTenantLookupEndpoints();
-    app.Run();
+    builder.Services.AddHealthChecks()
+        .AddNpgSql(ConnectionStringHelper.GetConnectionString(builder.Configuration,
+            "OrganisationInformationDatabase"));
 }
-catch (Exception ex)
+
+var app = builder.Build();
+app.UseForwardedHeaders();
+
+// Configure the HTTP request pipeline.
+if (builder.Configuration.GetValue("Features:SwaggerUI", false))
 {
-    Log.Fatal(ex, "Application terminated unexpectedly");
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
-finally
+
+if (!app.Environment.IsDevelopment())
 {
-    Log.CloseAndFlush();
+    app.UseExceptionHandler();
+    app.UseHsts();
 }
+
+app.UseStatusCodePages();
+
+// Enable Serilog REQUEST logging
+app.UseSerilogRequestLogging();
+
+app.MapHealthChecks("/health").AllowAnonymous();
+app.UseHttpsRedirection();
+app.UseAuthentication();
+app.UseAuthorization();
+app.UseTenantEndpoints();
+app.UseTenantLookupEndpoints();
+app.Run();
 
 public abstract partial class Program;
