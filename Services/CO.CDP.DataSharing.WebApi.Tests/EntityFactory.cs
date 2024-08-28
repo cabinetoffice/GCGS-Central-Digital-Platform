@@ -2,6 +2,7 @@ using CO.CDP.DataSharing.WebApi.Extensions;
 using CO.CDP.DataSharing.WebApi.Model;
 using CO.CDP.OrganisationInformation.Persistence;
 using CO.CDP.OrganisationInformation.Persistence.Forms;
+using FormSection = CO.CDP.OrganisationInformation.Persistence.Forms.FormSection;
 
 namespace CO.CDP.DataSharing.WebApi.Tests;
 
