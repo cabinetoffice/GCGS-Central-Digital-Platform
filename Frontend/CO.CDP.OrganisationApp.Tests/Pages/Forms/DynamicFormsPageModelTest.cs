@@ -172,4 +172,41 @@ public class DynamicFormsPageModelTest
         result.Should().BeOfType<RedirectToPageResult>()
               .Which.PageName.Should().Be("/ShareInformation/ShareCodeConfirmation");
     }
+
+    [Fact]
+    public async Task OnPostAsync_ShouldRedirectToShareCodeConfirmation_WithGeneratedShareCode_WhenSectionIsDeclaration()
+    {
+        var shareCode = "HDJ2123F";
+        _pageModel.FormSectionType = FormSectionType.Declaration;
+        _pageModel.CurrentQuestionId = Guid.NewGuid();
+
+        var formResponse = new SectionQuestionsResponse
+        {
+            Section = new FormSection { Type = FormSectionType.Declaration, Title = "Test Section" },
+            Questions = new List<FormQuestion>
+            {
+                new FormQuestion { Id = _pageModel.CurrentQuestionId.Value, Type = FormQuestionType.CheckYourAnswers }
+            }
+        };
+
+        _formsEngineMock.Setup(f => f.GetCurrentQuestion(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid?>()))
+            .ReturnsAsync(new FormQuestion { Id = _pageModel.CurrentQuestionId.Value, Type = FormQuestionType.CheckYourAnswers });
+
+        _formsEngineMock.Setup(f => f.GetFormSectionAsync(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid>()))
+            .ReturnsAsync(formResponse);
+
+        _formsEngineMock.Setup(f => f.CreateShareCodeAsync(It.IsAny<Guid>(), It.IsAny<Guid>()))
+            .ReturnsAsync(shareCode);
+
+        _tempDataServiceMock.Setup(t => t.PeekOrDefault<FormQuestionAnswerState>(It.IsAny<string>()))
+            .Returns(new FormQuestionAnswerState());
+
+        var result = await _pageModel.OnPostAsync();
+
+        _formsEngineMock.Verify(f => f.CreateShareCodeAsync(_pageModel.FormId, _pageModel.OrganisationId), Times.Once);
+
+        result.Should().BeOfType<RedirectToPageResult>()
+              .Which.PageName.Should().Be("/ShareInformation/ShareCodeConfirmation");
+        (result as RedirectToPageResult)!.RouteValues?["shareCode"].Should().Be(shareCode);
+    }
 }

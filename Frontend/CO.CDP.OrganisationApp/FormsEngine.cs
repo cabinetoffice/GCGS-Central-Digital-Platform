@@ -1,10 +1,13 @@
 using CO.CDP.Forms.WebApiClient;
 using CO.CDP.OrganisationApp.Models;
+using DataShareWebApiClient = CO.CDP.DataSharing.WebApiClient;
 using SectionQuestionsResponse = CO.CDP.OrganisationApp.Models.SectionQuestionsResponse;
-
 namespace CO.CDP.OrganisationApp;
 
-public class FormsEngine(IFormsClient formsApiClient, ITempDataService tempDataService) : IFormsEngine
+public class FormsEngine(
+    IFormsClient formsApiClient,
+    ITempDataService tempDataService,
+    DataShareWebApiClient.IDataSharingClient dataSharingClient) : IFormsEngine
 {
     public const string OrganisationSupplierInfoFormId = "0618b13e-eaf2-46e3-a7d2-6f2c44be7022";
 
@@ -119,9 +122,17 @@ public class FormsEngine(IFormsClient formsApiClient, ITempDataService tempDataS
             answersPayload);
     }
 
+    public async Task<string> CreateShareCodeAsync(Guid formId, Guid organisationId)
+    {
+        var sharingDataDetails = await dataSharingClient.CreateSharedDataAsync(
+            new DataShareWebApiClient.ShareRequest(formId, organisationId));
+
+        return sharingDataDetails.ShareCode;
+    }
     private static FormAddress? MapAddress(Address? formAdddress)
     {
-        if (formAdddress == null) return null;
+        if (formAdddress == null)
+            return null;
         return new FormAddress(
             streetAddress: formAdddress.AddressLine1,
             locality: formAdddress.TownOrCity,
