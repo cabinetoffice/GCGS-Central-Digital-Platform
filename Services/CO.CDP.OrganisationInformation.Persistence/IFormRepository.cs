@@ -9,7 +9,7 @@ public interface IFormRepository : IDisposable
     Task SaveSharedConsentAsync(SharedConsent sharedConsent);
     Task<FormSection?> GetSectionAsync(Guid formId, Guid sectionId);
     Task<SharedConsent?> GetSharedConsentDraftWithAnswersAsync(Guid formId, Guid organisationId);
-    
+
     Task<IEnumerable<FormQuestion>> GetQuestionsAsync(Guid sectionId);
 
     Task<List<FormAnswerSet>> GetFormAnswerSetsAsync(Guid sectionId, Guid organisationId);

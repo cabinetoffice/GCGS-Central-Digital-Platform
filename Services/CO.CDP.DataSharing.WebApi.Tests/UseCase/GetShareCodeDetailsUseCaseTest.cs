@@ -32,8 +32,8 @@ public class GetShareCodeDetailsUseCaseTest(AutoMapperFixture mapperFixture) : I
         var sharedConsentDetails = new CO.CDP.OrganisationInformation.Persistence.Forms.SharedConsentDetails
         {
             ShareCode = shareCode,
-            SubmittedAt=DateTime.UtcNow,
-            QuestionAnswers=new List<CO.CDP.OrganisationInformation.Persistence.Forms.SharedConsentQuestionAnswer>()
+            SubmittedAt = DateTime.UtcNow,
+            QuestionAnswers = new List<CO.CDP.OrganisationInformation.Persistence.Forms.SharedConsentQuestionAnswer>()
         };
 
         _shareCodeRepository.Setup(r => r.GetShareCodeDetailsAsync(organisationId, shareCode)).ReturnsAsync(sharedConsentDetails);

@@ -110,8 +110,8 @@ public class ConnectedEntityCompanyRegisterNameTest
     }
 
     [Theory]
-    [InlineData(Constants.ConnectedEntityType.Organisation, Constants.ConnectedEntityOrganisationCategoryType.RegisteredCompany, false,"ConnectedEntityCheckAnswersOrganisation", "date-registered-question")]
-    [InlineData(Constants.ConnectedEntityType.Organisation, Constants.ConnectedEntityOrganisationCategoryType.RegisteredCompany, true,"ConnectedEntityCheckAnswersOrganisation", "date-registered")]
+    [InlineData(Constants.ConnectedEntityType.Organisation, Constants.ConnectedEntityOrganisationCategoryType.RegisteredCompany, false, "ConnectedEntityCheckAnswersOrganisation", "date-registered-question")]
+    [InlineData(Constants.ConnectedEntityType.Organisation, Constants.ConnectedEntityOrganisationCategoryType.RegisteredCompany, true, "ConnectedEntityCheckAnswersOrganisation", "date-registered")]
     [InlineData(Constants.ConnectedEntityType.Organisation, Constants.ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl, false, "ConnectedEntityLegalFormQuestion", "date-registered-question")]
     public void OnPost_ShouldRedirectToConnectedEntityCategoryPageOrganisation(
         Constants.ConnectedEntityType connectedEntityType,
@@ -140,10 +140,10 @@ public class ConnectedEntityCompanyRegisterNameTest
     }
 
     [Theory]
-    [InlineData(Constants.ConnectedEntityType.Individual, Constants.ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndividual, false,"ConnectedEntityCheckAnswersIndividualOrTrust", "date-registered-question")]
-    [InlineData(Constants.ConnectedEntityType.TrustOrTrustee, Constants.ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForTrust, false,"ConnectedEntityCheckAnswersIndividualOrTrust", "date-registered-question")]
-    [InlineData(Constants.ConnectedEntityType.Individual, Constants.ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndividual, true,"ConnectedEntityCheckAnswersIndividualOrTrust", "date-registered")]
-    [InlineData(Constants.ConnectedEntityType.TrustOrTrustee, Constants.ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForTrust, true,"ConnectedEntityCheckAnswersIndividualOrTrust", "date-registered")]
+    [InlineData(Constants.ConnectedEntityType.Individual, Constants.ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndividual, false, "ConnectedEntityCheckAnswersIndividualOrTrust", "date-registered-question")]
+    [InlineData(Constants.ConnectedEntityType.TrustOrTrustee, Constants.ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForTrust, false, "ConnectedEntityCheckAnswersIndividualOrTrust", "date-registered-question")]
+    [InlineData(Constants.ConnectedEntityType.Individual, Constants.ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndividual, true, "ConnectedEntityCheckAnswersIndividualOrTrust", "date-registered")]
+    [InlineData(Constants.ConnectedEntityType.TrustOrTrustee, Constants.ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForTrust, true, "ConnectedEntityCheckAnswersIndividualOrTrust", "date-registered")]
     public void OnPost_ShouldRedirectToConnectedEntityCategoryPageIndividualTrust(
         Constants.ConnectedEntityType connectedEntityType,
         Constants.ConnectedEntityIndividualAndTrustCategoryType individualOTrustCategoryType,

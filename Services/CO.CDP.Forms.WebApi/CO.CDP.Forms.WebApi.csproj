@@ -15,8 +15,8 @@
 
     <ItemGroup>
         <PackageReference Include="AutoMapper" Version="13.0.1" />
-        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.7" />
-        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.7" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.8" />
+        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.8" />
         <PackageReference Include="DotSwashbuckle.AspNetCore" Version="3.0.10" />
         <PackageReference Include="AspNetCore.HealthChecks.NpgSql" Version="8.0.1" />
         <ProjectReference Include="..\..\Libraries\CO.CDP.Authentication\CO.CDP.Authentication.csproj" />

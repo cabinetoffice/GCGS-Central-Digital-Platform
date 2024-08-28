@@ -8,7 +8,7 @@
 
     <ItemGroup>
         <FrameworkReference Include="Microsoft.AspNetCore.App" />
-        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.7" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.8" />
         <ProjectReference Include="..\..\Services\CO.CDP.OrganisationInformation\CO.CDP.OrganisationInformation.csproj" />
         <ProjectReference Include="..\..\Services\CO.CDP.OrganisationInformation.Persistence\CO.CDP.OrganisationInformation.Persistence.csproj" />
     </ItemGroup>

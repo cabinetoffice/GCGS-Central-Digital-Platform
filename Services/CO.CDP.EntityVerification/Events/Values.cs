@@ -6,7 +6,7 @@ public class IdentifierSchemes
 }
 
 public record Identifier
-{ 
+{
     /// <example>"CDP-PPON"</example>
     public required string Scheme { get; init; }
 

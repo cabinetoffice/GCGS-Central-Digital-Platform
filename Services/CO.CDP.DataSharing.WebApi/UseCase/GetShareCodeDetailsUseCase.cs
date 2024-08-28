@@ -11,7 +11,7 @@ public class GetShareCodeDetailsUseCase(IShareCodeRepository shareCodeRepository
     {
         var details = await shareCodeRepository.GetShareCodeDetailsAsync(input.organisationId, input.shareCode);
 
-        if (details == null) return null;       
+        if (details == null) return null;
 
         return mapper.Map<SharedConsentDetails>(details);
     }

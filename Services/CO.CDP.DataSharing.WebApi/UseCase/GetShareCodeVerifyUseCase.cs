@@ -1,4 +1,3 @@
-using AutoMapper;
 using CO.CDP.DataSharing.WebApi.Model;
 using CO.CDP.OrganisationInformation.Persistence;
 

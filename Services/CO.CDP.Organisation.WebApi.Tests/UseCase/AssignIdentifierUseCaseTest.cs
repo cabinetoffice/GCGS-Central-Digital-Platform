@@ -49,12 +49,12 @@ public class AssignIdentifierUseCaseTest
 
         _organisations.Verify(r => r.Save(It.Is<Persistence.Organisation>(o =>
             o.Guid == organisation.Guid && o.Identifiers.Contains(new Persistence.Organisation.Identifier
-                {
-                    Primary = true,
-                    Scheme = "CDP-PPON",
-                    IdentifierId = "c0777aeb968b4113a27d94e55b10c1b4",
-                    LegalName = "Acme Ltd"
-                }
+            {
+                Primary = true,
+                Scheme = "CDP-PPON",
+                IdentifierId = "c0777aeb968b4113a27d94e55b10c1b4",
+                LegalName = "Acme Ltd"
+            }
             ))));
         result.Should().BeTrue();
     }
@@ -88,12 +88,12 @@ public class AssignIdentifierUseCaseTest
 
         _organisations.Verify(r => r.Save(It.Is<Persistence.Organisation>(o =>
             o.Guid == organisation.Guid && o.Identifiers.Contains(new Persistence.Organisation.Identifier
-                {
-                    Primary = false,
-                    Scheme = "CDP-PPON",
-                    IdentifierId = "c0777aeb968b4113a27d94e55b10c1b4",
-                    LegalName = "Acme Ltd"
-                }
+            {
+                Primary = false,
+                Scheme = "CDP-PPON",
+                IdentifierId = "c0777aeb968b4113a27d94e55b10c1b4",
+                LegalName = "Acme Ltd"
+            }
             ))));
         result.Should().BeTrue();
     }
