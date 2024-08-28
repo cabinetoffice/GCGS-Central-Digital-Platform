@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using CO.CDP.OrganisationInformation.Persistence.Forms;
 using Microsoft.EntityFrameworkCore.Migrations;
 

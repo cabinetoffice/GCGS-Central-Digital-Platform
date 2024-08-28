@@ -34,12 +34,14 @@ public class GetFormSectionsUseCaseTest(AutoMapperFixture mapperFixture) : IClas
         var sectionId = Guid.NewGuid();
         var organisationId = Guid.NewGuid();
 
-        List<FormSectionSummary> formSummaries = [new FormSectionSummary {
+        List<FormSectionSummary> formSummaries = [new FormSectionSummary
+        {
             AllowsMultipleAnswerSets = true,
             AnswerSetCount = 1,
             Type = FormSectionType.Standard,
             SectionId = sectionId,
-            SectionName = "TestSection" }];
+            SectionName = "TestSection"
+        }];
 
         _repository.Setup(repo => repo.GetFormSummaryAsync(formId, organisationId))
                            .ReturnsAsync(formSummaries);

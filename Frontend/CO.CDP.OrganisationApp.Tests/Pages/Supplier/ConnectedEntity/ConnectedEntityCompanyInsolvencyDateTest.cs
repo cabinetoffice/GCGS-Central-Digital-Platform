@@ -193,7 +193,7 @@ public class ConnectedEntityCompanyInsolvencyDateTest
             .Returns(state);
 
         var result = _model.OnPost();
-                
+
         var pageResult = result.Should().BeOfType<RedirectToPageResult>();
 
         pageResult.Which.PageName.Should().Be(expectedRedirectPage);

@@ -39,7 +39,7 @@ public class DatabaseShareCodeRepository(OrganisationInformationContext context)
                 .ThenInclude(f => f.Sections)
                     .ThenInclude(s => s.Questions)
             .FirstOrDefaultAsync();
-    } 
+    }
 
     public async Task<SharedConsentDetails?> GetShareCodeDetailsAsync(Guid organisationId, string shareCode)
     {
@@ -88,8 +88,8 @@ public class DatabaseShareCodeRepository(OrganisationInformationContext context)
     public async Task<Boolean?> GetShareCodeVerifyAsync(string formVersionId, string shareCode)
     {
         // Get FormId and Organisation based on ShareCode and FormVersionId
-        var query = from s in context.SharedConsents                    
-                    where                    
+        var query = from s in context.SharedConsents
+                    where
                         s.FormVersionId == formVersionId
                         && s.ShareCode == shareCode
                     select s;

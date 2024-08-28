@@ -31,7 +31,7 @@ public class DatabasePponRepository(EntityVerificationContext context) : IPponRe
             .FirstOrDefaultAsync(p => p.IdentifierId == pponId);
     }
 
-    public async Task<Ppon?> FindPponByIdentifierAsync(string scheme, string  id)
+    public async Task<Ppon?> FindPponByIdentifierAsync(string scheme, string id)
     {
         var ppons = await context.Ppons
             .Include(p => p.Identifiers)

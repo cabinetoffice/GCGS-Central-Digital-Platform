@@ -208,7 +208,7 @@ public class AwsFileManagerTest : IClassFixture<LocalStackFixture>
 
     [Theory]
     [InlineData(0)]
-    [InlineData(7*24*60+1)]
+    [InlineData(7 * 24 * 60 + 1)]
     public void GeneratePresignedUrl_ShouldThrowArgumentExceptopm(int urlExpiryInMinutes)
     {
         Func<Task> act = async () => await _fileManager.GeneratePresignedUrl("file.text", urlExpiryInMinutes);

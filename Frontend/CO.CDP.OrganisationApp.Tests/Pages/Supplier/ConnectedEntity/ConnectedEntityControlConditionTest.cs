@@ -78,7 +78,7 @@ public class ConnectedEntityControlConditionTest
         _model.ControlConditions.Should().Contain(Constants.ConnectedEntityControlCondition.OwnsShares);
     }
 
-    [Theory]    
+    [Theory]
     [InlineData(true, ConnectedEntityType.Organisation, "overseas-company-question", ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl, null, null)]
     [InlineData(true, ConnectedEntityType.Organisation, "company-question", ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl, null, true)]
     [InlineData(true, ConnectedEntityType.Organisation, "company-question", ConnectedEntityOrganisationCategoryType.RegisteredCompany, null, null)]
