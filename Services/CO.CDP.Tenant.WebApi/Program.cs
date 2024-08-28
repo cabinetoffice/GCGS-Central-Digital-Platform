@@ -14,15 +14,19 @@ using Tenant = CO.CDP.Tenant.WebApi.Model.Tenant;
 using TenantLookup = CO.CDP.OrganisationInformation.TenantLookup;
 using Serilog;
 
-// Console logger to log configuration issues
 Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Verbose()
     .WriteTo.Console()
     .CreateBootstrapLogger();
+
+Log.Logger.Information("Bootstrapping logging...");
 
 try
 {
     var builder = WebApplication.CreateBuilder(args);
     builder.ConfigureForwardedHeaders();
+
+    Log.Logger.Information("Configuration builder started.");
 
     // Add services to the container.
     // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -30,6 +34,8 @@ try
     builder.Services.AddSwaggerGen(options => { options.DocumentTenantApi(builder.Configuration); });
     builder.Services.AddHealthChecks();
     builder.Services.AddSerilog();
+
+    Log.Logger.Information("Serilog should be enabled now.");
 
     builder.Services.AddAutoMapper(typeof(WebApiToPersistenceProfile));
 
