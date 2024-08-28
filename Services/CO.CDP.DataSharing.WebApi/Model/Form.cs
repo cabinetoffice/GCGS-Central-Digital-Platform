@@ -45,7 +45,4 @@ public record Form
 
     /// <example>SupplierInformation</example>
     public required FormScope Scope { get; init; }
-
-    /// <example>Standard</example>
-    public required FormSectionType Type { get; init; }
 }
