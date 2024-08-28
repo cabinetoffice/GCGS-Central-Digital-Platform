@@ -1,3 +1,4 @@
+using CO.CDP.OrganisationInformation.Persistence.Forms;
 using System.Text.Json.Serialization;
 
 namespace CO.CDP.DataSharing.WebApi.Model;
@@ -7,6 +8,20 @@ public enum FormSubmissionState
 {
     Draft,
     Submitted
+}
+
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum FormSectionType
+{
+    Standard,  //Standard Questionnaire Form
+    Declaration //Declaration Form
+}
+
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum FormScope
+{
+    SupplierInformation, //(Submission Scope of supplier information) example can have a Wales Specific form and a England Specific Form tells us on submission how to hand the Form answers and versions
+    LegalCompliance //Declarations for legal compliance. Declarations will not be shared with eSenders
 }
 
 public record Form
@@ -36,8 +51,8 @@ public record Form
     public required string ShareCode { get; init; }
 
     /// <example>0</example>
-    public required int Scope { get; init; }
+    public required FormScope Scope { get; init; }
 
     /// <example>0</example>
-    public required int Type { get; init; }
+    public required FormSectionType Type { get; init; }
 }
