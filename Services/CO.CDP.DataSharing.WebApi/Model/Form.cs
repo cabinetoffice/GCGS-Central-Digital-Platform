@@ -11,13 +11,6 @@ public enum FormSubmissionState
 }
 
 [JsonConverter(typeof(JsonStringEnumConverter))]
-public enum FormSectionType
-{
-    Standard,  //Standard Questionnaire Form
-    Declaration //Declaration Form
-}
-
-[JsonConverter(typeof(JsonStringEnumConverter))]
 public enum FormScope
 {
     SupplierInformation, //(Submission Scope of supplier information) example can have a Wales Specific form and a England Specific Form tells us on submission how to hand the Form answers and versions
@@ -50,9 +43,9 @@ public record Form
     /// <example>"AGMT-2024-XYZ"</example>
     public required string ShareCode { get; init; }
 
-    /// <example>0</example>
+    /// <example>SupplierInformation</example>
     public required FormScope Scope { get; init; }
 
-    /// <example>0</example>
+    /// <example>Standard</example>
     public required FormSectionType Type { get; init; }
 }
