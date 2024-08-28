@@ -2,9 +2,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CO.CDP.DataSharing.WebApi.Model;
 
-internal record ShareVerificationRequest
+public record ShareVerificationRequest
 {
-    /// <example>"f53dee53-cf59-4725-9285-44f8960507b9"</example>
+    /// <example>"f53dee53"</example>
     [Required]
     public required string ShareCode { get; init; }
 
