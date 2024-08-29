@@ -179,7 +179,7 @@ public class ConnectedEntityCheckAnswersIndividualOrTrustModel(
                     case ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndividualWithSignificantInfluenceOrControlForTrust:
                         backPage = state.SupplierHasCompanyHouseNumber == true
                                     ? "date-registered"
-                                    :  "date-registered-question";
+                                    : "date-registered-question";
                         break;
                     case ConnectedEntityIndividualAndTrustCategoryType.DirectorOrIndividualWithTheSameResponsibilitiesForTrust:
                         backPage = $"{Constants.AddressType.Registered}-address/{(string.Equals(state.RegisteredAddress?.Country, Country.UKCountryCode, StringComparison.OrdinalIgnoreCase) ? "uk" : "non-uk")}";

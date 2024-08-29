@@ -131,7 +131,7 @@ public class ConnectedEntityLawRegisterTest
 
         _sessionMock.Setup(s => s.Get<ConnectedEntityState>(Session.ConnectedPersonKey)).
             Returns(state);
-        
+
 
         var result = _model.OnPost();
 

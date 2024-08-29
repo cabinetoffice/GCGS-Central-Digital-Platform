@@ -103,7 +103,7 @@ public class ConnectedEntityLegalFormQuestionModel(ISession session) : PageModel
                                 : "ConnectedEntityCompanyQuestion");
                         break;
                     case ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl:
-                        redirectPage = "ConnectedEntityCheckAnswersOrganisation";
+                        redirectPage = (state.HasLegalForm == true ? "ConnectedEntityLawEnforce" : "ConnectedEntityCheckAnswersOrganisation");
                         break;
                 }
                 break;

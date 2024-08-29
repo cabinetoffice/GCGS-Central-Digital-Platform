@@ -57,7 +57,9 @@ public class PponGeneratedSubscriberTest
         var organisationId = Guid.Parse("36a98954-f9d3-4695-a29b-b8b97318f3ac");
         var exception = new IdentifierAlreadyAssigned(organisationId, new OrganisationIdentifier
         {
-            Id = "123945", LegalName = "Acme Ltd", Scheme = "CDP-PPON"
+            Id = "123945",
+            LegalName = "Acme Ltd",
+            Scheme = "CDP-PPON"
         });
 
         _useCase.Setup(u => u.Execute(It.IsAny<AssignOrganisationIdentifier>()))

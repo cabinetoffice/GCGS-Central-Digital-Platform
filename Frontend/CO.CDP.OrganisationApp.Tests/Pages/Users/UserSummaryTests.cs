@@ -37,7 +37,7 @@ public class UserSummaryModelTests
         var organisationId = Guid.NewGuid();
         _pageModel.Id = organisationId;
 
-        var person = new Organisation.WebApiClient.Person("john@johnson.com", "John", _userGuid, "Johnson", ["ADMIN"] );
+        var person = new Organisation.WebApiClient.Person("john@johnson.com", "John", _userGuid, "Johnson", ["ADMIN"]);
 
         _mockOrganisationClient
             .Setup(client => client.GetOrganisationPersonsAsync(organisationId))
@@ -63,7 +63,7 @@ public class UserSummaryModelTests
         var organisationId = Guid.NewGuid();
         _pageModel.Id = organisationId;
 
-        var person = new Organisation.WebApiClient.Person("john@johnson.com", "Johnny", _userGuid, "NoAdminJohnson", ["VIEWER"] );
+        var person = new Organisation.WebApiClient.Person("john@johnson.com", "Johnny", _userGuid, "NoAdminJohnson", ["VIEWER"]);
 
         _mockOrganisationClient
             .Setup(client => client.GetOrganisationPersonsAsync(organisationId))

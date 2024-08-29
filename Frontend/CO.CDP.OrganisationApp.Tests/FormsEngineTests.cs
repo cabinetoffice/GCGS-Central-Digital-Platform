@@ -1,6 +1,7 @@
 using CO.CDP.OrganisationApp.Models;
 using FluentAssertions;
 using Moq;
+using DataShareWebApiClient = CO.CDP.DataSharing.WebApiClient;
 using WebApiClient = CO.CDP.Forms.WebApiClient;
 
 namespace CO.CDP.OrganisationApp.Tests;
@@ -8,14 +9,16 @@ namespace CO.CDP.OrganisationApp.Tests;
 public class FormsEngineTests
 {
     private readonly Mock<WebApiClient.IFormsClient> _formsApiClientMock;
+    private readonly Mock<DataShareWebApiClient.IDataSharingClient> _dataSharingClientMock;
     private readonly Mock<ITempDataService> _tempDataServiceMock;
     private readonly FormsEngine _formsEngine;
 
     public FormsEngineTests()
     {
         _formsApiClientMock = new Mock<WebApiClient.IFormsClient>();
+        _dataSharingClientMock = new Mock<DataShareWebApiClient.IDataSharingClient>();
         _tempDataServiceMock = new Mock<ITempDataService>();
-        _formsEngine = new FormsEngine(_formsApiClientMock.Object, _tempDataServiceMock.Object);
+        _formsEngine = new FormsEngine(_formsApiClientMock.Object, _tempDataServiceMock.Object, _dataSharingClientMock.Object);
     }
 
     private static (Guid organisationId, Guid formId, Guid sectionId, string sessionKey) CreateTestGuids()
@@ -292,6 +295,44 @@ public class FormsEngineTests
 
         Func<Task> act = async () => await _formsEngine.SaveUpdateAnswers(formId, sectionId, organisationId, answerSet);
         await act.Should().ThrowAsync<Exception>().WithMessage("API call failed");
+    }
+
+    [Fact]
+    public async Task CreateShareCodeAsync_ShouldReturnShareCode_WhenApiCallSucceeds()
+    {
+        var formId = Guid.NewGuid();
+        var organisationId = Guid.NewGuid();
+        var expectedShareCode = "HDJ2123F";
+
+        _dataSharingClientMock.Setup(client => client.CreateSharedDataAsync(
+            It.Is<DataShareWebApiClient.ShareRequest>(sr =>
+                sr.FormId == formId && sr.OrganisationId == organisationId)))
+            .ReturnsAsync(new DataShareWebApiClient.ShareReceipt(formId, null, expectedShareCode));
+
+        var result = await _formsEngine.CreateShareCodeAsync(formId, organisationId);
+
+        result.Should().Be(expectedShareCode);
+        _dataSharingClientMock.Verify(client => client.CreateSharedDataAsync(
+            It.Is<DataShareWebApiClient.ShareRequest>(sr =>
+                sr.FormId == formId && sr.OrganisationId == organisationId)), Times.Once);
+    }
+
+    [Fact]
+    public async Task CreateShareCodeAsync_ShouldThrowException_WhenApiCallFails()
+    {
+        var formId = Guid.NewGuid();
+        var organisationId = Guid.NewGuid();
+
+        _dataSharingClientMock.Setup(client => client.CreateSharedDataAsync(
+            It.IsAny<DataShareWebApiClient.ShareRequest>()))
+            .ThrowsAsync(new Exception("API call failed"));
+
+        Func<Task> act = async () => await _formsEngine.CreateShareCodeAsync(formId, organisationId);
+
+        await act.Should().ThrowAsync<Exception>().WithMessage("API call failed");
+        _dataSharingClientMock.Verify(client => client.CreateSharedDataAsync(
+            It.Is<DataShareWebApiClient.ShareRequest>(sr =>
+                sr.FormId == formId && sr.OrganisationId == organisationId)), Times.Once);
     }
 
     private (Guid formId, Guid sectionId, Guid organisationId, FormQuestionAnswerState answerSet, FormAnswer expectedAnswer) SetupTestData()

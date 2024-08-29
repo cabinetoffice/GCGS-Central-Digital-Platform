@@ -56,15 +56,9 @@ public static class EndpointExtensions
             })
             .RequireAuthorization(Constants.OneLoginPolicy);
 
-        app.MapPost("/share/data/verify", (ShareVerificationRequest request) => Results.Ok(
-                    new ShareVerificationReceipt
-                    {
-                        ShareCode = request.ShareCode,
-                        FormVersionId = request.FormVersionId,
-                        IsLatest = true
-                    }
-                )
-            )
+        app.MapPost("/share/data/verify", async (ShareVerificationRequest request, IUseCase<ShareVerificationRequest, ShareVerificationReceipt> useCase) =>
+                await useCase.Execute(request)
+                    .AndThen(shareVerificationReceipt => shareVerificationReceipt != null ? Results.Ok(shareVerificationReceipt) : Results.NotFound()))
             .Produces<ShareVerificationReceipt>(StatusCodes.Status200OK, "application/json")
             .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
             .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
@@ -73,8 +67,8 @@ public static class EndpointExtensions
             {
                 operation.OperationId = "VerifySharedData";
                 operation.Description =
-                    "Operation to verify if shared data is the latest version available. ";
-                operation.Summary = "Create Supplier Submitted Information. ";
+                    "Operation to verify if shared data is the latest version available.";
+                operation.Summary = "Create Supplier Submitted Information.";
                 operation.Responses["200"].Description = "Share code and version verification.";
                 operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
                 operation.Responses["404"].Description = "Share code not found or the caller is not authorised to use it.";

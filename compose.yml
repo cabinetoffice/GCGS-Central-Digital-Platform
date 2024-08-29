@@ -55,10 +55,12 @@ services:
       retries: 5
     environment:
       # LocalStack configuration: https://docs.localstack.cloud/references/configuration/
-      SERVICES: sqs,s3
+      SERVICES: sqs,s3,logs
       DEBUG: 0
       SQS_QUEUES: entity-verification.fifo,organisation.fifo
       S3_BUCKETS: cdp-staging-bucket.s3,cdp-permanent-bucket.s3
+      LOG_GROUP_NAME: test-log-group
+      LOG_STREAM_NAME: test-log-stream
     volumes:
       - './docker/localstack/ready.d:/etc/localstack/init/ready.d:ro'
       - './docker/localstack/healthcheck.sh:/etc/localstack/healthcheck.sh:ro'

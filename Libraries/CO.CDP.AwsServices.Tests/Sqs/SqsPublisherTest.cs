@@ -52,8 +52,8 @@ public class SqsPublisherTest : PublisherContractTest, IClassFixture<LocalStackF
         var queueUrl = queue.QueueUrl ?? "";
         return new SqsPublisher(
             _sqsClient,
-            new SqsPublisherConfiguration { QueueUrl = queueUrl, MessageGroupId = "test-messages"},
-            LoggerFactory.Create(_ => {}).CreateLogger<SqsPublisher>());
+            new SqsPublisherConfiguration { QueueUrl = queueUrl, MessageGroupId = "test-messages" },
+            LoggerFactory.Create(_ => { }).CreateLogger<SqsPublisher>());
     }
 
     private AmazonSQSClient SqsClient()

@@ -26,7 +26,7 @@ public class UpdateFormSectionAnswersUseCase(
         var sharedConsent = await formRepository.GetSharedConsentWithAnswersAsync(formId, organisationId);
         if (sharedConsent == null)
         {
-            CreateSharedConsent(organisation, section.Form);
+            sharedConsent = CreateSharedConsent(organisation, section.Form);
         }
         else if (sharedConsent.SubmissionState == Persistence.SubmissionState.Submitted)
         {

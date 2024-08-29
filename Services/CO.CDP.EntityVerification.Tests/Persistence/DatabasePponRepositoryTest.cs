@@ -28,12 +28,14 @@ public class DatabasePponRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
     {
         using var repository = PponRepository();
         var ppon = GivenPpon(pponId: "dba3fb78c1f3401fa44774c0ad2ba6bc");
-        var identifier = new Identifier() {
+        var identifier = new Identifier()
+        {
             IdentifierId = "GB123123123",
             Scheme = "GB-COH",
             Id = 0,
             LegalName = "Acme Ltd",
-            Uri = new Uri("https://www.acme-org.com") };
+            Uri = new Uri("https://www.acme-org.com")
+        };
         ppon.Identifiers = [identifier];
 
         repository.Save(ppon);

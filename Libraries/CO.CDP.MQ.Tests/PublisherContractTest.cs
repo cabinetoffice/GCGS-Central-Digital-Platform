@@ -20,5 +20,5 @@ public abstract class PublisherContractTest
 
     protected abstract Task<IPublisher> CreatePublisher();
 
-    record TestMessage(int Id, String Name);
+    protected record TestMessage(int Id, String Name);
 }

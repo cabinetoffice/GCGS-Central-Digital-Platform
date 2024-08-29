@@ -190,7 +190,7 @@ public class OrganisationIdentificationModel(ISession session,
         {
             await LookupOrganisationAsync();
         }
-        catch (Exception orgApiException) when(orgApiException is Organisation.WebApiClient.ApiException && ((Organisation.WebApiClient.ApiException)orgApiException).StatusCode == 404)
+        catch (Exception orgApiException) when (orgApiException is Organisation.WebApiClient.ApiException && ((Organisation.WebApiClient.ApiException)orgApiException).StatusCode == 404)
         {
             try
             {
@@ -214,7 +214,7 @@ public class OrganisationIdentificationModel(ISession session,
                 return RedirectToPage("OrganisationRegistrationUnavailable");
             }
         }
-        
+
         return RedirectToPage("OrganisationAlreadyRegistered");
     }
 

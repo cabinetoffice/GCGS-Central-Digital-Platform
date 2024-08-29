@@ -33,6 +33,10 @@ up: compose.override.yml ## Start Docker containers
 	@docker compose ps
 .PHONY: up
 
+verify-up: compose.override.yml ## Verify if all Docker containers have run
+	@docker compose ps -a --format json | jq --exit-status 'select(.ExitCode != 0)' && exit 1 || echo "All services up"
+.PHONY: verify-up
+
 down: ## Destroy Docker containers
 	@docker compose down
 .PHONY: down
@@ -95,5 +99,5 @@ version-commit: ## Determines the last commit hash
 .PHONY: version-commit
 
 last-tag: ## Determines the last created tag on the repository
-	@git for-each-ref refs/tags --sort=-taggerdate --format='%(refname:short)' --count=1
+	@git for-each-ref refs/tags --sort=-creatordate --format='%(refname:short)' --count=1
 .PHONY: last-tag

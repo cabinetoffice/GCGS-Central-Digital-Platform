@@ -50,7 +50,7 @@ resource "aws_api_gateway_integration_response" "root" {
         api_gateway_deployment_time = local.formatted_date
         endpoints                   = local.endpoints
         frontend_url                = var.public_hosted_zone_fqdn
-        service_version             = data.aws_ssm_parameter.orchestrator_service_version.value
+        service_version             = var.pinned_service_version == null ? data.aws_ssm_parameter.orchestrator_service_version.value : var.pinned_service_version
       }
     )
   }
