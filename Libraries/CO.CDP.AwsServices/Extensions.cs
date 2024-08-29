@@ -5,6 +5,7 @@ using Amazon.SQS;
 using CO.CDP.AwsServices.S3;
 using CO.CDP.AwsServices.Sqs;
 using CO.CDP.MQ;
+using CO.CDP.MQ.Pull;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;

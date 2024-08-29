@@ -1,6 +1,4 @@
-using CO.CDP.MQ;
-
-namespace CO.CDP.AwsServices.Sqs;
+namespace CO.CDP.MQ.Pull;
 
 public class Subscribers
 {

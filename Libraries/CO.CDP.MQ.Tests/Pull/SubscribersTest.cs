@@ -1,8 +1,7 @@
-using CO.CDP.AwsServices.Sqs;
-using CO.CDP.MQ;
+using CO.CDP.MQ.Pull;
 using FluentAssertions;
 
-namespace CO.CDP.AwsServices.Tests.Sqs;
+namespace CO.CDP.MQ.Tests.Pull;
 
 public class SubscribersTest
 {

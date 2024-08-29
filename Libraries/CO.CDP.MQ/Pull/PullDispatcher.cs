@@ -1,7 +1,6 @@
-using CO.CDP.MQ;
 using Microsoft.Extensions.Logging;
 
-namespace CO.CDP.AwsServices.Sqs;
+namespace CO.CDP.MQ.Pull;
 
 public delegate object Deserializer(string type, string body);
 

@@ -1,5 +1,5 @@
 using System.Text.Json;
-using CO.CDP.AwsServices.Sqs;
+using CO.CDP.MQ.Pull;
 using static CO.CDP.EntityVerification.Events.EventDeserializer.EventDeserializerException;
 
 namespace CO.CDP.EntityVerification.Events;
