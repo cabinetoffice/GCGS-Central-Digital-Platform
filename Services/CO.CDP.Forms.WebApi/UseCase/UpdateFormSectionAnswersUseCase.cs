@@ -56,10 +56,12 @@ public class UpdateFormSectionAnswersUseCase(
         {
             answerSet.Id = default;
             answerSet.Guid = Guid.NewGuid();
+            answerSet.SharedConsent = sharedConsent;
             foreach (var answer in answerSet.Answers)
             {
                 answer.Id = default;
                 answer.Guid = Guid.NewGuid();
+                answer.FormAnswerSet = answerSet;
             }
         }
     }
