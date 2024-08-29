@@ -17,10 +17,14 @@ public class DatabaseFormRepository(OrganisationInformationContext context) : IF
 
     public async Task<IEnumerable<FormSectionSummary>> GetFormSummaryAsync(Guid formId, Guid organisationId)
     {
+        var currentSharedConsent = await context.SharedConsents
+            .OrderByDescending(x => x.UpdatedOn)
+            .FirstAsync(x => x.Form.Guid == formId && x.Organisation.Guid == organisationId);
+
         var answersQuery = from sc in context.SharedConsents
                            join fas in context.FormAnswerSets on sc.Id equals fas.SharedConsentId
                            join o in context.Organisations on sc.OrganisationId equals o.Id
-                           where o.Guid == organisationId && fas.Deleted == false
+                           where o.Guid == organisationId && fas.Deleted == false && sc.Id == currentSharedConsent.Id
                            select new { sc.FormId, fas.SectionId };
 
         var query = from f in context.Forms
