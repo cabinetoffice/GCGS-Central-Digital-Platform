@@ -1,14 +1,9 @@
 using Amazon.SQS;
 using Amazon.SQS.Model;
-using CO.CDP.MQ;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace CO.CDP.AwsServices.Sqs;
-
-public delegate object Deserializer(string type, string body);
-
-public delegate bool TypeMatcher(Type type, string typeName);
 
 public class SqsDispatcher(
     IAmazonSQS sqsClient,
@@ -16,12 +11,14 @@ public class SqsDispatcher(
     Deserializer deserializer,
     TypeMatcher typeMatcher,
     ILogger<SqsDispatcher> logger
-) : IDispatcher
+) : PullDispatcher<Message>(deserializer, typeMatcher, logger)
 {
+    private const string TypeAttribute = "Type";
+
     public SqsDispatcher(
         IAmazonSQS sqsClient,
-        IOptions<AwsConfiguration>
-            configuration, Deserializer deserializer,
+        IOptions<AwsConfiguration> configuration,
+        Deserializer deserializer,
         ILogger<SqsDispatcher> logger
     ) : this(
         sqsClient,
@@ -42,82 +39,11 @@ public class SqsDispatcher(
         return configuration.Value.SqsDispatcher;
     }
 
-    private const string TypeAttribute = "Type";
-    private readonly SqsSubscribers _subscribers = new();
-
-    public void Subscribe<TM>(ISubscriber<TM> subscriber) where TM : class
-    {
-        _subscribers.Subscribe(subscriber);
-    }
-
-    public Task ExecuteAsync(CancellationToken cancellationToken = default)
-    {
-        return Task.Run(async () =>
-        {
-            logger.LogInformation("Started the SQS message dispatcher");
-
-            while (!cancellationToken.IsCancellationRequested)
-            {
-                await HandleMessages(cancellationToken);
-            }
-        }, cancellationToken);
-    }
-
-    private async Task HandleMessages(CancellationToken cancellationToken)
-    {
-        try
-        {
-            foreach (var message in await ReceiveMessages(configuration.QueueUrl, cancellationToken))
-            {
-                await HandleMessage(message);
-            }
-        }
-        catch (Exception cause)
-        {
-            logger.LogError(cause, "Failed to handle messages");
-        }
-    }
-
-    private async Task HandleMessage(Message message)
-    {
-        try
-        {
-            await InvokeSubscribers(message);
-            await DeleteMessage(message);
-        }
-        catch (Exception cause)
-        {
-            logger.LogError(cause, "Failed to handle the message with MessageId={MessageId}", message.MessageId);
-        }
-    }
-
-    private async Task InvokeSubscribers(Message message)
-    {
-        logger.LogDebug("Handling the message with MessageId={MessageId}", message.MessageId);
-
-        var type = message.MessageAttributes.GetValueOrDefault(TypeAttribute)?.StringValue ?? "";
-        var matchingSubscribers = _subscribers.AllMatching((t) => typeMatcher(t, type)).ToList();
-
-        logger.LogDebug("Found {CNT} subscribers to handle the `{TYPE}` message", matchingSubscribers.Count, type);
-
-        if (matchingSubscribers.Any())
-        {
-            var deserialized = deserializer(type, message.Body);
-
-            logger.LogDebug("Handling the `{TYPE}` message: `{MESSAGE}`", type, message.Body);
-
-            foreach (var subscriber in matchingSubscribers)
-            {
-                await subscriber.Handle(deserialized);
-            }
-        }
-    }
-
-    private async Task<List<Message>> ReceiveMessages(string queueUrl, CancellationToken cancellationToken)
+    protected override async Task<List<Message>> ReceiveMessages(CancellationToken cancellationToken)
     {
         var response = await sqsClient.ReceiveMessageAsync(new ReceiveMessageRequest
         {
-            QueueUrl = queueUrl,
+            QueueUrl = configuration.QueueUrl,
             MaxNumberOfMessages = configuration.MaxNumberOfMessages,
             MessageAttributeNames = [TypeAttribute],
             WaitTimeSeconds = configuration.WaitTimeSeconds,
@@ -128,7 +54,7 @@ public class SqsDispatcher(
         return response.Messages;
     }
 
-    private async Task DeleteMessage(Message message)
+    protected override async Task DeleteMessage(Message message)
     {
         logger.LogDebug("Deleting the message with MessageId={MessageId}", message.MessageId);
 
@@ -139,7 +65,9 @@ public class SqsDispatcher(
         });
     }
 
-    public void Dispose()
-    {
-    }
+    protected override string MessageId(Message message) => message.MessageId;
+    protected override string MessageBody(Message message) => message.Body;
+
+    protected override string MessageType(Message message) =>
+        message.MessageAttributes.GetValueOrDefault(TypeAttribute)?.StringValue ?? "";
 }

@@ -2,7 +2,7 @@ using CO.CDP.MQ;
 
 namespace CO.CDP.AwsServices.Sqs;
 
-public class SqsSubscribers
+public class Subscribers
 {
     private readonly Dictionary<Type, List<ISubscriber<object>>> _subscribers = [];
 

@@ -4,12 +4,12 @@ using FluentAssertions;
 
 namespace CO.CDP.AwsServices.Tests.Sqs;
 
-public class SqsSubscribersTest
+public class SubscribersTest
 {
     [Fact]
     public void ItReturnsAllSubscriberMatchingThePredicate()
     {
-        var subscribers = new SqsSubscribers();
+        var subscribers = new Subscribers();
         subscribers.Subscribe(new TestSubscriber<Foo>());
         subscribers.Subscribe(new TestSubscriber<Foo>());
         subscribers.Subscribe(new TestSubscriber<Bar>());
