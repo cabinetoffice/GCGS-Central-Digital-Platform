@@ -17,6 +17,8 @@ public class GetFormSectionQuestionsUseCase(IFormRepository formRepository, IMap
             return null;
 
         var answerSet = await formRepository.GetFormAnswerSetsAsync(sectionId, organisationId);
+        var currentSharedConsent = answerSet.Select(x => x.SharedConsent).OrderByDescending(x => x.UpdatedOn).FirstOrDefault();
+        answerSet = answerSet.Where(x => x.SharedConsent == currentSharedConsent).ToList();
 
         return new SectionQuestionsResponse
         {
