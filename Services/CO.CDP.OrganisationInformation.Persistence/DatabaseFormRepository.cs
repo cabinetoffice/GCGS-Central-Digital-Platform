@@ -19,7 +19,12 @@ public class DatabaseFormRepository(OrganisationInformationContext context) : IF
     {
         var currentSharedConsent = await context.SharedConsents
             .OrderByDescending(x => x.UpdatedOn)
-            .FirstAsync(x => x.Form.Guid == formId && x.Organisation.Guid == organisationId);
+            .FirstOrDefaultAsync(x => x.Form.Guid == formId && x.Organisation.Guid == organisationId);
+
+        if(currentSharedConsent == null)
+        {
+            return Enumerable.Empty<FormSectionSummary>();
+        }
 
         var answersQuery = from sc in context.SharedConsents
                            join fas in context.FormAnswerSets on sc.Id equals fas.SharedConsentId
