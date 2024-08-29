@@ -188,7 +188,14 @@ public class OrganisationIdentificationModel(ISession session,
         };
         try
         {
-            await LookupOrganisationAsync();
+            if (RegistrationDetails.OrganisationIdentificationNumber != null)
+            {
+                await LookupOrganisationAsync();
+            }
+            else
+            {
+                return RedirectSuccess();
+            }
         }
         catch (Exception orgApiException) when(orgApiException is Organisation.WebApiClient.ApiException && ((Organisation.WebApiClient.ApiException)orgApiException).StatusCode == 404)
         {
@@ -198,16 +205,7 @@ public class OrganisationIdentificationModel(ISession session,
             }
             catch (Exception evApiException) when (evApiException is EntityVerificationClient.ApiException && ((EntityVerificationClient.ApiException)evApiException).StatusCode == 404)
             {
-                session.Set(Session.RegistrationDetailsKey, RegistrationDetails);
-
-                if (RedirectToSummary == true)
-                {
-                    return RedirectToPage("OrganisationDetailsSummary");
-                }
-                else
-                {
-                    return RedirectToPage("OrganisationName");
-                }
+                return RedirectSuccess();
             }
             catch
             {
@@ -216,6 +214,20 @@ public class OrganisationIdentificationModel(ISession session,
         }
         
         return RedirectToPage("OrganisationAlreadyRegistered");
+    }
+
+    private IActionResult RedirectSuccess()
+    {
+        session.Set(Session.RegistrationDetailsKey, RegistrationDetails);
+
+        if (RedirectToSummary == true)
+        {
+            return RedirectToPage("OrganisationDetailsSummary");
+        }
+        else
+        {
+            return RedirectToPage("OrganisationName");
+        }
     }
 
     private async Task<Organisation.WebApiClient.Organisation> LookupOrganisationAsync()

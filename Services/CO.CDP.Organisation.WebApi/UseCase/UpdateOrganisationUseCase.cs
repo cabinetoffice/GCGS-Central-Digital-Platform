@@ -27,6 +27,7 @@ public class UpdateOrganisationUseCase(
                 {
                     throw new InvalidUpdateOrganisationCommand("Missing additional identifiers.");
                 }
+
                 foreach (var identifier in updateObject.AdditionalIdentifiers)
                 {
                     var existingIdentifier = organisation.Identifiers.FirstOrDefault(i => i.Scheme == identifier.Scheme);
@@ -40,7 +41,7 @@ public class UpdateOrganisationUseCase(
                         organisation.Identifiers.Add(new OrganisationInformation.Persistence.Organisation.Identifier
                         {
                             IdentifierId = identifier.Id,
-                            Primary = false,
+                            Primary = AssignIdentifierUseCase.IsPrimaryIdentifier(organisation),
                             LegalName = identifier.LegalName,
                             Scheme = identifier.Scheme
                         });
