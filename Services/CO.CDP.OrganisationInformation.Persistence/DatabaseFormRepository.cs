@@ -67,12 +67,14 @@ public class DatabaseFormRepository(OrganisationInformationContext context) : IF
             .FirstOrDefaultAsync(s => s.Guid == sectionId);
     }
 
-    public async Task<SharedConsent?> GetSharedConsentDraftWithAnswersAsync(Guid formId, Guid organisationId)
+    public async Task<SharedConsent?> GetSharedConsentWithAnswersAsync(Guid formId, Guid organisationId)
     {
         return await context.Set<SharedConsent>()
-            .Where(x => x.SubmissionState == SubmissionState.Draft)
             .Include(c => c.AnswerSets)
-            .ThenInclude(a => a.Answers)
+                .ThenInclude(a => a.Answers)
+            .Include(c => c.AnswerSets)
+                .ThenInclude(a => a.Section)
+            .OrderByDescending(x => x.UpdatedOn)
             .FirstOrDefaultAsync(x => x.Form.Guid == formId && x.Organisation.Guid == organisationId);
     }
 
@@ -186,12 +188,9 @@ public class DatabaseFormRepository(OrganisationInformationContext context) : IF
         }
     }
 
-    public async Task<SharedConsent?> GetUntrackedSharedConsent(Guid formId, Guid organisationGuid)
+    public void ClearTracker()
     {
-        return await context.SharedConsents
-            .AsNoTracking()
-            .OrderByDescending(x => x.UpdatedOn)
-            .FirstOrDefaultAsync(x => x.Form.Guid == formId && x.Organisation.Guid == organisationGuid);
+        context.ChangeTracker.Clear();
     }
 
     private static void HandleDbUpdateException(FormAnswerSet answerSet, DbUpdateException cause)
