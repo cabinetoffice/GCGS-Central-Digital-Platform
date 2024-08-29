@@ -281,7 +281,7 @@ public class UpdateFormSectionAnswersUseCaseTest(AutoMapperFixture mapperFixture
     {
         var sharedConsent = GivenSharedConsent(organisation, form);
 
-        _repository.Setup(r => r.GetSharedConsentDraftWithAnswersAsync(form.Guid, organisation.Guid))
+        _repository.Setup(r => r.GetSharedConsentWithAnswersAsync(form.Guid, organisation.Guid))
             .ReturnsAsync(sharedConsent);
 
         return sharedConsent;
