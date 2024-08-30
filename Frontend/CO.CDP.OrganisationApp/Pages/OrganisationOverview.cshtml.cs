@@ -1,12 +1,10 @@
 using CO.CDP.Organisation.WebApiClient;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using OrganisationWebApiClient = CO.CDP.Organisation.WebApiClient;
 
 namespace CO.CDP.OrganisationApp.Pages;
 
-[Authorize]
 public class OrganisationOverviewModel(IOrganisationClient organisationClient) : PageModel
 {
     public OrganisationWebApiClient.Organisation? OrganisationDetails { get; set; }

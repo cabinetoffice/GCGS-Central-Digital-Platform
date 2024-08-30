@@ -1,16 +1,13 @@
 using CO.CDP.Organisation.WebApiClient;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using System.ComponentModel.DataAnnotations;
 using CO.CDP.OrganisationApp.Models;
+using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace CO.CDP.OrganisationApp.Pages.Users;
 
-[Authorize]
 public class UserSummaryModel(
     IOrganisationClient organisationClient,
-    ISession session) : PageModel
+    ISession session) : LoggedInUserAwareModel(session)
 {
     private const string ScopeAdmin = "ADMIN";
 
@@ -30,9 +27,7 @@ public class UserSummaryModel(
 
     public async Task<IActionResult> OnGet(bool? selected)
     {
-        var userDetails = session.Get<UserDetails>(Session.UserDetailsKey);
-
-        SignedInPersonId = userDetails?.PersonId;
+        SignedInPersonId = UserDetails.PersonId;
 
         try
         {

@@ -16,11 +16,6 @@ public class UserRemoveConfirmationModelTests
     {
         _mockOrganisationClient = new Mock<IOrganisationClient>();
         _mockSession = new Mock<ISession>();
-        _pageModel = new UserRemoveConfirmationModel(_mockOrganisationClient.Object, _mockSession.Object)
-        {
-            Id = Guid.NewGuid(),
-            UserId = Guid.NewGuid()
-        };
 
         UserDetails userDetails = new UserDetails
         {
@@ -30,6 +25,12 @@ public class UserRemoveConfirmationModelTests
 
         _mockSession.Setup(session => session.Get<UserDetails>(It.IsAny<string>()))
             .Returns(userDetails);
+
+        _pageModel = new UserRemoveConfirmationModel(_mockOrganisationClient.Object, _mockSession.Object)
+        {
+            Id = Guid.NewGuid(),
+            UserId = Guid.NewGuid()
+        };
     }
 
     [Fact]
