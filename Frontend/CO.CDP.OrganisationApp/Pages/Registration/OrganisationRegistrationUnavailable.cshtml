@@ -2,7 +2,15 @@
 
 @model OrganisationRegistrationUnavailable
 
-<a href="@RegistrationStepModel.OrganisationIdentifierPage" class="govuk-back-link">Back</a>
+@{
+    var backLink = RegistrationStepModel.OrganisationIdentifierPage;
+    var overrideBackLink = Request.Query.ContainsKey("backLink");
+
+    if (overrideBackLink)
+    {
+        backLink = Request.Query["backLink"];
+    }
+}
 
 <main class="govuk-main-wrapper">
     <div class="govuk-grid-row">
