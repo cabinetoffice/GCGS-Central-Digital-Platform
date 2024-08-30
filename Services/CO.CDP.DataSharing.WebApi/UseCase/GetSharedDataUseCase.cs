@@ -11,12 +11,12 @@ public class GetSharedDataUseCase(
 {
     public async Task<SupplierInformation?> Execute(string sharecode)
     {
-        var organisation = await shareCodeRepository.GetByShareCode(sharecode);
-        if (organisation == null)
+        var sharedConsent = await shareCodeRepository.GetByShareCode(sharecode);
+        if (sharedConsent == null)
         {
             throw new SharedConsentNotFoundException("Shared Consent not found.");
         }
 
-        return mapper.Map<SupplierInformation>(organisation);
+        return mapper.Map<SupplierInformation>(sharedConsent);
     }
 }

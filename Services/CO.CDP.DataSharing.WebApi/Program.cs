@@ -19,7 +19,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options => { options.DocumentDataSharingApi(builder.Configuration); });
 builder.Services.AddHealthChecks()
     .AddNpgSql(ConnectionStringHelper.GetConnectionString(builder.Configuration, "OrganisationInformationDatabase"));
-builder.Services.AddAutoMapper(typeof(DataSharingProfile));
+builder.Services.AddAutoMapper(typeof(WebApiToPersistenceProfile));
 
 builder.Services.AddDbContext<OrganisationInformationContext>(o =>
     o.UseNpgsql(ConnectionStringHelper.GetConnectionString(builder.Configuration, "OrganisationInformationDatabase")));

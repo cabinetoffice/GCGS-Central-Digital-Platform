@@ -8,6 +8,6 @@ public class AutoMapperFixture
     public IMapper Mapper => Configuration.CreateMapper();
 
     public readonly MapperConfiguration Configuration = new(
-        config => config.AddProfile<DataSharingProfile>()
+        config => config.AddProfile<WebApiToPersistenceProfile>()
     );
 }

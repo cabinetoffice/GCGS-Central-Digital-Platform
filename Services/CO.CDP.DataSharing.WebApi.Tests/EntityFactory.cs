@@ -38,7 +38,7 @@ internal static class EntityFactory
             Sections = new List<FormSection> { }
         };
 
-        var orgnisation = new Organisation
+        var organisation = new Organisation
         {
             Id = organisationId,
             Guid = organisationGuid,
@@ -47,14 +47,38 @@ internal static class EntityFactory
             {
                 Guid = Guid.NewGuid(),
                 Name = string.Empty
+            },
+            OrganisationPersons = new List<OrganisationPerson>
+        {
+            new OrganisationPerson
+            {
+                Person = new Person
+                {
+                    Guid = Guid.NewGuid(),
+                    FirstName = "John",
+                    LastName = "Doe",
+                    Email = "john.doe@example.com"
+                },
+                Organisation = null
             }
+        },
+            Identifiers = new List<Organisation.Identifier>
+        {
+            new Organisation.Identifier
+            {
+                Scheme = "CDP-PPON",
+                IdentifierId = "123456789",
+                LegalName = "Test Organisation Ltd.",
+                Primary = true
+            }
+        }
         };
 
         return new OrganisationInformation.Persistence.Forms.SharedConsent()
         {
             Guid = formId,
-            OrganisationId = orgnisation.Id,
-            Organisation = orgnisation,
+            OrganisationId = organisation.Id,
+            Organisation = organisation,
             FormId = form.Id,
             Form = form,
             AnswerSets = new List<FormAnswerSet> { },
@@ -62,9 +86,9 @@ internal static class EntityFactory
             SubmittedAt = DateTime.UtcNow,
             FormVersionId = string.Empty,
             ShareCode = string.Empty
-
         };
     }
+
 
     internal static List<OrganisationInformation.Persistence.Forms.SharedConsent> GetSharedConsents(int organisationId, Guid organisationGuid, Guid formId)
     {
@@ -87,7 +111,32 @@ internal static class EntityFactory
             {
                 Guid = Guid.NewGuid(),
                 Name = string.Empty
+            },
+            OrganisationPersons = new List<OrganisationPerson>
+        {
+            new OrganisationPerson
+            {
+                Person = new Person
+                {
+                    Guid = Guid.NewGuid(),
+                    FirstName = "John",
+                    LastName = "Doe",
+                    Email = "john.doe@example.com"
+                },
+                Organisation = null //TODO: verfiy
             }
+        },
+            // Initialize Identifiers here
+            Identifiers = new List<Organisation.Identifier>
+        {
+            new Organisation.Identifier
+            {
+                Scheme = "CDP-PPON",
+                IdentifierId = "123456789",
+                LegalName = "Test Organisation Ltd.",
+                Primary = true
+            }
+        }
         };
 
         return new List<OrganisationInformation.Persistence.Forms.SharedConsent>
