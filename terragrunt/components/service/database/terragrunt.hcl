@@ -23,7 +23,8 @@ locals {
 dependency core_iam {
   config_path = "../../core/iam"
   mock_outputs = {
-    terraform_arn                    = "mock"
+    rds_cloudwatch_arn = "mock"
+    terraform_arn      = "mock"
   }
 }
 
@@ -52,5 +53,6 @@ inputs = {
 
   db_postgres_sg_id = dependency.core_security_group.outputs.db_postgres_sg_id
 
-  role_terraform_arn = dependency.core_iam.outputs.terraform_arn
+  role_terraform_arn      = dependency.core_iam.outputs.terraform_arn
+  role_rds_cloudwatch_arn = dependency.core_iam.outputs.rds_cloudwatch_arn
 }
