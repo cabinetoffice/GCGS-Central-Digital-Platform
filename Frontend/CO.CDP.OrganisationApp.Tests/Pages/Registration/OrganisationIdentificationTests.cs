@@ -308,11 +308,12 @@ public class OrganisationIdentificationModelTests
     }
 
     [Fact]
-    public async Task OnPost_WhenOrganisationExistsInOganisationService_ShouldRedirectToOrganisationAlreadyRegisteredPage()
+    public async Task OnPost_WhenSchemeNotOtherAndOrganisationExistsInOganisationService_ShouldRedirectToOrganisationAlreadyRegisteredPage()
     {
         var model = new OrganisationIdentificationModel(sessionMock.Object, organisationClientMock.Object, _pponClientMock.Object)
         {
-            OrganisationScheme = "Other",
+            OrganisationScheme = "VAT",
+            VATNumber = "0123456789",
             RedirectToSummary = true
         };
         GivenRegistrationIsInProgress();
@@ -327,11 +328,12 @@ public class OrganisationIdentificationModelTests
     }
 
     [Fact]
-    public async Task OnPost_WhenIdentifierExistsInEntityVerificationService_ShouldRedirectToOrganisationAlreadyRegisteredPage()
+    public async Task OnPost_WhenSchemeNotOtherAndIdentifierExistsInEntityVerificationService_ShouldRedirectToOrganisationAlreadyRegisteredPage()
     {
         var model = new OrganisationIdentificationModel(sessionMock.Object, organisationClientMock.Object, _pponClientMock.Object)
         {
-            OrganisationScheme = "Other",
+            OrganisationScheme = "VAT",
+            VATNumber = "0123456789",
             RedirectToSummary = true
         };
         GivenRegistrationIsInProgress();
@@ -346,11 +348,12 @@ public class OrganisationIdentificationModelTests
     }
 
     [Fact]
-    public async Task OnPost_WhenEntityVerificationServiceOffLine_ShouldRedirectToOrganisationServiceUnavailablePage()
+    public async Task OnPost_WhenSchemeNotOtherAndEntityVerificationServiceOffLine_ShouldRedirectToOrganisationServiceUnavailablePage()
     {
         var model = new OrganisationIdentificationModel(sessionMock.Object, organisationClientMock.Object, _pponClientMock.Object)
         {
-            OrganisationScheme = "Other",
+            OrganisationScheme = "VAT",
+            VATNumber = "0123456789",
             RedirectToSummary = true
         };
 
