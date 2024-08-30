@@ -4,13 +4,10 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CO.CDP.OrganisationApp.Pages.Registration;
 
-[AuthorisedSession]
 [ValidateRegistrationStep]
-public class BuyerSelectDevolvedRegulationModel(ISession session) : RegistrationStepModel
+public class BuyerSelectDevolvedRegulationModel(ISession session) : RegistrationStepModel(session)
 {
     public override string CurrentPage => BuyerSelectDevolvedRegulationPage;
-
-    public override ISession SessionContext => session;
 
     [BindProperty]
     [NotEmpty(ErrorMessage = "Select the do devolved regulations apply to your organisation?")]
@@ -34,7 +31,7 @@ public class BuyerSelectDevolvedRegulationModel(ISession session) : Registration
         }
 
         RegistrationDetails.Regulations = Regulations;
-        session.Set(Session.RegistrationDetailsKey, RegistrationDetails);
+        SessionContext.Set(Session.RegistrationDetailsKey, RegistrationDetails);
 
         return RedirectToPage("OrganisationDetailsSummary");
     }

@@ -1,17 +1,13 @@
 using CO.CDP.EntityVerificationClient;
 using CO.CDP.Mvc.Validation;
 using CO.CDP.Organisation.WebApiClient;
-using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.WebApiClients;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System.ComponentModel.DataAnnotations;
 
 namespace CO.CDP.OrganisationApp.Pages.Supplier;
 
-[Authorize]
 public class SupplierVatQuestionModel(IOrganisationClient organisationClient,
     IPponClient pponClient, IHttpContextAccessor httpContextAccessor) : PageModel
 {

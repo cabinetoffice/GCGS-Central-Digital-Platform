@@ -16,10 +16,12 @@ public class BuyerOrganisationTypeTest
     public BuyerOrganisationTypeTest()
     {
         _sessionMock = new Mock<ISession>();
-        _model = new BuyerOrganisationTypeModel(_sessionMock.Object);
         _registrationDetails = new RegistrationDetails();
         _sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey))
                     .Returns(_registrationDetails);
+        _sessionMock.Setup(session => session.Get<UserDetails>(Session.UserDetailsKey))
+            .Returns(new UserDetails { UserUrn = "urn:test" });
+        _model = new BuyerOrganisationTypeModel(_sessionMock.Object);
     }
 
 

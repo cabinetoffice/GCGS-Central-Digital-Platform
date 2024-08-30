@@ -7,14 +7,12 @@ using OrganisationWebApiClient = CO.CDP.Organisation.WebApiClient;
 
 namespace CO.CDP.OrganisationApp.Pages.Registration;
 
-[AuthorisedSession]
 [ValidateRegistrationStep]
 public class OrganisationDetailsSummaryModel(
     ISession session,
-    IOrganisationClient organisationClient) : RegistrationStepModel
+    IOrganisationClient organisationClient) : RegistrationStepModel(session)
 {
     public override string CurrentPage => OrganisationSummaryPage;
-    public override ISession SessionContext => session;
 
     public string? Error { get; set; }
 
@@ -24,7 +22,7 @@ public class OrganisationDetailsSummaryModel(
 
     public async Task<IActionResult> OnPost()
     {
-        var organisation = await RegisterOrganisationAsync(UserDetails!, RegistrationDetails);
+        var organisation = await RegisterOrganisationAsync();
         if (!ModelState.IsValid || organisation == null)
         {
             return Page();
@@ -44,13 +42,13 @@ public class OrganisationDetailsSummaryModel(
 
         await Task.WhenAll(tasks);
 
-        session.Remove(Session.RegistrationDetailsKey);
+        SessionContext.Remove(Session.RegistrationDetailsKey);
         return RedirectToPage("/OrganisationSelection");
     }
 
-    private async Task<OrganisationWebApiClient.Organisation?> RegisterOrganisationAsync(UserDetails user, RegistrationDetails details)
+    private async Task<OrganisationWebApiClient.Organisation?> RegisterOrganisationAsync()
     {
-        var payload = NewOrganisationPayload(user, details);
+        var payload = NewOrganisationPayload(UserDetails, RegistrationDetails);
 
         if (payload == null)
         {
