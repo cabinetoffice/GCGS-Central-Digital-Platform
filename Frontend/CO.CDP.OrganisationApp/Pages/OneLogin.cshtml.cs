@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace CO.CDP.OrganisationApp.Pages.Registration;
 
+[AuthorisedSessionNotRequired]
 public class OneLogin(
     IHttpContextAccessor httpContextAccessor,
     IPersonClient personClient,

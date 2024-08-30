@@ -22,6 +22,8 @@ public class OrganisationDetailsSummaryModelTest
     public OrganisationDetailsSummaryModelTest()
     {
         sessionMock = new Mock<ISession>();
+        sessionMock.Setup(session => session.Get<UserDetails>(Session.UserDetailsKey))
+            .Returns(new UserDetails { UserUrn = "urn:test" });
         organisationClientMock = new Mock<IOrganisationClient>();
     }
 

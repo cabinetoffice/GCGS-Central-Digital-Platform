@@ -108,9 +108,8 @@ public class RegistrationStepModelTest
         sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(details);
     }
 
-    private class TestRegistrationStepModel(ISession session, string currentPage) : RegistrationStepModel
+    private class TestRegistrationStepModel(ISession session, string currentPage) : RegistrationStepModel(session)
     {
         public override string CurrentPage { get; } = currentPage;
-        public override ISession SessionContext { get; } = session;
     }
 }

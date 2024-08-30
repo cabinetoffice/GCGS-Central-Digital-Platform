@@ -1,10 +1,11 @@
 using CO.CDP.AwsServices;
 using CO.CDP.Configuration.ForwardedHeaders;
-using CO.CDP.EntityVerificationClient;
 using CO.CDP.DataSharing.WebApiClient;
+using CO.CDP.EntityVerificationClient;
 using CO.CDP.Forms.WebApiClient;
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp;
+using CO.CDP.OrganisationApp.Pages;
 using CO.CDP.Person.WebApiClient;
 using CO.CDP.Tenant.WebApiClient;
 using Microsoft.AspNetCore.Authentication;
@@ -27,7 +28,11 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddRazorPages()
     .AddSessionStateTempDataProvider()
-    .AddRazorRuntimeCompilation();
+    .AddRazorRuntimeCompilation()
+    .AddMvcOptions(options =>
+    {
+        options.Filters.Add<AuthorisedSessionFilter>();
+    });
 builder.ConfigureForwardedHeaders();
 
 builder.Services.AddDistributedMemoryCache();

@@ -3,20 +3,11 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace CO.CDP.OrganisationApp.Pages;
 
-public abstract class LoggedInUserAwareModel : PageModel
+public abstract class LoggedInUserAwareModel(ISession session) : PageModel
 {
-    public abstract ISession SessionContext { get; }
+    public ISession SessionContext { get; } = session;
 
     public UserDetails UserDetails { get; }
-
-    public bool UserDetailsAvailable { get; } = false;
-
-    protected LoggedInUserAwareModel()
-    {
-        var details = SessionContext.Get<UserDetails>(Session.UserDetailsKey);
-
-        UserDetailsAvailable = details != null;
-
-        UserDetails = details ?? new UserDetails { UserUrn = "" };
-    }
+        = session.Get<UserDetails>(Session.UserDetailsKey)
+            ?? throw new Exception("Invalid session, no user details found");
 }

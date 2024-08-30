@@ -13,6 +13,8 @@ public class CompanyHouseNumberQuestionTests
     public CompanyHouseNumberQuestionTests()
     {
         sessionMock = new Mock<ISession>();
+        sessionMock.Setup(session => session.Get<UserDetails>(Session.UserDetailsKey))
+            .Returns(new UserDetails { UserUrn = "urn:test" });
     }
 
     [Theory]

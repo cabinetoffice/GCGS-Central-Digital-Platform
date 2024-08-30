@@ -19,6 +19,8 @@ public class OrganisationIdentificationModelTests
     public OrganisationIdentificationModelTests()
     {
         sessionMock = new Mock<ISession>();
+        sessionMock.Setup(session => session.Get<UserDetails>(Session.UserDetailsKey))
+            .Returns(new UserDetails { UserUrn = "urn:test" });
         _pponClientMock = new Mock<IPponClient>();
         organisationClientMock = new Mock<IOrganisationClient>();
 

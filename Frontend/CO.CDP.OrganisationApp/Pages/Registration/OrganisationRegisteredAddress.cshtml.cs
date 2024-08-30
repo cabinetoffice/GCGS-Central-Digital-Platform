@@ -5,12 +5,10 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CO.CDP.OrganisationApp.Pages.Registration;
 
-[AuthorisedSession]
 [ValidateRegistrationStep]
-public class OrganisationRegisteredAddressModel(ISession session) : RegistrationStepModel
+public class OrganisationRegisteredAddressModel(ISession session) : RegistrationStepModel(session)
 {
     public override string CurrentPage => OrganisationAddressPage;
-    public override ISession SessionContext => session;
 
     [BindProperty(SupportsGet = true)]
     public string UkOrNonUk { get; set; } = "uk";
@@ -50,7 +48,7 @@ public class OrganisationRegisteredAddressModel(ISession session) : Registration
         RegistrationDetails.OrganisationCountryName = Address.CountryName ?? RegistrationDetails.OrganisationCountryName;
         RegistrationDetails.OrganisationCountryCode = Address.Country ?? RegistrationDetails.OrganisationCountryCode;
 
-        session.Set(Session.RegistrationDetailsKey, RegistrationDetails);
+        SessionContext.Set(Session.RegistrationDetailsKey, RegistrationDetails);
 
         if (RedirectToSummary == true)
         {
