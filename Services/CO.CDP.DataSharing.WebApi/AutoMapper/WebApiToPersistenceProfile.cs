@@ -27,10 +27,12 @@ public class WebApiToPersistenceProfile : Profile
 
         CreateMap<Persistence.Forms.SharedConsent, Model.SupplierInformation>()
             .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Organisation.Guid))
-            .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Organisation.Name));
-
-
-
+            .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Organisation.Name))
+            .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.Organisation.Addresses.FirstOrDefault(i => i.Type == OrgInfo.AddressType.Registered)))
+            .ForMember(dest => dest.ContactPoint, opt => opt.MapFrom(src => src.Organisation.ContactPoints.FirstOrDefault()))
+            .ForMember(m => m.Identifier, o => o.MapFrom(src => src.Organisation.Identifiers.FirstOrDefault(i => i.Primary)))
+            .ForMember(dest => dest.AdditionalIdentifiers, opt => opt.MapFrom(src => src.Organisation.Identifiers.Where(i => !i.Primary).ToList()))
+            .ForMember(dest => dest.Details, opt => opt.MapFrom(src => new Model.Details()));
 
         CreateMap<Persistence.Organisation.OrganisationAddress, OrgInfo.Address>()
             .ForMember(m => m.Type, o => o.MapFrom(m => m.Type))
@@ -40,6 +42,19 @@ public class WebApiToPersistenceProfile : Profile
             .ForMember(m => m.PostalCode, o => o.MapFrom(m => m.Address.PostalCode))
             .ForMember(m => m.CountryName, o => o.MapFrom(m => m.Address.CountryName))
             .ForMember(m => m.Country, o => o.MapFrom(m => m.Address.Country));
+
+        CreateMap<Persistence.Organisation.ContactPoint, OrgInfo.ContactPoint>()
+                .ForMember(m => m.Name, o => o.MapFrom(m => m.Name))
+                .ForMember(m => m.Email, o => o.MapFrom(m => m.Email))
+                .ForMember(m => m.Telephone, o => o.MapFrom(m => m.Telephone))
+                .ForMember(m => m.Url, o => o.MapFrom(m => string.IsNullOrEmpty(m.Url) ? null : new Uri(m.Url)));
+
+        CreateMap<Persistence.Organisation.Identifier, OrgInfo.Identifier>()
+                       .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.IdentifierId))
+                       .ForMember(dest => dest.Scheme, opt => opt.MapFrom(src => src.Scheme))
+                       .ForMember(dest => dest.LegalName, opt => opt.MapFrom(src => src.LegalName))
+                       .ForMember(dest => dest.Uri, opt => opt.MapFrom(src => string.IsNullOrEmpty(src.Uri) ? null : new Uri(src.Uri)))
+                       .ReverseMap();
 
     }
 }

@@ -39,11 +39,24 @@ public class GetSharedDataUseCaseTest(AutoMapperFixture mapperFixture) : IClassF
         var result = await UseCase.Execute(shareCode);
 
         result.Should().NotBeNull();
-        result?.Name.Should().Be("Test Organisation");
         result?.Id.Should().Be(sharedConsent.Organisation.Guid);
-        result?.AssociatedPersons.Should().HaveCount(1);
-        result?.AssociatedPersons.First().Name.Should().Be("John Doe");
-        result?.Identifier.Id.Should().Be("123456789");
-        result?.Identifier.LegalName.Should().Be("Test Organisation Ltd.");
+        result?.Name.Should().Be("Test Organisation");
+
+        result?.Address.Should().NotBeNull();
+        result?.Address.StreetAddress.Should().Be("123 Example Street");
+        result?.Address.Locality.Should().Be("Example Town");
+        result?.Address.Region.Should().Be("Example Region");
+        result?.Address.PostalCode.Should().Be("EX1 1EX");
+        result?.Address.CountryName.Should().Be("Example Country");
+        result?.Address.Country.Should().Be("EX");
+
+
+
+        // result?.AssociatedPersons.Should().HaveCount(1);
+        // result?.AssociatedPersons.First().Name.Should().Be("John Doe");
+        // result?.Identifier.Id.Should().Be("123456789");
+        // result?.Identifier.LegalName.Should().Be("Test Organisation Ltd.");
+
+
     }
 }

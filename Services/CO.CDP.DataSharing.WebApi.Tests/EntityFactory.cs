@@ -71,8 +71,24 @@ internal static class EntityFactory
                 LegalName = "Test Organisation Ltd.",
                 Primary = true
             }
+        },
+        Addresses = new List<Organisation.OrganisationAddress>
+        {
+            new Organisation.OrganisationAddress
+            {
+                Type = CO.CDP.OrganisationInformation.AddressType.Registered,
+                Address = new Address
+                {
+                    StreetAddress = "123 Example Street",
+                    Locality = "Example Town",
+                    Region = "Example Region",
+                    PostalCode = "EX1 1EX",
+                    CountryName = "Example Country",
+                    Country = "EX"
+                }
+            }
         }
-        };
+    };
 
         return new OrganisationInformation.Persistence.Forms.SharedConsent()
         {
