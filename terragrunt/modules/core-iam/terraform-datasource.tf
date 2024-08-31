@@ -251,6 +251,8 @@ data "aws_iam_policy_document" "terraform_global" {
 
   statement {
     actions = [
+      "rds:AddTagsToResource",
+      "rds:CreateDBInstanceReadReplica",
       "rds:DescribeDBInstances",
     ]
     effect = "Allow"

@@ -62,6 +62,14 @@ output "notification_step_function_name" {
   value = aws_iam_role.notification_step_function.name
 }
 
+output "rds_cloudwatch_arn" {
+  value = aws_iam_role.rds_cloudwatch_role.arn
+}
+
+output "rds_cloudwatch_name" {
+  value = aws_iam_role.rds_cloudwatch_role.name
+}
+
 output "service_deployer_step_function_arn" {
   value = aws_iam_role.service_deployer_step_function.arn
 }

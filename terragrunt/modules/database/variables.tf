@@ -32,6 +32,12 @@ variable "product" {
   })
 }
 
+variable "role_rds_cloudwatch_arn" {
+  description = "The ARN for the IAM role that permits RDS to send data to CloudWatch. Required in production accounts where enhanced monitoring is enabled"
+  type        = string
+  default     = ""
+}
+
 variable "role_terraform_arn" {
   description = "Terraform IAM role ARN"
   type        = string
