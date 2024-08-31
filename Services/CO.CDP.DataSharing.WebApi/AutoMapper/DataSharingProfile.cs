@@ -35,7 +35,7 @@ public class DataSharingProfile : Profile
           .ForMember(m => m.AdditionalParties, o => o.MapFrom(m => Enumerable.Empty<OrganisationReference>()))
           .ForMember(m => m.Identifier, o => o.MapFrom(m => m.Organisation.Identifiers.FirstOrDefault(x => x.Primary)))
           .ForMember(m => m.AdditionalIdentifiers, o => o.MapFrom(m => m.Organisation.Identifiers.Where(x => !x.Primary).ToList()))
-          .ForMember(m => m.Address, o => o.MapFrom(m => m.Organisation.Addresses.FirstOrDefault(x => x.Type == OrganisationInformation.AddressType.Registered).Address))
+          .ForMember(m => m.Address, o => o.MapFrom(m => m.Organisation.Addresses.FirstOrDefault(x => x.Type == OrganisationInformation.AddressType.Registered)))
           .ForMember(m => m.ContactPoint, o => o.MapFrom(m => m.Organisation.ContactPoints.FirstOrDefault()))
           .ForMember(m => m.Roles, o => o.MapFrom(m => m.Organisation.Roles))
           .ForMember(m => m.Details, o => o.MapFrom(m => new Details()))
@@ -47,7 +47,14 @@ public class DataSharingProfile : Profile
           .ForMember(m => m.LegalName, o => o.MapFrom(m => m.LegalName))
           .ForMember(m => m.Uri, o => o.MapFrom(m => !string.IsNullOrWhiteSpace(m.Uri) ? new Uri(m.Uri) : default));
 
-        CreateMap<OrganisationInformation.Persistence.Address, OrganisationInformation.Address>();
+        CreateMap<OrganisationInformation.Persistence.Organisation.OrganisationAddress, OrganisationInformation.Address>()
+          .ForMember(m => m.StreetAddress, o => o.MapFrom(m => m.Address.StreetAddress))
+          .ForMember(m => m.Locality, o => o.MapFrom(m => m.Address.Locality))
+          .ForMember(m => m.Region, o => o.MapFrom(m => m.Address.Region))
+          .ForMember(m => m.PostalCode, o => o.MapFrom(m => m.Address.PostalCode))
+          .ForMember(m => m.CountryName, o => o.MapFrom(m => m.Address.CountryName))
+          .ForMember(m => m.Country, o => o.MapFrom(m => m.Address.Country))
+          .ForMember(m => m.Type, o => o.MapFrom(m => m.Type));
 
         CreateMap<OrganisationInformation.Persistence.Organisation.ContactPoint, OrganisationInformation.ContactPoint>()
           .ForMember(m => m.Name, o => o.MapFrom(m => m.Name))
