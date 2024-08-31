@@ -56,7 +56,7 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
     {
         var result = context.ConnectedEntities
             .Include(x => x.Organisation)
-            .Where(x => x.Organisation.Id == organisationId);
+            .Where(x => x.Organisation != null && x.Organisation.Id == organisationId);
 
         if (connectedEntityType != null)
         {
