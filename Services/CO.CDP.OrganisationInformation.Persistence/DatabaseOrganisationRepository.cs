@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using static CO.CDP.OrganisationInformation.Persistence.ConnectedEntity;
 
 namespace CO.CDP.OrganisationInformation.Persistence;
 
@@ -49,6 +50,20 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
             .Include(p => p.Addresses)
             .ThenInclude(p => p.Address)
             .FirstOrDefaultAsync(o => o.Identifiers.Any(i => i.Scheme == scheme && i.IdentifierId == identifierId));
+    }
+
+    public async Task<IList<ConnectedEntity>> GetConnectedEntities(int organisationId, ConnectedEntityType? connectedEntityType = null)
+    {
+        var result = context.ConnectedEntities
+            .Include(x => x.Organisation)
+            .Where(x => x.Organisation.Id == organisationId);
+
+        if (connectedEntityType != null)
+        {
+            result = result.Where(x => x.EntityType == connectedEntityType);
+        }
+
+        return await result.ToListAsync();
     }
 
     public void Save(Organisation organisation)
