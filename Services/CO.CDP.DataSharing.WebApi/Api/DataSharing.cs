@@ -35,7 +35,8 @@ public static class EndpointExtensions
                 operation.Responses["404"].Description = "Share code not found or the caller is not authorised to use it.";
                 operation.Responses["500"].Description = "Internal server error.";
                 return operation;
-            });
+            })
+            .RequireAuthorization(Constants.OrganisationApiKeyPolicy);
 
         app.MapPost("/share/data", async (ShareRequest shareRequest, IUseCase<ShareRequest, ShareReceipt> useCase) =>
                 await useCase.Execute(shareRequest)
