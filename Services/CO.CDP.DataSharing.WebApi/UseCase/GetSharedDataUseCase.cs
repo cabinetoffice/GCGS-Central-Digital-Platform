@@ -2,6 +2,7 @@ using AutoMapper;
 using CO.CDP.DataSharing.WebApi.Model;
 using CO.CDP.OrganisationInformation;
 using CO.CDP.OrganisationInformation.Persistence;
+using SharedConsent = CO.CDP.OrganisationInformation.Persistence.Forms.SharedConsent;
 
 namespace CO.CDP.DataSharing.WebApi.UseCase;
 
@@ -13,16 +14,23 @@ public class GetSharedDataUseCase(
 {
     public async Task<SupplierInformation?> Execute(string sharecode)
     {
-        var sharedConsent = await shareCodeRepository.GetByShareCode(sharecode);
-        if (sharedConsent == null)
+        var sharedConsent = await shareCodeRepository.GetByShareCode(sharecode)
+                            ?? throw new SharedConsentNotFoundException("Shared Consent not found.");
+
+        var associatedPersons = await AssociatedPersons(sharedConsent);
+        var additionalEntities = await AdditionalEntities(sharedConsent);
+        return mapper.Map<SupplierInformation>(sharedConsent, opts =>
         {
-            throw new SharedConsentNotFoundException("Shared Consent not found.");
-        }
+            opts.Items["AssociatedPersons"] = associatedPersons;
+            opts.Items["AdditionalParties"] = new List<OrganisationReference>();
+            opts.Items["AdditionalEntities"] = additionalEntities;
+        });
+    }
 
-        var result = mapper.Map<SupplierInformation>(sharedConsent);
-
+    private async Task<ICollection<AssociatedPerson>> AssociatedPersons(SharedConsent sharedConsent)
+    {
         var associatedPersons = await organisationRepository.GetConnectedIndividualTrusts(sharedConsent.OrganisationId);
-        result.AssociatedPersons = associatedPersons.Select(x => new AssociatedPerson()
+        return associatedPersons.Select(x => new AssociatedPerson
         {
             Id = x.Guid,
             Name = string.Format($"{x.IndividualOrTrust?.FirstName} {x.IndividualOrTrust?.LastName}"),
@@ -30,16 +38,17 @@ public class GetSharedDataUseCase(
             Uri = null,
             Roles = []
         }).ToList();
+    }
 
+    private async Task<ICollection<OrganisationReference>> AdditionalEntities(SharedConsent sharedConsent)
+    {
         var additionalEntities = await organisationRepository.GetConnectedOrganisations(sharedConsent.OrganisationId);
-        result.AdditionalEntities = additionalEntities.Select(x => new OrganisationReference()
+        return additionalEntities.Select(x => new OrganisationReference
         {
             Id = x.Guid,
             Name = x.Organisation?.Name ?? string.Empty,
             Roles = [],
             Uri = null
         }).ToList();
-
-        return result;
     }
 }

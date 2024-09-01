@@ -45,9 +45,12 @@ public class DataSharingProfile : Profile
             .ForMember(m => m.Roles, o => o.MapFrom(m => m.Organisation.Roles))
             .ForMember(m => m.Details, o => o.MapFrom(m => new Details()))
             .ForMember(m => m.SupplierInformationData, o => o.MapFrom(m => m))
-            .ForMember(m => m.AssociatedPersons, o => o.Ignore())
-            .ForMember(m => m.AdditionalEntities, o => o.Ignore())
-            .ForMember(m => m.AdditionalParties, o => o.Ignore());
+            .ForMember(m => m.AssociatedPersons,
+                o => o.MapFrom((_, _, _, context) => context.Items["AssociatedPersons"]))
+            .ForMember(m => m.AdditionalEntities,
+                o => o.MapFrom((_, _, _, context) => context.Items["AdditionalEntities"]))
+            .ForMember(m => m.AdditionalParties,
+                o => o.MapFrom((_, _, _, context) => context.Items["AdditionalParties"]));
 
         CreateMap<OrganisationInformation.Persistence.Organisation.Identifier, OrganisationInformation.Identifier>()
             .ForMember(m => m.Scheme, o => o.MapFrom(m => m.Scheme))
