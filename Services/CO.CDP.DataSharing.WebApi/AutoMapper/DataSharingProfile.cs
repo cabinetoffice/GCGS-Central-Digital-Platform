@@ -94,16 +94,6 @@ public class DataSharingProfile : Profile
             .ForMember(m => m.Id, o => o.MapFrom(m => m.Guid))
             .ForMember(m => m.Answers, o => o.MapFrom(m => m.Answers));
 
-        CreateMap<CO.CDP.OrganisationInformation.Persistence.Forms.FormSection, Model.FormSection>()
-            .ForMember(m => m.Id, o => o.MapFrom(m => m.Guid))
-            .ForMember(m => m.Title, o => o.MapFrom(m => m.Title))
-            .ForMember(m => m.Type, o => o.MapFrom(m => m.Type))
-            .ForMember(m => m.FormId, o => o.MapFrom(m => m.FormId))
-            .ForMember(m => m.Form, o => o.Ignore())
-            .ForMember(m => m.Questions, o => o.Ignore())
-            .ForMember(m => m.AllowsMultipleAnswerSets, o => o.MapFrom(m => m.AllowsMultipleAnswerSets))
-            .ForMember(m => m.Configuration, o => o.Ignore());
-
         CreateMap<CO.CDP.OrganisationInformation.Persistence.Forms.FormAnswer, Model.FormAnswer>()
             .ForMember(m => m.QuestionName, o => o.MapFrom(m => m.Question.Guid))
             .ForMember(m => m.BoolValue, o => o.MapFrom(m => m.BoolValue))
