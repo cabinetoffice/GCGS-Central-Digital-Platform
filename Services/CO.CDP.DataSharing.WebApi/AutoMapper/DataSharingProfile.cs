@@ -66,8 +66,7 @@ public class DataSharingProfile : Profile
 
         CreateMap<Persistence.SharedConsent, SupplierInformationData>()
           .ForMember(m => m.Form, o => o.MapFrom(m => m))
-          .ForMember(m => m.Answers, o => o.MapFrom(m => m.AnswerSets.SelectMany(x => x.Answers)))
-          .ForMember(m => m.Questions, o => o.MapFrom(m => m.AnswerSets.SelectMany(x => x.Answers.Select(y => y.Question))));
+          .ForMember(m => m.FormAnswerSets, o => o.MapFrom(m => m.AnswerSets));
 
         CreateMap<Persistence.SharedConsent, Model.Form>()
           .ForMember(m => m.Name, o => o.MapFrom(m => m.Form.Name))
@@ -78,6 +77,27 @@ public class DataSharingProfile : Profile
           .ForMember(m => m.FormVersionId, o => o.MapFrom(m => m.Form.Version))
           .ForMember(m => m.IsRequired, o => o.MapFrom(m => m.Form.IsRequired))
           .ForMember(m => m.ShareCode, o => o.MapFrom(m => m.ShareCode));
+
+        CreateMap<CO.CDP.OrganisationInformation.Persistence.Forms.FormAnswerSet, Model.FormAnswerSet>()
+          .ForMember(m => m.Id, o => o.MapFrom(m => m.Id))
+          .ForMember(m => m.Guid, o => o.MapFrom(m => m.Guid))
+          .ForMember(m => m.SharedConsentId, o => o.MapFrom(m => m.SharedConsentId))
+          .ForMember(m => m.SharedConsent, o => o.Ignore())
+          .ForMember(m => m.SectionId, o => o.MapFrom(m => m.SectionId))
+          .ForMember(m => m.Section, o => o.MapFrom(m => m.Section))
+          .ForMember(m => m.Answers, o => o.MapFrom(m => m.Answers))
+          .ForMember(m => m.Deleted, o => o.MapFrom(m => m.Deleted));
+
+        CreateMap<CO.CDP.OrganisationInformation.Persistence.Forms.FormSection, Model.FormSection>()
+          .ForMember(m => m.Id, o => o.MapFrom(m => m.Id))
+          .ForMember(m => m.Guid, o => o.MapFrom(m => m.Guid))
+          .ForMember(m => m.Title, o => o.MapFrom(m => m.Title))
+          .ForMember(m => m.Type, o => o.MapFrom(m => m.Type))
+          .ForMember(m => m.FormId, o => o.MapFrom(m => m.FormId))
+          .ForMember(m => m.Form, o => o.Ignore())
+          .ForMember(m => m.Questions, o => o.Ignore())
+          .ForMember(m => m.AllowsMultipleAnswerSets, o => o.MapFrom(m => m.AllowsMultipleAnswerSets))
+          .ForMember(m => m.Configuration, o => o.Ignore());
 
         CreateMap<CO.CDP.OrganisationInformation.Persistence.Forms.FormAnswer, Model.FormAnswer>()
           .ForMember(m => m.QuestionName, o => o.MapFrom(m => m.Question.Title))
