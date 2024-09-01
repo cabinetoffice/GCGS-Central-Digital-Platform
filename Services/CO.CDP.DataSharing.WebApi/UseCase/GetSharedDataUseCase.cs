@@ -27,8 +27,8 @@ public class GetSharedDataUseCase(
             Id = x.Guid,
             Name = string.Format($"{x.IndividualOrTrust?.FirstName} {x.IndividualOrTrust?.LastName}"),
             Relationship = x.IndividualOrTrust?.Category.ToString() ?? string.Empty,
-            Uri = new Uri("https://google.com"),
-            Roles = new List<PartyRole>()
+            Uri = null,
+            Roles = []
         }).ToList();
 
         var additionalEntities = await organisationRepository.GetConnectedOrganisations(sharedConsent.OrganisationId);
@@ -36,8 +36,8 @@ public class GetSharedDataUseCase(
         {
             Id = x.Guid,
             Name = x.Organisation?.Name ?? string.Empty,
-            Roles = new List<PartyRole>(),
-            Uri = new Uri("https://google.com")
+            Roles = [],
+            Uri = null
         }).ToList();
 
         return result;
