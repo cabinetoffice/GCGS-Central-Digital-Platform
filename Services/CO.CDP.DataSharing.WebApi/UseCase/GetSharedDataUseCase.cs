@@ -21,28 +21,24 @@ public class GetSharedDataUseCase(
 
         var result = mapper.Map<SupplierInformation>(sharedConsent);
 
-        var associatedPersons = await organisationRepository.GetConnectedEntities(sharedConsent.OrganisationId, ConnectedEntity.ConnectedEntityType.Individual);
-        var additionalEntities = await organisationRepository.GetConnectedEntities(sharedConsent.OrganisationId, ConnectedEntity.ConnectedEntityType.Organisation);
-
-        var mappedAssociatedPersones = associatedPersons.Select(x => new AssociatedPerson()
+        var associatedPersons = await organisationRepository.GetConnectedIndividualTrusts(sharedConsent.OrganisationId);
+        result.AssociatedPersons = associatedPersons.Select(x => new AssociatedPerson()
         {
             Id = x.Guid,
-            Name = x.RegisterName ?? string.Empty,
-            Relationship = x.EntityType.ToString(),
-            Uri = new Uri(string.Empty),
+            Name = string.Format($"{x.IndividualOrTrust?.FirstName} {x.IndividualOrTrust?.LastName}"),
+            Relationship = x.IndividualOrTrust?.Category.ToString() ?? string.Empty,
+            Uri = new Uri("https://google.com"),
             Roles = new List<PartyRole>()
         }).ToList();
 
-        var mappedAdditionalEntities = associatedPersons.Select(x => new OrganisationReference()
+        var additionalEntities = await organisationRepository.GetConnectedOrganisations(sharedConsent.OrganisationId);
+        result.AdditionalEntities = additionalEntities.Select(x => new OrganisationReference()
         {
             Id = x.Guid,
-            Name = x.RegisterName ?? string.Empty,
+            Name = x.Organisation?.Name ?? string.Empty,
             Roles = new List<PartyRole>(),
-            Uri = new Uri(string.Empty)
+            Uri = new Uri("https://google.com")
         }).ToList();
-
-        result.AssociatedPersons = mappedAssociatedPersones;
-        result.AdditionalEntities = mappedAdditionalEntities;
 
         return result;
     }

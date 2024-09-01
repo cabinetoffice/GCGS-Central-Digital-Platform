@@ -20,6 +20,7 @@ public class OrganisationInformationContext(DbContextOptions<OrganisationInforma
     public DbSet<Form> Forms { get; set; } = null!;
     public DbSet<SharedConsent> SharedConsents { get; set; } = null!;
     public DbSet<ConnectedEntity> ConnectedEntities { get; set; } = null!;
+    public DbSet<ConnectedIndividualTrust> ConnectedIndividualTrusts { get; set; } = null!;
     public DbSet<AuthenticationKey> AuthenticationKeys { get; set; } = null!;
     public DbSet<FormAnswerSet> FormAnswerSets { get; set; } = null!;
     public DbSet<RefreshToken> RefreshTokens { get; set; } = null!;

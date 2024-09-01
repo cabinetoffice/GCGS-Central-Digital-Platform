@@ -22,5 +22,7 @@ public interface IOrganisationRepository : IDisposable
             : OrganisationRepositoryException(message, cause);
     }
 
-    public Task<IList<ConnectedEntity>> GetConnectedEntities(int organisationId, ConnectedEntityType? connectedEntityType = null);
+    public Task<IList<ConnectedEntity>> GetConnectedIndividualTrusts(int organisationId);
+
+    public Task<IList<ConnectedEntity>> GetConnectedOrganisations(int organisationId);
 }

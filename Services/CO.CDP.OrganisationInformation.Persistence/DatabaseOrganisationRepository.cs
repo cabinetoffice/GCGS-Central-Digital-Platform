@@ -52,16 +52,22 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
             .FirstOrDefaultAsync(o => o.Identifiers.Any(i => i.Scheme == scheme && i.IdentifierId == identifierId));
     }
 
-    public async Task<IList<ConnectedEntity>> GetConnectedEntities(int organisationId, ConnectedEntityType? connectedEntityType = null)
+    public async Task<IList<ConnectedEntity>> GetConnectedIndividualTrusts(int organisationId)
+    {
+        var result = context.ConnectedEntities
+            .Include(x => x.IndividualOrTrust)
+            .Where(x => x.IndividualOrTrust != null && x.EntityType == ConnectedEntityType.Individual)
+            .Where(x => x.SupplierOrganisation != null && x.SupplierOrganisation.Id == organisationId);
+
+        return await result.ToListAsync();
+    }
+
+    public async Task<IList<ConnectedEntity>> GetConnectedOrganisations(int organisationId)
     {
         var result = context.ConnectedEntities
             .Include(x => x.Organisation)
-            .Where(x => x.Organisation != null && x.Organisation.Id == organisationId);
-
-        if (connectedEntityType != null)
-        {
-            result = result.Where(x => x.EntityType == connectedEntityType);
-        }
+            .Where(x => x.Organisation != null && x.EntityType == ConnectedEntityType.Organisation)
+            .Where(x => x.SupplierOrganisation != null && x.SupplierOrganisation.Id == organisationId);
 
         return await result.ToListAsync();
     }
