@@ -2,10 +2,7 @@ using AutoMapper;
 using CO.CDP.DataSharing.WebApi.Model;
 using CO.CDP.OrganisationInformation;
 using CO.CDP.OrganisationInformation.Persistence;
-using CO.CDP.OrganisationInformation.Persistence.Forms;
-using CO.CDP.OrganisationInformation.Persistence.Migrations;
-using static CO.CDP.OrganisationInformation.Persistence.ConnectedEntity;
-using FormQuestionType = CO.CDP.DataSharing.WebApi.Model.FormQuestionType;
+using Address = CO.CDP.OrganisationInformation.Address;
 using Persistence = CO.CDP.OrganisationInformation.Persistence.Forms;
 
 namespace CO.CDP.DataSharing.WebApi.AutoMapper;
@@ -18,15 +15,15 @@ public class DataSharingProfile : Profile
             .ForMember(m => m.FormId, o => o.MapFrom(m => m.Guid))
             .ForMember(m => m.FormVersionId, o => o.MapFrom(m => m.FormVersionId));
 
-        CreateMap<Persistence.SharedConsent, Model.SharedConsent>()
+        CreateMap<Persistence.SharedConsent, SharedConsent>()
             .ForMember(m => m.SubmittedAt, o => o.MapFrom(m => m.SubmittedAt));
 
-        CreateMap<Persistence.SharedConsentQuestionAnswer, Model.SharedConsentQuestionAnswer>()
+        CreateMap<Persistence.SharedConsentQuestionAnswer, SharedConsentQuestionAnswer>()
             .ForMember(m => m.QuestionId, o => o.MapFrom(m => m.QuestionId))
             .ForMember(m => m.Title, o => o.MapFrom(m => m.Title))
             .ForMember(m => m.Answer, o => o.MapFrom<CustomResolver>());
 
-        CreateMap<Persistence.SharedConsentDetails, Model.SharedConsentDetails>()
+        CreateMap<Persistence.SharedConsentDetails, SharedConsentDetails>()
             .ForMember(m => m.SubmittedAt, o => o.MapFrom(m => m.SubmittedAt))
             .ForMember(m => m.ShareCode, o => o.MapFrom(m => m.ShareCode));
 
@@ -40,7 +37,7 @@ public class DataSharingProfile : Profile
             .ForMember(m => m.Address,
                 o => o.MapFrom(m =>
                     m.Organisation.Addresses.FirstOrDefault(x =>
-                        x.Type == OrganisationInformation.AddressType.Registered)))
+                        x.Type == AddressType.Registered)))
             .ForMember(m => m.ContactPoint, o => o.MapFrom(m => m.Organisation.ContactPoints.FirstOrDefault()))
             .ForMember(m => m.Roles, o => o.MapFrom(m => m.Organisation.Roles))
             .ForMember(m => m.Details, o => o.MapFrom(m => new Details()))
@@ -52,14 +49,14 @@ public class DataSharingProfile : Profile
             .ForMember(m => m.AdditionalParties,
                 o => o.MapFrom((_, _, _, context) => context.Items["AdditionalParties"]));
 
-        CreateMap<OrganisationInformation.Persistence.Organisation.Identifier, OrganisationInformation.Identifier>()
+        CreateMap<Organisation.Identifier, Identifier>()
             .ForMember(m => m.Scheme, o => o.MapFrom(m => m.Scheme))
             .ForMember(m => m.Id, o => o.MapFrom(m => m.IdentifierId))
             .ForMember(m => m.LegalName, o => o.MapFrom(m => m.LegalName))
             .ForMember(m => m.Uri, o => o.MapFrom(m => !string.IsNullOrWhiteSpace(m.Uri) ? new Uri(m.Uri) : default));
 
-        CreateMap<OrganisationInformation.Persistence.Organisation.OrganisationAddress,
-                OrganisationInformation.Address>()
+        CreateMap<Organisation.OrganisationAddress,
+                Address>()
             .ForMember(m => m.StreetAddress, o => o.MapFrom(m => m.Address.StreetAddress))
             .ForMember(m => m.Locality, o => o.MapFrom(m => m.Address.Locality))
             .ForMember(m => m.Region, o => o.MapFrom(m => m.Address.Region))
@@ -68,13 +65,11 @@ public class DataSharingProfile : Profile
             .ForMember(m => m.Country, o => o.MapFrom(m => m.Address.Country))
             .ForMember(m => m.Type, o => o.MapFrom(m => m.Type));
 
-        CreateMap<OrganisationInformation.Persistence.Organisation.ContactPoint, OrganisationInformation.ContactPoint>()
+        CreateMap<Organisation.ContactPoint, ContactPoint>()
             .ForMember(m => m.Name, o => o.MapFrom(m => m.Name))
             .ForMember(m => m.Email, o => o.MapFrom(m => m.Email))
             .ForMember(m => m.Telephone, o => o.MapFrom(m => m.Telephone))
             .ForMember(m => m.Url, o => o.MapFrom(m => !string.IsNullOrWhiteSpace(m.Url) ? new Uri(m.Url) : default));
-
-        CreateMap<OrganisationInformation.PartyRole, OrganisationInformation.PartyRole>();
 
         CreateMap<Persistence.SharedConsent, SupplierInformationData>()
             .ForMember(m => m.Form, o => o.MapFrom(m => m))
@@ -82,7 +77,7 @@ public class DataSharingProfile : Profile
             .ForMember(m => m.Questions,
                 o => o.MapFrom(m => m.AnswerSets.SelectMany(a => a.Section.Questions).DistinctBy(q => q.Id)));
 
-        CreateMap<Persistence.SharedConsent, Model.Form>()
+        CreateMap<Persistence.SharedConsent, Form>()
             .ForMember(m => m.Name, o => o.MapFrom(m => m.Form.Name))
             .ForMember(m => m.SubmissionState, o => o.MapFrom(m => m.SubmissionState.ToString()))
             .ForMember(m => m.SubmittedAt,
@@ -93,11 +88,11 @@ public class DataSharingProfile : Profile
             .ForMember(m => m.IsRequired, o => o.MapFrom(m => m.Form.IsRequired))
             .ForMember(m => m.ShareCode, o => o.MapFrom(m => m.ShareCode));
 
-        CreateMap<CO.CDP.OrganisationInformation.Persistence.Forms.FormAnswerSet, Model.FormAnswerSet>()
+        CreateMap<Persistence.FormAnswerSet, FormAnswerSet>()
             .ForMember(m => m.Id, o => o.MapFrom(m => m.Guid))
             .ForMember(m => m.Answers, o => o.MapFrom(m => m.Answers));
 
-        CreateMap<CO.CDP.OrganisationInformation.Persistence.Forms.FormAnswer, Model.FormAnswer>()
+        CreateMap<Persistence.FormAnswer, FormAnswer>()
             .ForMember(m => m.QuestionName, o => o.MapFrom(m => m.Question.Guid))
             .ForMember(m => m.BoolValue, o => o.MapFrom(m => m.BoolValue))
             .ForMember(m => m.NumericValue, o => o.MapFrom(m => m.NumericValue))
@@ -107,7 +102,7 @@ public class DataSharingProfile : Profile
             .ForMember(m => m.OptionValue,
                 o => o.MapFrom(m => !string.IsNullOrWhiteSpace(m.OptionValue) ? int.Parse(m.OptionValue) : default));
 
-        CreateMap<CO.CDP.OrganisationInformation.Persistence.Forms.FormQuestion, Model.FormQuestion>()
+        CreateMap<Persistence.FormQuestion, FormQuestion>()
             .ForMember(m => m.Type, o => o.MapFrom(m => (int)m.Type))
             .ForMember(m => m.Title, o => o.MapFrom(m => m.Title))
             .ForMember(m => m.Name, o => o.MapFrom(m => m.Guid))
@@ -116,17 +111,17 @@ public class DataSharingProfile : Profile
             .ForMember(m => m.SectionName, o => o.MapFrom(m => m.Section.Title))
             .ForMember(m => m.Options, o => o.MapFrom(m => m.Options.Choices));
 
-        CreateMap<CO.CDP.OrganisationInformation.Persistence.Forms.FormQuestionChoice, Model.FormQuestionOption>()
+        CreateMap<Persistence.FormQuestionChoice, FormQuestionOption>()
             .ForMember(m => m.Id, o => o.MapFrom(m => m.Id))
             .ForMember(m => m.Value, o => o.MapFrom(m => m.Title));
     }
 }
 
-public class CustomResolver : IValueResolver<Persistence.SharedConsentQuestionAnswer, Model.SharedConsentQuestionAnswer,
+public class CustomResolver : IValueResolver<Persistence.SharedConsentQuestionAnswer, SharedConsentQuestionAnswer,
     string?>
 {
     public string? Resolve(Persistence.SharedConsentQuestionAnswer source,
-        Model.SharedConsentQuestionAnswer destination, string? destMemb, ResolutionContext context)
+        SharedConsentQuestionAnswer destination, string? destMemb, ResolutionContext context)
     {
         switch (source.QuestionType)
         {
