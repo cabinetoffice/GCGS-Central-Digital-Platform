@@ -102,7 +102,7 @@ public class DataSharingProfile : Profile
             .ForMember(m => m.Configuration, o => o.Ignore());
 
         CreateMap<CO.CDP.OrganisationInformation.Persistence.Forms.FormAnswer, Model.FormAnswer>()
-            .ForMember(m => m.QuestionName, o => o.MapFrom(m => m.Question.Title))
+            .ForMember(m => m.QuestionName, o => o.MapFrom(m => m.Question.Guid))
             .ForMember(m => m.BoolValue, o => o.MapFrom(m => m.BoolValue))
             .ForMember(m => m.NumericValue, o => o.MapFrom(m => m.NumericValue))
             .ForMember(m => m.StartValue, o => o.MapFrom(m => m.StartValue))
