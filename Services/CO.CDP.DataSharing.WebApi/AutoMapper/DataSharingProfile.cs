@@ -79,8 +79,7 @@ public class DataSharingProfile : Profile
           .ForMember(m => m.ShareCode, o => o.MapFrom(m => m.ShareCode));
 
         CreateMap<CO.CDP.OrganisationInformation.Persistence.Forms.FormAnswerSet, Model.FormAnswerSet>()
-          .ForMember(m => m.Id, o => o.MapFrom(m => m.Id))
-          .ForMember(m => m.Guid, o => o.MapFrom(m => m.Guid))
+          .ForMember(m => m.Id, o => o.MapFrom(m => m.Guid))
           .ForMember(m => m.SharedConsentId, o => o.MapFrom(m => m.SharedConsentId))
           .ForMember(m => m.SharedConsent, o => o.Ignore())
           .ForMember(m => m.SectionId, o => o.MapFrom(m => m.SectionId))
@@ -89,8 +88,7 @@ public class DataSharingProfile : Profile
           .ForMember(m => m.Deleted, o => o.MapFrom(m => m.Deleted));
 
         CreateMap<CO.CDP.OrganisationInformation.Persistence.Forms.FormSection, Model.FormSection>()
-          .ForMember(m => m.Id, o => o.MapFrom(m => m.Id))
-          .ForMember(m => m.Guid, o => o.MapFrom(m => m.Guid))
+          .ForMember(m => m.Id, o => o.MapFrom(m => m.Guid))
           .ForMember(m => m.Title, o => o.MapFrom(m => m.Title))
           .ForMember(m => m.Type, o => o.MapFrom(m => m.Type))
           .ForMember(m => m.FormId, o => o.MapFrom(m => m.FormId))

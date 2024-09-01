@@ -2,11 +2,8 @@ namespace CO.CDP.DataSharing.WebApi.Model;
 
 public record FormSection
 {
-    /// <example>"1"</example>
-    public int Id { get; set; }
-
     /// <example>"3b3a269a-c1fa-4bfa-8892-7c6a9aef03bb"</example>
-    public required Guid Guid { get; set; }
+    public required Guid Id { get; set; }
 
     /// <example>"Some Section"</example>
     public required string Title { get; set; }
