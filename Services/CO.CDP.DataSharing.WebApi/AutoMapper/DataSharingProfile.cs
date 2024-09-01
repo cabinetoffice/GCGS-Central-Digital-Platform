@@ -5,6 +5,7 @@ using CO.CDP.OrganisationInformation.Persistence;
 using CO.CDP.OrganisationInformation.Persistence.Forms;
 using CO.CDP.OrganisationInformation.Persistence.Migrations;
 using static CO.CDP.OrganisationInformation.Persistence.ConnectedEntity;
+using FormQuestionType = CO.CDP.DataSharing.WebApi.Model.FormQuestionType;
 using Persistence = CO.CDP.OrganisationInformation.Persistence.Forms;
 
 namespace CO.CDP.DataSharing.WebApi.AutoMapper;
@@ -74,7 +75,9 @@ public class DataSharingProfile : Profile
 
         CreateMap<Persistence.SharedConsent, SupplierInformationData>()
             .ForMember(m => m.Form, o => o.MapFrom(m => m))
-            .ForMember(m => m.AnswerSets, o => o.MapFrom(m => m.AnswerSets));
+            .ForMember(m => m.AnswerSets, o => o.MapFrom(m => m.AnswerSets))
+            .ForMember(m => m.Questions,
+                o => o.MapFrom(m => m.AnswerSets.SelectMany(a => a.Section.Questions).DistinctBy(q => q.Id)));
 
         CreateMap<Persistence.SharedConsent, Model.Form>()
             .ForMember(m => m.Name, o => o.MapFrom(m => m.Form.Name))
@@ -113,7 +116,8 @@ public class DataSharingProfile : Profile
 
         CreateMap<CO.CDP.OrganisationInformation.Persistence.Forms.FormQuestion, Model.FormQuestion>()
             .ForMember(m => m.Type, o => o.MapFrom(m => (int)m.Type))
-            .ForMember(m => m.Name, o => o.MapFrom(m => m.Title))
+            .ForMember(m => m.Title, o => o.MapFrom(m => m.Title))
+            .ForMember(m => m.Name, o => o.MapFrom(m => m.Guid))
             .ForMember(m => m.Text, o => o.MapFrom(m => m.Description))
             .ForMember(m => m.IsRequired, o => o.MapFrom(m => m.IsRequired))
             .ForMember(m => m.SectionName, o => o.MapFrom(m => m.Section.Title))
