@@ -32,7 +32,6 @@ public class DataSharingProfile : Profile
         CreateMap<Persistence.SharedConsent, SupplierInformation>()
             .ForMember(m => m.Id, o => o.MapFrom(m => m.Organisation.Guid))
             .ForMember(m => m.Name, o => o.MapFrom(m => m.Organisation.Name))
-            .ForMember(m => m.AdditionalParties, o => o.MapFrom(m => Enumerable.Empty<OrganisationReference>()))
             .ForMember(m => m.Identifier,
                 o => o.MapFrom(m => m.Organisation.Identifiers.FirstOrDefault(x => x.Primary)))
             .ForMember(m => m.AdditionalIdentifiers,
@@ -44,7 +43,10 @@ public class DataSharingProfile : Profile
             .ForMember(m => m.ContactPoint, o => o.MapFrom(m => m.Organisation.ContactPoints.FirstOrDefault()))
             .ForMember(m => m.Roles, o => o.MapFrom(m => m.Organisation.Roles))
             .ForMember(m => m.Details, o => o.MapFrom(m => new Details()))
-            .ForMember(m => m.SupplierInformationData, o => o.MapFrom(m => m));
+            .ForMember(m => m.SupplierInformationData, o => o.MapFrom(m => m))
+            .ForMember(m => m.AssociatedPersons, o => o.Ignore())
+            .ForMember(m => m.AdditionalEntities, o => o.Ignore())
+            .ForMember(m => m.AdditionalParties, o => o.Ignore());
 
         CreateMap<OrganisationInformation.Persistence.Organisation.Identifier, OrganisationInformation.Identifier>()
             .ForMember(m => m.Scheme, o => o.MapFrom(m => m.Scheme))
