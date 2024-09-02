@@ -5,14 +5,10 @@ namespace CO.CDP.DataSharing.WebApi.Model;
 [JsonConverter(typeof(JsonStringEnumConverter))]
 public enum FormQuestionType
 {
-    NoInput,
+    Boolean,
+    Numeric,
     Text,
-    FileUpload,
-    YesOrNo,
-    SingleChoice,
-    MultipleChoice,
-    CheckYourAnswers,
-    Date,
-    CheckBox,
-    Address
+    Option,
+    DateTimeRange,
+    Date
 }
