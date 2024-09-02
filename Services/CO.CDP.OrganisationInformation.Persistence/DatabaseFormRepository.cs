@@ -18,7 +18,7 @@ public class DatabaseFormRepository(OrganisationInformationContext context) : IF
     public async Task<IEnumerable<FormSectionSummary>> GetFormSummaryAsync(Guid formId, Guid organisationId)
     {
         var currentSharedConsent = await context.SharedConsents
-            .OrderByDescending(x => x.UpdatedOn)
+            .OrderByDescending(x => x.CreatedOn)
             .FirstOrDefaultAsync(x => x.Form.Guid == formId && x.Organisation.Guid == organisationId);
 
         if(currentSharedConsent == null)
@@ -94,7 +94,7 @@ public class DatabaseFormRepository(OrganisationInformationContext context) : IF
     {
         return await context.Set<SharedConsent>()
             .Where(x => x.Organisation.Guid == organisationId)
-            .OrderByDescending(x => x.UpdatedOn)
+            .OrderByDescending(x => x.CreatedOn)
             .Take(1)
             .Include(x => x.AnswerSets)
                 .ThenInclude(a => a.Answers)
