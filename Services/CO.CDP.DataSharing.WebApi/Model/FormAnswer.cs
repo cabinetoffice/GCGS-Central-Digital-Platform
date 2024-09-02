@@ -17,6 +17,9 @@ public record FormAnswer
     /// <example>"2024-04-22:00:00.000Z"</example>
     public DateTime? EndValue { get; init; }
 
+    /// <example>"2024-04-22"</example>
+    public DateOnly? Date { get; init; }
+
     /// <example>"Compliance confirmed through third-party audit."</example>
     public string? TextValue { get; init; }
 

@@ -98,6 +98,7 @@ public class DataSharingProfile : Profile
             .ForMember(m => m.NumericValue, o => o.MapFrom(m => m.NumericValue))
             .ForMember(m => m.StartValue, o => o.MapFrom(m => m.StartValue))
             .ForMember(m => m.EndValue, o => o.MapFrom(m => m.EndValue))
+            .ForMember(m => m.Date, o => o.MapFrom(m => ToDateOnly(m.DateValue)))
             .ForMember(m => m.TextValue, o => o.MapFrom(m => m.TextValue))
             .ForMember(m => m.OptionValue,
                 o => o.MapFrom(m => !string.IsNullOrWhiteSpace(m.OptionValue) ? int.Parse(m.OptionValue) : default));
@@ -115,6 +116,8 @@ public class DataSharingProfile : Profile
             .ForMember(m => m.Id, o => o.MapFrom(m => m.Id))
             .ForMember(m => m.Value, o => o.MapFrom(m => m.Title));
     }
+
+    private DateOnly? ToDateOnly(DateTime? dateTime) => dateTime.HasValue ? DateOnly.FromDateTime(dateTime.Value) : null;
 }
 
 public class CustomResolver : IValueResolver<Persistence.SharedConsentQuestionAnswer, SharedConsentQuestionAnswer,

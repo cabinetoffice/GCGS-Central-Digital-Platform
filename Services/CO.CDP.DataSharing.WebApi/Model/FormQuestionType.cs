@@ -9,5 +9,6 @@ public enum FormQuestionType
     Numeric,
     Text,
     Option,
-    DateTimeRange
+    DateTimeRange,
+    Date
 }
