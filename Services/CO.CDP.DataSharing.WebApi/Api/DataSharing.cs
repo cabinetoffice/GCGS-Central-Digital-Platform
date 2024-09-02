@@ -1,4 +1,3 @@
-using System.Reflection;
 using CO.CDP.Authentication.AuthorizationPolicy;
 using CO.CDP.DataSharing.WebApi.Model;
 using CO.CDP.DataSharing.WebApi.UseCase;
@@ -10,6 +9,8 @@ using CO.CDP.Swashbuckle.SwaggerGen;
 using DotSwashbuckle.AspNetCore.SwaggerGen;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
+using System.Net.Mime;
+using System.Reflection;
 
 namespace CO.CDP.DataSharing.WebApi.Api;
 
@@ -36,6 +37,27 @@ public static class EndpointExtensions
                 operation.Responses["500"].Description = "Internal server error.";
                 return operation;
             });
+
+        app.MapGet("/share/data/{sharecode}/pdf",
+             async (string sharecode, IUseCase<string, byte[]?> useCase) =>
+                 await useCase.Execute(sharecode)
+                     .AndThen(res => res != null ? Results.File(res, MediaTypeNames.Application.Pdf, $"{sharecode}.pdf") : Results.NotFound()))
+             .Produces<byte[]?>(StatusCodes.Status200OK, MediaTypeNames.Application.Pdf)
+             .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
+             .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
+             .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError)
+             .WithOpenApi(operation =>
+             {
+                 operation.OperationId = "GetSharedDataPdf";
+                 operation.Description =
+                     "Operation to obtain Supplier information which has been shared as part of a notice. ";
+                 operation.Summary = "Request Supplier Submitted Information Pdf. ";
+                 operation.Responses["200"].Description = "Organisation Information including Form Answers.";
+                 operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
+                 operation.Responses["404"].Description = "Share code not found or the caller is not authorised to use it.";
+                 operation.Responses["500"].Description = "Internal server error.";
+                 return operation;
+             });
 
         app.MapPost("/share/data", async (ShareRequest shareRequest, IUseCase<ShareRequest, ShareReceipt> useCase) =>
                 await useCase.Execute(shareRequest)
