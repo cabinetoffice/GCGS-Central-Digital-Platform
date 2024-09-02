@@ -90,12 +90,15 @@ public class DatabaseFormRepository(OrganisationInformationContext context) : IF
         return await context.Set<FormQuestion>().Where(q => q.Section.Guid == sectionId).ToListAsync();
     }
 
-    public async Task<List<FormAnswerSet>> GetFormAnswerSetsAsync(Guid sectionId, Guid organisationId)
+    public async Task<List<FormAnswerSet>> GetFormAnswerSetsFromCurrentSharedConsentAsync(Guid sectionId, Guid organisationId)
     {
-        return await context.Set<FormAnswerSet>()
-            .Include(a => a.Answers)
-            .Include(a => a.SharedConsent)
-            .Where(a => a.Section.Guid == sectionId && a.SharedConsent.Organisation.Guid == organisationId && a.Deleted == false)
+        return await context.Set<SharedConsent>()
+            .Where(x => x.Organisation.Guid == organisationId)
+            .OrderByDescending(x => x.UpdatedOn)
+            .Take(1)
+            .Include(x => x.AnswerSets)
+                .ThenInclude(a => a.Answers)
+            .SelectMany(x => x.AnswerSets.Where(x => x.Section.Guid == sectionId && !x.Deleted))
             .ToListAsync();
     }
 
