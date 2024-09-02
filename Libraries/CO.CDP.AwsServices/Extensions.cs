@@ -1,7 +1,9 @@
+using Amazon.Auth.AccessControlPolicy.ActionIdentifiers;
 using Amazon.Extensions.NETCore.Setup;
 using Amazon.Runtime;
 using Amazon.S3;
 using Amazon.SQS;
+using Amazon.CloudWatch;
 using CO.CDP.AwsServices.S3;
 using CO.CDP.AwsServices.Sqs;
 using CO.CDP.MQ;
@@ -62,6 +64,12 @@ public static class Extensions
             .AddAWSService<IAmazonS3>()
             .AddSingleton<ITransferUtility, TransferUtilityWrapper>()
             .AddSingleton<IFileHostManager, AwsFileManager>();
+    }
+
+    public static IServiceCollection AddAwsCloudWatchService(this IServiceCollection services)
+    {
+        return services
+            .AddAWSService<IAmazonCloudWatch>();
     }
 
     public static IServiceCollection AddAwsSqsService(this IServiceCollection services)
