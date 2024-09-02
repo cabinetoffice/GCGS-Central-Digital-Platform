@@ -55,8 +55,7 @@ public class DataSharingProfile : Profile
             .ForMember(m => m.LegalName, o => o.MapFrom(m => m.LegalName))
             .ForMember(m => m.Uri, o => o.MapFrom(m => !string.IsNullOrWhiteSpace(m.Uri) ? new Uri(m.Uri) : default));
 
-        CreateMap<Organisation.OrganisationAddress,
-                Address>()
+        CreateMap<Organisation.OrganisationAddress, Address>()
             .ForMember(m => m.StreetAddress, o => o.MapFrom(m => m.Address.StreetAddress))
             .ForMember(m => m.Locality, o => o.MapFrom(m => m.Address.Locality))
             .ForMember(m => m.Region, o => o.MapFrom(m => m.Address.Region))
@@ -103,7 +102,7 @@ public class DataSharingProfile : Profile
             .ForMember(m => m.OptionValue, o => o.Ignore());
 
         CreateMap<Persistence.FormQuestion, FormQuestion>()
-            .ForMember(m => m.Type, o => o.MapFrom(m => (int)m.Type))
+            .ForMember(m => m.Type, o => o.MapFrom<CustomFormQuestionTypeResolver>())
             .ForMember(m => m.Title, o => o.MapFrom(m => m.Title))
             .ForMember(m => m.Name, o => o.MapFrom(m => m.Guid))
             .ForMember(m => m.Text, o => o.MapFrom(m => m.Description))
@@ -119,8 +118,35 @@ public class DataSharingProfile : Profile
     private DateOnly? ToDateOnly(DateTime? dateTime) => dateTime.HasValue ? DateOnly.FromDateTime(dateTime.Value) : null;
 }
 
-public class CustomResolver : IValueResolver<Persistence.SharedConsentQuestionAnswer, SharedConsentQuestionAnswer,
-    string?>
+public class CustomFormQuestionTypeResolver : IValueResolver<Persistence.FormQuestion, FormQuestion, FormQuestionType>
+{
+    public FormQuestionType Resolve(Persistence.FormQuestion source,
+        FormQuestion destination, FormQuestionType destMemb, ResolutionContext context)
+    {
+        switch (source.Type)
+        {
+            case Persistence.FormQuestionType.YesOrNo:
+            case Persistence.FormQuestionType.CheckBox:
+                return FormQuestionType.Boolean;
+            case Persistence.FormQuestionType.Text:
+            case Persistence.FormQuestionType.FileUpload:
+            case Persistence.FormQuestionType.Address:
+                return FormQuestionType.Text;
+            case Persistence.FormQuestionType.SingleChoice:
+            case Persistence.FormQuestionType.MultipleChoice:
+                return FormQuestionType.Option;
+            case Persistence.FormQuestionType.Date:
+                return FormQuestionType.Date;
+            case Persistence.FormQuestionType.NoInput:
+            case Persistence.FormQuestionType.CheckYourAnswers:
+                return FormQuestionType.None;
+            default:
+                return FormQuestionType.None;
+        }
+    }
+}
+
+public class CustomResolver : IValueResolver<Persistence.SharedConsentQuestionAnswer, SharedConsentQuestionAnswer, string?>
 {
     public string? Resolve(Persistence.SharedConsentQuestionAnswer source,
         SharedConsentQuestionAnswer destination, string? destMemb, ResolutionContext context)
