@@ -70,7 +70,7 @@ locals {
             cidr_block             = "10.${local.cidr_b_integration}.0.0/16"
             account_id             = 767397666448
             name                   = "integration"
-            pinned_service_version = "0.3.0"
+            pinned_service_version = "0.4.0"
             postgres_instance_type = "db.t4g.micro"
             private_subnets        = [
                 "10.${local.cidr_b_integration}.101.0/24",
