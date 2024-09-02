@@ -1,6 +1,7 @@
 using CO.CDP.DataSharing.WebApi.Model;
 using CO.CDP.OrganisationInformation;
 using CO.CDP.OrganisationInformation.Persistence;
+using SharedConsent = CO.CDP.OrganisationInformation.Persistence.Forms.SharedConsent;
 
 namespace CO.CDP.DataSharing.WebApi.UseCase;
 
@@ -18,6 +19,15 @@ public class GetSharedDataPdfUseCase(
             throw new SharedConsentNotFoundException("Shared Consent not found.");
         }
 
+        var sharedSupplierInfo = await GetSharedSupplierInformation(sharedConsent);
+
+        var pdfBytes = pdfGenerator.GenerateBasicInformationPdf(sharedSupplierInfo);
+
+        return pdfBytes;
+    }
+
+    private async Task<SharedSupplierInformation> GetSharedSupplierInformation(SharedConsent sharedConsent)
+    {
         var organisation = await organisationRepository.Find(sharedConsent.OrganisationId);
 
         if (organisation?.SupplierInfo == null)
@@ -26,10 +36,11 @@ public class GetSharedDataPdfUseCase(
         }
 
         var basicInformation = MapToBasicInformation(organisation);
-
-        var pdfBytes = pdfGenerator.GenerateBasicInformationPdf(basicInformation);
-
-        return pdfBytes;
+        var sharedSupplierInfo = new SharedSupplierInformation
+        {
+            BasicInformation = basicInformation
+        };
+        return sharedSupplierInfo;
     }
 
     private BasicInformation MapToBasicInformation(Organisation organisation)

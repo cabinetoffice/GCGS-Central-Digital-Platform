@@ -7,8 +7,9 @@ namespace CO.CDP.DataSharing.WebApi;
 
 public class PdfGenerator : IPdfGenerator
 {
-    public byte[] GenerateBasicInformationPdf(BasicInformation basicInformation)
+    public byte[] GenerateBasicInformationPdf(SharedSupplierInformation supplierInformation)
     {
+        var basicInformation = supplierInformation.BasicInformation;
         var document = new Document();
         var section = document.AddSection();
 
