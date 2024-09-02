@@ -278,7 +278,7 @@ locals {
         }
     }
 
-    service_configs = { for key, value in local.service_configs_scaling[local.environment] :
+    service_configs = { for key, value in try(local.service_configs_scaling[local.environment], local.service_configs_scaling_non_production) :
         key => merge(value, local.service_configs_common[key])
     }
 
