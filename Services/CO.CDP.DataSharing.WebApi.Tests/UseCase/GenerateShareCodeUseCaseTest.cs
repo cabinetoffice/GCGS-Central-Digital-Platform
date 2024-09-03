@@ -41,7 +41,7 @@ public class GenerateShareCodeUseCaseTest(AutoMapperFixture mapperFixture) : ICl
         var shareRequest = EntityFactory.GetShareRequest(organisationGuid: organisationGuid, formId: formId);
         var sharedConsent = EntityFactory.GetSharedConsent(organisationId: organisationId, organisationGuid: organisationGuid, formId: formId);
 
-        _claimService.Setup(x => x.HaveAccessToOrganisation(organisationGuid)).Returns(false);
+        _claimService.Setup(x => x.HaveAccessToOrganisation(organisationGuid)).ReturnsAsync(false);
         _organisationRepository.Setup(x => x.Find(organisationGuid)).ReturnsAsync(sharedConsent.Organisation);
 
         var shareReceipt = async () => await UseCase.Execute(shareRequest);
@@ -60,7 +60,7 @@ public class GenerateShareCodeUseCaseTest(AutoMapperFixture mapperFixture) : ICl
         var shareRequest = EntityFactory.GetShareRequest(organisationGuid: organisationGuid, formId: formId);
         var sharedConsent = EntityFactory.GetSharedConsent(organisationId: organisationId, organisationGuid: organisationGuid, formId: formId);
 
-        _claimService.Setup(x => x.HaveAccessToOrganisation(organisationGuid)).Returns(true);
+        _claimService.Setup(x => x.HaveAccessToOrganisation(organisationGuid)).ReturnsAsync(true);
         _organisationRepository.Setup(x => x.Find(organisationGuid)).ReturnsAsync(sharedConsent.Organisation);
         _shareCodeRepository.Setup(r => r.GetSharedConsentDraftAsync(shareRequest.FormId, shareRequest.OrganisationId)).ReturnsAsync((OrganisationInformation.Persistence.Forms.SharedConsent?)null);
 
@@ -80,7 +80,7 @@ public class GenerateShareCodeUseCaseTest(AutoMapperFixture mapperFixture) : ICl
         var shareRequest = EntityFactory.GetShareRequest(organisationGuid: organisationGuid, formId: formId);
         var sharedConsent = EntityFactory.GetSharedConsent(organisationId: organisationId, organisationGuid: organisationGuid, formId: formId);
 
-        _claimService.Setup(x => x.HaveAccessToOrganisation(organisationGuid)).Returns(true);
+        _claimService.Setup(x => x.HaveAccessToOrganisation(organisationGuid)).ReturnsAsync(true);
         _organisationRepository.Setup(x => x.Find(organisationGuid)).ReturnsAsync(sharedConsent.Organisation);
         _shareCodeRepository.Setup(r => r.GetSharedConsentDraftAsync(shareRequest.FormId, shareRequest.OrganisationId)).ReturnsAsync(sharedConsent);
 
