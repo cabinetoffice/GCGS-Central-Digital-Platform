@@ -46,7 +46,8 @@ if (Assembly.GetEntryAssembly().IsRunAs("CO.CDP.Tenant.WebApi"))
 {
     builder.Services
         .AddAwsConfiguration(builder.Configuration)
-        .AddAwsCloudWatchSerilogService(builder.Configuration);
+        .AddAmazonCloudWatchLogsService()
+        .AddCloudWatchSerilog(builder.Configuration);
 
     builder.Services.AddHealthChecks()
         .AddNpgSql(ConnectionStringHelper.GetConnectionString(builder.Configuration,
