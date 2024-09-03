@@ -5,6 +5,7 @@ using CO.CDP.Configuration.Helpers;
 using CO.CDP.DataSharing.WebApi;
 using CO.CDP.DataSharing.WebApi.Api;
 using CO.CDP.DataSharing.WebApi.AutoMapper;
+using CO.CDP.DataSharing.WebApi.DataService;
 using CO.CDP.DataSharing.WebApi.Extensions;
 using CO.CDP.DataSharing.WebApi.Model;
 using CO.CDP.DataSharing.WebApi.UseCase;
@@ -24,6 +25,7 @@ builder.Services.AddAutoMapper(typeof(DataSharingProfile));
 
 builder.Services.AddDbContext<OrganisationInformationContext>(o =>
     o.UseNpgsql(ConnectionStringHelper.GetConnectionString(builder.Configuration, "OrganisationInformationDatabase")));
+builder.Services.AddScoped<IDataService, DataService>();
 builder.Services.AddScoped<IPdfGenerator, PdfGenerator>();
 builder.Services.AddScoped<IClaimService, ClaimService>();
 builder.Services.AddScoped<IOrganisationRepository, DatabaseOrganisationRepository>();
