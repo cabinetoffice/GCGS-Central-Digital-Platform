@@ -26,7 +26,7 @@ public class GenerateShareCodeUseCase(
         var result = await shareCodeRepository.GetSharedConsentDraftAsync(shareRequest.FormId, shareRequest.OrganisationId);
         if (result == null)
         {
-            throw new SharedConsentNotFoundException("Shared Consent not found.");
+            throw new ShareCodeNotFoundException(Constants.ShareCodeNotFoundExceptionMessage);
         }
 
         var shareCode = ShareCodeExtensions.GenerateShareCode();
