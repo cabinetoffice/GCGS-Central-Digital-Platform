@@ -2,13 +2,11 @@ using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Pages.Supplier.ConnectedEntity;
 using CO.CDP.OrganisationApp.WebApiClients;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace CO.CDP.OrganisationApp.Pages.Supplier;
 
-[Authorize]
 public class ConnectedEntityCheckAnswersIndividualOrTrustModel(
     ISession session,
     IOrganisationClient organisationClient) : PageModel
@@ -179,7 +177,7 @@ public class ConnectedEntityCheckAnswersIndividualOrTrustModel(
                     case ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndividualWithSignificantInfluenceOrControlForTrust:
                         backPage = state.SupplierHasCompanyHouseNumber == true
                                     ? "date-registered"
-                                    :  "date-registered-question";
+                                    : "date-registered-question";
                         break;
                     case ConnectedEntityIndividualAndTrustCategoryType.DirectorOrIndividualWithTheSameResponsibilitiesForTrust:
                         backPage = $"{Constants.AddressType.Registered}-address/{(string.Equals(state.RegisteredAddress?.Country, Country.UKCountryCode, StringComparison.OrdinalIgnoreCase) ? "uk" : "non-uk")}";

@@ -2,6 +2,7 @@ using CO.CDP.DataSharing.WebApi.Extensions;
 using CO.CDP.DataSharing.WebApi.Model;
 using CO.CDP.OrganisationInformation.Persistence;
 using CO.CDP.OrganisationInformation.Persistence.Forms;
+using FormSection = CO.CDP.OrganisationInformation.Persistence.Forms.FormSection;
 
 namespace CO.CDP.DataSharing.WebApi.Tests;
 
@@ -56,7 +57,7 @@ internal static class EntityFactory
             Organisation = orgnisation,
             FormId = form.Id,
             Form = form,
-            AnswerSets = new List<FormAnswerSet> { },
+            AnswerSets = new List<OrganisationInformation.Persistence.Forms.FormAnswerSet> { },
             SubmissionState = SubmissionState.Draft,
             SubmittedAt = DateTime.UtcNow,
             FormVersionId = string.Empty,
@@ -98,7 +99,7 @@ internal static class EntityFactory
             Organisation = orgnisation,
             FormId = form.Id,
             Form = form,
-            AnswerSets = new List<FormAnswerSet> { },
+            AnswerSets = new List<OrganisationInformation.Persistence.Forms.FormAnswerSet> { },
             SubmissionState = SubmissionState.Draft,
             SubmittedAt = DateTime.UtcNow,
             FormVersionId = "V1.0",
@@ -112,7 +113,7 @@ internal static class EntityFactory
             Organisation = orgnisation,
             FormId = form.Id,
             Form = form,
-            AnswerSets = new List<FormAnswerSet> { },
+            AnswerSets = new List<OrganisationInformation.Persistence.Forms.FormAnswerSet> { },
             SubmissionState = SubmissionState.Submitted,
             SubmittedAt = DateTime.UtcNow,
             FormVersionId = "V1.0",
@@ -127,7 +128,7 @@ internal static class EntityFactory
             Organisation = orgnisation,
             FormId = form.Id,
             Form = form,
-            AnswerSets = new List<FormAnswerSet> { },
+            AnswerSets = new List<OrganisationInformation.Persistence.Forms.FormAnswerSet> { },
             SubmissionState = SubmissionState.Submitted,
             SubmittedAt = DateTime.UtcNow,
             FormVersionId = "V1.0",

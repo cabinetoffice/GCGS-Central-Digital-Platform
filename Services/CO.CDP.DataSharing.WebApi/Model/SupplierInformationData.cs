@@ -3,6 +3,6 @@ namespace CO.CDP.DataSharing.WebApi.Model;
 public record SupplierInformationData
 {
     public required Form Form { get; init; }
-    public required List<FormAnswer> Answers { get; init; } = new();
-    public required List<FormQuestion> Questions { get; init; } = new();
+    public required ICollection<FormAnswerSet> AnswerSets { get; init; } = [];
+    public required ICollection<FormQuestion> Questions { get; set; } = [];
 }

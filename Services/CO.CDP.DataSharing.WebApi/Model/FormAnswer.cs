@@ -17,9 +17,12 @@ public record FormAnswer
     /// <example>"2024-04-22:00:00.000Z"</example>
     public DateTime? EndValue { get; init; }
 
+    /// <example>"2024-04-22"</example>
+    public DateOnly? DateValue { get; init; }
+
     /// <example>"Compliance confirmed through third-party audit."</example>
     public string? TextValue { get; init; }
 
-    /// <example>2</example>
-    public int? OptionValue { get; init; }
+    /// <example>["option-id-1"]</example>
+    public List<string> OptionValue { get; init; } = [];
 }

@@ -1,7 +1,6 @@
 using System.Text.Json;
 using CO.CDP.MQ.Database;
 using CO.CDP.Testcontainers.PostgreSql;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace CO.CDP.MQ.Tests.Database;

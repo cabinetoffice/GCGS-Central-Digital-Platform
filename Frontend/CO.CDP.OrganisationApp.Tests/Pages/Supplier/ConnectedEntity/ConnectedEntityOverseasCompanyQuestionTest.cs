@@ -135,7 +135,7 @@ public class ConnectedEntityOverseasCompanyQuestionTest
         state.SupplierHasCompanyHouseNumber = yesJourney;
         state.ConnectedEntityType = connectedEntityType;
         state.ConnectedEntityOrganisationCategoryType = organisationCategoryType;
-        
+
         _sessionMock.Setup(s => s.Get<ConnectedEntityState>(Session.ConnectedPersonKey)).
             Returns(state);
 
@@ -157,7 +157,7 @@ public class ConnectedEntityOverseasCompanyQuestionTest
             HasCompaniesHouseNumber = false,
             HasOverseasCompaniesHouseNumber = true,
             OverseasCompaniesHouseNumber = "12345678",
-            ConnectedEntityOrganisationCategoryType= ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl
+            ConnectedEntityOrganisationCategoryType = ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl
         };
 
         return connectedPersonDetails;

@@ -110,7 +110,7 @@ public class ConnectedEntityCompanyQuestionTest
     [InlineData(false, true, ConnectedEntityType.Organisation, ConnectedEntityOrganisationCategoryType.DirectorOrTheSameResponsibilities, "legal-form-question")]
     [InlineData(true, true, ConnectedEntityType.Organisation, ConnectedEntityOrganisationCategoryType.ParentOrSubsidiaryCompany, "postal-address-same-as-registered")]
     [InlineData(true, true, ConnectedEntityType.Organisation, ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl, "postal-address-same-as-registered")]
-    [InlineData(true, true, ConnectedEntityType.Organisation, ConnectedEntityOrganisationCategoryType.ParentOrSubsidiaryCompany, "Postal-address/uk",false, false)]
+    [InlineData(true, true, ConnectedEntityType.Organisation, ConnectedEntityOrganisationCategoryType.ParentOrSubsidiaryCompany, "Postal-address/uk", false, false)]
     [InlineData(true, true, ConnectedEntityType.Organisation, ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl, "Postal-address/uk", false, false)]
     [InlineData(true, true, ConnectedEntityType.Organisation, ConnectedEntityOrganisationCategoryType.ACompanyYourOrganisationHasTakenOver, "Registered-address/uk")]
     public void OnGet_BackPageNameShouldBeExpectedPage(
@@ -168,7 +168,7 @@ public class ConnectedEntityCompanyQuestionTest
             ConnectedEntityOrganisationCategoryType organisationCategoryType,
             string expectedRedirectPage)
     {
-        
+
         var state = DummyConnectedPersonDetails();
         state.SupplierHasCompanyHouseNumber = yesJourney;
         state.HasCompaniesHouseNumber = hasCompanyHouseNumber;

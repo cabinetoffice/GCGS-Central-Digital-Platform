@@ -1,3 +1,4 @@
+using CO.CDP.OrganisationInformation.Persistence.Forms;
 using System.Text.Json.Serialization;
 
 namespace CO.CDP.DataSharing.WebApi.Model;
@@ -34,10 +35,4 @@ public record Form
 
     /// <example>"AGMT-2024-XYZ"</example>
     public required string ShareCode { get; init; }
-
-    /// <example>0</example>
-    public required int Scope { get; init; }
-
-    /// <example>0</example>
-    public required int Type { get; init; }
 }

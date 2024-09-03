@@ -88,4 +88,3 @@ public class ShareCodesListViewTests
         _pageModel.SharedConsentDetailsList.Should().BeEmpty();
     }
 }
-

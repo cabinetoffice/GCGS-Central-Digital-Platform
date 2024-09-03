@@ -8,14 +8,12 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CO.CDP.OrganisationApp.Pages.Registration;
 
-[AuthorisedSession]
 [ValidateRegistrationStep]
 public class OrganisationIdentificationModel(ISession session,
     IOrganisationClient organisationClient,
-    IPponClient pponClient) : RegistrationStepModel
+    IPponClient pponClient) : RegistrationStepModel(session)
 {
     public override string CurrentPage => OrganisationIdentifierPage;
-    public override ISession SessionContext => session;
 
     [BindProperty]
     [DisplayName("Organisation Type")]
@@ -188,46 +186,34 @@ public class OrganisationIdentificationModel(ISession session,
         };
         try
         {
-            if (RegistrationDetails.OrganisationIdentificationNumber != null)
-            {
-                await LookupOrganisationAsync();
-            }
-            else
-            {
-                return RedirectSuccess();
-            }
+            await LookupOrganisationAsync();
         }
-        catch (Exception orgApiException) when(orgApiException is Organisation.WebApiClient.ApiException && ((Organisation.WebApiClient.ApiException)orgApiException).StatusCode == 404)
+        catch (Exception orgApiException) when (orgApiException is Organisation.WebApiClient.ApiException && ((Organisation.WebApiClient.ApiException)orgApiException).StatusCode == 404)
         {
             try
             {
                 await LookupEntityVerificationAsync();
             }
-            catch (Exception evApiException) when (evApiException is EntityVerificationClient.ApiException && ((EntityVerificationClient.ApiException)evApiException).StatusCode == 404)
+            catch (Exception evApiException) when (evApiException is EntityVerificationClient.ApiException eve && eve.StatusCode == 404)
             {
-                return RedirectSuccess();
+                SessionContext.Set(Session.RegistrationDetailsKey, RegistrationDetails);
+
+                if (RedirectToSummary == true)
+                {
+                    return RedirectToPage("OrganisationDetailsSummary");
+                }
+                else
+                {
+                    return RedirectToPage("OrganisationName");
+                }
             }
             catch
             {
                 return RedirectToPage("OrganisationRegistrationUnavailable");
             }
         }
-        
+
         return RedirectToPage("OrganisationAlreadyRegistered");
-    }
-
-    private IActionResult RedirectSuccess()
-    {
-        session.Set(Session.RegistrationDetailsKey, RegistrationDetails);
-
-        if (RedirectToSummary == true)
-        {
-            return RedirectToPage("OrganisationDetailsSummary");
-        }
-        else
-        {
-            return RedirectToPage("OrganisationName");
-        }
     }
 
     private async Task<Organisation.WebApiClient.Organisation> LookupOrganisationAsync()

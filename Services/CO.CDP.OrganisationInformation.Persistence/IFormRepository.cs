@@ -9,10 +9,10 @@ public interface IFormRepository : IDisposable
     Task SaveSharedConsentAsync(SharedConsent sharedConsent);
     Task<FormSection?> GetSectionAsync(Guid formId, Guid sectionId);
     Task<SharedConsent?> GetSharedConsentDraftWithAnswersAsync(Guid formId, Guid organisationId);
-    
+
     Task<IEnumerable<FormQuestion>> GetQuestionsAsync(Guid sectionId);
 
-    Task<List<FormAnswerSet>> GetFormAnswerSetsAsync(Guid sectionId, Guid organisationId);
+    Task<List<FormAnswerSet>> GetFormAnswerSetsFromCurrentSharedConsentAsync(Guid sectionId, Guid organisationId);
     Task<FormAnswerSet?> GetFormAnswerSetAsync(Guid sectionId, Guid organisationId, Guid answerSetId);
     Task<bool> DeleteAnswerSetAsync(Guid organisationId, Guid answerSetId);
     Task SaveAnswerSet(FormAnswerSet answerSet);

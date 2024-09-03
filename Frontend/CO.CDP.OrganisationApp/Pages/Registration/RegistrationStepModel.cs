@@ -13,7 +13,7 @@ public abstract class RegistrationStepModel : LoggedInUserAwareModel
     public const string OrganisationAddressPage = "/registration/organisation-registered-address/uk";
     public const string OrganisationNonUKAddressPage = "/registration/organisation-registered-address/non-uk";
     public const string OrganisationSummaryPage = "/registration/organisation-details-summary";
-    
+
     public const string BuyerOrganisationTypePage = "/registration/buyer-organisation-type";
     public const string BuyerDevolvedRegulationPage = "/registration/buyer-devolved-regulations";
     public const string BuyerSelectDevolvedRegulationPage = "/registration/buyer-select-devolved-regulations";
@@ -24,7 +24,7 @@ public abstract class RegistrationStepModel : LoggedInUserAwareModel
 
     public RegistrationDetails RegistrationDetails { get; }
 
-    protected RegistrationStepModel()
+    protected RegistrationStepModel(ISession session) : base(session)
     {
         RegistrationDetails = SessionContext.Get<RegistrationDetails?>(Session.RegistrationDetailsKey) ?? new();
     }

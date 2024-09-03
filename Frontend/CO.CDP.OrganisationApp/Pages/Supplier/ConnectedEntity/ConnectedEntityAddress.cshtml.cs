@@ -1,12 +1,10 @@
 using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Pages.Shared;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace CO.CDP.OrganisationApp.Pages.Supplier;
 
-[Authorize]
 public class ConnectedEntityAddressModel(ISession session) : PageModel
 {
     [BindProperty(SupportsGet = true)]
@@ -126,7 +124,7 @@ public class ConnectedEntityAddressModel(ISession session) : PageModel
                         redirectPage = "ConnectedEntityCompanyQuestion";
                         break;
 
-                    case ConnectedEntityOrganisationCategoryType.ParentOrSubsidiaryCompany:                    
+                    case ConnectedEntityOrganisationCategoryType.ParentOrSubsidiaryCompany:
                     case ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl:
                         redirectPage = (AddressType == AddressType.Postal && state.PostalAddress != null)
                             ? "ConnectedEntityCompanyQuestion"

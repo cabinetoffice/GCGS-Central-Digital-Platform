@@ -16,11 +16,6 @@ public class UserRemoveConfirmationModelTests
     {
         _mockOrganisationClient = new Mock<IOrganisationClient>();
         _mockSession = new Mock<ISession>();
-        _pageModel = new UserRemoveConfirmationModel(_mockOrganisationClient.Object, _mockSession.Object)
-        {
-            Id = Guid.NewGuid(),
-            UserId = Guid.NewGuid()
-        };
 
         UserDetails userDetails = new UserDetails
         {
@@ -30,12 +25,18 @@ public class UserRemoveConfirmationModelTests
 
         _mockSession.Setup(session => session.Get<UserDetails>(It.IsAny<string>()))
             .Returns(userDetails);
+
+        _pageModel = new UserRemoveConfirmationModel(_mockOrganisationClient.Object, _mockSession.Object)
+        {
+            Id = Guid.NewGuid(),
+            UserId = Guid.NewGuid()
+        };
     }
 
     [Fact]
     public async Task OnGet_Returns_Page_When_Person_Found()
     {
-        var person = new Organisation.WebApiClient.Person ("john@johnson.com", "John", _pageModel.UserId, "Johnson", []);
+        var person = new Organisation.WebApiClient.Person("john@johnson.com", "John", _pageModel.UserId, "Johnson", []);
         _mockOrganisationClient.Setup(client => client.GetOrganisationPersonsAsync(It.IsAny<Guid>()))
                                .ReturnsAsync(new List<Organisation.WebApiClient.Person> { person });
 
@@ -92,7 +93,7 @@ public class UserRemoveConfirmationModelTests
     public async Task OnPost_Redirects_To_UserSummary_When_ConfirmRemove_Is_True_And_Person_Exists()
     {
         _pageModel.ConfirmRemove = true;
-        var person = new Organisation.WebApiClient.Person ("john@johnson.com", "John", _pageModel.UserId, "Johnson", []);
+        var person = new Organisation.WebApiClient.Person("john@johnson.com", "John", _pageModel.UserId, "Johnson", []);
         _mockOrganisationClient.Setup(client => client.GetOrganisationPersonsAsync(It.IsAny<Guid>()))
                                .ReturnsAsync(new List<Organisation.WebApiClient.Person> { person });
 
@@ -134,7 +135,7 @@ public class UserRemoveConfirmationModelTests
     [Fact]
     public async Task GetPerson_Returns_Person_When_Found()
     {
-        var person = new Organisation.WebApiClient.Person ("john@johnson.com", "John", _pageModel.UserId, "Johnson", []);
+        var person = new Organisation.WebApiClient.Person("john@johnson.com", "John", _pageModel.UserId, "Johnson", []);
         _mockOrganisationClient.Setup(client => client.GetOrganisationPersonsAsync(It.IsAny<Guid>()))
                                .ReturnsAsync(new List<Organisation.WebApiClient.Person> { person });
 
@@ -146,7 +147,7 @@ public class UserRemoveConfirmationModelTests
     [Fact]
     public async Task GetPersonInvite_Returns_PersonInvite_When_Found()
     {
-        var personInvite = new PersonInviteModel ("john@johnson.com", "John", _pageModel.UserId, "Johnson", []);
+        var personInvite = new PersonInviteModel("john@johnson.com", "John", _pageModel.UserId, "Johnson", []);
         _mockOrganisationClient.Setup(client => client.GetOrganisationPersonInvitesAsync(It.IsAny<Guid>()))
             .ReturnsAsync(new List<PersonInviteModel> { personInvite });
 

@@ -67,7 +67,7 @@ IOrganisationClient organisationClient) : PageModel
                 ModelState.AddModelError(nameof(EndDate), "Date of removal must be a real date");
                 return Page();
             }
-            endDate = endDate.AddHours(23).AddMinutes(59).AddSeconds(59).ToUniversalTime();            
+            endDate = endDate.AddHours(23).AddMinutes(59).AddSeconds(59).ToUniversalTime();
             await organisationClient.DeleteConnectedEntityAsync(Id, ConnectedPersonId, new DeleteConnectedEntity(endDate));
         }
 

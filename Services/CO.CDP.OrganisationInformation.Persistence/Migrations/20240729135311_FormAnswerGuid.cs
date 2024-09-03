@@ -10,21 +10,21 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
-        {         
+        {
             migrationBuilder.AddColumn<Guid>(
                 name: "guid",
                 table: "form_answers",
                 type: "uuid",
                 nullable: false,
-                defaultValue: new Guid("00000000-0000-0000-0000-000000000000"));           
+                defaultValue: new Guid("00000000-0000-0000-0000-000000000000"));
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
-        {           
+        {
             migrationBuilder.DropColumn(
                 name: "guid",
-                table: "form_answers");         
+                table: "form_answers");
         }
     }
 }

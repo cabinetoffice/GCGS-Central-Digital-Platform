@@ -1,6 +1,5 @@
 using CO.CDP.Organisation.WebApiClient;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
 using CO.CDP.OrganisationApp.Models;
 
@@ -9,7 +8,7 @@ namespace CO.CDP.OrganisationApp.Pages.Users;
 public class UserRemoveConfirmationModel(
 IOrganisationClient organisationClient,
 ISession session
-) : PageModel
+) : LoggedInUserAwareModel(session)
 {
     [BindProperty(SupportsGet = true)]
     public Guid Id { get; set; }
@@ -29,9 +28,7 @@ ISession session
     {
         var person = await GetPerson(organisationClient);
 
-        var userDetails = session.Get<UserDetails>(Session.UserDetailsKey);
-
-        if (person == null || userDetails == null || person.Id == userDetails.PersonId)
+        if (person == null || person.Id == UserDetails.PersonId)
         {
             return Redirect("/page-not-found");
         }
@@ -64,9 +61,7 @@ ISession session
         {
             var person = await GetPerson(organisationClient);
 
-            var userDetails = session.Get<UserDetails>(Session.UserDetailsKey);
-
-            if (person == null || userDetails == null || person.Id == userDetails.PersonId)
+            if (person == null || person.Id == UserDetails.PersonId)
             {
                 return Redirect("/page-not-found");
             }

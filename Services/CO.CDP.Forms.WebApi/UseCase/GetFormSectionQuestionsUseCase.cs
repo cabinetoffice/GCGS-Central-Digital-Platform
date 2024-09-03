@@ -16,13 +16,13 @@ public class GetFormSectionQuestionsUseCase(IFormRepository formRepository, IMap
         if (section == null)
             return null;
 
-        var answerSet = await formRepository.GetFormAnswerSetsAsync(sectionId, organisationId);
+        var answerSets = await formRepository.GetFormAnswerSetsFromCurrentSharedConsentAsync(sectionId, organisationId);
 
         return new SectionQuestionsResponse
         {
             Section = mapper.Map<FormSection>(section),
             Questions = mapper.Map<List<FormQuestion>>(section.Questions),
-            AnswerSets = mapper.Map<List<FormAnswerSet>>(answerSet)
+            AnswerSets = mapper.Map<List<FormAnswerSet>>(answerSets)
         };
     }
 }

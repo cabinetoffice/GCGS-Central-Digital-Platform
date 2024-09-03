@@ -1,11 +1,7 @@
+using Microsoft.AspNetCore.Mvc.RazorPages;
+
 namespace CO.CDP.OrganisationApp.Pages.Registration;
 
-[AuthorisedSession]
-public class OrganisationRegistrationUnavailable(ISession session) : LoggedInUserAwareModel
+public class OrganisationRegistrationUnavailable : PageModel
 {
-    public override ISession SessionContext => session;
-
-    public void OnGet()
-    {
-    }
 }

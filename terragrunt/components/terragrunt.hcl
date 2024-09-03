@@ -70,7 +70,7 @@ locals {
             cidr_block             = "10.${local.cidr_b_integration}.0.0/16"
             account_id             = 767397666448
             name                   = "integration"
-            pinned_service_version = "0.1.1-703a6406"
+            pinned_service_version = "0.4.0"
             postgres_instance_type = "db.t4g.micro"
             private_subnets        = [
                 "10.${local.cidr_b_integration}.101.0/24",
@@ -112,77 +112,174 @@ locals {
         public_hosted_zone = "${local.environments[local.environment].name}.supplier.information.${local.environments[local.environment].top_level_domain}"
     }
 
-    service_configs = {
+    service_configs_scaling_non_production = {
         authority = {
             cpu           = 256
+            desired_count = 1
             memory        = 512
+        }
+        data_sharing = {
+            cpu           = 256
+            desired_count = 1
+            memory        = 512
+        }
+        entity_verification = {
+            cpu           = 256
+            desired_count = 1
+            memory        = 512
+        }
+        entity_verification_migrations = {
+            cpu           = 256
+            desired_count = 1
+            memory        = 512
+        }
+        forms = {
+            cpu           = 256
+            desired_count = 1
+            memory        = 512
+        }
+        organisation = {
+            cpu           = 256
+            desired_count = 1
+            memory        = 512
+        }
+        organisation_app = {
+            cpu           = 256
+            desired_count = 1
+            memory        = 512
+        }
+        organisation_information_migrations = {
+            cpu           = 256
+            desired_count = 1
+            memory        = 512
+        }
+        person = {
+            cpu           = 256
+            desired_count = 1
+            memory        = 512
+        }
+        tenant = {
+            cpu           = 256
+            desired_count = 1
+            memory        = 512
+        }
+    }
+
+    service_configs_scaling_production = {
+        authority = {
+            cpu           = 256
+            desired_count = 2
+            memory        = 512
+        }
+        data_sharing = {
+            cpu           = 256
+            desired_count = 2
+            memory        = 512
+        }
+        entity_verification = {
+            cpu           = 256
+            desired_count = 2
+            memory        = 512
+        }
+        entity_verification_migrations = {
+            cpu           = 256
+            desired_count = 2
+            memory        = 512
+        }
+        forms = {
+            cpu           = 256
+            desired_count = 2
+            memory        = 512
+        }
+        organisation = {
+            cpu           = 256
+            desired_count = 2
+            memory        = 512
+        }
+        organisation_app = {
+            cpu           = 256
+            desired_count = 2
+            memory        = 512
+        }
+        organisation_information_migrations = {
+            cpu           = 256
+            desired_count = 2
+            memory        = 512
+        }
+        person = {
+            cpu           = 256
+            desired_count = 2
+            memory        = 512
+        }
+        tenant = {
+            cpu           = 256
+            desired_count = 2
+            memory        = 512
+        }
+    }
+
+
+    service_configs_scaling = {
+        development = local.service_configs_scaling_non_production
+        staging     = local.service_configs_scaling_non_production
+        integration = local.service_configs_scaling_production
+    }
+
+    service_configs_common = {
+        authority = {
             name          = "authority"
             port          = 8092
             port_host     = 8092
         }
         data_sharing = {
-            cpu           = 256
-            memory        = 512
             name          = "data-sharing"
             port          = 8088
             port_host     = 8088
         }
         entity_verification = {
-            cpu           = 256
-            memory        = 512
             name          = "entity-verification"
             port          = 8094
             port_host     = 8094
         }
         entity_verification_migrations = {
-            cpu           = 256
-            memory        = 512
             name          = "entity-verification-migrations"
             port          = 9191
             port_host     = null
         }
         forms = {
-            cpu           = 256
-            memory        = 512
             name          = "forms"
             port          = 8086
             port_host     = 8086
         }
         organisation = {
-            cpu           = 256
-            memory        = 512
             name          = "organisation"
             port          = 8082
             port_host     = 8082
         }
         organisation_app = {
-            cpu           = 256
-            memory        = 512
             name          = "organisation-app"
             port          = 8090
             port_host     = 80
         }
         organisation_information_migrations = {
-            cpu           = 256
-            memory        = 512
             name          = "organisation-information-migrations"
             port          = 9090
             port_host     = null
         }
         person = {
-            cpu           = 256
-            memory        = 512
             name          = "person"
             port          = 8084
             port_host     = 8084
         }
         tenant = {
-            cpu           = 256
-            memory        = 512
             name          = "tenant"
             port          = 8080
             port_host     = 8080
         }
+    }
+
+    service_configs = { for key, value in try(local.service_configs_scaling[local.environment], local.service_configs_scaling_non_production) :
+        key => merge(value, local.service_configs_common[key])
     }
 
     tags = {

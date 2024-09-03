@@ -1,13 +1,11 @@
 using CO.CDP.Mvc.Validation;
 using CO.CDP.OrganisationApp.Constants;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
 
 namespace CO.CDP.OrganisationApp.Pages.Supplier;
 
-[Authorize]
 public class ConnectedEntityLegalFormQuestionModel(ISession session) : PageModel
 {
     [BindProperty(SupportsGet = true)]
@@ -70,6 +68,7 @@ public class ConnectedEntityLegalFormQuestionModel(ISession session) : PageModel
         state.LegalForm = LegalFormName;
         if (state.HasLegalForm == false)
         {
+            state.LegalForm = null;
             state.LawRegistered = null;
         }
 

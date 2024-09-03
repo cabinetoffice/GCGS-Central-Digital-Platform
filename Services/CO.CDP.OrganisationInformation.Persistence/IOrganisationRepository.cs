@@ -1,3 +1,5 @@
+using static CO.CDP.OrganisationInformation.Persistence.ConnectedEntity;
+
 namespace CO.CDP.OrganisationInformation.Persistence;
 
 public interface IOrganisationRepository : IDisposable
@@ -19,4 +21,8 @@ public interface IOrganisationRepository : IDisposable
         public class DuplicateOrganisationException(string message, Exception? cause = null)
             : OrganisationRepositoryException(message, cause);
     }
+
+    public Task<IList<ConnectedEntity>> GetConnectedIndividualTrusts(int organisationId);
+
+    public Task<IList<ConnectedEntity>> GetConnectedOrganisations(int organisationId);
 }
