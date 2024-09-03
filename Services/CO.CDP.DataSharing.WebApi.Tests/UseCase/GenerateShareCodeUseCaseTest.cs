@@ -66,7 +66,7 @@ public class GenerateShareCodeUseCaseTest(AutoMapperFixture mapperFixture) : ICl
 
         var shareReceipt = async () => await UseCase.Execute(shareRequest);
 
-        await shareReceipt.Should().ThrowAsync<SharedConsentNotFoundException>();
+        await shareReceipt.Should().ThrowAsync<ShareCodeNotFoundException>();
     }
 
     [Fact]
