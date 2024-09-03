@@ -168,7 +168,7 @@ public class OrganisationIdentificationModel(ISession session,
         }
 
         RegistrationDetails.OrganisationScheme = OrganisationScheme;
-
+        
         RegistrationDetails.OrganisationIdentificationNumber = OrganisationScheme switch
         {
             "GB-CHC" => CharityCommissionEnglandWalesNumber,
@@ -186,6 +186,7 @@ public class OrganisationIdentificationModel(ISession session,
         };
         try
         {
+            SessionContext.Set(Session.RegistrationDetailsKey, RegistrationDetails);
             await LookupOrganisationAsync();
         }
         catch (Exception orgApiException) when (orgApiException is Organisation.WebApiClient.ApiException && ((Organisation.WebApiClient.ApiException)orgApiException).StatusCode == 404)
@@ -196,8 +197,6 @@ public class OrganisationIdentificationModel(ISession session,
             }
             catch (Exception evApiException) when (evApiException is EntityVerificationClient.ApiException eve && eve.StatusCode == 404)
             {
-                SessionContext.Set(Session.RegistrationDetailsKey, RegistrationDetails);
-
                 if (RedirectToSummary == true)
                 {
                     return RedirectToPage("OrganisationDetailsSummary");
