@@ -18,10 +18,6 @@
         <PackageReference Include="DotSwashbuckle.AspNetCore" Version="3.0.10" />
         <PackageReference Include="AutoMapper" Version="13.0.1" />
         <PackageReference Include="AspNetCore.HealthChecks.NpgSql" Version="8.0.1" />
-        <PackageReference Include="Serilog.AspNetCore" Version="8.0.2" />
-        <PackageReference Include="Serilog.Formatting.Compact" Version="3.0.0" />
-        <PackageReference Include="Serilog.Sinks.AwsCloudWatch" Version="4.3.37" />
-        <PackageReference Include="Serilog.Sinks.Console" Version="6.0.0" />
         <ProjectReference Include="..\..\Libraries\CO.CDP.Authentication\CO.CDP.Authentication.csproj" />
         <ProjectReference Include="..\..\Libraries\CO.CDP.AwsServices\CO.CDP.AwsServices.csproj" />
         <ProjectReference Include="..\CO.CDP.OrganisationInformation.Persistence\CO.CDP.OrganisationInformation.Persistence.csproj" />

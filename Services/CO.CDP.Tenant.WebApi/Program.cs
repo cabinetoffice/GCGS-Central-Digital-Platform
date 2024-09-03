@@ -1,6 +1,4 @@
 using System.Reflection;
-using Amazon;
-using Amazon.CloudWatchLogs;
 using CO.CDP.Authentication;
 using CO.CDP.AwsServices;
 using CO.CDP.Configuration.Assembly;
@@ -15,9 +13,6 @@ using CO.CDP.Tenant.WebApi.UseCase;
 using Microsoft.EntityFrameworkCore;
 using Tenant = CO.CDP.Tenant.WebApi.Model.Tenant;
 using TenantLookup = CO.CDP.OrganisationInformation.TenantLookup;
-using Serilog;
-using Serilog.Formatting.Compact;
-using Serilog.Sinks.AwsCloudWatch;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.ConfigureForwardedHeaders();
@@ -51,30 +46,25 @@ if (Assembly.GetEntryAssembly().IsRunAs("CO.CDP.Tenant.WebApi"))
 {
     builder.Services
         .AddAwsConfiguration(builder.Configuration)
-        .AddAwsCloudWatchService();
+        .AddAwsCloudWatchSerilogService(builder.Configuration);
 
     builder.Services.AddHealthChecks()
         .AddNpgSql(ConnectionStringHelper.GetConnectionString(builder.Configuration,
             "OrganisationInformationDatabase"));
-    builder.Services.AddSerilog((services, lc) => lc
-        .ReadFrom.Configuration(builder.Configuration)
-        .ReadFrom.Services(services)
-        .Enrich.FromLogContext()
-    );
 
-    using var log = new LoggerConfiguration()
-        .MinimumLevel.Verbose()
-        .WriteTo.AmazonCloudWatch(
-            logGroup: builder.Configuration["Aws:LogGroup"],
-            logStreamPrefix: builder.Configuration["Aws:LogStream"],
-            cloudWatchClient: new AmazonCloudWatchLogsClient(),
-            textFormatter: new CompactJsonFormatter())
-        .WriteTo.Console()
-        .CreateLogger();
-
-    log.Verbose("Writing introduction message...");
-    log.Information("Hi there! How are you?");
-    log.Verbose("Wrote introduction message!");
+    // using var log = new LoggerConfiguration()
+    //     .MinimumLevel.Verbose()
+    //     .WriteTo.AmazonCloudWatch(
+    //         logGroup: builder.Configuration["Aws:LogGroup"],
+    //         logStreamPrefix: builder.Configuration["Aws:LogStream"],
+    //         cloudWatchClient: amazonCloudWatchLogsClient,
+    //         textFormatter: new CompactJsonFormatter())
+    //     .WriteTo.Console()
+    //     .CreateLogger();
+    //
+    // log.Verbose("Writing introduction message...");
+    // log.Information("Hi there! How are you?");
+    // log.Verbose("Wrote introduction message!");
 }
 
 var app = builder.Build();

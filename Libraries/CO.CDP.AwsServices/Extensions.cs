@@ -4,6 +4,7 @@ using Amazon.Runtime;
 using Amazon.S3;
 using Amazon.SQS;
 using Amazon.CloudWatch;
+using Amazon.CloudWatchLogs;
 using CO.CDP.AwsServices.S3;
 using CO.CDP.AwsServices.Sqs;
 using CO.CDP.MQ;
@@ -11,6 +12,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Serilog;
+using Serilog.Events;
+using Serilog.Formatting.Compact;
+using Serilog.Sinks.AwsCloudWatch;
+using Serilog.Sinks.AwsCloudWatch.LogStreamNameProvider;
 
 namespace CO.CDP.AwsServices;
 
@@ -66,10 +72,39 @@ public static class Extensions
             .AddSingleton<IFileHostManager, AwsFileManager>();
     }
 
-    public static IServiceCollection AddAwsCloudWatchService(this IServiceCollection services)
+    public static IServiceCollection AddAwsCloudWatchSerilogService(this IServiceCollection services,
+        ConfigurationManager configuration)
     {
-        return services
-            .AddAWSService<IAmazonCloudWatch>();
+        return services.AddSerilog((serviceProvider, lc) =>
+        {
+            var awsConfiguration = serviceProvider.GetRequiredService<IOptions<AwsConfiguration>>().Value;
+
+            // options for the sink defaults in https://github.com/Cimpress-MCP/serilog-sinks-awscloudwatch/blob/master/src/Serilog.Sinks.AwsCloudWatch/CloudWatchSinkOptions.cs
+            var options = new CloudWatchSinkOptions
+            {
+                LogGroupName = awsConfiguration.LogGroup,
+                TextFormatter = new CompactJsonFormatter(),
+                LogStreamNameProvider = new ConfigurableLogStreamNameProvider(awsConfiguration.LogStream),
+                MinimumLogEventLevel = LogEventLevel.Information
+            };
+
+            var amazonCloudWatchLogsClient =
+                awsConfiguration.Credentials is not null && awsConfiguration.ServiceURL is not null
+                    ? new AmazonCloudWatchLogsClient(
+                        new BasicAWSCredentials(awsConfiguration.Credentials.AccessKeyId,
+                            awsConfiguration.Credentials.SecretAccessKey),
+                        new AmazonCloudWatchLogsConfig
+                        {
+                            ServiceURL = awsConfiguration.ServiceURL
+                        })
+                    : new AmazonCloudWatchLogsClient();
+
+            lc
+                .WriteTo.AmazonCloudWatch(options, amazonCloudWatchLogsClient)
+                .ReadFrom.Configuration(configuration)
+                .ReadFrom.Services(serviceProvider)
+                .Enrich.FromLogContext();
+        });
     }
 
     public static IServiceCollection AddAwsSqsService(this IServiceCollection services)
