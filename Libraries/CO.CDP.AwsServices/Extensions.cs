@@ -115,7 +115,6 @@ public static class Extensions
             };
 
             lc.WriteTo.AmazonCloudWatch(options, serviceProvider.GetRequiredService<IAmazonCloudWatchLogs>())
-                .WriteTo.Console()
                 .MinimumLevel.Information()
                 .Enrich.FromLogContext();
             configureLogger(serviceProvider, lc);
