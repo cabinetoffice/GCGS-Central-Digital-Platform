@@ -90,7 +90,17 @@ public static class Extensions
         });
     }
 
-    public static IServiceCollection AddCloudWatchSerilog(this IServiceCollection services, ConfigurationManager configuration)
+    public static IServiceCollection AddCloudWatchSerilog(
+        this IServiceCollection services,
+        ConfigurationManager configuration)
+    {
+        return AddCloudWatchSerilog(services, configuration, (_, _) => {});
+    }
+
+    public static IServiceCollection AddCloudWatchSerilog(
+        this IServiceCollection services,
+        ConfigurationManager configuration,
+        Action<IServiceProvider, LoggerConfiguration> configureLogger)
     {
         return services.AddSerilog((serviceProvider, lc) =>
         {
@@ -101,14 +111,14 @@ public static class Extensions
                 LogGroupName = awsConfiguration.LogGroup,
                 TextFormatter = new CompactJsonFormatter(),
                 LogStreamNameProvider = new ConfigurableLogStreamNameProvider(awsConfiguration.LogStream),
-                MinimumLogEventLevel = LogEventLevel.Information
+                MinimumLogEventLevel = LogEventLevel.Verbose
             };
 
-            lc
-                .WriteTo.AmazonCloudWatch(options, serviceProvider.GetRequiredService<IAmazonCloudWatchLogs>())
-                .ReadFrom.Configuration(configuration)
-                .ReadFrom.Services(serviceProvider)
+            lc.WriteTo.AmazonCloudWatch(options, serviceProvider.GetRequiredService<IAmazonCloudWatchLogs>())
+                .WriteTo.Console()
+                .MinimumLevel.Information()
                 .Enrich.FromLogContext();
+            configureLogger(serviceProvider, lc);
         });
     }
 
