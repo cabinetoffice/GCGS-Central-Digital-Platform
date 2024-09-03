@@ -17,10 +17,19 @@ public class DatabaseFormRepository(OrganisationInformationContext context) : IF
 
     public async Task<IEnumerable<FormSectionSummary>> GetFormSummaryAsync(Guid formId, Guid organisationId)
     {
+        var currentSharedConsent = await context.SharedConsents
+            .OrderByDescending(x => x.CreatedOn)
+            .FirstOrDefaultAsync(x => x.Form.Guid == formId && x.Organisation.Guid == organisationId);
+
+        if(currentSharedConsent == null)
+        {
+            return Enumerable.Empty<FormSectionSummary>();
+        }
+
         var answersQuery = from sc in context.SharedConsents
                            join fas in context.FormAnswerSets on sc.Id equals fas.SharedConsentId
                            join o in context.Organisations on sc.OrganisationId equals o.Id
-                           where o.Guid == organisationId && fas.Deleted == false
+                           where o.Guid == organisationId && fas.Deleted == false && sc.Id == currentSharedConsent.Id
                            select new { sc.FormId, fas.SectionId };
 
         var query = from f in context.Forms
@@ -81,12 +90,15 @@ public class DatabaseFormRepository(OrganisationInformationContext context) : IF
         return await context.Set<FormQuestion>().Where(q => q.Section.Guid == sectionId).ToListAsync();
     }
 
-    public async Task<List<FormAnswerSet>> GetFormAnswerSetsAsync(Guid sectionId, Guid organisationId)
+    public async Task<List<FormAnswerSet>> GetFormAnswerSetsFromCurrentSharedConsentAsync(Guid sectionId, Guid organisationId)
     {
-        return await context.Set<FormAnswerSet>()
-            .Include(a => a.Answers)
-            .Include(a => a.SharedConsent)
-            .Where(a => a.Section.Guid == sectionId && a.SharedConsent.Organisation.Guid == organisationId && a.Deleted == false)
+        return await context.Set<SharedConsent>()
+            .Where(x => x.Organisation.Guid == organisationId)
+            .OrderByDescending(x => x.CreatedOn)
+            .Take(1)
+            .Include(x => x.AnswerSets)
+                .ThenInclude(a => a.Answers)
+            .SelectMany(x => x.AnswerSets.Where(x => x.Section.Guid == sectionId && !x.Deleted))
             .ToListAsync();
     }
 
