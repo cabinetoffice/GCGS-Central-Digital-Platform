@@ -11,8 +11,14 @@ using CO.CDP.Tenant.WebApi.Extensions;
 using CO.CDP.Tenant.WebApi.Model;
 using CO.CDP.Tenant.WebApi.UseCase;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 using Tenant = CO.CDP.Tenant.WebApi.Model.Tenant;
 using TenantLookup = CO.CDP.OrganisationInformation.TenantLookup;
+
+var log = new LoggerConfiguration()
+    .MinimumLevel.Verbose()
+    .WriteTo.Console()
+    .CreateLogger();
 
 var builder = WebApplication.CreateBuilder(args);
 builder.ConfigureForwardedHeaders();
@@ -52,20 +58,6 @@ if (Assembly.GetEntryAssembly().IsRunAs("CO.CDP.Tenant.WebApi"))
     builder.Services.AddHealthChecks()
         .AddNpgSql(ConnectionStringHelper.GetConnectionString(builder.Configuration,
             "OrganisationInformationDatabase"));
-
-    // using var log = new LoggerConfiguration()
-    //     .MinimumLevel.Verbose()
-    //     .WriteTo.AmazonCloudWatch(
-    //         logGroup: builder.Configuration["Aws:LogGroup"],
-    //         logStreamPrefix: builder.Configuration["Aws:LogStream"],
-    //         cloudWatchClient: amazonCloudWatchLogsClient,
-    //         textFormatter: new CompactJsonFormatter())
-    //     .WriteTo.Console()
-    //     .CreateLogger();
-    //
-    // log.Verbose("Writing introduction message...");
-    // log.Information("Hi there! How are you?");
-    // log.Verbose("Wrote introduction message!");
 }
 
 var app = builder.Build();
