@@ -2,23 +2,31 @@
 
 @model OrganisationRegistrationUnavailable
 
-<a href="@RegistrationStepModel.OrganisationIdentifierPage" class="govuk-back-link">Back</a>
+@{
+    var backLink = RegistrationStepModel.OrganisationIdentifierPage;
+    var overrideBackLink = Request.Query.ContainsKey("backLink");
+
+    if (overrideBackLink)
+    {
+        backLink = Request.Query["backLink"];
+    }
+}
+
+<a href="@backLink" class="govuk-back-link">
+    Back
+</a>
 
 <main class="govuk-main-wrapper">
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-            <partial name="_ErrorSummary" model="@ModelState" />
+            <h1 class="govuk-heading-l">
+                <span class="govuk-label--l">Sorry, there is a problem with the service</span>
+            </h1>
 
-            <form method="post">
-                <h1 class="govuk-heading-l">
-                    <span class="govuk-label--l">Service Unavailable</span>
-                </h1>
+            <p class="govuk-body">
+                Please try again later.
+            </p>
 
-                <p class="govuk-body">
-                    Please try again later.
-                </p>
-
-            </form>
         </div>
     </div>
 </main>

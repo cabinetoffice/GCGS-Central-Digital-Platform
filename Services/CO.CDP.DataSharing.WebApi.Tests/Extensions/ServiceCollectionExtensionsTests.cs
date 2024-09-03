@@ -9,10 +9,10 @@ public class ServiceCollectionExtensionsTests
     [Fact]
     public void MapException_Should_Return_InternalServerError_For_SharedConsentNotFoundException()
     {
-        var exception = new SharedConsentNotFoundException("Shared Consent not found.");
+        var exception = new ShareCodeNotFoundException(Constants.ShareCodeNotFoundExceptionMessage);
         var result = ServiceCollectionExtensions.MapException(exception);
 
         Assert.Equal(StatusCodes.Status404NotFound, result.status);
-        Assert.Equal("SHARED_CONSENT_NOT_FOUND", result.error);
+        Assert.Equal(Constants.ShareCodeNotFoundExceptionCode, result.error);
     }
 }

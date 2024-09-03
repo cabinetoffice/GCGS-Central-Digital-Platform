@@ -3,15 +3,13 @@ using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.WebApiClients;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace CO.CDP.OrganisationApp.Pages.Supplier;
 
-[AuthorisedSession]
-public class SupplierOperationQuestionModel(
-    ISession session,
-    IOrganisationClient organisationClient) : LoggedInUserAwareModel
+public class SupplierOperationQuestionModel(IOrganisationClient organisationClient) : PageModel
 {
-    public override ISession SessionContext => session;
+    private readonly IOrganisationClient organisationClient = organisationClient;
 
     [BindProperty]
     [NotEmpty(ErrorMessage = "Select at least one option to proceed.")]

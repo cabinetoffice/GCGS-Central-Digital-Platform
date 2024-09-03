@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 
@@ -115,7 +116,8 @@ public static class Extensions
     public static IServiceCollection AddJwtClaimExtractor(this IServiceCollection services)
     {
         services.AddHttpContextAccessor();
-        services.AddScoped<IClaimService, ClaimService>();
+        services.TryAddScoped<IClaimService, ClaimService>();
+        services.TryAddScoped<ITenantRepository, DatabaseTenantRepository>();
         return services;
     }
 }

@@ -36,7 +36,8 @@ public static class EndpointExtensions
                 operation.Responses["404"].Description = "Share code not found or the caller is not authorised to use it.";
                 operation.Responses["500"].Description = "Internal server error.";
                 return operation;
-            });
+            })
+            .RequireAuthorization(Authentication.AuthorizationPolicy.Constants.OrganisationApiKeyPolicy);
 
         app.MapGet("/share/data/{sharecode}/pdf",
              async (string sharecode, IUseCase<string, byte[]?> useCase) =>
@@ -76,7 +77,7 @@ public static class EndpointExtensions
                 operation.Responses["500"].Description = "Internal server error.";
                 return operation;
             })
-            .RequireAuthorization(Constants.OneLoginPolicy);
+            .RequireAuthorization(Authentication.AuthorizationPolicy.Constants.OneLoginPolicy);
 
         app.MapPost("/share/data/verify", async (ShareVerificationRequest request, IUseCase<ShareVerificationRequest, ShareVerificationReceipt> useCase) =>
                 await useCase.Execute(request)
@@ -97,7 +98,7 @@ public static class EndpointExtensions
                 operation.Responses["500"].Description = "Internal server error.";
                 return operation;
             })
-            .RequireAuthorization(Constants.OrganisationApiKeyPolicy);
+            .RequireAuthorization(Authentication.AuthorizationPolicy.Constants.OrganisationApiKeyPolicy);
 
         app.MapGet("/share/organisations/{organisationId}/codes", async (Guid organisationId,
             IUseCase<Guid, List<Model.SharedConsent>?> useCase) => await useCase.Execute(organisationId)
@@ -117,7 +118,7 @@ public static class EndpointExtensions
                  operation.Responses["500"].Description = "Internal server error.";
                  return operation;
              })
-            .RequireAuthorization(Constants.OneLoginPolicy);
+            .RequireAuthorization(Authentication.AuthorizationPolicy.Constants.OneLoginPolicy);
 
         app.MapGet("/share/organisations/{organisationId}/codes/{sharecode}",
                 async (Guid organisationId, string shareCode, IUseCase<(Guid, string), SharedConsentDetails?> useCase)
@@ -138,7 +139,7 @@ public static class EndpointExtensions
                 operation.Responses["500"].Description = "Internal server error.";
                 return operation;
             })
-            .RequireAuthorization(Constants.OneLoginPolicy);
+            .RequireAuthorization(Authentication.AuthorizationPolicy.Constants.OneLoginPolicy);
     }
 }
 

@@ -97,4 +97,18 @@ public class ConnectedEntityCheckAnswersCommon
                 || state.ConnectedEntityIndividualAndTrustCategoryType == ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndividualWithSignificantInfluenceOrControlForTrust;
         }
     }
+
+    public static bool SetShowLegalForm(ConnectedEntityState state)
+    {
+        if (state.ConnectedEntityType == ConnectedEntityType.Organisation)
+        {
+            return state.ConnectedEntityOrganisationCategoryType == ConnectedEntityOrganisationCategoryType.RegisteredCompany
+                || state.ConnectedEntityOrganisationCategoryType == ConnectedEntityOrganisationCategoryType.DirectorOrTheSameResponsibilities
+                || state.ConnectedEntityOrganisationCategoryType == ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl;
+        }
+        else
+        {
+            return false;
+        }
+    }
 }

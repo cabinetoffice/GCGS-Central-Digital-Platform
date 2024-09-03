@@ -1,12 +1,10 @@
 using CO.CDP.Mvc.Validation;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using CO.CDP.OrganisationApp.Constants;
 
 namespace CO.CDP.OrganisationApp.Pages.Supplier;
 
-[Authorize]
 public class ConnectedEntityControlConditionModel(ISession session) : PageModel
 {
     [BindProperty(SupportsGet = true)]

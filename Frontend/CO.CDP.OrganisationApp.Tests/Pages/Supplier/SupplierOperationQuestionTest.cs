@@ -10,15 +10,13 @@ namespace CO.CDP.OrganisationApp.Tests.Pages.Supplier;
 
 public class SupplierOperationQuestionTest
 {
-    private readonly Mock<ISession> _sessionMock;
     private readonly Mock<IOrganisationClient> _organisationClientMock;
     private readonly SupplierOperationQuestionModel _model;
 
     public SupplierOperationQuestionTest()
     {
-        _sessionMock = new Mock<ISession>();
         _organisationClientMock = new Mock<IOrganisationClient>();
-        _model = new SupplierOperationQuestionModel(_sessionMock.Object, _organisationClientMock.Object)
+        _model = new SupplierOperationQuestionModel(_organisationClientMock.Object)
         {
             SelectedOperationTypes = new List<OperationType>()
         };
@@ -86,7 +84,7 @@ public class SupplierOperationQuestionTest
     [Fact]
     public void ValidateModel_WithNoneAndOtherOperationTypes_ShouldReturnValidationError()
     {
-        var model = new SupplierOperationQuestionModel(_sessionMock.Object, _organisationClientMock.Object)
+        var model = new SupplierOperationQuestionModel(_organisationClientMock.Object)
         {
             SelectedOperationTypes = new List<OperationType>
             {

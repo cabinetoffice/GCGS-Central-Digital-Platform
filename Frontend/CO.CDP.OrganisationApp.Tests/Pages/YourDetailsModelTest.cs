@@ -21,6 +21,8 @@ public class YourDetailsModelTest
     public YourDetailsModelTest()
     {
         sessionMock = new Mock<ISession>();
+        sessionMock.Setup(session => session.Get<UserDetails>(Session.UserDetailsKey))
+            .Returns(new UserDetails { UserUrn = "urn:test" });
         personClientMock = new Mock<IPersonClient>();
     }
 

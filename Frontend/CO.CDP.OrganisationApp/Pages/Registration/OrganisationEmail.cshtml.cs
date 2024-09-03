@@ -5,12 +5,10 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CO.CDP.OrganisationApp.Pages.Registration;
 
-[AuthorisedSession]
 [ValidateRegistrationStep]
-public class OrganisationEmailModel(ISession session) : RegistrationStepModel
+public class OrganisationEmailModel(ISession session) : RegistrationStepModel(session)
 {
     public override string CurrentPage => OrganisationEmailPage;
-    public override ISession SessionContext => session;
 
     [BindProperty]
     [DisplayName("Enter the organisation's contact email address")]
@@ -35,7 +33,7 @@ public class OrganisationEmailModel(ISession session) : RegistrationStepModel
 
         RegistrationDetails.OrganisationEmailAddress = EmailAddress;
 
-        session.Set(Session.RegistrationDetailsKey, RegistrationDetails);
+        SessionContext.Set(Session.RegistrationDetailsKey, RegistrationDetails);
 
         if (RedirectToSummary == true)
         {

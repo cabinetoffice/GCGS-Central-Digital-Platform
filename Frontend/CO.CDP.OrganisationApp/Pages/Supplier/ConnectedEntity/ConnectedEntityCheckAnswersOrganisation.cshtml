@@ -91,8 +91,7 @@
 
                     @if (details.SupplierHasCompanyHouseNumber == true)
                     {
-                        @if (!string.IsNullOrWhiteSpace(details.LegalForm) ||
-                       !string.IsNullOrWhiteSpace(details.LawRegistered))
+                        @if (Model.ShowLegalForm)
                         {
                             <div class="govuk-summary-list__row">
                                 <dt class="govuk-summary-list__key">
@@ -114,8 +113,10 @@
                     }
                     else
                     {
-                        @if (!string.IsNullOrWhiteSpace(details.LegalForm))
+                        @if (Model.ShowLegalForm)
                         {
+                            var enforceLinkPage = details.HasLegalForm == true ? "law-enforces" : "legal-form-question";
+
                             <div class="govuk-summary-list__row">
                                 <dt class="govuk-summary-list__key">
                                     Legal form:
@@ -131,10 +132,7 @@
                                     </a>
                                 </dd>
                             </div>
-                        }
-
-                        @if (!string.IsNullOrWhiteSpace(details.LawRegistered))
-                        {
+                        
                             <div class="govuk-summary-list__row">
                                 <dt class="govuk-summary-list__key">
                                     Enforced by:
@@ -143,7 +141,7 @@
                                     @details.LawRegistered
                                 </dd>
                                 <dd class="govuk-summary-list__actions">
-                                    <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/law-enforces/@Model.ConnectedEntityId?frm-chk-answer=true">
+                                    <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/@enforceLinkPage/@Model.ConnectedEntityId?frm-chk-answer=true">
                                         Change<span class="govuk-visually-hidden">
                                             which law enforces it?
                                         </span>

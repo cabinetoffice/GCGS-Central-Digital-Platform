@@ -7,13 +7,10 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CO.CDP.OrganisationApp.Pages;
 
-[AuthorisedSession]
 public class YourDetailsModel(
     ISession session,
-    IPersonClient personClient) : LoggedInUserAwareModel
+    IPersonClient personClient) : LoggedInUserAwareModel(session)
 {
-    public override ISession SessionContext => session;
-
     [BindProperty]
     [DisplayName("First name")]
     [Required(ErrorMessage = "Enter your first name")]
@@ -28,13 +25,14 @@ public class YourDetailsModel(
 
     public IActionResult OnGet()
     {
-        if (UserDetails.PersonId.HasValue)
+        var details = UserDetails;
+        if (details.PersonId.HasValue)
         {
             return RedirectToPage("OrganisationSelection");
         }
 
-        FirstName = UserDetails.FirstName;
-        LastName = UserDetails.LastName;
+        FirstName = details.FirstName;
+        LastName = details.LastName;
 
         return Page();
     }
@@ -46,15 +44,16 @@ public class YourDetailsModel(
             return Page();
         }
 
-        var person = await RegisterPersonAsync(UserDetails);
+        var details = UserDetails;
+        var person = await RegisterPersonAsync(details);
 
         if (person != null)
         {
-            UserDetails.PersonId = person.Id;
-            UserDetails.FirstName = FirstName;
-            UserDetails.LastName = LastName;
+            details.PersonId = person.Id;
+            details.FirstName = FirstName;
+            details.LastName = LastName;
 
-            session.Set(Session.UserDetailsKey, UserDetails);
+            SessionContext.Set(Session.UserDetailsKey, details);
         }
         else
         {

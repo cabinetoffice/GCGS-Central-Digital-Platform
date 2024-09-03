@@ -8,6 +8,14 @@ resource "aws_lb_target_group" "this" {
   target_type          = "ip"
   vpc_id               = var.vpc_id
 
+  dynamic "stickiness" {
+    for_each = var.name == "organisation-app" ? [1] : []
+    content {
+      type            = "lb_cookie"
+      cookie_duration = 3600  # 1 hour
+    }
+  }
+
   health_check {
     enabled           = true
     interval          = var.healthcheck_interval
@@ -23,7 +31,6 @@ resource "aws_lb_target_group" "this" {
     create_before_destroy = false
   }
 }
-
 
 resource "aws_lb_listener_rule" "this" {
   count = var.host_port != null ? 1 : 0

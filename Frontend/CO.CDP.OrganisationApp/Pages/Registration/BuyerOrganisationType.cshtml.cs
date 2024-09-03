@@ -6,13 +6,10 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CO.CDP.OrganisationApp.Pages.Registration;
 
-[AuthorisedSession]
 [ValidateRegistrationStep]
-public class BuyerOrganisationTypeModel(ISession session) : RegistrationStepModel
+public class BuyerOrganisationTypeModel(ISession session) : RegistrationStepModel(session)
 {
     public override string CurrentPage => BuyerOrganisationTypePage;
-
-    public override ISession SessionContext => session;
 
     [BindProperty]
     [Required(ErrorMessage = "Select the organisation type")]
@@ -46,7 +43,7 @@ public class BuyerOrganisationTypeModel(ISession session) : RegistrationStepMode
         }
 
         RegistrationDetails.BuyerOrganisationType = (BuyerOrganisationType == "Other" ? OtherValue : BuyerOrganisationType);
-        session.Set(Session.RegistrationDetailsKey, RegistrationDetails);
+        SessionContext.Set(Session.RegistrationDetailsKey, RegistrationDetails);
 
         if (RedirectToSummary == true)
         {
