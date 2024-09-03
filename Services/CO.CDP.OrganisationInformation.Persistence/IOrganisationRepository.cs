@@ -1,5 +1,3 @@
-using static CO.CDP.OrganisationInformation.Persistence.ConnectedEntity;
-
 namespace CO.CDP.OrganisationInformation.Persistence;
 
 public interface IOrganisationRepository : IDisposable
