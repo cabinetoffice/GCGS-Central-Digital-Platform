@@ -198,7 +198,7 @@ locals {
         }
         organisation_app = {
             cpu           = 256
-            desired_count = 2
+            desired_count = 1
             memory        = 512
         }
         organisation_information_migrations = {
