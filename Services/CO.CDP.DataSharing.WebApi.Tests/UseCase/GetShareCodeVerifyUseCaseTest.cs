@@ -24,7 +24,7 @@ public class GetShareCodeVerifyUseCaseTest() : IClassFixture<AutoMapperFixture>
 
         var response = async () => await UseCase.Execute(shareVerificationRequest);
 
-        await response.Should().ThrowAsync<SharedConsentNotFoundException>();
+        await response.Should().ThrowAsync<ShareCodeNotFoundException>();
     }
 
     [Fact]

@@ -23,6 +23,6 @@ public class DataSharingClientIntegrationTest(ITestOutputHelper testOutputHelper
         var exception = await act.Should().ThrowAsync<ApiException<ProblemDetails>>();
 
         exception.And.StatusCode.Should().Be(404);
-        exception.And.Result!.Title.Should().Contain("SharedConsentNotFoundException");
+        exception.And.Result!.Title.Should().Contain("ShareCodeNotFoundException");
     }
 }
