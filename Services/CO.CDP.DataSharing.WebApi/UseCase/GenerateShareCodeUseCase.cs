@@ -18,7 +18,7 @@ public class GenerateShareCodeUseCase(
     public async Task<ShareReceipt> Execute(ShareRequest shareRequest)
     {
         var org = await organisationRepository.Find(shareRequest.OrganisationId);
-        if (org == null || claimService.HaveAccessToOrganisation(shareRequest.OrganisationId) == false)
+        if (org == null || await claimService.HaveAccessToOrganisation(shareRequest.OrganisationId) == false)
         {
             throw new InvalidOrganisationRequestedException("Invalid Organisation requested.");
         }
