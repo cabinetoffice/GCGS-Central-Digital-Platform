@@ -74,7 +74,7 @@ public class DatabaseFormRepository(OrganisationInformationContext context) : IF
                 .ThenInclude(a => a.Answers)
             .Include(c => c.AnswerSets)
                 .ThenInclude(a => a.Section)
-            .OrderByDescending(x => x.UpdatedOn)
+            .OrderByDescending(x => x.CreatedOn)
             .FirstOrDefaultAsync(x => x.Form.Guid == formId && x.Organisation.Guid == organisationId);
     }
 
