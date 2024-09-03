@@ -24,6 +24,10 @@ public class OrganisationUpdatedSubscriber(
 
             if (pponToUpdate != null)
             {
+                //
+                //  TODO: set endsOn for any identifiers that aren't in the update message.
+                //          add unit test.
+
                 // Add new identifiers that do not already exist.
                 var newEventIdentifiers = @event.AllIdentifiers()
                     .Where(pi => !pponToUpdate.Identifiers.Any(i => i.IdentifierId == pi.Id && i.Scheme == pi.Scheme))
