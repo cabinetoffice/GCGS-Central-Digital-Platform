@@ -1,5 +1,6 @@
 using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.OrganisationInformation.Persistence;
+using Person = CO.CDP.OrganisationInformation.Persistence.Person;
 
 namespace CO.CDP.Organisation.WebApi.UseCase;
 
@@ -7,9 +8,9 @@ public class UpdatePersonToOrganisationUseCase(
     IOrganisationRepository organisationRepository,
     IPersonRepository personRepository
    )
-    : IUseCase<(Guid organisationId, Guid personInviteId, UpdatePersonToOrganisation updateInvitedPerson), PersonInvite>
+    : IUseCase<(Guid organisationId, Guid personInviteId, UpdatePersonToOrganisation updateInvitedPerson), bool>
 {
-    public async Task<PersonInvite> Execute((Guid organisationId, Guid personInviteId, UpdatePersonToOrganisation updateInvitedPerson) command)
+    public async Task<bool> Execute((Guid organisationId, Guid personInviteId, UpdatePersonToOrganisation updateInvitedPerson) command)
     {
         if (!command.updateInvitedPerson.Scopes.Any())        
             throw new EmptyPersonRoleException($"Empty Scope of Invited Person {command.personInviteId}.");
@@ -17,23 +18,23 @@ public class UpdatePersonToOrganisationUseCase(
         var organisation = await organisationRepository.Find(command.organisationId)
                            ?? throw new UnknownOrganisationException($"Unknown organisation {command.organisationId}.");
 
-        var invitedPerson = await personRepository.Find(command.personInviteId)
+        var organisationPerson = await personRepository.Find(command.personInviteId)
                          ?? throw new UnknownInvitedPersonException($"Unknown invited person {command.personInviteId}.");
 
-        var personInvite = UpdatePersonInvite(command.updateInvitedPerson, invitedPerson);
+        var person = UpdatePersonInvite(command.updateInvitedPerson, organisationPerson);
 
 
-        personRepository.Save(personInvite);
+        personRepository.Save(person);
 
         return personInvite;
     }
 
-    private PersonInvite UpdatePersonInvite(
+    private OrganisationPerson UpdatePersonInvite(
         UpdatePersonToOrganisation command,
-        PersonInvite invitedPerson
+        OrganisationPerson person
     )
     {
-        invitedPerson.Scopes = command.Scopes;
+        person.= command.Scopes;
 
         return invitedPerson;
     }

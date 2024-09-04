@@ -14,6 +14,12 @@ public class DatabasePersonRepository(OrganisationInformationContext context) : 
         return await context.Persons.FirstOrDefaultAsync(t => t.Guid == personId);
     }
 
+    public async Task<OrganisationPerson?> IPersonRepository.FindAsync(Guid organisationId, Guid personId)
+    {
+        var result = await context.Persons.FirstOrDefaultAsync(o => o.Guid == personId && o.Organisations.Any(_ => _.Guid == organisationId));
+
+    }
+
     public async Task<Person?> FindByUrn(string urn)
     {
         return await context.Persons.FirstOrDefaultAsync(t => t.UserUrn == urn);
@@ -55,4 +61,6 @@ public class DatabasePersonRepository(OrganisationInformationContext context) : 
                 throw cause;
         }
     }
+
+
 }
