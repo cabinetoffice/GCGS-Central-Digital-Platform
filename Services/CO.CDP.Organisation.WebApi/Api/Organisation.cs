@@ -522,7 +522,7 @@ public static class EndpointExtensions
             });
 
         app.MapPut("/{organisationId}/invite/{personInviteId}",
-             async (Guid organisationId, Guid personInviteId, UpdatePersonToOrganisation updatePersonToOrganisation, IUseCase<(Guid, Guid, UpdatePersonToOrganisation), PersonInvite> useCase) =>
+             async (Guid organisationId, Guid personInviteId, UpdatePersonToOrganisation updatePersonToOrganisation, IUseCase<(Guid, Guid, UpdatePersonToOrganisation), bool> useCase) =>
 
                  await useCase.Execute((organisationId, personInviteId, updatePersonToOrganisation))
                      .AndThen(_ => Results.NoContent())

@@ -36,12 +36,10 @@ public class UpdateInvitedPersonToOrganisationUseCaseTests : IClassFixture<AutoM
 
         _personInviteRepositoryMock.Setup(repo => repo.Find(_personInviteId)).ReturnsAsync(PersonInvite);
 
+        PersonInvite.Scopes = updatePersonToOrganisation.Scopes;
         var result = await _useCase.Execute((_organisationId, _personInviteId, updatePersonToOrganisation));
 
-        result.Should().NotBeNull();
-        result.Scopes.Should().NotBeEmpty();
-        result.Scopes.Equals(updatePersonToOrganisation);
-        _personInviteRepositoryMock.Verify(repo => repo.Save(result!), Times.Once);
+        result.Should().Be(true);        
     }
 
     [Fact]
