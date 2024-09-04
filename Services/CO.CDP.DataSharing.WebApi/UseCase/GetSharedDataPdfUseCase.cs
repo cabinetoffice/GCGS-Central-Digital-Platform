@@ -14,7 +14,7 @@ public class GetSharedDataPdfUseCase(
         var sharedConsent = await shareCodeRepository.GetByShareCode(sharecode);
         if (sharedConsent == null)
         {
-            throw new SharedConsentNotFoundException("Shared Consent not found.");
+            throw new ShareCodeNotFoundException(Constants.ShareCodeNotFoundExceptionMessage);
         }
 
         var sharedSupplierInfo = await dataService.GetSharedSupplierInformationAsync(sharedConsent);

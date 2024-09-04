@@ -42,7 +42,7 @@ public class GetSharedDataPdfUseCaseTests
     }
 
     [Fact]
-    public async Task Execute_ShouldThrowSharedConsentNotFoundException_WhenShareCodeDoesNotExist()
+    public async Task Execute_ShouldThrowShareCodeNotFoundException_WhenShareCodeDoesNotExist()
     {
         var sharecode = "invalid-sharecode";
 
@@ -51,8 +51,8 @@ public class GetSharedDataPdfUseCaseTests
 
         Func<Task> act = async () => await UseCase.Execute(sharecode);
 
-        await act.Should().ThrowAsync<SharedConsentNotFoundException>()
-            .WithMessage("Shared Consent not found.");
+        await act.Should().ThrowAsync<ShareCodeNotFoundException>()
+            .WithMessage(Constants.ShareCodeNotFoundExceptionMessage);
     }
 
     [Fact]

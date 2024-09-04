@@ -1,4 +1,3 @@
-using CO.CDP.Authentication.AuthorizationPolicy;
 using CO.CDP.DataSharing.WebApi.Model;
 using CO.CDP.DataSharing.WebApi.UseCase;
 using CO.CDP.Functional;
@@ -58,7 +57,8 @@ public static class EndpointExtensions
                  operation.Responses["404"].Description = "Share code not found or the caller is not authorised to use it.";
                  operation.Responses["500"].Description = "Internal server error.";
                  return operation;
-             });
+             })
+             .RequireAuthorization(Authentication.AuthorizationPolicy.Constants.OneLoginPolicy);
 
         app.MapPost("/share/data", async (ShareRequest shareRequest, IUseCase<ShareRequest, ShareReceipt> useCase) =>
                 await useCase.Execute(shareRequest)
