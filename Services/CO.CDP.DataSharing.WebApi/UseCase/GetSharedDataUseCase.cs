@@ -15,7 +15,7 @@ public class GetSharedDataUseCase(
     public async Task<SupplierInformation?> Execute(string sharecode)
     {
         var sharedConsent = await shareCodeRepository.GetByShareCode(sharecode)
-                            ?? throw new SharedConsentNotFoundException("Shared Consent not found.");
+                            ?? throw new ShareCodeNotFoundException(Constants.ShareCodeNotFoundExceptionMessage);
 
         var associatedPersons = await AssociatedPersons(sharedConsent);
         var additionalEntities = await AdditionalEntities(sharedConsent);

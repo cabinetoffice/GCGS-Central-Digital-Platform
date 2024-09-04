@@ -7,7 +7,7 @@ public static class ServiceCollectionExtensions
     private static readonly Dictionary<Type, (int, string)> ExceptionMap = new()
     {
         { typeof(InvalidOrganisationRequestedException), (StatusCodes.Status403Forbidden, "INVALID_ORGANISATION_REQUESTED") },
-        { typeof(SharedConsentNotFoundException), (StatusCodes.Status404NotFound, "SHARED_CONSENT_NOT_FOUND") }
+        { typeof(ShareCodeNotFoundException), (StatusCodes.Status404NotFound, Constants.ShareCodeNotFoundExceptionCode) }
     };
 
     public static IServiceCollection AddDataSharingProblemDetails(this IServiceCollection services)
