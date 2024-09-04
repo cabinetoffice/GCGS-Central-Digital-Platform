@@ -5,5 +5,5 @@ public interface IClaimService
 
     int? GetOrganisationId();
 
-    bool HaveAccessToOrganisation(Guid oragnisationId);
+    Task<bool> HaveAccessToOrganisation(Guid oragnisationId);
 }

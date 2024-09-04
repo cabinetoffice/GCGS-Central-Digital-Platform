@@ -4,9 +4,12 @@ This code base is responsible for provisioning the AWS infrastructure needed to 
 
 ## Table of Contents
 1. [Bootstrap New Account](#bootstrap-a-new-account)
-2. [Pin Service Version](#pin-service-version)
-3. [Update OneLogin Secrets](#update-onelogin-secrets)
-4. [Create New User](#create-new-users)
+2. [Create New User](#create-new-users)
+3. [Manage Secrets](#manage-secrets)
+   - [Update OneLogin Secrets](#update-onelogin-secrets)
+   - [Update FtsService URL](#update-ftsservice-url)
+   - [Update Slack Configuration](#update-slack-configuration)
+4. [Pin Service Version](#pin-service-version)
 
 ## Bootstrap a new account
 
@@ -62,17 +65,24 @@ ave make aws-push-authority-keys
 ```shell
 ave make aws-push-to-ecr
 ```
----
-
-## Pin Service Version
-
-To pin services to a specific version in the given account, we can set the pinned_service_version in the [main configuration file](./components/terragrunt.hcl). If this value is left null, the system will default to using the latest published version, as specified in the service-version parameter within the Orchestrator account's SSM.
-
-![pin-service-version](../docs/images/infra/pin-service-version.png)
 
 ---
 
-## Update OneLogin secrets
+## Create new users
+
+We are using Cognito user pools to restrict access to non-production accounts. The [cognito_create_user.sh](./tools/scripts/cognito_create_user.sh) script allows us to create new users with a randomly generated password.
+
+```shell
+# To create a user called DP-405
+./tools/scripts/cognito_create_user.sh DP-405
+```
+The credentials will also be stored in AWS Secrets Manager under the same account, within the cdp-sirsi-cognito/users/* namespace, for future use, such as sharing with third-party users.
+
+---
+
+## Manage Secrets
+
+### Update OneLogin secrets
 
 1. Create a JSON file in the `./secrets` folder with the following attributes, e.g., **onelogin-secrets-development.json**:
 
@@ -89,25 +99,36 @@ Note: The `./secrets` folder is set to ignore all files to ensure no sensitive i
 
 ```shell
 # ave is alias for `aws-vault exec` command
-ave aws secretsmanager put-secret-value --secret-id cdp-sirsi-one-login-credentials --secret-string file://secrets/onelogin-secrets-development.json 
+ave aws secretsmanager put-secret-value --secret-id cdp-sirsi-one-login-credentials --secret-string file://secrets/onelogin-secrets-development.json | jq .
 ```
 3. Redeploy the organisation-app service.
 
+### Update FtsService URL
 
-## Create new users
+1. Identify the `FTS service URL` for the specified AWS account.
+2. Set your AWS profile to target the specified AWS account, and use the AWS CLI to update the secret.
 
-We are using Cognito user pools to restrict access to non-production accounts. The [cognito_create_user.sh](./tools/scripts/cognito_create_user.sh) script allows us to create new users with a randomly generated password.
+```shell
+# ave is alias for `aws-vault exec` command
+ave aws secretsmanager create-secret --name cdp-sirsi-fts-service-url --force-overwrite-replica-secret --secret-string "<FTS service URL>" | jq .
+```
 
-The credentials will also be stored in AWS Secrets Manager under the same account, within the cdp-sirsi-cognito/users/* namespace, for future use, such as sharing with third-party users.
-
-## Slack Notifications
+### Update Slack Configuration
 
 When the orchestrator's notification component is enabled, the system will notify a specified Slack channel about important CI/CD events. The required configuration for this connection must be stored as a secret named slack-configuration in the Orchestrator account. To create this secret, add a file named slack-notification-api-endpoint.txt under the secrets directory, containing a single line with the Slack API endpoint. Then, run the following command.
 
 ```shell
 aws-switch-to-cdp-sirsi-orchestrator-goaco-terraform
-ave aws secretsmanager create-secret --name cdp-sirsi-slack-api-endpoint --secret-string file://secrets/slack-notification-api-endpoint.txt | jq .
+ave aws secretsmanager create-secret --name cdp-sirsi-slack-api-endpoint --name cdp-sirsi-fts-service-url --secret-string file://secrets/slack-notification-api-endpoint.txt | jq .
 
 ```
 
-This command will create a secret named cdp-sirsi-slack-api-endpoint in AWS Secrets Manager, setting its value from the contents of the slack-notification-api-endpoint.txt file in the secrets directory.
+This command will create a secret named cdp-sirsi-slack-api-endpoint in AWS Secrets Manager, setting its value from the contents of the slack-notification-api-endpoint.txt file in the secrets' directory.
+
+---
+
+## Pin Service Version
+
+To pin services to a specific version in the given account, we can set the pinned_service_version in the [main configuration file](./components/terragrunt.hcl). If this value is left null, the system will default to using the latest published version, as specified in the service-version parameter within the Orchestrator account's SSM.
+
+![pin-service-version](../docs/images/infra/pin-service-version.png)

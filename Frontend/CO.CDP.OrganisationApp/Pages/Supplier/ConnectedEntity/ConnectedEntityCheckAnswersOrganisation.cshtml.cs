@@ -24,6 +24,7 @@ public class ConnectedEntityCheckAnswersOrganisationModel(
     public ConnectedEntityState? ConnectedEntityDetails { get; set; }
     public string? BackPageLink { get; set; }
     public bool ShowRegisterDate { get; set; }
+    public bool ShowLegalForm { get; set; }
     public async Task<IActionResult> OnGet()
     {
         var (valid, state) = ValidatePage();
@@ -126,6 +127,7 @@ public class ConnectedEntityCheckAnswersOrganisationModel(
         Heading = $"Check your answers";
         BackPageLink = GetBackLinkPageName(state);
         ShowRegisterDate = ConnectedEntityCheckAnswersCommon.SetShowRegisterDate(state);
+        ShowLegalForm = ConnectedEntityCheckAnswersCommon.SetShowLegalForm(state);
     }
 
     private RegisterConnectedEntity? RegisterConnectedEntityPayload(ConnectedEntityState state)

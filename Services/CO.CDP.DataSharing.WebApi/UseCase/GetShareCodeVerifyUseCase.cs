@@ -14,7 +14,7 @@ public class GetShareCodeVerifyUseCase(
 
         if (details == null)
         {
-            throw new SharedConsentNotFoundException("Shared Code not found.");
+            throw new ShareCodeNotFoundException(Constants.ShareCodeNotFoundExceptionMessage);
         }
 
         return new ShareVerificationReceipt

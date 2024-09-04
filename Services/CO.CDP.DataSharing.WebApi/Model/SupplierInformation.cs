@@ -12,15 +12,16 @@ public record SupplierInformation
     [Required] public required Guid Id { get; init; }
     /// <example>"Acme Corporation"</example>
     [Required(AllowEmptyStrings = true)] public required string Name { get; init; }
-    [Required] public required List<AssociatedPerson> AssociatedPersons { get; init; }
-    [Required] public required List<OrganisationReference> AdditionalParties { get; init; }
-    [Required] public required List<OrganisationReference> AdditionalEntities { get; init; }
+    [Required] public required List<AssociatedPerson> AssociatedPersons { get; init; } = [];
+    [Required] public required List<OrganisationReference> AdditionalParties { get; init; } = [];
+    [Required] public required List<OrganisationReference> AdditionalEntities { get; init; } = [];
     [Required] public required Identifier Identifier { get; init; }
-    [Required] public required List<Identifier> AdditionalIdentifiers { get; init; }
+    [Required] public required List<Identifier> AdditionalIdentifiers { get; init; } = [];
     [Required] public required Address Address { get; init; }
     [Required] public required ContactPoint ContactPoint { get; init; }
+
     /// <example>["supplier"]</example>
-    [Required] public required List<PartyRole> Roles { get; init; }
+    [Required] public required List<PartyRole> Roles { get; init; } = [];
     [Required] public required Details Details { get; init; }
     [Required] public required SupplierInformationData SupplierInformationData { get; init; }
 }

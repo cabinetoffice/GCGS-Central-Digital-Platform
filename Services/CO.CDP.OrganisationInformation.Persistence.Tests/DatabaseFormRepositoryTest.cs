@@ -178,7 +178,7 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
         var nonExistentSectionId = Guid.NewGuid();
         var nonExistentOrganisationId = Guid.NewGuid();
 
-        var foundAnswerSets = await repository.GetFormAnswerSetsAsync(nonExistentSectionId, nonExistentOrganisationId);
+        var foundAnswerSets = await repository.GetFormAnswerSetsFromCurrentSharedConsentAsync(nonExistentSectionId, nonExistentOrganisationId);
 
         foundAnswerSets.Should().BeEmpty();
     }
@@ -263,7 +263,7 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
         var nonExistentSectionId = Guid.NewGuid();
         var nonExistentOrganisationId = Guid.NewGuid();
 
-        var foundAnswerSets = await repository.GetFormAnswerSetsAsync(nonExistentSectionId, nonExistentOrganisationId);
+        var foundAnswerSets = await repository.GetFormAnswerSetsFromCurrentSharedConsentAsync(nonExistentSectionId, nonExistentOrganisationId);
 
         foundAnswerSets.Should().BeEmpty();
     }
@@ -276,7 +276,7 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
         var nonExistentAnswerSetId = Guid.NewGuid();
         var organisationId = Guid.NewGuid();
 
-        var foundAnswerSet = await repository.GetFormAnswerSetsAsync(nonExistentAnswerSetId, organisationId);
+        var foundAnswerSet = await repository.GetFormAnswerSetsFromCurrentSharedConsentAsync(nonExistentAnswerSetId, organisationId);
 
         foundAnswerSet.Should().BeNullOrEmpty();
     }
@@ -352,7 +352,7 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
         context.FormAnswerSets.Add(answerSet);
         await context.SaveChangesAsync();
 
-        var foundAnswerSet = await repository.GetFormAnswerSetsAsync(sectionId, organisation.Guid);
+        var foundAnswerSet = await repository.GetFormAnswerSetsFromCurrentSharedConsentAsync(sectionId, organisation.Guid);
 
         foundAnswerSet.Should().NotBeNull();
         foundAnswerSet!.Should().HaveCount(1);
@@ -402,7 +402,7 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
         context.FormAnswerSets.Add(answerSet);
         await context.SaveChangesAsync();
 
-        var foundAnswerSet = await repository.GetFormAnswerSetsAsync(sectionId, organisation.Guid);
+        var foundAnswerSet = await repository.GetFormAnswerSetsFromCurrentSharedConsentAsync(sectionId, organisation.Guid);
 
         foundAnswerSet.Should().NotBeNull();
         foundAnswerSet!.Should().HaveCount(0);
