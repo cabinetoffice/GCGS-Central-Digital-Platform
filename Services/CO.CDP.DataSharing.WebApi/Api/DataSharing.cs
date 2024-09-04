@@ -50,9 +50,9 @@ public static class EndpointExtensions
              {
                  operation.OperationId = "GetSharedDataPdf";
                  operation.Description =
-                     "Operation to obtain Supplier information which has been shared as part of a notice. ";
-                 operation.Summary = "Request Supplier Submitted Information Pdf. ";
-                 operation.Responses["200"].Description = "Organisation Information including Form Answers.";
+                     "Operation to obtain Supplier Information as Pdf.";
+                 operation.Summary = "Request Supplier Information as Pdf.";
+                 operation.Responses["200"].Description = "Supplier Information in Pdf format.";
                  operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
                  operation.Responses["404"].Description = "Share code not found or the caller is not authorised to use it.";
                  operation.Responses["500"].Description = "Internal server error.";
