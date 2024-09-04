@@ -25,61 +25,55 @@
                 Add a user
             </h1>
             <form class="form" method="post">
-                <div class="govuk-form-group">
+                <div class="govuk-form-group @(firstNameHasError ? "govuk-form-group--error" : "")">
                     <label class="govuk-label" for="@nameof(Model.FirstName)">
                         First name
                     </label>
 
-                    <div class="govuk-form-group @(firstNameHasError ? "govuk-form-group--error" : "")">
-                        @if (firstNameHasError)
-                        {
-                        <p id="first-name-error" class="govuk-error-message">
-                            <span class="govuk-visually-hidden">Error:</span>
-                            @Html.ValidationMessageFor(m => m.FirstName)
-                        </p>
-                        }
-                        <input class="govuk-input govuk-input--width-20 @(firstNameHasError ? "govuk-input--error" : "")" id="@nameof(Model.FirstName)"
-                               value="@Model.FirstName" name="@nameof(Model.FirstName)" type="text"
-                               spellcheck="false" @(firstNameHasError ? "aria-describedby=first-name-error" : "")>
-                    </div>
+                    @if (firstNameHasError)
+                    {
+                    <p id="first-name-error" class="govuk-error-message">
+                        <span class="govuk-visually-hidden">Error:</span>
+                        @Html.ValidationMessageFor(m => m.FirstName)
+                    </p>
+                    }
+                    <input class="govuk-input govuk-input--width-20 @(firstNameHasError ? "govuk-input--error" : "")" id="@nameof(Model.FirstName)"
+                            value="@Model.FirstName" name="@nameof(Model.FirstName)" type="text"
+                            spellcheck="false" @(firstNameHasError ? "aria-describedby=first-name-error" : "")>
                 </div>
-
-                <div class="govuk-form-group">
-
+                    
+                <div class="govuk-form-group @(lastNameHasError ? "govuk-form-group--error" : "")">
                     <label class="govuk-label" for="@nameof(Model.LastName)">
                         Last name
                     </label>
-                    <div class="govuk-form-group @(lastNameHasError ? "govuk-form-group--error" : "")">
-                        @if (lastNameHasError)
-                        {
+
+                    @if (lastNameHasError)
+                    {
                         <p id="last-name-error" class="govuk-error-message">
                             <span class="govuk-visually-hidden">Error:</span>
                             @Html.ValidationMessageFor(m => m.LastName)
                         </p>
-                        }
-                        <input class="govuk-input govuk-input--width-20 @(lastNameHasError ? "govuk-input--error" : "")" id="@nameof(Model.LastName)"
-                               value="@Model.LastName" name="@nameof(Model.LastName)" type="text"
-                               spellcheck="false" @(lastNameHasError ? "aria-describedby=last-name-error" : "")>
-                    </div>
+                    }
+                    <input class="govuk-input govuk-input--width-20 @(lastNameHasError ? "govuk-input--error" : "")" id="@nameof(Model.LastName)"
+                            value="@Model.LastName" name="@nameof(Model.LastName)" type="text"
+                            spellcheck="false" @(lastNameHasError ? "aria-describedby=last-name-error" : "")>
                 </div>
-
-                <div class="govuk-form-group">
-
+                    
+                <div class="govuk-form-group @(emailHasError ? "govuk-form-group--error" : "")">
                     <label class="govuk-label" for="@nameof(Model.Email)">
                         Email address
                     </label>
-                    <div class="govuk-form-group @(emailHasError ? "govuk-form-group--error" : "")">
-                        @if (emailHasError)
-                        {
-                            <p id="email-error" class="govuk-error-message">
-                                <span class="govuk-visually-hidden">Error:</span>
-                                @Html.ValidationMessageFor(m => m.Email)
-                            </p>
-                        }
-                        <input class="govuk-input govuk-input--width-20 @(emailHasError ? "govuk-input--error" : "")" id="@nameof(Model.Email)"
-                               value="@Model.Email" name="@nameof(Model.Email)" type="text"
-                               spellcheck="false" @(emailHasError ? "aria-describedby=email-error" : "")>
-                    </div>
+
+                    @if (emailHasError)
+                    {
+                        <p id="email-error" class="govuk-error-message">
+                            <span class="govuk-visually-hidden">Error:</span>
+                            @Html.ValidationMessageFor(m => m.Email)
+                        </p>
+                    }
+                    <input class="govuk-input govuk-input--width-20 @(emailHasError ? "govuk-input--error" : "")" id="@nameof(Model.Email)"
+                            value="@Model.Email" name="@nameof(Model.Email)" type="text"
+                            spellcheck="false" @(emailHasError ? "aria-describedby=email-error" : "")>
                 </div>
 
                 <div class="govuk-form-group">
@@ -96,7 +90,7 @@
                     </div>
                 </div>
 
-                <div class="govuk-form-group" @(roleHasError ? "govuk-form-group--error" : "")>
+                <div class="govuk-form-group @(roleHasError ? "govuk-form-group--error" : "")">
                     <fieldset class="govuk-fieldset" aria-describedby="role-hint">
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                             <h1 class="govuk-fieldset__heading">
