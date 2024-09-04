@@ -39,8 +39,8 @@ builder.Services.AddScoped<IUseCase<string, SupplierInformation?>, GetSharedData
 builder.Services.AddScoped<IUseCase<string, byte[]?>, GetSharedDataPdfUseCase>();
 builder.Services.AddDataSharingProblemDetails();
 builder.Services.AddJwtBearerAndApiKeyAuthentication(builder.Configuration, builder.Environment);
-builder.Services.AddAuthorization();
-//builder.Services.AddOrganisationAuthorization();
+//builder.Services.AddAuthorization();
+builder.Services.AddOrganisationAuthorization();
 
 builder.Services
     .AddAwsConfiguration(builder.Configuration)
