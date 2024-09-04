@@ -42,7 +42,6 @@ builder.Services.AddJwtBearerAndApiKeyAuthentication(builder.Configuration, buil
 builder.Services.AddAuthorization();
 //builder.Services.AddOrganisationAuthorization();
 
-
 builder.Services
     .AddAwsConfiguration(builder.Configuration)
     .AddAwsS3Service();

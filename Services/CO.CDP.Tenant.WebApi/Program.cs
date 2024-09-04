@@ -1,5 +1,6 @@
 using System.Reflection;
 using CO.CDP.Authentication;
+using CO.CDP.AwsServices;
 using CO.CDP.Configuration.Assembly;
 using CO.CDP.Configuration.ForwardedHeaders;
 using CO.CDP.Configuration.Helpers;
@@ -12,7 +13,6 @@ using CO.CDP.Tenant.WebApi.UseCase;
 using Microsoft.EntityFrameworkCore;
 using Tenant = CO.CDP.Tenant.WebApi.Model.Tenant;
 using TenantLookup = CO.CDP.OrganisationInformation.TenantLookup;
-using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.ConfigureForwardedHeaders();
@@ -44,14 +44,14 @@ builder.Services.AddHttpContextAccessor();
 
 if (Assembly.GetEntryAssembly().IsRunAs("CO.CDP.Tenant.WebApi"))
 {
+    builder.Services
+        .AddAwsConfiguration(builder.Configuration)
+        .AddAmazonCloudWatchLogsService()
+        .AddCloudWatchSerilog();
+
     builder.Services.AddHealthChecks()
         .AddNpgSql(ConnectionStringHelper.GetConnectionString(builder.Configuration,
             "OrganisationInformationDatabase"));
-    builder.Services.AddSerilog((services, lc) => lc
-        .ReadFrom.Configuration(builder.Configuration)
-        .ReadFrom.Services(services)
-        .Enrich.FromLogContext()
-    );
 }
 
 var app = builder.Build();
