@@ -29,6 +29,17 @@ public class TempDataServiceTest
     }
 
     [Fact]
+    public void Put_StoresStringValueInTempData()
+    {
+        var expectedValue = "Just a plain string";
+
+        _tempDataService.Put("testKey", expectedValue);
+
+        _tempData["testKey"].Should().NotBeNull()
+            .And.Be(JsonSerializer.Serialize(expectedValue));
+    }
+
+    [Fact]
     public void Get_RetrievesStoredValue()
     {
         var expectedValue = new TestObject { Name = "Jane", Age = 25 };

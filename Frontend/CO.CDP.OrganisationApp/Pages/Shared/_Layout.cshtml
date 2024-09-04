@@ -103,6 +103,13 @@
                 </span>
             </p>
         </div>
+
+        @* Replicates the BeforeContent region in the base govuk-frontend template *@
+        @* This is useful for things like back links, breadcrumbs etc which should not be rendered inside the <main> element *@
+        @await RenderSectionAsync("BeforeContent", required: false)
+
+        <partial name="_FlashMessage" />
+
         @RenderBody()
     </div>
 
