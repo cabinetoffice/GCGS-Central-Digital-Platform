@@ -1,5 +1,6 @@
 using Amazon.CloudWatchLogs;
 using Amazon.Runtime;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Serilog;
@@ -13,6 +14,12 @@ namespace CO.CDP.AwsServices;
 
 public static class CloudWatchExtensions
 {
+    public static IServiceCollection AddLoggingConfiguration(this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        return services.Configure<LoggingConfiguration>(configuration.GetSection("Logging"));
+    }
+
     public static IServiceCollection AddAmazonCloudWatchLogsService(this IServiceCollection services)
     {
         return services
@@ -66,11 +73,21 @@ public static class CloudWatchExtensions
     {
         return services.AddSerilog((serviceProvider, lc) =>
         {
+            var configuration = serviceProvider.GetRequiredService<IOptions<LoggingConfiguration>>().Value;
             lc.WriteTo.AmazonCloudWatch(serviceProvider)
-                .MinimumLevel.Information()
+                .MinimumLevel.Is(configuration.MinimumLevel.Default)
+                .OverrideLogLevels(configuration.MinimumLevel.Override)
+                .WriteTo.Console()
                 .Enrich.FromLogContext();
             configureLogger(serviceProvider, lc);
         });
+    }
+
+    private static LoggerConfiguration OverrideLogLevels(this LoggerConfiguration configuration,
+        Dictionary<string, LogEventLevel> logLevels)
+    {
+        return logLevels.Aggregate(configuration,
+            (c, o) => c.MinimumLevel.Override(o.Key, o.Value));
     }
 
     private static LoggerConfiguration AmazonCloudWatch(this LoggerSinkConfiguration loggerConfiguration,
