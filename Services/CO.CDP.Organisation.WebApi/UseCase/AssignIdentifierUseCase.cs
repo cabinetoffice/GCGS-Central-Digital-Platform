@@ -2,11 +2,19 @@ using CO.CDP.Functional;
 using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.OrganisationInformation.Persistence;
 
+using System.Collections.Generic;
+
 namespace CO.CDP.Organisation.WebApi.UseCase;
 
 public class AssignIdentifierUseCase(IOrganisationRepository organisations)
     : IUseCase<AssignOrganisationIdentifier, bool>
 {
+    public class IdentifierSchemes
+    {
+        public const string Ppon = "CDP-PPON";
+        public const string Other = "Other";
+    }
+
     public async Task<bool> Execute(AssignOrganisationIdentifier command)
     {
         await FindOrganisation(command)
@@ -34,10 +42,34 @@ public class AssignIdentifierUseCase(IOrganisationRepository organisations)
             IdentifierId = command.Identifier.Id,
             Scheme = command.Identifier.Scheme,
             LegalName = command.Identifier.LegalName,
-            Primary = organisation.Identifiers.Count == 0
+            Primary = IsPrimaryIdentifier(organisation)
         });
 
         return organisation;
+    }
+
+    private static void ResetIdentifierPrimaryToFalse(OrganisationInformation.Persistence.Organisation.Identifier? identifier)
+    {
+        if (identifier != null)
+        {
+            identifier.Primary = false;
+        }    
+    }
+
+    public static bool IsPrimaryIdentifier(OrganisationInformation.Persistence.Organisation organisation)
+    {
+        bool isPrimary = organisation.Identifiers.Count == 0;
+
+        if (organisation.Identifiers.Any(i => i.Scheme == IdentifierSchemes.Other && i.Primary) ||
+            organisation.Identifiers.Any(i => i.Scheme == IdentifierSchemes.Ppon && i.Primary))
+        {
+            ResetIdentifierPrimaryToFalse(organisation.Identifiers.FirstOrDefault(i => i.Scheme == IdentifierSchemes.Other && i.Primary));
+            ResetIdentifierPrimaryToFalse(organisation.Identifiers.FirstOrDefault(i => i.Scheme == IdentifierSchemes.Ppon && i.Primary));
+
+            isPrimary = true;
+        }
+
+        return isPrimary;
     }
 
     private async Task<OrganisationInformation.Persistence.Organisation> FindOrganisation(

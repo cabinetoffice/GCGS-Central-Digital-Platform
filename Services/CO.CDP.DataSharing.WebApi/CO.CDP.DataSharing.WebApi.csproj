@@ -18,8 +18,10 @@
         <PackageReference Include="AutoMapper" Version="13.0.1" />
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.8" />
         <PackageReference Include="DotSwashbuckle.AspNetCore" Version="3.0.10" />
+        <PackageReference Include="MigraDocCore.Rendering" Version="1.3.65" />
         <PackageReference Include="Nanoid" Version="3.1.0" />
         <PackageReference Include="AspNetCore.HealthChecks.NpgSql" Version="8.0.1" />
+        <PackageReference Include="PDFsharp-MigraDoc" Version="6.1.1" />
         <ProjectReference Include="..\..\Libraries\CO.CDP.Authentication\CO.CDP.Authentication.csproj" />
         <ProjectReference Include="..\..\Libraries\CO.CDP.AwsServices\CO.CDP.AwsServices.csproj" />
         <ProjectReference Include="..\..\Libraries\CO.CDP.Functional\CO.CDP.Functional.csproj" />

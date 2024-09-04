@@ -56,11 +56,6 @@ public class UpdateFormSectionAnswersUseCase(
 
             if (newFilename != existingFilename)
             {
-                if (!string.IsNullOrWhiteSpace(existingFilename))
-                {
-                    await fileHostManager.RemoveFromPermanentBucket(existingFilename);
-                }
-
                 if (!string.IsNullOrWhiteSpace(newFilename))
                 {
                     await fileHostManager.CopyToPermanentBucket(newFilename);
