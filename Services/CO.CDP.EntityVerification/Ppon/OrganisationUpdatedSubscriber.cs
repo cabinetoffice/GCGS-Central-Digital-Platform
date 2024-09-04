@@ -24,9 +24,12 @@ public class OrganisationUpdatedSubscriber(
 
             if (pponToUpdate != null)
             {
-                //
-                //  TODO: set endsOn for any identifiers that aren't in the update message.
-                //          add unit test.
+                // Find the stored identifiers that don't exist in @event. These are ended identifiers.
+                var endIdentifiers = pponToUpdate.Identifiers
+                    .Where(pi => !@event.AdditionalIdentifiers.Any(i => i.Id == pi.IdentifierId && i.Scheme == pi.Scheme))
+                    .Where(pi => pi.endsOn == null)
+                    .ToList();
+                endIdentifiers.ForEach(i => i.endsOn = DateTimeOffset.UtcNow);
 
                 // Add new identifiers that do not already exist.
                 var newEventIdentifiers = @event.AllIdentifiers()
