@@ -28,6 +28,7 @@ public class AddUserModel(
 
     [BindProperty]
     [Required(ErrorMessage = "Email required")]
+    [EmailAddress(ErrorMessage = "Enter an email address in the correct format, like name@example.com")]
     public string? Email { get; set; }
 
     [BindProperty]
