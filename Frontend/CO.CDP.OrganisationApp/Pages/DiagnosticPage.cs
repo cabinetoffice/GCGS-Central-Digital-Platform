@@ -26,14 +26,14 @@ public class DiagnosticPage(
 
         var userDetails = session.Get<UserDetails>(Session.UserDetailsKey);
 
-        static string tokenHtml(string text, string value) =>
-            $"<p><strong>{text} (<a target='_blank' href='https://jwt.io/#debugger-io?token={value}'>Decode</a>):</strong><br/><span style='overflow-wrap: break-word;'>{value}</span></p>";
+        static string tokenHtml(string text, string value, string id) =>
+            $"<p><strong>{text} (<a target='_blank' href='https://jwt.io/#debugger-io?token={value}'>Decode</a>) (<a style='text-decoration: none;' href=\"javascript:copyContent('{id}');\">📄 Copy</a>):</strong><br/><span id='{id}' style='overflow-wrap: break-word;'>{value}</span></p>";
 
-        StringBuilder sb = new("<!DOCTYPE html><html><head><title>Diagnostic Page</title></head><body><h1>Diagnostic Page</h1>");
+        StringBuilder sb = new("<!DOCTYPE html><html><head><meta charset=\"utf-8\"><title>Diagnostic Page</title></head><body><h1>Diagnostic Page</h1>");
 
         if (!string.IsNullOrWhiteSpace(oneLoginToken))
         {
-            sb.Append(tokenHtml("OneLogin Access Token", oneLoginToken));
+            sb.Append(tokenHtml("OneLogin Access Token", oneLoginToken, "oat"));
         }
 
         if (!string.IsNullOrWhiteSpace(oneLoginTokenExpiry))
@@ -43,12 +43,14 @@ public class DiagnosticPage(
 
         if (userDetails?.AuthTokens != null)
         {
-            sb.Append(tokenHtml("Authority Access Token", userDetails.AuthTokens.AccessToken));
+            sb.Append(tokenHtml("Authority Access Token", userDetails.AuthTokens.AccessToken, "aat"));
             sb.Append($"<p><strong>Authority Access Token Expiry: </strong><br/>{userDetails.AuthTokens.AccessTokenExpiry}</p>");
 
             sb.Append($"<p><strong>Authority Refresh Token: </strong><br/><span style='overflow-wrap: break-word;'>{userDetails.AuthTokens.RefreshToken}</span></p>");
             sb.Append($"<p><strong>Authority Refresh Token Expiry: </strong><br/>{userDetails.AuthTokens.RefreshTokenExpiry}</p>");
         }
+
+        sb.Append("<script>const copyContent = async (id) => {try {const text = document.getElementById(id).innerHTML;await navigator.clipboard.writeText(text);} catch (e) {}}</script>");
 
         sb.Append("</body></html>");
 
