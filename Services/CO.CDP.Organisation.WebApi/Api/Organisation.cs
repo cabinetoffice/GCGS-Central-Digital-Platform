@@ -1,6 +1,7 @@
 using CO.CDP.Functional;
 using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.Organisation.WebApi.UseCase;
+using CO.CDP.OrganisationInformation.Persistence;
 using CO.CDP.Swashbuckle.Filter;
 using CO.CDP.Swashbuckle.Security;
 using CO.CDP.Swashbuckle.SwaggerGen;
@@ -442,7 +443,7 @@ public static class EndpointExtensions
                 return operation;
             });
 
-        app.MapGet("/{organisationId}/persons/person-invites",
+        app.MapGet("/{organisationId}/invites",
                 async (Guid organisationId, IUseCase<Guid, IEnumerable<PersonInviteModel>> useCase) =>
                     await useCase.Execute(organisationId)
                         .AndThen(personInvites => personInvites != null ? Results.Ok(personInvites) : Results.NotFound()))
@@ -464,7 +465,7 @@ public static class EndpointExtensions
                 return operation;
             });
 
-        app.MapPost("/{organisationId}/persons/person-invite",
+        app.MapPost("/{organisationId}/invite",
                 async (Guid organisationId, InvitePersonToOrganisation invitePersonToOrganisation, IUseCase<(Guid, InvitePersonToOrganisation), PersonInvite> useCase) =>
 
                     await useCase.Execute((organisationId, invitePersonToOrganisation))
@@ -492,7 +493,35 @@ public static class EndpointExtensions
                 return operation;
             });
 
-        app.MapDelete("/{organisationId}/person-invite/{personInviteId}",
+        app.MapPut("/{organisationId}/invite/{personInviteId}",
+             async (Guid organisationId, Guid personInviteId, UpdatePersonToOrganisation updatePersonToOrganisation, IUseCase<(Guid, Guid, UpdatePersonToOrganisation), PersonInvite> useCase) =>
+
+                 await useCase.Execute((organisationId, personInviteId, updatePersonToOrganisation))
+                     .AndThen(_ => Results.NoContent())
+         )
+         .Produces(StatusCodes.Status201Created)
+         .Produces(StatusCodes.Status204NoContent)
+         .ProducesProblem(StatusCodes.Status400BadRequest)
+         .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
+         .ProducesProblem(StatusCodes.Status404NotFound)
+         .ProducesProblem(StatusCodes.Status422UnprocessableEntity)
+         .ProducesProblem(StatusCodes.Status500InternalServerError)
+         .WithOpenApi(operation =>
+         {
+             operation.OperationId = "UpdatePersonInvite";
+             operation.Description = "Update a person invite.";
+             operation.Summary = "Update a new person invite.";
+             operation.Responses["201"].Description = "Person invite updated successfully.";
+             operation.Responses["204"].Description = "Person invite updated successfully.";
+             operation.Responses["400"].Description = "Bad request.";
+             operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
+             operation.Responses["404"].Description = "Organisation or Person Invite not found.";
+             operation.Responses["422"].Description = "Unprocessable entity.";
+             operation.Responses["500"].Description = "Internal server error.";
+             return operation;
+         });
+
+        app.MapDelete("/{organisationId}/invite/{personInviteId}",
                 async (Guid organisationId, Guid personInviteId, IUseCase<(Guid, Guid), bool> useCase) =>
                     await useCase.Execute((organisationId, personInviteId))
                         .AndThen(_ => Results.NoContent()))
