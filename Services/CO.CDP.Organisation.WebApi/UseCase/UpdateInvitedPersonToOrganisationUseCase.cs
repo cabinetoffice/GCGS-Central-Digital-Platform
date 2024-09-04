@@ -7,9 +7,9 @@ public class UpdateInvitedPersonToOrganisationUseCase(
     IOrganisationRepository organisationRepository,
     IPersonInviteRepository personInviteRepository
    )
-    : IUseCase<(Guid organisationId, Guid personInviteId, UpdatePersonToOrganisation updateInvitedPerson), PersonInvite>
+    : IUseCase<(Guid organisationId, Guid personInviteId, UpdatePersonToOrganisation updateInvitedPerson), bool>
 {
-    public async Task<PersonInvite> Execute((Guid organisationId, Guid personInviteId, UpdatePersonToOrganisation updateInvitedPerson) command)
+    public async Task<bool> Execute((Guid organisationId, Guid personInviteId, UpdatePersonToOrganisation updateInvitedPerson) command)
     {
         if (!command.updateInvitedPerson.Scopes.Any())        
             throw new EmptyPersonRoleException($"Empty Scope of Invited Person {command.personInviteId}.");
@@ -22,10 +22,9 @@ public class UpdateInvitedPersonToOrganisationUseCase(
 
         var personInvite = UpdatePersonInvite(command.updateInvitedPerson, invitedPerson);
 
-
         personInviteRepository.Save(personInvite);
 
-        return personInvite;
+        return await Task.FromResult(true);     
     }
 
     private PersonInvite UpdatePersonInvite(
