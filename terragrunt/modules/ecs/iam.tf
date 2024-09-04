@@ -20,6 +20,17 @@ resource "aws_iam_role_policy_attachment" "ecs_task_access_queue" {
   role       = var.role_ecs_task_name
 }
 
+resource "aws_iam_policy" "ecs_task_serilog" {
+  name   = "${local.name_prefix}-ecs-task-serilog"
+  policy = data.aws_iam_policy_document.ecs_task_serilog.json
+  tags   = var.tags
+}
+
+resource "aws_iam_role_policy_attachment" "ecs_task_serilog" {
+  policy_arn = aws_iam_policy.ecs_task_serilog.arn
+  role       = var.role_ecs_task_name
+}
+
 resource "aws_iam_policy" "ecr_pull_from_orchestrator" {
   name   = "${local.name_prefix}-ecr-pull-from-orchestrator"
   policy = data.aws_iam_policy_document.ecr_pull_from_orchestrator.json
