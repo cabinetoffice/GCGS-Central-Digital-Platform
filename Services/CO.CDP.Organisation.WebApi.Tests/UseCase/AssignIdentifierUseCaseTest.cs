@@ -60,6 +60,118 @@ public class AssignIdentifierUseCaseTest
     }
 
     [Fact]
+    public async Task ItAssignsPponIdentifierAsPrimaryWhenOtherIdentifierExistsAsPrimary()
+    {
+        var organisation = GivenOrganisationExist(
+            organisationId: Guid.NewGuid(),
+            identifiers: [  new Persistence.Organisation.Identifier {
+                LegalName = "Acme Ltd",
+                Primary = true,
+                Scheme = "Other"
+            }
+         ]);
+
+        var result = await UseCase.Execute(new AssignOrganisationIdentifier
+        {
+            OrganisationId = organisation.Guid,
+            Identifier = new OrganisationIdentifier
+            {
+                Id = "c0777aeb968b4113a27d94e55b10c1b4",
+                Scheme = "CDP-PPON",
+                LegalName = "Acme Ltd"
+            }
+        });
+
+        _organisations.Verify(r => r.Save(It.Is<Persistence.Organisation>(o =>
+         o.Guid == organisation.Guid && o.Identifiers.Contains(new Persistence.Organisation.Identifier
+             {
+                 Primary = true,
+                 Scheme = "CDP-PPON",
+                 IdentifierId = "c0777aeb968b4113a27d94e55b10c1b4",
+                 LegalName = "Acme Ltd"
+             }) && o.Identifiers.Contains(new Persistence.Organisation.Identifier
+             {
+                 LegalName = "Acme Ltd",
+                 Primary = false,
+                 Scheme = "Other"
+             })
+         )));
+
+        result.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task ItAssignsVatIdentifierAsPrimaryWhenPponIdentifierExistsAsPrimary()
+    {
+        var organisation = GivenOrganisationExist(
+            organisationId: Guid.NewGuid(),
+            identifiers: [  new Persistence.Organisation.Identifier {
+                IdentifierId = "c0777aeb968b4113a27d94e55b10c1b4",
+                Scheme = "CDP-PPON",
+                Primary = true,
+                LegalName = "Acme Ltd"
+            }
+         ]);
+
+        var result = await UseCase.Execute(new AssignOrganisationIdentifier
+        {
+            OrganisationId = organisation.Guid,
+            Identifier = new OrganisationIdentifier
+            {
+                Id = "0123456789",
+                Scheme = "VAT",
+                LegalName = "Acme Ltd"
+            }
+        });
+
+        _organisations.Verify(r => r.Save(It.Is<Persistence.Organisation>(o =>
+         o.Guid == organisation.Guid && o.Identifiers.Contains(new Persistence.Organisation.Identifier
+         {
+             Primary = false,
+             Scheme = "CDP-PPON",
+             IdentifierId = "c0777aeb968b4113a27d94e55b10c1b4",
+             LegalName = "Acme Ltd"
+         }) && o.Identifiers.Contains(new Persistence.Organisation.Identifier
+         {
+             IdentifierId = "0123456789",
+             Scheme = "VAT",
+             LegalName = "Acme Ltd",
+             Primary = true
+         })
+         )));
+
+        result.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task ItAssignsOtherIdentifierAsPrimaryIfThereAreNoIdentifiers()
+    {
+        var organisation = GivenOrganisationExist(
+            organisationId: Guid.NewGuid(),
+            identifiers: [ ]);
+
+        var result = await UseCase.Execute(new AssignOrganisationIdentifier
+        {
+            OrganisationId = organisation.Guid,
+            Identifier = new OrganisationIdentifier
+            {
+                Scheme = "Other",
+                LegalName = "Acme Ltd"
+            }
+        });
+
+        _organisations.Verify(r => r.Save(It.Is<Persistence.Organisation>(o =>
+         o.Guid == organisation.Guid && o.Identifiers.Contains(new Persistence.Organisation.Identifier
+         {
+             Primary = true,
+             Scheme = "Other",
+             LegalName = "Acme Ltd"
+         }))));
+
+        result.Should().BeTrue();
+    }
+
+    [Fact]
     public async Task ItAssignsNonPrimaryIdentifierIfTheOrganisationAlreadyHasIdentifiersAssigned()
     {
         var organisation = GivenOrganisationExist(

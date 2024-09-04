@@ -5,6 +5,8 @@ public record AwsConfiguration
     public Credentials? Credentials { get; init; }
     public string? ServiceURL { get; init; }
     public Buckets? Buckets { get; init; }
+    public string? LogGroup { get; init; }
+    public string? LogStream { get; init; }
     public SqsDispatcherConfiguration? SqsDispatcher { get; init; }
     public SqsPublisherConfiguration? SqsPublisher { get; init; }
 }

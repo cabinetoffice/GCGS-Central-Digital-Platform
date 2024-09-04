@@ -417,6 +417,7 @@ data "aws_iam_policy_document" "terraform_product" {
       "logs:Delete*",
       "logs:List*",
       "logs:Put*",
+      "logs:TagResource",
     ]
     effect = "Allow"
     resources = [
