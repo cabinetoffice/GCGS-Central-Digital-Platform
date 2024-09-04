@@ -77,7 +77,7 @@ public static class CloudWatchExtensions
             lc.WriteTo.AmazonCloudWatch(serviceProvider)
                 .MinimumLevel.Is(configuration.MinimumLevel.Default)
                 .OverrideLogLevels(configuration.MinimumLevel.Override)
-                .WriteTo.Console()
+                .EnableConsole(configuration.Console)
                 .Enrich.FromLogContext();
             configureLogger(serviceProvider, lc);
         });
@@ -88,6 +88,11 @@ public static class CloudWatchExtensions
     {
         return logLevels.Aggregate(configuration,
             (c, o) => c.MinimumLevel.Override(o.Key, o.Value));
+    }
+
+    private static LoggerConfiguration EnableConsole(this LoggerConfiguration configuration, bool enable)
+    {
+        return enable ? configuration.WriteTo.Console() : configuration;
     }
 
     private static LoggerConfiguration AmazonCloudWatch(this LoggerSinkConfiguration loggerConfiguration,

@@ -5,6 +5,8 @@ namespace CO.CDP.AwsServices;
 public record LoggingConfiguration
 {
     public MinimumLevel MinimumLevel { get; init; } = new();
+
+    public bool Console { get; init; } = false;
 }
 
 public record MinimumLevel
