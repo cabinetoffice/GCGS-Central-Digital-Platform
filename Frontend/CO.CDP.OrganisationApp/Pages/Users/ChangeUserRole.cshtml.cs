@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 using CO.CDP.Organisation.WebApiClient;
+using CO.CDP.OrganisationApp.Constants;
 
 namespace CO.CDP.OrganisationApp.Pages.Users;
 
@@ -8,12 +9,8 @@ public class ChangeUserRole(
     IOrganisationClient organisationClient,
     ISession session) : LoggedInUserAwareModel(session)
 {
-    public const string ScopeAdmin = "ADMIN";
-    public const string ScopeEditor = "EDITOR";
-    public const string ScopeViewer = "VIEWER";
-
     [BindProperty(SupportsGet = true)]
-    public string Handler { get; set; }
+    public string? Handler { get; set; }
 
     [BindProperty(SupportsGet = true)]
     public Guid Id { get; set; }
@@ -28,7 +25,7 @@ public class ChangeUserRole(
     [Required(ErrorMessage = "Role required")]
     public string? Role { get; set; }
 
-    public string UserFullName;
+    public string? UserFullName;
 
     public async Task<IActionResult> OnGetPerson()
     {
@@ -54,7 +51,7 @@ public class ChangeUserRole(
         }
 
         UserFullName = personInvite.FirstName + " " + personInvite.LastName;
-        IsAdmin = personInvite.Scopes.Contains(ScopeAdmin);
+        IsAdmin = personInvite.Scopes.Contains(PersonScopes.Admin);
         Role = GetRole(personInvite.Scopes);
 
         return Page();
@@ -62,13 +59,13 @@ public class ChangeUserRole(
 
     public string? GetRole(ICollection<string> scopes)
     {
-        if (scopes.Contains(ScopeEditor))
+        if (scopes.Contains(PersonScopes.Editor))
         {
-            return ScopeEditor;
+            return PersonScopes.Editor;
         }
-        else if (scopes.Contains(ScopeViewer))
+        else if (scopes.Contains(PersonScopes.Viewer))
         {
-            return ScopeViewer;
+            return PersonScopes.Viewer;
         }
 
         return null;

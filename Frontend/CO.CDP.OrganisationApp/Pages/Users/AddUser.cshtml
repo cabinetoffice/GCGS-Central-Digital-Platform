@@ -1,5 +1,6 @@
 @page "/organisation/{id}/users/add-user/{personId?}"
 @model CO.CDP.OrganisationApp.Pages.Users.AddUserModel
+@using CO.CDP.OrganisationApp.Constants
 
 @{
     var firstNameHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.FirstName)).HasInnerHtml;
@@ -116,7 +117,7 @@
                         <div class="govuk-radios" data-module="govuk-radios">
 
                             <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="role-editor" name="role" type="radio" value="EDITOR" aria-describedby="role-editor-hint" @IsSelected(Model.Role == "EDITOR")>
+                                <input class="govuk-radios__input" id="role-editor" name="role" type="radio" value="@PersonScopes.Editor" aria-describedby="role-editor-hint" @IsSelected(Model.Role == "EDITOR")>
                                 <label class="govuk-label govuk-radios__label" for="role-editor">
                                     Editor
                                 </label>
@@ -126,7 +127,7 @@
                             </div>
 
                             <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="role-viewer" name="role" type="radio" value="VIEWER" aria-describedby="role-viewer-hint" @IsSelected(Model.Role == "VIEWER")>
+                                <input class="govuk-radios__input" id="role-viewer" name="role" type="radio" value="@PersonScopes.Viewer" aria-describedby="role-viewer-hint" @IsSelected(Model.Role == "VIEWER")>
                                 <label class="govuk-label govuk-radios__label" for="role-viewer">
                                     Viewer
                                 </label>

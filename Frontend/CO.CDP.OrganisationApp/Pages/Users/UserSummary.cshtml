@@ -1,5 +1,6 @@
 @page "/organisation/{id}/users/user-summary"
 @model CO.CDP.OrganisationApp.Pages.Users.UserSummaryModel
+@using CO.CDP.OrganisationApp.Constants
 
 @{
     var hasError = ((TagBuilder)Html.ValidationMessageFor(m => m.HasPerson)).HasInnerHtml;
@@ -26,17 +27,17 @@
                             @p.FirstName @p.LastName
                             @foreach(var scope in p.Scopes)
                             {
-                                if (scope == "ADMIN")
+                                if (scope == PersonScopes.Admin)
                                 {
                                     <span class="govuk-tag">Admin</span>
                                 }
 
-                                if (scope == "EDITOR")
+                                if (scope == PersonScopes.Editor)
                                 {
                                     <span class="govuk-tag govuk-tag--green">Editor</span>
                                 }
 
-                                if (scope == "VIEWER")
+                                if (scope == PersonScopes.Viewer)
                                 {
                                     <span class="govuk-tag govuk-tag--yellow">Viewer</span>
                                 }
@@ -70,17 +71,17 @@
                             @p.FirstName @p.LastName
                             @foreach(var scope in p.Scopes)
                             {
-                                if (scope == "ADMIN")
+                                if (scope == PersonScopes.Admin)
                                 {
                                     <span class="govuk-tag">Admin</span>
                                 }
 
-                                if (scope == "EDITOR")
+                                if (scope == PersonScopes.Editor)
                                 {
                                     <span class="govuk-tag govuk-tag--green">Editor</span>
                                 }
 
-                                if (scope == "VIEWER")
+                                if (scope == PersonScopes.Viewer)
                                 {
                                     <span class="govuk-tag govuk-tag--yellow">Viewer</span>
                                 }
