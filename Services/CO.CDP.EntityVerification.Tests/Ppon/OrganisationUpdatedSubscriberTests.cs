@@ -14,17 +14,12 @@ public class OrganisationUpdatedSubscriberTests
         var mockPponRepository = new Mock<IPponRepository>();
         var subscriber = new OrganisationUpdatedSubscriber(mockPponRepository.Object);
         var mockEvent = GivenOrganisationUpdatedEvent();
-        var testPpon = GivenPpon();
-        var pponIdentifier = CreatePponIdentifier();
-
-        var totalIdentifiersBeforeUpdate = mockEvent.AllIdentifiers().Count();
-        mockEvent.AdditionalIdentifiers.Add(pponIdentifier);
-
+        var testPpon = GivenPpon(mockEvent.Identifier.Id);
+        var totalAdditionalIdentifiersBeforeUpdate = mockEvent.AdditionalIdentifiers.Count();
+        
         mockPponRepository
-            .Setup(repo => repo.FindPponByPponIdAsync(pponIdentifier.Id))
+            .Setup(repo => repo.FindPponByPponIdAsync(mockEvent.Identifier.Id))
             .ReturnsAsync(testPpon);
-
-        testPpon.Identifiers.Should().BeEmpty();
 
         await subscriber.Handle(mockEvent);
 
@@ -32,7 +27,34 @@ public class OrganisationUpdatedSubscriberTests
             s => s.Save(It.Is<EntityVerification.Persistence.Ppon>(p =>
                 (p.IdentifierId == testPpon.IdentifierId))),
             Times.Once);
-        testPpon.Identifiers.Count.Should().Be(totalIdentifiersBeforeUpdate);
+        testPpon.Identifiers.Count.Should().Be(totalAdditionalIdentifiersBeforeUpdate);
+        testPpon.Identifiers.ToList().ForEach(i => i.endsOn.Should().BeNull());
+    }
+
+    [Fact]
+    public async Task Handle_SetsEndsOn_ForPersistedIdentifiersThatDoNotExistInUpdate()
+    {
+        var mockPponRepository = new Mock<IPponRepository>();
+        var subscriber = new OrganisationUpdatedSubscriber(mockPponRepository.Object);
+        var mockEvent = GivenOrganisationUpdatedEvent();
+        var testPpon = GivenPponWithIdentifier(mockEvent.Identifier.Id);
+        var totalAdditionalIdentifiersInUpdate = mockEvent.AdditionalIdentifiers.Count();
+        var totalPersistedIdentifiersBeforeHandle = testPpon.Identifiers.Count();
+
+        mockPponRepository
+            .Setup(repo => repo.FindPponByPponIdAsync(mockEvent.Identifier.Id))
+            .ReturnsAsync(testPpon);
+
+        await subscriber.Handle(mockEvent);
+
+        mockPponRepository.Verify(
+            s => s.Save(It.Is<EntityVerification.Persistence.Ppon>(p =>
+                (p.IdentifierId == testPpon.IdentifierId))),
+            Times.Once);
+        testPpon.Identifiers.Count.Should().Be(totalAdditionalIdentifiersInUpdate + totalPersistedIdentifiersBeforeHandle);
+
+        testPpon.Identifiers.FirstOrDefault(i => i.endsOn == null).Should().NotBeNull();
+        testPpon.Identifiers.FirstOrDefault(i => i.endsOn != null).Should().NotBeNull();
     }
 
     [Fact]

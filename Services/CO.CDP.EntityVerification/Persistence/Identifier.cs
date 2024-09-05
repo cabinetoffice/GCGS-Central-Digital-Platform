@@ -11,6 +11,8 @@ public class Identifier : IEntityDate
     public Uri? Uri { get; set; }
     public DateTimeOffset CreatedOn { get; set; }
     public DateTimeOffset UpdatedOn { get; set; }
+    public DateTimeOffset startsOn { get; set; }
+    public DateTimeOffset? endsOn { get; set; }
 
     public static ICollection<Identifier> GetPersistenceIdentifiers(IEnumerable<Events.Identifier> evIds)
     {
