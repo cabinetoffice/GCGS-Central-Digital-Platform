@@ -20,6 +20,7 @@ public class DatabasePersonInviteRepository(OrganisationInformationContext conte
     public async Task<IEnumerable<PersonInvite>> FindByOrganisation(Guid organisationId)
     {
         return await context.PersonInvites
+            .Include(pi => pi.Person)
             .Where(pi => pi.Organisation.Guid == organisationId)
             .ToArrayAsync();
     }
