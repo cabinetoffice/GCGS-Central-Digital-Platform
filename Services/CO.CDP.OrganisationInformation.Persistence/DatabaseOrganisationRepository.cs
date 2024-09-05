@@ -72,6 +72,16 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
         return await result.ToListAsync();
     }
 
+    public async Task<IList<Organisation.Qualification>> GetQualifications(int organisationId)
+    {
+        return await context.Organisations
+            .Where(x => x.Id == organisationId && x.SupplierInfo != null)
+            .Include(x => x.SupplierInfo)
+                .ThenInclude(x => x.Qualifications)
+            .SelectMany(x => x.SupplierInfo.Qualifications)
+            .ToListAsync();
+    }
+
     public void Save(Organisation organisation)
     {
         try
