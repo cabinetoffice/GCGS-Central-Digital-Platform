@@ -1,3 +1,5 @@
+using Docker.DotNet.Models;
+
 namespace CO.CDP.EntityVerification.Tests.Ppon;
 
 public class PponFactories
@@ -10,5 +12,20 @@ public class PponFactories
             Name = string.Empty,
             OrganisationId = Guid.NewGuid()
         };
+    }
+
+    public static EntityVerification.Persistence.Ppon GivenPponWithIdentifier(string? pponId = null)
+    {
+        var ppon = GivenPpon(pponId);
+
+        ppon.Identifiers =
+        [
+            new EntityVerification.Persistence.Identifier() {
+                LegalName  = "Acme Ltd",
+                Scheme = "GB-COH",
+                IdentifierId = "CO-1234567" },
+        ];
+
+        return ppon;
     }
 }
