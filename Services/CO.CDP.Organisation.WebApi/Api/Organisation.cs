@@ -443,7 +443,7 @@ public static class EndpointExtensions
                 return operation;
             });
 
-        app.MapGet("/{organisationId}/invites",
+        app.MapGet("/{organisationId}/persons/person-invites",
                 async (Guid organisationId, IUseCase<Guid, IEnumerable<PersonInviteModel>> useCase) =>
                     await useCase.Execute(organisationId)
                         .AndThen(personInvites => personInvites != null ? Results.Ok(personInvites) : Results.NotFound()))
@@ -465,7 +465,7 @@ public static class EndpointExtensions
                 return operation;
             });
 
-        app.MapPost("/{organisationId}/invite",
+        app.MapPost("/{organisationId}/persons/person-invite",
                 async (Guid organisationId, InvitePersonToOrganisation invitePersonToOrganisation, IUseCase<(Guid, InvitePersonToOrganisation), PersonInvite> useCase) =>
 
                     await useCase.Execute((organisationId, invitePersonToOrganisation))
