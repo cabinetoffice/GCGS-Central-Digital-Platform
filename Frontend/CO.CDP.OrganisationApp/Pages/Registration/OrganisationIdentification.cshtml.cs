@@ -8,14 +8,12 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CO.CDP.OrganisationApp.Pages.Registration;
 
-[AuthorisedSession]
 [ValidateRegistrationStep]
 public class OrganisationIdentificationModel(ISession session,
     IOrganisationClient organisationClient,
-    IPponClient pponClient) : RegistrationStepModel
+    IPponClient pponClient) : RegistrationStepModel(session)
 {
     public override string CurrentPage => OrganisationIdentifierPage;
-    public override ISession SessionContext => session;
 
     [BindProperty]
     [DisplayName("Organisation Type")]
@@ -170,7 +168,7 @@ public class OrganisationIdentificationModel(ISession session,
         }
 
         RegistrationDetails.OrganisationScheme = OrganisationScheme;
-
+        
         RegistrationDetails.OrganisationIdentificationNumber = OrganisationScheme switch
         {
             "GB-CHC" => CharityCommissionEnglandWalesNumber,
@@ -188,6 +186,7 @@ public class OrganisationIdentificationModel(ISession session,
         };
         try
         {
+            SessionContext.Set(Session.RegistrationDetailsKey, RegistrationDetails);
             await LookupOrganisationAsync();
         }
         catch (Exception orgApiException) when (orgApiException is Organisation.WebApiClient.ApiException && ((Organisation.WebApiClient.ApiException)orgApiException).StatusCode == 404)
@@ -196,10 +195,8 @@ public class OrganisationIdentificationModel(ISession session,
             {
                 await LookupEntityVerificationAsync();
             }
-            catch (Exception evApiException) when (evApiException is EntityVerificationClient.ApiException && ((EntityVerificationClient.ApiException)evApiException).StatusCode == 404)
+            catch (Exception evApiException) when (evApiException is EntityVerificationClient.ApiException eve && eve.StatusCode == 404)
             {
-                session.Set(Session.RegistrationDetailsKey, RegistrationDetails);
-
                 if (RedirectToSummary == true)
                 {
                     return RedirectToPage("OrganisationDetailsSummary");

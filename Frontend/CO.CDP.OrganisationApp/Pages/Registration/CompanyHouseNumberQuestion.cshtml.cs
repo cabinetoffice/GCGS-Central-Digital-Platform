@@ -5,12 +5,10 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CO.CDP.OrganisationApp.Pages.Registration;
 
-[AuthorisedSession]
 [ValidateRegistrationStep]
-public class CompanyHouseNumberQuestionModel(ISession session) : RegistrationStepModel
+public class CompanyHouseNumberQuestionModel(ISession session) : RegistrationStepModel(session)
 {
     public override string CurrentPage => OrganisationHasCompanyHouseNumberPage;
-    public override ISession SessionContext => session;
 
     [BindProperty]
     [Required(ErrorMessage = "Please select an option")]
@@ -45,7 +43,7 @@ public class CompanyHouseNumberQuestionModel(ISession session) : RegistrationSte
             RegistrationDetails.OrganisationScheme = "GB-COH";
         }
 
-        session.Set(Session.RegistrationDetailsKey, RegistrationDetails);
+        SessionContext.Set(Session.RegistrationDetailsKey, RegistrationDetails);
 
         if (HasCompaniesHouseNumber == false)
         {

@@ -1,3 +1,4 @@
+using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.Pages;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
@@ -12,6 +13,8 @@ public class PrivacyPolicyTest
     public PrivacyPolicyTest()
     {
         sessionMock = new Mock<ISession>();
+        sessionMock.Setup(session => session.Get<UserDetails>(Session.UserDetailsKey))
+            .Returns(new UserDetails { UserUrn = "urn:test" });
     }
 
     [Fact]

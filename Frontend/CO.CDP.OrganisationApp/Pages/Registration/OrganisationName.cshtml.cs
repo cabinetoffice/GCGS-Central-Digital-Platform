@@ -5,12 +5,10 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CO.CDP.OrganisationApp.Pages.Registration;
 
-[AuthorisedSession]
 [ValidateRegistrationStep]
-public class OrganisationNameModel(ISession session) : RegistrationStepModel
+public class OrganisationNameModel(ISession session) : RegistrationStepModel(session)
 {
     public override string CurrentPage => OrganisationNamePage;
-    public override ISession SessionContext => session;
 
     [BindProperty]
     [DisplayName("Enter the organisation's name")]
@@ -38,7 +36,7 @@ public class OrganisationNameModel(ISession session) : RegistrationStepModel
         }
 
         RegistrationDetails.OrganisationName = OrganisationName;
-        session.Set(Session.RegistrationDetailsKey, RegistrationDetails);
+        SessionContext.Set(Session.RegistrationDetailsKey, RegistrationDetails);
 
         if (RedirectToSummary == true)
         {

@@ -4,13 +4,10 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CO.CDP.OrganisationApp.Pages;
 
-[AuthorisedSession]
 public class OrganisationSelectionModel(
     IOrganisationClient organisationClient,
-    ISession session) : LoggedInUserAwareModel
+    ISession session) : LoggedInUserAwareModel(session)
 {
-    public override ISession SessionContext => session;
-
     public IEnumerable<Organisation.WebApiClient.Organisation> Organisations { get; set; } = [];
 
     public string? Error { get; set; }

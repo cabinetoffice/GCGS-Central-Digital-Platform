@@ -22,14 +22,16 @@
     "environment": [
         {"name": "ASPNETCORE_ENVIRONMENT", "value": "${aspcore_environment}"},
         {"name": "ASPNETCORE_HTTP_PORTS", "value": "${host_port}"},
+        {"name": "Aws__LogGroup", "value": "${lg_name}"},
+        {"name": "Aws__LogStream", "value": "${lg_prefix}-serilog"},
         {"name": "Aws__SqsDispatcher__QueueUrl", "value": "${queue_entity_verification_queue_url}"},
         {"name": "Aws__SqsPublisher__QueueUrl", "value": "${queue_organisation_queue_url}"},
         {"name": "CdpApiKeys__0", "value": "a955a529-1433-4acf-92b2-342a3e5e8086"},
         {"name": "ForwardedHeaders__KnownNetwork", "value": "${vpc_cidr}"},
-        {"name": "Organisation__Authority", "value": "https://authority.${public_hosted_zone_fqdn}"},
+        {"name": "OrganisationInformationDatabase__Database", "value": "${oi_db_name}"},
         {"name": "OrganisationInformationDatabase__Host", "value": "${oi_db_address}"},
         {"name": "OrganisationInformationDatabase__Server", "value": "${oi_db_address}"},
-        {"name": "OrganisationInformationDatabase__Database", "value": "${oi_db_name}"},
+        {"name": "Organisation__Authority", "value": "https://authority.${public_hosted_zone_fqdn}"},
         {"name": "VERSION", "value": "${service_version}"}
     ],
     "secrets": [

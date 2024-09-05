@@ -24,6 +24,10 @@ data "aws_secretsmanager_secret" "authority_keys" {
   name = "${local.name_prefix}-authority-keys"
 }
 
+data "aws_secretsmanager_secret_version" "fts_service_url" {
+  secret_id = "${local.name_prefix}-fts-service-url"
+}
+
 data "aws_secretsmanager_secret" "one_login" {
   name = "${local.name_prefix}-one-login-credentials"
 }
@@ -70,6 +74,20 @@ data "aws_iam_policy_document" "ecs_task_access_queue" {
       var.queue_entity_verification_queue_arn,
       var.queue_organisation_queue_arn
     ]
+  }
+}
+
+data "aws_iam_policy_document" "ecs_task_serilog" {
+  statement {
+    sid    = "AllowSerilogCreateStreamAndLog"
+    effect = "Allow"
+    actions = [
+      "logs:Create*",
+      "logs:Describe*",
+      "logs:Put*",
+
+    ]
+    resources = ["arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:*"]
   }
 }
 

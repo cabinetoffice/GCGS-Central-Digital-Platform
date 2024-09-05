@@ -1,5 +1,3 @@
-using System.Reflection;
-using CO.CDP.Authentication.AuthorizationPolicy;
 using CO.CDP.DataSharing.WebApi.Model;
 using CO.CDP.DataSharing.WebApi.UseCase;
 using CO.CDP.Functional;
@@ -10,6 +8,8 @@ using CO.CDP.Swashbuckle.SwaggerGen;
 using DotSwashbuckle.AspNetCore.SwaggerGen;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
+using System.Net.Mime;
+using System.Reflection;
 
 namespace CO.CDP.DataSharing.WebApi.Api;
 
@@ -35,7 +35,30 @@ public static class EndpointExtensions
                 operation.Responses["404"].Description = "Share code not found or the caller is not authorised to use it.";
                 operation.Responses["500"].Description = "Internal server error.";
                 return operation;
-            });
+            })
+            .RequireAuthorization(Authentication.AuthorizationPolicy.Constants.OrganisationApiKeyPolicy);
+
+        app.MapGet("/share/data/{sharecode}/pdf",
+             async (string sharecode, IUseCase<string, byte[]?> useCase) =>
+                 await useCase.Execute(sharecode)
+                     .AndThen(res => res != null ? Results.File(res, MediaTypeNames.Application.Pdf, $"{sharecode}.pdf") : Results.NotFound()))
+             .Produces<byte[]?>(StatusCodes.Status200OK, MediaTypeNames.Application.Pdf)
+             .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
+             .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
+             .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError)
+             .WithOpenApi(operation =>
+             {
+                 operation.OperationId = "GetSharedDataPdf";
+                 operation.Description =
+                     "Operation to obtain Supplier Information as Pdf.";
+                 operation.Summary = "Request Supplier Information as Pdf.";
+                 operation.Responses["200"].Description = "Supplier Information in Pdf format.";
+                 operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
+                 operation.Responses["404"].Description = "Share code not found or the caller is not authorised to use it.";
+                 operation.Responses["500"].Description = "Internal server error.";
+                 return operation;
+             })
+             .RequireAuthorization(Authentication.AuthorizationPolicy.Constants.OneLoginPolicy);
 
         app.MapPost("/share/data", async (ShareRequest shareRequest, IUseCase<ShareRequest, ShareReceipt> useCase) =>
                 await useCase.Execute(shareRequest)
@@ -54,7 +77,7 @@ public static class EndpointExtensions
                 operation.Responses["500"].Description = "Internal server error.";
                 return operation;
             })
-            .RequireAuthorization(Constants.OneLoginPolicy);
+            .RequireAuthorization(Authentication.AuthorizationPolicy.Constants.OneLoginPolicy);
 
         app.MapPost("/share/data/verify", async (ShareVerificationRequest request, IUseCase<ShareVerificationRequest, ShareVerificationReceipt> useCase) =>
                 await useCase.Execute(request)
@@ -75,7 +98,7 @@ public static class EndpointExtensions
                 operation.Responses["500"].Description = "Internal server error.";
                 return operation;
             })
-            .RequireAuthorization(Constants.OrganisationApiKeyPolicy);
+            .RequireAuthorization(Authentication.AuthorizationPolicy.Constants.OrganisationApiKeyPolicy);
 
         app.MapGet("/share/organisations/{organisationId}/codes", async (Guid organisationId,
             IUseCase<Guid, List<Model.SharedConsent>?> useCase) => await useCase.Execute(organisationId)
@@ -95,7 +118,7 @@ public static class EndpointExtensions
                  operation.Responses["500"].Description = "Internal server error.";
                  return operation;
              })
-            .RequireAuthorization(Constants.OneLoginPolicy);
+            .RequireAuthorization(Authentication.AuthorizationPolicy.Constants.OneLoginPolicy);
 
         app.MapGet("/share/organisations/{organisationId}/codes/{sharecode}",
                 async (Guid organisationId, string shareCode, IUseCase<(Guid, string), SharedConsentDetails?> useCase)
@@ -116,7 +139,7 @@ public static class EndpointExtensions
                 operation.Responses["500"].Description = "Internal server error.";
                 return operation;
             })
-            .RequireAuthorization(Constants.OneLoginPolicy);
+            .RequireAuthorization(Authentication.AuthorizationPolicy.Constants.OneLoginPolicy);
     }
 }
 

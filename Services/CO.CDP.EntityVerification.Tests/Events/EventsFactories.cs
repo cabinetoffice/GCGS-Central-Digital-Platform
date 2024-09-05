@@ -53,9 +53,9 @@ public static class EventsFactories
             Name = "Acme",
             Identifier = new Identifier
             {
-                Id = "93433423432",
+                Id = "92be415e5985421087bc8fee8c97d338",
                 LegalName = "Acme Ltd",
-                Scheme = "GB-COH",
+                Scheme = IdentifierSchemes.Ppon,
                 Uri = null
             },
             AdditionalIdentifiers =

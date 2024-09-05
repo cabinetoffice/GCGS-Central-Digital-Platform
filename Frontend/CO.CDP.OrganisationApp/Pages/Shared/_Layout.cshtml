@@ -1,3 +1,5 @@
+@using System.Text.RegularExpressions
+@using CO.CDP.OrganisationApp.Constants
 @inject Microsoft.Extensions.Configuration.IConfiguration config
 <!DOCTYPE html>
 <html lang="en" class="govuk-template">
@@ -42,14 +44,44 @@
                 </a>
             </div>
             <div class="govuk-header__content">
+                <a href="#" class="govuk-header__link govuk-header__service-name">
+                    SIRSI
+                </a>
                 <nav aria-label="Menu" class="govuk-header__navigation">
                     <button type="button" class="govuk-header__menu-button govuk-js-header-toggle" aria-controls="navigation" hidden>
                         Menu
                     </button>
-                    <ul id="navigation" style="float:right;" class="govuk-header__navigation-list">
+                    <ul id="navigation" class="govuk-header__navigation-list">
                         @if (User?.Identity?.IsAuthenticated == true)
                         {
+                            var ftsService = config["FtsService"] ?? "";
+                            var showMyNotice = !string.IsNullOrEmpty(ftsService);
+
                             <li class="govuk-header__navigation-item">
+                                <a class="govuk-header__link" href="/organisation-selection">
+                                    Dashboard
+                                </a>
+                            </li>
+
+                            if (showMyNotice == true)
+                            {
+                                var urlPath = Context.Request.Path;
+                                Regex regex = new Regex(RegExPatterns.OrganisationId);
+                                Match match = regex.Match(urlPath);
+                                string guid = match.Success == true ? match.Groups[1].Value : string.Empty;
+                                
+                                if (!string.IsNullOrEmpty(guid))
+                                {
+                                    ftsService = config["FtsService"]?.Replace("an_organisation_id", guid) ?? string.Empty;
+
+                                    <li class="govuk-header__navigation-item">
+                                        <a class="govuk-header__link" href="@ftsService">
+                                            My notices
+                                        </a>
+                                    </li>
+                                }                                
+                            }
+                            <li class="govuk-header__navigation-item" style="float:right;">
                                 <a class="govuk-header__link" href="/one-login/sign-out">
                                     Sign out
                                 </a>
@@ -71,6 +103,14 @@
                 </span>
             </p>
         </div>
+
+        @* Replicates the BeforeContent region in the base govuk-frontend template *@
+        @* This is useful for things like back links, breadcrumbs etc which should not be rendered
+        @* inside the <main> element and, crucially, should appear before the flash messages below *@
+        @await RenderSectionAsync("BeforeContent", required: false)
+
+        <partial name="_FlashMessage" />
+
         @RenderBody()
     </div>
 

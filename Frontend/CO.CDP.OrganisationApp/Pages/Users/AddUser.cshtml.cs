@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
@@ -6,7 +5,6 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace CO.CDP.OrganisationApp.Pages.Users;
 
-[Authorize]
 public class AddUserModel(
     ISession session) : PageModel
 {
@@ -30,6 +28,7 @@ public class AddUserModel(
 
     [BindProperty]
     [Required(ErrorMessage = "Email required")]
+    [EmailAddress(ErrorMessage = "Enter an email address in the correct format, like name@example.com")]
     public string? Email { get; set; }
 
     [BindProperty]

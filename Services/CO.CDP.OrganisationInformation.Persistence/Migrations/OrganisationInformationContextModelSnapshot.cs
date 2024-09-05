@@ -18,7 +18,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.7")
+                .HasAnnotation("ProductVersion", "8.0.8")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "connected_entity_type", new[] { "organisation", "individual", "trust_or_trustee" });

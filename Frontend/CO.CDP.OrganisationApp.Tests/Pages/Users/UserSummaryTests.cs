@@ -18,7 +18,6 @@ public class UserSummaryModelTests
     {
         _mockOrganisationClient = new Mock<IOrganisationClient>();
         _mockSession = new Mock<ISession>();
-        _pageModel = new UserSummaryModel(_mockOrganisationClient.Object, _mockSession.Object);
         _userGuid = new Guid();
 
         _userDetails = new UserDetails
@@ -29,6 +28,7 @@ public class UserSummaryModelTests
 
         _mockSession.Setup(session => session.Get<UserDetails>(It.IsAny<string>()))
             .Returns(_userDetails);
+        _pageModel = new UserSummaryModel(_mockOrganisationClient.Object, _mockSession.Object);
     }
 
     [Fact]

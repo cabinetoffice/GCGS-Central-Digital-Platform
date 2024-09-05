@@ -24,7 +24,7 @@ public abstract class RegistrationStepModel : LoggedInUserAwareModel
 
     public RegistrationDetails RegistrationDetails { get; }
 
-    protected RegistrationStepModel()
+    protected RegistrationStepModel(ISession session) : base(session)
     {
         RegistrationDetails = SessionContext.Get<RegistrationDetails?>(Session.RegistrationDetailsKey) ?? new();
     }

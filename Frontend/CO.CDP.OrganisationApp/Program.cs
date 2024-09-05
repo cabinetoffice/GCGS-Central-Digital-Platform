@@ -1,10 +1,11 @@
 using CO.CDP.AwsServices;
 using CO.CDP.Configuration.ForwardedHeaders;
-using CO.CDP.EntityVerificationClient;
 using CO.CDP.DataSharing.WebApiClient;
+using CO.CDP.EntityVerificationClient;
 using CO.CDP.Forms.WebApiClient;
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp;
+using CO.CDP.OrganisationApp.Pages;
 using CO.CDP.Person.WebApiClient;
 using CO.CDP.Tenant.WebApiClient;
 using Microsoft.AspNetCore.Authentication;
@@ -13,6 +14,7 @@ using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using static IdentityModel.OidcConstants;
+using static System.Net.Mime.MediaTypeNames;
 using ISession = CO.CDP.OrganisationApp.ISession;
 
 const string FormsHttpClientName = "FormsHttpClient";
@@ -25,9 +27,18 @@ const string EvHttpClient = "EvHttpClient";
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddRazorPages()
+var mvcBuilder = builder.Services.AddRazorPages()
     .AddSessionStateTempDataProvider()
-    .AddRazorRuntimeCompilation();
+    .AddMvcOptions(options =>
+    {
+        options.Filters.Add<AuthorisedSessionFilter>();
+    });
+
+if (builder.Environment.IsDevelopment())
+{
+    mvcBuilder.AddRazorRuntimeCompilation();
+}
+
 builder.ConfigureForwardedHeaders();
 
 builder.Services.AddDistributedMemoryCache();
@@ -51,6 +62,7 @@ builder.Services.AddTransient(provider =>
 builder.Services.AddScoped<ITempDataService, TempDataService>();
 builder.Services.AddScoped<ApiBearerTokenHandler>();
 builder.Services.AddTransient<IFormsEngine, FormsEngine>();
+builder.Services.AddTransient<IDiagnosticPage, DiagnosticPage>();
 
 var formsServiceUrl = builder.Configuration.GetValue<string>("FormsService")
             ?? throw new Exception("Missing configuration key: FormsService.");
@@ -165,5 +177,12 @@ app.MapFallback(ctx =>
     ctx.Response.Redirect("/page-not-found");
     return Task.CompletedTask;
 });
+
+var diagnosticPage = builder.Configuration.GetValue("Features:DiagnosticPage:Path", (string?)default);
+if (builder.Configuration.GetValue("Features:DiagnosticPage:Enabled", false)
+    && !string.IsNullOrWhiteSpace(diagnosticPage))
+{
+    app.MapGet(diagnosticPage, async (IDiagnosticPage dp) => Results.Content(await dp.GetContent(), Text.Html));
+}
 
 app.Run();

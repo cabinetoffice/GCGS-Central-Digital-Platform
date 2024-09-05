@@ -1,11 +1,9 @@
 using CO.CDP.Forms.WebApiClient;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace CO.CDP.OrganisationApp.Pages.Forms;
 
-[Authorize]
 public class FormsAddAnotherAnswerSetModel(
     IFormsClient formsClient,
     ITempDataService tempDataService) : PageModel

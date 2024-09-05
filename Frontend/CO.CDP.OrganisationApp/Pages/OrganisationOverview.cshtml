@@ -6,9 +6,6 @@
 @{
     var organisationDetails = Model.OrganisationDetails!;
     var registeredAddress = organisationDetails.Addresses.FirstOrDefault(a => a.Type == Organisation.WebApiClient.AddressType.Registered);
-    var pponIndentifier = organisationDetails.AdditionalIdentifiers.Prepend(organisationDetails.Identifier).FirstOrDefault(i => i.Scheme == "CDP-PPON");
-    var otherIdentifier = organisationDetails.AdditionalIdentifiers.Prepend(organisationDetails.Identifier).FirstOrDefault(i => i.Scheme == "Other");
-    var identifierToShow = (pponIndentifier != null && otherIdentifier != null) ? pponIndentifier : @organisationDetails.Identifier;
 }
 
 <main class="govuk-main-wrapper">
@@ -38,16 +35,16 @@
                         </dt>
                         <dd class="govuk-summary-list__value">
                             <p class="govuk-body">
-                                @identifierToShow.Scheme.SchemeDescription()
+                                @organisationDetails.Identifier.Scheme.SchemeDescription()
                             </p>
                             <p class="govuk-body">
-                                @if (@identifierToShow.Id == null)
+                                @if (@organisationDetails.Identifier.Id == null)
                                 {
                                     <p class="govuk-body">PPON generation pending.</p>
                                 }
                                 else
                                 {
-                                    @identifierToShow.Id
+                                    @organisationDetails.Identifier.Id
                                 }
                              </p>
                         </dd>

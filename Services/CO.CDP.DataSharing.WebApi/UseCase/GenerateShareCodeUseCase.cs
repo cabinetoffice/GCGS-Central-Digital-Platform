@@ -18,13 +18,13 @@ public class GenerateShareCodeUseCase(
     public async Task<ShareReceipt> Execute(ShareRequest shareRequest)
     {
         var org = await organisationRepository.Find(shareRequest.OrganisationId);
-        if (org == null || claimService.HaveAccessToOrganisation(shareRequest.OrganisationId) == false)
+        if (org == null || await claimService.HaveAccessToOrganisation(shareRequest.OrganisationId) == false)
         {
             throw new InvalidOrganisationRequestedException("Invalid Organisation requested.");
         }
 
         var result = await shareCodeRepository.GetSharedConsentDraftAsync(shareRequest.FormId, shareRequest.OrganisationId)
-            ?? throw new SharedConsentNotFoundException("Shared Consent not found.");
+            ?? throw new ShareCodeNotFoundException(Constants.ShareCodeNotFoundExceptionMessage);
 
         var shareCode = ShareCodeExtensions.GenerateShareCode();
         result.ShareCode = shareCode;

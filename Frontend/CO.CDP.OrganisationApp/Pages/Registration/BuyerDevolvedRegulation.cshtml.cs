@@ -4,13 +4,10 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CO.CDP.OrganisationApp.Pages.Registration;
 
-[AuthorisedSession]
 [ValidateRegistrationStep]
-public class BuyerDevolvedRegulationModel(ISession session) : RegistrationStepModel
+public class BuyerDevolvedRegulationModel(ISession session) : RegistrationStepModel(session)
 {
     public override string CurrentPage => BuyerDevolvedRegulationPage;
-
-    public override ISession SessionContext => session;
 
     [BindProperty]
     [Required(ErrorMessage = "Select the do devolved regulations apply to your organisation?")]
@@ -37,13 +34,13 @@ public class BuyerDevolvedRegulationModel(ISession session) : RegistrationStepMo
 
         if (Devolved == true)
         {
-            session.Set(Session.RegistrationDetailsKey, RegistrationDetails);
+            SessionContext.Set(Session.RegistrationDetailsKey, RegistrationDetails);
             return RedirectToPage("BuyerSelectDevolvedRegulation");
         }
         else
         {
             RegistrationDetails.Regulations = [];
-            session.Set(Session.RegistrationDetailsKey, RegistrationDetails);
+            SessionContext.Set(Session.RegistrationDetailsKey, RegistrationDetails);
             return RedirectToPage("OrganisationDetailsSummary");
         }
     }

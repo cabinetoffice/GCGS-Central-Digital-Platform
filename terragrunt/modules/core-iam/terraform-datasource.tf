@@ -251,6 +251,8 @@ data "aws_iam_policy_document" "terraform_global" {
 
   statement {
     actions = [
+      "rds:AddTagsToResource",
+      "rds:CreateDBInstanceReadReplica",
       "rds:DescribeDBInstances",
     ]
     effect = "Allow"
@@ -415,6 +417,7 @@ data "aws_iam_policy_document" "terraform_product" {
       "logs:Delete*",
       "logs:List*",
       "logs:Put*",
+      "logs:TagResource",
     ]
     effect = "Allow"
     resources = [
