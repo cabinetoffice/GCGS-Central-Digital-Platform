@@ -72,11 +72,33 @@ public class SupplierWebsiteModelQuestionTest
     [Fact]
     public async Task OnPost_InvalidModelState_ReturnsPageResult()
     {
-        _model.ModelState.AddModelError("HasWebsiteAddress", "Please select an option");
+        _model.ModelState.AddModelError("HasWebsiteAddress", "Select an option");
 
         var result = await _model.OnPost();
 
         result.Should().BeOfType<PageResult>();
+    }
+
+    [Fact]
+    public void OnPost_ValidWebsiteUrl_ReturnsNoModelStateError()
+    {
+        _model.HasWebsiteAddress = true;
+        _model.WebsiteAddress = "//valid-doamain.com/test-page";
+
+        var results = ModelValidationHelper.Validate(_model);
+
+        results.Count.Should().Be(0);
+    }
+
+    [Fact]
+    public void OnPost_InvalidWebsiteUrl_ReturnsPageResult()
+    {
+        _model.HasWebsiteAddress = true;
+        _model.WebsiteAddress = "https://.invalid-doamain.com/test-page";
+
+        var results = ModelValidationHelper.Validate(_model);
+
+        results.Count.Should().Be(1);
     }
 
     [Fact]
