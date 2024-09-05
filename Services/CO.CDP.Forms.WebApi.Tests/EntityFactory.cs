@@ -42,7 +42,6 @@ internal static class EntityFactory
             SubmittedAt = DateTime.UtcNow,
             FormVersionId = string.Empty,
             ShareCode = string.Empty
-
         };
     }
 
@@ -70,6 +69,18 @@ internal static class EntityFactory
             }
         };
 
+        var emptySharedConsent = new SharedConsent()
+        {
+            Guid = formId,
+            OrganisationId = orgnisation.Id,
+            Organisation = orgnisation,
+            FormId = form.Id,
+            Form = form,
+            SubmissionState = default,
+            FormVersionId = string.Empty,
+            AnswerSets = new List<FormAnswerSet>()
+        };
+
         return new SharedConsent()
         {
             Guid = formId,
@@ -83,7 +94,7 @@ internal static class EntityFactory
                 {
                     Guid = Guid.NewGuid(),
                     SharedConsentId = default,
-                    SharedConsent = null,
+                    SharedConsent = emptySharedConsent,
                     SectionId = default,
                     Section = new FormSection
                     {
@@ -91,10 +102,10 @@ internal static class EntityFactory
                         Title = string.Empty,
                         Type = FormSectionType.Standard,
                         FormId = form.Id,
-                        Form = null,
-                        Questions = null,
+                        Form = form,
+                        Questions = new List<FormQuestion>(),
                         AllowsMultipleAnswerSets = default,
-                        Configuration = null
+                        Configuration = new FormSectionConfiguration()
                     },
                     Answers = new List<FormAnswer>() { }
                 },
@@ -102,7 +113,7 @@ internal static class EntityFactory
                 {
                     Guid = Guid.NewGuid(),
                     SharedConsentId = default,
-                    SharedConsent = null,
+                    SharedConsent = emptySharedConsent,
                     SectionId = default,
                     Section = new FormSection
                     {
@@ -110,10 +121,10 @@ internal static class EntityFactory
                         Title = string.Empty,
                         Type = FormSectionType.Declaration,
                         FormId = form.Id,
-                        Form = null,
-                        Questions = null,
+                        Form = form,
+                        Questions = new List<FormQuestion>(),
                         AllowsMultipleAnswerSets = default,
-                        Configuration = null
+                        Configuration = new FormSectionConfiguration()
                     },
                     Answers = new List<FormAnswer>() { }
                 }
@@ -149,6 +160,18 @@ internal static class EntityFactory
             }
         };
 
+        var emptySharedConsent = new SharedConsent()
+        {
+            Guid = formId,
+            OrganisationId = orgnisation.Id,
+            Organisation = orgnisation,
+            FormId = form.Id,
+            Form = form,
+            SubmissionState = default,
+            FormVersionId = string.Empty,
+            AnswerSets = new List<FormAnswerSet>()
+        };
+
         return new SharedConsent()
         {
             Guid = formId,
@@ -162,7 +185,7 @@ internal static class EntityFactory
                 {
                     Guid = Guid.NewGuid(),
                     SharedConsentId = default,
-                    SharedConsent = null,
+                    SharedConsent = emptySharedConsent,
                     SectionId = default,
                     Section = new FormSection
                     {
@@ -170,10 +193,10 @@ internal static class EntityFactory
                         Title = string.Empty,
                         Type = FormSectionType.Declaration,
                         FormId = form.Id,
-                        Form = null,
-                        Questions = null,
+                        Form = form,
+                        Questions = new List<FormQuestion>(),
                         AllowsMultipleAnswerSets = default,
-                        Configuration = null
+                        Configuration = new FormSectionConfiguration()
                     },
                     Answers = new List<FormAnswer>() { }
                 },
@@ -181,7 +204,7 @@ internal static class EntityFactory
                 {
                     Guid = Guid.NewGuid(),
                     SharedConsentId = default,
-                    SharedConsent = null,
+                    SharedConsent = emptySharedConsent,
                     SectionId = default,
                     Section = new FormSection
                     {
@@ -189,10 +212,10 @@ internal static class EntityFactory
                         Title = string.Empty,
                         Type = FormSectionType.Declaration,
                         FormId = form.Id,
-                        Form = null,
-                        Questions = null,
+                        Form = form,
+                        Questions = new List<FormQuestion>(),
                         AllowsMultipleAnswerSets = default,
-                        Configuration = null
+                        Configuration = new FormSectionConfiguration()
                     },
                     Answers = new List<FormAnswer>() { }
                 }
@@ -201,7 +224,6 @@ internal static class EntityFactory
             SubmittedAt = DateTime.UtcNow,
             FormVersionId = string.Empty,
             ShareCode = string.Empty
-
         };
     }
 }
