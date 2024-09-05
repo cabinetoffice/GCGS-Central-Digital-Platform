@@ -27,19 +27,17 @@ public class ChangeUserRole(
 
     public string? UserFullName;
 
-    public async Task<IActionResult> OnGetPerson()
+    /*public async Task<IActionResult> OnGetPerson()
     {
-        //var person = await GetPerson(organisationClient);
+        var person = await GetPerson(organisationClient);
 
-        // TODO: Access checking - should only be able to do this if you have the admin role
-
-        //if (person == null || person.Id == UserDetails.PersonId)
-        //{
-        //    return Redirect("/page-not-found");
-        //}
+        if (person == null || person.Id == UserDetails.PersonId)
+        {
+            return Redirect("/page-not-found");
+        }
 
         return Page();
-    }
+    }*/
 
     public async Task<IActionResult> OnGetPersonInvite()
     {
@@ -71,7 +69,7 @@ public class ChangeUserRole(
         return null;
     }
 
-    public async Task<IActionResult> OnPostPerson()
+    /*public async Task<IActionResult> OnPostPerson()
     {
         if (!ModelState.IsValid)
         {
@@ -81,7 +79,7 @@ public class ChangeUserRole(
         // TODO: Update person
         
         return RedirectToPage("UserSummary", new { Id });
-    }
+    }*/
 
     public async Task<IActionResult> OnPostPersonInvite()
     {
@@ -90,8 +88,45 @@ public class ChangeUserRole(
             return Page();
         }
 
-        // TODO: Update person invite
-        
+        var personInvite = await GetPersonInvite(organisationClient);
+
+        if (personInvite == null)
+        {
+            return Redirect("/page-not-found");
+        }
+
+        var scopes = personInvite.Scopes;
+
+        if (scopes != null && scopes.Contains(PersonScopes.Admin)) scopes.Remove(PersonScopes.Admin);
+        if (scopes != null && scopes.Contains(PersonScopes.Editor)) scopes.Remove(PersonScopes.Editor);
+        if (scopes != null && scopes.Contains(PersonScopes.Viewer)) scopes.Remove(PersonScopes.Viewer);
+        if (IsAdmin == true)
+        {
+            scopes?.Add(PersonScopes.Admin);
+        }
+
+        if (Role == PersonScopes.Editor)
+        {
+            scopes?.Add(PersonScopes.Editor);
+        }
+        else
+        {
+            scopes?.Add(PersonScopes.Viewer);
+        }
+
+        var personInviteUpdateCommand = new UpdatePersonToOrganisation(
+            scopes
+        );
+
+        try
+        {
+            await organisationClient.UpdatePersonInviteAsync(Id, ItemId, personInviteUpdateCommand);
+        }
+        catch (ApiException ex) when (ex.StatusCode == 404)
+        {
+            return Redirect("/page-not-found");
+        }
+
         return RedirectToPage("UserSummary", new { Id });
     }
 
