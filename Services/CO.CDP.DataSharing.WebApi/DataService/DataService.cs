@@ -1,24 +1,19 @@
 using CO.CDP.DataSharing.WebApi.Model;
 using CO.CDP.OrganisationInformation;
 using CO.CDP.OrganisationInformation.Persistence;
-using SharedConsent = CO.CDP.OrganisationInformation.Persistence.Forms.SharedConsent;
+using Address = CO.CDP.OrganisationInformation.Address;
 
 namespace CO.CDP.DataSharing.WebApi.DataService;
 
-public class DataService : IDataService
+public class DataService(IShareCodeRepository shareCodeRepository) : IDataService
 {
-    private readonly IOrganisationRepository _organisationRepository;
-
-    public DataService(IOrganisationRepository organisationRepository)
+    public async Task<SharedSupplierInformation> GetSharedSupplierInformationAsync(string shareCode)
     {
-        _organisationRepository = organisationRepository;
-    }
+        var sharedConsent = await shareCodeRepository.GetByShareCode(shareCode)
+                            ?? throw new ShareCodeNotFoundException(Constants.ShareCodeNotFoundExceptionMessage);
+        var organisation = sharedConsent.Organisation;
 
-    public async Task<SharedSupplierInformation> GetSharedSupplierInformationAsync(SharedConsent sharedConsent)
-    {
-        var organisation = await _organisationRepository.Find(sharedConsent.OrganisationId);
-
-        if (organisation?.SupplierInfo == null)
+        if (organisation.SupplierInfo == null)
         {
             throw new SupplierInformationNotFoundException("Supplier information not found.");
         }
@@ -38,7 +33,7 @@ public class DataService : IDataService
         var registeredAddress = supplierInfo?.CompletedRegAddress == true
             ? organisation.Addresses
                 .Where(a => a.Type == AddressType.Registered)
-                .Select(a => new CO.CDP.OrganisationInformation.Address
+                .Select(a => new Address
                 {
                     StreetAddress = a.Address.StreetAddress,
                     Locality = a.Address.Locality,
@@ -54,7 +49,7 @@ public class DataService : IDataService
         var postalAddress = supplierInfo?.CompletedPostalAddress == true
             ? organisation.Addresses
                 .Where(a => a.Type == AddressType.Postal)
-                .Select(a => new CO.CDP.OrganisationInformation.Address
+                .Select(a => new Address
                 {
                     StreetAddress = a.Address.StreetAddress,
                     Locality = a.Address.Locality,
