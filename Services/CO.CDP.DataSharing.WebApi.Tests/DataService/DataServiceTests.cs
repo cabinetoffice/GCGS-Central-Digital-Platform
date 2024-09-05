@@ -20,7 +20,7 @@ public class DataServiceTests
             Id = 1,
             Guid = Guid.NewGuid(),
             OrganisationId = 1,
-            Organisation = DataSharingFactory.CreateMockOrganisation(),
+            Organisation = DataSharingFactory.CreateOrganisation(),
             FormId = 1,
             Form = null!,
             AnswerSets = null!,
@@ -76,21 +76,24 @@ public class DataServiceTests
     }
 
     [Fact]
-    public void MapToBasicInformation_ShouldMapOrganisationToBasicInformationCorrectly()
+    public async Task ShouldMapOrganisationToBasicInformation()
     {
-        var organisation = DataSharingFactory.CreateMockOrganisation();
+        var sharedConsent = CreateSharedConsent();
+        var organisation = sharedConsent.Organisation;
 
-        var result = DataService.MapToBasicInformation(organisation);
+        _shareCodeRepository.Setup(r => r.GetByShareCode("ABC-123")).ReturnsAsync(sharedConsent);
 
-        result.Should().NotBeNull();
-        result.SupplierType.Should().Be(organisation.SupplierInfo?.SupplierType);
-        result.RegisteredAddress.Should().NotBeNull();
-        result.PostalAddress.Should().NotBeNull();
-        result.VatNumber.Should().Be(organisation.Identifiers.FirstOrDefault(i => i.Scheme == "VAT")?.IdentifierId);
-        result.WebsiteAddress.Should().Be(organisation.ContactPoints.FirstOrDefault()?.Url);
-        result.EmailAddress.Should().Be(organisation.ContactPoints.FirstOrDefault()?.Email);
-        result.Qualifications.Should().HaveCount(1);
-        result.TradeAssurances.Should().HaveCount(1);
-        result.LegalForm.Should().NotBeNull();
+        var result = await DataService.GetSharedSupplierInformationAsync("ABC-123");
+
+        result.BasicInformation.SupplierType.Should().Be(organisation.SupplierInfo?.SupplierType);
+        result.BasicInformation.RegisteredAddress.Should().NotBeNull();
+        result.BasicInformation.PostalAddress.Should().NotBeNull();
+        result.BasicInformation.VatNumber.Should()
+            .Be(organisation.Identifiers.FirstOrDefault(i => i.Scheme == "VAT")?.IdentifierId);
+        result.BasicInformation.WebsiteAddress.Should().Be(organisation.ContactPoints.FirstOrDefault()?.Url);
+        result.BasicInformation.EmailAddress.Should().Be(organisation.ContactPoints.FirstOrDefault()?.Email);
+        result.BasicInformation.Qualifications.Should().HaveCount(1);
+        result.BasicInformation.TradeAssurances.Should().HaveCount(1);
+        result.BasicInformation.LegalForm.Should().NotBeNull();
     }
 }

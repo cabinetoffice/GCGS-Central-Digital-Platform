@@ -10,39 +10,31 @@ namespace DataSharing.Tests;
 
 public static class DataSharingFactory
 {
-    public static SharedConsent CreateMockSharedConsent()
+    public static SharedConsent CreateSharedConsent(
+        string? shareCode = null,
+        Organisation? organisation = null
+    )
     {
+        var theOrganisation = organisation ?? CreateOrganisation();
         return new SharedConsent
         {
             Id = 1,
             Guid = Guid.NewGuid(),
-            OrganisationId = 1,
-            Organisation = new Organisation
-            {
-                Id = 1,
-                Guid = Guid.NewGuid(),
-                Name = "Test Organisation",
-                Tenant = new Tenant { Guid = Guid.NewGuid(), Name = "TestTenant" },
-                Addresses = new List<OrganisationAddress>(),
-                ContactPoints = new List<ContactPoint>(),
-                Identifiers = new List<Identifier>(),
-                Roles = new List<PartyRole>(),
-                CreatedOn = DateTimeOffset.UtcNow,
-                UpdatedOn = DateTimeOffset.UtcNow
-            },
+            OrganisationId = theOrganisation.Id,
+            Organisation = theOrganisation,
             FormId = 1,
             Form = null!,
             AnswerSets = null!,
             SubmissionState = default,
             SubmittedAt = null,
             FormVersionId = string.Empty,
-            ShareCode = "valid-sharecode",
+            ShareCode = shareCode ?? "valid-sharecode",
             CreatedOn = DateTimeOffset.UtcNow,
             UpdatedOn = DateTimeOffset.UtcNow
         };
     }
 
-    public static Organisation CreateMockOrganisation(
+    public static Organisation CreateOrganisation(
         SupplierInformation? supplierInformation = null
     )
     {
