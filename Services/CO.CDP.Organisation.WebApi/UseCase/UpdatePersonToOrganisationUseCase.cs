@@ -4,15 +4,14 @@ using CO.CDP.OrganisationInformation.Persistence;
 namespace CO.CDP.Organisation.WebApi.UseCase;
 
 public class UpdatePersonToOrganisationUseCase(
-    IOrganisationRepository organisationRepository
-    , IPersonRepository personRepository
+    IOrganisationRepository organisationRepository    
    )
     : IUseCase<(Guid organisationId, Guid personId, UpdatePersonToOrganisation updatePerson), bool>
 {
     public async Task<bool> Execute((Guid organisationId, Guid personId, UpdatePersonToOrganisation updatePerson) command)
     {
         if (!command.updatePerson.Scopes.Any())
-            throw new EmptyPersonRoleException($"Empty Scope of Invited Person {command.personId}.");
+            throw new EmptyPersonRoleException($"Empty Scope of Person {command.personId}.");
 
         var organisationPerson = await organisationRepository.FindOrganisationPerson(command.organisationId, command.personId)
           ?? throw new UnknownOrganisationException($"Unknown organisation {command.organisationId} or Person {command.personId}.");

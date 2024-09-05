@@ -82,8 +82,8 @@ builder.Services.AddScoped<IUseCase<(Guid, Guid), bool>, RemovePersonInviteFromO
 builder.Services.AddOrganisationProblemDetails();
 
 builder.Services.AddJwtBearerAndApiKeyAuthentication(builder.Configuration, builder.Environment);
-builder.Services.AddAuthorization();
-//builder.Services.AddOrganisationAuthorization();
+//builder.Services.AddAuthorization();
+builder.Services.AddOrganisationAuthorization();
 
 var app = builder.Build();
 app.UseForwardedHeaders();
