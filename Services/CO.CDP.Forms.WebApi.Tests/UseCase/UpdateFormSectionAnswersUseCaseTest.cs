@@ -158,6 +158,41 @@ public class UpdateFormSectionAnswersUseCaseTest(AutoMapperFixture mapperFixture
             sc.AnswerSets.First().Answers.First().BoolValue == true)), Times.Once);
     }
 
+    [Fact]
+    public async Task Execute_ShouldSuccessfullyCopySharedConsent()
+    {
+        var organisation = GivenOrganisationExists(organisationId: Guid.NewGuid());
+        var section = GivenFormSectionExists(sectionId: Guid.NewGuid());
+        var question = GivenFormQuestion(questionId: Guid.NewGuid(), section: section);
+        var answerGuid = Guid.NewGuid();
+        var answers = new List<FormAnswer>
+        {
+            new() { Id = answerGuid, QuestionId = question.Guid, BoolValue = true }
+        };
+        var answerSetId = Guid.NewGuid();
+        var command = (formId: section.Form.Guid, sectionId: section.Guid, answerSetId,
+            organisationId: organisation.Guid, answers);
+
+        var sharedConsent = EntityFactory.GetSharedConsent(organisation.Id, organisation.Guid, section.Form.Guid);
+        sharedConsent.SubmissionState = Persistence.SubmissionState.Submitted;
+
+        var sharedConsentGuid = sharedConsent.Guid;
+        _repository.Setup(useCase => useCase.GetSharedConsentWithAnswersAsync(section.Form.Guid, organisation.Guid))
+                                    .ReturnsAsync(sharedConsent);
+
+        await UseCase.Execute(command);
+
+        _repository.Verify(r => r.SaveSharedConsentAsync(It.Is<Persistence.SharedConsent>(sc =>
+            sc.Guid != sharedConsentGuid &&
+            sc.SubmissionState == default &&
+            sc.ShareCode == default &&
+            sc.AnswerSets.Count == 1 &&
+            sc.AnswerSets.First().Guid != answerSetId &&
+            sc.AnswerSets.First().Answers.Count == 1 &&
+            sc.AnswerSets.First().Answers.First().Question.Guid == question.Guid &&
+            sc.AnswerSets.First().Answers.First().Guid != answerGuid)));
+    }
+
     private Organisation GivenOrganisationExists(Guid organisationId)
     {
         var organisation = GivenOrganisation(organisationId: organisationId);
