@@ -214,17 +214,17 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
                 {
                     Id = "",
                     LegalName = "Acme",
-                    Scheme = "GB-VAT-EMPTY"
+                    Scheme = "VAT"
                 },
                 new OrganisationIdentifier
                 {
                     Id = null,
                     LegalName = "Acme",
-                    Scheme = "GB-VAT-NULL"
+                    Scheme = "VAT"
                 }]
             }
         };
-        var organisation = Organisation;
+        var organisation = OrganisationWithPponIdentifier;
         _organisationRepositoryMock.Setup(repo => repo.Find(_organisationId)).ReturnsAsync(organisation);
 
         var result = await UseCase.Execute((_organisationId, command));
@@ -232,8 +232,7 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
         result.Should().BeTrue();
         _organisationRepositoryMock.Verify(repo => repo.Save(organisation!), Times.Once);
 
-        organisation.Identifiers.FirstOrDefault(i => i.Scheme == "GB-VAT-EMPTY").Should().BeNull();
-        organisation.Identifiers.FirstOrDefault(i => i.Scheme == "GB-VAT-NULL").Should().BeNull();
+        organisation.Identifiers.FirstOrDefault(i => i.Scheme == "VAT").Should().BeNull();
     }
 
     private Persistence.Organisation OrganisationWithOtherIdentifier =>
