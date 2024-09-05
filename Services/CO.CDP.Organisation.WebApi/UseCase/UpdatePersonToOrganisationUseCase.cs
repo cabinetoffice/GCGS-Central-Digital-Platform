@@ -1,41 +1,28 @@
 using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.OrganisationInformation.Persistence;
-using Person = CO.CDP.OrganisationInformation.Persistence.Person;
 
 namespace CO.CDP.Organisation.WebApi.UseCase;
 
 public class UpdatePersonToOrganisationUseCase(
-    IOrganisationRepository organisationRepository,
-    IPersonRepository personRepository
+    IOrganisationRepository organisationRepository
+    , IPersonRepository personRepository
    )
-    : IUseCase<(Guid organisationId, Guid personInviteId, UpdatePersonToOrganisation updateInvitedPerson), bool>
+    : IUseCase<(Guid organisationId, Guid personId, UpdatePersonToOrganisation updatePerson), bool>
 {
-    public async Task<bool> Execute((Guid organisationId, Guid personInviteId, UpdatePersonToOrganisation updateInvitedPerson) command)
+    public async Task<bool> Execute((Guid organisationId, Guid personId, UpdatePersonToOrganisation updatePerson) command)
     {
-        if (!command.updateInvitedPerson.Scopes.Any())        
-            throw new EmptyPersonRoleException($"Empty Scope of Invited Person {command.personInviteId}.");
-        
-        var organisation = await organisationRepository.Find(command.organisationId)
-                           ?? throw new UnknownOrganisationException($"Unknown organisation {command.organisationId}.");
+        if (!command.updatePerson.Scopes.Any())
+            throw new EmptyPersonRoleException($"Empty Scope of Invited Person {command.personId}.");
 
-        var organisationPerson = await personRepository.Find(command.personInviteId)
-                         ?? throw new UnknownInvitedPersonException($"Unknown invited person {command.personInviteId}.");
-
-        var person = UpdatePersonInvite(command.updateInvitedPerson, organisationPerson);
+        var organisationPerson = await organisationRepository.FindOrganisationPerson(command.organisationId, command.personId)
+          ?? throw new UnknownOrganisationException($"Unknown organisation {command.organisationId} or Person {command.personId}.");
 
 
-        personRepository.Save(person);
+        organisationPerson.Scopes = command.updatePerson.Scopes;
 
-        return personInvite;
-    }
+        organisationRepository.SaveOrganisationPerson(organisationPerson);
 
-    private OrganisationPerson UpdatePersonInvite(
-        UpdatePersonToOrganisation command,
-        OrganisationPerson person
-    )
-    {
-        person.= command.Scopes;
 
-        return invitedPerson;
+        return await Task.FromResult(true);
     }
 }
