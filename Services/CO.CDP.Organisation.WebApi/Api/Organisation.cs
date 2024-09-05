@@ -499,7 +499,7 @@ public static class EndpointExtensions
                  await useCase.Execute((organisationId, personInviteId, updatePersonToOrganisation))
                      .AndThen(_ => Results.NoContent())
          )
-         .Produces(StatusCodes.Status201Created)
+         .Produces(StatusCodes.Status200OK)
          .Produces(StatusCodes.Status204NoContent)
          .ProducesProblem(StatusCodes.Status400BadRequest)
          .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
