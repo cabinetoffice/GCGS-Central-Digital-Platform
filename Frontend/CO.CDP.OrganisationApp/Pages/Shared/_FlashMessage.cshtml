@@ -1,0 +1,16 @@
+@inject ITempDataService tempDataService
+@using CDP.OrganisationApp.Constants
+
+@if (tempDataService.Peek<string>(FlashMessageTypes.Success) != null)
+{
+    <div class="govuk-notification-banner govuk-notification-banner--success govuk-!-margin-top-8" role="alert" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+        <div class="govuk-notification-banner__header">
+            <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
+                Success
+            </h2>
+        </div>
+        <div class="govuk-notification-banner__content">
+            <p class="govuk-notification-banner__heading">@(tempDataService.Get<string>(FlashMessageTypes.Success))</p>
+        </div>
+    </div>
+}

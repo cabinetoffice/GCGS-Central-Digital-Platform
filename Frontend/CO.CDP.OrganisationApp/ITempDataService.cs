@@ -2,7 +2,7 @@ namespace CO.CDP.OrganisationApp;
 
 public interface ITempDataService
 {
-    void Put<T>(string key, T value) where T : new();
+    void Put<T>(string key, T value);
 
     T? Get<T>(string key);
 
