@@ -7,7 +7,12 @@ public abstract class LoggedInUserAwareModel(ISession session) : PageModel
 {
     public ISession SessionContext { get; } = session;
 
-    public UserDetails UserDetails { get; }
-        = session.Get<UserDetails>(Session.UserDetailsKey)
-            ?? throw new Exception("Invalid session, no user details found");
+    public UserDetails UserDetails
+    {
+        get
+        {
+            return SessionContext.Get<UserDetails>(Session.UserDetailsKey)
+                ?? throw new Exception("Invalid session, no user details found");
+        }
+    }
 }
