@@ -73,10 +73,14 @@ public class OneLogin(
                 await ClaimPersonInvite(person.Id, personInviteId.Value);
             }
 
+            session.Remove("PersonInviteId");
+
             return RedirectToPage("OrganisationSelection");
         }
         catch (ApiException ex) when (ex.StatusCode == 404)
         {
+            session.Remove("PersonInviteId");
+
             return RedirectToPage("PrivacyPolicy");
         }
     }
@@ -98,6 +102,5 @@ public class OneLogin(
     {
         var command = new ClaimPersonInvite(personInviteId);
         await personClient.ClaimPersonInviteAsync(personId, command);
-        session.Remove("PersonInviteId");
     }
 }
