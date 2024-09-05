@@ -12,15 +12,20 @@ public class ClaimPersonInviteUseCase(
     {
         var person = await personRepository.Find(command.personId) ?? throw new Exception($"Unknown person {command.personId}.");
         var personInvite = await personInviteRepository.Find(command.claimPersonInvite.PersonInviteId) ?? throw new Exception($"Unknown personInvite {command.claimPersonInvite.PersonInviteId}.");
-        var organisationPerson = new OrganisationPerson(
+
+        if (personInvite.Person != null)
         {
-            Organisation = personInvite.Organisation,
+            throw new PersonInviteAlreadyClaimedException(
+                $"PersonInvite {command.claimPersonInvite.PersonInviteId} has already been claimed.");
+        }
+
+        var organisation = personInvite.Organisation;
+        organisation.OrganisationPersons.Add(new OrganisationPerson
+        {
             Person = person,
+            Organisation = personInvite.Organisation,
             Scopes = personInvite.Scopes
         });
-
-
-        personInvite.Organisation.OrganisationPersons.Add(organisationPerson);
 
         personInvite.Person = person;
 

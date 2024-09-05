@@ -1,3 +1,4 @@
+using CO.CDP.Person.WebApi.Model;
 using static CO.CDP.OrganisationInformation.Persistence.IPersonRepository.PersonRepositoryException;
 
 namespace CO.CDP.Person.WebApi.Extensions;
@@ -8,6 +9,7 @@ public static class ServiceCollectionExtensions
     {
         { typeof(BadHttpRequestException), (StatusCodes.Status422UnprocessableEntity, "UNPROCESSABLE_ENTITY") },
         { typeof(DuplicatePersonException), (StatusCodes.Status400BadRequest, "PERSON_ALREADY_EXISTS") },
+        { typeof(PersonInviteAlreadyClaimedException), (StatusCodes.Status400BadRequest, "PERSON_INVITE_ALREADY_CLAIMED") },
     };
 
     public static IServiceCollection AddPersonProblemDetails(this IServiceCollection services)
