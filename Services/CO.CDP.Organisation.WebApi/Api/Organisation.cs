@@ -521,7 +521,7 @@ public static class EndpointExtensions
              return operation;
          });
 
-        app.MapDelete("/{organisationId}/invite/{personInviteId}",
+        app.MapDelete("/{organisationId}/person-invite/{personInviteId}",
                 async (Guid organisationId, Guid personInviteId, IUseCase<(Guid, Guid), bool> useCase) =>
                     await useCase.Execute((organisationId, personInviteId))
                         .AndThen(_ => Results.NoContent()))
