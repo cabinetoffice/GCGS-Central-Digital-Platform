@@ -36,7 +36,7 @@ public class UpdateOrganisationUseCase(
                         existingIdentifier.IdentifierId = identifier.Id;
                         existingIdentifier.LegalName = identifier.LegalName;
                     }
-                    else
+                    else if (!string.IsNullOrEmpty(identifier.Id))
                     {
                         organisation.Identifiers.Add(new OrganisationInformation.Persistence.Organisation.Identifier
                         {

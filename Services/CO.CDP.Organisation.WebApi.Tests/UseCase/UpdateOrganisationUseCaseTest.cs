@@ -202,6 +202,40 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
 
     }
 
+    [Fact]
+    public async Task Execute_ShouldNotInsertIdentifier_WhenIdentifierIdIsEmptyOrNull()
+    {
+        var command = new UpdateOrganisation
+        {
+            Type = OrganisationUpdateType.AdditionalIdentifiers,
+            Organisation = new OrganisationInfo
+            {
+                AdditionalIdentifiers = [new OrganisationIdentifier
+                {
+                    Id = "",
+                    LegalName = "Acme",
+                    Scheme = "GB-VAT-EMPTY"
+                },
+                new OrganisationIdentifier
+                {
+                    Id = null,
+                    LegalName = "Acme",
+                    Scheme = "GB-VAT-NULL"
+                }]
+            }
+        };
+        var organisation = Organisation;
+        _organisationRepositoryMock.Setup(repo => repo.Find(_organisationId)).ReturnsAsync(organisation);
+
+        var result = await UseCase.Execute((_organisationId, command));
+
+        result.Should().BeTrue();
+        _organisationRepositoryMock.Verify(repo => repo.Save(organisation!), Times.Once);
+
+        organisation.Identifiers.FirstOrDefault(i => i.Scheme == "GB-VAT-EMPTY").Should().BeNull();
+        organisation.Identifiers.FirstOrDefault(i => i.Scheme == "GB-VAT-NULL").Should().BeNull();
+    }
+
     private Persistence.Organisation OrganisationWithOtherIdentifier =>
         new()
         {
