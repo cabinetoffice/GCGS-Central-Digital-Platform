@@ -434,11 +434,11 @@ public static class EndpointExtensions
          .ProducesProblem(StatusCodes.Status500InternalServerError)
          .WithOpenApi(operation =>
          {
-             operation.OperationId = "UpdatePerson";
-             operation.Description = "Update a person.";
-             operation.Summary = "Update a new person invite.";
-             operation.Responses["200"].Description = "Person updated successfully.";
-             operation.Responses["204"].Description = "Person updated successfully.";
+             operation.OperationId = "UpdateOrganisationPerson";
+             operation.Description = "Update a organisation person.";
+             operation.Summary = "Update organisation person.";
+             operation.Responses["200"].Description = "Organisation Person updated successfully.";
+             operation.Responses["204"].Description = "Organisation Person updated successfully.";
              operation.Responses["400"].Description = "Bad request.";
              operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
              operation.Responses["404"].Description = "Organisation or Person not found.";
