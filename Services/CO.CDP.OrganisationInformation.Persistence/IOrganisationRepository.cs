@@ -24,5 +24,5 @@ public interface IOrganisationRepository : IDisposable
 
     public Task<IList<ConnectedEntity>> GetConnectedOrganisations(int organisationId);
 
-    Task<IList<Organisation.Qualification>> GetQualifications(int organisationId);
+    public Task<IList<Organisation.Qualification>> GetQualifications(int organisationId);
 }
