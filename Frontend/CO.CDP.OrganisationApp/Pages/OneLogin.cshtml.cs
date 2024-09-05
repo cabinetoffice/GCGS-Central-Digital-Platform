@@ -66,6 +66,13 @@ public class OneLogin(
                 session.Set(Session.UserDetailsKey, ud);
             }
 
+            var personInviteId = session.Get<Guid?>("PersonInviteId");
+
+            if (personInviteId != null)
+            {
+                await ClaimPersonInvite(person.Id, personInviteId.Value);
+            }
+
             return RedirectToPage("OrganisationSelection");
         }
         catch (ApiException ex) when (ex.StatusCode == 404)
@@ -85,5 +92,12 @@ public class OneLogin(
         return SignOut(new AuthenticationProperties { RedirectUri = "/" },
                 CookieAuthenticationDefaults.AuthenticationScheme,
                 OpenIdConnectDefaults.AuthenticationScheme);
+    }
+
+    private async Task ClaimPersonInvite(Guid personId, Guid personInviteId)
+    {
+        var command = new ClaimPersonInvite(personInviteId);
+        await personClient.ClaimPersonInviteAsync(personId, command);
+        session.Remove("PersonInviteId");
     }
 }

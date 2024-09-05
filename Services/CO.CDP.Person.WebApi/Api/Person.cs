@@ -1,4 +1,5 @@
 using CO.CDP.Functional;
+using CO.CDP.OrganisationInformation.Persistence;
 using CO.CDP.Person.WebApi.Model;
 using CO.CDP.Person.WebApi.UseCase;
 using CO.CDP.Swashbuckle.Filter;
@@ -60,6 +61,33 @@ public static class EndpointExtensions
                 operation.Summary = "Get a person by ID.";
                 operation.Responses["200"].Description = "Person details.";
                 operation.Responses["404"].Description = "Person not found.";
+                return operation;
+            });
+
+        app.MapPost("/persons/{personId}/person-invite/claim",
+                async (Guid personId, ClaimPersonInvite command, IUseCase<(Guid, ClaimPersonInvite), PersonInvite> useCase) =>
+                    await useCase.Execute((personId, command))
+                        .AndThen(_ => Results.NoContent())
+            )
+            .Produces(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status204NoContent)
+            .ProducesProblem(StatusCodes.Status400BadRequest)
+            .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
+            .ProducesProblem(StatusCodes.Status404NotFound)
+            .ProducesProblem(StatusCodes.Status422UnprocessableEntity)
+            .ProducesProblem(StatusCodes.Status500InternalServerError)
+            .WithOpenApi(operation =>
+            {
+                operation.OperationId = "ClaimPersonInvite";
+                operation.Description = "Claims a person invite.";
+                operation.Summary = "Claims a person invite.";
+                operation.Responses["200"].Description = "Person invite claimed successfully.";
+                operation.Responses["204"].Description = "Person invite claimed successfully.";
+                operation.Responses["400"].Description = "Bad request.";
+                operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
+                operation.Responses["404"].Description = "Person invite not found.";
+                operation.Responses["422"].Description = "Unprocessable entity.";
+                operation.Responses["500"].Description = "Internal server error.";
                 return operation;
             });
 

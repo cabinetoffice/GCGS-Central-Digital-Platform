@@ -24,9 +24,11 @@ builder.Services.AddDbContext<OrganisationInformationContext>(o =>
     o.UseNpgsql(ConnectionStringHelper.GetConnectionString(builder.Configuration, "OrganisationInformationDatabase")));
 
 builder.Services.AddScoped<IPersonRepository, DatabasePersonRepository>();
+builder.Services.AddScoped<IPersonInviteRepository, DatabasePersonInviteRepository>();
 builder.Services.AddScoped<IUseCase<RegisterPerson, CO.CDP.Person.WebApi.Model.Person>, RegisterPersonUseCase>();
 builder.Services.AddScoped<IUseCase<Guid, CO.CDP.Person.WebApi.Model.Person?>, GetPersonUseCase>();
 builder.Services.AddScoped<IUseCase<string, CO.CDP.Person.WebApi.Model.Person?>, LookupPersonUseCase>();
+builder.Services.AddScoped<IUseCase<(Guid, ClaimPersonInvite), PersonInvite>, ClaimPersonInviteUseCase>();
 builder.Services.AddPersonProblemDetails();
 
 builder.Services.AddJwtBearerAndApiKeyAuthentication(builder.Configuration, builder.Environment);
