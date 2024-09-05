@@ -84,6 +84,15 @@ builder.Services.AddJwtBearerAndApiKeyAuthentication(builder.Configuration, buil
 //builder.Services.AddAuthorization();
 builder.Services.AddOrganisationAuthorization();
 
+if (Assembly.GetEntryAssembly().IsRunAs("CO.CDP.Organisation.WebApi"))
+{
+    builder.Services
+        .AddAwsConfiguration(builder.Configuration)
+        .AddLoggingConfiguration(builder.Configuration)
+        .AddAmazonCloudWatchLogsService()
+        .AddCloudWatchSerilog();
+}
+
 var app = builder.Build();
 app.UseForwardedHeaders();
 

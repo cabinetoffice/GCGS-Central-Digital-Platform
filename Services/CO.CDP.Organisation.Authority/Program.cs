@@ -1,3 +1,6 @@
+using System.Reflection;
+using CO.CDP.AwsServices;
+using CO.CDP.Configuration.Assembly;
 using CO.CDP.Configuration.ForwardedHeaders;
 using CO.CDP.Configuration.Helpers;
 using CO.CDP.Organisation.Authority;
@@ -22,6 +25,15 @@ builder.Services.AddScoped<ITenantRepository, DatabaseTenantRepository>();
 builder.Services.AddScoped<IAuthorityRepository, DatabaseAuthorityRepository>();
 builder.Services.AddSingleton<IConfigurationService, ConfigurationService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
+
+if (Assembly.GetEntryAssembly().IsRunAs("CO.CDP.Organisation.Authority"))
+{
+    builder.Services
+        .AddAwsConfiguration(builder.Configuration)
+        .AddLoggingConfiguration(builder.Configuration)
+        .AddAmazonCloudWatchLogsService()
+        .AddCloudWatchSerilog();
+}
 
 var app = builder.Build();
 app.UseForwardedHeaders();
