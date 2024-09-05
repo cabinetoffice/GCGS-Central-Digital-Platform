@@ -23,4 +23,6 @@ public interface IOrganisationRepository : IDisposable
     public Task<IList<ConnectedEntity>> GetConnectedIndividualTrusts(int organisationId);
 
     public Task<IList<ConnectedEntity>> GetConnectedOrganisations(int organisationId);
+
+    public Task<IList<Organisation.TradeAssurance>> GetTradeAssurances(int organisationId);
 }
