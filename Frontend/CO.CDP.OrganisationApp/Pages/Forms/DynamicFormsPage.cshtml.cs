@@ -2,6 +2,7 @@ using CO.CDP.AwsServices;
 using CO.CDP.OrganisationApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace CO.CDP.OrganisationApp.Pages.Forms;
 
@@ -52,7 +53,7 @@ public class DynamicFormsPageModel(
     public FormSectionType? FormSectionType { get; set; }
 
     public string EncType => CurrentFormQuestionType == FormQuestionType.FileUpload
-        ? "multipart/form-data" : "application/x-www-form-urlencoded";
+        ? Multipart.FormData : Application.FormUrlEncoded;
 
     private string FormQuestionAnswerStateKey => $"Form_{OrganisationId}_{FormId}_{SectionId}_Answers";
 

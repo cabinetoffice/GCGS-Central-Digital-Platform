@@ -2,12 +2,14 @@ using Moq;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using CO.CDP.Organisation.WebApiClient;
+using CO.CDP.OrganisationApp.Constants;
 
 namespace CO.CDP.OrganisationApp.Pages.Users;
 
 public class UserCheckAnswersModelTests
 {
     private readonly Mock<IOrganisationClient> _mockOrganisationClient;
+    private readonly Mock<ITempDataService> _mockTempDataService;
     private readonly Mock<ISession> _mockSession;
     private readonly UserCheckAnswersModel _pageModel;
 
@@ -15,7 +17,8 @@ public class UserCheckAnswersModelTests
     {
         _mockOrganisationClient = new Mock<IOrganisationClient>();
         _mockSession = new Mock<ISession>();
-        _pageModel = new UserCheckAnswersModel(_mockOrganisationClient.Object, _mockSession.Object);
+        _mockTempDataService = new Mock<ITempDataService>();
+        _pageModel = new UserCheckAnswersModel(_mockOrganisationClient.Object, _mockTempDataService.Object, _mockSession.Object);
     }
 
     [Fact]
@@ -88,6 +91,9 @@ public class UserCheckAnswersModelTests
 
         _mockOrganisationClient.Verify(c => c.CreatePersonInviteAsync(_pageModel.Id, It.IsAny<InvitePersonToOrganisation>()), Times.Once);
         _mockSession.Verify(s => s.Remove(PersonInviteState.TempDataKey), Times.Once);
+
+        _mockTempDataService.Verify(s => s.Put(FlashMessageTypes.Success, It.Is<string>(t => t.Equals("You've sent an email invite to John Johnson"))), Times.Once);
+
         var redirectToPageResult = Assert.IsType<RedirectToPageResult>(result);
         Assert.Equal("UserSummary", redirectToPageResult.PageName);
         Assert.Equal(_pageModel.Id, redirectToPageResult.RouteValues?["Id"]);
