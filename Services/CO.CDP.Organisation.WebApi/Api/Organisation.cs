@@ -511,7 +511,7 @@ public static class EndpointExtensions
              operation.OperationId = "UpdatePersonInvite";
              operation.Description = "Update a person invite.";
              operation.Summary = "Update a new person invite.";
-             operation.Responses["201"].Description = "Person invite updated successfully.";
+             operation.Responses["200"].Description = "Person invite updated successfully.";
              operation.Responses["204"].Description = "Person invite updated successfully.";
              operation.Responses["400"].Description = "Bad request.";
              operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
