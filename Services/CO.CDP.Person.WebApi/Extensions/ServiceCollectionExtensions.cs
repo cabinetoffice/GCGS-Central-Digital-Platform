@@ -9,6 +9,8 @@ public static class ServiceCollectionExtensions
     {
         { typeof(BadHttpRequestException), (StatusCodes.Status422UnprocessableEntity, "UNPROCESSABLE_ENTITY") },
         { typeof(DuplicatePersonException), (StatusCodes.Status400BadRequest, "PERSON_ALREADY_EXISTS") },
+        { typeof(UnknownPersonException), (StatusCodes.Status400BadRequest, "UNKNOWN_PERSON") },
+        { typeof(UnknownPersonInviteException), (StatusCodes.Status400BadRequest, "UNKNOWN_PERSON_INVITE") },
         { typeof(PersonInviteAlreadyClaimedException), (StatusCodes.Status400BadRequest, "PERSON_INVITE_ALREADY_CLAIMED") },
     };
 

@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using ProblemDetails = CO.CDP.Person.WebApiClient.ProblemDetails;
+using CO.CDP.OrganisationApp.Constants;
 
 namespace CO.CDP.OrganisationApp.Pages.Registration;
 
@@ -101,6 +103,24 @@ public class OneLogin(
     private async Task ClaimPersonInvite(Guid personId, Guid personInviteId)
     {
         var command = new ClaimPersonInvite(personInviteId);
-        await personClient.ClaimPersonInviteAsync(personId, command);
+        try
+        {
+            await personClient.ClaimPersonInviteAsync(personId, command);
+        }
+        catch (ApiException<ProblemDetails> e)
+        {
+            var code = ExtractErrorCode(e);
+            if (code != ErrorCodes.PERSON_INVITE_ALREADY_CLAIMED)
+            {
+                throw;
+            }
+        }
+    }
+
+    private static string? ExtractErrorCode(ApiException<ProblemDetails> aex)
+    {
+        return aex.Result.AdditionalProperties.TryGetValue("code", out var code) && code is string codeString
+            ? codeString
+            : null;
     }
 }

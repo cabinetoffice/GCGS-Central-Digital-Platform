@@ -64,7 +64,7 @@ public static class EndpointExtensions
                 return operation;
             });
 
-        app.MapPost("/persons/{personId}/person-invite/claim",
+        app.MapPost("/persons/{personId}/claim-person-invite",
                 async (Guid personId, ClaimPersonInvite command, IUseCase<(Guid, ClaimPersonInvite), PersonInvite> useCase) =>
                     await useCase.Execute((personId, command))
                         .AndThen(_ => Results.NoContent())

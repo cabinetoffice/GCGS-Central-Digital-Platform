@@ -10,8 +10,8 @@ public class ClaimPersonInviteUseCase(
 {
     public async Task<PersonInvite> Execute((Guid personId, ClaimPersonInvite claimPersonInvite) command)
     {
-        var person = await personRepository.Find(command.personId) ?? throw new Exception($"Unknown person {command.personId}.");
-        var personInvite = await personInviteRepository.Find(command.claimPersonInvite.PersonInviteId) ?? throw new Exception($"Unknown personInvite {command.claimPersonInvite.PersonInviteId}.");
+        var person = await personRepository.Find(command.personId) ?? throw new UnknownPersonException($"Unknown person {command.personId}.");
+        var personInvite = await personInviteRepository.Find(command.claimPersonInvite.PersonInviteId) ?? throw new UnknownPersonInviteException($"Unknown personInvite {command.claimPersonInvite.PersonInviteId}.");
 
         if (personInvite.Person != null)
         {
