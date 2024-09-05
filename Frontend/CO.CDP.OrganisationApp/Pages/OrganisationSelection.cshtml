@@ -2,15 +2,6 @@
 @using CO.CDP.Organisation.WebApiClient
 @model OrganisationSelectionModel
 
-@{
-    string GetAddress(IEnumerable<Address> addresses)
-    {
-        var add = addresses.First(a => a.Type == AddressType.Registered);
-        return string.Join(", ", new[] { add.StreetAddress, add.Locality, add.CountryName, add.PostalCode }
-            .Where(t => !string.IsNullOrWhiteSpace(t)));
-    }
-}
-
 <main class="govuk-main-wrapper">
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
@@ -34,9 +25,6 @@
                                 <tr class="govuk-table__row">
                                     <th scope="row" class="govuk-table__header">
                                         @org.Name
-                                        <span class="govuk-hint govuk-!-display-block">
-                                            @GetAddress(org.Addresses)
-                                        </span>
                                     </th>
                                     <td class="govuk-table__cell">
                                         <a class="govuk-link govuk-link--no-visited-state"

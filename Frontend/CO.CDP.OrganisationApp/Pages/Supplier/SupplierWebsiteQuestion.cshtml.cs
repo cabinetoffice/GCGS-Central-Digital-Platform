@@ -10,12 +10,12 @@ namespace CO.CDP.OrganisationApp.Pages.Supplier;
 public class SupplierWebsiteQuestionModel(IOrganisationClient organisationClient) : PageModel
 {
     [BindProperty]
-    [Required(ErrorMessage = "Please select an option")]
+    [Required(ErrorMessage = "Select an option")]
     public bool? HasWebsiteAddress { get; set; }
 
     [BindProperty]
-    [RequiredIf(nameof(HasWebsiteAddress), true, ErrorMessage = "Please enter the Website address.")]
-    [Url]
+    [RequiredIf(nameof(HasWebsiteAddress), true, ErrorMessage = "Enter the website address")]
+    [ValidUri(ErrorMessage = "Enter a valid website address in the correct format")]
     public string? WebsiteAddress { get; set; }
 
     [BindProperty(SupportsGet = true)]
