@@ -52,6 +52,8 @@ public class IdentifierTests
             i.IdentifierId == "GB123123123" &&
             i.LegalName == evIds[0].LegalName &&
             i.Scheme == evIds[0].Scheme &&
-            i.Uri == evIds[0].Uri);
+            i.Uri == evIds[0].Uri &&
+            i.startsOn == DateTimeOffset.MinValue &&
+            i.endsOn == null);
     }
 }

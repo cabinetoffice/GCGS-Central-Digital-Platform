@@ -15,10 +15,12 @@
     },
     "environment": [
         {"name": "ASPNETCORE_ENVIRONMENT", "value": "${aspcore_environment}"},
-        {"name": "Organisation__Authority", "value": "https://authority.${public_hosted_zone_fqdn}"},
+        {"name": "Aws__LogGroup", "value": "${lg_name}"},
+        {"name": "Aws__LogStream", "value": "${lg_prefix}-serilog"},
+        {"name": "EntityVerificationDatabase__Database", "value": "${db_name}"},
         {"name": "EntityVerificationDatabase__Host", "value": "${db_address}"},
         {"name": "EntityVerificationDatabase__Server", "value": "${db_address}"},
-        {"name": "EntityVerificationDatabase__Database", "value": "${db_name}"}
+        {"name": "Organisation__Authority", "value": "https://authority.${public_hosted_zone_fqdn}"}
     ],
     "secrets": [
         {"name": "EntityVerificationDatabase__Password", "valueFrom": "${db_username}"},

@@ -471,7 +471,7 @@ public static class EndpointExtensions
                 return operation;
             });
 
-        app.MapGet("/{organisationId}/invites",
+        app.MapGet("/{organisationId}/persons/person-invites",
                 async (Guid organisationId, IUseCase<Guid, IEnumerable<PersonInviteModel>> useCase) =>
                     await useCase.Execute(organisationId)
                         .AndThen(personInvites => personInvites != null ? Results.Ok(personInvites) : Results.NotFound()))
@@ -493,7 +493,7 @@ public static class EndpointExtensions
                 return operation;
             });
 
-        app.MapPost("/{organisationId}/invite",
+        app.MapPost("/{organisationId}/persons/person-invite",
                 async (Guid organisationId, InvitePersonToOrganisation invitePersonToOrganisation, IUseCase<(Guid, InvitePersonToOrganisation), PersonInvite> useCase) =>
 
                     await useCase.Execute((organisationId, invitePersonToOrganisation))
@@ -521,13 +521,13 @@ public static class EndpointExtensions
                 return operation;
             });
 
-        app.MapPut("/{organisationId}/invite/{personInviteId}",
+        app.MapPatch("/{organisationId}/invite/{personInviteId}",
              async (Guid organisationId, Guid personInviteId, UpdatePersonToOrganisation updatePersonToOrganisation, IUseCase<(Guid, Guid, UpdatePersonToOrganisation), bool> useCase) =>
 
                  await useCase.Execute((organisationId, personInviteId, updatePersonToOrganisation))
                      .AndThen(_ => Results.NoContent())
          )
-         .Produces(StatusCodes.Status201Created)
+         .Produces(StatusCodes.Status200OK)
          .Produces(StatusCodes.Status204NoContent)
          .ProducesProblem(StatusCodes.Status400BadRequest)
          .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
@@ -539,7 +539,7 @@ public static class EndpointExtensions
              operation.OperationId = "UpdatePersonInvite";
              operation.Description = "Update a person invite.";
              operation.Summary = "Update a new person invite.";
-             operation.Responses["201"].Description = "Person invite updated successfully.";
+             operation.Responses["200"].Description = "Person invite updated successfully.";
              operation.Responses["204"].Description = "Person invite updated successfully.";
              operation.Responses["400"].Description = "Bad request.";
              operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
@@ -549,7 +549,7 @@ public static class EndpointExtensions
              return operation;
          });
 
-        app.MapDelete("/{organisationId}/invite/{personInviteId}",
+        app.MapDelete("/{organisationId}/person-invite/{personInviteId}",
                 async (Guid organisationId, Guid personInviteId, IUseCase<(Guid, Guid), bool> useCase) =>
                     await useCase.Execute((organisationId, personInviteId))
                         .AndThen(_ => Results.NoContent()))
