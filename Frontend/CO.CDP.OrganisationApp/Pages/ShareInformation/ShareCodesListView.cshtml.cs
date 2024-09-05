@@ -58,9 +58,9 @@ public class ShareCodesListViewModel(IDataSharingClient dataSharingClient) : Pag
             return Redirect("/page-not-found");
         }
 
-        var contentDisposition = fileResponse.Headers["content-disposition"].FirstOrDefault();
+        var contentDisposition = fileResponse.Headers["Content-Disposition"].FirstOrDefault();
         var filename = string.IsNullOrWhiteSpace(contentDisposition) ? $"{shareCode}.pdf" : new ContentDisposition(contentDisposition).FileName;
-        var contentType = fileResponse.Headers["content-type"].FirstOrDefault() ?? Application.Pdf;
+        var contentType = fileResponse.Headers["Content-Type"].FirstOrDefault() ?? Application.Pdf;
 
         return File(fileResponse.Stream, contentType, filename);
     }

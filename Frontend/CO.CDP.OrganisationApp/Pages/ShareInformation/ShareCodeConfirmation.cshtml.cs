@@ -1,6 +1,8 @@
 using CO.CDP.DataSharing.WebApiClient;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.Net.Mime;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace CO.CDP.OrganisationApp.Pages.ShareInformation;
 
@@ -18,28 +20,24 @@ public class ShareCodeConfirmationModel(IDataSharingClient dataSharingClient) : 
     [BindProperty(SupportsGet = true)]
     public string? ShareCode { get; set; }
 
-    public async Task<IActionResult> OnGetDownload()
+    public async Task<IActionResult> OnGetDownload(string shareCode)
     {
-        if (string.IsNullOrEmpty(ShareCode))
+        if (string.IsNullOrEmpty(shareCode))
         {
-            return NotFound("ShareCode is required to download the file.");
+            return Redirect("/page-not-found");
         }
 
-        try
-        {
-            var fileResponse = await dataSharingClient.GetSharedDataPdfAsync(ShareCode);
+        var fileResponse = await dataSharingClient.GetSharedDataPdfAsync(shareCode);
 
-            if (fileResponse == null || fileResponse.Stream.Length == 0)
-            {
-                return NotFound("Unable to generate the PDF.");
-            }
-
-            return File(fileResponse.Stream, "application/pdf", $"{ShareCode}.pdf");
-        }
-        catch (Exception ex)
+        if (fileResponse == null)
         {
-            return StatusCode(500, $"An error occurred while generating the PDF: {ex.Message}");
+            return Redirect("/page-not-found");
         }
+
+        var contentDisposition = fileResponse.Headers["Content-Disposition"].FirstOrDefault();
+        var filename = string.IsNullOrWhiteSpace(contentDisposition) ? $"{shareCode}.pdf" : new ContentDisposition(contentDisposition).FileName;
+        var contentType = fileResponse.Headers["Content-Type"].FirstOrDefault() ?? Application.Pdf;
+
+        return File(fileResponse.Stream, contentType, filename);
     }
-
 }
