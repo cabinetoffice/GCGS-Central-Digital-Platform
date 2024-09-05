@@ -15,6 +15,7 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
         return await context.Organisations
             .Include(p => p.Addresses)
             .ThenInclude(p => p.Address)
+            // .Include(p => p.OrganisationPersons)
             .FirstOrDefaultAsync(t => t.Guid == organisationId);
     }
 
