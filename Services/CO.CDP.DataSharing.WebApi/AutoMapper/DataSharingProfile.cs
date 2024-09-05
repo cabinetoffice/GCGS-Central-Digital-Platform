@@ -74,7 +74,7 @@ public class DataSharingProfile : Profile
             .ForMember(m => m.Form, o => o.MapFrom(m => m))
             .ForMember(m => m.AnswerSets, o => o.MapFrom(m => m.AnswerSets))
             .ForMember(m => m.Questions,
-                o => o.MapFrom(m => m.AnswerSets.SelectMany(a => a.Section.Questions).DistinctBy(q => q.Id)));
+                o => o.MapFrom(m => m.AnswerSets.SelectMany(a => a.Section.Questions.Where(x => x.Type != Persistence.FormQuestionType.NoInput && x.Type != Persistence.FormQuestionType.CheckYourAnswers)).DistinctBy(q => q.Id)));
 
         CreateMap<Persistence.SharedConsent, Form>()
             .ForMember(m => m.Name, o => o.MapFrom(m => m.Form.Name))
