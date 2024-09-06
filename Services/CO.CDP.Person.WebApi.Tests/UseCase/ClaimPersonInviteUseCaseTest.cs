@@ -25,9 +25,9 @@ public class ClaimPersonInviteUseCaseTests
         {
             Id = 0,
             Guid = _defaultPersonGuid,
-            FirstName = null,
-            LastName = null,
-            Email = null
+            FirstName = null!,
+            LastName = null!,
+            Email = null!
         };
     }
 
@@ -37,7 +37,7 @@ public class ClaimPersonInviteUseCaseTests
         var command = (personId: Guid.NewGuid(), claimPersonInvite: new ClaimPersonInvite { PersonInviteId = Guid.NewGuid() });
 
         _mockPersonRepository.Setup(repo => repo.Find(command.personId))
-            .ReturnsAsync((OrganisationInformation.Persistence.Person)null);
+            .ReturnsAsync((OrganisationInformation.Persistence.Person)null!);
 
         var exception = await Assert.ThrowsAsync<UnknownPersonException>(() => _useCase.Execute(command));
         Assert.Equal($"Unknown person {command.personId}.", exception.Message);
@@ -51,7 +51,7 @@ public class ClaimPersonInviteUseCaseTests
         _mockPersonRepository.Setup(repo => repo.Find(_defaultPerson.Guid))
             .ReturnsAsync(_defaultPerson);
         _mockPersonInviteRepository.Setup(repo => repo.Find(command.claimPersonInvite.PersonInviteId))
-            .ReturnsAsync((PersonInvite)null);
+            .ReturnsAsync((PersonInvite)null!);
 
         var exception = await Assert.ThrowsAsync<UnknownPersonInviteException>(() => _useCase.Execute(command));
         Assert.Equal($"Unknown personInvite {command.claimPersonInvite.PersonInviteId}.", exception.Message);
@@ -65,11 +65,11 @@ public class ClaimPersonInviteUseCaseTests
             Id = 0,
             Person = _defaultPerson,
             Guid = _defaultPersonInviteGuid,
-            FirstName = null,
-            LastName = null,
-            Email = null,
-            Organisation = null,
-            Scopes = null
+            FirstName = null!,
+            LastName = null!,
+            Email = null!,
+            Organisation = null!,
+            Scopes = null!
         };
         var command = (personId: _defaultPerson.Guid, claimPersonInvite: new ClaimPersonInvite { PersonInviteId = _defaultPersonInviteGuid });
 
@@ -90,16 +90,16 @@ public class ClaimPersonInviteUseCaseTests
             Id = 0,
             Person = null,
             Guid = _defaultPersonInviteGuid,
-            FirstName = null,
-            LastName = null,
-            Email = null,
+            FirstName = null!,
+            LastName = null!,
+            Email = null!,
             Organisation = new Organisation
             {
                 OrganisationPersons = new List<OrganisationPerson>(),
                 Id = 0,
                 Name = "Test Organisation",
                 Guid = new Guid(),
-                Tenant = null
+                Tenant = null!
             },
             Scopes = new List<string> { "EDITOR", "ADMIN" }
         };
@@ -110,7 +110,7 @@ public class ClaimPersonInviteUseCaseTests
         _mockPersonInviteRepository.Setup(repo => repo.Find(command.claimPersonInvite.PersonInviteId))
             .ReturnsAsync(personInvite);
 
-        var result = await _useCase.Execute(command);
+        await _useCase.Execute(command);
 
         Assert.Equal(_defaultPerson, personInvite.Person);
         Assert.Contains(personInvite.Organisation.OrganisationPersons, op => op.Person == _defaultPerson && op.Organisation == personInvite.Organisation);
