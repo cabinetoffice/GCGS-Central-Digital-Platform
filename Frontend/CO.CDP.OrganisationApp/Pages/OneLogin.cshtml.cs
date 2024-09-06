@@ -6,8 +6,6 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using ProblemDetails = CO.CDP.Person.WebApiClient.ProblemDetails;
-using CO.CDP.OrganisationApp.Constants;
 
 namespace CO.CDP.OrganisationApp.Pages.Registration;
 
@@ -69,20 +67,15 @@ public class OneLogin(
             }
 
             var personInviteId = session.Get<Guid?>("PersonInviteId");
-
             if (personInviteId != null)
             {
-                await ClaimPersonInvite(person.Id, personInviteId.Value);
+                return RedirectToPage("ClaimOrganisationInvite", new { personInviteId });
             }
-
-            session.Remove("PersonInviteId");
 
             return RedirectToPage("OrganisationSelection");
         }
         catch (ApiException ex) when (ex.StatusCode == 404)
         {
-            session.Remove("PersonInviteId");
-
             return RedirectToPage("PrivacyPolicy");
         }
     }
@@ -98,29 +91,5 @@ public class OneLogin(
         return SignOut(new AuthenticationProperties { RedirectUri = "/" },
                 CookieAuthenticationDefaults.AuthenticationScheme,
                 OpenIdConnectDefaults.AuthenticationScheme);
-    }
-
-    public async Task ClaimPersonInvite(Guid personId, Guid personInviteId)
-    {
-        var command = new ClaimPersonInvite(personInviteId);
-        try
-        {
-            await personClient.ClaimPersonInviteAsync(personId, command);
-        }
-        catch (ApiException<ProblemDetails> e)
-        {
-            var code = ExtractErrorCode(e);
-            if (code != ErrorCodes.PERSON_INVITE_ALREADY_CLAIMED)
-            {
-                throw;
-            }
-        }
-    }
-
-    private static string? ExtractErrorCode(ApiException<ProblemDetails> aex)
-    {
-        return aex.Result.AdditionalProperties.TryGetValue("code", out var code) && code is string codeString
-            ? codeString
-            : null;
     }
 }
