@@ -7,7 +7,6 @@ namespace CO.CDP.OrganisationApp.Pages.Users;
 
 public class ChangeUserRoleModel(
     IOrganisationClient organisationClient,
-    /*IPersonClient personClient,*/
     ISession session) : LoggedInUserAwareModel(session)
 {
     [BindProperty(SupportsGet = true)]
@@ -28,60 +27,64 @@ public class ChangeUserRoleModel(
 
     public string? UserFullName;
 
-    /*public async Task<IActionResult> OnGetPerson()
+    public async Task<IActionResult> OnGetPerson()
     {
-        var person = await GetPerson(personClient);
-        var roles = await GetRoles(organisationClient);
+        var organisationPerson = await GetOrganisationPerson(organisationClient);
 
-        if (person == null || person.Id == UserDetails.PersonId)
+        if (organisationPerson == null || organisationPerson.Id == UserDetails.PersonId)
         {
             return Redirect("/page-not-found");
         }
 
-        UserFullName = person.FirstName + " " + person.LastName;
-        //IsAdmin = person.Scopes.Contains(PersonScopes.Admin);
-        //Role = GetRole(personInvite.Scopes);
+        UserFullName = organisationPerson.FirstName + " " + organisationPerson.LastName;
+        IsAdmin = organisationPerson.Scopes.Contains(PersonScopes.Admin);
+        Role = GetRole(organisationPerson.Scopes);
 
         return Page();
-    }*/
+    }
 
-    /*public async Task<IActionResult> OnPostPerson()
+    public async Task<IActionResult> OnPostPerson()
     {
         if (!ModelState.IsValid)
         {
             return Page();
         }
 
-        // TODO: Update person
-        
-        return RedirectToPage("UserSummary", new { Id });
-    }*/
+        var person = await GetOrganisationPerson(organisationClient);
 
-    /*public async Task<Person.WebApiClient.Person?> GetPerson(IPersonClient personClient)
+        if (person == null)
+        {
+            return Redirect("/page-not-found");
+        }
+
+        var personInviteUpdateCommand = new UpdatePersonToOrganisation(
+            ProcessScopes(person.Scopes)
+        );
+
+        try
+        {
+            await organisationClient.UpdateOrganisationPersonAsync(Id, ItemId, personInviteUpdateCommand);
+        }
+        catch (CO.CDP.Organisation.WebApiClient.ApiException ex) when (ex.StatusCode == 404)
+        {
+            return Redirect("/page-not-found");
+        }
+
+        return RedirectToPage("UserSummary", new { Id });
+    }
+
+    public async Task<Organisation.WebApiClient.Person?> GetOrganisationPerson(IOrganisationClient organisationClient)
     {
         try
         {
-            var person = await personClient.GetPersonAsync(ItemId);
-            return person;
+            var persons = await organisationClient.GetOrganisationPersonsAsync(Id);
+            return persons.FirstOrDefault(p => p.Id == ItemId);
         }
-        catch (CO.CDP.Person.WebApiClient.ApiException ex) when (ex.StatusCode == 404)
+        catch (CO.CDP.Organisation.WebApiClient.ApiException ex) when (ex.StatusCode == 404)
         {
             return null;
         }
     }
-
-    public async Task<Person.WebApiClient.Person?> GetRoles(IOrganisationClient organisationClient)
-    {
-        try
-        {
-            var roles = await organisationClient.get (ItemId);
-            return person;
-        }
-        catch (CO.CDP.Person.WebApiClient.ApiException ex) when (ex.StatusCode == 404)
-        {
-            return null;
-        }
-    }*/
 
     public async Task<IActionResult> OnGetPersonInvite()
     {
@@ -127,8 +130,24 @@ public class ChangeUserRoleModel(
             return Redirect("/page-not-found");
         }
 
-        var scopes = personInvite.Scopes;
+        var personInviteUpdateCommand = new UpdatePersonToOrganisation(
+            ProcessScopes(personInvite.Scopes)
+        );
 
+        try
+        {
+            await organisationClient.UpdatePersonInviteAsync(Id, ItemId, personInviteUpdateCommand);
+        }
+        catch (CO.CDP.Organisation.WebApiClient.ApiException ex) when (ex.StatusCode == 404)
+        {
+            return Redirect("/page-not-found");
+        }
+
+        return RedirectToPage("UserSummary", new { Id });
+    }
+
+    public ICollection<string>? ProcessScopes(ICollection<string> scopes)
+    {
         if (scopes != null && scopes.Contains(PersonScopes.Admin)) scopes.Remove(PersonScopes.Admin);
         if (scopes != null && scopes.Contains(PersonScopes.Editor)) scopes.Remove(PersonScopes.Editor);
         if (scopes != null && scopes.Contains(PersonScopes.Viewer)) scopes.Remove(PersonScopes.Viewer);
@@ -146,20 +165,7 @@ public class ChangeUserRoleModel(
             scopes?.Add(PersonScopes.Viewer);
         }
 
-        var personInviteUpdateCommand = new UpdatePersonToOrganisation(
-            scopes
-        );
-
-        try
-        {
-            await organisationClient.UpdatePersonInviteAsync(Id, ItemId, personInviteUpdateCommand);
-        }
-        catch (CO.CDP.Organisation.WebApiClient.ApiException ex) when (ex.StatusCode == 404)
-        {
-            return Redirect("/page-not-found");
-        }
-
-        return RedirectToPage("UserSummary", new { Id });
+        return scopes;
     }
 
     public async Task<PersonInviteModel?> GetPersonInvite(IOrganisationClient organisationClient)
