@@ -7,7 +7,7 @@ variable "backup_retention_period" {
 variable "create_read_replica" {
   description = "Create a read replica for this RDS instance"
   type        = bool
-  default     = false
+  default     = true
 }
 
 variable "db_name" {
@@ -20,10 +20,16 @@ variable "db_postgres_sg_id" {
   type        = string
 }
 
+variable "deletion_protection" {
+  description = "If the DB instance should have deletion protection enabled"
+  type        = bool
+  default     = true
+}
+
 variable "multi_az" {
   description = "Enable Multi-AZ deployment for RDS"
   type        = bool
-  default     = false
+  default     = true
 }
 
 variable "environment" {
@@ -57,7 +63,7 @@ variable "monitoring_role_arn" {
 variable "performance_insights_enabled" {
   description = "Enable Performance Insights"
   type        = bool
-  default     = false
+  default     = true
 }
 
 variable "postgres_engine_version" {
