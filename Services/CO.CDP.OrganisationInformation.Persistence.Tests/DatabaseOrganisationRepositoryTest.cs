@@ -309,11 +309,10 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql) : 
 
         var individualTrust = result.First().IndividualOrTrust;
         individualTrust.Should().BeEquivalentTo(connectedEntity.IndividualOrTrust, options =>
-        options
-            .Using<DateTimeOffset>(ctx => ctx.Subject.Should().BeCloseTo(ctx.Expectation, TimeSpan.FromMilliseconds(100)))
-            .WhenTypeIs<DateTimeOffset>()
-    );
-
+            options
+                .Using<DateTimeOffset>(ctx => ctx.Subject.Should().BeCloseTo(ctx.Expectation, TimeSpan.FromMilliseconds(100)))
+                .WhenTypeIs<DateTimeOffset>()
+        );
     }
 
     [Fact]
@@ -350,22 +349,13 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql) : 
 
         result.Should().NotBeEmpty();
         result.Should().HaveCount(1);
-        result.First().Organisation.Should().BeEquivalentTo(connectedEntity.Organisation);
 
-        var actualOrganisation = result.First().Organisation;
-        var expectedOrganisation = connectedEntity.Organisation;
-
-        connectedEntity.Organisation.Should().NotBeNull();
-        actualOrganisation.Should().NotBeNull();
-
-        actualOrganisation?.Id.Should().Be(expectedOrganisation?.Id);
-        actualOrganisation?.Category.Should().Be(expectedOrganisation?.Category);
-        actualOrganisation?.Name.Should().Be(expectedOrganisation?.Name);
-        actualOrganisation?.InsolvencyDate.Should().Be(expectedOrganisation?.InsolvencyDate);
-        actualOrganisation?.RegisteredLegalForm.Should().Be(expectedOrganisation?.RegisteredLegalForm);
-        actualOrganisation?.LawRegistered.Should().Be(expectedOrganisation?.LawRegistered);
-        actualOrganisation?.ControlCondition.Should().BeEquivalentTo(expectedOrganisation?.ControlCondition);
-        actualOrganisation?.OrganisationId.Should().Be(expectedOrganisation?.OrganisationId);
+        var organisation = result.First().Organisation;
+        organisation.Should().BeEquivalentTo(connectedEntity.Organisation, options =>
+            options
+                .Using<DateTimeOffset>(ctx => ctx.Subject.Should().BeCloseTo(ctx.Expectation, TimeSpan.FromMilliseconds(100)))
+                .WhenTypeIs<DateTimeOffset>()
+        );
     }
 
     [Fact]
