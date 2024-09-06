@@ -203,6 +203,34 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
     }
 
     [Fact]
+    public async Task Execute_ShouldUpdateVatNumber_WhenVatIdentifierAlreadyExists()
+    {
+        var command = new UpdateOrganisation
+        {
+            Type = OrganisationUpdateType.AdditionalIdentifiers,
+            Organisation = new OrganisationInfo
+            {
+                AdditionalIdentifiers = [new OrganisationIdentifier
+                {
+                    Id = "999999",
+                    LegalName = "Acme",
+                    Scheme = "VAT"
+                }]
+            }
+        };
+        var organisation = Organisation;
+        _organisationRepositoryMock.Setup(repo => repo.Find(_organisationId)).ReturnsAsync(organisation);
+
+        var result = await UseCase.Execute((_organisationId, command));
+
+        result.Should().BeTrue();
+        _organisationRepositoryMock.Verify(repo => repo.Save(organisation!), Times.Once);
+
+        organisation.Identifiers.Should().Contain(i => i.Scheme == "VAT" && i.IdentifierId == "999999");
+        organisation.Identifiers.Should().ContainSingle();
+    }
+
+    [Fact]
     public async Task Execute_ShouldNotInsertIdentifier_WhenIdentifierIdIsEmptyOrNull()
     {
         var command = new UpdateOrganisation
