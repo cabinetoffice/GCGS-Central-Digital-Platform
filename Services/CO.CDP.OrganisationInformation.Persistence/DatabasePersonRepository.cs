@@ -12,7 +12,7 @@ public class DatabasePersonRepository(OrganisationInformationContext context) : 
     public async Task<Person?> Find(Guid personId)
     {
         return await context.Persons.FirstOrDefaultAsync(t => t.Guid == personId);
-    }
+    }   
 
     public async Task<Person?> FindByUrn(string urn)
     {
@@ -55,4 +55,6 @@ public class DatabasePersonRepository(OrganisationInformationContext context) : 
                 throw cause;
         }
     }
+
+
 }

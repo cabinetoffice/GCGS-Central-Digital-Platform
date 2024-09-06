@@ -4,9 +4,13 @@ public interface IOrganisationRepository : IDisposable
 {
     public void Save(Organisation organisation);
 
+    public void SaveOrganisationPerson(OrganisationPerson organisationPerson);    
+
     public Task<Organisation?> Find(Guid organisationId);
 
     public Task<Organisation?> Find(int organisationId);
+
+    public Task<OrganisationPerson?> FindOrganisationPerson(Guid organisationId, Guid personId);
 
     public Task<Organisation?> FindByName(string name);
 

@@ -52,6 +52,12 @@ if (Assembly.GetEntryAssembly().IsRunAs("CO.CDP.EntityVerification"))
             }
         );
     builder.Services.AddHostedService<DispatcherBackgroundService>();
+
+    builder.Services
+        .AddAwsConfiguration(builder.Configuration)
+        .AddLoggingConfiguration(builder.Configuration)
+        .AddAmazonCloudWatchLogsService()
+        .AddCloudWatchSerilog();
 }
 
 builder.Services

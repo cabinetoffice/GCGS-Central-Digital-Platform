@@ -1,4 +1,7 @@
+using System.Reflection;
 using CO.CDP.Authentication;
+using CO.CDP.AwsServices;
+using CO.CDP.Configuration.Assembly;
 using CO.CDP.Configuration.ForwardedHeaders;
 using CO.CDP.Configuration.Helpers;
 using CO.CDP.OrganisationInformation.Persistence;
@@ -32,6 +35,15 @@ builder.Services.AddPersonProblemDetails();
 builder.Services.AddJwtBearerAndApiKeyAuthentication(builder.Configuration, builder.Environment);
 //builder.Services.AddAuthorization();
 builder.Services.AddOrganisationAuthorization();
+
+if (Assembly.GetEntryAssembly().IsRunAs("CO.CDP.Person.WebApi"))
+{
+    builder.Services
+        .AddAwsConfiguration(builder.Configuration)
+        .AddLoggingConfiguration(builder.Configuration)
+        .AddAmazonCloudWatchLogsService()
+        .AddCloudWatchSerilog();
+}
 
 var app = builder.Build();
 app.UseForwardedHeaders();
