@@ -353,11 +353,8 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql) : 
         result.First().Organisation.Should().BeEquivalentTo(connectedEntity.Organisation);
 
         var organisation = result.First().Organisation;
-        organisation.Should().BeEquivalentTo(connectedEntity.Organisation, options =>
-        options
-            .Using<DateTimeOffset>(ctx => ctx.Subject.Should().BeCloseTo(ctx.Expectation, TimeSpan.FromMilliseconds(100)))
-            .WhenTypeIs<DateTimeOffset>()
-    );
+        organisation.Should().BeEquivalentTo(connectedEntity.Organisation!, options =>
+            options.Excluding(o => o.CreatedOn).Excluding(o => o.UpdatedOn));
     }
 
     [Fact]
