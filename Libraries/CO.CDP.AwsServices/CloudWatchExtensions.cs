@@ -35,9 +35,9 @@ public static class CloudWatchExtensions
             // options for the sink defaults in https://github.com/Cimpress-MCP/serilog-sinks-awscloudwatch/blob/master/src/Serilog.Sinks.AwsCloudWatch/CloudWatchSinkOptions.cs
             return new CloudWatchSinkOptions
             {
-                LogGroupName = awsConfiguration.CloudWatch.LogGroup,
+                LogGroupName = awsConfiguration?.CloudWatch.LogGroup,
                 TextFormatter = new CompactJsonFormatter(),
-                LogStreamNameProvider = new ConfigurableLogStreamNameProvider(awsConfiguration.CloudWatch.LogStream),
+                LogStreamNameProvider = new ConfigurableLogStreamNameProvider(awsConfiguration?.CloudWatch.LogStream),
                 MinimumLogEventLevel = LogEventLevel.Verbose
             };
         }, ServiceLifetime.Singleton));
