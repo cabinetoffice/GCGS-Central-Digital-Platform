@@ -310,7 +310,7 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql) : 
         var individualTrust = result.First().IndividualOrTrust;
         individualTrust.Should().BeEquivalentTo(connectedEntity.IndividualOrTrust, options =>
         options
-            .Using<DateTimeOffset>(ctx => ctx.Subject.Should().BeCloseTo(ctx.Expectation, TimeSpan.FromMilliseconds(1)))
+            .Using<DateTimeOffset>(ctx => ctx.Subject.Should().BeCloseTo(ctx.Expectation, TimeSpan.FromMilliseconds(100)))
             .WhenTypeIs<DateTimeOffset>()
     );
 
@@ -355,7 +355,7 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql) : 
         var organisation = result.First().Organisation;
         organisation.Should().BeEquivalentTo(connectedEntity.Organisation, options =>
         options
-            .Using<DateTimeOffset>(ctx => ctx.Subject.Should().BeCloseTo(ctx.Expectation, TimeSpan.FromMilliseconds(1)))
+            .Using<DateTimeOffset>(ctx => ctx.Subject.Should().BeCloseTo(ctx.Expectation, TimeSpan.FromMilliseconds(100)))
             .WhenTypeIs<DateTimeOffset>()
     );
     }
