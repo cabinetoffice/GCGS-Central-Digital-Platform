@@ -352,9 +352,20 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql) : 
         result.Should().HaveCount(1);
         result.First().Organisation.Should().BeEquivalentTo(connectedEntity.Organisation);
 
-        var organisation = result.First().Organisation;
-        organisation.Should().BeEquivalentTo(connectedEntity.Organisation!, options =>
-            options.Excluding(o => o.CreatedOn).Excluding(o => o.UpdatedOn));
+        var actualOrganisation = result.First().Organisation;
+        var expectedOrganisation = connectedEntity.Organisation;
+
+        connectedEntity.Organisation.Should().NotBeNull();
+        actualOrganisation.Should().NotBeNull();
+
+        actualOrganisation?.Id.Should().Be(expectedOrganisation?.Id);
+        actualOrganisation?.Category.Should().Be(expectedOrganisation?.Category);
+        actualOrganisation?.Name.Should().Be(expectedOrganisation?.Name);
+        actualOrganisation?.InsolvencyDate.Should().Be(expectedOrganisation?.InsolvencyDate);
+        actualOrganisation?.RegisteredLegalForm.Should().Be(expectedOrganisation?.RegisteredLegalForm);
+        actualOrganisation?.LawRegistered.Should().Be(expectedOrganisation?.LawRegistered);
+        actualOrganisation?.ControlCondition.Should().BeEquivalentTo(expectedOrganisation?.ControlCondition);
+        actualOrganisation?.OrganisationId.Should().Be(expectedOrganisation?.OrganisationId);
     }
 
     [Fact]
