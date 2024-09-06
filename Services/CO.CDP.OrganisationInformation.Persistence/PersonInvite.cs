@@ -15,7 +15,7 @@ public class PersonInvite : IEntityDate
 
     public Person? Person { get; set; }
 
-    public required List<string> Scopes { get; init; } = [];
+    public required List<string> Scopes { get; set; } = [];
     public DateTimeOffset InviteSentOn { get; set; }
     public DateTimeOffset CreatedOn { get; set; }
     public DateTimeOffset UpdatedOn { get; set; }

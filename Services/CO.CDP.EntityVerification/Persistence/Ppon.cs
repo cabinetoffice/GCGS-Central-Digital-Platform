@@ -11,4 +11,7 @@ public class Ppon : IEntityDate
     public required string Name { get; set; }
     public DateTimeOffset CreatedOn { get; set; }
     public DateTimeOffset UpdatedOn { get; set; }
+    public DateTimeOffset startsOn { get; set; }
+    public DateTimeOffset? endsOn { get; set; }
+
 }
