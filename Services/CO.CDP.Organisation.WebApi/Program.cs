@@ -75,6 +75,7 @@ builder.Services.AddScoped<IUseCase<Guid, IEnumerable<Person>>, GetPersonsUseCas
 builder.Services.AddScoped<IUseCase<(Guid, RemovePersonFromOrganisation), bool>, RemovePersonFromOrganisationUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, InvitePersonToOrganisation), PersonInvite>, InvitePersonToOrganisationUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid,Guid, UpdatePersonToOrganisation), bool>, UpdateInvitedPersonToOrganisationUseCase>();
+builder.Services.AddScoped<IUseCase<(Guid, Guid, UpdatePersonToOrganisation), bool>, UpdatePersonToOrganisationUseCase>();
 builder.Services.AddScoped<IUseCase<Guid, IEnumerable<PersonInviteModel>>, GetPersonInvitesUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, Guid), bool>, RemovePersonInviteFromOrganisationUseCase>();
 

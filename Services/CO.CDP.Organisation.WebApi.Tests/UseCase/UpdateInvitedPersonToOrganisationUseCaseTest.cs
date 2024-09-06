@@ -29,17 +29,17 @@ public class UpdateInvitedPersonToOrganisationUseCaseTests : IClassFixture<AutoM
     {
         var updatePersonToOrganisation = new UpdatePersonToOrganisation
         {
-            Scopes = ["Viewer"]
+            Scopes = ["Editor"]
         };
         var organisation = Organisation;
         _organisationRepositoryMock.Setup(repo => repo.Find(_organisationId)).ReturnsAsync(organisation);
+        var personInvite = PersonInvite;
+        _personInviteRepositoryMock.Setup(repo => repo.Find(_personInviteId)).ReturnsAsync(personInvite);
 
-        _personInviteRepositoryMock.Setup(repo => repo.Find(_personInviteId)).ReturnsAsync(PersonInvite);
-
-        PersonInvite.Scopes = updatePersonToOrganisation.Scopes;
         var result = await _useCase.Execute((_organisationId, _personInviteId, updatePersonToOrganisation));
 
-        result.Should().Be(true);        
+        result.Should().Be(true);
+        _personInviteRepositoryMock.Verify(repo => repo.Save(personInvite!), Times.Once);
     }
 
     [Fact]

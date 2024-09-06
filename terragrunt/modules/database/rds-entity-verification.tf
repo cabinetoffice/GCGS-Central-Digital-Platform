@@ -5,6 +5,7 @@ module "rds_entity_verification" {
   backup_retention_period      = local.is_production ? 14 : 0
   db_name                      = "${local.name_prefix}-entity-verification"
   db_postgres_sg_id            = var.db_postgres_sg_id
+  deletion_protection          = local.is_production
   environment                  = var.environment
   max_allocated_storage        = local.is_production ? 50 : 0
   monitoring_interval          = local.is_production ? 30 : 0
