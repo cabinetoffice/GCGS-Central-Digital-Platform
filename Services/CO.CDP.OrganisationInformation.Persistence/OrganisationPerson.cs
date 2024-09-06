@@ -8,7 +8,7 @@ public class OrganisationPerson : IEntityDate
     public required Person Person { get; init; }
     public int OrganisationId { get; set; }
     public required Organisation Organisation { get; init; }
-    public List<string> Scopes { get; init; } = [];
+    public List<string> Scopes { get; set; } = [];
 
     public DateTimeOffset CreatedOn { get; set; }
     public DateTimeOffset UpdatedOn { get; set; }
