@@ -1,44 +1,35 @@
 using CO.CDP.DataSharing.WebApi.Model;
 using CO.CDP.OrganisationInformation;
 using CO.CDP.OrganisationInformation.Persistence;
+using Address = CO.CDP.OrganisationInformation.Address;
 using SharedConsent = CO.CDP.OrganisationInformation.Persistence.Forms.SharedConsent;
 
 namespace CO.CDP.DataSharing.WebApi.DataService;
 
-public class DataService : IDataService
+public class DataService(IShareCodeRepository shareCodeRepository) : IDataService
 {
-    private readonly IOrganisationRepository _organisationRepository;
-
-    public DataService(IOrganisationRepository organisationRepository)
+    public async Task<SharedSupplierInformation> GetSharedSupplierInformationAsync(string shareCode)
     {
-        _organisationRepository = organisationRepository;
+        var sharedConsent = await shareCodeRepository.GetByShareCode(shareCode)
+                            ?? throw new ShareCodeNotFoundException(Constants.ShareCodeNotFoundExceptionMessage);
+        return MapToSharedSupplierInformation(sharedConsent);
     }
 
-    public async Task<SharedSupplierInformation> GetSharedSupplierInformationAsync(SharedConsent sharedConsent)
-    {
-        var organisation = await _organisationRepository.Find(sharedConsent.OrganisationId);
-
-        if (organisation?.SupplierInfo == null)
+    private SharedSupplierInformation MapToSharedSupplierInformation(SharedConsent sharedConsent) =>
+        new()
         {
-            throw new SupplierInformationNotFoundException("Supplier information not found.");
-        }
-
-        var basicInformation = MapToBasicInformation(organisation);
-        var sharedSupplierInfo = new SharedSupplierInformation
-        {
-            BasicInformation = basicInformation
+            BasicInformation = MapToBasicInformation(sharedConsent.Organisation)
         };
-        return sharedSupplierInfo;
-    }
 
-    public BasicInformation MapToBasicInformation(Organisation organisation)
+    private BasicInformation MapToBasicInformation(Organisation organisation)
     {
-        var supplierInfo = organisation.SupplierInfo;
+        var supplierInfo = organisation.SupplierInfo
+            ?? throw new SupplierInformationNotFoundException("Supplier information not found.");
 
-        var registeredAddress = supplierInfo?.CompletedRegAddress == true
+        var registeredAddress = supplierInfo.CompletedRegAddress
             ? organisation.Addresses
                 .Where(a => a.Type == AddressType.Registered)
-                .Select(a => new CO.CDP.OrganisationInformation.Address
+                .Select(a => new Address
                 {
                     StreetAddress = a.Address.StreetAddress,
                     Locality = a.Address.Locality,
@@ -51,10 +42,10 @@ public class DataService : IDataService
                 .FirstOrDefault()
             : null;
 
-        var postalAddress = supplierInfo?.CompletedPostalAddress == true
+        var postalAddress = supplierInfo.CompletedPostalAddress
             ? organisation.Addresses
                 .Where(a => a.Type == AddressType.Postal)
-                .Select(a => new CO.CDP.OrganisationInformation.Address
+                .Select(a => new Address
                 {
                     StreetAddress = a.Address.StreetAddress,
                     Locality = a.Address.Locality,
@@ -67,19 +58,19 @@ public class DataService : IDataService
                 .FirstOrDefault()
             : null;
 
-        var vatNumber = supplierInfo?.CompletedVat == true
+        var vatNumber = supplierInfo.CompletedVat
             ? organisation.Identifiers.FirstOrDefault(i => i.Scheme == "VAT")?.IdentifierId
             : null;
 
-        var websiteAddress = supplierInfo?.CompletedWebsiteAddress == true
+        var websiteAddress = supplierInfo.CompletedWebsiteAddress
             ? organisation.ContactPoints.FirstOrDefault()?.Url
             : null;
 
-        var emailAddress = supplierInfo?.CompletedEmailAddress == true
+        var emailAddress = supplierInfo.CompletedEmailAddress
             ? organisation.ContactPoints.FirstOrDefault()?.Email
             : null;
 
-        var qualifications = supplierInfo?.CompletedQualification == true
+        var qualifications = supplierInfo.CompletedQualification
             ? supplierInfo.Qualifications.Select(q => new BasicQualification
             {
                 Guid = q.Guid,
@@ -87,9 +78,9 @@ public class DataService : IDataService
                 DateAwarded = q.DateAwarded,
                 Name = q.Name
             }).ToList()
-            : new List<BasicQualification>();
+            : [];
 
-        var tradeAssurances = supplierInfo?.CompletedTradeAssurance == true
+        var tradeAssurances = supplierInfo.CompletedTradeAssurance
             ? supplierInfo.TradeAssurances.Select(t => new BasicTradeAssurance
             {
                 Guid = t.Guid,
@@ -97,9 +88,9 @@ public class DataService : IDataService
                 ReferenceNumber = t.ReferenceNumber,
                 DateAwarded = t.DateAwarded
             }).ToList()
-            : new List<BasicTradeAssurance>();
+            : [];
 
-        var legalForm = supplierInfo?.CompletedLegalForm == true
+        var legalForm = supplierInfo.CompletedLegalForm
             ? new BasicLegalForm
             {
                 RegisteredUnderAct2006 = supplierInfo.LegalForm!.RegisteredUnderAct2006,
@@ -115,7 +106,7 @@ public class DataService : IDataService
 
         return new BasicInformation
         {
-            SupplierType = supplierInfo?.SupplierType,
+            SupplierType = supplierInfo.SupplierType,
             RegisteredAddress = registeredAddress,
             PostalAddress = postalAddress,
             VatNumber = vatNumber,

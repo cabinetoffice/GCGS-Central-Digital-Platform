@@ -23,11 +23,8 @@ public class GenerateShareCodeUseCase(
             throw new InvalidOrganisationRequestedException("Invalid Organisation requested.");
         }
 
-        var result = await shareCodeRepository.GetSharedConsentDraftAsync(shareRequest.FormId, shareRequest.OrganisationId);
-        if (result == null)
-        {
-            throw new ShareCodeNotFoundException(Constants.ShareCodeNotFoundExceptionMessage);
-        }
+        var result = await shareCodeRepository.GetSharedConsentDraftAsync(shareRequest.FormId, shareRequest.OrganisationId)
+            ?? throw new ShareCodeNotFoundException(Constants.ShareCodeNotFoundExceptionMessage);
 
         var shareCode = ShareCodeExtensions.GenerateShareCode();
         result.ShareCode = shareCode;
