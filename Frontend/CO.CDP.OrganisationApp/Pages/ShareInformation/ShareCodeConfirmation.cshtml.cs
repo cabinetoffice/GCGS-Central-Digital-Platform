@@ -20,14 +20,14 @@ public class ShareCodeConfirmationModel(IDataSharingClient dataSharingClient) : 
     [BindProperty(SupportsGet = true)]
     public string? ShareCode { get; set; }
 
-    public async Task<IActionResult> OnGetDownload(string shareCode)
+    public async Task<IActionResult> OnGetDownload()
     {
-        if (string.IsNullOrEmpty(shareCode))
+        if (string.IsNullOrEmpty(ShareCode))
         {
             return Redirect("/page-not-found");
         }
 
-        var fileResponse = await dataSharingClient.GetSharedDataPdfAsync(shareCode);
+        var fileResponse = await dataSharingClient.GetSharedDataPdfAsync(ShareCode);
 
         if (fileResponse == null)
         {
@@ -35,7 +35,7 @@ public class ShareCodeConfirmationModel(IDataSharingClient dataSharingClient) : 
         }
 
         var contentDisposition = fileResponse.Headers["Content-Disposition"].FirstOrDefault();
-        var filename = string.IsNullOrWhiteSpace(contentDisposition) ? $"{shareCode}.pdf" : new ContentDisposition(contentDisposition).FileName;
+        var filename = string.IsNullOrWhiteSpace(contentDisposition) ? $"{ShareCode}.pdf" : new ContentDisposition(contentDisposition).FileName;
         var contentType = fileResponse.Headers["Content-Type"].FirstOrDefault() ?? Application.Pdf;
 
         return File(fileResponse.Stream, contentType, filename);

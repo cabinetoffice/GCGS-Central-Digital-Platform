@@ -41,10 +41,10 @@ public class ShareCodeConfirmationTests
         var shareCode = "HDJ2123F";
         var pdfBytes = new byte[] { 1, 2, 3, 4, 5 };
         var headers = new Dictionary<string, IEnumerable<string>>
-        {
-            { "Content-Disposition", new[] { "attachment; filename=HDJ2123F.pdf" } },
-            { "Content-Type", new[] { "application/pdf" } }
-        };
+    {
+        { "Content-Disposition", new[] { "attachment; filename=HDJ2123F.pdf" } },
+        { "Content-Type", new[] { "application/pdf" } }
+    };
         var clientMock = new Mock<IDisposable>();
         var responseMock = new Mock<IDisposable>();
         var stream = new MemoryStream(pdfBytes);
@@ -54,7 +54,9 @@ public class ShareCodeConfirmationTests
             .Setup(x => x.GetSharedDataPdfAsync(shareCode))
             .ReturnsAsync(fileResponseMock);
 
-        var result = await _pageModel.OnGetDownload(shareCode);
+        _pageModel.ShareCode = shareCode;
+
+        var result = await _pageModel.OnGetDownload();
 
         result.Should().BeOfType<FileStreamResult>();
         var fileResult = result as FileStreamResult;
@@ -66,7 +68,7 @@ public class ShareCodeConfirmationTests
     [Fact]
     public async Task OnGetDownload_ShouldRedirectToPageNotFound_WhenShareCodeIsEmpty()
     {
-        var result = await _pageModel.OnGetDownload("");
+        var result = await _pageModel.OnGetDownload();
 
         result.Should().BeOfType<RedirectResult>().Which.Url.Should().Be("/page-not-found");
     }
@@ -80,7 +82,7 @@ public class ShareCodeConfirmationTests
             .Setup(x => x.GetSharedDataPdfAsync(shareCode))
             .ReturnsAsync((WebApiClient.FileResponse?)null);
 
-        var result = await _pageModel.OnGetDownload(shareCode);
+        var result = await _pageModel.OnGetDownload();
 
         result.Should().BeOfType<RedirectResult>().Which.Url.Should().Be("/page-not-found");
     }

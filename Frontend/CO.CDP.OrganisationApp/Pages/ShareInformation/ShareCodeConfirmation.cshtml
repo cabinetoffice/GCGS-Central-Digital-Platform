@@ -16,7 +16,7 @@
                 Your share code<br><strong>@Model.ShareCode</strong>
             </div>
         </div>
-        <p class="govuk-body">You can save your share code and <a href="?handler=download">download your supplier information file</a> or come back and get them when needed.</p>
+        <p class="govuk-body">You can save your share code and <a href="?handler=download&shareCode=@Model.ShareCode">download your supplier information file</a> or come back and get them when needed.</p>
         <p class="govuk-body">If your supplier information changes, you can update it and create a new share code and file to share the new information.</p>
         <p class="govuk-body"><a href="/organisation/@Model.OrganisationId/supplier-information">Back to organisation details</a></p>
     </div>
