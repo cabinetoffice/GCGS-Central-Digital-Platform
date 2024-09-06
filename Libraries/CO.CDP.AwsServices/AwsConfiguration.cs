@@ -13,8 +13,8 @@ public record AwsConfiguration
 
 public record CloudWatch
 {
-    public string? LogGroup { get; init; }
-    public string? LogStream { get; init; }
+    public required string LogGroup { get; init; }
+    public required string LogStream { get; init; }
 }
 
 public record Credentials
