@@ -279,6 +279,11 @@ public record InvitePersonToOrganisation
     public required List<string> Scopes { get; init; }
 }
 
+public record UpdateInvitedPersonToOrganisation
+{
+    public required List<string> Scopes { get; init; }
+}
+
 public record UpdatePersonToOrganisation
 {
     public required List<string> Scopes { get; init; }
