@@ -289,6 +289,102 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql) : 
         found.As<IEnumerable<Organisation>>().Should().ContainEquivalentOf(organisation1);
     }
 
+    [Fact]
+    public async Task GetConnectedIndividualTrusts_WhenConnectedEntitiesExist_ReturnsConnectedEntities()
+    {
+        using var repository = OrganisationRepository();
+
+        var supplierOrganisation = GivenOrganisation();
+        var connectedEntity = GivenConnectedIndividualTrust(supplierOrganisation);
+
+        using var context = postgreSql.OrganisationInformationContext();
+        await context.Organisations.AddAsync(supplierOrganisation);
+        await context.ConnectedEntities.AddAsync(connectedEntity);
+        await context.SaveChangesAsync();
+
+        var result = await repository.GetConnectedIndividualTrusts(supplierOrganisation.Id);
+
+        result.Should().NotBeEmpty();
+        result.Should().HaveCount(1);
+
+        var individualTrust = result.First().IndividualOrTrust;
+        individualTrust.Should().BeEquivalentTo(connectedEntity.IndividualOrTrust, options =>
+        options
+            .Using<DateTimeOffset>(ctx => ctx.Subject.Should().BeCloseTo(ctx.Expectation, TimeSpan.FromMilliseconds(100)))
+            .WhenTypeIs<DateTimeOffset>()
+    );
+
+    }
+
+    [Fact]
+    public async Task GetConnectedIndividualTrusts_WhenNoConnectedEntitiesExist_ReturnsEmptyList()
+    {
+        using var repository = OrganisationRepository();
+
+        var organisationId = 1;
+        var organisation = GivenOrganisation();
+
+        using var context = postgreSql.OrganisationInformationContext();
+        await context.Organisations.AddAsync(organisation);
+        await context.SaveChangesAsync();
+
+        var result = await repository.GetConnectedIndividualTrusts(organisationId);
+
+        result.Should().BeEmpty();
+    }
+
+    [Fact]
+    public async Task GetConnectedOrganisations_WhenConnectedEntitiesExist_ReturnsConnectedEntities()
+    {
+        using var repository = OrganisationRepository();
+
+        var supplierOrganisation = GivenOrganisation();
+        var connectedEntity = GivenConnectedOrganisation(supplierOrganisation);
+
+        using var context = postgreSql.OrganisationInformationContext();
+        await context.Organisations.AddAsync(supplierOrganisation);
+        await context.ConnectedEntities.AddAsync(connectedEntity);
+        await context.SaveChangesAsync();
+
+        var result = await repository.GetConnectedOrganisations(supplierOrganisation.Id);
+
+        result.Should().NotBeEmpty();
+        result.Should().HaveCount(1);
+        result.First().Organisation.Should().BeEquivalentTo(connectedEntity.Organisation);
+
+        var actualOrganisation = result.First().Organisation;
+        var expectedOrganisation = connectedEntity.Organisation;
+
+        connectedEntity.Organisation.Should().NotBeNull();
+        actualOrganisation.Should().NotBeNull();
+
+        actualOrganisation?.Id.Should().Be(expectedOrganisation?.Id);
+        actualOrganisation?.Category.Should().Be(expectedOrganisation?.Category);
+        actualOrganisation?.Name.Should().Be(expectedOrganisation?.Name);
+        actualOrganisation?.InsolvencyDate.Should().Be(expectedOrganisation?.InsolvencyDate);
+        actualOrganisation?.RegisteredLegalForm.Should().Be(expectedOrganisation?.RegisteredLegalForm);
+        actualOrganisation?.LawRegistered.Should().Be(expectedOrganisation?.LawRegistered);
+        actualOrganisation?.ControlCondition.Should().BeEquivalentTo(expectedOrganisation?.ControlCondition);
+        actualOrganisation?.OrganisationId.Should().Be(expectedOrganisation?.OrganisationId);
+    }
+
+    [Fact]
+    public async Task GetConnectedOrganisations_WhenNoConnectedEntitiesExist_ReturnsEmptyList()
+    {
+        using var repository = OrganisationRepository();
+
+        var organisationId = 1;
+        var organisation = GivenOrganisation();
+
+        using var context = postgreSql.OrganisationInformationContext();
+        await context.Organisations.AddAsync(organisation);
+        await context.SaveChangesAsync();
+
+        var result = await repository.GetConnectedOrganisations(organisationId);
+
+        result.Should().BeEmpty();
+    }
+
     private IOrganisationRepository OrganisationRepository()
     {
         return new DatabaseOrganisationRepository(postgreSql.OrganisationInformationContext());
