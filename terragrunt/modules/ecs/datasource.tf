@@ -77,6 +77,20 @@ data "aws_iam_policy_document" "ecs_task_access_queue" {
   }
 }
 
+data "aws_iam_policy_document" "ecs_task_serilog" {
+  statement {
+    sid    = "AllowSerilogCreateStreamAndLog"
+    effect = "Allow"
+    actions = [
+      "logs:Create*",
+      "logs:Describe*",
+      "logs:Put*",
+
+    ]
+    resources = ["arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:*"]
+  }
+}
+
 data "aws_iam_policy_document" "cloudwatch_event_invoke_deployer_step_function" {
   statement {
     actions = ["states:StartExecution"]

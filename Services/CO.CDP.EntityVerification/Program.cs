@@ -31,6 +31,9 @@ builder.Services.AddScoped<IUseCase<LookupIdentifierQuery, IEnumerable<CO.CDP.En
 
 if (Assembly.GetEntryAssembly().IsRunAs("CO.CDP.EntityVerification"))
 {
+    builder.Services.AddHealthChecks()
+        .AddNpgSql(ConnectionStringHelper.GetConnectionString(builder.Configuration, "EntityVerificationDatabase"));
+
     builder.Services
         .AddAwsConfiguration(builder.Configuration)
         .AddAwsSqsService()

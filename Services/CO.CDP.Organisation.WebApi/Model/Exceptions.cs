@@ -1,6 +1,8 @@
 namespace CO.CDP.Organisation.WebApi.Model;
 
 public class UnknownOrganisationException(string message, Exception? cause = null) : Exception(message, cause);
+public class UnknownInvitedPersonException(string message, Exception? cause = null) : Exception(message, cause);
+public class EmptyPersonRoleException(string message, Exception? cause = null) : Exception(message, cause);
 public class InvalidUpdateOrganisationCommand(string message, Exception? cause = null) : Exception(message, cause);
 public class BuyerInfoNotExistException(string message, Exception? cause = null) : Exception(message, cause);
 public class InvalidUpdateBuyerInformationCommand(string message, Exception? cause = null) : Exception(message, cause);
