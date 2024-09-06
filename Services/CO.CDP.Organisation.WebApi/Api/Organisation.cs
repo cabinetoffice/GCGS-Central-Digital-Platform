@@ -419,6 +419,34 @@ public static class EndpointExtensions
                 return operation;
             });
 
+        app.MapPatch("/{organisationId}/person/{personId}",
+             async (Guid organisationId, Guid personId, UpdatePersonToOrganisation updatePersonToOrganisation, IUseCase<(Guid, Guid, UpdatePersonToOrganisation), bool> useCase) =>
+
+                 await useCase.Execute((organisationId, personId, updatePersonToOrganisation))
+                     .AndThen(_ => Results.NoContent())
+         )
+         .Produces(StatusCodes.Status200OK)
+         .Produces(StatusCodes.Status204NoContent)
+         .ProducesProblem(StatusCodes.Status400BadRequest)
+         .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
+         .ProducesProblem(StatusCodes.Status404NotFound)
+         .ProducesProblem(StatusCodes.Status422UnprocessableEntity)
+         .ProducesProblem(StatusCodes.Status500InternalServerError)
+         .WithOpenApi(operation =>
+         {
+             operation.OperationId = "UpdateOrganisationPerson";
+             operation.Description = "Update a organisation person.";
+             operation.Summary = "Update organisation person.";
+             operation.Responses["200"].Description = "Organisation Person updated successfully.";
+             operation.Responses["204"].Description = "Organisation Person updated successfully.";
+             operation.Responses["400"].Description = "Bad request.";
+             operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
+             operation.Responses["404"].Description = "Organisation or Person not found.";
+             operation.Responses["422"].Description = "Unprocessable entity.";
+             operation.Responses["500"].Description = "Internal server error.";
+             return operation;
+         });
+
         app.MapDelete("/{organisationId}/persons",
                 async (Guid organisationId, [FromBody] RemovePersonFromOrganisation removePersonFromOrganisation, IUseCase<(Guid, RemovePersonFromOrganisation), bool> useCase) =>
                     await useCase.Execute((organisationId, removePersonFromOrganisation))
@@ -494,9 +522,9 @@ public static class EndpointExtensions
             });
 
         app.MapPatch("/{organisationId}/invite/{personInviteId}",
-             async (Guid organisationId, Guid personInviteId, UpdatePersonToOrganisation updatePersonToOrganisation, IUseCase<(Guid, Guid, UpdatePersonToOrganisation), bool> useCase) =>
+             async (Guid organisationId, Guid personInviteId, UpdateInvitedPersonToOrganisation updateInvitedPersonToOrganisation, IUseCase<(Guid, Guid, UpdateInvitedPersonToOrganisation), bool> useCase) =>
 
-                 await useCase.Execute((organisationId, personInviteId, updatePersonToOrganisation))
+                 await useCase.Execute((organisationId, personInviteId, updateInvitedPersonToOrganisation))
                      .AndThen(_ => Results.NoContent())
          )
          .Produces(StatusCodes.Status200OK)

@@ -66,17 +66,35 @@ aws cognito-idp admin-set-user-password \
     --permanent | jq .
 
 if [ $? -ne 0 ]; then
-    echo "Error: Failed to mark password as permanent"
+    echo "Error: Failed to mark password as permanent."
     exit 1
 fi
 
-aws secretsmanager create-secret \
-    --name $SECRET_NAME \
-    --secret-string "{\"username\":\"$USERNAME\",\"password\":\"$RANDOM_PASSWORD\"}" | jq .
+SECRET_EXISTS=$(aws secretsmanager describe-secret --secret-id $SECRET_NAME --query 'Name' --output text 2>/dev/null)
 
-if [ $? -ne 0 ]; then
-    echo "Error: Failed to store credentials in AWS Secrets Manager."
-    exit 1
+if [ "$SECRET_EXISTS" == "$SECRET_NAME" ]; then
+    echo "Secret $SECRET_NAME already exists. Updating secret."
+    aws secretsmanager update-secret \
+        --secret-id $SECRET_NAME \
+        --secret-string "{\"username\":\"$USERNAME\",\"password\":\"$RANDOM_PASSWORD\"}" | jq .
+
+    if [ $? -ne 0 ]; then
+        echo "Error: Failed to update credentials in AWS Secrets Manager."
+        exit 1
+    fi
+    echo "User $USERNAME created and credentials updated in AWS Secrets Manager."
+
+else
+
+    echo "Secret $SECRET_NAME does not exist. Creating new secret."
+    aws secretsmanager create-secret \
+        --name $SECRET_NAME \
+        --secret-string "{\"username\":\"$USERNAME\",\"password\":\"$RANDOM_PASSWORD\"}" | jq .
+
+    if [ $? -ne 0 ]; then
+        echo "Error: Failed to store credentials in AWS Secrets Manager."
+        exit 1
+    fi
+    echo "User $USERNAME created and credentials stored in AWS Secrets Manager."
+
 fi
-
-echo "User $USERNAME created and credentials stored in AWS Secrets Manager."

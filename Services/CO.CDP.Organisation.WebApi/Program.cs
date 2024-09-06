@@ -74,7 +74,8 @@ builder.Services.AddScoped<IUseCase<(Guid, Guid, DeleteConnectedEntity), bool>, 
 builder.Services.AddScoped<IUseCase<Guid, IEnumerable<Person>>, GetPersonsUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, RemovePersonFromOrganisation), bool>, RemovePersonFromOrganisationUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, InvitePersonToOrganisation), PersonInvite>, InvitePersonToOrganisationUseCase>();
-builder.Services.AddScoped<IUseCase<(Guid,Guid, UpdatePersonToOrganisation), bool>, UpdateInvitedPersonToOrganisationUseCase>();
+builder.Services.AddScoped<IUseCase<(Guid, Guid, UpdateInvitedPersonToOrganisation), bool>, UpdateInvitedPersonToOrganisationUseCase>();
+builder.Services.AddScoped<IUseCase<(Guid, Guid, UpdatePersonToOrganisation), bool>, UpdatePersonToOrganisationUseCase>();
 builder.Services.AddScoped<IUseCase<Guid, IEnumerable<PersonInviteModel>>, GetPersonInvitesUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, Guid), bool>, RemovePersonInviteFromOrganisationUseCase>();
 
@@ -83,6 +84,15 @@ builder.Services.AddOrganisationProblemDetails();
 builder.Services.AddJwtBearerAndApiKeyAuthentication(builder.Configuration, builder.Environment);
 //builder.Services.AddAuthorization();
 builder.Services.AddOrganisationAuthorization();
+
+if (Assembly.GetEntryAssembly().IsRunAs("CO.CDP.Organisation.WebApi"))
+{
+    builder.Services
+        .AddAwsConfiguration(builder.Configuration)
+        .AddLoggingConfiguration(builder.Configuration)
+        .AddAmazonCloudWatchLogsService()
+        .AddCloudWatchSerilog();
+}
 
 var app = builder.Build();
 app.UseForwardedHeaders();
