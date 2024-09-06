@@ -1,4 +1,5 @@
 using Amazon.CloudWatchLogs;
+using Amazon.Extensions.NETCore.Setup;
 using Amazon.Runtime;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -33,13 +34,13 @@ public static class CloudWatchExtensions
         {
             var awsConfiguration = serviceProvider.GetRequiredService<IOptions<AwsConfiguration>>().Value;
             // options for the sink defaults in https://github.com/Cimpress-MCP/serilog-sinks-awscloudwatch/blob/master/src/Serilog.Sinks.AwsCloudWatch/CloudWatchSinkOptions.cs
-            return new CloudWatchSinkOptions
+            return awsConfiguration.CloudWatch is not null ? new CloudWatchSinkOptions
             {
-                LogGroupName = awsConfiguration?.CloudWatch.LogGroup,
+                LogGroupName = awsConfiguration.CloudWatch.LogGroup,
                 TextFormatter = new CompactJsonFormatter(),
-                LogStreamNameProvider = new ConfigurableLogStreamNameProvider(awsConfiguration?.CloudWatch.LogStream),
+                LogStreamNameProvider = new ConfigurableLogStreamNameProvider(awsConfiguration.CloudWatch.LogStream),
                 MinimumLogEventLevel = LogEventLevel.Verbose
-            };
+            } : throw new ConfigurationException("Missing CloudWatch configuration.");
         }, ServiceLifetime.Singleton));
         return services;
     }
