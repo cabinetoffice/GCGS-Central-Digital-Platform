@@ -1,5 +1,5 @@
 @page "/organisation/{id}/users/{itemId}/change-role"
-@model CO.CDP.OrganisationApp.Pages.Users.ChangeUserRole
+@model CO.CDP.OrganisationApp.Pages.Users.ChangeUserRoleModel
 
 @{
     var roleHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Role)).HasInnerHtml;
