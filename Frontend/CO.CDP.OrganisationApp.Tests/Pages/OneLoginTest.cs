@@ -142,6 +142,24 @@ public class OneLoginTest
             .Which.PageName.Should().Be("/");
     }
 
+    [Fact]
+    public async Task ClaimPersonInvite_CallsClaimPersonInviteAsync_WhenInviteExists()
+    {
+        var model = GivenOneLoginCallbackModel();
+
+        var personId = Guid.NewGuid();
+        var personInviteId = Guid.NewGuid();
+
+        sessionMock.Setup(s => s.Get<Guid?>("PersonInviteId"))
+            .Returns(personInviteId);
+
+        var command = new ClaimPersonInvite(personInviteId);
+
+        await model.ClaimPersonInvite(personId, personInviteId);
+
+        personClientMock.Verify(client => client.ClaimPersonInviteAsync(personId, command), Times.Once);
+    }
+
     private readonly AuthenticateResult authResultSuccess = AuthenticateResult.Success(new AuthenticationTicket(
                 new ClaimsPrincipal(new ClaimsIdentity(new[] {
                     new Claim(JwtClaimTypes.Subject, "urn:fdc:gov.uk:2022:7wTqYGMFQxgukTSpSI2GodMwe9"),

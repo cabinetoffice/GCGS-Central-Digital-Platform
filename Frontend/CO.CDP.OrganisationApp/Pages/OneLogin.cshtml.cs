@@ -100,7 +100,7 @@ public class OneLogin(
                 OpenIdConnectDefaults.AuthenticationScheme);
     }
 
-    private async Task ClaimPersonInvite(Guid personId, Guid personInviteId)
+    public async Task ClaimPersonInvite(Guid personId, Guid personInviteId)
     {
         var command = new ClaimPersonInvite(personInviteId);
         try

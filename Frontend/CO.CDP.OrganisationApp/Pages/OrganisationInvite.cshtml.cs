@@ -7,15 +7,9 @@ namespace CO.CDP.OrganisationApp.Pages;
 public class OrganisationInviteModel(
     ISession session) : PageModel
 {
-    [BindProperty]
-    public Guid PersonInviteId {get; set;}
-
     public IActionResult OnGet(Guid personInviteId)
     {
-        PersonInviteId = personInviteId;
-
-        session.Set("PersonInviteId", PersonInviteId);
-
+        session.Set("PersonInviteId", personInviteId);
         return Redirect("/one-login/sign-in");
     }
 }
