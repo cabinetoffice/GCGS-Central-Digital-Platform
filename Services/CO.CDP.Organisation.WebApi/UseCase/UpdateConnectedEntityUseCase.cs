@@ -1,7 +1,7 @@
 using AutoMapper;
 using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.OrganisationInformation.Persistence;
-using ConnectedEntity = CO.CDP.OrganisationInformation.Persistence.ConnectedEntity;
+using PersistenceConnectedEntity = CO.CDP.OrganisationInformation.Persistence.ConnectedEntity;
 
 namespace CO.CDP.Organisation.WebApi.UseCase;
 
@@ -16,18 +16,44 @@ public class UpdateConnectedEntityUseCase(
         var organisation = await organisationRepository.Find(command.organisationId)
                                    ?? throw new UnknownOrganisationException($"Unknown organisation {command.organisationId}.");
 
-        var connectedEntity = await connectedEntityRepository.Find(command.organisationId, command.connectedEntityId)
+        var connectedEntity = await connectedEntityRepository.Find(organisation.Guid, command.connectedEntityId)
                               ?? throw new UnknownConnectedEntityException(
                                   $"Unknown connected entity {command.connectedEntityId}.");
 
-        connectedEntity = MapRequestToConnectedEntity(command.updateConnectedEntity, connectedEntity);
+        connectedEntity = mapper.Map(command.updateConnectedEntity, connectedEntity);
+
+        var newRegisteredAddress = command.updateConnectedEntity.Addresses.FirstOrDefault(a => a.Type == OrganisationInformation.AddressType.Registered);
+        var existingRegisteredAddress = connectedEntity.Addresses.FirstOrDefault(a => a.Type == OrganisationInformation.AddressType.Registered);
+        AddressUpdate(connectedEntity, newRegisteredAddress, existingRegisteredAddress);
+
+        var newPostalAddress = command.updateConnectedEntity.Addresses.FirstOrDefault(a => a.Type == OrganisationInformation.AddressType.Postal);
+        var existingPostalAddress = connectedEntity.Addresses.FirstOrDefault(a => a.Type == OrganisationInformation.AddressType.Postal);
+        AddressUpdate(connectedEntity, newPostalAddress, existingPostalAddress);
 
         await connectedEntityRepository.Save(connectedEntity);
 
         return await Task.FromResult(true);
     }
 
-    private OrganisationInformation.Persistence.ConnectedEntity
-        MapRequestToConnectedEntity(UpdateConnectedEntity command, ConnectedEntity connectedEntity) =>
-        mapper.Map(command, connectedEntity);
+    private void AddressUpdate(
+        PersistenceConnectedEntity connectedEntity,
+        OrganisationInformation.Address? updatedAddress,
+        PersistenceConnectedEntity.ConnectedEntityAddress? existingAddress)
+    {
+        if (existingAddress != null)
+        {
+            if (updatedAddress == null)
+            {
+                connectedEntity.Addresses.Remove(existingAddress);
+            }
+            else
+            {
+                existingAddress.Address = mapper.Map(updatedAddress, existingAddress.Address);
+            }
+        }
+        else if (updatedAddress != null)
+        {
+            connectedEntity.Addresses.Add(mapper.Map<PersistenceConnectedEntity.ConnectedEntityAddress>(updatedAddress));
+        }
+    }
 }
