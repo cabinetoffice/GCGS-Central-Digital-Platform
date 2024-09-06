@@ -33,8 +33,15 @@ public class UpdateOrganisationUseCase(
                     var existingIdentifier = organisation.Identifiers.FirstOrDefault(i => i.Scheme == identifier.Scheme);
                     if (existingIdentifier != null)
                     {
-                        existingIdentifier.IdentifierId = identifier.Id;
-                        existingIdentifier.LegalName = identifier.LegalName;
+                        if (!string.IsNullOrEmpty(identifier.Id))
+                        {
+                            existingIdentifier.IdentifierId = identifier.Id;
+                            existingIdentifier.LegalName = identifier.LegalName;
+                        }
+                        else
+                        {
+                            RemoveIdentifier(organisation, existingIdentifier);
+                        }
                     }
                     else if (!string.IsNullOrEmpty(identifier.Id))
                     {
@@ -115,5 +122,36 @@ public class UpdateOrganisationUseCase(
         await publisher.Publish(mapper.Map<OrganisationUpdated>(organisation));
 
         return await Task.FromResult(true);
+    }
+
+    private void RemoveIdentifier(OrganisationInformation.Persistence.Organisation organisation,
+        OrganisationInformation.Persistence.Organisation.Identifier identifierToRemove)
+    {
+        organisation.Identifiers.Remove(identifierToRemove);
+
+        var nextPrimaryIdentifier = organisation.Identifiers.FirstOrDefault(i =>
+            i.Scheme != AssignIdentifierUseCase.IdentifierSchemes.Ppon &&
+            i.Scheme != AssignIdentifierUseCase.IdentifierSchemes.Other);
+
+        if (nextPrimaryIdentifier == null)
+        {
+            nextPrimaryIdentifier = organisation.Identifiers.FirstOrDefault(i =>
+                i.Scheme == AssignIdentifierUseCase.IdentifierSchemes.Ppon);
+
+            if (nextPrimaryIdentifier == null)
+            {
+                nextPrimaryIdentifier = organisation.Identifiers.FirstOrDefault(i =>
+                    i.Scheme == AssignIdentifierUseCase.IdentifierSchemes.Other);
+            }
+        }
+
+        if (nextPrimaryIdentifier != null)
+        {
+            nextPrimaryIdentifier.Primary = true;
+        }
+        else
+        {
+            throw new InvalidUpdateOrganisationCommand("Identifier cannot be removed as there is no identifier remaining to set as the primary.");
+        }
     }
 }
