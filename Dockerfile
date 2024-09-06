@@ -5,7 +5,12 @@ ARG NUGET_PACKAGES=/nuget/packages
 FROM mcr.microsoft.com/dotnet/aspnet:${ASPNET_VERSION} AS base
 ARG NUGET_PACKAGES
 ENV NUGET_PACKAGES="${NUGET_PACKAGES}"
-RUN apt-get update && apt-get install -y --no-install-recommends curl && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
+    fontconfig \
+    fonts-dejavu-core \
+    && fc-cache -fv \
+    && rm -rf /var/lib/apt/lists/*
 USER $APP_UID
 WORKDIR /app
 EXPOSE 8080
