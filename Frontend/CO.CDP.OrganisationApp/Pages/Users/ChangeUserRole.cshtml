@@ -37,7 +37,7 @@
 
                 <div class="govuk-form-group @(roleHasError ? "govuk-form-group--error" : "")">
                     <fieldset class="govuk-fieldset" aria-describedby="role-hint">
-                        <legend class="govuk-fieldset__legend">
+                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
                             Select a role
                         </legend>
                         @if (roleHasError)
@@ -53,8 +53,8 @@
                         <div class="govuk-radios" data-module="govuk-radios">
 
                             <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="role-editor" name="role" type="radio" value="EDITOR" aria-describedby="role-editor-hint" @IsSelected(Model.Role == "EDITOR")>
-                                <label class="govuk-label govuk-radios__label" for="role-editor">
+                                <input class="govuk-radios__input" id="@nameof(Model.Role)" name="role" type="radio" value="EDITOR" aria-describedby="role-editor-hint" @IsSelected(Model.Role == "EDITOR")>
+                                <label class="govuk-label govuk-radios__label" for="@nameof(Model.Role)">
                                     Editor
                                 </label>
                                 <div id="role-editor-hint" class="govuk-hint govuk-radios__hint">
@@ -63,8 +63,8 @@
                             </div>
 
                             <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="role-viewer" name="role" type="radio" value="VIEWER" aria-describedby="role-viewer-hint" @IsSelected(Model.Role == "VIEWER")>
-                                <label class="govuk-label govuk-radios__label" for="role-viewer">
+                                <input class="govuk-radios__input" id="@nameof(Model.Role)-1" name="role" type="radio" value="VIEWER" aria-describedby="role-viewer-hint" @IsSelected(Model.Role == "VIEWER")>
+                                <label class="govuk-label govuk-radios__label" for="@nameof(Model.Role)-1">
                                     Viewer
                                 </label>
                                 <div id="role-viewer-hint" class="govuk-hint govuk-radios__hint">
