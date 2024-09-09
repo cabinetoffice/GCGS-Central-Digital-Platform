@@ -4,7 +4,9 @@ using CO.CDP.OrganisationInformation.Persistence;
 using CO.CDP.Organisation.WebApi.UseCase;
 
 using Moq;
-using Organisation = CO.CDP.OrganisationInformation.Persistence.Organisation;
+using PersistenceOrganisation = CO.CDP.OrganisationInformation.Persistence.Organisation;
+
+namespace CO.CDP.Organisation.WebApi.Tests.UseCase;
 
 public class GetPersonInvitesUseCaseTest
 {
@@ -12,7 +14,7 @@ public class GetPersonInvitesUseCaseTest
     private readonly Mock<IOrganisationRepository> _organisationRepositoryMock;
     private readonly Mock<IMapper> _mapperMock;
     private readonly GetPersonInvitesUseCase _useCase;
-    private readonly Mock<Organisation> _organisationMock;
+    private readonly Mock<PersistenceOrganisation> _organisationMock;
 
     public GetPersonInvitesUseCaseTest()
     {
@@ -20,7 +22,7 @@ public class GetPersonInvitesUseCaseTest
         _organisationRepositoryMock = new Mock<IOrganisationRepository>();
         _mapperMock = new Mock<IMapper>();
         _useCase = new GetPersonInvitesUseCase(_personInviteRepositoryMock.Object, _mapperMock.Object);
-        _organisationMock = new Mock<Organisation>();
+        _organisationMock = new Mock<PersistenceOrganisation>();
     }
 
     [Fact]
@@ -42,54 +44,54 @@ public class GetPersonInvitesUseCaseTest
     {
         var organisationId = Guid.NewGuid();
         var personInvites = new List<PersonInvite>
-        {
-            new PersonInvite {
-                Id = 1,
-                Guid = Guid.NewGuid(),
-                FirstName = "John",
-                LastName = "Johnson",
-                Email = "john@johnson.com",
-                Organisation = null!,
-                Person = null,
-                Scopes = ["ADMIN", "VIEWER"],
-                InviteSentOn = default,
-                CreatedOn = default,
-                UpdatedOn = default
-            },
-            new PersonInvite {
-                Id = 2,
-                Guid = Guid.NewGuid(),
-                FirstName = "Bill",
-                LastName = "Billson",
-                Email = "bill@billson.com",
-                Organisation = null!,
-                Person = null,
-                Scopes = ["EDITOR"],
-                InviteSentOn = default,
-                CreatedOn = default,
-                UpdatedOn = default
-            }
-        };
+    {
+        new PersonInvite {
+            Id = 1,
+            Guid = Guid.NewGuid(),
+            FirstName = "John",
+            LastName = "Johnson",
+            Email = "john@johnson.com",
+            Organisation = null!,
+            Person = null,
+            Scopes = ["ADMIN", "VIEWER"],
+            InviteSentOn = default,
+            CreatedOn = default,
+            UpdatedOn = default
+        },
+        new PersonInvite {
+            Id = 2,
+            Guid = Guid.NewGuid(),
+            FirstName = "Bill",
+            LastName = "Billson",
+            Email = "bill@billson.com",
+            Organisation = null!,
+            Person = null,
+            Scopes = ["EDITOR"],
+            InviteSentOn = default,
+            CreatedOn = default,
+            UpdatedOn = default
+        }
+    };
 
         var personInviteModels = new List<PersonInviteModel>
+    {
+        new PersonInviteModel
         {
-            new PersonInviteModel
-            {
-                Id = personInvites[0].Guid,
-                Email = personInvites[0].Email,
-                FirstName = personInvites[0].FirstName,
-                LastName = personInvites[0].LastName,
-                Scopes = personInvites[0].Scopes
-            },
-            new PersonInviteModel
-            {
-                Id = personInvites[1].Guid,
-                Email = personInvites[1].Email,
-                FirstName = personInvites[1].FirstName,
-                LastName = personInvites[1].LastName,
-                Scopes = personInvites[1].Scopes
-            }
-        };
+            Id = personInvites[0].Guid,
+            Email = personInvites[0].Email,
+            FirstName = personInvites[0].FirstName,
+            LastName = personInvites[0].LastName,
+            Scopes = personInvites[0].Scopes
+        },
+        new PersonInviteModel
+        {
+            Id = personInvites[1].Guid,
+            Email = personInvites[1].Email,
+            FirstName = personInvites[1].FirstName,
+            LastName = personInvites[1].LastName,
+            Scopes = personInvites[1].Scopes
+        }
+    };
 
         _personInviteRepositoryMock.Setup(repo => repo.FindByOrganisation(organisationId))
             .ReturnsAsync(personInvites);

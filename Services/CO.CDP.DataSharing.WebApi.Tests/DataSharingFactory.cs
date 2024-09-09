@@ -1,6 +1,6 @@
+using CO.CDP.DataSharing.WebApi.Model;
 using CO.CDP.OrganisationInformation;
 using CO.CDP.OrganisationInformation.Persistence;
-using CO.CDP.OrganisationInformation.Persistence.Forms;
 using static CO.CDP.OrganisationInformation.Persistence.Organisation;
 using Address = CO.CDP.OrganisationInformation.Persistence.Address;
 using ContactPoint = CO.CDP.OrganisationInformation.Persistence.Organisation.ContactPoint;
@@ -10,13 +10,13 @@ namespace DataSharing.Tests;
 
 public static class DataSharingFactory
 {
-    public static SharedConsent CreateSharedConsent(
+    public static CO.CDP.OrganisationInformation.Persistence.Forms.SharedConsent CreateSharedConsent(
         string? shareCode = null,
         Organisation? organisation = null
     )
     {
         var theOrganisation = organisation ?? CreateOrganisation();
-        return new SharedConsent
+        return new CO.CDP.OrganisationInformation.Persistence.Forms.SharedConsent
         {
             Id = 1,
             Guid = Guid.NewGuid(),
@@ -35,7 +35,7 @@ public static class DataSharingFactory
     }
 
     public static Organisation CreateOrganisation(
-        SupplierInformation? supplierInformation = null
+        Organisation.SupplierInformation? supplierInformation = null
     )
     {
         return new Organisation
@@ -90,7 +90,7 @@ public static class DataSharingFactory
                 }
             },
             Roles = [PartyRole.Tenderer],
-            SupplierInfo = supplierInformation ?? new SupplierInformation
+            SupplierInfo = supplierInformation ?? new Organisation.SupplierInformation
             {
                 SupplierType = SupplierType.Organisation,
                 CompletedRegAddress = true,
@@ -131,6 +131,64 @@ public static class DataSharingFactory
             },
             CreatedOn = DateTimeOffset.UtcNow,
             UpdatedOn = DateTimeOffset.UtcNow
+        };
+    }
+
+    public static BasicInformation CreateMockBasicInformation()
+    {
+        return new BasicInformation
+        {
+            SupplierType = SupplierType.Organisation,
+            RegisteredAddress = new CO.CDP.OrganisationInformation.Address
+            {
+                StreetAddress = "123 Test Street",
+                Locality = "Test Locality",
+                Region = "Test Region",
+                PostalCode = "12345",
+                CountryName = "Test Country",
+                Country = "TC",
+                Type = AddressType.Registered
+            },
+            PostalAddress = new CO.CDP.OrganisationInformation.Address
+            {
+                StreetAddress = "456 Postal Street",
+                Locality = "Postal Locality",
+                Region = "Postal Region",
+                PostalCode = "67890",
+                CountryName = "Postal Country",
+                Country = "PC",
+                Type = AddressType.Postal
+            },
+            VatNumber = "VAT123456",
+            WebsiteAddress = "http://example.com",
+            EmailAddress = "test@example.com",
+            OrganisationType = OrganisationType.Supplier,
+            Qualifications = new List<BasicQualification>
+        {
+            new BasicQualification
+            {
+                Guid = Guid.NewGuid(),
+                AwardedByPersonOrBodyName = "Certifying Authority",
+                DateAwarded = DateTimeOffset.UtcNow.AddYears(-2),
+                Name = "ISO 9001"
+            }
+        },
+            TradeAssurances = new List<BasicTradeAssurance>
+        {
+            new BasicTradeAssurance
+            {
+                Guid = Guid.NewGuid(),
+                AwardedByPersonOrBodyName = "Trade Assurance Authority",
+                ReferenceNumber = "TA123456",
+                DateAwarded = DateTimeOffset.UtcNow.AddYears(-1)
+            }
+        },
+            LegalForm = new BasicLegalForm
+            {
+                RegisteredLegalForm = "Private Limited",
+                LawRegistered = "UK",
+                RegistrationDate = DateTimeOffset.UtcNow.AddYears(-10)
+            }
         };
     }
 }

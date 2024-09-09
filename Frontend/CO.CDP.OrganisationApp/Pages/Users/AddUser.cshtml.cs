@@ -2,16 +2,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.IdentityModel.Tokens;
+using CO.CDP.OrganisationApp.Constants;
 
 namespace CO.CDP.OrganisationApp.Pages.Users;
 
 public class AddUserModel(
     ISession session) : PageModel
 {
-    public const string ScopeAdmin = "ADMIN";
-    public const string ScopeEditor = "EDITOR";
-    public const string ScopeViewer = "VIEWER";
-
     [BindProperty(SupportsGet = true)]
     public Guid Id { get; set; }
 
@@ -99,22 +96,22 @@ public class AddUserModel(
             scopes = [];
         }
 
-        if (scopes != null && scopes.Contains(ScopeAdmin)) scopes.Remove(ScopeAdmin);
-        if (scopes != null && scopes.Contains(ScopeEditor)) scopes.Remove(ScopeEditor);
-        if (scopes != null && scopes.Contains(ScopeViewer)) scopes.Remove(ScopeViewer);
+        if (scopes != null && scopes.Contains(PersonScopes.Admin)) scopes.Remove(PersonScopes.Admin);
+        if (scopes != null && scopes.Contains(PersonScopes.Editor)) scopes.Remove(PersonScopes.Editor);
+        if (scopes != null && scopes.Contains(PersonScopes.Viewer)) scopes.Remove(PersonScopes.Viewer);
 
         if (IsAdmin == true)
         {
-            scopes?.Add(ScopeAdmin);
+            scopes?.Add(PersonScopes.Admin);
         }
 
-        if (Role == ScopeEditor)
+        if (Role == PersonScopes.Editor)
         {
-            scopes?.Add(ScopeEditor);
+            scopes?.Add(PersonScopes.Editor);
         }
         else
         {
-            scopes?.Add(ScopeViewer);
+            scopes?.Add(PersonScopes.Viewer);
         }
 
         state.Scopes = scopes;
@@ -130,18 +127,18 @@ public class AddUserModel(
 
         if (!state.Scopes.IsNullOrEmpty())
         {
-            if (state.Scopes != null && state.Scopes.Contains(ScopeAdmin))
+            if (state.Scopes != null && state.Scopes.Contains(PersonScopes.Admin))
             {
                 IsAdmin = true;
             }
 
-            if (state.Scopes != null && state.Scopes.Contains(ScopeEditor))
+            if (state.Scopes != null && state.Scopes.Contains(PersonScopes.Editor))
             {
-                Role = ScopeEditor;
+                Role = PersonScopes.Editor;
             }
             else
             {
-                Role = ScopeViewer;
+                Role = PersonScopes.Viewer;
             }
         }
     }

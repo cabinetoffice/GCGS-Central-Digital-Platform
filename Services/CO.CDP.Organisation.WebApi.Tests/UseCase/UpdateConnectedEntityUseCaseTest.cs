@@ -37,11 +37,11 @@ public class UpdateConnectedEntityUseCaseTests
         await Assert.ThrowsAsync<UnknownOrganisationException>(() => _useCase.Execute(command));
     }
 
-    private static Persistence.Organisation FakeOrganisation(bool? withSupplierInfo = true)
+    private static Persistence.Organisation FakeOrganisation(bool? withSupplierInfo = true, Guid? organisationId = null)
     {
         Persistence.Organisation org = new()
         {
-            Guid = Guid.NewGuid(),
+            Guid = organisationId ?? Guid.NewGuid(),
             Name = "FakeOrg",
             Tenant = new Persistence.Tenant()
             {
@@ -106,7 +106,7 @@ public class UpdateConnectedEntityUseCaseTests
         };
         var command = (organisationId, connectedEntityId, updateConnectedEntity);
 
-        var organisation = FakeOrganisation();
+        var organisation = FakeOrganisation(organisationId: organisationId);
         var connectedEntity = FakeConnectedEntity(organisation);
 
         _mockOrganisationRepository.Setup(repo => repo.Find(organisationId)).ReturnsAsync(organisation);
@@ -129,7 +129,7 @@ public class UpdateConnectedEntityUseCaseTests
         };
         var command = (organisationId, connectedEntityId, updateConnectedEntity);
 
-        var organisation = FakeOrganisation();
+        var organisation = FakeOrganisation(organisationId : organisationId);
         var connectedEntity = FakeConnectedEntity(organisation);
 
         _mockOrganisationRepository.Setup(repo => repo.Find(organisationId)).ReturnsAsync(organisation);
@@ -152,7 +152,7 @@ public class UpdateConnectedEntityUseCaseTests
         };
         var command = (organisationId, connectedEntityId, updateConnectedEntity);
 
-        var organisation = FakeOrganisation();
+        var organisation = FakeOrganisation(organisationId: organisationId);
         var connectedEntity = FakeConnectedEntity(organisation);
 
         _mockOrganisationRepository.Setup(repo => repo.Find(organisationId)).ReturnsAsync(organisation);

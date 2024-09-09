@@ -37,7 +37,7 @@ public static class CloudWatchExtensions
             return awsConfiguration.CloudWatch is not null ? new CloudWatchSinkOptions
             {
                 LogGroupName = awsConfiguration.CloudWatch.LogGroup,
-                TextFormatter = new CompactJsonFormatter(),
+                TextFormatter = new RenderedCompactJsonFormatter(),
                 LogStreamNameProvider = new ConfigurableLogStreamNameProvider(awsConfiguration.CloudWatch.LogStream),
                 MinimumLogEventLevel = LogEventLevel.Verbose
             } : throw new ConfigurationException("Missing CloudWatch configuration.");

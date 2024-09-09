@@ -50,7 +50,7 @@
             "uid": "CLOUDWATCH"
           },
           "dimensions": {},
-          "expression": "fields @timestamp, @message \n| filter @message like /excep/ or @message like /Excep/ or @message like /err/ or @message like /Err/ or @message like /fail/ or @message like /Fail/\n| sort @timestamp desc\n| limit 10",
+          "expression": "fields @timestamp, @@mt as Message, @@l as level, RequestPath, RequestId, ConnectionId, EventId, @@tr as TR, @@sp as SP, @@t as T, @message  \n| filter level = \"Error\" \n| sort @timestamp desc \n| limit 10",
           "id": "",
           "label": "",
           "logGroups": [
@@ -106,7 +106,7 @@
             "uid": "CLOUDWATCH"
           },
           "dimensions": {},
-          "expression": "fields @timestamp, @message \n| filter @message like /warn/ or @message like /Warn/\n| sort @timestamp desc\n| limit 10",
+          "expression": "fields @timestamp, @@mt as Message, @@l as level, RequestPath, RequestId, ConnectionId, EventId, @@tr as TR, @@sp as SP, @@t as T, @message  \n| filter level = \"Warning\" \n| sort @timestamp desc \n| limit 10",
           "id": "",
           "label": "",
           "logGroups": [
@@ -162,7 +162,7 @@
             "uid": "CLOUDWATCH"
           },
           "dimensions": {},
-          "expression": "fields @timestamp, @message \n| sort @timestamp desc",
+          "expression": "fields @timestamp, @@mt as Message, @@l as level, RequestPath, RequestId, ConnectionId, EventId, @@tr as TR, @@sp as SP, @@t as T, @message  \n| sort @timestamp desc",
           "id": "",
           "label": "",
           "logGroups": [

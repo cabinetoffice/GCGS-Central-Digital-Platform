@@ -483,8 +483,8 @@ public static class EndpointExtensions
             .WithOpenApi(operation =>
             {
                 operation.OperationId = "GetOrganisationPersonInvites";
-                operation.Description = "Get person invites by Organisation ID.";
-                operation.Summary = "Get person invites by Organisation ID.";
+                operation.Description = "Get unclaimed person invites by Organisation ID.";
+                operation.Summary = "Get unclaimed person invites by Organisation ID.";
                 operation.Responses["200"].Description = "Person invite details.";
                 operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
                 operation.Responses["404"].Description = "Person invite information not found.";
@@ -522,9 +522,9 @@ public static class EndpointExtensions
             });
 
         app.MapPatch("/{organisationId}/invite/{personInviteId}",
-             async (Guid organisationId, Guid personInviteId, UpdatePersonToOrganisation updatePersonToOrganisation, IUseCase<(Guid, Guid, UpdatePersonToOrganisation), bool> useCase) =>
+             async (Guid organisationId, Guid personInviteId, UpdateInvitedPersonToOrganisation updateInvitedPersonToOrganisation, IUseCase<(Guid, Guid, UpdateInvitedPersonToOrganisation), bool> useCase) =>
 
-                 await useCase.Execute((organisationId, personInviteId, updatePersonToOrganisation))
+                 await useCase.Execute((organisationId, personInviteId, updateInvitedPersonToOrganisation))
                      .AndThen(_ => Results.NoContent())
          )
          .Produces(StatusCodes.Status200OK)

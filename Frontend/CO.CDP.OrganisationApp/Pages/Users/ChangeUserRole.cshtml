@@ -1,11 +1,8 @@
-@page "/organisation/{id}/users/add-user/{personId?}"
-@model CO.CDP.OrganisationApp.Pages.Users.AddUserModel
+@page "/organisation/{id}/users/{itemId}/change-role"
+@model CO.CDP.OrganisationApp.Pages.Users.ChangeUserRoleModel
 @using CO.CDP.OrganisationApp.Constants
 
 @{
-    var firstNameHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.FirstName)).HasInnerHtml;
-    var lastNameHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.LastName)).HasInnerHtml;
-    var emailHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Email)).HasInnerHtml;
     var roleHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Role)).HasInnerHtml;
 
     string IsSelected(bool selectedCondition)
@@ -23,62 +20,10 @@
         </div>
         <div class="govuk-grid-column-full">
             <h1 class="govuk-heading-l">
-                Add a user
+                @Model.UserFullName
             </h1>
-            <form class="form" method="post">
-                <div class="govuk-form-group @(firstNameHasError ? "govuk-form-group--error" : "")">
-                    <label class="govuk-label" for="@nameof(Model.FirstName)">
-                        First name
-                    </label>
-
-                    @if (firstNameHasError)
-                    {
-                    <p id="first-name-error" class="govuk-error-message">
-                        <span class="govuk-visually-hidden">Error:</span>
-                        @Html.ValidationMessageFor(m => m.FirstName)
-                    </p>
-                    }
-                    <input class="govuk-input govuk-input--width-20 @(firstNameHasError ? "govuk-input--error" : "")" id="@nameof(Model.FirstName)"
-                            value="@Model.FirstName" name="@nameof(Model.FirstName)" type="text"
-                            spellcheck="false" @(firstNameHasError ? "aria-describedby=first-name-error" : "")>
-                </div>
-                    
-                <div class="govuk-form-group @(lastNameHasError ? "govuk-form-group--error" : "")">
-                    <label class="govuk-label" for="@nameof(Model.LastName)">
-                        Last name
-                    </label>
-
-                    @if (lastNameHasError)
-                    {
-                        <p id="last-name-error" class="govuk-error-message">
-                            <span class="govuk-visually-hidden">Error:</span>
-                            @Html.ValidationMessageFor(m => m.LastName)
-                        </p>
-                    }
-                    <input class="govuk-input govuk-input--width-20 @(lastNameHasError ? "govuk-input--error" : "")" id="@nameof(Model.LastName)"
-                            value="@Model.LastName" name="@nameof(Model.LastName)" type="text"
-                            spellcheck="false" @(lastNameHasError ? "aria-describedby=last-name-error" : "")>
-                </div>
-                    
-                <div class="govuk-form-group @(emailHasError ? "govuk-form-group--error" : "")">
-                    <label class="govuk-label" for="@nameof(Model.Email)">
-                        Email address
-                    </label>
-
-                    @if (emailHasError)
-                    {
-                        <p id="email-error" class="govuk-error-message">
-                            <span class="govuk-visually-hidden">Error:</span>
-                            @Html.ValidationMessageFor(m => m.Email)
-                        </p>
-                    }
-                    <input class="govuk-input govuk-input--width-20 @(emailHasError ? "govuk-input--error" : "")" id="@nameof(Model.Email)"
-                            value="@Model.Email" name="@nameof(Model.Email)" type="text"
-                            spellcheck="false" @(emailHasError ? "aria-describedby=email-error" : "")>
-                </div>
-
+            <form class="form" method="post" asp-page-handler="@Model.Handler">
                 <div class="govuk-form-group">
-
                     <div class="govuk-checkboxes__item">
                         <input class="govuk-checkboxes__input" id="role-admin" name="IsAdmin" type="checkbox"
                                value="true" @IsSelected(Model.IsAdmin == true)>
@@ -94,7 +39,7 @@
                 <div class="govuk-form-group @(roleHasError ? "govuk-form-group--error" : "")">
                     <fieldset class="govuk-fieldset" aria-describedby="role-hint">
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
-                            Select user role
+                            Select a role
                         </legend>
                         @if (roleHasError)
                         {

@@ -10,6 +10,8 @@ public class GetPersonInvitesUseCase(IPersonInviteRepository personInviteReposit
     {
         var personInvites = await personInviteRepository.FindByOrganisation(organisationId);
 
+        personInvites = personInvites.Where(pi => pi.Person == null);
+
         var personInviteModels = mapper.Map<IEnumerable<PersonInviteModel>>(personInvites);
 
         return personInviteModels;
