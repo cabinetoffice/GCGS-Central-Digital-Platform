@@ -14,6 +14,14 @@ output "api_gateway_deployer_step_function_name" {
   value = aws_iam_role.api_gateway_deployer_step_function.name
 }
 
+output "canary_arn" {
+  value = aws_iam_role.canary.arn
+}
+
+output "canary_name" {
+  value = aws_iam_role.canary.name
+}
+
 output "ci_build_arn" {
   value = aws_iam_role.ci_build.arn
 }
