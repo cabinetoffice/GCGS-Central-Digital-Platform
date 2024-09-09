@@ -127,6 +127,8 @@ public class UpdateOrganisationUseCase(
     private void RemoveIdentifier(OrganisationInformation.Persistence.Organisation organisation,
         OrganisationInformation.Persistence.Organisation.Identifier identifierToRemove)
     {
+        organisation.Identifiers.Remove(identifierToRemove);
+
         if (identifierToRemove.Primary)
         {
             var nextPrimaryIdentifier = organisation.Identifiers.FirstOrDefault(i =>
@@ -154,7 +156,5 @@ public class UpdateOrganisationUseCase(
                 throw new InvalidUpdateOrganisationCommand("Identifier cannot be removed as there is no identifier remaining to set as the primary.");
             }
         }
-
-        organisation.Identifiers.Remove(identifierToRemove);
     }
 }
