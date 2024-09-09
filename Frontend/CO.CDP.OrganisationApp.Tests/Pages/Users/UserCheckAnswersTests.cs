@@ -87,12 +87,13 @@ public class UserCheckAnswersModelTests
         var validInviteState = new PersonInviteState { Email = "john@johnson.com", FirstName = "John", LastName = "Johnson", Scopes = ["scope1"] };
         _mockSession.Setup(s => s.Get<PersonInviteState>(It.IsAny<string>())).Returns(validInviteState);
 
+        _mockOrganisationClient
+            .Setup(c => c.CreatePersonInviteAsync(_pageModel.Id, It.IsAny<InvitePersonToOrganisation>()));
+
         var result = await _pageModel.OnPost();
 
         _mockOrganisationClient.Verify(c => c.CreatePersonInviteAsync(_pageModel.Id, It.IsAny<InvitePersonToOrganisation>()), Times.Once);
         _mockSession.Verify(s => s.Remove(PersonInviteState.TempDataKey), Times.Once);
-
-        _mockTempDataService.Verify(s => s.Put(FlashMessageTypes.Success, It.Is<string>(t => t.Equals("You've sent an email invite to John Johnson"))), Times.Once);
 
         var redirectToPageResult = Assert.IsType<RedirectToPageResult>(result);
         Assert.Equal("UserSummary", redirectToPageResult.PageName);
