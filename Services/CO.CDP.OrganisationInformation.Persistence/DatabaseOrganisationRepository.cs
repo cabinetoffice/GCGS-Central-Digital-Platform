@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using static CO.CDP.OrganisationInformation.Persistence.ConnectedEntity;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace CO.CDP.OrganisationInformation.Persistence;
 
@@ -14,7 +15,7 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
     {
         return await context.Organisations
             .Include(p => p.Addresses)
-            .ThenInclude(p => p.Address)
+            .ThenInclude(p => p.Address)            
             .FirstOrDefaultAsync(t => t.Guid == organisationId);
     }
 
@@ -32,6 +33,12 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
             .Include(p => p.Addresses)
             .ThenInclude(p => p.Address)
             .FirstOrDefaultAsync(t => t.Name == name);
+    }
+
+
+    public async Task<OrganisationPerson?> FindOrganisationPerson(Guid organisationId, Guid personId)
+    {
+        return await context.Set<OrganisationPerson>().FirstOrDefaultAsync(o => o.Organisation.Guid == organisationId && o.Person.Guid == personId);
     }
 
     public async Task<IEnumerable<Organisation>> FindByUserUrn(string userUrn)
@@ -83,6 +90,12 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
         {
             HandleDbUpdateException(organisation, cause);
         }
+    }
+
+    public void SaveOrganisationPerson(OrganisationPerson organisationPerson)
+    {
+        context.Update(organisationPerson);
+        context.SaveChanges();
     }
 
     private static void HandleDbUpdateException(Organisation organisation, DbUpdateException cause)

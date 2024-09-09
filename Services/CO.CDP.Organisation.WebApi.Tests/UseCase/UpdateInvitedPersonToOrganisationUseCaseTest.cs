@@ -27,25 +27,25 @@ public class UpdateInvitedPersonToOrganisationUseCaseTests : IClassFixture<AutoM
     [Fact]
     public async Task Execute_ShouldUpdatePersonInvite_When_Organisation_PersonInvite_Exists()
     {
-        var updatePersonToOrganisation = new UpdatePersonToOrganisation
+        var updatePersonToOrganisation = new UpdateInvitedPersonToOrganisation
         {
-            Scopes = ["Viewer"]
+            Scopes = ["Editor"]
         };
         var organisation = Organisation;
         _organisationRepositoryMock.Setup(repo => repo.Find(_organisationId)).ReturnsAsync(organisation);
+        var personInvite = PersonInvite;
+        _personInviteRepositoryMock.Setup(repo => repo.Find(_personInviteId)).ReturnsAsync(personInvite);
 
-        _personInviteRepositoryMock.Setup(repo => repo.Find(_personInviteId)).ReturnsAsync(PersonInvite);
-
-        PersonInvite.Scopes = updatePersonToOrganisation.Scopes;
         var result = await _useCase.Execute((_organisationId, _personInviteId, updatePersonToOrganisation));
 
-        result.Should().Be(true);        
+        result.Should().Be(true);
+        _personInviteRepositoryMock.Verify(repo => repo.Save(personInvite!), Times.Once);
     }
 
     [Fact]
     public async Task Execute_ShouldThrowEmptyPersonRoleException_WhenPersonInviteScopeIsEmpty()
     {
-        var updatePersonToOrganisation = new UpdatePersonToOrganisation
+        var updatePersonToOrganisation = new UpdateInvitedPersonToOrganisation
         {
             Scopes = []
         };
@@ -64,7 +64,7 @@ public class UpdateInvitedPersonToOrganisationUseCaseTests : IClassFixture<AutoM
     [Fact]
     public async Task Execute_ShouldThrowUnknownInvitedPersonException_WhenPersonInviteNotFound()
     {
-        var updatePersonToOrganisation = new UpdatePersonToOrganisation
+        var updatePersonToOrganisation = new UpdateInvitedPersonToOrganisation
         {
             Scopes = ["Viewer"]
         };
@@ -80,7 +80,7 @@ public class UpdateInvitedPersonToOrganisationUseCaseTests : IClassFixture<AutoM
     [Fact]
     public async Task Execute_ShouldThrowUnknownOrganisationException_WhenOrganisationNotFound()
     {
-        var updatePersonToOrganisation = new UpdatePersonToOrganisation
+        var updatePersonToOrganisation = new UpdateInvitedPersonToOrganisation
         {
             Scopes = ["Viewer"]
         };

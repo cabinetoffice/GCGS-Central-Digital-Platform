@@ -1,7 +1,8 @@
 using CO.CDP.DataSharing.WebApi.Model;
 using CO.CDP.OrganisationInformation;
-using MigraDoc.DocumentObjectModel;
-using MigraDoc.Rendering;
+using QuestPDF.Fluent;
+using QuestPDF.Helpers;
+using QuestPDF.Infrastructure;
 
 namespace CO.CDP.DataSharing.WebApi;
 
@@ -9,65 +10,78 @@ public class PdfGenerator : IPdfGenerator
 {
     public byte[] GenerateBasicInformationPdf(SharedSupplierInformation supplierInformation)
     {
+        QuestPDF.Settings.License = LicenseType.Community;
         var basicInformation = supplierInformation.BasicInformation;
-        var document = new Document();
-        var section = document.AddSection();
 
-        var title = section.AddParagraph("Basic Information");
-        title.Format.Font.Size = 16;
-        title.Format.Font.Bold = true;
-        title.Format.SpaceAfter = 10;
-
-        AddTwoColumnRow(section, "Supplier Type:", basicInformation.SupplierType?.ToString());
-        AddTwoColumnRow(section, "Registered Address:", FormatAddress(basicInformation.RegisteredAddress));
-        AddTwoColumnRow(section, "Postal Address:", FormatAddress(basicInformation.PostalAddress));
-        AddTwoColumnRow(section, "VAT Number:", basicInformation.VatNumber);
-        AddTwoColumnRow(section, "Website Address:", basicInformation.WebsiteAddress);
-        AddTwoColumnRow(section, "Email Address:", basicInformation.EmailAddress);
-        AddTwoColumnRow(section, "Organisation Type:", basicInformation.OrganisationType.ToString());
-
-        if (basicInformation.Qualifications.Any())
+        var document = Document.Create(container =>
         {
-            section.AddParagraph("Qualifications:").Format.Font.Bold = true;
-            foreach (var qualification in basicInformation.Qualifications)
+            container.Page(page =>
             {
-                section.AddParagraph($"{qualification.Name} awarded by {qualification.AwardedByPersonOrBodyName} on {qualification.DateAwarded:yyyy-MM-dd}");
-            }
-        }
+                page.Size(PageSizes.A4);
+                page.Margin(2, Unit.Centimetre);
+                page.DefaultTextStyle(x => x.FontSize(12).FontFamily("DejaVu Sans"));
 
-        if (basicInformation.TradeAssurances.Any())
-        {
-            section.AddParagraph("Trade Assurances:").Format.Font.Bold = true;
-            foreach (var assurance in basicInformation.TradeAssurances)
-            {
-                section.AddParagraph($"{assurance.ReferenceNumber} awarded by {assurance.AwardedByPersonOrBodyName} on {assurance.DateAwarded:yyyy-MM-dd}");
-            }
-        }
+                page.Header().Text("Basic Information").FontSize(16).Bold().AlignCenter();
 
-        if (basicInformation.LegalForm != null)
-        {
-            section.AddParagraph("Legal Form:").Format.Font.Bold = true;
-            section.AddParagraph($"Registered Legal Form: {basicInformation.LegalForm.RegisteredLegalForm}");
-            section.AddParagraph($"Law Registered: {basicInformation.LegalForm.LawRegistered}");
-            section.AddParagraph($"Registration Date: {basicInformation.LegalForm.RegistrationDate:yyyy-MM-dd}");
-        }
+                page.Content().Column(col =>
+                {
+                    col.Item().Element(container => AddTwoColumnRow(container, "Supplier Type:", basicInformation.SupplierType?.ToString()));
+                    col.Item().Element(container => AddTwoColumnRow(container, "Registered Address:", FormatAddress(basicInformation.RegisteredAddress)));
+                    col.Item().Element(container => AddTwoColumnRow(container, "Postal Address:", FormatAddress(basicInformation.PostalAddress)));
+                    col.Item().Element(container => AddTwoColumnRow(container, "VAT Number:", basicInformation.VatNumber));
+                    col.Item().Element(container => AddTwoColumnRow(container, "Website Address:", basicInformation.WebsiteAddress));
+                    col.Item().Element(container => AddTwoColumnRow(container, "Email Address:", basicInformation.EmailAddress));
+                    col.Item().Element(container => AddTwoColumnRow(container, "Organisation Type:", basicInformation.OrganisationType.ToString()));
 
-        var pdfRenderer = new PdfDocumentRenderer { Document = document };
-        pdfRenderer.RenderDocument();
+                    if (basicInformation.Qualifications.Any())
+                    {
+                        col.Item().Text("Qualifications:").Bold();
+                        foreach (var qualification in basicInformation.Qualifications)
+                        {
+                            col.Item().Text($"{qualification.Name} awarded by {qualification.AwardedByPersonOrBodyName} on {qualification.DateAwarded:yyyy-MM-dd}");
+                        }
+                    }
+
+                    if (basicInformation.TradeAssurances.Any())
+                    {
+                        col.Item().Text("Trade Assurances:").Bold();
+                        foreach (var assurance in basicInformation.TradeAssurances)
+                        {
+                            col.Item().Text($"{assurance.ReferenceNumber} awarded by {assurance.AwardedByPersonOrBodyName} on {assurance.DateAwarded:yyyy-MM-dd}");
+                        }
+                    }
+
+                    if (basicInformation.LegalForm != null)
+                    {
+                        col.Item().Text("Legal Form:").Bold();
+                        col.Item().Text($"Registered Legal Form: {basicInformation.LegalForm.RegisteredLegalForm}");
+                        col.Item().Text($"Law Registered: {basicInformation.LegalForm.LawRegistered}");
+                        col.Item().Text($"Registration Date: {basicInformation.LegalForm.RegistrationDate:yyyy-MM-dd}");
+                    }
+                });
+
+                page.Footer().AlignRight().Text(x =>
+                {
+                    x.Span("Generated on: ");
+                    x.Span(DateTime.Now.ToString("yyyy-MM-dd")).Bold();
+                });
+            });
+        });
 
         using (var stream = new MemoryStream())
         {
-            pdfRenderer.PdfDocument.Save(stream, false);
+            document.GeneratePdf(stream);
             return stream.ToArray();
         }
     }
 
-    private void AddTwoColumnRow(Section section, string label, string? value)
+    private void AddTwoColumnRow(IContainer container, string label, string? value)
     {
-        var row = section.AddParagraph();
-        row.AddFormattedText(label, TextFormat.Bold);
-        row.AddTab();
-        row.AddText(value ?? "N/A");
+        container.Row(row =>
+        {
+            row.RelativeItem().Text(label).Bold();
+            row.RelativeItem().Text(value ?? "N/A");
+        });
     }
 
     private string FormatAddress(Address? address)
@@ -78,4 +92,3 @@ public class PdfGenerator : IPdfGenerator
         return $"{address.StreetAddress}, {address.Locality}, {address.Region}, {address.PostalCode}, {address.CountryName}, {address.Country}";
     }
 }
-
