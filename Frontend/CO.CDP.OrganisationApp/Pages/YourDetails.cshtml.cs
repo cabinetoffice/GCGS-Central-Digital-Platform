@@ -60,7 +60,7 @@ public class YourDetailsModel(
             return Page();
         }
 
-        var personInviteId = session.Get<Guid?>("PersonInviteId");
+        var personInviteId = SessionContext.Get<Guid?>("PersonInviteId");
         if (personInviteId != null)
         {
             return RedirectToPage("ClaimOrganisationInvite", new { personInviteId });
