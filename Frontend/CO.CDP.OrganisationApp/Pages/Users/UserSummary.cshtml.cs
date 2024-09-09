@@ -50,11 +50,11 @@ public class UserSummaryModel(
         return Page();
     }
 
-    public IActionResult OnPost()
+    public async Task<IActionResult> OnPost()
     {
         if (!ModelState.IsValid)
         {
-            return Page();
+            return await OnGet(HasPerson);
         }
 
         if (HasPerson == true)
