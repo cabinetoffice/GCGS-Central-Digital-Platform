@@ -1,13 +1,12 @@
-namespace CO.CDP.OrganisationInformation.Persistence
+namespace CO.CDP.OrganisationInformation.Persistence;
+
+public interface IPersonInviteRepository : IDisposable
 {
-    public interface IPersonInviteRepository : IDisposable
-    {
-        Task<PersonInvite?> Find(Guid personInviteId);
+    Task<PersonInvite?> Find(Guid personInviteId);
 
-        Task<bool> Delete(PersonInvite personInviteId);
+    Task<bool> Delete(PersonInvite personInviteId);
 
-        Task<IEnumerable<PersonInvite>> FindByOrganisation(Guid organisationId);
+    Task<IEnumerable<PersonInvite>> FindByOrganisation(Guid organisationId);
 
-        void Save(PersonInvite personInvite);
-    }
+    void Save(PersonInvite personInvite);
 }

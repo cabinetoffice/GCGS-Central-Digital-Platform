@@ -107,6 +107,25 @@ public class OneLoginTest
     }
 
     [Fact]
+    public async Task OnGetUserInfo_WhenPersonInviteId_ShouldRedirectToClaimOrganisationInvitePage()
+    {
+        var model = GivenOneLoginCallbackModel();
+
+        personClientMock.Setup(t => t.LookupPersonAsync(It.IsAny<string>()))
+            .ReturnsAsync(dummyPerson);
+
+        var personInviteId = Guid.NewGuid();
+
+        sessionMock.Setup(s => s.Get<Guid?>("PersonInviteId"))
+            .Returns(personInviteId);
+
+        var results = await model.OnGet("user-info");
+
+        results.Should().BeOfType<RedirectToPageResult>()
+            .Which.PageName.Should().Be("ClaimOrganisationInvite");
+    }
+
+    [Fact]
     public async Task OnGetSignOut_UserIsNotAuthenticated_ShouldReturnToIndex()
     {
         var model = GivenOneLoginCallbackModel();

@@ -18,3 +18,8 @@ internal record UpdatePerson
     [EmailAddress] public required string Email { get; init; }
     public string? Phone { get; init; }
 }
+
+public record ClaimPersonInvite
+{
+    public required Guid PersonInviteId { get; init; }
+}

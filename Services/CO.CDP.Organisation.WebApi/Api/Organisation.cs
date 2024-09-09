@@ -483,8 +483,8 @@ public static class EndpointExtensions
             .WithOpenApi(operation =>
             {
                 operation.OperationId = "GetOrganisationPersonInvites";
-                operation.Description = "Get person invites by Organisation ID.";
-                operation.Summary = "Get person invites by Organisation ID.";
+                operation.Description = "Get unclaimed person invites by Organisation ID.";
+                operation.Summary = "Get unclaimed person invites by Organisation ID.";
                 operation.Responses["200"].Description = "Person invite details.";
                 operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
                 operation.Responses["404"].Description = "Person invite information not found.";

@@ -60,6 +60,12 @@ public class YourDetailsModel(
             return Page();
         }
 
+        var personInviteId = SessionContext.Get<Guid?>("PersonInviteId");
+        if (personInviteId != null)
+        {
+            return RedirectToPage("ClaimOrganisationInvite", new { personInviteId });
+        }
+
         return RedirectToPage("OrganisationSelection");
     }
 
