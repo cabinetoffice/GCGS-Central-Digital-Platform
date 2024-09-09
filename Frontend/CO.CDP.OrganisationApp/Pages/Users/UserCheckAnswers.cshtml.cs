@@ -1,5 +1,4 @@
 using CO.CDP.Organisation.WebApiClient;
-using CO.CDP.OrganisationApp.Constants;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.IdentityModel.Tokens;
@@ -41,20 +40,26 @@ public class UserCheckAnswersModel(
             return RedirectToPage("AddUser", new { Id });
         }
 
-        var personInviteCommand = new InvitePersonToOrganisation(
-            PersonInviteStateData.Email,
-            PersonInviteStateData.FirstName,
-            PersonInviteStateData.LastName,
-            PersonInviteStateData.Scopes
-        );
+        try
+        {
+            var personInviteCommand = new InvitePersonToOrganisation(
+                PersonInviteStateData.Email,
+                PersonInviteStateData.FirstName,
+                PersonInviteStateData.LastName,
+                PersonInviteStateData.Scopes
+            );
 
-        await organisationClient.CreatePersonInviteAsync(Id, personInviteCommand);
+            await organisationClient.CreatePersonInviteAsync(Id, personInviteCommand);
 
-        session.Remove(PersonInviteState.TempDataKey);
+            session.Remove(PersonInviteState.TempDataKey);
 
-        tempDataService.Put(FlashMessageTypes.Success, $"You've sent an email invite to {PersonInviteStateData.FirstName} {PersonInviteStateData.LastName}");
-
-        return RedirectToPage("UserSummary", new { Id });
+            return RedirectToPage("UserSummary", new { Id });
+        }
+        catch
+        {
+            session.Remove(PersonInviteState.TempDataKey);
+            throw;
+        }
     }
 
     public static bool Validate(PersonInviteState personInviteStateData)

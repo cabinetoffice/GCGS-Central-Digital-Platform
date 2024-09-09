@@ -1,18 +1,23 @@
 using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.OrganisationInformation.Persistence;
-
+using CO.CDP.GovUKNotify;
+using GovukNotify.Models;
 namespace CO.CDP.Organisation.WebApi.UseCase;
 
 public class InvitePersonToOrganisationUseCase(
     IOrganisationRepository organisationRepository,
     IPersonInviteRepository personInviteRepository,
+    IGovUKNotifyApiClient govUKNotifyApiClient,
+    IConfiguration configuration,
     Func<Guid> guidFactory)
     : IUseCase<(Guid organisationId, InvitePersonToOrganisation invitePersonData), PersonInvite>
 {
     public InvitePersonToOrganisationUseCase(
         IOrganisationRepository organisationRepository,
-        IPersonInviteRepository personInviteRepository
-    ) : this(organisationRepository, personInviteRepository, Guid.NewGuid)
+        IPersonInviteRepository personInviteRepository,
+        IGovUKNotifyApiClient govUKNotifyApiClient,
+        IConfiguration configuration
+    ) : this(organisationRepository, personInviteRepository, govUKNotifyApiClient, configuration, Guid.NewGuid)
     {
 
     }
@@ -24,9 +29,26 @@ public class InvitePersonToOrganisationUseCase(
 
         var personInvite = CreatePersonInvite(command.invitePersonData, organisation);
 
-        personInvite = EmailPersonInvite(personInvite);
-
         personInviteRepository.Save(personInvite);
+
+        var templateId = configuration.GetValue<string>("GOVUKNotify:PersonInviteEmailTemplateId")
+                            ?? throw new Exception("Missing configuration key: GOVUKNotify:PersonInviteEmailTemplateId.");
+
+        var invitationLink = "https://www.GOV.UK.One.Login.com";
+        var emailRequest = new EmailNotificationResquest
+        {
+            EmailAddress = personInvite.Email,
+            TemplateId = templateId,
+            Personalisation = new Dictionary<string, string> {
+                                        { "org name", organisation.Name},
+                                        { "first name", personInvite.FirstName},
+                                        { "last name", personInvite.LastName},
+                                        { "days", "7" },
+                                        { "expiry date", personInvite.InviteSentOn.AddDays(6).ToString("dddd dd MMMM")},
+                                        { "invitation link", invitationLink} }
+        };
+
+        await govUKNotifyApiClient.SendEmail(emailRequest);
 
         return personInvite;
     }
@@ -45,15 +67,6 @@ public class InvitePersonToOrganisationUseCase(
             Organisation = organisation,
             Scopes = command.Scopes
         };
-
-        return personInvite;
-    }
-
-    private PersonInvite EmailPersonInvite(PersonInvite personInvite)
-    {
-        // TODO: Need to send out GOV Notify email to the user
-        // This may need to be set elsewhere... We may use SQS to schedule the email to be sent
-        // When the invite is emailed then update this field: personInvite.InviteSentOn;
 
         return personInvite;
     }
