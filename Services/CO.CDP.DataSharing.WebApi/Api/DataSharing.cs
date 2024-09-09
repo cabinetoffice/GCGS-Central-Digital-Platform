@@ -42,7 +42,7 @@ public static class EndpointExtensions
              async (string sharecode, IUseCase<string, byte[]?> useCase) =>
                  await useCase.Execute(sharecode)
                      .AndThen(res => res != null ? Results.File(res, MediaTypeNames.Application.Pdf, $"{sharecode}.pdf") : Results.NotFound()))
-             .Produces<byte[]?>(StatusCodes.Status200OK, MediaTypeNames.Application.Pdf)
+             .Produces<FileContentResult>(StatusCodes.Status200OK, MediaTypeNames.Application.Pdf)
              .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
              .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
              .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError)
@@ -117,8 +117,7 @@ public static class EndpointExtensions
                  operation.Responses["404"].Description = "Share Codes not found.";
                  operation.Responses["500"].Description = "Internal server error.";
                  return operation;
-             })
-            .RequireAuthorization(Authentication.AuthorizationPolicy.Constants.OneLoginPolicy);
+             });
 
         app.MapGet("/share/organisations/{organisationId}/codes/{sharecode}",
                 async (Guid organisationId, string shareCode, IUseCase<(Guid, string), SharedConsentDetails?> useCase)

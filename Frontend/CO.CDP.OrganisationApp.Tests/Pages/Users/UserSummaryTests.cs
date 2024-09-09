@@ -99,35 +99,46 @@ public class UserSummaryModelTests
     }
 
     [Fact]
-    public void OnPost_ReturnsPageResult_WhenModelStateIsInvalid()
+    public async Task OnPost_ReturnsPageResult_WhenModelStateIsInvalid()
     {
+        var organisationId = Guid.NewGuid();
+        _pageModel.Id = organisationId;
         _pageModel.ModelState.AddModelError("HasPerson", "Required");
 
-        var result = _pageModel.OnPost();
+        var person = new Organisation.WebApiClient.Person("john@johnson.com", "Johnny", _userGuid, "NoAdminJohnson", ["ADMIN"]);
+
+        _mockOrganisationClient
+            .Setup(client => client.GetOrganisationPersonsAsync(organisationId))
+            .ReturnsAsync(new List<Organisation.WebApiClient.Person>
+            {
+                person
+            });
+
+        var result = await _pageModel.OnPost();
 
         Assert.IsType<PageResult>(result);
     }
 
     [Fact]
-    public void OnPost_RedirectsToAddUser_WhenHasPersonIsTrue()
+    public async Task OnPost_RedirectsToAddUser_WhenHasPersonIsTrue()
     {
         _pageModel.HasPerson = true;
         _pageModel.Id = Guid.NewGuid();
 
-        var result = _pageModel.OnPost();
+        var result = await _pageModel.OnPost();
 
         var redirectResult = Assert.IsType<RedirectResult>(result);
         Assert.Equal("add-user", redirectResult.Url);
     }
 
     [Fact]
-    public void OnPost_RedirectsToOrganisationPage_WhenHasPersonIsFalse()
+    public async Task OnPost_RedirectsToOrganisationPage_WhenHasPersonIsFalse()
     {
         _pageModel.HasPerson = false;
         var organisationId = Guid.NewGuid();
         _pageModel.Id = organisationId;
 
-        var result = _pageModel.OnPost();
+        var result = await _pageModel.OnPost();
 
         var redirectResult = Assert.IsType<RedirectResult>(result);
         Assert.Equal($"/organisation/{organisationId}", redirectResult.Url);
