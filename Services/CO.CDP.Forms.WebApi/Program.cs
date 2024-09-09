@@ -1,5 +1,7 @@
+using System.Reflection;
 using CO.CDP.Authentication;
 using CO.CDP.AwsServices;
+using CO.CDP.Configuration.Assembly;
 using CO.CDP.Configuration.ForwardedHeaders;
 using CO.CDP.Configuration.Helpers;
 using CO.CDP.Forms.WebApi.Api;
@@ -40,6 +42,15 @@ builder.Services.AddOrganisationAuthorization();
 builder.Services
     .AddAwsConfiguration(builder.Configuration)
     .AddAwsS3Service();
+
+if (Assembly.GetEntryAssembly().IsRunAs("CO.CDP.Forms.WebApi"))
+{
+    builder.Services
+        .AddAwsConfiguration(builder.Configuration)
+        .AddLoggingConfiguration(builder.Configuration)
+        .AddAmazonCloudWatchLogsService()
+        .AddCloudWatchSerilog();
+}
 
 var app = builder.Build();
 app.UseForwardedHeaders();

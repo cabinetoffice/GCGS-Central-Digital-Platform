@@ -33,6 +33,7 @@ resource "aws_db_instance" "postgres" {
   character_set_name                  = ""
   db_name                             = replace(var.db_name, "-", "_")
   db_subnet_group_name                = aws_db_subnet_group.postgres.name
+  deletion_protection                 = var.deletion_protection
   engine                              = "postgres"
   engine_version                      = var.postgres_engine_version
   iam_database_authentication_enabled = true
