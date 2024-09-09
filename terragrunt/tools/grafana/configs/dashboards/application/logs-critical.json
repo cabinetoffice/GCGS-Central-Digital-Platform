@@ -126,7 +126,7 @@
             "uid": "CLOUDWATCH"
           },
           "dimensions": {},
-          "expression": "fields @timestamp, @message \n| filter @message like \"err\"\n| sort @timestamp desc\n| limit 20\n",
+          "expression": "fields @@mt as Message \n| filter @@l = \"Error\" \n| sort @timestamp desc \n| limit 10",
           "id": "",
           "label": "",
           "logGroups": [
@@ -244,7 +244,7 @@
             "uid": "CLOUDWATCH"
           },
           "dimensions": {},
-          "expression": "fields @timestamp, @message \n| filter @message like \"warn\"\n| sort @timestamp desc\n| limit 20\n",
+          "expression": "fields @timestamp, @@mt as Message \n| filter @@l = \"Warning\" \n| sort @timestamp desc \n| limit 10",
           "id": "",
           "label": "",
           "logGroups": [
