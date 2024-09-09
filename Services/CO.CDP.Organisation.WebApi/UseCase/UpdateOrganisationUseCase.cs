@@ -127,31 +127,34 @@ public class UpdateOrganisationUseCase(
     private void RemoveIdentifier(OrganisationInformation.Persistence.Organisation organisation,
         OrganisationInformation.Persistence.Organisation.Identifier identifierToRemove)
     {
-        organisation.Identifiers.Remove(identifierToRemove);
-
-        var nextPrimaryIdentifier = organisation.Identifiers.FirstOrDefault(i =>
-            i.Scheme != AssignIdentifierUseCase.IdentifierSchemes.Ppon &&
-            i.Scheme != AssignIdentifierUseCase.IdentifierSchemes.Other);
-
-        if (nextPrimaryIdentifier == null)
+        if (identifierToRemove.Primary)
         {
-            nextPrimaryIdentifier = organisation.Identifiers.FirstOrDefault(i =>
-                i.Scheme == AssignIdentifierUseCase.IdentifierSchemes.Ppon);
+            var nextPrimaryIdentifier = organisation.Identifiers.FirstOrDefault(i =>
+                i.Scheme != AssignIdentifierUseCase.IdentifierSchemes.Ppon &&
+                i.Scheme != AssignIdentifierUseCase.IdentifierSchemes.Other);
 
             if (nextPrimaryIdentifier == null)
             {
                 nextPrimaryIdentifier = organisation.Identifiers.FirstOrDefault(i =>
-                    i.Scheme == AssignIdentifierUseCase.IdentifierSchemes.Other);
+                    i.Scheme == AssignIdentifierUseCase.IdentifierSchemes.Ppon);
+
+                if (nextPrimaryIdentifier == null)
+                {
+                    nextPrimaryIdentifier = organisation.Identifiers.FirstOrDefault(i =>
+                        i.Scheme == AssignIdentifierUseCase.IdentifierSchemes.Other);
+                }
+            }
+
+            if (nextPrimaryIdentifier != null)
+            {
+                nextPrimaryIdentifier.Primary = true;
+            }
+            else
+            {
+                throw new InvalidUpdateOrganisationCommand("Identifier cannot be removed as there is no identifier remaining to set as the primary.");
             }
         }
 
-        if (nextPrimaryIdentifier != null)
-        {
-            nextPrimaryIdentifier.Primary = true;
-        }
-        else
-        {
-            throw new InvalidUpdateOrganisationCommand("Identifier cannot be removed as there is no identifier remaining to set as the primary.");
-        }
+        organisation.Identifiers.Remove(identifierToRemove);
     }
 }
