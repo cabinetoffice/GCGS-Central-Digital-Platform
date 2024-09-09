@@ -1,3 +1,7 @@
+output "canary_sg_id" {
+  value = aws_security_group.canary.id
+}
+
 output "ci_sg_id" {
   value = aws_security_group.ci.id
 }
