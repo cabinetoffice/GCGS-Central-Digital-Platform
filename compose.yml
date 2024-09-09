@@ -59,8 +59,8 @@ services:
       DEBUG: 0
       SQS_QUEUES: entity-verification.fifo,organisation.fifo
       S3_BUCKETS: cdp-staging-bucket.s3,cdp-permanent-bucket.s3
-      LOG_GROUP_NAME: test-log-group
-      LOG_STREAM_NAME: test-log-stream
+      LOG_GROUP_NAME: localstack
+      LOG_STREAM_NAME: serilog
     volumes:
       - './docker/localstack/ready.d:/etc/localstack/init/ready.d:ro'
       - './docker/localstack/healthcheck.sh:/etc/localstack/healthcheck.sh:ro'

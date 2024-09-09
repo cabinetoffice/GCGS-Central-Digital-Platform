@@ -27,7 +27,7 @@ public class UpdateInvitedPersonToOrganisationUseCaseTests : IClassFixture<AutoM
     [Fact]
     public async Task Execute_ShouldUpdatePersonInvite_When_Organisation_PersonInvite_Exists()
     {
-        var updatePersonToOrganisation = new UpdatePersonToOrganisation
+        var updatePersonToOrganisation = new UpdateInvitedPersonToOrganisation
         {
             Scopes = ["Editor"]
         };
@@ -45,7 +45,7 @@ public class UpdateInvitedPersonToOrganisationUseCaseTests : IClassFixture<AutoM
     [Fact]
     public async Task Execute_ShouldThrowEmptyPersonRoleException_WhenPersonInviteScopeIsEmpty()
     {
-        var updatePersonToOrganisation = new UpdatePersonToOrganisation
+        var updatePersonToOrganisation = new UpdateInvitedPersonToOrganisation
         {
             Scopes = []
         };
@@ -64,7 +64,7 @@ public class UpdateInvitedPersonToOrganisationUseCaseTests : IClassFixture<AutoM
     [Fact]
     public async Task Execute_ShouldThrowUnknownInvitedPersonException_WhenPersonInviteNotFound()
     {
-        var updatePersonToOrganisation = new UpdatePersonToOrganisation
+        var updatePersonToOrganisation = new UpdateInvitedPersonToOrganisation
         {
             Scopes = ["Viewer"]
         };
@@ -80,7 +80,7 @@ public class UpdateInvitedPersonToOrganisationUseCaseTests : IClassFixture<AutoM
     [Fact]
     public async Task Execute_ShouldThrowUnknownOrganisationException_WhenOrganisationNotFound()
     {
-        var updatePersonToOrganisation = new UpdatePersonToOrganisation
+        var updatePersonToOrganisation = new UpdateInvitedPersonToOrganisation
         {
             Scopes = ["Viewer"]
         };

@@ -4,8 +4,10 @@ using CO.CDP.OrganisationInformation.Persistence;
 using CO.CDP.Organisation.WebApi.UseCase;
 using FluentAssertions;
 using Moq;
-using Organisation = CO.CDP.OrganisationInformation.Persistence.Organisation;
+using PersistenceOrganisation = CO.CDP.OrganisationInformation.Persistence.Organisation;
 using Person = CO.CDP.OrganisationInformation.Persistence.Person;
+
+namespace CO.CDP.Organisation.WebApi.Tests.UseCase;
 
 public class GetPersonsUseCaseTest
 {
@@ -13,7 +15,7 @@ public class GetPersonsUseCaseTest
     private readonly Mock<IOrganisationRepository> _organisationRepositoryMock;
     private readonly Mock<IMapper> _mapperMock;
     private readonly GetPersonsUseCase _useCase;
-    private readonly Mock<Organisation> _organisationMock;
+    private readonly Mock<PersistenceOrganisation> _organisationMock;
 
     public GetPersonsUseCaseTest()
     {
@@ -21,7 +23,7 @@ public class GetPersonsUseCaseTest
         _organisationRepositoryMock = new Mock<IOrganisationRepository>();
         _mapperMock = new Mock<IMapper>();
         _useCase = new GetPersonsUseCase(_personRepositoryMock.Object, _organisationRepositoryMock.Object, _mapperMock.Object);
-        _organisationMock = new Mock<Organisation>();
+        _organisationMock = new Mock<PersistenceOrganisation>();
     }
 
     [Fact]
@@ -29,7 +31,7 @@ public class GetPersonsUseCaseTest
     {
         var organisationId = Guid.NewGuid();
         _organisationRepositoryMock.Setup(repo => repo.Find(organisationId))
-            .ReturnsAsync((Organisation)null!);
+            .ReturnsAsync((PersistenceOrganisation)null!);
 
         Func<Task> act = async () => await _useCase.Execute(organisationId);
 
@@ -55,7 +57,7 @@ public class GetPersonsUseCaseTest
     public async Task Execute_OrganisationExistsAndHasPersons_ReturnsPersonModels()
     {
         var organisationGuid = Guid.NewGuid();
-        var organisation = new Organisation
+        var organisation = new PersistenceOrganisation
         {
             Id = 1,
             Guid = organisationGuid,

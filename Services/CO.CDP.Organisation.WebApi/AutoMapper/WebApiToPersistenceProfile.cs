@@ -129,6 +129,7 @@ public class WebApiToPersistenceProfile : Profile
             .ForMember(m => m.Id, o => o.Ignore())
             .ForMember(m => m.Guid, o => o.Ignore())
             .ForMember(m => m.SupplierOrganisation, o => o.Ignore())
+            .ForMember(m => m.Addresses, o => o.Ignore())
             .ForMember(m => m.CreatedOn, o => o.Ignore())
             .ForMember(m => m.UpdatedOn, o => o.Ignore());
 
