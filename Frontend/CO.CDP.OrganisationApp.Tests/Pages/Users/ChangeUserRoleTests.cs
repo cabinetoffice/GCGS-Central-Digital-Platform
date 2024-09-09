@@ -125,7 +125,7 @@ public class ChangeUserRoleTests
         _mockOrganisationClient.Verify(s => s.UpdatePersonInviteAsync(
                                                 It.IsAny<Guid>(),
                                                 It.IsAny<Guid>(),
-                                                It.Is<UpdatePersonToOrganisation>(u =>
+                                                It.Is<UpdateInvitedPersonToOrganisation>(u =>
                                                     u.Scopes.Contains(PersonScopes.Viewer) &&
                                                     u.Scopes.Contains(PersonScopes.Admin) &&
                                                     u.Scopes.Count == 2

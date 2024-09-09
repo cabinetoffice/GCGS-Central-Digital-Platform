@@ -130,7 +130,7 @@ public class ChangeUserRoleModel(
             return Redirect("/page-not-found");
         }
 
-        var personInviteUpdateCommand = new UpdatePersonToOrganisation(
+        var personInviteUpdateCommand = new UpdateInvitedPersonToOrganisation(
             ProcessScopes(personInvite.Scopes)
         );
 
