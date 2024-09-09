@@ -15,7 +15,7 @@ public class ClaimOrganisationInviteModel(
 
         await ClaimPersonInvite(person.Id, personInviteId);
 
-        session.Remove("PersonInviteId");
+        SessionContext.Remove("PersonInviteId");
 
         return RedirectToPage("OrganisationSelection");
     }
