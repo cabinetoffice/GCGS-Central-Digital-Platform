@@ -149,9 +149,12 @@ public class DatabaseFormRepository(OrganisationInformationContext context) : IF
         }
     }
 
-    public void ClearTracker()
+    public void CheckEntitiesStates(SharedConsent sharedConsent)
     {
-        context.ChangeTracker.Clear();
+        //TODO: Remove before merging into Main, for easy state checking during debugging only
+        var undetachedEntriesCopy = context.ChangeTracker.Entries()
+            .Where(e => e.State != EntityState.Detached)
+            .ToList();
     }
 
     private static void HandleDbUpdateException(FormAnswerSet answerSet, DbUpdateException cause)
