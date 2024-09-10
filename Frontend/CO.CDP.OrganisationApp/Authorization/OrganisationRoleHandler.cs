@@ -1,56 +1,77 @@
-using CO.CDP.Organisation.WebApiClient;
+//using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Models;
+using CO.CDP.Tenant.WebApiClient;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 
 namespace CO.CDP.OrganisationApp.Authorization;
 
 public class OrganizationRoleHandler : AuthorizationHandler<OrganizationRoleRequirement>
 {
-    private IOrganisationClient _organisationClient;
+    private ITenantClient _tenantClient;
     private ISession _session;
     private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public OrganizationRoleHandler(IOrganisationClient organisationClient, ISession session, IHttpContextAccessor httpContextAccessor)
+    public OrganizationRoleHandler(ITenantClient tenantClient, ISession session, IHttpContextAccessor httpContextAccessor)
     {
-        _organisationClient = organisationClient;
+        _tenantClient = tenantClient;
         _session = session;
         _httpContextAccessor = httpContextAccessor;
     }
 
     protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, OrganizationRoleRequirement requirement)
     {
-        var personId = _session.Get<UserDetails>(Session.UserDetailsKey).PersonId;
-        try
+        Models.UserDetails? userDetails = _session.Get<Models.UserDetails>(Session.UserDetailsKey);
+
+        if (userDetails != null && userDetails.PersonId != null)
         {
-
-            var path = _httpContextAccessor.HttpContext.Request.Path.Value;
-
-            if (path != null)
+            try
             {
-                var pathSegments = path.Split('/', StringSplitOptions.RemoveEmptyEntries);
-                if (pathSegments.Length >= 2 && pathSegments[0] == "organisation" && Guid.TryParse(pathSegments[1], out Guid organisationId))
-                {
-                    // TODO: Cache this - otherwise we'll be hitting the db every time we check a user's role, multiple times per page
-                    var persons = await _organisationClient.GetOrganisationPersonsAsync(organisationId);
-                    var person = persons.FirstOrDefault(p => p.Id == personId); // TODO: We need an api client method for fetching a specific person based on id
-                    // TODO: Use tenant lookup instead of the above combo
 
-                    if (person != null && person.Scopes.Contains(requirement.Role))
+                var path = _httpContextAccessor.HttpContext.Request.Path.Value;
+
+                if (path != null)
+                {
+                    var pathSegments = path.Split('/', StringSplitOptions.RemoveEmptyEntries);
+                    if (pathSegments.Length >= 2 && pathSegments[0] == "organisation" && Guid.TryParse(pathSegments[1], out Guid organisationId))
                     {
-                        context.Succeed(requirement);
-                        return;
+                        UserOrganisation? personOrganisation = await GetPersonOrganisation(organisationId);
+
+                        if (personOrganisation != null && personOrganisation.Scopes.Contains(requirement.Role))
+                        {
+                            context.Succeed(requirement);
+                            return;
+                        }
                     }
                 }
             }
+            catch (Exception ex)
+            {
+                context.Fail();
+            }
+        }
 
-            context.Fail();
-        }
-        catch (Exception ex)
-        {
-            context.Fail();
-        }
+        context.Fail();
 
         // TODO: Stop the app throwing 404 page-not-found when auth fails - need to throw a 403?
+    }
+
+    private async Task<UserOrganisation?> GetPersonOrganisation(Guid organisationId)
+    {
+        var cacheKey = "CO.CDP.OrganisationApp.Authorization.OrganizationRoleHandler.GetPersonOrganisation";
+
+        if (_httpContextAccessor.HttpContext.Items[cacheKey] is UserOrganisation cachedData)
+        {
+            return cachedData;
+        }
+
+        var result = await _tenantClient.LookupTenantAsync();
+
+        var personOrganisation = result.Tenants
+            .SelectMany(tenant => tenant.Organisations)
+            .FirstOrDefault(org => org.Id == organisationId);
+
+        _httpContextAccessor.HttpContext.Items[cacheKey] = personOrganisation;
+
+        return personOrganisation;
     }
 }
