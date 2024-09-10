@@ -143,7 +143,8 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
             o.Roles.SequenceEqual(new List<PartyRole> { PartyRole.Tenderer }) &&
             o.OrganisationPersons.First().Scopes.Count == 2 &&
             o.OrganisationPersons.First().Scopes[0] == "ADMIN" &&
-            o.OrganisationPersons.First().Scopes[1] == "RESPONDER"
+            o.OrganisationPersons.First().Scopes[1] == "RESPONDER" && 
+            o.OrganisationPersons.First().Scopes[1] == "EDTIOR"
         )), Times.Once);
 
         persistanceOrganisation.Should().NotBeNull();

@@ -2,12 +2,17 @@ using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Constants;
+using Microsoft.AspNetCore.Authorization;
+using System.Data;
 
 namespace CO.CDP.OrganisationApp.Pages.Users;
 
+// Example decorating entire razor page
+//[Authorize(Policy = "OrgRolePolicy_EDITOR")]
 public class ChangeUserRoleModel(
     IOrganisationClient organisationClient,
-    ISession session) : LoggedInUserAwareModel(session)
+    ISession session,
+    IAuthorizationService authorizationService) : LoggedInUserAwareModel(session)
 {
     [BindProperty(SupportsGet = true)]
     public string? Handler { get; set; }
@@ -29,6 +34,13 @@ public class ChangeUserRoleModel(
 
     public async Task<IActionResult> OnGetPerson()
     {
+
+        // Example inside a handler
+        //if(!(await authorizationService.AuthorizeAsync(User, "OrgRolePolicy_EDITOR")).Succeeded)
+        //{
+        //    // Return 403
+        //}
+
         var organisationPerson = await GetOrganisationPerson(organisationClient);
 
         if (organisationPerson == null || organisationPerson.Id == UserDetails.PersonId)

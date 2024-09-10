@@ -2,6 +2,8 @@
 @using CO.CDP.OrganisationApp.Constants
 @using CO.CDP.OrganisationApp.WebApiClients
 @model OrganisationOverviewModel
+@using Microsoft.AspNetCore.Authorization
+@inject IAuthorizationService authorizationService
 
 @{
     var organisationDetails = Model.OrganisationDetails!;
@@ -16,6 +18,14 @@
                     <span class="govuk-label--l">@organisationDetails.Name</span>
                 </h1>
                 <h2 class="govuk-heading-m">Organisation details</h2>
+
+                @* Example showing a piece of UI if role is met *@
+                @* TODO: Write custom TagHelpers to streamline this. E.g. <authorize role="OrgRolePolicy_EDITOR">Auth only content inside</authorize> *@
+                @* @if ((await authorizationService.AuthorizeAsync(User, "OrgRolePolicy_EDITOR")).Succeeded)
+                {
+                    <p>THIS CONTENT ONLY APPEARS IF YOU HAVE THE RIGHT ROLE.</p>
+                } *@
+
                 <dl class="govuk-summary-list">
                     <div class="govuk-summary-list__row">
                         <dt class="govuk-summary-list__key">
