@@ -34,12 +34,22 @@ public class UpdateFormSectionAnswersUseCase(
 
             var (newSharedConsent, oldToNewIds) = MapSharedConsent(sharedConsent);
 
-            for(int i = 0; i < answers.Count; i++)
+            if (oldToNewIds.Count > 0)
             {
-                answers[i].Id = oldToNewIds[answers[i].Id];
+                for (int i = 0; i < answers.Count; i++)
+                {
+                    answers[i].Id = oldToNewIds[answers[i].Id];
+                }
             }
 
-            await UpdateOrAddAnswers(formRepository, oldToNewIds[answerSetId], answers, section, newSharedConsent);
+            if (oldToNewIds.ContainsKey(answerSetId))
+            {
+                await UpdateOrAddAnswers(formRepository, oldToNewIds[answerSetId], answers, section, newSharedConsent);
+            }
+            else
+            {
+                await UpdateOrAddAnswers(formRepository, answerSetId, answers, section, newSharedConsent);
+            }
             await formRepository.SaveSharedConsentAsync(sharedConsent);
 
             return true;
