@@ -22,6 +22,16 @@ public class UpdateOrganisationUseCase(
 
         switch (command.updateOrganisation.Type)
         {
+            case OrganisationUpdateType.RemoveIdentifier:
+                var identifierToRemove = organisation.Identifiers.FirstOrDefault(
+                    i => i.Scheme == command.updateOrganisation.Organisation.IdentifierToRemove!.Scheme);
+
+                if (identifierToRemove != null)
+                {
+                    RemoveIdentifier(organisation, identifierToRemove);
+                }
+
+                break;
             case OrganisationUpdateType.AdditionalIdentifiers:
                 if (updateObject.AdditionalIdentifiers == null)
                 {
@@ -37,10 +47,6 @@ public class UpdateOrganisationUseCase(
                         {
                             existingIdentifier.IdentifierId = identifier.Id;
                             existingIdentifier.LegalName = identifier.LegalName;
-                        }
-                        else
-                        {
-                            RemoveIdentifier(organisation, existingIdentifier);
                         }
                     }
                     else if (!string.IsNullOrEmpty(identifier.Id))
@@ -131,30 +137,35 @@ public class UpdateOrganisationUseCase(
 
         if (identifierToRemove.Primary)
         {
-            var nextPrimaryIdentifier = organisation.Identifiers.FirstOrDefault(i =>
-                i.Scheme != AssignIdentifierUseCase.IdentifierSchemes.Ppon &&
-                i.Scheme != AssignIdentifierUseCase.IdentifierSchemes.Other);
+            AllocateNextPrimaryIdentifier(organisation);
+        }
+    }
+
+    private void AllocateNextPrimaryIdentifier(OrganisationInformation.Persistence.Organisation organisation)
+    {
+        var nextPrimaryIdentifier = organisation.Identifiers.FirstOrDefault(i =>
+            i.Scheme != AssignIdentifierUseCase.IdentifierSchemes.Ppon &&
+            i.Scheme != AssignIdentifierUseCase.IdentifierSchemes.Other);
+
+        if (nextPrimaryIdentifier == null)
+        {
+            nextPrimaryIdentifier = organisation.Identifiers.FirstOrDefault(i =>
+                i.Scheme == AssignIdentifierUseCase.IdentifierSchemes.Ppon);
 
             if (nextPrimaryIdentifier == null)
             {
                 nextPrimaryIdentifier = organisation.Identifiers.FirstOrDefault(i =>
-                    i.Scheme == AssignIdentifierUseCase.IdentifierSchemes.Ppon);
+                    i.Scheme == AssignIdentifierUseCase.IdentifierSchemes.Other);
+            }
+        }
 
-                if (nextPrimaryIdentifier == null)
-                {
-                    nextPrimaryIdentifier = organisation.Identifiers.FirstOrDefault(i =>
-                        i.Scheme == AssignIdentifierUseCase.IdentifierSchemes.Other);
-                }
-            }
-
-            if (nextPrimaryIdentifier != null)
-            {
-                nextPrimaryIdentifier.Primary = true;
-            }
-            else
-            {
-                throw new InvalidUpdateOrganisationCommand("Identifier cannot be removed as there is no identifier remaining to set as the primary.");
-            }
+        if (nextPrimaryIdentifier != null)
+        {
+            nextPrimaryIdentifier.Primary = true;
+        }
+        else
+        {
+            throw new InvalidUpdateOrganisationCommand("There are no identifiers remaining that can be set as the primary.");
         }
     }
 }

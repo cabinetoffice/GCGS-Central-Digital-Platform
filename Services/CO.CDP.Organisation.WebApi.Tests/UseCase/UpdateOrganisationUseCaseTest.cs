@@ -231,19 +231,19 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
     }
 
     [Fact]
-    public async Task Execute_ShouldThrowException_WhenVatIdentifierIsOnlyIdentifierAndVatNumberIsEmptyInUpdate()
+    public async Task Execute_ShouldThrowException_WhenVatIdentifierIsOnlyIdentifierAndVatNumberIsRemoved()
     {
         var command = new UpdateOrganisation
         {
-            Type = OrganisationUpdateType.AdditionalIdentifiers,
+            Type = OrganisationUpdateType.RemoveIdentifier,
             Organisation = new OrganisationInfo
             {
-                AdditionalIdentifiers = [new OrganisationIdentifier
+                IdentifierToRemove = new OrganisationIdentifier
                 {
                     Id = "",
                     LegalName = "Acme",
                     Scheme = "VAT"
-                }]
+                }
             }
         };
         var organisation = Organisation;
@@ -253,23 +253,23 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
 
         await act.Should()
          .ThrowAsync<InvalidUpdateOrganisationCommand>()
-         .WithMessage("Identifier cannot be removed as there is no identifier remaining to set as the primary.");
+         .WithMessage("There are no identifiers remaining that can be set as the primary.");
     }
 
     [Fact]
-    public async Task Execute_ShouldAssignPponAsPrimary_WhenVatIdentifierIsEmptyInUpdate()
+    public async Task Execute_ShouldAssignPponAsPrimary_WhenVatIdentifierIsRemoved()
     {
         var command = new UpdateOrganisation
         {
-            Type = OrganisationUpdateType.AdditionalIdentifiers,
+            Type = OrganisationUpdateType.RemoveIdentifier,
             Organisation = new OrganisationInfo
             {
-                AdditionalIdentifiers = [new OrganisationIdentifier
+                IdentifierToRemove = new OrganisationIdentifier
                 {
                     Id = "",
                     LegalName = "Acme",
                     Scheme = "VAT"
-                }]
+                }
             }
         };
         var organisation = OrganisationWithVatPrimaryAndPpon;
