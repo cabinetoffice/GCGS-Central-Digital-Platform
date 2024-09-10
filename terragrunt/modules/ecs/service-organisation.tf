@@ -7,6 +7,7 @@ module "ecs_service_organisation" {
       aspcore_environment                 = local.aspcore_environment
       container_port                      = var.service_configs.organisation.port
       cpu                                 = var.service_configs.organisation.cpu
+      govuknotify_apikey                  = data.aws_secretsmanager_secret_version.govuknotify_apikey.arn
       host_port                           = var.service_configs.organisation.port
       image                               = local.ecr_urls[var.service_configs.organisation.name]
       lg_name                             = aws_cloudwatch_log_group.tasks[var.service_configs.organisation.name].name
