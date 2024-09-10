@@ -4,5 +4,5 @@ namespace CO.CDP.GovUKNotify;
 
 public interface IGovUKNotifyApiClient
 {
-    Task<EmailNotificationResponse?> SendEmail(EmailNotificationResquest request);
+    Task<EmailNotificationResponse?> SendEmail(EmailNotificationRequest request);
 }

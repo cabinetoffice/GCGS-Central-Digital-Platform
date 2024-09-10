@@ -2,6 +2,7 @@ using CO.CDP.GovUKNotify;
 using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.Organisation.WebApi.UseCase;
 using CO.CDP.OrganisationInformation.Persistence;
+using FluentAssertions;
 using GovukNotify.Models;
 using Microsoft.Extensions.Configuration;
 using Moq;
@@ -14,9 +15,9 @@ public class InvitePersonToOrganisationUseCaseTest
     private readonly Mock<Persistence.IOrganisationRepository> _organisationRepository = new();
     private readonly Mock<Persistence.IPersonInviteRepository> _personsInviteRepository = new();
     private readonly Mock<IGovUKNotifyApiClient> _mockGovUKNotifyApiClient = new();
-    private readonly IConfiguration _mockConfiguration;    
+    private readonly IConfiguration _mockConfiguration;
     private readonly Guid _generatedGuid = Guid.NewGuid();
-
+    
     private InvitePersonToOrganisationUseCase _useCase => new(
         _organisationRepository.Object,
         _personsInviteRepository.Object,
@@ -25,9 +26,11 @@ public class InvitePersonToOrganisationUseCaseTest
         () => _generatedGuid);
 
     public InvitePersonToOrganisationUseCaseTest()
-    {
-        var inMemorySettings = new Dictionary<string, string> {
-            {"GOVUKNotify:PersonInviteEmailTemplateId", "test-template-id"}
+    {        
+        var inMemorySettings = new List<KeyValuePair<string, string?>>
+        {
+            new("GOVUKNotify:PersonInviteEmailTemplateId", "test-template-id"),
+            new("OrganisationAppUrl", "http://baseurl/"),
         };
 
         _mockConfiguration = new ConfigurationBuilder()
@@ -47,25 +50,26 @@ public class InvitePersonToOrganisationUseCaseTest
             Name = "Test Organisation",
             Tenant = It.IsAny<Tenant>()
         };
-
+        
         var command = (organisationId, invitePersonData);
 
+        
         _organisationRepository.Setup(repo => repo.Find(organisationId))
             .ReturnsAsync(organisation);
 
-        _mockGovUKNotifyApiClient.Setup(client => client.SendEmail(It.IsAny<EmailNotificationResquest>()));
+        _mockGovUKNotifyApiClient.Setup(client => client.SendEmail(It.IsAny<EmailNotificationRequest>()));
 
         var result = await _useCase.Execute(command);
 
-        Assert.NotNull(result);
-        Assert.Equal("John", result.FirstName);
-        Assert.Equal("Doe", result.LastName);
-        Assert.Equal("john.doe@example.com", result.Email);
-        Assert.Equal(_generatedGuid, result.Guid);
+        result.Should().NotBeNull();
+        result.As<PersonInvite>().FirstName.Should().Be("John");
+        result.As<PersonInvite>().LastName.Should().Be("Doe");
+        result.As<PersonInvite>().Email.Should().Be("john.doe@example.com");
+        result.As<PersonInvite>().Guid.Should().Be(_generatedGuid);
 
         _organisationRepository.Verify(repo => repo.Find(organisationId), Times.Once);
         _personsInviteRepository.Verify(repo => repo.Save(It.IsAny<PersonInvite>()), Times.Once);
-        _mockGovUKNotifyApiClient.Verify(client => client.SendEmail(It.IsAny<EmailNotificationResquest>()), Times.Once);               
+        _mockGovUKNotifyApiClient.Verify(client => client.SendEmail(It.IsAny<EmailNotificationRequest>()), Times.Once);
     }
 
     [Fact]
@@ -77,8 +81,9 @@ public class InvitePersonToOrganisationUseCaseTest
 
         _organisationRepository.Setup(repo => repo.Find(organisationId))
             .ReturnsAsync((Persistence.Organisation?)null);
-
-        await Assert.ThrowsAsync<UnknownOrganisationException>(() => _useCase.Execute(command));
+                
+        Func<Task> act = async () => await _useCase.Execute(command);
+        await act.Should().ThrowAsync<UnknownOrganisationException>();        
     }
 
     private InvitePersonToOrganisation CreateDummyInviteToPerson()
@@ -88,7 +93,7 @@ public class InvitePersonToOrganisationUseCaseTest
             FirstName = "John",
             LastName = "Doe",
             Email = "john.doe@example.com",
-            Scopes = new List<string> { "scope1", "scope2" }
+            Scopes = ["scope1", "scope2"]
         };
     }
 }

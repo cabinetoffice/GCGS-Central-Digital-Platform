@@ -31,21 +31,25 @@ public class InvitePersonToOrganisationUseCase(
 
         personInviteRepository.Save(personInvite);
 
+        var baseAppUrl = configuration.GetValue<string>("OrganisationAppUrl")
+                            ?? throw new Exception("Missing configuration key: OrganisationAppUrl");
+
+
         var templateId = configuration.GetValue<string>("GOVUKNotify:PersonInviteEmailTemplateId")
                             ?? throw new Exception("Missing configuration key: GOVUKNotify:PersonInviteEmailTemplateId.");
 
-        var invitationLink = "https://www.GOV.UK.One.Login.com";
-        var emailRequest = new EmailNotificationResquest
+        Uri baseUri = new Uri(baseAppUrl);
+        Uri inviteLink = new Uri(baseUri, $"organisation-invite/{personInvite.Guid}");
+
+        var emailRequest = new EmailNotificationRequest
         {
             EmailAddress = personInvite.Email,
             TemplateId = templateId,
             Personalisation = new Dictionary<string, string> {
-                                        { "org name", organisation.Name},
-                                        { "first name", personInvite.FirstName},
-                                        { "last name", personInvite.LastName},
-                                        { "days", "7" },
-                                        { "expiry date", personInvite.InviteSentOn.AddDays(6).ToString("dddd dd MMMM")},
-                                        { "invitation link", invitationLink} }
+                                        { "org_name", organisation.Name},
+                                        { "first_name", personInvite.FirstName},
+                                        { "last_name", personInvite.LastName},
+                                        { "invite_link", inviteLink.ToString()} }
         };
 
         await govUKNotifyApiClient.SendEmail(emailRequest);

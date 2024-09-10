@@ -9,7 +9,6 @@ namespace CO.CDP.OrganisationApp.Pages.Users;
 public class UserCheckAnswersModelTests
 {
     private readonly Mock<IOrganisationClient> _mockOrganisationClient;
-    private readonly Mock<ITempDataService> _mockTempDataService;
     private readonly Mock<ISession> _mockSession;
     private readonly UserCheckAnswersModel _pageModel;
 
@@ -17,8 +16,7 @@ public class UserCheckAnswersModelTests
     {
         _mockOrganisationClient = new Mock<IOrganisationClient>();
         _mockSession = new Mock<ISession>();
-        _mockTempDataService = new Mock<ITempDataService>();
-        _pageModel = new UserCheckAnswersModel(_mockOrganisationClient.Object, _mockTempDataService.Object, _mockSession.Object);
+        _pageModel = new UserCheckAnswersModel(_mockOrganisationClient.Object, _mockSession.Object);
     }
 
     [Fact]
@@ -29,6 +27,7 @@ public class UserCheckAnswersModelTests
         var result = _pageModel.OnGet();
 
         var redirectToPageResult = Assert.IsType<RedirectToPageResult>(result);
+
         Assert.Equal("AddUser", redirectToPageResult.PageName);
         Assert.Equal(_pageModel.Id, redirectToPageResult.RouteValues?["Id"]);
     }

@@ -1,8 +1,8 @@
-﻿using System.Text.Json.Serialization;
+using System.Text.Json.Serialization;
 
 namespace GovukNotify.Models;
 
-public class EmailNotificationResquest
+public class EmailNotificationRequest
 {
     [JsonPropertyName("email_address")]
     public required string EmailAddress { get; set; }
@@ -16,7 +16,7 @@ public class EmailNotificationResquest
     [JsonPropertyName("reference")]
     public string? Reference { get; set; }
 
-    [JsonPropertyName("one_click_unsubscribe_url ")]
+    [JsonPropertyName("one_click_unsubscribe_url")]
     public string? OneClickUnsubscribeUrl { get; set; }
 
     [JsonPropertyName("email_reply_to_id")]

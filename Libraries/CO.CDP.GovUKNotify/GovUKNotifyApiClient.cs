@@ -23,7 +23,7 @@ public class GovUKNotifyApiClient : IGovUKNotifyApiClient
         client.DefaultRequestHeaders.Authorization = authentication.GetAuthenticationHeader();
     }
 
-    public async Task<EmailNotificationResponse?> SendEmail(EmailNotificationResquest request)
+    public async Task<EmailNotificationResponse?> SendEmail(EmailNotificationRequest request)
     {
         var res = await client.PostAsJsonAsync("/v2/notifications/email", request, jsonSerializerOptions);
         res.EnsureSuccessStatusCode();

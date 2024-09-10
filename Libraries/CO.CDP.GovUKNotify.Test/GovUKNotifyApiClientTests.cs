@@ -40,7 +40,7 @@ public class GovUKNotifyApiClientTests
         var templateId = Guid.NewGuid();
         var responseId = Guid.NewGuid();
 
-        var emailNotificationRequest = new EmailNotificationResquest
+        var emailNotificationRequest = new EmailNotificationRequest
         {
             EmailAddress = "test.test.com",
             TemplateId = templateId.ToString()
@@ -75,7 +75,7 @@ public class GovUKNotifyApiClientTests
     [Fact]
     public async Task SendEmail_HttpRequestException_ThrowsException()
     {
-        var emailNotificationRequest = new EmailNotificationResquest
+        var emailNotificationRequest = new EmailNotificationRequest
         {
             EmailAddress = "test@test.com",
             TemplateId = Guid.NewGuid().ToString()
@@ -95,7 +95,7 @@ public class GovUKNotifyApiClientTests
     [Fact]
     public async Task SendEmail_ResponseNotSuccessful_ThrowsHttpRequestException()
     {        
-        var emailNotificationRequest = new EmailNotificationResquest
+        var emailNotificationRequest = new EmailNotificationRequest
         {
             EmailAddress = "test@test.com",
             TemplateId = Guid.NewGuid().ToString()

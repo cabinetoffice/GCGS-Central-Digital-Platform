@@ -7,7 +7,6 @@ namespace CO.CDP.OrganisationApp.Pages.Users;
 
 public class UserCheckAnswersModel(
     IOrganisationClient organisationClient,
-    ITempDataService tempDataService,
     ISession session) : PageModel
 {
     [BindProperty(SupportsGet = true)]
