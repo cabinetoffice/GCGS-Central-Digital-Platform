@@ -41,6 +41,32 @@ public class PrivacyPolicyTest
             .Which.PageName.Should().Be("YourDetails");
     }
 
+    [Fact]
+    public void Model_WhenAgreeToPrivacyPolicySetTrueAndRelativeRedirectUrlProvided_ShouldRedirectToTourDetailsPageWithRedirectUrlQueryString()
+    {
+        var model = GivenPrivacyPolicyModel();
+        model.AgreeToPrivacy = true;
+
+        var results = model.OnPost("/org/1");
+
+        var redirectToPageResult = results.Should().BeOfType<RedirectToPageResult>();
+        redirectToPageResult.Which.PageName.Should().Be("YourDetails");
+        redirectToPageResult.Which.RouteValues.Should().BeEquivalentTo(new Dictionary<string, string> { { "RedirectUri", "/org/1" } });
+    }
+
+    [Fact]
+    public void Model_WhenAgreeToPrivacyPolicySetTrueAndAbsoluteRedirectUrlProvided_ShouldRedirectToTourDetailsPageWithoutRedirectUrlQueryString()
+    {
+        var model = GivenPrivacyPolicyModel();
+        model.AgreeToPrivacy = true;
+
+        var results = model.OnPost("http://test-domain/org/1");
+
+        var redirectToPageResult = results.Should().BeOfType<RedirectToPageResult>();
+        redirectToPageResult.Which.PageName.Should().Be("YourDetails");
+        redirectToPageResult.Which.RouteValues.Should().BeEquivalentTo(new Dictionary<string, string?> { { "RedirectUri", default } });
+    }
+
     private PrivacyPolicyModel GivenPrivacyPolicyModel()
     {
         return new PrivacyPolicyModel(sessionMock.Object);

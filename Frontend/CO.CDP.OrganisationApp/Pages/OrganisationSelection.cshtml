@@ -5,7 +5,7 @@
 <main class="govuk-main-wrapper">
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-            @if (Model.Organisations.Any())
+            @if (Model.UserOrganisations.Any())
             {
                 <h1 class="govuk-heading-l">
                     <span class="govuk-label--l">Select or add an organisation</span>
@@ -20,7 +20,7 @@
                     </thead>
                     <tbody class="govuk-table__body">
                         @{
-                            foreach (var org in Model.Organisations)
+                            foreach (var org in Model.UserOrganisations)
                             {
                                 <tr class="govuk-table__row">
                                     <th scope="row" class="govuk-table__header">
