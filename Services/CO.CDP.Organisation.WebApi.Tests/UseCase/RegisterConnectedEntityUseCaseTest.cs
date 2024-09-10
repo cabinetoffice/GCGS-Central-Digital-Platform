@@ -113,10 +113,10 @@ public class RegisterConnectedEntityUseCaseTest(AutoMapperFixture mapperFixture)
     {
         return new RegisterConnectedEntity
         {
-            EntityType = ConnectedEntityType.Organisation,
+            EntityType = Model.ConnectedEntityType.Organisation,
             Organisation = new CreateConnectedOrganisation
             {
-                Category = ConnectedOrganisationCategory.RegisteredCompany,
+                Category = Model.ConnectedOrganisationCategory.RegisteredCompany,
                 Name = "Org1",
                 OrganisationId = organisationId
             },

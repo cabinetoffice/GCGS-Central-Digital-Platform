@@ -58,7 +58,7 @@ public static class EndpointExtensions
                  operation.Responses["500"].Description = "Internal server error.";
                  return operation;
              })
-             .RequireAuthorization(Authentication.AuthorizationPolicy.Constants.OneLoginPolicy);
+        .RequireAuthorization(Authentication.AuthorizationPolicy.Constants.OneLoginPolicy);
 
         app.MapPost("/share/data", async (ShareRequest shareRequest, IUseCase<ShareRequest, ShareReceipt> useCase) =>
                 await useCase.Execute(shareRequest)

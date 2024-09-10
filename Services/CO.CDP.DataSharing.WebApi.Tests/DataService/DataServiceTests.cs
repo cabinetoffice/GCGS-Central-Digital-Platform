@@ -10,7 +10,9 @@ namespace DataSharing.Tests.DataService;
 public class DataServiceTests
 {
     private readonly Mock<IShareCodeRepository> _shareCodeRepository = new();
-    private CO.CDP.DataSharing.WebApi.DataService.DataService DataService => new(_shareCodeRepository.Object);
+    private readonly Mock<IConnectedEntityRepository> _connectedEntityRepository = new();
+    private CO.CDP.DataSharing.WebApi.DataService.DataService DataService => new(_shareCodeRepository.Object,
+        _connectedEntityRepository.Object);
 
     [Fact]
     public async Task GetSharedSupplierInformationAsync_ShouldReturnSharedSupplierInformation_WhenOrganisationExists()
