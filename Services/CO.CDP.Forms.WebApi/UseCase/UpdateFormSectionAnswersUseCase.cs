@@ -50,7 +50,7 @@ public class UpdateFormSectionAnswersUseCase(
             {
                 await UpdateOrAddAnswers(formRepository, answerSetId, answers, section, newSharedConsent);
             }
-            await formRepository.SaveSharedConsentAsync(sharedConsent);
+            await formRepository.SaveSharedConsentAsync(newSharedConsent);
 
             return true;
         }
