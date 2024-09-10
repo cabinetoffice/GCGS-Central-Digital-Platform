@@ -2,7 +2,7 @@ namespace CO.CDP.Forms.WebApi.Model;
 
 public record FormAnswer
 {
-    public required Guid Id { get; init; }
+    public required Guid Id { get; set; }
     public required Guid QuestionId { get; init; }
     public bool? BoolValue { get; init; }
     public double? NumericValue { get; init; }

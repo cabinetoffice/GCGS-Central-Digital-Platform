@@ -30,11 +30,16 @@ public class UpdateFormSectionAnswersUseCase(
         }
         else if (sharedConsent.SubmissionState == Persistence.SubmissionState.Submitted)
         {
-            formRepository.ClearTracker();
             sharedConsent.AnswerSets = sharedConsent.AnswerSets.Where(x => x.Section.Type != Persistence.FormSectionType.Declaration).ToList();
 
-            await UpdateOrAddAnswers(formRepository, answerSetId, answers, section, sharedConsent);
-            ClearSharedConsent(sharedConsent);
+            var (newSharedConsent, oldToNewIds) = MapSharedConsent(sharedConsent);
+
+            for(int i = 0; i < answers.Count; i++)
+            {
+                answers[i].Id = oldToNewIds[answers[i].Id];
+            }
+
+            await UpdateOrAddAnswers(formRepository, oldToNewIds[answerSetId], answers, section, newSharedConsent);
             await formRepository.SaveSharedConsentAsync(sharedConsent);
 
             return true;
@@ -45,25 +50,56 @@ public class UpdateFormSectionAnswersUseCase(
         return true;
     }
 
-    private static void ClearSharedConsent(Persistence.SharedConsent sharedConsent)
+    private static (Persistence.SharedConsent, Dictionary<Guid, Guid>) MapSharedConsent(Persistence.SharedConsent sharedConsent)
     {
-        sharedConsent.SubmittedAt = default;
-        sharedConsent.ShareCode = default;
-        sharedConsent.SubmissionState = default;
-        sharedConsent.Id = default;
-        sharedConsent.Guid = Guid.NewGuid();
+        var oldToNewGuids = new Dictionary<Guid, Guid>();
+
+        var newSharedConsent = new Persistence.SharedConsent
+        {
+            Id = default,
+            Guid = Guid.NewGuid(),
+            OrganisationId = sharedConsent.OrganisationId,
+            Organisation = sharedConsent.Organisation,
+            FormId = sharedConsent.FormId,
+            Form = sharedConsent.Form,
+            SubmissionState = Persistence.SubmissionState.Draft,
+            FormVersionId = sharedConsent.FormVersionId,
+            AnswerSets = null
+        };
+
+        var newAnswerSets = new List<Persistence.FormAnswerSet>() { };
         foreach (var answerSet in sharedConsent.AnswerSets)
         {
-            answerSet.Id = default;
-            answerSet.Guid = Guid.NewGuid();
-            answerSet.SharedConsent = sharedConsent;
+            var newAnswerSet = new Persistence.FormAnswerSet()
+            {
+                Guid = Guid.NewGuid(),
+                SharedConsentId = newSharedConsent.Id,
+                SharedConsent = newSharedConsent,
+                SectionId = answerSet.SectionId,
+                Section = null,
+                Answers = new List<Persistence.FormAnswer>() { }
+            };
+            oldToNewGuids.Add(answerSet.Guid, newAnswerSet.Guid);
+
             foreach (var answer in answerSet.Answers)
             {
-                answer.Id = default;
-                answer.Guid = Guid.NewGuid();
-                answer.FormAnswerSet = answerSet;
+                var newAnswer = new Persistence.FormAnswer()
+                {
+                    Guid = Guid.NewGuid(),
+                    QuestionId = answer.QuestionId,
+                    Question = null,
+                    FormAnswerSetId = default,
+                    FormAnswerSet = newAnswerSet
+                };
+                oldToNewGuids.Add(answer.Guid, newAnswer.Guid);
+
+                newAnswerSet.Answers.Add(newAnswer);
             }
+            newAnswerSets.Add(newAnswerSet);
         }
+        newSharedConsent.AnswerSets = newAnswerSets;
+
+        return (newSharedConsent, oldToNewGuids);
     }
 
     private async Task UpdateOrAddAnswers(IFormRepository formRepository, Guid answerSetId, List<FormAnswer> answers, Persistence.FormSection section, Persistence.SharedConsent sharedConsent)
@@ -153,8 +189,18 @@ public class UpdateFormSectionAnswersUseCase(
             else
             {
                 var formAnswer = mapper.Map<Persistence.FormAnswer>(answer);
-                formAnswer.Question = questionDictionary[answer.QuestionId];
-                answersList.Add(formAnswer);
+
+                var newAnswer = new Persistence.FormAnswer()
+                {
+                    Guid = Guid.NewGuid(),
+                    QuestionId = formAnswer.QuestionId,
+                    Question = null,
+                    FormAnswerSetId = default,
+                    FormAnswerSet = null
+                };
+
+                newAnswer.Question = questionDictionary[answer.QuestionId];
+                answersList.Add(newAnswer);
             }
         }
 
