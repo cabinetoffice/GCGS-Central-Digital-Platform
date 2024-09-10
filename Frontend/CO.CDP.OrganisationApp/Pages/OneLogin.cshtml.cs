@@ -66,6 +66,12 @@ public class OneLogin(
                 session.Set(Session.UserDetailsKey, ud);
             }
 
+            var personInviteId = session.Get<Guid?>("PersonInviteId");
+            if (personInviteId != null)
+            {
+                return RedirectToPage("ClaimOrganisationInvite", new { personInviteId });
+            }
+
             return RedirectToPage("OrganisationSelection");
         }
         catch (ApiException ex) when (ex.StatusCode == 404)

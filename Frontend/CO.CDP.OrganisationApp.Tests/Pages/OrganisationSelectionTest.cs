@@ -1,23 +1,23 @@
-using CO.CDP.Organisation.WebApiClient;
-using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.Pages;
+using CO.CDP.Tenant.WebApiClient;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
+using PartyRole = CO.CDP.Tenant.WebApiClient.PartyRole;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages;
 
 public class OrganisationSelectionTest
 {
     private readonly Mock<ISession> sessionMock;
-    private readonly Mock<IOrganisationClient> organisationClientMock;
+    private readonly Mock<ITenantClient> organisationClientMock;
 
     public OrganisationSelectionTest()
     {
         sessionMock = new Mock<ISession>();
-        sessionMock.Setup(session => session.Get<UserDetails>(Session.UserDetailsKey))
-            .Returns(new UserDetails { UserUrn = "urn:test" });
-        organisationClientMock = new Mock<IOrganisationClient>();
+        sessionMock.Setup(session => session.Get<Models.UserDetails>(Session.UserDetailsKey))
+            .Returns(new Models.UserDetails { UserUrn = "urn:test" });
+        organisationClientMock = new Mock<ITenantClient>();
     }
 
     [Fact]
@@ -25,15 +25,15 @@ public class OrganisationSelectionTest
     {
         var model = GivenOrganisationSelectionModelModel();
 
-        sessionMock.Setup(s => s.Get<UserDetails>(Session.UserDetailsKey))
-            .Returns(new UserDetails { UserUrn = "urn:test" });
+        sessionMock.Setup(s => s.Get<Models.UserDetails>(Session.UserDetailsKey))
+            .Returns(new Models.UserDetails { UserUrn = "urn:test" });
 
-        organisationClientMock.Setup(o => o.ListOrganisationsAsync(It.IsAny<string>()))
-            .ReturnsAsync([new Organisation.WebApiClient.Organisation(null, null, null, Guid.NewGuid(), null, "Test Org", [PartyRole.Buyer])]);
+        organisationClientMock.Setup(o => o.LookupTenantAsync())
+            .ReturnsAsync(GetUserTenant());
 
         var actionResult = await model.OnGet();
 
-        model.Organisations.Should().HaveCount(1);
+        model.UserOrganisations.Should().HaveCount(1);
     }
 
     [Fact]
@@ -50,5 +50,26 @@ public class OrganisationSelectionTest
     private OrganisationSelectionModel GivenOrganisationSelectionModelModel()
     {
         return new OrganisationSelectionModel(organisationClientMock.Object, sessionMock.Object);
+    }
+
+    private TenantLookup GetUserTenant()
+    {
+        return new TenantLookup(
+                new List<UserTenant>()
+                {
+                    new UserTenant(
+                        Guid.NewGuid(),
+                        "TrentTheTenant",
+                        new List<UserOrganisation>()
+                        {
+                            new UserOrganisation(Guid.NewGuid(),
+                                "Acme Ltd",
+                                new List<PartyRole>() { PartyRole.Payee },
+                                new List<string>() { "Scope" },
+                                new Uri("http://www.acme.com"))
+                        }
+                    )
+                },
+                new UserDetails("person@example.com", "Person A", "urn:test"));
     }
 }
