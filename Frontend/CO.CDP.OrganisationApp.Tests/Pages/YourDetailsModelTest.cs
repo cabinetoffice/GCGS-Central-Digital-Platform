@@ -162,6 +162,36 @@ public class YourDetailsModelTest
     }
 
     [Fact]
+    public async Task OnPost_WhenValidModelAndRelativeRedirectUrlProvided_ShouldRedirectToRedirectUrl()
+    {
+        var model = GivenYourDetailsModel();
+
+        sessionMock.Setup(s => s.Get<UserDetails>(Session.UserDetailsKey))
+            .Returns(new UserDetails { UserUrn = "urn:fdc:gov.uk:2022:bad51" });
+        personClientMock.Setup(s => s.CreatePersonAsync(It.IsAny<NewPerson>())).ReturnsAsync(dummyPerson);
+
+        var actionResult = await model.OnPost("/org/1");
+
+        actionResult.Should().BeOfType<RedirectResult>()
+            .Which.Url.Should().Be("/org/1");
+    }
+
+    [Fact]
+    public async Task OnPost_WhenValidModelAndAbsoluteRedirectUrlProvided_ShouldRedirectToOrganisationDetailsPageWithoutRedirectUrlQueryString()
+    {
+        var model = GivenYourDetailsModel();
+
+        sessionMock.Setup(s => s.Get<UserDetails>(Session.UserDetailsKey))
+            .Returns(new UserDetails { UserUrn = "urn:fdc:gov.uk:2022:bad51" });
+        personClientMock.Setup(s => s.CreatePersonAsync(It.IsAny<NewPerson>())).ReturnsAsync(dummyPerson);
+
+        var actionResult = await model.OnPost("http://test-domain/org/1");
+
+        actionResult.Should().BeOfType<RedirectToPageResult>()
+            .Which.PageName.Should().Be("OrganisationSelection");
+    }
+
+    [Fact]
     public async Task OnPost_WhenErrorInRegisteringPerson_ShouldReturnPageWithError()
     {
         var model = GivenYourDetailsModel();

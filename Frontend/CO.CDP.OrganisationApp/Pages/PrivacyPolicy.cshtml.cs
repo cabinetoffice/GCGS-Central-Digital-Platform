@@ -21,13 +21,13 @@ public class PrivacyPolicyModel(ISession session) : LoggedInUserAwareModel(sessi
         return Page();
     }
 
-    public IActionResult OnPost()
+    public IActionResult OnPost(string? redirectUri = null)
     {
         if (!ModelState.IsValid)
         {
             return Page();
         }
 
-        return RedirectToPage("YourDetails");
+        return RedirectToPage("YourDetails", new { RedirectUri = Helper.ValidRelativeUri(redirectUri) ? redirectUri : default });
     }
 }
