@@ -41,7 +41,7 @@ public class ClaimPersonInviteUseCaseTests
             .ReturnsAsync((OrganisationInformation.Persistence.Person)null!);
 
         var exception = await Assert.ThrowsAsync<UnknownPersonException>(() => _useCase.Execute(command));
-        exception.Message.Should().Match($"Unknown person {command.personId}.");
+        exception.Message.Should().Be($"Unknown person {command.personId}.");
     }
 
     [Fact]
