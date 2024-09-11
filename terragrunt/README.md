@@ -120,6 +120,15 @@ ave aws secretsmanager put-secret-value --secret-id cdp-sirsi-one-login-credenti
 ave aws secretsmanager put-secret-value --secret-id cdp-sirsi-fts-service-url --secret-string "<FTS service URL>" | jq .
 ```
 
+### Retrieve Diagnostic URI
+
+1. Set your AWS profile to target the specified AWS account, and use the AWS CLI to retrieve the full URL of the diagnostic page for the given account.
+
+```shell
+# ave is alias for `aws-vault exec` command
+echo "https://$(ave aws route53 list-hosted-zones --query 'HostedZones[0].Name' --output text | sed 's/\.$//')$(ave aws secretsmanager get-secret-value --secret-id cdp-sirsi-diagnostic-path --query 'SecretString' --output text)"
+```
+
 ### Update GOVUKNotify ApiKey
 
 1. Identify the `GOV UK Notify API Key` for the specified AWS account.
