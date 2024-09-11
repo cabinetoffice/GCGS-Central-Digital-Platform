@@ -1,12 +1,15 @@
+using Amazon.S3;
 using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.Pages.Registration;
+using CO.CDP.OrganisationApp.ThirdPartyApiClients.CompaniesHouse;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using Moq;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages.Registration;
@@ -14,10 +17,12 @@ namespace CO.CDP.OrganisationApp.Tests.Pages.Registration;
 public class OrganisationRegisteredAddressModelTest
 {
     private readonly Mock<ISession> sessionMock;
+    private readonly Mock<ICompaniesHouseApi> companiesHouseMock;
 
     public OrganisationRegisteredAddressModelTest()
     {
         sessionMock = new Mock<ISession>();
+        companiesHouseMock = new Mock<ICompaniesHouseApi>();
         sessionMock.Setup(session => session.Get<UserDetails>(Session.UserDetailsKey))
             .Returns(new UserDetails { UserUrn = "urn:test" });
     }
@@ -166,7 +171,7 @@ public class OrganisationRegisteredAddressModelTest
     }
 
     [Fact]
-    public void OnGet_ValidSession_ReturnsRegistrationDetails()
+    public async void OnGet_ValidSession_ReturnsRegistrationDetails()
     {
         RegistrationDetails registrationDetails = DummyRegistrationDetails();
 
@@ -175,12 +180,49 @@ public class OrganisationRegisteredAddressModelTest
 
         var model = GivenOrganisationAddressModel();
 
-        model.OnGet();
+        await model.OnGet();
 
         model.Address.AddressLine1.Should().Be(registrationDetails.OrganisationAddressLine1);
         model.Address.TownOrCity.Should().Be(registrationDetails.OrganisationCityOrTown);
         model.Address.Postcode.Should().Be(registrationDetails.OrganisationPostcode);
         //model.Country.Should().Be(registrationDetails.OrganisationCountry);
+    }
+
+    [Fact]
+    public async Task OnGet_WhenCompaniesHouseNumberProvided_ShouldCallCompaniesHouseApi()
+    {
+        RegistrationDetails registrationDetails = DummyRegistrationDetails();
+        registrationDetails.OrganisationAddressLine1 = string.Empty;
+        registrationDetails.OrganisationCityOrTown = string.Empty;
+        registrationDetails.OrganisationPostcode = string.Empty;
+        registrationDetails.OrganisationCountryCode = Country.UKCountryCode;
+        registrationDetails.OrganisationType = OrganisationType.Supplier;
+        registrationDetails.OrganisationHasCompaniesHouseNumber = true;
+        registrationDetails.OrganisationIdentificationNumber = "0123456789";
+
+        sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(registrationDetails);
+
+        var model = GivenOrganisationAddressModel();
+
+        await model.OnGet();
+
+        companiesHouseMock.Verify(ch => ch.GetRegisteredAddress(registrationDetails.OrganisationIdentificationNumber), Times.Once);
+    }
+
+    [Fact]
+    public async Task OnGet_WhenCompaniesHouseNumberAndRegDetailsProvided_ShouldNotCallCompaniesHouseApi()
+    {
+        var model = GivenOrganisationAddressModel();
+
+        RegistrationDetails registrationDetails = DummyRegistrationDetails();
+        registrationDetails.OrganisationType = OrganisationType.Supplier;
+        registrationDetails.OrganisationHasCompaniesHouseNumber = true;
+        registrationDetails.OrganisationIdentificationNumber = "0123456789";
+        sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(registrationDetails);
+
+        await model.OnGet();
+
+        companiesHouseMock.Verify(ch => ch.GetRegisteredAddress(registrationDetails.OrganisationIdentificationNumber), Times.Never);
     }
 
     private RegistrationDetails DummyRegistrationDetails()
@@ -199,6 +241,6 @@ public class OrganisationRegisteredAddressModelTest
 
     private OrganisationRegisteredAddressModel GivenOrganisationAddressModel()
     {
-        return new OrganisationRegisteredAddressModel(sessionMock.Object) { Address = new() };
+        return new OrganisationRegisteredAddressModel(sessionMock.Object, companiesHouseMock.Object) { Address = new() };
     }
 }

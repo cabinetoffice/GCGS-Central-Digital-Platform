@@ -132,7 +132,9 @@ services:
       TenantService: '${TenantService:-http://gateway:${CDP_TENANT_PORT:-8080}}'
       DataSharingService: '${DataSharingService:-http://gateway:${CDP_DATA_SHARING_PORT:-8088}}'
       EntityVerificationService: '${EntityVerificationService:-http://gateway:${CDP_ENTITY_VERIFICATION_PORT:-8094}}'
-
+      CompaniesHouse__Url: ""
+      CompaniesHouse__User: ""
+      CompaniesHouse__Password: ""
   authority:
     container_name: co-cdp-authority
     build:

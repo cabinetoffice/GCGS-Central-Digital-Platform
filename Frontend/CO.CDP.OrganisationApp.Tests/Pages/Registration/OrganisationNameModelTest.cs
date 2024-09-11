@@ -1,5 +1,7 @@
+using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.Pages.Registration;
+using CO.CDP.OrganisationApp.ThirdPartyApiClients.CompaniesHouse;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -13,10 +15,12 @@ namespace CO.CDP.OrganisationApp.Tests.Pages.Registration;
 public class OrganisationNameModelTest
 {
     private readonly Mock<ISession> sessionMock;
+    private readonly Mock<ICompaniesHouseApi> companiesHouseMock;
 
     public OrganisationNameModelTest()
     {
         sessionMock = new Mock<ISession>();
+        companiesHouseMock = new Mock<ICompaniesHouseApi>();
         sessionMock.Setup(session => session.Get<UserDetails>(Session.UserDetailsKey))
             .Returns(new UserDetails { UserUrn = "urn:test" });
     }
@@ -103,6 +107,40 @@ public class OrganisationNameModelTest
     }
 
     [Fact]
+    public async Task OnGet_WhenCompaniesHouseNumberProvided_ShouldCallCompaniesHouseApi()
+    {
+        RegistrationDetails registrationDetails = DummyRegistrationDetails();
+        registrationDetails.OrganisationHasCompaniesHouseNumber = true;
+        registrationDetails.OrganisationIdentificationNumber = "0123456789";
+        registrationDetails.OrganisationName = string.Empty;
+
+        sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(registrationDetails);
+
+        var model = GivenOrganisationNameModel();
+
+        await model.OnGet();
+
+        companiesHouseMock.Verify(ch => ch.GetProfile(registrationDetails.OrganisationIdentificationNumber), Times.Once);
+    }
+
+    [Fact]
+    public async Task OnGet_WhenCompaniesHouseNumberAndCompanyNameProvided_ShouldNotCallCompaniesHouseApi()
+    {
+        RegistrationDetails registrationDetails = DummyRegistrationDetails();
+        registrationDetails.OrganisationHasCompaniesHouseNumber = true;
+        registrationDetails.OrganisationIdentificationNumber = "0123456789";
+        registrationDetails.OrganisationName = "Acme Ltd";
+
+        sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(registrationDetails);
+
+        var model = GivenOrganisationNameModel();
+
+        await model.OnGet();
+
+        companiesHouseMock.Verify(ch => ch.GetProfile(registrationDetails.OrganisationIdentificationNumber), Times.Never);
+    }
+
+    [Fact]
     public void OnPost_WhenValidModel_ShouldRedirectToOrganisationEmailPage()
     {
         var model = GivenOrganisationNameModel();
@@ -145,6 +183,6 @@ public class OrganisationNameModelTest
 
     private OrganisationNameModel GivenOrganisationNameModel()
     {
-        return new OrganisationNameModel(sessionMock.Object);
+        return new OrganisationNameModel(sessionMock.Object, companiesHouseMock.Object);
     }
 }
