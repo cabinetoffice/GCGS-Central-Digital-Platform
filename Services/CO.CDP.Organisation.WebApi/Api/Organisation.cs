@@ -419,7 +419,7 @@ public static class EndpointExtensions
                 return operation;
             });
 
-        app.MapPatch("/{organisationId}/person/{personId}",
+        app.MapPatch("/{organisationId}/persons/{personId}",
              async (Guid organisationId, Guid personId, UpdatePersonToOrganisation updatePersonToOrganisation, IUseCase<(Guid, Guid, UpdatePersonToOrganisation), bool> useCase) =>
 
                  await useCase.Execute((organisationId, personId, updatePersonToOrganisation))
@@ -471,7 +471,7 @@ public static class EndpointExtensions
                 return operation;
             });
 
-        app.MapGet("/{organisationId}/persons/person-invites",
+        app.MapGet("/{organisationId}/invites",
                 async (Guid organisationId, IUseCase<Guid, IEnumerable<PersonInviteModel>> useCase) =>
                     await useCase.Execute(organisationId)
                         .AndThen(personInvites => personInvites != null ? Results.Ok(personInvites) : Results.NotFound()))
@@ -493,7 +493,7 @@ public static class EndpointExtensions
                 return operation;
             });
 
-        app.MapPost("/{organisationId}/persons/person-invite",
+        app.MapPost("/{organisationId}/invites",
                 async (Guid organisationId, InvitePersonToOrganisation invitePersonToOrganisation, IUseCase<(Guid, InvitePersonToOrganisation), PersonInvite> useCase) =>
 
                     await useCase.Execute((organisationId, invitePersonToOrganisation))
@@ -521,7 +521,7 @@ public static class EndpointExtensions
                 return operation;
             });
 
-        app.MapPatch("/{organisationId}/invite/{personInviteId}",
+        app.MapPatch("/{organisationId}/invites/{personInviteId}",
              async (Guid organisationId, Guid personInviteId, UpdateInvitedPersonToOrganisation updateInvitedPersonToOrganisation, IUseCase<(Guid, Guid, UpdateInvitedPersonToOrganisation), bool> useCase) =>
 
                  await useCase.Execute((organisationId, personInviteId, updateInvitedPersonToOrganisation))
@@ -549,7 +549,7 @@ public static class EndpointExtensions
              return operation;
          });
 
-        app.MapDelete("/{organisationId}/person-invite/{personInviteId}",
+        app.MapDelete("/{organisationId}/invites/{personInviteId}",
                 async (Guid organisationId, Guid personInviteId, IUseCase<(Guid, Guid), bool> useCase) =>
                     await useCase.Execute((organisationId, personInviteId))
                         .AndThen(_ => Results.NoContent()))

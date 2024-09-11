@@ -4,6 +4,7 @@ using CO.CDP.AwsServices;
 using CO.CDP.Configuration.Assembly;
 using CO.CDP.Configuration.ForwardedHeaders;
 using CO.CDP.Configuration.Helpers;
+using CO.CDP.GovUKNotify;
 using CO.CDP.MQ;
 using CO.CDP.MQ.Hosting;
 using CO.CDP.Organisation.WebApi.Api;
@@ -82,8 +83,9 @@ builder.Services.AddScoped<IUseCase<(Guid, Guid), bool>, RemovePersonInviteFromO
 builder.Services.AddOrganisationProblemDetails();
 
 builder.Services.AddJwtBearerAndApiKeyAuthentication(builder.Configuration, builder.Environment);
-//builder.Services.AddAuthorization();
-builder.Services.AddOrganisationAuthorization();
+builder.Services.AddAuthorization();
+//builder.Services.AddOrganisationAuthorization();
+builder.Services.AddGovUKNotifyApiClient(builder.Configuration);
 
 if (Assembly.GetEntryAssembly().IsRunAs("CO.CDP.Organisation.WebApi"))
 {

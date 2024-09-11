@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.Net;
 
 namespace CO.CDP.OrganisationApp.Pages.Registration;
 
@@ -15,23 +16,29 @@ public class OneLogin(
     IPersonClient personClient,
     ISession session) : PageModel
 {
-    public async Task<IActionResult> OnGet(string action)
+    public async Task<IActionResult> OnGet(string action, string? redirectUri = null)
     {
         return action switch
         {
-            "sign-in" => SignIn(),
-            "user-info" => await UserInfo(),
+            "sign-in" => SignIn(redirectUri),
+            "user-info" => await UserInfo(redirectUri),
             "sign-out" => SignOut(),
             _ => RedirectToPage("/"),
         };
     }
 
-    private IActionResult SignIn()
+    private IActionResult SignIn(string? redirectUri = null)
     {
-        return Challenge(new AuthenticationProperties { RedirectUri = "/one-login/user-info" });
+        var uri = "/one-login/user-info";
+        if (Helper.ValidRelativeUri(redirectUri))
+        {
+            uri += $"?redirectUri={WebUtility.UrlEncode(redirectUri)}";
+        }
+
+        return Challenge(new AuthenticationProperties { RedirectUri = uri });
     }
 
-    private async Task<IActionResult> UserInfo()
+    private async Task<IActionResult> UserInfo(string? redirectUri = null)
     {
         var userInfo = await httpContextAccessor.HttpContext!.AuthenticateAsync();
         if (!userInfo.Succeeded)
@@ -66,17 +73,16 @@ public class OneLogin(
                 session.Set(Session.UserDetailsKey, ud);
             }
 
-            var personInviteId = session.Get<Guid?>("PersonInviteId");
-            if (personInviteId != null)
+            if (Helper.ValidRelativeUri(redirectUri))
             {
-                return RedirectToPage("ClaimOrganisationInvite", new { personInviteId });
+                return Redirect(redirectUri!);
             }
 
             return RedirectToPage("OrganisationSelection");
         }
         catch (ApiException ex) when (ex.StatusCode == 404)
         {
-            return RedirectToPage("PrivacyPolicy");
+            return RedirectToPage("PrivacyPolicy", new { RedirectUri = Helper.ValidRelativeUri(redirectUri) ? redirectUri : default });
         }
     }
 
