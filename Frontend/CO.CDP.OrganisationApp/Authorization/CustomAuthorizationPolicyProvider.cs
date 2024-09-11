@@ -13,7 +13,7 @@ public class CustomAuthorizationPolicyProvider : IAuthorizationPolicyProvider
         _fallbackPolicyProvider = new DefaultAuthorizationPolicyProvider(options);
     }
 
-    public Task<AuthorizationPolicy> GetPolicyAsync(string policyName)
+    public Task<AuthorizationPolicy?> GetPolicyAsync(string policyName)
     {
         if (policyName.StartsWith(POLICY_PREFIX))
         {
@@ -25,7 +25,7 @@ public class CustomAuthorizationPolicyProvider : IAuthorizationPolicyProvider
                 .AddRequirements(new OrganizationRoleRequirement(role))
                 .Build();
 
-            return Task.FromResult(policy);
+            return Task.FromResult<AuthorizationPolicy?>(policy);
         }
 
         // Fall back to the default provider for other policies
@@ -34,5 +34,5 @@ public class CustomAuthorizationPolicyProvider : IAuthorizationPolicyProvider
 
     public Task<AuthorizationPolicy> GetDefaultPolicyAsync() => _fallbackPolicyProvider.GetDefaultPolicyAsync();
 
-    public Task<AuthorizationPolicy> GetFallbackPolicyAsync() => _fallbackPolicyProvider.GetFallbackPolicyAsync();
+    public Task<AuthorizationPolicy?> GetFallbackPolicyAsync() => _fallbackPolicyProvider.GetFallbackPolicyAsync();
 }

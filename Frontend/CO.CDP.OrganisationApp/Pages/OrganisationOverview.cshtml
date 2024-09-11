@@ -19,17 +19,9 @@
                 </h1>
                 <h2 class="govuk-heading-m">Organisation details</h2>
 
-                @* Example showing a piece of UI if role is met *@
-                @* TODO: Write custom TagHelpers to streamline this. E.g. <authorize role="OrgRolePolicy_EDITOR">Auth only content inside</authorize> *@
-                @if ((await authorizationService.AuthorizeAsync(User, "OrgRolePolicy_ADMIN")).Succeeded)
-                {
-                    <p>THIS CONTENT ONLY APPEARS IF YOU HAVE THE RIGHT ROLE.</p>
-                }
-
-                @if ((await authorizationService.AuthorizeAsync(User, "OrgRolePolicy_ADMIN")).Succeeded)
-                {
-                    <p>THIS CONTENT ONLY APPEARS IF YOU HAVE THE RIGHT ROLE.</p>
-                }
+                <authorize scope="@PersonScopes.Viewer">
+                    <p>THIS TAG HELPER CONTENT ONLY APPEARS IF YOU HAVE THE RIGHT ROLE.</p>
+                </authorize>
 
                 <dl class="govuk-summary-list">
                     <div class="govuk-summary-list__row">

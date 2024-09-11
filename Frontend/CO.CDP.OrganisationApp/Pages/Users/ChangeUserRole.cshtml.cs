@@ -38,7 +38,7 @@ public class ChangeUserRoleModel(
         // Example inside a handler
         //if(!(await authorizationService.AuthorizeAsync(User, "OrgRolePolicy_EDITOR")).Succeeded)
         //{
-        //    // Return 403
+            // Return 403
         //}
 
         var organisationPerson = await GetOrganisationPerson(organisationClient);
