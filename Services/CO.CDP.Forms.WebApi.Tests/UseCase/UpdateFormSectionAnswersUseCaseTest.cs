@@ -162,19 +162,21 @@ public class UpdateFormSectionAnswersUseCaseTest(AutoMapperFixture mapperFixture
     public async Task Execute_ShouldSuccessfullyCopySharedConsent()
     {
         var organisation = GivenOrganisationExists(organisationId: Guid.NewGuid());
-        var section = GivenFormSectionExists(sectionId: Guid.NewGuid());
+        var form = GivenForm();
+        var section = GivenFormSectionExists(sectionId: Guid.NewGuid(), form: form);
         var question = GivenFormQuestion(questionId: Guid.NewGuid(), section: section);
+
+        var sharedConsent = GivenSharedConsentExists(organisation, form);
+        sharedConsent.SubmissionState = Persistence.SubmissionState.Submitted;
+        var answerSet = GivenAnswerSet(sharedConsent: sharedConsent, section: section);
+        var answerSetId = answerSet.Guid;
         var answerGuid = Guid.NewGuid();
         var answers = new List<FormAnswer>
         {
             new() { Id = answerGuid, QuestionId = question.Guid, BoolValue = true }
         };
-        var answerSetId = Guid.NewGuid();
         var command = (formId: section.Form.Guid, sectionId: section.Guid, answerSetId,
             organisationId: organisation.Guid, answers);
-
-        var sharedConsent = EntityFactory.GetSharedConsent(organisation.Id, organisation.Guid, section.Form.Guid);
-        sharedConsent.SubmissionState = Persistence.SubmissionState.Submitted;
 
         var sharedConsentGuid = sharedConsent.Guid;
         _repository.Setup(useCase => useCase.GetSharedConsentWithAnswersAsync(section.Form.Guid, organisation.Guid))
@@ -200,16 +202,16 @@ public class UpdateFormSectionAnswersUseCaseTest(AutoMapperFixture mapperFixture
         var section = GivenFormSectionExists(sectionId: Guid.NewGuid());
         var question = GivenFormQuestion(questionId: Guid.NewGuid(), section: section);
         var answerGuid = Guid.NewGuid();
+        var sharedConsent = EntityFactory.GetSharedConsentWithDeclarationOnlyAnswerSets(organisation.Id, organisation.Guid, section.Form.Guid);
+        sharedConsent.SubmissionState = Persistence.SubmissionState.Submitted;
+        var answerSet = GivenAnswerSet(sharedConsent: sharedConsent, section: section);
+        var answerSetId = answerSet.Guid;
         var answers = new List<FormAnswer>
         {
             new() { Id = answerGuid, QuestionId = question.Guid, BoolValue = true }
         };
-        var answerSetId = Guid.NewGuid();
         var command = (formId: section.Form.Guid, sectionId: section.Guid, answerSetId,
             organisationId: organisation.Guid, answers);
-
-        var sharedConsent = EntityFactory.GetSharedConsentWithDeclarationOnlyAnswerSets(organisation.Id, organisation.Guid, section.Form.Guid);
-        sharedConsent.SubmissionState = Persistence.SubmissionState.Submitted;
 
         var sharedConsentGuid = sharedConsent.Guid;
         _repository.Setup(useCase => useCase.GetSharedConsentWithAnswersAsync(section.Form.Guid, organisation.Guid))
@@ -273,10 +275,9 @@ public class UpdateFormSectionAnswersUseCaseTest(AutoMapperFixture mapperFixture
         _organisationRepository.Setup(r => r.Find(organisationId)).ReturnsAsync((Organisation?)null);
     }
 
-    private Persistence.FormSection GivenFormSectionExists(Guid sectionId)
+    private Persistence.FormSection GivenFormSectionExists(Guid sectionId, Persistence.Form? form = null)
     {
-        var form = GivenForm();
-        var section = GivenFormSection(sectionId, form);
+        var section = GivenFormSection(sectionId, form ?? GivenForm());
         _repository.Setup(r => r.GetSectionAsync(It.IsAny<Guid>(), It.IsAny<Guid>())).ReturnsAsync(section);
         return section;
     }
@@ -321,7 +322,7 @@ public class UpdateFormSectionAnswersUseCaseTest(AutoMapperFixture mapperFixture
 
     private static Persistence.FormSection GivenFormSection(Guid sectionId, Persistence.Form form)
     {
-        return new Persistence.FormSection
+        var formSection = new Persistence.FormSection
         {
             Id = 1,
             Guid = sectionId,
@@ -342,6 +343,8 @@ public class UpdateFormSectionAnswersUseCaseTest(AutoMapperFixture mapperFixture
                 RemoveConfirmationHeading = "Are you sure you want to remove this file?"
             }
         };
+        form.Sections.Add(formSection);
+        return formSection;
     }
 
     private static Persistence.Form GivenForm()
