@@ -1,6 +1,7 @@
 using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.Pages.Registration;
+using CO.CDP.OrganisationApp.ThirdPartyApiClients;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -14,6 +15,7 @@ namespace CO.CDP.OrganisationApp.Tests.Pages.Registration;
 public class OrganisationRegisteredAddressModelTest
 {
     private readonly Mock<ISession> sessionMock;
+    private readonly Mock<ICompaniesHouseApi> companiesHouseMock;
 
     public OrganisationRegisteredAddressModelTest()
     {
@@ -199,6 +201,6 @@ public class OrganisationRegisteredAddressModelTest
 
     private OrganisationRegisteredAddressModel GivenOrganisationAddressModel()
     {
-        return new OrganisationRegisteredAddressModel(sessionMock.Object) { Address = new() };
+        return new OrganisationRegisteredAddressModel(sessionMock.Object, companiesHouseMock.Object) { Address = new() };
     }
 }

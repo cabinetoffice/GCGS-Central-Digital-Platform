@@ -9,6 +9,7 @@
     </PropertyGroup>
     
     <ItemGroup>
+      <PackageReference Include="Flurl.Http" Version="4.0.2" />
       <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="8.0.8" />
       <PackageReference Include="IdentityModel" Version="7.0.0" />
       <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="8.0.8" />

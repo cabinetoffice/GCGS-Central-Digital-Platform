@@ -1,25 +1,26 @@
 using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.Pages.Shared;
+using CO.CDP.OrganisationApp.ThirdPartyApiClients;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CO.CDP.OrganisationApp.Pages.Registration;
 
 [ValidateRegistrationStep]
-public class OrganisationRegisteredAddressModel(ISession session) : RegistrationStepModel(session)
+public class OrganisationRegisteredAddressModel(ISession session, ICompaniesHouseApi companiesHouseApi) : RegistrationStepModel(session)
 {
     public override string CurrentPage => OrganisationAddressPage;
 
     [BindProperty(SupportsGet = true)]
     public string UkOrNonUk { get; set; } = "uk";
-
+    
     [BindProperty]
     public AddressPartialModel Address { get; set; } = new();
 
     [BindProperty]
     public bool? RedirectToSummary { get; set; }
 
-    public void OnGet()
+    public async Task OnGet()
     {
         SetupAddress(true);
 
@@ -29,6 +30,20 @@ public class OrganisationRegisteredAddressModel(ISession session) : Registration
             Address.AddressLine1 = RegistrationDetails.OrganisationAddressLine1;
             Address.TownOrCity = RegistrationDetails.OrganisationCityOrTown;
             Address.Postcode = RegistrationDetails.OrganisationPostcode;
+            Address.Country = RegistrationDetails.OrganisationCountryCode;
+        }
+
+        if ((RegistrationDetails.OrganisationCountryCode == Country.UKCountryCode) &&
+            (RegistrationDetails.OrganisationHasCompaniesHouseNumber ?? false) &&
+            (string.IsNullOrEmpty(Address.AddressLine1)) &&
+            (string.IsNullOrEmpty(Address.TownOrCity)) &&
+            (string.IsNullOrEmpty(Address.Postcode)))
+        {
+            var details = await companiesHouseApi.GetRegisteredAddress(RegistrationDetails.OrganisationIdentificationNumber!);
+
+            Address.AddressLine1 = details.AddressLine1;
+            Address.TownOrCity = details.Locality;
+            Address.Postcode = details.PostalCode;
             Address.Country = RegistrationDetails.OrganisationCountryCode;
         }
     }
