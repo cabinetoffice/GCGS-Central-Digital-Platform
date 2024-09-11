@@ -65,7 +65,10 @@ internal static class EntityFactory
             FormVersionId = string.Empty,
             ShareCode = string.Empty
         };
-        sharedConsent.AnswerSets = GivenQuestionsAndAnswers(sharedConsent, form);
+        foreach (var questionsAndAnswer in GivenQuestionsAndAnswers(sharedConsent, form))
+        {
+            sharedConsent.AnswerSets.Add(questionsAndAnswer);
+        }
 
         return sharedConsent;
     }

@@ -76,21 +76,18 @@ public class UpdateFormSectionAnswersUseCase(
             FormId = sharedConsent.FormId,
             Form = sharedConsent.Form,
             SubmissionState = Persistence.SubmissionState.Draft,
-            FormVersionId = sharedConsent.FormVersionId,
-            AnswerSets = null
+            FormVersionId = sharedConsent.FormVersionId
         };
 
-        var newAnswerSets = new List<Persistence.FormAnswerSet>() { };
         foreach (var answerSet in sharedConsent.AnswerSets.Where(x => x.Section.Type != Persistence.FormSectionType.Declaration))
         {
             var newAnswerSet = new Persistence.FormAnswerSet()
             {
                 Guid = Guid.NewGuid(),
                 SharedConsentId = newSharedConsent.Id,
-                SharedConsent = null,
+                SharedConsent = newSharedConsent,
                 SectionId = answerSet.SectionId,
-                Section = null,
-                Answers = new List<Persistence.FormAnswer>() { }
+                Section = answerSet.Section
             };
             oldToNewGuids.Add(answerSet.Guid, newAnswerSet.Guid);
 
@@ -100,17 +97,16 @@ public class UpdateFormSectionAnswersUseCase(
                 {
                     Guid = Guid.NewGuid(),
                     QuestionId = answer.QuestionId,
-                    Question = null,
-                    FormAnswerSetId = default,
-                    FormAnswerSet = null
+                    Question = answer.Question,
+                    FormAnswerSetId = newAnswerSet.Id,
+                    FormAnswerSet = newAnswerSet
                 };
                 oldToNewGuids.Add(answer.Guid, newAnswer.Guid);
 
                 newAnswerSet.Answers.Add(newAnswer);
             }
-            newAnswerSets.Add(newAnswerSet);
+            newSharedConsent.AnswerSets.Add(newAnswerSet);
         }
-        newSharedConsent.AnswerSets = newAnswerSets;
 
         return (newSharedConsent, oldToNewGuids);
     }
@@ -204,7 +200,7 @@ public class UpdateFormSectionAnswersUseCase(
                 var newAnswer = mapper.Map<Persistence.FormAnswer>(answer);
                 newAnswer.Guid = Guid.NewGuid();
                 newAnswer.QuestionId = questionDictionary[answer.QuestionId].Id;
-                newAnswer.Question = null;
+                newAnswer.Question = questionDictionary[answer.QuestionId];
                 newAnswer.FormAnswerSetId = default;
                 newAnswer.FormAnswerSet = null;
 
