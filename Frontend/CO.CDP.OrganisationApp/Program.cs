@@ -149,7 +149,7 @@ builder.Services.AddAuthentication(options =>
 });
 
 builder.Services.AddSingleton<IAuthorizationPolicyProvider, CustomAuthorizationPolicyProvider>();
-builder.Services.AddSingleton<IAuthorizationHandler, OrganizationRoleHandler>();
+builder.Services.AddSingleton<IAuthorizationHandler, OrganizationScopeHandler>();
 builder.Services.AddAuthorization();
 
 builder.Services.AddHealthChecks();

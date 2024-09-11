@@ -3,20 +3,20 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace CO.CDP.OrganisationApp.Authorization;
 
-public class OrganizationRoleHandler : AuthorizationHandler<OrganizationRoleRequirement>
+public class OrganizationScopeHandler : AuthorizationHandler<OrganizationScopeRequirement>
 {
     private ITenantClient _tenantClient;
     private ISession _session;
     private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public OrganizationRoleHandler(ITenantClient tenantClient, ISession session, IHttpContextAccessor httpContextAccessor)
+    public OrganizationScopeHandler(ITenantClient tenantClient, ISession session, IHttpContextAccessor httpContextAccessor)
     {
         _tenantClient = tenantClient;
         _session = session;
         _httpContextAccessor = httpContextAccessor;
     }
 
-    protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, OrganizationRoleRequirement requirement)
+    protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, OrganizationScopeRequirement requirement)
     {
         Models.UserDetails? userDetails = _session.Get<Models.UserDetails>(Session.UserDetailsKey);
 
@@ -30,7 +30,7 @@ public class OrganizationRoleHandler : AuthorizationHandler<OrganizationRoleRequ
                 {
                     UserOrganisation? personOrganisation = await GetPersonOrganisation((Guid)organisationId);
 
-                    if (personOrganisation != null && personOrganisation.Scopes.Contains(requirement.Role))
+                    if (personOrganisation != null && personOrganisation.Scopes.Contains(requirement.Scope))
                     {
                         context.Succeed(requirement);
                         return;
@@ -52,7 +52,7 @@ public class OrganizationRoleHandler : AuthorizationHandler<OrganizationRoleRequ
     {
         // Role checks may be made multiple times when building a page
         // Therefore we cache the person's organisation details for the duration of the http request
-        var cacheKey = "CO.CDP.OrganisationApp.Authorization.OrganizationRoleHandler.GetPersonOrganisation";
+        var cacheKey = "CO.CDP.OrganisationApp.Authorization.OrganizationScopeHandler.GetPersonOrganisation";
 
         if (_httpContextAccessor?.HttpContext?.Items != null && _httpContextAccessor.HttpContext.Items[cacheKey] is UserOrganisation cachedData)
         {

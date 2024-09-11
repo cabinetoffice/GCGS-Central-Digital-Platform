@@ -21,10 +21,6 @@
                 Organisation has @(totalPersons == 1 ? "1 user" : $"{totalPersons} users")
             </h1>
 
-            <authorize scope="@PersonScopes.Editor">
-                <p>THIS TAG HELPER CONTENT ONLY APPEARS IF YOU HAVE THE RIGHT ROLE.</p>
-            </authorize>
-
             @foreach (var p in Model.Persons)
             {
                 <dl class="govuk-summary-list ros-add-to-a-list">

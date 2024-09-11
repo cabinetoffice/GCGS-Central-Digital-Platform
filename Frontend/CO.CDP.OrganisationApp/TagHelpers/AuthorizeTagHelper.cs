@@ -23,7 +23,7 @@ public class AuthorizeTagHelper: TagHelper
         var user = _httpContextAccessor?.HttpContext?.User;
         if (user != null)
         {
-            var roleCheck = await _authorizationService.AuthorizeAsync(user, string.Format("OrgRolePolicy_{0}", Scope.ToUpper()));
+            var roleCheck = await _authorizationService.AuthorizeAsync(user, Scope);
             if (roleCheck.Succeeded)
             {
                 output.Content.SetHtmlContent(output.GetChildContentAsync().Result.GetContent());

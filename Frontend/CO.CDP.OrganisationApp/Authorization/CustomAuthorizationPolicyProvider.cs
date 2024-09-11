@@ -5,7 +5,7 @@ namespace CO.CDP.OrganisationApp.Authorization;
 
 public class CustomAuthorizationPolicyProvider : IAuthorizationPolicyProvider
 {
-    const string POLICY_PREFIX = "OrgRolePolicy_";
+    const string POLICY_PREFIX = "OrgScope_";
     private readonly DefaultAuthorizationPolicyProvider _fallbackPolicyProvider;
 
     public CustomAuthorizationPolicyProvider(IOptions<AuthorizationOptions> options)
@@ -22,7 +22,7 @@ public class CustomAuthorizationPolicyProvider : IAuthorizationPolicyProvider
             // Create a dynamic policy with the custom role requirement
             var policy = new AuthorizationPolicyBuilder()
                 .RequireAuthenticatedUser()
-                .AddRequirements(new OrganizationRoleRequirement(role))
+                .AddRequirements(new OrganizationScopeRequirement(role))
                 .Build();
 
             return Task.FromResult<AuthorizationPolicy?>(policy);
