@@ -63,6 +63,11 @@ variable "environment" {
   type        = string
 }
 
+variable "is_production" {
+  description = "Indicates whether the target account is configured with production-level settings"
+  type        = bool
+}
+
 variable "pinned_service_version" {
   description = "The service version for the this environment. If null, latest version from Orchestration will be used"
   type        = string

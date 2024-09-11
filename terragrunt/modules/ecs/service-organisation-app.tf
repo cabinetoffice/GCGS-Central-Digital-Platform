@@ -32,7 +32,7 @@ module "ecs_service_organisation_app" {
       fts_service_url_arn      = data.aws_secretsmanager_secret_version.fts_service_url.arn
       host_port                = var.service_configs.organisation_app.port
       image                    = local.ecr_urls[var.service_configs.organisation_app.name]
-      diagnostic_page_enabled  = !local.is_production
+      diagnostic_page_enabled  = !var.is_production || var.environment == "integration"
       diagnostic_page_path_arn = aws_secretsmanager_secret.cdp_sirsi_diagnostic_path.arn
       lg_name                  = aws_cloudwatch_log_group.tasks[var.service_configs.organisation_app.name].name
       lg_prefix                = "app"
