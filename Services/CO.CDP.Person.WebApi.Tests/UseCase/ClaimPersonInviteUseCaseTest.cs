@@ -1,6 +1,7 @@
 using CO.CDP.OrganisationInformation.Persistence;
 using CO.CDP.Person.WebApi.Model;
 using CO.CDP.Person.WebApi.UseCase;
+using FluentAssertions;
 using Moq;
 
 namespace CO.CDP.Person.WebApi.Tests.UseCase;
@@ -40,7 +41,7 @@ public class ClaimPersonInviteUseCaseTests
             .ReturnsAsync((OrganisationInformation.Persistence.Person)null!);
 
         var exception = await Assert.ThrowsAsync<UnknownPersonException>(() => _useCase.Execute(command));
-        Assert.Equal($"Unknown person {command.personId}.", exception.Message);
+        exception.Message.Should().Match($"Unknown person {command.personId}.");
     }
 
     [Fact]
@@ -54,7 +55,7 @@ public class ClaimPersonInviteUseCaseTests
             .ReturnsAsync((PersonInvite)null!);
 
         var exception = await Assert.ThrowsAsync<UnknownPersonInviteException>(() => _useCase.Execute(command));
-        Assert.Equal($"Unknown personInvite {command.claimPersonInvite.PersonInviteId}.", exception.Message);
+        exception.Message.Should().Match($"Unknown personInvite {command.claimPersonInvite.PersonInviteId}.");
     }
 
     [Fact]
@@ -79,12 +80,20 @@ public class ClaimPersonInviteUseCaseTests
             .ReturnsAsync(claimedPersonInvite);
 
         var exception = await Assert.ThrowsAsync<PersonInviteAlreadyClaimedException>(() => _useCase.Execute(command));
-        Assert.Equal($"PersonInvite {command.claimPersonInvite.PersonInviteId} has already been claimed.", exception.Message);
+        exception.Message.Should()
+            .Match($"PersonInvite {command.claimPersonInvite.PersonInviteId} has already been claimed.");
     }
 
     [Fact]
-    public async Task Execute_Adds_Person_To_Organisation_And_Claims_Invite()
+    public async Task Execute_Adds_Person_To_Organisation_And_Tenant_And_Claims_Invite()
     {
+        var tenant = new Tenant
+        {
+            Id = 1,
+            Guid = new Guid(),
+            Name = "Test Organisation Tenant"
+        };
+
         var personInvite = new PersonInvite
         {
             Id = 0,
@@ -99,7 +108,7 @@ public class ClaimPersonInviteUseCaseTests
                 Id = 0,
                 Name = "Test Organisation",
                 Guid = new Guid(),
-                Tenant = null!
+                Tenant = tenant
             },
             Scopes = new List<string> { "EDITOR", "ADMIN" }
         };
@@ -112,9 +121,11 @@ public class ClaimPersonInviteUseCaseTests
 
         await _useCase.Execute(command);
 
-        Assert.Equal(_defaultPerson, personInvite.Person);
-        Assert.Contains(personInvite.Organisation.OrganisationPersons, op => op.Person == _defaultPerson && op.Organisation == personInvite.Organisation);
-        Assert.Equal(personInvite.Scopes, personInvite.Organisation.OrganisationPersons.First().Scopes);
+        personInvite.Person.Should().Be(_defaultPerson);
+        personInvite.Person?.Tenants.Should().Contain(tenant);
+        personInvite.Organisation.OrganisationPersons.Should().Contain(op =>
+            op.Person == _defaultPerson && op.Organisation == personInvite.Organisation);
+        personInvite.Scopes.Should().Equal(personInvite.Organisation.OrganisationPersons.First().Scopes);
 
         _mockPersonRepository.Verify(repo => repo.Save(_defaultPerson), Times.Once);
         _mockPersonInviteRepository.Verify(repo => repo.Save(personInvite), Times.Once);
