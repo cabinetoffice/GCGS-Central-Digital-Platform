@@ -71,6 +71,23 @@ public static class EntityFactory
         return person;
     }
 
+    public static PersonInvite GivenPersonInvite(Guid guid, string email = "invite@example.com", Organisation? organisation = null, Tenant? tenant = null)
+    {
+        return new PersonInvite
+        {
+            Guid = guid,
+            FirstName = "John",
+            LastName = "Doe",
+            Email = email,
+            Organisation = organisation ?? GivenOrganisation(),
+            Person = null,
+            Scopes = new List<string> { "scope1", "scope2" },
+            InviteSentOn = DateTimeOffset.UtcNow,
+            CreatedOn = DateTimeOffset.UtcNow,
+            UpdatedOn = DateTimeOffset.UtcNow
+        };
+    }
+
     public static Organisation GivenOrganisation(
         Guid? guid = null,
         Tenant? tenant = null,
