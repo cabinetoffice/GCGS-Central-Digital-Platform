@@ -53,14 +53,15 @@ public class UserCheckAnswersModel(
 
             await organisationClient.CreatePersonInviteAsync(Id, personInviteCommand);
 
-            session.Remove(PersonInviteState.TempDataKey);
-
             return RedirectToPage("UserSummary", new { Id });
         }
         catch
         {
-            session.Remove(PersonInviteState.TempDataKey);
             throw;
+        }
+        finally
+        {
+            session.Remove(PersonInviteState.TempDataKey);
         }
     }
 
