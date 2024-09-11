@@ -3,7 +3,7 @@ using ProblemDetails = CO.CDP.Person.WebApiClient.ProblemDetails;
 using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.Person.WebApiClient;
 
-namespace CO.CDP.OrganisationApp.Pages;
+namespace CO.CDP.OrganisationApp.Pages.Users;
 
 public class ClaimOrganisationInviteModel(
     IPersonClient personClient,
@@ -15,12 +15,10 @@ public class ClaimOrganisationInviteModel(
 
         await ClaimPersonInvite(person.Id, personInviteId);
 
-        SessionContext.Remove("PersonInviteId");
-
-        return RedirectToPage("OrganisationSelection");
+        return RedirectToPage("../OrganisationSelection");
     }
 
-    public async Task ClaimPersonInvite(Guid personId, Guid personInviteId)
+    private async Task ClaimPersonInvite(Guid personId, Guid personInviteId)
     {
         var command = new ClaimPersonInvite(personInviteId);
         try
@@ -29,18 +27,12 @@ public class ClaimOrganisationInviteModel(
         }
         catch (ApiException<ProblemDetails> e)
         {
-            var code = ExtractErrorCode(e);
-            if (code != ErrorCodes.PERSON_INVITE_ALREADY_CLAIMED)
+            var errorCode = e.Result.AdditionalProperties.TryGetValue("code", out var code) && code is string codeString ? codeString : default;
+
+            if (errorCode != ErrorCodes.PERSON_INVITE_ALREADY_CLAIMED)
             {
                 throw;
             }
         }
-    }
-
-    private static string? ExtractErrorCode(ApiException<ProblemDetails> aex)
-    {
-        return aex.Result.AdditionalProperties.TryGetValue("code", out var code) && code is string codeString
-            ? codeString
-            : null;
     }
 }

@@ -35,6 +35,7 @@
         {"name": "VERSION", "value": "${service_version}"}
     ],
     "secrets": [
+        {"name": "GOVUKNotify__ApiKey", "valueFrom": "${govuknotify_apikey}"},
         {"name": "OrganisationInformationDatabase__Password", "valueFrom": "${oi_db_username}"},
         {"name": "OrganisationInformationDatabase__Username", "valueFrom": "${oi_db_password}"}
     ],

@@ -8,6 +8,7 @@ This code base is responsible for provisioning the AWS infrastructure needed to 
 3. [Manage Secrets](#manage-secrets)
    - [Update OneLogin Secrets](#update-onelogin-secrets)
    - [Update FtsService URL](#update-ftsservice-url)
+   - [Update GOVUKNotify ApiKey](#update-govuknotify-apikey)
    - [Update Slack Configuration](#update-slack-configuration)
 4. [Pin Service Version](#pin-service-version)
 
@@ -99,6 +100,9 @@ Note: The `./secrets` folder is set to ignore all files to ensure no sensitive i
 
 ```shell
 # ave is alias for `aws-vault exec` command
+# add using:
+# ave aws secretsmanager create-secret --name cdp-sirsi-one-login-credentials --secret-string file://secrets/onelogin-secrets-development.json | jq .
+# or update using:
 ave aws secretsmanager put-secret-value --secret-id cdp-sirsi-one-login-credentials --secret-string file://secrets/onelogin-secrets-development.json | jq .
 ```
 3. Redeploy the organisation-app service.
@@ -110,7 +114,23 @@ ave aws secretsmanager put-secret-value --secret-id cdp-sirsi-one-login-credenti
 
 ```shell
 # ave is alias for `aws-vault exec` command
-ave aws secretsmanager create-secret --name cdp-sirsi-fts-service-url --force-overwrite-replica-secret --secret-string "<FTS service URL>" | jq .
+# add using:
+# ave aws secretsmanager create-secret --name cdp-sirsi-fts-service-url --secret-string "<FTS service URL>" | jq .
+# or update using:
+ave aws secretsmanager put-secret-value --secret-id cdp-sirsi-fts-service-url --secret-string "<FTS service URL>" | jq .
+```
+
+### Update GOVUKNotify ApiKey
+
+1. Identify the `GOV UK Notify API Key` for the specified AWS account.
+2. Set your AWS profile to target the specified AWS account, and use the AWS CLI to update the secret.
+
+```shell
+# ave is alias for `aws-vault exec` command
+# add using:
+# ave aws secretsmanager create-secret --name cdp-sirsi-govuknotify-apikey --secret-string "<GOV UK Notify API Key>" | jq .
+# or update using:
+ave aws secretsmanager put-secret-value --secret-id cdp-sirsi-govuknotify-apikey --secret-string "<GOV UK Notify API Key>" | jq .
 ```
 
 ### Update Slack Configuration

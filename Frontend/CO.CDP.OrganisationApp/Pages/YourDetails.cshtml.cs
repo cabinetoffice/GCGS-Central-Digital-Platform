@@ -37,7 +37,7 @@ public class YourDetailsModel(
         return Page();
     }
 
-    public async Task<IActionResult> OnPost()
+    public async Task<IActionResult> OnPost(string? redirectUri = null)
     {
         if (!ModelState.IsValid)
         {
@@ -60,10 +60,9 @@ public class YourDetailsModel(
             return Page();
         }
 
-        var personInviteId = SessionContext.Get<Guid?>("PersonInviteId");
-        if (personInviteId != null)
+        if (Helper.ValidRelativeUri(redirectUri))
         {
-            return RedirectToPage("ClaimOrganisationInvite", new { personInviteId });
+            return Redirect(redirectUri!);
         }
 
         return RedirectToPage("OrganisationSelection");

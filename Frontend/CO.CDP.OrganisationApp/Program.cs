@@ -155,7 +155,11 @@ builder.Services.AddAuthorization();
 builder.Services.AddHealthChecks();
 builder.Services
     .AddAwsConfiguration(builder.Configuration)
-    .AddAwsS3Service();
+    .AddAwsS3Service()
+    .AddLoggingConfiguration(builder.Configuration)
+    .AddAmazonCloudWatchLogsService()
+    .AddCloudWatchSerilog();
+
 
 var app = builder.Build();
 app.UseForwardedHeaders();

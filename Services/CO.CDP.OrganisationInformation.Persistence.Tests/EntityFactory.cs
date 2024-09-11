@@ -1,3 +1,4 @@
+using static CO.CDP.OrganisationInformation.Persistence.ConnectedEntity;
 using static CO.CDP.OrganisationInformation.Persistence.Organisation;
 
 namespace CO.CDP.OrganisationInformation.Persistence.Tests;
@@ -241,4 +242,62 @@ public static class EntityFactory
             LawRegistered = "England and Wales",
             RegistrationDate = DateTimeOffset.Parse("2005-12-02T00:00:00Z")
         };
+
+    public static ConnectedEntity GivenConnectedOrganisation(
+               Organisation supplierOrganisation,
+               string name = "Test Connected Organisation",
+               ConnectedOrganisationCategory category = ConnectedOrganisationCategory.RegisteredCompany,
+               Guid? organisationId = null
+           )
+    {
+        var connectedOrganisation = new ConnectedEntity.ConnectedOrganisation
+        {
+            Id = 1,
+            Category = category,
+            Name = name,
+            OrganisationId = organisationId,
+            CreatedOn = DateTimeOffset.UtcNow,
+            UpdatedOn = DateTimeOffset.UtcNow
+        };
+
+        return new ConnectedEntity
+        {
+            Guid = Guid.NewGuid(),
+            EntityType = ConnectedEntityType.Organisation,
+            Organisation = connectedOrganisation,
+            SupplierOrganisation = supplierOrganisation,
+            CreatedOn = DateTimeOffset.UtcNow,
+            UpdatedOn = DateTimeOffset.UtcNow
+        };
+    }
+
+    public static ConnectedEntity GivenConnectedIndividualTrust(
+               Organisation supplierOrganisation,
+               string firstName = "John",
+               string lastName = "Doe",
+               ConnectedPersonCategory category = ConnectedPersonCategory.PersonWithSignificantControl
+           )
+    {
+        var individualTrust = new ConnectedEntity.ConnectedIndividualTrust
+        {
+            Id = 1,
+            FirstName = firstName,
+            LastName = lastName,
+            Category = category,
+            CreatedOn = DateTimeOffset.UtcNow,
+            UpdatedOn = DateTimeOffset.UtcNow
+        };
+
+        return new ConnectedEntity
+        {
+            Guid = Guid.NewGuid(),
+            EntityType = ConnectedEntityType.Individual,
+            IndividualOrTrust = individualTrust,
+            SupplierOrganisation = supplierOrganisation,
+            CreatedOn = DateTimeOffset.UtcNow,
+            UpdatedOn = DateTimeOffset.UtcNow
+        };
+    }
+
+
 }
