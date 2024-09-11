@@ -5,7 +5,7 @@ resource "random_password" "cdp_sirsi_diagnostic_path" {
 }
 
 resource "aws_secretsmanager_secret" "cdp_sirsi_diagnostic_path" {
-  name        = "cdp-sirsi-diagnostic-path"
+  name        = "${local.name_prefix}-diagnostic-path"
   description = "Stores the frontend diagnostic path"
 
   lifecycle {
