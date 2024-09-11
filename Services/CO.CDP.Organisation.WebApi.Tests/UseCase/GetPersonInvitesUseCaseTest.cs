@@ -1,8 +1,8 @@
 using AutoMapper;
 using CO.CDP.Organisation.WebApi.Model;
-using CO.CDP.Organisation.WebApi.UseCase;
 using CO.CDP.OrganisationInformation.Persistence;
-using FluentAssertions;
+using CO.CDP.Organisation.WebApi.UseCase;
+
 using Moq;
 using PersistenceOrganisation = CO.CDP.OrganisationInformation.Persistence.Organisation;
 
@@ -36,7 +36,7 @@ public class GetPersonInvitesUseCaseTest
 
         var result = await _useCase.Execute(organisationId);
 
-        result.Should().BeEmpty();
+        Assert.Empty(result);
     }
 
     [Fact]
@@ -101,10 +101,9 @@ public class GetPersonInvitesUseCaseTest
 
         var result = await _useCase.Execute(organisationId);
 
-        result.Should().NotBeEmpty();
-        result.As<IEnumerable<PersonInviteModel>>().Count().Should().Be(2);
-        result.As<IEnumerable<PersonInviteModel>>().Equals(personInviteModels);
-
+        Assert.NotEmpty(result);
+        Assert.Equal(2, result.Count());
+        Assert.Equal(personInviteModels, result);
         _personInviteRepositoryMock.Verify(repo => repo.FindByOrganisation(organisationId), Times.Once);
         _mapperMock.Verify(mapper => mapper.Map<IEnumerable<PersonInviteModel>>(personInvites), Times.Once);
     }

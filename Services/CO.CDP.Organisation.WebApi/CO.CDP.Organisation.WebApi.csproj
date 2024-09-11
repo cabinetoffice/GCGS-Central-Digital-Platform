@@ -20,7 +20,6 @@
         <PackageReference Include="AutoMapper" Version="13.0.1" />
         <PackageReference Include="AspNetCore.HealthChecks.NpgSql" Version="8.0.1" />
         <ProjectReference Include="..\..\Libraries\CO.CDP.Authentication\CO.CDP.Authentication.csproj" />
-        <ProjectReference Include="..\..\Libraries\CO.CDP.GovUKNotify\CO.CDP.GovUKNotify.csproj" />
         <ProjectReference Include="..\CO.CDP.OrganisationInformation.Persistence\CO.CDP.OrganisationInformation.Persistence.csproj" />
         <ProjectReference Include="..\..\Libraries\CO.CDP.Functional\CO.CDP.Functional.csproj" />
         <ProjectReference Include="..\CO.CDP.OrganisationInformation\CO.CDP.OrganisationInformation.csproj" />
