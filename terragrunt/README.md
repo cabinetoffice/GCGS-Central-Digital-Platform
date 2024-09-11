@@ -6,9 +6,10 @@ This code base is responsible for provisioning the AWS infrastructure needed to 
 1. [Bootstrap New Account](#bootstrap-a-new-account)
 2. [Create New User](#create-new-users)
 3. [Manage Secrets](#manage-secrets)
-   - [Update OneLogin Secrets](#update-onelogin-secrets)
+   - [Retrieve Diagnostic URI](#Retrieve-iagnostic-uri)
    - [Update FtsService URL](#update-ftsservice-url)
    - [Update GOVUKNotify ApiKey](#update-govuknotify-apikey)
+   - [Update OneLogin Secrets](#update-onelogin-secrets)
    - [Update Slack Configuration](#update-slack-configuration)
 4. [Pin Service Version](#pin-service-version)
 
@@ -83,6 +84,46 @@ The credentials will also be stored in AWS Secrets Manager under the same accoun
 
 ## Manage Secrets
 
+### Retrieve Diagnostic URI
+
+1. Set your AWS profile to target the specified AWS account, and use the AWS CLI to retrieve the full URL of the diagnostic page for the given account.
+
+```shell
+# ave is alias for `aws-vault exec` command
+echo "https://$(ave aws route53 list-hosted-zones --query 'HostedZones[0].Name' --output text | sed 's/\.$//')$(ave aws secretsmanager get-secret-value --secret-id cdp-sirsi-diagnostic-path --query 'SecretString' --output text)"
+```
+
+### Update FtsService URL
+
+1. Identify the `FTS service URL` for the specified AWS account.
+2. Set your AWS profile to target the specified AWS account, and use the AWS CLI to update the secret.
+
+```shell
+# ave is alias for `aws-vault exec` command
+# add using:
+# ave aws secretsmanager create-secret --name cdp-sirsi-fts-service-url --secret-string "<FTS service URL>" | jq .
+# or update using:
+ave aws secretsmanager put-secret-value --secret-id cdp-sirsi-fts-service-url --secret-string "<FTS service URL>" | jq .
+```
+
+3. Redeploy the `organisation-app` service.
+
+### Update GOVUKNotify ApiKey
+
+1. Identify the `GOV UK Notify API Key` for the specified AWS account.
+2. Set your AWS profile to target the specified AWS account, and use the AWS CLI to update the secret.
+
+```shell
+# ave is alias for `aws-vault exec` command
+# add using:
+# ave aws secretsmanager create-secret --name cdp-sirsi-govuknotify-apikey --secret-string "<GOV UK Notify API Key>" | jq .
+# or update using:
+ave aws secretsmanager put-secret-value --secret-id cdp-sirsi-govuknotify-apikey --secret-string "<GOV UK Notify API Key>" | jq .
+```
+
+3. Redeploy the `organisation` service.
+
+
 ### Update OneLogin secrets
 
 1. Create a JSON file in the `./secrets` folder with the following attributes, e.g., **onelogin-secrets-development.json**:
@@ -105,42 +146,7 @@ Note: The `./secrets` folder is set to ignore all files to ensure no sensitive i
 # or update using:
 ave aws secretsmanager put-secret-value --secret-id cdp-sirsi-one-login-credentials --secret-string file://secrets/onelogin-secrets-development.json | jq .
 ```
-3. Redeploy the organisation-app service.
-
-### Update FtsService URL
-
-1. Identify the `FTS service URL` for the specified AWS account.
-2. Set your AWS profile to target the specified AWS account, and use the AWS CLI to update the secret.
-
-```shell
-# ave is alias for `aws-vault exec` command
-# add using:
-# ave aws secretsmanager create-secret --name cdp-sirsi-fts-service-url --secret-string "<FTS service URL>" | jq .
-# or update using:
-ave aws secretsmanager put-secret-value --secret-id cdp-sirsi-fts-service-url --secret-string "<FTS service URL>" | jq .
-```
-
-### Retrieve Diagnostic URI
-
-1. Set your AWS profile to target the specified AWS account, and use the AWS CLI to retrieve the full URL of the diagnostic page for the given account.
-
-```shell
-# ave is alias for `aws-vault exec` command
-echo "https://$(ave aws route53 list-hosted-zones --query 'HostedZones[0].Name' --output text | sed 's/\.$//')$(ave aws secretsmanager get-secret-value --secret-id cdp-sirsi-diagnostic-path --query 'SecretString' --output text)"
-```
-
-### Update GOVUKNotify ApiKey
-
-1. Identify the `GOV UK Notify API Key` for the specified AWS account.
-2. Set your AWS profile to target the specified AWS account, and use the AWS CLI to update the secret.
-
-```shell
-# ave is alias for `aws-vault exec` command
-# add using:
-# ave aws secretsmanager create-secret --name cdp-sirsi-govuknotify-apikey --secret-string "<GOV UK Notify API Key>" | jq .
-# or update using:
-ave aws secretsmanager put-secret-value --secret-id cdp-sirsi-govuknotify-apikey --secret-string "<GOV UK Notify API Key>" | jq .
-```
+3. Redeploy the `organisation-app` service.
 
 ### Update Slack Configuration
 
