@@ -37,7 +37,7 @@ public class OrganizationScopeHandler : AuthorizationHandler<OrganizationScopeRe
                     }
                 }
             }
-            catch (Exception ex)
+            catch
             {
                 context.Fail();
             }
