@@ -114,9 +114,6 @@ public class PdfGenerator : IPdfGenerator
             {
                 col.Item().LineHorizontal(1);
 
-                if (!string.IsNullOrEmpty(person.PersonId.ToString()))
-                    col.Item().Element(container => AddTwoColumnRow(container, "Person ID:", person.PersonId.ToString()));
-
                 if (!string.IsNullOrEmpty(person.FirstName))
                     col.Item().Element(container => AddTwoColumnRow(container, "First Name:", person.FirstName));
 
