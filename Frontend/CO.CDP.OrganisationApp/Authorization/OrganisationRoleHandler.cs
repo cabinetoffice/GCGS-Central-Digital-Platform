@@ -1,5 +1,3 @@
-//using CO.CDP.Organisation.WebApiClient;
-using CO.CDP.OrganisationApp.Models;
 using CO.CDP.Tenant.WebApiClient;
 using Microsoft.AspNetCore.Authorization;
 
@@ -27,20 +25,16 @@ public class OrganizationRoleHandler : AuthorizationHandler<OrganizationRoleRequ
             try
             {
 
-                var path = _httpContextAccessor.HttpContext.Request.Path.Value;
+                Guid? organisationId = GetOrganisationId();
 
-                if (path != null)
+                if (organisationId != null)
                 {
-                    var pathSegments = path.Split('/', StringSplitOptions.RemoveEmptyEntries);
-                    if (pathSegments.Length >= 2 && pathSegments[0] == "organisation" && Guid.TryParse(pathSegments[1], out Guid organisationId))
-                    {
-                        UserOrganisation? personOrganisation = await GetPersonOrganisation(organisationId);
+                    UserOrganisation? personOrganisation = await GetPersonOrganisation((Guid)organisationId);
 
-                        if (personOrganisation != null && personOrganisation.Scopes.Contains(requirement.Role))
-                        {
-                            context.Succeed(requirement);
-                            return;
-                        }
+                    if (personOrganisation != null && personOrganisation.Scopes.Contains(requirement.Role))
+                    {
+                        context.Succeed(requirement);
+                        return;
                     }
                 }
             }
@@ -57,9 +51,11 @@ public class OrganizationRoleHandler : AuthorizationHandler<OrganizationRoleRequ
 
     private async Task<UserOrganisation?> GetPersonOrganisation(Guid organisationId)
     {
+        // Role checks may be made multiple times when building a page
+        // Therefore we cache the person's organisation details for the duration of the http request
         var cacheKey = "CO.CDP.OrganisationApp.Authorization.OrganizationRoleHandler.GetPersonOrganisation";
 
-        if (_httpContextAccessor.HttpContext.Items[cacheKey] is UserOrganisation cachedData)
+        if (_httpContextAccessor?.HttpContext?.Items != null && _httpContextAccessor.HttpContext.Items[cacheKey] is UserOrganisation cachedData)
         {
             return cachedData;
         }
@@ -70,8 +66,32 @@ public class OrganizationRoleHandler : AuthorizationHandler<OrganizationRoleRequ
             .SelectMany(tenant => tenant.Organisations)
             .FirstOrDefault(org => org.Id == organisationId);
 
-        _httpContextAccessor.HttpContext.Items[cacheKey] = personOrganisation;
+        if(_httpContextAccessor?.HttpContext?.Items != null)
+        {
+            _httpContextAccessor.HttpContext.Items[cacheKey] = personOrganisation;
+        }
 
         return personOrganisation;
+    }
+
+    private Guid? GetOrganisationId()
+    {
+        if (_httpContextAccessor?.HttpContext?.Request?.Path.Value == null)
+        {
+            return null;
+        }
+
+        var path = _httpContextAccessor.HttpContext.Request.Path.Value;
+
+        if (path != null)
+        {
+            var pathSegments = path.Split('/', StringSplitOptions.RemoveEmptyEntries);
+            if (pathSegments.Length >= 2 && pathSegments[0] == "organisation" && Guid.TryParse(pathSegments[1], out Guid organisationId))
+            {
+                return organisationId;
+            }
+        }
+
+        return null;
     }
 }
