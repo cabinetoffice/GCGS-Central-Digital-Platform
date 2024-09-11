@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace GovukNotify.Models;
+namespace CO.CDP.GovUKNotify.Models;
 
 public class EmailNotificationRequest
 {

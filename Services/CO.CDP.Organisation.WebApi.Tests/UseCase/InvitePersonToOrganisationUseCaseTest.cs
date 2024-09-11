@@ -1,9 +1,9 @@
 using CO.CDP.GovUKNotify;
+using CO.CDP.GovUKNotify.Models;
 using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.Organisation.WebApi.UseCase;
 using CO.CDP.OrganisationInformation.Persistence;
 using FluentAssertions;
-using GovukNotify.Models;
 using Microsoft.Extensions.Configuration;
 using Moq;
 using Persistence = CO.CDP.OrganisationInformation.Persistence;
