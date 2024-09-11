@@ -14,6 +14,7 @@ public class DatabasePersonInviteRepository(OrganisationInformationContext conte
         return await context.PersonInvites
             .Include(pi => pi.Organisation)
             .Include(pi => pi.Person)
+            .Include(pi => pi.Organisation.Tenant)
             .FirstOrDefaultAsync(t => t.Guid == personInviteId);
     }
 
