@@ -37,6 +37,7 @@
         {"name": "TenantService", "value": "https://tenant.${public_hosted_zone_fqdn}"}
     ],
     "secrets": [
+        {"name": "Features__DiagnosticPage__Path", "valueFrom": "${diagnostic_page_path_arn}"},
         {"name": "FtsService", "valueFrom": "${fts_service_url_arn}"},
         {"name": "OneLogin__Authority", "valueFrom": "${onelogin_authority}"},
         {"name": "OneLogin__ClientId", "valueFrom": "${onelogin_client_id}"},
