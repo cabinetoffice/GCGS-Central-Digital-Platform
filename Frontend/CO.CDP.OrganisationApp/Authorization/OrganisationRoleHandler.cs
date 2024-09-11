@@ -24,7 +24,6 @@ public class OrganizationRoleHandler : AuthorizationHandler<OrganizationRoleRequ
         {
             try
             {
-
                 Guid? organisationId = GetOrganisationId();
 
                 if (organisationId != null)

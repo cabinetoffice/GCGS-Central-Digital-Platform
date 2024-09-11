@@ -18,6 +18,7 @@ public class AuthorizeTagHelper: TagHelper
     public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
     {
         output.TagName = null;
+        output.Content.SetContent(string.Empty);
 
         var user = _httpContextAccessor?.HttpContext?.User;
         if (user != null)
@@ -25,7 +26,7 @@ public class AuthorizeTagHelper: TagHelper
             var roleCheck = await _authorizationService.AuthorizeAsync(user, string.Format("OrgRolePolicy_{0}", Scope.ToUpper()));
             if (roleCheck.Succeeded)
             {
-                output.Content.SetContent(output.GetChildContentAsync().Result.GetContent());
+                output.Content.SetHtmlContent(output.GetChildContentAsync().Result.GetContent());
             }
         }
     }

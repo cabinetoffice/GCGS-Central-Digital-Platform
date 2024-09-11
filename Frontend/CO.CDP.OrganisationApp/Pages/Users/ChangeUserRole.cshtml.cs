@@ -2,8 +2,6 @@ using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Constants;
-using Microsoft.AspNetCore.Authorization;
-using System.Data;
 
 namespace CO.CDP.OrganisationApp.Pages.Users;
 
@@ -11,8 +9,7 @@ namespace CO.CDP.OrganisationApp.Pages.Users;
 //[Authorize(Policy = "OrgRolePolicy_EDITOR")]
 public class ChangeUserRoleModel(
     IOrganisationClient organisationClient,
-    ISession session,
-    IAuthorizationService authorizationService) : LoggedInUserAwareModel(session)
+    ISession session) : LoggedInUserAwareModel(session)
 {
     [BindProperty(SupportsGet = true)]
     public string? Handler { get; set; }
