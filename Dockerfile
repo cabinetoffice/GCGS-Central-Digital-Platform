@@ -20,6 +20,8 @@ FROM mcr.microsoft.com/dotnet/sdk:${ASPNET_VERSION} AS solution-dependencies
 ARG NUGET_PACKAGES
 ENV NUGET_PACKAGES="${NUGET_PACKAGES}"
 WORKDIR /src
+COPY --link Libraries/CO.CDP.GovUKNotify/CO.CDP.GovUKNotify.csproj Libraries/CO.CDP.GovUKNotify/
+COPY --link Libraries/CO.CDP.GovUKNotify.Test/CO.CDP.GovUKNotify.Test.csproj Libraries/CO.CDP.GovUKNotify.Test/
 COPY --link Libraries/CO.CDP.AwsServices/CO.CDP.AwsServices.csproj Libraries/CO.CDP.AwsServices/
 COPY --link Libraries/CO.CDP.AwsServices.Tests/CO.CDP.AwsServices.Tests.csproj Libraries/CO.CDP.AwsServices.Tests/
 COPY --link Libraries/CO.CDP.Authentication/CO.CDP.Authentication.csproj Libraries/CO.CDP.Authentication/
