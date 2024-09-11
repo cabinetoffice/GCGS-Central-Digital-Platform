@@ -1,16 +1,17 @@
 using CO.CDP.Organisation.WebApiClient;
+using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 
 namespace CO.CDP.OrganisationApp.Pages.Users;
 
+[Authorize(Policy = OrgScopeRequirement.Admin)]
 public class UserSummaryModel(
     IOrganisationClient organisationClient,
     ISession session) : LoggedInUserAwareModel(session)
 {
-    private const string ScopeAdmin = "ADMIN";
-
     [BindProperty(SupportsGet = true)]
     public Guid Id { get; set; }
 
@@ -71,7 +72,7 @@ public class UserSummaryModel(
 
         foreach (var person in Persons)
         {
-            if (person.Id == SignedInPersonId && person.Scopes.Contains(ScopeAdmin))
+            if (person.Id == SignedInPersonId && person.Scopes.Contains(OrganisationPersonScopes.Admin))
             {
                 userIsAdminForOrg = true;
             }

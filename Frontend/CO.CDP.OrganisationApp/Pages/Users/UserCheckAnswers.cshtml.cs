@@ -1,11 +1,13 @@
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Constants;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.IdentityModel.Tokens;
 
 namespace CO.CDP.OrganisationApp.Pages.Users;
 
+[Authorize(Policy = OrgScopeRequirement.Admin)]
 public class UserCheckAnswersModel(
     IOrganisationClient organisationClient,
     ITempDataService tempDataService,

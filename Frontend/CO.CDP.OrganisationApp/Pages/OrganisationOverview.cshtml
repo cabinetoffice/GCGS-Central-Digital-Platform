@@ -96,7 +96,7 @@
                     <a class="govuk-link govuk-!-font-size-19 govuk-!-font-weight-bold govuk-!-margin-top-3" href="/organisation/@RouteData.Values["id"]/supplier-information">Supplier information</a>
                 }
 
-                <authorize scope="OrgScope_@PersonScopes.Admin">
+                <authorize scope="@OrgScopeRequirement.Admin">
                     <a class="govuk-link govuk-!-font-size-19 govuk-!-font-weight-bold govuk-!-margin-top-3" href="/organisation/@RouteData.Values["id"]/users/user-summary">Users</a>
                 </authorize>
 
