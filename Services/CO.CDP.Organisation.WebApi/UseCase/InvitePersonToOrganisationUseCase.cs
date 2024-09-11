@@ -1,7 +1,7 @@
+using CO.CDP.GovUKNotify;
+using CO.CDP.GovUKNotify.Models;
 using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.OrganisationInformation.Persistence;
-using CO.CDP.GovUKNotify;
-using GovukNotify.Models;
 namespace CO.CDP.Organisation.WebApi.UseCase;
 
 public class InvitePersonToOrganisationUseCase(
