@@ -26,18 +26,11 @@ public class UpdateFormSectionAnswersUseCase(
         var sharedConsent = await formRepository.GetSharedConsentWithAnswersAsync(formId, organisationId)
             ?? CreateSharedConsent(organisation, section.Form);
 
-        if (sharedConsent.SubmissionState == Persistence.SubmissionState.Submitted)
-        {
-            var (newSharedConsent, mappedAnswerSetId, updatedAnswers) =
-                MapSharedConsent(sharedConsent, answerSetId, answers);
+        var (updatedSharedConsent, mappedAnswerSetId, updatedAnswers) =
+            MapSharedConsent(sharedConsent, answerSetId, answers);
 
-            await UpdateOrAddAnswers(mappedAnswerSetId, updatedAnswers, section, newSharedConsent);
-            await formRepository.SaveSharedConsentAsync(newSharedConsent);
-
-            return true;
-        }
-        await UpdateOrAddAnswers(answerSetId, answers, section, sharedConsent);
-        await formRepository.SaveSharedConsentAsync(sharedConsent);
+        await UpdateOrAddAnswers(mappedAnswerSetId, updatedAnswers, section, updatedSharedConsent);
+        await formRepository.SaveSharedConsentAsync(updatedSharedConsent);
 
         return true;
     }
@@ -45,6 +38,11 @@ public class UpdateFormSectionAnswersUseCase(
     private static (Persistence.SharedConsent, Guid, List<FormAnswer>) MapSharedConsent(
         Persistence.SharedConsent sharedConsent, Guid answerSetId, List<FormAnswer> answers)
     {
+        if (sharedConsent.SubmissionState != Persistence.SubmissionState.Submitted)
+        {
+            return (sharedConsent, answerSetId, answers);
+        }
+
         var oldToNewGuids = new Dictionary<Guid, Guid>();
 
         var newSharedConsent = new Persistence.SharedConsent
