@@ -298,10 +298,10 @@ public class UpdateFormSectionAnswersUseCaseTest(AutoMapperFixture mapperFixture
             organisationId: organisation.Guid,
             answers: new List<FormAnswer>
             {
-                new() { Id = Guid.NewGuid(), QuestionId = answers[0].Question.Guid, BoolValue = true },
-                new() { Id = Guid.NewGuid(), QuestionId = answers[1].Question.Guid, TextValue = "My new answer" },
-                new() { Id = Guid.NewGuid(), QuestionId = answers[2].Question.Guid, DateValue = new DateTime(2025, 1, 12) },
-                new() { Id = Guid.NewGuid(), QuestionId = answers[3].Question.Guid, TextValue = "my-new-photo.jpg" },
+                new() { Id = answers[0].Guid, QuestionId = answers[0].Question.Guid, BoolValue = true },
+                new() { Id = answers[1].Guid, QuestionId = answers[1].Question.Guid, TextValue = "My new answer" },
+                new() { Id = answers[2].Guid, QuestionId = answers[2].Question.Guid, DateValue = new DateTime(2025, 1, 12) },
+                new() { Id = answers[3].Guid, QuestionId = answers[3].Question.Guid, TextValue = "my-new-photo.jpg" },
             });
 
         _repository.Setup(useCase => useCase.GetSharedConsentWithAnswersAsync(section.Form.Guid, organisation.Guid))
