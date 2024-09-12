@@ -1,5 +1,6 @@
 @page "/organisation/{id}/users/user-summary"
 @model CO.CDP.OrganisationApp.Pages.Users.UserSummaryModel
+@using CO.CDP.OrganisationApp.Constants
 
 @{
     var hasError = ((TagBuilder)Html.ValidationMessageFor(m => m.HasPerson)).HasInnerHtml;
@@ -28,17 +29,17 @@
                             @p.FirstName @p.LastName
                             @foreach(var scope in p.Scopes)
                             {
-                                if (scope == "ADMIN")
+                                if (scope == PersonScopes.Admin)
                                 {
                                     <span class="govuk-tag">Admin</span>
                                 }
 
-                                if (scope == "EDITOR")
+                                if (scope == PersonScopes.Editor)
                                 {
                                     <span class="govuk-tag govuk-tag--green">Editor</span>
                                 }
 
-                                if (scope == "VIEWER")
+                                if (scope == PersonScopes.Viewer)
                                 {
                                     <span class="govuk-tag govuk-tag--yellow">Viewer</span>
                                 }
@@ -52,7 +53,7 @@
                                 @if (p.Id != @Model.SignedInPersonId)
                                 {
                                     <li class="govuk-summary-list__actions-list-item">
-                                        <a class="govuk-link" href="/organisation/@Model.Id/users/@p.Id/update/?handler=person">Change</a>
+                                        <a class="govuk-link" href="/organisation/@Model.Id/users/@p.Id/change-role?handler=person">Change</a>
                                     </li>
                                     <li class="govuk-summary-list__actions-list-item">
                                         <a class="govuk-link" href="/organisation/@Model.Id/users/@p.Id/remove">Remove</a>
@@ -72,17 +73,17 @@
                             @p.FirstName @p.LastName
                             @foreach(var scope in p.Scopes)
                             {
-                                if (scope == "ADMIN")
+                                if (scope == PersonScopes.Admin)
                                 {
                                     <span class="govuk-tag">Admin</span>
                                 }
 
-                                if (scope == "EDITOR")
+                                if (scope == PersonScopes.Editor)
                                 {
                                     <span class="govuk-tag govuk-tag--green">Editor</span>
                                 }
 
-                                if (scope == "VIEWER")
+                                if (scope == PersonScopes.Viewer)
                                 {
                                     <span class="govuk-tag govuk-tag--yellow">Viewer</span>
                                 }
@@ -95,7 +96,7 @@
                         <dd class="govuk-summary-list__actions">
                             <ul class="govuk-summary-list__actions-list">
                                 <li class="govuk-summary-list__actions-list-item">
-                                    <a class="govuk-link" href="/organisation/@Model.Id/users/@p.Id/update/?handler=personInvite">Change</a>
+                                    <a class="govuk-link" href="/organisation/@Model.Id/users/@p.Id/change-role?handler=personInvite">Change</a>
                                 </li>
                                 <li class="govuk-summary-list__actions-list-item">
                                     <a class="govuk-link" href="/organisation/@Model.Id/users/@p.Id/remove?handler=personInvite">Remove</a>
@@ -108,7 +109,7 @@
 
             <div class="govuk-form-group @(hasError ? "govuk-form-group--error" : "")">
                 <form class="form" method="post">
-                    <fieldset class="govuk-fieldset" data-required="" data-error="Select yes if you need to add another user" aria-required="true">
+                    <fieldset class="govuk-fieldset">
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
                             <h2 class="govuk-fieldset__heading">
                                 Add another user?

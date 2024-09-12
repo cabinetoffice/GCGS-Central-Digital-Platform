@@ -11,12 +11,17 @@ public class DatabasePersonInviteRepository(OrganisationInformationContext conte
 
     public async Task<PersonInvite?> Find(Guid personInviteId)
     {
-        return await context.PersonInvites.FirstOrDefaultAsync(t => t.Guid == personInviteId);
+        return await context.PersonInvites
+            .Include(pi => pi.Organisation)
+            .Include(pi => pi.Person)
+            .Include(pi => pi.Organisation.Tenant)
+            .FirstOrDefaultAsync(t => t.Guid == personInviteId);
     }
 
     public async Task<IEnumerable<PersonInvite>> FindByOrganisation(Guid organisationId)
     {
         return await context.PersonInvites
+            .Include(pi => pi.Person)
             .Where(pi => pi.Organisation.Guid == organisationId)
             .ToArrayAsync();
     }

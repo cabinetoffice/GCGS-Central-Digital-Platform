@@ -37,7 +37,7 @@ public class YourDetailsModel(
         return Page();
     }
 
-    public async Task<IActionResult> OnPost()
+    public async Task<IActionResult> OnPost(string? redirectUri = null)
     {
         if (!ModelState.IsValid)
         {
@@ -58,6 +58,11 @@ public class YourDetailsModel(
         else
         {
             return Page();
+        }
+
+        if (Helper.ValidRelativeUri(redirectUri))
+        {
+            return Redirect(redirectUri!);
         }
 
         return RedirectToPage("OrganisationSelection");

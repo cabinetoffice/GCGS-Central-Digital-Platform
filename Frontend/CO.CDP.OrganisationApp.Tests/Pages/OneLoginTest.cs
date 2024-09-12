@@ -38,6 +38,17 @@ public class OneLoginTest
     }
 
     [Fact]
+    public async Task OnGetSignIn_WhenRedirectUrlProvides_ShouldReturnAuthChallangeWithRedirectUrlQueryString()
+    {
+        var model = GivenOneLoginCallbackModel();
+
+        var results = await model.OnGet("sign-in", "/org/1");
+
+        results.Should().BeOfType<ChallengeResult>()
+            .Which.Properties!.RedirectUri.Should().Be("/one-login/user-info?redirectUri=%2Forg%2F1");
+    }
+
+    [Fact]
     public async Task OnGetUserInfo_OnSuccessfulAuthentication_ShouldRetrieveUserProfile()
     {
         var model = GivenOneLoginCallbackModel();
@@ -93,6 +104,34 @@ public class OneLoginTest
     }
 
     [Fact]
+    public async Task OnGetUserInfo_WhenPersonAlreadyRegisteredAndRelativeRedirectUrlProvided_ShouldRedirectToRedirectUrl()
+    {
+        var model = GivenOneLoginCallbackModel();
+
+        personClientMock.Setup(t => t.LookupPersonAsync(It.IsAny<string>()))
+            .ReturnsAsync(dummyPerson);
+
+        var results = await model.OnGet("user-info", "/org/1");
+
+        results.Should().BeOfType<RedirectResult>()
+            .Which.Url.Should().Be("/org/1");
+    }
+
+    [Fact]
+    public async Task OnGetUserInfo_WhenPersonAlreadyRegisteredAndAbsoluteRedirectUrlProvided_ShouldRedirectToOrganisationDetailsPageWithoutRedirectUrlQueryString()
+    {
+        var model = GivenOneLoginCallbackModel();
+
+        personClientMock.Setup(t => t.LookupPersonAsync(It.IsAny<string>()))
+            .ReturnsAsync(dummyPerson);
+
+        var results = await model.OnGet("user-info", "http://test-domain/org/1");
+
+        results.Should().BeOfType<RedirectToPageResult>()
+            .Which.PageName.Should().Be("OrganisationSelection");
+    }
+
+    [Fact]
     public async Task OnGetUserInfo_WhenPersonNotRegistered_ShouldRedirectToPrivacyPolicyPage()
     {
         var model = GivenOneLoginCallbackModel();
@@ -104,6 +143,36 @@ public class OneLoginTest
 
         results.Should().BeOfType<RedirectToPageResult>()
             .Which.PageName.Should().Be("PrivacyPolicy");
+    }
+
+    [Fact]
+    public async Task OnGetUserInfo_WhenPersonNotRegisteredAndRelativeRedirectUrlProvided_ShouldRedirectToPrivacyPolicyPageWithRedirectUrlQueryString()
+    {
+        var model = GivenOneLoginCallbackModel();
+
+        personClientMock.Setup(t => t.LookupPersonAsync(It.IsAny<string>()))
+            .ThrowsAsync(new ApiException("Unexpected error", 404, "", default, null));
+
+        var results = await model.OnGet("user-info", "/org/1");
+
+        var redirectToPageResult = results.Should().BeOfType<RedirectToPageResult>();
+        redirectToPageResult.Which.PageName.Should().Be("PrivacyPolicy");
+        redirectToPageResult.Which.RouteValues.Should().BeEquivalentTo(new Dictionary<string, string> { { "RedirectUri", "/org/1" } });
+    }
+
+    [Fact]
+    public async Task OnGetUserInfo_WhenPersonNotRegisteredAndAbsoluteRedirectUrlProvided_ShouldRedirectToPrivacyPolicyPageWithoutRedirectUrlQueryString()
+    {
+        var model = GivenOneLoginCallbackModel();
+
+        personClientMock.Setup(t => t.LookupPersonAsync(It.IsAny<string>()))
+            .ThrowsAsync(new ApiException("Unexpected error", 404, "", default, null));
+
+        var results = await model.OnGet("user-info", "http://test-domain/org/1");
+
+        var redirectToPageResult = results.Should().BeOfType<RedirectToPageResult>();
+        redirectToPageResult.Which.PageName.Should().Be("PrivacyPolicy");
+        redirectToPageResult.Which.RouteValues.Should().BeEquivalentTo(new Dictionary<string, string?> { { "RedirectUri", default } });
     }
 
     [Fact]

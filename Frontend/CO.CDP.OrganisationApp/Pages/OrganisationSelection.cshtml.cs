@@ -1,20 +1,23 @@
-using CO.CDP.Organisation.WebApiClient;
-using CO.CDP.OrganisationApp.Models;
+using CO.CDP.Tenant.WebApiClient;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CO.CDP.OrganisationApp.Pages;
 
 public class OrganisationSelectionModel(
-    IOrganisationClient organisationClient,
+    ITenantClient tenantClient,
     ISession session) : LoggedInUserAwareModel(session)
 {
-    public IEnumerable<Organisation.WebApiClient.Organisation> Organisations { get; set; } = [];
+    public IList<UserOrganisation> UserOrganisations { get; set; } = [];
 
     public string? Error { get; set; }
 
     public async Task<IActionResult> OnGet()
     {
-        Organisations = await organisationClient.ListOrganisationsAsync(UserDetails.UserUrn);
+        var usersTenant = await tenantClient.LookupTenantAsync();
+
+        usersTenant.Tenants.ToList()
+            .ForEach(t => t.Organisations.ToList()
+                .ForEach(o => UserOrganisations.Add(o)));
 
         return Page();
     }

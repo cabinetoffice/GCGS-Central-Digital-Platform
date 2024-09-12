@@ -1,10 +1,11 @@
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Models;
+using CO.CDP.OrganisationApp.Pages.Users;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moq;
 
-namespace CO.CDP.OrganisationApp.Pages.Users;
+namespace CO.CDP.OrganisationApp.Tests.Pages.Users;
 
 public class UserRemoveConfirmationModelTests
 {
