@@ -1,7 +1,10 @@
 using CO.CDP.DataSharing.WebApi.Model;
 using CO.CDP.OrganisationInformation;
 using CO.CDP.OrganisationInformation.Persistence;
+using static CO.CDP.OrganisationInformation.Persistence.ConnectedEntity;
 using Address = CO.CDP.OrganisationInformation.Address;
+using ConnectedIndividualTrust = CO.CDP.DataSharing.WebApi.Model.ConnectedIndividualTrust;
+using ConnectedOrganisation = CO.CDP.DataSharing.WebApi.Model.ConnectedOrganisation;
 using SharedConsent = CO.CDP.OrganisationInformation.Persistence.Forms.SharedConsent;
 
 namespace CO.CDP.DataSharing.WebApi.DataService;
@@ -129,8 +132,8 @@ public static class DataMappingFactory
                     entity.IndividualOrTrust.LastName,
                     entity.IndividualOrTrust.DateOfBirth,
                     entity.IndividualOrTrust.Nationality,
-                    entity.IndividualOrTrust?.Category != null ? (ConnectedPersonCategory)entity.IndividualOrTrust.Category : ConnectedPersonCategory.PersonWithSignificantControl,
-                    entity.IndividualOrTrust?.ConnectedType != null ? (ConnectedPersonType)entity.IndividualOrTrust.ConnectedType : ConnectedPersonType.Individual,
+                    entity.IndividualOrTrust?.Category != null ? entity.IndividualOrTrust.Category : ConnectedPersonCategory.PersonWithSignificantControl,
+                    entity.IndividualOrTrust?.ConnectedType != null ? entity.IndividualOrTrust.ConnectedType : ConnectedPersonType.Individual,
                     entity.IndividualOrTrust?.ControlCondition.Select(c => c.ToString()).ToList() ?? new List<string>(),
                     entity.IndividualOrTrust?.ResidentCountry
                 ) : null;
@@ -161,8 +164,8 @@ public static class DataMappingFactory
                     entity.IndividualOrTrust?.LastName ?? string.Empty,
                     entity.IndividualOrTrust?.Nationality,
                     entity.IndividualOrTrust?.DateOfBirth,
-                    entity.IndividualOrTrust?.ConnectedType != null ? (ConnectedPersonType)entity.IndividualOrTrust.ConnectedType : ConnectedPersonType.Individual,
-                    entity.IndividualOrTrust?.Category != null ? (ConnectedPersonCategory)entity.IndividualOrTrust.Category : ConnectedPersonCategory.PersonWithSignificantControl,
+                    entity.IndividualOrTrust?.ConnectedType != null ? entity.IndividualOrTrust.ConnectedType : ConnectedPersonType.Individual,
+                    entity.IndividualOrTrust?.Category != null ? entity.IndividualOrTrust.Category : ConnectedPersonCategory.PersonWithSignificantControl,
                     entity.IndividualOrTrust?.ResidentCountry,
                     addresses,
                     entity.IndividualOrTrust?.ControlCondition.Select(c => c.ToString()).ToList() ?? new List<string>(),

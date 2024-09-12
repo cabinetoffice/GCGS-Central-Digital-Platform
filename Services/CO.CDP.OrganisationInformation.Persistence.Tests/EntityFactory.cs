@@ -1,3 +1,4 @@
+using static CO.CDP.OrganisationInformation.Persistence.ConnectedEntity;
 using static CO.CDP.OrganisationInformation.Persistence.Organisation;
 
 namespace CO.CDP.OrganisationInformation.Persistence.Tests;

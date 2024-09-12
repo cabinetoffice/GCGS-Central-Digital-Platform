@@ -1,6 +1,7 @@
 using CO.CDP.DataSharing.WebApi.Model;
 using CO.CDP.OrganisationInformation;
 using CO.CDP.OrganisationInformation.Persistence;
+using static CO.CDP.OrganisationInformation.Persistence.ConnectedEntity;
 using static CO.CDP.OrganisationInformation.Persistence.Organisation;
 using Address = CO.CDP.OrganisationInformation.Persistence.Address;
 using ContactPoint = CO.CDP.OrganisationInformation.Persistence.Organisation.ContactPoint;

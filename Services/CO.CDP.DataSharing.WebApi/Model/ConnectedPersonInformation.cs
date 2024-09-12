@@ -1,4 +1,6 @@
 using CO.CDP.OrganisationInformation;
+using static CO.CDP.OrganisationInformation.Persistence.ConnectedEntity;
+
 namespace CO.CDP.DataSharing.WebApi.Model;
 
 public record ConnectedPersonInformation
