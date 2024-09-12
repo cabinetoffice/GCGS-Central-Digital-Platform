@@ -320,6 +320,48 @@ public class UpdateFormSectionAnswersUseCaseTest(AutoMapperFixture mapperFixture
         )));
     }
 
+    [Fact]
+    public async Task Execute_ShouldCopySharedConsentWithNewAnswers()
+    {
+        var organisation = GivenOrganisationExists(organisationId: Guid.NewGuid());
+        var section = GivenFormSectionExists(sectionId: Guid.NewGuid());
+        var sharedConsent = GivenSharedConsentExists(organisation, section.Form, state: Submitted);
+        var questions = new List<Persistence.FormQuestion>
+        {
+            GivenFormQuestion(section: section, type: YesOrNo),
+            GivenFormQuestion(section: section, type: Text),
+            GivenFormQuestion(section: section, type: Date),
+            GivenFormQuestion(section: section, type: FileUpload)
+        };
+        var command = (
+            formId: section.Form.Guid,
+            sectionId: section.Guid,
+            answerSetId: Guid.NewGuid(),
+            organisationId: organisation.Guid,
+            answers: new List<FormAnswer>
+            {
+                new() { Id = Guid.NewGuid(), QuestionId = questions[0].Guid, BoolValue = true },
+                new() { Id = Guid.NewGuid(), QuestionId = questions[1].Guid, TextValue = "My new answer" },
+                new() { Id = Guid.NewGuid(), QuestionId = questions[2].Guid, DateValue = new DateTime(2025, 1, 12) },
+                new() { Id = Guid.NewGuid(), QuestionId = questions[3].Guid, TextValue = "my-new-photo.jpg" },
+            });
+
+        _repository.Setup(useCase => useCase.GetSharedConsentWithAnswersAsync(section.Form.Guid, organisation.Guid))
+            .ReturnsAsync(sharedConsent);
+
+        await UseCase.Execute(command);
+
+        _repository.Verify(r => r.SaveSharedConsentAsync(It.Is<Persistence.SharedConsent>(sc =>
+            sc.Guid != sharedConsent.Guid &&
+            sc.SubmissionState == Draft &&
+            sc.AnswerSets.Count == 1 &&
+            sc.AnswerSets.First().Answers.ElementAt(0).BoolValue == true &&
+            sc.AnswerSets.First().Answers.ElementAt(1).TextValue == "My new answer" &&
+            sc.AnswerSets.First().Answers.ElementAt(2).DateValue == new DateTime(2025, 1, 12) &&
+            sc.AnswerSets.First().Answers.ElementAt(3).TextValue == "my-new-photo.jpg"
+        )));
+    }
+
     private Organisation GivenOrganisationExists(Guid organisationId)
     {
         var organisation = GivenOrganisation(organisationId: organisationId);
