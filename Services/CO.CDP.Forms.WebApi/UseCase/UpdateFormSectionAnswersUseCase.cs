@@ -34,16 +34,16 @@ public class UpdateFormSectionAnswersUseCase(
             {
                 for (int i = 0; i < answers.Count; i++)
                 {
-                    if (oldToNewIds.ContainsKey(answers[i].Id))
+                    if (oldToNewIds.TryGetValue(answers[i].Id, out var newId))
                     {
-                        answers[i].Id = oldToNewIds[answers[i].Id];
+                        answers[i].Id = newId;
                     }
                 }
             }
 
-            if (oldToNewIds.ContainsKey(answerSetId))
+            if (oldToNewIds.TryGetValue(answerSetId, out var mappedAnswerSetId))
             {
-                await UpdateOrAddAnswers(oldToNewIds[answerSetId], answers, section, newSharedConsent);
+                await UpdateOrAddAnswers(mappedAnswerSetId, answers, section, newSharedConsent);
             }
             else
             {
