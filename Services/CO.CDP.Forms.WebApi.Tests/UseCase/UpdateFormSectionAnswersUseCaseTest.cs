@@ -362,6 +362,62 @@ public class UpdateFormSectionAnswersUseCaseTest(AutoMapperFixture mapperFixture
         )));
     }
 
+    [Fact]
+    public async Task Execute_ShouldCopySharedConsentWithExistingAnswersWhileUpdatingChangedAnswers()
+    {
+        var organisation = GivenOrganisationExists(organisationId: Guid.NewGuid());
+        var section = GivenFormSectionExists(sectionId: Guid.NewGuid());
+        var sharedConsent = GivenSharedConsentExists(organisation, section.Form, state: Submitted);
+        var answers = new List<Persistence.FormAnswer>
+        {
+            GivenAnswer(question: GivenFormQuestion(section: section, type: YesOrNo), boolValue: false),
+            GivenAnswer(question: GivenFormQuestion(section: section, type: Text), textValue: "My answer"),
+            GivenAnswer(question: GivenFormQuestion(section: section, type: Date),
+                dateValue: new DateTime(2024, 12, 31)),
+            GivenAnswer(question: GivenFormQuestion(section: section, type: FileUpload), textValue: "my-photo.jpg"),
+            GivenAnswer(question: GivenFormQuestion(section: section, type: CheckBox), boolValue: true),
+            GivenAnswer(question: GivenFormQuestion(section: section, type: SingleChoice), optionValue: "Option-1"),
+            GivenAnswer(question: GivenFormQuestion(section: section, type: Persistence.FormQuestionType.Address),
+                addressValue: new Persistence.FormAddress
+                {
+                    StreetAddress = "10 Yellow Lane",
+                    Locality = "London",
+                    PostalCode = "SW19 8AR",
+                    CountryName = "United Kingodm",
+                    Country = "UK"
+                })
+        };
+        var answerSet = GivenAnswerSet(sharedConsent: sharedConsent, section: section, answers: answers);
+        var command = (
+            formId: section.Form.Guid,
+            sectionId: section.Guid,
+            answerSetId: answerSet.Guid,
+            organisationId: organisation.Guid,
+            answers: new List<FormAnswer>
+            {
+                new() { Id = answers[1].Guid, QuestionId = answers[1].Question.Guid, TextValue = "My new answer" },
+            });
+
+        _repository.Setup(useCase => useCase.GetSharedConsentWithAnswersAsync(section.Form.Guid, organisation.Guid))
+            .ReturnsAsync(sharedConsent);
+
+        await UseCase.Execute(command);
+
+        _repository.Verify(r => r.SaveSharedConsentAsync(It.Is<Persistence.SharedConsent>(sc =>
+            sc.Guid != sharedConsent.Guid &&
+            sc.SubmissionState == Draft &&
+            sc.AnswerSets.Count == 1 &&
+            sc.AnswerSets.First().Answers.Count == 7 &&
+            sc.AnswerSets.First().Answers.ElementAt(0).BoolValue == false &&
+            sc.AnswerSets.First().Answers.ElementAt(1).TextValue == "My new answer" &&
+            sc.AnswerSets.First().Answers.ElementAt(2).DateValue == new DateTime(2024, 12, 31) &&
+            sc.AnswerSets.First().Answers.ElementAt(3).TextValue == "my-photo.jpg" &&
+            sc.AnswerSets.First().Answers.ElementAt(4).BoolValue == true &&
+            sc.AnswerSets.First().Answers.ElementAt(5).OptionValue == "Option-1" &&
+            sc.AnswerSets.First().Answers.ElementAt(6).AddressValue != null
+        )));
+    }
+
     private Organisation GivenOrganisationExists(Guid organisationId)
     {
         var organisation = GivenOrganisation(organisationId: organisationId);
