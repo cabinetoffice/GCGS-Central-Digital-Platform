@@ -1,4 +1,4 @@
-using GovukNotify.Models;
+using CO.CDP.GovUKNotify.Models;
 
 namespace CO.CDP.GovUKNotify;
 

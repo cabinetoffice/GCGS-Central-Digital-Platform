@@ -27,6 +27,8 @@ public class ClaimPersonInviteUseCase(
             Scopes = personInvite.Scopes
         });
 
+        person.Tenants.Add(organisation.Tenant);
+
         personInvite.Person = person;
 
         personRepository.Save(person);
