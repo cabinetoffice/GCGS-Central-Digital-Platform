@@ -52,7 +52,6 @@ public class UpdateFormSectionAnswersUseCase(
                 await UpdateOrAddAnswers(answerSetId, answers, section, newSharedConsent);
             }
 
-            formRepository.CheckEntitiesStates(newSharedConsent);
             await formRepository.SaveSharedConsentAsync(newSharedConsent);
 
             return true;
