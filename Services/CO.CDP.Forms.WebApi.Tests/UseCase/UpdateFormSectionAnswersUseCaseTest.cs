@@ -5,6 +5,8 @@ using CO.CDP.Forms.WebApi.UseCase;
 using CO.CDP.OrganisationInformation.Persistence;
 using FluentAssertions;
 using Moq;
+using static CO.CDP.OrganisationInformation.Persistence.Forms.FormQuestionType;
+using static CO.CDP.OrganisationInformation.Persistence.Forms.SubmissionState;
 using Persistence = CO.CDP.OrganisationInformation.Persistence.Forms;
 
 namespace CO.CDP.Forms.WebApi.Tests.UseCase;
@@ -174,7 +176,7 @@ public class UpdateFormSectionAnswersUseCaseTest(AutoMapperFixture mapperFixture
         var question = GivenFormQuestion(questionId: Guid.NewGuid(), section: section);
 
         var sharedConsent = GivenSharedConsentExists(organisation, form);
-        sharedConsent.SubmissionState = Persistence.SubmissionState.Submitted;
+        sharedConsent.SubmissionState = Submitted;
         var answerSet = GivenAnswerSet(sharedConsent: sharedConsent, section: section);
         var answerSetId = answerSet.Guid;
         var answerGuid = Guid.NewGuid();
@@ -212,7 +214,7 @@ public class UpdateFormSectionAnswersUseCaseTest(AutoMapperFixture mapperFixture
         var sharedConsent =
             EntityFactory.GetSharedConsentWithDeclarationOnlyAnswerSets(organisation.Id, organisation.Guid,
                 section.Form.Guid);
-        sharedConsent.SubmissionState = Persistence.SubmissionState.Submitted;
+        sharedConsent.SubmissionState = Submitted;
         var answerSet = GivenAnswerSet(sharedConsent: sharedConsent, section: section);
         var answerSetId = answerSet.Guid;
         var answers = new List<FormAnswer>
@@ -258,7 +260,7 @@ public class UpdateFormSectionAnswersUseCaseTest(AutoMapperFixture mapperFixture
         var sharedConsent =
             EntityFactory.GetSharedConsentWithMixedTypeDeclarationAnswerSets(organisation.Id, organisation.Guid,
                 section.Form.Guid);
-        sharedConsent.SubmissionState = Persistence.SubmissionState.Submitted;
+        sharedConsent.SubmissionState = Submitted;
 
         var sharedConsentGuid = sharedConsent.Guid;
         _repository.Setup(useCase => useCase.GetSharedConsentWithAnswersAsync(section.Form.Guid, organisation.Guid))
@@ -272,6 +274,51 @@ public class UpdateFormSectionAnswersUseCaseTest(AutoMapperFixture mapperFixture
             sc.ShareCode == default &&
             sc.AnswerSets.Count == 2 &&
             sc.AnswerSets.All(x => x.Section.Type != Persistence.FormSectionType.Declaration))));
+    }
+
+    [Fact]
+    public async Task Execute_ShouldCopySharedConsentWithExistingAnswers()
+    {
+        var organisation = GivenOrganisationExists(organisationId: Guid.NewGuid());
+        var section = GivenFormSectionExists(sectionId: Guid.NewGuid());
+        var sharedConsent = GivenSharedConsentExists(organisation, section.Form, state: Submitted);
+        var answers = new List<Persistence.FormAnswer>
+        {
+            GivenAnswer(question: GivenFormQuestion(section: section, type: YesOrNo), boolValue: false),
+            GivenAnswer(question: GivenFormQuestion(section: section, type: Text), textValue: "My answer"),
+            GivenAnswer(question: GivenFormQuestion(section: section, type: Date),
+                dateValue: new DateTime(2024, 12, 31)),
+            GivenAnswer(question: GivenFormQuestion(section: section, type: FileUpload), textValue: "my-photo.jpg"),
+        };
+        var answerSet = GivenAnswerSet(sharedConsent: sharedConsent, section: section, answers: answers);
+        var answerGuid = Guid.NewGuid();
+        var command = (
+            formId: section.Form.Guid,
+            sectionId: section.Guid,
+            answerSetId: answerSet.Guid,
+            organisationId: organisation.Guid,
+            answers: new List<FormAnswer>
+            {
+                new() { Id = answerGuid, QuestionId = answers[0].Question.Guid, BoolValue = true },
+                new() { Id = answerGuid, QuestionId = answers[1].Question.Guid, TextValue = "My new answer" },
+                new() { Id = answerGuid, QuestionId = answers[2].Question.Guid, DateValue = new DateTime(2025, 1, 12) },
+                new() { Id = answerGuid, QuestionId = answers[3].Question.Guid, TextValue = "my-new-photo.jpg" },
+            });
+
+        _repository.Setup(useCase => useCase.GetSharedConsentWithAnswersAsync(section.Form.Guid, organisation.Guid))
+            .ReturnsAsync(sharedConsent);
+
+        await UseCase.Execute(command);
+
+        _repository.Verify(r => r.SaveSharedConsentAsync(It.Is<Persistence.SharedConsent>(sc =>
+            sc.Guid != sharedConsent.Guid &&
+            sc.SubmissionState == Draft &&
+            sc.AnswerSets.Count == 1 &&
+            sc.AnswerSets.First().Answers.ElementAt(0).BoolValue == true &&
+            sc.AnswerSets.First().Answers.ElementAt(1).TextValue == "My new answer" &&
+            sc.AnswerSets.First().Answers.ElementAt(2).DateValue == new DateTime(2025, 1, 12) &&
+            sc.AnswerSets.First().Answers.ElementAt(3).TextValue == "my-new-photo.jpg"
+        )));
     }
 
     private Organisation GivenOrganisationExists(Guid organisationId)
@@ -302,15 +349,19 @@ public class UpdateFormSectionAnswersUseCaseTest(AutoMapperFixture mapperFixture
         _repository.Setup(r => r.GetSectionAsync(formId, sectionId)).ReturnsAsync((Persistence.FormSection?)null);
     }
 
-    private static Persistence.FormQuestion GivenFormQuestion(Guid questionId, Persistence.FormSection section)
+    private static Persistence.FormQuestion GivenFormQuestion(
+        Persistence.FormSection section,
+        Guid? questionId = null,
+        Persistence.FormQuestionType? type = null
+    )
     {
         var question = new Persistence.FormQuestion
         {
-            Guid = questionId,
+            Guid = questionId ?? Guid.NewGuid(),
             Title = "Were your accounts audited?",
             Caption = "",
             Description = "",
-            Type = Persistence.FormQuestionType.YesOrNo,
+            Type = type ?? YesOrNo,
             IsRequired = true,
             NextQuestion = null,
             NextQuestionAlternative = null,
@@ -402,10 +453,10 @@ public class UpdateFormSectionAnswersUseCaseTest(AutoMapperFixture mapperFixture
 
     private Persistence.SharedConsent GivenSharedConsentExists(
         Organisation organisation,
-        Persistence.Form form
-    )
+        Persistence.Form form,
+        Persistence.SubmissionState? state = null)
     {
-        var sharedConsent = GivenSharedConsent(organisation, form);
+        var sharedConsent = GivenSharedConsent(organisation, form, state);
 
         _repository.Setup(r => r.GetSharedConsentWithAnswersAsync(form.Guid, organisation.Guid))
             .ReturnsAsync(sharedConsent);
@@ -415,8 +466,8 @@ public class UpdateFormSectionAnswersUseCaseTest(AutoMapperFixture mapperFixture
 
     private Persistence.SharedConsent GivenSharedConsent(
         Organisation organisation,
-        Persistence.Form form
-    )
+        Persistence.Form form,
+        Persistence.SubmissionState? state = null)
     {
         return new Persistence.SharedConsent()
         {
@@ -426,10 +477,43 @@ public class UpdateFormSectionAnswersUseCaseTest(AutoMapperFixture mapperFixture
             FormId = form.Id,
             Form = form,
             AnswerSets = [],
-            SubmissionState = Persistence.SubmissionState.Draft,
+            SubmissionState = state ?? Draft,
             SubmittedAt = null,
             FormVersionId = "202405",
             ShareCode = null
+        };
+    }
+
+    private static Persistence.FormAnswer GivenAnswer(
+        Persistence.FormQuestion question,
+        bool? boolValue = null,
+        double? numericValue = null,
+        DateTime? dateValue = null,
+        DateTime? startValue = null,
+        DateTime? endValue = null,
+        string? textValue = null,
+        string? optionValue = null,
+        Persistence.FormAddress? addressValue = null
+    )
+    {
+        return new Persistence.FormAnswer
+        {
+            Id = 0,
+            Guid = Guid.NewGuid(),
+            QuestionId = question.Id,
+            Question = question,
+            FormAnswerSetId = default,
+            FormAnswerSet = null,
+            BoolValue = boolValue,
+            NumericValue = numericValue,
+            DateValue = dateValue,
+            StartValue = startValue,
+            EndValue = endValue,
+            TextValue = textValue,
+            OptionValue = optionValue,
+            AddressValue = addressValue,
+            CreatedOn = DateTimeOffset.UtcNow,
+            UpdatedOn = DateTimeOffset.UtcNow,
         };
     }
 }
