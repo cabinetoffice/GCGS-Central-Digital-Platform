@@ -23,12 +23,10 @@ public class UpdateFormSectionAnswersUseCase(
         var section = await formRepository.GetSectionAsync(formId, sectionId)
             ?? throw new UnknownSectionException($"Unknown section {sectionId} in form {formId}.");
 
-        var sharedConsent = await formRepository.GetSharedConsentWithAnswersAsync(formId, organisationId);
-        if (sharedConsent == null)
-        {
-            sharedConsent = CreateSharedConsent(organisation, section.Form);
-        }
-        else if (sharedConsent.SubmissionState == Persistence.SubmissionState.Submitted)
+        var sharedConsent = await formRepository.GetSharedConsentWithAnswersAsync(formId, organisationId)
+            ?? CreateSharedConsent(organisation, section.Form);
+
+        if (sharedConsent.SubmissionState == Persistence.SubmissionState.Submitted)
         {
             var (newSharedConsent, oldToNewIds) = MapSharedConsent(sharedConsent);
 
