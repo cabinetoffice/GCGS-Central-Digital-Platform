@@ -34,13 +34,13 @@ public static class CloudWatchExtensions
         {
             var awsConfiguration = serviceProvider.GetRequiredService<IOptions<AwsConfiguration>>().Value;
             // options for the sink defaults in https://github.com/Cimpress-MCP/serilog-sinks-awscloudwatch/blob/master/src/Serilog.Sinks.AwsCloudWatch/CloudWatchSinkOptions.cs
-            return awsConfiguration.CloudWatch is not null ? new CloudWatchSinkOptions
+            return awsConfiguration.Serilog is not null ? new CloudWatchSinkOptions
             {
-                LogGroupName = awsConfiguration.CloudWatch.LogGroup,
+                LogGroupName = awsConfiguration.Serilog.LogGroup,
                 TextFormatter = new RenderedCompactJsonFormatter(),
-                LogStreamNameProvider = new ConfigurableLogStreamNameProvider(awsConfiguration.CloudWatch.LogStream),
+                LogStreamNameProvider = new ConfigurableLogStreamNameProvider(awsConfiguration.Serilog.LogStream),
                 MinimumLogEventLevel = LogEventLevel.Verbose
-            } : throw new ConfigurationException("Missing CloudWatch configuration.");
+            } : throw new ConfigurationException("Missing Serilog configuration for CloudWatch.");
         }, ServiceLifetime.Singleton));
         return services;
     }

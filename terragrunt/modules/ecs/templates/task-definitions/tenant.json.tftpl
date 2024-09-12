@@ -22,8 +22,8 @@
     "environment": [
         {"name": "ASPNETCORE_ENVIRONMENT", "value": "${aspcore_environment}"},
         {"name": "ASPNETCORE_HTTP_PORTS", "value": "${host_port}"},
-        {"name": "Aws__LogGroup", "value": "${lg_name}"},
-        {"name": "Aws__LogStream", "value": "${lg_prefix}-serilog"},
+        {"name": "Aws__Serilog__LogGroup", "value": "${lg_name}"},
+        {"name": "Aws__Serilog__LogStream", "value": "${lg_prefix}-serilog"},
         {"name": "CdpApiKeys__0", "value": "a955a529-1433-4acf-92b2-342a3e5e8086"},
         {"name": "ForwardedHeaders__KnownNetwork", "value": "${vpc_cidr}"},
         {"name": "OrganisationInformationDatabase__Database", "value": "${oi_db_name}"},

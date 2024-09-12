@@ -8,10 +8,10 @@ public record AwsConfiguration
 
     public SqsDispatcherConfiguration? SqsDispatcher { get; init; }
     public SqsPublisherConfiguration? SqsPublisher { get; init; }
-    public CloudWatch? CloudWatch { get; init; }
+    public Serilog? Serilog { get; init; }
 }
 
-public record CloudWatch
+public record Serilog
 {
     public required string LogGroup { get; init; }
     public required string LogStream { get; init; }
