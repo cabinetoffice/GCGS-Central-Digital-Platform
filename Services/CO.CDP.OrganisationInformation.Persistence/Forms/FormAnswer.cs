@@ -15,7 +15,7 @@ public class SharedConsent : IEntityDate
     [ForeignKey(nameof(Form))]
     public required int FormId { get; set; }
     public required Form Form { get; init; }
-    public required ICollection<FormAnswerSet> AnswerSets { get; set; } = [];
+    public ICollection<FormAnswerSet> AnswerSets { get; init; } = [];
     public required SubmissionState SubmissionState { get; set; } = SubmissionState.Draft;
     public DateTimeOffset? SubmittedAt { get; set; }
     public required string FormVersionId { get; init; }
@@ -72,7 +72,7 @@ public class FormAnswerSet : IEntityDate
     [ForeignKey(nameof(Section))]
     public required int SectionId { get; set; }
     public required FormSection Section { get; init; }
-    public required ICollection<FormAnswer> Answers { get; set; } = [];
+    public ICollection<FormAnswer> Answers { get; set; } = [];
     public bool Deleted { get; set; } = false;
     public DateTimeOffset CreatedOn { get; set; }
     public DateTimeOffset UpdatedOn { get; set; }
