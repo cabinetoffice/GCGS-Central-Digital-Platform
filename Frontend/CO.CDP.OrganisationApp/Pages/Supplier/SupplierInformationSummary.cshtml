@@ -68,42 +68,20 @@
                 </div>
 
             </dl>
-            <dl class="govuk-summary-list">
-                <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">
-                        <a class="govuk-link govuk-link--no-visited-state" href="#">Mandatory exclusions</a>
-                    </dt>
-                    <dd class="govuk-summary-list__value">
-
-                    </dd>
-                    <dd class="govuk-summary-list__actions">
-                        <strong class="govuk-tag">Not started</strong>
-                    </dd>
-                </div>
-
-            </dl>
-            <dl class="govuk-summary-list">
-                <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">
-                        <a class="govuk-link govuk-link--no-visited-state" href="#">Discretionary exclusions</a>
-                    </dt>
-                    <dd class="govuk-summary-list__value">
-
-                    </dd>
-                    <dd class="govuk-summary-list__actions">
-                        <strong class="govuk-tag">Not started</strong>
-                    </dd>
-                </div>
-            </dl>
 
             @foreach (var section in Model.FormSections)
             {
                 var declarationSection = section.Type == CDP.Forms.WebApiClient.FormSectionType.Declaration;
+                var exclusionsSection = section.Type == CDP.Forms.WebApiClient.FormSectionType.Exclusions;
                 var redirectLink = $"/organisation/{Model.Id}/forms/{FormsEngine.OrganisationSupplierInfoFormId}/sections/{section.SectionId}";
 
                 if (declarationSection)
                 {
                     redirectLink += "/share-codes-list-view";
+                }
+                else if (exclusionsSection)
+                {
+                    redirectLink += "/add-exclusion-declaration";
                 }
                 else if (section.AnswerSetCount > 0 && section.AllowsMultipleAnswerSets == true)
                 {
