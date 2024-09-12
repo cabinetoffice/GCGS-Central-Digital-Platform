@@ -291,7 +291,6 @@ public class UpdateFormSectionAnswersUseCaseTest(AutoMapperFixture mapperFixture
             GivenAnswer(question: GivenFormQuestion(section: section, type: FileUpload), textValue: "my-photo.jpg"),
         };
         var answerSet = GivenAnswerSet(sharedConsent: sharedConsent, section: section, answers: answers);
-        var answerGuid = Guid.NewGuid();
         var command = (
             formId: section.Form.Guid,
             sectionId: section.Guid,
@@ -299,10 +298,10 @@ public class UpdateFormSectionAnswersUseCaseTest(AutoMapperFixture mapperFixture
             organisationId: organisation.Guid,
             answers: new List<FormAnswer>
             {
-                new() { Id = answerGuid, QuestionId = answers[0].Question.Guid, BoolValue = true },
-                new() { Id = answerGuid, QuestionId = answers[1].Question.Guid, TextValue = "My new answer" },
-                new() { Id = answerGuid, QuestionId = answers[2].Question.Guid, DateValue = new DateTime(2025, 1, 12) },
-                new() { Id = answerGuid, QuestionId = answers[3].Question.Guid, TextValue = "my-new-photo.jpg" },
+                new() { Id = Guid.NewGuid(), QuestionId = answers[0].Question.Guid, BoolValue = true },
+                new() { Id = Guid.NewGuid(), QuestionId = answers[1].Question.Guid, TextValue = "My new answer" },
+                new() { Id = Guid.NewGuid(), QuestionId = answers[2].Question.Guid, DateValue = new DateTime(2025, 1, 12) },
+                new() { Id = Guid.NewGuid(), QuestionId = answers[3].Question.Guid, TextValue = "my-new-photo.jpg" },
             });
 
         _repository.Setup(useCase => useCase.GetSharedConsentWithAnswersAsync(section.Form.Guid, organisation.Guid))
