@@ -1,4 +1,5 @@
-using GovukNotify.Models;
+using CO.CDP.GovUKNotify.Models;
+using FluentAssertions;
 using Moq;
 using Moq.Protected;
 using System.Net;
@@ -68,8 +69,8 @@ public class GovUKNotifyApiClientTests
 
         var response = await _govUKNotifyApiClient.SendEmail(emailNotificationRequest);
 
-        Assert.NotNull(response);
-        Assert.Equal(expectedResponse.Id, response.Id);
+        response.Should().NotBeNull();
+        response.As<EmailNotificationResponse>().Id.Should().Be(expectedResponse.Id);
     }
 
     [Fact]
@@ -89,7 +90,8 @@ public class GovUKNotifyApiClientTests
             )
             .ThrowsAsync(new HttpRequestException("Error occurred"));
 
-        await Assert.ThrowsAsync<HttpRequestException>(() => _govUKNotifyApiClient.SendEmail(emailNotificationRequest));
+        Func<Task> act = async () => await _govUKNotifyApiClient.SendEmail(emailNotificationRequest);
+        await act.Should().ThrowAsync<HttpRequestException>();
     }
 
     [Fact]
@@ -110,7 +112,7 @@ public class GovUKNotifyApiClientTests
                 ItExpr.IsAny<CancellationToken>()
             )
             .ReturnsAsync(httpResponseMessage);
-        
-        await Assert.ThrowsAsync<HttpRequestException>(() => _govUKNotifyApiClient.SendEmail(emailNotificationRequest));
+        Func<Task> act = async () => await _govUKNotifyApiClient.SendEmail(emailNotificationRequest);
+        await act.Should().ThrowAsync<HttpRequestException>();
     }
 }

@@ -12,6 +12,8 @@ locals {
 
     environment = get_env("TG_ENVIRONMENT", "development")
 
+    is_production = contains(["production", "integration"], local.environment)
+
     environments = {
         orchestrator = {
             cidr_block             = "10.${local.cidr_b_orchestrator}.0.0/16"
@@ -364,6 +366,7 @@ generate provider {
 
 inputs = {
     environment             = local.environment
+    is_production           = local.is_production
     product                 = local.product
     tags                    = local.tags
     postgres_engine_version = local.versions.postgres_engine
