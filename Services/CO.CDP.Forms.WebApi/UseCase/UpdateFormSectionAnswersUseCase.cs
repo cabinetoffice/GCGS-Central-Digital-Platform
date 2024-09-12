@@ -28,28 +28,10 @@ public class UpdateFormSectionAnswersUseCase(
 
         if (sharedConsent.SubmissionState == Persistence.SubmissionState.Submitted)
         {
-            var (newSharedConsent, oldToNewIds) = MapSharedConsent(sharedConsent);
+            var (newSharedConsent, updatedAnswers, mappedAnswerSetId) =
+                MapSharedConsent(sharedConsent, answers, answerSetId);
 
-            if (oldToNewIds.Count > 0)
-            {
-                for (int i = 0; i < answers.Count; i++)
-                {
-                    if (oldToNewIds.TryGetValue(answers[i].Id, out var newId))
-                    {
-                        answers[i].Id = newId;
-                    }
-                }
-            }
-
-            if (oldToNewIds.TryGetValue(answerSetId, out var mappedAnswerSetId))
-            {
-                await UpdateOrAddAnswers(mappedAnswerSetId, answers, section, newSharedConsent);
-            }
-            else
-            {
-                await UpdateOrAddAnswers(answerSetId, answers, section, newSharedConsent);
-            }
-
+            await UpdateOrAddAnswers(mappedAnswerSetId, updatedAnswers, section, newSharedConsent);
             await formRepository.SaveSharedConsentAsync(newSharedConsent);
 
             return true;
@@ -60,7 +42,8 @@ public class UpdateFormSectionAnswersUseCase(
         return true;
     }
 
-    private static (Persistence.SharedConsent, Dictionary<Guid, Guid>) MapSharedConsent(Persistence.SharedConsent sharedConsent)
+    private static (Persistence.SharedConsent, List<FormAnswer>, Guid) MapSharedConsent(
+        Persistence.SharedConsent sharedConsent, List<FormAnswer> answers, Guid answerSetId)
     {
         var oldToNewGuids = new Dictionary<Guid, Guid>();
 
@@ -113,7 +96,18 @@ public class UpdateFormSectionAnswersUseCase(
             newSharedConsent.AnswerSets.Add(newAnswerSet);
         }
 
-        return (newSharedConsent, oldToNewGuids);
+        if (oldToNewGuids.Count > 0)
+        {
+            foreach (var answer in answers)
+            {
+                if (oldToNewGuids.TryGetValue(answer.Id, out var newId))
+                {
+                    answer.Id = newId;
+                }
+            }
+        }
+
+        return (newSharedConsent, answers, oldToNewGuids.GetValueOrDefault(answerSetId, answerSetId));
     }
 
     private async Task UpdateOrAddAnswers(Guid answerSetId, List<FormAnswer> answers, Persistence.FormSection section, Persistence.SharedConsent sharedConsent)
