@@ -1,6 +1,8 @@
 using CO.CDP.DataSharing.WebApiClient;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.Net.Mime;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace CO.CDP.OrganisationApp.Pages.ShareInformation;
 
@@ -31,5 +33,25 @@ public class ShareCodeDetailsModel(IDataSharingClient dataSharingClient) : PageM
             return Redirect("/page-not-found");
         }
         return Page();
+    }
+    public async Task<IActionResult> OnGetDownload(string shareCode)
+    {
+        if (string.IsNullOrEmpty(shareCode))
+        {
+            return Redirect("/page-not-found");
+        }
+
+        var fileResponse = await dataSharingClient.GetSharedDataPdfAsync(shareCode);
+
+        if (fileResponse == null)
+        {
+            return Redirect("/page-not-found");
+        }
+
+        var contentDisposition = fileResponse.Headers["Content-Disposition"].FirstOrDefault();
+        var filename = string.IsNullOrWhiteSpace(contentDisposition) ? $"{shareCode}.pdf" : new ContentDisposition(contentDisposition).FileName;
+        var contentType = fileResponse.Headers["Content-Type"].FirstOrDefault() ?? Application.Pdf;
+
+        return File(fileResponse.Stream, contentType, filename);
     }
 }
