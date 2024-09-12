@@ -15,8 +15,8 @@
     },
     "environment": [
         {"name": "ASPNETCORE_ENVIRONMENT", "value": "${aspcore_environment}"},
-        {"name": "Aws__LogGroup", "value": "${lg_name}"},
-        {"name": "Aws__LogStream", "value": "${lg_prefix}-serilog"},
+        {"name": "Aws__Cloudwatch__LogGroup", "value": "${lg_name}"},
+        {"name": "Aws__Cloudwatch__LogStream", "value": "${lg_prefix}-serilog"},
         {"name": "OrganisationInformationDatabase__Database", "value": "${db_name}"},
         {"name": "OrganisationInformationDatabase__Host", "value": "${db_address}"},
         {"name": "OrganisationInformationDatabase__Server", "value": "${db_address}"},
