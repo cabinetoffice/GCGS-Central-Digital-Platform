@@ -5,6 +5,7 @@ using CO.CDP.Forms.WebApi.UseCase;
 using CO.CDP.OrganisationInformation.Persistence;
 using FluentAssertions;
 using Moq;
+using static CO.CDP.Forms.WebApi.Tests.UseCase.SharedConsentFactory;
 using static CO.CDP.OrganisationInformation.Persistence.Forms.FormQuestionType;
 using static CO.CDP.OrganisationInformation.Persistence.Forms.FormSectionType;
 using static CO.CDP.OrganisationInformation.Persistence.Forms.SubmissionState;
@@ -335,9 +336,6 @@ public class UpdateFormSectionAnswersUseCaseTest(AutoMapperFixture mapperFixture
                 new() { Id = Guid.NewGuid(), QuestionId = questions[3].Guid, TextValue = "my-new-photo.jpg" },
             });
 
-        _repository.Setup(useCase => useCase.GetSharedConsentWithAnswersAsync(section.Form.Guid, organisation.Guid))
-            .ReturnsAsync(sharedConsent);
-
         await UseCase.Execute(command);
 
         _repository.Verify(r => r.SaveSharedConsentAsync(It.Is<Persistence.SharedConsent>(sc =>
@@ -433,109 +431,6 @@ public class UpdateFormSectionAnswersUseCaseTest(AutoMapperFixture mapperFixture
         _repository.Setup(r => r.GetSectionAsync(formId, sectionId)).ReturnsAsync((Persistence.FormSection?)null);
     }
 
-    private static Persistence.FormQuestion GivenFormQuestion(
-        Persistence.FormSection section,
-        Guid? questionId = null,
-        Persistence.FormQuestionType? type = null
-    )
-    {
-        var question = new Persistence.FormQuestion
-        {
-            Guid = questionId ?? Guid.NewGuid(),
-            Title = "Were your accounts audited?",
-            Caption = "",
-            Description = "",
-            Type = type ?? YesOrNo,
-            IsRequired = true,
-            NextQuestion = null,
-            NextQuestionAlternative = null,
-            Options = new Persistence.FormQuestionOptions(),
-            Section = section,
-        };
-        section.Questions.Add(question);
-        return question;
-    }
-
-    private static Organisation GivenOrganisation(Guid organisationId)
-    {
-        return new Organisation
-        {
-            Guid = organisationId,
-            Name = $"Test Organisation {organisationId}",
-            Tenant = new Tenant
-            {
-                Guid = Guid.NewGuid(),
-                Name = $"Test Tenant {organisationId}"
-            }
-        };
-    }
-
-    private static Persistence.FormSection GivenFormSection(
-        Guid sectionId,
-        Persistence.Form form,
-        List<Persistence.FormQuestion>? questions = null,
-        Persistence.FormSectionType type = Standard
-    )
-    {
-        var formSection = new Persistence.FormSection
-        {
-            Id = 1,
-            Guid = sectionId,
-            Title = "Financial Information",
-            FormId = form.Id,
-            Form = form,
-            Questions = questions ?? [],
-            Type = type,
-            AllowsMultipleAnswerSets = true,
-            CreatedOn = DateTimeOffset.UtcNow,
-            UpdatedOn = DateTimeOffset.UtcNow,
-            Configuration = new Persistence.FormSectionConfiguration
-            {
-                PluralSummaryHeadingFormat = "You have added {0} files",
-                SingularSummaryHeading = "You have added 1 file",
-                AddAnotherAnswerLabel = "Add another file?",
-                RemoveConfirmationCaption = "Economic and Financial Standing",
-                RemoveConfirmationHeading = "Are you sure you want to remove this file?"
-            }
-        };
-        questions?.ForEach(q => q.Section = formSection);
-        form.Sections.Add(formSection);
-        return formSection;
-    }
-
-    private static Persistence.Form GivenForm()
-    {
-        return new Persistence.Form
-        {
-            Id = 1,
-            Guid = Guid.NewGuid(),
-            Name = "Sample Form",
-            Version = "1.0",
-            IsRequired = true,
-            Scope = Persistence.FormScope.SupplierInformation,
-            Sections = new List<Persistence.FormSection>()
-        };
-    }
-
-    private static Persistence.FormAnswerSet GivenAnswerSet(
-        Persistence.SharedConsent sharedConsent,
-        Persistence.FormSection section,
-        List<Persistence.FormAnswer>? answers = null
-    )
-    {
-        var existingAnswerSet = new Persistence.FormAnswerSet
-        {
-            Guid = Guid.NewGuid(),
-            SharedConsentId = sharedConsent.Id,
-            SharedConsent = sharedConsent,
-            SectionId = section.Id,
-            Section = section,
-            Answers = answers ?? []
-        };
-        sharedConsent.AnswerSets.Add(existingAnswerSet);
-        return existingAnswerSet;
-    }
-
     private Persistence.SharedConsent GivenSharedConsentExists(
         Organisation organisation,
         Persistence.Form form,
@@ -547,58 +442,5 @@ public class UpdateFormSectionAnswersUseCaseTest(AutoMapperFixture mapperFixture
             .ReturnsAsync(sharedConsent);
 
         return sharedConsent;
-    }
-
-    private Persistence.SharedConsent GivenSharedConsent(
-        Organisation organisation,
-        Persistence.Form form,
-        Persistence.SubmissionState? state = null)
-    {
-        return new Persistence.SharedConsent()
-        {
-            Guid = Guid.NewGuid(),
-            OrganisationId = organisation.Id,
-            Organisation = organisation,
-            FormId = form.Id,
-            Form = form,
-            AnswerSets = [],
-            SubmissionState = state ?? Draft,
-            SubmittedAt = null,
-            FormVersionId = "202405",
-            ShareCode = null
-        };
-    }
-
-    private static Persistence.FormAnswer GivenAnswer(
-        Persistence.FormQuestion question,
-        bool? boolValue = null,
-        double? numericValue = null,
-        DateTime? dateValue = null,
-        DateTime? startValue = null,
-        DateTime? endValue = null,
-        string? textValue = null,
-        string? optionValue = null,
-        Persistence.FormAddress? addressValue = null
-    )
-    {
-        return new Persistence.FormAnswer
-        {
-            Id = 0,
-            Guid = Guid.NewGuid(),
-            QuestionId = question.Id,
-            Question = question,
-            FormAnswerSetId = default,
-            FormAnswerSet = null,
-            BoolValue = boolValue,
-            NumericValue = numericValue,
-            DateValue = dateValue,
-            StartValue = startValue,
-            EndValue = endValue,
-            TextValue = textValue,
-            OptionValue = optionValue,
-            AddressValue = addressValue,
-            CreatedOn = DateTimeOffset.UtcNow,
-            UpdatedOn = DateTimeOffset.UtcNow,
-        };
     }
 }

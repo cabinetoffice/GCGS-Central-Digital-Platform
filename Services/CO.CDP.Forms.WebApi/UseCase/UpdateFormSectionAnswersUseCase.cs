@@ -1,6 +1,7 @@
 using AutoMapper;
 using CO.CDP.AwsServices;
 using CO.CDP.Forms.WebApi.Model;
+using CO.CDP.Forms.WebApi.UseCase.SharedConsent;
 using CO.CDP.OrganisationInformation.Persistence;
 using Persistence = CO.CDP.OrganisationInformation.Persistence.Forms;
 
@@ -38,74 +39,7 @@ public class UpdateFormSectionAnswersUseCase(
     private static (Persistence.SharedConsent, Guid, List<FormAnswer>) MapSharedConsent(
         Persistence.SharedConsent sharedConsent, Guid answerSetId, List<FormAnswer> answers)
     {
-        if (sharedConsent.SubmissionState != Persistence.SubmissionState.Submitted)
-        {
-            return (sharedConsent, answerSetId, answers);
-        }
-
-        var oldToNewGuids = new Dictionary<Guid, Guid>();
-
-        var newSharedConsent = new Persistence.SharedConsent
-        {
-            Id = default,
-            Guid = Guid.NewGuid(),
-            OrganisationId = sharedConsent.OrganisationId,
-            Organisation = sharedConsent.Organisation,
-            FormId = sharedConsent.FormId,
-            Form = sharedConsent.Form,
-            SubmissionState = Persistence.SubmissionState.Draft,
-            FormVersionId = sharedConsent.FormVersionId
-        };
-
-        foreach (var answerSet in sharedConsent.AnswerSets.Where(x => x.Section.Type != Persistence.FormSectionType.Declaration))
-        {
-            var newAnswerSet = new Persistence.FormAnswerSet()
-            {
-                Guid = Guid.NewGuid(),
-                SharedConsentId = newSharedConsent.Id,
-                SharedConsent = newSharedConsent,
-                SectionId = answerSet.SectionId,
-                Section = answerSet.Section
-            };
-            oldToNewGuids.Add(answerSet.Guid, newAnswerSet.Guid);
-
-            foreach (var answer in answerSet.Answers)
-            {
-                var newAnswer = new Persistence.FormAnswer()
-                {
-                    Guid = Guid.NewGuid(),
-                    QuestionId = answer.QuestionId,
-                    Question = answer.Question,
-                    FormAnswerSetId = newAnswerSet.Id,
-                    FormAnswerSet = newAnswerSet,
-                    BoolValue = answer.BoolValue,
-                    DateValue = answer.DateValue,
-                    TextValue = answer.TextValue,
-                    OptionValue = answer.OptionValue,
-                    NumericValue = answer.NumericValue,
-                    StartValue = answer.StartValue,
-                    EndValue = answer.EndValue,
-                    AddressValue = answer.AddressValue
-                };
-                oldToNewGuids.Add(answer.Guid, newAnswer.Guid);
-
-                newAnswerSet.Answers.Add(newAnswer);
-            }
-            newSharedConsent.AnswerSets.Add(newAnswerSet);
-        }
-
-        if (oldToNewGuids.Count > 0)
-        {
-            foreach (var answer in answers)
-            {
-                if (oldToNewGuids.TryGetValue(answer.Id, out var newId))
-                {
-                    answer.Id = newId;
-                }
-            }
-        }
-
-        return (newSharedConsent, oldToNewGuids.GetValueOrDefault(answerSetId, answerSetId), answers);
+        return SharedConsentMapper.Map(sharedConsent, answerSetId, answers);
     }
 
     private async Task UpdateOrAddAnswers(Guid answerSetId, List<FormAnswer> answers, Persistence.FormSection section, Persistence.SharedConsent sharedConsent)
@@ -231,8 +165,7 @@ public class UpdateFormSectionAnswersUseCase(
 
     private static Persistence.FormAnswerSet CreateAnswerSet(Guid answerSetId, Persistence.SharedConsent sharedConsent, Persistence.FormSection section)
     {
-        Persistence.FormAnswerSet answerSet;
-        answerSet = new Persistence.FormAnswerSet
+        var answerSet = new Persistence.FormAnswerSet
         {
             Guid = answerSetId,
             SharedConsentId = sharedConsent.Id,
