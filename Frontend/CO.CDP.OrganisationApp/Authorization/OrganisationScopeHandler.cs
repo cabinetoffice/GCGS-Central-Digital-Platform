@@ -44,8 +44,6 @@ public class OrganizationScopeHandler : AuthorizationHandler<OrganizationScopeRe
         }
 
         context.Fail();
-
-        // TODO: Stop the app throwing 404 page-not-found when auth fails - need to throw a 403?
     }
 
     private async Task<UserOrganisation?> GetPersonOrganisation(Guid organisationId)

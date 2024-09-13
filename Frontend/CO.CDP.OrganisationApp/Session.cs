@@ -8,7 +8,7 @@ public class Session(IHttpContextAccessor httpContextAccessor) : ISession
     public const string RegistrationDetailsKey = "RegistrationDetails";
     public const string ConnectedPersonKey = "ConnectedPerson";
 
-    public T? Get<T>(string key)
+    public virtual T? Get<T>(string key)
     {
         var value = GetSession().GetString(key);
         return value == null ? default : JsonSerializer.Deserialize<T>(value);

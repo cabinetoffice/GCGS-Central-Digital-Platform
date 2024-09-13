@@ -197,3 +197,5 @@ if (builder.Configuration.GetValue("Features:DiagnosticPage:Enabled", false)
 }
 
 app.Run();
+
+public abstract partial class Program;
