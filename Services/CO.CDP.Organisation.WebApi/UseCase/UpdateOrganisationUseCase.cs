@@ -23,62 +23,16 @@ public class UpdateOrganisationUseCase(
 
         switch (command.updateOrganisation.Type)
         {
-            case OrganisationUpdateType.OrganisationName:
-                if (string.IsNullOrEmpty(updateObject.OrganisationName))
+            case OrganisationUpdateType.RemoveIdentifier:
+                var identifierToRemove = organisation.Identifiers.FirstOrDefault(
+                    i => i.Scheme == command.updateOrganisation.Organisation.IdentifierToRemove!.Scheme);
+
+                if (identifierToRemove != null)
                 {
-                    throw new InvalidUpdateOrganisationCommand("Missing organisation name.");
+                    RemoveIdentifier(organisation, identifierToRemove);
                 }
-                organisation.Name = updateObject.OrganisationName;
+
                 break;
-
-            case OrganisationUpdateType.OrganisationEmail:
-                if (updateObject.ContactPoint == null || string.IsNullOrEmpty(updateObject.ContactPoint.Email))
-                    throw new InvalidUpdateOrganisationCommand("Missing organisation email.");
-
-                var organisationContact = organisation.ContactPoints.FirstOrDefault();
-                if (organisationContact == null)
-                    throw new InvalidUpdateOrganisationCommand("organisation email does not exists.");
-
-                organisationContact.Email = updateObject.ContactPoint.Email;
-                break;           
-
-            case OrganisationUpdateType.RegisteredAddress:
-                if (updateObject.Addresses == null)                
-                    throw new InvalidUpdateOrganisationCommand("Missing organisation address.");                
-
-                var newAddress = updateObject.Addresses.FirstOrDefault(x => x.Type == AddressType.Registered);
-                if (newAddress == null)
-                    throw new InvalidUpdateOrganisationCommand("Organisation regsitered address does not exists.");
-
-
-                var existingAddress = organisation.Addresses.FirstOrDefault(i => i.Type == newAddress.Type);
-                if (existingAddress != null)
-                {
-                    existingAddress.Address.StreetAddress = newAddress.StreetAddress;
-                    existingAddress.Address.PostalCode = newAddress.PostalCode;
-                    existingAddress.Address.Locality = newAddress.Locality;
-                    existingAddress.Address.Region = newAddress.Region;
-                    existingAddress.Address.CountryName = newAddress.CountryName;
-                    existingAddress.Address.Country = newAddress.Country;
-                }
-                else
-                {
-                    organisation.Addresses.Add(new OrganisationInformation.Persistence.Organisation.OrganisationAddress
-                    {
-                        Type = newAddress.Type,
-                        Address = new Address
-                        {
-                            StreetAddress = newAddress.StreetAddress,
-                            PostalCode = newAddress.PostalCode,
-                            Locality = newAddress.Locality,
-                            Region = newAddress.Region,
-                            CountryName = newAddress.CountryName,
-                            Country = newAddress.Country
-                        },
-                    });
-                }
-                break;
-
             case OrganisationUpdateType.AdditionalIdentifiers:
                 if (updateObject.AdditionalIdentifiers == null)
                 {
@@ -90,10 +44,13 @@ public class UpdateOrganisationUseCase(
                     var existingIdentifier = organisation.Identifiers.FirstOrDefault(i => i.Scheme == identifier.Scheme);
                     if (existingIdentifier != null)
                     {
-                        existingIdentifier.IdentifierId = identifier.Id;
-                        existingIdentifier.LegalName = identifier.LegalName;
+                        if (!string.IsNullOrEmpty(identifier.Id))
+                        {
+                            existingIdentifier.IdentifierId = identifier.Id;
+                            existingIdentifier.LegalName = identifier.LegalName;
+                        }
                     }
-                    else
+                    else if (!string.IsNullOrEmpty(identifier.Id))
                     {
                         organisation.Identifiers.Add(new OrganisationInformation.Persistence.Organisation.Identifier
                         {
@@ -172,5 +129,44 @@ public class UpdateOrganisationUseCase(
         await publisher.Publish(mapper.Map<OrganisationUpdated>(organisation));
 
         return await Task.FromResult(true);
+    }
+
+    private void RemoveIdentifier(OrganisationInformation.Persistence.Organisation organisation,
+        OrganisationInformation.Persistence.Organisation.Identifier identifierToRemove)
+    {
+        organisation.Identifiers.Remove(identifierToRemove);
+
+        if (identifierToRemove.Primary)
+        {
+            AllocateNextPrimaryIdentifier(organisation);
+        }
+    }
+
+    private void AllocateNextPrimaryIdentifier(OrganisationInformation.Persistence.Organisation organisation)
+    {
+        var nextPrimaryIdentifier = organisation.Identifiers.FirstOrDefault(i =>
+            i.Scheme != AssignIdentifierUseCase.IdentifierSchemes.Ppon &&
+            i.Scheme != AssignIdentifierUseCase.IdentifierSchemes.Other);
+
+        if (nextPrimaryIdentifier == null)
+        {
+            nextPrimaryIdentifier = organisation.Identifiers.FirstOrDefault(i =>
+                i.Scheme == AssignIdentifierUseCase.IdentifierSchemes.Ppon);
+
+            if (nextPrimaryIdentifier == null)
+            {
+                nextPrimaryIdentifier = organisation.Identifiers.FirstOrDefault(i =>
+                    i.Scheme == AssignIdentifierUseCase.IdentifierSchemes.Other);
+            }
+        }
+
+        if (nextPrimaryIdentifier != null)
+        {
+            nextPrimaryIdentifier.Primary = true;
+        }
+        else
+        {
+            throw new InvalidUpdateOrganisationCommand("There are no identifiers remaining that can be set as the primary.");
+        }
     }
 }
