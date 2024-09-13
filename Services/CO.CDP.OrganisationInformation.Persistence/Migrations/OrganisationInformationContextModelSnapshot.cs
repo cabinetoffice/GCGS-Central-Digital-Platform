@@ -113,6 +113,10 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("organisation_id");
 
+                    b.Property<bool?>("Revoked")
+                        .HasColumnType("boolean")
+                        .HasColumnName("revoked");
+
                     b.Property<string>("Scopes")
                         .IsRequired()
                         .HasColumnType("jsonb")

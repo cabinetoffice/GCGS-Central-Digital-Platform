@@ -13,8 +13,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CO.CDP.OrganisationInformation.Persistence.Migrations
 {
     [DbContext(typeof(OrganisationInformationContext))]
-    [Migration("20240912192100_CreateUniqueAuthenticationKey")]
-    partial class CreateUniqueAuthenticationKey
+    [Migration("20240913163525_AlterAuthenticationKey")]
+    partial class AlterAuthenticationKey
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -115,6 +115,10 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                     b.Property<int?>("OrganisationId")
                         .HasColumnType("integer")
                         .HasColumnName("organisation_id");
+
+                    b.Property<bool?>("Revoked")
+                        .HasColumnType("boolean")
+                        .HasColumnName("revoked");
 
                     b.Property<string>("Scopes")
                         .IsRequired()

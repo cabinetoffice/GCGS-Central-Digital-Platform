@@ -5,7 +5,7 @@
 namespace CO.CDP.OrganisationInformation.Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class CreateUniqueAuthenticationKey : Migration
+    public partial class AlterAuthenticationKey : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -13,6 +13,12 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
             migrationBuilder.DropIndex(
                 name: "ix_authentication_keys_key",
                 table: "authentication_keys");
+
+            migrationBuilder.AddColumn<bool>(
+                name: "revoked",
+                table: "authentication_keys",
+                type: "boolean",
+                nullable: true);
 
             migrationBuilder.CreateIndex(
                 name: "ix_authentication_keys_name_key",
@@ -26,6 +32,10 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
         {
             migrationBuilder.DropIndex(
                 name: "ix_authentication_keys_name_key",
+                table: "authentication_keys");
+
+            migrationBuilder.DropColumn(
+                name: "revoked",
                 table: "authentication_keys");
 
             migrationBuilder.CreateIndex(
