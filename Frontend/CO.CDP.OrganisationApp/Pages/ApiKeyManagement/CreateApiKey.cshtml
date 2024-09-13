@@ -1,0 +1,46 @@
+@page "/organisation/{id}/supplier-information/manage-api-key/create-new-api-key"
+@model CO.CDP.OrganisationApp.Pages.ApiKeyManagement.CreateApiKeyModel
+
+@{
+    var apiKeyNameHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.ApiKeyName)).HasInnerHtml;
+}
+<a href="/organisation/@Model.Id/supplier-information/manage-api-key/start" class="govuk-back-link">Back</a>
+
+<main class="govuk-main-wrapper">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <partial name="_ErrorSummary" model="@ModelState" />
+            <form class="form" method="post">
+                <div class="govuk-form-group">
+                    <h1 class="govuk-label-wrapper">
+                        <label class="govuk-label govuk-label--l" for="APIKeyName">
+                            Name your API key
+                        </label>
+                    </h1>
+                    <div id="hint" class="govuk-hint">
+                        For security we only show the API key once on the confirmation page. Add a name for reference. For example, the name of the eSender it's for.
+                    </div>
+                    <div class="govuk-form-group @(apiKeyNameHasError ? "govuk-form-group--error" : "")">
+                        @if (apiKeyNameHasError)
+                        {
+                            <p id="api-key-name-error" class="govuk-error-message">
+                                <span class="govuk-visually-hidden">Error:</span>
+                                @Html.ValidationMessageFor(m => m.ApiKeyName)
+                            </p>
+                        }
+                        <input class="govuk-input govuk-!-width-two-thirds @(apiKeyNameHasError ? "govuk-input--error" : "")"
+                               id="@nameof(Model.ApiKeyName)" value="@Model.ApiKeyName" name="@nameof(Model.ApiKeyName)" type="text"
+                               @(apiKeyNameHasError ? "aria-describedby=api-key-name-error" : "")>
+
+                    </div>
+                </div>
+
+                <div class="govuk-button-group govuk-!-margin-top-6">
+                    <button class="govuk-button" data-module="govuk-button" type="submit">
+                        Continue
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</main>

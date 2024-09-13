@@ -1,0 +1,23 @@
+@page "/organisation/{id}/supplier-information/manage-api-key/start"
+@model CO.CDP.OrganisationApp.Pages.ApiKeyManagement.ManageApiKeyStartModel
+
+<a href="/organisation/@Model.Id" class="govuk-back-link">Back</a>
+
+<main class="govuk-main-wrapper">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <form class="form" method="post">
+                <h1 class="govuk-heading-l">Manage API keys</h1>
+                <p class="govuk-body">
+                    API keys that you create will be listed here.
+                </p>
+
+                <div class="govuk-button-group govuk-!-margin-top-6">
+                    <button class="govuk-button" data-module="govuk-button">
+                        Create an API key
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</main>

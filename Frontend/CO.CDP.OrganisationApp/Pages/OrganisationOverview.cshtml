@@ -95,6 +95,17 @@
                         <a class="govuk-link" href="/organisation/@RouteData.Values["id"]/supplier-information">Supplier information</a>
                     </h3>
                 }
+                else if (organisationDetails.IsBuyer())
+                {
+                    <h3 class="govuk-!-margin-top-3">
+                        <a class="govuk-link" href="/organisation/@RouteData.Values["id"]/supplier-information/manage-api-key/start">Manage API keys</a>
+                    </h3>
+
+                    <div class="govuk-!-margin-top-3">
+                        <p class="govuk-body">An application programming interface (API) key is a code that allows different pieces of software to share information.</p>
+                        <p class="govuk-body">You need to create an API key and share it with the e-Sender you use to publish procurement notices on the Find a Tender service.</p>
+                    </div>
+                }
 
                 <h3 class="govuk-!-margin-top-3">
                     <a class="govuk-link" href="/organisation/@RouteData.Values["id"]/users/user-summary">Users</a>
