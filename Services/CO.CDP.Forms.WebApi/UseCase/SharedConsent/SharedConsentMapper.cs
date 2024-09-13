@@ -1,4 +1,3 @@
-using CO.CDP.Forms.WebApi.Model;
 using static CO.CDP.OrganisationInformation.Persistence.Forms.FormSectionType;
 using static CO.CDP.OrganisationInformation.Persistence.Forms.SubmissionState;
 using Persistence = CO.CDP.OrganisationInformation.Persistence.Forms;
@@ -7,47 +6,28 @@ namespace CO.CDP.Forms.WebApi.UseCase.SharedConsent;
 
 public static class SharedConsentMapper
 {
-    public static (Persistence.SharedConsent, Guid, List<FormAnswer>) Map(
-        Persistence.SharedConsent sharedConsent,
-        Guid answerSetId,
-        List<FormAnswer> requestAnswers
-    )
+    public static Persistence.SharedConsent Map(Persistence.SharedConsent sharedConsent)
     {
         if (sharedConsent.SubmissionState != Submitted)
         {
-            return (sharedConsent, answerSetId, requestAnswers);
+            return sharedConsent;
         }
-
-        var oldToNewGuids = new Dictionary<Guid, Guid>();
 
         var newSharedConsent = CreateNewSharedConsent(sharedConsent);
 
         foreach (var answerSet in sharedConsent.AnswerSets.Where(x => x.Section.Type != Declaration))
         {
             var newAnswerSet = CreateNewAnswerSet(newSharedConsent, answerSet);
-            oldToNewGuids.Add(answerSet.Guid, newAnswerSet.Guid);
 
             foreach (var answer in answerSet.Answers)
             {
-                var newAnswer = CreateNewAnswer(newAnswerSet, answer);
-                oldToNewGuids.Add(answer.Guid, newAnswer.Guid);
-                newAnswerSet.Answers.Add(newAnswer);
+                newAnswerSet.Answers.Add(CreateNewAnswer(newAnswerSet, answer));
             }
 
             newSharedConsent.AnswerSets.Add(newAnswerSet);
         }
 
-        var newRequestAnswers = requestAnswers.Select(answer =>
-        {
-            if (oldToNewGuids.TryGetValue(answer.Id, out var newId))
-            {
-                return answer with { Id = newId };
-            }
-
-            return answer;
-        }).ToList();
-
-        return (newSharedConsent, oldToNewGuids.GetValueOrDefault(answerSetId, answerSetId), newRequestAnswers);
+        return newSharedConsent;
     }
 
     private static Persistence.FormAnswer CreateNewAnswer(

@@ -39,7 +39,7 @@ public class UpdateFormSectionAnswersUseCase(
     private static (Persistence.SharedConsent, Guid, List<FormAnswer>) MapSharedConsent(
         Persistence.SharedConsent sharedConsent, Guid answerSetId, List<FormAnswer> answers)
     {
-        var  (newSharedConsent, _, _) = SharedConsentMapper.Map(sharedConsent, answerSetId, answers);
+        var newSharedConsent = SharedConsentMapper.Map(sharedConsent);
         var allAnswers = newSharedConsent.AnswerSets.SelectMany(a => a.Answers);
         var newRequestAnswers = answers.Select(answer =>
         {

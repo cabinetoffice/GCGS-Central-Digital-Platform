@@ -20,13 +20,10 @@ public class SharedConsentMapperTest
             new() { Id = Guid.NewGuid(), QuestionId = Guid.NewGuid(), BoolValue = true }
         };
 
-        var (mappedSharedConsent, mappedAnswerSetId, mappedAnswers) =
-            SharedConsentMapper.Map(sharedConsent, answerSetId, answers);
+        var mappedSharedConsent = SharedConsentMapper.Map(sharedConsent);
 
         mappedSharedConsent.Should().Be(sharedConsent);
         mappedSharedConsent.CreatedFrom.Should().BeNull();
-        mappedAnswerSetId.Should().Be(answerSetId);
-        mappedAnswers.Should().BeEquivalentTo(answers);
     }
 
     [Fact]
@@ -49,8 +46,7 @@ public class SharedConsentMapperTest
             }
         };
 
-        var (mappedSharedConsent, mappedAnswerSetId, mappedAnswers) =
-            SharedConsentMapper.Map(sharedConsent, answerSetId, answers);
+        var mappedSharedConsent = SharedConsentMapper.Map(sharedConsent);
 
         mappedSharedConsent.Should().NotBeEquivalentTo(sharedConsent);
         mappedSharedConsent.Id.Should().Be(default);
@@ -62,8 +58,6 @@ public class SharedConsentMapperTest
         mappedSharedConsent.SubmittedAt.Should().BeNull();
         mappedSharedConsent.FormVersionId.Should().Be(sharedConsent.FormVersionId);
         mappedSharedConsent.ShareCode.Should().Be(sharedConsent.ShareCode);
-        mappedAnswerSetId.Should().Be(answerSetId, "AnswerSet did not exist");
-        mappedAnswers.Should().BeEquivalentTo(answers, "Answer did not exist");
     }
 
     [Fact]
@@ -85,8 +79,7 @@ public class SharedConsentMapperTest
             }
         };
 
-        var (mappedSharedConsent, mappedAnswerSetId, mappedAnswers) =
-            SharedConsentMapper.Map(sharedConsent, answerSet.Guid, answers);
+        var mappedSharedConsent = SharedConsentMapper.Map(sharedConsent);
 
         mappedSharedConsent.Should().NotBeEquivalentTo(sharedConsent);
         mappedSharedConsent.Id.Should().Be(default);
@@ -100,10 +93,9 @@ public class SharedConsentMapperTest
         mappedSharedConsent.ShareCode.Should().Be(sharedConsent.ShareCode);
         mappedSharedConsent.AnswerSets.First().CreatedFrom.Should().Be(answerSet.Guid);
         mappedSharedConsent.AnswerSets.First().Answers.First().CreatedFrom.Should().Be(answerSet.Answers.First().Guid);
-        mappedAnswerSetId.Should().NotBe(answerSet.Guid, "AnswerSet exists and must be cloned");
-        mappedAnswers.Should().NotBeEquivalentTo(answers, "Answer exists and must be cloned");
-        mappedAnswers.First().Id.Should().NotBe(answers.First().Id);
-        mappedAnswers.First().QuestionId.Should().Be(answers.First().QuestionId);
-        mappedAnswers.First().BoolValue.Should().Be(answers.First().BoolValue);
+        mappedSharedConsent.AnswerSets.First().Should().NotBe(answerSet.Guid, "AnswerSet exists and must be cloned");
+        mappedSharedConsent.AnswerSets.First().Answers.First().Guid.Should().NotBe(answers.First().Id);
+        mappedSharedConsent.AnswerSets.First().Answers.First().Question.Guid.Should().Be(answers.First().QuestionId);
+        mappedSharedConsent.AnswerSets.First().Answers.First().BoolValue.Should().Be(answers.First().BoolValue);
     }
 }
