@@ -39,7 +39,7 @@ public class FormAnswer : IEntityDate
     public required FormQuestion Question { get; set; }
     [ForeignKey(nameof(FormAnswerSet))]
     public required int FormAnswerSetId { get; set; }
-    public required FormAnswerSet FormAnswerSet { get; set; }
+    public FormAnswerSet? FormAnswerSet { get; set; }
     public bool? BoolValue { get; set; }
     public double? NumericValue { get; set; }
     public DateTime? DateValue { get; set; }

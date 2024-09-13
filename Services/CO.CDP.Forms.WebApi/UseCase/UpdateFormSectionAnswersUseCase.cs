@@ -96,7 +96,7 @@ public class UpdateFormSectionAnswersUseCase(
         var answersList = existingAnswers
             .Select(ea => UpdateAnswerValues(ea, answers.FirstOrDefault(a => a.Id == ea.Guid)));
 
-        // next, include new answers making sure to filter updates to the existing ones
+        // next, include new answers making sure to filter updates to the existing ones (those were added in the previous step)
         var newAnswerList = answers
             .FindAll(answer => existingAnswers.All(ea => ea.Guid != answer.Id))
             .Select(answer =>

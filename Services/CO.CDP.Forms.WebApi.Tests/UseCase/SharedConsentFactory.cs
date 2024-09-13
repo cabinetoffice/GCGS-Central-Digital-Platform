@@ -119,6 +119,7 @@ public static class SharedConsentFactory
             Answers = answers ?? []
         };
         sharedConsent.AnswerSets.Add(existingAnswerSet);
+        answers?.ForEach(a => a.FormAnswerSet = existingAnswerSet);
         return existingAnswerSet;
     }
 
@@ -142,7 +143,6 @@ public static class SharedConsentFactory
             QuestionId = theQuestion.Id,
             Question = theQuestion,
             FormAnswerSetId = default,
-            FormAnswerSet = null,
             BoolValue = boolValue,
             NumericValue = numericValue,
             DateValue = dateValue,
