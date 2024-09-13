@@ -56,6 +56,7 @@ public static class SharedConsentMapper
     ) => new()
     {
         Guid = Guid.NewGuid(),
+        CreatedFrom = answer.Guid,
         QuestionId = answer.QuestionId,
         Question = answer.Question,
         FormAnswerSetId = newAnswerSet.Id,
@@ -75,6 +76,7 @@ public static class SharedConsentMapper
         {
             Id = default,
             Guid = Guid.NewGuid(),
+            CreatedFrom = sharedConsent.Guid,
             OrganisationId = sharedConsent.OrganisationId,
             Organisation = sharedConsent.Organisation,
             FormId = sharedConsent.FormId,
@@ -88,6 +90,7 @@ public static class SharedConsentMapper
     ) => new()
     {
         Guid = Guid.NewGuid(),
+        CreatedFrom = answerSet.Guid,
         SharedConsentId = sharedConsent.Id,
         SharedConsent = sharedConsent,
         SectionId = answerSet.SectionId,

@@ -24,6 +24,7 @@ public class SharedConsentMapperTest
             SharedConsentMapper.Map(sharedConsent, answerSetId, answers);
 
         mappedSharedConsent.Should().Be(sharedConsent);
+        mappedSharedConsent.CreatedFrom.Should().BeNull();
         mappedAnswerSetId.Should().Be(answerSetId);
         mappedAnswers.Should().BeEquivalentTo(answers);
     }
@@ -54,6 +55,7 @@ public class SharedConsentMapperTest
         mappedSharedConsent.Should().NotBeEquivalentTo(sharedConsent);
         mappedSharedConsent.Id.Should().Be(default);
         mappedSharedConsent.Guid.Should().NotBe(sharedConsent.Guid);
+        mappedSharedConsent.CreatedFrom.Should().Be(sharedConsent.Guid);
         mappedSharedConsent.OrganisationId.Should().Be(sharedConsent.OrganisationId);
         mappedSharedConsent.FormId.Should().Be(sharedConsent.FormId);
         mappedSharedConsent.SubmissionState.Should().Be(Draft);
@@ -89,12 +91,15 @@ public class SharedConsentMapperTest
         mappedSharedConsent.Should().NotBeEquivalentTo(sharedConsent);
         mappedSharedConsent.Id.Should().Be(default);
         mappedSharedConsent.Guid.Should().NotBe(sharedConsent.Guid);
+        mappedSharedConsent.CreatedFrom.Should().Be(sharedConsent.Guid);
         mappedSharedConsent.OrganisationId.Should().Be(sharedConsent.OrganisationId);
         mappedSharedConsent.FormId.Should().Be(sharedConsent.FormId);
         mappedSharedConsent.SubmissionState.Should().Be(Draft);
         mappedSharedConsent.SubmittedAt.Should().BeNull();
         mappedSharedConsent.FormVersionId.Should().Be(sharedConsent.FormVersionId);
         mappedSharedConsent.ShareCode.Should().Be(sharedConsent.ShareCode);
+        mappedSharedConsent.AnswerSets.First().CreatedFrom.Should().Be(answerSet.Guid);
+        mappedSharedConsent.AnswerSets.First().Answers.First().CreatedFrom.Should().Be(answerSet.Answers.First().Guid);
         mappedAnswerSetId.Should().NotBe(answerSet.Guid, "AnswerSet exists and must be cloned");
         mappedAnswers.Should().NotBeEquivalentTo(answers, "Answer exists and must be cloned");
         mappedAnswers.First().Id.Should().NotBe(answers.First().Id);
