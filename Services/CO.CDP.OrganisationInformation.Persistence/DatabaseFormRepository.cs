@@ -149,11 +149,6 @@ public class DatabaseFormRepository(OrganisationInformationContext context) : IF
         }
     }
 
-    public void ClearTracker()
-    {
-        context.ChangeTracker.Clear();
-    }
-
     private static void HandleDbUpdateException(FormAnswerSet answerSet, DbUpdateException cause)
     {
         switch (cause.InnerException)
