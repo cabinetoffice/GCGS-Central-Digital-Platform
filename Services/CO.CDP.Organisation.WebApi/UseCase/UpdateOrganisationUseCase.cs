@@ -40,21 +40,7 @@ public class UpdateOrganisationUseCase(
                     throw new InvalidUpdateOrganisationCommand("organisation email does not exists.");
 
                 organisationContact.Email = updateObject.ContactPoint.Email;
-                break;
-
-            case OrganisationUpdateType.Identifier:
-                if (updateObject.Identifier == null)
-                    throw new InvalidUpdateOrganisationCommand("Missing identifier.");
-
-                var primaryIdentifier = organisation.Identifiers.FirstOrDefault(i => i.Primary == true);
-                if (primaryIdentifier == null)
-                    throw new InvalidUpdateOrganisationCommand("Organisation Identifier does not exists.");
-
-                primaryIdentifier.IdentifierId = updateObject.Identifier.Id;
-                primaryIdentifier.LegalName = updateObject.Identifier.LegalName;
-                primaryIdentifier.Scheme = updateObject.Identifier.Scheme;
-
-                break;
+                break;           
 
             case OrganisationUpdateType.RegisteredAddress:
                 if (updateObject.Addresses == null)                
