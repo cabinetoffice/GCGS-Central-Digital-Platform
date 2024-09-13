@@ -2,6 +2,7 @@ using AutoMapper;
 using CO.CDP.MQ;
 using CO.CDP.Organisation.WebApi.Events;
 using CO.CDP.Organisation.WebApi.Model;
+using CO.CDP.OrganisationInformation;
 using CO.CDP.OrganisationInformation.Persistence;
 using Address = CO.CDP.OrganisationInformation.Persistence.Address;
 
@@ -22,6 +23,76 @@ public class UpdateOrganisationUseCase(
 
         switch (command.updateOrganisation.Type)
         {
+            case OrganisationUpdateType.OrganisationName:
+                if (string.IsNullOrEmpty(updateObject.OrganisationName))
+                {
+                    throw new InvalidUpdateOrganisationCommand("Missing organisation name.");
+                }
+                organisation.Name = updateObject.OrganisationName;
+                break;
+
+            case OrganisationUpdateType.OrganisationEmail:
+                if (updateObject.ContactPoint == null || string.IsNullOrEmpty(updateObject.ContactPoint.Email))
+                    throw new InvalidUpdateOrganisationCommand("Missing organisation email.");
+
+                var organisationContact = organisation.ContactPoints.FirstOrDefault();
+                if (organisationContact == null)
+                    throw new InvalidUpdateOrganisationCommand("organisation email does not exists.");
+
+                organisationContact.Email = updateObject.ContactPoint.Email;
+                break;
+
+            case OrganisationUpdateType.Identifier:
+                if (updateObject.Identifier == null)
+                    throw new InvalidUpdateOrganisationCommand("Missing identifier.");
+
+                var primaryIdentifier = organisation.Identifiers.FirstOrDefault(i => i.Primary == true);
+                if (primaryIdentifier == null)
+                    throw new InvalidUpdateOrganisationCommand("Organisation Identifier does not exists.");
+
+                primaryIdentifier.IdentifierId = updateObject.Identifier.Id;
+                primaryIdentifier.LegalName = updateObject.Identifier.LegalName;
+                primaryIdentifier.Scheme = updateObject.Identifier.Scheme;
+
+                break;
+
+            case OrganisationUpdateType.RegisteredAddress:
+                if (updateObject.Addresses == null)                
+                    throw new InvalidUpdateOrganisationCommand("Missing organisation address.");                
+
+                var newAddress = updateObject.Addresses.FirstOrDefault(x => x.Type == AddressType.Registered);
+                if (newAddress == null)
+                    throw new InvalidUpdateOrganisationCommand("Organisation regsitered address does not exists.");
+
+
+                var existingAddress = organisation.Addresses.FirstOrDefault(i => i.Type == newAddress.Type);
+                if (existingAddress != null)
+                {
+                    existingAddress.Address.StreetAddress = newAddress.StreetAddress;
+                    existingAddress.Address.PostalCode = newAddress.PostalCode;
+                    existingAddress.Address.Locality = newAddress.Locality;
+                    existingAddress.Address.Region = newAddress.Region;
+                    existingAddress.Address.CountryName = newAddress.CountryName;
+                    existingAddress.Address.Country = newAddress.Country;
+                }
+                else
+                {
+                    organisation.Addresses.Add(new OrganisationInformation.Persistence.Organisation.OrganisationAddress
+                    {
+                        Type = newAddress.Type,
+                        Address = new Address
+                        {
+                            StreetAddress = newAddress.StreetAddress,
+                            PostalCode = newAddress.PostalCode,
+                            Locality = newAddress.Locality,
+                            Region = newAddress.Region,
+                            CountryName = newAddress.CountryName,
+                            Country = newAddress.Country
+                        },
+                    });
+                }
+                break;
+
             case OrganisationUpdateType.AdditionalIdentifiers:
                 if (updateObject.AdditionalIdentifiers == null)
                 {
