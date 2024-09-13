@@ -1,10 +1,11 @@
-using CO.CDP.DataSharing.WebApi.Extensions;
 using CO.CDP.DataSharing.WebApi.Model;
 using CO.CDP.OrganisationInformation;
 using CO.CDP.OrganisationInformation.Persistence;
-using PersistenceForms = CO.CDP.OrganisationInformation.Persistence.Forms;
-using static CO.CDP.OrganisationInformation.Persistence.ConnectedEntity;
 using static CO.CDP.OrganisationInformation.Persistence.Organisation;
+using ConnectedEntityType = CO.CDP.OrganisationInformation.Persistence.ConnectedEntity.ConnectedEntityType;
+using ConnectedOrganisationCategory = CO.CDP.OrganisationInformation.Persistence.ConnectedEntity.ConnectedOrganisationCategory;
+using ConnectedPersonCategory = CO.CDP.OrganisationInformation.Persistence.ConnectedEntity.ConnectedPersonCategory;
+using PersistenceForms = CO.CDP.OrganisationInformation.Persistence.Forms;
 
 namespace CO.CDP.DataSharing.WebApi.Tests;
 
@@ -65,7 +66,10 @@ internal static class EntityFactory
             FormVersionId = string.Empty,
             ShareCode = string.Empty
         };
-        sharedConsent.AnswerSets = GivenQuestionsAndAnswers(sharedConsent, form);
+        foreach (var questionsAndAnswer in GivenQuestionsAndAnswers(sharedConsent, form))
+        {
+            sharedConsent.AnswerSets.Add(questionsAndAnswer);
+        }
 
         return sharedConsent;
     }
@@ -131,7 +135,7 @@ internal static class EntityFactory
         List<PartyRole>? roles = null,
         List<(Person, List<string>)>? personsWithScope = null,
         BuyerInformation? buyerInformation = null,
-        OrganisationInformation.Persistence.Organisation.SupplierInformation? supplierInformation = null
+        Organisation.SupplierInformation? supplierInformation = null
     )
     {
         var theGuid = guid ?? Guid.NewGuid();

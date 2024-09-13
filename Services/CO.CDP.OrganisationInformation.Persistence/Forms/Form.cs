@@ -25,7 +25,8 @@ public class Form : IEntityDate
 public enum FormSectionType
 {
     Standard,
-    Declaration
+    Declaration,
+    Exclusions
 }
 
 public enum FormScope

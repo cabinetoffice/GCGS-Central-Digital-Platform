@@ -1,4 +1,3 @@
-using System.Reflection;
 using CO.CDP.Authentication;
 using CO.CDP.AwsServices;
 using CO.CDP.Configuration.Assembly;
@@ -13,6 +12,7 @@ using CO.CDP.DataSharing.WebApi.Model;
 using CO.CDP.DataSharing.WebApi.UseCase;
 using CO.CDP.OrganisationInformation.Persistence;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.ConfigureForwardedHeaders();
@@ -33,6 +33,7 @@ builder.Services.AddScoped<IClaimService, ClaimService>();
 builder.Services.AddScoped<IOrganisationRepository, DatabaseOrganisationRepository>();
 builder.Services.AddScoped<IFormRepository, DatabaseFormRepository>();
 builder.Services.AddScoped<IShareCodeRepository, DatabaseShareCodeRepository>();
+builder.Services.AddScoped<IConnectedEntityRepository, DatabaseConnectedEntityRepository>();
 builder.Services.AddScoped<IUseCase<ShareRequest, ShareReceipt>, GenerateShareCodeUseCase>();
 builder.Services.AddScoped<IUseCase<Guid, List<SharedConsent>?>, GetShareCodesUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, string), SharedConsentDetails?>, GetShareCodeDetailsUseCase>();

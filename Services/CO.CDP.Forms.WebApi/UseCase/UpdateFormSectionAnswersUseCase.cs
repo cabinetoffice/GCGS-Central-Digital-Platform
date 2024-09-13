@@ -1,6 +1,7 @@
 using AutoMapper;
 using CO.CDP.AwsServices;
 using CO.CDP.Forms.WebApi.Model;
+using CO.CDP.Forms.WebApi.UseCase.SharedConsent;
 using CO.CDP.OrganisationInformation.Persistence;
 using Persistence = CO.CDP.OrganisationInformation.Persistence.Forms;
 
@@ -23,50 +24,25 @@ public class UpdateFormSectionAnswersUseCase(
         var section = await formRepository.GetSectionAsync(formId, sectionId)
             ?? throw new UnknownSectionException($"Unknown section {sectionId} in form {formId}.");
 
-        var sharedConsent = await formRepository.GetSharedConsentWithAnswersAsync(formId, organisationId);
-        if (sharedConsent == null)
-        {
-            sharedConsent = CreateSharedConsent(organisation, section.Form);
-        }
-        else if (sharedConsent.SubmissionState == Persistence.SubmissionState.Submitted)
-        {
-            formRepository.ClearTracker();
-            sharedConsent.AnswerSets = sharedConsent.AnswerSets.Where(x => x.Section.Type != Persistence.FormSectionType.Declaration).ToList();
+        var sharedConsent = await formRepository.GetSharedConsentWithAnswersAsync(formId, organisationId)
+            ?? CreateSharedConsent(organisation, section.Form);
 
-            await UpdateOrAddAnswers(formRepository, answerSetId, answers, section, sharedConsent);
-            ClearSharedConsent(sharedConsent);
-            await formRepository.SaveSharedConsentAsync(sharedConsent);
+        var (updatedSharedConsent, mappedAnswerSetId, updatedAnswers) =
+            MapSharedConsent(sharedConsent, answerSetId, answers);
 
-            return true;
-        }
-        await UpdateOrAddAnswers(formRepository, answerSetId, answers, section, sharedConsent);
-        await formRepository.SaveSharedConsentAsync(sharedConsent);
+        await UpdateOrAddAnswers(mappedAnswerSetId, updatedAnswers, section, updatedSharedConsent);
+        await formRepository.SaveSharedConsentAsync(updatedSharedConsent);
 
         return true;
     }
 
-    private static void ClearSharedConsent(Persistence.SharedConsent sharedConsent)
+    private static (Persistence.SharedConsent, Guid, List<FormAnswer>) MapSharedConsent(
+        Persistence.SharedConsent sharedConsent, Guid answerSetId, List<FormAnswer> answers)
     {
-        sharedConsent.SubmittedAt = default;
-        sharedConsent.ShareCode = default;
-        sharedConsent.SubmissionState = default;
-        sharedConsent.Id = default;
-        sharedConsent.Guid = Guid.NewGuid();
-        foreach (var answerSet in sharedConsent.AnswerSets)
-        {
-            answerSet.Id = default;
-            answerSet.Guid = Guid.NewGuid();
-            answerSet.SharedConsent = sharedConsent;
-            foreach (var answer in answerSet.Answers)
-            {
-                answer.Id = default;
-                answer.Guid = Guid.NewGuid();
-                answer.FormAnswerSet = answerSet;
-            }
-        }
+        return SharedConsentMapper.Map(sharedConsent, answerSetId, answers);
     }
 
-    private async Task UpdateOrAddAnswers(IFormRepository formRepository, Guid answerSetId, List<FormAnswer> answers, Persistence.FormSection section, Persistence.SharedConsent sharedConsent)
+    private async Task UpdateOrAddAnswers(Guid answerSetId, List<FormAnswer> answers, Persistence.FormSection section, Persistence.SharedConsent sharedConsent)
     {
         var questionDictionary = section.Questions.ToDictionary(q => q.Guid);
 
@@ -111,54 +87,64 @@ public class UpdateFormSectionAnswersUseCase(
         }
     }
 
-    private List<Persistence.FormAnswer> MapAnswers(
+    private ICollection<Persistence.FormAnswer> MapAnswers(
         List<FormAnswer> answers,
         Dictionary<Guid, Persistence.FormQuestion> questionDictionary,
         ICollection<Persistence.FormAnswer> existingAnswers)
     {
-        List<Persistence.FormAnswer> answersList = [];
+        // first, include answers that were already there and update them if necessary
+        var answersList = existingAnswers
+            .Select(ea => UpdateAnswerValues(ea, answers.FirstOrDefault(a => a.Id == ea.Guid)));
 
-        static bool areSameAddress(Persistence.FormAddress? a, FormAddress? b) =>
-            (a == null && b == null) || (a != null && b != null
-                && $"{a.StreetAddress}{a.Locality}{a.Region ?? ""}{a.PostalCode}{a.Country}"
-                    .Equals($"{b.StreetAddress}{b.Locality}{b.Region ?? ""}{b.PostalCode}{b.Country}"));
-
-        foreach (var answer in answers)
-        {
-            var existingAnswer = existingAnswers.FirstOrDefault(ea => ea.Guid == answer.Id);
-
-            if (existingAnswer != null)
-            {
-                if (existingAnswer.BoolValue != answer.BoolValue) existingAnswer.BoolValue = answer.BoolValue;
-                if (existingAnswer.NumericValue != answer.NumericValue) existingAnswer.NumericValue = answer.NumericValue;
-                if (existingAnswer.DateValue != answer.DateValue) existingAnswer.DateValue = answer.DateValue?.ToUniversalTime();
-                if (existingAnswer.StartValue != answer.StartValue) existingAnswer.StartValue = answer.StartValue?.ToUniversalTime();
-                if (existingAnswer.EndValue != answer.EndValue) existingAnswer.EndValue = answer.EndValue?.ToUniversalTime();
-                if (existingAnswer.TextValue != answer.TextValue) existingAnswer.TextValue = answer.TextValue;
-                if (existingAnswer.OptionValue != answer.OptionValue) existingAnswer.OptionValue = answer.OptionValue;
-                if (!areSameAddress(existingAnswer.AddressValue, answer.AddressValue))
+        // next, include new answers making sure to filter updates to the existing ones (those were added in the previous step)
+        var newAnswerList = answers
+            .FindAll(answer => existingAnswers.All(ea => ea.Guid != answer.Id))
+            .Select(answer =>
                 {
-                    existingAnswer.AddressValue = answer.AddressValue == null ? null : new Persistence.FormAddress
-                    {
-                        StreetAddress = answer.AddressValue.StreetAddress,
-                        Locality = answer.AddressValue.Locality,
-                        PostalCode = answer.AddressValue.PostalCode,
-                        Region = answer.AddressValue.Region,
-                        CountryName = answer.AddressValue.CountryName,
-                        Country = answer.AddressValue.Country
-                    };
-                }
-                answersList.Add(existingAnswer);
-            }
-            else
-            {
-                var formAnswer = mapper.Map<Persistence.FormAnswer>(answer);
-                formAnswer.Question = questionDictionary[answer.QuestionId];
-                answersList.Add(formAnswer);
-            }
-        }
+                    var newAnswer = mapper.Map<Persistence.FormAnswer>(answer);
+                    newAnswer.Guid = Guid.NewGuid();
+                    newAnswer.QuestionId = questionDictionary[answer.QuestionId].Id;
+                    newAnswer.Question = questionDictionary[answer.QuestionId];
+                    newAnswer.FormAnswerSetId = default;
 
-        return answersList;
+                    return newAnswer;
+                }
+            );
+
+        return answersList.Concat(newAnswerList).ToList();
+    }
+
+    private static Persistence.FormAnswer UpdateAnswerValues(Persistence.FormAnswer existingAnswer, FormAnswer? answer)
+    {
+        if (answer is null)
+        {
+            return existingAnswer;
+        }
+        static bool AreSameAddress(Persistence.FormAddress? a, FormAddress? b) =>
+            (a == null && b == null) || (a != null && b != null
+                                                   && $"{a.StreetAddress}{a.Locality}{a.Region ?? ""}{a.PostalCode}{a.Country}"
+                                                       .Equals($"{b.StreetAddress}{b.Locality}{b.Region ?? ""}{b.PostalCode}{b.Country}"));
+
+        if (existingAnswer.BoolValue != answer.BoolValue) existingAnswer.BoolValue = answer.BoolValue;
+        if (existingAnswer.NumericValue != answer.NumericValue) existingAnswer.NumericValue = answer.NumericValue;
+        if (existingAnswer.DateValue != answer.DateValue) existingAnswer.DateValue = answer.DateValue?.ToUniversalTime();
+        if (existingAnswer.StartValue != answer.StartValue) existingAnswer.StartValue = answer.StartValue?.ToUniversalTime();
+        if (existingAnswer.EndValue != answer.EndValue) existingAnswer.EndValue = answer.EndValue?.ToUniversalTime();
+        if (existingAnswer.TextValue != answer.TextValue) existingAnswer.TextValue = answer.TextValue;
+        if (existingAnswer.OptionValue != answer.OptionValue) existingAnswer.OptionValue = answer.OptionValue;
+        if (!AreSameAddress(existingAnswer.AddressValue, answer.AddressValue))
+        {
+            existingAnswer.AddressValue = answer.AddressValue == null ? null : new Persistence.FormAddress
+            {
+                StreetAddress = answer.AddressValue.StreetAddress,
+                Locality = answer.AddressValue.Locality,
+                PostalCode = answer.AddressValue.PostalCode,
+                Region = answer.AddressValue.Region,
+                CountryName = answer.AddressValue.CountryName,
+                Country = answer.AddressValue.Country
+            };
+        }
+        return existingAnswer;
     }
 
     private Persistence.SharedConsent CreateSharedConsent(Organisation organisation, Persistence.Form form)
@@ -179,8 +165,7 @@ public class UpdateFormSectionAnswersUseCase(
 
     private static Persistence.FormAnswerSet CreateAnswerSet(Guid answerSetId, Persistence.SharedConsent sharedConsent, Persistence.FormSection section)
     {
-        Persistence.FormAnswerSet answerSet;
-        answerSet = new Persistence.FormAnswerSet
+        var answerSet = new Persistence.FormAnswerSet
         {
             Guid = answerSetId,
             SharedConsentId = sharedConsent.Id,

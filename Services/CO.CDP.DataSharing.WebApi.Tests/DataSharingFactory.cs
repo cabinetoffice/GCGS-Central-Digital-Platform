@@ -1,6 +1,7 @@
 using CO.CDP.DataSharing.WebApi.Model;
 using CO.CDP.OrganisationInformation;
 using CO.CDP.OrganisationInformation.Persistence;
+using static CO.CDP.OrganisationInformation.Persistence.ConnectedEntity;
 using static CO.CDP.OrganisationInformation.Persistence.Organisation;
 using Address = CO.CDP.OrganisationInformation.Persistence.Address;
 using ContactPoint = CO.CDP.OrganisationInformation.Persistence.Organisation.ContactPoint;
@@ -190,5 +191,36 @@ public static class DataSharingFactory
                 RegistrationDate = DateTimeOffset.UtcNow.AddYears(-10)
             }
         };
+    }
+    public static Task<List<ConnectedPersonInformation>> CreateMockConnectedPersonInformation()
+    {
+        return Task.FromResult(new List<ConnectedPersonInformation>
+        {
+            new ConnectedPersonInformation(
+                Guid.NewGuid(),
+                "John",
+                "Doe",
+                "British",
+                DateTimeOffset.Now.AddYears(-30),
+                ConnectedPersonType.Individual,
+                ConnectedPersonCategory.PersonWithSignificantControl,
+                "UK",
+                new List<ConnectedAddress>
+                {
+                    new ConnectedAddress(
+                        "123 Main St",
+                        "London",
+                        "London",
+                        "12345",
+                        "UK",
+                        AddressType.Registered
+                    )
+                },
+                new List<string> { "ControlCondition1" },
+                "12345",
+                null,
+                null
+            )
+        });
     }
 }
