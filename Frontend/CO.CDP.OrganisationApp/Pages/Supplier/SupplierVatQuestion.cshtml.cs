@@ -97,6 +97,7 @@ public class SupplierVatQuestionModel(IOrganisationClient organisationClient,
         }
         else
         {
+            await organisationClient.UpdateOrganisationAdditionalIdentifiers(Id, identifiers);
             return RedirectToPage("SupplierBasicInformation", new { Id });
         }
 
