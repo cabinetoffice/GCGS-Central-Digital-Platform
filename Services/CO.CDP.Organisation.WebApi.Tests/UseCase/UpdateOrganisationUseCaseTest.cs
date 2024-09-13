@@ -202,6 +202,125 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
 
     }
 
+    [Fact]
+    public async Task Execute_ShouldUpdateVatNumber_WhenVatIdentifierAlreadyExists()
+    {
+        var command = new UpdateOrganisation
+        {
+            Type = OrganisationUpdateType.AdditionalIdentifiers,
+            Organisation = new OrganisationInfo
+            {
+                AdditionalIdentifiers = [new OrganisationIdentifier
+                {
+                    Id = "999999",
+                    LegalName = "Acme",
+                    Scheme = "VAT"
+                }]
+            }
+        };
+        var organisation = Organisation;
+        _organisationRepositoryMock.Setup(repo => repo.Find(_organisationId)).ReturnsAsync(organisation);
+
+        var result = await UseCase.Execute((_organisationId, command));
+
+        result.Should().BeTrue();
+        _organisationRepositoryMock.Verify(repo => repo.Save(organisation!), Times.Once);
+
+        organisation.Identifiers.Should().Contain(i => i.Scheme == "VAT" && i.IdentifierId == "999999");
+        organisation.Identifiers.Should().ContainSingle();
+    }
+
+    [Fact]
+    public async Task Execute_ShouldThrowException_WhenVatIdentifierIsOnlyIdentifierAndVatNumberIsRemoved()
+    {
+        var command = new UpdateOrganisation
+        {
+            Type = OrganisationUpdateType.RemoveIdentifier,
+            Organisation = new OrganisationInfo
+            {
+                IdentifierToRemove = new OrganisationIdentifier
+                {
+                    Id = "",
+                    LegalName = "Acme",
+                    Scheme = "VAT"
+                }
+            }
+        };
+        var organisation = Organisation;
+        _organisationRepositoryMock.Setup(repo => repo.Find(_organisationId)).ReturnsAsync(organisation);
+
+        Func<Task> act = async () => await UseCase.Execute((_organisationId, command));
+
+        await act.Should()
+         .ThrowAsync<InvalidUpdateOrganisationCommand>()
+         .WithMessage("There are no identifiers remaining that can be set as the primary.");
+    }
+
+    [Fact]
+    public async Task Execute_ShouldAssignPponAsPrimary_WhenVatIdentifierIsRemoved()
+    {
+        var command = new UpdateOrganisation
+        {
+            Type = OrganisationUpdateType.RemoveIdentifier,
+            Organisation = new OrganisationInfo
+            {
+                IdentifierToRemove = new OrganisationIdentifier
+                {
+                    Id = "",
+                    LegalName = "Acme",
+                    Scheme = "VAT"
+                }
+            }
+        };
+        var organisation = OrganisationWithVatPrimaryAndPpon;
+        _organisationRepositoryMock.Setup(repo => repo.Find(_organisationId)).ReturnsAsync(organisation);
+
+        var result = await UseCase.Execute((_organisationId, command));
+
+        result.Should().BeTrue();
+        _organisationRepositoryMock.Verify(repo => repo.Save(organisation!), Times.Once);
+
+        organisation.Identifiers.FirstOrDefault(i =>
+            i.Scheme == "CDP-PPON" &&
+            i.IdentifierId == "c0777aeb968b4113a27d94e55b10c1b4" &&
+            i.Primary)
+            .Should().NotBeNull();
+        organisation.Identifiers.Should().ContainSingle();
+    }
+
+    [Fact]
+    public async Task Execute_ShouldNotInsertIdentifier_WhenIdentifierIdIsEmptyOrNull()
+    {
+        var command = new UpdateOrganisation
+        {
+            Type = OrganisationUpdateType.AdditionalIdentifiers,
+            Organisation = new OrganisationInfo
+            {
+                AdditionalIdentifiers = [new OrganisationIdentifier
+                {
+                    Id = "",
+                    LegalName = "Acme",
+                    Scheme = "VAT"
+                },
+                new OrganisationIdentifier
+                {
+                    Id = null,
+                    LegalName = "Acme",
+                    Scheme = "VAT"
+                }]
+            }
+        };
+        var organisation = OrganisationWithPponIdentifier;
+        _organisationRepositoryMock.Setup(repo => repo.Find(_organisationId)).ReturnsAsync(organisation);
+
+        var result = await UseCase.Execute((_organisationId, command));
+
+        result.Should().BeTrue();
+        _organisationRepositoryMock.Verify(repo => repo.Save(organisation!), Times.Once);
+
+        organisation.Identifiers.FirstOrDefault(i => i.Scheme == "VAT").Should().BeNull();
+    }
+
     private Persistence.Organisation OrganisationWithOtherIdentifier =>
         new()
         {
@@ -250,6 +369,31 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
                     IdentifierId = "93294342",
                     LegalName = "Acme Ltd",
                     Primary = true
+                }
+            ],
+            ContactPoints = [new Persistence.Organisation.ContactPoint { Email = "test@test.com" }]
+        };
+
+    private Persistence.Organisation OrganisationWithVatPrimaryAndPpon =>
+        new()
+        {
+            Guid = _organisationId,
+            Name = "Acme Ltd",
+            Tenant = It.IsAny<Persistence.Tenant>(),
+            Identifiers = [
+                new Persistence.Organisation.Identifier
+                    {
+                        Scheme = "VAT",
+                        IdentifierId = "93294342",
+                        LegalName = "Acme Ltd",
+                        Primary = true
+                    },
+                new Persistence.Organisation.Identifier
+                {
+                    Scheme = "CDP-PPON",
+                    LegalName = "Acme Ltd",
+                    Primary = false,
+                    IdentifierId = "c0777aeb968b4113a27d94e55b10c1b4"
                 }
             ],
             ContactPoints = [new Persistence.Organisation.ContactPoint { Email = "test@test.com" }]
