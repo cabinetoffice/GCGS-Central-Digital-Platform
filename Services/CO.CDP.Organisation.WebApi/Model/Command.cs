@@ -57,7 +57,7 @@ public enum OrganisationUpdateType
 {
     AdditionalIdentifiers,
     ContactPoint,    
-    RemoveIdentifier
+    RemoveIdentifier,
     Address,
     OrganisationName,
     OrganisationEmail,   
