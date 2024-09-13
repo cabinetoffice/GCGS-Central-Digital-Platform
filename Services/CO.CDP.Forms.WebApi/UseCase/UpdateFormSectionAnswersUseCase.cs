@@ -39,7 +39,15 @@ public class UpdateFormSectionAnswersUseCase(
     private static (Persistence.SharedConsent, Guid, List<FormAnswer>) MapSharedConsent(
         Persistence.SharedConsent sharedConsent, Guid answerSetId, List<FormAnswer> answers)
     {
-        return SharedConsentMapper.Map(sharedConsent, answerSetId, answers);
+        var  (newSharedConsent, _, newAnswers) = SharedConsentMapper.Map(sharedConsent, answerSetId, answers);
+        return (
+            newSharedConsent,
+            newSharedConsent.AnswerSets
+                .Where(s => s.CreatedFrom == answerSetId)
+                .Select(a => a.Guid)
+                .FirstOrDefault(answerSetId),
+            newAnswers
+        );
     }
 
     private async Task UpdateOrAddAnswers(Guid answerSetId, List<FormAnswer> answers, Persistence.FormSection section, Persistence.SharedConsent sharedConsent)
