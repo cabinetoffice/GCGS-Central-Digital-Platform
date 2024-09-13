@@ -323,6 +323,9 @@ locals {
             "arn:aws:iam::525593800265:user/ali.bahman@goaco.com",
             "arn:aws:iam::525593800265:user/dorian.stefan@goaco.com",
         ]
+        external_user_arns = [
+            "arn:aws:iam::495599741725:user/gdavies"
+        ]
     }
 
 

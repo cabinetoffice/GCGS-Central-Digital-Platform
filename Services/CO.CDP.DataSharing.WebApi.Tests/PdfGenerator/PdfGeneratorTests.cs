@@ -1,5 +1,4 @@
 using CO.CDP.DataSharing.WebApi;
-using CO.CDP.DataSharing.WebApi.Model;
 using DataSharing.Tests;
 
 public class PdfGeneratorTests
@@ -12,12 +11,13 @@ public class PdfGeneratorTests
     }
 
     [Fact]
-    public void GenerateBasicInformationPdf_ShouldGeneratePdfWithBasicInformation()
+    public void GenerateBasicInformationPdf_ShouldGeneratePdfWithAllInformation()
     {
 
-        var supplierInformation = new SharedSupplierInformation
+        var supplierInformation = new CO.CDP.DataSharing.WebApi.Model.SharedSupplierInformation
         {
-            BasicInformation = DataSharingFactory.CreateMockBasicInformation()
+            BasicInformation = DataSharingFactory.CreateMockBasicInformation(),
+            ConnectedPersonInformation = DataSharingFactory.CreateMockConnectedPersonInformation(),
         };
 
         var pdfBytes = _pdfGenerator.GenerateBasicInformationPdf(supplierInformation);

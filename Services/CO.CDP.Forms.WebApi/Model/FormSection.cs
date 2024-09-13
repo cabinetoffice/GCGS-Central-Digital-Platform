@@ -16,7 +16,8 @@ public record FormSection
 public enum FormSectionType
 {
     Standard,
-    Declaration
+    Declaration,
+    Exclusions
 }
 
 public record FormSectionConfiguration

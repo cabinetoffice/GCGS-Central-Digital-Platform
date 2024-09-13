@@ -20,8 +20,10 @@ public class GetSharedDataPdfUseCaseTests
         var sharecode = "valid-sharecode";
         var sharedSupplierInformation = new SharedSupplierInformation
         {
-            BasicInformation = new BasicInformation()
+            BasicInformation = DataSharingFactory.CreateMockBasicInformation(),
+            ConnectedPersonInformation = DataSharingFactory.CreateMockConnectedPersonInformation()
         };
+
         var pdfBytes = new byte[] { 1, 2, 3 };
 
         _dataService.Setup(service => service.GetSharedSupplierInformationAsync(sharecode))
@@ -39,10 +41,13 @@ public class GetSharedDataPdfUseCaseTests
     public async Task Execute_ShouldCallDataServiceAndPdfGenerator_WhenShareCodeExists()
     {
         var sharecode = "valid-sharecode";
+
         var sharedSupplierInformation = new SharedSupplierInformation
         {
-            BasicInformation = new BasicInformation()
+            BasicInformation = DataSharingFactory.CreateMockBasicInformation(),
+            ConnectedPersonInformation = DataSharingFactory.CreateMockConnectedPersonInformation()
         };
+
         var pdfBytes = new byte[] { 1, 2, 3 };
 
         _dataService.Setup(service => service.GetSharedSupplierInformationAsync(sharecode))

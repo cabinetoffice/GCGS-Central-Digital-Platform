@@ -288,7 +288,6 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
         var formId = Guid.NewGuid();
         var sectionId = Guid.NewGuid();
         var organisationId = Guid.NewGuid();
-        var answerSetId = Guid.NewGuid();
         var questionId = Guid.NewGuid();
 
         var form = GivenForm(formId);
@@ -353,7 +352,7 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
         var foundAnswerSet = await repository.GetFormAnswerSetsFromCurrentSharedConsentAsync(sectionId, organisation.Guid);
 
         foundAnswerSet.Should().NotBeNull();
-        foundAnswerSet!.Should().HaveCount(1);
+        foundAnswerSet.Should().HaveCount(1);
         foundAnswerSet[0].Answers.Should().HaveCount(1);
         var foundAnswer = foundAnswerSet[0].Answers.First();
         foundAnswer.Question.Should().Be(question);
@@ -363,14 +362,13 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
     [Fact]
     public async Task GetFormAnswerSetAsync_WhenFormAnswerSetDeleted_DoesNotReturnsFormAnswerSet()
     {
-        using var context = postgreSql.OrganisationInformationContext();
+        await using var context = postgreSql.OrganisationInformationContext();
         var repository = new DatabaseFormRepository(context);
 
         var formId = Guid.NewGuid();
         var sectionId = Guid.NewGuid();
         var organisationId = Guid.NewGuid();
         var answerSetId = Guid.NewGuid();
-        var questionId = Guid.NewGuid();
 
         var form = GivenForm(formId);
         var section = GivenSection(sectionId, form);
@@ -403,13 +401,13 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
         var foundAnswerSet = await repository.GetFormAnswerSetsFromCurrentSharedConsentAsync(sectionId, organisation.Guid);
 
         foundAnswerSet.Should().NotBeNull();
-        foundAnswerSet!.Should().HaveCount(0);
+        foundAnswerSet.Should().HaveCount(0);
     }
 
     [Fact]
     public async Task GetFormAnswerSetAsync_WhenFormAnswerSetExists_ReturnsFormAnswerSet()
     {
-        using var context = postgreSql.OrganisationInformationContext();
+        await using var context = postgreSql.OrganisationInformationContext();
         var repository = new DatabaseFormRepository(context);
 
         var formId = Guid.NewGuid();
@@ -461,7 +459,6 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
 
         var formId = Guid.NewGuid();
         var sectionId = Guid.NewGuid();
-        var organisationId = Guid.NewGuid();
         var questionId = Guid.NewGuid();
 
         var guid = Guid.NewGuid();
@@ -535,7 +532,6 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
 
         var formId = Guid.NewGuid();
         var sectionId = Guid.NewGuid();
-        var organisationId = Guid.NewGuid();
         var questionId = Guid.NewGuid();
 
         var guid = Guid.NewGuid();
@@ -687,9 +683,9 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
         var foundQuestion = foundQuestions.First();
         foundQuestion.Options.Should().NotBeNull();
 
-        foundQuestion.Options!.Choices.Should().NotBeNull().And.HaveCount(1);
+        foundQuestion.Options.Choices.Should().NotBeNull().And.HaveCount(1);
 
-        var foundChoice = foundQuestion?.Options?.Choices?.First();
+        var foundChoice = foundQuestion.Options.Choices?.First();
         foundChoice.Should().BeEquivalentTo(simpleOptions.Choices.First(), config => config.Excluding(ctx => ctx.Id));
     }
 

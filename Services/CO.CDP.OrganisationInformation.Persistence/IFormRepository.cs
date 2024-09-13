@@ -17,8 +17,6 @@ public interface IFormRepository : IDisposable
     Task<bool> DeleteAnswerSetAsync(Guid organisationId, Guid answerSetId);
     Task SaveAnswerSet(FormAnswerSet answerSet);
 
-    void ClearTracker();
-
     public class FormRepositoryException(string message, Exception? cause = null) : Exception(message, cause)
     {
         public class DuplicateFormAnswerSetException(string message, Exception? cause = null)

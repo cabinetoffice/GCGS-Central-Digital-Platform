@@ -20,10 +20,11 @@ locals {
 }
 
 inputs = {
-  account_ids             = local.global_vars.locals.account_ids
-  pen_testing_allowed_ips = local.global_vars.locals.pen_testing.allowed_ips
-  pen_testing_user_arns   = local.global_vars.locals.pen_testing.user_arns
-  tags                    = local.tags
-  terraform_operators     = local.global_vars.locals.terraform_operators
-  tfstate_bucket_name     = local.global_vars.locals.tg.state_bucket
+  account_ids                    = local.global_vars.locals.account_ids
+  pen_testing_allowed_ips        = local.global_vars.locals.pen_testing.allowed_ips
+  pen_testing_user_arns          = local.global_vars.locals.pen_testing.user_arns
+  pen_testing_external_user_arns = local.global_vars.locals.pen_testing.external_user_arns
+  tags                           = local.tags
+  terraform_operators            = local.global_vars.locals.terraform_operators
+  tfstate_bucket_name            = local.global_vars.locals.tg.state_bucket
 }
