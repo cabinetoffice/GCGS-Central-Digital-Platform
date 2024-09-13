@@ -1,7 +1,7 @@
 using AutoMapper;
 using CO.CDP.AwsServices;
 using CO.CDP.Forms.WebApi.Model;
-using CO.CDP.Forms.WebApi.UseCase.SharedConsent;
+using CO.CDP.Forms.WebApi.SharedConsent;
 using CO.CDP.OrganisationInformation.Persistence;
 using Persistence = CO.CDP.OrganisationInformation.Persistence.Forms;
 

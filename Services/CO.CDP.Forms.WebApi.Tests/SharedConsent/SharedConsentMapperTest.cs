@@ -1,12 +1,10 @@
-using CO.CDP.Forms.WebApi.Model;
-using CO.CDP.Forms.WebApi.UseCase.SharedConsent;
+using CO.CDP.Forms.WebApi.SharedConsent;
+using CO.CDP.OrganisationInformation.Persistence.Forms;
 using FluentAssertions;
 using static CO.CDP.Forms.WebApi.Tests.UseCase.SharedConsentFactory;
-using static CO.CDP.OrganisationInformation.Persistence.Forms.FormQuestionType;
 using static CO.CDP.OrganisationInformation.Persistence.Forms.SubmissionState;
-using FormQuestion = CO.CDP.OrganisationInformation.Persistence.Forms.FormQuestion;
 
-namespace CO.CDP.Forms.WebApi.Tests.UseCase.SharedConsent;
+namespace CO.CDP.Forms.WebApi.Tests.SharedConsent;
 
 public class SharedConsentMapperTest
 {
@@ -14,11 +12,6 @@ public class SharedConsentMapperTest
     public void ItReturnsTheOriginalSharedConsentIfItIsInDraftState()
     {
         var sharedConsent = GivenSharedConsent(state: Draft);
-        var answerSetId = Guid.NewGuid();
-        var answers = new List<FormAnswer>()
-        {
-            new() { Id = Guid.NewGuid(), QuestionId = Guid.NewGuid(), BoolValue = true }
-        };
 
         var mappedSharedConsent = SharedConsentMapper.Map(sharedConsent);
 
@@ -30,21 +23,6 @@ public class SharedConsentMapperTest
     public void ItCreatesNewSharedConsentIfItIsInSubmittedStateAndThereAreNoAnswersYet()
     {
         var sharedConsent = GivenSharedConsent(state: Submitted);
-        var answerSetId = Guid.NewGuid();
-        var questions = new List<FormQuestion>
-        {
-            GivenFormQuestion(type: YesOrNo),
-            GivenFormQuestion(type: NoInput)
-        };
-        var answers = new List<FormAnswer>()
-        {
-            new()
-            {
-                Id = Guid.NewGuid(),
-                QuestionId = questions.First().Guid,
-                BoolValue = true
-            }
-        };
 
         var mappedSharedConsent = SharedConsentMapper.Map(sharedConsent);
 
@@ -64,20 +42,12 @@ public class SharedConsentMapperTest
     public void ItCreatesNewSharedConsentIfItIsInSubmittedStateAndThereAreExistingAnswers()
     {
         var sharedConsent = GivenSharedConsent(state: Submitted);
-        var answerSet = GivenAnswerSet(sharedConsent, answers:
-        [
+        var formAnswers = new List<FormAnswer>
+        {
             GivenAnswer(boolValue: true),
             GivenAnswer(textValue: "Answer 2")
-        ]);
-        var answers = new List<FormAnswer>()
-        {
-            new()
-            {
-                Id = answerSet.Answers.First().Guid,
-                QuestionId = answerSet.Answers.First().Question.Guid,
-                BoolValue = true
-            }
         };
+        var answerSet = GivenAnswerSet(sharedConsent, answers: formAnswers);
 
         var mappedSharedConsent = SharedConsentMapper.Map(sharedConsent);
 
@@ -94,8 +64,8 @@ public class SharedConsentMapperTest
         mappedSharedConsent.AnswerSets.First().CreatedFrom.Should().Be(answerSet.Guid);
         mappedSharedConsent.AnswerSets.First().Answers.First().CreatedFrom.Should().Be(answerSet.Answers.First().Guid);
         mappedSharedConsent.AnswerSets.First().Should().NotBe(answerSet.Guid, "AnswerSet exists and must be cloned");
-        mappedSharedConsent.AnswerSets.First().Answers.First().Guid.Should().NotBe(answers.First().Id);
-        mappedSharedConsent.AnswerSets.First().Answers.First().Question.Guid.Should().Be(answers.First().QuestionId);
-        mappedSharedConsent.AnswerSets.First().Answers.First().BoolValue.Should().Be(answers.First().BoolValue);
+        mappedSharedConsent.AnswerSets.First().Answers.First().Guid.Should().NotBe(formAnswers.First().Guid);
+        mappedSharedConsent.AnswerSets.First().Answers.First().QuestionId.Should().Be(formAnswers.First().QuestionId);
+        mappedSharedConsent.AnswerSets.First().Answers.First().BoolValue.Should().Be(formAnswers.First().BoolValue);
     }
 }

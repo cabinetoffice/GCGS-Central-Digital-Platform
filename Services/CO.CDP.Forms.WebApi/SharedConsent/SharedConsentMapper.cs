@@ -2,7 +2,7 @@ using static CO.CDP.OrganisationInformation.Persistence.Forms.FormSectionType;
 using static CO.CDP.OrganisationInformation.Persistence.Forms.SubmissionState;
 using Persistence = CO.CDP.OrganisationInformation.Persistence.Forms;
 
-namespace CO.CDP.Forms.WebApi.UseCase.SharedConsent;
+namespace CO.CDP.Forms.WebApi.SharedConsent;
 
 public static class SharedConsentMapper
 {
