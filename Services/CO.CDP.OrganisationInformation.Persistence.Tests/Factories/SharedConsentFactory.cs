@@ -1,21 +1,19 @@
-using CO.CDP.OrganisationInformation.Persistence;
-using Persistence = CO.CDP.OrganisationInformation.Persistence.Forms;
 using static CO.CDP.OrganisationInformation.Persistence.Forms.FormSectionType;
 using static CO.CDP.OrganisationInformation.Persistence.Forms.SubmissionState;
 using static CO.CDP.OrganisationInformation.Persistence.Forms.FormQuestionType;
 
-namespace CO.CDP.Forms.WebApi.Tests.UseCase;
+namespace CO.CDP.OrganisationInformation.Persistence.Tests.Factories;
 
 public static class SharedConsentFactory
 {
-    public static Persistence.SharedConsent GivenSharedConsent(
+    public static Persistence.Forms.SharedConsent GivenSharedConsent(
         Organisation? organisation = null,
-        Persistence.Form? form = null,
-        Persistence.SubmissionState? state = null)
+        Persistence.Forms.Form? form = null,
+        Persistence.Forms.SubmissionState? state = null)
     {
         var theOrganisation = organisation ?? GivenOrganisation();
         var theForm = form ?? GivenForm();
-        return new Persistence.SharedConsent()
+        return new Persistence.Forms.SharedConsent()
         {
             Guid = Guid.NewGuid(),
             OrganisationId = theOrganisation.Id,
@@ -30,29 +28,29 @@ public static class SharedConsentFactory
         };
     }
 
-    public static Persistence.Form GivenForm()
+    public static Persistence.Forms.Form GivenForm()
     {
-        return new Persistence.Form
+        return new Persistence.Forms.Form
         {
             Id = 1,
             Guid = Guid.NewGuid(),
             Name = "Sample Form",
             Version = "1.0",
             IsRequired = true,
-            Scope = Persistence.FormScope.SupplierInformation,
-            Sections = new List<Persistence.FormSection>()
+            Scope = Persistence.Forms.FormScope.SupplierInformation,
+            Sections = new List<Persistence.Forms.FormSection>()
         };
     }
 
-    public static Persistence.FormSection GivenFormSection(
+    public static Persistence.Forms.FormSection GivenFormSection(
         Guid? sectionId = null,
-        Persistence.Form? form = null,
-        List<Persistence.FormQuestion>? questions = null,
-        Persistence.FormSectionType type = Standard
+        Persistence.Forms.Form? form = null,
+        List<Persistence.Forms.FormQuestion>? questions = null,
+        Persistence.Forms.FormSectionType type = Standard
     )
     {
         var theForm = form ?? GivenForm();
-        var formSection = new Persistence.FormSection
+        var formSection = new Persistence.Forms.FormSection
         {
             Id = 1,
             Guid = sectionId ?? Guid.NewGuid(),
@@ -64,7 +62,7 @@ public static class SharedConsentFactory
             AllowsMultipleAnswerSets = true,
             CreatedOn = DateTimeOffset.UtcNow,
             UpdatedOn = DateTimeOffset.UtcNow,
-            Configuration = new Persistence.FormSectionConfiguration
+            Configuration = new Persistence.Forms.FormSectionConfiguration
             {
                 PluralSummaryHeadingFormat = "You have added {0} files",
                 SingularSummaryHeading = "You have added 1 file",
@@ -78,14 +76,14 @@ public static class SharedConsentFactory
         return formSection;
     }
 
-    public static Persistence.FormQuestion GivenFormQuestion(
-        Persistence.FormSection? section = null,
+    public static Persistence.Forms.FormQuestion GivenFormQuestion(
+        Persistence.Forms.FormSection? section = null,
         Guid? questionId = null,
-        Persistence.FormQuestionType? type = null
+        Persistence.Forms.FormQuestionType? type = null
     )
     {
         var theSection = section ?? GivenFormSection();
-        var question = new Persistence.FormQuestion
+        var question = new Persistence.Forms.FormQuestion
         {
             Guid = questionId ?? Guid.NewGuid(),
             Title = "Were your accounts audited?",
@@ -95,21 +93,21 @@ public static class SharedConsentFactory
             IsRequired = true,
             NextQuestion = null,
             NextQuestionAlternative = null,
-            Options = new Persistence.FormQuestionOptions(),
+            Options = new Persistence.Forms.FormQuestionOptions(),
             Section = theSection,
         };
         theSection.Questions.Add(question);
         return question;
     }
 
-    public static Persistence.FormAnswerSet GivenAnswerSet(
-        Persistence.SharedConsent sharedConsent,
-        Persistence.FormSection? section = null,
-        List<Persistence.FormAnswer>? answers = null
+    public static Persistence.Forms.FormAnswerSet GivenAnswerSet(
+        Persistence.Forms.SharedConsent sharedConsent,
+        Persistence.Forms.FormSection? section = null,
+        List<Persistence.Forms.FormAnswer>? answers = null
     )
     {
         var theSection = section ?? GivenFormSection();
-        var existingAnswerSet = new Persistence.FormAnswerSet
+        var existingAnswerSet = new Persistence.Forms.FormAnswerSet
         {
             Guid = Guid.NewGuid(),
             SharedConsentId = sharedConsent.Id,
@@ -123,8 +121,8 @@ public static class SharedConsentFactory
         return existingAnswerSet;
     }
 
-    public static Persistence.FormAnswer GivenAnswer(
-        Persistence.FormQuestion? question = null,
+    public static Persistence.Forms.FormAnswer GivenAnswer(
+        Persistence.Forms.FormQuestion? question = null,
         bool? boolValue = null,
         double? numericValue = null,
         DateTime? dateValue = null,
@@ -132,11 +130,11 @@ public static class SharedConsentFactory
         DateTime? endValue = null,
         string? textValue = null,
         string? optionValue = null,
-        Persistence.FormAddress? addressValue = null
+        Persistence.Forms.FormAddress? addressValue = null
     )
     {
         var theQuestion = question ?? GivenFormQuestion();
-        return new Persistence.FormAnswer
+        return new Persistence.Forms.FormAnswer
         {
             Id = 0,
             Guid = Guid.NewGuid(),

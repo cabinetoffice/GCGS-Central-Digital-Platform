@@ -1,12 +1,11 @@
 using static CO.CDP.OrganisationInformation.Persistence.Forms.FormSectionType;
 using static CO.CDP.OrganisationInformation.Persistence.Forms.SubmissionState;
-using Persistence = CO.CDP.OrganisationInformation.Persistence.Forms;
 
-namespace CO.CDP.Forms.WebApi.SharedConsent;
+namespace CO.CDP.OrganisationInformation.Persistence.Forms;
 
 public static class SharedConsentMapper
 {
-    public static Persistence.SharedConsent Map(Persistence.SharedConsent sharedConsent)
+    public static SharedConsent Map(SharedConsent sharedConsent)
     {
         if (sharedConsent.SubmissionState != Submitted)
         {
@@ -30,9 +29,9 @@ public static class SharedConsentMapper
         return newSharedConsent;
     }
 
-    private static Persistence.FormAnswer CreateNewAnswer(
-        Persistence.FormAnswerSet newAnswerSet,
-        Persistence.FormAnswer answer
+    private static FormAnswer CreateNewAnswer(
+        FormAnswerSet newAnswerSet,
+        FormAnswer answer
     ) => new()
     {
         Guid = Guid.NewGuid(),
@@ -51,7 +50,7 @@ public static class SharedConsentMapper
         AddressValue = answer.AddressValue
     };
 
-    private static Persistence.SharedConsent CreateNewSharedConsent(Persistence.SharedConsent sharedConsent) =>
+    private static SharedConsent CreateNewSharedConsent(SharedConsent sharedConsent) =>
         new()
         {
             Id = default,
@@ -65,8 +64,8 @@ public static class SharedConsentMapper
             FormVersionId = sharedConsent.FormVersionId
         };
 
-    private static Persistence.FormAnswerSet CreateNewAnswerSet(
-        Persistence.SharedConsent sharedConsent, Persistence.FormAnswerSet answerSet
+    private static FormAnswerSet CreateNewAnswerSet(
+        SharedConsent sharedConsent, FormAnswerSet answerSet
     ) => new()
     {
         Guid = Guid.NewGuid(),

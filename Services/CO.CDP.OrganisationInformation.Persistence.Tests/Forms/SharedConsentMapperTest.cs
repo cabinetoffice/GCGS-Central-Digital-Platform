@@ -1,10 +1,8 @@
-using CO.CDP.Forms.WebApi.SharedConsent;
 using CO.CDP.OrganisationInformation.Persistence.Forms;
 using FluentAssertions;
-using static CO.CDP.Forms.WebApi.Tests.UseCase.SharedConsentFactory;
 using static CO.CDP.OrganisationInformation.Persistence.Forms.SubmissionState;
-
-namespace CO.CDP.Forms.WebApi.Tests.SharedConsent;
+using static CO.CDP.OrganisationInformation.Persistence.Tests.Factories.SharedConsentFactory;
+namespace CO.CDP.OrganisationInformation.Persistence.Tests.Forms;
 
 public class SharedConsentMapperTest
 {
