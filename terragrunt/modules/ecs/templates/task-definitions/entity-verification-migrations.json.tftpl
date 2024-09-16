@@ -15,8 +15,8 @@
     },
     "environment": [
         {"name": "ASPNETCORE_ENVIRONMENT", "value": "${aspcore_environment}"},
-        {"name": "Aws__LogGroup", "value": "${lg_name}"},
-        {"name": "Aws__LogStream", "value": "${lg_prefix}-serilog"},
+        {"name": "Aws__CloudWatch__LogGroup", "value": "${lg_name}"},
+        {"name": "Aws__CloudWatch__LogStream", "value": "${lg_prefix}-serilog"},
         {"name": "EntityVerificationDatabase__Database", "value": "${db_name}"},
         {"name": "EntityVerificationDatabase__Host", "value": "${db_address}"},
         {"name": "EntityVerificationDatabase__Server", "value": "${db_address}"},

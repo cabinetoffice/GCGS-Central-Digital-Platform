@@ -97,6 +97,10 @@ public class SupplierVatQuestionModel(IOrganisationClient organisationClient,
         }
         else
         {
+            await organisationClient.UpdateOrganisationRemoveIdentifier(
+                organisation.Id,
+                new OrganisationIdentifier(string.Empty, organisation.Name, VatSchemeName));
+
             return RedirectToPage("SupplierBasicInformation", new { Id });
         }
 

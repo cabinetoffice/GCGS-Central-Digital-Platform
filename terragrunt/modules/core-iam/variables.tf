@@ -20,6 +20,12 @@ variable "pen_testing_user_arns" {
   default     = []
 }
 
+variable "pen_testing_external_user_arns" {
+  description = "List of external user ARNs to grant access for pen testing"
+  type        = list(string)
+  default     = []
+}
+
 variable "product" {
   description = "product's common attributes"
   type = object({

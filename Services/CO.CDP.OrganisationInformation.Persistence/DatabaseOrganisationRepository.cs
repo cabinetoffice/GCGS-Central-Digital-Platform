@@ -1,6 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using static CO.CDP.OrganisationInformation.Persistence.ConnectedEntity;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace CO.CDP.OrganisationInformation.Persistence;
 
@@ -15,7 +13,7 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
     {
         return await context.Organisations
             .Include(p => p.Addresses)
-            .ThenInclude(p => p.Address)            
+            .ThenInclude(p => p.Address)
             .FirstOrDefaultAsync(t => t.Guid == organisationId);
     }
 
@@ -63,7 +61,7 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
     {
         var result = context.ConnectedEntities
             .Include(x => x.IndividualOrTrust)
-            .Where(x => x.IndividualOrTrust != null && x.EntityType == ConnectedEntityType.Individual)
+            .Where(x => x.IndividualOrTrust != null && x.EntityType == ConnectedEntity.ConnectedEntityType.Individual)
             .Where(x => x.SupplierOrganisation != null && x.SupplierOrganisation.Id == organisationId);
 
         return await result.ToListAsync();
@@ -73,7 +71,7 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
     {
         var result = context.ConnectedEntities
             .Include(x => x.Organisation)
-            .Where(x => x.Organisation != null && x.EntityType == ConnectedEntityType.Organisation)
+            .Where(x => x.Organisation != null && x.EntityType == ConnectedEntity.ConnectedEntityType.Organisation)
             .Where(x => x.SupplierOrganisation != null && x.SupplierOrganisation.Id == organisationId);
 
         return await result.ToListAsync();
