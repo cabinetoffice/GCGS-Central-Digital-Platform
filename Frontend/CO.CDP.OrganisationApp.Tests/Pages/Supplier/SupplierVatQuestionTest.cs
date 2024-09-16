@@ -92,14 +92,17 @@ public class SupplierVatModelQuestionTest
             .ReturnsAsync(fakeOrg);
 
         var result = await _model.OnPost();
+
         var expectedUpdate = new UpdatedOrganisation(
-            new OrganisationInfo(
-                null,
-                null,
-                null,
-                new OrganisationIdentifier(string.Empty, fakeOrg.Name, "VAT")),
-            type: OrganisationUpdateType.RemoveIdentifier
-        );
+            type: OrganisationUpdateType.RemoveIdentifier,
+            organisation: new OrganisationInfo(
+                additionalIdentifiers: null,
+                contactPoint: null,
+                addresses: null,
+                identifierToRemove: new OrganisationIdentifier(
+                    string.Empty,
+                    fakeOrg.Name,
+                    "VAT")));
 
         _organisationClientMock.Verify(o => o.UpdateOrganisationAsync(id, expectedUpdate), Times.Once);
 
