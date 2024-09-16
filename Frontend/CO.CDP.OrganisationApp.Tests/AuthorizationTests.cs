@@ -105,6 +105,7 @@ public class AuthorizationTests
         var responseBody = await response.Content.ReadAsStringAsync();
 
         Assert.NotNull(responseBody);
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         foreach (string expectedText in expectedTexts)
         {
             Assert.Contains(expectedText, responseBody);
