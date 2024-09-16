@@ -33,12 +33,6 @@ public class UserSummaryModel(
         try
         {
             Persons = await organisationClient.GetOrganisationPersonsAsync(Id);
-
-            if (!UserHasAdminScopeForOrganisation())
-            {
-                return Redirect("/page-not-found");
-            }
-
             PersonInvites = await organisationClient.GetOrganisationPersonInvitesAsync(Id);
         }
         catch (ApiException ex) when (ex.StatusCode == 404)
@@ -64,25 +58,5 @@ public class UserSummaryModel(
         }
 
         return Redirect("/organisation/" + Id);
-    }
-
-    public bool UserHasAdminScopeForOrganisation()
-    {
-        bool userIsAdminForOrg = false;
-
-        foreach (var person in Persons)
-        {
-            if (person.Id == SignedInPersonId && person.Scopes.Contains(OrganisationPersonScopes.Admin))
-            {
-                userIsAdminForOrg = true;
-            }
-        }
-
-        if (!userIsAdminForOrg)
-        {
-            return false;
-        }
-
-        return true;
     }
 }

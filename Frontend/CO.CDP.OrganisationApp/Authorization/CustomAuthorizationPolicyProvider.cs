@@ -19,7 +19,6 @@ public class CustomAuthorizationPolicyProvider : IAuthorizationPolicyProvider
         {
             var role = policyName.Substring(POLICY_PREFIX.Length);
 
-            // Create a dynamic policy with the custom role requirement
             var policy = new AuthorizationPolicyBuilder()
                 .RequireAuthenticatedUser()
                 .AddRequirements(new OrganizationScopeRequirement(role))
@@ -28,7 +27,6 @@ public class CustomAuthorizationPolicyProvider : IAuthorizationPolicyProvider
             return Task.FromResult<AuthorizationPolicy?>(policy);
         }
 
-        // Fall back to the default provider for other policies
         return _fallbackPolicyProvider.GetPolicyAsync(policyName);
     }
 
