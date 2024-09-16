@@ -33,13 +33,13 @@ public class OrganisationAuthorizationPolicyProvider(IOptions<AuthorizationOptio
     {
         if (!string.IsNullOrWhiteSpace(policyName))
         {
-            var requirement = GetRequirement(policyName);
+            var requirements = GetRequirements(policyName);
 
-            if (requirement != null)
+            if (requirements.Length > 0)
             {
                 var policy = new AuthorizationPolicyBuilder(Extensions.JwtBearerOrApiKeyScheme)
                     .RequireAuthenticatedUser()
-                    .AddRequirements(requirement)
+                    .AddRequirements(requirements)
                     .Build();
 
                 return Task.FromResult<AuthorizationPolicy?>(policy);
@@ -49,11 +49,11 @@ public class OrganisationAuthorizationPolicyProvider(IOptions<AuthorizationOptio
         return _fallbackPolicyProvider.GetPolicyAsync(policyName);
     }
 
-    private static OrganisationAuthorizationRequirement? GetRequirement(string policyName)
+    private static IAuthorizationRequirement[] GetRequirements(string policyName)
     {
         if (!policyName.StartsWith(OrganisationAuthorizeAttribute.PolicyPrefix))
         {
-            return null;
+            return [];
         }
 
         var policyTokens = policyName[OrganisationAuthorizeAttribute.PolicyPrefix.Length..]
@@ -91,6 +91,13 @@ public class OrganisationAuthorizationPolicyProvider(IOptions<AuthorizationOptio
             }
         }
 
-        return new OrganisationAuthorizationRequirement(channels, scopes, organisationIdLocation);
+        List<IAuthorizationRequirement> requirements = [new ChannelAuthorizationRequirement(channels)];
+
+        if (channels.Contains(AuthenticationChannel.OneLogin) && scopes.Length > 0)
+        {
+            requirements.Add(new OrganisationScopeAuthorizationRequirement(scopes, organisationIdLocation));
+        }
+
+        return [.. requirements];
     }
 }

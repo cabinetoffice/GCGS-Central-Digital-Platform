@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 namespace CO.CDP.Authentication.Authorization;
 
 /*
- * Examples below how the attribute parameters are converted to policy name
+ * Examples how the attribute parameters are converted to policy name
  * 
  * [OrganisationAuthorize([AuthenticationChannel.OneLogin, AuthenticationChannel.ServiceKey], ["ADMIN", "VIEWER"], OrganisationIdLocation.Path)]
  * Org_Channels$OneLogin|ServiceKey;Scopes$ADMIN|VIEWER;OrgIdLoc$Path;

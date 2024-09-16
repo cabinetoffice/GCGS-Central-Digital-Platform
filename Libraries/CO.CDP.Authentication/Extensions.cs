@@ -75,7 +75,8 @@ public static class Extensions
     {
         services.TryAddScoped<ITenantRepository, DatabaseTenantRepository>();
         services.AddSingleton<IAuthorizationPolicyProvider, OrganisationAuthorizationPolicyProvider>();
-        services.AddScoped<IAuthorizationHandler, OrganisationAuthorizationHandler>();
+        services.AddSingleton<IAuthorizationHandler, ChannelAuthorizationHandler>();
+        services.AddScoped<IAuthorizationHandler, OrganisationScopeAuthorizationHandler>();
         services.AddAuthorization();
 
         return services;

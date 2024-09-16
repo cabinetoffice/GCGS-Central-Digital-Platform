@@ -9,55 +9,31 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace CO.CDP.Authentication.Authorization;
 
-public class OrganisationAuthorizationHandler(
+public class OrganisationScopeAuthorizationHandler(
     IHttpContextAccessor httpContextAccessor,
     ITenantRepository tenantRepository)
-    : AuthorizationHandler<OrganisationAuthorizationRequirement>
+    : AuthorizationHandler<OrganisationScopeAuthorizationRequirement>
 {
     private const string RegexGuid = @"[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}";
 
-    protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, OrganisationAuthorizationRequirement requirement)
+    protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, OrganisationScopeAuthorizationRequirement requirement)
     {
-        if (ValidateChannel(context, requirement.Channels))
+        var userUrn = context.User.FindFirstValue("sub");
+        var organisationId = await FetchOrganisationIdAsync(requirement.OrganisationIdLocation);
+
+        if (!string.IsNullOrWhiteSpace(userUrn)
+            && !string.IsNullOrWhiteSpace(organisationId)
+            && Guid.TryParse(organisationId, out var organisationGuid))
         {
-            if (!requirement.Channels.Contains(AuthenticationChannel.OneLogin) || requirement.Scopes.Length == 0)
+            var lookup = await tenantRepository.LookupTenant(userUrn);
+            List<string> orgScopes = lookup?.Tenants?.SelectMany(t => t.Organisations)?
+                        .FirstOrDefault(o => o.Id == organisationGuid)?.Scopes ?? [];
+
+            if (requirement.Scopes.Intersect(orgScopes).Any())
             {
                 context.Succeed(requirement);
             }
-            else
-            {
-                var userUrn = context.User.FindFirstValue("sub");
-                var organisationId = await FetchOrganisationIdAsync(requirement.OrganisationIdLocation);
-
-                if (!string.IsNullOrWhiteSpace(userUrn)
-                    && !string.IsNullOrWhiteSpace(organisationId)
-                    && Guid.TryParse(organisationId, out var organisationGuid))
-                {
-                    var lookup = await tenantRepository.LookupTenant(userUrn);
-                    List<string> orgScopes = lookup?.Tenants?.SelectMany(t => t.Organisations)?
-                                .FirstOrDefault(o => o.Id == organisationGuid)?.Scopes ?? [];
-
-                    if (requirement.Scopes.Intersect(orgScopes).Any())
-                    {
-                        context.Succeed(requirement);
-                    }
-                }
-            }
         }
-    }
-
-    private static bool ValidateChannel(AuthorizationHandlerContext context, AuthenticationChannel[] channels)
-    {
-        var hasOneLoginChannelClaim = channels.Contains(AuthenticationChannel.OneLogin)
-                                        && context.User.HasClaim("channel", "one-login");
-
-        var hasOrganisationKeyChannelClaim = channels.Contains(AuthenticationChannel.OrganisationKey)
-                                        && context.User.HasClaim("channel", "organisation-key");
-
-        var hasServiceKeyChannelClaim = channels.Contains(AuthenticationChannel.ServiceKey)
-                                        && context.User.HasClaim("channel", "service-key");
-
-        return hasOneLoginChannelClaim || hasOrganisationKeyChannelClaim || hasServiceKeyChannelClaim;
     }
 
     private async Task<string?> FetchOrganisationIdAsync(OrganisationIdLocation organisationIdLocation)
@@ -80,9 +56,9 @@ public class OrganisationAuthorizationHandler(
                 break;
 
             case OrganisationIdLocation.Body:
-                if (currentRequest.Body == null && currentRequest.ContentType != Application.Json) return null;
+                if (currentRequest.Body == null || currentRequest.ContentType != Application.Json) return null;
 
-                if (!currentRequest.Body!.CanSeek) currentRequest.EnableBuffering();
+                if (!currentRequest.Body.CanSeek) currentRequest.EnableBuffering();
                 currentRequest.Body.Position = 0;
                 var reader = new StreamReader(currentRequest.Body, Encoding.UTF8);
                 var body = await reader.ReadToEndAsync().ConfigureAwait(false);
