@@ -70,12 +70,6 @@ public class DatabaseFormRepository(OrganisationInformationContext context) : IF
         await context.SaveChangesAsync();
     }
 
-    public async Task<FormSection?> GetFormSectionAsync(Guid sectionId)
-    {
-        return await context.Set<FormSection>()
-            .FirstOrDefaultAsync(s => s.Guid == sectionId);
-    }
-
     public async Task<SharedConsent?> GetSharedConsentWithAnswersAsync(Guid formId, Guid organisationId)
     {
         return await context.Set<SharedConsent>()
@@ -104,12 +98,12 @@ public class DatabaseFormRepository(OrganisationInformationContext context) : IF
             .ToListAsync();
     }
 
-    public async Task<FormAnswerSet?> GetFormAnswerSetAsync(Guid sectionId, Guid organisationId, Guid answerSetId)
+    public async Task<FormAnswerSet?> GetFormAnswerSetAsync(Guid organisationId, Guid answerSetId)
     {
         return await context.Set<FormAnswerSet>()
             .Include(a => a.Answers)
             .Include(b => b.SharedConsent)
-            .FirstOrDefaultAsync(a => a.Guid == answerSetId && a.Section.Guid == sectionId && a.SharedConsent.Organisation.Guid == organisationId);
+            .FirstOrDefaultAsync(a => a.Guid == answerSetId && a.SharedConsent.Organisation.Guid == organisationId);
     }
 
     public async Task<bool> DeleteAnswerSetAsync(Guid organisationId, Guid answerSetId)

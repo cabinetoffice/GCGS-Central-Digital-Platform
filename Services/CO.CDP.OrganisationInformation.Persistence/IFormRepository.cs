@@ -13,13 +13,6 @@ public interface IFormRepository : IDisposable
     Task<IEnumerable<FormQuestion>> GetQuestionsAsync(Guid sectionId);
 
     Task<List<FormAnswerSet>> GetFormAnswerSetsFromCurrentSharedConsentAsync(Guid sectionId, Guid organisationId);
-    Task<FormAnswerSet?> GetFormAnswerSetAsync(Guid sectionId, Guid organisationId, Guid answerSetId);
+    Task<FormAnswerSet?> GetFormAnswerSetAsync(Guid organisationId, Guid answerSetId);
     Task<bool> DeleteAnswerSetAsync(Guid organisationId, Guid answerSetId);
-    Task SaveAnswerSet(FormAnswerSet answerSet);
-
-    public class FormRepositoryException(string message, Exception? cause = null) : Exception(message, cause)
-    {
-        public class DuplicateFormAnswerSetException(string message, Exception? cause = null)
-            : FormRepositoryException(message, cause);
-    }
 }

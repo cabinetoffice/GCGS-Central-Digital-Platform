@@ -7,14 +7,14 @@ namespace CO.CDP.OrganisationInformation.Persistence.Tests.Factories;
 
 public static class SharedConsentFactory
 {
-    public static Persistence.Forms.SharedConsent GivenSharedConsent(
+    public static SharedConsent GivenSharedConsent(
         Organisation? organisation = null,
-        Persistence.Forms.Form? form = null,
-        Persistence.Forms.SubmissionState? state = null)
+        Form? form = null,
+        SubmissionState? state = null)
     {
         var theOrganisation = organisation ?? GivenOrganisation();
         var theForm = form ?? GivenForm();
-        return new Persistence.Forms.SharedConsent()
+        return new SharedConsent()
         {
             Guid = Guid.NewGuid(),
             OrganisationId = theOrganisation.Id,
@@ -29,30 +29,30 @@ public static class SharedConsentFactory
         };
     }
 
-    public static Persistence.Forms.Form GivenForm(
+    public static Form GivenForm(
         Guid? formId = null
     )
     {
-        return new Persistence.Forms.Form
+        return new Form
         {
             Guid = formId ?? Guid.NewGuid(),
             Name = "Sample Form",
             Version = "1.0",
             IsRequired = true,
-            Scope = Persistence.Forms.FormScope.SupplierInformation,
-            Sections = new List<Persistence.Forms.FormSection>()
+            Scope = FormScope.SupplierInformation,
+            Sections = new List<FormSection>()
         };
     }
 
-    public static Persistence.Forms.FormSection GivenFormSection(
+    public static FormSection GivenFormSection(
         Guid? sectionId = null,
-        Persistence.Forms.Form? form = null,
-        List<Persistence.Forms.FormQuestion>? questions = null,
-        Persistence.Forms.FormSectionType type = Standard
+        Form? form = null,
+        List<FormQuestion>? questions = null,
+        FormSectionType type = Standard
     )
     {
         var theForm = form ?? GivenForm();
-        var formSection = new Persistence.Forms.FormSection
+        var formSection = new FormSection
         {
             Guid = sectionId ?? Guid.NewGuid(),
             Title = "Financial Information",
@@ -63,7 +63,7 @@ public static class SharedConsentFactory
             AllowsMultipleAnswerSets = true,
             CreatedOn = DateTimeOffset.UtcNow,
             UpdatedOn = DateTimeOffset.UtcNow,
-            Configuration = new Persistence.Forms.FormSectionConfiguration
+            Configuration = new FormSectionConfiguration
             {
                 PluralSummaryHeadingFormat = "You have added {0} files",
                 SingularSummaryHeading = "You have added 1 file",
@@ -104,18 +104,21 @@ public static class SharedConsentFactory
     public static FormAnswerSet GivenAnswerSet(
         SharedConsent sharedConsent,
         FormSection? section = null,
-        List<FormAnswer>? answers = null
+        List<FormAnswer>? answers = null,
+        Guid? answerSetId = null,
+        bool deleted = false
     )
     {
         var theSection = section ?? GivenFormSection();
         var existingAnswerSet = new FormAnswerSet
         {
-            Guid = Guid.NewGuid(),
+            Guid = answerSetId ?? Guid.NewGuid(),
             SharedConsentId = sharedConsent.Id,
             SharedConsent = sharedConsent,
             SectionId = theSection.Id,
             Section = theSection,
-            Answers = answers ?? []
+            Answers = answers ?? [],
+            Deleted = deleted
         };
         sharedConsent.AnswerSets.Add(existingAnswerSet);
         answers?.ForEach(a => a.FormAnswerSet = existingAnswerSet);
