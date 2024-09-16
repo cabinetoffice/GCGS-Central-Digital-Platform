@@ -12,6 +12,10 @@ using System.Net;
 
 namespace CO.CDP.OrganisationApp.Tests;
 
+[CollectionDefinition("Non-Parallel Collection", DisableParallelization = true)]
+public class NonParallelCollection { }
+
+[Collection("Non-Parallel Collection")]
 public class AuthorizationTests
 {
     private static readonly Mock<TenantClient> tenantClient = new Mock<TenantClient>("https://whatever", new HttpClient());
