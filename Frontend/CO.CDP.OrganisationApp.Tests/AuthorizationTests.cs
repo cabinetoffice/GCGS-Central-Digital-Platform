@@ -11,17 +11,20 @@ namespace CO.CDP.OrganisationApp.Tests;
 
 public class AuthorizationTests
 {
-    private readonly HttpClient _httpClient;
     private static readonly Mock<TenantClient> tenantClient = new Mock<TenantClient>("https://whatever", new HttpClient());
     private static readonly Mock<PersonClient> personClient = new Mock<PersonClient>("https://whatever", new HttpClient());
     private static readonly Mock<OrganisationClient> organisationClient = new Mock<OrganisationClient>("https://whatever", new HttpClient());
     private static readonly Mock<ISession> _mockSession = new Mock<ISession>();
     private static Guid testOrganisationId = new Guid("0510ce2a-10c9-4c1a-b9cb-3d65c52aa7b7");
     private static Guid personId = new Guid("5b0d3aa8-94cd-4ede-ba03-546937035690");
+    private static Guid personInviteGuid = new Guid("330fb1d4-26e2-4c69-898f-6197f9321361");
 
     public AuthorizationTests()
     {
+    }
 
+    public HttpClient BuildHttpClient(List<string> userScopes)
+    {
         var services = new ServiceCollection();
 
         var organisation = new UserOrganisation(
@@ -31,7 +34,7 @@ public class AuthorizationTests
                                         Tenant.WebApiClient.PartyRole.Supplier,
                                         Tenant.WebApiClient.PartyRole.ProcuringEntity
                                     },
-                                    new List<string> { "ADMIN" },
+                                    userScopes,
                                     new Uri("http://foo")
                                 );
 
@@ -66,7 +69,7 @@ public class AuthorizationTests
             .ReturnsAsync(
                 new List<PersonInviteModel>
                 {
-                    new PersonInviteModel("a@b.com", "First name", new Guid(), "Last name", new List<string>() { OrganisationPersonScopes.Admin, OrganisationPersonScopes.Editor })
+                    new PersonInviteModel("a@b.com", "Person invite", personInviteGuid, "Last name", new List<string>() { OrganisationPersonScopes.Admin, OrganisationPersonScopes.Editor })
                 }
             );
 
@@ -80,18 +83,21 @@ public class AuthorizationTests
         services.AddSingleton<IPolicyEvaluator, FakeAuthenticationPolicyEvaluator>();
 
         var factory = new CustomisableWebApplicationFactory<Program>(services);
-        _httpClient = factory.CreateClient();
+        return factory.CreateClient();
     }
 
-    public static IEnumerable<object[]> SuccessfulTestCases()
+    public static IEnumerable<object[]> TestCases()
     {
-        yield return new object[] { $"/organisation/{testOrganisationId}/users/user-summary", "Organisation has 2 users" };
+        yield return new object[] { $"/organisation/{testOrganisationId}/users/user-summary", new string[] { "Organisation has 2 users" } };
+        yield return new object[] { $"/organisation/{testOrganisationId}/users/{personInviteGuid}/change-role?handler=personInvite", new string[] { "Person invite Last name", "Can add, remove and edit users" } };
     }
 
     [Theory]
-    [MemberData(nameof(SuccessfulTestCases))]
-    public async Task TestAuthorizationIsSuccessful_WhenUserIsAllowedToAccessResource(string url, string expectedText)
+    [MemberData(nameof(TestCases))]
+    public async Task TestAuthorizationIsSuccessful_WhenUserIsAllowedToAccessResourceAsAdminUser(string url, string[] expectedTexts)
     {
+        var _httpClient = BuildHttpClient(new List<string> { OrganisationPersonScopes.Admin });
+
         var request = new HttpRequestMessage(HttpMethod.Get, url);
 
         var response = await _httpClient.SendAsync(request);
@@ -99,19 +105,35 @@ public class AuthorizationTests
         var responseBody = await response.Content.ReadAsStringAsync();
 
         Assert.NotNull(responseBody);
-        Assert.Contains(expectedText, responseBody);
-    }
-
-    public static IEnumerable<object[]> UnsuccessfulTestCases()
-    {
-        // Note that the organisation ID in these URLs intentionally doesn't match the organisation that is mocked above
-        yield return new object[] { $"/organisation/69457513-5cf6-4450-945b-d56e6c195147/users/user-summary" };
+        foreach (string expectedText in expectedTexts)
+        {
+            Assert.Contains(expectedText, responseBody);
+        }
     }
 
     [Theory]
-    [MemberData(nameof(UnsuccessfulTestCases))]
-    public async Task TestAuthorizationIsUnsuccessful_WhenUserIsNotAllowedToAccessResource(string url)
+    [MemberData(nameof(TestCases))]
+    public async Task TestAuthorizationIsUnsuccessful_WhenUserIsNotAllowedToAccessResourceAsEditorUser(string url, string[] _)
     {
+        var _httpClient = BuildHttpClient(new List<string> { OrganisationPersonScopes.Editor });
+
+        var request = new HttpRequestMessage(HttpMethod.Get, url);
+
+        var response = await _httpClient.SendAsync(request);
+
+        var responseBody = await response.Content.ReadAsStringAsync();
+
+        Assert.NotNull(responseBody);
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        Assert.Contains("Page not found", responseBody);
+    }
+
+    [Theory]
+    [MemberData(nameof(TestCases))]
+    public async Task TestAuthorizationIsUnsuccessful_WhenUserIsNotAllowedToAccessResourceAsUserWithoutPermissions(string url, string[] _)
+    {
+        var _httpClient = BuildHttpClient(new List<string> { });
+
         var request = new HttpRequestMessage(HttpMethod.Get, url);
 
         var response = await _httpClient.SendAsync(request);
