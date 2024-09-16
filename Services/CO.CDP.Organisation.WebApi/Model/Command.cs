@@ -56,15 +56,21 @@ public record UpdateOrganisation
 public enum OrganisationUpdateType
 {
     AdditionalIdentifiers,
-    ContactPoint,
-    Address
+    ContactPoint,    
+    RemoveIdentifier,
+    Address,
+    OrganisationName,
+    OrganisationEmail,   
+    RegisteredAddress
 }
 
 public record OrganisationInfo
 {
+    public string? OrganisationName { get; set; }
     public List<OrganisationIdentifier>? AdditionalIdentifiers { get; init; }
     public OrganisationContactPoint? ContactPoint { get; init; }
     public List<OrganisationAddress>? Addresses { get; init; }
+    public OrganisationIdentifier? IdentifierToRemove { get; init; }
 }
 
 public record OrganisationIdentifier
