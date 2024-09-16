@@ -48,8 +48,7 @@ public class UpdateOrganisationUseCase(
 
                 var newAddress = updateObject.Addresses.FirstOrDefault(x => x.Type == AddressType.Registered);
                 if (newAddress == null)
-                    throw new InvalidUpdateOrganisationCommand("Organisation regsitered address does not exists.");
-
+                    throw new InvalidUpdateOrganisationCommand("Missing Organisation regsitered address.");
 
                 var existingAddress = organisation.Addresses.FirstOrDefault(i => i.Type == newAddress.Type);
                 if (existingAddress != null)
