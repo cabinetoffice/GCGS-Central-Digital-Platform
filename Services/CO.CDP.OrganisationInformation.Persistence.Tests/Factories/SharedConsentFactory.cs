@@ -1,3 +1,4 @@
+using CO.CDP.OrganisationInformation.Persistence.Forms;
 using static CO.CDP.OrganisationInformation.Persistence.Forms.FormSectionType;
 using static CO.CDP.OrganisationInformation.Persistence.Forms.SubmissionState;
 using static CO.CDP.OrganisationInformation.Persistence.Forms.FormQuestionType;
@@ -28,12 +29,13 @@ public static class SharedConsentFactory
         };
     }
 
-    public static Persistence.Forms.Form GivenForm()
+    public static Persistence.Forms.Form GivenForm(
+        Guid? formId = null
+    )
     {
         return new Persistence.Forms.Form
         {
-            Id = 1,
-            Guid = Guid.NewGuid(),
+            Guid = formId ?? Guid.NewGuid(),
             Name = "Sample Form",
             Version = "1.0",
             IsRequired = true,
@@ -52,7 +54,6 @@ public static class SharedConsentFactory
         var theForm = form ?? GivenForm();
         var formSection = new Persistence.Forms.FormSection
         {
-            Id = 1,
             Guid = sectionId ?? Guid.NewGuid(),
             Title = "Financial Information",
             FormId = theForm.Id,
@@ -76,38 +77,38 @@ public static class SharedConsentFactory
         return formSection;
     }
 
-    public static Persistence.Forms.FormQuestion GivenFormQuestion(
-        Persistence.Forms.FormSection? section = null,
+    public static FormQuestion GivenFormQuestion(
+        FormSection? section = null,
         Guid? questionId = null,
-        Persistence.Forms.FormQuestionType? type = null
+        FormQuestionType? type = null
     )
     {
         var theSection = section ?? GivenFormSection();
-        var question = new Persistence.Forms.FormQuestion
+        var question = new FormQuestion
         {
             Guid = questionId ?? Guid.NewGuid(),
             Title = "Were your accounts audited?",
             Caption = "",
-            Description = "",
+            Description = "Please answer.",
             Type = type ?? YesOrNo,
             IsRequired = true,
             NextQuestion = null,
             NextQuestionAlternative = null,
-            Options = new Persistence.Forms.FormQuestionOptions(),
+            Options = new FormQuestionOptions(),
             Section = theSection,
         };
         theSection.Questions.Add(question);
         return question;
     }
 
-    public static Persistence.Forms.FormAnswerSet GivenAnswerSet(
-        Persistence.Forms.SharedConsent sharedConsent,
-        Persistence.Forms.FormSection? section = null,
-        List<Persistence.Forms.FormAnswer>? answers = null
+    public static FormAnswerSet GivenAnswerSet(
+        SharedConsent sharedConsent,
+        FormSection? section = null,
+        List<FormAnswer>? answers = null
     )
     {
         var theSection = section ?? GivenFormSection();
-        var existingAnswerSet = new Persistence.Forms.FormAnswerSet
+        var existingAnswerSet = new FormAnswerSet
         {
             Guid = Guid.NewGuid(),
             SharedConsentId = sharedConsent.Id,
@@ -121,8 +122,8 @@ public static class SharedConsentFactory
         return existingAnswerSet;
     }
 
-    public static Persistence.Forms.FormAnswer GivenAnswer(
-        Persistence.Forms.FormQuestion? question = null,
+    public static FormAnswer GivenAnswer(
+        FormQuestion? question = null,
         bool? boolValue = null,
         double? numericValue = null,
         DateTime? dateValue = null,
@@ -130,13 +131,14 @@ public static class SharedConsentFactory
         DateTime? endValue = null,
         string? textValue = null,
         string? optionValue = null,
-        Persistence.Forms.FormAddress? addressValue = null
+        FormAddress? addressValue = null,
+        FormAnswerSet? answerSet = null
     )
     {
         var theQuestion = question ?? GivenFormQuestion();
-        return new Persistence.Forms.FormAnswer
+        var answer = new FormAnswer
         {
-            Id = 0,
+            Id = default,
             Guid = Guid.NewGuid(),
             QuestionId = theQuestion.Id,
             Question = theQuestion,
@@ -152,6 +154,8 @@ public static class SharedConsentFactory
             CreatedOn = DateTimeOffset.UtcNow,
             UpdatedOn = DateTimeOffset.UtcNow,
         };
+        answerSet?.Answers.Add(answer);
+        return answer;
     }
 
     public static Organisation GivenOrganisation(Guid? organisationId = null)
