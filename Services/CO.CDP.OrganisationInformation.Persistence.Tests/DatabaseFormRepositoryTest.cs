@@ -327,6 +327,7 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
             Section = section,
             Answers = new List<FormAnswer>(),
             Deleted = false,
+            FurtherQuestionsExempted = false,
             CreatedOn = DateTimeOffset.UtcNow,
             UpdatedOn = DateTimeOffset.UtcNow
         };
@@ -391,6 +392,7 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
             Section = section,
             Answers = [],
             Deleted = true,
+            FurtherQuestionsExempted = false,
             CreatedOn = DateTimeOffset.UtcNow,
             UpdatedOn = DateTimeOffset.UtcNow
         };
@@ -434,6 +436,7 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
             SharedConsent = sharedConsent,
             SectionId = section.Id,
             Section = section,
+            FurtherQuestionsExempted = false,
             Answers = new List<FormAnswer>(),
             CreatedOn = DateTimeOffset.UtcNow,
             UpdatedOn = DateTimeOffset.UtcNow
@@ -495,6 +498,7 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
             Section = section,
             Answers = new List<FormAnswer>(),
             Deleted = false,
+            FurtherQuestionsExempted = false,
             CreatedOn = DateTimeOffset.UtcNow,
             UpdatedOn = DateTimeOffset.UtcNow
         };
@@ -583,6 +587,7 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
             Section = section,
             Answers = new List<FormAnswer>(),
             Deleted = false,
+            FurtherQuestionsExempted = false,
             CreatedOn = DateTimeOffset.UtcNow,
             UpdatedOn = DateTimeOffset.UtcNow
         };
@@ -773,6 +778,7 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
             SectionId = section.Id,
             Section = section,
             Answers = [],
+            FurtherQuestionsExempted = false,
         };
         sharedConsent.AnswerSets.Add(answerSet);
         return answerSet;

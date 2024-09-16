@@ -175,7 +175,8 @@ public class GetFormSectionQuestionsTest
                             QuestionId=question4,
                             DateValue=DateTime.Now
                         }
-                    }
+                    },
+                    FurtherQuestionsExempted = false
                 }
 
             }

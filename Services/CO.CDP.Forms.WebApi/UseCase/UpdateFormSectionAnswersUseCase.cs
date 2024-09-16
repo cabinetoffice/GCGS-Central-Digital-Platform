@@ -125,13 +125,20 @@ public class UpdateFormSectionAnswersUseCase(
                                                    && $"{a.StreetAddress}{a.Locality}{a.Region ?? ""}{a.PostalCode}{a.Country}"
                                                        .Equals($"{b.StreetAddress}{b.Locality}{b.Region ?? ""}{b.PostalCode}{b.Country}"));
 
-        if (existingAnswer.BoolValue != answer.BoolValue) existingAnswer.BoolValue = answer.BoolValue;
-        if (existingAnswer.NumericValue != answer.NumericValue) existingAnswer.NumericValue = answer.NumericValue;
-        if (existingAnswer.DateValue != answer.DateValue) existingAnswer.DateValue = answer.DateValue?.ToUniversalTime();
-        if (existingAnswer.StartValue != answer.StartValue) existingAnswer.StartValue = answer.StartValue?.ToUniversalTime();
-        if (existingAnswer.EndValue != answer.EndValue) existingAnswer.EndValue = answer.EndValue?.ToUniversalTime();
-        if (existingAnswer.TextValue != answer.TextValue) existingAnswer.TextValue = answer.TextValue;
-        if (existingAnswer.OptionValue != answer.OptionValue) existingAnswer.OptionValue = answer.OptionValue;
+        if (existingAnswer.BoolValue != answer.BoolValue)
+            existingAnswer.BoolValue = answer.BoolValue;
+        if (existingAnswer.NumericValue != answer.NumericValue)
+            existingAnswer.NumericValue = answer.NumericValue;
+        if (existingAnswer.DateValue != answer.DateValue)
+            existingAnswer.DateValue = answer.DateValue?.ToUniversalTime();
+        if (existingAnswer.StartValue != answer.StartValue)
+            existingAnswer.StartValue = answer.StartValue?.ToUniversalTime();
+        if (existingAnswer.EndValue != answer.EndValue)
+            existingAnswer.EndValue = answer.EndValue?.ToUniversalTime();
+        if (existingAnswer.TextValue != answer.TextValue)
+            existingAnswer.TextValue = answer.TextValue;
+        if (existingAnswer.OptionValue != answer.OptionValue)
+            existingAnswer.OptionValue = answer.OptionValue;
         if (!AreSameAddress(existingAnswer.AddressValue, answer.AddressValue))
         {
             existingAnswer.AddressValue = answer.AddressValue == null ? null : new Persistence.FormAddress
@@ -173,6 +180,7 @@ public class UpdateFormSectionAnswersUseCase(
             SectionId = section.Id,
             Section = section,
             Answers = [],
+            FurtherQuestionsExempted = sharedConsent.AnswerSets.FirstOrDefault(x => x.Guid == answerSetId)?.FurtherQuestionsExempted != null,
         };
         sharedConsent.AnswerSets.Add(answerSet);
         return answerSet;

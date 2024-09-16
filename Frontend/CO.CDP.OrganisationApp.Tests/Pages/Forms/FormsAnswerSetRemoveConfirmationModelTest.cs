@@ -34,7 +34,7 @@ public class FormsAnswerSetRemoveConfirmationModelTest
                      removeConfirmationHeading: "Test confimration heading",
                      singularSummaryHeading: null)),
              questions: [],
-             answerSets: [new FormAnswerSet(id: _pageModel.AnswerSetId, answers: [])]
+             answerSets: [new FormAnswerSet(id: _pageModel.AnswerSetId, answers: [], furtherQuestionsExempted: false)]
              ));
     }
 

@@ -1,8 +1,8 @@
 using CO.CDP.OrganisationInformation.Persistence;
-using Persistence = CO.CDP.OrganisationInformation.Persistence.Forms;
+using static CO.CDP.OrganisationInformation.Persistence.Forms.FormQuestionType;
 using static CO.CDP.OrganisationInformation.Persistence.Forms.FormSectionType;
 using static CO.CDP.OrganisationInformation.Persistence.Forms.SubmissionState;
-using static CO.CDP.OrganisationInformation.Persistence.Forms.FormQuestionType;
+using Persistence = CO.CDP.OrganisationInformation.Persistence.Forms;
 
 namespace CO.CDP.Forms.WebApi.Tests.UseCase;
 
@@ -116,7 +116,8 @@ public static class SharedConsentFactory
             SharedConsent = sharedConsent,
             SectionId = theSection.Id,
             Section = theSection,
-            Answers = answers ?? []
+            Answers = answers ?? [],
+            FurtherQuestionsExempted = false
         };
         sharedConsent.AnswerSets.Add(existingAnswerSet);
         answers?.ForEach(a => a.FormAnswerSet = existingAnswerSet);

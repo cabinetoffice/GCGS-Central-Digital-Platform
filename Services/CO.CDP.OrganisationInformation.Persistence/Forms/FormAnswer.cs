@@ -73,6 +73,7 @@ public class FormAnswerSet : IEntityDate
     public required int SectionId { get; set; }
     public required FormSection Section { get; init; }
     public ICollection<FormAnswer> Answers { get; set; } = [];
+    public required bool FurtherQuestionsExempted { get; set; }
     public bool Deleted { get; set; } = false;
     public DateTimeOffset CreatedOn { get; set; }
     public DateTimeOffset UpdatedOn { get; set; }
