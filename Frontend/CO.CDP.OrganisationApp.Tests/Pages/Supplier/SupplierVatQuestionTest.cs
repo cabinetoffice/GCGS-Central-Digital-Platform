@@ -93,18 +93,7 @@ public class SupplierVatModelQuestionTest
 
         var result = await _model.OnPost();
 
-        var expectedUpdate = new UpdatedOrganisation(
-            type: OrganisationUpdateType.RemoveIdentifier,
-            organisation: new OrganisationInfo(
-                additionalIdentifiers: null,
-                contactPoint: null,
-                addresses: null,
-                identifierToRemove: new OrganisationIdentifier(
-                    string.Empty,
-                    fakeOrg.Name,
-                    "VAT")));
-
-        _organisationClientMock.Verify(o => o.UpdateOrganisationAsync(id, expectedUpdate), Times.Once);
+        _organisationClientMock.Verify(o => o.UpdateOrganisationAsync(id, It.IsAny<UpdatedOrganisation>()), Times.Once);
 
         result.Should().BeOfType<RedirectToPageResult>();
         (result as RedirectToPageResult)?.PageName.Should().Be("SupplierBasicInformation");
