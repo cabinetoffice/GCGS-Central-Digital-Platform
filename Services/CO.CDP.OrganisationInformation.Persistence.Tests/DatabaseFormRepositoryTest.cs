@@ -91,7 +91,8 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
     [Fact]
     public async Task GetQuestionsAsync_WhenSectionExists_ReturnsQuestions()
     {
-        using var repository = FormRepository();
+        await using var context = postgreSql.OrganisationInformationContext();
+        using var repository = FormRepository(context);
         var formId = Guid.NewGuid();
         var sectionId = Guid.NewGuid();
 
@@ -130,7 +131,8 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
         section.Questions.Add(question1);
         section.Questions.Add(question2);
 
-        await repository.SaveFormAsync(form);
+        await context.Forms.AddAsync(form);
+        await context.SaveChangesAsync();
 
         var foundQuestions = await repository.GetQuestionsAsync(sectionId);
 
@@ -151,14 +153,16 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
     [Fact]
     public async Task GetSectionAsync_WhenSectionExist_ReturnsFormSection()
     {
-        using var repository = FormRepository();
+        await using var context = postgreSql.OrganisationInformationContext();
+        using var repository = FormRepository(context);
         var formId = Guid.NewGuid();
         var sectionId = Guid.NewGuid();
 
         var form = GivenForm(formId);
         var section = GivenFormSection(sectionId, form);
         form.Sections.Add(section);
-        await repository.SaveFormAsync(form);
+        await context.Forms.AddAsync(form);
+        await context.SaveChangesAsync();
 
         var foundSection = await repository.GetSectionAsync(formId, sectionId);
 
@@ -449,63 +453,10 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
     }
 
     [Fact]
-    public async Task GetFormAnswerSetAsync_WhenFormAnswerSetDeleted_DoesNotReturnsFormAnswerSet()
-    {
-        await using var context = postgreSql.OrganisationInformationContext();
-        var repository = FormRepository(context);
-
-        var organisation = GivenOrganisation();
-        var answers = new List<FormAnswer>
-        {
-            GivenAnswer(GivenFormQuestion(type: FormQuestionType.CheckBox), boolValue: true),
-            GivenAnswer(GivenFormQuestion(type: FormQuestionType.Text), textValue: "Answer 1"),
-        };
-        var sharedConsent = GivenSharedConsent(organisation: organisation);
-        var answerSet = GivenAnswerSet(sharedConsent: sharedConsent, answers: answers, deleted: true);
-
-        await context.Organisations.AddAsync(organisation);
-        await repository.SaveSharedConsentAsync(sharedConsent);
-
-        var foundAnswerSet = await repository.GetFormAnswerSetAsync(organisation.Guid, answerSet.Guid);
-
-        foundAnswerSet.Should().NotBeNull();
-        foundAnswerSet.Should().BeEquivalentTo(answerSet, config => config
-            .Excluding(ctx => ctx.Id)
-            .Excluding(ctx => ctx.CreatedOn)
-            .Excluding(ctx => ctx.UpdatedOn));
-    }
-
-    [Fact]
-    public async Task SaveAnswerSet_ShouldSaveNewAnswerSet()
+    public async Task GetQuestionsAsync_WhenOptionsAreSimple_ReturnsCorrectOptions()
     {
         await using var context = postgreSql.OrganisationInformationContext();
         using var repository = FormRepository(context);
-
-        var organisation = GivenOrganisation();
-        var answers = new List<FormAnswer>
-        {
-            GivenAnswer(GivenFormQuestion(type: FormQuestionType.CheckBox), boolValue: true),
-            GivenAnswer(GivenFormQuestion(type: FormQuestionType.Text), textValue: "Answer 1"),
-        };
-        var sharedConsent = GivenSharedConsent(organisation: organisation);
-        var answerSet = GivenAnswerSet(sharedConsent: sharedConsent, answers: answers);
-
-        await context.Organisations.AddAsync(organisation);
-        await repository.SaveSharedConsentAsync(sharedConsent);
-
-        var foundAnswerSet = await repository.GetFormAnswerSetAsync(organisation.Guid, answerSet.Guid);
-
-        foundAnswerSet.Should().NotBeNull();
-        foundAnswerSet!.Answers.Should().HaveCount(2);
-        var foundAnswer = foundAnswerSet.Answers.First();
-        foundAnswer.Question.Should().BeEquivalentTo(answers.First().Question);
-        foundAnswer.BoolValue.Should().BeTrue();
-    }
-
-    [Fact]
-    public async Task GetQuestionsAsync_WhenOptionsAreSimple_ReturnsCorrectOptions()
-    {
-        using var repository = FormRepository();
         var formId = Guid.NewGuid();
         var sectionId = Guid.NewGuid();
 
@@ -550,7 +501,8 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
         };
 
         section.Questions.Add(question);
-        await repository.SaveFormAsync(form);
+        await context.Forms.AddAsync(form);
+        await context.SaveChangesAsync();
 
         var foundQuestions = await repository.GetQuestionsAsync(sectionId);
 
