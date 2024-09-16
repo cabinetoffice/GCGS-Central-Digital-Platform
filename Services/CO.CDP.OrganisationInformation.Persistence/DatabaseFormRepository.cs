@@ -110,11 +110,25 @@ public class DatabaseFormRepository(OrganisationInformationContext context) : IF
     {
         var answerSet = await context.Set<FormAnswerSet>()
             .Include(a => a.SharedConsent)
+            .ThenInclude(s => s.Form)
+            .Include(a => a.Section)
             .FirstOrDefaultAsync(a => a.SharedConsent.Organisation.Guid == organisationId && a.Guid == answerSetId);
 
         if (answerSet == null) return false;
 
-        answerSet.Deleted = true;
+        var sharedConsent = await GetSharedConsentWithAnswersAsync(answerSet.SharedConsent.Form.Guid, organisationId);
+
+        if (sharedConsent == null) return false;
+
+        sharedConsent = SharedConsentMapper.Map(sharedConsent);
+
+        var sharedConsentAnswerSet = sharedConsent.AnswerSets
+            .FirstOrDefault(a => a.Guid == answerSetId || a.CreatedFrom == answerSetId);
+
+        if (sharedConsentAnswerSet == null) return false;
+
+        sharedConsentAnswerSet.Deleted = true;
+        context.Update(sharedConsent);
         await context.SaveChangesAsync();
         return true;
     }

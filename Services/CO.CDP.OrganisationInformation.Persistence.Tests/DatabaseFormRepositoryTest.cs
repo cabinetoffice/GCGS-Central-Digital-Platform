@@ -265,12 +265,15 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
         var organisationId = Guid.NewGuid();
         var answerSetId = Guid.NewGuid();
         var organisation = GivenOrganisation(organisationId: organisationId);
+        var form = GivenForm();
+        var section = GivenFormSection(form: form);
         var sharedConsent = GivenSharedConsent(
             state: SubmissionState.Draft,
-            organisation: organisation);
-        var answerSet = GivenAnswerSet(sharedConsent: sharedConsent, answerSetId: answerSetId);
+            organisation: organisation,
+            form: form);
+        var answerSet = GivenAnswerSet(sharedConsent: sharedConsent, answerSetId: answerSetId, section: section);
         GivenAnswer(
-            question: GivenFormQuestion(type: FormQuestionType.Text),
+            question: GivenFormQuestion(type: FormQuestionType.Text, section: section),
             textValue: "Answer 1",
             answerSet: answerSet);
 
@@ -282,9 +285,53 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
 
         var result = await repository.DeleteAnswerSetAsync(organisationId, answerSetId);
         var foundAnswerSet = await context.FormAnswerSets.FirstAsync(a => a.Guid == answerSetId);
+        var sharedConsents = context.SharedConsents
+            .Where(s => s.OrganisationId == organisation.Id)
+            .ToList();
 
         result.Should().BeTrue();
         foundAnswerSet.As<FormAnswerSet>().Deleted.Should().BeTrue();
+        sharedConsents.Count.Should().Be(1);
+    }
+
+    [Fact]
+    public async Task DeleteAnswerSetAsync_ShouldDeleteClonedAnswerSet_WhenAnswerSetFoundForSubmittedSharedConsent()
+    {
+        await using var context = postgreSql.OrganisationInformationContext();
+        var organisationId = Guid.NewGuid();
+        var answerSetId = Guid.NewGuid();
+        var organisation = GivenOrganisation(organisationId: organisationId);
+        var form = GivenForm();
+        var section = GivenFormSection(form: form);
+        var sharedConsent = GivenSharedConsent(
+            state: SubmissionState.Submitted,
+            organisation: organisation,
+            form: form);
+        var answerSet = GivenAnswerSet(sharedConsent: sharedConsent, answerSetId: answerSetId, section: section);
+        GivenAnswer(
+            question: GivenFormQuestion(type: FormQuestionType.Text, section: section),
+            textValue: "Answer 1",
+            answerSet: answerSet);
+
+        context.Organisations.Add(organisation);
+        context.SharedConsents.Add(sharedConsent);
+        await context.SaveChangesAsync();
+
+        var repository = FormRepository(context);
+
+        var result = await repository.DeleteAnswerSetAsync(organisationId, answerSetId);
+        var foundAnswerSet = await context.FormAnswerSets.FirstAsync(a => a.Guid == answerSetId);
+        var sharedConsents = context.SharedConsents
+            .Where(s => s.OrganisationId == organisation.Id)
+            .ToList();
+
+        result.Should().BeTrue();
+        foundAnswerSet.As<FormAnswerSet>().Deleted.Should().BeFalse();
+        sharedConsents.Count.Should().Be(2);
+        sharedConsents.ElementAt(0).Guid.Should().Be(sharedConsent.Guid);
+        sharedConsents.ElementAt(0).AnswerSets.First().Deleted.Should().BeFalse();
+        sharedConsents.ElementAt(1).Guid.Should().NotBe(sharedConsent.Guid);
+        sharedConsents.ElementAt(1).AnswerSets.First().Deleted.Should().BeTrue();
     }
 
     [Fact]

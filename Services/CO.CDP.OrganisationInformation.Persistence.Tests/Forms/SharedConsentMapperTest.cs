@@ -60,10 +60,28 @@ public class SharedConsentMapperTest
         mappedSharedConsent.FormVersionId.Should().Be(sharedConsent.FormVersionId);
         mappedSharedConsent.ShareCode.Should().Be(sharedConsent.ShareCode);
         mappedSharedConsent.AnswerSets.First().CreatedFrom.Should().Be(answerSet.Guid);
+        mappedSharedConsent.AnswerSets.First().Deleted.Should().Be(false);
         mappedSharedConsent.AnswerSets.First().Answers.First().CreatedFrom.Should().Be(answerSet.Answers.First().Guid);
         mappedSharedConsent.AnswerSets.First().Should().NotBe(answerSet.Guid, "AnswerSet exists and must be cloned");
         mappedSharedConsent.AnswerSets.First().Answers.First().Guid.Should().NotBe(formAnswers.First().Guid);
         mappedSharedConsent.AnswerSets.First().Answers.First().QuestionId.Should().Be(formAnswers.First().QuestionId);
         mappedSharedConsent.AnswerSets.First().Answers.First().BoolValue.Should().Be(formAnswers.First().BoolValue);
+    }
+
+    [Fact]
+    public void ItCarriesOnDeletedAnswerSet()
+    {
+        var sharedConsent = GivenSharedConsent(state: Submitted);
+        var formAnswers = new List<FormAnswer>
+        {
+            GivenAnswer(boolValue: true),
+            GivenAnswer(textValue: "Answer 2")
+        };
+        GivenAnswerSet(sharedConsent, answers: formAnswers, deleted: true);
+
+        var mappedSharedConsent = SharedConsentMapper.Map(sharedConsent);
+
+        mappedSharedConsent.Should().NotBeEquivalentTo(sharedConsent);
+        mappedSharedConsent.AnswerSets.First().Deleted.Should().Be(true);
     }
 }

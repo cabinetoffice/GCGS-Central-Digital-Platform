@@ -73,6 +73,7 @@ public static class SharedConsentMapper
         SharedConsentId = sharedConsent.Id,
         SharedConsent = sharedConsent,
         SectionId = answerSet.SectionId,
-        Section = answerSet.Section
+        Section = answerSet.Section,
+        Deleted = answerSet.Deleted
     };
 }
