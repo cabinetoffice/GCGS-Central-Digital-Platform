@@ -10,29 +10,33 @@ public class OrganisationsModel(
     ISession session) : LoggedInUserAwareModel(session)
 {
     [BindProperty]
-    public IList<Organisation.WebApiClient.Organisation> BuyerOrganisations { get; set; } = [];
+    public IList<ApprovableOrganisation> BuyerOrganisations { get; set; } = [];
 
     [BindProperty]
-    public IList<Organisation.WebApiClient.Organisation> SupplierOrganisations { get; set; } = [];
+    public IList<ApprovableOrganisation> SupplierOrganisations { get; set; } = [];
 
     public async Task<IActionResult> OnGet()
     {
         var userDetails = SessionContext.Get<UserDetails>(Session.UserDetailsKey);
 
-        var organisations = await organisationClient.ListOrganisationsAsync(userDetails.UserUrn);
+        // var organisations = await organisationClient.GetAllOrganisationsAsync(50, 0);
 
-        organisations.ToList()
-            .ForEach(o =>
-            {
-                if (o.Roles.Contains(PartyRole.Supplier))
-                {
-                    SupplierOrganisations.Add(o);
-                }
-                else
-                {
-                    BuyerOrganisations.Add(o);
-                }
-            });
+        BuyerOrganisations = (await organisationClient.GetAllOrganisationsAsync("buyer", 50, 0)).ToList();
+
+        SupplierOrganisations = (await organisationClient.GetAllOrganisationsAsync("supplier", 50, 0)).ToList();
+
+        // organisations.ToList()
+        //     .ForEach(o =>
+        //     {
+        //         if (o.Role == "buyer")
+        //         {
+        //             BuyerOrganisations.Add(o);
+        //         }
+        //         else if (o.Role == "supplier")
+        //         {
+        //             SupplierOrganisations.Add(o);
+        //         }
+        //     });
 
         return Page();
     }

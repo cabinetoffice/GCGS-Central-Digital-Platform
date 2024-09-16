@@ -22,6 +22,12 @@ public class Organisation : IEntityDate
     public DateTimeOffset CreatedOn { get; set; }
     public DateTimeOffset UpdatedOn { get; set; }
 
+    public DateTimeOffset? ApprovedOn { get; set; }
+
+    public Person? ApprovedBy { get; set; }
+
+    public string? ApprovedComment { get; set; }
+
     [Owned]
     [Index(nameof(IdentifierId), [nameof(Scheme)], IsUnique = true)]
     public record Identifier : IEntityDate

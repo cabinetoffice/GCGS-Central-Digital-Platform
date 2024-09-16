@@ -15,7 +15,7 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
     {
         return await context.Organisations
             .Include(p => p.Addresses)
-            .ThenInclude(p => p.Address)            
+            .ThenInclude(p => p.Address)
             .FirstOrDefaultAsync(t => t.Guid == organisationId);
     }
 
@@ -57,6 +57,24 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
             .Include(p => p.Addresses)
             .ThenInclude(p => p.Address)
             .FirstOrDefaultAsync(o => o.Identifiers.Any(i => i.Scheme == scheme && i.IdentifierId == identifierId));
+    }
+
+    public async Task<IList<Organisation>> Get(string type)
+    {
+        IQueryable<Organisation> result = context.Organisations
+            .Include(o => o.Identifiers)
+            .Include(o => o.BuyerInfo)
+            .Include(o => o.SupplierInfo);
+
+        if (type == "buyer")
+        {
+            result = result.Where(o => o.BuyerInfo != null);
+        } else if (type == "supplier")
+        {
+            result = result.Where(o => o.SupplierInfo != null);
+        }
+
+        return await result.ToListAsync();
     }
 
     public async Task<IList<ConnectedEntity>> GetConnectedIndividualTrusts(int organisationId)
