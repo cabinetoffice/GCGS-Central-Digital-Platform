@@ -2,6 +2,9 @@ using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.Person.WebApiClient;
 using CO.CDP.Tenant.WebApiClient;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization.Policy;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
@@ -73,6 +76,19 @@ public class AuthorizationTests
                 }
             );
 
+        organisationClient.Setup(client => client.GetOrganisationAsync(testOrganisationId))
+            .ReturnsAsync(
+                new Organisation.WebApiClient.Organisation(
+                    new List<Identifier> { },
+                    new List<Address> { },
+                    new ContactPoint("a@b.com", "Contact", "123", new Uri("http://whatever")),
+                    testOrganisationId,
+                    new Identifier("asd", "asd", "asd", new Uri("http://whatever")),
+                    "Org name",
+                    new List<Organisation.WebApiClient.PartyRole> { Organisation.WebApiClient.PartyRole.Supplier, Organisation.WebApiClient.PartyRole.ProcuringEntity }
+                )
+            );
+
         services.AddTransient<IOrganisationClient, OrganisationClient>(sc => organisationClient.Object);
 
         _mockSession.Setup(s => s.Get<Models.UserDetails>(Session.UserDetailsKey))
@@ -81,6 +97,13 @@ public class AuthorizationTests
         services.AddSingleton(_mockSession.Object);
 
         services.AddSingleton<IPolicyEvaluator, FakeAuthenticationPolicyEvaluator>();
+
+        services.AddAuthentication(options =>
+        {
+            options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
+        })
+        .AddScheme<AuthenticationSchemeOptions, FakeCookieAuthHandler>(CookieAuthenticationDefaults.AuthenticationScheme, options => { });
 
         var factory = new CustomisableWebApplicationFactory<Program>(services);
         return factory.CreateClient();
@@ -144,5 +167,41 @@ public class AuthorizationTests
         Assert.NotNull(responseBody);
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
         Assert.Contains("Page not found", responseBody);
+    }
+
+    [Fact]
+    public async Task TestCanSeeUsersLinkOnOrganisationPage_WhenUserIsAllowedToAccessResourceAsAdminUser()
+    {
+        var _httpClient = BuildHttpClient(new List<string> { OrganisationPersonScopes.Admin });
+
+        var request = new HttpRequestMessage(HttpMethod.Get, $"/organisation/{testOrganisationId}");
+
+        var response = await _httpClient.SendAsync(request);
+
+        var responseBody = await response.Content.ReadAsStringAsync();
+
+        Assert.NotNull(responseBody);
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Contains("Organisation details", responseBody);
+        Assert.Contains($"href=\"/organisation/{testOrganisationId}/users/user-summary\">Users</a>", responseBody);
+    }
+
+    [Fact]
+    public async Task TestCannotSeeUsersLinkOnOrganisationPage_WhenUserIsNotAllowedToAccessResourceAsEditorUser()
+    {
+        var _httpClient = BuildHttpClient(new List<string> { OrganisationPersonScopes.Editor });
+
+        var request = new HttpRequestMessage(HttpMethod.Get, $"/organisation/{testOrganisationId}");
+
+        var response = await _httpClient.SendAsync(request);
+
+        var responseBody = await response.Content.ReadAsStringAsync();
+
+        Assert.NotNull(responseBody);
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        
+        Assert.Contains("Organisation details", responseBody);
+        Assert.DoesNotContain($"href=\"/organisation/{testOrganisationId}/users/user-summary\">Users</a>", responseBody);
+        Assert.DoesNotContain("Users", responseBody);
     }
 }

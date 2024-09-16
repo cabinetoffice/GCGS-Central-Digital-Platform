@@ -15,12 +15,11 @@ public class UserSummaryModel(
     [BindProperty(SupportsGet = true)]
     public Guid Id { get; set; }
 
-    [BindProperty]
     public Guid? SignedInPersonId { get; set; }
 
-    [BindProperty] public ICollection<Organisation.WebApiClient.Person> Persons { get; set; } = [];
+    public ICollection<Organisation.WebApiClient.Person> Persons { get; set; } = [];
 
-    [BindProperty] public ICollection<PersonInviteModel> PersonInvites { get; set; } = [];
+    public ICollection<PersonInviteModel> PersonInvites { get; set; } = [];
 
     [BindProperty]
     [Required(ErrorMessage = "Select yes to add another user")]
