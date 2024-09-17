@@ -1,10 +1,13 @@
 using CO.CDP.Forms.WebApiClient;
 using CO.CDP.Organisation.WebApiClient;
+using CO.CDP.OrganisationApp.Constants;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace CO.CDP.OrganisationApp.Pages.Supplier;
 
+[Authorize(Policy = OrgScopeRequirement.Editor)]
 public class SupplierInformationSummaryModel(
     IOrganisationClient organisationClient,
     IFormsClient formsClient) : PageModel
