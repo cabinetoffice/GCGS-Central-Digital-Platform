@@ -27,18 +27,44 @@ public class OutboxProcessorTest
         publisher.Verify(p => p.Publish(messages.ElementAt(1)), Times.Once);
     }
 
-    private static OutboxMessage GivenOutboxMessage(string type, string message, bool published)
+    [Fact]
+    public async Task ItMarksPublishedMessagesAsPublished()
     {
-        return new()
+        var publisher = new Mock<IPublisher>();
+        var outbox = new Mock<IOutboxMessageRepository>();
+
+        var messages = new List<OutboxMessage>
         {
-            Id = default,
-            Type = type,
-            Message = message,
-            Published = published,
-            CreatedOn = DateTimeOffset.UtcNow,
-            UpdatedOn = DateTimeOffset.UtcNow
+            GivenOutboxMessage(id: 1, message: "{\"Message\":\"Hello World\"}", published: false),
+            GivenOutboxMessage(id: 2, message: "{\"Message\":\"Good bye\"}", published: false)
         };
+
+        outbox.Setup(m => m.FindOldest(10)).ReturnsAsync(messages);
+
+        var processor = new OutboxProcessor(publisher.Object, outbox.Object);
+
+        await processor.Execute(count: 10);
+
+        outbox.Verify(o => o.SaveAsync(It.Is<OutboxMessage>(
+            m => m.Id == 1 && m.Published == true)), Times.Once);
+        outbox.Verify(o => o.SaveAsync(It.Is<OutboxMessage>(
+            m => m.Id == 2 && m.Published == true)), Times.Once);
     }
+
+    private static OutboxMessage GivenOutboxMessage(
+        int id = default,
+        string type = "Greeting",
+        string message = "{}",
+        bool published = false
+    ) => new()
+    {
+        Id = id,
+        Type = type,
+        Message = message,
+        Published = published,
+        CreatedOn = DateTimeOffset.UtcNow,
+        UpdatedOn = DateTimeOffset.UtcNow
+    };
 }
 
 class OutboxProcessor(IPublisher publisher, IOutboxMessageRepository outbox)
@@ -46,6 +72,13 @@ class OutboxProcessor(IPublisher publisher, IOutboxMessageRepository outbox)
     public async Task Execute(int count)
     {
         var messages = await outbox.FindOldest(count);
-        messages.ForEach(m => publisher.Publish(m));
+        messages.ForEach(PublishMessages);
+    }
+
+    private async void PublishMessages(OutboxMessage m)
+    {
+        await publisher.Publish(m);
+        m.Published = true;
+        await outbox.SaveAsync(m);
     }
 }
