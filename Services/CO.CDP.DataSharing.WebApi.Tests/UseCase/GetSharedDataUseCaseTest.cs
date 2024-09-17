@@ -1,12 +1,11 @@
-using AutoMapper;
 using CO.CDP.DataSharing.WebApi.Model;
-using CO.CDP.DataSharing.WebApi.UseCase;
 using CO.CDP.DataSharing.WebApi.Tests.AutoMapper;
+using CO.CDP.DataSharing.WebApi.UseCase;
+using CO.CDP.OrganisationInformation;
 using CO.CDP.OrganisationInformation.Persistence;
 using FluentAssertions;
 using Moq;
-using Xunit;
-using CO.CDP.OrganisationInformation;
+using Address = CO.CDP.OrganisationInformation.Address;
 
 namespace CO.CDP.DataSharing.WebApi.Tests.UseCase;
 
@@ -76,7 +75,7 @@ public class GetSharedDataUseCaseTest : IClassFixture<AutoMapperFixture>
         result?.Name.Should().Be("Test Organisation");
     }
 
-    private void AssertAddress(OrganisationInformation.Address? address)
+    private void AssertAddress(Address? address)
     {
         address.Should().NotBeNull();
         address?.StreetAddress.Should().Be("1234 Default St");

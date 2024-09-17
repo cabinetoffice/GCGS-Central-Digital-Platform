@@ -1,6 +1,7 @@
 using CO.CDP.DataSharing.WebApi;
 using CO.CDP.DataSharing.WebApi.DataService;
 using CO.CDP.DataSharing.WebApi.Model;
+using CO.CDP.DataSharing.WebApi.Tests;
 using CO.CDP.DataSharing.WebApi.UseCase;
 using FluentAssertions;
 using Moq;

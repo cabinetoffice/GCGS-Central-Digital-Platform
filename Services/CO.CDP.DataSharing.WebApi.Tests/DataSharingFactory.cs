@@ -7,7 +7,7 @@ using Address = CO.CDP.OrganisationInformation.Persistence.Address;
 using ContactPoint = CO.CDP.OrganisationInformation.Persistence.Organisation.ContactPoint;
 using Identifier = CO.CDP.OrganisationInformation.Persistence.Organisation.Identifier;
 
-namespace DataSharing.Tests;
+namespace CO.CDP.DataSharing.WebApi.Tests;
 
 public static class DataSharingFactory
 {

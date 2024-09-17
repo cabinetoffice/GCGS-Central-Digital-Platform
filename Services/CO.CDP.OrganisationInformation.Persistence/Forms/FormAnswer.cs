@@ -20,6 +20,7 @@ public class SharedConsent : IEntityDate
     public DateTimeOffset? SubmittedAt { get; set; }
     public required string FormVersionId { get; init; }
     public string? ShareCode { get; set; }
+    public Guid? CreatedFrom { get; init; }
     public DateTimeOffset CreatedOn { get; set; }
     public DateTimeOffset UpdatedOn { get; set; }
 }
@@ -48,6 +49,7 @@ public class FormAnswer : IEntityDate
     public string? TextValue { get; set; }
     public string? OptionValue { get; set; }
     public FormAddress? AddressValue { get; set; }
+    public Guid? CreatedFrom { get; init; }
     public DateTimeOffset CreatedOn { get; set; }
     public DateTimeOffset UpdatedOn { get; set; }
 }
@@ -74,6 +76,7 @@ public class FormAnswerSet : IEntityDate
     public required FormSection Section { get; init; }
     public ICollection<FormAnswer> Answers { get; set; } = [];
     public bool Deleted { get; set; } = false;
+    public Guid? CreatedFrom { get; init; }
     public DateTimeOffset CreatedOn { get; set; }
     public DateTimeOffset UpdatedOn { get; set; }
 }

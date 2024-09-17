@@ -1,4 +1,5 @@
 using CO.CDP.DataSharing.WebApi;
+using CO.CDP.DataSharing.WebApi.Tests;
 using DataSharing.Tests;
 
 public class PdfGeneratorTests
