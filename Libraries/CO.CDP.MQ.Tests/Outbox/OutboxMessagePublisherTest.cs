@@ -12,7 +12,7 @@ public class OutboxMessagePublisherTest
     private OutboxMessagePublisher Publisher => new(
         _repository.Object,
         o => JsonSerializer.Serialize(o),
-        t => t.Name,
+        o => o.GetType().Name,
         LoggerFactory.Create(_ => { }).CreateLogger<OutboxMessagePublisher>()
     );
 
