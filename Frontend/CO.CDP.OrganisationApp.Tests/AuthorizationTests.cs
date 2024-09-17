@@ -21,10 +21,6 @@ public class AuthorizationTests
     private static Guid personId = new Guid("5b0d3aa8-94cd-4ede-ba03-546937035690");
     private static Guid personInviteGuid = new Guid("330fb1d4-26e2-4c69-898f-6197f9321361");
 
-    public AuthorizationTests()
-    {
-    }
-
     public HttpClient BuildHttpClient(List<string> userScopes)
     {
         var services = new ServiceCollection();
@@ -122,7 +118,7 @@ public class AuthorizationTests
     [MemberData(nameof(TestCases))]
     public async Task TestAuthorizationIsSuccessful_WhenUserIsAllowedToAccessResourceAsAdminUser(string url, string[] expectedTexts)
     {
-        var _httpClient = BuildHttpClient(new List<string> { OrganisationPersonScopes.Admin });
+        var _httpClient = BuildHttpClient([OrganisationPersonScopes.Admin]);
 
         var request = new HttpRequestMessage(HttpMethod.Get, url);
 
