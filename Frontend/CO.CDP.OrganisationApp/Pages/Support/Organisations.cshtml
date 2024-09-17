@@ -1,5 +1,4 @@
 @page "/support/organisations"
-@using CO.CDP.Organisation.WebApiClient
 @model OrganisationsModel
 
 <main class="govuk-main-wrapper">
@@ -67,7 +66,7 @@
                     @(@org.ApprovedComment ?? "N/A")
                 </td>
                 <td class="govuk-table__cell">
-                    Approve
+                    <a class="govuk-link" href="/support/organisation/@org.Id/approval">Approve</a>
                 </td>
             </tr>
             }

@@ -17,26 +17,10 @@ public class OrganisationsModel(
 
     public async Task<IActionResult> OnGet()
     {
-        var userDetails = SessionContext.Get<UserDetails>(Session.UserDetailsKey);
+        // Pagination will be put in place in a later update
+        BuyerOrganisations = (await organisationClient.GetAllOrganisationsAsync("buyer", 1000, 0)).ToList();
 
-        // var organisations = await organisationClient.GetAllOrganisationsAsync(50, 0);
-
-        BuyerOrganisations = (await organisationClient.GetAllOrganisationsAsync("buyer", 50, 0)).ToList();
-
-        SupplierOrganisations = (await organisationClient.GetAllOrganisationsAsync("supplier", 50, 0)).ToList();
-
-        // organisations.ToList()
-        //     .ForEach(o =>
-        //     {
-        //         if (o.Role == "buyer")
-        //         {
-        //             BuyerOrganisations.Add(o);
-        //         }
-        //         else if (o.Role == "supplier")
-        //         {
-        //             SupplierOrganisations.Add(o);
-        //         }
-        //     });
+        SupplierOrganisations = (await organisationClient.GetAllOrganisationsAsync("supplier", 1000, 0)).ToList();
 
         return Page();
     }
