@@ -7,6 +7,7 @@ using CO.CDP.Organisation.WebApi.UseCase;
 using FluentAssertions;
 using Moq;
 using Persistence = CO.CDP.OrganisationInformation.Persistence;
+using Address = CO.CDP.OrganisationInformation.Persistence.Address;
 
 namespace CO.CDP.Organisation.WebApi.Tests.UseCase;
 
@@ -321,6 +322,195 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
         organisation.Identifiers.FirstOrDefault(i => i.Scheme == "VAT").Should().BeNull();
     }
 
+    [Fact]
+    public async Task Execute_ShouldThrowInvalidUpdateOrganisationCommand_WhenOrganisationNameIsNull()
+    {
+        var updateOrganisation = new UpdateOrganisation
+        {
+            Type = OrganisationUpdateType.OrganisationName,
+            Organisation = new()
+        };
+        _organisationRepositoryMock.Setup(repo => repo.Find(_organisationId)).ReturnsAsync(Organisation);
+
+        Func<Task> act = async () => await UseCase.Execute((_organisationId, updateOrganisation));
+
+        await act.Should()
+            .ThrowAsync<InvalidUpdateOrganisationCommand>()
+            .WithMessage("Missing organisation name.");
+    }
+
+    [Fact]
+    public async Task Execute_ShouldUpdateOrganisationName_WhenOrganisationAlreadyExists()
+    {
+        var command = new UpdateOrganisation
+        {
+            Type = OrganisationUpdateType.OrganisationName,
+            Organisation = new OrganisationInfo
+            {
+               OrganisationName="Updated Organisation Name"
+            }
+        };
+        var organisation = Organisation;
+        _organisationRepositoryMock.Setup(repo => repo.Find(_organisationId)).ReturnsAsync(organisation);
+
+        var result = await UseCase.Execute((_organisationId, command));
+
+        result.Should().BeTrue();
+        _organisationRepositoryMock.Verify(repo => repo.Save(organisation!), Times.Once);
+
+        organisation.Name.Should().Be("Updated Organisation Name");
+    }
+
+
+    [Fact]
+    public async Task Execute_ShouldThrowInvalidUpdateOrganisationCommand_WhenOrganisationEmailIsNull()
+    {
+        var updateOrganisation = new UpdateOrganisation
+        {
+            Type = OrganisationUpdateType.OrganisationEmail,
+            Organisation = new()
+        };
+        _organisationRepositoryMock.Setup(repo => repo.Find(_organisationId)).ReturnsAsync(Organisation);
+
+        Func<Task> act = async () => await UseCase.Execute((_organisationId, updateOrganisation));
+
+        await act.Should()
+            .ThrowAsync<InvalidUpdateOrganisationCommand>()
+            .WithMessage("Missing organisation email.");
+    }
+
+    [Fact]
+    public async Task Execute_ShouldThrowInvalidUpdateOrganisationCommand_WhenOrganisationEmail_DoesNotExists()
+    {
+        var updateOrganisation = new UpdateOrganisation
+        {
+            Type = OrganisationUpdateType.OrganisationEmail,
+            Organisation = new OrganisationInfo()
+            {
+                ContactPoint = new OrganisationContactPoint()
+                {
+                    Email = "testemail@test.com"
+                }
+            }
+        };
+        var organisation = Organisation;
+        organisation.ContactPoints = [];
+
+        _organisationRepositoryMock.Setup(repo => repo.Find(_organisationId)).ReturnsAsync(organisation);
+
+        Func<Task> act = async () => await UseCase.Execute((_organisationId, updateOrganisation));
+
+        await act.Should()
+            .ThrowAsync<InvalidUpdateOrganisationCommand>()
+            .WithMessage("organisation email does not exists.");
+    }
+
+    [Fact]
+    public async Task Execute_ShouldUpdateOrganisationEmail_WhenOrganisationContactPointExists()
+    {
+        var command = new UpdateOrganisation
+        {
+            Type = OrganisationUpdateType.OrganisationEmail,
+            Organisation = new OrganisationInfo
+            {
+                ContactPoint=new OrganisationContactPoint()
+                { Email="updatedemail@test.com" }
+            }
+        };
+        var organisation = Organisation;
+        _organisationRepositoryMock.Setup(repo => repo.Find(_organisationId)).ReturnsAsync(organisation);
+
+        var result = await UseCase.Execute((_organisationId, command));
+
+        result.Should().BeTrue();
+        _organisationRepositoryMock.Verify(repo => repo.Save(organisation!), Times.Once);
+
+        organisation.ContactPoints.FirstOrDefault()!.Email.Should().Be("updatedemail@test.com");
+    }
+
+    [Fact]
+    public async Task Execute_ShouldThrowInvalidUpdateOrganisationCommand_WhenOrganisationRegsiteredAddressIsNull()
+    {
+        var updateOrganisation = new UpdateOrganisation
+        {
+            Type = OrganisationUpdateType.RegisteredAddress,
+            Organisation = new()
+        };
+        _organisationRepositoryMock.Setup(repo => repo.Find(_organisationId)).ReturnsAsync(Organisation);
+
+        Func<Task> act = async () => await UseCase.Execute((_organisationId, updateOrganisation));
+
+        await act.Should()
+            .ThrowAsync<InvalidUpdateOrganisationCommand>()
+            .WithMessage("Missing organisation address.");
+    }
+
+    [Fact]
+    public async Task Execute_ShouldThrowInvalidUpdateOrganisationCommand_WhenOrganisationRegsiteredAddressIsMissing()
+    {
+        var updateOrganisation = new UpdateOrganisation
+        {
+            Type = OrganisationUpdateType.RegisteredAddress,
+            Organisation = new OrganisationInfo()
+            {
+                Addresses = [
+                    new OrganisationAddress
+                    {
+                        Type=OrganisationInformation.AddressType.Postal,                        
+                        StreetAddress = "1234 Test St",
+                        Locality = "Test City",
+                        PostalCode = "12345",
+                        CountryName = "Testland",
+                        Country = "AB",
+                        Region="Test Region"
+                     }
+                ]
+            }
+        };
+
+        _organisationRepositoryMock.Setup(repo => repo.Find(_organisationId)).ReturnsAsync(Organisation);
+
+        Func<Task> act = async () => await UseCase.Execute((_organisationId, updateOrganisation));
+
+        await act.Should()
+            .ThrowAsync<InvalidUpdateOrganisationCommand>()
+            .WithMessage("Missing Organisation regsitered address.");
+    }
+
+    [Fact]
+    public async Task Execute_ShouldUpdateOrganisationRegisteredAddress_WhenOrganisationExists()
+    {
+        var command = new UpdateOrganisation
+        {
+            Type = OrganisationUpdateType.RegisteredAddress,
+            Organisation = new OrganisationInfo
+            {
+                Addresses = [
+                    new OrganisationAddress
+                    {
+                        Type=OrganisationInformation.AddressType.Registered,
+                        StreetAddress = "1234 Test St",
+                        Locality = "Test City",
+                        PostalCode = "12345",
+                        CountryName = "Testland updated",
+                        Country = "AB",
+                        Region="Test Region"
+                     }
+                ]
+            }
+        };
+        var organisation = Organisation;
+        _organisationRepositoryMock.Setup(repo => repo.Find(_organisationId)).ReturnsAsync(organisation);
+
+        var result = await UseCase.Execute((_organisationId, command));
+
+        result.Should().BeTrue();
+        _organisationRepositoryMock.Verify(repo => repo.Save(organisation!), Times.Once);
+
+        organisation.Addresses.FirstOrDefault(x=>x.Type==OrganisationInformation.AddressType.Registered)!.Address!.CountryName.Should().Be("Testland updated");
+    }
+
+
     private Persistence.Organisation OrganisationWithOtherIdentifier =>
         new()
         {
@@ -371,7 +561,20 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
                     Primary = true
                 }
             ],
-            ContactPoints = [new Persistence.Organisation.ContactPoint { Email = "test@test.com" }]
+            ContactPoints = [new Persistence.Organisation.ContactPoint { Email = "test@test.com" }],
+            Addresses = {new OrganisationInformation.Persistence.Organisation.OrganisationAddress
+            {
+                Type  = OrganisationInformation.AddressType.Registered,
+                Address = new Address
+                {
+                    StreetAddress = "1234 Test St",
+                    Locality = "Test City",
+                    PostalCode = "12345",
+                    CountryName = "Testland",
+                    Country = "AB"
+                }
+            }}
+
         };
 
     private Persistence.Organisation OrganisationWithVatPrimaryAndPpon =>
