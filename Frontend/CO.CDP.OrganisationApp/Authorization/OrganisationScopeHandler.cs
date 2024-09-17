@@ -1,3 +1,4 @@
+using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.Tenant.WebApiClient;
 using Microsoft.AspNetCore.Authorization;
 
@@ -30,10 +31,20 @@ public class OrganizationScopeHandler : AuthorizationHandler<OrganizationScopeRe
                 {
                     UserOrganisation? personOrganisation = await GetPersonOrganisation((Guid)organisationId);
 
-                    if (personOrganisation != null && personOrganisation.Scopes.Contains(requirement.Scope))
+                    if (personOrganisation != null)
                     {
-                        context.Succeed(requirement);
-                        return;
+                        if (personOrganisation.Scopes.Contains(requirement.Scope))
+                        {
+                            context.Succeed(requirement);
+                            return;
+                        }
+
+                        // Editor role implies viewer permissions also
+                        if (requirement.Scope == OrganisationPersonScopes.Viewer && personOrganisation.Scopes.Contains(OrganisationPersonScopes.Editor))
+                        {
+                            context.Succeed(requirement);
+                            return;
+                        }
                     }
                 }
             }
