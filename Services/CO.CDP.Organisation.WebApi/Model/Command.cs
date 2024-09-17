@@ -336,12 +336,20 @@ public record OrganisationQuery
     }
 }
 
+public record AuthenticationKey
+{
+    public int Id { get; set; }
+    public required string Name { get; set; }
+    public required string Key { get; set; }
+    public int? OrganisationId { get; set; }
+    public bool? Revoked { get; set; }
+}
+
 [JsonConverter(typeof(JsonStringEnumConverter))]
 public enum SupplierInformationDeleteType
 {
     TradeAssurance,
     Qualification
-
 }
 
 public static class MappingExtensions
