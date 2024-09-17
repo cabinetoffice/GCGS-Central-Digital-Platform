@@ -91,11 +91,15 @@
 
                 @if (organisationDetails.IsTenderer())
                 {
-                    <a class="govuk-link govuk-!-font-size-19 govuk-!-font-weight-bold govuk-!-margin-top-3" href="/organisation/@RouteData.Values["id"]/supplier-information">Supplier information</a>
+                    <div class="govuk-!-margin-top-3">
+                        <a class="govuk-link govuk-!-font-size-19 govuk-!-font-weight-bold" href="/organisation/@RouteData.Values["id"]/supplier-information">Supplier information</a>
+                    </div>
                 }
 
                 <authorize scope="@OrgScopeRequirement.Admin">
-                    <a class="govuk-link govuk-!-font-size-19 govuk-!-font-weight-bold govuk-!-margin-top-3" href="/organisation/@RouteData.Values["id"]/users/user-summary">Users</a>
+                    <div class="govuk-!-margin-top-3">
+                        <a class="govuk-link govuk-!-font-size-19 govuk-!-font-weight-bold" href="/organisation/@RouteData.Values["id"]/users/user-summary">Users</a>
+                    </div>
                 </authorize>
 
                 <div class="govuk-!-margin-top-6">
