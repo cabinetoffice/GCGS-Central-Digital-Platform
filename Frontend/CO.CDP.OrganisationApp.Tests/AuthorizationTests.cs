@@ -11,11 +11,6 @@ using Moq;
 using System.Net;
 
 namespace CO.CDP.OrganisationApp.Tests;
-
-[CollectionDefinition("Non-Parallel Collection", DisableParallelization = true)]
-public class NonParallelCollection { }
-
-[Collection("Non-Parallel Collection")]
 public class AuthorizationTests
 {
     private static readonly Mock<TenantClient> tenantClient = new Mock<TenantClient>("https://whatever", new HttpClient());
@@ -109,7 +104,13 @@ public class AuthorizationTests
         })
         .AddScheme<AuthenticationSchemeOptions, FakeCookieAuthHandler>(CookieAuthenticationDefaults.AuthenticationScheme, options => { });
 
+        services.Configure<OpenIdConnectOptions>(OpenIdConnectDefaults.AuthenticationScheme, options => {
+            options.ClientId = "123";
+            options.Authority = "https://whatever";
+        });
+
         var factory = new CustomisableWebApplicationFactory<Program>(services);
+
         return factory.CreateClient();
     }
 
