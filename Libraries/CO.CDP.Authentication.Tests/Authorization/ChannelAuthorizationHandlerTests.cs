@@ -15,17 +15,15 @@ public class ChannelAuthorizationHandlerTests
     }
 
     [Theory]
-    [InlineData("one-login", AuthenticationChannel.OneLogin, true)]
-    [InlineData("organisation-key", AuthenticationChannel.OrganisationKey, true)]
-    [InlineData("service-key", AuthenticationChannel.ServiceKey, true)]
-    [InlineData("invalid-channel", AuthenticationChannel.ServiceKey, false)]
-    [InlineData(" ", AuthenticationChannel.ServiceKey, false)]
-    [InlineData(null, AuthenticationChannel.ServiceKey, false)]
-    public async Task HandleRequirementAsync_ShouldMatchExpectedResult(string? claimValue, AuthenticationChannel requiredChannel, bool expectedResult)
+    [InlineData(AuthenticationChannel.OneLogin, "one-login", true)]
+    [InlineData(AuthenticationChannel.OrganisationKey, "organisation-key", true)]
+    [InlineData(AuthenticationChannel.ServiceKey, "service-key", true)]
+    [InlineData(AuthenticationChannel.OrganisationKey, "invalid-channel", false)]
+    [InlineData(AuthenticationChannel.ServiceKey, " ", false)]
+    [InlineData(AuthenticationChannel.OrganisationKey, null, false)]
+    public async Task HandleRequirementAsync_ShouldMatchExpectedResult(AuthenticationChannel requiredChannel, string? claimValue, bool expectedResult)
     {
-        var requirement = CreateRequirement(requiredChannel);
-        var user = CreateClaimsPrincipal(claimValue);
-        var context = CreateAuthorizationHandlerContext(user, requirement);
+        var context = CreateAuthorizationHandlerContext([requiredChannel], [claimValue]);
 
         await _handler.HandleAsync(context);
 
@@ -35,9 +33,7 @@ public class ChannelAuthorizationHandlerTests
     [Fact]
     public async Task HandleRequirementAsync_ShouldSucceed_WhenMultipleChannelsAndValidClaimExists()
     {
-        var requirement = CreateRequirement(AuthenticationChannel.OneLogin, AuthenticationChannel.ServiceKey);
-        var user = CreateClaimsPrincipal("service-key");
-        var context = CreateAuthorizationHandlerContext(user, requirement);
+        var context = CreateAuthorizationHandlerContext([AuthenticationChannel.OneLogin, AuthenticationChannel.ServiceKey], ["service-key"]);
 
         await _handler.HandleAsync(context);
 
@@ -47,9 +43,7 @@ public class ChannelAuthorizationHandlerTests
     [Fact]
     public async Task HandleRequirementAsync_ShouldNotSucceed_WhenChannelsArrayIsEmpty()
     {
-        var requirement = CreateRequirement();
-        var user = CreateClaimsPrincipal("service-key");
-        var context = CreateAuthorizationHandlerContext(user, requirement);
+        var context = CreateAuthorizationHandlerContext([], ["service-key"]);
 
         await _handler.HandleAsync(context);
 
@@ -57,28 +51,16 @@ public class ChannelAuthorizationHandlerTests
     }
 
     [Fact]
-    public async Task HandleRequirementAsync_ShouldSucceed_WhenMultipleClaimsAndValidClaim_xists()
+    public async Task HandleRequirementAsync_ShouldSucceed_WhenMultipleClaimsAndValidClaimExists()
     {
-        var requirement = CreateRequirement(AuthenticationChannel.OneLogin, AuthenticationChannel.ServiceKey);
-        var user = CreateClaimsPrincipal("one-login", "invalid-channel");
-        var context = CreateAuthorizationHandlerContext(user, requirement);
+        var context = CreateAuthorizationHandlerContext([AuthenticationChannel.OneLogin, AuthenticationChannel.ServiceKey], ["one-login", "invalid-channel"]);
 
         await _handler.HandleAsync(context);
 
         context.HasSucceeded.Should().BeTrue();
     }
 
-    private static AuthorizationHandlerContext CreateAuthorizationHandlerContext(ClaimsPrincipal user, ChannelAuthorizationRequirement requirement)
-    {
-        return new AuthorizationHandlerContext(new[] { requirement }, user, new object());
-    }
-
-    private static ChannelAuthorizationRequirement CreateRequirement(params AuthenticationChannel[] channels)
-    {
-        return new ChannelAuthorizationRequirement(channels);
-    }
-
-    private static ClaimsPrincipal CreateClaimsPrincipal(params string?[] channelValue)
+    private static AuthorizationHandlerContext CreateAuthorizationHandlerContext(AuthenticationChannel[] channels, string?[] channelValue)
     {
         var identity = new ClaimsIdentity();
 
@@ -90,6 +72,8 @@ public class ChannelAuthorizationHandlerTests
             }
         });
 
-        return new ClaimsPrincipal(identity);
+        var requirement = new ChannelAuthorizationRequirement(channels);
+        var claimsPrincipal = new ClaimsPrincipal(identity);
+        return new AuthorizationHandlerContext([requirement], claimsPrincipal, new object());
     }
 }

@@ -18,20 +18,27 @@ public class OrganisationScopeAuthorizationHandler(
 
     protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, OrganisationScopeAuthorizationRequirement requirement)
     {
-        var userUrn = context.User.FindFirstValue("sub");
-        var organisationId = await FetchOrganisationIdAsync(requirement.OrganisationIdLocation);
-
-        if (!string.IsNullOrWhiteSpace(userUrn)
-            && !string.IsNullOrWhiteSpace(organisationId)
-            && Guid.TryParse(organisationId, out var organisationGuid))
+        if (requirement.Scopes.Length == 0 || requirement.OrganisationIdLocation == OrganisationIdLocation.None)
         {
-            var lookup = await tenantRepository.LookupTenant(userUrn);
-            List<string> orgScopes = lookup?.Tenants?.SelectMany(t => t.Organisations)?
-                        .FirstOrDefault(o => o.Id == organisationGuid)?.Scopes ?? [];
+            return;
+        }
 
-            if (requirement.Scopes.Intersect(orgScopes).Any())
+        var userUrn = context.User.FindFirstValue("sub");
+
+        if (!string.IsNullOrWhiteSpace(userUrn))
+        {
+            var organisationId = await FetchOrganisationIdAsync(requirement.OrganisationIdLocation);
+
+            if (!string.IsNullOrWhiteSpace(organisationId) && Guid.TryParse(organisationId, out var organisationGuid))
             {
-                context.Succeed(requirement);
+                var lookup = await tenantRepository.LookupTenant(userUrn);
+                List<string> orgScopes = lookup?.Tenants?.SelectMany(t => t.Organisations)?
+                            .FirstOrDefault(o => o.Id == organisationGuid)?.Scopes ?? [];
+
+                if (requirement.Scopes.Intersect(orgScopes).Any())
+                {
+                    context.Succeed(requirement);
+                }
             }
         }
     }
