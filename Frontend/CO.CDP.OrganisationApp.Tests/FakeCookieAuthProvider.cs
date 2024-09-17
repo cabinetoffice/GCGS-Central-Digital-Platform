@@ -11,9 +11,8 @@ public class FakeCookieAuthHandler : AuthenticationHandler<AuthenticationSchemeO
     public FakeCookieAuthHandler(
         IOptionsMonitor<AuthenticationSchemeOptions> options,
         ILoggerFactory logger,
-        UrlEncoder encoder,
-        ISystemClock clock)
-        : base(options, logger, encoder, clock)
+        UrlEncoder encoder)
+        : base(options, logger, encoder)
     {
     }
 
