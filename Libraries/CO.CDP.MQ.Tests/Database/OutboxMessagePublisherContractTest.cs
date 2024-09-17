@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 
 namespace CO.CDP.MQ.Tests.Database;
 
-public class DatabasePublisherContractTest(PostgreSqlFixture postgreSql)
+public class OutboxMessagePublisherContractTest(PostgreSqlFixture postgreSql)
     : PublisherContractTest, IClassFixture<PostgreSqlFixture>
 {
     private readonly DatabaseOutboxMessageRepository<TestDbContext> _outboxMessages = new(postgreSql.TestDbContext());
@@ -20,9 +20,9 @@ public class DatabasePublisherContractTest(PostgreSqlFixture postgreSql)
 
     protected override Task<IPublisher> CreatePublisher()
     {
-        return Task.FromResult<IPublisher>(new DatabasePublisher(
+        return Task.FromResult<IPublisher>(new OutboxMessagePublisher(
             _outboxMessages,
-            LoggerFactory.Create(_ => { }).CreateLogger<DatabasePublisher>()
+            LoggerFactory.Create(_ => { }).CreateLogger<OutboxMessagePublisher>()
         ));
     }
 

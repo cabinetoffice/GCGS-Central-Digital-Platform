@@ -6,14 +6,14 @@ using Moq;
 
 namespace CO.CDP.MQ.Tests.Database;
 
-public class DatabasePublisherTest
+public class OutboxMessagePublisherTest
 {
     private readonly Mock<IOutboxMessageRepository> _repository = new();
-    private DatabasePublisher Publisher => new(
+    private OutboxMessagePublisher Publisher => new(
         _repository.Object,
         o => JsonSerializer.Serialize(o),
         t => t.Name,
-        LoggerFactory.Create(_ => { }).CreateLogger<DatabasePublisher>()
+        LoggerFactory.Create(_ => { }).CreateLogger<OutboxMessagePublisher>()
     );
 
     [Fact]

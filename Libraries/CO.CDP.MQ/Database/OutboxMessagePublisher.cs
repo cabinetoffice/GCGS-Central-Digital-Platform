@@ -7,14 +7,14 @@ public delegate string Serializer(object message);
 
 public delegate string TypeMapper(Type type);
 
-public class DatabasePublisher(
+public class OutboxMessagePublisher(
     IOutboxMessageRepository messages,
     Serializer serializer,
     TypeMapper typeMapper,
-    ILogger<DatabasePublisher> logger
+    ILogger<OutboxMessagePublisher> logger
 ) : IPublisher
 {
-    public DatabasePublisher(IOutboxMessageRepository messages, ILogger<DatabasePublisher> logger)
+    public OutboxMessagePublisher(IOutboxMessageRepository messages, ILogger<OutboxMessagePublisher> logger)
         : this(messages, o => JsonSerializer.Serialize(o), type => type.Name, logger)
     {
     }
