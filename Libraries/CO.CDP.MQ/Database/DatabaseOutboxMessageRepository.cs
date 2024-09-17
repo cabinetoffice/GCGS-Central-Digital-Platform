@@ -15,6 +15,7 @@ public class DatabaseOutboxMessageRepository<TC>(TC context) : IOutboxMessageRep
     {
         return await context.OutboxMessages
             .OrderBy(o => o.CreatedOn)
+            .Where(o => o.Published == false)
             .Take(count)
             .ToListAsync();
     }

@@ -16,7 +16,8 @@ public class DatabaseOutboxMessageRepositoryTest(PostgreSqlFixture postgreSql) :
         var message = new OutboxMessage
         {
             Message = "Hello World",
-            Type = "String"
+            Type = "String",
+            Published = false
         };
         await repository.SaveAsync(message);
 
@@ -37,9 +38,10 @@ public class DatabaseOutboxMessageRepositoryTest(PostgreSqlFixture postgreSql) :
 
         List<OutboxMessage> messages =
         [
-            new OutboxMessage { Message = "Message 1", Type = "String" },
-            new OutboxMessage { Message = "Message 2", Type = "String" },
-            new OutboxMessage { Message = "Message 3", Type = "String" }
+            new OutboxMessage { Message = "Message 0", Type = "String", Published = true },
+            new OutboxMessage { Message = "Message 1", Type = "String", Published = false },
+            new OutboxMessage { Message = "Message 2", Type = "String", Published = false },
+            new OutboxMessage { Message = "Message 3", Type = "String", Published = false }
         ];
         foreach (var message in messages)
         {
