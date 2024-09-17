@@ -43,6 +43,19 @@ public class DatabaseAuthenticationKeyRepositoryTest(PostgreSqlFixture postgreSq
         found.As<AuthenticationKey>().OrganisationId.Should().Be(authenticationKey.Organisation.Id);
     }
 
+    [Fact]
+    public async Task ItFindsSavedAuthenticationKeys()
+    {
+        using var repository = AuthenticationKeyRepository();
+        var organisation = GivenOrganisation();
+        var authenticationKey = GivenAuthenticationKey(key: Guid.NewGuid().ToString(), organisation: organisation);
+        await repository.Save(authenticationKey);
+
+        var found = await repository.GetAuthenticationKeys(organisation.Guid);
+        found.As<IEnumerable<AuthenticationKey>>().Should().NotBeEmpty();
+        found.As<IEnumerable<AuthenticationKey>>().Should().HaveCountGreaterThan(0);
+    }
+
     private static AuthenticationKey GivenAuthenticationKey(
         string name = "fts",
         string key = "api-key",
