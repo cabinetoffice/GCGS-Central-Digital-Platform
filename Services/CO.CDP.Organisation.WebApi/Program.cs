@@ -79,6 +79,7 @@ builder.Services.AddScoped<IUseCase<(Guid, Guid, UpdateInvitedPersonToOrganisati
 builder.Services.AddScoped<IUseCase<(Guid, Guid, UpdatePersonToOrganisation), bool>, UpdatePersonToOrganisationUseCase>();
 builder.Services.AddScoped<IUseCase<Guid, IEnumerable<PersonInviteModel>>, GetPersonInvitesUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, Guid), bool>, RemovePersonInviteFromOrganisationUseCase>();
+builder.Services.AddScoped<IUseCase<Guid, IEnumerable<CO.CDP.Organisation.WebApi.Model.AuthenticationKey>>, GetAuthenticationKeyUseCase>();
 
 builder.Services.AddOrganisationProblemDetails();
 
@@ -139,6 +140,10 @@ app.MapGroup("/organisations")
 app.MapGroup("/organisations")
     .UsePersonsEndpoints()
     .WithTags("Organisation - Persons");
+
+app.MapGroup("/organisations")
+    .UseManageApiKeyEndpoints()
+    .WithTags("Organisation - Manage Api Keys");
 
 app.Run();
 public abstract partial class Program;

@@ -575,6 +575,33 @@ public static class EndpointExtensions
 
         return app;
     }
+
+    public static RouteGroupBuilder UseManageApiKeyEndpoints(this RouteGroupBuilder app)
+    {
+        app.MapGet("/{organisationId}/api-keys",
+            async (Guid organisationId, IUseCase<Guid, IEnumerable<Model.AuthenticationKey>> useCase) =>
+               await useCase.Execute(organisationId)
+                   .AndThen(entities => entities != null ? Results.Ok(entities) : Results.NotFound()))
+           .Produces<List<Model.AuthenticationKey>>(StatusCodes.Status200OK, "application/json")
+           .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
+           .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
+           .ProducesProblem(StatusCodes.Status422UnprocessableEntity)
+           .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError)
+           .WithOpenApi(operation =>
+           {
+               operation.OperationId = "GetAuthenticationKeys";
+               operation.Description = "Get authentication keys by Organisation ID.";
+               operation.Summary = "Get authentication keys information by Organisation ID.";
+               operation.Responses["200"].Description = "Authentication keys details.";
+               operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
+               operation.Responses["404"].Description = "authentication keys information not found.";
+               operation.Responses["422"].Description = "Unprocessable entity.";
+               operation.Responses["500"].Description = "Internal server error.";
+               return operation;
+           });
+
+        return app;
+    }
 }
 
 public static class ApiExtensions
