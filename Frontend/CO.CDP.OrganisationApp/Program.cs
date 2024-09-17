@@ -5,12 +5,14 @@ using CO.CDP.EntityVerificationClient;
 using CO.CDP.Forms.WebApiClient;
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp;
+using CO.CDP.OrganisationApp.Authorization;
 using CO.CDP.OrganisationApp.Pages;
 using CO.CDP.Person.WebApiClient;
 using CO.CDP.Tenant.WebApiClient;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using static IdentityModel.OidcConstants;
@@ -146,6 +148,11 @@ builder.Services.AddAuthentication(options =>
     options.ClaimActions.MapAll();
 });
 
+builder.Services.AddSingleton<IAuthorizationPolicyProvider, CustomAuthorizationPolicyProvider>();
+builder.Services.AddSingleton<IAuthorizationHandler, OrganizationScopeHandler>();
+builder.Services.AddSingleton<IAuthorizationMiddlewareResultHandler, CustomAuthorizationMiddlewareResultHandler>();
+builder.Services.AddAuthorization();
+
 builder.Services.AddHealthChecks();
 builder.Services
     .AddAwsConfiguration(builder.Configuration)
@@ -172,8 +179,8 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 app.UseAuthentication();
-app.UseAuthorization();
 app.UseSession();
+app.UseAuthorization();
 app.MapRazorPages();
 
 app.MapFallback(ctx =>
@@ -190,3 +197,5 @@ if (builder.Configuration.GetValue("Features:DiagnosticPage:Enabled", false)
 }
 
 app.Run();
+
+public abstract partial class Program;
