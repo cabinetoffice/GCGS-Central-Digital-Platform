@@ -31,6 +31,7 @@ public class WebApiToPersistenceProfile : Profile
             .ForMember(dest => dest.Question, opt => opt.Ignore())
             .ForMember(dest => dest.FormAnswerSetId, opt => opt.Ignore())
             .ForMember(dest => dest.FormAnswerSet, opt => opt.Ignore())
+            .ForMember(dest => dest.CreatedFrom, opt => opt.Ignore())
             .ForMember(dest => dest.CreatedOn, opt => opt.Ignore())
             .ForMember(dest => dest.UpdatedOn, opt => opt.Ignore())
             .ForMember(dest => dest.Id, opt => opt.Ignore())
