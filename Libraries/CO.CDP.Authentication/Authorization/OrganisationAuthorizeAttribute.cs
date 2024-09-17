@@ -20,8 +20,7 @@ public class OrganisationAuthorizeAttribute : AuthorizeAttribute
 
     private AuthenticationChannel[] channels = [];
     private string[] scopes = [];
-    private OrganisationIdLocation organisationIdLocation;
-    private bool _isDefault = true;
+    private OrganisationIdLocation organisationIdLocation = OrganisationIdLocation.None;
 
     public OrganisationAuthorizeAttribute(
         AuthenticationChannel[] channels,
@@ -39,7 +38,7 @@ public class OrganisationAuthorizeAttribute : AuthorizeAttribute
         set
         {
             channels = value;
-            BuildPolicy(string.Join("|", value), ChannelsGroup);
+            BuildPolicy();
         }
     }
 
@@ -49,7 +48,7 @@ public class OrganisationAuthorizeAttribute : AuthorizeAttribute
         set
         {
             scopes = value;
-            BuildPolicy(string.Join("|", value), ScopesGroup);
+            BuildPolicy();
         }
     }
 
@@ -59,18 +58,12 @@ public class OrganisationAuthorizeAttribute : AuthorizeAttribute
         set
         {
             organisationIdLocation = value;
-            BuildPolicy(value.ToString(), OrgIdLocGroup);
+            BuildPolicy();
         }
     }
 
-    private void BuildPolicy(string value, string group)
+    private void BuildPolicy()
     {
-        if (_isDefault)
-        {
-            Policy = PolicyPrefix;
-            _isDefault = false;
-        }
-
-        Policy += $"{group}${value};";
+        Policy = $"{PolicyPrefix}{ChannelsGroup}${string.Join("|", channels)};{ScopesGroup}${string.Join("|", scopes)};{OrgIdLocGroup}${organisationIdLocation};";
     }
 }

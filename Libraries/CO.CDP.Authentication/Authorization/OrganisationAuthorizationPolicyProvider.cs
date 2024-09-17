@@ -4,14 +4,6 @@ using System.Data;
 
 namespace CO.CDP.Authentication.Authorization;
 
-/*
- * https://learn.microsoft.com/en-us/aspnet/core/security/authorization/policies?view=aspnetcore-8.0
- * https://learn.microsoft.com/en-us/aspnet/core/security/authorization/iauthorizationpolicyprovider?view=aspnetcore-2.2
- * https://github.com/dotnet/aspnetcore/blob/v3.1.3/src/Security/samples/CustomPolicyProvider/Authorization/MinimumAgeAuthorizationHandler.cs
- * https://medium.com/@kadir.kilicoglu_67563/asp-net-core-custom-authorization-policies-with-multiple-requirements-and-multiple-handlers-487f920ae13e
- * https://stackoverflow.com/questions/56420394/how-to-pass-custom-argument-to-authorization-policy
- * https://stackoverflow.com/questions/52970354/asp-net-core-pass-several-parameters-to-custom-authorization-policy-provider
- */
 public class OrganisationAuthorizationPolicyProvider(IOptions<AuthorizationOptions> options) : IAuthorizationPolicyProvider
 {
     private readonly DefaultAuthorizationPolicyProvider _fallbackPolicyProvider = new(options);
