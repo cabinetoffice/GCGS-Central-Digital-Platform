@@ -6,7 +6,6 @@ from aws_synthetics.common import synthetics_logger as logger
 from selenium.common.exceptions import StaleElementReferenceException, TimeoutException
 import os
 import re
-import time
 import boto3
 import json
 
@@ -50,7 +49,6 @@ def get_version_from_ssm(parameter_name):
 def visit_frontend_and_login(browser, frontend_url, username, password):
     browser.get(frontend_url)
     logger.debug(f"Attempting login to {frontend_url}")
-    # time.sleep(2)  # Small delay to ensure page is fully loaded
 
     take_screenshot(browser, "frontend_cagnito_login")
 
@@ -113,13 +111,11 @@ def check_swagger_pages(browser, services, api_url, expected_version):
             logger.debug(f"Attempting to visit Swagger page for {service}: {swagger_url}")
             browser.get(swagger_url)
 
-            # Wait for the Swagger UI to load
             WebDriverWait(browser, 20).until(
                 EC.presence_of_element_located((By.CLASS_NAME, "swagger-ui"))
             )
             logger.info(f"Swagger UI loaded successfully for {service}")
 
-            # Now let's find the version in the Swagger page
             version_element = WebDriverWait(browser, 20).until(
                 EC.presence_of_element_located((By.XPATH,
                                                 '/html/body/div/section/div[2]/div[2]/div[1]/section/div/div/hgroup/h2/span/small[1]/pre'))
@@ -134,7 +130,6 @@ def check_swagger_pages(browser, services, api_url, expected_version):
 
             logger.info(f"Version on {service} Swagger page matches: {deployed_version}")
 
-            # Take a screenshot for each service
             take_screenshot(browser, f"swagger_page_{service}")
 
         except TimeoutException as e:
@@ -199,5 +194,9 @@ def main():
 
 
 def handler(event, context):
-    logger.info("Running Canary to validate frontend and API landing page. v 0.1.1")
+    log_level = os.getenv("WEB_DRIVER_LOG_LEVEL", "WARNING")
+    logger.info("Running Canary to validate frontend and API landing page. v 0.1.4")
+    logger.info(f"Current Log Level is '{logger.get_level()}'")
+    logger.info(f"Setting Log Level to '{log_level}'")
+    logger.set_level(log_level)
     return main()

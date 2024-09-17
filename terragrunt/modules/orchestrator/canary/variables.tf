@@ -30,8 +30,9 @@ variable "environment_variables" {
   type        = map(string)
   default     = {
     API_LANDING_PAGE_URL = "https://api.dev.supplier.information.findatender.codatt.net/"
-    AUTH_SECRET_NAME = "cdp-sirsi-canary-dev-credentials"
-    EXPECTED_VERSION = "0.4.0-a5b1c239"
+    AUTH_SECRET_NAME     = "cdp-sirsi-canary-dev-credentials"
+    EXPECTED_VERSION     = "0.4.0-a5b1c239"
+    WEB_DRIVER_LOG_LEVEL = "WARNING"
   }
 }
 
