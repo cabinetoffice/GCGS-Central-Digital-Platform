@@ -1,10 +1,13 @@
 using CO.CDP.Forms.WebApiClient;
+using CO.CDP.OrganisationApp.Constants;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
 
 namespace CO.CDP.OrganisationApp.Pages.Forms;
 
+[Authorize(Policy = OrgScopeRequirement.Editor)]
 public class FormsAnswerSetRemoveConfirmationModel(
     IFormsClient formsClient) : PageModel
 {
