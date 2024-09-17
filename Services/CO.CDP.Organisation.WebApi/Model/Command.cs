@@ -336,12 +336,18 @@ public record OrganisationQuery
     }
 }
 
-public record AuthenticationKey
-{
-    public int Id { get; set; }
+public record RegisterAuthenticationKey
+{    
     public required string Name { get; set; }
     public required string Key { get; set; }
-    public int? OrganisationId { get; set; }
+    public Guid OrganisationId { get; set; }
+    public bool? Revoked { get; set; }
+}
+
+public record AuthenticationKey
+{
+    public required string Name { get; set; }
+    public required string Key { get; set; }    
     public bool? Revoked { get; set; }
 }
 
