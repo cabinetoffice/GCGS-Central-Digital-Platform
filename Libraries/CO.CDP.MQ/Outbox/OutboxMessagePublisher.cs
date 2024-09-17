@@ -1,7 +1,7 @@
 using System.Text.Json;
 using Microsoft.Extensions.Logging;
 
-namespace CO.CDP.MQ.Database;
+namespace CO.CDP.MQ.Outbox;
 
 public delegate string Serializer(object message);
 

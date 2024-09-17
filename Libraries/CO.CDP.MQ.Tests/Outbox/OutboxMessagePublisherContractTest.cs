@@ -1,9 +1,9 @@
 using System.Text.Json;
-using CO.CDP.MQ.Database;
+using CO.CDP.MQ.Outbox;
 using CO.CDP.Testcontainers.PostgreSql;
 using Microsoft.Extensions.Logging;
 
-namespace CO.CDP.MQ.Tests.Database;
+namespace CO.CDP.MQ.Tests.Outbox;
 
 public class OutboxMessagePublisherContractTest(PostgreSqlFixture postgreSql)
     : PublisherContractTest, IClassFixture<PostgreSqlFixture>

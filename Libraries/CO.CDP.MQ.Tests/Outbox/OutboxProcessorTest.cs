@@ -1,7 +1,7 @@
-using CO.CDP.MQ.Database;
+using CO.CDP.MQ.Outbox;
 using Moq;
 
-namespace CO.CDP.MQ.Tests.Database;
+namespace CO.CDP.MQ.Tests.Outbox;
 
 public class OutboxProcessorTest
 {

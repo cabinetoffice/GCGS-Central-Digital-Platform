@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 
-namespace CO.CDP.MQ.Database;
+namespace CO.CDP.MQ.Outbox;
 
 public class DatabaseOutboxMessageRepository<TC>(TC context) : IOutboxMessageRepository
     where TC : DbContext, IOutboxMessageDbContext

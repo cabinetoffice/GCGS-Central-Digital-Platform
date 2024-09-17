@@ -1,6 +1,6 @@
 using CO.CDP.EntityFrameworkCore.Timestamps;
 
-namespace CO.CDP.MQ.Database;
+namespace CO.CDP.MQ.Outbox;
 
 public class OutboxMessage : IEntityDate
 {

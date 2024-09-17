@@ -1,8 +1,8 @@
-using CO.CDP.MQ.Database;
+using CO.CDP.MQ.Outbox;
 using CO.CDP.Testcontainers.PostgreSql;
 using FluentAssertions;
 
-namespace CO.CDP.MQ.Tests.Database;
+namespace CO.CDP.MQ.Tests.Outbox;
 
 public class DatabaseOutboxMessageRepositoryTest(PostgreSqlFixture postgreSql) : IClassFixture<PostgreSqlFixture>
 {

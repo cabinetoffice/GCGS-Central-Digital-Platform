@@ -1,10 +1,10 @@
 using System.Text.Json;
-using CO.CDP.MQ.Database;
+using CO.CDP.MQ.Outbox;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Moq;
 
-namespace CO.CDP.MQ.Tests.Database;
+namespace CO.CDP.MQ.Tests.Outbox;
 
 public class OutboxMessagePublisherTest
 {
