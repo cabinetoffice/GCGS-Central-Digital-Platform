@@ -10,19 +10,19 @@ public class DeleteAnswerSetUseCaseTest
     [Fact]
     public async Task Execute_ShouldReturnTrue_WhenDeletionIsSuccessful()
     {
-        var formRepositoryMock = new Mock<IFormRepository>();
+        var formRepository = new Mock<IFormRepository>();
         var organisationId = Guid.NewGuid();
         var answerSetId = Guid.NewGuid();
-        formRepositoryMock
+        formRepository
             .Setup(repo => repo.DeleteAnswerSetAsync(organisationId, answerSetId))
             .ReturnsAsync(true);
 
-        var useCase = new DeleteAnswerSetUseCase(formRepositoryMock.Object);
+        var useCase = new DeleteAnswerSetUseCase(formRepository.Object);
 
         var result = await useCase.Execute((organisationId, answerSetId));
 
         result.Should().BeTrue();
-        formRepositoryMock.Verify(repo => repo.DeleteAnswerSetAsync(organisationId, answerSetId), Times.Once);
+        formRepository.Verify(repo => repo.DeleteAnswerSetAsync(organisationId, answerSetId), Times.Once);
     }
 
     [Fact]
