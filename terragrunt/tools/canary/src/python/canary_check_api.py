@@ -104,6 +104,47 @@ def check_api_version(browser, api_url, expected_version):
         raise
 
 
+def check_swagger_pages(browser, services, api_url, expected_version):
+    logger.info("Start checking Swagger pages for each service.")
+
+    for service in services:
+        swagger_url = f"{api_url}{service}/swagger/index.html"
+        try:
+            logger.debug(f"Attempting to visit Swagger page for {service}: {swagger_url}")
+            browser.get(swagger_url)
+
+            # Wait for the Swagger UI to load
+            WebDriverWait(browser, 20).until(
+                EC.presence_of_element_located((By.CLASS_NAME, "swagger-ui"))
+            )
+            logger.info(f"Swagger UI loaded successfully for {service}")
+
+            # Now let's find the version in the Swagger page
+            version_element = WebDriverWait(browser, 20).until(
+                EC.presence_of_element_located((By.XPATH,
+                                                '/html/body/div/section/div[2]/div[2]/div[1]/section/div/div/hgroup/h2/span/small[1]/pre'))
+            )
+            deployed_version = version_element.text.strip()
+
+            logger.info(f"Found version on {service} Swagger page: {deployed_version}")
+
+            if deployed_version != expected_version:
+                raise Exception(
+                    f"Version mismatch on {service} Swagger page: expected {expected_version}, but found {deployed_version}")
+
+            logger.info(f"Version on {service} Swagger page matches: {deployed_version}")
+
+            # Take a screenshot for each service
+            take_screenshot(browser, f"swagger_page_{service}")
+
+        except TimeoutException as e:
+            logger.error(f"Timeout while trying to load the Swagger UI for {service}: {e}")
+            take_screenshot(browser, f"swagger_page_{service}_error")
+        except Exception as e:
+            logger.error(f"Failed to verify version on Swagger UI for {service}: {e}")
+            take_screenshot(browser, f"swagger_page_{service}_error")
+
+
 def main():
     logger.debug("Fetch URL and secret name from environment variables")
     api_url = os.getenv("API_LANDING_PAGE_URL")
@@ -143,7 +184,20 @@ def main():
     logger.debug("Step 2: Check the API version")
     check_api_version(browser, api_url, expected_version)
 
+    services = [
+        "authority",
+        "data-sharing",
+        "entity-verification",
+        "forms",
+        "organisation",
+        "person",
+        "tenant",
+    ]
+
+    logger.debug("Step 3: Check Swagger pages for all services")
+    check_swagger_pages(browser, services, api_url, expected_version)
+
 
 def handler(event, context):
-    logger.info("Running Canary to validate frontend and API landing page. v 0.1.0")
+    logger.info("Running Canary to validate frontend and API landing page. v 0.1.1")
     return main()
