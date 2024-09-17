@@ -2,10 +2,10 @@ using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.Person.WebApiClient;
 using CO.CDP.Tenant.WebApiClient;
+using FluentAssertions;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
-using Microsoft.AspNetCore.Authorization.Policy;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using System.Net;
@@ -130,11 +130,11 @@ public class AuthorizationTests
 
         var responseBody = await response.Content.ReadAsStringAsync();
 
-        Assert.NotNull(responseBody);
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        responseBody.Should().NotBeNull();
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
         foreach (string expectedText in expectedTexts)
         {
-            Assert.Contains(expectedText, responseBody);
+            responseBody.Should().Contain(expectedText);
         }
     }
 
@@ -150,9 +150,9 @@ public class AuthorizationTests
 
         var responseBody = await response.Content.ReadAsStringAsync();
 
-        Assert.NotNull(responseBody);
-        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
-        Assert.Contains("Page not found", responseBody);
+        responseBody.Should().NotBeNull();
+        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+        responseBody.Should().Contain("Page not found");
     }
 
     [Theory]
@@ -167,9 +167,9 @@ public class AuthorizationTests
 
         var responseBody = await response.Content.ReadAsStringAsync();
 
-        Assert.NotNull(responseBody);
-        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
-        Assert.Contains("Page not found", responseBody);
+        responseBody.Should().NotBeNull();
+        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+        responseBody.Should().Contain("Page not found");
     }
 
     [Fact]
@@ -183,10 +183,10 @@ public class AuthorizationTests
 
         var responseBody = await response.Content.ReadAsStringAsync();
 
-        Assert.NotNull(responseBody);
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        Assert.Contains("Organisation details", responseBody);
-        Assert.Contains($"href=\"/organisation/{testOrganisationId}/users/user-summary\">Users</a>", responseBody);
+        responseBody.Should().NotBeNull();
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        responseBody.Should().Contain("Organisation details");
+        responseBody.Should().Contain($"href=\"/organisation/{testOrganisationId}/users/user-summary\">Users</a>");
     }
 
     [Fact]
@@ -200,11 +200,11 @@ public class AuthorizationTests
 
         var responseBody = await response.Content.ReadAsStringAsync();
 
-        Assert.NotNull(responseBody);
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        
-        Assert.Contains("Organisation details", responseBody);
-        Assert.DoesNotContain($"href=\"/organisation/{testOrganisationId}/users/user-summary\">Users</a>", responseBody);
-        Assert.DoesNotContain("Users", responseBody);
+        responseBody.Should().NotBeNull();
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+
+        responseBody.Should().Contain("Organisation details");
+        responseBody.Should().NotContain($"href=\"/organisation/{testOrganisationId}/users/user-summary\">Users</a>");
+        responseBody.Should().NotContain("Users");
     }
 }
