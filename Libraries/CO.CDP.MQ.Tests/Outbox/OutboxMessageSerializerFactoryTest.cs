@@ -1,11 +1,10 @@
 using System.Text.Json;
-using CO.CDP.AwsServices.Sqs.Outbox;
 using CO.CDP.MQ.Outbox;
 using FluentAssertions;
 
-namespace CO.CDP.AwsServices.Tests.Sqs.Outbox;
+namespace CO.CDP.MQ.Tests.Outbox;
 
-public class OutboxMessageSerializerTest
+public class OutboxMessageSerializerFactoryTest
 {
     [Fact]
     public void ItDelegatesSerializationForNonOutboxMessages()

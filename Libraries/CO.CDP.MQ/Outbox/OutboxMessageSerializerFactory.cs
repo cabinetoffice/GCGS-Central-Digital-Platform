@@ -1,6 +1,4 @@
-using CO.CDP.MQ.Outbox;
-
-namespace CO.CDP.AwsServices.Sqs.Outbox;
+namespace CO.CDP.MQ.Outbox;
 
 public static class OutboxMessageSerializerFactory
 {
