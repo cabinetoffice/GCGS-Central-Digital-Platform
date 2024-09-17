@@ -1,15 +1,23 @@
+using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.Pages.Exclusions;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Moq;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages.Exclusions;
 public class DeclaringExclusionsTests
 {
+    private readonly Mock<IFormsEngine> _formsEngineMock;
+
+    public DeclaringExclusionsTests()
+    {
+        _formsEngineMock = new Mock<IFormsEngine>();
+    }
     [Fact]
     public void OnPost_ShouldReturnPage_WhenNoOptionIsSelected()
     {
-        var pageModel = new DeclaringExclusionsModel
+        var pageModel = new DeclaringExclusionsModel(_formsEngineMock.Object)
         {
             OrganisationId = Guid.NewGuid(),
             FormId = Guid.NewGuid(),
@@ -31,7 +39,7 @@ public class DeclaringExclusionsTests
         var formId = Guid.NewGuid();
         var sectionId = Guid.NewGuid();
 
-        var pageModel = new DeclaringExclusionsModel
+        var pageModel = new DeclaringExclusionsModel(_formsEngineMock.Object)
         {
             OrganisationId = organisationId,
             FormId = formId,
@@ -43,6 +51,12 @@ public class DeclaringExclusionsTests
 
         result.Should().BeOfType<RedirectToPageResult>();
         var redirectResult = result as RedirectToPageResult;
+        _formsEngineMock.Verify(engine => engine.SaveUpdateAnswers(
+            It.IsAny<Guid>(),
+            It.IsAny<Guid>(),
+            It.IsAny<Guid>(),
+            It.IsAny<FormQuestionAnswerState>()
+        ), Times.Never);
         redirectResult!.PageName.Should().Be("");
         redirectResult.RouteValues.Should().ContainKey("OrganisationId").WhoseValue.Should().Be(organisationId);
         redirectResult.RouteValues.Should().ContainKey("FormId").WhoseValue.Should().Be(formId);
@@ -54,7 +68,7 @@ public class DeclaringExclusionsTests
     {
         var organisationId = Guid.NewGuid();
 
-        var pageModel = new DeclaringExclusionsModel
+        var pageModel = new DeclaringExclusionsModel(_formsEngineMock.Object)
         {
             OrganisationId = organisationId,
             YesNoInput = false
@@ -64,8 +78,15 @@ public class DeclaringExclusionsTests
 
         result.Should().BeOfType<RedirectToPageResult>();
         var redirectResult = result as RedirectToPageResult;
+        _formsEngineMock.Verify(engine => engine.SaveUpdateAnswers(
+          It.IsAny<Guid>(),
+          It.IsAny<Guid>(),
+          organisationId,
+          It.Is<FormQuestionAnswerState>(s => s.FurtherQuestionsExempted == true)
+        ), Times.Once);
         redirectResult!.PageName.Should().Be("../Supplier/SupplierInformationSummary");
         redirectResult.RouteValues.Should().ContainKey("Id").WhoseValue.Should().Be(organisationId);
+
     }
 
 }

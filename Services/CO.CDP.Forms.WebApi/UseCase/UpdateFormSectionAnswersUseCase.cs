@@ -12,11 +12,11 @@ public class UpdateFormSectionAnswersUseCase(
     IOrganisationRepository organisationRepository,
     IMapper mapper,
     IFileHostManager fileHostManager)
-    : IUseCase<(Guid formId, Guid sectionId, Guid answerSetId, Guid organisationId, List<FormAnswer> answers), bool>
+    : IUseCase<(Guid formId, Guid sectionId, Guid answerSetId, Guid organisationId, UpdateFormSectionAnswers updateFormSectionAnswers), bool>
 {
-    public async Task<bool> Execute((Guid formId, Guid sectionId, Guid answerSetId, Guid organisationId, List<FormAnswer> answers) input)
+    public async Task<bool> Execute((Guid formId, Guid sectionId, Guid answerSetId, Guid organisationId, UpdateFormSectionAnswers updateFormSectionAnswers) input)
     {
-        var (formId, sectionId, answerSetId, organisationId, answers) = input;
+        var (formId, sectionId, answerSetId, organisationId, updateFormSectionAnswers) = input;
 
         var organisation = await organisationRepository.Find(organisationId)
             ?? throw new UnknownOrganisationException($"Unknown organisation {organisationId}.");
@@ -28,9 +28,9 @@ public class UpdateFormSectionAnswersUseCase(
             ?? CreateSharedConsent(organisation, section.Form);
 
         var (updatedSharedConsent, mappedAnswerSetId, updatedAnswers) =
-            MapSharedConsent(sharedConsent, answerSetId, answers);
+            MapSharedConsent(sharedConsent, answerSetId, updateFormSectionAnswers.Answers ?? []);
 
-        await UpdateOrAddAnswers(mappedAnswerSetId, updatedAnswers, section, updatedSharedConsent);
+        await UpdateOrAddAnswers(mappedAnswerSetId, updatedAnswers, section, updatedSharedConsent, updateFormSectionAnswers.FurtherQuestionsExempted);
         await formRepository.SaveSharedConsentAsync(updatedSharedConsent);
 
         return true;
@@ -42,14 +42,19 @@ public class UpdateFormSectionAnswersUseCase(
         return SharedConsentMapper.Map(sharedConsent, answerSetId, answers);
     }
 
-    private async Task UpdateOrAddAnswers(Guid answerSetId, List<FormAnswer> answers, Persistence.FormSection section, Persistence.SharedConsent sharedConsent)
+    private async Task UpdateOrAddAnswers(
+        Guid answerSetId,
+        List<FormAnswer> answers,
+        Persistence.FormSection section,
+        Persistence.SharedConsent sharedConsent,
+        bool furtherQuestionsExempted)
     {
         var questionDictionary = section.Questions.ToDictionary(q => q.Guid);
 
         ValidateQuestions(answers, questionDictionary);
 
         var answerSet = sharedConsent.AnswerSets.FirstOrDefault(a => a.Guid == answerSetId)
-            ?? CreateAnswerSet(answerSetId, sharedConsent, section);
+            ?? CreateAnswerSet(answerSetId, sharedConsent, section, furtherQuestionsExempted);
 
         await UploadFileIfRequired(answers, questionDictionary, answerSet);
 
@@ -170,7 +175,11 @@ public class UpdateFormSectionAnswersUseCase(
         };
     }
 
-    private static Persistence.FormAnswerSet CreateAnswerSet(Guid answerSetId, Persistence.SharedConsent sharedConsent, Persistence.FormSection section)
+    private static Persistence.FormAnswerSet CreateAnswerSet(
+        Guid answerSetId,
+        Persistence.SharedConsent sharedConsent,
+        Persistence.FormSection section,
+        bool furtherQuestionsExempted)
     {
         var answerSet = new Persistence.FormAnswerSet
         {
@@ -180,7 +189,7 @@ public class UpdateFormSectionAnswersUseCase(
             SectionId = section.Id,
             Section = section,
             Answers = [],
-            FurtherQuestionsExempted = sharedConsent.AnswerSets.FirstOrDefault(x => x.Guid == answerSetId)?.FurtherQuestionsExempted != null,
+            FurtherQuestionsExempted = furtherQuestionsExempted,
         };
         sharedConsent.AnswerSets.Add(answerSet);
         return answerSet;

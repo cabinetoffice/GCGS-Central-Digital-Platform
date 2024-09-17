@@ -1,9 +1,10 @@
+using CO.CDP.OrganisationApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace CO.CDP.OrganisationApp.Pages.Exclusions;
 
-public class DeclaringExclusionsModel : PageModel
+public class DeclaringExclusionsModel(IFormsEngine formsEngine) : PageModel
 {
     [BindProperty(SupportsGet = true)]
     public Guid OrganisationId { get; set; }
@@ -32,7 +33,8 @@ public class DeclaringExclusionsModel : PageModel
             return RedirectToPage("", new { OrganisationId, FormId, SectionId });
         }
 
-        return RedirectToPage("../Supplier/SupplierInformationSummary", new { Id = OrganisationId });
+        formsEngine.SaveUpdateAnswers(FormId, SectionId, OrganisationId, new FormQuestionAnswerState() { FurtherQuestionsExempted = true });
 
+        return RedirectToPage("../Supplier/SupplierInformationSummary", new { Id = OrganisationId });
     }
 }
