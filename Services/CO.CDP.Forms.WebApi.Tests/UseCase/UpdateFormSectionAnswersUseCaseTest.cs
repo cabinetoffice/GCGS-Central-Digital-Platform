@@ -5,10 +5,10 @@ using CO.CDP.Forms.WebApi.UseCase;
 using CO.CDP.OrganisationInformation.Persistence;
 using FluentAssertions;
 using Moq;
-using static CO.CDP.Forms.WebApi.Tests.UseCase.SharedConsentFactory;
 using static CO.CDP.OrganisationInformation.Persistence.Forms.FormQuestionType;
 using static CO.CDP.OrganisationInformation.Persistence.Forms.FormSectionType;
 using static CO.CDP.OrganisationInformation.Persistence.Forms.SubmissionState;
+using static CO.CDP.OrganisationInformation.Persistence.Tests.Factories.SharedConsentFactory;
 using Persistence = CO.CDP.OrganisationInformation.Persistence.Forms;
 
 namespace CO.CDP.Forms.WebApi.Tests.UseCase;

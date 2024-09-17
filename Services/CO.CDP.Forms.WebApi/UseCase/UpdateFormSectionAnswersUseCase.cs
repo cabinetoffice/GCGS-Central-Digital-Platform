@@ -1,7 +1,6 @@
 using AutoMapper;
 using CO.CDP.AwsServices;
 using CO.CDP.Forms.WebApi.Model;
-using CO.CDP.Forms.WebApi.UseCase.SharedConsent;
 using CO.CDP.OrganisationInformation.Persistence;
 using Persistence = CO.CDP.OrganisationInformation.Persistence.Forms;
 
@@ -39,7 +38,26 @@ public class UpdateFormSectionAnswersUseCase(
     private static (Persistence.SharedConsent, Guid, List<FormAnswer>) MapSharedConsent(
         Persistence.SharedConsent sharedConsent, Guid answerSetId, List<FormAnswer> answers)
     {
-        return SharedConsentMapper.Map(sharedConsent, answerSetId, answers);
+        var newSharedConsent = Persistence.SharedConsentMapper.Map(sharedConsent);
+        var allAnswers = newSharedConsent.AnswerSets.SelectMany(a => a.Answers);
+        var newRequestAnswers = answers.Select(answer =>
+        {
+            var matched = allAnswers.FirstOrDefault(a => a.CreatedFrom == answer.Id);
+            if (matched is not null)
+            {
+                return answer with { Id = matched.Guid };
+            }
+
+            return answer;
+        }).ToList();
+        return (
+            newSharedConsent,
+            newSharedConsent.AnswerSets
+                .Where(s => s.CreatedFrom == answerSetId)
+                .Select(a => a.Guid)
+                .FirstOrDefault(answerSetId),
+            newRequestAnswers
+        );
     }
 
     private async Task UpdateOrAddAnswers(

@@ -1,7 +1,8 @@
 using CO.CDP.OrganisationInformation.Persistence.Forms;
 using CO.CDP.Testcontainers.PostgreSql;
 using FluentAssertions;
-using static CO.CDP.OrganisationInformation.Persistence.Tests.EntityFactory;
+using Microsoft.EntityFrameworkCore;
+using static CO.CDP.OrganisationInformation.Persistence.Tests.Factories.SharedConsentFactory;
 
 namespace CO.CDP.OrganisationInformation.Persistence.Tests;
 
@@ -23,8 +24,8 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
         var formId = Guid.NewGuid();
         var sectionId = Guid.NewGuid();
         var form = GivenForm(formId: formId);
-        var sharedConsent = GivenSharedConsent(form);
-        var section = GivenSection(sectionId, form);
+        var sharedConsent = GivenSharedConsent(form: form);
+        var section = GivenFormSection(sectionId, form);
 
         await using var context = postgreSql.OrganisationInformationContext();
         await context.Forms.AddAsync(form);
@@ -32,7 +33,7 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
         await context.SharedConsents.AddAsync(sharedConsent);
         await context.SaveChangesAsync();
 
-        using var repository = FormRepository();
+        using var repository = FormRepository(context);
 
         var summaries = await repository.GetFormSummaryAsync(formId, sharedConsent.Organisation.Guid);
 
@@ -47,8 +48,8 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
         var formId = Guid.NewGuid();
         var sectionId = Guid.NewGuid();
         var form = GivenForm(formId: formId);
-        var sharedConsent = GivenSharedConsent(form);
-        var section = GivenSection(sectionId, form);
+        var sharedConsent = GivenSharedConsent(form: form);
+        var section = GivenFormSection(sectionId, form);
         GivenAnswerSet(sharedConsent: sharedConsent, section: section);
 
         await using var context = postgreSql.OrganisationInformationContext();
@@ -56,7 +57,7 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
         await context.SharedConsents.AddAsync(sharedConsent);
         await context.SaveChangesAsync();
 
-        using var repository = FormRepository();
+        using var repository = FormRepository(context);
 
         var summaries = await repository.GetFormSummaryAsync(formId, sharedConsent.Organisation.Guid);
 
@@ -90,12 +91,13 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
     [Fact]
     public async Task GetQuestionsAsync_WhenSectionExists_ReturnsQuestions()
     {
-        using var repository = FormRepository();
+        await using var context = postgreSql.OrganisationInformationContext();
+        using var repository = FormRepository(context);
         var formId = Guid.NewGuid();
         var sectionId = Guid.NewGuid();
 
         var form = GivenForm(formId);
-        var section = GivenSection(sectionId, form);
+        var section = GivenFormSection(sectionId, form);
         form.Sections.Add(section);
 
         var question1 = new FormQuestion
@@ -129,7 +131,8 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
         section.Questions.Add(question1);
         section.Questions.Add(question2);
 
-        await repository.SaveFormAsync(form);
+        await context.Forms.AddAsync(form);
+        await context.SaveChangesAsync();
 
         var foundQuestions = await repository.GetQuestionsAsync(sectionId);
 
@@ -150,14 +153,16 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
     [Fact]
     public async Task GetSectionAsync_WhenSectionExist_ReturnsFormSection()
     {
-        using var repository = FormRepository();
+        await using var context = postgreSql.OrganisationInformationContext();
+        using var repository = FormRepository(context);
         var formId = Guid.NewGuid();
         var sectionId = Guid.NewGuid();
 
         var form = GivenForm(formId);
-        var section = GivenSection(sectionId, form);
+        var section = GivenFormSection(sectionId, form);
         form.Sections.Add(section);
-        await repository.SaveFormAsync(form);
+        await context.Forms.AddAsync(form);
+        await context.SaveChangesAsync();
 
         var foundSection = await repository.GetSectionAsync(formId, sectionId);
 
@@ -178,7 +183,9 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
         var nonExistentSectionId = Guid.NewGuid();
         var nonExistentOrganisationId = Guid.NewGuid();
 
-        var foundAnswerSets = await repository.GetFormAnswerSetsFromCurrentSharedConsentAsync(nonExistentSectionId, nonExistentOrganisationId);
+        var foundAnswerSets =
+            await repository.GetFormAnswerSetsFromCurrentSharedConsentAsync(nonExistentSectionId,
+                nonExistentOrganisationId);
 
         foundAnswerSets.Should().BeEmpty();
     }
@@ -202,9 +209,10 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
         await context.SharedConsents.AddAsync(sharedConsent);
         await context.SaveChangesAsync();
 
-        using var repository = FormRepository();
+        using var repository = FormRepository(context);
 
-        var found = await repository.GetSharedConsentWithAnswersAsync(sharedConsent.Form.Guid, sharedConsent.Organisation.Guid);
+        var found = await repository.GetSharedConsentWithAnswersAsync(sharedConsent.Form.Guid,
+            sharedConsent.Organisation.Guid);
 
         found.Should().NotBeNull();
         found.As<SharedConsent>().OrganisationId.Should().Be(sharedConsent.OrganisationId);
@@ -217,8 +225,8 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
         var formId = Guid.NewGuid();
 
         var form = GivenForm(formId: formId);
-        var sharedConsent = GivenSharedConsent(form);
-        var section = GivenSection(sectionId: Guid.NewGuid(), form: form);
+        var sharedConsent = GivenSharedConsent(form: form);
+        var section = GivenFormSection(sectionId: Guid.NewGuid(), form: form);
         var question = GivenYesOrNoQuestion(section: section);
         var answerSet = GivenAnswerSet(sharedConsent: sharedConsent, section: section);
         var answer = GivenAnswer(question: question, answerSet: answerSet);
@@ -228,9 +236,10 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
         await context.SharedConsents.AddAsync(sharedConsent);
         await context.SaveChangesAsync();
 
-        using var repository = FormRepository();
+        using var repository = FormRepository(context);
 
-        var found = await repository.GetSharedConsentWithAnswersAsync(sharedConsent.Form.Guid, sharedConsent.Organisation.Guid);
+        var found = await repository.GetSharedConsentWithAnswersAsync(sharedConsent.Form.Guid,
+            sharedConsent.Organisation.Guid);
 
         found.Should().NotBeNull();
         found.As<SharedConsent>().OrganisationId.Should().Be(sharedConsent.OrganisationId);
@@ -254,6 +263,82 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
     }
 
     [Fact]
+    public async Task DeleteAnswerSetAsync_ShouldDeleteExistingAnswerSet_WhenAnswerSetFoundForDraftSharedConsent()
+    {
+        await using var context = postgreSql.OrganisationInformationContext();
+        var organisationId = Guid.NewGuid();
+        var answerSetId = Guid.NewGuid();
+        var organisation = GivenOrganisation(organisationId: organisationId);
+        var form = GivenForm();
+        var section = GivenFormSection(form: form);
+        var sharedConsent = GivenSharedConsent(
+            state: SubmissionState.Draft,
+            organisation: organisation,
+            form: form);
+        var answerSet = GivenAnswerSet(sharedConsent: sharedConsent, answerSetId: answerSetId, section: section);
+        GivenAnswer(
+            question: GivenFormQuestion(type: FormQuestionType.Text, section: section),
+            textValue: "Answer 1",
+            answerSet: answerSet);
+
+        context.Organisations.Add(organisation);
+        context.SharedConsents.Add(sharedConsent);
+        await context.SaveChangesAsync();
+
+        var repository = FormRepository(context);
+
+        var result = await repository.DeleteAnswerSetAsync(organisationId, answerSetId);
+        var foundAnswerSet = await context.FormAnswerSets.FirstAsync(a => a.Guid == answerSetId);
+        var sharedConsents = context.SharedConsents
+            .Where(s => s.OrganisationId == organisation.Id)
+            .ToList();
+
+        result.Should().BeTrue();
+        foundAnswerSet.As<FormAnswerSet>().Deleted.Should().BeTrue();
+        sharedConsents.Count.Should().Be(1);
+    }
+
+    [Fact]
+    public async Task DeleteAnswerSetAsync_ShouldDeleteClonedAnswerSet_WhenAnswerSetFoundForSubmittedSharedConsent()
+    {
+        await using var context = postgreSql.OrganisationInformationContext();
+        var organisationId = Guid.NewGuid();
+        var answerSetId = Guid.NewGuid();
+        var organisation = GivenOrganisation(organisationId: organisationId);
+        var form = GivenForm();
+        var section = GivenFormSection(form: form);
+        var sharedConsent = GivenSharedConsent(
+            state: SubmissionState.Submitted,
+            organisation: organisation,
+            form: form);
+        var answerSet = GivenAnswerSet(sharedConsent: sharedConsent, answerSetId: answerSetId, section: section);
+        GivenAnswer(
+            question: GivenFormQuestion(type: FormQuestionType.Text, section: section),
+            textValue: "Answer 1",
+            answerSet: answerSet);
+
+        context.Organisations.Add(organisation);
+        context.SharedConsents.Add(sharedConsent);
+        await context.SaveChangesAsync();
+
+        var repository = FormRepository(context);
+
+        var result = await repository.DeleteAnswerSetAsync(organisationId, answerSetId);
+        var foundAnswerSet = await context.FormAnswerSets.FirstAsync(a => a.Guid == answerSetId);
+        var sharedConsents = context.SharedConsents
+            .Where(s => s.OrganisationId == organisation.Id)
+            .ToList();
+
+        result.Should().BeTrue();
+        foundAnswerSet.As<FormAnswerSet>().Deleted.Should().BeFalse();
+        sharedConsents.Count.Should().Be(2);
+        sharedConsents.ElementAt(0).Guid.Should().Be(sharedConsent.Guid);
+        sharedConsents.ElementAt(0).AnswerSets.First().Deleted.Should().BeFalse();
+        sharedConsents.ElementAt(1).Guid.Should().NotBe(sharedConsent.Guid);
+        sharedConsents.ElementAt(1).AnswerSets.First().Deleted.Should().BeTrue();
+    }
+
+    [Fact]
     public async Task GetFormAnswerSetsAsync_WhenFormAnswerSetsDoNotExist_ReturnsEmptyList()
     {
         using var repository = FormRepository();
@@ -261,7 +346,9 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
         var nonExistentSectionId = Guid.NewGuid();
         var nonExistentOrganisationId = Guid.NewGuid();
 
-        var foundAnswerSets = await repository.GetFormAnswerSetsFromCurrentSharedConsentAsync(nonExistentSectionId, nonExistentOrganisationId);
+        var foundAnswerSets =
+            await repository.GetFormAnswerSetsFromCurrentSharedConsentAsync(nonExistentSectionId,
+                nonExistentOrganisationId);
 
         foundAnswerSets.Should().BeEmpty();
     }
@@ -274,7 +361,8 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
         var nonExistentAnswerSetId = Guid.NewGuid();
         var organisationId = Guid.NewGuid();
 
-        var foundAnswerSet = await repository.GetFormAnswerSetsFromCurrentSharedConsentAsync(nonExistentAnswerSetId, organisationId);
+        var foundAnswerSet =
+            await repository.GetFormAnswerSetsFromCurrentSharedConsentAsync(nonExistentAnswerSetId, organisationId);
 
         foundAnswerSet.Should().BeNullOrEmpty();
     }
@@ -283,7 +371,7 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
     public async Task GetFormAnswerSetAsync_WhenFormAnswerSetsExists_ReturnsFormAnswerSet()
     {
         using var context = postgreSql.OrganisationInformationContext();
-        var repository = new DatabaseFormRepository(context);
+        var repository = FormRepository(context);
 
         var formId = Guid.NewGuid();
         var sectionId = Guid.NewGuid();
@@ -291,7 +379,7 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
         var questionId = Guid.NewGuid();
 
         var form = GivenForm(formId);
-        var section = GivenSection(sectionId, form);
+        var section = GivenFormSection(sectionId, form);
         form.Sections.Add(section);
         var question = new FormQuestion
         {
@@ -313,11 +401,11 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
         context.Forms.Add(form);
         await context.SaveChangesAsync();
 
-        var organisation = GivenOrganisation(organisationId);
+        var organisation = EntityFactory.GivenOrganisation(organisationId);
         context.Organisations.Add(organisation);
         await context.SaveChangesAsync();
 
-        var sharedConsent = GivenSharedConsent(form, null, organisation);
+        var sharedConsent = GivenSharedConsent(form: form, organisation: organisation);
         var answerSet = new FormAnswerSet
         {
             Guid = Guid.NewGuid(),
@@ -340,7 +428,11 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
             FormAnswerSetId = answerSet.Id,
             FormAnswerSet = answerSet,
             BoolValue = true,
-            AddressValue = new FormAddress { StreetAddress = "456 Elm St", Locality = "London", PostalCode = "G67890", CountryName = "UK", Country = "GB" },
+            AddressValue = new FormAddress
+            {
+                StreetAddress = "456 Elm St", Locality = "London", PostalCode = "G67890", CountryName = "UK",
+                Country = "GB"
+            },
             CreatedOn = DateTimeOffset.UtcNow,
             UpdatedOn = DateTimeOffset.UtcNow
         };
@@ -350,7 +442,8 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
         context.FormAnswerSets.Add(answerSet);
         await context.SaveChangesAsync();
 
-        var foundAnswerSet = await repository.GetFormAnswerSetsFromCurrentSharedConsentAsync(sectionId, organisation.Guid);
+        var foundAnswerSet =
+            await repository.GetFormAnswerSetsFromCurrentSharedConsentAsync(sectionId, organisation.Guid);
 
         foundAnswerSet.Should().NotBeNull();
         foundAnswerSet.Should().HaveCount(1);
@@ -361,284 +454,15 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
     }
 
     [Fact]
-    public async Task GetFormAnswerSetAsync_WhenFormAnswerSetDeleted_DoesNotReturnsFormAnswerSet()
-    {
-        await using var context = postgreSql.OrganisationInformationContext();
-        var repository = new DatabaseFormRepository(context);
-
-        var formId = Guid.NewGuid();
-        var sectionId = Guid.NewGuid();
-        var organisationId = Guid.NewGuid();
-        var answerSetId = Guid.NewGuid();
-
-        var form = GivenForm(formId);
-        var section = GivenSection(sectionId, form);
-        form.Sections.Add(section);
-
-        context.Forms.Add(form);
-        await context.SaveChangesAsync();
-
-        var organisation = GivenOrganisation(organisationId);
-        context.Organisations.Add(organisation);
-        await context.SaveChangesAsync();
-
-        var sharedConsent = GivenSharedConsent(form);
-        var answerSet = new FormAnswerSet
-        {
-            Guid = answerSetId,
-            SharedConsentId = sharedConsent.Id,
-            SharedConsent = sharedConsent,
-            SectionId = section.Id,
-            Section = section,
-            Answers = [],
-            Deleted = true,
-            FurtherQuestionsExempted = false,
-            CreatedOn = DateTimeOffset.UtcNow,
-            UpdatedOn = DateTimeOffset.UtcNow
-        };
-
-        context.FormAnswerSets.Add(answerSet);
-        await context.SaveChangesAsync();
-
-        var foundAnswerSet = await repository.GetFormAnswerSetsFromCurrentSharedConsentAsync(sectionId, organisation.Guid);
-
-        foundAnswerSet.Should().NotBeNull();
-        foundAnswerSet.Should().HaveCount(0);
-    }
-
-    [Fact]
-    public async Task GetFormAnswerSetAsync_WhenFormAnswerSetExists_ReturnsFormAnswerSet()
-    {
-        await using var context = postgreSql.OrganisationInformationContext();
-        var repository = new DatabaseFormRepository(context);
-
-        var formId = Guid.NewGuid();
-        var sectionId = Guid.NewGuid();
-        var organisationId = Guid.NewGuid();
-        var answerSetId = Guid.NewGuid();
-
-        var form = GivenForm(formId);
-        var section = GivenSection(sectionId, form);
-        form.Sections.Add(section);
-
-        context.Forms.Add(form);
-        await context.SaveChangesAsync();
-
-        var organisation = GivenOrganisation(organisationId);
-        context.Organisations.Add(organisation);
-        await context.SaveChangesAsync();
-
-        var sharedConsent = GivenSharedConsent(form, null, organisation);
-        var answerSet = new FormAnswerSet
-        {
-            Guid = answerSetId,
-            SharedConsentId = sharedConsent.Id,
-            SharedConsent = sharedConsent,
-            SectionId = section.Id,
-            Section = section,
-            FurtherQuestionsExempted = false,
-            Answers = new List<FormAnswer>(),
-            CreatedOn = DateTimeOffset.UtcNow,
-            UpdatedOn = DateTimeOffset.UtcNow
-        };
-
-        context.FormAnswerSets.Add(answerSet);
-        await context.SaveChangesAsync();
-
-        var foundAnswerSet = await repository.GetFormAnswerSetAsync(sectionId, organisation.Guid, answerSetId);
-
-        foundAnswerSet.Should().NotBeNull();
-        foundAnswerSet.Should().BeEquivalentTo(answerSet, config => config
-            .Excluding(ctx => ctx.Id)
-            .Excluding(ctx => ctx.CreatedOn)
-            .Excluding(ctx => ctx.UpdatedOn));
-    }
-
-    [Fact]
-    public async Task SaveAnswerSet_ShouldSaveNewAnswerSet()
-    {
-        using var repository = FormRepository();
-        using var orgRepository = OrganisationRepository();
-
-        var formId = Guid.NewGuid();
-        var sectionId = Guid.NewGuid();
-        var questionId = Guid.NewGuid();
-
-        var guid = Guid.NewGuid();
-        var organisation = GivenOrganisation(guid: guid, name: "Organisation1");
-
-        var form = GivenForm(formId);
-        var section = GivenSection(sectionId, form);
-        form.Sections.Add(section);
-        var question = new FormQuestion
-        {
-            Guid = questionId,
-            Section = section,
-            Title = "Question 1",
-            Caption = "Question Caption",
-            Description = "Question 1 desc",
-            Type = FormQuestionType.YesOrNo,
-            IsRequired = true,
-            Options = new FormQuestionOptions(),
-            NextQuestion = null,
-            NextQuestionAlternative = null,
-            CreatedOn = DateTimeOffset.UtcNow,
-            UpdatedOn = DateTimeOffset.UtcNow
-        };
-        section.Questions.Add(question);
-        await repository.SaveFormAsync(form);
-
-        var sharedConsent = GivenSharedConsent(form, null, organisation);
-        var answerSet = new FormAnswerSet
-        {
-            Guid = Guid.NewGuid(),
-            SharedConsentId = sharedConsent.Id,
-            SharedConsent = sharedConsent,
-            SectionId = section.Id,
-            Section = section,
-            Answers = new List<FormAnswer>(),
-            Deleted = false,
-            FurtherQuestionsExempted = false,
-            CreatedOn = DateTimeOffset.UtcNow,
-            UpdatedOn = DateTimeOffset.UtcNow
-        };
-
-        var formAnswer = new FormAnswer
-        {
-            Guid = Guid.NewGuid(),
-            QuestionId = question.Id,
-            Question = question,
-            FormAnswerSetId = answerSet.Id,
-            FormAnswerSet = answerSet,
-            BoolValue = true,
-            CreatedOn = DateTimeOffset.UtcNow,
-            UpdatedOn = DateTimeOffset.UtcNow
-        };
-
-        answerSet.Answers.Add(formAnswer);
-
-        await repository.SaveAnswerSet(answerSet);
-
-        var foundAnswerSet = await repository.GetFormAnswerSetAsync(section.Guid, organisation.Guid, answerSet.Guid);
-
-        foundAnswerSet.Should().NotBeNull();
-        foundAnswerSet!.Answers.Should().HaveCount(1);
-        var foundAnswer = foundAnswerSet.Answers.First();
-        foundAnswer.Question.Should().Be(question);
-        foundAnswer.BoolValue.Should().BeTrue();
-    }
-
-    [Fact]
-    public async Task UpdateFormAnswerSet_ShouldUpdateExistingAnswerSet()
-    {
-        using var repository = FormRepository();
-        using var orgRepository = OrganisationRepository();
-
-        var formId = Guid.NewGuid();
-        var sectionId = Guid.NewGuid();
-        var questionId = Guid.NewGuid();
-
-        var guid = Guid.NewGuid();
-        var organisation = GivenOrganisation(guid: guid, name: "Organisation2");
-
-        var form = GivenForm(formId);
-        var section = GivenSection(sectionId, form);
-        form.Sections.Add(section);
-        var question = new FormQuestion
-        {
-            Guid = questionId,
-            Section = section,
-            Title = "Question 1",
-            Caption = "Question Caption",
-            Description = "Question 1 desc",
-            Type = FormQuestionType.YesOrNo,
-            IsRequired = true,
-            Options = new FormQuestionOptions(),
-            NextQuestion = null,
-            NextQuestionAlternative = null,
-            CreatedOn = DateTimeOffset.UtcNow,
-            UpdatedOn = DateTimeOffset.UtcNow
-        };
-        section.Questions.Add(question);
-        await repository.SaveFormAsync(form);
-
-        var sharedConsnt = new SharedConsent
-        {
-            Guid = Guid.NewGuid(),
-            OrganisationId = organisation.Id,
-            Organisation = organisation,
-            FormId = form.Id,
-            Form = form,
-            AnswerSets = new List<FormAnswerSet>(),
-            SubmissionState = SubmissionState.Draft,
-            SubmittedAt = DateTimeOffset.UtcNow,
-            FormVersionId = "1.0",
-            ShareCode = string.Empty,
-            CreatedOn = DateTimeOffset.UtcNow,
-            UpdatedOn = DateTimeOffset.UtcNow
-        };
-
-        var answerSet = new FormAnswerSet
-        {
-            Guid = Guid.NewGuid(),
-            SharedConsentId = sharedConsnt.Id,
-            SharedConsent = sharedConsnt,
-            SectionId = section.Id,
-            Section = section,
-            Answers = new List<FormAnswer>(),
-            Deleted = false,
-            FurtherQuestionsExempted = false,
-            CreatedOn = DateTimeOffset.UtcNow,
-            UpdatedOn = DateTimeOffset.UtcNow
-        };
-
-        var formAnswer = new FormAnswer
-        {
-            Guid = Guid.NewGuid(),
-            QuestionId = question.Id,
-            Question = question,
-            FormAnswerSetId = answerSet.Id,
-            FormAnswerSet = answerSet,
-            BoolValue = true,
-            CreatedOn = DateTimeOffset.UtcNow,
-            UpdatedOn = DateTimeOffset.UtcNow
-        };
-
-        answerSet.Answers.Add(formAnswer);
-
-        var newAnswer = new FormAnswer
-        {
-            Guid = Guid.NewGuid(),
-            QuestionId = question.Id,
-            Question = question,
-            FormAnswerSetId = answerSet.Id,
-            FormAnswerSet = answerSet,
-            BoolValue = false,
-            CreatedOn = DateTimeOffset.UtcNow,
-            UpdatedOn = DateTimeOffset.UtcNow
-        };
-        answerSet.Answers.Clear();
-        answerSet.Answers.Add(newAnswer);
-        await repository.SaveAnswerSet(answerSet);
-
-        var foundAnswerSet = await repository.GetFormAnswerSetAsync(section.Guid, organisation.Guid, answerSet.Guid);
-
-        foundAnswerSet.Should().NotBeNull();
-        foundAnswerSet!.Answers.Should().HaveCount(1);
-        var foundAnswer = foundAnswerSet.Answers.First();
-        foundAnswer.Question.Should().Be(question);
-        foundAnswer.BoolValue.Should().BeFalse();
-    }
-
-    [Fact]
     public async Task GetQuestionsAsync_WhenOptionsAreSimple_ReturnsCorrectOptions()
     {
-        using var repository = FormRepository();
+        await using var context = postgreSql.OrganisationInformationContext();
+        using var repository = FormRepository(context);
         var formId = Guid.NewGuid();
         var sectionId = Guid.NewGuid();
 
         var form = GivenForm(formId);
-        var section = GivenSection(sectionId, form);
+        var section = GivenFormSection(sectionId, form);
         form.Sections.Add(section);
 
         var questionId = Guid.NewGuid();
@@ -647,19 +471,19 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
         var simpleOptions = new FormQuestionOptions
         {
             Choices = new List<FormQuestionChoice>
-        {
-            new FormQuestionChoice
             {
-                Id = choiceId,
-                Title = "Choice 1",
-                GroupName = "Group 1",
-                Hint = new FormQuestionChoiceHint
+                new()
                 {
-                    Title = "Hint Title",
-                    Description = "Hint Description"
+                    Id = choiceId,
+                    Title = "Choice 1",
+                    GroupName = "Group 1",
+                    Hint = new FormQuestionChoiceHint
+                    {
+                        Title = "Hint Title",
+                        Description = "Hint Description"
+                    }
                 }
-            }
-        },
+            },
             ChoiceProviderStrategy = "SimpleStrategy"
         };
 
@@ -678,7 +502,8 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
         };
 
         section.Questions.Add(question);
-        await repository.SaveFormAsync(form);
+        await context.Forms.AddAsync(form);
+        await context.SaveChangesAsync();
 
         var foundQuestions = await repository.GetQuestionsAsync(sectionId);
 
@@ -694,122 +519,13 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
         foundChoice.Should().BeEquivalentTo(simpleOptions.Choices.First(), config => config.Excluding(ctx => ctx.Id));
     }
 
-    private static Form GivenForm(Guid formId)
-    {
-        return new Form
-        {
-            Guid = formId,
-            Name = "Test Form",
-            Version = "1.0",
-            IsRequired = true,
-            Scope = FormScope.SupplierInformation,
-            Sections = new List<FormSection>()
-        };
-    }
-
-    private static FormSection GivenSection(Guid sectionId, Form form)
-    {
-        return new FormSection
-        {
-            Guid = sectionId,
-            FormId = form.Id,
-            Form = form,
-            Questions = new List<FormQuestion>(),
-            Title = "Test Section",
-            Type = FormSectionType.Standard,
-            AllowsMultipleAnswerSets = true,
-            Configuration = new FormSectionConfiguration
-            {
-                PluralSummaryHeadingFormat = "You have added {0} files",
-                SingularSummaryHeading = "You have added 1 file",
-                AddAnotherAnswerLabel = "Add another file?",
-                RemoveConfirmationCaption = "Economic and Financial Standing",
-                RemoveConfirmationHeading = "Are you sure you want to remove this file?"
-            }
-        };
-    }
-
-    private static SharedConsent GivenSharedConsent(
-        Form? form = null,
-        List<FormAnswerSet>? answerSets = null,
-        Organisation? organisation = null
-        )
-    {
-        form ??= GivenForm(Guid.NewGuid());
-        organisation ??= GivenOrganisation();
-
-        return new SharedConsent()
-        {
-            Guid = Guid.NewGuid(),
-            OrganisationId = organisation.Id,
-            Organisation = organisation,
-            FormId = form.Id,
-            Form = form,
-            AnswerSets = answerSets ?? [],
-            SubmissionState = SubmissionState.Draft,
-            SubmittedAt = null,
-            FormVersionId = "202404",
-            ShareCode = null
-        };
-    }
-
-    private static FormAnswer GivenAnswer(FormQuestion question, FormAnswerSet answerSet)
-    {
-        var answer = new FormAnswer
-        {
-            Guid = Guid.NewGuid(),
-            QuestionId = question.Id,
-            Question = question,
-            FormAnswerSetId = answerSet.Id,
-            FormAnswerSet = answerSet,
-            BoolValue = true
-        };
-        answerSet.Answers.Add(answer);
-        return answer;
-    }
-
-    private static FormAnswerSet GivenAnswerSet(SharedConsent sharedConsent, FormSection section)
-    {
-        var answerSet = new FormAnswerSet
-        {
-            Guid = Guid.NewGuid(),
-            SharedConsentId = sharedConsent.Id,
-            SharedConsent = sharedConsent,
-            SectionId = section.Id,
-            Section = section,
-            Answers = [],
-            FurtherQuestionsExempted = false,
-        };
-        sharedConsent.AnswerSets.Add(answerSet);
-        return answerSet;
-    }
-
     private static FormQuestion GivenYesOrNoQuestion(FormSection section)
     {
-        var question = new FormQuestion
-        {
-            Guid = Guid.NewGuid(),
-            Section = section,
-            Type = FormQuestionType.YesOrNo,
-            IsRequired = true,
-            Title = "Yes or no?",
-            Description = "Please answer.",
-            NextQuestion = null,
-            NextQuestionAlternative = null,
-            Caption = null,
-            Options = new()
-        };
-        section.Questions.Add(question);
-        return question;
+        return GivenFormQuestion(section: section, type: FormQuestionType.YesOrNo);
     }
 
-    private IFormRepository FormRepository()
+    private IFormRepository FormRepository(OrganisationInformationContext? context = null)
     {
-        return new DatabaseFormRepository(postgreSql.OrganisationInformationContext());
-    }
-
-    private IOrganisationRepository OrganisationRepository()
-    {
-        return new DatabaseOrganisationRepository(postgreSql.OrganisationInformationContext());
+        return new DatabaseFormRepository(context ?? postgreSql.OrganisationInformationContext());
     }
 }
