@@ -2,9 +2,11 @@ using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Constants;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CO.CDP.OrganisationApp.Pages.Users;
 
+[Authorize(Policy = OrgScopeRequirement.Admin)]
 public class ChangeUserRoleModel(
     IOrganisationClient organisationClient,
     ISession session) : LoggedInUserAwareModel(session)
@@ -37,7 +39,7 @@ public class ChangeUserRoleModel(
         }
 
         UserFullName = organisationPerson.FirstName + " " + organisationPerson.LastName;
-        IsAdmin = organisationPerson.Scopes.Contains(PersonScopes.Admin);
+        IsAdmin = organisationPerson.Scopes.Contains(OrganisationPersonScopes.Admin);
         Role = GetRole(organisationPerson.Scopes);
 
         return Page();
@@ -96,7 +98,7 @@ public class ChangeUserRoleModel(
         }
 
         UserFullName = personInvite.FirstName + " " + personInvite.LastName;
-        IsAdmin = personInvite.Scopes.Contains(PersonScopes.Admin);
+        IsAdmin = personInvite.Scopes.Contains(OrganisationPersonScopes.Admin);
         Role = GetRole(personInvite.Scopes);
 
         return Page();
@@ -104,13 +106,13 @@ public class ChangeUserRoleModel(
 
     public string? GetRole(ICollection<string> scopes)
     {
-        if (scopes.Contains(PersonScopes.Editor))
+        if (scopes.Contains(OrganisationPersonScopes.Editor))
         {
-            return PersonScopes.Editor;
+            return OrganisationPersonScopes.Editor;
         }
-        else if (scopes.Contains(PersonScopes.Viewer))
+        else if (scopes.Contains(OrganisationPersonScopes.Viewer))
         {
-            return PersonScopes.Viewer;
+            return OrganisationPersonScopes.Viewer;
         }
 
         return null;
@@ -148,21 +150,21 @@ public class ChangeUserRoleModel(
 
     public ICollection<string>? ProcessScopes(ICollection<string> scopes)
     {
-        if (scopes != null && scopes.Contains(PersonScopes.Admin)) scopes.Remove(PersonScopes.Admin);
-        if (scopes != null && scopes.Contains(PersonScopes.Editor)) scopes.Remove(PersonScopes.Editor);
-        if (scopes != null && scopes.Contains(PersonScopes.Viewer)) scopes.Remove(PersonScopes.Viewer);
+        if (scopes != null && scopes.Contains(OrganisationPersonScopes.Admin)) scopes.Remove(OrganisationPersonScopes.Admin);
+        if (scopes != null && scopes.Contains(OrganisationPersonScopes.Editor)) scopes.Remove(OrganisationPersonScopes.Editor);
+        if (scopes != null && scopes.Contains(OrganisationPersonScopes.Viewer)) scopes.Remove(OrganisationPersonScopes.Viewer);
         if (IsAdmin == true)
         {
-            scopes?.Add(PersonScopes.Admin);
+            scopes?.Add(OrganisationPersonScopes.Admin);
         }
 
-        if (Role == PersonScopes.Editor)
+        if (Role == OrganisationPersonScopes.Editor)
         {
-            scopes?.Add(PersonScopes.Editor);
+            scopes?.Add(OrganisationPersonScopes.Editor);
         }
         else
         {
-            scopes?.Add(PersonScopes.Viewer);
+            scopes?.Add(OrganisationPersonScopes.Viewer);
         }
 
         return scopes;
