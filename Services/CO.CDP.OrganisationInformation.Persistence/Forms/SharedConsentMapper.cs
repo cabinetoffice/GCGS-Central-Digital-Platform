@@ -1,61 +1,41 @@
-using CO.CDP.Forms.WebApi.Model;
 using static CO.CDP.OrganisationInformation.Persistence.Forms.FormSectionType;
 using static CO.CDP.OrganisationInformation.Persistence.Forms.SubmissionState;
-using Persistence = CO.CDP.OrganisationInformation.Persistence.Forms;
 
-namespace CO.CDP.Forms.WebApi.UseCase.SharedConsent;
+namespace CO.CDP.OrganisationInformation.Persistence.Forms;
 
 public static class SharedConsentMapper
 {
-    public static (Persistence.SharedConsent, Guid, List<FormAnswer>) Map(
-        Persistence.SharedConsent sharedConsent,
-        Guid answerSetId,
-        List<FormAnswer> requestAnswers
-    )
+    public static SharedConsent Map(SharedConsent sharedConsent)
     {
         if (sharedConsent.SubmissionState != Submitted)
         {
-            return (sharedConsent, answerSetId, requestAnswers);
+            return sharedConsent;
         }
-
-        var oldToNewGuids = new Dictionary<Guid, Guid>();
 
         var newSharedConsent = CreateNewSharedConsent(sharedConsent);
 
         foreach (var answerSet in sharedConsent.AnswerSets.Where(x => x.Section.Type != Declaration))
         {
             var newAnswerSet = CreateNewAnswerSet(newSharedConsent, answerSet);
-            oldToNewGuids.Add(answerSet.Guid, newAnswerSet.Guid);
 
             foreach (var answer in answerSet.Answers)
             {
-                var newAnswer = CreateNewAnswer(newAnswerSet, answer);
-                oldToNewGuids.Add(answer.Guid, newAnswer.Guid);
-                newAnswerSet.Answers.Add(newAnswer);
+                newAnswerSet.Answers.Add(CreateNewAnswer(newAnswerSet, answer));
             }
 
             newSharedConsent.AnswerSets.Add(newAnswerSet);
         }
 
-        var newRequestAnswers = requestAnswers.Select(answer =>
-        {
-            if (oldToNewGuids.TryGetValue(answer.Id, out var newId))
-            {
-                return answer with { Id = newId };
-            }
-
-            return answer;
-        }).ToList();
-
-        return (newSharedConsent, oldToNewGuids.GetValueOrDefault(answerSetId, answerSetId), newRequestAnswers);
+        return newSharedConsent;
     }
 
-    private static Persistence.FormAnswer CreateNewAnswer(
-        Persistence.FormAnswerSet newAnswerSet,
-        Persistence.FormAnswer answer
+    private static FormAnswer CreateNewAnswer(
+        FormAnswerSet newAnswerSet,
+        FormAnswer answer
     ) => new()
     {
         Guid = Guid.NewGuid(),
+        CreatedFrom = answer.Guid,
         QuestionId = answer.QuestionId,
         Question = answer.Question,
         FormAnswerSetId = newAnswerSet.Id,
@@ -70,11 +50,12 @@ public static class SharedConsentMapper
         AddressValue = answer.AddressValue
     };
 
-    private static Persistence.SharedConsent CreateNewSharedConsent(Persistence.SharedConsent sharedConsent) =>
+    private static SharedConsent CreateNewSharedConsent(SharedConsent sharedConsent) =>
         new()
         {
             Id = default,
             Guid = Guid.NewGuid(),
+            CreatedFrom = sharedConsent.Guid,
             OrganisationId = sharedConsent.OrganisationId,
             Organisation = sharedConsent.Organisation,
             FormId = sharedConsent.FormId,
@@ -83,14 +64,16 @@ public static class SharedConsentMapper
             FormVersionId = sharedConsent.FormVersionId
         };
 
-    private static Persistence.FormAnswerSet CreateNewAnswerSet(
-        Persistence.SharedConsent sharedConsent, Persistence.FormAnswerSet answerSet
+    private static FormAnswerSet CreateNewAnswerSet(
+        SharedConsent sharedConsent, FormAnswerSet answerSet
     ) => new()
     {
         Guid = Guid.NewGuid(),
+        CreatedFrom = answerSet.Guid,
         SharedConsentId = sharedConsent.Id,
         SharedConsent = sharedConsent,
         SectionId = answerSet.SectionId,
-        Section = answerSet.Section
+        Section = answerSet.Section,
+        Deleted = answerSet.Deleted
     };
 }
