@@ -95,8 +95,6 @@ public class AuthorizationTests
 
         services.AddSingleton(_mockSession.Object);
 
-        services.AddSingleton<IPolicyEvaluator, FakeAuthenticationPolicyEvaluator>();
-
         services.AddAuthentication(options =>
         {
             options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
