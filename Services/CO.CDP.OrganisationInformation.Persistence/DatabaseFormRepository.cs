@@ -58,22 +58,10 @@ public class DatabaseFormRepository(OrganisationInformationContext context) : IF
             .FirstOrDefaultAsync(s => s.Form.Guid == formId && s.Guid == sectionId);
     }
 
-    public async Task SaveFormAsync(Form form)
-    {
-        context.Update(form);
-        await context.SaveChangesAsync();
-    }
-
     public async Task SaveSharedConsentAsync(SharedConsent sharedConsent)
     {
         context.Update(sharedConsent);
         await context.SaveChangesAsync();
-    }
-
-    public async Task<FormSection?> GetFormSectionAsync(Guid sectionId)
-    {
-        return await context.Set<FormSection>()
-            .FirstOrDefaultAsync(s => s.Guid == sectionId);
     }
 
     public async Task<SharedConsent?> GetSharedConsentWithAnswersAsync(Guid formId, Guid organisationId)
@@ -104,60 +92,30 @@ public class DatabaseFormRepository(OrganisationInformationContext context) : IF
             .ToListAsync();
     }
 
-    public async Task<FormAnswerSet?> GetFormAnswerSetAsync(Guid sectionId, Guid organisationId, Guid answerSetId)
-    {
-        return await context.Set<FormAnswerSet>()
-            .Include(a => a.Answers)
-            .Include(b => b.SharedConsent)
-            .FirstOrDefaultAsync(a => a.Guid == answerSetId && a.Section.Guid == sectionId && a.SharedConsent.Organisation.Guid == organisationId);
-    }
-
     public async Task<bool> DeleteAnswerSetAsync(Guid organisationId, Guid answerSetId)
     {
         var answerSet = await context.Set<FormAnswerSet>()
             .Include(a => a.SharedConsent)
+            .ThenInclude(s => s.Form)
+            .Include(a => a.Section)
             .FirstOrDefaultAsync(a => a.SharedConsent.Organisation.Guid == organisationId && a.Guid == answerSetId);
 
         if (answerSet == null) return false;
 
-        answerSet.Deleted = true;
+        var sharedConsent = await GetSharedConsentWithAnswersAsync(answerSet.SharedConsent.Form.Guid, organisationId);
+
+        if (sharedConsent == null) return false;
+
+        sharedConsent = SharedConsentMapper.Map(sharedConsent);
+
+        var sharedConsentAnswerSet = sharedConsent.AnswerSets
+            .FirstOrDefault(a => a.Guid == answerSetId || a.CreatedFrom == answerSetId);
+
+        if (sharedConsentAnswerSet == null) return false;
+
+        sharedConsentAnswerSet.Deleted = true;
+        context.Update(sharedConsent);
         await context.SaveChangesAsync();
         return true;
-    }
-
-    public async Task SaveAnswerSet(FormAnswerSet answerSet)
-    {
-        var existingAnswerSet = await context.Set<FormAnswerSet>().FirstOrDefaultAsync(a => a.Guid == answerSet.Guid);
-
-        if (existingAnswerSet != null)
-        {
-            context.Entry(existingAnswerSet).CurrentValues.SetValues(answerSet);
-            context.Entry(existingAnswerSet).State = EntityState.Modified;
-        }
-        else
-        {
-            context.Add(answerSet);
-        }
-
-        try
-        {
-            await context.SaveChangesAsync();
-        }
-        catch (DbUpdateException ex)
-        {
-            HandleDbUpdateException(answerSet, ex);
-        }
-    }
-
-    private static void HandleDbUpdateException(FormAnswerSet answerSet, DbUpdateException cause)
-    {
-        switch (cause.InnerException)
-        {
-            case { } e when e.Message.Contains("_form_answer_sets_guid"):
-                throw new IConnectedEntityRepository.ConnectedEntityRepositoryException.DuplicateConnectedEntityException(
-                    $"Form answer set with guid `{answerSet.Guid}` already exists.", cause);
-            default:
-                throw cause;
-        }
     }
 }
