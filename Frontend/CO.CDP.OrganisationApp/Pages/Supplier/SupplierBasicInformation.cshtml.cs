@@ -44,7 +44,7 @@ public class SupplierBasicInformationModel(IOrganisationClient organisationClien
         WebsiteAddress = composed.Organisation.ContactPoint.Url?.ToString();
         EmailAddress = composed.Organisation.ContactPoint.Email;
 
-        var vatIdentifier = composed.Organisation.AdditionalIdentifiers.FirstOrDefault(i => i.Scheme == "VAT");
+        var vatIdentifier = Helper.GetVatIdentifier(composed.Organisation);
         if (vatIdentifier != null) VatNumber = vatIdentifier.Id;
 
         var registeredAddrress = composed.Organisation.Addresses.FirstOrDefault(i => i.Type == AddressType.Registered);
