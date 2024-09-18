@@ -49,19 +49,7 @@ public class OrganisationScopeAuthorizationHandlerTests
     public async Task HandleRequirementAsync_ShouldFail_WhenOrganisationIdCannotBeFetched(string url, OrganisationIdLocation location)
     {
         var context = CreateAuthorizationHandlerContext("user-urn", ["Admin"], location);
-
-        var mockHttpContext = new DefaultHttpContext();
-        switch (location)
-        {
-            case OrganisationIdLocation.Path:
-                mockHttpContext.Request.Path = url;
-                break;
-            case OrganisationIdLocation.QueryString:
-                mockHttpContext.Request.QueryString = new QueryString(url);
-                break;
-        }
-
-        _mockHttpContextAccessor.Setup(x => x.HttpContext).Returns(mockHttpContext);
+        MockHttpContext(location, url);
 
         await _handler.HandleAsync(context);
 
@@ -78,23 +66,9 @@ public class OrganisationScopeAuthorizationHandlerTests
     {
         var userUrn = "user-urn";
         var organisationId = Guid.NewGuid();
-        string[] requiredScopes = organisationScopeExists ? ["Admin"] : ["Scope1"];
 
-        var context = CreateAuthorizationHandlerContext(userUrn, requiredScopes, location);
-
-        var url = string.Format(urlFormat, organisationId);
-        var mockHttpContext = new DefaultHttpContext();
-        switch (location)
-        {
-            case OrganisationIdLocation.Path:
-                mockHttpContext.Request.Path = url;
-                break;
-            case OrganisationIdLocation.QueryString:
-                mockHttpContext.Request.QueryString = new QueryString(url);
-                break;
-        }
-
-        _mockHttpContextAccessor.Setup(x => x.HttpContext).Returns(mockHttpContext);
+        var context = CreateAuthorizationHandlerContext(userUrn, organisationScopeExists ? ["Admin"] : ["Scope1"], location);
+        MockHttpContext(location, string.Format(urlFormat, organisationId));
 
         _mockTenantRepository.Setup(x => x.LookupTenant(userUrn))
             .ReturnsAsync(GetTenantLookup(userUrn, organisationId));
@@ -109,14 +83,8 @@ public class OrganisationScopeAuthorizationHandlerTests
     {
         var userUrn = "user-urn";
         var organisationId = Guid.NewGuid();
-
         var context = CreateAuthorizationHandlerContext(userUrn, ["Admin"], OrganisationIdLocation.Body);
-
-        var mockHttpContext = new DefaultHttpContext();
-        mockHttpContext.Request.Body = new MemoryStream(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(new { organisationId })));
-        mockHttpContext.Request.ContentType = "application/json";
-
-        _mockHttpContextAccessor.Setup(x => x.HttpContext).Returns(mockHttpContext);
+        MockHttpContext(OrganisationIdLocation.Body, organisationId: organisationId);
 
         _mockTenantRepository.Setup(x => x.LookupTenant(userUrn))
             .ReturnsAsync(GetTenantLookup(userUrn, organisationId));
@@ -126,6 +94,26 @@ public class OrganisationScopeAuthorizationHandlerTests
         context.HasSucceeded.Should().BeTrue();
     }
 
+    private void MockHttpContext(OrganisationIdLocation location, string? url = null, Guid? organisationId = null)
+    {
+        var mockHttpContext = new DefaultHttpContext();
+
+        switch (location)
+        {
+            case OrganisationIdLocation.Path:
+                mockHttpContext.Request.Path = url;
+                break;
+            case OrganisationIdLocation.QueryString:
+                mockHttpContext.Request.QueryString = new QueryString(url);
+                break;
+            case OrganisationIdLocation.Body:
+                mockHttpContext.Request.Body = new MemoryStream(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(new { organisationId })));
+                mockHttpContext.Request.ContentType = "application/json";
+                break;
+        }
+
+        _mockHttpContextAccessor.Setup(x => x.HttpContext).Returns(mockHttpContext);
+    }
 
     private static TenantLookup GetTenantLookup(string userUrn, Guid organisationId)
     {

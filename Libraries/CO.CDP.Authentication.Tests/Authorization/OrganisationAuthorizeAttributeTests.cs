@@ -40,7 +40,7 @@ public class OrganisationAuthorizeAttributeTests
     }
 
     [Fact]
-    public void Setting_Scopes_ShouldUpdate_olicy()
+    public void Setting_Scopes_ShouldUpdatePolicy()
     {
         var attribute = new OrganisationAuthorizeAttribute([AuthenticationChannel.ServiceKey], ["scope1"]);
 
