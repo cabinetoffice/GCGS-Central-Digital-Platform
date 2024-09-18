@@ -599,6 +599,35 @@ public static class EndpointExtensions
                return operation;
            });
 
+        app.MapPost("/{organisationId}/api-keys",
+            async (Guid organisationId, RegisterAuthenticationKey updateRegisterAuthenticationKey,
+                IUseCase<(Guid, RegisterAuthenticationKey), bool> useCase) =>
+
+                await useCase.Execute((organisationId, updateRegisterAuthenticationKey))
+                    .AndThen(_ => Results.NoContent())
+            )
+            .Produces(StatusCodes.Status201Created)
+            .Produces(StatusCodes.Status204NoContent)
+            .ProducesProblem(StatusCodes.Status400BadRequest)
+            .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
+            .ProducesProblem(StatusCodes.Status404NotFound)
+            .ProducesProblem(StatusCodes.Status422UnprocessableEntity)
+            .ProducesProblem(StatusCodes.Status500InternalServerError)
+            .WithOpenApi(operation =>
+            {
+                operation.OperationId = "CreateAuthenticationKey";
+                operation.Description = "Create a new authentication entity.";
+                operation.Summary = "Create a new authentication entity.";
+                operation.Responses["201"].Description = "Authentication key created successfully.";
+                operation.Responses["204"].Description = "Authentication key created successfully.";
+                operation.Responses["400"].Description = "Bad request.";
+                operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
+                operation.Responses["404"].Description = "Authentication key not found.";
+                operation.Responses["422"].Description = "Unprocessable entity.";
+                operation.Responses["500"].Description = "Internal server error.";
+                return operation;
+            });
+
         return app;
     }
 }
