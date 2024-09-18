@@ -21,10 +21,11 @@ public class OrganisationOverviewTest
     public async Task OnGet_WithValidId_CallsGetOrganisationAsync()
     {
         var id = Guid.NewGuid();
+        _model.Id = id;
         _organisationClientMock.Setup(o => o.GetOrganisationAsync(id))
             .ReturnsAsync(GivenOrganisationClientModel(id));
 
-        await _model.OnGet(id);
+        await _model.OnGet();
 
         _organisationClientMock.Verify(c => c.GetOrganisationAsync(id), Times.Once);
     }
@@ -34,8 +35,9 @@ public class OrganisationOverviewTest
     {
         _organisationClientMock.Setup(o => o.GetOrganisationAsync(It.IsAny<Guid>()))
             .ThrowsAsync(new ApiException("Unexpected error", 404, "", default, null));
-
-        var result = await _model.OnGet(Guid.NewGuid());
+        var id = Guid.NewGuid();
+        _model.Id = id;
+        var result = await _model.OnGet();
 
         result.Should().BeOfType<RedirectResult>()
             .Which.Url.Should().Be("/page-not-found");

@@ -83,7 +83,7 @@ public class LegalFormFormationDateModel(
             return RedirectToPage("LegalFormCompanyActQuestion", new { Id });
         }
 
-        var legalform = new Organisation.WebApiClient.LegalForm
+        var legalform = new CO.CDP.Organisation.WebApiClient.LegalForm
                         (
                             lf.LawRegistered,
                             lf.RegisteredLegalForm,

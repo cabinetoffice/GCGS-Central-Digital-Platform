@@ -45,7 +45,7 @@ public class TradeAssuranceRemoveConfirmationModel(
         return RedirectToPage("TradeAssuranceSummary", new { Id });
     }
 
-    private async Task<Organisation.WebApiClient.TradeAssurance?> GetTradeAssurance(IOrganisationClient organisationClient)
+    private async Task<CO.CDP.Organisation.WebApiClient.TradeAssurance?> GetTradeAssurance(IOrganisationClient organisationClient)
     {
         try
         {

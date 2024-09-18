@@ -70,6 +70,15 @@ internal static class OrganisationClientExtensions
                             type: OrganisationUpdateType.RemoveIdentifier,
                             organisation: new OrganisationInfo(additionalIdentifiers: null, contactPoint: null, addresses: null, identifierToRemove: identifierToRemove, organisationName: null)));
 
+
+    internal static Task UpdateOrganisationName(this IOrganisationClient organisationClient,
+        Guid organisationId,
+        string organisationName)
+            => organisationClient.UpdateOrganisationAsync(organisationId,
+                    new UpdatedOrganisation(
+                        type: OrganisationUpdateType.OrganisationName,
+                        organisation: new OrganisationInfo(additionalIdentifiers: null, contactPoint: null, addresses: null, identifierToRemove: null, organisationName: organisationName)));
+
     internal static Task UpdateOrganisationContactPoint(this IOrganisationClient organisationClient,
         Guid organisationId,
         OrganisationContactPoint contactPoint)

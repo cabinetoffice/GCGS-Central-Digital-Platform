@@ -46,3 +46,4 @@ msbuild.err
 msbuild.wrn
 OpenAPI
 TestResults/
+/Frontend/CO.CDP.OrganisationApp/Pages/Supplier/SupplierVatQuestion.cshtml.cs

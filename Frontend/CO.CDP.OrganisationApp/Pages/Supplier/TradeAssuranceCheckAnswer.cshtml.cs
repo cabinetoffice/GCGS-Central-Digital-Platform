@@ -39,7 +39,7 @@ public class TradeAssuranceCheckAnswerModel(
         }
 
         await organisationClient.UpdateSupplierTradeAssurance(Id,
-            new Organisation.WebApiClient.TradeAssurance(
+            new CO.CDP.Organisation.WebApiClient.TradeAssurance(
                 id: ta.Id,
                 awardedByPersonOrBodyName: ta.AwardedByPersonOrBodyName,
                 referenceNumber: ta.ReferenceNumber,

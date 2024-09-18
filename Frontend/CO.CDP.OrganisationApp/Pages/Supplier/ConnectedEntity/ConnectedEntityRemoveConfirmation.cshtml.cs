@@ -74,7 +74,7 @@ IOrganisationClient organisationClient) : PageModel
         return RedirectToPage("ConnectedPersonSummary", new { Id });
     }
 
-    private async Task<Organisation.WebApiClient.ConnectedEntityLookup?> GetConnectedEntity(IOrganisationClient organisationClient)
+    private async Task<CO.CDP.Organisation.WebApiClient.ConnectedEntityLookup?> GetConnectedEntity(IOrganisationClient organisationClient)
     {
         try
         {

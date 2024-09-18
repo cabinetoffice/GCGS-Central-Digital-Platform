@@ -15,7 +15,7 @@ public class TradeAssuranceSummaryModel(
     public bool? HasTradeAssurance { get; set; }
 
     [BindProperty]
-    public ICollection<Organisation.WebApiClient.TradeAssurance> TradeAssurances { get; set; } = [];
+    public ICollection<CO.CDP.Organisation.WebApiClient.TradeAssurance> TradeAssurances { get; set; } = [];
 
     [BindProperty]
     public bool CompletedTradeAssurance { get; set; }

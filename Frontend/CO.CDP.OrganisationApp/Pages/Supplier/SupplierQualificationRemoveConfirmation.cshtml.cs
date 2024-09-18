@@ -47,7 +47,7 @@ IOrganisationClient organisationClient) : PageModel
         return RedirectToPage("SupplierQualificationSummary", new { Id });
     }
 
-    private async Task<Organisation.WebApiClient.Qualification?> GetQualification(IOrganisationClient organisationClient)
+    private async Task<CO.CDP.Organisation.WebApiClient.Qualification?> GetQualification(IOrganisationClient organisationClient)
     {
         try
         {

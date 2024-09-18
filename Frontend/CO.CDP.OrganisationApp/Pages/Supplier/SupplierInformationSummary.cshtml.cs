@@ -50,7 +50,7 @@ public class SupplierInformationSummaryModel(
             HasSupplierType = supplierInfo.SupplierType.HasValue;
         }
         catch (Exception ex)
-            when ((ex is Organisation.WebApiClient.ApiException oex && oex.StatusCode == 404)
+            when ((ex is CO.CDP.Organisation.WebApiClient.ApiException oex && oex.StatusCode == 404)
                 || (ex is CDP.Forms.WebApiClient.ApiException wex && wex.StatusCode == 404))
         {
             return Redirect("/page-not-found");

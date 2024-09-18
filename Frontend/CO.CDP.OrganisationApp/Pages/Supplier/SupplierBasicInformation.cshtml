@@ -56,7 +56,7 @@
 
     void RenderOperationTypes(List<CO.CDP.Organisation.WebApiClient.OperationType> operationTypes)
     {
-         foreach (var item in operationTypes)
+        foreach (var item in operationTypes)
         {
             <p class="govuk-body">@item.ShortDescription()</p>
         }
@@ -78,7 +78,7 @@
                         Supplier type
                     </dt>
                     <dd class="govuk-summary-list__value">
-                        @(details.SupplierType == Organisation.WebApiClient.SupplierType.Organisation ? "Organisation" : "Individual")
+                        @(details.SupplierType == CO.CDP.Organisation.WebApiClient.SupplierType.Organisation ? "Organisation" : "Individual")
                     </dd>
                     <dd class="govuk-summary-list__actions">
                         <a class="govuk-link" href="individual-or-org">
@@ -87,7 +87,7 @@
                     </dd>
                 </div>
 
-                @if (details.SupplierType == Organisation.WebApiClient.SupplierType.Organisation)
+                @if (details.SupplierType == CO.CDP.Organisation.WebApiClient.SupplierType.Organisation)
                 {
                     <div class="govuk-summary-list__row">
                         <dt class="govuk-summary-list__key">
@@ -242,7 +242,7 @@
                     </dd>
                 </div>
 
-                @if (details.SupplierType == Organisation.WebApiClient.SupplierType.Organisation)
+                @if (details.SupplierType == CO.CDP.Organisation.WebApiClient.SupplierType.Organisation)
                 {
                     <div class="govuk-summary-list__row">
                         <dt class="govuk-summary-list__key">

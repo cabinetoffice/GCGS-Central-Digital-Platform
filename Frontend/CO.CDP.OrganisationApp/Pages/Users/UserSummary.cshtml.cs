@@ -1,25 +1,25 @@
 using CO.CDP.Organisation.WebApiClient;
-using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 
 namespace CO.CDP.OrganisationApp.Pages.Users;
 
-[Authorize(Policy = OrgScopeRequirement.Admin)]
 public class UserSummaryModel(
     IOrganisationClient organisationClient,
     ISession session) : LoggedInUserAwareModel(session)
 {
+    private const string ScopeAdmin = "ADMIN";
+
     [BindProperty(SupportsGet = true)]
     public Guid Id { get; set; }
 
+    [BindProperty]
     public Guid? SignedInPersonId { get; set; }
 
-    public ICollection<Organisation.WebApiClient.Person> Persons { get; set; } = [];
+    [BindProperty] public ICollection<CO.CDP.Organisation.WebApiClient.Person> Persons { get; set; } = [];
 
-    public ICollection<PersonInviteModel> PersonInvites { get; set; } = [];
+    [BindProperty] public ICollection<PersonInviteModel> PersonInvites { get; set; } = [];
 
     [BindProperty]
     [Required(ErrorMessage = "Select yes to add another user")]
@@ -32,6 +32,12 @@ public class UserSummaryModel(
         try
         {
             Persons = await organisationClient.GetOrganisationPersonsAsync(Id);
+
+            if (!UserHasAdminScopeForOrganisation())
+            {
+                return Redirect("/page-not-found");
+            }
+
             PersonInvites = await organisationClient.GetOrganisationPersonInvitesAsync(Id);
         }
         catch (ApiException ex) when (ex.StatusCode == 404)
@@ -57,5 +63,25 @@ public class UserSummaryModel(
         }
 
         return Redirect("/organisation/" + Id);
+    }
+
+    public bool UserHasAdminScopeForOrganisation()
+    {
+        bool userIsAdminForOrg = false;
+
+        foreach (var person in Persons)
+        {
+            if (person.Id == SignedInPersonId && person.Scopes.Contains(ScopeAdmin))
+            {
+                userIsAdminForOrg = true;
+            }
+        }
+
+        if (!userIsAdminForOrg)
+        {
+            return false;
+        }
+
+        return true;
     }
 }

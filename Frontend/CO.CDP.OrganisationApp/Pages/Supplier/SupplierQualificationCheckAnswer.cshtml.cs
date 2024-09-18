@@ -38,7 +38,7 @@ public class SupplierQualificationCheckAnswerModel(
         }
 
         await organisationClient.UpdateSupplierQualification(Id,
-            new Organisation.WebApiClient.Qualification(
+            new CO.CDP.Organisation.WebApiClient.Qualification(
                 id: qa.Id,
                 awardedByPersonOrBodyName: qa.AwardedByPersonOrBodyName,
                 name: qa.Name,
