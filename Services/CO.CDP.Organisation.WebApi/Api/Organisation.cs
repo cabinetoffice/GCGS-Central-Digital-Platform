@@ -512,7 +512,6 @@ public static class EndpointExtensions
                 operation.Description = "Create a new person invite.";
                 operation.Summary = "Create a new person invite.";
                 operation.Responses["201"].Description = "Person invite created successfully.";
-                operation.Responses["204"].Description = "Person invite created successfully.";
                 operation.Responses["400"].Description = "Bad request.";
                 operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
                 operation.Responses["404"].Description = "Organisation not found.";
