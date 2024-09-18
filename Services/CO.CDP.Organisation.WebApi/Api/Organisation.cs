@@ -500,7 +500,6 @@ public static class EndpointExtensions
                         .AndThen(_ => Results.NoContent())
             )
             .Produces(StatusCodes.Status201Created)
-            .Produces(StatusCodes.Status204NoContent)
             .ProducesProblem(StatusCodes.Status400BadRequest)
             .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
             .ProducesProblem(StatusCodes.Status404NotFound)
