@@ -53,7 +53,7 @@ public class DataSharingProfile : Profile
             .ForMember(m => m.Scheme, o => o.MapFrom(m => m.Scheme))
             .ForMember(m => m.Id, o => o.MapFrom(m => m.IdentifierId))
             .ForMember(m => m.LegalName, o => o.MapFrom(m => m.LegalName))
-            .ForMember(m => m.Uri, o => o.MapFrom(m => !string.IsNullOrWhiteSpace(m.Uri) ? new Uri(m.Uri) : default));
+            .ForMember(m => m.Uri, o => o.MapFrom(m => OrganisationInformation.Constants.GetEndpointUri(m.Scheme, m.IdentifierId)));
 
         CreateMap<Organisation.OrganisationAddress, Address>()
             .ForMember(m => m.StreetAddress, o => o.MapFrom(m => m.Address.StreetAddress))
