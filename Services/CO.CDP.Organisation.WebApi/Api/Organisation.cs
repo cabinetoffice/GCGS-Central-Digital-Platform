@@ -498,10 +498,9 @@ public static class EndpointExtensions
                 async (Guid organisationId, InvitePersonToOrganisation invitePersonToOrganisation, IUseCase<(Guid, InvitePersonToOrganisation), PersonInvite> useCase) =>
 
                     await useCase.Execute((organisationId, invitePersonToOrganisation))
-                        .AndThen(_ => Results.NoContent())
+                        .AndThen(Results.Ok)
             )
-            .Produces(StatusCodes.Status201Created)
-            .Produces(StatusCodes.Status204NoContent)
+            .Produces(StatusCodes.Status200OK)
             .ProducesProblem(StatusCodes.Status400BadRequest)
             .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
             .ProducesProblem(StatusCodes.Status404NotFound)
@@ -512,8 +511,7 @@ public static class EndpointExtensions
                 operation.OperationId = "CreatePersonInvite";
                 operation.Description = "Create a new person invite.";
                 operation.Summary = "Create a new person invite.";
-                operation.Responses["201"].Description = "Person invite created successfully.";
-                operation.Responses["204"].Description = "Person invite created successfully.";
+                operation.Responses["200"].Description = "Person invite created successfully.";
                 operation.Responses["400"].Description = "Bad request.";
                 operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
                 operation.Responses["404"].Description = "Organisation not found.";
