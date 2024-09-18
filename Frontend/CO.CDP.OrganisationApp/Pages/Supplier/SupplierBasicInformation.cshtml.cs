@@ -8,7 +8,7 @@ using AddressType = CO.CDP.Organisation.WebApiClient.AddressType;
 
 namespace CO.CDP.OrganisationApp.Pages.Supplier;
 
-[Authorize(Policy = OrgScopeRequirement.Editor)]
+[Authorize(Policy = OrgScopeRequirement.Viewer)]
 public class SupplierBasicInformationModel(IOrganisationClient organisationClient) : PageModel
 {
     [BindProperty]

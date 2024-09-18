@@ -1,5 +1,7 @@
 @page "/organisation/{id}/supplier-information"
 @using CO.CDP.OrganisationApp.Pages.Forms
+@using CO.CDP.OrganisationApp.Constants
+@inject IUserInfoService userInfoService
 @model CO.CDP.OrganisationApp.Pages.Supplier.SupplierInformationSummaryModel
 
 @{
@@ -14,8 +16,10 @@
         };
     }
 
-    var basicInformationLink = $"/organisation/{Model.Id}/supplier-information/{(Model.HasSupplierType ? "basic-information" : "individual-or-org")}";
-    var connectedEntityLink = $"/organisation/{Model.Id}/supplier-information/connected-person/{(Model.ConnectedEntities.Count > 0 ? "connected-person-summary" : "declaration")}";
+    bool isViewer = await userInfoService.UserHasScope(OrganisationPersonScopes.Viewer);
+
+    var basicInformationLink = $"/organisation/{Model.Id}/supplier-information/{((Model.HasSupplierType || isViewer) ? "basic-information" : "individual-or-org")}";
+    var connectedEntityLink = $"/organisation/{Model.Id}/supplier-information/connected-person/{((Model.ConnectedEntities.Count > 0 || isViewer) ? "connected-person-summary" : "declaration")}";
 
     string NoOfConnectedPersonText()
     {
@@ -54,6 +58,11 @@
                     </dd>
                 </div>
             </dl>
+
+
+            @* TODO: Next - viewing connected persons *@
+
+
             <dl class="govuk-summary-list">
                 <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">
@@ -74,10 +83,12 @@
                 var declarationSection = section.Type == CDP.Forms.WebApiClient.FormSectionType.Declaration;
                 var exclusionsSection = section.Type == CDP.Forms.WebApiClient.FormSectionType.Exclusions;
                 var redirectLink = $"/organisation/{Model.Id}/forms/{FormsEngine.OrganisationSupplierInfoFormId}/sections/{section.SectionId}";
+                var requiredScope = OrgScopeRequirement.Viewer;
 
                 if (declarationSection)
                 {
                     redirectLink += "/share-codes-list-view";
+                    requiredScope = OrgScopeRequirement.Editor;
                 }
                 else if (exclusionsSection)
                 {
@@ -88,27 +99,29 @@
                     redirectLink += "/add-another-answer-set";
                 }
 
-                <dl class="govuk-summary-list">
-                    <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">
-                            <a class="govuk-link govuk-link--no-visited-state" href="@redirectLink">
-                                @(section.SectionName)
-                            </a>
-                        </dt>
-                        <dd class="govuk-summary-list__value">
-                            @if (!declarationSection && section.AnswerSetCount > 0)
-                            {
-                                @(section.AnswerSetCount) @:records
-                            }
-                        </dd>
-                        <dd class="govuk-summary-list__actions">
-                            @if (!declarationSection)
-                            {
-                                <strong class="govuk-tag">@(section.AnswerSetCount > 0 ? $"Completed" : "Not started")</strong>
-                            }
-                        </dd>
-                    </div>
-                </dl>
+                <authorize scope="@requiredScope">
+                    <dl class="govuk-summary-list">
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">
+                                <a class="govuk-link govuk-link--no-visited-state" href="@redirectLink">
+                                    @(section.SectionName)
+                                </a>
+                            </dt>
+                            <dd class="govuk-summary-list__value">
+                                @if (!declarationSection && section.AnswerSetCount > 0)
+                                {
+                                    @(section.AnswerSetCount) @:records
+                                }
+                            </dd>
+                            <dd class="govuk-summary-list__actions">
+                                @if (!declarationSection)
+                                {
+                                    <strong class="govuk-tag">@(section.AnswerSetCount > 0 ? $"Completed" : "Not started")</strong>
+                                }
+                            </dd>
+                        </div>
+                    </dl>
+                </authorize>
             }
 
             <div class="govuk-!-margin-top-3">

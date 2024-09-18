@@ -7,10 +7,11 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace CO.CDP.OrganisationApp.Pages.Supplier;
 
-[Authorize(Policy = OrgScopeRequirement.Editor)]
+[Authorize(Policy = OrgScopeRequirement.Viewer)]
 public class SupplierInformationSummaryModel(
     IOrganisationClient organisationClient,
-    IFormsClient formsClient) : PageModel
+    IFormsClient formsClient,
+    ISession session) : LoggedInUserAwareModel(session)
 {
     [BindProperty]
     public string? Name { get; set; }
