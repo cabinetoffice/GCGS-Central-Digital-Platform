@@ -36,8 +36,8 @@ data "aws_iam_policy_document" "terraform_product" {
     ]
     effect = "Allow"
     resources = [
-      "arn:aws:lambda:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:function:cwsyn-cdp-sirsi-canary-*",
-      "arn:aws:lambda:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:layer:cwsyn-cdp-sirsi-canary-*",
+      "arn:aws:lambda:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:function:cwsyn-${local.name_prefix}-*",
+      "arn:aws:lambda:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:layer:cwsyn-${local.name_prefix}-*",
       "arn:aws:lambda:${data.aws_region.current.name}:*:layer:Synthetics_*",
     ]
     sid = "ManageProductCanarysLambda"
