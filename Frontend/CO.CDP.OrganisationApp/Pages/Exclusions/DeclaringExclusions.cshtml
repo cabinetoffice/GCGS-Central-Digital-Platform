@@ -31,12 +31,12 @@
                         <div class="govuk-radios" data-module="govuk-radios">
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input" id="conditional-YES" name="YesNoInput" type="radio"
-                                       value="true" data-aria-controls="conditional-YES" @(Model.YesNoInput == true ? "checked" : "")>
+                                       value="true" @(Model.YesNoInput == true ? "checked" : "")>
                                 <label class="govuk-label govuk-radios__label" for="conditional-YES">Yes</label>
                             </div>
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input" id="conditional-NO" name="YesNoInput" type="radio"
-                                       value="false" data-aria-controls="conditional-NO" @(Model.YesNoInput == false ? "checked" : "")>
+                                       value="false" @(Model.YesNoInput == false ? "checked" : "")>
                                 <label class="govuk-label govuk-radios__label" for="conditional-NO">No</label>
                             </div>
                         </div>
