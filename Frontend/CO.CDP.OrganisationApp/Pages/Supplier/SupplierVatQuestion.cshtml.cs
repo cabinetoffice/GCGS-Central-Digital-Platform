@@ -42,7 +42,7 @@ public class SupplierVatQuestionModel(IOrganisationClient organisationClient,
                 }
             }
         }
-        catch (Organisation.WebApiClient.ApiException ex) when (ex.StatusCode == 404)
+        catch (CO.CDP.Organisation.WebApiClient.ApiException ex) when (ex.StatusCode == 404)
         {
             return Redirect("/page-not-found");
         }
@@ -57,12 +57,12 @@ public class SupplierVatQuestionModel(IOrganisationClient organisationClient,
             return Page();
         }
 
-        Organisation.WebApiClient.Organisation? organisation;
+        CO.CDP.Organisation.WebApiClient.Organisation? organisation;
         try
         {
             organisation = await organisationClient.GetOrganisationAsync(Id);
         }
-        catch (Organisation.WebApiClient.ApiException ex) when (ex.StatusCode == 404)
+        catch (CO.CDP.Organisation.WebApiClient.ApiException ex) when (ex.StatusCode == 404)
         {
             return Redirect("/page-not-found");
         }
@@ -128,7 +128,7 @@ public class SupplierVatQuestionModel(IOrganisationClient organisationClient,
         };
     }
 
-    private async Task<Organisation.WebApiClient.Organisation> LookupOrganisationAsync()
+    private async Task<CO.CDP.Organisation.WebApiClient.Organisation> LookupOrganisationAsync()
     {
         return await organisationClient.LookupOrganisationAsync(string.Empty,
                     $"{VatSchemeName}:{VatNumber}");
