@@ -81,14 +81,14 @@ dependency service_auth {
 dependency service_database {
   config_path = "../../service/database"
   mock_outputs = {
-    entity_verification_address               = "mock"
-    entity_verification_credentials_arn       = "mock"
-    entity_verification_kms_arn               = "mock"
-    entity_verification_name                  = "mock"
-    sirsi_address                             = "mock"
-    sirsi_credentials_arn                     = "mock"
-    sirsi_kms_arn                             = "mock"
-    sirsi_name                                = "mock"
+    entity_verification_address         = "mock"
+    entity_verification_credentials_arn = "mock"
+    entity_verification_kms_arn         = "mock"
+    entity_verification_name            = "mock"
+    sirsi_address                       = "mock"
+    sirsi_credentials_arn               = "mock"
+    sirsi_kms_arn                       = "mock"
+    sirsi_name                          = "mock"
 
   }
 }
@@ -146,14 +146,14 @@ inputs = {
   user_pool_client_id = dependency.service_auth.outputs.organisation_app_user_pool_client_id
   user_pool_domain    = dependency.service_auth.outputs.user_pool_domain
 
-  db_entity_verification_address               = dependency.service_database.outputs.entity_verification_address
-  db_entity_verification_credentials_arn       = dependency.service_database.outputs.entity_verification_credentials_arn
-  db_entity_verification_kms_arn               = dependency.service_database.outputs.entity_verification_kms_arn
-  db_entity_verification_name                  = dependency.service_database.outputs.entity_verification_name
-  db_sirsi_address                             = dependency.service_database.outputs.sirsi_address
-  db_sirsi_credentials_arn                     = dependency.service_database.outputs.sirsi_credentials_arn
-  db_sirsi_kms_arn                             = dependency.service_database.outputs.sirsi_kms_arn
-  db_sirsi_name                                = dependency.service_database.outputs.sirsi_name
+  db_entity_verification_address         = dependency.service_database.outputs.entity_verification_address
+  db_entity_verification_credentials_arn = dependency.service_database.outputs.entity_verification_credentials_arn
+  db_entity_verification_kms_arn         = dependency.service_database.outputs.entity_verification_kms_arn
+  db_entity_verification_name            = dependency.service_database.outputs.entity_verification_name
+  db_sirsi_address                       = dependency.service_database.outputs.sirsi_address
+  db_sirsi_credentials_arn               = dependency.service_database.outputs.sirsi_credentials_arn
+  db_sirsi_kms_arn                       = dependency.service_database.outputs.sirsi_kms_arn
+  db_sirsi_name                          = dependency.service_database.outputs.sirsi_name
 
 
   queue_entity_verification_queue_arn = dependency.service_queue.outputs.entity_verification_queue_arn

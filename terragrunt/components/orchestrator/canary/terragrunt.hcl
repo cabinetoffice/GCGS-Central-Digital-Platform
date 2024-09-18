@@ -14,11 +14,12 @@ locals {
 
   canary_configs = {
     for key, env in local.global_vars.locals.environments :
-      key => {
-        name                   = env.name
-        pinned_service_version = try(env.pinned_service_version, null)
-        api_url                = "https://api.${env.name}.supplier.information.${env.top_level_domain}"
-      } if !(contains(local.canary_exclude_list, env.name))
+    key => {
+      name                = env.name
+      pinned_service_version = try(env.pinned_service_version, null)
+      api_url             = "https://api.${env.name}.supplier.information.${env.top_level_domain}"
+      schedule_expression = env.canary_schedule_expression
+    } if !(contains(local.canary_exclude_list, env.name))
   }
 
   tags = merge(
