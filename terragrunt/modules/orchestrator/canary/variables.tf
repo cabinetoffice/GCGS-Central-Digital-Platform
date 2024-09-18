@@ -3,6 +3,15 @@ variable "alb_sg_id" {
   type        = string
 }
 
+variable "canary_configs" {
+  description = "Configuration for each environment's canary, including the name and pinned service version."
+  type = map(object({
+    name                   = string
+    pinned_service_version = string
+    api_url                = string
+  }))
+}
+
 variable "canary_sg_id" {
   description = "The security group identifier for the Canary"
   type        = string
@@ -21,7 +30,7 @@ variable "datapoints_to_alarm" {
 }
 
 variable "environment" {
-  description = "The environment in which to deploy (e.g. prod)"
+  description = "The environment we are provisioning"
   type        = string
 }
 
@@ -108,4 +117,3 @@ variable "vpce_secretsmanager_sg_id" {
   description = "Security group ID of the Secrets Manager VPC endpoint"
   type        = string
 }
-

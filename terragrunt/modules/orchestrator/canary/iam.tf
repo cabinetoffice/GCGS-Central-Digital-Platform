@@ -1,5 +1,5 @@
 resource "aws_iam_policy" "canary" {
-  name   = local.canary_name
+  name   = "${local.name_prefix}-canary"
   policy = data.aws_iam_policy_document.canary.json
   tags   = var.tags
 }

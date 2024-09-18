@@ -10,6 +10,17 @@ locals {
   global_vars = read_terragrunt_config(find_in_parent_folders("terragrunt.hcl"))
   orchestrator_vars = read_terragrunt_config(find_in_parent_folders("orchestrator.hcl"))
 
+  canary_exclude_list = ["orchestrator", "production"]
+
+  canary_configs = {
+    for key, env in local.global_vars.locals.environments :
+      key => {
+        name                   = env.name
+        pinned_service_version = try(env.pinned_service_version, null)
+        api_url                = "https://api.${env.name}.supplier.information.${env.top_level_domain}"
+      } if !(contains(local.canary_exclude_list, env.name))
+  }
+
   tags = merge(
     local.global_vars.inputs.tags,
     local.orchestrator_vars.inputs.tags,
@@ -56,10 +67,10 @@ dependency core_security_groups {
 
 inputs = {
 
-  account_ids            = local.global_vars.locals.account_ids
-  pinned_service_version = local.global_vars.locals.pinned_service_version
-  service_configs        = local.global_vars.locals.service_configs
-  tags                   = local.tags
+  account_ids     = local.global_vars.locals.account_ids
+  canary_configs  = local.canary_configs
+  service_configs = local.global_vars.locals.service_configs
+  tags            = local.tags
 
   role_canary_arn     = dependency.core_iam.outputs.canary_arn
   role_canary_name    = dependency.core_iam.outputs.canary_name
