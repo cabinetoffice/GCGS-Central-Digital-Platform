@@ -606,8 +606,7 @@ public static class EndpointExtensions
                 await useCase.Execute((organisationId, updateRegisterAuthenticationKey))
                     .AndThen(_ => Results.NoContent())
             )
-            .Produces(StatusCodes.Status201Created)
-            .Produces(StatusCodes.Status204NoContent)
+            .Produces(StatusCodes.Status200OK)
             .ProducesProblem(StatusCodes.Status400BadRequest)
             .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
             .ProducesProblem(StatusCodes.Status404NotFound)
@@ -618,11 +617,10 @@ public static class EndpointExtensions
                 operation.OperationId = "CreateAuthenticationKey";
                 operation.Description = "Create a new authentication entity.";
                 operation.Summary = "Create a new authentication entity.";
-                operation.Responses["201"].Description = "Authentication key created successfully.";
-                operation.Responses["204"].Description = "Authentication key created successfully.";
+                operation.Responses["200"].Description = "Authentication key created successfully.";
                 operation.Responses["400"].Description = "Bad request.";
                 operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
-                operation.Responses["404"].Description = "Authentication key not found.";
+                operation.Responses["404"].Description = "Authentication failed.";
                 operation.Responses["422"].Description = "Unprocessable entity.";
                 operation.Responses["500"].Description = "Internal server error.";
                 return operation;
