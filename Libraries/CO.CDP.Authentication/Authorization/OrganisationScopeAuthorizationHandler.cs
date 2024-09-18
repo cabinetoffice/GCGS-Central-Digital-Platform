@@ -5,6 +5,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
+using static CO.CDP.Authentication.Constants;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace CO.CDP.Authentication.Authorization;
@@ -23,7 +24,7 @@ public class OrganisationScopeAuthorizationHandler(
             return;
         }
 
-        var userUrn = context.User.FindFirstValue("sub");
+        var userUrn = context.User.FindFirstValue(ClaimType.Subject);
 
         if (!string.IsNullOrWhiteSpace(userUrn))
         {
