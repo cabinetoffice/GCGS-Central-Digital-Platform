@@ -67,7 +67,7 @@ public class OrganisationDetailsSummaryModelTest
         var actionResult = await model.OnPost();
 
         actionResult.Should().BeOfType<RedirectToPageResult>()
-            .Which.PageName.Should().Be("/OrganisationSelection");
+            .Which.PageName.Should().Be("../Organisation/OrganisationSelection");
     }
 
     [Fact]
@@ -103,7 +103,7 @@ public class OrganisationDetailsSummaryModelTest
         sessionMock.Verify(s => s.Remove(Session.RegistrationDetailsKey), Times.Once);
 
         actionResult.Should().BeOfType<RedirectToPageResult>()
-            .Which.PageName.Should().Be("/OrganisationSelection");
+            .Which.PageName.Should().Be("../Organisation/OrganisationSelection");
     }
 
     [Fact]
@@ -128,7 +128,7 @@ public class OrganisationDetailsSummaryModelTest
         sessionMock.Verify(s => s.Remove(Session.RegistrationDetailsKey), Times.Once);
 
         result.Should().BeOfType<RedirectToPageResult>()
-            .Which.PageName.Should().Be("/OrganisationSelection");
+            .Which.PageName.Should().Be("../Organisation/OrganisationSelection");
     }
 
     [Fact]
@@ -151,7 +151,7 @@ public class OrganisationDetailsSummaryModelTest
         organisationClientMock.Verify(o => o.UpdateBuyerInformationAsync(_organisationId, It.IsAny<UpdateBuyerInformation>()), Times.Never);
 
         result.Should().BeOfType<RedirectToPageResult>()
-            .Which.PageName.Should().Be("/OrganisationSelection");
+            .Which.PageName.Should().Be("../Organisation/OrganisationSelection");
     }
 
     [Fact]

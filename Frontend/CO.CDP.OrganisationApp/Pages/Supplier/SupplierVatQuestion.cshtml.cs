@@ -82,7 +82,7 @@ public class SupplierVatQuestionModel(IOrganisationClient organisationClient,
                 {
                     await LookupOrganisationAsync();
                 }
-                catch (Exception orgApiException) when (orgApiException is Organisation.WebApiClient.ApiException && ((Organisation.WebApiClient.ApiException)orgApiException).StatusCode == 404)
+                catch (Exception orgApiException) when (orgApiException is CO.CDP.Organisation.WebApiClient.ApiException && ((CO.CDP.Organisation.WebApiClient.ApiException)orgApiException).StatusCode == 404)
                 {
                     try
                     {

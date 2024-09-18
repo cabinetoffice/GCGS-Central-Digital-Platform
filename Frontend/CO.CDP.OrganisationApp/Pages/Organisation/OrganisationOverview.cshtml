@@ -50,7 +50,7 @@
                             </p>
                         </dd>
                         <dd class="govuk-summary-list__actions">
-                            <a class="govuk-link govuk-link--no-visited-state" href="#">Change<span class="govuk-visually-hidden"> address</span></a>
+                            <a class="govuk-link govuk-link--no-visited-state" href="#">Add<span class="govuk-visually-hidden"> address</span></a>
                         </dd>
                     </div>
 
@@ -62,7 +62,7 @@
                             <p class="govuk-body">@organisationDetails.ContactPoint.Email</p>
                         </dd>
                         <dd class="govuk-summary-list__actions">
-                            <a class="govuk-link govuk-link--no-visited-state" href="#">Change<span class="govuk-visually-hidden"> address</span></a>
+                            <a class="govuk-link govuk-link--no-visited-state" href="/organisation/@Model.Id/email">Change<span class="govuk-visually-hidden"> address</span></a>
                         </dd>
                     </div>
 
@@ -83,11 +83,10 @@
                                 <p class="govuk-body">@registeredAddress.CountryName</p>
                             </dd>
                             <dd class="govuk-summary-list__actions">
-                                <a class="govuk-link govuk-link--no-visited-state" href="#">Change<span class="govuk-visually-hidden"> address</span></a>
+                                <a class="govuk-link govuk-link--no-visited-state" href="/organisation/@Model.Id/address/@(registeredAddress.Country == Country.UKCountryCode ? "uk" : "non-uk")?frm-overview">Change<span class="govuk-visually-hidden"> address</span></a>
                             </dd>
                         </div>
-                    }
-
+                    }                    
                 </dl>
 
                 @if (organisationDetails.IsTenderer())

@@ -1,4 +1,5 @@
 using CO.CDP.Organisation.WebApiClient;
+using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.WebApiClients;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -7,13 +8,13 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CO.CDP.OrganisationApp.Pages.Organisation;
 
-
-public class OrganisationNameModel(IOrganisationClient organisationClient) : PageModel
+public class OrganisationEmailModel(IOrganisationClient organisationClient) : PageModel
 {
     [BindProperty]
-    [DisplayName("Enter the organisation's name")]
-    [Required(ErrorMessage = "Enter the organisation's name")]
-    public string? OrganisationName { get; set; }
+    [DisplayName("Enter the organisation's contact email address")]
+    [Required(ErrorMessage = "Enter the organisation's contact email address")]
+    [EmailAddress(ErrorMessage = "Enter an email address in the correct format, like name@example.com")]
+    public string? EmailAddress { get; set; }
 
     [BindProperty(SupportsGet = true)]
     public Guid Id { get; set; }
@@ -25,7 +26,7 @@ public class OrganisationNameModel(IOrganisationClient organisationClient) : Pag
             var organisation = await organisationClient.GetOrganisationAsync(Id);
             if (organisation == null) return Redirect("/page-not-found");
 
-            OrganisationName = organisation.Name;
+            EmailAddress = organisation.ContactPoint.Email;
 
             return Page();
         }
@@ -48,17 +49,24 @@ public class OrganisationNameModel(IOrganisationClient organisationClient) : Pag
         {
             return Redirect("/page-not-found");
         }
-     
+
         try
         {
-            await organisationClient.UpdateOrganisationName(Id, organisationName: OrganisationName!);
+            var cp = new OrganisationContactPoint(
+                    name: organisation.ContactPoint.Name,
+                    email: EmailAddress,
+                    telephone: organisation.ContactPoint.Telephone,
+                    url: organisation.ContactPoint.Url?.ToString());
+
+
+            await organisationClient.UpdateOrganisationEmail(Id, cp);
         }
         catch (CO.CDP.Organisation.WebApiClient.ApiException ex) when (ex.StatusCode == 404)
         {
             return Redirect("/page-not-found");
         }
 
-        
+
         return RedirectToPage("OrganisationOverview", new { Id });
     }
 }
