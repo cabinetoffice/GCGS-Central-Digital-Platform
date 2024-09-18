@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "cdp-sirsi-canary"
+version = "0.1.0"
+description = "Canary service scripts to test CDP SIRSI"
+authors = ["Ali Bahman <ali.bahman@goaco.com>"]
+license = "Apache 2.0"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+boto3 = "^1.35.20"
+selenium = "^4.24.0"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.3.2"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
