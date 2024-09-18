@@ -2,9 +2,12 @@ using CO.CDP.Organisation.WebApiClient;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 using CO.CDP.OrganisationApp.Models;
+using CO.CDP.OrganisationApp.Constants;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CO.CDP.OrganisationApp.Pages.Users;
 
+[Authorize(Policy = OrgScopeRequirement.Admin)]
 public class UserRemoveConfirmationModel(
 IOrganisationClient organisationClient,
 ISession session

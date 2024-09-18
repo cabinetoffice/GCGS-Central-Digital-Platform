@@ -16,6 +16,7 @@
                     <span class="govuk-label--l">@organisationDetails.Name</span>
                 </h1>
                 <h2 class="govuk-heading-m">Organisation details</h2>
+
                 <dl class="govuk-summary-list">
                     <div class="govuk-summary-list__row">
                         <dt class="govuk-summary-list__key">
@@ -86,14 +87,13 @@
                             </dd>
                         </div>
                     }
-
                 </dl>
 
                 @if (organisationDetails.IsTenderer())
                 {
-                    <h3 class="govuk-!-margin-top-3">
-                        <a class="govuk-link" href="/organisation/@RouteData.Values["id"]/supplier-information">Supplier information</a>
-                    </h3>
+                    <div class="govuk-!-margin-top-3">
+                        <a class="govuk-link govuk-!-font-size-19 govuk-!-font-weight-bold" href="/organisation/@RouteData.Values["id"]/supplier-information">Supplier information</a>
+                    </div>
                 }
                 else if (organisationDetails.IsBuyer())
                 {
@@ -107,9 +107,11 @@
                     </div>
                 }
 
-                <h3 class="govuk-!-margin-top-3">
-                    <a class="govuk-link" href="/organisation/@RouteData.Values["id"]/users/user-summary">Users</a>
-                </h3>
+                <authorize scope="@OrgScopeRequirement.Admin">
+                    <div class="govuk-!-margin-top-3">
+                        <a class="govuk-link govuk-!-font-size-19 govuk-!-font-weight-bold" href="/organisation/@RouteData.Values["id"]/users/user-summary">Users</a>
+                    </div>
+                </authorize>
 
                 <div class="govuk-!-margin-top-6">
                     <a href="/organisation-selection" class="govuk-link govuk-link--no-visited-state">Back to all organisations</a>

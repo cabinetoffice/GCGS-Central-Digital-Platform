@@ -149,7 +149,7 @@ resource "aws_security_group_rule" "ecs_service_to_vpce_s3" {
 }
 
 resource "aws_security_group_rule" "ecs_service_to_vpce_secretsmanager" {
-  description              = "To Logs VPCE"
+  description              = "To Secret Manager VPCE"
   from_port                = 443
   protocol                 = "TCP"
   security_group_id        = var.ecs_sg_id
