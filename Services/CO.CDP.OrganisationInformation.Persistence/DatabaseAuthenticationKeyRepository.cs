@@ -7,7 +7,7 @@ public class DatabaseAuthenticationKeyRepository(OrganisationInformationContext 
 {
     public async Task<AuthenticationKey?> Find(string key)
     {
-        return await context.AuthenticationKeys.FirstOrDefaultAsync(t => t.Key == key);
+        return await context.AuthenticationKeys.Include(a => a.Organisation).FirstOrDefaultAsync(t => t.Key == key);
     }
 
     public async Task Save(AuthenticationKey authenticationKey)
