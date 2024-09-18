@@ -43,13 +43,19 @@ public class ApiKeyValidatorTest
     [Fact]
     public async Task Validate_ValidApiKeyWithOrganisation_ReturnsTrue()
     {
+        var orgId = Guid.NewGuid();
         _repository.Setup(r => r.Find(It.IsAny<string>()))
-            .ReturnsAsync(new AuthenticationKey { Name = "FTS", Key = ValidApiKey, OrganisationId = 42, Scopes = ["ADMIN"] });
+            .ReturnsAsync(new AuthenticationKey {
+                Name = "FTS",
+                Key = ValidApiKey,
+                OrganisationId = 42,
+                Organisation = new Organisation { Guid = orgId, Name = "", Tenant = new Tenant { Guid = Guid.NewGuid(), Name = "" } },
+                Scopes = ["ADMIN"] });
 
         var (valid, organisation, scopes) = await _validator.Validate(ValidApiKey);
 
         valid.Should().BeTrue();
-        organisation.Should().Be(42);
+        organisation.Should().Be(orgId);
         scopes.Should().Contain("ADMIN");
     }
 
