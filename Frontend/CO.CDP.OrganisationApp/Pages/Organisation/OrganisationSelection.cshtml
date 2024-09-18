@@ -1,0 +1,54 @@
+@page "/organisation-selection"
+@using CO.CDP.Organisation.WebApiClient
+@model OrganisationSelectionModel
+
+<main class="govuk-main-wrapper">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            @if (Model.UserOrganisations.Any())
+            {
+                <h1 class="govuk-heading-l">
+                    <span class="govuk-label--l">Select or add an organisation</span>
+                </h1>
+
+                <table class="govuk-table">
+                    <caption class="govuk-table__caption govuk-table__caption--m">List of organisations</caption>
+                    <thead class="govuk-table__head">
+                        <tr class="govuk-table__row">
+                            <th scope="col" colspan="2" class="govuk-table__header">Organisation name</th>
+                        </tr>
+                    </thead>
+                    <tbody class="govuk-table__body">
+                        @{
+                            foreach (var org in Model.UserOrganisations)
+                            {
+                                <tr class="govuk-table__row">
+                                    <th scope="row" class="govuk-table__header">
+                                        @org.Name
+                                    </th>
+                                    <td class="govuk-table__cell">
+                                        <a class="govuk-link govuk-link--no-visited-state"
+                                           href="/organisation/@org.Id">Select</a>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <h1 class="govuk-heading-l">
+                    <span class="govuk-label--l">Add an organisation</span>
+                </h1>
+
+                <p class="govuk-body">Begin by adding your organisation. If you have more than one organisation to manage, you can add additional organisations after you've added the first one.</p>
+            }
+            <form method="post">
+                <button type="submit" class="govuk-button" data-module="govuk-button">
+                    Add Organisation
+                </button>
+            </form>
+        </div>
+    </div>
+</main>
