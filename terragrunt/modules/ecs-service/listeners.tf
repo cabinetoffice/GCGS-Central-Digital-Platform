@@ -12,7 +12,7 @@ resource "aws_lb_target_group" "this" {
     for_each = var.name == "organisation-app" ? [1] : []
     content {
       type            = "lb_cookie"
-      cookie_duration = 3600  # 1 hour
+      cookie_duration = 3600 # 1 hour
     }
   }
 

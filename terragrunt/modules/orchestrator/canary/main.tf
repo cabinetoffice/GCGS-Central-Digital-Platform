@@ -7,7 +7,7 @@ resource "aws_synthetics_canary" "canary" {
   delete_lambda        = true
   execution_role_arn   = var.role_canary_arn
   handler              = "canary_check_api.handler"
-  name                 = "${local.name_prefix}-ver-${substr(each.key, 0 ,3)}"
+  name                 = "${local.name_prefix}-ver-${substr(each.key, 0, 3)}"
   runtime_version      = "syn-python-selenium-4.0"
   s3_bucket            = module.s3_bucket_canary.id
   s3_key               = "lambda_package.zip"
@@ -22,11 +22,11 @@ resource "aws_synthetics_canary" "canary" {
       VERSION_PARAM_NAME   = aws_ssm_parameter.expected_service_versions[each.key].name
       WEB_DRIVER_LOG_LEVEL = "WARNING"
     }
-    timeout_in_seconds    = var.canary_timeout_seconds
-    memory_in_mb          = var.memory_in_mb
+    timeout_in_seconds = var.canary_timeout_seconds
+    memory_in_mb       = var.memory_in_mb
   }
   schedule {
-    expression = "rate(1 minute)"
+    expression = each.value.schedule_expression
   }
 
   vpc_config {

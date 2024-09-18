@@ -8,7 +8,7 @@ include {
 
 locals {
   global_vars = read_terragrunt_config(find_in_parent_folders("terragrunt.hcl"))
-  core_vars   = read_terragrunt_config(find_in_parent_folders("core.hcl"))
+  core_vars = read_terragrunt_config(find_in_parent_folders("core.hcl"))
 
   tags = merge(
     local.global_vars.inputs.tags,

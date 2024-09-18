@@ -13,15 +13,15 @@ data "aws_vpc_endpoint" "s3" {
 
 data "aws_iam_policy_document" "canary" {
   statement {
-    sid    = "AllowPutCloudwatchMetricData"
-    actions = ["cloudwatch:PutMetricData"]
-    effect = "Allow"
+    sid       = "AllowPutCloudwatchMetricData"
+    actions   = ["cloudwatch:PutMetricData"]
+    effect    = "Allow"
     resources = ["*"]
 
     condition {
       test     = "StringEquals"
       variable = "cloudwatch:namespace"
-      values = ["CloudWatchSynthetics"]
+      values   = ["CloudWatchSynthetics"]
     }
   }
 
@@ -32,14 +32,14 @@ data "aws_iam_policy_document" "canary" {
       "logs:CreateLogGroup",
       "logs:PutLogEvents"
     ]
-    effect = "Allow"
+    effect    = "Allow"
     resources = ["*"]
   }
 
   statement {
-    sid    = "AllowXRay"
-    actions = ["xray:PutTraceSegments"]
-    effect = "Allow"
+    sid       = "AllowXRay"
+    actions   = ["xray:PutTraceSegments"]
+    effect    = "Allow"
     resources = ["*"]
   }
 
@@ -50,21 +50,21 @@ data "aws_iam_policy_document" "canary" {
       "ec2:DescribeNetworkInterfaces",
       "ec2:DeleteNetworkInterface"
     ]
-    effect = "Allow"
+    effect    = "Allow"
     resources = ["*"]
   }
 
   statement {
-    sid    = "AllowListBucketLocation"
-    actions = ["s3:ListAllMyBuckets"]
-    effect = "Allow"
+    sid       = "AllowListBucketLocation"
+    actions   = ["s3:ListAllMyBuckets"]
+    effect    = "Allow"
     resources = ["*"]
   }
 
   statement {
-    sid    = "AllowGetBucketLocation"
-    actions = ["s3:GetBucketLocation"]
-    effect = "Allow"
+    sid       = "AllowGetBucketLocation"
+    actions   = ["s3:GetBucketLocation"]
+    effect    = "Allow"
     resources = [module.s3_bucket_canary.arn]
   }
 
