@@ -415,6 +415,7 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
             Section = section,
             Answers = new List<FormAnswer>(),
             Deleted = false,
+            FurtherQuestionsExempted = false,
             CreatedOn = DateTimeOffset.UtcNow,
             UpdatedOn = DateTimeOffset.UtcNow
         };

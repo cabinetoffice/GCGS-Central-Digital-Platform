@@ -253,6 +253,7 @@ public class DatabaseShareCodeRepositoryTest(PostgreSqlFixture postgreSql) : ICl
             SectionId = section.Id,
             Section = section,
             Answers = [],
+            FurtherQuestionsExempted = false
         };
         sharedConsent.AnswerSets.Add(answerSet);
         return answerSet;
