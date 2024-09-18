@@ -33,7 +33,8 @@ public class SupplierVatQuestionModel(IOrganisationClient organisationClient,
             if (composed.SupplierInfo.CompletedVat)
             {
                 HasVatNumber = false;
-                var vatIdentifier = composed.Organisation.AdditionalIdentifiers.FirstOrDefault(i => i.Scheme == VatSchemeName);
+                var vatIdentifier = Helper.GetVatIdentifier(composed.Organisation);
+
                 if (vatIdentifier != null)
                 {
                     HasVatNumber = !string.IsNullOrWhiteSpace(vatIdentifier.Id);
@@ -41,7 +42,7 @@ public class SupplierVatQuestionModel(IOrganisationClient organisationClient,
                 }
             }
         }
-        catch (CO.CDP.Organisation.WebApiClient.ApiException ex) when (ex.StatusCode == 404)
+        catch (Organisation.WebApiClient.ApiException ex) when (ex.StatusCode == 404)
         {
             return Redirect("/page-not-found");
         }
@@ -56,12 +57,12 @@ public class SupplierVatQuestionModel(IOrganisationClient organisationClient,
             return Page();
         }
 
-        CO.CDP.Organisation.WebApiClient.Organisation? organisation;
+        Organisation.WebApiClient.Organisation? organisation;
         try
         {
             organisation = await organisationClient.GetOrganisationAsync(Id);
         }
-        catch (CO.CDP.Organisation.WebApiClient.ApiException ex) when (ex.StatusCode == 404)
+        catch (Organisation.WebApiClient.ApiException ex) when (ex.StatusCode == 404)
         {
             return Redirect("/page-not-found");
         }
@@ -71,36 +72,48 @@ public class SupplierVatQuestionModel(IOrganisationClient organisationClient,
                                     id: HasVatNumber == true ? VatNumber : null,
                                     legalName: organisation.Name,
                                     scheme: VatSchemeName)];
+        var existingVatIdentifier = Helper.GetVatIdentifier(organisation);
 
         if (HasVatNumber.GetValueOrDefault())
         {
-            try
-            {
-                await LookupOrganisationAsync();
-            }
-            catch (Exception orgApiException) when (orgApiException is CO.CDP.Organisation.WebApiClient.ApiException && ((CO.CDP.Organisation.WebApiClient.ApiException)orgApiException).StatusCode == 404)
+            if ((existingVatIdentifier?.Id ?? string.Empty) != VatNumber)
             {
                 try
                 {
-                    await LookupEntityVerificationAsync();
+                    await LookupOrganisationAsync();
                 }
-                catch (Exception evApiException) when (evApiException is EntityVerificationClient.ApiException && ((EntityVerificationClient.ApiException)evApiException).StatusCode == 404)
+                catch (Exception orgApiException) when (orgApiException is Organisation.WebApiClient.ApiException && ((Organisation.WebApiClient.ApiException)orgApiException).StatusCode == 404)
                 {
-                    await organisationClient.UpdateOrganisationAdditionalIdentifiers(Id, identifiers);
-                    return RedirectToPage("SupplierBasicInformation", new { Id });
-                }
-                catch
-                {
-                    return RedirectToPage("/Registration/OrganisationRegistrationUnavailable", SetRoute());
+                    try
+                    {
+                        await LookupEntityVerificationAsync();
+                    }
+                    catch (Exception evApiException) when (evApiException is EntityVerificationClient.ApiException && ((EntityVerificationClient.ApiException)evApiException).StatusCode == 404)
+                    {
+                        await organisationClient.UpdateOrganisationAdditionalIdentifiers(Id, identifiers);
+                        return RedirectToPage("SupplierBasicInformation", new { Id });
+                    }
+                    catch
+                    {
+                        return RedirectToPage("/Registration/OrganisationRegistrationUnavailable", SetRoute());
+                    }
                 }
             }
+            else
+            {
+                return RedirectToPage("SupplierBasicInformation", new { Id });
+            }
         }
-        else
+        else if (!string.IsNullOrEmpty(existingVatIdentifier?.Id))
         {
             await organisationClient.UpdateOrganisationRemoveIdentifier(
                 organisation.Id,
                 new OrganisationIdentifier(string.Empty, organisation.Name, VatSchemeName));
 
+            return RedirectToPage("SupplierBasicInformation", new { Id });
+        }
+        else
+        {
             return RedirectToPage("SupplierBasicInformation", new { Id });
         }
 
@@ -115,7 +128,7 @@ public class SupplierVatQuestionModel(IOrganisationClient organisationClient,
         };
     }
 
-    private async Task<CO.CDP.Organisation.WebApiClient.Organisation> LookupOrganisationAsync()
+    private async Task<Organisation.WebApiClient.Organisation> LookupOrganisationAsync()
     {
         return await organisationClient.LookupOrganisationAsync(string.Empty,
                     $"{VatSchemeName}:{VatNumber}");
