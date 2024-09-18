@@ -56,11 +56,11 @@ public record UpdateOrganisation
 public enum OrganisationUpdateType
 {
     AdditionalIdentifiers,
-    ContactPoint,    
+    ContactPoint,
     RemoveIdentifier,
     Address,
     OrganisationName,
-    OrganisationEmail,   
+    OrganisationEmail,
     RegisteredAddress
 }
 
@@ -337,7 +337,7 @@ public record OrganisationQuery
 }
 
 public record RegisterAuthenticationKey
-{    
+{
     public required string Name { get; set; }
     public required string Key { get; set; }
     public Guid OrganisationId { get; set; }
@@ -347,8 +347,14 @@ public record RegisterAuthenticationKey
 public record AuthenticationKey
 {
     public required string Name { get; set; }
-    public required string Key { get; set; }    
+    public required string Key { get; set; }
     public bool? Revoked { get; set; }
+}
+
+public record RevokeAuthenticationKey
+{
+    public required string Name { get; set; }
+    public required string Key { get; set; }
 }
 
 [JsonConverter(typeof(JsonStringEnumConverter))]

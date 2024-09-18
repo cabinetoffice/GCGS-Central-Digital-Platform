@@ -14,3 +14,7 @@ public class InvalidUpdateConnectedEntityCommand(string message, Exception? caus
 public class UnknownConnectedEntityException(string message, Exception? cause = null) : Exception(message, cause);
 
 public class MissingOrganisationIdException(string message, Exception? cause = null) : Exception(message, cause);
+
+public class EmptyAuthenticationKeyException(string message, Exception? cause = null) : Exception(message, cause);
+public class EmptyAuthenticationKeyNameException(string message, Exception? cause = null) : Exception(message, cause);
+public class UnknownAuthenticationKeyException(string message, Exception? cause = null) : Exception(message, cause);

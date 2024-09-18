@@ -28,4 +28,11 @@ public class DatabaseAuthenticationKeyRepository(OrganisationInformationContext 
             .Where(t => t.Organisation!.Guid == organisationId)
             .ToArrayAsync();
     }
+    public async Task<AuthenticationKey?> FindByKeyNameAndOrganisationId(string key, string name, Guid organisationId)
+    {
+        return await context.AuthenticationKeys
+            .Include(a => a.Organisation)
+            .Where(t => t.Organisation!.Guid == organisationId)
+            .FirstOrDefaultAsync(t => t.Key == key && t.Name == name);
+    }
 }
