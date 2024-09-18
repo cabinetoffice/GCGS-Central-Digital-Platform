@@ -85,7 +85,8 @@ def check_api_version(browser, api_url, expected_version):
         logger.info("Version element found on API landing page.")
 
         logger.debug("Verify the version")
-        deployed_version = re.search(r"V([\d\.]+-[\da-f]+)", version_element.text).group(1)
+        # Updated regex to match both '0.4.0-abcdef' and '0.4.0'
+        deployed_version = re.search(r"V([\d\.]+(?:-[\da-f]+)?)", version_element.text).group(1)
         if deployed_version != expected_version:
             raise Exception(
                 f"Version mismatch on API landing page: expected {expected_version}, but found {deployed_version}")
@@ -95,6 +96,10 @@ def check_api_version(browser, api_url, expected_version):
     except TimeoutException as e:
         logger.error(f"Timeout while trying to find the version element on the API landing page: {e}")
         take_screenshot(browser, "api_landing_page_error")
+        raise
+    except AttributeError:
+        logger.error("No version information found in the expected format.")
+        take_screenshot(browser, "api_landing_page_version_check_failed")
         raise
     except Exception as e:
         logger.error(f"Failed to verify version on API landing page: {e}")
@@ -199,7 +204,7 @@ def main():
 
 def handler(event, context):
     log_level = os.getenv("WEB_DRIVER_LOG_LEVEL", "WARNING")
-    logger.info("Running Canary to validate frontend and API landing page. v 0.1.6")
+    logger.info("Running Canary to validate frontend and API landing page. v 0.1.7")
     logger.info(f"Current Log Level is '{logger.get_level()}'")
     logger.info(f"Setting Log Level to '{log_level}'")
     logger.set_level(log_level)

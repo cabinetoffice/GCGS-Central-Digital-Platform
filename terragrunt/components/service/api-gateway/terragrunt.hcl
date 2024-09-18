@@ -7,7 +7,7 @@ include {
 }
 
 locals {
-  global_vars  = read_terragrunt_config(find_in_parent_folders("terragrunt.hcl"))
+  global_vars = read_terragrunt_config(find_in_parent_folders("terragrunt.hcl"))
   service_vars = read_terragrunt_config(find_in_parent_folders("service.hcl"))
 
   tags = merge(
@@ -50,8 +50,8 @@ inputs = {
   service_configs        = local.global_vars.locals.service_configs
   tags                   = local.tags
 
-  role_api_gateway_cloudwatch_arn = dependency.core_iam.outputs.api_gateway_cloudwatch_arn
-  role_api_gateway_deployer_step_function_arn = dependency.core_iam.outputs.api_gateway_deployer_step_function_arn
+  role_api_gateway_cloudwatch_arn              = dependency.core_iam.outputs.api_gateway_cloudwatch_arn
+  role_api_gateway_deployer_step_function_arn  = dependency.core_iam.outputs.api_gateway_deployer_step_function_arn
   role_api_gateway_deployer_step_function_name = dependency.core_iam.outputs.api_gateway_deployer_step_function_name
 
   public_hosted_zone_fqdn = dependency.core_networking.outputs.public_hosted_zone_fqdn
