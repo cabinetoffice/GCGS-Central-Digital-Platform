@@ -1,4 +1,3 @@
-using System.Reflection;
 using CO.CDP.Authentication;
 using CO.CDP.AwsServices;
 using CO.CDP.Configuration.Assembly;
@@ -10,6 +9,7 @@ using CO.CDP.Forms.WebApi.Model;
 using CO.CDP.Forms.WebApi.UseCase;
 using CO.CDP.OrganisationInformation.Persistence;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.ConfigureForwardedHeaders();
@@ -33,7 +33,7 @@ builder.Services.AddScoped<IOrganisationRepository, DatabaseOrganisationReposito
 builder.Services.AddScoped<IUseCase<(Guid, Guid), FormSectionResponse?>, GetFormSectionsUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, Guid), bool>, DeleteAnswerSetUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, Guid, Guid), SectionQuestionsResponse?>, GetFormSectionQuestionsUseCase>();
-builder.Services.AddScoped<IUseCase<(Guid formId, Guid sectionId, Guid answerSetId, Guid organisationId, List<FormAnswer> answers), bool>, UpdateFormSectionAnswersUseCase>();
+builder.Services.AddScoped<IUseCase<(Guid formId, Guid sectionId, Guid answerSetId, Guid organisationId, UpdateFormSectionAnswers updateFormSectionAnswers), bool>, UpdateFormSectionAnswersUseCase>();
 
 builder.Services.AddJwtBearerAndApiKeyAuthentication(builder.Configuration, builder.Environment);
 //builder.Services.AddAuthorization();

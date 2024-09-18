@@ -44,6 +44,7 @@ public class FormQuestionAnswerState
 {
     public Guid? AnswerSetId { get; set; }
     public List<QuestionAnswer> Answers { get; set; } = [];
+    public bool FurtherQuestionsExempted { get; set; }
 }
 
 public class QuestionAnswer

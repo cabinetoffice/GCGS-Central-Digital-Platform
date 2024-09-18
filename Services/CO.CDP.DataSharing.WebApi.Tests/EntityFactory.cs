@@ -260,7 +260,8 @@ internal static class EntityFactory
             SharedConsent = sharedConsent,
             SectionId = default,
             Section = GivenSection(Guid.NewGuid(), form),
-            Answers = new List<PersistenceForms.FormAnswer>() { }
+            Answers = new List<PersistenceForms.FormAnswer>() { },
+            FurtherQuestionsExempted = false,
         };
 
         var questions = new List<PersistenceForms.FormQuestion>
@@ -420,7 +421,8 @@ internal static class EntityFactory
                             FormAnswerSet = answerSet,
                             DateValue=DateTime.Now
                         }
-                    }
+                    },
+                    FurtherQuestionsExempted = false
                 },
                 answerSet
             };
