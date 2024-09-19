@@ -1,5 +1,5 @@
 namespace CO.CDP.OrganisationInformation;
-public static class Constants
+public static class IdentifierSchemes
 {
     public static readonly IDictionary<string, string> SchemesToEndpointUris = new Dictionary<string, string>
     {
@@ -16,7 +16,7 @@ public static class Constants
         {"GB-PPON", "https://find-and-update.company-information.service.gov.uk/company/{0}"}
     };
 
-    public static Uri? GetEndpointUri(string? scheme, string? identifierId)
+    public static Uri? GetRegistryUri(string? scheme, string? identifierId)
     {
         if (scheme == null || identifierId == null || !SchemesToEndpointUris.ContainsKey(scheme))
         {
