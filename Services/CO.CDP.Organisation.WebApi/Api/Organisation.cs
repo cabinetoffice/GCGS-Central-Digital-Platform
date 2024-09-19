@@ -146,7 +146,8 @@ public static class EndpointExtensions
             });
 
         app.MapGet("/lookup",
-             async ([FromQuery] string? name, [FromQuery] string? identifier, IUseCase<OrganisationQuery, Model.Organisation?> useCase) =>
+            [OrganisationAuthorize([AuthenticationChannel.OneLogin, AuthenticationChannel.ServiceKey])]
+        async ([FromQuery] string? name, [FromQuery] string? identifier, IUseCase<OrganisationQuery, Model.Organisation?> useCase) =>
                  await useCase.Execute(new OrganisationQuery(name, identifier))
                     .AndThen(organisation => organisation != null ? Results.Ok(organisation) : Results.NotFound()))
          .Produces<Model.Organisation>(StatusCodes.Status200OK, "application/json")
@@ -429,7 +430,11 @@ public static class EndpointExtensions
     public static RouteGroupBuilder UsePersonsEndpoints(this RouteGroupBuilder app)
     {
         app.MapGet("/{organisationId}/persons",
-                async (Guid organisationId, IUseCase<Guid, IEnumerable<Person>> useCase) =>
+            [OrganisationAuthorize(
+                [AuthenticationChannel.OneLogin],
+                [Constants.OrganisationPersonScope.Admin],
+                OrganisationIdLocation.Path)]
+        async (Guid organisationId, IUseCase<Guid, IEnumerable<Person>> useCase) =>
                     await useCase.Execute(organisationId)
                         .AndThen(persons => persons != null ? Results.Ok(persons) : Results.NotFound()))
             .Produces<List<Model.Person>>(StatusCodes.Status200OK, "application/json")
@@ -451,7 +456,11 @@ public static class EndpointExtensions
             });
 
         app.MapPatch("/{organisationId}/persons/{personId}",
-             async (Guid organisationId, Guid personId, UpdatePersonToOrganisation updatePersonToOrganisation, IUseCase<(Guid, Guid, UpdatePersonToOrganisation), bool> useCase) =>
+            [OrganisationAuthorize(
+                [AuthenticationChannel.OneLogin],
+                [Constants.OrganisationPersonScope.Admin],
+                OrganisationIdLocation.Path)]
+        async (Guid organisationId, Guid personId, UpdatePersonToOrganisation updatePersonToOrganisation, IUseCase<(Guid, Guid, UpdatePersonToOrganisation), bool> useCase) =>
 
                  await useCase.Execute((organisationId, personId, updatePersonToOrganisation))
                      .AndThen(_ => Results.NoContent())
@@ -479,7 +488,11 @@ public static class EndpointExtensions
          });
 
         app.MapDelete("/{organisationId}/persons",
-                async (Guid organisationId, [FromBody] RemovePersonFromOrganisation removePersonFromOrganisation, IUseCase<(Guid, RemovePersonFromOrganisation), bool> useCase) =>
+            [OrganisationAuthorize(
+                [AuthenticationChannel.OneLogin],
+                [Constants.OrganisationPersonScope.Admin],
+                OrganisationIdLocation.Path)]
+        async (Guid organisationId, [FromBody] RemovePersonFromOrganisation removePersonFromOrganisation, IUseCase<(Guid, RemovePersonFromOrganisation), bool> useCase) =>
                     await useCase.Execute((organisationId, removePersonFromOrganisation))
             .AndThen(_ => Results.NoContent()))
             .Produces(StatusCodes.Status204NoContent)
@@ -503,7 +516,11 @@ public static class EndpointExtensions
             });
 
         app.MapGet("/{organisationId}/invites",
-                async (Guid organisationId, IUseCase<Guid, IEnumerable<PersonInviteModel>> useCase) =>
+            [OrganisationAuthorize(
+                [AuthenticationChannel.OneLogin],
+                [Constants.OrganisationPersonScope.Admin],
+                OrganisationIdLocation.Path)]
+        async (Guid organisationId, IUseCase<Guid, IEnumerable<PersonInviteModel>> useCase) =>
                     await useCase.Execute(organisationId)
                         .AndThen(personInvites => personInvites != null ? Results.Ok(personInvites) : Results.NotFound()))
             .Produces<List<PersonInviteModel>>(StatusCodes.Status200OK, "application/json")
@@ -525,7 +542,11 @@ public static class EndpointExtensions
             });
 
         app.MapPost("/{organisationId}/invites",
-                async (Guid organisationId, InvitePersonToOrganisation invitePersonToOrganisation, IUseCase<(Guid, InvitePersonToOrganisation), PersonInvite> useCase) =>
+            [OrganisationAuthorize(
+                [AuthenticationChannel.OneLogin],
+                [Constants.OrganisationPersonScope.Admin],
+                OrganisationIdLocation.Path)]
+        async (Guid organisationId, InvitePersonToOrganisation invitePersonToOrganisation, IUseCase<(Guid, InvitePersonToOrganisation), PersonInvite> useCase) =>
 
                     await useCase.Execute((organisationId, invitePersonToOrganisation))
                         .AndThen(Results.Ok)
@@ -551,7 +572,11 @@ public static class EndpointExtensions
             });
 
         app.MapPatch("/{organisationId}/invites/{personInviteId}",
-             async (Guid organisationId, Guid personInviteId, UpdateInvitedPersonToOrganisation updateInvitedPersonToOrganisation, IUseCase<(Guid, Guid, UpdateInvitedPersonToOrganisation), bool> useCase) =>
+            [OrganisationAuthorize(
+                [AuthenticationChannel.OneLogin],
+                [Constants.OrganisationPersonScope.Admin],
+                OrganisationIdLocation.Path)]
+        async (Guid organisationId, Guid personInviteId, UpdateInvitedPersonToOrganisation updateInvitedPersonToOrganisation, IUseCase<(Guid, Guid, UpdateInvitedPersonToOrganisation), bool> useCase) =>
 
                  await useCase.Execute((organisationId, personInviteId, updateInvitedPersonToOrganisation))
                      .AndThen(_ => Results.NoContent())
@@ -579,7 +604,11 @@ public static class EndpointExtensions
          });
 
         app.MapDelete("/{organisationId}/invites/{personInviteId}",
-                async (Guid organisationId, Guid personInviteId, IUseCase<(Guid, Guid), bool> useCase) =>
+            [OrganisationAuthorize(
+                [AuthenticationChannel.OneLogin],
+                [Constants.OrganisationPersonScope.Admin],
+                OrganisationIdLocation.Path)]
+        async (Guid organisationId, Guid personInviteId, IUseCase<(Guid, Guid), bool> useCase) =>
                     await useCase.Execute((organisationId, personInviteId))
                         .AndThen(_ => Results.NoContent()))
             .Produces(StatusCodes.Status204NoContent)
