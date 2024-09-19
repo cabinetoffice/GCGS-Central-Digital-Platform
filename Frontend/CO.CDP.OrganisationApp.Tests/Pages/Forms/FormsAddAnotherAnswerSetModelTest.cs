@@ -33,7 +33,8 @@ public class FormsAddAnotherAnswerSetModelTest
                      removeConfirmationHeading: "Test confimration heading",
                      singularSummaryHeading: null)),
              questions: [],
-             answerSets: [new FormAnswerSet(id: AnswerSetId, answers: [])]
+             answerSets: [new FormAnswerSet(id: AnswerSetId, answers: [],
+             furtherQuestionsExempted : false)]
              ));
 
         _model = new FormsAddAnotherAnswerSetModel(_formsClientMock.Object, _tempDataServiceMock.Object)

@@ -44,7 +44,7 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql) : 
 
         repository.Save(organisation);
 
-        var found = await repository.Find(organisation.Id);
+        var found = await repository.Find(organisation.Guid);
 
         found.Should().Be(organisation);
         found.As<Organisation>().Id.Should().BePositive();
@@ -56,7 +56,7 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql) : 
     {
         using var repository = OrganisationRepository();
 
-        var found = await repository.Find(0);
+        var found = await repository.Find(Guid.NewGuid());
 
         found.Should().BeNull();
     }

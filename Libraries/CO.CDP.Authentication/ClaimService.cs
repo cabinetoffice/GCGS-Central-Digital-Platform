@@ -23,9 +23,9 @@ public class ClaimService(
         return tenantlookup.Tenants.SelectMany(t => t.Organisations).Any(o => o.Id == oragnisationId);
     }
 
-    public int? GetOrganisationId()
+    public Guid? GetOrganisationId()
     {
-        if (int.TryParse(httpContextAccessor.HttpContext?.User?.FindFirst("org")?.Value, out int result))
+        if (Guid.TryParse(httpContextAccessor.HttpContext?.User?.FindFirst("org")?.Value, out Guid result))
         {
             return result;
         }
