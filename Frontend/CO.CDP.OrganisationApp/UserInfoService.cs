@@ -27,8 +27,6 @@ public class UserInfoService(IHttpContextAccessor httpContextAccessor, ITenantCl
         return scopes.Contains(scope);
     }
 
-    // TODO: This service is scoped, so we can just set a property on it and no need to reinvent caching below!
-
     private async Task<UserOrganisation?> GetPersonOrganisation(Guid organisationId)
     {
         // Role checks may be made multiple times when building a page
