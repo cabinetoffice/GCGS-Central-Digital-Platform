@@ -1,5 +1,4 @@
 using CO.CDP.Tenant.WebApiClient;
-using UserDetails = CO.CDP.OrganisationApp.Models.UserDetails;
 
 namespace CO.CDP.OrganisationApp;
 
