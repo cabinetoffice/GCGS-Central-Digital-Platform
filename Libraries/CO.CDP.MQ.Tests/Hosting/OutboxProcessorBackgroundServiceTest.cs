@@ -13,23 +13,40 @@ public class OutboxProcessorBackgroundServiceTest
     private readonly TestServiceProvider _serviceProvider = new();
 
     [Fact]
-    public void ItExecutesTheOutboxProcessor()
+    public async Task ItExecutesTheOutboxProcessor()
     {
         GivenOutboxProcessorIsAvailableInServiceProvider();
         GivenServiceScopeFactoryIsAvailableInServiceContainer();
-
-        var task = Task.CompletedTask;
-        _outboxProcessor.Setup(d => d.ExecuteAsync(2))
-            .Returns(task);
 
         var backgroundService = new OutboxProcessorBackgroundService(_serviceProvider,
             new OutboxProcessorBackgroundService.OutboxProcessorConfiguration
             {
                 BatchSize = 2
             });
-        var result = backgroundService.StartAsync(CancellationToken.None);
+        await backgroundService.StartAsync(CancellationToken.None);
+        await Task.Delay(1);
+        await backgroundService.StopAsync(CancellationToken.None);
 
-        result.Should().Be(task);
+        _outboxProcessor.Verify(d => d.ExecuteAsync(2), Times.Once);
+    }
+
+    [Fact]
+    public async Task ItContinuesExecutingTheOutboxProcessorInRegularIntervals()
+    {
+        GivenOutboxProcessorIsAvailableInServiceProvider();
+        GivenServiceScopeFactoryIsAvailableInServiceContainer();
+
+        var backgroundService = new OutboxProcessorBackgroundService(_serviceProvider,
+            new OutboxProcessorBackgroundService.OutboxProcessorConfiguration
+            {
+                BatchSize = 3,
+                ExecutionInterval = TimeSpan.FromMilliseconds(4)
+            });
+        await backgroundService.StartAsync(CancellationToken.None);
+        await Task.Delay(TimeSpan.FromMilliseconds(6));
+        await backgroundService.StopAsync(CancellationToken.None);
+
+        _outboxProcessor.Verify(d => d.ExecuteAsync(3), Times.Exactly(2));
     }
 
     private void GivenServiceScopeFactoryIsAvailableInServiceContainer()

@@ -12,24 +12,29 @@ public class OutboxProcessorBackgroundService(
     public record OutboxProcessorConfiguration
     {
         public int BatchSize { get; init; } = 10;
+        public TimeSpan ExecutionInterval { get; init; } = TimeSpan.FromSeconds(60);
     }
+
+    private Timer? _timer = null;
 
     public Task StartAsync(CancellationToken cancellationToken)
     {
-        return ExecuteOutboxProcessorAsync();
+        _timer = new Timer(ExecuteOutboxProcessorAsync, null, TimeSpan.Zero, configuration.ExecutionInterval);
+        return Task.CompletedTask;
     }
 
     public Task StopAsync(CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        _timer?.Change(Timeout.Infinite, 0);
+        return Task.CompletedTask;
     }
 
     public void Dispose()
     {
-        throw new NotImplementedException();
+        _timer?.Dispose();
     }
 
-    private async Task ExecuteOutboxProcessorAsync()
+    private async void ExecuteOutboxProcessorAsync(object? state)
     {
         using var scope = services.CreateScope();
         var outboxProcessor = scope.ServiceProvider.GetRequiredService<IOutboxProcessor>();
