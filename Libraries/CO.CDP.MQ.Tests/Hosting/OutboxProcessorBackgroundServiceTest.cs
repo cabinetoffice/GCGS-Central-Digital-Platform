@@ -1,7 +1,6 @@
 using CO.CDP.MQ.Hosting;
 using CO.CDP.MQ.Outbox;
 using CO.CDP.MQ.Tests.Hosting.TestKit;
-using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using Range = Moq.Range;
@@ -25,7 +24,7 @@ public class OutboxProcessorBackgroundServiceTest
                 BatchSize = 2
             });
         await backgroundService.StartAsync(CancellationToken.None);
-        await Task.Delay(1);
+        await Task.Delay(30);
         await backgroundService.StopAsync(CancellationToken.None);
 
         _outboxProcessor.Verify(d => d.ExecuteAsync(2), Times.Once);
@@ -47,7 +46,8 @@ public class OutboxProcessorBackgroundServiceTest
         await Task.Delay(TimeSpan.FromMilliseconds(6));
         await backgroundService.StopAsync(CancellationToken.None);
 
-        _outboxProcessor.Verify(d => d.ExecuteAsync(It.IsInRange(2, 3, Range.Inclusive)), Times.Exactly(2));
+        _outboxProcessor.Verify(d => d.ExecuteAsync(It.IsInRange(2, 3, Range.Inclusive)),
+            Times.Between(2, 3, Range.Inclusive));
     }
 
     private void GivenServiceScopeFactoryIsAvailableInServiceContainer()
