@@ -115,10 +115,11 @@ public class GetSharedDataUseCaseTest : IClassFixture<AutoMapperFixture>
         additionalIdentifiers.Should().NotBeNull();
         additionalIdentifiers.Should().HaveCount(1);
 
+        var scheme = "GB-COH";
         var identifier = additionalIdentifiers?.First();
-        identifier?.Scheme.Should().Be("GB-COH");
+        identifier?.Scheme.Should().Be(scheme);
         identifier?.LegalName.Should().Be("AnotherLegalName");
-        identifier?.Uri.Should().Be(new Uri("http://example.com"));
+        identifier?.Uri.Should().Be(IdentifierSchemes.GetRegistryUri(scheme, identifier.Id));
     }
 
     private void AssertContactPoint(ContactPoint? contactPoint)
