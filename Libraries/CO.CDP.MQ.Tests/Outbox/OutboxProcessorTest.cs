@@ -21,7 +21,7 @@ public class OutboxProcessorTest
 
         var processor = new OutboxProcessor(publisher.Object, outbox.Object);
 
-        await processor.Execute(count: 10);
+        await processor.ExecuteAsync(count: 10);
 
         publisher.Verify(p => p.Publish(messages.ElementAt(0)), Times.Once);
         publisher.Verify(p => p.Publish(messages.ElementAt(1)), Times.Once);
@@ -43,7 +43,7 @@ public class OutboxProcessorTest
 
         var processor = new OutboxProcessor(publisher.Object, outbox.Object);
 
-        await processor.Execute(count: 10);
+        await processor.ExecuteAsync(count: 10);
 
         outbox.Verify(o => o.SaveAsync(It.Is<OutboxMessage>(
             m => m.Id == 1 && m.Published == true)), Times.Once);

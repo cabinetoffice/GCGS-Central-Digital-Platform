@@ -2,7 +2,7 @@ namespace CO.CDP.MQ.Outbox;
 
 public class OutboxProcessor(IPublisher publisher, IOutboxMessageRepository outbox)
 {
-    public async Task Execute(int count)
+    public async Task ExecuteAsync(int count)
     {
         var messages = await outbox.FindOldest(count);
         messages.ForEach(PublishMessages);
