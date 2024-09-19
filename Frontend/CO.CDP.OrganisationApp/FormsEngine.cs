@@ -111,7 +111,8 @@ public class FormsEngine(
                 optionValue: a.Answer?.OptionValue,
                 questionId: a.QuestionId,
                 addressValue: MapAddress(a.Answer?.AddressValue)
-            )).ToArray()
+            )).ToArray(),
+            furtherQuestionsExempted: answerSet.FurtherQuestionsExempted
         );
 
         await formsApiClient.PutFormSectionAnswersAsync(

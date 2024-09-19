@@ -1,7 +1,7 @@
+using CO.CDP.Authentication.Authorization;
 using CO.CDP.Functional;
 using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.Organisation.WebApi.UseCase;
-using CO.CDP.OrganisationInformation.Persistence;
 using CO.CDP.Swashbuckle.Filter;
 using CO.CDP.Swashbuckle.Security;
 using CO.CDP.Swashbuckle.SwaggerGen;
@@ -10,7 +10,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
 using Address = CO.CDP.OrganisationInformation.Address;
-using AuthorizationPolicyConstants = CO.CDP.Authentication.AuthorizationPolicy.Constants;
 using ConnectedEntity = CO.CDP.Organisation.WebApi.Model.ConnectedEntity;
 using ConnectedEntityLookup = CO.CDP.Organisation.WebApi.Model.ConnectedEntityLookup;
 using Person = CO.CDP.Organisation.WebApi.Model.Person;
@@ -65,7 +64,8 @@ public static class EndpointExtensions
             return operation;
         });
 
-        app.MapGet("/organisations/{organisationId}", async (Guid organisationId, IUseCase<Guid, Model.Organisation?> useCase) =>
+        app.MapGet("/organisations/{organisationId}",
+            async (Guid organisationId, IUseCase<Guid, Model.Organisation?> useCase) =>
                await useCase.Execute(organisationId)
                    .AndThen(organisation => organisation != null ? Results.Ok(organisation) : Results.NotFound()))
             .Produces<Model.Organisation>(StatusCodes.Status200OK, "application/json")
@@ -112,7 +112,9 @@ public static class EndpointExtensions
 
     public static RouteGroupBuilder UseOrganisationLookupEndpoints(this RouteGroupBuilder app)
     {
-        app.MapGet("/me", async (IUseCase<Model.Organisation?> useCase) =>
+        app.MapGet("/me",
+            [OrganisationAuthorize([AuthenticationChannel.OrganisationKey])]
+        async (IUseCase<Model.Organisation?> useCase) =>
                 await useCase.Execute()
                     .AndThen(organisation => organisation != null ? Results.Ok(organisation) : Results.NotFound()))
             .Produces<List<Model.Organisation>>(StatusCodes.Status200OK, "application/json")
@@ -130,8 +132,7 @@ public static class EndpointExtensions
                 operation.Responses["404"].Description = "Organisation matching the API key was not found.";
                 operation.Responses["500"].Description = "Internal server error.";
                 return operation;
-            })
-            .RequireAuthorization(AuthorizationPolicyConstants.OrganisationApiKeyPolicy);
+            });
 
         app.MapGet("/lookup",
              async ([FromQuery] string? name, [FromQuery] string? identifier, IUseCase<OrganisationQuery, Model.Organisation?> useCase) =>
@@ -497,10 +498,9 @@ public static class EndpointExtensions
                 async (Guid organisationId, InvitePersonToOrganisation invitePersonToOrganisation, IUseCase<(Guid, InvitePersonToOrganisation), PersonInvite> useCase) =>
 
                     await useCase.Execute((organisationId, invitePersonToOrganisation))
-                        .AndThen(_ => Results.NoContent())
+                        .AndThen(Results.Ok)
             )
-            .Produces(StatusCodes.Status201Created)
-            .Produces(StatusCodes.Status204NoContent)
+            .Produces(StatusCodes.Status200OK)
             .ProducesProblem(StatusCodes.Status400BadRequest)
             .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
             .ProducesProblem(StatusCodes.Status404NotFound)
@@ -511,8 +511,7 @@ public static class EndpointExtensions
                 operation.OperationId = "CreatePersonInvite";
                 operation.Description = "Create a new person invite.";
                 operation.Summary = "Create a new person invite.";
-                operation.Responses["201"].Description = "Person invite created successfully.";
-                operation.Responses["204"].Description = "Person invite created successfully.";
+                operation.Responses["200"].Description = "Person invite created successfully.";
                 operation.Responses["400"].Description = "Bad request.";
                 operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
                 operation.Responses["404"].Description = "Organisation not found.";

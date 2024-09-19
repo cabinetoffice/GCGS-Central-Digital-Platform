@@ -18,7 +18,7 @@ public class GetMyOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : ICl
     [Fact]
     public async Task ItReturnsNullIfNoOrganisationIsFound()
     {
-        _claimService.Setup(r => r.GetOrganisationId()).Returns((int?)null);
+        _claimService.Setup(r => r.GetOrganisationId()).Returns((Guid?)null);
         await UseCase.Invoking(x => x.Execute()).Should().ThrowAsync<MissingOrganisationIdException>();
     }
 
@@ -79,8 +79,8 @@ public class GetMyOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : ICl
             Roles = [PartyRole.Buyer]
         };
 
-        _claimService.Setup(r => r.GetOrganisationId()).Returns(organisationId);
-        _repository.Setup(r => r.Find(organisationId)).ReturnsAsync(persistenceOrganisation);
+        _claimService.Setup(r => r.GetOrganisationId()).Returns(organisationGuid);
+        _repository.Setup(r => r.Find(organisationGuid)).ReturnsAsync(persistenceOrganisation);
 
         var found = await UseCase.Execute();
         var expectedModelOrganisation = new Model.Organisation

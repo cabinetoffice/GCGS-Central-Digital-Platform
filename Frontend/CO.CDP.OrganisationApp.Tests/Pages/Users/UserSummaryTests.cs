@@ -59,31 +59,6 @@ public class UserSummaryModelTests
     }
 
     [Fact]
-    public async Task OnGet_RedirectsToPageNotFound_WhenUserDoesNotHaveAdminRole()
-    {
-        var organisationId = Guid.NewGuid();
-        _pageModel.Id = organisationId;
-
-        var person = new Organisation.WebApiClient.Person("john@johnson.com", "Johnny", _userGuid, "NoAdminJohnson", ["VIEWER"]);
-
-        _mockOrganisationClient
-            .Setup(client => client.GetOrganisationPersonsAsync(organisationId))
-            .ReturnsAsync(new List<Organisation.WebApiClient.Person>
-            {
-                person
-            });
-
-        _mockOrganisationClient
-            .Setup(client => client.GetOrganisationPersonInvitesAsync(organisationId))
-            .ReturnsAsync(new List<PersonInviteModel>());
-
-        var result = await _pageModel.OnGet(null);
-
-        var redirectResult = Assert.IsType<RedirectResult>(result);
-        Assert.Equal("/page-not-found", redirectResult.Url);
-    }
-
-    [Fact]
     public async Task OnGet_RedirectsToPageNotFound_WhenApiException404Thrown()
     {
         var organisationId = Guid.NewGuid();

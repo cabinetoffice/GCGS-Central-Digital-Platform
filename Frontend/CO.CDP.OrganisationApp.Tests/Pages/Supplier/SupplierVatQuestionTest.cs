@@ -81,6 +81,45 @@ public class SupplierVatModelQuestionTest
     }
 
     [Fact]
+    public async Task OnPost_WhenCompanyDeregistersVatNumber_ShouldUpdateOrganisationAndRedirectToSupplierBasicInformationPage()
+    {
+        var id = Guid.NewGuid();
+        _model.Id = id;
+        _model.HasVatNumber = false;
+        var fakeOrg = SupplierDetailsFactory.GivenOrganisationClientModel(id);
+
+        _organisationClientMock.Setup(client => client.GetOrganisationAsync(id))
+            .ReturnsAsync(fakeOrg);
+
+        var result = await _model.OnPost();
+
+        _organisationClientMock.Verify(o => o.UpdateOrganisationAsync(id, It.IsAny<UpdatedOrganisation>()), Times.Once);
+
+        result.Should().BeOfType<RedirectToPageResult>();
+        (result as RedirectToPageResult)?.PageName.Should().Be("SupplierBasicInformation");
+    }
+
+    [Fact]
+    public async Task OnPost_WhenNoChangeToVatNumber_ShouldNotUpdateOrganisationAndRedirectToSupplierBasicInformationPage()
+    {
+        var id = Guid.NewGuid();
+        _model.Id = id;
+        _model.HasVatNumber = true;
+        var fakeOrg = SupplierDetailsFactory.GivenOrganisationClientModel(id);
+        _model.VatNumber = fakeOrg.AdditionalIdentifiers.First().Id;
+
+        _organisationClientMock.Setup(client => client.GetOrganisationAsync(id))
+            .ReturnsAsync(fakeOrg);
+
+        var result = await _model.OnPost();
+        
+        _organisationClientMock.Verify(o => o.UpdateOrganisationAsync(It.IsAny<Guid>(), It.IsAny<UpdatedOrganisation>()), Times.Never);
+
+        result.Should().BeOfType<RedirectToPageResult>();
+        (result as RedirectToPageResult)?.PageName.Should().Be("SupplierBasicInformation");
+    }
+
+    [Fact]
     public async Task OnPost_WhenOrganisationExistsInOganisationService_ShouldRedirectToOrganisationAlreadyRegisteredPage()
     {
         var id = Guid.NewGuid();
@@ -96,6 +135,7 @@ public class SupplierVatModelQuestionTest
             .ReturnsAsync(GivenOrganisationClientModel());
 
         var result = await _model.OnPost();
+
         result.Should().BeOfType<RedirectToPageResult>();
         (result as RedirectToPageResult)?.PageName.Should().Be("/Registration/OrganisationAlreadyRegistered");
     }

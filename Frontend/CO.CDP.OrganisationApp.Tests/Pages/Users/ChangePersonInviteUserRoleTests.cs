@@ -33,7 +33,7 @@ public class ChangePersonInviteUserRoleTests
                                     "John",
                                     new Guid(),
                                     "Smith",
-                                    new List<string> { PersonScopes.Admin, PersonScopes.Editor }
+                                    new List<string> { OrganisationPersonScopes.Admin, OrganisationPersonScopes.Editor }
                                 );
 
         _mockOrganisationClient
@@ -44,7 +44,7 @@ public class ChangePersonInviteUserRoleTests
 
         Assert.Equal("John Smith", _changeUserRoleModel.UserFullName);
         Assert.True(_changeUserRoleModel.IsAdmin);
-        Assert.Equal(PersonScopes.Editor, _changeUserRoleModel.Role);
+        Assert.Equal(OrganisationPersonScopes.Editor, _changeUserRoleModel.Role);
     }
 
     [Fact]
@@ -69,7 +69,7 @@ public class ChangePersonInviteUserRoleTests
                                     "John",
                                     new Guid(),
                                     "Smith",
-                                    new List<string> { PersonScopes.Admin, PersonScopes.Editor }
+                                    new List<string> { OrganisationPersonScopes.Admin, OrganisationPersonScopes.Editor }
                                 );
 
         _mockOrganisationClient
@@ -107,7 +107,7 @@ public class ChangePersonInviteUserRoleTests
                                     "John",
                                     new Guid(),
                                     "Smith",
-                                    new List<string> { PersonScopes.Admin, PersonScopes.Editor }
+                                    new List<string> { OrganisationPersonScopes.Admin, OrganisationPersonScopes.Editor }
                                 );
 
         _mockOrganisationClient
@@ -115,7 +115,7 @@ public class ChangePersonInviteUserRoleTests
             .ReturnsAsync(new List<PersonInviteModel>() { mockPersonInvite });
 
         _changeUserRoleModel.IsAdmin = true;
-        _changeUserRoleModel.Role = PersonScopes.Viewer;
+        _changeUserRoleModel.Role = OrganisationPersonScopes.Viewer;
 
         var result = await _changeUserRoleModel.OnPostPersonInvite();
 
@@ -126,8 +126,8 @@ public class ChangePersonInviteUserRoleTests
                                                 It.IsAny<Guid>(),
                                                 It.IsAny<Guid>(),
                                                 It.Is<UpdateInvitedPersonToOrganisation>(u =>
-                                                    u.Scopes.Contains(PersonScopes.Viewer) &&
-                                                    u.Scopes.Contains(PersonScopes.Admin) &&
+                                                    u.Scopes.Contains(OrganisationPersonScopes.Viewer) &&
+                                                    u.Scopes.Contains(OrganisationPersonScopes.Admin) &&
                                                     u.Scopes.Count == 2
                                                 )
                                             ),
