@@ -10,8 +10,7 @@ namespace CO.CDP.OrganisationApp.Pages.Supplier;
 [Authorize(Policy = OrgScopeRequirement.Viewer)]
 public class SupplierInformationSummaryModel(
     IOrganisationClient organisationClient,
-    IFormsClient formsClient,
-    ISession session) : LoggedInUserAwareModel(session)
+    IFormsClient formsClient) : PageModel
 {
     [BindProperty]
     public string? Name { get; set; }

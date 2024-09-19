@@ -10,7 +10,6 @@ public class OrganizationScopeHandler : AuthorizationHandler<OrganizationScopeRe
     private ITenantClient _tenantClient;
     private ISession _session;
     private readonly IHttpContextAccessor _httpContextAccessor;
-    private IUserInfoService _userInfo;
     private readonly IServiceScopeFactory _serviceScopeFactory;
 
     public OrganizationScopeHandler(ITenantClient tenantClient, ISession session, IHttpContextAccessor httpContextAccessor, IServiceScopeFactory serviceScopeFactory)
