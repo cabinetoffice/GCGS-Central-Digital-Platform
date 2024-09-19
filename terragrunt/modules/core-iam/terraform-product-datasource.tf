@@ -55,7 +55,7 @@ data "aws_iam_policy_document" "terraform_product" {
     ]
     effect = "Allow"
     resources = [
-      "arn:aws:synthetics:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:canary:cdp-sirsi-*"
+      "arn:aws:synthetics:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:canary:${local.name_prefix}-*"
     ]
     sid = "ManageProductCanary"
   }
@@ -63,12 +63,15 @@ data "aws_iam_policy_document" "terraform_product" {
   statement {
     actions = [
       "cloudwatch:Delete*",
+      "cloudwatch:Describe*",
       "cloudwatch:Get*",
+      "cloudwatch:List*",
       "cloudwatch:Put*",
     ]
     effect = "Allow"
     resources = [
-      "arn:aws:cloudwatch::${data.aws_caller_identity.current.account_id}:dashboard/${local.name_prefix}-*"
+      "arn:aws:cloudwatch::${data.aws_caller_identity.current.account_id}:dashboard/${local.name_prefix}-*",
+      "arn:aws:cloudwatch:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:alarm:canary/*/${local.name_prefix}-*"
     ]
     sid = "ManageProductCloudwatch"
   }
@@ -171,7 +174,7 @@ data "aws_iam_policy_document" "terraform_product" {
     effect = "Allow"
     resources = [
       "arn:aws:kms:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:key*",
-      "arn:aws:secretsmanager:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:secret:events!connection/cdp-sirsi-*",
+      "arn:aws:secretsmanager:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:secret:events!connection/${local.name_prefix}-*",
       "arn:aws:secretsmanager:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:secret:rds!db*",
       "arn:aws:secretsmanager:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:secret:${local.name_prefix}*",
     ]
