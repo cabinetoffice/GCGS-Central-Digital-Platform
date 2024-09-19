@@ -456,6 +456,56 @@ public class UpdateFormSectionAnswersUseCaseTest(AutoMapperFixture mapperFixture
         )));
     }
 
+    [Fact]
+    public async Task Execute_ShouldReturnExistingAnswerSet_WhenFurtherQuestionsExemptedIsTrue()
+    {
+        var organisation = GivenOrganisationExists(organisationId: Guid.NewGuid());
+        var section = GivenFormSectionExists(sectionId: Guid.NewGuid());
+        var sharedConsent = GivenSharedConsentExists(organisation, section.Form);
+        var existingAnswerSet = GivenAnswerSet(sharedConsent, section);
+
+        existingAnswerSet.FurtherQuestionsExempted = true;
+        _repository.Setup(r => r.GetFormAnswerSetsFromCurrentSharedConsentAsync(section.Guid, sharedConsent.Organisation.Guid))
+            .ReturnsAsync(new List<Persistence.FormAnswerSet> { existingAnswerSet });
+
+        var command = (
+            formId: section.Form.Guid,
+            sectionId: section.Guid,
+            answerSetId: existingAnswerSet.Guid,
+            organisationId: organisation.Guid,
+            new UpdateFormSectionAnswers { Answers = [], FurtherQuestionsExempted = true }
+        );
+
+        var result = await UseCase.Execute(command);
+        existingAnswerSet.Deleted.Should().BeFalse();
+        _repository.Verify(r => r.SaveSharedConsentAsync(sharedConsent), Times.Once);
+    }
+
+    [Fact]
+    public async Task Execute_ShouldDeleteExistingAnswerSet_WhenFurtherQuestionsExemptedIsFalse()
+    {
+        var organisation = GivenOrganisationExists(organisationId: Guid.NewGuid());
+        var section = GivenFormSectionExists(sectionId: Guid.NewGuid());
+        var sharedConsent = GivenSharedConsentExists(organisation, section.Form);
+
+        var existingAnswerSet = GivenAnswerSet(sharedConsent, section);
+        existingAnswerSet.FurtherQuestionsExempted = true;
+        _repository.Setup(r => r.GetFormAnswerSetsFromCurrentSharedConsentAsync(section.Guid, sharedConsent.Organisation.Guid))
+            .ReturnsAsync(new List<Persistence.FormAnswerSet> { existingAnswerSet });
+
+        var command = (
+            formId: section.Form.Guid,
+            sectionId: section.Guid,
+            answerSetId: Guid.NewGuid(),
+            organisationId: organisation.Guid,
+            new UpdateFormSectionAnswers { Answers = [], FurtherQuestionsExempted = false }
+        );
+
+        await UseCase.Execute(command);
+        existingAnswerSet.Deleted.Should().BeTrue();
+        _repository.Verify(r => r.SaveSharedConsentAsync(sharedConsent), Times.Once);
+    }
+
     private Organisation GivenOrganisationExists(Guid organisationId)
     {
         var organisation = GivenOrganisation(organisationId: organisationId);

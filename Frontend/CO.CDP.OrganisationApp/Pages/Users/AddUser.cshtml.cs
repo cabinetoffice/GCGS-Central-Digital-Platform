@@ -116,6 +116,11 @@ public class AddUserModel(
             scopes?.Add(OrganisationPersonScopes.Viewer);
         }
 
+        if (!scopes?.Contains(OrganisationPersonScopes.Responder) ?? false)
+        {
+            scopes?.Add(OrganisationPersonScopes.Responder);
+        }
+
         state.Scopes = scopes;
 
         return state;

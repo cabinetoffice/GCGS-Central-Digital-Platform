@@ -72,7 +72,7 @@ public class UpdateFormSectionAnswersUseCase(
         ValidateQuestions(answers, questionDictionary);
 
         var answerSet = sharedConsent.AnswerSets.FirstOrDefault(a => a.Guid == answerSetId)
-            ?? CreateAnswerSet(answerSetId, sharedConsent, section, furtherQuestionsExempted);
+            ?? await CreateAnswerSet(answerSetId, sharedConsent, section, furtherQuestionsExempted);
 
         await UploadFileIfRequired(answers, questionDictionary, answerSet);
 
@@ -193,12 +193,30 @@ public class UpdateFormSectionAnswersUseCase(
         };
     }
 
-    private static Persistence.FormAnswerSet CreateAnswerSet(
+    private async Task<Persistence.FormAnswerSet> CreateAnswerSet(
         Guid answerSetId,
         Persistence.SharedConsent sharedConsent,
         Persistence.FormSection section,
         bool furtherQuestionsExempted)
     {
+        var currentAnswers = await formRepository.GetFormAnswerSetsFromCurrentSharedConsentAsync(section.Guid, sharedConsent.Organisation.Guid);
+
+        if (currentAnswers != null)
+        {
+            var existingFurtherQuestionsExemptedAnswer = currentAnswers.FirstOrDefault(x => x.Deleted == false && x.FurtherQuestionsExempted == true);
+
+            if (existingFurtherQuestionsExemptedAnswer != null)
+            {
+                if (furtherQuestionsExempted == true)
+                {
+                    return existingFurtherQuestionsExemptedAnswer;
+                }
+                else
+                {
+                    existingFurtherQuestionsExemptedAnswer.Deleted = true;
+                }
+            }
+        }
         var answerSet = new Persistence.FormAnswerSet
         {
             Guid = answerSetId,
