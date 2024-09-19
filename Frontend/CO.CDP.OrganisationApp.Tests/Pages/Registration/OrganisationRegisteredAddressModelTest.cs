@@ -171,7 +171,7 @@ public class OrganisationRegisteredAddressModelTest
     }
 
     [Fact]
-    public async void OnGet_ValidSession_ReturnsRegistrationDetails()
+    public async Task OnGet_ValidSession_ReturnsRegistrationDetails()
     {
         RegistrationDetails registrationDetails = DummyRegistrationDetails();
 
