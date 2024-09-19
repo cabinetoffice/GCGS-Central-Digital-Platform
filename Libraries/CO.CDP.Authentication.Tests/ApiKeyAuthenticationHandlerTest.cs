@@ -67,7 +67,7 @@ public class ApiKeyAuthenticationHandlerTest
     [Fact]
     public async Task AuthenticateAsync_ValidApiKey_ReturnsSuccessWithOrganisationKeyClaimType()
     {
-        var orgId = 42;
+        var orgId = Guid.NewGuid();
         await SetHandlerAndApiKeyHeader(ValidApiKey);
         _apiKeyValidatorMock.Setup(v => v.Validate(ValidApiKey))
             .ReturnsAsync((true, orgId, ["ADMIN", "MANAGER"]));
@@ -80,7 +80,7 @@ public class ApiKeyAuthenticationHandlerTest
         claims.Should().NotBeNull();
         claims.Should().Contain(c => c.Type == "channel" && c.Value == "organisation-key");
         claims.Should()
-            .Contain(c => c.Type == "org" && c.Value == orgId.ToString() && c.ValueType == ClaimValueTypes.Integer);
+            .Contain(c => c.Type == "org" && c.Value == orgId.ToString());
         claims.Should().Contain(c => c.Type == "scope" && c.Value == "ADMIN MANAGER");
     }
 

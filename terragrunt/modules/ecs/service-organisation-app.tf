@@ -9,7 +9,7 @@ resource "aws_secretsmanager_secret" "cdp_sirsi_diagnostic_path" {
   description = "Stores the frontend diagnostic path"
 
   lifecycle {
-    prevent_destroy = true  # Prevent the secret from being destroyed
+    prevent_destroy = true # Prevent the secret from being destroyed
   }
 
   tags = var.tags

@@ -68,7 +68,7 @@ resource "aws_db_instance" "replica" {
   # @TODO(ABN) decide if read replica is wanted for this project considering its limitation on Postgres
   #            https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_PostgreSQL.Replication.ReadReplicas.html#USER_PostgreSQL.Replication.ReadReplicas.Limitations
   # count                  = var.create_read_replica ? 1 : 0
-  count                  = 0
+  count = 0
 
   auto_minor_version_upgrade  = false
   instance_class              = var.postgres_instance_type

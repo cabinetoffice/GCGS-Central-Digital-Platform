@@ -34,9 +34,11 @@ public class UpdateFormSectionAnswersUseCaseTest(AutoMapperFixture mapperFixture
 
         GivenOrganisationDoesNotExist(organisationId: organisationId);
 
+        var updateFormSectionAnswers = new UpdateFormSectionAnswers { Answers = [], FurtherQuestionsExempted = true };
+
         var act = async () =>
         {
-            await UseCase.Execute((Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), organisationId, []));
+            await UseCase.Execute((Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), organisationId, updateFormSectionAnswers));
         };
 
         await act.Should().ThrowAsync<UnknownOrganisationException>();
@@ -48,15 +50,19 @@ public class UpdateFormSectionAnswersUseCaseTest(AutoMapperFixture mapperFixture
         var organisationId = Guid.NewGuid();
         var formId = Guid.NewGuid();
         var sectionId = Guid.NewGuid();
+        var updateFormSectionAnswers = new UpdateFormSectionAnswers
+        {
+            Answers = new List<FormAnswer>
+            {
+                new() { Id = Guid.NewGuid(), QuestionId = Guid.NewGuid(), BoolValue = true }
+            }
+        };
         var command = (
             formId,
             sectionId,
             answerSetId: Guid.NewGuid(),
             organisationId,
-            answers: new List<FormAnswer>
-            {
-                new() { Id = Guid.NewGuid(), QuestionId = Guid.NewGuid(), BoolValue = true }
-            }
+            updateFormSectionAnswers
         );
 
         GivenOrganisationExists(organisationId: organisationId);
@@ -73,15 +79,19 @@ public class UpdateFormSectionAnswersUseCaseTest(AutoMapperFixture mapperFixture
         var organisationId = Guid.NewGuid();
         var sectionId = Guid.NewGuid();
         var form = GivenForm();
+        var updateFormSectionAnswers = new UpdateFormSectionAnswers
+        {
+            Answers = new List<FormAnswer>
+            {
+                new() { Id = Guid.NewGuid(), QuestionId = Guid.NewGuid()}
+            }
+        };
         var command = (
             formId: form.Guid,
             sectionId,
             answerSetId: Guid.NewGuid(),
             organisationId,
-            invalidAnswers: new List<FormAnswer>
-            {
-                new() { Id = Guid.NewGuid(), QuestionId = Guid.NewGuid() }
-            }
+            updateFormSectionAnswers
         );
 
         GivenOrganisationExists(organisationId: organisationId);
@@ -103,11 +113,19 @@ public class UpdateFormSectionAnswersUseCaseTest(AutoMapperFixture mapperFixture
         var organisation = GivenOrganisationExists(organisationId: organisationId);
         var sharedConsent = GivenSharedConsentExists(organisation: organisation, form: section.Form);
         var existingAnswerSet = GivenAnswerSet(sharedConsent, section);
-        var command = (section.Form.Guid, sectionId, existingAnswerSet.Guid, organisationId,
-            answers: new List<FormAnswer>
-            {
-                new() { Id = Guid.NewGuid(), QuestionId = questionId, BoolValue = true }
-            });
+        var updateFormSectionAnswers = new UpdateFormSectionAnswers
+        {
+            Answers =
+            [
+                new() { Id = Guid.NewGuid(), QuestionId = questionId, BoolValue = true}
+            ]
+        };
+        var command = (
+            section.Form.Guid,
+            sectionId,
+            existingAnswerSet.Guid,
+            organisationId,
+            updateFormSectionAnswers);
 
         await UseCase.Execute(command);
 
@@ -129,12 +147,16 @@ public class UpdateFormSectionAnswersUseCaseTest(AutoMapperFixture mapperFixture
         var section = GivenFormSectionExists(sectionId: Guid.NewGuid());
         var question = GivenFormQuestion(questionId: Guid.NewGuid(), section: section);
         var sharedConsent = GivenSharedConsentExists(organisation: organisation, form: section.Form);
-        var answers = new List<FormAnswer>
+        var updateFormSectionAnswers = new UpdateFormSectionAnswers
         {
-            new() { Id = Guid.NewGuid(), QuestionId = question.Guid, BoolValue = true }
+            Answers =
+           [
+               new() { Id = Guid.NewGuid(), QuestionId = question.Guid, BoolValue = true}
+           ]
         };
+
         var command = (formId: section.Form.Guid, sectionId: section.Guid, answerSetId: Guid.NewGuid(),
-            organisationId: organisation.Guid, answers);
+            organisationId: organisation.Guid, updateFormSectionAnswers);
 
         await UseCase.Execute(command);
 
@@ -152,13 +174,18 @@ public class UpdateFormSectionAnswersUseCaseTest(AutoMapperFixture mapperFixture
         var organisation = GivenOrganisationExists(organisationId: Guid.NewGuid());
         var section = GivenFormSectionExists(sectionId: Guid.NewGuid());
         var question = GivenFormQuestion(questionId: Guid.NewGuid(), section: section);
-        var answers = new List<FormAnswer>
+        var updateFormSectionAnswers = new UpdateFormSectionAnswers
         {
-            new() { Id = Guid.NewGuid(), QuestionId = question.Guid, BoolValue = true }
+            Answers =
+           [
+               new() { Id = Guid.NewGuid(), QuestionId = question.Guid, BoolValue = true}
+           ]
         };
+
         var answerSetId = Guid.NewGuid();
+
         var command = (formId: section.Form.Guid, sectionId: section.Guid, answerSetId,
-            organisationId: organisation.Guid, answers);
+            organisationId: organisation.Guid, updateFormSectionAnswers);
 
         await UseCase.Execute(command);
 
@@ -182,12 +209,16 @@ public class UpdateFormSectionAnswersUseCaseTest(AutoMapperFixture mapperFixture
         var answerSet = GivenAnswerSet(sharedConsent: sharedConsent, section: section);
         var answerSetId = answerSet.Guid;
         var answerGuid = Guid.NewGuid();
+        var updateFormSectionAnswers = new UpdateFormSectionAnswers
+        {
+            Answers =
+          [
+              new() { Id = answerGuid, QuestionId = question.Guid, BoolValue = true }
+          ]
+        };
         var command = (formId: section.Form.Guid, sectionId: section.Guid, answerSetId,
             organisationId: organisation.Guid,
-            answers: new List<FormAnswer>
-            {
-                new() { Id = answerGuid, QuestionId = question.Guid, BoolValue = true }
-            });
+            updateFormSectionAnswers);
 
         await UseCase.Execute(command);
 
@@ -216,12 +247,16 @@ public class UpdateFormSectionAnswersUseCaseTest(AutoMapperFixture mapperFixture
         var answerSet = GivenAnswerSet(sharedConsent: sharedConsent, section: standardSection);
         GivenAnswerSet(sharedConsent: sharedConsent, section: declarationSection);
         var answerSetId = answerSet.Guid;
+        var updateFormSectionAnswers = new UpdateFormSectionAnswers
+        {
+            Answers =
+          [
+              new() { Id = answerGuid, QuestionId = question.Guid, BoolValue = true }
+          ]
+        };
         var command = (formId: form.Guid, sectionId: standardSection.Guid, answerSetId,
             organisationId: organisation.Guid,
-            answers: new List<FormAnswer>
-            {
-                new() { Id = answerGuid, QuestionId = question.Guid, BoolValue = true }
-            });
+            updateFormSectionAnswers);
 
         await UseCase.Execute(command);
 
@@ -251,12 +286,16 @@ public class UpdateFormSectionAnswersUseCaseTest(AutoMapperFixture mapperFixture
         var answerSet = GivenAnswerSet(sharedConsent: sharedConsent, section: standardSection);
         GivenAnswerSet(sharedConsent: sharedConsent, section: declarationSection);
         var answerSetId = answerSet.Guid;
+        var updateFormSectionAnswers = new UpdateFormSectionAnswers
+        {
+            Answers =
+          [
+              new() { Id = answerGuid, QuestionId = question.Guid, BoolValue = true }
+          ]
+        };
         var command = (formId: standardSection.Form.Guid, sectionId: standardSection.Guid, answerSetId,
             organisationId: organisation.Guid,
-            answers: new List<FormAnswer>
-            {
-                new() { Id = answerGuid, QuestionId = question.Guid, BoolValue = true }
-            });
+            updateFormSectionAnswers);
 
 
         await UseCase.Execute(command);
@@ -275,6 +314,7 @@ public class UpdateFormSectionAnswersUseCaseTest(AutoMapperFixture mapperFixture
         var organisation = GivenOrganisationExists(organisationId: Guid.NewGuid());
         var section = GivenFormSectionExists(sectionId: Guid.NewGuid());
         var sharedConsent = GivenSharedConsentExists(organisation, section.Form, state: Submitted);
+
         var answers = new List<Persistence.FormAnswer>
         {
             GivenAnswer(question: GivenFormQuestion(section: section, type: YesOrNo), boolValue: false),
@@ -283,19 +323,23 @@ public class UpdateFormSectionAnswersUseCaseTest(AutoMapperFixture mapperFixture
                 dateValue: new DateTime(2024, 12, 31)),
             GivenAnswer(question: GivenFormQuestion(section: section, type: FileUpload), textValue: "my-photo.jpg"),
         };
+        var updateFormSectionAnswers = new UpdateFormSectionAnswers
+        {
+            Answers = new List<FormAnswer>
+            {
+                new() { Id = answers[0].Guid, QuestionId = answers[0].Question.Guid, BoolValue = true },
+                new() { Id = answers[1].Guid, QuestionId = answers[1].Question.Guid, TextValue = "My new answer" },
+                new() { Id = answers[2].Guid, QuestionId = answers[2].Question.Guid, DateValue = new DateTime(2025, 1, 12) },
+                new() { Id = answers[3].Guid, QuestionId = answers[3].Question.Guid, TextValue = "my-new-photo.jpg" },
+            }
+        };
         var answerSet = GivenAnswerSet(sharedConsent: sharedConsent, section: section, answers: answers);
         var command = (
             formId: section.Form.Guid,
             sectionId: section.Guid,
             answerSetId: answerSet.Guid,
             organisationId: organisation.Guid,
-            answers: new List<FormAnswer>
-            {
-                new() { Id = answers[0].Guid, QuestionId = answers[0].Question.Guid, BoolValue = true },
-                new() { Id = answers[1].Guid, QuestionId = answers[1].Question.Guid, TextValue = "My new answer" },
-                new() { Id = answers[2].Guid, QuestionId = answers[2].Question.Guid, DateValue = new DateTime(2025, 1, 12) },
-                new() { Id = answers[3].Guid, QuestionId = answers[3].Question.Guid, TextValue = "my-new-photo.jpg" },
-            });
+            updateFormSectionAnswers);
 
         await UseCase.Execute(command);
 
@@ -323,18 +367,22 @@ public class UpdateFormSectionAnswersUseCaseTest(AutoMapperFixture mapperFixture
             GivenFormQuestion(section: section, type: Date),
             GivenFormQuestion(section: section, type: FileUpload)
         };
-        var command = (
-            formId: section.Form.Guid,
-            sectionId: section.Guid,
-            answerSetId: Guid.NewGuid(),
-            organisationId: organisation.Guid,
-            answers: new List<FormAnswer>
+        var updateFormSectionAnswers = new UpdateFormSectionAnswers
+        {
+            Answers = new List<FormAnswer>
             {
                 new() { Id = Guid.NewGuid(), QuestionId = questions[0].Guid, BoolValue = true },
                 new() { Id = Guid.NewGuid(), QuestionId = questions[1].Guid, TextValue = "My new answer" },
                 new() { Id = Guid.NewGuid(), QuestionId = questions[2].Guid, DateValue = new DateTime(2025, 1, 12) },
                 new() { Id = Guid.NewGuid(), QuestionId = questions[3].Guid, TextValue = "my-new-photo.jpg" },
-            });
+            }
+        };
+        var command = (
+            formId: section.Form.Guid,
+            sectionId: section.Guid,
+            answerSetId: Guid.NewGuid(),
+            organisationId: organisation.Guid,
+            updateFormSectionAnswers);
 
         await UseCase.Execute(command);
 
@@ -374,16 +422,22 @@ public class UpdateFormSectionAnswersUseCaseTest(AutoMapperFixture mapperFixture
                     Country = "UK"
                 })
         };
+
+        var updateFormSectionAnswers = new UpdateFormSectionAnswers
+        {
+            Answers = new List<FormAnswer>
+            {
+                new() { Id = answers[1].Guid, QuestionId = answers[1].Question.Guid, TextValue = "My new answer" },
+            }
+        };
+
         var answerSet = GivenAnswerSet(sharedConsent: sharedConsent, section: section, answers: answers);
         var command = (
             formId: section.Form.Guid,
             sectionId: section.Guid,
             answerSetId: answerSet.Guid,
             organisationId: organisation.Guid,
-            answers: new List<FormAnswer>
-            {
-                new() { Id = answers[1].Guid, QuestionId = answers[1].Question.Guid, TextValue = "My new answer" },
-            });
+            updateFormSectionAnswers);
 
         await UseCase.Execute(command);
 

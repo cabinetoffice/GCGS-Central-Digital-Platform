@@ -7,7 +7,7 @@ include {
 }
 
 locals {
-  global_vars  = read_terragrunt_config(find_in_parent_folders("terragrunt.hcl"))
+  global_vars = read_terragrunt_config(find_in_parent_folders("terragrunt.hcl"))
   service_vars = read_terragrunt_config(find_in_parent_folders("service.hcl"))
 
   tags = merge(
@@ -64,7 +64,7 @@ inputs = {
   tags            = local.tags
 
   role_ecs_task_arn      = dependency.core_iam.outputs.ecs_task_arn
-  role_ecs_task_name      = dependency.core_iam.outputs.ecs_task_name
+  role_ecs_task_name     = dependency.core_iam.outputs.ecs_task_name
   role_ecs_task_exec_arn = dependency.core_iam.outputs.ecs_task_exec_arn
   role_telemetry_arn     = dependency.core_iam.outputs.telemetry_arn
 

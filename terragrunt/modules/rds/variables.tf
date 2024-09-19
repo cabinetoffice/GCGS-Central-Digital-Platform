@@ -26,12 +26,6 @@ variable "deletion_protection" {
   default     = true
 }
 
-variable "multi_az" {
-  description = "Enable Multi-AZ deployment for RDS"
-  type        = bool
-  default     = true
-}
-
 variable "environment" {
   description = "The environment we are provisioning, i.e. test, do not mistake this with the AWS account"
   type        = string
@@ -49,7 +43,7 @@ variable "monitoring_interval" {
   default     = 0
 
   validation {
-    condition = contains([0, 1, 5, 10, 15, 30, 60], var.monitoring_interval)
+    condition     = contains([0, 1, 5, 10, 15, 30, 60], var.monitoring_interval)
     error_message = "Invalid value for monitoring_interval. Valid values are: 0, 1, 5, 10, 15, 30, 60 seconds."
   }
 }
@@ -58,6 +52,12 @@ variable "monitoring_role_arn" {
   description = "The ARN for the IAM role that permits RDS to send enhanced monitoring metrics to CloudWatch Logs. Required if monitoring_interval is greater than 0."
   type        = string
   default     = ""
+}
+
+variable "multi_az" {
+  description = "Enable Multi-AZ deployment for RDS"
+  type        = bool
+  default     = true
 }
 
 variable "performance_insights_enabled" {

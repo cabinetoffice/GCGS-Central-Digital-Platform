@@ -366,6 +366,10 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                         .HasDefaultValue(false)
                         .HasColumnName("deleted");
 
+                    b.Property<bool>("FurtherQuestionsExempted")
+                        .HasColumnType("boolean")
+                        .HasColumnName("further_questions_exempted");
+
                     b.Property<Guid>("Guid")
                         .HasColumnType("uuid")
                         .HasColumnName("guid");
