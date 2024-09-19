@@ -4,6 +4,7 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moq;
+using Organisation = CO.CDP;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages.Supplier.ConnectedEntity;
 
@@ -125,7 +126,7 @@ public class ConnectedEntitySupplierCompanyQuestionTest
             legalForm: null,
             qualifications: null);
 
-    private static Organisation.WebApiClient.Organisation OrganisationClientModel(Guid id) =>
+    private static CO.CDP.Organisation.WebApiClient.Organisation OrganisationClientModel(Guid id) =>
         new(
             additionalIdentifiers: [new Identifier(id: "FakeId", legalName: "FakeOrg", scheme: "VAT", uri: null)],
             addresses: null,

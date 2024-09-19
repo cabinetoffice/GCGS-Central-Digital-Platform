@@ -34,8 +34,4 @@
     <Using Include="Xunit" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Pages\Organisation\" />
-  </ItemGroup>
-
 </Project>

@@ -6,6 +6,7 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moq;
+using OrganisationWebApiClient = CO.CDP.Organisation.WebApiClient;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages.Registration;
 
@@ -25,7 +26,7 @@ public class OrganisationIdentificationModelTests
         organisationClientMock = new Mock<IOrganisationClient>();
 
         organisationClientMock.Setup(api => api.LookupOrganisationAsync(It.IsAny<string>(), It.IsAny<string>()))
-                    .ThrowsAsync(new Organisation.WebApiClient.ApiException("Organisation does not exist", 404, "", null, null));
+                    .ThrowsAsync(new OrganisationWebApiClient.ApiException("Organisation does not exist", 404, "", null, null));
         _pponClientMock.Setup(api => api.GetIdentifiersAsync(It.IsAny<string>()))
             .ThrowsAsync(new EntityVerificationClient.ApiException("Organisation does not exist", 404, "", null, null));
     }
@@ -435,9 +436,9 @@ public class OrganisationIdentificationModelTests
         }
     }
 
-    private static Organisation.WebApiClient.Organisation GivenOrganisationClientModel()
+    private static OrganisationWebApiClient.Organisation GivenOrganisationClientModel()
     {
-        return new Organisation.WebApiClient.Organisation(null, null, null, _organisationId, null, "Test Org", []);
+        return new OrganisationWebApiClient.Organisation(null, null, null, _organisationId, null, "Test Org", []);
     }
 
     private static ICollection<EntityVerificationClient.Identifier> GivenEntityVerificationIdentifiers()

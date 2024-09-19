@@ -27,7 +27,7 @@ public class SupplierVatModelQuestionTest
         _model = new SupplierVatQuestionModel(_organisationClientMock.Object, _pponClientMock.Object, contextAccessor.Object);
         
         _organisationClientMock.Setup(api => api.LookupOrganisationAsync(It.IsAny<string>(), It.IsAny<string>()))
-                    .ThrowsAsync(new Organisation.WebApiClient.ApiException("Organisation does not exist", 404, "", null, null));
+                    .ThrowsAsync(new CO.CDP.Organisation.WebApiClient.ApiException("Organisation does not exist", 404, "", null, null));
         _pponClientMock.Setup(api => api.GetIdentifiersAsync(It.IsAny<string>()))
             .ThrowsAsync(new EntityVerificationClient.ApiException("Organisation does not exist", 404, "", null, null));
     }
@@ -55,7 +55,7 @@ public class SupplierVatModelQuestionTest
     {
         var id = Guid.NewGuid();
         _organisationClientMock.Setup(client => client.GetOrganisationSupplierInformationAsync(id))
-            .ThrowsAsync(new Organisation.WebApiClient.ApiException("Unexpected error", 404, "", default, null));
+            .ThrowsAsync(new CO.CDP.Organisation.WebApiClient.ApiException("Unexpected error", 404, "", default, null));
 
         var result = await _model.OnGet(id);
 
@@ -197,16 +197,16 @@ public class SupplierVatModelQuestionTest
         _model.HasVatNumber = false;
 
         _organisationClientMock.Setup(client => client.GetOrganisationAsync(id))
-            .ThrowsAsync(new Organisation.WebApiClient.ApiException("Unexpected error", 404, "", default, null));
+            .ThrowsAsync(new CO.CDP.Organisation.WebApiClient.ApiException("Unexpected error", 404, "", default, null));
 
         var result = await _model.OnPost();
 
         result.Should().BeOfType<RedirectResult>().Which.Url.Should().Be("/page-not-found");
     }
 
-    private static Organisation.WebApiClient.Organisation GivenOrganisationClientModel()
+    private static CO.CDP.Organisation.WebApiClient.Organisation GivenOrganisationClientModel()
     {
-        return new Organisation.WebApiClient.Organisation(null, null, null, _organisationId, null, "Test Org", []);
+        return new CO.CDP.Organisation.WebApiClient.Organisation(null, null, null, _organisationId, null, "Test Org", []);
     }
 
     private static ICollection<EntityVerificationClient.Identifier> GivenEntityVerificationIdentifiers()

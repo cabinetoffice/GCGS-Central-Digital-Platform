@@ -169,7 +169,7 @@ public class OrganisationDetailsSummaryModelTest
     public async Task OnPost_NullOrganisation_ReturnsPage()
     {
         var model = GivenOrganisationDetailModel();
-        Organisation.WebApiClient.Organisation? organisation = null;
+        CO.CDP.Organisation.WebApiClient.Organisation? organisation = null;
         organisationClientMock.Setup(o => o.CreateOrganisationAsync(It.IsAny<NewOrganisation>()))
             .ReturnsAsync(organisation);
 
@@ -220,9 +220,9 @@ public class OrganisationDetailsSummaryModelTest
         return registrationDetails;
     }
 
-    private static Organisation.WebApiClient.Organisation GivenOrganisationClientModel()
+    private static CO.CDP.Organisation.WebApiClient.Organisation GivenOrganisationClientModel()
     {
-        return new Organisation.WebApiClient.Organisation(null, null, null, _organisationId, null, "Test Org", []);
+        return new CO.CDP.Organisation.WebApiClient.Organisation(null, null, null, _organisationId, null, "Test Org", []);
     }
 
     private OrganisationDetailsSummaryModel GivenOrganisationDetailModel()

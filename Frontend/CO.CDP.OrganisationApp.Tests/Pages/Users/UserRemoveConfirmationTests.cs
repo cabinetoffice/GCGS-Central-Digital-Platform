@@ -37,9 +37,9 @@ public class UserRemoveConfirmationModelTests
     [Fact]
     public async Task OnGet_Returns_Page_When_Person_Found()
     {
-        var person = new Organisation.WebApiClient.Person("john@johnson.com", "John", _pageModel.UserId, "Johnson", []);
+        var person = new CO.CDP.Organisation.WebApiClient.Person("john@johnson.com", "John", _pageModel.UserId, "Johnson", []);
         _mockOrganisationClient.Setup(client => client.GetOrganisationPersonsAsync(It.IsAny<Guid>()))
-                               .ReturnsAsync(new List<Organisation.WebApiClient.Person> { person });
+                               .ReturnsAsync(new List<CO.CDP.Organisation.WebApiClient.Person> { person });
 
         var result = await _pageModel.OnGet();
 
@@ -51,7 +51,7 @@ public class UserRemoveConfirmationModelTests
     public async Task OnGet_Redirects_To_PageNotFound_When_Person_Not_Found()
     {
         _mockOrganisationClient.Setup(client => client.GetOrganisationPersonsAsync(It.IsAny<Guid>()))
-                               .ReturnsAsync(new List<Organisation.WebApiClient.Person>());
+                               .ReturnsAsync(new List<CO.CDP.Organisation.WebApiClient.Person>());
 
         var result = await _pageModel.OnGet();
 
@@ -63,7 +63,7 @@ public class UserRemoveConfirmationModelTests
     public async Task OnGet_Redirects_To_PageNotFound_When_Person_Same_As_Signed_In_User()
     {
         _mockOrganisationClient.Setup(client => client.GetOrganisationPersonsAsync(It.IsAny<Guid>()))
-            .ReturnsAsync(new List<Organisation.WebApiClient.Person>());
+            .ReturnsAsync(new List<CO.CDP.Organisation.WebApiClient.Person>());
 
         UserDetails userDetails = new UserDetails
         {
@@ -94,9 +94,9 @@ public class UserRemoveConfirmationModelTests
     public async Task OnPost_Redirects_To_UserSummary_When_ConfirmRemove_Is_True_And_Person_Exists()
     {
         _pageModel.ConfirmRemove = true;
-        var person = new Organisation.WebApiClient.Person("john@johnson.com", "John", _pageModel.UserId, "Johnson", []);
+        var person = new CO.CDP.Organisation.WebApiClient.Person("john@johnson.com", "John", _pageModel.UserId, "Johnson", []);
         _mockOrganisationClient.Setup(client => client.GetOrganisationPersonsAsync(It.IsAny<Guid>()))
-                               .ReturnsAsync(new List<Organisation.WebApiClient.Person> { person });
+                               .ReturnsAsync(new List<CO.CDP.Organisation.WebApiClient.Person> { person });
 
         var result = await _pageModel.OnPost();
 
@@ -112,7 +112,7 @@ public class UserRemoveConfirmationModelTests
     {
         _pageModel.ConfirmRemove = true;
         _mockOrganisationClient.Setup(client => client.GetOrganisationPersonsAsync(It.IsAny<Guid>()))
-                               .ReturnsAsync(new List<Organisation.WebApiClient.Person>());
+                               .ReturnsAsync(new List<CO.CDP.Organisation.WebApiClient.Person>());
 
         var result = await _pageModel.OnPost();
 
@@ -136,9 +136,9 @@ public class UserRemoveConfirmationModelTests
     [Fact]
     public async Task GetPerson_Returns_Person_When_Found()
     {
-        var person = new Organisation.WebApiClient.Person("john@johnson.com", "John", _pageModel.UserId, "Johnson", []);
+        var person = new CO.CDP.Organisation.WebApiClient.Person("john@johnson.com", "John", _pageModel.UserId, "Johnson", []);
         _mockOrganisationClient.Setup(client => client.GetOrganisationPersonsAsync(It.IsAny<Guid>()))
-                               .ReturnsAsync(new List<Organisation.WebApiClient.Person> { person });
+                               .ReturnsAsync(new List<CO.CDP.Organisation.WebApiClient.Person> { person });
 
         var result = await _pageModel.GetPerson(_mockOrganisationClient.Object);
 
@@ -161,7 +161,7 @@ public class UserRemoveConfirmationModelTests
     public async Task GetPerson_Returns_Null_When_Not_Found()
     {
         _mockOrganisationClient.Setup(client => client.GetOrganisationPersonsAsync(It.IsAny<Guid>()))
-                               .ReturnsAsync(new List<Organisation.WebApiClient.Person>());
+                               .ReturnsAsync(new List<CO.CDP.Organisation.WebApiClient.Person>());
 
         var result = await _pageModel.GetPerson(_mockOrganisationClient.Object);
 

@@ -67,7 +67,7 @@ public class LegalFormCompanyActQuestionModelTests
         _model.RegisteredOnCompanyHouse = true;
         _model.Id = id;
 
-        var legalForm = new Organisation.WebApiClient.LegalForm("LawRegistered", "RegisteredLegalForm", true, new DateTimeOffset());
+        var legalForm = new CO.CDP.Organisation.WebApiClient.LegalForm("LawRegistered", "RegisteredLegalForm", true, new DateTimeOffset());
         var supplierInfo = SupplierDetailsFactory.CreateSupplierInformationClientModel(completedLegalForm: true, legalForm: legalForm);
 
         _mockOrganisationClient.Setup(c => c.GetOrganisationSupplierInformationAsync(id))
@@ -85,7 +85,7 @@ public class LegalFormCompanyActQuestionModelTests
         var id = Guid.NewGuid();
         _model.RegisteredOnCompanyHouse = false;
         _model.Id = id;
-        var legalForm = new Organisation.WebApiClient.LegalForm("LawRegistered", "RegisteredLegalForm", true, new DateTimeOffset());
+        var legalForm = new CO.CDP.Organisation.WebApiClient.LegalForm("LawRegistered", "RegisteredLegalForm", true, new DateTimeOffset());
         var supplierInfo = SupplierDetailsFactory.CreateSupplierInformationClientModel(completedLegalForm: true, legalForm: legalForm);
         _mockOrganisationClient.Setup(c => c.GetOrganisationSupplierInformationAsync(id))
                                .ReturnsAsync(supplierInfo);

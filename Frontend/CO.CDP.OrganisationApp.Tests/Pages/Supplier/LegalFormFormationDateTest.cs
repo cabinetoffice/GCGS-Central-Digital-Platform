@@ -3,6 +3,7 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moq;
+using OrganisationWebApiClient = CO.CDP.Organisation.WebApiClient;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages.Supplier;
 
@@ -10,12 +11,12 @@ public class LegalFormFormationDateTest
 {
     private readonly Mock<ITempDataService> _mockTempDataService;
     private readonly LegalFormFormationDateModel _model;
-    private readonly Mock<Organisation.WebApiClient.IOrganisationClient> _mockOrganisationClient;
+    private readonly Mock<OrganisationWebApiClient.IOrganisationClient> _mockOrganisationClient;
 
     public LegalFormFormationDateTest()
     {
         _mockTempDataService = new Mock<ITempDataService>();
-        _mockOrganisationClient = new Mock<Organisation.WebApiClient.IOrganisationClient>();
+        _mockOrganisationClient = new Mock<OrganisationWebApiClient.IOrganisationClient>();
         _model = new LegalFormFormationDateModel(_mockTempDataService.Object, _mockOrganisationClient.Object);
     }
 
@@ -25,7 +26,7 @@ public class LegalFormFormationDateTest
         _model.Id = Guid.NewGuid();
 
         _mockOrganisationClient.Setup(client => client.GetOrganisationAsync(_model.Id))
-            .ThrowsAsync(new Organisation.WebApiClient.ApiException("Unexpected error", 404, "", default, null));
+            .ThrowsAsync(new OrganisationWebApiClient.ApiException("Unexpected error", 404, "", default, null));
 
         var result = await _model.OnGet();
 
@@ -138,7 +139,7 @@ public class LegalFormFormationDateTest
 
         legalForm.RegistrationDate.Should().Be(validDate);
         _mockTempDataService.Verify(s => s.Put(LegalForm.TempDataKey, legalForm), Times.Once);
-        _mockOrganisationClient.Verify(x => x.UpdateSupplierInformationAsync(_model.Id, It.IsAny<Organisation.WebApiClient.UpdateSupplierInformation>()), Times.Once);
+        _mockOrganisationClient.Verify(x => x.UpdateSupplierInformationAsync(_model.Id, It.IsAny<OrganisationWebApiClient.UpdateSupplierInformation>()), Times.Once);
         result.Should().BeOfType<RedirectToPageResult>().Which.PageName.Should().Be("SupplierBasicInformation");
     }
 
@@ -151,8 +152,8 @@ public class LegalFormFormationDateTest
 
         var legalForm = new LegalForm() { RegisteredUnderAct2006 = false };
         _mockTempDataService.Setup(s => s.GetOrDefault<LegalForm>(LegalForm.TempDataKey)).Returns(legalForm);
-        _mockOrganisationClient.Setup(c => c.UpdateSupplierInformationAsync(It.IsAny<Guid>(), It.IsAny<Organisation.WebApiClient.UpdateSupplierInformation>()))
-                               .ThrowsAsync(new Organisation.WebApiClient.ApiException("Not Found", 404, null, null, null));
+        _mockOrganisationClient.Setup(c => c.UpdateSupplierInformationAsync(It.IsAny<Guid>(), It.IsAny<OrganisationWebApiClient.UpdateSupplierInformation>()))
+                               .ThrowsAsync(new OrganisationWebApiClient.ApiException("Not Found", 404, null, null, null));
 
         var result = await _model.OnPost();
 
@@ -202,8 +203,8 @@ public class LegalFormFormationDateTest
         _model.Year = futureDate.Year.ToString();
     }
 
-    private static Organisation.WebApiClient.Organisation GivenOrganisationClientModel(Guid? id)
+    private static OrganisationWebApiClient.Organisation GivenOrganisationClientModel(Guid? id)
     {
-        return new Organisation.WebApiClient.Organisation(null, null, null, id!.Value, null, "Test Org", []);
+        return new OrganisationWebApiClient.Organisation(null, null, null, id!.Value, null, "Test Org", []);
     }
 }

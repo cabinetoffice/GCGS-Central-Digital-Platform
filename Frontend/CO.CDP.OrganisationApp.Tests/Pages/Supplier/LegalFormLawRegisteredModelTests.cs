@@ -85,8 +85,8 @@ public class LegalFormLawRegisteredModelTests
         result.Should().BeOfType<RedirectToPageResult>().Which.PageName.Should().Be("LegalFormFormationDate");
     }
 
-    private static Organisation.WebApiClient.Organisation GivenOrganisationClientModel(Guid? id)
+    private static CO.CDP.Organisation.WebApiClient.Organisation GivenOrganisationClientModel(Guid? id)
     {
-        return new Organisation.WebApiClient.Organisation(null, null, null, id!.Value, null, "Test Org", []);
+        return new CO.CDP.Organisation.WebApiClient.Organisation(null, null, null, id!.Value, null, "Test Org", []);
     }
 }

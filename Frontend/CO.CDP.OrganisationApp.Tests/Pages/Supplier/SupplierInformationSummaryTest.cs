@@ -76,7 +76,7 @@ public class SupplierInformationSummaryTest
     public async Task OnGet_WhenNoOrganisationFound_ShouldRedirectsToPageNotFound()
     {
         _organisationClientMock.Setup(o => o.GetOrganisationSupplierInformationAsync(It.IsAny<Guid>()))
-            .ThrowsAsync(new Organisation.WebApiClient.ApiException("Unexpected error", 404, "", default, null));
+            .ThrowsAsync(new CO.CDP.Organisation.WebApiClient.ApiException("Unexpected error", 404, "", default, null));
 
         var result = await _model.OnGet(Guid.NewGuid());
 
@@ -100,7 +100,7 @@ public class SupplierInformationSummaryTest
     public async Task OnGet_PageNotFoundOnConnectedEntities()
     {
         _organisationClientMock.Setup(o => o.GetConnectedEntitiesAsync(It.IsAny<Guid>()))
-            .ThrowsAsync(new Organisation.WebApiClient.ApiException("Unexpected error", 404, "", default, null));
+            .ThrowsAsync(new CO.CDP.Organisation.WebApiClient.ApiException("Unexpected error", 404, "", default, null));
 
         var result = await _model.OnGet(Guid.NewGuid());
 
