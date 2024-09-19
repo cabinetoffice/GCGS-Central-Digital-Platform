@@ -36,7 +36,7 @@ public class PersonsEndpointsTests
         var factory = new TestAuthorizationWebApplicationFactory<Program>(
             [new Claim(ClaimType.Channel, channel)],
             organisationId,
-            scope != null ? [scope] : [],
+            scope,
             services => services.AddScoped(_ => _getPersonsUseCase.Object));
 
         var response = await factory.CreateClient().GetAsync($"/organisations/{organisationId}/persons");
@@ -65,7 +65,7 @@ public class PersonsEndpointsTests
         var factory = new TestAuthorizationWebApplicationFactory<Program>(
             [new Claim(ClaimType.Channel, channel)],
             organisationId,
-            scope != null ? [scope] : [],
+            scope,
             services => services.AddScoped(_ => _updatePersonToOrganisationUseCase.Object));
 
         var response = await factory.CreateClient().PatchAsJsonAsync($"/organisations/{organisationId}/persons/{persoinId}", updatePersonToOrganisation);
@@ -93,7 +93,7 @@ public class PersonsEndpointsTests
         var factory = new TestAuthorizationWebApplicationFactory<Program>(
             [new Claim(ClaimType.Channel, channel)],
             organisationId,
-            scope != null ? [scope] : [],
+            scope,
             services => services.AddScoped(_ => _removePersonFromOrganisationUseCase.Object));
 
         var response = await factory.CreateClient().SendAsync(

@@ -35,7 +35,7 @@ public class BuyerInformationEndpointsTests
         var factory = new TestAuthorizationWebApplicationFactory<Program>(
             [new Claim(ClaimType.Channel, channel)],
             organisationId,
-            scope != null ? [scope] : [],
+            scope,
             services => services.AddScoped(_ => _updateBuyerInformationUseCase.Object));
 
         var response = await factory.CreateClient().PatchAsJsonAsync($"/organisations/{organisationId}/buyer-information", updateBuyerInformation);

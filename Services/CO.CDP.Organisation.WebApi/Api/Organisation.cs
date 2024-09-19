@@ -207,7 +207,11 @@ public static class EndpointExtensions
     public static RouteGroupBuilder UseSupplierInformationEndpoints(this RouteGroupBuilder app)
     {
         app.MapGet("/{organisationId}/supplier-information",
-            async (Guid organisationId, IUseCase<Guid, SupplierInformation?> useCase) =>
+            [OrganisationAuthorize(
+                [AuthenticationChannel.OneLogin],
+                [Constants.OrganisationPersonScope.Admin, Constants.OrganisationPersonScope.Editor, Constants.OrganisationPersonScope.Viewer],
+                OrganisationIdLocation.Path)]
+        async (Guid organisationId, IUseCase<Guid, SupplierInformation?> useCase) =>
                await useCase.Execute(organisationId)
                    .AndThen(supplier => supplier != null ? Results.Ok(supplier) : Results.NotFound()))
            .Produces<SupplierInformation>(StatusCodes.Status200OK, "application/json")
@@ -229,7 +233,11 @@ public static class EndpointExtensions
            });
 
         app.MapPatch("/{organisationId}/supplier-information",
-            async (Guid organisationId, UpdateSupplierInformation supplierInformation,
+            [OrganisationAuthorize(
+                [AuthenticationChannel.OneLogin],
+                [Constants.OrganisationPersonScope.Admin, Constants.OrganisationPersonScope.Editor],
+                OrganisationIdLocation.Path)]
+        async (Guid organisationId, UpdateSupplierInformation supplierInformation,
                 IUseCase<(Guid, UpdateSupplierInformation), bool> useCase) =>
                     await useCase.Execute((organisationId, supplierInformation))
                         .AndThen(_ => Results.NoContent()))
@@ -254,7 +262,11 @@ public static class EndpointExtensions
             });
 
         app.MapDelete("/{organisationId}/supplier-information",
-            async (Guid organisationId, [FromBody] DeleteSupplierInformation deleteSupplierInformation,
+            [OrganisationAuthorize(
+                [AuthenticationChannel.OneLogin],
+                [Constants.OrganisationPersonScope.Admin, Constants.OrganisationPersonScope.Editor],
+                OrganisationIdLocation.Path)]
+        async (Guid organisationId, [FromBody] DeleteSupplierInformation deleteSupplierInformation,
                 IUseCase<(Guid, DeleteSupplierInformation), bool> useCase) =>
                     await useCase.Execute((organisationId, deleteSupplierInformation))
                         .AndThen(_ => Results.NoContent()))

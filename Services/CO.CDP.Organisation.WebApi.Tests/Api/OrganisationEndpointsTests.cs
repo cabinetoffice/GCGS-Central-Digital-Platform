@@ -156,7 +156,7 @@ public class OrganisationEndpointsTests
         var factory = new TestAuthorizationWebApplicationFactory<Program>(
             [new Claim(ClaimType.Channel, channel)],
             organisationId,
-            scope != null ? [scope] : [],
+            scope,
             services => services.AddScoped(_ => _getOrganisationUseCase.Object));
 
         var response = await factory.CreateClient().GetAsync($"/organisations/{organisationId}");
@@ -183,7 +183,7 @@ public class OrganisationEndpointsTests
         var factory = new TestAuthorizationWebApplicationFactory<Program>(
             [new Claim(ClaimType.Channel, channel)],
             organisationId,
-            scope != null ? [scope] : [],
+            scope,
             services => services.AddScoped(_ => _updatesOrganisationUseCase.Object));
 
         var response = await factory.CreateClient().PatchAsJsonAsync($"/organisations/{organisationId}", updateOrganisation);

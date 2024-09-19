@@ -7,8 +7,10 @@ using Microsoft.Extensions.Hosting;
 using Moq;
 using System.Net;
 using System.Net.Http.Json;
+using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
+using static CO.CDP.Authentication.Constants;
 using static System.Net.HttpStatusCode;
 
 namespace CO.CDP.Organisation.WebApi.Tests.Api;
@@ -124,6 +126,97 @@ public class SupplierInformationEndpointsTests
         var response = await SendDeleteRequestAsync($"/organisations/{invalidOrganisationId}/supplier-information", "{}");
 
         response.StatusCode.Should().Be(UnprocessableEntity);
+    }
+
+    [Theory]
+    [InlineData(OK, Channel.OneLogin, OrganisationPersonScope.Admin)]
+    [InlineData(OK, Channel.OneLogin, OrganisationPersonScope.Editor)]
+    [InlineData(OK, Channel.OneLogin, OrganisationPersonScope.Viewer)]
+    [InlineData(Forbidden, Channel.OneLogin, OrganisationPersonScope.Responder)]
+    [InlineData(Forbidden, Channel.ServiceKey)]
+    [InlineData(Forbidden, Channel.OrganisationKey)]
+    [InlineData(Forbidden, "unknown_channel")]
+    public async Task GetOrganisationSupplierInformation_Authorization_ReturnsExpectedStatusCode(
+        HttpStatusCode expectedStatusCode, string channel, string? scope = null)
+    {
+        var organisationId = Guid.NewGuid();
+
+        _getSupplierInformationUseCase.Setup(uc => uc.Execute(organisationId))
+            .ReturnsAsync(new SupplierInformation { OrganisationName = "FakeOrg" });
+
+        var factory = new TestAuthorizationWebApplicationFactory<Program>(
+            [new Claim(ClaimType.Channel, channel)],
+            organisationId,
+            scope,
+            services => services.AddScoped(_ => _getSupplierInformationUseCase.Object));
+
+        var response = await factory.CreateClient().GetAsync($"/organisations/{organisationId}/supplier-information");
+
+        response.StatusCode.Should().Be(expectedStatusCode);
+    }
+
+    [Theory]
+    [InlineData(NoContent, Channel.OneLogin, OrganisationPersonScope.Admin)]
+    [InlineData(NoContent, Channel.OneLogin, OrganisationPersonScope.Editor)]
+    [InlineData(Forbidden, Channel.OneLogin, OrganisationPersonScope.Viewer)]
+    [InlineData(Forbidden, Channel.OneLogin, OrganisationPersonScope.Responder)]
+    [InlineData(Forbidden, Channel.ServiceKey)]
+    [InlineData(Forbidden, Channel.OrganisationKey)]
+    [InlineData(Forbidden, "unknown_channel")]
+    public async Task UpdateSupplierInformation_Authorization_ReturnsExpectedStatusCode(
+        HttpStatusCode expectedStatusCode, string channel, string? scope = null)
+    {
+        var organisationId = Guid.NewGuid();
+        var updateSupplierInformation = new UpdateSupplierInformation
+        {
+            Type = SupplierInformationUpdateType.SupplierType,
+            SupplierInformation = new SupplierInfo()
+        };
+        var command = (organisationId, updateSupplierInformation);
+
+        _updatesSupplierInformationUseCase.Setup(uc => uc.Execute(command)).ReturnsAsync(true);
+
+        var factory = new TestAuthorizationWebApplicationFactory<Program>(
+            [new Claim(ClaimType.Channel, channel)],
+            organisationId,
+            scope,
+            services => services.AddScoped(_ => _updatesSupplierInformationUseCase.Object));
+
+        var response = await factory.CreateClient().PatchAsJsonAsync($"/organisations/{organisationId}/supplier-information", updateSupplierInformation);
+
+        response.StatusCode.Should().Be(expectedStatusCode);
+    }
+
+    [Theory]
+    [InlineData(NoContent, Channel.OneLogin, OrganisationPersonScope.Admin)]
+    [InlineData(NoContent, Channel.OneLogin, OrganisationPersonScope.Editor)]
+    [InlineData(Forbidden, Channel.OneLogin, OrganisationPersonScope.Viewer)]
+    [InlineData(Forbidden, Channel.OneLogin, OrganisationPersonScope.Responder)]
+    [InlineData(Forbidden, Channel.ServiceKey)]
+    [InlineData(Forbidden, Channel.OrganisationKey)]
+    [InlineData(Forbidden, "unknown_channel")]
+    public async Task DeleteSupplierInformation_Authorization_ReturnsExpectedStatusCode(
+        HttpStatusCode expectedStatusCode, string channel, string? scope = null)
+    {
+        var organisationId = Guid.NewGuid();
+        var deleteSupplierInformation = new DeleteSupplierInformation { Type = SupplierInformationDeleteType.Qualification };
+        var command = (organisationId, deleteSupplierInformation);
+
+        _deleteSupplierInformationUseCase.Setup(uc => uc.Execute(command)).ReturnsAsync(true);
+
+        var factory = new TestAuthorizationWebApplicationFactory<Program>(
+            [new Claim(ClaimType.Channel, channel)],
+            organisationId,
+            scope,
+            services => services.AddScoped(_ => _deleteSupplierInformationUseCase.Object));
+
+        var response = await factory.CreateClient().SendAsync(
+            new HttpRequestMessage(HttpMethod.Delete, $"/organisations/{organisationId}/supplier-information")
+            {
+                Content = JsonContent.Create(deleteSupplierInformation)
+            });
+
+        response.StatusCode.Should().Be(expectedStatusCode);
     }
 
     private async Task<HttpResponseMessage> SendDeleteRequestAsync(string relativeUri, object obj)

@@ -14,7 +14,7 @@ namespace CO.CDP.TestKit.Mvc;
 public class TestAuthorizationWebApplicationFactory<TProgram>(
         Claim[] claimFeed,
         Guid? organisationId = null,
-        string[]? assignedOrganisationScopes = null,
+        string? assignedOrganisationScopes = null,
         Action<IServiceCollection>? serviceCollection = null)
     : WebApplicationFactory<TProgram> where TProgram : class
 {
@@ -27,7 +27,7 @@ public class TestAuthorizationWebApplicationFactory<TProgram>(
             services.AddTransient<IPolicyEvaluator>(sp => new AuthorizationPolicyEvaluator(
                 ActivatorUtilities.CreateInstance<PolicyEvaluator>(sp), claimFeed, assignedOrganisationScopes));
 
-            if (assignedOrganisationScopes?.Length > 0)
+            if (assignedOrganisationScopes != null)
             {
                 Mock<ITenantRepository> mockDatabaseTenantRepo = new();
                 mockDatabaseTenantRepo.Setup(r => r.LookupTenant("urn:fake_user"))
@@ -35,7 +35,7 @@ public class TestAuthorizationWebApplicationFactory<TProgram>(
                     {
                         User = new TenantLookup.PersonUser { Name = "Test", Email = "test@test", Urn = "urn:fake_user" },
                         Tenants = [new TenantLookup.Tenant { Id = Guid.NewGuid(), Name = "Ten",
-                            Organisations = [new TenantLookup.Organisation { Id = organisationId ?? Guid.NewGuid(), Name = "org", Roles = [], Scopes = [.. assignedOrganisationScopes] }] }]
+                            Organisations = [new TenantLookup.Organisation { Id = organisationId ?? Guid.NewGuid(), Name = "org", Roles = [], Scopes = [assignedOrganisationScopes] }] }]
                     });
 
                 services.AddTransient(sc => mockDatabaseTenantRepo.Object);
@@ -46,7 +46,7 @@ public class TestAuthorizationWebApplicationFactory<TProgram>(
     }
 }
 
-public class AuthorizationPolicyEvaluator(PolicyEvaluator innerEvaluator, Claim[] claimFeed, string[]? assignedOrganisationScopes) : IPolicyEvaluator
+public class AuthorizationPolicyEvaluator(PolicyEvaluator innerEvaluator, Claim[] claimFeed, string? assignedOrganisationScopes) : IPolicyEvaluator
 {
     const string JwtBearerOrApiKeyScheme = "JwtBearer_Or_ApiKey";
 
@@ -54,7 +54,7 @@ public class AuthorizationPolicyEvaluator(PolicyEvaluator innerEvaluator, Claim[
     {
         var claimsIdentity = new ClaimsIdentity(JwtBearerOrApiKeyScheme);
         if (claimFeed.Length > 0) claimsIdentity.AddClaims(claimFeed);
-        if (assignedOrganisationScopes?.Length > 0) claimsIdentity.AddClaim(new Claim("sub", "urn:fake_user"));
+        if (assignedOrganisationScopes != null) claimsIdentity.AddClaim(new Claim("sub", "urn:fake_user"));
 
         return await Task.FromResult(AuthenticateResult.Success(new AuthenticationTicket(new ClaimsPrincipal(claimsIdentity),
                     new AuthenticationProperties(), JwtBearerOrApiKeyScheme)));

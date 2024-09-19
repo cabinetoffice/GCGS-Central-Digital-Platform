@@ -38,7 +38,7 @@ public class ConnectedEntityEndpointsTests
         var factory = new TestAuthorizationWebApplicationFactory<Program>(
             [new Claim(ClaimType.Channel, channel)],
             organisationId,
-            scope != null ? [scope] : [],
+            scope,
             services => services.AddScoped(_ => _getConnectedEntitiesUseCase.Object));
 
         var response = await factory.CreateClient().GetAsync($"/organisations/{organisationId}/connected-entities");
@@ -67,7 +67,7 @@ public class ConnectedEntityEndpointsTests
         var factory = new TestAuthorizationWebApplicationFactory<Program>(
             [new Claim(ClaimType.Channel, channel)],
             organisationId,
-            scope != null ? [scope] : [],
+            scope,
             services => services.AddScoped(_ => _getConnectedEntityUseCase.Object));
 
         var response = await factory.CreateClient().GetAsync($"/organisations/{organisationId}/connected-entities/{connectedEntityId}");
@@ -95,7 +95,7 @@ public class ConnectedEntityEndpointsTests
         var factory = new TestAuthorizationWebApplicationFactory<Program>(
             [new Claim(ClaimType.Channel, channel)],
             organisationId,
-            scope != null ? [scope] : [],
+            scope,
             services => services.AddScoped(_ => _registerConnectedEntityUseCase.Object));
 
         var response = await factory.CreateClient().PostAsJsonAsync($"/organisations/{organisationId}/connected-entities", updateConnectedEntity);
@@ -124,7 +124,7 @@ public class ConnectedEntityEndpointsTests
         var factory = new TestAuthorizationWebApplicationFactory<Program>(
             [new Claim(ClaimType.Channel, channel)],
             organisationId,
-            scope != null ? [scope] : [],
+            scope,
             services => services.AddScoped(_ => _updateConnectedEntityUseCase.Object));
 
         var response = await factory.CreateClient().PutAsJsonAsync($"/organisations/{organisationId}/connected-entities/{connectedEntityId}", updateConnectedEntity);
@@ -153,7 +153,7 @@ public class ConnectedEntityEndpointsTests
         var factory = new TestAuthorizationWebApplicationFactory<Program>(
             [new Claim(ClaimType.Channel, channel)],
             organisationId,
-            scope != null ? [scope] : [],
+            scope,
             services => services.AddScoped(_ => _deleteConnectedEntityUseCase.Object));
 
         var response = await factory.CreateClient().SendAsync(
