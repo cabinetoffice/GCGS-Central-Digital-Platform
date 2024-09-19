@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using CO.CDP.OrganisationInformation.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,9 +13,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CO.CDP.OrganisationInformation.Persistence.Migrations
 {
     [DbContext(typeof(OrganisationInformationContext))]
-    partial class OrganisationInformationContextModelSnapshot : ModelSnapshot
+    [Migration("20240919151457_AddNameToFormQuestion")]
+    partial class AddNameToFormQuestion
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -620,18 +623,6 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("ApprovedById")
-                        .HasColumnType("integer")
-                        .HasColumnName("approved_by_id");
-
-                    b.Property<string>("ApprovedComment")
-                        .HasColumnType("text")
-                        .HasColumnName("approved_comment");
-
-                    b.Property<DateTimeOffset?>("ApprovedOn")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("approved_on");
-
                     b.Property<DateTimeOffset>("CreatedOn")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
@@ -664,9 +655,6 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
 
                     b.HasKey("Id")
                         .HasName("pk_organisations");
-
-                    b.HasIndex("ApprovedById")
-                        .HasDatabaseName("ix_organisations_approved_by_id");
 
                     b.HasIndex("Guid")
                         .IsUnique()
@@ -1259,11 +1247,6 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
 
             modelBuilder.Entity("CO.CDP.OrganisationInformation.Persistence.Organisation", b =>
                 {
-                    b.HasOne("CO.CDP.OrganisationInformation.Persistence.Person", "ApprovedBy")
-                        .WithMany()
-                        .HasForeignKey("ApprovedById")
-                        .HasConstraintName("fk_organisations_persons_approved_by_id");
-
                     b.HasOne("CO.CDP.OrganisationInformation.Persistence.Tenant", "Tenant")
                         .WithMany("Organisations")
                         .HasForeignKey("TenantId")
@@ -1722,8 +1705,6 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                         });
 
                     b.Navigation("Addresses");
-
-                    b.Navigation("ApprovedBy");
 
                     b.Navigation("BuyerInfo");
 

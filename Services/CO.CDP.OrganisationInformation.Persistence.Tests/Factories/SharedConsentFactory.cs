@@ -87,6 +87,7 @@ public static class SharedConsentFactory
         var question = new FormQuestion
         {
             Guid = questionId ?? Guid.NewGuid(),
+            Name = "_Section01",
             Title = "Were your accounts audited?",
             Caption = "",
             Description = "Please answer.",
