@@ -37,7 +37,7 @@ public class RegisterOrganisationUseCase(
         Person? person = await personRepository.Find(command.PersonId);
         if (person == null)
         {
-            throw new RegisterOrganisationException.UnknownPersonException($"Unknown person {command.PersonId}.");
+            throw new UnknownPersonException($"Unknown person {command.PersonId}.");
         }
 
         return person;
@@ -74,10 +74,4 @@ public class RegisterOrganisationUseCase(
                 Persons = { person }
             };
         });
-
-    public abstract class RegisterOrganisationException(string message, Exception? cause = null)
-        : Exception(message, cause)
-    {
-        public class UnknownPersonException(string message, Exception? cause = null) : Exception(message, cause);
-    }
 }

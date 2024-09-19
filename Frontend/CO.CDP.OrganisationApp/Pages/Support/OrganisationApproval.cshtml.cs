@@ -34,14 +34,10 @@ public class OrganisationApprovalModel(
         await organisationClient.ReviewOrganisationAsync(new ReviewOrganisation(
             Approval ?? false,
             UserDetails.PersonId ?? Guid.Empty,
-            Comments,
+            Comments ?? "",
             organisationId
             ));
 
         return RedirectToPage("Organisations");
     }
-
-    // TODO: Create post
-    // TODO: Write unit tests for landing page
-    // TODO: Consider pagination for landing page
 }

@@ -2,7 +2,6 @@ using CO.CDP.Organisation.WebApi.Extensions;
 using CO.CDP.Organisation.WebApi.Model;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
-using static CO.CDP.Organisation.WebApi.UseCase.RegisterOrganisationUseCase.RegisterOrganisationException;
 using static CO.CDP.OrganisationInformation.Persistence.IOrganisationRepository.OrganisationRepositoryException;
 
 namespace CO.CDP.Organisation.WebApi.Tests.Extensions;

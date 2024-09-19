@@ -249,7 +249,7 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
                 personId: unknownPersonId
             )))
             .Should()
-            .ThrowAsync<RegisterOrganisationUseCase.RegisterOrganisationException.UnknownPersonException>();
+            .ThrowAsync<UnknownPersonException>();
 
         _repository.Verify(
             r => r.Save(It.IsAny<Persistence.Organisation>()),

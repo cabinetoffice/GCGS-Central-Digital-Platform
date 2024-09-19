@@ -62,6 +62,7 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
     public async Task<IList<Organisation>> Get(string type)
     {
         IQueryable<Organisation> result = context.Organisations
+            .Include(o => o.ApprovedBy)
             .Include(o => o.Identifiers)
             .Include(o => o.BuyerInfo)
             .Include(o => o.SupplierInfo);
