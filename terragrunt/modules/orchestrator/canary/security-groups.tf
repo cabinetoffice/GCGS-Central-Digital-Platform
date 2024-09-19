@@ -1,7 +1,7 @@
 resource "aws_security_group_rule" "canary_sg_to_target_sgs" {
   for_each = toset(local.aws_endpoint_sgs)
 
-  description              = "${local.canary_name} to target sg ${each.value} (egress)"
+  description              = "${local.name_prefix}-canary to target sg ${each.value} (egress)"
   from_port                = var.https_port
   protocol                 = "tcp"
   security_group_id        = var.canary_sg_id
@@ -13,7 +13,7 @@ resource "aws_security_group_rule" "canary_sg_to_target_sgs" {
 resource "aws_security_group_rule" "target_sgs_to_canary_sg" {
   for_each = toset(local.aws_endpoint_sgs)
 
-  description              = "${local.canary_name} from target sg ${each.value} (ingress)"
+  description              = "${local.name_prefix}-canary from target sg ${each.value} (ingress)"
   from_port                = var.https_port
   protocol                 = "tcp"
   security_group_id        = each.value
@@ -33,7 +33,7 @@ resource "aws_security_group_rule" "canary_to_public" {
 }
 
 resource "aws_security_group_rule" "canary_to_service_alb_egress" {
-  description              = "Allow outbound traffic from ${local.canary_name} to the VPN ALB"
+  description              = "Allow outbound traffic from ${local.name_prefix}-canary to the VPN ALB"
   from_port                = var.https_port
   protocol                 = "tcp"
   security_group_id        = var.canary_sg_id
@@ -43,7 +43,7 @@ resource "aws_security_group_rule" "canary_to_service_alb_egress" {
 }
 
 resource "aws_security_group_rule" "canary_to_service_alb_ingress" {
-  description              = "Allow outbound traffic from ${local.canary_name} to the VPN ALB"
+  description              = "Allow outbound traffic from ${local.name_prefix}-canary to the VPN ALB"
   from_port                = var.https_port
   protocol                 = "tcp"
   source_security_group_id = var.canary_sg_id

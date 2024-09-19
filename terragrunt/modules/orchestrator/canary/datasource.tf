@@ -2,6 +2,10 @@ data "aws_caller_identity" "current" {}
 
 data "aws_region" "current" {}
 
+data "aws_ssm_parameter" "cdp_sirsi_service_version" {
+  name = "cdp-sirsi-service-version"
+}
+
 data "aws_vpc_endpoint" "s3" {
   vpc_id       = var.vpc_id
   service_name = "com.amazonaws.eu-west-2.s3"
@@ -9,15 +13,15 @@ data "aws_vpc_endpoint" "s3" {
 
 data "aws_iam_policy_document" "canary" {
   statement {
-    sid    = "AllowPutCloudwatchMetricData"
-    actions = ["cloudwatch:PutMetricData"]
-    effect = "Allow"
+    sid       = "AllowPutCloudwatchMetricData"
+    actions   = ["cloudwatch:PutMetricData"]
+    effect    = "Allow"
     resources = ["*"]
 
     condition {
       test     = "StringEquals"
       variable = "cloudwatch:namespace"
-      values = ["CloudWatchSynthetics"]
+      values   = ["CloudWatchSynthetics"]
     }
   }
 
@@ -28,14 +32,14 @@ data "aws_iam_policy_document" "canary" {
       "logs:CreateLogGroup",
       "logs:PutLogEvents"
     ]
-    effect = "Allow"
+    effect    = "Allow"
     resources = ["*"]
   }
 
   statement {
-    sid    = "AllowXRay"
-    actions = ["xray:PutTraceSegments"]
-    effect = "Allow"
+    sid       = "AllowXRay"
+    actions   = ["xray:PutTraceSegments"]
+    effect    = "Allow"
     resources = ["*"]
   }
 
@@ -46,21 +50,21 @@ data "aws_iam_policy_document" "canary" {
       "ec2:DescribeNetworkInterfaces",
       "ec2:DeleteNetworkInterface"
     ]
-    effect = "Allow"
+    effect    = "Allow"
     resources = ["*"]
   }
 
   statement {
-    sid    = "AllowListBucketLocation"
-    actions = ["s3:ListAllMyBuckets"]
-    effect = "Allow"
+    sid       = "AllowListBucketLocation"
+    actions   = ["s3:ListAllMyBuckets"]
+    effect    = "Allow"
     resources = ["*"]
   }
 
   statement {
-    sid    = "AllowGetBucketLocation"
-    actions = ["s3:GetBucketLocation"]
-    effect = "Allow"
+    sid       = "AllowGetBucketLocation"
+    actions   = ["s3:GetBucketLocation"]
+    effect    = "Allow"
     resources = [module.s3_bucket_canary.arn]
   }
 
@@ -79,7 +83,7 @@ data "aws_iam_policy_document" "canary" {
     ]
     effect = "Allow"
     resources = [
-      "arn:aws:secretsmanager:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:secret:${local.name_prefix}-canary-dev-credentials-*",
+      "arn:aws:secretsmanager:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:secret:${local.name_prefix}-canary-*-credentials-*",
     ]
   }
 
@@ -91,7 +95,7 @@ data "aws_iam_policy_document" "canary" {
     ]
 
     resources = [
-      "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter/${local.name_prefix}-service-version"
+      "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter/${local.name_prefix}-expected-service-version-*"
     ]
   }
 }

@@ -47,8 +47,8 @@ def get_version_from_ssm(parameter_name):
 
 
 def visit_frontend_and_login(browser, frontend_url, username, password):
-    browser.get(frontend_url)
     logger.debug(f"Attempting login to {frontend_url}")
+    browser.get(frontend_url)
 
     take_screenshot(browser, "frontend_cagnito_login")
 
@@ -85,7 +85,8 @@ def check_api_version(browser, api_url, expected_version):
         logger.info("Version element found on API landing page.")
 
         logger.debug("Verify the version")
-        deployed_version = re.search(r"V([\d\.]+-[\da-f]+)", version_element.text).group(1)
+        # Updated regex to match both '0.4.0-abcdef' and '0.4.0'
+        deployed_version = re.search(r"V([\d\.]+(?:-[\da-f]+)?)", version_element.text).group(1)
         if deployed_version != expected_version:
             raise Exception(
                 f"Version mismatch on API landing page: expected {expected_version}, but found {deployed_version}")
@@ -95,6 +96,10 @@ def check_api_version(browser, api_url, expected_version):
     except TimeoutException as e:
         logger.error(f"Timeout while trying to find the version element on the API landing page: {e}")
         take_screenshot(browser, "api_landing_page_error")
+        raise
+    except AttributeError:
+        logger.error("No version information found in the expected format.")
+        take_screenshot(browser, "api_landing_page_version_check_failed")
         raise
     except Exception as e:
         logger.error(f"Failed to verify version on API landing page: {e}")
@@ -106,7 +111,7 @@ def check_swagger_pages(browser, services, api_url, expected_version):
     logger.info("Start checking Swagger pages for each service.")
 
     for service in services:
-        swagger_url = f"{api_url}{service}/swagger/index.html"
+        swagger_url = f"{api_url}/{service}/swagger/index.html"
         try:
             logger.debug(f"Attempting to visit Swagger page for {service}: {swagger_url}")
             browser.get(swagger_url)
@@ -142,18 +147,22 @@ def check_swagger_pages(browser, services, api_url, expected_version):
 
 def main():
     logger.debug("Fetch URL and secret name from environment variables")
-    api_url = os.getenv("API_LANDING_PAGE_URL")
+    api_url = os.getenv("API_URL")
     frontend_url = api_url.replace("api.", "")
     secret_name = os.getenv("AUTH_SECRET_NAME")
-    version_parameter = "cdp-sirsi-service-version"
+    version_parameter = os.getenv("VERSION_PARAM_NAME")
 
     if not api_url:
-        logger.error("Environment variable 'API_LANDING_PAGE_URL' is not set. Exiting Canary test.")
-        raise Exception("Environment variable 'API_LANDING_PAGE_URL' is not set.")
+        logger.error("API_URL environment variable is not set. Exiting Canary test.")
+        raise Exception("API_URL environment variable is not set.")
 
     if not secret_name:
         logger.error("AUTH_SECRET_NAME environment variable is not set. Exiting Canary test.")
         raise Exception("AUTH_SECRET_NAME environment variable is not set.")
+
+    if not version_parameter:
+        logger.error("VERSION_PARAM_NAME environment variable is not set. Exiting Canary test.")
+        raise Exception("VERSION_PARAM_NAME environment variable is not set.")
 
     logger.debug("Retrieve credentials from Secrets Manager")
     try:
@@ -195,7 +204,7 @@ def main():
 
 def handler(event, context):
     log_level = os.getenv("WEB_DRIVER_LOG_LEVEL", "WARNING")
-    logger.info("Running Canary to validate frontend and API landing page. v 0.1.4")
+    logger.info("Running Canary to validate frontend and API landing page. v 0.1.7")
     logger.info(f"Current Log Level is '{logger.get_level()}'")
     logger.info(f"Setting Log Level to '{log_level}'")
     logger.set_level(log_level)

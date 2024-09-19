@@ -43,7 +43,7 @@ variable "monitoring_interval" {
   default     = 0
 
   validation {
-    condition = contains([0, 1, 5, 10, 15, 30, 60], var.monitoring_interval)
+    condition     = contains([0, 1, 5, 10, 15, 30, 60], var.monitoring_interval)
     error_message = "Invalid value for monitoring_interval. Valid values are: 0, 1, 5, 10, 15, 30, 60 seconds."
   }
 }

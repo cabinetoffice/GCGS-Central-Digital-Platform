@@ -3,6 +3,16 @@ variable "alb_sg_id" {
   type        = string
 }
 
+variable "canary_configs" {
+  description = "Configuration for each environment's canary, including the name and pinned service version."
+  type = map(object({
+    api_url                = string
+    name                   = string
+    pinned_service_version = string
+    schedule_expression    = string
+  }))
+}
+
 variable "canary_sg_id" {
   description = "The security group identifier for the Canary"
   type        = string
@@ -21,19 +31,8 @@ variable "datapoints_to_alarm" {
 }
 
 variable "environment" {
-  description = "The environment in which to deploy (e.g. prod)"
+  description = "The environment we are provisioning"
   type        = string
-}
-
-variable "environment_variables" {
-  description = "Map of environment variables to pass to the Canary"
-  type        = map(string)
-  default     = {
-    API_LANDING_PAGE_URL = "https://api.dev.supplier.information.findatender.codatt.net/"
-    AUTH_SECRET_NAME     = "cdp-sirsi-canary-dev-credentials"
-    EXPECTED_VERSION     = "0.4.0-a5b1c239"
-    WEB_DRIVER_LOG_LEVEL = "WARNING"
-  }
 }
 
 variable "evaluation_periods" {
@@ -57,7 +56,7 @@ variable "memory_in_mb" {
 variable "period" {
   description = "Length of interval in seconds"
   type        = number
-  default     = 300
+  default     = 60 * 30
 }
 
 variable "private_subnet_ids" {
@@ -108,4 +107,3 @@ variable "vpce_secretsmanager_sg_id" {
   description = "Security group ID of the Secrets Manager VPC endpoint"
   type        = string
 }
-
