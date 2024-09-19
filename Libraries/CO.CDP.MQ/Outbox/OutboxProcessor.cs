@@ -1,6 +1,11 @@
 namespace CO.CDP.MQ.Outbox;
 
-public class OutboxProcessor(IPublisher publisher, IOutboxMessageRepository outbox)
+public interface IOutboxProcessor
+{
+    Task ExecuteAsync(int count);
+}
+
+public class OutboxProcessor(IPublisher publisher, IOutboxMessageRepository outbox) : IOutboxProcessor
 {
     public async Task ExecuteAsync(int count)
     {
