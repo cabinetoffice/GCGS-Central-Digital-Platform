@@ -8,7 +8,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CO.CDP.OrganisationApp.Pages.Supplier;
 
-[Authorize(Policy = OrgScopeRequirement.Editor)]
+[Authorize(Policy = OrgScopeRequirement.Viewer)]
 public class ConnectedPersonSummaryModel(
     IOrganisationClient organisationClient,
     ISession session) : PageModel
