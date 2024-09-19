@@ -10,6 +10,12 @@ public class OrganisationApprovalModel(
 {
     public OrganisationWebApiClient.Organisation? OrganisationDetails { get; set; }
 
+    [BindProperty(SupportsGet = true)]
+    public Boolean? Approval { get; init; }
+
+    [BindProperty(SupportsGet = true)]
+    public string? Comments { get; init; }
+
     public async Task<IActionResult> OnGet(Guid organisationId)
     {
         try
@@ -21,6 +27,18 @@ public class OrganisationApprovalModel(
         {
             return Redirect("/page-not-found");
         }
+    }
+
+    public async Task<IActionResult> OnPost(Guid organisationId)
+    {
+        await organisationClient.ReviewOrganisationAsync(new ReviewOrganisation(
+            Approval ?? false,
+            UserDetails.PersonId ?? Guid.Empty,
+            Comments,
+            organisationId
+            ));
+
+        return RedirectToPage("Organisations");
     }
 
     // TODO: Create post
