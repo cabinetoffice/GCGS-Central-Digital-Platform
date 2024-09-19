@@ -13,7 +13,7 @@ public class EventDeserializerTest
         {
             OrganisationId = Guid.Parse("58efbd0f-37bd-44e0-baa4-bcae42ab0567"),
             Id = "1234453",
-            Scheme = "CDP-PPON",
+            Scheme = "GB-PPON",
             LegalName = "Acme Ltd"
         };
         var serialized = JsonSerializer.Serialize(pponGenerated);

@@ -96,7 +96,7 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
         result.Should().BeTrue();
         _organisationRepositoryMock.Verify(repo => repo.Save(organisation!), Times.Once);
 
-        organisation.Identifiers.First(i => i.Scheme == "CDP-PPON").Primary.Should().BeFalse();
+        organisation.Identifiers.First(i => i.Scheme == "GB-PPON").Primary.Should().BeFalse();
         organisation.Identifiers.First(i => i.Scheme == "VAT").Primary.Should().BeTrue();
     }
 
@@ -282,7 +282,7 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
         _organisationRepositoryMock.Verify(repo => repo.Save(organisation!), Times.Once);
 
         organisation.Identifiers.FirstOrDefault(i =>
-            i.Scheme == "CDP-PPON" &&
+            i.Scheme == "GB-PPON" &&
             i.IdentifierId == "c0777aeb968b4113a27d94e55b10c1b4" &&
             i.Primary)
             .Should().NotBeNull();
@@ -537,7 +537,7 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
             Identifiers = [
                 new Persistence.Organisation.Identifier
                 {
-                    Scheme = "CDP-PPON",
+                    Scheme = "GB-PPON",
                     LegalName = "Acme Ltd",
                     Primary = true,
                     IdentifierId = "c0777aeb968b4113a27d94e55b10c1b4"
@@ -593,7 +593,7 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
                     },
                 new Persistence.Organisation.Identifier
                 {
-                    Scheme = "CDP-PPON",
+                    Scheme = "GB-PPON",
                     LegalName = "Acme Ltd",
                     Primary = false,
                     IdentifierId = "c0777aeb968b4113a27d94e55b10c1b4"
