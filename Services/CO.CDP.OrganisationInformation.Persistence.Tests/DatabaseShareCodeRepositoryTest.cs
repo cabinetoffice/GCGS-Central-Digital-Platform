@@ -267,6 +267,7 @@ public class DatabaseShareCodeRepositoryTest(PostgreSqlFixture postgreSql) : ICl
             Section = section,
             Type = FormQuestionType.YesOrNo,
             IsRequired = true,
+            Name = "_Section01",
             Title = "Yes or no?",
             Description = "Please answer.",
             NextQuestion = null,

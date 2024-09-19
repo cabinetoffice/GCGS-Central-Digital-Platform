@@ -104,6 +104,7 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
         {
             Guid = Guid.NewGuid(),
             Section = section,
+            Name = "_Section01",
             Title = "Question 1",
             Caption = "Question Caption",
             Description = "Question 1 desc",
@@ -118,6 +119,7 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
         {
             Guid = Guid.NewGuid(),
             Section = section,
+            Name = "_Section02",
             Title = "Question 2",
             Caption = "Question Caption",
             Description = "Question 2 desc",
@@ -385,6 +387,7 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
         {
             Guid = questionId,
             Section = section,
+            Name = "_Section01",
             Title = "Question 1",
             Caption = "Question Caption",
             Description = "Question 1 desc",
@@ -491,6 +494,7 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
         {
             Guid = questionId,
             Section = section,
+            Name = "_Section01",
             Title = "Question with Simple Options",
             Caption = "Question Caption",
             Description = "This is a test question with simple options.",

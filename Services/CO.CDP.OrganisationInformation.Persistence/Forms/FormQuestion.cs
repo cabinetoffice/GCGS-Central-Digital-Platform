@@ -11,6 +11,7 @@ public class FormQuestion : IEntityDate
     public required FormSection Section { get; set; }
     public required FormQuestionType Type { get; set; }
     public required bool IsRequired { get; set; } = true;
+    public required string Name { get; set; }
     public required string Title { get; set; }
     public required string? Description { get; set; } = null;
     public required string? Caption { get; set; } = null;
