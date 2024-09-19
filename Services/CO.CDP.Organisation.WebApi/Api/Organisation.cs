@@ -1,3 +1,4 @@
+using CO.CDP.Authentication;
 using CO.CDP.Authentication.Authorization;
 using CO.CDP.Functional;
 using CO.CDP.Organisation.WebApi.Model;
@@ -39,7 +40,9 @@ public static class EndpointExtensions
                 return operation;
             });
 
-        app.MapPost("/organisations", async (RegisterOrganisation command, IUseCase<RegisterOrganisation, Model.Organisation> useCase) =>
+        app.MapPost("/organisations",
+            [OrganisationAuthorize([AuthenticationChannel.OneLogin])]
+        async (RegisterOrganisation command, IUseCase<RegisterOrganisation, Model.Organisation> useCase) =>
               await useCase.Execute(command)
               .AndThen(organisation =>
                   organisation != null
@@ -65,7 +68,11 @@ public static class EndpointExtensions
         });
 
         app.MapGet("/organisations/{organisationId}",
-            async (Guid organisationId, IUseCase<Guid, Model.Organisation?> useCase) =>
+            [OrganisationAuthorize(
+                [AuthenticationChannel.OneLogin, AuthenticationChannel.ServiceKey],
+                [Constants.OrganisationPersonScope.Admin, Constants.OrganisationPersonScope.Editor, Constants.OrganisationPersonScope.Viewer],
+                OrganisationIdLocation.Path)]
+        async (Guid organisationId, IUseCase<Guid, Model.Organisation?> useCase) =>
                await useCase.Execute(organisationId)
                    .AndThen(organisation => organisation != null ? Results.Ok(organisation) : Results.NotFound()))
             .Produces<Model.Organisation>(StatusCodes.Status200OK, "application/json")
@@ -85,7 +92,11 @@ public static class EndpointExtensions
            });
 
         app.MapPatch("/organisations/{organisationId}",
-            async (Guid organisationId, UpdateOrganisation updateOrganisation,
+            [OrganisationAuthorize(
+                [AuthenticationChannel.OneLogin],
+                [Constants.OrganisationPersonScope.Admin, Constants.OrganisationPersonScope.Editor],
+                OrganisationIdLocation.Path)]
+        async (Guid organisationId, UpdateOrganisation updateOrganisation,
                 IUseCase<(Guid, UpdateOrganisation), bool> useCase) =>
                     await useCase.Execute((organisationId, updateOrganisation))
                         .AndThen(_ => Results.NoContent()))

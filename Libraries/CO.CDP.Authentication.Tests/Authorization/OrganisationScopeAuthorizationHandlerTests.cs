@@ -148,7 +148,9 @@ public class OrganisationScopeAuthorizationHandlerTests
     private static AuthorizationHandlerContext CreateAuthorizationHandlerContext(string userUrn, string[] scopes, OrganisationIdLocation orgIdLoc)
     {
         var requirement = new OrganisationScopeAuthorizationRequirement(scopes, orgIdLoc);
-        var claimsPrincipal = new ClaimsPrincipal(new ClaimsIdentity([new Claim(ClaimType.Subject, userUrn)]));
+        var claimsPrincipal = new ClaimsPrincipal(new ClaimsIdentity(
+            [new Claim(ClaimType.Channel, Channel.OneLogin),
+            new Claim(ClaimType.Subject, userUrn)]));
         return new AuthorizationHandlerContext([requirement], claimsPrincipal, new object());
     }
 }

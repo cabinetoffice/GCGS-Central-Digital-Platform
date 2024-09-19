@@ -9,6 +9,8 @@ using Microsoft.Extensions.Hosting;
 using Moq;
 using System.Net;
 using System.Net.Http.Json;
+using System.Security.Claims;
+using static CO.CDP.Authentication.Constants;
 using static System.Net.HttpStatusCode;
 
 namespace CO.CDP.Organisation.WebApi.Tests.Api;
@@ -17,6 +19,7 @@ public class OrganisationEndpointsTests
     private readonly HttpClient _httpClient;
     private readonly Mock<IUseCase<RegisterOrganisation, Model.Organisation>> _registerOrganisationUseCase = new();
     private readonly Mock<IUseCase<string, IEnumerable<Model.Organisation>>> _getOrganisationsUseCase = new();
+    private readonly Mock<IUseCase<Guid, Model.Organisation>> _getOrganisationUseCase = new();
     private readonly Mock<IUseCase<(Guid, UpdateOrganisation), bool>> _updatesOrganisationUseCase = new();
 
     public OrganisationEndpointsTests()
@@ -27,6 +30,7 @@ public class OrganisationEndpointsTests
             {
                 services.AddScoped(_ => _registerOrganisationUseCase.Object);
                 services.AddScoped(_ => _getOrganisationsUseCase.Object);
+                services.AddScoped(_ => _getOrganisationUseCase.Object);
                 services.AddScoped(_ => _updatesOrganisationUseCase.Object);
             });
         });
@@ -37,19 +41,7 @@ public class OrganisationEndpointsTests
     public async Task ItRegistersNewOrganisation()
     {
         var command = GivenRegisterOrganisationCommand();
-        var organisation = new Model.Organisation
-        {
-            Id = Guid.NewGuid(),
-            Name = "TheOrganisation",
-            Identifier = command.Identifier.AsView(),
-            AdditionalIdentifiers = command.AdditionalIdentifiers.AsView(),
-            Addresses = command.Addresses.AsView(),
-            ContactPoint = command.ContactPoint.AsView(),
-            Roles = command.Roles
-        };
-
-        _registerOrganisationUseCase.Setup(useCase => useCase.Execute(It.IsAny<RegisterOrganisation>()))
-                                    .ReturnsAsync(organisation);
+        var organisation = SetupRegisterOrganisationUseCaseMock(command);
 
         var response = await _httpClient.PostAsJsonAsync("/organisations", command);
 
@@ -126,6 +118,94 @@ public class OrganisationEndpointsTests
         response.StatusCode.Should().Be(UnprocessableEntity);
     }
 
+
+    [Theory]
+    [InlineData(Created, Channel.OneLogin)]
+    [InlineData(Forbidden, Channel.ServiceKey)]
+    [InlineData(Forbidden, Channel.OrganisationKey)]
+    [InlineData(Forbidden, "unknown_channel")]
+    public async Task CreateOrganisation_Authorization_ReturnsExpectedStatusCode(HttpStatusCode expectedStatusCode, string channel)
+    {
+        var command = GivenRegisterOrganisationCommand();
+        SetupRegisterOrganisationUseCaseMock(command);
+        var factory = new TestAuthorizationWebApplicationFactory<Program>(
+            [new Claim(ClaimType.Channel, channel)],
+            serviceCollection: services => services.AddScoped(_ => _registerOrganisationUseCase.Object));
+        var httpClient = factory.CreateClient();
+
+        var response = await httpClient.PostAsJsonAsync("/organisations", command);
+
+        response.StatusCode.Should().Be(expectedStatusCode);
+    }
+
+    [Theory]
+    [InlineData(OK, Channel.OneLogin, OrganisationPersonScope.Admin)]
+    [InlineData(OK, Channel.OneLogin, OrganisationPersonScope.Editor)]
+    [InlineData(OK, Channel.OneLogin, OrganisationPersonScope.Viewer)]
+    [InlineData(OK, Channel.ServiceKey)]
+    [InlineData(Forbidden, Channel.OrganisationKey)]
+    [InlineData(Forbidden, "unknown_channel")]
+    [InlineData(Forbidden, Channel.OneLogin, OrganisationPersonScope.Responder)]
+    public async Task GetOrganisation_Authorization_ReturnsExpectedStatusCode(HttpStatusCode expectedStatusCode, string channel, string? scope = null)
+    {
+        var organisationId = Guid.NewGuid();
+
+        _getOrganisationUseCase.Setup(useCase => useCase.Execute(organisationId))
+                                    .ReturnsAsync(GivenOrganisation(organisationId));
+
+        var factory = new TestAuthorizationWebApplicationFactory<Program>(
+            [new Claim(ClaimType.Channel, channel)],
+            organisationId,
+            scope != null ? [scope] : [],
+            services => services.AddScoped(_ => _getOrganisationUseCase.Object));
+
+        var response = await factory.CreateClient().GetAsync($"/organisations/{organisationId}");
+
+        response.StatusCode.Should().Be(expectedStatusCode);
+    }
+
+    [Theory]
+    [InlineData(NoContent, Channel.OneLogin, OrganisationPersonScope.Admin)]
+    [InlineData(NoContent, Channel.OneLogin, OrganisationPersonScope.Editor)]
+    [InlineData(Forbidden, Channel.OneLogin, OrganisationPersonScope.Responder)]
+    [InlineData(Forbidden, Channel.OneLogin, OrganisationPersonScope.Viewer)]
+    [InlineData(Forbidden, Channel.ServiceKey)]
+    [InlineData(Forbidden, Channel.OrganisationKey)]
+    [InlineData(Forbidden, "unknown_channel")]
+    public async Task UpdateOrganisation_Authorization_ReturnsExpectedStatusCode(HttpStatusCode expectedStatusCode, string channel, string? scope = null)
+    {
+        var organisationId = Guid.NewGuid();
+        var updateOrganisation = new UpdateOrganisation { Type = OrganisationUpdateType.AdditionalIdentifiers, Organisation = new() };
+        var command = (organisationId, updateOrganisation);
+
+        _updatesOrganisationUseCase.Setup(uc => uc.Execute(command)).ReturnsAsync(true);
+
+        var factory = new TestAuthorizationWebApplicationFactory<Program>(
+            [new Claim(ClaimType.Channel, channel)],
+            organisationId,
+            scope != null ? [scope] : [],
+            services => services.AddScoped(_ => _updatesOrganisationUseCase.Object));
+
+        var response = await factory.CreateClient().PatchAsJsonAsync($"/organisations/{organisationId}", updateOrganisation);
+
+        response.StatusCode.Should().Be(expectedStatusCode);
+    }
+
+    public static Model.Organisation GivenOrganisation(Guid organisationId)
+    {
+        var command = GivenRegisterOrganisationCommand();
+        return new Model.Organisation
+        {
+            Id = organisationId,
+            Name = "TheOrganisation",
+            Identifier = command.Identifier.AsView(),
+            AdditionalIdentifiers = command.AdditionalIdentifiers.AsView(),
+            Addresses = command.Addresses.AsView(),
+            ContactPoint = command.ContactPoint.AsView(),
+            Roles = command.Roles
+        };
+    }
+
     private static RegisterOrganisation GivenRegisterOrganisationCommand()
     {
         return new RegisterOrganisation
@@ -166,5 +246,24 @@ public class OrganisationEndpointsTests
             },
             Roles = [PartyRole.Tenderer]
         };
+    }
+
+    private Model.Organisation SetupRegisterOrganisationUseCaseMock(RegisterOrganisation command)
+    {
+        var organisation = new Model.Organisation
+        {
+            Id = Guid.NewGuid(),
+            Name = "TheOrganisation",
+            Identifier = command.Identifier.AsView(),
+            AdditionalIdentifiers = command.AdditionalIdentifiers.AsView(),
+            Addresses = command.Addresses.AsView(),
+            ContactPoint = command.ContactPoint.AsView(),
+            Roles = command.Roles
+        };
+
+        _registerOrganisationUseCase.Setup(useCase => useCase.Execute(It.IsAny<RegisterOrganisation>()))
+                                    .ReturnsAsync(organisation);
+
+        return organisation;
     }
 }

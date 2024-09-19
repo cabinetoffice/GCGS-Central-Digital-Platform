@@ -17,4 +17,12 @@ public static class Constants
         public const string OrganisationKey = "organisation-key";
         public const string ServiceKey = "service-key";
     }
+
+    public static class OrganisationPersonScope
+    {
+        public const string Admin = "ADMIN";
+        public const string Responder = "RESPONDER";
+        public const string Editor = "EDITOR";
+        public const string Viewer = "VIEWER";
+    }
 }

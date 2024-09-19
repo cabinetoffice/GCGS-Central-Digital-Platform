@@ -19,6 +19,13 @@ public class OrganisationScopeAuthorizationHandler(
 
     protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, OrganisationScopeAuthorizationRequirement requirement)
     {
+        var channel = context.User.FindFirstValue(ClaimType.Channel);
+        if (channel != Channel.OneLogin)
+        {
+            context.Succeed(requirement);
+            return;
+        }
+
         if (requirement.Scopes.Length == 0 || requirement.OrganisationIdLocation == OrganisationIdLocation.None)
         {
             return;
