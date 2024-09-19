@@ -10,7 +10,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-			migrationBuilder.Sql("UPDATE identifiers SET scheme = 'GB-PPON' WHERE scheme = 'CDP-PPON';");
+            migrationBuilder.Sql("UPDATE identifiers SET scheme = 'GB-PPON' WHERE scheme = 'CDP-PPON';");
         }
 
         /// <inheritdoc />
