@@ -8,10 +8,10 @@ public class OrganisationsModel(
     ISession session) : LoggedInUserAwareModel(session)
 {
     [BindProperty]
-    public string Title { get; set; }
+    public string? Title { get; set; }
 
     [BindProperty]
-    public string Type { get; set; }
+    public string? Type { get; set; }
 
     [BindProperty]
     public IList<ApprovableOrganisation> Organisations { get; set; } = [];
