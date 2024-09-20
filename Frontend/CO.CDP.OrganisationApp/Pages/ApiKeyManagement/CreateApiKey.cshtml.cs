@@ -1,6 +1,7 @@
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.WebApiClients;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
@@ -8,6 +9,7 @@ using OrganisationWebApiClient = CO.CDP.Organisation.WebApiClient;
 
 namespace CO.CDP.OrganisationApp.Pages.ApiKeyManagement;
 
+[Authorize(Policy = OrgScopeRequirement.Editor)]
 public class CreateApiKeyModel(IOrganisationClient organisationClient) : PageModel
 {
     [BindProperty(SupportsGet = true)]

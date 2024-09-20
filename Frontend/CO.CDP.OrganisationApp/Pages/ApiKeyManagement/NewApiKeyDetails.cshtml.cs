@@ -1,9 +1,12 @@
+using CO.CDP.OrganisationApp.Constants;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using static CO.CDP.OrganisationApp.Pages.ApiKeyManagement.CreateApiKeyModel;
 
 namespace CO.CDP.OrganisationApp.Pages.ApiKeyManagement;
 
+[Authorize(Policy = OrgScopeRequirement.Editor)]
 public class NewApiKeyDetailsModel() : PageModel
 {
     [BindProperty(SupportsGet = true)]
