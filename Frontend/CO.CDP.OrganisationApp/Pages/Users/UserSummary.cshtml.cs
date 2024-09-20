@@ -17,7 +17,7 @@ public class UserSummaryModel(
 
     public Guid? SignedInPersonId { get; set; }
 
-    public ICollection<Organisation.WebApiClient.Person> Persons { get; set; } = [];
+    public ICollection<CO.CDP.Organisation.WebApiClient.Person> Persons { get; set; } = [];
 
     public ICollection<PersonInviteModel> PersonInvites { get; set; } = [];
 

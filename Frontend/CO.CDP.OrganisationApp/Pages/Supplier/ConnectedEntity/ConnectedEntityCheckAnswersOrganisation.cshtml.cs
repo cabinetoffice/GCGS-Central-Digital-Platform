@@ -155,12 +155,12 @@ public class ConnectedEntityCheckAnswersOrganisationModel(
 
         if (state.RegisteredAddress?.AddressLine1 != null)
         {
-            addresses.Add(AddAddress(state.RegisteredAddress, Organisation.WebApiClient.AddressType.Registered));
+            addresses.Add(AddAddress(state.RegisteredAddress, CO.CDP.Organisation.WebApiClient.AddressType.Registered));
         }
 
         if (state.PostalAddress?.AddressLine1 != null)
         {
-            addresses.Add(AddAddress(state.PostalAddress, Organisation.WebApiClient.AddressType.Postal));
+            addresses.Add(AddAddress(state.PostalAddress, CO.CDP.Organisation.WebApiClient.AddressType.Postal));
         }
 
         var registerConnectedEntity = new RegisterConnectedEntity
@@ -201,12 +201,12 @@ public class ConnectedEntityCheckAnswersOrganisationModel(
 
         if (state.RegisteredAddress != null)
         {
-            addresses.Add(AddAddress(state.RegisteredAddress, Organisation.WebApiClient.AddressType.Registered));
+            addresses.Add(AddAddress(state.RegisteredAddress, CO.CDP.Organisation.WebApiClient.AddressType.Registered));
         }
 
         if (state.PostalAddress != null)
         {
-            addresses.Add(AddAddress(state.PostalAddress, Organisation.WebApiClient.AddressType.Postal));
+            addresses.Add(AddAddress(state.PostalAddress, CO.CDP.Organisation.WebApiClient.AddressType.Postal));
         }
 
         var updateConnectedEntity = new UpdateConnectedEntity
@@ -228,7 +228,7 @@ public class ConnectedEntityCheckAnswersOrganisationModel(
         return updateConnectedEntity;
     }
 
-    private Address AddAddress(ConnectedEntityState.Address addressDetails, Organisation.WebApiClient.AddressType addressType)
+    private Address AddAddress(ConnectedEntityState.Address addressDetails, CO.CDP.Organisation.WebApiClient.AddressType addressType)
     {
         return new Address(
             countryName: addressDetails.CountryName,

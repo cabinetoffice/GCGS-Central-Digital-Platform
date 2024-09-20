@@ -38,11 +38,11 @@ public class UserSummaryModelTests
         var organisationId = Guid.NewGuid();
         _pageModel.Id = organisationId;
 
-        var person = new Organisation.WebApiClient.Person("john@johnson.com", "John", _userGuid, "Johnson", ["ADMIN"]);
+        var person = new CO.CDP.Organisation.WebApiClient.Person("john@johnson.com", "John", _userGuid, "Johnson", ["ADMIN"]);
 
         _mockOrganisationClient
             .Setup(client => client.GetOrganisationPersonsAsync(organisationId))
-            .ReturnsAsync(new List<Organisation.WebApiClient.Person>
+            .ReturnsAsync(new List<CO.CDP.Organisation.WebApiClient.Person>
             {
                 person
             });
@@ -81,11 +81,11 @@ public class UserSummaryModelTests
         _pageModel.Id = organisationId;
         _pageModel.ModelState.AddModelError("HasPerson", "Required");
 
-        var person = new Organisation.WebApiClient.Person("john@johnson.com", "Johnny", _userGuid, "NoAdminJohnson", ["ADMIN"]);
+        var person = new CO.CDP.Organisation.WebApiClient.Person("john@johnson.com", "Johnny", _userGuid, "NoAdminJohnson", ["ADMIN"]);
 
         _mockOrganisationClient
             .Setup(client => client.GetOrganisationPersonsAsync(organisationId))
-            .ReturnsAsync(new List<Organisation.WebApiClient.Person>
+            .ReturnsAsync(new List<CO.CDP.Organisation.WebApiClient.Person>
             {
                 person
             });

@@ -134,7 +134,7 @@ public class SupplierWebsiteModelQuestionTest
             legalForm: null,
             qualifications: null);
 
-    private static Organisation.WebApiClient.Organisation OrganisationClientModel(Guid id) =>
+    private static CO.CDP.Organisation.WebApiClient.Organisation OrganisationClientModel(Guid id) =>
         new(
             additionalIdentifiers: [new Identifier(id: "FakeId", legalName: "FakeOrg", scheme: "VAT", uri: null)],
             addresses: null,

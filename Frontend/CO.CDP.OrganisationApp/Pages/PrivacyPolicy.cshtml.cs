@@ -15,7 +15,7 @@ public class PrivacyPolicyModel(ISession session) : LoggedInUserAwareModel(sessi
     {
         if (UserDetails.PersonId.HasValue)
         {
-            return RedirectToPage("OrganisationSelection");
+            return RedirectToPage("Organisation/OrganisationSelection");
         }
 
         return Page();

@@ -23,6 +23,7 @@ public class Organisation : IEntityDate
     public DateTimeOffset UpdatedOn { get; set; }
     public DateTimeOffset? ApprovedOn { get; set; }
     public Person? ApprovedBy { get; set; }
+    public int? ApprovedById { get; set; }
     public string? ApprovedComment { get; set; }
 
     [Owned]

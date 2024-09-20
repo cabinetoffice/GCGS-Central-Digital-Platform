@@ -10,12 +10,12 @@ public class LegalFormSelectOrganisationModelTests
 {
     private readonly Mock<ITempDataService> _mockTempDataService;
     private readonly LegalFormSelectOrganisationModel _model;
-    private readonly Mock<Organisation.WebApiClient.IOrganisationClient> _mockOrganisationClient;
+    private readonly Mock<CO.CDP.Organisation.WebApiClient.IOrganisationClient> _mockOrganisationClient;
 
     public LegalFormSelectOrganisationModelTests()
     {
         _mockTempDataService = new Mock<ITempDataService>();
-        _mockOrganisationClient = new Mock<Organisation.WebApiClient.IOrganisationClient>();
+        _mockOrganisationClient = new Mock<CO.CDP.Organisation.WebApiClient.IOrganisationClient>();
         _model = new LegalFormSelectOrganisationModel(_mockTempDataService.Object, _mockOrganisationClient.Object);
     }
 
@@ -59,7 +59,7 @@ public class LegalFormSelectOrganisationModelTests
     {
         var id = Guid.NewGuid();
         _mockOrganisationClient.Setup(o => o.GetOrganisationAsync(It.IsAny<Guid>()))
-             .ThrowsAsync(new Organisation.WebApiClient.ApiException("Unexpected error", 404, "", default, null));
+             .ThrowsAsync(new CO.CDP.Organisation.WebApiClient.ApiException("Unexpected error", 404, "", default, null));
 
         var result = await _model.OnGet(id);
 
@@ -106,8 +106,8 @@ public class LegalFormSelectOrganisationModelTests
         orgLegalForm.Should().ContainKey("Other").WhoseValue.Should().Be("Other");
     }
 
-    private static Organisation.WebApiClient.Organisation GivenOrganisationClientModel(Guid? id)
+    private static CO.CDP.Organisation.WebApiClient.Organisation GivenOrganisationClientModel(Guid? id)
     {
-        return new Organisation.WebApiClient.Organisation(null, null, null, id!.Value, null, "Test Org", []);
+        return new CO.CDP.Organisation.WebApiClient.Organisation(null, null, null, id!.Value, null, "Test Org", []);
     }
 }
