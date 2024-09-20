@@ -24,7 +24,7 @@ public class OutboxProcessorBackgroundServiceTest
                 BatchSize = 2
             });
         await backgroundService.StartAsync(CancellationToken.None);
-        await Task.Delay(30);
+        await Task.Delay(TimeSpan.FromMilliseconds(100));
         await backgroundService.StopAsync(CancellationToken.None);
 
         _outboxProcessor.Verify(d => d.ExecuteAsync(2), Times.Once);
