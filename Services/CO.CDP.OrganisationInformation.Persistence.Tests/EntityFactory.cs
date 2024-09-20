@@ -71,6 +71,23 @@ public static class EntityFactory
         return person;
     }
 
+    public static PersonInvite GivenPersonInvite(Guid guid, string email = "invite@example.com", Organisation? organisation = null, Tenant? tenant = null)
+    {
+        return new PersonInvite
+        {
+            Guid = guid,
+            FirstName = "John",
+            LastName = "Doe",
+            Email = email,
+            Organisation = organisation ?? GivenOrganisation(),
+            Person = null,
+            Scopes = new List<string> { "scope1", "scope2" },
+            InviteSentOn = DateTimeOffset.UtcNow,
+            CreatedOn = DateTimeOffset.UtcNow,
+            UpdatedOn = DateTimeOffset.UtcNow
+        };
+    }
+
     public static Organisation GivenOrganisation(
         Guid? guid = null,
         Tenant? tenant = null,
@@ -253,7 +270,7 @@ public static class EntityFactory
         var connectedOrganisation = new ConnectedEntity.ConnectedOrganisation
         {
             Id = 1,
-            Category = category,
+            Category = (ConnectedEntity.ConnectedOrganisationCategory)category,
             Name = name,
             OrganisationId = organisationId,
             CreatedOn = DateTimeOffset.UtcNow,
@@ -263,7 +280,7 @@ public static class EntityFactory
         return new ConnectedEntity
         {
             Guid = Guid.NewGuid(),
-            EntityType = ConnectedEntityType.Organisation,
+            EntityType = (ConnectedEntity.ConnectedEntityType)ConnectedEntityType.Organisation,
             Organisation = connectedOrganisation,
             SupplierOrganisation = supplierOrganisation,
             CreatedOn = DateTimeOffset.UtcNow,
@@ -283,7 +300,7 @@ public static class EntityFactory
             Id = 1,
             FirstName = firstName,
             LastName = lastName,
-            Category = category,
+            Category = (ConnectedEntity.ConnectedPersonCategory)category,
             CreatedOn = DateTimeOffset.UtcNow,
             UpdatedOn = DateTimeOffset.UtcNow
         };
@@ -291,7 +308,7 @@ public static class EntityFactory
         return new ConnectedEntity
         {
             Guid = Guid.NewGuid(),
-            EntityType = ConnectedEntityType.Individual,
+            EntityType = (ConnectedEntity.ConnectedEntityType)ConnectedEntityType.Individual,
             IndividualOrTrust = individualTrust,
             SupplierOrganisation = supplierOrganisation,
             CreatedOn = DateTimeOffset.UtcNow,

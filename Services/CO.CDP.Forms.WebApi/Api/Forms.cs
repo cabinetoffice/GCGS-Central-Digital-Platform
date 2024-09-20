@@ -60,9 +60,9 @@ public static class EndpointExtensions
             Guid formId, Guid sectionId, Guid answerSetId,
             [FromQuery(Name = "organisation-id")] Guid organisationId,
             [FromBody] UpdateFormSectionAnswers updateFormSectionAnswers,
-            IUseCase<(Guid formId, Guid sectionId, Guid answerSetId, Guid organisationId, List<FormAnswer> answers), bool> updateFormSectionAnswersUseCase) =>
+            IUseCase<(Guid formId, Guid sectionId, Guid answerSetId, Guid organisationId, UpdateFormSectionAnswers updateFormSectionAnswers), bool> updateFormSectionAnswersUseCase) =>
             {
-                var result = await updateFormSectionAnswersUseCase.Execute((formId, sectionId, answerSetId, organisationId, updateFormSectionAnswers.Answers ?? new List<FormAnswer>()));
+                var result = await updateFormSectionAnswersUseCase.Execute((formId, sectionId, answerSetId, organisationId, updateFormSectionAnswers));
                 return result ? Results.NoContent() : Results.Problem();
             })
             .Produces(StatusCodes.Status204NoContent)

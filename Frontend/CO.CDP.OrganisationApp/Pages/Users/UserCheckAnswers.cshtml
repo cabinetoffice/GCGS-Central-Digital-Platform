@@ -1,10 +1,12 @@
 @page "/organisation/{id}/users/check-answers"
+@using CO.CDP.OrganisationApp.Constants
 
 @model CO.CDP.OrganisationApp.Pages.Users.UserCheckAnswersModel
 
 @{
     var scopes = Model.PersonInviteStateData?.Scopes ?? new List<string>();
-    var scopesCsvString = string.Join(", ", scopes);
+    var filteredScopes = scopes.Where(scope => !string.Equals(scope, OrganisationPersonScopes.Responder));
+    var scopesCsvString = string.Join(", ", filteredScopes);
 }
 
 <a href="/organisation/@Model.Id/users/add-user" class="govuk-back-link">Back</a>

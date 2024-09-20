@@ -1,4 +1,4 @@
-using CO.CDP.Authentication.AuthorizationPolicy;
+using CO.CDP.Authentication.Authorization;
 using CO.CDP.OrganisationInformation.Persistence;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -14,7 +14,7 @@ namespace CO.CDP.Authentication;
 
 public static class Extensions
 {
-    private const string JwtBearerOrApiKeyScheme = "JwtBearer_Or_ApiKey";
+    public const string JwtBearerOrApiKeyScheme = "JwtBearer_Or_ApiKey";
 
     public static IServiceCollection AddJwtBearerAndApiKeyAuthentication(
         this IServiceCollection services, IConfiguration configuration, IWebHostEnvironment webHostEnvironment)
@@ -71,35 +71,15 @@ public static class Extensions
         return services;
     }
 
-    public static AuthorizationBuilder AddOrganisationAuthorization(this IServiceCollection services)
+    public static IServiceCollection AddOrganisationAuthorization(this IServiceCollection services)
     {
-        return services
-            .AddAuthorizationBuilder()
-            .AddPolicy(Constants.ApiKeyPolicy, policy =>
-            {
-                policy.RequireAuthenticatedUser();
-                policy.RequireClaim("channel", ["service-key", "organisation-key"]);
-            })
-            .AddPolicy(Constants.OrganisationApiKeyPolicy, policy =>
-            {
-                policy.RequireAuthenticatedUser();
-                policy.RequireClaim("channel", "organisation-key");
-            })
-            .AddPolicy(Constants.ServiceApiKeyPolicy, policy =>
-            {
-                policy.RequireAuthenticatedUser();
-                policy.RequireClaim("channel", "service-key");
-            })
-            .AddPolicy(Constants.OneLoginPolicy, policy =>
-            {
-                policy.RequireAuthenticatedUser();
-                policy.RequireClaim("channel", "one-login");
-            })
-            .SetFallbackPolicy(
-                new AuthorizationPolicyBuilder()
-                    .AddAuthenticationSchemes(JwtBearerOrApiKeyScheme)
-                    .RequireAuthenticatedUser()
-                    .Build());
+        services.TryAddScoped<ITenantRepository, DatabaseTenantRepository>();
+        services.AddSingleton<IAuthorizationPolicyProvider, OrganisationAuthorizationPolicyProvider>();
+        services.AddSingleton<IAuthorizationHandler, ChannelAuthorizationHandler>();
+        services.AddScoped<IAuthorizationHandler, OrganisationScopeAuthorizationHandler>();
+        services.AddAuthorization();
+
+        return services;
     }
 
     public static AuthorizationBuilder AddEntityVerificationAuthorization(this IServiceCollection services)

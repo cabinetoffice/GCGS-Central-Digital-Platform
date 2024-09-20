@@ -277,6 +277,10 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                         .HasColumnType("boolean")
                         .HasColumnName("bool_value");
 
+                    b.Property<Guid?>("CreatedFrom")
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_from");
+
                     b.Property<DateTimeOffset>("CreatedOn")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
@@ -346,6 +350,10 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<Guid?>("CreatedFrom")
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_from");
+
                     b.Property<DateTimeOffset>("CreatedOn")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
@@ -357,6 +365,10 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                         .HasColumnType("boolean")
                         .HasDefaultValue(false)
                         .HasColumnName("deleted");
+
+                    b.Property<bool>("FurtherQuestionsExempted")
+                        .HasColumnType("boolean")
+                        .HasColumnName("further_questions_exempted");
 
                     b.Property<Guid>("Guid")
                         .HasColumnType("uuid")
@@ -536,6 +548,10 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                         .HasColumnName("id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<Guid?>("CreatedFrom")
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_from");
 
                     b.Property<DateTimeOffset>("CreatedOn")
                         .ValueGeneratedOnAdd()

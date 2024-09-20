@@ -3,9 +3,11 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.IdentityModel.Tokens;
 using CO.CDP.OrganisationApp.Constants;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CO.CDP.OrganisationApp.Pages.Users;
 
+[Authorize(Policy = OrgScopeRequirement.Admin)]
 public class AddUserModel(
     ISession session) : PageModel
 {
@@ -96,22 +98,27 @@ public class AddUserModel(
             scopes = [];
         }
 
-        if (scopes != null && scopes.Contains(PersonScopes.Admin)) scopes.Remove(PersonScopes.Admin);
-        if (scopes != null && scopes.Contains(PersonScopes.Editor)) scopes.Remove(PersonScopes.Editor);
-        if (scopes != null && scopes.Contains(PersonScopes.Viewer)) scopes.Remove(PersonScopes.Viewer);
+        if (scopes != null && scopes.Contains(OrganisationPersonScopes.Admin)) scopes.Remove(OrganisationPersonScopes.Admin);
+        if (scopes != null && scopes.Contains(OrganisationPersonScopes.Editor)) scopes.Remove(OrganisationPersonScopes.Editor);
+        if (scopes != null && scopes.Contains(OrganisationPersonScopes.Viewer)) scopes.Remove(OrganisationPersonScopes.Viewer);
 
         if (IsAdmin == true)
         {
-            scopes?.Add(PersonScopes.Admin);
+            scopes?.Add(OrganisationPersonScopes.Admin);
         }
 
-        if (Role == PersonScopes.Editor)
+        if (Role == OrganisationPersonScopes.Editor)
         {
-            scopes?.Add(PersonScopes.Editor);
+            scopes?.Add(OrganisationPersonScopes.Editor);
         }
         else
         {
-            scopes?.Add(PersonScopes.Viewer);
+            scopes?.Add(OrganisationPersonScopes.Viewer);
+        }
+
+        if (!scopes?.Contains(OrganisationPersonScopes.Responder) ?? false)
+        {
+            scopes?.Add(OrganisationPersonScopes.Responder);
         }
 
         state.Scopes = scopes;
@@ -127,18 +134,18 @@ public class AddUserModel(
 
         if (!state.Scopes.IsNullOrEmpty())
         {
-            if (state.Scopes != null && state.Scopes.Contains(PersonScopes.Admin))
+            if (state.Scopes != null && state.Scopes.Contains(OrganisationPersonScopes.Admin))
             {
                 IsAdmin = true;
             }
 
-            if (state.Scopes != null && state.Scopes.Contains(PersonScopes.Editor))
+            if (state.Scopes != null && state.Scopes.Contains(OrganisationPersonScopes.Editor))
             {
-                Role = PersonScopes.Editor;
+                Role = OrganisationPersonScopes.Editor;
             }
             else
             {
-                Role = PersonScopes.Viewer;
+                Role = OrganisationPersonScopes.Viewer;
             }
         }
     }

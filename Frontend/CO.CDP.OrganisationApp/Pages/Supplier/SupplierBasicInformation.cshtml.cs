@@ -1,10 +1,14 @@
 using CO.CDP.Organisation.WebApiClient;
+using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.WebApiClients;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using AddressType = CO.CDP.Organisation.WebApiClient.AddressType;
 
 namespace CO.CDP.OrganisationApp.Pages.Supplier;
 
+[Authorize(Policy = OrgScopeRequirement.Viewer)]
 public class SupplierBasicInformationModel(IOrganisationClient organisationClient) : PageModel
 {
     [BindProperty]
@@ -44,7 +48,7 @@ public class SupplierBasicInformationModel(IOrganisationClient organisationClien
         WebsiteAddress = composed.Organisation.ContactPoint.Url?.ToString();
         EmailAddress = composed.Organisation.ContactPoint.Email;
 
-        var vatIdentifier = composed.Organisation.AdditionalIdentifiers.FirstOrDefault(i => i.Scheme == "VAT");
+        var vatIdentifier = Helper.GetVatIdentifier(composed.Organisation);
         if (vatIdentifier != null) VatNumber = vatIdentifier.Id;
 
         var registeredAddrress = composed.Organisation.Addresses.FirstOrDefault(i => i.Type == AddressType.Registered);

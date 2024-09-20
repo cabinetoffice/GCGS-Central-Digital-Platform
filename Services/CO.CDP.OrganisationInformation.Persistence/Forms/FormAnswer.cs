@@ -15,11 +15,12 @@ public class SharedConsent : IEntityDate
     [ForeignKey(nameof(Form))]
     public required int FormId { get; set; }
     public required Form Form { get; init; }
-    public required ICollection<FormAnswerSet> AnswerSets { get; set; } = [];
+    public ICollection<FormAnswerSet> AnswerSets { get; init; } = [];
     public required SubmissionState SubmissionState { get; set; } = SubmissionState.Draft;
     public DateTimeOffset? SubmittedAt { get; set; }
     public required string FormVersionId { get; init; }
     public string? ShareCode { get; set; }
+    public Guid? CreatedFrom { get; init; }
     public DateTimeOffset CreatedOn { get; set; }
     public DateTimeOffset UpdatedOn { get; set; }
 }
@@ -39,7 +40,7 @@ public class FormAnswer : IEntityDate
     public required FormQuestion Question { get; set; }
     [ForeignKey(nameof(FormAnswerSet))]
     public required int FormAnswerSetId { get; set; }
-    public required FormAnswerSet FormAnswerSet { get; set; }
+    public FormAnswerSet? FormAnswerSet { get; set; }
     public bool? BoolValue { get; set; }
     public double? NumericValue { get; set; }
     public DateTime? DateValue { get; set; }
@@ -48,6 +49,7 @@ public class FormAnswer : IEntityDate
     public string? TextValue { get; set; }
     public string? OptionValue { get; set; }
     public FormAddress? AddressValue { get; set; }
+    public Guid? CreatedFrom { get; init; }
     public DateTimeOffset CreatedOn { get; set; }
     public DateTimeOffset UpdatedOn { get; set; }
 }
@@ -72,8 +74,10 @@ public class FormAnswerSet : IEntityDate
     [ForeignKey(nameof(Section))]
     public required int SectionId { get; set; }
     public required FormSection Section { get; init; }
-    public required ICollection<FormAnswer> Answers { get; set; } = [];
+    public ICollection<FormAnswer> Answers { get; set; } = [];
+    public required bool FurtherQuestionsExempted { get; set; }
     public bool Deleted { get; set; } = false;
+    public Guid? CreatedFrom { get; init; }
     public DateTimeOffset CreatedOn { get; set; }
     public DateTimeOffset UpdatedOn { get; set; }
 }

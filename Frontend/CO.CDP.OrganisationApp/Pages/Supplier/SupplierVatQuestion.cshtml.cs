@@ -1,13 +1,16 @@
 using CO.CDP.EntityVerificationClient;
 using CO.CDP.Mvc.Validation;
 using CO.CDP.Organisation.WebApiClient;
+using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.WebApiClients;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
 
 namespace CO.CDP.OrganisationApp.Pages.Supplier;
 
+[Authorize(Policy = OrgScopeRequirement.Editor)]
 public class SupplierVatQuestionModel(IOrganisationClient organisationClient,
     IPponClient pponClient, IHttpContextAccessor httpContextAccessor) : PageModel
 {
@@ -33,7 +36,8 @@ public class SupplierVatQuestionModel(IOrganisationClient organisationClient,
             if (composed.SupplierInfo.CompletedVat)
             {
                 HasVatNumber = false;
-                var vatIdentifier = composed.Organisation.AdditionalIdentifiers.FirstOrDefault(i => i.Scheme == VatSchemeName);
+                var vatIdentifier = Helper.GetVatIdentifier(composed.Organisation);
+
                 if (vatIdentifier != null)
                 {
                     HasVatNumber = !string.IsNullOrWhiteSpace(vatIdentifier.Id);
@@ -71,29 +75,45 @@ public class SupplierVatQuestionModel(IOrganisationClient organisationClient,
                                     id: HasVatNumber == true ? VatNumber : null,
                                     legalName: organisation.Name,
                                     scheme: VatSchemeName)];
+        var existingVatIdentifier = Helper.GetVatIdentifier(organisation);
 
         if (HasVatNumber.GetValueOrDefault())
         {
-            try
-            {
-                await LookupOrganisationAsync();
-            }
-            catch (Exception orgApiException) when (orgApiException is Organisation.WebApiClient.ApiException && ((Organisation.WebApiClient.ApiException)orgApiException).StatusCode == 404)
+            if ((existingVatIdentifier?.Id ?? string.Empty) != VatNumber)
             {
                 try
                 {
-                    await LookupEntityVerificationAsync();
+                    await LookupOrganisationAsync();
                 }
-                catch (Exception evApiException) when (evApiException is EntityVerificationClient.ApiException && ((EntityVerificationClient.ApiException)evApiException).StatusCode == 404)
+                catch (Exception orgApiException) when (orgApiException is Organisation.WebApiClient.ApiException && ((Organisation.WebApiClient.ApiException)orgApiException).StatusCode == 404)
                 {
-                    await organisationClient.UpdateOrganisationAdditionalIdentifiers(Id, identifiers);
-                    return RedirectToPage("SupplierBasicInformation", new { Id });
-                }
-                catch
-                {
-                    return RedirectToPage("/Registration/OrganisationRegistrationUnavailable", SetRoute());
+                    try
+                    {
+                        await LookupEntityVerificationAsync();
+                    }
+                    catch (Exception evApiException) when (evApiException is EntityVerificationClient.ApiException && ((EntityVerificationClient.ApiException)evApiException).StatusCode == 404)
+                    {
+                        await organisationClient.UpdateOrganisationAdditionalIdentifiers(Id, identifiers);
+                        return RedirectToPage("SupplierBasicInformation", new { Id });
+                    }
+                    catch
+                    {
+                        return RedirectToPage("/Registration/OrganisationRegistrationUnavailable", SetRoute());
+                    }
                 }
             }
+            else
+            {
+                return RedirectToPage("SupplierBasicInformation", new { Id });
+            }
+        }
+        else if (!string.IsNullOrEmpty(existingVatIdentifier?.Id))
+        {
+            await organisationClient.UpdateOrganisationRemoveIdentifier(
+                organisation.Id,
+                new OrganisationIdentifier(string.Empty, organisation.Name, VatSchemeName));
+
+            return RedirectToPage("SupplierBasicInformation", new { Id });
         }
         else
         {

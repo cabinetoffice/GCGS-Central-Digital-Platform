@@ -14,6 +14,12 @@ variable "pen_testing_allowed_ips" {
   default     = []
 }
 
+variable "pen_testing_external_user_arns" {
+  description = "List of external user ARNs to grant access for pen testing"
+  type        = list(string)
+  default     = []
+}
+
 variable "pen_testing_user_arns" {
   description = "List of user ARNs to grant access for pen testing"
   type        = list(string)

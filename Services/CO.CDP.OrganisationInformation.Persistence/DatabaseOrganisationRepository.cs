@@ -1,6 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using static CO.CDP.OrganisationInformation.Persistence.ConnectedEntity;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace CO.CDP.OrganisationInformation.Persistence;
 
@@ -17,14 +15,6 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
             .Include(p => p.Addresses)
             .ThenInclude(p => p.Address)
             .FirstOrDefaultAsync(t => t.Guid == organisationId);
-    }
-
-    public async Task<Organisation?> Find(int organisationId)
-    {
-        return await context.Organisations
-            .Include(p => p.Addresses)
-            .ThenInclude(p => p.Address)
-            .FirstOrDefaultAsync(t => t.Id == organisationId);
     }
 
     public async Task<Organisation?> FindByName(string name)
@@ -82,7 +72,7 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
     {
         var result = context.ConnectedEntities
             .Include(x => x.IndividualOrTrust)
-            .Where(x => x.IndividualOrTrust != null && x.EntityType == ConnectedEntityType.Individual)
+            .Where(x => x.IndividualOrTrust != null && x.EntityType == ConnectedEntity.ConnectedEntityType.Individual)
             .Where(x => x.SupplierOrganisation != null && x.SupplierOrganisation.Id == organisationId);
 
         return await result.ToListAsync();
@@ -92,7 +82,7 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
     {
         var result = context.ConnectedEntities
             .Include(x => x.Organisation)
-            .Where(x => x.Organisation != null && x.EntityType == ConnectedEntityType.Organisation)
+            .Where(x => x.Organisation != null && x.EntityType == ConnectedEntity.ConnectedEntityType.Organisation)
             .Where(x => x.SupplierOrganisation != null && x.SupplierOrganisation.Id == organisationId);
 
         return await result.ToListAsync();

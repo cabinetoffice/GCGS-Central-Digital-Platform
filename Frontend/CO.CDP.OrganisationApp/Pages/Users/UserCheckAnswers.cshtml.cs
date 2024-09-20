@@ -1,10 +1,13 @@
 using CO.CDP.Organisation.WebApiClient;
+using CO.CDP.OrganisationApp.Constants;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.IdentityModel.Tokens;
 
 namespace CO.CDP.OrganisationApp.Pages.Users;
 
+[Authorize(Policy = OrgScopeRequirement.Admin)]
 public class UserCheckAnswersModel(
     IOrganisationClient organisationClient,
     ISession session) : PageModel
@@ -50,14 +53,15 @@ public class UserCheckAnswersModel(
 
             await organisationClient.CreatePersonInviteAsync(Id, personInviteCommand);
 
-            session.Remove(PersonInviteState.TempDataKey);
-
             return RedirectToPage("UserSummary", new { Id });
         }
         catch
         {
-            session.Remove(PersonInviteState.TempDataKey);
             throw;
+        }
+        finally
+        {
+            session.Remove(PersonInviteState.TempDataKey);
         }
     }
 

@@ -5,7 +5,7 @@ data "aws_iam_policy_document" "assume_pen_testing" {
     actions = ["sts:AssumeRole"]
     principals {
       type        = "AWS"
-      identifiers = var.pen_testing_user_arns
+      identifiers = local.pen_testing_user_arns
     }
     condition {
       test     = "Bool"
@@ -14,11 +14,11 @@ data "aws_iam_policy_document" "assume_pen_testing" {
     }
 
     dynamic "condition" {
-      for_each = length(var.pen_testing_allowed_ips) > 0 ? [1] : []
+      for_each = length(local.pen_testing_allowed_ips) > 0 ? [1] : []
       content {
         test     = "IpAddress"
         variable = "aws:SourceIp"
-        values   = var.pen_testing_allowed_ips
+        values   = local.pen_testing_allowed_ips
       }
     }
   }
@@ -44,7 +44,7 @@ data "aws_iam_policy_document" "pen_testing_self_management" {
       "iam:ChangePassword",
       "iam:GetUser"
     ]
-    resources = var.pen_testing_user_arns
+    resources = local.pen_testing_user_arns
   }
 
   statement {
@@ -57,7 +57,7 @@ data "aws_iam_policy_document" "pen_testing_self_management" {
       "iam:UpdateAccessKey",
       "iam:GetAccessKeyLastUsed"
     ]
-    resources = var.pen_testing_user_arns
+    resources = local.pen_testing_user_arns
   }
 
   statement {
@@ -69,7 +69,7 @@ data "aws_iam_policy_document" "pen_testing_self_management" {
       "iam:UpdateSigningCertificate",
       "iam:UploadSigningCertificate"
     ]
-    resources = var.pen_testing_user_arns
+    resources = local.pen_testing_user_arns
   }
 
   statement {
@@ -82,7 +82,7 @@ data "aws_iam_policy_document" "pen_testing_self_management" {
       "iam:UpdateSSHPublicKey",
       "iam:UploadSSHPublicKey"
     ]
-    resources = var.pen_testing_user_arns
+    resources = local.pen_testing_user_arns
   }
 
   statement {
@@ -95,7 +95,7 @@ data "aws_iam_policy_document" "pen_testing_self_management" {
       "iam:ResetServiceSpecificCredential",
       "iam:UpdateServiceSpecificCredential"
     ]
-    resources = var.pen_testing_user_arns
+    resources = local.pen_testing_user_arns
   }
 
   statement {
@@ -114,6 +114,6 @@ data "aws_iam_policy_document" "pen_testing_self_management" {
       "iam:ListMFADevices",
       "iam:ResyncMFADevice"
     ]
-    resources = var.pen_testing_user_arns
+    resources = local.pen_testing_user_arns
   }
 }

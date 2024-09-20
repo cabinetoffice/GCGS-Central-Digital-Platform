@@ -25,7 +25,7 @@ public class AddUserModelTests
             FirstName = "John",
             LastName = "Johnson",
             Email = "john@johnson.com",
-            Scopes = new List<string> { PersonScopes.Admin, PersonScopes.Editor }
+            Scopes = new List<string> { OrganisationPersonScopes.Admin, OrganisationPersonScopes.Editor }
         };
 
         _mockSession
@@ -38,7 +38,7 @@ public class AddUserModelTests
         Assert.Equal("Johnson", _addUserModel.LastName);
         Assert.Equal("john@johnson.com", _addUserModel.Email);
         Assert.True(_addUserModel.IsAdmin);
-        Assert.Equal(PersonScopes.Editor, _addUserModel.Role);
+        Assert.Equal(OrganisationPersonScopes.Editor, _addUserModel.Role);
         Assert.IsType<PageResult>(result);
     }
 
@@ -74,7 +74,7 @@ public class AddUserModelTests
         _addUserModel.LastName = "Johnson";
         _addUserModel.Email = "john@johnson.com";
         _addUserModel.IsAdmin = true;
-        _addUserModel.Role = PersonScopes.Editor;
+        _addUserModel.Role = OrganisationPersonScopes.Editor;
 
         var initialState = new PersonInviteState();
         _mockSession.Setup(s => s.Get<PersonInviteState>(PersonInviteState.TempDataKey)).Returns(initialState);
@@ -86,8 +86,8 @@ public class AddUserModelTests
             state.FirstName == "John" &&
             state.LastName == "Johnson" &&
             state.Email == "john@johnson.com" &&
-            state.Scopes.Contains(PersonScopes.Admin) &&
-            state.Scopes.Contains(PersonScopes.Editor)
+            state.Scopes.Contains(OrganisationPersonScopes.Admin) &&
+            state.Scopes.Contains(OrganisationPersonScopes.Editor)
         )), Times.Once);
 
         var redirectResult = Assert.IsType<RedirectToPageResult>(result);
@@ -115,18 +115,19 @@ public class AddUserModelTests
     public void UpdateScopes_ShouldUpdateScopes_WhenIsAdminAndRoleIsEditor()
     {
         _addUserModel.IsAdmin = true;
-        _addUserModel.Role = PersonScopes.Editor;
+        _addUserModel.Role = OrganisationPersonScopes.Editor;
 
         var initialState = new PersonInviteState
         {
-            Scopes = new List<string> { PersonScopes.Viewer }
+            Scopes = new List<string> { OrganisationPersonScopes.Viewer }
         };
 
         var updatedState = _addUserModel.UpdateScopes(initialState);
 
-        Assert.Contains(PersonScopes.Admin, updatedState.Scopes ?? []);
-        Assert.Contains(PersonScopes.Editor, updatedState.Scopes ?? []);
-        Assert.DoesNotContain(PersonScopes.Viewer, updatedState.Scopes ?? []);
+        Assert.Contains(OrganisationPersonScopes.Admin, updatedState.Scopes ?? []);
+        Assert.Contains(OrganisationPersonScopes.Editor, updatedState.Scopes ?? []);
+        Assert.Contains(OrganisationPersonScopes.Responder, updatedState.Scopes ?? []);
+        Assert.DoesNotContain(OrganisationPersonScopes.Viewer, updatedState.Scopes ?? []);
     }
 
     [Fact]
@@ -137,7 +138,7 @@ public class AddUserModelTests
             FirstName = "John",
             LastName = "Johnson",
             Email = "john@johnson.com",
-            Scopes = new List<string> { PersonScopes.Admin, PersonScopes.Editor }
+            Scopes = new List<string> { OrganisationPersonScopes.Admin, OrganisationPersonScopes.Editor }
         };
 
         _addUserModel.InitModel(state);
@@ -146,6 +147,6 @@ public class AddUserModelTests
         Assert.Equal("Johnson", _addUserModel.LastName);
         Assert.Equal("john@johnson.com", _addUserModel.Email);
         Assert.True(_addUserModel.IsAdmin);
-        Assert.Equal(PersonScopes.Editor, _addUserModel.Role);
+        Assert.Equal(OrganisationPersonScopes.Editor, _addUserModel.Role);
     }
 }

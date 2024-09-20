@@ -8,6 +8,11 @@ variable "environment" {
   type        = string
 }
 
+variable "is_production" {
+  description = "Indicates whether the target account is configured with production-level settings"
+  type        = bool
+}
+
 variable "postgres_engine_version" {
   description = "DB engine version"
   type        = string

@@ -8,8 +8,6 @@ public interface IOrganisationRepository : IDisposable
 
     public Task<Organisation?> Find(Guid organisationId);
 
-    public Task<Organisation?> Find(int organisationId);
-
     public Task<OrganisationPerson?> FindOrganisationPerson(Guid organisationId, Guid personId);
 
     public Task<Organisation?> FindByName(string name);
