@@ -34,15 +34,4 @@
     <Using Include="Xunit" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Content Update="Pages\Support\Organisations.cshtml">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-  </ItemGroup>
-
-  <ItemGroup>
-    <AdditionalFiles Include="Pages\Support\Organisations.cshtml" />
-  </ItemGroup>
-
 </Project>
