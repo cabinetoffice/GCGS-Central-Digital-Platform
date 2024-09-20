@@ -80,6 +80,7 @@ builder.Services.AddScoped<IUseCase<(Guid, Guid, UpdatePersonToOrganisation), bo
 builder.Services.AddScoped<IUseCase<Guid, IEnumerable<PersonInviteModel>>, GetPersonInvitesUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, Guid), bool>, RemovePersonInviteFromOrganisationUseCase>();
 builder.Services.AddScoped<IUseCase<(string, int, int), IEnumerable<ApprovableOrganisation>>, GetApprovableOrganisationsUseCase>();
+builder.Services.AddScoped<IUseCase<ReviewOrganisation, Boolean>, ReviewOrganisationUseCase>();
 builder.Services.AddGovUKNotifyApiClient(builder.Configuration);
 builder.Services.AddOrganisationProblemDetails();
 

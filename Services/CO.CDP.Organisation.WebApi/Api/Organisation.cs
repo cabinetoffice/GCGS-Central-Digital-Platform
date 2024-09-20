@@ -40,6 +40,28 @@ public static class EndpointExtensions
                 return operation;
             });
 
+        app.MapPost("/admin/organisation/review", async (ReviewOrganisation command, IUseCase<ReviewOrganisation, Boolean> useCase) =>
+                await useCase.Execute(command)
+                    .AndThen(ok => Results.Ok(ok)))
+            .Produces<Boolean>(StatusCodes.Status200OK, "application/json")
+            .ProducesProblem(StatusCodes.Status500InternalServerError)
+            .ProducesProblem(StatusCodes.Status400BadRequest)
+            .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
+            .ProducesProblem(StatusCodes.Status422UnprocessableEntity)
+            .ProducesProblem(StatusCodes.Status404NotFound)
+            .WithOpenApi(operation =>
+            {
+                operation.OperationId = "ReviewOrganisation";
+                operation.Description = "Reviews an organisation.";
+                operation.Summary = "Reviews an organisation.";
+                operation.Responses["200"].Description = "Organisation reviewed successfully.";
+                operation.Responses["400"].Description = "Bad request.";
+                operation.Responses["422"].Description = "Unprocessable entity.";
+                operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
+                operation.Responses["500"].Description = "Internal server error.";
+                return operation;
+            });
+
         app.MapGet("/organisations",
                 async ([FromQuery] string userUrn, IUseCase<string, IEnumerable<Model.Organisation>> useCase) =>
                 await useCase.Execute(userUrn)
