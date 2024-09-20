@@ -8,17 +8,20 @@ public class OrganisationsModel(
     ISession session) : LoggedInUserAwareModel(session)
 {
     [BindProperty]
-    public IList<ApprovableOrganisation> BuyerOrganisations { get; set; } = [];
+    public string Title { get; set; }
 
     [BindProperty]
-    public IList<ApprovableOrganisation> SupplierOrganisations { get; set; } = [];
+    public string Type { get; set; }
 
-    public async Task<IActionResult> OnGet()
+    [BindProperty]
+    public IList<ApprovableOrganisation> Organisations { get; set; } = [];
+
+    public async Task<IActionResult> OnGet(string type)
     {
-        // Pagination will be put in place in a later update
-        BuyerOrganisations = (await organisationClient.GetAllOrganisationsAsync("buyer", 1000, 0)).ToList();
+        Type = type;
+        Title = type.Substring(0, 1).ToUpper() + type.Substring(1, type.Length-1) + " organisations";
 
-        SupplierOrganisations = (await organisationClient.GetAllOrganisationsAsync("supplier", 1000, 0)).ToList();
+        Organisations = (await organisationClient.GetAllOrganisationsAsync(Type, 1000, 0)).ToList();
 
         return Page();
     }

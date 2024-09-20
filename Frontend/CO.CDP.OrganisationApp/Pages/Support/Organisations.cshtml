@@ -1,119 +1,94 @@
-@page "/support/organisations"
+@page "/support/organisations/{type}"
 @model OrganisationsModel
 
 <main class="govuk-main-wrapper">
-    @if (Model.BuyerOrganisations.Any())
-    {
     <table class="govuk-table">
-        <caption class="govuk-table__caption govuk-table__caption--m">Buyer organisations</caption>
+        <caption class="govuk-table__caption govuk-table__caption--m">@Model.Title</caption>
         <thead class="govuk-table__head">
         <tr class="govuk-table__row">
             <th scope="col" colspan="1" class="govuk-table__header">Organisation name</th>
             <th scope="col" colspan="1" class="govuk-table__header">Identifier/s</th>
             <th scope="col" colspan="1" class="govuk-table__header">PPON</th>
             <th scope="col" colspan="1" class="govuk-table__header">Org Email</th>
-            <th scope="col" colspan="1" class="govuk-table__header">Status</th>
-            <th scope="col" colspan="1" class="govuk-table__header">Date Approved</th>
-            <th scope="col" colspan="1" class="govuk-table__header">Last reviewed by</th>
-            <th scope="col" colspan="1" class="govuk-table__header">Comments</th>
-            <th scope="col" colspan="1" class="govuk-table__header">Action</th>
+            @{
+                if (Model.Type == "buyer")
+                {
+                    <th scope="col" colspan="1" class="govuk-table__header">Status</th>
+                    <th scope="col" colspan="1" class="govuk-table__header">Date Approved</th>
+                    <th scope="col" colspan="1" class="govuk-table__header">Last reviewed by</th>
+                    <th scope="col" colspan="1" class="govuk-table__header">Comments</th>
+                    <th scope="col" colspan="1" class="govuk-table__header">Action</th>
+                }
+            }
         </tr>
         </thead>
         <tbody class="govuk-table__body">
         @{
-        foreach (var org in Model.BuyerOrganisations)
-        {
-        <tr class="govuk-table__row">
-            <th scope="row" class="govuk-table__header">
-                @org.Name
-            </th>
-            <td class="govuk-table__cell">
-                <ul class="govuk-list">
+            foreach (var org in Model.Organisations)
+            {
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">
+                        @org.Name
+                    </th>
+                    <td class="govuk-table__cell">
+                        <ul class="govuk-list">
+                            @{
+                                foreach (var i in @org.Identifiers)
+                                {
+                                    <li>@i.Scheme: @i.Id</li>
+                                }
+                            }
+                        </ul>
+                    </td>
+                    <td class="govuk-table__cell">
+                        @org.Ppon
+                    </td>
+                    <td class="govuk-table__cell">
+                        @org.Email
+                    </td>
                     @{
-                    foreach (var i in @org.Identifiers)
-                    {
-                    <li>@i.Scheme: @i.Id</li>
+                        if (Model.Type == "buyer")
+                        {
+                            <td class="govuk-table__cell">
+                                @{
+                                    if (@org.ApprovedOn == null)
+                                    {
+                                        <span>Pending</span>
+                                    }
+                                    else
+                                    {
+                                        <span>Approved</span>
+                                    }
+                                }
+                            </td>
+                            <td class="govuk-table__cell">
+                                @(@org.ApprovedOn == null ? "N/A" : @org.ApprovedOn)
+                            </td>
+                            <td class="govuk-table__cell">
+                                @(@org.ApprovedByName ?? "N/A")
+                            </td>
+                            <td class="govuk-table__cell">
+                                @(@org.ApprovedComment ?? "N/A")
+                            </td>
+                            <td class="govuk-table__cell">
+                                <a class="govuk-link" href="/support/organisation/@org.Id/approval">Review</a>
+                            </td>
+                        }
                     }
-                    }
-                </ul>
-            </td>
-            <td class="govuk-table__cell">
-                @org.Ppon
-            </td>
-            <td class="govuk-table__cell">
-                @org.Email
-            </td>
-            <td class="govuk-table__cell">
-                @{
-                if (@org.ApprovedOn == null)
-                {
-                <span>Pending</span>
-                }
-                else
-                {
-                <span>Approved</span>
-                }
-                }
-            </td>
-            <td class="govuk-table__cell">
-                @(@org.ApprovedOn == null ? "N/A" : @org.ApprovedOn)
-            </td>
-            <td class="govuk-table__cell">
-                @(@org.ApprovedByName ?? "N/A")
-            </td>
-            <td class="govuk-table__cell">
-                @(@org.ApprovedComment ?? "N/A")
-            </td>
-            <td class="govuk-table__cell">
-                <a class="govuk-link" href="/support/organisation/@org.Id/approval">Review</a>
-            </td>
-        </tr>
-        }
+                </tr>
+            }
         }
         </tbody>
     </table>
+    @{
+        if (Model.Type == "buyer")
+        {
+            <a class="govuk-link" href="/support/organisations/supplier">Supplier organisations</a>
+        }
+        else
+        {
+            <a class="govuk-link" href="/support/organisations/buyer">Buyer organisations</a>
+        }
     }
 
-    @if (Model.SupplierOrganisations.Any())
-    {
-    <table class="govuk-table">
-        <caption class="govuk-table__caption govuk-table__caption--m">Supplier organisations</caption>
-        <thead class="govuk-table__head">
-        <tr class="govuk-table__row">
-            <th scope="col" colspan="1" class="govuk-table__header">Organisation name</th>
-            <th scope="col" colspan="1" class="govuk-table__header">Identifier/s</th>
-            <th scope="col" colspan="1" class="govuk-table__header">PPON</th>
-            <th scope="col" colspan="1" class="govuk-table__header">Org Email</th>
-        </tr>
-        </thead>
-        <tbody class="govuk-table__body">
-        @{
-        foreach (var org in Model.SupplierOrganisations)
-        {
-        <tr class="govuk-table__row">
-            <th scope="row" class="govuk-table__header">
-                @org.Name
-            </th>
-            <td class="govuk-table__cell">
-                <ul class="govuk-list">
-                    @{
-                    foreach (var i in @org.Identifiers)
-                    {
-                    <li>@i.Scheme: @i.Id</li>
-                    }
-                    }
-                </ul>
-            </td>
-            <td class="govuk-table__cell">
-                @org.Ppon
-            </td>
-            <td class="govuk-table__cell">
-                @org.Email
-            </td>
-        </tr>
-        }
-        }
-        </tbody>
-    </table>
-    }
 </main>
