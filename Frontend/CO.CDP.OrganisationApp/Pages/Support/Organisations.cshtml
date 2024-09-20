@@ -1,4 +1,5 @@
 @page "/support/organisations/{type}"
+@using CO.CDP.OrganisationApp.Constants
 @model OrganisationsModel
 
 <main class="govuk-main-wrapper">
@@ -35,7 +36,7 @@
                             @{
                                 foreach (var i in @org.Identifiers)
                                 {
-                                    <li>@i.Scheme: @i.Id</li>
+                                    <li>@i.Scheme.SchemeDescription(): @i.Id</li>
                                 }
                             }
                         </ul>
