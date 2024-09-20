@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moq;
+using static CO.CDP.Authentication.Constants;
 
 namespace CO.CDP.Authentication.Tests;
 
@@ -78,10 +79,10 @@ public class ApiKeyAuthenticationHandlerTest
 
         var claims = result.Principal?.Claims;
         claims.Should().NotBeNull();
-        claims.Should().Contain(c => c.Type == "channel" && c.Value == "organisation-key");
+        claims.Should().Contain(c => c.Type == ClaimType.Channel && c.Value == Channel.OrganisationKey);
         claims.Should()
-            .Contain(c => c.Type == "org" && c.Value == orgId.ToString());
-        claims.Should().Contain(c => c.Type == "scope" && c.Value == "ADMIN MANAGER");
+            .Contain(c => c.Type == ClaimType.OrganisationId && c.Value == orgId.ToString());
+        claims.Should().Contain(c => c.Type == ClaimType.ApiKeyScope && c.Value == "ADMIN MANAGER");
     }
 
     [Fact]
@@ -98,6 +99,6 @@ public class ApiKeyAuthenticationHandlerTest
         result.Principal.Should().NotBeNull()
             .And.BeOfType<ClaimsPrincipal>()
             .Which.Identity.Should().BeAssignableTo<ClaimsIdentity>()
-            .And.BeOfType<ClaimsIdentity>().Which.Claims.Should().ContainSingle(c => c.Type == "channel" && c.Value == "service-key");
+            .And.BeOfType<ClaimsIdentity>().Which.Claims.Should().ContainSingle(c => c.Type == ClaimType.Channel && c.Value == Channel.ServiceKey);
     }
 }

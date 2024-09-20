@@ -1,5 +1,6 @@
 using CO.CDP.OrganisationInformation.Persistence;
 using Microsoft.AspNetCore.Http;
+using static CO.CDP.Authentication.Constants;
 
 namespace CO.CDP.Authentication;
 
@@ -9,7 +10,7 @@ public class ClaimService(
 {
     public string? GetUserUrn()
     {
-        return httpContextAccessor.HttpContext?.User?.FindFirst("sub")?.Value;
+        return httpContextAccessor.HttpContext?.User?.FindFirst(ClaimType.Subject)?.Value;
     }
 
     public async Task<bool> HaveAccessToOrganisation(Guid oragnisationId)
@@ -25,7 +26,7 @@ public class ClaimService(
 
     public Guid? GetOrganisationId()
     {
-        if (Guid.TryParse(httpContextAccessor.HttpContext?.User?.FindFirst("org")?.Value, out Guid result))
+        if (Guid.TryParse(httpContextAccessor.HttpContext?.User?.FindFirst(ClaimType.OrganisationId)?.Value, out Guid result))
         {
             return result;
         }
