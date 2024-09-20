@@ -10,19 +10,12 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace CO.CDP.EntityVerification.Persistence;
 
 
-public class EntityVerificationContext : DbContext, IOutboxMessageDbContext
+public class EntityVerificationContext(DbContextOptions<EntityVerificationContext> options)
+    : DbContext(options), IOutboxMessageDbContext
 {
     public DbSet<Ppon> Ppons { get; set; } = null!;
     public DbSet<Identifier> Identifiers { get; set; } = null!;
     public DbSet<OutboxMessage> OutboxMessages { get; set; }
-
-    public EntityVerificationContext()
-    {
-    }
-
-    public EntityVerificationContext(DbContextOptions<EntityVerificationContext> options) : base(options)
-    {
-    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
