@@ -73,11 +73,6 @@ public static class Extensions
             .AddAWSService<IAmazonSQS>();
     }
 
-    public static IServiceCollection AddSqsPublisher(this IServiceCollection services)
-    {
-        return services.AddScoped<IPublisher, SqsPublisher>();
-    }
-
     public static IServiceCollection AddOutboxSqsPublisher<TDbContext>(this IServiceCollection services)
         where TDbContext : DbContext, IOutboxMessageDbContext
     {
@@ -96,7 +91,7 @@ public static class Extensions
                 s.GetRequiredKeyedService<IPublisher>("SqsPublisher"),
                 s.GetRequiredService<IOutboxMessageRepository>(),
                 s.GetRequiredService<ILogger<OutboxProcessor>>()
-                )
+            )
         );
         return services;
     }
