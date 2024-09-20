@@ -290,7 +290,7 @@ public class DatabaseShareCodeRepositoryTest(PostgreSqlFixture postgreSql) : ICl
             new Organisation.Identifier
             {
                 IdentifierId = Guid.NewGuid().ToString(),
-                Scheme = "CDP-PPON",
+                Scheme = "GB-PPON",
                 LegalName = "New Corporation Ltd",
                 Uri = "https://cdp.cabinetoffice.gov.uk/organisations/" + Guid.NewGuid().ToString(),
                 Primary = true
