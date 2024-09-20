@@ -21,7 +21,7 @@ public class PponGeneratedSubscriberTest
         {
             OrganisationId = Guid.Parse("36a98954-f9d3-4695-a29b-b8b97318f3ac"),
             Id = "c0777aeb968b4113a27d94e55b10c1b4",
-            Scheme = "CDP-PPON",
+            Scheme = "GB-PPON",
             LegalName = "Acme Ltd"
         });
 
@@ -31,7 +31,7 @@ public class PponGeneratedSubscriberTest
             Identifier = new OrganisationIdentifier
             {
                 Id = "c0777aeb968b4113a27d94e55b10c1b4",
-                Scheme = "CDP-PPON",
+                Scheme = "GB-PPON",
                 LegalName = "Acme Ltd"
             }
         }));
@@ -59,14 +59,14 @@ public class PponGeneratedSubscriberTest
         {
             Id = "123945",
             LegalName = "Acme Ltd",
-            Scheme = "CDP-PPON"
+            Scheme = "GB-PPON"
         });
 
         _useCase.Setup(u => u.Execute(It.IsAny<AssignOrganisationIdentifier>()))
             .Throws(exception);
 
         await Subscriber.Handle(PponGenerated(
-            organisationId: organisationId, id: "123945", legalName: "Acme Ltd", scheme: "CDP-PPON"
+            organisationId: organisationId, id: "123945", legalName: "Acme Ltd", scheme: "GB-PPON"
         ));
 
         _logger.Invocations.Count.Should().BePositive();
@@ -82,7 +82,7 @@ public class PponGeneratedSubscriberTest
         {
             OrganisationId = organisationId,
             Id = id ?? "c0777aeb968b4113a27d94e55b10c1b4",
-            Scheme = scheme ?? "CDP-PPON",
+            Scheme = scheme ?? "GB-PPON",
             LegalName = legalName ?? "Acme Ltd"
         };
     }

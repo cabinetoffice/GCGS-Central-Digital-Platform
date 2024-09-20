@@ -2,6 +2,7 @@ using CO.CDP.Authentication.Authorization;
 using FluentAssertions;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
+using static CO.CDP.Authentication.Constants;
 
 namespace CO.CDP.Authentication.Tests.Authorization;
 
@@ -15,9 +16,9 @@ public class ChannelAuthorizationHandlerTests
     }
 
     [Theory]
-    [InlineData(AuthenticationChannel.OneLogin, "one-login", true)]
-    [InlineData(AuthenticationChannel.OrganisationKey, "organisation-key", true)]
-    [InlineData(AuthenticationChannel.ServiceKey, "service-key", true)]
+    [InlineData(AuthenticationChannel.OneLogin, Channel.OneLogin, true)]
+    [InlineData(AuthenticationChannel.OrganisationKey, Channel.OrganisationKey, true)]
+    [InlineData(AuthenticationChannel.ServiceKey, Channel.ServiceKey, true)]
     [InlineData(AuthenticationChannel.OrganisationKey, "invalid-channel", false)]
     [InlineData(AuthenticationChannel.ServiceKey, " ", false)]
     [InlineData(AuthenticationChannel.OrganisationKey, null, false)]
@@ -33,7 +34,7 @@ public class ChannelAuthorizationHandlerTests
     [Fact]
     public async Task HandleRequirementAsync_ShouldSucceed_WhenMultipleChannelsAndValidClaimExists()
     {
-        var context = CreateAuthorizationHandlerContext([AuthenticationChannel.OneLogin, AuthenticationChannel.ServiceKey], ["service-key"]);
+        var context = CreateAuthorizationHandlerContext([AuthenticationChannel.OneLogin, AuthenticationChannel.ServiceKey], [Channel.ServiceKey]);
 
         await _handler.HandleAsync(context);
 
@@ -43,7 +44,7 @@ public class ChannelAuthorizationHandlerTests
     [Fact]
     public async Task HandleRequirementAsync_ShouldNotSucceed_WhenChannelsArrayIsEmpty()
     {
-        var context = CreateAuthorizationHandlerContext([], ["service-key"]);
+        var context = CreateAuthorizationHandlerContext([], [Channel.ServiceKey]);
 
         await _handler.HandleAsync(context);
 
@@ -53,7 +54,7 @@ public class ChannelAuthorizationHandlerTests
     [Fact]
     public async Task HandleRequirementAsync_ShouldSucceed_WhenMultipleClaimsAndValidClaimExists()
     {
-        var context = CreateAuthorizationHandlerContext([AuthenticationChannel.OneLogin, AuthenticationChannel.ServiceKey], ["one-login", "invalid-channel"]);
+        var context = CreateAuthorizationHandlerContext([AuthenticationChannel.OneLogin, AuthenticationChannel.ServiceKey], [Channel.OneLogin, "invalid-channel"]);
 
         await _handler.HandleAsync(context);
 
@@ -68,7 +69,7 @@ public class ChannelAuthorizationHandlerTests
         {
             if (!string.IsNullOrWhiteSpace(channel))
             {
-                identity.AddClaim(new Claim("channel", channel));
+                identity.AddClaim(new Claim(ClaimType.Channel, channel));
             }
         });
 

@@ -1,11 +1,12 @@
 @page "/organisation/{id}"
 @using CO.CDP.OrganisationApp.Constants
+@using CO.CDP.OrganisationApp.Pages
 @using CO.CDP.OrganisationApp.WebApiClients
 @model OrganisationOverviewModel
 
 @{
     var organisationDetails = Model.OrganisationDetails!;
-    var registeredAddress = organisationDetails.Addresses.FirstOrDefault(a => a.Type == Organisation.WebApiClient.AddressType.Registered);
+    var registeredAddress = organisationDetails.Addresses.FirstOrDefault(a => a.Type == CO.CDP.Organisation.WebApiClient.AddressType.Registered);
 }
 
 <main class="govuk-main-wrapper">
@@ -16,7 +17,6 @@
                     <span class="govuk-label--l">@organisationDetails.Name</span>
                 </h1>
                 <h2 class="govuk-heading-m">Organisation details</h2>
-
                 <dl class="govuk-summary-list">
                     <div class="govuk-summary-list__row">
                         <dt class="govuk-summary-list__key">
@@ -26,7 +26,7 @@
                             <p class="govuk-body">@organisationDetails.Name</p>
                         </dd>
                         <dd class="govuk-summary-list__actions">
-                            <a class="govuk-link govuk-link--no-visited-state" href="#">Change<span class="govuk-visually-hidden"> address</span></a>
+                            <a class="govuk-link govuk-link--no-visited-state" href="/organisation/@Model.Id/name">Change<span class="govuk-visually-hidden"> address</span></a>
                         </dd>
                     </div>
 
@@ -41,16 +41,16 @@
                             <p class="govuk-body">
                                 @if (@organisationDetails.Identifier.Id == null)
                                 {
-                                    <p class="govuk-body">PPON generation pending.</p>
+                                <p class="govuk-body">PPON generation pending.</p>
                                 }
                                 else
                                 {
                                     @organisationDetails.Identifier.Id
                                 }
-                             </p>
+                            </p>
                         </dd>
                         <dd class="govuk-summary-list__actions">
-                            <a class="govuk-link govuk-link--no-visited-state" href="#">Change<span class="govuk-visually-hidden"> address</span></a>
+                            <a class="govuk-link govuk-link--no-visited-state" href="#">Add<span class="govuk-visually-hidden"> address</span></a>
                         </dd>
                     </div>
 
@@ -62,7 +62,7 @@
                             <p class="govuk-body">@organisationDetails.ContactPoint.Email</p>
                         </dd>
                         <dd class="govuk-summary-list__actions">
-                            <a class="govuk-link govuk-link--no-visited-state" href="#">Change<span class="govuk-visually-hidden"> address</span></a>
+                            <a class="govuk-link govuk-link--no-visited-state" href="/organisation/@Model.Id/email">Change<span class="govuk-visually-hidden"> address</span></a>
                         </dd>
                     </div>
 
@@ -83,10 +83,10 @@
                                 <p class="govuk-body">@registeredAddress.CountryName</p>
                             </dd>
                             <dd class="govuk-summary-list__actions">
-                                <a class="govuk-link govuk-link--no-visited-state" href="#">Change<span class="govuk-visually-hidden"> address</span></a>
+                                <a class="govuk-link govuk-link--no-visited-state" href="/organisation/@Model.Id/address/@(registeredAddress.Country == Country.UKCountryCode ? "uk" : "non-uk")?frm-overview">Change<span class="govuk-visually-hidden"> address</span></a>
                             </dd>
                         </div>
-                    }
+                    }                    
                 </dl>
 
                 @if (organisationDetails.IsTenderer())
@@ -111,7 +111,7 @@
                     <div class="govuk-!-margin-top-3">
                         <a class="govuk-link govuk-!-font-size-19 govuk-!-font-weight-bold" href="/organisation/@RouteData.Values["id"]/users/user-summary">Users</a>
                     </div>
-                </authorize>
+                </authorize>               
 
                 <div class="govuk-!-margin-top-6">
                     <a href="/organisation-selection" class="govuk-link govuk-link--no-visited-state">Back to all organisations</a>

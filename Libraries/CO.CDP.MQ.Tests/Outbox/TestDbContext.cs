@@ -1,8 +1,8 @@
 using CO.CDP.EntityFrameworkCore.Timestamps;
-using CO.CDP.MQ.Database;
+using CO.CDP.MQ.Outbox;
 using Microsoft.EntityFrameworkCore;
 
-namespace CO.CDP.MQ.Tests.Database;
+namespace CO.CDP.MQ.Tests.Outbox;
 
 internal class TestDbContext(DbContextOptions<TestDbContext> options) : DbContext(options), IOutboxMessageDbContext
 {

@@ -36,7 +36,6 @@ builder.Services.AddScoped<IUseCase<(Guid, Guid, Guid), SectionQuestionsResponse
 builder.Services.AddScoped<IUseCase<(Guid formId, Guid sectionId, Guid answerSetId, Guid organisationId, UpdateFormSectionAnswers updateFormSectionAnswers), bool>, UpdateFormSectionAnswersUseCase>();
 
 builder.Services.AddJwtBearerAndApiKeyAuthentication(builder.Configuration, builder.Environment);
-//builder.Services.AddAuthorization();
 builder.Services.AddOrganisationAuthorization();
 
 builder.Services

@@ -8,7 +8,7 @@ public class PponGenerated
     /// <example>"d2dab085ec23481cb970ee6b372f9f57"</example>
     public required string Id { get; init; }
 
-    /// <example>"CDP-PPON"</example>
+    /// <example>"GB-PPON"</example>
     public required string Scheme { get; init; }
 
     /// <example>"Acme Ltd"</example>

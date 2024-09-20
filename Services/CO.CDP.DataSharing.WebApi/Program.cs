@@ -41,8 +41,8 @@ builder.Services.AddScoped<IUseCase<ShareVerificationRequest, ShareVerificationR
 builder.Services.AddScoped<IUseCase<string, SupplierInformation?>, GetSharedDataUseCase>();
 builder.Services.AddScoped<IUseCase<string, byte[]?>, GetSharedDataPdfUseCase>();
 builder.Services.AddDataSharingProblemDetails();
+
 builder.Services.AddJwtBearerAndApiKeyAuthentication(builder.Configuration, builder.Environment);
-//builder.Services.AddAuthorization();
 builder.Services.AddOrganisationAuthorization();
 
 builder.Services

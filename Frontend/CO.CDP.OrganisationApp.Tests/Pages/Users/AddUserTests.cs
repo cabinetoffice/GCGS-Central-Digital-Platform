@@ -126,6 +126,7 @@ public class AddUserModelTests
 
         Assert.Contains(OrganisationPersonScopes.Admin, updatedState.Scopes ?? []);
         Assert.Contains(OrganisationPersonScopes.Editor, updatedState.Scopes ?? []);
+        Assert.Contains(OrganisationPersonScopes.Responder, updatedState.Scopes ?? []);
         Assert.DoesNotContain(OrganisationPersonScopes.Viewer, updatedState.Scopes ?? []);
     }
 

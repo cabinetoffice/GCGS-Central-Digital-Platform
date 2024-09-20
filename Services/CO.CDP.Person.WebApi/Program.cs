@@ -35,7 +35,6 @@ builder.Services.AddScoped<IUseCase<(Guid, ClaimPersonInvite), PersonInvite>, Cl
 builder.Services.AddPersonProblemDetails();
 
 builder.Services.AddJwtBearerAndApiKeyAuthentication(builder.Configuration, builder.Environment);
-//builder.Services.AddAuthorization();
 builder.Services.AddOrganisationAuthorization();
 
 if (Assembly.GetEntryAssembly().IsRunAs("CO.CDP.Person.WebApi"))

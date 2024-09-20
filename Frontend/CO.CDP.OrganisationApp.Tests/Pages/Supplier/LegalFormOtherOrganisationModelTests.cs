@@ -10,12 +10,12 @@ public class LegalFormOtherOrganisationModelTests
 {
     private readonly Mock<ITempDataService> _mockTempDataService;
     private readonly LegalFormOtherOrganisationModel _model;
-    private readonly Mock<Organisation.WebApiClient.IOrganisationClient> _mockOrganisationClient;
+    private readonly Mock<CO.CDP.Organisation.WebApiClient.IOrganisationClient> _mockOrganisationClient;
 
     public LegalFormOtherOrganisationModelTests()
     {
         _mockTempDataService = new Mock<ITempDataService>();
-        _mockOrganisationClient = new Mock<Organisation.WebApiClient.IOrganisationClient>();
+        _mockOrganisationClient = new Mock<CO.CDP.Organisation.WebApiClient.IOrganisationClient>();
         _model = new LegalFormOtherOrganisationModel(_mockTempDataService.Object, _mockOrganisationClient.Object);
     }
 
@@ -25,7 +25,7 @@ public class LegalFormOtherOrganisationModelTests
         _model.Id = Guid.NewGuid();
 
         _mockOrganisationClient.Setup(client => client.GetOrganisationAsync(_model.Id))
-            .ThrowsAsync(new Organisation.WebApiClient.ApiException("Unexpected error", 404, "", default, null));
+            .ThrowsAsync(new CO.CDP.Organisation.WebApiClient.ApiException("Unexpected error", 404, "", default, null));
 
         var result = await _model.OnGet(_model.Id);
 

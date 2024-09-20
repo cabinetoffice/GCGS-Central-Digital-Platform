@@ -56,7 +56,7 @@ variable "memory_in_mb" {
 variable "period" {
   description = "Length of interval in seconds"
   type        = number
-  default     = 300
+  default     = 60 * 30
 }
 
 variable "private_subnet_ids" {

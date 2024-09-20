@@ -1,11 +1,12 @@
 using CO.CDP.Organisation.WebApiClient;
+using OrganisationWebApiClient = CO.CDP.Organisation.WebApiClient;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages.Registration;
 public static class OrganisationEntityFactory
 {
-    public static Organisation.WebApiClient.Organisation GivenClientModel()
+    public static OrganisationWebApiClient.Organisation GivenClientModel()
     {
-        return new Organisation.WebApiClient.Organisation(null, null, null, Guid.NewGuid(), null, "Test Org", []);
+        return new OrganisationWebApiClient.Organisation(null, null, null, Guid.NewGuid(), null, "Test Org", []);
     }
 
     public static ProblemDetails GivenProblemDetails(

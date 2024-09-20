@@ -120,6 +120,8 @@ public class OrganisationInformationContext(DbContextOptions<OrganisationInforma
                 a.ToTable("buyer_information");
             });
 
+            entity.HasOne(e => e.ApprovedBy);
+
             entity
                 .HasMany(p => p.Persons)
                 .WithMany(t => t.Organisations)

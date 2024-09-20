@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Security.Claims;
 using System.Text.Encodings.Web;
+using static CO.CDP.Authentication.Constants;
 
 namespace CO.CDP.Authentication;
 
@@ -33,14 +34,14 @@ public class ApiKeyAuthenticationHandler(
         var (valid, organisation, scopes) = await apiKeyValidator.Validate(providedApiKey!);
         if (valid)
         {
-            List<Claim> claims = [new Claim("channel", organisation == null ? "service-key" : "organisation-key")];
+            List<Claim> claims = [new Claim(ClaimType.Channel, organisation == null ? Channel.ServiceKey : Channel.OrganisationKey)];
             if (organisation.HasValue)
             {
-                claims.Add(new Claim("org", organisation.Value.ToString()));
+                claims.Add(new Claim(ClaimType.OrganisationId, organisation.Value.ToString()));
             }
             if (scopes.Count > 0)
             {
-                claims.Add(new Claim("scope", string.Join(" ", scopes)));
+                claims.Add(new Claim(ClaimType.ApiKeyScope, string.Join(" ", scopes)));
             }
             var identity = new ClaimsIdentity(claims, Scheme.Name);
             var ticket = new AuthenticationTicket(new ClaimsPrincipal(identity), Scheme.Name);
