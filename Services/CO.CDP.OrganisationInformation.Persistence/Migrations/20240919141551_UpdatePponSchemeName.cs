@@ -16,7 +16,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-
+            migrationBuilder.Sql("UPDATE identifiers SET scheme = 'CDP-PPON' WHERE scheme = 'GB-PPON';");
         }
     }
 }
