@@ -22,7 +22,7 @@ builder.ConfigureForwardedHeaders();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options => { options.DocumentTenantApi(builder.Configuration); });
 builder.Services.AddHealthChecks();
-
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddAutoMapper(typeof(WebApiToPersistenceProfile));
 
 builder.Services.AddDbContext<OrganisationInformationContext>(o =>
@@ -38,8 +38,6 @@ builder.Services.AddScoped<IClaimService, ClaimService>();
 builder.Services.AddTenantProblemDetails();
 
 builder.Services.AddJwtBearerAndApiKeyAuthentication(builder.Configuration, builder.Environment);
-//builder.Services.AddAuthorization();
-builder.Services.AddHttpContextAccessor();
 
 if (Assembly.GetEntryAssembly().IsRunAs("CO.CDP.Tenant.WebApi"))
 {

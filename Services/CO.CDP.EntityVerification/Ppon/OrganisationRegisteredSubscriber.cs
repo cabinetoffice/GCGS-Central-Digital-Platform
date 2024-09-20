@@ -27,7 +27,7 @@ public class OrganisationRegisteredSubscriber(
             OrganisationId = @event.Id,
             Id = newPpon.IdentifierId,
             LegalName = @event.Identifier.LegalName,
-            Scheme = "CDP-PPON"
+            Scheme = "GB-PPON"
         };
 
         pponRepository.Save(newPpon);

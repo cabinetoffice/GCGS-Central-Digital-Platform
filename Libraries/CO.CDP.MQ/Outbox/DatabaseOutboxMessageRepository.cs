@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 
-namespace CO.CDP.MQ.Database;
+namespace CO.CDP.MQ.Outbox;
 
 public class DatabaseOutboxMessageRepository<TC>(TC context) : IOutboxMessageRepository
     where TC : DbContext, IOutboxMessageDbContext
@@ -15,6 +15,7 @@ public class DatabaseOutboxMessageRepository<TC>(TC context) : IOutboxMessageRep
     {
         return await context.OutboxMessages
             .OrderBy(o => o.CreatedOn)
+            .Where(o => o.Published == false)
             .Take(count)
             .ToListAsync();
     }

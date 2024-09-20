@@ -75,7 +75,7 @@ public record OrganisationInfo
 
 public record OrganisationIdentifier
 {
-    /// <example>"CDP-PPON"</example>
+    /// <example>"GB-PPON"</example>
     [Required(AllowEmptyStrings = false)]
     public required string Scheme { get; init; }
 

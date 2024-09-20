@@ -7,7 +7,7 @@ namespace CO.CDP.OrganisationInformation;
 /// </summary>
 public record Identifier
 {
-    /// <example>"CDP-PPON"</example>
+    /// <example>"GB-PPON"</example>
     [Required]
     public required string Scheme { get; init; }
 

@@ -11,7 +11,7 @@ public class AssignIdentifierUseCase(IOrganisationRepository organisations)
 {
     public class IdentifierSchemes
     {
-        public const string Ppon = "CDP-PPON";
+        public const string Ppon = "GB-PPON";
         public const string Other = "Other";
     }
 
