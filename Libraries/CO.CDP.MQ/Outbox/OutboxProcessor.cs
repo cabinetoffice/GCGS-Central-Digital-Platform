@@ -14,7 +14,7 @@ public class OutboxProcessor(IPublisher publisher, IOutboxMessageRepository outb
     {
         logger.LogDebug("Executing the outbox processor");
         var messages = await FetchMessages(count);
-        messages.ForEach(PublishMessages);
+        messages.ForEach(PublishMessage);
     }
 
     private async Task<List<OutboxMessage>> FetchMessages(int count)
@@ -24,7 +24,7 @@ public class OutboxProcessor(IPublisher publisher, IOutboxMessageRepository outb
         return messages;
     }
 
-    private async void PublishMessages(OutboxMessage m)
+    private async void PublishMessage(OutboxMessage m)
     {
         logger.LogDebug("Publishing the `{TYPE}` message: `{MESSAGE}`", m.Type, m.Message);
         await publisher.Publish(m);
