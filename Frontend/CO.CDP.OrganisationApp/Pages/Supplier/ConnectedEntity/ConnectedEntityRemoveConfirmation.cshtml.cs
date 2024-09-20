@@ -4,9 +4,11 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
 using CO.CDP.Mvc.Validation;
 using CO.CDP.OrganisationApp.Constants;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CO.CDP.OrganisationApp.Pages.Supplier.ConnectedEntity;
 
+[Authorize(Policy = OrgScopeRequirement.Editor)]
 public class ConnectedEntityRemoveConfirmationModel(
 IOrganisationClient organisationClient) : PageModel
 {

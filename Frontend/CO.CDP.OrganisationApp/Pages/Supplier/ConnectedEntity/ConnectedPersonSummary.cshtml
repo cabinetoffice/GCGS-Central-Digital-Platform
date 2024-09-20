@@ -1,5 +1,7 @@
 @page "/organisation/{id}/supplier-information/connected-person/connected-person-summary"
 @model CO.CDP.OrganisationApp.Pages.Supplier.ConnectedPersonSummaryModel
+@using CO.CDP.OrganisationApp.Constants
+@inject IUserInfoService userInfoService
 
 @{
     var hasError = ((TagBuilder)Html.ValidationMessageFor(m => m.HasConnectedEntity)).HasInnerHtml;
@@ -28,55 +30,66 @@
                             @ce.Name
                         </dt>
                         <dd class="govuk-summary-list__value"></dd>
-                        <dd class="govuk-summary-list__actions">
-                            <ul class="govuk-summary-list__actions-list">
-                                <li class="govuk-summary-list__actions-list-item">
-                                    <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/@entityTypePage/@ce.EntityId?handler=change">Change</a>
-                                </li>
-                                <li class="govuk-summary-list__actions-list-item">
-                                    <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/@ce.EntityId/remove">Remove</a>
-                                </li>
-                            </ul>
-                        </dd>
+                        <authorize scope="@OrgScopeRequirement.Editor">
+                            <dd class="govuk-summary-list__actions">
+                                <ul class="govuk-summary-list__actions-list">
+                                    <li class="govuk-summary-list__actions-list-item">
+                                        <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/@entityTypePage/@ce.EntityId?handler=change">Change</a>
+                                    </li>
+                                    <li class="govuk-summary-list__actions-list-item">
+                                        <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/@ce.EntityId/remove">Remove</a>
+                                    </li>
+                                </ul>
+                            </dd>
+                        </authorize>
                     </div>
                 </dl>
             }
 
-            <div class="govuk-form-group @(hasError ? "govuk-form-group--error" : "")">
-                <form class="form" method="post">
-                    <fieldset class="govuk-fieldset" data-required="" data-error="Select yes if you need to add another connected person" aria-required="true">
-                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
-                            <h2 class="govuk-fieldset__heading">
-                                Add another connected person?
-                            </h2>
-                        </legend>
-                        @if (hasError)
-                        {
-                            <p id="qualification-option-error" class="govuk-error-message">
-                                <span class="govuk-visually-hidden">Error:</span> Select an option
-                            </p>
-                        }
-                        <div class="govuk-radios govuk-radios--inline" data-module="govuk-radios">
-                            <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="conditional-YES" name="HasConnectedEntity" type="radio"
-                                       value="true" data-aria-controls="conditional-YES" @(Model.HasConnectedEntity == true ? "checked" : "")>
-                                <label class="govuk-label govuk-radios__label" for="conditional-YES">Yes</label>
+            <authorize scope="@OrgScopeRequirement.Editor">
+                <div class="govuk-form-group @(hasError ? "govuk-form-group--error" : "")">
+                    <form class="form" method="post">
+                        <fieldset class="govuk-fieldset" aria-required="true">
+                            <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                                <h2 class="govuk-fieldset__heading">
+                                    Add another connected person?
+                                </h2>
+                            </legend>
+                            @if (hasError)
+                            {
+                                <p id="qualification-option-error" class="govuk-error-message">
+                                    <span class="govuk-visually-hidden">Error:</span> Select an option
+                                </p>
+                            }
+                            <div class="govuk-radios govuk-radios--inline" data-module="govuk-radios">
+                                <div class="govuk-radios__item">
+                                    <input class="govuk-radios__input" id="conditional-YES" name="HasConnectedEntity" type="radio"
+                                           value="true" @(Model.HasConnectedEntity == true ? "checked" : "")>
+                                    <label class="govuk-label govuk-radios__label" for="conditional-YES">Yes</label>
+                                </div>
+                                <div class="govuk-radios__item">
+                                    <input class="govuk-radios__input" id="conditional-NO" name="HasConnectedEntity" type="radio"
+                                           value="false" @(Model.HasConnectedEntity == false ? "checked" : "")>
+                                    <label class="govuk-label govuk-radios__label" for="conditional-NO">No</label>
+                                </div>
                             </div>
-                            <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="conditional-NO" name="HasConnectedEntity" type="radio"
-                                       value="false" data-aria-controls="conditional-NO" @(Model.HasConnectedEntity == false ? "checked" : "")>
-                                <label class="govuk-label govuk-radios__label" for="conditional-NO">No</label>
-                            </div>
-                        </div>
-                    </fieldset>
+                        </fieldset>
 
-                    <div class="govuk-button-group govuk-!-margin-top-6">
-                        <button class="govuk-button" data-module="govuk-button">
-                            Continue
-                        </button>
-                    </div>
-                </form>
-            </div>
+                        <div class="govuk-button-group govuk-!-margin-top-6">
+                            <button class="govuk-button" data-module="govuk-button">
+                                Continue
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </authorize>
+
+            @if (await userInfoService.UserHasScope(OrganisationPersonScopes.Viewer))
+            {
+                <div class="govuk-!-margin-top-3 govuk-body">
+                    <a class="govuk-link" href="/organisation/@Model.Id/supplier-information">Back to supplier information</a>
+                </div>
+            }
         </div>
     </div>
 </main>

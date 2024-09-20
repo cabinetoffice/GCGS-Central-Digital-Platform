@@ -80,11 +80,13 @@
                     <dd class="govuk-summary-list__value">
                         @(details.SupplierType == CO.CDP.Organisation.WebApiClient.SupplierType.Organisation ? "Organisation" : "Individual")
                     </dd>
-                    <dd class="govuk-summary-list__actions">
-                        <a class="govuk-link" href="individual-or-org">
-                            Change<span class="govuk-visually-hidden"> Change</span>
-                        </a>
-                    </dd>
+                    <authorize scope="@OrgScopeRequirement.Editor">
+                        <dd class="govuk-summary-list__actions">
+                            <a class="govuk-link" href="individual-or-org">
+                                Change
+                            </a>
+                        </dd>
+                    </authorize>
                 </div>
 
                 @if (details.SupplierType == CO.CDP.Organisation.WebApiClient.SupplierType.Organisation)
@@ -99,11 +101,13 @@
                                 RenderAddress(Model.RegisteredAddress);
                             }
                         </dd>
-                        <dd class="govuk-summary-list__actions">
-                            <a class="govuk-link" href="@(Constants.AddressType.Registered.ToString().ToLower())-address/uk">
-                                @GetActionString(details.CompletedRegAddress)<span class="govuk-visually-hidden"> Change</span>
-                            </a>
-                        </dd>
+                        <authorize scope="@OrgScopeRequirement.Editor">
+                            <dd class="govuk-summary-list__actions">
+                                <a class="govuk-link" href="@(Constants.AddressType.Registered.ToString().ToLower())-address/uk">
+                                    @GetActionString(details.CompletedRegAddress)
+                                </a>
+                            </dd>
+                        </authorize>
                     </div>
                 }
 
@@ -117,11 +121,13 @@
                             RenderAddress(Model.PostalAddress);
                         }
                     </dd>
-                    <dd class="govuk-summary-list__actions">
-                        <a class="govuk-link" href="postal-address-same-as-registered">
-                            @GetActionString(details.CompletedPostalAddress)<span class="govuk-visually-hidden"> Change</span>
-                        </a>
-                    </dd>
+                    <authorize scope="@OrgScopeRequirement.Editor">
+                        <dd class="govuk-summary-list__actions">
+                            <a class="govuk-link" href="postal-address-same-as-registered">
+                                @GetActionString(details.CompletedPostalAddress)
+                            </a>
+                        </dd>
+                    </authorize>
                 </div>
 
                 <div class="govuk-summary-list__row">
@@ -142,11 +148,13 @@
                             }
                         }
                     </dt>
-                    <dd class="govuk-summary-list__actions">
-                        <a class="govuk-link" href="vat-question">
-                            @GetActionString(details.CompletedVat)<span class="govuk-visually-hidden"> Change</span>
-                        </a>
-                    </dd>
+                    <authorize scope="@OrgScopeRequirement.Editor">
+                        <dd class="govuk-summary-list__actions">
+                            <a class="govuk-link" href="vat-question">
+                                @GetActionString(details.CompletedVat)
+                            </a>
+                        </dd>
+                    </authorize>
                 </div>
 
                 <div class="govuk-summary-list__row">
@@ -167,11 +175,13 @@
                             }
                         }
                     </dt>
-                    <dd class="govuk-summary-list__actions">
-                        <a class="govuk-link" href="website-question">
-                            @GetActionString(details.CompletedWebsiteAddress)<span class="govuk-visually-hidden"> Add</span>
-                        </a>
-                    </dd>
+                    <authorize scope="@OrgScopeRequirement.Editor">
+                        <dd class="govuk-summary-list__actions">
+                            <a class="govuk-link" href="website-question">
+                                @GetActionString(details.CompletedWebsiteAddress)<span class="govuk-visually-hidden"> Add</span>
+                            </a>
+                        </dd>
+                    </authorize>
                 </div>
 
                 <div class="govuk-summary-list__row">
@@ -187,11 +197,13 @@
                             }
                         }
                     </dt>
-                    <dd class="govuk-summary-list__actions">
-                        <a class="govuk-link" href="email-address">
-                            @GetActionString(details.CompletedEmailAddress)<span class="govuk-visually-hidden"> Change</span>
-                        </a>
-                    </dd>
+                    <authorize scope="@OrgScopeRequirement.Editor">
+                        <dd class="govuk-summary-list__actions">
+                            <a class="govuk-link" href="email-address">
+                                @GetActionString(details.CompletedEmailAddress)
+                            </a>
+                        </dd>
+                    </authorize>
                 </div>
 
                 <div class="govuk-summary-list__row">
@@ -211,11 +223,13 @@
                             }
                         }
                     </dt>
-                    <dd class="govuk-summary-list__actions">
-                        <a class="govuk-link" href="supplier-qualification-summary">
-                            @GetActionStringWithoutItems(details.CompletedQualification, details.Qualifications.Count)<span class="govuk-visually-hidden"> Change</span>
-                        </a>
-                    </dd>
+                    <authorize scope="@OrgScopeRequirement.Editor">
+                        <dd class="govuk-summary-list__actions">
+                            <a class="govuk-link" href="supplier-qualification-summary">
+                                @GetActionStringWithoutItems(details.CompletedQualification, details.Qualifications.Count)
+                            </a>
+                        </dd>
+                    </authorize>
                 </div>
 
                 <div class="govuk-summary-list__row">
@@ -235,11 +249,13 @@
                             }
                         }
                     </dt>
-                    <dd class="govuk-summary-list__actions">
-                        <a class="govuk-link" href="trade-assurance-summary">
-                            @GetActionStringWithItems(details.CompletedTradeAssurance, details.TradeAssurances.Count)<span class="govuk-visually-hidden"> Change</span>
-                        </a>
-                    </dd>
+                    <authorize scope="@OrgScopeRequirement.Editor">
+                        <dd class="govuk-summary-list__actions">
+                            <a class="govuk-link" href="trade-assurance-summary">
+                                @GetActionStringWithItems(details.CompletedTradeAssurance, details.TradeAssurances.Count)
+                            </a>
+                        </dd>
+                    </authorize>
                 </div>
 
                 @if (details.SupplierType == CO.CDP.Organisation.WebApiClient.SupplierType.Organisation)
@@ -254,11 +270,13 @@
                                 RenderOperationTypes(Model.OperationTypes);
                             }
                         </dt>
-                        <dd class="govuk-summary-list__actions">
-                            <a class="govuk-link" href="operation">
-                                @GetActionString(details.CompletedOperationType)<span class="govuk-visually-hidden"> Change</span>
-                            </a>
-                        </dd>
+                        <authorize scope="@OrgScopeRequirement.Editor">
+                            <dd class="govuk-summary-list__actions">
+                                <a class="govuk-link" href="operation">
+                                    @GetActionString(details.CompletedOperationType)
+                                </a>
+                            </dd>
+                        </authorize>
                     </div>
 
                     <div class="govuk-summary-list__row">
@@ -271,11 +289,13 @@
                                 RenderLegalForm(Model.SupplierInformation.LegalForm);
                             }
                         </dt>
-                        <dd class="govuk-summary-list__actions">
-                            <a class="govuk-link" href="company-act-question">
-                                @GetActionString(details.CompletedLegalForm)<span class="govuk-visually-hidden"> Change</span>
-                            </a>
-                        </dd>
+                        <authorize scope="@OrgScopeRequirement.Editor">
+                            <dd class="govuk-summary-list__actions">
+                                <a class="govuk-link" href="company-act-question">
+                                    @GetActionString(details.CompletedLegalForm)
+                                </a>
+                            </dd>
+                        </authorize>
                     </div>
                 }
             </dl>
