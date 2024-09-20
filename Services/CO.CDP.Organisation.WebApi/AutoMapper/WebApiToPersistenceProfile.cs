@@ -79,7 +79,10 @@ public class WebApiToPersistenceProfile : Profile
             .ForMember(m => m.SupplierInfo, o => o.Ignore())
             .ForMember(m => m.BuyerInfo, o => o.Ignore())
             .ForMember(m => m.Identifiers, o => o.MapFrom<IdentifiersResolver>())
-            .ForMember(m => m.ContactPoints, o => o.MapFrom(m => new[] { m.ContactPoint }));
+            .ForMember(m => m.ContactPoints, o => o.MapFrom(m => new[] { m.ContactPoint }))
+            .ForMember(m => m.ApprovedBy, o => o.Ignore())
+            .ForMember(m => m.ApprovedComment, o => o.Ignore())
+            .ForMember(m => m.ApprovedOn, o => o.Ignore());
 
         CreateMap<Persistence.Organisation.SupplierInformation, SupplierInformation>()
             .ForMember(m => m.OrganisationName, o => o.Ignore());
