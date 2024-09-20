@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
+using static CO.CDP.Authentication.Constants;
 
 namespace CO.CDP.Authentication.Authorization;
 
@@ -13,20 +14,20 @@ public class ChannelAuthorizationHandler
             return Task.CompletedTask;
         }
 
-        var requestChannel = context.User.FindFirstValue("channel");
+        var requestChannel = context.User.FindFirstValue(ClaimType.Channel);
         if (string.IsNullOrWhiteSpace(requestChannel))
         {
             return Task.CompletedTask;
         }
 
         var hasOneLoginChannelClaim = requirement.Channels.Contains(AuthenticationChannel.OneLogin)
-                                        && requestChannel == "one-login";
+                                        && requestChannel == Channel.OneLogin;
 
         var hasOrganisationKeyChannelClaim = requirement.Channels.Contains(AuthenticationChannel.OrganisationKey)
-                                        && requestChannel == "organisation-key";
+                                        && requestChannel == Channel.OrganisationKey;
 
         var hasServiceKeyChannelClaim = requirement.Channels.Contains(AuthenticationChannel.ServiceKey)
-                                        && requestChannel == "service-key";
+                                        && requestChannel == Channel.ServiceKey;
 
         if (hasOneLoginChannelClaim || hasOrganisationKeyChannelClaim || hasServiceKeyChannelClaim)
         {

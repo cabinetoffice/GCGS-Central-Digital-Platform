@@ -3,27 +3,26 @@ using CO.CDP.Organisation.WebApi.UseCase;
 using CO.CDP.OrganisationInformation;
 using CO.CDP.TestKit.Mvc;
 using FluentAssertions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Moq;
 using System.Net;
 using System.Net.Http.Json;
-using System.Text;
-using System.Text.Json;
+using System.Security.Claims;
+using static CO.CDP.Authentication.Constants;
 using static System.Net.HttpStatusCode;
 
 namespace CO.CDP.Organisation.WebApi.Tests.Api;
-public class RegisterOrganisationTest
+public class OrganisationEndpointsTests
 {
     private readonly HttpClient _httpClient;
     private readonly Mock<IUseCase<RegisterOrganisation, Model.Organisation>> _registerOrganisationUseCase = new();
     private readonly Mock<IUseCase<string, IEnumerable<Model.Organisation>>> _getOrganisationsUseCase = new();
-    private readonly Mock<IUseCase<Guid, SupplierInformation?>> _getSupplierInformationUseCase = new();
-    private readonly Mock<IUseCase<(Guid, UpdateSupplierInformation), bool>> _updatesSupplierInformationUseCase = new();
+    private readonly Mock<IUseCase<Guid, Model.Organisation>> _getOrganisationUseCase = new();
     private readonly Mock<IUseCase<(Guid, UpdateOrganisation), bool>> _updatesOrganisationUseCase = new();
-    private readonly Mock<IUseCase<(Guid, DeleteSupplierInformation), bool>> _deleteSupplierInformationUseCase = new();
 
-    public RegisterOrganisationTest()
+    public OrganisationEndpointsTests()
     {
         TestWebApplicationFactory<Program> factory = new(builder =>
         {
@@ -31,10 +30,8 @@ public class RegisterOrganisationTest
             {
                 services.AddScoped(_ => _registerOrganisationUseCase.Object);
                 services.AddScoped(_ => _getOrganisationsUseCase.Object);
-                services.AddScoped(_ => _getSupplierInformationUseCase.Object);
-                services.AddScoped(_ => _updatesSupplierInformationUseCase.Object);
+                services.AddScoped(_ => _getOrganisationUseCase.Object);
                 services.AddScoped(_ => _updatesOrganisationUseCase.Object);
-                services.AddScoped(_ => _deleteSupplierInformationUseCase.Object);
             });
         });
         _httpClient = factory.CreateClient();
@@ -44,19 +41,7 @@ public class RegisterOrganisationTest
     public async Task ItRegistersNewOrganisation()
     {
         var command = GivenRegisterOrganisationCommand();
-        var organisation = new Model.Organisation
-        {
-            Id = Guid.NewGuid(),
-            Name = "TheOrganisation",
-            Identifier = command.Identifier.AsView(),
-            AdditionalIdentifiers = command.AdditionalIdentifiers.AsView(),
-            Addresses = command.Addresses.AsView(),
-            ContactPoint = command.ContactPoint.AsView(),
-            Roles = command.Roles
-        };
-
-        _registerOrganisationUseCase.Setup(useCase => useCase.Execute(It.IsAny<RegisterOrganisation>()))
-                                    .ReturnsAsync(organisation);
+        var organisation = SetupRegisterOrganisationUseCaseMock(command);
 
         var response = await _httpClient.PostAsJsonAsync("/organisations", command);
 
@@ -103,70 +88,6 @@ public class RegisterOrganisationTest
         returnedOrganisations.Should().ContainEquivalentOf(organisation);
     }
 
-    [Fact]
-    public async Task GetSupplierInformation_ValidOrganisationId_ReturnsOk()
-    {
-        var organisationId = Guid.NewGuid();
-        var supplierInformation = new SupplierInformation { OrganisationName = "FakeOrg" };
-        _getSupplierInformationUseCase.Setup(uc => uc.Execute(organisationId)).ReturnsAsync(supplierInformation);
-
-        var returnedSupplierInformation = await _httpClient.GetFromJsonAsync<SupplierInformation>(
-            $"/organisations/{organisationId}/supplier-information");
-
-        returnedSupplierInformation.Should().BeEquivalentTo(supplierInformation);
-    }
-
-    [Fact]
-    public async Task GetSupplierInformation_OrganisationNotFound_ReturnsNotFound()
-    {
-        var organisationId = Guid.NewGuid();
-        _getSupplierInformationUseCase.Setup(uc => uc.Execute(organisationId)).ReturnsAsync((SupplierInformation?)null);
-
-        var response = await _httpClient.GetAsync($"/organisations/{organisationId}/supplier-information");
-
-        response.StatusCode.Should().Be(NotFound);
-    }
-
-    [Fact]
-    public async Task GetSupplierInformation_InvalidOrganisationId_ReturnsUnprocessableEntity()
-    {
-        var invalidOrganisationId = "invalid-guid";
-
-        var response = await _httpClient.GetAsync($"/organisations/{invalidOrganisationId}/supplier-information");
-
-        response.StatusCode.Should().Be(UnprocessableEntity);
-    }
-
-    [Theory]
-    [InlineData(true, NoContent)]
-    [InlineData(false, NotFound)]
-    public async Task UpdateSupplierInformation_TestCases(bool useCaseResult, HttpStatusCode expectedStatusCode)
-    {
-        var organisationId = Guid.NewGuid();
-        var updateSupplierInformation = new UpdateSupplierInformation { Type = SupplierInformationUpdateType.SupplierType, SupplierInformation = new() };
-        var command = (organisationId, updateSupplierInformation);
-
-        if (useCaseResult)
-            _updatesSupplierInformationUseCase.Setup(uc => uc.Execute(command)).ReturnsAsync(true);
-        else
-            _updatesSupplierInformationUseCase.Setup(uc => uc.Execute(command)).ThrowsAsync(new UnknownOrganisationException(""));
-
-        var response = await _httpClient.PatchAsJsonAsync($"/organisations/{organisationId}/supplier-information", updateSupplierInformation);
-
-        response.StatusCode.Should().Be(expectedStatusCode);
-    }
-
-    [Fact]
-    public async Task UpdateSupplierInformation_InvalidOrganisationId_ReturnsUnprocessableEntity()
-    {
-        var invalidOrganisationId = "invalid-guid";
-
-        var response = await _httpClient.PatchAsJsonAsync($"/organisations/{invalidOrganisationId}/supplier-information",
-            new UpdateSupplierInformation { Type = SupplierInformationUpdateType.SupplierType, SupplierInformation = new() });
-
-        response.StatusCode.Should().Be(UnprocessableEntity);
-    }
-
     [Theory]
     [InlineData(true, NoContent)]
     [InlineData(false, NotFound)]
@@ -197,43 +118,92 @@ public class RegisterOrganisationTest
         response.StatusCode.Should().Be(UnprocessableEntity);
     }
 
+
     [Theory]
-    [InlineData(true, NoContent)]
-    [InlineData(false, NotFound)]
-    public async Task DeleteSupplierInformation_TestCases(bool useCaseResult, HttpStatusCode expectedStatusCode)
+    [InlineData(Created, Channel.OneLogin)]
+    [InlineData(Forbidden, Channel.ServiceKey)]
+    [InlineData(Forbidden, Channel.OrganisationKey)]
+    [InlineData(Forbidden, "unknown_channel")]
+    public async Task CreateOrganisation_Authorization_ReturnsExpectedStatusCode(HttpStatusCode expectedStatusCode, string channel)
     {
-        var organisationId = Guid.NewGuid();
-        var deleteSupplierInformation = new DeleteSupplierInformation { Type = SupplierInformationDeleteType.TradeAssurance, TradeAssuranceId = Guid.NewGuid() };
-        var command = (organisationId, deleteSupplierInformation);
+        var command = GivenRegisterOrganisationCommand();
+        SetupRegisterOrganisationUseCaseMock(command);
+        var factory = new TestAuthorizationWebApplicationFactory<Program>(
+            [new Claim(ClaimType.Channel, channel)],
+            serviceCollection: services => services.AddScoped(_ => _registerOrganisationUseCase.Object));
+        var httpClient = factory.CreateClient();
 
-        if (useCaseResult)
-            _deleteSupplierInformationUseCase.Setup(uc => uc.Execute(command)).ReturnsAsync(true);
-        else
-            _deleteSupplierInformationUseCase.Setup(uc => uc.Execute(command)).ThrowsAsync(new UnknownOrganisationException(""));
-
-        var response = await SendDeleteRequestAsync($"/organisations/{organisationId}/supplier-information", deleteSupplierInformation);
+        var response = await httpClient.PostAsJsonAsync("/organisations", command);
 
         response.StatusCode.Should().Be(expectedStatusCode);
     }
 
-    [Fact]
-    public async Task DeleteSupplierInformation_InvalidOrganisationId_ReturnsUnprocessableEntity()
+    [Theory]
+    [InlineData(OK, Channel.OneLogin, OrganisationPersonScope.Admin)]
+    [InlineData(OK, Channel.OneLogin, OrganisationPersonScope.Editor)]
+    [InlineData(OK, Channel.OneLogin, OrganisationPersonScope.Viewer)]
+    [InlineData(OK, Channel.ServiceKey)]
+    [InlineData(Forbidden, Channel.OrganisationKey)]
+    [InlineData(Forbidden, "unknown_channel")]
+    [InlineData(Forbidden, Channel.OneLogin, OrganisationPersonScope.Responder)]
+    public async Task GetOrganisation_Authorization_ReturnsExpectedStatusCode(HttpStatusCode expectedStatusCode, string channel, string? scope = null)
     {
-        var invalidOrganisationId = "invalid-guid";
-        var response = await SendDeleteRequestAsync($"/organisations/{invalidOrganisationId}/supplier-information", "{}");
+        var organisationId = Guid.NewGuid();
 
-        response.StatusCode.Should().Be(UnprocessableEntity);
+        _getOrganisationUseCase.Setup(useCase => useCase.Execute(organisationId))
+                                    .ReturnsAsync(GivenOrganisation(organisationId));
+
+        var factory = new TestAuthorizationWebApplicationFactory<Program>(
+            [new Claim(ClaimType.Channel, channel)],
+            organisationId,
+            scope,
+            services => services.AddScoped(_ => _getOrganisationUseCase.Object));
+
+        var response = await factory.CreateClient().GetAsync($"/organisations/{organisationId}");
+
+        response.StatusCode.Should().Be(expectedStatusCode);
     }
 
-    private async Task<HttpResponseMessage> SendDeleteRequestAsync(string relativeUri, object obj)
+    [Theory]
+    [InlineData(NoContent, Channel.OneLogin, OrganisationPersonScope.Admin)]
+    [InlineData(NoContent, Channel.OneLogin, OrganisationPersonScope.Editor)]
+    [InlineData(Forbidden, Channel.OneLogin, OrganisationPersonScope.Responder)]
+    [InlineData(Forbidden, Channel.OneLogin, OrganisationPersonScope.Viewer)]
+    [InlineData(Forbidden, Channel.ServiceKey)]
+    [InlineData(Forbidden, Channel.OrganisationKey)]
+    [InlineData(Forbidden, "unknown_channel")]
+    public async Task UpdateOrganisation_Authorization_ReturnsExpectedStatusCode(HttpStatusCode expectedStatusCode, string channel, string? scope = null)
     {
-        var request = new HttpRequestMessage
+        var organisationId = Guid.NewGuid();
+        var updateOrganisation = new UpdateOrganisation { Type = OrganisationUpdateType.AdditionalIdentifiers, Organisation = new() };
+        var command = (organisationId, updateOrganisation);
+
+        _updatesOrganisationUseCase.Setup(uc => uc.Execute(command)).ReturnsAsync(true);
+
+        var factory = new TestAuthorizationWebApplicationFactory<Program>(
+            [new Claim(ClaimType.Channel, channel)],
+            organisationId,
+            scope,
+            services => services.AddScoped(_ => _updatesOrganisationUseCase.Object));
+
+        var response = await factory.CreateClient().PatchAsJsonAsync($"/organisations/{organisationId}", updateOrganisation);
+
+        response.StatusCode.Should().Be(expectedStatusCode);
+    }
+
+    public static Model.Organisation GivenOrganisation(Guid organisationId)
+    {
+        var command = GivenRegisterOrganisationCommand();
+        return new Model.Organisation
         {
-            Method = HttpMethod.Delete,
-            RequestUri = new Uri(_httpClient.BaseAddress!, relativeUri),
-            Content = new StringContent(JsonSerializer.Serialize(obj), Encoding.UTF8, "application/json")
+            Id = organisationId,
+            Name = "TheOrganisation",
+            Identifier = command.Identifier.AsView(),
+            AdditionalIdentifiers = command.AdditionalIdentifiers.AsView(),
+            Addresses = command.Addresses.AsView(),
+            ContactPoint = command.ContactPoint.AsView(),
+            Roles = command.Roles
         };
-        return await _httpClient.SendAsync(request);
     }
 
     private static RegisterOrganisation GivenRegisterOrganisationCommand()
@@ -276,5 +246,24 @@ public class RegisterOrganisationTest
             },
             Roles = [PartyRole.Tenderer]
         };
+    }
+
+    private Model.Organisation SetupRegisterOrganisationUseCaseMock(RegisterOrganisation command)
+    {
+        var organisation = new Model.Organisation
+        {
+            Id = Guid.NewGuid(),
+            Name = "TheOrganisation",
+            Identifier = command.Identifier.AsView(),
+            AdditionalIdentifiers = command.AdditionalIdentifiers.AsView(),
+            Addresses = command.Addresses.AsView(),
+            ContactPoint = command.ContactPoint.AsView(),
+            Roles = command.Roles
+        };
+
+        _registerOrganisationUseCase.Setup(useCase => useCase.Execute(It.IsAny<RegisterOrganisation>()))
+                                    .ReturnsAsync(organisation);
+
+        return organisation;
     }
 }
