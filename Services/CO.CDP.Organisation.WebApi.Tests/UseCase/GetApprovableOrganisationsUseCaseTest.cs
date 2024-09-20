@@ -64,9 +64,9 @@ public class GetApprovableOrganisationsUseCaseTest
                     Guid = Guid.NewGuid(),
                     FirstName = "John",
                     LastName = "Doe",
-                    Email = null
+                    Email = null!
                 },
-                Tenant = null
+                Tenant = null!
             },
             new CO.CDP.OrganisationInformation.Persistence.Organisation
             {
@@ -79,14 +79,14 @@ public class GetApprovableOrganisationsUseCaseTest
                     {
                         Scheme = "CDP-PPON",
                         IdentifierId = "456",
-                        LegalName = null,
+                        LegalName = null!,
                         Primary = false
                     }
                 },
                 ContactPoints = new List<CO.CDP.OrganisationInformation.Persistence.Organisation.ContactPoint>(),
                 ApprovedOn = null,
                 ApprovedBy = null,
-                Tenant = null
+                Tenant = null!
             }
         };
 
@@ -110,7 +110,7 @@ public class GetApprovableOrganisationsUseCaseTest
             Role = "other",
             Email = "contact@org1.com",
             ApprovedOn = organisations[0].ApprovedOn,
-            ApprovedById = organisations[0].ApprovedBy.Guid,
+            ApprovedById = organisations[0]!.ApprovedBy!.Guid,
             ApprovedByName = "John Doe"
         }, options => options.Excluding(o => o.Ppon)); // Ppon is not set for this org
 
@@ -120,7 +120,7 @@ public class GetApprovableOrganisationsUseCaseTest
             Name = "Org 2",
             Role = "supplier",
             Ppon = "456",
-            Identifiers = null,
+            Identifiers = null!,
             Email = null
         }, options => options.Excluding(o => o.Identifiers).Excluding(o => o.Email).Excluding(o => o.ApprovedOn).Excluding(o => o.ApprovedById).Excluding(o => o.ApprovedByName));
 
@@ -137,7 +137,7 @@ public class GetApprovableOrganisationsUseCaseTest
             Name = "Buyer Org",
             BuyerInfo = new CO.CDP.OrganisationInformation.Persistence.Organisation.BuyerInformation(),
             Identifiers = new List<CO.CDP.OrganisationInformation.Persistence.Organisation.Identifier>(),
-            Tenant = null
+            Tenant = null!
         };
 
         _organisationRepositoryMock.Setup(repo => repo.Get("buyers"))
