@@ -1,4 +1,5 @@
 using CO.CDP.MQ.Hosting;
+using CO.CDP.MQ.Tests.Hosting.TestKit;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
@@ -25,32 +26,5 @@ public class DispatcherBackgroundServiceTest
         var result = backgroundService.StartAsync(cancellationToken);
 
         result.Should().Be(task);
-    }
-}
-
-internal class TestServiceScopeFactory(IServiceProvider services) : IServiceScopeFactory
-{
-    public IServiceScope CreateScope()
-    {
-        return new TestServiceScope(services);
-    }
-}
-
-internal class TestServiceScope(IServiceProvider services) : IServiceScope
-{
-    public void Dispose()
-    {
-    }
-
-    public IServiceProvider ServiceProvider => services;
-}
-
-internal class TestServiceProvider : IServiceProvider
-{
-    public readonly Dictionary<Type, object> Services = new();
-
-    public object? GetService(Type serviceType)
-    {
-        return Services.GetValueOrDefault(serviceType);
     }
 }

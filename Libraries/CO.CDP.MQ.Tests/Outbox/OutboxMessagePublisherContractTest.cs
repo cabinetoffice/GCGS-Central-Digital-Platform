@@ -1,11 +1,11 @@
 using System.Text.Json;
-using CO.CDP.MQ.Database;
+using CO.CDP.MQ.Outbox;
 using CO.CDP.Testcontainers.PostgreSql;
 using Microsoft.Extensions.Logging;
 
-namespace CO.CDP.MQ.Tests.Database;
+namespace CO.CDP.MQ.Tests.Outbox;
 
-public class DatabasePublisherContractTest(PostgreSqlFixture postgreSql)
+public class OutboxMessagePublisherContractTest(PostgreSqlFixture postgreSql)
     : PublisherContractTest, IClassFixture<PostgreSqlFixture>
 {
     private readonly DatabaseOutboxMessageRepository<TestDbContext> _outboxMessages = new(postgreSql.TestDbContext());
@@ -20,9 +20,9 @@ public class DatabasePublisherContractTest(PostgreSqlFixture postgreSql)
 
     protected override Task<IPublisher> CreatePublisher()
     {
-        return Task.FromResult<IPublisher>(new DatabasePublisher(
+        return Task.FromResult<IPublisher>(new OutboxMessagePublisher(
             _outboxMessages,
-            LoggerFactory.Create(_ => { }).CreateLogger<DatabasePublisher>()
+            LoggerFactory.Create(_ => { }).CreateLogger<OutboxMessagePublisher>()
         ));
     }
 
