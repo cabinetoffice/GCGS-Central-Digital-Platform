@@ -1,7 +1,9 @@
 using CO.CDP.EntityFrameworkCore.Timestamps;
+using Microsoft.EntityFrameworkCore;
 
 namespace CO.CDP.OrganisationInformation.Persistence.Forms;
 
+[Index(nameof(Name), IsUnique = true)]
 public class FormQuestion : IEntityDate
 {
     public int Id { get; set; }
