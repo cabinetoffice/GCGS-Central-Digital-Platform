@@ -959,7 +959,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                         .IsRequired()
                         .HasConstraintName("fk_connected_entities_organisations_supplier_organisation_id");
 
-                    b.OwnsMany("CO.CDP.OrganisationInformation.Persistence.ConnectedEntity.Addresses#CO.CDP.OrganisationInformation.Persistence.ConnectedEntity+ConnectedEntityAddress", "Addresses", b1 =>
+                    b.OwnsMany("CO.CDP.OrganisationInformation.Persistence.ConnectedEntity+ConnectedEntityAddress", "Addresses", b1 =>
                         {
                             b1.Property<int>("ConnectedEntityId")
                                 .HasColumnType("integer")
@@ -1002,7 +1002,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                             b1.Navigation("Address");
                         });
 
-                    b.OwnsOne("CO.CDP.OrganisationInformation.Persistence.ConnectedEntity.IndividualOrTrust#CO.CDP.OrganisationInformation.Persistence.ConnectedEntity+ConnectedIndividualTrust", "IndividualOrTrust", b1 =>
+                    b.OwnsOne("CO.CDP.OrganisationInformation.Persistence.ConnectedEntity+ConnectedIndividualTrust", "IndividualOrTrust", b1 =>
                         {
                             b1.Property<int>("Id")
                                 .HasColumnType("integer")
@@ -1069,7 +1069,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                                 .HasConstraintName("fk_connected_individual_trust_connected_entities_connected_ind");
                         });
 
-                    b.OwnsOne("CO.CDP.OrganisationInformation.Persistence.ConnectedEntity.Organisation#CO.CDP.OrganisationInformation.Persistence.ConnectedEntity+ConnectedOrganisation", "Organisation", b1 =>
+                    b.OwnsOne("CO.CDP.OrganisationInformation.Persistence.ConnectedEntity+ConnectedOrganisation", "Organisation", b1 =>
                         {
                             b1.Property<int>("Id")
                                 .HasColumnType("integer")
@@ -1246,53 +1246,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                         .IsRequired()
                         .HasConstraintName("fk_organisations_tenants_tenant_id");
 
-                    b.OwnsMany("CO.CDP.OrganisationInformation.Persistence.Organisation.Addresses#CO.CDP.OrganisationInformation.Persistence.Organisation+OrganisationAddress", "Addresses", b1 =>
-                        {
-                            b1.Property<int>("Id")
-                                .ValueGeneratedOnAdd()
-                                .HasColumnType("integer")
-                                .HasColumnName("id");
-
-                            NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b1.Property<int>("Id"));
-
-                            b1.Property<int>("AddressId")
-                                .HasColumnType("integer")
-                                .HasColumnName("address_id");
-
-                            b1.Property<int>("OrganisationId")
-                                .HasColumnType("integer")
-                                .HasColumnName("organisation_id");
-
-                            b1.Property<int>("Type")
-                                .HasColumnType("integer")
-                                .HasColumnName("type");
-
-                            b1.HasKey("Id")
-                                .HasName("pk_organisation_address");
-
-                            b1.HasIndex("AddressId")
-                                .HasDatabaseName("ix_organisation_address_address_id");
-
-                            b1.HasIndex("OrganisationId")
-                                .HasDatabaseName("ix_organisation_address_organisation_id");
-
-                            b1.ToTable("organisation_address", (string)null);
-
-                            b1.HasOne("CO.CDP.OrganisationInformation.Persistence.Address", "Address")
-                                .WithMany()
-                                .HasForeignKey("AddressId")
-                                .OnDelete(DeleteBehavior.Cascade)
-                                .IsRequired()
-                                .HasConstraintName("fk_organisation_address_address_address_id");
-
-                            b1.WithOwner()
-                                .HasForeignKey("OrganisationId")
-                                .HasConstraintName("fk_organisation_address_organisations_organisation_id");
-
-                            b1.Navigation("Address");
-                        });
-
-                    b.OwnsOne("CO.CDP.OrganisationInformation.Persistence.Organisation.BuyerInfo#CO.CDP.OrganisationInformation.Persistence.Organisation+BuyerInformation", "BuyerInfo", b1 =>
+                    b.OwnsOne("CO.CDP.OrganisationInformation.Persistence.Organisation+BuyerInformation", "BuyerInfo", b1 =>
                         {
                             b1.Property<int>("OrganisationId")
                                 .HasColumnType("integer")
@@ -1329,7 +1283,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                                 .HasConstraintName("fk_buyer_information_organisations_id");
                         });
 
-                    b.OwnsMany("CO.CDP.OrganisationInformation.Persistence.Organisation.ContactPoints#CO.CDP.OrganisationInformation.Persistence.Organisation+ContactPoint", "ContactPoints", b1 =>
+                    b.OwnsMany("CO.CDP.OrganisationInformation.Persistence.Organisation+ContactPoint", "ContactPoints", b1 =>
                         {
                             b1.Property<int>("Id")
                                 .ValueGeneratedOnAdd()
@@ -1383,7 +1337,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                                 .HasConstraintName("fk_contact_points_organisations_organisation_id");
                         });
 
-                    b.OwnsMany("CO.CDP.OrganisationInformation.Persistence.Organisation.Identifiers#CO.CDP.OrganisationInformation.Persistence.Organisation+Identifier", "Identifiers", b1 =>
+                    b.OwnsMany("CO.CDP.OrganisationInformation.Persistence.Organisation+Identifier", "Identifiers", b1 =>
                         {
                             b1.Property<int>("Id")
                                 .ValueGeneratedOnAdd()
@@ -1447,7 +1401,53 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                                 .HasConstraintName("fk_identifiers_organisations_organisation_id");
                         });
 
-                    b.OwnsOne("CO.CDP.OrganisationInformation.Persistence.Organisation.SupplierInfo#CO.CDP.OrganisationInformation.Persistence.Organisation+SupplierInformation", "SupplierInfo", b1 =>
+                    b.OwnsMany("CO.CDP.OrganisationInformation.Persistence.Organisation+OrganisationAddress", "Addresses", b1 =>
+                        {
+                            b1.Property<int>("Id")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("integer")
+                                .HasColumnName("id");
+
+                            NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b1.Property<int>("Id"));
+
+                            b1.Property<int>("AddressId")
+                                .HasColumnType("integer")
+                                .HasColumnName("address_id");
+
+                            b1.Property<int>("OrganisationId")
+                                .HasColumnType("integer")
+                                .HasColumnName("organisation_id");
+
+                            b1.Property<int>("Type")
+                                .HasColumnType("integer")
+                                .HasColumnName("type");
+
+                            b1.HasKey("Id")
+                                .HasName("pk_organisation_address");
+
+                            b1.HasIndex("AddressId")
+                                .HasDatabaseName("ix_organisation_address_address_id");
+
+                            b1.HasIndex("OrganisationId")
+                                .HasDatabaseName("ix_organisation_address_organisation_id");
+
+                            b1.ToTable("organisation_address", (string)null);
+
+                            b1.HasOne("CO.CDP.OrganisationInformation.Persistence.Address", "Address")
+                                .WithMany()
+                                .HasForeignKey("AddressId")
+                                .OnDelete(DeleteBehavior.Cascade)
+                                .IsRequired()
+                                .HasConstraintName("fk_organisation_address_address_address_id");
+
+                            b1.WithOwner()
+                                .HasForeignKey("OrganisationId")
+                                .HasConstraintName("fk_organisation_address_organisations_organisation_id");
+
+                            b1.Navigation("Address");
+                        });
+
+                    b.OwnsOne("CO.CDP.OrganisationInformation.Persistence.Organisation+SupplierInformation", "SupplierInfo", b1 =>
                         {
                             b1.Property<int>("OrganisationId")
                                 .HasColumnType("integer")
@@ -1523,7 +1523,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                                 .HasForeignKey("OrganisationId")
                                 .HasConstraintName("fk_supplier_information_organisations_id");
 
-                            b1.OwnsOne("CO.CDP.OrganisationInformation.Persistence.Organisation.SupplierInfo#CO.CDP.OrganisationInformation.Persistence.Organisation+SupplierInformation.LegalForm#CO.CDP.OrganisationInformation.Persistence.Organisation+LegalForm", "LegalForm", b2 =>
+                            b1.OwnsOne("CO.CDP.OrganisationInformation.Persistence.Organisation+LegalForm", "LegalForm", b2 =>
                                 {
                                     b2.Property<int>("SupplierInformationOrganisationId")
                                         .HasColumnType("integer")
@@ -1569,7 +1569,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                                         .HasConstraintName("fk_legal_forms_supplier_information_id");
                                 });
 
-                            b1.OwnsMany("CO.CDP.OrganisationInformation.Persistence.Organisation.SupplierInfo#CO.CDP.OrganisationInformation.Persistence.Organisation+SupplierInformation.Qualifications#CO.CDP.OrganisationInformation.Persistence.Organisation+Qualification", "Qualifications", b2 =>
+                            b1.OwnsMany("CO.CDP.OrganisationInformation.Persistence.Organisation+Qualification", "Qualifications", b2 =>
                                 {
                                     b2.Property<int>("Id")
                                         .ValueGeneratedOnAdd()
@@ -1629,7 +1629,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                                         .HasConstraintName("fk_qualifications_supplier_information_supplier_information_or");
                                 });
 
-                            b1.OwnsMany("CO.CDP.OrganisationInformation.Persistence.Organisation.SupplierInfo#CO.CDP.OrganisationInformation.Persistence.Organisation+SupplierInformation.TradeAssurances#CO.CDP.OrganisationInformation.Persistence.Organisation+TradeAssurance", "TradeAssurances", b2 =>
+                            b1.OwnsMany("CO.CDP.OrganisationInformation.Persistence.Organisation+TradeAssurance", "TradeAssurances", b2 =>
                                 {
                                     b2.Property<int>("Id")
                                         .ValueGeneratedOnAdd()
