@@ -70,6 +70,22 @@ public class DatabaseAuthenticationKeyRepositoryTest(PostgreSqlFixture postgreSq
         found.As<AuthenticationKey>().Key.Should().BeSameAs(key);
     }
 
+    [Fact]
+    public void ItRejectsTwoApiKeyWithTheSameName()
+    {
+        using var repository = AuthenticationKeyRepository();
+        var organisation = GivenOrganisation();
+        var key = Guid.NewGuid().ToString();
+        var authenticationKey1 = GivenAuthenticationKey(key: key, organisation: organisation);
+        var authenticationKey2 = GivenAuthenticationKey(key: key, organisation: organisation);
+
+        repository.Save(authenticationKey1);
+        
+        repository.Invoking(r => r.Save(authenticationKey2))
+            .Should().ThrowAsync<IAuthenticationKeyRepository.AuthenticationKeyRepositoryException.DuplicateAuthenticationKeyNameException>()
+            .WithMessage($"Authentication Key with name `fts` already exists.");
+    }
+
     private static AuthenticationKey GivenAuthenticationKey(
         string name = "fts",
         string key = "api-key",

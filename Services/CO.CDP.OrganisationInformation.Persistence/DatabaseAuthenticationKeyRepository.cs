@@ -12,8 +12,15 @@ public class DatabaseAuthenticationKeyRepository(OrganisationInformationContext 
 
     public async Task Save(AuthenticationKey authenticationKey)
     {
-        context.Update(authenticationKey);
-        await context.SaveChangesAsync();
+        try
+        {
+            context.Update(authenticationKey);
+            await context.SaveChangesAsync();
+        }
+        catch (DbUpdateException cause)
+        {
+            HandleDbUpdateException(authenticationKey, cause);
+        }
     }
 
     public void Dispose()
@@ -33,6 +40,17 @@ public class DatabaseAuthenticationKeyRepository(OrganisationInformationContext 
         return await context.AuthenticationKeys
             .Include(a => a.Organisation)
             .Where(t => t.Organisation!.Guid == organisationId)
-            .FirstOrDefaultAsync(t => t.Name == name && t.OrganisationId == t.Organisation!.Id);
+            .FirstOrDefaultAsync(t => t.Name == name);
+    }
+
+    private static void HandleDbUpdateException(AuthenticationKey authenticationKey, DbUpdateException cause)
+    {
+        switch (cause.InnerException)
+        {
+            case { } e when e.ContainsDuplicateKey("_authentication_keys_name_organisation_id"):
+                throw new IAuthenticationKeyRepository.AuthenticationKeyRepositoryException.DuplicateAuthenticationKeyNameException(
+                    $"Authentication Key with name `{authenticationKey.Name}` already exists.", cause);
+            default: throw cause;
+        }
     }
 }

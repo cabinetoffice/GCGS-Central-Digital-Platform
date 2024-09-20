@@ -1,8 +1,10 @@
 using CO.CDP.Organisation.WebApiClient;
+using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.WebApiClients;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
+using OrganisationWebApiClient = CO.CDP.Organisation.WebApiClient;
 
 namespace CO.CDP.OrganisationApp.Pages.ApiKeyManagement;
 
@@ -32,10 +34,36 @@ public class CreateApiKeyModel(IOrganisationClient organisationClient) : PageMod
             await organisationClient.CreateAuthenticationKey(Id, registerApiKey);
 
             return RedirectToPage("NewApiKeyDetails", new { Id, apiKey });
+        }        
+        catch (ApiException<OrganisationWebApiClient.ProblemDetails> aex)
+        {
+            MapApiExceptions(aex);
+            return Page();
         }
         catch (ApiException ex) when (ex.StatusCode == 404)
         {
             return Redirect("/page-not-found");
         }
+    }
+
+    private void MapApiExceptions(ApiException<OrganisationWebApiClient.ProblemDetails> aex)
+    {
+        var code = ExtractErrorCode(aex);
+
+        if (!string.IsNullOrEmpty(code))
+        {
+            ModelState.AddModelError(string.Empty, code switch
+            {
+                ErrorCodes.APIKEY_NAME_ALREADY_EXISTS => ErrorMessagesList.DuplicateApiKeyName,
+                _ => ErrorMessagesList.UnexpectedError
+            });
+        }
+    }
+
+    private static string? ExtractErrorCode(ApiException<OrganisationWebApiClient.ProblemDetails> aex)
+    {
+        return aex.Result.AdditionalProperties.TryGetValue("code", out var code) && code is string codeString
+            ? codeString
+            : null;
     }
 }
