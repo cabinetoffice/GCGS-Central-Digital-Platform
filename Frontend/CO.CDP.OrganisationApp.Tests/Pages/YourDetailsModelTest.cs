@@ -158,7 +158,7 @@ public class YourDetailsModelTest
 
         personClientMock.Verify(s => s.CreatePersonAsync(It.IsAny<NewPerson>()), Times.Once);
         actionResult.Should().BeOfType<RedirectToPageResult>()
-            .Which.PageName.Should().Be("OrganisationSelection");
+            .Which.PageName.Should().Be("Organisation/OrganisationSelection");
     }
 
     [Fact]
@@ -188,7 +188,7 @@ public class YourDetailsModelTest
         var actionResult = await model.OnPost("http://test-domain/org/1");
 
         actionResult.Should().BeOfType<RedirectToPageResult>()
-            .Which.PageName.Should().Be("OrganisationSelection");
+            .Which.PageName.Should().Be("Organisation/OrganisationSelection");
     }
 
     [Fact]

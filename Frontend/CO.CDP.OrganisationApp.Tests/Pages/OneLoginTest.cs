@@ -100,7 +100,7 @@ public class OneLoginTest
         var results = await model.OnGet("user-info");
 
         results.Should().BeOfType<RedirectToPageResult>()
-            .Which.PageName.Should().Be("OrganisationSelection");
+            .Which.PageName.Should().Be("Organisation/OrganisationSelection");
     }
 
     [Fact]
@@ -128,7 +128,7 @@ public class OneLoginTest
         var results = await model.OnGet("user-info", "http://test-domain/org/1");
 
         results.Should().BeOfType<RedirectToPageResult>()
-            .Which.PageName.Should().Be("OrganisationSelection");
+            .Which.PageName.Should().Be("Organisation/OrganisationSelection");
     }
 
     [Fact]

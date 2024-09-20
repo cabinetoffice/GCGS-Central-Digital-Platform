@@ -21,7 +21,7 @@ public class SupplierQualificationSummaryModel(
     public bool? HasQualification { get; set; }
 
     [BindProperty]
-    public ICollection<Organisation.WebApiClient.Qualification> Qualifications { get; set; } = [];
+    public ICollection<CO.CDP.Organisation.WebApiClient.Qualification> Qualifications { get; set; } = [];
 
     [BindProperty]
     public bool CompletedQualification { get; set; }

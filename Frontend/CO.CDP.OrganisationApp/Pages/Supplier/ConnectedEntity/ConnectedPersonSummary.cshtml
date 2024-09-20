@@ -21,7 +21,7 @@
 
             @foreach (var ce in Model.ConnectedEntities)
             {
-                var entityTypePage = (ce.EntityType == Organisation.WebApiClient.ConnectedEntityType.Organisation
+                var entityTypePage = (ce.EntityType == CO.CDP.Organisation.WebApiClient.ConnectedEntityType.Organisation
                 ? "check-answers-organisation" : "check-answer-individual-trust");
 
                 <dl class="govuk-summary-list ros-add-to-a-list">

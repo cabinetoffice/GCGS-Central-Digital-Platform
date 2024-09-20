@@ -28,7 +28,7 @@ public class YourDetailsModel(
         var details = UserDetails;
         if (details.PersonId.HasValue)
         {
-            return RedirectToPage("OrganisationSelection");
+            return RedirectToPage("Organisation/OrganisationSelection");
         }
 
         FirstName = details.FirstName;
@@ -65,7 +65,7 @@ public class YourDetailsModel(
             return Redirect(redirectUri!);
         }
 
-        return RedirectToPage("OrganisationSelection");
+        return RedirectToPage("Organisation/OrganisationSelection");
     }
 
     private async Task<Person.WebApiClient.Person?> RegisterPersonAsync(UserDetails details)

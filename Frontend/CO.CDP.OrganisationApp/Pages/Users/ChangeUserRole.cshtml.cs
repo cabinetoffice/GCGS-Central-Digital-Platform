@@ -75,7 +75,7 @@ public class ChangeUserRoleModel(
         return RedirectToPage("UserSummary", new { Id });
     }
 
-    public async Task<Organisation.WebApiClient.Person?> GetOrganisationPerson(IOrganisationClient organisationClient)
+    public async Task<CO.CDP.Organisation.WebApiClient.Person?> GetOrganisationPerson(IOrganisationClient organisationClient)
     {
         try
         {
