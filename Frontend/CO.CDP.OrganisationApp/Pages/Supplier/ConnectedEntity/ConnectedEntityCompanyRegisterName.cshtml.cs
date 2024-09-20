@@ -1,5 +1,6 @@
 using CO.CDP.Mvc.Validation;
 using CO.CDP.OrganisationApp.Constants;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel;
@@ -7,6 +8,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CO.CDP.OrganisationApp.Pages.Supplier;
 
+[Authorize(Policy = OrgScopeRequirement.Editor)]
 public class ConnectedEntityCompanyRegisterNameModel(ISession session) : PageModel
 {
     private const string OPTION_OTHER = "Other";
