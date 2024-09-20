@@ -4,9 +4,8 @@ using CO.CDP.Organisation.WebApi.UseCase;
 using CO.CDP.OrganisationInformation;
 using FluentAssertions;
 using Moq;
-using Organisation = CO.CDP.OrganisationInformation.Persistence.Organisation;
-using Person = CO.CDP.OrganisationInformation.Persistence.Person;
 
+namespace CO.CDP.Organisation.WebApi.Tests.UseCase;
 public class GetApprovableOrganisationsUseCaseTest
 {
     private readonly Mock<IOrganisationRepository> _organisationRepositoryMock;
@@ -21,7 +20,7 @@ public class GetApprovableOrganisationsUseCaseTest
     [Fact]
     public async Task Execute_NoOrganisations_ReturnsEmptyList()
     {
-        var organisations = new List<Organisation>();
+        var organisations = new List<CO.CDP.OrganisationInformation.Persistence.Organisation>();
 
         var command = ("buyers", 10, 0);
         _organisationRepositoryMock.Setup(repo => repo.Get("buyers"))
@@ -36,15 +35,15 @@ public class GetApprovableOrganisationsUseCaseTest
     public async Task Execute_OrganisationsExist_ReturnsApprovableOrganisations()
     {
         var command = ("suppliers", 10, 0);
-        var organisations = new List<Organisation>
+        var organisations = new List<CO.CDP.OrganisationInformation.Persistence.Organisation>
         {
-            new Organisation
+            new CO.CDP.OrganisationInformation.Persistence.Organisation
             {
                 Guid = Guid.NewGuid(),
                 Name = "Org 1",
-                Identifiers = new List<Organisation.Identifier>
+                Identifiers = new List<CO.CDP.OrganisationInformation.Persistence.Organisation.Identifier>
                 {
-                    new Organisation.Identifier
+                    new CO.CDP.OrganisationInformation.Persistence.Organisation.Identifier
                     {
                         Scheme = "TestScheme",
                         IdentifierId = "123",
@@ -52,15 +51,15 @@ public class GetApprovableOrganisationsUseCaseTest
                         Primary = false
                     }
                 },
-                ContactPoints = new List<Organisation.ContactPoint>
+                ContactPoints = new List<CO.CDP.OrganisationInformation.Persistence.Organisation.ContactPoint>
                 {
-                    new Organisation.ContactPoint
+                    new CO.CDP.OrganisationInformation.Persistence.Organisation.ContactPoint
                     {
                         Email = "contact@org1.com"
                     }
                 },
                 ApprovedOn = DateTime.UtcNow,
-                ApprovedBy = new Person
+                ApprovedBy = new CO.CDP.OrganisationInformation.Persistence.Person
                 {
                     Guid = Guid.NewGuid(),
                     FirstName = "John",
@@ -69,14 +68,14 @@ public class GetApprovableOrganisationsUseCaseTest
                 },
                 Tenant = null
             },
-            new Organisation
+            new CO.CDP.OrganisationInformation.Persistence.Organisation
             {
                 Guid = Guid.NewGuid(),
                 Name = "Org 2",
-                SupplierInfo = new Organisation.SupplierInformation(), // To test GetRole method returning "supplier"
-                Identifiers = new List<Organisation.Identifier>
+                SupplierInfo = new CO.CDP.OrganisationInformation.Persistence.Organisation.SupplierInformation(), // To test GetRole method returning "supplier"
+                Identifiers = new List<CO.CDP.OrganisationInformation.Persistence.Organisation.Identifier>
                 {
-                    new Organisation.Identifier
+                    new CO.CDP.OrganisationInformation.Persistence.Organisation.Identifier
                     {
                         Scheme = "CDP-PPON",
                         IdentifierId = "456",
@@ -84,7 +83,7 @@ public class GetApprovableOrganisationsUseCaseTest
                         Primary = false
                     }
                 },
-                ContactPoints = new List<Organisation.ContactPoint>(),
+                ContactPoints = new List<CO.CDP.OrganisationInformation.Persistence.Organisation.ContactPoint>(),
                 ApprovedOn = null,
                 ApprovedBy = null,
                 Tenant = null
@@ -100,7 +99,7 @@ public class GetApprovableOrganisationsUseCaseTest
 
         var approvableOrganisations = result.ToList();
 
-        approvableOrganisations[0].Should().BeEquivalentTo(new ApprovableOrganisation
+        approvableOrganisations[0].Should().BeEquivalentTo(new ApprovableOrganisation()
         {
             Id = organisations[0].Guid,
             Name = "Org 1",
@@ -132,17 +131,17 @@ public class GetApprovableOrganisationsUseCaseTest
     public async Task Execute_OrganisationWithBuyerInfo_ReturnsRoleBuyer()
     {
         var command = ("buyers", 10, 0);
-        var organisation = new Organisation
+        var organisation = new CO.CDP.OrganisationInformation.Persistence.Organisation
         {
             Guid = Guid.NewGuid(),
             Name = "Buyer Org",
-            BuyerInfo = new Organisation.BuyerInformation(),
-            Identifiers = new List<Organisation.Identifier>(),
+            BuyerInfo = new CO.CDP.OrganisationInformation.Persistence.Organisation.BuyerInformation(),
+            Identifiers = new List<CO.CDP.OrganisationInformation.Persistence.Organisation.Identifier>(),
             Tenant = null
         };
 
         _organisationRepositoryMock.Setup(repo => repo.Get("buyers"))
-            .ReturnsAsync(new List<Organisation> { organisation });
+            .ReturnsAsync(new List<CO.CDP.OrganisationInformation.Persistence.Organisation> { organisation });
 
         var result = await _useCase.Execute(command);
 
