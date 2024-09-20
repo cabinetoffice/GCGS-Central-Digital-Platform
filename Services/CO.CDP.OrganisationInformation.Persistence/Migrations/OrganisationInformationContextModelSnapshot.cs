@@ -475,6 +475,10 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                     b.HasKey("Id")
                         .HasName("pk_form_questions");
 
+                    b.HasIndex("Name")
+                        .IsUnique()
+                        .HasDatabaseName("ix_form_questions_name");
+
                     b.HasIndex("NextQuestionAlternativeId")
                         .HasDatabaseName("ix_form_questions_next_question_alternative_id");
 
