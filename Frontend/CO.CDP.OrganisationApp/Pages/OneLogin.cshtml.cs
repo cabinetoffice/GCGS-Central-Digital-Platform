@@ -78,7 +78,7 @@ public class OneLogin(
                 return Redirect(redirectUri!);
             }
 
-            return RedirectToPage("OrganisationSelection");
+            return RedirectToPage("Organisation/OrganisationSelection");
         }
         catch (ApiException ex) when (ex.StatusCode == 404)
         {

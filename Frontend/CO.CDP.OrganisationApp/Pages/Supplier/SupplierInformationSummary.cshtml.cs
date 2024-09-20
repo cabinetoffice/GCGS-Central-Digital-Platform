@@ -1,10 +1,13 @@
 using CO.CDP.Forms.WebApiClient;
 using CO.CDP.Organisation.WebApiClient;
+using CO.CDP.OrganisationApp.Constants;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace CO.CDP.OrganisationApp.Pages.Supplier;
 
+[Authorize(Policy = OrgScopeRequirement.Viewer)]
 public class SupplierInformationSummaryModel(
     IOrganisationClient organisationClient,
     IFormsClient formsClient) : PageModel
@@ -50,7 +53,7 @@ public class SupplierInformationSummaryModel(
             HasSupplierType = supplierInfo.SupplierType.HasValue;
         }
         catch (Exception ex)
-            when ((ex is Organisation.WebApiClient.ApiException oex && oex.StatusCode == 404)
+            when ((ex is CO.CDP.Organisation.WebApiClient.ApiException oex && oex.StatusCode == 404)
                 || (ex is CDP.Forms.WebApiClient.ApiException wex && wex.StatusCode == 404))
         {
             return Redirect("/page-not-found");

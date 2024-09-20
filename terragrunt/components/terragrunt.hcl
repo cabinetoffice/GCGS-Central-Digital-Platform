@@ -35,7 +35,7 @@ locals {
     development = {
       cidr_block             = "10.${local.cidr_b_development}.0.0/16"
       account_id             = 471112892058
-      canary_schedule_expression = "rate(5 minutes)" # "cron(15 7,11,15 ? * MON-FRI)" # UTC+0
+      canary_schedule_expression = "rate(30 minutes)" # "cron(15 7,11,15 ? * MON-FRI)" # UTC+0
       name                   = "dev"
       pinned_service_version = null
       postgres_instance_type = "db.t4g.micro"

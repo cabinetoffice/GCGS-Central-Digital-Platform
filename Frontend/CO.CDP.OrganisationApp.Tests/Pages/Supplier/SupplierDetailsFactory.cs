@@ -13,7 +13,7 @@ public static class SupplierDetailsFactory
         bool completedTradeAssurance = false,
         bool completedPostalAddress = false,
         bool completedLegalForm = false,
-        Organisation.WebApiClient.LegalForm? legalForm = null)
+        CO.CDP.Organisation.WebApiClient.LegalForm? legalForm = null)
     {
         return new SupplierInformation(
             organisationName: "FakeOrg",
@@ -35,9 +35,9 @@ public static class SupplierDetailsFactory
         );
     }
 
-    public static Organisation.WebApiClient.Organisation GivenOrganisationClientModel(Guid id)
+    public static CO.CDP.Organisation.WebApiClient.Organisation GivenOrganisationClientModel(Guid id)
     {
-        return new Organisation.WebApiClient.Organisation(
+        return new CO.CDP.Organisation.WebApiClient.Organisation(
             additionalIdentifiers: [new Identifier(id: "FakeVatId", legalName: "FakeOrg", scheme: "VAT", uri: null)],
             addresses:
             [

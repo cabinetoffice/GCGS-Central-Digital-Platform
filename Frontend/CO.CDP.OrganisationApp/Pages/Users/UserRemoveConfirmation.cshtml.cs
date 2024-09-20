@@ -96,7 +96,7 @@ ISession session
         return RedirectToPage("UserSummary", new { Id });
     }
 
-    public async Task<Organisation.WebApiClient.PersonInviteModel?> GetPersonInvite(IOrganisationClient organisationClient)
+    public async Task<CO.CDP.Organisation.WebApiClient.PersonInviteModel?> GetPersonInvite(IOrganisationClient organisationClient)
     {
         try
         {
@@ -109,7 +109,7 @@ ISession session
         }
     }
 
-    public async Task<Organisation.WebApiClient.Person?> GetPerson(IOrganisationClient organisationClient)
+    public async Task<CO.CDP.Organisation.WebApiClient.Person?> GetPerson(IOrganisationClient organisationClient)
     {
         try
         {

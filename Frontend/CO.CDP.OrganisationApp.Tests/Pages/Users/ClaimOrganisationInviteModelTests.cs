@@ -39,7 +39,7 @@ public class ClaimOrganisationInviteModelTests
         var result = await model.OnGet(personInviteId);
 
         result.Should().BeOfType<RedirectToPageResult>()
-            .Which.PageName.Should().Be("../OrganisationSelection");
+            .Which.PageName.Should().Be("../Organisation/OrganisationSelection");
         personClientMock.Verify(pc => pc.LookupPersonAsync(UsreUrn), Times.Once);
         personClientMock.Verify(pc => pc.ClaimPersonInviteAsync(PersonId, claimPersonInvite), Times.Once);
     }

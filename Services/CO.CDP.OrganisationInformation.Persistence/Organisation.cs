@@ -21,6 +21,10 @@ public class Organisation : IEntityDate
     public BuyerInformation? BuyerInfo { get; set; }
     public DateTimeOffset CreatedOn { get; set; }
     public DateTimeOffset UpdatedOn { get; set; }
+    public DateTimeOffset? ApprovedOn { get; set; }
+    public Person? ApprovedBy { get; set; }
+    public int? ApprovedById { get; set; }
+    public string? ApprovedComment { get; set; }
 
     [Owned]
     [Index(nameof(IdentifierId), [nameof(Scheme)], IsUnique = true)]

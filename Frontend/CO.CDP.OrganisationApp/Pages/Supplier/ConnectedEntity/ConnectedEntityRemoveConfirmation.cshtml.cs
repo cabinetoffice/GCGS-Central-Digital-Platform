@@ -4,9 +4,11 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
 using CO.CDP.Mvc.Validation;
 using CO.CDP.OrganisationApp.Constants;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CO.CDP.OrganisationApp.Pages.Supplier.ConnectedEntity;
 
+[Authorize(Policy = OrgScopeRequirement.Editor)]
 public class ConnectedEntityRemoveConfirmationModel(
 IOrganisationClient organisationClient) : PageModel
 {
@@ -74,7 +76,7 @@ IOrganisationClient organisationClient) : PageModel
         return RedirectToPage("ConnectedPersonSummary", new { Id });
     }
 
-    private async Task<Organisation.WebApiClient.ConnectedEntityLookup?> GetConnectedEntity(IOrganisationClient organisationClient)
+    private async Task<CO.CDP.Organisation.WebApiClient.ConnectedEntityLookup?> GetConnectedEntity(IOrganisationClient organisationClient)
     {
         try
         {

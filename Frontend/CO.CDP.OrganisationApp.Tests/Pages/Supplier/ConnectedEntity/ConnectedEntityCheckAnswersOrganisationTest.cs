@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moq;
 using System.Net;
+using OrganisationWebApiClient = CO.CDP.Organisation.WebApiClient;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages.Supplier.ConnectedEntity;
 
@@ -225,7 +226,7 @@ public class ConnectedEntityCheckAnswersOrganisationTest
                 postalCode: "LS1 2AE",
                 region: null,
                 streetAddress: "1 street lane",
-                type: Organisation.WebApiClient.AddressType.Registered),
+                type: OrganisationWebApiClient.AddressType.Registered),
             new Address(
                 countryName: "United Kingdom",
                 country: "GB",
@@ -233,7 +234,7 @@ public class ConnectedEntityCheckAnswersOrganisationTest
                 postalCode: "LS1 2AE",
                 region: null,
                 streetAddress: "1 street lane",
-                type: Organisation.WebApiClient.AddressType.Postal),
+                type: OrganisationWebApiClient.AddressType.Postal),
         ];
 
         var registerConnectedEntity = new RegisterConnectedEntity
@@ -274,9 +275,9 @@ public class ConnectedEntityCheckAnswersOrganisationTest
         return connectedPersonDetails;
     }
 
-    private Organisation.WebApiClient.ConnectedEntity DummyConnectedEntity()
+    private OrganisationWebApiClient.ConnectedEntity DummyConnectedEntity()
     {
-        var connectedOrganisation = new Organisation.WebApiClient.ConnectedOrganisation(
+        var connectedOrganisation = new OrganisationWebApiClient.ConnectedOrganisation(
             ConnectedOrganisationCategory.RegisteredCompany,
             [ControlCondition.OwnsShares, ControlCondition.HasVotingRights],
             1,
@@ -287,11 +288,11 @@ public class ConnectedEntityCheckAnswersOrganisationTest
             "registeredLegalForm text"
         );
 
-        var connectedEntity = new Organisation.WebApiClient.ConnectedEntity(
+        var connectedEntity = new OrganisationWebApiClient.ConnectedEntity(
             new List<Address>(),
             "012345",
             new DateTimeOffset?(),
-            Organisation.WebApiClient.ConnectedEntityType.Organisation,
+            OrganisationWebApiClient.ConnectedEntityType.Organisation,
             true,
             new Guid(),
             null,

@@ -1,10 +1,12 @@
 using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Pages.Shared;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace CO.CDP.OrganisationApp.Pages.Supplier;
 
+[Authorize(Policy = OrgScopeRequirement.Editor)]
 public class ConnectedEntityAddressModel(ISession session) : PageModel
 {
     [BindProperty(SupportsGet = true)]
