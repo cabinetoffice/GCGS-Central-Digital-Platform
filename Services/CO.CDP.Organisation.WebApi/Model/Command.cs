@@ -347,14 +347,9 @@ public record RegisterAuthenticationKey
 public record AuthenticationKey
 {
     public required string Name { get; set; }
-    public required string Key { get; set; }
     public bool? Revoked { get; set; }
-}
-
-public record RevokeAuthenticationKey
-{
-    public required string Name { get; set; }
-    public required string Key { get; set; }
+    public DateTimeOffset CreatedOn { get; set; }
+    public DateTimeOffset UpdatedOn { get; set; }
 }
 
 [JsonConverter(typeof(JsonStringEnumConverter))]

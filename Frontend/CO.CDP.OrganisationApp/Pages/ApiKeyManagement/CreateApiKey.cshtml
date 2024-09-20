@@ -1,5 +1,5 @@
-@page "/organisation/{id}/supplier-information/manage-api-key/create-new-api-key"
-@model CO.CDP.OrganisationApp.Pages.ApiKeyManagement.CreateApiKeyModel
+@page "/organisation/{id}/manage-api-key/create"
+@model CreateApiKeyModel
 
 @{
     var apiKeyNameHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.ApiKeyName)).HasInnerHtml;

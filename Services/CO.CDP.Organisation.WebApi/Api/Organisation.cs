@@ -600,11 +600,11 @@ public static class EndpointExtensions
            });
 
         app.MapPost("/{organisationId}/api-keys",
-            async (Guid organisationId, RegisterAuthenticationKey updateRegisterAuthenticationKey,
+            async (Guid organisationId, RegisterAuthenticationKey registerAuthenticationKey,
                 IUseCase<(Guid, RegisterAuthenticationKey), bool> useCase) =>
 
-                await useCase.Execute((organisationId, updateRegisterAuthenticationKey))
-                    .AndThen(_ => Results.NoContent())
+                await useCase.Execute((organisationId, registerAuthenticationKey))
+                    .AndThen(_ => Results.Ok())
             )
             .Produces(StatusCodes.Status200OK)
             .ProducesProblem(StatusCodes.Status400BadRequest)
@@ -627,9 +627,9 @@ public static class EndpointExtensions
             });
 
         app.MapPatch("/{organisationId}/api-keys/revoke",
-            async (Guid organisationId, RevokeAuthenticationKey updateAuthenticationKey,
-                IUseCase<(Guid, RevokeAuthenticationKey), bool> useCase) =>
-                    await useCase.Execute((organisationId, updateAuthenticationKey))
+            async (Guid organisationId, string keyName,
+                IUseCase<(Guid, string), bool> useCase) =>
+                    await useCase.Execute((organisationId, keyName))
                         .AndThen(_ => Results.NoContent()))
             .Produces(StatusCodes.Status204NoContent)
             .ProducesProblem(StatusCodes.Status400BadRequest)

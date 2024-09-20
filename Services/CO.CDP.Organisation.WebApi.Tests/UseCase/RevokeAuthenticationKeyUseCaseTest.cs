@@ -13,18 +13,18 @@ public class RevokeAuthenticationKeyUseCaseTest()
     private readonly Mock<IOrganisationRepository> _organisationRepo = new();
     private readonly Mock<IAuthenticationKeyRepository> _keyRepo = new();
     private RevokeAuthenticationKeyUseCase UseCase => new(_organisationRepo.Object, _keyRepo.Object);
+    private const string _authKeyName = "keyname1";
 
     [Fact]
     public async Task Execute_ShouldThrowUnknownOrganisationException_WhenOrganisationNotFound()
     {
         var organisationId = Guid.NewGuid();
         Persistence.Organisation? organisation = null;
-        var registerAuthenticationKey = GivenRevokeAuthenticationKey();
 
         _organisationRepo.Setup(repo => repo.Find(organisationId))
             .ReturnsAsync(organisation);
 
-        Func<Task> act = async () => await UseCase.Execute((organisationId, registerAuthenticationKey));
+        Func<Task> act = async () => await UseCase.Execute((organisationId, _authKeyName));
 
         await act.Should()
             .ThrowAsync<UnknownOrganisationException>()
@@ -32,32 +32,9 @@ public class RevokeAuthenticationKeyUseCaseTest()
     }
 
     [Fact]
-    public async Task Execute_ShouldThrowEmptyAuthenticationKeyException_WhenKeyIsNullOrEmpty()
-    {
-        var organisationId = Guid.NewGuid();
-        var registerAuthenticationKey = GivenRevokeAuthenticationKey();
-        registerAuthenticationKey.Key = "";
-
-        var org = GivenOrganisationExist(organisationId);
-
-        _organisationRepo.Setup(x => x.Save(org));
-
-        _organisationRepo.Setup(repo => repo.Find(organisationId))
-            .ReturnsAsync(org);
-
-        Func<Task> act = async () => await UseCase.Execute((organisationId, registerAuthenticationKey));
-
-        await act.Should()
-            .ThrowAsync<EmptyAuthenticationKeyException>()
-            .WithMessage($"Empty Key of Revoke AuthenticationKey for organisation {organisationId}.");
-    }
-
-    [Fact]
     public async Task Execute_ShouldThrowEmptyAuthenticationKeyNameException_WhenNameIsNullOrEmpty()
     {
-        var organisationId = Guid.NewGuid();
-        var registerAuthenticationKey = GivenRevokeAuthenticationKey();
-        registerAuthenticationKey.Name = "";
+        var organisationId = Guid.NewGuid();        
 
         var org = GivenOrganisationExist(organisationId);
 
@@ -66,7 +43,7 @@ public class RevokeAuthenticationKeyUseCaseTest()
         _organisationRepo.Setup(repo => repo.Find(organisationId))
             .ReturnsAsync(org);
 
-        Func<Task> act = async () => await UseCase.Execute((organisationId, registerAuthenticationKey));
+        Func<Task> act = async () => await UseCase.Execute((organisationId, ""));
 
         await act.Should()
             .ThrowAsync<EmptyAuthenticationKeyNameException>()
@@ -78,7 +55,6 @@ public class RevokeAuthenticationKeyUseCaseTest()
     {
         var organisationId = Guid.NewGuid();
         Persistence.AuthenticationKey? authorisationKey = null;
-        var registerAuthenticationKey = GivenRevokeAuthenticationKey();
 
         var org = GivenOrganisationExist(organisationId);
 
@@ -87,27 +63,26 @@ public class RevokeAuthenticationKeyUseCaseTest()
         _organisationRepo.Setup(repo => repo.Find(organisationId))
             .ReturnsAsync(org);
 
-        _keyRepo.Setup(k => k.FindByKeyNameAndOrganisationId("k", "n", organisationId))
+        _keyRepo.Setup(k => k.FindByKeyNameAndOrganisationId("n", organisationId))
             .ReturnsAsync(authorisationKey);
 
-        Func<Task> act = async () => await UseCase.Execute((organisationId, registerAuthenticationKey));
+        Func<Task> act = async () => await UseCase.Execute((organisationId, _authKeyName));
 
         await act.Should()
         .ThrowAsync<UnknownAuthenticationKeyException>()
-            .WithMessage($"Unknown Authentication Key - name {registerAuthenticationKey.Name} for organisation {organisationId}.");
+            .WithMessage($"Unknown Authentication Key - name {_authKeyName} for organisation {organisationId}.");
     }
 
     [Fact]
     public async Task Execute_ShouldRevokeAuthenticationKey_WhenValidCommandIsProvided()
     {
         var organisationId = Guid.NewGuid();
-        var revokeAuth = GivenRevokeAuthenticationKey();
-        var command = (organisationId, revokeAuth);
+        var command = (organisationId, _authKeyName);
         var organisation = GivenOrganisationExist(organisationId);
-        var authKey = new Persistence.AuthenticationKey { Key = revokeAuth.Key, Name = revokeAuth.Name, Revoked = false };
+        var authKey = new Persistence.AuthenticationKey { Key = "k1", Name = _authKeyName, Revoked = false };
 
         _organisationRepo.Setup(repo => repo.Find(organisationId)).ReturnsAsync(organisation);
-        _keyRepo.Setup(repo => repo.FindByKeyNameAndOrganisationId(revokeAuth.Key, revokeAuth.Name, organisationId)).ReturnsAsync(authKey);
+        _keyRepo.Setup(repo => repo.FindByKeyNameAndOrganisationId(_authKeyName, organisationId)).ReturnsAsync(authKey);
 
         var result = await UseCase.Execute(command);
 
@@ -144,14 +119,5 @@ public class RevokeAuthenticationKeyUseCaseTest()
             .ReturnsAsync(org);
 
         return org;
-    }
-
-    private static RevokeAuthenticationKey GivenRevokeAuthenticationKey()
-    {
-        return new RevokeAuthenticationKey
-        {
-            Key = "Key1",
-            Name = "KeyName1"
-        };
     }
 }

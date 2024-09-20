@@ -7,23 +7,20 @@ public class RevokeAuthenticationKeyUseCase(
     IOrganisationRepository organisationRepository,
     IAuthenticationKeyRepository keyRepository
    )
-    : IUseCase<(Guid organisationId, RevokeAuthenticationKey revokeAuthentication), bool>
+    : IUseCase<(Guid organisationId, string keyName), bool>
 {
-    public async Task<bool> Execute((Guid organisationId, RevokeAuthenticationKey revokeAuthentication) command)
+    public async Task<bool> Execute((Guid organisationId, string keyName) command)
     {
-        var revokeAuthKey = command.revokeAuthentication;
+        var revokeAuthKeyName = command.keyName;
 
         _ = await organisationRepository.Find(command.organisationId)
             ?? throw new UnknownOrganisationException($"Unknown organisation {command.organisationId}.");
 
-        if (string.IsNullOrEmpty(revokeAuthKey.Key))
-            throw new EmptyAuthenticationKeyException($"Empty Key of Revoke AuthenticationKey for organisation {command.organisationId}.");
-
-        if (string.IsNullOrEmpty(revokeAuthKey.Name))
+        if (string.IsNullOrEmpty(revokeAuthKeyName))
             throw new EmptyAuthenticationKeyNameException($"Empty Name of Revoke AuthenticationKey for organisation {command.organisationId}.");
 
-        var authorisationKey = await keyRepository.FindByKeyNameAndOrganisationId(revokeAuthKey.Key, revokeAuthKey.Name, command.organisationId)
-            ?? throw new UnknownAuthenticationKeyException($"Unknown Authentication Key - name {revokeAuthKey.Name} for organisation {command.organisationId}.");
+        var authorisationKey = await keyRepository.FindByKeyNameAndOrganisationId(revokeAuthKeyName, command.organisationId)
+            ?? throw new UnknownAuthenticationKeyException($"Unknown Authentication Key - name {revokeAuthKeyName} for organisation {command.organisationId}.");
 
         authorisationKey.Revoked = true;
 

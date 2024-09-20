@@ -1,10 +1,12 @@
+using CO.CDP.Organisation.WebApiClient;
+using CO.CDP.OrganisationApp.WebApiClients;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
 
 namespace CO.CDP.OrganisationApp.Pages.ApiKeyManagement;
 
-public class CreateApiKeyModel() : PageModel
+public class CreateApiKeyModel(IOrganisationClient organisationClient) : PageModel
 {
     [BindProperty(SupportsGet = true)]
     public Guid Id { get; set; }
@@ -13,12 +15,27 @@ public class CreateApiKeyModel() : PageModel
     [Required(ErrorMessage = "Enter the api key name")]
     public string? ApiKeyName { get; set; }
 
-    public IActionResult OnPost()
+    public async Task<IActionResult> OnPost()
     {
-        if (!ModelState.IsValid) return Page();
+        try
+        {
+            if (!ModelState.IsValid) return Page();
 
-        //Generate new key
-        //call api and save in db (create endpoint in api for list all, create and revoke)
-        return RedirectToPage("CreateApiKey", new { Id });
+            var apiKey = Guid.NewGuid().ToString();
+
+            var registerApiKey = new RegisterAuthenticationKey(
+                                    key: apiKey,
+                                    name: ApiKeyName,
+                                    organisationId: Id,
+                                    revoked: false);
+
+            await organisationClient.CreateAuthenticationKey(Id, registerApiKey);
+
+            return RedirectToPage("NewApiKeyDetails", new { Id, apiKey });
+        }
+        catch (ApiException ex) when (ex.StatusCode == 404)
+        {
+            return Redirect("/page-not-found");
+        }
     }
 }

@@ -65,7 +65,7 @@ public class DatabaseAuthenticationKeyRepositoryTest(PostgreSqlFixture postgreSq
         var authenticationKey = GivenAuthenticationKey(key: key, organisation: organisation);
         await repository.Save(authenticationKey);
 
-        var found = await repository.FindByKeyNameAndOrganisationId(key, "fts", organisation.Guid);
+        var found = await repository.FindByKeyNameAndOrganisationId("fts", organisation.Guid);
         found.As<AuthenticationKey>().Should().NotBeNull();
         found.As<AuthenticationKey>().Key.Should().BeSameAs(key);
     }

@@ -82,7 +82,7 @@ builder.Services.AddScoped<IUseCase<Guid, IEnumerable<PersonInviteModel>>, GetPe
 builder.Services.AddScoped<IUseCase<(Guid, Guid), bool>, RemovePersonInviteFromOrganisationUseCase>();
 builder.Services.AddScoped<IUseCase<Guid, IEnumerable<CO.CDP.Organisation.WebApi.Model.AuthenticationKey>>, GetAuthenticationKeyUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, RegisterAuthenticationKey), bool>, RegisterAuthenticationKeyUseCase>();
-builder.Services.AddScoped<IUseCase<(Guid, RevokeAuthenticationKey), bool>, RevokeAuthenticationKeyUseCase>();
+builder.Services.AddScoped<IUseCase<(Guid, string), bool>, RevokeAuthenticationKeyUseCase>();
 
 builder.Services.AddOrganisationProblemDetails();
 

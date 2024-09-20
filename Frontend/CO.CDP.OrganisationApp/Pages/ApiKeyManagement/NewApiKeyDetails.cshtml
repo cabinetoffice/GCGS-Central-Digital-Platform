@@ -1,0 +1,48 @@
+@page "/organisation/{id}/manage-api-key/{apikey}/details"
+@model NewApiKeyDetailsModel
+
+<main class="govuk-main-wrapper">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <script>
+                const copyContent =
+                    async (id) =>{
+                                    try {
+                                            const text = document.getElementById(id).innerHTML;
+                                            await navigator.clipboard.writeText(text);
+                                    }
+                                    catch (e) { }
+                                }
+            </script>
+
+            <form class="form" method="post">
+                <div class="govuk-grid-column-ful-width">
+                    <div class="govuk-panel govuk-panel--confirmation">
+                        <h1 class="govuk-panel__title">API key created</h1>
+                        <div class="govuk-panel__body">
+                            Your API key<br>
+                            <strong id="apikeytext">@Model.ApiKey</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="govuk-grid-row">
+                    <div class="govuk-grid-column-two-thirds">
+                        <div class="govuk-inset-text">
+                            Copy the API key and keep it safe.
+                        </div>
+                        <p class="govuk-body">
+                            This is the only time we show you the API key. If you lose it, you’ll need to cancel it and create a new one.
+                        </p>
+                        <button class="govuk-button govuk-button--secondary" data-module="govuk-button" onclick="javascript:copyContent('apikeytext');">
+                            Copy API key to clipboard
+                        </button>
+                        <p>
+                            <a class="govuk-link govuk-link--no-visited-state" href="/organisation/manage-api-keys">Back to your API keys</a>
+                        </p>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</main>

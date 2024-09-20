@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CO.CDP.OrganisationInformation.Persistence;
 
-[Index(nameof(Name), nameof(Key), IsUnique = true)]
 public class AuthenticationKey : IEntityDate
 {
     public int Id { get; set; }
