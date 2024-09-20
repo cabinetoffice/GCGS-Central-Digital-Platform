@@ -20,7 +20,7 @@ public class OutboxProcessor(IPublisher publisher, IOutboxMessageRepository outb
     private async Task<List<OutboxMessage>> FetchMessages(int count)
     {
         var messages = await outbox.FindOldest(count);
-        logger.LogDebug("Fetched `{COUNT}` messages", messages.Count);
+        logger.LogDebug("Fetched {COUNT} message(s)", messages.Count);
         return messages;
     }
 
