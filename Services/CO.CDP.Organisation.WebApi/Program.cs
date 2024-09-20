@@ -34,7 +34,7 @@ builder.Services.AddAutoMapper(typeof(WebApiToPersistenceProfile));
 builder.Services
     .AddAwsConfiguration(builder.Configuration)
     .AddAwsSqsService()
-    .AddSqsPublisher()
+    .AddOutboxSqsPublisher<OrganisationInformationContext>()
     .AddSqsDispatcher(
         EventDeserializer.Deserializer,
         (services) =>
@@ -49,6 +49,7 @@ builder.Services
 if (Assembly.GetEntryAssembly().IsRunAs("CO.CDP.Organisation.WebApi"))
 {
     builder.Services.AddHostedService<DispatcherBackgroundService>();
+    builder.Services.AddHostedService<OutboxProcessorBackgroundService>();
 }
 builder.Services.AddDbContext<OrganisationInformationContext>(o =>
     o.UseNpgsql(ConnectionStringHelper.GetConnectionString(builder.Configuration, "OrganisationInformationDatabase")));
