@@ -1,7 +1,5 @@
 using CO.CDP.Organisation.WebApiClient;
 using Microsoft.AspNetCore.Mvc;
-using PartyRole = CO.CDP.Organisation.WebApiClient.PartyRole;
-using UserDetails = CO.CDP.OrganisationApp.Models.UserDetails;
 
 namespace CO.CDP.OrganisationApp.Pages.Support;
 
