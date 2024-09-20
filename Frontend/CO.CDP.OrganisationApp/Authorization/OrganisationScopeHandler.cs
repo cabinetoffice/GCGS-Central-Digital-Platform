@@ -1,5 +1,7 @@
+using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.Tenant.WebApiClient;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace CO.CDP.OrganisationApp.Authorization;
 
@@ -8,12 +10,14 @@ public class OrganizationScopeHandler : AuthorizationHandler<OrganizationScopeRe
     private ITenantClient _tenantClient;
     private ISession _session;
     private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly IServiceScopeFactory _serviceScopeFactory;
 
-    public OrganizationScopeHandler(ITenantClient tenantClient, ISession session, IHttpContextAccessor httpContextAccessor)
+    public OrganizationScopeHandler(ITenantClient tenantClient, ISession session, IHttpContextAccessor httpContextAccessor, IServiceScopeFactory serviceScopeFactory)
     {
         _tenantClient = tenantClient;
         _session = session;
         _httpContextAccessor = httpContextAccessor;
+        _serviceScopeFactory = serviceScopeFactory;
     }
 
     protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, OrganizationScopeRequirement requirement)
@@ -24,13 +28,21 @@ public class OrganizationScopeHandler : AuthorizationHandler<OrganizationScopeRe
         {
             try
             {
-                Guid? organisationId = GetOrganisationId();
-
-                if (organisationId != null)
+                // The UserInfoService is scoped, but authorization is a singleton, so we need to work around that with a ServiceScopeFactory
+                using (var serviceScope = _serviceScopeFactory.CreateScope())
                 {
-                    UserOrganisation? personOrganisation = await GetPersonOrganisation((Guid)organisationId);
+                    IUserInfoService _userInfo = serviceScope.ServiceProvider.GetRequiredService<IUserInfoService>();
 
-                    if (personOrganisation != null && personOrganisation.Scopes.Contains(requirement.Scope))
+                    var scopes = await _userInfo.GetOrganisationUserScopes();
+
+                    if (scopes.Contains(requirement.Scope))
+                    {
+                        context.Succeed(requirement);
+                        return;
+                    }
+
+                    // Editor role implies viewer permissions also
+                    if (requirement.Scope == OrganisationPersonScopes.Viewer && scopes.Contains(OrganisationPersonScopes.Editor))
                     {
                         context.Succeed(requirement);
                         return;
@@ -44,51 +56,5 @@ public class OrganizationScopeHandler : AuthorizationHandler<OrganizationScopeRe
         }
 
         context.Fail();
-    }
-
-    private async Task<UserOrganisation?> GetPersonOrganisation(Guid organisationId)
-    {
-        // Role checks may be made multiple times when building a page
-        // Therefore we cache the person's organisation details for the duration of the http request
-        var cacheKey = "CO.CDP.OrganisationApp.Authorization.OrganizationScopeHandler.GetPersonOrganisation";
-
-        if (_httpContextAccessor?.HttpContext?.Items != null && _httpContextAccessor.HttpContext.Items[cacheKey] is UserOrganisation cachedData)
-        {
-            return cachedData;
-        }
-
-        var result = await _tenantClient.LookupTenantAsync();
-
-        var personOrganisation = result.Tenants
-            .SelectMany(tenant => tenant.Organisations)
-            .FirstOrDefault(org => org.Id == organisationId);
-
-        if(_httpContextAccessor?.HttpContext?.Items != null)
-        {
-            _httpContextAccessor.HttpContext.Items[cacheKey] = personOrganisation;
-        }
-
-        return personOrganisation;
-    }
-
-    private Guid? GetOrganisationId()
-    {
-        if (_httpContextAccessor?.HttpContext?.Request?.Path.Value == null)
-        {
-            return null;
-        }
-
-        var path = _httpContextAccessor.HttpContext.Request.Path.Value;
-
-        if (path != null)
-        {
-            var pathSegments = path.Split('/', StringSplitOptions.RemoveEmptyEntries);
-            if (pathSegments.Length >= 2 && pathSegments[0] == "organisation" && Guid.TryParse(pathSegments[1], out Guid organisationId))
-            {
-                return organisationId;
-            }
-        }
-
-        return null;
     }
 }

@@ -1,4 +1,6 @@
 using CO.CDP.DataSharing.WebApiClient;
+using CO.CDP.OrganisationApp.Constants;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Net.Mime;
@@ -6,6 +8,7 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace CO.CDP.OrganisationApp.Pages.ShareInformation;
 
+[Authorize(Policy = OrgScopeRequirement.Editor)]
 public class ShareCodeDetailsModel(IDataSharingClient dataSharingClient) : PageModel
 {
     [BindProperty(SupportsGet = true)]

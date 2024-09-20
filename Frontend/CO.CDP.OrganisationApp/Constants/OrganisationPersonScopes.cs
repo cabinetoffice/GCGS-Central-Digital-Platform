@@ -12,4 +12,5 @@ public class OrgScopeRequirement
 {
     public const string Admin = "OrgScope_" + OrganisationPersonScopes.Admin;
     public const string Editor = "OrgScope_" + OrganisationPersonScopes.Editor;
+    public const string Viewer = "OrgScope_" + OrganisationPersonScopes.Viewer;
 }
