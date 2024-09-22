@@ -34,6 +34,7 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
     public async Task<OrganisationPerson?> FindOrganisationPerson(Guid organisationId, string userUrn)
     {
         return await context.Set<OrganisationPerson>()
+            .AsNoTracking()
             .FirstOrDefaultAsync(o => o.Organisation.Guid == organisationId && o.Person.UserUrn == userUrn);
     }
 
