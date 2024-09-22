@@ -19,9 +19,14 @@
                         <h1 class="govuk-heading-l">@Model.Heading</h1>
                     }
                 </legend>
-                <div id="date-hint" class="govuk-hint">
-                    For example, 05 04 2022
-                </div>
+                @if (!string.IsNullOrWhiteSpace(Model.Caption))
+                {
+                    <span class="govuk-caption-l">@Model.Caption</span>
+                } else {
+                    <div id="date-hint" class="govuk-hint">
+                        For example, 05 04 2022
+                    </div>
+                }
                 @if (dayHasError)
                 {
                     <p class="govuk-error-message">

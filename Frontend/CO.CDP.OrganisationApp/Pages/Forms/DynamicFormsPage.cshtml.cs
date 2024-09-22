@@ -35,6 +35,8 @@ public class DynamicFormsPageModel(
     [BindProperty]
     public FormElementTextInputModel? TextInputModel { get; set; }
     [BindProperty]
+    public FormElementMultiLineInputModel? MultiLineInputModel { get; set; }
+    [BindProperty]
     public FormElementYesNoInputModel? YesNoInputModel { get; set; }
     [BindProperty]
     public FormElementAddressModel? AddressModel { get; set; }
@@ -147,6 +149,7 @@ public class DynamicFormsPageModel(
                 string answerString = question.Type switch
                 {
                     FormQuestionType.Text => answer.Answer?.TextValue ?? "",
+                    FormQuestionType.MultiLine => answer.Answer?.TextValue ?? "",
                     FormQuestionType.CheckBox => answer.Answer?.BoolValue == true ? question.Options.Choices?.FirstOrDefault() ?? "" : "",
                     FormQuestionType.FileUpload => answer.Answer?.TextValue ?? "",
                     FormQuestionType.YesOrNo => answer.Answer?.BoolValue.HasValue == true ? (answer.Answer.BoolValue == true ? "yes" : "no") : "",
@@ -219,7 +222,8 @@ public class DynamicFormsPageModel(
             { FormQuestionType.Date, "_FormElementDateInput" },
             { FormQuestionType.Text, "_FormElementTextInput" },
             { FormQuestionType.CheckBox, "_FormElementCheckBoxInput" },
-            { FormQuestionType.Address, "_FormElementAddress" }
+            { FormQuestionType.Address, "_FormElementAddress" },
+            { FormQuestionType.MultiLine, "_FormElementMultiLineInput" },
         };
 
         if (formQuestionPartials.TryGetValue(question.Type, out var partialView))
@@ -239,6 +243,7 @@ public class DynamicFormsPageModel(
         {
             FormQuestionType.NoInput => NoInputModel ?? new FormElementNoInputModel(),
             FormQuestionType.Text => TextInputModel ?? new FormElementTextInputModel(),
+            FormQuestionType.MultiLine => MultiLineInputModel ?? new FormElementMultiLineInputModel(),
             FormQuestionType.FileUpload => FileUploadModel ?? new FormElementFileUploadModel(),
             FormQuestionType.YesOrNo => YesNoInputModel ?? new FormElementYesNoInputModel(),
             FormQuestionType.Date => DateInputModel ?? new FormElementDateInputModel(),

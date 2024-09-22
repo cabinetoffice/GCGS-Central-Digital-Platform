@@ -31,7 +31,8 @@ public enum FormQuestionType
     CheckYourAnswers,
     Date,
     CheckBox,
-    Address
+    Address,
+    MultiLine
 }
 
 public record FormQuestionOptions

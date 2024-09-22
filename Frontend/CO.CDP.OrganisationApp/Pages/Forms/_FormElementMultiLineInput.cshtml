@@ -1,11 +1,11 @@
-@model FormElementTextInputModel
+@model FormElementMultiLineInputModel
 
 @{
     var hasError = ((TagBuilder)Html.ValidationMessageFor(m => m.TextInput)).HasInnerHtml;
 }
 
 <div class="govuk-form-group">
-   
+
     @if (!string.IsNullOrWhiteSpace(Model.Heading))
     {
         <label class="govuk-label govuk-label--l" for="declarationInput">@Model.Heading</label>
@@ -28,5 +28,5 @@
         </p>
     }
 
-    <input class="govuk-input govuk-!-width-two-thirds" name="TextInput" type="text" value="@Model.TextInput">    
+    <textarea class="govuk-textarea govuk-!-width-two-thirds" rows="5" name="TextInput">@Model.TextInput</textarea>
 </div>
