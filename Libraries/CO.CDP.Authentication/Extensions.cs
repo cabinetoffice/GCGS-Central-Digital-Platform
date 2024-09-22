@@ -73,7 +73,7 @@ public static class Extensions
 
     public static IServiceCollection AddOrganisationAuthorization(this IServiceCollection services)
     {
-        services.TryAddScoped<ITenantRepository, DatabaseTenantRepository>();
+        services.TryAddScoped<IOrganisationRepository, DatabaseOrganisationRepository>();
         services.AddSingleton<IAuthorizationPolicyProvider, OrganisationAuthorizationPolicyProvider>();
         services.AddSingleton<IAuthorizationHandler, ChannelAuthorizationHandler>();
         services.AddScoped<IAuthorizationHandler, OrganisationScopeAuthorizationHandler>();

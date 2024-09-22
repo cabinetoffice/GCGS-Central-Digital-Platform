@@ -38,6 +38,7 @@ builder.Services.AddScoped<IClaimService, ClaimService>();
 builder.Services.AddTenantProblemDetails();
 
 builder.Services.AddJwtBearerAndApiKeyAuthentication(builder.Configuration, builder.Environment);
+builder.Services.AddOrganisationAuthorization();
 
 if (Assembly.GetEntryAssembly().IsRunAs("CO.CDP.Tenant.WebApi"))
 {
@@ -50,12 +51,6 @@ if (Assembly.GetEntryAssembly().IsRunAs("CO.CDP.Tenant.WebApi"))
     builder.Services.AddHealthChecks()
         .AddNpgSql(ConnectionStringHelper.GetConnectionString(builder.Configuration,
             "OrganisationInformationDatabase"));
-
-    builder.Services.AddOrganisationAuthorization();
-}
-else
-{
-    builder.Services.AddAuthorization();
 }
 
 var app = builder.Build();

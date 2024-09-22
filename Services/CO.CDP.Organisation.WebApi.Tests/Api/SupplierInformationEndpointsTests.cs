@@ -7,7 +7,6 @@ using Microsoft.Extensions.Hosting;
 using Moq;
 using System.Net;
 using System.Net.Http.Json;
-using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
 using static CO.CDP.Authentication.Constants;
@@ -145,9 +144,7 @@ public class SupplierInformationEndpointsTests
             .ReturnsAsync(new SupplierInformation { OrganisationName = "FakeOrg" });
 
         var factory = new TestAuthorizationWebApplicationFactory<Program>(
-            [new Claim(ClaimType.Channel, channel)],
-            organisationId,
-            scope,
+            channel, organisationId, scope,
             services => services.AddScoped(_ => _getSupplierInformationUseCase.Object));
 
         var response = await factory.CreateClient().GetAsync($"/organisations/{organisationId}/supplier-information");
@@ -177,9 +174,7 @@ public class SupplierInformationEndpointsTests
         _updatesSupplierInformationUseCase.Setup(uc => uc.Execute(command)).ReturnsAsync(true);
 
         var factory = new TestAuthorizationWebApplicationFactory<Program>(
-            [new Claim(ClaimType.Channel, channel)],
-            organisationId,
-            scope,
+            channel, organisationId, scope,
             services => services.AddScoped(_ => _updatesSupplierInformationUseCase.Object));
 
         var response = await factory.CreateClient().PatchAsJsonAsync($"/organisations/{organisationId}/supplier-information", updateSupplierInformation);
@@ -205,9 +200,7 @@ public class SupplierInformationEndpointsTests
         _deleteSupplierInformationUseCase.Setup(uc => uc.Execute(command)).ReturnsAsync(true);
 
         var factory = new TestAuthorizationWebApplicationFactory<Program>(
-            [new Claim(ClaimType.Channel, channel)],
-            organisationId,
-            scope,
+            channel, organisationId, scope,
             services => services.AddScoped(_ => _deleteSupplierInformationUseCase.Object));
 
         var response = await factory.CreateClient().SendAsync(

@@ -1,5 +1,4 @@
 using AutoMapper;
-using CO.CDP.Authentication;
 using CO.CDP.DataSharing.WebApi.Extensions;
 using CO.CDP.DataSharing.WebApi.Model;
 using CO.CDP.OrganisationInformation.Persistence;
@@ -8,7 +7,6 @@ using CO.CDP.OrganisationInformation.Persistence.Forms;
 namespace CO.CDP.DataSharing.WebApi.UseCase;
 
 public class GenerateShareCodeUseCase(
-    IClaimService claimService,
     IOrganisationRepository organisationRepository,
     IFormRepository formRepository,
     IShareCodeRepository shareCodeRepository,
@@ -18,7 +16,7 @@ public class GenerateShareCodeUseCase(
     public async Task<ShareReceipt> Execute(ShareRequest shareRequest)
     {
         var org = await organisationRepository.Find(shareRequest.OrganisationId);
-        if (org == null || await claimService.HaveAccessToOrganisation(shareRequest.OrganisationId) == false)
+        if (org == null)
         {
             throw new InvalidOrganisationRequestedException("Invalid Organisation requested.");
         }
