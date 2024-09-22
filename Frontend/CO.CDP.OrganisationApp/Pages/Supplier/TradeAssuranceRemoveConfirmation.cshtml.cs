@@ -1,11 +1,14 @@
 using CO.CDP.Organisation.WebApiClient;
+using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.WebApiClients;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
 
 namespace CO.CDP.OrganisationApp.Pages.Supplier;
 
+[Authorize(Policy = OrgScopeRequirement.Editor)]
 public class TradeAssuranceRemoveConfirmationModel(
     IOrganisationClient organisationClient) : PageModel
 {
@@ -45,7 +48,7 @@ public class TradeAssuranceRemoveConfirmationModel(
         return RedirectToPage("TradeAssuranceSummary", new { Id });
     }
 
-    private async Task<Organisation.WebApiClient.TradeAssurance?> GetTradeAssurance(IOrganisationClient organisationClient)
+    private async Task<CO.CDP.Organisation.WebApiClient.TradeAssurance?> GetTradeAssurance(IOrganisationClient organisationClient)
     {
         try
         {

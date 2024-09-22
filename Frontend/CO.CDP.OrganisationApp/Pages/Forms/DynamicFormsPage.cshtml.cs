@@ -1,11 +1,14 @@
 using CO.CDP.AwsServices;
+using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace CO.CDP.OrganisationApp.Pages.Forms;
 
+[Authorize(Policy = OrgScopeRequirement.Editor)]
 public class DynamicFormsPageModel(
     IFormsEngine formsEngine,
     ITempDataService tempDataService,

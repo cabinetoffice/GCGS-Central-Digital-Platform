@@ -1,13 +1,16 @@
 using CO.CDP.EntityVerificationClient;
 using CO.CDP.Mvc.Validation;
 using CO.CDP.Organisation.WebApiClient;
+using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.WebApiClients;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
 
 namespace CO.CDP.OrganisationApp.Pages.Supplier;
 
+[Authorize(Policy = OrgScopeRequirement.Editor)]
 public class SupplierVatQuestionModel(IOrganisationClient organisationClient,
     IPponClient pponClient, IHttpContextAccessor httpContextAccessor) : PageModel
 {
@@ -42,7 +45,7 @@ public class SupplierVatQuestionModel(IOrganisationClient organisationClient,
                 }
             }
         }
-        catch (Organisation.WebApiClient.ApiException ex) when (ex.StatusCode == 404)
+        catch (CO.CDP.Organisation.WebApiClient.ApiException ex) when (ex.StatusCode == 404)
         {
             return Redirect("/page-not-found");
         }
@@ -57,12 +60,12 @@ public class SupplierVatQuestionModel(IOrganisationClient organisationClient,
             return Page();
         }
 
-        Organisation.WebApiClient.Organisation? organisation;
+        CO.CDP.Organisation.WebApiClient.Organisation? organisation;
         try
         {
             organisation = await organisationClient.GetOrganisationAsync(Id);
         }
-        catch (Organisation.WebApiClient.ApiException ex) when (ex.StatusCode == 404)
+        catch (CO.CDP.Organisation.WebApiClient.ApiException ex) when (ex.StatusCode == 404)
         {
             return Redirect("/page-not-found");
         }
@@ -82,7 +85,7 @@ public class SupplierVatQuestionModel(IOrganisationClient organisationClient,
                 {
                     await LookupOrganisationAsync();
                 }
-                catch (Exception orgApiException) when (orgApiException is Organisation.WebApiClient.ApiException && ((Organisation.WebApiClient.ApiException)orgApiException).StatusCode == 404)
+                catch (Exception orgApiException) when (orgApiException is CO.CDP.Organisation.WebApiClient.ApiException && ((CO.CDP.Organisation.WebApiClient.ApiException)orgApiException).StatusCode == 404)
                 {
                     try
                     {
@@ -128,7 +131,7 @@ public class SupplierVatQuestionModel(IOrganisationClient organisationClient,
         };
     }
 
-    private async Task<Organisation.WebApiClient.Organisation> LookupOrganisationAsync()
+    private async Task<CO.CDP.Organisation.WebApiClient.Organisation> LookupOrganisationAsync()
     {
         return await organisationClient.LookupOrganisationAsync(string.Empty,
                     $"{VatSchemeName}:{VatNumber}");

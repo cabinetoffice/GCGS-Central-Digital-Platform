@@ -137,7 +137,7 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql) : 
                 new Organisation.Identifier
                 {
                     Primary = false,
-                    Scheme = "CDP-PPON",
+                    Scheme = "GB-PPON",
                     IdentifierId = Guid.NewGuid().ToString(),
                     LegalName = "DefaultLegalName",
                     Uri = "http://default.org"

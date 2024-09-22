@@ -23,7 +23,7 @@ public class AssignIdentifierUseCaseTest
             Identifier = new OrganisationIdentifier
             {
                 Id = "c0777aeb968b4113a27d94e55b10c1b4",
-                Scheme = "CDP-PPON",
+                Scheme = "GB-PPON",
                 LegalName = "Acme Ltd"
             }
         })).Should().ThrowAsync<OrganisationNotFoundException>();
@@ -42,7 +42,7 @@ public class AssignIdentifierUseCaseTest
             Identifier = new OrganisationIdentifier
             {
                 Id = "c0777aeb968b4113a27d94e55b10c1b4",
-                Scheme = "CDP-PPON",
+                Scheme = "GB-PPON",
                 LegalName = "Acme Ltd"
             }
         });
@@ -51,7 +51,7 @@ public class AssignIdentifierUseCaseTest
             o.Guid == organisation.Guid && o.Identifiers.Contains(new Persistence.Organisation.Identifier
             {
                 Primary = true,
-                Scheme = "CDP-PPON",
+                Scheme = "GB-PPON",
                 IdentifierId = "c0777aeb968b4113a27d94e55b10c1b4",
                 LegalName = "Acme Ltd"
             }
@@ -77,7 +77,7 @@ public class AssignIdentifierUseCaseTest
             Identifier = new OrganisationIdentifier
             {
                 Id = "c0777aeb968b4113a27d94e55b10c1b4",
-                Scheme = "CDP-PPON",
+                Scheme = "GB-PPON",
                 LegalName = "Acme Ltd"
             }
         });
@@ -86,7 +86,7 @@ public class AssignIdentifierUseCaseTest
          o.Guid == organisation.Guid && o.Identifiers.Contains(new Persistence.Organisation.Identifier
              {
                  Primary = true,
-                 Scheme = "CDP-PPON",
+                 Scheme = "GB-PPON",
                  IdentifierId = "c0777aeb968b4113a27d94e55b10c1b4",
                  LegalName = "Acme Ltd"
              }) && o.Identifiers.Contains(new Persistence.Organisation.Identifier
@@ -107,7 +107,7 @@ public class AssignIdentifierUseCaseTest
             organisationId: Guid.NewGuid(),
             identifiers: [  new Persistence.Organisation.Identifier {
                 IdentifierId = "c0777aeb968b4113a27d94e55b10c1b4",
-                Scheme = "CDP-PPON",
+                Scheme = "GB-PPON",
                 Primary = true,
                 LegalName = "Acme Ltd"
             }
@@ -128,7 +128,7 @@ public class AssignIdentifierUseCaseTest
          o.Guid == organisation.Guid && o.Identifiers.Contains(new Persistence.Organisation.Identifier
          {
              Primary = false,
-             Scheme = "CDP-PPON",
+             Scheme = "GB-PPON",
              IdentifierId = "c0777aeb968b4113a27d94e55b10c1b4",
              LegalName = "Acme Ltd"
          }) && o.Identifiers.Contains(new Persistence.Organisation.Identifier
@@ -193,7 +193,7 @@ public class AssignIdentifierUseCaseTest
             Identifier = new OrganisationIdentifier
             {
                 Id = "c0777aeb968b4113a27d94e55b10c1b4",
-                Scheme = "CDP-PPON",
+                Scheme = "GB-PPON",
                 LegalName = "Acme Ltd"
             }
         });
@@ -202,7 +202,7 @@ public class AssignIdentifierUseCaseTest
             o.Guid == organisation.Guid && o.Identifiers.Contains(new Persistence.Organisation.Identifier
             {
                 Primary = false,
-                Scheme = "CDP-PPON",
+                Scheme = "GB-PPON",
                 IdentifierId = "c0777aeb968b4113a27d94e55b10c1b4",
                 LegalName = "Acme Ltd"
             }
@@ -220,7 +220,7 @@ public class AssignIdentifierUseCaseTest
                 new Persistence.Organisation.Identifier
                 {
                     Primary = true,
-                    Scheme = "CDP-PPON",
+                    Scheme = "GB-PPON",
                     IdentifierId = "c0777aeb968b4113a27d94e55b10c1b4",
                     LegalName = "Acme Ltd"
                 }
@@ -232,7 +232,7 @@ public class AssignIdentifierUseCaseTest
             Identifier = new OrganisationIdentifier
             {
                 Id = "c0777aeb968b4113a27d94e55b10c1b4",
-                Scheme = "CDP-PPON",
+                Scheme = "GB-PPON",
                 LegalName = "Acme Ltd"
             }
         })).Should().ThrowAsync<IdentifierAlreadyAssigned>();

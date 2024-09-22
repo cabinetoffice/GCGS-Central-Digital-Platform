@@ -1,10 +1,13 @@
 using CO.CDP.Organisation.WebApiClient;
+using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.WebApiClients;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace CO.CDP.OrganisationApp.Pages.Supplier;
 
+[Authorize(Policy = OrgScopeRequirement.Editor)]
 public class TradeAssuranceCheckAnswerModel(
     IOrganisationClient organisationClient,
     ITempDataService tempDataService) : PageModel
@@ -39,7 +42,7 @@ public class TradeAssuranceCheckAnswerModel(
         }
 
         await organisationClient.UpdateSupplierTradeAssurance(Id,
-            new Organisation.WebApiClient.TradeAssurance(
+            new CO.CDP.Organisation.WebApiClient.TradeAssurance(
                 id: ta.Id,
                 awardedByPersonOrBodyName: ta.AwardedByPersonOrBodyName,
                 referenceNumber: ta.ReferenceNumber,

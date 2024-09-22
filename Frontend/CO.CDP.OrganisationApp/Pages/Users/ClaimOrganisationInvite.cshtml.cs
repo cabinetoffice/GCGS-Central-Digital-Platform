@@ -15,7 +15,7 @@ public class ClaimOrganisationInviteModel(
 
         await ClaimPersonInvite(person.Id, personInviteId);
 
-        return RedirectToPage("../OrganisationSelection");
+        return RedirectToPage("../Organisation/OrganisationSelection");
     }
 
     private async Task ClaimPersonInvite(Guid personId, Guid personInviteId)

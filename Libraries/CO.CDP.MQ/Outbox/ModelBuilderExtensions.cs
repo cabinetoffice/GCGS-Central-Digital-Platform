@@ -1,7 +1,7 @@
 using CO.CDP.EntityFrameworkCore.Timestamps;
 using Microsoft.EntityFrameworkCore;
 
-namespace CO.CDP.MQ.Database;
+namespace CO.CDP.MQ.Outbox;
 
 public static class ModelBuilderExtensions
 {

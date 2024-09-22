@@ -9,7 +9,7 @@ namespace CO.CDP.AwsServices.Sqs;
 
 public delegate string Serializer(object message);
 
-public delegate string TypeMapper(Type type);
+public delegate string TypeMapper(object message);
 
 public class SqsPublisher(
     IAmazonSQS sqsClient,
@@ -30,7 +30,7 @@ public class SqsPublisher(
         sqsClient,
         configuration,
         o => JsonSerializer.Serialize(o),
-        type => type.Name,
+        o => o.GetType().Name,
         logger)
     {
     }
@@ -47,7 +47,7 @@ public class SqsPublisher(
 
     public async Task Publish<TM>(TM message) where TM : notnull
     {
-        var messageType = typeMapper(typeof(TM));
+        var messageType = typeMapper(message);
         var serialized = serializer(message);
 
         logger.LogDebug("Publishing the `{TYPE}` message: `{MESSAGE}`", messageType, serialized);

@@ -189,7 +189,7 @@ public class OrganisationIdentificationModel(ISession session,
             SessionContext.Set(Session.RegistrationDetailsKey, RegistrationDetails);
             await LookupOrganisationAsync();
         }
-        catch (Exception orgApiException) when (orgApiException is Organisation.WebApiClient.ApiException && ((Organisation.WebApiClient.ApiException)orgApiException).StatusCode == 404)
+        catch (Exception orgApiException) when (orgApiException is CO.CDP.Organisation.WebApiClient.ApiException && ((CO.CDP.Organisation.WebApiClient.ApiException)orgApiException).StatusCode == 404)
         {
             try
             {
@@ -215,7 +215,7 @@ public class OrganisationIdentificationModel(ISession session,
         return RedirectToPage("OrganisationAlreadyRegistered");
     }
 
-    private async Task<Organisation.WebApiClient.Organisation> LookupOrganisationAsync()
+    private async Task<CO.CDP.Organisation.WebApiClient.Organisation> LookupOrganisationAsync()
     {
         return await organisationClient.LookupOrganisationAsync(string.Empty,
                     $"{OrganisationScheme}:{RegistrationDetails.OrganisationIdentificationNumber}");

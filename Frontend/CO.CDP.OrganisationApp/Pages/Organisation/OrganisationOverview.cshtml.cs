@@ -1,6 +1,4 @@
 using CO.CDP.Organisation.WebApiClient;
-using CO.CDP.OrganisationApp.Constants;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using OrganisationWebApiClient = CO.CDP.Organisation.WebApiClient;
@@ -11,11 +9,14 @@ public class OrganisationOverviewModel(IOrganisationClient organisationClient) :
 {
     public OrganisationWebApiClient.Organisation? OrganisationDetails { get; set; }
 
-    public async Task<IActionResult> OnGet(Guid id)
+    [BindProperty(SupportsGet = true)]
+    public Guid Id { get; set; }
+
+    public async Task<IActionResult> OnGet()
     {
         try
         {
-            OrganisationDetails = await organisationClient.GetOrganisationAsync(id);
+            OrganisationDetails = await organisationClient.GetOrganisationAsync(Id);
             return Page();
         }
         catch (ApiException ex) when (ex.StatusCode == 404)

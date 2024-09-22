@@ -7,6 +7,7 @@ using Moq;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
+using static CO.CDP.Authentication.Constants;
 
 namespace CO.CDP.Authentication.Tests.Authorization;
 
@@ -147,7 +148,9 @@ public class OrganisationScopeAuthorizationHandlerTests
     private static AuthorizationHandlerContext CreateAuthorizationHandlerContext(string userUrn, string[] scopes, OrganisationIdLocation orgIdLoc)
     {
         var requirement = new OrganisationScopeAuthorizationRequirement(scopes, orgIdLoc);
-        var claimsPrincipal = new ClaimsPrincipal(new ClaimsIdentity([new Claim("sub", userUrn)]));
+        var claimsPrincipal = new ClaimsPrincipal(new ClaimsIdentity(
+            [new Claim(ClaimType.Channel, Channel.OneLogin),
+            new Claim(ClaimType.Subject, userUrn)]));
         return new AuthorizationHandlerContext([requirement], claimsPrincipal, new object());
     }
 }

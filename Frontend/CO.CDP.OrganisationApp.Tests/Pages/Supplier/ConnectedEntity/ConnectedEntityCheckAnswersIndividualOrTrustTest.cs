@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moq;
 using System.Net;
+using OrganisationWebApiClient = CO.CDP.Organisation.WebApiClient;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages.Supplier.ConnectedEntity;
 
@@ -223,9 +224,9 @@ public class ConnectedEntityCheckAnswersIndividualOrTrustTest
         return connectedPersonDetails;
     }
 
-    private Organisation.WebApiClient.ConnectedEntity DummyConnectedEntity()
+    private OrganisationWebApiClient.ConnectedEntity DummyConnectedEntity()
     {
-        var connectedIndividualOrTrust = new Organisation.WebApiClient.ConnectedIndividualTrust(
+        var connectedIndividualOrTrust = new OrganisationWebApiClient.ConnectedIndividualTrust(
             category: ConnectedIndividualAndTrustCategory.PersonWithSignificantControlForIndividual,
             connectedType: ConnectedPersonType.Individual,
             dateOfBirth: new DateTimeOffset(1973, 6, 11, 0, 0, 0, TimeSpan.FromHours(0)),
@@ -246,13 +247,13 @@ public class ConnectedEntityCheckAnswersIndividualOrTrustTest
             postalCode: "LS1 2AE",
             region: null,
             streetAddress: "1 street lane",
-            type: Organisation.WebApiClient.AddressType.Registered));
+            type: OrganisationWebApiClient.AddressType.Registered));
 
-        var connectedEntity = new Organisation.WebApiClient.ConnectedEntity(
+        var connectedEntity = new OrganisationWebApiClient.ConnectedEntity(
             addresses,
             "012345",
             new DateTimeOffset?(),
-            Organisation.WebApiClient.ConnectedEntityType.Individual,
+            OrganisationWebApiClient.ConnectedEntityType.Individual,
             true,
             new Guid(),
             connectedIndividualOrTrust,

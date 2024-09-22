@@ -1,11 +1,14 @@
 using CO.CDP.Organisation.WebApiClient;
+using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.WebApiClients;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
 
 namespace CO.CDP.OrganisationApp.Pages.Supplier;
 
+[Authorize(Policy = OrgScopeRequirement.Editor)]
 public class SupplierQualificationRemoveConfirmationModel(
 IOrganisationClient organisationClient) : PageModel
 {
@@ -47,7 +50,7 @@ IOrganisationClient organisationClient) : PageModel
         return RedirectToPage("SupplierQualificationSummary", new { Id });
     }
 
-    private async Task<Organisation.WebApiClient.Qualification?> GetQualification(IOrganisationClient organisationClient)
+    private async Task<CO.CDP.Organisation.WebApiClient.Qualification?> GetQualification(IOrganisationClient organisationClient)
     {
         try
         {

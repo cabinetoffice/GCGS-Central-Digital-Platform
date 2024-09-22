@@ -5,6 +5,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
+using static CO.CDP.Authentication.Constants;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace CO.CDP.Authentication.Authorization;
@@ -18,12 +19,19 @@ public class OrganisationScopeAuthorizationHandler(
 
     protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, OrganisationScopeAuthorizationRequirement requirement)
     {
+        var channel = context.User.FindFirstValue(ClaimType.Channel);
+        if (channel != Channel.OneLogin)
+        {
+            context.Succeed(requirement);
+            return;
+        }
+
         if (requirement.Scopes.Length == 0 || requirement.OrganisationIdLocation == OrganisationIdLocation.None)
         {
             return;
         }
 
-        var userUrn = context.User.FindFirstValue("sub");
+        var userUrn = context.User.FindFirstValue(ClaimType.Subject);
 
         if (!string.IsNullOrWhiteSpace(userUrn))
         {

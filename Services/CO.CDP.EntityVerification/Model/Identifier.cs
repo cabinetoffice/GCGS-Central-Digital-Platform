@@ -2,7 +2,7 @@ namespace CO.CDP.EntityVerification.Model;
 
 public record Identifier
 {
-    /// <example>"CDP-PPON"</example>
+    /// <example>"GB-PPON"</example>
     public required string Scheme { get; init; }
 
     /// <example>"5a360be7-e1d3-4214-9f72-0e1d6b57b85d"</example>

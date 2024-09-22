@@ -43,7 +43,7 @@ public class OrganisationDetailsSummaryModel(
         await Task.WhenAll(tasks);
 
         SessionContext.Remove(Session.RegistrationDetailsKey);
-        return RedirectToPage("/OrganisationSelection");
+        return RedirectToPage("../Organisation/OrganisationSelection");
     }
 
     private async Task<OrganisationWebApiClient.Organisation?> RegisterOrganisationAsync()

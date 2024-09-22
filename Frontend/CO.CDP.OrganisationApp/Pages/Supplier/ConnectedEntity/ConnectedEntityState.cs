@@ -49,7 +49,7 @@ public class ConnectedEntityState
         }
     }
 
-    public void UpdateState(Guid supplierOrganisationId, Organisation.WebApiClient.ConnectedEntity connectedEntity)
+    public void UpdateState(Guid supplierOrganisationId, CO.CDP.Organisation.WebApiClient.ConnectedEntity connectedEntity)
     {
         SupplierOrganisationId = supplierOrganisationId;
         ConnectedEntityId = connectedEntity.Id;

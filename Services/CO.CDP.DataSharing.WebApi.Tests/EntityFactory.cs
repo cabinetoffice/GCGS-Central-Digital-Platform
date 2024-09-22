@@ -151,7 +151,7 @@ internal static class EntityFactory
                 new Organisation.Identifier
                 {
                     Primary = true,
-                    Scheme = "CDP-PPON",
+                    Scheme = "GB-PPON",
                     IdentifierId = $"{theGuid}",
                     LegalName = "DefaultLegalName",
                     Uri = "https://default.org"

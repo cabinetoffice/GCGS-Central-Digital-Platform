@@ -3,6 +3,7 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Moq;
 using System.Security.Claims;
+using static CO.CDP.Authentication.Constants;
 
 namespace CO.CDP.Authentication.Tests;
 
@@ -19,7 +20,7 @@ public class ClaimServiceTests
     public void GetUserUrn_ShouldReturnUrn_WhenUserHasSubClaim()
     {
         var userUrn = "urn:fdc:gov.uk:2022:rynbwxUssDAcmU38U5gxd7dBfu9N7KFP9_nqDuZ66Hg";
-        var httpContextAccessor = GivenHttpContextWith([new("sub", userUrn)]);
+        var httpContextAccessor = GivenHttpContextWith([new(ClaimType.Subject, userUrn)]);
 
         var claimService = new ClaimService(httpContextAccessor.Object, mockTenantRepo.Object);
 
@@ -53,7 +54,7 @@ public class ClaimServiceTests
     public async Task HaveAccessToOrganisation_ShouldReturnFalse_WhenUserHasNoTenant()
     {
         var userUrn = "urn:fdc:gov.uk:2022:rynbwxUssDAcmU38U5gxd7dBfu9N7KFP9_nqDuZ66Hg";
-        var httpContextAccessor = GivenHttpContextWith([new("sub", userUrn)]);
+        var httpContextAccessor = GivenHttpContextWith([new(ClaimType.Subject, userUrn)]);
 
         mockTenantRepo.Setup(m => m.LookupTenant(userUrn))
             .ReturnsAsync((TenantLookup?)default);
@@ -68,7 +69,7 @@ public class ClaimServiceTests
     public async Task HaveAccessToOrganisation_ShouldReturnFalse_WhenDoesNotHaveAccessToOrganisation()
     {
         var userUrn = "urn:fdc:gov.uk:2022:rynbwxUssDAcmU38U5gxd7dBfu9N7KFP9_nqDuZ66Hg";
-        var httpContextAccessor = GivenHttpContextWith([new("sub", userUrn)]);
+        var httpContextAccessor = GivenHttpContextWith([new(ClaimType.Subject, userUrn)]);
 
         mockTenantRepo.Setup(m => m.LookupTenant(userUrn))
             .ReturnsAsync(new TenantLookup
@@ -88,7 +89,7 @@ public class ClaimServiceTests
     {
         var organisationId = new Guid("96dc0f35-c059-4d89-91fa-a6ba5e4861a2");
         var userUrn = "urn:fdc:gov.uk:2022:rynbwxUssDAcmU38U5gxd7dBfu9N7KFP9_nqDuZ66Hg";
-        var httpContextAccessor = GivenHttpContextWith([new("sub", userUrn)]);
+        var httpContextAccessor = GivenHttpContextWith([new(ClaimType.Subject, userUrn)]);
 
         mockTenantRepo.Setup(m => m.LookupTenant(userUrn))
             .ReturnsAsync(new TenantLookup

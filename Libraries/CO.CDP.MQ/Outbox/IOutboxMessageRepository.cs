@@ -1,4 +1,4 @@
-namespace CO.CDP.MQ.Database;
+namespace CO.CDP.MQ.Outbox;
 
 public interface IOutboxMessageRepository
 {

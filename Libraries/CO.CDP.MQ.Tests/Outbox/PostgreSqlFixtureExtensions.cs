@@ -1,7 +1,7 @@
 using CO.CDP.Testcontainers.PostgreSql;
 using Microsoft.EntityFrameworkCore;
 
-namespace CO.CDP.MQ.Tests.Database;
+namespace CO.CDP.MQ.Tests.Outbox;
 
 internal static class PostgreSqlFixtureExtensions
 {
