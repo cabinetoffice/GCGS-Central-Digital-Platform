@@ -31,44 +31,7 @@ public class DataSharingTests
         var shareCode = "valid-share-code";
 
         _getSharedDataUseCase.Setup(uc => uc.Execute(shareCode))
-            .ReturnsAsync(new SupplierInformation
-            {
-                Id = Guid.NewGuid(),
-                Name = "si",
-                AssociatedPersons = [],
-                AdditionalParties = [],
-                AdditionalEntities = [],
-                Identifier = new OrganisationInformation.Identifier { Scheme = "fake", LegalName = "test" },
-                AdditionalIdentifiers = [],
-                Address = new OrganisationInformation.Address
-                {
-                    StreetAddress = "1 st",
-                    Locality = "very local",
-                    PostalCode = "WS1",
-                    Country = "GB",
-                    CountryName = "UK",
-                    Type = OrganisationInformation.AddressType.Registered
-                },
-                ContactPoint = new OrganisationInformation.ContactPoint(),
-                Roles = [],
-                Details = new Details(),
-                SupplierInformationData = new SupplierInformationData
-                {
-                    Form = new Form
-                    {
-                        FormId = Guid.NewGuid(),
-                        Name = "f1",
-                        FormVersionId = "v.0",
-                        OrganisationId = Guid.NewGuid(),
-                        IsRequired = false,
-                        ShareCode = "new_code",
-                        SubmissionState = FormSubmissionState.Submitted,
-                        SubmittedAt = DateTime.Now
-                    },
-                    Questions = [],
-                    AnswerSets = []
-                }
-            });
+            .ReturnsAsync(GetSupplierInfo());
 
         var factory = new TestAuthorizationWebApplicationFactory<Program>(
             channel, serviceCollection: s => s.AddScoped(_ => _getSharedDataUseCase.Object));
@@ -198,5 +161,47 @@ public class DataSharingTests
         var response = await factory.CreateClient().GetAsync($"/share/organisations/{organisationId}/codes/{shareCode}");
 
         response.StatusCode.Should().Be(expectedStatusCode);
+    }
+
+    private static SupplierInformation GetSupplierInfo()
+    {
+        return new SupplierInformation
+        {
+            Id = Guid.NewGuid(),
+            Name = "si",
+            AssociatedPersons = [],
+            AdditionalParties = [],
+            AdditionalEntities = [],
+            Identifier = new OrganisationInformation.Identifier { Scheme = "fake", LegalName = "test" },
+            AdditionalIdentifiers = [],
+            Address = new OrganisationInformation.Address
+            {
+                StreetAddress = "1 st",
+                Locality = "very local",
+                PostalCode = "WS1",
+                Country = "GB",
+                CountryName = "UK",
+                Type = OrganisationInformation.AddressType.Registered
+            },
+            ContactPoint = new OrganisationInformation.ContactPoint(),
+            Roles = [],
+            Details = new Details(),
+            SupplierInformationData = new SupplierInformationData
+            {
+                Form = new Form
+                {
+                    FormId = Guid.NewGuid(),
+                    Name = "f1",
+                    FormVersionId = "v.0",
+                    OrganisationId = Guid.NewGuid(),
+                    IsRequired = false,
+                    ShareCode = "new_code",
+                    SubmissionState = FormSubmissionState.Submitted,
+                    SubmittedAt = DateTime.Now
+                },
+                Questions = [],
+                AnswerSets = []
+            }
+        };
     }
 }
