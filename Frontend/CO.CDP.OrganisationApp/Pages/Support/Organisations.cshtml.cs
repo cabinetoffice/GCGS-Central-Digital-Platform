@@ -7,13 +7,10 @@ public class OrganisationsModel(
     IOrganisationClient organisationClient,
     ISession session) : LoggedInUserAwareModel(session)
 {
-    [BindProperty]
     public string? Title { get; set; }
 
-    [BindProperty]
     public string? Type { get; set; }
 
-    [BindProperty]
     public IList<ApprovableOrganisation> Organisations { get; set; } = [];
 
     public async Task<IActionResult> OnGet(string type)
