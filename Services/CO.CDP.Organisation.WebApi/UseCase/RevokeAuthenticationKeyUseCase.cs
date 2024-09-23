@@ -23,6 +23,7 @@ public class RevokeAuthenticationKeyUseCase(
             ?? throw new UnknownAuthenticationKeyException($"Unknown Authentication Key - name {revokeAuthKeyName} for organisation {command.organisationId}.");
 
         authorisationKey.Revoked = true;
+        authorisationKey.RevokedOn = DateTimeOffset.UtcNow;
 
         await keyRepository.Save(authorisationKey);
 
