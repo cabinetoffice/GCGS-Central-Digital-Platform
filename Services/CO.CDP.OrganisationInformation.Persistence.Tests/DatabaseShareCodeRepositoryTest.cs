@@ -6,6 +6,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Tests;
 
 public class DatabaseShareCodeRepositoryTest(PostgreSqlFixture postgreSql) : IClassFixture<PostgreSqlFixture>
 {
+    private static int NextQuestionNumber = 1;
 
     [Fact]
     public async Task GetSharedConsentDraftAsync_WhenSharedConsentDoesNotExist_ReturnsNull()
@@ -267,7 +268,7 @@ public class DatabaseShareCodeRepositoryTest(PostgreSqlFixture postgreSql) : ICl
             Section = section,
             Type = FormQuestionType.YesOrNo,
             IsRequired = true,
-            Name = "_Section01",
+            Name = "_Section0" + (NextQuestionNumber++),
             Title = "Yes or no?",
             Description = "Please answer.",
             NextQuestion = null,
