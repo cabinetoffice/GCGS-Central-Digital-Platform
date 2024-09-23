@@ -651,7 +651,7 @@ public static class EndpointExtensions
         app.MapGet("/{organisationId}/api-keys",
             async (Guid organisationId, IUseCase<Guid, IEnumerable<Model.AuthenticationKey>> useCase) =>
                await useCase.Execute(organisationId)
-                   .AndThen(entities => entities != null ? Results.Ok(entities) : Results.NotFound()))
+                   .AndThen(entities => Results.Ok(entities)))
            .Produces<List<Model.AuthenticationKey>>(StatusCodes.Status200OK, "application/json")
            .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
            .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
@@ -675,9 +675,9 @@ public static class EndpointExtensions
                 IUseCase<(Guid, RegisterAuthenticationKey), bool> useCase) =>
 
                 await useCase.Execute((organisationId, registerAuthenticationKey))
-                    .AndThen(_ => Results.Ok())
+                    .AndThen(_ => Results.Created())
             )
-            .Produces(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status201Created)
             .ProducesProblem(StatusCodes.Status400BadRequest)
             .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
             .ProducesProblem(StatusCodes.Status404NotFound)
@@ -688,7 +688,7 @@ public static class EndpointExtensions
                 operation.OperationId = "CreateAuthenticationKey";
                 operation.Description = "Create a new authentication key.";
                 operation.Summary = "Create a new authentication key.";
-                operation.Responses["200"].Description = "Authentication key created successfully.";
+                operation.Responses["201"].Description = "Authentication key created successfully.";
                 operation.Responses["400"].Description = "Bad request.";
                 operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
                 operation.Responses["404"].Description = "Authentication failed.";
