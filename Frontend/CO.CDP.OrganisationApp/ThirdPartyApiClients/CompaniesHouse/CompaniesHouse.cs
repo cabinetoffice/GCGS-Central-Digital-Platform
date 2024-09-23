@@ -8,7 +8,7 @@ public class CompaniesHouseApi(IConfiguration configuration, ILogger<CompaniesHo
     public async Task<RegisteredAddress?> GetRegisteredAddress(
         string companyNumber)
     {
-        var companiesHouseUrl = GetComapniesHouseUrl();
+        var companiesHouseUrl = GetCompaniesHouseUrl();
         var userName = GetComapniesHouseUser();
         var password = GetComapniesHousePassword();
         RegisteredAddress? companyRegDetails = null;
@@ -32,7 +32,7 @@ public class CompaniesHouseApi(IConfiguration configuration, ILogger<CompaniesHo
     public async Task<CompanyProfile?> GetProfile(
         string companyNumber)
     {
-        var companiesHouseUrl = GetComapniesHouseUrl();
+        var companiesHouseUrl = GetCompaniesHouseUrl();
         var userName = GetComapniesHouseUser();
         var password = GetComapniesHousePassword();
         CompanyProfile? profile = null;
@@ -53,7 +53,7 @@ public class CompaniesHouseApi(IConfiguration configuration, ILogger<CompaniesHo
         return profile;
     }
 
-    private string? GetComapniesHouseUrl()
+    private string? GetCompaniesHouseUrl()
     {
         return configuration["CompaniesHouse:Url"];
     }
