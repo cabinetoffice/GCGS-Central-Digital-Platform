@@ -31,6 +31,13 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
         return await context.Set<OrganisationPerson>().FirstOrDefaultAsync(o => o.Organisation.Guid == organisationId && o.Person.Guid == personId);
     }
 
+    public async Task<OrganisationPerson?> FindOrganisationPerson(Guid organisationId, string userUrn)
+    {
+        return await context.Set<OrganisationPerson>()
+            .AsNoTracking()
+            .FirstOrDefaultAsync(o => o.Organisation.Guid == organisationId && o.Person.UserUrn == userUrn);
+    }
+
     public async Task<IEnumerable<Organisation>> FindByUserUrn(string userUrn)
     {
         var person = await context.Persons
@@ -40,6 +47,7 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
             .FirstOrDefaultAsync(p => p.UserUrn == userUrn);
         return person?.Organisations ?? [];
     }
+
     public async Task<Organisation?> FindByIdentifier(string scheme, string identifierId)
     {
         return await context.Organisations

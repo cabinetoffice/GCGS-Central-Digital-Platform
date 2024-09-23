@@ -7,7 +7,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using System.Net;
 using System.Net.Http.Json;
-using System.Security.Claims;
 using static CO.CDP.Authentication.Constants;
 using static System.Net.HttpStatusCode;
 
@@ -36,9 +35,7 @@ public class PersonInvitesEndpointsTests
         _getPersonInvitesUseCase.Setup(uc => uc.Execute(organisationId)).ReturnsAsync([]);
 
         var factory = new TestAuthorizationWebApplicationFactory<Program>(
-            [new Claim(ClaimType.Channel, channel)],
-            organisationId,
-            scope,
+            channel, organisationId, scope,
             services => services.AddScoped(_ => _getPersonInvitesUseCase.Object));
 
         var response = await factory.CreateClient().GetAsync($"/organisations/{organisationId}/invites");
@@ -70,9 +67,7 @@ public class PersonInvitesEndpointsTests
         _invitePersonToOrganisationUseCase.Setup(uc => uc.Execute(command)).ReturnsAsync(Mock.Of<PersonInvite>());
 
         var factory = new TestAuthorizationWebApplicationFactory<Program>(
-            [new Claim(ClaimType.Channel, channel)],
-            organisationId,
-            scope,
+            channel, organisationId, scope,
             services => services.AddScoped(_ => _invitePersonToOrganisationUseCase.Object));
 
         var response = await factory.CreateClient().PostAsJsonAsync($"/organisations/{organisationId}/invites", invitePersonToOrganisation);
@@ -99,9 +94,7 @@ public class PersonInvitesEndpointsTests
         _updateInvitedPersonToOrganisationUseCase.Setup(uc => uc.Execute(command)).ReturnsAsync(true);
 
         var factory = new TestAuthorizationWebApplicationFactory<Program>(
-            [new Claim(ClaimType.Channel, channel)],
-            organisationId,
-            scope,
+            channel, organisationId, scope,
             services => services.AddScoped(_ => _updateInvitedPersonToOrganisationUseCase.Object));
 
         var response = await factory.CreateClient().PatchAsJsonAsync($"/organisations/{organisationId}/invites/{personInviteId}", updateInvitedPersonToOrganisation);
@@ -127,9 +120,7 @@ public class PersonInvitesEndpointsTests
         _removePersonInviteFromOrganisationUseCase.Setup(uc => uc.Execute(command)).ReturnsAsync(true);
 
         var factory = new TestAuthorizationWebApplicationFactory<Program>(
-            [new Claim(ClaimType.Channel, channel)],
-            organisationId,
-            scope,
+            channel, organisationId, scope,
             services => services.AddScoped(_ => _removePersonInviteFromOrganisationUseCase.Object));
 
         var response = await factory.CreateClient().DeleteAsync($"/organisations/{organisationId}/invites/{personInviteId}");
