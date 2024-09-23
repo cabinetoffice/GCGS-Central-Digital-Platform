@@ -25,9 +25,11 @@
                         <dd class="govuk-summary-list__value">
                             <p class="govuk-body">@organisationDetails.Name</p>
                         </dd>
-                        <dd class="govuk-summary-list__actions">
-                            <a class="govuk-link govuk-link--no-visited-state" href="/organisation/@Model.Id/name">Change<span class="govuk-visually-hidden"> address</span></a>
-                        </dd>
+                        <authorize scope="@OrgScopeRequirement.Editor">
+                            <dd class="govuk-summary-list__actions">
+                                <a class="govuk-link govuk-link--no-visited-state" href="/organisation/@Model.Id/name">Change<span class="govuk-visually-hidden"> address</span></a>
+                            </dd>
+                        </authorize>
                     </div>
 
                     <div class="govuk-summary-list__row">
@@ -49,9 +51,11 @@
                                 }
                             </p>
                         </dd>
-                        <dd class="govuk-summary-list__actions">
-                            <a class="govuk-link govuk-link--no-visited-state" href="#">Add<span class="govuk-visually-hidden"> address</span></a>
-                        </dd>
+                        <authorize scope="@OrgScopeRequirement.Editor">
+                            <dd class="govuk-summary-list__actions">
+                                <a class="govuk-link govuk-link--no-visited-state" href="#">Add<span class="govuk-visually-hidden"> address</span></a>
+                            </dd>
+                        </authorize>
                     </div>
 
                     <div class="govuk-summary-list__row">
@@ -61,9 +65,11 @@
                         <dd class="govuk-summary-list__value">
                             <p class="govuk-body">@organisationDetails.ContactPoint.Email</p>
                         </dd>
-                        <dd class="govuk-summary-list__actions">
-                            <a class="govuk-link govuk-link--no-visited-state" href="/organisation/@Model.Id/email">Change<span class="govuk-visually-hidden"> address</span></a>
-                        </dd>
+                        <authorize scope="@OrgScopeRequirement.Editor">
+                            <dd class="govuk-summary-list__actions">
+                                <a class="govuk-link govuk-link--no-visited-state" href="/organisation/@Model.Id/email">Change<span class="govuk-visually-hidden"> address</span></a>
+                            </dd>
+                        </authorize>
                     </div>
 
                     @if (registeredAddress != null)
@@ -82,9 +88,11 @@
                                 <p class="govuk-body">@registeredAddress.PostalCode</p>
                                 <p class="govuk-body">@registeredAddress.CountryName</p>
                             </dd>
-                            <dd class="govuk-summary-list__actions">
-                                <a class="govuk-link govuk-link--no-visited-state" href="/organisation/@Model.Id/address/@(registeredAddress.Country == Country.UKCountryCode ? "uk" : "non-uk")?frm-overview">Change<span class="govuk-visually-hidden"> address</span></a>
-                            </dd>
+                            <authorize scope="@OrgScopeRequirement.Editor">
+                                <dd class="govuk-summary-list__actions">
+                                    <a class="govuk-link govuk-link--no-visited-state" href="/organisation/@Model.Id/address/@(registeredAddress.Country == Country.UKCountryCode ? "uk" : "non-uk")?frm-overview">Change<span class="govuk-visually-hidden"> address</span></a>
+                                </dd>
+                            </authorize>
                         </div>
                     }
                 </dl>
