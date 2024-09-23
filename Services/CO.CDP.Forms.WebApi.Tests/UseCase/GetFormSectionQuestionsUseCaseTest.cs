@@ -12,13 +12,13 @@ public class GetFormSectionQuestionsUseCaseTest(AutoMapperFixture mapperFixture)
     private readonly Mock<IFormRepository> _repository = new();
     private GetFormSectionQuestionsUseCase UseCase => new(_repository.Object, mapperFixture.Mapper);
 
-    private static int nextQuestionNumber = 0;
+    private static int _nextQuestionNumber;
 
-    private static int getQuestionNumber()
+    private static int GetQuestionNumber()
     {
-        Interlocked.Increment(ref nextQuestionNumber);
+        Interlocked.Increment(ref _nextQuestionNumber);
 
-        return nextQuestionNumber;
+        return _nextQuestionNumber;
     }
 
     [Fact]
@@ -76,7 +76,7 @@ public class GetFormSectionQuestionsUseCaseTest(AutoMapperFixture mapperFixture)
                 Id = 1,
                 Guid = Guid.NewGuid(),
                 Caption = "Page caption",
-                Name = "_Section0" + getQuestionNumber(),
+                Name = "_Section0" + GetQuestionNumber(),
                 Title = "The financial information you will need.",
                 Description = "You will need to upload accounts or statements for your 2 most recent financial years. If you do not have 2 years, you can upload your most recent financial year. You will need to enter the financial year end date for the information you upload.",
                 Type = CO.CDP.OrganisationInformation.Persistence.Forms.FormQuestionType.NoInput,
@@ -91,7 +91,7 @@ public class GetFormSectionQuestionsUseCaseTest(AutoMapperFixture mapperFixture)
                 Id = 2,
                 Guid = Guid.NewGuid(),
                 Caption = "Page caption",
-                Name = "_Section0" + getQuestionNumber(),
+                Name = "_Section0" + GetQuestionNumber(),
                 Title = "Were your accounts audited?.",
                 Description = "",
                 Type = CO.CDP.OrganisationInformation.Persistence.Forms.FormQuestionType.YesOrNo,

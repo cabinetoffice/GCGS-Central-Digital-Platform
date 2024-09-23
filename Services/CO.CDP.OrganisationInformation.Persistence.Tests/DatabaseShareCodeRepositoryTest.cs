@@ -6,13 +6,13 @@ namespace CO.CDP.OrganisationInformation.Persistence.Tests;
 
 public class DatabaseShareCodeRepositoryTest(PostgreSqlFixture postgreSql) : IClassFixture<PostgreSqlFixture>
 {
-    private static int nextQuestionNumber = 0;
+    private static int _nextQuestionNumber;
 
-    private static int getQuestionNumber()
+    private static int GetQuestionNumber()
     {
-        Interlocked.Increment(ref nextQuestionNumber);
+        Interlocked.Increment(ref _nextQuestionNumber);
 
-        return nextQuestionNumber;
+        return _nextQuestionNumber;
     }
 
     [Fact]
@@ -275,7 +275,7 @@ public class DatabaseShareCodeRepositoryTest(PostgreSqlFixture postgreSql) : ICl
             Section = section,
             Type = FormQuestionType.YesOrNo,
             IsRequired = true,
-            Name = "_Section0" + getQuestionNumber(),
+            Name = "_Section0" + GetQuestionNumber(),
             Title = "Yes or no?",
             Description = "Please answer.",
             NextQuestion = null,
