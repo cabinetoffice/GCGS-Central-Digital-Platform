@@ -113,6 +113,14 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("organisation_id");
 
+                    b.Property<bool>("Revoked")
+                        .HasColumnType("boolean")
+                        .HasColumnName("revoked");
+
+                    b.Property<DateTimeOffset?>("RevokedOn")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("revoked_on");
+
                     b.Property<string>("Scopes")
                         .IsRequired()
                         .HasColumnType("jsonb")
@@ -127,12 +135,14 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                     b.HasKey("Id")
                         .HasName("pk_authentication_keys");
 
-                    b.HasIndex("Key")
-                        .IsUnique()
-                        .HasDatabaseName("ix_authentication_keys_key");
-
                     b.HasIndex("OrganisationId")
                         .HasDatabaseName("ix_authentication_keys_organisation_id");
+
+                    b.HasIndex("Name", "OrganisationId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_authentication_keys_name_organisation_id");
+
+                    NpgsqlIndexBuilderExtensions.AreNullsDistinct(b.HasIndex("Name", "OrganisationId"), false);
 
                     b.ToTable("authentication_keys", (string)null);
                 });
@@ -366,6 +376,10 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                         .HasDefaultValue(false)
                         .HasColumnName("deleted");
 
+                    b.Property<bool>("FurtherQuestionsExempted")
+                        .HasColumnType("boolean")
+                        .HasColumnName("further_questions_exempted");
+
                     b.Property<Guid>("Guid")
                         .HasColumnType("uuid")
                         .HasColumnName("guid");
@@ -427,6 +441,11 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                         .HasColumnType("boolean")
                         .HasColumnName("is_required");
 
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("name");
+
                     b.Property<int?>("NextQuestionAlternativeId")
                         .HasColumnType("integer")
                         .HasColumnName("next_question_alternative_id");
@@ -465,6 +484,10 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
 
                     b.HasKey("Id")
                         .HasName("pk_form_questions");
+
+                    b.HasIndex("Name")
+                        .IsUnique()
+                        .HasDatabaseName("ix_form_questions_name");
 
                     b.HasIndex("NextQuestionAlternativeId")
                         .HasDatabaseName("ix_form_questions_next_question_alternative_id");
@@ -611,6 +634,18 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("ApprovedById")
+                        .HasColumnType("integer")
+                        .HasColumnName("approved_by_id");
+
+                    b.Property<string>("ApprovedComment")
+                        .HasColumnType("text")
+                        .HasColumnName("approved_comment");
+
+                    b.Property<DateTimeOffset?>("ApprovedOn")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("approved_on");
+
                     b.Property<DateTimeOffset>("CreatedOn")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
@@ -643,6 +678,9 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
 
                     b.HasKey("Id")
                         .HasName("pk_organisations");
+
+                    b.HasIndex("ApprovedById")
+                        .HasDatabaseName("ix_organisations_approved_by_id");
 
                     b.HasIndex("Guid")
                         .IsUnique()
@@ -1235,6 +1273,11 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
 
             modelBuilder.Entity("CO.CDP.OrganisationInformation.Persistence.Organisation", b =>
                 {
+                    b.HasOne("CO.CDP.OrganisationInformation.Persistence.Person", "ApprovedBy")
+                        .WithMany()
+                        .HasForeignKey("ApprovedById")
+                        .HasConstraintName("fk_organisations_persons_approved_by_id");
+
                     b.HasOne("CO.CDP.OrganisationInformation.Persistence.Tenant", "Tenant")
                         .WithMany("Organisations")
                         .HasForeignKey("TenantId")
@@ -1693,6 +1736,8 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                         });
 
                     b.Navigation("Addresses");
+
+                    b.Navigation("ApprovedBy");
 
                     b.Navigation("BuyerInfo");
 

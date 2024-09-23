@@ -1,6 +1,6 @@
-using CO.CDP.DataSharing.WebApi;
-using CO.CDP.DataSharing.WebApi.Tests;
-using DataSharing.Tests;
+using FluentAssertions;
+
+namespace CO.CDP.DataSharing.WebApi.Tests.Pdf;
 
 public class PdfGeneratorTests
 {
@@ -14,16 +14,16 @@ public class PdfGeneratorTests
     [Fact]
     public void GenerateBasicInformationPdf_ShouldGeneratePdfWithAllInformation()
     {
-
-        var supplierInformation = new CO.CDP.DataSharing.WebApi.Model.SharedSupplierInformation
+        var supplierInformation = new Model.SharedSupplierInformation
         {
+            OrganisationId = Guid.NewGuid(),
             BasicInformation = DataSharingFactory.CreateMockBasicInformation(),
             ConnectedPersonInformation = DataSharingFactory.CreateMockConnectedPersonInformation(),
         };
 
         var pdfBytes = _pdfGenerator.GenerateBasicInformationPdf(supplierInformation);
 
-        Assert.NotNull(pdfBytes);
-        Assert.True(pdfBytes.Length > 0);
+        pdfBytes.Should().NotBeNull();
+        pdfBytes.Length.Should().BeGreaterThan(0);
     }
 }

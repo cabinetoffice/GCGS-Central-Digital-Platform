@@ -28,7 +28,7 @@ public class ChangePersonUserRoleTests
     [Fact]
     public async Task OnGet_ShouldInitializeModel_WhenPersonExists()
     {
-        var mockPerson = new Organisation.WebApiClient.Person(
+        var mockPerson = new CO.CDP.Organisation.WebApiClient.Person(
                                     "a@b.com",
                                     "John",
                                     new Guid(),
@@ -38,7 +38,7 @@ public class ChangePersonUserRoleTests
 
         _mockOrganisationClient
             .Setup(s => s.GetOrganisationPersonsAsync(mockPerson.Id))
-            .ReturnsAsync(new List<Organisation.WebApiClient.Person>() { mockPerson });
+            .ReturnsAsync(new List<CO.CDP.Organisation.WebApiClient.Person>() { mockPerson });
 
         var result = await _changeUserRoleModel.OnGetPerson();
 
@@ -64,7 +64,7 @@ public class ChangePersonUserRoleTests
     [Fact]
     public async Task OnPostPerson_ShouldReturnPageResult_WhenModelStateIsInvalid()
     {
-        var mockPerson = new Organisation.WebApiClient.Person(
+        var mockPerson = new CO.CDP.Organisation.WebApiClient.Person(
                                     "a@b.com",
                                     "John",
                                     new Guid(),
@@ -74,7 +74,7 @@ public class ChangePersonUserRoleTests
 
         _mockOrganisationClient
             .Setup(s => s.GetOrganisationPersonsAsync(mockPerson.Id))
-            .ReturnsAsync(new List<Organisation.WebApiClient.Person>() { mockPerson });
+            .ReturnsAsync(new List<CO.CDP.Organisation.WebApiClient.Person>() { mockPerson });
 
         _changeUserRoleModel.IsAdmin = true;
         _changeUserRoleModel.Role = null;
@@ -102,7 +102,7 @@ public class ChangePersonUserRoleTests
     [Fact]
     public async Task OnPostPerson_ShouldUpdatePersonTableAndRedirect_WhenModelStateIsValid()
     {
-        var mockPerson = new Organisation.WebApiClient.Person(
+        var mockPerson = new CO.CDP.Organisation.WebApiClient.Person(
                                     "a@b.com",
                                     "John",
                                     new Guid(),
@@ -112,7 +112,7 @@ public class ChangePersonUserRoleTests
 
         _mockOrganisationClient
             .Setup(s => s.GetOrganisationPersonsAsync(mockPerson.Id))
-            .ReturnsAsync(new List<Organisation.WebApiClient.Person>() { mockPerson });
+            .ReturnsAsync(new List<CO.CDP.Organisation.WebApiClient.Person>() { mockPerson });
 
         _changeUserRoleModel.IsAdmin = true;
         _changeUserRoleModel.Role = OrganisationPersonScopes.Viewer;

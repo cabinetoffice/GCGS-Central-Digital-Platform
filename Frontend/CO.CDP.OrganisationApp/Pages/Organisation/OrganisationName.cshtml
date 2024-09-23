@@ -1,0 +1,53 @@
+@page "/organisation/{id}/name"
+@model CO.CDP.OrganisationApp.Pages.Organisation.OrganisationNameModel
+
+@{
+    var organisationNameHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.OrganisationName)).HasInnerHtml;
+}
+
+<a href="/organisation/@Model.Id" class="govuk-back-link">
+    Back
+</a> <main class="govuk-main-wrapper">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <partial name="_ErrorSummary" model="@ModelState" />
+
+            <form method="post">             
+
+                <div class="govuk-form-group">
+                    <fieldset class="govuk-fieldset">
+
+                        <h1 class="govuk-label-wrapper">
+                            <label class="govuk-label govuk-label--l" for="@nameof(Model.OrganisationName)">
+                                @Html.DisplayNameFor(m => m.OrganisationName)
+                            </label>
+                        </h1>
+
+                        <div id="hint" class="govuk-hint">As registered on Companies House if incorporated, or the trading name of the company.</div>
+
+                        <div class="govuk-form-group @(organisationNameHasError ? "govuk-form-group--error" : "")">
+                            @if (organisationNameHasError)
+                            {
+                                <p id="organisation-name-error" class="govuk-error-message">
+                                    <span class="govuk-visually-hidden">Error:</span>
+                                    @Html.ValidationMessageFor(m => m.OrganisationName)
+                                </p>
+                            }
+                            <input class="govuk-input govuk-!-width-two-thirds @(organisationNameHasError ? "govuk-input--error" : "")" id="@nameof(Model.OrganisationName)"
+                                   value="@Model.OrganisationName" name="@nameof(Model.OrganisationName)" type="text"
+                                   spellcheck="false" @(organisationNameHasError ? "aria-describedby=organisation-name-error" : "")>
+                        </div>
+
+                    </fieldset>
+                </div>
+
+                <button type="submit"
+                        class="govuk-button"
+                        data-module="govuk-button">
+                    Continue
+                </button>
+
+            </form>
+        </div>
+    </div>
+</main>

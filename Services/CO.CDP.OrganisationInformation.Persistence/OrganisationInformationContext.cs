@@ -120,6 +120,8 @@ public class OrganisationInformationContext(DbContextOptions<OrganisationInforma
                 a.ToTable("buyer_information");
             });
 
+            entity.HasOne(e => e.ApprovedBy);
+
             entity
                 .HasMany(p => p.Persons)
                 .WithMany(t => t.Organisations)
@@ -142,6 +144,7 @@ public class OrganisationInformationContext(DbContextOptions<OrganisationInforma
 
         modelBuilder.Entity<AuthenticationKey>(e =>
         {
+            e.HasIndex(e => new { e.Name, e.OrganisationId }).IsUnique().AreNullsDistinct(false);
             e.Property(e => e.Scopes).HasJsonColumn([], PropertyBuilderExtensions.ListComparer<string>());
         });
 

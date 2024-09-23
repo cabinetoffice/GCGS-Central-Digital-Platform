@@ -70,6 +70,22 @@ internal static class OrganisationClientExtensions
                             type: OrganisationUpdateType.RemoveIdentifier,
                             organisation: new OrganisationInfo(additionalIdentifiers: null, contactPoint: null, addresses: null, identifierToRemove: identifierToRemove, organisationName: null)));
 
+
+    internal static Task UpdateOrganisationName(this IOrganisationClient organisationClient,
+        Guid organisationId,
+        string organisationName)
+            => organisationClient.UpdateOrganisationAsync(organisationId,
+                    new UpdatedOrganisation(
+                        type: OrganisationUpdateType.OrganisationName,
+                        organisation: new OrganisationInfo(additionalIdentifiers: null, contactPoint: null, addresses: null, identifierToRemove: null, organisationName: organisationName)));
+    internal static Task UpdateOrganisationEmail(this IOrganisationClient organisationClient,
+     Guid organisationId,
+     OrganisationContactPoint contactPoint)
+         => organisationClient.UpdateOrganisationAsync(organisationId,
+                 new UpdatedOrganisation(
+                     type: OrganisationUpdateType.OrganisationEmail,
+                     organisation: new OrganisationInfo(additionalIdentifiers: null, contactPoint: contactPoint, addresses: null, identifierToRemove: null, organisationName: null)));
+
     internal static Task UpdateOrganisationContactPoint(this IOrganisationClient organisationClient,
         Guid organisationId,
         OrganisationContactPoint contactPoint)
@@ -156,6 +172,18 @@ internal static class OrganisationClientExtensions
             new UpdateSupplierInformation(
                 type: SupplierInformationUpdateType.CompletedConnectedPerson,
                 supplierInformation: new SupplierInfo(supplierType: null, operationTypes: null, tradeAssurance: null, legalForm: null, qualification: null)));
+
+    internal static async Task RevokeAuthenticationKey(this IOrganisationClient organisationClient,
+        Guid organisationId, string authenticationKeyName)
+        => await organisationClient.RevokeAuthenticationKeyAsync(organisationId, authenticationKeyName);
+
+    internal static async Task CreateAuthenticationKey(this IOrganisationClient organisationClient,
+        Guid organisationId, RegisterAuthenticationKey? registerAuthenticationKey)
+        => await organisationClient.CreateAuthenticationKeyAsync(organisationId, registerAuthenticationKey);
+
+    internal static async Task<ICollection<AuthenticationKey>> GetAuthenticationKeys(this IOrganisationClient organisationClient,
+        Guid organisationId)
+        => await organisationClient.GetAuthenticationKeysAsync(organisationId);
 }
 
 public class ComposedOrganisation

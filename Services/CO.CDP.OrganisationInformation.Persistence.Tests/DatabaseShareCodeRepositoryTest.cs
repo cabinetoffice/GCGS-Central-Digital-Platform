@@ -6,6 +6,14 @@ namespace CO.CDP.OrganisationInformation.Persistence.Tests;
 
 public class DatabaseShareCodeRepositoryTest(PostgreSqlFixture postgreSql) : IClassFixture<PostgreSqlFixture>
 {
+    private static int _nextQuestionNumber;
+
+    private static int GetQuestionNumber()
+    {
+        Interlocked.Increment(ref _nextQuestionNumber);
+
+        return _nextQuestionNumber;
+    }
 
     [Fact]
     public async Task GetSharedConsentDraftAsync_WhenSharedConsentDoesNotExist_ReturnsNull()
@@ -253,6 +261,7 @@ public class DatabaseShareCodeRepositoryTest(PostgreSqlFixture postgreSql) : ICl
             SectionId = section.Id,
             Section = section,
             Answers = [],
+            FurtherQuestionsExempted = false
         };
         sharedConsent.AnswerSets.Add(answerSet);
         return answerSet;
@@ -266,6 +275,7 @@ public class DatabaseShareCodeRepositoryTest(PostgreSqlFixture postgreSql) : ICl
             Section = section,
             Type = FormQuestionType.YesOrNo,
             IsRequired = true,
+            Name = "_Section0" + GetQuestionNumber(),
             Title = "Yes or no?",
             Description = "Please answer.",
             NextQuestion = null,
@@ -289,7 +299,7 @@ public class DatabaseShareCodeRepositoryTest(PostgreSqlFixture postgreSql) : ICl
             new Organisation.Identifier
             {
                 IdentifierId = Guid.NewGuid().ToString(),
-                Scheme = "CDP-PPON",
+                Scheme = "GB-PPON",
                 LegalName = "New Corporation Ltd",
                 Uri = "https://cdp.cabinetoffice.gov.uk/organisations/" + Guid.NewGuid().ToString(),
                 Primary = true

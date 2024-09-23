@@ -1,0 +1,35 @@
+@page "/organisation/{id}/address/{UkOrNonUk}"
+@model CO.CDP.OrganisationApp.Pages.Organisation.OrganisationRegisteredAddressModel
+
+@{
+    var backLink = $"/organisation/{@Model.Id}";
+    var fromOverviewPage = Request.Query.ContainsKey("frm-overview");
+    if (fromOverviewPage) Model.RedirectToOverview = true;
+
+    if (Model.Address.IsNonUkAddress)
+    {
+        backLink = backLink = $"/organisation/{@Model.Id}/address/uk{(fromOverviewPage ? "?frm-overview" : "")}";
+    }
+    else if (fromOverviewPage)
+    {
+        backLink = $"/organisation/{@Model.Id}";
+    }
+}
+
+<a href="@backLink" class="govuk-back-link">Back</a>
+
+<main class="govuk-main-wrapper">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <partial name="_ErrorSummary" model="@ModelState" />           
+            <form method="post">
+                @if (Request.Query.ContainsKey("frm-overview"))
+                {
+                    <input type="hidden" name="RedirectToOverview" value="true" />
+                }
+
+                <partial name="_Address" model="@Model.Address" />
+            </form>
+        </div>
+    </div>
+</main>

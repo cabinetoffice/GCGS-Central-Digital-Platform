@@ -1,31 +1,34 @@
 using CO.CDP.OrganisationInformation.Persistence;
 using Microsoft.AspNetCore.Http;
+using static CO.CDP.Authentication.Constants;
 
 namespace CO.CDP.Authentication;
 
 public class ClaimService(
     IHttpContextAccessor httpContextAccessor,
-    ITenantRepository tenantRepository) : IClaimService
+    IOrganisationRepository organisationRepository) : IClaimService
 {
     public string? GetUserUrn()
     {
-        return httpContextAccessor.HttpContext?.User?.FindFirst("sub")?.Value;
+        return httpContextAccessor.HttpContext?.User?.FindFirst(ClaimType.Subject)?.Value;
     }
 
-    public async Task<bool> HaveAccessToOrganisation(Guid oragnisationId)
+    public async Task<bool> HaveAccessToOrganisation(Guid organisationId, string[]? scopes = null)
     {
         var userUrn = GetUserUrn();
-        if (string.IsNullOrEmpty(userUrn)) return false;
+        if (string.IsNullOrWhiteSpace(userUrn)) return false;
 
-        var tenantlookup = await tenantRepository.LookupTenant(userUrn);
-        if (tenantlookup == null) return false;
+        var organisationPerson = await organisationRepository.FindOrganisationPerson(organisationId, userUrn);
+        if (organisationPerson == null) return false;
 
-        return tenantlookup.Tenants.SelectMany(t => t.Organisations).Any(o => o.Id == oragnisationId);
+        if (scopes == null) return true;
+
+        return organisationPerson.Scopes.Intersect(scopes).Any();
     }
 
-    public int? GetOrganisationId()
+    public Guid? GetOrganisationId()
     {
-        if (int.TryParse(httpContextAccessor.HttpContext?.User?.FindFirst("org")?.Value, out int result))
+        if (Guid.TryParse(httpContextAccessor.HttpContext?.User?.FindFirst(ClaimType.OrganisationId)?.Value, out Guid result))
         {
             return result;
         }

@@ -3,25 +3,21 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Moq;
 using System.Security.Claims;
+using static CO.CDP.Authentication.Constants;
 
 namespace CO.CDP.Authentication.Tests;
 
 public class ClaimServiceTests
 {
-    private readonly Mock<ITenantRepository> mockTenantRepo;
-
-    public ClaimServiceTests()
-    {
-        mockTenantRepo = new();
-    }
+    private readonly Mock<IOrganisationRepository> mockOrgRepo = new();
 
     [Fact]
     public void GetUserUrn_ShouldReturnUrn_WhenUserHasSubClaim()
     {
         var userUrn = "urn:fdc:gov.uk:2022:rynbwxUssDAcmU38U5gxd7dBfu9N7KFP9_nqDuZ66Hg";
-        var httpContextAccessor = GivenHttpContextWith([new("sub", userUrn)]);
+        var httpContextAccessor = GivenHttpContextWith([new(ClaimType.Subject, userUrn)]);
 
-        var claimService = new ClaimService(httpContextAccessor.Object, mockTenantRepo.Object);
+        var claimService = new ClaimService(httpContextAccessor.Object, mockOrgRepo.Object);
 
         var result = claimService.GetUserUrn();
         result.Should().Be(userUrn);
@@ -32,7 +28,7 @@ public class ClaimServiceTests
     {
         var httpContextAccessor = GivenHttpContextWith([]);
 
-        var claimService = new ClaimService(httpContextAccessor.Object, mockTenantRepo.Object);
+        var claimService = new ClaimService(httpContextAccessor.Object, mockOrgRepo.Object);
         var result = claimService.GetUserUrn();
 
         result.Should().BeNull();
@@ -43,7 +39,7 @@ public class ClaimServiceTests
     {
         var httpContextAccessor = GivenHttpContextWith([]);
 
-        var claimService = new ClaimService(httpContextAccessor.Object, mockTenantRepo.Object);
+        var claimService = new ClaimService(httpContextAccessor.Object, mockOrgRepo.Object);
         var result = await claimService.HaveAccessToOrganisation(Guid.NewGuid());
 
         result.Should().BeFalse();
@@ -52,33 +48,15 @@ public class ClaimServiceTests
     [Fact]
     public async Task HaveAccessToOrganisation_ShouldReturnFalse_WhenUserHasNoTenant()
     {
+        var organisationId = Guid.NewGuid();
         var userUrn = "urn:fdc:gov.uk:2022:rynbwxUssDAcmU38U5gxd7dBfu9N7KFP9_nqDuZ66Hg";
-        var httpContextAccessor = GivenHttpContextWith([new("sub", userUrn)]);
+        var httpContextAccessor = GivenHttpContextWith([new(ClaimType.Subject, userUrn)]);
 
-        mockTenantRepo.Setup(m => m.LookupTenant(userUrn))
-            .ReturnsAsync((TenantLookup?)default);
+        mockOrgRepo.Setup(m => m.FindOrganisationPerson(organisationId, userUrn))
+            .ReturnsAsync((OrganisationPerson?)default);
 
-        var claimService = new ClaimService(httpContextAccessor.Object, mockTenantRepo.Object);
-        var result = await claimService.HaveAccessToOrganisation(Guid.NewGuid());
-
-        result.Should().BeFalse();
-    }
-
-    [Fact]
-    public async Task HaveAccessToOrganisation_ShouldReturnFalse_WhenDoesNotHaveAccessToOrganisation()
-    {
-        var userUrn = "urn:fdc:gov.uk:2022:rynbwxUssDAcmU38U5gxd7dBfu9N7KFP9_nqDuZ66Hg";
-        var httpContextAccessor = GivenHttpContextWith([new("sub", userUrn)]);
-
-        mockTenantRepo.Setup(m => m.LookupTenant(userUrn))
-            .ReturnsAsync(new TenantLookup
-            {
-                User = new TenantLookup.PersonUser { Name = "Test", Email = "test@test", Urn = userUrn },
-                Tenants = []
-            });
-
-        var claimService = new ClaimService(httpContextAccessor.Object, mockTenantRepo.Object);
-        var result = await claimService.HaveAccessToOrganisation(new Guid("57dcf48c-8910-4108-9cf1-c2935488a085"));
+        var claimService = new ClaimService(httpContextAccessor.Object, mockOrgRepo.Object);
+        var result = await claimService.HaveAccessToOrganisation(organisationId);
 
         result.Should().BeFalse();
     }
@@ -88,17 +66,17 @@ public class ClaimServiceTests
     {
         var organisationId = new Guid("96dc0f35-c059-4d89-91fa-a6ba5e4861a2");
         var userUrn = "urn:fdc:gov.uk:2022:rynbwxUssDAcmU38U5gxd7dBfu9N7KFP9_nqDuZ66Hg";
-        var httpContextAccessor = GivenHttpContextWith([new("sub", userUrn)]);
+        var httpContextAccessor = GivenHttpContextWith([new(ClaimType.Subject, userUrn)]);
 
-        mockTenantRepo.Setup(m => m.LookupTenant(userUrn))
-            .ReturnsAsync(new TenantLookup
+        mockOrgRepo.Setup(m => m.FindOrganisationPerson(organisationId, userUrn))
+            .ReturnsAsync(new OrganisationPerson
             {
-                User = new TenantLookup.PersonUser { Name = "Test", Email = "test@test", Urn = userUrn },
-                Tenants = [new TenantLookup.Tenant { Id = Guid.NewGuid(), Name = "Ten",
-                    Organisations = [new TenantLookup.Organisation { Id = organisationId, Name = "org", Roles = [], Scopes = [] }] }]
+                Organisation = Mock.Of<Organisation>(),
+                Person = Mock.Of<Person>(),
+                Scopes = ["Admin"]
             });
 
-        var claimService = new ClaimService(httpContextAccessor.Object, mockTenantRepo.Object);
+        var claimService = new ClaimService(httpContextAccessor.Object, mockOrgRepo.Object);
         var result = await claimService.HaveAccessToOrganisation(organisationId);
 
         result.Should().BeTrue();

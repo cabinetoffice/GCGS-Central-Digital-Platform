@@ -1,4 +1,6 @@
 using CO.CDP.DataSharing.WebApiClient;
+using CO.CDP.OrganisationApp.Constants;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Net.Mime;
@@ -7,6 +9,7 @@ using SharedConsentDetails = CO.CDP.OrganisationApp.Models.SharedConsentDetails;
 
 namespace CO.CDP.OrganisationApp.Pages.ShareInformation;
 
+[Authorize(Policy = OrgScopeRequirement.Editor)]
 public class ShareCodesListViewModel(IDataSharingClient dataSharingClient) : PageModel
 {
     [BindProperty(SupportsGet = true)]

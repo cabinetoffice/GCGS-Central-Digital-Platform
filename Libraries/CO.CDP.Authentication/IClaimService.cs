@@ -3,7 +3,7 @@ public interface IClaimService
 {
     string? GetUserUrn();
 
-    int? GetOrganisationId();
+    Guid? GetOrganisationId();
 
-    Task<bool> HaveAccessToOrganisation(Guid oragnisationId);
+    Task<bool> HaveAccessToOrganisation(Guid organisationId, string[] scopes);
 }
