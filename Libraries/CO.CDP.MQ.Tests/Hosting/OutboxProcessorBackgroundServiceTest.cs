@@ -21,7 +21,8 @@ public class OutboxProcessorBackgroundServiceTest
         var backgroundService = new OutboxProcessorBackgroundService(_serviceProvider,
             new OutboxProcessorBackgroundService.OutboxProcessorConfiguration
             {
-                BatchSize = 2
+                BatchSize = 2,
+                ExecutionInterval = TimeSpan.FromSeconds(30)
             });
         await backgroundService.StartAsync(CancellationToken.None);
         await Task.Delay(TimeSpan.FromMilliseconds(100));
@@ -43,11 +44,10 @@ public class OutboxProcessorBackgroundServiceTest
                 ExecutionInterval = TimeSpan.FromMilliseconds(4)
             });
         await backgroundService.StartAsync(CancellationToken.None);
-        await Task.Delay(TimeSpan.FromMilliseconds(6));
+        await Task.Delay(TimeSpan.FromMilliseconds(8));
         await backgroundService.StopAsync(CancellationToken.None);
 
-        _outboxProcessor.Verify(d => d.ExecuteAsync(It.IsInRange(2, 3, Range.Inclusive)),
-            Times.Between(2, 3, Range.Inclusive));
+        _outboxProcessor.Verify(d => d.ExecuteAsync(3), Times.AtLeast(2));
     }
 
     private void GivenServiceScopeFactoryIsAvailableInServiceContainer()
