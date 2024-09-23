@@ -1,3 +1,4 @@
+using CO.CDP.Authentication.Authorization;
 using CO.CDP.Functional;
 using CO.CDP.OrganisationInformation.Persistence;
 using CO.CDP.Person.WebApi.Model;
@@ -49,7 +50,9 @@ public static class EndpointExtensions
             return operation;
         });
 
-        app.MapGet("/persons/{personId}", async (Guid personId, IUseCase<Guid, Model.Person?> useCase) =>
+        app.MapGet("/persons/{personId}",
+            [OrganisationAuthorize([AuthenticationChannel.OneLogin])]
+        async (Guid personId, IUseCase<Guid, Model.Person?> useCase) =>
                 await useCase.Execute(personId)
                     .AndThen(person => person != null ? Results.Ok(person) : Results.NotFound()))
             .Produces<Model.Person>(200, "application/json")
@@ -65,7 +68,8 @@ public static class EndpointExtensions
             });
 
         app.MapPost("/persons/{personId}/claim-person-invite",
-                async (Guid personId, ClaimPersonInvite command, IUseCase<(Guid, ClaimPersonInvite), PersonInvite> useCase) =>
+            [OrganisationAuthorize([AuthenticationChannel.OneLogin])]
+        async (Guid personId, ClaimPersonInvite command, IUseCase<(Guid, ClaimPersonInvite), PersonInvite> useCase) =>
                     await useCase.Execute((personId, command))
                         .AndThen(_ => Results.NoContent())
             )
@@ -114,6 +118,7 @@ public static class EndpointExtensions
                 operation.Responses["200"].Description = "Person updated.";
                 return operation;
             });
+
         app.MapDelete("/persons/{personId}", (Guid personId) =>
         {
             _persons.Remove(personId);
