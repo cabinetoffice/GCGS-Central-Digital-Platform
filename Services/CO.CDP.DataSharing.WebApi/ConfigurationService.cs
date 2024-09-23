@@ -2,8 +2,8 @@ namespace CO.CDP.DataSharing.WebApi;
 
 public class ConfigurationService(IConfiguration config) : IConfigurationService
 {
-    public string GetOrganisationsApiUrl()
+    public string GetOrganisationApiHostUrl()
     {
-        return config["OrganisationsApiUrl"] ?? throw new Exception("Missing configuration key: OrganisationsApiUrl.");
+        return config["OrganisationApiHostUrl"] ?? throw new Exception("Missing configuration key: OrganisationApiHostUrl.");
     }
 }

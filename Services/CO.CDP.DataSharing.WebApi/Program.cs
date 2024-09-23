@@ -29,13 +29,12 @@ builder.Services.AddHealthChecks()
 
 builder.Services.AddScoped(provider => new MapperConfiguration(cfg =>
 {
-    cfg.AddProfile(new DataSharingProfile(provider.GetService<IIdentifierSchemes>()));
+    cfg.AddProfile(new DataSharingProfile(provider.GetService<IConfigurationService>()));
 }).CreateMapper());
 
 builder.Services.AddDbContext<OrganisationInformationContext>(o =>
     o.UseNpgsql(ConnectionStringHelper.GetConnectionString(builder.Configuration, "OrganisationInformationDatabase")));
 builder.Services.AddScoped<IConfigurationService, ConfigurationService>();
-builder.Services.AddScoped<IIdentifierSchemes, IdentifierSchemes>();
 builder.Services.AddScoped<IDataService, DataService>();
 builder.Services.AddScoped<IPdfGenerator, PdfGenerator>();
 builder.Services.AddScoped<IClaimService, ClaimService>();

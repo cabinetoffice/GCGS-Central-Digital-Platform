@@ -16,12 +16,10 @@ public class GetSharedDataUseCaseTest : IClassFixture<AutoMapperFixture>
     private readonly GetSharedDataUseCase _useCase;
 
     private readonly Mock<IConfigurationService> _configurationService = new();
-    private readonly IIdentifierSchemes _identifierSchemes;
 
     public GetSharedDataUseCaseTest(AutoMapperFixture mapperFixture)
     {
         _useCase = new GetSharedDataUseCase(_shareCodeRepository.Object, _organisationRepository.Object, mapperFixture.Mapper);
-        _identifierSchemes = new IdentifierSchemes(_configurationService.Object);
     }
 
     [Fact]
@@ -123,7 +121,7 @@ public class GetSharedDataUseCaseTest : IClassFixture<AutoMapperFixture>
         var identifier = additionalIdentifiers?.First();
         identifier?.Scheme.Should().Be(scheme);
         identifier?.LegalName.Should().Be("AnotherLegalName");
-        identifier?.Uri.Should().Be(_identifierSchemes.GetRegistryUri(scheme, identifier.Id));
+        identifier?.Uri.Should().Be(IdentifierSchemes.GetRegistryUri(_configurationService.Object.GetOrganisationApiHostUrl(), scheme, identifier.Id));
     }
 
     private void AssertContactPoint(ContactPoint? contactPoint)

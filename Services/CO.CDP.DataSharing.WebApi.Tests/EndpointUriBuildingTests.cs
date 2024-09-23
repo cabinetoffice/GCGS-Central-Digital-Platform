@@ -6,21 +6,15 @@ namespace CO.CDP.OrganisationInformation.Tests;
 public class EndpointUriBuildingTests
 {
     private readonly Mock<IConfigurationService> _configurationService = new();
-    private readonly IIdentifierSchemes _identifierSchemes;
-
-    public EndpointUriBuildingTests()
-    {
-        _identifierSchemes = new IdentifierSchemes(_configurationService.Object);
-    }
 
     [Fact]
     public void GetEndpointUri_ReturnsValidUris_WhenProvidedNumericIds()
     {
-        foreach (var key in _identifierSchemes.SchemesToEndpointUris.Keys)
+        foreach (var key in IdentifierSchemes.SchemesToEndpointUris.Keys)
         {
             var result = () =>
             {
-                var uri = _identifierSchemes.GetRegistryUri(key, Random.Shared.Next(999999).ToString());
+                var uri = IdentifierSchemes.GetRegistryUri(_configurationService.Object.GetOrganisationApiHostUrl(), key, Random.Shared.Next(999999).ToString());
             };
 
             result.Should().NotThrow();
@@ -30,11 +24,11 @@ public class EndpointUriBuildingTests
     [Fact]
     public void GetEndpointUri_ReturnsValidUris_WhenProvidedGuidIds()
     {
-        foreach (var key in _identifierSchemes.SchemesToEndpointUris.Keys)
+        foreach (var key in IdentifierSchemes.SchemesToEndpointUris.Keys)
         {
             var result = () =>
             {
-                var uri = _identifierSchemes.GetRegistryUri(key, Guid.NewGuid().ToString());
+                var uri = IdentifierSchemes.GetRegistryUri(_configurationService.Object.GetOrganisationApiHostUrl(), key, Guid.NewGuid().ToString());
             };
 
             result.Should().NotThrow();
