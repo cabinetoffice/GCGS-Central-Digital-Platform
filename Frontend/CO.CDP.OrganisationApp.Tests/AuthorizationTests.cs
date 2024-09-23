@@ -169,7 +169,7 @@ public class AuthorizationTests
     [Fact]
     public async Task TestCanSeeUsersLinkOnOrganisationPage_WhenUserIsAllowedToAccessResourceAsAdminUser()
     {
-        var _httpClient = BuildHttpClient([ OrganisationPersonScopes.Admin ]);
+        var _httpClient = BuildHttpClient([ OrganisationPersonScopes.Admin, OrganisationPersonScopes.Viewer ]);
 
         var request = new HttpRequestMessage(HttpMethod.Get, $"/organisation/{testOrganisationId}");
 
@@ -186,7 +186,7 @@ public class AuthorizationTests
     [Fact]
     public async Task TestCannotSeeUsersLinkOnOrganisationPage_WhenUserIsNotAllowedToAccessResourceAsEditorUser()
     {
-        var _httpClient = BuildHttpClient([]);
+        var _httpClient = BuildHttpClient([ OrganisationPersonScopes.Viewer ]);
 
         var request = new HttpRequestMessage(HttpMethod.Get, $"/organisation/{testOrganisationId}");
 

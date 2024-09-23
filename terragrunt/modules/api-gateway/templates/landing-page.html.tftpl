@@ -30,6 +30,13 @@
             <div class="govuk-grid-row">
                 <div class="govuk-grid-column-two-thirds govuk-body">
                     <h4>API Endpoints: V${service_version}</h4>
+                    <h3>ECS Direct URLs:</h3>
+                    <ul class="govuk-list govuk-list--bullet">
+                    %{ for endpoint in endpoints }
+                        <li><a href="${endpoint.direct_url}">${endpoint.name}</a></li>
+                    %{ endfor }
+                    </ul>
+                    <h3>API Gateway URLs: (not in use)</h3>
                     <ul class="govuk-list govuk-list--bullet">
                     %{ for endpoint in endpoints }
                         <li><a href="${endpoint.url}">${endpoint.name}</a></li>

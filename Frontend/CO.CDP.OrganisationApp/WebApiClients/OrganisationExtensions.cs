@@ -8,4 +8,9 @@ public static class OrganisationExtensions
     {
         return organisation.Roles.Contains(PartyRole.Tenderer);
     }
+
+    public static bool IsBuyer(this Organisation.WebApiClient.Organisation organisation)
+    {
+        return organisation.Roles.Contains(PartyRole.Buyer);
+    }
 }
