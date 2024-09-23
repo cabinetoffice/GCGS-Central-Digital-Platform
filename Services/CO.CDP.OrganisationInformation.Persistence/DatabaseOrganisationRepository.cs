@@ -55,14 +55,17 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
             .Include(o => o.ApprovedBy)
             .Include(o => o.Identifiers)
             .Include(o => o.BuyerInfo)
-            .Include(o => o.SupplierInfo);
+            .Include(o => o.SupplierInfo)
+            .Include(o => o.Addresses)
+            .ThenInclude(p => p.Address);
 
         if (type == "buyer")
         {
-            result = result.Where(o => o.BuyerInfo != null);
+            result = result.Where(o => o.Roles.Contains(PartyRole.Buyer));
+
         } else if (type == "supplier")
         {
-            result = result.Where(o => o.SupplierInfo != null);
+            result = result.Where(o => o.Roles.Contains(PartyRole.Tenderer));
         }
 
         return await result.ToListAsync();

@@ -61,7 +61,7 @@ builder.Services.AddScoped<IUseCase<RegisterOrganisation, Organisation>, Registe
 builder.Services.AddScoped<IUseCase<Guid, Organisation?>, GetOrganisationUseCase>();
 builder.Services.AddScoped<IUseCase<Organisation?>, GetMyOrganisationUseCase>();
 builder.Services.AddScoped<IUseCase<OrganisationQuery, Organisation?>, LookupOrganisationUseCase>();
-builder.Services.AddScoped<IUseCase<string, IEnumerable<Organisation>>, GetOrganisationsUseCase>();
+builder.Services.AddScoped<IUseCase<PaginatedOrganisationQuery, IEnumerable<OrganisationExtended>>, GetOrganisationsUseCase>();
 builder.Services.AddScoped<IUseCase<Guid, SupplierInformation?>, GetSupplierInformationUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, Guid), ConnectedEntity?>, GetConnectedEntityUseCase>();
 builder.Services.AddScoped<IUseCase<Guid, IEnumerable<ConnectedEntityLookup>>, GetConnectedEntitiesUseCase>();
@@ -79,7 +79,7 @@ builder.Services.AddScoped<IUseCase<(Guid, Guid, UpdateInvitedPersonToOrganisati
 builder.Services.AddScoped<IUseCase<(Guid, Guid, UpdatePersonToOrganisation), bool>, UpdatePersonToOrganisationUseCase>();
 builder.Services.AddScoped<IUseCase<Guid, IEnumerable<PersonInviteModel>>, GetPersonInvitesUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, Guid), bool>, RemovePersonInviteFromOrganisationUseCase>();
-builder.Services.AddScoped<IUseCase<(string, int, int), IEnumerable<ApprovableOrganisation>>, GetApprovableOrganisationsUseCase>();
+// builder.Services.AddScoped<IUseCase<PaginatedOrganisationQuery, IEnumerable<OrganisationExtended>>, GetApprovableOrganisationsUseCase>();
 builder.Services.AddGovUKNotifyApiClient(builder.Configuration);
 builder.Services.AddOrganisationProblemDetails();
 

@@ -22,11 +22,18 @@ public static class EndpointExtensions
 {
     public static void UseOrganisationEndpoints(this WebApplication app)
     {
-        app.MapGet("/admin/organisations",
-                async ([FromQuery] string type, [FromQuery] int limit, [FromQuery] int skip, IUseCase<(string, int, int), IEnumerable<Model.ApprovableOrganisation>> useCase) =>
-                await useCase.Execute((type, limit, skip))
-                    .AndThen(organisations => Results.Ok(organisations)))
-            .Produces<List<Model.ApprovableOrganisation>>(StatusCodes.Status200OK, "application/json")
+        app.MapGet("/organisations",
+                async ([FromQuery] string type, [FromQuery] int limit, [FromQuery] int skip, IUseCase<PaginatedOrganisationQuery, IEnumerable<OrganisationExtended>> useCase) =>
+                {
+                    return await useCase.Execute(new PaginatedOrganisationQuery
+                        {
+                            Type = type,
+                            Limit = limit,
+                            Skip = skip
+                        })
+                        .AndThen(organisations => Results.Ok(organisations));
+                })
+            .Produces<List<OrganisationExtended>>(StatusCodes.Status200OK, "application/json")
             .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
             .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError)
             .WithOpenApi(operation =>
@@ -34,24 +41,6 @@ public static class EndpointExtensions
                 operation.OperationId = "GetAllOrganisations";
                 operation.Description = "Get a list of all organisations.";
                 operation.Summary = "Get a list of all organisations.";
-                operation.Responses["200"].Description = "A list of organisations.";
-                operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
-                operation.Responses["500"].Description = "Internal server error.";
-                return operation;
-            });
-
-        app.MapGet("/organisations",
-                async ([FromQuery] string userUrn, IUseCase<string, IEnumerable<Model.Organisation>> useCase) =>
-                await useCase.Execute(userUrn)
-                    .AndThen(organisations => Results.Ok(organisations)))
-            .Produces<List<Model.Organisation>>(StatusCodes.Status200OK, "application/json")
-            .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
-            .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError)
-            .WithOpenApi(operation =>
-            {
-                operation.OperationId = "ListOrganisations";
-                operation.Description = "Get a list of organisations for a particular userUrn.";
-                operation.Summary = "Get a list of organisations for a particular userUrn.";
                 operation.Responses["200"].Description = "A list of organisations.";
                 operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
                 operation.Responses["500"].Description = "Internal server error.";

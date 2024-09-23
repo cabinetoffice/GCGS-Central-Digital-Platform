@@ -56,11 +56,11 @@ public record UpdateOrganisation
 public enum OrganisationUpdateType
 {
     AdditionalIdentifiers,
-    ContactPoint,    
+    ContactPoint,
     RemoveIdentifier,
     Address,
     OrganisationName,
-    OrganisationEmail,   
+    OrganisationEmail,
     RegisteredAddress
 }
 
@@ -301,6 +301,13 @@ public record ReviewOrganisation
     public required Guid approvedById { get; init; }
     public required Boolean Approved { get; init; }
     public required string Comment { get; init; }
+}
+
+public record PaginatedOrganisationQuery
+{
+    public string? Type { get; init; }
+    public int? Limit { get; init; }
+    public int? Skip { get; init; }
 }
 
 public record OrganisationQuery
