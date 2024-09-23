@@ -6,7 +6,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using System.Net;
 using System.Net.Http.Json;
-using System.Security.Claims;
 using static CO.CDP.Authentication.Constants;
 using static System.Net.HttpStatusCode;
 
@@ -34,9 +33,7 @@ public class PersonsEndpointsTests
         _getPersonsUseCase.Setup(uc => uc.Execute(organisationId)).ReturnsAsync([]);
 
         var factory = new TestAuthorizationWebApplicationFactory<Program>(
-            [new Claim(ClaimType.Channel, channel)],
-            organisationId,
-            scope,
+            channel, organisationId, scope,
             services => services.AddScoped(_ => _getPersonsUseCase.Object));
 
         var response = await factory.CreateClient().GetAsync($"/organisations/{organisationId}/persons");
@@ -63,9 +60,7 @@ public class PersonsEndpointsTests
         _updatePersonToOrganisationUseCase.Setup(uc => uc.Execute(command)).ReturnsAsync(true);
 
         var factory = new TestAuthorizationWebApplicationFactory<Program>(
-            [new Claim(ClaimType.Channel, channel)],
-            organisationId,
-            scope,
+            channel, organisationId, scope,
             services => services.AddScoped(_ => _updatePersonToOrganisationUseCase.Object));
 
         var response = await factory.CreateClient().PatchAsJsonAsync($"/organisations/{organisationId}/persons/{persoinId}", updatePersonToOrganisation);
@@ -91,9 +86,7 @@ public class PersonsEndpointsTests
         _removePersonFromOrganisationUseCase.Setup(uc => uc.Execute(command)).ReturnsAsync(true);
 
         var factory = new TestAuthorizationWebApplicationFactory<Program>(
-            [new Claim(ClaimType.Channel, channel)],
-            organisationId,
-            scope,
+            channel, organisationId, scope,
             services => services.AddScoped(_ => _removePersonFromOrganisationUseCase.Object));
 
         var response = await factory.CreateClient().SendAsync(

@@ -12,7 +12,7 @@ using System.Security.Claims;
 namespace CO.CDP.TestKit.Mvc;
 
 public class TestAuthorizationWebApplicationFactory<TProgram>(
-        Claim[] claimFeed,
+        string channel,
         Guid? organisationId = null,
         string? assignedOrganisationScopes = null,
         Action<IServiceCollection>? serviceCollection = null)
@@ -25,20 +25,20 @@ public class TestAuthorizationWebApplicationFactory<TProgram>(
         builder.ConfigureServices(services =>
         {
             services.AddTransient<IPolicyEvaluator>(sp => new AuthorizationPolicyEvaluator(
-                ActivatorUtilities.CreateInstance<PolicyEvaluator>(sp), claimFeed, assignedOrganisationScopes));
+                ActivatorUtilities.CreateInstance<PolicyEvaluator>(sp), channel, assignedOrganisationScopes));
 
-            if (assignedOrganisationScopes != null)
+            if (assignedOrganisationScopes != null && organisationId != null)
             {
-                Mock<ITenantRepository> mockDatabaseTenantRepo = new();
-                mockDatabaseTenantRepo.Setup(r => r.LookupTenant("urn:fake_user"))
-                    .ReturnsAsync(new TenantLookup
+                Mock<IOrganisationRepository> mockDatabaseOrgRepo = new();
+                mockDatabaseOrgRepo.Setup(r => r.FindOrganisationPerson(organisationId.Value, "urn:fake_user"))
+                    .ReturnsAsync(new OrganisationPerson
                     {
-                        User = new TenantLookup.PersonUser { Name = "Test", Email = "test@test", Urn = "urn:fake_user" },
-                        Tenants = [new TenantLookup.Tenant { Id = Guid.NewGuid(), Name = "Ten",
-                            Organisations = [new TenantLookup.Organisation { Id = organisationId ?? Guid.NewGuid(), Name = "org", Roles = [], Scopes = [assignedOrganisationScopes] }] }]
+                        Person = Mock.Of<Person>(),
+                        Organisation = Mock.Of<Organisation>(),
+                        Scopes = [assignedOrganisationScopes]
                     });
 
-                services.AddTransient(sc => mockDatabaseTenantRepo.Object);
+                services.AddTransient(sc => mockDatabaseOrgRepo.Object);
             }
         });
 
@@ -46,14 +46,14 @@ public class TestAuthorizationWebApplicationFactory<TProgram>(
     }
 }
 
-public class AuthorizationPolicyEvaluator(PolicyEvaluator innerEvaluator, Claim[] claimFeed, string? assignedOrganisationScopes) : IPolicyEvaluator
+public class AuthorizationPolicyEvaluator(PolicyEvaluator innerEvaluator, string? channel, string? assignedOrganisationScopes) : IPolicyEvaluator
 {
     const string JwtBearerOrApiKeyScheme = "JwtBearer_Or_ApiKey";
 
     public async Task<AuthenticateResult> AuthenticateAsync(AuthorizationPolicy policy, HttpContext context)
     {
         var claimsIdentity = new ClaimsIdentity(JwtBearerOrApiKeyScheme);
-        if (claimFeed.Length > 0) claimsIdentity.AddClaims(claimFeed);
+        if (!string.IsNullOrWhiteSpace(channel)) claimsIdentity.AddClaims([new Claim("channel", channel)]);
         if (assignedOrganisationScopes != null) claimsIdentity.AddClaim(new Claim("sub", "urn:fake_user"));
 
         return await Task.FromResult(AuthenticateResult.Success(new AuthenticationTicket(new ClaimsPrincipal(claimsIdentity),

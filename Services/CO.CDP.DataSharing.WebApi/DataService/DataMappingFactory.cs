@@ -15,6 +15,7 @@ public static class DataMappingFactory
     {
         return new SharedSupplierInformation
         {
+            OrganisationId = sharedConsent.Organisation.Guid,
             BasicInformation = MapToBasicInformation(sharedConsent.Organisation),
             ConnectedPersonInformation = MapToConnectedPersonInformation(sharedConsent.Organisation.Guid, connectedEntityRepository)
         };
