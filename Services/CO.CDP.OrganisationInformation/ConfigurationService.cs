@@ -1,4 +1,5 @@
-namespace CO.CDP.DataSharing.WebApi;
+using CO.CDP.OrganisationInformation;
+using Microsoft.Extensions.Configuration;
 
 public class ConfigurationService(IConfiguration config) : IConfigurationService
 {

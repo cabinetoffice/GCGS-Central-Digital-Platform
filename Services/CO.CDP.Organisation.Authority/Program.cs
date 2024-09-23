@@ -23,7 +23,7 @@ builder.Services.AddDbContext<OrganisationInformationContext>(o =>
     o.UseNpgsql(ConnectionStringHelper.GetConnectionString(builder.Configuration, "OrganisationInformationDatabase")));
 builder.Services.AddScoped<ITenantRepository, DatabaseTenantRepository>();
 builder.Services.AddScoped<IAuthorityRepository, DatabaseAuthorityRepository>();
-builder.Services.AddSingleton<IConfigurationService, ConfigurationService>();
+builder.Services.AddSingleton<IConfigurationService, CO.CDP.Organisation.Authority.ConfigurationService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 
 if (Assembly.GetEntryAssembly().IsRunAs("CO.CDP.Organisation.Authority"))

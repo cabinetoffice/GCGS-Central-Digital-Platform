@@ -1,4 +1,4 @@
-namespace CO.CDP.DataSharing.WebApi;
+namespace CO.CDP.OrganisationInformation;
 public static class IdentifierSchemes
 {
     public static IDictionary<string, string> SchemesToEndpointUris

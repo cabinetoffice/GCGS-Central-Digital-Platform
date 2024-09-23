@@ -19,12 +19,12 @@ public class AutoMapperFixture
 
         var serviceCollection = new ServiceCollection();
         serviceCollection.AddSingleton<IConfiguration>(configuration);
-        serviceCollection.AddScoped<IConfigurationService, ConfigurationService>();
+        serviceCollection.AddScoped<OrganisationInformation.IConfigurationService, ConfigurationService>();
         serviceCollection.AddScoped(provider =>
         {
             Configuration = new MapperConfiguration(cfg =>
             {
-                cfg.AddProfile(new DataSharingProfile(provider.GetService<IConfigurationService>()));
+                cfg.AddProfile(new DataSharingProfile(provider.GetService<OrganisationInformation.IConfigurationService>()));
             });
 
             return Configuration.CreateMapper();

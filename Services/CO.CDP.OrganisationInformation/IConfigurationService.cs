@@ -1,4 +1,4 @@
-namespace CO.CDP.DataSharing.WebApi;
+namespace CO.CDP.OrganisationInformation;
 
 public interface IConfigurationService
 {

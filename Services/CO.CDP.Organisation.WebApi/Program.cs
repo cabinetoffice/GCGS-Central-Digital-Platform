@@ -1,4 +1,5 @@
 using System.Reflection;
+using AutoMapper;
 using CO.CDP.Authentication;
 using CO.CDP.AwsServices;
 using CO.CDP.Configuration.Assembly;
@@ -13,6 +14,7 @@ using CO.CDP.Organisation.WebApi.Events;
 using CO.CDP.Organisation.WebApi.Extensions;
 using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.Organisation.WebApi.UseCase;
+using CO.CDP.OrganisationInformation;
 using CO.CDP.OrganisationInformation.Persistence;
 using Microsoft.EntityFrameworkCore;
 using ConnectedEntity = CO.CDP.Organisation.WebApi.Model.ConnectedEntity;
@@ -29,7 +31,11 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options => { options.DocumentOrganisationApi(builder.Configuration); });
 builder.Services.AddHealthChecks()
     .AddNpgSql(ConnectionStringHelper.GetConnectionString(builder.Configuration, "OrganisationInformationDatabase"));
-builder.Services.AddAutoMapper(typeof(WebApiToPersistenceProfile));
+
+builder.Services.AddScoped(provider => new MapperConfiguration(cfg =>
+{
+    cfg.AddProfile(new WebApiToPersistenceProfile(provider.GetService<IConfigurationService>()));
+}).CreateMapper());
 
 builder.Services
     .AddAwsConfiguration(builder.Configuration)
@@ -52,6 +58,7 @@ if (Assembly.GetEntryAssembly().IsRunAs("CO.CDP.Organisation.WebApi"))
 }
 builder.Services.AddDbContext<OrganisationInformationContext>(o =>
     o.UseNpgsql(ConnectionStringHelper.GetConnectionString(builder.Configuration, "OrganisationInformationDatabase")));
+builder.Services.AddScoped<IConfigurationService, ConfigurationService>();
 builder.Services.AddScoped<IOrganisationRepository, DatabaseOrganisationRepository>();
 builder.Services.AddScoped<IConnectedEntityRepository, DatabaseConnectedEntityRepository>();
 builder.Services.AddScoped<IPersonRepository, DatabasePersonRepository>();

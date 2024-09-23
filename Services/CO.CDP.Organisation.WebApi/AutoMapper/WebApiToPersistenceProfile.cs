@@ -12,7 +12,7 @@ namespace CO.CDP.Organisation.WebApi.AutoMapper;
 
 public class WebApiToPersistenceProfile : Profile
 {
-    public WebApiToPersistenceProfile()
+    public WebApiToPersistenceProfile(IConfigurationService configurationService)
     {
         CreateMap<Persistence.Organisation, Model.Organisation>()
             .ForMember(m => m.Id, o => o.MapFrom(m => m.Guid))
@@ -38,6 +38,12 @@ public class WebApiToPersistenceProfile : Profile
             .ForMember(m => m.IdentifierId, o => o.MapFrom(m => m.Id))
             .ReverseMap()
             .ForMember(m => m.Id, o => o.MapFrom(m => m.IdentifierId));
+
+        CreateMap<Persistence.Organisation.Identifier, Identifier>()
+            .ForMember(m => m.Scheme, o => o.MapFrom(m => m.Scheme))
+            .ForMember(m => m.Id, o => o.MapFrom(m => m.IdentifierId))
+            .ForMember(m => m.LegalName, o => o.MapFrom(m => m.LegalName))
+            .ForMember(m => m.Uri, o => o.MapFrom(m => IdentifierSchemes.GetRegistryUri(configurationService.GetOrganisationApiHostUrl(), m.Scheme, m.IdentifierId)));
 
         CreateMap<OrganisationAddress, Persistence.Address>(MemberList.Source)
             .ForSourceMember(m => m.Type, o => o.DoNotValidate());
