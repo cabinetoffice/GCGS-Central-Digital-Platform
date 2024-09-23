@@ -15,6 +15,7 @@ locals {
     {
       name = service.name,
       url  = "https://${aws_api_gateway_domain_name.ecs_api.domain_name}/${service.name}/swagger/index.html"
+      direct_url  = "https://${service.name}.${var.public_hosted_zone_fqdn}/swagger/index.html"
     }
   ]
 
