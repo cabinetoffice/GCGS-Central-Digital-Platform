@@ -86,11 +86,12 @@
                     redirectLink += "/share-codes-list-view";
                     requiredScope = OrgScopeRequirement.Editor;
                 }
-                else if (exclusionsSection)
+                else if (exclusionsSection && section.AnswerSetCount == 0)
                 {
                     redirectLink += "/add-exclusion-declaration";
+                    requiredScope = OrgScopeRequirement.Editor;
                 }
-                else if (section.AnswerSetCount > 0 && section.AllowsMultipleAnswerSets == true)
+                else if (section.AnswerSetCount > 0 && section.AllowsMultipleAnswerSets == true && section.AnswerSetWithFurtherQuestionExemptedExists == false)
                 {
                     redirectLink += "/add-another-answer-set";
                 }
