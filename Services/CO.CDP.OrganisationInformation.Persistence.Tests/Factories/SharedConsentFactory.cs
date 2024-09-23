@@ -7,6 +7,8 @@ namespace CO.CDP.OrganisationInformation.Persistence.Tests.Factories;
 
 public static class SharedConsentFactory
 {
+    private static int NextQuestionNumber = 1;
+
     public static SharedConsent GivenSharedConsent(
         Organisation? organisation = null,
         Form? form = null,
@@ -87,7 +89,7 @@ public static class SharedConsentFactory
         var question = new FormQuestion
         {
             Guid = questionId ?? Guid.NewGuid(),
-            Name = "_Section01",
+            Name = "_Section0" + (NextQuestionNumber++),
             Title = "Were your accounts audited?",
             Caption = "",
             Description = "Please answer.",

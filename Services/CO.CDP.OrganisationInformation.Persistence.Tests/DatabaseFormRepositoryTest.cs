@@ -8,6 +8,9 @@ namespace CO.CDP.OrganisationInformation.Persistence.Tests;
 
 public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFixture<PostgreSqlFixture>
 {
+
+    private static int NextQuestionNumber = 1;
+
     [Fact]
     public async Task GetFormSummaryAsync_WhenFormDoesNotExists_ReturnsEmptyCollection()
     {
@@ -104,7 +107,7 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
         {
             Guid = Guid.NewGuid(),
             Section = section,
-            Name = "_Section01",
+            Name = "_Section0" + (NextQuestionNumber++),
             Title = "Question 1",
             Caption = "Question Caption",
             Description = "Question 1 desc",
@@ -119,7 +122,7 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
         {
             Guid = Guid.NewGuid(),
             Section = section,
-            Name = "_Section02",
+            Name = "_Section0" + (NextQuestionNumber++),
             Title = "Question 2",
             Caption = "Question Caption",
             Description = "Question 2 desc",
@@ -387,7 +390,7 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
         {
             Guid = questionId,
             Section = section,
-            Name = "_Section01",
+            Name = "_Section0" + (NextQuestionNumber++),
             Title = "Question 1",
             Caption = "Question Caption",
             Description = "Question 1 desc",
@@ -494,7 +497,7 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
         {
             Guid = questionId,
             Section = section,
-            Name = "_Section01",
+            Name = "_Section0" + (NextQuestionNumber++),
             Title = "Question with Simple Options",
             Caption = "Question Caption",
             Description = "This is a test question with simple options.",
