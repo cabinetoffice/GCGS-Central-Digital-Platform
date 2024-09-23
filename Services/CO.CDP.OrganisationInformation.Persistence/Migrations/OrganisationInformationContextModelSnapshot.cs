@@ -113,9 +113,13 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("organisation_id");
 
-                    b.Property<bool?>("Revoked")
+                    b.Property<bool>("Revoked")
                         .HasColumnType("boolean")
                         .HasColumnName("revoked");
+
+                    b.Property<DateTimeOffset?>("RevokedOn")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("revoked_on");
 
                     b.Property<string>("Scopes")
                         .IsRequired()
