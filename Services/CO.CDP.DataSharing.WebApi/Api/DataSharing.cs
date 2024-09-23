@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
 using System.Net.Mime;
 using System.Reflection;
+using static CO.CDP.Authentication.Constants;
 
 namespace CO.CDP.DataSharing.WebApi.Api;
 
@@ -63,7 +64,10 @@ public static class EndpointExtensions
              });
 
         app.MapPost("/share/data",
-            [OrganisationAuthorize([AuthenticationChannel.OneLogin])]
+            [OrganisationAuthorize(
+                [AuthenticationChannel.OneLogin],
+                [OrganisationPersonScope.Admin, OrganisationPersonScope.Editor],
+                OrganisationIdLocation.Body)]
         async (ShareRequest shareRequest, IUseCase<ShareRequest, ShareReceipt> useCase) =>
                 await useCase.Execute(shareRequest)
                     .AndThen(shareReceipt => Results.Ok(shareReceipt)))
@@ -104,10 +108,15 @@ public static class EndpointExtensions
                 return operation;
             });
 
-        app.MapGet("/share/organisations/{organisationId}/codes", async (Guid organisationId,
-            IUseCase<Guid, List<Model.SharedConsent>?> useCase) => await useCase.Execute(organisationId)
+        app.MapGet("/share/organisations/{organisationId}/codes",
+            [OrganisationAuthorize(
+                [AuthenticationChannel.OneLogin],
+                [OrganisationPersonScope.Admin, OrganisationPersonScope.Editor, OrganisationPersonScope.Viewer],
+                OrganisationIdLocation.Path)]
+        async (Guid organisationId,
+            IUseCase<Guid, List<SharedConsent>?> useCase) => await useCase.Execute(organisationId)
              .AndThen(sharedCodes => sharedCodes != null ? Results.Ok(sharedCodes) : Results.NotFound()))
-             .Produces<List<Model.SharedConsent>>(StatusCodes.Status200OK, "application/json")
+             .Produces<List<SharedConsent>>(StatusCodes.Status200OK, "application/json")
              .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
              .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
              .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError)
@@ -124,7 +133,10 @@ public static class EndpointExtensions
              });
 
         app.MapGet("/share/organisations/{organisationId}/codes/{sharecode}",
-            [OrganisationAuthorize([AuthenticationChannel.OneLogin])]
+            [OrganisationAuthorize(
+                [AuthenticationChannel.OneLogin],
+                [OrganisationPersonScope.Admin, OrganisationPersonScope.Editor, OrganisationPersonScope.Viewer],
+                OrganisationIdLocation.Path)]
         async (Guid organisationId, string shareCode, IUseCase<(Guid, string), SharedConsentDetails?> useCase)
                     => await useCase.Execute((organisationId, shareCode))
             .AndThen(sharedCodeDetails => sharedCodeDetails != null ? Results.Ok(sharedCodeDetails) : Results.NotFound()))
