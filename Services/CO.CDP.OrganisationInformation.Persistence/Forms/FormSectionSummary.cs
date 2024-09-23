@@ -7,4 +7,5 @@ public record FormSectionSummary
     public required FormSectionType Type { get; init; }
     public required bool AllowsMultipleAnswerSets { get; init; }
     public required int AnswerSetCount { get; init; }
+    public required bool AnswerSetWithFurtherQuestionExemptedExists { get; init; }
 }
