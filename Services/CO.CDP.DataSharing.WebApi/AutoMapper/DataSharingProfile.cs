@@ -9,7 +9,7 @@ namespace CO.CDP.DataSharing.WebApi.AutoMapper;
 
 public class DataSharingProfile : Profile
 {
-    public DataSharingProfile()
+    public DataSharingProfile(IIdentifierSchemes identifierSchemes)
     {
         CreateMap<Persistence.SharedConsent, ShareReceipt>()
             .ForMember(m => m.FormId, o => o.MapFrom(m => m.Guid))
@@ -53,7 +53,7 @@ public class DataSharingProfile : Profile
             .ForMember(m => m.Scheme, o => o.MapFrom(m => m.Scheme))
             .ForMember(m => m.Id, o => o.MapFrom(m => m.IdentifierId))
             .ForMember(m => m.LegalName, o => o.MapFrom(m => m.LegalName))
-            .ForMember(m => m.Uri, o => o.MapFrom(m => OrganisationInformation.IdentifierSchemes.GetRegistryUri(m.Scheme, m.IdentifierId)));
+            .ForMember(m => m.Uri, o => o.MapFrom(m => identifierSchemes.GetRegistryUri(m.Scheme, m.IdentifierId)));
 
         CreateMap<Organisation.OrganisationAddress, Address>()
             .ForMember(m => m.StreetAddress, o => o.MapFrom(m => m.Address.StreetAddress))

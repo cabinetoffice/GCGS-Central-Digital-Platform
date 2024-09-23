@@ -1,3 +1,4 @@
+using AutoMapper;
 using CO.CDP.Authentication;
 using CO.CDP.AwsServices;
 using CO.CDP.Configuration.Assembly;
@@ -17,16 +18,24 @@ using System.Reflection;
 var builder = WebApplication.CreateBuilder(args);
 builder.ConfigureForwardedHeaders();
 
+var env = builder.Environment.EnvironmentName;
+
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options => { options.DocumentDataSharingApi(builder.Configuration); });
 builder.Services.AddHealthChecks()
     .AddNpgSql(ConnectionStringHelper.GetConnectionString(builder.Configuration, "OrganisationInformationDatabase"));
-builder.Services.AddAutoMapper(typeof(DataSharingProfile));
+
+builder.Services.AddScoped(provider => new MapperConfiguration(cfg =>
+{
+    cfg.AddProfile(new DataSharingProfile(provider.GetService<IIdentifierSchemes>()));
+}).CreateMapper());
 
 builder.Services.AddDbContext<OrganisationInformationContext>(o =>
     o.UseNpgsql(ConnectionStringHelper.GetConnectionString(builder.Configuration, "OrganisationInformationDatabase")));
+builder.Services.AddScoped<IConfigurationService, ConfigurationService>();
+builder.Services.AddScoped<IIdentifierSchemes, IdentifierSchemes>();
 builder.Services.AddScoped<IDataService, DataService>();
 builder.Services.AddScoped<IPdfGenerator, PdfGenerator>();
 builder.Services.AddScoped<IClaimService, ClaimService>();
@@ -57,7 +66,6 @@ if (Assembly.GetEntryAssembly().IsRunAs("CO.CDP.DataSharing.WebApi"))
         .AddAmazonCloudWatchLogsService()
         .AddCloudWatchSerilog();
 }
-
 var app = builder.Build();
 app.UseForwardedHeaders();
 
