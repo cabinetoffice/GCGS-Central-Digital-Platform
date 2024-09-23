@@ -73,7 +73,6 @@ public static class EndpointExtensions
                     await useCase.Execute((personId, command))
                         .AndThen(_ => Results.NoContent())
             )
-            .Produces(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status204NoContent)
             .ProducesProblem(StatusCodes.Status400BadRequest)
             .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
@@ -85,7 +84,6 @@ public static class EndpointExtensions
                 operation.OperationId = "ClaimPersonInvite";
                 operation.Description = "Claims a person invite.";
                 operation.Summary = "Claims a person invite.";
-                operation.Responses["200"].Description = "Person invite claimed successfully.";
                 operation.Responses["204"].Description = "Person invite claimed successfully.";
                 operation.Responses["400"].Description = "Bad request.";
                 operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";

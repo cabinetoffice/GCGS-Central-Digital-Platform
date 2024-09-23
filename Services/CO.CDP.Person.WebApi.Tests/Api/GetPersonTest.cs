@@ -38,7 +38,7 @@ public class GetPersonTest
     }
 
     [Theory]
-    [InlineData(OK, Channel.OneLogin)]
+    [InlineData(NoContent, Channel.OneLogin)]
     [InlineData(Forbidden, Channel.ServiceKey)]
     [InlineData(Forbidden, Channel.OrganisationKey)]
     [InlineData(Forbidden, "unknown_channel")]
