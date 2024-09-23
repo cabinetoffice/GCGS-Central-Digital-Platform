@@ -645,6 +645,85 @@ public static class EndpointExtensions
 
         return app;
     }
+
+    public static RouteGroupBuilder UseManageApiKeyEndpoints(this RouteGroupBuilder app)
+    {
+        app.MapGet("/{organisationId}/api-keys",
+            async (Guid organisationId, IUseCase<Guid, IEnumerable<Model.AuthenticationKey>> useCase) =>
+               await useCase.Execute(organisationId)
+                   .AndThen(entities => Results.Ok(entities)))
+           .Produces<List<Model.AuthenticationKey>>(StatusCodes.Status200OK, "application/json")
+           .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
+           .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
+           .ProducesProblem(StatusCodes.Status422UnprocessableEntity)
+           .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError)
+           .WithOpenApi(operation =>
+           {
+               operation.OperationId = "GetAuthenticationKeys";
+               operation.Description = "Get authentication keys by Organisation ID.";
+               operation.Summary = "Get authentication keys information by Organisation ID.";
+               operation.Responses["200"].Description = "Authentication keys details.";
+               operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
+               operation.Responses["404"].Description = "authentication keys information not found.";
+               operation.Responses["422"].Description = "Unprocessable entity.";
+               operation.Responses["500"].Description = "Internal server error.";
+               return operation;
+           });
+
+        app.MapPost("/{organisationId}/api-keys",
+            async (Guid organisationId, RegisterAuthenticationKey registerAuthenticationKey,
+                IUseCase<(Guid, RegisterAuthenticationKey), bool> useCase) =>
+
+                await useCase.Execute((organisationId, registerAuthenticationKey))
+                    .AndThen(_ => Results.Created())
+            )
+            .Produces(StatusCodes.Status201Created)
+            .ProducesProblem(StatusCodes.Status400BadRequest)
+            .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
+            .ProducesProblem(StatusCodes.Status404NotFound)
+            .ProducesProblem(StatusCodes.Status422UnprocessableEntity)
+            .ProducesProblem(StatusCodes.Status500InternalServerError)
+            .WithOpenApi(operation =>
+            {
+                operation.OperationId = "CreateAuthenticationKey";
+                operation.Description = "Create a new authentication key.";
+                operation.Summary = "Create a new authentication key.";
+                operation.Responses["201"].Description = "Authentication key created successfully.";
+                operation.Responses["400"].Description = "Bad request.";
+                operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
+                operation.Responses["404"].Description = "Authentication failed.";
+                operation.Responses["422"].Description = "Unprocessable entity.";
+                operation.Responses["500"].Description = "Internal server error.";
+                return operation;
+            });
+
+        app.MapPatch("/{organisationId}/api-keys/revoke",
+            async (Guid organisationId, string keyName,
+                IUseCase<(Guid, string), bool> useCase) =>
+                    await useCase.Execute((organisationId, keyName))
+                        .AndThen(_ => Results.NoContent()))
+            .Produces(StatusCodes.Status204NoContent)
+            .ProducesProblem(StatusCodes.Status400BadRequest)
+            .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
+            .ProducesProblem(StatusCodes.Status404NotFound)
+            .ProducesProblem(StatusCodes.Status422UnprocessableEntity)
+            .ProducesProblem(StatusCodes.Status500InternalServerError)
+            .WithOpenApi(operation =>
+            {
+                operation.OperationId = "RevokeAuthenticationKey";
+                operation.Description = "Revoke Authentication key.";
+                operation.Summary = "Revoke Authentication key.";
+                operation.Responses["204"].Description = "Authentication key revoked successfully.";
+                operation.Responses["400"].Description = "Bad request.";
+                operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
+                operation.Responses["404"].Description = "Authentication failed.";
+                operation.Responses["422"].Description = "Unprocessable entity.";
+                operation.Responses["500"].Description = "Internal server error.";
+                return operation;
+            });
+
+        return app;
+    }
 }
 
 public static class ApiExtensions
