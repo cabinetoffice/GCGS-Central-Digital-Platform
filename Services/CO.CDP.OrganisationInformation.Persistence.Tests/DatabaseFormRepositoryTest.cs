@@ -8,13 +8,13 @@ namespace CO.CDP.OrganisationInformation.Persistence.Tests;
 
 public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFixture<PostgreSqlFixture>
 {
-    private static int nextQuestionNumber = 0;
+    private static int _nextQuestionNumber = 100;
 
-    private static int getQuestionNumber()
+    private static int GetQuestionNumber()
     {
-        Interlocked.Increment(ref nextQuestionNumber);
+        Interlocked.Increment(ref _nextQuestionNumber);
 
-        return nextQuestionNumber;
+        return _nextQuestionNumber;
     }
 
     [Fact]
@@ -113,7 +113,7 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
         {
             Guid = Guid.NewGuid(),
             Section = section,
-            Name = "_Section0" + getQuestionNumber(),
+            Name = "_Section0" + GetQuestionNumber(),
             Title = "Question 1",
             Caption = "Question Caption",
             Description = "Question 1 desc",
@@ -128,7 +128,7 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
         {
             Guid = Guid.NewGuid(),
             Section = section,
-            Name = "_Section0" + getQuestionNumber(),
+            Name = "_Section0" + GetQuestionNumber(),
             Title = "Question 2",
             Caption = "Question Caption",
             Description = "Question 2 desc",
@@ -381,7 +381,7 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
     [Fact]
     public async Task GetFormAnswerSetAsync_WhenFormAnswerSetsExists_ReturnsFormAnswerSet()
     {
-        using var context = postgreSql.OrganisationInformationContext();
+        await using var context = postgreSql.OrganisationInformationContext();
         var repository = FormRepository(context);
 
         var formId = Guid.NewGuid();
@@ -396,7 +396,7 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
         {
             Guid = questionId,
             Section = section,
-            Name = "_Section0" + getQuestionNumber(),
+            Name = "_Section0" + GetQuestionNumber(),
             Title = "Question 1",
             Caption = "Question Caption",
             Description = "Question 1 desc",
@@ -503,7 +503,7 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
         {
             Guid = questionId,
             Section = section,
-            Name = "_Section0" + getQuestionNumber(),
+            Name = "_Section0" + GetQuestionNumber(),
             Title = "Question with Simple Options",
             Caption = "Question Caption",
             Description = "This is a test question with simple options.",
