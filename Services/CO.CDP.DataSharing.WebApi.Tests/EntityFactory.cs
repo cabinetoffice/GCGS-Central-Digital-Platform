@@ -11,13 +11,13 @@ namespace CO.CDP.DataSharing.WebApi.Tests;
 
 internal static class EntityFactory
 {
-    private static int nextQuestionNumber = 0;
+    private static int _nextQuestionNumber;
 
-    private static int getQuestionNumber()
+    private static int GetQuestionNumber()
     {
-        Interlocked.Increment(ref nextQuestionNumber);
+        Interlocked.Increment(ref _nextQuestionNumber);
 
-        return nextQuestionNumber;
+        return _nextQuestionNumber;
     }
 
     internal static ShareRequest GetShareRequest(Guid organisationGuid, Guid formId)
@@ -280,7 +280,7 @@ internal static class EntityFactory
                         Id = 1,
                         Guid = Guid.NewGuid(),
                         Caption = "Page caption",
-                        Name = "_Section0" + getQuestionNumber(),
+                        Name = "_Section0" + GetQuestionNumber(),
                         Title = "The financial information you will need.",
                         Description = "You will need to upload accounts or statements for your 2 most recent financial years. If you do not have 2 years, you can upload your most recent financial year. You will need to enter the financial year end date for the information you upload.",
                         Type = PersistenceForms.FormQuestionType.NoInput,
@@ -297,7 +297,7 @@ internal static class EntityFactory
                         Id = 2,
                         Guid = Guid.NewGuid(),
                         Caption = "Page caption",
-                        Name = "_Section0" + getQuestionNumber(),
+                        Name = "_Section0" + GetQuestionNumber(),
                         Title = "Were your accounts audited?",
                         Description = String.Empty,
                         Type = PersistenceForms.FormQuestionType.YesOrNo,
@@ -314,7 +314,7 @@ internal static class EntityFactory
                         Id = 2,
                         Guid  = Guid.NewGuid(),
                         Caption = "Page caption",
-                        Name = "_Section0" + getQuestionNumber(),
+                        Name = "_Section0" + GetQuestionNumber(),
                         Title = "Upload your accounts",
                         Description = "Upload your most recent 2 financial years. If you do not have 2, upload your most recent financial year.",
                         Type = PersistenceForms.FormQuestionType.FileUpload,
@@ -331,7 +331,7 @@ internal static class EntityFactory
                         Id = 3,
                         Guid  = Guid.NewGuid(),
                         Caption = "Page caption",
-                        Name = "_Section0" + getQuestionNumber(),
+                        Name = "_Section0" + GetQuestionNumber(),
                         Title = "What is the financial year end date for the information you uploaded?",
                         Description = String.Empty,
                         Type = PersistenceForms.FormQuestionType.Date,
@@ -348,7 +348,7 @@ internal static class EntityFactory
                         Id = 4,
                         Guid  = Guid.NewGuid(),
                         Caption = "Page caption",
-                        Name = "_Section0" + getQuestionNumber(),
+                        Name = "_Section0" + GetQuestionNumber(),
                         Title = "Check your answers",
                         Type = PersistenceForms.FormQuestionType.CheckYourAnswers,
                         Description = String.Empty,
@@ -365,7 +365,7 @@ internal static class EntityFactory
                         Id = 5,
                         Guid  = Guid.NewGuid(),
                         Caption = "Page caption",
-                        Name = "_Section0" + getQuestionNumber(),
+                        Name = "_Section0" + GetQuestionNumber(),
                         Title = "Enter your postal address",
                         Description = String.Empty,
                         Type = PersistenceForms.FormQuestionType.Address,
