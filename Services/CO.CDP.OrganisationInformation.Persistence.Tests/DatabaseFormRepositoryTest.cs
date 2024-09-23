@@ -8,8 +8,14 @@ namespace CO.CDP.OrganisationInformation.Persistence.Tests;
 
 public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFixture<PostgreSqlFixture>
 {
+    private static int nextQuestionNumber = 0;
 
-    private static int NextQuestionNumber = 1;
+    private static int getQuestionNumber()
+    {
+        Interlocked.Increment(ref nextQuestionNumber);
+
+        return nextQuestionNumber;
+    }
 
     [Fact]
     public async Task GetFormSummaryAsync_WhenFormDoesNotExists_ReturnsEmptyCollection()
@@ -107,7 +113,7 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
         {
             Guid = Guid.NewGuid(),
             Section = section,
-            Name = "_Section0" + (NextQuestionNumber++),
+            Name = "_Section0" + getQuestionNumber(),
             Title = "Question 1",
             Caption = "Question Caption",
             Description = "Question 1 desc",
@@ -122,7 +128,7 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
         {
             Guid = Guid.NewGuid(),
             Section = section,
-            Name = "_Section0" + (NextQuestionNumber++),
+            Name = "_Section0" + getQuestionNumber(),
             Title = "Question 2",
             Caption = "Question Caption",
             Description = "Question 2 desc",
@@ -390,7 +396,7 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
         {
             Guid = questionId,
             Section = section,
-            Name = "_Section0" + (NextQuestionNumber++),
+            Name = "_Section0" + getQuestionNumber(),
             Title = "Question 1",
             Caption = "Question Caption",
             Description = "Question 1 desc",
@@ -497,7 +503,7 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
         {
             Guid = questionId,
             Section = section,
-            Name = "_Section0" + (NextQuestionNumber++),
+            Name = "_Section0" + getQuestionNumber(),
             Title = "Question with Simple Options",
             Caption = "Question Caption",
             Description = "This is a test question with simple options.",
