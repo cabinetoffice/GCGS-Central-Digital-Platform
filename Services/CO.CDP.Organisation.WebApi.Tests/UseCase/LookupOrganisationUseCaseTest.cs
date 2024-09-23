@@ -100,34 +100,40 @@ public class LookupOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
                 Guid = Guid.NewGuid(),
                 Name = "Tenant 102"
             },
-            Identifiers = [new OrganisationInformation.Persistence.Organisation.Identifier
-            {
-                Primary = true,
-                IdentifierId = "123456",
-                Scheme = "Scheme1",
-                LegalName = "Legal Name",
-                Uri = "https://example.com"
-            },
+            Identifiers =
+            [
+                new OrganisationInformation.Persistence.Organisation.Identifier
+                {
+                    Primary = true,
+                    IdentifierId = "123456",
+                    Scheme = "GB-COH",
+                    LegalName = "Legal Name",
+                    Uri = "https://find-and-update.company-information.service.gov.uk/company/123456"
+                },
                 new OrganisationInformation.Persistence.Organisation.Identifier
                 {
                     Primary = false,
                     IdentifierId = "123456",
                     Scheme = "Scheme2",
                     LegalName = "Another Legal Name",
-                    Uri = "https://another-example.com"
-                }],
-            Addresses = {new OrganisationInformation.Persistence.Organisation.OrganisationAddress
-            {
-                Type = AddressType.Registered,
-                Address = new Address{
-                    StreetAddress = "1234 Test St",
-                    Locality = "Test City",
-                    PostalCode = "12345",
-                    CountryName = "Testland",
-                    Country = "AB",
-                    Region = ""
+                    Uri = ""
                 }
-            }},
+            ],
+            Addresses =
+            {
+                new OrganisationInformation.Persistence.Organisation.OrganisationAddress
+                {
+                    Type = AddressType.Registered,
+                    Address = new Address{
+                        StreetAddress = "1234 Test St",
+                        Locality = "Test City",
+                        PostalCode = "12345",
+                        CountryName = "Testland",
+                        Country = "AB",
+                        Region = ""
+                    }
+                }
+            },
             ContactPoints = [new OrganisationInformation.Persistence.Organisation.ContactPoint
             {
                 Name = "Contact Name",
@@ -149,9 +155,9 @@ public class LookupOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
             Identifier = new Identifier
             {
                 Id = "123456",
-                Scheme = "Scheme1",
+                Scheme = "GB-COH",
                 LegalName = "Legal Name",
-                Uri = new Uri("https://example.com")
+                Uri = new Uri("https://find-and-update.company-information.service.gov.uk/company/123456")
             },
             AdditionalIdentifiers =
             [
@@ -160,7 +166,7 @@ public class LookupOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
                     Id = "123456",
                     Scheme = "Scheme2",
                     LegalName = "Another Legal Name",
-                    Uri = new Uri("https://another-example.com")
+                    Uri = null
                 }
             ],
             Addresses = [new OrganisationInformation.Address

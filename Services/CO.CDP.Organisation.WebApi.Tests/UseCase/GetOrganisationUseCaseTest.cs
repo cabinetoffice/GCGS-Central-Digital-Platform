@@ -37,22 +37,25 @@ public class GetOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IClas
                 Guid = Guid.NewGuid(),
                 Name = "Tenant 101"
             },
-            Identifiers = [new OrganisationInformation.Persistence.Organisation.Identifier
-            {
-                Primary = true,
-                IdentifierId = "123456",
-                Scheme = "Scheme1",
-                LegalName = "Legal Name",
-                Uri = "https://example.com"
-            },
+            Identifiers =
+            [
+                new OrganisationInformation.Persistence.Organisation.Identifier
+                {
+                    Primary = true,
+                    IdentifierId = "123456",
+                    Scheme = "GB-NIC",
+                    LegalName = "Legal Name",
+                    Uri = "https://www.charitycommissionni.org.uk/charity-details/?regId=123456"
+                },
                 new OrganisationInformation.Persistence.Organisation.Identifier
                 {
                     Primary = false,
                     IdentifierId = "123456",
-                    Scheme = "Scheme2",
+                    Scheme = "GB-UKPRN",
                     LegalName = "Another Legal Name",
-                    Uri = "https://another-example.com"
-                }],
+                    Uri = "https://www.ukrlp.co.uk"
+                }
+            ],
             Addresses = {new OrganisationInformation.Persistence.Organisation.OrganisationAddress
             {
                 Type = AddressType.Registered,
@@ -86,30 +89,33 @@ public class GetOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IClas
             Identifier = new Identifier
             {
                 Id = "123456",
-                Scheme = "Scheme1",
+                Scheme = "GB-NIC",
                 LegalName = "Legal Name",
-                Uri = new Uri("https://example.com")
+                Uri = new Uri("https://www.charitycommissionni.org.uk/charity-details/?regId=123456")
             },
             AdditionalIdentifiers =
             [
                 new()
                 {
                     Id = "123456",
-                    Scheme = "Scheme2",
+                    Scheme = "GB-UKPRN",
                     LegalName = "Another Legal Name",
-                    Uri = new Uri("https://another-example.com"),
+                    Uri = new Uri("https://www.ukrlp.co.uk"),
                 }
             ],
-            Addresses = [new OrganisationInformation.Address
-            {
-                Type = AddressType.Registered,
-                StreetAddress = "1234 Test St",
-                Locality = "Test City",
-                PostalCode = "12345",
-                CountryName = "Testland",
-                Country = "AB",
-                Region = ""
-            }],
+            Addresses =
+            [
+                new OrganisationInformation.Address
+                {
+                    Type = AddressType.Registered,
+                    StreetAddress = "1234 Test St",
+                    Locality = "Test City",
+                    PostalCode = "12345",
+                    CountryName = "Testland",
+                    Country = "AB",
+                    Region = ""
+                }
+            ],
             ContactPoint = new ContactPoint
             {
                 Name = "Contact Name",

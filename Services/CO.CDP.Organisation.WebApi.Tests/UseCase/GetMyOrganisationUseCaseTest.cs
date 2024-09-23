@@ -46,15 +46,15 @@ public class GetMyOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : ICl
                     IdentifierId = "123456",
                     Scheme = "Scheme1",
                     LegalName = "Legal Name",
-                    Uri = "https://example.com"
+                    Uri = ""
                 },
                 new OrganisationInformation.Persistence.Organisation.Identifier
                 {
                     Primary = false,
                     IdentifierId = "123456",
-                    Scheme = "Scheme2",
+                    Scheme = "GB-COH",
                     LegalName = "Another Legal Name",
-                    Uri = "https://another-example.com"
+                    Uri = "https://find-and-update.company-information.service.gov.uk/company/123456"
                 }],
             Addresses = {new OrganisationInformation.Persistence.Organisation.OrganisationAddress
             {
@@ -92,16 +92,16 @@ public class GetMyOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : ICl
                 Id = "123456",
                 Scheme = "Scheme1",
                 LegalName = "Legal Name",
-                Uri = new Uri("https://example.com")
+                Uri = null
             },
             AdditionalIdentifiers =
             [
                 new()
                 {
                     Id = "123456",
-                    Scheme = "Scheme2",
+                    Scheme = "GB-COH",
                     LegalName = "Another Legal Name",
-                    Uri = new Uri("https://another-example.com"),
+                    Uri = new Uri("https://find-and-update.company-information.service.gov.uk/company/123456"),
                 }
             ],
             Addresses = [new OrganisationInformation.Address
