@@ -43,6 +43,49 @@ public class DatabaseAuthenticationKeyRepositoryTest(PostgreSqlFixture postgreSq
         found.As<AuthenticationKey>().OrganisationId.Should().Be(authenticationKey.Organisation.Id);
     }
 
+    [Fact]
+    public async Task ItFindsSavedAuthenticationKeys()
+    {
+        using var repository = AuthenticationKeyRepository();
+        var organisation = GivenOrganisation();
+        var authenticationKey = GivenAuthenticationKey(key: Guid.NewGuid().ToString(), organisation: organisation);
+        await repository.Save(authenticationKey);
+
+        var found = await repository.GetAuthenticationKeys(organisation.Guid);
+        found.As<IEnumerable<AuthenticationKey>>().Should().NotBeEmpty();
+        found.As<IEnumerable<AuthenticationKey>>().Should().HaveCountGreaterThan(0);
+    }
+
+    [Fact]
+    public async Task ItFindsSavedAuthenticationKeyByNameKeyAndOrganisationId()
+    {
+        using var repository = AuthenticationKeyRepository();
+        var organisation = GivenOrganisation();
+        var key = Guid.NewGuid().ToString();
+        var authenticationKey = GivenAuthenticationKey(key: key, organisation: organisation);
+        await repository.Save(authenticationKey);
+
+        var found = await repository.FindByKeyNameAndOrganisationId("fts", organisation.Guid);
+        found.As<AuthenticationKey>().Should().NotBeNull();
+        found.As<AuthenticationKey>().Key.Should().BeSameAs(key);
+    }
+
+    [Fact]
+    public void ItRejectsTwoApiKeyWithTheSameName()
+    {
+        using var repository = AuthenticationKeyRepository();
+        var organisation = GivenOrganisation();
+        var key = Guid.NewGuid().ToString();
+        var authenticationKey1 = GivenAuthenticationKey(key: key, organisation: organisation);
+        var authenticationKey2 = GivenAuthenticationKey(key: key, organisation: organisation);
+
+        repository.Save(authenticationKey1);
+        
+        repository.Invoking(r => r.Save(authenticationKey2))
+            .Should().ThrowAsync<IAuthenticationKeyRepository.AuthenticationKeyRepositoryException.DuplicateAuthenticationKeyNameException>()
+            .WithMessage($"Authentication Key with name `fts` already exists.");
+    }
+
     private static AuthenticationKey GivenAuthenticationKey(
         string name = "fts",
         string key = "api-key",
