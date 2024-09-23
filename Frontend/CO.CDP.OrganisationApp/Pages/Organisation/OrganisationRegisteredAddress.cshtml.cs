@@ -3,12 +3,14 @@ using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.Pages.Shared;
 using CO.CDP.OrganisationApp.WebApiClients;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using AddressType = CO.CDP.Organisation.WebApiClient.AddressType;
 
 namespace CO.CDP.OrganisationApp.Pages.Organisation;
 
+[Authorize(Policy = OrgScopeRequirement.Editor)]
 public class OrganisationRegisteredAddressModel(IOrganisationClient organisationClient) : PageModel
 {
 
