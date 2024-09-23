@@ -42,7 +42,7 @@
                                 <div class="govuk-summary-list__row">
                                     <dd class="govuk-summary-list__value">@ak.Name</dd>
                                     <dd class="govuk-summary-list__value">@ak.CreatedOn.ToString("d")</dd>
-                                    <dd class="govuk-summary-list__value">@(ak.Revoked == true ? ak.UpdatedOn.ToString("d") : "")</dd>
+                                    <dd class="govuk-summary-list__value">@(ak.Revoked == true ? ak.RevokedOn?.ToString("d") : "")</dd>
                                     <dd class="govuk-summary-list__actions">
                                         @if (ak.Revoked == true)
                                         {

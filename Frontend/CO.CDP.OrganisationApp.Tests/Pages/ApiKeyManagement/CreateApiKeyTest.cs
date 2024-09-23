@@ -118,6 +118,6 @@ public class CreateApiKeyTest
 
     private RegisterAuthenticationKey DummyApiKeyEntity()
     {
-        return new RegisterAuthenticationKey(key: "_key", name: "name", organisationId: _organisationId, revoked: false);
+        return new RegisterAuthenticationKey(key: "_key", name: "name", organisationId: _organisationId);
     }
 }

@@ -341,7 +341,6 @@ public record RegisterAuthenticationKey
     public required string Name { get; set; }
     public required string Key { get; set; }
     public Guid OrganisationId { get; set; }
-    public bool? Revoked { get; set; }
 }
 
 public record AuthenticationKey
@@ -349,7 +348,7 @@ public record AuthenticationKey
     public required string Name { get; set; }
     public bool? Revoked { get; set; }
     public DateTimeOffset CreatedOn { get; set; }
-    public DateTimeOffset UpdatedOn { get; set; }
+    public DateTimeOffset? RevokedOn { get; set; }
 }
 
 [JsonConverter(typeof(JsonStringEnumConverter))]

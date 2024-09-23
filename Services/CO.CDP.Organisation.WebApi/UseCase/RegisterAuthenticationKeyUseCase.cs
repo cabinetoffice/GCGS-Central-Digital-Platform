@@ -6,7 +6,7 @@ public class RegisterAuthenticationKeyUseCase(
     IAuthenticationKeyRepository keyRepository,
     IOrganisationRepository organisationRepository)
     : IUseCase<(Guid organisationId, RegisterAuthenticationKey authKey), bool>
-{    
+{
     public async Task<bool> Execute((Guid organisationId, RegisterAuthenticationKey authKey) command)
     {
         var authenticationKey = command.authKey;
@@ -18,7 +18,7 @@ public class RegisterAuthenticationKeyUseCase(
         {
             Key = authenticationKey.Key,
             Name = authenticationKey.Name,
-            OrganisationId = organisation.Id,            
+            OrganisationId = organisation.Id,
         });
 
         return await Task.FromResult(true);

@@ -30,8 +30,7 @@ public class CreateApiKeyModel(IOrganisationClient organisationClient) : PageMod
             var registerApiKey = new RegisterAuthenticationKey(
                                     key: apiKey,
                                     name: ApiKeyName,
-                                    organisationId: Id,
-                                    revoked: false);
+                                    organisationId: Id);
 
             await organisationClient.CreateAuthenticationKey(Id, registerApiKey);
 

@@ -23,7 +23,7 @@ public class ManageApiKeyTest
     public async Task OnGet_WhenAuthenticationKeysAreRetrieved_ShouldReturnPage()
     {
         var authenticationKeys = new List<AuthenticationKey> {
-            new AuthenticationKey(createdOn: DateTimeOffset.UtcNow.AddDays(-1), name: "TestKey1", revoked: false, updatedOn: DateTimeOffset.UtcNow)
+            new AuthenticationKey(createdOn: DateTimeOffset.UtcNow.AddDays(-1), name: "TestKey1", revoked: false, revokedOn: DateTimeOffset.UtcNow)
         };
 
         _mockOrganisationClient
