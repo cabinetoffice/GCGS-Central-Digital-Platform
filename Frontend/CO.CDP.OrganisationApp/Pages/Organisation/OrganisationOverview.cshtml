@@ -99,9 +99,11 @@
 
                 @if (organisationDetails.IsTenderer())
                 {
-                    <div class="govuk-!-margin-top-3">
-                        <a class="govuk-link govuk-!-font-size-19 govuk-!-font-weight-bold" href="/organisation/@RouteData.Values["id"]/supplier-information">Supplier information</a>
-                    </div>
+                    <authorize scope="@OrgScopeRequirement.Editor">
+                        <div class="govuk-!-margin-top-3">
+                            <a class="govuk-link govuk-!-font-size-19 govuk-!-font-weight-bold" href="/organisation/@RouteData.Values["id"]/supplier-information">Supplier information</a>
+                        </div>
+                    </authorize>
                 }
                 else if (organisationDetails.IsBuyer())
                 {
