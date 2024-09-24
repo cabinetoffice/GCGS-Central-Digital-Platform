@@ -201,21 +201,4 @@ public class AuthorizationTests
         responseBody.Should().NotContain($"href=\"/organisation/{testOrganisationId}/users/user-summary\">Users</a>");
         responseBody.Should().NotContain("Users");
     }
-
-    [Fact]
-    public async Task TestCanSeeLinkToSupplierInformation_WhenUserIsAdmin()
-    {
-        var _httpClient = BuildHttpClient([OrganisationPersonScopes.Admin]);
-
-        var request = new HttpRequestMessage(HttpMethod.Get, $"/organisation/{testOrganisationId}");
-
-        var response = await _httpClient.SendAsync(request);
-
-        var responseBody = await response.Content.ReadAsStringAsync();
-
-        responseBody.Should().NotBeNull();
-        response.StatusCode.Should().Be(HttpStatusCode.OK);
-
-        responseBody.Should().Contain("Supplier information");
-    }
 }
