@@ -5,6 +5,8 @@ using Moq;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
+namespace CO.CDP.OrganisationApp.Tests.Pages.Support;
+
 public class OrganisationsModelTests
 {
     private readonly Mock<IOrganisationClient> _organisationClientMock;

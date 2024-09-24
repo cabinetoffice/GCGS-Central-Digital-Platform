@@ -10,11 +10,11 @@ public class OrganisationApprovalModel(
 {
     public OrganisationWebApiClient.Organisation? OrganisationDetails { get; set; }
 
-    [BindProperty(SupportsGet = true)]
-    public Boolean? Approval { get; init; }
+    [BindProperty]
+    public Boolean? Approval { get; set; }
 
-    [BindProperty(SupportsGet = true)]
-    public string? Comments { get; init; }
+    [BindProperty]
+    public string? Comments { get; set; }
 
     public async Task<IActionResult> OnGet(Guid organisationId)
     {
