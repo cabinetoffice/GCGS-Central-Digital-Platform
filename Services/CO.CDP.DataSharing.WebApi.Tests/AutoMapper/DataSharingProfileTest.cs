@@ -5,6 +5,6 @@ public class DataSharingProfileTest(AutoMapperFixture mapperFixture) : IClassFix
     [Fact]
     public void ConfigurationIsValid()
     {
-        mapperFixture.Configuration.AssertConfigurationIsValid();
+        mapperFixture.Configuration?.AssertConfigurationIsValid();
     }
 }

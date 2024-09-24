@@ -4,6 +4,6 @@ public class WebApiToPersistenceProfileTest(AutoMapperFixture mapperFixture) : I
     [Fact]
     public void ConfigurationIsValid()
     {
-        mapperFixture.Configuration.AssertConfigurationIsValid();
+        mapperFixture.Configuration?.AssertConfigurationIsValid();
     }
 }
