@@ -7,9 +7,9 @@ namespace CO.CDP.Organisation.WebApi.Tests.AutoMapper;
 
 public class AutoMapperFixture
 {
-    private ServiceProvider _serviceProvider;
+    private readonly ServiceProvider _serviceProvider;
     public IMapper Mapper { get; private set; }
-    public MapperConfiguration Configuration { get; private set; }
+    public MapperConfiguration? Configuration { get; private set; } = null;
 
     public AutoMapperFixture()
     {
@@ -24,14 +24,18 @@ public class AutoMapperFixture
         {
             Configuration = new MapperConfiguration(cfg =>
             {
-                cfg.AddProfile(new WebApiToPersistenceProfile(provider.GetService<OrganisationInformation.IConfigurationService>()));
+                var configurationService = provider.GetService<OrganisationInformation.IConfigurationService>();
+                if (configurationService != null)
+                {
+                    cfg.AddProfile(new WebApiToPersistenceProfile(configurationService));
+                }
             });
 
             return Configuration.CreateMapper();
         });
 
         _serviceProvider = serviceCollection.BuildServiceProvider();
-        Mapper = serviceCollection.BuildServiceProvider().GetRequiredService<IMapper>();
+        Mapper = _serviceProvider.GetRequiredService<IMapper>();
     }
 
     public void Dispose()
