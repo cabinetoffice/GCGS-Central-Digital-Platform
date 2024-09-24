@@ -12,8 +12,7 @@ public class PdfGenerator : IPdfGenerator
     {
         QuestPDF.Settings.License = LicenseType.Community;
         var basicInformation = supplierInformation.BasicInformation;
-        var connectedPersonInformationTask = supplierInformation.ConnectedPersonInformation;
-        var connectedPersonInformation = connectedPersonInformationTask.Result;
+        var connectedPersonInformation = supplierInformation.ConnectedPersonInformation;
 
         var document = Document.Create(container =>
         {
