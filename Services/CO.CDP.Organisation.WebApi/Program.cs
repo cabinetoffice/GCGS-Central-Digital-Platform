@@ -34,7 +34,11 @@ builder.Services.AddHealthChecks()
 
 builder.Services.AddScoped(provider => new MapperConfiguration(cfg =>
 {
-    cfg.AddProfile(new WebApiToPersistenceProfile(provider.GetService<IConfigurationService>()));
+    var configurationService = provider.GetService<IConfigurationService>();
+    if (configurationService != null)
+    {
+        cfg.AddProfile(new WebApiToPersistenceProfile(configurationService));
+    }
 }).CreateMapper());
 
 builder.Services

@@ -30,7 +30,11 @@ builder.Services.AddHealthChecks()
 
 builder.Services.AddScoped(provider => new MapperConfiguration(cfg =>
 {
-    cfg.AddProfile(new DataSharingProfile(provider.GetService<IConfigurationService>()));
+    var configurationService = provider.GetService<IConfigurationService>();
+    if (configurationService != null)
+    {
+        cfg.AddProfile(new DataSharingProfile(configurationService));
+    }
 }).CreateMapper());
 
 builder.Services.AddDbContext<OrganisationInformationContext>(o =>
