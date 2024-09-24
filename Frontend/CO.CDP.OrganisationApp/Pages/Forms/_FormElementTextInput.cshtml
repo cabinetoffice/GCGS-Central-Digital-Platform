@@ -8,7 +8,9 @@
    
     @if (!string.IsNullOrWhiteSpace(Model.Heading))
     {
-        <h1 class="govuk-label govuk-label--l" for="textInput">@Model.Heading</h1>
+        <h1 class="govuk-label-wrapper">
+            <label class="govuk-label govuk-label--l" for="textInput">@Model.Heading</label>
+        </h1>
     }
     @if (!string.IsNullOrWhiteSpace(Model.Caption))
     {
