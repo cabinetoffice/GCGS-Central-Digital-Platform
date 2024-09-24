@@ -53,7 +53,11 @@ public class DataSharingProfile : Profile
             .ForMember(m => m.Scheme, o => o.MapFrom(m => m.Scheme))
             .ForMember(m => m.Id, o => o.MapFrom(m => m.IdentifierId))
             .ForMember(m => m.LegalName, o => o.MapFrom(m => m.LegalName))
-            .ForMember(m => m.Uri, o => o.MapFrom(m => IdentifierSchemes.GetRegistryUri(configurationService.GetOrganisationApiHostUrl(), m.Scheme, m.IdentifierId)));
+            .ForMember(m => m.Uri, o =>
+            {
+                o.PreCondition(x => x.Scheme != null && x.IdentifierId != null && configurationService != null);
+                o.MapFrom(m => IdentifierSchemes.GetRegistryUri(configurationService.GetOrganisationApiHostUrl(), m.Scheme, m.IdentifierId));
+            });
 
         CreateMap<Organisation.OrganisationAddress, Address>()
             .ForMember(m => m.StreetAddress, o => o.MapFrom(m => m.Address.StreetAddress))
