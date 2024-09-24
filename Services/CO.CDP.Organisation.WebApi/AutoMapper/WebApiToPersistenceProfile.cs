@@ -135,6 +135,8 @@ public class WebApiToPersistenceProfile : Profile
         CreateMap<Persistence.PersonInvite, PersonInviteModel>()
             .ForMember(m => m.Id, o => o.MapFrom(m => m.Guid));
 
+        CreateMap<Persistence.AuthenticationKey, AuthenticationKey>();
+
         ConnectedEntityMapping();
         OrganisationEventsMapping();
     }

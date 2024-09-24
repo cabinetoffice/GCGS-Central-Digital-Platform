@@ -40,7 +40,8 @@ public class GetFormSectionsUseCaseTest(AutoMapperFixture mapperFixture) : IClas
             AnswerSetCount = 1,
             Type = FormSectionType.Standard,
             SectionId = sectionId,
-            SectionName = "TestSection"
+            SectionName = "TestSection",
+            AnswerSetWithFurtherQuestionExemptedExists = false
         }];
 
         _repository.Setup(repo => repo.GetFormSummaryAsync(formId, organisationId))

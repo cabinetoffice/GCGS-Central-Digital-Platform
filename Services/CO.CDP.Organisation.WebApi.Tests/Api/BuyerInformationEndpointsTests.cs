@@ -6,7 +6,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using System.Net;
 using System.Net.Http.Json;
-using System.Security.Claims;
 using static CO.CDP.Authentication.Constants;
 using static System.Net.HttpStatusCode;
 
@@ -24,7 +23,8 @@ public class BuyerInformationEndpointsTests
     [InlineData(Forbidden, Channel.ServiceKey)]
     [InlineData(Forbidden, Channel.OrganisationKey)]
     [InlineData(Forbidden, "unknown_channel")]
-    public async Task UpdateBuyerInformation_Authorization_ReturnsExpectedStatusCode(HttpStatusCode expectedStatusCode, string channel, string? scope = null)
+    public async Task UpdateBuyerInformation_Authorization_ReturnsExpectedStatusCode(
+        HttpStatusCode expectedStatusCode, string channel, string? scope = null)
     {
         var organisationId = Guid.NewGuid();
         var updateBuyerInformation = new UpdateBuyerInformation { Type = BuyerInformationUpdateType.BuyerOrganisationType, BuyerInformation = new() };
@@ -33,9 +33,7 @@ public class BuyerInformationEndpointsTests
         _updateBuyerInformationUseCase.Setup(uc => uc.Execute(command)).ReturnsAsync(true);
 
         var factory = new TestAuthorizationWebApplicationFactory<Program>(
-            [new Claim(ClaimType.Channel, channel)],
-            organisationId,
-            scope,
+            channel, organisationId, scope,
             services => services.AddScoped(_ => _updateBuyerInformationUseCase.Object));
 
         var response = await factory.CreateClient().PatchAsJsonAsync($"/organisations/{organisationId}/buyer-information", updateBuyerInformation);

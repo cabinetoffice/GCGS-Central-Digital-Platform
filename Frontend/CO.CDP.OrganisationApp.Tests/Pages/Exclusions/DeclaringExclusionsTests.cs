@@ -57,7 +57,7 @@ public class DeclaringExclusionsTests
             It.IsAny<Guid>(),
             It.IsAny<FormQuestionAnswerState>()
         ), Times.Never);
-        redirectResult!.PageName.Should().Be("");
+        redirectResult!.PageName.Should().Be("../Forms/DynamicFormsPage");
         redirectResult.RouteValues.Should().ContainKey("OrganisationId").WhoseValue.Should().Be(organisationId);
         redirectResult.RouteValues.Should().ContainKey("FormId").WhoseValue.Should().Be(formId);
         redirectResult.RouteValues.Should().ContainKey("SectionId").WhoseValue.Should().Be(sectionId);

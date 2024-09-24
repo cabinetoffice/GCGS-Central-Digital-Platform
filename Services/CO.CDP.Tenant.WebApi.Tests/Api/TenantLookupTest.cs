@@ -5,7 +5,9 @@ using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Moq;
+using System.Net;
 using System.Net.Http.Json;
+using static CO.CDP.Authentication.Constants;
 using static System.Net.HttpStatusCode;
 
 namespace CO.CDP.Tenant.WebApi.Tests.Api;
@@ -29,9 +31,8 @@ public class TenantLookupTest
     [Fact]
     public async Task IfNoTenantIsFound_ReturnsNotFound()
     {
-
         _getTenantUseCase.Setup(useCase => useCase.Execute())
-            .Returns(Task.FromResult<TenantLookup?>(null));
+            .ReturnsAsync((TenantLookup?)null);
 
         var response = await _httpClient.GetAsync($"/tenant/lookup");
 
@@ -44,12 +45,31 @@ public class TenantLookupTest
         var lookup = GivenTenantLookup();
 
         _getTenantUseCase.Setup(useCase => useCase.Execute())
-            .Returns(Task.FromResult<TenantLookup?>(lookup));
+            .ReturnsAsync(lookup);
 
-        var response = await _httpClient.GetAsync($"/tenant/lookup");
+        var response = await _httpClient.GetAsync("/tenant/lookup");
 
         response.Should().HaveStatusCode(OK);
         (await response.Content.ReadFromJsonAsync<TenantLookup>()).Should().BeEquivalentTo(lookup);
+    }
+
+    [Theory]
+    [InlineData(OK, Channel.OneLogin)]
+    [InlineData(Forbidden, Channel.ServiceKey)]
+    [InlineData(Forbidden, Channel.OrganisationKey)]
+    [InlineData(Forbidden, "unknown_channel")]
+    public async Task GetSharedData_Authorization_ReturnsExpectedStatusCode(
+        HttpStatusCode expectedStatusCode, string channel)
+    {
+        _getTenantUseCase.Setup(useCase => useCase.Execute())
+            .ReturnsAsync(GivenTenantLookup());
+
+        var factory = new TestAuthorizationWebApplicationFactory<Program>(
+            channel, serviceCollection: s => s.AddScoped(_ => _getTenantUseCase.Object));
+
+        var response = await factory.CreateClient().GetAsync("/tenant/lookup");
+
+        response.StatusCode.Should().Be(expectedStatusCode);
     }
 
     private static TenantLookup GivenTenantLookup()

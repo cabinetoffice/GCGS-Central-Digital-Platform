@@ -172,6 +172,18 @@ internal static class OrganisationClientExtensions
             new UpdateSupplierInformation(
                 type: SupplierInformationUpdateType.CompletedConnectedPerson,
                 supplierInformation: new SupplierInfo(supplierType: null, operationTypes: null, tradeAssurance: null, legalForm: null, qualification: null)));
+
+    internal static async Task RevokeAuthenticationKey(this IOrganisationClient organisationClient,
+        Guid organisationId, string authenticationKeyName)
+        => await organisationClient.RevokeAuthenticationKeyAsync(organisationId, authenticationKeyName);
+
+    internal static async Task CreateAuthenticationKey(this IOrganisationClient organisationClient,
+        Guid organisationId, RegisterAuthenticationKey? registerAuthenticationKey)
+        => await organisationClient.CreateAuthenticationKeyAsync(organisationId, registerAuthenticationKey);
+
+    internal static async Task<ICollection<AuthenticationKey>> GetAuthenticationKeys(this IOrganisationClient organisationClient,
+        Guid organisationId)
+        => await organisationClient.GetAuthenticationKeysAsync(organisationId);
 }
 
 public class ComposedOrganisation

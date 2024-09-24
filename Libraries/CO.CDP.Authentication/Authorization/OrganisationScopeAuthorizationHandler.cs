@@ -12,7 +12,7 @@ namespace CO.CDP.Authentication.Authorization;
 
 public class OrganisationScopeAuthorizationHandler(
     IHttpContextAccessor httpContextAccessor,
-    ITenantRepository tenantRepository)
+    IOrganisationRepository organisationRepository)
     : AuthorizationHandler<OrganisationScopeAuthorizationRequirement>
 {
     private const string RegexGuid = @"[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}";
@@ -39,9 +39,8 @@ public class OrganisationScopeAuthorizationHandler(
 
             if (!string.IsNullOrWhiteSpace(organisationId) && Guid.TryParse(organisationId, out var organisationGuid))
             {
-                var lookup = await tenantRepository.LookupTenant(userUrn);
-                List<string> orgScopes = lookup?.Tenants?.SelectMany(t => t.Organisations)?
-                            .FirstOrDefault(o => o.Id == organisationGuid)?.Scopes ?? [];
+                var orgPerson = await organisationRepository.FindOrganisationPerson(organisationGuid, userUrn);
+                List<string> orgScopes = orgPerson?.Scopes ?? [];
 
                 if (requirement.Scopes.Intersect(orgScopes).Any())
                 {
@@ -71,7 +70,7 @@ public class OrganisationScopeAuthorizationHandler(
                 break;
 
             case OrganisationIdLocation.Body:
-                if (currentRequest.Body == null || currentRequest.ContentType != Application.Json) return null;
+                if (currentRequest.Body == null || currentRequest.ContentType?.Contains(Application.Json) == false) return null;
 
                 if (!currentRequest.Body.CanSeek) currentRequest.EnableBuffering();
                 currentRequest.Body.Position = 0;

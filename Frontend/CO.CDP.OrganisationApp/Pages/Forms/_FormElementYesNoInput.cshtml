@@ -5,10 +5,10 @@
 
 <div class="govuk-form-group @(hasError ? "govuk-form-group--error" : "")">
     <fieldset class="govuk-fieldset" aria-required="true">
-        <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
             @if (!string.IsNullOrWhiteSpace(Model.Heading))
             {
-                <h2 class="govuk-fieldset__heading">@Model.Heading</h2>
+                <h1 class="govuk-fieldset__heading">@Model.Heading</h1>
             }
         </legend>
 
