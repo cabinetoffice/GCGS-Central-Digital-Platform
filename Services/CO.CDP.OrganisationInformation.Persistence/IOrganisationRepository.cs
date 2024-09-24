@@ -18,7 +18,7 @@ public interface IOrganisationRepository : IDisposable
 
     public Task<Organisation?> FindByIdentifier(string scheme, string identifierId);
 
-    public Task<IList<Organisation>> Get(string type);
+    public Task<IList<Organisation>> Get(string? type);
 
     public class OrganisationRepositoryException(string message, Exception? cause = null) : Exception(message, cause)
     {

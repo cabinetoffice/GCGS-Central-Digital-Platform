@@ -57,7 +57,7 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
             .FirstOrDefaultAsync(o => o.Identifiers.Any(i => i.Scheme == scheme && i.IdentifierId == identifierId));
     }
 
-    public async Task<IList<Organisation>> Get(string type)
+    public async Task<IList<Organisation>> Get(string? type)
     {
         IQueryable<Organisation> result = context.Organisations
             .Include(o => o.ApprovedBy)
@@ -67,13 +67,14 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
             .Include(o => o.Addresses)
             .ThenInclude(p => p.Address);
 
-        if (type == "buyer")
+        switch (type)
         {
-            result = result.Where(o => o.Roles.Contains(PartyRole.Buyer));
-
-        } else if (type == "supplier")
-        {
-            result = result.Where(o => o.Roles.Contains(PartyRole.Tenderer));
+            case "buyer":
+                result = result.Where(o => o.Roles.Contains(PartyRole.Buyer));
+                break;
+            case "supplier":
+                result = result.Where(o => o.Roles.Contains(PartyRole.Tenderer));
+                break;
         }
 
         return await result.ToListAsync();

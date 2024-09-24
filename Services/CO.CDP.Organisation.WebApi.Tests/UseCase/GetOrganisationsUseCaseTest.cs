@@ -29,32 +29,32 @@ public class GetOrganisationsUseCaseTests
             {
                 Guid = Guid.NewGuid(),
                 Name = "Organisation 2",
-                Tenant = null
+                Tenant = null!
             }
         };
         organisations.Add(new CO.CDP.OrganisationInformation.Persistence.Organisation
         {
             Guid = Guid.NewGuid(),
             Name = "Organisation 1",
-            Tenant = null
+            Tenant = null!
         });
         var mappedOrganisations = new List<OrganisationExtended>
         {
             new OrganisationExtended{
                 Id = default,
                 Name = "Organisation 1",
-                Identifier = null,
-                ContactPoint = null,
+                Identifier = null!,
+                ContactPoint = null!,
                 Roles = new List<PartyRole>(),
-                Details = null
+                Details = null!
             },
             new OrganisationExtended{
                 Id = default,
                 Name = "Organisation 2",
-                Identifier = null,
-                ContactPoint = null,
+                Identifier = null!,
+                ContactPoint = null!,
                 Roles = new List<PartyRole>(),
-                Details = null
+                Details = null!
             }
         };
 
