@@ -1,6 +1,8 @@
+using Amazon;
 using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.Pages.Registration;
+using CO.CDP.OrganisationApp.ThirdPartyApiClients;
 using CO.CDP.OrganisationApp.ThirdPartyApiClients.CompaniesHouse;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
@@ -107,37 +109,37 @@ public class OrganisationNameModelTest
     }
 
     [Fact]
-    public async Task OnGet_WhenCompaniesHouseNumberProvided_ShouldCallCompaniesHouseApi()
+    public async Task OnGet_WhenCompaniesHouseNumberProvided_ShouldPrepopulateCompanyName()
     {
-        RegistrationDetails registrationDetails = DummyRegistrationDetails();
-        registrationDetails.OrganisationHasCompaniesHouseNumber = true;
-        registrationDetails.OrganisationIdentificationNumber = "0123456789";
-        registrationDetails.OrganisationName = string.Empty;
-
+        var registrationDetails = DummyRegistrationDetails();
         sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(registrationDetails);
 
+        var profile = GivenProfileOnCompaniesHouse(organisationName: "Acme Ltd");
         var model = GivenOrganisationNameModel();
+
+        companiesHouseMock.Setup(ch => ch.GetProfile(registrationDetails.OrganisationIdentificationNumber!))
+            .ReturnsAsync(profile);
 
         await model.OnGet();
 
-        companiesHouseMock.Verify(ch => ch.GetProfile(registrationDetails.OrganisationIdentificationNumber), Times.Once);
+        model.OrganisationName.Should().Be(registrationDetails.OrganisationName);
     }
 
     [Fact]
-    public async Task OnGet_WhenCompaniesHouseNumberAndCompanyNameProvided_ShouldNotCallCompaniesHouseApi()
+    public async Task OnGet_WhenCompaniesHouseNumberAndCompanyNameProvided_ShouldNotPrepopulateCompanyName()
     {
-        RegistrationDetails registrationDetails = DummyRegistrationDetails();
-        registrationDetails.OrganisationHasCompaniesHouseNumber = true;
-        registrationDetails.OrganisationIdentificationNumber = "0123456789";
-        registrationDetails.OrganisationName = "Acme Ltd";
-
+        var registrationDetails = DummyRegistrationDetails("Microsoft Limited");
         sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(registrationDetails);
 
         var model = GivenOrganisationNameModel();
+        var profile = GivenProfileOnCompaniesHouse(organisationName: "Acme Ltd");
 
+        companiesHouseMock.Setup(ch => ch.GetProfile(registrationDetails.OrganisationIdentificationNumber!))
+            .ReturnsAsync(profile);
+        
         await model.OnGet();
 
-        companiesHouseMock.Verify(ch => ch.GetProfile(registrationDetails.OrganisationIdentificationNumber), Times.Never);
+        model.OrganisationName.Should().Be(registrationDetails.OrganisationName);
     }
 
     [Fact]
@@ -169,16 +171,35 @@ public class OrganisationNameModelTest
             .Which.PageName.Should().Be("OrganisationDetailsSummary");
     }
 
-    private RegistrationDetails DummyRegistrationDetails()
+    private RegistrationDetails DummyRegistrationDetails(string organisationName = "TestOrg")
     {
         var registrationDetails = new RegistrationDetails
         {
             OrganisationName = "TestOrg",
             OrganisationScheme = "TestType",
-            OrganisationEmailAddress = "test@example.com"
+            OrganisationEmailAddress = "test@example.com",
+            OrganisationIdentificationNumber = "123456",
+            OrganisationHasCompaniesHouseNumber = true,
         };
 
         return registrationDetails;
+    }
+
+    private CompanyProfile GivenProfileOnCompaniesHouse(string organisationName = "")
+    {
+        return new CompanyProfile() {  CompanyName = organisationName };
+    }
+
+    private RegisteredAddress GivenRegisteredAddressOnCompaniesHouse()
+    {
+        return new RegisteredAddress()
+        {
+            AddressLine1 = "100 Park Lane",
+            AddressLine2 = "",
+            Country = "United Kingdom",
+            Locality = "London",
+            PostalCode = "SW1 1LP"
+        };
     }
 
     private OrganisationNameModel GivenOrganisationNameModel()
