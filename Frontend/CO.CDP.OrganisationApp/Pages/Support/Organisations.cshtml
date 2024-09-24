@@ -48,7 +48,7 @@
                         {
                             <td class="govuk-table__cell">
                                 @{
-                                    if (@org.Details.Approval.ApprovedOn == null)
+                                    if (@org.Details?.Approval?.ApprovedOn == null)
                                     {
                                         <span>Pending</span>
                                     }
@@ -59,13 +59,13 @@
                                 }
                             </td>
                             <td class="govuk-table__cell">
-                                @(@org.Details.Approval.ApprovedOn == null ? "N/A" : @org.Details.Approval.ApprovedOn)
+                                @(@org.Details?.Approval?.ApprovedOn == null ? "N/A" : @org.Details?.Approval?.ApprovedOn)
                             </td>
                             <td class="govuk-table__cell">
-                                @(@org.Details.Approval.ApprovedBy.Name ?? "N/A")
+                                @(@org.Details?.Approval?.ApprovedBy.Name ?? "N/A")
                             </td>
                             <td class="govuk-table__cell">
-                                @(@org.Details.Approval.Comment ?? "N/A")
+                                @(@org.Details?.Approval?.Comment ?? "N/A")
                             </td>
                             <td class="govuk-table__cell">
                                 <a class="govuk-link" href="/support/organisation/@org.Id/approval">Review</a>
