@@ -8,7 +8,7 @@
    
     @if (!string.IsNullOrWhiteSpace(Model.Heading))
     {
-        <label class="govuk-label govuk-label--l" for="textInput">@Model.Heading</label>
+        <h1 class="govuk-label govuk-label--l" for="textInput">@Model.Heading</h1>
     }
     @if (!string.IsNullOrWhiteSpace(Model.Caption))
     {
@@ -28,5 +28,5 @@
         </p>
     }
 
-    <input class="govuk-input govuk-!-width-two-thirds" id="textInput" name="textInput" type="text" value="@Model.TextInput">
+    <input class="govuk-input govuk-!-width-two-thirds" id="textInput" name="TextInput" type="text" value="@Model.TextInput">
 </div>
