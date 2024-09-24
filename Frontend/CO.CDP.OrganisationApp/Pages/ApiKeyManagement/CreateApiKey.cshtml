@@ -4,7 +4,7 @@
 @{
     var apiKeyNameHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.ApiKeyName)).HasInnerHtml;
 }
-<a href="/organisation/@Model.Id/supplier-information/manage-api-key/start" class="govuk-back-link">Back</a>
+<a href="/organisation/@Model.Id/manage-api-keys" class="govuk-back-link">Back</a>
 
 <main class="govuk-main-wrapper">
     <div class="govuk-grid-row">
