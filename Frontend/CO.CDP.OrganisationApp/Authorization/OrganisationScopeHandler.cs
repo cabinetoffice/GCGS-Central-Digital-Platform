@@ -35,13 +35,20 @@ public class OrganizationScopeHandler : AuthorizationHandler<OrganizationScopeRe
 
                     var scopes = await _userInfo.GetOrganisationUserScopes();
 
+                    // Admin role can do anything within this organisation
+                    if (scopes.Contains(OrganisationPersonScopes.Admin))
+                    {
+                        context.Succeed(requirement);
+                        return;
+                    }
+
                     if (scopes.Contains(requirement.Scope))
                     {
                         context.Succeed(requirement);
                         return;
                     }
 
-                    // Editor role implies viewer permissions also
+                    // Editor role implies viewer permissions
                     if (requirement.Scope == OrganisationPersonScopes.Viewer && scopes.Contains(OrganisationPersonScopes.Editor))
                     {
                         context.Succeed(requirement);
