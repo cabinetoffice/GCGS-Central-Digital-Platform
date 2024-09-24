@@ -48,7 +48,8 @@ public class GetFormSectionstEndpointTest
                 AllowsMultipleAnswerSets = true,
                 AnswerSetCount = 1,
                 SectionId = Guid.NewGuid(),
-                SectionName = "TestSection"
+                SectionName = "TestSection",
+                AnswerSetWithFurtherQuestionExemptedExists = false
             }]
         };
 
