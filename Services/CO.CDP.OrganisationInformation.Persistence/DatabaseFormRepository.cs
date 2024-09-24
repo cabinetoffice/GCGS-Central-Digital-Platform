@@ -13,6 +13,8 @@ public class DatabaseFormRepository(OrganisationInformationContext context) : IF
     private struct FormSectionGroupSelection
     {
         public int? FormId { get; set; }
+
+        public bool? FurtherQuestionsExempted { get; set; }
     }
 
     public async Task<IEnumerable<FormSectionSummary>> GetFormSummaryAsync(Guid formId, Guid organisationId)
@@ -21,7 +23,7 @@ public class DatabaseFormRepository(OrganisationInformationContext context) : IF
                            join fas in context.FormAnswerSets on sc.Id equals fas.SharedConsentId
                            join o in context.Organisations on sc.OrganisationId equals o.Id
                            where o.Guid == organisationId && fas.Deleted == false
-                           select new { sc.FormId, fas.SectionId, SharedConsentId = sc.Id };
+                           select new { sc.FormId, fas.SectionId, fas.FurtherQuestionsExempted, SharedConsentId = sc.Id };
 
         var currentSharedConsent = await context.SharedConsents
             .OrderByDescending(x => x.CreatedOn)
@@ -37,14 +39,16 @@ public class DatabaseFormRepository(OrganisationInformationContext context) : IF
                     join subQuery in answersQuery on new { FormId = f.Id, SectionId = fss.Id } equals new { subQuery.FormId, subQuery.SectionId } into answers
                     from answer in answers.DefaultIfEmpty()
                     where f.Guid == formId
-                    group new FormSectionGroupSelection { FormId = answer.FormId } by new { fss.Guid, fss.Title, fss.Type, fss.AllowsMultipleAnswerSets } into g
+                    group new FormSectionGroupSelection { FormId = answer.FormId, FurtherQuestionsExempted = answer.FurtherQuestionsExempted }
+                        by new { fss.Guid, fss.Title, fss.Type, fss.AllowsMultipleAnswerSets } into g
                     select new FormSectionSummary
                     {
                         SectionId = g.Key.Guid,
                         SectionName = g.Key.Title,
                         Type = g.Key.Type,
                         AllowsMultipleAnswerSets = g.Key.AllowsMultipleAnswerSets,
-                        AnswerSetCount = g.Count(a => a.FormId != null)
+                        AnswerSetCount = g.Count(a => a.FormId != null),
+                        AnswerSetWithFurtherQuestionExemptedExists = g.Any(a => a.FurtherQuestionsExempted == true)
                     };
 
         return await query.ToListAsync();

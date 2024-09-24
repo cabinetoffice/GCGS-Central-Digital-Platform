@@ -11,7 +11,7 @@ public class OrganisationsModel(
 
     public string? Type { get; set; }
 
-    public IList<ApprovableOrganisation> Organisations { get; set; } = [];
+    public IList<OrganisationExtended> Organisations { get; set; } = [];
 
     public async Task<IActionResult> OnGet(string type)
     {
@@ -21,5 +21,22 @@ public class OrganisationsModel(
         Organisations = (await organisationClient.GetAllOrganisationsAsync(Type, 1000, 0)).ToList();
 
         return Page();
+    }
+
+    public static List<Identifier> CombineIdentifiers(Identifier? identifier, ICollection<Identifier> additionalIdentifiers)
+    {
+        var identifiers = new List<Identifier>();
+
+        if (identifier != null)
+        {
+            identifiers.Add(identifier);
+        }
+
+        foreach (var additionalIdentifier in additionalIdentifiers)
+        {
+            identifiers.Add(additionalIdentifier);
+        }
+
+        return identifiers;
     }
 }

@@ -30,7 +30,7 @@ public class DeclaringExclusionsModel(IFormsEngine formsEngine) : PageModel
 
         if (YesNoInput == true)
         {
-            return RedirectToPage("", new { OrganisationId, FormId, SectionId });
+            return RedirectToPage("../Forms/DynamicFormsPage", new { OrganisationId, FormId, SectionId });
         }
 
         formsEngine.SaveUpdateAnswers(FormId, SectionId, OrganisationId, new FormQuestionAnswerState() { FurtherQuestionsExempted = true });

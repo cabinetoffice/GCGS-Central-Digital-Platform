@@ -1,0 +1,34 @@
+@model FormElementMultiLineInputModel
+
+@{
+    var hasError = ((TagBuilder)Html.ValidationMessageFor(m => m.TextInput)).HasInnerHtml;
+}
+
+<div class="govuk-form-group">
+
+    @if (!string.IsNullOrWhiteSpace(Model.Heading))
+    {
+        <h1 class="govuk-label-wrapper">
+            <label class="govuk-label govuk-label--l" for="multiLineTextInput">@Model.Heading</label>
+        </h1>
+    }
+    @if (!string.IsNullOrWhiteSpace(Model.Caption))
+    {
+        <span class="govuk-caption-l">@Model.Caption</span>
+    }
+
+    @if (!string.IsNullOrWhiteSpace(Model.Description))
+    {
+        @Html.Raw(Model.Description)
+    }
+
+    @if (hasError)
+    {
+        <p class="govuk-error-message">
+            <span class="govuk-visually-hidden">Error:</span>
+            @Html.ValidationMessageFor(m => m.TextInput)
+        </p>
+    }
+
+    <textarea class="govuk-textarea govuk-!-width-two-thirds" rows="5" id="multiLineTextInput" name="TextInput">@Model.TextInput</textarea>
+</div>

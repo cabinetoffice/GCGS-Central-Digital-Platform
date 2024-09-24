@@ -22,11 +22,18 @@ public static class EndpointExtensions
 {
     public static void UseOrganisationEndpoints(this WebApplication app)
     {
-        app.MapGet("/admin/organisations",
-                async ([FromQuery] string type, [FromQuery] int limit, [FromQuery] int skip, IUseCase<(string, int, int), IEnumerable<Model.ApprovableOrganisation>> useCase) =>
-                await useCase.Execute((type, limit, skip))
-                    .AndThen(organisations => Results.Ok(organisations)))
-            .Produces<List<Model.ApprovableOrganisation>>(StatusCodes.Status200OK, "application/json")
+        app.MapGet("/organisations",
+                async ([FromQuery] string type, [FromQuery] int limit, [FromQuery] int skip, IUseCase<PaginatedOrganisationQuery, IEnumerable<OrganisationExtended>> useCase) =>
+                {
+                    return await useCase.Execute(new PaginatedOrganisationQuery
+                        {
+                            Type = type,
+                            Limit = limit,
+                            Skip = skip
+                        })
+                        .AndThen(organisations => Results.Ok(organisations));
+                })
+            .Produces<List<OrganisationExtended>>(StatusCodes.Status200OK, "application/json")
             .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
             .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError)
             .WithOpenApi(operation =>
@@ -57,24 +64,6 @@ public static class EndpointExtensions
                 operation.Responses["200"].Description = "Organisation reviewed successfully.";
                 operation.Responses["400"].Description = "Bad request.";
                 operation.Responses["422"].Description = "Unprocessable entity.";
-                operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
-                operation.Responses["500"].Description = "Internal server error.";
-                return operation;
-            });
-
-        app.MapGet("/organisations",
-                async ([FromQuery] string userUrn, IUseCase<string, IEnumerable<Model.Organisation>> useCase) =>
-                await useCase.Execute(userUrn)
-                    .AndThen(organisations => Results.Ok(organisations)))
-            .Produces<List<Model.Organisation>>(StatusCodes.Status200OK, "application/json")
-            .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
-            .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError)
-            .WithOpenApi(operation =>
-            {
-                operation.OperationId = "ListOrganisations";
-                operation.Description = "Get a list of organisations for a particular userUrn.";
-                operation.Summary = "Get a list of organisations for a particular userUrn.";
-                operation.Responses["200"].Description = "A list of organisations.";
                 operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
                 operation.Responses["500"].Description = "Internal server error.";
                 return operation;
@@ -678,6 +667,85 @@ public static class EndpointExtensions
                 operation.Responses["400"].Description = "Bad request.";
                 operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
                 operation.Responses["404"].Description = "Person invite not found.";
+                operation.Responses["422"].Description = "Unprocessable entity.";
+                operation.Responses["500"].Description = "Internal server error.";
+                return operation;
+            });
+
+        return app;
+    }
+
+    public static RouteGroupBuilder UseManageApiKeyEndpoints(this RouteGroupBuilder app)
+    {
+        app.MapGet("/{organisationId}/api-keys",
+            async (Guid organisationId, IUseCase<Guid, IEnumerable<Model.AuthenticationKey>> useCase) =>
+               await useCase.Execute(organisationId)
+                   .AndThen(entities => Results.Ok(entities)))
+           .Produces<List<Model.AuthenticationKey>>(StatusCodes.Status200OK, "application/json")
+           .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
+           .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
+           .ProducesProblem(StatusCodes.Status422UnprocessableEntity)
+           .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError)
+           .WithOpenApi(operation =>
+           {
+               operation.OperationId = "GetAuthenticationKeys";
+               operation.Description = "Get authentication keys by Organisation ID.";
+               operation.Summary = "Get authentication keys information by Organisation ID.";
+               operation.Responses["200"].Description = "Authentication keys details.";
+               operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
+               operation.Responses["404"].Description = "authentication keys information not found.";
+               operation.Responses["422"].Description = "Unprocessable entity.";
+               operation.Responses["500"].Description = "Internal server error.";
+               return operation;
+           });
+
+        app.MapPost("/{organisationId}/api-keys",
+            async (Guid organisationId, RegisterAuthenticationKey registerAuthenticationKey,
+                IUseCase<(Guid, RegisterAuthenticationKey), bool> useCase) =>
+
+                await useCase.Execute((organisationId, registerAuthenticationKey))
+                    .AndThen(_ => Results.Created())
+            )
+            .Produces(StatusCodes.Status201Created)
+            .ProducesProblem(StatusCodes.Status400BadRequest)
+            .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
+            .ProducesProblem(StatusCodes.Status404NotFound)
+            .ProducesProblem(StatusCodes.Status422UnprocessableEntity)
+            .ProducesProblem(StatusCodes.Status500InternalServerError)
+            .WithOpenApi(operation =>
+            {
+                operation.OperationId = "CreateAuthenticationKey";
+                operation.Description = "Create a new authentication key.";
+                operation.Summary = "Create a new authentication key.";
+                operation.Responses["201"].Description = "Authentication key created successfully.";
+                operation.Responses["400"].Description = "Bad request.";
+                operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
+                operation.Responses["404"].Description = "Authentication failed.";
+                operation.Responses["422"].Description = "Unprocessable entity.";
+                operation.Responses["500"].Description = "Internal server error.";
+                return operation;
+            });
+
+        app.MapPatch("/{organisationId}/api-keys/revoke",
+            async (Guid organisationId, string keyName,
+                IUseCase<(Guid, string), bool> useCase) =>
+                    await useCase.Execute((organisationId, keyName))
+                        .AndThen(_ => Results.NoContent()))
+            .Produces(StatusCodes.Status204NoContent)
+            .ProducesProblem(StatusCodes.Status400BadRequest)
+            .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
+            .ProducesProblem(StatusCodes.Status404NotFound)
+            .ProducesProblem(StatusCodes.Status422UnprocessableEntity)
+            .ProducesProblem(StatusCodes.Status500InternalServerError)
+            .WithOpenApi(operation =>
+            {
+                operation.OperationId = "RevokeAuthenticationKey";
+                operation.Description = "Revoke Authentication key.";
+                operation.Summary = "Revoke Authentication key.";
+                operation.Responses["204"].Description = "Authentication key revoked successfully.";
+                operation.Responses["400"].Description = "Bad request.";
+                operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
+                operation.Responses["404"].Description = "Authentication failed.";
                 operation.Responses["422"].Description = "Unprocessable entity.";
                 operation.Responses["500"].Description = "Internal server error.";
                 return operation;

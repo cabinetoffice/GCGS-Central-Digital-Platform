@@ -10,13 +10,15 @@ public interface IOrganisationRepository : IDisposable
 
     public Task<OrganisationPerson?> FindOrganisationPerson(Guid organisationId, Guid personId);
 
+    public Task<OrganisationPerson?> FindOrganisationPerson(Guid organisationId, string userUrn);
+
     public Task<Organisation?> FindByName(string name);
 
     public Task<IEnumerable<Organisation>> FindByUserUrn(string userUrn);
 
     public Task<Organisation?> FindByIdentifier(string scheme, string identifierId);
 
-    public Task<IList<Organisation>> Get(string type);
+    public Task<IList<Organisation>> Get(string? type);
 
     public class OrganisationRepositoryException(string message, Exception? cause = null) : Exception(message, cause)
     {

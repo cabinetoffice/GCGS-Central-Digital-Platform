@@ -9,7 +9,6 @@ using Microsoft.Extensions.Hosting;
 using Moq;
 using System.Net;
 using System.Net.Http.Json;
-using System.Security.Claims;
 using static CO.CDP.Authentication.Constants;
 using static System.Net.HttpStatusCode;
 
@@ -64,30 +63,6 @@ public class OrganisationEndpointsTests
         response.Should().HaveStatusCode(HttpStatusCode.InternalServerError, await response.Content.ReadAsStringAsync());
     }
 
-    [Fact]
-    public async Task ItListsOrganisationWhenFound()
-    {
-        var command = GivenRegisterOrganisationCommand();
-        var organisation = new Model.Organisation
-        {
-            Id = Guid.NewGuid(),
-            Name = "TheOrganisation",
-            Identifier = command.Identifier.AsView(),
-            AdditionalIdentifiers = command.AdditionalIdentifiers.AsView(),
-            Addresses = command.Addresses.AsView(),
-            ContactPoint = command.ContactPoint.AsView(),
-            Roles = command.Roles
-        };
-
-        _getOrganisationsUseCase.Setup(useCase => useCase.Execute(It.IsAny<string>()))
-                                    .ReturnsAsync([organisation]);
-
-        var returnedOrganisations = await _httpClient.GetFromJsonAsync<IEnumerable<Model.Organisation>>(
-            "/organisations?userUrn=urn:7wTqYGMFQxgukTSpSI2GodMwe9");
-
-        returnedOrganisations.Should().ContainEquivalentOf(organisation);
-    }
-
     [Theory]
     [InlineData(true, NoContent)]
     [InlineData(false, NotFound)]
@@ -124,13 +99,13 @@ public class OrganisationEndpointsTests
     [InlineData(Forbidden, Channel.ServiceKey)]
     [InlineData(Forbidden, Channel.OrganisationKey)]
     [InlineData(Forbidden, "unknown_channel")]
-    public async Task CreateOrganisation_Authorization_ReturnsExpectedStatusCode(HttpStatusCode expectedStatusCode, string channel)
+    public async Task CreateOrganisation_Authorization_ReturnsExpectedStatusCode(
+        HttpStatusCode expectedStatusCode, string channel)
     {
         var command = GivenRegisterOrganisationCommand();
         SetupRegisterOrganisationUseCaseMock(command);
         var factory = new TestAuthorizationWebApplicationFactory<Program>(
-            [new Claim(ClaimType.Channel, channel)],
-            serviceCollection: services => services.AddScoped(_ => _registerOrganisationUseCase.Object));
+            channel, serviceCollection: s => s.AddScoped(_ => _registerOrganisationUseCase.Object));
         var httpClient = factory.CreateClient();
 
         var response = await httpClient.PostAsJsonAsync("/organisations", command);
@@ -146,7 +121,8 @@ public class OrganisationEndpointsTests
     [InlineData(Forbidden, Channel.OrganisationKey)]
     [InlineData(Forbidden, "unknown_channel")]
     [InlineData(Forbidden, Channel.OneLogin, OrganisationPersonScope.Responder)]
-    public async Task GetOrganisation_Authorization_ReturnsExpectedStatusCode(HttpStatusCode expectedStatusCode, string channel, string? scope = null)
+    public async Task GetOrganisation_Authorization_ReturnsExpectedStatusCode(
+        HttpStatusCode expectedStatusCode, string channel, string? scope = null)
     {
         var organisationId = Guid.NewGuid();
 
@@ -154,9 +130,7 @@ public class OrganisationEndpointsTests
                                     .ReturnsAsync(GivenOrganisation(organisationId));
 
         var factory = new TestAuthorizationWebApplicationFactory<Program>(
-            [new Claim(ClaimType.Channel, channel)],
-            organisationId,
-            scope,
+            channel, organisationId, scope,
             services => services.AddScoped(_ => _getOrganisationUseCase.Object));
 
         var response = await factory.CreateClient().GetAsync($"/organisations/{organisationId}");
@@ -172,7 +146,8 @@ public class OrganisationEndpointsTests
     [InlineData(Forbidden, Channel.ServiceKey)]
     [InlineData(Forbidden, Channel.OrganisationKey)]
     [InlineData(Forbidden, "unknown_channel")]
-    public async Task UpdateOrganisation_Authorization_ReturnsExpectedStatusCode(HttpStatusCode expectedStatusCode, string channel, string? scope = null)
+    public async Task UpdateOrganisation_Authorization_ReturnsExpectedStatusCode(
+        HttpStatusCode expectedStatusCode, string channel, string? scope = null)
     {
         var organisationId = Guid.NewGuid();
         var updateOrganisation = new UpdateOrganisation { Type = OrganisationUpdateType.AdditionalIdentifiers, Organisation = new() };
@@ -181,9 +156,7 @@ public class OrganisationEndpointsTests
         _updatesOrganisationUseCase.Setup(uc => uc.Execute(command)).ReturnsAsync(true);
 
         var factory = new TestAuthorizationWebApplicationFactory<Program>(
-            [new Claim(ClaimType.Channel, channel)],
-            organisationId,
-            scope,
+            channel, organisationId, scope,
             services => services.AddScoped(_ => _updatesOrganisationUseCase.Object));
 
         var response = await factory.CreateClient().PatchAsJsonAsync($"/organisations/{organisationId}", updateOrganisation);

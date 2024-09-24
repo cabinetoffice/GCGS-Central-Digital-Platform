@@ -113,6 +113,14 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("organisation_id");
 
+                    b.Property<bool>("Revoked")
+                        .HasColumnType("boolean")
+                        .HasColumnName("revoked");
+
+                    b.Property<DateTimeOffset?>("RevokedOn")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("revoked_on");
+
                     b.Property<string>("Scopes")
                         .IsRequired()
                         .HasColumnType("jsonb")
@@ -127,12 +135,14 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                     b.HasKey("Id")
                         .HasName("pk_authentication_keys");
 
-                    b.HasIndex("Key")
-                        .IsUnique()
-                        .HasDatabaseName("ix_authentication_keys_key");
-
                     b.HasIndex("OrganisationId")
                         .HasDatabaseName("ix_authentication_keys_organisation_id");
+
+                    b.HasIndex("Name", "OrganisationId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_authentication_keys_name_organisation_id");
+
+                    NpgsqlIndexBuilderExtensions.AreNullsDistinct(b.HasIndex("Name", "OrganisationId"), false);
 
                     b.ToTable("authentication_keys", (string)null);
                 });
@@ -431,6 +441,11 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                         .HasColumnType("boolean")
                         .HasColumnName("is_required");
 
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("name");
+
                     b.Property<int?>("NextQuestionAlternativeId")
                         .HasColumnType("integer")
                         .HasColumnName("next_question_alternative_id");
@@ -469,6 +484,10 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
 
                     b.HasKey("Id")
                         .HasName("pk_form_questions");
+
+                    b.HasIndex("Name")
+                        .IsUnique()
+                        .HasDatabaseName("ix_form_questions_name");
 
                     b.HasIndex("NextQuestionAlternativeId")
                         .HasDatabaseName("ix_form_questions_next_question_alternative_id");

@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
+using static CO.CDP.Authentication.Constants;
 
 namespace CO.CDP.Authentication;
 
@@ -73,7 +74,7 @@ public static class Extensions
 
     public static IServiceCollection AddOrganisationAuthorization(this IServiceCollection services)
     {
-        services.TryAddScoped<ITenantRepository, DatabaseTenantRepository>();
+        services.TryAddScoped<IOrganisationRepository, DatabaseOrganisationRepository>();
         services.AddSingleton<IAuthorizationPolicyProvider, OrganisationAuthorizationPolicyProvider>();
         services.AddSingleton<IAuthorizationHandler, ChannelAuthorizationHandler>();
         services.AddScoped<IAuthorizationHandler, OrganisationScopeAuthorizationHandler>();
@@ -86,6 +87,11 @@ public static class Extensions
     {
         return services
             .AddAuthorizationBuilder()
+            .AddPolicy("OneLoginPolicy", policy =>
+            {
+                policy.RequireAuthenticatedUser();
+                policy.RequireClaim(ClaimType.Channel, Channel.OneLogin);
+            })
             .SetFallbackPolicy(
                 new AuthorizationPolicyBuilder()
                     .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)

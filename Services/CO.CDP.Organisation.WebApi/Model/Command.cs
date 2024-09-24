@@ -56,11 +56,11 @@ public record UpdateOrganisation
 public enum OrganisationUpdateType
 {
     AdditionalIdentifiers,
-    ContactPoint,    
+    ContactPoint,
     RemoveIdentifier,
     Address,
     OrganisationName,
-    OrganisationEmail,   
+    OrganisationEmail,
     RegisteredAddress
 }
 
@@ -303,6 +303,13 @@ public record ReviewOrganisation
     public required string Comment { get; init; }
 }
 
+public record PaginatedOrganisationQuery
+{
+    public string? Type { get; init; }
+    public int? Limit { get; init; }
+    public int? Skip { get; init; }
+}
+
 public record OrganisationQuery
 {
     public string? Name { get; }
@@ -344,12 +351,26 @@ public record OrganisationQuery
     }
 }
 
+public record RegisterAuthenticationKey
+{
+    public required string Name { get; set; }
+    public required string Key { get; set; }
+    public Guid OrganisationId { get; set; }
+}
+
+public record AuthenticationKey
+{
+    public required string Name { get; set; }
+    public bool? Revoked { get; set; }
+    public DateTimeOffset CreatedOn { get; set; }
+    public DateTimeOffset? RevokedOn { get; set; }
+}
+
 [JsonConverter(typeof(JsonStringEnumConverter))]
 public enum SupplierInformationDeleteType
 {
     TradeAssurance,
     Qualification
-
 }
 
 public static class MappingExtensions

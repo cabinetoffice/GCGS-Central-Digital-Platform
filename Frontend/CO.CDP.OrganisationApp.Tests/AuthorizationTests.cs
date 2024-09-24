@@ -30,7 +30,7 @@ public class AuthorizationTests
                                     "Org name",
                                     [
                                         Tenant.WebApiClient.PartyRole.Supplier,
-                                        Tenant.WebApiClient.PartyRole.ProcuringEntity
+                                        Tenant.WebApiClient.PartyRole.Tenderer
                                     ],
                                     userScopes,
                                     new Uri("http://foo")
@@ -78,7 +78,7 @@ public class AuthorizationTests
                     testOrganisationId,
                     new Identifier("asd", "asd", "asd", new Uri("http://whatever")),
                     "Org name",
-                    [ CO.CDP.Organisation.WebApiClient.PartyRole.Supplier, CO.CDP.Organisation.WebApiClient.PartyRole.ProcuringEntity ]
+                    [ CO.CDP.Organisation.WebApiClient.PartyRole.Supplier, CO.CDP.Organisation.WebApiClient.PartyRole.Tenderer ]
                 )
             );
 
@@ -169,7 +169,7 @@ public class AuthorizationTests
     [Fact]
     public async Task TestCanSeeUsersLinkOnOrganisationPage_WhenUserIsAllowedToAccessResourceAsAdminUser()
     {
-        var _httpClient = BuildHttpClient([ OrganisationPersonScopes.Admin ]);
+        var _httpClient = BuildHttpClient([ OrganisationPersonScopes.Admin, OrganisationPersonScopes.Viewer ]);
 
         var request = new HttpRequestMessage(HttpMethod.Get, $"/organisation/{testOrganisationId}");
 
@@ -186,7 +186,7 @@ public class AuthorizationTests
     [Fact]
     public async Task TestCannotSeeUsersLinkOnOrganisationPage_WhenUserIsNotAllowedToAccessResourceAsEditorUser()
     {
-        var _httpClient = BuildHttpClient([]);
+        var _httpClient = BuildHttpClient([ OrganisationPersonScopes.Editor ]);
 
         var request = new HttpRequestMessage(HttpMethod.Get, $"/organisation/{testOrganisationId}");
 
@@ -200,5 +200,22 @@ public class AuthorizationTests
         responseBody.Should().Contain("Organisation details");
         responseBody.Should().NotContain($"href=\"/organisation/{testOrganisationId}/users/user-summary\">Users</a>");
         responseBody.Should().NotContain("Users");
+    }
+
+    [Fact]
+    public async Task TestCanSeeLinkToSupplierInformation_WhenUserIsAdmin()
+    {
+        var _httpClient = BuildHttpClient([OrganisationPersonScopes.Admin]);
+
+        var request = new HttpRequestMessage(HttpMethod.Get, $"/organisation/{testOrganisationId}");
+
+        var response = await _httpClient.SendAsync(request);
+
+        var responseBody = await response.Content.ReadAsStringAsync();
+
+        responseBody.Should().NotBeNull();
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+
+        responseBody.Should().Contain("Supplier information");
     }
 }

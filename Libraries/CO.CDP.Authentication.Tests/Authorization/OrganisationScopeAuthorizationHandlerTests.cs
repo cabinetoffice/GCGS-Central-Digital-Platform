@@ -13,15 +13,13 @@ namespace CO.CDP.Authentication.Tests.Authorization;
 
 public class OrganisationScopeAuthorizationHandlerTests
 {
-    private readonly Mock<IHttpContextAccessor> _mockHttpContextAccessor;
-    private readonly Mock<ITenantRepository> _mockTenantRepository;
+    private readonly Mock<IHttpContextAccessor> _mockHttpContextAccessor = new();
+    private readonly Mock<IOrganisationRepository> _mockOrganisationRepository = new();
     private readonly OrganisationScopeAuthorizationHandler _handler;
 
     public OrganisationScopeAuthorizationHandlerTests()
     {
-        _mockHttpContextAccessor = new();
-        _mockTenantRepository = new();
-        _handler = new OrganisationScopeAuthorizationHandler(_mockHttpContextAccessor.Object, _mockTenantRepository.Object);
+        _handler = new OrganisationScopeAuthorizationHandler(_mockHttpContextAccessor.Object, _mockOrganisationRepository.Object);
     }
 
     [Fact]
@@ -71,8 +69,8 @@ public class OrganisationScopeAuthorizationHandlerTests
         var context = CreateAuthorizationHandlerContext(userUrn, organisationScopeExists ? ["Admin"] : ["Scope1"], location);
         MockHttpContext(location, string.Format(urlFormat, organisationId));
 
-        _mockTenantRepository.Setup(x => x.LookupTenant(userUrn))
-            .ReturnsAsync(GetTenantLookup(userUrn, organisationId));
+        _mockOrganisationRepository.Setup(x => x.FindOrganisationPerson(organisationId, userUrn))
+            .ReturnsAsync(GetOrganisationPerson());
 
         await _handler.HandleAsync(context);
 
@@ -87,8 +85,8 @@ public class OrganisationScopeAuthorizationHandlerTests
         var context = CreateAuthorizationHandlerContext(userUrn, ["Admin"], OrganisationIdLocation.Body);
         MockHttpContext(OrganisationIdLocation.Body, organisationId: organisationId);
 
-        _mockTenantRepository.Setup(x => x.LookupTenant(userUrn))
-            .ReturnsAsync(GetTenantLookup(userUrn, organisationId));
+        _mockOrganisationRepository.Setup(x => x.FindOrganisationPerson(organisationId, userUrn))
+            .ReturnsAsync(GetOrganisationPerson());
 
         await _handler.HandleAsync(context);
 
@@ -116,33 +114,14 @@ public class OrganisationScopeAuthorizationHandlerTests
         _mockHttpContextAccessor.Setup(x => x.HttpContext).Returns(mockHttpContext);
     }
 
-    private static TenantLookup GetTenantLookup(string userUrn, Guid organisationId)
+    private static OrganisationPerson GetOrganisationPerson()
     {
-        var tenantLookup = new TenantLookup
+        return new OrganisationPerson
         {
-            User = new TenantLookup.PersonUser
-            {
-                Email = "test@test.com",
-                Name = "Test person",
-                Urn = userUrn
-            },
-            Tenants = [
-                new TenantLookup.Tenant
-                {
-                    Id = Guid.NewGuid(),
-                    Name = $"Test Tenant",
-                    Organisations = [
-                    new TenantLookup.Organisation
-                    {
-                        Id = organisationId,
-                        Name = $"Test Org",
-                        Roles = [OrganisationInformation.PartyRole.Buyer],
-                        Scopes = ["Admin"]
-                    }]
-                }]
+            Organisation = Mock.Of<Organisation>(),
+            Person = Mock.Of<Person>(),
+            Scopes = ["Admin"]
         };
-
-        return tenantLookup;
     }
 
     private static AuthorizationHandlerContext CreateAuthorizationHandlerContext(string userUrn, string[] scopes, OrganisationIdLocation orgIdLoc)
