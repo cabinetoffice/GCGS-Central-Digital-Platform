@@ -22,36 +22,90 @@ public class OrganisationsModelTests
     public async Task OnGet_ValidType_SetsTitleAndOrganisations_ReturnsPageResult()
     {
         var type = "buyer";
-        var approvableOrganisations = new List<ApprovableOrganisation>
+        var orgs = new List<OrganisationExtended>
         {
-            new ApprovableOrganisation (
-                approvedById: null,
-                approvedByName: "John Smith",
-                approvedComment: "",
-                approvedOn: null,
-                id: new Guid(),
-                email: "john@smith.com",
-                identifiers: new List<Identifier>(),
-                name: "Org 1",
-                ppon: "",
-                role: ""
+            new OrganisationExtended(
+                additionalIdentifiers: new List<Identifier>
+                {
+                    new Identifier(
+                        id: "12345678",
+                        legalName: "Mock Legal Name 1",
+                        scheme: "GB-COH",
+                        uri: new Uri("http://example.com/1")
+                    )
+                },
+                addresses: new List<Address>
+                {
+                    new Address(
+                        country: "GB",
+                        countryName: "United Kingdom",
+                        locality: "Mock Town",
+                        postalCode: "MK1 1AB",
+                        region: "Mockshire",
+                        streetAddress: "123 Mock St",
+                        type: AddressType.Postal
+                    )
+                },
+                contactPoint: new ContactPoint(
+                    name: "John Doe",
+                    email: "john.doe@example.com",
+                    telephone: "+441234567890",
+                    url: new Uri("http://example.com/contact")
                 ),
-            new ApprovableOrganisation (
-                approvedById: null,
-                approvedByName: "Smith Johnson",
-                approvedComment: "",
-                approvedOn: null,
-                id: new Guid(),
-                email: "smith@johnson.com",
-                identifiers: new List<Identifier>(),
-                name: "Org 2",
-                ppon: "",
-                role: ""
+                details: null,
+                id: Guid.NewGuid(),
+                identifier: new Identifier(
+                    id: "12345678",
+                    legalName: "Mock Legal Name 1",
+                    scheme: "GB-COH",
+                    uri: new Uri("http://example.com/1")
+                ),
+                name: "Mock Organisation 1",
+                roles: new List<PartyRole> { PartyRole.Buyer, PartyRole.Supplier }
+            ),
+            new OrganisationExtended(
+                additionalIdentifiers: new List<Identifier>
+                {
+                    new Identifier(
+                        id: "87654321",
+                        legalName: "Mock Legal Name 2",
+                        scheme: "GB-COH",
+                        uri: new Uri("http://example.com/2")
+                    )
+                },
+                addresses: new List<Address>
+                {
+                    new Address(
+                        country: "GB",
+                        countryName: "United Kingdom",
+                        locality: "Testville",
+                        postalCode: "TS2 2XY",
+                        region: "Testshire",
+                        streetAddress: "456 Test Lane",
+                        type: AddressType.Postal
+                    )
+                },
+                contactPoint: new ContactPoint(
+                    name: "Jane Doe",
+                    email: "jane.doe@example.com",
+                    telephone: "+441234567892",
+                    url: new Uri("http://example.com/contact2")
+                ),
+                details: null,
+                id: Guid.NewGuid(),
+                identifier: new Identifier(
+                    id: "87654321",
+                    legalName: "Mock Legal Name 2",
+                    scheme: "GB-COH",
+                    uri: new Uri("http://example.com/2")
+                ),
+                name: "Mock Organisation 2",
+                roles: new List<PartyRole> { PartyRole.Buyer }
             )
         };
 
         _organisationClientMock.Setup(client => client.GetAllOrganisationsAsync(type, 1000, 0))
-            .ReturnsAsync(approvableOrganisations);
+            .ReturnsAsync(orgs);
 
         var result = await _organisationsModel.OnGet(type);
 
@@ -67,10 +121,10 @@ public class OrganisationsModelTests
     public async Task OnGet_EmptyOrganisations_ReturnsPageResultWithEmptyList()
     {
         var type = "buyer";
-        var approvableOrganisations = new List<ApprovableOrganisation>();
+        var orgs = new List<OrganisationExtended>();
 
         _organisationClientMock.Setup(client => client.GetAllOrganisationsAsync(type, 1000, 0))
-            .ReturnsAsync(approvableOrganisations);
+            .ReturnsAsync(orgs);
 
         var result = await _organisationsModel.OnGet(type);
 

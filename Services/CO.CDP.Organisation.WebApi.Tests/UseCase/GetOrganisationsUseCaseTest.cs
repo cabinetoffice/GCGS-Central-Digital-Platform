@@ -1,102 +1,87 @@
-using CO.CDP.Organisation.WebApi.Tests.AutoMapper;
+using AutoMapper;
+using Moq;
+using FluentAssertions;
+using CO.CDP.Organisation.WebApi.Model;
+using CO.CDP.OrganisationInformation.Persistence;
 using CO.CDP.Organisation.WebApi.UseCase;
 using CO.CDP.OrganisationInformation;
-using CO.CDP.OrganisationInformation.Persistence;
-using FluentAssertions;
-using Moq;
-using Address = CO.CDP.OrganisationInformation.Persistence.Address;
 
-namespace CO.CDP.Organisation.WebApi.Tests.UseCase;
-public class GetOrganisationsUseCaseTest(AutoMapperFixture mapperFixture) : IClassFixture<AutoMapperFixture>
+public class GetOrganisationsUseCaseTests
 {
-    private readonly Mock<IOrganisationRepository> _repository = new();
-    private GetOrganisationsUseCase UseCase => new(_repository.Object, mapperFixture.Mapper);
+    private readonly Mock<IOrganisationRepository> _organisationRepositoryMock;
+    private readonly Mock<IMapper> _mapperMock;
+    private readonly GetOrganisationsUseCase _useCase;
 
-    [Fact]
-    public async Task WhenNoOrganisationFound_ReturnEmptyList()
+    public GetOrganisationsUseCaseTests()
     {
-        var userUrn = "urn:fdc:gov.uk:2022:7wTqYGMFQxgukTSpSI2GodMwe9";
-
-        var found = await UseCase.Execute(userUrn);
-
-        found.Should().BeEmpty();
+        _organisationRepositoryMock = new Mock<IOrganisationRepository>();
+        _mapperMock = new Mock<IMapper>();
+        _useCase = new GetOrganisationsUseCase(_organisationRepositoryMock.Object, _mapperMock.Object);
     }
 
     [Fact]
-    public async Task WhenOrganisationsFound_ReturnThatList()
+    public async Task Execute_WithValidCommand_ReturnsMappedOrganisations()
     {
-        var userUrn = "urn:fdc:gov.uk:2022:7wTqYGMFQxgukTSpSI2GodMwe9";
-        var persistenceOrganisation = new[]{ new OrganisationInformation.Persistence.Organisation
+        var command = new PaginatedOrganisationQuery { Type = "buyer" };
+        var organisations = new List<CO.CDP.OrganisationInformation.Persistence.Organisation>
         {
-            Id = 1,
-            Guid = Guid.NewGuid(),
-            Name = "Test Organisation",
-            Tenant = new Tenant
+            new CO.CDP.OrganisationInformation.Persistence.Organisation
             {
-                Id = 101,
                 Guid = Guid.NewGuid(),
-                Name = "Tenant 101"
-            },
-            Identifiers = [new OrganisationInformation.Persistence.Organisation.Identifier
-            {
-                Primary = true,
-                Scheme = "Scheme1",
-                IdentifierId = "123456",
-                LegalName = "Test Organisation Ltd"
-            }],
-            Addresses = {new OrganisationInformation.Persistence.Organisation.OrganisationAddress
-            {
-                Type  = AddressType.Registered,
-                Address = new Address
-                {
-                    StreetAddress = "1234 Test St",
-                    Locality = "Test City",
-                    PostalCode = "12345",
-                    CountryName = "Testland",
-                    Country = "AB"
-                }
-            }},
-            ContactPoints = [new OrganisationInformation.Persistence.Organisation.ContactPoint { Email = "contact@test.org" }],
-            Roles = [PartyRole.Buyer]
-        },
-        new OrganisationInformation.Persistence.Organisation
+                Name = "Organisation 2",
+                Tenant = null
+            }
+        };
+        organisations.Add(new CO.CDP.OrganisationInformation.Persistence.Organisation
         {
-            Id = 2,
             Guid = Guid.NewGuid(),
-            Name = "Test Organisation 2",
-            Tenant = new Tenant
-            {
-                Id = 101,
-                Guid = Guid.NewGuid(),
-                Name = "Tenant 101"
+            Name = "Organisation 1",
+            Tenant = null
+        });
+        var mappedOrganisations = new List<OrganisationExtended>
+        {
+            new OrganisationExtended{
+                Id = default,
+                Name = "Organisation 1",
+                Identifier = null,
+                ContactPoint = null,
+                Roles = new List<PartyRole>(),
+                Details = null
             },
-            Identifiers = [new OrganisationInformation.Persistence.Organisation.Identifier
-            {
-                Primary = true,
-                Scheme = "Scheme1",
-                IdentifierId = "123456",
-                LegalName = "Test Organisation Ltd"
-            }],
-            Addresses = {new OrganisationInformation.Persistence.Organisation.OrganisationAddress
-            {
-                Type = AddressType.Registered,
-                Address = new Address
-                {
-                    StreetAddress = "1234 Test St",
-                    Locality = "Test City",
-                    PostalCode = "12345",
-                    CountryName = "Testland",
-                    Country = "AB"
-                }
-            }},
-            ContactPoints = [],
-            Roles = [PartyRole.Buyer]
-        }};
+            new OrganisationExtended{
+                Id = default,
+                Name = "Organisation 2",
+                Identifier = null,
+                ContactPoint = null,
+                Roles = new List<PartyRole>(),
+                Details = null
+            }
+        };
 
-        _repository.Setup(r => r.FindByUserUrn(userUrn)).ReturnsAsync(persistenceOrganisation);
+        _organisationRepositoryMock.Setup(repo => repo.Get(command.Type)).ReturnsAsync(organisations);
+        _mapperMock.Setup(m => m.Map<IEnumerable<OrganisationExtended>>(organisations)).Returns(mappedOrganisations);
 
-        var found = await UseCase.Execute(userUrn);
+        var result = await _useCase.Execute(command);
 
-        found.Should().HaveCount(2);
+        result.Should().BeEquivalentTo(mappedOrganisations);
+        _organisationRepositoryMock.Verify(repo => repo.Get(command.Type), Times.Once);
+        _mapperMock.Verify(m => m.Map<IEnumerable<OrganisationExtended>>(organisations), Times.Once);
+    }
+
+    [Fact]
+    public async Task Execute_WhenNoOrganisationsExist_ReturnsEmptyList()
+    {
+        var command = new PaginatedOrganisationQuery { Type = "buyer" };
+        var organisations = new List<CO.CDP.OrganisationInformation.Persistence.Organisation>();
+        var mappedOrganisations = new List<OrganisationExtended>();
+
+        _organisationRepositoryMock.Setup(repo => repo.Get(command.Type)).ReturnsAsync(organisations);
+        _mapperMock.Setup(m => m.Map<IEnumerable<OrganisationExtended>>(organisations)).Returns(mappedOrganisations);
+
+        var result = await _useCase.Execute(command);
+
+        result.Should().BeEmpty();
+        _organisationRepositoryMock.Verify(repo => repo.Get(command.Type), Times.Once);
+        _mapperMock.Verify(m => m.Map<IEnumerable<OrganisationExtended>>(organisations), Times.Once);
     }
 }
