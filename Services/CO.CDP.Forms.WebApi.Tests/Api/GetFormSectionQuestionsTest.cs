@@ -5,6 +5,8 @@ using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Moq;
+using System.Net;
+using static CO.CDP.Authentication.Constants;
 using static System.Net.HttpStatusCode;
 
 namespace CO.CDP.Forms.WebApi.Tests.Api;
@@ -19,7 +21,7 @@ public class GetFormSectionQuestionsTest
         TestWebApplicationFactory<Program> factory = new(builder =>
         {
             builder.ConfigureServices(services =>
-                services.AddScoped<IUseCase<(Guid formId, Guid sectionId, Guid organisationId), SectionQuestionsResponse?>>(_ => _getFormSectionQuestionsUseCase.Object)
+                services.AddScoped(_ => _getFormSectionQuestionsUseCase.Object)
             );
         });
         _httpClient = factory.CreateClient();
@@ -57,6 +59,32 @@ public class GetFormSectionQuestionsTest
 
         response.Should().HaveStatusCode(OK);
         await response.Should().HaveContent(sectionQuestionsResponse);
+    }
+
+    [Theory]
+    [InlineData(OK, Channel.OneLogin, OrganisationPersonScope.Admin)]
+    [InlineData(OK, Channel.OneLogin, OrganisationPersonScope.Editor)]
+    [InlineData(OK, Channel.OneLogin, OrganisationPersonScope.Viewer)]
+    [InlineData(Forbidden, Channel.ServiceKey)]
+    [InlineData(Forbidden, Channel.OrganisationKey)]
+    [InlineData(Forbidden, "unknown_channel")]
+    public async Task GetFormSectionQuestions_Authorization_ReturnsExpectedStatusCode(
+        HttpStatusCode expectedStatusCode, string channel, string? scope = null)
+    {
+        var formId = Guid.NewGuid();
+        var sectionId = Guid.NewGuid();
+        var organisationId = Guid.NewGuid();
+        var command = (formId, sectionId, organisationId);
+
+        _getFormSectionQuestionsUseCase.Setup(uc => uc.Execute(command))
+            .ReturnsAsync(new SectionQuestionsResponse());
+
+        var factory = new TestAuthorizationWebApplicationFactory<Program>(
+            channel, organisationId, scope, serviceCollection: s => s.AddScoped(_ => _getFormSectionQuestionsUseCase.Object));
+
+        var response = await factory.CreateClient().GetAsync($"/forms/{formId}/sections/{sectionId}/questions?organisation-id={organisationId}");
+
+        response.StatusCode.Should().Be(expectedStatusCode);
     }
 
     private static SectionQuestionsResponse GivenSectionQuestionsResponse()

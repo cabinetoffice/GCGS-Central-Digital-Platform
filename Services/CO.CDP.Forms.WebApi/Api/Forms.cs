@@ -1,3 +1,4 @@
+using CO.CDP.Authentication.Authorization;
 using CO.CDP.Forms.WebApi.Model;
 using CO.CDP.Forms.WebApi.UseCase;
 using CO.CDP.Functional;
@@ -9,6 +10,7 @@ using DotSwashbuckle.AspNetCore.SwaggerGen;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
+using static CO.CDP.Authentication.Constants;
 
 namespace CO.CDP.Forms.WebApi.Api;
 
@@ -17,7 +19,8 @@ public static class EndpointExtensions
     public static void UseFormsEndpoints(this WebApplication app)
     {
         app.MapGet("/forms/{formId}/sections",
-            async (Guid formId, [FromQuery(Name = "organisation-id")] Guid organisationId, IUseCase<(Guid, Guid), FormSectionResponse?> useCase) =>
+            [OrganisationAuthorize([AuthenticationChannel.OneLogin])]
+        async (Guid formId, [FromQuery(Name = "organisation-id")] Guid organisationId, IUseCase<(Guid, Guid), FormSectionResponse?> useCase) =>
             await useCase.Execute((formId, organisationId))
                     .AndThen(res => res != null ? Results.Ok(res) : Results.NotFound()))
                     .Produces<FormSectionResponse>(StatusCodes.Status200OK, "application/json")
@@ -37,7 +40,11 @@ public static class EndpointExtensions
                     });
 
         app.MapGet("/forms/{formId}/sections/{sectionId}/questions",
-            async (Guid formId, Guid sectionId, [FromQuery(Name = "organisation-id")] Guid organisationId, IUseCase<(Guid, Guid, Guid), SectionQuestionsResponse?> useCase) =>
+            [OrganisationAuthorize(
+                [AuthenticationChannel.OneLogin],
+                [OrganisationPersonScope.Admin, OrganisationPersonScope.Editor, OrganisationPersonScope.Viewer],
+                OrganisationIdLocation.QueryString)]
+        async (Guid formId, Guid sectionId, [FromQuery(Name = "organisation-id")] Guid organisationId, IUseCase<(Guid, Guid, Guid), SectionQuestionsResponse?> useCase) =>
             await useCase.Execute((formId, sectionId, organisationId))
                     .AndThen(sectionQuestions => sectionQuestions != null ? Results.Ok(sectionQuestions) : Results.NotFound()))
                     .Produces<SectionQuestionsResponse>(StatusCodes.Status200OK, "application/json")
@@ -56,8 +63,12 @@ public static class EndpointExtensions
                return operation;
            });
 
-        app.MapPut("/forms/{formId}/sections/{sectionId}/answers/{answerSetId}", async (
-            Guid formId, Guid sectionId, Guid answerSetId,
+        app.MapPut("/forms/{formId}/sections/{sectionId}/answers/{answerSetId}",
+            [OrganisationAuthorize(
+                [AuthenticationChannel.OneLogin],
+                [OrganisationPersonScope.Admin, OrganisationPersonScope.Editor],
+                OrganisationIdLocation.QueryString)]
+        async (Guid formId, Guid sectionId, Guid answerSetId,
             [FromQuery(Name = "organisation-id")] Guid organisationId,
             [FromBody] UpdateFormSectionAnswers updateFormSectionAnswers,
             IUseCase<(Guid formId, Guid sectionId, Guid answerSetId, Guid organisationId, UpdateFormSectionAnswers updateFormSectionAnswers), bool> updateFormSectionAnswersUseCase) =>
@@ -82,7 +93,11 @@ public static class EndpointExtensions
             });
 
         app.MapDelete("/forms/answer-sets/{answerSetId}",
-                async (Guid answerSetId, [FromQuery(Name = "organisation-id")] Guid organisationId, IUseCase<(Guid, Guid), bool> useCase) =>
+            [OrganisationAuthorize(
+                [AuthenticationChannel.OneLogin],
+                [OrganisationPersonScope.Admin, OrganisationPersonScope.Editor],
+                OrganisationIdLocation.QueryString)]
+        async (Guid answerSetId, [FromQuery(Name = "organisation-id")] Guid organisationId, IUseCase<(Guid, Guid), bool> useCase) =>
                  await useCase.Execute((organisationId, answerSetId))
                     .AndThen(success => success ? Results.NoContent() : Results.NotFound()))
             .Produces(StatusCodes.Status204NoContent)

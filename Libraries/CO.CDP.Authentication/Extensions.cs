@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
+using static CO.CDP.Authentication.Constants;
 
 namespace CO.CDP.Authentication;
 
@@ -86,6 +87,11 @@ public static class Extensions
     {
         return services
             .AddAuthorizationBuilder()
+            .AddPolicy("OneLoginPolicy", policy =>
+            {
+                policy.RequireAuthenticatedUser();
+                policy.RequireClaim(ClaimType.Channel, Channel.OneLogin);
+            })
             .SetFallbackPolicy(
                 new AuthorizationPolicyBuilder()
                     .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)

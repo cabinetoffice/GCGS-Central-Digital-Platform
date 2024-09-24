@@ -1,3 +1,4 @@
+using CO.CDP.Authentication.Authorization;
 using CO.CDP.Functional;
 using CO.CDP.OrganisationInformation;
 using CO.CDP.Swashbuckle.Filter;
@@ -39,6 +40,7 @@ public static class EndpointExtensions
                 operation.Responses["500"].Description = "Internal server error.";
                 return operation;
             });
+
         app.MapGet("/tenants/{tenantId}", async (Guid tenantId, IUseCase<Guid, Model.Tenant?> useCase) =>
                 await useCase.Execute(tenantId)
                     .AndThen(tenant => tenant != null ? Results.Ok(tenant) : Results.NotFound()))
@@ -64,7 +66,8 @@ public static class EndpointExtensions
         var openApiTags = new List<OpenApiTag> { new() { Name = "Tenant Lookup" } };
 
         app.MapGet("/tenant/lookup",
-                async (IUseCase<TenantLookup?> useCase) =>
+            [OrganisationAuthorize([AuthenticationChannel.OneLogin])]
+        async (IUseCase<TenantLookup?> useCase) =>
                 await useCase.Execute()
                     .AndThen(tenant => tenant != null ? Results.Ok(tenant) : Results.NotFound()))
             .Produces<TenantLookup>(StatusCodes.Status200OK, "application/json")
