@@ -6,7 +6,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using System.Net;
 using System.Net.Http.Json;
-using System.Security.Claims;
 using static CO.CDP.Authentication.Constants;
 using static System.Net.HttpStatusCode;
 
@@ -36,9 +35,7 @@ public class ConnectedEntityEndpointsTests
         _getConnectedEntitiesUseCase.Setup(uc => uc.Execute(organisationId)).ReturnsAsync([]);
 
         var factory = new TestAuthorizationWebApplicationFactory<Program>(
-            [new Claim(ClaimType.Channel, channel)],
-            organisationId,
-            scope,
+            channel, organisationId, scope,
             services => services.AddScoped(_ => _getConnectedEntitiesUseCase.Object));
 
         var response = await factory.CreateClient().GetAsync($"/organisations/{organisationId}/connected-entities");
@@ -65,9 +62,7 @@ public class ConnectedEntityEndpointsTests
             .ReturnsAsync(new ConnectedEntity { EntityType = ConnectedEntityType.Organisation });
 
         var factory = new TestAuthorizationWebApplicationFactory<Program>(
-            [new Claim(ClaimType.Channel, channel)],
-            organisationId,
-            scope,
+            channel, organisationId, scope,
             services => services.AddScoped(_ => _getConnectedEntityUseCase.Object));
 
         var response = await factory.CreateClient().GetAsync($"/organisations/{organisationId}/connected-entities/{connectedEntityId}");
@@ -93,9 +88,7 @@ public class ConnectedEntityEndpointsTests
         _registerConnectedEntityUseCase.Setup(uc => uc.Execute(command)).ReturnsAsync(true);
 
         var factory = new TestAuthorizationWebApplicationFactory<Program>(
-            [new Claim(ClaimType.Channel, channel)],
-            organisationId,
-            scope,
+            channel, organisationId, scope,
             services => services.AddScoped(_ => _registerConnectedEntityUseCase.Object));
 
         var response = await factory.CreateClient().PostAsJsonAsync($"/organisations/{organisationId}/connected-entities", updateConnectedEntity);
@@ -122,9 +115,7 @@ public class ConnectedEntityEndpointsTests
         _updateConnectedEntityUseCase.Setup(uc => uc.Execute(command)).ReturnsAsync(true);
 
         var factory = new TestAuthorizationWebApplicationFactory<Program>(
-            [new Claim(ClaimType.Channel, channel)],
-            organisationId,
-            scope,
+            channel, organisationId, scope,
             services => services.AddScoped(_ => _updateConnectedEntityUseCase.Object));
 
         var response = await factory.CreateClient().PutAsJsonAsync($"/organisations/{organisationId}/connected-entities/{connectedEntityId}", updateConnectedEntity);
@@ -151,9 +142,7 @@ public class ConnectedEntityEndpointsTests
         _deleteConnectedEntityUseCase.Setup(uc => uc.Execute(command)).ReturnsAsync(true);
 
         var factory = new TestAuthorizationWebApplicationFactory<Program>(
-            [new Claim(ClaimType.Channel, channel)],
-            organisationId,
-            scope,
+            channel, organisationId, scope,
             services => services.AddScoped(_ => _deleteConnectedEntityUseCase.Object));
 
         var response = await factory.CreateClient().SendAsync(

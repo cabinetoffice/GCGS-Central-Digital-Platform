@@ -3,6 +3,7 @@ using CO.CDP.Organisation.WebApi.Model;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using static CO.CDP.Organisation.WebApi.UseCase.RegisterOrganisationUseCase.RegisterOrganisationException;
+using static CO.CDP.OrganisationInformation.Persistence.IAuthenticationKeyRepository.AuthenticationKeyRepositoryException;
 using static CO.CDP.OrganisationInformation.Persistence.IOrganisationRepository.OrganisationRepositoryException;
 
 namespace CO.CDP.Organisation.WebApi.Tests.Extensions;
@@ -62,6 +63,16 @@ public class ServiceCollectionExtensionsTests
     }
 
     [Fact]
+    public void MapException_Should_Return_NotFound_For_DuplicateApiKeyNameException()
+    {
+        var exception = new DuplicateAuthenticationKeyNameException("Duplicate Api key name");
+        var result = ServiceCollectionExtensions.MapException(exception);
+
+        Assert.Equal(StatusCodes.Status400BadRequest, result.status);
+        Assert.Equal("APIKEY_NAME_ALREADY_EXISTS", result.error);
+    }
+
+    [Fact]
     public void ErrorCodes_ShouldReturn_ListOfStatusesMappedToErrorCodes()
     {
         var result = ServiceCollectionExtensions.ErrorCodes();
@@ -70,6 +81,7 @@ public class ServiceCollectionExtensionsTests
         result["400"].Should().Contain("ORGANISATION_ALREADY_EXISTS");
         result["400"].Should().Contain("INVALID_BUYER_INFORMATION_UPDATE_ENTITY");
         result["400"].Should().Contain("INVALID_SUPPLIER_INFORMATION_UPDATE_ENTITY");
+        result["400"].Should().Contain("APIKEY_NAME_ALREADY_EXISTS");
 
         result.Should().ContainKey("404");
         result["404"].Should().Contain("PERSON_DOES_NOT_EXIST");

@@ -146,6 +146,7 @@ public class OrganisationInformationContext(DbContextOptions<OrganisationInforma
 
         modelBuilder.Entity<AuthenticationKey>(e =>
         {
+            e.HasIndex(e => new { e.Name, e.OrganisationId }).IsUnique().AreNullsDistinct(false);
             e.Property(e => e.Scopes).HasJsonColumn([], PropertyBuilderExtensions.ListComparer<string>());
         });
 

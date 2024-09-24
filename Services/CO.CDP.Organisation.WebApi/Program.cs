@@ -57,6 +57,7 @@ builder.Services.AddScoped<IOrganisationRepository, DatabaseOrganisationReposito
 builder.Services.AddScoped<IConnectedEntityRepository, DatabaseConnectedEntityRepository>();
 builder.Services.AddScoped<IPersonRepository, DatabasePersonRepository>();
 builder.Services.AddScoped<IPersonInviteRepository, DatabasePersonInviteRepository>();
+builder.Services.AddScoped<IAuthenticationKeyRepository, DatabaseAuthenticationKeyRepository>();
 builder.Services.AddScoped<IUseCase<AssignOrganisationIdentifier, bool>, AssignIdentifierUseCase>();
 builder.Services.AddScoped<IUseCase<RegisterOrganisation, Organisation>, RegisterOrganisationUseCase>();
 builder.Services.AddScoped<IUseCase<Guid, Organisation?>, GetOrganisationUseCase>();
@@ -81,6 +82,10 @@ builder.Services.AddScoped<IUseCase<(Guid, Guid, UpdatePersonToOrganisation), bo
 builder.Services.AddScoped<IUseCase<Guid, IEnumerable<PersonInviteModel>>, GetPersonInvitesUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, Guid), bool>, RemovePersonInviteFromOrganisationUseCase>();
 builder.Services.AddGovUKNotifyApiClient(builder.Configuration);
+builder.Services.AddScoped<IUseCase<Guid, IEnumerable<CO.CDP.Organisation.WebApi.Model.AuthenticationKey>>, GetAuthenticationKeyUseCase>();
+builder.Services.AddScoped<IUseCase<(Guid, RegisterAuthenticationKey), bool>, RegisterAuthenticationKeyUseCase>();
+builder.Services.AddScoped<IUseCase<(Guid, string), bool>, RevokeAuthenticationKeyUseCase>();
+
 builder.Services.AddOrganisationProblemDetails();
 
 builder.Services.AddJwtBearerAndApiKeyAuthentication(builder.Configuration, builder.Environment);
@@ -138,6 +143,10 @@ app.MapGroup("/organisations")
 app.MapGroup("/organisations")
     .UsePersonsEndpoints()
     .WithTags("Organisation - Persons");
+
+app.MapGroup("/organisations")
+    .UseManageApiKeyEndpoints()
+    .WithTags("Organisation - Manage Api Keys");
 
 app.Run();
 public abstract partial class Program;

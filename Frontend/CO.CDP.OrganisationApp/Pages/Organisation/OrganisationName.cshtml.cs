@@ -1,5 +1,7 @@
 using CO.CDP.Organisation.WebApiClient;
+using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.WebApiClients;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel;
@@ -7,7 +9,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CO.CDP.OrganisationApp.Pages.Organisation;
 
-
+[Authorize(Policy = OrgScopeRequirement.Editor)]
 public class OrganisationNameModel(IOrganisationClient organisationClient) : PageModel
 {
     [BindProperty]

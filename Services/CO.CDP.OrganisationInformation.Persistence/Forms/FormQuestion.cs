@@ -1,7 +1,9 @@
 using CO.CDP.EntityFrameworkCore.Timestamps;
+using Microsoft.EntityFrameworkCore;
 
 namespace CO.CDP.OrganisationInformation.Persistence.Forms;
 
+[Index(nameof(Name), IsUnique = true)]
 public class FormQuestion : IEntityDate
 {
     public int Id { get; set; }
@@ -11,6 +13,7 @@ public class FormQuestion : IEntityDate
     public required FormSection Section { get; set; }
     public required FormQuestionType Type { get; set; }
     public required bool IsRequired { get; set; } = true;
+    public required string Name { get; set; }
     public required string Title { get; set; }
     public required string? Description { get; set; } = null;
     public required string? Caption { get; set; } = null;
@@ -31,7 +34,8 @@ public enum FormQuestionType
     CheckYourAnswers,
     Date,
     CheckBox,
-    Address
+    Address,
+    MultiLine
 }
 
 public record FormQuestionOptions

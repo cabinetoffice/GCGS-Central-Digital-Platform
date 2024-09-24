@@ -5,7 +5,6 @@ using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using System.Net;
-using System.Security.Claims;
 using static CO.CDP.Authentication.Constants;
 using static System.Net.HttpStatusCode;
 
@@ -27,8 +26,7 @@ public class OrganisationLookupEndpointsTests
                                     .ReturnsAsync(OrganisationEndpointsTests.GivenOrganisation(Guid.NewGuid()));
 
         var factory = new TestAuthorizationWebApplicationFactory<Program>(
-            [new Claim(ClaimType.Channel, channel)],
-            serviceCollection: services => services.AddScoped(_ => _getMyOrganisationUseCase.Object));
+            channel, serviceCollection: s => s.AddScoped(_ => _getMyOrganisationUseCase.Object));
         var httpClient = factory.CreateClient();
 
         var response = await httpClient.GetAsync("/organisation/me");
@@ -49,8 +47,8 @@ public class OrganisationLookupEndpointsTests
                                     .ReturnsAsync(OrganisationEndpointsTests.GivenOrganisation(Guid.NewGuid()));
 
         var factory = new TestAuthorizationWebApplicationFactory<Program>(
-            [new Claim(ClaimType.Channel, channel)],
-            serviceCollection: services => services.AddScoped(_ => _lookupOrganisationUseCase.Object));
+            channel,
+            serviceCollection: s => s.AddScoped(_ => _lookupOrganisationUseCase.Object));
         var httpClient = factory.CreateClient();
 
         var response = await httpClient.GetAsync($"/organisation/lookup?name={name}");

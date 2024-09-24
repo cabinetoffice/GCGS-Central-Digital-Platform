@@ -322,14 +322,17 @@ locals {
     allowed_ips = [
       "212.139.19.138", #GOACO
       "94.174.71.0/24", # Ali Bahman
-      "82.38.3.0/24", # Dorian Stefan
+      "82.38.3.0/24",   # Dorian Stefan
     ]
     user_arns = [
       "arn:aws:iam::525593800265:user/ali.bahman@goaco.com",
       "arn:aws:iam::525593800265:user/dorian.stefan@goaco.com",
     ]
     external_user_arns = [
-      "arn:aws:iam::495599741725:user/gdavies"
+        "arn:aws:iam::464141439926:user/jamesmoss-cgi", # James Moss     from CGI
+        "arn:aws:iam::495599741725:user/gdavies",       # Gavin Davis    from CGI
+        "arn:aws:iam::571600860189:user/nchamdal",      # Naresh Chamdal from CGI
+        "arn:aws:iam::717279707340:user/Chrisr-CGI",    # Chris Rooney   from CGI
     ]
   }
 
