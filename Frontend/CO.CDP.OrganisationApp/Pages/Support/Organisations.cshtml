@@ -1,0 +1,91 @@
+@page "/support/organisations/{type}"
+@using CO.CDP.OrganisationApp.Constants
+@model OrganisationsModel
+
+<main class="govuk-main-wrapper">
+    <table class="govuk-table">
+        <caption class="govuk-table__caption govuk-table__caption--m">@Model.Title</caption>
+        <thead class="govuk-table__head">
+        <tr class="govuk-table__row">
+            <th scope="col" colspan="1" class="govuk-table__header">Organisation name</th>
+            <th scope="col" colspan="1" class="govuk-table__header">Identifier/s</th>
+            <th scope="col" colspan="1" class="govuk-table__header">Org Email</th>
+            @{
+                if (Model.Type == "buyer")
+                {
+                    <th scope="col" colspan="1" class="govuk-table__header">Status</th>
+                    <th scope="col" colspan="1" class="govuk-table__header">Date Approved</th>
+                    <th scope="col" colspan="1" class="govuk-table__header">Last reviewed by</th>
+                    <th scope="col" colspan="1" class="govuk-table__header">Comments</th>
+                    <th scope="col" colspan="1" class="govuk-table__header">Action</th>
+                }
+            }
+        </tr>
+        </thead>
+        <tbody class="govuk-table__body">
+        @{
+            foreach (var org in Model.Organisations)
+            {
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">
+                        @org.Name
+                    </th>
+                    <td class="govuk-table__cell">
+                        <ul class="govuk-list">
+                            @{
+                                foreach (var i in OrganisationsModel.CombineIdentifiers(@org.Identifier, @org.AdditionalIdentifiers))
+                                {
+                                    <li>@i.Scheme.SchemeDescription(): @i.Id</li>
+                                }
+                            }
+                        </ul>
+                    </td>
+                    <td class="govuk-table__cell">
+                        @org.ContactPoint.Email
+                    </td>
+                    @{
+                        if (Model.Type == "buyer")
+                        {
+                            <td class="govuk-table__cell">
+                                @{
+                                    if (@org.Details?.Approval?.ApprovedOn == null)
+                                    {
+                                        <span>Pending</span>
+                                    }
+                                    else
+                                    {
+                                        <span>Approved</span>
+                                    }
+                                }
+                            </td>
+                            <td class="govuk-table__cell">
+                                @(@org.Details?.Approval?.ApprovedOn == null ? "N/A" : @org.Details?.Approval?.ApprovedOn)
+                            </td>
+                            <td class="govuk-table__cell">
+                                @(@org.Details?.Approval?.ApprovedBy.Name ?? "N/A")
+                            </td>
+                            <td class="govuk-table__cell">
+                                @(@org.Details?.Approval?.Comment ?? "N/A")
+                            </td>
+                            <td class="govuk-table__cell">
+                                <a class="govuk-link" href="/support/organisation/@org.Id/approval">Review</a>
+                            </td>
+                        }
+                    }
+                </tr>
+            }
+        }
+        </tbody>
+    </table>
+    @{
+        if (Model.Type == "buyer")
+        {
+            <a class="govuk-link" href="/support/organisations/supplier">Supplier organisations</a>
+        }
+        else
+        {
+            <a class="govuk-link" href="/support/organisations/buyer">Buyer organisations</a>
+        }
+    }
+
+</main>

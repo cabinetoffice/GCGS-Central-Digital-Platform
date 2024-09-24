@@ -56,6 +56,7 @@
                         {
                             var ftsService = config["FtsService"] ?? "";
                             var showMyNotice = !string.IsNullOrEmpty(ftsService);
+                            var isSupportAdmin = true; // TODO: Add logic to determine if signed in user is a super user
 
                             <li class="govuk-header__navigation-item">
                                 <a class="govuk-header__link" href="/organisation-selection">
@@ -63,13 +64,22 @@
                                 </a>
                             </li>
 
+                            if (isSupportAdmin == true)
+                            {
+                                <li class="govuk-header__navigation-item">
+                                    <a class="govuk-header__link" href="/support/organisations/buyer">
+                                        Support
+                                    </a>
+                                </li>
+                            }
+
                             if (showMyNotice == true)
                             {
                                 var urlPath = Context.Request.Path;
                                 Regex regex = new Regex(RegExPatterns.OrganisationId);
                                 Match match = regex.Match(urlPath);
                                 string guid = match.Success == true ? match.Groups[1].Value : string.Empty;
-                                
+
                                 if (!string.IsNullOrEmpty(guid))
                                 {
                                     ftsService = config["FtsService"]?.Replace("an_organisation_id", guid) ?? string.Empty;
@@ -79,7 +89,7 @@
                                             My notices
                                         </a>
                                     </li>
-                                }                                
+                                }
                             }
                             <li class="govuk-header__navigation-item" style="float:right;">
                                 <a class="govuk-header__link" href="/one-login/sign-out">

@@ -4,7 +4,7 @@ public interface IOrganisationRepository : IDisposable
 {
     public void Save(Organisation organisation);
 
-    public void SaveOrganisationPerson(OrganisationPerson organisationPerson);    
+    public void SaveOrganisationPerson(OrganisationPerson organisationPerson);
 
     public Task<Organisation?> Find(Guid organisationId);
 
@@ -17,6 +17,8 @@ public interface IOrganisationRepository : IDisposable
     public Task<IEnumerable<Organisation>> FindByUserUrn(string userUrn);
 
     public Task<Organisation?> FindByIdentifier(string scheme, string identifierId);
+
+    public Task<IList<Organisation>> Get(string? type);
 
     public class OrganisationRepositoryException(string message, Exception? cause = null) : Exception(message, cause)
     {
