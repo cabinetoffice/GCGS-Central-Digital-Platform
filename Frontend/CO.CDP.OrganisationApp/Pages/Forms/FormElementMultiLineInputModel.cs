@@ -29,5 +29,10 @@ public class FormElementMultiLineInputModel : FormElementModel, IValidatableObje
         {
             yield return new ValidationResult("All information is required on this page", new[] { nameof(TextInput) });
         }
+
+        if (TextInput != null && TextInput.Length > 10000)
+        {
+            yield return new ValidationResult("Enter 10,000 characters or fewer", new[] { nameof(TextInput) });
+        }
     }
 }
