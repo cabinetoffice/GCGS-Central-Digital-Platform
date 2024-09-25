@@ -30,7 +30,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                     RETURNING id INTO previousQuestionId;
 
                     INSERT INTO form_questions (guid, section_id, type, next_question_id, is_required, title, description, options, caption, summary_title, name)
-                    VALUES ('{Guid.NewGuid()}', sectionId, {(int)FormQuestionType.Text}, previousQuestionId, TRUE, 'Enter the name of the person or body which awarded the qualification', NULL, '{{}}', 'For example, Royal Institution of Chartered Surveyors (RICS).', 'Awarded by person or body', '_Qualifications02')
+                    VALUES ('{Guid.NewGuid()}', sectionId, {(int)FormQuestionType.Text}, previousQuestionId, TRUE, 'Enter the name of the person or body which awarded the qualification', '<div class=""govuk-hint"">For example, Royal Institution of Chartered Surveyors (RICS).</div>', '{{}}', NULL, 'Awarded by person or body', '_Qualifications02')
                     RETURNING id INTO previousQuestionId;
 
                     INSERT INTO form_questions (guid, section_id, type, next_question_id, is_required, title, description, options, caption, summary_title, name)
@@ -38,8 +38,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                     RETURNING id INTO previousQuestionId;
 
                     INSERT INTO form_questions (guid, section_id, type, next_question_id, is_required, title, description, options, caption, summary_title, name)
-                    VALUES ('{Guid.NewGuid()}', sectionId, {(int)FormQuestionType.Text}, previousQuestionId, TRUE, 'Enter the name of the qualification', NULL, '{{}}', 'For example, Surveying (Quantity Surveying) MSc.', 'Qualification name', '_Qualifications04')
-                    RETURNING id INTO previousQuestionId;
+                    VALUES ('{Guid.NewGuid()}', sectionId, {(int)FormQuestionType.Text}, previousQuestionId, TRUE, 'Enter the name of the qualification', '<div class=""govuk-hint"">For example, Surveying (Quantity Surveying) MSc.</div>', '{{}}', NULL, 'Qualification name', '_Qualifications04')                    RETURNING id INTO previousQuestionId;
                 END $$;
             ");
         }
