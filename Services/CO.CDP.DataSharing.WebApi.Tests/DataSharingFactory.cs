@@ -192,10 +192,10 @@ public static class DataSharingFactory
             }
         };
     }
-    public static Task<List<ConnectedPersonInformation>> CreateMockConnectedPersonInformation()
+    public static List<ConnectedPersonInformation> CreateMockConnectedPersonInformation()
     {
-        return Task.FromResult(new List<ConnectedPersonInformation>
-        {
+        return
+        [
             new ConnectedPersonInformation(
                 Guid.NewGuid(),
                 "John",
@@ -221,6 +221,6 @@ public static class DataSharingFactory
                 null,
                 null
             )
-        });
+        ];
     }
 }
