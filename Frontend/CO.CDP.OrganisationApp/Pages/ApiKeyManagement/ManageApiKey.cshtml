@@ -46,11 +46,11 @@
                                     <dd class="govuk-summary-list__actions">
                                         @if (ak.Revoked == true)
                                         {
-                                            <span class="govuk-tag govuk-tag--red govuk-!-font-size-16">Revoked</span>
+                                            <span class="govuk-tag govuk-tag--red govuk-!-font-size-16">Cancelled</span>
                                         }
                                         else
                                         {
-                                            <a class="govuk-link" href="/organisation/@Model.Id/manage-api-key/@ak.Name/revoke-api-key">Revoke</a>
+                                            <a class="govuk-link" href="/organisation/@Model.Id/manage-api-key/@ak.Name/revoke-api-key">Cancel</a>
                                         }
                                     </dd>
                                 </div>
