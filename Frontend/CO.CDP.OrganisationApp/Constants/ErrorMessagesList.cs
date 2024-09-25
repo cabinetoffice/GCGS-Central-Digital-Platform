@@ -20,6 +20,6 @@ public static class ErrorMessagesList
     public const string BuyerInfoNotExists = "The buyer information for requested organisation not exist.";
     public const string UnknownBuyerInformationUpdateType = "The requested buyer information update type is unknown.";
 
-    public const string DuplicateApiKeyName = "An API key Name with this name already exists. Please try again.";
+    public const string DuplicateApiKeyName = "An API key with this name already exists. Please try again.";
 
 }
