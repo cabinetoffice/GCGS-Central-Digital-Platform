@@ -32,16 +32,16 @@ public class ReviewOrganisationUseCaseTest
         {
             Id = 1,
             Guid = Guid.NewGuid(),
-            Tenant = null,
-            Name = null
+            Tenant = null!,
+            Name = null!
         };
         _person = new Person
         {
             Id = 1,
             Guid = Guid.NewGuid(),
-            FirstName = null,
-            LastName = null,
-            Email = null
+            FirstName = null!,
+            LastName = null!,
+            Email = null!
         };
     }
 
@@ -49,7 +49,7 @@ public class ReviewOrganisationUseCaseTest
     public async Task Execute_WhenOrganisationIsUnknown_ShouldThrowUnknownOrganisationException()
     {
         _mockOrganisationRepository.Setup(repo => repo.Find(_command.OrganisationId))
-            .ReturnsAsync((OrganisationInformation.Persistence.Organisation)null);
+            .ReturnsAsync((OrganisationInformation.Persistence.Organisation)null!);
 
         Func<Task> action = async () => await _useCase.Execute(_command);
 
@@ -63,7 +63,7 @@ public class ReviewOrganisationUseCaseTest
         _mockOrganisationRepository.Setup(repo => repo.Find(_command.OrganisationId))
             .ReturnsAsync(_organisation);
         _mockPersonRepository.Setup(repo => repo.Find(_command.approvedById))
-            .ReturnsAsync((Person)null);
+            .ReturnsAsync((Person)null!);
 
         Func<Task> action = async () => await _useCase.Execute(_command);
 
