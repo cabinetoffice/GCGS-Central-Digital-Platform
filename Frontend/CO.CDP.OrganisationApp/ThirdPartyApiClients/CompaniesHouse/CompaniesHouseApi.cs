@@ -1,9 +1,12 @@
+using CO.CDP.AwsServices;
 using Flurl;
 using Flurl.Http;
+using Microsoft.Extensions.Options;
 
 namespace CO.CDP.OrganisationApp.ThirdPartyApiClients.CompaniesHouse;
 
-public class CompaniesHouseApi(IConfiguration configuration, ILogger<CompaniesHouseApi> logger) : ICompaniesHouseApi
+public class CompaniesHouseApi(IConfiguration configuration,
+    ILogger<CompaniesHouseApi> logger) : ICompaniesHouseApi
 {
     public async Task<RegisteredAddress?> GetRegisteredAddress(
         string companyNumber)
@@ -21,7 +24,7 @@ public class CompaniesHouseApi(IConfiguration configuration, ILogger<CompaniesHo
                 .GetAsync()
                 .ReceiveJson<RegisteredAddress>();
         }
-        catch (FlurlHttpException exc)
+        catch (Exception exc)
         {
             logger.LogError(exc, "Failed during call to registered office address.");
         }
@@ -45,7 +48,7 @@ public class CompaniesHouseApi(IConfiguration configuration, ILogger<CompaniesHo
                 .GetAsync()
                 .ReceiveJson<CompanyProfile>();
         }
-        catch (FlurlHttpException exc)
+        catch (Exception exc)
         {
             logger.LogError(exc, "Failed during call to get company profile.");
         }
@@ -53,18 +56,18 @@ public class CompaniesHouseApi(IConfiguration configuration, ILogger<CompaniesHo
         return profile;
     }
 
-    private string? GetCompaniesHouseUrl()
+    private string GetCompaniesHouseUrl()
     {
-        return configuration["CompaniesHouse:Url"];
+        return configuration["CompaniesHouse:Url"] ?? "";
     }
 
-    private string? GetComapniesHouseUser()
+    private string GetComapniesHouseUser()
     {
-        return configuration["CompaniesHouse:User"];
+        return configuration["CompaniesHouse:User"] ?? "";
     }
 
-    private string? GetComapniesHousePassword()
+    private string GetComapniesHousePassword()
     {
-        return configuration["CompaniesHouse:Password"];
+        return configuration["CompaniesHouse:Password"] ?? "";
     }
 }
