@@ -1,12 +1,17 @@
+using Amazon;
+using Amazon.S3;
 using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.Pages.Registration;
+using CO.CDP.OrganisationApp.ThirdPartyApiClients;
+using CO.CDP.OrganisationApp.ThirdPartyApiClients.CompaniesHouse;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using Moq;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages.Registration;
@@ -14,10 +19,12 @@ namespace CO.CDP.OrganisationApp.Tests.Pages.Registration;
 public class OrganisationRegisteredAddressModelTest
 {
     private readonly Mock<ISession> sessionMock;
+    private readonly Mock<ICompaniesHouseApi> companiesHouseMock;
 
     public OrganisationRegisteredAddressModelTest()
     {
         sessionMock = new Mock<ISession>();
+        companiesHouseMock = new Mock<ICompaniesHouseApi>();
         sessionMock.Setup(session => session.Get<UserDetails>(Session.UserDetailsKey))
             .Returns(new UserDetails { UserUrn = "urn:test" });
     }
@@ -166,7 +173,7 @@ public class OrganisationRegisteredAddressModelTest
     }
 
     [Fact]
-    public void OnGet_ValidSession_ReturnsRegistrationDetails()
+    public async Task OnGet_ValidSession_ReturnsRegistrationDetails()
     {
         RegistrationDetails registrationDetails = DummyRegistrationDetails();
 
@@ -175,7 +182,7 @@ public class OrganisationRegisteredAddressModelTest
 
         var model = GivenOrganisationAddressModel();
 
-        model.OnGet();
+        await model.OnGet();
 
         model.Address.AddressLine1.Should().Be(registrationDetails.OrganisationAddressLine1);
         model.Address.TownOrCity.Should().Be(registrationDetails.OrganisationCityOrTown);
@@ -183,13 +190,53 @@ public class OrganisationRegisteredAddressModelTest
         //model.Country.Should().Be(registrationDetails.OrganisationCountry);
     }
 
-    private RegistrationDetails DummyRegistrationDetails()
+    [Fact]
+    public async Task OnGet_WhenCompaniesHouseNumberProvided_ShouldPrepopulateRegisteredAddress()
+    {
+        RegistrationDetails registrationDetails = DummyRegistrationDetails(emptyAddress: true);
+        sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(registrationDetails);
+
+        var model = GivenOrganisationAddressModel();
+        var companiesHouseRegisteredAddress = GivenRegisteredAddressOnCompaniesHouse();
+
+        companiesHouseMock.Setup(ch => ch.GetRegisteredAddress(registrationDetails.OrganisationIdentificationNumber!))
+            .ReturnsAsync(companiesHouseRegisteredAddress);
+
+        await model.OnGet();
+
+        model.Address.AddressLine1.Should().Be(companiesHouseRegisteredAddress.AddressLine1);
+        model.Address.TownOrCity.Should().Be(companiesHouseRegisteredAddress.Locality);
+        model.Address.Postcode.Should().Be(companiesHouseRegisteredAddress.PostalCode);
+    }
+
+    [Fact]
+    public async Task OnGet_WhenCompaniesHouseNumberAndRegDetailsProvided_ShouldNotPrepopulateRegisteredAddress()
+    {
+        RegistrationDetails registrationDetails = DummyRegistrationDetails();
+        sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(registrationDetails);
+
+        var model = GivenOrganisationAddressModel();
+        var companiesHouseRegisteredAddress = GivenRegisteredAddressOnCompaniesHouse();
+
+        companiesHouseMock.Setup(ch => ch.GetRegisteredAddress(registrationDetails.OrganisationIdentificationNumber!))
+            .ReturnsAsync(companiesHouseRegisteredAddress);
+
+        await model.OnGet();
+
+        model.Address.AddressLine1.Should().Be(registrationDetails.OrganisationAddressLine1);
+        model.Address.TownOrCity.Should().Be(registrationDetails.OrganisationCityOrTown);
+        model.Address.Postcode.Should().Be(registrationDetails.OrganisationPostcode);
+    }
+
+    private RegistrationDetails DummyRegistrationDetails(bool emptyAddress = false)
     {
         var registrationDetails = new RegistrationDetails
         {
-            OrganisationAddressLine1 = "address line 1",
-            OrganisationCityOrTown = "london",
-            OrganisationPostcode = "SW1A 2AA",
+            OrganisationAddressLine1 = emptyAddress ? "": "address line 1",
+            OrganisationCityOrTown = emptyAddress ? "" : "london",
+            OrganisationPostcode = emptyAddress ? "" : "SW1A 2AA",
+            OrganisationIdentificationNumber = "123456",
+            OrganisationHasCompaniesHouseNumber = true,
             OrganisationCountryName = "United Kingdom",
             OrganisationCountryCode = "GB"
         };
@@ -197,8 +244,20 @@ public class OrganisationRegisteredAddressModelTest
         return registrationDetails;
     }
 
+    private RegisteredAddress GivenRegisteredAddressOnCompaniesHouse()
+    {
+        return new RegisteredAddress()
+        {
+            AddressLine1 = "10 Park Lane",
+            AddressLine2 = "",
+            Country = "UK",
+            Locality = "London",
+            PostalCode = "SW1 1AP"
+        };
+    }
+
     private OrganisationRegisteredAddressModel GivenOrganisationAddressModel()
     {
-        return new OrganisationRegisteredAddressModel(sessionMock.Object) { Address = new() };
+        return new OrganisationRegisteredAddressModel(sessionMock.Object, companiesHouseMock.Object) { Address = new() };
     }
 }
