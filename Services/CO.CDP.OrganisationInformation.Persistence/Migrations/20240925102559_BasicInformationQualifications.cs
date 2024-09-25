@@ -26,11 +26,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                     SELECT id INTO sectionId FROM form_sections WHERE guid = '798cf1c1-40be-4e49-9adb-252219d5599d';
 
                     INSERT INTO form_questions (guid, section_id, type, is_required, title, description, options, name)
-                    VALUES ('{Guid.NewGuid()}', sectionId, {(int)FormQuestionType.CheckYourAnswers}, TRUE, 'Check your answers', NULL, '{{}}', '_Qualifications01')
-                    RETURNING id INTO previousQuestionId;
-
-                    INSERT INTO form_questions (guid, section_id, type, next_question_id, is_required, title, description, options, caption, summary_title, name)
-                    VALUES ('{Guid.NewGuid()}', sectionId, {(int)FormQuestionType.Text}, previousQuestionId, TRUE, 'Enter the name of the person or body which awarded the qualification', '<div class=""govuk-hint"">For example, Royal Institution of Chartered Surveyors (RICS).</div>', '{{}}', NULL, 'Awarded by person or body', '_Qualifications02')
+                    VALUES ('{Guid.NewGuid()}', sectionId, {(int)FormQuestionType.CheckYourAnswers}, TRUE, 'Check your answers', NULL, '{{}}', '_Qualifications04')
                     RETURNING id INTO previousQuestionId;
 
                     INSERT INTO form_questions (guid, section_id, type, next_question_id, is_required, title, description, options, caption, summary_title, name)
@@ -38,7 +34,12 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                     RETURNING id INTO previousQuestionId;
 
                     INSERT INTO form_questions (guid, section_id, type, next_question_id, is_required, title, description, options, caption, summary_title, name)
-                    VALUES ('{Guid.NewGuid()}', sectionId, {(int)FormQuestionType.Text}, previousQuestionId, TRUE, 'Enter the name of the qualification', '<div class=""govuk-hint"">For example, Surveying (Quantity Surveying) MSc.</div>', '{{}}', NULL, 'Qualification name', '_Qualifications04')                    RETURNING id INTO previousQuestionId;
+                    VALUES ('{Guid.NewGuid()}', sectionId, {(int)FormQuestionType.Text}, previousQuestionId, TRUE, 'Who awarded the qualification?', '<div class=""govuk-hint"">Enter the name of the person or body. For example, ISO, Constructionline or Red Tractor Assurance.</div>', '{{}}', NULL, 'Awarded by', '_Qualifications02')
+                    RETURNING id INTO previousQuestionId;
+
+                    INSERT INTO form_questions (guid, section_id, type, next_question_id, is_required, title, description, options, caption, summary_title, name)
+                    VALUES ('{Guid.NewGuid()}', sectionId, {(int)FormQuestionType.Text}, previousQuestionId, TRUE, 'Enter the qualification name', '<div class=""govuk-hint"">Enter one qualification at a time. You can add another at the end if you need to. For example, ISO 45001 Health and Safety Management.</div>', '{{}}', NULL, 'Qualification name', '_Qualifications01')
+                    RETURNING id INTO previousQuestionId;
                 END $$;
             ");
         }
