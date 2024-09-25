@@ -86,14 +86,13 @@
                     redirectLink += "/share-codes-list-view";
                     requiredScope = OrgScopeRequirement.Editor;
                 }
-                else if (exclusionsSection && section.AnswerSetCount == 0)
+                else if (exclusionsSection && section.AnswerSetCount == 0 && !isViewer)
                 {
                     redirectLink += "/add-exclusion-declaration";
-                    requiredScope = OrgScopeRequirement.Editor;
                 }
-                else if (section.AnswerSetCount > 0 && section.AllowsMultipleAnswerSets == true && section.AnswerSetWithFurtherQuestionExemptedExists == false)
+                else if ((isViewer || section.AnswerSetCount > 0) && section.AllowsMultipleAnswerSets == true && section.AnswerSetWithFurtherQuestionExemptedExists == false)
                 {
-                    redirectLink += "/add-another-answer-set";
+                    redirectLink += "/summary";
                 }
 
                 <authorize scope="@requiredScope">
