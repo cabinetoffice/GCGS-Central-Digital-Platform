@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using CO.CDP.EntityFrameworkCore.Timestamps;
 using Microsoft.EntityFrameworkCore;
 
@@ -24,6 +25,8 @@ public class Organisation : IEntityDate
     public DateTimeOffset? ApprovedOn { get; set; }
     public Person? ApprovedBy { get; set; }
     public int? ApprovedById { get; set; }
+
+    [MaxLength(10000)]
     public string? ApprovedComment { get; set; }
 
     [Owned]
