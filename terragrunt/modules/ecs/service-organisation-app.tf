@@ -27,6 +27,9 @@ module "ecs_service_organisation_app" {
     "${path.module}/templates/task-definitions/${var.service_configs.organisation_app.name}.json.tftpl",
     {
       aspcore_environment      = local.aspcore_environment
+      companies_house_password = "${data.aws_secretsmanager_secret.companies_house.arn}:Password::"
+      companies_house_url      = "${data.aws_secretsmanager_secret.companies_house.arn}:Url::"
+      companies_house_user     = "${data.aws_secretsmanager_secret.companies_house.arn}:User::"
       container_port           = var.service_configs.organisation_app.port
       cpu                      = var.service_configs.organisation_app.cpu
       fts_service_url_arn      = data.aws_secretsmanager_secret_version.fts_service_url.arn
