@@ -144,7 +144,7 @@ public class FormsAddAnotherAnswerSetModel(
         AddAnotherAnswerLabel = form.Section.Configuration.AddAnotherAnswerLabel;
         Heading = form.Section.Configuration.SingularSummaryHeading;
 
-        if (FormAnswerSets.Count > 1 && form.Section.Configuration.PluralSummaryHeadingFormat != null)
+        if (FormAnswerSets.Count != 1 && form.Section.Configuration.PluralSummaryHeadingFormat != null)
         {
             Heading = string.Format(form.Section.Configuration.PluralSummaryHeadingFormat, FormAnswerSets.Count);
         }
