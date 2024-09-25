@@ -16,6 +16,9 @@ public class RegisterPersonUseCase(IPersonRepository personRepository, IMapper m
     {
         var person =
             mapper.Map<OrganisationInformation.Persistence.Person>(command, o => o.Items["Guid"] = guidFactory());
+
+        person.Scopes = new List<string>();
+
         personRepository.Save(person);
         return Task.FromResult(mapper.Map<Model.Person>(person));
     }

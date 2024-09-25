@@ -17,7 +17,8 @@ public class Person : IEntityDate
     public List<Tenant> Tenants { get; } = [];
     public List<Organisation> Organisations { get; } = [];
     public List<OrganisationPerson> PersonOrganisations { get; init; } = [];
-    public List<string> Scopes { get; set; } = [];
+
+    public required List<string> Scopes { get; set; } = [];
     public DateTimeOffset CreatedOn { get; set; }
     public DateTimeOffset UpdatedOn { get; set; }
 }
