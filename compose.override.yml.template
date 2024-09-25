@@ -37,6 +37,9 @@ services:
       OneLogin__Authority: "https://oidc.example.com"
       OneLogin__ClientId: "client-id"
       OneLogin__PrivateKey: "RSA PRIVATE KEY"
+      CompaniesHouse__Url: ""
+      CompaniesHouse__User: ""
+      CompaniesHouse__Password: ""
     deploy:
       replicas: 1
   authority:

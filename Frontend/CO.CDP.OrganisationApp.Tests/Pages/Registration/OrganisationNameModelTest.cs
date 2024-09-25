@@ -1,5 +1,9 @@
+using Amazon;
+using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.Pages.Registration;
+using CO.CDP.OrganisationApp.ThirdPartyApiClients;
+using CO.CDP.OrganisationApp.ThirdPartyApiClients.CompaniesHouse;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -13,10 +17,12 @@ namespace CO.CDP.OrganisationApp.Tests.Pages.Registration;
 public class OrganisationNameModelTest
 {
     private readonly Mock<ISession> sessionMock;
+    private readonly Mock<ICompaniesHouseApi> companiesHouseMock;
 
     public OrganisationNameModelTest()
     {
         sessionMock = new Mock<ISession>();
+        companiesHouseMock = new Mock<ICompaniesHouseApi>();
         sessionMock.Setup(session => session.Get<UserDetails>(Session.UserDetailsKey))
             .Returns(new UserDetails { UserUrn = "urn:test" });
     }
@@ -103,6 +109,40 @@ public class OrganisationNameModelTest
     }
 
     [Fact]
+    public async Task OnGet_WhenCompaniesHouseNumberProvided_ShouldPrepopulateCompanyName()
+    {
+        var registrationDetails = DummyRegistrationDetails();
+        sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(registrationDetails);
+
+        var profile = GivenProfileOnCompaniesHouse(organisationName: "Acme Ltd");
+        var model = GivenOrganisationNameModel();
+
+        companiesHouseMock.Setup(ch => ch.GetProfile(registrationDetails.OrganisationIdentificationNumber!))
+            .ReturnsAsync(profile);
+
+        await model.OnGet();
+
+        model.OrganisationName.Should().Be(registrationDetails.OrganisationName);
+    }
+
+    [Fact]
+    public async Task OnGet_WhenCompaniesHouseNumberAndCompanyNameProvided_ShouldNotPrepopulateCompanyName()
+    {
+        var registrationDetails = DummyRegistrationDetails("Microsoft Limited");
+        sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(registrationDetails);
+
+        var model = GivenOrganisationNameModel();
+        var profile = GivenProfileOnCompaniesHouse(organisationName: "Acme Ltd");
+
+        companiesHouseMock.Setup(ch => ch.GetProfile(registrationDetails.OrganisationIdentificationNumber!))
+            .ReturnsAsync(profile);
+        
+        await model.OnGet();
+
+        model.OrganisationName.Should().Be(registrationDetails.OrganisationName);
+    }
+
+    [Fact]
     public void OnPost_WhenValidModel_ShouldRedirectToOrganisationEmailPage()
     {
         var model = GivenOrganisationNameModel();
@@ -131,20 +171,39 @@ public class OrganisationNameModelTest
             .Which.PageName.Should().Be("OrganisationDetailsSummary");
     }
 
-    private RegistrationDetails DummyRegistrationDetails()
+    private RegistrationDetails DummyRegistrationDetails(string organisationName = "TestOrg")
     {
         var registrationDetails = new RegistrationDetails
         {
             OrganisationName = "TestOrg",
             OrganisationScheme = "TestType",
-            OrganisationEmailAddress = "test@example.com"
+            OrganisationEmailAddress = "test@example.com",
+            OrganisationIdentificationNumber = "123456",
+            OrganisationHasCompaniesHouseNumber = true,
         };
 
         return registrationDetails;
     }
 
+    private CompanyProfile GivenProfileOnCompaniesHouse(string organisationName = "")
+    {
+        return new CompanyProfile() {  CompanyName = organisationName };
+    }
+
+    private RegisteredAddress GivenRegisteredAddressOnCompaniesHouse()
+    {
+        return new RegisteredAddress()
+        {
+            AddressLine1 = "100 Park Lane",
+            AddressLine2 = "",
+            Country = "United Kingdom",
+            Locality = "London",
+            PostalCode = "SW1 1LP"
+        };
+    }
+
     private OrganisationNameModel GivenOrganisationNameModel()
     {
-        return new OrganisationNameModel(sessionMock.Object);
+        return new OrganisationNameModel(sessionMock.Object, companiesHouseMock.Object);
     }
 }
