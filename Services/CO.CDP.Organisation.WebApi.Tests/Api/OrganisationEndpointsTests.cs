@@ -63,30 +63,6 @@ public class OrganisationEndpointsTests
         response.Should().HaveStatusCode(HttpStatusCode.InternalServerError, await response.Content.ReadAsStringAsync());
     }
 
-    [Fact]
-    public async Task ItListsOrganisationWhenFound()
-    {
-        var command = GivenRegisterOrganisationCommand();
-        var organisation = new Model.Organisation
-        {
-            Id = Guid.NewGuid(),
-            Name = "TheOrganisation",
-            Identifier = command.Identifier.AsView(),
-            AdditionalIdentifiers = command.AdditionalIdentifiers.AsView(),
-            Addresses = command.Addresses.AsView(),
-            ContactPoint = command.ContactPoint.AsView(),
-            Roles = command.Roles
-        };
-
-        _getOrganisationsUseCase.Setup(useCase => useCase.Execute(It.IsAny<string>()))
-                                    .ReturnsAsync([organisation]);
-
-        var returnedOrganisations = await _httpClient.GetFromJsonAsync<IEnumerable<Model.Organisation>>(
-            "/organisations?userUrn=urn:7wTqYGMFQxgukTSpSI2GodMwe9");
-
-        returnedOrganisations.Should().ContainEquivalentOf(organisation);
-    }
-
     [Theory]
     [InlineData(true, NoContent)]
     [InlineData(false, NotFound)]

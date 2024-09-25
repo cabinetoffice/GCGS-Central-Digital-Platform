@@ -1,0 +1,42 @@
+using CO.CDP.OrganisationInformation;
+
+namespace CO.CDP.Organisation.WebApi.Model;
+public record OrganisationExtended
+{
+    /// <example>"d2dab085-ec23-481c-b970-ee6b372f9f57"</example>
+    public required Guid Id { get; init; }
+
+    /// <example>"Acme Corporation"</example>
+    public required string Name { get; init; }
+
+    public required Identifier Identifier { get; init; }
+
+    public List<Identifier> AdditionalIdentifiers { get; init; } = [];
+
+    public List<Address> Addresses { get; init; } = [];
+
+    public required ContactPoint ContactPoint { get; init; }
+
+    /// <example>["supplier"]</example>
+    public required List<PartyRole> Roles { get; init; }
+
+    public required Details Details { get; init; }
+}
+
+public record Details
+{
+    public Approval? Approval { get; init; }
+}
+
+public record Approval
+{
+    public DateTimeOffset? ApprovedOn { get; init; }
+    public ApprovedBy? ApprovedBy { get; init; }
+    public string? Comment { get; init; }
+}
+
+public record ApprovedBy
+{
+    public required Guid Id { get; init; }
+    public required string Name { get; init; }
+}

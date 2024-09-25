@@ -295,6 +295,21 @@ public record UpdatePersonToOrganisation
     public required List<string> Scopes { get; init; }
 }
 
+public record ReviewOrganisation
+{
+    public required Guid OrganisationId { get; init; }
+    public required Guid approvedById { get; init; }
+    public required Boolean Approved { get; init; }
+    public required string Comment { get; init; }
+}
+
+public record PaginatedOrganisationQuery
+{
+    public string? Type { get; init; }
+    public int? Limit { get; init; }
+    public int? Skip { get; init; }
+}
+
 public record OrganisationQuery
 {
     public string? Name { get; }

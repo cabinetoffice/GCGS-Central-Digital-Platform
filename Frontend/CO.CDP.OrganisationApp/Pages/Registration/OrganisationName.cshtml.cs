@@ -1,4 +1,5 @@
 using CO.CDP.OrganisationApp.Models;
+using CO.CDP.OrganisationApp.ThirdPartyApiClients.CompaniesHouse;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -6,7 +7,7 @@ using System.ComponentModel.DataAnnotations;
 namespace CO.CDP.OrganisationApp.Pages.Registration;
 
 [ValidateRegistrationStep]
-public class OrganisationNameModel(ISession session) : RegistrationStepModel(session)
+public class OrganisationNameModel(ISession session, ICompaniesHouseApi companiesHouseApi) : RegistrationStepModel(session)
 {
     public override string CurrentPage => OrganisationNamePage;
 
@@ -20,10 +21,17 @@ public class OrganisationNameModel(ISession session) : RegistrationStepModel(ses
 
     public bool HasCompaniesHouseNumber { get; set; }
 
-    public void OnGet()
+    public async Task OnGet()
     {
         OrganisationName = RegistrationDetails.OrganisationName;
         HasCompaniesHouseNumber = RegistrationDetails.OrganisationHasCompaniesHouseNumber ?? false;
+
+        if (HasCompaniesHouseNumber && string.IsNullOrEmpty(OrganisationName))
+        {
+            var profile = await companiesHouseApi.GetProfile(RegistrationDetails.OrganisationIdentificationNumber!);
+
+            OrganisationName = profile != null ? profile.CompanyName ?? string.Empty : string.Empty;
+        }
     }
 
     public IActionResult OnPost()

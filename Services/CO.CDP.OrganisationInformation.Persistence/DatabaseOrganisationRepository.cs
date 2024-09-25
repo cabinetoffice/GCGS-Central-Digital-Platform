@@ -57,6 +57,29 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
             .FirstOrDefaultAsync(o => o.Identifiers.Any(i => i.Scheme == scheme && i.IdentifierId == identifierId));
     }
 
+    public async Task<IList<Organisation>> Get(string? type)
+    {
+        IQueryable<Organisation> result = context.Organisations
+            .Include(o => o.ApprovedBy)
+            .Include(o => o.Identifiers)
+            .Include(o => o.BuyerInfo)
+            .Include(o => o.SupplierInfo)
+            .Include(o => o.Addresses)
+            .ThenInclude(p => p.Address);
+
+        switch (type)
+        {
+            case "buyer":
+                result = result.Where(o => o.Roles.Contains(PartyRole.Buyer));
+                break;
+            case "supplier":
+                result = result.Where(o => o.Roles.Contains(PartyRole.Tenderer));
+                break;
+        }
+
+        return await result.ToListAsync();
+    }
+
     public async Task<IList<ConnectedEntity>> GetConnectedIndividualTrusts(int organisationId)
     {
         var result = context.ConnectedEntities

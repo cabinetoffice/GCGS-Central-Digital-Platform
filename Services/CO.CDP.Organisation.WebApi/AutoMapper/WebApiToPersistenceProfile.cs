@@ -20,6 +20,25 @@ public class WebApiToPersistenceProfile : Profile
             .ForMember(m => m.AdditionalIdentifiers, o => o.MapFrom(m => m.Identifiers.Where(i => !i.Primary)))
             .ForMember(m => m.ContactPoint, o => o.MapFrom(m => m.ContactPoints.FirstOrDefault() ?? new Persistence.Organisation.ContactPoint()));
 
+        CreateMap<Persistence.Organisation, OrganisationExtended>()
+            .ForMember(m => m.Id, o => o.MapFrom(m => m.Guid))
+            .ForMember(m => m.Identifier, o => o.MapFrom(m => m.Identifiers.FirstOrDefault(i => i.Primary)))
+            .ForMember(m => m.AdditionalIdentifiers, o => o.MapFrom(m => m.Identifiers.Where(i => !i.Primary)))
+            .ForMember(m => m.ContactPoint, o => o.MapFrom(m => m.ContactPoints.FirstOrDefault() ?? new Persistence.Organisation.ContactPoint()))
+            .ForMember(m => m.Details, o => o.MapFrom(m => new Details
+            {
+                Approval = new Approval
+                {
+                    ApprovedOn = m.ApprovedOn,
+                    ApprovedBy = m.ApprovedBy != null ? new ApprovedBy
+                    {
+                        Name = $"{m.ApprovedBy.FirstName} {m.ApprovedBy.LastName}",
+                        Id = m.ApprovedBy.Guid
+                    } : null,
+                    Comment = m.ApprovedComment
+                }
+            }));
+
         CreateMap<OrganisationIdentifier, Persistence.Organisation.Identifier>()
             .ForMember(m => m.Id, o => o.Ignore())
             .ForMember(m => m.Primary, o => o.Ignore())
@@ -195,7 +214,7 @@ public class WebApiToPersistenceProfile : Profile
             .ForMember(m => m.CountryName, o => o.MapFrom(m => m.Address.CountryName))
             .ForMember(m => m.Country, o => o.MapFrom(m => m.Address.Country));
 
-        CreateMap<Persistence.ConnectedEntityLookup, Model.ConnectedEntityLookup>()
+        CreateMap<Persistence.ConnectedEntityLookup, ConnectedEntityLookup>()
             .ForMember(m => m.Uri, o => o.MapFrom((src, _, _, context) => new Uri($"https://cdp.cabinetoffice.gov.uk/organisations/{context.Items["OrganisationId"]}/connected-entities/{src.EntityId}")))
             .ReverseMap();
     }

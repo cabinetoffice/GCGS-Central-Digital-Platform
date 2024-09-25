@@ -1,5 +1,4 @@
 using CO.CDP.Organisation.WebApi.Model;
-using static CO.CDP.Organisation.WebApi.UseCase.RegisterOrganisationUseCase.RegisterOrganisationException;
 using static CO.CDP.OrganisationInformation.Persistence.IAuthenticationKeyRepository.AuthenticationKeyRepositoryException;
 using static CO.CDP.OrganisationInformation.Persistence.IOrganisationRepository.OrganisationRepositoryException;
 
