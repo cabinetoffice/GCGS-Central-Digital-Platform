@@ -37,6 +37,9 @@
         {"name": "TenantService", "value": "https://tenant.${public_hosted_zone_fqdn}"}
     ],
     "secrets": [
+        {"name": "CompaniesHouse__Password", "valueFrom": "${companies_house_password}"},
+        {"name": "CompaniesHouse__Url", "valueFrom": "${companies_house_url}"},
+        {"name": "CompaniesHouse__User", "valueFrom": "${companies_house_user}"},
         {"name": "Features__DiagnosticPage__Path", "valueFrom": "${diagnostic_page_path_arn}"},
         {"name": "FtsService", "valueFrom": "${fts_service_url_arn}"},
         {"name": "OneLogin__Authority", "valueFrom": "${onelogin_authority}"},

@@ -24,6 +24,10 @@ data "aws_secretsmanager_secret" "authority_keys" {
   name = "${local.name_prefix}-authority-keys"
 }
 
+data "aws_secretsmanager_secret" "companies_house" {
+    name = "${local.name_prefix}-companies-house-credentials"
+}
+
 data "aws_secretsmanager_secret_version" "fts_service_url" {
   secret_id = "${local.name_prefix}-fts-service-url"
 }

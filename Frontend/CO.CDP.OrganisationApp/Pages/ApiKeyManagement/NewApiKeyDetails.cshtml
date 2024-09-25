@@ -4,19 +4,8 @@
 <main class="govuk-main-wrapper">
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-            <script>
-                const copyContent =
-                    async (id) =>{
-                                    try {
-                                            const text = document.getElementById(id).innerHTML;
-                                            await navigator.clipboard.writeText(text);
-                                    }
-                                    catch (e) { }
-                                }
-            </script>
-
             <form class="form" method="post">
-                <div class="govuk-grid-column-ful-width">
+                <div class="govuk-grid-column-full">
                     <div class="govuk-panel govuk-panel--confirmation">
                         <h1 class="govuk-panel__title">API key created</h1>
                         <div class="govuk-panel__body">
@@ -34,15 +23,29 @@
                         <p class="govuk-body">
                             This is the only time we show you the API key. If you lose it, you’ll need to cancel it and create a new one.
                         </p>
-                        <button class="govuk-button govuk-button--secondary" data-module="govuk-button" onclick="javascript:copyContent('apikeytext');">
+
+                        <button id="copybutton" class="govuk-button govuk-button--secondary govuk-visually-hidden" data-module="govuk-button" onclick="javascript:copyContent('apikeytext');">
                             Copy API key to clipboard
                         </button>
+
                         <p>
                             <a class="govuk-link govuk-link--no-visited-state" href="/organisation/@Model.Id/manage-api-keys">Back to your API keys</a>
                         </p>
                     </div>
                 </div>
             </form>
+            <script>
+                document.getElementById("copybutton").classList.remove('govuk-visually-hidden');
+
+                const copyContent =
+                    async (id) => {
+                        try {
+                            const text = document.getElementById(id).innerHTML;
+                            await navigator.clipboard.writeText(text);
+                        }
+                        catch (e) { }
+                    }
+            </script>
         </div>
     </div>
 </main>
