@@ -10,7 +10,8 @@ namespace CO.CDP.Organisation.WebApi.Tests.UseCase;
 public class AssignIdentifierUseCaseTest
 {
     private readonly Mock<Persistence.IOrganisationRepository> _organisations = new();
-    private AssignIdentifierUseCase UseCase => new(_organisations.Object);
+    private readonly Mock<IIdentifierService> _identifierService = new();
+    private AssignIdentifierUseCase UseCase => new(_organisations.Object, _identifierService.Object);
 
     [Fact]
     public async Task ItThrowsAnExceptionIfOrganisationIsNotFound()
