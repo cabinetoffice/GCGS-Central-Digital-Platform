@@ -7,6 +7,7 @@ This code base is responsible for provisioning the AWS infrastructure needed to 
 2. [Create New User](#create-new-users)
 3. [Manage Secrets](#manage-secrets)
    - [Retrieve Diagnostic URI](#Retrieve-iagnostic-uri)
+   - [Update Companies House Secrets](#update-companies-house-secrets)
    - [Update FtsService URL](#update-ftsservice-url)
    - [Update GOVUKNotify ApiKey](#update-govuknotify-apikey)
    - [Update OneLogin Secrets](#update-onelogin-secrets)
@@ -93,6 +94,30 @@ The credentials will also be stored in AWS Secrets Manager under the same accoun
 echo "https://$(ave aws route53 list-hosted-zones --query 'HostedZones[0].Name' --output text | sed 's/\.$//')$(ave aws secretsmanager get-secret-value --secret-id cdp-sirsi-diagnostic-path --query 'SecretString' --output text)"
 ```
 
+### Update Companies House Secrets
+
+1. Create a JSON file in the `./secrets` folder with the following attributes, e.g., **companies-house-secrets-development.json**:
+
+```json
+{
+    "url": "https://api.company-information.service.gov.uk",
+    "User": "<value>",
+    "Password": "<value>"
+}
+```
+Note: The `./secrets` folder is set to ignore all files to ensure no sensitive information is committed.
+
+2. Assume the appropriate role for the target environment and update the secret:
+
+```shell
+# ave is alias for `aws-vault exec` command
+# add using:
+# ave aws secretsmanager create-secret --name cdp-sirsi-companies-house-credentials --secret-string file://secrets/companies-house-secrets-development.json | jq .
+# or update using:
+ave aws secretsmanager put-secret-value --secret-id cdp-sirsi-companies-house-credentials --secret-string file://secrets/companies-house-secrets-development.json | jq .
+```
+3. Redeploy the `organisation-app` service.
+
 ### Update FtsService URL
 
 1. Identify the `FTS service URL` for the specified AWS account.
@@ -122,7 +147,6 @@ ave aws secretsmanager put-secret-value --secret-id cdp-sirsi-govuknotify-apikey
 ```
 
 3. Redeploy the `organisation` service.
-
 
 ### Update OneLogin secrets
 
