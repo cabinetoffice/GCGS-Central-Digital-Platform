@@ -57,13 +57,11 @@ public class RegisterOrganisationUseCase(
             Scopes = _defaultScopes
         });
 
-        for (int i = 0; i < organisation.Identifiers.Count; i++)
-        {
-            if (organisation.Identifiers[i].Uri == null)
-            {
-                organisation.Identifiers[0].Uri = identifierService.GetRegistryUri(command.Identifier.Scheme, command.Identifier.Id);
-            }
-        }
+        organisation.Identifiers
+            .Where(i => i.Uri == null)
+            .Select(i => i.Uri = identifierService.GetRegistryUri(command.Identifier.Scheme, command.Identifier.Id))
+            .ToList();
+
         organisation.UpdateBuyerInformation();
         organisation.UpdateSupplierInformation();
         return organisation;
