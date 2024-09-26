@@ -1,6 +1,4 @@
 using CO.CDP.Organisation.WebApiClient;
-using CO.CDP.OrganisationApp.Models;
-using CO.CDP.OrganisationApp.Pages;
 using CO.CDP.OrganisationApp.Pages.Organisation;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;

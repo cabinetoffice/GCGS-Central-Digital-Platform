@@ -19,7 +19,6 @@ public class SupplierInformationEndpointsTests
     private readonly HttpClient _httpClient;
     private readonly Mock<IUseCase<Guid, SupplierInformation?>> _getSupplierInformationUseCase = new();
     private readonly Mock<IUseCase<(Guid, UpdateSupplierInformation), bool>> _updatesSupplierInformationUseCase = new();
-    private readonly Mock<IUseCase<(Guid, DeleteSupplierInformation), bool>> _deleteSupplierInformationUseCase = new();
 
     public SupplierInformationEndpointsTests()
     {
@@ -29,7 +28,6 @@ public class SupplierInformationEndpointsTests
             {
                 services.AddScoped(_ => _getSupplierInformationUseCase.Object);
                 services.AddScoped(_ => _updatesSupplierInformationUseCase.Object);
-                services.AddScoped(_ => _deleteSupplierInformationUseCase.Object);
             });
         });
         _httpClient = factory.CreateClient();
@@ -100,34 +98,6 @@ public class SupplierInformationEndpointsTests
     }
 
     [Theory]
-    [InlineData(true, NoContent)]
-    [InlineData(false, NotFound)]
-    public async Task DeleteSupplierInformation_TestCases(bool useCaseResult, HttpStatusCode expectedStatusCode)
-    {
-        var organisationId = Guid.NewGuid();
-        var deleteSupplierInformation = new DeleteSupplierInformation { Type = SupplierInformationDeleteType.TradeAssurance, TradeAssuranceId = Guid.NewGuid() };
-        var command = (organisationId, deleteSupplierInformation);
-
-        if (useCaseResult)
-            _deleteSupplierInformationUseCase.Setup(uc => uc.Execute(command)).ReturnsAsync(true);
-        else
-            _deleteSupplierInformationUseCase.Setup(uc => uc.Execute(command)).ThrowsAsync(new UnknownOrganisationException(""));
-
-        var response = await SendDeleteRequestAsync($"/organisations/{organisationId}/supplier-information", deleteSupplierInformation);
-
-        response.StatusCode.Should().Be(expectedStatusCode);
-    }
-
-    [Fact]
-    public async Task DeleteSupplierInformation_InvalidOrganisationId_ReturnsUnprocessableEntity()
-    {
-        var invalidOrganisationId = "invalid-guid";
-        var response = await SendDeleteRequestAsync($"/organisations/{invalidOrganisationId}/supplier-information", "{}");
-
-        response.StatusCode.Should().Be(UnprocessableEntity);
-    }
-
-    [Theory]
     [InlineData(OK, Channel.OneLogin, OrganisationPersonScope.Admin)]
     [InlineData(OK, Channel.OneLogin, OrganisationPersonScope.Editor)]
     [InlineData(OK, Channel.OneLogin, OrganisationPersonScope.Viewer)]
@@ -178,36 +148,6 @@ public class SupplierInformationEndpointsTests
             services => services.AddScoped(_ => _updatesSupplierInformationUseCase.Object));
 
         var response = await factory.CreateClient().PatchAsJsonAsync($"/organisations/{organisationId}/supplier-information", updateSupplierInformation);
-
-        response.StatusCode.Should().Be(expectedStatusCode);
-    }
-
-    [Theory]
-    [InlineData(NoContent, Channel.OneLogin, OrganisationPersonScope.Admin)]
-    [InlineData(NoContent, Channel.OneLogin, OrganisationPersonScope.Editor)]
-    [InlineData(Forbidden, Channel.OneLogin, OrganisationPersonScope.Viewer)]
-    [InlineData(Forbidden, Channel.OneLogin, OrganisationPersonScope.Responder)]
-    [InlineData(Forbidden, Channel.ServiceKey)]
-    [InlineData(Forbidden, Channel.OrganisationKey)]
-    [InlineData(Forbidden, "unknown_channel")]
-    public async Task DeleteSupplierInformation_Authorization_ReturnsExpectedStatusCode(
-        HttpStatusCode expectedStatusCode, string channel, string? scope = null)
-    {
-        var organisationId = Guid.NewGuid();
-        var deleteSupplierInformation = new DeleteSupplierInformation { Type = SupplierInformationDeleteType.Qualification };
-        var command = (organisationId, deleteSupplierInformation);
-
-        _deleteSupplierInformationUseCase.Setup(uc => uc.Execute(command)).ReturnsAsync(true);
-
-        var factory = new TestAuthorizationWebApplicationFactory<Program>(
-            channel, organisationId, scope,
-            services => services.AddScoped(_ => _deleteSupplierInformationUseCase.Object));
-
-        var response = await factory.CreateClient().SendAsync(
-            new HttpRequestMessage(HttpMethod.Delete, $"/organisations/{organisationId}/supplier-information")
-            {
-                Content = JsonContent.Create(deleteSupplierInformation)
-            });
 
         response.StatusCode.Should().Be(expectedStatusCode);
     }

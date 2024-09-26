@@ -147,10 +147,8 @@ public enum SupplierInformationUpdateType
     SupplierType,
     CompletedWebsiteAddress,
     CompletedEmailAddress,
-    TradeAssurance,
     LegalForm,
     OperationType,
-    Qualification,
     CompletedConnectedPerson
 }
 
@@ -158,19 +156,8 @@ public record SupplierInfo
 {
     public SupplierType? SupplierType { get; set; }
 
-    public TradeAssurance? TradeAssurance { get; set; }
-
     public LegalForm? LegalForm { get; set; }
     public List<OperationType>? OperationTypes { get; set; }
-    public Qualification? Qualification { get; set; }
-}
-
-public record DeleteSupplierInformation
-{
-    public required SupplierInformationDeleteType Type { get; init; }
-
-    public Guid? TradeAssuranceId { get; init; }
-    public Guid? QualificationId { get; init; }
 }
 
 public record RegisterConnectedEntity
@@ -364,13 +351,6 @@ public record AuthenticationKey
     public bool? Revoked { get; set; }
     public DateTimeOffset CreatedOn { get; set; }
     public DateTimeOffset? RevokedOn { get; set; }
-}
-
-[JsonConverter(typeof(JsonStringEnumConverter))]
-public enum SupplierInformationDeleteType
-{
-    TradeAssurance,
-    Qualification
 }
 
 public static class MappingExtensions

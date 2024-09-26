@@ -70,13 +70,9 @@ public class Organisation : IEntityDate
         public bool CompletedVat { get; set; }
         public bool CompletedWebsiteAddress { get; set; }
         public bool CompletedEmailAddress { get; set; }
-        public bool CompletedQualification { get; set; }
-        public bool CompletedTradeAssurance { get; set; }
         public bool CompletedOperationType { get; set; }
         public bool CompletedLegalForm { get; set; }
         public bool CompletedConnectedPerson { get; set; }
-        public List<Qualification> Qualifications { get; set; } = [];
-        public List<TradeAssurance> TradeAssurances { get; set; } = [];
         public LegalForm? LegalForm { get; set; }
         public DateTimeOffset CreatedOn { get; set; }
         public DateTimeOffset UpdatedOn { get; set; }
@@ -88,32 +84,6 @@ public class Organisation : IEntityDate
         public int OrganisationId { get; set; }
         public string? BuyerType { get; set; }
         public List<DevolvedRegulation> DevolvedRegulations { get; set; } = [];
-        public DateTimeOffset CreatedOn { get; set; }
-        public DateTimeOffset UpdatedOn { get; set; }
-    }
-
-    [Owned]
-    [Index(nameof(Guid), IsUnique = true)]
-    public record Qualification : IEntityDate
-    {
-        public int Id { get; set; }
-        public required Guid Guid { get; set; }
-        public required string AwardedByPersonOrBodyName { get; set; }
-        public required DateTimeOffset DateAwarded { get; set; }
-        public required string Name { get; set; }
-        public DateTimeOffset CreatedOn { get; set; }
-        public DateTimeOffset UpdatedOn { get; set; }
-    }
-
-    [Owned]
-    [Index(nameof(Guid), IsUnique = true)]
-    public record TradeAssurance : IEntityDate
-    {
-        public int Id { get; set; }
-        public required Guid Guid { get; set; }
-        public required string AwardedByPersonOrBodyName { get; set; }
-        public required string ReferenceNumber { get; set; }
-        public required DateTimeOffset DateAwarded { get; set; }
         public DateTimeOffset CreatedOn { get; set; }
         public DateTimeOffset UpdatedOn { get; set; }
     }
@@ -152,10 +122,6 @@ public class Organisation : IEntityDate
         SupplierInfo.CompletedPostalAddress =
             Addresses.Any(a => a.Type == AddressType.Postal) || SupplierInfo.CompletedPostalAddress;
         SupplierInfo.CompletedVat = Identifiers.Any(i => i.Scheme == "VAT") || SupplierInfo.CompletedVat;
-        SupplierInfo.CompletedQualification =
-            SupplierInfo.Qualifications.Count > 0 || SupplierInfo.CompletedQualification;
-        SupplierInfo.CompletedTradeAssurance =
-            SupplierInfo.TradeAssurances.Count > 0 || SupplierInfo.CompletedTradeAssurance;
         SupplierInfo.CompletedLegalForm = SupplierInfo.LegalForm != null || SupplierInfo.CompletedLegalForm;
         SupplierInfo.CompletedEmailAddress =
             !string.IsNullOrWhiteSpace(ContactPoints.FirstOrDefault()?.Email) || SupplierInfo.CompletedEmailAddress;

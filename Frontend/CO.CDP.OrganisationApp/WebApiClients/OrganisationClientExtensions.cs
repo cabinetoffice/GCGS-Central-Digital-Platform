@@ -107,71 +107,42 @@ internal static class OrganisationClientExtensions
             organisationId,
             new UpdateSupplierInformation(
                 type: SupplierInformationUpdateType.CompletedEmailAddress,
-                supplierInformation: new SupplierInfo(supplierType: null, operationTypes: null, tradeAssurance: null, legalForm: null, qualification: null)));
+                supplierInformation: new SupplierInfo(supplierType: null, operationTypes: null, legalForm: null)));
 
     internal static Task UpdateSupplierType(this IOrganisationClient organisationClient, Guid organisationId, SupplierType supplierType)
         => organisationClient.UpdateSupplierInformationAsync(
             organisationId,
             new UpdateSupplierInformation(
                 type: SupplierInformationUpdateType.SupplierType,
-                supplierInformation: new SupplierInfo(supplierType: supplierType, operationTypes: null, tradeAssurance: null, legalForm: null, qualification: null)));
+                supplierInformation: new SupplierInfo(supplierType: supplierType, operationTypes: null, legalForm: null)));
 
     internal static Task UpdateSupplierCompletedWebsiteAddress(this IOrganisationClient organisationClient, Guid organisationId)
         => organisationClient.UpdateSupplierInformationAsync(
             organisationId,
             new UpdateSupplierInformation(
                 type: SupplierInformationUpdateType.CompletedWebsiteAddress,
-                supplierInformation: new SupplierInfo(supplierType: null, operationTypes: null, tradeAssurance: null, legalForm: null, qualification: null)));
-
-    internal static Task UpdateSupplierTradeAssurance(this IOrganisationClient organisationClient, Guid organisationId, TradeAssurance? tradeAssurance = null)
-        => organisationClient.UpdateSupplierInformationAsync(
-            organisationId,
-            new UpdateSupplierInformation(
-                type: SupplierInformationUpdateType.TradeAssurance,
-                supplierInformation: new SupplierInfo(supplierType: null, operationTypes: null, tradeAssurance: tradeAssurance, legalForm: null, qualification: null)));
-    internal static Task UpdateSupplierQualification(this IOrganisationClient organisationClient, Guid organisationId, Qualification? qualification = null)
-        => organisationClient.UpdateSupplierInformationAsync(
-            organisationId,
-            new UpdateSupplierInformation(
-                type: SupplierInformationUpdateType.Qualification,
-                supplierInformation: new SupplierInfo(supplierType: null, operationTypes: null, tradeAssurance: null, legalForm: null, qualification: qualification)));
+                supplierInformation: new SupplierInfo(supplierType: null, operationTypes: null, legalForm: null)));
 
     internal static Task UpdateSupplierLegalForm(this IOrganisationClient organisationClient, Guid organisationId, LegalForm? legalForm = null)
         => organisationClient.UpdateSupplierInformationAsync(
             organisationId,
             new UpdateSupplierInformation(
                 type: SupplierInformationUpdateType.LegalForm,
-                supplierInformation: new SupplierInfo(supplierType: null, operationTypes: null, tradeAssurance: null, qualification: null, legalForm: legalForm)));
-
-    internal static Task DeleteSupplierTradeAssurance(this IOrganisationClient organisationClient, Guid organisationId, Guid tradeAssuranceId)
-        => organisationClient.DeleteSupplierInformationAsync(
-            organisationId,
-            new DeleteSupplierInformation(
-                type: SupplierInformationDeleteType.TradeAssurance,
-                tradeAssuranceId: tradeAssuranceId,
-                qualificationId: null));
+                supplierInformation: new SupplierInfo(supplierType: null, operationTypes: null, legalForm: legalForm)));
 
     internal static Task UpdateOperationType(this IOrganisationClient organisationClient, Guid organisationId, List<OperationType>? operationTypes)
         => organisationClient.UpdateSupplierInformationAsync(
             organisationId,
             new UpdateSupplierInformation(
                 type: SupplierInformationUpdateType.OperationType,
-                supplierInformation: new SupplierInfo(supplierType: null, operationTypes: operationTypes, tradeAssurance: null, legalForm: null, qualification: null)));
-
-    internal static Task DeleteSupplierQualification(this IOrganisationClient organisationClient, Guid organisationId, Guid qualificationId)
-      => organisationClient.DeleteSupplierInformationAsync(
-          organisationId,
-          new DeleteSupplierInformation(
-              type: SupplierInformationDeleteType.Qualification,
-              tradeAssuranceId: null,
-              qualificationId: qualificationId));
+                supplierInformation: new SupplierInfo(supplierType: null, operationTypes: operationTypes, legalForm: null)));
 
     internal static Task UpdateSupplierCompletedConnectedPerson(this IOrganisationClient organisationClient, Guid organisationId)
         => organisationClient.UpdateSupplierInformationAsync(
             organisationId,
             new UpdateSupplierInformation(
                 type: SupplierInformationUpdateType.CompletedConnectedPerson,
-                supplierInformation: new SupplierInfo(supplierType: null, operationTypes: null, tradeAssurance: null, legalForm: null, qualification: null)));
+                supplierInformation: new SupplierInfo(supplierType: null, operationTypes: null, legalForm: null)));
 
     internal static async Task RevokeAuthenticationKey(this IOrganisationClient organisationClient,
         Guid organisationId, string authenticationKeyName)

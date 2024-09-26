@@ -175,26 +175,18 @@ public static class EntityFactory
 
     public static SupplierInformation GivenSupplierInformation(
         SupplierType? type = null,
-        List<Qualification>? qualifications = null,
-        List<TradeAssurance>? tradeAssurances = null,
         LegalForm? legalForm = null,
         bool completedRegAddress = false,
         bool completedPostalAddress = false,
         bool completedVat = false,
-        bool completedQualification = false,
-        bool completedTradeAssurance = false,
         bool completedLegalForm = false
     ) => new()
     {
         SupplierType = type,
-        Qualifications = qualifications ?? [],
-        TradeAssurances = tradeAssurances ?? [],
         LegalForm = legalForm,
         CompletedRegAddress = completedRegAddress,
         CompletedPostalAddress = completedPostalAddress,
         CompletedVat = completedVat,
-        CompletedQualification = completedQualification,
-        CompletedTradeAssurance = completedTradeAssurance,
         CompletedLegalForm = completedLegalForm
     };
 
@@ -229,25 +221,6 @@ public static class EntityFactory
         LegalName = legalName,
         Uri = uri
     };
-
-    public static Qualification GivenSupplierQualification(
-        string name = "My Qualification"
-    ) => new()
-    {
-        Guid = Guid.NewGuid(),
-        Name = name,
-        AwardedByPersonOrBodyName = "Qualification Centre",
-        DateAwarded = DateTimeOffset.Parse("2018-02-20T00:00:00Z")
-    };
-
-    public static TradeAssurance GivenSupplierTradeAssurance()
-        => new()
-        {
-            Guid = Guid.NewGuid(),
-            AwardedByPersonOrBodyName = "Assurance Body",
-            ReferenceNumber = "QA-12333",
-            DateAwarded = DateTimeOffset.Parse("2009-10-03T00:00:00Z")
-        };
 
     public static LegalForm GivenSupplierLegalForm(
         string registeredLegalForm = "Limited company"
