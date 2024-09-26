@@ -89,7 +89,7 @@ public class OrganisationApprovalModelTests
 
         _mockOrganisationClient.Verify(client => client.SupportUpdateOrganisationAsync(It.IsAny<Guid>(), It.Is<SupportUpdateOrganisation>(r =>
             r.Organisation.Approved == true &&
-            r.Organisation.ApprovedById == _personId &&
+            r.Organisation.ReviewedById == _personId &&
             r.Organisation.Comment == "Approved"
         )), Times.Once);
     }

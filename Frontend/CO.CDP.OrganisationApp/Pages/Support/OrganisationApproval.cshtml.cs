@@ -42,9 +42,9 @@ public class OrganisationApprovalModel(
         if (UserDetails.PersonId != null)
         {
             SupportOrganisationInfo orgInfo = new SupportOrganisationInfo(
-                Approval,
-                UserDetails.PersonId.Value,
-                Comments ?? ""
+                approved: Approval,
+                comment: Comments ?? "",
+                reviewedById: UserDetails.PersonId.Value
             );
 
             await organisationClient.SupportUpdateOrganisationAsync(organisationId, new SupportUpdateOrganisation(
