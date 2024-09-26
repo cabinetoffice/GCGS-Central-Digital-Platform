@@ -22,8 +22,8 @@ public class SupportUpdateOrganisationUseCase(IOrganisationRepository organisati
                     organisation.ApprovedOn = DateTimeOffset.UtcNow;
                 }
 
-                organisation.ApprovedBy = person;
-                organisation.ApprovedComment = command.supportUpdateOrganisation.Organisation.Comment;
+                organisation.ReviewedBy = person;
+                organisation.ReviewComment = command.supportUpdateOrganisation.Organisation.Comment;
 
                 break;
         }

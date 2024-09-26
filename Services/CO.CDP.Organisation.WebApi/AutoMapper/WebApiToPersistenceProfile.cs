@@ -30,12 +30,12 @@ public class WebApiToPersistenceProfile : Profile
                 Approval = new Approval
                 {
                     ApprovedOn = m.ApprovedOn,
-                    ApprovedBy = m.ApprovedBy != null ? new ApprovedBy
+                    ReviewedBy = m.ReviewedBy != null ? new ReviewedBy
                     {
-                        Name = $"{m.ApprovedBy.FirstName} {m.ApprovedBy.LastName}",
-                        Id = m.ApprovedBy.Guid
+                        Name = $"{m.ReviewedBy.FirstName} {m.ReviewedBy.LastName}",
+                        Id = m.ReviewedBy.Guid
                     } : null,
-                    Comment = m.ApprovedComment
+                    Comment = m.ReviewComment
                 }
             }));
 
@@ -99,10 +99,10 @@ public class WebApiToPersistenceProfile : Profile
             .ForMember(m => m.BuyerInfo, o => o.Ignore())
             .ForMember(m => m.Identifiers, o => o.MapFrom<IdentifiersResolver>())
             .ForMember(m => m.ContactPoints, o => o.MapFrom(m => new[] { m.ContactPoint }))
-            .ForMember(m => m.ApprovedBy, o => o.Ignore())
-            .ForMember(m => m.ApprovedComment, o => o.Ignore())
+            .ForMember(m => m.ReviewedBy, o => o.Ignore())
+            .ForMember(m => m.ReviewComment, o => o.Ignore())
             .ForMember(m => m.ApprovedOn, o => o.Ignore())
-            .ForMember(m => m.ApprovedById, o => o.Ignore());
+            .ForMember(m => m.ReviewedById, o => o.Ignore());
 
         CreateMap<Persistence.Organisation.SupplierInformation, SupplierInformation>()
             .ForMember(m => m.OrganisationName, o => o.Ignore());

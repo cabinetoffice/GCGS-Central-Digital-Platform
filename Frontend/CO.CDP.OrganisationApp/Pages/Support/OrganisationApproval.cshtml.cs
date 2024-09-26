@@ -12,7 +12,7 @@ public class OrganisationApprovalModel(
     public OrganisationWebApiClient.Organisation? OrganisationDetails { get; set; }
 
     [BindProperty]
-    [Required(ErrorMessage = "Choose whether to approve the buyer or not")]
+    [Required(ErrorMessage = "Select an option")]
     public bool Approval { get; set; }
 
     [BindProperty]
