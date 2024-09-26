@@ -12,16 +12,16 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <partial name="_ErrorSummary" model="@Model.ModelState" />
-            @if (!string.IsNullOrEmpty(Model.Heading))
-            {
-                @Html.Raw(Model.Heading)
-            }
 
             <form method="post">
                 <div class="govuk-form-group @(hasError ? "govuk-form-group--error" : "")">
                     <fieldset class="govuk-fieldset">
+                        @if (!string.IsNullOrEmpty(Model.Heading))
+                        {
+                            @Html.Raw(Model.Heading)
+                        }
 
-                        <div class="govuk-radios" data-module="govuk-radios">
+                        <div class="govuk-radios govuk-!-margin-top-6" data-module="govuk-radios">
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input" id="conditional-YES" name="Confirm" type="radio"
                                        value="true" @(Model.Confirm == true ? "checked" : "")>
