@@ -58,8 +58,7 @@ public class GetFormSectionQuestionsUseCaseTest(AutoMapperFixture mapperFixture)
             Type = CO.CDP.OrganisationInformation.Persistence.Forms.FormSectionType.Standard,
             AllowsMultipleAnswerSets = true,
             CheckFurtherQuestionsExempted = false,
-            CreatedOn = DateTimeOffset.UtcNow,
-            UpdatedOn = DateTimeOffset.UtcNow,
+            DisplayOrder = 1,
             Configuration = new OrganisationInformation.Persistence.Forms.FormSectionConfiguration
             {
                 PluralSummaryHeadingFormat = "You have added {0} files",

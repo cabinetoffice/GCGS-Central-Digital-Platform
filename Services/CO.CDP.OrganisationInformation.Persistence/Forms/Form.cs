@@ -48,6 +48,7 @@ public class FormSection : IEntityDate
     public required ICollection<FormQuestion> Questions { get; set; } = [];
     public required bool AllowsMultipleAnswerSets { get; set; }
     public required bool CheckFurtherQuestionsExempted { get; set; }
+    public required int DisplayOrder { get; set; }
     public required FormSectionConfiguration Configuration;
     public DateTimeOffset CreatedOn { get; set; }
     public DateTimeOffset UpdatedOn { get; set; }
