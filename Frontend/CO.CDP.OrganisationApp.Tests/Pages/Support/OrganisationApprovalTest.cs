@@ -11,23 +11,22 @@ namespace CO.CDP.OrganisationApp.Tests.Pages.Support;
 
 public class OrganisationApprovalModelTests
 {
-    private Guid PersonId;
+    private readonly Guid _personId;
     private readonly Mock<IOrganisationClient> _mockOrganisationClient;
-    private readonly Mock<ISession> _mockSession;
     private readonly OrganisationApprovalModel _organisationApprovalModel;
 
     public OrganisationApprovalModelTests()
     {
-        PersonId = new Guid();
+        _personId = new Guid();
         _mockOrganisationClient = new Mock<IOrganisationClient>();
-        _mockSession = new Mock<ISession>();
-        _mockSession.Setup(s => s.Get<UserDetails>(Session.UserDetailsKey))
+        Mock<ISession> mockSession = new();
+        mockSession.Setup(s => s.Get<UserDetails>(Session.UserDetailsKey))
             .Returns(new UserDetails
             {
-                PersonId = PersonId,
+                PersonId = _personId,
                 UserUrn = "Something"
             });
-        _organisationApprovalModel = new OrganisationApprovalModel(_mockOrganisationClient.Object, _mockSession.Object);
+        _organisationApprovalModel = new OrganisationApprovalModel(_mockOrganisationClient.Object, mockSession.Object);
     }
 
     [Fact]
@@ -78,7 +77,7 @@ public class OrganisationApprovalModelTests
         _organisationApprovalModel.Comments = "Approved";
 
         _mockOrganisationClient
-            .Setup(client => client.ReviewOrganisationAsync(It.IsAny<ReviewOrganisation>()))
+            .Setup(client => client.SupportUpdateOrganisationAsync(It.IsAny<Guid>(), It.IsAny<SupportUpdateOrganisation>()))
             .ReturnsAsync(true);
 
         var result = await _organisationApprovalModel.OnPost(organisationId);
@@ -88,11 +87,10 @@ public class OrganisationApprovalModelTests
         redirectToPageResult!.PageName.Should().Be("Organisations");
         redirectToPageResult.RouteValues.Should().ContainKey("type").WhoseValue.Should().Be("buyer");
 
-        _mockOrganisationClient.Verify(client => client.ReviewOrganisationAsync(It.Is<ReviewOrganisation>(r =>
-            r.Approved == true &&
-            r.ApprovedById == PersonId &&
-            r.Comment == "Approved" &&
-            r.OrganisationId == organisationId
+        _mockOrganisationClient.Verify(client => client.SupportUpdateOrganisationAsync(It.IsAny<Guid>(), It.Is<SupportUpdateOrganisation>(r =>
+            r.Organisation.Approved == true &&
+            r.Organisation.ApprovedById == _personId &&
+            r.Organisation.Comment == "Approved"
         )), Times.Once);
     }
 
@@ -104,7 +102,7 @@ public class OrganisationApprovalModelTests
         _organisationApprovalModel.Comments = null;
 
         _mockOrganisationClient
-            .Setup(client => client.ReviewOrganisationAsync(It.IsAny<ReviewOrganisation>()))
+            .Setup(client => client.SupportUpdateOrganisationAsync(It.IsAny<Guid>(), It.IsAny<SupportUpdateOrganisation>()))
             .ReturnsAsync(true);
 
         var result = await _organisationApprovalModel.OnPost(organisationId);
@@ -114,11 +112,10 @@ public class OrganisationApprovalModelTests
         redirectToPageResult!.PageName.Should().Be("Organisations");
         redirectToPageResult.RouteValues.Should().ContainKey("type").WhoseValue.Should().Be("buyer");
 
-        _mockOrganisationClient.Verify(client => client.ReviewOrganisationAsync(It.Is<ReviewOrganisation>(r =>
-            r.Approved == false &&
-            r.ApprovedById == PersonId &&
-            r.Comment == "" &&
-            r.OrganisationId == organisationId
+        _mockOrganisationClient.Verify(client => client.SupportUpdateOrganisationAsync(It.IsAny<Guid>(), It.Is<SupportUpdateOrganisation>(r =>
+            r.Organisation.Approved == false &&
+            r.Organisation.ApprovedById == _personId &&
+            r.Organisation.Comment == ""
         )), Times.Once);
     }
 }
