@@ -26,13 +26,15 @@ public class FormsAnswerSetRemoveConfirmationModelTest
                  title: "Test Title",
                  type: FormSectionType.Standard,
                  allowsMultipleAnswerSets: true,
+                 checkFurtherQuestionsExempted: false,
                  id: Guid.NewGuid(),
                  configuration: new FormSectionConfiguration(
                      addAnotherAnswerLabel: null,
                      pluralSummaryHeadingFormat: null,
                      removeConfirmationCaption: "Test Caption",
                      removeConfirmationHeading: "Test confimration heading",
-                     singularSummaryHeading: null)),
+                     singularSummaryHeading: null,
+                     furtherQuestionsExemptedHeading: null)),
              questions: [],
              answerSets: [new FormAnswerSet(id: _pageModel.AnswerSetId, answers: [], furtherQuestionsExempted: false)]
              ));
@@ -79,7 +81,7 @@ public class FormsAnswerSetRemoveConfirmationModelTest
 
         _formsClientMock.Verify(client => client.DeleteFormSectionAnswersAsync(It.IsAny<Guid>(), It.IsAny<Guid>()), Times.Once);
 
-        result.Should().BeOfType<RedirectToPageResult>().Which.PageName.Should().Be("FormsAddAnotherAnswerSet");
+        result.Should().BeOfType<RedirectToPageResult>().Which.PageName.Should().Be("FormsAnswerSetSummary");
     }
 
     [Fact]
@@ -90,6 +92,6 @@ public class FormsAnswerSetRemoveConfirmationModelTest
         var result = await _pageModel.OnPost();
 
         _formsClientMock.Verify(client => client.DeleteFormSectionAnswersAsync(It.IsAny<Guid>(), It.IsAny<Guid>()), Times.Never);
-        result.Should().BeOfType<RedirectToPageResult>().Which.PageName.Should().Be("FormsAddAnotherAnswerSet");
+        result.Should().BeOfType<RedirectToPageResult>().Which.PageName.Should().Be("FormsAnswerSetSummary");
     }
 }

@@ -60,7 +60,7 @@ public class FormsAnswerSetRemoveConfirmationModel(
             await formsClient.DeleteFormSectionAnswersAsync(AnswerSetId, OrganisationId);
         }
 
-        return RedirectToPage("FormsAddAnotherAnswerSet", new { OrganisationId, FormId, SectionId });
+        return RedirectToPage("FormsAnswerSetSummary", new { OrganisationId, FormId, SectionId });
     }
 
     private async Task<bool> InitAndVerifyPage()
