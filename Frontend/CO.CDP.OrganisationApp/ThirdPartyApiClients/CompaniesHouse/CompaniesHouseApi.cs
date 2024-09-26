@@ -19,7 +19,7 @@ public class CompaniesHouseApi(IConfiguration configuration,
         try
         {
             companyRegDetails = await $"{companiesHouseUrl}"
-                .AppendPathSegment($"/company/{companyNumber}/registered-office-address")
+                .AppendPathSegment($"/company/{companyNumber.Trim()}/registered-office-address")
                 .WithBasicAuth(userName, password)
                 .GetAsync()
                 .ReceiveJson<RegisteredAddress>();
@@ -43,7 +43,7 @@ public class CompaniesHouseApi(IConfiguration configuration,
         try
         {
             profile = await $"{companiesHouseUrl}"
-                .AppendPathSegment($"/company/{companyNumber}")
+                .AppendPathSegment($"/company/{companyNumber.Trim()}")
                 .WithBasicAuth(userName, password)
                 .GetAsync()
                 .ReceiveJson<CompanyProfile>();
