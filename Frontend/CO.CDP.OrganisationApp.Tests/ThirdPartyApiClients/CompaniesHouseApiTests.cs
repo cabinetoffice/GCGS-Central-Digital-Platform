@@ -22,7 +22,6 @@ public class CompaniesHouseApiTest
     [Fact]
     public async Task GetRegisteredAddress_ShouldReturnRegisteredAddress()
     {
-        // Arrange
         var companyNumber = "12345678";
         var expectedAddress = new RegisteredAddress { AddressLine1 = "123 Test St" };
         _mockConfiguration.Setup(c => c["CompaniesHouse:Url"]).Returns("https://api.companieshouse.gov.uk");
@@ -32,10 +31,8 @@ public class CompaniesHouseApiTest
         using var httpTest = new HttpTest();
         httpTest.RespondWithJson(expectedAddress);
 
-        // Act
         var result = await _companiesHouseApi.GetRegisteredAddress(companyNumber);
 
-        // Assert
         Assert.NotNull(result);
         Assert.Equal(expectedAddress.AddressLine1, result.AddressLine1);
     }
@@ -43,7 +40,6 @@ public class CompaniesHouseApiTest
     [Fact]
     public async Task GetProfile_ShouldReturnCompanyProfile()
     {
-        // Arrange
         var companyNumber = "12345678";
         var expectedProfile = new CompanyProfile { CompanyName = "Test Company" };
         _mockConfiguration.Setup(c => c["CompaniesHouse:Url"]).Returns("https://api.companieshouse.gov.uk");
@@ -53,10 +49,8 @@ public class CompaniesHouseApiTest
         using var httpTest = new HttpTest();
         httpTest.RespondWithJson(expectedProfile);
 
-        // Act
         var result = await _companiesHouseApi.GetProfile(companyNumber);
 
-        // Assert
         Assert.NotNull(result);
         Assert.Equal(expectedProfile.CompanyName, result.CompanyName);
     }
