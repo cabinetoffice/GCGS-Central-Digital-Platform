@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using CO.CDP.Organisation.WebApiClient;
 using Microsoft.AspNetCore.Mvc;
 using OrganisationWebApiClient = CO.CDP.Organisation.WebApiClient;
@@ -11,7 +12,8 @@ public class OrganisationApprovalModel(
     public OrganisationWebApiClient.Organisation? OrganisationDetails { get; set; }
 
     [BindProperty]
-    public Boolean? Approval { get; set; }
+    [Required(ErrorMessage = "Choose whether to approve the buyer or not")]
+    public required bool Approval { get; set; }
 
     [BindProperty]
     public string? Comments { get; set; }
@@ -31,8 +33,14 @@ public class OrganisationApprovalModel(
 
     public async Task<IActionResult> OnPost(Guid organisationId)
     {
+        if (!ModelState.IsValid)
+        {
+            OrganisationDetails = await organisationClient.GetOrganisationAsync(organisationId);
+            return Page();
+        }
+
         SupportOrganisationInfo orgInfo = new SupportOrganisationInfo(
-            Approval ?? false,
+            Approval,
             UserDetails.PersonId ?? Guid.Empty,
             Comments ?? ""
         );

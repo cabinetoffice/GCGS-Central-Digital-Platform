@@ -5,6 +5,7 @@
 @{
 var organisationDetails = Model.OrganisationDetails!;
 var registeredAddress = organisationDetails.Addresses.FirstOrDefault(a => a.Type == CO.CDP.Organisation.WebApiClient.AddressType.Registered);
+var approvalHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Approval)).HasInnerHtml;
 }
 
 <a href="/support/organisations/buyer" class="govuk-back-link">
@@ -14,6 +15,7 @@ var registeredAddress = organisationDetails.Addresses.FirstOrDefault(a => a.Type
 <main class="govuk-main-wrapper">
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
+            <partial name="_ErrorSummary" model="@Model.ModelState" />
             <fieldset class="govuk-fieldset">
                 <h1 class="govuk-heading-l">
                     <span class="govuk-label--l">@organisationDetails.Name</span>
@@ -88,12 +90,18 @@ var registeredAddress = organisationDetails.Addresses.FirstOrDefault(a => a.Type
         <div class="govuk-grid-column-two-thirds">
             <form method="post">
                 <fieldset class="govuk-fieldset" data-required="" data-error="Select yes if you want to approve this organisation" aria-required="true">
-                    <div class="govuk-form-group">
+                    <div class="govuk-form-group @(approvalHasError ? "govuk-form-group--error" : "")">
 
                         <h2 class="govuk-heading-m">
                             <span class="govuk-label--m">Are you happy to approve?</span>
                         </h2>
-
+                        @if (approvalHasError)
+                        {
+                            <p id="approval-error" class="govuk-error-message">
+                                <span class="govuk-visually-hidden">Error:</span>
+                                @Html.ValidationMessageFor(m => m.Approval)
+                            </p>
+                        }
                         <div class="govuk-radios govuk-radios--inline" data-module="govuk-radios">
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input" id="conditional-YES" name="Approval" type="radio"
