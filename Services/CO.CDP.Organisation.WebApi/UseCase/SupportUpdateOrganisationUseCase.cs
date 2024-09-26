@@ -13,7 +13,7 @@ public class SupportUpdateOrganisationUseCase(IOrganisationRepository organisati
         {
             case SupportOrganisationUpdateType.Review:
 
-                var personId = command.supportUpdateOrganisation.Organisation.ApprovedById;
+                var personId = command.supportUpdateOrganisation.Organisation.ReviewedById;
 
                 var person = await personRepository.Find(personId) ?? throw new UnknownPersonException($"Unknown person {personId}.");
 

@@ -310,7 +310,7 @@ public record SupportUpdateOrganisation
 
 public record SupportOrganisationInfo
 {
-    public required Guid ApprovedById { get; init; }
+    public required Guid ReviewedById { get; init; }
     public required Boolean Approved { get; init; }
     public required string Comment { get; init; }
 }
