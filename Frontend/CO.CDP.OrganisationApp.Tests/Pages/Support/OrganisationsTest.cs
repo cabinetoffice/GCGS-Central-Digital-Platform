@@ -1,9 +1,10 @@
 using CO.CDP.Organisation.WebApiClient;
-using CO.CDP.OrganisationApp;
 using CO.CDP.OrganisationApp.Pages.Support;
-using Moq;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Moq;
+
+namespace CO.CDP.OrganisationApp.Tests.Pages.Support;
 
 public class OrganisationsModelTests
 {
@@ -23,86 +24,86 @@ public class OrganisationsModelTests
     {
         var type = "buyer";
         var orgs = new List<OrganisationExtended>
-        {
-            new OrganisationExtended(
-                additionalIdentifiers: new List<Identifier>
-                {
-                    new Identifier(
-                        id: "12345678",
-                        legalName: "Mock Legal Name 1",
-                        scheme: "GB-COH",
-                        uri: new Uri("http://example.com/1")
-                    )
-                },
-                addresses: new List<Address>
-                {
-                    new Address(
-                        country: "GB",
-                        countryName: "United Kingdom",
-                        locality: "Mock Town",
-                        postalCode: "MK1 1AB",
-                        region: "Mockshire",
-                        streetAddress: "123 Mock St",
-                        type: AddressType.Postal
-                    )
-                },
-                contactPoint: new ContactPoint(
-                    name: "John Doe",
-                    email: "john.doe@example.com",
-                    telephone: "+441234567890",
-                    url: new Uri("http://example.com/contact")
-                ),
-                details: null,
-                id: Guid.NewGuid(),
-                identifier: new Identifier(
+    {
+        new OrganisationExtended(
+            additionalIdentifiers: new List<Identifier>
+            {
+                new Identifier(
                     id: "12345678",
                     legalName: "Mock Legal Name 1",
                     scheme: "GB-COH",
                     uri: new Uri("http://example.com/1")
-                ),
-                name: "Mock Organisation 1",
-                roles: new List<PartyRole> { PartyRole.Buyer, PartyRole.Supplier }
+                )
+            },
+            addresses: new List<Address>
+            {
+                new Address(
+                    country: "GB",
+                    countryName: "United Kingdom",
+                    locality: "Mock Town",
+                    postalCode: "MK1 1AB",
+                    region: "Mockshire",
+                    streetAddress: "123 Mock St",
+                    type: AddressType.Postal
+                )
+            },
+            contactPoint: new ContactPoint(
+                name: "John Doe",
+                email: "john.doe@example.com",
+                telephone: "+441234567890",
+                url: new Uri("http://example.com/contact")
             ),
-            new OrganisationExtended(
-                additionalIdentifiers: new List<Identifier>
-                {
-                    new Identifier(
-                        id: "87654321",
-                        legalName: "Mock Legal Name 2",
-                        scheme: "GB-COH",
-                        uri: new Uri("http://example.com/2")
-                    )
-                },
-                addresses: new List<Address>
-                {
-                    new Address(
-                        country: "GB",
-                        countryName: "United Kingdom",
-                        locality: "Testville",
-                        postalCode: "TS2 2XY",
-                        region: "Testshire",
-                        streetAddress: "456 Test Lane",
-                        type: AddressType.Postal
-                    )
-                },
-                contactPoint: new ContactPoint(
-                    name: "Jane Doe",
-                    email: "jane.doe@example.com",
-                    telephone: "+441234567892",
-                    url: new Uri("http://example.com/contact2")
-                ),
-                details: null,
-                id: Guid.NewGuid(),
-                identifier: new Identifier(
+            details: null,
+            id: Guid.NewGuid(),
+            identifier: new Identifier(
+                id: "12345678",
+                legalName: "Mock Legal Name 1",
+                scheme: "GB-COH",
+                uri: new Uri("http://example.com/1")
+            ),
+            name: "Mock Organisation 1",
+            roles: new List<PartyRole> { PartyRole.Buyer, PartyRole.Supplier }
+        ),
+        new OrganisationExtended(
+            additionalIdentifiers: new List<Identifier>
+            {
+                new Identifier(
                     id: "87654321",
                     legalName: "Mock Legal Name 2",
                     scheme: "GB-COH",
                     uri: new Uri("http://example.com/2")
-                ),
-                name: "Mock Organisation 2",
-                roles: new List<PartyRole> { PartyRole.Buyer }
-            )
-        };
+                )
+            },
+            addresses: new List<Address>
+            {
+                new Address(
+                    country: "GB",
+                    countryName: "United Kingdom",
+                    locality: "Testville",
+                    postalCode: "TS2 2XY",
+                    region: "Testshire",
+                    streetAddress: "456 Test Lane",
+                    type: AddressType.Postal
+                )
+            },
+            contactPoint: new ContactPoint(
+                name: "Jane Doe",
+                email: "jane.doe@example.com",
+                telephone: "+441234567892",
+                url: new Uri("http://example.com/contact2")
+            ),
+            details: null,
+            id: Guid.NewGuid(),
+            identifier: new Identifier(
+                id: "87654321",
+                legalName: "Mock Legal Name 2",
+                scheme: "GB-COH",
+                uri: new Uri("http://example.com/2")
+            ),
+            name: "Mock Organisation 2",
+            roles: new List<PartyRole> { PartyRole.Buyer }
+        )
+    };
 
         _organisationClientMock.Setup(client => client.GetAllOrganisationsAsync(type, 1000, 0))
             .ReturnsAsync(orgs);

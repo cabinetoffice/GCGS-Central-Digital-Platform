@@ -8,15 +8,15 @@ using Moq;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages.Forms;
 
-public class DynamicFormsPageModelTest
+public class FormsQuestionPageModelTest
 {
     private readonly Mock<IFormsEngine> _formsEngineMock;
     private readonly Mock<ITempDataService> _tempDataServiceMock;
     private readonly Mock<IFileHostManager> _fileHostManagerMock;
-    private readonly DynamicFormsPageModel _pageModel;
+    private readonly FormsQuestionPageModel _pageModel;
     private readonly Guid TextQuestionId = Guid.NewGuid();
 
-    public DynamicFormsPageModelTest()
+    public FormsQuestionPageModelTest()
     {
         _formsEngineMock = new Mock<IFormsEngine>();
 
@@ -31,7 +31,7 @@ public class DynamicFormsPageModelTest
         _fileHostManagerMock = new Mock<IFileHostManager>();
         _tempDataServiceMock.Setup(t => t.PeekOrDefault<FormQuestionAnswerState>(It.IsAny<string>()))
             .Returns(new FormQuestionAnswerState());
-        _pageModel = new DynamicFormsPageModel(_formsEngineMock.Object, _tempDataServiceMock.Object, _fileHostManagerMock.Object);
+        _pageModel = new FormsQuestionPageModel(_formsEngineMock.Object, _tempDataServiceMock.Object, _fileHostManagerMock.Object);
     }
 
     [Fact]
@@ -120,7 +120,7 @@ public class DynamicFormsPageModelTest
     }
 
     [Fact]
-    public async Task OnPostAsync_ShouldCallSaveUpdateAnswersAndRedirectToFormsAddAnotherAnswerSet_WhenCurrentQuestionIsCheckYourAnswerQuestion()
+    public async Task OnPostAsync_ShouldCallSaveUpdateAnswersAndRedirectToFormsAnswerSetSummary_WhenCurrentQuestionIsCheckYourAnswerQuestion()
     {
         var currentQuestionId = Guid.NewGuid();
         var checkYourAnswerQuestionId = currentQuestionId;
@@ -144,7 +144,7 @@ public class DynamicFormsPageModelTest
         _formsEngineMock.Verify(f => f.SaveUpdateAnswers(_pageModel.FormId, _pageModel.SectionId, _pageModel.OrganisationId, It.IsAny<FormQuestionAnswerState>()), Times.Once);
 
         result.Should().BeOfType<RedirectToPageResult>()
-              .Which.PageName.Should().Be("FormsAddAnotherAnswerSet");
+              .Which.PageName.Should().Be("FormsAnswerSetSummary");
     }
 
     [Fact]
@@ -185,12 +185,12 @@ public class DynamicFormsPageModelTest
             Section = new FormSection { Type = FormSectionType.Declaration, Title = "Test Section" },
             Questions = new List<FormQuestion>
             {
-                new FormQuestion { Id = _pageModel.CurrentQuestionId.Value, Type = FormQuestionType.CheckYourAnswers }
+                new FormQuestion { Id = _pageModel.CurrentQuestionId, Type = FormQuestionType.CheckYourAnswers }
             }
         };
 
         _formsEngineMock.Setup(f => f.GetCurrentQuestion(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid?>()))
-            .ReturnsAsync(new FormQuestion { Id = _pageModel.CurrentQuestionId.Value, Type = FormQuestionType.CheckYourAnswers });
+            .ReturnsAsync(new FormQuestion { Id = _pageModel.CurrentQuestionId, Type = FormQuestionType.CheckYourAnswers });
 
         _formsEngineMock.Setup(f => f.GetFormSectionAsync(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid>()))
             .ReturnsAsync(formResponse);

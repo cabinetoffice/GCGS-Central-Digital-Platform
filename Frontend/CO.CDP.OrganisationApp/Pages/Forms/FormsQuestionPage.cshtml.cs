@@ -9,7 +9,7 @@ using static System.Net.Mime.MediaTypeNames;
 namespace CO.CDP.OrganisationApp.Pages.Forms;
 
 [Authorize(Policy = OrgScopeRequirement.Editor)]
-public class DynamicFormsPageModel(
+public class FormsQuestionPageModel(
     IFormsEngine formsEngine,
     ITempDataService tempDataService,
     IFileHostManager fileHostManager) : PageModel
@@ -24,7 +24,7 @@ public class DynamicFormsPageModel(
     public Guid SectionId { get; set; }
 
     [BindProperty(SupportsGet = true)]
-    public Guid? CurrentQuestionId { get; set; }
+    public Guid CurrentQuestionId { get; set; }
 
     [BindProperty]
     public bool? RedirectToCheckYourAnswer { get; set; }
@@ -120,7 +120,7 @@ public class DynamicFormsPageModel(
                             new { OrganisationId, FormId, SectionId, shareCode });
             }
 
-            return RedirectToPage("FormsAddAnotherAnswerSet", new { OrganisationId, FormId, SectionId });
+            return RedirectToPage("FormsAnswerSetSummary", new { OrganisationId, FormId, SectionId });
         }
 
         Guid? nextQuestionId;
@@ -134,7 +134,7 @@ public class DynamicFormsPageModel(
             nextQuestionId = (await formsEngine.GetNextQuestion(OrganisationId, FormId, SectionId, currentQuestion.Id))?.Id;
         }
 
-        return RedirectToPage("DynamicFormsPage", new { OrganisationId, FormId, SectionId, CurrentQuestionId = nextQuestionId });
+        return RedirectToPage("FormsQuestionPage", new { OrganisationId, FormId, SectionId, CurrentQuestionId = nextQuestionId });
     }
 
     public async Task<IEnumerable<AnswerSummary>> GetAnswers()
@@ -165,7 +165,7 @@ public class DynamicFormsPageModel(
                 {
                     Title = question.SummaryTitle ?? question.Title,
                     Answer = answerString,
-                    ChangeLink = $"/organisation/{OrganisationId}/forms/{FormId}/sections/{SectionId}/{answer.QuestionId}?frm-chk-answer"
+                    ChangeLink = $"/organisation/{OrganisationId}/forms/{FormId}/sections/{SectionId}/questions/{answer.QuestionId}?frm-chk-answer"
                 };
 
                 if (question.Type == FormQuestionType.Address && answer.Answer?.AddressValue != null

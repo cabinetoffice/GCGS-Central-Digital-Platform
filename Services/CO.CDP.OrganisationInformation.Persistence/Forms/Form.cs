@@ -47,6 +47,7 @@ public class FormSection : IEntityDate
     public required Form Form { get; set; }
     public required ICollection<FormQuestion> Questions { get; set; } = [];
     public required bool AllowsMultipleAnswerSets { get; set; }
+    public required bool CheckFurtherQuestionsExempted { get; set; }
     public required FormSectionConfiguration Configuration;
     public DateTimeOffset CreatedOn { get; set; }
     public DateTimeOffset UpdatedOn { get; set; }
@@ -59,4 +60,5 @@ public record FormSectionConfiguration
     public string? AddAnotherAnswerLabel { get; set; }
     public string? RemoveConfirmationCaption { get; set; }
     public string? RemoveConfirmationHeading { get; set; }
+    public string? FurtherQuestionsExemptedHeading { get; set; }
 }

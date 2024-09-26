@@ -7,8 +7,9 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 namespace CO.CDP.OrganisationApp.Pages.Forms;
 
 [Authorize(Policy = OrgScopeRequirement.Viewer)]
-public class FormsAddAnotherAnswerSetModel(
+public class FormsAnswerSetSummaryModel(
     IFormsClient formsClient,
+    IFormsEngine formsEngine,
     ITempDataService tempDataService) : PageModel
 {
     [BindProperty(SupportsGet = true)]
@@ -60,7 +61,12 @@ public class FormsAddAnotherAnswerSetModel(
 
         if (AddAnotherAnswerSet == true)
         {
-            return RedirectToPage("DynamicFormsPage", new { OrganisationId, FormId, SectionId });
+            var currentQuestion = await formsEngine.GetCurrentQuestion(OrganisationId, FormId, SectionId, null);
+            if (currentQuestion == null)
+            {
+                return Redirect("/page-not-found");
+            }
+            return RedirectToPage("FormsQuestionPage", new { OrganisationId, FormId, SectionId, CurrentQuestionId = currentQuestion.Id });
         }
         else
         {
@@ -111,7 +117,7 @@ public class FormsAddAnotherAnswerSetModel(
 
         var checkYourAnswersQuestionId = response?.Questions?.FirstOrDefault(q => q.Type == FormQuestionType.CheckYourAnswers)?.Id;
 
-        return RedirectToPage("DynamicFormsPage", new { OrganisationId, FormId, SectionId, CurrentQuestionId = checkYourAnswersQuestionId });
+        return RedirectToPage("FormsQuestionPage", new { OrganisationId, FormId, SectionId, CurrentQuestionId = checkYourAnswersQuestionId });
     }
 
     private static Models.Address? MapAddress(FormAddress? formAdddress)

@@ -70,6 +70,7 @@ public static class SharedConsentFactory
             Questions = questions ?? [],
             Type = type,
             AllowsMultipleAnswerSets = true,
+            CheckFurtherQuestionsExempted = false,
             CreatedOn = DateTimeOffset.UtcNow,
             UpdatedOn = DateTimeOffset.UtcNow,
             Configuration = new FormSectionConfiguration

@@ -86,13 +86,9 @@
                     redirectLink += "/share-codes-list-view";
                     requiredScope = OrgScopeRequirement.Editor;
                 }
-                else if (exclusionsSection && section.AnswerSetCount == 0 && !isViewer)
+                else if (exclusionsSection && (section.AnswerSetCount == 0 || section.AnswerSetWithFurtherQuestionExemptedExists) && !isViewer)
                 {
                     redirectLink += "/add-exclusion-declaration";
-                }
-                else if ((isViewer || section.AnswerSetCount > 0) && section.AllowsMultipleAnswerSets == true && section.AnswerSetWithFurtherQuestionExemptedExists == false)
-                {
-                    redirectLink += "/summary";
                 }
 
                 <authorize scope="@requiredScope">
