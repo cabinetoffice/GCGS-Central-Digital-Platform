@@ -8,6 +8,7 @@ using Person = CO.CDP.OrganisationInformation.Persistence.Person;
 namespace CO.CDP.Organisation.WebApi.UseCase;
 
 public class RegisterOrganisationUseCase(
+    IIdentifierService identifierService,
     IOrganisationRepository organisationRepository,
     IPersonRepository personRepository,
     IPublisher publisher,
@@ -17,9 +18,9 @@ public class RegisterOrganisationUseCase(
 {
     private readonly List<string> _defaultScopes = ["ADMIN", "RESPONDER", "EDITOR"];
 
-    public RegisterOrganisationUseCase(IOrganisationRepository organisationRepository,
+    public RegisterOrganisationUseCase(IIdentifierService identifierService, IOrganisationRepository organisationRepository,
         IPersonRepository personRepository, IPublisher publisher, IMapper mapper)
-        : this(organisationRepository, personRepository, publisher, mapper, Guid.NewGuid)
+        : this(identifierService, organisationRepository, personRepository, publisher, mapper, Guid.NewGuid)
     {
     }
 
@@ -55,6 +56,12 @@ public class RegisterOrganisationUseCase(
             Organisation = organisation,
             Scopes = _defaultScopes
         });
+
+        organisation.Identifiers
+            .Where(i => i.Uri == null)
+            .Select(i => i.Uri = identifierService.GetRegistryUri(command.Identifier.Scheme, command.Identifier.Id))
+            .ToList();
+
         organisation.UpdateBuyerInformation();
         organisation.UpdateSupplierInformation();
         return organisation;
