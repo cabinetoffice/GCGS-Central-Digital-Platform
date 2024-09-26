@@ -49,7 +49,7 @@
                         var answers = await Model.GetAnswers();
 
                         <h1 class="govuk-heading-l">Check your answers</h1>
-                        <dl class="govuk-summary-list govuk-!-margin-bottom-3">
+                        <dl class="govuk-summary-list govuk-!-margin-bottom-9">
                             @foreach (var answer in answers)
                             {
                                 <div class="govuk-summary-list__row">
@@ -81,8 +81,7 @@
                     {
                         <button type="submit" class="govuk-button">Save</button>
                     }
-                }
-                else
+                } else
                 {
                     <button type="submit" class="govuk-button">Continue</button>
                 }
