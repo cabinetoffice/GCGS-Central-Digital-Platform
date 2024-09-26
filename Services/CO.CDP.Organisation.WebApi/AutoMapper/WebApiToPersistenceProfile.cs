@@ -249,11 +249,11 @@ public class WebApiToPersistenceProfile : Profile
     }
 
     public class IdentifiersResolver : IValueResolver<RegisterOrganisation, Persistence.Organisation,
-        ICollection<Persistence.Organisation.Identifier>>
+        IList<Persistence.Organisation.Identifier>>
     {
-        public ICollection<Persistence.Organisation.Identifier> Resolve(
+        public IList<Persistence.Organisation.Identifier> Resolve(
             RegisterOrganisation source, Persistence.Organisation destination,
-            ICollection<Persistence.Organisation.Identifier> destMember,
+            IList<Persistence.Organisation.Identifier> destMember,
             ResolutionContext context)
         {
             var pi = context.Mapper.Map<Persistence.Organisation.Identifier>(source.Identifier);
