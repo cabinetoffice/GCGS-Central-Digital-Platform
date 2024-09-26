@@ -6,8 +6,6 @@ using Moq;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages.Support;
 
-namespace CO.CDP.OrganisationApp.Tests.Pages.Support;
-
 public class OrganisationsModelTests
 {
     private readonly Mock<IOrganisationClient> _organisationClientMock;

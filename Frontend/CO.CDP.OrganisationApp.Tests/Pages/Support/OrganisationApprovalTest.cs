@@ -93,29 +93,4 @@ public class OrganisationApprovalModelTests
             r.Organisation.Comment == "Approved"
         )), Times.Once);
     }
-
-    [Fact]
-    public async Task OnPost_WhenApprovalIsNotSet_ShouldDefaultToFalseAndRedirect()
-    {
-        var organisationId = Guid.NewGuid();
-        _organisationApprovalModel.Approval = null;
-        _organisationApprovalModel.Comments = null;
-
-        _mockOrganisationClient
-            .Setup(client => client.SupportUpdateOrganisationAsync(It.IsAny<Guid>(), It.IsAny<SupportUpdateOrganisation>()))
-            .ReturnsAsync(true);
-
-        var result = await _organisationApprovalModel.OnPost(organisationId);
-
-        result.Should().BeOfType<RedirectToPageResult>();
-        var redirectToPageResult = result as RedirectToPageResult;
-        redirectToPageResult!.PageName.Should().Be("Organisations");
-        redirectToPageResult.RouteValues.Should().ContainKey("type").WhoseValue.Should().Be("buyer");
-
-        _mockOrganisationClient.Verify(client => client.SupportUpdateOrganisationAsync(It.IsAny<Guid>(), It.Is<SupportUpdateOrganisation>(r =>
-            r.Organisation.Approved == false &&
-            r.Organisation.ApprovedById == _personId &&
-            r.Organisation.Comment == ""
-        )), Times.Once);
-    }
 }

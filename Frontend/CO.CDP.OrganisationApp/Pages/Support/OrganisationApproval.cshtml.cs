@@ -13,7 +13,7 @@ public class OrganisationApprovalModel(
 
     [BindProperty]
     [Required(ErrorMessage = "Choose whether to approve the buyer or not")]
-    public required bool Approval { get; set; }
+    public bool Approval { get; set; }
 
     [BindProperty]
     public string? Comments { get; set; }
