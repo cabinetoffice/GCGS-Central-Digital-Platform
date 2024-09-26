@@ -57,13 +57,14 @@ public class FormElementTextInputModelTest
     }
 
     [Theory]
-    [InlineData(true, null, "All information is required on this page")]
-    [InlineData(true, " ", "All information is required on this page")]
-    [InlineData(false, null, null)]
-    [InlineData(false, "Some value", null)]
-    public void Validate_ReturnsExpectedResults(bool isRequired, string? textInput, string? expectedErrorMessage)
+    [InlineData(true, null, null, "Enter a value")]
+    [InlineData(true, null, " ", "Enter a value")]
+    [InlineData(false, false, null, null)]
+    [InlineData(false, true, "Some value", null)]
+    public void Validate_ReturnsExpectedResults(bool isRequired, bool? hasValue, string? textInput, string? expectedErrorMessage)
     {
         _model.IsRequired = isRequired;
+        _model.HasValue = hasValue;
         _model.CurrentFormQuestionType = FormQuestionType.Text;
         _model.TextInput = textInput;
 
@@ -85,7 +86,7 @@ public class FormElementTextInputModelTest
     [InlineData("valid.email@example.com", null)]
     public void Validate_EmailValidation_ReturnsExpectedResults(string? email, string? expectedErrorMessage)
     {
-        _model.IsRequired = false;
+        _model.IsRequired = true;
         _model.CurrentFormQuestionType = FormQuestionType.Text;
         _model.Heading = "Email Address";
         _model.TextInput = email;
@@ -104,15 +105,16 @@ public class FormElementTextInputModelTest
     }
 
     [Theory]
-    [InlineData(true, "Email Address", null, "All information is required on this page")]
-    [InlineData(true, "Email Address", "invalid-email", "Enter an email address in the correct format, like name@example.com.")]
-    [InlineData(true, "Email Address", "valid.email@example.com", null)]
-    [InlineData(false, "Email Address", "somevalue", "Enter an email address in the correct format, like name@example.com.")]
-    [InlineData(false, "Email Address", null, null)]
-    [InlineData(false, "Name", "invalid-email", null)]
-    public void Validate_EmailFieldValidationBasedOnHeading_ReturnsExpectedResults(bool isRequired, string heading, string? textInput, string? expectedErrorMessage)
+    [InlineData(true, null, "Email Address", null, "Enter an email address in the correct format, like name@example.com.")]
+    [InlineData(true, null, "Email Address", "invalid-email", "Enter an email address in the correct format, like name@example.com.")]
+    [InlineData(true, null, "Email Address", "valid.email@example.com", null)]
+    [InlineData(false, true, "Email Address", "somevalue", "Enter an email address in the correct format, like name@example.com.")]
+    [InlineData(false, false, "Email Address", null, null)]
+    [InlineData(false, true, "Name", "invalid-email", null)]
+    public void Validate_EmailFieldValidationBasedOnHeading_ReturnsExpectedResults(bool isRequired, bool? hasValue, string heading, string? textInput, string? expectedErrorMessage)
     {
         _model.IsRequired = isRequired;
+        _model.HasValue = hasValue;
         _model.CurrentFormQuestionType = FormQuestionType.Text;
         _model.Heading = heading;
         _model.TextInput = textInput;
