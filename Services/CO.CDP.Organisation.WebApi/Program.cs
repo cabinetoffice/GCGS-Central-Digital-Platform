@@ -7,6 +7,7 @@ using CO.CDP.Configuration.Helpers;
 using CO.CDP.GovUKNotify;
 using CO.CDP.MQ;
 using CO.CDP.MQ.Hosting;
+using CO.CDP.Organisation.WebApi;
 using CO.CDP.Organisation.WebApi.Api;
 using CO.CDP.Organisation.WebApi.AutoMapper;
 using CO.CDP.Organisation.WebApi.Events;
@@ -52,6 +53,7 @@ if (Assembly.GetEntryAssembly().IsRunAs("CO.CDP.Organisation.WebApi"))
 }
 builder.Services.AddDbContext<OrganisationInformationContext>(o =>
     o.UseNpgsql(ConnectionStringHelper.GetConnectionString(builder.Configuration, "OrganisationInformationDatabase")));
+builder.Services.AddScoped<IIdentifierService, IdentifierService>();
 builder.Services.AddScoped<IOrganisationRepository, DatabaseOrganisationRepository>();
 builder.Services.AddScoped<IConnectedEntityRepository, DatabaseConnectedEntityRepository>();
 builder.Services.AddScoped<IPersonRepository, DatabasePersonRepository>();

@@ -11,7 +11,7 @@ public class Organisation : IEntityDate
     public required Guid Guid { get; set; }
     public required Tenant Tenant { get; set; }
     public required string Name { get; set; }
-    public ICollection<Identifier> Identifiers { get; set; } = [];
+    public IList<Identifier> Identifiers { get; set; } = [];
     public ICollection<OrganisationAddress> Addresses { get; set; } = [];
     public ICollection<ContactPoint> ContactPoints { get; set; } = [];
     public List<PartyRole> Roles { get; set; } = [];

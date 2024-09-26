@@ -2,6 +2,7 @@
 
 @{
     var hasError = ((TagBuilder)Html.ValidationMessageFor(m => m.TextInput)).HasInnerHtml;
+    string ariaDescribedby = "";
 }
 
 <div class="govuk-form-group">
@@ -9,26 +10,33 @@
     @if (!string.IsNullOrWhiteSpace(Model.Heading))
     {
         <h1 class="govuk-label-wrapper">
-            <label class="govuk-label govuk-label--l" for="textInput">@Model.Heading</label>
+            <label class="govuk-label govuk-label--l" for="TextInput">@Model.Heading</label>
+
+            @if (!string.IsNullOrWhiteSpace(Model.Caption))
+            {
+                <span class="govuk-caption-l govuk-!-margin-bottom-3">@Model.Caption</span>
+            }
         </h1>
-    }
-    @if (!string.IsNullOrWhiteSpace(Model.Caption))
-    {
-        <span class="govuk-caption-l">@Model.Caption</span>
     }
 
     @if (!string.IsNullOrWhiteSpace(Model.Description))
     {
-        @Html.Raw(Model.Description)
+        ariaDescribedby += "TextInput-description";
+
+        <div id="TextInput-description">
+            @Html.Raw(Model.Description)
+        </div>
     }
 
     @if (hasError)
     {
-        <p class="govuk-error-message">
+        ariaDescribedby += " TextInput-error";
+
+        <p class="govuk-error-message" id="TextInput-error">
             <span class="govuk-visually-hidden">Error:</span>
             @Html.ValidationMessageFor(m => m.TextInput)
         </p>
     }
 
-    <input class="govuk-input govuk-!-width-two-thirds" id="textInput" name="TextInput" type="text" value="@Model.TextInput">
+    <input class="govuk-input govuk-!-width-two-thirds" id="TextInput" name="TextInput" type="text" value="@Model.TextInput" @(string.IsNullOrWhiteSpace(ariaDescribedby) ? "" : Html.Raw($"aria-describedby=\"{ariaDescribedby}\""))>
 </div>

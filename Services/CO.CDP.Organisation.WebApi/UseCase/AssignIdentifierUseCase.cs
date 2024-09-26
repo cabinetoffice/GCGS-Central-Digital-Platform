@@ -2,11 +2,9 @@ using CO.CDP.Functional;
 using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.OrganisationInformation.Persistence;
 
-using System.Collections.Generic;
-
 namespace CO.CDP.Organisation.WebApi.UseCase;
 
-public class AssignIdentifierUseCase(IOrganisationRepository organisations)
+public class AssignIdentifierUseCase(IOrganisationRepository organisations, IIdentifierService identifierService)
     : IUseCase<AssignOrganisationIdentifier, bool>
 {
     public class IdentifierSchemes
@@ -28,7 +26,7 @@ public class AssignIdentifierUseCase(IOrganisationRepository organisations)
         return true;
     }
 
-    private static OrganisationInformation.Persistence.Organisation AssignIdentifier(
+    private OrganisationInformation.Persistence.Organisation AssignIdentifier(
         AssignOrganisationIdentifier command, OrganisationInformation.Persistence.Organisation organisation)
     {
         if (organisation.Identifiers.Any(i =>
@@ -42,7 +40,8 @@ public class AssignIdentifierUseCase(IOrganisationRepository organisations)
             IdentifierId = command.Identifier.Id,
             Scheme = command.Identifier.Scheme,
             LegalName = command.Identifier.LegalName,
-            Primary = IsPrimaryIdentifier(organisation)
+            Primary = IsPrimaryIdentifier(organisation),
+            Uri = identifierService.GetRegistryUri(command.Identifier.Scheme, command.Identifier.Id)
         });
 
         return organisation;
