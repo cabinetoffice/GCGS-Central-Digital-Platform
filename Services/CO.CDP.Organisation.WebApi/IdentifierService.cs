@@ -21,16 +21,16 @@ public class IdentifierService(IConfiguration configuration) : IIdentifierServic
         }
     }
 
-    public string? GetRegistryUri(string? scheme, string? identifierId)
+    public string? GetRegistryUri(string scheme, string? identifierId)
     {
-        if (scheme == null || identifierId == null || (scheme != "GB-PPON" && !SchemesToEndpointUris.ContainsKey(scheme)))
+        if (identifierId == null || (scheme != "GB-PPON" && !SchemesToEndpointUris.ContainsKey(scheme)))
         {
             return default;
         }
 
         if (scheme == "GB-PPON")
         {
-            var hostUrl = configuration["OrganisationApiHostUrl"] ?? throw new Exception("Missing configuration key: OrganisationApiHostUrl.");
+            var hostUrl = configuration["OrganisationApiUrl"] ?? throw new Exception("Missing configuration key: OrganisationApiUrl.");
 
             return string.Format("{0}/organisations/{1}", hostUrl, identifierId);
         }
