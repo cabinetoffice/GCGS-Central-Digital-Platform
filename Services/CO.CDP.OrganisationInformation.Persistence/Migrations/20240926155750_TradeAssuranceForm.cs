@@ -11,6 +11,13 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.AddColumn<int>(
+                name: "display_order",
+                table: "form_sections",
+                type: "integer",
+                nullable: false,
+                defaultValue: 0);
+
             migrationBuilder.Sql($@"
                 DO $$
                 DECLARE
@@ -42,6 +49,14 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                     RETURNING id INTO previousQuestionId;
                 END $$;
             ");
+
+            migrationBuilder.Sql($@"
+                update form_sections set display_order = 1 where title = 'Qualifications';
+                update form_sections set display_order = 2 where title = 'Trade assurances';
+                update form_sections set display_order = 3 where title = 'Financial Information';
+                update form_sections set display_order = 4 where title = 'Exclusions';
+                update form_sections set display_order = 100 where title = 'Share my information';
+            ");
         }
 
         /// <inheritdoc />
@@ -53,12 +68,14 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                     sectionId INT;
                 BEGIN
                     SELECT id INTO sectionId FROM form_sections WHERE guid = 'cf08acf8-e2fa-40c8-83e7-50c8671c343f';
- 
                     DELETE FROM form_questions WHERE section_id = sectionId;
-
                     DELETE FROM form_sections WHERE id = sectionId;
                 END $$;
             ");
+
+            migrationBuilder.DropColumn(
+                name: "display_order",
+                table: "form_sections");
         }
     }
 }
