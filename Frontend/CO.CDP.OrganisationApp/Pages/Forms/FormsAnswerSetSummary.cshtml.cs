@@ -145,16 +145,23 @@ public class FormsAnswerSetSummaryModel(
             return false;
         }
 
-        FormAnswerSets = GetAnswers(form);
         AllowsMultipleAnswerSets = form.Section.AllowsMultipleAnswerSets;
         AddAnotherAnswerLabel = form.Section.Configuration.AddAnotherAnswerLabel;
-        Heading = form.Section.Configuration.SingularSummaryHeading;
 
-        if (FormAnswerSets.Count != 1 && form.Section.Configuration.PluralSummaryHeadingFormat != null)
+        if (form.AnswerSets.Any(a => a.FurtherQuestionsExempted == true))
         {
-            Heading = string.Format(form.Section.Configuration.PluralSummaryHeadingFormat, FormAnswerSets.Count);
+            Heading = "Not Applicable";
         }
+        else
+        {
+            FormAnswerSets = GetAnswers(form);
+            Heading = form.Section.Configuration.SingularSummaryHeading;
 
+            if (FormAnswerSets.Count != 1 && form.Section.Configuration.PluralSummaryHeadingFormat != null)
+            {
+                Heading = string.Format(form.Section.Configuration.PluralSummaryHeadingFormat, FormAnswerSets.Count);
+            }
+        }
         return true;
     }
 

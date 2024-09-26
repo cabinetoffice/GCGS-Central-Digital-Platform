@@ -6,8 +6,11 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace CO.CDP.OrganisationApp.Pages.Forms;
 
-[Authorize(Policy = OrgScopeRequirement.Editor)]
-public class FormsLandingPage(IFormsClient formsClient, IFormsEngine formsEngine) : PageModel
+[Authorize(Policy = OrgScopeRequirement.Viewer)]
+public class FormsLandingPage(
+    IFormsClient formsClient,
+    IFormsEngine formsEngine,
+    IUserInfoService userInfoService) : PageModel
 {
     [BindProperty(SupportsGet = true)]
     public Guid OrganisationId { get; set; }
@@ -28,6 +31,11 @@ public class FormsLandingPage(IFormsClient formsClient, IFormsEngine formsEngine
         catch (ApiException ex) when (ex.StatusCode == 404)
         {
             return Redirect("/page-not-found");
+        }
+
+        if (await userInfoService.UserHasScope(OrganisationPersonScopes.Viewer))
+        {
+            return RedirectToPage("FormsAnswerSetSummary", new { OrganisationId, FormId, SectionId });
         }
 
         if (form.AnswerSets.Count != 0)

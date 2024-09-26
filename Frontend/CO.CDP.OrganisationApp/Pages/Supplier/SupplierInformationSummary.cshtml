@@ -102,7 +102,14 @@
                             <dd class="govuk-summary-list__value">
                                 @if (!declarationSection && section.AnswerSetCount > 0)
                                 {
-                                    @(section.AnswerSetCount) @:records
+                                    if (section.AnswerSetWithFurtherQuestionExemptedExists)
+                                    {
+                                        @:Not Applicable
+                                    }
+                                    else
+                                    {
+                                        @(section.AnswerSetCount) @:records
+                                    }
                                 }
                             </dd>
                             <dd class="govuk-summary-list__actions">
