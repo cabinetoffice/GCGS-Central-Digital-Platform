@@ -227,6 +227,7 @@ public class DatabaseShareCodeRepositoryTest(PostgreSqlFixture postgreSql) : ICl
             Type = FormSectionType.Standard,
             AllowsMultipleAnswerSets = true,
             CheckFurtherQuestionsExempted = false,
+            DisplayOrder = 1,
             Configuration = new FormSectionConfiguration
             {
                 PluralSummaryHeadingFormat = "You have added {0} files",
