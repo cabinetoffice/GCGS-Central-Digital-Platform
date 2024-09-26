@@ -1,6 +1,6 @@
-@page "/organisation/{organisationId:guid}/forms/{formId:guid}/sections/{sectionId:guid}/{currentQuestionId:guid?}"
+@page "/organisation/{organisationId:guid}/forms/{formId:guid}/sections/{sectionId:guid}/questions/{currentQuestionId}"
 @using CO.CDP.OrganisationApp.Constants
-@model DynamicFormsPageModel
+@model FormsQuestionPageModel
 
 @{
     var backUrl = $"/organisation/{Model.OrganisationId}/supplier-information";
@@ -15,12 +15,12 @@
         if (fromCheckAnswerPage)
         {
             var checkYourAnswerQuestionId = Model.CheckYourAnswerQuestionId;
-            backUrl = $"/organisation/{Model.OrganisationId}/forms/{Model.FormId}/sections/{Model.SectionId}/{checkYourAnswerQuestionId}";
+            backUrl = $"/organisation/{Model.OrganisationId}/forms/{Model.FormId}/sections/{Model.SectionId}/questions/{checkYourAnswerQuestionId}";
             Model.RedirectToCheckYourAnswer = true;
         }
         else if (Model.PreviousQuestion != null)
         {
-            backUrl = $"/organisation/{Model.OrganisationId}/forms/{Model.FormId}/sections/{Model.SectionId}/{Model.PreviousQuestion.Id}{(Model.PreviousQuestionHasNonUKAddressAnswer() ? "?UkOrNonUk=non-uk" : "")}";
+            backUrl = $"/organisation/{Model.OrganisationId}/forms/{Model.FormId}/sections/{Model.SectionId}/questions/{Model.PreviousQuestion.Id}{(Model.PreviousQuestionHasNonUKAddressAnswer() ? "?UkOrNonUk=non-uk" : "")}";
         }
     }
 }

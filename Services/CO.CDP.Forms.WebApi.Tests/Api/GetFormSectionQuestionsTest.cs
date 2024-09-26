@@ -104,6 +104,7 @@ public class GetFormSectionQuestionsTest
                 Title = "Financial Information",
                 Type = FormSectionType.Standard,
                 AllowsMultipleAnswerSets = true,
+                CheckFurtherQuestionsExempted = false,
                 Configuration = new FormSectionConfiguration
                 {
                     PluralSummaryHeadingFormat = "You have added {0} files",

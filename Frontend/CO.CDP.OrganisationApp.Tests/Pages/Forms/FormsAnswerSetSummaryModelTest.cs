@@ -7,16 +7,18 @@ using Moq;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages.Forms;
 
-public class FormsAddAnotherAnswerSetModelTest
+public class FormsAnswerSetSummaryModelTest
 {
     private readonly Mock<IFormsClient> _formsClientMock;
+    private readonly Mock<IFormsEngine> _formsEngineMock;
     private readonly Mock<ITempDataService> _tempDataServiceMock;
-    private readonly FormsAddAnotherAnswerSetModel _model;
+    private readonly FormsAnswerSetSummaryModel _model;
     private readonly Guid AnswerSetId = Guid.NewGuid();
 
-    public FormsAddAnotherAnswerSetModelTest()
+    public FormsAnswerSetSummaryModelTest()
     {
         _tempDataServiceMock = new Mock<ITempDataService>();
+        _formsEngineMock = new();
 
         _formsClientMock = new Mock<IFormsClient>();
         _formsClientMock.Setup(client => client.GetFormSectionQuestionsAsync(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid>()))
@@ -25,19 +27,22 @@ public class FormsAddAnotherAnswerSetModelTest
                  title: "Test Title",
                  type: FormSectionType.Standard,
                  allowsMultipleAnswerSets: true,
+                 checkFurtherQuestionsExempted: false,
                  id: Guid.NewGuid(),
                  configuration: new FormSectionConfiguration(
                      addAnotherAnswerLabel: null,
                      pluralSummaryHeadingFormat: null,
                      removeConfirmationCaption: "Test Caption",
                      removeConfirmationHeading: "Test confimration heading",
-                     singularSummaryHeading: null)),
+                     singularSummaryHeading: null,
+                     furtherQuestionsExemptedHeading: null
+                     )),
              questions: [],
              answerSets: [new FormAnswerSet(id: AnswerSetId, answers: [],
              furtherQuestionsExempted : false)]
              ));
 
-        _model = new FormsAddAnotherAnswerSetModel(_formsClientMock.Object, _tempDataServiceMock.Object)
+        _model = new FormsAnswerSetSummaryModel(_formsClientMock.Object, _formsEngineMock.Object, _tempDataServiceMock.Object)
         {
             OrganisationId = Guid.NewGuid(),
             FormId = Guid.NewGuid(),
@@ -66,14 +71,16 @@ public class FormsAddAnotherAnswerSetModelTest
     }
 
     [Fact]
-    public async Task OnPost_ShouldRedirectToDynamicFormsPage_WhenAddAnotherAnswerSetIsTrue()
+    public async Task OnPost_ShouldRedirectToFormsQuestionPage_WhenAddAnotherAnswerSetIsTrue()
     {
         _model.AddAnotherAnswerSet = true;
+        _formsEngineMock.Setup(f => f.GetCurrentQuestion(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid>(), null))
+            .ReturnsAsync(new Models.FormQuestion());
 
         var result = await _model.OnPost();
 
         var redirectToPageResult = result.Should().BeOfType<RedirectToPageResult>().Subject;
-        redirectToPageResult.PageName.Should().Be("DynamicFormsPage");
+        redirectToPageResult.PageName.Should().Be("FormsQuestionPage");
     }
 
     [Fact]
@@ -98,12 +105,12 @@ public class FormsAddAnotherAnswerSetModelTest
     }
 
     [Fact]
-    public async Task OnGetChange_ShouldRedirectToDynamicFormsPage_WhenAnswerSetIsFound()
+    public async Task OnGetChange_ShouldRedirectToFormsQuestionPage_WhenAnswerSetIsFound()
     {
         var result = await _model.OnGetChange(AnswerSetId);
 
         var redirectToPageResult = result.Should().BeOfType<RedirectToPageResult>().Subject;
-        redirectToPageResult.PageName.Should().Be("DynamicFormsPage");
+        redirectToPageResult.PageName.Should().Be("FormsQuestionPage");
     }
 
     [Fact]
