@@ -30,6 +30,6 @@ public class SupportUpdateOrganisationUseCase(IOrganisationRepository organisati
 
         organisationRepository.Save(organisation);
 
-        return await Task.FromResult(true);
+        return true;
     }
 }

@@ -39,16 +39,23 @@ public class OrganisationApprovalModel(
             return Page();
         }
 
-        SupportOrganisationInfo orgInfo = new SupportOrganisationInfo(
-            Approval,
-            UserDetails.PersonId ?? Guid.Empty,
-            Comments ?? ""
-        );
+        if (UserDetails.PersonId != null)
+        {
+            SupportOrganisationInfo orgInfo = new SupportOrganisationInfo(
+                Approval,
+                UserDetails.PersonId.Value,
+                Comments ?? ""
+            );
 
-        await organisationClient.SupportUpdateOrganisationAsync(organisationId, new SupportUpdateOrganisation(
-            orgInfo,
-            SupportOrganisationUpdateType.Review
-        ));
+            await organisationClient.SupportUpdateOrganisationAsync(organisationId, new SupportUpdateOrganisation(
+                orgInfo,
+                SupportOrganisationUpdateType.Review
+            ));
+        }
+        else
+        {
+            return Redirect("/");
+        }
 
         return RedirectToPage("Organisations", new { type = "buyer" });
     }
