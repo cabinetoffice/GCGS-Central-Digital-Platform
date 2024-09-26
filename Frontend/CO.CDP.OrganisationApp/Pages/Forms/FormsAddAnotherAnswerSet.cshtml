@@ -1,4 +1,4 @@
-@page "/organisation/{organisationId:guid}/forms/{formId:guid}/sections/{sectionId:guid}/add-another-answer-set"
+@page "/organisation/{organisationId:guid}/forms/{formId:guid}/sections/{sectionId:guid}/summary"
 @model FormsAddAnotherAnswerSetModel
 @using CO.CDP.OrganisationApp.Constants
 @inject IUserInfoService userInfoService
@@ -14,7 +14,7 @@
         </div>
         <div class="govuk-grid-column-full">
 
-            @if (Model.FormAnswerSets.Count > 0 && !string.IsNullOrWhiteSpace(Model.Heading))
+            @if (!string.IsNullOrWhiteSpace(Model.Heading))
             {
                 <h1 class="govuk-heading-l">
                     @Model.Heading

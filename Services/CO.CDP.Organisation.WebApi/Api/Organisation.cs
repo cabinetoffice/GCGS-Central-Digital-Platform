@@ -678,10 +678,14 @@ public static class EndpointExtensions
     public static RouteGroupBuilder UseManageApiKeyEndpoints(this RouteGroupBuilder app)
     {
         app.MapGet("/{organisationId}/api-keys",
-            async (Guid organisationId, IUseCase<Guid, IEnumerable<Model.AuthenticationKey>> useCase) =>
+            [OrganisationAuthorize(
+                [AuthenticationChannel.OneLogin],
+                [Constants.OrganisationPersonScope.Admin, Constants.OrganisationPersonScope.Editor],
+                OrganisationIdLocation.Path)]
+        async (Guid organisationId, IUseCase<Guid, IEnumerable<Model.AuthenticationKey>> useCase) =>
                await useCase.Execute(organisationId)
                    .AndThen(entities => Results.Ok(entities)))
-           .Produces<List<Model.AuthenticationKey>>(StatusCodes.Status200OK, "application/json")
+           .Produces<List<AuthenticationKey>>(StatusCodes.Status200OK, "application/json")
            .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
            .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
            .ProducesProblem(StatusCodes.Status422UnprocessableEntity)
@@ -700,7 +704,11 @@ public static class EndpointExtensions
            });
 
         app.MapPost("/{organisationId}/api-keys",
-            async (Guid organisationId, RegisterAuthenticationKey registerAuthenticationKey,
+            [OrganisationAuthorize(
+                [AuthenticationChannel.OneLogin],
+                [Constants.OrganisationPersonScope.Admin, Constants.OrganisationPersonScope.Editor],
+                OrganisationIdLocation.Path)]
+        async (Guid organisationId, RegisterAuthenticationKey registerAuthenticationKey,
                 IUseCase<(Guid, RegisterAuthenticationKey), bool> useCase) =>
 
                 await useCase.Execute((organisationId, registerAuthenticationKey))
@@ -726,8 +734,12 @@ public static class EndpointExtensions
                 return operation;
             });
 
-        app.MapPatch("/{organisationId}/api-keys/revoke",
-            async (Guid organisationId, string keyName,
+        app.MapPatch("/{organisationId}/api-keys/{keyName}/revoke",
+            [OrganisationAuthorize(
+                [AuthenticationChannel.OneLogin],
+                [Constants.OrganisationPersonScope.Admin, Constants.OrganisationPersonScope.Editor],
+                OrganisationIdLocation.Path)]
+        async (Guid organisationId, string keyName,
                 IUseCase<(Guid, string), bool> useCase) =>
                     await useCase.Execute((organisationId, keyName))
                         .AndThen(_ => Results.NoContent()))
