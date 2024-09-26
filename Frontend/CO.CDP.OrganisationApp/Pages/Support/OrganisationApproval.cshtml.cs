@@ -31,12 +31,16 @@ public class OrganisationApprovalModel(
 
     public async Task<IActionResult> OnPost(Guid organisationId)
     {
-        await organisationClient.ReviewOrganisationAsync(new ReviewOrganisation(
+        SupportOrganisationInfo orgInfo = new SupportOrganisationInfo(
             Approval ?? false,
             UserDetails.PersonId ?? Guid.Empty,
-            Comments ?? "",
-            organisationId
-            ));
+            Comments ?? ""
+        );
+
+        await organisationClient.SupportUpdateOrganisationAsync(organisationId, new SupportUpdateOrganisation(
+            orgInfo,
+            SupportOrganisationUpdateType.Review
+        ));
 
         return RedirectToPage("Organisations", new { type = "buyer" });
     }
