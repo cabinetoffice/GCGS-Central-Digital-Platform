@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using CO.CDP.EntityFrameworkCore.Timestamps;
 using Microsoft.EntityFrameworkCore;
 
@@ -22,9 +23,11 @@ public class Organisation : IEntityDate
     public DateTimeOffset CreatedOn { get; set; }
     public DateTimeOffset UpdatedOn { get; set; }
     public DateTimeOffset? ApprovedOn { get; set; }
-    public Person? ApprovedBy { get; set; }
-    public int? ApprovedById { get; set; }
-    public string? ApprovedComment { get; set; }
+    public Person? ReviewedBy { get; set; }
+    public int? ReviewedById { get; set; }
+
+    [MaxLength(10000)]
+    public string? ReviewComment { get; set; }
 
     [Owned]
     [Index(nameof(IdentifierId), [nameof(Scheme)], IsUnique = true)]

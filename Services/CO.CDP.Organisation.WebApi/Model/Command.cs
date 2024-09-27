@@ -282,10 +282,22 @@ public record UpdatePersonToOrganisation
     public required List<string> Scopes { get; init; }
 }
 
-public record ReviewOrganisation
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum SupportOrganisationUpdateType
 {
-    public required Guid OrganisationId { get; init; }
-    public required Guid approvedById { get; init; }
+    Review
+}
+
+public record SupportUpdateOrganisation
+{
+    public required SupportOrganisationUpdateType Type { get; init; }
+
+    public required SupportOrganisationInfo Organisation { get; init; }
+}
+
+public record SupportOrganisationInfo
+{
+    public required Guid ReviewedById { get; init; }
     public required Boolean Approved { get; init; }
     public required string Comment { get; init; }
 }
