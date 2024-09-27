@@ -8,16 +8,24 @@ namespace CO.CDP.OrganisationApp.Pages.Forms;
 
 public class FormElementFileUploadModel : FormElementModel, IValidatableObject
 {
-    private const int AllowedMaxFileSizeMB = 10;
+    private const int AllowedMaxFileSizeMB = 25;
     private readonly string[] AllowedExtensions = [".jpg", ".jpeg", ".png", ".pdf", ".txt", ".xls", ".xlsx", ".csv", ".docx", ".doc"];
 
     [BindProperty]
     public IFormFile? UploadedFile { get; set; }
 
+    [BindProperty]
+    public bool? HasValue { get; set; }
+
     public string? UploadedFileName { get; set; }
 
     public override FormAnswer? GetAnswer()
     {
+        if (IsRequired == false && HasValue == false)
+        {
+            return null;
+        }
+
         return string.IsNullOrWhiteSpace(UploadedFileName) ? null : new FormAnswer { TextValue = UploadedFileName };
     }
 
@@ -26,6 +34,11 @@ public class FormElementFileUploadModel : FormElementModel, IValidatableObject
         if (answer?.TextValue != null)
         {
             UploadedFileName = answer.TextValue;
+            HasValue = true;
+        }
+        else if (RedirectFromCheckYourAnswerPage && IsRequired == false)
+        {
+            HasValue = false;
         }
     }
 
@@ -46,23 +59,45 @@ public class FormElementFileUploadModel : FormElementModel, IValidatableObject
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
-        if (CurrentFormQuestionType == FormQuestionType.FileUpload && IsRequired == true && string.IsNullOrWhiteSpace(UploadedFileName))
+        if (CurrentFormQuestionType != FormQuestionType.FileUpload)
         {
-            if (UploadedFile == null)
-            {
-                yield return new ValidationResult("No file selected.", [nameof(UploadedFile)]);
-            }
-            else
-            {
-                if (UploadedFile.Length > AllowedMaxFileSizeMB * 1024 * 1024)
-                {
-                    yield return new ValidationResult($"The file size must not exceed {AllowedMaxFileSizeMB}MB.", [nameof(UploadedFile)]);
-                }
+            yield break;
+        }
 
-                var fileExtension = Path.GetExtension(UploadedFile.FileName).ToLowerInvariant();
-                if (!AllowedExtensions.Contains(fileExtension))
+        var validateField = IsRequired;
+
+        if (IsRequired == false)
+        {
+            if (HasValue == null)
+            {
+                yield return new ValidationResult("Select an option", [nameof(HasValue)]);
+            }
+            else if (HasValue == true)
+            {
+                validateField = true;
+            }
+        }
+
+        if (validateField)
+        {
+            if (string.IsNullOrWhiteSpace(UploadedFileName))
+            {
+                if (UploadedFile == null)
                 {
-                    yield return new ValidationResult($"Please upload a file which has one of the following extensions: {string.Join(", ", AllowedExtensions)}", [nameof(UploadedFile)]);
+                    yield return new ValidationResult("No file selected.", [nameof(UploadedFile)]);
+                }
+                else
+                {
+                    if (UploadedFile.Length > AllowedMaxFileSizeMB * 1024 * 1024)
+                    {
+                        yield return new ValidationResult($"The file size must not exceed {AllowedMaxFileSizeMB}MB.", [nameof(UploadedFile)]);
+                    }
+
+                    var fileExtension = Path.GetExtension(UploadedFile.FileName).ToLowerInvariant();
+                    if (!AllowedExtensions.Contains(fileExtension))
+                    {
+                        yield return new ValidationResult($"Please upload a file which has one of the following extensions: {string.Join(", ", AllowedExtensions)}", [nameof(UploadedFile)]);
+                    }
                 }
             }
         }

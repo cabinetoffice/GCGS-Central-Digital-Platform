@@ -1,12 +1,37 @@
 @model FormElementFileUploadModel
 
 @{
-    var hasError = ((TagBuilder)Html.ValidationMessageFor(m => m.UploadedFile)).HasInnerHtml;
+    var uploadFileHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.UploadedFile)).HasInnerHtml;
+    var selectOptionHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.HasValue)).HasInnerHtml;
+
+    void RenderField()
+    {
+        <label class="govuk-label" for="file-upload">
+            Upload a file
+        </label>
+        <div id="documents-hint" class="govuk-hint">
+            You can upload most file types including: PDF, scans, mobile phone photos, Word, Excel and PowerPoint, multimedia and ZIP files that are smaller than 25MB.
+        </div>
+        if (uploadFileHasError)
+        {
+            <p class="govuk-error-message">
+                <span class="govuk-visually-hidden">Error:</span>
+                @Html.ValidationMessageFor(m => m.UploadedFile)
+            </p>
+        }
+        <input id="file-upload" class="govuk-file-upload" name="UploadedFile" type="file"
+               accept="image/png, image/gif, image/jpeg, application/pdf, text/plain, text/csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document">
+
+        @if (!string.IsNullOrWhiteSpace(@Model.UploadedFileName))
+        {
+            <p class="govuk-body">Uploaded file: @Model.UploadedFileName</p>
+        }
+    }
 }
 
 <input type="hidden" name="UploadedFileName" value="@Model.UploadedFileName" />
 
-<div class="govuk-form-group @(hasError ? "govuk-form-group--error" : "")">
+<div class="govuk-form-group @((Model.IsRequired && uploadFileHasError) || selectOptionHasError ? "govuk-form-group--error" : "")">
     @if (!string.IsNullOrWhiteSpace(Model.Heading))
     {
         <h1 class="govuk-heading-l">@Model.Heading</h1>
@@ -17,19 +42,44 @@
         @Html.Raw(Model.Description)
     }
 
-    @if (!string.IsNullOrWhiteSpace(@Model.UploadedFileName))
-    {
-        <p class="govuk-body">Uploaded file: @Model.UploadedFileName</p>
-    }
-
-    @if (hasError)
+    @if (selectOptionHasError)
     {
         <p class="govuk-error-message">
             <span class="govuk-visually-hidden">Error:</span>
-            @Html.ValidationMessageFor(m => m.UploadedFile)
+            @Html.ValidationMessageFor(m => m.HasValue)
         </p>
     }
 
-    <input class="govuk-file-upload" name="UploadedFile" type="file"
-           accept="image/png, image/gif, image/jpeg, application/pdf, text/plain, text/csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document">
+    @if (Model.IsRequired)
+    {
+        RenderField();
+    }
+    else
+    {
+        <fieldset class="govuk-fieldset">
+            <div class="govuk-radios" data-module="govuk-radios">
+
+                <div class="govuk-radios__item">
+                    <input class="govuk-radios__input" id="YES" name="HasValue" type="radio"
+                           value="true" data-aria-controls="conditional-YES" @(Model.HasValue == true ? "checked" : "")>
+                    <label class="govuk-label govuk-radios__label" for="YES">Yes</label>
+                </div>
+
+                <div class="govuk-radios__conditional" id="conditional-YES">
+                    <div class="govuk-form-group @(uploadFileHasError ? "govuk-form-group--error" : "")">
+                        @{
+                            RenderField();
+                        }
+                    </div>
+                </div>
+
+                <div class="govuk-radios__item">
+                    <input class="govuk-radios__input" id="NO" name="HasValue" type="radio"
+                           value="false" data-aria-controls="conditional-NO" @(Model.HasValue == false ? "checked" : "")>
+                    <label class="govuk-label govuk-radios__label" for="NO">No</label>
+                    <div class="govuk-radios__conditional--hidden" id="conditional-NO"></div>
+                </div>
+            </div>
+        </fieldset>
+    }
 </div>
