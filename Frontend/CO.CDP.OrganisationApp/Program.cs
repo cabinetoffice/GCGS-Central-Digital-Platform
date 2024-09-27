@@ -69,7 +69,7 @@ builder.Services.AddScoped<ICompaniesHouseApi, CompaniesHouseApi>();
 
 builder.Services.AddTransient<IChoiceProviderStrategy, ExclusionAppliesToChoiceProviderStrategy>();
 builder.Services.AddTransient<IChoiceProviderStrategy, DefaultChoiceProviderStrategy>();
-builder.Services.AddTransient<ChoiceProviderService>();
+builder.Services.AddTransient<IChoiceProviderService, ChoiceProviderService>();
 
 builder.Services.AddTransient<IFormsEngine, FormsEngine>();
 builder.Services.AddTransient<IDiagnosticPage, DiagnosticPage>();

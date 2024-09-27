@@ -1,7 +1,6 @@
 using CO.CDP.Forms.WebApiClient;
 using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.Pages.Forms.ChoiceProviderStrategies;
-using Microsoft.Extensions.DependencyInjection;
 using DataShareWebApiClient = CO.CDP.DataSharing.WebApiClient;
 using SectionQuestionsResponse = CO.CDP.OrganisationApp.Models.SectionQuestionsResponse;
 namespace CO.CDP.OrganisationApp;
@@ -10,6 +9,7 @@ public class FormsEngine(
     IFormsClient formsApiClient,
     ITempDataService tempDataService,
     IServiceProvider serviceProvider,
+    IChoiceProviderService choiceProviderService,
     DataShareWebApiClient.IDataSharingClient dataSharingClient) : IFormsEngine
 {
     public const string OrganisationSupplierInfoFormId = "0618b13e-eaf2-46e3-a7d2-6f2c44be7022";
@@ -60,7 +60,6 @@ public class FormsEngine(
 
     public async Task<List<string>?> ExecuteChoiceProviderStrategy(Forms.WebApiClient.FormQuestionOptions options)
     {
-        var choiceProviderService = serviceProvider.GetRequiredService<ChoiceProviderService>();
         IChoiceProviderStrategy strategy = choiceProviderService.GetStrategy(options.ChoiceProviderStrategy);
         return await strategy.Execute(options);
     }
