@@ -1,4 +1,5 @@
 using CO.CDP.OrganisationApp.ThirdPartyApiClients.CompaniesHouse;
+using FluentAssertions;
 using Flurl.Http.Testing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -33,8 +34,8 @@ public class CompaniesHouseApiTest
 
         var result = await _companiesHouseApi.GetRegisteredAddress(companyNumber);
 
-        Assert.NotNull(result);
-        Assert.Equal(expectedAddress.AddressLine1, result.AddressLine1);
+        result.Should().NotBeNull();
+        expectedAddress.AddressLine1.Should().Match(result!.AddressLine1);
     }
 
     [Fact]
@@ -51,7 +52,7 @@ public class CompaniesHouseApiTest
 
         var result = await _companiesHouseApi.GetProfile(companyNumber);
 
-        Assert.NotNull(result);
-        Assert.Equal(expectedProfile.CompanyName, result.CompanyName);
+        result.Should().NotBeNull();
+        expectedProfile.CompanyName.Should().Match(result!.CompanyName);
     }
 }
