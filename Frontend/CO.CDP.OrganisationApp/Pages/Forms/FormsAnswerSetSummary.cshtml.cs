@@ -185,6 +185,7 @@ public class FormsAnswerSetSummaryModel(
                         FormQuestionType.YesOrNo => answer.BoolValue.HasValue ? (answer.BoolValue == true ? "yes" : "no") : "",
                         FormQuestionType.Date => answer.DateValue.HasValue ? answer.DateValue.Value.ToString("dd/MM/yyyy") : "",
                         FormQuestionType.Address => answer.AddressValue != null ? $"{answer.AddressValue.StreetAddress}, {answer.AddressValue.Locality}, {answer.AddressValue.PostalCode}, {answer.AddressValue.CountryName}" : "",
+                        FormQuestionType.SingleChoice => answer.OptionValue ?? "",
                         _ => ""
                     };
 

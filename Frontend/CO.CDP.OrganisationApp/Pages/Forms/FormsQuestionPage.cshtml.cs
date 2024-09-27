@@ -44,6 +44,8 @@ public class FormsQuestionPageModel(
     [BindProperty]
     public FormElementAddressModel? AddressModel { get; set; }
     [BindProperty]
+    public FormElementSingleChoiceModel? SingleChoiceModel { get; set; }
+    [BindProperty]
     public FormElementCheckBoxInputModel? CheckBoxModel { get; set; }
 
     [BindProperty(SupportsGet = true)]
@@ -158,6 +160,7 @@ public class FormsQuestionPageModel(
                     FormQuestionType.YesOrNo => answer.Answer?.BoolValue.HasValue == true ? (answer.Answer.BoolValue == true ? "yes" : "no") : "",
                     FormQuestionType.Date => answer.Answer?.DateValue.HasValue == true ? answer.Answer.DateValue.Value.ToString("dd/MM/yyyy") : "",
                     FormQuestionType.Address => answer.Answer?.AddressValue != null ? answer.Answer.AddressValue.ToHtmlString() : "",
+                    FormQuestionType.SingleChoice => answer.Answer?.OptionValue ?? "",
                     _ => ""
                 };
 
@@ -227,6 +230,7 @@ public class FormsQuestionPageModel(
             { FormQuestionType.CheckBox, "_FormElementCheckBoxInput" },
             { FormQuestionType.Address, "_FormElementAddress" },
             { FormQuestionType.MultiLine, "_FormElementMultiLineInput" },
+            { FormQuestionType.SingleChoice, "_FormElementSingleChoice" },
         };
 
         if (formQuestionPartials.TryGetValue(question.Type, out var partialView))
@@ -252,6 +256,7 @@ public class FormsQuestionPageModel(
             FormQuestionType.Date => DateInputModel ?? new FormElementDateInputModel(),
             FormQuestionType.CheckBox => CheckBoxModel ?? new FormElementCheckBoxInputModel(),
             FormQuestionType.Address => AddressModel ?? new FormElementAddressModel(),
+            FormQuestionType.SingleChoice => SingleChoiceModel ?? new FormElementSingleChoiceModel(),
             _ => throw new NotImplementedException($"Forms question: {question.Type} is not supported"),
         };
 
