@@ -40,7 +40,8 @@ public class DatabaseFormRepository(OrganisationInformationContext context) : IF
                     from answer in answers.DefaultIfEmpty()
                     where f.Guid == formId
                     group new FormSectionGroupSelection { FormId = answer.FormId, FurtherQuestionsExempted = answer.FurtherQuestionsExempted }
-                        by new { fss.Guid, fss.Title, fss.Type, fss.AllowsMultipleAnswerSets } into g
+                        by new { fss.Guid, fss.Title, fss.Type, fss.AllowsMultipleAnswerSets, fss.DisplayOrder } into g
+                    orderby g.Key.DisplayOrder
                     select new FormSectionSummary
                     {
                         SectionId = g.Key.Guid,

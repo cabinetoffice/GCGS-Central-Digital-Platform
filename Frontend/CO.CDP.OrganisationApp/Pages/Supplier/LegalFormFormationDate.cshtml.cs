@@ -96,7 +96,7 @@ public class LegalFormFormationDateModel(
         {
             await organisationClient.UpdateSupplierLegalForm(Id, legalform);
 
-            tempDataService.Remove(TradeAssurance.TempDataKey);
+            tempDataService.Remove(LegalForm.TempDataKey);
         }
         catch (ApiException ex) when (ex.StatusCode == 404)
         {

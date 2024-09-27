@@ -1,4 +1,3 @@
-using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Pages.Supplier;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
@@ -100,38 +99,4 @@ public class ConnectedEntitySupplierCompanyQuestionTest
 
         return connectedPersonDetails;
     }
-
-    private static List<ConnectedEntityLookup> ConnectedEntities =>
-    [
-         new(Guid.NewGuid(), ConnectedEntityType.Organisation, "e1", It.IsAny<Uri>()),
-        new(Guid.NewGuid(), ConnectedEntityType.Organisation, "e2", It.IsAny<Uri>()),
-    ];
-
-    private static SupplierInformation SupplierInformationClientModel => new(
-            organisationName: "FakeOrg",
-            supplierType: SupplierType.Organisation,
-            operationTypes: null,
-            completedRegAddress: true,
-            completedPostalAddress: false,
-            completedVat: false,
-            completedWebsiteAddress: false,
-            completedEmailAddress: true,
-            completedQualification: false,
-            completedTradeAssurance: false,
-            completedOperationType: false,
-            completedLegalForm: false,
-            completedConnectedPerson: false,
-            tradeAssurances: null,
-            legalForm: null,
-            qualifications: null);
-
-    private static CO.CDP.Organisation.WebApiClient.Organisation OrganisationClientModel(Guid id) =>
-        new(
-            additionalIdentifiers: [new Identifier(id: "FakeId", legalName: "FakeOrg", scheme: "VAT", uri: null)],
-            addresses: null,
-            contactPoint: new ContactPoint(email: "test@test.com", name: null, telephone: null, url: new Uri("https://xyz.com")),
-            id: id,
-            identifier: null,
-            name: "Test Org",
-            roles: [PartyRole.Supplier]);
 }

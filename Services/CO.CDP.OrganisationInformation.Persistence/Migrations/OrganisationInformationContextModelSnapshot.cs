@@ -529,6 +529,10 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                         .HasColumnName("created_on")
                         .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
+                    b.Property<int>("DisplayOrder")
+                        .HasColumnType("integer")
+                        .HasColumnName("display_order");
+
                     b.Property<int>("FormId")
                         .HasColumnType("integer")
                         .HasColumnName("form_id");
@@ -638,14 +642,6 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("ApprovedById")
-                        .HasColumnType("integer")
-                        .HasColumnName("approved_by_id");
-
-                    b.Property<string>("ApprovedComment")
-                        .HasColumnType("text")
-                        .HasColumnName("approved_comment");
-
                     b.Property<DateTimeOffset?>("ApprovedOn")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("approved_on");
@@ -665,6 +661,15 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                         .HasColumnType("text")
                         .HasColumnName("name");
 
+                    b.Property<string>("ReviewComment")
+                        .HasMaxLength(10000)
+                        .HasColumnType("character varying(10000)")
+                        .HasColumnName("review_comment");
+
+                    b.Property<int?>("ReviewedById")
+                        .HasColumnType("integer")
+                        .HasColumnName("reviewed_by_id");
+
                     b.Property<int[]>("Roles")
                         .IsRequired()
                         .HasColumnType("integer[]")
@@ -683,9 +688,6 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                     b.HasKey("Id")
                         .HasName("pk_organisations");
 
-                    b.HasIndex("ApprovedById")
-                        .HasDatabaseName("ix_organisations_approved_by_id");
-
                     b.HasIndex("Guid")
                         .IsUnique()
                         .HasDatabaseName("ix_organisations_guid");
@@ -693,6 +695,9 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                     b.HasIndex("Name")
                         .IsUnique()
                         .HasDatabaseName("ix_organisations_name");
+
+                    b.HasIndex("ReviewedById")
+                        .HasDatabaseName("ix_organisations_reviewed_by_id");
 
                     b.HasIndex("TenantId")
                         .HasDatabaseName("ix_organisations_tenant_id");
@@ -1277,10 +1282,10 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
 
             modelBuilder.Entity("CO.CDP.OrganisationInformation.Persistence.Organisation", b =>
                 {
-                    b.HasOne("CO.CDP.OrganisationInformation.Persistence.Person", "ApprovedBy")
+                    b.HasOne("CO.CDP.OrganisationInformation.Persistence.Person", "ReviewedBy")
                         .WithMany()
-                        .HasForeignKey("ApprovedById")
-                        .HasConstraintName("fk_organisations_persons_approved_by_id");
+                        .HasForeignKey("ReviewedById")
+                        .HasConstraintName("fk_organisations_persons_reviewed_by_id");
 
                     b.HasOne("CO.CDP.OrganisationInformation.Persistence.Tenant", "Tenant")
                         .WithMany("Organisations")
@@ -1516,17 +1521,9 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                                 .HasColumnType("boolean")
                                 .HasColumnName("completed_postal_address");
 
-                            b1.Property<bool>("CompletedQualification")
-                                .HasColumnType("boolean")
-                                .HasColumnName("completed_qualification");
-
                             b1.Property<bool>("CompletedRegAddress")
                                 .HasColumnType("boolean")
                                 .HasColumnName("completed_reg_address");
-
-                            b1.Property<bool>("CompletedTradeAssurance")
-                                .HasColumnType("boolean")
-                                .HasColumnName("completed_trade_assurance");
 
                             b1.Property<bool>("CompletedVat")
                                 .HasColumnType("boolean")
@@ -1612,142 +1609,18 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                                         .HasConstraintName("fk_legal_forms_supplier_information_id");
                                 });
 
-                            b1.OwnsMany("CO.CDP.OrganisationInformation.Persistence.Organisation+Qualification", "Qualifications", b2 =>
-                                {
-                                    b2.Property<int>("Id")
-                                        .ValueGeneratedOnAdd()
-                                        .HasColumnType("integer")
-                                        .HasColumnName("id");
-
-                                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b2.Property<int>("Id"));
-
-                                    b2.Property<string>("AwardedByPersonOrBodyName")
-                                        .IsRequired()
-                                        .HasColumnType("text")
-                                        .HasColumnName("awarded_by_person_or_body_name");
-
-                                    b2.Property<DateTimeOffset>("CreatedOn")
-                                        .ValueGeneratedOnAdd()
-                                        .HasColumnType("timestamp with time zone")
-                                        .HasColumnName("created_on")
-                                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
-
-                                    b2.Property<DateTimeOffset>("DateAwarded")
-                                        .HasColumnType("timestamp with time zone")
-                                        .HasColumnName("date_awarded");
-
-                                    b2.Property<Guid>("Guid")
-                                        .HasColumnType("uuid")
-                                        .HasColumnName("guid");
-
-                                    b2.Property<string>("Name")
-                                        .IsRequired()
-                                        .HasColumnType("text")
-                                        .HasColumnName("name");
-
-                                    b2.Property<int>("SupplierInformationOrganisationId")
-                                        .HasColumnType("integer")
-                                        .HasColumnName("supplier_information_organisation_id");
-
-                                    b2.Property<DateTimeOffset>("UpdatedOn")
-                                        .ValueGeneratedOnAdd()
-                                        .HasColumnType("timestamp with time zone")
-                                        .HasColumnName("updated_on")
-                                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
-
-                                    b2.HasKey("Id")
-                                        .HasName("pk_qualifications");
-
-                                    b2.HasIndex("Guid")
-                                        .IsUnique()
-                                        .HasDatabaseName("ix_qualifications_guid");
-
-                                    b2.HasIndex("SupplierInformationOrganisationId")
-                                        .HasDatabaseName("ix_qualifications_supplier_information_organisation_id");
-
-                                    b2.ToTable("qualifications", (string)null);
-
-                                    b2.WithOwner()
-                                        .HasForeignKey("SupplierInformationOrganisationId")
-                                        .HasConstraintName("fk_qualifications_supplier_information_supplier_information_or");
-                                });
-
-                            b1.OwnsMany("CO.CDP.OrganisationInformation.Persistence.Organisation+TradeAssurance", "TradeAssurances", b2 =>
-                                {
-                                    b2.Property<int>("Id")
-                                        .ValueGeneratedOnAdd()
-                                        .HasColumnType("integer")
-                                        .HasColumnName("id");
-
-                                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b2.Property<int>("Id"));
-
-                                    b2.Property<string>("AwardedByPersonOrBodyName")
-                                        .IsRequired()
-                                        .HasColumnType("text")
-                                        .HasColumnName("awarded_by_person_or_body_name");
-
-                                    b2.Property<DateTimeOffset>("CreatedOn")
-                                        .ValueGeneratedOnAdd()
-                                        .HasColumnType("timestamp with time zone")
-                                        .HasColumnName("created_on")
-                                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
-
-                                    b2.Property<DateTimeOffset>("DateAwarded")
-                                        .HasColumnType("timestamp with time zone")
-                                        .HasColumnName("date_awarded");
-
-                                    b2.Property<Guid>("Guid")
-                                        .HasColumnType("uuid")
-                                        .HasColumnName("guid");
-
-                                    b2.Property<string>("ReferenceNumber")
-                                        .IsRequired()
-                                        .HasColumnType("text")
-                                        .HasColumnName("reference_number");
-
-                                    b2.Property<int>("SupplierInformationOrganisationId")
-                                        .HasColumnType("integer")
-                                        .HasColumnName("supplier_information_organisation_id");
-
-                                    b2.Property<DateTimeOffset>("UpdatedOn")
-                                        .ValueGeneratedOnAdd()
-                                        .HasColumnType("timestamp with time zone")
-                                        .HasColumnName("updated_on")
-                                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
-
-                                    b2.HasKey("Id")
-                                        .HasName("pk_trade_assurances");
-
-                                    b2.HasIndex("Guid")
-                                        .IsUnique()
-                                        .HasDatabaseName("ix_trade_assurances_guid");
-
-                                    b2.HasIndex("SupplierInformationOrganisationId")
-                                        .HasDatabaseName("ix_trade_assurances_supplier_information_organisation_id");
-
-                                    b2.ToTable("trade_assurances", (string)null);
-
-                                    b2.WithOwner()
-                                        .HasForeignKey("SupplierInformationOrganisationId")
-                                        .HasConstraintName("fk_trade_assurances_supplier_information_supplier_information_");
-                                });
-
                             b1.Navigation("LegalForm");
-
-                            b1.Navigation("Qualifications");
-
-                            b1.Navigation("TradeAssurances");
                         });
 
                     b.Navigation("Addresses");
-
-                    b.Navigation("ApprovedBy");
 
                     b.Navigation("BuyerInfo");
 
                     b.Navigation("ContactPoints");
 
                     b.Navigation("Identifiers");
+
+                    b.Navigation("ReviewedBy");
 
                     b.Navigation("SupplierInfo");
 

@@ -10,10 +10,9 @@ public static class SupplierDetailsFactory
     }
 
     public static SupplierInformation CreateSupplierInformationClientModel(
-        bool completedTradeAssurance = false,
         bool completedPostalAddress = false,
         bool completedLegalForm = false,
-        CO.CDP.Organisation.WebApiClient.LegalForm? legalForm = null)
+        LegalForm? legalForm = null)
     {
         return new SupplierInformation(
             organisationName: "FakeOrg",
@@ -24,14 +23,10 @@ public static class SupplierDetailsFactory
             completedVat: true,
             completedWebsiteAddress: false,
             completedEmailAddress: false,
-            completedQualification: false,
-            completedTradeAssurance: completedTradeAssurance,
             completedOperationType: false,
             completedLegalForm: completedLegalForm,
             completedConnectedPerson: false,
-            tradeAssurances: [],
-            legalForm: legalForm,
-            qualifications: []
+            legalForm: legalForm
         );
     }
 

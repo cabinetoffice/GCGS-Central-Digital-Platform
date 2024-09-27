@@ -1,35 +1,22 @@
 using CO.CDP.OrganisationApp.Constants;
-using CO.CDP.Tenant.WebApiClient;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace CO.CDP.OrganisationApp.Authorization;
 
-public class OrganizationScopeHandler : AuthorizationHandler<OrganizationScopeRequirement>
+public class OrganizationScopeHandler(
+    ISession session,
+    IServiceScopeFactory serviceScopeFactory) : AuthorizationHandler<OrganizationScopeRequirement>
 {
-    private ITenantClient _tenantClient;
-    private ISession _session;
-    private readonly IHttpContextAccessor _httpContextAccessor;
-    private readonly IServiceScopeFactory _serviceScopeFactory;
-
-    public OrganizationScopeHandler(ITenantClient tenantClient, ISession session, IHttpContextAccessor httpContextAccessor, IServiceScopeFactory serviceScopeFactory)
-    {
-        _tenantClient = tenantClient;
-        _session = session;
-        _httpContextAccessor = httpContextAccessor;
-        _serviceScopeFactory = serviceScopeFactory;
-    }
-
     protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, OrganizationScopeRequirement requirement)
     {
-        Models.UserDetails? userDetails = _session.Get<Models.UserDetails>(Session.UserDetailsKey);
+        Models.UserDetails? userDetails = session.Get<Models.UserDetails>(Session.UserDetailsKey);
 
         if (userDetails != null && userDetails.PersonId != null)
         {
             try
             {
                 // The UserInfoService is scoped, but authorization is a singleton, so we need to work around that with a ServiceScopeFactory
-                using (var serviceScope = _serviceScopeFactory.CreateScope())
+                using (var serviceScope = serviceScopeFactory.CreateScope())
                 {
                     IUserInfoService _userInfo = serviceScope.ServiceProvider.GetRequiredService<IUserInfoService>();
 

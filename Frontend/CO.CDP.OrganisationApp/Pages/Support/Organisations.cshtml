@@ -17,7 +17,7 @@
                         <th scope="col" colspan="1" class="govuk-table__header">Date Approved</th>
                         <th scope="col" colspan="1" class="govuk-table__header">Last reviewed by</th>
                         <th scope="col" colspan="1" class="govuk-table__header">Comments</th>
-                        <th scope="col" colspan="1" class="govuk-table__header">Action</th>
+                        <th scope="col" colspan="1" class="govuk-table__header"></th>
                     }
                 }
             </tr>
@@ -64,19 +64,29 @@
                                     @(approval?.ApprovedOn == null ? "N/A" : approval?.ApprovedOn)
                                 </td>
                                 <td class="govuk-table__cell">
-                                    @(approval?.ApprovedBy?.Name ?? "N/A")
+                                    @(approval?.ReviewedBy?.Name ?? "N/A")
                                 </td>
                                 <td class="govuk-table__cell">
                                     @(approval?.Comment ?? "N/A")
                                 </td>
                                 <td class="govuk-table__cell">
+                                    @{
+                                if (@org.Details?.Approval?.ApprovedOn == null)
+                                {
                                     <a class="govuk-link" href="/support/organisation/@org.Id/approval">Review</a>
-                                </td>
-                            }
+                                }
+                                else
+                                {
+                                    <span>Approved</span>
+                                }
+                                }
+
+                            </td>
                         }
-                    </tr>
-                }
+                    }
+                </tr>
             }
+        }
         </tbody>
     </table>
     @{

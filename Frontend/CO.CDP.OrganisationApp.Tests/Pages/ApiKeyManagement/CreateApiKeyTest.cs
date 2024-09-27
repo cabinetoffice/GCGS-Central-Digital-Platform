@@ -1,9 +1,7 @@
-using Amazon.S3;
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Pages.ApiKeyManagement;
 using FluentAssertions;
-using FluentAssertions.Equivalency;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;

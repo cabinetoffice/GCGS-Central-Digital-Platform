@@ -1,20 +1,12 @@
 using CO.CDP.OrganisationApp.Models;
-using Microsoft.AspNetCore.Mvc;
 
 namespace CO.CDP.OrganisationApp.Pages.Forms;
 
 public interface IFormElementModel
 {
-    string? Heading { get; set; }
-
-    string? Description { get; set; }
-    string? Caption { get; set; }
-
-    bool IsRequired { get; set; }
-
     FormQuestionType? CurrentFormQuestionType { get; set; }
 
-    void Initialize(FormQuestion question);
+    void Initialize(FormQuestion question, bool redirectFromCheckYourAnswerPage);
 
     FormAnswer? GetAnswer();
 
@@ -29,16 +21,15 @@ public abstract class FormElementModel : IFormElementModel
 
     public string? Caption { get; set; }
 
-    [BindProperty]
+    protected bool RedirectFromCheckYourAnswerPage { get; set; }
+
     public FormQuestionType? CurrentFormQuestionType { get; set; }
 
-    [BindProperty]
     public bool IsRequired { get; set; }
 
-    [BindProperty]
     public FormQuestionOptions? Options { get; set; }
 
-    public virtual void Initialize(FormQuestion question)
+    public virtual void Initialize(FormQuestion question, bool redirectFromCheckYourAnswerPage)
     {
         Heading = question.Title;
         Description = question.Description;
@@ -46,6 +37,7 @@ public abstract class FormElementModel : IFormElementModel
         CurrentFormQuestionType = question.Type;
         IsRequired = question.IsRequired;
         Options = question.Options;
+        RedirectFromCheckYourAnswerPage = redirectFromCheckYourAnswerPage;
     }
 
     public abstract FormAnswer? GetAnswer();

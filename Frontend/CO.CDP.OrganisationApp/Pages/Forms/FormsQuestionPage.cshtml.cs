@@ -26,8 +26,8 @@ public class FormsQuestionPageModel(
     [BindProperty(SupportsGet = true)]
     public Guid CurrentQuestionId { get; set; }
 
-    [BindProperty]
-    public bool? RedirectToCheckYourAnswer { get; set; }
+    [BindProperty(SupportsGet = true, Name = "frm-chk-answer")]
+    public bool? RedirectFromCheckYourAnswerPage { get; set; }
 
     [BindProperty]
     public FormElementDateInputModel? DateInputModel { get; set; }
@@ -127,7 +127,7 @@ public class FormsQuestionPageModel(
 
         Guid? nextQuestionId;
 
-        if (RedirectToCheckYourAnswer == true)
+        if (RedirectFromCheckYourAnswerPage == true)
         {
             nextQuestionId = CheckYourAnswerQuestionId;
         }
@@ -168,7 +168,7 @@ public class FormsQuestionPageModel(
                 {
                     Title = question.SummaryTitle ?? question.Title,
                     Answer = answerString,
-                    ChangeLink = $"/organisation/{OrganisationId}/forms/{FormId}/sections/{SectionId}/questions/{answer.QuestionId}?frm-chk-answer"
+                    ChangeLink = $"/organisation/{OrganisationId}/forms/{FormId}/sections/{SectionId}/questions/{answer.QuestionId}?frm-chk-answer=true"
                 };
 
                 if (question.Type == FormQuestionType.Address && answer.Answer?.AddressValue != null
@@ -260,7 +260,7 @@ public class FormsQuestionPageModel(
             _ => throw new NotImplementedException($"Forms question: {question.Type} is not supported"),
         };
 
-        model.Initialize(question);
+        model.Initialize(question, RedirectFromCheckYourAnswerPage == true);
         if (question.Type == FormQuestionType.Address && model is FormElementAddressModel addressModel)
         {
             addressModel.UkOrNonUk = UkOrNonUk ?? addressModel.UkOrNonUk;

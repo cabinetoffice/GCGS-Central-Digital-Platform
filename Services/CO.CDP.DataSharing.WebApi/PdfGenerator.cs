@@ -72,24 +72,6 @@ public class PdfGenerator : IPdfGenerator
         if (!string.IsNullOrEmpty(basicInformation.OrganisationType.ToString()))
             col.Item().Element(container => AddTwoColumnRow(container, "Organisation Type:", basicInformation.OrganisationType.ToString()));
 
-        if (basicInformation.Qualifications.Any())
-        {
-            col.Item().Text("Qualifications:").Bold();
-            foreach (var qualification in basicInformation.Qualifications)
-            {
-                col.Item().Text($"{qualification.Name} awarded by {qualification.AwardedByPersonOrBodyName} on {qualification.DateAwarded:yyyy-MM-dd}");
-            }
-        }
-
-        if (basicInformation.TradeAssurances.Any())
-        {
-            col.Item().Text("Trade Assurances:").Bold();
-            foreach (var assurance in basicInformation.TradeAssurances)
-            {
-                col.Item().Text($"{assurance.ReferenceNumber} awarded by {assurance.AwardedByPersonOrBodyName} on {assurance.DateAwarded:yyyy-MM-dd}");
-            }
-        }
-
         if (basicInformation.LegalForm != null)
         {
             col.Item().Text("Legal Form:").Bold();

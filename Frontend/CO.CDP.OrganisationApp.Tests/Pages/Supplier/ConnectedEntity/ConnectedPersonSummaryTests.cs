@@ -56,18 +56,6 @@ public class ConnectedPersonSummaryTests
     }
 
     [Fact]
-    public async Task OnPost_UpdatesQualification_WhenNoQualificationSelectedAndNotCompleted()
-    {
-        _model.HasConnectedEntity = false;
-        SetupOrganisationClientMock();
-
-        var result = await _model.OnPost();
-
-        result.Should().BeOfType<RedirectToPageResult>()
-            .Which.PageName.Should().Be("/Supplier/SupplierInformationSummary");
-    }
-
-    [Fact]
     public async Task OnPost_ReturnsPageResult_WhenModelStateIsInvalid()
     {
         SetupOrganisationClientMock();

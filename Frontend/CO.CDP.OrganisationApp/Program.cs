@@ -16,7 +16,6 @@ using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
-using System.Runtime.InteropServices;
 using static IdentityModel.OidcConstants;
 using static System.Net.Mime.MediaTypeNames;
 using ISession = CO.CDP.OrganisationApp.ISession;

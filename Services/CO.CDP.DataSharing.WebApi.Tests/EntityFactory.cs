@@ -248,6 +248,7 @@ internal static class EntityFactory
             Type = PersistenceForms.FormSectionType.Standard,
             AllowsMultipleAnswerSets = true,
             CheckFurtherQuestionsExempted = false,
+            DisplayOrder = 1,
             Configuration = new PersistenceForms.FormSectionConfiguration
             {
                 PluralSummaryHeadingFormat = "You have added {0} files",
@@ -398,6 +399,7 @@ internal static class EntityFactory
                         Questions = new List<PersistenceForms.FormQuestion>(),
                         AllowsMultipleAnswerSets = default,
                         CheckFurtherQuestionsExempted = false,
+                        DisplayOrder = 1,
                         Configuration = new PersistenceForms.FormSectionConfiguration()
                     },
                     Answers = new List<PersistenceForms.FormAnswer>
