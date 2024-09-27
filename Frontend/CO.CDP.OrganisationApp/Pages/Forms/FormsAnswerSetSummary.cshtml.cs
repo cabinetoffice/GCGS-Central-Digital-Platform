@@ -180,12 +180,13 @@ public class FormsAnswerSetSummaryModel(
                     var answerString = question.Type switch
                     {
                         FormQuestionType.Text => answer.TextValue ?? "",
-                        FormQuestionType.CheckBox => answer.BoolValue.HasValue ? question.Options.Choices?.FirstOrDefault()?.Title ?? "" : "",
                         FormQuestionType.FileUpload => answer.TextValue ?? "",
                         FormQuestionType.YesOrNo => answer.BoolValue.HasValue ? (answer.BoolValue == true ? "yes" : "no") : "",
                         FormQuestionType.Date => answer.DateValue.HasValue ? answer.DateValue.Value.ToString("dd/MM/yyyy") : "",
+                        FormQuestionType.CheckBox => answer.BoolValue.HasValue ? question.Options.Choices?.FirstOrDefault()?.Title ?? "" : "",
                         FormQuestionType.Address => answer.AddressValue != null ? $"{answer.AddressValue.StreetAddress}, {answer.AddressValue.Locality}, {answer.AddressValue.PostalCode}, {answer.AddressValue.CountryName}" : "",
                         FormQuestionType.SingleChoice => answer.OptionValue ?? "",
+                        FormQuestionType.MultiLine => answer.TextValue ?? "",
                         _ => ""
                     };
 

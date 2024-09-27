@@ -250,13 +250,13 @@ public class FormsQuestionPageModel(
         {
             FormQuestionType.NoInput => NoInputModel ?? new FormElementNoInputModel(),
             FormQuestionType.Text => TextInputModel ?? new FormElementTextInputModel(),
-            FormQuestionType.MultiLine => MultiLineInputModel ?? new FormElementMultiLineInputModel(),
             FormQuestionType.FileUpload => FileUploadModel ?? new FormElementFileUploadModel(),
             FormQuestionType.YesOrNo => YesNoInputModel ?? new FormElementYesNoInputModel(),
             FormQuestionType.Date => DateInputModel ?? new FormElementDateInputModel(),
             FormQuestionType.CheckBox => CheckBoxModel ?? new FormElementCheckBoxInputModel(),
             FormQuestionType.Address => AddressModel ?? new FormElementAddressModel(),
             FormQuestionType.SingleChoice => SingleChoiceModel ?? new FormElementSingleChoiceModel(),
+            FormQuestionType.MultiLine => MultiLineInputModel ?? new FormElementMultiLineInputModel(),
             _ => throw new NotImplementedException($"Forms question: {question.Type} is not supported"),
         };
 
