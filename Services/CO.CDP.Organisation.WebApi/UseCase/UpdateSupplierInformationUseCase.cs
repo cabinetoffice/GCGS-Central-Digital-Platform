@@ -39,26 +39,6 @@ public class UpdateSupplierInformationUseCase(IOrganisationRepository organisati
                 organisation.SupplierInfo.CompletedEmailAddress = true;
                 break;
 
-            case SupplierInformationUpdateType.TradeAssurance:
-                if (updateObject.TradeAssurance != null)
-                {
-                    var existingTradeAssurance = !updateObject.TradeAssurance.Id.HasValue ? null :
-                        organisation.SupplierInfo.TradeAssurances.FirstOrDefault(ta => ta.Guid == updateObject.TradeAssurance.Id);
-                    if (existingTradeAssurance != null)
-                    {
-                        existingTradeAssurance.AwardedByPersonOrBodyName = updateObject.TradeAssurance.AwardedByPersonOrBodyName;
-                        existingTradeAssurance.ReferenceNumber = updateObject.TradeAssurance.ReferenceNumber;
-                        existingTradeAssurance.DateAwarded = updateObject.TradeAssurance.DateAwarded;
-                    }
-                    else
-                    {
-                        organisation.SupplierInfo.TradeAssurances.Add(
-                            mapper.Map<PersistenceOrganisation.TradeAssurance>(updateObject.TradeAssurance));
-                    }
-                }
-                organisation.SupplierInfo.CompletedTradeAssurance = true;
-                break;
-
             case SupplierInformationUpdateType.LegalForm:
                 if (updateObject.LegalForm == null)
                 {
@@ -79,26 +59,6 @@ public class UpdateSupplierInformationUseCase(IOrganisationRepository organisati
                 }
                 organisation.SupplierInfo.OperationTypes = updateObject.OperationTypes;
                 organisation.SupplierInfo.CompletedOperationType = true;
-                break;
-
-            case SupplierInformationUpdateType.Qualification:
-                if (updateObject.Qualification != null)
-                {
-                    var existingQualification = !updateObject.Qualification.Id.HasValue ? null :
-                        organisation.SupplierInfo.Qualifications.FirstOrDefault(ta => ta.Guid == updateObject.Qualification.Id);
-                    if (existingQualification != null)
-                    {
-                        existingQualification.AwardedByPersonOrBodyName = updateObject.Qualification.AwardedByPersonOrBodyName;
-                        existingQualification.Name = updateObject.Qualification.Name;
-                        existingQualification.DateAwarded = updateObject.Qualification.DateAwarded;
-                    }
-                    else
-                    {
-                        organisation.SupplierInfo.Qualifications.Add(
-                            mapper.Map<PersistenceOrganisation.Qualification>(updateObject.Qualification));
-                    }
-                }
-                organisation.SupplierInfo.CompletedQualification = true;
                 break;
 
             case SupplierInformationUpdateType.CompletedConnectedPerson:

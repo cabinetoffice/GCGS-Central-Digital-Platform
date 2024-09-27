@@ -268,35 +268,6 @@ public static class EndpointExtensions
                 return operation;
             });
 
-        app.MapDelete("/{organisationId}/supplier-information",
-            [OrganisationAuthorize(
-                [AuthenticationChannel.OneLogin],
-                [Constants.OrganisationPersonScope.Admin, Constants.OrganisationPersonScope.Editor],
-                OrganisationIdLocation.Path)]
-        async (Guid organisationId, [FromBody] DeleteSupplierInformation deleteSupplierInformation,
-                IUseCase<(Guid, DeleteSupplierInformation), bool> useCase) =>
-                    await useCase.Execute((organisationId, deleteSupplierInformation))
-                        .AndThen(_ => Results.NoContent()))
-            .Produces(StatusCodes.Status204NoContent)
-            .ProducesProblem(StatusCodes.Status400BadRequest)
-            .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
-            .ProducesProblem(StatusCodes.Status404NotFound)
-            .ProducesProblem(StatusCodes.Status422UnprocessableEntity)
-            .ProducesProblem(StatusCodes.Status500InternalServerError)
-            .WithOpenApi(operation =>
-            {
-                operation.OperationId = "DeleteSupplierInformation";
-                operation.Description = "Delete Supplier Information.";
-                operation.Summary = "Delete Supplier Information.";
-                operation.Responses["204"].Description = "Supplier information deleted successfully.";
-                operation.Responses["400"].Description = "Bad request.";
-                operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
-                operation.Responses["404"].Description = "Organisation supplier information not found.";
-                operation.Responses["422"].Description = "Unprocessable entity.";
-                operation.Responses["500"].Description = "Internal server error.";
-                return operation;
-            });
-
         return app;
     }
 
