@@ -12,12 +12,21 @@ public class FormElementSingleChoiceModel : FormElementModel, IValidatableObject
 
     public override FormAnswer? GetAnswer()
     {
-        return string.IsNullOrWhiteSpace(SelectedOption) ? null : new FormAnswer { OptionValue = SelectedOption };
+        if(
+            SelectedOption != null
+            && Options?.Choices != null
+            && Options.Choices.Contains(SelectedOption)
+         )
+        {
+            return new FormAnswer { OptionValue = SelectedOption };
+        }
+
+        return null;
     }
 
     public override void SetAnswer(FormAnswer? answer)
     {
-        if (answer?.OptionValue != null)
+        if (answer?.OptionValue != null && Options?.Choices != null && Options.Choices.Contains(answer.OptionValue))
         {
             SelectedOption = answer.OptionValue;
         }
@@ -28,7 +37,14 @@ public class FormElementSingleChoiceModel : FormElementModel, IValidatableObject
 
         if (string.IsNullOrWhiteSpace(SelectedOption))
         {
-            yield return new ValidationResult("All information is required on this page", new[] { nameof(SelectedOption) });
+            yield return new ValidationResult("Select an option", new[] { nameof(SelectedOption) });
+            yield break;
+        }
+
+        if(Options?.Choices == null || (SelectedOption != null && !Options.Choices.Contains(SelectedOption)))
+        {
+            yield return new ValidationResult("Invalid option selected", new[] { nameof(SelectedOption) });
+            yield break;
         }
     }
 }
