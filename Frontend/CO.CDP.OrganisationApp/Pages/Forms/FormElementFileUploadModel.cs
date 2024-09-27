@@ -59,11 +59,6 @@ public class FormElementFileUploadModel : FormElementModel, IValidatableObject
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
-        if (CurrentFormQuestionType != FormQuestionType.FileUpload)
-        {
-            yield break;
-        }
-
         var validateField = IsRequired;
 
         if (IsRequired == false)

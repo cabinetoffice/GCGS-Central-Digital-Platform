@@ -1,11 +1,10 @@
 using CO.CDP.OrganisationApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
-using System.Text.RegularExpressions;
 
 namespace CO.CDP.OrganisationApp.Pages.Forms;
 
-public class FormElementTextInputModel : FormElementModel, IValidatableObject
+public class FormElementUrlInputModel : FormElementModel, IValidatableObject
 {
     [BindProperty]
     public string? TextInput { get; set; }
@@ -55,29 +54,14 @@ public class FormElementTextInputModel : FormElementModel, IValidatableObject
 
         if (validateTextField)
         {
-            if (IsEmailValidationRequired() && !IsValidEmail(TextInput))
+            if (string.IsNullOrWhiteSpace(TextInput))
             {
-                yield return new ValidationResult("Enter an email address in the correct format, like name@example.com.", [nameof(TextInput)]);
+                yield return new ValidationResult("Enter a website address", [nameof(TextInput)]);
             }
-            else if (string.IsNullOrWhiteSpace(TextInput))
+            else if (Uri.TryCreate(TextInput, UriKind.Absolute, out var _) == false)
             {
-                yield return new ValidationResult("Enter a value", [nameof(TextInput)]);
+                yield return new ValidationResult("Enter a valid website address in the correct format", [nameof(TextInput)]);
             }
         }
-    }
-    private bool IsEmailValidationRequired()
-    {
-        return Heading?.Contains("email", StringComparison.OrdinalIgnoreCase) == true;
-    }
-
-    private static bool IsValidEmail(string? email)
-    {
-        if (string.IsNullOrWhiteSpace(email))
-        {
-            return false;
-        }
-
-        var emailRegex = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
-        return Regex.IsMatch(email, emailRegex);
     }
 }

@@ -78,5 +78,6 @@ public enum FormQuestionType
     Date,
     CheckBox,
     Address,
-    MultiLine
+    MultiLine,
+    Url
 }

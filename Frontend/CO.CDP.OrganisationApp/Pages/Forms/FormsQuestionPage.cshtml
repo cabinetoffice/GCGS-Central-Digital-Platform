@@ -3,6 +3,7 @@
 @model FormsQuestionPageModel
 
 @{
+    var isCheckYourAnswersPage = Model.CurrentFormQuestionType == Models.FormQuestionType.CheckYourAnswers;
     var backUrl = $"/organisation/{Model.OrganisationId}/supplier-information";
     var fromCheckAnswerPage = Model.RedirectFromCheckYourAnswerPage == true;
 
@@ -28,7 +29,7 @@
 
 <main class="govuk-main-wrapper">
     <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
+        <div class="@(isCheckYourAnswersPage ? "govuk-grid-column-full" : "govuk-grid-column-two-thirds")">
             <partial name="_ErrorSummary" model="@ModelState" />
 
             <form method="post" enctype="@Model.EncType">
@@ -38,7 +39,7 @@
                         @await Html.PartialAsync(Model.PartialViewName, Model.PartialViewModel)
                     }
 
-                    @if (Model.CurrentFormQuestionType == Models.FormQuestionType.CheckYourAnswers)
+                    @if (isCheckYourAnswersPage)
                     {
                         var answers = await Model.GetAnswers();
 
@@ -65,7 +66,9 @@
                         </dl>
                     }
                 </fieldset>
-                @if (Model.CurrentFormQuestionType == Models.FormQuestionType.CheckYourAnswers)
+
+
+                @if (isCheckYourAnswersPage)
                 {
                     if (Model.FormSectionType == Models.FormSectionType.Declaration)
                     {

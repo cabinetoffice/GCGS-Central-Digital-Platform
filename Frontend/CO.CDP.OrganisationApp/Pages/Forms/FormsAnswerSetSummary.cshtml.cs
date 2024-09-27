@@ -181,12 +181,13 @@ public class FormsAnswerSetSummaryModel(
                     {
                         FormQuestionType.Text => answer.TextValue ?? "",
                         FormQuestionType.FileUpload => answer.TextValue ?? "",
-                        FormQuestionType.YesOrNo => answer.BoolValue.HasValue ? (answer.BoolValue == true ? "yes" : "no") : "",
+                        FormQuestionType.YesOrNo => answer.BoolValue.HasValue ? (answer.BoolValue == true ? "Yes" : "No") : "",
+                        FormQuestionType.SingleChoice => answer.OptionValue ?? "",
                         FormQuestionType.Date => answer.DateValue.HasValue ? answer.DateValue.Value.ToString("dd/MM/yyyy") : "",
                         FormQuestionType.CheckBox => answer.BoolValue.HasValue ? question.Options.Choices?.FirstOrDefault()?.Title ?? "" : "",
                         FormQuestionType.Address => answer.AddressValue != null ? $"{answer.AddressValue.StreetAddress}, {answer.AddressValue.Locality}, {answer.AddressValue.PostalCode}, {answer.AddressValue.CountryName}" : "",
-                        FormQuestionType.SingleChoice => answer.OptionValue ?? "",
                         FormQuestionType.MultiLine => answer.TextValue ?? "",
+                        FormQuestionType.Url => answer.TextValue ?? "",
                         _ => ""
                     };
 
