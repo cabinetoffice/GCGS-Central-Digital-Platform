@@ -41,7 +41,7 @@ public enum FormQuestionType
 public record FormQuestionOptions
 {
     public ICollection<FormQuestionChoice>? Choices { get; set; } = null;
-    public string? ChoiceProviderStrategy = null;
+    public string? ChoiceProviderStrategy { get; set; } = null;
 }
 
 public class FormQuestionChoice

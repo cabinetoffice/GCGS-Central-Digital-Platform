@@ -26,7 +26,7 @@ public class UserInfoService(IHttpContextAccessor httpContextAccessor, ITenantCl
         return scopes.Contains(scope);
     }
 
-    private async Task<UserOrganisation?> GetPersonOrganisation(Guid organisationId)
+    public async Task<UserOrganisation?> GetPersonOrganisation(Guid organisationId)
     {
         // Role checks may be made multiple times when building a page
         // Therefore we cache the person's organisation details for the duration of the http request
@@ -51,7 +51,7 @@ public class UserInfoService(IHttpContextAccessor httpContextAccessor, ITenantCl
         return personOrganisation;
     }
 
-    private Guid? GetOrganisationId()
+    public Guid? GetOrganisationId()
     {
         if (httpContextAccessor?.HttpContext?.Request?.Path.Value == null)
         {
