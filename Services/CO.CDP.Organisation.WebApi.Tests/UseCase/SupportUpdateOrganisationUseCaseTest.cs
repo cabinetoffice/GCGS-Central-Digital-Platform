@@ -23,8 +23,8 @@ public class SupportUpdateOrganisationUseCaseTests
         {
             Id = 1,
             Guid = new Guid(),
-            Tenant = null,
-            Name = null
+            Tenant = null!,
+            Name = null!
         };
 
         _person = new OrganisationInformation.Persistence.Person
@@ -63,7 +63,7 @@ public class SupportUpdateOrganisationUseCaseTests
 
     [Fact]
     public async Task Execute_WhenPersonIsUnknown_ShouldThrowUnknownPersonException()
-    {;
+    {
         var personId = Guid.NewGuid();
         var supportUpdateOrganisation = new SupportUpdateOrganisation
         {
