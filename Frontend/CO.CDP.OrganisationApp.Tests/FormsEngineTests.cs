@@ -1,4 +1,5 @@
 using CO.CDP.OrganisationApp.Models;
+using CO.CDP.OrganisationApp.Pages.Forms.ChoiceProviderStrategies;
 using FluentAssertions;
 using Moq;
 using DataShareWebApiClient = CO.CDP.DataSharing.WebApiClient;
@@ -11,6 +12,7 @@ public class FormsEngineTests
     private readonly Mock<WebApiClient.IFormsClient> _formsApiClientMock;
     private readonly Mock<DataShareWebApiClient.IDataSharingClient> _dataSharingClientMock;
     private readonly Mock<ITempDataService> _tempDataServiceMock;
+    private readonly Mock<IChoiceProviderService> _choiceProviderServiceMock;
     private readonly FormsEngine _formsEngine;
 
     public FormsEngineTests()
@@ -18,7 +20,8 @@ public class FormsEngineTests
         _formsApiClientMock = new Mock<WebApiClient.IFormsClient>();
         _dataSharingClientMock = new Mock<DataShareWebApiClient.IDataSharingClient>();
         _tempDataServiceMock = new Mock<ITempDataService>();
-        _formsEngine = new FormsEngine(_formsApiClientMock.Object, _tempDataServiceMock.Object, _dataSharingClientMock.Object);
+        _choiceProviderServiceMock = new Mock<IChoiceProviderService>();
+        _formsEngine = new FormsEngine(_formsApiClientMock.Object, _tempDataServiceMock.Object, _choiceProviderServiceMock.Object, _dataSharingClientMock.Object);
     }
 
     private static (Guid organisationId, Guid formId, Guid sectionId, string sessionKey) CreateTestGuids()
@@ -135,6 +138,8 @@ public class FormsEngineTests
 
         _tempDataServiceMock.Setup(t => t.Peek<SectionQuestionsResponse>(sessionKey))
             .Returns((SectionQuestionsResponse?)null);
+        _choiceProviderServiceMock.Setup(t => t.GetStrategy(It.IsAny<string>()))
+            .Returns(new DefaultChoiceProviderStrategy());
         _formsApiClientMock.Setup(c => c.GetFormSectionQuestionsAsync(formId, sectionId, organisationId))
             .ReturnsAsync(apiResponse);
 

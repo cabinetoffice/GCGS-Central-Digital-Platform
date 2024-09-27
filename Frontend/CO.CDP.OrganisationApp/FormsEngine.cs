@@ -8,7 +8,6 @@ namespace CO.CDP.OrganisationApp;
 public class FormsEngine(
     IFormsClient formsApiClient,
     ITempDataService tempDataService,
-    IServiceProvider serviceProvider,
     IChoiceProviderService choiceProviderService,
     DataShareWebApiClient.IDataSharingClient dataSharingClient) : IFormsEngine
 {
@@ -19,10 +18,10 @@ public class FormsEngine(
         var sessionKey = $"Form_{organisationId}_{formId}_{sectionId}_Questions";
         var cachedResponse = tempDataService.Peek<SectionQuestionsResponse>(sessionKey);
 
-        //if (cachedResponse != null)
-        //{
-        //    return cachedResponse;
-        //}
+        if (cachedResponse != null)
+        {
+            return cachedResponse;
+        }
 
         var response = await formsApiClient.GetFormSectionQuestionsAsync(formId, sectionId, organisationId);
 
