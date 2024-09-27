@@ -779,11 +779,6 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                         .HasColumnType("text")
                         .HasColumnName("phone");
 
-                    b.Property<List<string>>("Scopes")
-                        .IsRequired()
-                        .HasColumnType("text[]")
-                        .HasColumnName("scopes");
-
                     b.Property<DateTimeOffset>("UpdatedOn")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
