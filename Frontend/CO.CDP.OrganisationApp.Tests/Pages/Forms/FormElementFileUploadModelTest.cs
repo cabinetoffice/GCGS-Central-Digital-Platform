@@ -98,7 +98,7 @@ public class FormElementFileUploadModelTest
     public void Validate_ReturnsError_WhenUploadedFileExceedsMaxSize()
     {
         var formFileMock = new Mock<IFormFile>();
-        formFileMock.Setup(f => f.Length).Returns(26 * 1024 * 1024); // 11 MB
+        formFileMock.Setup(f => f.Length).Returns(26 * 1024 * 1024); // 26 MB
         formFileMock.Setup(f => f.FileName).Returns("testfile.txt");
 
         _model.IsRequired = true;
