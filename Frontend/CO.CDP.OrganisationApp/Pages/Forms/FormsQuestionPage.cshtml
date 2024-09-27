@@ -4,7 +4,7 @@
 
 @{
     var backUrl = $"/organisation/{Model.OrganisationId}/supplier-information";
-    var fromCheckAnswerPage = Request.Query.ContainsKey("frm-chk-answer");
+    var fromCheckAnswerPage = Model.RedirectFromCheckYourAnswerPage == true;
 
     if (Request.Query["UkOrNonUk"] == "non-uk")
     {
@@ -16,7 +16,6 @@
         {
             var checkYourAnswerQuestionId = Model.CheckYourAnswerQuestionId;
             backUrl = $"/organisation/{Model.OrganisationId}/forms/{Model.FormId}/sections/{Model.SectionId}/questions/{checkYourAnswerQuestionId}";
-            Model.RedirectToCheckYourAnswer = true;
         }
         else if (Model.PreviousQuestion != null)
         {
@@ -33,11 +32,6 @@
             <partial name="_ErrorSummary" model="@ModelState" />
 
             <form method="post" enctype="@Model.EncType">
-                @if (Request.Query.ContainsKey("frm-chk-answer"))
-                {
-                    <input type="hidden" name="RedirectToCheckYourAnswer" value="true" />
-                }
-
                 <fieldset class="govuk-fieldset">
                     @if (Model.PartialViewName != null && Model.PartialViewModel != null)
                     {
@@ -81,7 +75,8 @@
                     {
                         <button type="submit" class="govuk-button">Save</button>
                     }
-                } else
+                }
+                else
                 {
                     <button type="submit" class="govuk-button">Continue</button>
                 }

@@ -113,14 +113,10 @@ public class SupplierEmailAddressTest
             completedVat: false,
             completedWebsiteAddress: false,
             completedEmailAddress: true,
-            completedQualification: false,
-            completedTradeAssurance: false,
             completedOperationType: false,
             completedLegalForm: false,
             completedConnectedPerson: false,
-            tradeAssurances: null,
-            legalForm: null,
-            qualifications: null);
+            legalForm: null);
 
     private static CO.CDP.Organisation.WebApiClient.Organisation OrganisationClientModel(Guid id) =>
         new(

@@ -2,7 +2,6 @@ using Moq;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using CO.CDP.Organisation.WebApiClient;
-using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Pages.Users;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages.Users;

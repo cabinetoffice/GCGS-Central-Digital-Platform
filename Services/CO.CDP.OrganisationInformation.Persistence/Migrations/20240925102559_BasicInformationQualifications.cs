@@ -56,7 +56,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
  
                     DELETE FROM form_questions WHERE section_id = sectionId;
 
-                    DELETE FROM form_sections WHERE guid = sectionId;
+                    DELETE FROM form_sections WHERE id = sectionId;
                 END $$;
             ");
         }
