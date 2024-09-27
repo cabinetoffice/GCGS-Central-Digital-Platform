@@ -179,6 +179,36 @@ public static class EndpointExtensions
         return app;
     }
 
+    public static RouteGroupBuilder UseSupportEndpoints(this RouteGroupBuilder app)
+    {
+        app.MapPatch("/organisation/{organisationId}",
+                [OrganisationAuthorize([AuthenticationChannel.OneLogin])]
+                async (Guid organisationId, SupportUpdateOrganisation supportUpdateOrganisation, IUseCase<(Guid, SupportUpdateOrganisation), bool> useCase) =>
+                await useCase.Execute((organisationId, supportUpdateOrganisation))
+                    .AndThen(Results.Ok))
+            .Produces<Boolean>(StatusCodes.Status200OK, "application/json")
+            .ProducesProblem(StatusCodes.Status500InternalServerError)
+            .ProducesProblem(StatusCodes.Status400BadRequest)
+            .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
+            .ProducesProblem(StatusCodes.Status422UnprocessableEntity)
+            .ProducesProblem(StatusCodes.Status404NotFound)
+            .WithOpenApi(operation =>
+            {
+                operation.OperationId = "SupportUpdateOrganisation";
+                operation.Description = "Update an organisation as a support admin. Perform support admin specific actions.";
+                operation.Summary = "Updates an organisation.";
+                operation.Responses["200"].Description = "Organisation updated successfully.";
+                operation.Responses["400"].Description = "Bad request.";
+                operation.Responses["422"].Description = "Unprocessable entity.";
+                operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
+                operation.Responses["404"].Description = "Organisation not found.";
+                operation.Responses["500"].Description = "Internal server error.";
+                return operation;
+            });
+
+        return app;
+    }
+
     public static RouteGroupBuilder UseBuyerInformationEndpoints(this RouteGroupBuilder app)
     {
         app.MapPatch("/{organisationId}/buyer-information",
@@ -260,35 +290,6 @@ public static class EndpointExtensions
                 operation.Description = "Update Supplier Information.";
                 operation.Summary = "Update Supplier Information.";
                 operation.Responses["204"].Description = "Supplier information updated successfully.";
-                operation.Responses["400"].Description = "Bad request.";
-                operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
-                operation.Responses["404"].Description = "Organisation supplier information not found.";
-                operation.Responses["422"].Description = "Unprocessable entity.";
-                operation.Responses["500"].Description = "Internal server error.";
-                return operation;
-            });
-
-        app.MapDelete("/{organisationId}/supplier-information",
-            [OrganisationAuthorize(
-                [AuthenticationChannel.OneLogin],
-                [Constants.OrganisationPersonScope.Admin, Constants.OrganisationPersonScope.Editor],
-                OrganisationIdLocation.Path)]
-        async (Guid organisationId, [FromBody] DeleteSupplierInformation deleteSupplierInformation,
-                IUseCase<(Guid, DeleteSupplierInformation), bool> useCase) =>
-                    await useCase.Execute((organisationId, deleteSupplierInformation))
-                        .AndThen(_ => Results.NoContent()))
-            .Produces(StatusCodes.Status204NoContent)
-            .ProducesProblem(StatusCodes.Status400BadRequest)
-            .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
-            .ProducesProblem(StatusCodes.Status404NotFound)
-            .ProducesProblem(StatusCodes.Status422UnprocessableEntity)
-            .ProducesProblem(StatusCodes.Status500InternalServerError)
-            .WithOpenApi(operation =>
-            {
-                operation.OperationId = "DeleteSupplierInformation";
-                operation.Description = "Delete Supplier Information.";
-                operation.Summary = "Delete Supplier Information.";
-                operation.Responses["204"].Description = "Supplier information deleted successfully.";
                 operation.Responses["400"].Description = "Bad request.";
                 operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
                 operation.Responses["404"].Description = "Organisation supplier information not found.";
@@ -656,10 +657,14 @@ public static class EndpointExtensions
     public static RouteGroupBuilder UseManageApiKeyEndpoints(this RouteGroupBuilder app)
     {
         app.MapGet("/{organisationId}/api-keys",
-            async (Guid organisationId, IUseCase<Guid, IEnumerable<Model.AuthenticationKey>> useCase) =>
+            [OrganisationAuthorize(
+                [AuthenticationChannel.OneLogin],
+                [Constants.OrganisationPersonScope.Admin, Constants.OrganisationPersonScope.Editor],
+                OrganisationIdLocation.Path)]
+        async (Guid organisationId, IUseCase<Guid, IEnumerable<Model.AuthenticationKey>> useCase) =>
                await useCase.Execute(organisationId)
                    .AndThen(entities => Results.Ok(entities)))
-           .Produces<List<Model.AuthenticationKey>>(StatusCodes.Status200OK, "application/json")
+           .Produces<List<AuthenticationKey>>(StatusCodes.Status200OK, "application/json")
            .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
            .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
            .ProducesProblem(StatusCodes.Status422UnprocessableEntity)
@@ -678,7 +683,11 @@ public static class EndpointExtensions
            });
 
         app.MapPost("/{organisationId}/api-keys",
-            async (Guid organisationId, RegisterAuthenticationKey registerAuthenticationKey,
+            [OrganisationAuthorize(
+                [AuthenticationChannel.OneLogin],
+                [Constants.OrganisationPersonScope.Admin, Constants.OrganisationPersonScope.Editor],
+                OrganisationIdLocation.Path)]
+        async (Guid organisationId, RegisterAuthenticationKey registerAuthenticationKey,
                 IUseCase<(Guid, RegisterAuthenticationKey), bool> useCase) =>
 
                 await useCase.Execute((organisationId, registerAuthenticationKey))
@@ -704,8 +713,12 @@ public static class EndpointExtensions
                 return operation;
             });
 
-        app.MapPatch("/{organisationId}/api-keys/revoke",
-            async (Guid organisationId, string keyName,
+        app.MapPatch("/{organisationId}/api-keys/{keyName}/revoke",
+            [OrganisationAuthorize(
+                [AuthenticationChannel.OneLogin],
+                [Constants.OrganisationPersonScope.Admin, Constants.OrganisationPersonScope.Editor],
+                OrganisationIdLocation.Path)]
+        async (Guid organisationId, string keyName,
                 IUseCase<(Guid, string), bool> useCase) =>
                     await useCase.Execute((organisationId, keyName))
                         .AndThen(_ => Results.NoContent()))

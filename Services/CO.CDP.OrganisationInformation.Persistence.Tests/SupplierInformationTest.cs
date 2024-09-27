@@ -22,8 +22,6 @@ public class SupplierInformationTest
             CompletedVat = false,
             CompletedWebsiteAddress = false,
             CompletedEmailAddress = true,
-            CompletedQualification = false,
-            CompletedTradeAssurance = false,
             CompletedOperationType = false,
             CompletedLegalForm = false
         });
@@ -98,38 +96,6 @@ public class SupplierInformationTest
     }
 
     [Fact]
-    public void ItMarksQualificationAsCompletedIfGiven()
-    {
-        var organisation = GivenOrganisation(
-            roles: [PartyRole.Tenderer],
-            supplierInformation: GivenSupplierInformation(
-                qualifications: [GivenSupplierQualification(name: "Qualification 1")]
-            )
-        );
-
-        organisation.UpdateSupplierInformation();
-
-        organisation.SupplierInfo.As<Organisation.SupplierInformation>()
-            .CompletedQualification.Should().BeTrue();
-    }
-
-    [Fact]
-    public void ItMarksTradeAssuranceAsCompletedIfGiven()
-    {
-        var organisation = GivenOrganisation(
-            roles: [PartyRole.Tenderer],
-            supplierInformation: GivenSupplierInformation(
-                tradeAssurances: [GivenSupplierTradeAssurance()]
-            )
-        );
-
-        organisation.UpdateSupplierInformation();
-
-        organisation.SupplierInfo.As<Organisation.SupplierInformation>()
-            .CompletedTradeAssurance.Should().BeTrue();
-    }
-
-    [Fact]
     public void ItMarksLegalFormAsCompletedIfGiven()
     {
         var organisation = GivenOrganisation(
@@ -190,36 +156,6 @@ public class SupplierInformationTest
         organisation.SupplierInfo.As<Organisation.SupplierInformation>()
             .CompletedVat.Should().BeTrue();
     }
-
-    [Fact]
-    public void ItDoesNotRemoveTheCompletedQualificationFlagIfItWasExplicitlySet()
-    {
-        var organisation = GivenOrganisation(
-            roles: [PartyRole.Tenderer],
-            supplierInformation: GivenSupplierInformation(completedQualification: true)
-        );
-
-        organisation.UpdateSupplierInformation();
-
-        organisation.SupplierInfo.As<Organisation.SupplierInformation>()
-            .CompletedQualification.Should().BeTrue();
-    }
-
-
-    [Fact]
-    public void ItDoesNotRemoveTheCompletedTradeAssuranceFlagIfItWasExplicitlySet()
-    {
-        var organisation = GivenOrganisation(
-            roles: [PartyRole.Tenderer],
-            supplierInformation: GivenSupplierInformation(completedTradeAssurance: true)
-        );
-
-        organisation.UpdateSupplierInformation();
-
-        organisation.SupplierInfo.As<Organisation.SupplierInformation>()
-            .CompletedTradeAssurance.Should().BeTrue();
-    }
-
 
     [Fact]
     public void ItDoesNotRemoveTheCompletedLegalFormFlagIfItWasExplicitlySet()

@@ -155,6 +155,8 @@ public class GetSharedDataUseCaseTest : IClassFixture<AutoMapperFixture>
         supplierInformationData?.AnswerSets.First().Answers.Should().NotBeNull();
         supplierInformationData?.AnswerSets.First().Answers.Should().HaveCount(3);
 
+        supplierInformationData?.AnswerSets.First().SectionName.Should().NotBeNull();
+
         supplierInformationData?.AnswerSets.First().Answers.First().QuestionName.Should().NotBeNull();
 
         supplierInformationData?.Questions.Should().NotBeNull();

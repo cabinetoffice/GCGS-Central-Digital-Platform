@@ -74,26 +74,6 @@ public class DataService(IShareCodeRepository shareCodeRepository, IConnectedEnt
             ? organisation.ContactPoints.FirstOrDefault()?.Email
             : null;
 
-        var qualifications = supplierInfo.CompletedQualification
-            ? supplierInfo.Qualifications.Select(q => new BasicQualification
-            {
-                Guid = q.Guid,
-                AwardedByPersonOrBodyName = q.AwardedByPersonOrBodyName,
-                DateAwarded = q.DateAwarded,
-                Name = q.Name
-            }).ToList()
-            : new List<BasicQualification>();
-
-        var tradeAssurances = supplierInfo.CompletedTradeAssurance
-            ? supplierInfo.TradeAssurances.Select(t => new BasicTradeAssurance
-            {
-                Guid = t.Guid,
-                AwardedByPersonOrBodyName = t.AwardedByPersonOrBodyName,
-                ReferenceNumber = t.ReferenceNumber,
-                DateAwarded = t.DateAwarded
-            }).ToList()
-            : new List<BasicTradeAssurance>();
-
         var legalForm = supplierInfo.CompletedLegalForm
             ? new BasicLegalForm
             {
@@ -116,8 +96,6 @@ public class DataService(IShareCodeRepository shareCodeRepository, IConnectedEnt
             VatNumber = vatNumber,
             WebsiteAddress = websiteAddress,
             EmailAddress = emailAddress,
-            Qualifications = qualifications,
-            TradeAssurances = tradeAssurances,
             OrganisationType = organisationType,
             LegalForm = legalForm
         };

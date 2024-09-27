@@ -57,8 +57,8 @@ public class GetFormSectionQuestionsUseCaseTest(AutoMapperFixture mapperFixture)
             Questions = new List<CO.CDP.OrganisationInformation.Persistence.Forms.FormQuestion>(),
             Type = CO.CDP.OrganisationInformation.Persistence.Forms.FormSectionType.Standard,
             AllowsMultipleAnswerSets = true,
-            CreatedOn = DateTimeOffset.UtcNow,
-            UpdatedOn = DateTimeOffset.UtcNow,
+            CheckFurtherQuestionsExempted = false,
+            DisplayOrder = 1,
             Configuration = new OrganisationInformation.Persistence.Forms.FormSectionConfiguration
             {
                 PluralSummaryHeadingFormat = "You have added {0} files",
@@ -117,6 +117,7 @@ public class GetFormSectionQuestionsUseCaseTest(AutoMapperFixture mapperFixture)
             Title = "Financial Information",
             Type = FormSectionType.Standard,
             AllowsMultipleAnswerSets = true,
+            CheckFurtherQuestionsExempted = false,
             Configuration = new FormSectionConfiguration
             {
                 PluralSummaryHeadingFormat = "You have added {0} files",

@@ -36,12 +36,14 @@ public class FormsEngineTests
             section: new WebApiClient.FormSection(
                 type: WebApiClient.FormSectionType.Standard,
                 allowsMultipleAnswerSets: true,
+                checkFurtherQuestionsExempted: false,
                 configuration: new WebApiClient.FormSectionConfiguration(
                     singularSummaryHeading: null,
                     pluralSummaryHeadingFormat: null,
                     addAnotherAnswerLabel: null,
                     removeConfirmationCaption: null,
-                    removeConfirmationHeading: null
+                    removeConfirmationHeading: null,
+                    furtherQuestionsExemptedHeading: null
                 ),
                 id: sectionId,
                 title: "SectionTitle"

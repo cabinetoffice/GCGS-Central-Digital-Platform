@@ -4,12 +4,12 @@
     var hasError = ((TagBuilder)Html.ValidationMessageFor(m => m.TextInput)).HasInnerHtml;
 }
 
-<div class="govuk-form-group">
+<div class="govuk-form-group govuk-character-count" data-module="govuk-character-count" data-maxlength="10000" data-threshold="90">
 
     @if (!string.IsNullOrWhiteSpace(Model.Heading))
     {
         <h1 class="govuk-label-wrapper">
-            <label class="govuk-label govuk-label--l" for="multiLineTextInput">@Model.Heading</label>
+            <label class="govuk-label govuk-label--l" for="TextInput">@Model.Heading</label>
         </h1>
     }
     @if (!string.IsNullOrWhiteSpace(Model.Caption))
@@ -30,5 +30,9 @@
         </p>
     }
 
-    <textarea class="govuk-textarea govuk-!-width-two-thirds" rows="5" id="multiLineTextInput" name="TextInput">@Model.TextInput</textarea>
+    <textarea class="govuk-textarea govuk-!-width-two-thirds govuk-js-character-count" rows="5" id="TextInput" name="TextInput" aria-describedby="TextInput-info">@Model.TextInput</textarea>
+
+    <div id="TextInput-info" class="govuk-hint govuk-character-count__message">
+        You can enter up to 10,000 characters
+    </div>
 </div>

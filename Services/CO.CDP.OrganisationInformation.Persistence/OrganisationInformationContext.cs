@@ -90,21 +90,6 @@ public class OrganisationInformationContext(DbContextOptions<OrganisationInforma
                 a.Property(z => z.UpdatedOn).HasTimestampDefault();
                 a.ToTable("supplier_information");
 
-                a.OwnsMany(x => x.Qualifications, y =>
-                {
-                    y.HasKey(z => z.Id);
-                    y.Property(z => z.CreatedOn).HasTimestampDefault();
-                    y.Property(z => z.UpdatedOn).HasTimestampDefault();
-                    y.ToTable("qualifications");
-                });
-
-                a.OwnsMany(x => x.TradeAssurances, y =>
-                {
-                    y.HasKey(z => z.Id);
-                    y.Property(z => z.CreatedOn).HasTimestampDefault();
-                    y.Property(z => z.UpdatedOn).HasTimestampDefault();
-                    y.ToTable("trade_assurances");
-                });
                 a.OwnsOne(x => x.LegalForm, y =>
                 {
                     y.Property(z => z.CreatedOn).HasTimestampDefault();
@@ -120,7 +105,7 @@ public class OrganisationInformationContext(DbContextOptions<OrganisationInforma
                 a.ToTable("buyer_information");
             });
 
-            entity.HasOne(e => e.ApprovedBy);
+            entity.HasOne(e => e.ReviewedBy);
 
             entity
                 .HasMany(p => p.Persons)

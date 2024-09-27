@@ -1,34 +1,84 @@
 @model FormElementTextInputModel
 
 @{
-    var hasError = ((TagBuilder)Html.ValidationMessageFor(m => m.TextInput)).HasInnerHtml;
+    var textInputHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.TextInput)).HasInnerHtml;
+    string textInputAriaDescribedby = "";
 }
 
 <div class="govuk-form-group">
-   
+
     @if (!string.IsNullOrWhiteSpace(Model.Heading))
     {
         <h1 class="govuk-label-wrapper">
-            <label class="govuk-label govuk-label--l" for="textInput">@Model.Heading</label>
+            <label class="govuk-label govuk-label--l" for="TextInput">@Model.Heading</label>
+
+            @if (!string.IsNullOrWhiteSpace(Model.Caption))
+            {
+                <span class="govuk-caption-l govuk-!-margin-bottom-3">@Model.Caption</span>
+            }
         </h1>
-    }
-    @if (!string.IsNullOrWhiteSpace(Model.Caption))
-    {
-        <span class="govuk-caption-l">@Model.Caption</span>
     }
 
     @if (!string.IsNullOrWhiteSpace(Model.Description))
     {
-        @Html.Raw(Model.Description)
+        textInputAriaDescribedby += "TextInput-description";
+
+        <div id="TextInput-description">
+            @Html.Raw(Model.Description)
+        </div>
     }
 
-    @if (hasError)
+    @if (textInputHasError)
     {
-        <p class="govuk-error-message">
+        textInputAriaDescribedby += " TextInput-error";
+
+        <p class="govuk-error-message" id="TextInput-error">
             <span class="govuk-visually-hidden">Error:</span>
             @Html.ValidationMessageFor(m => m.TextInput)
         </p>
     }
 
-    <input class="govuk-input govuk-!-width-two-thirds" id="textInput" name="TextInput" type="text" value="@Model.TextInput">
+    @if (((TagBuilder)Html.ValidationMessageFor(m => m.HasValue)).HasInnerHtml)
+    {
+        <p class="govuk-error-message">
+            <span class="govuk-visually-hidden">Error:</span>
+            @Html.ValidationMessageFor(m => m.HasValue)
+        </p>
+    }
+
+    @if (Model.IsRequired)
+    {
+        <input class="govuk-input govuk-!-width-two-thirds" id="TextInput" name="TextInput" type="text" value="@Model.TextInput"
+                @(string.IsNullOrWhiteSpace(textInputAriaDescribedby) ? "" : Html.Raw($"aria-describedby=\"{textInputAriaDescribedby}\""))>
+    }
+    else
+    {
+        <fieldset class="govuk-fieldset">
+            <div class="govuk-radios" data-module="govuk-radios">
+
+                <div class="govuk-radios__item">
+                    <input class="govuk-radios__input" id="YES" name="HasValue" type="radio"
+                           value="true" data-aria-controls="conditional-YES" @(Model.HasValue == true ? "checked" : "")>
+                    <label class="govuk-label govuk-radios__label" for="YES">Yes</label>
+                </div>
+
+                <div class="govuk-radios__conditional" id="conditional-YES">
+                    <div class="govuk-form-group @(textInputHasError ? "govuk-form-group--error" : "")">
+
+                        <input class="govuk-input govuk-!-width-two-thirds @(textInputHasError ? "govuk-input--error" : "")"
+                                id="TextInput" name="TextInput" type="text"
+                               value="@(Model.HasValue == true ? Model.TextInput : "")"
+                        @(string.IsNullOrWhiteSpace(textInputAriaDescribedby) ? "" : Html.Raw($"aria-describedby=\"{textInputAriaDescribedby}\""))>
+                    </div>
+                </div>
+
+                <div class="govuk-radios__item">
+                    <input class="govuk-radios__input" id="NO" name="HasValue" type="radio"
+                           value="false" data-aria-controls="conditional-NO" @(Model.HasValue == false ? "checked" : "")>
+                    <label class="govuk-label govuk-radios__label" for="NO">No</label>
+                    <div class="govuk-radios__conditional--hidden" id="conditional-NO"></div>
+                </div>
+            </div>
+        </fieldset>
+    }
 </div>

@@ -13,13 +13,14 @@ namespace CO.CDP.Organisation.WebApi.Tests.UseCase;
 
 public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IClassFixture<AutoMapperFixture>
 {
+    private readonly Mock<IIdentifierService> _identifierService = new();
     private readonly Mock<Persistence.IOrganisationRepository> _repository = new();
     private readonly Mock<Persistence.IPersonRepository> _persons = new();
     private readonly Mock<IPublisher> _publisher = new();
     private readonly Guid _generatedGuid = Guid.NewGuid();
 
     private RegisterOrganisationUseCase UseCase => new(
-        _repository.Object, _persons.Object, _publisher.Object, mapperFixture.Mapper, () => _generatedGuid);
+        _identifierService.Object, _repository.Object, _persons.Object, _publisher.Object, mapperFixture.Mapper, () => _generatedGuid);
 
     [Fact]
     public async Task ItReturnsTheRegisteredOrganisation()

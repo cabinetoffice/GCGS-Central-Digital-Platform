@@ -1,5 +1,6 @@
 using CO.CDP.GovUKNotify.Models;
 using FluentAssertions;
+using Microsoft.Extensions.Logging;
 using Moq;
 using Moq.Protected;
 using System.Net;
@@ -14,12 +15,13 @@ public class GovUKNotifyApiClientTests
     private readonly Mock<IAuthentication> _mockAuthentication;
     private readonly Mock<HttpMessageHandler> _mockHttpMessageHandler;
     private readonly GovUKNotifyApiClient _govUKNotifyApiClient;
-
+    private readonly Mock<ILogger<GovUKNotifyApiClient>> _logger;
     public GovUKNotifyApiClientTests()
     {
         _mockHttpClientFactory = new Mock<IHttpClientFactory>();
         _mockAuthentication = new Mock<IAuthentication>();
         _mockHttpMessageHandler = new Mock<HttpMessageHandler>();
+        _logger = new Mock<ILogger<GovUKNotifyApiClient>>();
 
         var client = new HttpClient(_mockHttpMessageHandler.Object)
         {
@@ -32,7 +34,7 @@ public class GovUKNotifyApiClientTests
         _mockHttpClientFactory.Setup(h => h.CreateClient(It.IsAny<string>()))
             .Returns(client);
 
-        _govUKNotifyApiClient = new GovUKNotifyApiClient(_mockHttpClientFactory.Object, _mockAuthentication.Object);
+        _govUKNotifyApiClient = new GovUKNotifyApiClient(_mockHttpClientFactory.Object, _mockAuthentication.Object, _logger.Object);
     }
 
     [Fact]

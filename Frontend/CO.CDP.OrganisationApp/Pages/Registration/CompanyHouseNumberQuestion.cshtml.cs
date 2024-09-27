@@ -1,12 +1,18 @@
 using CO.CDP.Mvc.Validation;
+using CO.CDP.Organisation.WebApiClient;
+using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
+using CO.CDP.OrganisationApp.ThirdPartyApiClients.CompaniesHouse;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 
 namespace CO.CDP.OrganisationApp.Pages.Registration;
 
 [ValidateRegistrationStep]
-public class CompanyHouseNumberQuestionModel(ISession session) : RegistrationStepModel(session)
+public class CompanyHouseNumberQuestionModel(ISession session,
+    ICompaniesHouseApi companiesHouseApi,
+    IOrganisationClient organisationClient,
+    ITempDataService tempDataService) : RegistrationStepModel(session)
 {
     public override string CurrentPage => OrganisationHasCompanyHouseNumberPage;
 
@@ -23,13 +29,19 @@ public class CompanyHouseNumberQuestionModel(ISession session) : RegistrationSte
 
     public string? Error { get; set; }
 
+    [BindProperty]
+    public string? FailedCompaniesHouseNumber { get; set; }
+
+    public static string NotificationBannerCompanyNotFound { get { return "We cannot find your company number on Companies House. If it’s correct continue and enter your details manually."; } }
+    public static string NotificationBannerCompanyAlreadyRegistered { get { return "An organisation with this company number already exists. Change the company number or <a class='govuk-notification-banner__link' href='#'>request to join the organisation.</a>"; } }
+
     public void OnGet()
     {
         HasCompaniesHouseNumber = RegistrationDetails.OrganisationHasCompaniesHouseNumber;
         CompaniesHouseNumber = RegistrationDetails.OrganisationIdentificationNumber;
     }
 
-    public IActionResult OnPost()
+    public async Task<IActionResult> OnPost()
     {
         if (!ModelState.IsValid)
         {
@@ -41,6 +53,28 @@ public class CompanyHouseNumberQuestionModel(ISession session) : RegistrationSte
         {
             RegistrationDetails.OrganisationIdentificationNumber = CompaniesHouseNumber;
             RegistrationDetails.OrganisationScheme = "GB-COH";
+
+            try
+            {
+                await organisationClient.LookupOrganisationAsync(string.Empty, $"GB-COH:{RegistrationDetails.OrganisationIdentificationNumber}");
+
+                tempDataService.Put(FlashMessageTypes.Important, NotificationBannerCompanyAlreadyRegistered);
+                return Page();
+            }
+            catch (Exception orgApiException) when (orgApiException is ApiException && ((ApiException)orgApiException).StatusCode == 404)
+            {
+                if (FailedCompaniesHouseNumber != CompaniesHouseNumber)
+                {
+                    var chProfile = await companiesHouseApi.GetProfile(RegistrationDetails.OrganisationIdentificationNumber!);
+                    
+                    if (chProfile == null)
+                    {
+                        FailedCompaniesHouseNumber = CompaniesHouseNumber;
+                        tempDataService.Put(FlashMessageTypes.Important, NotificationBannerCompanyNotFound);
+                        return Page();
+                    }
+                }
+            }
         }
 
         SessionContext.Set(Session.RegistrationDetailsKey, RegistrationDetails);

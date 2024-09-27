@@ -9,6 +9,7 @@ public record FormSection
     public required string Title { get; init; }
     public required FormSectionType Type { get; set; }
     public required bool AllowsMultipleAnswerSets { get; init; }
+    public required bool CheckFurtherQuestionsExempted { get; init; }
     public required FormSectionConfiguration Configuration { get; init; }
 }
 
@@ -27,4 +28,5 @@ public record FormSectionConfiguration
     public string? AddAnotherAnswerLabel { get; set; }
     public string? RemoveConfirmationCaption { get; set; }
     public string? RemoveConfirmationHeading { get; set; }
+    public string? FurtherQuestionsExemptedHeading { get; set; }
 }

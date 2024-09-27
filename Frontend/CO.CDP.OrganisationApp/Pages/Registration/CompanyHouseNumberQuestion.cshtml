@@ -21,12 +21,16 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <partial name="_ErrorSummary" model="@Model.ModelState" />
+
             <h1 class="govuk-heading-l">Does your organisation have a Companies House number?</h1>
             <form method="post">
                 @if (Request.Query.ContainsKey("frm-summary"))
                 {
                     <input type="hidden" name="RedirectToSummary" value="true" />
                 }
+
+                <input type="hidden" id="FailedCompaniesHouseNumber" name="FailedCompaniesHouseNumber" value="@(Model.FailedCompaniesHouseNumber)" />
+
                 <div class="govuk-form-group">
                     <fieldset class="govuk-fieldset">
                         <div class="govuk-radios" data-module="govuk-radios">

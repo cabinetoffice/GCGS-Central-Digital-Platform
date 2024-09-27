@@ -30,12 +30,12 @@ public class WebApiToPersistenceProfile : Profile
                 Approval = new Approval
                 {
                     ApprovedOn = m.ApprovedOn,
-                    ApprovedBy = m.ApprovedBy != null ? new ApprovedBy
+                    ReviewedBy = m.ReviewedBy != null ? new ReviewedBy
                     {
-                        Name = $"{m.ApprovedBy.FirstName} {m.ApprovedBy.LastName}",
-                        Id = m.ApprovedBy.Guid
+                        Name = $"{m.ReviewedBy.FirstName} {m.ReviewedBy.LastName}",
+                        Id = m.ReviewedBy.Guid
                     } : null,
-                    Comment = m.ApprovedComment
+                    Comment = m.ReviewComment
                 }
             }));
 
@@ -99,34 +99,18 @@ public class WebApiToPersistenceProfile : Profile
             .ForMember(m => m.BuyerInfo, o => o.Ignore())
             .ForMember(m => m.Identifiers, o => o.MapFrom<IdentifiersResolver>())
             .ForMember(m => m.ContactPoints, o => o.MapFrom(m => new[] { m.ContactPoint }))
-            .ForMember(m => m.ApprovedBy, o => o.Ignore())
-            .ForMember(m => m.ApprovedComment, o => o.Ignore())
+            .ForMember(m => m.ReviewedBy, o => o.Ignore())
+            .ForMember(m => m.ReviewComment, o => o.Ignore())
             .ForMember(m => m.ApprovedOn, o => o.Ignore())
-            .ForMember(m => m.ApprovedById, o => o.Ignore());
+            .ForMember(m => m.ReviewedById, o => o.Ignore());
 
         CreateMap<Persistence.Organisation.SupplierInformation, SupplierInformation>()
             .ForMember(m => m.OrganisationName, o => o.Ignore());
-
-        CreateMap<TradeAssurance, Persistence.Organisation.TradeAssurance>()
-            .ForMember(m => m.Id, o => o.Ignore())
-            .ForMember(m => m.Guid, o => o.MapFrom(_ => Guid.NewGuid()))
-            .ForMember(m => m.CreatedOn, o => o.Ignore())
-            .ForMember(m => m.UpdatedOn, o => o.Ignore())
-            .ReverseMap()
-            .ForMember(m => m.Id, o => o.MapFrom(m => m.Guid));
 
         CreateMap<LegalForm, Persistence.Organisation.LegalForm>()
             .ForMember(m => m.CreatedOn, o => o.Ignore())
             .ForMember(m => m.UpdatedOn, o => o.Ignore())
             .ReverseMap();
-
-        CreateMap<Qualification, Persistence.Organisation.Qualification>()
-           .ForMember(m => m.Id, o => o.Ignore())
-           .ForMember(m => m.Guid, o => o.MapFrom(_ => Guid.NewGuid()))
-           .ForMember(m => m.CreatedOn, o => o.Ignore())
-           .ForMember(m => m.UpdatedOn, o => o.Ignore())
-           .ReverseMap()
-           .ForMember(m => m.Id, o => o.MapFrom(m => m.Guid));
 
         CreateMap<Persistence.Person, Person>()
             .ForMember(m => m.Scopes, o => o.Ignore())
@@ -249,11 +233,11 @@ public class WebApiToPersistenceProfile : Profile
     }
 
     public class IdentifiersResolver : IValueResolver<RegisterOrganisation, Persistence.Organisation,
-        ICollection<Persistence.Organisation.Identifier>>
+        IList<Persistence.Organisation.Identifier>>
     {
-        public ICollection<Persistence.Organisation.Identifier> Resolve(
+        public IList<Persistence.Organisation.Identifier> Resolve(
             RegisterOrganisation source, Persistence.Organisation destination,
-            ICollection<Persistence.Organisation.Identifier> destMember,
+            IList<Persistence.Organisation.Identifier> destMember,
             ResolutionContext context)
         {
             var pi = context.Mapper.Map<Persistence.Organisation.Identifier>(source.Identifier);
