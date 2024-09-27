@@ -20,23 +20,32 @@ public class OrganizationScopeHandler(
                 {
                     IUserInfoService _userInfo = serviceScope.ServiceProvider.GetRequiredService<IUserInfoService>();
 
-                    var scopes = await _userInfo.GetOrganisationUserScopes();
+                    var userScopes = await _userInfo.GetUserScopes();
 
-                    // Admin role can do anything within this organisation
-                    if (scopes.Contains(OrganisationPersonScopes.Admin))
+                    // SupportAdmin role can do anything within any organisation
+                    if (userScopes.Contains(PersonScopes.SupportAdmin))
                     {
                         context.Succeed(requirement);
                         return;
                     }
 
-                    if (scopes.Contains(requirement.Scope))
+                    var organisationUserScopes = await _userInfo.GetOrganisationUserScopes();
+
+                    // Admin role can do anything within this organisation
+                    if (organisationUserScopes.Contains(OrganisationPersonScopes.Admin))
+                    {
+                        context.Succeed(requirement);
+                        return;
+                    }
+
+                    if (organisationUserScopes.Contains(requirement.Scope))
                     {
                         context.Succeed(requirement);
                         return;
                     }
 
                     // Editor role implies viewer permissions
-                    if (requirement.Scope == OrganisationPersonScopes.Viewer && scopes.Contains(OrganisationPersonScopes.Editor))
+                    if (requirement.Scope == OrganisationPersonScopes.Viewer && organisationUserScopes.Contains(OrganisationPersonScopes.Editor))
                     {
                         context.Succeed(requirement);
                         return;
