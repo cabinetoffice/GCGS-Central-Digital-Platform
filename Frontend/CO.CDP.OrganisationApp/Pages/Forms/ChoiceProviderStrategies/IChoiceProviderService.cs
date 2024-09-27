@@ -1,4 +1,4 @@
-﻿namespace CO.CDP.OrganisationApp.Pages.Forms.ChoiceProviderStrategies;
+namespace CO.CDP.OrganisationApp.Pages.Forms.ChoiceProviderStrategies;
 
 public interface IChoiceProviderService
 {

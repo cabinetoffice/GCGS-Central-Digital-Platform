@@ -1,21 +1,11 @@
+using Microsoft.Extensions.DependencyInjection;
+
 namespace CO.CDP.OrganisationApp.Pages.Forms.ChoiceProviderStrategies;
-public class ChoiceProviderService(IEnumerable<IChoiceProviderStrategy> choiceProviderStrategies) : IChoiceProviderService
+public class ChoiceProviderService(IEnumerable<IChoiceProviderStrategy> choiceProviderStrategies, IServiceProvider serviceProvider) : IChoiceProviderService
 {
     public IChoiceProviderStrategy GetStrategy(string strategyType)
     {
-        IChoiceProviderStrategy? strategy = choiceProviderStrategies.FirstOrDefault(s => s.GetType().Name == strategyType);
-
-        if (strategy == null)
-        {
-            strategy = choiceProviderStrategies.First(s => s.GetType().Name == "DefaultChoiceProviderStrategy");
-        }
-
-        return strategy;
-
-        /*        return strategyType switch
-                {
-                    "ExclusionAppliesTo" => _serviceProvider.GetRequiredService<ExclusionAppliesToChoiceProviderStrategy>(),
-                    _ => _serviceProvider.GetRequiredService<DefaultChoiceProviderStrategy>()
-                };*/
+        strategyType ??= "DefaultChoiceProviderStrategy";
+        return serviceProvider.GetKeyedService<IChoiceProviderStrategy>(strategyType)!;
     }
 }

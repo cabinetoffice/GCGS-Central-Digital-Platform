@@ -67,8 +67,8 @@ builder.Services.AddScoped<ITempDataService, TempDataService>();
 builder.Services.AddScoped<ApiBearerTokenHandler>();
 builder.Services.AddScoped<ICompaniesHouseApi, CompaniesHouseApi>();
 
-builder.Services.AddTransient<IChoiceProviderStrategy, ExclusionAppliesToChoiceProviderStrategy>();
-builder.Services.AddTransient<IChoiceProviderStrategy, DefaultChoiceProviderStrategy>();
+builder.Services.AddKeyedTransient<IChoiceProviderStrategy, ExclusionAppliesToChoiceProviderStrategy>("ExclusionAppliesToChoiceProviderStrategy");
+builder.Services.AddKeyedTransient<IChoiceProviderStrategy, DefaultChoiceProviderStrategy>("DefaultChoiceProviderStrategy");
 builder.Services.AddTransient<IChoiceProviderService, ChoiceProviderService>();
 
 builder.Services.AddTransient<IFormsEngine, FormsEngine>();
