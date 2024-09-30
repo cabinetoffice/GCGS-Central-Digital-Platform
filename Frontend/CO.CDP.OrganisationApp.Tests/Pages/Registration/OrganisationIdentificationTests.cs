@@ -438,7 +438,7 @@ public class OrganisationIdentificationModelTests
 
     private static OrganisationWebApiClient.Organisation GivenOrganisationClientModel()
     {
-        return new OrganisationWebApiClient.Organisation(null, null, null, _organisationId, null, "Test Org", []);
+        return new OrganisationWebApiClient.Organisation(null, null, null, null, _organisationId, null, "Test Org", []);
     }
 
     private static ICollection<EntityVerificationClient.Identifier> GivenEntityVerificationIdentifiers()
