@@ -71,29 +71,6 @@ public class FormsQuestionPageModelTest
     }
 
     [Fact]
-    public async Task OnGetAsync_ClearsFormSectionCache_WhenPreviousQuestionIsNull()
-    {
-        var formQuestion = new FormQuestion { Id = Guid.NewGuid(), Type = FormQuestionType.Text };
-        _formsEngineMock.Setup(f => f.GetCurrentQuestion(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid?>()))
-            .ReturnsAsync(formQuestion);
-
-        _formsEngineMock.Setup(f => f.GetPreviousQuestion(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid>()))
-            .ReturnsAsync((FormQuestion?)null);
-
-        var tempDataKey = $"Form_{_pageModel.OrganisationId}_{_pageModel.FormId}_{_pageModel.SectionId}";
-
-        _tempDataServiceMock.Setup(td => td.Keys).Returns([tempDataKey]);
-
-        var result = await _pageModel.OnGetAsync();
-
-        _tempDataServiceMock.Verify(t => t.Remove(tempDataKey), Times.AtLeastOnce);
-
-        result.Should().BeOfType<PageResult>();
-        _pageModel.PartialViewName.Should().Be("_FormElementTextInput");
-        _pageModel.PartialViewModel.Should().NotBeNull();
-    }
-
-    [Fact]
     public async Task OnPostAsync_RedirectsToPageNotFound_WhenCurrentQuestionIsNull()
     {
         _formsEngineMock.Setup(f => f.GetCurrentQuestion(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid?>()))

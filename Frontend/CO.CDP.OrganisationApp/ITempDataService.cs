@@ -3,8 +3,6 @@ namespace CO.CDP.OrganisationApp;
 
 public interface ITempDataService
 {
-    IEnumerable<string> Keys { get; }
-
     void Put<T>(string key, T value);
 
     T? Get<T>(string key);
