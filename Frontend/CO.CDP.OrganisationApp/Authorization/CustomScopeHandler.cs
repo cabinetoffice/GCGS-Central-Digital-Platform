@@ -3,11 +3,11 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace CO.CDP.OrganisationApp.Authorization;
 
-public class OrganizationScopeHandler(
+public class CustomScopeHandler(
     ISession session,
-    IServiceScopeFactory serviceScopeFactory) : AuthorizationHandler<OrganizationScopeRequirement>
+    IServiceScopeFactory serviceScopeFactory) : AuthorizationHandler<ScopeRequirement>
 {
-    protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, OrganizationScopeRequirement requirement)
+    protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, ScopeRequirement requirement)
     {
         Models.UserDetails? userDetails = session.Get<Models.UserDetails>(Session.UserDetailsKey);
 

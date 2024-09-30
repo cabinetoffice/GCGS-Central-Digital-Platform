@@ -5,7 +5,7 @@ public class PersonScopes
     public const string SupportAdmin = "SUPPORTADMIN";
 }
 
-public class ScopeRequirement
+public class PersonScopeRequirement
 {
-    public const string SupportAdmin = "Scope_" + PersonScopes.SupportAdmin;
+    public const string SupportAdmin = "PersonScope_" + PersonScopes.SupportAdmin;
 }
