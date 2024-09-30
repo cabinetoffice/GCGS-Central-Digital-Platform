@@ -80,7 +80,7 @@ public class FormElementFileUploadModel : FormElementModel, IValidatableObject
 
         if (validateField)
         {
-            if (string.IsNullOrWhiteSpace(UploadedFileName))
+            if (string.IsNullOrWhiteSpace(UploadedFileName) || UploadedFile != null)
             {
                 if (UploadedFile == null)
                 {
