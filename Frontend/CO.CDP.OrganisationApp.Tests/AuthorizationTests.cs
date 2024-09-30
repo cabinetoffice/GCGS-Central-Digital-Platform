@@ -36,7 +36,7 @@ public class AuthorizationTests
                                     new Uri("http://foo")
                                 );
 
-        var person = new Person.WebApiClient.Person("a@b.com", "First name", personId, "Last name");
+        var person = new Person.WebApiClient.Person("a@b.com", "First name", personId, "Last name", new List<string>());
 
         tenantClient.Setup(client => client.LookupTenantAsync())
             .ReturnsAsync(
