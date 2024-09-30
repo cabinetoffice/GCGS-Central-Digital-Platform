@@ -10,8 +10,17 @@ public class FormElementTextInputModel : FormElementModel, IValidatableObject
     [BindProperty]
     public string? TextInput { get; set; }
 
+    [BindProperty]
+    public bool? HasValue { get; set; }
+
+
     public override FormAnswer? GetAnswer()
     {
+        if (IsRequired == false && HasValue == false)
+        {
+            return null;
+        }
+
         return string.IsNullOrWhiteSpace(TextInput) ? null : new FormAnswer { TextValue = TextInput };
     }
 
@@ -20,19 +29,45 @@ public class FormElementTextInputModel : FormElementModel, IValidatableObject
         if (answer?.TextValue != null)
         {
             TextInput = answer.TextValue;
+            HasValue = true;
+        }
+        else if (RedirectFromCheckYourAnswerPage && IsRequired == false)
+        {
+            HasValue = false;
         }
     }
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
-
-        if (IsRequired == true && string.IsNullOrWhiteSpace(TextInput))
+        if (CurrentFormQuestionType != FormQuestionType.Text)
         {
-            yield return new ValidationResult("All information is required on this page", new[] { nameof(TextInput) });
+            yield break;
         }
-        else if (!string.IsNullOrWhiteSpace(TextInput) && IsEmailValidationRequired() && !IsValidEmail(TextInput))
+
+        var validateTextField = IsRequired;
+
+        if (IsRequired == false)
         {
-            yield return new ValidationResult("Enter an email address in the correct format, like name@example.com.", new[] { nameof(TextInput) });
+            if (HasValue == null)
+            {
+                yield return new ValidationResult("Select an option", [nameof(HasValue)]);
+            }
+            else if (HasValue == true)
+            {
+                validateTextField = true;
+            }
+        }
+
+        if (validateTextField)
+        {
+            if (IsEmailValidationRequired() && !IsValidEmail(TextInput))
+            {
+                yield return new ValidationResult("Enter an email address in the correct format, like name@example.com.", [nameof(TextInput)]);
+            }
+            else if (string.IsNullOrWhiteSpace(TextInput))
+            {
+                yield return new ValidationResult("Enter a value", [nameof(TextInput)]);
+            }
         }
     }
     private bool IsEmailValidationRequired()
@@ -40,7 +75,7 @@ public class FormElementTextInputModel : FormElementModel, IValidatableObject
         return Heading?.Contains("email", StringComparison.OrdinalIgnoreCase) == true;
     }
 
-    private bool IsValidEmail(string? email)
+    private static bool IsValidEmail(string? email)
     {
         if (string.IsNullOrWhiteSpace(email))
         {

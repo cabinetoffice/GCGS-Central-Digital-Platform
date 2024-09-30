@@ -70,8 +70,8 @@ public static class SharedConsentFactory
             Questions = questions ?? [],
             Type = type,
             AllowsMultipleAnswerSets = true,
-            CreatedOn = DateTimeOffset.UtcNow,
-            UpdatedOn = DateTimeOffset.UtcNow,
+            CheckFurtherQuestionsExempted = false,
+            DisplayOrder = 1,
             Configuration = new FormSectionConfiguration
             {
                 PluralSummaryHeadingFormat = "You have added {0} files",

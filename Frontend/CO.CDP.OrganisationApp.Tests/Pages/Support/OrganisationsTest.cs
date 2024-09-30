@@ -1,9 +1,10 @@
 using CO.CDP.Organisation.WebApiClient;
-using CO.CDP.OrganisationApp;
 using CO.CDP.OrganisationApp.Pages.Support;
-using Moq;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Moq;
+
+namespace CO.CDP.OrganisationApp.Tests.Pages.Support;
 
 public class OrganisationsModelTests
 {

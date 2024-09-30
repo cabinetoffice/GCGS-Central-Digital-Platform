@@ -1,5 +1,3 @@
-using Amazon;
-using Amazon.S3;
 using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.Pages.Registration;
@@ -11,7 +9,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Routing;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using Moq;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages.Registration;

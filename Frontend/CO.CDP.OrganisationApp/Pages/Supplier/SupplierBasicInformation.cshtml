@@ -5,27 +5,6 @@
 @{
     var details = Model.SupplierInformation!;
     string GetActionString(bool completed) => completed ? "Change" : "Add";
-    string GetActionStringWithItems(bool completed, int itemCount) => completed && itemCount > 0 ? "View" : "Add";
-
-    string GetActionStringWithoutItems(bool completed, int itemCount)
-    {
-        var text = "Add";
-
-        if (completed && itemCount == 0)
-        {
-            text = "Change";
-        }
-        else if (completed && itemCount > 0)
-        {
-            text = "View";
-        }
-        else if (completed == false && itemCount == 0)
-        {
-            text = "Add";
-        }
-
-        return text;
-    }
 
     void RenderAddress(CO.CDP.Organisation.WebApiClient.Address address)
     {
@@ -201,58 +180,6 @@
                         <dd class="govuk-summary-list__actions">
                             <a class="govuk-link" href="email-address">
                                 @GetActionString(details.CompletedEmailAddress)
-                            </a>
-                        </dd>
-                    </authorize>
-                </div>
-
-                <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">
-                        Qualifications
-                    </dt>
-                    <dt class="govuk-summary-list__value">
-                        @if (details.CompletedQualification)
-                        {
-                            if (details.Qualifications.Count > 0)
-                            {
-                                @(details.Qualifications.Count) @:qualifications
-                            }
-                            else
-                            {
-                                @:None
-                            }
-                        }
-                    </dt>
-                    <authorize scope="@OrgScopeRequirement.Editor">
-                        <dd class="govuk-summary-list__actions">
-                            <a class="govuk-link" href="supplier-qualification-summary">
-                                @GetActionStringWithoutItems(details.CompletedQualification, details.Qualifications.Count)
-                            </a>
-                        </dd>
-                    </authorize>
-                </div>
-
-                <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">
-                        Trade assurances
-                    </dt>
-                    <dt class="govuk-summary-list__value">
-                        @if (details.CompletedTradeAssurance)
-                        {
-                            if (details.TradeAssurances.Count > 0)
-                            {
-                                @(details.TradeAssurances.Count) @:trade assurances
-                            }
-                            else
-                            {
-                                @:None
-                            }
-                        }
-                    </dt>
-                    <authorize scope="@OrgScopeRequirement.Editor">
-                        <dd class="govuk-summary-list__actions">
-                            <a class="govuk-link" href="trade-assurance-summary">
-                                @GetActionStringWithItems(details.CompletedTradeAssurance, details.TradeAssurances.Count)
                             </a>
                         </dd>
                     </authorize>

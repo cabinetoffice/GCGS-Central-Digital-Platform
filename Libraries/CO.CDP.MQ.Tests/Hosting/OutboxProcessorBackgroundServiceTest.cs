@@ -3,7 +3,6 @@ using CO.CDP.MQ.Outbox;
 using CO.CDP.MQ.Tests.Hosting.TestKit;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
-using Range = Moq.Range;
 
 namespace CO.CDP.MQ.Tests.Hosting;
 
