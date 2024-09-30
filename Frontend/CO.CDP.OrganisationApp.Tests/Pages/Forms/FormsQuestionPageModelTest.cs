@@ -1,6 +1,7 @@
 using CO.CDP.AwsServices;
 using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.Pages.Forms;
+using CO.CDP.OrganisationApp.Pages.Forms.ChoiceProviderStrategies;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -12,6 +13,7 @@ public class FormsQuestionPageModelTest
 {
     private readonly Mock<IFormsEngine> _formsEngineMock;
     private readonly Mock<ITempDataService> _tempDataServiceMock;
+    private readonly Mock<IChoiceProviderService> _choiceProviderServiceMock;
     private readonly Mock<IFileHostManager> _fileHostManagerMock;
     private readonly FormsQuestionPageModel _pageModel;
     private readonly Guid TextQuestionId = Guid.NewGuid();
@@ -25,13 +27,22 @@ public class FormsQuestionPageModelTest
             Questions = [new FormQuestion { Id = TextQuestionId, Type = FormQuestionType.Text, SummaryTitle = "Sample Question" }]
         };
 
+        _formsEngineMock.Setup(f => f.ExecuteChoiceProviderStrategy(It.IsAny<CO.CDP.Forms.WebApiClient.FormQuestionOptions>()))
+            .ReturnsAsync(["Choices"]);
+        
         _formsEngineMock.Setup(f => f.GetFormSectionAsync(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid>()))
             .ReturnsAsync(form);
         _tempDataServiceMock = new Mock<ITempDataService>();
         _fileHostManagerMock = new Mock<IFileHostManager>();
+        _choiceProviderServiceMock = new Mock<IChoiceProviderService>();
         _tempDataServiceMock.Setup(t => t.PeekOrDefault<FormQuestionAnswerState>(It.IsAny<string>()))
             .Returns(new FormQuestionAnswerState());
+        _tempDataServiceMock.Setup(t => t.Remove(It.IsAny<string>()));
         _pageModel = new FormsQuestionPageModel(_formsEngineMock.Object, _tempDataServiceMock.Object, _fileHostManagerMock.Object);
+
+        _pageModel.OrganisationId = Guid.NewGuid();
+        _pageModel.FormId = Guid.NewGuid();
+        _pageModel.SectionId = Guid.NewGuid();
     }
 
     [Fact]

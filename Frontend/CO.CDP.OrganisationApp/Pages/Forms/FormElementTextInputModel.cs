@@ -16,7 +16,11 @@ public class FormElementTextInputModel : FormElementModel, IValidatableObject
 
     public override FormAnswer? GetAnswer()
     {
-        if (IsRequired == false && HasValue == false) return null;
+        if (IsRequired == false && HasValue == false)
+        {
+            return null;
+        }
+
         return string.IsNullOrWhiteSpace(TextInput) ? null : new FormAnswer { TextValue = TextInput };
     }
 
@@ -35,6 +39,11 @@ public class FormElementTextInputModel : FormElementModel, IValidatableObject
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
+        if (CurrentFormQuestionType != FormQuestionType.Text)
+        {
+            yield break;
+        }
+
         var validateTextField = IsRequired;
 
         if (IsRequired == false)
