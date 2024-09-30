@@ -5,88 +5,133 @@
     var monthHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Month)).HasInnerHtml;
     var yearHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Year)).HasInnerHtml;
     var dateStringHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.DateString)).HasInnerHtml;
-    var hasError = dateStringHasError || dayHasError || monthHasError || yearHasError;
+    var hasDateError = dateStringHasError || dayHasError || monthHasError || yearHasError;
+    var selectOptionHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.HasValue)).HasInnerHtml;
+
+    void RenderField()
+    {
+        if (!string.IsNullOrWhiteSpace(Model.Caption))
+        {
+            @Html.Raw(Model.Caption)
+        }
+        else
+        {
+            <div class="govuk-hint">For example, 27 3 2007</div>
+        }
+
+        @if (dayHasError)
+        {
+            <p class="govuk-error-message">
+                <span class="govuk-visually-hidden">Error:</span>
+                @Html.ValidationMessageFor(m => m.Day)
+            </p>
+        }
+        @if (monthHasError)
+        {
+            <p class="govuk-error-message">
+                <span class="govuk-visually-hidden">Error:</span>
+                @Html.ValidationMessageFor(m => m.Month)
+            </p>
+        }
+        @if (yearHasError)
+        {
+            <p class="govuk-error-message">
+                <span class="govuk-visually-hidden">Error:</span>
+                @Html.ValidationMessageFor(m => m.Year)
+            </p>
+        }
+        @if (dateStringHasError)
+        {
+            <p class="govuk-error-message">
+                <span class="govuk-visually-hidden">Error:</span>
+                @Html.ValidationMessageFor(m => m.DateString)
+            </p>
+        }
+        <div class="govuk-date-input">
+            <div class="govuk-date-input__item">
+                <div class="govuk-form-group">
+                    <label class="govuk-label govuk-date-input__label" for="formDay">
+                        Day
+                    </label>
+                    <input class="govuk-input govuk-date-input__input govuk-input--width-2 @(dayHasError || dateStringHasError ? "govuk-input--error" : "")"
+                           id="formDay" name="Day" type="text" inputmode="numeric" value="@Model.Day">
+                </div>
+            </div>
+            <div class="govuk-date-input__item">
+                <div class="govuk-form-group">
+                    <label class="govuk-label govuk-date-input__label" for="formMonth">
+                        Month
+                    </label>
+                    <input class="govuk-input govuk-date-input__input govuk-input--width-2 @(monthHasError || dateStringHasError ? "govuk-input--error" : "")"
+                           id="formMonth" name="Month" type="text" inputmode="numeric" value="@Model.Month">
+                </div>
+            </div>
+            <div class="govuk-date-input__item">
+                <div class="govuk-form-group">
+                    <label class="govuk-label govuk-date-input__label" for="formYear">
+                        Year
+                    </label>
+                    <input class="govuk-input govuk-date-input__input govuk-input--width-4 @(yearHasError || dateStringHasError ? "govuk-input--error" : "")"
+                           id="formYear" name="Year" type="text" inputmode="numeric" value="@Model.Year">
+                </div>
+            </div>
+        </div>
+    }
 }
 
-<div class="govuk-form-group">
-    <fieldset class="govuk-fieldset">
+<div class="govuk-form-group @((Model.IsRequired && hasDateError) || selectOptionHasError ? "govuk-form-group--error" : "")">
+    <fieldset class="govuk-fieldset" role="group">
+        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+            @if (!string.IsNullOrWhiteSpace(Model.Heading))
+            {
+                <h1 class="govuk-fieldset__heading">@Model.Heading</h1>
+            }
+        </legend>
 
-        <div class="govuk-form-group @(hasError ? "govuk-form-group--error" : "")">
-            <fieldset class="govuk-fieldset" role="group" aria-describedby="financialhint">
-                <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                    @if (!string.IsNullOrWhiteSpace(Model.Heading))
-                    {
-                        <h1 class="govuk-heading-l">@Model.Heading</h1>
-                    }
-                </legend>
-                @if (!string.IsNullOrWhiteSpace(Model.Caption))
-                {
-                    <span class="govuk-caption-l">@Model.Caption</span>
-                } else {
-                    <div id="date-hint" class="govuk-hint">
-                        For example, 05 04 2022
+        @if (!string.IsNullOrWhiteSpace(Model.Description))
+        {
+            @Html.Raw(Model.Description)
+        }
+
+        @if (selectOptionHasError)
+        {
+            <p class="govuk-error-message">
+                <span class="govuk-visually-hidden">Error:</span>
+                @Html.ValidationMessageFor(m => m.HasValue)
+            </p>
+        }
+
+        @if (Model.IsRequired)
+        {
+            RenderField();
+        }
+        else
+        {
+            <fieldset class="govuk-fieldset">
+                <div class="govuk-radios" data-module="govuk-radios">
+
+                    <div class="govuk-radios__item">
+                        <input class="govuk-radios__input" id="YES" name="HasValue" type="radio"
+                               value="true" data-aria-controls="conditional-YES" @(Model.HasValue == true ? "checked" : "")>
+                        <label class="govuk-label govuk-radios__label" for="YES">Yes</label>
                     </div>
-                }
-                @if (dayHasError)
-                {
-                    <p class="govuk-error-message">
-                        <span class="govuk-visually-hidden">Error:</span>
-                        @Html.ValidationMessageFor(m => m.Day)
-                    </p>
-                }
-                @if (monthHasError)
-                {
-                    <p class="govuk-error-message">
-                        <span class="govuk-visually-hidden">Error:</span>
-                        @Html.ValidationMessageFor(m => m.Month)
-                    </p>
-                }
-                @if (yearHasError)
-                {
-                    <p class="govuk-error-message">
-                        <span class="govuk-visually-hidden">Error:</span>
-                        @Html.ValidationMessageFor(m => m.Year)
-                    </p>
-                }
-                @if (dateStringHasError)
-                {
-                    <p class="govuk-error-message">
-                        <span class="govuk-visually-hidden">Error:</span>
-                        @Html.ValidationMessageFor(m => m.DateString)
-                    </p>
-                }
-                <div class="govuk-date-input">
-                    <div class="govuk-date-input__item">
-                        <div class="govuk-form-group">
-                            <label class="govuk-label govuk-date-input__label" for="formDay">
-                                Day
-                            </label>
-                            <input class="govuk-input govuk-date-input__input govuk-input--width-2 @(dayHasError || dateStringHasError ? "govuk-input--error" : "")"
-                                   id="formDay" name="Day" type="text" inputmode="numeric" value="@Model.Day">
-                        </div>
-                    </div>
-                    <div class="govuk-date-input__item">
-                        <div class="govuk-form-group">
-                            <label class="govuk-label govuk-date-input__label" for="formMonth">
-                                Month
-                            </label>
-                            <input class="govuk-input govuk-date-input__input govuk-input--width-2 @(monthHasError || dateStringHasError ? "govuk-input--error" : "")"
-                                   id="formMonth" name="Month" type="text" inputmode="numeric" value="@Model.Month">
-                        </div>
-                    </div>
-                    <div class="govuk-date-input__item">
-                        <div class="govuk-form-group">
-                            <label class="govuk-label govuk-date-input__label" for="formYear">
-                                Year
-                            </label>
-                            <input class="govuk-input govuk-date-input__input govuk-input--width-4 @(yearHasError || dateStringHasError ? "govuk-input--error" : "")"
-                                   id="formYear" name="Year" type="text" inputmode="numeric" value="@Model.Year">
+
+                    <div class="govuk-radios__conditional" id="conditional-YES">
+                        <div class="govuk-form-group @(hasDateError ? "govuk-form-group--error" : "")">
+                            @{
+                                RenderField();
+                            }
                         </div>
                     </div>
 
+                    <div class="govuk-radios__item">
+                        <input class="govuk-radios__input" id="NO" name="HasValue" type="radio"
+                               value="false" data-aria-controls="conditional-NO" @(Model.HasValue == false ? "checked" : "")>
+                        <label class="govuk-label govuk-radios__label" for="NO">No</label>
+                        <div class="govuk-radios__conditional--hidden" id="conditional-NO"></div>
+                    </div>
                 </div>
             </fieldset>
-        </div>
-
+        }
     </fieldset>
 </div>

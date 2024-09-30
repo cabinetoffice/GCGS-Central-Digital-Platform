@@ -21,8 +21,16 @@ public class FormElementDateInputModel : FormElementModel, IValidatableObject
     [BindProperty]
     public string? Year { get; set; }
 
+    [BindProperty]
+    public bool? HasValue { get; set; }
+
     public override FormAnswer? GetAnswer()
     {
+        if (IsRequired == false && HasValue == false)
+        {
+            return null;
+        }
+
         if (!string.IsNullOrWhiteSpace(Day) && !string.IsNullOrWhiteSpace(Month) && !string.IsNullOrWhiteSpace(Year))
         {
             var dateString = $"{Year}-{Month!.PadLeft(2, '0')}-{Day!.PadLeft(2, '0')}";
@@ -42,11 +50,34 @@ public class FormElementDateInputModel : FormElementModel, IValidatableObject
             Month = answer.DateValue.Value.Month.ToString();
             Year = answer.DateValue.Value.Year.ToString();
         }
+        else if (RedirectFromCheckYourAnswerPage && IsRequired == false)
+        {
+            HasValue = false;
+        }
     }
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
-        if (CurrentFormQuestionType == FormQuestionType.Date && IsRequired == true && string.IsNullOrWhiteSpace(DateString))
+        if (CurrentFormQuestionType != FormQuestionType.Date)
+        {
+            yield break;
+        }
+
+        var validateField = IsRequired;
+
+        if (IsRequired == false)
+        {
+            if (HasValue == null)
+            {
+                yield return new ValidationResult("Select an option", [nameof(HasValue)]);
+            }
+            else if (HasValue == true)
+            {
+                validateField = true;
+            }
+        }
+
+        if (validateField)
         {
             if (string.IsNullOrWhiteSpace(Day))
             {
