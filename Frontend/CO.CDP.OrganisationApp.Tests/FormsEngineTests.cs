@@ -1,3 +1,4 @@
+using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.Pages.Forms.ChoiceProviderStrategies;
 using FluentAssertions;
@@ -13,6 +14,8 @@ public class FormsEngineTests
     private readonly Mock<DataShareWebApiClient.IDataSharingClient> _dataSharingClientMock;
     private readonly Mock<ITempDataService> _tempDataServiceMock;
     private readonly Mock<IChoiceProviderService> _choiceProviderServiceMock;
+    private readonly Mock<IUserInfoService> _userInfoServiceMock;
+    private readonly Mock<IOrganisationClient> _organisationClientMock;
     private readonly FormsEngine _formsEngine;
 
     public FormsEngineTests()
@@ -21,6 +24,8 @@ public class FormsEngineTests
         _dataSharingClientMock = new Mock<DataShareWebApiClient.IDataSharingClient>();
         _tempDataServiceMock = new Mock<ITempDataService>();
         _choiceProviderServiceMock = new Mock<IChoiceProviderService>();
+        _userInfoServiceMock = new Mock<IUserInfoService>();
+        _organisationClientMock = new Mock<IOrganisationClient>();
         _formsEngine = new FormsEngine(_formsApiClientMock.Object, _tempDataServiceMock.Object, _choiceProviderServiceMock.Object, _dataSharingClientMock.Object);
     }
 
@@ -33,7 +38,7 @@ public class FormsEngineTests
         return (organisationId, formId, sectionId, sessionKey);
     }
 
-    private static WebApiClient.SectionQuestionsResponse CreateApiSectionQuestionsResponse(Guid sectionId, Guid questionId, Guid nextQuestionId)
+    private static WebApiClient.SectionQuestionsResponse CreateApiSectionQuestionsResponse(Guid sectionId, Guid questionId, Guid nextQuestionId, string? choiceProviderStrategy = null)
     {
         return new WebApiClient.SectionQuestionsResponse(
             section: new WebApiClient.FormSection(
@@ -64,7 +69,7 @@ public class FormsEngineTests
                 nextQuestion: nextQuestionId,
                 nextQuestionAlternative: null,
                 options: new WebApiClient.FormQuestionOptions(
-                    choiceProviderStrategy: null,
+                    choiceProviderStrategy: choiceProviderStrategy,
                     choices: new List<WebApiClient.FormQuestionChoice>
                     {
                         new WebApiClient.FormQuestionChoice(
@@ -84,7 +89,7 @@ public class FormsEngineTests
         );
     }
 
-    private static SectionQuestionsResponse CreateModelSectionQuestionsResponse(Guid sectionId, Guid questionId, Guid nextQuestionId)
+    private static SectionQuestionsResponse CreateModelSectionQuestionsResponse(Guid sectionId, Guid questionId, Guid nextQuestionId, string? choiceProviderStrategy = null, List<string>? options = null)
     {
         return new SectionQuestionsResponse
         {
@@ -103,7 +108,8 @@ public class FormsEngineTests
                 NextQuestion = nextQuestionId,
                 Options = new FormQuestionOptions
                 {
-                    Choices = new List<string> { "Option1" }
+                    Choices = options == null ? new List<string> { "Option1" } : options,
+                    ChoiceProviderStrategy = choiceProviderStrategy
                 }
             }
         }
@@ -239,6 +245,36 @@ public class FormsEngineTests
         var result = await _formsEngine.GetCurrentQuestion(organisationId, formId, sectionId, questionId);
 
         result.Should().BeEquivalentTo(sectionResponse.Questions.First(q => q.Id == questionId));
+    }
+
+    [Fact]
+    public async Task GetFormSectionAsync_ShouldFetchChoicesFromCustomChoiceProvider_WhenCustomChoiceProviderIsConfigured()
+    {
+        var (organisationId, formId, sectionId, sessionKey) = CreateTestGuids();
+        var questionId = Guid.NewGuid();
+        var nextQuestionId = Guid.NewGuid();
+        var apiResponse = CreateApiSectionQuestionsResponse(sectionId, questionId, nextQuestionId, "ExclusionAppliesToChoiceProviderStrategy");
+        var expectedResponse = CreateModelSectionQuestionsResponse(sectionId, questionId, nextQuestionId, "ExclusionAppliesToChoiceProviderStrategy", ["User's current organisation", "Connected person", "Connected organisation"]);
+
+        _organisationClientMock.Setup(c => c.GetConnectedEntitiesAsync(It.IsAny<Guid>()))
+            .ReturnsAsync([
+                new ConnectedEntityLookup(new Guid(), ConnectedEntityType.Individual, "Connected person", new Uri("http://whatever")),
+                new ConnectedEntityLookup(new Guid(), ConnectedEntityType.Organisation, "Connected organisation", new Uri("http://whatever"))
+            ]);
+        _organisationClientMock.Setup(c => c.GetOrganisationAsync(organisationId))
+            .ReturnsAsync(new Organisation.WebApiClient.Organisation([], [], null, organisationId, null, "User's current organisation", []));
+        _userInfoServiceMock.Setup(u => u.GetOrganisationId()).Returns(organisationId);
+        _tempDataServiceMock.Setup(t => t.Peek<SectionQuestionsResponse>(sessionKey))
+            .Returns((SectionQuestionsResponse?)null);
+        _choiceProviderServiceMock.Setup(t => t.GetStrategy("ExclusionAppliesToChoiceProviderStrategy"))
+            .Returns(new ExclusionAppliesToChoiceProviderStrategy(_userInfoServiceMock.Object, _organisationClientMock.Object));
+        _formsApiClientMock.Setup(c => c.GetFormSectionQuestionsAsync(formId, sectionId, organisationId))
+            .ReturnsAsync(apiResponse);
+
+        var result = await _formsEngine.GetFormSectionAsync(organisationId, formId, sectionId);
+
+        result.Should().BeEquivalentTo(expectedResponse);
+        _tempDataServiceMock.Verify(t => t.Put(sessionKey, It.IsAny<SectionQuestionsResponse>()), Times.Once);
     }
 
     [Fact]
