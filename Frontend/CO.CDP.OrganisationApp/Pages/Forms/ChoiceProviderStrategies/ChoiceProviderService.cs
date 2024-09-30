@@ -1,5 +1,3 @@
-using Microsoft.Extensions.DependencyInjection;
-
 namespace CO.CDP.OrganisationApp.Pages.Forms.ChoiceProviderStrategies;
 public class ChoiceProviderService(IServiceProvider serviceProvider) : IChoiceProviderService
 {

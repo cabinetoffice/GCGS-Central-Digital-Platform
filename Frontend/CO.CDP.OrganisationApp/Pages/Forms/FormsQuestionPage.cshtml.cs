@@ -72,6 +72,11 @@ public class FormsQuestionPageModel(
             return Redirect("/page-not-found");
         }
 
+        if(PreviousQuestion == null)
+        {
+            ClearSectionCache();
+        }
+
         return Page();
     }
 
@@ -296,6 +301,17 @@ public class FormsQuestionPageModel(
         questionAnswer.Answer = answer;
 
         tempDataService.Put(FormQuestionAnswerStateKey, state);
+    }
+
+    private void ClearSectionCache()
+    {
+        foreach (var key in TempData.Keys.ToList())
+        {
+            if (key.StartsWith($"Form_{OrganisationId}_{FormId}_{SectionId}"))
+            {
+                tempDataService.Remove(key);
+            }
+        }
     }
 }
 
