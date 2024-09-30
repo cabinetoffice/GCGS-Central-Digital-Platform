@@ -118,55 +118,58 @@ locals {
     public_hosted_zone = "${local.environments[local.environment].name}.supplier.information.${local.environments[local.environment].top_level_domain}"
   }
 
+  desired_count_non_production = 1
+  desired_count_production = 1
+
   service_configs_scaling_non_production = {
     authority = {
       cpu           = 256
-      desired_count = 1
+      desired_count = local.desired_count_non_production
       memory        = 512
     }
     data_sharing = {
       cpu           = 256
-      desired_count = 1
+      desired_count = local.desired_count_non_production
       memory        = 512
     }
     entity_verification = {
       cpu           = 256
-      desired_count = 1
+      desired_count = local.desired_count_non_production
       memory        = 512
     }
     entity_verification_migrations = {
       cpu           = 256
-      desired_count = 1
+      desired_count = local.desired_count_non_production
       memory        = 512
     }
     forms = {
       cpu           = 256
-      desired_count = 1
+      desired_count = local.desired_count_non_production
       memory        = 512
     }
     organisation = {
       cpu           = 256
-      desired_count = 1
+      desired_count = local.desired_count_non_production
       memory        = 512
     }
     organisation_app = {
       cpu           = 256
-      desired_count = 1
+      desired_count = local.desired_count_non_production
       memory        = 512
     }
     organisation_information_migrations = {
       cpu           = 256
-      desired_count = 1
+      desired_count = local.desired_count_non_production
       memory        = 512
     }
     person = {
       cpu           = 256
-      desired_count = 1
+      desired_count = local.desired_count_non_production
       memory        = 512
     }
     tenant = {
       cpu           = 256
-      desired_count = 1
+      desired_count = local.desired_count_non_production
       memory        = 512
     }
   }
@@ -174,52 +177,52 @@ locals {
   service_configs_scaling_production = {
     authority = {
       cpu           = 256
-      desired_count = 2
+      desired_count = local.desired_count_production
       memory        = 512
     }
     data_sharing = {
       cpu           = 256
-      desired_count = 2
+      desired_count = local.desired_count_production
       memory        = 512
     }
     entity_verification = {
       cpu           = 256
-      desired_count = 2
+      desired_count = local.desired_count_production
       memory        = 512
     }
     entity_verification_migrations = {
       cpu           = 256
-      desired_count = 2
+      desired_count = local.desired_count_production
       memory        = 512
     }
     forms = {
       cpu           = 256
-      desired_count = 2
+      desired_count = local.desired_count_production
       memory        = 512
     }
     organisation = {
       cpu           = 256
-      desired_count = 2
+      desired_count = local.desired_count_production
       memory        = 512
     }
     organisation_app = {
       cpu           = 256
-      desired_count = 2
+      desired_count = local.desired_count_production
       memory        = 512
     }
     organisation_information_migrations = {
       cpu           = 256
-      desired_count = 2
+      desired_count = local.desired_count_production
       memory        = 512
     }
     person = {
       cpu           = 256
-      desired_count = 2
+      desired_count = local.desired_count_production
       memory        = 512
     }
     tenant = {
       cpu           = 256
-      desired_count = 2
+      desired_count = local.desired_count_production
       memory        = 512
     }
   }
