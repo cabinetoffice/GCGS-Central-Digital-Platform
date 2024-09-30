@@ -10,7 +10,7 @@ public class UserInfoService(IHttpContextAccessor httpContextAccessor, ITenantCl
         var userUrn = GetUserUrn();
         if (userUrn == null)
         {
-            return new List<string>(); // Return an empty list if no user ID is found
+            return new List<string>(); // Return an empty list if no userUrn is found
         }
 
         var person = await personClient.LookupPersonAsync(userUrn);
