@@ -5,6 +5,8 @@ namespace CO.CDP.OrganisationApp;
 
 public class TempDataService(ITempDataDictionary tempData) : ITempDataService
 {
+    public IEnumerable<string> Keys => tempData.Keys;
+
     public void Put<T>(string key, T value)
     {
         tempData[key] = JsonSerializer.Serialize(value);

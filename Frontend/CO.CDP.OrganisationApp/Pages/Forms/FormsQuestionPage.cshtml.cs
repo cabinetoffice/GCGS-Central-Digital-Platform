@@ -305,7 +305,7 @@ public class FormsQuestionPageModel(
 
     private void ClearSectionCache()
     {
-        foreach (var key in TempData.Keys.ToList())
+        foreach (var key in tempDataService.Keys.ToList())
         {
             if (key.StartsWith($"Form_{OrganisationId}_{FormId}_{SectionId}"))
             {
