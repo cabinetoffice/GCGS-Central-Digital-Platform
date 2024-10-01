@@ -83,7 +83,11 @@ public class AuthorizationTests
                 )
             );
 
+        personClient.Setup(client => client.LookupPersonAsync(It.IsAny<string>())).ReturnsAsync(person);
+
         services.AddTransient<IOrganisationClient, OrganisationClient>(sc => organisationClient.Object);
+
+        services.AddTransient<IPersonClient, PersonClient>(sc => personClient.Object);
 
         _mockSession.Setup(s => s.Get<Models.UserDetails>(Session.UserDetailsKey))
             .Returns(new Models.UserDetails() { Email = "a@b.com", UserUrn = "urn", PersonId = person.Id });
