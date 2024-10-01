@@ -99,29 +99,7 @@ public static class DataSharingFactory
                 CompletedVat = true,
                 CompletedWebsiteAddress = true,
                 CompletedEmailAddress = true,
-                CompletedQualification = true,
-                CompletedTradeAssurance = true,
                 CompletedLegalForm = true,
-                Qualifications =
-                [
-                    new()
-                    {
-                        Guid = Guid.NewGuid(),
-                        AwardedByPersonOrBodyName = "Certifying Authority",
-                        DateAwarded = DateTimeOffset.UtcNow.AddYears(-2),
-                        Name = "ISO 9001"
-                    }
-                ],
-                TradeAssurances =
-                [
-                    new TradeAssurance
-                    {
-                        Guid = Guid.NewGuid(),
-                        AwardedByPersonOrBodyName = "Trade Assurance Authority",
-                        ReferenceNumber = "TA123456",
-                        DateAwarded = DateTimeOffset.UtcNow.AddYears(-1)
-                    }
-                ],
                 LegalForm = new LegalForm
                 {
                     RegisteredUnderAct2006 = true,
@@ -164,26 +142,6 @@ public static class DataSharingFactory
             WebsiteAddress = "http://example.com",
             EmailAddress = "test@example.com",
             OrganisationType = OrganisationType.Supplier,
-            Qualifications = new List<BasicQualification>
-        {
-            new BasicQualification
-            {
-                Guid = Guid.NewGuid(),
-                AwardedByPersonOrBodyName = "Certifying Authority",
-                DateAwarded = DateTimeOffset.UtcNow.AddYears(-2),
-                Name = "ISO 9001"
-            }
-        },
-            TradeAssurances = new List<BasicTradeAssurance>
-        {
-            new BasicTradeAssurance
-            {
-                Guid = Guid.NewGuid(),
-                AwardedByPersonOrBodyName = "Trade Assurance Authority",
-                ReferenceNumber = "TA123456",
-                DateAwarded = DateTimeOffset.UtcNow.AddYears(-1)
-            }
-        },
             LegalForm = new BasicLegalForm
             {
                 RegisteredLegalForm = "Private Limited",

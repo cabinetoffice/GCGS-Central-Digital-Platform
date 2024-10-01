@@ -7,6 +7,7 @@ using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp;
 using CO.CDP.OrganisationApp.Authorization;
 using CO.CDP.OrganisationApp.Pages;
+using CO.CDP.OrganisationApp.Pages.Forms.ChoiceProviderStrategies;
 using CO.CDP.OrganisationApp.ThirdPartyApiClients.CompaniesHouse;
 using CO.CDP.Person.WebApiClient;
 using CO.CDP.Tenant.WebApiClient;
@@ -16,7 +17,6 @@ using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
-using System.Runtime.InteropServices;
 using static IdentityModel.OidcConstants;
 using static System.Net.Mime.MediaTypeNames;
 using ISession = CO.CDP.OrganisationApp.ISession;
@@ -66,6 +66,10 @@ builder.Services.AddTransient(provider =>
 builder.Services.AddScoped<ITempDataService, TempDataService>();
 builder.Services.AddScoped<ApiBearerTokenHandler>();
 builder.Services.AddScoped<ICompaniesHouseApi, CompaniesHouseApi>();
+
+builder.Services.AddKeyedTransient<IChoiceProviderStrategy, ExclusionAppliesToChoiceProviderStrategy>("ExclusionAppliesToChoiceProviderStrategy");
+builder.Services.AddKeyedTransient<IChoiceProviderStrategy, DefaultChoiceProviderStrategy>("DefaultChoiceProviderStrategy");
+builder.Services.AddTransient<IChoiceProviderService, ChoiceProviderService>();
 
 builder.Services.AddTransient<IFormsEngine, FormsEngine>();
 builder.Services.AddTransient<IDiagnosticPage, DiagnosticPage>();
@@ -154,7 +158,7 @@ builder.Services.AddAuthentication(options =>
 });
 
 builder.Services.AddSingleton<IAuthorizationPolicyProvider, CustomAuthorizationPolicyProvider>();
-builder.Services.AddSingleton<IAuthorizationHandler, OrganizationScopeHandler>();
+builder.Services.AddSingleton<IAuthorizationHandler, CustomScopeHandler>();
 builder.Services.AddSingleton<IAuthorizationMiddlewareResultHandler, CustomAuthorizationMiddlewareResultHandler>();
 builder.Services.AddAuthorization();
 

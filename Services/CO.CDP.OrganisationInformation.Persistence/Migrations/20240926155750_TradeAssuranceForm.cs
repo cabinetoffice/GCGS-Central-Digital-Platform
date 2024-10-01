@@ -28,7 +28,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                     SELECT id INTO form_id FROM forms WHERE guid = '0618b13e-eaf2-46e3-a7d2-6f2c44be7022';
 
 	                INSERT INTO form_sections (guid, title, form_id, allows_multiple_answer_sets, check_further_questions_exempted, type, configuration)
-                    VALUES ('cf08acf8-e2fa-40c8-83e7-50c8671c343f', 'Trade assurances', form_id, TRUE, TRUE, 0, '{{""AddAnotherAnswerLabel"": ""Add another trade assurance?"", ""SingularSummaryHeading"": ""You have added 1 trade assurance"", ""RemoveConfirmationCaption"": ""Trade assurance"", ""RemoveConfirmationHeading"": ""Are you sure you want to remove this trade assurance?"", ""PluralSummaryHeadingFormat"": ""You have added {{0}} assurance"", ""FurtherQuestionsExemptedHeading"": ""<legend class=''govuk-fieldset__legend govuk-fieldset__legend--l''><h1 class=''govuk-fieldset__heading''>Do you want to add any trade assurances?</h1></legend><div class=''govuk-hint''>These are trade assurances for business and trade, not procurement specific. Adding them will provide confidence to contracting authorities and support any bids you submit. For example, Red Tractor Assurance covers food safety, traceability, animal welfare and environmental protection.</div>""}}');
+                    VALUES ('cf08acf8-e2fa-40c8-83e7-50c8671c343f', 'Trade assurances', form_id, TRUE, TRUE, 0, '{{""AddAnotherAnswerLabel"": ""Add another trade assurance?"", ""SingularSummaryHeading"": ""You have added 1 trade assurance"", ""RemoveConfirmationCaption"": ""Trade assurance"", ""RemoveConfirmationHeading"": ""Are you sure you want to remove this trade assurance?"", ""PluralSummaryHeadingFormat"": ""You have added {{0}} trade assurances"", ""FurtherQuestionsExemptedHeading"": ""<legend class=''govuk-fieldset__legend govuk-fieldset__legend--l''><h1 class=''govuk-fieldset__heading''>Do you want to add any trade assurances?</h1></legend><div class=''govuk-hint''>These are trade assurances for business and trade, not procurement specific. Adding them will provide confidence to contracting authorities and support any bids you submit. For example, Red Tractor Assurance covers food safety, traceability, animal welfare and environmental protection.</div>""}}');
 
                     SELECT id INTO sectionId FROM form_sections WHERE guid = 'cf08acf8-e2fa-40c8-83e7-50c8671c343f';
 
@@ -53,8 +53,8 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
             migrationBuilder.Sql($@"
                 update form_sections set display_order = 1 where title = 'Qualifications';
                 update form_sections set display_order = 2 where title = 'Trade assurances';
-                update form_sections set display_order = 3 where title = 'Financial Information';
-                update form_sections set display_order = 4 where title = 'Exclusions';
+                update form_sections set display_order = 3 where title = 'Exclusions';
+                update form_sections set display_order = 4 where title = 'Financial Information';
                 update form_sections set display_order = 100 where title = 'Share my information';
             ");
         }

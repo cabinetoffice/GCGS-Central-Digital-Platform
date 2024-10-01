@@ -4,6 +4,7 @@ using Amazon.SQS;
 using Amazon.SQS.Model;
 using CO.CDP.AwsServices.Sqs;
 using CO.CDP.MQ;
+using CO.CDP.MQ.Outbox;
 using CO.CDP.MQ.Tests;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
@@ -22,6 +23,22 @@ public class SqsPublisherTest : PublisherContractTest, IClassFixture<LocalStackF
         _sqsClient = SqsClient();
     }
 
+    [Fact]
+    public async Task ItPublishesOutboxMessageToTheQueue()
+    {
+        var publisher = await CreatePublisher();
+
+        await publisher.Publish(new OutboxMessage
+        {
+            Type = "TestMessage",
+            Message = "{\"Id\":13,\"Name\":\"Hello!\"}"
+        });
+
+        var message = await waitForOneMessage<TestMessage>();
+
+        message.Should().Be(new TestMessage(13, "Hello!"));
+    }
+
     protected override async Task<T> waitForOneMessage<T>() where T : class
     {
         var queue = await _sqsClient.GetQueueUrlAsync(TestQueue);
@@ -34,6 +51,7 @@ public class SqsPublisherTest : PublisherContractTest, IClassFixture<LocalStackF
         var message = messages.Messages.First<Message>();
         var type = message.MessageAttributes.GetValueOrDefault("Type")?.StringValue;
         type.Should().Be(typeof(T).Name);
+        await _sqsClient.DeleteMessageAsync(queue.QueueUrl, message.ReceiptHandle);
         return JsonSerializer.Deserialize<T>(message.Body) ??
                throw new Exception($"Unable to deserialize {message.Body} into {typeof(T).FullName}");
     }

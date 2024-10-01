@@ -1,9 +1,33 @@
+using CO.CDP.Person.WebApiClient;
 using CO.CDP.Tenant.WebApiClient;
 
 namespace CO.CDP.OrganisationApp;
 
-public class UserInfoService(IHttpContextAccessor httpContextAccessor, ITenantClient tenantClient) : IUserInfoService
+public class UserInfoService(IHttpContextAccessor httpContextAccessor, ITenantClient tenantClient, IPersonClient personClient) : IUserInfoService
 {
+    public async Task<ICollection<string>> GetUserScopes()
+    {
+        var userUrn = GetUserUrn();
+        if (userUrn == null)
+        {
+            return new List<string>(); // Return an empty list if no userUrn is found
+        }
+
+        var person = await personClient.LookupPersonAsync(userUrn);
+
+        if (person == null || person.Scopes == null)
+        {
+            return new List<string>(); // Return an empty list if no person or roles are found
+        }
+
+        return person.Scopes;
+    }
+
+    private string? GetUserUrn()
+    {
+        return httpContextAccessor.HttpContext?.User?.FindFirst("sub")?.Value;
+    }
+
     public async Task<ICollection<string>> GetOrganisationUserScopes()
     {
         Guid? organisationId = GetOrganisationId();
@@ -14,7 +38,7 @@ public class UserInfoService(IHttpContextAccessor httpContextAccessor, ITenantCl
             if(organisation != null)
             {
                 return organisation.Scopes;
-            }            
+            }
         }
 
         return [];
@@ -51,7 +75,7 @@ public class UserInfoService(IHttpContextAccessor httpContextAccessor, ITenantCl
         return personOrganisation;
     }
 
-    private Guid? GetOrganisationId()
+    public Guid? GetOrganisationId()
     {
         if (httpContextAccessor?.HttpContext?.Request?.Path.Value == null)
         {

@@ -23,10 +23,10 @@ public class SupplierInformationSummaryTest
     }
 
     [Theory]
-    [InlineData(null, false, false, false, false, false, false, false, false, false, false, StepStatus.NotStarted, StepStatus.NotStarted)]
-    [InlineData(SupplierType.Individual, true, false, false, false, false, false, false, false, false, false, StepStatus.InProcess, StepStatus.NotStarted)]
-    [InlineData(SupplierType.Individual, true, true, true, true, true, true, true, false, false, false, StepStatus.Completed, StepStatus.NotStarted)]
-    [InlineData(SupplierType.Organisation, true, true, true, true, true, true, true, true, true, true, StepStatus.Completed, StepStatus.Completed)]
+    [InlineData(null, false, false, false, false, false, false, false, false, StepStatus.NotStarted, StepStatus.NotStarted)]
+    [InlineData(SupplierType.Individual, true, false, false, false, false, false, false, false, StepStatus.InProcess, StepStatus.NotStarted)]
+    [InlineData(SupplierType.Individual, true, true, true, true, true, false, false, false, StepStatus.Completed, StepStatus.NotStarted)]
+    [InlineData(SupplierType.Organisation, true, true, true, true, true, true, true, true, StepStatus.Completed, StepStatus.Completed)]
     public async Task OnGet_BasicInformationStepStatus(
             SupplierType? supplierType,
             bool completedRegAddress,
@@ -34,8 +34,6 @@ public class SupplierInformationSummaryTest
             bool completedVat,
             bool completedWebsiteAddress,
             bool completedEmailAddress,
-            bool completedQualification,
-            bool completedTradeAssurance,
             bool completedOperationType,
             bool completedLegalForm,
             bool completedConnectedPerson,
@@ -51,14 +49,10 @@ public class SupplierInformationSummaryTest
             completedVat: completedVat,
             completedWebsiteAddress: completedWebsiteAddress,
             completedEmailAddress: completedEmailAddress,
-            completedQualification: completedQualification,
-            completedTradeAssurance: completedTradeAssurance,
             completedOperationType: completedOperationType,
             completedLegalForm: completedLegalForm,
             completedConnectedPerson: completedConnectedPerson,
-            tradeAssurances: null,
-            legalForm: null,
-            qualifications: null);
+            legalForm: null);
 
         _organisationClientMock.Setup(o => o.GetOrganisationSupplierInformationAsync(It.IsAny<Guid>()))
             .ReturnsAsync(supplierInformation);

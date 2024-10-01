@@ -113,19 +113,16 @@ public class SupplierEmailAddressTest
             completedVat: false,
             completedWebsiteAddress: false,
             completedEmailAddress: true,
-            completedQualification: false,
-            completedTradeAssurance: false,
             completedOperationType: false,
             completedLegalForm: false,
             completedConnectedPerson: false,
-            tradeAssurances: null,
-            legalForm: null,
-            qualifications: null);
+            legalForm: null);
 
     private static CO.CDP.Organisation.WebApiClient.Organisation OrganisationClientModel(Guid id) =>
         new(
             additionalIdentifiers: [new Identifier(id: "FakeId", legalName: "FakeOrg", scheme: "VAT", uri: null)],
             addresses: null,
+            null,
             contactPoint: new ContactPoint(email: "test@test.com", name: null, telephone: null, url: new Uri("https://xyz.com")),
             id: id,
             identifier: null,

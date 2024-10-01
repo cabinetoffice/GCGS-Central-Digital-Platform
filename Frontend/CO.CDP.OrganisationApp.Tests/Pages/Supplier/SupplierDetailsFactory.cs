@@ -10,10 +10,9 @@ public static class SupplierDetailsFactory
     }
 
     public static SupplierInformation CreateSupplierInformationClientModel(
-        bool completedTradeAssurance = false,
         bool completedPostalAddress = false,
         bool completedLegalForm = false,
-        CO.CDP.Organisation.WebApiClient.LegalForm? legalForm = null)
+        LegalForm? legalForm = null)
     {
         return new SupplierInformation(
             organisationName: "FakeOrg",
@@ -24,14 +23,10 @@ public static class SupplierDetailsFactory
             completedVat: true,
             completedWebsiteAddress: false,
             completedEmailAddress: false,
-            completedQualification: false,
-            completedTradeAssurance: completedTradeAssurance,
             completedOperationType: false,
             completedLegalForm: completedLegalForm,
             completedConnectedPerson: false,
-            tradeAssurances: [],
-            legalForm: legalForm,
-            qualifications: []
+            legalForm: legalForm
         );
     }
 
@@ -44,6 +39,7 @@ public static class SupplierDetailsFactory
                 new Address(countryName: "United Kingdom", country: "GB", locality: "London", postalCode: "L1", region: "South", streetAddress: "1 London Street", type: AddressType.Registered),
                 new Address(countryName: "France", country: "FR", locality: "Paris", postalCode: "F1", region: "North", streetAddress: "1 Paris Street", type: AddressType.Postal)
             ],
+            null,
             contactPoint: new ContactPoint(email: "test@test.com", name: "fakecontact", telephone: "0123456789", url: new Uri("https://test.com")),
             id: id,
             identifier: null,

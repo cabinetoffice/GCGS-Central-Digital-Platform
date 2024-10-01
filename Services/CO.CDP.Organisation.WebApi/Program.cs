@@ -35,7 +35,7 @@ builder.Services.AddAutoMapper(typeof(WebApiToPersistenceProfile));
 builder.Services
     .AddAwsConfiguration(builder.Configuration)
     .AddAwsSqsService()
-    .AddSqsPublisher()
+    .AddOutboxSqsPublisher<OrganisationInformationContext>()
     .AddSqsDispatcher(
         EventDeserializer.Deserializer,
         (services) =>
@@ -50,6 +50,7 @@ builder.Services
 if (Assembly.GetEntryAssembly().IsRunAs("CO.CDP.Organisation.WebApi"))
 {
     builder.Services.AddHostedService<DispatcherBackgroundService>();
+    builder.Services.AddHostedService<OutboxProcessorBackgroundService>();
 }
 builder.Services.AddDbContext<OrganisationInformationContext>(o =>
     o.UseNpgsql(ConnectionStringHelper.GetConnectionString(builder.Configuration, "OrganisationInformationDatabase")));
@@ -73,7 +74,6 @@ builder.Services.AddScoped<IUseCase<(Guid, UpdateBuyerInformation), bool>, Updat
 builder.Services.AddScoped<IUseCase<(Guid, UpdateSupplierInformation), bool>, UpdateSupplierInformationUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, RegisterConnectedEntity), bool>, RegisterConnectedEntityUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, Guid, UpdateConnectedEntity), bool>, UpdateConnectedEntityUseCase>();
-builder.Services.AddScoped<IUseCase<(Guid, DeleteSupplierInformation), bool>, DeleteSupplierInformationUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, Guid, DeleteConnectedEntity), bool>, DeleteConnectedEntityUseCase>();
 builder.Services.AddScoped<IUseCase<Guid, IEnumerable<Person>>, GetPersonsUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, RemovePersonFromOrganisation), bool>, RemovePersonFromOrganisationUseCase>();
@@ -82,6 +82,7 @@ builder.Services.AddScoped<IUseCase<(Guid, Guid, UpdateInvitedPersonToOrganisati
 builder.Services.AddScoped<IUseCase<(Guid, Guid, UpdatePersonToOrganisation), bool>, UpdatePersonToOrganisationUseCase>();
 builder.Services.AddScoped<IUseCase<Guid, IEnumerable<PersonInviteModel>>, GetPersonInvitesUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, Guid), bool>, RemovePersonInviteFromOrganisationUseCase>();
+builder.Services.AddScoped<IUseCase<(Guid, SupportUpdateOrganisation), bool>, SupportUpdateOrganisationUseCase>();
 builder.Services.AddGovUKNotifyApiClient(builder.Configuration);
 builder.Services.AddScoped<IUseCase<Guid, IEnumerable<CO.CDP.Organisation.WebApi.Model.AuthenticationKey>>, GetAuthenticationKeyUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, RegisterAuthenticationKey), bool>, RegisterAuthenticationKeyUseCase>();
@@ -124,6 +125,11 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseOrganisationEndpoints();
+
+
+app.MapGroup("/support")
+    .UseSupportEndpoints()
+    .WithTags("Organisation - Support");
 
 app.MapGroup("/organisation")
     .UseOrganisationLookupEndpoints()

@@ -98,7 +98,7 @@ public class FormElementFileUploadModelTest
     public void Validate_ReturnsError_WhenUploadedFileExceedsMaxSize()
     {
         var formFileMock = new Mock<IFormFile>();
-        formFileMock.Setup(f => f.Length).Returns(11 * 1024 * 1024); // 11 MB
+        formFileMock.Setup(f => f.Length).Returns(26 * 1024 * 1024); // 26 MB
         formFileMock.Setup(f => f.FileName).Returns("testfile.txt");
 
         _model.IsRequired = true;
@@ -108,7 +108,7 @@ public class FormElementFileUploadModelTest
         var validationResults = _model.Validate(new ValidationContext(_model)).ToList();
 
         validationResults.Should().ContainSingle();
-        validationResults.First().ErrorMessage.Should().Be("The file size must not exceed 10MB.");
+        validationResults.First().ErrorMessage.Should().Be("The file size must not exceed 25MB.");
     }
 
     [Fact]
@@ -121,6 +121,24 @@ public class FormElementFileUploadModelTest
         _model.IsRequired = true;
         _model.CurrentFormQuestionType = FormQuestionType.FileUpload;
         _model.UploadedFile = formFileMock.Object;
+
+        var validationResults = _model.Validate(new ValidationContext(_model)).ToList();
+
+        validationResults.Should().ContainSingle();
+        validationResults.First().ErrorMessage.Should().Be("Please upload a file which has one of the following extensions: .jpg, .jpeg, .png, .pdf, .txt, .xls, .xlsx, .csv, .docx, .doc");
+    }
+
+    [Fact]
+    public void Validate_ReturnsError_WhenUploadedFileHasInvalidExtensionEvenAFileAlreadyUploaded()
+    {
+        var formFileMock = new Mock<IFormFile>();
+        formFileMock.Setup(f => f.Length).Returns(1 * 1024 * 1024); // 1 MB
+        formFileMock.Setup(f => f.FileName).Returns("testfile.exe");
+
+        _model.IsRequired = true;
+        _model.CurrentFormQuestionType = FormQuestionType.FileUpload;
+        _model.UploadedFile = formFileMock.Object;
+        _model.UploadedFileName = "test.jpg";
 
         var validationResults = _model.Validate(new ValidationContext(_model)).ToList();
 

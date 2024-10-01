@@ -2,10 +2,27 @@
 
 @{
     var textInputHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.TextInput)).HasInnerHtml;
+    var selectOptionHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.HasValue)).HasInnerHtml;
     string textInputAriaDescribedby = "";
+
+    void RenderField()
+    {
+        if (textInputHasError)
+        {
+            textInputAriaDescribedby += " TextInput-error";
+
+            <p class="govuk-error-message" id="TextInput-error">
+                <span class="govuk-visually-hidden">Error:</span>
+                @Html.ValidationMessageFor(m => m.TextInput)
+            </p>
+        }
+
+        <input class="govuk-input govuk-!-width-two-thirds" id="TextInput" name="TextInput" type="text" value="@Model.TextInput"
+        @(string.IsNullOrWhiteSpace(textInputAriaDescribedby) ? "" : Html.Raw($"aria-describedby=\"{textInputAriaDescribedby}\""))>
+    }
 }
 
-<div class="govuk-form-group">
+<div class="govuk-form-group @((Model.IsRequired && textInputHasError) || selectOptionHasError ? "govuk-form-group--error" : "")">
 
     @if (!string.IsNullOrWhiteSpace(Model.Heading))
     {
@@ -28,17 +45,7 @@
         </div>
     }
 
-    @if (textInputHasError)
-    {
-        textInputAriaDescribedby += " TextInput-error";
-
-        <p class="govuk-error-message" id="TextInput-error">
-            <span class="govuk-visually-hidden">Error:</span>
-            @Html.ValidationMessageFor(m => m.TextInput)
-        </p>
-    }
-
-    @if (((TagBuilder)Html.ValidationMessageFor(m => m.HasValue)).HasInnerHtml)
+    @if (selectOptionHasError)
     {
         <p class="govuk-error-message">
             <span class="govuk-visually-hidden">Error:</span>
@@ -48,8 +55,7 @@
 
     @if (Model.IsRequired)
     {
-        <input class="govuk-input govuk-!-width-two-thirds" id="TextInput" name="TextInput" type="text" value="@Model.TextInput"
-                @(string.IsNullOrWhiteSpace(textInputAriaDescribedby) ? "" : Html.Raw($"aria-describedby=\"{textInputAriaDescribedby}\""))>
+        RenderField();
     }
     else
     {
@@ -64,11 +70,9 @@
 
                 <div class="govuk-radios__conditional" id="conditional-YES">
                     <div class="govuk-form-group @(textInputHasError ? "govuk-form-group--error" : "")">
-
-                        <input class="govuk-input govuk-!-width-two-thirds @(textInputHasError ? "govuk-input--error" : "")"
-                                id="TextInput" name="TextInput" type="text"
-                               value="@(Model.HasValue == true ? Model.TextInput : "")"
-                        @(string.IsNullOrWhiteSpace(textInputAriaDescribedby) ? "" : Html.Raw($"aria-describedby=\"{textInputAriaDescribedby}\""))>
+                        @{
+                            RenderField();
+                        }
                     </div>
                 </div>
 

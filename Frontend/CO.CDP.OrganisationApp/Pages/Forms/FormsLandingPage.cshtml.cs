@@ -10,7 +10,8 @@ namespace CO.CDP.OrganisationApp.Pages.Forms;
 public class FormsLandingPage(
     IFormsClient formsClient,
     IFormsEngine formsEngine,
-    IUserInfoService userInfoService) : PageModel
+    IUserInfoService userInfoService,
+    ITempDataService tempDataService) : PageModel
 {
     [BindProperty(SupportsGet = true)]
     public Guid OrganisationId { get; set; }
@@ -33,38 +34,42 @@ public class FormsLandingPage(
             return Redirect("/page-not-found");
         }
 
-        if (await userInfoService.UserHasScope(OrganisationPersonScopes.Viewer))
-        {
-            return RedirectToPage("FormsAnswerSetSummary", new { OrganisationId, FormId, SectionId });
-        }
+        tempDataService.Remove($"Form_{OrganisationId}_{FormId}_{SectionId}_Questions");
+        tempDataService.Remove($"Form_{OrganisationId}_{FormId}_{SectionId}_Answers");
 
-        if (form.AnswerSets.Count != 0)
+        if (form.Section.Type != FormSectionType.Declaration)
         {
-            if (form.AnswerSets.Any(a => a.FurtherQuestionsExempted == true))
-            {
-                return RedirectToPage("FormsCheckFurtherQuestionsExempted", new { OrganisationId, FormId, SectionId });
-            }
-            else
+            if (await userInfoService.UserHasScope(OrganisationPersonScopes.Viewer))
             {
                 return RedirectToPage("FormsAnswerSetSummary", new { OrganisationId, FormId, SectionId });
             }
-        }
-        else
-        {
-            if (form.Section.CheckFurtherQuestionsExempted)
+
+            if (form.AnswerSets.Count != 0)
             {
-                return RedirectToPage("FormsCheckFurtherQuestionsExempted", new { OrganisationId, FormId, SectionId });
+                if (form.AnswerSets.Any(a => a.FurtherQuestionsExempted == true))
+                {
+                    return RedirectToPage("FormsCheckFurtherQuestionsExempted", new { OrganisationId, FormId, SectionId });
+                }
+                else
+                {
+                    return RedirectToPage("FormsAnswerSetSummary", new { OrganisationId, FormId, SectionId });
+                }
             }
             else
             {
-                var currentQuestion = await formsEngine.GetCurrentQuestion(OrganisationId, FormId, SectionId, null);
-                if (currentQuestion == null)
+                if (form.Section.CheckFurtherQuestionsExempted)
                 {
-                    return Redirect("/page-not-found");
+                    return RedirectToPage("FormsCheckFurtherQuestionsExempted", new { OrganisationId, FormId, SectionId });
                 }
-
-                return RedirectToPage("FormsQuestionPage", new { OrganisationId, FormId, SectionId, CurrentQuestionId = currentQuestion.Id });
             }
         }
+
+        var currentQuestion = await formsEngine.GetCurrentQuestion(OrganisationId, FormId, SectionId, null);
+        if (currentQuestion == null)
+        {
+            return Redirect("/page-not-found");
+        }
+
+        return RedirectToPage("FormsQuestionPage", new { OrganisationId, FormId, SectionId, CurrentQuestionId = currentQuestion.Id });
     }
 }

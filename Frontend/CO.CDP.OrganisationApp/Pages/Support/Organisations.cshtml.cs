@@ -1,8 +1,10 @@
 using CO.CDP.Organisation.WebApiClient;
+using CO.CDP.OrganisationApp.Constants;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CO.CDP.OrganisationApp.Pages.Support;
-
+[Authorize(Policy = PersonScopeRequirement.SupportAdmin)]
 public class OrganisationsModel(
     IOrganisationClient organisationClient,
     ISession session) : LoggedInUserAwareModel(session)

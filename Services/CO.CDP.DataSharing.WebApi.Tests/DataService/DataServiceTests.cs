@@ -73,8 +73,6 @@ public class DataServiceTests
             .Be(organisation.Identifiers.FirstOrDefault(i => i.Scheme == "VAT")?.IdentifierId);
         result.BasicInformation.WebsiteAddress.Should().Be(organisation.ContactPoints.FirstOrDefault()?.Url);
         result.BasicInformation.EmailAddress.Should().Be(organisation.ContactPoints.FirstOrDefault()?.Email);
-        result.BasicInformation.Qualifications.Should().HaveCount(1);
-        result.BasicInformation.TradeAssurances.Should().HaveCount(1);
         result.BasicInformation.LegalForm.Should().NotBeNull();
     }
 }
