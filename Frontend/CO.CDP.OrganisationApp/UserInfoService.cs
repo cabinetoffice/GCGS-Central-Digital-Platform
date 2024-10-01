@@ -75,7 +75,7 @@ public class UserInfoService(IHttpContextAccessor httpContextAccessor, ITenantCl
         return personOrganisation;
     }
 
-    private Guid? GetOrganisationId()
+    public Guid? GetOrganisationId()
     {
         if (httpContextAccessor?.HttpContext?.Request?.Path.Value == null)
         {

@@ -25,7 +25,7 @@ public class AuthorizationTests
     {
         var services = new ServiceCollection();
 
-        var organisation = new UserOrganisation(
+        var organisation = new UserOrganisation(null,
                                     testOrganisationId,
                                     "Org name",
                                     [
@@ -74,6 +74,7 @@ public class AuthorizationTests
                 new CO.CDP.Organisation.WebApiClient.Organisation(
                     [],
                     [],
+                    null,
                     new ContactPoint("a@b.com", "Contact", "123", new Uri("http://whatever")),
                     testOrganisationId,
                     new Identifier("asd", "asd", "asd", new Uri("http://whatever")),
