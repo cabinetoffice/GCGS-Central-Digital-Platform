@@ -21,7 +21,7 @@ public class AuthorizationTests
     private static Guid personId = new Guid("5b0d3aa8-94cd-4ede-ba03-546937035690");
     private static Guid personInviteGuid = new Guid("330fb1d4-26e2-4c69-898f-6197f9321361");
 
-    public HttpClient BuildHttpClient(List<string> userScopes)
+    public HttpClient BuildHttpClient(List<string> userOrganisationScopes, List<string> userScopes)
     {
         var services = new ServiceCollection();
 
@@ -32,11 +32,11 @@ public class AuthorizationTests
                                         Tenant.WebApiClient.PartyRole.Supplier,
                                         Tenant.WebApiClient.PartyRole.Tenderer
                                     ],
-                                    userScopes,
+                                    userOrganisationScopes,
                                     new Uri("http://foo")
                                 );
 
-        var person = new Person.WebApiClient.Person("a@b.com", "First name", personId, "Last name");
+        var person = new Person.WebApiClient.Person("a@b.com", "First name", personId, "Last name", userScopes);
 
         tenantClient.Setup(client => client.LookupTenantAsync())
             .ReturnsAsync(
@@ -83,7 +83,11 @@ public class AuthorizationTests
                 )
             );
 
+        personClient.Setup(client => client.LookupPersonAsync(It.IsAny<string>())).ReturnsAsync(person);
+
         services.AddTransient<IOrganisationClient, OrganisationClient>(sc => organisationClient.Object);
+
+        services.AddTransient<IPersonClient, PersonClient>(sc => personClient.Object);
 
         _mockSession.Setup(s => s.Get<Models.UserDetails>(Session.UserDetailsKey))
             .Returns(new Models.UserDetails() { Email = "a@b.com", UserUrn = "urn", PersonId = person.Id });
@@ -115,9 +119,29 @@ public class AuthorizationTests
 
     [Theory]
     [MemberData(nameof(TestCases))]
+    public async Task TestAuthorizationIsSuccessful_WhenUserIsAllowedToAccessResourceAsSupportAdminUser(string url, string[] expectedTexts)
+    {
+        var _httpClient = BuildHttpClient([], [PersonScopes.SupportAdmin]);
+
+        var request = new HttpRequestMessage(HttpMethod.Get, url);
+
+        var response = await _httpClient.SendAsync(request);
+
+        var responseBody = await response.Content.ReadAsStringAsync();
+
+        responseBody.Should().NotBeNull();
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        foreach (string expectedText in expectedTexts)
+        {
+            responseBody.Should().Contain(expectedText);
+        }
+    }
+
+    [Theory]
+    [MemberData(nameof(TestCases))]
     public async Task TestAuthorizationIsSuccessful_WhenUserIsAllowedToAccessResourceAsAdminUser(string url, string[] expectedTexts)
     {
-        var _httpClient = BuildHttpClient([OrganisationPersonScopes.Admin]);
+        var _httpClient = BuildHttpClient([OrganisationPersonScopes.Admin], []);
 
         var request = new HttpRequestMessage(HttpMethod.Get, url);
 
@@ -137,7 +161,7 @@ public class AuthorizationTests
     [MemberData(nameof(TestCases))]
     public async Task TestAuthorizationIsUnsuccessful_WhenUserIsNotAllowedToAccessResourceAsEditorUser(string url, string[] _)
     {
-        var _httpClient = BuildHttpClient([OrganisationPersonScopes.Editor]);
+        var _httpClient = BuildHttpClient([OrganisationPersonScopes.Editor], []);
 
         var request = new HttpRequestMessage(HttpMethod.Get, url);
 
@@ -154,7 +178,7 @@ public class AuthorizationTests
     [MemberData(nameof(TestCases))]
     public async Task TestAuthorizationIsUnsuccessful_WhenUserIsNotAllowedToAccessResourceAsUserWithoutPermissions(string url, string[] _)
     {
-        var _httpClient = BuildHttpClient([]);
+        var _httpClient = BuildHttpClient([], []);
 
         var request = new HttpRequestMessage(HttpMethod.Get, url);
 
@@ -170,7 +194,7 @@ public class AuthorizationTests
     [Fact]
     public async Task TestCanSeeUsersLinkOnOrganisationPage_WhenUserIsAllowedToAccessResourceAsAdminUser()
     {
-        var _httpClient = BuildHttpClient([ OrganisationPersonScopes.Admin, OrganisationPersonScopes.Viewer ]);
+        var _httpClient = BuildHttpClient([ OrganisationPersonScopes.Admin, OrganisationPersonScopes.Viewer ], []);
 
         var request = new HttpRequestMessage(HttpMethod.Get, $"/organisation/{testOrganisationId}");
 
@@ -187,7 +211,7 @@ public class AuthorizationTests
     [Fact]
     public async Task TestCannotSeeUsersLinkOnOrganisationPage_WhenUserIsNotAllowedToAccessResourceAsEditorUser()
     {
-        var _httpClient = BuildHttpClient([ OrganisationPersonScopes.Editor ]);
+        var _httpClient = BuildHttpClient([ OrganisationPersonScopes.Editor ], []);
 
         var request = new HttpRequestMessage(HttpMethod.Get, $"/organisation/{testOrganisationId}");
 
