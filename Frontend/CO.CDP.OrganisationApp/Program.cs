@@ -158,7 +158,7 @@ builder.Services.AddAuthentication(options =>
 });
 
 builder.Services.AddSingleton<IAuthorizationPolicyProvider, CustomAuthorizationPolicyProvider>();
-builder.Services.AddSingleton<IAuthorizationHandler, OrganizationScopeHandler>();
+builder.Services.AddSingleton<IAuthorizationHandler, CustomScopeHandler>();
 builder.Services.AddSingleton<IAuthorizationMiddlewareResultHandler, CustomAuthorizationMiddlewareResultHandler>();
 builder.Services.AddAuthorization();
 
