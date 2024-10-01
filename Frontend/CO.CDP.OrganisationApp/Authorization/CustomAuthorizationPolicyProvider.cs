@@ -5,7 +5,8 @@ namespace CO.CDP.OrganisationApp.Authorization;
 
 public class CustomAuthorizationPolicyProvider : IAuthorizationPolicyProvider
 {
-    const string POLICY_PREFIX = "OrgScope_";
+    const string ORG_POLICY_PREFIX = "OrgScope_";
+    const string POLICY_PREFIX = "PersonScope_";
     private readonly DefaultAuthorizationPolicyProvider _fallbackPolicyProvider;
 
     public CustomAuthorizationPolicyProvider(IOptions<AuthorizationOptions> options)
@@ -15,19 +16,34 @@ public class CustomAuthorizationPolicyProvider : IAuthorizationPolicyProvider
 
     public Task<AuthorizationPolicy?> GetPolicyAsync(string policyName)
     {
-        if (policyName.StartsWith(POLICY_PREFIX))
-        {
-            var role = policyName.Substring(POLICY_PREFIX.Length);
+        var role = extractRoleFromPolicyName(policyName);
 
+        if (role != null)
+        {
             var policy = new AuthorizationPolicyBuilder()
                 .RequireAuthenticatedUser()
-                .AddRequirements(new OrganizationScopeRequirement(role))
+                .AddRequirements(new ScopeRequirement(role))
                 .Build();
 
             return Task.FromResult<AuthorizationPolicy?>(policy);
         }
 
         return _fallbackPolicyProvider.GetPolicyAsync(policyName);
+    }
+
+    private static string? extractRoleFromPolicyName(string policyName)
+    {
+        if (policyName.StartsWith(ORG_POLICY_PREFIX))
+        {
+            return policyName.Substring(ORG_POLICY_PREFIX.Length);
+        }
+
+        if (policyName.StartsWith(POLICY_PREFIX))
+        {
+            return policyName.Substring(POLICY_PREFIX.Length);
+        }
+
+        return null;
     }
 
     public Task<AuthorizationPolicy> GetDefaultPolicyAsync() => _fallbackPolicyProvider.GetDefaultPolicyAsync();

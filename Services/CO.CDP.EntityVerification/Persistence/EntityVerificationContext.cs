@@ -1,6 +1,7 @@
 using System.Text.Json;
 using CO.CDP.EntityFrameworkCore.Timestamps;
 using CO.CDP.EntityVerification.EntityFramework;
+using CO.CDP.MQ.Outbox;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -9,18 +10,12 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace CO.CDP.EntityVerification.Persistence;
 
 
-public class EntityVerificationContext : DbContext
+public class EntityVerificationContext(DbContextOptions<EntityVerificationContext> options)
+    : DbContext(options), IOutboxMessageDbContext
 {
     public DbSet<Ppon> Ppons { get; set; } = null!;
     public DbSet<Identifier> Identifiers { get; set; } = null!;
-
-    public EntityVerificationContext()
-    {
-    }
-
-    public EntityVerificationContext(DbContextOptions<EntityVerificationContext> options) : base(options)
-    {
-    }
+    public DbSet<OutboxMessage> OutboxMessages { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -49,6 +44,8 @@ public class EntityVerificationContext : DbContext
                 .HasForeignKey("PponId")
                 .IsRequired();
         });
+
+        modelBuilder.OnOutboxMessageCreating();
 
         base.OnModelCreating(modelBuilder);
     }

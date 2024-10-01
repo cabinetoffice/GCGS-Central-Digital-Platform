@@ -103,7 +103,7 @@ public class OrganisationNameModelTest
    
     private static CO.CDP.Organisation.WebApiClient.Organisation GivenOrganisationClientModel(Guid? id)
     {
-        return new CO.CDP.Organisation.WebApiClient.Organisation(null, null, null, id!.Value, null, "Test Org", []);
+        return new CO.CDP.Organisation.WebApiClient.Organisation(null, null,null, null, id!.Value, null, "Test Org", []);
     }
 
     private OrganisationNameModel GivenOrganisationNameModel()

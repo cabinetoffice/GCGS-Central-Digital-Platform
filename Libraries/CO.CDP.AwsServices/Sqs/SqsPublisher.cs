@@ -2,20 +2,17 @@ using System.Text.Json;
 using Amazon.SQS;
 using Amazon.SQS.Model;
 using CO.CDP.MQ;
+using CO.CDP.MQ.Outbox;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace CO.CDP.AwsServices.Sqs;
 
-public delegate string Serializer(object message);
-
-public delegate string TypeMapper(object message);
-
 public class SqsPublisher(
     IAmazonSQS sqsClient,
     SqsPublisherConfiguration configuration,
-    Serializer serializer,
-    TypeMapper typeMapper,
+    Func<object, string> serializer,
+    Func<object, string> typeMapper,
     ILogger<SqsPublisher> logger
 ) : IPublisher
 {
@@ -29,8 +26,8 @@ public class SqsPublisher(
     public SqsPublisher(IAmazonSQS sqsClient, SqsPublisherConfiguration configuration, ILogger<SqsPublisher> logger) : this(
         sqsClient,
         configuration,
-        o => JsonSerializer.Serialize(o),
-        o => o.GetType().Name,
+        OutboxMessageSerializerFactory.Create(o => JsonSerializer.Serialize(o)),
+        OutboxMessageTypeMapperFactory.Create(o => o.GetType().Name),
         logger)
     {
     }

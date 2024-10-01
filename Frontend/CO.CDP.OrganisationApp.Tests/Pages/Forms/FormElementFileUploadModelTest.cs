@@ -129,6 +129,24 @@ public class FormElementFileUploadModelTest
     }
 
     [Fact]
+    public void Validate_ReturnsError_WhenUploadedFileHasInvalidExtensionEvenAFileAlreadyUploaded()
+    {
+        var formFileMock = new Mock<IFormFile>();
+        formFileMock.Setup(f => f.Length).Returns(1 * 1024 * 1024); // 1 MB
+        formFileMock.Setup(f => f.FileName).Returns("testfile.exe");
+
+        _model.IsRequired = true;
+        _model.CurrentFormQuestionType = FormQuestionType.FileUpload;
+        _model.UploadedFile = formFileMock.Object;
+        _model.UploadedFileName = "test.jpg";
+
+        var validationResults = _model.Validate(new ValidationContext(_model)).ToList();
+
+        validationResults.Should().ContainSingle();
+        validationResults.First().ErrorMessage.Should().Be("Please upload a file which has one of the following extensions: .jpg, .jpeg, .png, .pdf, .txt, .xls, .xlsx, .csv, .docx, .doc");
+    }
+
+    [Fact]
     public void Validate_ReturnsNoErrors_WhenUploadedFileIsValid()
     {
         var formFileMock = new Mock<IFormFile>();

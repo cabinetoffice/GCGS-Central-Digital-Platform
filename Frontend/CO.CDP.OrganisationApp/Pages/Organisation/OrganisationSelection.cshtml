@@ -1,5 +1,7 @@
 @page "/organisation-selection"
 @using CO.CDP.Organisation.WebApiClient
+@using CO.CDP.OrganisationApp.WebApiClients
+
 @model OrganisationSelectionModel
 
 <main class="govuk-main-wrapper">
@@ -25,7 +27,16 @@
                                 <tr class="govuk-table__row">
                                     <th scope="row" class="govuk-table__header">
                                         @org.Name
+                                        @{
+                                            if (@org.IsBuyer() && org.IsApproved() == false)
+                                            {
+                                                <strong class="govuk-tag govuk-tag--blue">
+                                                    Pending approval
+                                                </strong>
+                                            }
+                                        }
                                     </th>
+
                                     <td class="govuk-table__cell">
                                         <a class="govuk-link govuk-link--no-visited-state"
                                            href="/organisation/@org.Id">Select</a>

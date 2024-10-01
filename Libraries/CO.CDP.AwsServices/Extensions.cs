@@ -5,6 +5,9 @@ using Amazon.SQS;
 using CO.CDP.AwsServices.S3;
 using CO.CDP.AwsServices.Sqs;
 using CO.CDP.MQ;
+using CO.CDP.MQ.Hosting;
+using CO.CDP.MQ.Outbox;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -70,9 +73,27 @@ public static class Extensions
             .AddAWSService<IAmazonSQS>();
     }
 
-    public static IServiceCollection AddSqsPublisher(this IServiceCollection services)
+    public static IServiceCollection AddOutboxSqsPublisher<TDbContext>(this IServiceCollection services)
+        where TDbContext : DbContext, IOutboxMessageDbContext
     {
-        return services.AddScoped<IPublisher, SqsPublisher>();
+        services.AddScoped<IOutboxMessageRepository, DatabaseOutboxMessageRepository<TDbContext>>();
+
+        services.AddKeyedScoped<IPublisher, SqsPublisher>("SqsPublisher");
+        services.AddScoped<IPublisher, OutboxMessagePublisher>();
+
+        services.AddSingleton<OutboxProcessorBackgroundService.OutboxProcessorConfiguration>(s =>
+            s.GetRequiredService<IOptions<AwsConfiguration>>().Value.SqsPublisher?.Outbox ??
+            new OutboxProcessorBackgroundService.OutboxProcessorConfiguration()
+        );
+
+        services.AddScoped<IOutboxProcessor>(s =>
+            new OutboxProcessor(
+                s.GetRequiredKeyedService<IPublisher>("SqsPublisher"),
+                s.GetRequiredService<IOutboxMessageRepository>(),
+                s.GetRequiredService<ILogger<OutboxProcessor>>()
+            )
+        );
+        return services;
     }
 
     public static IServiceCollection AddSqsDispatcher(this IServiceCollection services,
