@@ -52,8 +52,9 @@ public class CustomScopeHandler(
                     }
                 }
             }
-            catch
+            catch (Exception e)
             {
+                Console.WriteLine(e.Message);
                 context.Fail();
             }
         }
