@@ -28,7 +28,7 @@ public class FormsQuestionPageModelTest
         };
 
         _formsEngineMock.Setup(f => f.ExecuteChoiceProviderStrategy(It.IsAny<CO.CDP.Forms.WebApiClient.FormQuestionOptions>()))
-            .ReturnsAsync(["Choices"]);
+            .ReturnsAsync(new Dictionary<string, string>() { { "Choices", "Choices" } });
         
         _formsEngineMock.Setup(f => f.GetFormSectionAsync(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid>()))
             .ReturnsAsync(form);
@@ -38,7 +38,7 @@ public class FormsQuestionPageModelTest
         _tempDataServiceMock.Setup(t => t.PeekOrDefault<FormQuestionAnswerState>(It.IsAny<string>()))
             .Returns(new FormQuestionAnswerState());
         _tempDataServiceMock.Setup(t => t.Remove(It.IsAny<string>()));
-        _pageModel = new FormsQuestionPageModel(_formsEngineMock.Object, _tempDataServiceMock.Object, _fileHostManagerMock.Object);
+        _pageModel = new FormsQuestionPageModel(_formsEngineMock.Object, _tempDataServiceMock.Object, _fileHostManagerMock.Object, _choiceProviderServiceMock.Object);
 
         _pageModel.OrganisationId = Guid.NewGuid();
         _pageModel.FormId = Guid.NewGuid();

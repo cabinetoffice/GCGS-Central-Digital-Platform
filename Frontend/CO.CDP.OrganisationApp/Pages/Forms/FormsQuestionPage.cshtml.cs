@@ -1,6 +1,7 @@
 using CO.CDP.AwsServices;
 using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
+using CO.CDP.OrganisationApp.Pages.Forms.ChoiceProviderStrategies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -12,7 +13,8 @@ namespace CO.CDP.OrganisationApp.Pages.Forms;
 public class FormsQuestionPageModel(
     IFormsEngine formsEngine,
     ITempDataService tempDataService,
-    IFileHostManager fileHostManager) : PageModel
+    IFileHostManager fileHostManager,
+    IChoiceProviderService choiceProviderService) : PageModel
 {
     [BindProperty(SupportsGet = true)]
     public Guid OrganisationId { get; set; }
@@ -151,16 +153,17 @@ public class FormsQuestionPageModel(
             var question = form?.Questions.FirstOrDefault(q => q.Id == answer.QuestionId);
             if (question != null && question.Type != FormQuestionType.NoInput && question.Type != FormQuestionType.CheckYourAnswers)
             {
+                var choiceProviderStrategy = choiceProviderService.GetStrategy(question.Options.ChoiceProviderStrategy);
                 string answerString = question.Type switch
                 {
                     FormQuestionType.Text => answer.Answer?.TextValue ?? "",
                     FormQuestionType.MultiLine => answer.Answer?.TextValue ?? "",
-                    FormQuestionType.CheckBox => answer.Answer?.BoolValue == true ? question.Options.Choices?.FirstOrDefault() ?? "" : "",
+                    FormQuestionType.CheckBox => answer.Answer?.BoolValue == true ? question.Options.Choices?.Values.FirstOrDefault() ?? "" : "",
                     FormQuestionType.FileUpload => answer.Answer?.TextValue ?? "",
                     FormQuestionType.YesOrNo => answer.Answer?.BoolValue.HasValue == true ? (answer.Answer.BoolValue == true ? "yes" : "no") : "",
                     FormQuestionType.Date => answer.Answer?.DateValue.HasValue == true ? answer.Answer.DateValue.Value.ToString("dd/MM/yyyy") : "",
                     FormQuestionType.Address => answer.Answer?.AddressValue != null ? answer.Answer.AddressValue.ToHtmlString() : "",
-                    FormQuestionType.SingleChoice => answer.Answer?.OptionValue ?? "",
+                    FormQuestionType.SingleChoice =>  await choiceProviderStrategy.RenderOption(answer.Answer),
                     _ => ""
                 };
 
@@ -246,6 +249,8 @@ public class FormsQuestionPageModel(
         if (question.Type == FormQuestionType.CheckYourAnswers)
             return null;
 
+        var choiceProviderStrategy = choiceProviderService.GetStrategy(question?.Options.ChoiceProviderStrategy);
+
         IFormElementModel model = question.Type switch
         {
             FormQuestionType.NoInput => NoInputModel ?? new FormElementNoInputModel(),
@@ -255,7 +260,7 @@ public class FormsQuestionPageModel(
             FormQuestionType.Date => DateInputModel ?? new FormElementDateInputModel(),
             FormQuestionType.CheckBox => CheckBoxModel ?? new FormElementCheckBoxInputModel(),
             FormQuestionType.Address => AddressModel ?? new FormElementAddressModel(),
-            FormQuestionType.SingleChoice => SingleChoiceModel ?? new FormElementSingleChoiceModel(),
+            FormQuestionType.SingleChoice => SingleChoiceModel ?? new FormElementSingleChoiceModel() { AnswerFieldName = choiceProviderStrategy.AnswerFieldName },
             FormQuestionType.MultiLine => MultiLineInputModel ?? new FormElementMultiLineInputModel(),
             _ => throw new NotImplementedException($"Forms question: {question.Type} is not supported"),
         };

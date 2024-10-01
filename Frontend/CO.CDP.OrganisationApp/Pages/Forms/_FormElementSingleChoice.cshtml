@@ -1,4 +1,6 @@
 @model FormElementSingleChoiceModel
+@using CO.CDP.OrganisationApp.Pages.Forms.ChoiceProviderStrategies
+@inject IChoiceProviderService choiceProviderService
 
 @{
     var hasError = ((TagBuilder)Html.ValidationMessageFor(m => m.SelectedOption)).HasInnerHtml;
@@ -13,6 +15,8 @@
     {
         ariaDescribedby += " SelectedOption-error";
     }
+
+    IChoiceProviderStrategy choiceProviderStrategy = choiceProviderService.GetStrategy(Model.Options.ChoiceProviderStrategy);
 }
 
 <div class="govuk-form-group">
@@ -49,13 +53,13 @@
             @{
                 var index = 0;
                 if (Model.Options?.Choices != null ) {
-                    foreach(var value in Model.Options.Choices)
+                    foreach(var choice in Model.Options.Choices)
                     {
                         var id = index == 0 ? "SelectedOption" : $"SelectedOption_{index}";
 
                         <div class="govuk-radios__item">
-                            <input class="govuk-radios__input" id="@id" name="SelectedOption" type="radio" value="@value" @(Model.SelectedOption == value ? "checked": "")>
-                            <label class="govuk-label govuk-radios__label" for="@id">@value</label>
+                            <input class="govuk-radios__input" id="@id" name="SelectedOption" type="radio" value="@choice.Key" @(Model.SelectedOption == choice.Key ? "checked" : "")>
+                            <label class="govuk-label govuk-radios__label" for="@id">@choice.Value</label>
                         </div>
 
                         index++;
@@ -63,5 +67,8 @@
                 }
             }
         </div>
+
+        @* TODO: Can we get the AnswerFieldName from the choice provider strategy directly after posting, rather than passing it here *@
+        <input type="hidden" name="AnswerFieldName" value="@choiceProviderStrategy.AnswerFieldName" />
     </fieldset>
 </div>

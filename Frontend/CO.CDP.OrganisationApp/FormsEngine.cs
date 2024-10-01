@@ -57,7 +57,7 @@ public class FormsEngine(
         return sectionQuestionsResponse;
     }
 
-    public async Task<List<string>?> ExecuteChoiceProviderStrategy(Forms.WebApiClient.FormQuestionOptions options)
+    public async Task<Dictionary<string, string>?> ExecuteChoiceProviderStrategy(Forms.WebApiClient.FormQuestionOptions options)
     {
         IChoiceProviderStrategy strategy = choiceProviderService.GetStrategy(options.ChoiceProviderStrategy);
         return await strategy.Execute(options);
@@ -118,7 +118,8 @@ public class FormsEngine(
                 textValue: a.Answer?.TextValue,
                 optionValue: a.Answer?.OptionValue,
                 questionId: a.QuestionId,
-                addressValue: MapAddress(a.Answer?.AddressValue)
+                addressValue: MapAddress(a.Answer?.AddressValue),
+                jsonValue: a.Answer?.JsonValue
             )).ToArray(),
             furtherQuestionsExempted: answerSet.FurtherQuestionsExempted
         );

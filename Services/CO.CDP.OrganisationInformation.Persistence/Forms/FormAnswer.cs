@@ -48,6 +48,7 @@ public class FormAnswer : IEntityDate
     public DateTime? EndValue { get; set; }
     public string? TextValue { get; set; }
     public string? OptionValue { get; set; }
+    public string? JsonValue { get; set; }
     public FormAddress? AddressValue { get; set; }
     public Guid? CreatedFrom { get; init; }
     public DateTimeOffset CreatedOn { get; set; }
