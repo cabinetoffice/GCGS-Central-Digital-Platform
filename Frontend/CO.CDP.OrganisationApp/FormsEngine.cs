@@ -46,7 +46,8 @@ public class FormsEngine(
                 Options = new Models.FormQuestionOptions
                 {
                     Choices = q.Options.Choices.Select(c => c.Title).ToList(),
-                    ChoiceProviderStrategy = q.Options.ChoiceProviderStrategy
+                    ChoiceProviderStrategy = q.Options.ChoiceProviderStrategy,
+                    Groups = q.Options.Groups.Select(c => c.Name).ToList()
                 }
             }).ToList()
         };

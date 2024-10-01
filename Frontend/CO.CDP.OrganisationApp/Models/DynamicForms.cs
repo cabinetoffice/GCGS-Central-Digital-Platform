@@ -38,6 +38,7 @@ public class FormQuestionOptions
 {
     public List<string>? Choices { get; set; }
     public string? ChoiceProviderStrategy { get; set; }
+    public List<string>? Groups { get; set; } = [];
 }
 
 public class FormQuestionAnswerState

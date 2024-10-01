@@ -43,6 +43,7 @@ public record FormQuestionOptions
 {
     public ICollection<FormQuestionChoice>? Choices { get; set; } = null;
     public string? ChoiceProviderStrategy = null;
+    public ICollection<FormQuestionGroup>? Groups { get; set; } = null;
 }
 
 public class FormQuestionChoice
@@ -57,4 +58,18 @@ public class FormQuestionChoiceHint
 {
     public required string? Title { get; set; } = null;
     public required string Description { get; set; }
+}
+
+public class FormQuestionGroup
+{
+    public required string Name { get; set; }
+    public required string Hint { get; set; }
+    public required string Caption { get; set; }
+    public ICollection<FormQuestionGroupChoice>? Choices { get; set; }
+}
+
+public class FormQuestionGroupChoice
+{
+    public required string? Title { get; set; }
+    public required string? Value { get; set; } = null;
 }
