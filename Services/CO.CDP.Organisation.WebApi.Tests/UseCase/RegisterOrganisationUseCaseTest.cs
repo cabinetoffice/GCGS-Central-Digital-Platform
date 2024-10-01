@@ -1,3 +1,5 @@
+using CO.CDP.GovUKNotify;
+using CO.CDP.GovUKNotify.Models;
 using CO.CDP.MQ;
 using CO.CDP.Organisation.WebApi.Events;
 using CO.CDP.Organisation.WebApi.Model;
@@ -5,69 +7,56 @@ using CO.CDP.Organisation.WebApi.Tests.AutoMapper;
 using CO.CDP.Organisation.WebApi.Tests.UseCase.Extensions;
 using CO.CDP.Organisation.WebApi.UseCase;
 using CO.CDP.OrganisationInformation;
+using CO.CDP.OrganisationInformation.Persistence;
 using FluentAssertions;
+using Microsoft.Extensions.Configuration;
 using Moq;
 using Persistence = CO.CDP.OrganisationInformation.Persistence;
 
 namespace CO.CDP.Organisation.WebApi.Tests.UseCase;
 
-public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IClassFixture<AutoMapperFixture>
+public class RegisterOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
 {
     private readonly Mock<IIdentifierService> _identifierService = new();
     private readonly Mock<Persistence.IOrganisationRepository> _repository = new();
     private readonly Mock<Persistence.IPersonRepository> _persons = new();
     private readonly Mock<IPublisher> _publisher = new();
+    private readonly Mock<IGovUKNotifyApiClient> _notifyApiClient = new();
+    private readonly IConfiguration _mockConfiguration;
     private readonly Guid _generatedGuid = Guid.NewGuid();
-
+    private readonly AutoMapperFixture _mapperFixture;
     private RegisterOrganisationUseCase UseCase => new(
-        _identifierService.Object, _repository.Object, _persons.Object, _publisher.Object, mapperFixture.Mapper, () => _generatedGuid);
+        _identifierService.Object,
+        _repository.Object,
+        _persons.Object,
+        _notifyApiClient.Object,
+        _publisher.Object,
+        _mapperFixture.Mapper,
+        _mockConfiguration,
+        () => _generatedGuid);
+
+    public RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture)
+    {
+        _mapperFixture = mapperFixture;
+        var inMemorySettings = new List<KeyValuePair<string, string?>>
+        {
+            new("GOVUKNotify:PersonInviteEmailTemplateId", "test-template-id"),
+            new("OrganisationAppUrl", "http://baseurl/"),
+            new("GOVUKNotify:RequestReviewApplicationEmailTemplateId", "template-id"),
+            new("GOVUKNotify:SupportAdminEmailAddress", "admin@example.com"),
+        };
+
+        _mockConfiguration = new ConfigurationBuilder()
+            .AddInMemoryCollection(inMemorySettings)
+            .Build();
+    }
 
     [Fact]
     public async Task ItReturnsTheRegisteredOrganisation()
     {
         var person = GivenPersonExists(guid: Guid.NewGuid());
 
-        var command = new RegisterOrganisation
-        {
-            Name = "TheOrganisation",
-            PersonId = person.Guid,
-            Identifier = new OrganisationIdentifier
-            {
-                Scheme = "ISO9001",
-                Id = "1",
-                LegalName = "OfficialOrganisationName"
-            },
-            AdditionalIdentifiers = new List<OrganisationIdentifier>
-            {
-                new OrganisationIdentifier
-                {
-                    Scheme = "ISO14001",
-                    Id = "2",
-                    LegalName = "AnotherOrganisationName"
-                }
-            },
-            Addresses =
-            [
-                new OrganisationAddress
-                {
-                    Type = AddressType.Registered,
-                    StreetAddress = "1234 Example St",
-                    Locality = "Example City",
-                    Region = "Test Region",
-                    PostalCode = "12345",
-                    CountryName = "Exampleland",
-                    Country = "AB"
-                }
-            ],
-            ContactPoint = new OrganisationContactPoint
-            {
-                Name = "Contact Name",
-                Email = "contact@example.org",
-                Telephone = "123-456-7890",
-                Url = "https://example.org/contact"
-            },
-            Roles = [PartyRole.Tenderer]
-        };
+        var command = GivenRegisterOrganisationCommand(personId: person.Guid);
 
         var createdOrganisation = await UseCase.Execute(command);
 
@@ -87,56 +76,17 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
     }
 
     [Fact]
-    public async Task ItSavesNewOrganisationInTheRepository()
+    public async Task ItSavesNewOrganisationInTheRepositoryAndPublishEvent()
     {
         var person = GivenPersonExists(guid: Guid.NewGuid());
 
         Persistence.Organisation? persistanceOrganisation = null;
+
         _repository
             .Setup(x => x.Save(It.IsAny<Persistence.Organisation>()))
             .Callback<Persistence.Organisation>(b => persistanceOrganisation = b);
 
-        await UseCase.Execute(new RegisterOrganisation
-        {
-            Name = "TheOrganisation",
-            PersonId = person.Guid,
-            Identifier = new OrganisationIdentifier
-            {
-                Scheme = "ISO9001",
-                Id = "1",
-                LegalName = "OfficialOrganisationName"
-            },
-            AdditionalIdentifiers = new List<OrganisationIdentifier>
-            {
-                new OrganisationIdentifier
-                {
-                    Scheme = "ISO14001",
-                    Id = "2",
-                    LegalName = "AnotherOrganisationName"
-                }
-            },
-            Addresses =
-            [
-                new OrganisationAddress
-                {
-                    Type = AddressType.Registered,
-                    StreetAddress = "1234 Example St",
-                    Locality = "Example City",
-                    Region = "Test Region",
-                    PostalCode = "12345",
-                    CountryName = "Exampleland",
-                    Country = "AB"
-                }
-            ],
-            ContactPoint = new OrganisationContactPoint
-            {
-                Name = "Contact Name",
-                Email = "contact@example.org",
-                Telephone = "123-456-7890",
-                Url = "https://example.org/contact"
-            },
-            Roles = [PartyRole.Tenderer]
-        });
+        await UseCase.Execute(GivenRegisterOrganisationCommand(personId: person.Guid));
 
         _repository.Verify(r => r.Save(It.Is<Persistence.Organisation>(o =>
             o.Guid == _generatedGuid &&
@@ -144,7 +94,7 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
             o.Roles.SequenceEqual(new List<PartyRole> { PartyRole.Tenderer }) &&
             o.OrganisationPersons.First().Scopes.Count == 3 &&
             o.OrganisationPersons.First().Scopes[0] == "ADMIN" &&
-            o.OrganisationPersons.First().Scopes[1] == "RESPONDER" && 
+            o.OrganisationPersons.First().Scopes[1] == "RESPONDER" &&
             o.OrganisationPersons.First().Scopes[2] == "EDITOR"
         )), Times.Once);
 
@@ -193,6 +143,8 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
                     Country = "AB"
                 }
             });
+
+        _publisher.Verify(x => x.Publish(It.IsAny<OrganisationRegistered>()), Times.Once);
     }
 
     [Fact]
@@ -311,6 +263,31 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
         });
     }
 
+    [Fact]
+    public async Task ItShouldSendEmailIfOrganisationIsBuyer()
+    {
+        var person = GivenPersonExists(guid: Guid.NewGuid());
+        var roles = new List<PartyRole> { PartyRole.Buyer };
+        var command = GivenRegisterOrganisationCommand(personId: person.Guid, roles: roles);
+
+        _persons.Setup(x => x.Find(command.PersonId)).ReturnsAsync(person);
+
+        Persistence.Organisation organisation = GetOrganisationEntity();
+
+        Persistence.Organisation? persistanceOrganisation = null;
+        _repository
+            .Setup(x => x.Save(It.IsAny<Persistence.Organisation>()))
+            .Callback<Persistence.Organisation>(b => persistanceOrganisation = b);
+
+        var result = await UseCase.Execute(command);
+
+        _notifyApiClient.Verify(x => x.SendEmail(It.Is<EmailNotificationRequest>(req =>
+            req.EmailAddress == "admin@example.com" &&
+            req.TemplateId == "template-id" &&
+            req.Personalisation!["org_name"] == "TheOrganisation"
+        )), Times.Once);
+    }
+
     private static RegisterOrganisation GivenRegisterOrganisationCommand(
         string name = "TheOrganisation",
         Guid? personId = null,
@@ -373,5 +350,57 @@ public class RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : 
         };
         _persons.Setup(r => r.Find(theGuid)).ReturnsAsync(person);
         return person;
+    }
+    private Persistence.Organisation GetOrganisationEntity()
+    {
+        return new OrganisationInformation.Persistence.Organisation
+        {
+            Id = 1,
+            Guid = _generatedGuid,
+            Name = "TheOrganisation",
+            Tenant = new Tenant
+            {
+                Id = 101,
+                Guid = Guid.NewGuid(),
+                Name = "Tenant 101"
+            },
+            Identifiers = [new OrganisationInformation.Persistence.Organisation.Identifier
+            {
+                Primary = true,
+                IdentifierId = "123456",
+                Scheme = "Scheme1",
+                LegalName = "Legal Name",
+                Uri = "https://example.com"
+            },
+                new OrganisationInformation.Persistence.Organisation.Identifier
+                {
+                    Primary = false,
+                    IdentifierId = "123456",
+                    Scheme = "Scheme2",
+                    LegalName = "Another Legal Name",
+                    Uri = "https://another-example.com"
+                }],
+            Addresses = {new OrganisationInformation.Persistence.Organisation.OrganisationAddress
+            {
+                Type = AddressType.Registered,
+                Address = new Persistence.Address
+                {
+                    StreetAddress = "1234 Test St",
+                    Locality = "Test City",
+                    PostalCode = "12345",
+                    CountryName = "Testland",
+                    Country = "AB",
+                    Region = ""
+                }
+            }},
+            ContactPoints = [new OrganisationInformation.Persistence.Organisation.ContactPoint
+            {
+                Name = "Contact Name",
+                Email = "contact@test.org",
+                Telephone = "123-456-7890",
+                Url = "https://contact.test.org"
+            }],
+            Roles = [PartyRole.Buyer]
+        };
     }
 }
