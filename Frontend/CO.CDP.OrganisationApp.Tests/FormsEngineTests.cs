@@ -285,7 +285,7 @@ public class FormsEngineTests
                 new ConnectedEntityLookup(new Guid(), ConnectedEntityType.Organisation, "Connected organisation", new Uri("http://whatever"))
             ]);
         _organisationClientMock.Setup(c => c.GetOrganisationAsync(organisationId))
-            .ReturnsAsync(new Organisation.WebApiClient.Organisation([], [], null, organisationId, null, "User's current organisation", []));
+            .ReturnsAsync(new Organisation.WebApiClient.Organisation([], [],null, null, organisationId, null, "User's current organisation", []));
         _userInfoServiceMock.Setup(u => u.GetOrganisationId()).Returns(organisationId);
         _tempDataServiceMock.Setup(t => t.Peek<SectionQuestionsResponse>(sessionKey))
             .Returns((SectionQuestionsResponse?)null);

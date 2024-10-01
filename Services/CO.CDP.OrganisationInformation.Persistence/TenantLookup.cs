@@ -26,5 +26,6 @@ public class TenantLookup
         public required string Name { get; init; }
         public required List<PartyRole> Roles { get; init; }
         public required List<string> Scopes { get; init; }
+        public DateTimeOffset? ApprovedOn{get;init;}
     }
 }
