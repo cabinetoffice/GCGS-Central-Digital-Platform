@@ -15,7 +15,7 @@ public class CustomAuthorizationMiddlewareResultHandler : IAuthorizationMiddlewa
     {
         if (authorizeResult.Forbidden)
         {
-            context.Response.Redirect("/page-not-found");
+            context.Response.Redirect("/");
 
             return;
         }
