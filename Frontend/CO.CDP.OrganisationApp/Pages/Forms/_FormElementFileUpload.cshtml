@@ -10,18 +10,14 @@
         {
             <h1 class="govuk-heading-l">@Model.Heading</h1>
         }
+    }
+
+    void RenderDescription()
+    {
 
         @if (!string.IsNullOrWhiteSpace(Model.Description))
         {
             @Html.Raw(Model.Description)
-        }
-
-        @if (selectOptionHasError)
-        {
-            <p class="govuk-error-message">
-                <span class="govuk-visually-hidden">Error:</span>
-                @Html.ValidationMessageFor(m => m.HasValue)
-            </p>
         }
     }
 
@@ -58,6 +54,7 @@
     @if (Model.IsRequired)
     {
         RenderHeading();
+        RenderDescription();
         RenderField();
     }
     else
@@ -68,6 +65,17 @@
                     RenderHeading();
                 }
             </legend>
+            @{
+                RenderDescription();
+            }
+            @if (selectOptionHasError)
+            {
+                <p class="govuk-error-message">
+                    <span class="govuk-visually-hidden">Error:</span>
+                    @Html.ValidationMessageFor(m => m.HasValue)
+                </p>
+            }
+
             <div class="govuk-radios" data-module="govuk-radios">
 
                 <div class="govuk-radios__item">

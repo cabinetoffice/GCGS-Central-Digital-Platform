@@ -35,6 +35,8 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                     RETURNING id INTO questionId;
  
                     UPDATE form_questions SET next_question_id = questionId WHERE name = '_Exclusion03';
+
+                    UPDATE form_questions SET caption = '<label class=""govuk-label"">Trade assurance reference number</label>' WHERE name = '_TradeAssurance02';
                 END $$;
             ");
         }
@@ -50,6 +52,8 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                     SELECT id INTO questionId FROM form_questions WHERE name = '_Exclusion02';
  
                     UPDATE form_questions SET next_question_id = questionId WHERE name = '_Exclusion03';
+
+                    UPDATE form_questions SET caption = NULL WHERE name = '_TradeAssurance02';
  
                     DELETE FROM form_questions WHERE name = '_Exclusion10';
                 END $$;

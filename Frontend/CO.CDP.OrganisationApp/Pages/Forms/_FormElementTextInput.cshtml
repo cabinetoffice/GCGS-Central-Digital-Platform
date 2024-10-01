@@ -12,13 +12,16 @@
             <h1 class="govuk-label-wrapper">
                 <label class="govuk-label govuk-label--l" for="TextInput">@Model.Heading</label>
 
-                @if (!string.IsNullOrWhiteSpace(Model.Caption))
+                @if (Model.IsRequired && !string.IsNullOrWhiteSpace(Model.Caption))
                 {
                     <span class="govuk-caption-l govuk-!-margin-bottom-3">@Model.Caption</span>
                 }
             </h1>
         }
+    }
 
+    void RenderDescription()
+    {
         @if (!string.IsNullOrWhiteSpace(Model.Description))
         {
             textInputAriaDescribedby += "TextInput-description";
@@ -26,14 +29,6 @@
             <div id="TextInput-description">
                 @Html.Raw(Model.Description)
             </div>
-        }
-
-        @if (selectOptionHasError)
-        {
-            <p class="govuk-error-message">
-                <span class="govuk-visually-hidden">Error:</span>
-                @Html.ValidationMessageFor(m => m.HasValue)
-            </p>
         }
     }
 
@@ -58,6 +53,7 @@
     @if (Model.IsRequired)
     {
         RenderHeading();
+        RenderDescription();
         RenderField();
     }
     else
@@ -68,6 +64,16 @@
                     RenderHeading();
                 }
             </legend>
+            @{
+                RenderDescription();
+            }
+            @if (selectOptionHasError)
+            {
+                <p class="govuk-error-message">
+                    <span class="govuk-visually-hidden">Error:</span>
+                    @Html.ValidationMessageFor(m => m.HasValue)
+                </p>
+            }
             <div class="govuk-radios" data-module="govuk-radios">
 
                 <div class="govuk-radios__item">
@@ -79,6 +85,10 @@
                 <div class="govuk-radios__conditional" id="conditional-YES">
                     <div class="govuk-form-group @(textInputHasError ? "govuk-form-group--error" : "")">
                         @{
+                            if (!string.IsNullOrWhiteSpace(Model.Caption))
+                            {
+                                @Html.Raw(Model.Caption)
+                            }
                             RenderField();
                         }
                     </div>
