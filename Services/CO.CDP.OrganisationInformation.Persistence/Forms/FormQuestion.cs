@@ -1,5 +1,6 @@
 using CO.CDP.EntityFrameworkCore.Timestamps;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 
 namespace CO.CDP.OrganisationInformation.Persistence.Forms;
 
@@ -42,7 +43,7 @@ public enum FormQuestionType
 public record FormQuestionOptions
 {
     public ICollection<FormQuestionChoice>? Choices { get; set; } = null;
-    public string? ChoiceProviderStrategy = null;
+    public string? ChoiceProviderStrategy { get; set; } = null;
     public ICollection<FormQuestionGroup>? Groups { get; set; } = null;
 }
 

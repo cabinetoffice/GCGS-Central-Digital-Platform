@@ -7,6 +7,7 @@ using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp;
 using CO.CDP.OrganisationApp.Authorization;
 using CO.CDP.OrganisationApp.Pages;
+using CO.CDP.OrganisationApp.Pages.Forms.ChoiceProviderStrategies;
 using CO.CDP.OrganisationApp.ThirdPartyApiClients.CompaniesHouse;
 using CO.CDP.Person.WebApiClient;
 using CO.CDP.Tenant.WebApiClient;
@@ -65,6 +66,10 @@ builder.Services.AddTransient(provider =>
 builder.Services.AddScoped<ITempDataService, TempDataService>();
 builder.Services.AddScoped<ApiBearerTokenHandler>();
 builder.Services.AddScoped<ICompaniesHouseApi, CompaniesHouseApi>();
+
+builder.Services.AddKeyedTransient<IChoiceProviderStrategy, ExclusionAppliesToChoiceProviderStrategy>("ExclusionAppliesToChoiceProviderStrategy");
+builder.Services.AddKeyedTransient<IChoiceProviderStrategy, DefaultChoiceProviderStrategy>("DefaultChoiceProviderStrategy");
+builder.Services.AddTransient<IChoiceProviderService, ChoiceProviderService>();
 
 builder.Services.AddTransient<IFormsEngine, FormsEngine>();
 builder.Services.AddTransient<IDiagnosticPage, DiagnosticPage>();

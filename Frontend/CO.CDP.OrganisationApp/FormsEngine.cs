@@ -1,5 +1,6 @@
 using CO.CDP.Forms.WebApiClient;
 using CO.CDP.OrganisationApp.Models;
+using CO.CDP.OrganisationApp.Pages.Forms.ChoiceProviderStrategies;
 using DataShareWebApiClient = CO.CDP.DataSharing.WebApiClient;
 using SectionQuestionsResponse = CO.CDP.OrganisationApp.Models.SectionQuestionsResponse;
 namespace CO.CDP.OrganisationApp;
@@ -7,6 +8,7 @@ namespace CO.CDP.OrganisationApp;
 public class FormsEngine(
     IFormsClient formsApiClient,
     ITempDataService tempDataService,
+    IChoiceProviderService choiceProviderService,
     DataShareWebApiClient.IDataSharingClient dataSharingClient) : IFormsEngine
 {
     public const string OrganisationSupplierInfoFormId = "0618b13e-eaf2-46e3-a7d2-6f2c44be7022";
@@ -32,7 +34,7 @@ public class FormsEngine(
                 Title = response.Section.Title,
                 AllowsMultipleAnswerSets = response.Section.AllowsMultipleAnswerSets
             },
-            Questions = response.Questions.Select(q => new Models.FormQuestion
+            Questions = (await Task.WhenAll(response.Questions.Select(async q => new Models.FormQuestion
             {
                 Id = q.Id,
                 Title = q.Title,
@@ -45,15 +47,21 @@ public class FormsEngine(
                 NextQuestionAlternative = q.NextQuestionAlternative,
                 Options = new Models.FormQuestionOptions
                 {
-                    Choices = q.Options.Choices.Select(c => c.Title).ToList(),
+                    Choices = await ExecuteChoiceProviderStrategy(q.Options),
                     ChoiceProviderStrategy = q.Options.ChoiceProviderStrategy,
                     Groups = q.Options.Groups.Select(c => c.Name).ToList()
                 }
-            }).ToList()
+            }))).ToList()
         };
 
         tempDataService.Put(sessionKey, sectionQuestionsResponse);
         return sectionQuestionsResponse;
+    }
+
+    public async Task<List<string>?> ExecuteChoiceProviderStrategy(Forms.WebApiClient.FormQuestionOptions options)
+    {
+        IChoiceProviderStrategy strategy = choiceProviderService.GetStrategy(options.ChoiceProviderStrategy);
+        return await strategy.Execute(options);
     }
 
     public async Task<Models.FormQuestion?> GetNextQuestion(Guid organisationId, Guid formId, Guid sectionId, Guid currentQuestionId)
