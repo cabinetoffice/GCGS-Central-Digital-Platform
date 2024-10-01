@@ -4,6 +4,27 @@
     var uploadFileHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.UploadedFile)).HasInnerHtml;
     var selectOptionHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.HasValue)).HasInnerHtml;
 
+    void RenderHeading()
+    {
+        @if (!string.IsNullOrWhiteSpace(Model.Heading))
+        {
+            <h1 class="govuk-heading-l">@Model.Heading</h1>
+        }
+
+        @if (!string.IsNullOrWhiteSpace(Model.Description))
+        {
+            @Html.Raw(Model.Description)
+        }
+
+        @if (selectOptionHasError)
+        {
+            <p class="govuk-error-message">
+                <span class="govuk-visually-hidden">Error:</span>
+                @Html.ValidationMessageFor(m => m.HasValue)
+            </p>
+        }
+    }
+
     void RenderField()
     {
         <label class="govuk-label" for="file-upload">
@@ -32,31 +53,21 @@
 <input type="hidden" name="UploadedFileName" value="@Model.UploadedFileName" />
 
 <div class="govuk-form-group @((Model.IsRequired && uploadFileHasError) || selectOptionHasError ? "govuk-form-group--error" : "")">
-    @if (!string.IsNullOrWhiteSpace(Model.Heading))
-    {
-        <h1 class="govuk-heading-l">@Model.Heading</h1>
-    }
-
-    @if (!string.IsNullOrWhiteSpace(Model.Description))
-    {
-        @Html.Raw(Model.Description)
-    }
-
-    @if (selectOptionHasError)
-    {
-        <p class="govuk-error-message">
-            <span class="govuk-visually-hidden">Error:</span>
-            @Html.ValidationMessageFor(m => m.HasValue)
-        </p>
-    }
+    
 
     @if (Model.IsRequired)
     {
+        RenderHeading();
         RenderField();
     }
     else
     {
         <fieldset class="govuk-fieldset">
+            <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                @{
+                    RenderHeading();
+                }
+            </legend>
             <div class="govuk-radios" data-module="govuk-radios">
 
                 <div class="govuk-radios__item">

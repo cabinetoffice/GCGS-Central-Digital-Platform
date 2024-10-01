@@ -107,31 +107,29 @@
         }
         else
         {
-            <fieldset class="govuk-fieldset">
-                <div class="govuk-radios" data-module="govuk-radios">
+            <div class="govuk-radios" data-module="govuk-radios">
 
-                    <div class="govuk-radios__item">
-                        <input class="govuk-radios__input" id="YES" name="HasValue" type="radio"
-                               value="true" data-aria-controls="conditional-YES" @(Model.HasValue == true ? "checked" : "")>
-                        <label class="govuk-label govuk-radios__label" for="YES">Yes</label>
-                    </div>
+                <div class="govuk-radios__item">
+                    <input class="govuk-radios__input" id="YES" name="HasValue" type="radio"
+                           value="true" data-aria-controls="conditional-YES" @(Model.HasValue == true ? "checked" : "")>
+                    <label class="govuk-label govuk-radios__label" for="YES">Yes</label>
+                </div>
 
-                    <div class="govuk-radios__conditional" id="conditional-YES">
-                        <div class="govuk-form-group @(hasDateError ? "govuk-form-group--error" : "")">
-                            @{
-                                RenderField();
-                            }
-                        </div>
-                    </div>
-
-                    <div class="govuk-radios__item">
-                        <input class="govuk-radios__input" id="NO" name="HasValue" type="radio"
-                               value="false" data-aria-controls="conditional-NO" @(Model.HasValue == false ? "checked" : "")>
-                        <label class="govuk-label govuk-radios__label" for="NO">No</label>
-                        <div class="govuk-radios__conditional--hidden" id="conditional-NO"></div>
+                <div class="govuk-radios__conditional" id="conditional-YES">
+                    <div class="govuk-form-group @(hasDateError ? "govuk-form-group--error" : "")">
+                        @{
+                            RenderField();
+                        }
                     </div>
                 </div>
-            </fieldset>
+
+                <div class="govuk-radios__item">
+                    <input class="govuk-radios__input" id="NO" name="HasValue" type="radio"
+                           value="false" data-aria-controls="conditional-NO" @(Model.HasValue == false ? "checked" : "")>
+                    <label class="govuk-label govuk-radios__label" for="NO">No</label>
+                    <div class="govuk-radios__conditional--hidden" id="conditional-NO"></div>
+                </div>
+            </div>
         }
     </fieldset>
 </div>
