@@ -69,16 +69,16 @@
                 {
                     if (Model.FormSectionType == Models.FormSectionType.Declaration)
                     {
-                        <button type="submit" class="govuk-button">Confirm and get share code</button>
+                        <button type="submit" data-prevent-double-click="true" class="govuk-button">Confirm and get share code</button>
                     }
                     else
                     {
-                        <button type="submit" class="govuk-button">Save</button>
+                        <button type="submit" data-prevent-double-click="true" class="govuk-button">Save</button>
                     }
                 }
                 else
                 {
-                    <button type="submit" class="govuk-button">Continue</button>
+                    <button type="submit" data-prevent-double-click="true" class="govuk-button">Continue</button>
                 }
 
             </form>
