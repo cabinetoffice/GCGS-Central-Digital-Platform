@@ -1,21 +1,36 @@
+using CO.CDP.GovUKNotify;
 using CO.CDP.OrganisationInformation.Persistence;
 using CO.CDP.TestKit.Mvc;
+using Microsoft.Extensions.DependencyInjection;
+using Moq;
 using Xunit.Abstractions;
 
 namespace CO.CDP.Organisation.WebApiClient.Tests;
 
-public class OrganisationClientIntegrationTest(ITestOutputHelper testOutputHelper)
+public class OrganisationClientIntegrationTest
 {
-    private readonly TestWebApplicationFactory<Program> _factory = new(builder =>
+    private readonly HttpClient _httpClient;
+    private readonly Mock<IGovUKNotifyApiClient> _govUKNotifyApiClientMock = new();
+
+    public OrganisationClientIntegrationTest(ITestOutputHelper testOutputHelper)
     {
-        builder.ConfigureInMemoryDbContext<OrganisationInformationContext>();
-        builder.ConfigureLogging(testOutputHelper);
-    });
+        TestWebApplicationFactory<Program> _factory = new(builder =>
+        {
+            builder.ConfigureInMemoryDbContext<OrganisationInformationContext>();
+            builder.ConfigureLogging(testOutputHelper);
+            builder.ConfigureServices((_, s) =>
+            {
+                s.AddScoped(_ => _govUKNotifyApiClientMock.Object);
+            });
+        });
+
+        _httpClient = _factory.CreateClient();
+    }
 
     [Fact]
     public async Task ItTalksToTheOrganisationApi()
     {
-        IOrganisationClient client = new OrganisationClient("https://localhost", _factory.CreateClient());
+        IOrganisationClient client = new OrganisationClient("https://localhost", _httpClient);
 
         var unknownPersonId = Guid.NewGuid();
         var identifier = new OrganisationIdentifier(
