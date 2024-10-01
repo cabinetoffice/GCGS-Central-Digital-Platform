@@ -25,6 +25,7 @@ public class GetPersonUseCaseTest(AutoMapperFixture mapperFixture) : IClassFixtu
     public async Task ItReturnsTheFoundPerson()
     {
         var persontId = Guid.NewGuid();
+        var scopes = new List<string>();
         var tenant = new OrganisationInformation.Persistence.Person
         {
             Id = 42,
@@ -32,18 +33,20 @@ public class GetPersonUseCaseTest(AutoMapperFixture mapperFixture) : IClassFixtu
             Email = "person@example.com",
             FirstName = "fn",
             LastName = "ln",
+            Scopes = scopes
         };
 
         _repository.Setup(r => r.Find(persontId)).ReturnsAsync(tenant);
 
         var found = await UseCase.Execute(persontId);
 
-        found.Should().Be(new Model.Person
+        found.Should().BeEquivalentTo(new Model.Person
         {
             Id = persontId,
             FirstName = "fn",
             LastName = "ln",
             Email = "person@example.com",
+            Scopes = scopes
         });
     }
 }

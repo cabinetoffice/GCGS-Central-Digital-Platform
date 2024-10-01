@@ -289,7 +289,7 @@ public class YourDetailsModelTest
     }
 
     private readonly Person.WebApiClient.Person dummyPerson
-        = new("dummy@test.com", "firstdummy", Guid.NewGuid(), "lastdummy");
+        = new("dummy@test.com", "firstdummy", Guid.NewGuid(), "lastdummy", new List<string>());
 
     private YourDetailsModel GivenYourDetailsModel()
     {

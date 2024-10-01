@@ -1,4 +1,6 @@
 using AutoMapper;
+using CO.CDP.GovUKNotify;
+using CO.CDP.GovUKNotify.Models;
 using CO.CDP.MQ;
 using CO.CDP.Organisation.WebApi.Events;
 using CO.CDP.Organisation.WebApi.Model;
@@ -11,16 +13,31 @@ public class RegisterOrganisationUseCase(
     IIdentifierService identifierService,
     IOrganisationRepository organisationRepository,
     IPersonRepository personRepository,
+    IGovUKNotifyApiClient govUKNotifyApiClient,
     IPublisher publisher,
     IMapper mapper,
+    IConfiguration configuration,
     Func<Guid> guidFactory)
     : IUseCase<RegisterOrganisation, Model.Organisation>
 {
     private readonly List<string> _defaultScopes = ["ADMIN", "RESPONDER", "EDITOR"];
 
-    public RegisterOrganisationUseCase(IIdentifierService identifierService, IOrganisationRepository organisationRepository,
-        IPersonRepository personRepository, IPublisher publisher, IMapper mapper)
-        : this(identifierService, organisationRepository, personRepository, publisher, mapper, Guid.NewGuid)
+    public RegisterOrganisationUseCase(
+        IIdentifierService identifierService,
+        IOrganisationRepository organisationRepository,
+        IPersonRepository personRepository,
+        IGovUKNotifyApiClient govUKNotifyApiClient,
+        IPublisher publisher,
+        IMapper mapper,
+        IConfiguration configuration)
+        : this(identifierService,
+              organisationRepository,
+              personRepository,
+              govUKNotifyApiClient,
+              publisher,
+              mapper,
+              configuration,
+              Guid.NewGuid)
     {
     }
 
@@ -29,6 +46,12 @@ public class RegisterOrganisationUseCase(
         var person = await FindPerson(command);
         var organisation = CreateOrganisation(command, person);
         organisationRepository.Save(organisation);
+
+        if (organisation.Roles.Contains(OrganisationInformation.PartyRole.Buyer))
+        {
+            await NotifyAdminOfApprovalRequest(organisation);
+        }
+
         await publisher.Publish(mapper.Map<OrganisationRegistered>(organisation));
         return mapper.Map<Model.Organisation>(organisation);
     }
@@ -65,6 +88,32 @@ public class RegisterOrganisationUseCase(
         organisation.UpdateBuyerInformation();
         organisation.UpdateSupplierInformation();
         return organisation;
+    }
+    private async Task NotifyAdminOfApprovalRequest(OrganisationInformation.Persistence.Organisation organisation)
+    {
+        var baseAppUrl = configuration.GetValue<string>("OrganisationAppUrl")
+                        ?? throw new Exception("Missing configuration key: OrganisationAppUrl");
+
+        var templateId = configuration.GetValue<string>("GOVUKNotify:RequestReviewApplicationEmailTemplateId")
+                        ?? throw new Exception("Missing configuration key: GOVUKNotify:RequestReviewApplicationEmailTemplateId.");
+
+        var supportAdminEmailAddress = configuration.GetValue<string>("GOVUKNotify:SupportAdminEmailAddress")
+                        ?? throw new Exception("Missing configuration key: GOVUKNotify:SupportAdminEmailAddress");
+
+        var requestLink = new Uri(new Uri(baseAppUrl), $"/support/organisation/{organisation.Guid}/approval").ToString();
+
+        var emailRequest = new EmailNotificationRequest
+        {
+            EmailAddress = supportAdminEmailAddress,
+            TemplateId = templateId,
+            Personalisation = new Dictionary<string, string>
+            {
+                { "org_name", organisation.Name },
+                { "request_link", requestLink }
+            }
+        };
+
+        await govUKNotifyApiClient.SendEmail(emailRequest);
     }
 
     private OrganisationInformation.Persistence.Organisation MapRequestToOrganisation(

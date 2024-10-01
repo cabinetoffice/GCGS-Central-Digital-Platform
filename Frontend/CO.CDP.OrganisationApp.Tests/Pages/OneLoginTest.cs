@@ -229,7 +229,7 @@ public class OneLoginTest
     private readonly AuthenticateResult authResultFail = AuthenticateResult.Fail(new Exception("Auth failed"));
 
     private readonly Person.WebApiClient.Person dummyPerson
-        = new("dummy@test.com", "firstdummy", new Guid("0bacf3d1-3b69-4efa-80e9-3623f4b7786e"), "lastdummy");
+        = new("dummy@test.com", "firstdummy", new Guid("0bacf3d1-3b69-4efa-80e9-3623f4b7786e"), "lastdummy", new List<string>());
 
     private OneLogin GivenOneLoginCallbackModel()
     {

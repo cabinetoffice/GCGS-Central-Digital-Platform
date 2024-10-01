@@ -30,7 +30,8 @@ public class RegisterPersonUseCaseTest(AutoMapperFixture mapperFixture) : IClass
             Id = _generatedGuid,
             FirstName = "ThePerson",
             LastName = "lastname",
-            Email = "jon@email.com"
+            Email = "jon@email.com",
+            Scopes = new List<string>()
         };
 
         createdPerson.Should().BeEquivalentTo(expectedPerson, options => options.ComparingByMembers<Model.Person>());

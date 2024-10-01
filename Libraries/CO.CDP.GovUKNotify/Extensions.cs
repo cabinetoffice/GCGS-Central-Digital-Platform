@@ -11,7 +11,7 @@ public static class Extensions
         services.TryAddSingleton(configuration);
 
         services
-            .AddTransient<IAuthentication, Authentication>()
+            .AddSingleton<IAuthentication, Authentication>()
             .AddTransient<IGovUKNotifyApiClient, GovUKNotifyApiClient>()
             .AddHttpClient(GovUKNotifyApiClient.GovUKNotifyHttpClientName);
 
