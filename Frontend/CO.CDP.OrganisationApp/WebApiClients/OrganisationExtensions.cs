@@ -13,4 +13,9 @@ public static class OrganisationExtensions
     {
         return organisation.Roles.Contains(PartyRole.Buyer);
     }
+
+    public static bool IsApproved(this Organisation.WebApiClient.Organisation organisation)
+    {
+       return organisation.ApprovedOn.HasValue;        
+    }
 }

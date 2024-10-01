@@ -169,7 +169,7 @@ public class OrganisationRegisteredAddressModelTest
             streetAddress: "1 street lane",
             type: CDP.Organisation.WebApiClient.AddressType.Registered));
 
-        return new CO.CDP.Organisation.WebApiClient.Organisation(null, addresses, null, id!.Value, null, null, []);
+        return new CO.CDP.Organisation.WebApiClient.Organisation(null, addresses,null, null, id!.Value, null, null, []);
     }
 
     private OrganisationRegisteredAddressModel GivenOrganisationAddressModel()
