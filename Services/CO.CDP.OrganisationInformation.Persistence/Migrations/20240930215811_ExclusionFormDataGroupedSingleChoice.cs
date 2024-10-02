@@ -19,7 +19,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                 BEGIN
                     SELECT id INTO sectionId FROM form_sections WHERE guid = '8a75cb04-fe29-45ae-90f9-168832dbea48';
  
-                    SELECT id INTO questionId FROM form_questions WHERE section_id = sectionId AND name = '_Exclusion06';
+                    SELECT id INTO questionId FROM form_questions WHERE section_id = sectionId AND name = '_Exclusion07';
 
                     INSERT INTO form_questions (guid, section_id, next_question_id, type, is_required, title, description, options, caption, summary_title, name)
                     VALUES ('{Guid.NewGuid()}',

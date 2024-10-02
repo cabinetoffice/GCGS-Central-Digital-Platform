@@ -46,6 +46,8 @@ public class FormsQuestionPageModel(
     [BindProperty]
     public FormElementSingleChoiceModel? SingleChoiceModel { get; set; }
     [BindProperty]
+    public FormElementGroupedSingleChoiceModel? GroupedSingleChoiceModel { get; set; }
+    [BindProperty]
     public FormElementCheckBoxInputModel? CheckBoxModel { get; set; }
 
     [BindProperty(SupportsGet = true)]
@@ -161,6 +163,7 @@ public class FormsQuestionPageModel(
                     FormQuestionType.Date => answer.Answer?.DateValue.HasValue == true ? answer.Answer.DateValue.Value.ToString("dd/MM/yyyy") : "",
                     FormQuestionType.Address => answer.Answer?.AddressValue != null ? answer.Answer.AddressValue.ToHtmlString() : "",
                     FormQuestionType.SingleChoice => answer.Answer?.OptionValue ?? "",
+                    FormQuestionType.GroupedSingleChoice => answer.Answer?.OptionValue ?? "",
                     _ => ""
                 };
 
@@ -231,6 +234,7 @@ public class FormsQuestionPageModel(
             { FormQuestionType.Address, "_FormElementAddress" },
             { FormQuestionType.MultiLine, "_FormElementMultiLineInput" },
             { FormQuestionType.SingleChoice, "_FormElementSingleChoice" },
+            { FormQuestionType.GroupedSingleChoice, "_FormElementGroupedSingleChoice" },
         };
 
         if (formQuestionPartials.TryGetValue(question.Type, out var partialView))
@@ -257,6 +261,7 @@ public class FormsQuestionPageModel(
             FormQuestionType.Address => AddressModel ?? new FormElementAddressModel(),
             FormQuestionType.SingleChoice => SingleChoiceModel ?? new FormElementSingleChoiceModel(),
             FormQuestionType.MultiLine => MultiLineInputModel ?? new FormElementMultiLineInputModel(),
+            FormQuestionType.GroupedSingleChoice => GroupedSingleChoiceModel ?? new FormElementGroupedSingleChoiceModel(),
             _ => throw new NotImplementedException($"Forms question: {question.Type} is not supported"),
         };
 

@@ -49,7 +49,17 @@ public class FormsEngine(
                 {
                     Choices = await ExecuteChoiceProviderStrategy(q.Options),
                     ChoiceProviderStrategy = q.Options.ChoiceProviderStrategy,
-                    Groups = q.Options.Groups.Select(c => c.Name).ToList()
+                    Groups = q.Options.Groups?.Select(g => new Models.FormQuestionGroup
+                    {
+                        Name = g.Name,
+                        Hint = g.Hint,
+                        Caption = g.Caption,
+                        Choices = g.Choices?.Select(c => new Models.FormQuestionGroupChoice
+                        {
+                            Title = c.Title,
+                            Value = c.Value
+                        }).ToList()
+                    }).ToList()
                 }
             }))).ToList()
         };

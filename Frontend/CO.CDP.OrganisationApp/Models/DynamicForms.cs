@@ -38,7 +38,7 @@ public class FormQuestionOptions
 {
     public List<string>? Choices { get; set; }
     public string? ChoiceProviderStrategy { get; set; }
-    public List<string>? Groups { get; set; } = [];
+    public List<FormQuestionGroup>? Groups { get; set; }
 }
 
 public class FormQuestionAnswerState
@@ -65,6 +65,20 @@ public class FormAnswer
     public string? TextValue { get; init; }
     public string? OptionValue { get; init; }
     public Address? AddressValue { get; init; }
+}
+
+public class FormQuestionGroup
+{
+    public string? Name { get; set; }
+    public string? Hint { get; set; }
+    public string? Caption { get; set; }
+    public List<FormQuestionGroupChoice>? Choices { get; set; }
+}
+
+public class FormQuestionGroupChoice
+{
+    public string? Title { get; set; }
+    public string? Value { get; set; } = null;
 }
 
 public enum FormQuestionType

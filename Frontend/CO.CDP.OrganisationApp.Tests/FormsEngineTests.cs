@@ -158,10 +158,25 @@ public class FormsEngineTests
         var (organisationId, formId, sectionId, sessionKey) = CreateTestGuids();
         var questionId = Guid.NewGuid();
         var nextQuestionId = Guid.NewGuid();
+
         var apiResponse = CreateApiSectionQuestionsResponse(sectionId, questionId, nextQuestionId);
+
         var expectedResponse = CreateModelSectionQuestionsResponse(sectionId, questionId, nextQuestionId);
 
-        expectedResponse.Questions[0].Options.Groups = new List<string> { "Group 1" };
+        expectedResponse.Questions[0].Options.Groups = new List<FormQuestionGroup>
+        {
+            new FormQuestionGroup
+            {
+                Name = "Group 1",
+                Hint = "Group 1 Hint",
+                Caption = "Group 1 Caption",
+                Choices = new List<FormQuestionGroupChoice>
+                {
+                    new FormQuestionGroupChoice { Title = "Group Choice 1", Value = "group_choice_1" },
+                    new FormQuestionGroupChoice { Title = "Group Choice 2", Value = "group_choice_2" }
+                }
+            }
+        };
 
         _tempDataServiceMock.Setup(t => t.Peek<SectionQuestionsResponse>(sessionKey))
             .Returns((SectionQuestionsResponse?)null);
@@ -277,7 +292,20 @@ public class FormsEngineTests
         var apiResponse = CreateApiSectionQuestionsResponse(sectionId, questionId, nextQuestionId, "ExclusionAppliesToChoiceProviderStrategy");
         var expectedResponse = CreateModelSectionQuestionsResponse(sectionId, questionId, nextQuestionId, "ExclusionAppliesToChoiceProviderStrategy", ["User's current organisation", "Connected person", "Connected organisation"]);
 
-        expectedResponse.Questions[0].Options.Groups = new List<string> { "Group 1" };
+        expectedResponse.Questions[0].Options.Groups = new List<FormQuestionGroup>
+        {
+            new FormQuestionGroup
+            {
+                Name = "Group 1",
+                Hint = "Group 1 Hint",
+                Caption = "Group 1 Caption",
+                Choices = new List<FormQuestionGroupChoice>
+                {
+                    new FormQuestionGroupChoice { Title = "Group Choice 1", Value = "group_choice_1" },
+                    new FormQuestionGroupChoice { Title = "Group Choice 2", Value = "group_choice_2" }
+                }
+            }
+        };
 
         _organisationClientMock.Setup(c => c.GetConnectedEntitiesAsync(It.IsAny<Guid>()))
             .ReturnsAsync([
@@ -285,7 +313,7 @@ public class FormsEngineTests
                 new ConnectedEntityLookup(new Guid(), ConnectedEntityType.Organisation, "Connected organisation", new Uri("http://whatever"))
             ]);
         _organisationClientMock.Setup(c => c.GetOrganisationAsync(organisationId))
-            .ReturnsAsync(new Organisation.WebApiClient.Organisation([], [],null, null, organisationId, null, "User's current organisation", []));
+            .ReturnsAsync(new Organisation.WebApiClient.Organisation([], [], null, null, organisationId, null, "User's current organisation", []));
         _userInfoServiceMock.Setup(u => u.GetOrganisationId()).Returns(organisationId);
         _tempDataServiceMock.Setup(t => t.Peek<SectionQuestionsResponse>(sessionKey))
             .Returns((SectionQuestionsResponse?)null);
