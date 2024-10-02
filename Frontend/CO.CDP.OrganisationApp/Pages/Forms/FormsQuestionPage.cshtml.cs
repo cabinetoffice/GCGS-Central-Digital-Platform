@@ -53,11 +53,8 @@ public class FormsQuestionPageModel(
     public FormElementMultiLineInputModel? MultiLineInputModel { get; set; }
     [BindProperty]
     public FormElementUrlInputModel? UrlInputModel { get; set; }
-
     [BindProperty(SupportsGet = true)]
     public string? UkOrNonUk { get; set; }
-
-
     public FormQuestionType? CurrentFormQuestionType { get; private set; }
     public string? PartialViewName { get; private set; }
     public IFormElementModel? PartialViewModel { get; private set; }
@@ -166,7 +163,7 @@ public class FormsQuestionPageModel(
                     FormQuestionType.SingleChoice => await choiceProviderStrategy.RenderOption(answer.Answer) ?? "",
                     FormQuestionType.Date => answer.Answer?.DateValue.HasValue == true ? answer.Answer.DateValue.Value.ToString("dd/MM/yyyy") : "",
                     FormQuestionType.CheckBox => answer.Answer?.BoolValue == true ? question?.Options?.Choices?.Values.FirstOrDefault() ?? "" : "",
-                    FormQuestionType.Address => answer.Answer?.AddressValue != null ? answer.Answer.AddressValue.ToHtmlString() : "",                    
+                    FormQuestionType.Address => answer.Answer?.AddressValue != null ? answer.Answer.AddressValue.ToHtmlString() : "",
                     FormQuestionType.GroupedSingleChoice => answer.Answer?.OptionValue ?? "",
                     FormQuestionType.MultiLine => answer.Answer?.TextValue ?? "",
                     FormQuestionType.Url => answer.Answer?.TextValue ?? "",
@@ -175,12 +172,12 @@ public class FormsQuestionPageModel(
 
                 var summary = new AnswerSummary
                 {
-                    Title = question.SummaryTitle ?? question.Title,
+                    Title = question?.SummaryTitle ?? question?.Title,
                     Answer = answerString,
                     ChangeLink = $"/organisation/{OrganisationId}/forms/{FormId}/sections/{SectionId}/questions/{answer.QuestionId}?frm-chk-answer=true"
                 };
 
-                if (question.Type == FormQuestionType.Address && answer.Answer?.AddressValue != null
+                if (question?.Type == FormQuestionType.Address && answer.Answer?.AddressValue != null
                     && answer.Answer.AddressValue.Country != Constants.Country.UKCountryCode)
                 {
                     summary.ChangeLink += "&UkOrNonUk=non-uk";
@@ -239,7 +236,7 @@ public class FormsQuestionPageModel(
             { FormQuestionType.Date, "_FormElementDateInput" },
             { FormQuestionType.CheckBox, "_FormElementCheckBoxInput" },
             { FormQuestionType.Address, "_FormElementAddress" },
-            { FormQuestionType.MultiLine, "_FormElementMultiLineInput" },            
+            { FormQuestionType.MultiLine, "_FormElementMultiLineInput" },
             { FormQuestionType.GroupedSingleChoice, "_FormElementGroupedSingleChoice" },
             { FormQuestionType.Url, "_FormElementUrlInput" },
         };
