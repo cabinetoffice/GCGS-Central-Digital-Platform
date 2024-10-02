@@ -62,7 +62,7 @@ public class OrganisationSelectionTest
                         "TrentTheTenant",
                         new List<UserOrganisation>()
                         {
-                            new UserOrganisation(Guid.NewGuid(),
+                            new UserOrganisation(null,Guid.NewGuid(),
                                 "Acme Ltd",
                                 new List<PartyRole>() { PartyRole.Payee },
                                 new List<string>() { "Scope" },

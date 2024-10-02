@@ -24,6 +24,7 @@ public class LookupPersonUseCaseTest(AutoMapperFixture mapperFixture) : IClassFi
     public async Task Execute_IfPersonIsFound_ReturnsPerson()
     {
         var personId = Guid.NewGuid();
+        var scopes = new List<string>();
         var persistencePerson = new OrganisationInformation.Persistence.Person
         {
             Id = 1,
@@ -31,7 +32,8 @@ public class LookupPersonUseCaseTest(AutoMapperFixture mapperFixture) : IClassFi
             FirstName = "fn",
             LastName = "ln",
             Email = "email@email.com",
-            UserUrn = "urn:fdc:gov.uk:2022:7wTqYGMFQxgukTSpSI2GodMwe9"
+            UserUrn = "urn:fdc:gov.uk:2022:7wTqYGMFQxgukTSpSI2GodMwe9",
+            Scopes = scopes
         };
 
         _repository.Setup(r => r.FindByUrn(persistencePerson.UserUrn)).ReturnsAsync(persistencePerson);
@@ -44,6 +46,7 @@ public class LookupPersonUseCaseTest(AutoMapperFixture mapperFixture) : IClassFi
             Email = "email@email.com",
             FirstName = "fn",
             LastName = "ln",
+            Scopes = scopes
         }, options => options.ComparingByMembers<Model.Person>());
     }
 }

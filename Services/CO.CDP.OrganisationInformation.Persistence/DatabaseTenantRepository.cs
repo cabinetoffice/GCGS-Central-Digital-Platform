@@ -52,7 +52,9 @@ public class DatabaseTenantRepository(OrganisationInformationContext context) : 
                              Name = o.Name,
                              Roles = o.Roles,
                              // ReSharper disable once NullCoalescingConditionIsAlwaysNotNullAccordingToAPIContract
-                             Scopes = o.OrganisationPersons.Single(op => op.PersonId == p.Id).Scopes ?? new List<string>()
+                             Scopes = o.OrganisationPersons.Single(op => op.PersonId == p.Id).Scopes ?? new List<string>(),
+                             ApprovedOn = o.ApprovedOn
+
                          }).ToList()
                      }).ToList()
                  })

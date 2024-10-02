@@ -32,23 +32,25 @@ public class FormsQuestionPageModel(
     public bool? RedirectFromCheckYourAnswerPage { get; set; }
 
     [BindProperty]
-    public FormElementDateInputModel? DateInputModel { get; set; }
-    [BindProperty]
-    public FormElementFileUploadModel? FileUploadModel { get; set; }
-    [BindProperty]
     public FormElementNoInputModel? NoInputModel { get; set; }
     [BindProperty]
     public FormElementTextInputModel? TextInputModel { get; set; }
     [BindProperty]
-    public FormElementMultiLineInputModel? MultiLineInputModel { get; set; }
+    public FormElementFileUploadModel? FileUploadModel { get; set; }
     [BindProperty]
     public FormElementYesNoInputModel? YesNoInputModel { get; set; }
     [BindProperty]
-    public FormElementAddressModel? AddressModel { get; set; }
-    [BindProperty]
     public FormElementSingleChoiceModel? SingleChoiceModel { get; set; }
     [BindProperty]
+    public FormElementDateInputModel? DateInputModel { get; set; }
+    [BindProperty]
     public FormElementCheckBoxInputModel? CheckBoxModel { get; set; }
+    [BindProperty]
+    public FormElementAddressModel? AddressModel { get; set; }
+    [BindProperty]
+    public FormElementMultiLineInputModel? MultiLineInputModel { get; set; }
+    [BindProperty]
+    public FormElementUrlInputModel? UrlInputModel { get; set; }
 
     [BindProperty(SupportsGet = true)]
     public string? UkOrNonUk { get; set; }
@@ -158,12 +160,13 @@ public class FormsQuestionPageModel(
                 {
                     FormQuestionType.Text => answer.Answer?.TextValue ?? "",
                     FormQuestionType.MultiLine => answer.Answer?.TextValue ?? "",
-                    FormQuestionType.CheckBox => answer.Answer?.BoolValue == true ? question.Options.Choices?.Values.FirstOrDefault() ?? "" : "",
+                    FormQuestionType.CheckBox => answer.Answer?.BoolValue == true ? question.Options.Choices.Values.FirstOrDefault() ?? "" : "",
                     FormQuestionType.FileUpload => answer.Answer?.TextValue ?? "",
-                    FormQuestionType.YesOrNo => answer.Answer?.BoolValue.HasValue == true ? (answer.Answer.BoolValue == true ? "yes" : "no") : "",
+                    FormQuestionType.YesOrNo => answer.Answer?.BoolValue.HasValue == true ? (answer.Answer.BoolValue == true ? "Yes" : "No") : "",
                     FormQuestionType.Date => answer.Answer?.DateValue.HasValue == true ? answer.Answer.DateValue.Value.ToString("dd/MM/yyyy") : "",
                     FormQuestionType.Address => answer.Answer?.AddressValue != null ? answer.Answer.AddressValue.ToHtmlString() : "",
-                    FormQuestionType.SingleChoice =>  await choiceProviderStrategy.RenderOption(answer.Answer),
+                    FormQuestionType.SingleChoice => await choiceProviderStrategy.RenderOption(answer.Answer) ?? "",
+                    FormQuestionType.Url => answer.Answer?.TextValue ?? "",
                     _ => ""
                 };
 
@@ -226,14 +229,15 @@ public class FormsQuestionPageModel(
 
         Dictionary<FormQuestionType, string> formQuestionPartials = new(){
             { FormQuestionType.NoInput, "_FormElementNoInput" },
-            { FormQuestionType.YesOrNo, "_FormElementYesNoInput" },
-            { FormQuestionType.FileUpload, "_FormElementFileUpload" },
-            { FormQuestionType.Date, "_FormElementDateInput" },
             { FormQuestionType.Text, "_FormElementTextInput" },
+            { FormQuestionType.FileUpload, "_FormElementFileUpload" },
+            { FormQuestionType.YesOrNo, "_FormElementYesNoInput" },
+            { FormQuestionType.SingleChoice, "_FormElementSingleChoice" },
+            { FormQuestionType.Date, "_FormElementDateInput" },
             { FormQuestionType.CheckBox, "_FormElementCheckBoxInput" },
             { FormQuestionType.Address, "_FormElementAddress" },
             { FormQuestionType.MultiLine, "_FormElementMultiLineInput" },
-            { FormQuestionType.SingleChoice, "_FormElementSingleChoice" },
+            { FormQuestionType.Url, "_FormElementUrlInput" },
         };
 
         if (formQuestionPartials.TryGetValue(question.Type, out var partialView))
@@ -260,6 +264,7 @@ public class FormsQuestionPageModel(
             FormQuestionType.Address => AddressModel ?? new FormElementAddressModel(),
             FormQuestionType.SingleChoice => SingleChoiceModel ?? new FormElementSingleChoiceModel(),
             FormQuestionType.MultiLine => MultiLineInputModel ?? new FormElementMultiLineInputModel(),
+            FormQuestionType.Url => UrlInputModel ?? new FormElementUrlInputModel(),
             _ => throw new NotImplementedException($"Forms question: {question.Type} is not supported"),
         };
 

@@ -5,6 +5,18 @@
     var selectOptionHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.HasValue)).HasInnerHtml;
     string textInputAriaDescribedby = "";
 
+    void RenderDescription()
+    {
+        @if (!string.IsNullOrWhiteSpace(Model.Description))
+        {
+            textInputAriaDescribedby += "TextInput-description";
+
+            <div id="TextInput-description">
+                @Html.Raw(Model.Description)
+            </div>
+        }
+    }
+
     void RenderField()
     {
         if (textInputHasError)
@@ -23,43 +35,43 @@
 }
 
 <div class="govuk-form-group @((Model.IsRequired && textInputHasError) || selectOptionHasError ? "govuk-form-group--error" : "")">
-
-    @if (!string.IsNullOrWhiteSpace(Model.Heading))
-    {
-        <h1 class="govuk-label-wrapper">
-            <label class="govuk-label govuk-label--l" for="TextInput">@Model.Heading</label>
-
-            @if (!string.IsNullOrWhiteSpace(Model.Caption))
-            {
-                <span class="govuk-caption-l govuk-!-margin-bottom-3">@Model.Caption</span>
-            }
-        </h1>
-    }
-
-    @if (!string.IsNullOrWhiteSpace(Model.Description))
-    {
-        textInputAriaDescribedby += "TextInput-description";
-
-        <div id="TextInput-description">
-            @Html.Raw(Model.Description)
-        </div>
-    }
-
-    @if (selectOptionHasError)
-    {
-        <p class="govuk-error-message">
-            <span class="govuk-visually-hidden">Error:</span>
-            @Html.ValidationMessageFor(m => m.HasValue)
-        </p>
-    }
-
     @if (Model.IsRequired)
     {
+        if (!string.IsNullOrWhiteSpace(Model.Heading))
+        {
+            <h1 class="govuk-label-wrapper">
+                <label class="govuk-label govuk-label--l" for="TextInput">@Model.Heading</label>
+
+                @if (!string.IsNullOrWhiteSpace(Model.Caption))
+                {
+                    <span class="govuk-caption-l govuk-!-margin-bottom-3">@Model.Caption</span>
+                }
+            </h1>
+        }
+        RenderDescription();
         RenderField();
     }
     else
     {
-        <fieldset class="govuk-fieldset">
+        <fieldset class="govuk-fieldset" @(selectOptionHasError ? Html.Raw("aria-describedby=\"input-error\"") : "")>
+            <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                @if (!string.IsNullOrWhiteSpace(Model.Heading))
+                {
+                    <h1 class="govuk-fieldset__heading">
+                        @Model.Heading
+                    </h1>
+                }
+            </legend>
+            @{
+                RenderDescription();
+            }
+            @if (selectOptionHasError)
+            {
+                <p class="govuk-error-message">
+                    <span id="input-error" class="govuk-visually-hidden">Error:</span>
+                    @Html.ValidationMessageFor(m => m.HasValue)
+                </p>
+            }
             <div class="govuk-radios" data-module="govuk-radios">
 
                 <div class="govuk-radios__item">
@@ -71,6 +83,10 @@
                 <div class="govuk-radios__conditional" id="conditional-YES">
                     <div class="govuk-form-group @(textInputHasError ? "govuk-form-group--error" : "")">
                         @{
+                            if (!string.IsNullOrWhiteSpace(Model.Caption))
+                            {
+                                @Html.Raw(Model.Caption)
+                            }
                             RenderField();
                         }
                     </div>

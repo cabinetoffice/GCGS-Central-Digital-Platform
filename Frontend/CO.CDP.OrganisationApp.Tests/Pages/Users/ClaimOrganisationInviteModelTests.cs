@@ -18,7 +18,7 @@ public class ClaimOrganisationInviteModelTests
 
     public ClaimOrganisationInviteModelTests()
     {
-        var person = new Person.WebApiClient.Person("test@test", "F1", PersonId, "L1");
+        var person = new Person.WebApiClient.Person("test@test", "F1", PersonId, "L1", new List<string>());
         personClientMock = new Mock<IPersonClient>();
         personClientMock.Setup(pc => pc.LookupPersonAsync(UsreUrn)).ReturnsAsync(person);
 

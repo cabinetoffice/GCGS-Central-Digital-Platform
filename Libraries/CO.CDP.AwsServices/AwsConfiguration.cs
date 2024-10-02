@@ -1,3 +1,5 @@
+using static CO.CDP.MQ.Hosting.OutboxProcessorBackgroundService;
+
 namespace CO.CDP.AwsServices;
 
 public record AwsConfiguration
@@ -40,4 +42,5 @@ public record SqsPublisherConfiguration
 {
     public required string QueueUrl { get; init; }
     public required string? MessageGroupId { get; init; }
+    public OutboxProcessorConfiguration? Outbox { get; init; }
 }

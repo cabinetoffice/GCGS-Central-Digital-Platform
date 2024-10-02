@@ -7,12 +7,13 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore.Migrations;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using CO.CDP.MQ.Outbox;
 using static CO.CDP.OrganisationInformation.Persistence.ConnectedEntity;
 
 namespace CO.CDP.OrganisationInformation.Persistence;
 
 public class OrganisationInformationContext(DbContextOptions<OrganisationInformationContext> options)
-    : DbContext(options)
+    : DbContext(options), IOutboxMessageDbContext
 {
     public DbSet<Tenant> Tenants { get; set; } = null!;
     public DbSet<Organisation> Organisations { get; set; } = null!;
@@ -24,6 +25,7 @@ public class OrganisationInformationContext(DbContextOptions<OrganisationInforma
     public DbSet<FormAnswerSet> FormAnswerSets { get; set; } = null!;
     public DbSet<RefreshToken> RefreshTokens { get; set; } = null!;
     public DbSet<PersonInvite> PersonInvites { get; set; } = null!;
+    public DbSet<OutboxMessage> OutboxMessages { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -148,6 +150,8 @@ public class OrganisationInformationContext(DbContextOptions<OrganisationInforma
         }
 
         OnFormModelCreating(modelBuilder);
+
+        modelBuilder.OnOutboxMessageCreating();
 
         base.OnModelCreating(modelBuilder);
     }
