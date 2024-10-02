@@ -757,6 +757,38 @@ for the <code>organisation-app</code> service:</p>
 </div>
 </div>
 <div class="sect4">
+<h5 id="_organisation_webapi">Organisation WebApi</h5>
+<div class="paragraph">
+<p>The <code>Organisation.WebApi</code> requires the following secrets / environment variables:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>GOVUKNotify:ApiKey</code> / <code>GOVUKNotify__ApiKey</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>These can be set as secrets with the following dotnet commands:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="bash">dotnet user-secrets <span class="nb">set</span> <span class="nt">--project</span> Services/CO.CDP.Organisation.WebApi/CO.CDP.Organisation.WebApi.csproj GOVUKNotify:ApiKey <span class="s2">"123456"</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>For Docker, the following environment variables need to be updated in <code>compose.override.yml</code>
+for the <code>organisation</code> service:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="yaml">  <span class="na">organisation</span><span class="pi">:</span>
+    <span class="na">environment</span><span class="pi">:</span>
+      <span class="na">GOVUKNotify__ApiKey</span><span class="pi">:</span> <span class="s2">"</span><span class="s">123456"</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
 <h5 id="_authority_api">Authority API</h5>
 <div class="paragraph">
 <p>The <code>Authority</code> API depends on the following secrets / environment variables:</p>
@@ -2255,7 +2287,7 @@ The main difference to SpecFlow is that it&#8217;s built on top of xUnit.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2024-10-02 12:36:06 UTC
+Last updated 2024-10-02 13:24:45 UTC
 </div>
 </div>
 </body>
