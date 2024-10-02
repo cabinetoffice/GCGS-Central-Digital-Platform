@@ -164,7 +164,7 @@ builder.Services
     .AddAwsS3Service()
     .AddLoggingConfiguration(builder.Configuration)
     .AddAmazonCloudWatchLogsService()
-    .AddCloudWatchSerilog();
+    .AddCloudWatchSerilog(builder.Configuration);
 
 
 var app = builder.Build();

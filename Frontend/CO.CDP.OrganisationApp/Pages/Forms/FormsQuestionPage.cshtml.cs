@@ -178,7 +178,7 @@ public class FormsQuestionPageModel(
                 };
 
                 if (question?.Type == FormQuestionType.Address && answer.Answer?.AddressValue != null
-                    && answer.Answer.AddressValue.Country != Constants.Country.UKCountryCode)
+                    && answer.Answer.AddressValue.Country != Country.UKCountryCode)
                 {
                     summary.ChangeLink += "&UkOrNonUk=non-uk";
                 }

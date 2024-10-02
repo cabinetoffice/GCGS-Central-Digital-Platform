@@ -43,7 +43,7 @@ if (Assembly.GetEntryAssembly().IsRunAs("CO.CDP.Person.WebApi"))
         .AddAwsConfiguration(builder.Configuration)
         .AddLoggingConfiguration(builder.Configuration)
         .AddAmazonCloudWatchLogsService()
-        .AddCloudWatchSerilog();
+        .AddCloudWatchSerilog(builder.Configuration);
 }
 
 var app = builder.Build();
