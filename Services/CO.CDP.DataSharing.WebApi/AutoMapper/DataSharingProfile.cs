@@ -138,6 +138,8 @@ public class CustomFormQuestionTypeResolver : IValueResolver<Persistence.FormQue
                 return FormQuestionType.Option;
             case Persistence.FormQuestionType.Date:
                 return FormQuestionType.Date;
+            case Persistence.FormQuestionType.Url:
+                return FormQuestionType.Url;
             case Persistence.FormQuestionType.NoInput:
             case Persistence.FormQuestionType.CheckYourAnswers:
                 return FormQuestionType.None;
