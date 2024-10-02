@@ -1,6 +1,5 @@
 @model FormElementSingleChoiceModel
 @using CO.CDP.OrganisationApp.Pages.Forms.ChoiceProviderStrategies
-@inject IChoiceProviderService choiceProviderService
 
 @{
     var hasError = ((TagBuilder)Html.ValidationMessageFor(m => m.SelectedOption)).HasInnerHtml;
@@ -15,8 +14,6 @@
     {
         ariaDescribedby += " SelectedOption-error";
     }
-
-    IChoiceProviderStrategy choiceProviderStrategy = choiceProviderService.GetStrategy(Model.Options.ChoiceProviderStrategy);
 }
 
 <div class="govuk-form-group">
@@ -67,7 +64,5 @@
                 }
             }
         </div>
-
-        <input type="hidden" name="AnswerFieldName" value="@choiceProviderStrategy.AnswerFieldName" />
     </fieldset>
 </div>

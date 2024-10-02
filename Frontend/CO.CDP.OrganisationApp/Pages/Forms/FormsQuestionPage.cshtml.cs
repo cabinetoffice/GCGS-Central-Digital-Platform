@@ -249,8 +249,6 @@ public class FormsQuestionPageModel(
         if (question.Type == FormQuestionType.CheckYourAnswers)
             return null;
 
-        var choiceProviderStrategy = choiceProviderService.GetStrategy(question?.Options.ChoiceProviderStrategy);
-
         IFormElementModel model = question.Type switch
         {
             FormQuestionType.NoInput => NoInputModel ?? new FormElementNoInputModel(),
@@ -260,7 +258,7 @@ public class FormsQuestionPageModel(
             FormQuestionType.Date => DateInputModel ?? new FormElementDateInputModel(),
             FormQuestionType.CheckBox => CheckBoxModel ?? new FormElementCheckBoxInputModel(),
             FormQuestionType.Address => AddressModel ?? new FormElementAddressModel(),
-            FormQuestionType.SingleChoice => SingleChoiceModel ?? new FormElementSingleChoiceModel() { AnswerFieldName = choiceProviderStrategy.AnswerFieldName },
+            FormQuestionType.SingleChoice => SingleChoiceModel ?? new FormElementSingleChoiceModel(),
             FormQuestionType.MultiLine => MultiLineInputModel ?? new FormElementMultiLineInputModel(),
             _ => throw new NotImplementedException($"Forms question: {question.Type} is not supported"),
         };

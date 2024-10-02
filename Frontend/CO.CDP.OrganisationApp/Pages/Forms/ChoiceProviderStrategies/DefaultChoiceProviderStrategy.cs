@@ -11,7 +11,6 @@ public class DefaultChoiceProviderStrategy() : IChoiceProviderStrategy
 
     public async Task<string?> RenderOption(CO.CDP.Forms.WebApiClient.FormAnswer? answer)
     {
-        // TODO: Is there a better way to accomodate both FormAnswer types without overloading?
         return await RenderOption(answer?.OptionValue);
     }
 
@@ -22,6 +21,6 @@ public class DefaultChoiceProviderStrategy() : IChoiceProviderStrategy
 
     private async Task<string?> RenderOption(string? optionValue)
     {
-        return optionValue;
+        return await Task.FromResult(optionValue);
     }
 }

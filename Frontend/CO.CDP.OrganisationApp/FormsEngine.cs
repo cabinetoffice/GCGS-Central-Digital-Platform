@@ -34,33 +34,32 @@ public class FormsEngine(
                 Title = response.Section.Title,
                 AllowsMultipleAnswerSets = response.Section.AllowsMultipleAnswerSets
             },
-            Questions = (await Task.WhenAll(response.Questions.Select(async q => new Models.FormQuestion
-            {
-                Id = q.Id,
-                Title = q.Title,
-                Description = q.Description,
-                Caption = q.Caption,
-                SummaryTitle = q.SummaryTitle,
-                Type = (Models.FormQuestionType)q.Type,
-                IsRequired = q.IsRequired,
-                NextQuestion = q.NextQuestion,
-                NextQuestionAlternative = q.NextQuestionAlternative,
-                Options = new Models.FormQuestionOptions
+            Questions = (await Task.WhenAll(response.Questions.Select(async q => {
+                IChoiceProviderStrategy choiceProviderStrategy = choiceProviderService.GetStrategy(q.Options.ChoiceProviderStrategy);
+
+                return new Models.FormQuestion
                 {
-                    Choices = await ExecuteChoiceProviderStrategy(q.Options),
-                    ChoiceProviderStrategy = q.Options.ChoiceProviderStrategy
-                }
+                    Id = q.Id,
+                    Title = q.Title,
+                    Description = q.Description,
+                    Caption = q.Caption,
+                    SummaryTitle = q.SummaryTitle,
+                    Type = (Models.FormQuestionType)q.Type,
+                    IsRequired = q.IsRequired,
+                    NextQuestion = q.NextQuestion,
+                    NextQuestionAlternative = q.NextQuestionAlternative,
+                    Options = new Models.FormQuestionOptions
+                    {
+                        Choices = await choiceProviderStrategy.Execute(q.Options),
+                        ChoiceProviderStrategy = q.Options.ChoiceProviderStrategy,
+                        ChoiceAnswerFieldName = choiceProviderStrategy.AnswerFieldName
+                    }
+                };
             }))).ToList()
         };
 
         tempDataService.Put(sessionKey, sectionQuestionsResponse);
         return sectionQuestionsResponse;
-    }
-
-    public async Task<Dictionary<string, string>?> ExecuteChoiceProviderStrategy(Forms.WebApiClient.FormQuestionOptions options)
-    {
-        IChoiceProviderStrategy strategy = choiceProviderService.GetStrategy(options.ChoiceProviderStrategy);
-        return await strategy.Execute(options);
     }
 
     public async Task<Models.FormQuestion?> GetNextQuestion(Guid organisationId, Guid formId, Guid sectionId, Guid currentQuestionId)

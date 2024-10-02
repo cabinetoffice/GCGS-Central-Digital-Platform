@@ -79,6 +79,6 @@ public class ExclusionAppliesToChoiceProviderStrategy(IUserInfoService userInfoS
 
 public class ExclusionAppliesToChoiceProviderStrategyAnswer()
 {
-    public Guid Id { get; set; }
-    public string Type { get; set; }
+    required public Guid Id { get; set; }
+    required public string Type { get; set; }
 }

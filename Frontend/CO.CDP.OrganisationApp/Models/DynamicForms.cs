@@ -38,6 +38,7 @@ public class FormQuestionOptions
 {
     public Dictionary<string, string>? Choices { get; set; }
     public string? ChoiceProviderStrategy { get; set; }
+    public string? ChoiceAnswerFieldName { get; set; }
 }
 
 public class FormQuestionAnswerState

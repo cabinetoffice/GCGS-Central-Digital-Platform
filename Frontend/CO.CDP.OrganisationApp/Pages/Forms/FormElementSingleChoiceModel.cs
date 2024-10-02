@@ -1,8 +1,6 @@
 using CO.CDP.OrganisationApp.Models;
-using CO.CDP.OrganisationApp.Pages.Forms.ChoiceProviderStrategies;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
-using System.Text.RegularExpressions;
 
 namespace CO.CDP.OrganisationApp.Pages.Forms;
 
@@ -10,9 +8,6 @@ public class FormElementSingleChoiceModel : FormElementModel, IValidatableObject
 {
     [BindProperty]
     public string? SelectedOption { get; set; }
-
-    [BindProperty]
-    public required string AnswerFieldName { get; set; }
 
     public override FormAnswer? GetAnswer()
     {
@@ -24,7 +19,7 @@ public class FormElementSingleChoiceModel : FormElementModel, IValidatableObject
         {
             FormAnswer formAnswer;
 
-            switch (AnswerFieldName)
+            switch (Options.ChoiceAnswerFieldName)
             {
                 case nameof(FormAnswer.OptionValue):
                     formAnswer = new FormAnswer { OptionValue = SelectedOption };
@@ -33,7 +28,7 @@ public class FormElementSingleChoiceModel : FormElementModel, IValidatableObject
                     formAnswer = new FormAnswer { JsonValue = SelectedOption };
                     break;
                 default:
-                    throw new InvalidOperationException($"Unsupported answer type: {AnswerFieldName}");
+                    throw new InvalidOperationException($"Unsupported field: {Options.ChoiceAnswerFieldName}");
             }
 
             return formAnswer;
@@ -47,7 +42,7 @@ public class FormElementSingleChoiceModel : FormElementModel, IValidatableObject
     {
         string? value;
 
-        switch (AnswerFieldName)
+        switch (Options?.ChoiceAnswerFieldName)
         {
             case nameof(FormAnswer.OptionValue):
                 value = answer?.OptionValue;
@@ -56,7 +51,7 @@ public class FormElementSingleChoiceModel : FormElementModel, IValidatableObject
                 value = answer?.JsonValue;
                 break;
             default:
-                throw new InvalidOperationException($"Unsupported answer type: {AnswerFieldName}");
+                throw new InvalidOperationException($"Unsupported field: {Options?.ChoiceAnswerFieldName}");
         }
 
         if (value != null && Options?.Choices != null && Options.Choices.ContainsKey(value))
