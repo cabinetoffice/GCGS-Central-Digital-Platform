@@ -32,7 +32,7 @@ if (Assembly.GetEntryAssembly().IsRunAs("CO.CDP.Organisation.Authority"))
         .AddAwsConfiguration(builder.Configuration)
         .AddLoggingConfiguration(builder.Configuration)
         .AddAmazonCloudWatchLogsService()
-        .AddCloudWatchSerilog();
+        .AddCloudWatchSerilog(builder.Configuration);
 }
 
 var app = builder.Build();
