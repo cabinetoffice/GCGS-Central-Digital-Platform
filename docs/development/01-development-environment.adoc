@@ -58,6 +58,29 @@ for the `organisation-app` service:
       OneLogin__PrivateKey: "-----BEGIN RSA PRIVATE KEY-----SECRET KEY-----END RSA PRIVATE KEY-----"
 ----
 
+=== Organisation WebApi
+
+The `Organisation.WebApi` requires the following secrets / environment variables:
+
+* `GOVUKNotify:ApiKey` / `GOVUKNotify__ApiKey`
+
+These can be set as secrets with the following dotnet commands:
+
+[source,bash]
+----
+dotnet user-secrets set --project Services/CO.CDP.Organisation.WebApi/CO.CDP.Organisation.WebApi.csproj GOVUKNotify:ApiKey "123456"
+----
+
+For Docker, the following environment variables need to be updated in `compose.override.yml`
+for the `organisation` service:
+
+[source,yaml]
+----
+  organisation:
+    environment:
+      GOVUKNotify__ApiKey: "123456"
+----
+
 === Authority API
 
 The `Authority` API depends on the following secrets / environment variables:
