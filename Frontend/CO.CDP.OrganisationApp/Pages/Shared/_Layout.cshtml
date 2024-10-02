@@ -64,14 +64,13 @@
                                 </a>
                             </li>
 
-                            if (isSupportAdmin == true)
-                            {
+                            <authorize scope="@PersonScopeRequirement.SupportAdmin">
                                 <li class="govuk-header__navigation-item">
                                     <a class="govuk-header__link" href="/support/organisations/buyer">
                                         Support
                                     </a>
                                 </li>
-                            }
+                            </authorize>
 
                             if (showMyNotice == true)
                             {
