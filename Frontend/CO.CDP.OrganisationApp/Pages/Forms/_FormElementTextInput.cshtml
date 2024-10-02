@@ -5,21 +5,6 @@
     var selectOptionHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.HasValue)).HasInnerHtml;
     string textInputAriaDescribedby = "";
 
-    void RenderHeading()
-    {
-        @if (!string.IsNullOrWhiteSpace(Model.Heading))
-        {
-            <h1 class="govuk-label-wrapper">
-                <label class="govuk-label govuk-label--l" for="TextInput">@Model.Heading</label>
-
-                @if (Model.IsRequired && !string.IsNullOrWhiteSpace(Model.Caption))
-                {
-                    <span class="govuk-caption-l govuk-!-margin-bottom-3">@Model.Caption</span>
-                }
-            </h1>
-        }
-    }
-
     void RenderDescription()
     {
         @if (!string.IsNullOrWhiteSpace(Model.Description))
@@ -52,16 +37,29 @@
 <div class="govuk-form-group @((Model.IsRequired && textInputHasError) || selectOptionHasError ? "govuk-form-group--error" : "")">
     @if (Model.IsRequired)
     {
-        RenderHeading();
+        if (!string.IsNullOrWhiteSpace(Model.Heading))
+        {
+            <h1 class="govuk-label-wrapper">
+                <label class="govuk-label govuk-label--l" for="TextInput">@Model.Heading</label>
+
+                @if (!string.IsNullOrWhiteSpace(Model.Caption))
+                {
+                    <span class="govuk-caption-l govuk-!-margin-bottom-3">@Model.Caption</span>
+                }
+            </h1>
+        }
         RenderDescription();
         RenderField();
     }
     else
     {
-        <fieldset class="govuk-fieldset">
+        <fieldset class="govuk-fieldset" @(selectOptionHasError ? Html.Raw("aria-describedby=\"input-error\"") : "")>
             <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                @{
-                    RenderHeading();
+                @if (!string.IsNullOrWhiteSpace(Model.Heading))
+                {
+                    <h1 class="govuk-fieldset__heading">
+                        @Model.Heading
+                    </h1>
                 }
             </legend>
             @{
@@ -70,7 +68,7 @@
             @if (selectOptionHasError)
             {
                 <p class="govuk-error-message">
-                    <span class="govuk-visually-hidden">Error:</span>
+                    <span id="input-error" class="govuk-visually-hidden">Error:</span>
                     @Html.ValidationMessageFor(m => m.HasValue)
                 </p>
             }

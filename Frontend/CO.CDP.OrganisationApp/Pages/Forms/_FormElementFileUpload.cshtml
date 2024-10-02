@@ -6,7 +6,7 @@
 
     void RenderHeading()
     {
-        @if (!string.IsNullOrWhiteSpace(Model.Heading))
+        if (!string.IsNullOrWhiteSpace(Model.Heading))
         {
             <h1 class="govuk-heading-l">@Model.Heading</h1>
         }
@@ -14,8 +14,7 @@
 
     void RenderDescription()
     {
-
-        @if (!string.IsNullOrWhiteSpace(Model.Description))
+        if (!string.IsNullOrWhiteSpace(Model.Description))
         {
             @Html.Raw(Model.Description)
         }
@@ -49,7 +48,7 @@
 <input type="hidden" name="UploadedFileName" value="@Model.UploadedFileName" />
 
 <div class="govuk-form-group @((Model.IsRequired && uploadFileHasError) || selectOptionHasError ? "govuk-form-group--error" : "")">
-    
+
 
     @if (Model.IsRequired)
     {

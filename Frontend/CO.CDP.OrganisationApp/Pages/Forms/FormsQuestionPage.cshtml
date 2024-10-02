@@ -33,43 +33,37 @@
             <partial name="_ErrorSummary" model="@ModelState" />
 
             <form method="post" enctype="@Model.EncType">
-                <fieldset class="govuk-fieldset">
-                    @if (Model.PartialViewName != null && Model.PartialViewModel != null)
-                    {
-                        @await Html.PartialAsync(Model.PartialViewName, Model.PartialViewModel)
-                    }
-
-                    @if (isCheckYourAnswersPage)
-                    {
-                        var answers = await Model.GetAnswers();
-
-                        <h1 class="govuk-heading-l">Check your answers</h1>
-                        <dl class="govuk-summary-list govuk-!-margin-bottom-9">
-                            @foreach (var answer in answers)
-                            {
-                                <div class="govuk-summary-list__row">
-                                    <dt class="govuk-summary-list__key">
-                                        @answer.Title
-                                    </dt>
-                                    <dd class="govuk-summary-list__value">
-                                        @Html.Raw(answer.Answer)
-                                    </dd>
-                                    <dd class="govuk-summary-list__actions">
-                                        <a class="govuk-link" href="@answer.ChangeLink">
-                                            Change<span class="govuk-visually-hidden">
-                                                @($"the {answer.Title?.ToLower()}")
-                                            </span>
-                                        </a>
-                                    </dd>
-                                </div>
-                            }
-                        </dl>
-                    }
-                </fieldset>
-
+                @if (Model.PartialViewName != null && Model.PartialViewModel != null)
+                {
+                    @await Html.PartialAsync(Model.PartialViewName, Model.PartialViewModel)
+                }
 
                 @if (isCheckYourAnswersPage)
                 {
+                    var answers = await Model.GetAnswers();
+
+                    <h1 class="govuk-heading-l">Check your answers</h1>
+                    <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+                        @foreach (var answer in answers)
+                        {
+                            <div class="govuk-summary-list__row">
+                                <dt class="govuk-summary-list__key">
+                                    @answer.Title
+                                </dt>
+                                <dd class="govuk-summary-list__value">
+                                    @Html.Raw(answer.Answer)
+                                </dd>
+                                <dd class="govuk-summary-list__actions">
+                                    <a class="govuk-link" href="@answer.ChangeLink">
+                                        Change<span class="govuk-visually-hidden">
+                                            @($"the {answer.Title?.ToLower()}")
+                                        </span>
+                                    </a>
+                                </dd>
+                            </div>
+                        }
+                    </dl>
+
                     if (Model.FormSectionType == Models.FormSectionType.Declaration)
                     {
                         <button type="submit" class="govuk-button">Confirm and get share code</button>
