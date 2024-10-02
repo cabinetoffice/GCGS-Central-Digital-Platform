@@ -63,23 +63,25 @@ public static class CloudWatchExtensions
         });
     }
 
-    public static IServiceCollection AddCloudWatchSerilog(this IServiceCollection services)
+    public static IServiceCollection AddCloudWatchSerilog(
+        this IServiceCollection services, IConfiguration configuration)
     {
-        return AddCloudWatchSerilog(services, (_, _) => { });
+        return AddCloudWatchSerilog(services, configuration, (_, _) => { });
     }
 
     private static IServiceCollection AddCloudWatchSerilog(
-        this IServiceCollection services,
+        this IServiceCollection services, IConfiguration configuration,
         Action<IServiceProvider, LoggerConfiguration> configureLogger)
     {
         return services.AddSerilog((serviceProvider, lc) =>
         {
-            var configuration = serviceProvider.GetRequiredService<IOptions<LoggingConfiguration>>().Value;
+            var loggingConfiguration = serviceProvider.GetRequiredService<IOptions<LoggingConfiguration>>().Value;
             lc.WriteTo.AmazonCloudWatch(serviceProvider)
-                .MinimumLevel.Is(configuration.MinimumLevel.Default)
-                .OverrideLogLevels(configuration.MinimumLevel.Override)
-                .EnableConsole(configuration.Console)
-                .Enrich.FromLogContext();
+                .MinimumLevel.Is(loggingConfiguration.MinimumLevel.Default)
+                .OverrideLogLevels(loggingConfiguration.MinimumLevel.Override)
+                .EnableConsole(loggingConfiguration.Console)
+                .Enrich.FromLogContext()
+                .Enrich.WithProperty("Version", configuration.GetValue<string>("Version"));
             configureLogger(serviceProvider, lc);
         });
     }
