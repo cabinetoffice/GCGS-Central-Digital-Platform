@@ -106,10 +106,9 @@ workspace "Central Digital Platform" {
                     -> cdp.authority.openIdJwksConfigurationEndpoint "Retrieves Json Web Key Set from"
                 }
             }
-
-            eSender -> dataSharingApi.dataSharingEndpoint "Looks up supplier information" "HTTPS/json"
         }
 
+        eSender -> cdp.dataSharingApi.dataSharingEndpoint "Looks up supplier information" "HTTPS/json"
         buyer -> eSender "Uses"
 
         fts -> oneLogin "Authenticates with"
