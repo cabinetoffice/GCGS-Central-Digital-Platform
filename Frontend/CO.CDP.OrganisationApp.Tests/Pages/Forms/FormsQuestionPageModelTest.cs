@@ -26,10 +26,7 @@ public class FormsQuestionPageModelTest
         {
             Questions = [new FormQuestion { Id = TextQuestionId, Type = FormQuestionType.Text, SummaryTitle = "Sample Question" }]
         };
-
-        _formsEngineMock.Setup(f => f.ExecuteChoiceProviderStrategy(It.IsAny<CO.CDP.Forms.WebApiClient.FormQuestionOptions>()))
-            .ReturnsAsync(new Dictionary<string, string>() { { "Choices", "Choices" } });
-        
+       
         _formsEngineMock.Setup(f => f.GetFormSectionAsync(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid>()))
             .ReturnsAsync(form);
         _tempDataServiceMock = new Mock<ITempDataService>();
