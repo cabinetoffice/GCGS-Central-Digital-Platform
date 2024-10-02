@@ -4,7 +4,7 @@ using System.Net;
 
 namespace CO.CDP.OrganisationApp.Pages.Users;
 
-[AuthorisedSessionNotRequired]
+[AuthenticatedSessionNotRequired]
 public class OrganisationInviteModel : PageModel
 {
     public IActionResult OnGet(Guid personInviteId)

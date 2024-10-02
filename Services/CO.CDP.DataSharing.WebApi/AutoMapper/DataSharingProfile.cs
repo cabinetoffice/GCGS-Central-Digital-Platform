@@ -105,7 +105,7 @@ public class DataSharingProfile : Profile
         CreateMap<Persistence.FormQuestion, FormQuestion>()
             .ForMember(m => m.Type, o => o.MapFrom<CustomFormQuestionTypeResolver>())
             .ForMember(m => m.Title, o => o.MapFrom(m => m.Title))
-            .ForMember(m => m.Name, o => o.MapFrom(m => m.Guid))
+            .ForMember(m => m.Name, o => o.MapFrom(m => m.Name))
             .ForMember(m => m.Text, o => o.MapFrom(m => m.Description))
             .ForMember(m => m.IsRequired, o => o.MapFrom(m => m.IsRequired))
             .ForMember(m => m.SectionName, o => o.MapFrom(m => m.Section.Title))
@@ -138,6 +138,8 @@ public class CustomFormQuestionTypeResolver : IValueResolver<Persistence.FormQue
                 return FormQuestionType.Option;
             case Persistence.FormQuestionType.Date:
                 return FormQuestionType.Date;
+            case Persistence.FormQuestionType.Url:
+                return FormQuestionType.Url;
             case Persistence.FormQuestionType.NoInput:
             case Persistence.FormQuestionType.CheckYourAnswers:
                 return FormQuestionType.None;

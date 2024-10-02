@@ -37,7 +37,8 @@ public enum FormQuestionType
     CheckBox,
     Address,
     MultiLine,
-    GroupedSingleChoice
+    GroupedSingleChoice,
+    Url
 }
 
 public record FormQuestionOptions

@@ -11,5 +11,6 @@ public enum FormQuestionType
     Text,
     Option,
     DateTimeRange,
-    Date
+    Date,
+    Url
 }

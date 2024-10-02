@@ -32,11 +32,7 @@ const string EvHttpClient = "EvHttpClient";
 var builder = WebApplication.CreateBuilder(args);
 
 var mvcBuilder = builder.Services.AddRazorPages()
-    .AddSessionStateTempDataProvider()
-    .AddMvcOptions(options =>
-    {
-        options.Filters.Add<AuthorisedSessionFilter>();
-    });
+    .AddSessionStateTempDataProvider();
 
 if (builder.Environment.IsDevelopment())
 {
@@ -189,6 +185,7 @@ app.UseStaticFiles();
 app.UseRouting();
 app.UseAuthentication();
 app.UseSession();
+app.UseMiddleware<AuthenticatedSessionAwareMiddleware>();
 app.UseAuthorization();
 app.MapRazorPages();
 

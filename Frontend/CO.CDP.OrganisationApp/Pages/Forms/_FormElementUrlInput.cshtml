@@ -1,4 +1,4 @@
-@model FormElementTextInputModel
+@model FormElementUrlInputModel
 
 @{
     var textInputHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.TextInput)).HasInnerHtml;
@@ -7,7 +7,7 @@
 
     void RenderDescription()
     {
-        @if (!string.IsNullOrWhiteSpace(Model.Description))
+        if (!string.IsNullOrWhiteSpace(Model.Description))
         {
             textInputAriaDescribedby += "TextInput-description";
 
@@ -35,6 +35,7 @@
 }
 
 <div class="govuk-form-group @((Model.IsRequired && textInputHasError) || selectOptionHasError ? "govuk-form-group--error" : "")">
+
     @if (Model.IsRequired)
     {
         if (!string.IsNullOrWhiteSpace(Model.Heading))
@@ -53,7 +54,7 @@
     }
     else
     {
-        <fieldset class="govuk-fieldset" @(selectOptionHasError ? Html.Raw("aria-describedby=\"input-error\"") : "")>
+        <fieldset class="govuk-fieldset" @(selectOptionHasError ? Html.Raw("aria-describedby=\"input-error\"") : "") >
             <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                 @if (!string.IsNullOrWhiteSpace(Model.Heading))
                 {
@@ -62,9 +63,11 @@
                     </h1>
                 }
             </legend>
+
             @{
                 RenderDescription();
             }
+
             @if (selectOptionHasError)
             {
                 <p class="govuk-error-message">
@@ -72,6 +75,7 @@
                     @Html.ValidationMessageFor(m => m.HasValue)
                 </p>
             }
+
             <div class="govuk-radios" data-module="govuk-radios">
 
                 <div class="govuk-radios__item">
