@@ -172,13 +172,13 @@ public class FormsQuestionPageModel(
 
                 var summary = new AnswerSummary
                 {
-                    Title = question.SummaryTitle ?? question.Title,
+                    Title = question?.SummaryTitle ?? question?.Title,
                     Answer = answerString,
                     ChangeLink = $"/organisation/{OrganisationId}/forms/{FormId}/sections/{SectionId}/questions/{answer.QuestionId}?frm-chk-answer=true"
                 };
 
-                if (question.Type == FormQuestionType.Address && answer.Answer?.AddressValue != null
-                    && answer.Answer.AddressValue.Country != Constants.Country.UKCountryCode)
+                if (question?.Type == FormQuestionType.Address && answer.Answer?.AddressValue != null
+                    && answer.Answer.AddressValue.Country != Country.UKCountryCode)
                 {
                     summary.ChangeLink += "&UkOrNonUk=non-uk";
                 }
