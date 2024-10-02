@@ -10,7 +10,7 @@ using System.Net;
 
 namespace CO.CDP.OrganisationApp.Pages.Registration;
 
-[AuthorisedSessionNotRequired]
+[AuthenticatedSessionNotRequired]
 public class OneLogin(
     IHttpContextAccessor httpContextAccessor,
     IPersonClient personClient,
