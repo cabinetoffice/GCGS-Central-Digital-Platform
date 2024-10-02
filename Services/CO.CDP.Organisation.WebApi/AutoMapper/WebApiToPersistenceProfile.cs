@@ -56,7 +56,8 @@ public class WebApiToPersistenceProfile : Profile
             .ForMember(m => m.UpdatedOn, o => o.Ignore())
             .ForMember(m => m.IdentifierId, o => o.MapFrom(m => m.Id))
             .ReverseMap()
-            .ForMember(m => m.Id, o => o.MapFrom(m => m.IdentifierId));
+            .ForMember(m => m.Id, o => o.MapFrom(m => m.IdentifierId))
+            .ForMember(m => m.Uri, o => o.Ignore());
 
         CreateMap<OrganisationAddress, Persistence.Address>(MemberList.Source)
             .ForSourceMember(m => m.Type, o => o.DoNotValidate());
