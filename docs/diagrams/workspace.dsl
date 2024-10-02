@@ -74,7 +74,7 @@ workspace "Central Digital Platform" {
                     useCase -> fileStorage "writes to / reads from" "HTTPS"
                     -> organisationInformationDatabase "reads/writes" "SQL"
                 }
-                webApp = container "Web Application" "Account & data capture frontend" "Asp.Net Core MVC" WebApp {
+                organisationApp = container "Organisation App" "Account & data capture frontend" "Asp.Net Core MVC" WebApp {
                     group "Libraries" {
                         !include "libraries.dsl"
                     }
@@ -133,7 +133,7 @@ workspace "Central Digital Platform" {
             include *
             description "The component diagram for the Authority service."
         }
-        component cdp.webApp "CDP-3-WebApp-Components" {
+        component cdp.organisationApp "CDP-3-OrganisationApp-Components" {
             include *
             description "The component diagram for the Web Application."
         }
