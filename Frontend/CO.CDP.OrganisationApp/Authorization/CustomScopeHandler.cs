@@ -44,6 +44,12 @@ public class CustomScopeHandler(
                         context.Succeed(requirement);
                         return;
                     }
+
+                    if (requirement.Scope == PersonScopes.SupportAdmin && userScopes.Contains(PersonScopes.SupportAdmin))
+                    {
+                        context.Succeed(requirement);
+                        return;
+                    }
                 }
             }
             catch
