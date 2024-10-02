@@ -10,6 +10,7 @@ using CO.CDP.OrganisationInformation;
 using CO.CDP.OrganisationInformation.Persistence;
 using FluentAssertions;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Moq;
 using Persistence = CO.CDP.OrganisationInformation.Persistence;
 
@@ -22,7 +23,8 @@ public class RegisterOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
     private readonly Mock<Persistence.IPersonRepository> _persons = new();
     private readonly Mock<IPublisher> _publisher = new();
     private readonly Mock<IGovUKNotifyApiClient> _notifyApiClient = new();
-    private readonly IConfiguration _mockConfiguration;
+    private readonly IConfiguration _mockConfiguration;    
+    private readonly Mock<ILogger<RegisterOrganisationUseCase>> _logger = new();
     private readonly Guid _generatedGuid = Guid.NewGuid();
     private readonly AutoMapperFixture _mapperFixture;
     private RegisterOrganisationUseCase UseCase => new(
@@ -33,10 +35,11 @@ public class RegisterOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
         _publisher.Object,
         _mapperFixture.Mapper,
         _mockConfiguration,
+        _logger.Object,
         () => _generatedGuid);
 
     public RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture)
-    {
+    {        
         _mapperFixture = mapperFixture;
         var inMemorySettings = new List<KeyValuePair<string, string?>>
         {
@@ -49,6 +52,55 @@ public class RegisterOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
         _mockConfiguration = new ConfigurationBuilder()
             .AddInMemoryCollection(inMemorySettings)
             .Build();
+    }
+
+    [Fact]
+    public async Task ItShouldLogErrorWhenConfigurationKeysAreMissing()
+    {
+        IConfiguration _configurationMock;
+        var inMemorySettings = new List<KeyValuePair<string, string?>>
+        {
+            new("GOVUKNotify:PersonInviteEmailTemplateId", ""),
+            new("OrganisationAppUrl", ""),
+            new("GOVUKNotify:RequestReviewApplicationEmailTemplateId", ""),
+            new("GOVUKNotify:SupportAdminEmailAddress", ""),
+        };
+
+        _configurationMock = new ConfigurationBuilder()
+            .AddInMemoryCollection(inMemorySettings)
+            .Build();
+
+        var person = GivenPersonExists(guid: Guid.NewGuid());
+
+        var command = GivenRegisterOrganisationCommand(personId: person.Guid, roles: [PartyRole.Buyer]);
+
+
+        _persons.Setup(p => p.Find(command.PersonId)).ReturnsAsync(person);
+
+        var useCase = new RegisterOrganisationUseCase(
+                            _identifierService.Object,
+                            _repository.Object,
+                            _persons.Object,
+                            _notifyApiClient.Object,
+                            _publisher.Object,
+                            _mapperFixture.Mapper,
+                            _configurationMock,
+                            _logger.Object,
+                            () => _generatedGuid
+                        );
+
+        await useCase.Execute(command);
+
+        _logger.Verify(
+    x => x.Log(
+            LogLevel.Error,
+            It.IsAny<EventId>(),
+            It.Is<It.IsAnyType>((v, t) => v.ToString()!.Contains("Missing configuration keys: OrganisationAppUrl, GOVUKNotify:RequestReviewApplicationEmailTemplateId, GOVUKNotify:SupportAdminEmailAddress")),
+            It.IsAny<Exception>(),
+            It.Is<Func<It.IsAnyType, Exception?, string>>((v, t) => true)
+        ), Times.Once);
+
+        _notifyApiClient.Verify(g => g.SendEmail(It.IsAny<EmailNotificationRequest>()), Times.Never);
     }
 
     [Fact]
