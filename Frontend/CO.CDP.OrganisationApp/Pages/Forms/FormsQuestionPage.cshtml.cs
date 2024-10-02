@@ -163,7 +163,7 @@ public class FormsQuestionPageModel(
                     FormQuestionType.YesOrNo => answer.Answer?.BoolValue.HasValue == true ? (answer.Answer.BoolValue == true ? "Yes" : "No") : "",
                     FormQuestionType.SingleChoice => await choiceProviderStrategy.RenderOption(answer.Answer) ?? "",
                     FormQuestionType.Date => answer.Answer?.DateValue.HasValue == true ? answer.Answer.DateValue.Value.ToString("dd/MM/yyyy") : "",
-                    FormQuestionType.CheckBox => answer.Answer?.BoolValue == true ? question.Options.Choices.Values.FirstOrDefault() ?? "" : "",
+                    FormQuestionType.CheckBox => answer.Answer?.BoolValue == true ? question?.Options?.Choices?.Values.FirstOrDefault() ?? "" : "",
                     FormQuestionType.Address => answer.Answer?.AddressValue != null ? answer.Answer.AddressValue.ToHtmlString() : "",
                     FormQuestionType.MultiLine => answer.Answer?.TextValue ?? "",
                     FormQuestionType.Url => answer.Answer?.TextValue ?? "",
