@@ -1,7 +1,6 @@
 using CO.CDP.OrganisationApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
-using System.Text.RegularExpressions;
 
 namespace CO.CDP.OrganisationApp.Pages.Forms;
 
@@ -15,10 +14,25 @@ public class FormElementSingleChoiceModel : FormElementModel, IValidatableObject
         if(
             SelectedOption != null
             && Options?.Choices != null
-            && Options.Choices.Contains(SelectedOption)
+            && Options.Choices.ContainsKey(SelectedOption)
          )
         {
-            return new FormAnswer { OptionValue = SelectedOption };
+            FormAnswer formAnswer;
+
+            switch (Options.ChoiceAnswerFieldName)
+            {
+                case nameof(FormAnswer.OptionValue):
+                    formAnswer = new FormAnswer { OptionValue = SelectedOption };
+                    break;
+                case nameof(FormAnswer.JsonValue):
+                    formAnswer = new FormAnswer { JsonValue = SelectedOption };
+                    break;
+                default:
+                    throw new InvalidOperationException($"Unsupported field: {Options.ChoiceAnswerFieldName}");
+            }
+
+            return formAnswer;
+
         }
 
         return null;
@@ -26,9 +40,23 @@ public class FormElementSingleChoiceModel : FormElementModel, IValidatableObject
 
     public override void SetAnswer(FormAnswer? answer)
     {
-        if (answer?.OptionValue != null && Options?.Choices != null && Options.Choices.Contains(answer.OptionValue))
+        string? value;
+
+        switch (Options?.ChoiceAnswerFieldName)
         {
-            SelectedOption = answer.OptionValue;
+            case nameof(FormAnswer.OptionValue):
+                value = answer?.OptionValue;
+                break;
+            case nameof(FormAnswer.JsonValue):
+                value = answer?.JsonValue;
+                break;
+            default:
+                throw new InvalidOperationException($"Unsupported field: {Options?.ChoiceAnswerFieldName}");
+        }
+
+        if (value != null && Options?.Choices != null && Options.Choices.ContainsKey(value))
+        {
+            SelectedOption = value;
         }
     }
 
@@ -41,8 +69,9 @@ public class FormElementSingleChoiceModel : FormElementModel, IValidatableObject
             yield break;
         }
 
-        if(Options?.Choices == null || (SelectedOption != null && !Options.Choices.Contains(SelectedOption)))
+        if(Options?.Choices == null || (SelectedOption != null && !Options.Choices.ContainsKey(SelectedOption)))
         {
+            // Note that any JSON responses received from the client *must* be present in the Choices list, and this check ensures that this is the case.
             yield return new ValidationResult("Invalid option selected", new[] { nameof(SelectedOption) });
             yield break;
         }

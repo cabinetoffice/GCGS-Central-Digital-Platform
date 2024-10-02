@@ -36,8 +36,9 @@ public class FormQuestion
 
 public class FormQuestionOptions
 {
-    public List<string>? Choices { get; set; }
+    public Dictionary<string, string>? Choices { get; set; }
     public string? ChoiceProviderStrategy { get; set; }
+    public string? ChoiceAnswerFieldName { get; set; }
 }
 
 public class FormQuestionAnswerState
@@ -64,6 +65,7 @@ public class FormAnswer
     public string? TextValue { get; init; }
     public string? OptionValue { get; init; }
     public Address? AddressValue { get; init; }
+    public string? JsonValue { get; init; }
 }
 
 public enum FormQuestionType

@@ -89,7 +89,7 @@ public class FormsEngineTests
         );
     }
 
-    private static SectionQuestionsResponse CreateModelSectionQuestionsResponse(Guid sectionId, Guid questionId, Guid nextQuestionId, string? choiceProviderStrategy = null, List<string>? options = null)
+    private static SectionQuestionsResponse CreateModelSectionQuestionsResponse(Guid sectionId, Guid questionId, Guid nextQuestionId, string? choiceProviderStrategy = null, Dictionary<string, string>? options = null)
     {
         return new SectionQuestionsResponse
         {
@@ -108,8 +108,9 @@ public class FormsEngineTests
                 NextQuestion = nextQuestionId,
                 Options = new FormQuestionOptions
                 {
-                    Choices = options == null ? new List<string> { "Option1" } : options,
-                    ChoiceProviderStrategy = choiceProviderStrategy
+                    Choices = options == null ? new Dictionary<string, string>() { { "Option1", "Option1" } } : options,
+                    ChoiceProviderStrategy = choiceProviderStrategy,
+                    ChoiceAnswerFieldName = "OptionValue",
                 }
             }
         }
@@ -254,12 +255,19 @@ public class FormsEngineTests
         var questionId = Guid.NewGuid();
         var nextQuestionId = Guid.NewGuid();
         var apiResponse = CreateApiSectionQuestionsResponse(sectionId, questionId, nextQuestionId, "ExclusionAppliesToChoiceProviderStrategy");
-        var expectedResponse = CreateModelSectionQuestionsResponse(sectionId, questionId, nextQuestionId, "ExclusionAppliesToChoiceProviderStrategy", ["User's current organisation", "Connected person", "Connected organisation"]);
+        var expectedResponse = CreateModelSectionQuestionsResponse(sectionId, questionId, nextQuestionId, "ExclusionAppliesToChoiceProviderStrategy");
+
+        expectedResponse.Questions[0].Options.Choices = new Dictionary<string, string>() {
+            { $@"{{""id"":""{organisationId}"",""type"":""organisation""}}", "User's current organisation" },
+            { "{\"id\":\"e4bdd7ef-8200-4257-9892-b16f43d1803e\",\"type\":\"connected-entity\"}", "Connected person" },
+            { "{\"id\":\"4c8dccba-df39-4997-814b-7599ed9b5bed\",\"type\":\"connected-entity\"}", "Connected organisation" } };
+
+        expectedResponse.Questions[0].Options.ChoiceAnswerFieldName = "JsonValue";
 
         _organisationClientMock.Setup(c => c.GetConnectedEntitiesAsync(It.IsAny<Guid>()))
             .ReturnsAsync([
-                new ConnectedEntityLookup(new Guid(), ConnectedEntityType.Individual, "Connected person", new Uri("http://whatever")),
-                new ConnectedEntityLookup(new Guid(), ConnectedEntityType.Organisation, "Connected organisation", new Uri("http://whatever"))
+                new ConnectedEntityLookup(new Guid("e4bdd7ef-8200-4257-9892-b16f43d1803e"), ConnectedEntityType.Individual, "Connected person", new Uri("http://whatever")),
+                new ConnectedEntityLookup(new Guid("4c8dccba-df39-4997-814b-7599ed9b5bed"), ConnectedEntityType.Organisation, "Connected organisation", new Uri("http://whatever"))
             ]);
         _organisationClientMock.Setup(c => c.GetOrganisationAsync(organisationId))
             .ReturnsAsync(new Organisation.WebApiClient.Organisation([], [],null, null, organisationId, null, "User's current organisation", []));
