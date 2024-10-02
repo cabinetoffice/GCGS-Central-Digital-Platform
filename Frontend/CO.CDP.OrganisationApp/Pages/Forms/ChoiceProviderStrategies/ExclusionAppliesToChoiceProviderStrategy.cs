@@ -35,7 +35,6 @@ public class ExclusionAppliesToChoiceProviderStrategy(IUserInfoService userInfoS
 
     public async Task<string?> RenderOption(CO.CDP.Forms.WebApiClient.FormAnswer? answer)
     {
-        // TODO: Is there a better way to accomodate both FormAnswer types without overloading?
         return await RenderOption(answer?.JsonValue);
     }
 
