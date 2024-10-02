@@ -12,6 +12,7 @@ public record FormAnswer
     public string? TextValue { get; init; }
     public string? OptionValue { get; init; }
     public FormAddress? AddressValue { get; init; }
+    public string? JsonValue { get; init; }
 }
 
 public record FormAddress

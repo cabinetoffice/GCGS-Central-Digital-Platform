@@ -1,6 +1,7 @@
 using CO.CDP.AwsServices;
 using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
+using CO.CDP.OrganisationApp.Pages.Forms.ChoiceProviderStrategies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -12,7 +13,8 @@ namespace CO.CDP.OrganisationApp.Pages.Forms;
 public class FormsQuestionPageModel(
     IFormsEngine formsEngine,
     ITempDataService tempDataService,
-    IFileHostManager fileHostManager) : PageModel
+    IFileHostManager fileHostManager,
+    IChoiceProviderService choiceProviderService) : PageModel
 {
     [BindProperty(SupportsGet = true)]
     public Guid OrganisationId { get; set; }
@@ -155,14 +157,15 @@ public class FormsQuestionPageModel(
             var question = form?.Questions.FirstOrDefault(q => q.Id == answer.QuestionId);
             if (question != null && question.Type != FormQuestionType.NoInput && question.Type != FormQuestionType.CheckYourAnswers)
             {
+                var choiceProviderStrategy = choiceProviderService.GetStrategy(question.Options.ChoiceProviderStrategy);
                 string answerString = question.Type switch
                 {
                     FormQuestionType.Text => answer.Answer?.TextValue ?? "",
                     FormQuestionType.FileUpload => answer.Answer?.TextValue ?? "",
                     FormQuestionType.YesOrNo => answer.Answer?.BoolValue.HasValue == true ? (answer.Answer.BoolValue == true ? "Yes" : "No") : "",
-                    FormQuestionType.SingleChoice => answer.Answer?.OptionValue ?? "",
+                    FormQuestionType.SingleChoice => await choiceProviderStrategy.RenderOption(answer.Answer) ?? "",
                     FormQuestionType.Date => answer.Answer?.DateValue.HasValue == true ? answer.Answer.DateValue.Value.ToString("dd/MM/yyyy") : "",
-                    FormQuestionType.CheckBox => answer.Answer?.BoolValue == true ? question.Options.Choices?.FirstOrDefault() ?? "" : "",
+                    FormQuestionType.CheckBox => answer.Answer?.BoolValue == true ? question?.Options?.Choices?.Values.FirstOrDefault() ?? "" : "",
                     FormQuestionType.Address => answer.Answer?.AddressValue != null ? answer.Answer.AddressValue.ToHtmlString() : "",                    
                     FormQuestionType.GroupedSingleChoice => answer.Answer?.OptionValue ?? "",
                     FormQuestionType.MultiLine => answer.Answer?.TextValue ?? "",

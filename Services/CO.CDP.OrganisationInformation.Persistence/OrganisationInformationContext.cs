@@ -196,6 +196,9 @@ public class OrganisationInformationContext(DbContextOptions<OrganisationInforma
             e.Property(p => p.AddressValue)
                 .HasJsonColumn(PropertyBuilderExtensions.RecordComparer<FormAddress>(),
                     JsonOptions.SerializerOptions);
+
+            e.Property(fa => fa.JsonValue)
+                .HasColumnType("jsonb");
         });
     }
 

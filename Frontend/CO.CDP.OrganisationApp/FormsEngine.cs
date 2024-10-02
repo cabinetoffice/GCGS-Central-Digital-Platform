@@ -34,44 +34,43 @@ public class FormsEngine(
                 Title = response.Section.Title,
                 AllowsMultipleAnswerSets = response.Section.AllowsMultipleAnswerSets
             },
-            Questions = (await Task.WhenAll(response.Questions.Select(async q => new Models.FormQuestion
-            {
-                Id = q.Id,
-                Title = q.Title,
-                Description = q.Description,
-                Caption = q.Caption,
-                SummaryTitle = q.SummaryTitle,
-                Type = (Models.FormQuestionType)q.Type,
-                IsRequired = q.IsRequired,
-                NextQuestion = q.NextQuestion,
-                NextQuestionAlternative = q.NextQuestionAlternative,
-                Options = new Models.FormQuestionOptions
+            Questions = (await Task.WhenAll(response.Questions.Select(async q => {
+                IChoiceProviderStrategy choiceProviderStrategy = choiceProviderService.GetStrategy(q.Options.ChoiceProviderStrategy);
+
+                return new Models.FormQuestion
                 {
-                    Choices = await ExecuteChoiceProviderStrategy(q.Options),
-                    ChoiceProviderStrategy = q.Options.ChoiceProviderStrategy,
-                    Groups = q.Options.Groups?.Select(g => new Models.FormQuestionGroup
+                    Id = q.Id,
+                    Title = q.Title,
+                    Description = q.Description,
+                    Caption = q.Caption,
+                    SummaryTitle = q.SummaryTitle,
+                    Type = (Models.FormQuestionType)q.Type,
+                    IsRequired = q.IsRequired,
+                    NextQuestion = q.NextQuestion,
+                    NextQuestionAlternative = q.NextQuestionAlternative,
+                    Options = new Models.FormQuestionOptions
                     {
-                        Name = g.Name,
-                        Hint = g.Hint,
-                        Caption = g.Caption,
-                        Choices = g.Choices?.Select(c => new Models.FormQuestionGroupChoice
+                        Choices = await choiceProviderStrategy.Execute(q.Options),
+                        ChoiceProviderStrategy = q.Options.ChoiceProviderStrategy,
+                        Groups = q.Options.Groups?.Select(g => new Models.FormQuestionGroup
                         {
-                            Title = c.Title,
-                            Value = c.Value
-                        }).ToList()
-                    }).ToList()
-                }
+                            Name = g.Name,
+                            Hint = g.Hint,
+                            Caption = g.Caption,
+                            Choices = g.Choices?.Select(c => new Models.FormQuestionGroupChoice
+                            {
+                                Title = c.Title,
+                                Value = c.Value
+                            }).ToList()
+                        }).ToList(),
+                        ChoiceAnswerFieldName = choiceProviderStrategy.AnswerFieldName
+                    }
+                };
             }))).ToList()
         };
 
         tempDataService.Put(sessionKey, sectionQuestionsResponse);
         return sectionQuestionsResponse;
-    }
-
-    public async Task<List<string>?> ExecuteChoiceProviderStrategy(Forms.WebApiClient.FormQuestionOptions options)
-    {
-        IChoiceProviderStrategy strategy = choiceProviderService.GetStrategy(options.ChoiceProviderStrategy);
-        return await strategy.Execute(options);
     }
 
     public async Task<Models.FormQuestion?> GetNextQuestion(Guid organisationId, Guid formId, Guid sectionId, Guid currentQuestionId)
@@ -129,7 +128,8 @@ public class FormsEngine(
                 textValue: a.Answer?.TextValue,
                 optionValue: a.Answer?.OptionValue,
                 questionId: a.QuestionId,
-                addressValue: MapAddress(a.Answer?.AddressValue)
+                addressValue: MapAddress(a.Answer?.AddressValue),
+                jsonValue: a.Answer?.JsonValue
             )).ToArray(),
             furtherQuestionsExempted: answerSet.FurtherQuestionsExempted
         );
