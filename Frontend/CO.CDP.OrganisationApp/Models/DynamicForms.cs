@@ -38,6 +38,7 @@ public class FormQuestionOptions
 {
     public Dictionary<string, string>? Choices { get; set; }
     public string? ChoiceProviderStrategy { get; set; }
+    public List<FormQuestionGroup>? Groups { get; set; }
     public string? ChoiceAnswerFieldName { get; set; }
 }
 
@@ -68,6 +69,20 @@ public class FormAnswer
     public string? JsonValue { get; init; }
 }
 
+public class FormQuestionGroup
+{
+    public string? Name { get; set; }
+    public string? Hint { get; set; }
+    public string? Caption { get; set; }
+    public List<FormQuestionGroupChoice>? Choices { get; set; }
+}
+
+public class FormQuestionGroupChoice
+{
+    public string? Title { get; set; }
+    public string? Value { get; set; } = null;
+}
+
 public enum FormQuestionType
 {
     NoInput,
@@ -81,5 +96,6 @@ public enum FormQuestionType
     CheckBox,
     Address,
     MultiLine,
+    GroupedSingleChoice,
     Url
 }
