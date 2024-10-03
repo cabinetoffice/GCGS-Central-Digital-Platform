@@ -26,6 +26,7 @@ test: ## Run tests
 
 build-docker: VERSION ?= "undefined"
 build-docker: ## Build Docker images
+	echo "VERSION=$(VERSION)"
 	@docker compose build --build-arg VERSION=$(VERSION)
 .PHONY: build-docker
 
