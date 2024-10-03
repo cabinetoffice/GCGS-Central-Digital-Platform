@@ -1,6 +1,7 @@
 using CO.CDP.OrganisationApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json;
 
 namespace CO.CDP.OrganisationApp.Pages.Forms;
 
@@ -46,17 +47,32 @@ public class FormElementSingleChoiceModel : FormElementModel, IValidatableObject
         {
             case nameof(FormAnswer.OptionValue):
                 value = answer?.OptionValue;
+
+                if (value != null && Options?.Choices != null && Options.Choices.ContainsKey(value))
+                {
+                    SelectedOption = value;
+                }
+
                 break;
             case nameof(FormAnswer.JsonValue):
                 value = answer?.JsonValue;
+
+                if (value != null && Options?.Choices != null)
+                {
+                    // We have to deserialize and serialize the json before checking equality,
+                    // because the representation straight out of postgres does not match the representation from C# with respect to whitespace
+                    Dictionary<string, object>? parsedValue = JsonSerializer.Deserialize<Dictionary<string, object>>(value);
+                    string reseralizedValue = JsonSerializer.Serialize(parsedValue);
+
+                    if (Options.Choices.ContainsKey(reseralizedValue))
+                    {
+                        SelectedOption = reseralizedValue;
+                    }
+                }
+
                 break;
             default:
                 throw new InvalidOperationException($"Unsupported field: {Options?.ChoiceAnswerFieldName}");
-        }
-
-        if (value != null && Options?.Choices != null && Options.Choices.ContainsKey(value))
-        {
-            SelectedOption = value;
         }
     }
 
