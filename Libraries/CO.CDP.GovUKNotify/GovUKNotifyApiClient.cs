@@ -41,7 +41,7 @@ public class GovUKNotifyApiClient : IGovUKNotifyApiClient
         {
             var content = await res.Content.ReadAsStringAsync();
             _logger.LogError(ex, $"GovUKNotify error, response status: {res.StatusCode}, response body: {content}");
-            return null;
+            throw;
         }
     }
 }
