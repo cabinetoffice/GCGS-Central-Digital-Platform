@@ -22,6 +22,6 @@ public record SupplierInformation
 
     /// <example>["supplier"]</example>
     [Required] public required List<PartyRole> Roles { get; init; } = [];
-    [Required] public required Details Details { get; init; }
+    [Required] public required Details Details { get; set; }
     [Required] public required SupplierInformationData SupplierInformationData { get; init; }
 }

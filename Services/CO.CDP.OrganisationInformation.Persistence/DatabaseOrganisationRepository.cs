@@ -100,6 +100,18 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
         return await result.ToListAsync();
     }
 
+    public async Task<Organisation.LegalForm?> GetLegalForm(int organisationId)
+    {
+        var organisation = await context.Organisations
+            .Where(x => x.Id == organisationId && x.SupplierInfo != null)
+            .Include(x => x.SupplierInfo)
+                .ThenInclude(x => x.LegalForm)
+            .AsNoTracking()
+            .FirstOrDefaultAsync();
+
+        return organisation?.SupplierInfo?.LegalForm;
+    }
+
     public void Save(Organisation organisation)
     {
         try
