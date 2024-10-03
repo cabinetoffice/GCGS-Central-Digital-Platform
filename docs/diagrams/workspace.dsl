@@ -26,11 +26,13 @@ workspace "Central Digital Platform" {
                     }
                     entityVerificationEndpoint = component "Entity Verification Endpoint" "Queries known identifers." "Asp.Net Core Web API"
                     useCase = component "Use Case"
+                    mqSubscriber = component "Message Subscriber"
                     persistence = component "Persistence" "EntityFramework Core model and repositories" "C# Namespace"
                     entityVerificationEndpoint -> useCase "Executes"
                     useCase -> persistence "Executes"
                     useCase -> mq "Calls"
                     mq -> messageQueue "publishes to / listens to" "HTTPS"
+                    mq -> mqSubscriber "Calls"
                     persistence -> entityVerificationDatabase "reads/writes" "SQL"
                 }
             }
@@ -81,12 +83,14 @@ workspace "Central Digital Platform" {
                     }
                     organisationEndpoint = component "Organisation Endpoint" "" "Asp.Net Core Web API"
                     useCase = component "Use Case"
+                    mqSubscriber = component "Message Subscriber"
                     organisationEndpoint -> useCase "Executes"
                     useCase -> organisationInformationPersisence "Calls"
                     useCase -> mq "Calls"
                     useCase -> govUkNotifyClient "Calls"
                     organisationInformationPersisence -> organisationInformationDatabase "reads/writes" "SQL"
                     mq -> messageQueue "publishes to / listens to" "HTTPS"
+                    mq -> mqSubscriber "Calls"
                     govUkNotifyClient -> govUkNotify "sends notifications with" "HTTPS"
                 }
                 formsApi = container "Forms API" "" "Asp.Net Core" WebApi {
