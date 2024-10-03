@@ -27,12 +27,15 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                     UPDATE form_questions SET sort_order = 5 WHERE name='_FinancialInformation05';
 
                     UPDATE form_questions SET sort_order = 1 WHERE name='_Exclusion07';
-                    UPDATE form_questions SET sort_order = 2 WHERE name='_Exclusion06';
-                    UPDATE form_questions SET sort_order = 3 WHERE name='_Exclusion05';
-                    UPDATE form_questions SET sort_order = 4 WHERE name='_Exclusion04';
-                    UPDATE form_questions SET sort_order = 5 WHERE name='_Exclusion03';
-                    UPDATE form_questions SET sort_order = 6 WHERE name='_Exclusion02';
-                    UPDATE form_questions SET sort_order = 7 WHERE name='_Exclusion01';
+                    UPDATE form_questions SET sort_order = 2 WHERE name='_Exclusion08';
+                    UPDATE form_questions SET sort_order = 3 WHERE name='_Exclusion09';
+                    UPDATE form_questions SET sort_order = 4 WHERE name='_Exclusion06';
+                    UPDATE form_questions SET sort_order = 5 WHERE name='_Exclusion05';
+                    UPDATE form_questions SET sort_order = 6 WHERE name='_Exclusion04';
+                    UPDATE form_questions SET sort_order = 7 WHERE name='_Exclusion03';
+                    UPDATE form_questions SET sort_order = 8 WHERE name='_Exclusion010';
+                    UPDATE form_questions SET sort_order = 9 WHERE name='_Exclusion02';
+                    UPDATE form_questions SET sort_order = 10 WHERE name='_Exclusion01';                 
 
                     UPDATE form_questions SET sort_order = 1 WHERE name='_Qualifications01';
                     UPDATE form_questions SET sort_order = 2 WHERE name='_Qualifications02';
