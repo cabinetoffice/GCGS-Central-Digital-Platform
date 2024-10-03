@@ -66,14 +66,17 @@
                 <div class="govuk-radios govuk-!-margin-bottom-5" data-module="govuk-radios">
                     @if (group.Choices != null)
                     {
+                        var index = 0;
                         foreach (var choice in group.Choices)
                         {
-                            var id = $"SelectedOption_{choice.Value}";
+                            var id = index == 0 ? "SelectedOption" : $"SelectedOption_{index}";
 
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input" id="@id" name="SelectedOption" type="radio" value="@choice.Value" @(Model.SelectedOption == choice.Value ? "checked" : "")>
                                 <label class="govuk-label govuk-radios__label" for="@id">@choice.Title</label>
                             </div>
+                            
+                            index++;
                         }
                     }
                 </div>
