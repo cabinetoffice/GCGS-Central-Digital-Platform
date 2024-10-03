@@ -47,6 +47,7 @@
 
         @if (Model.Options?.Groups != null)
         {
+            var index = 0;
                 
             foreach (var group in Model.Options.Groups)
             {
@@ -66,7 +67,7 @@
             <div class="govuk-radios govuk-!-margin-bottom-5" data-module="govuk-radios">
                 @if (group.Choices != null)
                 {
-                    var index = 0;
+                    
                     foreach (var choice in group.Choices)
                     {
                         var id = index == 0 ? "SelectedOption" : $"SelectedOption_{index}";
