@@ -24,8 +24,9 @@ test: ## Run tests
 	@dotnet test $(TEST_OPTIONS)
 .PHONY: test
 
+build-docker: VERSION ?= ""
 build-docker: ## Build Docker images
-	@docker compose build
+	@docker compose build --build-arg VERSION=$(VERSION)
 .PHONY: build-docker
 
 up: compose.override.yml ## Start Docker containers
