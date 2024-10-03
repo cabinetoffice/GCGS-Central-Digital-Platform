@@ -102,7 +102,7 @@ public class DataSharingProfile : Profile
             .ForMember(m => m.EndValue, o => o.MapFrom(m => m.EndValue))
             .ForMember(m => m.DateValue, o => o.MapFrom(m => ToDateOnly(m.DateValue)))
             .ForMember(m => m.TextValue, o => o.MapFrom(m => m.TextValue))
-            .ForMember(m => m.OptionValue, o => o.Ignore())
+            .ForMember(m => m.OptionValue, o => o.MapFrom(m => m.OptionValue != null ? new string[] { m.OptionValue } : null))
             .ForMember(m => m.JsonValue, o => o.MapFrom<JsonValueResolver>());
 
         CreateMap<Persistence.FormQuestion, FormQuestion>()
