@@ -2,6 +2,7 @@ using AutoMapper;
 using CO.CDP.DataSharing.WebApi.Model;
 using CO.CDP.OrganisationInformation;
 using CO.CDP.OrganisationInformation.Persistence;
+using System.Text.Json;
 using Address = CO.CDP.OrganisationInformation.Address;
 using Persistence = CO.CDP.OrganisationInformation.Persistence.Forms;
 
@@ -101,7 +102,8 @@ public class DataSharingProfile : Profile
             .ForMember(m => m.EndValue, o => o.MapFrom(m => m.EndValue))
             .ForMember(m => m.DateValue, o => o.MapFrom(m => ToDateOnly(m.DateValue)))
             .ForMember(m => m.TextValue, o => o.MapFrom(m => m.TextValue))
-            .ForMember(m => m.OptionValue, o => o.Ignore());
+            .ForMember(m => m.OptionValue, o => o.MapFrom(m => m.OptionValue != null ? new string[] { m.OptionValue } : null))
+            .ForMember(m => m.JsonValue, o => o.MapFrom<JsonValueResolver>());
 
         CreateMap<Persistence.FormQuestion, FormQuestion>()
             .ForMember(m => m.Type, o => o.MapFrom<CustomFormQuestionTypeResolver>())
@@ -175,5 +177,18 @@ public class CustomResolver : IValueResolver<Persistence.SharedConsentQuestionAn
     {
         return
             $"{source.StreetAddress}<br/>{source.Locality}<br/>{source.PostalCode}<br/>{source.Region}<br/>{source.CountryName}";
+    }
+}
+
+public class JsonValueResolver : IValueResolver<Persistence.FormAnswer, FormAnswer, Dictionary<string, object>?>
+{
+    public Dictionary<string, object>? Resolve(Persistence.FormAnswer source, FormAnswer destination, Dictionary<string, object>? destMember, ResolutionContext context)
+    {
+        if (string.IsNullOrEmpty(source.JsonValue))
+        {
+            return null;
+        }
+
+        return JsonSerializer.Deserialize<Dictionary<string, object>>(source.JsonValue);
     }
 }
