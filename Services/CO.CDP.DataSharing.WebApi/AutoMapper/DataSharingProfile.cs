@@ -94,7 +94,7 @@ public class DataSharingProfile : Profile
             .ForMember(m => m.Answers, o => o.MapFrom(m => m.Answers.Where(x => x.Question.Type != Persistence.FormQuestionType.NoInput && x.Question.Type != Persistence.FormQuestionType.CheckYourAnswers)));
 
         CreateMap<Persistence.FormAnswer, FormAnswer>()
-            .ForMember(m => m.QuestionName, o => o.MapFrom(m => m.Question.Guid))
+            .ForMember(m => m.QuestionName, o => o.MapFrom(m => m.Question.Name))
             .ForMember(m => m.BoolValue, o => o.MapFrom(m => m.BoolValue))
             .ForMember(m => m.NumericValue, o => o.MapFrom(m => m.NumericValue))
             .ForMember(m => m.StartValue, o => o.MapFrom(m => m.StartValue))
