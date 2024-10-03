@@ -23,7 +23,7 @@ public class RegisterOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
     private readonly Mock<Persistence.IPersonRepository> _persons = new();
     private readonly Mock<IPublisher> _publisher = new();
     private readonly Mock<IGovUKNotifyApiClient> _notifyApiClient = new();
-    private readonly IConfiguration _mockConfiguration;    
+    private readonly IConfiguration _mockConfiguration;
     private readonly Mock<ILogger<RegisterOrganisationUseCase>> _logger = new();
     private readonly Guid _generatedGuid = Guid.NewGuid();
     private readonly AutoMapperFixture _mapperFixture;
@@ -39,7 +39,7 @@ public class RegisterOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
         () => _generatedGuid);
 
     public RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture)
-    {        
+    {
         _mapperFixture = mapperFixture;
         var inMemorySettings = new List<KeyValuePair<string, string?>>
         {
