@@ -18,6 +18,7 @@ public class TokenService(
     ILogger<TokenService> logger,
     IConfigurationService configService,
     IMapper mapper,
+    IPersonRepository personRepository,
     ITenantRepository tenantRepository,
     IAuthorityRepository authorityRepository) : ITokenService
 {
@@ -115,6 +116,9 @@ public class TokenService(
             new Claim(JwtClaimTypes.Subject, urn),
             new Claim("channel", "one-login")
         ];
+
+        var person = await personRepository.FindByUrn(urn);
+        claims.Add(new Claim(JwtClaimTypes.Roles, string.Join(",", person?.Scopes ?? [])));
 
         var tenantLookup = await GetTenant(urn);
         if (tenantLookup != null)

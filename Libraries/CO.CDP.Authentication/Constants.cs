@@ -6,6 +6,7 @@ public static class Constants
     {
         public const string Channel = "channel";
         public const string Subject = "sub";
+        public const string Roles = "roles";
         public const string TenantLookup = "ten";
         public const string OrganisationId = "org";
         public const string ApiKeyScope = "scope";
@@ -24,5 +25,10 @@ public static class Constants
         public const string Responder = "RESPONDER";
         public const string Editor = "EDITOR";
         public const string Viewer = "VIEWER";
+    }
+
+    public static class PersonScope
+    {
+        public const string SupportAdmin = "SUPPORTADMIN";
     }
 }

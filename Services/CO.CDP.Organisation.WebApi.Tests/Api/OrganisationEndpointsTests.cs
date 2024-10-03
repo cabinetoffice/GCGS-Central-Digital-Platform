@@ -17,7 +17,7 @@ public class OrganisationEndpointsTests
 {
     private readonly HttpClient _httpClient;
     private readonly Mock<IUseCase<RegisterOrganisation, Model.Organisation>> _registerOrganisationUseCase = new();
-    private readonly Mock<IUseCase<string, IEnumerable<Model.Organisation>>> _getOrganisationsUseCase = new();
+    private readonly Mock<IUseCase<PaginatedOrganisationQuery, IEnumerable<OrganisationExtended>>> _getOrganisationsUseCase = new();
     private readonly Mock<IUseCase<Guid, Model.Organisation>> _getOrganisationUseCase = new();
     private readonly Mock<IUseCase<(Guid, UpdateOrganisation), bool>> _updatesOrganisationUseCase = new();
 
@@ -93,6 +93,27 @@ public class OrganisationEndpointsTests
         response.StatusCode.Should().Be(UnprocessableEntity);
     }
 
+    [Theory]
+    [InlineData(OK, Channel.OneLogin, PersonScope.SupportAdmin)]
+    [InlineData(Forbidden, Channel.OneLogin)]
+    [InlineData(Forbidden, Channel.ServiceKey)]
+    [InlineData(Forbidden, Channel.OrganisationKey)]
+    [InlineData(Forbidden, "unknown_channel")]
+    public async Task GetAllOrganisations_Authorization_ReturnsExpectedStatusCode(
+        HttpStatusCode expectedStatusCode, string channel, string? personScope = null)
+    {
+        _getOrganisationsUseCase.Setup(uc => uc.Execute(It.IsAny<PaginatedOrganisationQuery>()))
+            .ReturnsAsync([]);
+
+        var factory = new TestAuthorizationWebApplicationFactory<Program>(
+            channel,
+            serviceCollection: s => s.AddScoped(_ => _getOrganisationsUseCase.Object),
+            assignedPersonScopes: personScope);
+
+        var response = await factory.CreateClient().GetAsync("/organisations?type=any&limit=10&skip=1");
+
+        response.StatusCode.Should().Be(expectedStatusCode);
+    }
 
     [Theory]
     [InlineData(Created, Channel.OneLogin)]
@@ -114,6 +135,7 @@ public class OrganisationEndpointsTests
     }
 
     [Theory]
+    [InlineData(OK, Channel.OneLogin, null, PersonScope.SupportAdmin)]
     [InlineData(OK, Channel.OneLogin, OrganisationPersonScope.Admin)]
     [InlineData(OK, Channel.OneLogin, OrganisationPersonScope.Editor)]
     [InlineData(OK, Channel.OneLogin, OrganisationPersonScope.Viewer)]
@@ -122,7 +144,7 @@ public class OrganisationEndpointsTests
     [InlineData(Forbidden, "unknown_channel")]
     [InlineData(Forbidden, Channel.OneLogin, OrganisationPersonScope.Responder)]
     public async Task GetOrganisation_Authorization_ReturnsExpectedStatusCode(
-        HttpStatusCode expectedStatusCode, string channel, string? scope = null)
+        HttpStatusCode expectedStatusCode, string channel, string? organisationPersonScope = null, string? personScope = null)
     {
         var organisationId = Guid.NewGuid();
 
@@ -130,8 +152,8 @@ public class OrganisationEndpointsTests
                                     .ReturnsAsync(GivenOrganisation(organisationId));
 
         var factory = new TestAuthorizationWebApplicationFactory<Program>(
-            channel, organisationId, scope,
-            services => services.AddScoped(_ => _getOrganisationUseCase.Object));
+            channel, organisationId, organisationPersonScope,
+            services => services.AddScoped(_ => _getOrganisationUseCase.Object), personScope);
 
         var response = await factory.CreateClient().GetAsync($"/organisations/{organisationId}");
 
