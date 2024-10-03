@@ -49,11 +49,12 @@ public class DataSharingProfile : Profile
             .ForMember(m => m.AdditionalParties,
                 o => o.MapFrom((_, _, _, context) => context.Items["AdditionalParties"]));
 
+        Uri? tempResult;
         CreateMap<Organisation.Identifier, Identifier>()
             .ForMember(m => m.Scheme, o => o.MapFrom(m => m.Scheme))
             .ForMember(m => m.Id, o => o.MapFrom(m => m.IdentifierId))
             .ForMember(m => m.LegalName, o => o.MapFrom(m => m.LegalName))
-            .ForMember(m => m.Uri, o => o.MapFrom(m => !string.IsNullOrWhiteSpace(m.Uri) ? new Uri(m.Uri) : default));
+            .ForMember(m => m.Uri, o => o.MapFrom(m => Uri.TryCreate(m.Uri, UriKind.Absolute, out tempResult) ? tempResult : null));
 
         CreateMap<Organisation.OrganisationAddress, Address>()
             .ForMember(m => m.StreetAddress, o => o.MapFrom(m => m.Address.StreetAddress))
