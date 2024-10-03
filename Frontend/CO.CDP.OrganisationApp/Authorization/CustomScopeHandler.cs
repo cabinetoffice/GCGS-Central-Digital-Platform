@@ -20,15 +20,6 @@ public class CustomScopeHandler(
                 {
                     IUserInfoService _userInfo = serviceScope.ServiceProvider.GetRequiredService<IUserInfoService>();
 
-                    var userScopes = await _userInfo.GetUserScopes();
-
-                    // SupportAdmin role can do anything within any organisation
-                    if (userScopes.Contains(PersonScopes.SupportAdmin))
-                    {
-                        context.Succeed(requirement);
-                        return;
-                    }
-
                     var organisationUserScopes = await _userInfo.GetOrganisationUserScopes();
 
                     // Admin role can do anything within this organisation
@@ -44,8 +35,17 @@ public class CustomScopeHandler(
                         return;
                     }
 
-                    // Editor role implies viewer permissions
-                    if (requirement.Scope == OrganisationPersonScopes.Viewer && organisationUserScopes.Contains(OrganisationPersonScopes.Editor))
+                    var userScopes = await _userInfo.GetUserScopes();
+
+                    // Editor role and support admin both imply viewer permissions
+                    if (requirement.Scope == OrganisationPersonScopes.Viewer &&
+                        (organisationUserScopes.Contains(OrganisationPersonScopes.Editor) || userScopes.Contains(PersonScopes.SupportAdmin)))
+                    {
+                        context.Succeed(requirement);
+                        return;
+                    }
+
+                    if (requirement.Scope == PersonScopes.SupportAdmin && userScopes.Contains(PersonScopes.SupportAdmin))
                     {
                         context.Succeed(requirement);
                         return;
