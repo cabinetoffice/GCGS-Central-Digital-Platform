@@ -70,31 +70,38 @@ public class SupportUpdateOrganisationUseCase(
 
         var orgPersons = await organisationRepository.FindOrganisationPersons(organisation.Guid);
 
-        if (orgPersons.Count() == 0)
+        var adminPersons = orgPersons.Where(p => p.Scopes.Contains("ADMIN")).ToList();
+        if (!adminPersons.Any())
         {
-            logger.LogError(new Exception("Unable to send buyer approved email"), $"Person not found");
+            logger.LogError(new Exception("Unable to send buyer approved email"), "Admin person not found");
             return;
         }
 
-        foreach (var p in orgPersons)
+        var emailTasks = adminPersons.Select(async p =>
         {
-            if (p.Scopes.Contains("ADMIN"))
+            try
             {
                 var emailRequest = new EmailNotificationRequest
                 {
                     EmailAddress = p.Person.Email,
                     TemplateId = templateId,
                     Personalisation = new Dictionary<string, string>
-                    {
-                        { "org_name", organisation.Name },
-                        { "first_name",  p.Person.FirstName},
-                        { "last_name", p.Person.LastName },
-                        { "org_link", orgLink }
-                    }
+                {
+                    { "org_name", organisation.Name },
+                    { "first_name", p.Person.FirstName },
+                    { "last_name", p.Person.LastName },
+                    { "org_link", orgLink }
+                }
                 };
 
                 await govUKNotifyApiClient.SendEmail(emailRequest);
             }
-        }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, $"Failed to send email to {p.Person.Email} for organisation {organisation.Name}");
+            }
+        });
+
+        await Task.WhenAll(emailTasks);
     }
 }

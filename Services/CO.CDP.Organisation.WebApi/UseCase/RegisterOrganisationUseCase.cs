@@ -123,7 +123,15 @@ public class RegisterOrganisationUseCase(
                 }
         };
 
-        await govUKNotifyApiClient.SendEmail(emailRequest);
+        try
+        {
+            await govUKNotifyApiClient.SendEmail(emailRequest);
+        }
+        catch
+        {
+            return;
+        }
+
     }
 
     private OrganisationInformation.Persistence.Organisation MapRequestToOrganisation(
