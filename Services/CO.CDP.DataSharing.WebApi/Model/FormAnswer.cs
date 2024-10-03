@@ -25,4 +25,7 @@ public record FormAnswer
 
     /// <example>["option-id-1"]</example>
     public List<string> OptionValue { get; init; } = [];
+
+    /// <example>{"id": "00000000-0000-0000-0000-000000000000", "type": "organisation"}</example>
+    public Dictionary<string, object>? JsonValue { get; init; }
 }
