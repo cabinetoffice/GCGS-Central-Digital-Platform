@@ -40,7 +40,7 @@ public class DatabaseShareCodeRepository(OrganisationInformationContext context)
                     .ThenInclude(a => a.Question)
             .Include(sc => sc.Form)
                 .ThenInclude(f => f.Sections)
-                    .ThenInclude(s => s.Questions)
+                    .ThenInclude(s => s.Questions.OrderBy(q => q.SortOrder))
             .FirstOrDefaultAsync();
     }
 

@@ -283,7 +283,8 @@ public class DatabaseShareCodeRepositoryTest(PostgreSqlFixture postgreSql) : ICl
             NextQuestion = null,
             NextQuestionAlternative = null,
             Caption = null,
-            Options = new()
+            Options = new(),
+            SortOrder = 0
         };
         section.Questions.Add(question);
         return question;
