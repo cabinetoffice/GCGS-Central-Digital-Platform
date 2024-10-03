@@ -24,8 +24,9 @@ test: ## Run tests
 	@dotnet test $(TEST_OPTIONS)
 .PHONY: test
 
+build-docker: VERSION ?= "undefined"
 build-docker: ## Build Docker images
-	@docker compose build
+	@docker compose build --build-arg VERSION=$(VERSION)
 .PHONY: build-docker
 
 up: compose.override.yml ## Start Docker containers
@@ -34,7 +35,7 @@ up: compose.override.yml ## Start Docker containers
 .PHONY: up
 
 verify-up: compose.override.yml ## Verify if all Docker containers have run
-	@docker compose ps -a --format json | jq --exit-status 'select(.ExitCode != 0)' && exit 1 || echo "All services up"
+	@docker compose ps -a --format json | jq --exit-status 'select(.ExitCode != 0 or (.Health != "healthy" and .Health != ""))' && exit 1 || echo "All services up"
 .PHONY: verify-up
 
 down: ## Destroy Docker containers

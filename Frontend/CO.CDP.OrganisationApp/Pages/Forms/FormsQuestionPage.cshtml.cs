@@ -42,6 +42,8 @@ public class FormsQuestionPageModel(
     [BindProperty]
     public FormElementSingleChoiceModel? SingleChoiceModel { get; set; }
     [BindProperty]
+    public FormElementGroupedSingleChoiceModel? GroupedSingleChoiceModel { get; set; }
+    [BindProperty]
     public FormElementDateInputModel? DateInputModel { get; set; }
     [BindProperty]
     public FormElementCheckBoxInputModel? CheckBoxModel { get; set; }
@@ -51,11 +53,8 @@ public class FormsQuestionPageModel(
     public FormElementMultiLineInputModel? MultiLineInputModel { get; set; }
     [BindProperty]
     public FormElementUrlInputModel? UrlInputModel { get; set; }
-
     [BindProperty(SupportsGet = true)]
     public string? UkOrNonUk { get; set; }
-
-
     public FormQuestionType? CurrentFormQuestionType { get; private set; }
     public string? PartialViewName { get; private set; }
     public IFormElementModel? PartialViewModel { get; private set; }
@@ -165,6 +164,7 @@ public class FormsQuestionPageModel(
                     FormQuestionType.Date => answer.Answer?.DateValue.HasValue == true ? answer.Answer.DateValue.Value.ToString("dd/MM/yyyy") : "",
                     FormQuestionType.CheckBox => answer.Answer?.BoolValue == true ? question?.Options?.Choices?.Values.FirstOrDefault() ?? "" : "",
                     FormQuestionType.Address => answer.Answer?.AddressValue != null ? answer.Answer.AddressValue.ToHtmlString() : "",
+                    FormQuestionType.GroupedSingleChoice => answer.Answer?.OptionValue ?? "",
                     FormQuestionType.MultiLine => answer.Answer?.TextValue ?? "",
                     FormQuestionType.Url => answer.Answer?.TextValue ?? "",
                     _ => ""
@@ -237,6 +237,7 @@ public class FormsQuestionPageModel(
             { FormQuestionType.CheckBox, "_FormElementCheckBoxInput" },
             { FormQuestionType.Address, "_FormElementAddress" },
             { FormQuestionType.MultiLine, "_FormElementMultiLineInput" },
+            { FormQuestionType.GroupedSingleChoice, "_FormElementGroupedSingleChoice" },
             { FormQuestionType.Url, "_FormElementUrlInput" },
         };
 
@@ -264,6 +265,7 @@ public class FormsQuestionPageModel(
             FormQuestionType.Address => AddressModel ?? new FormElementAddressModel(),
             FormQuestionType.SingleChoice => SingleChoiceModel ?? new FormElementSingleChoiceModel(),
             FormQuestionType.MultiLine => MultiLineInputModel ?? new FormElementMultiLineInputModel(),
+            FormQuestionType.GroupedSingleChoice => GroupedSingleChoiceModel ?? new FormElementGroupedSingleChoiceModel(),
             FormQuestionType.Url => UrlInputModel ?? new FormElementUrlInputModel(),
             _ => throw new NotImplementedException($"Forms question: {question.Type} is not supported"),
         };

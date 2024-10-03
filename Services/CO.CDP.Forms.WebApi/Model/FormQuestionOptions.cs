@@ -4,4 +4,5 @@ public record FormQuestionOptions
 {
     public List<FormQuestionChoice>? Choices { get; init; } = new();
     public string? ChoiceProviderStrategy { get; init; }
+    public List<FormQuestionGroup>? Groups { get; set; } = new();
 }
