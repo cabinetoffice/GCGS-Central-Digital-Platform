@@ -1,0 +1,89 @@
+@model FormElementGroupedSingleChoiceModel
+
+@{
+    var hasError = ((TagBuilder)Html.ValidationMessageFor(m => m.SelectedOption)).HasInnerHtml;
+    string ariaDescribedby = "";
+
+    if (!string.IsNullOrWhiteSpace(Model.Description))
+    {
+        ariaDescribedby += "SelectedOption-description";
+    }
+
+    if (hasError)
+    {
+        ariaDescribedby += " SelectedOption-error";
+    }
+}
+
+<div class="govuk-form-group">
+    <fieldset class="govuk-fieldset" aria-describedby="@ariaDescribedby">
+        @if (!string.IsNullOrWhiteSpace(Model.Heading))
+        {
+            <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                <h1 class="govuk-fieldset__heading">
+                    @Model.Heading
+                    @if (!string.IsNullOrWhiteSpace(Model.Caption))
+                    {
+                        <span class="govuk-caption-l govuk-!-margin-bottom-3">@Model.Caption</span>
+                    }
+                </h1>
+            </legend>
+        }
+
+        @if (!string.IsNullOrWhiteSpace(Model.Description))
+        {
+            <div id="SelectedOption-description">
+                @Html.Raw(Model.Description)
+            </div>
+        }
+
+        @if (hasError)
+        {
+            <p class="govuk-error-message" id="SelectedOption-error">
+                <span class="govuk-visually-hidden">Error:</span>
+                @Html.ValidationMessageFor(m => m.SelectedOption)
+            </p>
+        }
+
+        @if (Model.Options?.Groups != null)
+        {
+            var index = 0;
+                
+            foreach (var group in Model.Options.Groups)
+            {
+                <h2 class="govuk-heading-m">
+                    <span class="govuk-caption-m">@group.Caption</span>
+                    @group.Name
+
+                </h2>
+
+            @if (!string.IsNullOrWhiteSpace(@group.Hint))
+            {
+                <div class="govuk-hint">
+                    <p>@Html.Raw(@group.Hint)</p>
+                </div>
+            }
+
+            <div class="govuk-radios govuk-!-margin-bottom-5" data-module="govuk-radios">
+                @if (group.Choices != null)
+                {
+                    
+                    foreach (var choice in group.Choices)
+                    {
+                        var id = index == 0 ? "SelectedOption" : $"SelectedOption_{index}";
+
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="@id" name="SelectedOption" type="radio" value="@choice.Value" @(Model.SelectedOption == choice.Value ? "checked" : "")>
+                            <label class="govuk-label govuk-radios__label" for="@id">@choice.Title</label>
+                        </div>
+                            
+                        index++;
+                    }
+                }
+            </div>
+                    
+            }
+        }
+        
+    </fieldset>
+</div>

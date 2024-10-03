@@ -39,11 +39,6 @@ public class FormElementTextInputModel : FormElementModel, IValidatableObject
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
-        if (CurrentFormQuestionType != FormQuestionType.Text)
-        {
-            yield break;
-        }
-
         var validateTextField = IsRequired;
 
         if (IsRequired == false)

@@ -360,6 +360,10 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("guid");
 
+                    b.Property<string>("JsonValue")
+                        .HasColumnType("jsonb")
+                        .HasColumnName("json_value");
+
                     b.Property<double?>("NumericValue")
                         .HasColumnType("double precision")
                         .HasColumnName("numeric_value");

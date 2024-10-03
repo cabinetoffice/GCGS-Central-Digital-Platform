@@ -1,5 +1,6 @@
 using CO.CDP.Forms.WebApiClient;
 using CO.CDP.OrganisationApp.Constants;
+using CO.CDP.OrganisationApp.Pages.Forms.ChoiceProviderStrategies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -10,7 +11,8 @@ namespace CO.CDP.OrganisationApp.Pages.Forms;
 public class FormsAnswerSetSummaryModel(
     IFormsClient formsClient,
     IFormsEngine formsEngine,
-    ITempDataService tempDataService) : PageModel
+    ITempDataService tempDataService,
+    IChoiceProviderService choiceProviderService) : PageModel
 {
     [BindProperty(SupportsGet = true)]
     public Guid OrganisationId { get; set; }
@@ -108,7 +110,8 @@ public class FormsAnswerSetSummaryModel(
                     OptionValue = a.OptionValue,
                     StartValue = a.StartValue,
                     TextValue = a.TextValue,
-                    AddressValue = MapAddress(a.AddressValue)
+                    AddressValue = MapAddress(a.AddressValue),
+                    JsonValue = a.JsonValue,
                 }
             }).ToList()
         };
@@ -154,7 +157,7 @@ public class FormsAnswerSetSummaryModel(
         }
         else
         {
-            FormAnswerSets = GetAnswers(form);
+            FormAnswerSets = await GetAnswers(form);
             Heading = form.Section.Configuration.SingularSummaryHeading;
 
             if (FormAnswerSets.Count != 1 && form.Section.Configuration.PluralSummaryHeadingFormat != null)
@@ -165,7 +168,7 @@ public class FormsAnswerSetSummaryModel(
         return true;
     }
 
-    private static List<(Guid answerSetId, IEnumerable<AnswerSummary> answers)> GetAnswers(SectionQuestionsResponse form)
+    private async Task<List<(Guid answerSetId, IEnumerable<AnswerSummary> answers)>> GetAnswers(SectionQuestionsResponse form)
     {
         List<(Guid answerSetId, IEnumerable<AnswerSummary> answers)> summaryList = [];
 
@@ -177,16 +180,18 @@ public class FormsAnswerSetSummaryModel(
                 var question = form.Questions.FirstOrDefault(q => q.Id == answer.QuestionId);
                 if (question != null && question.Type != FormQuestionType.NoInput && question.Type != FormQuestionType.CheckYourAnswers)
                 {
+                    var choiceProviderStrategy = choiceProviderService.GetStrategy(question.Options.ChoiceProviderStrategy);
                     var answerString = question.Type switch
                     {
                         FormQuestionType.Text => answer.TextValue ?? "",
                         FormQuestionType.FileUpload => answer.TextValue ?? "",
-                        FormQuestionType.YesOrNo => answer.BoolValue.HasValue ? (answer.BoolValue == true ? "yes" : "no") : "",
+                        FormQuestionType.YesOrNo => answer.BoolValue.HasValue ? (answer.BoolValue == true ? "Yes" : "No") : "",
                         FormQuestionType.Date => answer.DateValue.HasValue ? answer.DateValue.Value.ToString("dd/MM/yyyy") : "",
                         FormQuestionType.CheckBox => answer.BoolValue.HasValue ? question.Options.Choices?.FirstOrDefault()?.Title ?? "" : "",
                         FormQuestionType.Address => answer.AddressValue != null ? $"{answer.AddressValue.StreetAddress}, {answer.AddressValue.Locality}, {answer.AddressValue.PostalCode}, {answer.AddressValue.CountryName}" : "",
-                        FormQuestionType.SingleChoice => answer.OptionValue ?? "",
+                        FormQuestionType.SingleChoice => await choiceProviderStrategy.RenderOption(answer),
                         FormQuestionType.MultiLine => answer.TextValue ?? "",
+                        FormQuestionType.Url => answer.TextValue ?? "",
                         _ => ""
                     };
 

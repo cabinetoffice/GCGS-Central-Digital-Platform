@@ -3,6 +3,7 @@
 @model FormsQuestionPageModel
 
 @{
+    var isCheckYourAnswersPage = Model.CurrentFormQuestionType == Models.FormQuestionType.CheckYourAnswers;
     var backUrl = $"/organisation/{Model.OrganisationId}/supplier-information";
     var fromCheckAnswerPage = Model.RedirectFromCheckYourAnswerPage == true;
 
@@ -28,57 +29,53 @@
 
 <main class="govuk-main-wrapper">
     <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
+        <div class="@(isCheckYourAnswersPage ? "govuk-grid-column-full" : "govuk-grid-column-two-thirds")">
             <partial name="_ErrorSummary" model="@ModelState" />
 
             <form method="post" enctype="@Model.EncType">
-                <fieldset class="govuk-fieldset">
-                    @if (Model.PartialViewName != null && Model.PartialViewModel != null)
-                    {
-                        @await Html.PartialAsync(Model.PartialViewName, Model.PartialViewModel)
-                    }
-
-                    @if (Model.CurrentFormQuestionType == Models.FormQuestionType.CheckYourAnswers)
-                    {
-                        var answers = await Model.GetAnswers();
-
-                        <h1 class="govuk-heading-l">Check your answers</h1>
-                        <dl class="govuk-summary-list govuk-!-margin-bottom-9">
-                            @foreach (var answer in answers)
-                            {
-                                <div class="govuk-summary-list__row">
-                                    <dt class="govuk-summary-list__key">
-                                        @answer.Title
-                                    </dt>
-                                    <dd class="govuk-summary-list__value">
-                                        @Html.Raw(answer.Answer)
-                                    </dd>
-                                    <dd class="govuk-summary-list__actions">
-                                        <a class="govuk-link" href="@answer.ChangeLink">
-                                            Change<span class="govuk-visually-hidden">
-                                                @($"the {answer.Title?.ToLower()}")
-                                            </span>
-                                        </a>
-                                    </dd>
-                                </div>
-                            }
-                        </dl>
-                    }
-                </fieldset>
-                @if (Model.CurrentFormQuestionType == Models.FormQuestionType.CheckYourAnswers)
+                @if (Model.PartialViewName != null && Model.PartialViewModel != null)
                 {
+                    @await Html.PartialAsync(Model.PartialViewName, Model.PartialViewModel)
+                }
+
+                @if (isCheckYourAnswersPage)
+                {
+                    var answers = await Model.GetAnswers();
+
+                    <h1 class="govuk-heading-l">Check your answers</h1>
+                    <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+                        @foreach (var answer in answers)
+                        {
+                            <div class="govuk-summary-list__row">
+                                <dt class="govuk-summary-list__key">
+                                    @answer.Title
+                                </dt>
+                                <dd class="govuk-summary-list__value">
+                                    @Html.Raw(answer.Answer)
+                                </dd>
+                                <dd class="govuk-summary-list__actions">
+                                    <a class="govuk-link" href="@answer.ChangeLink">
+                                        Change<span class="govuk-visually-hidden">
+                                            @($"the {answer.Title?.ToLower()}")
+                                        </span>
+                                    </a>
+                                </dd>
+                            </div>
+                        }
+                    </dl>
+
                     if (Model.FormSectionType == Models.FormSectionType.Declaration)
                     {
-                        <button type="submit" class="govuk-button">Confirm and get share code</button>
+                        <button type="submit" data-prevent-double-click="true" class="govuk-button">Confirm and get share code</button>
                     }
                     else
                     {
-                        <button type="submit" class="govuk-button">Save</button>
+                        <button type="submit" data-prevent-double-click="true" class="govuk-button">Save</button>
                     }
                 }
                 else
                 {
-                    <button type="submit" class="govuk-button">Continue</button>
+                    <button type="submit" data-prevent-double-click="true" class="govuk-button">Continue</button>
                 }
 
             </form>

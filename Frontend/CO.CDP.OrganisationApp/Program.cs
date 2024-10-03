@@ -32,11 +32,7 @@ const string EvHttpClient = "EvHttpClient";
 var builder = WebApplication.CreateBuilder(args);
 
 var mvcBuilder = builder.Services.AddRazorPages()
-    .AddSessionStateTempDataProvider()
-    .AddMvcOptions(options =>
-    {
-        options.Filters.Add<AuthorisedSessionFilter>();
-    });
+    .AddSessionStateTempDataProvider();
 
 if (builder.Environment.IsDevelopment())
 {
@@ -168,7 +164,7 @@ builder.Services
     .AddAwsS3Service()
     .AddLoggingConfiguration(builder.Configuration)
     .AddAmazonCloudWatchLogsService()
-    .AddCloudWatchSerilog();
+    .AddCloudWatchSerilog(builder.Configuration);
 
 
 var app = builder.Build();
@@ -183,12 +179,13 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-app.MapHealthChecks("/health");
+app.MapHealthChecks("/health").AllowAnonymous();
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 app.UseAuthentication();
 app.UseSession();
+app.UseMiddleware<AuthenticatedSessionAwareMiddleware>();
 app.UseAuthorization();
 app.MapRazorPages();
 

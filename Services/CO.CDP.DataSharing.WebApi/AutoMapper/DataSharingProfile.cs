@@ -2,6 +2,7 @@ using AutoMapper;
 using CO.CDP.DataSharing.WebApi.Model;
 using CO.CDP.OrganisationInformation;
 using CO.CDP.OrganisationInformation.Persistence;
+using System.Text.Json;
 using Address = CO.CDP.OrganisationInformation.Address;
 using Persistence = CO.CDP.OrganisationInformation.Persistence.Forms;
 
@@ -49,11 +50,12 @@ public class DataSharingProfile : Profile
             .ForMember(m => m.AdditionalParties,
                 o => o.MapFrom((_, _, _, context) => context.Items["AdditionalParties"]));
 
+        Uri? tempResult;
         CreateMap<Organisation.Identifier, Identifier>()
             .ForMember(m => m.Scheme, o => o.MapFrom(m => m.Scheme))
             .ForMember(m => m.Id, o => o.MapFrom(m => m.IdentifierId))
             .ForMember(m => m.LegalName, o => o.MapFrom(m => m.LegalName))
-            .ForMember(m => m.Uri, o => o.MapFrom(m => !string.IsNullOrWhiteSpace(m.Uri) ? new Uri(m.Uri) : default));
+            .ForMember(m => m.Uri, o => o.MapFrom(m => Uri.TryCreate(m.Uri, UriKind.Absolute, out tempResult) ? tempResult : null));
 
         CreateMap<Organisation.OrganisationAddress, Address>()
             .ForMember(m => m.StreetAddress, o => o.MapFrom(m => m.Address.StreetAddress))
@@ -93,19 +95,20 @@ public class DataSharingProfile : Profile
             .ForMember(m => m.Answers, o => o.MapFrom(m => m.Answers.Where(x => x.Question.Type != Persistence.FormQuestionType.NoInput && x.Question.Type != Persistence.FormQuestionType.CheckYourAnswers)));
 
         CreateMap<Persistence.FormAnswer, FormAnswer>()
-            .ForMember(m => m.QuestionName, o => o.MapFrom(m => m.Question.Guid))
+            .ForMember(m => m.QuestionName, o => o.MapFrom(m => m.Question.Name))
             .ForMember(m => m.BoolValue, o => o.MapFrom(m => m.BoolValue))
             .ForMember(m => m.NumericValue, o => o.MapFrom(m => m.NumericValue))
             .ForMember(m => m.StartValue, o => o.MapFrom(m => m.StartValue))
             .ForMember(m => m.EndValue, o => o.MapFrom(m => m.EndValue))
             .ForMember(m => m.DateValue, o => o.MapFrom(m => ToDateOnly(m.DateValue)))
             .ForMember(m => m.TextValue, o => o.MapFrom(m => m.TextValue))
-            .ForMember(m => m.OptionValue, o => o.Ignore());
+            .ForMember(m => m.OptionValue, o => o.MapFrom(m => m.OptionValue != null ? new string[] { m.OptionValue } : null))
+            .ForMember(m => m.JsonValue, o => o.MapFrom<JsonValueResolver>());
 
         CreateMap<Persistence.FormQuestion, FormQuestion>()
             .ForMember(m => m.Type, o => o.MapFrom<CustomFormQuestionTypeResolver>())
             .ForMember(m => m.Title, o => o.MapFrom(m => m.Title))
-            .ForMember(m => m.Name, o => o.MapFrom(m => m.Guid))
+            .ForMember(m => m.Name, o => o.MapFrom(m => m.Name))
             .ForMember(m => m.Text, o => o.MapFrom(m => m.Description))
             .ForMember(m => m.IsRequired, o => o.MapFrom(m => m.IsRequired))
             .ForMember(m => m.SectionName, o => o.MapFrom(m => m.Section.Title))
@@ -139,6 +142,8 @@ public class CustomFormQuestionTypeResolver : IValueResolver<Persistence.FormQue
                 return FormQuestionType.Option;
             case Persistence.FormQuestionType.Date:
                 return FormQuestionType.Date;
+            case Persistence.FormQuestionType.Url:
+                return FormQuestionType.Url;
             case Persistence.FormQuestionType.NoInput:
             case Persistence.FormQuestionType.CheckYourAnswers:
                 return FormQuestionType.None;
@@ -173,5 +178,18 @@ public class CustomResolver : IValueResolver<Persistence.SharedConsentQuestionAn
     {
         return
             $"{source.StreetAddress}<br/>{source.Locality}<br/>{source.PostalCode}<br/>{source.Region}<br/>{source.CountryName}";
+    }
+}
+
+public class JsonValueResolver : IValueResolver<Persistence.FormAnswer, FormAnswer, Dictionary<string, object>?>
+{
+    public Dictionary<string, object>? Resolve(Persistence.FormAnswer source, FormAnswer destination, Dictionary<string, object>? destMember, ResolutionContext context)
+    {
+        if (string.IsNullOrEmpty(source.JsonValue))
+        {
+            return null;
+        }
+
+        return JsonSerializer.Deserialize<Dictionary<string, object>>(source.JsonValue);
     }
 }

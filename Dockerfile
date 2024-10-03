@@ -172,51 +172,71 @@ RUN dotnet tool restore
 RUN dotnet ef migrations bundle -p /src/Services/CO.CDP.EntityVerification --self-contained -o /app/migrations/efbundle
 
 FROM base AS migrations-organisation-information
+ARG VERSION
+ENV VERSION=${VERSION}
 WORKDIR /app
 COPY --from=build-migrations-organisation-information /app/migrations/efbundle .
 ENTRYPOINT /app/efbundle --connection "Host=$OrganisationInformationDatabase__Host;Database=$OrganisationInformationDatabase__Database;Username=$OrganisationInformationDatabase__Username;Password=$OrganisationInformationDatabase__Password;"
 
 FROM base AS migrations-entity-verification
+ARG VERSION
+ENV VERSION=${VERSION}
 WORKDIR /app
 COPY --from=build-migrations-entity-verification /app/migrations/efbundle .
 ENTRYPOINT /app/efbundle --connection "Host=$EntityVerificationDatabase__Host;Database=$EntityVerificationDatabase__Database;Username=$EntityVerificationDatabase__Username;Password=$EntityVerificationDatabase__Password;"
 
 FROM base AS final-authority
+ARG VERSION
+ENV VERSION=${VERSION}
 WORKDIR /app
 COPY --from=publish-authority /app/publish .
 ENTRYPOINT ["dotnet", "CO.CDP.Organisation.Authority.dll"]
 
 FROM base AS final-tenant
+ARG VERSION
+ENV VERSION=${VERSION}
 WORKDIR /app
 COPY --from=publish-tenant /app/publish .
 ENTRYPOINT ["dotnet", "CO.CDP.Tenant.WebApi.dll"]
 
 FROM base AS final-organisation
+ARG VERSION
+ENV VERSION=${VERSION}
 WORKDIR /app
 COPY --from=publish-organisation /app/publish .
 ENTRYPOINT ["dotnet", "CO.CDP.Organisation.WebApi.dll"]
 
 FROM base AS final-person
+ARG VERSION
+ENV VERSION=${VERSION}
 WORKDIR /app
 COPY --from=publish-person /app/publish .
 ENTRYPOINT ["dotnet", "CO.CDP.Person.WebApi.dll"]
 
 FROM base AS final-forms
+ARG VERSION
+ENV VERSION=${VERSION}
 WORKDIR /app
 COPY --from=publish-forms /app/publish .
 ENTRYPOINT ["dotnet", "CO.CDP.Forms.WebApi.dll"]
 
 FROM base AS final-data-sharing
+ARG VERSION
+ENV VERSION=${VERSION}
 WORKDIR /app
 COPY --from=publish-data-sharing /app/publish .
 ENTRYPOINT ["dotnet", "CO.CDP.DataSharing.WebApi.dll"]
 
 FROM base AS final-entity-verification
+ARG VERSION
+ENV VERSION=${VERSION}
 WORKDIR /app
 COPY --from=publish-entity-verification /app/publish .
 ENTRYPOINT ["dotnet", "CO.CDP.EntityVerification.dll"]
 
 FROM base AS final-organisation-app
+ARG VERSION
+ENV VERSION=${VERSION}
 WORKDIR /app
 COPY --from=publish-organisation-app /app/publish .
 ENTRYPOINT ["dotnet", "CO.CDP.OrganisationApp.dll"]

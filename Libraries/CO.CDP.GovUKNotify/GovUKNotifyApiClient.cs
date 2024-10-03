@@ -40,7 +40,7 @@ public class GovUKNotifyApiClient : IGovUKNotifyApiClient
         catch (Exception ex)
         {
             var content = await res.Content.ReadAsStringAsync();
-            _logger.LogError($"GovUKNotify error, response status: {res.StatusCode}, response body: {content}, exception: {ex}");
+            _logger.LogError(ex, $"GovUKNotify error, response status: {res.StatusCode}, response body: {content}");
             throw;
         }
     }

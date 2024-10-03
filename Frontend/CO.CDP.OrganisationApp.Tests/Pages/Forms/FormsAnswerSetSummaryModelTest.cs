@@ -1,5 +1,6 @@
 using CO.CDP.Forms.WebApiClient;
 using CO.CDP.OrganisationApp.Pages.Forms;
+using CO.CDP.OrganisationApp.Pages.Forms.ChoiceProviderStrategies;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -12,12 +13,14 @@ public class FormsAnswerSetSummaryModelTest
     private readonly Mock<IFormsClient> _formsClientMock;
     private readonly Mock<IFormsEngine> _formsEngineMock;
     private readonly Mock<ITempDataService> _tempDataServiceMock;
+    private readonly Mock<IChoiceProviderService> _choiceProviderService;
     private readonly FormsAnswerSetSummaryModel _model;
     private readonly Guid AnswerSetId = Guid.NewGuid();
 
     public FormsAnswerSetSummaryModelTest()
     {
         _tempDataServiceMock = new Mock<ITempDataService>();
+        _choiceProviderService = new Mock<IChoiceProviderService>();
         _formsEngineMock = new();
 
         _formsClientMock = new Mock<IFormsClient>();
@@ -42,7 +45,7 @@ public class FormsAnswerSetSummaryModelTest
              furtherQuestionsExempted : false)]
              ));
 
-        _model = new FormsAnswerSetSummaryModel(_formsClientMock.Object, _formsEngineMock.Object, _tempDataServiceMock.Object)
+        _model = new FormsAnswerSetSummaryModel(_formsClientMock.Object, _formsEngineMock.Object, _tempDataServiceMock.Object, _choiceProviderService.Object)
         {
             OrganisationId = Guid.NewGuid(),
             FormId = Guid.NewGuid(),

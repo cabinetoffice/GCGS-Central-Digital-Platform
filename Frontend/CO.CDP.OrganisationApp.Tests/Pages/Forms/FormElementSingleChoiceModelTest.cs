@@ -12,7 +12,7 @@ public class FormElementSingleChoiceModelTest
     public FormElementSingleChoiceModelTest()
     {
         _model = new FormElementSingleChoiceModel();
-        _model.Options = new FormQuestionOptions() { Choices = ["Option 1", "Option 2", "Option 3"] } ;
+        _model.Options = new FormQuestionOptions() { ChoiceAnswerFieldName = "OptionValue", Choices = new Dictionary<string, string>() {{ "Option 1", "Option 1" }, { "Option 2", "Option 2" }, { "Option 3", "Option 3" }}};
     }
 
     [Theory]

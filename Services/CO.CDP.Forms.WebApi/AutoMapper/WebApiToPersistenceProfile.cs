@@ -23,6 +23,10 @@ public class WebApiToPersistenceProfile : Profile
 
         CreateMap<Persistence.FormQuestionChoiceHint, Model.FormQuestionChoiceHint>();
 
+        CreateMap<Persistence.FormQuestionGroup, Model.FormQuestionGroup>();
+
+        CreateMap<Persistence.FormQuestionGroupChoice, Model.FormQuestionGroupChoice>();
+
         CreateMap<Persistence.FormSectionConfiguration, Model.FormSectionConfiguration>();
 
         CreateMap<Model.FormAnswer, Persistence.FormAnswer>()

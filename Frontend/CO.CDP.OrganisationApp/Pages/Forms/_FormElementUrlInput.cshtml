@@ -1,0 +1,108 @@
+@model FormElementUrlInputModel
+
+@{
+    var textInputHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.TextInput)).HasInnerHtml;
+    var selectOptionHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.HasValue)).HasInnerHtml;
+    string textInputAriaDescribedby = "";
+
+    void RenderDescription()
+    {
+        if (!string.IsNullOrWhiteSpace(Model.Description))
+        {
+            textInputAriaDescribedby += "TextInput-description";
+
+            <div id="TextInput-description">
+                @Html.Raw(Model.Description)
+            </div>
+        }
+    }
+
+    void RenderField()
+    {
+        if (textInputHasError)
+        {
+            textInputAriaDescribedby += " TextInput-error";
+
+            <p class="govuk-error-message" id="TextInput-error">
+                <span class="govuk-visually-hidden">Error:</span>
+                @Html.ValidationMessageFor(m => m.TextInput)
+            </p>
+        }
+
+        <input class="govuk-input govuk-!-width-two-thirds" id="TextInput" name="TextInput" type="text" value="@Model.TextInput"
+        @(string.IsNullOrWhiteSpace(textInputAriaDescribedby) ? "" : Html.Raw($"aria-describedby=\"{textInputAriaDescribedby}\""))>
+    }
+}
+
+<div class="govuk-form-group @((Model.IsRequired && textInputHasError) || selectOptionHasError ? "govuk-form-group--error" : "")">
+
+    @if (Model.IsRequired)
+    {
+        if (!string.IsNullOrWhiteSpace(Model.Heading))
+        {
+            <h1 class="govuk-label-wrapper">
+                <label class="govuk-label govuk-label--l" for="TextInput">@Model.Heading</label>
+
+                @if (!string.IsNullOrWhiteSpace(Model.Caption))
+                {
+                    <span class="govuk-caption-l govuk-!-margin-bottom-3">@Model.Caption</span>
+                }
+            </h1>
+        }
+        RenderDescription();
+        RenderField();
+    }
+    else
+    {
+        <fieldset class="govuk-fieldset" @(selectOptionHasError ? Html.Raw("aria-describedby=\"input-error\"") : "") >
+            <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                @if (!string.IsNullOrWhiteSpace(Model.Heading))
+                {
+                    <h1 class="govuk-fieldset__heading">
+                        @Model.Heading
+                    </h1>
+                }
+            </legend>
+
+            @{
+                RenderDescription();
+            }
+
+            @if (selectOptionHasError)
+            {
+                <p class="govuk-error-message">
+                    <span id="input-error" class="govuk-visually-hidden">Error:</span>
+                    @Html.ValidationMessageFor(m => m.HasValue)
+                </p>
+            }
+
+            <div class="govuk-radios" data-module="govuk-radios">
+
+                <div class="govuk-radios__item">
+                    <input class="govuk-radios__input" id="YES" name="HasValue" type="radio"
+                           value="true" data-aria-controls="conditional-YES" @(Model.HasValue == true ? "checked" : "")>
+                    <label class="govuk-label govuk-radios__label" for="YES">Yes</label>
+                </div>
+
+                <div class="govuk-radios__conditional" id="conditional-YES">
+                    <div class="govuk-form-group @(textInputHasError ? "govuk-form-group--error" : "")">
+                        @{
+                            if (!string.IsNullOrWhiteSpace(Model.Caption))
+                            {
+                                @Html.Raw(Model.Caption)
+                            }
+                            RenderField();
+                        }
+                    </div>
+                </div>
+
+                <div class="govuk-radios__item">
+                    <input class="govuk-radios__input" id="NO" name="HasValue" type="radio"
+                           value="false" data-aria-controls="conditional-NO" @(Model.HasValue == false ? "checked" : "")>
+                    <label class="govuk-label govuk-radios__label" for="NO">No</label>
+                    <div class="govuk-radios__conditional--hidden" id="conditional-NO"></div>
+                </div>
+            </div>
+        </fieldset>
+    }
+</div>

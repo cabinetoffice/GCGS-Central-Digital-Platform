@@ -1,6 +1,7 @@
 using CO.CDP.AwsServices;
 using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
+using CO.CDP.OrganisationApp.Pages.Forms.ChoiceProviderStrategies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -12,7 +13,8 @@ namespace CO.CDP.OrganisationApp.Pages.Forms;
 public class FormsQuestionPageModel(
     IFormsEngine formsEngine,
     ITempDataService tempDataService,
-    IFileHostManager fileHostManager) : PageModel
+    IFileHostManager fileHostManager,
+    IChoiceProviderService choiceProviderService) : PageModel
 {
     [BindProperty(SupportsGet = true)]
     public Guid OrganisationId { get; set; }
@@ -30,28 +32,29 @@ public class FormsQuestionPageModel(
     public bool? RedirectFromCheckYourAnswerPage { get; set; }
 
     [BindProperty]
-    public FormElementDateInputModel? DateInputModel { get; set; }
-    [BindProperty]
-    public FormElementFileUploadModel? FileUploadModel { get; set; }
-    [BindProperty]
     public FormElementNoInputModel? NoInputModel { get; set; }
     [BindProperty]
     public FormElementTextInputModel? TextInputModel { get; set; }
     [BindProperty]
-    public FormElementMultiLineInputModel? MultiLineInputModel { get; set; }
+    public FormElementFileUploadModel? FileUploadModel { get; set; }
     [BindProperty]
     public FormElementYesNoInputModel? YesNoInputModel { get; set; }
     [BindProperty]
-    public FormElementAddressModel? AddressModel { get; set; }
-    [BindProperty]
     public FormElementSingleChoiceModel? SingleChoiceModel { get; set; }
     [BindProperty]
+    public FormElementGroupedSingleChoiceModel? GroupedSingleChoiceModel { get; set; }
+    [BindProperty]
+    public FormElementDateInputModel? DateInputModel { get; set; }
+    [BindProperty]
     public FormElementCheckBoxInputModel? CheckBoxModel { get; set; }
-
+    [BindProperty]
+    public FormElementAddressModel? AddressModel { get; set; }
+    [BindProperty]
+    public FormElementMultiLineInputModel? MultiLineInputModel { get; set; }
+    [BindProperty]
+    public FormElementUrlInputModel? UrlInputModel { get; set; }
     [BindProperty(SupportsGet = true)]
     public string? UkOrNonUk { get; set; }
-
-
     public FormQuestionType? CurrentFormQuestionType { get; private set; }
     public string? PartialViewName { get; private set; }
     public IFormElementModel? PartialViewModel { get; private set; }
@@ -151,28 +154,31 @@ public class FormsQuestionPageModel(
             var question = form?.Questions.FirstOrDefault(q => q.Id == answer.QuestionId);
             if (question != null && question.Type != FormQuestionType.NoInput && question.Type != FormQuestionType.CheckYourAnswers)
             {
+                var choiceProviderStrategy = choiceProviderService.GetStrategy(question.Options.ChoiceProviderStrategy);
                 string answerString = question.Type switch
                 {
                     FormQuestionType.Text => answer.Answer?.TextValue ?? "",
-                    FormQuestionType.MultiLine => answer.Answer?.TextValue ?? "",
-                    FormQuestionType.CheckBox => answer.Answer?.BoolValue == true ? question.Options.Choices?.FirstOrDefault() ?? "" : "",
                     FormQuestionType.FileUpload => answer.Answer?.TextValue ?? "",
-                    FormQuestionType.YesOrNo => answer.Answer?.BoolValue.HasValue == true ? (answer.Answer.BoolValue == true ? "yes" : "no") : "",
+                    FormQuestionType.YesOrNo => answer.Answer?.BoolValue.HasValue == true ? (answer.Answer.BoolValue == true ? "Yes" : "No") : "",
+                    FormQuestionType.SingleChoice => await choiceProviderStrategy.RenderOption(answer.Answer) ?? "",
                     FormQuestionType.Date => answer.Answer?.DateValue.HasValue == true ? answer.Answer.DateValue.Value.ToString("dd/MM/yyyy") : "",
+                    FormQuestionType.CheckBox => answer.Answer?.BoolValue == true ? question?.Options?.Choices?.Values.FirstOrDefault() ?? "" : "",
                     FormQuestionType.Address => answer.Answer?.AddressValue != null ? answer.Answer.AddressValue.ToHtmlString() : "",
-                    FormQuestionType.SingleChoice => answer.Answer?.OptionValue ?? "",
+                    FormQuestionType.GroupedSingleChoice => answer.Answer?.OptionValue ?? "",
+                    FormQuestionType.MultiLine => answer.Answer?.TextValue ?? "",
+                    FormQuestionType.Url => answer.Answer?.TextValue ?? "",
                     _ => ""
                 };
 
                 var summary = new AnswerSummary
                 {
-                    Title = question.SummaryTitle ?? question.Title,
+                    Title = question?.SummaryTitle ?? question?.Title,
                     Answer = answerString,
                     ChangeLink = $"/organisation/{OrganisationId}/forms/{FormId}/sections/{SectionId}/questions/{answer.QuestionId}?frm-chk-answer=true"
                 };
 
-                if (question.Type == FormQuestionType.Address && answer.Answer?.AddressValue != null
-                    && answer.Answer.AddressValue.Country != Constants.Country.UKCountryCode)
+                if (question?.Type == FormQuestionType.Address && answer.Answer?.AddressValue != null
+                    && answer.Answer.AddressValue.Country != Country.UKCountryCode)
                 {
                     summary.ChangeLink += "&UkOrNonUk=non-uk";
                 }
@@ -223,14 +229,16 @@ public class FormsQuestionPageModel(
 
         Dictionary<FormQuestionType, string> formQuestionPartials = new(){
             { FormQuestionType.NoInput, "_FormElementNoInput" },
-            { FormQuestionType.YesOrNo, "_FormElementYesNoInput" },
-            { FormQuestionType.FileUpload, "_FormElementFileUpload" },
-            { FormQuestionType.Date, "_FormElementDateInput" },
             { FormQuestionType.Text, "_FormElementTextInput" },
+            { FormQuestionType.FileUpload, "_FormElementFileUpload" },
+            { FormQuestionType.YesOrNo, "_FormElementYesNoInput" },
+            { FormQuestionType.SingleChoice, "_FormElementSingleChoice" },
+            { FormQuestionType.Date, "_FormElementDateInput" },
             { FormQuestionType.CheckBox, "_FormElementCheckBoxInput" },
             { FormQuestionType.Address, "_FormElementAddress" },
             { FormQuestionType.MultiLine, "_FormElementMultiLineInput" },
-            { FormQuestionType.SingleChoice, "_FormElementSingleChoice" },
+            { FormQuestionType.GroupedSingleChoice, "_FormElementGroupedSingleChoice" },
+            { FormQuestionType.Url, "_FormElementUrlInput" },
         };
 
         if (formQuestionPartials.TryGetValue(question.Type, out var partialView))
@@ -257,6 +265,8 @@ public class FormsQuestionPageModel(
             FormQuestionType.Address => AddressModel ?? new FormElementAddressModel(),
             FormQuestionType.SingleChoice => SingleChoiceModel ?? new FormElementSingleChoiceModel(),
             FormQuestionType.MultiLine => MultiLineInputModel ?? new FormElementMultiLineInputModel(),
+            FormQuestionType.GroupedSingleChoice => GroupedSingleChoiceModel ?? new FormElementGroupedSingleChoiceModel(),
+            FormQuestionType.Url => UrlInputModel ?? new FormElementUrlInputModel(),
             _ => throw new NotImplementedException($"Forms question: {question.Type} is not supported"),
         };
 

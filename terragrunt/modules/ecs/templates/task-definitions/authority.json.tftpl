@@ -28,8 +28,7 @@
         {"name": "Issuer", "value": "https://authority.${public_hosted_zone_fqdn}"},
         {"name": "OrganisationInformationDatabase__Database", "value": "${oi_db_name}"},
         {"name": "OrganisationInformationDatabase__Host", "value": "${oi_db_address}"},
-        {"name": "OrganisationInformationDatabase__Server", "value": "${oi_db_address}"},
-        {"name": "VERSION", "value": "${service_version}"}
+        {"name": "OrganisationInformationDatabase__Server", "value": "${oi_db_address}"}
     ],
     "secrets": [
         {"name": "OneLogin__Authority", "valueFrom": "${onelogin_authority}"},
