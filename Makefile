@@ -24,7 +24,7 @@ test: ## Run tests
 	@dotnet test $(TEST_OPTIONS)
 .PHONY: test
 
-build-docker: VERSION ?= ""
+build-docker: VERSION ?= "dev"
 build-docker: ## Build Docker images
 	@docker compose build --build-arg VERSION=$(VERSION)
 .PHONY: build-docker
