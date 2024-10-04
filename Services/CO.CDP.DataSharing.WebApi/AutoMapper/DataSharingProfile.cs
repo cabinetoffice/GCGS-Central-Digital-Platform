@@ -41,7 +41,8 @@ public class DataSharingProfile : Profile
                         x.Type == AddressType.Registered)))
             .ForMember(m => m.ContactPoint, o => o.MapFrom(m => m.Organisation.ContactPoints.FirstOrDefault()))
             .ForMember(m => m.Roles, o => o.MapFrom(m => m.Organisation.Roles))
-            .ForMember(m => m.Details, o => o.MapFrom(m => new Details()))
+            .ForMember(m => m.Details,
+                o => o.MapFrom((_, _, _, context) => context.Items["Details"]))
             .ForMember(m => m.SupplierInformationData, o => o.MapFrom(m => m))
             .ForMember(m => m.AssociatedPersons,
                 o => o.MapFrom((_, _, _, context) => context.Items["AssociatedPersons"]))
@@ -118,6 +119,12 @@ public class DataSharingProfile : Profile
         CreateMap<Persistence.FormQuestionChoice, FormQuestionOption>()
             .ForMember(m => m.Id, o => o.MapFrom(m => m.Id))
             .ForMember(m => m.Value, o => o.MapFrom(m => m.Title));
+
+        CreateMap<Organisation.LegalForm, LegalForm>()
+            .ForMember(m => m.LawRegistered, o => o.MapFrom(m => m.LawRegistered))
+            .ForMember(m => m.RegistrationDate, o => o.MapFrom(m => m.RegistrationDate.ToString("yyyy-MM-dd")))
+            .ForMember(m => m.RegisteredLegalForm, o => o.MapFrom(m => m.RegisteredLegalForm))
+            .ForMember(m => m.RegisteredUnderAct2006, o => o.MapFrom(m => m.RegisteredUnderAct2006));
     }
 
     private DateOnly? ToDateOnly(DateTime? dateTime) => dateTime.HasValue ? DateOnly.FromDateTime(dateTime.Value) : null;
