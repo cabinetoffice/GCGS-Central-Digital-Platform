@@ -1,6 +1,6 @@
 using CO.CDP.DataSharing.WebApi.Model;
-using CO.CDP.OrganisationInformation.Persistence;
 using CO.CDP.OrganisationInformation;
+using CO.CDP.OrganisationInformation.Persistence;
 using static CO.CDP.OrganisationInformation.Persistence.ConnectedEntity;
 using Address = CO.CDP.OrganisationInformation.Address;
 using ConnectedIndividualTrust = CO.CDP.DataSharing.WebApi.Model.ConnectedIndividualTrust;
@@ -10,19 +10,82 @@ namespace CO.CDP.DataSharing.WebApi.DataService;
 
 public class DataService(IShareCodeRepository shareCodeRepository, IConnectedEntityRepository connectedEntityRepository) : IDataService
 {
+    private const string ExclusionsSectionName = "Exclusions";
+    private const string FinancialInformationSectionName = "Financial Information";
+    private const string QualificationsSectionName = "Qualifications";
+    private const string TradeAssurancesSectionName = "Trade assurances";
+
     public async Task<SharedSupplierInformation> GetSharedSupplierInformationAsync(string shareCode)
     {
         var sharedConsent = await shareCodeRepository.GetByShareCode(shareCode)
                             ?? throw new ShareCodeNotFoundException(Constants.ShareCodeNotFoundExceptionMessage);
 
+        var exclusions = sharedConsent.AnswerSets.Where(a => a.Section.Title == ExclusionsSectionName).ToArray();
+        var financialInformation = sharedConsent.AnswerSets.Where(a => a.Section.Title == FinancialInformationSectionName);
+        var qualifications = sharedConsent.AnswerSets.Where(a => a.Section.Title == QualificationsSectionName);
+        var tradeAssurances = sharedConsent.AnswerSets.Where(a => a.Section.Title == TradeAssurancesSectionName);
+
         var connectedEntities = await connectedEntityRepository.FindByOrganisation(sharedConsent.Organisation.Guid);
+
+        var pdfAnswerSets = new List<FormAnswerSetForPdf>();
+
+        pdfAnswerSets.AddRange(MapToFormAnswerSetsForPdf(ExclusionsSectionName, exclusions));
+        pdfAnswerSets.AddRange(MapToFormAnswerSetsForPdf(FinancialInformationSectionName, financialInformation));
+        pdfAnswerSets.AddRange(MapToFormAnswerSetsForPdf(QualificationsSectionName, qualifications));
+        pdfAnswerSets.AddRange(MapToFormAnswerSetsForPdf(TradeAssurancesSectionName, tradeAssurances));
 
         return new SharedSupplierInformation
         {
             OrganisationId = sharedConsent.Organisation.Guid,
             BasicInformation = MapToBasicInformation(sharedConsent.Organisation),
-            ConnectedPersonInformation = MapToConnectedPersonInformation(connectedEntities)
+            ConnectedPersonInformation = MapToConnectedPersonInformation(connectedEntities),
+            FormAnswerSetForPdfs = pdfAnswerSets
         };
+    }
+
+    public static IEnumerable<FormAnswerSetForPdf> MapToFormAnswerSetsForPdf(string sectionName,
+        IEnumerable<OrganisationInformation.Persistence.Forms.FormAnswerSet> answerSets)
+    {
+        var pdfAnswerSets = new List<FormAnswerSetForPdf>();
+
+        foreach (var answerSet in answerSets)
+        {
+            var pdfAnswerSet = new FormAnswerSetForPdf() {
+                SectionName = sectionName,
+                QuestionAnswers = []
+            };
+
+            pdfAnswerSets.Add(pdfAnswerSet);
+
+            foreach (var answer in answerSet.Answers)
+            {
+                switch (answer.Question.Type)
+                {
+                    case OrganisationInformation.Persistence.Forms.FormQuestionType.Date:
+                        {
+                            pdfAnswerSet.QuestionAnswers.Add(new Tuple<string, string>($"{answer.Question.Title} ",
+                                answer.DateValue?.ToString("dd-MM-yyyy") ?? "Not specified"));
+                            break;
+                        }
+                    case OrganisationInformation.Persistence.Forms.FormQuestionType.Url:
+                        {
+                            pdfAnswerSet.QuestionAnswers.Add(new Tuple<string, string>($"{answer.Question.Title} ",
+                               answer.TextValue ?? ""));
+                            break;
+                        }
+                    case OrganisationInformation.Persistence.Forms.FormQuestionType.Text:
+                    case OrganisationInformation.Persistence.Forms.FormQuestionType.MultiLine:
+                        {
+                            pdfAnswerSet.QuestionAnswers.Add(new Tuple<string, string>($"{answer.Question.Title}: ",
+                                answer.TextValue ?? ""));
+                            break;
+                        }
+                }
+
+            }
+        }
+
+        return pdfAnswerSets;
     }
 
     public static BasicInformation MapToBasicInformation(Organisation organisation)
