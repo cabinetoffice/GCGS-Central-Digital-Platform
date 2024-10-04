@@ -8,6 +8,7 @@ module "ecs_service_organisation" {
       container_port                      = var.service_configs.organisation.port
       cpu                                 = var.service_configs.organisation.cpu
       govuknotify_apikey                  = data.aws_secretsmanager_secret_version.govuknotify_apikey.arn
+      govuknotify_support_admin_email     = data.aws_secretsmanager_secret_version.govuknotify_support_admin_email.arn
       host_port                           = var.service_configs.organisation.port
       image                               = local.ecr_urls[var.service_configs.organisation.name]
       lg_name                             = aws_cloudwatch_log_group.tasks[var.service_configs.organisation.name].name
