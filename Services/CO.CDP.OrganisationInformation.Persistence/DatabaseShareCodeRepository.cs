@@ -5,6 +5,13 @@ namespace CO.CDP.OrganisationInformation.Persistence;
 
 public class DatabaseShareCodeRepository(OrganisationInformationContext context) : IShareCodeRepository
 {
+    public async Task<bool> OrganisationShareCodeExistsAsync(Guid organisationId, string shareCode)
+    {
+        return await context.Set<SharedConsent>()
+            .Where(x => x.Organisation.Guid == organisationId && x.ShareCode == shareCode)
+            .AnyAsync();
+    }
+
     public async Task<IEnumerable<SharedConsent>> GetShareCodesAsync(Guid organisationId)
     {
         return await context.Set<SharedConsent>()
@@ -89,7 +96,7 @@ public class DatabaseShareCodeRepository(OrganisationInformationContext context)
         };
     }
 
-    public async Task<Boolean?> GetShareCodeVerifyAsync(string formVersionId, string shareCode)
+    public async Task<bool?> GetShareCodeVerifyAsync(string formVersionId, string shareCode)
     {
         // Get FormId and Organisation based on ShareCode and FormVersionId
         var query = from s in context.SharedConsents
