@@ -103,7 +103,8 @@ public class FormsQuestionPageModel(
                 {
                     using var stream = response.Value.formFile.OpenReadStream();
                     await fileHostManager.UploadFile(stream, response.Value.filename, response.Value.contentType);
-                    answer = new FormAnswer { TextValue = response.Value.filename };
+                    answer ??= new FormAnswer();
+                    answer.TextValue = response.Value.filename;
                 }
             }
 

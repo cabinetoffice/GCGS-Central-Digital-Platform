@@ -28,7 +28,7 @@ public class FormElementFileUploadModel : FormElementModel, IValidatableObject
             formAnswer = new FormAnswer { BoolValue = HasValue };
         }
 
-        if (!string.IsNullOrWhiteSpace(UploadedFileName))
+        if (HasValue != false && !string.IsNullOrWhiteSpace(UploadedFileName))
         {
             formAnswer ??= new FormAnswer();
             formAnswer.TextValue = UploadedFileName;
