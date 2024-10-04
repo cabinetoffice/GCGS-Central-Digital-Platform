@@ -16,15 +16,15 @@ public class SupportEndpointsTests
     private readonly Mock<IUseCase<(Guid, SupportUpdateOrganisation), bool>> _supportUpdateOrganisationUseCase = new();
 
     [Theory]
-    [InlineData(OK, Channel.OneLogin, OrganisationPersonScope.Admin)]
-    [InlineData(OK, Channel.OneLogin, OrganisationPersonScope.Editor)]
-    [InlineData(OK, Channel.OneLogin, OrganisationPersonScope.Viewer)]
-    [InlineData(OK, Channel.OneLogin, OrganisationPersonScope.Responder)]
+    [InlineData(OK, Channel.OneLogin, null, PersonScope.SupportAdmin)]
+    [InlineData(Forbidden, Channel.OneLogin)]
+    [InlineData(Forbidden, Channel.OneLogin, OrganisationPersonScope.Admin)]
+    [InlineData(Forbidden, Channel.OneLogin, "unknown_scope")]
     [InlineData(Forbidden, Channel.ServiceKey)]
     [InlineData(Forbidden, Channel.OrganisationKey)]
     [InlineData(Forbidden, "unknown_channel")]
     public async Task SupportUpdateOrganisation_Authorization_ReturnsExpectedStatusCode(
-        HttpStatusCode expectedStatusCode, string channel, string? scope = null)
+        HttpStatusCode expectedStatusCode, string channel, string? organisationPersonScope = null, string? personScope = null)
     {
         var organisationId = Guid.NewGuid();
 
@@ -39,8 +39,8 @@ public class SupportEndpointsTests
         _supportUpdateOrganisationUseCase.Setup(useCase => useCase.Execute(tuple)).ReturnsAsync(true);
 
         var factory = new TestAuthorizationWebApplicationFactory<Program>(
-            channel, organisationId, scope,
-            services => services.AddScoped(_ => _supportUpdateOrganisationUseCase.Object));
+            channel, organisationId, organisationPersonScope,
+            services => services.AddScoped(_ => _supportUpdateOrganisationUseCase.Object), personScope);
 
         var response = await factory.CreateClient().PatchAsJsonAsync($"/support/organisation/{organisationId}", supportUpdateOrg);
 

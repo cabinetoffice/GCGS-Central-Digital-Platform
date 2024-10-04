@@ -26,28 +26,57 @@ public class OrganisationScopeAuthorizationHandler(
             return;
         }
 
-        if (requirement.Scopes.Length == 0 || requirement.OrganisationIdLocation == OrganisationIdLocation.None)
-        {
-            return;
-        }
-
         var userUrn = context.User.FindFirstValue(ClaimType.Subject);
 
         if (!string.IsNullOrWhiteSpace(userUrn))
         {
-            var organisationId = await FetchOrganisationIdAsync(requirement.OrganisationIdLocation);
-
-            if (!string.IsNullOrWhiteSpace(organisationId) && Guid.TryParse(organisationId, out var organisationGuid))
+            if (MeetsPersonScopesRequirement(context, requirement.PersonScopes)
+                || await MeetsOrganisationPersonScopesRequirement(requirement, userUrn))
             {
-                var orgPerson = await organisationRepository.FindOrganisationPerson(organisationGuid, userUrn);
-                List<string> orgScopes = orgPerson?.Scopes ?? [];
-
-                if (requirement.Scopes.Intersect(orgScopes).Any())
-                {
-                    context.Succeed(requirement);
-                }
+                context.Succeed(requirement);
             }
         }
+    }
+
+    private static bool MeetsPersonScopesRequirement(AuthorizationHandlerContext context, string[] personScopes)
+    {
+        if (personScopes.Length == 0)
+        {
+            return false;
+        }
+
+        var personRoles = context.User.FindFirstValue(ClaimType.Roles);
+
+        var personRolesArray = (personRoles ?? "").Split(",", StringSplitOptions.RemoveEmptyEntries);
+
+        if (personScopes.Intersect(personRolesArray).Any())
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    private async Task<bool> MeetsOrganisationPersonScopesRequirement(OrganisationScopeAuthorizationRequirement requirement, string userUrn)
+    {
+        if (requirement.OrganisationPersonScopes.Length == 0 || requirement.OrganisationIdLocation == OrganisationIdLocation.None)
+        {
+            return false;
+        }
+
+        var organisationId = await FetchOrganisationIdAsync(requirement.OrganisationIdLocation);
+
+        if (!string.IsNullOrWhiteSpace(organisationId) && Guid.TryParse(organisationId, out var organisationGuid))
+        {
+            var orgPerson = await organisationRepository.FindOrganisationPerson(organisationGuid, userUrn);
+
+            if (requirement.OrganisationPersonScopes.Intersect(orgPerson?.Scopes ?? []).Any())
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private async Task<string?> FetchOrganisationIdAsync(OrganisationIdLocation organisationIdLocation)

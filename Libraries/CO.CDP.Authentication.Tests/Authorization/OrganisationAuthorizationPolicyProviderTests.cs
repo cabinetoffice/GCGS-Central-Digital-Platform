@@ -36,8 +36,9 @@ public class OrganisationAuthorizationPolicyProviderTests
     }
 
     [Theory]
-    [InlineData("Org_Channels$OneLogin|ServiceKey;Scopes$scope1|scope2;OrgIdLoc$Header", true)]
-    [InlineData("Org_Channels$InvalidChannel;Scopes$scope1;", true)]
+    [InlineData("Org_Channels$OneLogin|ServiceKey;OrgScopes$scope1|scope2;OrgIdLoc$Header;", true)]
+    [InlineData("Org_Channels$InvalidChannel;OrgScopes$scope1;", true)]
+    [InlineData("Org_Channels$OneLogin|ServiceKey;PersonScopes$scope1|scope2;", true)]
     [InlineData("InvalidPolicy", false)]
     public async Task GetPolicyAsync_ShouldReturnCorrectPolicyBasedOnPolicyName(string policyName, bool isValidPolicy)
     {
@@ -49,7 +50,12 @@ public class OrganisationAuthorizationPolicyProviderTests
             policy!.AuthenticationSchemes.Should().Contain(Extensions.JwtBearerOrApiKeyScheme);
             policy.Requirements.Should().ContainSingle(r => r is ChannelAuthorizationRequirement);
 
-            if (policyName.Contains("Scopes") && policyName.Contains("OneLogin"))
+            if (policyName.Contains("OrgScopes") && policyName.Contains("OneLogin"))
+            {
+                policy.Requirements.Should().Contain(r => r is OrganisationScopeAuthorizationRequirement);
+            }
+
+            if (policyName.Contains("PersonScopes") && policyName.Contains("OneLogin"))
             {
                 policy.Requirements.Should().Contain(r => r is OrganisationScopeAuthorizationRequirement);
             }
