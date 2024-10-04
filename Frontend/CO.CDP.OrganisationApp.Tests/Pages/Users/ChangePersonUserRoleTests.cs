@@ -106,14 +106,13 @@ public class ChangePersonUserRoleTests
                                     "John",
                                     new Guid(),
                                     "Smith",
-                                    new List<string> { OrganisationPersonScopes.Admin, OrganisationPersonScopes.Editor }
+                                    new List<string> { OrganisationPersonScopes.Editor }
                                 );
 
         _mockOrganisationClient
             .Setup(s => s.GetOrganisationPersonsAsync(mockPerson.Id))
             .ReturnsAsync(new List<CO.CDP.Organisation.WebApiClient.Person>() { mockPerson });
 
-        _changeUserRoleModel.IsAdmin = true;
         _changeUserRoleModel.Role = OrganisationPersonScopes.Viewer;
 
         var result = await _changeUserRoleModel.OnPostPerson();
@@ -126,8 +125,7 @@ public class ChangePersonUserRoleTests
                                                 It.IsAny<Guid>(),
                                                 It.Is<UpdatePersonToOrganisation>(u =>
                                                     u.Scopes.Contains(OrganisationPersonScopes.Viewer) &&
-                                                    u.Scopes.Contains(OrganisationPersonScopes.Admin) &&
-                                                    u.Scopes.Count == 2
+                                                    u.Scopes.Count == 1
                                                 )
                                             ),
                                             Times.Once
