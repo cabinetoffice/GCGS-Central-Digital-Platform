@@ -13,7 +13,7 @@ public class FormElementUrlInputModelTests
         var model = new FormElementUrlInputModel
         {
             IsRequired = false,
-            HasValue = false
+            HasValue = null
         };
 
         var result = model.GetAnswer();
@@ -41,7 +41,7 @@ public class FormElementUrlInputModelTests
     public void SetAnswer_ShouldSetTextInputAndHasValue_WhenAnswerIsProvided()
     {
         var model = new FormElementUrlInputModel();
-        var answer = new FormAnswer { TextValue = "https://example.com" };
+        var answer = new FormAnswer { TextValue = "https://example.com", BoolValue = true };
 
         model.SetAnswer(answer);
 
