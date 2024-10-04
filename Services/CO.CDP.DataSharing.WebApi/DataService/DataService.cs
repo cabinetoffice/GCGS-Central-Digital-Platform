@@ -29,10 +29,10 @@ public class DataService(IShareCodeRepository shareCodeRepository, IConnectedEnt
 
         var pdfAnswerSets = new List<FormAnswerSetForPdf>();
 
-        pdfAnswerSets.AddRange(MapToFormAnswerSetsForPdf(ExclusionsSectionName, exclusions));
-        pdfAnswerSets.AddRange(MapToFormAnswerSetsForPdf(FinancialInformationSectionName, financialInformation));
-        pdfAnswerSets.AddRange(MapToFormAnswerSetsForPdf(QualificationsSectionName, qualifications));
-        pdfAnswerSets.AddRange(MapToFormAnswerSetsForPdf(TradeAssurancesSectionName, tradeAssurances));
+        pdfAnswerSets.AddRange(MapFormAnswerSetsForPdf(ExclusionsSectionName, exclusions));
+        pdfAnswerSets.AddRange(MapFormAnswerSetsForPdf(FinancialInformationSectionName, financialInformation));
+        pdfAnswerSets.AddRange(MapFormAnswerSetsForPdf(QualificationsSectionName, qualifications));
+        pdfAnswerSets.AddRange(MapFormAnswerSetsForPdf(TradeAssurancesSectionName, tradeAssurances));
 
         return new SharedSupplierInformation
         {
@@ -43,7 +43,7 @@ public class DataService(IShareCodeRepository shareCodeRepository, IConnectedEnt
         };
     }
 
-    public static IEnumerable<FormAnswerSetForPdf> MapToFormAnswerSetsForPdf(string sectionName,
+    public static IEnumerable<FormAnswerSetForPdf> MapFormAnswerSetsForPdf(string sectionName,
         IEnumerable<OrganisationInformation.Persistence.Forms.FormAnswerSet> answerSets)
     {
         var pdfAnswerSets = new List<FormAnswerSetForPdf>();
@@ -61,6 +61,12 @@ public class DataService(IShareCodeRepository shareCodeRepository, IConnectedEnt
             {
                 switch (answer.Question.Type)
                 {
+                    case OrganisationInformation.Persistence.Forms.FormQuestionType.YesOrNo:
+                        {
+                            pdfAnswerSet.QuestionAnswers.Add(new Tuple<string, string>($"{answer.Question.Title} ",
+                                answer.OptionValue ?? "No"));
+                            break;
+                        }
                     case OrganisationInformation.Persistence.Forms.FormQuestionType.Date:
                         {
                             pdfAnswerSet.QuestionAnswers.Add(new Tuple<string, string>($"{answer.Question.Title} ",
