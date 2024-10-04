@@ -24,7 +24,13 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
             .ThenInclude(p => p.Address)
             .FirstOrDefaultAsync(t => t.Name == name);
     }
-
+    public async Task<IEnumerable<OrganisationPerson>> FindOrganisationPersons(Guid organisationId)
+    {
+        return await context.Set<OrganisationPerson>()
+            .Include(p => p.Person)
+            .Where(o => o.Organisation.Guid == organisationId)
+            .ToListAsync();
+    }
 
     public async Task<OrganisationPerson?> FindOrganisationPerson(Guid organisationId, Guid personId)
     {
