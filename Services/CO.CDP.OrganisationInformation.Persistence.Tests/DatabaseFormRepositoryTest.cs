@@ -121,7 +121,8 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
             IsRequired = true,
             NextQuestion = null,
             NextQuestionAlternative = null,
-            Options = new FormQuestionOptions()
+            Options = new FormQuestionOptions(),
+            SortOrder = 0
         };
 
         var question2 = new FormQuestion
@@ -136,7 +137,8 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
             IsRequired = true,
             NextQuestion = null,
             NextQuestionAlternative = null,
-            Options = new FormQuestionOptions()
+            Options = new FormQuestionOptions(),
+            SortOrder = 0
         };
 
         section.Questions.Add(question1);
@@ -406,7 +408,8 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
             NextQuestion = null,
             NextQuestionAlternative = null,
             CreatedOn = DateTimeOffset.UtcNow,
-            UpdatedOn = DateTimeOffset.UtcNow
+            UpdatedOn = DateTimeOffset.UtcNow,
+            SortOrder = 0
         };
         section.Questions.Add(question);
 
@@ -442,7 +445,10 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
             BoolValue = true,
             AddressValue = new FormAddress
             {
-                StreetAddress = "456 Elm St", Locality = "London", PostalCode = "G67890", CountryName = "UK",
+                StreetAddress = "456 Elm St",
+                Locality = "London",
+                PostalCode = "G67890",
+                CountryName = "UK",
                 Country = "GB"
             },
             CreatedOn = DateTimeOffset.UtcNow,
@@ -511,7 +517,8 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
             IsRequired = true,
             NextQuestion = null,
             NextQuestionAlternative = null,
-            Options = simpleOptions
+            Options = simpleOptions,
+            SortOrder = 0
         };
 
         section.Questions.Add(question);

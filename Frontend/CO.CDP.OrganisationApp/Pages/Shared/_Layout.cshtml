@@ -56,7 +56,6 @@
                         {
                             var ftsService = config["FtsService"] ?? "";
                             var showMyNotice = !string.IsNullOrEmpty(ftsService);
-                            var isSupportAdmin = true; // TODO: Add logic to determine if signed in user is a super user
 
                             <li class="govuk-header__navigation-item">
                                 <a class="govuk-header__link" href="/organisation-selection">
@@ -64,14 +63,13 @@
                                 </a>
                             </li>
 
-                            if (isSupportAdmin == true)
-                            {
+                            <authorize scope="@PersonScopeRequirement.SupportAdmin">
                                 <li class="govuk-header__navigation-item">
                                     <a class="govuk-header__link" href="/support/organisations/buyer">
                                         Support
                                     </a>
                                 </li>
-                            }
+                            </authorize>
 
                             if (showMyNotice == true)
                             {

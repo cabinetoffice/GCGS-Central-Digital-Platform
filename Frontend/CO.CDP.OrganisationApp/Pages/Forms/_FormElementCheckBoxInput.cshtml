@@ -31,7 +31,7 @@
             <div class="govuk-checkboxes__item">
                 <input class="govuk-checkboxes__input" id="declarationStatement" name="CheckBoxInput" type="checkbox" value="true" @(Model.CheckBoxInput == true ? "checked" : "")>
                 <label class="govuk-label govuk-checkboxes__label" for="declarationStatement">
-                    @Html.Raw(Model.Options?.Choices?.FirstOrDefault())
+                    @Html.Raw(Model.Options?.Choices?.Values.FirstOrDefault())
                 </label>
             </div>
         </div>

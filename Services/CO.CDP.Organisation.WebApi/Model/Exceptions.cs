@@ -18,3 +18,4 @@ public class MissingOrganisationIdException(string message, Exception? cause = n
 
 public class EmptyAuthenticationKeyNameException(string message, Exception? cause = null) : Exception(message, cause);
 public class UnknownAuthenticationKeyException(string message, Exception? cause = null) : Exception(message, cause);
+public class InvalidSupportUpdateOrganisationCommand(string message, Exception? cause = null) : Exception(message, cause);

@@ -119,26 +119,6 @@ public class AuthorizationTests
 
     [Theory]
     [MemberData(nameof(TestCases))]
-    public async Task TestAuthorizationIsSuccessful_WhenUserIsAllowedToAccessResourceAsSupportAdminUser(string url, string[] expectedTexts)
-    {
-        var _httpClient = BuildHttpClient([], [PersonScopes.SupportAdmin]);
-
-        var request = new HttpRequestMessage(HttpMethod.Get, url);
-
-        var response = await _httpClient.SendAsync(request);
-
-        var responseBody = await response.Content.ReadAsStringAsync();
-
-        responseBody.Should().NotBeNull();
-        response.StatusCode.Should().Be(HttpStatusCode.OK);
-        foreach (string expectedText in expectedTexts)
-        {
-            responseBody.Should().Contain(expectedText);
-        }
-    }
-
-    [Theory]
-    [MemberData(nameof(TestCases))]
     public async Task TestAuthorizationIsSuccessful_WhenUserIsAllowedToAccessResourceAsAdminUser(string url, string[] expectedTexts)
     {
         var _httpClient = BuildHttpClient([OrganisationPersonScopes.Admin], []);
@@ -225,5 +205,37 @@ public class AuthorizationTests
         responseBody.Should().Contain("Organisation details");
         responseBody.Should().NotContain($"href=\"/organisation/{testOrganisationId}/users/user-summary\">Users</a>");
         responseBody.Should().NotContain("Users");
+    }
+
+    public static IEnumerable<object[]> SupportAdminAccessTestCases()
+    {
+        yield return new object[] { $"/organisation/{testOrganisationId}", new string[] { "Organisation name", "Organisation identifier", "Organisation email", "Supplier information" }, new string[] { "Change", "Users" }, HttpStatusCode.OK };
+        yield return new object[] { $"/organisation/{testOrganisationId}/address/uk?frm-overview", new string[] {}, new string[] {}, HttpStatusCode.NotFound };
+        yield return new object[] { $"/organisation/{testOrganisationId}/users/user-summary", new string[] {}, new string[] {}, HttpStatusCode.NotFound };
+    }
+
+    [Theory]
+    [MemberData(nameof(SupportAdminAccessTestCases))]
+    public async Task TestAuthorizationIsSuccessful_WhenUserIsAllowedToAccessResourceAsSupportAdminUser(string url, string[] shouldContain, string[] shouldNotContain, HttpStatusCode expectedStatusCode)
+    {
+        var _httpClient = BuildHttpClient([], [PersonScopes.SupportAdmin]);
+
+        var request = new HttpRequestMessage(HttpMethod.Get, url);
+
+        var response = await _httpClient.SendAsync(request);
+
+        var responseBody = await response.Content.ReadAsStringAsync();
+
+        responseBody.Should().NotBeNull();
+        response.StatusCode.Should().Be(expectedStatusCode);
+        foreach (string expectedText in shouldContain)
+        {
+            responseBody.Should().Contain(expectedText);
+        }
+
+        foreach (string expectedText in shouldNotContain)
+        {
+            responseBody.Should().NotContain(expectedText);
+        }
     }
 }

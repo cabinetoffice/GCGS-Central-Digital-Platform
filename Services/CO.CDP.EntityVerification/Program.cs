@@ -58,7 +58,7 @@ if (Assembly.GetEntryAssembly().IsRunAs("CO.CDP.EntityVerification"))
         .AddAwsConfiguration(builder.Configuration)
         .AddLoggingConfiguration(builder.Configuration)
         .AddAmazonCloudWatchLogsService()
-        .AddCloudWatchSerilog();
+        .AddCloudWatchSerilog(builder.Configuration);
 }
 
 builder.Services

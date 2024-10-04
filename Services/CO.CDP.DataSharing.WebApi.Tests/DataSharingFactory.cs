@@ -100,7 +100,7 @@ public static class DataSharingFactory
                 CompletedWebsiteAddress = true,
                 CompletedEmailAddress = true,
                 CompletedLegalForm = true,
-                LegalForm = new LegalForm
+                LegalForm = new Organisation.LegalForm
                 {
                     RegisteredUnderAct2006 = true,
                     RegisteredLegalForm = "Private Limited",

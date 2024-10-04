@@ -19,12 +19,26 @@ public class GetSharedDataUseCase(
 
         var associatedPersons = await AssociatedPersons(sharedConsent);
         var additionalEntities = await AdditionalEntities(sharedConsent);
+        var details = await GetDetails(sharedConsent);
+
         return mapper.Map<SupplierInformation>(sharedConsent, opts =>
         {
             opts.Items["AssociatedPersons"] = associatedPersons;
             opts.Items["AdditionalParties"] = new List<OrganisationReference>();
             opts.Items["AdditionalEntities"] = additionalEntities;
+
+            opts.Items["Details"] = details;
         });
+    }
+
+    private async Task<Details> GetDetails(SharedConsent sharedConsent)
+    {
+        var legalForm = await organisationRepository.GetLegalForm(sharedConsent.OrganisationId);
+
+        return new Details
+        {
+            LegalForm = legalForm != null ? mapper.Map<LegalForm>(legalForm) : null
+        };
     }
 
     private async Task<ICollection<AssociatedPerson>> AssociatedPersons(SharedConsent sharedConsent)

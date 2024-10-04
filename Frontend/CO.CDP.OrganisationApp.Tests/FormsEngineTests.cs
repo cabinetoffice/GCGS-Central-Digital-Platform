@@ -56,40 +56,59 @@ public class FormsEngineTests
                 id: sectionId,
                 title: "SectionTitle"
             ),
-            questions: new List<WebApiClient.FormQuestion>
-            {
-            new WebApiClient.FormQuestion(
-                id: questionId,
-                title: "Question1",
-                description: "Description1",
-                caption: "Caption1",
-                summaryTitle: "Question1 Title",
-                type: WebApiClient.FormQuestionType.Text,
-                isRequired: true,
-                nextQuestion: nextQuestionId,
-                nextQuestionAlternative: null,
-                options: new WebApiClient.FormQuestionOptions(
-                    choiceProviderStrategy: choiceProviderStrategy,
-                    choices: new List<WebApiClient.FormQuestionChoice>
-                    {
-                        new WebApiClient.FormQuestionChoice(
-                            id: Guid.NewGuid(),
-                            title: "Option1",
-                            groupName: null,
-                            hint: new WebApiClient.FormQuestionChoiceHint(
-                                title: null,
-                                description: "Hint Description"
-                            )
+             questions: new List<WebApiClient.FormQuestion>
+                {
+                    new WebApiClient.FormQuestion(
+                        id: questionId,
+                        title: "Question1",
+                        description: "Description1",
+                        caption: "Caption1",
+                        summaryTitle: "Question1 Title",
+                        type: WebApiClient.FormQuestionType.Text,
+                        isRequired: true,
+                        nextQuestion: nextQuestionId,
+                        nextQuestionAlternative: null,
+                        options: new WebApiClient.FormQuestionOptions(
+                            choiceProviderStrategy: choiceProviderStrategy,
+                            choices: new List<WebApiClient.FormQuestionChoice>
+                            {
+                                new WebApiClient.FormQuestionChoice(
+                                    id: Guid.NewGuid(),
+                                    title: "Option1",
+                                    groupName: null,
+                                    hint: new WebApiClient.FormQuestionChoiceHint(
+                                        title: null,
+                                        description: "Hint Description"
+                                    )
+                                )
+                            },
+                            groups: new List<WebApiClient.FormQuestionGroup>
+                            {
+                                new WebApiClient.FormQuestionGroup(
+                                    name: "Group 1",
+                                    hint: "Group 1 Hint",
+                                    caption: "Group 1 Caption",
+                                    choices: new List<WebApiClient.FormQuestionGroupChoice>
+                                    {
+                                        new WebApiClient.FormQuestionGroupChoice(
+                                            title: "Group Choice 1",
+                                            value: "group_choice_1"
+                                        ),
+                                        new WebApiClient.FormQuestionGroupChoice(
+                                            title: "Group Choice 2",
+                                            value: "group_choice_2"
+                                        )
+                                    }
+                                )
+                            }
                         )
-                    }
-                )
-            )
-            },
-            answerSets: new List<WebApiClient.FormAnswerSet>()
-        );
+                    )
+                },
+                answerSets: new List<WebApiClient.FormAnswerSet>()
+            );
     }
 
-    private static SectionQuestionsResponse CreateModelSectionQuestionsResponse(Guid sectionId, Guid questionId, Guid nextQuestionId, string? choiceProviderStrategy = null, List<string>? options = null)
+    private static SectionQuestionsResponse CreateModelSectionQuestionsResponse(Guid sectionId, Guid questionId, Guid nextQuestionId, string? choiceProviderStrategy = null, Dictionary<string, string>? options = null)
     {
         return new SectionQuestionsResponse
         {
@@ -108,8 +127,9 @@ public class FormsEngineTests
                 NextQuestion = nextQuestionId,
                 Options = new FormQuestionOptions
                 {
-                    Choices = options == null ? new List<string> { "Option1" } : options,
-                    ChoiceProviderStrategy = choiceProviderStrategy
+                    Choices = options == null ? new Dictionary<string, string>() { { "Option1", "Option1" } } : options,
+                    ChoiceProviderStrategy = choiceProviderStrategy,
+                    ChoiceAnswerFieldName = "OptionValue",
                 }
             }
         }
@@ -139,8 +159,25 @@ public class FormsEngineTests
         var (organisationId, formId, sectionId, sessionKey) = CreateTestGuids();
         var questionId = Guid.NewGuid();
         var nextQuestionId = Guid.NewGuid();
+
         var apiResponse = CreateApiSectionQuestionsResponse(sectionId, questionId, nextQuestionId);
+
         var expectedResponse = CreateModelSectionQuestionsResponse(sectionId, questionId, nextQuestionId);
+
+        expectedResponse.Questions[0].Options.Groups = new List<FormQuestionGroup>
+        {
+            new FormQuestionGroup
+            {
+                Name = "Group 1",
+                Hint = "Group 1 Hint",
+                Caption = "Group 1 Caption",
+                Choices = new List<FormQuestionGroupChoice>
+                {
+                    new FormQuestionGroupChoice { Title = "Group Choice 1", Value = "group_choice_1" },
+                    new FormQuestionGroupChoice { Title = "Group Choice 2", Value = "group_choice_2" }
+                }
+            }
+        };
 
         _tempDataServiceMock.Setup(t => t.Peek<SectionQuestionsResponse>(sessionKey))
             .Returns((SectionQuestionsResponse?)null);
@@ -254,15 +291,37 @@ public class FormsEngineTests
         var questionId = Guid.NewGuid();
         var nextQuestionId = Guid.NewGuid();
         var apiResponse = CreateApiSectionQuestionsResponse(sectionId, questionId, nextQuestionId, "ExclusionAppliesToChoiceProviderStrategy");
-        var expectedResponse = CreateModelSectionQuestionsResponse(sectionId, questionId, nextQuestionId, "ExclusionAppliesToChoiceProviderStrategy", ["User's current organisation", "Connected person", "Connected organisation"]);
+        var expectedResponse = CreateModelSectionQuestionsResponse(sectionId, questionId, nextQuestionId, "ExclusionAppliesToChoiceProviderStrategy");
+
+        expectedResponse.Questions[0].Options.Choices = new Dictionary<string, string>() {
+            { $@"{{""id"":""{organisationId}"",""type"":""organisation""}}", "User's current organisation" },
+            { "{\"id\":\"e4bdd7ef-8200-4257-9892-b16f43d1803e\",\"type\":\"connected-entity\"}", "Connected person" },
+            { "{\"id\":\"4c8dccba-df39-4997-814b-7599ed9b5bed\",\"type\":\"connected-entity\"}", "Connected organisation" } };
+
+        expectedResponse.Questions[0].Options.ChoiceAnswerFieldName = "JsonValue";
+
+        expectedResponse.Questions[0].Options.Groups = new List<FormQuestionGroup>
+        {
+            new FormQuestionGroup
+            {
+                Name = "Group 1",
+                Hint = "Group 1 Hint",
+                Caption = "Group 1 Caption",
+                Choices = new List<FormQuestionGroupChoice>
+                {
+                    new FormQuestionGroupChoice { Title = "Group Choice 1", Value = "group_choice_1" },
+                    new FormQuestionGroupChoice { Title = "Group Choice 2", Value = "group_choice_2" }
+                }
+            }
+        };
 
         _organisationClientMock.Setup(c => c.GetConnectedEntitiesAsync(It.IsAny<Guid>()))
             .ReturnsAsync([
-                new ConnectedEntityLookup(new Guid(), ConnectedEntityType.Individual, "Connected person", new Uri("http://whatever")),
-                new ConnectedEntityLookup(new Guid(), ConnectedEntityType.Organisation, "Connected organisation", new Uri("http://whatever"))
+                new ConnectedEntityLookup(new Guid("e4bdd7ef-8200-4257-9892-b16f43d1803e"), ConnectedEntityType.Individual, "Connected person", new Uri("http://whatever")),
+                new ConnectedEntityLookup(new Guid("4c8dccba-df39-4997-814b-7599ed9b5bed"), ConnectedEntityType.Organisation, "Connected organisation", new Uri("http://whatever"))
             ]);
         _organisationClientMock.Setup(c => c.GetOrganisationAsync(organisationId))
-            .ReturnsAsync(new Organisation.WebApiClient.Organisation([], [],null, null, organisationId, null, "User's current organisation", []));
+            .ReturnsAsync(new Organisation.WebApiClient.Organisation([], [], null, null, organisationId, null, "User's current organisation", []));
         _userInfoServiceMock.Setup(u => u.GetOrganisationId()).Returns(organisationId);
         _tempDataServiceMock.Setup(t => t.Peek<SectionQuestionsResponse>(sessionKey))
             .Returns((SectionQuestionsResponse?)null);

@@ -360,6 +360,10 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("guid");
 
+                    b.Property<string>("JsonValue")
+                        .HasColumnType("jsonb")
+                        .HasColumnName("json_value");
+
                     b.Property<double?>("NumericValue")
                         .HasColumnType("double precision")
                         .HasColumnName("numeric_value");
@@ -509,6 +513,10 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                     b.Property<int>("SectionId")
                         .HasColumnType("integer")
                         .HasColumnName("section_id");
+
+                    b.Property<int>("SortOrder")
+                        .HasColumnType("integer")
+                        .HasColumnName("sort_order");
 
                     b.Property<string>("SummaryTitle")
                         .HasColumnType("text")

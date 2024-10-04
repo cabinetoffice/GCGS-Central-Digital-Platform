@@ -7,24 +7,27 @@ public class AuthenticatedSessionAwareMiddleware(RequestDelegate next, ISession 
 {
     public async Task Invoke(HttpContext context)
     {
-        var endpoint = context.GetEndpoint();
-
-        if (endpoint != null)
+        if (context.Request.Path != "/health")
         {
-            if (endpoint.Metadata.GetMetadata<AuthenticatedSessionNotRequiredAttribute>() is null)
+            var endpoint = context.GetEndpoint();
+
+            if (endpoint != null)
             {
-                if (context.User.Identity?.IsAuthenticated == false)
+                if (endpoint.Metadata.GetMetadata<AuthenticatedSessionNotRequiredAttribute>() is null)
                 {
-                    context.Response.Redirect("/");
-                    return;
-                }
+                    if (context.User.Identity?.IsAuthenticated == false)
+                    {
+                        context.Response.Redirect("/");
+                        return;
+                    }
 
-                var details = session.Get<UserDetails>(Session.UserDetailsKey);
+                    var details = session.Get<UserDetails>(Session.UserDetailsKey);
 
-                if (details == null)
-                {
-                    context.Response.Redirect("/");
-                    return;
+                    if (details == null)
+                    {
+                        context.Response.Redirect("/");
+                        return;
+                    }
                 }
             }
         }

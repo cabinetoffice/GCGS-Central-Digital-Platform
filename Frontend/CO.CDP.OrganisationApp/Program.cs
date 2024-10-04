@@ -164,7 +164,7 @@ builder.Services
     .AddAwsS3Service()
     .AddLoggingConfiguration(builder.Configuration)
     .AddAmazonCloudWatchLogsService()
-    .AddCloudWatchSerilog();
+    .AddCloudWatchSerilog(builder.Configuration);
 
 
 var app = builder.Build();
@@ -179,7 +179,7 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-app.MapHealthChecks("/health");
+app.MapHealthChecks("/health").AllowAnonymous();
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();

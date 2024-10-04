@@ -1,4 +1,5 @@
 @model FormElementSingleChoiceModel
+@using CO.CDP.OrganisationApp.Pages.Forms.ChoiceProviderStrategies
 
 @{
     var hasError = ((TagBuilder)Html.ValidationMessageFor(m => m.SelectedOption)).HasInnerHtml;
@@ -49,13 +50,13 @@
             @{
                 var index = 0;
                 if (Model.Options?.Choices != null ) {
-                    foreach(var value in Model.Options.Choices)
+                    foreach(var choice in Model.Options.Choices)
                     {
                         var id = index == 0 ? "SelectedOption" : $"SelectedOption_{index}";
 
                         <div class="govuk-radios__item">
-                            <input class="govuk-radios__input" id="@id" name="SelectedOption" type="radio" value="@value" @(Model.SelectedOption == value ? "checked": "")>
-                            <label class="govuk-label govuk-radios__label" for="@id">@value</label>
+                            <input class="govuk-radios__input" id="@id" name="SelectedOption" type="radio" value="@choice.Key" @(Model.SelectedOption == choice.Key ? "checked" : "")>
+                            <label class="govuk-label govuk-radios__label" for="@id">@choice.Value</label>
                         </div>
 
                         index++;

@@ -7,7 +7,7 @@ public interface IOrganisationRepository : IDisposable
     public void SaveOrganisationPerson(OrganisationPerson organisationPerson);
 
     public Task<Organisation?> Find(Guid organisationId);
-
+    public Task<IEnumerable<OrganisationPerson>> FindOrganisationPersons(Guid organisationId);
     public Task<OrganisationPerson?> FindOrganisationPerson(Guid organisationId, Guid personId);
 
     public Task<OrganisationPerson?> FindOrganisationPerson(Guid organisationId, string userUrn);
@@ -29,4 +29,6 @@ public interface IOrganisationRepository : IDisposable
     public Task<IList<ConnectedEntity>> GetConnectedIndividualTrusts(int organisationId);
 
     public Task<IList<ConnectedEntity>> GetConnectedOrganisations(int organisationId);
+
+    public Task<Organisation.LegalForm?> GetLegalForm(int organisationId);
 }

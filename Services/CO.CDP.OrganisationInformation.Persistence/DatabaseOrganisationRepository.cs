@@ -24,7 +24,13 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
             .ThenInclude(p => p.Address)
             .FirstOrDefaultAsync(t => t.Name == name);
     }
-
+    public async Task<IEnumerable<OrganisationPerson>> FindOrganisationPersons(Guid organisationId)
+    {
+        return await context.Set<OrganisationPerson>()
+            .Include(p => p.Person)
+            .Where(o => o.Organisation.Guid == organisationId)
+            .ToListAsync();
+    }
 
     public async Task<OrganisationPerson?> FindOrganisationPerson(Guid organisationId, Guid personId)
     {
@@ -98,6 +104,18 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
             .Where(x => x.SupplierOrganisation != null && x.SupplierOrganisation.Id == organisationId);
 
         return await result.ToListAsync();
+    }
+
+    public async Task<Organisation.LegalForm?> GetLegalForm(int organisationId)
+    {
+        var organisation = await context.Organisations
+            .Where(x => x.Id == organisationId && x.SupplierInfo != null)
+            .Include(x => x.SupplierInfo)
+                .ThenInclude(x => x != null ? x.LegalForm : null)
+            .AsNoTracking()
+            .FirstOrDefaultAsync();
+
+        return organisation?.SupplierInfo?.LegalForm;
     }
 
     public void Save(Organisation organisation)
