@@ -34,10 +34,15 @@ public class GetSharedDataUseCase(
     private async Task<Details> GetDetails(SharedConsent sharedConsent)
     {
         var legalForm = await organisationRepository.GetLegalForm(sharedConsent.OrganisationId);
+        var operationType = await organisationRepository.GetOperationType(sharedConsent.OrganisationId);
 
         return new Details
         {
-            LegalForm = legalForm != null ? mapper.Map<LegalForm>(legalForm) : null
+            LegalForm = legalForm != null ? mapper.Map<LegalForm>(legalForm) : null,
+            Scale = operationType == OperationType.SmallorMediumSized ? "small" : "large",
+            Vcse = operationType == OperationType.NonGovernmental,
+            ShelteredWorkshop = operationType == OperationType.SupportedEmploymentProvider,
+            PublicServiceMissionOrganization = operationType == OperationType.PublicService
         };
     }
 
