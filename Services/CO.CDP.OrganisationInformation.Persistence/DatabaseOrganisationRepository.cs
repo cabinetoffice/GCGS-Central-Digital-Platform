@@ -105,7 +105,7 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
         var organisation = await context.Organisations
             .Where(x => x.Id == organisationId && x.SupplierInfo != null)
             .Include(x => x.SupplierInfo)
-                .ThenInclude(x => x.LegalForm)
+                .ThenInclude(x => x != null ? x.LegalForm : null)
             .AsNoTracking()
             .FirstOrDefaultAsync();
 
