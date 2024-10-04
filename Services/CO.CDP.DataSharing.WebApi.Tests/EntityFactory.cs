@@ -294,7 +294,6 @@ internal static class EntityFactory
                         NextQuestionAlternative = null,
                         CreatedOn = DateTimeOffset.UtcNow,
                         UpdatedOn = DateTimeOffset.UtcNow,
-                        Section = GivenSection(Guid.NewGuid(), form),
                         Section = GivenSection(Guid.NewGuid(), form, sectionName),
                         SortOrder = 1
                     },
@@ -331,7 +330,8 @@ internal static class EntityFactory
                         CreatedOn = DateTimeOffset.UtcNow,
                         UpdatedOn = DateTimeOffset.UtcNow,
                         Section = GivenSection(Guid.NewGuid(), form, sectionName),
-                        SortOrder = 3                    },
+                        SortOrder = 3
+                    },
                     new PersistenceForms.FormQuestion
                     {
                         Id = 3,
@@ -348,7 +348,8 @@ internal static class EntityFactory
                         CreatedOn = DateTimeOffset.UtcNow,
                         UpdatedOn = DateTimeOffset.UtcNow,
                         Section = GivenSection(Guid.NewGuid(), form, sectionName),
-                        SortOrder = 4                    },
+                        SortOrder = 4
+                    },
                     new PersistenceForms.FormQuestion
                     {
                         Id = 4,
@@ -365,7 +366,8 @@ internal static class EntityFactory
                         CreatedOn = DateTimeOffset.UtcNow,
                         UpdatedOn = DateTimeOffset.UtcNow,
                         Section = GivenSection(Guid.NewGuid(), form, sectionName),
-                        SortOrder = 5                    },
+                        SortOrder = 5
+                    },
                     new PersistenceForms.FormQuestion
                     {
                         Id = 5,
@@ -382,7 +384,8 @@ internal static class EntityFactory
                         CreatedOn = DateTimeOffset.UtcNow,
                         UpdatedOn = DateTimeOffset.UtcNow,
                         Section = GivenSection(Guid.NewGuid(), form, sectionName),
-                        SortOrder = 6                    }
+                        SortOrder = 6
+                    }
                 };
 
         var formAnswers = new List<PersistenceForms.FormAnswerSet>
