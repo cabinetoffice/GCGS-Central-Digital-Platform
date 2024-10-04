@@ -17,6 +17,7 @@ public class RegisterOrganisationUseCase(
     IPublisher publisher,
     IMapper mapper,
     IConfiguration configuration,
+    ILogger<RegisterOrganisationUseCase> logger,
     Func<Guid> guidFactory)
     : IUseCase<RegisterOrganisation, Model.Organisation>
 {
@@ -29,7 +30,8 @@ public class RegisterOrganisationUseCase(
         IGovUKNotifyApiClient govUKNotifyApiClient,
         IPublisher publisher,
         IMapper mapper,
-        IConfiguration configuration)
+        IConfiguration configuration,
+        ILogger<RegisterOrganisationUseCase> logger)
         : this(identifierService,
               organisationRepository,
               personRepository,
@@ -37,6 +39,7 @@ public class RegisterOrganisationUseCase(
               publisher,
               mapper,
               configuration,
+              logger,
               Guid.NewGuid)
     {
     }
@@ -91,14 +94,21 @@ public class RegisterOrganisationUseCase(
     }
     private async Task NotifyAdminOfApprovalRequest(OrganisationInformation.Persistence.Organisation organisation)
     {
-        var baseAppUrl = configuration.GetValue<string>("OrganisationAppUrl")
-                        ?? throw new Exception("Missing configuration key: OrganisationAppUrl");
+        var baseAppUrl = configuration.GetValue<string>("OrganisationAppUrl") ?? "";
+        var templateId = configuration.GetValue<string>("GOVUKNotify:RequestReviewApplicationEmailTemplateId") ?? "";
+        var supportAdminEmailAddress = configuration.GetValue<string>("GOVUKNotify:SupportAdminEmailAddress") ?? "";
 
-        var templateId = configuration.GetValue<string>("GOVUKNotify:RequestReviewApplicationEmailTemplateId")
-                        ?? throw new Exception("Missing configuration key: GOVUKNotify:RequestReviewApplicationEmailTemplateId.");
+        var missingConfigs = new List<string>();
 
-        var supportAdminEmailAddress = configuration.GetValue<string>("GOVUKNotify:SupportAdminEmailAddress")
-                        ?? throw new Exception("Missing configuration key: GOVUKNotify:SupportAdminEmailAddress");
+        if (string.IsNullOrEmpty(baseAppUrl)) missingConfigs.Add("OrganisationAppUrl");
+        if (string.IsNullOrEmpty(templateId)) missingConfigs.Add("GOVUKNotify:RequestReviewApplicationEmailTemplateId");
+        if (string.IsNullOrEmpty(supportAdminEmailAddress)) missingConfigs.Add("GOVUKNotify:SupportAdminEmailAddress");
+
+        if (missingConfigs.Count != 0)
+        {
+            logger.LogError(new Exception("Unable to send email to support admin"), $"Missing configuration keys: {string.Join(", ", missingConfigs)}. Unable to send email to support admin.");
+            return;
+        }
 
         var requestLink = new Uri(new Uri(baseAppUrl), $"/support/organisation/{organisation.Guid}/approval").ToString();
 
@@ -107,13 +117,21 @@ public class RegisterOrganisationUseCase(
             EmailAddress = supportAdminEmailAddress,
             TemplateId = templateId,
             Personalisation = new Dictionary<string, string>
-            {
-                { "org_name", organisation.Name },
-                { "request_link", requestLink }
-            }
+                {
+                    { "org_name", organisation.Name },
+                    { "request_link", requestLink }
+                }
         };
 
-        await govUKNotifyApiClient.SendEmail(emailRequest);
+        try
+        {
+            await govUKNotifyApiClient.SendEmail(emailRequest);
+        }
+        catch
+        {
+            return;
+        }
+
     }
 
     private OrganisationInformation.Persistence.Organisation MapRequestToOrganisation(

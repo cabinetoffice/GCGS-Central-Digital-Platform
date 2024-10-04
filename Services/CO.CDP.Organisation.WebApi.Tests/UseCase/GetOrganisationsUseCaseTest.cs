@@ -6,6 +6,8 @@ using CO.CDP.OrganisationInformation.Persistence;
 using CO.CDP.Organisation.WebApi.UseCase;
 using CO.CDP.OrganisationInformation;
 
+namespace CO.CDP.Organisation.WebApi.Tests.UseCase;
+
 public class GetOrganisationsUseCaseTests
 {
     private readonly Mock<IOrganisationRepository> _organisationRepositoryMock;

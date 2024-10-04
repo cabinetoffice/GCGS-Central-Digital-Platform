@@ -21,25 +21,28 @@ public class FormElementFileUploadModel : FormElementModel, IValidatableObject
 
     public override FormAnswer? GetAnswer()
     {
-        if (IsRequired == false && HasValue == false)
+        FormAnswer? formAnswer = null;
+
+        if (HasValue != null)
         {
-            return null;
+            formAnswer = new FormAnswer { BoolValue = HasValue };
         }
 
-        return string.IsNullOrWhiteSpace(UploadedFileName) ? null : new FormAnswer { TextValue = UploadedFileName };
+        if (HasValue != false && !string.IsNullOrWhiteSpace(UploadedFileName))
+        {
+            formAnswer ??= new FormAnswer();
+            formAnswer.TextValue = UploadedFileName;
+        }
+
+        return formAnswer;
     }
 
     public override void SetAnswer(FormAnswer? answer)
     {
-        if (answer?.TextValue != null)
-        {
-            UploadedFileName = answer.TextValue;
-            HasValue = true;
-        }
-        else if (RedirectFromCheckYourAnswerPage && IsRequired == false)
-        {
-            HasValue = false;
-        }
+        if (answer == null) return;
+
+        HasValue = answer.BoolValue;
+        UploadedFileName = answer.TextValue;
     }
 
     public (IFormFile formFile, string filename, string contentType)? GetUploadedFileInfo()

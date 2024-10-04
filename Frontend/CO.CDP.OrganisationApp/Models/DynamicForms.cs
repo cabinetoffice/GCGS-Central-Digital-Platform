@@ -36,8 +36,10 @@ public class FormQuestion
 
 public class FormQuestionOptions
 {
-    public List<string>? Choices { get; set; }
+    public Dictionary<string, string>? Choices { get; set; }
     public string? ChoiceProviderStrategy { get; set; }
+    public List<FormQuestionGroup>? Groups { get; set; }
+    public string? ChoiceAnswerFieldName { get; set; }
 }
 
 public class FormQuestionAnswerState
@@ -56,14 +58,29 @@ public class QuestionAnswer
 
 public class FormAnswer
 {
-    public bool? BoolValue { get; init; }
-    public double? NumericValue { get; init; }
-    public DateTimeOffset? DateValue { get; init; }
-    public DateTimeOffset? StartValue { get; init; }
-    public DateTimeOffset? EndValue { get; init; }
-    public string? TextValue { get; init; }
-    public string? OptionValue { get; init; }
-    public Address? AddressValue { get; init; }
+    public bool? BoolValue { get; set; }
+    public double? NumericValue { get; set; }
+    public DateTimeOffset? DateValue { get; set; }
+    public DateTimeOffset? StartValue { get; set; }
+    public DateTimeOffset? EndValue { get; set; }
+    public string? TextValue { get; set; }
+    public string? OptionValue { get; set; }
+    public Address? AddressValue { get; set; }
+    public string? JsonValue { get; set; }
+}
+
+public class FormQuestionGroup
+{
+    public string? Name { get; set; }
+    public string? Hint { get; set; }
+    public string? Caption { get; set; }
+    public List<FormQuestionGroupChoice>? Choices { get; set; }
+}
+
+public class FormQuestionGroupChoice
+{
+    public string? Title { get; set; }
+    public string? Value { get; set; } = null;
 }
 
 public enum FormQuestionType
@@ -79,5 +96,6 @@ public enum FormQuestionType
     CheckBox,
     Address,
     MultiLine,
+    GroupedSingleChoice,
     Url
 }

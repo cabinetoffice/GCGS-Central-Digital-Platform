@@ -14,5 +14,4 @@ public interface IFormsEngine
 
     Task SaveUpdateAnswers(Guid formId, Guid sectionId, Guid organisationId, FormQuestionAnswerState answerSet);
     Task<string> CreateShareCodeAsync(Guid formId, Guid organisationId);
-    Task<List<string>?> ExecuteChoiceProviderStrategy(Forms.WebApiClient.FormQuestionOptions options);
 }

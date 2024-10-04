@@ -20,4 +20,6 @@ public record FormQuestion
     public required string SectionName { get; init; }
 
     public List<FormQuestionOption>? Options { get; init; }
+
+    public required int SortOrder { get; set; }
 }

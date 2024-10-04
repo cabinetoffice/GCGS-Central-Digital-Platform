@@ -29,8 +29,7 @@
         {"name": "OrganisationInformationDatabase__Database", "value": "${oi_db_name}"},
         {"name": "OrganisationInformationDatabase__Host", "value": "${oi_db_address}"},
         {"name": "OrganisationInformationDatabase__Server", "value": "${oi_db_address}"},
-        {"name": "Organisation__Authority", "value": "https://authority.${public_hosted_zone_fqdn}"},
-        {"name": "VERSION", "value": "${service_version}"}
+        {"name": "Organisation__Authority", "value": "https://authority.${public_hosted_zone_fqdn}"}
     ],
     "secrets": [
         {"name": "OrganisationInformationDatabase__Password", "valueFrom": "${oi_db_username}"},

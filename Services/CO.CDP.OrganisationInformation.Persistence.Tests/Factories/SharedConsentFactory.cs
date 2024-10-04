@@ -106,6 +106,7 @@ public static class SharedConsentFactory
             NextQuestionAlternative = null,
             Options = new FormQuestionOptions(),
             Section = theSection,
+            SortOrder = 0
         };
         theSection.Questions.Add(question);
         return question;

@@ -74,7 +74,7 @@ jobs:
           echo "Version: $VERSION"
           echo "version=${VERSION}" >> $GITHUB_OUTPUT
       - name: Build
-        run: make build-docker
+        run: make build-docker VERSION=${IMAGE_VERSION}
         env:
           IMAGE_VERSION: ${{ steps.version.outputs.version }}
       - name: Start services

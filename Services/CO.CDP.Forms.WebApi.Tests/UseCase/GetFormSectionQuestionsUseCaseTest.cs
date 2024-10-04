@@ -85,6 +85,7 @@ public class GetFormSectionQuestionsUseCaseTest(AutoMapperFixture mapperFixture)
                 NextQuestionAlternative = null,
                 Options = new CO.CDP.OrganisationInformation.Persistence.Forms.FormQuestionOptions(),
                 Section = section,
+                SortOrder = 0
             },
             new CO.CDP.OrganisationInformation.Persistence.Forms.FormQuestion
             {
@@ -100,6 +101,7 @@ public class GetFormSectionQuestionsUseCaseTest(AutoMapperFixture mapperFixture)
                 NextQuestionAlternative = null,
                 Options = new CO.CDP.OrganisationInformation.Persistence.Forms.FormQuestionOptions(),
                 Section = section,
+                SortOrder = 0
             }
         };
         section.Questions = questions;

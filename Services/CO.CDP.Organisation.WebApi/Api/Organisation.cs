@@ -23,14 +23,15 @@ public static class EndpointExtensions
     public static void UseOrganisationEndpoints(this WebApplication app)
     {
         app.MapGet("/organisations",
-                async ([FromQuery] string type, [FromQuery] int limit, [FromQuery] int skip, IUseCase<PaginatedOrganisationQuery, IEnumerable<OrganisationExtended>> useCase) =>
+            [OrganisationAuthorize([AuthenticationChannel.OneLogin], personScopes: [Constants.PersonScope.SupportAdmin])]
+        async ([FromQuery] string type, [FromQuery] int limit, [FromQuery] int skip, IUseCase<PaginatedOrganisationQuery, IEnumerable<OrganisationExtended>> useCase) =>
                 {
                     return await useCase.Execute(new PaginatedOrganisationQuery
-                        {
-                            Type = type,
-                            Limit = limit,
-                            Skip = skip
-                        })
+                    {
+                        Type = type,
+                        Limit = limit,
+                        Skip = skip
+                    })
                         .AndThen(organisations => Results.Ok(organisations));
                 })
             .Produces<List<OrganisationExtended>>(StatusCodes.Status200OK, "application/json")
@@ -78,7 +79,8 @@ public static class EndpointExtensions
             [OrganisationAuthorize(
                 [AuthenticationChannel.OneLogin, AuthenticationChannel.ServiceKey],
                 [Constants.OrganisationPersonScope.Admin, Constants.OrganisationPersonScope.Editor, Constants.OrganisationPersonScope.Viewer],
-                OrganisationIdLocation.Path)]
+                OrganisationIdLocation.Path,
+                [Constants.PersonScope.SupportAdmin])]
         async (Guid organisationId, IUseCase<Guid, Model.Organisation?> useCase) =>
                await useCase.Execute(organisationId)
                    .AndThen(organisation => organisation != null ? Results.Ok(organisation) : Results.NotFound()))
@@ -182,8 +184,8 @@ public static class EndpointExtensions
     public static RouteGroupBuilder UseSupportEndpoints(this RouteGroupBuilder app)
     {
         app.MapPatch("/organisation/{organisationId}",
-                [OrganisationAuthorize([AuthenticationChannel.OneLogin])]
-                async (Guid organisationId, SupportUpdateOrganisation supportUpdateOrganisation, IUseCase<(Guid, SupportUpdateOrganisation), bool> useCase) =>
+            [OrganisationAuthorize([AuthenticationChannel.OneLogin], personScopes: [Constants.PersonScope.SupportAdmin])]
+        async (Guid organisationId, SupportUpdateOrganisation supportUpdateOrganisation, IUseCase<(Guid, SupportUpdateOrganisation), bool> useCase) =>
                 await useCase.Execute((organisationId, supportUpdateOrganisation))
                     .AndThen(Results.Ok))
             .Produces<Boolean>(StatusCodes.Status200OK, "application/json")

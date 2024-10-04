@@ -157,7 +157,6 @@ services:
       OrganisationInformationDatabase__Username: 'cdp_user'
       OrganisationInformationDatabase__Password: 'cdp123'
       Issuer: 'http://gateway:${CDP_AUTHORITY_PORT:-8092}'
-      VERSION: dev-docker
 
   tenant:
     container_name: co-cdp-tenant
@@ -184,7 +183,6 @@ services:
       Aws__Credentials__AccessKeyId: test
       Aws__Credentials__SecretAccessKey: test
       Aws__ServiceURL: "http://localstack:4566"
-      VERSION: dev-docker
 
   organisation:
     container_name: co-cdp-organisation
@@ -216,7 +214,6 @@ services:
       OrganisationInformationDatabase__Username: 'cdp_user'
       OrganisationInformationDatabase__Password: 'cdp123'
       Organisation__Authority: '${Organisation__Authority:-http://gateway:${CDP_AUTHORITY_PORT:-8092}}'
-      VERSION: dev-docker
 
   person:
     container_name: co-cdp-person
@@ -240,7 +237,6 @@ services:
       OrganisationInformationDatabase__Username: 'cdp_user'
       OrganisationInformationDatabase__Password: 'cdp123'
       Organisation__Authority: '${Organisation__Authority:-http://gateway:${CDP_AUTHORITY_PORT:-8092}}'
-      VERSION: dev-docker
 
   forms:
     container_name: co-cdp-forms
@@ -269,7 +265,6 @@ services:
       OrganisationInformationDatabase__Username: 'cdp_user'
       OrganisationInformationDatabase__Password: 'cdp123'
       Organisation__Authority: '${Organisation__Authority:-http://gateway:${CDP_AUTHORITY_PORT:-8092}}'
-      VERSION: dev-docker
 
   data-sharing:
     container_name: co-cdp-data-sharing
@@ -298,7 +293,6 @@ services:
       OrganisationInformationDatabase__Username: 'cdp_user'
       OrganisationInformationDatabase__Password: 'cdp123'
       Organisation__Authority: '${Organisation__Authority:-http://gateway:${CDP_AUTHORITY_PORT:-8092}}'
-      VERSION: dev-docker
 
   entity-verification:
     container_name: co-cdp-entity-verification
@@ -330,4 +324,3 @@ services:
       EntityVerificationDatabase__Username: 'cdp_user'
       EntityVerificationDatabase__Password: 'cdp123'
       Organisation__Authority: '${Organisation__Authority:-http://gateway:${CDP_AUTHORITY_PORT:-8092}}'
-      VERSION: dev-docker
