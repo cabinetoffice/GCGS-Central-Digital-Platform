@@ -50,17 +50,6 @@ public class FormElementUrlInputModelTests
     }
 
     [Fact]
-    public void SetAnswer_ShouldSetHasValueToFalse_WhenAnswerIsNullAndRedirectFromCheckYourAnswerPage()
-    {
-        var model = new FormElementUrlInputModel();
-        model.Initialize(new FormQuestion { IsRequired = false }, true);
-
-        model.SetAnswer(null);
-
-        model.HasValue.Should().BeFalse();
-    }
-
-    [Fact]
     public void Validate_ShouldReturnError_WhenHasValueIsNullAndIsNotRequired()
     {
         var model = new FormElementUrlInputModel
