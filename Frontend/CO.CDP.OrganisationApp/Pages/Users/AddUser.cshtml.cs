@@ -98,15 +98,9 @@ public class AddUserModel(
             scopes = [];
         }
 
-        if (scopes != null && scopes.Contains(OrganisationPersonScopes.UserAdmin)) scopes.Remove(OrganisationPersonScopes.UserAdmin);
         if (scopes != null && scopes.Contains(OrganisationPersonScopes.Admin)) scopes.Remove(OrganisationPersonScopes.Admin);
         if (scopes != null && scopes.Contains(OrganisationPersonScopes.Editor)) scopes.Remove(OrganisationPersonScopes.Editor);
         if (scopes != null && scopes.Contains(OrganisationPersonScopes.Viewer)) scopes.Remove(OrganisationPersonScopes.Viewer);
-
-        if (IsAdmin == true)
-        {
-            scopes?.Add(OrganisationPersonScopes.UserAdmin);
-        }
 
         switch (Role)
         {

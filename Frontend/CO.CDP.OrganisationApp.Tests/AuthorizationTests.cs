@@ -114,7 +114,7 @@ public class AuthorizationTests
     public static IEnumerable<object[]> TestCases()
     {
         yield return new object[] { $"/organisation/{testOrganisationId}/users/user-summary", new string[] { "Organisation has 2 users" } };
-        yield return new object[] { $"/organisation/{testOrganisationId}/users/{personInviteGuid}/change-role?handler=personInvite", new string[] { "Person invite Last name", "Can add, remove and edit users" } };
+        yield return new object[] { $"/organisation/{testOrganisationId}/users/{personInviteGuid}/change-role?handler=personInvite", new string[] { "Person invite Last name", "Select a role" } };
     }
 
     [Theory]

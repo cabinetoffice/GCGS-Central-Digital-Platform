@@ -78,7 +78,7 @@ public class ChangePersonInviteUserRoleTests
         _changeUserRoleModel.IsAdmin = true;
         _changeUserRoleModel.Role = null;
 
-        _changeUserRoleModel.ModelState.AddModelError("Role", "Required");       
+        _changeUserRoleModel.ModelState.AddModelError("Role", "Required");
 
         var result = await _changeUserRoleModel.OnPostPersonInvite();
         Assert.IsType<PageResult>(result);
@@ -106,14 +106,13 @@ public class ChangePersonInviteUserRoleTests
                                     "John",
                                     new Guid(),
                                     "Smith",
-                                    new List<string> { OrganisationPersonScopes.Admin, OrganisationPersonScopes.Editor }
+                                    new List<string> { OrganisationPersonScopes.Editor }
                                 );
 
         _mockOrganisationClient
             .Setup(s => s.GetOrganisationPersonInvitesAsync(mockPersonInvite.Id))
             .ReturnsAsync(new List<PersonInviteModel>() { mockPersonInvite });
 
-        _changeUserRoleModel.IsAdmin = true;
         _changeUserRoleModel.Role = OrganisationPersonScopes.Viewer;
 
         var result = await _changeUserRoleModel.OnPostPersonInvite();
@@ -126,8 +125,7 @@ public class ChangePersonInviteUserRoleTests
                                                 It.IsAny<Guid>(),
                                                 It.Is<UpdateInvitedPersonToOrganisation>(u =>
                                                     u.Scopes.Contains(OrganisationPersonScopes.Viewer) &&
-                                                    u.Scopes.Contains(OrganisationPersonScopes.Admin) &&
-                                                    u.Scopes.Count == 2
+                                                    u.Scopes.Count == 1
                                                 )
                                             ),
                                             Times.Once

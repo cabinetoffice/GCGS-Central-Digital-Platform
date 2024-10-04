@@ -77,20 +77,6 @@
                             spellcheck="false" @(emailHasError ? "aria-describedby=email-error" : "")>
                 </div>
 
-                <div class="govuk-form-group">
-
-                    <div class="govuk-checkboxes__item">
-                        <input class="govuk-checkboxes__input" id="role-admin" name="IsAdmin" type="checkbox"
-                               value="true" @IsSelected(Model.IsAdmin == true)>
-                        <label class="govuk-label govuk-checkboxes__label" for="role-admin">
-                            Is user admin
-                        </label>
-                        <div id="role-admin-hint" class="govuk-hint govuk-radios__hint">
-                            Can add, remove and edit users
-                        </div>
-                    </div>
-                </div>
-
                 <div class="govuk-form-group @(roleHasError ? "govuk-form-group--error" : "")">
                     <fieldset class="govuk-fieldset" aria-describedby="role-hint">
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
