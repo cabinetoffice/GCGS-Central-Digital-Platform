@@ -11,6 +11,7 @@ public class FormQuestion : IEntityDate
     public required Guid Guid { get; set; }
     public required FormQuestion? NextQuestion { get; set; } = null;
     public required FormQuestion? NextQuestionAlternative { get; set; } = null;
+    public required int SortOrder { get; set; } = 0; // To return Question's sort order mirroring with NextQuestionID/NextQuestionAlternative
     public required FormSection Section { get; set; }
     public required FormQuestionType Type { get; set; }
     public required bool IsRequired { get; set; } = true;

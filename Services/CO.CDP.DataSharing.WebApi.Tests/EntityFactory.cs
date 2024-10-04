@@ -292,7 +292,8 @@ internal static class EntityFactory
                         NextQuestionAlternative = null,
                         CreatedOn = DateTimeOffset.UtcNow,
                         UpdatedOn = DateTimeOffset.UtcNow,
-                        Section = GivenSection(Guid.NewGuid(), form)
+                        Section = GivenSection(Guid.NewGuid(), form),
+                        SortOrder = 1
                     },
                     new PersistenceForms.FormQuestion
                     {
@@ -309,7 +310,8 @@ internal static class EntityFactory
                         NextQuestionAlternative = null,
                         CreatedOn = DateTimeOffset.UtcNow,
                         UpdatedOn = DateTimeOffset.UtcNow,
-                        Section = GivenSection(Guid.NewGuid(), form)
+                        Section = GivenSection(Guid.NewGuid(), form),
+                        SortOrder = 2
                     },
                     new PersistenceForms.FormQuestion
                     {
@@ -326,7 +328,8 @@ internal static class EntityFactory
                         NextQuestionAlternative = null,
                         CreatedOn = DateTimeOffset.UtcNow,
                         UpdatedOn = DateTimeOffset.UtcNow,
-                        Section = GivenSection(Guid.NewGuid(), form)
+                        Section = GivenSection(Guid.NewGuid(), form),
+                        SortOrder = 3
                     },
                     new PersistenceForms.FormQuestion
                     {
@@ -343,7 +346,8 @@ internal static class EntityFactory
                         NextQuestionAlternative = null,
                         CreatedOn = DateTimeOffset.UtcNow,
                         UpdatedOn = DateTimeOffset.UtcNow,
-                        Section = GivenSection(Guid.NewGuid(), form)
+                        Section = GivenSection(Guid.NewGuid(), form),
+                        SortOrder = 4
                     },
                     new PersistenceForms.FormQuestion
                     {
@@ -360,7 +364,8 @@ internal static class EntityFactory
                         NextQuestionAlternative = null,
                         CreatedOn = DateTimeOffset.UtcNow,
                         UpdatedOn = DateTimeOffset.UtcNow,
-                        Section = GivenSection(Guid.NewGuid(), form)
+                        Section = GivenSection(Guid.NewGuid(), form),
+                        SortOrder = 5
                     },
                     new PersistenceForms.FormQuestion
                     {
@@ -377,7 +382,8 @@ internal static class EntityFactory
                         NextQuestionAlternative = null,
                         CreatedOn = DateTimeOffset.UtcNow,
                         UpdatedOn = DateTimeOffset.UtcNow,
-                        Section = GivenSection(Guid.NewGuid(), form)
+                        Section = GivenSection(Guid.NewGuid(), form),
+                        SortOrder = 6
                     }
                 };
 

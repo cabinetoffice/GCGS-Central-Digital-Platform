@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using CO.CDP.OrganisationInformation.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,9 +13,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CO.CDP.OrganisationInformation.Persistence.Migrations
 {
     [DbContext(typeof(OrganisationInformationContext))]
-    partial class OrganisationInformationContextModelSnapshot : ModelSnapshot
+    [Migration("20241003131026_QuestionSortOrder")]
+    partial class QuestionSortOrder
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -359,10 +362,6 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                     b.Property<Guid>("Guid")
                         .HasColumnType("uuid")
                         .HasColumnName("guid");
-
-                    b.Property<string>("JsonValue")
-                        .HasColumnType("jsonb")
-                        .HasColumnName("json_value");
 
                     b.Property<double?>("NumericValue")
                         .HasColumnType("double precision")

@@ -112,7 +112,8 @@ public class DataSharingProfile : Profile
             .ForMember(m => m.Text, o => o.MapFrom(m => m.Description))
             .ForMember(m => m.IsRequired, o => o.MapFrom(m => m.IsRequired))
             .ForMember(m => m.SectionName, o => o.MapFrom(m => m.Section.Title))
-            .ForMember(m => m.Options, o => o.MapFrom(m => m.Options.Choices));
+            .ForMember(m => m.Options, o => o.MapFrom(m => m.Options.Choices))
+            .ForMember(m => m.SortOrder, o => o.MapFrom(m => m.SortOrder));            
 
         CreateMap<Persistence.FormQuestionChoice, FormQuestionOption>()
             .ForMember(m => m.Id, o => o.MapFrom(m => m.Id))
