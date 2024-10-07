@@ -92,7 +92,8 @@ public class DataServiceTests
         result.FormAnswerSetForPdfs.Should().Contain(f => f.SectionName == "Exclusions");
 
         var exclusionsSection = result.FormAnswerSetForPdfs.First(fa => fa.SectionName == "Exclusions");
-        exclusionsSection.QuestionAnswers.Should().Contain(qa => qa.Item1 == "Were your accounts audited? " && qa.Item2 == "yes");
-        exclusionsSection.QuestionAnswers.Should().Contain(qa => qa.Item1 == "What is the financial year end date for the information you uploaded? " && qa.Item2 == DateTime.Today.ToString("dd-MM-yyyy"));
+        exclusionsSection.QuestionAnswers.Should().Contain(qa => qa.Item1 == "Were your accounts audited?" && qa.Item2 == "yes");
+        exclusionsSection.QuestionAnswers.Should().Contain(qa => qa.Item1 == "What is the financial year end date for the information you uploaded?" && qa.Item2 == DateTime.Today.ToString("dd-MM-yyyy"));
+        exclusionsSection.QuestionAnswers.Should().Contain(qa => qa.Item1 == "Upload your accounts" && qa.Item2 == "Accounts_File.xlsx");
     }
 }

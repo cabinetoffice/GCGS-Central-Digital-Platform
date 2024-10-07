@@ -10,40 +10,25 @@ namespace CO.CDP.DataSharing.WebApi.DataService;
 
 public class DataService(IShareCodeRepository shareCodeRepository, IConnectedEntityRepository connectedEntityRepository) : IDataService
 {
-    private const string ExclusionsSectionName = "Exclusions";
-    private const string FinancialInformationSectionName = "Financial Information";
-    private const string QualificationsSectionName = "Qualifications";
-    private const string TradeAssurancesSectionName = "Trade assurances";
+    private const string DeclarationsSectionName = "Declarations";
 
     public async Task<SharedSupplierInformation> GetSharedSupplierInformationAsync(string shareCode)
     {
         var sharedConsent = await shareCodeRepository.GetByShareCode(shareCode)
                             ?? throw new ShareCodeNotFoundException(Constants.ShareCodeNotFoundExceptionMessage);
-
-        var exclusions = sharedConsent.AnswerSets.Where(a => a.Section.Title == ExclusionsSectionName).ToArray();
-        var financialInformation = sharedConsent.AnswerSets.Where(a => a.Section.Title == FinancialInformationSectionName);
-        var qualifications = sharedConsent.AnswerSets.Where(a => a.Section.Title == QualificationsSectionName);
-        var tradeAssurances = sharedConsent.AnswerSets.Where(a => a.Section.Title == TradeAssurancesSectionName);
-
+        var allFormSectionsExceptDeclaractions = sharedConsent.AnswerSets.Where(a => a.Section.Title != DeclarationsSectionName);
         var connectedEntities = await connectedEntityRepository.FindByOrganisation(sharedConsent.Organisation.Guid);
-
-        var pdfAnswerSets = new List<FormAnswerSetForPdf>();
-
-        pdfAnswerSets.AddRange(MapFormAnswerSetsForPdf(ExclusionsSectionName, exclusions));
-        pdfAnswerSets.AddRange(MapFormAnswerSetsForPdf(FinancialInformationSectionName, financialInformation));
-        pdfAnswerSets.AddRange(MapFormAnswerSetsForPdf(QualificationsSectionName, qualifications));
-        pdfAnswerSets.AddRange(MapFormAnswerSetsForPdf(TradeAssurancesSectionName, tradeAssurances));
-
+        
         return new SharedSupplierInformation
         {
             OrganisationId = sharedConsent.Organisation.Guid,
             BasicInformation = MapToBasicInformation(sharedConsent.Organisation),
             ConnectedPersonInformation = MapToConnectedPersonInformation(connectedEntities),
-            FormAnswerSetForPdfs = pdfAnswerSets
+            FormAnswerSetForPdfs = MapFormAnswerSetsForPdf(allFormSectionsExceptDeclaractions)
         };
     }
 
-    public static IEnumerable<FormAnswerSetForPdf> MapFormAnswerSetsForPdf(string sectionName,
+    public static IEnumerable<FormAnswerSetForPdf> MapFormAnswerSetsForPdf(
         IEnumerable<OrganisationInformation.Persistence.Forms.FormAnswerSet> answerSets)
     {
         var pdfAnswerSets = new List<FormAnswerSetForPdf>();
@@ -51,7 +36,7 @@ public class DataService(IShareCodeRepository shareCodeRepository, IConnectedEnt
         foreach (var answerSet in answerSets)
         {
             var pdfAnswerSet = new FormAnswerSetForPdf() {
-                SectionName = sectionName,
+                SectionName = answerSet.Section.Title,
                 QuestionAnswers = []
             };
 
@@ -63,26 +48,32 @@ public class DataService(IShareCodeRepository shareCodeRepository, IConnectedEnt
                 {
                     case OrganisationInformation.Persistence.Forms.FormQuestionType.YesOrNo:
                         {
-                            pdfAnswerSet.QuestionAnswers.Add(new Tuple<string, string>($"{answer.Question.Title} ",
+                            pdfAnswerSet.QuestionAnswers.Add(new Tuple<string, string>($"{answer.Question.Title}",
                                 answer.OptionValue ?? "No"));
                             break;
                         }
                     case OrganisationInformation.Persistence.Forms.FormQuestionType.Date:
                         {
-                            pdfAnswerSet.QuestionAnswers.Add(new Tuple<string, string>($"{answer.Question.Title} ",
+                            pdfAnswerSet.QuestionAnswers.Add(new Tuple<string, string>($"{answer.Question.Title}",
                                 answer.DateValue?.ToString("dd-MM-yyyy") ?? "Not specified"));
                             break;
                         }
                     case OrganisationInformation.Persistence.Forms.FormQuestionType.Url:
                         {
-                            pdfAnswerSet.QuestionAnswers.Add(new Tuple<string, string>($"{answer.Question.Title} ",
+                            pdfAnswerSet.QuestionAnswers.Add(new Tuple<string, string>($"{answer.Question.Title}",
                                answer.TextValue ?? ""));
+                            break;
+                        }
+                    case OrganisationInformation.Persistence.Forms.FormQuestionType.FileUpload:
+                        {
+                            pdfAnswerSet.QuestionAnswers.Add(new Tuple<string, string>($"{answer.Question.Title}",
+                               answer.TextValue ?? "No"));
                             break;
                         }
                     case OrganisationInformation.Persistence.Forms.FormQuestionType.Text:
                     case OrganisationInformation.Persistence.Forms.FormQuestionType.MultiLine:
                         {
-                            pdfAnswerSet.QuestionAnswers.Add(new Tuple<string, string>($"{answer.Question.Title}: ",
+                            pdfAnswerSet.QuestionAnswers.Add(new Tuple<string, string>($"{answer.Question.Title}:",
                                 answer.TextValue ?? ""));
                             break;
                         }

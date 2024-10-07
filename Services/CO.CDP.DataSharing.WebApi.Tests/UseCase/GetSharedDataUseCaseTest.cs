@@ -190,10 +190,6 @@ public class GetSharedDataUseCaseTest : IClassFixture<AutoMapperFixture>
         answer.Should().NotBeNull();
         answer!.QuestionName.Should().NotBeNull();
 
-        if (!string.IsNullOrEmpty(answer.TextValue))
-            answer.TextValue.Should().Be("Compliance confirmed through third-party audit.");
-
-
         if (answer.BoolValue.HasValue)
             answer.BoolValue.Should().BeTrue();
 
