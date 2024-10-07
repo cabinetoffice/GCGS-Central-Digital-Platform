@@ -376,11 +376,15 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql) : 
     }
 
     [Fact]
-    public async Task GetOperationTypes_WhenNoOperationTypeExists_ReturnsNull()
     {
         using var repository = OrganisationRepository();
 
         var organisationId = 1;
+    [Fact]
+    public async Task GetOperationTypes_WhenNoOperationTypeExists_ReturnsNull()
+    {
+        using var repository = OrganisationRepository();
+
         var organisation = GivenOrganisation();
         organisation.SupplierInfo = GivenSupplierInformation();
         organisation.SupplierInfo.OperationTypes = [];
@@ -389,7 +393,7 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql) : 
         await context.Organisations.AddAsync(organisation);
         await context.SaveChangesAsync();
 
-        var result = await repository.GetOperationTypes(organisationId);
+        var result = await repository.GetOperationTypes(organisation.Id);
 
         result.Should().BeEmpty();
     }
@@ -399,19 +403,18 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql) : 
     {
         using var repository = OrganisationRepository();
 
-        var organisationId = 1;
         var organisation = GivenOrganisation();
         organisation.SupplierInfo = GivenSupplierInformation();
-        organisation.SupplierInfo.OperationTypes = [OperationType.None];
+        organisation.SupplierInfo.OperationTypes = [OperationType.SmallOrMediumSized];
 
         using var context = postgreSql.OrganisationInformationContext();
         await context.Organisations.AddAsync(organisation);
         await context.SaveChangesAsync();
 
-        var result = await repository.GetOperationTypes(organisationId);
+        var result = await repository.GetOperationTypes(organisation.Id);
 
         result.Should().NotBeNull();
-        result.Should().Contain(OperationType.None);
+        result.Should().Contain(OperationType.SmallOrMediumSized);
     }
 
     private IOrganisationRepository OrganisationRepository()
