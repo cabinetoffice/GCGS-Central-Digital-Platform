@@ -8,31 +8,30 @@
 <a href="@backUrl" class="govuk-back-link">Back</a>
 
 <main class="govuk-main-wrapper" id="main-content">
-    <div class="govuk-grid-column-ful-width">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
 
-        <div class="govuk-grid-row">
-            <div class="govuk-grid-column-two-thirds">
+            <div class="govuk-form-group">
+                <h1 class="govuk-heading-l">
+                    Share your supplier information
+                </h1>
 
-                <div class="govuk-form-group">
-                    <h1 class="govuk-heading-l">
-                        Share your supplier information
-                    </h1>
+                <details class="govuk-details">
+                    <summary class="govuk-details__summary">
+                        <span class="govuk-details__summary-text">
+                            How it works
+                        </span>
+                    </summary>
+                    <div class="govuk-details__text">
+                        To share your supplier information with buyers you need to create a share code and file, and declare that the information is correct.<br><br>
+                        This saves a copy of the supplier information you provided about your organisation, connected persons, exclusions and financial information.<br><br>
+                        When you submit a bid for a procurement, the contracting authority will let you know how to give them the share code or file.<br><br>
+                        If your supplier information changes, you can update it and create a new share code and file to share the new information.
+                    </div>
+                </details>
 
-                    <details class="govuk-details">
-                        <summary class="govuk-details__summary">
-                            <span class="govuk-details__summary-text">
-                                How it works
-                            </span>
-                        </summary>
-                        <div class="govuk-details__text">
-                            To share your supplier information with buyers you need to create a share code and file, and declare that the information is correct.<br><br>
-                            This saves a copy of the supplier information you provided about your organisation, connected persons, exclusions and financial information.<br><br>
-                            When you submit a bid for a procurement, the contracting authority will let you know how to give them the share code or file.<br><br>
-                            If your supplier information changes, you can update it and create a new share code and file to share the new information.
-                        </div>
-                    </details>
-
-
+                @if(await Model.MandatorySectionsCompleted())
+                {
                     <a href="@createShareCodeLink" role="button" draggable="false" class="govuk-button" data-module="govuk-button">
                         Create a share code
                     </a>
@@ -67,7 +66,17 @@
                             </table>
                         </div>
                     }
-                </div>
+                }
+                else
+                {
+                    <div class="govuk-warning-text">
+                        <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+                        <strong class="govuk-warning-text__text">
+                            <span class="govuk-visually-hidden">Note: </span>
+                            You must complete all mandatory sections before you can create a share code.
+                        </strong>
+                    </div>
+                }
             </div>
         </div>
     </div>
