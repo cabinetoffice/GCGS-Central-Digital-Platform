@@ -53,7 +53,7 @@ public class UpdateSupplierInformationUseCase(IOrganisationRepository organisati
                 {
                     throw new InvalidUpdateSupplierInformationCommand("Missing operation types.");
                 }
-                if (updateObject.OperationTypes.Contains(OperationType.NoneOfAbove) && updateObject.OperationTypes.Count > 1)
+                if (updateObject.OperationTypes.Contains(OperationType.None) && updateObject.OperationTypes.Count > 1)
                 {
                     throw new InvalidUpdateSupplierInformationCommand("When 'None' is specified, it must be the only operation type.");
                 }

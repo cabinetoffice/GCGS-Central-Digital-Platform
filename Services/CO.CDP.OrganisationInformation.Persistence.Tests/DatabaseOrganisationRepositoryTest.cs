@@ -402,7 +402,7 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql) : 
         var organisationId = 1;
         var organisation = GivenOrganisation();
         organisation.SupplierInfo = GivenSupplierInformation();
-        organisation.SupplierInfo.OperationTypes = [OperationType.NoneOfAbove];
+        organisation.SupplierInfo.OperationTypes = [OperationType.None];
 
         using var context = postgreSql.OrganisationInformationContext();
         await context.Organisations.AddAsync(organisation);
@@ -411,7 +411,7 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql) : 
         var result = await repository.GetOperationTypes(organisationId);
 
         result.Should().NotBeNull();
-        result.Should().Contain(OperationType.NoneOfAbove);
+        result.Should().Contain(OperationType.None);
     }
 
     private IOrganisationRepository OrganisationRepository()
