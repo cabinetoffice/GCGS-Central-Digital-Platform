@@ -52,8 +52,9 @@ public class OrganisationAuthorizationPolicyProvider(IOptions<AuthorizationOptio
                         .Split(';', StringSplitOptions.RemoveEmptyEntries);
 
         AuthenticationChannel[] channels = [];
-        string[] scopes = [];
+        string[] organisationPersonScopes = [];
         var organisationIdLocation = OrganisationIdLocation.None;
+        string[] personScopes = [];
 
         foreach (var token in policyTokens)
         {
@@ -69,8 +70,8 @@ public class OrganisationAuthorizationPolicyProvider(IOptions<AuthorizationOptio
                                     .Select(t => (AuthenticationChannel)Enum.Parse(typeof(AuthenticationChannel), t)).ToArray();
                         break;
 
-                    case OrganisationAuthorizeAttribute.ScopesGroup:
-                        scopes = pair[1].Split('|', StringSplitOptions.RemoveEmptyEntries);
+                    case OrganisationAuthorizeAttribute.OrganisationPersonScopesGroup:
+                        organisationPersonScopes = pair[1].Split('|', StringSplitOptions.RemoveEmptyEntries);
                         break;
 
                     case OrganisationAuthorizeAttribute.OrgIdLocGroup:
@@ -79,15 +80,19 @@ public class OrganisationAuthorizationPolicyProvider(IOptions<AuthorizationOptio
                             organisationIdLocation = value;
                         }
                         break;
+
+                    case OrganisationAuthorizeAttribute.PersonScopesGroup:
+                        personScopes = pair[1].Split('|', StringSplitOptions.RemoveEmptyEntries);
+                        break;
                 }
             }
         }
 
         List<IAuthorizationRequirement> requirements = [new ChannelAuthorizationRequirement(channels)];
 
-        if (channels.Contains(AuthenticationChannel.OneLogin) && scopes.Length > 0)
+        if (channels.Contains(AuthenticationChannel.OneLogin) && (organisationPersonScopes.Length > 0 || personScopes.Length > 0))
         {
-            requirements.Add(new OrganisationScopeAuthorizationRequirement(scopes, organisationIdLocation));
+            requirements.Add(new OrganisationScopeAuthorizationRequirement(organisationPersonScopes, organisationIdLocation, personScopes));
         }
 
         return [.. requirements];

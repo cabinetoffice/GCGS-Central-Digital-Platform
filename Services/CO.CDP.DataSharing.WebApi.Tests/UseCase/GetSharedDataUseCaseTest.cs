@@ -1,3 +1,4 @@
+using CO.CDP.Authentication;
 using CO.CDP.DataSharing.WebApi.Model;
 using CO.CDP.DataSharing.WebApi.Tests.AutoMapper;
 using CO.CDP.DataSharing.WebApi.UseCase;
@@ -13,17 +14,46 @@ public class GetSharedDataUseCaseTest : IClassFixture<AutoMapperFixture>
 {
     private readonly Mock<IShareCodeRepository> _shareCodeRepository = new();
     private readonly Mock<IOrganisationRepository> _organisationRepository = new();
+    private readonly Mock<IClaimService> _claimService = new();
     private readonly GetSharedDataUseCase _useCase;
 
     public GetSharedDataUseCaseTest(AutoMapperFixture mapperFixture)
     {
-        _useCase = new GetSharedDataUseCase(_shareCodeRepository.Object, _organisationRepository.Object, mapperFixture.Mapper);
+        var organisationId = Guid.NewGuid();
+        _claimService.Setup(c => c.GetOrganisationId()).Returns(organisationId);
+        _shareCodeRepository.Setup(s => s.OrganisationShareCodeExistsAsync(organisationId, It.IsAny<string>())).ReturnsAsync(true);
+
+        _useCase = new GetSharedDataUseCase(_shareCodeRepository.Object, _organisationRepository.Object, _claimService.Object, mapperFixture.Mapper);
+    }
+
+    [Fact]
+    public async Task ThrowsUserUnauthorizedException_WhenRequestedUserOrganisationAndShareCodeRequestedNotFound()
+    {
+        var shareCode = "dummy_code";
+
+        var organisationId = Guid.NewGuid();
+        _claimService.Setup(c => c.GetOrganisationId()).Returns(organisationId);
+        _shareCodeRepository.Setup(s => s.OrganisationShareCodeExistsAsync(organisationId, shareCode)).ReturnsAsync(false);
+
+        var response = async () => await _useCase.Execute(shareCode);
+
+        await response.Should().ThrowAsync<UserUnauthorizedException>();
+    }
+
+    [Fact]
+    public async Task ThrowsUserUnauthorizedException_WhenRequestedUserOrganisationInNotInTheClaim()
+    {
+        _claimService.Setup(c => c.GetOrganisationId()).Returns((Guid?)null);
+
+        var response = async () => await _useCase.Execute("dummy_code");
+
+        await response.Should().ThrowAsync<UserUnauthorizedException>();
     }
 
     [Fact]
     public async Task ItReturnsMappedSupplierInformationWhenSharedConsentIsFound()
     {
-        var (shareCode, organisationId, organisationGuid, formId) = SetupTestData();
+        var (shareCode, _, organisationGuid, _) = SetupTestData();
 
         var result = await _useCase.Execute(shareCode);
 

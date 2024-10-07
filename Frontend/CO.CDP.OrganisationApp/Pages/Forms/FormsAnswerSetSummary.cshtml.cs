@@ -175,30 +175,15 @@ public class FormsAnswerSetSummaryModel(
         foreach (var answerSet in form.AnswerSets)
         {
             List<AnswerSummary> answerSummaries = [];
-            foreach (var answer in answerSet.Answers)
+            foreach (FormAnswer answer in answerSet.Answers)
             {
                 var question = form.Questions.FirstOrDefault(q => q.Id == answer.QuestionId);
                 if (question != null && question.Type != FormQuestionType.NoInput && question.Type != FormQuestionType.CheckYourAnswers)
                 {
-                    var choiceProviderStrategy = choiceProviderService.GetStrategy(question.Options.ChoiceProviderStrategy);
-                    var answerString = question.Type switch
-                    {
-                        FormQuestionType.Text => answer.TextValue ?? "",
-                        FormQuestionType.FileUpload => answer.TextValue ?? "",
-                        FormQuestionType.YesOrNo => answer.BoolValue.HasValue ? (answer.BoolValue == true ? "Yes" : "No") : "",
-                        FormQuestionType.Date => answer.DateValue.HasValue ? answer.DateValue.Value.ToString("dd/MM/yyyy") : "",
-                        FormQuestionType.CheckBox => answer.BoolValue.HasValue ? question.Options.Choices?.FirstOrDefault()?.Title ?? "" : "",
-                        FormQuestionType.Address => answer.AddressValue != null ? $"{answer.AddressValue.StreetAddress}, {answer.AddressValue.Locality}, {answer.AddressValue.PostalCode}, {answer.AddressValue.CountryName}" : "",
-                        FormQuestionType.SingleChoice => await choiceProviderStrategy.RenderOption(answer),
-                        FormQuestionType.MultiLine => answer.TextValue ?? "",
-                        FormQuestionType.Url => answer.TextValue ?? "",
-                        _ => ""
-                    };
-
                     answerSummaries.Add(new AnswerSummary
                     {
                         Title = question.SummaryTitle ?? question.Title,
-                        Answer = answerString ?? ""
+                        Answer = await GetAnswerString(answer, question)
                     });
                 }
             }
@@ -207,5 +192,33 @@ public class FormsAnswerSetSummaryModel(
         }
 
         return summaryList;
+    }
+
+    private async Task<string> GetAnswerString(FormAnswer answer, FormQuestion question)
+    {
+        async Task<string> singleChoiceString(FormAnswer a)
+        {
+            var choiceProviderStrategy = choiceProviderService.GetStrategy(question.Options.ChoiceProviderStrategy);
+            return await choiceProviderStrategy.RenderOption(a) ?? "";
+        }
+
+        string boolAnswerString = answer.BoolValue.HasValue == true ? (answer.BoolValue == true ? "Yes" : "No") : "";
+
+        string answerString = question.Type switch
+        {
+            FormQuestionType.Text => answer.TextValue ?? "",
+            FormQuestionType.FileUpload => answer.TextValue ?? "",
+            FormQuestionType.SingleChoice => await singleChoiceString(answer),
+            FormQuestionType.Date => answer.DateValue.HasValue ? answer.DateValue.Value.ToString("dd/MM/yyyy") : "",
+            FormQuestionType.CheckBox => answer.BoolValue.HasValue ? question.Options.Choices?.FirstOrDefault()?.Title ?? "" : "",
+            FormQuestionType.Address => answer.AddressValue != null ? $"{answer.AddressValue.StreetAddress}, {answer.AddressValue.Locality}, {answer.AddressValue.PostalCode}, {answer.AddressValue.CountryName}" : "",
+            FormQuestionType.MultiLine => answer.TextValue ?? "",
+            FormQuestionType.Url => answer.TextValue ?? "",
+            _ => ""
+        };
+
+        string[] answers = [boolAnswerString, answerString];
+
+        return string.Join(", ", answers.Where(s => !string.IsNullOrWhiteSpace(s)));
     }
 }

@@ -23,7 +23,7 @@ public class OrganisationScopeAuthorizationHandlerTests
     }
 
     [Fact]
-    public async Task HandleRequirementAsync_ShouldFail_WhenRequirementScopeIsEmpty()
+    public async Task HandleRequirementAsync_ShouldFail_WhenRequirementOrganisationPersonScopeIsEmpty()
     {
         var context = CreateAuthorizationHandlerContext("user-urn", [], OrganisationIdLocation.Path);
 
@@ -61,12 +61,12 @@ public class OrganisationScopeAuthorizationHandlerTests
     [InlineData(true, "?organisation-id={0}", OrganisationIdLocation.QueryString, true)]
     [InlineData(false, "/organisations/{0}", OrganisationIdLocation.Path, false)]
     [InlineData(false, "?organisation-id={0}", OrganisationIdLocation.QueryString, false)]
-    public async Task HandleRequirementAsync_MatchExpectedResult(bool organisationScopeExists, string urlFormat, OrganisationIdLocation location, bool expectedResult)
+    public async Task HandleRequirementAsync_MatchExpectedResult(bool organisationPersonScopeExists, string urlFormat, OrganisationIdLocation location, bool expectedResult)
     {
         var userUrn = "user-urn";
         var organisationId = Guid.NewGuid();
 
-        var context = CreateAuthorizationHandlerContext(userUrn, organisationScopeExists ? ["Admin"] : ["Scope1"], location);
+        var context = CreateAuthorizationHandlerContext(userUrn, organisationPersonScopeExists ? ["Admin"] : ["Scope1"], location);
         MockHttpContext(location, string.Format(urlFormat, organisationId));
 
         _mockOrganisationRepository.Setup(x => x.FindOrganisationPerson(organisationId, userUrn))
@@ -78,7 +78,7 @@ public class OrganisationScopeAuthorizationHandlerTests
     }
 
     [Fact]
-    public async Task FetchOrganisationIdAsync_Should_Return_Correct_OrganisationId_From_Body()
+    public async Task HandleRequirementAsync_ShouldPass_WhenOrganisationIdLocationIsBody()
     {
         var userUrn = "user-urn";
         var organisationId = Guid.NewGuid();
@@ -91,6 +91,37 @@ public class OrganisationScopeAuthorizationHandlerTests
         await _handler.HandleAsync(context);
 
         context.HasSucceeded.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task HandleRequirementAsync_ShouldFail_WhenRequirementPersonScopeIsEmpty()
+    {
+        var context = CreateAuthorizationHandlerContext("user-urn", []);
+
+        await _handler.HandleAsync(context);
+
+        context.HasSucceeded.Should().BeFalse();
+    }
+
+    [Fact]
+    public async Task HandleRequirementAsync_ShouldPass_WhenRequirementPersonScopeExists()
+    {
+        var userUrn = "user-urn";
+        var context = CreateAuthorizationHandlerContext(userUrn, ["Scope1"], new Claim(ClaimType.Roles, "Scope1,Scope2"));
+
+        await _handler.HandleAsync(context);
+
+        context.HasSucceeded.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task HandleRequirementAsync_ShouldPass_WhenRequirementPersonScopeDoesNotExists()
+    {
+        var userUrn = "user-urn";
+        var context = CreateAuthorizationHandlerContext(userUrn, ["Scope1"]);
+        await _handler.HandleAsync(context);
+
+        context.HasSucceeded.Should().BeFalse();
     }
 
     private void MockHttpContext(OrganisationIdLocation location, string? url = null, Guid? organisationId = null)
@@ -124,12 +155,31 @@ public class OrganisationScopeAuthorizationHandlerTests
         };
     }
 
-    private static AuthorizationHandlerContext CreateAuthorizationHandlerContext(string userUrn, string[] scopes, OrganisationIdLocation orgIdLoc)
+    private static AuthorizationHandlerContext CreateAuthorizationHandlerContext(
+        string userUrn, string[] personScopes, Claim? additionalUserClaim = null)
     {
-        var requirement = new OrganisationScopeAuthorizationRequirement(scopes, orgIdLoc);
-        var claimsPrincipal = new ClaimsPrincipal(new ClaimsIdentity(
-            [new Claim(ClaimType.Channel, Channel.OneLogin),
-            new Claim(ClaimType.Subject, userUrn)]));
+        return CreateAuthorizationHandlerContext(userUrn,
+            new OrganisationScopeAuthorizationRequirement(personScopes: personScopes),
+            additionalUserClaim);
+    }
+
+    private static AuthorizationHandlerContext CreateAuthorizationHandlerContext(
+        string userUrn, string[] organisationPersonScopes, OrganisationIdLocation orgIdLoc)
+    {
+        return CreateAuthorizationHandlerContext(userUrn,
+            new OrganisationScopeAuthorizationRequirement(organisationPersonScopes, orgIdLoc));
+    }
+
+    private static AuthorizationHandlerContext CreateAuthorizationHandlerContext(
+        string userUrn, OrganisationScopeAuthorizationRequirement requirement, Claim? additionalUserClaim = null)
+    {
+        List<Claim> userClaims = [new Claim(ClaimType.Channel, Channel.OneLogin), new Claim(ClaimType.Subject, userUrn)];
+        if (additionalUserClaim != null)
+        {
+            userClaims.Add(additionalUserClaim);
+        }
+
+        var claimsPrincipal = new ClaimsPrincipal(new ClaimsIdentity(userClaims));
         return new AuthorizationHandlerContext([requirement], claimsPrincipal, new object());
     }
 }

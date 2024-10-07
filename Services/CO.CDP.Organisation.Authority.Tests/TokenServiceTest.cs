@@ -22,23 +22,20 @@ public class TokenServiceTest : IClassFixture<AutoMapperFixture>
     private readonly string _oneLoginIssuer = "https://onelogin-authority.com";
     private readonly string _userUrn = "urn:fdc:gov.uk:2022:6fTvD1cMhQNJxrLZSyBgo5";
 
-    private readonly Mock<ILogger<TokenService>> _loggerMock;
-    private readonly Mock<IConfigurationService> _configServiceMock;
-    private readonly Mock<ITenantRepository> _tenantRepositoryMock;
-    private readonly Mock<IAuthorityRepository> _authorityRepositoryMock;
+    private readonly Mock<ILogger<TokenService>> _loggerMock = new();
+    private readonly Mock<IConfigurationService> _configServiceMock = new();
+    private readonly Mock<IPersonRepository> _personRepositoryMock = new();
+    private readonly Mock<ITenantRepository> _tenantRepositoryMock = new();
+    private readonly Mock<IAuthorityRepository> _authorityRepositoryMock = new();
     private readonly TokenService _tokenService;
 
     public TokenServiceTest(AutoMapperFixture mapperFixture)
     {
-        _loggerMock = new();
-        _configServiceMock = new();
-        _tenantRepositoryMock = new();
-        _authorityRepositoryMock = new();
-
         _tokenService = new TokenService(
             _loggerMock.Object,
             _configServiceMock.Object,
              mapperFixture.Mapper,
+             _personRepositoryMock.Object,
             _tenantRepositoryMock.Object,
             _authorityRepositoryMock.Object);
     }

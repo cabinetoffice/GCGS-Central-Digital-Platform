@@ -3,10 +3,13 @@ using Microsoft.AspNetCore.Authorization;
 namespace CO.CDP.Authentication.Authorization;
 
 public class OrganisationScopeAuthorizationRequirement(
-    string[]? scopes = null,
-    OrganisationIdLocation organisationIdLocation = OrganisationIdLocation.None) : IAuthorizationRequirement
+    string[]? organisationPersonScopes = null,
+    OrganisationIdLocation organisationIdLocation = OrganisationIdLocation.None,
+    string[]? personScopes = null) : IAuthorizationRequirement
 {
-    public string[] Scopes { get; private set; } = scopes ?? [];
+    public string[] OrganisationPersonScopes { get; private set; } = organisationPersonScopes ?? [];
 
     public OrganisationIdLocation OrganisationIdLocation { get; private set; } = organisationIdLocation;
+
+    public string[] PersonScopes { get; private set; } = personScopes ?? [];
 }
