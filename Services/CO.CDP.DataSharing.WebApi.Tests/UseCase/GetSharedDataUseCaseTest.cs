@@ -88,12 +88,16 @@ public class GetSharedDataUseCaseTest : IClassFixture<AutoMapperFixture>
 
         var mockAssociatedPersons = EntityFactory.GetMockAssociatedPersons();
         var mockAdditionalEntities = EntityFactory.GetMockAdditionalEntities();
+        var mockOperationTypes = EntityFactory.GetOperationTypes();
 
         _organisationRepository.Setup(repo => repo.GetConnectedIndividualTrusts(organisationId))
                                .ReturnsAsync(mockAssociatedPersons);
 
         _organisationRepository.Setup(repo => repo.GetConnectedOrganisations(organisationId))
                                .ReturnsAsync(mockAdditionalEntities);
+
+        _organisationRepository.Setup(repo => repo.GetOperationTypes(organisationId))
+                               .ReturnsAsync(mockOperationTypes);
 
         return (shareCode, organisationId, organisationGuid, formId);
     }
@@ -172,6 +176,10 @@ public class GetSharedDataUseCaseTest : IClassFixture<AutoMapperFixture>
     private void AssertDetails(Details? details)
     {
         details.Should().NotBeNull();
+        details?.Scale.Should().Be("small");
+        details?.Vcse.Should().Be(false);
+        details?.ShelteredWorkshop.Should().Be(false);
+        details?.PublicServiceMissionOrganization.Should().Be(false);
     }
 
     private void AssertSupplierInformationData(SupplierInformationData? supplierInformationData)

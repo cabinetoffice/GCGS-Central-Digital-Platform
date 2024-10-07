@@ -57,7 +57,7 @@ public class SupplierOperationQuestionTest
     {
         var id = Guid.NewGuid();
         _model.Id = id;
-        _model.SelectedOperationTypes = new List<OperationType> { OperationType.SmallorMediumSized };
+        _model.SelectedOperationTypes = new List<OperationType> { OperationType.SmallOrMediumSized };
 
         _organisationClientMock.Setup(client => client.GetOrganisationAsync(id))
             .ReturnsAsync(SupplierDetailsFactory.GivenOrganisationClientModel(id));
@@ -89,7 +89,7 @@ public class SupplierOperationQuestionTest
             SelectedOperationTypes = new List<OperationType>
             {
                 OperationType.None,
-                OperationType.SmallorMediumSized
+                OperationType.SmallOrMediumSized
             }
         };
 
