@@ -52,7 +52,7 @@
 
     @if (Model.IsRequired)
     {
-        RenderHeading();
+        <h1 class="govuk-heading-l">@Model.Heading</h1>
         RenderDescription();
         RenderField();
     }
@@ -60,9 +60,7 @@
     {
         <fieldset class="govuk-fieldset">
             <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                @{
-                    RenderHeading();
-                }
+                <h1 class="govuk-fieldset__heading">@Model.Heading</h1>
             </legend>
             @{
                 RenderDescription();
