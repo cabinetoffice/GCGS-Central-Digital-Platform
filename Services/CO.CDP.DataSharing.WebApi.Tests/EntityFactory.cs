@@ -38,7 +38,7 @@ internal static class EntityFactory
         };
     }
 
-    internal static PersistenceForms.SharedConsent GetSharedConsent(int organisationId, Guid organisationGuid, Guid formId, string sectionName = "Test Section")
+    internal static PersistenceForms.SharedConsent GetSharedConsent(int organisationId, Guid organisationGuid, Guid formId)
     {
         var form = new PersistenceForms.Form
         {
@@ -75,7 +75,7 @@ internal static class EntityFactory
             FormVersionId = string.Empty,
             ShareCode = string.Empty
         };
-        foreach (var questionsAndAnswer in GivenQuestionsAndAnswers(sharedConsent, form, sectionName))
+        foreach (var questionsAndAnswer in GivenQuestionsAndAnswers(sharedConsent, form))
         {
             sharedConsent.AnswerSets.Add(questionsAndAnswer);
         }
@@ -236,7 +236,7 @@ internal static class EntityFactory
         return tenant;
     }
 
-    private static PersistenceForms.FormSection GivenSection(Guid sectionId, PersistenceForms.Form form, string title)
+    private static PersistenceForms.FormSection GivenSection(Guid sectionId, PersistenceForms.Form form)
     {
         var formSection = new PersistenceForms.FormSection
         {
@@ -244,8 +244,8 @@ internal static class EntityFactory
             FormId = form.Id,
             Form = form,
             Questions = new List<PersistenceForms.FormQuestion>(),
-            Title = title,
-            Type = PersistenceForms.FormSectionType.Standard,
+            Title = "Test Section",
+            Type = PersistenceForms.FormSectionType.Declaration,
             AllowsMultipleAnswerSets = true,
             CheckFurtherQuestionsExempted = false,
             DisplayOrder = 1,
@@ -262,17 +262,15 @@ internal static class EntityFactory
         return formSection;
     }
 
-    public static List<PersistenceForms.FormAnswerSet> GivenQuestionsAndAnswers(PersistenceForms.SharedConsent sharedConsent,
-        PersistenceForms.Form form,
-        string sectionName)
+    public static List<PersistenceForms.FormAnswerSet> GivenQuestionsAndAnswers(PersistenceForms.SharedConsent sharedConsent, PersistenceForms.Form form)
     {
-        var answerSetDeclarationsSection = new PersistenceForms.FormAnswerSet
+        var answerSet = new PersistenceForms.FormAnswerSet
         {
             Guid = Guid.NewGuid(),
             SharedConsentId = default,
             SharedConsent = sharedConsent,
             SectionId = default,
-            Section = GivenSection(Guid.NewGuid(), form, "Declarations"),
+            Section = GivenSection(Guid.NewGuid(), form),
             Answers = new List<PersistenceForms.FormAnswer>() { },
             FurtherQuestionsExempted = false,
         };
@@ -294,7 +292,7 @@ internal static class EntityFactory
                         NextQuestionAlternative = null,
                         CreatedOn = DateTimeOffset.UtcNow,
                         UpdatedOn = DateTimeOffset.UtcNow,
-                        Section = GivenSection(Guid.NewGuid(), form, sectionName),
+                        Section = GivenSection(Guid.NewGuid(), form),
                         SortOrder = 1
                     },
                     new PersistenceForms.FormQuestion
@@ -312,8 +310,9 @@ internal static class EntityFactory
                         NextQuestionAlternative = null,
                         CreatedOn = DateTimeOffset.UtcNow,
                         UpdatedOn = DateTimeOffset.UtcNow,
-                        Section = GivenSection(Guid.NewGuid(), form, sectionName),
-                        SortOrder = 2                    },
+                        Section = GivenSection(Guid.NewGuid(), form),
+                        SortOrder = 2
+                    },
                     new PersistenceForms.FormQuestion
                     {
                         Id = 2,
@@ -329,7 +328,7 @@ internal static class EntityFactory
                         NextQuestionAlternative = null,
                         CreatedOn = DateTimeOffset.UtcNow,
                         UpdatedOn = DateTimeOffset.UtcNow,
-                        Section = GivenSection(Guid.NewGuid(), form, sectionName),
+                        Section = GivenSection(Guid.NewGuid(), form),
                         SortOrder = 3
                     },
                     new PersistenceForms.FormQuestion
@@ -347,7 +346,7 @@ internal static class EntityFactory
                         NextQuestionAlternative = null,
                         CreatedOn = DateTimeOffset.UtcNow,
                         UpdatedOn = DateTimeOffset.UtcNow,
-                        Section = GivenSection(Guid.NewGuid(), form, sectionName),
+                        Section = GivenSection(Guid.NewGuid(), form),
                         SortOrder = 4
                     },
                     new PersistenceForms.FormQuestion
@@ -365,7 +364,7 @@ internal static class EntityFactory
                         NextQuestionAlternative = null,
                         CreatedOn = DateTimeOffset.UtcNow,
                         UpdatedOn = DateTimeOffset.UtcNow,
-                        Section = GivenSection(Guid.NewGuid(), form, sectionName),
+                        Section = GivenSection(Guid.NewGuid(), form),
                         SortOrder = 5
                     },
                     new PersistenceForms.FormQuestion
@@ -383,7 +382,7 @@ internal static class EntityFactory
                         NextQuestionAlternative = null,
                         CreatedOn = DateTimeOffset.UtcNow,
                         UpdatedOn = DateTimeOffset.UtcNow,
-                        Section = GivenSection(Guid.NewGuid(), form, sectionName),
+                        Section = GivenSection(Guid.NewGuid(), form),
                         SortOrder = 6
                     }
                 };
@@ -399,8 +398,8 @@ internal static class EntityFactory
                     Section = new PersistenceForms.FormSection
                     {
                         Guid = Guid.NewGuid(),
-                        Title = sectionName,
-                        Type = PersistenceForms.FormSectionType.Standard,
+                        Title = string.Empty,
+                        Type = PersistenceForms.FormSectionType.Exclusions,
                         FormId = form.Id,
                         Form = form,
                         Questions = new List<PersistenceForms.FormQuestion>(),
@@ -416,8 +415,8 @@ internal static class EntityFactory
                             Guid = Guid.NewGuid(),
                             QuestionId = questions[0].Id,
                             Question = questions[0],
-                            FormAnswerSetId = default,
-                            FormAnswerSet = default,
+                            FormAnswerSetId = answerSet.Id,
+                            FormAnswerSet = answerSet,
                             BoolValue = true
                         },
                           new PersistenceForms.FormAnswer
@@ -425,8 +424,8 @@ internal static class EntityFactory
                             Guid = Guid.NewGuid(),
                             QuestionId = questions[1].Id,
                             Question = questions[1],
-                            FormAnswerSetId = default,
-                            FormAnswerSet = default,
+                            FormAnswerSetId = answerSet.Id,
+                            FormAnswerSet = answerSet,
                             OptionValue="yes"
                         },
                             new  PersistenceForms.FormAnswer
@@ -434,23 +433,23 @@ internal static class EntityFactory
                             Guid = Guid.NewGuid(),
                             QuestionId = questions[2].Id,
                             Question = questions[2],
-                            FormAnswerSetId = default,
-                            FormAnswerSet = default,
-                            TextValue = "Accounts_File.xlsx"
+                            FormAnswerSetId = answerSet.Id,
+                            FormAnswerSet = answerSet,
+                            BoolValue=true
                         },
                         new  PersistenceForms.FormAnswer
                         {
                             Guid = Guid.NewGuid(),
                             QuestionId = questions[3].Id,
                             Question = questions[3],
-                            FormAnswerSetId = default,
-                            FormAnswerSet = default,
+                            FormAnswerSetId = answerSet.Id,
+                            FormAnswerSet = answerSet,
                             DateValue=DateTime.Now
                         }
                     },
                     FurtherQuestionsExempted = false
                 },
-                answerSetDeclarationsSection
+                answerSet
             };
 
         return formAnswers;

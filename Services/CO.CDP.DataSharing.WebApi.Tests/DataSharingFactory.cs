@@ -161,7 +161,8 @@ public static class DataSharingFactory
                         new Tuple<string, string>("Did this exclusion happen in the UK? ", "Yes"),
                         new Tuple<string, string>("Enter an email address ", "john.smith@acme.com")
                         ],
-                    SectionName = "Exclusions"
+                    SectionName = "Exclusions",
+                    SectionType = OrganisationInformation.Persistence.Forms.FormSectionType.Exclusions
                 }
             ];
     }

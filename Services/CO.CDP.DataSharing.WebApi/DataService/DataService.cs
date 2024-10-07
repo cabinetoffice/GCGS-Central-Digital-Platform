@@ -10,13 +10,12 @@ namespace CO.CDP.DataSharing.WebApi.DataService;
 
 public class DataService(IShareCodeRepository shareCodeRepository, IConnectedEntityRepository connectedEntityRepository) : IDataService
 {
-    private const string DeclarationsSectionName = "Declarations";
-
     public async Task<SharedSupplierInformation> GetSharedSupplierInformationAsync(string shareCode)
     {
         var sharedConsent = await shareCodeRepository.GetByShareCode(shareCode)
                             ?? throw new ShareCodeNotFoundException(Constants.ShareCodeNotFoundExceptionMessage);
-        var allFormSectionsExceptDeclaractions = sharedConsent.AnswerSets.Where(a => a.Section.Title != DeclarationsSectionName);
+        var allFormSectionsExceptDeclaractions = sharedConsent.AnswerSets.Where(a =>
+            a.Section.Type != OrganisationInformation.Persistence.Forms.FormSectionType.Declaration);
         var connectedEntities = await connectedEntityRepository.FindByOrganisation(sharedConsent.Organisation.Guid);
         
         return new SharedSupplierInformation
@@ -37,6 +36,7 @@ public class DataService(IShareCodeRepository shareCodeRepository, IConnectedEnt
         {
             var pdfAnswerSet = new FormAnswerSetForPdf() {
                 SectionName = answerSet.Section.Title,
+                SectionType = answerSet.Section.Type,
                 QuestionAnswers = []
             };
 

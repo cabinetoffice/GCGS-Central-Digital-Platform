@@ -81,7 +81,7 @@ public class DataServiceTests
     public async Task ShouldMapFormAnswerSetsForPdf()
     {
         var org = CreateOrganisation();
-        var sharedConsent = EntityFactory.GetSharedConsent(org.Id, org.Guid, Guid.NewGuid(), "Exclusions");
+        var sharedConsent = EntityFactory.GetSharedConsent(org.Id, org.Guid, Guid.NewGuid());
         sharedConsent.Organisation = org;
 
         _shareCodeRepository.Setup(r => r.GetByShareCode("ABC-123")).ReturnsAsync(sharedConsent);
@@ -89,11 +89,10 @@ public class DataServiceTests
         var result = await DataService.GetSharedSupplierInformationAsync("ABC-123");
 
         result.FormAnswerSetForPdfs.Should().ContainSingle();
-        result.FormAnswerSetForPdfs.Should().Contain(f => f.SectionName == "Exclusions");
 
-        var exclusionsSection = result.FormAnswerSetForPdfs.First(fa => fa.SectionName == "Exclusions");
+        var exclusionsSection = result.FormAnswerSetForPdfs.First(fa => fa.SectionType == CO.CDP.OrganisationInformation.Persistence.Forms.FormSectionType.Exclusions);
         exclusionsSection.QuestionAnswers.Should().Contain(qa => qa.Item1 == "Were your accounts audited?" && qa.Item2 == "yes");
         exclusionsSection.QuestionAnswers.Should().Contain(qa => qa.Item1 == "What is the financial year end date for the information you uploaded?" && qa.Item2 == DateTime.Today.ToString("dd-MM-yyyy"));
-        exclusionsSection.QuestionAnswers.Should().Contain(qa => qa.Item1 == "Upload your accounts" && qa.Item2 == "Accounts_File.xlsx");
+        exclusionsSection.QuestionAnswers.Should().Contain(qa => qa.Item1 == "Upload your accounts" && qa.Item2 == "No");
     }
 }
