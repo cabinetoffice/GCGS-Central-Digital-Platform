@@ -376,11 +376,6 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql) : 
     }
 
     [Fact]
-    {
-        using var repository = OrganisationRepository();
-
-        var organisationId = 1;
-    [Fact]
     public async Task GetOperationTypes_WhenNoOperationTypeExists_ReturnsNull()
     {
         using var repository = OrganisationRepository();
