@@ -146,7 +146,7 @@ public class GetSharedDataUseCaseTest : IClassFixture<AutoMapperFixture>
     private void AssertDetails(Details? details)
     {
         details.Should().NotBeNull();
-        details?.Scale.Should().Be("large");
+        details?.Scale.Should().Be("small");
         details?.Vcse.Should().Be(false);
         details?.ShelteredWorkshop.Should().Be(false);
         details?.PublicServiceMissionOrganization.Should().Be(false);
