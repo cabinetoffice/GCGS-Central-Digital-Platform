@@ -5,7 +5,7 @@
     var legalFormHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.LegalForm)).HasInnerHtml;
 
     var lawRegister = ((TagBuilder)Html.ValidationMessageFor(m => m.LawRegistered)).HasInnerHtml;
-        
+
     var backPage = Request.Query.ContainsKey("frm-chk-answer") ? "check-answers-organisation" : Model.BackPageLink;
     var backLink = $"/organisation/{Model.Id}/supplier-information/connected-person/{backPage}/{Model.ConnectedEntityId}";
 
@@ -74,11 +74,9 @@
                         </div>
                     </div>
 
-                    <button type="submit"
-                            class="govuk-button"
-                            data-prevent-double-click="true" data-module="govuk-button">
+                    <govuk-button>
                         Continue
-                    </button>
+                    </govuk-button>
                 </fieldset>
             </form>
         </div>
