@@ -41,12 +41,20 @@ public class CustomScopeHandlerTests
     }
 
     [Theory]
-    [InlineData(OrganisationPersonScopes.Admin, OrganisationPersonScopes.Admin, null, true)] // Admin should succeed
-    [InlineData(PersonScopes.SupportAdmin, OrganisationPersonScopes.Admin, null, false)] // Admin cannot do support admin tasks
-    [InlineData(PersonScopes.SupportAdmin, null, PersonScopes.SupportAdmin, true)] // SupportAdmin should succeed
-    [InlineData(OrganisationPersonScopes.Editor, null, null, false)] // No scopes should fail
-    [InlineData(OrganisationPersonScopes.Viewer, OrganisationPersonScopes.Editor, null, true)] // Editor implies viewer permission
-    [InlineData(OrganisationPersonScopes.Viewer, null, PersonScopes.SupportAdmin, true)] // SupportAdmin implies viewer permission
+    [InlineData(OrganisationPersonScopes.Viewer, OrganisationPersonScopes.Viewer, null, true)]  // Viewer CAN only do viewer stuff
+    [InlineData(OrganisationPersonScopes.Editor, OrganisationPersonScopes.Viewer, null, false)] // Viewer CANNOT do editor stuff
+    [InlineData(OrganisationPersonScopes.Admin, OrganisationPersonScopes.Viewer, null, false)]  // Viewer CANNOT do admin stuff
+    [InlineData(OrganisationPersonScopes.Editor, OrganisationPersonScopes.Editor, null, true)]  // Editor CAN do editor stuff
+    [InlineData(OrganisationPersonScopes.Viewer, OrganisationPersonScopes.Editor, null, true)]  // Editor CAN do viewer stuff
+    [InlineData(OrganisationPersonScopes.Admin, OrganisationPersonScopes.Editor, null, false)]  // Editor CANNOT do admin stuff
+    [InlineData(OrganisationPersonScopes.Admin, OrganisationPersonScopes.Admin, null, true)]    // Admin CAN do admin stuff
+    [InlineData(OrganisationPersonScopes.Editor, OrganisationPersonScopes.Admin, null, true)]   // Admin CAN do editor stuff
+    [InlineData(OrganisationPersonScopes.Viewer, OrganisationPersonScopes.Admin, null, true)]   // Admin CAN do viewer stuff
+    [InlineData(PersonScopes.SupportAdmin, OrganisationPersonScopes.Admin, null, false)]        // Admin CANNOT do Support Admin stuff
+    [InlineData(PersonScopes.SupportAdmin, null, PersonScopes.SupportAdmin, true)]              // SupportAdmin CAN do Support Admin stuff
+    [InlineData(OrganisationPersonScopes.Viewer, null, PersonScopes.SupportAdmin, true)]        // SupportAdmin CAN do viewer stuff
+    [InlineData(OrganisationPersonScopes.Editor, null, PersonScopes.SupportAdmin, false)]       // SupportAdmin CANNOT do editor stuff
+    [InlineData(OrganisationPersonScopes.Editor, null, null, false)]                            // No scopes should fail
     public async Task HandleRequirementAsync_ShouldEvaluateScopesCorrectly(
         string requirementScope,
         string? organisationUserScope,
@@ -54,7 +62,7 @@ public class CustomScopeHandlerTests
         bool expectedResult)
     {
         var requirement = new ScopeRequirement(requirementScope);
-        var context = new AuthorizationHandlerContext(new[] { requirement }, null, null);
+        var context = new AuthorizationHandlerContext(new[] { requirement }, null!, null);
 
         _sessionMock.Setup(x => x.Get<Models.UserDetails>(Session.UserDetailsKey))
                     .Returns(_defaultUserDetails);
