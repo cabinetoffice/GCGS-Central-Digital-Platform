@@ -50,8 +50,10 @@ public class CustomScopeHandlerTests
     [InlineData(OrganisationPersonScopes.Admin, OrganisationPersonScopes.Admin, null, true)]    // Admin CAN do admin stuff
     [InlineData(OrganisationPersonScopes.Editor, OrganisationPersonScopes.Admin, null, true)]   // Admin CAN do editor stuff
     [InlineData(OrganisationPersonScopes.Viewer, OrganisationPersonScopes.Admin, null, true)]   // Admin CAN do viewer stuff
-    [InlineData(PersonScopes.SupportAdmin, OrganisationPersonScopes.Admin, null, false)]        // Admin CANNOT do Support Admin stuff
     [InlineData(PersonScopes.SupportAdmin, null, PersonScopes.SupportAdmin, true)]              // SupportAdmin CAN do Support Admin stuff
+    [InlineData(PersonScopes.SupportAdmin, OrganisationPersonScopes.Admin, null, false)]        // Admin CANNOT do Support Admin stuff
+    [InlineData(PersonScopes.SupportAdmin, OrganisationPersonScopes.Editor, null, false)]       // Editor CANNOT do Support Admin stuff
+    [InlineData(PersonScopes.SupportAdmin, OrganisationPersonScopes.Viewer, null, false)]       // Viewer CANNOT do Support Admin stuff
     [InlineData(OrganisationPersonScopes.Viewer, null, PersonScopes.SupportAdmin, true)]        // SupportAdmin CAN do viewer stuff
     [InlineData(OrganisationPersonScopes.Editor, null, PersonScopes.SupportAdmin, false)]       // SupportAdmin CANNOT do editor stuff
     [InlineData(OrganisationPersonScopes.Editor, null, null, false)]                            // No scopes should fail
