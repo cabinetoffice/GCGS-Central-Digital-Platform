@@ -25,12 +25,10 @@ public class CustomScopeHandlerTests
         _serviceScopeMock = new Mock<IServiceScope>();
         _userInfoServiceMock = new Mock<IUserInfoService>();
 
-        // Set up Service Scope Factory to return the mock scope
         _serviceScopeFactoryMock.Setup(x => x.CreateScope()).Returns(_serviceScopeMock.Object);
         _serviceScopeMock.Setup(x => x.ServiceProvider.GetService(typeof(IUserInfoService)))
             .Returns(_userInfoServiceMock.Object);
 
-        // Instantiate the handler with the mocked dependencies
         _handler = new CustomScopeHandler(_sessionMock.Object, _serviceScopeFactoryMock.Object);
 
         _defaultPersonId = new Guid();
@@ -42,84 +40,49 @@ public class CustomScopeHandlerTests
         };
     }
 
-    [Fact]
-    public async Task HandleRequirementAsync_ShouldSucceed_WhenAdminScope_AndNotSupportAdmin()
+    [Theory]
+    [InlineData(OrganisationPersonScopes.Admin, OrganisationPersonScopes.Admin, null, true)] // Admin should succeed
+    [InlineData(PersonScopes.SupportAdmin, OrganisationPersonScopes.Admin, null, false)] // Admin cannot do support admin tasks
+    [InlineData(PersonScopes.SupportAdmin, null, PersonScopes.SupportAdmin, true)] // SupportAdmin should succeed
+    [InlineData(OrganisationPersonScopes.Editor, null, null, false)] // No scopes should fail
+    [InlineData(OrganisationPersonScopes.Viewer, OrganisationPersonScopes.Editor, null, true)] // Editor implies viewer permission
+    [InlineData(OrganisationPersonScopes.Viewer, null, PersonScopes.SupportAdmin, true)] // SupportAdmin implies viewer permission
+    public async Task HandleRequirementAsync_ShouldEvaluateScopesCorrectly(
+        string requirementScope,
+        string? organisationUserScope,
+        string? userScope,
+        bool expectedResult)
     {
-        var requirement = new ScopeRequirement(OrganisationPersonScopes.Admin);
+        var requirement = new ScopeRequirement(requirementScope);
         var context = new AuthorizationHandlerContext(new[] { requirement }, null, null);
 
-        _sessionMock.Setup(x => x.Get<Models.UserDetails>(Session.UserDetailsKey)).Returns(_defaultUserDetails);
-        _userInfoServiceMock.Setup(x => x.GetOrganisationUserScopes())
-            .ReturnsAsync(new[] { OrganisationPersonScopes.Admin });
+        _sessionMock.Setup(x => x.Get<Models.UserDetails>(Session.UserDetailsKey))
+                    .Returns(_defaultUserDetails);
+
+        if (organisationUserScope != null)
+        {
+            _userInfoServiceMock.Setup(x => x.GetOrganisationUserScopes())
+                .ReturnsAsync(new[] { organisationUserScope });
+        }
+        else
+        {
+            _userInfoServiceMock.Setup(x => x.GetOrganisationUserScopes())
+                .ReturnsAsync(new string[] { });
+        }
+
+        if (userScope != null)
+        {
+            _userInfoServiceMock.Setup(x => x.GetUserScopes())
+                .ReturnsAsync(new[] { userScope });
+        }
+        else
+        {
+            _userInfoServiceMock.Setup(x => x.GetUserScopes())
+                .ReturnsAsync(new string[] { });
+        }
 
         await _handler.HandleAsync(context);
 
-        context.HasSucceeded.Should().BeTrue();
-    }
-
-    [Fact]
-    public async Task HandleRequirementAsync_ShouldFail_WhenAdminScope_AndSupportAdminRequired()
-    {
-        var requirement = new ScopeRequirement(PersonScopes.SupportAdmin);
-        var context = new AuthorizationHandlerContext(new[] { requirement }, null, null);
-
-        _sessionMock.Setup(x => x.Get<Models.UserDetails>(Session.UserDetailsKey)).Returns(_defaultUserDetails);
-        _userInfoServiceMock.Setup(x => x.GetOrganisationUserScopes())
-            .ReturnsAsync(new[] { OrganisationPersonScopes.Admin });
-
-        await _handler.HandleAsync(context);
-
-        context.HasSucceeded.Should().BeFalse();
-    }
-
-    [Fact]
-    public async Task HandleRequirementAsync_ShouldSucceed_WhenSupportAdminScope_IsPresent()
-    {
-        var requirement = new ScopeRequirement(PersonScopes.SupportAdmin);
-        var context = new AuthorizationHandlerContext(new[] { requirement }, null, null);
-
-        _sessionMock.Setup(x => x.Get<Models.UserDetails>(Session.UserDetailsKey)).Returns(_defaultUserDetails);
-        _userInfoServiceMock.Setup(x => x.GetOrganisationUserScopes())
-            .ReturnsAsync([]);
-        _userInfoServiceMock.Setup(x => x.GetUserScopes())
-            .ReturnsAsync(new[] { PersonScopes.SupportAdmin });
-
-        await _handler.HandleAsync(context);
-
-        context.HasSucceeded.Should().BeTrue();
-    }
-
-    [Fact]
-    public async Task HandleRequirementAsync_ShouldFail_WhenNoScopesMatch()
-    {
-        var requirement = new ScopeRequirement(OrganisationPersonScopes.Editor);
-        var context = new AuthorizationHandlerContext(new[] { requirement }, null, null);
-
-        _sessionMock.Setup(x => x.Get<Models.UserDetails>(Session.UserDetailsKey)).Returns(_defaultUserDetails);
-        _userInfoServiceMock.Setup(x => x.GetOrganisationUserScopes())
-            .ReturnsAsync([]);
-        _userInfoServiceMock.Setup(x => x.GetOrganisationUserScopes())
-            .ReturnsAsync([]);
-
-        await _handler.HandleAsync(context);
-
-        context.HasSucceeded.Should().BeFalse();
-    }
-
-    [Fact]
-    public async Task HandleRequirementAsync_ShouldSucceed_WhenViewerScope_AndEditorOrSupportAdminPresent()
-    {
-        var requirement = new ScopeRequirement(OrganisationPersonScopes.Viewer);
-        var context = new AuthorizationHandlerContext(new[] { requirement }, null, null);
-
-        _sessionMock.Setup(x => x.Get<Models.UserDetails>(Session.UserDetailsKey)).Returns(_defaultUserDetails);
-        _userInfoServiceMock.Setup(x => x.GetOrganisationUserScopes())
-            .ReturnsAsync(new[] { OrganisationPersonScopes.Editor });
-        _userInfoServiceMock.Setup(x => x.GetUserScopes())
-            .ReturnsAsync(new string[] { PersonScopes.SupportAdmin });
-
-        await _handler.HandleAsync(context);
-
-        context.HasSucceeded.Should().BeTrue();
+        context.HasSucceeded.Should().Be(expectedResult);
     }
 }
