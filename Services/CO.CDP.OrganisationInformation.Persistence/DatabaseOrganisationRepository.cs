@@ -118,14 +118,14 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
         return organisation?.SupplierInfo?.LegalForm;
     }
 
-    public async Task<OperationType?> GetOperationType(int organisationId)
+    public async Task<IList<OperationType>> GetOperationTypes(int organisationId)
     {
         var organisation = await context.Organisations
             .Where(x => x.Id == organisationId)
             .Include(x => x.SupplierInfo)
             .FirstOrDefaultAsync();
 
-        return organisation?.SupplierInfo?.OperationTypes.FirstOrDefault();
+        return organisation?.SupplierInfo?.OperationTypes ?? [];
     }
 
     public void Save(Organisation organisation)

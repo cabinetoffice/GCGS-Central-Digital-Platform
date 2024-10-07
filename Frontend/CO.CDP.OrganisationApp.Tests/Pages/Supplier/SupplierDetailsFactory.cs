@@ -17,7 +17,7 @@ public static class SupplierDetailsFactory
         return new SupplierInformation(
             organisationName: "FakeOrg",
             supplierType: SupplierType.Organisation,
-            operationTypes: new List<OperationType>() { OperationType.SmallorMediumSized, OperationType.NonGovernmental },
+            operationTypes: new List<OperationType>() { OperationType.SmallOrMediumSized, OperationType.NonGovernmental },
             completedRegAddress: true,
             completedPostalAddress: completedPostalAddress,
             completedVat: true,

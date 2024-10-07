@@ -5,9 +5,10 @@ namespace CO.CDP.OrganisationInformation;
 [JsonConverter(typeof(JsonStringEnumConverter))]
 public enum OperationType
 {
-    SmallorMediumSized = 1,
+    None,
+    SmallOrMediumSized,
     NonGovernmental,
     SupportedEmploymentProvider,
     PublicService,
-    None
+    NoneOfAbove
 }
