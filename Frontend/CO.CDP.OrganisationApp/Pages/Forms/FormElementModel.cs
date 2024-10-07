@@ -6,7 +6,7 @@ public interface IFormElementModel
 {
     FormQuestionType? CurrentFormQuestionType { get; set; }
 
-    void Initialize(FormQuestion question, bool redirectFromCheckYourAnswerPage);
+    void Initialize(FormQuestion question);
 
     FormAnswer? GetAnswer();
 
@@ -21,15 +21,13 @@ public abstract class FormElementModel : IFormElementModel
 
     public string? Caption { get; set; }
 
-    protected bool RedirectFromCheckYourAnswerPage { get; set; }
-
     public FormQuestionType? CurrentFormQuestionType { get; set; }
 
     public bool IsRequired { get; set; }
 
     public FormQuestionOptions? Options { get; set; }
 
-    public virtual void Initialize(FormQuestion question, bool redirectFromCheckYourAnswerPage)
+    public virtual void Initialize(FormQuestion question)
     {
         Heading = question.Title;
         Description = question.Description;
@@ -37,7 +35,6 @@ public abstract class FormElementModel : IFormElementModel
         CurrentFormQuestionType = question.Type;
         IsRequired = question.IsRequired;
         Options = question.Options;
-        RedirectFromCheckYourAnswerPage = redirectFromCheckYourAnswerPage;
     }
 
     public abstract FormAnswer? GetAnswer();

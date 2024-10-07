@@ -103,7 +103,8 @@ public class FormsQuestionPageModel(
                 {
                     using var stream = response.Value.formFile.OpenReadStream();
                     await fileHostManager.UploadFile(stream, response.Value.filename, response.Value.contentType);
-                    answer = new FormAnswer { TextValue = response.Value.filename };
+                    answer ??= new FormAnswer();
+                    answer.TextValue = response.Value.filename;
                 }
             }
 
@@ -149,35 +150,20 @@ public class FormsQuestionPageModel(
         var form = await formsEngine.GetFormSectionAsync(OrganisationId, FormId, SectionId);
 
         List<AnswerSummary> summaryList = [];
-        foreach (var answer in answerSet.Answers)
+        foreach (QuestionAnswer answer in answerSet.Answers)
         {
             var question = form?.Questions.FirstOrDefault(q => q.Id == answer.QuestionId);
+
             if (question != null && question.Type != FormQuestionType.NoInput && question.Type != FormQuestionType.CheckYourAnswers)
             {
-                var choiceProviderStrategy = choiceProviderService.GetStrategy(question.Options.ChoiceProviderStrategy);
-                string answerString = question.Type switch
-                {
-                    FormQuestionType.Text => answer.Answer?.TextValue ?? "",
-                    FormQuestionType.FileUpload => answer.Answer?.TextValue ?? "",
-                    FormQuestionType.YesOrNo => answer.Answer?.BoolValue.HasValue == true ? (answer.Answer.BoolValue == true ? "Yes" : "No") : "",
-                    FormQuestionType.SingleChoice => await choiceProviderStrategy.RenderOption(answer.Answer) ?? "",
-                    FormQuestionType.Date => answer.Answer?.DateValue.HasValue == true ? answer.Answer.DateValue.Value.ToString("dd/MM/yyyy") : "",
-                    FormQuestionType.CheckBox => answer.Answer?.BoolValue == true ? question?.Options?.Choices?.Values.FirstOrDefault() ?? "" : "",
-                    FormQuestionType.Address => answer.Answer?.AddressValue != null ? answer.Answer.AddressValue.ToHtmlString() : "",
-                    FormQuestionType.GroupedSingleChoice => answer.Answer?.OptionValue ?? "",
-                    FormQuestionType.MultiLine => answer.Answer?.TextValue ?? "",
-                    FormQuestionType.Url => answer.Answer?.TextValue ?? "",
-                    _ => ""
-                };
-
                 var summary = new AnswerSummary
                 {
-                    Title = question?.SummaryTitle ?? question?.Title,
-                    Answer = answerString,
+                    Title = question.SummaryTitle ?? question.Title,
+                    Answer = await GetAnswerString(answer, question),
                     ChangeLink = $"/organisation/{OrganisationId}/forms/{FormId}/sections/{SectionId}/questions/{answer.QuestionId}?frm-chk-answer=true"
                 };
 
-                if (question?.Type == FormQuestionType.Address && answer.Answer?.AddressValue != null
+                if (question.Type == FormQuestionType.Address && answer.Answer?.AddressValue != null
                     && answer.Answer.AddressValue.Country != Country.UKCountryCode)
                 {
                     summary.ChangeLink += "&UkOrNonUk=non-uk";
@@ -188,6 +174,38 @@ public class FormsQuestionPageModel(
         }
 
         return summaryList;
+    }
+
+    private async Task<string> GetAnswerString(QuestionAnswer questionAnswer, FormQuestion question)
+    {
+        var answer = questionAnswer.Answer;
+        if (answer == null) return "";
+
+        async Task<string> singleChoiceString(FormAnswer a)
+        {
+            var choiceProviderStrategy = choiceProviderService.GetStrategy(question.Options.ChoiceProviderStrategy);
+            return await choiceProviderStrategy.RenderOption(a) ?? "";
+        }
+
+        string boolAnswerString = answer.BoolValue.HasValue == true ? (answer.BoolValue == true ? "Yes" : "No") : "";
+
+        string answerString = question.Type switch
+        {
+            FormQuestionType.Text => answer.TextValue ?? "",
+            FormQuestionType.FileUpload => answer.TextValue ?? "",
+            FormQuestionType.SingleChoice => await singleChoiceString(answer),
+            FormQuestionType.Date => answer.DateValue.HasValue == true ? answer.DateValue.Value.ToString("dd/MM/yyyy") : "",
+            FormQuestionType.CheckBox => answer.BoolValue == true ? question?.Options?.Choices?.Values.FirstOrDefault() ?? "" : "",
+            FormQuestionType.Address => answer.AddressValue != null ? answer.AddressValue.ToHtmlString() : "",
+            FormQuestionType.MultiLine => answer.TextValue ?? "",
+            FormQuestionType.GroupedSingleChoice => answer.OptionValue ?? "",
+            FormQuestionType.Url => answer.TextValue ?? "",
+            _ => ""
+        };
+
+        string[] answers = [boolAnswerString, answerString];
+
+        return string.Join(", ", answers.Where(s => !string.IsNullOrWhiteSpace(s)));
     }
 
     public bool PreviousQuestionHasNonUKAddressAnswer()
@@ -270,7 +288,7 @@ public class FormsQuestionPageModel(
             _ => throw new NotImplementedException($"Forms question: {question.Type} is not supported"),
         };
 
-        model.Initialize(question, RedirectFromCheckYourAnswerPage == true);
+        model.Initialize(question);
         if (question.Type == FormQuestionType.Address && model is FormElementAddressModel addressModel)
         {
             addressModel.UkOrNonUk = UkOrNonUk ?? addressModel.UkOrNonUk;

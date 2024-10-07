@@ -26,9 +26,11 @@ public class FormElementDateInputModel : FormElementModel, IValidatableObject
 
     public override FormAnswer? GetAnswer()
     {
-        if (IsRequired == false && HasValue == false)
+        FormAnswer? formAnswer = null;
+
+        if (HasValue != null)
         {
-            return null;
+            formAnswer = new FormAnswer { BoolValue = HasValue };
         }
 
         if (!string.IsNullOrWhiteSpace(Day) && !string.IsNullOrWhiteSpace(Month) && !string.IsNullOrWhiteSpace(Year))
@@ -36,23 +38,24 @@ public class FormElementDateInputModel : FormElementModel, IValidatableObject
             var dateString = $"{Year}-{Month!.PadLeft(2, '0')}-{Day!.PadLeft(2, '0')}";
             if (DateTime.TryParseExact(dateString, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
             {
-                return new FormAnswer { DateValue = parsedDate };
+                formAnswer ??= new FormAnswer();
+                formAnswer.DateValue = parsedDate;
             }
         }
-        return null;
+
+        return formAnswer;
     }
 
     public override void SetAnswer(FormAnswer? answer)
     {
+        if (answer == null) return;
+
+        HasValue = answer.BoolValue;
         if (answer?.DateValue != null)
         {
             Day = answer.DateValue.Value.Day.ToString();
             Month = answer.DateValue.Value.Month.ToString();
             Year = answer.DateValue.Value.Year.ToString();
-        }
-        else if (RedirectFromCheckYourAnswerPage && IsRequired == false)
-        {
-            HasValue = false;
         }
     }
 

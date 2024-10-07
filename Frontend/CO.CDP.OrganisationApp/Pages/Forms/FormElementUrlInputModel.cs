@@ -15,25 +15,28 @@ public class FormElementUrlInputModel : FormElementModel, IValidatableObject
 
     public override FormAnswer? GetAnswer()
     {
-        if (IsRequired == false && HasValue == false)
+        FormAnswer? formAnswer = null;
+
+        if (HasValue != null)
         {
-            return null;
+            formAnswer = new FormAnswer { BoolValue = HasValue };
         }
 
-        return string.IsNullOrWhiteSpace(TextInput) ? null : new FormAnswer { TextValue = TextInput };
+        if (!string.IsNullOrWhiteSpace(TextInput))
+        {
+            formAnswer ??= new FormAnswer();
+            formAnswer.TextValue = TextInput;
+        }
+
+        return formAnswer;
     }
 
     public override void SetAnswer(FormAnswer? answer)
     {
-        if (answer?.TextValue != null)
-        {
-            TextInput = answer.TextValue;
-            HasValue = true;
-        }
-        else if (RedirectFromCheckYourAnswerPage && IsRequired == false)
-        {
-            HasValue = false;
-        }
+        if (answer == null) return;
+
+        HasValue = answer.BoolValue;
+        TextInput = answer.TextValue;
     }
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)

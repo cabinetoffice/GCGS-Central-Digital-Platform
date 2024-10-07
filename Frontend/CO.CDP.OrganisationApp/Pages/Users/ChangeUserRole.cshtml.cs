@@ -153,18 +153,18 @@ public class ChangeUserRoleModel(
         if (scopes != null && scopes.Contains(OrganisationPersonScopes.Admin)) scopes.Remove(OrganisationPersonScopes.Admin);
         if (scopes != null && scopes.Contains(OrganisationPersonScopes.Editor)) scopes.Remove(OrganisationPersonScopes.Editor);
         if (scopes != null && scopes.Contains(OrganisationPersonScopes.Viewer)) scopes.Remove(OrganisationPersonScopes.Viewer);
-        if (IsAdmin == true)
-        {
-            scopes?.Add(OrganisationPersonScopes.Admin);
-        }
 
-        if (Role == OrganisationPersonScopes.Editor)
+        switch (Role)
         {
-            scopes?.Add(OrganisationPersonScopes.Editor);
-        }
-        else
-        {
-            scopes?.Add(OrganisationPersonScopes.Viewer);
+            case OrganisationPersonScopes.Admin:
+                scopes?.Add(OrganisationPersonScopes.Admin);
+                break;
+            case OrganisationPersonScopes.Editor:
+                scopes?.Add(OrganisationPersonScopes.Editor);
+                break;
+            default:
+                scopes?.Add(OrganisationPersonScopes.Viewer);
+                break;
         }
 
         return scopes;

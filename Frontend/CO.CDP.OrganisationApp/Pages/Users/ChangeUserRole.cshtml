@@ -23,19 +23,6 @@
                 @Model.UserFullName
             </h1>
             <form class="form" method="post" asp-page-handler="@Model.Handler">
-                <div class="govuk-form-group">
-                    <div class="govuk-checkboxes__item">
-                        <input class="govuk-checkboxes__input" id="role-admin" name="IsAdmin" type="checkbox"
-                               value="true" @IsSelected(Model.IsAdmin == true)>
-                        <label class="govuk-label govuk-checkboxes__label" for="role-admin">
-                            Is user admin
-                        </label>
-                        <div id="role-admin-hint" class="govuk-hint govuk-radios__hint">
-                            Can add, remove and edit users
-                        </div>
-                    </div>
-                </div>
-
                 <div class="govuk-form-group @(roleHasError ? "govuk-form-group--error" : "")">
                     <fieldset class="govuk-fieldset" aria-describedby="role-hint">
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
@@ -52,6 +39,16 @@
                             Select the one that applies
                         </div>
                         <div class="govuk-radios" data-module="govuk-radios">
+
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input" id="@nameof(Model.Role)" name="role" type="radio" value="@OrganisationPersonScopes.Admin" aria-describedby="role-editor-hint" @IsSelected(Model.Role == OrganisationPersonScopes.Admin)>
+                                <label class="govuk-label govuk-radios__label" for="@nameof(Model.Role)">
+                                    Admin
+                                </label>
+                                <div id="role-editor-hint" class="govuk-hint govuk-radios__hint">
+                                    Can do anything, including add, remove and edit users
+                                </div>
+                            </div>
 
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input" id="@nameof(Model.Role)" name="role" type="radio" value="@OrganisationPersonScopes.Editor" aria-describedby="role-editor-hint" @IsSelected(Model.Role == OrganisationPersonScopes.Editor)>

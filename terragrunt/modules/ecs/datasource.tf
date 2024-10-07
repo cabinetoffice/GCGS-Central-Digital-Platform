@@ -36,6 +36,10 @@ data "aws_secretsmanager_secret_version" "govuknotify_apikey" {
   secret_id = "${local.name_prefix}-govuknotify-apikey"
 }
 
+data "aws_secretsmanager_secret_version" "govuknotify_support_admin_email" {
+  secret_id = "${local.name_prefix}-govuknotify-support-admin-email"
+}
+
 data "aws_secretsmanager_secret" "one_login" {
   name = "${local.name_prefix}-one-login-credentials"
 }
