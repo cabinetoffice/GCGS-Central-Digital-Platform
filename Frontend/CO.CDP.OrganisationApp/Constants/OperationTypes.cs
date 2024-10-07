@@ -9,7 +9,7 @@ public static class OperationTypeExtensions
     {
         return operationType switch
         {
-            OperationType.SmallorMediumSized => "As a small or medium-sized enterprise",
+            OperationType.SmallOrMediumSized => "As a small or medium-sized enterprise",
             OperationType.NonGovernmental => "As a non-governmental organisation that is value-driven and which principally reinvests its surpluses to further social, environmental or cultural objectives",
             OperationType.SupportedEmploymentProvider => "As a supported employment provider",
             OperationType.PublicService => "As a public service mutual",
@@ -22,7 +22,7 @@ public static class OperationTypeExtensions
     {
         return operationType switch
         {
-            OperationType.SmallorMediumSized => "Small or medium-sized enterprise",
+            OperationType.SmallOrMediumSized => "Small or medium-sized enterprise",
             OperationType.NonGovernmental => "Non-governmental organisation ",
             OperationType.SupportedEmploymentProvider => "Supported employment provider",
             OperationType.PublicService => "Public service mutual",
