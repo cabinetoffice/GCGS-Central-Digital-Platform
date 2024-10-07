@@ -134,6 +134,13 @@ internal static class EntityFactory
         return mockEntities;
     }
 
+    internal static IList<OperationType> GetOperationTypes()
+    {
+        var mockOperationType = new List<OperationType> { OperationType.SmallOrMediumSized };
+
+        return mockOperationType;
+    }
+
     public static Organisation GivenOrganisation(
         Guid? guid = null,
         Tenant? tenant = null,
