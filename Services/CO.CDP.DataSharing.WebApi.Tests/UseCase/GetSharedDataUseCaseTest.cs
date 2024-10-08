@@ -5,6 +5,7 @@ using CO.CDP.DataSharing.WebApi.UseCase;
 using CO.CDP.OrganisationInformation;
 using CO.CDP.OrganisationInformation.Persistence;
 using FluentAssertions;
+using Microsoft.Extensions.Configuration;
 using Moq;
 using Address = CO.CDP.OrganisationInformation.Address;
 
@@ -15,6 +16,7 @@ public class GetSharedDataUseCaseTest : IClassFixture<AutoMapperFixture>
     private readonly Mock<IShareCodeRepository> _shareCodeRepository = new();
     private readonly Mock<IOrganisationRepository> _organisationRepository = new();
     private readonly Mock<IClaimService> _claimService = new();
+    private readonly Mock<IConfiguration> _configuration = new();
     private readonly GetSharedDataUseCase _useCase;
 
     public GetSharedDataUseCaseTest(AutoMapperFixture mapperFixture)
@@ -23,11 +25,12 @@ public class GetSharedDataUseCaseTest : IClassFixture<AutoMapperFixture>
         _claimService.Setup(c => c.GetOrganisationId()).Returns(organisationId);
         _shareCodeRepository.Setup(s => s.OrganisationShareCodeExistsAsync(organisationId, It.IsAny<string>())).ReturnsAsync(true);
 
-        _useCase = new GetSharedDataUseCase(_shareCodeRepository.Object, _organisationRepository.Object, _claimService.Object, mapperFixture.Mapper);
+        _useCase = new GetSharedDataUseCase(_shareCodeRepository.Object, _organisationRepository.Object,
+            _claimService.Object, mapperFixture.Mapper, _configuration.Object);
     }
 
     [Fact]
-    public async Task ThrowsUserUnauthorizedException_WhenRequestedUserOrganisationAndShareCodeRequestedNotFound()
+    public async Task ThrowsUserUnauthorizedException_WhenRequestedUserOrganisationAndShareCodeRequested_NotFound()
     {
         var shareCode = "dummy_code";
 
@@ -41,7 +44,7 @@ public class GetSharedDataUseCaseTest : IClassFixture<AutoMapperFixture>
     }
 
     [Fact]
-    public async Task ThrowsUserUnauthorizedException_WhenRequestedUserOrganisationInNotInTheClaim()
+    public async Task ThrowsUserUnauthorizedException_WhenRequestedUserOrganisation_NotInTheClaim()
     {
         _claimService.Setup(c => c.GetOrganisationId()).Returns((Guid?)null);
 
@@ -51,12 +54,31 @@ public class GetSharedDataUseCaseTest : IClassFixture<AutoMapperFixture>
     }
 
     [Fact]
+    public async Task ThrowsShareCodeNotFoundException_When_NotFound()
+    {
+        var response = async () => await _useCase.Execute("dummy_code");
+
+        await response.Should().ThrowAsync<ShareCodeNotFoundException>();
+    }
+
+    [Fact]
+    public async Task ThrowsException_WhenDataSharingApiUrl_NotConfigured()
+    {
+        var (shareCode, _, organisationGuid, _) = SetupTestData();
+
+        var response = async () => await _useCase.Execute(shareCode);
+
+        await response.Should().ThrowAsync<Exception>();
+    }
+
+    [Fact]
     public async Task ItReturnsMappedSupplierInformationWhenSharedConsentIsFound()
     {
         var (shareCode, _, organisationGuid, _) = SetupTestData();
 
-        var result = await _useCase.Execute(shareCode);
+        _configuration.Setup(c => c["DataSharingApiUrl"]).Returns("https://localhost");
 
+        var result = await _useCase.Execute(shareCode);
         result.Should().NotBeNull();
 
         AssertBasicInformation(result, organisationGuid);
@@ -223,6 +245,11 @@ public class GetSharedDataUseCaseTest : IClassFixture<AutoMapperFixture>
         if (!string.IsNullOrEmpty(answer.TextValue))
             answer.TextValue.Should().Be("Compliance confirmed through third-party audit.");
 
+        if (answer.QuestionName == "_Section03")
+        {
+            answer.TextValue.Should().BeNull();
+            answer.DocumentUri.Should().Be("https://localhost/share/data/valid-sharecode/document/a_dummy_file.pdf");
+        }
 
         if (answer.BoolValue.HasValue)
             answer.BoolValue.Should().BeTrue();

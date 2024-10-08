@@ -4,6 +4,7 @@ using CO.CDP.DataSharing.WebApi.Model;
 using CO.CDP.OrganisationInformation;
 using CO.CDP.OrganisationInformation.Persistence;
 using SharedConsent = CO.CDP.OrganisationInformation.Persistence.Forms.SharedConsent;
+using FormQuestionType = CO.CDP.OrganisationInformation.Persistence.Forms.FormQuestionType;
 
 namespace CO.CDP.DataSharing.WebApi.UseCase;
 
@@ -11,7 +12,8 @@ public class GetSharedDataUseCase(
     IShareCodeRepository shareCodeRepository,
     IOrganisationRepository organisationRepository,
     IClaimService claimService,
-    IMapper mapper)
+    IMapper mapper,
+    IConfiguration configuration)
     : IUseCase<string, SupplierInformation?>
 {
     public async Task<SupplierInformation?> Execute(string sharecode)
@@ -29,7 +31,7 @@ public class GetSharedDataUseCase(
         var additionalEntities = await AdditionalEntities(sharedConsent);
         var details = await GetDetails(sharedConsent);
 
-        return mapper.Map<SupplierInformation>(sharedConsent, opts =>
+        var supplierInformation = mapper.Map<SupplierInformation>(sharedConsent, opts =>
         {
             opts.Items["AssociatedPersons"] = associatedPersons;
             opts.Items["AdditionalParties"] = new List<OrganisationReference>();
@@ -37,6 +39,31 @@ public class GetSharedDataUseCase(
 
             opts.Items["Details"] = details;
         });
+
+        InsertFileDocumentUri(sharedConsent, supplierInformation, sharecode);
+
+        return supplierInformation;
+    }
+
+    private void InsertFileDocumentUri(SharedConsent sharedConsent, SupplierInformation supplierInformation, string sharecode)
+    {
+        var dataSharingApiUrl = configuration["DataSharingApiUrl"]
+                    ?? throw new Exception("Missing configuration key: DataSharingApiUrl.");
+
+        var questions = sharedConsent.Form.Sections.SelectMany(s => s.Questions);
+
+        foreach (var answerSet in supplierInformation.SupplierInformationData.AnswerSets)
+        {
+            foreach (var answer in answerSet.Answers)
+            {
+                if (!string.IsNullOrWhiteSpace(answer.TextValue)
+                    && questions.Any(q => q.Type == FormQuestionType.FileUpload && q.Name == answer.QuestionName))
+                {
+                    answer.DocumentUri = new Uri(new Uri(dataSharingApiUrl), $"/share/data/{sharecode}/document/{answer.TextValue}");
+                    answer.TextValue = null;
+                }
+            }
+        }
     }
 
     private async Task<Details> GetDetails(SharedConsent sharedConsent)

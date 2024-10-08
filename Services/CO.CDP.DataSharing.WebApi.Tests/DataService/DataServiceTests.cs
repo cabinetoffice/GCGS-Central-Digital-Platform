@@ -5,7 +5,7 @@ using Moq;
 using static CO.CDP.DataSharing.WebApi.Tests.DataSharingFactory;
 using SharedConsent = CO.CDP.OrganisationInformation.Persistence.Forms.SharedConsent;
 
-namespace DataSharing.Tests.DataService;
+namespace CO.CDP.DataSharing.WebApi.Tests.DataService;
 
 public class DataServiceTests
 {

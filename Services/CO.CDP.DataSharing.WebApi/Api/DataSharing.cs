@@ -32,9 +32,30 @@ public static class EndpointExtensions
             {
                 operation.OperationId = "GetSharedData";
                 operation.Description =
-                    "Operation to obtain Supplier information which has been shared as part of a notice. ";
+                    "Operation to obtain Supplier information which has been shared as part of a notice.";
                 operation.Summary = "Request Supplier Submitted Information. ";
                 operation.Responses["200"].Description = "Organisation Information including Form Answers.";
+                operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
+                operation.Responses["404"].Description = "Share code not found or the caller is not authorised to use it.";
+                operation.Responses["500"].Description = "Internal server error.";
+                return operation;
+            });
+
+        app.MapGet("/share/data/{sharecode}/document/{documentId}",
+            [OrganisationAuthorize([AuthenticationChannel.OrganisationKey])]
+        async (string sharecode, string documentId,
+            IUseCase<(string, string), string?> useCase) => await useCase.Execute((sharecode, documentId))
+             .AndThen(url => url != null ? Results.Redirect(url) : Results.NotFound()))
+            .Produces(StatusCodes.Status302Found)
+            .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
+            .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
+            .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError)
+            .WithOpenApi(operation =>
+            {
+                operation.OperationId = "GetSharedDataDocumentDownloadUrl";
+                operation.Description = "Operation to obtain direct download url for a document supplied within Supplier information which has been shared as part of a notice..";
+                operation.Summary = "Request Document within Supplier Submitted Information.";
+                operation.Responses["302"].Description = "Redirect to direct download url.";
                 operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
                 operation.Responses["404"].Description = "Share code not found or the caller is not authorised to use it.";
                 operation.Responses["500"].Description = "Internal server error.";
