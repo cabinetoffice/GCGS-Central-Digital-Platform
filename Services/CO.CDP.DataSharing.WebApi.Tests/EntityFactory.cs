@@ -252,7 +252,7 @@ internal static class EntityFactory
             Form = form,
             Questions = new List<PersistenceForms.FormQuestion>(),
             Title = "Test Section",
-            Type = PersistenceForms.FormSectionType.Standard,
+            Type = PersistenceForms.FormSectionType.Declaration,
             AllowsMultipleAnswerSets = true,
             CheckFurtherQuestionsExempted = false,
             DisplayOrder = 1,
@@ -406,7 +406,7 @@ internal static class EntityFactory
                     {
                         Guid = Guid.NewGuid(),
                         Title = string.Empty,
-                        Type = PersistenceForms.FormSectionType.Standard,
+                        Type = PersistenceForms.FormSectionType.Exclusions,
                         FormId = form.Id,
                         Form = form,
                         Questions = new List<PersistenceForms.FormQuestion>(),

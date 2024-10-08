@@ -23,7 +23,7 @@ public class CustomScopeHandler(
                     var organisationUserScopes = await _userInfo.GetOrganisationUserScopes();
 
                     // Admin role can do anything within this organisation
-                    if (organisationUserScopes.Contains(OrganisationPersonScopes.Admin))
+                    if (organisationUserScopes.Contains(OrganisationPersonScopes.Admin) && requirement.Scope != PersonScopes.SupportAdmin)
                     {
                         context.Succeed(requirement);
                         return;
