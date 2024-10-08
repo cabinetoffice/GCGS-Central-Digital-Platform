@@ -89,7 +89,7 @@ var approvalHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Approval)).
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <form method="post">
-                <fieldset class="govuk-fieldset" data-required="" data-error="Select yes if you want to approve this organisation" aria-required="true">
+                <fieldset class="govuk-fieldset">
                     <div class="govuk-form-group @(approvalHasError ? "govuk-form-group--error" : "")">
 
                         <h2 class="govuk-heading-m">

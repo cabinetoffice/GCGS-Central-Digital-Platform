@@ -16,7 +16,7 @@
         <div class="govuk-grid-column-two-thirds">
             <partial name="_ErrorSummary" model="@Model.ModelState" />
             <form method="post">
-                <fieldset class="govuk-fieldset" data-required="" data-error="Select yes if you want to remove this connected person" aria-required="true">
+                <fieldset class="govuk-fieldset">
                     <div class="govuk-form-group @(hasError ? "govuk-form-group--error" : "")">
 
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">

@@ -52,7 +52,7 @@
                     <form class="form" method="post">
                         @if (Model.AllowsMultipleAnswerSets)
                         {
-                            <fieldset class="govuk-fieldset" data-required="" data-error="Select yes if you need to add another answer set" aria-required="true">
+                            <fieldset class="govuk-fieldset">
                                 <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
 
                                     @if (!string.IsNullOrWhiteSpace(Model.AddAnotherAnswerLabel))
