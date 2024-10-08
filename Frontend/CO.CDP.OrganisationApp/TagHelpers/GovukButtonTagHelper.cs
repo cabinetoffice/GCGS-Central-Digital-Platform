@@ -19,7 +19,8 @@ public class GovukButtonTagHelper : TagHelper
 
         if (!string.IsNullOrEmpty(Class))
         {
-            output.AddClass(Class.Trim(), HtmlEncoder.Default);
+            Class.Trim().Split(" ").ToList()
+                .ForEach(c => output.AddClass(c, HtmlEncoder.Default));
         }
 
         if (PreventDoubleClick)
