@@ -10,7 +10,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-			migrationBuilder.Sql($@"
+            migrationBuilder.Sql($@"
                 UPDATE identifiers
                 SET uri = 
                   CASE
@@ -35,7 +35,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-			migrationBuilder.Sql($@"
+            migrationBuilder.Sql($@"
                 UPDATE identifiers
                 SET uri = NULL
                 WHERE scheme = 'GB-PPON' AND uri = '/organisations/' || identifier_id;
