@@ -13,7 +13,7 @@
     var hasError = dateOfBirthHasError || dayHasError || monthHasError || yearHasError;
     var nationalityHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Nationality)).HasInnerHtml;
 
-    var backPage = Request.Query.ContainsKey("frm-chk-answer") ? "check-answer-individual-trust" : "individual-category";        
+    var backPage = Request.Query.ContainsKey("frm-chk-answer") ? "check-answer-individual-trust" : "individual-category";
     var backLink = $"/organisation/{Model.Id}/supplier-information/connected-person/{backPage}/{Model.ConnectedEntityId}";
 }
 
@@ -162,11 +162,9 @@
                             </select>
                         </div>
                     }
-                    <button type="submit"
-                            class="govuk-button"
-                            data-module="govuk-button">
+                    <govuk-button>
                         Continue
-                    </button>
+                    </govuk-button>
                 </fieldset>
             </form>
         </div>
