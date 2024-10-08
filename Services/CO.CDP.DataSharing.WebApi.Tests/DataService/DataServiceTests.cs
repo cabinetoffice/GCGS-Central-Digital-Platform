@@ -1,4 +1,5 @@
 using CO.CDP.DataSharing.WebApi.Model;
+using CO.CDP.DataSharing.WebApi.Tests;
 using CO.CDP.OrganisationInformation.Persistence;
 using FluentAssertions;
 using Moq;
@@ -74,5 +75,24 @@ public class DataServiceTests
         result.BasicInformation.WebsiteAddress.Should().Be(organisation.ContactPoints.FirstOrDefault()?.Url);
         result.BasicInformation.EmailAddress.Should().Be(organisation.ContactPoints.FirstOrDefault()?.Email);
         result.BasicInformation.LegalForm.Should().NotBeNull();
+    }
+
+    [Fact]
+    public async Task ShouldMapFormAnswerSetsForPdf()
+    {
+        var org = CreateOrganisation();
+        var sharedConsent = EntityFactory.GetSharedConsent(org.Id, org.Guid, Guid.NewGuid());
+        sharedConsent.Organisation = org;
+
+        _shareCodeRepository.Setup(r => r.GetByShareCode("ABC-123")).ReturnsAsync(sharedConsent);
+
+        var result = await DataService.GetSharedSupplierInformationAsync("ABC-123");
+
+        result.FormAnswerSetForPdfs.Should().ContainSingle();
+
+        var exclusionsSection = result.FormAnswerSetForPdfs.First(fa => fa.SectionType == CO.CDP.OrganisationInformation.Persistence.Forms.FormSectionType.Exclusions);
+        exclusionsSection.QuestionAnswers.Should().Contain(qa => qa.Item1 == "Were your accounts audited?" && qa.Item2 == "yes");
+        exclusionsSection.QuestionAnswers.Should().Contain(qa => qa.Item1 == "What is the financial year end date for the information you uploaded?" && qa.Item2 == DateTime.Today.ToString("dd-MM-yyyy"));
+        exclusionsSection.QuestionAnswers.Should().Contain(qa => qa.Item1 == "Upload your accounts" && qa.Item2 == "No");
     }
 }

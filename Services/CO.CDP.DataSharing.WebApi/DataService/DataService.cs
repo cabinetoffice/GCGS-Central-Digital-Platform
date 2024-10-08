@@ -1,6 +1,6 @@
 using CO.CDP.DataSharing.WebApi.Model;
-using CO.CDP.OrganisationInformation.Persistence;
 using CO.CDP.OrganisationInformation;
+using CO.CDP.OrganisationInformation.Persistence;
 using static CO.CDP.OrganisationInformation.Persistence.ConnectedEntity;
 using Address = CO.CDP.OrganisationInformation.Address;
 using ConnectedIndividualTrust = CO.CDP.DataSharing.WebApi.Model.ConnectedIndividualTrust;
@@ -14,15 +14,75 @@ public class DataService(IShareCodeRepository shareCodeRepository, IConnectedEnt
     {
         var sharedConsent = await shareCodeRepository.GetByShareCode(shareCode)
                             ?? throw new ShareCodeNotFoundException(Constants.ShareCodeNotFoundExceptionMessage);
-
+        var allFormSectionsExceptDeclaractions = sharedConsent.AnswerSets.Where(a =>
+            a.Section.Type != OrganisationInformation.Persistence.Forms.FormSectionType.Declaration);
         var connectedEntities = await connectedEntityRepository.FindByOrganisation(sharedConsent.Organisation.Guid);
-
+        
         return new SharedSupplierInformation
         {
             OrganisationId = sharedConsent.Organisation.Guid,
             BasicInformation = MapToBasicInformation(sharedConsent.Organisation),
-            ConnectedPersonInformation = MapToConnectedPersonInformation(connectedEntities)
+            ConnectedPersonInformation = MapToConnectedPersonInformation(connectedEntities),
+            FormAnswerSetForPdfs = MapFormAnswerSetsForPdf(allFormSectionsExceptDeclaractions)
         };
+    }
+
+    public static IEnumerable<FormAnswerSetForPdf> MapFormAnswerSetsForPdf(
+        IEnumerable<OrganisationInformation.Persistence.Forms.FormAnswerSet> answerSets)
+    {
+        var pdfAnswerSets = new List<FormAnswerSetForPdf>();
+
+        foreach (var answerSet in answerSets)
+        {
+            var pdfAnswerSet = new FormAnswerSetForPdf() {
+                SectionName = answerSet.Section.Title,
+                SectionType = answerSet.Section.Type,
+                QuestionAnswers = []
+            };
+
+            pdfAnswerSets.Add(pdfAnswerSet);
+
+            foreach (var answer in answerSet.Answers)
+            {
+                switch (answer.Question.Type)
+                {
+                    case OrganisationInformation.Persistence.Forms.FormQuestionType.YesOrNo:
+                        {
+                            pdfAnswerSet.QuestionAnswers.Add(new Tuple<string, string>($"{answer.Question.Title}",
+                                answer.OptionValue ?? "No"));
+                            break;
+                        }
+                    case OrganisationInformation.Persistence.Forms.FormQuestionType.Date:
+                        {
+                            pdfAnswerSet.QuestionAnswers.Add(new Tuple<string, string>($"{answer.Question.Title}",
+                                answer.DateValue?.ToString("dd-MM-yyyy") ?? "Not specified"));
+                            break;
+                        }
+                    case OrganisationInformation.Persistence.Forms.FormQuestionType.Url:
+                        {
+                            pdfAnswerSet.QuestionAnswers.Add(new Tuple<string, string>($"{answer.Question.Title}",
+                               answer.TextValue ?? ""));
+                            break;
+                        }
+                    case OrganisationInformation.Persistence.Forms.FormQuestionType.FileUpload:
+                        {
+                            pdfAnswerSet.QuestionAnswers.Add(new Tuple<string, string>($"{answer.Question.Title}",
+                               answer.TextValue ?? "No"));
+                            break;
+                        }
+                    case OrganisationInformation.Persistence.Forms.FormQuestionType.Text:
+                    case OrganisationInformation.Persistence.Forms.FormQuestionType.MultiLine:
+                        {
+                            pdfAnswerSet.QuestionAnswers.Add(new Tuple<string, string>($"{answer.Question.Title}:",
+                                answer.TextValue ?? ""));
+                            break;
+                        }
+                }
+
+            }
+        }
+
+        return pdfAnswerSets;
     }
 
     public static BasicInformation MapToBasicInformation(Organisation organisation)
