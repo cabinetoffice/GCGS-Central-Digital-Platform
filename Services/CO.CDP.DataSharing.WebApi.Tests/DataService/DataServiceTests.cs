@@ -93,6 +93,6 @@ public class DataServiceTests
         var exclusionsSection = result.FormAnswerSetForPdfs.First(fa => fa.SectionType == CO.CDP.OrganisationInformation.Persistence.Forms.FormSectionType.Exclusions);
         exclusionsSection.QuestionAnswers.Should().Contain(qa => qa.Item1 == "Were your accounts audited?" && qa.Item2 == "yes");
         exclusionsSection.QuestionAnswers.Should().Contain(qa => qa.Item1 == "What is the financial year end date for the information you uploaded?" && qa.Item2 == DateTime.Today.ToString("dd-MM-yyyy"));
-        exclusionsSection.QuestionAnswers.Should().Contain(qa => qa.Item1 == "Upload your accounts" && qa.Item2 == "No");
+        exclusionsSection.QuestionAnswers.Should().Contain(qa => qa.Item1 == "Upload your accounts" && qa.Item2 == "a_dummy_file.pdf");
     }
 }

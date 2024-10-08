@@ -257,7 +257,7 @@ internal static class EntityFactory
         return tenant;
     }
 
-    private static PersistenceForms.FormSection GivenSection(Guid sectionId, PersistenceForms.Form form)
+    private static PersistenceForms.FormSection GivenSection(Guid sectionId, PersistenceForms.Form form, PersistenceForms.FormSectionType? sectionType = null)
     {
         var formSection = new PersistenceForms.FormSection
         {
@@ -266,7 +266,7 @@ internal static class EntityFactory
             Form = form,
             Questions = new List<PersistenceForms.FormQuestion>(),
             Title = "Test Section",
-            Type = PersistenceForms.FormSectionType.Declaration,
+            Type = sectionType ?? PersistenceForms.FormSectionType.Declaration,
             AllowsMultipleAnswerSets = true,
             CheckFurtherQuestionsExempted = false,
             DisplayOrder = 1,
@@ -283,7 +283,9 @@ internal static class EntityFactory
         return formSection;
     }
 
-    public static List<PersistenceForms.FormAnswerSet> GivenQuestionsAndAnswers(PersistenceForms.SharedConsent sharedConsent, PersistenceForms.Form form)
+    public static List<PersistenceForms.FormAnswerSet> GivenQuestionsAndAnswers(
+        PersistenceForms.SharedConsent sharedConsent,
+        PersistenceForms.Form form)
     {
         var section = GivenSection(Guid.NewGuid(), form);
         var answerSet = new PersistenceForms.FormAnswerSet
@@ -396,7 +398,7 @@ internal static class EntityFactory
                         Caption = "Page caption",
                         Name = "_Section0" + GetQuestionNumber(),
                         Title = "Enter your postal address",
-                        Description = String.Empty,
+                        Description = string.Empty,
                         Type = PersistenceForms.FormQuestionType.Address,
                         IsRequired = true,
                         Options = new PersistenceForms.FormQuestionOptions(),
@@ -408,6 +410,9 @@ internal static class EntityFactory
                         SortOrder = 6
                     }
                 };
+        section.Questions = questions;
+
+        var exclusionSection = GivenSection(Guid.NewGuid(), form, PersistenceForms.FormSectionType.Exclusions);
 
         var formAnswers = new List<PersistenceForms.FormAnswerSet>
             {
@@ -416,8 +421,8 @@ internal static class EntityFactory
                     Guid = Guid.NewGuid(),
                     SharedConsentId = default,
                     SharedConsent = sharedConsent,
-                    SectionId = section.Id,
-                    Section = section,
+                    SectionId = exclusionSection.Id,
+                    Section = exclusionSection,
                     Answers =
                     [
                         new PersistenceForms.FormAnswer
@@ -462,7 +467,6 @@ internal static class EntityFactory
                 answerSet
             };
 
-        section.Questions = questions;
 
         return formAnswers;
     }
