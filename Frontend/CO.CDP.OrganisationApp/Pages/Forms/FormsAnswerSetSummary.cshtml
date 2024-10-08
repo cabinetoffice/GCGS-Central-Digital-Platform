@@ -71,12 +71,12 @@
                                 <div class="govuk-radios govuk-radios--inline" data-module="govuk-radios">
                                     <div class="govuk-radios__item">
                                         <input class="govuk-radios__input" id="conditional-YES" name="AddAnotherAnswerSet" type="radio"
-                                               value="true" data-aria-controls="conditional-YES" @(Model.AddAnotherAnswerSet == true ? "checked" : "")>
+                                               value="true" @(Model.AddAnotherAnswerSet == true ? "checked" : "")>
                                         <label class="govuk-label govuk-radios__label" for="conditional-YES">Yes</label>
                                     </div>
                                     <div class="govuk-radios__item">
                                         <input class="govuk-radios__input" id="conditional-NO" name="AddAnotherAnswerSet" type="radio"
-                                               value="false" data-aria-controls="conditional-NO" @(Model.AddAnotherAnswerSet == false ? "checked" : "")>
+                                               value="false" @(Model.AddAnotherAnswerSet == false ? "checked" : "")>
                                         <label class="govuk-label govuk-radios__label" for="conditional-NO">No</label>
                                     </div>
                                 </div>

@@ -37,8 +37,7 @@
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input" id="entityCategory" name="ConnectedEntityCategory" type="radio"
                                        value="@Constants.ConnectedEntityOrganisationCategoryType.RegisteredCompany"
-                                       data-aria-controls="conditional-entityCategory"
-                                @IsSelected(Constants.ConnectedEntityOrganisationCategoryType.RegisteredCompany)>
+                                       @IsSelected(Constants.ConnectedEntityOrganisationCategoryType.RegisteredCompany)>
 
                                 <label class="govuk-label govuk-radios__label" for="entityCategory">
                                     @ConnectedEntityOrganisationCategoryModel.ConnectedEntityCategoryOption["RegisteredCompany"] @(Model.RegisteredWithCh == false ? " or equivalent" : "")
@@ -48,8 +47,7 @@
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input" id="entityCategory-2" name="ConnectedEntityCategory" type="radio"
                                        value="@Constants.ConnectedEntityOrganisationCategoryType.DirectorOrTheSameResponsibilities"
-                                       data-aria-controls="conditional-entityCategory-2"
-                                @IsSelected(Constants.ConnectedEntityOrganisationCategoryType.DirectorOrTheSameResponsibilities)>
+                                       @IsSelected(Constants.ConnectedEntityOrganisationCategoryType.DirectorOrTheSameResponsibilities)>
 
                                 <label class="govuk-label govuk-radios__label" for="entityCategory-2">
                                     @ConnectedEntityOrganisationCategoryModel.ConnectedEntityCategoryOption["Director"]
@@ -59,8 +57,7 @@
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input" id="entityCategory-3" name="ConnectedEntityCategory" type="radio"
                                        value="@Constants.ConnectedEntityOrganisationCategoryType.ParentOrSubsidiaryCompany"
-                                       data-aria-controls="conditional-entityCategory-3"
-                                @IsSelected(Constants.ConnectedEntityOrganisationCategoryType.ParentOrSubsidiaryCompany)>
+                                       @IsSelected(Constants.ConnectedEntityOrganisationCategoryType.ParentOrSubsidiaryCompany)>
 
                                 <label class="govuk-label govuk-radios__label" for="entityCategory-3">
                                     @ConnectedEntityOrganisationCategoryModel.ConnectedEntityCategoryOption["ParentOrSubCompany"]
@@ -70,8 +67,7 @@
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input" id="entityCategory-4" name="ConnectedEntityCategory" type="radio"
                                        value="@Constants.ConnectedEntityOrganisationCategoryType.ACompanyYourOrganisationHasTakenOver"
-                                       data-aria-controls="conditional-entityCategory-4"
-                                @IsSelected(Constants.ConnectedEntityOrganisationCategoryType.ACompanyYourOrganisationHasTakenOver)>
+                                       @IsSelected(Constants.ConnectedEntityOrganisationCategoryType.ACompanyYourOrganisationHasTakenOver)>
 
                                 <label class="govuk-label govuk-radios__label" for="entityCategory-4">
                                     @ConnectedEntityOrganisationCategoryModel.ConnectedEntityCategoryOption["CompanyOverTaken"]
@@ -81,8 +77,8 @@
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input" id="entityCategory-5" name="ConnectedEntityCategory" type="radio"
                                        value="@Constants.ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl"
-                                       data-aria-controls="conditional-entityCategory-5"
-                                @IsSelected(Constants.ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl)>
+                                       @IsSelected(Constants.ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl)>
+
                                 <label class="govuk-label govuk-radios__label" for="entityCategory-5">
                                     @ConnectedEntityOrganisationCategoryModel.ConnectedEntityCategoryOption["OrgWithSignificantControl"]
                                 </label>

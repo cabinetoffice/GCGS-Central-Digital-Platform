@@ -48,9 +48,8 @@
 
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input" id="NO" name="HasCompaniesHouseNumber" type="radio"
-                                       value="false" data-aria-controls="conditional-NO" @(Model.HasCompaniesHouseNumber == false ? "checked" : "")>
+                                       value="false" @(Model.HasCompaniesHouseNumber == false ? "checked" : "")>
                                 <label class="govuk-label govuk-radios__label" for="NO">No</label>
-                                <div class="govuk-radios__conditional--hidden" id="conditional-NO"></div>
                             </div>
                         </div>
 

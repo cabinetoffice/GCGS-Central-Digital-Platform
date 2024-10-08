@@ -49,9 +49,8 @@
 
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input" id="NO" name="HasLegalForm" type="radio"
-                                       value="false" data-aria-controls="conditional-NO" @(Model.HasLegalForm == false ? "checked" : "")>
+                                       value="false" @(Model.HasLegalForm == false ? "checked" : "")>
                                 <label class="govuk-label govuk-radios__label" for="NO">No</label>
-                                <div class="govuk-radios__conditional--hidden" id="conditional-NO"></div>
                             </div>
                         </div>
 
