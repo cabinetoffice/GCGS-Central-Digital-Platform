@@ -88,6 +88,7 @@ public class GetSharedDataUseCaseTest : IClassFixture<AutoMapperFixture>
 
         var mockAssociatedPersons = EntityFactory.GetMockAssociatedPersons();
         var mockAdditionalEntities = EntityFactory.GetMockAdditionalEntities();
+        var mockLegalForm = EntityFactory.GetLegalForm();
         var mockOperationTypes = EntityFactory.GetOperationTypes();
 
         _organisationRepository.Setup(repo => repo.GetConnectedIndividualTrusts(organisationId))
@@ -95,6 +96,9 @@ public class GetSharedDataUseCaseTest : IClassFixture<AutoMapperFixture>
 
         _organisationRepository.Setup(repo => repo.GetConnectedOrganisations(organisationId))
                                .ReturnsAsync(mockAdditionalEntities);
+
+        _organisationRepository.Setup(repo => repo.GetLegalForm(organisationId))
+                               .ReturnsAsync(mockLegalForm);
 
         _organisationRepository.Setup(repo => repo.GetOperationTypes(organisationId))
                                .ReturnsAsync(mockOperationTypes);
@@ -176,6 +180,10 @@ public class GetSharedDataUseCaseTest : IClassFixture<AutoMapperFixture>
     private void AssertDetails(Details? details)
     {
         details.Should().NotBeNull();
+        details?.LegalForm?.RegisteredUnderAct2006.Should().Be(false);
+        details?.LegalForm?.RegisteredLegalForm.Should().Be("Registered Legal Form 1");
+        details?.LegalForm?.LawRegistered.Should().Be("Law Registered 1");
+        details?.LegalForm?.RegistrationDate.Should().Be(DateTimeOffset.UtcNow.ToString("yyyy-MM-dd"));
         details?.Scale.Should().Be("small");
         details?.Vcse.Should().Be(false);
         details?.ShelteredWorkshop.Should().Be(false);
