@@ -37,7 +37,7 @@ public class SupplierBasicInformationTest
         _model.SupplierInformation.Should().Be(supplierInfo);
         _model.SupplierInformation?.OperationTypes.Should().NotBeNull();
         _model.SupplierInformation?.OperationTypes.Should().BeOfType<List<OperationType>>();
-        _model.SupplierInformation?.OperationTypes.Should().Contain(OperationType.SmallorMediumSized);
+        _model.SupplierInformation?.OperationTypes.Should().Contain(OperationType.SmallOrMediumSized);
         _model.SupplierInformation?.OperationTypes.Should().Contain(OperationType.NonGovernmental);
     }
 

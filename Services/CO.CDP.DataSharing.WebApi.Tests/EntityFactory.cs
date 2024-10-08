@@ -135,6 +135,26 @@ internal static class EntityFactory
         return mockEntities;
     }
 
+    internal static Organisation.LegalForm GetLegalForm()
+    {
+        var mockLegalForm = new Organisation.LegalForm
+        {
+            RegisteredUnderAct2006 = false,
+            RegisteredLegalForm = "Registered Legal Form 1",
+            LawRegistered = "Law Registered 1",
+            RegistrationDate = DateTimeOffset.UtcNow
+        };
+
+        return mockLegalForm;
+    }
+
+    internal static IList<OperationType> GetOperationTypes()
+    {
+        var mockOperationType = new List<OperationType> { OperationType.SmallOrMediumSized };
+
+        return mockOperationType;
+    }
+
     public static Organisation GivenOrganisation(
         Guid? guid = null,
         Tenant? tenant = null,
@@ -246,7 +266,7 @@ internal static class EntityFactory
             Form = form,
             Questions = new List<PersistenceForms.FormQuestion>(),
             Title = "Test Section",
-            Type = PersistenceForms.FormSectionType.Standard,
+            Type = PersistenceForms.FormSectionType.Declaration,
             AllowsMultipleAnswerSets = true,
             CheckFurtherQuestionsExempted = false,
             DisplayOrder = 1,

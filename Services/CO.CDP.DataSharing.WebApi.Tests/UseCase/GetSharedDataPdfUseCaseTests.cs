@@ -28,7 +28,8 @@ public class GetSharedDataPdfUseCaseTests
         {
             OrganisationId = organisationId,
             BasicInformation = DataSharingFactory.CreateMockBasicInformation(),
-            ConnectedPersonInformation = DataSharingFactory.CreateMockConnectedPersonInformation()
+            ConnectedPersonInformation = DataSharingFactory.CreateMockConnectedPersonInformation(),
+            FormAnswerSetForPdfs = DataSharingFactory.CreateMockFormAnswerSetForPdfs()
         };
 
         var pdfBytes = new byte[] { 1, 2, 3 };
@@ -56,7 +57,8 @@ public class GetSharedDataPdfUseCaseTests
         {
             OrganisationId = organisationId,
             BasicInformation = DataSharingFactory.CreateMockBasicInformation(),
-            ConnectedPersonInformation = DataSharingFactory.CreateMockConnectedPersonInformation()
+            ConnectedPersonInformation = DataSharingFactory.CreateMockConnectedPersonInformation(),
+            FormAnswerSetForPdfs = DataSharingFactory.CreateMockFormAnswerSetForPdfs()
         };
 
         var pdfBytes = new byte[] { 1, 2, 3 };
@@ -86,7 +88,8 @@ public class GetSharedDataPdfUseCaseTests
             {
                 OrganisationId = organisationId,
                 BasicInformation = DataSharingFactory.CreateMockBasicInformation(),
-                ConnectedPersonInformation = DataSharingFactory.CreateMockConnectedPersonInformation()
+                ConnectedPersonInformation = DataSharingFactory.CreateMockConnectedPersonInformation(),
+                FormAnswerSetForPdfs = DataSharingFactory.CreateMockFormAnswerSetForPdfs()
             });
 
         _claimService.Setup(cs => cs.HaveAccessToOrganisation(organisationId, invalidscope))
