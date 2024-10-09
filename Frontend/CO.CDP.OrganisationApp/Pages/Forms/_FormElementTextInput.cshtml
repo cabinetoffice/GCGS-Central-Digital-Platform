@@ -40,12 +40,12 @@
         if (!string.IsNullOrWhiteSpace(Model.Heading))
         {
             <h1 class="govuk-label-wrapper">
-                <label class="govuk-label govuk-label--l" for="TextInput">@Model.Heading</label>
-
                 @if (!string.IsNullOrWhiteSpace(Model.Caption))
                 {
-                    <span class="govuk-caption-l govuk-!-margin-bottom-3">@Model.Caption</span>
+                    <span class="govuk-caption-l">@Model.Caption</span>
                 }
+
+                <label class="govuk-label govuk-label--l" for="TextInput">@Model.Heading</label>
             </h1>
         }
         RenderDescription();
