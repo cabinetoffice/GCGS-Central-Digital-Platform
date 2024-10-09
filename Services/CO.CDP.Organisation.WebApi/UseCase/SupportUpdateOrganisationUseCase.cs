@@ -2,7 +2,6 @@ using CO.CDP.GovUKNotify.Models;
 using CO.CDP.GovUKNotify;
 using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.OrganisationInformation.Persistence;
-using Microsoft.Extensions.Configuration;
 
 namespace CO.CDP.Organisation.WebApi.UseCase;
 public class SupportUpdateOrganisationUseCase(

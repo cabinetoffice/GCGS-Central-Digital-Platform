@@ -2,6 +2,7 @@ using CO.CDP.DataSharing.WebApi.Model;
 using CO.CDP.DataSharing.WebApi.UseCase;
 using CO.CDP.TestKit.Mvc;
 using FluentAssertions;
+using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using System.Net;
@@ -19,6 +20,7 @@ public class DataSharingTests
     private readonly Mock<IUseCase<ShareVerificationRequest, ShareVerificationReceipt>> _getShareCodeVerifyUseCase = new();
     private readonly Mock<IUseCase<Guid, List<SharedConsent>?>> _getShareCodesUseCase = new();
     private readonly Mock<IUseCase<(Guid, string), SharedConsentDetails?>> _getShareCodeDetailsUseCase = new();
+    private readonly Mock<IUseCase<(string, string), string?>> _getSharedDataDocumentDownloadUrlUseCase = new();
 
     [Theory]
     [InlineData(OK, Channel.OrganisationKey)]
@@ -37,6 +39,31 @@ public class DataSharingTests
             channel, serviceCollection: s => s.AddScoped(_ => _getSharedDataUseCase.Object));
 
         var response = await factory.CreateClient().GetAsync($"/share/data/{shareCode}");
+
+        response.StatusCode.Should().Be(expectedStatusCode);
+    }
+
+    [Theory]
+    [InlineData(Redirect, Channel.OrganisationKey)]
+    [InlineData(Forbidden, Channel.ServiceKey)]
+    [InlineData(Forbidden, Channel.OneLogin)]
+    [InlineData(Forbidden, "unknown_channel")]
+    public async Task GetSharedDataDocumentDownloadUrl_Authorization_ReturnsExpectedStatusCode(
+        HttpStatusCode expectedStatusCode, string channel)
+    {
+        var shareCode = "valid-share-code";
+        var documentId = "document-id";
+        var command = (shareCode, documentId);
+
+        _getSharedDataDocumentDownloadUrlUseCase.Setup(uc => uc.Execute(command))
+            .ReturnsAsync("https://example.com/presignedurl");
+
+        var factory = new TestAuthorizationWebApplicationFactory<Program>(
+            channel, serviceCollection: s => s.AddScoped(_ => _getSharedDataDocumentDownloadUrlUseCase.Object));
+
+        var client = factory.CreateClient(new WebApplicationFactoryClientOptions { AllowAutoRedirect = false });
+
+        var response = await client.GetAsync($"/share/data/{shareCode}/document/{documentId}");
 
         response.StatusCode.Should().Be(expectedStatusCode);
     }

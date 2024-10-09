@@ -8,7 +8,7 @@ using FluentAssertions;
 using Moq;
 using static CO.CDP.Authentication.Constants;
 
-namespace DataSharing.Tests.UseCase;
+namespace CO.CDP.DataSharing.WebApi.Tests.UseCase;
 
 public class GetSharedDataPdfUseCaseTests
 {
