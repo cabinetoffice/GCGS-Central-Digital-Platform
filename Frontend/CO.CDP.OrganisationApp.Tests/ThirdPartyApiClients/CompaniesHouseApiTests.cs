@@ -1,3 +1,4 @@
+using Amazon;
 using CO.CDP.OrganisationApp.ThirdPartyApiClients.CompaniesHouse;
 using FluentAssertions;
 using Flurl.Http.Testing;
@@ -32,10 +33,10 @@ public class CompaniesHouseApiTest
         using var httpTest = new HttpTest();
         httpTest.RespondWithJson(expectedAddress);
 
-        var result = await _companiesHouseApi.GetRegisteredAddress(companyNumber);
+        var (regAddress, httpStatus) = await _companiesHouseApi.GetRegisteredAddress(companyNumber);
 
-        result.Should().NotBeNull();
-        expectedAddress.AddressLine1.Should().Match(result!.AddressLine1);
+        regAddress.Should().NotBeNull();
+        expectedAddress.AddressLine1.Should().Match(regAddress!.AddressLine1);
     }
 
     [Fact]
@@ -50,9 +51,9 @@ public class CompaniesHouseApiTest
         using var httpTest = new HttpTest();
         httpTest.RespondWithJson(expectedProfile);
 
-        var result = await _companiesHouseApi.GetProfile(companyNumber);
+        var (profile, httpStatus) = await _companiesHouseApi.GetProfile(companyNumber);
 
-        result.Should().NotBeNull();
-        expectedProfile.CompanyName.Should().Match(result!.CompanyName);
+        profile.Should().NotBeNull();
+        expectedProfile.CompanyName.Should().Match(profile!.CompanyName);
     }
 }

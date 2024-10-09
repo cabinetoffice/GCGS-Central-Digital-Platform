@@ -1,7 +1,9 @@
+using System.Net;
+
 namespace CO.CDP.OrganisationApp.ThirdPartyApiClients.CompaniesHouse;
 
 public interface ICompaniesHouseApi
 {
-    Task<RegisteredAddress?> GetRegisteredAddress(string companyNumber);
-    Task<CompanyProfile?> GetProfile(string companyNumber);
+    Task<(RegisteredAddress?, HttpStatusCode)> GetRegisteredAddress(string companyNumber);
+    Task<(CompanyProfile?, HttpStatusCode)> GetProfile(string companyNumber);
 }

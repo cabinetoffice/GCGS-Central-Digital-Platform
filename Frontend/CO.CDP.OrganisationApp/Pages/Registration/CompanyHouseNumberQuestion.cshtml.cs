@@ -21,6 +21,7 @@ public class CompanyHouseNumberQuestionModel(ISession session,
     public bool? HasCompaniesHouseNumber { get; set; }
 
     [BindProperty]
+    [RegularExpression(@"^(?:[A-Z]{2}\d{6}|\d{8})$", ErrorMessage = "CRN is made up of up to eight digits or two alphabetical characters followed by 6 digits.")]
     [RequiredIf(nameof(HasCompaniesHouseNumber), true, ErrorMessage = "Please enter the Companies House number.")]
     public string? CompaniesHouseNumber { get; set; }
 
@@ -32,7 +33,8 @@ public class CompanyHouseNumberQuestionModel(ISession session,
     [BindProperty]
     public string? FailedCompaniesHouseNumber { get; set; }
 
-    public static string NotificationBannerCompanyNotFound { get { return "We cannot find your company number on Companies House. If it’s correct continue and enter your details manually."; } }
+    public static string NotificationBannerCompanyNotFound { get { return "We cannot find your company number on Companies House. If it’s correct you may continue and enter your details manually."; } }
+    public static string NotificationBannerCompanyHouseApiError { get { return "We are unable to verify the Companies House number at present. You may continue or try adding your organisation again later."; } }
     public static string NotificationBannerCompanyAlreadyRegistered { get { return "An organisation with this company number already exists. Change the company number or <a class='govuk-notification-banner__link' href='#'>request to join the organisation.</a>"; } }
 
     public void OnGet()
@@ -65,12 +67,19 @@ public class CompanyHouseNumberQuestionModel(ISession session,
             {
                 if (FailedCompaniesHouseNumber != CompaniesHouseNumber)
                 {
-                    var chProfile = await companiesHouseApi.GetProfile(RegistrationDetails.OrganisationIdentificationNumber!);
+                    var (chProfile, httpStatus) = await companiesHouseApi.GetProfile(RegistrationDetails.OrganisationIdentificationNumber!);
                     
-                    if (chProfile == null)
+                    if (httpStatus == System.Net.HttpStatusCode.NotFound)
                     {
                         FailedCompaniesHouseNumber = CompaniesHouseNumber;
                         tempDataService.Put(FlashMessageTypes.Important, NotificationBannerCompanyNotFound);
+                        return Page();
+                    }
+
+                    if ((httpStatus == System.Net.HttpStatusCode.ServiceUnavailable) || (httpStatus == System.Net.HttpStatusCode.InternalServerError))
+                    {
+                        FailedCompaniesHouseNumber = CompaniesHouseNumber;
+                        tempDataService.Put(FlashMessageTypes.Important, NotificationBannerCompanyHouseApiError);
                         return Page();
                     }
                 }

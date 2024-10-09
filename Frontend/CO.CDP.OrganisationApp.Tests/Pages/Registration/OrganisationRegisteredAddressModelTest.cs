@@ -197,7 +197,7 @@ public class OrganisationRegisteredAddressModelTest
         var companiesHouseRegisteredAddress = GivenRegisteredAddressOnCompaniesHouse();
 
         companiesHouseMock.Setup(ch => ch.GetRegisteredAddress(registrationDetails.OrganisationIdentificationNumber!))
-            .ReturnsAsync(companiesHouseRegisteredAddress);
+            .ReturnsAsync((companiesHouseRegisteredAddress, 200));
 
         await model.OnGet();
 
@@ -216,7 +216,7 @@ public class OrganisationRegisteredAddressModelTest
         var companiesHouseRegisteredAddress = GivenRegisteredAddressOnCompaniesHouse();
 
         companiesHouseMock.Setup(ch => ch.GetRegisteredAddress(registrationDetails.OrganisationIdentificationNumber!))
-            .ReturnsAsync(companiesHouseRegisteredAddress);
+            .ReturnsAsync((companiesHouseRegisteredAddress, 200));
 
         await model.OnGet();
 
