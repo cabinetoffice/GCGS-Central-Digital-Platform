@@ -1,4 +1,3 @@
-using CO.CDP.Authentication;
 using CO.CDP.DataSharing.WebApi.Model;
 using CO.CDP.DataSharing.WebApi.Tests.AutoMapper;
 using CO.CDP.DataSharing.WebApi.UseCase;
@@ -15,42 +14,13 @@ public class GetSharedDataUseCaseTest : IClassFixture<AutoMapperFixture>
 {
     private readonly Mock<IShareCodeRepository> _shareCodeRepository = new();
     private readonly Mock<IOrganisationRepository> _organisationRepository = new();
-    private readonly Mock<IClaimService> _claimService = new();
     private readonly Mock<IConfiguration> _configuration = new();
     private readonly GetSharedDataUseCase _useCase;
 
     public GetSharedDataUseCaseTest(AutoMapperFixture mapperFixture)
     {
-        var organisationId = Guid.NewGuid();
-        _claimService.Setup(c => c.GetOrganisationId()).Returns(organisationId);
-        _shareCodeRepository.Setup(s => s.OrganisationShareCodeExistsAsync(organisationId, It.IsAny<string>())).ReturnsAsync(true);
-
         _useCase = new GetSharedDataUseCase(_shareCodeRepository.Object, _organisationRepository.Object,
-            _claimService.Object, mapperFixture.Mapper, _configuration.Object);
-    }
-
-    [Fact]
-    public async Task ThrowsUserUnauthorizedException_WhenRequestedUserOrganisationAndShareCodeRequested_NotFound()
-    {
-        var shareCode = "dummy_code";
-
-        var organisationId = Guid.NewGuid();
-        _claimService.Setup(c => c.GetOrganisationId()).Returns(organisationId);
-        _shareCodeRepository.Setup(s => s.OrganisationShareCodeExistsAsync(organisationId, shareCode)).ReturnsAsync(false);
-
-        var response = async () => await _useCase.Execute(shareCode);
-
-        await response.Should().ThrowAsync<UserUnauthorizedException>();
-    }
-
-    [Fact]
-    public async Task ThrowsUserUnauthorizedException_WhenRequestedUserOrganisation_NotInTheClaim()
-    {
-        _claimService.Setup(c => c.GetOrganisationId()).Returns((Guid?)null);
-
-        var response = async () => await _useCase.Execute("dummy_code");
-
-        await response.Should().ThrowAsync<UserUnauthorizedException>();
+            mapperFixture.Mapper, _configuration.Object);
     }
 
     [Fact]
