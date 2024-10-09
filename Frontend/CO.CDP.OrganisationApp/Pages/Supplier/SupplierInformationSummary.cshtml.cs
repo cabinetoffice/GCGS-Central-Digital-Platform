@@ -60,40 +60,8 @@ public class SupplierInformationSummaryModel(
         }
 
         Name = supplierInfo.OrganisationName;
-        BasicInformationStepStatus = GetBasicInfoStepStatus(supplierInfo);
-        ConnectedPersonStepStatus = GetConnectedPersonStepStatus(supplierInfo, ConnectedEntities.Count);
+        BasicInformationStepStatus = SupplierInformationStatus.GetBasicInfoStepStatus(supplierInfo);
+        ConnectedPersonStepStatus = SupplierInformationStatus.GetConnectedPersonStepStatus(supplierInfo, ConnectedEntities.Count);
         return Page();
-    }
-
-    private static SupplierInformationStatus.StepStatus GetBasicInfoStepStatus(SupplierInformation info)
-    {
-        if (info.SupplierType == null)
-            return SupplierInformationStatus.StepStatus.NotStarted;
-
-        return info.SupplierType.Value switch
-        {
-            SupplierType.Organisation => info.CompletedRegAddress && info.CompletedPostalAddress
-                            && info.CompletedVat && info.CompletedWebsiteAddress
-                            && info.CompletedEmailAddress
-                            && info.CompletedOperationType && info.CompletedLegalForm ? SupplierInformationStatus.StepStatus.Completed : SupplierInformationStatus.StepStatus.InProcess,
-
-            SupplierType.Individual => info.CompletedRegAddress && info.CompletedPostalAddress
-                            && info.CompletedVat && info.CompletedWebsiteAddress
-                            && info.CompletedEmailAddress
-                            ? SupplierInformationStatus.StepStatus.Completed : SupplierInformationStatus.StepStatus.InProcess,
-
-            _ => SupplierInformationStatus.StepStatus.NotStarted,
-        };
-    }
-
-    private static SupplierInformationStatus.StepStatus GetConnectedPersonStepStatus(SupplierInformation info, int entityCount)
-    {
-        if (info == null)
-            return SupplierInformationStatus.StepStatus.NotStarted;
-
-        if (info.CompletedConnectedPerson == false && entityCount == 0)
-            return SupplierInformationStatus.StepStatus.NotStarted;
-
-        return info.CompletedConnectedPerson != true ? SupplierInformationStatus.StepStatus.NotStarted : SupplierInformationStatus.StepStatus.Completed;
     }
 }
