@@ -28,7 +28,7 @@ public class OrganisationNameModel(ISession session, ICompaniesHouseApi companie
 
         if (HasCompaniesHouseNumber && string.IsNullOrEmpty(OrganisationName))
         {
-            var profile = await companiesHouseApi.GetProfile(RegistrationDetails.OrganisationIdentificationNumber!);
+            var (profile, httpStatus) = await companiesHouseApi.GetProfile(RegistrationDetails.OrganisationIdentificationNumber!);
 
             OrganisationName = profile != null ? profile.CompanyName ?? string.Empty : string.Empty;
         }

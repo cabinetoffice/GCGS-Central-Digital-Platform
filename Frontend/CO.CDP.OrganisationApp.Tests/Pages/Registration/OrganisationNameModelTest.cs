@@ -116,7 +116,7 @@ public class OrganisationNameModelTest
         var model = GivenOrganisationNameModel();
 
         companiesHouseMock.Setup(ch => ch.GetProfile(registrationDetails.OrganisationIdentificationNumber!))
-            .ReturnsAsync(profile);
+            .ReturnsAsync((profile, 200));
 
         await model.OnGet();
 
@@ -133,7 +133,7 @@ public class OrganisationNameModelTest
         var profile = GivenProfileOnCompaniesHouse(organisationName: "Acme Ltd");
 
         companiesHouseMock.Setup(ch => ch.GetProfile(registrationDetails.OrganisationIdentificationNumber!))
-            .ReturnsAsync(profile);
+            .ReturnsAsync((profile, 200));
         
         await model.OnGet();
 

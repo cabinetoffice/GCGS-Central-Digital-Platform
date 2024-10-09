@@ -39,13 +39,13 @@ public class OrganisationRegisteredAddressModel(ISession session, ICompaniesHous
             (string.IsNullOrEmpty(Address.TownOrCity)) &&
             (string.IsNullOrEmpty(Address.Postcode)))
         {
-            var details = await companiesHouseApi.GetRegisteredAddress(RegistrationDetails.OrganisationIdentificationNumber!);
+            var (companyAddress, httpStatus) = await companiesHouseApi.GetRegisteredAddress(RegistrationDetails.OrganisationIdentificationNumber!);
 
-            if (details != null)
+            if (companyAddress != null)
             {
-                Address.AddressLine1 = details.AddressLine1;
-                Address.TownOrCity = details.Locality;
-                Address.Postcode = details.PostalCode;
+                Address.AddressLine1 = companyAddress.AddressLine1;
+                Address.TownOrCity = companyAddress.Locality;
+                Address.Postcode = companyAddress.PostalCode;
                 Address.Country = RegistrationDetails.OrganisationCountryCode;
             }
         }

@@ -73,7 +73,7 @@ public class CompanyHouseNumberQuestionTests
         
         var profile = GivenProfileOnCompaniesHouse(organisationName: "Acme Ltd");
         companiesHouseApiMock.Setup(ch => ch.GetProfile(model.CompaniesHouseNumber))
-            .ReturnsAsync(profile);
+            .ReturnsAsync((profile, 200));
 
         var result = await model.OnPost();
         result.Should().BeOfType<RedirectToPageResult>();
@@ -96,7 +96,7 @@ public class CompanyHouseNumberQuestionTests
 
         var profile = GivenProfileOnCompaniesHouse(organisationName: "Acme Ltd");
         companiesHouseApiMock.Setup(ch => ch.GetProfile(model.CompaniesHouseNumber))
-            .ReturnsAsync(profile);
+            .ReturnsAsync((profile, 200));
 
         var result = await model.OnPost();
         result.Should().BeOfType<RedirectToPageResult>();
