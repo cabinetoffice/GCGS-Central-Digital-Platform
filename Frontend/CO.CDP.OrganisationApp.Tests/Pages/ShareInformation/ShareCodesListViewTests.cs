@@ -159,7 +159,7 @@ public class ShareCodesListViewTests
         _organisationClientMock
             .Setup(c => c.GetOrganisationSupplierInformationAsync(organisationId))
             .ReturnsAsync(
-                new SupplierInformation(true, true, true, true, true, true, true, true, new LegalForm("law", "form", true, new DateTimeOffset()), new List<OperationType>() { OperationType.SmallorMediumSized }, "org name", SupplierType.Organisation));
+                new SupplierInformation(true, true, true, true, true, true, true, true, new LegalForm("law", "form", true, new DateTimeOffset()), new List<OperationType>() { OperationType.SmallOrMediumSized }, "org name", SupplierType.Organisation));
 
         _organisationClientMock
             .Setup(c => c.GetConnectedEntitiesAsync(organisationId))
@@ -186,7 +186,7 @@ public class ShareCodesListViewTests
         _organisationClientMock
             .Setup(c => c.GetOrganisationSupplierInformationAsync(organisationId))
             .ReturnsAsync(
-                new SupplierInformation(true, true, true, true, true, false, true, true, new LegalForm("law", "form", true, new DateTimeOffset()), new List<OperationType>() { OperationType.SmallorMediumSized }, "org name", SupplierType.Organisation));
+                new SupplierInformation(true, true, true, true, true, false, true, true, new LegalForm("law", "form", true, new DateTimeOffset()), new List<OperationType>() { OperationType.SmallOrMediumSized }, "org name", SupplierType.Organisation));
 
         _organisationClientMock
             .Setup(c => c.GetConnectedEntitiesAsync(organisationId))
@@ -213,7 +213,7 @@ public class ShareCodesListViewTests
         _organisationClientMock
             .Setup(c => c.GetOrganisationSupplierInformationAsync(organisationId))
             .ReturnsAsync(
-                new SupplierInformation(false, true, true, true, true, true, true, true, new LegalForm("law", "form", true, new DateTimeOffset()), new List<OperationType>() { OperationType.SmallorMediumSized }, "org name", SupplierType.Organisation));
+                new SupplierInformation(false, true, true, true, true, true, true, true, new LegalForm("law", "form", true, new DateTimeOffset()), new List<OperationType>() { OperationType.SmallOrMediumSized }, "org name", SupplierType.Organisation));
 
         _organisationClientMock
             .Setup(c => c.GetConnectedEntitiesAsync(organisationId))
@@ -240,7 +240,7 @@ public class ShareCodesListViewTests
         _organisationClientMock
             .Setup(c => c.GetOrganisationSupplierInformationAsync(organisationId))
             .ReturnsAsync(
-                new SupplierInformation(true, true, true, true, true, true, true, true, new LegalForm("law", "form", true, new DateTimeOffset()), new List<OperationType>() { OperationType.SmallorMediumSized }, "org name", SupplierType.Organisation));
+                new SupplierInformation(true, true, true, true, true, true, true, true, new LegalForm("law", "form", true, new DateTimeOffset()), new List<OperationType>() { OperationType.SmallOrMediumSized }, "org name", SupplierType.Organisation));
 
         _organisationClientMock
             .Setup(c => c.GetConnectedEntitiesAsync(organisationId))
@@ -267,7 +267,7 @@ public class ShareCodesListViewTests
         _organisationClientMock
             .Setup(c => c.GetOrganisationSupplierInformationAsync(organisationId))
             .ReturnsAsync(
-                new SupplierInformation(true, true, true, true, true, true, true, true, new LegalForm("law", "form", true, new DateTimeOffset()), new List<OperationType>() { OperationType.SmallorMediumSized }, "org name", SupplierType.Organisation));
+                new SupplierInformation(true, true, true, true, true, true, true, true, new LegalForm("law", "form", true, new DateTimeOffset()), new List<OperationType>() { OperationType.SmallOrMediumSized }, "org name", SupplierType.Organisation));
 
         _organisationClientMock
             .Setup(c => c.GetConnectedEntitiesAsync(organisationId))
