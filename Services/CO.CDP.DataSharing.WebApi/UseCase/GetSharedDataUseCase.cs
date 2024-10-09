@@ -27,13 +27,14 @@ public class GetSharedDataUseCase(
 
         var associatedPersons = await AssociatedPersons(sharedConsent);
         var additionalEntities = await AdditionalEntities(sharedConsent);
+        var additionalParties = await AdditionalParties(sharedConsent);
         var details = await GetDetails(sharedConsent);
 
         return mapper.Map<SupplierInformation>(sharedConsent, opts =>
         {
             opts.Items["AssociatedPersons"] = associatedPersons;
-            opts.Items["AdditionalParties"] = new List<OrganisationReference>();
             opts.Items["AdditionalEntities"] = additionalEntities;
+            opts.Items["AdditionalParties"] = additionalParties;
 
             opts.Items["Details"] = details;
         });
@@ -57,6 +58,7 @@ public class GetSharedDataUseCase(
     private async Task<ICollection<AssociatedPerson>> AssociatedPersons(SharedConsent sharedConsent)
     {
         var associatedPersons = await organisationRepository.GetConnectedIndividualTrusts(sharedConsent.OrganisationId);
+
         return associatedPersons.Select(x => new AssociatedPerson
         {
             Id = x.Guid,
@@ -70,10 +72,24 @@ public class GetSharedDataUseCase(
     private async Task<ICollection<OrganisationReference>> AdditionalEntities(SharedConsent sharedConsent)
     {
         var additionalEntities = await organisationRepository.GetConnectedOrganisations(sharedConsent.OrganisationId);
+
         return additionalEntities.Select(x => new OrganisationReference
         {
             Id = x.Guid,
             Name = x.Organisation?.Name ?? string.Empty,
+            Roles = [],
+            Uri = null
+        }).ToList();
+    }
+
+    private async Task<ICollection<OrganisationReference>> AdditionalParties(SharedConsent sharedConsent)
+    {
+        var additionalEntities = await organisationRepository.GetConnectedTrustsOrTrustees(sharedConsent.OrganisationId);
+
+        return additionalEntities.Select(x => new OrganisationReference
+        {
+            Id = x.Guid,
+            Name = x.Organisation?.Name ?? string.Format($"{x.IndividualOrTrust?.FirstName} {x.IndividualOrTrust?.LastName}") ?? string.Empty,
             Roles = [],
             Uri = null
         }).ToList();
