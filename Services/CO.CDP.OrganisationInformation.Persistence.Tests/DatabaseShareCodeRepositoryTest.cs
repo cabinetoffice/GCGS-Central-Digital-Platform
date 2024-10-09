@@ -26,6 +26,87 @@ public class DatabaseShareCodeRepositoryTest(PostgreSqlFixture postgreSql) : ICl
     }
 
     [Fact]
+    public async Task ShareCodeDocumentExistsAsync_WhenDoesNotExist_ReturnsFalse()
+    {
+        using var repository = ShareCodeRepository();
+
+        var exists = await repository.ShareCodeDocumentExistsAsync("share_code", "document_name");
+
+        exists.Should().BeFalse();
+    }
+
+    [Fact]
+    public async Task ShareCodeDocumentExistsAsync_WhenExists_ReturnsTrue()
+    {
+        var sharedConsent = GivenSharedConsent();
+
+        var section = new FormSection
+        {
+            Form = sharedConsent.Form,
+            FormId = sharedConsent.FormId,
+            Title = "form_section",
+            Type = FormSectionType.Standard,
+            DisplayOrder = 0,
+            AllowsMultipleAnswerSets = true,
+            CheckFurtherQuestionsExempted = true,
+            Configuration = new(),
+            Guid = Guid.NewGuid(),
+            Questions = []
+        };
+
+        var question = new FormQuestion
+        {
+            Guid = Guid.NewGuid(),
+            NextQuestion = null,
+            NextQuestionAlternative = null,
+            SortOrder = 0,
+            Section = section,
+            Type = FormQuestionType.FileUpload,
+            IsRequired = true,
+            Name = "question_1",
+            Title = "title_1",
+            Description = null,
+            Caption = null,
+            Options = new FormQuestionOptions()
+        };
+
+        section.Questions.Add(question);
+
+        var answerSet = new FormAnswerSet
+        {
+            Guid = Guid.NewGuid(),
+            SharedConsentId = sharedConsent.Id,
+            SharedConsent = sharedConsent,
+            FurtherQuestionsExempted = false,
+            Section = section,
+            SectionId = section.Id,
+            Answers = []
+        };
+
+        answerSet.Answers.Add(new FormAnswer
+        {
+            Guid = Guid.NewGuid(),
+            FormAnswerSetId = answerSet.Id,
+            Question = question,
+            QuestionId = question.Id,
+            TextValue = "document_name"
+        });
+
+        sharedConsent.ShareCode = "share_code";
+        sharedConsent.AnswerSets.Add(answerSet);
+
+        await using var context = postgreSql.OrganisationInformationContext();
+        await context.SharedConsents.AddAsync(sharedConsent);
+        await context.SaveChangesAsync();
+
+        using var repository = ShareCodeRepository();
+
+        var exists = await repository.ShareCodeDocumentExistsAsync("share_code", "document_name");
+
+        exists.Should().BeTrue();
+    }
+
+    [Fact]
     public async Task GetSharedConsentDraftAsync_WhenItDoesExist_ReturnsIt()
     {
         var sharedConsent = GivenSharedConsent();

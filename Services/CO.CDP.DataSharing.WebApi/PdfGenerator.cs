@@ -29,6 +29,7 @@ public class PdfGenerator : IPdfGenerator
                 {
                     AddBasicInformationSection(col, basicInformation);
                     AddConnectedPersonInformationSection(col, connectedPersonInformation);
+                    AddFormSections(col, supplierInformation.FormAnswerSetForPdfs);
                 });
 
                 page.Footer().AlignRight().Text(x =>
@@ -43,6 +44,28 @@ public class PdfGenerator : IPdfGenerator
         {
             document.GeneratePdf(stream);
             return stream.ToArray();
+        }
+    }
+
+    private void AddFormSections(ColumnDescriptor col, IEnumerable<FormAnswerSetForPdf> formAnswerSet)
+    {
+        foreach (var answerSet in formAnswerSet)
+        {
+            col.Item().Text(answerSet.SectionName).Bold().FontSize(14);
+            col.Item().PaddingBottom(10);
+
+            if (answerSet.QuestionAnswers != null)
+            {
+                foreach (var qa in answerSet.QuestionAnswers)
+                {
+                    col.Item().Element(container => AddTwoColumnRow(container, qa.Item1, qa.Item2));
+                }
+
+                col.Item().PaddingBottom(10);
+            }
+
+            col.Item().LineHorizontal(1);
+            col.Item().PaddingBottom(10);
         }
     }
 

@@ -12,6 +12,16 @@ public class DatabaseShareCodeRepository(OrganisationInformationContext context)
             .AnyAsync();
     }
 
+    public async Task<bool> ShareCodeDocumentExistsAsync(string shareCode, string documentId)
+    {
+        return await context.Set<FormAnswer>()
+            .Where(x => x.Question.Type == FormQuestionType.FileUpload
+                && x.TextValue == documentId
+                && x.FormAnswerSet!.Deleted == false
+                && x.FormAnswerSet!.SharedConsent.ShareCode == shareCode)
+            .AnyAsync();
+    }
+
     public async Task<IEnumerable<SharedConsent>> GetShareCodesAsync(Guid organisationId)
     {
         return await context.Set<SharedConsent>()

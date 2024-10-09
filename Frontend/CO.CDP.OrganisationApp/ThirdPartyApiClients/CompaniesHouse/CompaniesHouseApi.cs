@@ -1,7 +1,5 @@
-using CO.CDP.AwsServices;
 using Flurl;
 using Flurl.Http;
-using Microsoft.Extensions.Options;
 
 namespace CO.CDP.OrganisationApp.ThirdPartyApiClients.CompaniesHouse;
 
