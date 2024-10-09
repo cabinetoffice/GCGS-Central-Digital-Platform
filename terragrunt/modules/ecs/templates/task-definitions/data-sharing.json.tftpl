@@ -26,6 +26,7 @@
         {"name": "Aws__Buckets__StagingBucket", "value": "${s3_staging_bucket}"},
         {"name": "Aws__CloudWatch__LogGroup", "value": "${lg_name}"},
         {"name": "Aws__CloudWatch__LogStream", "value": "${lg_prefix}-serilog"},
+        {"name": "DataSharingApiUrl", "value": "https://data-sharing.${public_hosted_zone_fqdn}"},
         {"name": "ForwardedHeaders__KnownNetwork", "value": "${vpc_cidr}"},
         {"name": "OrganisationInformationDatabase__Database", "value": "${oi_db_name}"},
         {"name": "OrganisationInformationDatabase__Host", "value": "${oi_db_address}"},
