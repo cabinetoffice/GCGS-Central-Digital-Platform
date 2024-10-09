@@ -160,7 +160,7 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql) : 
                 Telephone = "123-456-7890",
                 Url = "http://contact.default.org"
             }],
-            BuyerInfo = new Organisation.BuyerInformation
+            BuyerInfo = new BuyerInformation
             {
                 BuyerType = "Buyer Type 1",
                 DevolvedRegulations = [DevolvedRegulation.NorthernIreland],
@@ -183,7 +183,7 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql) : 
 
         repository.Save(organisation);
 
-        var updatedOrganisation = await repository.Find(guid)!;
+        var updatedOrganisation = await repository.Find(guid);
         updatedOrganisation.Should().NotBeNull();
         updatedOrganisation.As<Organisation>().Name.Should().Be(updatedName);
         updatedOrganisation.As<Organisation>().Tenant.Should().Be(organisation.Tenant);
@@ -297,7 +297,7 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql) : 
         var supplierOrganisation = GivenOrganisation();
         var connectedEntity = GivenConnectedIndividualTrust(supplierOrganisation);
 
-        using var context = postgreSql.OrganisationInformationContext();
+        await using var context = postgreSql.OrganisationInformationContext();
         await context.Organisations.AddAsync(supplierOrganisation);
         await context.ConnectedEntities.AddAsync(connectedEntity);
         await context.SaveChangesAsync();
@@ -323,7 +323,7 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql) : 
         var organisationId = 1;
         var organisation = GivenOrganisation();
 
-        using var context = postgreSql.OrganisationInformationContext();
+        await using var context = postgreSql.OrganisationInformationContext();
         await context.Organisations.AddAsync(organisation);
         await context.SaveChangesAsync();
 
@@ -340,7 +340,7 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql) : 
         var supplierOrganisation = GivenOrganisation();
         var connectedEntity = GivenConnectedOrganisation(supplierOrganisation);
 
-        using var context = postgreSql.OrganisationInformationContext();
+        await using var context = postgreSql.OrganisationInformationContext();
         await context.Organisations.AddAsync(supplierOrganisation);
         await context.ConnectedEntities.AddAsync(connectedEntity);
         await context.SaveChangesAsync();
@@ -366,7 +366,7 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql) : 
         var organisationId = 1;
         var organisation = GivenOrganisation();
 
-        using var context = postgreSql.OrganisationInformationContext();
+        await using var context = postgreSql.OrganisationInformationContext();
         await context.Organisations.AddAsync(organisation);
         await context.SaveChangesAsync();
 
@@ -384,7 +384,7 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql) : 
         organisation.SupplierInfo = GivenSupplierInformation();
         organisation.SupplierInfo.LegalForm = null;
 
-        using var context = postgreSql.OrganisationInformationContext();
+        await using var context = postgreSql.OrganisationInformationContext();
         await context.Organisations.AddAsync(organisation);
         await context.SaveChangesAsync();
 
@@ -402,7 +402,7 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql) : 
         organisation.SupplierInfo = GivenSupplierInformation();
         organisation.SupplierInfo.LegalForm = GivenSupplierLegalForm();
 
-        using var context = postgreSql.OrganisationInformationContext();
+        await using var context = postgreSql.OrganisationInformationContext();
         await context.Organisations.AddAsync(organisation);
         await context.SaveChangesAsync();
 
@@ -424,7 +424,7 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql) : 
         organisation.SupplierInfo = GivenSupplierInformation();
         organisation.SupplierInfo.OperationTypes = [];
 
-        using var context = postgreSql.OrganisationInformationContext();
+        await using var context = postgreSql.OrganisationInformationContext();
         await context.Organisations.AddAsync(organisation);
         await context.SaveChangesAsync();
 
@@ -442,7 +442,7 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql) : 
         organisation.SupplierInfo = GivenSupplierInformation();
         organisation.SupplierInfo.OperationTypes = [OperationType.SmallOrMediumSized];
 
-        using var context = postgreSql.OrganisationInformationContext();
+        await using var context = postgreSql.OrganisationInformationContext();
         await context.Organisations.AddAsync(organisation);
         await context.SaveChangesAsync();
 
