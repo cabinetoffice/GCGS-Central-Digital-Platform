@@ -1,24 +1,27 @@
 using CO.CDP.EntityVerificationClient;
 using CO.CDP.Mvc.Validation;
 using CO.CDP.Organisation.WebApiClient;
+using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
+using CO.CDP.OrganisationApp.WebApiClients;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using ApiException = CO.CDP.EntityVerificationClient.ApiException;
 
-namespace CO.CDP.OrganisationApp.Pages.Registration;
 
-[ValidateRegistrationStep]
-public class OrganisationIdentificationModel(ISession session,
-    IOrganisationClient organisationClient,
-    IPponClient pponClient) : RegistrationStepModel(session)
+
+namespace CO.CDP.OrganisationApp.Pages.Organisation;
+
+[Authorize(Policy = OrgScopeRequirement.Editor)]
+public class OrganisationIdentificationModel(IOrganisationClient organisationClient) : PageModel
 {
-    public override string CurrentPage => OrganisationIdentifierPage;
-
     [BindProperty]
     [DisplayName("Organisation Type")]
     [Required(ErrorMessage = "Please select your organisation type")]
-    public string? OrganisationScheme { get; set; }
+    public List<string> OrganisationScheme { get; set; } = [];
 
     [BindProperty]
     [DisplayName("Charity Commission for England & Wales")]
@@ -102,50 +105,67 @@ public class OrganisationIdentificationModel(ISession session,
     public string? UKLearningProviderReferenceNumber { get; set; }
 
     [BindProperty]
-    [DisplayName("The organisation does not have a registry number")]
+    [DisplayName("None apply")]
     public string? Other { get; set; }
 
-    [BindProperty]
-    public bool? RedirectToSummary { get; set; }
+    [BindProperty(SupportsGet = true)]
+    public Guid Id { get; set; }
 
-    public void OnGet()
+    [BindProperty(SupportsGet = true)]
+    public required string Addorchange { get; set; }
+
+    public async Task<IActionResult> OnGet()
     {
-        OrganisationScheme = RegistrationDetails.OrganisationScheme;
 
-        switch (OrganisationScheme)
+        try
         {
-            case "GB-CHC":
-                CharityCommissionEnglandWalesNumber = RegistrationDetails.OrganisationIdentificationNumber;
-                break;
-            case "GB-SC":
-                ScottishCharityRegulatorNumber = RegistrationDetails.OrganisationIdentificationNumber;
-                break;
-            case "GB-NIC":
-                CharityCommissionNorthernIrelandNumber = RegistrationDetails.OrganisationIdentificationNumber;
-                break;
-            case "GB-MPR":
-                MutualsPublicRegisterNumber = RegistrationDetails.OrganisationIdentificationNumber;
-                break;
-            case "GG-RCE":
-                GuernseyRegistryNumber = RegistrationDetails.OrganisationIdentificationNumber;
-                break;
+            var organisation = await organisationClient.GetOrganisationAsync(Id);
+            if (organisation == null) return Redirect("/page-not-found");
 
-            case "JE-FSC":
-                JerseyFinancialServicesCommissionRegistryNumber = RegistrationDetails.OrganisationIdentificationNumber;
-                break;
-            case "IM-CR":
-                IsleofManCompaniesRegistryNumber = RegistrationDetails.OrganisationIdentificationNumber;
-                break;
-            case "GB-NHS":
-                NationalHealthServiceOrganisationsRegistryNumber = RegistrationDetails.OrganisationIdentificationNumber;
-                break;
-            case "GB-UKPRN":
-                UKLearningProviderReferenceNumber = RegistrationDetails.OrganisationIdentificationNumber;
-                break;            
-            default:
-                break;
+            OrganisationScheme = organisation.AdditionalIdentifiers.Select(x => x.Scheme).ToList();
+
+            foreach (var identifier in organisation.AdditionalIdentifiers)
+            {
+                switch (identifier.Scheme)
+                {
+                    case "GB-CHC":
+                        CharityCommissionEnglandWalesNumber = identifier.LegalName;
+                        break;
+                    case "GB-SC":
+                        ScottishCharityRegulatorNumber = identifier.LegalName;
+                        break;
+                    case "GB-NIC":
+                        CharityCommissionNorthernIrelandNumber = identifier.LegalName;
+                        break;
+                    case "GB-MPR":
+                        MutualsPublicRegisterNumber = identifier.LegalName;
+                        break;
+                    case "GG-RCE":
+                        GuernseyRegistryNumber = identifier.LegalName;
+                        break;
+                    case "JE-FSC":
+                        JerseyFinancialServicesCommissionRegistryNumber = identifier.LegalName;
+                        break;
+                    case "IM-CR":
+                        IsleofManCompaniesRegistryNumber = identifier.LegalName;
+                        break;
+                    case "GB-NHS":
+                        NationalHealthServiceOrganisationsRegistryNumber = identifier.LegalName;
+                        break;
+                    case "GB-UKPRN":
+                        UKLearningProviderReferenceNumber = identifier.LegalName;
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            return Page();
         }
-
+        catch (ApiException ex) when (ex.StatusCode == 404)
+        {
+            return Redirect("/page-not-found");
+        }
     }
 
     public async Task<IActionResult> OnPost()
@@ -155,9 +175,41 @@ public class OrganisationIdentificationModel(ISession session,
             return Page();
         }
 
-        RegistrationDetails.OrganisationScheme = OrganisationScheme;
-        
-        RegistrationDetails.OrganisationIdentificationNumber = OrganisationScheme switch
+        // Ensure OrganisationScheme is valid
+        if (OrganisationScheme == null || OrganisationScheme.Count == 0)
+        {
+            return Redirect("/invalid-organisation-scheme");
+        }
+        try
+        {
+            var organisation = await organisationClient.GetOrganisationAsync(Id);
+            if (organisation == null) return Redirect("/page-not-found");
+
+            // Create a new list of identifiers based on the OrganisationScheme
+            var identifiers = new List<OrganisationIdentifier>();
+
+            foreach (var scheme in OrganisationScheme)
+            {
+                identifiers.Add(new OrganisationIdentifier(
+                    id: null, 
+                    legalName: GetLegalName(scheme),
+                    scheme: scheme
+                ));
+            }
+
+            await organisationClient.UpdateOrganisationAdditionalIdentifiers(Id, identifiers);
+
+            return RedirectToPage("OrganisationOverview", new { Id });
+        }
+        catch (ApiException ex) when (ex.StatusCode == 404)
+        {
+            return Redirect("/page-not-found");
+        }
+    }
+
+    private string? GetLegalName(string scheme)
+    {
+        return scheme switch
         {
             "GB-CHC" => CharityCommissionEnglandWalesNumber,
             "GB-SC" => ScottishCharityRegulatorNumber,
@@ -167,49 +219,9 @@ public class OrganisationIdentificationModel(ISession session,
             "JE-FSC" => JerseyFinancialServicesCommissionRegistryNumber,
             "IM-CR" => IsleofManCompaniesRegistryNumber,
             "GB-NHS" => NationalHealthServiceOrganisationsRegistryNumber,
-            "GB-UKPRN" => UKLearningProviderReferenceNumber,            
+            "GB-UKPRN" => UKLearningProviderReferenceNumber,
             "Other" => null,
             _ => null,
         };
-        try
-        {
-            SessionContext.Set(Session.RegistrationDetailsKey, RegistrationDetails);
-            await LookupOrganisationAsync();
-        }
-        catch (Exception orgApiException) when (orgApiException is CO.CDP.Organisation.WebApiClient.ApiException && ((CO.CDP.Organisation.WebApiClient.ApiException)orgApiException).StatusCode == 404)
-        {
-            try
-            {
-                await LookupEntityVerificationAsync();
-            }
-            catch (Exception evApiException) when (evApiException is EntityVerificationClient.ApiException eve && eve.StatusCode == 404)
-            {
-                if (RedirectToSummary == true)
-                {
-                    return RedirectToPage("OrganisationDetailsSummary");
-                }
-                else
-                {
-                    return RedirectToPage("OrganisationName");
-                }
-            }
-            catch
-            {
-                return RedirectToPage("OrganisationRegistrationUnavailable");
-            }
-        }
-
-        return RedirectToPage("OrganisationAlreadyRegistered");
-    }
-
-    private async Task<CO.CDP.Organisation.WebApiClient.Organisation> LookupOrganisationAsync()
-    {
-        return await organisationClient.LookupOrganisationAsync(string.Empty,
-                    $"{OrganisationScheme}:{RegistrationDetails.OrganisationIdentificationNumber}");
-    }
-
-    private async Task<ICollection<EntityVerificationClient.Identifier>> LookupEntityVerificationAsync()
-    {
-        return await pponClient.GetIdentifiersAsync($"{OrganisationScheme}:{RegistrationDetails.OrganisationIdentificationNumber}");
     }
 }

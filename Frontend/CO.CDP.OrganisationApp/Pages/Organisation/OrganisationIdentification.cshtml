@@ -1,0 +1,192 @@
+@page "/organisation/{id}/identifiers/{addorchange}"
+@model CO.CDP.OrganisationApp.Pages.Organisation.OrganisationIdentificationModel
+
+@{
+    var charityCommissionEnglandWalesNumberHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.CharityCommissionEnglandWalesNumber)).HasInnerHtml;
+    var scottishCharityRegulatorNumberHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.ScottishCharityRegulatorNumber)).HasInnerHtml;
+    var charityCommissionNorthernIrelandNumberHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.CharityCommissionNorthernIrelandNumber)).HasInnerHtml;
+
+    var mutualsPublicRegisterNumberHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.MutualsPublicRegisterNumber)).HasInnerHtml;
+    var guernseyRegistryNumberHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.GuernseyRegistryNumber)).HasInnerHtml;
+    var jerseyFinancialServicesCommissionRegistryNumberHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.JerseyFinancialServicesCommissionRegistryNumber)).HasInnerHtml;
+    var isleofManCompaniesRegistryNumberHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.IsleofManCompaniesRegistryNumber)).HasInnerHtml;
+
+    var ukLearningProviderReferenceNumberHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.UKLearningProviderReferenceNumber)).HasInnerHtml;
+
+    var nationalHealthServiceOrganisationsRegistryNumberHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.NationalHealthServiceOrganisationsRegistryNumber)).HasInnerHtml;
+}
+
+<a href="/organisation/@Model.Id" class="govuk-back-link">
+    Back
+</a>
+
+<main class="govuk-main-wrapper">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <partial name="_ErrorSummary" model="@Model.ModelState" />
+            <form method="post">
+
+                <div class="govuk-form-group">
+                    <fieldset class="govuk-fieldset">
+                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                            <h1 class="govuk-fieldset__heading">
+                                Is your organisation on any of these registries?
+                            </h1>
+                        </legend>
+
+
+                        <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+                            @if (Model.OrganisationScheme!.Contains("GB-CHC") == false)
+                            {
+                                <div class="govuk-checkboxes__item">
+                                    <input class="govuk-checkboxes__input" id="GB-CHC" name="OrganisationScheme" type="checkbox" value="GB-CHC" data-aria-controls="conditional-GB-CHC" @(Model.OrganisationScheme!.Contains("GB-CHC") ? "checked" : "")>
+                                    @Html.LabelFor(m => m.CharityCommissionEnglandWales, new { @class = "govuk-label govuk-checkboxes__label", @for = "GB-CHC" })
+                                </div>
+                                <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-GB-CHC">
+                                    <div class="govuk-form-group @(charityCommissionEnglandWalesNumberHasError ? "govuk-form-group--error" : "")">
+                                        @Html.LabelFor(m => m.CharityCommissionEnglandWalesNumber, new { @class = "govuk-label", @for = Model.CharityCommissionEnglandWalesNumber })
+                                        @Html.ValidationMessageFor(m => m.CharityCommissionEnglandWalesNumber, "", new { @class = "govuk-error-message", @id = "CharityCommissionEnglandWalesNumber-error" })
+                                        @Html.TextBoxFor(m => m.CharityCommissionEnglandWalesNumber, new { @class = "govuk-input " + (charityCommissionEnglandWalesNumberHasError ? "govuk-input--error" : ""), @id = "CharityCommissionEnglandWalesNumber", @type = "text", spellcheck = "false", autocomplete = "off" })
+                                    </div>
+                                </div>
+
+                            }
+                            @if (Model.OrganisationScheme!.Contains("GB-SC") == false)
+                            {
+                                <div class="govuk-checkboxes__item">
+                                    <input class="govuk-checkboxes__input" id="GB-SC" name="OrganisationScheme" type="checkbox" value="GB-SC" data-aria-controls="conditional-GB-SC" @(Model.OrganisationScheme!.Contains("GB-SC") ? "checked" : "")>
+                                    @Html.LabelFor(m => m.ScottishCharityRegulator, new { @class = "govuk-label govuk-checkboxes__label", @for = "GB-SC" })
+                                </div>
+                                <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-GB-SC">
+                                    <div class="govuk-form-group @(scottishCharityRegulatorNumberHasError ? "govuk-form-group--error" : "")">
+                                        @Html.LabelFor(m => m.ScottishCharityRegulatorNumber, new { @class = "govuk-label", @for = Model.ScottishCharityRegulatorNumber })
+                                        @Html.ValidationMessageFor(m => m.ScottishCharityRegulatorNumber, "", new { @class = "govuk-error-message", @id = "ScottishCharityRegulatorNumber-error" })
+                                        @Html.TextBoxFor(m => m.ScottishCharityRegulatorNumber, new { @class = "govuk-input " + (scottishCharityRegulatorNumberHasError ? "govuk-input--error" : ""), @id = "ScottishCharityRegulatorNumber", @type = "text", spellcheck = "false", autocomplete = "off" })
+                                    </div>
+                                </div>
+                            }
+
+                            @if (Model.OrganisationScheme!.Contains("GB-NIC") == false)
+                            {
+                                <div class="govuk-checkboxes__item">
+                                    <input class="govuk-checkboxes__input" id="GB-NIC" name="OrganisationScheme" type="checkbox" value="GB-NIC" data-aria-controls="conditional-GB-NIC" @(Model.OrganisationScheme.Contains("GB-NIC") ? "checked" : "")>
+                                    @Html.LabelFor(m => m.CharityCommissionNorthernIreland, new { @class = "govuk-label govuk-checkboxes__label", @for = "GB-NIC" })
+                                </div>
+                                <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-GB-NIC">
+                                    <div class="govuk-form-group @(charityCommissionNorthernIrelandNumberHasError ? "govuk-form-group--error" : "")">
+                                        @Html.LabelFor(m => m.CharityCommissionNorthernIrelandNumber, new { @class = "govuk-label", @for = Model.CharityCommissionNorthernIrelandNumber })
+                                        @Html.ValidationMessageFor(m => m.CharityCommissionNorthernIrelandNumber, "", new { @class = "govuk-error-message", @id = "CharityCommissionNorthernIrelandNumber-error" })
+                                        @Html.TextBoxFor(m => m.CharityCommissionNorthernIrelandNumber, new { @class = "govuk-input " + (charityCommissionNorthernIrelandNumberHasError ? "govuk-input--error" : ""), @id = "CharityCommissionNorthernIrelandNumber", @type = "text", spellcheck = "false", autocomplete = "off" })
+                                    </div>
+                                </div>
+                            }
+
+                            @if (Model.OrganisationScheme!.Contains("GB-MPR") == false)
+                            {
+                                <div class="govuk-checkboxes__item">
+                                    <input class="govuk-checkboxes__input" id="GB-MPR" name="OrganisationScheme" type="checkbox" value="GB-MPR" data-aria-controls="conditional-GB-MPR" @(Model.OrganisationScheme.Contains("GB-MPR") ? "checked" : "")>
+                                    @Html.LabelFor(m => m.MutualsPublicRegister, new { @class = "govuk-label govuk-checkboxes__label", @for = "GB-MPR" })
+                                </div>
+                                <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-GB-MPR">
+                                    <div class="govuk-form-group @(mutualsPublicRegisterNumberHasError ? "govuk-form-group--error" : "")">
+                                        @Html.LabelFor(m => m.MutualsPublicRegisterNumber, new { @class = "govuk-label", @for = Model.MutualsPublicRegisterNumber })
+                                        @Html.ValidationMessageFor(m => m.MutualsPublicRegisterNumber, "", new { @class = "govuk-error-message", @id = "MutualsPublicRegisterNumber-error" })
+                                        @Html.TextBoxFor(m => m.MutualsPublicRegisterNumber, new { @class = "govuk-input " + (mutualsPublicRegisterNumberHasError ? "govuk-input--error" : ""), @id = "MutualsPublicRegisterNumber", @type = "text", spellcheck = "false", autocomplete = "off" })
+                                    </div>
+                                </div>
+                            }
+
+                            @if (Model.OrganisationScheme!.Contains("GG-RCE") == false)
+                            {
+                                <div class="govuk-checkboxes__item">
+                                    <input class="govuk-checkboxes__input" id="GG-RCE" name="OrganisationScheme" type="checkbox" value="GG-RCE" data-aria-controls="conditional-GG-RCE" @(Model.OrganisationScheme.Contains("GG-RCE") ? "checked" : "")>
+                                    @Html.LabelFor(m => m.GuernseyRegistry, new { @class = "govuk-label govuk-checkboxes__label", @for = "GG-RCE" })
+                                </div>
+                                <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-GG-RCE">
+                                    <div class="govuk-form-group @(guernseyRegistryNumberHasError ? "govuk-form-group--error" : "")">
+                                        @Html.LabelFor(m => m.GuernseyRegistryNumber, new { @class = "govuk-label", @for = Model.GuernseyRegistryNumber })
+                                        @Html.ValidationMessageFor(m => m.GuernseyRegistryNumber, "", new { @class = "govuk-error-message", @id = "GuernseyRegistryNumber-error" })
+                                        @Html.TextBoxFor(m => m.GuernseyRegistryNumber, new { @class = "govuk-input " + (guernseyRegistryNumberHasError ? "govuk-input--error" : ""), @id = "GuernseyRegistryNumber", @type = "text", spellcheck = "false", autocomplete = "off" })
+                                    </div>
+                                </div>
+                            }
+
+                            @if (Model.OrganisationScheme!.Contains("JE-FSC") == false)
+                            {
+                                <div class="govuk-checkboxes__item">
+                                    <input class="govuk-checkboxes__input" id="JE-FSC" name="OrganisationScheme" type="checkbox" value="JE-FSC" data-aria-controls="conditional-JE-FSC" @(Model.OrganisationScheme.Contains("JE-FSC") ? "checked" : "")>
+                                    @Html.LabelFor(m => m.JerseyFinancialServicesCommissionRegistry, new { @class = "govuk-label govuk-checkboxes__label", @for = "JE-FSC" })
+                                </div>
+                                <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-JE-FSC">
+                                    <div class="govuk-form-group @(jerseyFinancialServicesCommissionRegistryNumberHasError ? "govuk-form-group--error" : "")">
+                                        @Html.LabelFor(m => m.JerseyFinancialServicesCommissionRegistryNumber, new { @class = "govuk-label", @for = Model.JerseyFinancialServicesCommissionRegistryNumber })
+                                        @Html.ValidationMessageFor(m => m.JerseyFinancialServicesCommissionRegistryNumber, "", new { @class = "govuk-error-message", @id = "JerseyFinancialServicesCommissionRegistryNumber-error" })
+                                        @Html.TextBoxFor(m => m.JerseyFinancialServicesCommissionRegistryNumber, new { @class = "govuk-input " + (jerseyFinancialServicesCommissionRegistryNumberHasError ? "govuk-input--error" : ""), @id = "JerseyFinancialServicesCommissionRegistryNumber", @type = "text", spellcheck = "false", autocomplete = "off" })
+                                    </div>
+                                </div>
+                            }
+
+                            @if (Model.OrganisationScheme!.Contains("IM-CR") == false)
+                            {
+                                <div class="govuk-checkboxes__item">
+                                    <input class="govuk-checkboxes__input" id="IM-CR" name="OrganisationScheme" type="checkbox" value="IM-CR" data-aria-controls="conditional-IM-CR" @(Model.OrganisationScheme.Contains("IM-CR") ? "checked" : "")>
+                                    @Html.LabelFor(m => m.IsleofManCompaniesRegistry, new { @class = "govuk-label govuk-checkboxes__label", @for = "IM-CR" })
+                                </div>
+                                <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-IM-CR">
+                                    <div class="govuk-form-group @(isleofManCompaniesRegistryNumberHasError ? "govuk-form-group--error" : "")">
+                                        @Html.LabelFor(m => m.IsleofManCompaniesRegistryNumber, new { @class = "govuk-label", @for = Model.IsleofManCompaniesRegistryNumber })
+                                        @Html.ValidationMessageFor(m => m.IsleofManCompaniesRegistryNumber, "", new { @class = "govuk-error-message", @id = "IsleofManCompaniesRegistryNumber-error" })
+                                        @Html.TextBoxFor(m => m.IsleofManCompaniesRegistryNumber, new { @class = "govuk-input " + (isleofManCompaniesRegistryNumberHasError ? "govuk-input--error" : ""), @id = "IsleofManCompaniesRegistryNumber", @type = "text", spellcheck = "false", autocomplete = "off" })
+                                    </div>
+                                </div>
+                            }
+
+                            @if (Model.OrganisationScheme!.Contains("GB-NHS") == false)
+                            {
+                                <div class="govuk-checkboxes__item">
+                                    <input class="govuk-checkboxes__input" id="GB-NHS" name="OrganisationScheme" type="checkbox" value="GB-NHS" data-aria-controls="conditional-GB-NHS" @(Model.OrganisationScheme.Contains("GB-NHS") ? "checked" : "")>
+                                    @Html.LabelFor(m => m.NationalHealthServiceOrganisationsRegistry, new { @class = "govuk-label govuk-checkboxes__label", @for = "GB-NHS" })
+                                </div>
+                                <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-GB-NHS">
+                                    <div class="govuk-form-group @(nationalHealthServiceOrganisationsRegistryNumberHasError ? "govuk-form-group--error" : "")">
+                                        @Html.LabelFor(m => m.NationalHealthServiceOrganisationsRegistryNumber, new { @class = "govuk-label", @for = Model.NationalHealthServiceOrganisationsRegistryNumber })
+                                        @Html.ValidationMessageFor(m => m.NationalHealthServiceOrganisationsRegistryNumber, "", new { @class = "govuk-error-message", @id = "NationalHealthServiceOrganisationsRegistryNumber-error" })
+                                        @Html.TextBoxFor(m => m.NationalHealthServiceOrganisationsRegistryNumber, new { @class = "govuk-input " + (nationalHealthServiceOrganisationsRegistryNumberHasError ? "govuk-input--error" : ""), @id = "NationalHealthServiceOrganisationsRegistryNumber", @type = "text", spellcheck = "false", autocomplete = "off" })
+                                    </div>
+                                </div>
+                            }
+
+                            @if (Model.OrganisationScheme!.Contains("GB-UKPRN") == false)
+                            {
+                                <div class="govuk-checkboxes__item">
+                                    <input class="govuk-checkboxes__input" id="GB-UKPRN" name="OrganisationScheme" type="checkbox" value="GB-UKPRN" data-aria-controls="conditional-GB-UKPRN" @(Model.OrganisationScheme.Contains("GB-UKPRN") ? "checked" : "")>
+                                    @Html.LabelFor(m => m.UKLearningProviderReference, new { @class = "govuk-label govuk-checkboxes__label", @for = "VAT" })
+                                </div>
+                                <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-GB-UKPRN">
+                                    <div class="govuk-form-group @(ukLearningProviderReferenceNumberHasError ? "govuk-form-group--error" : "")">
+                                        @Html.LabelFor(m => m.UKLearningProviderReferenceNumber, new { @class = "govuk-label", @for = Model.UKLearningProviderReferenceNumber })
+                                        @Html.ValidationMessageFor(m => m.UKLearningProviderReferenceNumber, "", new { @class = "govuk-error-message", @id = "UKLearningProviderReferenceNumber-error" })
+                                        @Html.TextBoxFor(m => m.UKLearningProviderReferenceNumber, new { @class = "govuk-input " + (ukLearningProviderReferenceNumberHasError ? "govuk-input--error" : ""), @id = "UKLearningProviderReferenceNumber", @type = "text", spellcheck = "false", autocomplete = "off" })
+                                    </div>
+                                </div>
+                            }
+
+                            @if (Model.OrganisationScheme!.Contains("Other") == false)
+                            {
+                                <div class="govuk-checkboxes__divider">or</div>
+                                <div class="govuk-checkboxes__item">
+                                    <input class="govuk-checkboxes__input" id="Other" name="OrganisationScheme" type="checkbox" value="Other" data-behaviour="exclusive" @(Model.OrganisationScheme.Contains("Other") ? "checked" : "")>
+                                    @Html.LabelFor(m => m.Other, new { @class = "govuk-label govuk-checkboxes__label", @for = "Other" })
+                                    <div id="OrganisationSchemeHint" class="govuk-hint govuk-checkboxes__hint">
+                                        A public procurement organisation number (PPON) will be assigned to your organisation
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </fieldset>
+                </div>
+                <button type="submit" class="govuk-button" data-module="govuk-button">Continue</button>
+            </form>
+        </div>
+    </div>
+</main>

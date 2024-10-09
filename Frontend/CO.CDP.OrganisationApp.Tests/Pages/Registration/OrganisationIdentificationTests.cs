@@ -74,10 +74,7 @@ public class OrganisationIdentificationModelTests
 
             case "GB-UKPRN":
                 model.UKLearningProviderReferenceNumber.Should().Be(registrationDetails.OrganisationIdentificationNumber);
-                break;
-            case "VAT":
-                model.VATNumber.Should().Be(registrationDetails.OrganisationIdentificationNumber);
-                break;
+                break;            
         }
 
     }
@@ -269,8 +266,7 @@ public class OrganisationIdentificationModelTests
     {
         var model = new OrganisationIdentificationModel(sessionMock.Object, organisationClientMock.Object, _pponClientMock.Object)
         {
-            OrganisationScheme = organisationType,
-            VATNumber = vatNumber
+            OrganisationScheme = organisationType,            
         };
         model.ModelState.AddModelError("VATNumber", "VAT Number field is required.");
 
@@ -315,8 +311,7 @@ public class OrganisationIdentificationModelTests
     {
         var model = new OrganisationIdentificationModel(sessionMock.Object, organisationClientMock.Object, _pponClientMock.Object)
         {
-            OrganisationScheme = "VAT",
-            VATNumber = "0123456789",
+            OrganisationScheme = "JE-FSC",         
             RedirectToSummary = true
         };
         GivenRegistrationIsInProgress();
@@ -335,8 +330,7 @@ public class OrganisationIdentificationModelTests
     {
         var model = new OrganisationIdentificationModel(sessionMock.Object, organisationClientMock.Object, _pponClientMock.Object)
         {
-            OrganisationScheme = "VAT",
-            VATNumber = "0123456789",
+            OrganisationScheme = "JE-FSC",           
             RedirectToSummary = true
         };
         GivenRegistrationIsInProgress();
@@ -355,8 +349,7 @@ public class OrganisationIdentificationModelTests
     {
         var model = new OrganisationIdentificationModel(sessionMock.Object, organisationClientMock.Object, _pponClientMock.Object)
         {
-            OrganisationScheme = "VAT",
-            VATNumber = "0123456789",
+            OrganisationScheme = "JE-FSC",            
             RedirectToSummary = true
         };
 
@@ -429,9 +422,6 @@ public class OrganisationIdentificationModelTests
                 break;
             case "GB-UKPRN":
                 model.UKLearningProviderReferenceNumber = identificationNumber;
-                break;
-            case "VAT":
-                model.VATNumber = identificationNumber;
                 break;
         }
     }
