@@ -78,6 +78,9 @@ public class SupplierVatModelQuestionTest
 
         result.Should().BeOfType<RedirectToPageResult>()
             .Which.PageName.Should().Be("SupplierBasicInformation");
+
+        _organisationClientMock.Verify(o => o.UpdateSupplierInformationAsync(It.IsAny<Guid>(),
+            It.Is<UpdateSupplierInformation>(u => u.Type == SupplierInformationUpdateType.CompletedVat)), Times.Once);
     }
 
     [Fact]
@@ -97,6 +100,9 @@ public class SupplierVatModelQuestionTest
 
         result.Should().BeOfType<RedirectToPageResult>();
         (result as RedirectToPageResult)?.PageName.Should().Be("SupplierBasicInformation");
+
+        _organisationClientMock.Verify(o => o.UpdateSupplierInformationAsync(It.IsAny<Guid>(),
+            It.Is<UpdateSupplierInformation>(u => u.Type == SupplierInformationUpdateType.CompletedVat)), Times.Once);
     }
 
     [Fact]
@@ -114,9 +120,8 @@ public class SupplierVatModelQuestionTest
         var result = await _model.OnPost();
         
         _organisationClientMock.Verify(o => o.UpdateOrganisationAsync(It.IsAny<Guid>(), It.IsAny<UpdatedOrganisation>()), Times.Never);
-
-        result.Should().BeOfType<RedirectToPageResult>();
-        (result as RedirectToPageResult)?.PageName.Should().Be("SupplierBasicInformation");
+        _organisationClientMock.Verify(o => o.UpdateSupplierInformationAsync(It.IsAny<Guid>(),
+            It.Is<UpdateSupplierInformation>(u => u.Type == SupplierInformationUpdateType.CompletedVat)), Times.Never);
     }
 
     [Fact]
@@ -138,6 +143,9 @@ public class SupplierVatModelQuestionTest
 
         result.Should().BeOfType<RedirectToPageResult>();
         (result as RedirectToPageResult)?.PageName.Should().Be("/Registration/OrganisationAlreadyRegistered");
+
+        _organisationClientMock.Verify(o => o.UpdateSupplierInformationAsync(It.IsAny<Guid>(),
+            It.Is<UpdateSupplierInformation>(u => u.Type == SupplierInformationUpdateType.CompletedVat)), Times.Never);
     }
 
     [Fact]
@@ -158,6 +166,9 @@ public class SupplierVatModelQuestionTest
         var result = await _model.OnPost();
         result.Should().BeOfType<RedirectToPageResult>();
         (result as RedirectToPageResult)?.PageName.Should().Be("/Registration/OrganisationAlreadyRegistered");
+
+        _organisationClientMock.Verify(o => o.UpdateSupplierInformationAsync(It.IsAny<Guid>(),
+            It.Is<UpdateSupplierInformation>(u => u.Type == SupplierInformationUpdateType.CompletedVat)), Times.Never);
     }
 
     [Fact]
@@ -177,6 +188,9 @@ public class SupplierVatModelQuestionTest
         var result = await _model.OnPost();
         result.Should().BeOfType<RedirectToPageResult>();
         (result as RedirectToPageResult)?.PageName.Should().Be("/Registration/OrganisationRegistrationUnavailable");
+
+        _organisationClientMock.Verify(o => o.UpdateSupplierInformationAsync(It.IsAny<Guid>(),
+            It.Is<UpdateSupplierInformation>(u => u.Type == SupplierInformationUpdateType.CompletedVat)), Times.Never);
     }
 
     [Fact]

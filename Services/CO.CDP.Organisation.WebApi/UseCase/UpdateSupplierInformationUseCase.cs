@@ -65,6 +65,10 @@ public class UpdateSupplierInformationUseCase(IOrganisationRepository organisati
                 organisation.SupplierInfo.CompletedConnectedPerson = true;
                 break;
 
+            case SupplierInformationUpdateType.CompletedVat:
+                organisation.SupplierInfo.CompletedVat = true;
+                break;
+
             default:
                 throw new InvalidUpdateSupplierInformationCommand("Unknown supplier information update type.");
         }

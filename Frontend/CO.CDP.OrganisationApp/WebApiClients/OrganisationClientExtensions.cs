@@ -155,6 +155,13 @@ internal static class OrganisationClientExtensions
     internal static async Task<ICollection<AuthenticationKey>> GetAuthenticationKeys(this IOrganisationClient organisationClient,
         Guid organisationId)
         => await organisationClient.GetAuthenticationKeysAsync(organisationId);
+
+    internal static Task UpdateSupplierCompletedVat(this IOrganisationClient organisationClient, Guid organisationId)
+        => organisationClient.UpdateSupplierInformationAsync(
+            organisationId,
+            new UpdateSupplierInformation(
+                type: SupplierInformationUpdateType.CompletedVat,
+                supplierInformation: new SupplierInfo(supplierType: null, operationTypes: null, legalForm: null)));
 }
 
 public class ComposedOrganisation
