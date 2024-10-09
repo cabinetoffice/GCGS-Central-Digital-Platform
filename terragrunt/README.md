@@ -10,6 +10,7 @@ This code base is responsible for provisioning the AWS infrastructure needed to 
    - [Update Companies House Secrets](#update-companies-house-secrets)
    - [Update FtsService URL](#update-ftsservice-url)
    - [Update GOVUKNotify ApiKey](#update-govuknotify-apikey)
+   - [Update GOVUKNotify Support Admin Email](#update-govuknotify-support-admin-email)
    - [Update OneLogin Secrets](#update-onelogin-secrets)
    - [Update Slack Configuration](#update-slack-configuration)
 4. [Pin Service Version](#pin-service-version)
@@ -144,6 +145,22 @@ ave aws secretsmanager put-secret-value --secret-id cdp-sirsi-fts-service-url --
 # ave aws secretsmanager create-secret --name cdp-sirsi-govuknotify-apikey --secret-string "<GOV UK Notify API Key>" | jq .
 # or update using:
 ave aws secretsmanager put-secret-value --secret-id cdp-sirsi-govuknotify-apikey --secret-string "<GOV UK Notify API Key>" | jq .
+```
+
+3. Redeploy the `organisation` service.
+
+### Update GOVUKNotify Support Admin Email
+
+_this is a temporary solution while we are managing such user in the database_
+1. Identify the `GOV UK Notify Support Admin Email` for the specified AWS account.
+2. Set your AWS profile to target the specified AWS account, and use the AWS CLI to update the secret.
+
+```shell
+# ave is alias for `aws-vault exec` command
+# add using:
+# ave aws secretsmanager create-secret --name cdp-sirsi-govuknotify-support-admin-email --secret-string "<GOV UK Notify API Key>" | jq .
+# or update using:
+ave aws secretsmanager put-secret-value --secret-id cdp-sirsi-govuknotify-support-admin-email --secret-string "<GOV UK Notify API Key>" | jq .
 ```
 
 3. Redeploy the `organisation` service.

@@ -106,6 +106,28 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
         return await result.ToListAsync();
     }
 
+    public async Task<Organisation.LegalForm?> GetLegalForm(int organisationId)
+    {
+        var organisation = await context.Organisations
+            .Where(x => x.Id == organisationId && x.SupplierInfo != null)
+            .Include(x => x.SupplierInfo)
+                .ThenInclude(x => x != null ? x.LegalForm : null)
+            .AsNoTracking()
+            .FirstOrDefaultAsync();
+
+        return organisation?.SupplierInfo?.LegalForm;
+    }
+
+    public async Task<IList<OperationType>> GetOperationTypes(int organisationId)
+    {
+        var organisation = await context.Organisations
+            .Where(x => x.Id == organisationId)
+            .Include(x => x.SupplierInfo)
+            .FirstOrDefaultAsync();
+
+        return organisation?.SupplierInfo?.OperationTypes ?? [];
+    }
+
     public void Save(Organisation organisation)
     {
         try

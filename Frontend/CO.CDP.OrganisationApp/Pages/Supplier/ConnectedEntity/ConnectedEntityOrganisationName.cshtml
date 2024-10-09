@@ -6,7 +6,7 @@
 
     var categoryPage = (Model.ConnectedEntityType == Constants.ConnectedEntityType.Organisation
                             ? "organisation-category" : "");
-    
+
     var backPage = Request.Query.ContainsKey("frm-chk-answer") ? "check-answers-organisation" : categoryPage;
 
     var backLink = $"/organisation/{@Model.Id}/supplier-information/connected-person/{backPage}";
@@ -54,11 +54,9 @@
                     </fieldset>
                 </div>
 
-                <button type="submit"
-                        class="govuk-button"
-                        data-module="govuk-button">
+                <govuk-button>
                     Continue
-                </button>
+                </govuk-button>
 
             </form>
         </div>

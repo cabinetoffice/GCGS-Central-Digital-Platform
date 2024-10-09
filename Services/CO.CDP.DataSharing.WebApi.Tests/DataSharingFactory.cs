@@ -1,3 +1,4 @@
+using Amazon.CloudWatch;
 using CO.CDP.DataSharing.WebApi.Model;
 using CO.CDP.OrganisationInformation;
 using CO.CDP.OrganisationInformation.Persistence;
@@ -25,13 +26,13 @@ public static class DataSharingFactory
             Organisation = theOrganisation,
             FormId = 1,
             Form = null!,
-            AnswerSets = null!,
+            AnswerSets = [],
             SubmissionState = default,
             SubmittedAt = null,
             FormVersionId = string.Empty,
             ShareCode = shareCode ?? "valid-sharecode",
             CreatedOn = DateTimeOffset.UtcNow,
-            UpdatedOn = DateTimeOffset.UtcNow
+            UpdatedOn = DateTimeOffset.UtcNow,
         };
     }
 
@@ -100,7 +101,7 @@ public static class DataSharingFactory
                 CompletedWebsiteAddress = true,
                 CompletedEmailAddress = true,
                 CompletedLegalForm = true,
-                LegalForm = new LegalForm
+                LegalForm = new Organisation.LegalForm
                 {
                     RegisteredUnderAct2006 = true,
                     RegisteredLegalForm = "Private Limited",
@@ -150,6 +151,22 @@ public static class DataSharingFactory
             }
         };
     }
+
+    public static List<FormAnswerSetForPdf> CreateMockFormAnswerSetForPdfs()
+    {
+        return
+            [
+                new FormAnswerSetForPdf() {
+                    QuestionAnswers = [
+                        new Tuple<string, string>("Did this exclusion happen in the UK? ", "Yes"),
+                        new Tuple<string, string>("Enter an email address ", "john.smith@acme.com")
+                        ],
+                    SectionName = "Exclusions",
+                    SectionType = OrganisationInformation.Persistence.Forms.FormSectionType.Exclusions
+                }
+            ];
+    }
+
     public static List<ConnectedPersonInformation> CreateMockConnectedPersonInformation()
     {
         return

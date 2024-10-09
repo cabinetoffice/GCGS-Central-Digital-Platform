@@ -58,15 +58,15 @@ public class QuestionAnswer
 
 public class FormAnswer
 {
-    public bool? BoolValue { get; init; }
-    public double? NumericValue { get; init; }
-    public DateTimeOffset? DateValue { get; init; }
-    public DateTimeOffset? StartValue { get; init; }
-    public DateTimeOffset? EndValue { get; init; }
-    public string? TextValue { get; init; }
-    public string? OptionValue { get; init; }
-    public Address? AddressValue { get; init; }
-    public string? JsonValue { get; init; }
+    public bool? BoolValue { get; set; }
+    public double? NumericValue { get; set; }
+    public DateTimeOffset? DateValue { get; set; }
+    public DateTimeOffset? StartValue { get; set; }
+    public DateTimeOffset? EndValue { get; set; }
+    public string? TextValue { get; set; }
+    public string? OptionValue { get; set; }
+    public Address? AddressValue { get; set; }
+    public string? JsonValue { get; set; }
 }
 
 public class FormQuestionGroup

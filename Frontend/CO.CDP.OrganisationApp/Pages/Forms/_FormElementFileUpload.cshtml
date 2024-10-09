@@ -4,14 +4,6 @@
     var uploadFileHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.UploadedFile)).HasInnerHtml;
     var selectOptionHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.HasValue)).HasInnerHtml;
 
-    void RenderHeading()
-    {
-        if (!string.IsNullOrWhiteSpace(Model.Heading))
-        {
-            <h1 class="govuk-heading-l">@Model.Heading</h1>
-        }
-    }
-
     void RenderDescription()
     {
         if (!string.IsNullOrWhiteSpace(Model.Description))
@@ -52,7 +44,7 @@
 
     @if (Model.IsRequired)
     {
-        RenderHeading();
+        <h1 class="govuk-heading-l">@Model.Heading</h1>
         RenderDescription();
         RenderField();
     }
@@ -60,9 +52,7 @@
     {
         <fieldset class="govuk-fieldset">
             <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                @{
-                    RenderHeading();
-                }
+                <h1 class="govuk-fieldset__heading">@Model.Heading</h1>
             </legend>
             @{
                 RenderDescription();

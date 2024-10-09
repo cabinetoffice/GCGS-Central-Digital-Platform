@@ -7,7 +7,7 @@ workspace "Central Digital Platform" {
         buyer = person "Buyer"
         eSender = softwareSystem "eSender" "Commercial Software that Buyers use to manage tender processes"
         oneLogin = softwareSystem "Gov.uk One Login" "Let users sign in and prove their identities to use your service"
-        govNotify = softwareSystem "Gov.uk Notify" "Sends emails, text messages and letters"
+        govUkNotify = softwareSystem "Gov.uk Notify" "Sends emails, text messages and letters"
         companiesHouse = softwareSystem "Companies House" "Provides registered company details"
         fts = softwareSystem "Find a Tender"
         cfs = softwareSystem "Supplier Information and Contracts Finder"
@@ -21,10 +21,20 @@ workspace "Central Digital Platform" {
                 entityVerificationDatabase = container "Entity Verification Database" "" PostgreSQL Database {
                 }
                 entityVerification = container "Entity Verification" "" "Asp.Net Core" WebApi {
+                    group "Libraries" {
+                        !include "libraries/mq.dsl"
+                    }
                     entityVerificationEndpoint = component "Entity Verification Endpoint" "Queries known identifers." "Asp.Net Core Web API"
-                    entityVerificationUseCase = component "Use Case"
-                    entityVerificationUseCase -> messageQueue "publishes to / listens to" "HTTPS"
-                    -> entityVerificationDatabase "reads/writes" "SQL"
+                    useCase = component "Use Case"
+                    mqSubscriber = component "Message Subscriber"
+                    persistence = component "Persistence" "EntityFramework Core model and repositories" "C# Namespace"
+                    entityVerificationEndpoint -> useCase "Executes"
+                    useCase -> persistence "Calls"
+                    mqSubscriber -> persistence "Calls"
+                    useCase -> mq "Calls"
+                    mq -> messageQueue "publishes to / listens to" "HTTPS"
+                    mq -> mqSubscriber "Calls"
+                    persistence -> entityVerificationDatabase "reads/writes" "SQL"
                 }
             }
 
@@ -35,48 +45,81 @@ workspace "Central Digital Platform" {
                 }
 
                 authority = container "Authority" "" "Asp.Net Core" WebApi {
+                    group "Libraries" {
+                        !include "libraries/organisationInformationPersistence.dsl"
+                    }
                     openIdConfigurationEndpoint = component "OpenID Well-Known Configuration Endpoint" "Exposes OpenID configuration" "Asp.Net Core Web API"
                     openIdJwksConfigurationEndpoint = component "OpenID Well-Known JWKS Configuration Endpoint" "Exposes Json Web Key Set" "Asp.Net Core Web API"
                     tokenEndpoint = component "Token endpoint" "Exchanges a valid One Login token to a longer-lived token with additional claims." "Asp.Net Core Web API"
-                    -> organisationInformationDatabase "reads/writes" "SQL"
+                    tokenService = component "Token Service" "Creates and validates authentication tokens"
+                    tokenEndpoint -> tokenService "Calls"
+                    tokenService -> organisationInformationPersisence "Calls"
+                    organisationInformationPersisence -> organisationInformationDatabase "reads/writes" "SQL"
                 }
                 tenantApi = container "Tenant API" "" "Asp.Net Core" WebApi {
+                    group "Libraries" {
+                        !include "libraries/organisationInformationPersistence.dsl"
+                    }
                     tenantEndpoint = component "Tenant Endpoint" "" "Asp.Net Core Web API"
-                    registerTenantUseCase = component "Register Tenant Use Case"
-                    getTenantUseCase = component "Get Tenant Use Case"
-                    tenantPersistence = component "Persistence" "" "Project"
-                    tenantEndpoint -> registerTenantUseCase "Executes"
-                    tenantEndpoint -> getTenantUseCase "Executes"
-                    registerTenantUseCase -> tenantPersistence "Calls"
-                    getTenantUseCase -> tenantPersistence "Calls"
-                    tenantPersistence -> organisationInformationDatabase "reads/writes" "SQL"
+                    useCase = component "Use Case"
+                    tenantEndpoint -> useCase "Executes"
+                    useCase -> organisationInformationPersisence "Calls"
+                    organisationInformationPersisence -> organisationInformationDatabase "reads/writes" "SQL"
                 }
                 personApi = container "Person API" "" "Asp.Net Core" WebApi {
+                    group "Libraries" {
+                        !include "libraries/organisationInformationPersistence.dsl"
+                    }
                     personEndpoint = component "Person Endpoint" "" "Asp.Net Core Web API"
-                    -> organisationInformationDatabase "reads/writes" "SQL"
+                    useCase = component "Use Case"
+                    personEndpoint -> useCase "Executes"
+                    useCase -> organisationInformationPersisence "Calls"
+                    organisationInformationPersisence -> organisationInformationDatabase "reads/writes" "SQL"
                 }
                 organisationApi = container "Organisation API" "" "Asp.Net Core" WebApi {
+                    group "Libraries" {
+                        !include "libraries/organisationInformationPersistence.dsl"
+                        !include "libraries/mq.dsl"
+                        !include "libraries/govUkNotify.dsl"
+                    }
                     organisationEndpoint = component "Organisation Endpoint" "" "Asp.Net Core Web API"
                     useCase = component "Use Case"
-                    useCase -> messageQueue "publishes to / listens to" "HTTPS"
-                    useCase -> govNotify "sends notifications with" "HTTPS"
-                    -> organisationInformationDatabase "reads/writes" "SQL"
+                    mqSubscriber = component "Message Subscriber"
+                    organisationEndpoint -> useCase "Executes"
+                    useCase -> organisationInformationPersisence "Calls"
+                    useCase -> mq "Calls"
+                    useCase -> govUkNotifyClient "Calls"
+                    mqSubscriber -> organisationInformationPersisence "Calls"
+                    organisationInformationPersisence -> organisationInformationDatabase "reads/writes" "SQL"
+                    mq -> messageQueue "publishes to / listens to" "HTTPS"
+                    mq -> mqSubscriber "Calls"
+                    govUkNotifyClient -> govUkNotify "sends notifications with" "HTTPS"
                 }
                 formsApi = container "Forms API" "" "Asp.Net Core" WebApi {
+                    group "Libraries" {
+                        !include "libraries/organisationInformationPersistence.dsl"
+                    }
                     formsEndpoint = component "Forms Endpoint" "" "Asp.Net Core Web API"
                     useCase = component "Use Case"
+                    formsEndpoint -> useCase "Executes"
                     useCase -> fileStorage "writes to" "HTTPS"
-                    -> organisationInformationDatabase "reads/writes" "SQL"
+                    useCase -> organisationInformationPersisence "Calls"
+                    organisationInformationPersisence -> organisationInformationDatabase "reads/writes" "SQL"
                 }
                 dataSharingApi = container "Data Sharing API" "" "Asp.Net Core" WebApi {
+                    group "Libraries" {
+                        !include "libraries/organisationInformationPersistence.dsl"
+                    }
                     dataSharingEndpoint = component "Data Sharing Endpoint" "" "Asp.Net Core Web API"
                     useCase = component "Use Case"
+                    dataSharingEndpoint -> useCase "Executes"
                     useCase -> fileStorage "writes to / reads from" "HTTPS"
-                    -> organisationInformationDatabase "reads/writes" "SQL"
+                    useCase -> organisationInformationPersisence "Calls"
+                    organisationInformationPersisence -> organisationInformationDatabase "reads/writes" "SQL"
                 }
                 organisationApp = container "Organisation App" "Account & data capture frontend" "Asp.Net Core MVC" WebApp {
                     group "Libraries" {
-                        !include "libraries.dsl"
+                        !include "libraries/webApiClients.dsl"
                     }
 
                     mvcController = component "MVC Controller" "Enables web users to perform tasks." "Asp.Net Core MVC Controller"

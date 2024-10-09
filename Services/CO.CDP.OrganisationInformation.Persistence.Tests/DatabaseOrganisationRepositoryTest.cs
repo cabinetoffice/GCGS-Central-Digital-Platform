@@ -375,6 +375,83 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql) : 
         result.Should().BeEmpty();
     }
 
+    [Fact]
+    public async Task GetLegalForm_WhenNoLegalFormExists_ReturnNull()
+    {
+        using var repository = OrganisationRepository();
+
+        var organisation = GivenOrganisation();
+        organisation.SupplierInfo = GivenSupplierInformation();
+        organisation.SupplierInfo.LegalForm = null;
+
+        using var context = postgreSql.OrganisationInformationContext();
+        await context.Organisations.AddAsync(organisation);
+        await context.SaveChangesAsync();
+
+        var result = await repository.GetLegalForm(organisation.Id);
+
+        result.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task GetLegalForm_WhenLegalFormExists_ReturnValidLegalForm()
+    {
+        using var repository = OrganisationRepository();
+
+        var organisation = GivenOrganisation();
+        organisation.SupplierInfo = GivenSupplierInformation();
+        organisation.SupplierInfo.LegalForm = GivenSupplierLegalForm();
+
+        using var context = postgreSql.OrganisationInformationContext();
+        await context.Organisations.AddAsync(organisation);
+        await context.SaveChangesAsync();
+
+        var result = await repository.GetLegalForm(organisation.Id);
+
+        result?.Should().NotBeNull();
+        result?.RegisteredUnderAct2006.Should().Be(true);
+        result?.RegisteredLegalForm.Should().Be("Limited company");
+        result?.LawRegistered.Should().Be("England and Wales");
+        result?.RegistrationDate.Should().Be(DateTimeOffset.Parse("2005-12-02T00:00:00Z"));
+    }
+
+    [Fact]
+    public async Task GetOperationTypes_WhenNoOperationTypeExists_ReturnsNull()
+    {
+        using var repository = OrganisationRepository();
+
+        var organisation = GivenOrganisation();
+        organisation.SupplierInfo = GivenSupplierInformation();
+        organisation.SupplierInfo.OperationTypes = [];
+
+        using var context = postgreSql.OrganisationInformationContext();
+        await context.Organisations.AddAsync(organisation);
+        await context.SaveChangesAsync();
+
+        var result = await repository.GetOperationTypes(organisation.Id);
+
+        result.Should().BeEmpty();
+    }
+
+    [Fact]
+    public async Task GetOperationTypes_WhenOperationTypeExists_ReturnsEmptyList()
+    {
+        using var repository = OrganisationRepository();
+
+        var organisation = GivenOrganisation();
+        organisation.SupplierInfo = GivenSupplierInformation();
+        organisation.SupplierInfo.OperationTypes = [OperationType.SmallOrMediumSized];
+
+        using var context = postgreSql.OrganisationInformationContext();
+        await context.Organisations.AddAsync(organisation);
+        await context.SaveChangesAsync();
+
+        var result = await repository.GetOperationTypes(organisation.Id);
+
+        result.Should().NotBeNull();
+        result.Should().Contain(OperationType.SmallOrMediumSized);
+    }
+
     private IOrganisationRepository OrganisationRepository()
     {
         return new DatabaseOrganisationRepository(postgreSql.OrganisationInformationContext());
