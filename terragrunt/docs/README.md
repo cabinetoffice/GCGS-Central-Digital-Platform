@@ -2,11 +2,19 @@
 
 ## Diagrams
 
+- [High-Level Overview (DNS, Networking, ECS, and Data Flow)](#cdp-sirsi-application-high-level-overview-of-dns-networking-ecs-and-data-flow)
+- [ECS and RDS Database Integration](#cdp-sirsi-application-ecs-and-rds-database-integration)
+- [ECS and SQS Queue Integration](#cdp-sirsi-application-ecs-and-sqs-queue-integration)
+
+---
+
 ### CDP-SIRSI Application: High-Level Overview of DNS, Networking, ECS, and Data Flow
 
 This diagram provides an overview of the CDP-SIRSI application’s architecture, covering DNS records, load balancing, ECS services, and database connections. It includes key services and interactions but does not represent the complete implementation details.
 
 ![CDP-SIRSI-HLO-DNS-NET-ECS-DATA](./diagrams/CDP-SIRSI-HLO-DNS-NET-ECS-DATA.png)
+
+---
 
 ### CDP-SIRSI Application: ECS and RDS Database Integration
 
@@ -15,6 +23,8 @@ This diagram illustrates the integration between the ECS cluster and Amazon RDS 
 Additionally, the PG Admin Task is a tool used in the non-production environment to assist developers. However, it requires manual updates to database connection passwords following each rotation of the master credentials in Secrets Manager.
 
 ![CDP-SIRSI-ECS-RDS](./diagrams/CDP-SIRSI-ECS-RDS.png)
+
+---
 
 ### CDP-SIRSI Application: ECS and SQS Queue Integration
 
