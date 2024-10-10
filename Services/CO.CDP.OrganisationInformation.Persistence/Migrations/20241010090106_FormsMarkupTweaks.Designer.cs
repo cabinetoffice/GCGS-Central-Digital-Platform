@@ -13,8 +13,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CO.CDP.OrganisationInformation.Persistence.Migrations
 {
     [DbContext(typeof(OrganisationInformationContext))]
-    [Migration("20241009111547_FormsHtmlTweaks")]
-    partial class FormsHtmlTweaks
+    [Migration("20241010090106_FormsMarkupTweaks")]
+    partial class FormsMarkupTweaks
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

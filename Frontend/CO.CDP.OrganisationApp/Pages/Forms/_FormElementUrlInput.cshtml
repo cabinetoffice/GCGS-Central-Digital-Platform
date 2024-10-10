@@ -29,7 +29,7 @@
             </p>
         }
 
-        <input class="govuk-input govuk-!-width-two-thirds" id="TextInput" name="TextInput" type="text" value="@Model.TextInput"
+        <input class="govuk-input govuk-!-width-two-thirds" id="@nameof(Model.TextInput)" name="@nameof(Model.TextInput)" type="url" value="@Model.TextInput"
         @(string.IsNullOrWhiteSpace(textInputAriaDescribedby) ? "" : Html.Raw($"aria-describedby=\"{textInputAriaDescribedby}\""))>
     }
 }
@@ -41,7 +41,7 @@
         if (!string.IsNullOrWhiteSpace(Model.Heading))
         {
             <h1 class="govuk-label-wrapper">
-                <label class="govuk-label govuk-label--l" for="TextInput">@Model.Heading</label>
+                <label class="govuk-label govuk-label--l" for="@nameof(Model.TextInput)">@Model.Heading</label>
 
                 @if (!string.IsNullOrWhiteSpace(Model.Caption))
                 {
@@ -70,8 +70,8 @@
 
             @if (selectOptionHasError)
             {
-                <p class="govuk-error-message">
-                    <span id="input-error" class="govuk-visually-hidden">Error:</span>
+                <p class="govuk-error-message" id="input-error">
+                    <span class="govuk-visually-hidden">Error:</span>
                     @Html.ValidationMessageFor(m => m.HasValue)
                 </p>
             }
@@ -79,27 +79,24 @@
             <div class="govuk-radios" data-module="govuk-radios">
 
                 <div class="govuk-radios__item">
-                    <input class="govuk-radios__input" id="YES" name="HasValue" type="radio"
+                    <input class="govuk-radios__input" id="@nameof(Model.HasValue)" name="@nameof(Model.HasValue)" type="radio"
                            value="true" data-aria-controls="conditional-YES" @(Model.HasValue == true ? "checked" : "")>
-                    <label class="govuk-label govuk-radios__label" for="YES">Yes</label>
+                    <label class="govuk-label govuk-radios__label" for="@nameof(Model.HasValue)">Yes</label>
                 </div>
 
                 <div class="govuk-radios__conditional" id="conditional-YES">
                     <div class="govuk-form-group @(textInputHasError ? "govuk-form-group--error" : "")">
                         @{
-                            if (!string.IsNullOrWhiteSpace(Model.Caption))
-                            {
-                                @Html.Raw(Model.Caption)
-                            }
+                            <label class="govuk-label" for="@nameof(Model.TextInput)">@Model.Caption</label>
                             RenderField();
                         }
                     </div>
                 </div>
 
                 <div class="govuk-radios__item">
-                    <input class="govuk-radios__input" id="NO" name="HasValue" type="radio"
+                    <input class="govuk-radios__input" id="@nameof(Model.HasValue)-1" name="@nameof(Model.HasValue)" type="radio"
                            value="false" @(Model.HasValue == false ? "checked" : "")>
-                    <label class="govuk-label govuk-radios__label" for="NO">No</label>
+                    <label class="govuk-label govuk-radios__label" for="@nameof(Model.HasValue)-1">No</label>
                 </div>
             </div>
         </fieldset>
