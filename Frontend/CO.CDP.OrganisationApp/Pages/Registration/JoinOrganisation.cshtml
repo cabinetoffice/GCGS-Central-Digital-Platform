@@ -1,0 +1,111 @@
+@page "/registration/{organisationId}/join-organisation"
+@using CO.CDP.OrganisationApp.Constants
+@model JoinOrganisationModel
+
+@{
+var organisationDetails = Model.OrganisationDetails!;
+var joinHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Join)).HasInnerHtml;
+}
+
+<a href="/registration/has-companies-house-number" class="govuk-back-link">
+    Back
+</a>
+
+<main class="govuk-main-wrapper">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <partial name="_ErrorSummary" model="@Model.ModelState" />
+            <fieldset class="govuk-fieldset">
+                <h1 class="govuk-heading-l">
+                    <span class="govuk-label--l">Join company: @organisationDetails.Name</span>
+                </h1>
+                <h2 class="govuk-heading-m">Organisation details</h2>
+                <dl class="govuk-summary-list">
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            Organisation name
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            <p class="govuk-body">@organisationDetails.Name</p>
+                        </dd>
+                    </div>
+                </dl>
+                <br/>
+                <h2 class="govuk-heading-m">User details</h2>
+                <dl class="govuk-summary-list">
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            Firstname
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            <p class="govuk-body">John</p>
+                        </dd>
+                        <dd class="govuk-summary-list__actions">
+                            <a class="govuk-link govuk-link--no-visited-state" href="/organisation//name">Change</a>
+                        </dd>
+                    </div>
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            Lastname
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            <p class="govuk-body">Johnson</p>
+                        </dd>
+                        <dd class="govuk-summary-list__actions">
+                            <a class="govuk-link govuk-link--no-visited-state" href="/organisation//name">Change</a>
+                        </dd>
+                    </div>
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            Email address
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            <p class="govuk-body">john@johnson.com</p>
+                        </dd>
+                        <dd class="govuk-summary-list__actions">
+                            <a class="govuk-link govuk-link--no-visited-state" href="/organisation//name">Change</a>
+                        </dd>
+                    </div>
+                </dl>
+            </fieldset>
+        </div>
+    </div>
+    <br/>
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <form method="post">
+                <fieldset class="govuk-fieldset" data-required="" data-error="Select yes if you want to join this organisation" aria-required="true">
+                    <div class="govuk-form-group @(joinHasError ? "govuk-form-group--error" : "")">
+                        <h2 class="govuk-heading-m">
+                            <span class="govuk-label--m">Would you like to join @organisationDetails.Name?</span>
+                        </h2>
+                        @if (joinHasError)
+                        {
+                            <p id="approval-error" class="govuk-error-message">
+                                <span class="govuk-visually-hidden">Error:</span>
+                                @Html.ValidationMessageFor(m => m.Join)
+                            </p>
+                        }
+                        <div class="govuk-radios govuk-radios--inline" data-module="govuk-radios">
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input" id="join-YES" name="Join" type="radio"
+                                       value="true">
+                                <label class="govuk-label govuk-radios__label" for="join-YES">Yes</label>
+                            </div>
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input" id="join-NO" name="Join" type="radio"
+                                       value="false">
+                                <label class="govuk-label govuk-radios__label" for="join-NO">No</label>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+                <div class="govuk-button-group govuk-!-margin-top-6">
+                    <govuk-button>
+                        Continue
+                    </govuk-button>
+                </div>
+            </form>
+        </div>
+    </div>
+</main>

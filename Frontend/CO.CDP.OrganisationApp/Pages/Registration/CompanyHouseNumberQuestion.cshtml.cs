@@ -32,8 +32,12 @@ public class CompanyHouseNumberQuestionModel(ISession session,
     [BindProperty]
     public string? FailedCompaniesHouseNumber { get; set; }
 
+    public static Guid? OrganisationId;
+
+    public static string? OrganisationName;
+
     public static string NotificationBannerCompanyNotFound { get { return "We cannot find your company number on Companies House. If it’s correct continue and enter your details manually."; } }
-    public static string NotificationBannerCompanyAlreadyRegistered { get { return "An organisation with this company number already exists. Change the company number or <a class='govuk-notification-banner__link' href='#'>request to join the organisation.</a>"; } }
+    public static string NotificationBannerCompanyAlreadyRegistered { get { return "An organisation with this company number already exists. Change the company number or <a class='govuk-notification-banner__link' href='/registration/"+ OrganisationId +"/join-organisation'>request to join " + OrganisationName + ".</a>"; } }
 
     public void OnGet()
     {
@@ -56,8 +60,9 @@ public class CompanyHouseNumberQuestionModel(ISession session,
 
             try
             {
-                await organisationClient.LookupOrganisationAsync(string.Empty, $"GB-COH:{RegistrationDetails.OrganisationIdentificationNumber}");
-
+                var organisation = await organisationClient.LookupOrganisationAsync(string.Empty, $"GB-COH:{RegistrationDetails.OrganisationIdentificationNumber}");
+                OrganisationId = organisation.Id;
+                OrganisationName = organisation.Name;
                 tempDataService.Put(FlashMessageTypes.Important, NotificationBannerCompanyAlreadyRegistered);
                 return Page();
             }
@@ -66,7 +71,7 @@ public class CompanyHouseNumberQuestionModel(ISession session,
                 if (FailedCompaniesHouseNumber != CompaniesHouseNumber)
                 {
                     var chProfile = await companiesHouseApi.GetProfile(RegistrationDetails.OrganisationIdentificationNumber!);
-                    
+
                     if (chProfile == null)
                     {
                         FailedCompaniesHouseNumber = CompaniesHouseNumber;
