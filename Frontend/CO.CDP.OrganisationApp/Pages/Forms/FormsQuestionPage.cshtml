@@ -32,7 +32,7 @@
         <div class="@(isCheckYourAnswersPage ? "govuk-grid-column-full" : "govuk-grid-column-two-thirds")">
             <partial name="_ErrorSummary" model="@ModelState" />
 
-            <form method="post" enctype="@Model.EncType">
+            <form method="post" enctype="@Model.EncType" novalidate>
                 @if (Model.PartialViewName != null && Model.PartialViewModel != null)
                 {
                     @await Html.PartialAsync(Model.PartialViewName, Model.PartialViewModel)

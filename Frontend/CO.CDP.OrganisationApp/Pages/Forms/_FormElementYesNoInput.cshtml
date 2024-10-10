@@ -3,7 +3,7 @@
     var hasError = ((TagBuilder)Html.ValidationMessageFor(m => m.YesNoInput)).HasInnerHtml;
 }
 
-<div class="govuk-form-group @(hasError ? "govuk-form-group--error" : "")">
+<div class="govuk-form-group @(hasError ? "govuk-form-group--error" : "")" @(hasError ? Html.Raw(@"aria-describedby=""yes-no-error""") : null)>
     <fieldset class="govuk-fieldset">
         <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
             @if (!string.IsNullOrWhiteSpace(Model.Heading))
@@ -19,7 +19,7 @@
 
         @if (hasError)
         {
-            <p class="govuk-error-message">
+            <p class="govuk-error-message" id="yes-no-error">
                 <span class="govuk-visually-hidden">Error:</span>
                 @Html.ValidationMessageFor(m => m.YesNoInput)
             </p>
@@ -27,12 +27,12 @@
 
         <div class="govuk-radios" data-module="govuk-radios">
             <div class="govuk-radios__item">
-                <input class="govuk-radios__input" id="yes" name="YesNoInput" type="radio" value="yes" @(Model.YesNoInput == "yes" ? "checked" : "")>
-                <label class="govuk-label govuk-radios__label" for="yes">Yes</label>
+                <input class="govuk-radios__input" id="@nameof(Model.YesNoInput)" name="@nameof(Model.YesNoInput)" type="radio" value="yes" @(Model.YesNoInput == "yes" ? "checked" : "")>
+                <label class="govuk-label govuk-radios__label" for="@nameof(Model.YesNoInput)">Yes</label>
             </div>
             <div class="govuk-radios__item">
-                <input class="govuk-radios__input" id="no" name="YesNoInput" type="radio" value="no" @(Model.YesNoInput == "no" ? "checked" : "")>
-                <label class="govuk-label govuk-radios__label" for="no">No</label>
+                <input class="govuk-radios__input" id="@nameof(Model.YesNoInput)-1" name="@nameof(Model.YesNoInput)" type="radio" value="no" @(Model.YesNoInput == "no" ? "checked" : "")>
+                <label class="govuk-label govuk-radios__label" for="@nameof(Model.YesNoInput)-1">No</label>
             </div>
         </div>
     </fieldset>

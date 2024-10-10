@@ -73,6 +73,11 @@ public class FormElementTextInputModel : FormElementModel, IValidatableObject
         return Heading?.Contains("email", StringComparison.OrdinalIgnoreCase) == true;
     }
 
+    public string GetFieldType()
+    {
+        return IsEmailValidationRequired() ? "email" : "text";
+    }
+
     private static bool IsValidEmail(string? email)
     {
         if (string.IsNullOrWhiteSpace(email))

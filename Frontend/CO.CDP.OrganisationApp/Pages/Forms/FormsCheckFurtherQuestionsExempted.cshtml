@@ -15,25 +15,31 @@
 
             <form method="post">
                 <div class="govuk-form-group @(hasError ? "govuk-form-group--error" : "")">
-                    <fieldset class="govuk-fieldset">
+                    <fieldset class="govuk-fieldset" @(hasError ? Html.Raw(@"aria-describedby=""confirm-error""") : null)>
                         @if (!string.IsNullOrEmpty(Model.Heading))
                         {
                             @Html.Raw(Model.Heading)
                         }
 
-                        <div class="govuk-radios govuk-!-margin-top-6" data-module="govuk-radios">
+                        @if (hasError)
+                        {
+                            <p class="govuk-error-message" id="confirm-error">
+                                <span class="govuk-visually-hidden">Error:</span> Select an option
+                            </p>
+                        }
+
+                        <div class="govuk-radios" data-module="govuk-radios">
                             <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="conditional-YES" name="Confirm" type="radio"
+                                <input class="govuk-radios__input" id="@nameof(Model.Confirm)" name="@nameof(Model.Confirm)" type="radio"
                                        value="true" @(Model.Confirm == true ? "checked" : "")>
-                                <label class="govuk-label govuk-radios__label" for="conditional-YES">Yes</label>
+                                <label class="govuk-label govuk-radios__label" for="@nameof(Model.Confirm)">Yes</label>
                             </div>
                             <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="conditional-NO" name="Confirm" type="radio"
+                                <input class="govuk-radios__input" id="@nameof(Model.Confirm)-1" name="@nameof(Model.Confirm)" type="radio"
                                        value="false" @(Model.Confirm == false ? "checked" : "")>
-                                <label class="govuk-label govuk-radios__label" for="conditional-NO">No</label>
+                                <label class="govuk-label govuk-radios__label" for="@nameof(Model.Confirm)-1">No</label>
                             </div>
                         </div>
-
                     </fieldset>
                 </div>
 
