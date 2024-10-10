@@ -149,7 +149,8 @@ public enum SupplierInformationUpdateType
     CompletedEmailAddress,
     LegalForm,
     OperationType,
-    CompletedConnectedPerson
+    CompletedConnectedPerson,
+    CompletedVat
 }
 
 public record SupplierInfo

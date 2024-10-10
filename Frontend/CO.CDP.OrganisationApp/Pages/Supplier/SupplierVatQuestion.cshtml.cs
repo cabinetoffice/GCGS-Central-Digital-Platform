@@ -60,7 +60,8 @@ public class SupplierVatQuestionModel(IOrganisationClient organisationClient,
             return Page();
         }
 
-        CO.CDP.Organisation.WebApiClient.Organisation? organisation;
+        CDP.Organisation.WebApiClient.Organisation? organisation;
+
         try
         {
             organisation = await organisationClient.GetOrganisationAsync(Id);
@@ -93,7 +94,9 @@ public class SupplierVatQuestionModel(IOrganisationClient organisationClient,
                     }
                     catch (Exception evApiException) when (evApiException is EntityVerificationClient.ApiException && ((EntityVerificationClient.ApiException)evApiException).StatusCode == 404)
                     {
+                        await organisationClient.UpdateSupplierCompletedVat(Id);
                         await organisationClient.UpdateOrganisationAdditionalIdentifiers(Id, identifiers);
+
                         return RedirectToPage("SupplierBasicInformation", new { Id });
                     }
                     catch
@@ -107,16 +110,17 @@ public class SupplierVatQuestionModel(IOrganisationClient organisationClient,
                 return RedirectToPage("SupplierBasicInformation", new { Id });
             }
         }
-        else if (!string.IsNullOrEmpty(existingVatIdentifier?.Id))
-        {
-            await organisationClient.UpdateOrganisationRemoveIdentifier(
-                organisation.Id,
-                new OrganisationIdentifier(string.Empty, organisation.Name, VatSchemeName));
-
-            return RedirectToPage("SupplierBasicInformation", new { Id });
-        }
         else
         {
+            await organisationClient.UpdateSupplierCompletedVat(Id);
+
+            if (!string.IsNullOrEmpty(existingVatIdentifier?.Id))
+            {
+                await organisationClient.UpdateOrganisationRemoveIdentifier(
+                    organisation.Id,
+                    new OrganisationIdentifier(string.Empty, organisation.Name, VatSchemeName));
+            }
+
             return RedirectToPage("SupplierBasicInformation", new { Id });
         }
 

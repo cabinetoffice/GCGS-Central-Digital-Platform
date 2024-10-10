@@ -16,10 +16,10 @@ public class SupplierInformationSummaryModel(
     public string? Name { get; set; }
 
     [BindProperty]
-    public StepStatus BasicInformationStepStatus { get; set; }
+    public SupplierInformationStatus.StepStatus BasicInformationStepStatus { get; set; }
 
     [BindProperty]
-    public StepStatus ConnectedPersonStepStatus { get; set; }
+    public SupplierInformationStatus.StepStatus ConnectedPersonStepStatus { get; set; }
 
     [BindProperty]
     public ICollection<ConnectedEntityLookup> ConnectedEntities { get; set; } = [];
@@ -60,47 +60,8 @@ public class SupplierInformationSummaryModel(
         }
 
         Name = supplierInfo.OrganisationName;
-        BasicInformationStepStatus = GetBasicInfoStepStatus(supplierInfo);
-        ConnectedPersonStepStatus = GetConnectedPersonStepStatus(supplierInfo, ConnectedEntities.Count);
+        BasicInformationStepStatus = SupplierInformationStatus.GetBasicInfoStepStatus(supplierInfo);
+        ConnectedPersonStepStatus = SupplierInformationStatus.GetConnectedPersonStepStatus(supplierInfo, ConnectedEntities.Count);
         return Page();
     }
-
-    private static StepStatus GetBasicInfoStepStatus(SupplierInformation info)
-    {
-        if (info.SupplierType == null)
-            return StepStatus.NotStarted;
-
-        return info.SupplierType.Value switch
-        {
-            SupplierType.Organisation => info.CompletedRegAddress && info.CompletedPostalAddress
-                            && info.CompletedVat && info.CompletedWebsiteAddress
-                            && info.CompletedEmailAddress
-                            && info.CompletedOperationType && info.CompletedLegalForm ? StepStatus.Completed : StepStatus.InProcess,
-
-            SupplierType.Individual => info.CompletedRegAddress && info.CompletedPostalAddress
-                            && info.CompletedVat && info.CompletedWebsiteAddress
-                            && info.CompletedEmailAddress
-                            ? StepStatus.Completed : StepStatus.InProcess,
-
-            _ => StepStatus.NotStarted,
-        };
-    }
-
-    private static StepStatus GetConnectedPersonStepStatus(SupplierInformation info, int entityCount)
-    {
-        if (info == null)
-            return StepStatus.NotStarted;
-
-        if (info.CompletedConnectedPerson == false && entityCount == 0)
-            return StepStatus.NotStarted;
-
-        return info.CompletedConnectedPerson != true ? StepStatus.NotStarted : StepStatus.Completed;
-    }
-}
-
-public enum StepStatus
-{
-    NotStarted,
-    InProcess,
-    Completed,
 }

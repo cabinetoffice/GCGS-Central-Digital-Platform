@@ -1,7 +1,5 @@
 using CO.CDP.OrganisationApp.TagHelpers;
 using FluentAssertions;
-using Microsoft.AspNetCore.Razor.TagHelpers;
-using System.Text.Encodings.Web;
 using static CO.CDP.OrganisationApp.Tests.TagHelpers.TagHelperTestKit;
 
 namespace CO.CDP.OrganisationApp.Tests.TagHelpers;
