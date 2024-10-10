@@ -1,5 +1,6 @@
 using CO.CDP.Testcontainers.PostgreSql;
 using FluentAssertions;
+using static CO.CDP.OrganisationInformation.Persistence.IOrganisationRepository.OrganisationRepositoryException;
 using static CO.CDP.OrganisationInformation.Persistence.Organisation;
 using static CO.CDP.OrganisationInformation.Persistence.Tests.EntityFactory;
 
@@ -22,6 +23,49 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql) : 
         found.Should().Be(organisation);
         found.As<Organisation>().Id.Should().BePositive();
         found.As<Organisation>().OrganisationPersons.First().Scopes.Should().Equal(["ADMIN"]);
+    }
+
+    [Fact]
+    public async Task ItSavesTheOrganisationAndAdditionalEntitiesInASingleTransaction()
+    {
+        await using var context = postgreSql.OrganisationInformationContext();
+        using var repository = OrganisationRepository(context);
+
+        var organisation = GivenOrganisation(name: "Organisation name before update 1");
+
+        await repository.SaveAsync(organisation, _ =>
+        {
+            organisation.Name = "Updated organisation name 1";
+            repository.Save(organisation);
+            return Task.CompletedTask;
+        });
+
+        var foundOrganisation = await repository.Find(organisation.Guid);
+
+        foundOrganisation.Should().NotBeNull();
+        foundOrganisation.As<Organisation>().Name.Should().Be("Updated organisation name 1");
+    }
+
+    [Fact]
+    public async Task ItRevertsTheTransactionIfSavingOfAdditionalEntitiesFails()
+    {
+        await using var context = postgreSql.OrganisationInformationContext();
+        var repository = OrganisationRepository(context);
+
+        var organisation = GivenOrganisation(name: "Organisation name before update 2");
+
+        var act = async () => await repository.SaveAsync(organisation, _ =>
+        {
+            organisation.Name = "Updated organisation name 2";
+            repository.Save(organisation);
+            throw new Exception("Failed in transaction");
+        });
+
+        await act.Should().ThrowAsync<Exception>("Failed in transaction");
+
+        var foundOrganisation = await repository.Find(organisation.Guid);
+
+        foundOrganisation.Should().BeNull();
     }
 
     [Fact]
@@ -74,7 +118,7 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql) : 
         repository.Save(organisation1);
 
         repository.Invoking(r => r.Save(organisation2))
-            .Should().Throw<IOrganisationRepository.OrganisationRepositoryException.DuplicateOrganisationException>()
+            .Should().Throw<DuplicateOrganisationException>()
             .WithMessage($"Organisation with name `TheOrganisation` already exists.");
     }
 
@@ -91,7 +135,7 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql) : 
         repository.Save(organisation1);
 
         repository.Invoking(r => r.Save(organisation2))
-            .Should().Throw<IOrganisationRepository.OrganisationRepositoryException.DuplicateOrganisationException>()
+            .Should().Throw<DuplicateOrganisationException>()
             .WithMessage($"Organisation with name `Acme LTD` already exists.");
     }
 
@@ -107,7 +151,7 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql) : 
         repository.Save(organisation1);
 
         repository.Invoking((r) => r.Save(organisation2))
-            .Should().Throw<IOrganisationRepository.OrganisationRepositoryException.DuplicateOrganisationException>()
+            .Should().Throw<DuplicateOrganisationException>()
             .WithMessage($"Organisation with guid `{guid}` already exists.");
     }
 
@@ -452,8 +496,8 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql) : 
         result.Should().Contain(OperationType.SmallOrMediumSized);
     }
 
-    private IOrganisationRepository OrganisationRepository()
+    private IOrganisationRepository OrganisationRepository(OrganisationInformationContext? context = null)
     {
-        return new DatabaseOrganisationRepository(postgreSql.OrganisationInformationContext());
+        return new DatabaseOrganisationRepository(context ?? postgreSql.OrganisationInformationContext());
     }
 }
