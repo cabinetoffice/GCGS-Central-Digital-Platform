@@ -109,7 +109,7 @@ public class UpdateOrganisationUseCase(
                         organisation.Identifiers.Add(new OrganisationInformation.Persistence.Organisation.Identifier
                         {
                             IdentifierId = identifier.Id,
-                            Primary = AssignIdentifierUseCase.IsPrimaryIdentifier(organisation),
+                            Primary = AssignIdentifierUseCase.IsPrimaryIdentifier(organisation, identifier.Scheme),
                             LegalName = identifier.LegalName,
                             Scheme = identifier.Scheme
                         });
@@ -200,7 +200,8 @@ public class UpdateOrganisationUseCase(
     {
         var nextPrimaryIdentifier = organisation.Identifiers.FirstOrDefault(i =>
             i.Scheme != AssignIdentifierUseCase.IdentifierSchemes.Ppon &&
-            i.Scheme != AssignIdentifierUseCase.IdentifierSchemes.Other);
+            i.Scheme != AssignIdentifierUseCase.IdentifierSchemes.Other &&
+            i.Scheme != AssignIdentifierUseCase.IdentifierSchemes.Vat);
 
         if (nextPrimaryIdentifier == null)
         {
