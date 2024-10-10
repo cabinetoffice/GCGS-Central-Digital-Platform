@@ -18,7 +18,7 @@
             <partial name="_ErrorSummary" model="@Model.ModelState" />
             <form method="post">
                 <div class="govuk-form-group @(hasError ? "govuk-form-group--error" : "")">
-                    <fieldset class="govuk-fieldset" data-required="" data-error="Enter the date your company registered under the Companies Act 2006" aria-required="true">
+                    <fieldset class="govuk-fieldset">
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                             <h1 class="govuk-heading-l">
                                 What is the equivalent date your company registered under the Companies Act 2006?
@@ -88,7 +88,7 @@
                         </div>
                     </fieldset>
                 </div>
-                <button class="govuk-button" type="submit">Save and exit</button>
+                <govuk-button>Save and exit</govuk-button>
             </form>
         </div>
     </div>

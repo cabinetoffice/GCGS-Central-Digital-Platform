@@ -1,4 +1,3 @@
-using Amazon.CloudWatch;
 using CO.CDP.DataSharing.WebApi.Model;
 using CO.CDP.OrganisationInformation;
 using CO.CDP.OrganisationInformation.Persistence;

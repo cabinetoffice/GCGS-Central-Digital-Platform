@@ -5,13 +5,6 @@ namespace CO.CDP.OrganisationInformation.Persistence;
 
 public class DatabaseShareCodeRepository(OrganisationInformationContext context) : IShareCodeRepository
 {
-    public async Task<bool> OrganisationShareCodeExistsAsync(Guid organisationId, string shareCode)
-    {
-        return await context.Set<SharedConsent>()
-            .Where(x => x.Organisation.Guid == organisationId && x.ShareCode == shareCode)
-            .AnyAsync();
-    }
-
     public async Task<bool> ShareCodeDocumentExistsAsync(string shareCode, string documentId)
     {
         return await context.Set<FormAnswer>()

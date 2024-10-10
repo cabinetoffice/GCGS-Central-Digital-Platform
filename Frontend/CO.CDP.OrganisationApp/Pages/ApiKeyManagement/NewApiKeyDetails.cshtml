@@ -24,9 +24,9 @@
                             This is the only time we show you the API key. If you lose it, you’ll need to cancel it and create a new one.
                         </p>
 
-                        <button id="copybutton" class="govuk-button govuk-button--secondary govuk-visually-hidden" data-module="govuk-button" onclick="javascript:copyContent('apikeytext');">
+                        <govuk-button id="copybutton" type="button" class="govuk-button--secondary govuk-visually-hidden" onclick="javascript:copyContent('apikeytext');" prevent-double-click="false">
                             Copy API key to clipboard
-                        </button>
+                        </govuk-button>
 
                         <p>
                             <a class="govuk-link govuk-link--no-visited-state" href="/organisation/@Model.Id/manage-api-keys">Back to your API keys</a>
