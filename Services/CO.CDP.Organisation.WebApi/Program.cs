@@ -19,6 +19,7 @@ using Microsoft.EntityFrameworkCore;
 using ConnectedEntity = CO.CDP.Organisation.WebApi.Model.ConnectedEntity;
 using ConnectedEntityLookup = CO.CDP.Organisation.WebApi.Model.ConnectedEntityLookup;
 using Organisation = CO.CDP.Organisation.WebApi.Model.Organisation;
+using OrganisationJoinRequest = CO.CDP.Organisation.WebApi.Model.OrganisationJoinRequest;
 using Person = CO.CDP.Organisation.WebApi.Model.Person;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -60,6 +61,7 @@ builder.Services.AddScoped<IConnectedEntityRepository, DatabaseConnectedEntityRe
 builder.Services.AddScoped<IPersonRepository, DatabasePersonRepository>();
 builder.Services.AddScoped<IPersonInviteRepository, DatabasePersonInviteRepository>();
 builder.Services.AddScoped<IAuthenticationKeyRepository, DatabaseAuthenticationKeyRepository>();
+builder.Services.AddScoped<IOrganisationJoinRequestRepository, DatabaseOrganisationJoinRequestRepository>();
 builder.Services.AddScoped<IUseCase<AssignOrganisationIdentifier, bool>, AssignIdentifierUseCase>();
 builder.Services.AddScoped<IUseCase<RegisterOrganisation, Organisation>, RegisterOrganisationUseCase>();
 builder.Services.AddScoped<IUseCase<Guid, Organisation?>, GetOrganisationUseCase>();
@@ -87,6 +89,7 @@ builder.Services.AddGovUKNotifyApiClient(builder.Configuration);
 builder.Services.AddScoped<IUseCase<Guid, IEnumerable<CO.CDP.Organisation.WebApi.Model.AuthenticationKey>>, GetAuthenticationKeyUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, RegisterAuthenticationKey), bool>, RegisterAuthenticationKeyUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, string), bool>, RevokeAuthenticationKeyUseCase>();
+builder.Services.AddScoped<IUseCase<(Guid, CreateOrganisationJoinRequest), OrganisationJoinRequest>, CreateOrganisationJoinRequestUseCase>();
 
 builder.Services.AddOrganisationProblemDetails();
 
