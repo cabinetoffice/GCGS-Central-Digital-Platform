@@ -240,10 +240,10 @@ public static class EntityFactory
                Guid? organisationId = null
            )
     {
-        var connectedOrganisation = new ConnectedEntity.ConnectedOrganisation
+        var connectedOrganisation = new ConnectedOrganisation
         {
             Id = 1,
-            Category = (ConnectedEntity.ConnectedOrganisationCategory)category,
+            Category = category,
             Name = name,
             OrganisationId = organisationId,
             CreatedOn = DateTimeOffset.UtcNow,
@@ -268,12 +268,13 @@ public static class EntityFactory
                ConnectedPersonCategory category = ConnectedPersonCategory.PersonWithSignificantControl
            )
     {
-        var individualTrust = new ConnectedEntity.ConnectedIndividualTrust
+        var individualTrust = new ConnectedIndividualTrust
         {
             Id = 1,
             FirstName = firstName,
             LastName = lastName,
-            Category = (ConnectedEntity.ConnectedPersonCategory)category,
+            Category = category,
+            ConnectedType = ConnectedPersonType.Individual,
             CreatedOn = DateTimeOffset.UtcNow,
             UpdatedOn = DateTimeOffset.UtcNow
         };
@@ -289,5 +290,32 @@ public static class EntityFactory
         };
     }
 
+    public static ConnectedEntity GivenConnectedTrustsOrTrustees(
+           Organisation supplierOrganisation,
+           string firstName = "John",
+           string lastName = "Doe",
+           ConnectedPersonCategory category = ConnectedPersonCategory.PersonWithSignificantControl
+       )
+    {
+        var trustOrTrustee = new ConnectedIndividualTrust
+        {
+            Id = 1,
+            FirstName = firstName,
+            LastName = lastName,
+            Category = category,
+            ConnectedType = ConnectedPersonType.TrustOrTrustee,
+            CreatedOn = DateTimeOffset.UtcNow,
+            UpdatedOn = DateTimeOffset.UtcNow
+        };
 
+        return new ConnectedEntity
+        {
+            Guid = Guid.NewGuid(),
+            EntityType = (ConnectedEntity.ConnectedEntityType)ConnectedEntityType.TrustOrTrustee,
+            IndividualOrTrust = trustOrTrustee,
+            SupplierOrganisation = supplierOrganisation,
+            CreatedOn = DateTimeOffset.UtcNow,
+            UpdatedOn = DateTimeOffset.UtcNow
+        };
+    }
 }
