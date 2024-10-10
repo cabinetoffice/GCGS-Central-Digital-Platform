@@ -61,7 +61,7 @@
                                 Director's residency:
                             </dt>
                             <dd class="govuk-summary-list__value">
-                                @details.DirectorLocation
+                                @Constants.Country.NonUKCountries[details.DirectorLocation]
                             </dd>
                             <dd class="govuk-summary-list__actions">
                                 <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/director-residency/@Model.ConnectedEntityId?frm-chk-answer=true">
