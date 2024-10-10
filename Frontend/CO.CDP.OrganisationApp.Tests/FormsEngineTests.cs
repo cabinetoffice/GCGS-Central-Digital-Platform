@@ -295,7 +295,7 @@ public class FormsEngineTests
 
         expectedResponse.Questions[0].Options.Choices = new Dictionary<string, string>() {
             { $@"{{""id"":""{organisationId}"",""type"":""organisation""}}", "User's current organisation" },
-            { "{\"id\":\"e4bdd7ef-8200-4257-9892-b16f43d1803e\",\"type\":\"connected-entity\"}", "Connected person" },
+            { "{\"id\":\"e4bdd7ef-8200-4257-9892-b16f43d1803e\",\"type\":\"connected-entity\"}", "First name Last name" },
             { "{\"id\":\"4c8dccba-df39-4997-814b-7599ed9b5bed\",\"type\":\"connected-entity\"}", "Connected organisation" } };
 
         expectedResponse.Questions[0].Options.ChoiceAnswerFieldName = "JsonValue";
@@ -315,11 +315,48 @@ public class FormsEngineTests
             }
         };
 
+        var connectedIndividualGuid = new Guid("e4bdd7ef-8200-4257-9892-b16f43d1803e");
+
         _organisationClientMock.Setup(c => c.GetConnectedEntitiesAsync(It.IsAny<Guid>()))
             .ReturnsAsync([
-                new ConnectedEntityLookup(new Guid("e4bdd7ef-8200-4257-9892-b16f43d1803e"), ConnectedEntityType.Individual, "Connected person", new Uri("http://whatever")),
+                new ConnectedEntityLookup(connectedIndividualGuid, ConnectedEntityType.Individual, "Connected person", new Uri("http://whatever")),
                 new ConnectedEntityLookup(new Guid("4c8dccba-df39-4997-814b-7599ed9b5bed"), ConnectedEntityType.Organisation, "Connected organisation", new Uri("http://whatever"))
             ]);
+        _organisationClientMock.Setup(c => c.GetConnectedEntityAsync(organisationId, connectedIndividualGuid))
+            .ReturnsAsync(new ConnectedEntity(
+                            [],
+                            "123",
+                            null,
+                            ConnectedEntityType.Individual,
+                            false,
+                            connectedIndividualGuid,
+                            new ConnectedIndividualTrust(
+                                ConnectedIndividualAndTrustCategory.PersonWithSignificantControlForIndividual,
+                                ConnectedPersonType.Individual,
+                                [],
+                                null,
+                                "First name",
+                                3,
+                                "Last name",
+                                "British",
+                                new Guid(),
+                                "UK"
+                            ),
+                            new ConnectedOrganisation(
+                                ConnectedOrganisationCategory.AnyOtherOrganisationWithSignificantInfluenceOrControl,
+                                [],
+                                4,
+                                null,
+                                "law",
+                                "name",
+                                organisationId,
+                                "legal form"
+                            ),
+                            "123",
+                            null,
+                            "register name",
+                            null
+                        ));
         _organisationClientMock.Setup(c => c.GetOrganisationAsync(organisationId))
             .ReturnsAsync(new Organisation.WebApiClient.Organisation([], [], null, null, organisationId, null, "User's current organisation", []));
         _userInfoServiceMock.Setup(u => u.GetOrganisationId()).Returns(organisationId);
