@@ -661,8 +661,9 @@ public static class EndpointExtensions
         app.MapGet("/{organisationId}/api-keys",
             [OrganisationAuthorize(
                 [AuthenticationChannel.OneLogin],
-                [Constants.OrganisationPersonScope.Admin, Constants.OrganisationPersonScope.Editor],
-                OrganisationIdLocation.Path)]
+                [Constants.OrganisationPersonScope.Admin, Constants.OrganisationPersonScope.Editor, Constants.OrganisationPersonScope.Viewer],                
+                OrganisationIdLocation.Path,
+                [Constants.PersonScope.SupportAdmin])]
         async (Guid organisationId, IUseCase<Guid, IEnumerable<Model.AuthenticationKey>> useCase) =>
                await useCase.Execute(organisationId)
                    .AndThen(entities => Results.Ok(entities)))
