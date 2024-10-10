@@ -107,9 +107,9 @@
                 </dl>
             }
 
-            <div class="govuk-form-group @(hasError ? "govuk-form-group--error" : "")">
-                <form class="form" method="post">
-                    <fieldset class="govuk-fieldset">
+            <form class="form" method="post">
+                <div class="govuk-form-group @(hasError ? "govuk-form-group--error" : "")">
+                    <fieldset class="govuk-fieldset" @(hasError ? Html.Raw(@"aria-describedby=""has-person-error""") : "")>
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
                             <h2 class="govuk-fieldset__heading">
                                 Add another user?
@@ -117,31 +117,28 @@
                         </legend>
                         @if (hasError)
                         {
-                            <p class="govuk-error-message">
-                                <span class="govuk-visually-hidden">Error:</span> Select an option
+                            <p class="govuk-error-message" id="has-person-error">
+                                <span class="govuk-visually-hidden">Error:</span> @Html.ValidationMessageFor(m => m.HasPerson)
                             </p>
                         }
                         <div class="govuk-radios govuk-radios--inline" data-module="govuk-radios">
                             <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="conditional-YES" name="HasPerson" type="radio"
-                                       value="true" data-aria-controls="conditional-YES" @(Model.HasPerson == true ? "checked" : "")>
-                                <label class="govuk-label govuk-radios__label" for="conditional-YES">Yes</label>
+                                <input class="govuk-radios__input" id="@nameof(Model.HasPerson)" name="HasPerson" type="radio"
+                                        value="true" @(Model.HasPerson == true ? "checked" : "")>
+                                <label class="govuk-label govuk-radios__label" for="@nameof(Model.HasPerson)">Yes</label>
                             </div>
                             <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="conditional-NO" name="HasPerson" type="radio"
-                                       value="false" data-aria-controls="conditional-NO" @(Model.HasPerson == false ? "checked" : "")>
-                                <label class="govuk-label govuk-radios__label" for="conditional-NO">No</label>
+                                <input class="govuk-radios__input" id="@nameof(Model.HasPerson)-1" name="HasPerson" type="radio"
+                                        value="false" @(Model.HasPerson == false ? "checked" : "")>
+                                <label class="govuk-label govuk-radios__label" for="@nameof(Model.HasPerson)-1">No</label>
                             </div>
                         </div>
                     </fieldset>
-
-                    <div class="govuk-button-group govuk-!-margin-top-6">
-                        <govuk-button>
-                            Continue
-                        </govuk-button>
-                    </div>
-                </form>
-            </div>
+                </div>
+                <govuk-button>
+                    Continue
+                </govuk-button>
+            </form>
         </div>
     </div>
 </main>

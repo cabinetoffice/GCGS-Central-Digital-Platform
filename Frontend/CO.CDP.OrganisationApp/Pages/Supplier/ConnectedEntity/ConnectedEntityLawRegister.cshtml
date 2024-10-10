@@ -22,7 +22,7 @@
             <partial name="_ErrorSummary" model="@ModelState" />
 
             <form method="post">
-                <fieldset class="govuk-fieldset" data-required="" data-error="Enter the legal form of the organisation" aria-required="true">
+                <fieldset class="govuk-fieldset">
                     @if (Request.Query.ContainsKey("frm-chk-answer"))
                     {
                         <input type="hidden" name="RedirectToCheckYourAnswer" value="true" />

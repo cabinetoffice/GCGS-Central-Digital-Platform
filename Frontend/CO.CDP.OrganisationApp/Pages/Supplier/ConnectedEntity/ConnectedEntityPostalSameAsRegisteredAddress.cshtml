@@ -34,15 +34,14 @@
                         <div class="govuk-radios" data-module="govuk-radios">
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input" id="YES" name="DifferentThanRegiseterdAddress" type="radio"
-                                       value="true" data-aria-controls="conditional-YES" @(Model.DifferentThanRegiseterdAddress == true ? "checked" : "")>
+                                       value="true" @(Model.DifferentThanRegiseterdAddress == true ? "checked" : "")>
                                 <label class="govuk-label govuk-radios__label" for="YES">Yes</label>
                             </div>
 
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input" id="NO" name="DifferentThanRegiseterdAddress" type="radio"
-                                       value="false" data-aria-controls="conditional-NO" @(Model.DifferentThanRegiseterdAddress == false ? "checked" : "")>
+                                       value="false" @(Model.DifferentThanRegiseterdAddress == false ? "checked" : "")>
                                 <label class="govuk-label govuk-radios__label" for="NO">No</label>
-                                <div class="govuk-radios__conditional--hidden" id="conditional-NO"></div>
                             </div>
                         </div>
                     </fieldset>

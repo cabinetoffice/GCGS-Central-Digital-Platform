@@ -23,7 +23,7 @@
                     <input type="hidden" name="RedirectToCheckYourAnswer" value="true" />
                 }
                 <div class="govuk-form-group @(selectionError ? "govuk-form-group--error" : "")">
-                    <fieldset class="govuk-fieldset" data-required="" data-error="Select yes if the organisation have a legal form" aria-required="true">
+                    <fieldset class="govuk-fieldset">
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                             <h1 class="govuk-fieldset__heading">@Model.Heading</h1>
                         </legend>
@@ -49,9 +49,8 @@
 
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input" id="NO" name="HasLegalForm" type="radio"
-                                       value="false" data-aria-controls="conditional-NO" @(Model.HasLegalForm == false ? "checked" : "")>
+                                       value="false" @(Model.HasLegalForm == false ? "checked" : "")>
                                 <label class="govuk-label govuk-radios__label" for="NO">No</label>
-                                <div class="govuk-radios__conditional--hidden" id="conditional-NO"></div>
                             </div>
                         </div>
 

@@ -18,7 +18,7 @@
             <partial name="_ErrorSummary" model="@Model.ModelState" />
             <form class="form" method="post">
                 <div class="govuk-form-group @(personQuestionHasError ? "govuk-form-group--error": "")">
-                    <fieldset class="govuk-fieldset" data-required="" data-error="Select organisation, person or an equivalent Stand in." aria-required="true">
+                    <fieldset class="govuk-fieldset">
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                             <h1 class="govuk-fieldset__heading">
                                 Select the relevant option
@@ -37,7 +37,7 @@
 
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input" id="personQuestion" name="ConnectedEntityType" type="radio" value="@Constants.ConnectedEntityType.Organisation"
-                                       data-aria-controls="conditional-personQuestion" @IsSelected(Constants.ConnectedEntityType.Organisation)>
+                                       @IsSelected(Constants.ConnectedEntityType.Organisation)>
                                 <label class="govuk-label govuk-radios__label" for="personQuestion">
                                     Organisation
                                 </label>
@@ -45,7 +45,7 @@
 
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input" id="personQuestion-2" name="ConnectedEntityType" type="radio" value="@Constants.ConnectedEntityType.Individual"
-                                       data-aria-controls="conditional-personQuestion-2" @IsSelected(Constants.ConnectedEntityType.Individual)>
+                                       @IsSelected(Constants.ConnectedEntityType.Individual)>
                                 <label class="govuk-label govuk-radios__label" for="personQuestion-2">
                                     Individual
                                 </label>
@@ -53,7 +53,7 @@
 
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input" id="personQuestion-3" name="ConnectedEntityType" type="radio" value="@Constants.ConnectedEntityType.TrustOrTrustee"
-                                       data-aria-controls="conditional-personQuestion-3" @IsSelected(Constants.ConnectedEntityType.TrustOrTrustee)>
+                                       @IsSelected(Constants.ConnectedEntityType.TrustOrTrustee)>
                                 <label class="govuk-label govuk-radios__label" for="personQuestion-3">
                                     Trustee or trust
                                 </label>
