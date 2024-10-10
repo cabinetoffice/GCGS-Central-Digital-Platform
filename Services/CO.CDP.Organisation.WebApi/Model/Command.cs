@@ -366,6 +366,11 @@ public record AuthenticationKey
     public DateTimeOffset? RevokedOn { get; set; }
 }
 
+public record CreateOrganisationJoinRequest
+{
+    public Guid PersonId { get; init; }
+}
+
 public static class MappingExtensions
 {
     public static Identifier AsView(this OrganisationIdentifier command) =>
