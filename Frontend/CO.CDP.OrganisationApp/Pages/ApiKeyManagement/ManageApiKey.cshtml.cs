@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace CO.CDP.OrganisationApp.Pages.ApiKeyManagement;
 
-[Authorize(Policy = OrgScopeRequirement.Editor)]
+[Authorize(Policy = OrgScopeRequirement.Viewer)]
 public class ManageApiKeyModel(IOrganisationClient organisationClient) : PageModel
 {
     [BindProperty(SupportsGet = true)]
@@ -29,7 +29,7 @@ public class ManageApiKeyModel(IOrganisationClient organisationClient) : PageMod
         }
     }
 
-    public IActionResult OnPost()
+    public async Task<IActionResult> OnPost()
     {
         return RedirectToPage("CreateApiKey", new { Id });
     }

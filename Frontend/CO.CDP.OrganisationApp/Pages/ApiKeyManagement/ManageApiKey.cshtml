@@ -1,5 +1,6 @@
 @page "/organisation/{id}/manage-api-keys"
 @model ManageApiKeyModel
+@using CO.CDP.OrganisationApp.Constants
 
 @{
     var apiKeys = Model.AuthenticationKeys;
@@ -8,62 +9,62 @@
 <a href="/organisation/@Model.Id" class="govuk-back-link">Back</a>
 
 <main class="govuk-main-wrapper">
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
-            <form class="form" method="post">
-                @if (count == 0)
-                {
-                    <h1 class="govuk-heading-l">Manage API keys</h1>
+    <form class="form" method="post">
+        @if (count == 0)
+        {
+            <h1 class="govuk-heading-l">Manage API keys</h1>
 
-                    <p class="govuk-body">
-                        API keys that you create will be listed here.
-                    </p>
-                }
-                else
-                {
-                    <h1 class="govuk-heading-l">
-                        You have @count API @(count == 1 ? "key" : "keys")
-                    </h1>
-                    <p class="govuk-body">
-                        View your active and cancelled API keys. You can cancel any that are no longer needed.
-                    </p>
-                    <div class="govuk-form-group">
-                        <dl class="govuk-summary-list ros-add-to-a-list">
-                            <div class="govuk-summary-list__row">
-                                <dt class="govuk-summary-list__key">Name</dt>
-                                <dt class="govuk-summary-list__key">Date created</dt>
-                                <dt class="govuk-summary-list__key">Date cancelled</dt>
-                                <dt class="govuk-summary-list__key govuk-summary-list__actions">
-                                    Actions
-                                </dt>
-                            </div>
-                            @foreach (var ak in apiKeys)
-                            {
-                                <div class="govuk-summary-list__row">
-                                    <dd class="govuk-summary-list__value">@ak.Name</dd>
-                                    <dd class="govuk-summary-list__value">@ak.CreatedOn.ToString("d")</dd>
-                                    <dd class="govuk-summary-list__value">@(ak.Revoked == true ? ak.RevokedOn?.ToString("d") : "")</dd>
-                                    <dd class="govuk-summary-list__actions">
-                                        @if (ak.Revoked == true)
-                                        {
-                                            <span class="govuk-tag govuk-tag--red govuk-!-font-size-16">Cancelled</span>
-                                        }
-                                        else
-                                        {
-                                            <a class="govuk-link" href="/organisation/@Model.Id/manage-api-key/@ak.Name/revoke-api-key">Cancel</a>
-                                        }
-                                    </dd>
-                                </div>
-                            }
-                        </dl>
+            <p class="govuk-body">
+                API keys that you create will be listed here.
+            </p>
+        }
+        else
+        {
+            <h1 class="govuk-heading-l">
+                You have @count API @(count == 1 ? "key" : "keys")
+            </h1>
+            <p class="govuk-body">
+                View your active and cancelled API keys. <authorize scope="@OrgScopeRequirement.Editor">You can cancel any that are no longer needed.</authorize>
+            </p>
+            <div class="govuk-form-group">
+                <dl class="govuk-summary-list ros-add-to-a-list">
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">Name</dt>
+                        <dt class="govuk-summary-list__key">Date created</dt>
+                        <dt class="govuk-summary-list__key">Date cancelled</dt>
+                        <dt class="govuk-summary-list__key govuk-summary-list__actions">
+                            Actions
+                        </dt>
                     </div>
+                    @foreach (var ak in apiKeys)
+                    {
+                        <div class="govuk-summary-list__row">
+                            <dd class="govuk-summary-list__value">@ak.Name</dd>
+                            <dd class="govuk-summary-list__value">@ak.CreatedOn.ToString("d")</dd>
+                            <dd class="govuk-summary-list__value">@(ak.Revoked == true ? ak.RevokedOn?.ToString("d") : "")</dd>
+                            <dd class="govuk-summary-list__actions">
+                                @if (ak.Revoked == true)
+                                {
+                                    <span class="govuk-tag govuk-tag--red govuk-!-font-size-16">Cancelled</span>
+                                }
+                                else
+                                {
+                                    <authorize scope="@OrgScopeRequirement.Editor">
+                                        <a class="govuk-link" href="/organisation/@Model.Id/manage-api-key/@ak.Name/revoke-api-key">Cancel</a>
+                                    </authorize>
+                                }
+                            </dd>                                    
+                        </div>
+                    }
+                </dl>
+            </div>
                     
-                }
+        }
 
-                <govuk-button class="govuk-!-margin-top-6">
-                    Create an API key
-                </govuk-button>
-            </form>
-        </div>
-    </div>
+        <authorize scope="@OrgScopeRequirement.Editor">
+            <govuk-button class="govuk-!-margin-top-6">
+                Create an API key
+            </govuk-button>
+        </authorize>
+    </form>
 </main>
