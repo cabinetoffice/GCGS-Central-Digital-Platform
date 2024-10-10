@@ -414,7 +414,7 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql) : 
         await context.Organisations.AddAsync(organisation);
         await context.SaveChangesAsync();
 
-        var result = await repository.GetConnectedOrganisations(organisationId);
+        var result = await repository.GetConnectedTrustsOrTrustees(organisationId);
 
         result.Should().BeEmpty();
     }
