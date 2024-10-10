@@ -83,7 +83,7 @@ internal static class EntityFactory
         return sharedConsent;
     }
 
-    internal static List<ConnectedEntity> GetMockAssociatedPersons()
+    internal static List<ConnectedEntity> GetMockIndividuals()
     {
         var mockPersons = new List<ConnectedEntity>
             {
@@ -132,6 +132,32 @@ internal static class EntityFactory
             };
 
         return mockEntities;
+    }
+
+    internal static List<ConnectedEntity> GetMockTrustsOrTrustees()
+    {
+        var mockPersons = new List<ConnectedEntity>
+            {
+                new ConnectedEntity
+                {
+                    Guid = Guid.NewGuid(),
+                    EntityType = ConnectedEntityType.TrustOrTrustee,
+                    IndividualOrTrust = new ConnectedEntity.ConnectedIndividualTrust
+                    {
+                        Id = 2,
+                        FirstName = "John",
+                        LastName = "Smith",
+                        Category = ConnectedPersonCategory.PersonWithSignificantControl,
+                        CreatedOn = DateTimeOffset.UtcNow,
+                        UpdatedOn = DateTimeOffset.UtcNow
+                    },
+                    SupplierOrganisation = GivenOrganisation(),
+                    CreatedOn = DateTimeOffset.UtcNow,
+                    UpdatedOn = DateTimeOffset.UtcNow
+                }
+            };
+
+        return mockPersons;
     }
 
     internal static Organisation.LegalForm GetLegalForm()

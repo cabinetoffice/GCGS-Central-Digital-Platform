@@ -86,16 +86,20 @@ public class GetSharedDataUseCaseTest : IClassFixture<AutoMapperFixture>
 
         _shareCodeRepository.Setup(repo => repo.GetByShareCode(shareCode)).ReturnsAsync(sharedConsent);
 
-        var mockAssociatedPersons = EntityFactory.GetMockAssociatedPersons();
+        var mockIndividuals = EntityFactory.GetMockIndividuals();
         var mockAdditionalEntities = EntityFactory.GetMockAdditionalEntities();
+        var mockTrustOrTrustees = EntityFactory.GetMockTrustsOrTrustees();
         var mockLegalForm = EntityFactory.GetLegalForm();
         var mockOperationTypes = EntityFactory.GetOperationTypes();
 
         _organisationRepository.Setup(repo => repo.GetConnectedIndividualTrusts(organisationId))
-                               .ReturnsAsync(mockAssociatedPersons);
+                               .ReturnsAsync(mockIndividuals);
 
         _organisationRepository.Setup(repo => repo.GetConnectedOrganisations(organisationId))
                                .ReturnsAsync(mockAdditionalEntities);
+
+        _organisationRepository.Setup(repo => repo.GetConnectedTrustsOrTrustees(organisationId))
+                                .ReturnsAsync(mockTrustOrTrustees);
 
         _organisationRepository.Setup(repo => repo.GetLegalForm(organisationId))
                                .ReturnsAsync(mockLegalForm);
@@ -127,8 +131,9 @@ public class GetSharedDataUseCaseTest : IClassFixture<AutoMapperFixture>
     private void AssertAssociatedPersons(IEnumerable<AssociatedPerson>? associatedPersons)
     {
         associatedPersons.Should().NotBeNull();
-        associatedPersons.Should().HaveCount(1);
+        associatedPersons.Should().HaveCount(2);
         associatedPersons?.First().Name.Should().Be("John Doe");
+        associatedPersons?.Should().Contain(x => x.Name == "John Smith");
     }
 
     private void AssertAdditionalEntities(IEnumerable<OrganisationReference>? additionalEntities)
