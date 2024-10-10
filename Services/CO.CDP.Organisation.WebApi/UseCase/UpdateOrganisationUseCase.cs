@@ -179,8 +179,9 @@ public class UpdateOrganisationUseCase(
         }
 
         organisation.UpdateSupplierInformation();
-        organisationRepository.Save(organisation);
-        await publisher.Publish(mapper.Map<OrganisationUpdated>(organisation));
+
+        await organisationRepository.SaveAsync(organisation,
+            async o => await publisher.Publish(mapper.Map<OrganisationUpdated>(o)));
 
         return await Task.FromResult(true);
     }
