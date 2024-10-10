@@ -75,17 +75,6 @@ resource "aws_codepipeline" "this" {
   }
 
   stage {
-    name = "Wait-for-pproval-to-update-Staging"
-    action {
-      name     = "ManualApproval"
-      category = "Approval"
-      owner    = "AWS"
-      provider = "Manual"
-      version  = "1"
-    }
-  }
-
-  stage {
     name = "Update-Staging"
     action {
       category         = "Build"
