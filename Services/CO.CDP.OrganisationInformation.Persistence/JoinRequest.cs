@@ -14,6 +14,8 @@ public class JoinRequest : IEntityDate
     public required int PersonId { get; set; }
     public required JoinRequestStatus Status { get; set; }
     public DateTimeOffset? ReviewedOn { get; set; }
+    public Person? ReviewedBy { get; set; }
+    public int? ReviewedById { get; set; }
     public DateTimeOffset CreatedOn { get; set; }
     public DateTimeOffset UpdatedOn { get; set; }
 }
