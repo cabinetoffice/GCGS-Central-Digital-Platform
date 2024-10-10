@@ -1,5 +1,4 @@
 using AutoMapper;
-using CO.CDP.Authentication;
 using CO.CDP.DataSharing.WebApi.Model;
 using CO.CDP.OrganisationInformation;
 using CO.CDP.OrganisationInformation.Persistence;
@@ -11,19 +10,12 @@ namespace CO.CDP.DataSharing.WebApi.UseCase;
 public class GetSharedDataUseCase(
     IShareCodeRepository shareCodeRepository,
     IOrganisationRepository organisationRepository,
-    IClaimService claimService,
     IMapper mapper,
     IConfiguration configuration)
     : IUseCase<string, SupplierInformation?>
 {
     public async Task<SupplierInformation?> Execute(string sharecode)
     {
-        var organisationId = claimService.GetOrganisationId();
-        if (organisationId == null || await shareCodeRepository.OrganisationShareCodeExistsAsync(organisationId.Value, sharecode) == false)
-        {
-            throw new UserUnauthorizedException();
-        }
-
         var sharedConsent = await shareCodeRepository.GetByShareCode(sharecode)
                             ?? throw new ShareCodeNotFoundException(Constants.ShareCodeNotFoundExceptionMessage);
 

@@ -42,7 +42,7 @@ var approvalHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Approval)).
                             <p class="govuk-body">
                                 @if (@organisationDetails.Identifier.Id == null)
                                 {
-                                    <p class="govuk-body">PPON generation pending.</p>
+                                    <text>PPON generation pending</text>
                                 }
                                 else
                                 {
@@ -89,7 +89,7 @@ var approvalHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Approval)).
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <form method="post">
-                <fieldset class="govuk-fieldset" data-required="" data-error="Select yes if you want to approve this organisation" aria-required="true">
+                <fieldset class="govuk-fieldset">
                     <div class="govuk-form-group @(approvalHasError ? "govuk-form-group--error" : "")">
 
                         <h2 class="govuk-heading-m">
@@ -128,12 +128,9 @@ var approvalHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Approval)).
 
                 </fieldset>
 
-                <div class="govuk-button-group govuk-!-margin-top-6">
-                    <govuk-button>
-                        Continue
-                    </govuk-button>
-                </div>
-
+                <govuk-button class="govuk-!-margin-top-6">
+                    Continue
+                </govuk-button>
             </form>
         </div>
     </div>

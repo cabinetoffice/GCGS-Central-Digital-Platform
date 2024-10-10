@@ -34,9 +34,9 @@
                     }
                     <select asp-for="DirectorLocation" class="govuk-select govuk-!-width-two-thirds @(nationalityHasError ? "govuk-select--error" : "")">
                         <option value="">Please select</option>
-                        @foreach (var cnt in Constants.Country.Nationalities)
+                        @foreach (var cnt in Constants.Country.NonUKCountries)
                         {
-                            <option value="@cnt">@cnt</option>
+                            <option value="@cnt.Key">@cnt.Value</option>
                         }
                     </select>
                 </div>

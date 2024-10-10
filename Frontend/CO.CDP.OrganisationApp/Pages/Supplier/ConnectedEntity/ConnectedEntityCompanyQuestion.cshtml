@@ -22,7 +22,7 @@
                     <input type="hidden" name="RedirectToCheckYourAnswer" value="true" />
                 }
                 <div class="govuk-form-group">
-                    <fieldset class="govuk-fieldset" data-required="" data-error="Select yes if the organisation registered with Companies House" aria-required="true">
+                    <fieldset class="govuk-fieldset">
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                             <h1 class="govuk-fieldset__heading">@Model.Heading</h1>
                         </legend>
@@ -48,9 +48,8 @@
 
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input" id="NO" name="HasCompaniesHouseNumber" type="radio"
-                                       value="false" data-aria-controls="conditional-NO" @(Model.HasCompaniesHouseNumber == false ? "checked" : "")>
+                                       value="false" @(Model.HasCompaniesHouseNumber == false ? "checked" : "")>
                                 <label class="govuk-label govuk-radios__label" for="NO">No</label>
-                                <div class="govuk-radios__conditional--hidden" id="conditional-NO"></div>
                             </div>
                         </div>
 
