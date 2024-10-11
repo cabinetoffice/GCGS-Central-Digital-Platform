@@ -8,12 +8,11 @@
 }
 <a href="/organisation/@Model.Id" class="govuk-back-link">Back</a>
 
-<main class="govuk-main-wrapper">
+<main class="govuk-main-wrapper" id="main-content">
     <form class="form" method="post">
         @if (count == 0)
         {
             <h1 class="govuk-heading-l">Manage API keys</h1>
-
             <p class="govuk-body">
                 API keys that you create will be listed here.
             </p>
