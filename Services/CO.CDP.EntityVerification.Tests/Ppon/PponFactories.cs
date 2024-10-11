@@ -2,12 +2,16 @@ namespace CO.CDP.EntityVerification.Tests.Ppon;
 
 public class PponFactories
 {
-    public static EntityVerification.Persistence.Ppon GivenPpon(string? pponId = null)
+    public static EntityVerification.Persistence.Ppon GivenPpon(
+        string? pponId = null,
+        string? name = null
+    )
     {
+        var identifierId = pponId ?? Guid.NewGuid().ToString().Replace("-", "");
         return new EntityVerification.Persistence.Ppon
         {
-            IdentifierId = pponId ?? Guid.NewGuid().ToString().Replace("-", ""),
-            Name = string.Empty,
+            IdentifierId = identifierId,
+            Name = name ?? $"PPON {identifierId}",
             OrganisationId = Guid.NewGuid()
         };
     }
