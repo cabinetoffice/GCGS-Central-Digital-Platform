@@ -45,21 +45,24 @@ public class UserInfoService(IHttpContextAccessor httpContextAccessor, ITenantCl
         return [];
     }
 
-    public async Task<bool> UserHasScope(string scopeToCheck)
+    public async Task<bool> IsViewer()
     {
         var scopes = await GetOrganisationUserScopes();
-        if(scopes.Contains(scopeToCheck))
-        {
-            return true;
-        }
-
         var userScopes = await GetUserScopes();
-        if(scopeToCheck == OrganisationPersonScopes.Viewer && userScopes.Contains(PersonScopes.SupportAdmin))
-        {
-            return true;
-        }
+        return scopes.Contains(OrganisationPersonScopes.Viewer) || userScopes.Contains(PersonScopes.SupportAdmin);
+    }
 
-        return false;
+    public async Task<bool> HasTenant()
+    {
+        try
+        {
+            var usersTenant = await tenantClient.LookupTenantAsync();
+            return usersTenant.Tenants.Count > 0;
+        }
+        catch (CO.CDP.Tenant.WebApiClient.ApiException ex) when (ex.StatusCode == 404)
+        {
+            return false;
+        }    
     }
 
     private async Task<UserOrganisation?> GetPersonOrganisation(Guid organisationId)

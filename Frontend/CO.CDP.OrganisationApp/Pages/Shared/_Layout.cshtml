@@ -1,6 +1,7 @@
 @using System.Text.RegularExpressions
 @using CO.CDP.OrganisationApp.Constants
 @inject Microsoft.Extensions.Configuration.IConfiguration config
+@inject IUserInfoService userInfoService
 <!DOCTYPE html>
 <html lang="en" class="govuk-template">
 <head>
@@ -60,11 +61,14 @@
                             var ftsService = config["FtsService"] ?? "";
                             var showMyNotice = !string.IsNullOrEmpty(ftsService);
 
-                            <li class="govuk-header__navigation-item">
-                                <a class="govuk-header__link" href="/organisation-selection">
-                                    Dashboard
-                                </a>
-                            </li>
+                            @*@if (await userInfoService.HasTenant())
+                            {
+                                <li class="govuk-header__navigation-item">
+                                    <a class="govuk-header__link" href="/organisation-selection">
+                                        Dashboard
+                                    </a>
+                                </li>
+                            }*@
 
                             <authorize scope="@PersonScopeRequirement.SupportAdmin">
                                 <li class="govuk-header__navigation-item">

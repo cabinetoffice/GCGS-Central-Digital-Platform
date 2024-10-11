@@ -8,7 +8,7 @@
 @{
     var organisationDetails = Model.OrganisationDetails!;
     var registeredAddress = organisationDetails.Addresses.FirstOrDefault(a => a.Type == CO.CDP.Organisation.WebApiClient.AddressType.Registered);
-    bool isViewer = await userInfoService.UserHasScope(OrganisationPersonScopes.Viewer);
+    bool isViewer = await userInfoService.IsViewer();
 }
 
 <main class="govuk-main-wrapper">

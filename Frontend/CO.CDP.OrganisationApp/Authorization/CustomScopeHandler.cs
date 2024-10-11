@@ -20,6 +20,25 @@ public class CustomScopeHandler(
                 {
                     IUserInfoService _userInfo = serviceScope.ServiceProvider.GetRequiredService<IUserInfoService>();
 
+                    var userScopes = await _userInfo.GetUserScopes();
+
+                    // GetOrganisationUserScopes below will 404 for support admins who do not have an org of their own
+                    // Therefore we deal with support admin permissions first because we can exit early
+
+                    // Support admin both implies viewer permissions
+                    if (requirement.Scope == OrganisationPersonScopes.Viewer && userScopes.Contains(PersonScopes.SupportAdmin))
+                    {
+                        context.Succeed(requirement);
+                        return;
+                    }
+
+                    if (requirement.Scope == PersonScopes.SupportAdmin && userScopes.Contains(PersonScopes.SupportAdmin))
+                    {
+                        context.Succeed(requirement);
+                        return;
+                    }
+
+                    // Deal with organisation permissions second
                     var organisationUserScopes = await _userInfo.GetOrganisationUserScopes();
 
                     // Admin role can do anything within this organisation
@@ -35,17 +54,8 @@ public class CustomScopeHandler(
                         return;
                     }
 
-                    var userScopes = await _userInfo.GetUserScopes();
-
-                    // Editor role and support admin both imply viewer permissions
-                    if (requirement.Scope == OrganisationPersonScopes.Viewer &&
-                        (organisationUserScopes.Contains(OrganisationPersonScopes.Editor) || userScopes.Contains(PersonScopes.SupportAdmin)))
-                    {
-                        context.Succeed(requirement);
-                        return;
-                    }
-
-                    if (requirement.Scope == PersonScopes.SupportAdmin && userScopes.Contains(PersonScopes.SupportAdmin))
+                    // Editor role implies viewer permissions
+                    if (requirement.Scope == OrganisationPersonScopes.Viewer && organisationUserScopes.Contains(OrganisationPersonScopes.Editor))
                     {
                         context.Succeed(requirement);
                         return;

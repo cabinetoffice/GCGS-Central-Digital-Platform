@@ -16,7 +16,7 @@
         };
     }
 
-    bool isViewer = await userInfoService.UserHasScope(OrganisationPersonScopes.Viewer);
+    bool isViewer = await userInfoService.IsViewer();
 
     var basicInformationLink = $"/organisation/{Model.Id}/supplier-information/{((Model.HasSupplierType || isViewer) ? "basic-information" : "individual-or-org")}";
     var connectedEntityLink = $"/organisation/{Model.Id}/supplier-information/connected-person/{((Model.ConnectedEntities.Count > 0 || isViewer) ? "connected-person-summary" : "declaration")}";

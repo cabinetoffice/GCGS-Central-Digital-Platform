@@ -53,7 +53,7 @@ public class FormsLandingPageTests
             .ReturnsAsync(CreateApiSectionQuestionsResponse(_sectionId));
 
         _mockUserInfoService
-            .Setup(x => x.UserHasScope(OrganisationPersonScopes.Viewer))
+            .Setup(x => x.IsViewer())
             .ReturnsAsync(true);
 
         var result = await _pageModel.OnGetAsync();
@@ -70,7 +70,7 @@ public class FormsLandingPageTests
             .ReturnsAsync(CreateApiSectionQuestionsResponse(_sectionId, furtherQuestionExmpted: false));
 
         _mockUserInfoService
-            .Setup(x => x.UserHasScope(OrganisationPersonScopes.Viewer))
+            .Setup(x => x.IsViewer())
             .ReturnsAsync(false);
 
         var result = await _pageModel.OnGetAsync();
@@ -87,7 +87,7 @@ public class FormsLandingPageTests
             .ReturnsAsync(CreateApiSectionQuestionsResponse(_sectionId, furtherQuestionExmpted: true));
 
         _mockUserInfoService
-            .Setup(x => x.UserHasScope(OrganisationPersonScopes.Viewer))
+            .Setup(x => x.IsViewer())
             .ReturnsAsync(false);
 
         var result = await _pageModel.OnGetAsync();
@@ -104,7 +104,7 @@ public class FormsLandingPageTests
             .ReturnsAsync(CreateApiSectionQuestionsResponse(_sectionId, checkFurtherQuestionsExempted: true));
 
         _mockUserInfoService
-            .Setup(x => x.UserHasScope(OrganisationPersonScopes.Viewer))
+            .Setup(x => x.IsViewer())
             .ReturnsAsync(false);
 
         var result = await _pageModel.OnGetAsync();
