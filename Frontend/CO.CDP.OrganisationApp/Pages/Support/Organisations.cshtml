@@ -28,7 +28,9 @@
                 {
                     <tr class="govuk-table__row">
                         <th scope="row" class="govuk-table__header">
-                            @org.Name
+                            <a asp-page="/Organisation/OrganisationOverview" asp-route-id="@org.Id">
+                                @org.Name
+                            </a>
                         </th>
                         <td class="govuk-table__cell">
                             <ul class="govuk-list">

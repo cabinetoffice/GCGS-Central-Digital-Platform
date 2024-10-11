@@ -12,7 +12,7 @@ using SharedConsentDetails = CO.CDP.OrganisationApp.Models.SharedConsentDetails;
 
 namespace CO.CDP.OrganisationApp.Pages.ShareInformation;
 
-[Authorize(Policy = OrgScopeRequirement.Editor)]
+[Authorize(Policy = OrgScopeRequirement.Viewer)]
 public class ShareCodesListViewModel(
     IDataSharingClient dataSharingClient,
     IOrganisationClient organisationClient,

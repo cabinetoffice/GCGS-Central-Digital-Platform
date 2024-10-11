@@ -88,7 +88,7 @@
                     </form>
                 </authorize>
 
-                @if (await userInfoService.UserHasScope(OrganisationPersonScopes.Viewer))
+                @if (await userInfoService.IsViewer())
                 {
                     <div class="govuk-!-margin-top-3 govuk-body">
                         <a class="govuk-link" href="/organisation/@Model.OrganisationId/supplier-information">Back to supplier information</a>

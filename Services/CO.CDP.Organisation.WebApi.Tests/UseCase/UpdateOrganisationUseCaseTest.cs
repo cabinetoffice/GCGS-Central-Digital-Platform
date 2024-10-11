@@ -45,7 +45,7 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
     }
 
     [Fact]
-    public async Task Execute_ItAssignsVatIdentifierAsPrimaryWhenOtherIdentifierExistsAsPrimary()
+    public async Task Execute_ItAssignsOtherIdentifierAsPrimaryWhenVatIdentifierAdded()
     {
         var updateOrganisation = new UpdateOrganisation
         {
@@ -68,12 +68,12 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
         result.Should().BeTrue();
         _organisationRepositoryMock.Verify(repo => repo.Save(organisation!), Times.Once);
 
-        organisation.Identifiers.First(i => i.Scheme == "Other").Primary.Should().BeFalse();
-        organisation.Identifiers.First(i => i.Scheme == "VAT").Primary.Should().BeTrue();
+        organisation.Identifiers.First(i => i.Scheme == "Other").Primary.Should().BeTrue();
+        organisation.Identifiers.First(i => i.Scheme == "VAT").Primary.Should().BeFalse();
     }
 
     [Fact]
-    public async Task Execute_ItAssignsVatIdentifierAsPrimaryWhenPponIdentifierExistsAsPrimary()
+    public async Task Execute_ItAssignsCompaniesHouseIdentifierAsPrimaryWhenPponIdentifierExistsAsPrimary()
     {
         var updateOrganisation = new UpdateOrganisation
         {
@@ -84,7 +84,7 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
                 {
                     Id = "0123456789",
                     LegalName = "Acme Ltd",
-                    Scheme = "VAT"
+                    Scheme = AssignIdentifierUseCase.IdentifierSchemes.CompaniesHouse
                 }]
             }
         };
@@ -97,7 +97,7 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
         _organisationRepositoryMock.Verify(repo => repo.Save(organisation!), Times.Once);
 
         organisation.Identifiers.First(i => i.Scheme == "GB-PPON").Primary.Should().BeFalse();
-        organisation.Identifiers.First(i => i.Scheme == "VAT").Primary.Should().BeTrue();
+        organisation.Identifiers.First(i => i.Scheme == AssignIdentifierUseCase.IdentifierSchemes.CompaniesHouse).Primary.Should().BeTrue();
     }
 
     [Fact]
