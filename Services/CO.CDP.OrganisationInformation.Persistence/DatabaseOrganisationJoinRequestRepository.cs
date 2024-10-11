@@ -21,7 +21,7 @@ public class DatabaseOrganisationJoinRequestRepository(OrganisationInformationCo
     {
         return await context.OrganisationJoinRequests
             .Include(ojr => ojr.Person)
-            .Where(ojr => ojr.Organisation.Guid == organisationJoinRequestId)
+            .Where(ojr => ojr.Organisation != null && ojr.Organisation.Guid == organisationJoinRequestId)
             .ToArrayAsync();
     }
 

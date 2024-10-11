@@ -11,7 +11,6 @@ public class CreateOrganisationJoinRequestUseCase(
     Persistence.IOrganisationRepository organisationRepository,
     Persistence.IPersonRepository personRepository,
     Persistence.IOrganisationJoinRequestRepository organisationJoinRequestRepository,
-    IConfiguration configuration,
     Func<Guid> guidFactory,
     IMapper mapper)
     : IUseCase<(Guid organisationId, CreateOrganisationJoinRequest createOrganisationJoinRequestCommand), OrganisationJoinRequest>
@@ -20,9 +19,8 @@ public class CreateOrganisationJoinRequestUseCase(
         Persistence.IOrganisationRepository organisationRepository,
         Persistence.IPersonRepository personRepository,
         Persistence.IOrganisationJoinRequestRepository organisationJoinRequestRepository,
-        IConfiguration configuration,
         IMapper mapper
-    ) : this(organisationRepository, personRepository, organisationJoinRequestRepository, configuration, Guid.NewGuid, mapper)
+    ) : this(organisationRepository, personRepository, organisationJoinRequestRepository, Guid.NewGuid, mapper)
     {
 
     }

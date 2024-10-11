@@ -52,7 +52,6 @@ public class CreateOrganisationJoinRequestUseCaseTests
             _mockOrganisationRepository.Object,
             _mockPersonRepository.Object,
             _mockOrganisationJoinRequestRepository.Object,
-            _mockConfiguration.Object,
             _guidFactory,
             _mockMapper.Object
         );
@@ -65,7 +64,7 @@ public class CreateOrganisationJoinRequestUseCaseTests
         var createJoinRequestCommand = new CreateOrganisationJoinRequest { PersonId = Guid.NewGuid() };
 
         _mockOrganisationRepository.Setup(repo => repo.Find(organisationId))
-            .ReturnsAsync((OrganisationInformation.Persistence.Organisation)null);
+            .ReturnsAsync((OrganisationInformation.Persistence.Organisation)null!);
 
         Func<Task> action = async () => await _useCase.Execute((organisationId, createJoinRequestCommand));
 
