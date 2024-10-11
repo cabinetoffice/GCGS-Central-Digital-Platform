@@ -127,19 +127,20 @@ public class RegisterOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
     }
 
     [Fact]
-    public async Task ItSavesNewOrganisationInTheRepositoryAndPublishEvent()
+    public async Task ItSavesNewOrganisationInTheRepository()
     {
         var person = GivenPersonExists(guid: Guid.NewGuid());
 
         Persistence.Organisation? persistanceOrganisation = null;
 
         _repository
-            .Setup(x => x.Save(It.IsAny<Persistence.Organisation>()))
-            .Callback<Persistence.Organisation>(b => persistanceOrganisation = b);
+            .Setup(x => x.SaveAsync(It.IsAny<Persistence.Organisation>(), AnyOnSave()))
+            .Callback<Persistence.Organisation, Func<Persistence.Organisation, Task>>(
+                (b, _) => persistanceOrganisation = b);
 
         await UseCase.Execute(GivenRegisterOrganisationCommand(personId: person.Guid));
 
-        _repository.Verify(r => r.Save(It.Is<Persistence.Organisation>(o =>
+        _repository.Verify(r => r.SaveAsync(It.Is<Persistence.Organisation>(o =>
             o.Guid == _generatedGuid &&
             o.Name == "TheOrganisation" &&
             o.Roles.SequenceEqual(new List<PartyRole> { PartyRole.Tenderer }) &&
@@ -147,7 +148,7 @@ public class RegisterOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
             o.OrganisationPersons.First().Scopes[0] == "ADMIN" &&
             o.OrganisationPersons.First().Scopes[1] == "RESPONDER" &&
             o.OrganisationPersons.First().Scopes[2] == "EDITOR"
-        )), Times.Once);
+        ), AnyOnSave()), Times.Once);
 
         persistanceOrganisation.Should().NotBeNull();
         persistanceOrganisation.As<Persistence.Organisation>().Identifiers.Should().HaveCount(2);
@@ -194,8 +195,6 @@ public class RegisterOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
                     Country = "AB"
                 }
             });
-
-        _publisher.Verify(x => x.Publish(It.IsAny<OrganisationRegistered>()), Times.Once);
     }
 
     [Fact]
@@ -208,9 +207,9 @@ public class RegisterOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
             personId: person.Guid
         ));
 
-        _repository.Verify(r => r.Save(It.Is<Persistence.Organisation>(o =>
+        _repository.Verify(r => r.SaveAsync(It.Is<Persistence.Organisation>(o =>
             o.Tenant.Name == "ACME"
-        )), Times.Once);
+        ), AnyOnSave()), Times.Once);
     }
 
     [Fact]
@@ -223,9 +222,9 @@ public class RegisterOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
             personId: person.Guid
         ));
 
-        _repository.Verify(r => r.Save(It.Is<Persistence.Organisation>(o =>
+        _repository.Verify(r => r.SaveAsync(It.Is<Persistence.Organisation>(o =>
             o.Tenant.Persons.Count == 1 && o.Tenant.Persons.First().Guid == person.Guid
-        )), Times.Once);
+        ), AnyOnSave()), Times.Once);
     }
 
     [Fact]
@@ -238,9 +237,9 @@ public class RegisterOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
             personId: person.Guid
         ));
 
-        _repository.Verify(r => r.Save(It.Is<Persistence.Organisation>(o =>
+        _repository.Verify(r => r.SaveAsync(It.Is<Persistence.Organisation>(o =>
             o.OrganisationPersons.Count == 1 && o.OrganisationPersons.First().Person.Guid == person.Guid
-        )), Times.Once);
+        ), AnyOnSave()), Times.Once);
     }
 
     [Fact]
@@ -257,7 +256,7 @@ public class RegisterOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
             .ThrowAsync<UnknownPersonException>();
 
         _repository.Verify(
-            r => r.Save(It.IsAny<Persistence.Organisation>()),
+            r => r.SaveAsync(It.IsAny<Persistence.Organisation>(), AnyOnSave()),
             Times.Never);
     }
 
@@ -272,9 +271,9 @@ public class RegisterOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
 
         await UseCase.Execute(command);
 
-        _repository.Verify(r => r.Save(It.Is<Persistence.Organisation>(o =>
+        _repository.Verify(r => r.SaveAsync(It.Is<Persistence.Organisation>(o =>
             o.BuyerInfo != null && o.SupplierInfo == null
-        )), Times.Once);
+        ), AnyOnSave()), Times.Once);
     }
 
     [Fact]
@@ -288,9 +287,9 @@ public class RegisterOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
 
         await UseCase.Execute(command);
 
-        _repository.Verify(r => r.Save(It.Is<Persistence.Organisation>(o =>
+        _repository.Verify(r => r.SaveAsync(It.Is<Persistence.Organisation>(o =>
             o.BuyerInfo == null && o.SupplierInfo != null
-        )), Times.Once);
+        ), AnyOnSave()), Times.Once);
     }
 
     [Fact]
@@ -298,6 +297,8 @@ public class RegisterOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
     {
         var person = GivenPersonExists();
         var command = GivenRegisterOrganisationCommand(name: "Acme Ltd", personId: person.Guid);
+
+        _repository.Setup(r => r.SaveAsync(It.IsAny<Persistence.Organisation>(), AnyOnSave()));
 
         await UseCase.Execute(command);
 
@@ -322,10 +323,6 @@ public class RegisterOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
         var command = GivenRegisterOrganisationCommand(personId: person.Guid, roles: roles);
 
         _persons.Setup(x => x.Find(command.PersonId)).ReturnsAsync(person);
-
-        _repository
-            .Setup(x => x.Save(It.IsAny<Persistence.Organisation>()))
-            .Callback<Persistence.Organisation>(b => _ = b);
 
         await UseCase.Execute(command);
 
@@ -398,5 +395,15 @@ public class RegisterOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
         };
         _persons.Setup(r => r.Find(theGuid)).ReturnsAsync(person);
         return person;
+    }
+
+    private static Func<Persistence.Organisation, Task> AnyOnSave()
+    {
+        return OnSaveRespondingTo(It.IsAny<Persistence.Organisation>());
+    }
+
+    private static Func<Persistence.Organisation, Task> OnSaveRespondingTo(Persistence.Organisation organisation)
+    {
+        return It.Is<Func<Persistence.Organisation, Task>>(f => f(organisation).ContinueWith(_ => true).Result);
     }
 }
