@@ -133,7 +133,8 @@ public static class EndpointExtensions
             [OrganisationAuthorize(
                 [AuthenticationChannel.OneLogin],
                 [OrganisationPersonScope.Admin, OrganisationPersonScope.Editor, OrganisationPersonScope.Viewer],
-                OrganisationIdLocation.Path)]
+                OrganisationIdLocation.Path,
+                [PersonScope.SupportAdmin])]
         async (Guid organisationId,
             IUseCase<Guid, List<SharedConsent>?> useCase) => await useCase.Execute(organisationId)
              .AndThen(sharedCodes => sharedCodes != null ? Results.Ok(sharedCodes) : Results.NotFound()))
@@ -157,7 +158,8 @@ public static class EndpointExtensions
             [OrganisationAuthorize(
                 [AuthenticationChannel.OneLogin],
                 [OrganisationPersonScope.Admin, OrganisationPersonScope.Editor, OrganisationPersonScope.Viewer],
-                OrganisationIdLocation.Path)]
+                OrganisationIdLocation.Path,
+                [PersonScope.SupportAdmin])]
         async (Guid organisationId, string shareCode, IUseCase<(Guid, string), SharedConsentDetails?> useCase)
                     => await useCase.Execute((organisationId, shareCode))
             .AndThen(sharedCodeDetails => sharedCodeDetails != null ? Results.Ok(sharedCodeDetails) : Results.NotFound()))

@@ -5,5 +5,5 @@ public interface IClaimService
 
     Guid? GetOrganisationId();
 
-    Task<bool> HaveAccessToOrganisation(Guid organisationId, string[] scopes);
+    Task<bool> HaveAccessToOrganisation(Guid organisationId, string[] scopes, string[]? personScopes = null);
 }
