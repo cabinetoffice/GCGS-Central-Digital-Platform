@@ -29,7 +29,7 @@ public class ManageApiKeyModel(IOrganisationClient organisationClient) : PageMod
         }
     }
 
-    public async Task<IActionResult> OnPost()
+    public IActionResult OnPost()
     {
         return RedirectToPage("CreateApiKey", new { Id });
     }
