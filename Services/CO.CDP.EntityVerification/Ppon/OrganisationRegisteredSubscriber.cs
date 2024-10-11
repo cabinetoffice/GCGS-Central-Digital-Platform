@@ -17,20 +17,16 @@ public class OrganisationRegisteredSubscriber(
         {
             IdentifierId = pponService.GeneratePponId(),
             Name = @event.Name,
-            OrganisationId = @event.Id
+            OrganisationId = @event.Id,
+            Identifiers = Identifier.GetPersistenceIdentifiers(@event.AllIdentifiers())
         };
 
-        newPpon.Identifiers = Identifier.GetPersistenceIdentifiers(@event.AllIdentifiers());
-
-        PponGenerated pponGenerated = new()
+        await pponRepository.SaveAsync(newPpon, async _ => await publisher.Publish(new PponGenerated
         {
             OrganisationId = @event.Id,
             Id = newPpon.IdentifierId,
             LegalName = @event.Identifier.LegalName,
             Scheme = "GB-PPON"
-        };
-
-        pponRepository.Save(newPpon);
-        await publisher.Publish(pponGenerated);
+        }));
     }
 }
