@@ -1,3 +1,4 @@
+using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.Person.WebApiClient;
 using CO.CDP.Tenant.WebApiClient;
 
@@ -44,10 +45,21 @@ public class UserInfoService(IHttpContextAccessor httpContextAccessor, ITenantCl
         return [];
     }
 
-    public async Task<bool> UserHasScope(string scope)
+    public async Task<bool> UserHasScope(string scopeToCheck)
     {
         var scopes = await GetOrganisationUserScopes();
-        return scopes.Contains(scope);
+        if(scopes.Contains(scopeToCheck))
+        {
+            return true;
+        }
+
+        var userScopes = await GetUserScopes();
+        if(scopeToCheck == OrganisationPersonScopes.Viewer && userScopes.Contains(PersonScopes.SupportAdmin))
+        {
+            return true;
+        }
+
+        return false;
     }
 
     private async Task<UserOrganisation?> GetPersonOrganisation(Guid organisationId)
