@@ -146,6 +146,7 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
         await context.InTransaction(async _ =>
         {
             Save(organisation);
+            // The assumption here is that the `onSave()` callback uses the same `DbContext` as the current repository.
             await onSave(organisation);
             await context.SaveChangesAsync();
         });
