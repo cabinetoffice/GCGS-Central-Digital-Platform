@@ -65,7 +65,7 @@ public class GetSharedDataUseCase(
             Name = string.Format($"{x.IndividualOrTrust?.FirstName} {x.IndividualOrTrust?.LastName}"),
             Relationship = x.IndividualOrTrust?.Category.ToString() ?? string.Empty,
             Uri = null,
-            Roles = []
+            Roles = x.SupplierOrganisation.Roles
         }).ToList();
     }
 
