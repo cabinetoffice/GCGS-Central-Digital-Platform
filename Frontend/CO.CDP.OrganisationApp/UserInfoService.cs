@@ -59,7 +59,7 @@ public class UserInfoService(IHttpContextAccessor httpContextAccessor, ITenantCl
             var usersTenant = await tenantClient.LookupTenantAsync();
             return usersTenant.Tenants.Count > 0;
         }
-        catch (CO.CDP.Tenant.WebApiClient.ApiException ex) when (ex.StatusCode == 404)
+        catch
         {
             return false;
         }    

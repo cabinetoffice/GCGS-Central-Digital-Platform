@@ -61,14 +61,14 @@
                             var ftsService = config["FtsService"] ?? "";
                             var showMyNotice = !string.IsNullOrEmpty(ftsService);
 
-                            @*@if (await userInfoService.HasTenant())
+                            @if (await userInfoService.HasTenant())
                             {
                                 <li class="govuk-header__navigation-item">
                                     <a class="govuk-header__link" href="/organisation-selection">
                                         Dashboard
                                     </a>
                                 </li>
-                            }*@
+                            }
 
                             <authorize scope="@PersonScopeRequirement.SupportAdmin">
                                 <li class="govuk-header__navigation-item">
