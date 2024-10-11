@@ -178,7 +178,7 @@ public static class DataSharingFactory
                 "British",
                 DateTimeOffset.Now.AddYears(-30),
                 ConnectedPersonType.Individual,
-                ConnectedPersonCategory.PersonWithSignificantControl,
+                ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndividual,
                 "UK",
                 new List<ConnectedAddress>
                 {
