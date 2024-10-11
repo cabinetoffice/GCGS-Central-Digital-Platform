@@ -25,7 +25,7 @@ public class CustomScopeHandler(
                     // GetOrganisationUserScopes below will 404 for support admins who do not have an org of their own
                     // Therefore we deal with support admin permissions first because we can exit early
 
-                    // Support admin both implies viewer permissions
+                    // Support admin implies viewer permissions
                     if (requirement.Scope == OrganisationPersonScopes.Viewer && userScopes.Contains(PersonScopes.SupportAdmin))
                     {
                         context.Succeed(requirement);
