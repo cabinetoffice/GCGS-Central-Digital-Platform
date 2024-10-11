@@ -1,13 +1,11 @@
 @model FormElementNoInputModel
 
-<div class="govuk-form-group">
-    @if (!string.IsNullOrWhiteSpace(Model.Heading))
-    {
-        <h1 class="govuk-heading-l">@Model.Heading</h1>
-    }
+@if (!string.IsNullOrWhiteSpace(Model.Heading))
+{
+    <h1 class="govuk-heading-l">@Model.Heading</h1>
+}
 
-    @if (!string.IsNullOrWhiteSpace(Model.Description))
-    {
-        @Html.Raw(Model.Description)
-    }
-</div>
+@if (!string.IsNullOrWhiteSpace(Model.Description))
+{
+    @Html.Raw(Model.Description)
+}

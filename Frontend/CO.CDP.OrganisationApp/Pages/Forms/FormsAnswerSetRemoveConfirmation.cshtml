@@ -13,33 +13,42 @@
 
         <div class="govuk-grid-column-two-thirds">
             <partial name="_ErrorSummary" model="@Model.ModelState" />
-            @if (!string.IsNullOrWhiteSpace(@Model.Caption))
-            {
-                <span class="govuk-caption-l">@Model.Caption</span>
-            }
 
             <form method="post">
-                <fieldset class="govuk-fieldset">
+                <fieldset class="govuk-fieldset" @(hasError ? Html.Raw(@"aria-describedby=""confirm-error""") : null)>
                     <div class="govuk-form-group @(hasError ? "govuk-form-group--error" : "")">
 
                         @if (!string.IsNullOrWhiteSpace(@Model.Heading))
                         {
                             <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                                <h2 class="govuk-fieldset__heading">
+                                <h1 class="govuk-fieldset__heading">
+                                    @if (!string.IsNullOrWhiteSpace(@Model.Caption))
+                                    {
+                                        <span class="govuk-caption-l">@Model.Caption</span>
+                                    }
                                     @Model.Heading
-                                </h2>
+                                </h1>
                             </legend>
                         }
+
+                        @if (hasError)
+                        {
+                            <p class="govuk-error-message" id="confirm-error">
+                                <span class="govuk-visually-hidden">Error:</span>
+                                @Html.ValidationMessageFor(m => m.ConfirmRemove)
+                            </p>
+                        }
+
                         <div class="govuk-radios govuk-radios--inline" data-module="govuk-radios">
                             <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="conditional-YES" name="ConfirmRemove" type="radio"
+                                <input class="govuk-radios__input" id="@nameof(Model.ConfirmRemove)" name="@nameof(Model.ConfirmRemove)" type="radio"
                                        value="true" @(Model.ConfirmRemove == true ? "checked" : "")>
-                                <label class="govuk-label govuk-radios__label" for="conditional-YES">Yes</label>
+                                <label class="govuk-label govuk-radios__label" for="@nameof(Model.ConfirmRemove)">Yes</label>
                             </div>
                             <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="conditional-NO" name="ConfirmRemove" type="radio"
+                                <input class="govuk-radios__input" id="@nameof(Model.ConfirmRemove)-1" name="@nameof(Model.ConfirmRemove)" type="radio"
                                        value="false" @(Model.ConfirmRemove == false ? "checked" : "")>
-                                <label class="govuk-label govuk-radios__label" for="conditional-NO">No</label>
+                                <label class="govuk-label govuk-radios__label" for="@nameof(Model.ConfirmRemove)-1">No</label>
                             </div>
                         </div>
                     </div>
