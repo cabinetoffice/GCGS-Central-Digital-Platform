@@ -22,11 +22,11 @@
         {
             <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                 <h1 class="govuk-fieldset__heading">
-                    @Model.Heading
                     @if (!string.IsNullOrWhiteSpace(Model.Caption))
                     {
                         <span class="govuk-caption-l govuk-!-margin-bottom-3">@Model.Caption</span>
                     }
+                    @Model.Heading                    
                 </h1>
             </legend>           
         }
@@ -55,7 +55,7 @@
                         var id = index == 0 ? "SelectedOption" : $"SelectedOption_{index}";
 
                         <div class="govuk-radios__item">
-                            <input class="govuk-radios__input" id="@id" name="SelectedOption" type="radio" value="@choice.Key" @(Model.SelectedOption == choice.Key ? "checked" : "")>
+                            <input class="govuk-radios__input" id="@id" name="@nameof(Model.SelectedOption)" type="radio" value="@choice.Key" @(Model.SelectedOption == choice.Key ? "checked" : "")>
                             <label class="govuk-label govuk-radios__label" for="@id">@choice.Value</label>
                         </div>
 

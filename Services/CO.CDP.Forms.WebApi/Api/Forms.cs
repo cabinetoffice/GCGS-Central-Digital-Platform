@@ -1,3 +1,4 @@
+using CO.CDP.Authentication;
 using CO.CDP.Authentication.Authorization;
 using CO.CDP.Forms.WebApi.Model;
 using CO.CDP.Forms.WebApi.UseCase;
@@ -43,7 +44,8 @@ public static class EndpointExtensions
             [OrganisationAuthorize(
                 [AuthenticationChannel.OneLogin],
                 [OrganisationPersonScope.Admin, OrganisationPersonScope.Editor, OrganisationPersonScope.Viewer],
-                OrganisationIdLocation.QueryString)]
+                OrganisationIdLocation.QueryString,
+                [PersonScope.SupportAdmin])]
         async (Guid formId, Guid sectionId, [FromQuery(Name = "organisation-id")] Guid organisationId, IUseCase<(Guid, Guid, Guid), SectionQuestionsResponse?> useCase) =>
             await useCase.Execute((formId, sectionId, organisationId))
                     .AndThen(sectionQuestions => sectionQuestions != null ? Results.Ok(sectionQuestions) : Results.NotFound()))

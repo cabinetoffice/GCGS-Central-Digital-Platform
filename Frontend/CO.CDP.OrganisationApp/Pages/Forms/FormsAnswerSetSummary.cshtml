@@ -52,9 +52,8 @@
                     <form class="form" method="post">
                         @if (Model.AllowsMultipleAnswerSets)
                         {
-                            <fieldset class="govuk-fieldset" data-required="" data-error="Select yes if you need to add another answer set" aria-required="true">
+                            <fieldset class="govuk-fieldset" @(hasError ? Html.Raw(@"aria-describedby=""add-another-error""") : null)>
                                 <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
-
                                     @if (!string.IsNullOrWhiteSpace(Model.AddAnotherAnswerLabel))
                                     {
                                         <h2 class="govuk-fieldset__heading">
@@ -64,34 +63,32 @@
                                 </legend>
                                 @if (hasError)
                                 {
-                                    <p class="govuk-error-message">
+                                    <p class="govuk-error-message" id="add-another-error">
                                         <span class="govuk-visually-hidden">Error:</span> Select an option
                                     </p>
                                 }
                                 <div class="govuk-radios govuk-radios--inline" data-module="govuk-radios">
                                     <div class="govuk-radios__item">
-                                        <input class="govuk-radios__input" id="conditional-YES" name="AddAnotherAnswerSet" type="radio"
-                                               value="true" data-aria-controls="conditional-YES" @(Model.AddAnotherAnswerSet == true ? "checked" : "")>
-                                        <label class="govuk-label govuk-radios__label" for="conditional-YES">Yes</label>
+                                        <input class="govuk-radios__input" id="@nameof(Model.AddAnotherAnswerSet)" name="@nameof(Model.AddAnotherAnswerSet)" type="radio"
+                                               value="true" @(Model.AddAnotherAnswerSet == true ? "checked" : "")>
+                                        <label class="govuk-label govuk-radios__label" for="@nameof(Model.AddAnotherAnswerSet)">Yes</label>
                                     </div>
                                     <div class="govuk-radios__item">
-                                        <input class="govuk-radios__input" id="conditional-NO" name="AddAnotherAnswerSet" type="radio"
-                                               value="false" data-aria-controls="conditional-NO" @(Model.AddAnotherAnswerSet == false ? "checked" : "")>
-                                        <label class="govuk-label govuk-radios__label" for="conditional-NO">No</label>
+                                        <input class="govuk-radios__input" id="@nameof(Model.AddAnotherAnswerSet)-1" name="@nameof(Model.AddAnotherAnswerSet)" type="radio"
+                                               value="false" @(Model.AddAnotherAnswerSet == false ? "checked" : "")>
+                                        <label class="govuk-label govuk-radios__label" for="@nameof(Model.AddAnotherAnswerSet)-1">No</label>
                                     </div>
                                 </div>
                             </fieldset>
                         }
 
-                        <div class="govuk-button-group govuk-!-margin-top-6">
-                            <govuk-button>
-                                Continue
-                            </govuk-button>
-                        </div>
+                        <govuk-button class="govuk-!-margin-top-6">
+                            Continue
+                        </govuk-button>
                     </form>
                 </authorize>
 
-                @if (await userInfoService.UserHasScope(OrganisationPersonScopes.Viewer))
+                @if (await userInfoService.IsViewer())
                 {
                     <div class="govuk-!-margin-top-3 govuk-body">
                         <a class="govuk-link" href="/organisation/@Model.OrganisationId/supplier-information">Back to supplier information</a>

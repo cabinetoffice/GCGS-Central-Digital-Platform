@@ -7,32 +7,34 @@
     var countryHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Country)).HasInnerHtml;
 }
 
-<legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-    @if (!string.IsNullOrWhiteSpace(Model.Caption))
+<fieldset class="govuk-fieldset" @(!string.IsNullOrWhiteSpace(Model.Description) ? Html.Raw(@"aria-describedby=""address-hint""") : null)>
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+        @if (!string.IsNullOrWhiteSpace(Model.Caption))
+        {
+            <span class="govuk-caption-l">@Model.Caption</span>
+        }
+        @if (!string.IsNullOrWhiteSpace(Model.Heading))
+        {
+            <h1 class="govuk-fieldset__heading">@Model.Heading</h1>
+        }
+    </legend>
+
+    @if (!string.IsNullOrWhiteSpace(Model.Description))
     {
-        <span class="govuk-caption-l">@Model.Caption</span>
+        <div id="address-hint">
+            @Html.Raw(Model.Description)
+        </div>
     }
-    @if (!string.IsNullOrWhiteSpace(Model.Heading))
+
+    @if (!Model.IsNonUkAddress)
     {
-        <h1 class="govuk-fieldset__heading">@Model.Heading</h1>
+        <p>
+            <a class="govuk-link govuk-!-font-size-19" href="?UkOrNonUk=non-uk@(Context.Request.Query.ContainsKey("frm-chk-answer") ? "&frm-chk-answer" : "")">
+                Enter a non-UK address
+            </a>
+        </p>
     }
-</legend>
 
-@if (!string.IsNullOrWhiteSpace(Model.Description))
-{
-    @Html.Raw(Model.Description)
-}
-
-@if (!Model.IsNonUkAddress)
-{
-    <p>
-        <a class="govuk-link govuk-!-font-size-19" href="?UkOrNonUk=non-uk@(Context.Request.Query.ContainsKey("frm-chk-answer") ? "&frm-chk-answer" : "")">
-            Enter a non-UK address
-        </a>
-    </p>
-}
-
-<div class="govuk-form-group">
     <div class="govuk-form-group govuk-!-margin-top-3 @(addressLine1HasError ? "govuk-form-group--error" : "")">
         <label class="govuk-label" for="@nameof(Model.AddressLine1)">
             @Html.DisplayNameFor(m => m.AddressLine1)
@@ -45,8 +47,8 @@
             </p>
         }
         <input class="govuk-input @(addressLine1HasError ? "govuk-input--error" : "")" id="@nameof(Model.AddressLine1)"
-               value="@Model.AddressLine1" name="@nameof(Model.AddressLine1)" type="text"
-               spellcheck="false" @(addressLine1HasError ? "aria-describedby=address-one-error" : "")>
+                value="@Model.AddressLine1" name="@nameof(Model.AddressLine1)" type="text"
+                spellcheck="false" @(addressLine1HasError ? "aria-describedby=address-one-error" : "")>
     </div>
 
     <div class="govuk-form-group @(cityOrTownHasError ? "govuk-form-group--error" : "")">
@@ -61,8 +63,8 @@
             </p>
         }
         <input class="govuk-input govuk-!-width-two-thirds @(cityOrTownHasError ? "govuk-input--error" : "")" id="@nameof(Model.TownOrCity)"
-               value="@Model.TownOrCity" name="@nameof(Model.TownOrCity)" type="text"
-               spellcheck="false" @(cityOrTownHasError ? "aria-describedby=city-error" : "")>
+                value="@Model.TownOrCity" name="@nameof(Model.TownOrCity)" type="text"
+                spellcheck="false" @(cityOrTownHasError ? "aria-describedby=city-error" : "")>
     </div>
 
     <div class="govuk-form-group @(postcodeHasError ? "govuk-form-group--error" : "")">
@@ -77,8 +79,8 @@
             </p>
         }
         <input class="govuk-input govuk-input--width-10 @(postcodeHasError ? "govuk-input--error" : "")" id="@nameof(Model.Postcode)"
-               value="@Model.Postcode" name="@nameof(Model.Postcode)" type="text"
-               spellcheck="false" @(postcodeHasError ? "aria-describedby=postcode-error" : "")>
+                value="@Model.Postcode" name="@nameof(Model.Postcode)" type="text"
+                spellcheck="false" @(postcodeHasError ? "aria-describedby=postcode-error" : "")>
     </div>
 
     @if (Model.IsNonUkAddress)
@@ -112,4 +114,4 @@
             <input type="hidden" id="@nameof(Model.Country)" name="@nameof(Model.Country)" value="@Constants.Country.UKCountryCode" />
         </div>
     }
-</div>
+</fieldset>

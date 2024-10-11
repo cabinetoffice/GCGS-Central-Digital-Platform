@@ -1,5 +1,7 @@
 @page "/organisation/{organisationId:guid}/forms/{formId:guid}/sections/{sectionId:guid}/share-codes-list-view"
 @model CO.CDP.OrganisationApp.Pages.ShareInformation.ShareCodesListViewModel
+@using CO.CDP.OrganisationApp.Constants
+
 @{
     var createShareCodeLink = $"/organisation/{Model.OrganisationId}/forms/{Model.FormId}/sections/{Model.SectionId}";
     var backUrl = $"/organisation/{Model.OrganisationId}/supplier-information";
@@ -8,66 +10,69 @@
 <a href="@backUrl" class="govuk-back-link">Back</a>
 
 <main class="govuk-main-wrapper" id="main-content">
-    <div class="govuk-grid-column-ful-width">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
 
-        <div class="govuk-grid-row">
-            <div class="govuk-grid-column-two-thirds">
+            <div class="govuk-form-group">
+                <h1 class="govuk-heading-l">
+                    Share your supplier information
+                </h1>
 
-                <div class="govuk-form-group">
-                    <h1 class="govuk-heading-l">
-                        Share your supplier information
-                    </h1>
+                <details class="govuk-details">
+                    <summary class="govuk-details__summary">
+                        <span class="govuk-details__summary-text">
+                            How it works
+                        </span>
+                    </summary>
+                    <div class="govuk-details__text">
+                        <p>To share your supplier information with buyers you need to create a share code and file, and declare that the information is correct.</p>
+                        <p>This saves a copy of the supplier information you provided about your organisation, connected persons, exclusions and financial information.</p>
+                        <p>When you submit a bid for a procurement, the contracting authority will let you know how to give them the share code or file.</p>
+                        <p>If your supplier information changes, you can update it and create a new share code and file to share the new information.</p>
+                    </div>
+                </details>
 
-                    <details class="govuk-details">
-                        <summary class="govuk-details__summary">
-                            <span class="govuk-details__summary-text">
-                                How it works
-                            </span>
-                        </summary>
-                        <div class="govuk-details__text">
-                            To share your supplier information with buyers you need to create a share code and file, and declare that the information is correct.<br><br>
-                            This saves a copy of the supplier information you provided about your organisation, connected persons, exclusions and financial information.<br><br>
-                            When you submit a bid for a procurement, the contracting authority will let you know how to give them the share code or file.<br><br>
-                            If your supplier information changes, you can update it and create a new share code and file to share the new information.
-                        </div>
-                    </details>
+                <p class="govuk-body">Create a share code once you've completed all sections. You'll be asked for this share code if you apply for a tender.</p>
 
-
-                    <a href="@createShareCodeLink" role="button" draggable="false" class="govuk-button" data-module="govuk-button">
-                        Create a share code
-                    </a>
-
-                    @if (Model.SharedConsentDetailsList != null)
+                <authorize scope="@OrgScopeRequirement.Editor">
+                    @if (await Model.MandatorySectionsCompleted())
                     {
-                        <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
-                        <div class="govuk-radios govuk-!-margin-top-6">
-                            <table class="govuk-table">
-                                <caption class="govuk-table__caption govuk-table__caption--m">Your share codes and supplier information files</caption>
-                                <thead class="govuk-table__head">
-                                    <tr class="govuk-table__row">
-                                        <th scope="col" class="govuk-table__header">Share codes</th>
-                                        <th scope="col" class="govuk-table__header">Created on</th>
-                                        <th scope="col" class="govuk-table__header">Files</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="govuk-table__body">
-                                    @foreach (var details in Model.SharedConsentDetailsList)
-                                    {
-                                        <tr class="govuk-table__row">
-                                            <th scope="row" class="govuk-table__header">
-                                                <a class="govuk-link govuk-link--no-visited-state" href="/organisation/@Model.OrganisationId/forms/@Model.FormId/sections/@Model.SectionId/share-code-details/@details.ShareCode">@details.ShareCode</a>
-                                            </th>
-                                            <td class="govuk-table__cell">
-                                                @(details.SubmittedAt.ToString("dd/MM/yyyy"))
-                                            </td>
-                                            <td class="govuk-table__cell"><a class="govuk-link govuk-link--no-visited-state" href="?handler=download&shareCode=@details.ShareCode">Download</a></td>
-                                        </tr>
-                                    }
-                                </tbody>
-                            </table>
-                        </div>
+                        <a href="@createShareCodeLink" role="button" draggable="false" class="govuk-button" data-module="govuk-button">
+                            Create a share code
+                        </a>
                     }
-                </div>
+                </authorize>
+
+                @if (Model.SharedConsentDetailsList != null && Model.SharedConsentDetailsList.Count > 0)
+                {
+                    <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+                    <div class="govuk-radios govuk-!-margin-top-6">
+                        <table class="govuk-table">
+                            <caption class="govuk-table__caption govuk-table__caption--m">Your share codes and supplier information files</caption>
+                            <thead class="govuk-table__head">
+                                <tr class="govuk-table__row">
+                                    <th scope="col" class="govuk-table__header">Share codes</th>
+                                    <th scope="col" class="govuk-table__header">Created on</th>
+                                    <th scope="col" class="govuk-table__header">Files</th>
+                                </tr>
+                            </thead>
+                            <tbody class="govuk-table__body">
+                                @foreach (var details in Model.SharedConsentDetailsList)
+                                {
+                                    <tr class="govuk-table__row">
+                                        <th scope="row" class="govuk-table__header">
+                                            <a class="govuk-link govuk-link--no-visited-state" href="/organisation/@Model.OrganisationId/forms/@Model.FormId/sections/@Model.SectionId/share-code-details/@details.ShareCode">@details.ShareCode</a>
+                                        </th>
+                                        <td class="govuk-table__cell">
+                                            @(details.SubmittedAt.ToString("dd/MM/yyyy"))
+                                        </td>
+                                        <td class="govuk-table__cell"><a class="govuk-link govuk-link--no-visited-state" href="?handler=download&shareCode=@details.ShareCode">Download</a></td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
             </div>
         </div>
     </div>

@@ -34,6 +34,7 @@ builder.Services.AddScoped<IOrganisationRepository, DatabaseOrganisationReposito
 builder.Services.AddScoped<IFormRepository, DatabaseFormRepository>();
 builder.Services.AddScoped<IShareCodeRepository, DatabaseShareCodeRepository>();
 builder.Services.AddScoped<IConnectedEntityRepository, DatabaseConnectedEntityRepository>();
+builder.Services.AddScoped<IPersonRepository, DatabasePersonRepository>();
 builder.Services.AddScoped<IUseCase<ShareRequest, ShareReceipt>, GenerateShareCodeUseCase>();
 builder.Services.AddScoped<IUseCase<Guid, List<SharedConsent>?>, GetShareCodesUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, string), SharedConsentDetails?>, GetShareCodeDetailsUseCase>();

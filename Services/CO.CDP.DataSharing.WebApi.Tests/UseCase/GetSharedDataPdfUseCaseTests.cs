@@ -39,7 +39,7 @@ public class GetSharedDataPdfUseCaseTests
 
         _pdfGenerator.Setup(generator => generator.GenerateBasicInformationPdf(sharedSupplierInformation))
             .Returns(pdfBytes);
-        _claimService.Setup(cs => cs.HaveAccessToOrganisation(organisationId, requiredClaims))
+        _claimService.Setup(cs => cs.HaveAccessToOrganisation(organisationId, requiredClaims, It.IsAny<string[]?>()))
             .ReturnsAsync(true);
 
         var result = await UseCase.Execute(sharecode);
@@ -68,7 +68,7 @@ public class GetSharedDataPdfUseCaseTests
 
         _pdfGenerator.Setup(generator => generator.GenerateBasicInformationPdf(sharedSupplierInformation))
             .Returns(pdfBytes);
-        _claimService.Setup(cs => cs.HaveAccessToOrganisation(organisationId, requiredClaims))
+        _claimService.Setup(cs => cs.HaveAccessToOrganisation(organisationId, requiredClaims, It.IsAny<string[]?>()))
             .ReturnsAsync(true);
 
         var result = await UseCase.Execute(sharecode);
@@ -92,7 +92,7 @@ public class GetSharedDataPdfUseCaseTests
                 FormAnswerSetForPdfs = DataSharingFactory.CreateMockFormAnswerSetForPdfs()
             });
 
-        _claimService.Setup(cs => cs.HaveAccessToOrganisation(organisationId, invalidscope))
+        _claimService.Setup(cs => cs.HaveAccessToOrganisation(organisationId, invalidscope, null))
             .ReturnsAsync(true);
 
         var act = async () => await UseCase.Execute(sharecode);

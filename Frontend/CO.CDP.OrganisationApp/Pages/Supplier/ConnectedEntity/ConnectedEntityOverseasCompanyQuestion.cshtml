@@ -13,14 +13,14 @@
 
 <a href="@backLink" class="govuk-back-link">Back</a>
 
-<main class="govuk-main-wrapper">
+<main class="govuk-main-wrapper" id="main-content">
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <partial name="_ErrorSummary" model="@Model.ModelState" />
             <span class="govuk-caption-l">@Model.Caption</span>
             <form class="form" method="post">
                 <div class="govuk-form-group">
-                    <fieldset class="govuk-fieldset" data-required="" data-error="Select yes if the organisation registered with Companies House" aria-required="true">
+                    <fieldset class="govuk-fieldset">
 
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                             <h1 class="govuk-fieldset__heading">@Model.Heading</h1>
@@ -49,9 +49,8 @@
 
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input" id="NO" name="HasOverseasCompaniesHouseNumber" type="radio"
-                                       value="false" data-aria-controls="conditional-NO" @(Model.HasOverseasCompaniesHouseNumber == false ? "checked" : "")>
+                                       value="false" @(Model.HasOverseasCompaniesHouseNumber == false ? "checked" : "")>
                                 <label class="govuk-label govuk-radios__label" for="NO">No</label>
-                                <div class="govuk-radios__conditional--hidden" id="conditional-NO"></div>
                             </div>
                         </div>
 

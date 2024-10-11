@@ -15,14 +15,14 @@
     Back
 </a>
 
-<main class="govuk-main-wrapper">
+<main class="govuk-main-wrapper" id="main-content">
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <span class="govuk-caption-l">@Model.Caption</span>
             <partial name="_ErrorSummary" model="@ModelState" />
 
             <form method="post">
-                <fieldset class="govuk-fieldset" data-required="" data-error="Enter the legal form of the organisation" aria-required="true">
+                <fieldset class="govuk-fieldset">
                     @if (Request.Query.ContainsKey("frm-chk-answer"))
                     {
                         <input type="hidden" name="RedirectToCheckYourAnswer" value="true" />

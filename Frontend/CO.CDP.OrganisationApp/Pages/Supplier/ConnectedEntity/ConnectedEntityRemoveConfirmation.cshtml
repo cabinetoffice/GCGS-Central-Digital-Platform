@@ -10,13 +10,13 @@
 
 <a href="/organisation/@Model.Id/supplier-information/connected-person-summary" class="govuk-back-link">Back</a>
 
-<main class="govuk-main-wrapper">
+<main class="govuk-main-wrapper" id="main-content">
     <div class="govuk-grid-row">
 
         <div class="govuk-grid-column-two-thirds">
             <partial name="_ErrorSummary" model="@Model.ModelState" />
             <form method="post">
-                <fieldset class="govuk-fieldset" data-required="" data-error="Select yes if you want to remove this connected person" aria-required="true">
+                <fieldset class="govuk-fieldset">
                     <div class="govuk-form-group @(hasError ? "govuk-form-group--error" : "")">
 
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
@@ -103,12 +103,9 @@
                     </div>
                 </fieldset>
 
-                <div class="govuk-button-group govuk-!-margin-top-6">
-                    <govuk-button>
-                        Continue
-                    </govuk-button>
-                </div>
-
+                <govuk-button class="govuk-!-margin-top-6">
+                    Continue
+                </govuk-button>
             </form>
         </div>
     </div>

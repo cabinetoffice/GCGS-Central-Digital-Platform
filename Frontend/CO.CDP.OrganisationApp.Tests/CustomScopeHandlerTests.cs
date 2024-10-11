@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Authorization;
 using Moq;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
-using Xunit;
 
 namespace CO.CDP.OrganisationApp.Tests.Authorization;
 

@@ -5,18 +5,18 @@
 @model CO.CDP.OrganisationApp.Pages.Supplier.SupplierInformationSummaryModel
 
 @{
-    string GetStepStatusDescription(StepStatus status)
+    string GetStepStatusDescription(SupplierInformationStatus.StepStatus status)
     {
         return status switch
         {
-            StepStatus.NotStarted => "Not started",
-            StepStatus.InProcess => "In progress",
-            StepStatus.Completed => "Completed",
+            SupplierInformationStatus.StepStatus.NotStarted => "Not started",
+            SupplierInformationStatus.StepStatus.InProcess => "In progress",
+            SupplierInformationStatus.StepStatus.Completed => "Completed",
             _ => "Not started"
         };
     }
 
-    bool isViewer = await userInfoService.UserHasScope(OrganisationPersonScopes.Viewer);
+    bool isViewer = await userInfoService.IsViewer();
 
     var basicInformationLink = $"/organisation/{Model.Id}/supplier-information/{((Model.HasSupplierType || isViewer) ? "basic-information" : "individual-or-org")}";
     var connectedEntityLink = $"/organisation/{Model.Id}/supplier-information/connected-person/{((Model.ConnectedEntities.Count > 0 || isViewer) ? "connected-person-summary" : "declaration")}";
@@ -27,7 +27,7 @@
 
         if (count == 0)
         {
-            return Model.ConnectedPersonStepStatus == StepStatus.Completed ? "No connected persons" : string.Empty;
+            return Model.ConnectedPersonStepStatus == SupplierInformationStatus.StepStatus.Completed ? "No connected persons" : string.Empty;
         }
 
         return $"{count} Connected person{(count > 1 ? "s" : "")}";
@@ -38,7 +38,7 @@
     Back
 </a>
 
-<main class="govuk-main-wrapper">
+<main class="govuk-main-wrapper" id="main-content">
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds govuk-body">
             <h1 class="govuk-heading-l">
@@ -79,48 +79,44 @@
                 var declarationSection = section.Type == CDP.Forms.WebApiClient.FormSectionType.Declaration;
                 var exclusionsSection = section.Type == CDP.Forms.WebApiClient.FormSectionType.Exclusions;
                 var redirectLink = $"/organisation/{Model.Id}/forms/{FormsEngine.OrganisationSupplierInfoFormId}/sections/{section.SectionId}";
-                var requiredScope = OrgScopeRequirement.Viewer;
 
                 if (declarationSection)
                 {
                     redirectLink += "/share-codes-list-view";
-                    requiredScope = OrgScopeRequirement.Editor;
                 }
                 else if (exclusionsSection && (section.AnswerSetCount == 0 || section.AnswerSetWithFurtherQuestionExemptedExists) && !isViewer)
                 {
                     redirectLink += "/add-exclusion-declaration";
                 }
 
-                <authorize scope="@requiredScope">
-                    <dl class="govuk-summary-list">
-                        <div class="govuk-summary-list__row">
-                            <dt class="govuk-summary-list__key">
-                                <a class="govuk-link govuk-link--no-visited-state" href="@redirectLink">
-                                    @(section.SectionName)
-                                </a>
-                            </dt>
-                            <dd class="govuk-summary-list__value">
-                                @if (!declarationSection && section.AnswerSetCount > 0)
+                <dl class="govuk-summary-list">
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            <a class="govuk-link govuk-link--no-visited-state" href="@redirectLink">
+                                @(section.SectionName)
+                            </a>
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            @if (!declarationSection && section.AnswerSetCount > 0)
+                            {
+                                if (section.AnswerSetWithFurtherQuestionExemptedExists)
                                 {
-                                    if (section.AnswerSetWithFurtherQuestionExemptedExists)
-                                    {
-                                        @:Not Applicable
-                                    }
-                                    else
-                                    {
-                                        @(section.AnswerSetCount) @:records
-                                    }
+                                    @:Not Applicable
                                 }
-                            </dd>
-                            <dd class="govuk-summary-list__actions">
-                                @if (!declarationSection)
+                                else
                                 {
-                                    <strong class="govuk-tag">@(section.AnswerSetCount > 0 ? $"Completed" : "Not started")</strong>
+                                    @(section.AnswerSetCount) @:records
                                 }
-                            </dd>
-                        </div>
-                    </dl>
-                </authorize>
+                            }
+                        </dd>
+                        <dd class="govuk-summary-list__actions">
+                            @if (!declarationSection)
+                            {
+                                <strong class="govuk-tag">@(section.AnswerSetCount > 0 ? $"Completed" : "Not started")</strong>
+                            }
+                        </dd>
+                    </div>
+                </dl>
             }
 
             <div class="govuk-!-margin-top-3">

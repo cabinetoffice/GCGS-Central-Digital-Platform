@@ -1,6 +1,7 @@
 @using System.Text.RegularExpressions
 @using CO.CDP.OrganisationApp.Constants
 @inject Microsoft.Extensions.Configuration.IConfiguration config
+@inject IUserInfoService userInfoService
 <!DOCTYPE html>
 <html lang="en" class="govuk-template">
 <head>
@@ -26,6 +27,9 @@
 </head>
 <body class="govuk-template__body">
     <script>document.body.className += ' js-enabled' + ('noModule' in HTMLScriptElement.prototype ? ' govuk-frontend-supported' : '');</script>
+
+    <a href="#main-content" class="govuk-skip-link" data-module="govuk-skip-link">Skip to main content</a>
+
     <header class="govuk-header" role="banner" data-module="govuk-header">
         <div class="govuk-header__container govuk-width-container">
             <div class="govuk-header__logo">
@@ -57,11 +61,14 @@
                             var ftsService = config["FtsService"] ?? "";
                             var showMyNotice = !string.IsNullOrEmpty(ftsService);
 
-                            <li class="govuk-header__navigation-item">
-                                <a class="govuk-header__link" href="/organisation-selection">
-                                    Dashboard
-                                </a>
-                            </li>
+                            @if (await userInfoService.HasTenant())
+                            {
+                                <li class="govuk-header__navigation-item">
+                                    <a class="govuk-header__link" href="/organisation-selection">
+                                        Dashboard
+                                    </a>
+                                </li>
+                            }
 
                             <authorize scope="@PersonScopeRequirement.SupportAdmin">
                                 <li class="govuk-header__navigation-item">

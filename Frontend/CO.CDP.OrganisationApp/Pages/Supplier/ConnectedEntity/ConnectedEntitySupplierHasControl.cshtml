@@ -6,13 +6,13 @@
 
 <a href="/organisation/@Model.Id/supplier-information/connected-person/declaration" class="govuk-back-link">Back</a>
 
-<main class="govuk-main-wrapper">
+<main class="govuk-main-wrapper" id="main-content">
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <partial name="_ErrorSummary" model="@Model.ModelState" />
             <form class="form" method="post">
                 <div class="govuk-form-group @(controlledByPersonOrCompanyHasError ? "govuk-form-group--error": "")">
-                    <fieldset class="govuk-fieldset" data-required="" data-error="Select yes if your organisation influenced or controlled by another person or company" aria-required="true">
+                    <fieldset class="govuk-fieldset">
 
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                             Is your organisation influenced or controlled by another person or company?

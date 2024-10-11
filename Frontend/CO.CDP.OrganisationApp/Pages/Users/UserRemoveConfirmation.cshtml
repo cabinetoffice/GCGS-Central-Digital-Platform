@@ -6,20 +6,30 @@
 
 <a href="/organisation/@Model.Id/users/user-summary" class="govuk-back-link">Back</a>
 
-<main class="govuk-main-wrapper">
+<main class="govuk-main-wrapper" id="main-content">
     <div class="govuk-grid-row">
 
         <div class="govuk-grid-column-two-thirds">
             <partial name="_ErrorSummary" model="@Model.ModelState" />
             <form method="post">
-                <fieldset class="govuk-fieldset" data-required="" data-error="Select yes if you want to remove this connected person" aria-required="true">
-                    <div class="govuk-form-group @(hasError ? "govuk-form-group--error" : "")">
-
+                <fieldset class="govuk-fieldset">
+                    <div class="govuk-form-group @(hasError ? "govuk-form-group--error" : "")" @(hasError ? Html.Raw(@"aria-describedby=""confirm-remove-error""") : "")>
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                            <h2 class="govuk-fieldset__heading">
+                            <h1 class="govuk-fieldset__heading">
                                 Are you sure you want to remove <br/>[@Model.UserFullName]?
-                            </h2>
+                            </h1>
                         </legend>
+
+                        <input type="hidden" asp-for="UserFullName" />
+
+                        @if (hasError)
+                        {
+                            <p id="confirm-remove-error" class="govuk-error-message">
+                                <span class="govuk-visually-hidden">Error:</span>
+                                @Html.ValidationMessageFor(m => m.ConfirmRemove)
+                            </p>
+                        }
+
                         <div class="govuk-radios" data-module="govuk-radios">
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input" id="conditional-YES" name="ConfirmRemove" type="radio"
@@ -35,12 +45,9 @@
                     </div>
                 </fieldset>
 
-                <div class="govuk-button-group govuk-!-margin-top-6">
-                    <govuk-button>
-                        Continue
-                    </govuk-button>
-                </div>
-
+                <govuk-button class="govuk-!-margin-top-6">
+                    Continue
+                </govuk-button>
             </form>
         </div>
     </div>

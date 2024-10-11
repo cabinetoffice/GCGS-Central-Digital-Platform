@@ -23,7 +23,7 @@
 
 <a href="@backLink" class="govuk-back-link">Back</a>
 
-<main class="govuk-main-wrapper">
+<main class="govuk-main-wrapper" id="main-content">
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <partial name="_ErrorSummary" model="@Model.ModelState" />
@@ -34,7 +34,7 @@
                     <input type="hidden" name="RedirectToCheckYourAnswer" value="true" />
                 }
                 <div class="govuk-form-group @(selectionError ? "govuk-form-group--error" : "")">
-                    <fieldset class="govuk-fieldset" data-required="" data-error="Select yes if you required to register person or organistaion as a person with significant control?" aria-required="true">
+                    <fieldset class="govuk-fieldset">
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                             <h1 class="govuk-fieldset__heading">@Model.Heading</h1>
                         </legend>
@@ -121,9 +121,8 @@
 
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input" id="NO" name="HasRegistartionDate" type="radio"
-                                       value="false" data-aria-controls="conditional-NO" @(Model.HasRegistartionDate == false ? "checked" : "")>
+                                       value="false" @(Model.HasRegistartionDate == false ? "checked" : "")>
                                 <label class="govuk-label govuk-radios__label" for="NO">No</label>
-                                <div class="govuk-radios__conditional--hidden" id="conditional-NO"></div>
                             </div>
                         </div>
 

@@ -102,13 +102,13 @@ public class AssignIdentifierUseCaseTest
     }
 
     [Fact]
-    public async Task ItAssignsVatIdentifierAsPrimaryWhenPponIdentifierExistsAsPrimary()
+    public async Task ItAssignsCompaniesHouseIdentifierAsPrimaryWhenPponIdentifierExistsAsPrimary()
     {
         var organisation = GivenOrganisationExist(
             organisationId: Guid.NewGuid(),
             identifiers: [  new Persistence.Organisation.Identifier {
                 IdentifierId = "c0777aeb968b4113a27d94e55b10c1b4",
-                Scheme = "GB-PPON",
+                Scheme = AssignIdentifierUseCase.IdentifierSchemes.Ppon,
                 Primary = true,
                 LegalName = "Acme Ltd"
             }
@@ -120,7 +120,7 @@ public class AssignIdentifierUseCaseTest
             Identifier = new OrganisationIdentifier
             {
                 Id = "0123456789",
-                Scheme = "VAT",
+                Scheme = AssignIdentifierUseCase.IdentifierSchemes.CompaniesHouse,
                 LegalName = "Acme Ltd"
             }
         });
@@ -129,13 +129,13 @@ public class AssignIdentifierUseCaseTest
          o.Guid == organisation.Guid && o.Identifiers.Contains(new Persistence.Organisation.Identifier
          {
              Primary = false,
-             Scheme = "GB-PPON",
+             Scheme = AssignIdentifierUseCase.IdentifierSchemes.Ppon,
              IdentifierId = "c0777aeb968b4113a27d94e55b10c1b4",
              LegalName = "Acme Ltd"
          }) && o.Identifiers.Contains(new Persistence.Organisation.Identifier
          {
              IdentifierId = "0123456789",
-             Scheme = "VAT",
+             Scheme = AssignIdentifierUseCase.IdentifierSchemes.CompaniesHouse,
              LegalName = "Acme Ltd",
              Primary = true
          })

@@ -23,10 +23,10 @@ public class SupplierInformationSummaryTest
     }
 
     [Theory]
-    [InlineData(null, false, false, false, false, false, false, false, false, StepStatus.NotStarted, StepStatus.NotStarted)]
-    [InlineData(SupplierType.Individual, true, false, false, false, false, false, false, false, StepStatus.InProcess, StepStatus.NotStarted)]
-    [InlineData(SupplierType.Individual, true, true, true, true, true, false, false, false, StepStatus.Completed, StepStatus.NotStarted)]
-    [InlineData(SupplierType.Organisation, true, true, true, true, true, true, true, true, StepStatus.Completed, StepStatus.Completed)]
+    [InlineData(null, false, false, false, false, false, false, false, false, SupplierInformationStatus.StepStatus.NotStarted, SupplierInformationStatus.StepStatus.NotStarted)]
+    [InlineData(SupplierType.Individual, true, false, false, false, false, false, false, false, SupplierInformationStatus.StepStatus.InProcess, SupplierInformationStatus.StepStatus.NotStarted)]
+    [InlineData(SupplierType.Individual, true, true, true, true, true, false, false, false, SupplierInformationStatus.StepStatus.Completed, SupplierInformationStatus.StepStatus.NotStarted)]
+    [InlineData(SupplierType.Organisation, true, true, true, true, true, true, true, true, SupplierInformationStatus.StepStatus.Completed, SupplierInformationStatus.StepStatus.Completed)]
     public async Task OnGet_BasicInformationStepStatus(
             SupplierType? supplierType,
             bool completedRegAddress,
@@ -37,8 +37,8 @@ public class SupplierInformationSummaryTest
             bool completedOperationType,
             bool completedLegalForm,
             bool completedConnectedPerson,
-            StepStatus expectedStatusSupplier,
-            StepStatus expectedStatusConnectedPerson)
+            SupplierInformationStatus.StepStatus expectedStatusSupplier,
+            SupplierInformationStatus.StepStatus expectedStatusConnectedPerson)
     {
         var supplierInformation = new SupplierInformation(
             organisationName: "FakeOrg",

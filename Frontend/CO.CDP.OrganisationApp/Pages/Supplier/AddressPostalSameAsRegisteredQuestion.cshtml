@@ -8,7 +8,7 @@
 
 <a href="/organisation/@Model.Id/supplier-information/basic-information" class="govuk-back-link">Back</a>
 
-<main class="govuk-main-wrapper">
+<main class="govuk-main-wrapper" id="main-content">
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <partial name="_ErrorSummary" model="@Model.ModelState" />
@@ -27,15 +27,14 @@
                         <div class="govuk-radios" data-module="govuk-radios">
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input" id="YES" name="SameAsRegiseterdAddress" type="radio"
-                                       value="true" data-aria-controls="conditional-YES" @(Model.SameAsRegiseterdAddress == true ? "checked" : "")>
+                                       value="true" @(Model.SameAsRegiseterdAddress == true ? "checked" : "")>
                                 <label class="govuk-label govuk-radios__label" for="YES">Yes</label>
                             </div>
 
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input" id="NO" name="SameAsRegiseterdAddress" type="radio"
-                                       value="false" data-aria-controls="conditional-NO" @(Model.SameAsRegiseterdAddress == false ? "checked" : "")>
+                                       value="false" @(Model.SameAsRegiseterdAddress == false ? "checked" : "")>
                                 <label class="govuk-label govuk-radios__label" for="NO">No</label>
-                                <div class="govuk-radios__conditional--hidden" id="conditional-NO"></div>
                             </div>
                         </div>
                     </fieldset>

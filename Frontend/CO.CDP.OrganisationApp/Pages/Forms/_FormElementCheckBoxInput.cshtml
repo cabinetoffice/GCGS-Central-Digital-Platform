@@ -4,24 +4,25 @@
     var hasError = ((TagBuilder)Html.ValidationMessageFor(m => m.CheckBoxInput)).HasInnerHtml;
 }
 
-
 <div class="govuk-form-group @(hasError ? "govuk-form-group--error" : "")">
-    <fieldset class="govuk-fieldset" aria-required="true">
+    <fieldset class="govuk-fieldset" @(!string.IsNullOrWhiteSpace(Model.Description) ? Html.Raw(@"aria-describedby=""checkbox-hint""") : null)>
         <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
             @if (!string.IsNullOrWhiteSpace(Model.Heading))
             {
-                <h2 class="govuk-fieldset__heading">@Model.Heading</h2>
+                <h1 class="govuk-fieldset__heading">@Model.Heading</h1>
             }
         </legend>
 
         @if (!string.IsNullOrEmpty(Model.Description))
         {
-            @Html.Raw(Model.Description)
+            <div id="checkbox-hint">
+                @Html.Raw(Model.Description)
+            </div>
         }
 
         @if (hasError)
         {
-            <span class="govuk-error-message">
+            <span class="govuk-error-message" id="checkbox-error">
                 <span class="govuk-visually-hidden">Error:</span>
                 @Html.ValidationMessageFor(m => m.CheckBoxInput)
             </span>
@@ -29,8 +30,8 @@
 
         <div class="govuk-checkboxes" data-module="govuk-checkboxes">
             <div class="govuk-checkboxes__item">
-                <input class="govuk-checkboxes__input" id="declarationStatement" name="CheckBoxInput" type="checkbox" value="true" @(Model.CheckBoxInput == true ? "checked" : "")>
-                <label class="govuk-label govuk-checkboxes__label" for="declarationStatement">
+                <input class="govuk-checkboxes__input" id="@nameof(Model.CheckBoxInput)" name="@nameof(Model.CheckBoxInput)" type="checkbox" value="true" @(Model.CheckBoxInput == true ? "checked" : "") @(hasError ? Html.Raw(@"aria-describedby=""checkbox-error""") : null)>
+                <label class="govuk-label govuk-checkboxes__label" for="@nameof(Model.CheckBoxInput)">
                     @Html.Raw(Model.Options?.Choices?.Values.FirstOrDefault())
                 </label>
             </div>
