@@ -7,7 +7,6 @@
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
         <UserSecretsId>87df2f7f-b5fc-40f8-9de8-090619a77a58</UserSecretsId>
     </PropertyGroup>
-    
     <ItemGroup>
       <PackageReference Include="Flurl.Http" Version="4.0.2" />
       <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="8.0.8" />
@@ -25,6 +24,7 @@
       <ProjectReference Include="..\..\Libraries\CO.CDP.Tenant.WebApiClient\CO.CDP.Tenant.WebApiClient.csproj" />
       <ProjectReference Include="..\..\Libraries\CO.CDP.Mvc.Validation\CO.CDP.Mvc.Validation.csproj" />
       <ProjectReference Include="..\..\Libraries\CO.CDP.Configuration\CO.CDP.Configuration.csproj" />
+      <ProjectReference Include="..\..\Services\CO.CDP.Localization\CO.CDP.Localization.csproj" />
     </ItemGroup>
 
 </Project>

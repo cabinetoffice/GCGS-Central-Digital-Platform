@@ -17,3 +17,37 @@
     color: #fff;
     text-transform: uppercase;
 }
+
+/**
+ * Language switcher, adapted from hmrc-frontend
+ * TODO: Contemplate adding proper sass build pipeline
+ */
+.app-language-select::after {
+    content: "";
+    display: block;
+    clear: both;
+}
+
+.app-language-select__list {
+    margin-top: 1em;
+    float: right;
+    text-align: right;
+}
+
+.app-language-select__list-item {
+    display: inline-block;
+}
+
+    .app-language-select__list-item:first-child::after {
+        content: "";
+        display: inline-block;
+        position: relative;
+        top: 0.1875em;
+        height: 1em;
+        border-right: 0.09375em solid #0b0c0c;
+    }
+
+    .app-language-select__list-item a,
+    .app-language-select__list-item [aria-current] {
+        padding: 0.3125em;
+    }
