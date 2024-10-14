@@ -1,3 +1,4 @@
+using CO.CDP.EntityFrameworkCore.DbContext;
 using Microsoft.EntityFrameworkCore;
 
 namespace CO.CDP.OrganisationInformation.Persistence;
@@ -140,6 +141,15 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
             HandleDbUpdateException(organisation, cause);
         }
     }
+
+    public async Task SaveAsync(Organisation organisation, Func<Organisation, Task> onSave) =>
+        await context.InTransaction(async _ =>
+        {
+            Save(organisation);
+            // The assumption here is that the `onSave()` callback uses the same `DbContext` as the current repository.
+            await onSave(organisation);
+            await context.SaveChangesAsync();
+        });
 
     public void SaveOrganisationPerson(OrganisationPerson organisationPerson)
     {

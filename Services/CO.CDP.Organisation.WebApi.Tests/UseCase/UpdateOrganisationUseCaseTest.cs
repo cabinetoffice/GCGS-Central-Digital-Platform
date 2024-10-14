@@ -30,7 +30,7 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
                 AdditionalIdentifiers = [new OrganisationIdentifier
                 {
                     Id = "FakeId",
-                    LegalName = "Illigal",
+                    LegalName = "Illegal",
                     Scheme = "FakeScheme"
                 }]
             }
@@ -41,7 +41,7 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
         var result = await UseCase.Execute((_organisationId, updateOrganisation));
 
         result.Should().BeTrue();
-        _organisationRepositoryMock.Verify(repo => repo.Save(organisation!), Times.Once);
+        _organisationRepositoryMock.Verify(repo => repo.SaveAsync(organisation, AnyOnSave()), Times.Once);
     }
 
     [Fact]
@@ -66,7 +66,7 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
         var result = await UseCase.Execute((_organisationId, updateOrganisation));
 
         result.Should().BeTrue();
-        _organisationRepositoryMock.Verify(repo => repo.Save(organisation!), Times.Once);
+        _organisationRepositoryMock.Verify(repo => repo.SaveAsync(organisation, AnyOnSave()), Times.Once);
 
         organisation.Identifiers.First(i => i.Scheme == "Other").Primary.Should().BeTrue();
         organisation.Identifiers.First(i => i.Scheme == "VAT").Primary.Should().BeFalse();
@@ -94,7 +94,7 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
         var result = await UseCase.Execute((_organisationId, updateOrganisation));
 
         result.Should().BeTrue();
-        _organisationRepositoryMock.Verify(repo => repo.Save(organisation!), Times.Once);
+        _organisationRepositoryMock.Verify(repo => repo.SaveAsync(organisation, AnyOnSave()), Times.Once);
 
         organisation.Identifiers.First(i => i.Scheme == "GB-PPON").Primary.Should().BeFalse();
         organisation.Identifiers.First(i => i.Scheme == AssignIdentifierUseCase.IdentifierSchemes.CompaniesHouse).Primary.Should().BeTrue();
@@ -189,6 +189,8 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
 
         await UseCase.Execute((_organisationId, command));
 
+        _organisationRepositoryMock.Verify(repo =>
+            repo.SaveAsync(organisation, OnSaveRespondingTo(organisation)), Times.Once);
         _publisher.Verify(p => p.Publish(It.IsAny<OrganisationUpdated>()), Times.Once);
         _publisher.Invocations[0].Arguments[0].Should().BeEquivalentTo(new OrganisationUpdated
         {
@@ -225,7 +227,7 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
         var result = await UseCase.Execute((_organisationId, command));
 
         result.Should().BeTrue();
-        _organisationRepositoryMock.Verify(repo => repo.Save(organisation!), Times.Once);
+        _organisationRepositoryMock.Verify(repo => repo.SaveAsync(organisation, AnyOnSave()), Times.Once);
 
         organisation.Identifiers.Should().Contain(i => i.Scheme == "VAT" && i.IdentifierId == "999999");
         organisation.Identifiers.Should().ContainSingle();
@@ -279,12 +281,10 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
         var result = await UseCase.Execute((_organisationId, command));
 
         result.Should().BeTrue();
-        _organisationRepositoryMock.Verify(repo => repo.Save(organisation!), Times.Once);
+        _organisationRepositoryMock.Verify(repo => repo.SaveAsync(organisation, AnyOnSave()), Times.Once);
 
         organisation.Identifiers.FirstOrDefault(i =>
-            i.Scheme == "GB-PPON" &&
-            i.IdentifierId == "c0777aeb968b4113a27d94e55b10c1b4" &&
-            i.Primary)
+            i is { Scheme: "GB-PPON", IdentifierId: "c0777aeb968b4113a27d94e55b10c1b4", Primary: true })
             .Should().NotBeNull();
         organisation.Identifiers.Should().ContainSingle();
     }
@@ -317,7 +317,7 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
         var result = await UseCase.Execute((_organisationId, command));
 
         result.Should().BeTrue();
-        _organisationRepositoryMock.Verify(repo => repo.Save(organisation!), Times.Once);
+        _organisationRepositoryMock.Verify(repo => repo.SaveAsync(organisation, AnyOnSave()), Times.Once);
 
         organisation.Identifiers.FirstOrDefault(i => i.Scheme == "VAT").Should().BeNull();
     }
@@ -356,7 +356,7 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
         var result = await UseCase.Execute((_organisationId, command));
 
         result.Should().BeTrue();
-        _organisationRepositoryMock.Verify(repo => repo.Save(organisation!), Times.Once);
+        _organisationRepositoryMock.Verify(repo => repo.SaveAsync(organisation, AnyOnSave()), Times.Once);
 
         organisation.Name.Should().Be("Updated Organisation Name");
     }
@@ -423,13 +423,13 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
         var result = await UseCase.Execute((_organisationId, command));
 
         result.Should().BeTrue();
-        _organisationRepositoryMock.Verify(repo => repo.Save(organisation!), Times.Once);
+        _organisationRepositoryMock.Verify(repo => repo.SaveAsync(organisation, AnyOnSave()), Times.Once);
 
         organisation.ContactPoints.FirstOrDefault()!.Email.Should().Be("updatedemail@test.com");
     }
 
     [Fact]
-    public async Task Execute_ShouldThrowInvalidUpdateOrganisationCommand_WhenOrganisationRegsiteredAddressIsNull()
+    public async Task Execute_ShouldThrowInvalidUpdateOrganisationCommand_WhenOrganisationRegisteredAddressIsNull()
     {
         var updateOrganisation = new UpdateOrganisation
         {
@@ -446,7 +446,7 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
     }
 
     [Fact]
-    public async Task Execute_ShouldThrowInvalidUpdateOrganisationCommand_WhenOrganisationRegsiteredAddressIsMissing()
+    public async Task Execute_ShouldThrowInvalidUpdateOrganisationCommand_WhenOrganisationRegisteredAddressIsMissing()
     {
         var updateOrganisation = new UpdateOrganisation
         {
@@ -456,11 +456,11 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
                 Addresses = [
                     new OrganisationAddress
                     {
-                        Type=OrganisationInformation.AddressType.Postal,                        
+                        Type=OrganisationInformation.AddressType.Postal,
                         StreetAddress = "1234 Test St",
                         Locality = "Test City",
                         PostalCode = "12345",
-                        CountryName = "Testland",
+                        CountryName = "Test Land",
                         Country = "AB",
                         Region="Test Region"
                      }
@@ -474,7 +474,7 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
 
         await act.Should()
             .ThrowAsync<InvalidUpdateOrganisationCommand>()
-            .WithMessage("Missing Organisation regsitered address.");
+            .WithMessage("Missing Organisation registered address.");
     }
 
     [Fact]
@@ -492,7 +492,7 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
                         StreetAddress = "1234 Test St",
                         Locality = "Test City",
                         PostalCode = "12345",
-                        CountryName = "Testland updated",
+                        CountryName = "Test Land updated",
                         Country = "AB",
                         Region="Test Region"
                      }
@@ -505,9 +505,9 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
         var result = await UseCase.Execute((_organisationId, command));
 
         result.Should().BeTrue();
-        _organisationRepositoryMock.Verify(repo => repo.Save(organisation!), Times.Once);
+        _organisationRepositoryMock.Verify(repo => repo.SaveAsync(organisation, AnyOnSave()), Times.Once);
 
-        organisation.Addresses.FirstOrDefault(x=>x.Type==OrganisationInformation.AddressType.Registered)!.Address!.CountryName.Should().Be("Testland updated");
+        organisation.Addresses.FirstOrDefault(x=>x.Type==OrganisationInformation.AddressType.Registered)!.Address.CountryName.Should().Be("Test Land updated");
     }
 
 
@@ -570,7 +570,7 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
                     StreetAddress = "1234 Test St",
                     Locality = "Test City",
                     PostalCode = "12345",
-                    CountryName = "Testland",
+                    CountryName = "Test Land",
                     Country = "AB"
                 }
             }}
@@ -601,4 +601,14 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
             ],
             ContactPoints = [new Persistence.Organisation.ContactPoint { Email = "test@test.com" }]
         };
+
+    private static Func<Persistence.Organisation, Task> AnyOnSave()
+    {
+        return It.Is<Func<Persistence.Organisation, Task>>(_ => true);
+    }
+
+    private static Func<Persistence.Organisation, Task> OnSaveRespondingTo(Persistence.Organisation organisation)
+    {
+        return It.Is<Func<Persistence.Organisation, Task>>(f => f(organisation).ContinueWith(_ => true).Result);
+    }
 }

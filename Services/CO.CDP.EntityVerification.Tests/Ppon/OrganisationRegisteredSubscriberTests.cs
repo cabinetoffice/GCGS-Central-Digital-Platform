@@ -26,16 +26,20 @@ public class OrganisationRegisteredSubscriberTests
         await handler.Handle(@event);
 
         pponRepository.Verify(
-            s => s.Save(It.Is<EntityVerification.Persistence.Ppon>(p =>
-                (p.IdentifierId == generatedPpon))),
+            s => s.SaveAsync(It.Is<EntityVerification.Persistence.Ppon>(p =>
+                p.IdentifierId == generatedPpon), AnyOnSave()),
             Times.Once);
 
         publisher.Verify(
-               s => s.Publish(It.Is<PponGenerated>(e =>
-                (e.Id == generatedPpon) &&
-                (e.Scheme == "GB-PPON") &&
-                (e.LegalName == @event.Identifier.LegalName) &&
-                (e.OrganisationId == orgId))),
+            s => s.Publish(It.Is<PponGenerated>(e =>
+                e.Id == generatedPpon &&
+                e.Scheme == "GB-PPON" &&
+                e.LegalName == @event.Identifier.LegalName &&
+                e.OrganisationId == orgId)),
             Times.Once);
     }
+
+    private static Func<EntityVerification.Persistence.Ppon, Task> AnyOnSave() =>
+        It.Is<Func<EntityVerification.Persistence.Ppon, Task>>(f =>
+            f(It.IsAny<EntityVerification.Persistence.Ppon>()).ContinueWith(_ => true).Result);
 }

@@ -48,7 +48,7 @@ public class UpdateOrganisationUseCase(
 
                 var newAddress = updateObject.Addresses.FirstOrDefault(x => x.Type == AddressType.Registered);
                 if (newAddress == null)
-                    throw new InvalidUpdateOrganisationCommand("Missing Organisation regsitered address.");
+                    throw new InvalidUpdateOrganisationCommand("Missing Organisation registered address.");
 
                 var existingAddress = organisation.Addresses.FirstOrDefault(i => i.Type == newAddress.Type);
                 if (existingAddress != null)
@@ -179,8 +179,9 @@ public class UpdateOrganisationUseCase(
         }
 
         organisation.UpdateSupplierInformation();
-        organisationRepository.Save(organisation);
-        await publisher.Publish(mapper.Map<OrganisationUpdated>(organisation));
+
+        await organisationRepository.SaveAsync(organisation,
+            async o => await publisher.Publish(mapper.Map<OrganisationUpdated>(o)));
 
         return await Task.FromResult(true);
     }
