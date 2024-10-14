@@ -106,7 +106,7 @@ locals {
         "10.${local.cidr_b_production}.2.0/24",
         "10.${local.cidr_b_production}.3.0/24"
       ]
-      top_level_domain = "findatender.codatt.net"
+      top_level_domain = "private-beta.find-tender.service.gov.uk"
     }
   }
 
@@ -115,7 +115,7 @@ locals {
   product = {
     name               = "CDP SIRSI"
     resource_name      = "cdp-sirsi"
-    public_hosted_zone = "${local.environments[local.environment].name}.supplier.information.${local.environments[local.environment].top_level_domain}"
+    public_hosted_zone = local.environment == "production" ? local.environments[local.environment].top_level_domain : "${local.environments[local.environment].name}.supplier.information.${local.environments[local.environment].top_level_domain}"
   }
 
   desired_count_non_production = 1
