@@ -30,6 +30,7 @@ builder.Services.AddDbContext<OrganisationInformationContext>(o =>
         ConnectionStringHelper.GetConnectionString(builder.Configuration, "OrganisationInformationDatabase")));
 
 builder.Services.AddScoped<ITenantRepository, DatabaseTenantRepository>();
+builder.Services.AddScoped<IPersonRepository, DatabasePersonRepository>();
 
 builder.Services.AddScoped<IUseCase<RegisterTenant, Tenant>, RegisterTenantUseCase>();
 builder.Services.AddScoped<IUseCase<Guid, Tenant?>, GetTenantUseCase>();

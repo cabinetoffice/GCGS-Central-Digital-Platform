@@ -11,6 +11,8 @@ public class AssignIdentifierUseCase(IOrganisationRepository organisations, IIde
     {
         public const string Ppon = "GB-PPON";
         public const string Other = "Other";
+        public const string Vat = "VAT";
+        public const string CompaniesHouse = "GB-COH";
     }
 
     public async Task<bool> Execute(AssignOrganisationIdentifier command)
@@ -40,7 +42,7 @@ public class AssignIdentifierUseCase(IOrganisationRepository organisations, IIde
             IdentifierId = command.Identifier.Id,
             Scheme = command.Identifier.Scheme,
             LegalName = command.Identifier.LegalName,
-            Primary = IsPrimaryIdentifier(organisation),
+            Primary = IsPrimaryIdentifier(organisation, command.Identifier.Scheme),
             Uri = identifierService.GetRegistryUri(command.Identifier.Scheme, command.Identifier.Id)
         });
 
@@ -55,8 +57,13 @@ public class AssignIdentifierUseCase(IOrganisationRepository organisations, IIde
         }    
     }
 
-    public static bool IsPrimaryIdentifier(OrganisationInformation.Persistence.Organisation organisation)
+    public static bool IsPrimaryIdentifier(OrganisationInformation.Persistence.Organisation organisation, string newIdentifierSchemeName)
     {
+        if (newIdentifierSchemeName == IdentifierSchemes.Vat)
+        {
+            return false;
+        }
+
         bool isPrimary = organisation.Identifiers.Count == 0;
 
         if (organisation.Identifiers.Any(i => i.Scheme == IdentifierSchemes.Other && i.Primary) ||

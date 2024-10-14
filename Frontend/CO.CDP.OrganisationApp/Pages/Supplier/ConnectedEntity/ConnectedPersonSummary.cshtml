@@ -9,7 +9,7 @@
 
 <a href="/organisation/@Model.Id/supplier-information" class="govuk-back-link">Back</a>
 
-<main class="govuk-main-wrapper">
+<main class="govuk-main-wrapper" id="main-content">
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <partial name="_ErrorSummary" model="@Model.ModelState" />
@@ -82,7 +82,7 @@
                 </div>
             </authorize>
 
-            @if (await userInfoService.UserHasScope(OrganisationPersonScopes.Viewer))
+            @if (await userInfoService.IsViewer())
             {
                 <div class="govuk-!-margin-top-3 govuk-body">
                     <a class="govuk-link" href="/organisation/@Model.Id/supplier-information">Back to supplier information</a>

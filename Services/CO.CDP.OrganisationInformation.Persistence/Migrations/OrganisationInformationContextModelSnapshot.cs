@@ -760,6 +760,70 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                     b.ToTable("organisations", (string)null);
                 });
 
+            modelBuilder.Entity("CO.CDP.OrganisationInformation.Persistence.OrganisationJoinRequest", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTimeOffset>("CreatedOn")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_on")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                    b.Property<Guid>("Guid")
+                        .HasColumnType("uuid")
+                        .HasColumnName("guid");
+
+                    b.Property<int>("OrganisationId")
+                        .HasColumnType("integer")
+                        .HasColumnName("organisation_id");
+
+                    b.Property<int>("PersonId")
+                        .HasColumnType("integer")
+                        .HasColumnName("person_id");
+
+                    b.Property<int?>("ReviewedById")
+                        .HasColumnType("integer")
+                        .HasColumnName("reviewed_by_id");
+
+                    b.Property<DateTimeOffset?>("ReviewedOn")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("reviewed_on");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer")
+                        .HasColumnName("status");
+
+                    b.Property<DateTimeOffset>("UpdatedOn")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_on")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                    b.HasKey("Id")
+                        .HasName("pk_organisation_join_requests");
+
+                    b.HasIndex("Guid")
+                        .IsUnique()
+                        .HasDatabaseName("ix_organisation_join_requests_guid");
+
+                    b.HasIndex("OrganisationId")
+                        .HasDatabaseName("ix_organisation_join_requests_organisation_id");
+
+                    b.HasIndex("PersonId")
+                        .HasDatabaseName("ix_organisation_join_requests_person_id");
+
+                    b.HasIndex("ReviewedById")
+                        .HasDatabaseName("ix_organisation_join_requests_reviewed_by_id");
+
+                    b.ToTable("organisation_join_requests", (string)null);
+                });
+
             modelBuilder.Entity("CO.CDP.OrganisationInformation.Persistence.OrganisationPerson", b =>
                 {
                     b.Property<int>("OrganisationId")
@@ -1685,6 +1749,34 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                     b.Navigation("SupplierInfo");
 
                     b.Navigation("Tenant");
+                });
+
+            modelBuilder.Entity("CO.CDP.OrganisationInformation.Persistence.OrganisationJoinRequest", b =>
+                {
+                    b.HasOne("CO.CDP.OrganisationInformation.Persistence.Organisation", "Organisation")
+                        .WithMany()
+                        .HasForeignKey("OrganisationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_organisation_join_requests_organisations_organisation_id");
+
+                    b.HasOne("CO.CDP.OrganisationInformation.Persistence.Person", "Person")
+                        .WithMany()
+                        .HasForeignKey("PersonId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_organisation_join_requests_persons_person_id");
+
+                    b.HasOne("CO.CDP.OrganisationInformation.Persistence.Person", "ReviewedBy")
+                        .WithMany()
+                        .HasForeignKey("ReviewedById")
+                        .HasConstraintName("fk_organisation_join_requests_persons_reviewed_by_id");
+
+                    b.Navigation("Organisation");
+
+                    b.Navigation("Person");
+
+                    b.Navigation("ReviewedBy");
                 });
 
             modelBuilder.Entity("CO.CDP.OrganisationInformation.Persistence.OrganisationPerson", b =>

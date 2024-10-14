@@ -8,7 +8,7 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace CO.CDP.OrganisationApp.Pages.ShareInformation;
 
-[Authorize(Policy = OrgScopeRequirement.Editor)]
+[Authorize(Policy = OrgScopeRequirement.Viewer)]
 public class ShareCodeDetailsModel(IDataSharingClient dataSharingClient) : PageModel
 {
     [BindProperty(SupportsGet = true)]
