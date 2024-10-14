@@ -1,4 +1,4 @@
-@page "/organisation/{id}/identifiers/{addorchange}"
+@page "/organisation/{id}/identifiers"
 @model CO.CDP.OrganisationApp.Pages.Organisation.OrganisationIdentificationModel
 
 @{
@@ -14,6 +14,8 @@
     var ukLearningProviderReferenceNumberHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.UKLearningProviderReferenceNumber)).HasInnerHtml;
 
     var nationalHealthServiceOrganisationsRegistryNumberHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.NationalHealthServiceOrganisationsRegistryNumber)).HasInnerHtml;
+
+    var existingOrganisationScheme = Model.ExistingOrganisationScheme;
 }
 
 <a href="/organisation/@Model.Id" class="govuk-back-link">
@@ -36,7 +38,7 @@
 
 
                         <div class="govuk-checkboxes" data-module="govuk-checkboxes">
-                            @if (Model.OrganisationScheme!.Contains("GB-CHC") == false)
+                            @if (existingOrganisationScheme.Contains("GB-CHC") == false)
                             {
                                 <div class="govuk-checkboxes__item">
                                     <input class="govuk-checkboxes__input" id="GB-CHC" name="OrganisationScheme" type="checkbox" value="GB-CHC" data-aria-controls="conditional-GB-CHC" @(Model.OrganisationScheme!.Contains("GB-CHC") ? "checked" : "")>
@@ -51,7 +53,7 @@
                                 </div>
 
                             }
-                            @if (Model.OrganisationScheme!.Contains("GB-SC") == false)
+                            @if (existingOrganisationScheme.Contains("GB-SC") == false)
                             {
                                 <div class="govuk-checkboxes__item">
                                     <input class="govuk-checkboxes__input" id="GB-SC" name="OrganisationScheme" type="checkbox" value="GB-SC" data-aria-controls="conditional-GB-SC" @(Model.OrganisationScheme!.Contains("GB-SC") ? "checked" : "")>
@@ -66,7 +68,7 @@
                                 </div>
                             }
 
-                            @if (Model.OrganisationScheme!.Contains("GB-NIC") == false)
+                            @if (existingOrganisationScheme.Contains("GB-NIC") == false)
                             {
                                 <div class="govuk-checkboxes__item">
                                     <input class="govuk-checkboxes__input" id="GB-NIC" name="OrganisationScheme" type="checkbox" value="GB-NIC" data-aria-controls="conditional-GB-NIC" @(Model.OrganisationScheme.Contains("GB-NIC") ? "checked" : "")>
@@ -81,7 +83,7 @@
                                 </div>
                             }
 
-                            @if (Model.OrganisationScheme!.Contains("GB-MPR") == false)
+                            @if (existingOrganisationScheme.Contains("GB-MPR") == false)
                             {
                                 <div class="govuk-checkboxes__item">
                                     <input class="govuk-checkboxes__input" id="GB-MPR" name="OrganisationScheme" type="checkbox" value="GB-MPR" data-aria-controls="conditional-GB-MPR" @(Model.OrganisationScheme.Contains("GB-MPR") ? "checked" : "")>
@@ -96,7 +98,7 @@
                                 </div>
                             }
 
-                            @if (Model.OrganisationScheme!.Contains("GG-RCE") == false)
+                            @if (existingOrganisationScheme.Contains("GG-RCE") == false)
                             {
                                 <div class="govuk-checkboxes__item">
                                     <input class="govuk-checkboxes__input" id="GG-RCE" name="OrganisationScheme" type="checkbox" value="GG-RCE" data-aria-controls="conditional-GG-RCE" @(Model.OrganisationScheme.Contains("GG-RCE") ? "checked" : "")>
@@ -111,7 +113,7 @@
                                 </div>
                             }
 
-                            @if (Model.OrganisationScheme!.Contains("JE-FSC") == false)
+                            @if (existingOrganisationScheme.Contains("JE-FSC") == false)
                             {
                                 <div class="govuk-checkboxes__item">
                                     <input class="govuk-checkboxes__input" id="JE-FSC" name="OrganisationScheme" type="checkbox" value="JE-FSC" data-aria-controls="conditional-JE-FSC" @(Model.OrganisationScheme.Contains("JE-FSC") ? "checked" : "")>
@@ -126,7 +128,7 @@
                                 </div>
                             }
 
-                            @if (Model.OrganisationScheme!.Contains("IM-CR") == false)
+                            @if (existingOrganisationScheme.Contains("IM-CR") == false)
                             {
                                 <div class="govuk-checkboxes__item">
                                     <input class="govuk-checkboxes__input" id="IM-CR" name="OrganisationScheme" type="checkbox" value="IM-CR" data-aria-controls="conditional-IM-CR" @(Model.OrganisationScheme.Contains("IM-CR") ? "checked" : "")>
@@ -141,7 +143,7 @@
                                 </div>
                             }
 
-                            @if (Model.OrganisationScheme!.Contains("GB-NHS") == false)
+                            @if (existingOrganisationScheme.Contains("GB-NHS") == false)
                             {
                                 <div class="govuk-checkboxes__item">
                                     <input class="govuk-checkboxes__input" id="GB-NHS" name="OrganisationScheme" type="checkbox" value="GB-NHS" data-aria-controls="conditional-GB-NHS" @(Model.OrganisationScheme.Contains("GB-NHS") ? "checked" : "")>
@@ -156,7 +158,7 @@
                                 </div>
                             }
 
-                            @if (Model.OrganisationScheme!.Contains("GB-UKPRN") == false)
+                            @if (existingOrganisationScheme.Contains("GB-UKPRN") == false)
                             {
                                 <div class="govuk-checkboxes__item">
                                     <input class="govuk-checkboxes__input" id="GB-UKPRN" name="OrganisationScheme" type="checkbox" value="GB-UKPRN" data-aria-controls="conditional-GB-UKPRN" @(Model.OrganisationScheme.Contains("GB-UKPRN") ? "checked" : "")>
@@ -171,7 +173,7 @@
                                 </div>
                             }
 
-                            @if (Model.OrganisationScheme!.Contains("Other") == false)
+                            @if (existingOrganisationScheme.Contains("Other") == false && (existingOrganisationScheme.Count == 1 && existingOrganisationScheme.Contains("Other")))
                             {
                                 <div class="govuk-checkboxes__divider">or</div>
                                 <div class="govuk-checkboxes__item">

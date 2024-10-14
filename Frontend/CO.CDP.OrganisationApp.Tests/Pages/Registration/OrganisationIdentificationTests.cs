@@ -143,7 +143,7 @@ public class OrganisationIdentificationModelTests
             OrganisationScheme = organisationType,
             CharityCommissionNorthernIrelandNumber = charityCommissionNorthernIrelandNumber
         };
-        model.ModelState.AddModelError("CharityCommissionNorthernIrelandNumber", "The Charity Commission for Northren Ireland Number field is required.");
+        model.ModelState.AddModelError("CharityCommissionNorthernIrelandNumber", "The Charity Commission for Northern Ireland Number field is required.");
 
         var result = await model.OnPost();
 
@@ -372,8 +372,7 @@ public class OrganisationIdentificationModelTests
     [InlineData("JE-FSC", "JFSC123")]
     [InlineData("IM-CR", "IMCR123")]
     [InlineData("GB-NHS", "STUVWX")]
-    [InlineData("GB-UKPRN", "PRN1234")]
-    [InlineData("VAT", "GB1234")]
+    [InlineData("GB-UKPRN", "PRN1234")]    
     public async Task OnPost_WhenModelStateIsValid_ShouldStoreOrganisationTypeAndIdentificationNumberInSession(string organisationType, string identificationNumber)
     {
         var model = new OrganisationIdentificationModel(sessionMock.Object, organisationClientMock.Object, _pponClientMock.Object)

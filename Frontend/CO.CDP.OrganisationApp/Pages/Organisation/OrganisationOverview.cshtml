@@ -54,23 +54,29 @@
                             Organisation identifier
                         </dt>
                         <dd class="govuk-summary-list__value">
-                            <p class="govuk-body">
-                                @organisationDetails.Identifier.Scheme.SchemeDescription()
-                            </p>
-                            <p class="govuk-body">
-                                @if (@organisationDetails.Identifier.Id == null)
-                                {
-                                    <text>PPON generation pending.</text>
-                                }
-                                else
-                                {
-                                    @organisationDetails.Identifier.Id
-                                }
-                            </p>
+
+                            &bull; @organisationDetails.Identifier.Scheme.SchemeDescription()
+                            @if (@organisationDetails.Identifier.Id == null)
+                            {
+                                <text><br />PPON generation pending.</text>
+                            }
+                            else
+                            {
+                                @organisationDetails.Identifier.Id
+                            }
+                            @foreach (var aidentifier in organisationDetails.AdditionalIdentifiers)
+                            {
+                                <p>
+                                    &bull;
+                                    @aidentifier.Scheme.SchemeDescription()
+                                    <br />
+                                    @aidentifier.Id
+                                </p>
+                            }
                         </dd>
                         <authorize scope="@OrgScopeRequirement.Editor">
                             <dd class="govuk-summary-list__actions">
-                                <a class="govuk-link govuk-link--no-visited-state" href="/organisation/@Model.Id/identifiers/add">Add<span class="govuk-visually-hidden"> address</span></a>
+                                <a class="govuk-link govuk-link--no-visited-state" href="/organisation/@Model.Id/identifiers">Add<span class="govuk-visually-hidden"> address</span></a>
                             </dd>
                         </authorize>
                     </div>

@@ -39,12 +39,12 @@ public class OrganisationIdentificationModel(ISession session,
     public string? ScottishCharityRegulatorNumber { get; set; }
 
     [BindProperty]
-    [DisplayName("Charity Commission for Northren Ireland")]
+    [DisplayName("Charity Commission for Northern Ireland")]
     public string? CharityCommissionNorthernIreland { get; set; }
 
     [BindProperty]
     [DisplayName("Charity Commission for Northren Ireland Number")]
-    [RequiredIf(nameof(OrganisationScheme), "GB-NIC", ErrorMessage = "Please enter the Charity Commission for Northren Ireland number.")]
+    [RequiredIf(nameof(OrganisationScheme), "GB-NIC", ErrorMessage = "Please enter the Charity Commission for Northern Ireland number.")]
     public string? CharityCommissionNorthernIrelandNumber { get; set; }
 
     [BindProperty]
