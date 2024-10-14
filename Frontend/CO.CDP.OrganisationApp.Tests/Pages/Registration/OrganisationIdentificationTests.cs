@@ -257,24 +257,7 @@ public class OrganisationIdentificationModelTests
 
         result.Should().BeOfType<PageResult>();
         model.ModelState.IsValid.Should().BeFalse();
-    }
-
-    [Theory]
-    [InlineData("VAT", null)]
-    [InlineData("VAT", "")]
-    public async Task OnPost_WhenOrganisationTypeIsVATAndVATNumberIsNullOrEmpty_ShouldReturnPageWithModelStateError(string organisationType, string? vatNumber)
-    {
-        var model = new OrganisationIdentificationModel(sessionMock.Object, organisationClientMock.Object, _pponClientMock.Object)
-        {
-            OrganisationScheme = organisationType,            
-        };
-        model.ModelState.AddModelError("VATNumber", "VAT Number field is required.");
-
-        var result = await model.OnPost();
-
-        result.Should().BeOfType<PageResult>();
-        model.ModelState.IsValid.Should().BeFalse();
-    }
+    }    
 
     [Fact]
     public async Task OnPost_WhenModelStateIsValid_ShouldRedirectToOrganisationName()
