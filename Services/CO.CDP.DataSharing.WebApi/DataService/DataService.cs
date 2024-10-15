@@ -172,13 +172,23 @@ public class DataService(IShareCodeRepository shareCodeRepository, IConnectedEnt
         {
             if (entity != null)
             {
+                var connectedPersonType = entity.IndividualOrTrust?.ConnectedType != null ?
+                    entity.IndividualOrTrust.ConnectedType :
+                    ConnectedPersonType.Individual;
+
+                var connectedEntityIndividualAndTrustCategoryType = entity.IndividualOrTrust?.Category != null ?
+                    entity.IndividualOrTrust.Category :
+                    (connectedPersonType == ConnectedPersonType.Individual ?
+                        ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndividual :
+                        ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForTrust);
+
                 var individualTrust = entity.IndividualOrTrust != null ? new ConnectedIndividualTrust(
                     entity.IndividualOrTrust.FirstName,
                     entity.IndividualOrTrust.LastName,
                     entity.IndividualOrTrust.DateOfBirth,
                     entity.IndividualOrTrust.Nationality,
-                    entity.IndividualOrTrust?.Category != null ? entity.IndividualOrTrust.Category : ConnectedPersonCategory.PersonWithSignificantControl,
-                    entity.IndividualOrTrust?.ConnectedType != null ? entity.IndividualOrTrust.ConnectedType : ConnectedPersonType.Individual,
+                    connectedEntityIndividualAndTrustCategoryType,
+                    connectedPersonType,
                     entity.IndividualOrTrust?.ControlCondition.Select(c => c.ToString()).ToList() ?? new List<string>(),
                     entity.IndividualOrTrust?.ResidentCountry
                 ) : null;
@@ -209,8 +219,8 @@ public class DataService(IShareCodeRepository shareCodeRepository, IConnectedEnt
                     entity.IndividualOrTrust?.LastName ?? string.Empty,
                     entity.IndividualOrTrust?.Nationality,
                     entity.IndividualOrTrust?.DateOfBirth,
-                    entity.IndividualOrTrust?.ConnectedType != null ? entity.IndividualOrTrust.ConnectedType : ConnectedPersonType.Individual,
-                    entity.IndividualOrTrust?.Category != null ? entity.IndividualOrTrust.Category : ConnectedPersonCategory.PersonWithSignificantControl,
+                    connectedPersonType,
+                    connectedEntityIndividualAndTrustCategoryType,
                     entity.IndividualOrTrust?.ResidentCountry,
                     addresses,
                     entity.IndividualOrTrust?.ControlCondition.Select(c => c.ToString()).ToList() ?? new List<string>(),

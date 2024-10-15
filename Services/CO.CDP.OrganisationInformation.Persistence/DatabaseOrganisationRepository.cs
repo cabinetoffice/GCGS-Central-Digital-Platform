@@ -107,6 +107,16 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
         return await result.ToListAsync();
     }
 
+    public async Task<IList<ConnectedEntity>> GetConnectedTrustsOrTrustees(int organisationId)
+    {
+        var result = context.ConnectedEntities
+            .Include(x => x.IndividualOrTrust)
+            .Where(x => x.IndividualOrTrust != null && x.EntityType == ConnectedEntity.ConnectedEntityType.TrustOrTrustee)
+            .Where(x => x.SupplierOrganisation != null && x.SupplierOrganisation.Id == organisationId);
+
+        return await result.ToListAsync();
+    }
+
     public async Task<Organisation.LegalForm?> GetLegalForm(int organisationId)
     {
         var organisation = await context.Organisations
