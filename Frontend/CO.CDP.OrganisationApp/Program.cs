@@ -78,6 +78,7 @@ builder.Services.AddTransient(provider =>
 });
 builder.Services.AddScoped<ITempDataService, TempDataService>();
 builder.Services.AddScoped<ApiBearerTokenHandler>();
+builder.Services.AddScoped<CultureDelegatingHandler>();
 builder.Services.AddScoped<ICompaniesHouseApi, CompaniesHouseApi>();
 
 builder.Services.AddKeyedTransient<IChoiceProviderStrategy, ExclusionAppliesToChoiceProviderStrategy>("ExclusionAppliesToChoiceProviderStrategy");
@@ -90,7 +91,8 @@ builder.Services.AddScoped<IUserInfoService, UserInfoService>();
 
 var formsServiceUrl = builder.Configuration.GetValue<string>("FormsService")
             ?? throw new Exception("Missing configuration key: FormsService.");
-builder.Services.AddHttpClient(FormsHttpClientName)
+builder.Services.AddHttpClient(FormsHttpClientName)    
+    .AddHttpMessageHandler<CultureDelegatingHandler>()
     .AddHttpMessageHandler<ApiBearerTokenHandler>();
 builder.Services.AddTransient<IFormsClient, FormsClient>(
     sc => new FormsClient(formsServiceUrl,

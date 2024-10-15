@@ -8,7 +8,9 @@ using CO.CDP.Forms.WebApi.AutoMapper;
 using CO.CDP.Forms.WebApi.Model;
 using CO.CDP.Forms.WebApi.UseCase;
 using CO.CDP.OrganisationInformation.Persistence;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
+using System.Globalization;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,8 +21,22 @@ builder.ConfigureForwardedHeaders();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options => { options.DocumentFormsApi(builder.Configuration); });
 
+builder.Services.AddLocalization();
+
+var supportedCultures = new[] { new CultureInfo("en"), new CultureInfo("cy") };
+builder.Services.Configure<RequestLocalizationOptions>(options =>
+{
+    options.DefaultRequestCulture = new RequestCulture("en");
+    options.SupportedCultures = supportedCultures;
+    options.SupportedUICultures = supportedCultures;
+
+    options.RequestCultureProviders.Insert(0, new AcceptLanguageHeaderRequestCultureProvider());
+});
+
 builder.Services.AddHealthChecks()
     .AddNpgSql(ConnectionStringHelper.GetConnectionString(builder.Configuration, "OrganisationInformationDatabase"));
+
+builder.Services.AddTransient(typeof(LocalizedPropertyResolver<,>));
 builder.Services.AddAutoMapper(typeof(WebApiToPersistenceProfile));
 
 builder.Services.AddProblemDetails();
@@ -75,5 +91,6 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseFormsEndpoints();
+app.UseRequestLocalization();
 app.Run();
 public abstract partial class Program;

@@ -7,6 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Update="FormsEngineResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>FormsEngineResource.resx</DependentUpon>
+    </Compile>
     <Compile Update="StaticTextResource.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -20,6 +25,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Update="FormsEngineResource.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>FormsEngineResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Update="StaticTextResource.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>StaticTextResource.Designer.cs</LastGenOutput>

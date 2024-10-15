@@ -11,6 +11,7 @@ public class WebApiToPersistenceProfile : Profile
             .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Guid));
 
         CreateMap<Persistence.FormQuestion, Model.FormQuestion>()
+            .ForMember(dest => dest.Title, opt => opt.MapFrom<LocalizedPropertyResolver<Persistence.FormQuestion, Model.FormQuestion>, string>(src => src.Title))
             .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Guid))
             .ForMember(dest => dest.NextQuestion, opt => opt.MapFrom(src => src.NextQuestion != null ? src.NextQuestion.Guid : (Guid?)null))
             .ForMember(dest => dest.NextQuestionAlternative, opt => opt.MapFrom(src => src.NextQuestionAlternative != null ? src.NextQuestionAlternative.Guid : (Guid?)null))

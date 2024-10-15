@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 namespace CO.CDP.OrganisationApp.Pages;
 
 [AuthenticatedSessionNotRequired]
-public class ChangeLanguageModel : PageModel
+public class ChangeLanguageModel(ITempDataService tempDataService) : PageModel
 {
     public IActionResult OnGet(string culture, string? returnUrl)
     {
@@ -22,6 +22,14 @@ public class ChangeLanguageModel : PageModel
                     Secure = Request.IsHttps,
                     HttpOnly = true
                 });
+
+            foreach (var key in tempDataService.Keys.ToList())
+            {
+                if (key.StartsWith($"Form_") && key.EndsWith("_Questions"))
+                {
+                    tempDataService.Remove(key);
+                }
+            }
         }
 
         if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
