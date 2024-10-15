@@ -1,10 +1,10 @@
 using CO.CDP.DataSharing.WebApi.Model;
 using CO.CDP.OrganisationInformation;
 using CO.CDP.OrganisationInformation.Persistence;
+using static CO.CDP.OrganisationInformation.Persistence.ConnectedEntity;
 using static CO.CDP.OrganisationInformation.Persistence.Organisation;
 using ConnectedEntityType = CO.CDP.OrganisationInformation.Persistence.ConnectedEntity.ConnectedEntityType;
 using ConnectedOrganisationCategory = CO.CDP.OrganisationInformation.Persistence.ConnectedEntity.ConnectedOrganisationCategory;
-using ConnectedPersonCategory = CO.CDP.OrganisationInformation.Persistence.ConnectedEntity.ConnectedPersonCategory;
 using PersistenceForms = CO.CDP.OrganisationInformation.Persistence.Forms;
 
 namespace CO.CDP.DataSharing.WebApi.Tests;
@@ -84,7 +84,7 @@ internal static class EntityFactory
         return sharedConsent;
     }
 
-    internal static List<ConnectedEntity> GetMockAssociatedPersons()
+    internal static List<ConnectedEntity> GetMockIndividuals()
     {
         var mockPersons = new List<ConnectedEntity>
             {
@@ -97,7 +97,7 @@ internal static class EntityFactory
                         Id = 1,
                         FirstName = "John",
                         LastName = "Doe",
-                        Category = ConnectedPersonCategory.PersonWithSignificantControl,
+                        Category = ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndividual,
                         CreatedOn = DateTimeOffset.UtcNow,
                         UpdatedOn = DateTimeOffset.UtcNow
                     },
@@ -133,6 +133,32 @@ internal static class EntityFactory
             };
 
         return mockEntities;
+    }
+
+    internal static List<ConnectedEntity> GetMockTrustsOrTrustees()
+    {
+        var mockPersons = new List<ConnectedEntity>
+            {
+                new ConnectedEntity
+                {
+                    Guid = Guid.NewGuid(),
+                    EntityType = ConnectedEntityType.TrustOrTrustee,
+                    IndividualOrTrust = new ConnectedEntity.ConnectedIndividualTrust
+                    {
+                        Id = 2,
+                        FirstName = "John",
+                        LastName = "Smith",
+                        Category = ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForTrust,
+                        CreatedOn = DateTimeOffset.UtcNow,
+                        UpdatedOn = DateTimeOffset.UtcNow
+                    },
+                    SupplierOrganisation = GivenOrganisation(),
+                    CreatedOn = DateTimeOffset.UtcNow,
+                    UpdatedOn = DateTimeOffset.UtcNow
+                }
+            };
+
+        return mockPersons;
     }
 
     internal static Organisation.LegalForm GetLegalForm()

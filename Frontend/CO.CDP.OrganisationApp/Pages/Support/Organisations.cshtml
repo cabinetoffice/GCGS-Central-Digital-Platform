@@ -2,7 +2,7 @@
 @using CO.CDP.OrganisationApp.Constants
 @model OrganisationsModel
 
-<main class="govuk-main-wrapper">
+<main class="govuk-main-wrapper" id="main-content">
     <table class="govuk-table">
         <caption class="govuk-table__caption govuk-table__caption--m">@Model.Title</caption>
         <thead class="govuk-table__head">
@@ -28,7 +28,9 @@
                 {
                     <tr class="govuk-table__row">
                         <th scope="row" class="govuk-table__header">
-                            @org.Name
+                            <a asp-page="/Organisation/OrganisationOverview" asp-route-id="@org.Id">
+                                @org.Name
+                            </a>
                         </th>
                         <td class="govuk-table__cell">
                             <ul class="govuk-list">

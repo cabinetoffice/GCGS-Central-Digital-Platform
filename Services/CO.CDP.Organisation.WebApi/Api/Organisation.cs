@@ -273,7 +273,8 @@ public static class EndpointExtensions
             [OrganisationAuthorize(
                 [AuthenticationChannel.OneLogin],
                 [Constants.OrganisationPersonScope.Admin, Constants.OrganisationPersonScope.Editor, Constants.OrganisationPersonScope.Viewer],
-                OrganisationIdLocation.Path)]
+                OrganisationIdLocation.Path,
+                [Constants.PersonScope.SupportAdmin])]
         async (Guid organisationId, IUseCase<Guid, SupplierInformation?> useCase) =>
                await useCase.Execute(organisationId)
                    .AndThen(supplier => supplier != null ? Results.Ok(supplier) : Results.NotFound()))
@@ -333,7 +334,8 @@ public static class EndpointExtensions
             [OrganisationAuthorize(
                 [AuthenticationChannel.OneLogin],
                 [Constants.OrganisationPersonScope.Admin, Constants.OrganisationPersonScope.Editor, Constants.OrganisationPersonScope.Viewer],
-                OrganisationIdLocation.Path)]
+                OrganisationIdLocation.Path,
+                [Constants.PersonScope.SupportAdmin])]
         async (Guid organisationId, IUseCase<Guid, IEnumerable<ConnectedEntityLookup>> useCase) =>
                await useCase.Execute(organisationId)
                    .AndThen(entities => entities != null ? Results.Ok(entities) : Results.NotFound()))
@@ -359,7 +361,8 @@ public static class EndpointExtensions
             [OrganisationAuthorize(
                 [AuthenticationChannel.OneLogin],
                 [Constants.OrganisationPersonScope.Admin, Constants.OrganisationPersonScope.Editor, Constants.OrganisationPersonScope.Viewer],
-                OrganisationIdLocation.Path)]
+                OrganisationIdLocation.Path,
+                [Constants.PersonScope.SupportAdmin])]
         async (Guid organisationId, Guid connectedEntityId, IUseCase<(Guid, Guid), ConnectedEntity?> useCase) =>
                await useCase.Execute((organisationId, connectedEntityId))
                    .AndThen(entity => entity != null ? Results.Ok(entity) : Results.NotFound()))
@@ -685,8 +688,9 @@ public static class EndpointExtensions
         app.MapGet("/{organisationId}/api-keys",
             [OrganisationAuthorize(
                 [AuthenticationChannel.OneLogin],
-                [Constants.OrganisationPersonScope.Admin, Constants.OrganisationPersonScope.Editor],
-                OrganisationIdLocation.Path)]
+                [Constants.OrganisationPersonScope.Admin, Constants.OrganisationPersonScope.Editor, Constants.OrganisationPersonScope.Viewer],                
+                OrganisationIdLocation.Path,
+                [Constants.PersonScope.SupportAdmin])]
         async (Guid organisationId, IUseCase<Guid, IEnumerable<Model.AuthenticationKey>> useCase) =>
                await useCase.Execute(organisationId)
                    .AndThen(entities => Results.Ok(entities)))

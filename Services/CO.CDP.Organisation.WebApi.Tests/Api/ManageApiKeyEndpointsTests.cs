@@ -21,7 +21,7 @@ public class ManageApiKeyEndpointsTests
     [InlineData(OK, Channel.OneLogin, OrganisationPersonScope.Admin)]
     [InlineData(OK, Channel.OneLogin, OrganisationPersonScope.Editor)]
     [InlineData(Forbidden, Channel.OneLogin, OrganisationPersonScope.Responder)]
-    [InlineData(Forbidden, Channel.OneLogin, OrganisationPersonScope.Viewer)]
+    [InlineData(OK, Channel.OneLogin, OrganisationPersonScope.Viewer)]
     [InlineData(Forbidden, Channel.ServiceKey)]
     [InlineData(Forbidden, Channel.OrganisationKey)]
     [InlineData(Forbidden, "unknown_channel")]

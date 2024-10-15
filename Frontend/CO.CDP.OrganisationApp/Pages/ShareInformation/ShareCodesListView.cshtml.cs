@@ -12,7 +12,7 @@ using SharedConsentDetails = CO.CDP.OrganisationApp.Models.SharedConsentDetails;
 
 namespace CO.CDP.OrganisationApp.Pages.ShareInformation;
 
-[Authorize(Policy = OrgScopeRequirement.Editor)]
+[Authorize(Policy = OrgScopeRequirement.Viewer)]
 public class ShareCodesListViewModel(
     IDataSharingClient dataSharingClient,
     IOrganisationClient organisationClient,
@@ -60,7 +60,7 @@ public class ShareCodesListViewModel(
             return Redirect("/page-not-found");
         }
 
-        var fileResponse = await dataSharingClient.GetSharedDataPdfAsync(shareCode);
+        var fileResponse = await dataSharingClient.GetSharedDataFileAsync(shareCode);
 
         if (fileResponse == null)
         {

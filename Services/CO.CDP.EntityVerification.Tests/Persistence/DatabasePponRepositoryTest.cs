@@ -60,8 +60,49 @@ public class DatabasePponRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
             .Should().Throw<DuplicatePponException>();
     }
 
-    private IPponRepository PponRepository()
+    [Fact]
+    public async Task ItSavesPponAndAdditionalEntitiesInASingleTransaction()
     {
-        return new DatabasePponRepository(postgreSql.EntityVerificationContext());
+        await using var context = postgreSql.EntityVerificationContext();
+        using var repository = PponRepository(context);
+
+        var ppon = GivenPpon(pponId: "f53c02c216444e87a9364454b529f891", name: "ACME");
+        await repository.SaveAsync(ppon, _ =>
+        {
+            ppon.Name = "Updated name";
+            repository.Save(ppon);
+            return Task.CompletedTask;
+        });
+
+        var foundPpon = await repository.FindPponByPponIdAsync(ppon.IdentifierId);
+
+        foundPpon.Should().NotBeNull();
+        foundPpon.As<EntityVerification.Persistence.Ppon>().Name.Should().Be("Updated name");
+    }
+
+    [Fact]
+    public async Task ItRevertsTheTransactionIfSavingOfAdditionalEntitiesFails()
+    {
+        await using var context = postgreSql.EntityVerificationContext();
+        var repository = PponRepository(context);
+
+        var ppon = GivenPpon(pponId: "772bd0fa18d3448f883502afba8eb5e3", name: "ACME 2");
+        var act = async () => await repository.SaveAsync(ppon, _ =>
+        {
+            ppon.Name = "Updated name 2";
+            repository.Save(ppon);
+            throw new Exception("Failed in transaction");
+        });
+
+        await act.Should().ThrowAsync<Exception>("Failed in transaction");
+
+        var foundPpon = await repository.FindPponByPponIdAsync(ppon.IdentifierId);
+
+        foundPpon.Should().BeNull();
+    }
+
+    private IPponRepository PponRepository(EntityVerificationContext? context = null)
+    {
+        return new DatabasePponRepository(context ?? postgreSql.EntityVerificationContext());
     }
 }

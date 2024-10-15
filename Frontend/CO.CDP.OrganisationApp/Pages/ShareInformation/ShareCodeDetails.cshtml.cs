@@ -8,7 +8,7 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace CO.CDP.OrganisationApp.Pages.ShareInformation;
 
-[Authorize(Policy = OrgScopeRequirement.Editor)]
+[Authorize(Policy = OrgScopeRequirement.Viewer)]
 public class ShareCodeDetailsModel(IDataSharingClient dataSharingClient) : PageModel
 {
     [BindProperty(SupportsGet = true)]
@@ -44,7 +44,7 @@ public class ShareCodeDetailsModel(IDataSharingClient dataSharingClient) : PageM
             return Redirect("/page-not-found");
         }
 
-        var fileResponse = await dataSharingClient.GetSharedDataPdfAsync(shareCode);
+        var fileResponse = await dataSharingClient.GetSharedDataFileAsync(shareCode);
 
         if (fileResponse == null)
         {

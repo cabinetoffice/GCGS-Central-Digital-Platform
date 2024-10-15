@@ -34,12 +34,13 @@ builder.Services.AddScoped<IOrganisationRepository, DatabaseOrganisationReposito
 builder.Services.AddScoped<IFormRepository, DatabaseFormRepository>();
 builder.Services.AddScoped<IShareCodeRepository, DatabaseShareCodeRepository>();
 builder.Services.AddScoped<IConnectedEntityRepository, DatabaseConnectedEntityRepository>();
+builder.Services.AddScoped<IPersonRepository, DatabasePersonRepository>();
 builder.Services.AddScoped<IUseCase<ShareRequest, ShareReceipt>, GenerateShareCodeUseCase>();
 builder.Services.AddScoped<IUseCase<Guid, List<SharedConsent>?>, GetShareCodesUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, string), SharedConsentDetails?>, GetShareCodeDetailsUseCase>();
 builder.Services.AddScoped<IUseCase<ShareVerificationRequest, ShareVerificationReceipt>, GetShareCodeVerifyUseCase>();
 builder.Services.AddScoped<IUseCase<string, SupplierInformation?>, GetSharedDataUseCase>();
-builder.Services.AddScoped<IUseCase<string, byte[]?>, GetSharedDataPdfUseCase>();
+builder.Services.AddScoped<IUseCase<string, SharedDataFile?>, GetSharedDataFileUseCase>();
 builder.Services.AddScoped<IUseCase<(string, string), string?>, GetSharedDataDocumentDownloadUrlUseCase>();
 builder.Services.AddDataSharingProblemDetails();
 
