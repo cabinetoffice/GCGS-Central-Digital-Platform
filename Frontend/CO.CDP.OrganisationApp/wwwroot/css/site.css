@@ -20,16 +20,19 @@
 
 /**
  * Language switcher, adapted from hmrc-frontend
- * TODO: Contemplate adding proper sass build pipeline
  */
+.app-language-select {
+    margin: 0;
+}
+
 .app-language-select::after {
-    content: "";
+    /*    content: "";
     display: block;
-    clear: both;
+    clear: both;*/
 }
 
 .app-language-select__list {
-    margin-top: 1em;
+    margin-top: 10px;
     float: right;
     text-align: right;
 }

@@ -34,8 +34,6 @@ const string EvHttpClient = "EvHttpClient";
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddLocalization();
-
 builder.Services.Configure<RequestLocalizationOptions>(options =>
 {
     var supportedCultures = new[] { new CultureInfo("en"), new CultureInfo("cy") };
@@ -48,14 +46,9 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
 
 var mvcBuilder = builder.Services.AddRazorPages()
     .AddViewLocalization()
-
-    // TODO: Translate data coming from forms engine db
-    // TODO: Use this code below for translating form validation errors
-    //.AddDataAnnotationsLocalization(options =>
-    //{
-    //    options.DataAnnotationLocalizerProvider = (type, factory) =>
-    //        factory.Create(typeof(StaticTextResource));
-    //})
+    .AddDataAnnotationsLocalization(options => {
+        options.DataAnnotationLocalizerProvider = (type, factory) => factory.Create(typeof(ValidationMessagesResource));
+    })
     .AddSessionStateTempDataProvider();
 
 if (builder.Environment.IsDevelopment())
