@@ -420,6 +420,50 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql) : 
     }
 
     [Fact]
+    public async Task GetConnectedTrustsOrTrustees_WhenConnectedEntitiesExist_ReturnsConnectedEntities()
+    {
+        using var repository = OrganisationRepository();
+
+        var supplierOrganisation = GivenOrganisation();
+        var connectedEntity = GivenConnectedTrustsOrTrustees(supplierOrganisation);
+
+        using var context = postgreSql.OrganisationInformationContext();
+        await context.Organisations.AddAsync(supplierOrganisation);
+        await context.ConnectedEntities.AddAsync(connectedEntity);
+        await context.SaveChangesAsync();
+
+        var result = await repository.GetConnectedTrustsOrTrustees(supplierOrganisation.Id);
+
+        result.Should().NotBeEmpty();
+        result.Should().HaveCount(1);
+        result.Should().Contain(x => x.EntityType == ConnectedEntity.ConnectedEntityType.TrustOrTrustee);
+
+        var organisation = result.First().Organisation;
+        organisation.Should().BeEquivalentTo(connectedEntity.Organisation, options =>
+            options
+                .Using<DateTimeOffset>(ctx => ctx.Subject.Should().BeCloseTo(ctx.Expectation, TimeSpan.FromMilliseconds(100)))
+                .WhenTypeIs<DateTimeOffset>()
+        );
+    }
+
+    [Fact]
+    public async Task GetConnectedTrustsOrTrustees_WhenNoConnectedEntitiesExist_ReturnsEmptyList()
+    {
+        using var repository = OrganisationRepository();
+
+        var organisationId = 1;
+        var organisation = GivenOrganisation();
+
+        using var context = postgreSql.OrganisationInformationContext();
+        await context.Organisations.AddAsync(organisation);
+        await context.SaveChangesAsync();
+
+        var result = await repository.GetConnectedTrustsOrTrustees(organisationId);
+
+        result.Should().BeEmpty();
+    }
+
+    [Fact]
     public async Task GetLegalForm_WhenNoLegalFormExists_ReturnNull()
     {
         using var repository = OrganisationRepository();
