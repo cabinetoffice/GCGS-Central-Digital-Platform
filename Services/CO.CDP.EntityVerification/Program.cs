@@ -13,8 +13,10 @@ using CO.CDP.Configuration.Helpers;
 using Microsoft.EntityFrameworkCore;
 using CO.CDP.EntityVerification.Model;
 using CO.CDP.Authentication;
+using CO.CDP.Configuration.ForwardedHeaders;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.ConfigureForwardedHeaders();
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

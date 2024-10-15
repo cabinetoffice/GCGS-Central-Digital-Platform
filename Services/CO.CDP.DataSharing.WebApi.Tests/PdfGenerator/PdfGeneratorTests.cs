@@ -19,7 +19,8 @@ public class PdfGeneratorTests
             OrganisationId = Guid.NewGuid(),
             BasicInformation = DataSharingFactory.CreateMockBasicInformation(),
             ConnectedPersonInformation = DataSharingFactory.CreateMockConnectedPersonInformation(),
-            FormAnswerSetForPdfs = DataSharingFactory.CreateMockFormAnswerSetForPdfs()
+            FormAnswerSetForPdfs = DataSharingFactory.CreateMockFormAnswerSetForPdfs(),
+            AttachedDocuments = []
         };
 
         var pdfBytes = _pdfGenerator.GenerateBasicInformationPdf(supplierInformation);

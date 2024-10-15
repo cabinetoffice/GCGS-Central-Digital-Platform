@@ -71,7 +71,7 @@ public class DatabaseAuthenticationKeyRepositoryTest(PostgreSqlFixture postgreSq
     }
 
     [Fact]
-    public void ItRejectsTwoApiKeyWithTheSameName()
+    public async Task ItRejectsTwoApiKeyWithTheSameName()
     {
         using var repository = AuthenticationKeyRepository();
         var organisation = GivenOrganisation();
@@ -79,9 +79,9 @@ public class DatabaseAuthenticationKeyRepositoryTest(PostgreSqlFixture postgreSq
         var authenticationKey1 = GivenAuthenticationKey(name: "fts", key: key, organisation: organisation);
         var authenticationKey2 = GivenAuthenticationKey(name: "fts", key: key, organisation: organisation);
 
-        repository.Save(authenticationKey1);
+        await repository.Save(authenticationKey1);
 
-        repository.Invoking(async r => await r.Save(authenticationKey2))
+        await repository.Invoking(async r => await r.Save(authenticationKey2))
             .Should().ThrowAsync<IAuthenticationKeyRepository.AuthenticationKeyRepositoryException.DuplicateAuthenticationKeyNameException>()
             .WithMessage($"Authentication Key with name `fts` already exists.");
     }
