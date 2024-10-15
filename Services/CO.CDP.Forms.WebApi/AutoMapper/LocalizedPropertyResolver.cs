@@ -1,15 +1,14 @@
 using AutoMapper;
 using CO.CDP.Localization;
 using Microsoft.AspNetCore.Mvc.Localization;
-using Microsoft.Extensions.Localization;
 
 namespace CO.CDP.Forms.WebApi.AutoMapper;
 
 public class LocalizedPropertyResolver<TSource, TDestination> : IMemberValueResolver<TSource, TDestination, string, string>
 {
-    private readonly IStringLocalizer<FormsEngineResource> _localizer;
+    private readonly IHtmlLocalizer<FormsEngineResource> _localizer;
 
-    public LocalizedPropertyResolver(IStringLocalizer<FormsEngineResource> localizer)
+    public LocalizedPropertyResolver(IHtmlLocalizer<FormsEngineResource> localizer)
     {
         _localizer = localizer;
     }
@@ -18,7 +17,7 @@ public class LocalizedPropertyResolver<TSource, TDestination> : IMemberValueReso
     {
         if (!string.IsNullOrEmpty(sourceMember))
         {
-            return _localizer[sourceMember];
+            return _localizer[sourceMember].Value;
         }
 
         return sourceMember;

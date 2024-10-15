@@ -9,6 +9,7 @@ using CO.CDP.Forms.WebApi.Model;
 using CO.CDP.Forms.WebApi.UseCase;
 using CO.CDP.OrganisationInformation.Persistence;
 using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Mvc.Localization;
 using Microsoft.EntityFrameworkCore;
 using System.Globalization;
 using System.Reflection;
@@ -22,6 +23,10 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options => { options.DocumentFormsApi(builder.Configuration); });
 
 builder.Services.AddLocalization();
+
+// Note that we have to register IHtmlLocalizer manually, since this is an API and we are not calling AddViewLocalization
+builder.Services.AddSingleton<IHtmlLocalizerFactory, HtmlLocalizerFactory>();
+builder.Services.AddTransient(typeof(IHtmlLocalizer<>), typeof(HtmlLocalizer<>));
 
 var supportedCultures = new[] { new CultureInfo("en"), new CultureInfo("cy") };
 builder.Services.Configure<RequestLocalizationOptions>(options =>
