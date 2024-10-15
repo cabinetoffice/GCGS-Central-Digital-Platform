@@ -6,12 +6,26 @@ namespace CO.CDP.Authentication;
 
 public class ClaimService(
     IHttpContextAccessor httpContextAccessor,
-    IOrganisationRepository organisationRepository,
-    IPersonRepository personRepository) : IClaimService
+    IOrganisationRepository organisationRepository) : IClaimService
 {
     public string? GetUserUrn()
     {
         return httpContextAccessor.HttpContext?.User?.FindFirst(ClaimType.Subject)?.Value;
+    }
+
+    public IEnumerable<string> GetUserRoles()
+    {
+        var roles = httpContextAccessor.HttpContext?.User?.FindFirst(ClaimType.Roles)?.Value;
+        return string.IsNullOrWhiteSpace(roles) ? [] : roles.Split(",", StringSplitOptions.RemoveEmptyEntries);
+    }
+
+    public Guid? GetOrganisationId()
+    {
+        if (Guid.TryParse(httpContextAccessor.HttpContext?.User?.FindFirst(ClaimType.OrganisationId)?.Value, out Guid result))
+        {
+            return result;
+        }
+        return null;
     }
 
     public async Task<bool> HaveAccessToOrganisation(Guid organisationId, string[]? scopes = null, string[]? personScopes = null)
@@ -19,8 +33,7 @@ public class ClaimService(
         var userUrn = GetUserUrn();
         if (string.IsNullOrWhiteSpace(userUrn)) return false;
 
-        var person = await personRepository.FindByUrn(userUrn);
-        if (person != null && personScopes != null && person.Scopes.Intersect(personScopes).Any())
+        if (personScopes != null && GetUserRoles().Intersect(personScopes).Any())
         {
             return true;
         }
@@ -31,14 +44,5 @@ public class ClaimService(
         if (scopes == null) return true;
 
         return organisationPerson.Scopes.Intersect(scopes).Any();
-    }
-
-    public Guid? GetOrganisationId()
-    {
-        if (Guid.TryParse(httpContextAccessor.HttpContext?.User?.FindFirst(ClaimType.OrganisationId)?.Value, out Guid result))
-        {
-            return result;
-        }
-        return null;
     }
 }

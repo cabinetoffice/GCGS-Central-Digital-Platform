@@ -11,7 +11,7 @@ public record ConnectedPersonInformation
     string? Nationality,
     DateTimeOffset? DateOfBirth,
     ConnectedPersonType PersonType,
-    ConnectedPersonCategory Category,
+    ConnectedEntityIndividualAndTrustCategoryType Category,
     string? ResidentCountry,
     List<ConnectedAddress> Addresses,
     List<string> ControlConditions,
@@ -26,7 +26,7 @@ public record ConnectedIndividualTrust
     string LastName,
     DateTimeOffset? DateOfBirth,
     string? Nationality,
-    ConnectedPersonCategory Category,
+    ConnectedEntityIndividualAndTrustCategoryType Category,
     ConnectedPersonType PersonType,
     List<string> ControlConditions,
     string? ResidentCountry
