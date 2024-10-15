@@ -41,7 +41,7 @@ public class GetSharedDataFileUseCaseTests
 
         _pdfGenerator.Setup(generator => generator.GenerateBasicInformationPdf(sharedSupplierInformation))
             .Returns(new MemoryStream(pdfBytes));
-        _claimService.Setup(cs => cs.HaveAccessToOrganisation(organisationId, requiredClaims))
+        _claimService.Setup(cs => cs.HaveAccessToOrganisation(organisationId, requiredClaims, It.IsAny<string[]?>()))
             .ReturnsAsync(true);
 
         var result = await UseCase.Execute(sharecode);
@@ -69,7 +69,7 @@ public class GetSharedDataFileUseCaseTests
                 AttachedDocuments = []
             });
 
-        _claimService.Setup(cs => cs.HaveAccessToOrganisation(organisationId, invalidscope))
+        _claimService.Setup(cs => cs.HaveAccessToOrganisation(organisationId, invalidscope, null))
             .ReturnsAsync(true);
 
         var act = async () => await UseCase.Execute(sharecode);
