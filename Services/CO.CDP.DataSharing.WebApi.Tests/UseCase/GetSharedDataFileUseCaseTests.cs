@@ -1,8 +1,7 @@
 using CO.CDP.Authentication;
-using CO.CDP.DataSharing.WebApi;
+using CO.CDP.AwsServices;
 using CO.CDP.DataSharing.WebApi.DataService;
 using CO.CDP.DataSharing.WebApi.Model;
-using CO.CDP.DataSharing.WebApi.Tests;
 using CO.CDP.DataSharing.WebApi.UseCase;
 using FluentAssertions;
 using Moq;
@@ -10,42 +9,15 @@ using static CO.CDP.Authentication.Constants;
 
 namespace CO.CDP.DataSharing.WebApi.Tests.UseCase;
 
-public class GetSharedDataPdfUseCaseTests
+public class GetSharedDataFileUseCaseTests
 {
     private readonly Mock<IDataService> _dataService = new();
     private readonly Mock<IPdfGenerator> _pdfGenerator = new();
     private readonly Mock<IClaimService> _claimService = new();
+    private readonly Mock<IFileHostManager> _fileHostManager = new();
     private string[] requiredClaims = [OrganisationPersonScope.Admin, OrganisationPersonScope.Editor, OrganisationPersonScope.Viewer];
 
-    private GetSharedDataPdfUseCase UseCase => new(_pdfGenerator.Object, _dataService.Object, _claimService.Object);
-
-    [Fact]
-    public async Task Execute_ShouldReturnPdfBytes_WhenShareCodeExists()
-    {
-        var organisationId = Guid.NewGuid();
-        var sharecode = "valid-sharecode";
-        var sharedSupplierInformation = new SharedSupplierInformation
-        {
-            OrganisationId = organisationId,
-            BasicInformation = DataSharingFactory.CreateMockBasicInformation(),
-            ConnectedPersonInformation = DataSharingFactory.CreateMockConnectedPersonInformation(),
-            FormAnswerSetForPdfs = DataSharingFactory.CreateMockFormAnswerSetForPdfs()
-        };
-
-        var pdfBytes = new byte[] { 1, 2, 3 };
-
-        _dataService.Setup(service => service.GetSharedSupplierInformationAsync(sharecode))
-            .ReturnsAsync(sharedSupplierInformation);
-
-        _pdfGenerator.Setup(generator => generator.GenerateBasicInformationPdf(sharedSupplierInformation))
-            .Returns(pdfBytes);
-        _claimService.Setup(cs => cs.HaveAccessToOrganisation(organisationId, requiredClaims, It.IsAny<string[]?>()))
-            .ReturnsAsync(true);
-
-        var result = await UseCase.Execute(sharecode);
-
-        result.Should().BeEquivalentTo(pdfBytes);
-    }
+    private GetSharedDataFileUseCase UseCase => new(_pdfGenerator.Object, _dataService.Object, _claimService.Object, _fileHostManager.Object);
 
     [Fact]
     public async Task Execute_ShouldCallDataServiceAndPdfGenerator_WhenShareCodeExists()
@@ -58,7 +30,8 @@ public class GetSharedDataPdfUseCaseTests
             OrganisationId = organisationId,
             BasicInformation = DataSharingFactory.CreateMockBasicInformation(),
             ConnectedPersonInformation = DataSharingFactory.CreateMockConnectedPersonInformation(),
-            FormAnswerSetForPdfs = DataSharingFactory.CreateMockFormAnswerSetForPdfs()
+            FormAnswerSetForPdfs = DataSharingFactory.CreateMockFormAnswerSetForPdfs(),
+            AttachedDocuments = []
         };
 
         var pdfBytes = new byte[] { 1, 2, 3 };
@@ -67,13 +40,16 @@ public class GetSharedDataPdfUseCaseTests
             .ReturnsAsync(sharedSupplierInformation);
 
         _pdfGenerator.Setup(generator => generator.GenerateBasicInformationPdf(sharedSupplierInformation))
-            .Returns(pdfBytes);
+            .Returns(new MemoryStream(pdfBytes));
         _claimService.Setup(cs => cs.HaveAccessToOrganisation(organisationId, requiredClaims, It.IsAny<string[]?>()))
             .ReturnsAsync(true);
 
         var result = await UseCase.Execute(sharecode);
 
-        result.Should().BeEquivalentTo(pdfBytes);
+        result.Should().NotBeNull();
+        result.As<SharedDataFile>().FileName.Should().BeEquivalentTo("valid-sharecode.pdf");
+        result.As<SharedDataFile>().Content.Should().BeEquivalentTo(pdfBytes);
+        result.As<SharedDataFile>().ContentType.Should().BeEquivalentTo("application/pdf");
     }
 
     [Fact]
@@ -89,7 +65,8 @@ public class GetSharedDataPdfUseCaseTests
                 OrganisationId = organisationId,
                 BasicInformation = DataSharingFactory.CreateMockBasicInformation(),
                 ConnectedPersonInformation = DataSharingFactory.CreateMockConnectedPersonInformation(),
-                FormAnswerSetForPdfs = DataSharingFactory.CreateMockFormAnswerSetForPdfs()
+                FormAnswerSetForPdfs = DataSharingFactory.CreateMockFormAnswerSetForPdfs(),
+                AttachedDocuments = []
             });
 
         _claimService.Setup(cs => cs.HaveAccessToOrganisation(organisationId, invalidscope, null))

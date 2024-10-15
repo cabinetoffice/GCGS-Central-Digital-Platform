@@ -60,7 +60,7 @@ public class ShareCodesListViewModel(
             return Redirect("/page-not-found");
         }
 
-        var fileResponse = await dataSharingClient.GetSharedDataPdfAsync(shareCode);
+        var fileResponse = await dataSharingClient.GetSharedDataFileAsync(shareCode);
 
         if (fileResponse == null)
         {

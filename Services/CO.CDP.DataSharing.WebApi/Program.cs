@@ -40,7 +40,7 @@ builder.Services.AddScoped<IUseCase<Guid, List<SharedConsent>?>, GetShareCodesUs
 builder.Services.AddScoped<IUseCase<(Guid, string), SharedConsentDetails?>, GetShareCodeDetailsUseCase>();
 builder.Services.AddScoped<IUseCase<ShareVerificationRequest, ShareVerificationReceipt>, GetShareCodeVerifyUseCase>();
 builder.Services.AddScoped<IUseCase<string, SupplierInformation?>, GetSharedDataUseCase>();
-builder.Services.AddScoped<IUseCase<string, byte[]?>, GetSharedDataPdfUseCase>();
+builder.Services.AddScoped<IUseCase<string, SharedDataFile?>, GetSharedDataFileUseCase>();
 builder.Services.AddScoped<IUseCase<(string, string), string?>, GetSharedDataDocumentDownloadUrlUseCase>();
 builder.Services.AddDataSharingProblemDetails();
 
