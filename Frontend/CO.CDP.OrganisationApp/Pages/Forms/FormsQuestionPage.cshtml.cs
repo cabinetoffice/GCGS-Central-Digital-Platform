@@ -179,7 +179,8 @@ public class FormsQuestionPageModel(
     private async Task<string> GetAnswerString(QuestionAnswer questionAnswer, FormQuestion question)
     {
         var answer = questionAnswer.Answer;
-        if (answer == null) return "";
+        if (answer == null)
+            return "";
 
         async Task<string> singleChoiceString(FormAnswer a)
         {
@@ -226,7 +227,23 @@ public class FormsQuestionPageModel(
     {
         var form = await formsEngine.GetFormSectionAsync(OrganisationId, FormId, SectionId);
 
+        var answerState = tempDataService.PeekOrDefault<FormQuestionAnswerState>(FormQuestionAnswerStateKey);
+
+        if (answerState.Answers.Count > 0)
+        {
+            var nextValidQuestionId = formsEngine.GetPreviousUnansweredQuestionId(form.Questions, CurrentQuestionId, answerState);
+
+            if (nextValidQuestionId == null)
+                return null;
+
+            if (nextValidQuestionId != CurrentQuestionId)
+            {
+                CurrentQuestionId = nextValidQuestionId ?? Guid.Empty;
+            }
+        }
+
         var currentQuestion = await formsEngine.GetCurrentQuestion(OrganisationId, FormId, SectionId, CurrentQuestionId);
+
         if (currentQuestion == null)
             return null;
 

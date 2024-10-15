@@ -68,6 +68,8 @@ public class FormsEngineTests
                         isRequired: true,
                         nextQuestion: nextQuestionId,
                         nextQuestionAlternative: null,
+                        name: null,
+                        sortOrder: null,
                         options: new WebApiClient.FormQuestionOptions(
                             choiceProviderStrategy: choiceProviderStrategy,
                             choices: new List<WebApiClient.FormQuestionChoice>
@@ -472,6 +474,72 @@ public class FormsEngineTests
         _dataSharingClientMock.Verify(client => client.CreateSharedDataAsync(
             It.Is<DataShareWebApiClient.ShareRequest>(sr =>
                 sr.FormId == formId && sr.OrganisationId == organisationId)), Times.Once);
+    }
+
+    [Fact]
+    public void GetPreviousUnansweredQuestionId_ShouldReturnExpectedResult_WhenCalled()
+    {
+        var question1 = new FormQuestion { Id = Guid.NewGuid(), SortOrder = 1 };
+        var question2 = new FormQuestion { Id = Guid.NewGuid(), SortOrder = 2 };
+        var question3 = new FormQuestion { Id = Guid.NewGuid(), SortOrder = 3 };
+        var questions = new List<FormQuestion> { question1, question2, question3 };
+
+        var answerState = new FormQuestionAnswerState
+        {
+            Answers = new List<QuestionAnswer>
+        {
+            new QuestionAnswer { QuestionId = question2.Id }
+        }
+        };
+
+        var result = _formsEngine.GetPreviousUnansweredQuestionId(questions, question3.Id, answerState);
+
+        result.Should().Be(question1.Id);
+    }
+
+    [Fact]
+    public void GetPreviousUnansweredQuestionId_ShouldReturnCurrentQuestionId_WhenAllPreviousQuestionsAreAnswered()
+    {
+        var question1 = new FormQuestion { Id = Guid.NewGuid(), SortOrder = 1 };
+        var question2 = new FormQuestion { Id = Guid.NewGuid(), SortOrder = 2 };
+        var question3 = new FormQuestion { Id = Guid.NewGuid(), SortOrder = 3 };
+        var questions = new List<FormQuestion> { question1, question2, question3 };
+
+        var answerState = new FormQuestionAnswerState
+        {
+            Answers = new List<QuestionAnswer>
+        {
+            new QuestionAnswer { QuestionId = question1.Id },
+            new QuestionAnswer { QuestionId = question2.Id }
+        }
+        };
+
+        var result = _formsEngine.GetPreviousUnansweredQuestionId(questions, question3.Id, answerState);
+
+        result.Should().Be(question3.Id);
+    }
+
+    [Fact]
+    public void GetPreviousUnansweredQuestionId_ShouldReturnFirstUnansweredQuestion_WhenCurrentQuestionIdIsInvalid()
+    {
+        var question1 = new FormQuestion { Id = Guid.NewGuid(), SortOrder = 1 };
+        var question2 = new FormQuestion { Id = Guid.NewGuid(), SortOrder = 2 };
+        var question3 = new FormQuestion { Id = Guid.NewGuid(), SortOrder = 3 };
+        var questions = new List<FormQuestion> { question1, question2, question3 };
+
+        var answerState = new FormQuestionAnswerState
+        {
+            Answers = new List<QuestionAnswer>
+        {
+            new QuestionAnswer { QuestionId = question1.Id }
+        }
+        };
+
+        var invalidQuestionId = Guid.NewGuid();
+
+        var result = _formsEngine.GetPreviousUnansweredQuestionId(questions, invalidQuestionId, answerState);
+
+        result.Should().Be(question2.Id);
     }
 
     private (Guid formId, Guid sectionId, Guid organisationId, FormQuestionAnswerState answerSet, FormAnswer expectedAnswer) SetupTestData()

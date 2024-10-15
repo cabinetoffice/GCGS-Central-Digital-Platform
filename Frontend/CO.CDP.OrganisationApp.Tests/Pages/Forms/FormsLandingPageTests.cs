@@ -1,5 +1,4 @@
 using CO.CDP.Forms.WebApiClient;
-using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Pages.Forms;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
@@ -179,7 +178,9 @@ public class FormsLandingPageTests
                     isRequired: true,
                     nextQuestion: Guid.NewGuid(),
                     nextQuestionAlternative: null,
-                    options: null
+                    options: null,
+                    name: null,
+                    sortOrder: null
                 )
             ],
             answerSets: []

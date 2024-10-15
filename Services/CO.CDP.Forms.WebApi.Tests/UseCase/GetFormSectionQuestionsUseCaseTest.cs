@@ -1,7 +1,7 @@
-using CO.CDP.OrganisationInformation.Persistence;
 using CO.CDP.Forms.WebApi.Model;
 using CO.CDP.Forms.WebApi.Tests.AutoMapper;
 using CO.CDP.Forms.WebApi.UseCase;
+using CO.CDP.OrganisationInformation.Persistence;
 using FluentAssertions;
 using Moq;
 
@@ -140,7 +140,9 @@ public class GetFormSectionQuestionsUseCaseTest(AutoMapperFixture mapperFixture)
                 Description = questions[0].Description,
                 Type = FormQuestionType.NoInput,
                 IsRequired = questions[0].IsRequired,
-                Options = new FormQuestionOptions()
+                Options = new FormQuestionOptions(),
+                Name = questions[0].Name,
+                SortOrder= questions[0].SortOrder,
             },
             new FormQuestion
             {
@@ -150,7 +152,9 @@ public class GetFormSectionQuestionsUseCaseTest(AutoMapperFixture mapperFixture)
                 Description = questions[1].Description,
                 Type = FormQuestionType.YesOrNo,
                 IsRequired = questions[1].IsRequired,
-                Options = new FormQuestionOptions()
+                Options = new FormQuestionOptions(),
+                Name = questions[1].Name,
+                SortOrder= questions[1].SortOrder,
             }
         });
     }

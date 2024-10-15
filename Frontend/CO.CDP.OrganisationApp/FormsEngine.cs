@@ -34,7 +34,8 @@ public class FormsEngine(
                 Title = response.Section.Title,
                 AllowsMultipleAnswerSets = response.Section.AllowsMultipleAnswerSets
             },
-            Questions = (await Task.WhenAll(response.Questions.Select(async q => {
+            Questions = (await Task.WhenAll(response.Questions.Select(async q =>
+            {
                 IChoiceProviderStrategy choiceProviderStrategy = choiceProviderService.GetStrategy(q.Options.ChoiceProviderStrategy);
 
                 return new Models.FormQuestion
@@ -48,6 +49,7 @@ public class FormsEngine(
                     IsRequired = q.IsRequired,
                     NextQuestion = q.NextQuestion,
                     NextQuestionAlternative = q.NextQuestionAlternative,
+                    SortOrder = q.SortOrder,
                     Options = new Models.FormQuestionOptions
                     {
                         Choices = await choiceProviderStrategy.Execute(q.Options),
@@ -149,6 +151,32 @@ public class FormsEngine(
 
         return sharingDataDetails.ShareCode;
     }
+
+    public Guid? GetPreviousUnansweredQuestionId(List<Models.FormQuestion> questions, Guid currentQuestionId, FormQuestionAnswerState? answerState)
+    {
+        var answeredQuestionIds = answerState?.Answers.Select(a => a.QuestionId).ToList() ?? new List<Guid>();
+
+        var questionsInOrder = questions.OrderBy(x => x.SortOrder).ToList();
+
+        var currentQuestionIndex = questionsInOrder.FindIndex(q => q.Id == currentQuestionId);
+
+        if (currentQuestionIndex == -1)
+        {
+            return questionsInOrder.FirstOrDefault(q => !answeredQuestionIds.Contains(q.Id))?.Id;
+        }
+
+        for (var i = 0; i < currentQuestionIndex; i++)
+        {
+            if (answerState?.Answers.Any(t => t.QuestionId == questionsInOrder[i].Id) == false)
+            {
+                return questionsInOrder[i].Id;
+            }
+
+        }
+
+        return currentQuestionId;
+    }
+
     private static FormAddress? MapAddress(Address? formAdddress)
     {
         if (formAdddress == null)
