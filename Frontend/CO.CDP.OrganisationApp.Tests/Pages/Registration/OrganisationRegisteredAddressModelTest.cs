@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Routing;
 using Moq;
+using System.Net;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages.Registration;
 
@@ -197,7 +198,7 @@ public class OrganisationRegisteredAddressModelTest
         var companiesHouseRegisteredAddress = GivenRegisteredAddressOnCompaniesHouse();
 
         companiesHouseMock.Setup(ch => ch.GetRegisteredAddress(registrationDetails.OrganisationIdentificationNumber!))
-            .ReturnsAsync((companiesHouseRegisteredAddress, 200));
+            .ReturnsAsync((companiesHouseRegisteredAddress, HttpStatusCode.OK));
 
         await model.OnGet();
 
@@ -216,7 +217,7 @@ public class OrganisationRegisteredAddressModelTest
         var companiesHouseRegisteredAddress = GivenRegisteredAddressOnCompaniesHouse();
 
         companiesHouseMock.Setup(ch => ch.GetRegisteredAddress(registrationDetails.OrganisationIdentificationNumber!))
-            .ReturnsAsync((companiesHouseRegisteredAddress, 200));
+            .ReturnsAsync((companiesHouseRegisteredAddress, HttpStatusCode.OK));
 
         await model.OnGet();
 

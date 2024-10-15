@@ -8,6 +8,7 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moq;
+using System.Net;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages.Registration;
 public class CompanyHouseNumberQuestionTests
@@ -73,7 +74,7 @@ public class CompanyHouseNumberQuestionTests
         
         var profile = GivenProfileOnCompaniesHouse(organisationName: "Acme Ltd");
         companiesHouseApiMock.Setup(ch => ch.GetProfile(model.CompaniesHouseNumber))
-            .ReturnsAsync((profile, 200));
+            .ReturnsAsync((profile, HttpStatusCode.OK));
 
         var result = await model.OnPost();
         result.Should().BeOfType<RedirectToPageResult>();
@@ -96,7 +97,7 @@ public class CompanyHouseNumberQuestionTests
 
         var profile = GivenProfileOnCompaniesHouse(organisationName: "Acme Ltd");
         companiesHouseApiMock.Setup(ch => ch.GetProfile(model.CompaniesHouseNumber))
-            .ReturnsAsync((profile, 200));
+            .ReturnsAsync((profile, HttpStatusCode.OK));
 
         var result = await model.OnPost();
         result.Should().BeOfType<RedirectToPageResult>();
@@ -133,8 +134,14 @@ public class CompanyHouseNumberQuestionTests
 
         GivenRegistrationIsInProgress(model.HasCompaniesHouseNumber, model.CompaniesHouseNumber);
 
-        organisationClientMock.Setup(o => o.LookupOrganisationAsync(string.Empty, It.IsAny<string>()))
-            .Throws(new ApiException(string.Empty, 404, string.Empty, null, null));
+        organisationClientMock.Setup(o => o.LookupOrganisationAsync(
+            string.Empty,
+            $"GB-COH:{model.RegistrationDetails.OrganisationIdentificationNumber}"))
+                .Throws(new ApiException(string.Empty, 404, string.Empty, null, null));
+
+        var profile = GivenProfileOnCompaniesHouse(organisationName: "Acme Ltd");
+        companiesHouseApiMock.Setup(ch => ch.GetProfile(model.CompaniesHouseNumber))
+            .ReturnsAsync((profile, HttpStatusCode.NotFound));
 
         var result = await model.OnPost();
 

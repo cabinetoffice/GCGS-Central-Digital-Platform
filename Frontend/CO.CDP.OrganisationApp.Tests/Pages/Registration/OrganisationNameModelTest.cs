@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Routing;
 using Moq;
+using System.Net;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages.Registration;
 
@@ -116,7 +117,7 @@ public class OrganisationNameModelTest
         var model = GivenOrganisationNameModel();
 
         companiesHouseMock.Setup(ch => ch.GetProfile(registrationDetails.OrganisationIdentificationNumber!))
-            .ReturnsAsync((profile, 200));
+            .ReturnsAsync((profile, HttpStatusCode.OK));
 
         await model.OnGet();
 
@@ -133,7 +134,7 @@ public class OrganisationNameModelTest
         var profile = GivenProfileOnCompaniesHouse(organisationName: "Acme Ltd");
 
         companiesHouseMock.Setup(ch => ch.GetProfile(registrationDetails.OrganisationIdentificationNumber!))
-            .ReturnsAsync((profile, 200));
+            .ReturnsAsync((profile, HttpStatusCode.OK));
         
         await model.OnGet();
 
