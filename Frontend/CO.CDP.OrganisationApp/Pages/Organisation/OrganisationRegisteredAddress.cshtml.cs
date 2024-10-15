@@ -1,4 +1,3 @@
-using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Pages.Shared;
 using CO.CDP.OrganisationApp.WebApiClients;
@@ -6,11 +5,12 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using AddressType = CO.CDP.Organisation.WebApiClient.AddressType;
+using OrganisationWebApiClient = CO.CDP.Organisation.WebApiClient;
 
 namespace CO.CDP.OrganisationApp.Pages.Organisation;
 
 [Authorize(Policy = OrgScopeRequirement.Editor)]
-public class OrganisationRegisteredAddressModel(IOrganisationClient organisationClient) : PageModel
+public class OrganisationRegisteredAddressModel(OrganisationWebApiClient.IOrganisationClient organisationClient) : PageModel
 {
 
     [BindProperty(SupportsGet = true)]
@@ -32,7 +32,7 @@ public class OrganisationRegisteredAddressModel(IOrganisationClient organisation
         var organisation = await organisationClient.GetOrganisationAsync(Id);
         if (organisation == null) return Redirect("/page-not-found");
 
-        var regsiteredAddress = organisation.Addresses.FirstOrDefault(x => x.Type == CDP.Organisation.WebApiClient.AddressType.Registered);
+        var regsiteredAddress = organisation.Addresses.FirstOrDefault(x => x.Type == AddressType.Registered);
 
         if (regsiteredAddress == null) return Redirect("/page-not-found");
 
@@ -59,8 +59,8 @@ public class OrganisationRegisteredAddressModel(IOrganisationClient organisation
         {
             var organisation = await organisationClient.GetOrganisationAsync(Id);
 
-            ICollection<OrganisationAddress> addresses = [
-                            new OrganisationAddress(
+            ICollection<OrganisationWebApiClient.OrganisationAddress> addresses = [
+                            new OrganisationWebApiClient.OrganisationAddress(
                             streetAddress: Address.AddressLine1,
                             postalCode: Address.Postcode,
                             locality: Address.TownOrCity,
@@ -73,7 +73,12 @@ public class OrganisationRegisteredAddressModel(IOrganisationClient organisation
             if (RedirectToOverview == true)
                 return RedirectToPage("OrganisationOverview", new { Id });
         }
-        catch (CO.CDP.Organisation.WebApiClient.ApiException ex) when (ex.StatusCode == 404)
+        catch (OrganisationWebApiClient.ApiException<OrganisationWebApiClient.ProblemDetails> aex)
+        {
+            ApiExceptionMapper.MapApiExceptions(aex, ModelState);
+            return Page();
+        }
+        catch (OrganisationWebApiClient.ApiException ex) when (ex.StatusCode == 404)
         {
             return Redirect("/page-not-found");
         }
