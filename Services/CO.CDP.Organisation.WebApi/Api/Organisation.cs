@@ -3,6 +3,7 @@ using CO.CDP.Authentication.Authorization;
 using CO.CDP.Functional;
 using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.Organisation.WebApi.UseCase;
+using CO.CDP.OrganisationInformation;
 using CO.CDP.Swashbuckle.Filter;
 using CO.CDP.Swashbuckle.Security;
 using CO.CDP.Swashbuckle.SwaggerGen;
@@ -131,7 +132,7 @@ public static class EndpointExtensions
 
         app.MapPost("/organisations/{organisationId}/join-requests",
                 [OrganisationAuthorize([AuthenticationChannel.OneLogin])]
-                async (Guid organisationId, CreateOrganisationJoinRequest command, IUseCase<(Guid, CreateOrganisationJoinRequest), OrganisationJoinRequest> useCase) =>
+        async (Guid organisationId, CreateOrganisationJoinRequest command, IUseCase<(Guid, CreateOrganisationJoinRequest), OrganisationJoinRequest> useCase) =>
                     await useCase.Execute((organisationId, command))
                         .AndThen(_ => Results.Created()))
             .Produces<OrganisationJoinRequest>(StatusCodes.Status201Created, "application/json")
@@ -149,6 +150,32 @@ public static class EndpointExtensions
                 operation.Responses["400"].Description = "Bad request.";
                 operation.Responses["422"].Description = "Unprocessable entity.";
                 operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
+                operation.Responses["500"].Description = "Internal server error.";
+                return operation;
+            });
+
+        app.MapGet("/organisations/{organisationId}/join-requests/{status}",
+            [OrganisationAuthorize(
+                [AuthenticationChannel.OneLogin],
+                [Constants.OrganisationPersonScope.Admin],
+                OrganisationIdLocation.Path)]
+        async (Guid organisationId, [FromQuery] OrganisationJoinRequestStatus? status, IUseCase<(Guid, OrganisationJoinRequestStatus?), IEnumerable<OrganisationJoinRequest>> useCase) =>
+                await useCase.Execute((organisationId, status))
+                    .AndThen(organisations => organisations != null ? Results.Ok(organisations) : Results.NotFound()))
+            .Produces<List<OrganisationJoinRequest>>(StatusCodes.Status200OK, "application/json")
+            .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
+            .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
+            .ProducesProblem(StatusCodes.Status422UnprocessableEntity)
+            .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError)
+            .WithOpenApi(operation =>
+            {
+                operation.OperationId = "GetOrganisationJoinRequests";
+                operation.Description = "Get organisations join request by Organisation ID and status.";
+                operation.Summary = "Get organisations join request by Organisation ID and status.";
+                operation.Responses["200"].Description = "Organisations join requestdetails.";
+                operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
+                operation.Responses["404"].Description = "Organisations join request information not found.";
+                operation.Responses["422"].Description = "Unprocessable entity.";
                 operation.Responses["500"].Description = "Internal server error.";
                 return operation;
             });
@@ -688,7 +715,7 @@ public static class EndpointExtensions
         app.MapGet("/{organisationId}/api-keys",
             [OrganisationAuthorize(
                 [AuthenticationChannel.OneLogin],
-                [Constants.OrganisationPersonScope.Admin, Constants.OrganisationPersonScope.Editor, Constants.OrganisationPersonScope.Viewer],                
+                [Constants.OrganisationPersonScope.Admin, Constants.OrganisationPersonScope.Editor, Constants.OrganisationPersonScope.Viewer],
                 OrganisationIdLocation.Path,
                 [Constants.PersonScope.SupportAdmin])]
         async (Guid organisationId, IUseCase<Guid, IEnumerable<Model.AuthenticationKey>> useCase) =>

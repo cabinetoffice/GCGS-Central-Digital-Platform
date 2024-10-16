@@ -14,6 +14,7 @@ using CO.CDP.Organisation.WebApi.Events;
 using CO.CDP.Organisation.WebApi.Extensions;
 using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.Organisation.WebApi.UseCase;
+using CO.CDP.OrganisationInformation;
 using CO.CDP.OrganisationInformation.Persistence;
 using Microsoft.EntityFrameworkCore;
 using ConnectedEntity = CO.CDP.Organisation.WebApi.Model.ConnectedEntity;
@@ -90,6 +91,7 @@ builder.Services.AddScoped<IUseCase<Guid, IEnumerable<CO.CDP.Organisation.WebApi
 builder.Services.AddScoped<IUseCase<(Guid, RegisterAuthenticationKey), bool>, RegisterAuthenticationKeyUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, string), bool>, RevokeAuthenticationKeyUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, CreateOrganisationJoinRequest), OrganisationJoinRequest>, CreateOrganisationJoinRequestUseCase>();
+builder.Services.AddScoped<IUseCase<(Guid, OrganisationJoinRequestStatus?), IEnumerable<OrganisationJoinRequest>>, GetOrganisationJoinRequestUseCase>();
 
 builder.Services.AddOrganisationProblemDetails();
 
