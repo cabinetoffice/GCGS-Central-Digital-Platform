@@ -68,8 +68,6 @@ public class FormsEngineTests
                         isRequired: true,
                         nextQuestion: nextQuestionId,
                         nextQuestionAlternative: null,
-                        name: null,
-                        sortOrder: null,
                         options: new WebApiClient.FormQuestionOptions(
                             choiceProviderStrategy: choiceProviderStrategy,
                             choices: new List<WebApiClient.FormQuestionChoice>
@@ -477,6 +475,48 @@ public class FormsEngineTests
     }
 
     [Fact]
+    public void GetPreviousUnansweredQuestionId_ShouldReturnNull_WhenAllQuestionsAreAnswered()
+    {
+        var question1 = new FormQuestion { Id = Guid.NewGuid(), SortOrder = 1 };
+        var question2 = new FormQuestion { Id = Guid.NewGuid(), SortOrder = 2 };
+        var question3 = new FormQuestion { Id = Guid.NewGuid(), SortOrder = 3 };
+        var questions = new List<FormQuestion> { question1, question2, question3 };
+
+        var answerState = new FormQuestionAnswerState
+        {
+            Answers = new List<QuestionAnswer>
+        {
+            new QuestionAnswer { QuestionId = question1.Id },
+            new QuestionAnswer { QuestionId = question2.Id },
+            new QuestionAnswer { QuestionId = question3.Id }
+        }
+        };
+
+        var result = _formsEngine.GetPreviousUnansweredQuestionId(questions, question3.Id, answerState);
+
+        result.Should().BeNull("because all questions have been answered");
+    }
+
+    [Fact]
+    public void GetPreviousUnansweredQuestionId_ShouldReturnFirstQuestion_WhenNoQuestionsAreAnswered()
+    {
+        var question1 = new FormQuestion { Id = Guid.NewGuid(), SortOrder = 1 };
+        var question2 = new FormQuestion { Id = Guid.NewGuid(), SortOrder = 2 };
+        var question3 = new FormQuestion { Id = Guid.NewGuid(), SortOrder = 3 };
+        var questions = new List<FormQuestion> { question1, question2, question3 };
+
+        var answerState = new FormQuestionAnswerState
+        {
+            Answers = new List<QuestionAnswer>()
+        };
+
+        var result = _formsEngine.GetPreviousUnansweredQuestionId(questions, question3.Id, answerState);
+
+        result.Should().Be(question1.Id, "because no questions have been answered, so the first question should be returned");
+    }
+
+
+    [Fact]
     public void GetPreviousUnansweredQuestionId_ShouldReturnExpectedResult_WhenCalled()
     {
         var question1 = new FormQuestion { Id = Guid.NewGuid(), SortOrder = 1 };
@@ -498,7 +538,7 @@ public class FormsEngineTests
     }
 
     [Fact]
-    public void GetPreviousUnansweredQuestionId_ShouldReturnCurrentQuestionId_WhenAllPreviousQuestionsAreAnswered()
+    public void GetPreviousUnansweredQuestionId_ShouldReturnNull_WhenAllPreviousQuestionsAreAnswered()
     {
         var question1 = new FormQuestion { Id = Guid.NewGuid(), SortOrder = 1 };
         var question2 = new FormQuestion { Id = Guid.NewGuid(), SortOrder = 2 };
@@ -516,30 +556,7 @@ public class FormsEngineTests
 
         var result = _formsEngine.GetPreviousUnansweredQuestionId(questions, question3.Id, answerState);
 
-        result.Should().Be(question3.Id);
-    }
-
-    [Fact]
-    public void GetPreviousUnansweredQuestionId_ShouldReturnFirstUnansweredQuestion_WhenCurrentQuestionIdIsInvalid()
-    {
-        var question1 = new FormQuestion { Id = Guid.NewGuid(), SortOrder = 1 };
-        var question2 = new FormQuestion { Id = Guid.NewGuid(), SortOrder = 2 };
-        var question3 = new FormQuestion { Id = Guid.NewGuid(), SortOrder = 3 };
-        var questions = new List<FormQuestion> { question1, question2, question3 };
-
-        var answerState = new FormQuestionAnswerState
-        {
-            Answers = new List<QuestionAnswer>
-        {
-            new QuestionAnswer { QuestionId = question1.Id }
-        }
-        };
-
-        var invalidQuestionId = Guid.NewGuid();
-
-        var result = _formsEngine.GetPreviousUnansweredQuestionId(questions, invalidQuestionId, answerState);
-
-        result.Should().Be(question2.Id);
+        result.Should().BeNull();
     }
 
     private (Guid formId, Guid sectionId, Guid organisationId, FormQuestionAnswerState answerSet, FormAnswer expectedAnswer) SetupTestData()

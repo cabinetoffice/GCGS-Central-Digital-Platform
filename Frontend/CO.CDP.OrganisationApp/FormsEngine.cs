@@ -49,7 +49,6 @@ public class FormsEngine(
                     IsRequired = q.IsRequired,
                     NextQuestion = q.NextQuestion,
                     NextQuestionAlternative = q.NextQuestionAlternative,
-                    SortOrder = q.SortOrder,
                     Options = new Models.FormQuestionOptions
                     {
                         Choices = await choiceProviderStrategy.Execute(q.Options),
@@ -152,22 +151,7 @@ public class FormsEngine(
         return sharingDataDetails.ShareCode;
     }
 
-    private List<Models.FormQuestion> GetSortedFormQuestions(List<Models.FormQuestion> questions)
-    {
-        var dict = questions.ToDictionary(q => q.Id, q => q);
-        var start = questions.First(q => !questions.Any(x => x.NextQuestion == q.Id));
-        var result = new List<Models.FormQuestion>();
-        var current = start;
-        while (current != null)
-        {
-            result.Add(current);
-            current = current.NextQuestion.HasValue ? dict[current.NextQuestion.Value] : null;
-        }
-
-        return result;
-    }
-
-    public Guid? GetPreviousUnansweredQuestionId(List<Models.FormQuestion> questions, FormQuestionAnswerState answerState, Guid currentQuestionId)
+    public Guid? GetPreviousUnansweredQuestionId(List<Models.FormQuestion> questions, Guid currentQuestionId, FormQuestionAnswerState answerState)
     {
         var answeredQuestionIds = answerState.Answers.Select(a => a.QuestionId).ToList();
 
@@ -202,4 +186,20 @@ public class FormsEngine(
             country: formAdddress.Country
         );
     }
+
+    private List<Models.FormQuestion> GetSortedFormQuestions(List<Models.FormQuestion> questions)
+    {
+        var dict = questions.ToDictionary(q => q.Id, q => q);
+        var start = questions.First(q => !questions.Any(x => x.NextQuestion == q.Id));
+        var result = new List<Models.FormQuestion>();
+        var current = start;
+        while (current != null)
+        {
+            result.Add(current);
+            current = current.NextQuestion.HasValue ? dict[current.NextQuestion.Value] : null;
+        }
+
+        return result;
+    }
+
 }

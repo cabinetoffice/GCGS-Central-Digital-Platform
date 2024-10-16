@@ -178,9 +178,7 @@ public class FormsLandingPageTests
                     isRequired: true,
                     nextQuestion: Guid.NewGuid(),
                     nextQuestionAlternative: null,
-                    options: null,
-                    name: null,
-                    sortOrder: null
+                    options: null
                 )
             ],
             answerSets: []
