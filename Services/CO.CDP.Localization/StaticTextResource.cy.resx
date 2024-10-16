@@ -117,7 +117,22 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="TestKey" xml:space="preserve">
-    <value>Welsh value &lt;strong&gt;here&lt;/strong&gt;</value>
+  <data name="SupplierInformationStatus_StepStatus_NotStarted" xml:space="preserve">
+    <value>Ddim wedi dechrau</value>
+  </data>
+  <data name="SupplierInformationStatus_StepStatus_Completed" xml:space="preserve">
+    <value>Wedi'i gyflawni</value>
+  </data>
+  <data name="Supplier_SupplierInformationSummary_Heading" xml:space="preserve">
+    <value>Gwybodaeth am y cyflenwr</value>
+  </data>
+  <data name="Global_BackToOrganisationDetails" xml:space="preserve">
+    <value>Yn ôl i fanylion y sefydliad</value>
+  </data>
+  <data name="ConnectedPersons_SectionHeading" xml:space="preserve">
+    <value>Unigolion cysylltiedig</value>
+  </data>
+  <data name="BasicInformation_SectionHeading" xml:space="preserve">
+    <value>Gwybodaeth sylfaenol</value>
   </data>
 </root>

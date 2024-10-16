@@ -117,7 +117,46 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="TestKey" xml:space="preserve">
-    <value>English &lt;strong&gt;value&lt;/strong&gt; here</value>
+  <data name="SupplierInformationStatus_StepStatus_NotStarted" xml:space="preserve">
+    <value>Not started</value>
+  </data>
+  <data name="SupplierInformationStatus_StepStatus_InProcess" xml:space="preserve">
+    <value>In progress</value>
+  </data>
+  <data name="SupplierInformationStatus_StepStatus_Completed" xml:space="preserve">
+    <value>Completed</value>
+  </data>
+  <data name="Supplier_SupplierInformationSummary_Heading" xml:space="preserve">
+    <value>Supplier information</value>
+  </data>
+  <data name="Global_BackToOrganisationDetails" xml:space="preserve">
+    <value>Back to organisation details</value>
+  </data>
+  <data name="ConnectedPersons_SectionHeading" xml:space="preserve">
+    <value>Connected persons</value>
+  </data>
+  <data name="BasicInformation_SectionHeading" xml:space="preserve">
+    <value>Basic information</value>
+  </data>
+  <data name="Global_Back" xml:space="preserve">
+    <value>Back</value>
+  </data>
+  <data name="Supplier_SupplierInformationSummary_ConnectedPersonCount_Singular" xml:space="preserve">
+    <value>{0} Connected person</value>
+  </data>
+  <data name="Supplier_SupplierInformationSummary_ConnectedPersonCount_Plural" xml:space="preserve">
+    <value>{0} Connected persons</value>
+  </data>
+  <data name="Supplier_SupplierInformationSummary_ConnectedPersonCount_None" xml:space="preserve">
+    <value>No connected persons</value>
+  </data>
+  <data name="Supplier_SupplierInformationSummary_FormsFurtherQuestionExempt" xml:space="preserve">
+    <value>Not Applicable</value>
+  </data>
+  <data name="Supplier_SupplierInformationSummary_FormRecordCount_Singular" xml:space="preserve">
+    <value>{0} record</value>
+  </data>
+  <data name="Supplier_SupplierInformationSummary_FormRecordCount_Plural" xml:space="preserve">
+    <value>{0} records</value>
   </data>
 </root>
