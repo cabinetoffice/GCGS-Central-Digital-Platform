@@ -86,7 +86,7 @@ public class EntityDateInterceptorTest
     }
 }
 
-internal class TestDbContext(DbContextOptions options) : DbContext(options)
+internal class TestDbContext(DbContextOptions options) : Microsoft.EntityFrameworkCore.DbContext(options)
 {
     public DbSet<User> Users { get; set; }
 }

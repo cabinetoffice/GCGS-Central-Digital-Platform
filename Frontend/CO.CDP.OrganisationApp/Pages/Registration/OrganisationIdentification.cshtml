@@ -12,8 +12,7 @@
     var jerseyFinancialServicesCommissionRegistryNumberHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.JerseyFinancialServicesCommissionRegistryNumber)).HasInnerHtml;
     var isleofManCompaniesRegistryNumberHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.IsleofManCompaniesRegistryNumber)).HasInnerHtml;
 
-    var ukLearningProviderReferenceNumberHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.UKLearningProviderReferenceNumber)).HasInnerHtml;
-    var vatNumberHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.VATNumber)).HasInnerHtml;
+    var ukLearningProviderReferenceNumberHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.UKLearningProviderReferenceNumber)).HasInnerHtml;    
 
     var nationalHealthServiceOrganisationsRegistryNumberHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.NationalHealthServiceOrganisationsRegistryNumber)).HasInnerHtml;
 
@@ -24,7 +23,7 @@
     Back
 </a>
 
-<main class="govuk-main-wrapper">
+<main class="govuk-main-wrapper" id="main-content">
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <partial name="_ErrorSummary" model="@Model.ModelState" />
@@ -148,18 +147,7 @@
                                     @Html.TextBoxFor(m => m.UKLearningProviderReferenceNumber, new { @class = "govuk-input " + (ukLearningProviderReferenceNumberHasError ? "govuk-input--error" : ""), @id = "UKLearningProviderReferenceNumber", @type = "text", spellcheck = "false", autocomplete = "off" })
                                 </div>
                             </div>
-
-                            <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="VAT" name="OrganisationScheme" type="radio" value="VAT" data-aria-controls="conditional-VAT" @(Model.OrganisationScheme == "VAT" ? "checked" : "")>
-                                @Html.LabelFor(m => m.VAT, new { @class = "govuk-label govuk-radios__label", @for = "VAT" })
-                            </div>
-                            <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-VAT">
-                                <div class="govuk-form-group @(vatNumberHasError ? "govuk-form-group--error" : "")">
-                                    @Html.LabelFor(m => m.VATNumber, new { @class = "govuk-label", @for = Model.VATNumber })
-                                    @Html.ValidationMessageFor(m => m.VATNumber, "", new { @class = "govuk-error-message", @id = "VATNumber-error" })
-                                    @Html.TextBoxFor(m => m.VATNumber, new { @class = "govuk-input " + (vatNumberHasError ? "govuk-input--error" : ""), @id = "VATNumber", @type = "text", spellcheck = "false", autocomplete = "off" })
-                                </div>
-                            </div>
+                         
                             <div class="govuk-radios__divider">or</div>
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input" id="Other" name="OrganisationScheme" type="radio" value="Other" @(Model.OrganisationScheme == "Other" ? "checked" : "")>

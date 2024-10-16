@@ -48,14 +48,15 @@ public class RegisterOrganisationUseCase(
     {
         var person = await FindPerson(command);
         var organisation = CreateOrganisation(command, person);
-        organisationRepository.Save(organisation);
+        await organisationRepository.SaveAsync(
+            organisation,
+            async _ => await publisher.Publish(mapper.Map<OrganisationRegistered>(organisation)));
 
         if (organisation.Roles.Contains(OrganisationInformation.PartyRole.Buyer))
         {
             await NotifyAdminOfApprovalRequest(organisation);
         }
 
-        await publisher.Publish(mapper.Map<OrganisationRegistered>(organisation));
         return mapper.Map<Model.Organisation>(organisation);
     }
 

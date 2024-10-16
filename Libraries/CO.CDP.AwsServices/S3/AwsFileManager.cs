@@ -58,6 +58,16 @@ public class AwsFileManager(
         }
     }
 
+    public async Task<Stream> DownloadFile(string filename)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(filename);
+
+        var permanentBucket = awsConfig.Buckets?.PermanentBucket
+            ?? throw new Exception($"Missing Aws configuration '{nameof(awsConfig.Buckets.PermanentBucket)}' key.");
+
+        return await s3Client.GetObjectStreamAsync(permanentBucket, filename, new Dictionary<string, object>());
+    }
+
     public async Task CopyToPermanentBucket(string filename, bool deleteInSource = true)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(filename);

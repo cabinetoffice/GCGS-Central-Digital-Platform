@@ -23,7 +23,15 @@ public class ExclusionAppliesToChoiceProviderStrategy(IUserInfoService userInfoS
 
             foreach (var entity in connectedEntities)
             {
-                result[JsonSerializer.Serialize(new { id = entity.EntityId, type = "connected-entity" }, jsonSerializerOptions)] = entity.Name;
+                var name = entity.Name;
+
+                if (entity.EntityType == ConnectedEntityType.TrustOrTrustee || entity.EntityType == ConnectedEntityType.Individual)
+                {
+                    var connectedEntityDetails = await organisationClient.GetConnectedEntityAsync((Guid)organisationId, entity.EntityId);
+                    name = connectedEntityDetails.IndividualOrTrust.FirstName + " " + connectedEntityDetails.IndividualOrTrust.LastName;
+                }
+
+                result[JsonSerializer.Serialize(new { id = entity.EntityId, type = "connected-entity" }, jsonSerializerOptions)] = name;
             }
 
 

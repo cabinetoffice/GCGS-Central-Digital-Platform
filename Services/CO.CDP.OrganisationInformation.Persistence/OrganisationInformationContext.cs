@@ -25,6 +25,7 @@ public class OrganisationInformationContext(DbContextOptions<OrganisationInforma
     public DbSet<FormAnswerSet> FormAnswerSets { get; set; } = null!;
     public DbSet<RefreshToken> RefreshTokens { get; set; } = null!;
     public DbSet<PersonInvite> PersonInvites { get; set; } = null!;
+    public DbSet<OrganisationJoinRequest> OrganisationJoinRequests { get; set; } = null!;
     public DbSet<OutboxMessage> OutboxMessages { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -32,7 +33,7 @@ public class OrganisationInformationContext(DbContextOptions<OrganisationInforma
         modelBuilder.HasPostgresEnum<ControlCondition>();
         modelBuilder.HasPostgresEnum<ConnectedEntityType>();
         modelBuilder.HasPostgresEnum<ConnectedPersonType>();
-        modelBuilder.HasPostgresEnum<ConnectedPersonCategory>();
+        modelBuilder.HasPostgresEnum<ConnectedEntityIndividualAndTrustCategoryType>();
         modelBuilder.HasPostgresEnum<ConnectedOrganisationCategory>();
 
         modelBuilder.Entity<ConnectedEntity>(entity =>

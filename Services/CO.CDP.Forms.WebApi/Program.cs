@@ -29,6 +29,7 @@ builder.Services.AddDbContext<OrganisationInformationContext>(o =>
     o.UseNpgsql(ConnectionStringHelper.GetConnectionString(builder.Configuration, "OrganisationInformationDatabase")));
 builder.Services.AddScoped<IFormRepository, DatabaseFormRepository>();
 builder.Services.AddScoped<IOrganisationRepository, DatabaseOrganisationRepository>();
+builder.Services.AddScoped<IPersonRepository, DatabasePersonRepository>();
 
 builder.Services.AddScoped<IUseCase<(Guid, Guid), FormSectionResponse?>, GetFormSectionsUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, Guid), bool>, DeleteAnswerSetUseCase>();

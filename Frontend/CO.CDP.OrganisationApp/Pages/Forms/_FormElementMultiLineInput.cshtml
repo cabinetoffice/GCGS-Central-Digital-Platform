@@ -30,7 +30,7 @@
         </p>
     }
 
-    <textarea class="govuk-textarea govuk-js-character-count" rows="5" id="TextInput" name="TextInput" aria-describedby="TextInput-info">@Model.TextInput</textarea>
+    <textarea class="govuk-textarea govuk-js-character-count" rows="5" id="@nameof(Model.TextInput)" name="@nameof(Model.TextInput)" aria-describedby="TextInput-info">@Model.TextInput</textarea>
 
     <div id="TextInput-info" class="govuk-hint govuk-character-count__message">
         You can enter up to 10,000 characters
