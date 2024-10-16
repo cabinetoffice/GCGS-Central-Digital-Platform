@@ -1,21 +1,18 @@
 using CO.CDP.EntityVerificationClient;
-using CO.CDP.Mvc.Validation;
-using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Constants;
-using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.WebApiClients;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using ApiException = CO.CDP.EntityVerificationClient.ApiException;
-using Identifier = CO.CDP.Organisation.WebApiClient.Identifier;
+using CO.CDP.Mvc.Validation;
+using OrganisationWebApiClient = CO.CDP.Organisation.WebApiClient;
 
 namespace CO.CDP.OrganisationApp.Pages.Organisation;
 
 [Authorize(Policy = OrgScopeRequirement.Editor)]
-public class OrganisationIdentificationModel(IOrganisationClient organisationClient) : PageModel
+public class OrganisationIdentificationModel(OrganisationWebApiClient.IOrganisationClient organisationClient) : PageModel
 {
     [BindProperty]
     [DisplayName("Organisation Type")]
@@ -129,13 +126,18 @@ public class OrganisationIdentificationModel(IOrganisationClient organisationCli
 
             return Page();
         }
+        catch (OrganisationWebApiClient.ApiException<OrganisationWebApiClient.ProblemDetails> aex)
+        {
+            ApiExceptionMapper.MapApiExceptions(aex, ModelState);
+            return Page();
+        }
         catch (ApiException ex) when (ex.StatusCode == 404)
         {
             return Redirect("/page-not-found");
         }
     }
 
-    private async Task<(bool valid, List<Identifier>)> ValidateAndGetExistingIdentifiers()
+    private async Task<(bool valid, List<OrganisationWebApiClient.Identifier>)> ValidateAndGetExistingIdentifiers()
     {
         var organisation = await organisationClient.GetOrganisationAsync(Id);
         if (organisation == null) return (false, new());
@@ -169,11 +171,11 @@ public class OrganisationIdentificationModel(IOrganisationClient organisationCli
             if (organisation == null) return Redirect("/page-not-found");
 
             // Create a new list of identifiers based on the OrganisationScheme
-            var identifiers = new List<OrganisationIdentifier>();
+            var identifiers = new List<OrganisationWebApiClient.OrganisationIdentifier>();
 
             foreach (var scheme in OrganisationScheme)
             {
-                identifiers.Add(new OrganisationIdentifier(
+                identifiers.Add(new OrganisationWebApiClient.OrganisationIdentifier(
                     id: GetOrganisationIdentificationNumber(scheme),
                     legalName: organisation.Name,
                     scheme: scheme
@@ -183,6 +185,11 @@ public class OrganisationIdentificationModel(IOrganisationClient organisationCli
             await organisationClient.UpdateOrganisationAdditionalIdentifiers(Id, identifiers);
 
             return RedirectToPage("OrganisationOverview", new { Id });
+        }
+        catch (OrganisationWebApiClient.ApiException<OrganisationWebApiClient.ProblemDetails> aex)
+        {
+            ApiExceptionMapper.MapApiExceptions(aex, ModelState);
+            return Page();
         }
         catch (ApiException ex) when (ex.StatusCode == 404)
         {
@@ -208,7 +215,7 @@ public class OrganisationIdentificationModel(IOrganisationClient organisationCli
         };
     }
 
-    private void SetIdentifierValue(Identifier identifier)
+    private void SetIdentifierValue(OrganisationWebApiClient.Identifier identifier)
     {
         switch (identifier.Scheme)
         {
