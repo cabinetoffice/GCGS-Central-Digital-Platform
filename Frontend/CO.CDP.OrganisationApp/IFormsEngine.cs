@@ -16,5 +16,5 @@ public interface IFormsEngine
 
     Task<string> CreateShareCodeAsync(Guid formId, Guid organisationId);
 
-    Guid? GetPreviousUnansweredQuestionId(List<FormQuestion> questions, FormQuestionAnswerState? answerState);
+    Guid? GetPreviousUnansweredQuestionId(List<FormQuestion> questions, FormQuestionAnswerState answerState, Guid currentQuestionId);
 }

@@ -167,14 +167,19 @@ public class FormsEngine(
         return result;
     }
 
-    public Guid? GetPreviousUnansweredQuestionId(List<Models.FormQuestion> questions, FormQuestionAnswerState? answerState)
+    public Guid? GetPreviousUnansweredQuestionId(List<Models.FormQuestion> questions, FormQuestionAnswerState answerState, Guid currentQuestionId)
     {
-        var answeredQuestionIds = answerState?.Answers.Select(a => a.QuestionId).ToList() ?? new List<Guid>();
+        var answeredQuestionIds = answerState.Answers.Select(a => a.QuestionId).ToList();
 
         var questionsInOrder = GetSortedFormQuestions(questions);
 
         foreach (var question in questionsInOrder)
         {
+            if (question.Id == currentQuestionId)
+            {
+                break;
+            }
+
             if (answerState?.Answers.Any(t => t.QuestionId == question.Id) == false)
             {
                 return question.Id;
