@@ -8,6 +8,7 @@ public class WebApiToPersistenceProfile : Profile
     public WebApiToPersistenceProfile()
     {
         CreateMap<Persistence.FormSection, Model.FormSection>()
+            .ForMember(dest => dest.Title, opt => opt.MapFrom<LocalizedPropertyResolver<Persistence.FormSection, Model.FormSection>, string>(src => src.Title))
             .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Guid));
 
         CreateMap<Persistence.FormQuestion, Model.FormQuestion>()

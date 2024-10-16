@@ -45,7 +45,7 @@ public class OrganisationNameModelTest
         results.Any(c => c.MemberNames.Contains("OrganisationName")).Should().BeTrue();
 
         results.Where(c => c.MemberNames.Contains("OrganisationName")).First()
-            .ErrorMessage.Should().Be("Enter the organisation's name");
+            .ErrorMessage.Should().Be("OrganisationRegistration_EnterOrganisationName_Heading");    // Not passed through localization at this point
     }
 
     [Fact]
