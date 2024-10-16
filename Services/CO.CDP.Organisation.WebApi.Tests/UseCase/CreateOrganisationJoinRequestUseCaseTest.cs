@@ -104,7 +104,7 @@ public class CreateOrganisationJoinRequestUseCaseTests
         _mockMapper.Setup(mapper => mapper.Map<OrganisationJoinRequest>(It.IsAny<CO.CDP.OrganisationInformation.Persistence.OrganisationJoinRequest>()))
             .Returns(new OrganisationJoinRequest
             {
-                Status = "Pending",
+                Status = OrganisationJoinRequestStatus.Pending,
                 Id = default,
                 Person = null!,
                 Organisation = null!,
@@ -115,7 +115,7 @@ public class CreateOrganisationJoinRequestUseCaseTests
         var result = await _useCase.Execute((_organisation.Guid, createJoinRequestCommand));
 
         result.Should().NotBeNull();
-        result.Status.Should().Be("Pending");
+        result.Status.Should().Be(OrganisationJoinRequestStatus.Pending);
 
         _mockOrganisationJoinRequestRepository.Verify(repo => repo.Save(It.IsAny<CO.CDP.OrganisationInformation.Persistence.OrganisationJoinRequest>()), Times.Once);
         _mockMapper.Verify(mapper => mapper.Map<OrganisationJoinRequest>(It.IsAny<CO.CDP.OrganisationInformation.Persistence.OrganisationJoinRequest>()), Times.Once);
