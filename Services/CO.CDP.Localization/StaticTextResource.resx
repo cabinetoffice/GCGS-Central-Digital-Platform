@@ -159,4 +159,16 @@
   <data name="Supplier_SupplierInformationSummary_FormRecordCount_Plural" xml:space="preserve">
     <value>{0} records</value>
   </data>
+  <data name="OrganisationRegistration_EnterOrganisationName_Heading" xml:space="preserve">
+    <value>Enter the organisation's name</value>
+  </data>
+  <data name="OrganisationRegistration_EnterOrganisationName_Hint" xml:space="preserve">
+    <value>As registered on Companies House if incorporated, or the trading name of the company.</value>
+  </data>
+  <data name="Global_Error" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="Global_Continue" xml:space="preserve">
+    <value>Continue</value>
+  </data>
 </root>

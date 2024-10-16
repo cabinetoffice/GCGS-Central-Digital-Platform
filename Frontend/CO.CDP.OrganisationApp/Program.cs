@@ -47,7 +47,7 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
 var mvcBuilder = builder.Services.AddRazorPages()
     .AddViewLocalization()
     .AddDataAnnotationsLocalization(options => {
-        options.DataAnnotationLocalizerProvider = (type, factory) => factory.Create(typeof(ValidationMessagesResource));
+        options.DataAnnotationLocalizerProvider = (type, factory) => factory.Create(typeof(StaticTextResource));
     })
     .AddSessionStateTempDataProvider();
 

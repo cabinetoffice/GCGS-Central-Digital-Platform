@@ -13,8 +13,8 @@ public class OrganisationNameModel(ISession session, ICompaniesHouseApi companie
     public override string CurrentPage => OrganisationNamePage;
 
     [BindProperty]
-    [DisplayName(nameof(ValidationMessagesResource.OrganisationRegistration_EnterOrganisationName))]
-    [Required(ErrorMessage = nameof(ValidationMessagesResource.OrganisationRegistration_EnterOrganisationName))]
+    [DisplayName(nameof(StaticTextResource.OrganisationRegistration_EnterOrganisationName_Heading))]
+    [Required(ErrorMessage = nameof(StaticTextResource.OrganisationRegistration_EnterOrganisationName_Heading))]
     public string? OrganisationName { get; set; }
 
     [BindProperty]
