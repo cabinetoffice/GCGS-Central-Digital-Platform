@@ -1,5 +1,13 @@
 # Manage Secrets
 
+> **Note:** In this documentation, `ave` is an alias for the `aws-vault exec` command, and `aws-switch-to-*` is an alias that configures the following:
+> - `AWS_PROFILE`
+> - `TG_ENVIRONMENT`
+> - `AWS_ENV` (optional)
+> - `MFA_TOKEN` handler (out of scope for this documentation)
+>
+> You are welcome to use any profile manager or tool you are more comfortable with.
+
 ## Table of Contents
 - [Retrieve Diagnostic URI](#retrieve-diagnostic-uri)
 - [Update Authority Secrets](#update-authority-secrets)
@@ -17,7 +25,7 @@
 1. Set your AWS profile to target the specified AWS account, and use the AWS CLI to retrieve the full URL of the diagnostic page for the given account.
 
 ```shell
-# ave is an alias for the `aws-vault exec` command
+
 echo "https://$(ave aws route53 list-hosted-zones --query 'HostedZones[0].Name' --output text | sed 's/\.$//')$(ave aws secretsmanager get-secret-value --secret-id cdp-sirsi-diagnostic-path --query 'SecretString' --output text)"
 ```
 
@@ -49,7 +57,6 @@ ave make aws-push-authority-private-key
 2. Assume the appropriate role for the target environment and update the secret:
 
 ```shell
-# ave is an alias for the `aws-vault exec` command
 # Add using:
 # ave aws secretsmanager create-secret --name cdp-sirsi-companies-house-credentials --secret-string file://secrets/companies-house-secrets-development.json | jq .
 # Or update using:
@@ -66,7 +73,6 @@ ave aws secretsmanager put-secret-value --secret-id cdp-sirsi-companies-house-cr
 2. Set your AWS profile to target the specified AWS account, and use the AWS CLI to update the secret:
 
 ```shell
-# ave is an alias for the `aws-vault exec` command
 # Add using:
 # ave aws secretsmanager create-secret --name cdp-sirsi-fts-service-url --secret-string "<FTS service URL>" | jq .
 # Or update using:
@@ -83,7 +89,6 @@ ave aws secretsmanager put-secret-value --secret-id cdp-sirsi-fts-service-url --
 2. Set your AWS profile to target the specified AWS account, and use the AWS CLI to update the secret:
 
 ```shell
-# ave is an alias for the `aws-vault exec` command
 # Add using:
 # ave aws secretsmanager create-secret --name cdp-sirsi-govuknotify-apikey --secret-string "<GOV UK Notify API Key>" | jq .
 # Or update using:
@@ -102,7 +107,6 @@ ave aws secretsmanager put-secret-value --secret-id cdp-sirsi-govuknotify-apikey
 2. Set your AWS profile to target the specified AWS account, and use the AWS CLI to update the secret:
 
 ```shell
-# ave is an alias for the `aws-vault exec` command
 # Add using:
 # ave aws secretsmanager create-secret --name cdp-sirsi-govuknotify-support-admin-email --secret-string "<GOV UK Notify Support Admin Email>" | jq .
 # Or update using:
@@ -129,7 +133,6 @@ ave aws secretsmanager put-secret-value --secret-id cdp-sirsi-govuknotify-suppor
 2. Assume the appropriate role for the target environment and update the secret:
 
 ```shell
-# ave is an alias for the `aws-vault exec` command
 # Add using:
 # ave aws secretsmanager create-secret --name cdp-sirsi-one-login-credentials --secret-string file://secrets/onelogin-secrets-development.json | jq .
 # Or update using:
