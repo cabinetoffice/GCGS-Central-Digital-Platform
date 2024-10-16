@@ -24,9 +24,6 @@ public class CompaniesHouseApi(IConfiguration configuration,
                 .GetAsync()
                 .ReceiveJson<RegisteredAddress>();
         }
-        catch (FlurlHttpException ex) when ((ex.StatusCode == (int)HttpStatusCode.NotFound) || (ex.StatusCode == (int)HttpStatusCode.InternalServerError))
-        {
-        }
         catch (Exception exc)
         {
             Log(exc, companyNumber);
@@ -50,10 +47,6 @@ public class CompaniesHouseApi(IConfiguration configuration,
                 .WithBasicAuth(userName, password)
                 .GetAsync()
                 .ReceiveJson<CompanyProfile>();
-        }
-        catch (FlurlHttpException ex) when ((ex.StatusCode == (int)HttpStatusCode.NotFound) || (ex.StatusCode == (int)HttpStatusCode.InternalServerError))
-        {
-            
         }
         catch (Exception exc)
         {
