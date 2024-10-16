@@ -68,12 +68,15 @@
                             }
                             @foreach (var aidentifier in organisationDetails.AdditionalIdentifiers)
                             {
-                                <p>
-                                    &bull;
-                                    @aidentifier.Scheme.SchemeDescription()
-                                    <br />
-                                    @aidentifier.Id
-                                </p>
+                                @if (@aidentifier.Scheme != Helper.VatSchemeName)
+                                {
+                                    <p>
+                                        &bull;
+                                        @aidentifier.Scheme.SchemeDescription()
+                                        <br />
+                                        @aidentifier.Id
+                                    </p>
+                                }
                             }
                         </dd>
                         <authorize scope="@OrgScopeRequirement.Editor">
