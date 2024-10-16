@@ -35,12 +35,12 @@ public class DatabaseAuthenticationKeyRepositoryTest(PostgreSqlFixture postgreSq
         using var repository = AuthenticationKeyRepository();
         var organisation = GivenOrganisation();
         var authenticationKey = GivenAuthenticationKey(key: Guid.NewGuid().ToString(), organisation: organisation);
-        authenticationKey.Organisation = GivenOrganisation();
 
         await repository.Save(authenticationKey);
 
         var found = await repository.Find(authenticationKey.Key);
-        found.As<AuthenticationKey>().OrganisationId.Should().Be(authenticationKey.Organisation.Id);
+        found.As<AuthenticationKey>().OrganisationId.Should().NotBeNull();
+        found.As<AuthenticationKey>().OrganisationId.Should().Be(authenticationKey.Organisation?.Id);
     }
 
     [Fact]
@@ -62,41 +62,41 @@ public class DatabaseAuthenticationKeyRepositoryTest(PostgreSqlFixture postgreSq
         using var repository = AuthenticationKeyRepository();
         var organisation = GivenOrganisation();
         var key = Guid.NewGuid().ToString();
-        var authenticationKey = GivenAuthenticationKey(key: key, organisation: organisation);
+        var authenticationKey = GivenAuthenticationKey(name: "fts-key", key: key, organisation: organisation);
         await repository.Save(authenticationKey);
 
-        var found = await repository.FindByKeyNameAndOrganisationId("fts", organisation.Guid);
+        var found = await repository.FindByKeyNameAndOrganisationId("fts-key", organisation.Guid);
         found.As<AuthenticationKey>().Should().NotBeNull();
         found.As<AuthenticationKey>().Key.Should().BeSameAs(key);
     }
 
     [Fact]
-    public void ItRejectsTwoApiKeyWithTheSameName()
+    public async Task ItRejectsTwoApiKeyWithTheSameName()
     {
         using var repository = AuthenticationKeyRepository();
         var organisation = GivenOrganisation();
         var key = Guid.NewGuid().ToString();
-        var authenticationKey1 = GivenAuthenticationKey(key: key, organisation: organisation);
-        var authenticationKey2 = GivenAuthenticationKey(key: key, organisation: organisation);
+        var authenticationKey1 = GivenAuthenticationKey(name: "fts", key: key, organisation: organisation);
+        var authenticationKey2 = GivenAuthenticationKey(name: "fts", key: key, organisation: organisation);
 
-        repository.Save(authenticationKey1);
-        
-        repository.Invoking(r => r.Save(authenticationKey2))
+        await repository.Save(authenticationKey1);
+
+        await repository.Invoking(async r => await r.Save(authenticationKey2))
             .Should().ThrowAsync<IAuthenticationKeyRepository.AuthenticationKeyRepositoryException.DuplicateAuthenticationKeyNameException>()
             .WithMessage($"Authentication Key with name `fts` already exists.");
     }
 
     private static AuthenticationKey GivenAuthenticationKey(
-        string name = "fts",
-        string key = "api-key",
+        string? name = null,
+        string? key = null,
         Organisation? organisation = null,
         List<string>? scopes = null
     )
     {
         return new AuthenticationKey
         {
-            Name = name,
-            Key = key,
+            Name = name ?? $"key {Guid.NewGuid()}",
+            Key = key ?? Guid.NewGuid().ToString(),
             Organisation = organisation,
             Scopes = scopes ?? []
         };

@@ -74,10 +74,7 @@ public class OrganisationIdentificationModelTests
 
             case "GB-UKPRN":
                 model.UKLearningProviderReferenceNumber.Should().Be(registrationDetails.OrganisationIdentificationNumber);
-                break;
-            case "VAT":
-                model.VATNumber.Should().Be(registrationDetails.OrganisationIdentificationNumber);
-                break;
+                break;            
         }
 
     }
@@ -146,7 +143,7 @@ public class OrganisationIdentificationModelTests
             OrganisationScheme = organisationType,
             CharityCommissionNorthernIrelandNumber = charityCommissionNorthernIrelandNumber
         };
-        model.ModelState.AddModelError("CharityCommissionNorthernIrelandNumber", "The Charity Commission for Northren Ireland Number field is required.");
+        model.ModelState.AddModelError("CharityCommissionNorthernIrelandNumber", "The Charity Commission for Northern Ireland Number field is required.");
 
         var result = await model.OnPost();
 
@@ -260,25 +257,7 @@ public class OrganisationIdentificationModelTests
 
         result.Should().BeOfType<PageResult>();
         model.ModelState.IsValid.Should().BeFalse();
-    }
-
-    [Theory]
-    [InlineData("VAT", null)]
-    [InlineData("VAT", "")]
-    public async Task OnPost_WhenOrganisationTypeIsVATAndVATNumberIsNullOrEmpty_ShouldReturnPageWithModelStateError(string organisationType, string? vatNumber)
-    {
-        var model = new OrganisationIdentificationModel(sessionMock.Object, organisationClientMock.Object, _pponClientMock.Object)
-        {
-            OrganisationScheme = organisationType,
-            VATNumber = vatNumber
-        };
-        model.ModelState.AddModelError("VATNumber", "VAT Number field is required.");
-
-        var result = await model.OnPost();
-
-        result.Should().BeOfType<PageResult>();
-        model.ModelState.IsValid.Should().BeFalse();
-    }
+    }    
 
     [Fact]
     public async Task OnPost_WhenModelStateIsValid_ShouldRedirectToOrganisationName()
@@ -315,8 +294,7 @@ public class OrganisationIdentificationModelTests
     {
         var model = new OrganisationIdentificationModel(sessionMock.Object, organisationClientMock.Object, _pponClientMock.Object)
         {
-            OrganisationScheme = "VAT",
-            VATNumber = "0123456789",
+            OrganisationScheme = "JE-FSC",         
             RedirectToSummary = true
         };
         GivenRegistrationIsInProgress();
@@ -335,8 +313,7 @@ public class OrganisationIdentificationModelTests
     {
         var model = new OrganisationIdentificationModel(sessionMock.Object, organisationClientMock.Object, _pponClientMock.Object)
         {
-            OrganisationScheme = "VAT",
-            VATNumber = "0123456789",
+            OrganisationScheme = "JE-FSC",           
             RedirectToSummary = true
         };
         GivenRegistrationIsInProgress();
@@ -355,8 +332,7 @@ public class OrganisationIdentificationModelTests
     {
         var model = new OrganisationIdentificationModel(sessionMock.Object, organisationClientMock.Object, _pponClientMock.Object)
         {
-            OrganisationScheme = "VAT",
-            VATNumber = "0123456789",
+            OrganisationScheme = "JE-FSC",            
             RedirectToSummary = true
         };
 
@@ -379,8 +355,7 @@ public class OrganisationIdentificationModelTests
     [InlineData("JE-FSC", "JFSC123")]
     [InlineData("IM-CR", "IMCR123")]
     [InlineData("GB-NHS", "STUVWX")]
-    [InlineData("GB-UKPRN", "PRN1234")]
-    [InlineData("VAT", "GB1234")]
+    [InlineData("GB-UKPRN", "PRN1234")]    
     public async Task OnPost_WhenModelStateIsValid_ShouldStoreOrganisationTypeAndIdentificationNumberInSession(string organisationType, string identificationNumber)
     {
         var model = new OrganisationIdentificationModel(sessionMock.Object, organisationClientMock.Object, _pponClientMock.Object)
@@ -429,9 +404,6 @@ public class OrganisationIdentificationModelTests
                 break;
             case "GB-UKPRN":
                 model.UKLearningProviderReferenceNumber = identificationNumber;
-                break;
-            case "VAT":
-                model.VATNumber = identificationNumber;
                 break;
         }
     }

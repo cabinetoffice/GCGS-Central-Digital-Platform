@@ -7,7 +7,7 @@ public static class OrganisationSchemeType
             { "GB-COH", "Companies House Number"},
             { "GB-CHC", "Charity Commission for England & Wales Number"},
             { "GB-SC", "Scottish Charity Regulator"},
-            { "GB-NIC", "Charity Commission for Northren Ireland Number"},
+            { "GB-NIC", "Charity Commission for Northern Ireland Number"},
             { "GB-MPR", "Mutuals Public Register Number"},
             { "GG-RCE", "Guernsey Registry Number"},
             { "JE-FSC", "Jersey Financial Services Commission Registry Number"},

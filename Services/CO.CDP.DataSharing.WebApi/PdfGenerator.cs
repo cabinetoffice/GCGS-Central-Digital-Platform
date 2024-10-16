@@ -8,7 +8,7 @@ namespace CO.CDP.DataSharing.WebApi;
 
 public class PdfGenerator : IPdfGenerator
 {
-    public byte[] GenerateBasicInformationPdf(SharedSupplierInformation supplierInformation)
+    public Stream GenerateBasicInformationPdf(SharedSupplierInformation supplierInformation)
     {
         QuestPDF.Settings.License = LicenseType.Community;
         var basicInformation = supplierInformation.BasicInformation;
@@ -40,11 +40,9 @@ public class PdfGenerator : IPdfGenerator
             });
         });
 
-        using (var stream = new MemoryStream())
-        {
-            document.GeneratePdf(stream);
-            return stream.ToArray();
-        }
+        var stream = new MemoryStream();
+        document.GeneratePdf(stream);
+        return stream;
     }
 
     private void AddFormSections(ColumnDescriptor col, IEnumerable<FormAnswerSetForPdf> formAnswerSet)

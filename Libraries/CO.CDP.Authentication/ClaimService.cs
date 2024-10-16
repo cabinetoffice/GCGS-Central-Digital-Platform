@@ -13,17 +13,10 @@ public class ClaimService(
         return httpContextAccessor.HttpContext?.User?.FindFirst(ClaimType.Subject)?.Value;
     }
 
-    public async Task<bool> HaveAccessToOrganisation(Guid organisationId, string[]? scopes = null)
+    public IEnumerable<string> GetUserRoles()
     {
-        var userUrn = GetUserUrn();
-        if (string.IsNullOrWhiteSpace(userUrn)) return false;
-
-        var organisationPerson = await organisationRepository.FindOrganisationPerson(organisationId, userUrn);
-        if (organisationPerson == null) return false;
-
-        if (scopes == null) return true;
-
-        return organisationPerson.Scopes.Intersect(scopes).Any();
+        var roles = httpContextAccessor.HttpContext?.User?.FindFirst(ClaimType.Roles)?.Value;
+        return string.IsNullOrWhiteSpace(roles) ? [] : roles.Split(",", StringSplitOptions.RemoveEmptyEntries);
     }
 
     public Guid? GetOrganisationId()
@@ -33,5 +26,23 @@ public class ClaimService(
             return result;
         }
         return null;
+    }
+
+    public async Task<bool> HaveAccessToOrganisation(Guid organisationId, string[]? scopes = null, string[]? personScopes = null)
+    {
+        var userUrn = GetUserUrn();
+        if (string.IsNullOrWhiteSpace(userUrn)) return false;
+
+        if (personScopes != null && GetUserRoles().Intersect(personScopes).Any())
+        {
+            return true;
+        }
+
+        var organisationPerson = await organisationRepository.FindOrganisationPerson(organisationId, userUrn);
+        if (organisationPerson == null) return false;
+
+        if (scopes == null) return true;
+
+        return organisationPerson.Scopes.Intersect(scopes).Any();
     }
 }

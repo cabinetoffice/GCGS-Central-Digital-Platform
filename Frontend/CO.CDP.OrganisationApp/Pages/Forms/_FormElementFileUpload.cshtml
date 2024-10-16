@@ -14,20 +14,24 @@
 
     void RenderField()
     {
-        <label class="govuk-label" for="file-upload">
+        <label class="govuk-label" for="@nameof(Model.UploadedFile)">
             Upload a file
         </label>
         <div id="documents-hint" class="govuk-hint">
             You can upload most file types including: PDF, scans, mobile phone photos, Word, Excel and PowerPoint, multimedia and ZIP files that are smaller than 25MB.
         </div>
+
+        var ariaDescribedby = "documents-hint";
         if (uploadFileHasError)
         {
-            <p class="govuk-error-message">
+            ariaDescribedby += "documents-error";
+            <p class="govuk-error-message" id="documents-error">
                 <span class="govuk-visually-hidden">Error:</span>
                 @Html.ValidationMessageFor(m => m.UploadedFile)
             </p>
         }
-        <input id="file-upload" class="govuk-file-upload" name="UploadedFile" type="file"
+
+        <input id="@nameof(Model.UploadedFile)" class="govuk-file-upload" name="@nameof(Model.UploadedFile)" type="file" aria-describedby="@ariaDescribedby"
                accept="image/png, image/gif, image/jpeg, application/pdf, text/plain, text/csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document">
 
         @if (!string.IsNullOrWhiteSpace(@Model.UploadedFileName))
@@ -40,8 +44,6 @@
 <input type="hidden" name="UploadedFileName" value="@Model.UploadedFileName" />
 
 <div class="govuk-form-group @((Model.IsRequired && uploadFileHasError) || selectOptionHasError ? "govuk-form-group--error" : "")">
-
-
     @if (Model.IsRequired)
     {
         <h1 class="govuk-heading-l">@Model.Heading</h1>
@@ -68,9 +70,9 @@
             <div class="govuk-radios" data-module="govuk-radios">
 
                 <div class="govuk-radios__item">
-                    <input class="govuk-radios__input" id="YES" name="HasValue" type="radio"
+                    <input class="govuk-radios__input" id="@nameof(Model.HasValue)" name="@nameof(Model.HasValue)" type="radio"
                            value="true" data-aria-controls="conditional-YES" @(Model.HasValue == true ? "checked" : "")>
-                    <label class="govuk-label govuk-radios__label" for="YES">Yes</label>
+                    <label class="govuk-label govuk-radios__label" for="@nameof(Model.HasValue)">Yes</label>
                 </div>
 
                 <div class="govuk-radios__conditional" id="conditional-YES">
@@ -82,9 +84,9 @@
                 </div>
 
                 <div class="govuk-radios__item">
-                    <input class="govuk-radios__input" id="NO" name="HasValue" type="radio"
+                    <input class="govuk-radios__input" id="@nameof(Model.HasValue)-1" name="@nameof(Model.HasValue)" type="radio"
                            value="false" @(Model.HasValue == false ? "checked" : "")>
-                    <label class="govuk-label govuk-radios__label" for="NO">No</label>
+                    <label class="govuk-label govuk-radios__label" for="@nameof(Model.HasValue)-1">No</label>
                 </div>
             </div>
         </fieldset>

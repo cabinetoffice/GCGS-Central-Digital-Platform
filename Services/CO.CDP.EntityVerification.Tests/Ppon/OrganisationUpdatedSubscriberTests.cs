@@ -16,7 +16,7 @@ public class OrganisationUpdatedSubscriberTests
         var mockEvent = GivenOrganisationUpdatedEvent();
         var testPpon = GivenPpon(mockEvent.Identifier.Id);
         var totalAdditionalIdentifiersBeforeUpdate = mockEvent.AdditionalIdentifiers.Count();
-        
+
         mockPponRepository
             .Setup(repo => repo.FindPponByPponIdAsync(mockEvent.Identifier.Id))
             .ReturnsAsync(testPpon);

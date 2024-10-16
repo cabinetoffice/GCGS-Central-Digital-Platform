@@ -1,3 +1,4 @@
+using CO.CDP.EntityFrameworkCore.DbContext;
 using CO.CDP.EntityVerification.Events;
 using Microsoft.EntityFrameworkCore;
 using static CO.CDP.EntityVerification.Persistence.IPponRepository.PponRepositoryException;
@@ -18,6 +19,14 @@ public class DatabasePponRepository(EntityVerificationContext context) : IPponRe
             HandleDbUpdateException(identifier, cause);
         }
     }
+
+    public async Task SaveAsync(Ppon identifier, Func<Ppon, Task> onSave) =>
+        await context.InTransaction(async _ =>
+        {
+            Save(identifier);
+            await onSave(identifier);
+            await context.SaveChangesAsync();
+        });
 
     public void Dispose()
     {

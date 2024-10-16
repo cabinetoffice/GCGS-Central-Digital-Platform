@@ -1,3 +1,4 @@
+using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
 using CO.CDP.Person.WebApiClient;
 using IdentityModel;
@@ -76,6 +77,11 @@ public class OneLogin(
             if (Helper.ValidRelativeUri(redirectUri))
             {
                 return Redirect(redirectUri!);
+            }
+
+            if(person.Scopes.Contains(PersonScopes.SupportAdmin))
+            {
+                return RedirectToPage("Support/Organisations", new Dictionary<string, string> { { "type", "buyer" } });
             }
 
             return RedirectToPage("Organisation/OrganisationSelection");

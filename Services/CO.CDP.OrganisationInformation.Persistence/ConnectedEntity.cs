@@ -41,7 +41,7 @@ public class ConnectedEntity : IEntityDate
     public record ConnectedIndividualTrust : IEntityDate
     {
         public int Id { get; set; }
-        public required ConnectedPersonCategory Category { get; set; }
+        public required ConnectedEntityIndividualAndTrustCategoryType Category { get; set; }
         public required string FirstName { get; set; }
         public required string LastName { get; set; }
         public DateTimeOffset? DateOfBirth { get; set; }
@@ -91,11 +91,14 @@ public class ConnectedEntity : IEntityDate
         TrustOrTrustee
     }
 
-    public enum ConnectedPersonCategory
+    public enum ConnectedEntityIndividualAndTrustCategoryType
     {
-        PersonWithSignificantControl = 1,
-        DirectorOrIndividualWithTheSameResponsibilities,
-        AnyOtherIndividualWithSignificantInfluenceOrControl
+        PersonWithSignificantControlForIndividual = 1,
+        DirectorOrIndividualWithTheSameResponsibilitiesForIndividual,
+        AnyOtherIndividualWithSignificantInfluenceOrControlForIndividual,
+        PersonWithSignificantControlForTrust,
+        DirectorOrIndividualWithTheSameResponsibilitiesForTrust,
+        AnyOtherIndividualWithSignificantInfluenceOrControlForTrust
     }
 
     public enum ConnectedOrganisationCategory

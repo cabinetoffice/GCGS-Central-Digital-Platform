@@ -39,7 +39,7 @@ public class FormsLandingPage(
 
         if (form.Section.Type != FormSectionType.Declaration)
         {
-            if (await userInfoService.UserHasScope(OrganisationPersonScopes.Viewer))
+            if (await userInfoService.IsViewer())
             {
                 return RedirectToPage("FormsAnswerSetSummary", new { OrganisationId, FormId, SectionId });
             }
