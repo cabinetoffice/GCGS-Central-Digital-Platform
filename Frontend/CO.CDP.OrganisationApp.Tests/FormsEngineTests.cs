@@ -477,9 +477,9 @@ public class FormsEngineTests
     [Fact]
     public void GetPreviousUnansweredQuestionId_ShouldReturnNull_WhenAllQuestionsAreAnswered()
     {
-        var question1 = new FormQuestion { Id = Guid.NewGuid(), SortOrder = 1 };
-        var question2 = new FormQuestion { Id = Guid.NewGuid(), SortOrder = 2 };
-        var question3 = new FormQuestion { Id = Guid.NewGuid(), SortOrder = 3 };
+        var question1 = new FormQuestion { Id = Guid.NewGuid() };
+        var question2 = new FormQuestion { Id = Guid.NewGuid() };
+        var question3 = new FormQuestion { Id = Guid.NewGuid() };
         var questions = new List<FormQuestion> { question1, question2, question3 };
 
         var answerState = new FormQuestionAnswerState
@@ -500,9 +500,9 @@ public class FormsEngineTests
     [Fact]
     public void GetPreviousUnansweredQuestionId_ShouldReturnFirstQuestion_WhenNoQuestionsAreAnswered()
     {
-        var question1 = new FormQuestion { Id = Guid.NewGuid(), SortOrder = 1 };
-        var question2 = new FormQuestion { Id = Guid.NewGuid(), SortOrder = 2 };
-        var question3 = new FormQuestion { Id = Guid.NewGuid(), SortOrder = 3 };
+        var question1 = new FormQuestion { Id = Guid.NewGuid() };
+        var question2 = new FormQuestion { Id = Guid.NewGuid() };
+        var question3 = new FormQuestion { Id = Guid.NewGuid() };
         var questions = new List<FormQuestion> { question1, question2, question3 };
 
         var answerState = new FormQuestionAnswerState
@@ -519,9 +519,9 @@ public class FormsEngineTests
     [Fact]
     public void GetPreviousUnansweredQuestionId_ShouldReturnExpectedResult_WhenCalled()
     {
-        var question1 = new FormQuestion { Id = Guid.NewGuid(), SortOrder = 1 };
-        var question2 = new FormQuestion { Id = Guid.NewGuid(), SortOrder = 2 };
-        var question3 = new FormQuestion { Id = Guid.NewGuid(), SortOrder = 3 };
+        var question1 = new FormQuestion { Id = Guid.NewGuid() };
+        var question2 = new FormQuestion { Id = Guid.NewGuid() };
+        var question3 = new FormQuestion { Id = Guid.NewGuid() };
         var questions = new List<FormQuestion> { question1, question2, question3 };
 
         var answerState = new FormQuestionAnswerState
@@ -540,9 +540,9 @@ public class FormsEngineTests
     [Fact]
     public void GetPreviousUnansweredQuestionId_ShouldReturnNull_WhenAllPreviousQuestionsAreAnswered()
     {
-        var question1 = new FormQuestion { Id = Guid.NewGuid(), SortOrder = 1 };
-        var question2 = new FormQuestion { Id = Guid.NewGuid(), SortOrder = 2 };
-        var question3 = new FormQuestion { Id = Guid.NewGuid(), SortOrder = 3 };
+        var question1 = new FormQuestion { Id = Guid.NewGuid() };
+        var question2 = new FormQuestion { Id = Guid.NewGuid() };
+        var question3 = new FormQuestion { Id = Guid.NewGuid() };
         var questions = new List<FormQuestion> { question1, question2, question3 };
 
         var answerState = new FormQuestionAnswerState
