@@ -69,19 +69,16 @@ public class FormsQuestionPageModel(
 
     public async Task<IActionResult> OnGetAsync()
     {
+        var previousUnansweredQuestionId = await ValidateIfNeedRedirect();
+        if (previousUnansweredQuestionId != null)
+        {
+            return RedirectToPage("FormsQuestionPage", new { OrganisationId, FormId, SectionId, CurrentQuestionId = previousUnansweredQuestionId });
+        }
+
         var currentQuestion = await InitModel(true);
         if (currentQuestion == null)
         {
             return Redirect("/page-not-found");
-        }
-
-        var answerState = tempDataService.PeekOrDefault<FormQuestionAnswerState>(FormQuestionAnswerStateKey);
-
-        var previousUnansweredQuestionId = formsEngine.GetPreviousUnansweredQuestionId(form.Questions, answerState);
-
-        if (previousUnansweredQuestionId != null && previousUnansweredQuestionId != CurrentQuestionId)
-        {
-            RedirectToPage("FormsQuestionPage", new { OrganisationId, FormId, SectionId, CurrentQuestionId = previousUnansweredQuestionId });
         }
 
 
@@ -90,6 +87,12 @@ public class FormsQuestionPageModel(
 
     public async Task<IActionResult> OnPostAsync()
     {
+        var previousUnansweredQuestionId = await ValidateIfNeedRedirect();
+        if (previousUnansweredQuestionId != null)
+        {
+            return RedirectToPage("FormsQuestionPage", new { OrganisationId, FormId, SectionId, CurrentQuestionId = previousUnansweredQuestionId });
+        }
+
         var currentQuestion = await InitModel();
         if (currentQuestion == null)
         {
@@ -231,6 +234,22 @@ public class FormsQuestionPageModel(
         }
 
         return false;
+    }
+
+    private async Task<Guid?> ValidateIfNeedRedirect()
+    {
+        var form = await formsEngine.GetFormSectionAsync(OrganisationId, FormId, SectionId);
+
+        var answerState = tempDataService.PeekOrDefault<FormQuestionAnswerState>(FormQuestionAnswerStateKey);
+
+        var previousUnansweredQuestionId = formsEngine.GetPreviousUnansweredQuestionId(form.Questions, answerState);
+
+        if (previousUnansweredQuestionId != null && previousUnansweredQuestionId != CurrentQuestionId)
+        {
+            return previousUnansweredQuestionId;
+        }
+
+        return null;
     }
 
     private async Task<FormQuestion?> InitModel(bool reset = false)
