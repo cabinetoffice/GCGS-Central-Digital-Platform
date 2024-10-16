@@ -730,16 +730,23 @@ Run the following command to create it with defaults:</p>
 <li>
 <p><code>OneLogin:PrivateKey</code> / <code>OneLogin__PrivateKey</code></p>
 </li>
+<li>
+<p><code>CompaniesHouse:Url</code> / <code>CompaniesHouse__Url</code></p>
+</li>
+<li>
+<p><code>CompaniesHouse:User</code> / <code>CompaniesHouse__User</code>
+These can be set as secrets with the following dotnet commands:</p>
+</li>
 </ul>
-</div>
-<div class="paragraph">
-<p>These can be set as secrets with the following dotnet commands:</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="rouge highlight"><code data-lang="bash">dotnet user-secrets <span class="nb">set</span> <span class="nt">--project</span> Frontend/CO.CDP.OrganisationApp/CO.CDP.OrganisationApp.csproj OneLogin:Authority <span class="s2">"https://oidc.example.com"</span>
 dotnet user-secrets <span class="nb">set</span> <span class="nt">--project</span> Frontend/CO.CDP.OrganisationApp/CO.CDP.OrganisationApp.csproj OneLogin:ClientId <span class="s2">"client-id"</span>
-dotnet user-secrets <span class="nb">set</span> <span class="nt">--project</span> Frontend/CO.CDP.OrganisationApp/CO.CDP.OrganisationApp.csproj OneLogin:PrivateKey <span class="s2">"-----BEGIN RSA PRIVATE KEY-----SECRET KEY-----END RSA PRIVATE KEY-----"</span></code></pre>
+dotnet user-secrets <span class="nb">set</span> <span class="nt">--project</span> Frontend/CO.CDP.OrganisationApp/CO.CDP.OrganisationApp.csproj OneLogin:PrivateKey <span class="s2">"-----BEGIN RSA PRIVATE KEY-----SECRET KEY-----END RSA PRIVATE KEY-----"</span>
+
+dotnet user-secrets <span class="nb">set</span> <span class="nt">--project</span> Frontend/CO.CDP.OrganisationApp/CO.CDP.OrganisationApp.csproj CompaniesHouse:Url <span class="s2">"https://api.company-information.service.gov.uk"</span>
+dotnet user-secrets <span class="nb">set</span> <span class="nt">--project</span> Frontend/CO.CDP.OrganisationApp/CO.CDP.OrganisationApp.csproj CompaniesHouse:User <span class="s2">"user-id"</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -2287,7 +2294,7 @@ The main difference to SpecFlow is that it&#8217;s built on top of xUnit.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2024-10-16 10:21:03 UTC
+Last updated 2024-10-16 13:53:50 UTC
 </div>
 </div>
 </body>
