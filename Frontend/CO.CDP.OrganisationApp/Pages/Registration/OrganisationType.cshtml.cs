@@ -13,7 +13,7 @@ public class OrganisationTypeModel(
     public override string CurrentPage => OrganisationTypePage;
 
     [BindProperty]
-    [Required(ErrorMessage = nameof(ValidationMessagesResource.OrganisationRegistration_SelectOrganisationType) )]
+    [Required(ErrorMessage = "Select the organisation type")]
     public OrganisationType? OrganisationType { get; set; }
 
     [BindProperty]

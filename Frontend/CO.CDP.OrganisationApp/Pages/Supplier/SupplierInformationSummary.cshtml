@@ -106,7 +106,7 @@
                                 }
                                 else
                                 {
-                                    @(section.AnswerSetCount > 1 ? StaticTextResource.Supplier_SupplierInformationSummary_FormRecordCount_Plural : StaticTextResource.Supplier_SupplierInformationSummary_FormRecordCount_Singular)
+                                    @(string.Format(section.AnswerSetCount > 1 ? StaticTextResource.Supplier_SupplierInformationSummary_FormRecordCount_Plural : StaticTextResource.Supplier_SupplierInformationSummary_FormRecordCount_Singular, section.AnswerSetCount))
                                 }
                             }
                         </dd>

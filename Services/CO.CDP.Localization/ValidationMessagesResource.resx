@@ -117,10 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="OrganisationRegistration_SelectOrganisationType" xml:space="preserve">
-    <value>Select the organisation type</value>
-  </data>
-  <data name="Foo" xml:space="preserve">
-    <value>Foo</value>
+  <data name="OrganisationRegistration_EnterOrganisationName" xml:space="preserve">
+    <value>Enter the organisation's name</value>
   </data>
 </root>

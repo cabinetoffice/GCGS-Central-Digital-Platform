@@ -117,7 +117,19 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Exclusions_08_Title" xml:space="preserve">
-    <value>Welsh title here</value>
+  <data name="Exclusions_SectionTitle" xml:space="preserve">
+    <value>Eithriadau</value>
+  </data>
+  <data name="ShareMyInformation_SectionTitle" xml:space="preserve">
+    <value>Rhannu fy ngwybodaeth</value>
+  </data>
+  <data name="Qualifications_SectionTitle" xml:space="preserve">
+    <value>Cymwysterau</value>
+  </data>
+  <data name="TradeAssurances_SectionTitle" xml:space="preserve">
+    <value>Sicrwydd masnach</value>
+  </data>
+  <data name="FinancialInformation_SectionTitle" xml:space="preserve">
+    <value>Gwybodaeth ariannol</value>
   </data>
 </root>

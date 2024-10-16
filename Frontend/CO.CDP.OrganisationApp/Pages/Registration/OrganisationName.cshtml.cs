@@ -1,3 +1,4 @@
+using CO.CDP.Localization;
 using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.ThirdPartyApiClients.CompaniesHouse;
 using Microsoft.AspNetCore.Mvc;
@@ -12,8 +13,8 @@ public class OrganisationNameModel(ISession session, ICompaniesHouseApi companie
     public override string CurrentPage => OrganisationNamePage;
 
     [BindProperty]
-    [DisplayName("Enter the organisation's name")]
-    [Required(ErrorMessage = "Enter the organisation's name")]
+    [DisplayName(nameof(ValidationMessagesResource.OrganisationRegistration_EnterOrganisationName))]
+    [Required(ErrorMessage = nameof(ValidationMessagesResource.OrganisationRegistration_EnterOrganisationName))]
     public string? OrganisationName { get; set; }
 
     [BindProperty]
