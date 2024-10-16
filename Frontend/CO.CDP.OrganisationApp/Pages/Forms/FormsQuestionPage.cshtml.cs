@@ -75,6 +75,16 @@ public class FormsQuestionPageModel(
             return Redirect("/page-not-found");
         }
 
+        var answerState = tempDataService.PeekOrDefault<FormQuestionAnswerState>(FormQuestionAnswerStateKey);
+
+        var previousUnansweredQuestionId = formsEngine.GetPreviousUnansweredQuestionId(form.Questions, answerState);
+
+        if (previousUnansweredQuestionId != null && previousUnansweredQuestionId != CurrentQuestionId)
+        {
+            RedirectToPage("FormsQuestionPage", new { OrganisationId, FormId, SectionId, CurrentQuestionId = previousUnansweredQuestionId });
+        }
+
+
         return Page();
     }
 
@@ -226,21 +236,6 @@ public class FormsQuestionPageModel(
     private async Task<FormQuestion?> InitModel(bool reset = false)
     {
         var form = await formsEngine.GetFormSectionAsync(OrganisationId, FormId, SectionId);
-
-        var answerState = tempDataService.PeekOrDefault<FormQuestionAnswerState>(FormQuestionAnswerStateKey);
-
-        if (answerState.Answers.Count > 0)
-        {
-            var nextValidQuestionId = formsEngine.GetPreviousUnansweredQuestionId(form.Questions, CurrentQuestionId, answerState);
-
-            if (nextValidQuestionId == null)
-                return null;
-
-            if (nextValidQuestionId != CurrentQuestionId)
-            {
-                CurrentQuestionId = nextValidQuestionId ?? Guid.Empty;
-            }
-        }
 
         var currentQuestion = await formsEngine.GetCurrentQuestion(OrganisationId, FormId, SectionId, CurrentQuestionId);
 
