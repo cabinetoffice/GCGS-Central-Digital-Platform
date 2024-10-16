@@ -15,11 +15,26 @@ public class LocalizedPropertyResolver<TSource, TDestination> : IMemberValueReso
 
     public string Resolve(TSource source, TDestination destination, string sourceMember, string destMember, ResolutionContext context)
     {
-        if (!string.IsNullOrEmpty(sourceMember))
+        return _localizer[sourceMember].Value;
+    }
+}
+
+public class NullableLocalizedPropertyResolver<TSource, TDestination> : IMemberValueResolver<TSource, TDestination, string?, string?>
+{
+    private readonly IHtmlLocalizer<FormsEngineResource> _localizer;
+
+    public NullableLocalizedPropertyResolver(IHtmlLocalizer<FormsEngineResource> localizer)
+    {
+        _localizer = localizer;
+    }
+
+    public string? Resolve(TSource? source, TDestination? destination, string? sourceMember, string? destMember, ResolutionContext context)
+    {
+        if (sourceMember == null)
         {
-            return _localizer[sourceMember].Value;
+            return null;
         }
 
-        return sourceMember;
+        return _localizer[sourceMember].Value;
     }
 }
