@@ -53,6 +53,7 @@ public class CompaniesHouseApi(IConfiguration configuration,
         }
         catch (FlurlHttpException ex) when ((ex.StatusCode == (int)HttpStatusCode.NotFound) || (ex.StatusCode == (int)HttpStatusCode.InternalServerError))
         {
+            
         }
         catch (Exception exc)
         {
@@ -64,9 +65,9 @@ public class CompaniesHouseApi(IConfiguration configuration,
 
     private void Log(Exception exc, string companyNumber)
     {
-        var logException = new ExceptionLogging($"Failed to call Companies House API for company number: {companyNumber}.", ErrorCodes.CompaniesHouseApiError, exc);
+        var logException = new CdpExceptionLogging($"Failed to call Companies House API for company number: {companyNumber}.", CdpErrorCodes.CompaniesHouseApiError, exc);
 
-        logger.LogError(logException, "Failed to call Companies House API for company number: {companyNumber}.", companyNumber);
+        logger.LogError(logException, "Failed to call Companies House API.");
     }
 
     private string GetCompaniesHouseUrl()
