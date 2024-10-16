@@ -1,5 +1,7 @@
+using CO.CDP.OrganisationApp.Logging;
 using Flurl;
 using Flurl.Http;
+using System.Net;
 
 namespace CO.CDP.OrganisationApp.ThirdPartyApiClients.CompaniesHouse;
 
@@ -22,9 +24,12 @@ public class CompaniesHouseApi(IConfiguration configuration,
                 .GetAsync()
                 .ReceiveJson<RegisteredAddress>();
         }
+        catch (FlurlHttpException ex) when ((ex.StatusCode == (int)HttpStatusCode.NotFound) || (ex.StatusCode == (int)HttpStatusCode.InternalServerError))
+        {
+        }
         catch (Exception exc)
         {
-            logger.LogError(exc, "Failed during call to registered office address.");
+            Log(exc, companyNumber);
         }
 
         return companyRegDetails;
@@ -46,12 +51,22 @@ public class CompaniesHouseApi(IConfiguration configuration,
                 .GetAsync()
                 .ReceiveJson<CompanyProfile>();
         }
+        catch (FlurlHttpException ex) when ((ex.StatusCode == (int)HttpStatusCode.NotFound) || (ex.StatusCode == (int)HttpStatusCode.InternalServerError))
+        {
+        }
         catch (Exception exc)
         {
-            logger.LogError(exc, "Failed during call to get company profile.");
+            Log(exc, companyNumber);
         }
 
         return profile;
+    }
+
+    private void Log(Exception exc, string companyNumber)
+    {
+        var logException = new ExceptionLogging($"Failed to call Companies House API for company number: {companyNumber}.", ErrorCodes.CompaniesHouseApiError, exc);
+
+        logger.LogError(logException, "Failed to call Companies House API for company number: {companyNumber}.", companyNumber);
     }
 
     private string GetCompaniesHouseUrl()
