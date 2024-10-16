@@ -131,5 +131,40 @@ resource "aws_codepipeline" "this" {
     }
   }
 
+
+  stage {
+    name = "Wait-for-approval-to-update-Production"
+    action {
+      name     = "ManualApproval"
+      category = "Approval"
+      owner    = "AWS"
+      provider = "Manual"
+      version  = "1"
+    }
+  }
+
+  stage {
+    name = "Update-Production"
+    action {
+      category         = "Build"
+      input_artifacts  = ["source_output"]
+      name             = "${local.name_prefix}-deployment-to-production"
+      output_artifacts = ["output_update_account_production"]
+      owner            = "AWS"
+      provider         = "CodeBuild"
+      version          = "1"
+      configuration = {
+        ProjectName = "${local.name_prefix}-deployment-to-production"
+        EnvironmentVariables = jsonencode([
+          {
+            name  = "ENABLE_STATUS_CHECKS"
+            type  = "PLAINTEXT"
+            value = "False"
+          }
+        ])
+      }
+    }
+  }
+
   tags = var.tags
 }

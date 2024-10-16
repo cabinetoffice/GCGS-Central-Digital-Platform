@@ -23,7 +23,7 @@ public class RequiredIfAttribute(string dependentProperty, object? targetValue) 
 
 public class RequiredIfContainsAttribute(string dependentProperty, string containsValue) : RequiredAttribute
 {
-    protected override ValidationResult IsValid(object? value, ValidationContext validationContext)
+    protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
     {
         var instance = validationContext.ObjectInstance;
         var type = instance.GetType();
@@ -37,6 +37,6 @@ public class RequiredIfContainsAttribute(string dependentProperty, string contai
             return new ValidationResult(ErrorMessage ?? $"{validationContext.DisplayName} is required.");
         }
 
-        return ValidationResult.Success!;
+        return ValidationResult.Success;
     }
 }
