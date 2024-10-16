@@ -25,7 +25,7 @@ data "aws_secretsmanager_secret" "authority_keys" {
 }
 
 data "aws_secretsmanager_secret" "companies_house" {
-    name = "${local.name_prefix}-companies-house-credentials"
+  name = "${local.name_prefix}-companies-house-credentials"
 }
 
 data "aws_secretsmanager_secret_version" "fts_service_url" {
