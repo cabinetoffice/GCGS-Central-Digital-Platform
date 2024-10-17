@@ -1,17 +1,17 @@
-resource "aws_route53_record" "ecs_alb" {
+resource "aws_route53_record" "service_to_entrypoint_alias" {
   for_each = local.service_configs
 
   zone_id = var.public_hosted_zone_id
-  name    = each.value.name
+  name    = var.environment == "production" ? "${each.value.name}.${local.production_subdomain}" : each.value.name
   type    = "CNAME"
   ttl     = 60
 
-  records = [aws_lb.ecs.dns_name]
+  records = [aws_route53_record.entrypoint_alias.name]
 }
 
-resource "aws_route53_record" "ecs_alb_frontend_alias" {
+resource "aws_route53_record" "entrypoint_alias" {
 
-  name    = var.product.public_hosted_zone
+  name    = var.public_domain
   type    = "A"
   zone_id = var.public_hosted_zone_id
 

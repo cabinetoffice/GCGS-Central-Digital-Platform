@@ -20,7 +20,7 @@
         {"name": "EntityVerificationDatabase__Database", "value": "${db_name}"},
         {"name": "EntityVerificationDatabase__Host", "value": "${db_address}"},
         {"name": "EntityVerificationDatabase__Server", "value": "${db_address}"},
-        {"name": "Organisation__Authority", "value": "https://authority.${public_hosted_zone_fqdn}"}
+        {"name": "Organisation__Authority", "value": "https://authority.${public_domain}"}
     ],
     "secrets": [
         {"name": "EntityVerificationDatabase__Password", "valueFrom": "${db_username}"},

@@ -13,11 +13,10 @@ variable "product" {
   })
 }
 
-variable "public_hosted_zone_fqdn" {
-  description = "Fully qualified domain name of the public hosted zone"
+variable "public_domain" {
+  description = "The fully qualified domain name (FQDN) that may differ from the main delegated domain specified by 'public_hosted_zone_fqdn'. This domain represents the public-facing endpoint."
   type        = string
 }
-
 
 variable "tags" {
   description = "Tags to apply to all resources in this module"

@@ -79,11 +79,6 @@ variable "private_subnet_ids" {
   type        = list(string)
 }
 
-variable "private_subnets_cidr_blocks" {
-  description = "List of private subnet CIDR blocks"
-  type        = list(string)
-}
-
 variable "product" {
   description = "product's common attributes"
   type = object({
@@ -93,8 +88,8 @@ variable "product" {
   })
 }
 
-variable "public_hosted_zone_fqdn" {
-  description = "Fully qualified domain name of the public hosted zone"
+variable "public_domain" {
+  description = "The fully qualified domain name (FQDN) that may differ from the main delegated domain specified by 'public_hosted_zone_fqdn'. This domain represents the public-facing endpoint."
   type        = string
 }
 
@@ -105,11 +100,6 @@ variable "public_hosted_zone_id" {
 
 variable "public_subnet_ids" {
   description = "List of public subnet IDs"
-  type        = list(string)
-}
-
-variable "public_subnets_cidr_blocks" {
-  description = "The list of public subnet CIDR blocks"
   type        = list(string)
 }
 
@@ -130,11 +120,6 @@ variable "queue_organisation_queue_arn" {
 
 variable "queue_organisation_queue_url" {
   description = "URL of the Organisation's outbound SQS queue"
-  type        = string
-}
-
-variable "role_cloudwatch_events_arn" {
-  description = "ARN of the IAM role used by CloudWatch Events"
   type        = string
 }
 
@@ -175,11 +160,6 @@ variable "role_service_deployer_step_function_name" {
 
 variable "role_terraform_arn" {
   description = "Terraform IAM role ARN"
-  type        = string
-}
-
-variable "role_terraform_name" {
-  description = "Terraform IAM role name"
   type        = string
 }
 

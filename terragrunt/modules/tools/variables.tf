@@ -13,11 +13,6 @@ variable "db_entity_verification_credentials_arn" {
   type        = string
 }
 
-variable "db_entity_verification_kms_arn" {
-  description = "ARN of the KMS used to encrypt Entity Verification database secrets"
-  type        = string
-}
-
 variable "db_entity_verification_name" {
   description = "Entity Verification database name"
   type        = string
@@ -110,18 +105,8 @@ variable "product" {
   })
 }
 
-variable "public_hosted_zone_fqdn" {
-  description = "Fully qualified domain name of the public hosted zone"
-  type        = string
-}
-
 variable "public_hosted_zone_id" {
   description = "ID of the public hosted zone"
-  type        = string
-}
-
-variable "queue_healthcheck_queue_arn" {
-  description = "ARN of the Health Check's SQS queue"
   type        = string
 }
 
@@ -130,7 +115,6 @@ variable "queue_healthcheck_queue_url" {
   type        = string
 }
 
-
 variable "role_ecs_task_arn" {
   description = "Task IAM role ARN"
   type        = string
@@ -138,11 +122,6 @@ variable "role_ecs_task_arn" {
 
 variable "role_ecs_task_exec_arn" {
   description = "Task execution IAM role ARN"
-  type        = string
-}
-
-variable "role_ecs_task_name" {
-  description = "Task IAM role Name"
   type        = string
 }
 
@@ -157,11 +136,6 @@ variable "user_pool_arn" {
 }
 
 variable "user_pool_client_id" {
-  default = null
-  type    = string
-}
-
-variable "user_pool_client_secret" {
   default = null
   type    = string
 }

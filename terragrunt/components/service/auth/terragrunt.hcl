@@ -23,7 +23,7 @@ locals {
 dependency core_networking {
   config_path = "../../core/networking"
   mock_outputs = {
-    public_hosted_zone_fqdn = "mock"
+    public_domain = "mock"
   }
 }
 
@@ -31,5 +31,5 @@ dependency core_networking {
 inputs = {
   tags = local.tags
 
-  public_hosted_zone_fqdn = dependency.core_networking.outputs.public_hosted_zone_fqdn
+  public_domain = dependency.core_networking.outputs.public_domain
 }
