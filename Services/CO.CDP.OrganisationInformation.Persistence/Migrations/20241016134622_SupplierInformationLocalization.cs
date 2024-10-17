@@ -59,7 +59,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                     WHERE title = 'Exclusions_SectionTitle';
 
                     UPDATE form_sections
-                    SET title = 'Financial information'
+                    SET title = 'Financial Information'
                     WHERE title = 'FinancialInformation_SectionTitle';
                 END $$;
              ");

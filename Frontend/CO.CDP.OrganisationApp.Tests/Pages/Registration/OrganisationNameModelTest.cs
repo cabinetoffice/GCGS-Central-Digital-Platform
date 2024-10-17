@@ -94,14 +94,14 @@ public class OrganisationNameModelTest
     }
 
     [Fact]
-    public void OnGet_ValidSession_ReturnsRegistrationDetails()
+    public async Task OnGet_ValidSession_ReturnsRegistrationDetails()
     {
         RegistrationDetails registrationDetails = DummyRegistrationDetails();
 
         sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(registrationDetails);
 
         var model = GivenOrganisationNameModel();
-        model.OnGet();
+        await model.OnGet();
 
         model.OrganisationName.Should().Be(registrationDetails.OrganisationName);
     }
