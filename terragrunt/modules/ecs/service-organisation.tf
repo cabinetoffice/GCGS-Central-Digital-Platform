@@ -20,7 +20,7 @@ module "ecs_service_organisation" {
       oi_db_name                          = var.db_sirsi_name
       oi_db_password                      = "${var.db_sirsi_credentials_arn}:username::"
       oi_db_username                      = "${var.db_sirsi_credentials_arn}:password::"
-      public_hosted_zone_fqdn             = var.public_hosted_zone_fqdn
+      public_domain                       = var.public_domain
       queue_entity_verification_queue_url = var.queue_entity_verification_queue_url
       queue_organisation_queue_url        = var.queue_organisation_queue_url
       service_version                     = local.service_version
@@ -40,6 +40,7 @@ module "ecs_service_organisation" {
   name                   = var.service_configs.organisation.name
   private_subnet_ids     = var.private_subnet_ids
   product                = var.product
+  public_domain          = var.public_domain
   role_ecs_task_arn      = var.role_ecs_task_arn
   role_ecs_task_exec_arn = var.role_ecs_task_exec_arn
   tags                   = var.tags

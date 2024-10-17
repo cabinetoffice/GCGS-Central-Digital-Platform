@@ -1,9 +1,9 @@
 resource "aws_acm_certificate" "this" {
-  domain_name               = var.public_hosted_zone_fqdn
-  subject_alternative_names = ["*.${var.public_hosted_zone_fqdn}"] # @todo (ABN) Restrict to service sub-domains
+  domain_name               = var.public_domain
+  subject_alternative_names = ["*.${var.public_domain}"]
   validation_method         = "DNS"
 
-  tags = merge(var.tags, { Name = var.public_hosted_zone_fqdn })
+  tags = merge(var.tags, { Name = var.public_domain })
 
   lifecycle {
     create_before_destroy = true
