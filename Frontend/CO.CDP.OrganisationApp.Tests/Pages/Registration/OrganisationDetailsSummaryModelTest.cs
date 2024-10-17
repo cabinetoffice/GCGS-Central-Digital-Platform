@@ -222,7 +222,7 @@ public class OrganisationDetailsSummaryModelTest
 
     private static CO.CDP.Organisation.WebApiClient.Organisation GivenOrganisationClientModel()
     {
-        return new CO.CDP.Organisation.WebApiClient.Organisation(null, null, null, null, _organisationId, null, "Test Org", []);
+        return new CO.CDP.Organisation.WebApiClient.Organisation(additionalIdentifiers: null, addresses: null, approvedOn: null, contactPoint: null, id: _organisationId, identifier: null, name: "Test Org", roles: [], details: new Details(approval: null, pendingRoles: []));
     }
 
     private OrganisationDetailsSummaryModel GivenOrganisationDetailModel()

@@ -36,12 +36,13 @@ public class OrganisationApprovalModelTests
         var expectedOrganisation = new CDP.Organisation.WebApiClient.Organisation(
             additionalIdentifiers: new List<Identifier>(),
             addresses: new List<Address>(),
-            null,
+            approvedOn: null,
             contactPoint: null,
             id: organisationId,
             identifier: null,
             name: "Test Organisation",
-            roles: new List<PartyRole>()
+            roles: new List<PartyRole>(),
+            details: new Details(approval: null, pendingRoles: [])
         );
 
         _mockOrganisationClient

@@ -18,7 +18,11 @@ public class WebApiToPersistenceProfile : Profile
             .ForMember(m => m.Id, o => o.MapFrom(m => m.Guid))
             .ForMember(m => m.Identifier, o => o.MapFrom(m => m.Identifiers.FirstOrDefault(i => i.Primary)))
             .ForMember(m => m.AdditionalIdentifiers, o => o.MapFrom(m => m.Identifiers.Where(i => !i.Primary)))
-            .ForMember(m => m.ContactPoint, o => o.MapFrom(m => m.ContactPoints.FirstOrDefault() ?? new Persistence.Organisation.ContactPoint()));
+            .ForMember(m => m.ContactPoint, o => o.MapFrom(m => m.ContactPoints.FirstOrDefault() ?? new Persistence.Organisation.ContactPoint()))
+            .ForMember(m => m.Details, o => o.MapFrom(m => new Details
+            {
+                PendingRoles = m.PendingRoles
+            }));
 
         CreateMap<Persistence.Organisation, OrganisationExtended>()
             .ForMember(m => m.Id, o => o.MapFrom(m => m.Guid))

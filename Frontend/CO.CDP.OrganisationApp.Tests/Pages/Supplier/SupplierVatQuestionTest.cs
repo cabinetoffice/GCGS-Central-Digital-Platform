@@ -25,7 +25,7 @@ public class SupplierVatModelQuestionTest
         _organisationClientMock = new Mock<IOrganisationClient>();
         _pponClientMock = new Mock<IPponClient>();
         _model = new SupplierVatQuestionModel(_organisationClientMock.Object, _pponClientMock.Object, contextAccessor.Object);
-        
+
         _organisationClientMock.Setup(api => api.LookupOrganisationAsync(It.IsAny<string>(), It.IsAny<string>()))
                     .ThrowsAsync(new CO.CDP.Organisation.WebApiClient.ApiException("Organisation does not exist", 404, "", null, null));
         _pponClientMock.Setup(api => api.GetIdentifiersAsync(It.IsAny<string>()))
@@ -117,8 +117,8 @@ public class SupplierVatModelQuestionTest
         _organisationClientMock.Setup(client => client.GetOrganisationAsync(id))
             .ReturnsAsync(fakeOrg);
 
-        var result = await _model.OnPost();
-        
+        await _model.OnPost();
+
         _organisationClientMock.Verify(o => o.UpdateOrganisationAsync(It.IsAny<Guid>(), It.IsAny<UpdatedOrganisation>()), Times.Never);
         _organisationClientMock.Verify(o => o.UpdateSupplierInformationAsync(It.IsAny<Guid>(),
             It.Is<UpdateSupplierInformation>(u => u.Type == SupplierInformationUpdateType.CompletedVat)), Times.Never);
@@ -220,7 +220,7 @@ public class SupplierVatModelQuestionTest
 
     private static CO.CDP.Organisation.WebApiClient.Organisation GivenOrganisationClientModel()
     {
-        return new CO.CDP.Organisation.WebApiClient.Organisation(null, null, null, null, _organisationId, null, "Test Org", []);
+        return new CO.CDP.Organisation.WebApiClient.Organisation(additionalIdentifiers: null, addresses: null, approvedOn: null, contactPoint: null, id: _organisationId, identifier: null, name: "Test Org", roles: [], details: new Details(approval: null, pendingRoles: []));
     }
 
     private static ICollection<EntityVerificationClient.Identifier> GivenEntityVerificationIdentifiers()

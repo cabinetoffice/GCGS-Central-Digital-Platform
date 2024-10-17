@@ -74,14 +74,15 @@ public class AuthorizationTests
         organisationClient.Setup(client => client.GetOrganisationAsync(testOrganisationId))
             .ReturnsAsync(
                 new CO.CDP.Organisation.WebApiClient.Organisation(
-                    [],
-                    [],
-                    null,
-                    new ContactPoint("a@b.com", "Contact", "123", new Uri("http://whatever")),
-                    testOrganisationId,
-                    new Identifier("asd", "asd", "asd", new Uri("http://whatever")),
-                    "Org name",
-                    [ CO.CDP.Organisation.WebApiClient.PartyRole.Supplier, CO.CDP.Organisation.WebApiClient.PartyRole.Tenderer ]
+                    additionalIdentifiers: [],
+                    addresses: [],
+                    approvedOn: null,
+                    contactPoint: new ContactPoint("a@b.com", "Contact", "123", new Uri("http://whatever")),
+                    id: testOrganisationId,
+                    identifier: new Identifier("asd", "asd", "asd", new Uri("http://whatever")),
+                    name: "Org name",
+                    roles: [ Organisation.WebApiClient.PartyRole.Supplier, Organisation.WebApiClient.PartyRole.Tenderer ],
+                    details: new Details(approval: null, pendingRoles: [])
                 )
             );
 

@@ -26,6 +26,7 @@ public record Organisation
     public required List<PartyRole> Roles { get; init; }
 
     public DateTimeOffset? ApprovedOn { get; init; }
+    public required Details Details { get; init; }
 }
 
 public record SupplierInformation

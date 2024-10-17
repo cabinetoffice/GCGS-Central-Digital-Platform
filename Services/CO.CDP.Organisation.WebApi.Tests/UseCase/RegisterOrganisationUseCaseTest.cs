@@ -119,7 +119,8 @@ public class RegisterOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
             AdditionalIdentifiers = command.AdditionalIdentifiers.AsView(),
             Addresses = command.Addresses.AsView(),
             ContactPoint = command.ContactPoint.AsView(),
-            Roles = command.Roles
+            Roles = command.Roles,
+            Details = new Details()
         };
 
         createdOrganisation.Should().BeEquivalentTo(expectedOrganisation,

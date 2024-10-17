@@ -6,7 +6,7 @@ public static class OrganisationEntityFactory
 {
     public static OrganisationWebApiClient.Organisation GivenClientModel()
     {
-        return new OrganisationWebApiClient.Organisation(null, null, null, null, Guid.NewGuid(), null, "Test Org", []);
+        return new OrganisationWebApiClient.Organisation(additionalIdentifiers: null, addresses: null, approvedOn: null, contactPoint: null, id: Guid.NewGuid(), identifier: null, name: "Test Org", roles: [], details: new Details(approval: null, pendingRoles: []));
     }
 
     public static ProblemDetails GivenProblemDetails(
