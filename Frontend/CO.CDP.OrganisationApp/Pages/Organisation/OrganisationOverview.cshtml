@@ -56,23 +56,34 @@
                             Organisation identifier
                         </dt>
                         <dd class="govuk-summary-list__value">
-                            <p class="govuk-body">
-                                @organisationDetails.Identifier.Scheme.SchemeDescription()
-                            </p>
-                            <p class="govuk-body">
-                                @if (@organisationDetails.Identifier.Id == null)
+                            <ul class="govuk-list govuk-list--bullet">
+                                <li>
+                                    @organisationDetails.Identifier.Scheme.SchemeDescription()
+                                    @if (@organisationDetails.Identifier.Id == null)
+                                    {
+                                        <text><br />PPON generation pending.</text>
+                                    }
+                                    else
+                                    {
+                                        @organisationDetails.Identifier.Id
+                                    }
+                                </li>
+                                @foreach (var aidentifier in organisationDetails.AdditionalIdentifiers)
                                 {
-                                    <text>PPON generation pending.</text>
+                                    @if (@aidentifier.Scheme != Helper.VatSchemeName)
+                                    {
+                                        <li>
+                                            @aidentifier.Scheme.SchemeDescription()
+                                            <br />
+                                            @aidentifier.Id
+                                        </li>
+                                    }
                                 }
-                                else
-                                {
-                                    @organisationDetails.Identifier.Id
-                                }
-                            </p>
+                            </ul>
                         </dd>
                         <authorize scope="@OrgScopeRequirement.Editor">
                             <dd class="govuk-summary-list__actions">
-                                <a class="govuk-link govuk-link--no-visited-state" href="#">Add<span class="govuk-visually-hidden"> address</span></a>
+                                <a class="govuk-link govuk-link--no-visited-state" href="/organisation/@Model.Id/identifiers">Add<span class="govuk-visually-hidden"> address</span></a>
                             </dd>
                         </authorize>
                     </div>

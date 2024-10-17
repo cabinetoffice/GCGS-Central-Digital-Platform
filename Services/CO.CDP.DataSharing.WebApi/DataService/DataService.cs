@@ -5,6 +5,7 @@ using static CO.CDP.OrganisationInformation.Persistence.ConnectedEntity;
 using Address = CO.CDP.OrganisationInformation.Address;
 using ConnectedIndividualTrust = CO.CDP.DataSharing.WebApi.Model.ConnectedIndividualTrust;
 using ConnectedOrganisation = CO.CDP.DataSharing.WebApi.Model.ConnectedOrganisation;
+using FormQuestionType = CO.CDP.OrganisationInformation.Persistence.Forms.FormQuestionType;
 
 namespace CO.CDP.DataSharing.WebApi.DataService;
 
@@ -17,13 +18,14 @@ public class DataService(IShareCodeRepository shareCodeRepository, IConnectedEnt
         var allFormSectionsExceptDeclaractions = sharedConsent.AnswerSets.Where(a =>
             a.Section.Type != OrganisationInformation.Persistence.Forms.FormSectionType.Declaration);
         var connectedEntities = await connectedEntityRepository.FindByOrganisation(sharedConsent.Organisation.Guid);
-        
+
         return new SharedSupplierInformation
         {
             OrganisationId = sharedConsent.Organisation.Guid,
             BasicInformation = MapToBasicInformation(sharedConsent.Organisation),
             ConnectedPersonInformation = MapToConnectedPersonInformation(connectedEntities),
-            FormAnswerSetForPdfs = MapFormAnswerSetsForPdf(allFormSectionsExceptDeclaractions)
+            FormAnswerSetForPdfs = MapFormAnswerSetsForPdf(allFormSectionsExceptDeclaractions),
+            AttachedDocuments = MapAttachedDocuments(sharedConsent)
         };
     }
 
@@ -34,7 +36,8 @@ public class DataService(IShareCodeRepository shareCodeRepository, IConnectedEnt
 
         foreach (var answerSet in answerSets)
         {
-            var pdfAnswerSet = new FormAnswerSetForPdf() {
+            var pdfAnswerSet = new FormAnswerSetForPdf
+            {
                 SectionName = answerSet.Section.Title,
                 SectionType = answerSet.Section.Type,
                 QuestionAnswers = []
@@ -46,32 +49,32 @@ public class DataService(IShareCodeRepository shareCodeRepository, IConnectedEnt
             {
                 switch (answer.Question.Type)
                 {
-                    case OrganisationInformation.Persistence.Forms.FormQuestionType.YesOrNo:
+                    case FormQuestionType.YesOrNo:
                         {
                             pdfAnswerSet.QuestionAnswers.Add(new Tuple<string, string>($"{answer.Question.Title}",
                                 answer.OptionValue ?? "No"));
                             break;
                         }
-                    case OrganisationInformation.Persistence.Forms.FormQuestionType.Date:
+                    case FormQuestionType.Date:
                         {
                             pdfAnswerSet.QuestionAnswers.Add(new Tuple<string, string>($"{answer.Question.Title}",
                                 answer.DateValue?.ToString("dd-MM-yyyy") ?? "Not specified"));
                             break;
                         }
-                    case OrganisationInformation.Persistence.Forms.FormQuestionType.Url:
+                    case FormQuestionType.Url:
                         {
                             pdfAnswerSet.QuestionAnswers.Add(new Tuple<string, string>($"{answer.Question.Title}",
                                answer.TextValue ?? ""));
                             break;
                         }
-                    case OrganisationInformation.Persistence.Forms.FormQuestionType.FileUpload:
+                    case FormQuestionType.FileUpload:
                         {
                             pdfAnswerSet.QuestionAnswers.Add(new Tuple<string, string>($"{answer.Question.Title}",
                                answer.TextValue ?? "No"));
                             break;
                         }
-                    case OrganisationInformation.Persistence.Forms.FormQuestionType.Text:
-                    case OrganisationInformation.Persistence.Forms.FormQuestionType.MultiLine:
+                    case FormQuestionType.Text:
+                    case FormQuestionType.MultiLine:
                         {
                             pdfAnswerSet.QuestionAnswers.Add(new Tuple<string, string>($"{answer.Question.Title}:",
                                 answer.TextValue ?? ""));
@@ -169,13 +172,23 @@ public class DataService(IShareCodeRepository shareCodeRepository, IConnectedEnt
         {
             if (entity != null)
             {
+                var connectedPersonType = entity.IndividualOrTrust?.ConnectedType != null ?
+                    entity.IndividualOrTrust.ConnectedType :
+                    ConnectedPersonType.Individual;
+
+                var connectedEntityIndividualAndTrustCategoryType = entity.IndividualOrTrust?.Category != null ?
+                    entity.IndividualOrTrust.Category :
+                    (connectedPersonType == ConnectedPersonType.Individual ?
+                        ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndividual :
+                        ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForTrust);
+
                 var individualTrust = entity.IndividualOrTrust != null ? new ConnectedIndividualTrust(
                     entity.IndividualOrTrust.FirstName,
                     entity.IndividualOrTrust.LastName,
                     entity.IndividualOrTrust.DateOfBirth,
                     entity.IndividualOrTrust.Nationality,
-                    entity.IndividualOrTrust?.Category != null ? entity.IndividualOrTrust.Category : ConnectedPersonCategory.PersonWithSignificantControl,
-                    entity.IndividualOrTrust?.ConnectedType != null ? entity.IndividualOrTrust.ConnectedType : ConnectedPersonType.Individual,
+                    connectedEntityIndividualAndTrustCategoryType,
+                    connectedPersonType,
                     entity.IndividualOrTrust?.ControlCondition.Select(c => c.ToString()).ToList() ?? new List<string>(),
                     entity.IndividualOrTrust?.ResidentCountry
                 ) : null;
@@ -206,8 +219,8 @@ public class DataService(IShareCodeRepository shareCodeRepository, IConnectedEnt
                     entity.IndividualOrTrust?.LastName ?? string.Empty,
                     entity.IndividualOrTrust?.Nationality,
                     entity.IndividualOrTrust?.DateOfBirth,
-                    entity.IndividualOrTrust?.ConnectedType != null ? entity.IndividualOrTrust.ConnectedType : ConnectedPersonType.Individual,
-                    entity.IndividualOrTrust?.Category != null ? entity.IndividualOrTrust.Category : ConnectedPersonCategory.PersonWithSignificantControl,
+                    connectedPersonType,
+                    connectedEntityIndividualAndTrustCategoryType,
                     entity.IndividualOrTrust?.ResidentCountry,
                     addresses,
                     entity.IndividualOrTrust?.ControlCondition.Select(c => c.ToString()).ToList() ?? new List<string>(),
@@ -219,5 +232,21 @@ public class DataService(IShareCodeRepository shareCodeRepository, IConnectedEnt
         }
 
         return connectedPersonList;
+    }
+
+    private static List<string> MapAttachedDocuments(OrganisationInformation.Persistence.Forms.SharedConsent sharedConsent)
+    {
+        var attachedDocuments = new List<string>();
+        foreach (var answerSet in sharedConsent.AnswerSets)
+        {
+            foreach (var answer in answerSet.Answers)
+            {
+                if (answer.Question.Type == FormQuestionType.FileUpload && !string.IsNullOrWhiteSpace(answer.TextValue))
+                {
+                    attachedDocuments.Add(answer.TextValue);
+                }
+            }
+        }
+        return attachedDocuments;
     }
 }

@@ -39,12 +39,12 @@ public class OrganisationIdentificationModel(ISession session,
     public string? ScottishCharityRegulatorNumber { get; set; }
 
     [BindProperty]
-    [DisplayName("Charity Commission for Northren Ireland")]
+    [DisplayName("Charity Commission for Northern Ireland")]
     public string? CharityCommissionNorthernIreland { get; set; }
 
     [BindProperty]
     [DisplayName("Charity Commission for Northren Ireland Number")]
-    [RequiredIf(nameof(OrganisationScheme), "GB-NIC", ErrorMessage = "Please enter the Charity Commission for Northren Ireland number.")]
+    [RequiredIf(nameof(OrganisationScheme), "GB-NIC", ErrorMessage = "Please enter the Charity Commission for Northern Ireland number.")]
     public string? CharityCommissionNorthernIrelandNumber { get; set; }
 
     [BindProperty]
@@ -102,15 +102,6 @@ public class OrganisationIdentificationModel(ISession session,
     public string? UKLearningProviderReferenceNumber { get; set; }
 
     [BindProperty]
-    [DisplayName("VAT number")]
-    public string? VAT { get; set; }
-
-    [BindProperty]
-    [DisplayName("VAT number")]
-    [RequiredIf(nameof(OrganisationScheme), "VAT", ErrorMessage = "Please enter the VAT number.")]
-    public string? VATNumber { get; set; }
-
-    [BindProperty]
     [DisplayName("The organisation does not have a registry number")]
     public string? Other { get; set; }
 
@@ -150,10 +141,7 @@ public class OrganisationIdentificationModel(ISession session,
                 break;
             case "GB-UKPRN":
                 UKLearningProviderReferenceNumber = RegistrationDetails.OrganisationIdentificationNumber;
-                break;
-            case "VAT":
-                VATNumber = RegistrationDetails.OrganisationIdentificationNumber;
-                break;
+                break;            
             default:
                 break;
         }
@@ -179,8 +167,7 @@ public class OrganisationIdentificationModel(ISession session,
             "JE-FSC" => JerseyFinancialServicesCommissionRegistryNumber,
             "IM-CR" => IsleofManCompaniesRegistryNumber,
             "GB-NHS" => NationalHealthServiceOrganisationsRegistryNumber,
-            "GB-UKPRN" => UKLearningProviderReferenceNumber,
-            "VAT" => VATNumber,
+            "GB-UKPRN" => UKLearningProviderReferenceNumber,            
             "Other" => null,
             _ => null,
         };

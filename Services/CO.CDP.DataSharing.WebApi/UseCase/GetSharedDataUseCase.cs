@@ -75,20 +75,23 @@ public class GetSharedDataUseCase(
 
     private async Task<ICollection<AssociatedPerson>> AssociatedPersons(SharedConsent sharedConsent)
     {
-        var associatedPersons = await organisationRepository.GetConnectedIndividualTrusts(sharedConsent.OrganisationId);
-        return associatedPersons.Select(x => new AssociatedPerson
+        var individuals = await organisationRepository.GetConnectedIndividualTrusts(sharedConsent.OrganisationId);
+        var trustsOrTrustees = await organisationRepository.GetConnectedTrustsOrTrustees(sharedConsent.OrganisationId);
+
+        return individuals.Union(trustsOrTrustees).Select(x => new AssociatedPerson
         {
             Id = x.Guid,
             Name = string.Format($"{x.IndividualOrTrust?.FirstName} {x.IndividualOrTrust?.LastName}"),
             Relationship = x.IndividualOrTrust?.Category.ToString() ?? string.Empty,
             Uri = null,
-            Roles = []
+            Roles = x.SupplierOrganisation.Roles
         }).ToList();
     }
 
     private async Task<ICollection<OrganisationReference>> AdditionalEntities(SharedConsent sharedConsent)
     {
         var additionalEntities = await organisationRepository.GetConnectedOrganisations(sharedConsent.OrganisationId);
+
         return additionalEntities.Select(x => new OrganisationReference
         {
             Id = x.Guid,

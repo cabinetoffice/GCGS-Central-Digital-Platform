@@ -10,7 +10,6 @@ namespace CO.CDP.Authentication.Tests;
 public class ClaimServiceTests
 {
     private readonly Mock<IOrganisationRepository> mockOrgRepo = new();
-    private readonly Mock<IPersonRepository> mockPersonRepo = new();
 
     [Fact]
     public void GetUserUrn_ShouldReturnUrn_WhenUserHasSubClaim()
@@ -18,7 +17,7 @@ public class ClaimServiceTests
         var userUrn = "urn:fdc:gov.uk:2022:rynbwxUssDAcmU38U5gxd7dBfu9N7KFP9_nqDuZ66Hg";
         var httpContextAccessor = GivenHttpContextWith([new(ClaimType.Subject, userUrn)]);
 
-        var claimService = new ClaimService(httpContextAccessor.Object, mockOrgRepo.Object, mockPersonRepo.Object);
+        var claimService = new ClaimService(httpContextAccessor.Object, mockOrgRepo.Object);
 
         var result = claimService.GetUserUrn();
         result.Should().Be(userUrn);
@@ -29,7 +28,7 @@ public class ClaimServiceTests
     {
         var httpContextAccessor = GivenHttpContextWith([]);
 
-        var claimService = new ClaimService(httpContextAccessor.Object, mockOrgRepo.Object, mockPersonRepo.Object);
+        var claimService = new ClaimService(httpContextAccessor.Object, mockOrgRepo.Object);
         var result = claimService.GetUserUrn();
 
         result.Should().BeNull();
@@ -40,7 +39,7 @@ public class ClaimServiceTests
     {
         var httpContextAccessor = GivenHttpContextWith([]);
 
-        var claimService = new ClaimService(httpContextAccessor.Object, mockOrgRepo.Object, mockPersonRepo.Object);
+        var claimService = new ClaimService(httpContextAccessor.Object, mockOrgRepo.Object);
         var result = await claimService.HaveAccessToOrganisation(Guid.NewGuid());
 
         result.Should().BeFalse();
@@ -56,7 +55,7 @@ public class ClaimServiceTests
         mockOrgRepo.Setup(m => m.FindOrganisationPerson(organisationId, userUrn))
             .ReturnsAsync((OrganisationPerson?)default);
 
-        var claimService = new ClaimService(httpContextAccessor.Object, mockOrgRepo.Object, mockPersonRepo.Object);
+        var claimService = new ClaimService(httpContextAccessor.Object, mockOrgRepo.Object);
         var result = await claimService.HaveAccessToOrganisation(organisationId);
 
         result.Should().BeFalse();
@@ -77,7 +76,7 @@ public class ClaimServiceTests
                 Scopes = ["Admin"]
             });
 
-        var claimService = new ClaimService(httpContextAccessor.Object, mockOrgRepo.Object, mockPersonRepo.Object);
+        var claimService = new ClaimService(httpContextAccessor.Object, mockOrgRepo.Object);
         var result = await claimService.HaveAccessToOrganisation(organisationId);
 
         result.Should().BeTrue();
@@ -98,7 +97,7 @@ public class ClaimServiceTests
                 Scopes = []
             });
 
-        var claimService = new ClaimService(httpContextAccessor.Object, mockOrgRepo.Object, mockPersonRepo.Object);
+        var claimService = new ClaimService(httpContextAccessor.Object, mockOrgRepo.Object);
         var result = await claimService.HaveAccessToOrganisation(organisationId, null, [PersonScope.SupportAdmin]);
 
         result.Should().BeTrue();

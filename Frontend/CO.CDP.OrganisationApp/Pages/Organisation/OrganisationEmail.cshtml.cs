@@ -1,4 +1,3 @@
-using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.WebApiClients;
 using Microsoft.AspNetCore.Authorization;
@@ -6,11 +5,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using OrganisationWebApiClient = CO.CDP.Organisation.WebApiClient;
 
 namespace CO.CDP.OrganisationApp.Pages.Organisation;
 
 [Authorize(Policy = OrgScopeRequirement.Editor)]
-public class OrganisationEmailModel(IOrganisationClient organisationClient) : PageModel
+public class OrganisationEmailModel(OrganisationWebApiClient.IOrganisationClient organisationClient) : PageModel
 {
     [BindProperty]
     [DisplayName("Enter the organisation's contact email address")]
@@ -32,7 +32,12 @@ public class OrganisationEmailModel(IOrganisationClient organisationClient) : Pa
 
             return Page();
         }
-        catch (ApiException ex) when (ex.StatusCode == 404)
+        catch (OrganisationWebApiClient.ApiException<OrganisationWebApiClient.ProblemDetails> aex)
+        {
+            ApiExceptionMapper.MapApiExceptions(aex, ModelState);
+            return Page();
+        }
+        catch (OrganisationWebApiClient.ApiException ex) when (ex.StatusCode == 404)
         {
             return Redirect("/page-not-found");
         }
@@ -54,7 +59,7 @@ public class OrganisationEmailModel(IOrganisationClient organisationClient) : Pa
 
         try
         {
-            var cp = new OrganisationContactPoint(
+            var cp = new OrganisationWebApiClient.OrganisationContactPoint(
                     name: organisation.ContactPoint.Name,
                     email: EmailAddress,
                     telephone: organisation.ContactPoint.Telephone,

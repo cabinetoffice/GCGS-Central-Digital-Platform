@@ -3,6 +3,7 @@ namespace CO.CDP.OrganisationInformation.Persistence;
 public interface IOrganisationRepository : IDisposable
 {
     public void Save(Organisation organisation);
+    public Task SaveAsync(Organisation organisation, Func<Organisation, Task> onSave);
 
     public void SaveOrganisationPerson(OrganisationPerson organisationPerson);
 
@@ -29,6 +30,8 @@ public interface IOrganisationRepository : IDisposable
     public Task<IList<ConnectedEntity>> GetConnectedIndividualTrusts(int organisationId);
 
     public Task<IList<ConnectedEntity>> GetConnectedOrganisations(int organisationId);
+
+    public Task<IList<ConnectedEntity>> GetConnectedTrustsOrTrustees(int organisationId);
 
     public Task<Organisation.LegalForm?> GetLegalForm(int organisationId);
 

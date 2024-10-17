@@ -15,7 +15,7 @@ namespace CO.CDP.DataSharing.WebApi.Tests.Api;
 public class DataSharingTests
 {
     private readonly Mock<IUseCase<string, SupplierInformation?>> _getSharedDataUseCase = new();
-    private readonly Mock<IUseCase<string, byte[]?>> _getSharedDataPdfUseCase = new();
+    private readonly Mock<IUseCase<string, SharedDataFile?>> _getSharedDataFileUseCase = new();
     private readonly Mock<IUseCase<ShareRequest, ShareReceipt>> _generateShareCodeUseCase = new();
     private readonly Mock<IUseCase<ShareVerificationRequest, ShareVerificationReceipt>> _getShareCodeVerifyUseCase = new();
     private readonly Mock<IUseCase<Guid, List<SharedConsent>?>> _getShareCodesUseCase = new();
@@ -73,17 +73,18 @@ public class DataSharingTests
     [InlineData(Forbidden, Channel.ServiceKey)]
     [InlineData(Forbidden, Channel.OrganisationKey)]
     [InlineData(Forbidden, "unknown_channel")]
-    public async Task GetSharedDataPdf_Authorization_ReturnsExpectedStatusCode(
+    public async Task GetSharedDataFile_Authorization_ReturnsExpectedStatusCode(
         HttpStatusCode expectedStatusCode, string channel)
     {
         var shareCode = "valid-share-code";
 
-        _getSharedDataPdfUseCase.Setup(uc => uc.Execute(shareCode)).ReturnsAsync(new byte[1]);
+        _getSharedDataFileUseCase.Setup(uc => uc.Execute(shareCode))
+            .ReturnsAsync(new SharedDataFile { Content = new byte[1], ContentType = "application/pdf", FileName = "test_file.pdf" });
 
         var factory = new TestAuthorizationWebApplicationFactory<Program>(
-            channel, serviceCollection: s => s.AddScoped(_ => _getSharedDataPdfUseCase.Object));
+            channel, serviceCollection: s => s.AddScoped(_ => _getSharedDataFileUseCase.Object));
 
-        var response = await factory.CreateClient().GetAsync($"/share/data/{shareCode}/pdf");
+        var response = await factory.CreateClient().GetAsync($"/share/data/{shareCode}/file");
 
         response.StatusCode.Should().Be(expectedStatusCode);
     }

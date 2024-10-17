@@ -36,7 +36,8 @@ The `OrganisationApp` requires the following secrets / environment variables:
 * `OneLogin:Authority` / `OneLogin__Authority`
 * `OneLogin:ClientId` / `OneLogin__ClientId`
 * `OneLogin:PrivateKey` / `OneLogin__PrivateKey`
-
+* `CompaniesHouse:Url` / `CompaniesHouse__Url`
+* `CompaniesHouse:User` / `CompaniesHouse__User`
 These can be set as secrets with the following dotnet commands:
 
 [source,bash]
@@ -44,6 +45,9 @@ These can be set as secrets with the following dotnet commands:
 dotnet user-secrets set --project Frontend/CO.CDP.OrganisationApp/CO.CDP.OrganisationApp.csproj OneLogin:Authority "https://oidc.example.com"
 dotnet user-secrets set --project Frontend/CO.CDP.OrganisationApp/CO.CDP.OrganisationApp.csproj OneLogin:ClientId "client-id"
 dotnet user-secrets set --project Frontend/CO.CDP.OrganisationApp/CO.CDP.OrganisationApp.csproj OneLogin:PrivateKey "-----BEGIN RSA PRIVATE KEY-----SECRET KEY-----END RSA PRIVATE KEY-----"
+
+dotnet user-secrets set --project Frontend/CO.CDP.OrganisationApp/CO.CDP.OrganisationApp.csproj CompaniesHouse:Url "https://api.company-information.service.gov.uk"
+dotnet user-secrets set --project Frontend/CO.CDP.OrganisationApp/CO.CDP.OrganisationApp.csproj CompaniesHouse:User "user-id"
 ----
 
 For Docker, the following environment variables need to be updated in `compose.override.yml`

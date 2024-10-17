@@ -34,7 +34,8 @@ public class FormsEngine(
                 Title = response.Section.Title,
                 AllowsMultipleAnswerSets = response.Section.AllowsMultipleAnswerSets
             },
-            Questions = (await Task.WhenAll(response.Questions.Select(async q => {
+            Questions = (await Task.WhenAll(response.Questions.Select(async q =>
+            {
                 IChoiceProviderStrategy choiceProviderStrategy = choiceProviderService.GetStrategy(q.Options.ChoiceProviderStrategy);
 
                 return new Models.FormQuestion
@@ -149,6 +150,29 @@ public class FormsEngine(
 
         return sharingDataDetails.ShareCode;
     }
+
+    public Guid? GetPreviousUnansweredQuestionId(List<Models.FormQuestion> questions, Guid currentQuestionId, FormQuestionAnswerState answerState)
+    {
+        var answeredQuestionIds = answerState.Answers.Select(a => a.QuestionId).ToList();
+
+        var questionsInOrder = GetSortedFormQuestions(questions);
+
+        foreach (var question in questionsInOrder)
+        {
+            if (question.Id == currentQuestionId)
+            {
+                break;
+            }
+
+            if (answerState?.Answers.Any(t => t.QuestionId == question.Id) == false)
+            {
+                return question.Id;
+            }
+        }
+
+        return null;
+    }
+
     private static FormAddress? MapAddress(Address? formAdddress)
     {
         if (formAdddress == null)
@@ -162,4 +186,20 @@ public class FormsEngine(
             country: formAdddress.Country
         );
     }
+
+    private List<Models.FormQuestion> GetSortedFormQuestions(List<Models.FormQuestion> questions)
+    {
+        var dict = questions.ToDictionary(q => q.Id, q => q);
+        var start = questions.First(q => !questions.Any(x => x.NextQuestion == q.Id));
+        var result = new List<Models.FormQuestion>();
+        var current = start;
+        while (current != null)
+        {
+            result.Add(current);
+            current = current.NextQuestion.HasValue ? dict[current.NextQuestion.Value] : null;
+        }
+
+        return result;
+    }
+
 }

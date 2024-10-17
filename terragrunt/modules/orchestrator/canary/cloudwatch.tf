@@ -1,6 +1,6 @@
 resource "aws_cloudwatch_metric_alarm" "canary_alarm" {
 
-  for_each = var.canary_configs
+  for_each            = var.canary_configs
   alarm_description   = "${local.name_prefix}-ver-${substr(each.key, 0, 3)} failure in ${each.key}"
   alarm_name          = "canary/${each.key}/${local.name_prefix}-released-version-check/failed"
   comparison_operator = "LessThanThreshold"

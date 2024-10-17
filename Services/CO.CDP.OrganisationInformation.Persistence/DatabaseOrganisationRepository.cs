@@ -1,3 +1,4 @@
+using CO.CDP.EntityFrameworkCore.DbContext;
 using Microsoft.EntityFrameworkCore;
 
 namespace CO.CDP.OrganisationInformation.Persistence;
@@ -106,6 +107,16 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
         return await result.ToListAsync();
     }
 
+    public async Task<IList<ConnectedEntity>> GetConnectedTrustsOrTrustees(int organisationId)
+    {
+        var result = context.ConnectedEntities
+            .Include(x => x.IndividualOrTrust)
+            .Where(x => x.IndividualOrTrust != null && x.EntityType == ConnectedEntity.ConnectedEntityType.TrustOrTrustee)
+            .Where(x => x.SupplierOrganisation != null && x.SupplierOrganisation.Id == organisationId);
+
+        return await result.ToListAsync();
+    }
+
     public async Task<Organisation.LegalForm?> GetLegalForm(int organisationId)
     {
         var organisation = await context.Organisations
@@ -147,6 +158,15 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
             HandleDbUpdateException(organisation, cause);
         }
     }
+
+    public async Task SaveAsync(Organisation organisation, Func<Organisation, Task> onSave) =>
+        await context.InTransaction(async _ =>
+        {
+            Save(organisation);
+            // The assumption here is that the `onSave()` callback uses the same `DbContext` as the current repository.
+            await onSave(organisation);
+            await context.SaveChangesAsync();
+        });
 
     public void SaveOrganisationPerson(OrganisationPerson organisationPerson)
     {

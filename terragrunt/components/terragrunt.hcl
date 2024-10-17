@@ -56,7 +56,7 @@ locals {
       account_id             = 905418042182
       canary_schedule_expression = "rate(30 minutes)"
       name                   = "staging"
-      pinned_service_version = "0.5.0-e5fd7813"
+      pinned_service_version = "0.6.0"
       postgres_instance_type = "db.t4g.micro"
       private_subnets = [
         "10.${local.cidr_b_staging}.101.0/24",
@@ -106,7 +106,7 @@ locals {
         "10.${local.cidr_b_production}.2.0/24",
         "10.${local.cidr_b_production}.3.0/24"
       ]
-      top_level_domain = "findatender.codatt.net"
+      top_level_domain = "private-beta.find-tender.service.gov.uk"
     }
   }
 
@@ -115,7 +115,7 @@ locals {
   product = {
     name               = "CDP SIRSI"
     resource_name      = "cdp-sirsi"
-    public_hosted_zone = "${local.environments[local.environment].name}.supplier.information.${local.environments[local.environment].top_level_domain}"
+    public_hosted_zone = local.environment == "production" ? local.environments[local.environment].top_level_domain : "${local.environments[local.environment].name}.supplier.information.${local.environments[local.environment].top_level_domain}"
   }
 
   desired_count_non_production = 1

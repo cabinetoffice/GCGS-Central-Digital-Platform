@@ -474,6 +474,91 @@ public class FormsEngineTests
                 sr.FormId == formId && sr.OrganisationId == organisationId)), Times.Once);
     }
 
+    [Fact]
+    public void GetPreviousUnansweredQuestionId_ShouldReturnNull_WhenAllQuestionsAreAnswered()
+    {
+        var question1 = new FormQuestion { Id = Guid.NewGuid() };
+        var question2 = new FormQuestion { Id = Guid.NewGuid() };
+        var question3 = new FormQuestion { Id = Guid.NewGuid() };
+        var questions = new List<FormQuestion> { question1, question2, question3 };
+
+        var answerState = new FormQuestionAnswerState
+        {
+            Answers = new List<QuestionAnswer>
+        {
+            new QuestionAnswer { QuestionId = question1.Id },
+            new QuestionAnswer { QuestionId = question2.Id },
+            new QuestionAnswer { QuestionId = question3.Id }
+        }
+        };
+
+        var result = _formsEngine.GetPreviousUnansweredQuestionId(questions, question3.Id, answerState);
+
+        result.Should().BeNull("because all questions have been answered");
+    }
+
+    [Fact]
+    public void GetPreviousUnansweredQuestionId_ShouldReturnFirstQuestion_WhenNoQuestionsAreAnswered()
+    {
+        var question1 = new FormQuestion { Id = Guid.NewGuid() };
+        var question2 = new FormQuestion { Id = Guid.NewGuid() };
+        var question3 = new FormQuestion { Id = Guid.NewGuid() };
+        var questions = new List<FormQuestion> { question1, question2, question3 };
+
+        var answerState = new FormQuestionAnswerState
+        {
+            Answers = new List<QuestionAnswer>()
+        };
+
+        var result = _formsEngine.GetPreviousUnansweredQuestionId(questions, question3.Id, answerState);
+
+        result.Should().Be(question1.Id, "because no questions have been answered, so the first question should be returned");
+    }
+
+
+    [Fact]
+    public void GetPreviousUnansweredQuestionId_ShouldReturnExpectedResult_WhenCalled()
+    {
+        var question1 = new FormQuestion { Id = Guid.NewGuid() };
+        var question2 = new FormQuestion { Id = Guid.NewGuid() };
+        var question3 = new FormQuestion { Id = Guid.NewGuid() };
+        var questions = new List<FormQuestion> { question1, question2, question3 };
+
+        var answerState = new FormQuestionAnswerState
+        {
+            Answers = new List<QuestionAnswer>
+        {
+            new QuestionAnswer { QuestionId = question2.Id }
+        }
+        };
+
+        var result = _formsEngine.GetPreviousUnansweredQuestionId(questions, question3.Id, answerState);
+
+        result.Should().Be(question1.Id);
+    }
+
+    [Fact]
+    public void GetPreviousUnansweredQuestionId_ShouldReturnNull_WhenAllPreviousQuestionsAreAnswered()
+    {
+        var question1 = new FormQuestion { Id = Guid.NewGuid() };
+        var question2 = new FormQuestion { Id = Guid.NewGuid() };
+        var question3 = new FormQuestion { Id = Guid.NewGuid() };
+        var questions = new List<FormQuestion> { question1, question2, question3 };
+
+        var answerState = new FormQuestionAnswerState
+        {
+            Answers = new List<QuestionAnswer>
+        {
+            new QuestionAnswer { QuestionId = question1.Id },
+            new QuestionAnswer { QuestionId = question2.Id }
+        }
+        };
+
+        var result = _formsEngine.GetPreviousUnansweredQuestionId(questions, question3.Id, answerState);
+
+        result.Should().BeNull();
+    }
+
     private (Guid formId, Guid sectionId, Guid organisationId, FormQuestionAnswerState answerSet, FormAnswer expectedAnswer) SetupTestData()
     {
         var formId = Guid.NewGuid();
