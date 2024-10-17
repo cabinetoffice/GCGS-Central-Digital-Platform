@@ -28,6 +28,8 @@ public class SupportUpdateOrganisationUseCase(
                 if (command.supportUpdateOrganisation.Organisation.Approved)
                 {
                     organisation.ApprovedOn = DateTimeOffset.UtcNow;
+                    organisation.Roles = organisation.PendingRoles;
+                    organisation.PendingRoles = [];
                     sendemail = true;
                 }
 

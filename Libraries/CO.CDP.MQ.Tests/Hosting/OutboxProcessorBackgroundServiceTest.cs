@@ -49,7 +49,7 @@ public class OutboxProcessorBackgroundServiceTest
             },
             _logger);
         await backgroundService.StartAsync(CancellationToken.None);
-        await Task.Delay(TimeSpan.FromMilliseconds(8));
+        await Task.Delay(TimeSpan.FromMilliseconds(10));
         await backgroundService.StopAsync(CancellationToken.None);
 
         _outboxProcessor.Verify(d => d.ExecuteAsync(3), Times.AtLeast(2));

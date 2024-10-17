@@ -205,6 +205,6 @@ public class LegalFormFormationDateTest
 
     private static OrganisationWebApiClient.Organisation GivenOrganisationClientModel(Guid? id)
     {
-        return new OrganisationWebApiClient.Organisation(null, null, null, null, id!.Value, null, "Test Org", []);
+        return new OrganisationWebApiClient.Organisation(additionalIdentifiers: null, addresses: null, contactPoint: null, id: id ?? Guid.NewGuid(), identifier: null, name: "Test Org", roles: [], details: new OrganisationWebApiClient.Details(approval: null, pendingRoles: []));
     }
 }

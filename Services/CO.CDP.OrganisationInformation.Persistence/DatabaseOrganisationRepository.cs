@@ -77,7 +77,7 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
         switch (type)
         {
             case "buyer":
-                result = result.Where(o => o.Roles.Contains(PartyRole.Buyer));
+                result = result.Where(o => o.Roles.Contains(PartyRole.Buyer) || o.PendingRoles.Contains(PartyRole.Buyer));
                 break;
             case "supplier":
                 result = result.Where(o => o.Roles.Contains(PartyRole.Tenderer));
