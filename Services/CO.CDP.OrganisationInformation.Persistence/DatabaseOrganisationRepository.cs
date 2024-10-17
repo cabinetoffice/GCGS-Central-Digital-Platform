@@ -128,6 +128,13 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
         return organisation?.SupplierInfo?.OperationTypes ?? [];
     }
 
+    public async Task<bool> IsEmailUniqueWithinOrganisation(Guid organisationId, string email)
+    {
+        return await context.Organisations
+            .Where(x => x.Guid == organisationId)
+            .AnyAsync(x => !x.Persons.Any(y => y.Email == email));
+    }
+
     public void Save(Organisation organisation)
     {
         try

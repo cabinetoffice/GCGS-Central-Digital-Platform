@@ -540,6 +540,35 @@ public static class EndpointExtensions
                 return operation;
             });
 
+        app.MapPost("/{organisationId}/persons/isEmailUniqueWithinOrganisation",
+            [OrganisationAuthorize(
+                [AuthenticationChannel.OneLogin],
+                [Constants.OrganisationPersonScope.Admin],
+                OrganisationIdLocation.Path)]
+                async (Guid organisationId, [FromBody] string personEmail, IUseCase<(Guid, string), bool> useCase) =>
+                    await useCase.Execute((organisationId, personEmail))
+                        .AndThen(isPersonEmailUnique => Results.Ok(isPersonEmailUnique))
+            )
+            .Produces<bool>(StatusCodes.Status200OK, "application/json")
+            .ProducesProblem(StatusCodes.Status400BadRequest)
+            .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
+            .ProducesProblem(StatusCodes.Status404NotFound)
+            .ProducesProblem(StatusCodes.Status422UnprocessableEntity)
+            .ProducesProblem(StatusCodes.Status500InternalServerError)
+            .WithOpenApi(operation =>
+            {
+                operation.OperationId = "IsEmailUniqueWithinOrganisation";
+                operation.Description = "Check if email is unique within organisation.";
+                operation.Summary = "Check if email is unique within organisation.";
+                operation.Responses["200"].Description = "Email checked for uniqueness within organisation successfully.";
+                operation.Responses["400"].Description = "Bad request.";
+                operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
+                operation.Responses["404"].Description = "Organisation not found.";
+                operation.Responses["422"].Description = "Unprocessable entity.";
+                operation.Responses["500"].Description = "Internal server error.";
+                return operation;
+            });
+
         app.MapGet("/{organisationId}/invites",
             [OrganisationAuthorize(
                 [AuthenticationChannel.OneLogin],

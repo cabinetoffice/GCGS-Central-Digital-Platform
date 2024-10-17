@@ -33,4 +33,6 @@ public interface IOrganisationRepository : IDisposable
     public Task<Organisation.LegalForm?> GetLegalForm(int organisationId);
 
     public Task<IList<OperationType>> GetOperationTypes(int organisationId);
+
+    public Task<bool> IsEmailUniqueWithinOrganisation(Guid organisationId, string email);
 }

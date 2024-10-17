@@ -3,18 +3,20 @@ using Microsoft.AspNetCore.Mvc;
 using CO.CDP.OrganisationApp.Pages.Users;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using CO.CDP.OrganisationApp.Constants;
+using CO.CDP.Organisation.WebApiClient;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages.Users;
 
 public class AddUserModelTests
 {
     private readonly Mock<ISession> _mockSession;
+    private readonly Mock<IOrganisationClient> _mockOrganistionClient;
     private readonly AddUserModel _addUserModel;
 
     public AddUserModelTests()
     {
         _mockSession = new Mock<ISession>();
-        _addUserModel = new AddUserModel(_mockSession.Object);
+        _addUserModel = new AddUserModel(_mockOrganistionClient.Object, _mockSession.Object);
     }
 
     [Fact]

@@ -4,11 +4,14 @@ using System.ComponentModel.DataAnnotations;
 using Microsoft.IdentityModel.Tokens;
 using CO.CDP.OrganisationApp.Constants;
 using Microsoft.AspNetCore.Authorization;
+using CO.CDP.Organisation.WebApiClient;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace CO.CDP.OrganisationApp.Pages.Users;
 
 [Authorize(Policy = OrgScopeRequirement.Admin)]
 public class AddUserModel(
+    IOrganisationClient organisationClient,
     ISession session) : PageModel
 {
     [BindProperty(SupportsGet = true)]
@@ -51,7 +54,7 @@ public class AddUserModel(
         return Page();
     }
 
-    public IActionResult OnPost()
+    public async Task<IActionResult> OnPost()
     {
         if (!ModelState.IsValid)
         {
@@ -59,9 +62,24 @@ public class AddUserModel(
         }
 
         PersonInviteStateData = session.Get<PersonInviteState>(PersonInviteState.TempDataKey) ?? new PersonInviteState();
+        try
+        {
+            var isEmailUnique = await organisationClient.IsEmailUniqueWithinOrganisationAsync(Id, Email);
+            if (!isEmailUnique)
+            {
+                ModelState.AddModelError("Email", "A user with this email address already exists for your organisation.");
+                return Page();
+            }
+        }
+        catch (ApiException ex) when (ex.StatusCode == 404)
+        {
+            
+        }
+        finally
+        {
+        }
 
         PersonInviteStateData = UpdateFields(PersonInviteStateData);
-
         PersonInviteStateData = UpdateScopes(PersonInviteStateData);
 
         session.Set(PersonInviteState.TempDataKey, PersonInviteStateData);

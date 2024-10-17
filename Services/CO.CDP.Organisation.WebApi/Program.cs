@@ -87,6 +87,7 @@ builder.Services.AddGovUKNotifyApiClient(builder.Configuration);
 builder.Services.AddScoped<IUseCase<Guid, IEnumerable<CO.CDP.Organisation.WebApi.Model.AuthenticationKey>>, GetAuthenticationKeyUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, RegisterAuthenticationKey), bool>, RegisterAuthenticationKeyUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, string), bool>, RevokeAuthenticationKeyUseCase>();
+builder.Services.AddScoped<IUseCase<(Guid, string), bool>, IsEmailUniqueWithinOrganisationUseCase>();
 
 builder.Services.AddOrganisationProblemDetails();
 
