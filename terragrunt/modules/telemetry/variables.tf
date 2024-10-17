@@ -13,11 +13,6 @@ variable "ecs_cluster_id" {
   type        = string
 }
 
-variable "ecs_lb_dns_name" {
-  description = "ECS Application Loadbalancer DNS name"
-  type        = string
-}
-
 variable "ecs_listener_arn" {
   description = "ECS Application Loadbalancer Listener ARN"
   type        = string
