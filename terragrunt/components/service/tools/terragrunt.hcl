@@ -32,10 +32,10 @@ dependency core_iam {
 dependency core_networking {
   config_path = "../../core/networking"
   mock_outputs = {
-    private_subnet_ids      = "mock"
-    public_hosted_zone_fqdn = "mock"
-    public_hosted_zone_id   = "mock"
-    vpc_id                  = "mock"
+    private_subnet_ids    = "mock"
+    public_domain         = "mock"
+    public_hosted_zone_id = "mock"
+    vpc_id                = "mock"
   }
 }
 
@@ -99,10 +99,10 @@ inputs = {
   role_ecs_task_name     = dependency.core_iam.outputs.ecs_task_name
   role_ecs_task_exec_arn = dependency.core_iam.outputs.ecs_task_exec_arn
 
-  private_subnet_ids      = dependency.core_networking.outputs.private_subnet_ids
-  public_hosted_zone_fqdn = dependency.core_networking.outputs.public_hosted_zone_fqdn
-  public_hosted_zone_id   = dependency.core_networking.outputs.public_hosted_zone_id
-  vpc_id                  = dependency.core_networking.outputs.vpc_id
+  private_subnet_ids    = dependency.core_networking.outputs.private_subnet_ids
+  public_domain         = dependency.core_networking.outputs.public_domain
+  public_hosted_zone_id = dependency.core_networking.outputs.public_hosted_zone_id
+  vpc_id                = dependency.core_networking.outputs.vpc_id
 
   ecs_alb_sg_id = dependency.core_security_groups.outputs.alb_sg_id
   ecs_sg_id     = dependency.core_security_groups.outputs.ecs_sg_id

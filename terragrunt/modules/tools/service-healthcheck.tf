@@ -38,6 +38,7 @@ module "ecs_service_healthcheck" {
   name                   = var.healthcheck_config.name
   private_subnet_ids     = var.private_subnet_ids
   product                = var.product
+  public_domain          = var.public_domain
   role_ecs_task_arn      = var.role_ecs_task_arn
   role_ecs_task_exec_arn = var.role_ecs_task_exec_arn
   tags                   = var.tags

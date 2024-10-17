@@ -25,7 +25,7 @@
         {"name": "Aws__CloudWatch__LogGroup", "value": "${lg_name}"},
         {"name": "Aws__CloudWatch__LogStream", "value": "${lg_prefix}-serilog"},
         {"name": "ForwardedHeaders__KnownNetwork", "value": "${vpc_cidr}"},
-        {"name": "Issuer", "value": "https://authority.${public_hosted_zone_fqdn}"},
+        {"name": "Issuer", "value": "https://authority.${public_domain}"},
         {"name": "OrganisationInformationDatabase__Database", "value": "${oi_db_name}"},
         {"name": "OrganisationInformationDatabase__Host", "value": "${oi_db_address}"},
         {"name": "OrganisationInformationDatabase__Server", "value": "${oi_db_address}"}
