@@ -13,11 +13,6 @@ variable "ecs_cluster_id" {
   type        = string
 }
 
-variable "ecs_lb_dns_name" {
-  description = "ECS Application Loadbalancer DNS name"
-  type        = string
-}
-
 variable "ecs_listener_arn" {
   description = "ECS Application Loadbalancer Listener ARN"
   type        = string
@@ -58,8 +53,8 @@ variable "product" {
   })
 }
 
-variable "public_hosted_zone_fqdn" {
-  description = "Fully qualified domain name of the public hosted zone"
+variable "public_domain" {
+  description = "The fully qualified domain name (FQDN) that may differ from the main delegated domain specified by 'public_hosted_zone_fqdn'. This domain represents the public-facing endpoint."
   type        = string
 }
 

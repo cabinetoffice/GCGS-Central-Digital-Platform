@@ -1,5 +1,5 @@
 terraform {
-  source = local.global_vars.locals.environment != "orchestrator" ? "../../../modules//api-gateway" : null
+  source = contains(["development", "staging", "integration"], local.global_vars.locals.environment) ? "../../../modules//api-gateway" : null
 }
 
 include {

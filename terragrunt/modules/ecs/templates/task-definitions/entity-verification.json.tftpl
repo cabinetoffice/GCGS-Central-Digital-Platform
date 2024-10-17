@@ -31,7 +31,7 @@
         {"name": "EntityVerificationDatabase__Host", "value": "${ev_db_address}"},
         {"name": "EntityVerificationDatabase__Server", "value": "${ev_db_address}"},
         {"name": "ForwardedHeaders__KnownNetwork", "value": "${vpc_cidr}"},
-        {"name": "Organisation__Authority", "value": "https://authority.${public_hosted_zone_fqdn}"}
+        {"name": "Organisation__Authority", "value": "https://authority.${public_domain}"}
     ],
     "secrets": [
         {"name": "EntityVerificationDatabase__Password", "valueFrom": "${ev_db_username}"},
