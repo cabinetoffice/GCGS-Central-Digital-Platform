@@ -40,14 +40,18 @@ public class JoinOrganisationModel(
         {
             if (Join == true)
             {
-                // Create a person invite of type join and refactor person invite code
+                await organisationClient.CreateJoinRequestAsync(organisationId, new CreateOrganisationJoinRequest(
+                    personId: UserDetails.PersonId.Value
+                ));
+
+                return Redirect("/registration/" + organisationId + "/join-organisation/success");
             }
+
+            return Redirect("/registration/has-companies-house-number");
         }
         else
         {
             return Redirect("/");
         }
-
-        return RedirectToPage("Organisations", new { type = "buyer" });
     }
 }
