@@ -105,7 +105,7 @@ public class Organisation : IEntityDate
 
     public void UpdateBuyerInformation()
     {
-        if (!Roles.Contains(PartyRole.Buyer))
+        if (!Roles.Contains(PartyRole.Buyer) && !PendingRoles.Contains(PartyRole.Buyer))
         {
             return;
         }

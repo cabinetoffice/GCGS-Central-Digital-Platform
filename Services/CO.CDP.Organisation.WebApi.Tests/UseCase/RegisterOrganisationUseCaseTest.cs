@@ -277,6 +277,22 @@ public class RegisterOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
     }
 
     [Fact]
+    public async Task ItRegistersTheBuyerAsPending()
+    {
+        var person = GivenPersonExists(guid: Guid.NewGuid());
+        var command = GivenRegisterOrganisationCommand(
+            personId: person.Guid,
+            roles: [PartyRole.Buyer]
+        );
+
+        await UseCase.Execute(command);
+
+        _repository.Verify(r => r.SaveAsync(It.Is<Persistence.Organisation>(o =>
+            o.Roles.Count == 0 && o.PendingRoles.SequenceEqual(new List<PartyRole> { PartyRole.Buyer })
+        ), AnyOnSave()), Times.Once);
+    }
+
+    [Fact]
     public async Task ItInitialisesSupplierInformationWhenRegisteringSupplierOrganisation()
     {
         var person = GivenPersonExists(guid: Guid.NewGuid());
