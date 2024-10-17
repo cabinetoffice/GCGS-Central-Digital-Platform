@@ -17,11 +17,6 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>StaticTextResource.resx</DependentUpon>
     </Compile>
-    <Compile Update="ValidationMessagesResource.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>ValidationMessagesResource.resx</DependentUpon>
-    </Compile>
   </ItemGroup>
 
   <ItemGroup>
@@ -32,10 +27,6 @@
     <EmbeddedResource Update="StaticTextResource.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>StaticTextResource.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Update="ValidationMessagesResource.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>ValidationMessagesResource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
 </Project>
