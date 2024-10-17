@@ -67,8 +67,8 @@ var joinHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Join)).HasInner
             <form method="post">
                 <fieldset class="govuk-fieldset" aria-required="true" aria-describedby @(joinHasError ? Html.Raw(@"aria-describedby=""approval-error""") : null)>
                     <legend class="govuk-form-group @(joinHasError ? "govuk-form-group--error" : "")">
-                        <h2 class="govuk-fieldset__legend">
-                            <span class="govuk-label--m">Would you like to join @organisationDetails.Name?</span>
+                        <h2 class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                          Would you like to join @organisationDetails.Name?
                         </h2>
                         @if (joinHasError)
                         {
