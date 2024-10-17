@@ -25,7 +25,7 @@ public class AuthorizationTests
     {
         var services = new ServiceCollection();
 
-        var organisation = new UserOrganisation(approvedOn: null,
+        var organisation = new UserOrganisation(
                                     id: testOrganisationId,
                                     name: "Org name",
                                     roles:

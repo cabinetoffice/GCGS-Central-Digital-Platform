@@ -49,6 +49,4 @@ public record UserOrganisation
 
     /// <example>["Responder"]</example>
     public required List<string> Scopes { get; init; }
-
-    public DateTimeOffset? ApprovedOn { get; set; }
 }

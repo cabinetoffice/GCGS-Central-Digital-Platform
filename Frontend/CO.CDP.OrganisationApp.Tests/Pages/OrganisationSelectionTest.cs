@@ -62,7 +62,7 @@ public class OrganisationSelectionTest
                         name: "TrentTheTenant",
                         organisations: new List<UserOrganisation>()
                         {
-                            new(approvedOn: null,
+                            new(
                                 id: Guid.NewGuid(),
                                 name: "Acme Ltd",
                                 roles: new List<PartyRole> { PartyRole.Payee },
