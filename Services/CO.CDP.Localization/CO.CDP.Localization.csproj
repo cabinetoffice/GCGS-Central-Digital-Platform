@@ -1,33 +1,31 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <InvariantGlobalization>false</InvariantGlobalization>
+    <CoreCompileDependsOn>PrepareResources;$(CompileDependsOn)</CoreCompileDependsOn>
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Update="FormsEngineResource.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>FormsEngineResource.resx</DependentUpon>
-    </Compile>
-    <Compile Update="StaticTextResource.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>StaticTextResource.resx</DependentUpon>
-    </Compile>
-  </ItemGroup>
+      <EmbeddedResource Update="StaticTextResource.resx">
+          <Generator>MSBuild:Compile</Generator>
+          <LastGenOutput>StaticTextResource.Designer.cs</LastGenOutput>
+          <StronglyTypedFileName>$(IntermediateOutputPath)\StaticTextResource.Designer.cs</StronglyTypedFileName>
+          <StronglyTypedLanguage>CSharp</StronglyTypedLanguage>
+          <StronglyTypedNamespace>CO.CDP.Localization</StronglyTypedNamespace>
+          <StronglyTypedClassName>StaticTextResource</StronglyTypedClassName>
+          <PublicClass>true</PublicClass>
+      </EmbeddedResource>
 
-  <ItemGroup>
-    <EmbeddedResource Update="FormsEngineResource.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>FormsEngineResource.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Update="StaticTextResource.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>StaticTextResource.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
+      <EmbeddedResource Update="FormsEngineResource.resx">
+          <Generator>MSBuild:Compile</Generator>
+          <LastGenOutput>FormsEngineResource.Designer.cs</LastGenOutput>
+          <StronglyTypedFileName>$(IntermediateOutputPath)\FormsEngineResource.Designer.cs</StronglyTypedFileName>
+          <StronglyTypedLanguage>CSharp</StronglyTypedLanguage>
+          <StronglyTypedNamespace>CO.CDP.Localization</StronglyTypedNamespace>
+          <StronglyTypedClassName>FormsEngineResource</StronglyTypedClassName>
+          <PublicClass>true</PublicClass>
+      </EmbeddedResource>
   </ItemGroup>
 </Project>
