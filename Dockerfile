@@ -73,6 +73,7 @@ COPY --link Services/CO.CDP.Organisation.Authority/CO.CDP.Organisation.Authority
 COPY --link Services/CO.CDP.Organisation.Authority.Tests/CO.CDP.Organisation.Authority.Tests.csproj Services/CO.CDP.Organisation.Authority.Tests/
 COPY --link Services/CO.CDP.EntityVerification/CO.CDP.EntityVerification.csproj Services/CO.CDP.EntityVerification/
 COPY --link Services/CO.CDP.EntityVerification.Tests/CO.CDP.EntityVerification.Tests.csproj Services/CO.CDP.EntityVerification.Tests/
+COPY --link Services/CO.CDP.Localization/CO.CDP.Localization.csproj Services/CO.CDP.Localization/
 COPY --link GCGS-Central-Digital-Platform.sln .
 RUN dotnet restore "GCGS-Central-Digital-Platform.sln"
 
@@ -105,6 +106,11 @@ RUN dotnet build -c $BUILD_CONFIGURATION -o /app/build
 FROM build AS build-person
 ARG BUILD_CONFIGURATION
 WORKDIR /src/Services/CO.CDP.Person.WebApi
+RUN dotnet build -c $BUILD_CONFIGURATION -o /app/build
+
+FROM build AS build-localization
+ARG BUILD_CONFIGURATION
+WORKDIR /src/Services/CO.CDP.Localization
 RUN dotnet build -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS build-forms

@@ -1,6 +1,7 @@
 @page
 @attribute [RazorCompiledItemMetadata("RouteTemplate", RegistrationStepModel.OrganisationNamePage)]
 @model CO.CDP.OrganisationApp.Pages.Registration.OrganisationNameModel
+@using CO.CDP.Localization
 
 @{
     var organisationNameHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.OrganisationName)).HasInnerHtml;
@@ -18,7 +19,7 @@
 }
 
 <a href="@backLink" class="govuk-back-link">
-    Back
+    @StaticTextResource.Global_Back
 </a>
 
 <main class="govuk-main-wrapper" id="main-content">
@@ -42,13 +43,13 @@
                             </label>
                         </h1>
 
-                        <div id="hint" class="govuk-hint">As registered on Companies House if incorporated, or the trading name of the company.</div>
+                        <div id="hint" class="govuk-hint">@StaticTextResource.OrganisationRegistration_EnterOrganisationName_Hint</div>
 
                         <div class="govuk-form-group @(organisationNameHasError ? "govuk-form-group--error" : "")">
                             @if (organisationNameHasError)
                             {
                                 <p id="organisation-name-error" class="govuk-error-message">
-                                    <span class="govuk-visually-hidden">Error:</span>
+                                    <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span>
                                     @Html.ValidationMessageFor(m => m.OrganisationName)
                                 </p>
                             }
@@ -61,7 +62,7 @@
                 </div>
 
                 <govuk-button>
-                    Continue
+                    @StaticTextResource.Global_Continue
                 </govuk-button>
 
             </form>

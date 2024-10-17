@@ -1,7 +1,10 @@
 @using System.Text.RegularExpressions
 @using CO.CDP.OrganisationApp.Constants
+@using Microsoft.AspNetCore.Mvc.Localization
+@using CO.CDP.Localization
 @inject Microsoft.Extensions.Configuration.IConfiguration config
 @inject IUserInfoService userInfoService
+@inject IHtmlLocalizer<StaticTextResource> Localizer
 <!DOCTYPE html>
 <html lang="en" class="govuk-template">
 <head>
@@ -118,6 +121,8 @@
                 </span>
             </p>
         </div>
+
+        <partial name="Shared/LanguageSwitcher" />
 
         @* Replicates the BeforeContent region in the base govuk-frontend template *@
         @* This is useful for things like back links, breadcrumbs etc which should not be rendered

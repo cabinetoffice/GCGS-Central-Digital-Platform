@@ -4,6 +4,6 @@ public class ChoiceProviderService(IServiceProvider serviceProvider) : IChoicePr
     public IChoiceProviderStrategy GetStrategy(string? strategyType)
     {
         strategyType ??= "DefaultChoiceProviderStrategy";
-        return serviceProvider.GetKeyedService<IChoiceProviderStrategy>(strategyType)!;
+        return serviceProvider.GetRequiredKeyedService<IChoiceProviderStrategy>(strategyType);
     }
 }

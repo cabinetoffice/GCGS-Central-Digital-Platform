@@ -3,6 +3,7 @@ using CO.CDP.Configuration.ForwardedHeaders;
 using CO.CDP.DataSharing.WebApiClient;
 using CO.CDP.EntityVerificationClient;
 using CO.CDP.Forms.WebApiClient;
+using CO.CDP.Localization;
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp;
 using CO.CDP.OrganisationApp.Authorization;
@@ -15,8 +16,10 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+using System.Globalization;
 using static IdentityModel.OidcConstants;
 using static System.Net.Mime.MediaTypeNames;
 using ISession = CO.CDP.OrganisationApp.ISession;
@@ -31,7 +34,21 @@ const string EvHttpClient = "EvHttpClient";
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.Configure<RequestLocalizationOptions>(options =>
+{
+    var supportedCultures = new[] { new CultureInfo("en"), new CultureInfo("cy") };
+
+    options.DefaultRequestCulture = new RequestCulture("en");
+    options.SupportedCultures = supportedCultures;
+    options.SupportedUICultures = supportedCultures;
+    options.RequestCultureProviders.Insert(0, new CookieRequestCultureProvider());
+});
+
 var mvcBuilder = builder.Services.AddRazorPages()
+    .AddViewLocalization()
+    .AddDataAnnotationsLocalization(options => {
+        options.DataAnnotationLocalizerProvider = (type, factory) => factory.Create(typeof(StaticTextResource));
+    })
     .AddSessionStateTempDataProvider();
 
 if (builder.Environment.IsDevelopment())
@@ -61,6 +78,7 @@ builder.Services.AddTransient(provider =>
 });
 builder.Services.AddScoped<ITempDataService, TempDataService>();
 builder.Services.AddScoped<ApiBearerTokenHandler>();
+builder.Services.AddScoped<CultureDelegatingHandler>();
 builder.Services.AddScoped<ICompaniesHouseApi, CompaniesHouseApi>();
 
 builder.Services.AddKeyedTransient<IChoiceProviderStrategy, ExclusionAppliesToChoiceProviderStrategy>("ExclusionAppliesToChoiceProviderStrategy");
@@ -73,7 +91,8 @@ builder.Services.AddScoped<IUserInfoService, UserInfoService>();
 
 var formsServiceUrl = builder.Configuration.GetValue<string>("FormsService")
             ?? throw new Exception("Missing configuration key: FormsService.");
-builder.Services.AddHttpClient(FormsHttpClientName)
+builder.Services.AddHttpClient(FormsHttpClientName)    
+    .AddHttpMessageHandler<CultureDelegatingHandler>()
     .AddHttpMessageHandler<ApiBearerTokenHandler>();
 builder.Services.AddTransient<IFormsClient, FormsClient>(
     sc => new FormsClient(formsServiceUrl,
@@ -166,7 +185,6 @@ builder.Services
     .AddAmazonCloudWatchLogsService()
     .AddCloudWatchSerilog(builder.Configuration);
 
-
 var app = builder.Build();
 app.UseForwardedHeaders();
 app.UseMiddleware<ExceptionMiddleware>();
@@ -178,6 +196,14 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
+
+var supportedCultures = new[] { "en", "cy" };
+var localizationOptions = new RequestLocalizationOptions()
+    .SetDefaultCulture("en")
+    .AddSupportedCultures(supportedCultures)
+    .AddSupportedUICultures(supportedCultures);
+
+app.UseRequestLocalization(localizationOptions);
 
 app.MapHealthChecks("/health").AllowAnonymous();
 app.UseHttpsRedirection();

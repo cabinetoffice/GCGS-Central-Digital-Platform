@@ -51,7 +51,7 @@ public class GetFormSectionQuestionsUseCaseTest(AutoMapperFixture mapperFixture)
         {
             Id = 1,
             Guid = sectionId,
-            Title = "Financial Information",
+            Title = "FinancialInformation_SectionTitle",
             FormId = form.Id,
             Form = form,
             Questions = new List<CO.CDP.OrganisationInformation.Persistence.Forms.FormQuestion>(),
@@ -112,7 +112,6 @@ public class GetFormSectionQuestionsUseCaseTest(AutoMapperFixture mapperFixture)
         var result = await UseCase.Execute((formId, sectionId, organisationId));
 
         result?.Questions.Should().HaveCount(2);
-
         result?.Section.Should().BeEquivalentTo(new FormSection
         {
             Id = sectionId,
@@ -146,7 +145,7 @@ public class GetFormSectionQuestionsUseCaseTest(AutoMapperFixture mapperFixture)
             {
                 Id = questions[1].Guid,
                 Title = questions[1].Title,
-                Caption = questions[0].Caption,
+                Caption = questions[1].Caption,
                 Description = questions[1].Description,
                 Type = FormQuestionType.YesOrNo,
                 IsRequired = questions[1].IsRequired,

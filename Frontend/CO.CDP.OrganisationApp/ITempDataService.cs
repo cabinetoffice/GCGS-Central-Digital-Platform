@@ -14,4 +14,5 @@ public interface ITempDataService
     T PeekOrDefault<T>(string key) where T : new();
 
     void Remove(string key);
+    IEnumerable<string> Keys { get; }
 }
