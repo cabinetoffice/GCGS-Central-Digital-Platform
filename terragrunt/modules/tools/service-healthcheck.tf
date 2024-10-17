@@ -13,7 +13,7 @@ module "ecs_service_healthcheck" {
       db_sirsi_address                = var.db_sirsi_address
       db_sirsi_name                   = var.db_sirsi_name
       db_sirsi_username               = "${var.db_sirsi_credentials_arn}:username::"
-      environment = title(var.environment)
+      environment                     = title(var.environment)
       host_port                       = var.healthcheck_config.port
       image                           = "${local.orchestrator_account_id}.dkr.ecr.${data.aws_region.current.name}.amazonaws.com/cdp-healthcheck:latest"
       lg_name                         = aws_cloudwatch_log_group.healthcheck.name
