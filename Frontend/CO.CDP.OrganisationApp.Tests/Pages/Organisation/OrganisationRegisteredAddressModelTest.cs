@@ -169,7 +169,7 @@ public class OrganisationRegisteredAddressModelTest
             streetAddress: "1 street lane",
             type: CDP.Organisation.WebApiClient.AddressType.Registered));
 
-        return new CO.CDP.Organisation.WebApiClient.Organisation(additionalIdentifiers: null, addresses: addresses,approvedOn: null, contactPoint: null, id: id ?? Guid.NewGuid(), identifier: null, name: null, roles: [], details: new Details(approval: null, pendingRoles: []));
+        return new CO.CDP.Organisation.WebApiClient.Organisation(additionalIdentifiers: null, addresses: addresses, contactPoint: null, id: id ?? Guid.NewGuid(), identifier: null, name: null, roles: [], details: new Details(approval: null, pendingRoles: []));
     }
 
     private OrganisationRegisteredAddressModel GivenOrganisationAddressModel()

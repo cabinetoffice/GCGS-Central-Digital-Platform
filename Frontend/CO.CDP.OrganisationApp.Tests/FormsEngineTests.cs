@@ -358,7 +358,7 @@ public class FormsEngineTests
                             null
                         ));
         _organisationClientMock.Setup(c => c.GetOrganisationAsync(organisationId))
-            .ReturnsAsync(new Organisation.WebApiClient.Organisation(additionalIdentifiers: [], addresses: [], approvedOn: null, contactPoint: null, id: organisationId, identifier: null, name: "User's current organisation", roles: [], details: new Details(approval: null, pendingRoles: [])));
+            .ReturnsAsync(new Organisation.WebApiClient.Organisation(additionalIdentifiers: [], addresses: [], contactPoint: null, id: organisationId, identifier: null, name: "User's current organisation", roles: [], details: new Details(approval: null, pendingRoles: [])));
         _userInfoServiceMock.Setup(u => u.GetOrganisationId()).Returns(organisationId);
         _tempDataServiceMock.Setup(t => t.Peek<SectionQuestionsResponse>(sessionKey))
             .Returns((SectionQuestionsResponse?)null);

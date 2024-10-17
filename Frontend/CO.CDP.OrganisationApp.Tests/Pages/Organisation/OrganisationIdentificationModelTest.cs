@@ -107,6 +107,6 @@ public class OrganisationIdentificationModelTest
                     )
                 };
 
-        return new Organisation(additionalIdentifiers: additionalIdentifiers, addresses: null, approvedOn: null, contactPoint: null, id: id ?? Guid.NewGuid(), identifier: identifier, name: "Test Org", roles: [], details: new Details(approval: null, pendingRoles: []));
+        return new Organisation(additionalIdentifiers: additionalIdentifiers, addresses: null, contactPoint: null, id: id ?? Guid.NewGuid(), identifier: identifier, name: "Test Org", roles: [], details: new Details(approval: null, pendingRoles: []));
     }
 }

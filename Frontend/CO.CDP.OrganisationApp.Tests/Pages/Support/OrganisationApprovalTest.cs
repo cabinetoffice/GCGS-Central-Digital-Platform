@@ -36,7 +36,6 @@ public class OrganisationApprovalModelTests
         var expectedOrganisation = new CDP.Organisation.WebApiClient.Organisation(
             additionalIdentifiers: new List<Identifier>(),
             addresses: new List<Address>(),
-            approvedOn: null,
             contactPoint: null,
             id: organisationId,
             identifier: null,

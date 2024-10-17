@@ -128,7 +128,7 @@ public class OrganisationEmailModelTest
 
     private static CO.CDP.Organisation.WebApiClient.Organisation GivenOrganisationClientModel(Guid? id)
     {
-        return new CO.CDP.Organisation.WebApiClient.Organisation(additionalIdentifiers: null, addresses: null,approvedOn: null, contactPoint: new ContactPoint("Main Contact", "contact@test.com", "123456789", null), id: id ?? Guid.NewGuid(), identifier: null, name: null, roles: [], details: new Details(approval: null, pendingRoles: []));
+        return new CO.CDP.Organisation.WebApiClient.Organisation(additionalIdentifiers: null, addresses: null, contactPoint: new ContactPoint("Main Contact", "contact@test.com", "123456789", null), id: id ?? Guid.NewGuid(), identifier: null, name: null, roles: [], details: new Details(approval: null, pendingRoles: []));
     }
 
     private OrganisationEmailModel GivenOrganisationEmailModel()

@@ -76,7 +76,6 @@ public class AuthorizationTests
                 new CO.CDP.Organisation.WebApiClient.Organisation(
                     additionalIdentifiers: [],
                     addresses: [],
-                    approvedOn: null,
                     contactPoint: new ContactPoint("a@b.com", "Contact", "123", new Uri("http://whatever")),
                     id: testOrganisationId,
                     identifier: new Identifier("asd", "asd", "asd", new Uri("http://whatever")),
