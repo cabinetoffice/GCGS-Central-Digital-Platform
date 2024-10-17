@@ -9,7 +9,6 @@ using CO.CDP.Swashbuckle.SwaggerGen;
 using DotSwashbuckle.AspNetCore.SwaggerGen;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
-using System.Net.Mime;
 using System.Reflection;
 using static CO.CDP.Authentication.Constants;
 
@@ -62,22 +61,21 @@ public static class EndpointExtensions
                 return operation;
             });
 
-        app.MapGet("/share/data/{sharecode}/pdf",
+        app.MapGet("/share/data/{sharecode}/file",
             [OrganisationAuthorize([AuthenticationChannel.OneLogin])]
-        async (string sharecode, IUseCase<string, byte[]?> useCase) =>
+        async (string sharecode, IUseCase<string, SharedDataFile?> useCase) =>
                  await useCase.Execute(sharecode)
-                     .AndThen(res => res != null ? Results.File(res, MediaTypeNames.Application.Pdf, $"{sharecode}.pdf") : Results.NotFound()))
-             .Produces<FileContentResult>(StatusCodes.Status200OK, MediaTypeNames.Application.Pdf)
+                     .AndThen(res => res != null ? Results.File(res.Content, res.ContentType, res.FileName) : Results.NotFound()))
+             .Produces<FileContentResult>(StatusCodes.Status200OK)
              .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
              .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
              .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError)
              .WithOpenApi(operation =>
              {
-                 operation.OperationId = "GetSharedDataPdf";
-                 operation.Description =
-                     "Operation to obtain Supplier Information as Pdf.";
-                 operation.Summary = "Request Supplier Information as Pdf.";
-                 operation.Responses["200"].Description = "Supplier Information in Pdf format.";
+                 operation.OperationId = "GetSharedDataFile";
+                 operation.Description = "Operation to obtain Supplier Information as file.";
+                 operation.Summary = "Request Supplier Information as file.";
+                 operation.Responses["200"].Description = "Supplier Information information.";
                  operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
                  operation.Responses["404"].Description = "Share code not found or the caller is not authorised to use it.";
                  operation.Responses["500"].Description = "Internal server error.";

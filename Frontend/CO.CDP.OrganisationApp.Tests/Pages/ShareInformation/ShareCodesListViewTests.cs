@@ -111,7 +111,7 @@ public class ShareCodesListViewTests
         var fileResponseMock = new WebApiClient.FileResponse(200, headers, stream, clientMock.Object, responseMock.Object);
 
         _dataSharingApiClientMock
-            .Setup(x => x.GetSharedDataPdfAsync(shareCode))
+            .Setup(x => x.GetSharedDataFileAsync(shareCode))
             .ReturnsAsync(fileResponseMock);
 
         var result = await _pageModel.OnGetDownload(shareCode);
@@ -137,7 +137,7 @@ public class ShareCodesListViewTests
         var shareCode = "HDJ2123F";
 
         _dataSharingApiClientMock
-            .Setup(x => x.GetSharedDataPdfAsync(shareCode))
+            .Setup(x => x.GetSharedDataFileAsync(shareCode))
             .ReturnsAsync((WebApiClient.FileResponse?)null);
 
         var result = await _pageModel.OnGetDownload(shareCode);

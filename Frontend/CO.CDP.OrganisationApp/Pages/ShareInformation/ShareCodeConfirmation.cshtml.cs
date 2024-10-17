@@ -30,7 +30,7 @@ public class ShareCodeConfirmationModel(IDataSharingClient dataSharingClient) : 
             return Redirect("/page-not-found");
         }
 
-        var fileResponse = await dataSharingClient.GetSharedDataPdfAsync(ShareCode);
+        var fileResponse = await dataSharingClient.GetSharedDataFileAsync(ShareCode);
 
         if (fileResponse == null)
         {
