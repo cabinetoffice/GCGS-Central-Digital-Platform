@@ -27,6 +27,12 @@ public class InvitePersonToOrganisationUseCase(
         var organisation = await organisationRepository.Find(command.organisationId)
                            ?? throw new UnknownOrganisationException($"Unknown organisation {command.organisationId}.");
 
+        var isEmailUnique = await organisationRepository.IsEmailUniqueWithinOrganisation(command.organisationId, command.invitePersonData.Email);
+        if (!isEmailUnique)
+        {
+            throw new DuplicateEmailWithinOrganisationException($"A user with this email address already exists for your organisation.");
+        }
+
         var personInvite = CreatePersonInvite(command.invitePersonData, organisation);
 
         personInviteRepository.Save(personInvite);
