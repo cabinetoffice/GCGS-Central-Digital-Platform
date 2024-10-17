@@ -36,7 +36,7 @@ public class UserInfoService(IHttpContextAccessor httpContextAccessor, ITenantCl
         {
             var organisation = await GetPersonOrganisation((Guid)organisationId);
 
-            if(organisation != null)
+            if (organisation != null)
             {
                 return organisation.Scopes;
             }
@@ -47,9 +47,9 @@ public class UserInfoService(IHttpContextAccessor httpContextAccessor, ITenantCl
 
     public async Task<bool> IsViewer()
     {
-        var scopes = await GetOrganisationUserScopes();
+        var organisationPersonScopes = await GetOrganisationUserScopes();
         var userScopes = await GetUserScopes();
-        return scopes.Contains(OrganisationPersonScopes.Viewer) || userScopes.Contains(PersonScopes.SupportAdmin);
+        return organisationPersonScopes.Contains(OrganisationPersonScopes.Viewer) || (organisationPersonScopes.Count == 0 && userScopes.Contains(PersonScopes.SupportAdmin));
     }
 
     public async Task<bool> HasTenant()
@@ -62,7 +62,7 @@ public class UserInfoService(IHttpContextAccessor httpContextAccessor, ITenantCl
         catch
         {
             return false;
-        }    
+        }
     }
 
     private async Task<UserOrganisation?> GetPersonOrganisation(Guid organisationId)
