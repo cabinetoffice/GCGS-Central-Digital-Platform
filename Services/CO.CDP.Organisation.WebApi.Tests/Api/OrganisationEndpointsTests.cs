@@ -21,6 +21,7 @@ public class OrganisationEndpointsTests
     private readonly Mock<IUseCase<Guid, Model.Organisation>> _getOrganisationUseCase = new();
     private readonly Mock<IUseCase<(Guid, UpdateOrganisation), bool>> _updatesOrganisationUseCase = new();
     private readonly Mock<IUseCase<(Guid, OrganisationJoinRequestStatus?), IEnumerable<OrganisationJoinRequest>>> _getOrganisationJoinRequestsUseCase = new();
+    private readonly Mock<IUseCase<(Guid, Guid, UpdateJoinRequest), bool>> _updateJoinRequestUseCase = new();
 
     public OrganisationEndpointsTests()
     {
@@ -209,6 +210,33 @@ public class OrganisationEndpointsTests
             services => services.AddScoped(_ => _getOrganisationJoinRequestsUseCase.Object));
 
         var response = await factory.CreateClient().GetAsync($"/organisations/{organisationId}/join-requests/{status}");
+
+        response.StatusCode.Should().Be(expectedStatusCode);
+    }
+
+    [Theory]
+    [InlineData(NoContent, Channel.OneLogin, OrganisationPersonScope.Admin)]
+    [InlineData(Forbidden, Channel.OneLogin, OrganisationPersonScope.Editor)]
+    [InlineData(Forbidden, Channel.OneLogin, OrganisationPersonScope.Responder)]
+    [InlineData(Forbidden, Channel.OneLogin, OrganisationPersonScope.Viewer)]
+    [InlineData(Forbidden, Channel.ServiceKey)]
+    [InlineData(Forbidden, Channel.OrganisationKey)]
+    [InlineData(Forbidden, "unknown_channel")]
+    public async Task UpdateOrganisationJoinRequest_Authorization_ReturnsExpectedStatusCode(
+        HttpStatusCode expectedStatusCode, string channel, string? scope = null)
+    {
+        var organisationId = Guid.NewGuid();
+        var joinRequestId = Guid.NewGuid();
+        var updateJoinRequest = new UpdateJoinRequest { ReviewedBy = 1 , status = OrganisationJoinRequestStatus.Accepted };
+        var command = (organisationId, joinRequestId, updateJoinRequest);
+
+        _updateJoinRequestUseCase.Setup(uc => uc.Execute(command)).ReturnsAsync(true);
+
+        var factory = new TestAuthorizationWebApplicationFactory<Program>(
+            channel, organisationId, scope,
+            services => services.AddScoped(_ => _updateJoinRequestUseCase.Object));
+
+        var response = await factory.CreateClient().PatchAsJsonAsync($"/organisations/{organisationId}/join-requests/{joinRequestId}", updateJoinRequest);
 
         response.StatusCode.Should().Be(expectedStatusCode);
     }
