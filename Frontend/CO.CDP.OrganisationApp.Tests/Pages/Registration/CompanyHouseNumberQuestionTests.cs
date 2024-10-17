@@ -70,7 +70,7 @@ public class CompanyHouseNumberQuestionTests
 
         organisationClientMock.Setup(o => o.LookupOrganisationAsync(string.Empty, It.IsAny<string>()))
             .Throws(new ApiException(string.Empty, 404, string.Empty, null, null));
-        
+
         var profile = GivenProfileOnCompaniesHouse(organisationName: "Acme Ltd");
         companiesHouseApiMock.Setup(ch => ch.GetProfile(model.CompaniesHouseNumber))
             .ReturnsAsync(profile);
@@ -88,7 +88,7 @@ public class CompanyHouseNumberQuestionTests
         model.HasCompaniesHouseNumber = true;
         model.RedirectToSummary = true;
         model.CompaniesHouseNumber = "123456";
-        
+
         GivenRegistrationIsInProgress(model.HasCompaniesHouseNumber, model.CompaniesHouseNumber);
 
         organisationClientMock.Setup(o => o.LookupOrganisationAsync(string.Empty, It.IsAny<string>()))
@@ -111,6 +111,8 @@ public class CompanyHouseNumberQuestionTests
         model.HasCompaniesHouseNumber = true;
         model.RedirectToSummary = true;
         model.CompaniesHouseNumber = "123456";
+        model.OrganisationId = new Guid();
+        model.OrganisationName = "Test company";
 
         GivenRegistrationIsInProgress(model.HasCompaniesHouseNumber, model.CompaniesHouseNumber);
 
@@ -118,7 +120,7 @@ public class CompanyHouseNumberQuestionTests
 
         tempDataServiceMock.Verify(api => api.Put(
             FlashMessageTypes.Important,
-            CompanyHouseNumberQuestionModel.NotificationBannerCompanyAlreadyRegistered), Times.Once);
+            model.NotificationBannerCompanyAlreadyRegistered), Times.Once);
         result.Should().BeOfType<PageResult>();
     }
 
@@ -140,7 +142,7 @@ public class CompanyHouseNumberQuestionTests
 
         tempDataServiceMock.Verify(api => api.Put(
             FlashMessageTypes.Important,
-            CompanyHouseNumberQuestionModel.NotificationBannerCompanyNotFound), Times.Once);
+            model.NotificationBannerCompanyNotFound), Times.Once);
         result.Should().BeOfType<PageResult>();
     }
 
