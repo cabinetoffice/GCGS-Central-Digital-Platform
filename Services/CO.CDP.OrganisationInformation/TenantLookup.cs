@@ -42,11 +42,13 @@ public record UserOrganisation
 
     public required List<PartyRole> Roles { get; init; }
 
+    public required List<PartyRole> PendingRoles { get; init; }
+
     /// <example>"https://cdp.cabinetoffice.gov.uk/organisations/f4596cdd-12e5-4f25-9db1-4312474e516f"</example>
     public required Uri Uri { get; init; }
 
     /// <example>["Responder"]</example>
     public required List<string> Scopes { get; init; }
 
-    public DateTimeOffset? ApprovedOn { get; set; }    
+    public DateTimeOffset? ApprovedOn { get; set; }
 }

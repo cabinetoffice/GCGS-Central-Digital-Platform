@@ -55,18 +55,20 @@ public class OrganisationSelectionTest
     private TenantLookup GetUserTenant()
     {
         return new TenantLookup(
-                new List<UserTenant>()
+                new List<UserTenant>
                 {
-                    new UserTenant(
-                        Guid.NewGuid(),
-                        "TrentTheTenant",
-                        new List<UserOrganisation>()
+                    new(
+                        id: Guid.NewGuid(),
+                        name: "TrentTheTenant",
+                        organisations: new List<UserOrganisation>()
                         {
-                            new UserOrganisation(null,Guid.NewGuid(),
-                                "Acme Ltd",
-                                new List<PartyRole>() { PartyRole.Payee },
-                                new List<string>() { "Scope" },
-                                new Uri("http://www.acme.com"))
+                            new(approvedOn: null,
+                                id: Guid.NewGuid(),
+                                name: "Acme Ltd",
+                                roles: new List<PartyRole> { PartyRole.Payee },
+                                pendingRoles: [],
+                                scopes: new List<string> { "Scope" },
+                                uri: new Uri("http://www.acme.com"))
                         }
                     )
                 },

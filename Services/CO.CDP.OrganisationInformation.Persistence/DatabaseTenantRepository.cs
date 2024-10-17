@@ -51,6 +51,7 @@ public class DatabaseTenantRepository(OrganisationInformationContext context) : 
                              Id = o.Guid,
                              Name = o.Name,
                              Roles = o.Roles,
+                             PendingRoles = o.PendingRoles,
                              // ReSharper disable once NullCoalescingConditionIsAlwaysNotNullAccordingToAPIContract
                              Scopes = o.OrganisationPersons.Single(op => op.PersonId == p.Id).Scopes ?? new List<string>(),
                              ApprovedOn = o.ApprovedOn

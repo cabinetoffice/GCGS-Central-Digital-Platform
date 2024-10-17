@@ -25,15 +25,17 @@ public class AuthorizationTests
     {
         var services = new ServiceCollection();
 
-        var organisation = new UserOrganisation(null,
-                                    testOrganisationId,
-                                    "Org name",
+        var organisation = new UserOrganisation(approvedOn: null,
+                                    id: testOrganisationId,
+                                    name: "Org name",
+                                    roles:
                                     [
                                         Tenant.WebApiClient.PartyRole.Supplier,
                                         Tenant.WebApiClient.PartyRole.Tenderer
                                     ],
-                                    userOrganisationScopes,
-                                    new Uri("http://foo")
+                                    pendingRoles: [],
+                                    scopes: userOrganisationScopes,
+                                    uri: new Uri("http://foo")
                                 );
 
         var person = new Person.WebApiClient.Person("a@b.com", "First name", personId, "Last name", userScopes);
