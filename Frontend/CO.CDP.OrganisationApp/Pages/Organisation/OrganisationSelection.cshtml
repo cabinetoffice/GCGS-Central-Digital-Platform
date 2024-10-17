@@ -28,7 +28,7 @@
                                     <th scope="row" class="govuk-table__header">
                                         @org.Name
                                         @{
-                                            if (@org.IsBuyer() && org.IsApproved() == false)
+                                            if (org.IsPendingBuyer())
                                             {
                                                 <strong class="govuk-tag govuk-tag--blue">
                                                     Pending approval
