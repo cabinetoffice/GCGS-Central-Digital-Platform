@@ -104,7 +104,8 @@ public class WebApiToPersistenceProfile : Profile
             .ForMember(m => m.ReviewedBy, o => o.Ignore())
             .ForMember(m => m.ReviewComment, o => o.Ignore())
             .ForMember(m => m.ApprovedOn, o => o.Ignore())
-            .ForMember(m => m.ReviewedById, o => o.Ignore());
+            .ForMember(m => m.ReviewedById, o => o.Ignore())
+            .ForMember(m => m.PendingRoles, o => o.Ignore());
 
         CreateMap<Persistence.Organisation.SupplierInformation, SupplierInformation>()
             .ForMember(m => m.OrganisationName, o => o.Ignore());

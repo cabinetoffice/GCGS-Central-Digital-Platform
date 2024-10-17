@@ -16,6 +16,7 @@ public class Organisation : IEntityDate
     public ICollection<OrganisationAddress> Addresses { get; set; } = [];
     public ICollection<ContactPoint> ContactPoints { get; set; } = [];
     public List<PartyRole> Roles { get; set; } = [];
+    public List<PartyRole> PendingRoles { get; set; } = [];
     public List<Person> Persons => OrganisationPersons.Select(p => p.Person).ToList();
     public List<OrganisationPerson> OrganisationPersons { get; init; } = [];
     public SupplierInformation? SupplierInfo { get; set; }
