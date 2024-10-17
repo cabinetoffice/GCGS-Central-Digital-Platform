@@ -1,9 +1,9 @@
 @page "/registration/{organisationId}/join-organisation"
-@using CO.CDP.OrganisationApp.Constants
 @model JoinOrganisationModel
 
 @{
 var organisationDetails = Model.OrganisationDetails!;
+var userDetails = Model.UserDetails;
 var joinHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Join)).HasInnerHtml;
 }
 
@@ -38,7 +38,7 @@ var joinHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Join)).HasInner
                             Firstname
                         </dt>
                         <dd class="govuk-summary-list__value">
-                            <p class="govuk-body">John</p>
+                            <p class="govuk-body">@userDetails.FirstName</p>
                         </dd>
                     </div>
                     <div class="govuk-summary-list__row">
@@ -46,7 +46,7 @@ var joinHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Join)).HasInner
                             Lastname
                         </dt>
                         <dd class="govuk-summary-list__value">
-                            <p class="govuk-body">Johnson</p>
+                            <p class="govuk-body">@userDetails.LastName</p>
                         </dd>
                     </div>
                     <div class="govuk-summary-list__row">
@@ -54,7 +54,7 @@ var joinHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Join)).HasInner
                             Email address
                         </dt>
                         <dd class="govuk-summary-list__value">
-                            <p class="govuk-body">john@johnson.com</p>
+                            <p class="govuk-body">@userDetails.Email</p>
                         </dd>
                     </div>
                 </dl>
@@ -65,9 +65,9 @@ var joinHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Join)).HasInner
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <form method="post">
-                <fieldset class="govuk-fieldset" data-required="" data-error="Select yes if you want to join this organisation" aria-required="true">
-                    <div class="govuk-form-group @(joinHasError ? "govuk-form-group--error" : "")">
-                        <h2 class="govuk-heading-m">
+                <fieldset class="govuk-fieldset" aria-required="true" aria-describedby @(joinHasError ? Html.Raw(@"aria-describedby=""approval-error""") : null)>
+                    <legend class="govuk-form-group @(joinHasError ? "govuk-form-group--error" : "")">
+                        <h2 class="govuk-fieldset__legend">
                             <span class="govuk-label--m">Would you like to join @organisationDetails.Name?</span>
                         </h2>
                         @if (joinHasError)
@@ -79,23 +79,21 @@ var joinHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Join)).HasInner
                         }
                         <div class="govuk-radios govuk-radios--inline" data-module="govuk-radios">
                             <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="join-YES" name="Join" type="radio"
+                                <input class="govuk-radios__input" id="@nameof(Model.Join)-yes" name="@nameof(Model.Join)" type="radio"
                                        value="true">
-                                <label class="govuk-label govuk-radios__label" for="join-YES">Yes</label>
+                                <label class="govuk-label govuk-radios__label" for="@nameof(Model.Join)-yes">Yes</label>
                             </div>
                             <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="join-NO" name="Join" type="radio"
+                                <input class="govuk-radios__input" id="@nameof(Model.Join)-no" name="@nameof(Model.Join)" type="radio"
                                        value="false">
-                                <label class="govuk-label govuk-radios__label" for="join-NO">No</label>
+                                <label class="govuk-label govuk-radios__label" for="@nameof(Model.Join)-no">No</label>
                             </div>
                         </div>
-                    </div>
+                    </legend>
                 </fieldset>
-                <div class="govuk-button-group govuk-!-margin-top-6">
-                    <govuk-button>
-                        Continue
-                    </govuk-button>
-                </div>
+                <govuk-button>
+                    Continue
+                </govuk-button>
             </form>
         </div>
     </div>
