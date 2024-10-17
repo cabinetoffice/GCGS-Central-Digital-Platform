@@ -56,25 +56,30 @@
                             Organisation identifier
                         </dt>
                         <dd class="govuk-summary-list__value">
-
-                            &bull; @organisationDetails.Identifier.Scheme.SchemeDescription()
-                            @if (@organisationDetails.Identifier.Id == null)
-                            {
-                                <text><br />PPON generation pending.</text>
-                            }
-                            else
-                            {
-                                @organisationDetails.Identifier.Id
-                            }
-                            @foreach (var aidentifier in organisationDetails.AdditionalIdentifiers)
-                            {
-                                <p>
-                                    &bull;
-                                    @aidentifier.Scheme.SchemeDescription()
-                                    <br />
-                                    @aidentifier.Id
-                                </p>
-                            }
+                            <ul class="govuk-list govuk-list--bullet">
+                                <li>
+                                    @organisationDetails.Identifier.Scheme.SchemeDescription()
+                                    @if (@organisationDetails.Identifier.Id == null)
+                                    {
+                                        <text><br />PPON generation pending.</text>
+                                    }
+                                    else
+                                    {
+                                        @organisationDetails.Identifier.Id
+                                    }
+                                </li>
+                                @foreach (var aidentifier in organisationDetails.AdditionalIdentifiers)
+                                {
+                                    @if (@aidentifier.Scheme != Helper.VatSchemeName)
+                                    {
+                                        <li>
+                                            @aidentifier.Scheme.SchemeDescription()
+                                            <br />
+                                            @aidentifier.Id
+                                        </li>
+                                    }
+                                }
+                            </ul>
                         </dd>
                         <authorize scope="@OrgScopeRequirement.Editor">
                             <dd class="govuk-summary-list__actions">
