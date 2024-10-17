@@ -65,7 +65,7 @@ var joinHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Join)).HasInner
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <form method="post">
-                <fieldset class="govuk-fieldset" aria-required="true" aria-describedby @(joinHasError ? Html.Raw(@"aria-describedby=""approval-error""") : null)>
+                <fieldset class="govuk-fieldset" @(joinHasError ? Html.Raw(@"aria-describedby=""approval-error""") : null)>
                     <legend class="govuk-form-group @(joinHasError ? "govuk-form-group--error" : "")">
                         <h2 class="govuk-fieldset__legend govuk-fieldset__legend--m">
                           Would you like to join @organisationDetails.Name?
@@ -79,9 +79,9 @@ var joinHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Join)).HasInner
                         }
                         <div class="govuk-radios govuk-radios--inline" data-module="govuk-radios">
                             <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="@nameof(Model.Join)-yes" name="@nameof(Model.Join)" type="radio"
+                                <input class="govuk-radios__input" id="@nameof(Model.Join)" name="@nameof(Model.Join)" type="radio"
                                        value="true">
-                                <label class="govuk-label govuk-radios__label" for="@nameof(Model.Join)-yes">Yes</label>
+                                <label class="govuk-label govuk-radios__label" for="@nameof(Model.Join)">Yes</label>
                             </div>
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input" id="@nameof(Model.Join)-no" name="@nameof(Model.Join)" type="radio"
