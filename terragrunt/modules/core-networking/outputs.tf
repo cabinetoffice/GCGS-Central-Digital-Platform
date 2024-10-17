@@ -21,7 +21,6 @@ output "private_subnets_cidr_blocks" {
   value       = aws_subnet.private.*.cidr_block
 }
 
-
 output "public_domain" {
   value = var.is_production ? "${local.production_subdomain}.${aws_route53_zone.public.name}" : aws_route53_zone.public.name
 }

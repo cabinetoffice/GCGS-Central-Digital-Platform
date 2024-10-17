@@ -12,7 +12,7 @@ locals {
 
   environment = get_env("TG_ENVIRONMENT", "development")
 
-  is_production = contains(["production", "integration"], local.environment)
+  is_production = contains(["production"], local.environment)
 
   environments = {
     orchestrator = {
