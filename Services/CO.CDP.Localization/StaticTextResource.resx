@@ -132,10 +132,10 @@
   <data name="Global_BackToOrganisationDetails" xml:space="preserve">
     <value>Back to organisation details</value>
   </data>
-  <data name="ConnectedPersons_SectionHeading" xml:space="preserve">
+  <data name="ConnectedPersons_SectionTitle" xml:space="preserve">
     <value>Connected persons</value>
   </data>
-  <data name="BasicInformation_SectionHeading" xml:space="preserve">
+  <data name="BasicInformation_SectionTitle" xml:space="preserve">
     <value>Basic information</value>
   </data>
   <data name="Global_Back" xml:space="preserve">

@@ -5,5 +5,6 @@ This section stores recipes useful in development.
 :leveloffset: +1
 
 include::01-using-docker-for-development.adoc[]
+include::02-how-to-localize-ui-text.adoc[]
 
 :leveloffset: -1
