@@ -179,6 +179,38 @@ public static class EndpointExtensions
                 operation.Responses["500"].Description = "Internal server error.";
                 return operation;
             });
+
+        app.MapPatch("/organisations/{organisationId}/join-requests/{joinRequestId}",
+            [OrganisationAuthorize(
+                [AuthenticationChannel.OneLogin],
+                [Constants.OrganisationPersonScope.Admin],
+                OrganisationIdLocation.Path)]
+        async (Guid organisationId, Guid joinRequestId, UpdateJoinRequest updateJoinRequest, IUseCase<(Guid, Guid, UpdateJoinRequest), bool> useCase) =>
+
+                 await useCase.Execute((organisationId, joinRequestId, updateJoinRequest))
+                     .AndThen(_ => Results.NoContent())
+         )
+         .Produces(StatusCodes.Status200OK)
+         .Produces(StatusCodes.Status204NoContent)
+         .ProducesProblem(StatusCodes.Status400BadRequest)
+         .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
+         .ProducesProblem(StatusCodes.Status404NotFound)
+         .ProducesProblem(StatusCodes.Status422UnprocessableEntity)
+         .ProducesProblem(StatusCodes.Status500InternalServerError)
+         .WithOpenApi(operation =>
+         {
+             operation.OperationId = "UpdateOrganisationJoinRequest";
+             operation.Description = "Update an organisation join request.";
+             operation.Summary = "Update an organisation join request.";
+             operation.Responses["200"].Description = "Organisation join request updated successfully.";
+             operation.Responses["204"].Description = "Organisation join request updated successfully.";
+             operation.Responses["400"].Description = "Bad request.";
+             operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
+             operation.Responses["404"].Description = "Organisation or join request not found.";
+             operation.Responses["422"].Description = "Unprocessable entity.";
+             operation.Responses["500"].Description = "Internal server error.";
+             return operation;
+         });
     }
 
     public static RouteGroupBuilder UseOrganisationLookupEndpoints(this RouteGroupBuilder app)
@@ -706,7 +738,7 @@ public static class EndpointExtensions
                 operation.Responses["500"].Description = "Internal server error.";
                 return operation;
             });
-
+        
         return app;
     }
 

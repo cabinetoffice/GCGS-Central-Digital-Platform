@@ -92,6 +92,7 @@ builder.Services.AddScoped<IUseCase<(Guid, RegisterAuthenticationKey), bool>, Re
 builder.Services.AddScoped<IUseCase<(Guid, string), bool>, RevokeAuthenticationKeyUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, CreateOrganisationJoinRequest), OrganisationJoinRequest>, CreateOrganisationJoinRequestUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, OrganisationJoinRequestStatus?), IEnumerable<OrganisationJoinRequest>>, GetOrganisationJoinRequestUseCase>();
+builder.Services.AddScoped<IUseCase<(Guid, Guid, UpdateJoinRequest), bool>, UpdateJoinRequestUseCase>();
 
 builder.Services.AddOrganisationProblemDetails();
 
