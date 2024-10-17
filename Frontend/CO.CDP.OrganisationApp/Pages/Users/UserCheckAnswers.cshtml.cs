@@ -55,9 +55,10 @@ public class UserCheckAnswersModel(
 
             return RedirectToPage("UserSummary", new { Id });
         }
-        catch
+        catch (ApiException<CO.CDP.Organisation.WebApiClient.ProblemDetails> exc)
         {
-            throw;
+            ApiExceptionMapper.MapApiExceptions(exc, ModelState); 
+            return Page();
         }
         finally
         {
