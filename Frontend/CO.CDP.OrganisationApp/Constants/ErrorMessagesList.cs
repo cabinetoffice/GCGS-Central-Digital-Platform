@@ -3,6 +3,7 @@ namespace CO.CDP.OrganisationApp.Constants;
 public static class ErrorMessagesList
 {
     public const string DuplicatePersonName = "A person with this name already exists. Please try again.";
+    public const string DuplicatePersonEmail = "A user with this email address already exists for your organisation.";
     public const string PersonNotFound = "The requested person was not found.";
     public const string PersonCreationFailed = "Adding a person failed, have you provided the correct person details.";
 

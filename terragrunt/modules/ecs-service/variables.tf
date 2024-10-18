@@ -111,6 +111,11 @@ variable "product" {
   })
 }
 
+variable "public_domain" {
+  description = "The fully qualified domain name (FQDN) that may differ from the main delegated domain specified by 'public_hosted_zone_fqdn'. This domain represents the public-facing endpoint."
+  type        = string
+}
+
 variable "role_ecs_task_arn" {
   description = "Task IAM role ARN"
   type        = string
