@@ -45,7 +45,7 @@ public class OrganisationNameModelTest
         results.Any(c => c.MemberNames.Contains("OrganisationName")).Should().BeTrue();
 
         results.Where(c => c.MemberNames.Contains("OrganisationName")).First()
-            .ErrorMessage.Should().Be("Enter the organisation's name");
+            .ErrorMessage.Should().Be("OrganisationRegistration_EnterOrganisationName_Heading");    // Not passed through localization at this point
     }
 
     [Fact]
@@ -94,14 +94,14 @@ public class OrganisationNameModelTest
     }
 
     [Fact]
-    public void OnGet_ValidSession_ReturnsRegistrationDetails()
+    public async Task OnGet_ValidSession_ReturnsRegistrationDetails()
     {
         RegistrationDetails registrationDetails = DummyRegistrationDetails();
 
         sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(registrationDetails);
 
         var model = GivenOrganisationNameModel();
-        model.OnGet();
+        await model.OnGet();
 
         model.OrganisationName.Should().Be(registrationDetails.OrganisationName);
     }
