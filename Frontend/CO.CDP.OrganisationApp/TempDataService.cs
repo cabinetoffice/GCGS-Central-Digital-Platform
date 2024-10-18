@@ -36,4 +36,5 @@ public class TempDataService(ITempDataDictionary tempData) : ITempDataService
     {
         tempData.Remove(key);
     }
+    public IEnumerable<string> Keys => tempData.Keys;
 }

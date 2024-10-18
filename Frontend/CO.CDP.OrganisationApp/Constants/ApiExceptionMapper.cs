@@ -35,6 +35,7 @@ public static class ApiExceptionMapper
         return errorCode switch
         {
             ErrorCodes.ORGANISATION_ALREADY_EXISTS => ErrorMessagesList.DuplicateOgranisationName,
+            ErrorCodes.EMAIL_ALREADY_EXISTS_WITHIN_ORGANISATION => ErrorMessagesList.DuplicatePersonEmail,
             ErrorCodes.ARGUMENT_NULL => ErrorMessagesList.PayLoadIssueOrNullAurgument,
             ErrorCodes.INVALID_OPERATION => ErrorMessagesList.OrganisationCreationFailed,
             ErrorCodes.PERSON_DOES_NOT_EXIST => ErrorMessagesList.PersonNotFound,
