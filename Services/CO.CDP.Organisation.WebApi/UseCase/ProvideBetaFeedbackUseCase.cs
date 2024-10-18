@@ -11,8 +11,8 @@ public class ProvideBetaFeedbackUseCase(
     public async Task<bool> Execute(ProvideFeedback command)
     {
         var feedbackSentSuccess = true;
-        var templateId = configuration.GetValue<string>("GOVUKNotify:ProvideFeedbackEmailTemplateId") ?? "";
-        var supportAdminEmailAddress = configuration.GetValue<string>("GOVUKNotify:SupportAdminEmailAddress") ?? "";
+        var templateId = configuration["GOVUKNotify:ProvideFeedbackEmailTemplateId"] ?? "";
+        var supportAdminEmailAddress = configuration["GOVUKNotify:SupportAdminEmailAddress"] ?? "";
         var emailRequest = new EmailNotificationRequest
         {
             EmailAddress = supportAdminEmailAddress,

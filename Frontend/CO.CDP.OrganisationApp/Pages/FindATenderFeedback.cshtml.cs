@@ -65,8 +65,6 @@ public class FindATenderFeedback(IOrganisationClient organisationClient) : PageM
         var feedback = new ProvideFeedback(Email ?? string.Empty, Feedback, FeedbackOption, Name ?? string.Empty, UrlOfPage ?? string.Empty);
         var success = await organisationClient.ProvideFeedbackAsync(feedback);
 
-
-
         return RedirectToPage("YourDetails", new { RedirectUri = Helper.ValidRelativeUri(redirectUri) ? redirectUri : default });
     }
 }

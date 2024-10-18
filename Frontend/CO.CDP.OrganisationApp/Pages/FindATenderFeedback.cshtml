@@ -13,38 +13,27 @@
             </h1>
 
             <form method="post">
-                <input type="hidden" name="contact[url]" id="contact_url" value="https://www.gov.uk/contact/govuk" autocomplete="off">
-
                 <p class="govuk-body">This form is to provide feedback on the Find a Tender Website.</p>
                 <p class="govuk-body">You can use it to suggest feedback, an improvement or suggestion to the Find a Tender team.</p>
-                
-                <div class="govuk-visually-hidden" aria-hidden="true">
-                    <label for="giraffe"></label>
-                    <input type="text" tabindex="-1" autocomplete="off" id="giraffe" name="contact[giraffe]">
-                </div>
 
                 <div class="govuk-form-group govuk-!-margin-bottom-6">
                     <fieldset class="govuk-fieldset">
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
-
                             <span class="govuk-fieldset__heading">What's it to do with?</span>
                         </legend>
 
                         <div class="govuk-radios" data-module="govuk-radios" data-govuk-radios-module-started="true">
                             <div class="gem-c-radio govuk-radios__item">
                                 <input type="radio" name="FeedbackOption" id="WholeSite" value="WholeSite" class="govuk-radios__input" @(Model.FeedbackOption == "WholeSite" ? "checked" : "")>
-
                                 <label for="location-0" class="gem-c-label govuk-label govuk-radios__label">The whole site</label>
-
                             </div>
 
                             <div class="gem-c-radio govuk-radios__item">
                                 <input type="radio" name="FeedbackOption" id="SpecificPage" value="SpecificPage" class="govuk-radios__input" @(Model.FeedbackOption == "SpecificPage" ? "checked" : "") aria-controls="conditional-713d30a1" aria-expanded="true">
-
                                 <label for="location-1" class="gem-c-label govuk-label govuk-radios__label">A specific page</label>
 
                             </div>
-                            <div class="govuk-radios__conditional govuk-body" id="conditional-713d30a1">
+                            <div class="govuk-radios__conditional govuk-body">
                                 <div class="govuk-form-group">
                                     <label for="link" class="gem-c-label govuk-label">Enter URL or name of page</label>
                                     <input class="gem-c-input govuk-input" data-ga4-form-include-input="" id="UrlOfPage" name="UrlOfPage" spellcheck="false" type="text" value="@Model.UrlOfPage">
@@ -77,7 +66,6 @@
                         <p class="govuk-body">If you'd like us to get back to you, please leave your details below.</p>
 
                         <div class="govuk-form-group">
-
                             <label for="name" class="gem-c-label govuk-label">Your name</label>
 
                             <input autocomplete="name" class="gem-c-input govuk-input" id="@nameof(Model.Name)" name="@nameof(Model.Name)" spellcheck="false" type="text" value="@(Model.Name)">
@@ -87,7 +75,7 @@
 
                             <label for="email" class="gem-c-label govuk-label">Your email address</label>
 
-                            <div id="hint-a28138ec" class="gem-c-hint govuk-hint">
+                            <div class="gem-c-hint govuk-hint">
                                 We'll only use this to reply to your message.
                             </div>
 
@@ -98,8 +86,6 @@
                 </div>
 
                 <button class="gem-c-button govuk-button gem-c-button--bottom-margin" type="submit">Send message</button>
-
-                <input type="hidden" name="contact[javascript_enabled]" value="true"><input type="hidden" name="contact[referrer]" value="https://www.gov.uk/service-manual/communities/contact-the-service-manual-and-service-standard-team">
             </form>
         </div>
     </div>
