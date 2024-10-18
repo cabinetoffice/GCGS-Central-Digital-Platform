@@ -62,8 +62,8 @@ public class FindATenderFeedback(IOrganisationClient organisationClient) : PageM
             return Page();
         }
 
-        var context = Request.Query["context"];
-        if (context != "Feedback" && context != "Support")
+        var context = Request.Query["context"].ToString().ToUpper();
+        if (context != "FEEDBACK" && context != "SUPPORT")
         {
             throw new Exception("Unknown context");
         }
