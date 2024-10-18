@@ -52,7 +52,7 @@ public class RegisterOrganisationUseCase(
             organisation,
             async _ => await publisher.Publish(mapper.Map<OrganisationRegistered>(organisation)));
 
-        if (organisation.Roles.Contains(OrganisationInformation.PartyRole.Buyer))
+        if (organisation.PendingRoles.Contains(OrganisationInformation.PartyRole.Buyer))
         {
             await NotifyAdminOfApprovalRequest(organisation);
         }

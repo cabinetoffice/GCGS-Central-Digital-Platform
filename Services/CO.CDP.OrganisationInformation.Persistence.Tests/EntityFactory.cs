@@ -88,14 +88,14 @@ public static class EntityFactory
         };
     }
 
-    public static Organisation GivenOrganisation(
-        Guid? guid = null,
+    public static Organisation GivenOrganisation(Guid? guid = null,
         Tenant? tenant = null,
         string? name = null,
         List<Organisation.Identifier>? identifiers = null,
         List<OrganisationAddress>? addresses = null,
         Organisation.ContactPoint? contactPoint = null,
         List<PartyRole>? roles = null,
+        List<PartyRole>? pendingRoles = null,
         List<(Person, List<string>)>? personsWithScope = null,
         BuyerInformation? buyerInformation = null,
         SupplierInformation? supplierInformation = null
@@ -149,6 +149,7 @@ public static class EntityFactory
                 Url = "https://contact.default.org"
             }] : [contactPoint],
             Roles = roles ?? [PartyRole.Buyer],
+            PendingRoles = pendingRoles ?? [],
             BuyerInfo = buyerInformation,
             SupplierInfo = supplierInformation
         };

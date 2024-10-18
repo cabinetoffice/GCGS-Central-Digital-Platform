@@ -134,10 +134,11 @@ public class SupplierWebsiteModelQuestionTest
         new(
             additionalIdentifiers: [new Identifier(id: "FakeId", legalName: "FakeOrg", scheme: "VAT", uri: null)],
             addresses: null,
-            null,
             contactPoint: new ContactPoint(email: null, name: null, telephone: null, url: new Uri("https://xyz.com")),
             id: id,
             identifier: null,
             name: "Test Org",
-            roles: [PartyRole.Supplier]);
+            roles: [PartyRole.Supplier],
+            details: new Details(approval: null, pendingRoles: [])
+        );
 }

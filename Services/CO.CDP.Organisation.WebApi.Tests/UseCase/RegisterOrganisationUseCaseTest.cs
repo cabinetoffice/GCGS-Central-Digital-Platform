@@ -119,7 +119,8 @@ public class RegisterOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
             AdditionalIdentifiers = command.AdditionalIdentifiers.AsView(),
             Addresses = command.Addresses.AsView(),
             ContactPoint = command.ContactPoint.AsView(),
-            Roles = command.Roles
+            Roles = command.Roles,
+            Details = new Details()
         };
 
         createdOrganisation.Should().BeEquivalentTo(expectedOrganisation,
@@ -273,6 +274,22 @@ public class RegisterOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
 
         _repository.Verify(r => r.SaveAsync(It.Is<Persistence.Organisation>(o =>
             o.BuyerInfo != null && o.SupplierInfo == null
+        ), AnyOnSave()), Times.Once);
+    }
+
+    [Fact]
+    public async Task ItRegistersTheBuyerAsPending()
+    {
+        var person = GivenPersonExists(guid: Guid.NewGuid());
+        var command = GivenRegisterOrganisationCommand(
+            personId: person.Guid,
+            roles: [PartyRole.Buyer]
+        );
+
+        await UseCase.Execute(command);
+
+        _repository.Verify(r => r.SaveAsync(It.Is<Persistence.Organisation>(o =>
+            o.Roles.Count == 0 && o.PendingRoles.SequenceEqual(new List<PartyRole> { PartyRole.Buyer })
         ), AnyOnSave()), Times.Once);
     }
 

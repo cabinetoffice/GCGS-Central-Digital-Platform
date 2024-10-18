@@ -25,15 +25,17 @@ public class AuthorizationTests
     {
         var services = new ServiceCollection();
 
-        var organisation = new UserOrganisation(null,
-                                    testOrganisationId,
-                                    "Org name",
+        var organisation = new UserOrganisation(
+                                    id: testOrganisationId,
+                                    name: "Org name",
+                                    roles:
                                     [
                                         Tenant.WebApiClient.PartyRole.Supplier,
                                         Tenant.WebApiClient.PartyRole.Tenderer
                                     ],
-                                    userOrganisationScopes,
-                                    new Uri("http://foo")
+                                    pendingRoles: [],
+                                    scopes: userOrganisationScopes,
+                                    uri: new Uri("http://foo")
                                 );
 
         var person = new Person.WebApiClient.Person("a@b.com", "First name", personId, "Last name", userScopes);
@@ -72,14 +74,14 @@ public class AuthorizationTests
         organisationClient.Setup(client => client.GetOrganisationAsync(testOrganisationId))
             .ReturnsAsync(
                 new CO.CDP.Organisation.WebApiClient.Organisation(
-                    [],
-                    [],
-                    null,
-                    new ContactPoint("a@b.com", "Contact", "123", new Uri("http://whatever")),
-                    testOrganisationId,
-                    new Identifier("asd", "asd", "asd", new Uri("http://whatever")),
-                    "Org name",
-                    [ CO.CDP.Organisation.WebApiClient.PartyRole.Supplier, CO.CDP.Organisation.WebApiClient.PartyRole.Tenderer ]
+                    additionalIdentifiers: [],
+                    addresses: [],
+                    contactPoint: new ContactPoint("a@b.com", "Contact", "123", new Uri("http://whatever")),
+                    id: testOrganisationId,
+                    identifier: new Identifier("asd", "asd", "asd", new Uri("http://whatever")),
+                    name: "Org name",
+                    roles: [ Organisation.WebApiClient.PartyRole.Supplier, Organisation.WebApiClient.PartyRole.Tenderer ],
+                    details: new Details(approval: null, pendingRoles: [])
                 )
             );
 

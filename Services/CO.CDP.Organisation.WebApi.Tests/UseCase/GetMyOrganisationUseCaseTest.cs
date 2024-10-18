@@ -121,7 +121,8 @@ public class GetMyOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : ICl
                 Telephone = "123-456-7890",
                 Url = new Uri("https://contact.test.org")
             },
-            Roles = [PartyRole.Buyer]
+            Roles = [PartyRole.Buyer],
+            Details = new Details()
         };
 
         found.Should().BeEquivalentTo(expectedModelOrganisation, options => options.ComparingByMembers<Model.Organisation>());
