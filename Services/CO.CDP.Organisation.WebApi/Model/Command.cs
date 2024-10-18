@@ -273,7 +273,7 @@ public record InvitePersonToOrganisation
     public required List<string> Scopes { get; init; }
 }
 
-public record ProvideFeedback
+public record ProvideFeedbackAndContact
 {
     public required string FeedbackAbout { get; init; }
     public required string SpecificPage { get; init; }

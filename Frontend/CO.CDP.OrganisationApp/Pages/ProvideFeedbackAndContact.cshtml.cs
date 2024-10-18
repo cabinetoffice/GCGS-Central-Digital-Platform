@@ -6,11 +6,12 @@ using System.ComponentModel;
 namespace CO.CDP.OrganisationApp.Pages;
 
 using CO.CDP.Organisation.WebApiClient;
+using CO.CDP.OrganisationApp.WebApiClients;
 using System.ComponentModel.DataAnnotations;
 
 
 [AuthenticatedSessionNotRequired]
-public class FindATenderFeedback(IOrganisationClient organisationClient) : PageModel
+public class ProvideFeedbackAndContact(IOrganisationClient organisationClient) : PageModel
 {
     [BindProperty]
     [DisplayName("Enter feedback")]
@@ -68,8 +69,8 @@ public class FindATenderFeedback(IOrganisationClient organisationClient) : PageM
             throw new Exception("Unknown context");
         }
 
-        var feedback = new ProvideFeedback(Email ?? string.Empty, Feedback, FeedbackOption, Name ?? string.Empty, UrlOfPage ?? string.Empty, context);
-        var success = await organisationClient.ProvideFeedbackAsync(feedback);
+        var feedback = new CO.CDP.Organisation.WebApiClient.ProvideFeedbackAndContact(Email ?? string.Empty, Feedback, FeedbackOption, Name ?? string.Empty, UrlOfPage ?? string.Empty, context);
+        var success = await organisationClient.FeedbackAndContact(feedback);
 
         return RedirectToPage("YourDetails", new { RedirectUri = Helper.ValidRelativeUri(redirectUri) ? redirectUri : default });
     }

@@ -3,15 +3,18 @@ using CO.CDP.GovUKNotify.Models;
 using CO.CDP.Organisation.WebApi.Model;
 namespace CO.CDP.Organisation.WebApi.UseCase;
 
-public class ProvideBetaFeedbackUseCase(
+public class ProvideFeedbackAndContactUseCase(
     IGovUKNotifyApiClient govUKNotifyApiClient,
     IConfiguration configuration)
-    : IUseCase<ProvideFeedback, bool>
+    : IUseCase<ProvideFeedbackAndContact, bool>
 {
-    public async Task<bool> Execute(ProvideFeedback command)
+    public async Task<bool> Execute(ProvideFeedbackAndContact command)
     {
         var feedbackSentSuccess = true;
+
+        // TODO: select template based on Subject
         var templateId = configuration["GOVUKNotify:ProvideFeedbackEmailTemplateId"] ?? "";
+
         var supportAdminEmailAddress = configuration["GOVUKNotify:SupportAdminEmailAddress"] ?? "";
         var emailRequest = new EmailNotificationRequest
         {

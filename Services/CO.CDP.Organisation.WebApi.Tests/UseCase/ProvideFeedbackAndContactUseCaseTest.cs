@@ -8,23 +8,23 @@ using Moq;
 
 namespace CO.CDP.Organisation.WebApi.Tests.UseCase;
 
-public class ProvideBetaFeedbackUseCaseTest
+public class ProvideFeedbackAndContactUseCaseTest
 {
     private readonly Mock<IGovUKNotifyApiClient> _mockGovUKNotifyApiClient;
     private readonly Mock<IConfiguration> _mockConfiguration;
-    private readonly ProvideBetaFeedbackUseCase _useCase;
+    private readonly ProvideFeedbackAndContactUseCase _useCase;
 
-    public ProvideBetaFeedbackUseCaseTest()
+    public ProvideFeedbackAndContactUseCaseTest()
     {
         _mockGovUKNotifyApiClient = new Mock<IGovUKNotifyApiClient>();
         _mockConfiguration = new Mock<IConfiguration>();
-        _useCase = new ProvideBetaFeedbackUseCase(_mockGovUKNotifyApiClient.Object, _mockConfiguration.Object);
+        _useCase = new ProvideFeedbackAndContactUseCase(_mockGovUKNotifyApiClient.Object, _mockConfiguration.Object);
     }
 
     [Fact]
     public async Task Execute_ShouldReturnTrue_WhenEmailIsSentSuccessfully()
     {
-        var provideFeedback = new ProvideFeedback
+        var provideFeedback = new ProvideFeedbackAndContact
         {
             Subject = "Support",
             FeedbackAbout = "Test Feedback About",
@@ -55,7 +55,7 @@ public class ProvideBetaFeedbackUseCaseTest
     [Fact]
     public async Task Execute_ShouldReturnFalse_WhenEmailSendingFails()
     {
-        var provideFeedback = new ProvideFeedback
+        var provideFeedback = new ProvideFeedbackAndContact
         {
             Subject = "Feeback",
             FeedbackAbout = "Test Feedback About",
