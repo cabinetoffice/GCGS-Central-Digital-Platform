@@ -19,13 +19,10 @@ using System.Text.RegularExpressions;
 namespace CO.CDP.OrganisationApp.Tests;
 public class LocalizationTests
 {
-    private static readonly Mock<OrganisationClient> organisationClient = new Mock<OrganisationClient>("https://whatever", new HttpClient());
-    private static readonly Mock<ISession> _mockSession = new Mock<ISession>();
-    private static Guid personId = new Guid("5b0d3aa8-94cd-4ede-ba03-546937035690");
-    private static readonly Mock<ICompaniesHouseApi> companiesHouseApiMock = new Mock<ICompaniesHouseApi>();
-
     public HttpClient BuildHttpClient()
     {
+        Mock<ISession> _mockSession = new Mock<ISession>();
+        Guid personId = new Guid("5b0d3aa8-94cd-4ede-ba03-546937035690");
         var services = new ServiceCollection();
 
         var person = new Person.WebApiClient.Person("a@b.com", "First name", personId, "Last name", null);
