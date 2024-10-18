@@ -63,7 +63,7 @@ public class FindATenderFeedback(IOrganisationClient organisationClient) : PageM
         }
 
         var context = Request.Query["context"];
-        if (context != "Feeback" || context != "Support")
+        if (context != "Feedback" && context != "Support")
         {
             throw new Exception("Unknown context");
         }
