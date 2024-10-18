@@ -10,13 +10,13 @@
 {
     <nav class="app-language-select govuk-body-s" aria-label="Switcher iaith">
         <ul class="app-language-select__list">
-            <li class="app-language-select__list-item">
-                <a asp-page="/ChangeLanguage" asp-route-culture="en" asp-route-returnUrl="@returnUrl" hreflang="en" lang="en" rel="alternate" class="govuk-link">
+            <li class="app-language-select__list-item govuk-header__navigation-item">
+                <a asp-page="/ChangeLanguage" asp-route-culture="en" asp-route-returnUrl="@returnUrl" hreflang="en" lang="en" rel="alternate" class="govuk-header__link">
                     <span class="govuk-visually-hidden">Change the language to English</span>
                     <span aria-hidden="true">English</span>
                 </a>
             </li>
-            <li class="app-language-select__list-item">
+            <li class="app-language-select__list-item govuk-header__navigation-item">
                 <span aria-current="true">Cymraeg</span>
             </li>
         </ul>
@@ -26,11 +26,11 @@ else
 {
     <nav class="app-language-select govuk-body-s" aria-label="Language switcher">
         <ul class="app-language-select__list">
-            <li class="app-language-select__list-item">
+            <li class="app-language-select__list-item govuk-header__navigation-item">
                 <span aria-current="true">English</span>
             </li>
-            <li class="app-language-select__list-item">
-                <a asp-page="/ChangeLanguage" asp-route-culture="cy" asp-route-returnUrl="@returnUrl" hreflang="cy" lang="cy" rel="alternate" class="govuk-link">
+            <li class="app-language-select__list-item govuk-header__navigation-item">
+                <a asp-page="/ChangeLanguage" asp-route-culture="cy" asp-route-returnUrl="@returnUrl" hreflang="cy" lang="cy" rel="alternate" class="govuk-header__link">
                     <span class="govuk-visually-hidden">Newid yr iaith ir Gymraeg</span>
                     <span aria-hidden="true">Cymraeg</span>
                 </a>

@@ -19,26 +19,33 @@
 }
 
 /**
- * Language switcher, adapted from hmrc-frontend
+ * Custom header layout to allow for language switcher
+*/
+@media screen and (min-width: 768px) {
+    .app-header-layout {
+        display: flex;
+        justify-content: space-between;
+        flex-direction: row-reverse;
+    }
+}
+
+/**
+ * Language switcher, adapted from hmrc-frontend to roughly match FTS
  */
 .app-language-select {
     margin: 0;
-}
-
-.app-language-select::after {
-    /*    content: "";
-    display: block;
-    clear: both;*/
+    float: right;
 }
 
 .app-language-select__list {
-    margin-top: 10px;
     float: right;
-    text-align: right;
+    margin: 0;
 }
 
 .app-language-select__list-item {
     display: inline-block;
+    margin-right: 0;
+    border-bottom: 0;
 }
 
     .app-language-select__list-item:first-child::after {
@@ -47,10 +54,15 @@
         position: relative;
         top: 0.1875em;
         height: 1em;
-        border-right: 0.09375em solid #0b0c0c;
+        border-right: 0.09375em solid #b1b4b6;
     }
 
     .app-language-select__list-item a,
     .app-language-select__list-item [aria-current] {
         padding: 0.3125em;
+    }
+
+    .app-language-select__list-item [aria-current] {
+        color: #b1b4b6;
+        font-weight: 700;
     }

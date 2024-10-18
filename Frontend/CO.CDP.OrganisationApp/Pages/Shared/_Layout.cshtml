@@ -57,65 +57,72 @@
                 </a>
             </div>
             <div class="govuk-header__content">
-                <a href="@ftsService" class="govuk-header__link govuk-header__service-name">
-                    Find a Tender
-                </a>
-                <nav aria-label="Menu" class="govuk-header__navigation">
-                    <button type="button" class="govuk-header__menu-button govuk-js-header-toggle" aria-controls="navigation" hidden>
-                        Menu
-                    </button>
-                    <ul id="navigation" class="govuk-header__navigation-list">
-                        @if (User?.Identity?.IsAuthenticated == true)
-                        {
-                            @if (await userInfoService.HasTenant())
-                            {
-                                var organisationId = userInfoService.GetOrganisationId();
-                                if (organisationId != null)
+                <div class="app-header-layout">
+                    <div class="app-header-layout__column">
+                        <partial name="Shared/LanguageSwitcher" />
+                    </div>
+                    <div class="app-header-layout__column">
+                        <a href="@ftsService" class="govuk-header__link govuk-header__service-name">
+                            Find a Tender
+                        </a>
+                        <nav aria-label="Menu" class="govuk-header__navigation">
+                            <button type="button" class="govuk-header__menu-button govuk-js-header-toggle" aria-controls="navigation" hidden>
+                                Menu
+                            </button>
+                            <ul id="navigation" class="govuk-header__navigation-list">
+                                @if (User?.Identity?.IsAuthenticated == true)
                                 {
-                                    <li class="govuk-header__navigation-item">
-                                        <a class="govuk-header__link" href="@($"{ftsService}/login?organisation_id={organisationId}&redirect_url=/search/results")">
-                                            Search
-                                        </a>
-                                    </li>
+                                    @if (await userInfoService.HasTenant())
+                                    {
+                                        var organisationId = userInfoService.GetOrganisationId();
+                                        if (organisationId != null)
+                                        {
+                                            <li class="govuk-header__navigation-item">
+                                                <a class="govuk-header__link" href="@($"{ftsService}/login?organisation_id={organisationId}&redirect_url=/search/results")">
+                                                    Search
+                                                </a>
+                                            </li>
+
+                                            <li class="govuk-header__navigation-item">
+                                                <a class="govuk-header__link" href="@($"{ftsService}/login?organisation_id={organisationId}&redirect_url=/dashboard")">
+                                                    My notices
+                                                </a>
+                                            </li>
+                                        }
+
+                                        <li class="govuk-header__navigation-item">
+                                            <a class="govuk-header__link" href="/organisation-selection">
+                                                My account
+                                            </a>
+                                        </li>
+                                    }
+
+                                    <authorize scope="@PersonScopeRequirement.SupportAdmin">
+                                        <li class="govuk-header__navigation-item">
+                                            <a class="govuk-header__link" href="/support/organisations/buyer">
+                                                Support
+                                            </a>
+                                        </li>
+                                    </authorize>
 
                                     <li class="govuk-header__navigation-item">
-                                        <a class="govuk-header__link" href="@($"{ftsService}/login?organisation_id={organisationId}&redirect_url=/dashboard")">
-                                            My notices
+                                        <a class="govuk-header__link" href="/one-login/sign-out">
+                                            Sign out
                                         </a>
                                     </li>
                                 }
-
-                                <li class="govuk-header__navigation-item">
-                                    <a class="govuk-header__link" href="/organisation-selection">
-                                        My account
-                                    </a>
-                                </li>
-                            }
-
-                            <authorize scope="@PersonScopeRequirement.SupportAdmin">
-                                <li class="govuk-header__navigation-item">
-                                    <a class="govuk-header__link" href="/support/organisations/buyer">
-                                        Support
-                                    </a>
-                                </li>
-                            </authorize>
-
-                            <li class="govuk-header__navigation-item">
-                                <a class="govuk-header__link" href="/one-login/sign-out">
-                                    Sign out
-                                </a>
-                            </li>
-                        }
-                        else
-                        {
-                            <li class="govuk-header__navigation-item">
-                                <a class="govuk-header__link" href="/one-login/sign-in">
-                                    Sign in
-                                </a>
-                            </li>
-                        }
-                    </ul>
-                </nav>
+                                else
+                                {
+                                    <li class="govuk-header__navigation-item">
+                                        <a class="govuk-header__link" href="/one-login/sign-in">
+                                            Sign in
+                                        </a>
+                                    </li>
+                                }
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
             </div>
         </div>
     </header>
@@ -130,8 +137,6 @@
                 </span>
             </p>
         </div>
-
-        <partial name="Shared/LanguageSwitcher" />
 
         @* Replicates the BeforeContent region in the base govuk-frontend template *@
         @* This is useful for things like back links, breadcrumbs etc which should not be rendered
