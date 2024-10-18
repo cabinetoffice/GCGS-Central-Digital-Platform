@@ -22,7 +22,8 @@ public class ProvideBetaFeedbackUseCase(
                                         { "specific_page", command.SpecificPage},
                                         { "feedback", command.Feedback},
                                         { "name", command.Name},
-                                        { "email", command.Email }
+                                        { "email", command.Email },
+                                        { "subject", command.Subject }
             }
         };
 

@@ -4,7 +4,7 @@ public class ExceptionMiddleware(
     RequestDelegate next,
     ILogger<ExceptionMiddleware> logger)
 {
-    public async Task Invoke(HttpContext context)
+    public async Task Invoke(HttpContext context)   
     {
         try
         {

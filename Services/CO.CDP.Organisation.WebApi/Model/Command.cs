@@ -280,6 +280,7 @@ public record ProvideFeedback
     public required string Feedback { get; init; }
     public required string Name { get; init; }
     public required string Email { get; init; }
+    public required string Subject { get; init; }
 }
 
 

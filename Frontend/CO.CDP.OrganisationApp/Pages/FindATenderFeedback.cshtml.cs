@@ -62,7 +62,13 @@ public class FindATenderFeedback(IOrganisationClient organisationClient) : PageM
             return Page();
         }
 
-        var feedback = new ProvideFeedback(Email ?? string.Empty, Feedback, FeedbackOption, Name ?? string.Empty, UrlOfPage ?? string.Empty);
+        var context = Request.Query["context"];
+        if (context != "Feeback" || context != "Support")
+        {
+            throw new Exception("Unknown context");
+        }
+
+        var feedback = new ProvideFeedback(Email ?? string.Empty, Feedback, FeedbackOption, Name ?? string.Empty, UrlOfPage ?? string.Empty, context);
         var success = await organisationClient.ProvideFeedbackAsync(feedback);
 
         return RedirectToPage("YourDetails", new { RedirectUri = Helper.ValidRelativeUri(redirectUri) ? redirectUri : default });

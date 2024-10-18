@@ -26,6 +26,7 @@ public class ProvideBetaFeedbackUseCaseTest
     {
         var provideFeedback = new ProvideFeedback
         {
+            Subject = "Support",
             FeedbackAbout = "Test Feedback About",
             SpecificPage = "Test Specific Page",
             Feedback = "Test Feedback",
@@ -56,6 +57,7 @@ public class ProvideBetaFeedbackUseCaseTest
     {
         var provideFeedback = new ProvideFeedback
         {
+            Subject = "Feeback",
             FeedbackAbout = "Test Feedback About",
             SpecificPage = "Test Specific Page",
             Feedback = "Test Feedback",
