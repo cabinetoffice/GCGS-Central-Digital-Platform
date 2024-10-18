@@ -162,6 +162,10 @@ internal static class OrganisationClientExtensions
             new UpdateSupplierInformation(
                 type: SupplierInformationUpdateType.CompletedVat,
                 supplierInformation: new SupplierInfo(supplierType: null, operationTypes: null, legalForm: null)));
+
+    internal static async Task ProvideFeedback(this IOrganisationClient organisationClient,
+        ProvideFeedback feedback)
+        => await organisationClient.ProvideFeedbackAsync(feedback);
 }
 
 public class ComposedOrganisation

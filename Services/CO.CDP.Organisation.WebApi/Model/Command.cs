@@ -273,6 +273,16 @@ public record InvitePersonToOrganisation
     public required List<string> Scopes { get; init; }
 }
 
+public record ProvideFeedback
+{
+    public required string FeedbackAbout { get; init; }
+    public required string SpecificPage { get; init; }
+    public required string Feedback { get; init; }
+    public required string Name { get; init; }
+    public required string Email { get; init; }
+}
+
+
 public record UpdateInvitedPersonToOrganisation
 {
     public required List<string> Scopes { get; init; }

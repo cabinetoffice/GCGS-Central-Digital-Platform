@@ -235,6 +235,29 @@ public static class EndpointExtensions
         return app;
     }
 
+    public static RouteGroupBuilder UseFeedbackEndpoints(this RouteGroupBuilder app)
+    {
+        app.MapPost("/feedback/",
+            async (ProvideFeedback feedback, IUseCase<ProvideFeedback, bool> useCase) =>
+                    await useCase.Execute(feedback)
+                        .AndThen(Results.Ok))
+                .Produces<Boolean>(StatusCodes.Status200OK, "application/json")
+                .ProducesProblem(StatusCodes.Status500InternalServerError)
+                .ProducesProblem(StatusCodes.Status400BadRequest)
+                .WithOpenApi(operation =>
+                {
+                    operation.OperationId = "ProvideFeedback";
+                    operation.Description = "Provide find a tender feedback";
+                    operation.Summary = "Provide find a tender feedback.";
+                    operation.Responses["200"].Description = "Feedback sent successfully.";
+                    operation.Responses["400"].Description = "Bad request.";
+                    operation.Responses["500"].Description = "Internal server error.";
+                    return operation;
+                });
+
+        return app;
+    }
+
     public static RouteGroupBuilder UseBuyerInformationEndpoints(this RouteGroupBuilder app)
     {
         app.MapPatch("/{organisationId}/buyer-information",

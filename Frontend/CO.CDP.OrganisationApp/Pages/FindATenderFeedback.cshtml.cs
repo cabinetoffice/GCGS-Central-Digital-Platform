@@ -2,16 +2,15 @@ using CO.CDP.Mvc.Validation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 
 namespace CO.CDP.OrganisationApp.Pages;
 
-using System;
+using CO.CDP.Organisation.WebApiClient;
 using System.ComponentModel.DataAnnotations;
 
 
 [AuthenticatedSessionNotRequired]
-public class FindATenderFeedback() : PageModel
+public class FindATenderFeedback(IOrganisationClient organisationClient) : PageModel
 {
     [BindProperty]
     [DisplayName("Enter feedback")]
@@ -37,23 +36,24 @@ public class FindATenderFeedback() : PageModel
 
     public IActionResult OnGet()
     {
-
         return Page();
     }
 
-    public IActionResult OnPost(string? redirectUri = null)
+    public async Task<IActionResult> OnPost(string? redirectUri = null)
     {
-        if ((!string.IsNullOrEmpty(ModelState[nameof(Name)]!.RawValue as string)) && (ModelState[nameof(Email)].RawValue == string.Empty))
+        if ((!string.IsNullOrEmpty(ModelState[nameof(Name)]!.RawValue as string)) &&
+            (ModelState[nameof(Email)]!.RawValue as string == string.Empty))
         {
-            ModelState[nameof(Email)].ValidationState = Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Invalid;
-            ModelState[nameof(Email)].Errors.Add("Enter an Email address");
+            ModelState[nameof(Email)]!.ValidationState = Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Invalid;
+            ModelState[nameof(Email)]!.Errors.Add("Enter an Email address");
             return Page();
         }
 
-        if ((!string.IsNullOrEmpty(ModelState[nameof(Email)]!.RawValue as string)) && (ModelState[nameof(Name)]!.RawValue == string.Empty))
+        if ((!string.IsNullOrEmpty(ModelState[nameof(Email)]!.RawValue as string)) &&
+            (ModelState[nameof(Name)]!.RawValue as string == string.Empty))
         {
-            ModelState[nameof(Name)].ValidationState = Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Invalid;
-            ModelState[nameof(Name)].Errors.Add("Enter a name");
+            ModelState[nameof(Name)]!.ValidationState = Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Invalid;
+            ModelState[nameof(Name)]!.Errors.Add("Enter a name");
             return Page();
         }
 
@@ -61,6 +61,11 @@ public class FindATenderFeedback() : PageModel
         {
             return Page();
         }
+
+        var feedback = new ProvideFeedback(Email ?? string.Empty, Feedback, FeedbackOption, Name ?? string.Empty, UrlOfPage ?? string.Empty);
+        var success = await organisationClient.ProvideFeedbackAsync(feedback);
+
+
 
         return RedirectToPage("YourDetails", new { RedirectUri = Helper.ValidRelativeUri(redirectUri) ? redirectUri : default });
     }
