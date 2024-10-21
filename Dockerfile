@@ -108,11 +108,6 @@ ARG BUILD_CONFIGURATION
 WORKDIR /src/Services/CO.CDP.Person.WebApi
 RUN dotnet build -c $BUILD_CONFIGURATION -o /app/build
 
-FROM build AS build-localization
-ARG BUILD_CONFIGURATION
-WORKDIR /src/Services/CO.CDP.Localization
-RUN dotnet build -c $BUILD_CONFIGURATION -o /app/build
-
 FROM build AS build-forms
 ARG BUILD_CONFIGURATION
 WORKDIR /src/Services/CO.CDP.Forms.WebApi
