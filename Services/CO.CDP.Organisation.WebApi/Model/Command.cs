@@ -285,8 +285,8 @@ public record UpdatePersonToOrganisation
 
 public record UpdateJoinRequest
 {
-    public OrganisationJoinRequestStatus status { get; init; }
-    public int ReviewedBy { get; init; }
+    public required OrganisationJoinRequestStatus status { get; init; }
+    public required Guid ReviewedBy { get; init; }
 }
 
 [JsonConverter(typeof(JsonStringEnumConverter))]

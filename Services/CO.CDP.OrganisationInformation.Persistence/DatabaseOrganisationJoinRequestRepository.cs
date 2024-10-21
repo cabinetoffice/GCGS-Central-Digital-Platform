@@ -25,11 +25,11 @@ public class DatabaseOrganisationJoinRequestRepository(OrganisationInformationCo
             .FirstOrDefaultAsync(t => t.Organisation!.Guid == organisationId && t.Guid == organisationJoinRequestId);
     }
 
-    public async Task<IEnumerable<OrganisationJoinRequest>> FindByOrganisation(Guid organisationJoinRequestId)
+    public async Task<IEnumerable<OrganisationJoinRequest>> FindByOrganisation(Guid organisationId)
     {
         return await context.OrganisationJoinRequests
             .Include(ojr => ojr.Person)
-            .Where(ojr => ojr.Organisation != null && ojr.Organisation.Guid == organisationJoinRequestId)
+            .Where(ojr => ojr.Organisation != null && ojr.Organisation.Guid == organisationId)
             .ToArrayAsync();
     }
 

@@ -31,15 +31,12 @@ public class GetOrganisationJoinRequestUseCaseTests
             new OrganisationJoinRequest { Guid = joinRequestId, Status = OrganisationJoinRequestStatus.Pending }
         };
 
-        var mappedRequests = new List<Model.OrganisationJoinRequest>
+        var mappedRequests = new List<Model.JoinRequestLookUp>
         {
-            new Model.OrganisationJoinRequest
+            new Model.JoinRequestLookUp
             {
                 Id = joinRequestId,
-                Organisation = It.IsAny<Model.Organisation>(),
                 Person = It.IsAny<Model.Person>(),
-                ReviewedBy = It.IsAny<Model.Person>(),
-                ReviewedOn = DateTime.UtcNow,
                 Status = OrganisationJoinRequestStatus.Pending
             }
         };
@@ -49,14 +46,14 @@ public class GetOrganisationJoinRequestUseCaseTests
             .ReturnsAsync(joinRequests);
 
         _mapperMock
-            .Setup(m => m.Map<IEnumerable<Model.OrganisationJoinRequest>>(joinRequests))
+            .Setup(m => m.Map<IEnumerable<Model.JoinRequestLookUp>>(joinRequests))
             .Returns(mappedRequests);
 
         var result = await _useCase.Execute((organisationId, null));
 
         result.Should().BeEquivalentTo(mappedRequests);
         _requestRepositoryMock.Verify(r => r.FindByOrganisation(organisationId), Times.Once);
-        _mapperMock.Verify(m => m.Map<IEnumerable<Model.OrganisationJoinRequest>>(joinRequests), Times.Once);
+        _mapperMock.Verify(m => m.Map<IEnumerable<Model.JoinRequestLookUp>>(joinRequests), Times.Once);
     }
 
     [Fact]
@@ -73,15 +70,12 @@ public class GetOrganisationJoinRequestUseCaseTests
 
         var filteredRequests = joinRequests.Where(o => o.Status == status).ToList();
 
-        var mappedRequests = new List<Model.OrganisationJoinRequest>
+        var mappedRequests = new List<Model.JoinRequestLookUp>
         {
-            new Model.OrganisationJoinRequest
+            new Model.JoinRequestLookUp
             {
                 Id = filteredRequests[0].Guid,
-                Organisation = It.IsAny<Model.Organisation>(),
                 Person = It.IsAny<Model.Person>(),
-                ReviewedBy = It.IsAny<Model.Person>(),
-                ReviewedOn = DateTime.UtcNow,
                 Status = OrganisationJoinRequestStatus.Accepted
             }
         };
@@ -91,13 +85,13 @@ public class GetOrganisationJoinRequestUseCaseTests
             .ReturnsAsync(joinRequests);
 
         _mapperMock
-            .Setup(m => m.Map<IEnumerable<Model.OrganisationJoinRequest>>(filteredRequests))
+            .Setup(m => m.Map<IEnumerable<Model.JoinRequestLookUp>>(filteredRequests))
             .Returns(mappedRequests);
 
         var result = await _useCase.Execute((organisationId, status));
 
         result.Should().BeEquivalentTo(mappedRequests);
         _requestRepositoryMock.Verify(r => r.FindByOrganisation(organisationId), Times.Once);
-        _mapperMock.Verify(m => m.Map<IEnumerable<Model.OrganisationJoinRequest>>(filteredRequests), Times.Once);
+        _mapperMock.Verify(m => m.Map<IEnumerable<Model.JoinRequestLookUp>>(filteredRequests), Times.Once);
     }
 }

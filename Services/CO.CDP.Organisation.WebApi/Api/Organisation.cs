@@ -154,15 +154,15 @@ public static class EndpointExtensions
                 return operation;
             });
 
-        app.MapGet("/organisations/{organisationId}/join-requests/{status}",
+        app.MapGet("/organisations/{organisationId}/join-requests",
             [OrganisationAuthorize(
                 [AuthenticationChannel.OneLogin],
                 [Constants.OrganisationPersonScope.Admin],
                 OrganisationIdLocation.Path)]
-        async (Guid organisationId, [FromQuery] OrganisationJoinRequestStatus? status, IUseCase<(Guid, OrganisationJoinRequestStatus?), IEnumerable<OrganisationJoinRequest>> useCase) =>
+        async (Guid organisationId, [FromQuery] OrganisationJoinRequestStatus? status, IUseCase<(Guid, OrganisationJoinRequestStatus?), IEnumerable<JoinRequestLookUp>> useCase) =>
                 await useCase.Execute((organisationId, status))
                     .AndThen(organisations => organisations != null ? Results.Ok(organisations) : Results.NotFound()))
-            .Produces<List<OrganisationJoinRequest>>(StatusCodes.Status200OK, "application/json")
+            .Produces<List<JoinRequestLookUp>>(StatusCodes.Status200OK, "application/json")
             .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
             .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
             .ProducesProblem(StatusCodes.Status422UnprocessableEntity)

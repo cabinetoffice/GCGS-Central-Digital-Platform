@@ -4,9 +4,9 @@ using CO.CDP.OrganisationInformation.Persistence;
 
 namespace CO.CDP.Organisation.WebApi.UseCase;
 public class GetOrganisationJoinRequestUseCase(IOrganisationJoinRequestRepository requestRepository, IMapper mapper)
-    : IUseCase<(Guid organisationId, OrganisationJoinRequestStatus? status), IEnumerable<Model.OrganisationJoinRequest>>
+    : IUseCase<(Guid organisationId, OrganisationJoinRequestStatus? status), IEnumerable<Model.JoinRequestLookUp>>
 {
-    public async Task<IEnumerable<Model.OrganisationJoinRequest>> Execute((Guid organisationId, OrganisationJoinRequestStatus? status) command)
+    public async Task<IEnumerable<Model.JoinRequestLookUp>> Execute((Guid organisationId, OrganisationJoinRequestStatus? status) command)
     {
         var organisations = await requestRepository.FindByOrganisation(command.organisationId);
 
@@ -15,7 +15,7 @@ public class GetOrganisationJoinRequestUseCase(IOrganisationJoinRequestRepositor
             organisations = organisations.Where(o => o.Status == command.status);
         }        
 
-        var result = mapper.Map<IEnumerable<Model.OrganisationJoinRequest>>(organisations);
+        var result = mapper.Map<IEnumerable<Model.JoinRequestLookUp>>(organisations);
 
         return result;
     }
