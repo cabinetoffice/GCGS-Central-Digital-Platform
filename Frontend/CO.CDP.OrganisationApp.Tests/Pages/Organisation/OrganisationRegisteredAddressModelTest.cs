@@ -139,8 +139,8 @@ public class OrganisationRegisteredAddressModelTest
         var result = await _model.OnPost();
 
         result.Should().BeOfType<RedirectToPageResult>()
-           .Which.PageName.Should().Be("OrganisationOverview");        
-    }    
+           .Which.PageName.Should().Be("OrganisationOverview");
+    }
 
     [Fact]
     public async Task OnGet_ValidSession_ReturnsRegistrationDetails()
@@ -169,7 +169,7 @@ public class OrganisationRegisteredAddressModelTest
             streetAddress: "1 street lane",
             type: CDP.Organisation.WebApiClient.AddressType.Registered));
 
-        return new CO.CDP.Organisation.WebApiClient.Organisation(null, addresses,null, null, id!.Value, null, null, []);
+        return new CO.CDP.Organisation.WebApiClient.Organisation(additionalIdentifiers: null, addresses: addresses, contactPoint: null, id: id ?? Guid.NewGuid(), identifier: null, name: null, roles: [], details: new Details(approval: null, pendingRoles: []));
     }
 
     private OrganisationRegisteredAddressModel GivenOrganisationAddressModel()

@@ -1,0 +1,372 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": 19,
+  "links": [],
+  "panels": [
+    {
+      "datasource": {
+        "default": true,
+        "type": "cloudwatch",
+        "uid": "CLOUDWATCH"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "dark-red",
+            "mode": "fixed"
+          },
+          "custom": {
+            "align": "left",
+            "cellOptions": {
+              "type": "auto",
+              "wrapText": false
+            },
+            "filterable": true,
+            "inspect": true
+          },
+          "fieldMinMax": false,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Row"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 60
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "@t"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 160
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 24,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 1,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": true,
+          "enablePagination": false,
+          "fields": "",
+          "reducer": [
+            "count"
+          ],
+          "show": true
+        },
+        "showHeader": true,
+        "sortBy": []
+      },
+      "pluginVersion": "11.2.2+security-01",
+      "targets": [
+        {
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "CLOUDWATCH"
+          },
+          "dimensions": {},
+          "expression": "fields @timestamp, StatusCode, RequestPath, @message\n| filter $status_code\n| filter $healthcheck_requests\n| filter @message like \"${search_keyword}\"\n| sort @timestamp desc\n",
+          "hide": false,
+          "id": "",
+          "label": "",
+          "logGroups": [
+            {
+              "arn": "$log_groups",
+              "name": "$log_groups"
+            }
+          ],
+          "matchExact": true,
+          "metricEditorMode": 0,
+          "metricName": "",
+          "metricQueryType": 0,
+          "namespace": "",
+          "period": "",
+          "queryMode": "Logs",
+          "refId": "A",
+          "region": "default",
+          "sqlExpression": "",
+          "statistic": "Average",
+          "statsGroups": []
+        }
+      ],
+      "transformations": [
+        {
+          "id": "extractFields",
+          "options": {
+            "format": "auto",
+            "jsonPaths": [
+              {
+                "path": "Version"
+              },
+              {
+                "alias": "Status",
+                "path": "StatusCode"
+              },
+              {
+                "path": "Method"
+              },
+              {
+                "path": "RequestPath"
+              },
+              {
+                "path": "@m"
+              }
+            ],
+            "keepTime": false,
+            "replace": true,
+            "source": "@message"
+          }
+        },
+        {
+          "id": "calculateField",
+          "options": {
+            "index": {
+              "asPercentile": false
+            },
+            "mode": "index",
+            "reduce": {
+              "reducer": "sum"
+            },
+            "replaceFields": false
+          }
+        },
+        {
+          "id": "convertFieldType",
+          "options": {
+            "conversions": [
+              {
+                "destinationType": "time",
+                "targetField": "@t"
+              }
+            ],
+            "fields": {}
+          }
+        }
+      ],
+      "type": "table"
+    }
+  ],
+  "schemaVersion": 39,
+  "tags": [],
+  "templating": {
+    "list": [
+      {
+        "current": {
+          "selected": true,
+          "text": [
+            "All"
+          ],
+          "value": [
+            "$__all"
+          ]
+        },
+        "hide": 0,
+        "includeAll": true,
+        "label": "Service",
+        "multi": true,
+        "name": "log_groups",
+        "options": [
+          {
+            "selected": true,
+            "text": "All",
+            "value": "$__all"
+          },
+          {
+            "selected": false,
+            "text": "Authority",
+            "value": "/ecs/authority"
+          },
+          {
+            "selected": false,
+            "text": "Data Sharing",
+            "value": "/ecs/data-sharing"
+          },
+          {
+            "selected": false,
+            "text": "Entity Verification",
+            "value": "/ecs/entity-verification"
+          },
+          {
+            "selected": false,
+            "text": "Forms",
+            "value": "/ecs/forms"
+          },
+          {
+            "selected": false,
+            "text": "Organisation",
+            "value": "/ecs/organisation"
+          },
+          {
+            "selected": false,
+            "text": "Organisation App",
+            "value": "/ecs/organisation-app"
+          },
+          {
+            "selected": false,
+            "text": "Person",
+            "value": "/ecs/person"
+          },
+          {
+            "selected": false,
+            "text": "Tenant",
+            "value": "/ecs/tenant"
+          }
+        ],
+        "query": "Authority : /ecs/authority, Data Sharing : /ecs/data-sharing, Entity Verification : /ecs/entity-verification, Forms : /ecs/forms, Organisation : /ecs/organisation, Organisation App : /ecs/organisation-app, Person : /ecs/person, Tenant : /ecs/tenant",
+        "queryValue": "",
+        "skipUrlSync": false,
+        "type": "custom"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "All",
+          "value": "StatusCode >= 200 and StatusCode < 600"
+        },
+        "hide": 0,
+        "includeAll": false,
+        "label": "Status Code",
+        "multi": false,
+        "name": "status_code",
+        "options": [
+          {
+            "selected": true,
+            "text": "All",
+            "value": "StatusCode >= 200 and StatusCode < 600"
+          },
+          {
+            "selected": false,
+            "text": "All except 2xx",
+            "value": "StatusCode >= 300 and StatusCode < 600"
+          },
+          {
+            "selected": false,
+            "text": "2xx",
+            "value": "StatusCode >= 200 and StatusCode < 300"
+          },
+          {
+            "selected": false,
+            "text": "3xx",
+            "value": "StatusCode >= 300 and StatusCode < 400"
+          },
+          {
+            "selected": false,
+            "text": "4xx",
+            "value": "StatusCode >= 400 and StatusCode < 500"
+          },
+          {
+            "selected": false,
+            "text": "5xx",
+            "value": "StatusCode >= 500 and StatusCode < 600"
+          }
+        ],
+        "query": "All : StatusCode >= 200 and StatusCode < 600, All except 2xx : StatusCode >= 300 and StatusCode < 600, 2xx : StatusCode >= 200 and StatusCode < 300, 3xx : StatusCode >= 300 and StatusCode < 400, 4xx : StatusCode >= 400 and StatusCode < 500, 5xx : StatusCode >= 500 and StatusCode < 600",
+        "skipUrlSync": false,
+        "type": "custom"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "Exclude",
+          "value": "RequestPath != \"/health\""
+        },
+        "hide": 0,
+        "includeAll": false,
+        "label": "Healthcheck Requests",
+        "multi": false,
+        "name": "healthcheck_requests",
+        "options": [
+          {
+            "selected": true,
+            "text": "Exclude",
+            "value": "RequestPath != \"/health\""
+          },
+          {
+            "selected": false,
+            "text": "Include",
+            "value": "ispresent(@timestamp)"
+          }
+        ],
+        "query": "Exclude : RequestPath != \"/health\", Include : ispresent(@timestamp)",
+        "skipUrlSync": false,
+        "type": "custom"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "",
+          "value": ""
+        },
+        "hide": 0,
+        "label": "Search",
+        "name": "search_keyword",
+        "options": [
+          {
+            "selected": true,
+            "text": "",
+            "value": ""
+          }
+        ],
+        "query": "",
+        "skipUrlSync": false,
+        "type": "textbox"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-24h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "Service Logs",
+  "uid": "service-logs",
+  "version": 1,
+  "weekStart": ""
+}

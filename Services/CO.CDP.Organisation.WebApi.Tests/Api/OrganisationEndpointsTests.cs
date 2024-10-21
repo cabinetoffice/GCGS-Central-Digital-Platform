@@ -252,7 +252,8 @@ public class OrganisationEndpointsTests
             AdditionalIdentifiers = command.AdditionalIdentifiers.AsView(),
             Addresses = command.Addresses.AsView(),
             ContactPoint = command.ContactPoint.AsView(),
-            Roles = command.Roles
+            Roles = command.Roles,
+            Details = new Details()
         };
     }
 
@@ -308,7 +309,8 @@ public class OrganisationEndpointsTests
             AdditionalIdentifiers = command.AdditionalIdentifiers.AsView(),
             Addresses = command.Addresses.AsView(),
             ContactPoint = command.ContactPoint.AsView(),
-            Roles = command.Roles
+            Roles = command.Roles,
+            Details = new Details()
         };
 
         _registerOrganisationUseCase.Setup(useCase => useCase.Execute(It.IsAny<RegisterOrganisation>()))

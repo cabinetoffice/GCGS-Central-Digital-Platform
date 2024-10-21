@@ -74,7 +74,7 @@ public class OrganisationIdentificationModelTests
 
             case "GB-UKPRN":
                 model.UKLearningProviderReferenceNumber.Should().Be(registrationDetails.OrganisationIdentificationNumber);
-                break;            
+                break;
         }
 
     }
@@ -257,7 +257,7 @@ public class OrganisationIdentificationModelTests
 
         result.Should().BeOfType<PageResult>();
         model.ModelState.IsValid.Should().BeFalse();
-    }    
+    }
 
     [Fact]
     public async Task OnPost_WhenModelStateIsValid_ShouldRedirectToOrganisationName()
@@ -294,7 +294,7 @@ public class OrganisationIdentificationModelTests
     {
         var model = new OrganisationIdentificationModel(sessionMock.Object, organisationClientMock.Object, _pponClientMock.Object)
         {
-            OrganisationScheme = "JE-FSC",         
+            OrganisationScheme = "JE-FSC",
             RedirectToSummary = true
         };
         GivenRegistrationIsInProgress();
@@ -313,7 +313,7 @@ public class OrganisationIdentificationModelTests
     {
         var model = new OrganisationIdentificationModel(sessionMock.Object, organisationClientMock.Object, _pponClientMock.Object)
         {
-            OrganisationScheme = "JE-FSC",           
+            OrganisationScheme = "JE-FSC",
             RedirectToSummary = true
         };
         GivenRegistrationIsInProgress();
@@ -332,7 +332,7 @@ public class OrganisationIdentificationModelTests
     {
         var model = new OrganisationIdentificationModel(sessionMock.Object, organisationClientMock.Object, _pponClientMock.Object)
         {
-            OrganisationScheme = "JE-FSC",            
+            OrganisationScheme = "JE-FSC",
             RedirectToSummary = true
         };
 
@@ -355,7 +355,7 @@ public class OrganisationIdentificationModelTests
     [InlineData("JE-FSC", "JFSC123")]
     [InlineData("IM-CR", "IMCR123")]
     [InlineData("GB-NHS", "STUVWX")]
-    [InlineData("GB-UKPRN", "PRN1234")]    
+    [InlineData("GB-UKPRN", "PRN1234")]
     public async Task OnPost_WhenModelStateIsValid_ShouldStoreOrganisationTypeAndIdentificationNumberInSession(string organisationType, string identificationNumber)
     {
         var model = new OrganisationIdentificationModel(sessionMock.Object, organisationClientMock.Object, _pponClientMock.Object)
@@ -410,7 +410,7 @@ public class OrganisationIdentificationModelTests
 
     private static OrganisationWebApiClient.Organisation GivenOrganisationClientModel()
     {
-        return new OrganisationWebApiClient.Organisation(null, null, null, null, _organisationId, null, "Test Org", []);
+        return new OrganisationWebApiClient.Organisation(additionalIdentifiers: null, addresses: null, contactPoint: null, id: _organisationId, identifier: null, name: "Test Org", roles: [], details: new Details(approval: null, pendingRoles: []));
     }
 
     private static ICollection<EntityVerificationClient.Identifier> GivenEntityVerificationIdentifiers()

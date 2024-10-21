@@ -18,7 +18,11 @@ public class WebApiToPersistenceProfile : Profile
             .ForMember(m => m.Id, o => o.MapFrom(m => m.Guid))
             .ForMember(m => m.Identifier, o => o.MapFrom(m => m.Identifiers.FirstOrDefault(i => i.Primary)))
             .ForMember(m => m.AdditionalIdentifiers, o => o.MapFrom(m => m.Identifiers.Where(i => !i.Primary)))
-            .ForMember(m => m.ContactPoint, o => o.MapFrom(m => m.ContactPoints.FirstOrDefault() ?? new Persistence.Organisation.ContactPoint()));
+            .ForMember(m => m.ContactPoint, o => o.MapFrom(m => m.ContactPoints.FirstOrDefault() ?? new Persistence.Organisation.ContactPoint()))
+            .ForMember(m => m.Details, o => o.MapFrom(m => new Details
+            {
+                PendingRoles = m.PendingRoles
+            }));
 
         CreateMap<Persistence.Organisation, OrganisationExtended>()
             .ForMember(m => m.Id, o => o.MapFrom(m => m.Guid))
@@ -93,6 +97,8 @@ public class WebApiToPersistenceProfile : Profile
             .ForMember(m => m.Guid, o => o.MapFrom((_, _, _, context) => context.Items["Guid"]))
             .ForMember(m => m.Id, o => o.Ignore())
             .ForMember(m => m.Tenant, o => o.MapFrom((_, _, _, context) => context.Items["Tenant"]))
+            .ForMember(m => m.Roles, o => o.MapFrom(c => c.Roles.Where(r => r != PartyRole.Buyer).ToList()))
+            .ForMember(m => m.PendingRoles, o => o.MapFrom(c => c.Roles.Where(r => r == PartyRole.Buyer).ToList()))
             .ForMember(m => m.Persons, o => o.Ignore())
             .ForMember(m => m.OrganisationPersons, o => o.Ignore())
             .ForMember(m => m.CreatedOn, o => o.Ignore())

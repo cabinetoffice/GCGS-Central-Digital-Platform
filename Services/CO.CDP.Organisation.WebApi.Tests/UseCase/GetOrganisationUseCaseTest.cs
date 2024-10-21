@@ -1,3 +1,4 @@
+using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.Organisation.WebApi.Tests.AutoMapper;
 using CO.CDP.Organisation.WebApi.UseCase;
 using CO.CDP.OrganisationInformation;
@@ -73,7 +74,8 @@ public class GetOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IClas
                 Telephone = "123-456-7890",
                 Url = "https://contact.test.org"
             }],
-            Roles = [PartyRole.Buyer]
+            Roles = [PartyRole.Buyer],
+            PendingRoles = [PartyRole.Consortium]
         };
 
         _repository.Setup(r => r.Find(organisationId)).ReturnsAsync(persistenceOrganisation);
@@ -117,7 +119,11 @@ public class GetOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IClas
                 Telephone = "123-456-7890",
                 Url = new Uri("https://contact.test.org")
             },
-            Roles = [PartyRole.Buyer]
+            Roles = [PartyRole.Buyer],
+            Details = new Details
+            {
+                PendingRoles = [PartyRole.Consortium]
+            }
         };
 
         found.Should().BeEquivalentTo(expectedModelOrganisation, options => options.ComparingByMembers<Model.Organisation>());

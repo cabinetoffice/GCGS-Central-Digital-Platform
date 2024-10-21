@@ -8,15 +8,15 @@ using Microsoft.Extensions.Configuration;
 using CO.CDP.OrganisationInformation.Persistence;
 using Microsoft.Extensions.Logging;
 using CO.CDP.GovUKNotify.Models;
+using CO.CDP.OrganisationInformation;
 
 namespace CO.CDP.Organisation.WebApi.Tests.UseCase;
 
 public class SupportUpdateOrganisationUseCaseTests
 {
-    private readonly Mock<Persistence.IOrganisationRepository> _mockOrganisationRepository;
-    private readonly Mock<Persistence.IPersonRepository> _mockPersonRepository;
+    private readonly Mock<IOrganisationRepository> _mockOrganisationRepository;
+    private readonly Mock<IPersonRepository> _mockPersonRepository;
     private readonly Mock<IGovUKNotifyApiClient> _notifyApiClient = new();
-    private readonly IConfiguration _mockConfiguration;
     private readonly Mock<ILogger<SupportUpdateOrganisationUseCase>> _logger = new();
     private readonly SupportUpdateOrganisationUseCase _useCase;
     private readonly Persistence.Organisation _organisation;
@@ -33,27 +33,29 @@ public class SupportUpdateOrganisationUseCaseTests
             new("GOVUKNotify:BuyerApprovedEmailTemplateId", "buyer-template-id"),
         };
 
-        _mockConfiguration = new ConfigurationBuilder()
+        IConfiguration mockConfiguration = new ConfigurationBuilder()
             .AddInMemoryCollection(inMemorySettings)
             .Build();
 
-        _mockOrganisationRepository = new Mock<Persistence.IOrganisationRepository>();
-        _mockPersonRepository = new Mock<Persistence.IPersonRepository>();
+        _mockOrganisationRepository = new Mock<IOrganisationRepository>();
+        _mockPersonRepository = new Mock<IPersonRepository>();
         _useCase = new SupportUpdateOrganisationUseCase(
             _mockOrganisationRepository.Object,
             _mockPersonRepository.Object,
             _notifyApiClient.Object,
-            _mockConfiguration,
+            mockConfiguration,
             _logger.Object);
         _organisation = new OrganisationInformation.Persistence.Organisation
         {
             Id = 1,
             Guid = Guid.NewGuid(),
+            Roles = [PartyRole.Tenderer],
+            PendingRoles = [PartyRole.Buyer],
             Tenant = null!,
-            Name = null!,            
+            Name = null!,
         };
 
-        _person = new OrganisationInformation.Persistence.Person
+        _person = new Persistence.Person
         {
             Id = 1,
             Guid = Guid.NewGuid(),
@@ -127,7 +129,7 @@ public class SupportUpdateOrganisationUseCaseTests
             },
             Type = SupportOrganisationUpdateType.Review
         };
-        
+
         _mockOrganisationRepository.Setup(repo => repo.Find(_organisation.Guid))
             .ReturnsAsync(_organisation);
 
@@ -145,6 +147,8 @@ public class SupportUpdateOrganisationUseCaseTests
         _organisation.ApprovedOn.Should().BeCloseTo(DateTimeOffset.UtcNow, TimeSpan.FromSeconds(1));
         _organisation.ReviewedBy.Should().Be(_person);
         _organisation.ReviewComment.Should().Be("Reviewed and approved");
+        _organisation.Roles.Should().BeEquivalentTo([PartyRole.Tenderer, PartyRole.Buyer]);
+        _organisation.PendingRoles.Should().BeEmpty();
 
         _notifyApiClient.Verify(x => x.SendEmail(It.IsAny<EmailNotificationRequest>()));
 
@@ -177,6 +181,8 @@ public class SupportUpdateOrganisationUseCaseTests
         _organisation.ApprovedOn.Should().BeNull();
         _organisation.ReviewedBy.Should().Be(_person);
         _organisation.ReviewComment.Should().Be("Reviewed but rejected");
+        _organisation.Roles.Should().BeEquivalentTo([PartyRole.Tenderer]);
+        _organisation.PendingRoles.Should().BeEquivalentTo([PartyRole.Buyer]);
 
         _mockOrganisationRepository.Verify(repo => repo.Save(_organisation), Times.Once);
     }
