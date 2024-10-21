@@ -49,7 +49,7 @@ public class SupportUpdateOrganisationUseCaseTests
         {
             Id = 1,
             Guid = Guid.NewGuid(),
-            Roles = [],
+            Roles = [PartyRole.Tenderer],
             PendingRoles = [PartyRole.Buyer],
             Tenant = null!,
             Name = null!,
@@ -147,7 +147,7 @@ public class SupportUpdateOrganisationUseCaseTests
         _organisation.ApprovedOn.Should().BeCloseTo(DateTimeOffset.UtcNow, TimeSpan.FromSeconds(1));
         _organisation.ReviewedBy.Should().Be(_person);
         _organisation.ReviewComment.Should().Be("Reviewed and approved");
-        _organisation.Roles.Should().BeEquivalentTo([PartyRole.Buyer]);
+        _organisation.Roles.Should().BeEquivalentTo([PartyRole.Tenderer, PartyRole.Buyer]);
         _organisation.PendingRoles.Should().BeEmpty();
 
         _notifyApiClient.Verify(x => x.SendEmail(It.IsAny<EmailNotificationRequest>()));
@@ -181,7 +181,7 @@ public class SupportUpdateOrganisationUseCaseTests
         _organisation.ApprovedOn.Should().BeNull();
         _organisation.ReviewedBy.Should().Be(_person);
         _organisation.ReviewComment.Should().Be("Reviewed but rejected");
-        _organisation.Roles.Should().BeEmpty();
+        _organisation.Roles.Should().BeEquivalentTo([PartyRole.Tenderer]);
         _organisation.PendingRoles.Should().BeEquivalentTo([PartyRole.Buyer]);
 
         _mockOrganisationRepository.Verify(repo => repo.Save(_organisation), Times.Once);
