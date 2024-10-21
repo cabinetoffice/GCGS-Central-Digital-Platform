@@ -6,6 +6,7 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.DependencyInjection;
@@ -53,6 +54,7 @@ public class LocalizationTests
                     options.ClientId = "123";
                     options.Authority = "https://whatever";
                 });
+                services.AddDataProtection().DisableAutomaticKeyGeneration();
             });
         });
 
