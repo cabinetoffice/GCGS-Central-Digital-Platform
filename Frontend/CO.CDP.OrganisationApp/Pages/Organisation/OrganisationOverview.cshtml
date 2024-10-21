@@ -127,11 +127,13 @@
                     }
                 </dl>
 
-                @if (organisationDetails.IsBuyer() && !organisationDetails.IsTenderer())
-                {
-                    <a class="govuk-link govuk-!-font-size-19 govuk-!-font-weight-bold" asp-page="./OrganisationRegisterBuyerAsSupplier" asp-route-id="@Model.Id">Register as a supplier</a>
-                    <div class="govuk-section-break govuk-section-break--visible govuk-section-break--m"></div>
-                }
+                <authorize scope="@OrgScopeRequirement.Editor">
+                    @if (organisationDetails.IsBuyer() && !organisationDetails.IsTenderer())
+                    {
+                        <a class="govuk-link govuk-!-font-size-19 govuk-!-font-weight-bold" asp-page="./OrganisationRegisterBuyerAsSupplier" asp-route-id="@Model.Id">Register as a supplier</a>
+                        <div class="govuk-section-break govuk-section-break--visible govuk-section-break--m"></div>
+                    }
+                </authorize>
 
                 @if (organisationDetails.IsTenderer())
                 {
