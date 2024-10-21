@@ -82,8 +82,7 @@ public class DataSharingProfile : Profile
         CreateMap<Persistence.SharedConsent, Form>()
             .ForMember(m => m.Name, o => o.MapFrom(m => m.Form.Name))
             .ForMember(m => m.SubmissionState, o => o.MapFrom(m => m.SubmissionState.ToString()))
-            .ForMember(m => m.SubmittedAt,
-                o => o.MapFrom(m => m.SubmittedAt.HasValue ? m.SubmittedAt.Value.DateTime : default))
+            .ForMember(m => m.SubmittedAt, o => o.MapFrom(m => m.SubmittedAt))
             .ForMember(m => m.OrganisationId, o => o.MapFrom(m => m.Organisation.Guid))
             .ForMember(m => m.FormId, o => o.MapFrom(m => m.Guid))
             .ForMember(m => m.FormVersionId, o => o.MapFrom(m => m.Form.Version))
@@ -115,7 +114,7 @@ public class DataSharingProfile : Profile
             .ForMember(m => m.IsRequired, o => o.MapFrom(m => m.IsRequired))
             .ForMember(m => m.SectionName, opt => opt.MapFrom<LocalizedPropertyResolver<Persistence.FormQuestion, FormQuestion>, string>(m => m.Section.Title))
             .ForMember(m => m.Options, o => o.MapFrom(m => m.Options.Choices))
-            .ForMember(m => m.SortOrder, o => o.MapFrom(m => m.SortOrder));            
+            .ForMember(m => m.SortOrder, o => o.MapFrom(m => m.SortOrder));
 
         CreateMap<Persistence.FormQuestionChoice, FormQuestionOption>()
             .ForMember(m => m.Id, o => o.MapFrom(m => m.Id))
