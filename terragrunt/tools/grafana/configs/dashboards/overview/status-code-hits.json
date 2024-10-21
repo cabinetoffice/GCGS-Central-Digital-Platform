@@ -18,7 +18,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 21,
+  "id": 22,
   "links": [],
   "panels": [
     {
@@ -60,8 +60,22 @@
         "overrides": [
           {
             "matcher": {
-              "id": "byName",
-              "options": "200"
+              "id": "byRegexp",
+              "options": "/Hits/"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/2\\d{2}\\sHits/"
             },
             "properties": [
               {
@@ -75,14 +89,14 @@
           },
           {
             "matcher": {
-              "id": "byName",
-              "options": "201"
+              "id": "byRegexp",
+              "options": "/3\\d{2}\\sHits/"
             },
             "properties": [
               {
                 "id": "color",
                 "value": {
-                  "fixedColor": "semi-dark-green",
+                  "fixedColor": "yellow",
                   "mode": "fixed"
                 }
               }
@@ -90,128 +104,8 @@
           },
           {
             "matcher": {
-              "id": "byName",
-              "options": "202"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "semi-dark-green",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "204"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "semi-dark-green",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "301"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "blue",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "302"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "blue",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "304"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "blue",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "400"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "semi-dark-orange",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "401"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "semi-dark-orange",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "403"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "semi-dark-orange",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "404"
+              "id": "byRegexp",
+              "options": "/4\\d{2}\\sHits/"
             },
             "properties": [
               {
@@ -225,23 +119,8 @@
           },
           {
             "matcher": {
-              "id": "byName",
-              "options": "408"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "semi-dark-orange",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "500"
+              "id": "byRegexp",
+              "options": "/5\\d{2}\\sHits/"
             },
             "properties": [
               {
@@ -256,68 +135,25 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "501"
+              "options": "Hits"
             },
             "properties": [
               {
-                "id": "color",
-                "value": {
-                  "fixedColor": "semi-dark-red",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "502"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "semi-dark-red",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "503"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "semi-dark-red",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "504"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "semi-dark-red",
-                  "mode": "fixed"
-                }
+                "id": "links",
+                "value": [
+                  {
+                    "title": "Service Logs",
+                    "url": "d/service-logs/service-logs?${log_groups:queryparam}&${status_code:queryparam}&${__url_time_range}"
+                  }
+                ]
               }
             ]
           }
         ]
       },
       "gridPos": {
-        "h": 12,
-        "w": 5,
+        "h": 7,
+        "w": 3,
         "x": 0,
         "y": 1
       },
@@ -331,25 +167,19 @@
       ],
       "options": {
         "displayLabels": [
-          "value",
-          "name"
+          "percent"
         ],
         "legend": {
-          "calcs": [],
-          "displayMode": "table",
+          "displayMode": "list",
           "placement": "bottom",
-          "showLegend": true,
-          "values": [
-            "percent",
-            "value"
-          ]
+          "showLegend": false
         },
         "pieType": "pie",
         "reduceOptions": {
           "calcs": [
             "lastNotNull"
           ],
-          "fields": "/^Time \\(count\\)$/",
+          "fields": "/^Hits$/",
           "values": true
         },
         "tooltip": {
@@ -365,7 +195,7 @@
             "uid": "CLOUDWATCH"
           },
           "dimensions": {},
-          "expression": "fields @timestamp, StatusCode\n| filter ispresent(StatusCode) and $status_code\n| filter RequestPath != \"/health\"\n| sort @timestamp desc\n\n",
+          "expression": "fields @timestamp, StatusCode\n| filter ispresent(StatusCode) and $status_code\n| filter RequestPath != \"/health\"\n| stats count() as Hits by StatusCode\n| display concat(StatusCode, \" Hits\") as Name, Hits\n\n",
           "id": "",
           "label": "",
           "logGroups": [
@@ -385,54 +215,209 @@
           "region": "default",
           "sqlExpression": "",
           "statistic": "Average",
-          "statsGroups": []
-        }
-      ],
-      "transformations": [
-        {
-          "id": "groupBy",
-          "options": {
-            "fields": {
-              "@message": {
-                "aggregations": [
-                  "count"
-                ],
-                "operation": "aggregate"
-              },
-              "RequestPath": {
-                "aggregations": [],
-                "operation": "groupby"
-              },
-              "Row": {
-                "aggregations": []
-              },
-              "StatusCode": {
-                "aggregations": [],
-                "operation": "groupby"
-              },
-              "Time": {
-                "aggregations": [
-                  "count"
-                ],
-                "operation": "aggregate"
-              }
-            }
-          }
-        },
-        {
-          "id": "convertFieldType",
-          "options": {
-            "conversions": [
-              {
-                "destinationType": "string",
-                "targetField": "StatusCode"
-              }
-            ],
-            "fields": {}
-          }
+          "statsGroups": [
+            "StatusCode"
+          ]
         }
       ],
       "type": "piechart"
+    },
+    {
+      "datasource": {
+        "default": true,
+        "type": "cloudwatch",
+        "uid": "CLOUDWATCH"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 40,
+            "gradientMode": "opacity",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "smooth",
+            "lineWidth": 1,
+            "pointSize": 4,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "always",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "fieldMinMax": false,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/Hits/"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/2\\d{2}\\sHits/"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/3\\d{2}\\sHits/"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "yellow",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/4\\d{2}\\sHits/"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "orange",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/5\\d{2}\\sHits/"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 21,
+        "x": 3,
+        "y": 1
+      },
+      "id": 26,
+      "links": [
+        {
+          "title": "Service Logs",
+          "url": "d/service-logs/service-logs?${log_groups:queryparam}&${status_code:queryparam}&${__url_time_range}"
+        }
+      ],
+      "options": {
+        "legend": {
+          "calcs": [
+            "sum"
+          ],
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true,
+          "width": 200
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.2.2+security-01",
+      "targets": [
+        {
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "CLOUDWATCH"
+          },
+          "dimensions": {},
+          "expression": "fields @timestamp, @message, StatusCode\n| filter ispresent(StatusCode) and $status_code\n| filter $healthcheck_requests\n| stats count() as Hits by bin(1m), StatusCode\n",
+          "id": "",
+          "label": "",
+          "logGroups": [
+            {
+              "arn": "$log_groups",
+              "name": "$log_groups"
+            }
+          ],
+          "matchExact": true,
+          "metricEditorMode": 0,
+          "metricName": "",
+          "metricQueryType": 0,
+          "namespace": "",
+          "period": "",
+          "queryMode": "Logs",
+          "refId": "A",
+          "region": "default",
+          "sqlExpression": "",
+          "statistic": "Average",
+          "statsGroups": [
+            "bin(1m)",
+            "StatusCode"
+          ]
+        }
+      ],
+      "type": "timeseries"
     },
     {
       "datasource": {
@@ -546,10 +531,10 @@
         ]
       },
       "gridPos": {
-        "h": 12,
-        "w": 19,
-        "x": 5,
-        "y": 1
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 8
       },
       "id": 1,
       "links": [
@@ -756,6 +741,33 @@
         "queryValue": "",
         "skipUrlSync": false,
         "type": "custom"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "Exclude",
+          "value": "RequestPath != \"/health\""
+        },
+        "hide": 0,
+        "includeAll": false,
+        "label": "Healthcheck Requests",
+        "multi": false,
+        "name": "healthcheck_requests",
+        "options": [
+          {
+            "selected": true,
+            "text": "Exclude",
+            "value": "RequestPath != \"/health\""
+          },
+          {
+            "selected": false,
+            "text": "Include",
+            "value": "ispresent(@timestamp)"
+          }
+        ],
+        "query": "Exclude : RequestPath != \"/health\", Include : ispresent(@timestamp)",
+        "skipUrlSync": false,
+        "type": "custom"
       }
     ]
   },
@@ -767,6 +779,6 @@
   "timezone": "browser",
   "title": "Request Status Code Hits",
   "uid": "request-status-code-hits",
-  "version": 1,
+  "version": 2,
   "weekStart": ""
 }
