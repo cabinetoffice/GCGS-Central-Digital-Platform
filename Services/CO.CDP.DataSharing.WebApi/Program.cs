@@ -11,7 +11,10 @@ using CO.CDP.DataSharing.WebApi.Extensions;
 using CO.CDP.DataSharing.WebApi.Model;
 using CO.CDP.DataSharing.WebApi.UseCase;
 using CO.CDP.OrganisationInformation.Persistence;
+using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Mvc.Localization;
 using Microsoft.EntityFrameworkCore;
+using System.Globalization;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -21,8 +24,27 @@ builder.ConfigureForwardedHeaders();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options => { options.DocumentDataSharingApi(builder.Configuration); });
+
+builder.Services.AddLocalization();
+
+// Note that we have to register IHtmlLocalizer manually, since this is an API and we are not calling AddViewLocalization
+builder.Services.AddSingleton<IHtmlLocalizerFactory, HtmlLocalizerFactory>();
+builder.Services.AddTransient(typeof(IHtmlLocalizer<>), typeof(HtmlLocalizer<>));
+
+var supportedCultures = new[] { new CultureInfo("en"), new CultureInfo("cy") };
+builder.Services.Configure<RequestLocalizationOptions>(options =>
+{
+    options.DefaultRequestCulture = new RequestCulture("en");
+    options.SupportedCultures = supportedCultures;
+    options.SupportedUICultures = supportedCultures;
+
+    options.RequestCultureProviders.Insert(0, new AcceptLanguageHeaderRequestCultureProvider());
+});
+
 builder.Services.AddHealthChecks()
     .AddNpgSql(ConnectionStringHelper.GetConnectionString(builder.Configuration, "OrganisationInformationDatabase"));
+
+builder.Services.AddTransient(typeof(LocalizedPropertyResolver<,>));
 builder.Services.AddAutoMapper(typeof(DataSharingProfile));
 
 builder.Services.AddDbContext<OrganisationInformationContext>(o =>
@@ -82,6 +104,7 @@ app.MapHealthChecks("/health").AllowAnonymous();
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseRequestLocalization();
 app.UseDataSharingEndpoints();
 
 app.Run();
