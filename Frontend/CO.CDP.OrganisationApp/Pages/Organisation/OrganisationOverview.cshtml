@@ -36,7 +36,7 @@
                     <span class="govuk-label--l">@organisationDetails.Name</span>
                 </h1>
                 <h2 class="govuk-heading-m">Organisation details</h2>
-                <dl class="govuk-summary-list">
+                <dl class="govuk-summary-list govuk-!-margin-bottom-3">
                     <div class="govuk-summary-list__row">
                         <dt class="govuk-summary-list__key">
                             Organisation name
@@ -127,28 +127,33 @@
                     }
                 </dl>
 
+                @if (organisationDetails.IsBuyer() && !organisationDetails.IsTenderer())
+                {
+                    <a class="govuk-link govuk-!-font-size-19 govuk-!-font-weight-bold" asp-page="./OrganisationRegisterBuyerAsSupplier" asp-route-id="@Model.Id">Register as a supplier</a>
+                    <div class="govuk-section-break govuk-section-break--visible govuk-section-break--m"></div>
+                }
+
                 @if (organisationDetails.IsTenderer())
                 {
-                    <div class="govuk-!-margin-top-3">
-                        <a class="govuk-link govuk-!-font-size-19 govuk-!-font-weight-bold" href="/organisation/@RouteData.Values["id"]/supplier-information">Supplier information</a>
-                    </div>
+                    <a class="govuk-link govuk-!-font-size-19 govuk-!-font-weight-bold" href="/organisation/@RouteData.Values["id"]/supplier-information">Supplier information</a>
+                    <div class="govuk-section-break govuk-section-break--visible govuk-section-break--m"></div>
                 }
-                else if (organisationDetails.IsBuyer())
+
+                @if (organisationDetails.IsBuyer())
                 {
-                    <h3 class="govuk-!-margin-top-3">
-                        <a class="govuk-link" href="/organisation/@RouteData.Values["id"]/manage-api-keys">@(isViewer ? "View" : "Manage") API keys</a>
+                    <h3>
+                        <a class="govuk-link" href="/organisation/@RouteData.Values["id"]/manage-api-keys">@(isViewer ? "View" : "Manage") API keys (for Buyers)</a>
                     </h3>
 
-                    <div class="govuk-!-margin-top-3">
-                        <p class="govuk-body">An application programming interface (API) key is a code that allows different pieces of software to share information.</p>
-                        <p class="govuk-body">You need to create an API key and share it with the e-Sender you use to publish procurement notices on the Find a Tender service.</p>
-                    </div>
+                    <p class="govuk-body">An application programming interface (API) key is a code that allows different pieces of software to share information.</p>
+                    <p class="govuk-body">You need to create an API key and share it with the e-Sender you use to publish procurement notices on the Find a Tender service.</p>
+
+                    <div class="govuk-section-break govuk-section-break--visible govuk-section-break--m"></div>
                 }
 
                 <authorize scope="@OrgScopeRequirement.Admin">
-                    <div class="govuk-!-margin-top-3">
-                        <a class="govuk-link govuk-!-font-size-19 govuk-!-font-weight-bold" href="/organisation/@RouteData.Values["id"]/users/user-summary">Users</a>
-                    </div>
+                    <a class="govuk-link govuk-!-font-size-19 govuk-!-font-weight-bold" href="/organisation/@RouteData.Values["id"]/users/user-summary">Users</a>
+                    <div class="govuk-section-break govuk-section-break--visible govuk-section-break--m"></div>
                 </authorize>
 
                 @if (organisationDetails.IsBuyer())

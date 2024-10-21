@@ -31,6 +31,20 @@ public class UpdateOrganisationUseCase(
                 organisation.Name = updateObject.OrganisationName;
                 break;
 
+            case OrganisationUpdateType.Roles:
+                if (updateObject.Roles == null || !updateObject.Roles.Any())
+                {
+                    throw new InvalidUpdateOrganisationCommand("Missing roles.");
+                }
+
+                if (!updateObject.Roles.All(role => Enum.IsDefined(typeof(PartyRole), role)))
+                {
+                    throw new InvalidUpdateOrganisationCommand("One or more roles are invalid.");
+                }
+
+                organisation.Roles = updateObject.Roles;
+                break;
+
             case OrganisationUpdateType.OrganisationEmail:
                 if (updateObject.ContactPoint == null || string.IsNullOrEmpty(updateObject.ContactPoint.Email))
                     throw new InvalidUpdateOrganisationCommand("Missing organisation email.");
