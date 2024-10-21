@@ -6,6 +6,7 @@ using FluentAssertions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Moq;
+using System.Xml.Linq;
 
 namespace CO.CDP.Organisation.WebApi.Tests.UseCase;
 
@@ -13,67 +14,86 @@ public class ProvideFeedbackAndContactUseCaseTest
 {
     private readonly Mock<IGovUKNotifyApiClient> _mockGovUKNotifyApiClient;
     private readonly Mock<IConfiguration> _mockConfiguration;
+    private readonly Mock<ILogger<ProvideFeedbackAndContactUseCase>> _mockLogger;
     private readonly ProvideFeedbackAndContactUseCase _useCase;
-    private readonly Mock<ILogger<ProvideFeedbackAndContactUseCase>> _logger=new();
 
     public ProvideFeedbackAndContactUseCaseTest()
     {
         _mockGovUKNotifyApiClient = new Mock<IGovUKNotifyApiClient>();
-        _mockConfiguration = new Mock<IConfiguration>();        
-        _useCase = new ProvideFeedbackAndContactUseCase(_mockGovUKNotifyApiClient.Object, _mockConfiguration.Object, _logger.Object);
+        _mockConfiguration = new Mock<IConfiguration>();
+        _mockLogger = new Mock<ILogger<ProvideFeedbackAndContactUseCase>>();
+
+        _useCase = new ProvideFeedbackAndContactUseCase(
+            _mockGovUKNotifyApiClient.Object,
+            _mockConfiguration.Object,
+            _mockLogger.Object
+        );
+    } 
+
+    [Fact]
+    public async Task Execute_ShouldReturnFalse_WhenConfigurationKeysAreMissing()
+    {        
+        _mockConfiguration.Setup(c => c["GOVUKNotify:ProvideFeedbackAndContactEmailTemplateId"]).Returns((string)null);
+        _mockConfiguration.Setup(c => c["GOVUKNotify:SupportAdminEmailAddress"]).Returns((string)null);
+        var command = new ProvideFeedbackAndContact()
+        {
+            FeedbackAbout = "Website",
+            SpecificPage = "Homepage",
+            Feedback = "Great site!",
+            Name = "John Doe",
+            Email = "john.doe@test.com",
+            Subject = "Feedback"
+        };
+       
+        var result = await _useCase.Execute(command);
+       
+        result.Should().BeFalse();       
+        _mockGovUKNotifyApiClient.Verify(c => c.SendEmail(It.IsAny<EmailNotificationRequest>()), Times.Never);
     }
 
     [Fact]
     public async Task Execute_ShouldReturnTrue_WhenEmailIsSentSuccessfully()
-    {
-        var provideFeedback = new ProvideFeedbackAndContact
+    {        
+        _mockConfiguration.Setup(c => c["GOVUKNotify:ProvideFeedbackAndContactEmailTemplateId"]).Returns("template-id");
+        _mockConfiguration.Setup(c => c["GOVUKNotify:SupportAdminEmailAddress"]).Returns("admin@test.com");
+        var command = new ProvideFeedbackAndContact
         {
-            Subject = "Support",
-            FeedbackAbout = "Test Feedback About",
-            SpecificPage = "Test Specific Page",
-            Feedback = "Test Feedback",
-            Name = "Test Name",
-            Email = "test@example.com"
+            FeedbackAbout = "Website",
+            SpecificPage = "Homepage",
+            Feedback = "Great site!",
+            Name = "John Doe",
+            Email = "john.doe@test.com",
+            Subject = "Feedback"
         };
-
-        var expectedResponse = new EmailNotificationResponse
-        {
-            Content = It.IsAny<EmailResponseContent>(),
-            Id = Guid.NewGuid(),
-            Template = It.IsAny<Template>(),
-            Uri = It.IsAny<Uri>()
-        };
-
-        _mockGovUKNotifyApiClient.Setup(c => c.SendEmail(It.IsAny<EmailNotificationRequest>()))
-            .ReturnsAsync(expectedResponse);
-
-        var result = await _useCase.Execute(provideFeedback);
+       
+        var result = await _useCase.Execute(command);
 
         result.Should().BeTrue();
-
         _mockGovUKNotifyApiClient.Verify(c => c.SendEmail(It.IsAny<EmailNotificationRequest>()), Times.Once);
     }
 
     [Fact]
-    public async Task Execute_ShouldReturnFalse_WhenEmailSendingFails()
-    {
-        var provideFeedback = new ProvideFeedbackAndContact
+    public async Task Execute_ShouldReturnFalse_WhenEmailSendFails()
+    {       
+        _mockConfiguration.Setup(c => c["GOVUKNotify:ProvideFeedbackAndContactEmailTemplateId"]).Returns("template-id");
+        _mockConfiguration.Setup(c => c["GOVUKNotify:SupportAdminEmailAddress"]).Returns("admin@test.com");
+        var command = new ProvideFeedbackAndContact
         {
-            Subject = "Feeback",
-            FeedbackAbout = "Test Feedback About",
-            SpecificPage = "Test Specific Page",
-            Feedback = "Test Feedback",
-            Name = "Test Name",
-            Email = "test@example.com"
+            FeedbackAbout = "Website",
+            SpecificPage = "Homepage",
+            Feedback = "Great site!",
+            Name = "John Doe",
+            Email = "john.doe@test.com",
+            Subject = "Feedback"
         };
 
-        _mockGovUKNotifyApiClient.Setup(c => c.SendEmail(It.IsAny<EmailNotificationRequest>()))
-            .ThrowsAsync(new Exception("Email sending failed"));
+        _mockGovUKNotifyApiClient
+            .Setup(c => c.SendEmail(It.IsAny<EmailNotificationRequest>()))
+            .ThrowsAsync(new Exception());
+       
+        var result = await _useCase.Execute(command);
 
-        var result = await _useCase.Execute(provideFeedback);
-
-        result.Should().BeFalse();
-
+         result.Should().BeFalse();
         _mockGovUKNotifyApiClient.Verify(c => c.SendEmail(It.IsAny<EmailNotificationRequest>()), Times.Once);
     }
 }
