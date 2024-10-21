@@ -29,7 +29,7 @@ public class SupportUpdateOrganisationUseCase(
                 {
                     organisation.ApprovedOn = DateTimeOffset.UtcNow;
                     organisation.PendingRoles.ForEach(r => organisation.Roles.Add(r));
-                    organisation.PendingRoles = [];
+                    organisation.PendingRoles.Clear();
                     sendemail = true;
                 }
 
