@@ -72,9 +72,8 @@ public class ExclusionAppliesToChoiceProviderStrategy(IUserInfoService userInfoS
                     var organisationId = userInfoService.GetOrganisationId();
                     if (organisationId != null)
                     {
-                        var connectedEntities = await organisationClient.GetConnectedEntitiesAsync((Guid)organisationId);
-                        var entity = connectedEntities.FirstOrDefault(e => e.EntityId == answerValues.Id);
-                        return entity?.Name;
+                        var connectedEntityDetails = await organisationClient.GetConnectedEntityAsync((Guid)organisationId, answerValues.Id);
+                        return connectedEntityDetails.IndividualOrTrust.FirstName + " " + connectedEntityDetails.IndividualOrTrust.LastName;
                     }
 
                     break;
