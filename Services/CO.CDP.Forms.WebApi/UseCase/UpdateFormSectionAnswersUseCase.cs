@@ -162,6 +162,8 @@ public class UpdateFormSectionAnswersUseCase(
             existingAnswer.TextValue = answer.TextValue;
         if (existingAnswer.OptionValue != answer.OptionValue)
             existingAnswer.OptionValue = answer.OptionValue;
+        if (existingAnswer.JsonValue != answer.JsonValue)
+            existingAnswer.JsonValue = answer.JsonValue;
         if (!AreSameAddress(existingAnswer.AddressValue, answer.AddressValue))
         {
             existingAnswer.AddressValue = answer.AddressValue == null ? null : new Persistence.FormAddress
