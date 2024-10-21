@@ -1,20 +1,40 @@
 @page "/provide-feedback-and-contact"
 @model ProvideFeedbackAndContact
 @{
-    ViewData["Title"] = "Provide Find a Tender Feedback";
+    if (Model.Context == "FEEDBACK")
+    { ViewData["Title"] = "Provide Find a Tender Feedback"; }
+    else if (Model.Context == "CONTACT")
+    { ViewData["Title"] = "Contact Find a Tender"; }
 }
 
 <main class="govuk-main-wrapper" id="main-content">
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <partial name="_ErrorSummary" model="@ModelState" />
-            <h1 class="govuk-heading-xl">
-                Provide Find a Tender feedback
-            </h1>
+            @if (Model.Context == "FEEDBACK")
+            {
+                <h1 class="govuk-heading-xl">
+                    Provide Find a Tender feedback
+                </h1>
+            }
+            else if (Model.Context == "CONTACT")
+            {
+                <h1 class="govuk-heading-xl">
+                    Contact Find a Tender
+                </h1>
+            }
 
             <form method="post">
-                <p class="govuk-body">This form is to provide feedback on the Find a Tender Website.</p>
-                <p class="govuk-body">You can use it to suggest feedback, an improvement or suggestion to the Find a Tender team.</p>
+                @if (Model.Context == "FEEDBACK")
+                {
+                    <p class="govuk-body">This form is to provide feedback on the Find a Tender Website.</p>
+                    <p class="govuk-body">You can use it to suggest feedback, an improvement or suggestion to the Find a Tender team.</p>
+                }
+                else if (Model.Context == "CONTACT")
+                {
+                    <p class="govuk-body">This form is to raise issues or support requests related to Find a Tender website.</p>
+                    <p class="govuk-body">You can ask a question, report a problem or suggest an improvement to the Find a Tender team.</p>
+                }
 
                 <div class="govuk-form-group govuk-!-margin-bottom-6">
                     <fieldset class="govuk-fieldset">
@@ -24,21 +44,21 @@
 
                         <div class="govuk-radios" data-module="govuk-radios" data-govuk-radios-module-started="true">
                             <div class="gem-c-radio govuk-radios__item">
-                                <input type="radio" name="FeedbackOption" id="WholeSite" value="WholeSite" class="govuk-radios__input" @(Model.FeedbackOption == "WholeSite" ? "checked" : "")>
+                                <input type="radio" name="feedbackOrContactOption" id="WholeSite" value="WholeSite" class="govuk-radios__input" @(Model.FeedbackOrContactOption == "WholeSite" ? "checked" : "")>
                                 <label for="location-0" class="gem-c-label govuk-label govuk-radios__label">The whole site</label>
                             </div>
 
                             <div class="gem-c-radio govuk-radios__item">
-                                <input type="radio" name="FeedbackOption" id="SpecificPage" value="SpecificPage" class="govuk-radios__input" @(Model.FeedbackOption == "SpecificPage" ? "checked" : "") aria-controls="conditional-713d30a1" aria-expanded="true">
+                                <input type="radio" name="feedbackOrContactOption" id="SpecificPage" value="SpecificPage" class="govuk-radios__input" @(Model.FeedbackOrContactOption == "SpecificPage" ? "checked" : "") aria-controls="conditional-SpecificPage" aria-expanded="true">
                                 <label for="location-1" class="gem-c-label govuk-label govuk-radios__label">A specific page</label>
-
                             </div>
-                            <div class="govuk-radios__conditional govuk-body">
+
+                            <div class="govuk-radios__conditional govuk-body govuk-radios__conditional--hidden" id="conditional-SpecificPage">
                                 <div class="govuk-form-group">
                                     <label for="link" class="gem-c-label govuk-label">Enter URL or name of page</label>
                                     <input class="gem-c-input govuk-input" data-ga4-form-include-input="" id="UrlOfPage" name="UrlOfPage" spellcheck="false" type="text" value="@Model.UrlOfPage">
                                 </div>
-                            </div>
+                            </div>                         
 
                         </div>
                     </fieldset>
@@ -46,14 +66,23 @@
 
                 <div class="govuk-form-group govuk-character-count" data-module="govuk-character-count" data-maxlength="10000">
                     <h1 class="govuk-label-wrapper">
-                        <label class="govuk-label govuk-label--l" for="with-hint">
-                            Can you provide more detail?
-                        </label>
+                          @if (Model.Context == "FEEDBACK")
+                        {
+                            <label class="govuk-label govuk-label--l" for="with-hint">
+                                What is your Feedback
+                            </label>
+                        }
+                        else if (Model.Context == "CONTACT")
+                        {
+                            <label class="govuk-label govuk-label--l" for="with-hint">
+                                What are the details?
+                            </label>
+                        }
                     </h1>
                     <div id="with-hint-hint" class="govuk-hint">
                         Do not include personal or financial information like your National Insurance number or credit card details
                     </div>
-                    <textarea class="govuk-textarea govuk-js-character-count" id="with-hint" name="feedback" rows="5" aria-describedby="with-hint-info with-hint-hint">@Model.Feedback</textarea>
+                    <textarea class="govuk-textarea govuk-js-character-count" id="with-hint" name="details" rows="5" aria-describedby="with-hint-info with-hint-hint">@Model.Details</textarea>
                     <div id="with-hint-info" class="govuk-hint govuk-character-count__message">
                         You can enter up to 10000 characters
                     </div>

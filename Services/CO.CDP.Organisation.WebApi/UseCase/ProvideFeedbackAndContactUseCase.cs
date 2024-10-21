@@ -5,17 +5,29 @@ namespace CO.CDP.Organisation.WebApi.UseCase;
 
 public class ProvideFeedbackAndContactUseCase(
     IGovUKNotifyApiClient govUKNotifyApiClient,
-    IConfiguration configuration)
+    IConfiguration configuration,
+     ILogger<ProvideFeedbackAndContactUseCase> logger)
     : IUseCase<ProvideFeedbackAndContact, bool>
 {
     public async Task<bool> Execute(ProvideFeedbackAndContact command)
     {
         var feedbackSentSuccess = true;
 
-        // TODO: select template based on Subject
-        var templateId = configuration["GOVUKNotify:ProvideFeedbackEmailTemplateId"] ?? "";
-
+        var templateId = configuration["GOVUKNotify:ProvideFeedbackAndContactEmailTemplateId"] ?? "";
         var supportAdminEmailAddress = configuration["GOVUKNotify:SupportAdminEmailAddress"] ?? "";
+
+        var missingConfigs = new List<string>();
+
+        if (string.IsNullOrEmpty(templateId)) missingConfigs.Add("GOVUKNotify:ProvideFeedbackAndContactEmailTemplateId");
+        if (string.IsNullOrEmpty(supportAdminEmailAddress)) missingConfigs.Add("GOVUKNotify:SupportAdminEmailAddress");
+
+        if (missingConfigs.Count != 0)
+        {
+            logger.LogError(new Exception("Unable to send email "), $"Missing configuration keys: {string.Join(", ", missingConfigs)}. Unable to send email.");
+            feedbackSentSuccess = false;
+            return feedbackSentSuccess;
+        }
+       
         var emailRequest = new EmailNotificationRequest
         {
             EmailAddress = supportAdminEmailAddress,

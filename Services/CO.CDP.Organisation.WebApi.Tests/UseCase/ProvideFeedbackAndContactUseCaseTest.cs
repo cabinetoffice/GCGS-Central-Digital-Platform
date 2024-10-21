@@ -4,6 +4,7 @@ using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.Organisation.WebApi.UseCase;
 using FluentAssertions;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Moq;
 
 namespace CO.CDP.Organisation.WebApi.Tests.UseCase;
@@ -13,12 +14,13 @@ public class ProvideFeedbackAndContactUseCaseTest
     private readonly Mock<IGovUKNotifyApiClient> _mockGovUKNotifyApiClient;
     private readonly Mock<IConfiguration> _mockConfiguration;
     private readonly ProvideFeedbackAndContactUseCase _useCase;
+    private readonly Mock<ILogger<ProvideFeedbackAndContactUseCase>> _logger=new();
 
     public ProvideFeedbackAndContactUseCaseTest()
     {
         _mockGovUKNotifyApiClient = new Mock<IGovUKNotifyApiClient>();
-        _mockConfiguration = new Mock<IConfiguration>();
-        _useCase = new ProvideFeedbackAndContactUseCase(_mockGovUKNotifyApiClient.Object, _mockConfiguration.Object);
+        _mockConfiguration = new Mock<IConfiguration>();        
+        _useCase = new ProvideFeedbackAndContactUseCase(_mockGovUKNotifyApiClient.Object, _mockConfiguration.Object, _logger.Object);
     }
 
     [Fact]

@@ -7,6 +7,7 @@ namespace CO.CDP.OrganisationApp.Pages;
 
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.WebApiClients;
+using Microsoft.IdentityModel.Tokens;
 using System.ComponentModel.DataAnnotations;
 
 
@@ -14,19 +15,19 @@ using System.ComponentModel.DataAnnotations;
 public class ProvideFeedbackAndContact(IOrganisationClient organisationClient) : PageModel
 {
     [BindProperty]
-    [DisplayName("Enter feedback")]
-    [Required(ErrorMessage = "Enter feedback")]
-    public string? Feedback { get; set; }
-
-    [BindProperty]
     [DisplayName("What's it to do with")]
-    [Required(ErrorMessage = "Chose a feedback option")]
-    public string? FeedbackOption { get; set; }
+    [Required(ErrorMessage = "Choose a option")]
+    public string? FeedbackOrContactOption { get; set; }
 
     [BindProperty]
     [DisplayName("Specific Page")]
-    [RequiredIf("FeedbackOption", "SpecificPage", ErrorMessage = "URL of specific page is required")]
+    [RequiredIf("FeedbackOrContactOption", "SpecificPage", ErrorMessage = "URL of specific page is required")]
     public string? UrlOfPage { get; set; }
+
+    [BindProperty]
+    [DisplayName("Enter details")]
+    [Required(ErrorMessage = "The message field cannot be empty")]
+    public string? Details { get; set; }
 
     [BindProperty]
     public string? Name { get; set; }
@@ -34,10 +35,26 @@ public class ProvideFeedbackAndContact(IOrganisationClient organisationClient) :
     [BindProperty]
     public string? Email { get; set; }
 
+    public required string Context { get; set; }
 
     public IActionResult OnGet()
     {
+        SetContext();
         return Page();
+    }
+
+    private void SetContext()
+    {
+        Context = Request.Query["context"].ToString().ToUpper();
+        if (ValidateContext() == false) throw new Exception("Unknown context");
+    }
+
+    private bool ValidateContext()
+    {
+        if (string.IsNullOrEmpty(Context) || (Context != "FEEDBACK" && Context != "CONTACT"))
+            return false;
+
+        return true;
     }
 
     public async Task<IActionResult> OnPost(string? redirectUri = null)
@@ -63,15 +80,13 @@ public class ProvideFeedbackAndContact(IOrganisationClient organisationClient) :
             return Page();
         }
 
-        var context = Request.Query["context"].ToString().ToUpper();
-        if (context != "FEEDBACK" && context != "SUPPORT")
-        {
-            throw new Exception("Unknown context");
-        }
+        SetContext();
 
-        var feedback = new CO.CDP.Organisation.WebApiClient.ProvideFeedbackAndContact(Email ?? string.Empty, Feedback, FeedbackOption, Name ?? string.Empty, UrlOfPage ?? string.Empty, context);
+        if (ValidateContext() == false) throw new Exception("Unknown context");
+
+        var feedback = new CO.CDP.Organisation.WebApiClient.ProvideFeedbackAndContact(Email ?? string.Empty, Details, FeedbackOrContactOption, Name ?? string.Empty, UrlOfPage ?? string.Empty, Context);
         var success = await organisationClient.FeedbackAndContact(feedback);
 
-        return RedirectToPage("YourDetails", new { RedirectUri = Helper.ValidRelativeUri(redirectUri) ? redirectUri : default });
+        return RedirectToPage("confirmationmessage");
     }
 }
