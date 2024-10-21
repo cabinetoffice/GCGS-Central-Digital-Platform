@@ -180,7 +180,8 @@ public class LookupOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
                 Telephone = "123-456-7890",
                 Url = new Uri("https://contact.test.org")
             },
-            Roles = [PartyRole.Tenderer]
+            Roles = [PartyRole.Tenderer],
+            Details = new Details()
         };
     }
 }

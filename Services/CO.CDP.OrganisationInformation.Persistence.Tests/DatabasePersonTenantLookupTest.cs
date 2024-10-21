@@ -75,6 +75,7 @@ public class DatabasePersonTenantLookupTest(PostgreSqlFixture postgreSql) : ICla
                             Id = acmeCoOrganisation.Guid,
                             Name = acmeCoOrganisation.Name,
                             Roles = acmeCoOrganisation.Roles,
+                            PendingRoles = acmeCoOrganisation.PendingRoles,
                             Scopes = adminPersonScopes
                         }
                     ]
@@ -105,6 +106,7 @@ public class DatabasePersonTenantLookupTest(PostgreSqlFixture postgreSql) : ICla
                             Id = widgetCoOrganisation.Guid,
                             Name = widgetCoOrganisation.Name,
                             Roles = widgetCoOrganisation.Roles,
+                            PendingRoles = widgetCoOrganisation.PendingRoles,
                             Scopes = userPersonScopes
                         }
                     ]
@@ -148,6 +150,7 @@ public class DatabasePersonTenantLookupTest(PostgreSqlFixture postgreSql) : ICla
                             Id = acmeCoOrganisation.Guid,
                             Name = acmeCoOrganisation.Name,
                             Roles = acmeCoOrganisation.Roles,
+                            PendingRoles = acmeCoOrganisation.PendingRoles,
                             Scopes = []
                         }
                     ]

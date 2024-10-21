@@ -19,6 +19,19 @@ public class BuyerInformationTest
     }
 
     [Fact]
+    public void ItInitialisesBuyerInformationIfPendingBuyerRoleIsPresent()
+    {
+        var organisation = GivenOrganisation(
+            roles: [],
+            pendingRoles: [PartyRole.Buyer]
+        );
+
+        organisation.UpdateBuyerInformation();
+
+        organisation.BuyerInfo.Should().BeEquivalentTo(new Organisation.BuyerInformation());
+    }
+
+    [Fact]
     public void ItDoesNotInitialiseBuyerInformationIfBuyerRoleIsNotPresent()
     {
         var organisation = GivenOrganisation(
