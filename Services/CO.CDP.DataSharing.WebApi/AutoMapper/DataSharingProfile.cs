@@ -92,7 +92,7 @@ public class DataSharingProfile : Profile
 
         CreateMap<Persistence.FormAnswerSet, FormAnswerSet>()
             .ForMember(m => m.Id, o => o.MapFrom(m => m.Guid))
-            .ForMember(m=>m.SectionName, o=>o.MapFrom(m=>m.Section.Title))
+            .ForMember(m => m.SectionName, opt => opt.MapFrom<LocalizedPropertyResolver<Persistence.FormAnswerSet, FormAnswerSet>, string>(m => m.Section.Title))
             .ForMember(m => m.Answers, o => o.MapFrom(m => m.Answers.Where(x => x.Question.Type != Persistence.FormQuestionType.NoInput && x.Question.Type != Persistence.FormQuestionType.CheckYourAnswers)));
 
         CreateMap<Persistence.FormAnswer, FormAnswer>()
@@ -113,7 +113,7 @@ public class DataSharingProfile : Profile
             .ForMember(m => m.Name, o => o.MapFrom(m => m.Name))
             .ForMember(m => m.Text, o => o.MapFrom(m => m.Description))
             .ForMember(m => m.IsRequired, o => o.MapFrom(m => m.IsRequired))
-            .ForMember(m => m.SectionName, o => o.MapFrom(m => m.Section.Title))
+            .ForMember(m => m.SectionName, opt => opt.MapFrom<LocalizedPropertyResolver<Persistence.FormQuestion, FormQuestion>, string>(m => m.Section.Title))
             .ForMember(m => m.Options, o => o.MapFrom(m => m.Options.Choices))
             .ForMember(m => m.SortOrder, o => o.MapFrom(m => m.SortOrder));            
 
