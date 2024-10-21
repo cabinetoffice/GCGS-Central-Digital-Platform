@@ -33,6 +33,7 @@ module "ecs_service_grafana" {
   name                   = var.grafana_config.name
   private_subnet_ids     = var.private_subnet_ids
   product                = var.product
+  public_domain          = var.public_domain
   role_ecs_task_arn      = var.role_ecs_task_arn
   role_ecs_task_exec_arn = var.role_ecs_task_exec_arn
   tags                   = var.tags

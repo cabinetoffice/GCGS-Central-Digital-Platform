@@ -77,7 +77,7 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
         switch (type)
         {
             case "buyer":
-                result = result.Where(o => o.Roles.Contains(PartyRole.Buyer));
+                result = result.Where(o => o.Roles.Contains(PartyRole.Buyer) || o.PendingRoles.Contains(PartyRole.Buyer));
                 break;
             case "supplier":
                 result = result.Where(o => o.Roles.Contains(PartyRole.Tenderer));
@@ -137,6 +137,13 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
             .FirstOrDefaultAsync();
 
         return organisation?.SupplierInfo?.OperationTypes ?? [];
+    }
+
+    public async Task<bool> IsEmailUniqueWithinOrganisation(Guid organisationId, string email)
+    {
+        return await context.Organisations
+            .Where(x => x.Guid == organisationId)
+            .AnyAsync(x => !x.Persons.Any(y => y.Email == email));
     }
 
     public void Save(Organisation organisation)

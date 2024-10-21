@@ -540,6 +540,53 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql) : 
         result.Should().Contain(OperationType.SmallOrMediumSized);
     }
 
+    [Fact]
+    public async Task IsEmailUniqueWithinOrganisation_WhenDoesNotExist_ReturnsTrue()
+    {
+        using var repository = OrganisationRepository();
+
+        var organisation = GivenOrganisation();
+        organisation.OrganisationPersons = [];
+        var personEmail = "john.doe@example.com";
+
+        await using var context = postgreSql.OrganisationInformationContext();
+        await context.Organisations.AddAsync(organisation);
+        await context.SaveChangesAsync();
+
+        var result = await repository.IsEmailUniqueWithinOrganisation(organisation.Guid, personEmail);
+
+        result.Should().Be(true);
+    }
+
+    [Fact]
+    public async Task IsEmailUniqueWithinOrganisation_WhenDoesExist_ReturnsFalse()
+    {
+        using var repository = OrganisationRepository();
+
+        var organisation = GivenOrganisation();
+
+        var organisationPerson = new OrganisationPerson()
+        {
+            Organisation = organisation,
+            Person = new Person
+            {
+                FirstName = "John",
+                LastName = "Doe",
+                Email = "john.doe@example.com",
+                Guid = Guid.NewGuid()
+            }
+        };
+        organisation.OrganisationPersons.Add(organisationPerson);
+
+        await using var context = postgreSql.OrganisationInformationContext();
+        await context.Organisations.AddAsync(organisation);
+        await context.SaveChangesAsync();
+
+        var result = await repository.IsEmailUniqueWithinOrganisation(organisation.Guid, organisationPerson.Person.Email);
+
+        result.Should().Be(false);
+    }
+
     private IOrganisationRepository OrganisationRepository(OrganisationInformationContext? context = null)
     {
         return new DatabaseOrganisationRepository(context ?? postgreSql.OrganisationInformationContext());

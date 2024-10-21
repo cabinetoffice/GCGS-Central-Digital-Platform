@@ -12,7 +12,7 @@ locals {
 
   environment = get_env("TG_ENVIRONMENT", "development")
 
-  is_production = contains(["production", "integration"], local.environment)
+  is_production = contains(["production"], local.environment)
 
   environments = {
     orchestrator = {
@@ -75,7 +75,7 @@ locals {
       account_id                 = 767397666448
       canary_schedule_expression = "rate(30 minutes)"
       name                       = "integration"
-      pinned_service_version     = "0.5.0"
+      pinned_service_version     = "0.6.0"
       postgres_instance_type     = "db.t4g.micro"
       private_subnets = [
         "10.${local.cidr_b_integration}.101.0/24",
@@ -94,7 +94,7 @@ locals {
       account_id                 = 471112843276
       canary_schedule_expression = "rate(15 minutes)"
       name                       = "production"
-      pinned_service_version     = null
+      pinned_service_version     = "0.6.0"
       postgres_instance_type     = "db.t4g.micro"
       private_subnets = [
         "10.${local.cidr_b_production}.101.0/24",

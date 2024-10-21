@@ -39,12 +39,12 @@ public static class SupplierDetailsFactory
                 new Address(countryName: "United Kingdom", country: "GB", locality: "London", postalCode: "L1", region: "South", streetAddress: "1 London Street", type: AddressType.Registered),
                 new Address(countryName: "France", country: "FR", locality: "Paris", postalCode: "F1", region: "North", streetAddress: "1 Paris Street", type: AddressType.Postal)
             ],
-            null,
             contactPoint: new ContactPoint(email: "test@test.com", name: "fakecontact", telephone: "0123456789", url: new Uri("https://test.com")),
             id: id,
             identifier: null,
             name: "Test Org",
-            roles: [PartyRole.Supplier]
+            roles: [PartyRole.Supplier],
+            details: new Details(approval: null, pendingRoles: [])
         );
     }
 }

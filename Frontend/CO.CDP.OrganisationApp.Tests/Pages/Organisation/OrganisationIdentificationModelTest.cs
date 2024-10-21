@@ -1,14 +1,9 @@
-using Xunit;
-using Moq;
-using FluentAssertions;
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Pages.Organisation;
+using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using CO.CDP.OrganisationApp.Tests.Pages;
+using Moq;
 
 public class OrganisationIdentificationModelTest
 {
@@ -16,9 +11,9 @@ public class OrganisationIdentificationModelTest
     private readonly OrganisationIdentificationModel _pageModel;
 
     public OrganisationIdentificationModelTest()
-    {        
+    {
         _organisationClientMock = new Mock<IOrganisationClient>();
-        
+
         _pageModel = new OrganisationIdentificationModel(_organisationClientMock.Object)
         {
             Id = Guid.NewGuid(),
@@ -28,17 +23,14 @@ public class OrganisationIdentificationModelTest
     [Fact]
     public async Task OnGet_Should_ReturnPageResult_When_OrganisationIsValid()
     {
-        
         var id = Guid.NewGuid();
         _pageModel.Id = id;
         _pageModel.CharityCommissionEnglandWalesNumber = "Charity Org";
         _organisationClientMock.Setup(x => x.GetOrganisationAsync(It.IsAny<Guid>()))
             .ReturnsAsync(GivenOrganisationClientModel(id));
 
-        
         var result = await _pageModel.OnGet();
 
-        
         result.Should().BeOfType<PageResult>();
         _pageModel.CharityCommissionEnglandWalesNumber.Should().Be("Charity Org");
     }
@@ -46,14 +38,11 @@ public class OrganisationIdentificationModelTest
     [Fact]
     public async Task OnGet_Should_RedirectToPageNotFound_When_OrganisationIsNotFound()
     {
-        
         _organisationClientMock.Setup(x => x.GetOrganisationAsync(It.IsAny<Guid>()))
             .ReturnsAsync((Organisation?)null);
 
-        
         var result = await _pageModel.OnGet();
 
-        
         result.Should().BeOfType<RedirectResult>()
             .Which.Url.Should().Be("/page-not-found");
     }
@@ -105,7 +94,7 @@ public class OrganisationIdentificationModelTest
             .Which.Url.Should().Be("/page-not-found");
     }
 
-    private static CO.CDP.Organisation.WebApiClient.Organisation GivenOrganisationClientModel(Guid? id)
+    private static Organisation GivenOrganisationClientModel(Guid? id)
     {
         var identifier = new Identifier("asd", "asd", "asd", new Uri("http://whatever"));
         var additionalIdentifiers = new List<Identifier>
@@ -118,6 +107,6 @@ public class OrganisationIdentificationModelTest
                     )
                 };
 
-        return new CO.CDP.Organisation.WebApiClient.Organisation(additionalIdentifiers, null, null, null, id!.Value, identifier, "Test Org", []);
+        return new Organisation(additionalIdentifiers: additionalIdentifiers, addresses: null, contactPoint: null, id: id ?? Guid.NewGuid(), identifier: identifier, name: "Test Org", roles: [], details: new Details(approval: null, pendingRoles: []));
     }
 }

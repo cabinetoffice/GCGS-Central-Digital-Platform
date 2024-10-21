@@ -1,8 +1,10 @@
+using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Pages.Supplier;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moq;
+using LegalForm = CO.CDP.OrganisationApp.Pages.Supplier.LegalForm;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages.Supplier;
 
@@ -108,6 +110,6 @@ public class LegalFormSelectOrganisationModelTests
 
     private static CO.CDP.Organisation.WebApiClient.Organisation GivenOrganisationClientModel(Guid? id)
     {
-        return new CO.CDP.Organisation.WebApiClient.Organisation(null, null, null, null, id!.Value, null, "Test Org", []);
+        return new CO.CDP.Organisation.WebApiClient.Organisation(additionalIdentifiers: null, addresses: null, contactPoint: null, id: id ?? Guid.NewGuid(), identifier: null, name: "Test Org", roles: [], details: new Details(approval: null, pendingRoles: []));
     }
 }

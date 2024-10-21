@@ -1,0 +1,104 @@
+= Localizing UI text
+
+== Intro to solution
+
+Localization has been achieved using .Net "Resource files" which are held in CO.CDP.Localization.
+
+These are named with a pattern like `StaticTextResource.resx` and `StaticTextResource.cy.resx`, where the first file is the "neutral" language, and `.cy.` is the Welsh, and together they should load up in the resource explorer as a pair.
+
+The frontend application has been extended so that it negotiates the current culture based on a cookie which is set when clicking on the language switcher. In the absence of this cookie, the culture defaults to `en`.
+
+The form api has been localized based on the Accept-Language header, which is passed to them from the frontend via the `CultureDelegatingHandler`.
+
+There are two separate resource files - `StaticTextResource` which is text that is defined in code in the organisation app. The other is `FormsEngineResource` which is responsible for content that is held in the forms engine database tables.
+
+=== Guidance for naming keys
+
+Generally speaking, keys are either "global" in that they are not unique to a particular section and may appear anywhere on the service - for example `Global_Continue` represents the word `Continue` on the buttons that appear across the site. Or they can be namespaced to a specific section of the service such as `BasicInformation_SectionTitle`.
+
+Use Underscores_To_Separate_Words and not dots or hyphens. This ensures that the key is the same whether you are using the strongly typed `StaticTextResource` class to access keys like `StaticTextResource.Global_Back`, or if you are using `@inject IHtmlLocalizer<StaticTextResource> Localizer` to access keys like `Localizer["Global_Back"]`
+
+This is purely a naming convention - there is no mechanism enforcing this. It requires developers to name things in an appropriate way.
+
+As a rule - try to name keys in the most generic way that is appropriate. For example if the exclusions section contains some text that is used repeatedly in that section, don't define multiple keys scoped to each page it's used on.
+
+Using the path to the view, or folder containing a set of views is a reasonable place to start with naming.
+
+== How to localize static pieces of text
+
+As mentioned above, there are two methods to access localized strings.
+
+=== Strongly typed classses
+
+*Please where possible prefer using the strongly typed classes, in order that we have compile time safety.* This means that if a key is used which doesn't exist in the resource files, we get a compiler error instead of a runtime error which you would get when using `IHtmlLocalizer`.
+
+There are strongly typed classes for `StaticTextResource` and `FormsEngineResource` that allow you to access strings as follows:
+
+```
+<a href="@backLink" class="govuk-back-link">
+    @StaticTextResource.Global_Back
+</a>
+```
+
+If you have added a new key to the resource files, you will need to rebuild the solution for the strongly typed classes to rebuild and for your key to become available.
+
+If you need to access HTML inside a value, you can pass it through `Html.Raw`:
+
+```
+@Html.Raw(StaticTextResource.Global_Back)
+```
+
+=== Using IStringLocalizer or IHtmlLocalizer
+
+This method is mentioned for completeness, but should be avoided. Please use the strongly typed class where possible.
+
+```
+@inject IHtmlLocalizer<StaticTextResource> Localizer
+
+@Localizer["Global_Back"]
+```
+
+== How to localize form validation errors
+
+Form validation errors are localized as follows:
+
+```
+[DisplayName(nameof(StaticTextResource.OrganisationRegistration_EnterOrganisationName_Heading))]
+[Required(ErrorMessage = nameof(StaticTextResource.OrganisationRegistration_EnterOrganisationName_Heading))]
+public string? OrganisationName { get; set; }
+```
+
+This uses the same resource, but you cannot pass the values straight into the annotations. The `nameof` syntax above is what you need.
+
+== How to localize Forms engine text
+
+Forms engine text is stored in `FormsEngineResource` and uses keys named based on the form section. These need to be inserted into the database via migration scripts to replace whatever hardcoded text was there before.
+
+For example, the exclusions section title is set to `Exclusions_SectionTitle` instead of just `Exclusions`. This is then replaced at runtime by the forms api which is able to localize any of the strings that come out of the database.
+
+=== Inside question options
+
+Question options are stored as JSON blobs in the database. You *should not* localize the entire JSON blob, by placing the JSON into the resource file.
+
+The Forms API is capable of translating specific keys within the JSON and so you can just replace individual values like `{"choices": ["Qualifications_QuestionName_ChoiceOne", "Qualifications_QuestionName_ChoiceTwo"]}` and these will be resovled at runtime by the automapper.
+
+== Handling plural forms
+
+Plural forms can be handled by defining multiple keys, for example:
+
+```
+Supplier_SupplierInformationSummary_ConnectedPersonCount_None = "No connected persons"
+Supplier_SupplierInformationSummary_ConnectedPersonCount_Plural = "{0} Connected persons"
+Supplier_SupplierInformationSummary_ConnectedPersonCount_Singular = "{0} Connected person"
+```
+
+This can then be used in the code to format the right output:
+
+```
+if (count == 0)
+{
+    return Model.ConnectedPersonStepStatus == SupplierInformationStatus.StepStatus.Completed ? StaticTextResource.Supplier_SupplierInformationSummary_ConnectedPersonCount_None : string.Empty;
+}
+
+return string.Format(count > 1 ? StaticTextResource.Supplier_SupplierInformationSummary_ConnectedPersonCount_Plural : StaticTextResource.Supplier_SupplierInformationSummary_ConnectedPersonCount_Singular, count);
+```

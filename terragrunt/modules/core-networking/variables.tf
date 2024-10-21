@@ -1,3 +1,8 @@
+variable "is_production" {
+  description = "Indicates whether the target account is configured with production-level settings"
+  type        = bool
+}
+
 variable "product" {
   description = "product's common attributes"
   type = object({

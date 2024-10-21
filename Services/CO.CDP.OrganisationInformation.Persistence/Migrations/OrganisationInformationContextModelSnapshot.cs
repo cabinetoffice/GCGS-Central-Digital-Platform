@@ -716,6 +716,11 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                         .HasColumnType("text")
                         .HasColumnName("name");
 
+                    b.Property<int[]>("PendingRoles")
+                        .IsRequired()
+                        .HasColumnType("integer[]")
+                        .HasColumnName("pending_roles");
+
                     b.Property<string>("ReviewComment")
                         .HasMaxLength(10000)
                         .HasColumnType("character varying(10000)")

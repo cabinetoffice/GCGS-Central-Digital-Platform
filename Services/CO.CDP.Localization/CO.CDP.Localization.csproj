@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <CoreCompileDependsOn>PrepareResources;$(CompileDependsOn)</CoreCompileDependsOn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="StaticTextResource.resx">
+      <Generator>MSBuild:Compile</Generator>
+      <LastGenOutput>StaticTextResource.Designer.cs</LastGenOutput>
+      <StronglyTypedFileName>$(IntermediateOutputPath)\StaticTextResource.Designer.cs</StronglyTypedFileName>
+      <StronglyTypedLanguage>CSharp</StronglyTypedLanguage>
+      <StronglyTypedNamespace>CO.CDP.Localization</StronglyTypedNamespace>
+      <StronglyTypedClassName>StaticTextResource</StronglyTypedClassName>
+      <PublicClass>true</PublicClass>
+    </EmbeddedResource>
+
+    <EmbeddedResource Update="FormsEngineResource.resx">
+      <Generator>MSBuild:Compile</Generator>
+      <LastGenOutput>FormsEngineResource.Designer.cs</LastGenOutput>
+      <StronglyTypedFileName>$(IntermediateOutputPath)\FormsEngineResource.Designer.cs</StronglyTypedFileName>
+      <StronglyTypedLanguage>CSharp</StronglyTypedLanguage>
+      <StronglyTypedNamespace>CO.CDP.Localization</StronglyTypedNamespace>
+      <StronglyTypedClassName>FormsEngineResource</StronglyTypedClassName>
+      <PublicClass>true</PublicClass>
+    </EmbeddedResource>
+  </ItemGroup>
+</Project>

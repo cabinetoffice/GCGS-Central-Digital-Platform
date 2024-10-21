@@ -26,12 +26,12 @@
         {"name": "Aws__Buckets__StagingBucket", "value": "${s3_staging_bucket}"},
         {"name": "Aws__CloudWatch__LogGroup", "value": "${lg_name}"},
         {"name": "Aws__CloudWatch__LogStream", "value": "${lg_prefix}-serilog"},
-        {"name": "DataSharingApiUrl", "value": "https://data-sharing.${public_hosted_zone_fqdn}"},
+        {"name": "DataSharingApiUrl", "value": "https://data-sharing.${public_domain}"},
         {"name": "ForwardedHeaders__KnownNetwork", "value": "${vpc_cidr}"},
         {"name": "OrganisationInformationDatabase__Database", "value": "${oi_db_name}"},
         {"name": "OrganisationInformationDatabase__Host", "value": "${oi_db_address}"},
         {"name": "OrganisationInformationDatabase__Server", "value": "${oi_db_address}"},
-        {"name": "Organisation__Authority", "value": "https://authority.${public_hosted_zone_fqdn}"}
+        {"name": "Organisation__Authority", "value": "https://authority.${public_domain}"}
     ],
     "secrets": [
         {"name": "OrganisationInformationDatabase__Password", "valueFrom": "${oi_db_username}"},

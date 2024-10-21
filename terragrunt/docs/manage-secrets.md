@@ -128,6 +128,8 @@ ave aws secretsmanager put-secret-value --secret-id cdp-sirsi-govuknotify-suppor
   "PrivateKey": "-----BEGIN RSA PRIVATE KEY-----\nxxxx\nxxxx==\n-----END RSA PRIVATE KEY-----"
 }
 ```
+> The Authority should only contain the scheme and domain name (e.g., https://example.com). The application will automatically append the necessary URI (e.g., /.well-known/openid-configuration), so you don't need to include it in this field.
+
 *Note: The `./secrets` folder is set to ignore all files to ensure no sensitive information is committed.*
 
 2. Assume the appropriate role for the target environment and update the secret:
