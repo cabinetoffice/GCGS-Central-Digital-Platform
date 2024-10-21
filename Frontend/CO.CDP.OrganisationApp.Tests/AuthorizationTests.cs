@@ -5,6 +5,7 @@ using CO.CDP.Tenant.WebApiClient;
 using FluentAssertions;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using System.Net;
@@ -99,6 +100,7 @@ public class AuthorizationTests
                     options.ClientId = "123";
                     options.Authority = "https://whatever";
                 });
+                services.AddDataProtection().DisableAutomaticKeyGeneration();
             });
         });
 
