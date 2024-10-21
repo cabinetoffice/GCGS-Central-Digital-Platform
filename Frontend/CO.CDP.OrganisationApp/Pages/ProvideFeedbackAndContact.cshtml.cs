@@ -51,7 +51,7 @@ public class ProvideFeedbackAndContact(IOrganisationClient organisationClient) :
 
     private bool ValidateContext()
     {
-        if (string.IsNullOrEmpty(Context) || (Context != "FEEDBACK" && Context != "CONTACT"))
+        if (string.IsNullOrEmpty(Context) || (Context != "FEEDBACK" && Context != "SUPPORT"))
             return false;
 
         return true;

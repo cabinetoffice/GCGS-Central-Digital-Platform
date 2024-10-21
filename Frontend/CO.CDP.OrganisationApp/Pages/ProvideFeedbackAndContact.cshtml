@@ -3,7 +3,7 @@
 @{
     if (Model.Context == "FEEDBACK")
     { ViewData["Title"] = "Provide Find a Tender Feedback"; }
-    else if (Model.Context == "CONTACT")
+    else if (Model.Context == "SUPPORT")
     { ViewData["Title"] = "Contact Find a Tender"; }
 }
 
@@ -17,7 +17,7 @@
                     Provide Find a Tender feedback
                 </h1>
             }
-            else if (Model.Context == "CONTACT")
+            else if (Model.Context == "SUPPORT")
             {
                 <h1 class="govuk-heading-xl">
                     Contact Find a Tender
@@ -30,7 +30,7 @@
                     <p class="govuk-body">This form is to provide feedback on the Find a Tender Website.</p>
                     <p class="govuk-body">You can use it to suggest feedback, an improvement or suggestion to the Find a Tender team.</p>
                 }
-                else if (Model.Context == "CONTACT")
+                else if (Model.Context == "SUPPORT")
                 {
                     <p class="govuk-body">This form is to raise issues or support requests related to Find a Tender website.</p>
                     <p class="govuk-body">You can ask a question, report a problem or suggest an improvement to the Find a Tender team.</p>
@@ -72,7 +72,7 @@
                                 What is your Feedback
                             </label>
                         }
-                        else if (Model.Context == "CONTACT")
+                        else if (Model.Context == "SUPPORT")
                         {
                             <label class="govuk-label govuk-label--l" for="with-hint">
                                 What are the details?
