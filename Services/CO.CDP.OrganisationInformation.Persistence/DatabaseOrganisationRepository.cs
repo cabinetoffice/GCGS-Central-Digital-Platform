@@ -29,7 +29,8 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
     {
         return await context.Set<OrganisationPerson>()
             .Include(op => op.Person)
-            .Where(op => op.Organisation.Guid == organisationId).ToListAsync();
+            .Where(op => op.Organisation.Guid == organisationId)
+            .ToListAsync();
     }
 
     public async Task<OrganisationPerson?> FindOrganisationPerson(Guid organisationId, Guid personId)
