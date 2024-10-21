@@ -8,6 +8,7 @@ providers:
     updateIntervalSeconds: 10
     options:
       path: /etc/grafana/provisioning/dashboards/application
+
   - name: 'infrastructure'
     orgId: 1
     folder: 'Infrastructure'
@@ -16,3 +17,12 @@ providers:
     updateIntervalSeconds: 10
     options:
       path: /etc/grafana/provisioning/dashboards/infrastructure
+
+  - name: 'overview'
+    orgId: 1
+    folder: 'Overview'
+    type: file
+    disableDeletion: false
+    updateIntervalSeconds: 10
+    options:
+      path: /etc/grafana/provisioning/dashboards/overview

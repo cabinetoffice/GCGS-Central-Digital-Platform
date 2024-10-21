@@ -11,11 +11,11 @@ public record FormAnswer
     /// <example>42</example>
     public double? NumericValue { get; init; }
 
-    /// <example>"2024-04-19:00:00.000Z"</example>
-    public DateTime? StartValue { get; init; }
+    /// <example>"2024-04-19T00:00.000Z"</example>
+    public DateTimeOffset? StartValue { get; init; }
 
-    /// <example>"2024-04-22:00:00.000Z"</example>
-    public DateTime? EndValue { get; init; }
+    /// <example>"2024-04-22T00:00.000Z"</example>
+    public DateTimeOffset? EndValue { get; init; }
 
     /// <example>"2024-04-22"</example>
     public DateOnly? DateValue { get; init; }

@@ -291,7 +291,7 @@ internal static class EntityFactory
             FormId = form.Id,
             Form = form,
             Questions = new List<PersistenceForms.FormQuestion>(),
-            Title = "Test Section",
+            Title = "FinancialInformation_SectionTitle",
             Type = sectionType ?? PersistenceForms.FormSectionType.Declaration,
             AllowsMultipleAnswerSets = true,
             CheckFurtherQuestionsExempted = false,
