@@ -108,6 +108,8 @@ public class OrganisationIdentificationModel(ISession session,
     [BindProperty]
     public bool? RedirectToSummary { get; set; }
 
+    public Guid? OrganisationId { get; set; }
+
     public void OnGet()
     {
         OrganisationScheme = RegistrationDetails.OrganisationScheme;
@@ -141,7 +143,7 @@ public class OrganisationIdentificationModel(ISession session,
                 break;
             case "GB-UKPRN":
                 UKLearningProviderReferenceNumber = RegistrationDetails.OrganisationIdentificationNumber;
-                break;            
+                break;
             default:
                 break;
         }
@@ -156,7 +158,7 @@ public class OrganisationIdentificationModel(ISession session,
         }
 
         RegistrationDetails.OrganisationScheme = OrganisationScheme;
-        
+
         RegistrationDetails.OrganisationIdentificationNumber = OrganisationScheme switch
         {
             "GB-CHC" => CharityCommissionEnglandWalesNumber,
@@ -167,14 +169,16 @@ public class OrganisationIdentificationModel(ISession session,
             "JE-FSC" => JerseyFinancialServicesCommissionRegistryNumber,
             "IM-CR" => IsleofManCompaniesRegistryNumber,
             "GB-NHS" => NationalHealthServiceOrganisationsRegistryNumber,
-            "GB-UKPRN" => UKLearningProviderReferenceNumber,            
+            "GB-UKPRN" => UKLearningProviderReferenceNumber,
             "Other" => null,
             _ => null,
         };
         try
         {
             SessionContext.Set(Session.RegistrationDetailsKey, RegistrationDetails);
-            await LookupOrganisationAsync();
+            var organisation = await LookupOrganisationAsync();
+
+            OrganisationId = organisation.Id;
         }
         catch (Exception orgApiException) when (orgApiException is CO.CDP.Organisation.WebApiClient.ApiException && ((CO.CDP.Organisation.WebApiClient.ApiException)orgApiException).StatusCode == 404)
         {
@@ -199,7 +203,7 @@ public class OrganisationIdentificationModel(ISession session,
             }
         }
 
-        return RedirectToPage("OrganisationAlreadyRegistered");
+        return RedirectToPage("OrganisationAlreadyRegistered", new { OrganisationId = OrganisationId });
     }
 
     private async Task<CO.CDP.Organisation.WebApiClient.Organisation> LookupOrganisationAsync()
