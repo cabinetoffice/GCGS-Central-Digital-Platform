@@ -9,7 +9,7 @@ public interface IOrganisationRepository : IDisposable
 
     public Task<Organisation?> Find(Guid organisationId);
 
-    public Task<IEnumerable<OrganisationPerson>> FindOrganisationPersons(Guid organisationId, List<string>? scopes = null);
+    public Task<IEnumerable<OrganisationPerson>> FindOrganisationPersons(Guid organisationId);
 
     public Task<OrganisationPerson?> FindOrganisationPerson(Guid organisationId, Guid personId);
 

@@ -84,7 +84,7 @@ public class CreateOrganisationJoinRequestUseCase(
             return;
         }
 
-        var requestLink = new Uri(new Uri(baseAppUrl), $"/support/organisation/{organisation.Guid}/approval").ToString();
+        var requestLink = new Uri(new Uri(baseAppUrl), $"/organisation/{organisation.Guid}/users/user-summary").ToString();
 
         var organisationAdminUsers = await GetOrganisationAdminUsers(organisation);
 
@@ -97,7 +97,9 @@ public class CreateOrganisationJoinRequestUseCase(
                 Personalisation = new Dictionary<string, string>
                 {
                     { "org_name", organisation.Name },
-                    { "request_link", requestLink }
+                    { "request_link", requestLink },
+                    { "first_name", p.FirstName },
+                    { "last_name", p.LastName }
                 }
             };
 
@@ -150,7 +152,7 @@ public class CreateOrganisationJoinRequestUseCase(
 
     private async Task<List<Person>> GetOrganisationAdminUsers(Persistence.Organisation organisation)
     {
-        var organisationPersons = await organisationRepository.FindOrganisationPersons(organisation.Guid, [Constants.OrganisationPersonScope.Admin]);
-        return organisationPersons.Select(op => op.Person).ToList();
+        var organisationPersons = await organisationRepository.FindOrganisationPersons(organisation.Guid);
+        return organisationPersons.Where(op => op.Scopes.Contains(Constants.OrganisationPersonScope.Admin)).Select(op => op.Person).ToList();
     }
 }
