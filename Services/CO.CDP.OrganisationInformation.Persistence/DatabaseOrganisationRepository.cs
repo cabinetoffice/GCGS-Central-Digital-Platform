@@ -25,12 +25,18 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
             .ThenInclude(p => p.Address)
             .FirstOrDefaultAsync(t => t.Name == name);
     }
-    public async Task<IEnumerable<OrganisationPerson>> FindOrganisationPersons(Guid organisationId)
+    public async Task<IEnumerable<OrganisationPerson>> FindOrganisationPersons(Guid organisationId, List<string>? scopes = null)
     {
-        return await context.Set<OrganisationPerson>()
-            .Include(p => p.Person)
-            .Where(o => o.Organisation.Guid == organisationId)
-            .ToListAsync();
+        IQueryable<OrganisationPerson> result = context.Set<OrganisationPerson>()
+            .Include(op => op.Person)
+            .Where(op => op.Organisation.Guid == organisationId);
+
+        if (scopes != null && scopes.Any())
+        {
+            result = result.Where(op => op.Scopes.Any(scopes.Contains));
+        }
+
+        return await result.ToListAsync();
     }
 
     public async Task<OrganisationPerson?> FindOrganisationPerson(Guid organisationId, Guid personId)
