@@ -20,6 +20,7 @@ using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using System.Globalization;
+using Microsoft.AspNetCore.DataProtection;
 using static IdentityModel.OidcConstants;
 using static System.Net.Mime.MediaTypeNames;
 using ISession = CO.CDP.OrganisationApp.ISession;
@@ -91,7 +92,7 @@ builder.Services.AddScoped<IUserInfoService, UserInfoService>();
 
 var formsServiceUrl = builder.Configuration.GetValue<string>("FormsService")
             ?? throw new Exception("Missing configuration key: FormsService.");
-builder.Services.AddHttpClient(FormsHttpClientName)    
+builder.Services.AddHttpClient(FormsHttpClientName)
     .AddHttpMessageHandler<CultureDelegatingHandler>()
     .AddHttpMessageHandler<ApiBearerTokenHandler>();
 builder.Services.AddTransient<IFormsClient, FormsClient>(
@@ -184,6 +185,9 @@ builder.Services
     .AddLoggingConfiguration(builder.Configuration)
     .AddAmazonCloudWatchLogsService()
     .AddCloudWatchSerilog(builder.Configuration);
+
+builder.Services.AddDataProtection()
+    .PersistKeysToAWSSystemsManager("/OrganisationApp/DataProtection");
 
 var app = builder.Build();
 app.UseForwardedHeaders();
