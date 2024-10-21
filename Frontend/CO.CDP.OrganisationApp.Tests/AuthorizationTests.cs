@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using System.Net;
+using Microsoft.AspNetCore.DataProtection;
 
 namespace CO.CDP.OrganisationApp.Tests;
 public class AuthorizationTests
@@ -107,6 +108,8 @@ public class AuthorizationTests
             options.ClientId = "123";
             options.Authority = "https://whatever";
         });
+
+        services.AddDataProtection().DisableAutomaticKeyGeneration();
 
         var factory = new CustomisableWebApplicationFactory<Program>(services);
 

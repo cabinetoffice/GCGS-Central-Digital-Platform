@@ -15,6 +15,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using System.Net;
 using System.Text.RegularExpressions;
+using Microsoft.AspNetCore.DataProtection;
 
 namespace CO.CDP.OrganisationApp.Tests;
 public class LocalizationTests
@@ -45,9 +46,9 @@ public class LocalizationTests
         antiforgeryMock.Setup(a => a.GetAndStoreTokens(It.IsAny<HttpContext>()))
                .Returns(new AntiforgeryTokenSet(
                    "fakeRequestToken",
-                   "fakeCookieToken", 
+                   "fakeCookieToken",
                    "fakeFormFieldName",
-                   "fakeHeaderName")); 
+                   "fakeHeaderName"));
 
         services.AddSingleton(antiforgeryMock.Object);
 
@@ -62,6 +63,8 @@ public class LocalizationTests
             options.ClientId = "123";
             options.Authority = "https://whatever";
         });
+
+        services.AddDataProtection().DisableAutomaticKeyGeneration();
 
         var factory = new CustomisableWebApplicationFactory<Program>(services);
 
