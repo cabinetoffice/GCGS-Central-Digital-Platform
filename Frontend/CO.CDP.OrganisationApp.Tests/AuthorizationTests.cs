@@ -84,6 +84,13 @@ public class AuthorizationTests
                     details: new Details(approval: null, pendingRoles: [])
                 )
             );
+                
+        organisationClient.Setup(client => client.GetOrganisationJoinRequestsAsync(It.IsAny<Guid>(), null))
+            .ReturnsAsync(
+                [
+                    new JoinRequestLookUp(new Guid(),new Organisation.WebApiClient.Person("a@b.com", "First name", person.Id, "Last name", []) , OrganisationJoinRequestStatus.Pending)
+                ]
+            );
 
         personClient.Setup(client => client.LookupPersonAsync(It.IsAny<string>())).ReturnsAsync(person);
 
