@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using System.Net;
+using CO.CDP.TestKit.Mvc;
+using Microsoft.Extensions.Hosting;
 
 namespace CO.CDP.OrganisationApp.Tests;
 public class AuthorizationTests
@@ -23,8 +25,6 @@ public class AuthorizationTests
 
     public HttpClient BuildHttpClient(List<string> userOrganisationScopes, List<string> userScopes)
     {
-        var services = new ServiceCollection();
-
         var organisation = new UserOrganisation(
                                     id: testOrganisationId,
                                     name: "Org name",
@@ -52,9 +52,6 @@ public class AuthorizationTests
                     ],
                     new UserDetails("a@b.com", "User name", "urn")
                 ));
-
-        services.AddTransient<ITenantClient, TenantClient>(sc => tenantClient.Object);
-
 
         organisationClient.Setup(client => client.GetOrganisationPersonsAsync(It.IsAny<Guid>()))
             .ReturnsAsync(
@@ -87,28 +84,24 @@ public class AuthorizationTests
 
         personClient.Setup(client => client.LookupPersonAsync(It.IsAny<string>())).ReturnsAsync(person);
 
-        services.AddTransient<IOrganisationClient, OrganisationClient>(sc => organisationClient.Object);
-
-        services.AddTransient<IPersonClient, PersonClient>(sc => personClient.Object);
-
         _mockSession.Setup(s => s.Get<Models.UserDetails>(Session.UserDetailsKey))
             .Returns(new Models.UserDetails() { Email = "a@b.com", UserUrn = "urn", PersonId = person.Id });
 
-        services.AddSingleton(_mockSession.Object);
-
-        services.AddAuthentication(options =>
+        var factory = new TestWebApplicationFactory<Program>(builder =>
         {
-            options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-            options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
-        })
-        .AddScheme<AuthenticationSchemeOptions, FakeCookieAuthHandler>(CookieAuthenticationDefaults.AuthenticationScheme, options => { });
-
-        services.Configure<OpenIdConnectOptions>(OpenIdConnectDefaults.AuthenticationScheme, options => {
-            options.ClientId = "123";
-            options.Authority = "https://whatever";
+            builder.ConfigureServices(services =>
+            {
+                services.AddTransient<ITenantClient, TenantClient>(sc => tenantClient.Object);
+                services.AddTransient<IOrganisationClient, OrganisationClient>(sc => organisationClient.Object);
+                services.AddTransient<IPersonClient, PersonClient>(sc => personClient.Object);
+                services.AddSingleton(_mockSession.Object);
+                services.AddTransient<IAuthenticationSchemeProvider, FakeSchemeProvider>();
+                services.Configure<OpenIdConnectOptions>(OpenIdConnectDefaults.AuthenticationScheme, options => {
+                    options.ClientId = "123";
+                    options.Authority = "https://whatever";
+                });
+            });
         });
-
-        var factory = new CustomisableWebApplicationFactory<Program>(services);
 
         return factory.CreateClient();
     }
