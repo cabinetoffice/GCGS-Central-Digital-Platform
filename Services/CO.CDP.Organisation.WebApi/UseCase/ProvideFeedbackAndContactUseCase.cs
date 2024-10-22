@@ -1,6 +1,7 @@
 using CO.CDP.GovUKNotify;
 using CO.CDP.GovUKNotify.Models;
 using CO.CDP.Organisation.WebApi.Model;
+using System.Globalization;
 namespace CO.CDP.Organisation.WebApi.UseCase;
 
 public class ProvideFeedbackAndContactUseCase(
@@ -38,7 +39,8 @@ public class ProvideFeedbackAndContactUseCase(
                                         { "feedback", command.Feedback},
                                         { "name", command.Name},
                                         { "email", command.Email },
-                                        { "subject", command.Subject }
+                                        { "subject", CultureInfo.CurrentCulture.TextInfo.ToTitleCase(command.Subject.ToLower()) },
+                                        { "context", command.Subject.ToLower() },
             }
         };
 
