@@ -30,7 +30,7 @@ public class ExclusionAppliesToChoiceProviderStrategyTests
     {
         mockOrganisationClient
             .Setup(oc => oc.GetConnectedEntityAsync(It.IsAny<Guid>(), It.IsAny<Guid>()))
-            .ReturnsAsync(new ConnectedEntity([], "asd", null, ConnectedEntityType.Organisation, false, new Guid(), null, new ConnectedOrganisation(ConnectedOrganisationCategory.AnyOtherOrganisationWithSignificantInfluenceOrControl, [], 3, null, null, "Org name", new Guid(), null), null, null, "Register name", null));
+            .ReturnsAsync(ExampleConnectedOrganisation());
 
         var result = await choiceProviderStrategy.RenderOption(new Models.FormAnswer() { JsonValue = "{\"id\": \"1083f914-a4c0-4e0b-8650-0b5e46696666\", \"type\": \"connected-entity\"}" });
 
@@ -42,7 +42,7 @@ public class ExclusionAppliesToChoiceProviderStrategyTests
     {
         mockOrganisationClient
             .Setup(oc => oc.GetConnectedEntityAsync(It.IsAny<Guid>(), It.IsAny<Guid>()))
-            .ReturnsAsync(new ConnectedEntity([], "asd", null, ConnectedEntityType.TrustOrTrustee, false, new Guid(), new ConnectedIndividualTrust(ConnectedIndividualAndTrustCategory.AnyOtherIndividualWithSignificantInfluenceOrControlForTrust, ConnectedPersonType.TrustOrTrustee, [], null, "First name", 4, "Last name", null, new Guid(), null), null, null, null, "Register name", null));
+            .ReturnsAsync(ExampleConnectedIndividual(ConnectedEntityType.TrustOrTrustee, ConnectedIndividualAndTrustCategory.AnyOtherIndividualWithSignificantInfluenceOrControlForTrust, ConnectedPersonType.TrustOrTrustee));
 
         var result = await choiceProviderStrategy.RenderOption(new Models.FormAnswer() { JsonValue = "{\"id\": \"1083f914-a4c0-4e0b-8650-0b5e46696666\", \"type\": \"connected-entity\"}" });
 
@@ -54,10 +54,20 @@ public class ExclusionAppliesToChoiceProviderStrategyTests
     {
         mockOrganisationClient
             .Setup(oc => oc.GetConnectedEntityAsync(It.IsAny<Guid>(), It.IsAny<Guid>()))
-            .ReturnsAsync(new ConnectedEntity([], "asd", null, ConnectedEntityType.Individual, false, new Guid(), new ConnectedIndividualTrust(ConnectedIndividualAndTrustCategory.PersonWithSignificantControlForIndividual, ConnectedPersonType.Individual, [], null, "First name", 4, "Last name", null, new Guid(), null), null, null, null, "Register name", null));
+            .ReturnsAsync(ExampleConnectedIndividual(ConnectedEntityType.Individual, ConnectedIndividualAndTrustCategory.PersonWithSignificantControlForIndividual, ConnectedPersonType.Individual));
 
         var result = await choiceProviderStrategy.RenderOption(new Models.FormAnswer() { JsonValue = "{\"id\": \"1083f914-a4c0-4e0b-8650-0b5e46696666\", \"type\": \"connected-entity\"}" });
 
         result.Should().Be("First name Last name");
+    }
+
+    internal ConnectedEntity ExampleConnectedIndividual(ConnectedEntityType connectedEntityType, ConnectedIndividualAndTrustCategory connectedIndividualAndTrustCategory, ConnectedPersonType connectedPersonType)
+    {
+        return new ConnectedEntity([], "asd", null, ConnectedEntityType.TrustOrTrustee, false, new Guid(), new ConnectedIndividualTrust(ConnectedIndividualAndTrustCategory.AnyOtherIndividualWithSignificantInfluenceOrControlForTrust, ConnectedPersonType.TrustOrTrustee, [], null, "First name", 4, "Last name", null, new Guid(), null), null, null, null, "Register name", null);
+    }
+
+    internal ConnectedEntity ExampleConnectedOrganisation()
+    {
+        return new ConnectedEntity([], "asd", null, ConnectedEntityType.Organisation, false, new Guid(), null, new ConnectedOrganisation(ConnectedOrganisationCategory.AnyOtherOrganisationWithSignificantInfluenceOrControl, [], 3, null, null, "Org name", new Guid(), null), null, null, "Register name", null);
     }
 }
