@@ -11,6 +11,7 @@ public class FormsClientIntegrationTest(ITestOutputHelper testOutputHelper)
     {
         builder.ConfigureInMemoryDbContext<OrganisationInformationContext>();
         builder.ConfigureLogging(testOutputHelper);
+        builder.ConfigureFakePolicyEvaluator();
     });
 
     [Fact]
