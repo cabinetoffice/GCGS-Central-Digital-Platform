@@ -213,6 +213,7 @@ public class FormsAnswerSetSummaryModel(
             FormQuestionType.CheckBox => answer.BoolValue.HasValue ? question.Options.Choices?.FirstOrDefault()?.Title ?? "" : "",
             FormQuestionType.Address => answer.AddressValue != null ? $"{answer.AddressValue.StreetAddress}, {answer.AddressValue.Locality}, {answer.AddressValue.PostalCode}, {answer.AddressValue.CountryName}" : "",
             FormQuestionType.MultiLine => answer.TextValue ?? "",
+            FormQuestionType.GroupedSingleChoice => GroupedSingleChoiceAnswerString(answer, question),
             FormQuestionType.Url => answer.TextValue ?? "",
             _ => ""
         };
@@ -220,5 +221,16 @@ public class FormsAnswerSetSummaryModel(
         string[] answers = [boolAnswerString, answerString];
 
         return string.Join(", ", answers.Where(s => !string.IsNullOrWhiteSpace(s)));
+    }
+
+    private static string GroupedSingleChoiceAnswerString(FormAnswer? answer, FormQuestion question)
+    {
+        if (answer?.OptionValue == null) return "";
+
+        var choices = question.Options.Groups.SelectMany(g => g.Choices);
+
+        var choiceOption = choices.FirstOrDefault(c => c.Value == answer.OptionValue);
+
+        return (choiceOption == null ? answer.OptionValue : choiceOption.Title) ?? "";
     }
 }

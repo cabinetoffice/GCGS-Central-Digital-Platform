@@ -1,5 +1,4 @@
 using CO.CDP.DataSharing.WebApi.Model;
-using CO.CDP.DataSharing.WebApi.Tests;
 using CO.CDP.OrganisationInformation.Persistence;
 using FluentAssertions;
 using Moq;

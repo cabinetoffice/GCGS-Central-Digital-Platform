@@ -32,12 +32,12 @@ public class CompanyHouseNumberQuestionModel(ISession session,
     [BindProperty]
     public string? FailedCompaniesHouseNumber { get; set; }
 
-    public Guid? OrganisationId;
+    public string? OrganisationIdentifier;
 
     public string? OrganisationName;
 
     public FlashMessage NotificationBannerCompanyNotFound { get { return new FlashMessage("We cannot find your company number on Companies House. If it’s correct continue and enter your details manually."); } }
-    public FlashMessage NotificationBannerCompanyAlreadyRegistered { get { return new FlashMessage("An organisation with this company number already exists. Change the company number or <a class='govuk-notification-banner__link' href='/registration/" + OrganisationId + "/join-organisation'>request to join " + OrganisationName + ".</a>"); } }
+    public FlashMessage NotificationBannerCompanyAlreadyRegistered { get { return new FlashMessage("An organisation with this company number already exists. Change the company number or <a class='govuk-notification-banner__link' href='/registration/" + OrganisationIdentifier + "/join-organisation'>request to join " + OrganisationName + ".</a>"); } }
 
     public void OnGet()
     {
@@ -57,11 +57,11 @@ public class CompanyHouseNumberQuestionModel(ISession session,
         {
             RegistrationDetails.OrganisationIdentificationNumber = CompaniesHouseNumber;
             RegistrationDetails.OrganisationScheme = "GB-COH";
+            OrganisationIdentifier = $"GB-COH:{RegistrationDetails.OrganisationIdentificationNumber}";
 
             try
             {
-                var organisation = await organisationClient.LookupOrganisationAsync(string.Empty, $"GB-COH:{RegistrationDetails.OrganisationIdentificationNumber}");
-                OrganisationId = organisation?.Id;
+                var organisation = await organisationClient.LookupOrganisationAsync(string.Empty, OrganisationIdentifier);
                 OrganisationName = organisation?.Name;
                 tempDataService.Put(FlashMessageTypes.Important, NotificationBannerCompanyAlreadyRegistered);
                 return Page();

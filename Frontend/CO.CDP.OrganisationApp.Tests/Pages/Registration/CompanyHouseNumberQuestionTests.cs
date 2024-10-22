@@ -111,7 +111,7 @@ public class CompanyHouseNumberQuestionTests
         model.HasCompaniesHouseNumber = true;
         model.RedirectToSummary = true;
         model.CompaniesHouseNumber = "123456";
-        model.OrganisationId = new Guid();
+        model.OrganisationIdentifier = "GB-COH:123456789";
         model.OrganisationName = "Test company";
 
         GivenRegistrationIsInProgress(model.HasCompaniesHouseNumber, model.CompaniesHouseNumber);

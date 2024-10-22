@@ -1,4 +1,3 @@
-using CO.CDP.Authentication;
 using CO.CDP.Authentication.Authorization;
 using CO.CDP.Forms.WebApi.Model;
 using CO.CDP.Forms.WebApi.UseCase;
