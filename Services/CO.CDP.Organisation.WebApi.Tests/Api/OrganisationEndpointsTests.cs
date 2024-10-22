@@ -33,6 +33,7 @@ public class OrganisationEndpointsTests
                 services.AddScoped(_ => _getOrganisationsUseCase.Object);
                 services.AddScoped(_ => _getOrganisationUseCase.Object);
                 services.AddScoped(_ => _updatesOrganisationUseCase.Object);
+                services.ConfigureFakePolicyEvaluator();
             });
         });
         _httpClient = factory.CreateClient();
