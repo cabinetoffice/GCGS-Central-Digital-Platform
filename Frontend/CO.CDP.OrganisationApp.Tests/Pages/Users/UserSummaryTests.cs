@@ -116,43 +116,44 @@ public class UserSummaryModelTests
         result.Should().BeOfType<RedirectResult>().Which.Url.Should().Be($"/organisation/{_organisationId}");
     }
 
-
-    [Fact]
-    public async Task OnPostReject_ShouldHandleJoinRequestAndRedirect()
+    [Theory]
+    [InlineData(OrganisationJoinRequestStatus.Accepted, "/organisation/{0}/users/{1}/change-role?handler=person")]
+    [InlineData(OrganisationJoinRequestStatus.Rejected, "/organisation/{0}/users/user-summary")]
+    public async Task OnGetJoinRequest_ShouldRedirectToExpectedUrl(OrganisationJoinRequestStatus decision, string expectedUrl)
     {
-        _pageModel.JoinRequestId = Guid.NewGuid();
-        _pageModel.PersonId = Guid.NewGuid();
+        var reqId = Guid.NewGuid();
+        var personId = Guid.NewGuid();
+        var redirectUrl = string.Format(expectedUrl, _pageModel.Id, personId);
 
-        var result = await _pageModel.OnPostReject();
+        _mockOrganisationClient
+            .Setup(client => client.UpdateOrganisationJoinRequestAsync(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<UpdateJoinRequest>()))
+            .Returns(Task.CompletedTask);
 
-        _mockOrganisationClient.Verify(c => c.UpdateOrganisationJoinRequestAsync(
-            _pageModel.Id,
-            _pageModel.JoinRequestId.Value,
-            It.Is<UpdateJoinRequest>(r => r.Status == OrganisationJoinRequestStatus.Rejected)
-        ), Times.Once);
+        var result = await _pageModel.OnGetJoinRequest(reqId, personId, decision) as RedirectResult;
 
-        result.Should().BeOfType<RedirectResult>().Which.Url.Should().Be($"/organisation/{_pageModel.Id}/users/{_pageModel.PersonId}/change-role?handler=person");
+        result.Should().NotBeNull();
+        result.Should().BeOfType<RedirectResult>().Which.Url.Should().Be(redirectUrl);
+
+        _mockOrganisationClient.Verify(client => client.UpdateOrganisationJoinRequestAsync(
+            _pageModel.Id, reqId, It.Is<UpdateJoinRequest>(r => r.Status == decision)), Times.Once);
     }
 
     [Fact]
-    public async Task HandleJoinRequest_ShouldRedirectToPageNotFound_WhenJoinRequestIdIsNull()
+    public async Task OnGetJoinRequest_ShouldRedirectToPageNotFound_WhenApiExceptionIsThrown()
     {
-        _pageModel.JoinRequestId = null;
+        var reqId = Guid.NewGuid();
+        var personId = Guid.NewGuid();
 
-        var result = await _pageModel.OnPostApprove();
-
-        result.Should().BeOfType<RedirectResult>().Which.Url.Should().Be("/page-not-found");
-    }
-
-    [Fact]
-    public async Task HandleJoinRequest_ShouldRedirectToPageNotFound_WhenApiExceptionWith404()
-    {
-        _pageModel.JoinRequestId = Guid.NewGuid();
-        _mockOrganisationClient.Setup(c => c.UpdateOrganisationJoinRequestAsync(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<UpdateJoinRequest>()))
+        _mockOrganisationClient
+            .Setup(client => client.UpdateOrganisationJoinRequestAsync(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<UpdateJoinRequest>()))
             .ThrowsAsync(new ApiException("Not Found", 404, "Not Found", null, null));
 
-        var result = await _pageModel.OnPostApprove();
+        var result = await _pageModel.OnGetJoinRequest(reqId, personId, OrganisationJoinRequestStatus.Accepted) as RedirectResult;
 
+        result.Should().NotBeNull();
         result.Should().BeOfType<RedirectResult>().Which.Url.Should().Be("/page-not-found");
+
+        _mockOrganisationClient.Verify(client => client.UpdateOrganisationJoinRequestAsync(
+            _pageModel.Id, reqId, It.IsAny<UpdateJoinRequest>()), Times.Once);
     }
 }

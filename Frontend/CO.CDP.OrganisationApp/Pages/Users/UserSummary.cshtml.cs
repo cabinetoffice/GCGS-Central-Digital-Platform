@@ -74,30 +74,19 @@ public class UserSummaryModel(
         return Redirect("/organisation/" + Id);
     }
 
-    public async Task<IActionResult> OnPostApprove()
-    {
-        return await HandleJoinRequestAsync(OrganisationJoinRequestStatus.Accepted);
-    }
-
-    public async Task<IActionResult> OnPostReject()
-    {
-        return await HandleJoinRequestAsync(OrganisationJoinRequestStatus.Rejected);
-    }
-
-    private async Task<IActionResult> HandleJoinRequestAsync(OrganisationJoinRequestStatus status)
+    public async Task<IActionResult> OnGetJoinRequest(Guid reqid, Guid personid, OrganisationJoinRequestStatus decision)
     {
         try
         {
-            if (JoinRequestId != null)
-            {
-                var updateJoinRequest = new UpdateJoinRequest(UserDetails.PersonId!.Value, status);
+            var updateJoinRequest = new UpdateJoinRequest(UserDetails.PersonId!.Value, decision);
 
-                await organisationClient.UpdateOrganisationJoinRequest(Id, JoinRequestId.Value, updateJoinRequest);
+            await organisationClient.UpdateOrganisationJoinRequest(Id, reqid, updateJoinRequest);
 
-                return Redirect($"/organisation/{Id}/users/{PersonId}/change-role?handler=person");
-            }
+            var redirectUrl = decision == OrganisationJoinRequestStatus.Accepted
+            ? $"/organisation/{Id}/users/{personid}/change-role?handler=person"
+            : $"/organisation/{Id}/users/user-summary";
 
-            return Redirect("/page-not-found");
+            return Redirect(redirectUrl);
         }
         catch (ApiException ex) when (ex.StatusCode == 404)
         {

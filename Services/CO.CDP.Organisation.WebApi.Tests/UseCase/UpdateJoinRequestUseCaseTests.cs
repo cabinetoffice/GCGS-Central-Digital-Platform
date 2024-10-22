@@ -1,9 +1,12 @@
+using CO.CDP.GovUKNotify;
+using CO.CDP.GovUKNotify.Models;
 using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.Organisation.WebApi.UseCase;
 using CO.CDP.OrganisationInformation;
 using CO.CDP.OrganisationInformation.Persistence;
 using FluentAssertions;
-using Microsoft.AspNetCore.Identity.Data;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Moq;
 
 namespace CO.CDP.Organisation.WebApi.Tests.UseCase;
@@ -13,6 +16,9 @@ public class UpdateJoinRequestUseCaseTests
     private readonly Mock<IOrganisationRepository> _mockOrganisationRepository;
     private readonly Mock<IOrganisationJoinRequestRepository> _mockRequestRepository;
     private readonly Mock<IPersonRepository> _mockPersonRepository;
+    private readonly Mock<IGovUKNotifyApiClient> _mockGovUKNotifyApiClient = new();
+    private readonly Mock<ILogger<UpdateJoinRequestUseCase>> _logger = new();
+    private readonly IConfiguration _mockConfiguration;
     private readonly UpdateJoinRequestUseCase _useCase;
     private readonly Guid _organisationId = Guid.NewGuid();
     private readonly Guid _joinRequestId = Guid.NewGuid();
@@ -23,7 +29,24 @@ public class UpdateJoinRequestUseCaseTests
         _mockOrganisationRepository = new Mock<IOrganisationRepository>();
         _mockRequestRepository = new Mock<IOrganisationJoinRequestRepository>();
         _mockPersonRepository = new Mock<IPersonRepository>();
-        _useCase = new UpdateJoinRequestUseCase(_mockOrganisationRepository.Object, _mockRequestRepository.Object, _mockPersonRepository.Object);
+
+        var inMemorySettings = new List<KeyValuePair<string, string?>>
+        {            
+            new("OrganisationAppUrl", "http://baseurl/"),
+            new("GOVUKNotify:RequestToJoinOrganisationDecisionTemplateId", "template-id")
+        };
+
+        _mockConfiguration = new ConfigurationBuilder()
+            .AddInMemoryCollection(inMemorySettings)
+            .Build();
+
+        _useCase = new UpdateJoinRequestUseCase(
+                        _mockOrganisationRepository.Object,
+                        _mockRequestRepository.Object,
+                        _mockPersonRepository.Object,
+                        _mockGovUKNotifyApiClient.Object,
+                        _mockConfiguration,
+                        _logger.Object);
 
         _person = new OrganisationInformation.Persistence.Person
         {
@@ -58,6 +81,8 @@ public class UpdateJoinRequestUseCaseTests
         _mockPersonRepository.Setup(repo => repo.Find(_person.Guid))
             .ReturnsAsync(_person);
 
+        _mockGovUKNotifyApiClient.Setup(client => client.SendEmail(It.IsAny<EmailNotificationRequest>()));
+
         var result = await _useCase.Execute((_organisationId, _joinRequestId, updateJoinRequest));
 
         result.Should().BeTrue();
@@ -68,6 +93,7 @@ public class UpdateJoinRequestUseCaseTests
         _mockOrganisationRepository.Verify(repo => repo.Find(_organisationId), Times.Once);
         _mockRequestRepository.Verify(repo => repo.Find(_joinRequestId, _organisationId), Times.Once);
         _mockRequestRepository.Verify(repo => repo.Save(joinRequest), Times.Once);
+        _mockGovUKNotifyApiClient.Verify(client => client.SendEmail(It.IsAny<EmailNotificationRequest>()), Times.Once);
     }
 
     [Fact]
@@ -156,6 +182,58 @@ public class UpdateJoinRequestUseCaseTests
         _mockRequestRepository.Verify(repo => repo.Save(It.IsAny<CO.CDP.OrganisationInformation.Persistence.OrganisationJoinRequest>()), Times.Never);
     }
 
+    [Fact]
+    public async Task Execute_ShouldAddPersonToOrganisation_WhenStatusIsAccepted()
+    {
+        var organisation = Organisation;
+        var joinRequest = OrganisationJoinRequest;
+        var person = _person;
+
+        var updateJoinRequest = new UpdateJoinRequest
+        {
+            ReviewedBy = _reviewedBy,
+            status = OrganisationJoinRequestStatus.Accepted,
+        };
+
+        _mockOrganisationRepository.Setup(r => r.Find(_organisationId)).ReturnsAsync(organisation);
+        _mockRequestRepository.Setup(r => r.Find(_joinRequestId, _organisationId)).ReturnsAsync(joinRequest);
+        _mockPersonRepository.Setup(r => r.Find(_reviewedBy)).ReturnsAsync(person);
+
+        var result = await _useCase.Execute((_organisationId, _joinRequestId, updateJoinRequest));
+
+        result.Should().BeTrue();
+        organisation.OrganisationPersons.Should().Contain(op => op.Person.Guid == _reviewedBy);
+        _mockOrganisationRepository.Verify(r => r.Save(organisation), Times.Once);
+        _mockRequestRepository.Verify(r => r.Save(joinRequest), Times.Once);
+    }
+
+    [Fact]
+    public async Task Execute_ShouldNotAddPerson_WhenStatusIsRejected()
+    {
+
+        var organisation = Organisation;
+        var joinRequest = OrganisationJoinRequest;
+        var person = _person;
+
+        var updateJoinRequest = new UpdateJoinRequest
+        {
+            ReviewedBy = _reviewedBy,
+            status = OrganisationJoinRequestStatus.Rejected,
+        };
+
+        joinRequest.Status = OrganisationJoinRequestStatus.Rejected;
+        _mockOrganisationRepository.Setup(r => r.Find(_organisationId)).ReturnsAsync(organisation);
+        _mockRequestRepository.Setup(r => r.Find(_joinRequestId, _organisationId)).ReturnsAsync(joinRequest);
+        _mockPersonRepository.Setup(r => r.Find(_person.Guid)).ReturnsAsync(_person);
+
+        var result = await _useCase.Execute((_organisationId, _joinRequestId, updateJoinRequest));
+
+        result.Should().BeTrue();
+        Organisation.OrganisationPersons.Should().BeEmpty();
+        _mockOrganisationRepository.Verify(r => r.Save(organisation), Times.Never);
+        _mockRequestRepository.Verify(r => r.Save(joinRequest), Times.Once);
+    }
+
     private CO.CDP.OrganisationInformation.Persistence.Organisation Organisation =>
         new CO.CDP.OrganisationInformation.Persistence.Organisation
         {
@@ -172,6 +250,7 @@ public class UpdateJoinRequestUseCaseTests
             Guid = _joinRequestId,
             Status = OrganisationJoinRequestStatus.Accepted,
             Organisation = Organisation,
-            Id = 1
+            Id = 1,
+            Person = _person
         };
 }

@@ -1,5 +1,6 @@
 @page "/organisation/{id}/users/user-summary"
 @model CO.CDP.OrganisationApp.Pages.Users.UserSummaryModel
+@using CO.CDP.Organisation.WebApiClient
 @using CO.CDP.OrganisationApp.Constants
 
 @{
@@ -39,18 +40,14 @@
                         <dd class="govuk-summary-list__actions">
                             <ul class="govuk-summary-list__actions-list">
                                 <li class="govuk-summary-list__actions-list-item">
-                                    <form method="post" asp-page-handler="Approve">
-                                        <input name="JoinRequestId" type="hidden" value="@pr.Id" />
-                                        <input name="PersonId" type="hidden" value="@pr.Person.Id" />
-                                        <button type="submit" class="govuk-button govuk-button--secondary" data-module="govuk-button" data-prevent-double-click="true">Approve</button>
-                                    </form>
+
+                                    @{
+                                        var link = $"?handler=JoinRequest&reqid={pr.Id}&personid={pr.Person.Id}&decision=";
+                                    }
+                                    <a class="govuk-link" href="@($"{link}{OrganisationJoinRequestStatus.Accepted}")">Approve</a>
                                 </li>
                                 <li class="govuk-summary-list__actions-list-item">
-                                    <form method="post" asp-page-handler="Reject">
-                                        <input name="JoinRequestId" type="hidden" value="@pr.Id" />
-                                        <input name="PersonId" type="hidden" value="@pr.Person.Id" />
-                                        <govuk-button class="govuk-button govuk-button--secondary" prevent-double-click="true">Reject</govuk-button>
-                                    </form>
+                                    <a class="govuk-link" href="@($"{link}{OrganisationJoinRequestStatus.Rejected}")">Reject</a>
                                 </li>
                             </ul>
                         </dd>
