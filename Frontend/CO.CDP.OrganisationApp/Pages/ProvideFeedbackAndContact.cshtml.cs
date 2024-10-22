@@ -16,7 +16,7 @@ public class ProvideFeedbackAndContact(IOrganisationClient organisationClient) :
 {
     [BindProperty]
     [DisplayName("What's it to do with")]
-    [Required(ErrorMessage = "Choose a option")]
+    [Required(ErrorMessage = "Choose an option")]
     public string? FeedbackOrContactOption { get; set; }
 
     [BindProperty]

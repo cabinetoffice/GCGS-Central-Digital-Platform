@@ -43,20 +43,20 @@
                         </legend>
 
                         <div class="govuk-radios" data-module="govuk-radios" data-govuk-radios-module-started="true">
-                            <div class="gem-c-radio govuk-radios__item">
-                                <input type="radio" name="feedbackOrContactOption" id="WholeSite" value="WholeSite" class="govuk-radios__input" @(Model.FeedbackOrContactOption == "WholeSite" ? "checked" : "")>
-                                <label for="location-0" class="gem-c-label govuk-label govuk-radios__label">The whole site</label>
+                            <div class="govuk-radios__item">
+                                <input type="radio" name="@nameof(Model.FeedbackOrContactOption)" id="@nameof(Model.FeedbackOrContactOption)" value="WholeSite" class="govuk-radios__input" @(Model.FeedbackOrContactOption == "WholeSite" ? "checked" : "")>
+                                <label for="location-0" class="govuk-label govuk-radios__label">The whole site</label>
                             </div>
 
-                            <div class="gem-c-radio govuk-radios__item">
-                                <input type="radio" name="feedbackOrContactOption" id="SpecificPage" value="SpecificPage" class="govuk-radios__input" @(Model.FeedbackOrContactOption == "SpecificPage" ? "checked" : "") aria-controls="conditional-SpecificPage" aria-expanded="true">
-                                <label for="location-1" class="gem-c-label govuk-label govuk-radios__label">A specific page</label>
+                            <div class="govuk-radios__item">
+                                <input type="radio" name="@nameof(Model.FeedbackOrContactOption)" id="@nameof(Model.FeedbackOrContactOption)-1" value="SpecificPage" class="govuk-radios__input" @(Model.FeedbackOrContactOption == "SpecificPage" ? "checked" : "") aria-controls="conditional-SpecificPage" aria-expanded="true">
+                                <label for="location-1" class="govuk-label govuk-radios__label">A specific page</label>
                             </div>
 
                             <div class="govuk-radios__conditional govuk-body govuk-radios__conditional--hidden" id="conditional-SpecificPage">
                                 <div class="govuk-form-group">
-                                    <label for="link" class="gem-c-label govuk-label">Enter URL or name of page</label>
-                                    <input class="gem-c-input govuk-input" data-ga4-form-include-input="" id="UrlOfPage" name="UrlOfPage" spellcheck="false" type="text" value="@Model.UrlOfPage">
+                                    <label for="link" class="govuk-label">Enter URL or name of page</label>
+                                    <input class="govuk-input" data-ga4-form-include-input="" id="@nameof(Model.UrlOfPage)" name="@nameof(Model.UrlOfPage)" spellcheck="false" type="text" value="@Model.UrlOfPage">
                                 </div>
                             </div>                         
 
@@ -68,53 +68,53 @@
                     <h1 class="govuk-label-wrapper">
                           @if (Model.Context == "FEEDBACK")
                         {
-                            <label class="govuk-label govuk-label--l" for="with-hint">
+                            <label class="govuk-label govuk-label--l" for="@nameof(Model.Details)">
                                 What is your Feedback
                             </label>
                         }
                         else if (Model.Context == "SUPPORT")
                         {
-                            <label class="govuk-label govuk-label--l" for="with-hint">
+                            <label class="govuk-label govuk-label--l" for="@nameof(Model.Details)">
                                 What are the details?
                             </label>
                         }
                     </h1>
-                    <div id="with-hint-hint" class="govuk-hint">
+                    <div id="@nameof(Model.Details)-hint" class="govuk-hint">
                         Do not include personal or financial information like your National Insurance number or credit card details
                     </div>
-                    <textarea class="govuk-textarea govuk-js-character-count" id="with-hint" name="details" rows="5" aria-describedby="with-hint-info with-hint-hint">@Model.Details</textarea>
-                    <div id="with-hint-info" class="govuk-hint govuk-character-count__message">
+                    <textarea class="govuk-textarea govuk-js-character-count" id="@nameof(Model.Details)" name="@nameof(Model.Details)" rows="5">@Model.Details</textarea>
+                    <div id="@nameof(Model.Details)-info" class="govuk-hint govuk-character-count__message">
                         You can enter up to 10000 characters
                     </div>
                 </div>
 
-                <div class="gem-c-fieldset govuk-form-group">
+                <div class="govuk-form-group">
                     <fieldset class="govuk-fieldset">
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">If you want a reply (optional)</legend>
 
                         <p class="govuk-body">If you'd like us to get back to you, please leave your details below.</p>
 
                         <div class="govuk-form-group">
-                            <label for="name" class="gem-c-label govuk-label">Your name</label>
+                            <label for="@nameof(Model.Name)" class="govuk-label">Your name</label>
 
-                            <input autocomplete="name" class="gem-c-input govuk-input" id="@nameof(Model.Name)" name="@nameof(Model.Name)" spellcheck="false" type="text" value="@(Model.Name)">
+                            <input autocomplete="@nameof(Model.Name)" class="govuk-input" id="@nameof(Model.Name)" name="@nameof(Model.Name)" spellcheck="false" type="text" value="@(Model.Name)">
                         </div>
 
                         <div class="govuk-form-group">
 
-                            <label for="email" class="gem-c-label govuk-label">Your email address</label>
+                            <label for="@nameof(Model.Email)" class="govuk-label">Your email address</label>
 
-                            <div class="gem-c-hint govuk-hint">
+                            <div class="govuk-hint" id="email-hint">
                                 We'll only use this to reply to your message.
                             </div>
 
-                            <input aria-describedby="hint-a28138ec" autocomplete="email" class="gem-c-input govuk-input" id="@nameof(Model.Email)" name="@nameof(Model.Email)" spellcheck="false" type="email" value="@(Model.Email)">
+                            <input aria-describedby="email-hint" autocomplete="email" class="govuk-input" id="@nameof(Model.Email)" name="@nameof(Model.Email)" spellcheck="false" type="email" value="@(Model.Email)">
                         </div>
 
                     </fieldset>
                 </div>
 
-                <button class="gem-c-button govuk-button gem-c-button--bottom-margin" type="submit">Send message</button>
+                <button class="govuk-button" type="submit">Send message</button>
             </form>
         </div>
     </div>
