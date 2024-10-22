@@ -3,7 +3,6 @@ using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.WebApiClients;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
@@ -24,7 +23,7 @@ public class OrganisationRegisterBuyerAsSupplierModel(
             await organisationClient.UpdateOrganisationRoles(id, orgInfo.Roles);
             tempDataService.Put(FlashMessageTypes.Success, new FlashMessage(
                 "You have been registered as a supplier",
-                $"You'll need to <a class=\"govuk-notification-banner__link\" href=\"{Url.Page("/Supplier/SupplierInformationSummary", new { id })}\">add supplier information</a> to be able to create sharecode."
+                $"You'll need to <a class=\"govuk-notification-banner__link\" href=\"/organisation/{id}/register-buyer-as-supplier\"\">add supplier information</a> to be able to create sharecode."
             ));
         }
 
