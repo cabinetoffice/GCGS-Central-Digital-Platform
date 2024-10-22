@@ -18,16 +18,65 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 22,
+  "id": 21,
   "links": [],
   "panels": [
+    {
+      "datasource": {
+        "default": true,
+        "type": "cloudwatch",
+        "uid": "CLOUDWATCH"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 55,
+      "options": {
+        "code": {
+          "language": "plaintext",
+          "showLineNumbers": false,
+          "showMiniMap": false
+        },
+        "content": "# Request Status Code Hits\n\nBy default, this dashboard has the \"**Status Code**\" filter set to `All except 2xx` and \"**HealthCheck requests**\" set to `Exclude`. \\\nSeeing \"**No data**\" in the panels for different services is the desired state, indicating that no errors or unexpected responses are being logged. This setup helps to focus on identifying issues while disregarding successful requests and health checks, which are expected to be functioning properly.",
+        "mode": "markdown"
+      },
+      "pluginVersion": "11.2.2+security-01",
+      "targets": [
+        {
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "CLOUDWATCH"
+          },
+          "dimensions": {},
+          "expression": "",
+          "id": "",
+          "label": "",
+          "logGroups": [],
+          "matchExact": true,
+          "metricEditorMode": 0,
+          "metricName": "",
+          "metricQueryType": 0,
+          "namespace": "",
+          "period": "",
+          "queryMode": "Metrics",
+          "refId": "A",
+          "region": "default",
+          "sqlExpression": "",
+          "statistic": "Average"
+        }
+      ],
+      "type": "text"
+    },
     {
       "collapsed": false,
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 0
+        "y": 4
       },
       "id": 3,
       "panels": [],
@@ -155,7 +204,7 @@
         "h": 7,
         "w": 3,
         "x": 0,
-        "y": 1
+        "y": 5
       },
       "id": 4,
       "links": [
@@ -195,7 +244,7 @@
             "uid": "CLOUDWATCH"
           },
           "dimensions": {},
-          "expression": "fields @timestamp, StatusCode\n| filter ispresent(StatusCode) and $status_code\n| filter RequestPath != \"/health\"\n| stats count() as Hits by StatusCode\n| display concat(StatusCode, \" Hits\") as Name, Hits\n\n",
+          "expression": "fields @timestamp, StatusCode\n| filter ispresent(StatusCode) and $status_code\n| filter $healthcheck_requests\n| stats count() as Hits by StatusCode\n| display concat(StatusCode, \" Hits\") as Name, Hits\n\n",
           "id": "",
           "label": "",
           "logGroups": [
@@ -359,7 +408,7 @@
         "h": 7,
         "w": 21,
         "x": 3,
-        "y": 1
+        "y": 5
       },
       "id": 26,
       "links": [
@@ -534,7 +583,7 @@
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 8
+        "y": 12
       },
       "id": 1,
       "links": [
@@ -566,7 +615,7 @@
             "uid": "CLOUDWATCH"
           },
           "dimensions": {},
-          "expression": "fields @timestamp, StatusCode, RequestPath, @message\n| filter ispresent(StatusCode) and $status_code\n| filter RequestPath != \"/health\"\n| sort @timestamp desc\n",
+          "expression": "fields @timestamp, StatusCode, RequestPath, @message\n| filter ispresent(StatusCode) and $status_code\n| filter $healthcheck_requests\n| sort @timestamp desc\n",
           "hide": false,
           "id": "",
           "label": "",
@@ -744,7 +793,7 @@
       },
       {
         "current": {
-          "selected": false,
+          "selected": true,
           "text": "Exclude",
           "value": "RequestPath != \"/health\""
         },
@@ -766,6 +815,7 @@
           }
         ],
         "query": "Exclude : RequestPath != \"/health\", Include : ispresent(@timestamp)",
+        "queryValue": "",
         "skipUrlSync": false,
         "type": "custom"
       }
@@ -779,6 +829,6 @@
   "timezone": "browser",
   "title": "Request Status Code Hits",
   "uid": "request-status-code-hits",
-  "version": 2,
+  "version": 3,
   "weekStart": ""
 }
