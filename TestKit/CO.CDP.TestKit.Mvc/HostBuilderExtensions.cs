@@ -11,4 +11,7 @@ public static class HostBuilderExtensions
 
     public static IHostBuilder ConfigureLogging<TO>(this IHostBuilder builder, TO testOutputHelper) where TO : ITestOutputHelper =>
         builder.ConfigureLogging(logging => logging.AddProvider(testOutputHelper));
+
+    public static IHostBuilder ConfigureFakePolicyEvaluator(this IHostBuilder builder) =>
+        builder.ConfigureServices(services => services.ConfigureFakePolicyEvaluator());
 }
