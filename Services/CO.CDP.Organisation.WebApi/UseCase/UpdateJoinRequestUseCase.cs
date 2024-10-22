@@ -63,9 +63,7 @@ public class UpdateJoinRequestUseCase(
             logger.LogError(new Exception("Unable to send an email"), $"Missing configuration keys: {string.Join(", ", missingConfigs)}. Unable to send an email.");
             return;
         }
-
-        var orgLink = new Uri(new Uri(baseAppUrl), $"/organisation/{organisationJoinRequest.Organisation!.Guid}").ToString();
-
+        
         var emailRequest = new EmailNotificationRequest
         {
             EmailAddress = organisationJoinRequest.Person!.Email,
@@ -75,8 +73,7 @@ public class UpdateJoinRequestUseCase(
                 { "org_name", organisationJoinRequest.Organisation!.Name },
                 { "decision",  organisationJoinRequest.Status.ToString().ToLower()},
                 { "first_name", organisationJoinRequest.Person.FirstName},
-                { "last_name", organisationJoinRequest.Person.LastName },
-                { "org_link", orgLink  }
+                { "last_name", organisationJoinRequest.Person.LastName },                
             }
         };
 
