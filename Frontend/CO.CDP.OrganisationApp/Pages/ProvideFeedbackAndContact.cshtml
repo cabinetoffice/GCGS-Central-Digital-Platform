@@ -20,7 +20,7 @@
             @if (Model.Context == "FEEDBACK")
             {
                 <h1 class="govuk-heading-xl">
-                    Provide Find a Tender feedback
+                    Provide feedback on Find a Tender
                 </h1>
             }
             else if (Model.Context == "SUPPORT")
@@ -33,8 +33,7 @@
             <form method="post">
                 @if (Model.Context == "FEEDBACK")
                 {
-                    <p class="govuk-body">This form is to provide feedback on the Find a Tender Website.</p>
-                    <p class="govuk-body">You can use it to suggest feedback, an improvement or suggestion to the Find a Tender team.</p>
+                    <p class="govuk-body">Use this form to ask a question, report a problem or suggest an improvement to the Find a Tender service team.</p>
                 }
                 else if (Model.Context == "SUPPORT")
                 {
@@ -52,7 +51,7 @@
                             <div class="govuk-form-group  @(feedbackOrContactOptionError ? "govuk-form-group--error" : "")">
                                 <div class="govuk-radios__item">
                                     <input type="radio" name="@nameof(Model.FeedbackOrContactOption)" id="@nameof(Model.FeedbackOrContactOption)" value="WholeSite" class="govuk-radios__input" @(Model.FeedbackOrContactOption == "WholeSite" ? "checked" : "")>
-                                    <label for="@nameof(Model.FeedbackOrContactOption)" class="govuk-label govuk-radios__label">The whole site</label>
+                                    <label for="@nameof(Model.FeedbackOrContactOption)" class="govuk-label govuk-radios__label">The whole service</label>
                                 </div>
 
                                 <div class="govuk-radios__item">
@@ -79,7 +78,7 @@
                               @if (Model.Context == "FEEDBACK")
                             {
                                 <label class="govuk-label govuk-label--l" for="@nameof(Model.Details)">
-                                    What is your Feedback
+                                    Enter your feedback
                                 </label>
                             }
                             else if (Model.Context == "SUPPORT")
@@ -107,7 +106,7 @@
                     <p class="govuk-body">If you'd like us to get back to you, please leave your details below.</p>
 
                     <div class="govuk-form-group @(nameHasError ? "govuk-form-group--error" : "")">
-                        <label for="@nameof(Model.Name)" class="govuk-label">Your name</label>
+                        <label for="@nameof(Model.Name)" class="govuk-label">Name</label>
 
                         <input autocomplete="@nameof(Model.Name)" class="govuk-input" id="@nameof(Model.Name)" name="@nameof(Model.Name)" spellcheck="false" type="text" value="@(Model.Name)">
                         @Html.ValidationMessageFor(m => m.Name, "", new { @class = "govuk-error-message", @id = "Name-error" })
