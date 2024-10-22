@@ -47,7 +47,7 @@ public class CreateOrganisationJoinRequestUseCase(
         organisationJoinRequestRepository.Save(organisationJoinRequest);
 
         await NotifyUserRequestSent(organisation: organisation, person: person);
-        await NotifyOrgAdminsOfApprovalRequest(organisation: organisation);
+        await NotifyOrgAdminsOfApprovalRequest(organisation: organisation, person: person);
 
         return mapper.Map<OrganisationJoinRequest>(organisationJoinRequest);
     }
@@ -68,7 +68,7 @@ public class CreateOrganisationJoinRequestUseCase(
         return organisationJoinRequest;
     }
 
-    private async Task NotifyOrgAdminsOfApprovalRequest(Persistence.Organisation organisation)
+    private async Task NotifyOrgAdminsOfApprovalRequest(Persistence.Organisation organisation, Person person)
     {
         var baseAppUrl = configuration.GetValue<string>("OrganisationAppUrl") ?? "";
         var templateId = configuration.GetValue<string>("GOVUKNotify:RequestToJoinNotifyOrgAdminTemplateId") ?? "";
@@ -88,18 +88,20 @@ public class CreateOrganisationJoinRequestUseCase(
 
         var organisationAdminUsers = await GetOrganisationAdminUsers(organisation);
 
-        foreach (var p in organisationAdminUsers)
+        foreach (var adminPerson in organisationAdminUsers)
         {
             var emailRequest = new EmailNotificationRequest
             {
-                EmailAddress = p.Email,
+                EmailAddress = adminPerson.Email,
                 TemplateId = templateId,
                 Personalisation = new Dictionary<string, string>
                 {
                     { "org_name", organisation.Name },
                     { "request_link", requestLink },
-                    { "first_name", p.FirstName },
-                    { "last_name", p.LastName }
+                    { "first_name", adminPerson.FirstName },
+                    { "last_name", adminPerson.LastName },
+                    { "requester_first_name", person.FirstName },
+                    { "requester_last_name", person.LastName }
                 }
             };
 
