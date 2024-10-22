@@ -9,18 +9,25 @@ public class DefaultChoiceProviderStrategy() : IChoiceProviderStrategy
         return await Task.FromResult(options.Choices.ToDictionary(c => c.Title, c => c.Title));
     }
 
-    public async Task<string?> RenderOption(CO.CDP.Forms.WebApiClient.FormAnswer? answer)
+    public async Task<string?> RenderOption(CO.CDP.Forms.WebApiClient.FormAnswer? answer, CO.CDP.Forms.WebApiClient.FormQuestion question)
     {
-        return await RenderOption(answer?.OptionValue);
+        if (answer?.OptionValue == null) return "";
+
+        var choices = question.Options.Groups.SelectMany(g => g.Choices);
+
+        var choiceOption = choices.FirstOrDefault(c => c.Value == answer.OptionValue);
+
+        return await Task.FromResult(choiceOption == null ? answer.OptionValue : choiceOption.Title);
     }
 
-    public async Task<string?> RenderOption(CO.CDP.OrganisationApp.Models.FormAnswer? answer)
+    public async Task<string?> RenderOption(CO.CDP.OrganisationApp.Models.FormAnswer? answer, CO.CDP.OrganisationApp.Models.FormQuestion question)
     {
-        return await RenderOption(answer?.OptionValue);
-    }
+        if (answer?.OptionValue == null) return "";
 
-    private async Task<string?> RenderOption(string? optionValue)
-    {
-        return await Task.FromResult(optionValue);
+        var choices = question.Options.Groups.SelectMany(g => g.Choices);
+
+        var choiceOption = choices.FirstOrDefault(c => c.Value == answer.OptionValue);
+
+        return await Task.FromResult(choiceOption == null ? answer.OptionValue : choiceOption.Title);
     }
 }

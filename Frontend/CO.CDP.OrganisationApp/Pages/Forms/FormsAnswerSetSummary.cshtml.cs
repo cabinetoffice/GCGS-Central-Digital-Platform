@@ -199,7 +199,7 @@ public class FormsAnswerSetSummaryModel(
         async Task<string> singleChoiceString(FormAnswer a)
         {
             var choiceProviderStrategy = choiceProviderService.GetStrategy(question.Options.ChoiceProviderStrategy);
-            return await choiceProviderStrategy.RenderOption(a) ?? "";
+            return await choiceProviderStrategy.RenderOption(a, question) ?? "";
         }
 
         string boolAnswerString = answer.BoolValue.HasValue == true ? (answer.BoolValue == true ? "Yes" : "No") : "";
@@ -213,6 +213,7 @@ public class FormsAnswerSetSummaryModel(
             FormQuestionType.CheckBox => answer.BoolValue.HasValue ? question.Options.Choices?.FirstOrDefault()?.Title ?? "" : "",
             FormQuestionType.Address => answer.AddressValue != null ? $"{answer.AddressValue.StreetAddress}, {answer.AddressValue.Locality}, {answer.AddressValue.PostalCode}, {answer.AddressValue.CountryName}" : "",
             FormQuestionType.MultiLine => answer.TextValue ?? "",
+            FormQuestionType.GroupedSingleChoice => await singleChoiceString(answer),
             FormQuestionType.Url => answer.TextValue ?? "",
             _ => ""
         };

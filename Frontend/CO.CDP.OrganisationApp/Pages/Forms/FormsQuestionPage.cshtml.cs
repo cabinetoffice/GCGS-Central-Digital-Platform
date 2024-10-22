@@ -198,7 +198,7 @@ public class FormsQuestionPageModel(
         async Task<string> singleChoiceString(FormAnswer a)
         {
             var choiceProviderStrategy = choiceProviderService.GetStrategy(question.Options.ChoiceProviderStrategy);
-            return await choiceProviderStrategy.RenderOption(a) ?? "";
+            return await choiceProviderStrategy.RenderOption(a, question) ?? "";
         }
 
         string boolAnswerString = answer.BoolValue.HasValue == true ? (answer.BoolValue == true ? "Yes" : "No") : "";
@@ -212,7 +212,7 @@ public class FormsQuestionPageModel(
             FormQuestionType.CheckBox => answer.BoolValue == true ? question?.Options?.Choices?.Values.FirstOrDefault() ?? "" : "",
             FormQuestionType.Address => answer.AddressValue != null ? answer.AddressValue.ToHtmlString() : "",
             FormQuestionType.MultiLine => answer.TextValue ?? "",
-            FormQuestionType.GroupedSingleChoice => answer.OptionValue ?? "",
+            FormQuestionType.GroupedSingleChoice => await singleChoiceString(answer),
             FormQuestionType.Url => answer.TextValue ?? "",
             _ => ""
         };

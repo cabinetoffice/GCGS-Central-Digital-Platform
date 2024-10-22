@@ -1,9 +1,4 @@
-using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Constants;
-using CO.CDP.OrganisationApp.Models;
-using CO.CDP.OrganisationApp.ThirdPartyApiClients.CompaniesHouse;
-using CO.CDP.Person.WebApiClient;
-using CO.CDP.Tenant.WebApiClient;
 using FluentAssertions;
 using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Authentication;
@@ -14,7 +9,6 @@ using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using System.Net;
-using System.Text.RegularExpressions;
 
 namespace CO.CDP.OrganisationApp.Tests;
 public class LocalizationTests

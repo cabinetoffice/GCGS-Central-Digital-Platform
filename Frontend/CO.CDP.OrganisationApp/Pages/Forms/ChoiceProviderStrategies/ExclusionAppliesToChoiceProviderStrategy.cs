@@ -41,12 +41,12 @@ public class ExclusionAppliesToChoiceProviderStrategy(IUserInfoService userInfoS
         return null;
     }
 
-    public async Task<string?> RenderOption(CO.CDP.Forms.WebApiClient.FormAnswer? answer)
+    public async Task<string?> RenderOption(CO.CDP.Forms.WebApiClient.FormAnswer? answer, CO.CDP.Forms.WebApiClient.FormQuestion question)
     {
         return await RenderOption(answer?.JsonValue);
     }
 
-    public async Task<string?> RenderOption(CO.CDP.OrganisationApp.Models.FormAnswer? answer)
+    public async Task<string?> RenderOption(CO.CDP.OrganisationApp.Models.FormAnswer? answer, CO.CDP.OrganisationApp.Models.FormQuestion question)
     {
         return await RenderOption(answer?.JsonValue);
     }
