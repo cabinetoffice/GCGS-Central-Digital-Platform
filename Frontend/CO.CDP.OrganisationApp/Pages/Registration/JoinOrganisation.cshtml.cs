@@ -15,11 +15,11 @@ public class JoinOrganisationModel(
     [Required(ErrorMessage = "Select an option")]
     public bool Join { get; set; }
 
-    public async Task<IActionResult> OnGet(Guid organisationId)
+    public async Task<IActionResult> OnGet(string identifier)
     {
         try
         {
-            OrganisationDetails = await organisationClient.GetOrganisationAsync(organisationId);
+            OrganisationDetails = await organisationClient.LookupOrganisationAsync(string.Empty, $"{identifier}");
             return Page();
         }
         catch (ApiException ex) when (ex.StatusCode == 404)
@@ -28,23 +28,24 @@ public class JoinOrganisationModel(
         }
     }
 
-    public async Task<IActionResult> OnPost(Guid organisationId)
+    public async Task<IActionResult> OnPost(string identifier)
     {
+        OrganisationDetails = await organisationClient.LookupOrganisationAsync(string.Empty, $"{identifier}");
+
         if (!ModelState.IsValid)
         {
-            OrganisationDetails = await organisationClient.GetOrganisationAsync(organisationId);
             return Page();
         }
 
-        if (UserDetails.PersonId != null)
+        if (UserDetails.PersonId != null && OrganisationDetails != null)
         {
             if (Join == true)
             {
-                await organisationClient.CreateJoinRequestAsync(organisationId, new CreateOrganisationJoinRequest(
+                await organisationClient.CreateJoinRequestAsync(OrganisationDetails.Id, new CreateOrganisationJoinRequest(
                     personId: UserDetails.PersonId.Value
                 ));
 
-                return Redirect("/registration/" + organisationId + "/join-organisation/success");
+                return Redirect("/registration/" + identifier + "/join-organisation/success");
             }
 
             return Redirect("/registration/has-companies-house-number");
