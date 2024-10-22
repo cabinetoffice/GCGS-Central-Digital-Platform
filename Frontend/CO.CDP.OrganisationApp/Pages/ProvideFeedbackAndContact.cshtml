@@ -1,0 +1,132 @@
+@page "/provide-feedback-and-contact"
+@model ProvideFeedbackAndContact
+@{
+    if (Model.Context == "FEEDBACK")
+    { ViewData["Title"] = "Provide Find a Tender Feedback"; }
+    else if (Model.Context == "SUPPORT")
+    { ViewData["Title"] = "Contact Find a Tender"; }
+
+    var feedbackOrContactOptionError = ((TagBuilder)Html.ValidationMessageFor(m => m.FeedbackOrContactOption)).HasInnerHtml;
+    var urlOfPageHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.UrlOfPage)).HasInnerHtml;
+    var detailsHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Details)).HasInnerHtml;
+    var nameHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Name)).HasInnerHtml;
+    var emailHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Email)).HasInnerHtml;
+}
+
+<main class="govuk-main-wrapper" id="main-content">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <partial name="_ErrorSummary" model="@ModelState" />
+            @if (Model.Context == "FEEDBACK")
+            {
+                <h1 class="govuk-heading-xl">
+                    Provide feedback on Find a Tender
+                </h1>
+            }
+            else if (Model.Context == "SUPPORT")
+            {
+                <h1 class="govuk-heading-xl">
+                    Contact Find a Tender
+                </h1>
+            }
+
+            <form method="post">
+                @if (Model.Context == "FEEDBACK")
+                {
+                    <p class="govuk-body">Use this form to ask a question, report a problem or suggest an improvement to the Find a Tender service team.</p>
+                }
+                else if (Model.Context == "SUPPORT")
+                {
+                    <p class="govuk-body">This form is to raise issues or support requests related to Find a Tender website.</p>
+                    <p class="govuk-body">You can ask a question, report a problem or suggest an improvement to the Find a Tender team.</p>
+                }
+
+                <div class="govuk-form-group govuk-!-margin-bottom-6">
+                    <fieldset class="govuk-fieldset">
+                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                            <span class="govuk-fieldset__heading">What's it to do with?</span>
+                        </legend>
+
+                        <div class="govuk-radios" data-module="govuk-radios">
+                            <div class="govuk-form-group  @(feedbackOrContactOptionError ? "govuk-form-group--error" : "")">
+                                <div class="govuk-radios__item">
+                                    <input type="radio" name="@nameof(Model.FeedbackOrContactOption)" id="@nameof(Model.FeedbackOrContactOption)" value="WholeSite" class="govuk-radios__input" @(Model.FeedbackOrContactOption == "WholeSite" ? "checked" : "")>
+                                    <label for="@nameof(Model.FeedbackOrContactOption)" class="govuk-label govuk-radios__label">The whole service</label>
+                                </div>
+
+                                <div class="govuk-radios__item">
+                                    <input type="radio" name="@nameof(Model.FeedbackOrContactOption)" id="@nameof(Model.FeedbackOrContactOption)-1" value="SpecificPage" class="govuk-radios__input" @(Model.FeedbackOrContactOption == "SpecificPage" ? "checked" : "") aria-controls="conditional-SpecificPage" aria-expanded="true">
+                                    <label for="@nameof(Model.FeedbackOrContactOption)" class="govuk-label govuk-radios__label">A specific page</label>
+                                </div>
+                            </div>
+
+                            <div class="govuk-radios__conditional govuk-body govuk-radios__conditional--hidden" id="conditional-SpecificPage">
+                                <div class="govuk-form-group @(urlOfPageHasError ? "govuk-form-group--error" : "")">
+                                    <label for="@nameof(Model.UrlOfPage)" class="govuk-label">Enter URL or name of page</label>
+                                    @Html.ValidationMessageFor(m => m.UrlOfPage, "", new { @class = "govuk-error-message", @id = "UrlOfPage-error" })
+                                    <input class="govuk-input" id="@nameof(Model.UrlOfPage)" name="@nameof(Model.UrlOfPage)" spellcheck="false" type="text" value="@Model.UrlOfPage">
+                                </div>
+                            </div>                         
+
+                        </div>
+                    </fieldset>
+                </div>
+
+                <div class="govuk-form-group @(detailsHasError ? "govuk-form-group--error" : "")">
+                    <div class="govuk-form-group govuk-character-count" data-module="govuk-character-count" data-maxlength="10000">
+                        <h1 class="govuk-label-wrapper">
+                              @if (Model.Context == "FEEDBACK")
+                            {
+                                <label class="govuk-label govuk-label--l" for="@nameof(Model.Details)">
+                                    Enter your feedback
+                                </label>
+                            }
+                            else if (Model.Context == "SUPPORT")
+                            {
+                                <label class="govuk-label govuk-label--l" for="@nameof(Model.Details)">
+                                    What are the details?
+                                </label>
+                            }
+                        </h1>
+                        <div id="@nameof(Model.Details)-hint" class="govuk-hint">
+                            Do not include personal or financial information like your National Insurance number or credit card details
+                        </div>
+                        @Html.ValidationMessageFor(m => m.Details, "", new { @class = "govuk-error-message", @id = "Details-error" })
+                        <textarea class="govuk-textarea govuk-js-character-count" id="@nameof(Model.Details)" aria-describedby="@nameof(Model.Details)-hint @nameof(Model.Details)-info" name="@nameof(Model.Details)" rows="5">@Model.Details</textarea>
+                        <div id="@nameof(Model.Details)-info" class="govuk-hint govuk-character-count__message">
+                            You can enter up to 10000 characters
+                        </div>
+                    </div>
+                </div>
+
+
+                <fieldset class="govuk-fieldset">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">If you want a reply (optional)</legend>
+
+                    <p class="govuk-body">If you'd like us to get back to you, please leave your details below.</p>
+
+                    <div class="govuk-form-group @(nameHasError ? "govuk-form-group--error" : "")">
+                        <label for="@nameof(Model.Name)" class="govuk-label">Name</label>
+                        @Html.ValidationMessageFor(m => m.Name, "", new { @class = "govuk-error-message", @id = "Name-error" })
+                        <input autocomplete="@nameof(Model.Name)" class="govuk-input" id="@nameof(Model.Name)" name="@nameof(Model.Name)" spellcheck="false" type="text" value="@(Model.Name)">
+                    </div>
+
+                    <div class="govuk-form-group @(emailHasError ? "govuk-form-group--error" : "")">
+
+                        <label for="@nameof(Model.Email)" class="govuk-label">Your email address</label>
+
+                        <div class="govuk-hint" id="@nameof(Model.Email)-hint">
+                            We'll only use this to reply to your message.
+                        </div>
+                        @Html.ValidationMessageFor(m => m.Email, "", new { @class = "govuk-error-message", @id = "Email-error" })
+                        <input aria-describedby="@nameof(Model.Email)-hint" autocomplete="email" class="govuk-input" id="@nameof(Model.Email)" name="@nameof(Model.Email)" spellcheck="false" type="email" value="@(Model.Email)">
+                    </div>
+                </fieldset>
+
+
+                <govuk-button>Send message</govuk-button>
+            </form>
+        </div>
+    </div>
+
+</main>

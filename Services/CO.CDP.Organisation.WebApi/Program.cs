@@ -90,6 +90,7 @@ builder.Services.AddScoped<IUseCase<Guid, IEnumerable<CO.CDP.Organisation.WebApi
 builder.Services.AddScoped<IUseCase<(Guid, RegisterAuthenticationKey), bool>, RegisterAuthenticationKeyUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, string), bool>, RevokeAuthenticationKeyUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, CreateOrganisationJoinRequest), OrganisationJoinRequest>, CreateOrganisationJoinRequestUseCase>();
+builder.Services.AddScoped<IUseCase<ProvideFeedbackAndContact, bool>, ProvideFeedbackAndContactUseCase>();
 
 builder.Services.AddOrganisationProblemDetails();
 
@@ -157,6 +158,10 @@ app.MapGroup("/organisations")
 app.MapGroup("/organisations")
     .UseManageApiKeyEndpoints()
     .WithTags("Organisation - Manage Api Keys");
+
+app.MapGroup("/feeback")
+    .UseFeedbackEndpoints()
+    .WithTags("Feedback - provide feedback");
 
 app.Run();
 public abstract partial class Program;
