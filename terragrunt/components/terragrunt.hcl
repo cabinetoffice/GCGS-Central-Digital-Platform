@@ -56,7 +56,7 @@ locals {
       account_id             = 905418042182
       canary_schedule_expression = "rate(30 minutes)"
       name                   = "staging"
-      pinned_service_version = "0.6.1"
+      pinned_service_version = "0.6.2"
       postgres_instance_type = "db.t4g.micro"
       private_subnets = [
         "10.${local.cidr_b_staging}.101.0/24",
