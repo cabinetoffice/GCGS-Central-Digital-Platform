@@ -15,6 +15,7 @@ public class DataSharingClientIntegrationTest
         {
             builder.ConfigureInMemoryDbContext<OrganisationInformationContext>();
             builder.ConfigureLogging(testOutputHelper);
+            builder.ConfigureFakePolicyEvaluator();
         });
 
         _httpClient = _factory.CreateClient();

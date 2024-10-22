@@ -21,7 +21,11 @@ public class GetFormSectionstEndpointTest
     {
         TestWebApplicationFactory<Program> factory = new(builder =>
         {
-            builder.ConfigureServices(services => services.AddScoped(_ => _useCase.Object));
+            builder.ConfigureServices(services =>
+            {
+                services.AddScoped(_ => _useCase.Object);
+                services.ConfigureFakePolicyEvaluator();
+            });
         });
         _httpClient = factory.CreateClient();
     }
