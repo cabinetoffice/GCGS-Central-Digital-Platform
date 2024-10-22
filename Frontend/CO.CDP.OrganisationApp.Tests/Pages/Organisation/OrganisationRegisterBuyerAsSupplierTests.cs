@@ -18,7 +18,7 @@ public class OrganisationRegisterBuyerAsSupplierTests
     private readonly Mock<IOrganisationClient> organisationClientMock;
     private readonly Mock<ITempDataService> tempDataService;
     private readonly OrganisationRegisterBuyerAsSupplierModel _model;
-    private readonly Guid orgGuid = new Guid("8b1e9502-2dd5-49fa-ad56-26bae0f85b85");
+    private readonly Guid orgGuid = new("8b1e9502-2dd5-49fa-ad56-26bae0f85b85");
 
     public OrganisationRegisterBuyerAsSupplierTests()
     {

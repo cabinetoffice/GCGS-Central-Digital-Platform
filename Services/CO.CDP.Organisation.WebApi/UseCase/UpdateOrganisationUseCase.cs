@@ -37,11 +37,6 @@ public class UpdateOrganisationUseCase(
                     throw new InvalidUpdateOrganisationCommand("Missing roles.");
                 }
 
-                if (!updateObject.Roles.All(role => Enum.IsDefined(typeof(PartyRole), role)))
-                {
-                    throw new InvalidUpdateOrganisationCommand("One or more roles are invalid.");
-                }
-
                 organisation.Roles = updateObject.Roles;
                 break;
 
