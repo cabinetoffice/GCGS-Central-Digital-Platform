@@ -33,8 +33,8 @@ public class ProvideFeedbackAndContactUseCaseTest
     [Fact]
     public async Task Execute_ShouldReturnFalse_WhenConfigurationKeysAreMissing()
     {        
-        _mockConfiguration.Setup(c => c["GOVUKNotify:ProvideFeedbackAndContactEmailTemplateId"]).Returns((string)null);
-        _mockConfiguration.Setup(c => c["GOVUKNotify:SupportAdminEmailAddress"]).Returns((string)null);
+        _mockConfiguration.Setup(c => c["GOVUKNotify:ProvideFeedbackAndContactEmailTemplateId"]).Returns((string?)null);
+        _mockConfiguration.Setup(c => c["GOVUKNotify:SupportAdminEmailAddress"]).Returns((string?)null);        
         var command = new ProvideFeedbackAndContact()
         {
             FeedbackAbout = "Website",

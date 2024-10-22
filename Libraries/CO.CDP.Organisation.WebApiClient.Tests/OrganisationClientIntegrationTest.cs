@@ -17,6 +17,7 @@ public class OrganisationClientIntegrationTest
         TestWebApplicationFactory<Program> _factory = new(builder =>
         {
             builder.ConfigureInMemoryDbContext<OrganisationInformationContext>();
+            builder.ConfigureFakePolicyEvaluator();
             builder.ConfigureLogging(testOutputHelper);
             builder.ConfigureServices((_, s) =>
             {

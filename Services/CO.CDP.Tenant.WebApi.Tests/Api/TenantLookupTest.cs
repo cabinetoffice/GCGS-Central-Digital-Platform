@@ -22,8 +22,10 @@ public class TenantLookupTest
         TestWebApplicationFactory<Program> factory = new(builder =>
         {
             builder.ConfigureServices(services =>
-                services.AddScoped(_ => _getTenantUseCase.Object)
-            );
+            {
+                services.AddScoped(_ => _getTenantUseCase.Object);
+                services.ConfigureFakePolicyEvaluator();
+            });
         });
         _httpClient = factory.CreateClient();
     }
