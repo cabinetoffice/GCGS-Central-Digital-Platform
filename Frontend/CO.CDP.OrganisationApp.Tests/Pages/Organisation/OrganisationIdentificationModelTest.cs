@@ -4,6 +4,9 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moq;
+using WebApiClientOrganisation = CO.CDP.Organisation.WebApiClient.Organisation;
+
+namespace CO.CDP.OrganisationApp.Tests.Pages.Organisation;
 
 public class OrganisationIdentificationModelTest
 {
@@ -39,7 +42,7 @@ public class OrganisationIdentificationModelTest
     public async Task OnGet_Should_RedirectToPageNotFound_When_OrganisationIsNotFound()
     {
         _organisationClientMock.Setup(x => x.GetOrganisationAsync(It.IsAny<Guid>()))
-            .ReturnsAsync((Organisation?)null);
+            .ReturnsAsync((WebApiClientOrganisation?)null);
 
         var result = await _pageModel.OnGet();
 
@@ -84,7 +87,7 @@ public class OrganisationIdentificationModelTest
     public async Task OnPost_Should_RedirectToPageNotFound_When_OrganisationIsNotFound()
     {
         _organisationClientMock.Setup(x => x.GetOrganisationAsync(It.IsAny<Guid>()))
-            .ReturnsAsync((Organisation?)null);
+            .ReturnsAsync((WebApiClientOrganisation?)null);
 
         _pageModel.OrganisationScheme = new List<string> { "GB-CHC" };
 
@@ -94,7 +97,7 @@ public class OrganisationIdentificationModelTest
             .Which.Url.Should().Be("/page-not-found");
     }
 
-    private static Organisation GivenOrganisationClientModel(Guid? id)
+    private static WebApiClientOrganisation GivenOrganisationClientModel(Guid? id)
     {
         var identifier = new Identifier("asd", "asd", "asd", new Uri("http://whatever"));
         var additionalIdentifiers = new List<Identifier>
@@ -107,6 +110,6 @@ public class OrganisationIdentificationModelTest
                     )
                 };
 
-        return new Organisation(additionalIdentifiers: additionalIdentifiers, addresses: null, contactPoint: null, id: id ?? Guid.NewGuid(), identifier: identifier, name: "Test Org", roles: [], details: new Details(approval: null, pendingRoles: []));
+        return new WebApiClientOrganisation(additionalIdentifiers: additionalIdentifiers, addresses: null, contactPoint: null, id: id ?? Guid.NewGuid(), identifier: identifier, name: "Test Org", roles: [], details: new Details(approval: null, pendingRoles: []));
     }
 }

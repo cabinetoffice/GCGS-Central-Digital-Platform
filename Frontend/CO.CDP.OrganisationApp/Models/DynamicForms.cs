@@ -31,14 +31,14 @@ public class FormQuestion
     public string? Description { get; set; }
     public string? Caption { get; set; }
     public string? SummaryTitle { get; set; }
-    public FormQuestionOptions Options { get; set; } = new();    
+    public FormQuestionOptions Options { get; set; } = new();
 }
 
 public class FormQuestionOptions
 {
     public Dictionary<string, string>? Choices { get; set; }
     public string? ChoiceProviderStrategy { get; set; }
-    public List<FormQuestionGroup>? Groups { get; set; }
+    public List<FormQuestionGroup> Groups { get; set; } = [];
     public string? ChoiceAnswerFieldName { get; set; }
 }
 
@@ -74,7 +74,7 @@ public class FormQuestionGroup
     public string? Name { get; set; }
     public string? Hint { get; set; }
     public string? Caption { get; set; }
-    public List<FormQuestionGroupChoice>? Choices { get; set; }
+    public List<FormQuestionGroupChoice> Choices { get; set; } = [];
 }
 
 public class FormQuestionGroupChoice

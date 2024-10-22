@@ -212,7 +212,7 @@ public class FormsQuestionPageModel(
             FormQuestionType.CheckBox => answer.BoolValue == true ? question?.Options?.Choices?.Values.FirstOrDefault() ?? "" : "",
             FormQuestionType.Address => answer.AddressValue != null ? answer.AddressValue.ToHtmlString() : "",
             FormQuestionType.MultiLine => answer.TextValue ?? "",
-            FormQuestionType.GroupedSingleChoice => answer.OptionValue ?? "",
+            FormQuestionType.GroupedSingleChoice => GroupedSingleChoiceAnswerString(answer, question),
             FormQuestionType.Url => answer.TextValue ?? "",
             _ => ""
         };
@@ -234,6 +234,17 @@ public class FormsQuestionPageModel(
         }
 
         return false;
+    }
+
+    private static string GroupedSingleChoiceAnswerString(FormAnswer? answer, FormQuestion question)
+    {
+        if (answer?.OptionValue == null) return "";
+
+        var choices = question.Options.Groups.SelectMany(g => g.Choices);
+
+        var choiceOption = choices.FirstOrDefault(c => c.Value == answer.OptionValue);
+
+        return (choiceOption == null ? answer.OptionValue : choiceOption.Title) ?? "";
     }
 
     private async Task<Guid?> ValidateIfNeedRedirect()
