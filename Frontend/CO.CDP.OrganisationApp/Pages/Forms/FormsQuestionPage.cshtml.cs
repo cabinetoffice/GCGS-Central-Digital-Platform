@@ -212,7 +212,7 @@ public class FormsQuestionPageModel(
             FormQuestionType.CheckBox => answer.BoolValue == true ? question?.Options?.Choices?.Values.FirstOrDefault() ?? "" : "",
             FormQuestionType.Address => answer.AddressValue != null ? answer.AddressValue.ToHtmlString() : "",
             FormQuestionType.MultiLine => answer.TextValue ?? "",
-            FormQuestionType.GroupedSingleChoice => GroupedSingleChoiceString(answer, question),
+            FormQuestionType.GroupedSingleChoice => GroupedSingleChoiceAnswerString(answer, question),
             FormQuestionType.Url => answer.TextValue ?? "",
             _ => ""
         };
@@ -236,7 +236,7 @@ public class FormsQuestionPageModel(
         return false;
     }
 
-    private static string GroupedSingleChoiceString(FormAnswer? answer, FormQuestion question)
+    private static string GroupedSingleChoiceAnswerString(FormAnswer? answer, FormQuestion question)
     {
         if (answer?.OptionValue == null) return "";
 
