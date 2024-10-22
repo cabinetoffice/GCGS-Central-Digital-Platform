@@ -1,63 +1,60 @@
+using System.Net;
 using CO.CDP.OrganisationApp.Constants;
+using CO.CDP.OrganisationApp.Models;
+using CO.CDP.TestKit.Mvc;
 using FluentAssertions;
 using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Moq;
-using System.Net;
 
 namespace CO.CDP.OrganisationApp.Tests;
 public class LocalizationTests
 {
-    public HttpClient BuildHttpClient()
+    private HttpClient BuildHttpClient()
     {
-        Mock<ISession> _mockSession = new Mock<ISession>();
-        Guid personId = new Guid("5b0d3aa8-94cd-4ede-ba03-546937035690");
-        var services = new ServiceCollection();
+        Mock<ISession> session = new();
+        Guid personId = new("5b0d3aa8-94cd-4ede-ba03-546937035690");
 
         var person = new Person.WebApiClient.Person("a@b.com", "First name", personId, "Last name", null);
 
-        _mockSession
-            .Setup(s => s.Get<Models.UserDetails>(Session.UserDetailsKey))
-            .Returns(new Models.UserDetails() { Email = "a@b.com", UserUrn = "urn", PersonId = person.Id });
+        session
+            .Setup(s => s.Get<UserDetails>(Session.UserDetailsKey))
+            .Returns(new UserDetails() { Email = "a@b.com", UserUrn = "urn", PersonId = person.Id });
 
-        _mockSession
-            .Setup(s => s.Get<Models.RegistrationDetails>(Session.RegistrationDetailsKey))
-            .Returns(new Models.RegistrationDetails() { OrganisationType = OrganisationType.Supplier, OrganisationScheme = "Whatever" });
+        session
+            .Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey))
+            .Returns(new RegistrationDetails() { OrganisationType = OrganisationType.Supplier, OrganisationScheme = "Whatever" });
 
-        services.AddSingleton(_mockSession.Object);
+        var antiforgery = new Mock<IAntiforgery>();
 
-        var antiforgeryMock = new Mock<IAntiforgery>();
-
-        antiforgeryMock.Setup(a => a.ValidateRequestAsync(It.IsAny<HttpContext>()))
+        antiforgery.Setup(a => a.ValidateRequestAsync(It.IsAny<HttpContext>()))
                        .Returns(Task.CompletedTask);
 
-        antiforgeryMock.Setup(a => a.GetAndStoreTokens(It.IsAny<HttpContext>()))
+        antiforgery.Setup(a => a.GetAndStoreTokens(It.IsAny<HttpContext>()))
                .Returns(new AntiforgeryTokenSet(
                    "fakeRequestToken",
-                   "fakeCookieToken", 
+                   "fakeCookieToken",
                    "fakeFormFieldName",
-                   "fakeHeaderName")); 
+                   "fakeHeaderName"));
 
-        services.AddSingleton(antiforgeryMock.Object);
-
-        services.AddAuthentication(options =>
+        var factory = new TestWebApplicationFactory<Program>(builder =>
         {
-            options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-            options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
-        })
-        .AddScheme<AuthenticationSchemeOptions, FakeCookieAuthHandler>(CookieAuthenticationDefaults.AuthenticationScheme, options => { });
-
-        services.Configure<OpenIdConnectOptions>(OpenIdConnectDefaults.AuthenticationScheme, options => {
-            options.ClientId = "123";
-            options.Authority = "https://whatever";
+            builder.ConfigureServices(services =>
+            {
+                services.AddSingleton(session.Object);
+                services.AddSingleton(antiforgery.Object);
+                services.AddTransient<IAuthenticationSchemeProvider, FakeSchemeProvider>();
+                services.Configure<OpenIdConnectOptions>(OpenIdConnectDefaults.AuthenticationScheme, options => {
+                    options.ClientId = "123";
+                    options.Authority = "https://whatever";
+                });
+            });
         });
-
-        var factory = new CustomisableWebApplicationFactory<Program>(services);
 
         return factory.CreateClient();
     }
@@ -65,11 +62,11 @@ public class LocalizationTests
     [Fact]
     public async Task OrganisationNamePage_DisplaysCorrectly_WhenLanguageIsDefaulted()
     {
-        var _httpClient = BuildHttpClient();
+        var httpClient = BuildHttpClient();
 
         var request = new HttpRequestMessage(HttpMethod.Get, "/registration/organisation-name");
 
-        var response = await _httpClient.SendAsync(request);
+        var response = await httpClient.SendAsync(request);
 
         var responseBody = await response.Content.ReadAsStringAsync();
 
@@ -82,14 +79,14 @@ public class LocalizationTests
     [Fact]
     public async Task OrganisationNamePage_DisplaysCorrectly_WhenLanguageIsEnglish()
     {
-        var _httpClient = BuildHttpClient();
+        var httpClient = BuildHttpClient();
 
         var request = new HttpRequestMessage(HttpMethod.Get, "/registration/organisation-name");
 
         var cultureCookieValue = CookieRequestCultureProvider.MakeCookieValue(new RequestCulture("en"));
         request.Headers.Add("Cookie", $"{CookieRequestCultureProvider.DefaultCookieName}={cultureCookieValue}");
 
-        var response = await _httpClient.SendAsync(request);
+        var response = await httpClient.SendAsync(request);
 
         var responseBody = await response.Content.ReadAsStringAsync();
 
@@ -102,14 +99,14 @@ public class LocalizationTests
     [Fact]
     public async Task OrganisationNamePage_DisplaysCorrectly_WhenLanguageIsWelsh()
     {
-        var _httpClient = BuildHttpClient();
+        var httpClient = BuildHttpClient();
 
         var request = new HttpRequestMessage(HttpMethod.Get, "/registration/organisation-name");
 
         var cultureCookieValue = CookieRequestCultureProvider.MakeCookieValue(new RequestCulture("cy"));
         request.Headers.Add("Cookie", $"{CookieRequestCultureProvider.DefaultCookieName}={cultureCookieValue}");
 
-        var response = await _httpClient.SendAsync(request);
+        var response = await httpClient.SendAsync(request);
 
         var responseBody = await response.Content.ReadAsStringAsync();
 
@@ -122,14 +119,14 @@ public class LocalizationTests
     [Fact]
     public async Task OrganisationNamePage_DisplaysErrorMessageCorrectly_WhenLanguageIsEnglish()
     {
-        var _httpClient = BuildHttpClient();
+        var httpClient = BuildHttpClient();
 
         var request = new HttpRequestMessage(HttpMethod.Post, "/registration/organisation-name")
         {
             Content = new FormUrlEncodedContent(new Dictionary<string, string> { { "OrganisationName", "" } })
         };
 
-        var response = await _httpClient.SendAsync(request);
+        var response = await httpClient.SendAsync(request);
 
         var responseBody = await response.Content.ReadAsStringAsync();
 
@@ -142,7 +139,7 @@ public class LocalizationTests
     [Fact]
     public async Task OrganisationNamePage_DisplaysErrorMessageCorrectly_WhenLanguageIsWelsh()
     {
-        var _httpClient = BuildHttpClient();
+        var httpClient = BuildHttpClient();
 
         var request = new HttpRequestMessage(HttpMethod.Post, "/registration/organisation-name")
         {
@@ -152,7 +149,7 @@ public class LocalizationTests
         var cultureCookieValue = CookieRequestCultureProvider.MakeCookieValue(new RequestCulture("cy"));
         request.Headers.Add("Cookie", $"{CookieRequestCultureProvider.DefaultCookieName}={cultureCookieValue}");
 
-        var response = await _httpClient.SendAsync(request);
+        var response = await httpClient.SendAsync(request);
 
         var responseBody = await response.Content.ReadAsStringAsync();
 
