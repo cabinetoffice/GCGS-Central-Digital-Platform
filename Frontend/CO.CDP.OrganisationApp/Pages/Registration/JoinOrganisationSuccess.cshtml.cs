@@ -10,11 +10,11 @@ public class JoinOrganisationSuccessModel(
 {
     public OrganisationWebApiClient.Organisation? OrganisationDetails { get; set; }
 
-    public async Task<IActionResult> OnGet(Guid organisationId)
+    public async Task<IActionResult> OnGet(string identifier)
     {
         try
         {
-            OrganisationDetails = await organisationClient.GetOrganisationAsync(organisationId);
+            OrganisationDetails = await organisationClient.LookupOrganisationAsync(string.Empty, $"{identifier}");
             return Page();
         }
         catch (ApiException ex) when (ex.StatusCode == 404)
