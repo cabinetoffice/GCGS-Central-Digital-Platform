@@ -198,7 +198,7 @@ public class FormsQuestionPageModel(
         async Task<string> singleChoiceString(FormAnswer a)
         {
             var choiceProviderStrategy = choiceProviderService.GetStrategy(question.Options.ChoiceProviderStrategy);
-            return await choiceProviderStrategy.RenderOption(a, question) ?? "";
+            return await choiceProviderStrategy.RenderOption(a) ?? "";
         }
 
         string boolAnswerString = answer.BoolValue.HasValue == true ? (answer.BoolValue == true ? "Yes" : "No") : "";
@@ -212,7 +212,7 @@ public class FormsQuestionPageModel(
             FormQuestionType.CheckBox => answer.BoolValue == true ? question?.Options?.Choices?.Values.FirstOrDefault() ?? "" : "",
             FormQuestionType.Address => answer.AddressValue != null ? answer.AddressValue.ToHtmlString() : "",
             FormQuestionType.MultiLine => answer.TextValue ?? "",
-            FormQuestionType.GroupedSingleChoice => await singleChoiceString(answer),
+            FormQuestionType.GroupedSingleChoice => GroupedSingleChoiceString(answer, question),
             FormQuestionType.Url => answer.TextValue ?? "",
             _ => ""
         };
@@ -234,6 +234,17 @@ public class FormsQuestionPageModel(
         }
 
         return false;
+    }
+
+    private static string GroupedSingleChoiceString(FormAnswer? answer, FormQuestion question)
+    {
+        if (answer?.OptionValue == null) return "";
+
+        var choices = question.Options.Groups.SelectMany(g => g.Choices);
+
+        var choiceOption = choices.FirstOrDefault(c => c.Value == answer.OptionValue);
+
+        return (choiceOption == null ? answer.OptionValue : choiceOption.Title) ?? "";
     }
 
     private async Task<Guid?> ValidateIfNeedRedirect()

@@ -199,7 +199,7 @@ public class FormsAnswerSetSummaryModel(
         async Task<string> singleChoiceString(FormAnswer a)
         {
             var choiceProviderStrategy = choiceProviderService.GetStrategy(question.Options.ChoiceProviderStrategy);
-            return await choiceProviderStrategy.RenderOption(a, question) ?? "";
+            return await choiceProviderStrategy.RenderOption(a) ?? "";
         }
 
         string boolAnswerString = answer.BoolValue.HasValue == true ? (answer.BoolValue == true ? "Yes" : "No") : "";
@@ -213,7 +213,7 @@ public class FormsAnswerSetSummaryModel(
             FormQuestionType.CheckBox => answer.BoolValue.HasValue ? question.Options.Choices?.FirstOrDefault()?.Title ?? "" : "",
             FormQuestionType.Address => answer.AddressValue != null ? $"{answer.AddressValue.StreetAddress}, {answer.AddressValue.Locality}, {answer.AddressValue.PostalCode}, {answer.AddressValue.CountryName}" : "",
             FormQuestionType.MultiLine => answer.TextValue ?? "",
-            FormQuestionType.GroupedSingleChoice => await singleChoiceString(answer),
+            FormQuestionType.GroupedSingleChoice => GroupedSingleChoiceString(answer, question),
             FormQuestionType.Url => answer.TextValue ?? "",
             _ => ""
         };
@@ -221,5 +221,16 @@ public class FormsAnswerSetSummaryModel(
         string[] answers = [boolAnswerString, answerString];
 
         return string.Join(", ", answers.Where(s => !string.IsNullOrWhiteSpace(s)));
+    }
+
+    private static string GroupedSingleChoiceString(FormAnswer? answer, FormQuestion question)
+    {
+        if (answer?.OptionValue == null) return "";
+
+        var choices = question.Options.Groups.SelectMany(g => g.Choices);
+
+        var choiceOption = choices.FirstOrDefault(c => c.Value == answer.OptionValue);
+
+        return (choiceOption == null ? answer.OptionValue : choiceOption.Title) ?? "";
     }
 }
