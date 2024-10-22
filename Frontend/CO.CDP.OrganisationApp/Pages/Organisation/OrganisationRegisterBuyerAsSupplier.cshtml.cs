@@ -24,7 +24,7 @@ public class OrganisationRegisterBuyerAsSupplierModel(
             await organisationClient.UpdateOrganisationRoles(id, orgInfo.Roles);
             tempDataService.Put(FlashMessageTypes.Success, new FlashMessage(
                 "You have been registered as a supplier",
-                $"You'll need to <a href=\"{Url.Page("/Supplier/SupplierInformationSummary", new { id })}\">add supplier information</a> to be able to create sharecode."
+                $"You'll need to <a class=\"govuk-notification-banner__link\" href=\"{Url.Page("/Supplier/SupplierInformationSummary", new { id })}\">add supplier information</a> to be able to create sharecode."
             ));
         }
 
