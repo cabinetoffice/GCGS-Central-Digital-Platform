@@ -13,5 +13,14 @@ resource "aws_ecs_cluster" "this" {
     }
   }
 
+  dynamic "setting" {
+    for_each = var.is_production ? [0] : []
+    content {
+      name  = "containerInsights"
+      value = "enabled"
+    }
+  }
+
+
   tags = var.tags
 }
