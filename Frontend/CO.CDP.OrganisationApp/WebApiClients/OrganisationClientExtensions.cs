@@ -102,12 +102,12 @@ internal static class OrganisationClientExtensions
                         type: OrganisationUpdateType.Address,
                         organisation: new OrganisationInfo(additionalIdentifiers: null, contactPoint: null, addresses: addresses, identifierToRemove: null, organisationName: null, roles: null)));
 
-    internal static Task UpdateOrganisationRoles(this IOrganisationClient organisationClient,
+    internal static Task AddOrganisationRoles(this IOrganisationClient organisationClient,
         Guid organisationId,
         ICollection<PartyRole> roles)
             => organisationClient.UpdateOrganisationAsync(organisationId,
                     new UpdatedOrganisation(
-                        type: OrganisationUpdateType.Roles,
+                        type: OrganisationUpdateType.AddRoles,
                         organisation: new OrganisationInfo(additionalIdentifiers: null, contactPoint: null, addresses: null, identifierToRemove: null, organisationName: null, roles: roles)));
 
     internal static Task UpdateSupplierCompletedEmailAddress(this IOrganisationClient organisationClient, Guid organisationId)

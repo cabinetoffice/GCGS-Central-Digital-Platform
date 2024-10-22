@@ -39,7 +39,7 @@ public class OrganisationRegisterBuyerAsSupplierTests
         organisationClientMock.Verify(o => o.UpdateOrganisationAsync(
             orgGuid,
             It.Is<UpdatedOrganisation>(uo => uo.Organisation.Roles != null &&
-                                              uo.Organisation.Roles.SequenceEqual(new[] { PartyRole.Buyer, PartyRole.Tenderer }))),
+                                              uo.Organisation.Roles.SequenceEqual(new[] { PartyRole.Tenderer }))),
             Times.Once);
 
         tempDataService.Verify(td => td.Put(FlashMessageTypes.Success, It.Is<FlashMessage>(fm => fm.Heading == "You have been registered as a supplier")));
@@ -61,7 +61,7 @@ public class OrganisationRegisterBuyerAsSupplierTests
         organisationClientMock.Verify(o => o.UpdateOrganisationAsync(
             orgGuid,
             It.Is<UpdatedOrganisation>(uo => uo.Organisation.Roles != null &&
-                                              uo.Organisation.Roles.SequenceEqual(new[] { PartyRole.Buyer, PartyRole.Tenderer }))),
+                                              uo.Organisation.Roles.SequenceEqual(new[] { PartyRole.Tenderer }))),
             Times.Never);
     }
 }

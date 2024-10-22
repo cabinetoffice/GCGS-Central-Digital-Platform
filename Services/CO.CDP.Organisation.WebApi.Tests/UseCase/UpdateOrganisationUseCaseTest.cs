@@ -516,10 +516,10 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
     {
         var command = new UpdateOrganisation
         {
-            Type = OrganisationUpdateType.Roles,
+            Type = OrganisationUpdateType.AddRoles,
             Organisation = new OrganisationInfo
             {
-                Roles = [PartyRole.Buyer, PartyRole.Tenderer]
+                Roles = [PartyRole.Tenderer]
             }
         };
         var organisation = Organisation;
@@ -538,7 +538,7 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
     {
         var command = new UpdateOrganisation
         {
-            Type = OrganisationUpdateType.Roles,
+            Type = OrganisationUpdateType.AddRoles,
             Organisation = new OrganisationInfo
             {
             }

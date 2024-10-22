@@ -62,7 +62,7 @@ public enum OrganisationUpdateType
     OrganisationName,
     OrganisationEmail,
     RegisteredAddress,
-    Roles
+    AddRoles
 }
 
 public record OrganisationInfo

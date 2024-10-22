@@ -31,13 +31,13 @@ public class UpdateOrganisationUseCase(
                 organisation.Name = updateObject.OrganisationName;
                 break;
 
-            case OrganisationUpdateType.Roles:
+            case OrganisationUpdateType.AddRoles:
                 if (updateObject.Roles == null || !updateObject.Roles.Any())
                 {
                     throw new InvalidUpdateOrganisationCommand("Missing roles.");
                 }
 
-                organisation.Roles = updateObject.Roles;
+                organisation.Roles.AddRange(updateObject.Roles);
                 break;
 
             case OrganisationUpdateType.OrganisationEmail:
