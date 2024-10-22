@@ -3,9 +3,12 @@ using Moq;
 using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.OrganisationInformation.Persistence;
 using AutoMapper;
+using CO.CDP.GovUKNotify;
+using CO.CDP.GovUKNotify.Models;
 using CO.CDP.Organisation.WebApi.UseCase;
 using CO.CDP.OrganisationInformation;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using OrganisationJoinRequest = CO.CDP.Organisation.WebApi.Model.OrganisationJoinRequest;
 using Person = CO.CDP.OrganisationInformation.Persistence.Person;
 
@@ -17,8 +20,8 @@ public class CreateOrganisationJoinRequestUseCaseTests
     private readonly Mock<IPersonRepository> _mockPersonRepository;
     private readonly Mock<IOrganisationJoinRequestRepository> _mockOrganisationJoinRequestRepository;
     private readonly Mock<IMapper> _mockMapper;
-    private readonly Mock<IConfiguration> _mockConfiguration;
-    private readonly Func<Guid> _guidFactory;
+    private readonly Mock<IGovUKNotifyApiClient> _notifyApiClient = new();
+    private readonly Mock<ILogger<CreateOrganisationJoinRequestUseCase>> _logger = new();
     private readonly CreateOrganisationJoinRequestUseCase _useCase;
     private readonly OrganisationInformation.Persistence.Organisation _organisation;
     private readonly Person _person;
@@ -29,8 +32,6 @@ public class CreateOrganisationJoinRequestUseCaseTests
         _mockPersonRepository = new Mock<IPersonRepository>();
         _mockOrganisationJoinRequestRepository = new Mock<IOrganisationJoinRequestRepository>();
         _mockMapper = new Mock<IMapper>();
-        _mockConfiguration = new Mock<IConfiguration>();
-        _guidFactory = () => Guid.NewGuid();
         _organisation = new OrganisationInformation.Persistence.Organisation
         {
             Id = 1,
@@ -45,15 +46,28 @@ public class CreateOrganisationJoinRequestUseCaseTests
             Guid = default,
             FirstName = "John",
             LastName = "Johnson",
-            Email = "john@johson.com"
+            Email = "john@johnson.com"
         };
+
+        var inMemorySettings = new List<KeyValuePair<string, string?>>
+        {
+            new("OrganisationAppUrl", "http://baseurl/"),
+            new("GOVUKNotify:RequestToJoinNotifyOrgAdminTemplateId", "RequestToJoinNotifyOrgAdminTemplateId"),
+            new("GOVUKNotify:RequestToJoinConfirmationEmailTemplateId", "RequestToJoinConfirmationEmailTemplateId")
+        };
+
+        IConfiguration mockConfiguration = new ConfigurationBuilder()
+            .AddInMemoryCollection(inMemorySettings)
+            .Build();
 
         _useCase = new CreateOrganisationJoinRequestUseCase(
             _mockOrganisationRepository.Object,
             _mockPersonRepository.Object,
             _mockOrganisationJoinRequestRepository.Object,
-            _guidFactory,
-            _mockMapper.Object
+            _mockMapper.Object,
+            mockConfiguration,
+            _notifyApiClient.Object,
+            _logger.Object
         );
     }
 
@@ -119,5 +133,103 @@ public class CreateOrganisationJoinRequestUseCaseTests
 
         _mockOrganisationJoinRequestRepository.Verify(repo => repo.Save(It.IsAny<CO.CDP.OrganisationInformation.Persistence.OrganisationJoinRequest>()), Times.Once);
         _mockMapper.Verify(mapper => mapper.Map<OrganisationJoinRequest>(It.IsAny<CO.CDP.OrganisationInformation.Persistence.OrganisationJoinRequest>()), Times.Once);
+    }
+
+    [Fact]
+    public async Task ItShouldSendUserRequestSentEmail()
+    {
+        var createJoinRequestCommand = new CreateOrganisationJoinRequest { PersonId = _person.Guid };
+
+        _mockOrganisationRepository.Setup(repo => repo.Find(_organisation.Guid))
+            .ReturnsAsync(_organisation);
+
+        _mockPersonRepository.Setup(repo => repo.Find(_person.Guid))
+            .ReturnsAsync(_person);
+
+        _mockMapper.Setup(mapper => mapper.Map<OrganisationJoinRequest>(It.IsAny<CO.CDP.OrganisationInformation.Persistence.OrganisationJoinRequest>()))
+            .Returns(new OrganisationJoinRequest
+            {
+                Status = OrganisationJoinRequestStatus.Pending,
+                Id = default,
+                Person = null!,
+                Organisation = null!,
+                ReviewedBy = null!,
+                ReviewedOn = default
+            });
+
+        await _useCase.Execute((_organisation.Guid, createJoinRequestCommand));
+
+        _notifyApiClient.Verify(x => x.SendEmail(It.Is<EmailNotificationRequest>(req =>
+            req.EmailAddress == _person.Email &&
+            req.TemplateId == "RequestToJoinConfirmationEmailTemplateId" &&
+            req.Personalisation!["org_name"] == _organisation.Name
+        )), Times.Once);
+    }
+
+    [Fact]
+    public async Task ItShouldSendEmailsToOrgAdmins()
+    {
+        var createJoinRequestCommand = new CreateOrganisationJoinRequest { PersonId = _person.Guid };
+
+        _mockOrganisationRepository.Setup(repo => repo.Find(_organisation.Guid))
+            .ReturnsAsync(_organisation);
+
+        _mockPersonRepository.Setup(repo => repo.Find(_person.Guid))
+            .ReturnsAsync(_person);
+
+        var adminUsers = new List<Person>
+        {
+            new Person
+            {
+                Email = "admin1@example.com",
+                FirstName = "Admin",
+                LastName = "One",
+                Guid = new Guid()
+            },
+            new Person
+            {
+                Email = "admin2@example.com",
+                FirstName = "Admin",
+                LastName = "Two",
+                Guid = new Guid()
+            }
+        };
+
+        _mockOrganisationRepository.Setup(repo => repo.FindOrganisationPersons(_organisation.Guid))
+            .ReturnsAsync(adminUsers.Select(admin => new OrganisationPerson
+            {
+                Person = admin,
+                Scopes = ["ADMIN"],
+                Organisation = null!
+            }).ToList());
+
+        _mockMapper.Setup(mapper => mapper.Map<OrganisationJoinRequest>(It.IsAny<CO.CDP.OrganisationInformation.Persistence.OrganisationJoinRequest>()))
+            .Returns(new OrganisationJoinRequest
+            {
+                Status = OrganisationJoinRequestStatus.Pending,
+                Id = default,
+                Person = null!,
+                Organisation = null!,
+                ReviewedBy = null!,
+                ReviewedOn = default
+            });
+
+        await _useCase.Execute((_organisation.Guid, createJoinRequestCommand));
+
+        _notifyApiClient.Verify(x => x.SendEmail(It.Is<EmailNotificationRequest>(req =>
+            req.EmailAddress == "admin1@example.com" &&
+            req.TemplateId == "RequestToJoinNotifyOrgAdminTemplateId" &&
+            req.Personalisation!["org_name"] == _organisation.Name &&
+            req.Personalisation["first_name"] == "Admin" &&
+            req.Personalisation["last_name"] == "One"
+        )), Times.Once);
+
+        _notifyApiClient.Verify(x => x.SendEmail(It.Is<EmailNotificationRequest>(req =>
+            req.EmailAddress == "admin2@example.com" &&
+            req.TemplateId == "RequestToJoinNotifyOrgAdminTemplateId" &&
+            req.Personalisation!["org_name"] == _organisation.Name &&
+            req.Personalisation["first_name"] == "Admin" &&
+            req.Personalisation["last_name"] == "Two"
+        )), Times.Once);
     }
 }

@@ -28,8 +28,8 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
     public async Task<IEnumerable<OrganisationPerson>> FindOrganisationPersons(Guid organisationId)
     {
         return await context.Set<OrganisationPerson>()
-            .Include(p => p.Person)
-            .Where(o => o.Organisation.Guid == organisationId)
+            .Include(op => op.Person)
+            .Where(op => op.Organisation.Guid == organisationId)
             .ToListAsync();
     }
 

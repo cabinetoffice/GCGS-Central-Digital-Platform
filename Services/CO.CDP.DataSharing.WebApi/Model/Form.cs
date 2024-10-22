@@ -18,7 +18,7 @@ public record Form
     public required FormSubmissionState SubmissionState { get; init; }
 
     /// <example>"2024-04-28T21:53:26.377Z"</example>
-    public required DateTime SubmittedAt { get; init; }
+    public required DateTimeOffset SubmittedAt { get; init; }
 
     /// <example>"5a360be7-e1d3-4214-9f72-0e1d6b57b85d"</example>
     public required Guid OrganisationId { get; init; }
