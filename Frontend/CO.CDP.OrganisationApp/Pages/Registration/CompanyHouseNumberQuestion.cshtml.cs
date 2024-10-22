@@ -36,8 +36,8 @@ public class CompanyHouseNumberQuestionModel(ISession session,
 
     public string? OrganisationName;
 
-    public string NotificationBannerCompanyNotFound { get { return "We cannot find your company number on Companies House. If it’s correct continue and enter your details manually."; } }
-    public string NotificationBannerCompanyAlreadyRegistered { get { return "An organisation with this company number already exists. Change the company number or <a class='govuk-notification-banner__link' href='/registration/" + OrganisationId + "/join-organisation'>request to join " + OrganisationName + ".</a>"; } }
+    public FlashMessage NotificationBannerCompanyNotFound { get { return new FlashMessage("We cannot find your company number on Companies House. If it’s correct continue and enter your details manually."); } }
+    public FlashMessage NotificationBannerCompanyAlreadyRegistered { get { return new FlashMessage("An organisation with this company number already exists. Change the company number or <a class='govuk-notification-banner__link' href='/registration/" + OrganisationId + "/join-organisation'>request to join " + OrganisationName + ".</a>"); } }
 
     public void OnGet()
     {
