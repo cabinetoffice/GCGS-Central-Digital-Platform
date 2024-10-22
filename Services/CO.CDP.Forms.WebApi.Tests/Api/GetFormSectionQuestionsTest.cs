@@ -21,8 +21,10 @@ public class GetFormSectionQuestionsTest
         TestWebApplicationFactory<Program> factory = new(builder =>
         {
             builder.ConfigureServices(services =>
-                services.AddScoped(_ => _getFormSectionQuestionsUseCase.Object)
-            );
+            {
+                services.AddScoped(_ => _getFormSectionQuestionsUseCase.Object);
+                services.ConfigureFakePolicyEvaluator();
+            });
         });
         _httpClient = factory.CreateClient();
     }
