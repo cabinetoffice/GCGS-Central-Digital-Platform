@@ -2,13 +2,11 @@ using CO.CDP.Mvc.Validation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel;
-
-namespace CO.CDP.OrganisationApp.Pages;
-
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.WebApiClients;
-using Microsoft.IdentityModel.Tokens;
 using System.ComponentModel.DataAnnotations;
+
+namespace CO.CDP.OrganisationApp.Pages;
 
 
 [AuthenticatedSessionNotRequired]
@@ -35,26 +33,21 @@ public class ProvideFeedbackAndContact(IOrganisationClient organisationClient) :
     [BindProperty]
     public string? Email { get; set; }
 
-    public required string Context { get; set; }
+    [BindProperty(SupportsGet = true)]
+    public required ContactFormTypes Context { get; set; }
 
     public IActionResult OnGet()
     {
-        SetContext();
+        ValidateContext();
         return Page();
     }
 
-    private void SetContext()
+    private void ValidateContext()
     {
-        Context = Request.Query["context"].ToString().ToUpper();
-        if (ValidateContext() == false) throw new Exception("Unknown context");
-    }
-
-    private bool ValidateContext()
-    {
-        if (string.IsNullOrEmpty(Context) || (Context != "FEEDBACK" && Context != "SUPPORT"))
-            return false;
-
-        return true;
+        if(Context == ContactFormTypes.None)
+        {
+            throw new Exception("Unknown context");
+        }
     }
 
     public async Task<IActionResult> OnPost(string? redirectUri = null)
@@ -80,13 +73,18 @@ public class ProvideFeedbackAndContact(IOrganisationClient organisationClient) :
             return Page();
         }
 
-        SetContext();
+        ValidateContext();
 
-        if (ValidateContext() == false) throw new Exception("Unknown context");
-
-        var feedback = new CO.CDP.Organisation.WebApiClient.ProvideFeedbackAndContact(Email ?? string.Empty, Details, FeedbackOrContactOption, Name ?? string.Empty, UrlOfPage ?? string.Empty, Context);
+        var feedback = new CO.CDP.Organisation.WebApiClient.ProvideFeedbackAndContact(Email ?? string.Empty, Details, FeedbackOrContactOption, Name ?? string.Empty, UrlOfPage ?? string.Empty, Context.ToString().ToUpper());
         var success = await organisationClient.FeedbackAndContact(feedback);
 
         return RedirectToPage("confirmationmessage");
     }
+}
+
+public enum ContactFormTypes
+{
+    None,
+    Support,
+    Feedback
 }

@@ -8,6 +8,7 @@ using FluentAssertions;
 using Moq;
 using Persistence = CO.CDP.OrganisationInformation.Persistence;
 using Address = CO.CDP.OrganisationInformation.Persistence.Address;
+using CO.CDP.OrganisationInformation;
 
 namespace CO.CDP.Organisation.WebApi.Tests.UseCase;
 
@@ -510,6 +511,47 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
         organisation.Addresses.FirstOrDefault(x=>x.Type==OrganisationInformation.AddressType.Registered)!.Address.CountryName.Should().Be("Test Land updated");
     }
 
+    [Fact]
+    public async Task Execute_ShouldUpdateOrganisationRolesToTwo_WhenOrganisationHasOneRole()
+    {
+        var command = new UpdateOrganisation
+        {
+            Type = OrganisationUpdateType.AddRoles,
+            Organisation = new OrganisationInfo
+            {
+                Roles = [PartyRole.Tenderer]
+            }
+        };
+        var organisation = Organisation;
+        _organisationRepositoryMock.Setup(repo => repo.Find(_organisationId)).ReturnsAsync(organisation);
+
+        var result = await UseCase.Execute((_organisationId, command));
+
+        result.Should().BeTrue();
+        _organisationRepositoryMock.Verify(repo => repo.SaveAsync(organisation, AnyOnSave()), Times.Once);
+
+        organisation.Roles.Should().BeEquivalentTo([PartyRole.Buyer, PartyRole.Tenderer]);
+    }
+
+    [Fact]
+    public async Task Execute_ShouldUpdateOrganisationRolesThrowsException_WhenRolesAreMissing()
+    {
+        var command = new UpdateOrganisation
+        {
+            Type = OrganisationUpdateType.AddRoles,
+            Organisation = new OrganisationInfo
+            {
+            }
+        };
+        var organisation = Organisation;
+        _organisationRepositoryMock.Setup(repo => repo.Find(_organisationId)).ReturnsAsync(organisation);
+
+        Func<Task> act = async () => await UseCase.Execute((_organisationId, command));
+
+        await act.Should()
+            .ThrowAsync<InvalidUpdateOrganisationCommand>()
+            .WithMessage("Missing roles.");
+    }
 
     private Persistence.Organisation OrganisationWithOtherIdentifier =>
         new()
@@ -573,8 +615,8 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
                     CountryName = "Test Land",
                     Country = "AB"
                 }
-            }}
-
+            }},
+            Roles = [PartyRole.Buyer]
         };
 
     private Persistence.Organisation OrganisationWithVatPrimaryAndPpon =>
