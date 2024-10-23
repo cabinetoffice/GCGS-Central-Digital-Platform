@@ -1,11 +1,10 @@
-@page "/registration/organisation-already-registered/{OrganisationId}"
+@page "/registration/organisation-already-registered/{Identifier}"
 
 @model OrganisationAlreadyRegistered
 
 @{
     var backLink = RegistrationStepModel.OrganisationIdentifierPage;
     var overrideBackLink = Request.Query.ContainsKey("backLink");
-    var organisationId = Model.OrganisationId;
 
     if (overrideBackLink)
     {
@@ -33,7 +32,7 @@
                     If you know the person who registered the organisation, they can invite you to join. Or you can request to join below.
                 </p>
 
-                <a class="govuk-button" href="/registration/@organisationId/join-organisation">
+                <a class="govuk-button" href="/registration/@Model.Identifier/join-organisation">
                     Request to Join
                 </a>
             </form>

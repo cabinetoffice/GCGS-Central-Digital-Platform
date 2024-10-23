@@ -108,7 +108,7 @@ public class OrganisationIdentificationModel(ISession session,
     [BindProperty]
     public bool? RedirectToSummary { get; set; }
 
-    public Guid? OrganisationId { get; set; }
+    public string? Identifier { get; set; }
 
     public void OnGet()
     {
@@ -176,9 +176,8 @@ public class OrganisationIdentificationModel(ISession session,
         try
         {
             SessionContext.Set(Session.RegistrationDetailsKey, RegistrationDetails);
-            var organisation = await LookupOrganisationAsync();
-
-            OrganisationId = organisation.Id;
+            Identifier = $"{OrganisationScheme}:{RegistrationDetails.OrganisationIdentificationNumber}";
+            await LookupOrganisationAsync();
         }
         catch (Exception orgApiException) when (orgApiException is CO.CDP.Organisation.WebApiClient.ApiException && ((CO.CDP.Organisation.WebApiClient.ApiException)orgApiException).StatusCode == 404)
         {
@@ -203,17 +202,16 @@ public class OrganisationIdentificationModel(ISession session,
             }
         }
 
-        return RedirectToPage("OrganisationAlreadyRegistered", new { OrganisationId = OrganisationId });
+        return RedirectToPage("OrganisationAlreadyRegistered", new { Identifier });
     }
 
     private async Task<CO.CDP.Organisation.WebApiClient.Organisation> LookupOrganisationAsync()
     {
-        return await organisationClient.LookupOrganisationAsync(string.Empty,
-                    $"{OrganisationScheme}:{RegistrationDetails.OrganisationIdentificationNumber}");
+        return await organisationClient.LookupOrganisationAsync(string.Empty, Identifier);
     }
 
     private async Task<ICollection<EntityVerificationClient.Identifier>> LookupEntityVerificationAsync()
     {
-        return await pponClient.GetIdentifiersAsync($"{OrganisationScheme}:{RegistrationDetails.OrganisationIdentificationNumber}");
+        return await pponClient.GetIdentifiersAsync(Identifier);
     }
 }

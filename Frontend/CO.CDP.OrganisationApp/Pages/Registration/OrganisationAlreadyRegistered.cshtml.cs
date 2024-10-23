@@ -6,11 +6,11 @@ namespace CO.CDP.OrganisationApp.Pages.Registration;
 public class OrganisationAlreadyRegistered: PageModel
 {
     [BindProperty]
-    public Guid? OrganisationId { get; set; }
+    public string? Identifier { get; set; }
 
-    public IActionResult OnGet(Guid organisationId)
+    public IActionResult OnGet(string identifier)
     {
-        OrganisationId = organisationId;
+        Identifier = identifier;
         return Page();
     }
 }
