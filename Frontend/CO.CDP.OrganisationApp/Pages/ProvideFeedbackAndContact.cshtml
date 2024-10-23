@@ -64,7 +64,7 @@
                                 <div class="govuk-form-group @(urlOfPageHasError ? "govuk-form-group--error" : "")">
                                     <label for="@nameof(Model.UrlOfPage)" class="govuk-label">Enter URL or name of page</label>
                                     @Html.ValidationMessageFor(m => m.UrlOfPage, "", new { @class = "govuk-error-message", @id = "UrlOfPage-error" })
-                                    <input class="govuk-input" id="@nameof(Model.UrlOfPage)" name="@nameof(Model.UrlOfPage)" spellcheck="false" type="text" value="@Model.UrlOfPage" @(urlOfPageHasError ? Html.Raw("aria-describedby=\"UrlOfPage-error\"") : "")>
+                                    <input class="govuk-input" id="@nameof(Model.UrlOfPage)" name="@nameof(Model.UrlOfPage)" spellcheck="false" type="url" value="@Model.UrlOfPage" @(urlOfPageHasError ? Html.Raw("aria-describedby=\"UrlOfPage-error\"") : "")>
                                 </div>
                             </div>                         
                         </div>
