@@ -61,7 +61,7 @@ public class FormElementUrlInputModel : FormElementModel, IValidatableObject
             {
                 yield return new ValidationResult("Enter a website address", [nameof(TextInput)]);
             }
-            else if (Uri.TryCreate(TextInput, UriKind.Absolute, out var _) == false)
+            else if (TextInput.Contains(".") == false || TextInput.Contains(" "))
             {
                 yield return new ValidationResult("Enter a valid website address in the correct format", [nameof(TextInput)]);
             }

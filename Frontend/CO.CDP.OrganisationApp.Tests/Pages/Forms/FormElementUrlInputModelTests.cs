@@ -118,14 +118,16 @@ public class FormElementUrlInputModelTests
         validationResults[0].ErrorMessage.Should().Be("Enter a website address");
     }
 
-    [Fact]
-    public void Validate_ShouldReturnError_WhenTextInputIsInvalidUrl()
+    [Theory]
+    [InlineData("invalid-url")]
+    [InlineData("http://example.url/has space")]
+    public void Validate_ShouldReturnError_WhenTextInputIsInvalidUrl(string url)
     {
         var model = new FormElementUrlInputModel
         {
             IsRequired = true,
             HasValue = true,
-            TextInput = "invalid-url"
+            TextInput = url
         };
 
         var validationResults = new List<ValidationResult>();
