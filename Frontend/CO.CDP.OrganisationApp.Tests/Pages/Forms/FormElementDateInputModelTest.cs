@@ -7,31 +7,76 @@ namespace CO.CDP.OrganisationApp.Tests.Pages.Forms;
 
 public class FormElementDateInputModelTest
 {
-    private readonly FormElementDateInputModel _model;
-
-    public FormElementDateInputModelTest()
-    {
-        _model = new FormElementDateInputModel();
-    }
+    private readonly FormElementDateInputModel _model = new();
 
     [Theory]
     [InlineData("01", "12", null)]
     [InlineData(null, "12", "2023")]
     [InlineData("01", null, "2023")]
-    public void GetAnswer_ReturnsNull_WhenDateComponentsAreIncomplete(string? day, string? month, string? year)
+    [InlineData("01", "12", "2023")]
+    public void GetAnswer_WhenHasValueFalse_GetsExpectedFormAnswer(string? day, string? month, string? year)
     {
+        _model.HasValue = false;
         _model.Day = day;
         _model.Month = month;
         _model.Year = year;
 
         var answer = _model.GetAnswer();
 
-        answer.Should().BeNull();
+        answer.Should().NotBeNull();
+        answer.As<FormAnswer>().BoolValue.Should().Be(false);
+        answer.As<FormAnswer>().TextValue.Should().BeNull();
+    }
+
+    [Theory]
+    [InlineData("01", "12", null, false)]
+    [InlineData(null, "12", "2023", false)]
+    [InlineData("01", null, "2023", false)]
+    [InlineData("01", "12", "2023", true)]
+    public void GetAnswer_WhenHasValueTrue_GetsExpectedFormAnswer(string? day, string? month, string? year, bool validDateParams)
+    {
+        _model.HasValue = true;
+        _model.Day = day;
+        _model.Month = month;
+        _model.Year = year;
+
+        var answer = _model.GetAnswer();
+
+        answer.Should().NotBeNull();
+        answer.As<FormAnswer>().BoolValue.Should().Be(true);
+        answer.As<FormAnswer>().DateValue.Should().Be(validDateParams ? new DateTime(2023, 12, 1) : null);
+    }
+
+    [Theory]
+    [InlineData("01", "12", null, false)]
+    [InlineData(null, "12", "2023", false)]
+    [InlineData("01", null, "2023", false)]
+    [InlineData("01", "12", "2023", true)]
+    public void GetAnswer_WhenHasValueIsNull_GetsExpectedFormAnswer(string? day, string? month, string? year, bool validDateParams)
+    {
+        _model.HasValue = null;
+        _model.Day = day;
+        _model.Month = month;
+        _model.Year = year;
+
+        var answer = _model.GetAnswer();
+
+        if (validDateParams == false)
+        {
+            answer.Should().BeNull();
+        }
+        else
+        {
+            answer.Should().NotBeNull();
+            answer.As<FormAnswer>().BoolValue.Should().BeNull();
+            answer.As<FormAnswer>().DateValue.Should().Be(new DateTime(2023, 12, 1));
+        }
     }
 
     [Fact]
-    public void GetAnswer_ReturnsAnswer_WhenDateComponentsAreComplete()
+    public void GetAnswer_ShouldNotHaveDate_WhenSelectedAsNotRequired()
     {
+        _model.HasValue = false;
         _model.Day = "01";
         _model.Month = "12";
         _model.Year = "2023";
@@ -39,7 +84,7 @@ public class FormElementDateInputModelTest
         var answer = _model.GetAnswer();
 
         answer.Should().NotBeNull();
-        answer!.DateValue.Should().Be(new DateTime(2023, 12, 1));
+        answer.As<FormAnswer>().DateValue.Should().BeNull();
     }
 
     [Fact]
