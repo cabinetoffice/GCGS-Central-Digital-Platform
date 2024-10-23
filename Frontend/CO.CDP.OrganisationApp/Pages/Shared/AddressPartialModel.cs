@@ -8,12 +8,12 @@ public class AddressPartialModel : IValidatableObject
 {
     [BindProperty]
     [DisplayName("Address line 1")]
-    [Required(ErrorMessage = "Enter your address line 1")]
+    [Required(ErrorMessage = "Enter address line 1, typically the building and street")]
     public string? AddressLine1 { get; set; }
 
     [BindProperty]
     [DisplayName("Town or city")]
-    [Required(ErrorMessage = "Enter your town or city")]
+    [Required(ErrorMessage = "Enter town or city")]
     public string? TownOrCity { get; set; }
 
     [BindProperty]
@@ -22,7 +22,7 @@ public class AddressPartialModel : IValidatableObject
 
     [BindProperty]
     [DisplayName("Country")]
-    [Required(ErrorMessage = "Enter your country")]
+    [Required(ErrorMessage = "Enter country")]
     public string? Country { get; set; }
 
     [BindProperty(SupportsGet = true)]
@@ -70,7 +70,7 @@ public class AddressPartialModel : IValidatableObject
 
             if (string.IsNullOrWhiteSpace(address.Postcode))
             {
-                return new ValidationResult(address.IsNonUkAddress ? "Enter your postal or zip code" : "Enter your postcode");
+                return new ValidationResult(address.IsNonUkAddress ? "Enter postal or zip code" : "Enter postcode");
             }
 
             return ValidationResult.Success;
