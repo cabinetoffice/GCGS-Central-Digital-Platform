@@ -43,7 +43,7 @@
 
                             <div class="govuk-radios__conditional" id="conditional-YES">
                                 <div class="govuk-form-group @(companiesHouseNumberHasError ? "govuk-form-group--error" : "")">
-                                    <label class="govuk-label" for="CompaniesHouseNumber">Company House Number</label>
+                                    <label class="govuk-label" for="CompaniesHouseNumber">Enter your company number</label>
                                     <input class="govuk-input govuk-!-width-one-half @(companiesHouseNumberHasError ? "govuk-input--error" : "")"
                                            id="CompaniesHouseNumber" name="CompaniesHouseNumber" type="text" spellcheck="false" autocomplete="off"
                                            value="@(Model.HasCompaniesHouseNumber == true ? Model.CompaniesHouseNumber : "")">
