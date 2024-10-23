@@ -30,7 +30,7 @@ public class AddressPartialModel : IValidatableObject
 
     public bool IsNonUkAddress => UkOrNonUk == "non-uk";
 
-    public string PostcodeLabel => IsNonUkAddress ? "Postal or Zip code" : "Postcode";
+    public string PostcodeLabel => IsNonUkAddress ? "Postal or Zip Code" : "Postcode";
 
     public string? CountryName
     {
