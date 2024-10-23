@@ -70,7 +70,7 @@ public class AddressPartialModel : IValidatableObject
 
             if (string.IsNullOrWhiteSpace(address.Postcode))
             {
-                return new ValidationResult(address.IsNonUkAddress ? "Enter postal or zip code" : "Enter postcode");
+                return new ValidationResult(address.IsNonUkAddress ? "Enter postal or Zip Code" : "Enter postcode");
             }
 
             return ValidationResult.Success;
