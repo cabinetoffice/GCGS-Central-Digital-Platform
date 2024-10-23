@@ -28,6 +28,7 @@ public class SupplierInformationEndpointsTests
             {
                 services.AddScoped(_ => _getSupplierInformationUseCase.Object);
                 services.AddScoped(_ => _updatesSupplierInformationUseCase.Object);
+                services.ConfigureFakePolicyEvaluator();
             });
         });
         _httpClient = factory.CreateClient();

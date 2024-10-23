@@ -98,17 +98,6 @@ resource "aws_codepipeline" "this" {
   }
 
   stage {
-    name = "Wait-for-approval-to-update-Integration"
-    action {
-      name     = "ManualApproval"
-      category = "Approval"
-      owner    = "AWS"
-      provider = "Manual"
-      version  = "1"
-    }
-  }
-
-  stage {
     name = "Update-Integration"
     action {
       category         = "Build"
@@ -130,7 +119,6 @@ resource "aws_codepipeline" "this" {
       }
     }
   }
-
 
   stage {
     name = "Wait-for-approval-to-update-Production"

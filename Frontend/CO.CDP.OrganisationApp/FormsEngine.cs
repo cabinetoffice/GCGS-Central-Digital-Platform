@@ -53,12 +53,12 @@ public class FormsEngine(
                     {
                         Choices = await choiceProviderStrategy.Execute(q.Options),
                         ChoiceProviderStrategy = q.Options.ChoiceProviderStrategy,
-                        Groups = q.Options.Groups?.Select(g => new Models.FormQuestionGroup
+                        Groups = q.Options.Groups.Select(g => new Models.FormQuestionGroup
                         {
                             Name = g.Name,
                             Hint = g.Hint,
                             Caption = g.Caption,
-                            Choices = g.Choices?.Select(c => new Models.FormQuestionGroupChoice
+                            Choices = g.Choices.Select(c => new Models.FormQuestionGroupChoice
                             {
                                 Title = c.Title,
                                 Value = c.Value
