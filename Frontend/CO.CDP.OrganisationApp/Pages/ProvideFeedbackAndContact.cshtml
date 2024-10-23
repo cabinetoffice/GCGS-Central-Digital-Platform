@@ -76,15 +76,15 @@
                         <h1 class="govuk-label-wrapper">
                             @if (Model.Context == ContactFormTypes.Feedback)
                             {
-                                <label class="govuk-label govuk-label--l" for="@nameof(Model.Details)">
-                                    Enter your feedback
-                                </label>
+                                <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                                    <span class="govuk-fieldset__heading">Enter your feedback</span>
+                                </legend>
                             }
                             else if (Model.Context == ContactFormTypes.Support)
                             {
-                                <label class="govuk-label govuk-label--l" for="@nameof(Model.Details)">
-                                    What are the details?
-                                </label>
+                                <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                                    <span class="govuk-fieldset__heading">What are the details?</span>
+                                </legend>
                             }
                         </h1>
                         <div id="@nameof(Model.Details)-hint" class="govuk-hint">
@@ -100,9 +100,10 @@
 
 
                 <fieldset class="govuk-fieldset">
-                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">If you want a reply (optional)</legend>
 
-                    <p class="govuk-body">If you'd like us to get back to you, please leave your details below.</p>
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                        <span class="govuk-fieldset__heading">Give us your details if you want a reply (optional)</span>
+                    </legend>
 
                     <div class="govuk-form-group @(nameHasError ? "govuk-form-group--error" : "")">
                         <label for="@nameof(Model.Name)" class="govuk-label">Name</label>
@@ -112,10 +113,10 @@
 
                     <div class="govuk-form-group @(emailHasError ? "govuk-form-group--error" : "")">
 
-                        <label for="@nameof(Model.Email)" class="govuk-label">Your email address</label>
+                        <label for="@nameof(Model.Email)" class="govuk-label">Email address</label>
 
                         <div class="govuk-hint" id="@nameof(Model.Email)-hint">
-                            We'll only use this to reply to your message.
+                            We'll only use this to reply to your message
                         </div>
                         @Html.ValidationMessageFor(m => m.Email, "", new { @class = "govuk-error-message", @id = "Email-error" })
                         <input aria-describedby="@nameof(Model.Email)-hint @(emailHasError ? "Email-error" : "")" autocomplete="email" class="govuk-input" id="@nameof(Model.Email)" name="@nameof(Model.Email)" spellcheck="false" type="email" value="@(Model.Email)">
