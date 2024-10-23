@@ -120,7 +120,9 @@ public class CompanyHouseNumberQuestionTests
 
         tempDataServiceMock.Verify(api => api.Put(
             FlashMessageTypes.Important,
-            model.NotificationBannerCompanyAlreadyRegistered), Times.Once);
+            It.Is<FlashMessage>(f => f.Heading == model.NotificationBannerCompanyAlreadyRegistered.Heading)),
+            Times.Once);
+
         result.Should().BeOfType<PageResult>();
     }
 
@@ -142,7 +144,8 @@ public class CompanyHouseNumberQuestionTests
 
         tempDataServiceMock.Verify(api => api.Put(
             FlashMessageTypes.Important,
-            model.NotificationBannerCompanyNotFound), Times.Once);
+            It.Is<FlashMessage>(f => f.Heading == model.NotificationBannerCompanyNotFound.Heading)),
+            Times.Once);
         result.Should().BeOfType<PageResult>();
     }
 

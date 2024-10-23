@@ -61,7 +61,8 @@ public enum OrganisationUpdateType
     Address,
     OrganisationName,
     OrganisationEmail,
-    RegisteredAddress
+    RegisteredAddress,
+    AddRoles
 }
 
 public record OrganisationInfo
@@ -71,6 +72,7 @@ public record OrganisationInfo
     public OrganisationContactPoint? ContactPoint { get; init; }
     public List<OrganisationAddress>? Addresses { get; init; }
     public OrganisationIdentifier? IdentifierToRemove { get; init; }
+    public List<PartyRole>? Roles { get; init; }
 }
 
 public record OrganisationIdentifier
