@@ -39,7 +39,6 @@ if (Assembly.GetEntryAssembly().IsRunAs("CO.CDP.Organisation.Authority"))
 var app = builder.Build();
 app.UseForwardedHeaders();
 app.MapHealthChecks("/health");
-app.UseHttpsRedirection();
 
 if (builder.Configuration.GetValue("Features:SwaggerUI", false))
 {
