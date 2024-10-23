@@ -108,6 +108,8 @@ public class OrganisationIdentificationModel(ISession session,
     [BindProperty]
     public bool? RedirectToSummary { get; set; }
 
+    public string? Identifier { get; set; }
+
     public void OnGet()
     {
         OrganisationScheme = RegistrationDetails.OrganisationScheme;
@@ -141,7 +143,7 @@ public class OrganisationIdentificationModel(ISession session,
                 break;
             case "GB-UKPRN":
                 UKLearningProviderReferenceNumber = RegistrationDetails.OrganisationIdentificationNumber;
-                break;            
+                break;
             default:
                 break;
         }
@@ -156,7 +158,7 @@ public class OrganisationIdentificationModel(ISession session,
         }
 
         RegistrationDetails.OrganisationScheme = OrganisationScheme;
-        
+
         RegistrationDetails.OrganisationIdentificationNumber = OrganisationScheme switch
         {
             "GB-CHC" => CharityCommissionEnglandWalesNumber,
@@ -167,10 +169,13 @@ public class OrganisationIdentificationModel(ISession session,
             "JE-FSC" => JerseyFinancialServicesCommissionRegistryNumber,
             "IM-CR" => IsleofManCompaniesRegistryNumber,
             "GB-NHS" => NationalHealthServiceOrganisationsRegistryNumber,
-            "GB-UKPRN" => UKLearningProviderReferenceNumber,            
+            "GB-UKPRN" => UKLearningProviderReferenceNumber,
             "Other" => null,
             _ => null,
         };
+
+        Identifier = $"{OrganisationScheme}:{RegistrationDetails.OrganisationIdentificationNumber}";
+
         try
         {
             SessionContext.Set(Session.RegistrationDetailsKey, RegistrationDetails);
@@ -199,17 +204,16 @@ public class OrganisationIdentificationModel(ISession session,
             }
         }
 
-        return RedirectToPage("OrganisationAlreadyRegistered");
+        return RedirectToPage("OrganisationAlreadyRegistered", new { Identifier });
     }
 
     private async Task<CO.CDP.Organisation.WebApiClient.Organisation> LookupOrganisationAsync()
     {
-        return await organisationClient.LookupOrganisationAsync(string.Empty,
-                    $"{OrganisationScheme}:{RegistrationDetails.OrganisationIdentificationNumber}");
+        return await organisationClient.LookupOrganisationAsync(string.Empty, Identifier);
     }
 
     private async Task<ICollection<EntityVerificationClient.Identifier>> LookupEntityVerificationAsync()
     {
-        return await pponClient.GetIdentifiersAsync($"{OrganisationScheme}:{RegistrationDetails.OrganisationIdentificationNumber}");
+        return await pponClient.GetIdentifiersAsync(Identifier);
     }
 }
