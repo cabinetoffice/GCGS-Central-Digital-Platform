@@ -61,7 +61,8 @@ public enum OrganisationUpdateType
     Address,
     OrganisationName,
     OrganisationEmail,
-    RegisteredAddress
+    RegisteredAddress,
+    AddRoles
 }
 
 public record OrganisationInfo
@@ -71,6 +72,7 @@ public record OrganisationInfo
     public OrganisationContactPoint? ContactPoint { get; init; }
     public List<OrganisationAddress>? Addresses { get; init; }
     public OrganisationIdentifier? IdentifierToRemove { get; init; }
+    public List<PartyRole>? Roles { get; init; }
 }
 
 public record OrganisationIdentifier
@@ -272,6 +274,17 @@ public record InvitePersonToOrganisation
     public required string Email { get; init; }
     public required List<string> Scopes { get; init; }
 }
+
+public record ProvideFeedbackAndContact
+{
+    public required string FeedbackAbout { get; init; }
+    public required string SpecificPage { get; init; }
+    public required string Feedback { get; init; }
+    public required string Name { get; init; }
+    public required string Email { get; init; }
+    public required string Subject { get; init; }
+}
+
 
 public record UpdateInvitedPersonToOrganisation
 {

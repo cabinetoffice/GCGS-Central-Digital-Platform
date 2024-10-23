@@ -93,6 +93,7 @@ builder.Services.AddScoped<IUseCase<(Guid, string), bool>, RevokeAuthenticationK
 builder.Services.AddScoped<IUseCase<(Guid, CreateOrganisationJoinRequest), OrganisationJoinRequest>, CreateOrganisationJoinRequestUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, OrganisationJoinRequestStatus?), IEnumerable<JoinRequestLookUp>>, GetOrganisationJoinRequestUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, Guid, UpdateJoinRequest), bool>, UpdateJoinRequestUseCase>();
+builder.Services.AddScoped<IUseCase<ProvideFeedbackAndContact, bool>, ProvideFeedbackAndContactUseCase>();
 
 builder.Services.AddOrganisationProblemDetails();
 
@@ -160,6 +161,10 @@ app.MapGroup("/organisations")
 app.MapGroup("/organisations")
     .UseManageApiKeyEndpoints()
     .WithTags("Organisation - Manage Api Keys");
+
+app.MapGroup("/feeback")
+    .UseFeedbackEndpoints()
+    .WithTags("Feedback - provide feedback");
 
 app.Run();
 public abstract partial class Program;
