@@ -48,8 +48,8 @@
                                 }
                                 else
                                 {
-                                    <authorize scope="@OrgScopeRequirement.Editor">
-                                        <a class="govuk-link" href="/organisation/@Model.Id/manage-api-key/@Uri.EscapeDataString(ak.Name)/revoke-api-key">Cancel</a>
+                                    <authorize scope="@OrgScopeRequirement.Editor">                                        
+                                        <a asp-page="RevokeApiKey" class="govuk-link" asp-route-id="@Model.Id" asp-route-apiKeyName="@ak.Name">Cancel</a>
                                     </authorize>
                                 }
                             </dd>                                    
