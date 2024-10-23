@@ -7,34 +7,69 @@ namespace CO.CDP.OrganisationApp.Tests.Pages.Forms;
 
 public class FormElementUrlInputModelTests
 {
-    [Fact]
-    public void GetAnswer_ShouldReturnNull_WhenIsNotRequiredAndHasNoValue()
+    [Theory]
+    [InlineData(null)]
+    [InlineData(" ")]
+    [InlineData("https://example.com")]
+    public void GetAnswer_WhenHasValueFalse_GetsExpectedFormAnswer(string? input)
     {
         var model = new FormElementUrlInputModel
         {
-            IsRequired = false,
-            HasValue = null
+            HasValue = false,
+            TextInput = input
         };
 
-        var result = model.GetAnswer();
+        var answer = model.GetAnswer();
 
-        result.Should().BeNull();
+        answer.Should().NotBeNull();
+        answer.As<FormAnswer>().BoolValue.Should().Be(false);
+        answer.As<FormAnswer>().TextValue.Should().BeNull();
     }
 
-    [Fact]
-    public void GetAnswer_ShouldReturnAnswer_WhenTextInputIsProvided()
+    [Theory]
+    [InlineData(null, null)]
+    [InlineData(" ", null)]
+    [InlineData("https://example.com", "https://example.com")]
+    public void GetAnswer_WhenHasValueTrue_GetsExpectedFormAnswer(string? input, string? expected)
     {
         var model = new FormElementUrlInputModel
         {
-            IsRequired = true,
-            TextInput = "https://example.com",
-            HasValue = true
+            HasValue = true,
+            TextInput = input
         };
 
-        var result = model.GetAnswer();
+        var answer = model.GetAnswer();
 
-        result.Should().NotBeNull();
-        result?.TextValue.Should().Be("https://example.com");
+        answer.Should().NotBeNull();
+        answer.As<FormAnswer>().BoolValue.Should().Be(true);
+        answer.As<FormAnswer>().TextValue.Should().Be(expected);
+    }
+
+    [Theory]
+    [InlineData(null, null)]
+    [InlineData(" ", null)]
+    [InlineData("https://example.com", "https://example.com")]
+    [InlineData("https://example.com/withspaceinend ", "https://example.com/withspaceinend")]
+    public void GetAnswer_WhenHasValueIsNull_GetsExpectedFormAnswer(string? input, string? expected)
+    {
+        var model = new FormElementUrlInputModel
+        {
+            HasValue = null,
+            TextInput = input
+        };
+
+        var answer = model.GetAnswer();
+
+        if (expected == null)
+        {
+            answer.Should().BeNull();
+        }
+        else
+        {
+            answer.Should().NotBeNull();
+            answer.As<FormAnswer>().BoolValue.Should().BeNull();
+            answer.As<FormAnswer>().TextValue.Should().Be(expected);
+        }
     }
 
     [Fact]
@@ -84,14 +119,16 @@ public class FormElementUrlInputModelTests
         validationResults[0].ErrorMessage.Should().Be("Enter a website address");
     }
 
-    [Fact]
-    public void Validate_ShouldReturnError_WhenTextInputIsInvalidUrl()
+    [Theory]
+    [InlineData("invalid-url")]
+    [InlineData("http://example.url/has space")]
+    public void Validate_ShouldReturnError_WhenTextInputIsInvalidUrl(string url)
     {
         var model = new FormElementUrlInputModel
         {
             IsRequired = true,
             HasValue = true,
-            TextInput = "invalid-url"
+            TextInput = url
         };
 
         var validationResults = new List<ValidationResult>();
@@ -99,17 +136,21 @@ public class FormElementUrlInputModelTests
         Validator.TryValidateObject(model, context, validationResults, true);
 
         validationResults.Should().ContainSingle();
-        validationResults[0].ErrorMessage.Should().Be("Enter a valid website address in the correct format");
+        validationResults[0].ErrorMessage.Should().Be("Website address must be in the correct format, like www.companyname.com");
     }
 
-    [Fact]
-    public void Validate_ShouldPass_WhenValidUrlIsProvidedAndIsRequired()
+
+
+    [Theory]
+    [InlineData("https://example.com")]
+    [InlineData("http://example.url/hasspaceinend ")]
+    public void Validate_ShouldPass_WhenValidUrlIsProvidedAndIsRequired(string url)
     {
         var model = new FormElementUrlInputModel
         {
             IsRequired = true,
             HasValue = true,
-            TextInput = "https://example.com"
+            TextInput = url
         };
 
         var validationResults = new List<ValidationResult>();
