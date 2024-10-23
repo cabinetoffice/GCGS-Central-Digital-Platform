@@ -173,10 +173,12 @@ public class OrganisationIdentificationModel(ISession session,
             "Other" => null,
             _ => null,
         };
+
+        Identifier = $"{OrganisationScheme}:{RegistrationDetails.OrganisationIdentificationNumber}";
+
         try
         {
             SessionContext.Set(Session.RegistrationDetailsKey, RegistrationDetails);
-            Identifier = $"{OrganisationScheme}:{RegistrationDetails.OrganisationIdentificationNumber}";
             await LookupOrganisationAsync();
         }
         catch (Exception orgApiException) when (orgApiException is CO.CDP.Organisation.WebApiClient.ApiException && ((CO.CDP.Organisation.WebApiClient.ApiException)orgApiException).StatusCode == 404)
