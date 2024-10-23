@@ -25,7 +25,7 @@ public class FormElementUrlInputModel : FormElementModel, IValidatableObject
         if (HasValue != false && !string.IsNullOrWhiteSpace(TextInput))
         {
             formAnswer ??= new FormAnswer();
-            formAnswer.TextValue = TextInput;
+            formAnswer.TextValue = TextInput.Trim();
         }
 
         return formAnswer;
@@ -61,9 +61,9 @@ public class FormElementUrlInputModel : FormElementModel, IValidatableObject
             {
                 yield return new ValidationResult("Enter a website address", [nameof(TextInput)]);
             }
-            else if (TextInput.Contains(".") == false || TextInput.Contains(" "))
+            else if (TextInput.Contains(".") == false || TextInput.Trim().Contains(" "))
             {
-                yield return new ValidationResult("Enter a valid website address in the correct format", [nameof(TextInput)]);
+                yield return new ValidationResult("Website address must be in the correct format, like www.companyname.com", [nameof(TextInput)]);
             }
         }
     }
