@@ -49,7 +49,7 @@
                                 else
                                 {
                                     <authorize scope="@OrgScopeRequirement.Editor">
-                                        <a class="govuk-link" href="/organisation/@Model.Id/manage-api-key/@ak.Name/revoke-api-key">Cancel</a>
+                                        <a class="govuk-link" href="/organisation/@Model.Id/manage-api-key/@Uri.EscapeDataString(ak.Name)/revoke-api-key">Cancel</a>
                                     </authorize>
                                 }
                             </dd>                                    
