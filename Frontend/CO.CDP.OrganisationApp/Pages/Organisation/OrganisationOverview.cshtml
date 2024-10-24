@@ -58,13 +58,13 @@
                         <dd class="govuk-summary-list__value">
                             <ul class="govuk-list govuk-list--bullet">
                                 <li>
-                                    @organisationDetails.Identifier.Scheme.SchemeDescription()
                                     @if (@organisationDetails.Identifier.Id == null)
                                     {
                                         <text><br />PPON generation pending.</text>
                                     }
                                     else
                                     {
+                                        @organisationDetails.Identifier.Scheme.SchemeDescription()
                                         @organisationDetails.Identifier.Id
                                     }
                                 </li>
