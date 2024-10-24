@@ -1,10 +1,12 @@
 @page "/organisation/{id}/users/user-summary"
 @model CO.CDP.OrganisationApp.Pages.Users.UserSummaryModel
+@using CO.CDP.Organisation.WebApiClient
 @using CO.CDP.OrganisationApp.Constants
 
 @{
     var hasError = ((TagBuilder)Html.ValidationMessageFor(m => m.HasPerson)).HasInnerHtml;
     var totalPersons = Model.Persons.Count + Model.PersonInvites.Count;
+    var pendingJoinRequests = Model.OrganisationJoinRequests.Where(x => x.Status == CDP.Organisation.WebApiClient.OrganisationJoinRequestStatus.Pending).ToList();
 }
 
 @section BeforeContent {
@@ -17,6 +19,42 @@
             <partial name="_ErrorSummary" model="@Model.ModelState" />
         </div>
         <div class="govuk-grid-column-full">
+
+            @if (pendingJoinRequests.Any())
+            {
+                <h1 class="govuk-heading-l">
+                    Join requests
+                </h1>
+            }
+
+            <dl class="govuk-summary-list">
+                @foreach (var pr in pendingJoinRequests)
+                {
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            @pr.Person.FirstName @pr.Person.LastName
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            @pr.Person.Email
+                        </dd>
+                        <dd class="govuk-summary-list__actions">
+                            <ul class="govuk-summary-list__actions-list">
+                                <li class="govuk-summary-list__actions-list-item">
+
+                                    @{
+                                        var link = $"?handler=JoinRequest&reqid={pr.Id}&personid={pr.Person.Id}&decision=";
+                                    }
+                                    <a class="govuk-link" href="@($"{link}{OrganisationJoinRequestStatus.Accepted}")">Approve</a>
+                                </li>
+                                <li class="govuk-summary-list__actions-list-item">
+                                    <a class="govuk-link" href="@($"{link}{OrganisationJoinRequestStatus.Rejected}")">Reject</a>
+                                </li>
+                            </ul>
+                        </dd>
+                    </div>
+                }
+            </dl>
+
             <h1 class="govuk-heading-l">
                 Organisation has @(totalPersons == 1 ? "1 user" : $"{totalPersons} users")
             </h1>
@@ -27,7 +65,7 @@
                     <div class="govuk-summary-list__row">
                         <dt class="govuk-summary-list__key">
                             @p.FirstName @p.LastName
-                            @foreach(var scope in p.Scopes)
+                            @foreach (var scope in p.Scopes)
                             {
                                 if (scope == OrganisationPersonScopes.Admin)
                                 {
@@ -71,7 +109,7 @@
                     <div class="govuk-summary-list__row">
                         <dt class="govuk-summary-list__key">
                             @p.FirstName @p.LastName
-                            @foreach(var scope in p.Scopes)
+                            @foreach (var scope in p.Scopes)
                             {
                                 if (scope == OrganisationPersonScopes.Admin)
                                 {
@@ -124,12 +162,12 @@
                         <div class="govuk-radios govuk-radios--inline" data-module="govuk-radios">
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input" id="@nameof(Model.HasPerson)" name="HasPerson" type="radio"
-                                        value="true" @(Model.HasPerson == true ? "checked" : "")>
+                                       value="true" @(Model.HasPerson == true ? "checked" : "")>
                                 <label class="govuk-label govuk-radios__label" for="@nameof(Model.HasPerson)">Yes</label>
                             </div>
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input" id="@nameof(Model.HasPerson)-1" name="HasPerson" type="radio"
-                                        value="false" @(Model.HasPerson == false ? "checked" : "")>
+                                       value="false" @(Model.HasPerson == false ? "checked" : "")>
                                 <label class="govuk-label govuk-radios__label" for="@nameof(Model.HasPerson)-1">No</label>
                             </div>
                         </div>
