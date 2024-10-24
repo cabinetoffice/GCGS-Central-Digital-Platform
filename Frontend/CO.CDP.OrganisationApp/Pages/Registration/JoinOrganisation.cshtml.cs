@@ -44,7 +44,7 @@ public class JoinOrganisationModel(
 
         if (UserDetails.PersonId != null && OrganisationDetails != null)
         {
-            if (Join == true)
+            if (Join)
             {
                 try
                 {
@@ -53,7 +53,7 @@ public class JoinOrganisationModel(
                             personId: UserDetails.PersonId.Value
                         ));
                 }
-                catch (ApiException<OrganisationWebApiClient.ProblemDetails> aex)
+                catch (ApiException<OrganisationWebApiClient.ProblemDetails>)
                 {
                     tempDataService.Put(FlashMessageTypes.Important, NotificationBannerAlreadyMemberOfOrganisation);
                     return Page();

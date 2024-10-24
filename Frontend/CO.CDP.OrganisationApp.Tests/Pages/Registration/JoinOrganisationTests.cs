@@ -12,6 +12,7 @@ public class JoinOrganisationModelTests
 {
     private readonly Mock<IOrganisationClient> _organisationClientMock;
     private readonly Mock<ISession> _sessionMock;
+    private readonly Mock<ITempDataService> _tempDataMock;
     private readonly JoinOrganisationModel _joinOrganisationModel;
     private readonly Guid _organisationId = Guid.NewGuid();
     private readonly string _identifier = "GB-COH:123456789";
@@ -22,9 +23,10 @@ public class JoinOrganisationModelTests
     {
         _organisationClientMock = new Mock<IOrganisationClient>();
         _sessionMock = new Mock<ISession>();
+        _tempDataMock = new Mock<ITempDataService>();
         _sessionMock.Setup(s => s.Get<UserDetails>(Session.UserDetailsKey))
             .Returns(new UserDetails() { UserUrn = "testUserUrn", PersonId = _personId});
-        _joinOrganisationModel = new JoinOrganisationModel(_organisationClientMock.Object, _sessionMock.Object);
+        _joinOrganisationModel = new JoinOrganisationModel(_organisationClientMock.Object, _sessionMock.Object, _tempDataMock.Object);
         _organisation = new CO.CDP.Organisation.WebApiClient.Organisation(null, null, null, null, _organisationId, null, "Test Org", []);
     }
 
