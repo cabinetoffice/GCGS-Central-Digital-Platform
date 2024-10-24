@@ -113,7 +113,7 @@ public class UpdateOrganisationUseCase(
                     var organisationIdentifier = organisationRepository.FindByIdentifier(identifier.Scheme, identifier.Id);
                     if (organisationIdentifier != null)
                     {
-                        throw new InvalidUpdateOrganisationCommand($"The identifier '{identifier.Id}' you have entered belongs to a different organization that already exists. Please check that the registry number is correct and enter it again.");
+                        throw new InvalidUpdateOrganisationCommand($"The identifier '{identifier.Id}' you have entered belongs to a different organization that already exists.");
                     }
 
                     var existingIdentifier = organisation.Identifiers.FirstOrDefault(i => i.Scheme == identifier.Scheme);

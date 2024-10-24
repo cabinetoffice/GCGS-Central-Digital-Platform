@@ -17,9 +17,11 @@ public static class ApiExceptionMapper
             return;
         }
 
-        var errorMessage = GetErrorMessageByCode(code);
+        // Capture the exception message
+        var exceptionMessage = aex.Result.Detail;
+
+        var errorMessage = GetErrorMessageByCode(code, exceptionMessage);
         modelState.AddModelError(string.Empty, errorMessage);
-       
     }
 
     private static string? ExtractErrorCode(ApiException<ProblemDetails> aex)
@@ -29,7 +31,7 @@ public static class ApiExceptionMapper
             : null;
     }
 
-    private static string GetErrorMessageByCode(string errorCode)
+    private static string GetErrorMessageByCode(string errorCode, string exceptionMessage)
     {
         return errorCode switch
         {
@@ -42,6 +44,7 @@ public static class ApiExceptionMapper
             ErrorCodes.UNKNOWN_ORGANISATION => ErrorMessagesList.UnknownOrganisation,
             ErrorCodes.BUYER_INFO_NOT_EXISTS => ErrorMessagesList.BuyerInfoNotExists,
             ErrorCodes.UNKNOWN_BUYER_INFORMATION_UPDATE_TYPE => ErrorMessagesList.UnknownBuyerInformationUpdateType,
+            ErrorCodes.ORGANISATION_UPDATE_INVALID_INPUT => $"{exceptionMessage}",
             _ => ErrorMessagesList.UnexpectedError
         };
     }
