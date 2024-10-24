@@ -5,6 +5,8 @@ resource "random_string" "grafana_admin_password" {
 
 resource "aws_secretsmanager_secret" "grafana_credentials" {
   name = "${local.name_prefix}-${var.grafana_config.name}-credentials"
+  description = "Grafana Credentials"
+  tags = var.tags
 }
 
 resource "aws_secretsmanager_secret_version" "grafana_credentials_version" {

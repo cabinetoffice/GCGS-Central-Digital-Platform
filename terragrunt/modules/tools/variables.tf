@@ -18,6 +18,10 @@ variable "db_entity_verification_name" {
   type        = string
 }
 
+variable "db_postgres_sg_id" {
+  description = "Postgres DB security group ID"
+  type        = string
+}
 
 variable "db_sirsi_address" {
   description = "Sirsi database endpoint address"
@@ -26,11 +30,6 @@ variable "db_sirsi_address" {
 
 variable "db_sirsi_credentials_arn" {
   description = "Sirsi database secret ARN"
-  type        = string
-}
-
-variable "db_sirsi_kms_arn" {
-  description = "ARN of the KMS used to encrypt Sirsi database secrets"
   type        = string
 }
 
@@ -46,11 +45,6 @@ variable "ecs_alb_sg_id" {
 
 variable "ecs_cluster_id" {
   description = "ECS Cluster ID"
-  type        = string
-}
-
-variable "ecs_lb_dns_name" {
-  description = "ECS Application Loadbalancer DNS name"
   type        = string
 }
 
@@ -80,6 +74,11 @@ variable "healthcheck_config" {
   })
 }
 
+variable "is_production" {
+  description = "Indicates whether the target account is configured with production-level settings"
+  type        = bool
+}
+
 variable "pgadmin_config" {
   description = "Pgadmin services configuration"
   type = object({
@@ -89,6 +88,11 @@ variable "pgadmin_config" {
     port      = number
     port_host = number
   })
+}
+
+variable "postgres_engine_version" {
+  description = "DB engine version"
+  type        = string
 }
 
 variable "private_subnet_ids" {
@@ -127,6 +131,22 @@ variable "role_ecs_task_arn" {
 
 variable "role_ecs_task_exec_arn" {
   description = "Task execution IAM role ARN"
+  type        = string
+}
+
+variable "role_ecs_task_exec_name" {
+  description = "Task execution IAM role name"
+  type        = string
+}
+
+variable "role_rds_cloudwatch_arn" {
+  description = "The ARN for the IAM role that permits RDS to send data to CloudWatch. Required in production accounts where enhanced monitoring is enabled"
+  type        = string
+  default     = ""
+}
+
+variable "role_terraform_arn" {
+  description = "Terraform IAM role ARN"
   type        = string
 }
 

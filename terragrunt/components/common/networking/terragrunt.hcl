@@ -29,7 +29,7 @@ dependency core_networking {
   }
 }
 
-dependency core_security_group {
+dependency core_security_groups {
   config_path = "../../core/security-groups"
   mock_outputs = {
     vpce_ecr_api_sg_id        = "mock"
@@ -49,9 +49,9 @@ inputs = {
   public_subnet_ids       = dependency.core_networking.outputs.public_subnet_ids
   vpc_id                  = dependency.core_networking.outputs.vpc_id
 
-  vpce_ecr_api_sg_id        = dependency.core_security_group.outputs.vpce_ecr_api_sg_id
-  vpce_ecr_dkr_sg_id        = dependency.core_security_group.outputs.vpce_ecr_dkr_sg_id
-  vpce_logs_sg_id           = dependency.core_security_group.outputs.vpce_logs_sg_id
-  vpce_s3_sg_id             = dependency.core_security_group.outputs.vpce_s3_sg_id
-  vpce_secretsmanager_sg_id = dependency.core_security_group.outputs.vpce_secretsmanager_sg_id
+  vpce_ecr_api_sg_id        = dependency.core_security_groups.outputs.vpce_ecr_api_sg_id
+  vpce_ecr_dkr_sg_id        = dependency.core_security_groups.outputs.vpce_ecr_dkr_sg_id
+  vpce_logs_sg_id           = dependency.core_security_groups.outputs.vpce_logs_sg_id
+  vpce_s3_sg_id             = dependency.core_security_groups.outputs.vpce_s3_sg_id
+  vpce_secretsmanager_sg_id = dependency.core_security_groups.outputs.vpce_secretsmanager_sg_id
 }
