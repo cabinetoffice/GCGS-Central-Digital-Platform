@@ -94,7 +94,8 @@ public class OrganisationRegisteredAddressModel(OrganisationWebApiClient.IOrgani
         Address.Heading = Address.IsNonUkAddress ?
             "Enter your organisation's registered non-UK address" : "Enter your organisation's registered address";
 
-        Address.AddressHint = "The address registered with Companies House, or the principal address the business conducts its activities. For example, a head office.";
+        Address.AddressHint = Address.IsNonUkAddress ?
+            "The address recorded on public records or within the public domain" : "The address registered with Companies House, or the principal address the business conducts its activities. For example, a head office.";
 
         Address.NonUkAddressLink = $"/organisation/{Id}/address/non-uk{(RedirectToOverview == true ? "?frm-overview" : "")}";
     }
