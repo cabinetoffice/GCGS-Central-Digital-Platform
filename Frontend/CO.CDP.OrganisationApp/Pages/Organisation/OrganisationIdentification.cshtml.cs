@@ -16,7 +16,7 @@ public class OrganisationIdentificationModel(OrganisationWebApiClient.IOrganisat
 {
     [BindProperty]
     [DisplayName("Organisation Type")]
-    [Required(ErrorMessage = "Please select your organisation type")]
+    [Required]
     public List<string> OrganisationScheme { get; set; } = [];
 
     [BindProperty]
@@ -150,6 +150,12 @@ public class OrganisationIdentificationModel(OrganisationWebApiClient.IOrganisat
 
     public async Task<IActionResult> OnPost()
     {
+        // Ensure OrganisationScheme is valid
+        if (OrganisationScheme == null || OrganisationScheme.Count == 0)
+        {
+            ModelState.AddModelError(nameof(OrganisationScheme), "Please select your organisation type");         
+        }
+
         if (!ModelState.IsValid)
         {
             var (validate, existingIdentifier) = await ValidateAndGetExistingIdentifiers();
@@ -163,8 +169,10 @@ public class OrganisationIdentificationModel(OrganisationWebApiClient.IOrganisat
         // Ensure OrganisationScheme is valid
         if (OrganisationScheme == null || OrganisationScheme.Count == 0)
         {
-            return Redirect("/invalid-organisation-scheme");
+            ModelState.AddModelError(nameof(OrganisationScheme), "Please select your organisation type");
+            return Page();
         }
+
         try
         {
             var organisation = await organisationClient.GetOrganisationAsync(Id);
