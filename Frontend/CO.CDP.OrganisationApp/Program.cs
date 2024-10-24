@@ -125,6 +125,7 @@ builder.Services.AddTransient<IOrganisationClient, OrganisationClient>(
 var dataSharingServiceUrl = builder.Configuration.GetValue<string>("DataSharingService")
             ?? throw new Exception("Missing configuration key: DataSharingService.");
 builder.Services.AddHttpClient(DataSharingHttpClientName)
+    .AddHttpMessageHandler<CultureDelegatingHandler>()
     .AddHttpMessageHandler<ApiBearerTokenHandler>();
 builder.Services.AddTransient<IDataSharingClient, DataSharingClient>(
     sc => new DataSharingClient(dataSharingServiceUrl,
