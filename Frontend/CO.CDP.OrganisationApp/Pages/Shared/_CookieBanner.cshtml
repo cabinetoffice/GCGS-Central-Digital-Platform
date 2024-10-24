@@ -44,10 +44,13 @@
                     </div>
                 </div>
             </div>
-            <div class="govuk-button-group govuk-js">
-                <button type="button" class="govuk-button" data-module="govuk-button" data-cookie-hide-message>
-                    Hide cookie message
-                </button>
+            <div class="govuk-button-group">
+                @{
+                    var currentQueryString = Context.Request.QueryString.ToString();
+                    var cleanedQueryString = currentQueryString.Replace($"{CookieSettings.CookiesAcceptedQueryString}=true", "");
+                    cleanedQueryString = cleanedQueryString == "?" ? "" : cleanedQueryString;
+                }
+                <a class="govuk-button" role="button" data-module="govuk-button" href="@(Context.Request.PathBase + Context.Request.Path + cleanedQueryString)">Hide cookie message</a>
             </div>
         </div>
     </div>
