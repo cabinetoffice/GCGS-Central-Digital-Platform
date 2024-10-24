@@ -110,6 +110,9 @@
                                         @Html.ValidationMessageFor(m => m.GuernseyRegistryNumber, "", new { @class = "govuk-error-message", @id = "GuernseyRegistryNumber-error" })
                                         @Html.TextBoxFor(m => m.GuernseyRegistryNumber, new { @class = "govuk-input " + (guernseyRegistryNumberHasError ? "govuk-input--error" : ""), @id = "GuernseyRegistryNumber", @type = "text", spellcheck = "false", autocomplete = "off" })
                                     </div>
+                                    <div id="conditional-GG-RCE-hint" class="govuk-hint govuk-radios__hint">
+                                        Include prefix, if applicable. For example, GY.
+                                    </div>
                                 </div>
                             }
 
@@ -180,7 +183,7 @@
                                     <input class="govuk-checkboxes__input" id="Other" name="OrganisationScheme" type="checkbox" value="Other" data-behaviour="exclusive" @(Model.OrganisationScheme.Contains("Other") ? "checked" : "")>
                                     @Html.LabelFor(m => m.Other, new { @class = "govuk-label govuk-checkboxes__label", @for = "Other" })
                                     <div id="OrganisationSchemeHint" class="govuk-hint govuk-checkboxes__hint">
-                                        A public procurement organisation number (PPON) will be assigned to your organisation
+                                        You'll get a public procurement organisation number (PPON) as an identifier
                                     </div>
                                 </div>
                             }

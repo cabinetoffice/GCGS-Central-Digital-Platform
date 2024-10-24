@@ -43,7 +43,7 @@ public class OrganisationRegisteredAddressModelTest
         results.Any(c => c.MemberNames.Contains("AddressLine1")).Should().BeTrue();
 
         results.Where(c => c.MemberNames.Contains("AddressLine1")).First()
-            .ErrorMessage.Should().Be("Enter your address line 1");
+            .ErrorMessage.Should().Be("Enter address line 1, typically the building and street");
     }
 
     [Fact]
@@ -67,7 +67,7 @@ public class OrganisationRegisteredAddressModelTest
         results.Any(c => c.MemberNames.Contains("TownOrCity")).Should().BeTrue();
 
         results.Where(c => c.MemberNames.Contains("TownOrCity")).First()
-            .ErrorMessage.Should().Be("Enter your town or city");
+            .ErrorMessage.Should().Be("Enter town or city");
     }
 
     [Fact]

@@ -10,7 +10,7 @@ public class BuyerSelectDevolvedRegulationModel(ISession session) : Registration
     public override string CurrentPage => BuyerSelectDevolvedRegulationPage;
 
     [BindProperty]
-    [NotEmpty(ErrorMessage = "Select the do devolved regulations apply to your organisation?")]
+    [NotEmpty(ErrorMessage = "Select a devolved region")]
     public required List<DevolvedRegulation> Regulations { get; set; } = [];
 
     [BindProperty]

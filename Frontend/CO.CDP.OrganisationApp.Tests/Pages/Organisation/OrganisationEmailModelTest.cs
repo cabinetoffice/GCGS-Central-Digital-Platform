@@ -40,7 +40,7 @@ public class OrganisationEmailModelTest
         results.Any(c => c.MemberNames.Contains("EmailAddress")).Should().BeTrue();
 
         results.Where(c => c.MemberNames.Contains("EmailAddress")).First()
-            .ErrorMessage.Should().Be("Enter the organisation's contact email address");
+            .ErrorMessage.Should().Be("Enter your organisation's email address");
     }
 
     [Fact]
