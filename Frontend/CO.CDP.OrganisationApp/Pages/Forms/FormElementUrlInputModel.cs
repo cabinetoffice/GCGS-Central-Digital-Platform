@@ -22,10 +22,10 @@ public class FormElementUrlInputModel : FormElementModel, IValidatableObject
             formAnswer = new FormAnswer { BoolValue = HasValue };
         }
 
-        if (!string.IsNullOrWhiteSpace(TextInput))
+        if (HasValue != false && !string.IsNullOrWhiteSpace(TextInput))
         {
             formAnswer ??= new FormAnswer();
-            formAnswer.TextValue = TextInput;
+            formAnswer.TextValue = TextInput.Trim();
         }
 
         return formAnswer;
@@ -61,9 +61,9 @@ public class FormElementUrlInputModel : FormElementModel, IValidatableObject
             {
                 yield return new ValidationResult("Enter a website address", [nameof(TextInput)]);
             }
-            else if (Uri.TryCreate(TextInput, UriKind.Absolute, out var _) == false)
+            else if (TextInput.Contains(".") == false || TextInput.Trim().Contains(" "))
             {
-                yield return new ValidationResult("Enter a valid website address in the correct format", [nameof(TextInput)]);
+                yield return new ValidationResult("Website address must be in the correct format, like www.companyname.com", [nameof(TextInput)]);
             }
         }
     }

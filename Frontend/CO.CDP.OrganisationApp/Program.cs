@@ -125,6 +125,7 @@ builder.Services.AddTransient<IOrganisationClient, OrganisationClient>(
 var dataSharingServiceUrl = builder.Configuration.GetValue<string>("DataSharingService")
             ?? throw new Exception("Missing configuration key: DataSharingService.");
 builder.Services.AddHttpClient(DataSharingHttpClientName)
+    .AddHttpMessageHandler<CultureDelegatingHandler>()
     .AddHttpMessageHandler<ApiBearerTokenHandler>();
 builder.Services.AddTransient<IDataSharingClient, DataSharingClient>(
     sc => new DataSharingClient(dataSharingServiceUrl,
@@ -206,7 +207,6 @@ var localizationOptions = new RequestLocalizationOptions()
 app.UseRequestLocalization(localizationOptions);
 
 app.MapHealthChecks("/health").AllowAnonymous();
-app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 app.UseAuthentication();

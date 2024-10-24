@@ -23,7 +23,7 @@ public class FormElementTextInputModel : FormElementModel, IValidatableObject
             formAnswer = new FormAnswer { BoolValue = HasValue };
         }
 
-        if (!string.IsNullOrWhiteSpace(TextInput))
+        if (HasValue != false && !string.IsNullOrWhiteSpace(TextInput))
         {
             formAnswer ??= new FormAnswer();
             formAnswer.TextValue = TextInput;

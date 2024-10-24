@@ -57,6 +57,7 @@ public class DatabaseTenantRepository(OrganisationInformationContext context) : 
                          }).ToList()
                      }).ToList()
                  })
+                 .AsSplitQuery()
                  .SingleAsync();
 
         }
