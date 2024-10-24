@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using CO.CDP.OrganisationInformation.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,18 +13,20 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CO.CDP.OrganisationInformation.Persistence.Migrations
 {
     [DbContext(typeof(OrganisationInformationContext))]
-    partial class OrganisationInformationContextModelSnapshot : ModelSnapshot
+    [Migration("20241023145014_PersonUserUrnIndex")]
+    partial class PersonUserUrnIndex
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "8.0.8")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
+            NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "connected_entity_individual_and_trust_category_type", new[] { "person_with_significant_control_for_individual", "director_or_individual_with_the_same_responsibilities_for_individual", "any_other_individual_with_significant_influence_or_control_for_individual", "person_with_significant_control_for_trust", "director_or_individual_with_the_same_responsibilities_for_trust", "any_other_individual_with_significant_influence_or_control_for_trust" });
             NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "connected_entity_type", new[] { "organisation", "individual", "trust_or_trustee" });
             NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "connected_organisation_category", new[] { "registered_company", "director_or_the_same_responsibilities", "parent_or_subsidiary_company", "a_company_your_organisation_has_taken_over", "any_other_organisation_with_significant_influence_or_control" });
-            NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "connected_person_category", new[] { "person_with_significant_control", "director_or_individual_with_the_same_responsibilities", "any_other_individual_with_significant_influence_or_control" });
             NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "connected_person_type", new[] { "individual", "trust_or_trustee" });
             NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "control_condition", new[] { "none", "owns_shares", "has_voting_rights", "can_appoint_or_remove_directors", "has_other_significant_influence_or_control" });
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
