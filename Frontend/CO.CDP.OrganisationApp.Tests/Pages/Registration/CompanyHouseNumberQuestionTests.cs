@@ -111,7 +111,7 @@ public class CompanyHouseNumberQuestionTests
         model.HasCompaniesHouseNumber = true;
         model.RedirectToSummary = true;
         model.CompaniesHouseNumber = "123456";
-        model.OrganisationId = new Guid();
+        model.OrganisationIdentifier = "GB-COH:123456789";
         model.OrganisationName = "Test company";
 
         GivenRegistrationIsInProgress(model.HasCompaniesHouseNumber, model.CompaniesHouseNumber);
@@ -120,7 +120,9 @@ public class CompanyHouseNumberQuestionTests
 
         tempDataServiceMock.Verify(api => api.Put(
             FlashMessageTypes.Important,
-            model.NotificationBannerCompanyAlreadyRegistered), Times.Once);
+            It.Is<FlashMessage>(f => f.Heading == model.NotificationBannerCompanyAlreadyRegistered.Heading)),
+            Times.Once);
+
         result.Should().BeOfType<PageResult>();
     }
 
@@ -142,7 +144,8 @@ public class CompanyHouseNumberQuestionTests
 
         tempDataServiceMock.Verify(api => api.Put(
             FlashMessageTypes.Important,
-            model.NotificationBannerCompanyNotFound), Times.Once);
+            It.Is<FlashMessage>(f => f.Heading == model.NotificationBannerCompanyNotFound.Heading)),
+            Times.Once);
         result.Should().BeOfType<PageResult>();
     }
 

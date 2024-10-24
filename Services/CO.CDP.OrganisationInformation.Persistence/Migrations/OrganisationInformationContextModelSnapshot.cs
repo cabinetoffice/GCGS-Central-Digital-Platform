@@ -929,6 +929,10 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                         .IsUnique()
                         .HasDatabaseName("ix_persons_guid");
 
+                    b.HasIndex("UserUrn")
+                        .IsUnique()
+                        .HasDatabaseName("ix_persons_user_urn");
+
                     b.ToTable("persons", (string)null);
                 });
 

@@ -1,7 +1,8 @@
 using CO.CDP.DataSharing.WebApi.Model;
-using CO.CDP.DataSharing.WebApi.Tests;
+using CO.CDP.Localization;
 using CO.CDP.OrganisationInformation.Persistence;
 using FluentAssertions;
+using Microsoft.AspNetCore.Mvc.Localization;
 using Moq;
 using static CO.CDP.DataSharing.WebApi.Tests.DataSharingFactory;
 using SharedConsent = CO.CDP.OrganisationInformation.Persistence.Forms.SharedConsent;
@@ -12,8 +13,23 @@ public class DataServiceTests
 {
     private readonly Mock<IShareCodeRepository> _shareCodeRepository = new();
     private readonly Mock<IConnectedEntityRepository> _connectedEntityRepository = new();
+    private readonly Mock<IHtmlLocalizer<FormsEngineResource>> _localizer = new();
     private CO.CDP.DataSharing.WebApi.DataService.DataService DataService => new(_shareCodeRepository.Object,
-        _connectedEntityRepository.Object);
+        _connectedEntityRepository.Object, _localizer.Object);
+
+    public DataServiceTests()
+    {
+        _localizer.Setup(l => l[It.IsAny<string>()])
+            .Returns((string key) =>
+            {
+                if (key == "FinancialInformation_SectionTitle")
+                {
+                    return new LocalizedHtmlString("FinancialInformation_SectionTitle", "Financial Information");
+                }
+
+                return new LocalizedHtmlString(key, key);
+            });
+    }
 
     [Fact]
     public async Task GetSharedSupplierInformationAsync_ShouldReturnSharedSupplierInformation_WhenOrganisationExists()
@@ -91,6 +107,7 @@ public class DataServiceTests
         result.FormAnswerSetForPdfs.Should().ContainSingle();
 
         var exclusionsSection = result.FormAnswerSetForPdfs.First(fa => fa.SectionType == CO.CDP.OrganisationInformation.Persistence.Forms.FormSectionType.Exclusions);
+        exclusionsSection.SectionName.Should().Be("Financial Information");
         exclusionsSection.QuestionAnswers.Should().Contain(qa => qa.Item1 == "Were your accounts audited?" && qa.Item2 == "yes");
         exclusionsSection.QuestionAnswers.Should().Contain(qa => qa.Item1 == "What is the financial year end date for the information you uploaded?" && qa.Item2 == DateTime.Today.ToString("dd-MM-yyyy"));
         exclusionsSection.QuestionAnswers.Should().Contain(qa => qa.Item1 == "Upload your accounts" && qa.Item2 == "a_dummy_file.pdf");

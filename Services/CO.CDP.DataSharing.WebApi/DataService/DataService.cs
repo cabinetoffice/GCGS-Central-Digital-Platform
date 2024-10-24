@@ -1,6 +1,8 @@
 using CO.CDP.DataSharing.WebApi.Model;
+using CO.CDP.Localization;
 using CO.CDP.OrganisationInformation;
 using CO.CDP.OrganisationInformation.Persistence;
+using Microsoft.AspNetCore.Mvc.Localization;
 using static CO.CDP.OrganisationInformation.Persistence.ConnectedEntity;
 using Address = CO.CDP.OrganisationInformation.Address;
 using ConnectedIndividualTrust = CO.CDP.DataSharing.WebApi.Model.ConnectedIndividualTrust;
@@ -9,7 +11,7 @@ using FormQuestionType = CO.CDP.OrganisationInformation.Persistence.Forms.FormQu
 
 namespace CO.CDP.DataSharing.WebApi.DataService;
 
-public class DataService(IShareCodeRepository shareCodeRepository, IConnectedEntityRepository connectedEntityRepository) : IDataService
+public class DataService(IShareCodeRepository shareCodeRepository, IConnectedEntityRepository connectedEntityRepository, IHtmlLocalizer<FormsEngineResource> localizer) : IDataService
 {
     public async Task<SharedSupplierInformation> GetSharedSupplierInformationAsync(string shareCode)
     {
@@ -29,7 +31,7 @@ public class DataService(IShareCodeRepository shareCodeRepository, IConnectedEnt
         };
     }
 
-    public static IEnumerable<FormAnswerSetForPdf> MapFormAnswerSetsForPdf(
+    public IEnumerable<FormAnswerSetForPdf> MapFormAnswerSetsForPdf(
         IEnumerable<OrganisationInformation.Persistence.Forms.FormAnswerSet> answerSets)
     {
         var pdfAnswerSets = new List<FormAnswerSetForPdf>();
@@ -38,7 +40,7 @@ public class DataService(IShareCodeRepository shareCodeRepository, IConnectedEnt
         {
             var pdfAnswerSet = new FormAnswerSetForPdf
             {
-                SectionName = answerSet.Section.Title,
+                SectionName = localizer[answerSet.Section.Title].Value,
                 SectionType = answerSet.Section.Type,
                 QuestionAnswers = []
             };

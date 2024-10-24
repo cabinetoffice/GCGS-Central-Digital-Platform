@@ -221,7 +221,9 @@ public class CreateOrganisationJoinRequestUseCaseTests
             req.TemplateId == "RequestToJoinNotifyOrgAdminTemplateId" &&
             req.Personalisation!["org_name"] == _organisation.Name &&
             req.Personalisation["first_name"] == "Admin" &&
-            req.Personalisation["last_name"] == "One"
+            req.Personalisation["last_name"] == "One" &&
+            req.Personalisation["requester_first_name"] == _person.FirstName &&
+            req.Personalisation["requester_last_name"] == _person.LastName
         )), Times.Once);
 
         _notifyApiClient.Verify(x => x.SendEmail(It.Is<EmailNotificationRequest>(req =>
@@ -229,7 +231,9 @@ public class CreateOrganisationJoinRequestUseCaseTests
             req.TemplateId == "RequestToJoinNotifyOrgAdminTemplateId" &&
             req.Personalisation!["org_name"] == _organisation.Name &&
             req.Personalisation["first_name"] == "Admin" &&
-            req.Personalisation["last_name"] == "Two"
+            req.Personalisation["last_name"] == "Two" &&
+            req.Personalisation["requester_first_name"] == _person.FirstName &&
+            req.Personalisation["requester_last_name"] == _person.LastName
         )), Times.Once);
     }
 }
