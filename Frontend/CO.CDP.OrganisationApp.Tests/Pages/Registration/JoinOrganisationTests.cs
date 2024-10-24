@@ -14,6 +14,7 @@ public class JoinOrganisationModelTests
     private readonly Mock<ISession> _sessionMock;
     private readonly JoinOrganisationModel _joinOrganisationModel;
     private readonly Guid _organisationId = Guid.NewGuid();
+    private readonly string _identifier = "GB-COH:123456789";
     private readonly Guid _personId = Guid.NewGuid();
     private readonly CDP.Organisation.WebApiClient.Organisation _organisation;
 
@@ -30,28 +31,28 @@ public class JoinOrganisationModelTests
     [Fact]
     public async Task OnGet_ValidOrganisationId_ReturnsPageResult()
     {
-        _organisationClientMock.Setup(client => client.GetOrganisationAsync(_organisationId))
+        _organisationClientMock.Setup(client => client.LookupOrganisationAsync(string.Empty, _identifier))
             .ReturnsAsync(_organisation);
 
-        var result = await _joinOrganisationModel.OnGet(_organisationId);
+        var result = await _joinOrganisationModel.OnGet(_identifier);
 
         result.Should().BeOfType<PageResult>();
         _joinOrganisationModel.OrganisationDetails.Should().Be(_organisation);
-        _organisationClientMock.Verify(client => client.GetOrganisationAsync(_organisationId), Times.Once);
+        _organisationClientMock.Verify(client => client.LookupOrganisationAsync(string.Empty, _identifier), Times.Once);
     }
 
     [Fact]
     public async Task OnGet_OrganisationNotFound_ReturnsRedirectToPageNotFound()
     {
-        _organisationClientMock.Setup(client => client.GetOrganisationAsync(_organisationId))
+        _organisationClientMock.Setup(client => client.LookupOrganisationAsync(string.Empty, _identifier))
             .ThrowsAsync(new ApiException("Not Found", 404, "Not Found", null, null));
 
-        var result = await _joinOrganisationModel.OnGet(_organisationId);
+        var result = await _joinOrganisationModel.OnGet(_identifier);
 
         result.Should().BeOfType<RedirectResult>()
             .Which.Url.Should().Be("/page-not-found");
 
-        _organisationClientMock.Verify(client => client.GetOrganisationAsync(_organisationId), Times.Once);
+        _organisationClientMock.Verify(client => client.LookupOrganisationAsync(string.Empty, _identifier), Times.Once);
     }
 
     [Fact]
@@ -59,23 +60,25 @@ public class JoinOrganisationModelTests
     {
         _joinOrganisationModel.ModelState.AddModelError("Join", "Select an option");
 
-        _organisationClientMock.Setup(client => client.GetOrganisationAsync(_organisationId))
+        _organisationClientMock.Setup(client => client.LookupOrganisationAsync(string.Empty, _identifier))
             .ReturnsAsync(_organisation);
 
-        var result = await _joinOrganisationModel.OnPost(_organisationId);
+        var result = await _joinOrganisationModel.OnPost(_identifier);
 
         result.Should().BeOfType<PageResult>();
         _joinOrganisationModel.OrganisationDetails.Should().Be(_organisation);
-        _organisationClientMock.Verify(client => client.GetOrganisationAsync(_organisationId), Times.Once);
+        _organisationClientMock.Verify(client => client.LookupOrganisationAsync(string.Empty, _identifier), Times.Once);
     }
 
     [Fact]
     public async Task OnPost_UserHasPersonId_JoinIsTrue_CreatesJoinRequestAndRedirectsToSuccessPage()
     {
-        var personId = Guid.NewGuid();
+        _organisationClientMock.Setup(client => client.LookupOrganisationAsync(string.Empty, _identifier))
+            .ReturnsAsync(_organisation);
+
         _joinOrganisationModel.Join = true;
 
-        var result = await _joinOrganisationModel.OnPost(_organisationId);
+        var result = await _joinOrganisationModel.OnPost(_identifier);
 
         _organisationClientMock.Verify(client => client.CreateJoinRequestAsync(
             _organisationId,
@@ -83,16 +86,18 @@ public class JoinOrganisationModelTests
             Times.Once);
 
         result.Should().BeOfType<RedirectResult>()
-            .Which.Url.Should().Be($"/registration/{_organisationId}/join-organisation/success");
+            .Which.Url.Should().Be($"/registration/{_identifier}/join-organisation/success");
     }
 
     [Fact]
     public async Task OnPost_UserHasPersonId_JoinIsFalse_RedirectsToCompaniesHouseNumber()
     {
-        var organisationId = Guid.NewGuid();
+        _organisationClientMock.Setup(client => client.LookupOrganisationAsync(string.Empty, _identifier))
+            .ReturnsAsync(_organisation);
+
         _joinOrganisationModel.Join = false;
 
-        var result = await _joinOrganisationModel.OnPost(organisationId);
+        var result = await _joinOrganisationModel.OnPost(_identifier);
 
         result.Should().BeOfType<RedirectResult>()
             .Which.Url.Should().Be("/registration/has-companies-house-number");
@@ -103,12 +108,11 @@ public class JoinOrganisationModelTests
     [Fact]
     public async Task OnPost_UserHasNoPersonId_RedirectsToHomePage()
     {
-        var organisationId = Guid.NewGuid();
         _joinOrganisationModel.Join = true;
         _sessionMock.Setup(s => s.Get<UserDetails>(Session.UserDetailsKey))
             .Returns(new UserDetails() { UserUrn = "testUserUrn", PersonId = null});
 
-        var result = await _joinOrganisationModel.OnPost(organisationId);
+        var result = await _joinOrganisationModel.OnPost(_identifier);
 
         result.Should().BeOfType<RedirectResult>()
             .Which.Url.Should().Be("/");
