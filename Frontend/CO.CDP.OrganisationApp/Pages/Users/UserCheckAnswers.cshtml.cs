@@ -52,6 +52,7 @@ public class UserCheckAnswersModel(
             );
 
             await organisationClient.CreatePersonInviteAsync(Id, personInviteCommand);
+            session.Remove(PersonInviteState.TempDataKey);
 
             return RedirectToPage("UserSummary", new { Id });
         }
@@ -62,7 +63,6 @@ public class UserCheckAnswersModel(
         }
         finally
         {
-            session.Remove(PersonInviteState.TempDataKey);
         }
     }
 
