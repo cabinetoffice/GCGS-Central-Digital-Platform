@@ -24,11 +24,16 @@
         {"name": "DB_ENTITY_VERIFICATION_NAME", "value": "${db_entity_verification_name}"},
         {"name": "DB_SIRSI_ADDRESS", "value": "${db_sirsi_address}"},
         {"name": "DB_SIRSI_NAME", "value": "${db_sirsi_name}"},
+        {"name": "PGADMIN_CONFIG_DATABASE_HOST" , "value": "${pgadmin_config_database_host}"},
+        {"name": "PGADMIN_CONFIG_DATABASE_NAME" , "value": "${pgadmin_config_database_name}"},
+        {"name": "PGADMIN_CONFIG_SERVER_MODE" , "value": "True"},
         {"name": "PGADMIN_LISTEN_PORT", "value": "${host_port}"}
     ],
     "secrets": [
         {"name": "DB_ENTITY_VERIFICATION_USERNAME", "valueFrom": "${db_entity_verification_username}"},
         {"name": "DB_SIRSI_USERNAME", "valueFrom": "${db_sirsi_username}"},
+        {"name": "PGADMIN_CONFIG_DATABASE_PASSWORD" , "valueFrom": "${pgadmin_config_database_password}"},
+        {"name": "PGADMIN_CONFIG_DATABASE_USERNAME" , "valueFrom": "${pgadmin_config_database_username}"},
         {"name": "PGADMIN_DEFAULT_EMAIL", "valueFrom": "${pgadmin_admin_user}"},
         {"name": "PGADMIN_DEFAULT_PASSWORD", "valueFrom": "${pgadmin_admin_password}"}
     ],
