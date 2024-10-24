@@ -1,0 +1,54 @@
+@{
+    string currentUrl = Context.Request.PathBase + Context.Request.Path + Context.Request.QueryString;
+}
+
+@if (!Context.Request.Cookies.ContainsKey(CookieSettings.CookieName) && !Context.Request.Path.StartsWithSegments("/Cookies")) {
+    <div class="govuk-cookie-banner" data-nosnippet role="region" aria-label="Cookies on Find a Tender" data-cookie-name="@CookieSettings.CookieName">
+        <div class="govuk-cookie-banner__message govuk-width-container">
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-two-thirds">
+                    <h2 class="govuk-cookie-banner__heading govuk-heading-m">
+                        Cookies on Find a Tender
+                    </h2>
+                    <div class="govuk-cookie-banner__content">
+                        <p class="govuk-body">We use some essential cookies to make this service work.</p>
+                        <p class="govuk-body">We’d also like to use analytics cookies so we can understand how you use the service and make improvements.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <form action="/Cookies" method="post">
+                @Html.AntiForgeryToken()
+
+                <input type="hidden" name="@CookieSettings.CookieSettingsPageReturnUrlFieldName" value="@currentUrl" />
+
+                <div class="govuk-button-group">
+                    <govuk-button name="@CookieSettings.CookieAcceptanceFieldName" value="@CookieAcceptanceValues.Accept">Accept analytics cookies</govuk-button>
+                    <govuk-button name="@CookieSettings.CookieAcceptanceFieldName" value="@CookieAcceptanceValues.Reject">Reject analytics cookies</govuk-button>
+                    <a class="govuk-link" href="/Cookies">View cookies</a>
+                </div>
+            </form>                            
+        </div>
+    </div>
+}
+
+@if (Context.Request.Cookies.ContainsKey(CookieSettings.CookieName) && Context.Request.Query.ContainsKey(CookieSettings.CookiesAcceptedQueryString))
+{
+    var acceptedState = (Context.Request.Cookies.ContainsKey(CookieSettings.CookieName) && Context.Request.Cookies[CookieSettings.CookieName] == ((int)CookieAcceptanceValues.Accept).ToString()) ? "accepted" : "rejected";
+    <div class="govuk-cookie-banner" data-nosnippet role="region" aria-label="Cookies on Find a Tender">
+        <div class="govuk-cookie-banner__message govuk-width-container">
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-two-thirds">
+                    <div class="govuk-cookie-banner__content">
+                        <p class="govuk-body">You’ve @acceptedState additional cookies. You can <a class="govuk-link" href="/Cookies">change your cookie settings</a> at any time.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="govuk-button-group govuk-js">
+                <button type="button" class="govuk-button" data-module="govuk-button" data-cookie-hide-message>
+                    Hide cookie message
+                </button>
+            </div>
+        </div>
+    </div>
+}

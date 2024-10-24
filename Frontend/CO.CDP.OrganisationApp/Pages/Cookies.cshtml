@@ -1,0 +1,74 @@
+@page "/Cookies"
+@model CO.CDP.OrganisationApp.Pages.CookiesModel
+
+@{
+    var hasError = ((TagBuilder)Html.ValidationMessageFor(m => m.CookieAcceptance)).HasInnerHtml; ;
+}
+
+<main class="govuk-main-wrapper" id="main-content">
+    <partial name="_ErrorSummary" model="@Model.ModelState" />
+
+    <h1 class="govuk-heading-l">Cookies on Find a Tender</h1>
+    <p class="govuk-body">Cookies are files saved on your phone, tablet or computer when you visit a website.</p>
+    <p class="govuk-body">We use cookies to store information about how you use the Find a Tender website, such as the pages you visit.</p>
+
+    <form method="post">
+        <div class="govuk-form-group @(hasError ? "govuk-form-group--error" : "")">
+            <fieldset class="govuk-fieldset" @(hasError ? Html.Raw("aria-describedby=\"cookie-acceptance-error\"") : "")>
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                    <h2 class="govuk-fieldset__heading">Cookie settings</h2>
+                </legend>
+
+                <p class="govuk-body">We use 2 types of cookie. You can choose which types you’re happy for us to use, except for those that are essential.</p>
+
+                <h3 class="govuk-heading-s">Cookies that measure website use</h3>
+                <p class="govuk-body">We use Google Analytics to measure how you use the website so we can improve it based on user needs. We do not allow Google to use or share the data about how you use this site.</p>
+
+                <p class="govuk-body">Google Analytics sets cookies that store anonymised information about:</p>
+
+                <ul class="govuk-list govuk-list--bullet">
+                    <li>how you got to the site</li>
+                    <li>the pages you visit on Find a Tender and how long you spend on each page</li>
+                    <li>what you click on while you’re visiting the site</li>
+                </ul>
+
+                @if (hasError)
+                {
+                    <p id="cookie-acceptance-error" class="govuk-error-message">
+                        <span class="govuk-visually-hidden">Error:</span>
+                        @Html.ValidationMessageFor(m => m.CookieAcceptance)
+                    </p>
+                }
+
+                <div class="govuk-radios govuk-!-margin-bottom-8" data-module="govuk-radios">
+                    <div class="govuk-radios__item">
+                        <input class="govuk-radios__input" id="@nameof(Model.CookieAcceptance)" name="@nameof(Model.CookieAcceptance)" type="radio" value="@CookieAcceptanceValues.Accept" checked="@Model.RadioIsChecked(CookieAcceptanceValues.Accept)">
+                        <label class="govuk-label govuk-radios__label" for="@nameof(Model.CookieAcceptance)">
+                            Use cookies that measure my website use
+                        </label>
+                    </div>
+                    <div class="govuk-radios__item">
+                        <input class="govuk-radios__input" id="@nameof(Model.CookieAcceptance)-1" name="@nameof(Model.CookieAcceptance)" type="radio" value="@CookieAcceptanceValues.Reject" checked="@Model.RadioIsChecked(CookieAcceptanceValues.Reject)">
+                        <label class="govuk-label govuk-radios__label" for="@nameof(Model.CookieAcceptance)-1">
+                            Do not use cookies that measure my website use
+                        </label>
+                    </div>
+                </div>
+
+                <h2 class="govuk-heading-m">Strictly necessary cookies</h2>
+                <p class="govuk-body">These essential cookies do things like remember when you are signed in, the language you want to view the site in, and the notifications you’ve seen so we do not show them to you again.</p>
+
+                <p class="govuk-body">They always need to be on.</p>
+
+                <p class="govuk-body"><a class="govuk-link" href="/Cookies/About">Find out more about cookies on Find a Tender</a></p>
+
+                <div class="govuk-button-group">
+                    <govuk-button>Save changes</govuk-button>
+                </div>
+            </fieldset>
+        </div>
+    </form>
+                        
+    <h2 class="govuk-heading-m">Government services</h2>
+    <p class="govuk-body">Most services we link to are run by different government departments, for example DWP’s Universal Credit online, DVLA’s vehicle tax service, or HMRC’s webchat. These services may set additional cookies and, if so, will have their own cookie policy and banner linking to it.</p>
+</main>
