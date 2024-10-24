@@ -10,6 +10,7 @@ USER root
 # Install necessary dependencies for psycopg2 using apk (for Alpine-based images)
 RUN apk update && apk add --no-cache \
     build-base \
+    postgresql-client \
     postgresql-dev \
     python3-dev \
     py3-psycopg2

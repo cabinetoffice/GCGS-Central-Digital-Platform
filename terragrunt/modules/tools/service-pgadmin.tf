@@ -4,28 +4,28 @@ module "ecs_service_pgadmin" {
   container_definitions = templatefile(
     "${path.module}/templates/task-definitions/pgadmin.json.tftpl",
     {
-      account_id                       = data.aws_caller_identity.current.account_id
-      container_port                   = var.pgadmin_config.port
-      cpu                              = var.pgadmin_config.cpu
-      db_entity_verification_address   = var.db_entity_verification_address
-      db_entity_verification_name      = var.db_entity_verification_name
-      db_entity_verification_username  = "${var.db_entity_verification_credentials_arn}:username::"
-      db_sirsi_address                 = var.db_sirsi_address
-      db_sirsi_name                    = var.db_sirsi_name
-      db_sirsi_username                = "${var.db_sirsi_credentials_arn}:username::"
-      pgadmin_admin_password           = "${aws_secretsmanager_secret.pgadmin_credentials.arn}:ADMIN_PASSWORD::"
-      pgadmin_admin_user               = "${aws_secretsmanager_secret.pgadmin_credentials.arn}:ADMIN_USERNAME::"
-      pgadmin_config_database_host     = module.rds_pgadmin.db_address
-      pgadmin_config_database_name     = module.rds_pgadmin.db_name
-      pgadmin_config_database_password = "${module.rds_pgadmin.db_credentials_arn}:password::"
-      pgadmin_config_database_username = "${module.rds_pgadmin.db_credentials_arn}:username::"
-      host_port                        = var.pgadmin_config.port
-      image                            = "${local.orchestrator_account_id}.dkr.ecr.${data.aws_region.current.name}.amazonaws.com/cdp-pgadmin:8.12.0"
-      lg_name                          = aws_cloudwatch_log_group.pgadmin.name
-      lg_prefix                        = "tools"
-      lg_region                        = data.aws_region.current.name
-      memory                           = var.pgadmin_config.memory
-      name                             = var.pgadmin_config.name
+      account_id                      = data.aws_caller_identity.current.account_id
+      container_port                  = var.pgadmin_config.port
+      cpu                             = var.pgadmin_config.cpu
+      db_entity_verification_address  = var.db_entity_verification_address
+      db_entity_verification_name     = var.db_entity_verification_name
+      db_entity_verification_username = "${var.db_entity_verification_credentials_arn}:username::"
+      db_sirsi_address                = var.db_sirsi_address
+      db_sirsi_name                   = var.db_sirsi_name
+      db_sirsi_username               = "${var.db_sirsi_credentials_arn}:username::"
+      pgadmin_admin_password          = "${aws_secretsmanager_secret.pgadmin_credentials.arn}:ADMIN_PASSWORD::"
+      pgadmin_admin_user              = "${aws_secretsmanager_secret.pgadmin_credentials.arn}:ADMIN_USERNAME::"
+      pgadmin_database_host           = module.rds_pgadmin.db_address
+      pgadmin_database_name           = module.rds_pgadmin.db_name
+      pgadmin_database_password       = "${module.rds_pgadmin.db_credentials_arn}:password::"
+      pgadmin_database_username       = "${module.rds_pgadmin.db_credentials_arn}:username::"
+      host_port                       = var.pgadmin_config.port
+      image                           = "${local.orchestrator_account_id}.dkr.ecr.${data.aws_region.current.name}.amazonaws.com/cdp-pgadmin:8.12.0"
+      lg_name                         = aws_cloudwatch_log_group.pgadmin.name
+      lg_prefix                       = "tools"
+      lg_region                       = data.aws_region.current.name
+      memory                          = var.pgadmin_config.memory
+      name                            = var.pgadmin_config.name
     }
   )
 
