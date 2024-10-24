@@ -20,7 +20,7 @@ public class RemovePersonFromOrganisationUseCaseTest
             Id = 1,
             Guid = Guid.NewGuid(),
             Name = "Acme",
-            OrganisationPersons = [new OrganisationPerson { PersonId = 1, Person = person, Organisation = null }],
+            OrganisationPersons = [new OrganisationPerson { PersonId = 1, Person = person, Organisation = Mock.Of<OrganisationInformation.Persistence.Organisation>() }],
             Tenant = new Tenant { Guid = Guid.NewGuid(), Name = "A Tenant" }
         };
 
