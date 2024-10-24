@@ -10,7 +10,9 @@
 <head>
     @{
         var googleTagId = config["GoogleTagId"];
-        if (!string.IsNullOrWhiteSpace(googleTagId))
+        if (!string.IsNullOrWhiteSpace(googleTagId)
+        && Context.Request.Cookies.ContainsKey(CookieSettings.CookieName)
+        && Context.Request.Cookies[CookieSettings.CookieName] == ((int)CookieAcceptanceValues.Accept).ToString())
         {
             <!-- Google tag (gtag.js) -->
             <script async src="https://www.googletagmanager.com/gtag/js?id=@googleTagId"></script>
