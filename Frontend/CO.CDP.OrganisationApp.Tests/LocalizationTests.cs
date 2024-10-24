@@ -1,4 +1,5 @@
 using System.Net;
+using Amazon.SimpleSystemsManagement;
 using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
 using CO.CDP.TestKit.Mvc;
@@ -6,10 +7,14 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.DataProtection.KeyManagement;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 using Moq;
 
 namespace CO.CDP.OrganisationApp.Tests;
@@ -53,6 +58,10 @@ public class LocalizationTests
                     options.ClientId = "123";
                     options.Authority = "https://whatever";
                 });
+                services.AddDataProtection().DisableAutomaticKeyGeneration();
+                services.RemoveAll<IAmazonSimpleSystemsManagement>();
+                services.RemoveAll<IConfigureOptions<KeyManagementOptions>>();
+                services.AddDataProtection().DisableAutomaticKeyGeneration();
             });
         });
 

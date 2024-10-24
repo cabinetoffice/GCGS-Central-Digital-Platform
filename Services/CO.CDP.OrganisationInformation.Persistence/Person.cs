@@ -5,6 +5,7 @@ namespace CO.CDP.OrganisationInformation.Persistence;
 
 [Index(nameof(Guid), IsUnique = true)]
 [Index(nameof(Email), IsUnique = true)]
+[Index(nameof(UserUrn), IsUnique = true)]
 public class Person : IEntityDate
 {
     public int Id { get; set; }
