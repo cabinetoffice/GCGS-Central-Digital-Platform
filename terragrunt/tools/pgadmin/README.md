@@ -4,11 +4,16 @@ This configuration is based on the latest published pgAdmin image, to grant dev 
 
 > In the following examples ave is alias for `aws-vault exec` command.
 Feel free to use any convenient AWS profiler instead.
-
-## build
+## Pin version
 
 ```shell
-docker build -t cabinetoffice/cdp-pgadmin .
+export PINNED_PGADMIN_VERSION=8.12.0
+```
+
+## Build
+
+```shell
+docker build --build-arg PGADMIN_VERSION=${PINNED_PGADMIN_VERSION} -t cabinetoffice/cdp-pgadmin:${PINNED_PGADMIN_VERSION} .
 ```
 
 ## Deploy
@@ -21,24 +26,16 @@ There is ECR repositories in orchestrator account. Using the following commands,
 aws-switch-to-cdp-sirsi-orchestrator-goaco-terraform
 ACCOUNT_ID=$(ave aws sts get-caller-identity | jq -r '.Account')
 ave aws ecr get-login-password --region eu-west-2 | docker login --username AWS --password-stdin ${ACCOUNT_ID}.dkr.ecr.eu-west-2.amazonaws.com
-docker tag cabinetoffice/cdp-pgadmin:latest ${ACCOUNT_ID}.dkr.ecr.eu-west-2.amazonaws.com/cdp-pgadmin:latest
-docker push ${ACCOUNT_ID}.dkr.ecr.eu-west-2.amazonaws.com/cdp-pgadmin:latest
+docker tag cabinetoffice/cdp-pgadmin:${PINNED_PGADMIN_VERSION} ${ACCOUNT_ID}.dkr.ecr.eu-west-2.amazonaws.com/cdp-pgadmin:${PINNED_PGADMIN_VERSION}
+docker push ${ACCOUNT_ID}.dkr.ecr.eu-west-2.amazonaws.com/cdp-pgadmin:${PINNED_PGADMIN_VERSION}
 ```
 
 ### Re-deploy PG-Admin service
 
+> Note! if the same version is not set for the task's image [here](../../modules/tools/service-pgadmin.tf), you will need to update terraform and provision the service instead of just forcing a new deployment.
+
 ```shell
 aws-switch-to-cdp-sirsi-development-goaco-terraform
-ave aws ecs update-service --cluster cdp-sirsi --service pgadmin --force-new-deployment | jq .
-```
-
-```shell
-aws-switch-to-cdp-sirsi-staging-goaco-terraform
-ave aws ecs update-service --cluster cdp-sirsi --service pgadmin --force-new-deployment | jq .
-```
-
-```shell
-aws-switch-to-cdp-sirsi-integration-goaco-terraform
 ave aws ecs update-service --cluster cdp-sirsi --service pgadmin --force-new-deployment | jq .
 ```
 
