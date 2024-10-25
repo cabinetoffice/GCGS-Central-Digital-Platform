@@ -50,6 +50,8 @@ public class SupplierWebsiteQuestionModel(IOrganisationClient organisationClient
     {
         if (!string.IsNullOrWhiteSpace(WebsiteAddress))
         {
+            WebsiteAddress = WebsiteAddress.Trim();
+
             if (!WebsiteAddress.StartsWith("http") && !WebsiteAddress.StartsWith("//"))
             {
                 WebsiteAddress = $"https://{WebsiteAddress}";

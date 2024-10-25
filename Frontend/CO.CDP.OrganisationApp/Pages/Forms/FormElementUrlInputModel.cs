@@ -77,6 +77,6 @@ public class FormElementUrlInputModel : FormElementModel, IValidatableObject
         {
             url = $"https://{url}";
         }
-        return url;
+        return url.Trim();
     }
 }
