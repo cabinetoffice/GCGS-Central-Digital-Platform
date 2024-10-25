@@ -315,10 +315,12 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
         var organisation = OrganisationWithPponIdentifier;
         _organisationRepositoryMock.Setup(repo => repo.Find(_organisationId)).ReturnsAsync(organisation);
 
-        var result = await UseCase.Execute((_organisationId, command));
 
-        result.Should().BeTrue();
-        _organisationRepositoryMock.Verify(repo => repo.SaveAsync(organisation, AnyOnSave()), Times.Once);
+        Func<Task> act = async () => await UseCase.Execute((_organisationId, command));
+
+        await act.Should()
+           .ThrowAsync<InvalidUpdateOrganisationCommand>();         
+        
 
         organisation.Identifiers.FirstOrDefault(i => i.Scheme == "VAT").Should().BeNull();
     }

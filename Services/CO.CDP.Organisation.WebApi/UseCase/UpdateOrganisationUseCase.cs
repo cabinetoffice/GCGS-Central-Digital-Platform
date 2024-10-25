@@ -106,12 +106,12 @@ public class UpdateOrganisationUseCase(
                 {
                     if (string.IsNullOrWhiteSpace(identifier.Id))
                     {
-                        throw new InvalidUpdateOrganisationCommand($"Enter Identifier Number for scheme '{identifier.Scheme}'.");
+                        throw new InvalidUpdateOrganisationCommand($"Missing Identifier Number for scheme '{identifier.Scheme}'.");
                     }
 
                     // Check if Identifier number already exists
                     var organisationIdentifier = organisationRepository.FindByIdentifier(identifier.Scheme, identifier.Id);
-                    if (organisationIdentifier != null)
+                    if (organisationIdentifier.Result != null)
                     {
                         throw new InvalidUpdateOrganisationCommand($"The identifier '{identifier.Id}' you have entered belongs to a different organization that already exists.");
                     }
