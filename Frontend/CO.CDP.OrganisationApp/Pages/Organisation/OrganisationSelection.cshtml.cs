@@ -1,7 +1,7 @@
 using CO.CDP.Tenant.WebApiClient;
 using Microsoft.AspNetCore.Mvc;
 
-namespace CO.CDP.OrganisationApp.Pages;
+namespace CO.CDP.OrganisationApp.Pages.Organisation;
 
 public class OrganisationSelectionModel(
     ITenantClient tenantClient,
