@@ -22,7 +22,7 @@ public static class ServiceCollectionExtensions
         { typeof(InvalidQueryException), (StatusCodes.Status400BadRequest, "ISSUE_WITH_QUERY_PARAMETERS") },
         { typeof(DuplicateAuthenticationKeyNameException), (StatusCodes.Status400BadRequest, "APIKEY_NAME_ALREADY_EXISTS") },
         { typeof(DuplicateEmailWithinOrganisationException), (StatusCodes.Status400BadRequest, "EMAIL_ALREADY_EXISTS_WITHIN_ORGANISATION") },
-        { typeof(DuplicateInviteEmailForOrganisationException), (StatusCodes.Status400BadRequest, "INVITE_EMAIL_ALREADY_EXISTS_FOR_ORGANISATION") }
+        { typeof(DuplicateInviteEmailForOrganisationException), (StatusCodes.Status400BadRequest, "INVITE_EMAIL_ALREADY_EXISTS_FOR_ORGANISATION") },
         { typeof(PersonAlreadyAddedToOrganisationException), (StatusCodes.Status400BadRequest, "PERSON_ALREADY_ADDED_TO_ORGANISATION") }
     };
 
