@@ -4,7 +4,6 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moq;
-using System.Net;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages;
 
@@ -37,23 +36,12 @@ public class ContactUsModelTests
     [Fact]
     public async Task OnPost_ValidModelState_ShouldCallContactUsAndRedirect()
     {
+        _mockOrganisationClient.Setup(client => client.ContactUsAsync(It.IsAny<ContactUs>())).ReturnsAsync(true);
+
         var result = await _pageModel.OnPost();
 
         _mockOrganisationClient.Verify(client => client.ContactUsAsync(It.IsAny<ContactUs>()), Times.Once);
         result.Should().BeOfType<RedirectResult>()
               .Which.Url.Should().Be("/contact-us?message-sent=true");
-    }
-
-    [Fact]
-    public async Task OnPost_ApiExceptionWith404_ShouldReturnNotFoundRedirect()
-    {
-        _mockOrganisationClient
-            .Setup(client => client.ContactUsAsync(It.IsAny<ContactUs>()))            
-            .ThrowsAsync(new ApiException("Not Found", (int)HttpStatusCode.NotFound, string.Empty, null, null)); ;
-
-        var result = await _pageModel.OnPost();
-
-        result.Should().BeOfType<RedirectResult>()
-              .Which.Url.Should().Be("/page-not-found");
     }
 }

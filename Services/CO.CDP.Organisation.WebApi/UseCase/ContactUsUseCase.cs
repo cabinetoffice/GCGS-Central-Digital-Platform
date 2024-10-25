@@ -1,13 +1,12 @@
 using CO.CDP.GovUKNotify;
 using CO.CDP.GovUKNotify.Models;
 using CO.CDP.Organisation.WebApi.Model;
-using System.Globalization;
 namespace CO.CDP.Organisation.WebApi.UseCase;
 
-public class ContactUseCase(
+public class ContactUsUseCase(
     IGovUKNotifyApiClient govUKNotifyApiClient,
     IConfiguration configuration,
-     ILogger<ContactUseCase> logger)
+     ILogger<ContactUsUseCase> logger)
     : IUseCase<ContactUs, bool>
 {
     public async Task<bool> Execute(ContactUs command)
@@ -45,7 +44,7 @@ public class ContactUseCase(
         {
             await govUKNotifyApiClient.SendEmail(emailRequest);
         }
-        catch (Exception)
+        catch
         {
             contactUsSentSuccess = false;
         }

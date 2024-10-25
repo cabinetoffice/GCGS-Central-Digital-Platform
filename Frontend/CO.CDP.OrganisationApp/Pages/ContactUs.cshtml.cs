@@ -49,17 +49,11 @@ public class ContactUsModel(IOrganisationClient organisationClient) : PageModel
             return Page();
         }
 
-        try
-        {
-            var contactus = new ContactUs(EmailAddress, Message, Name, OrganisationName);
+        var contactus = new ContactUs(EmailAddress, Message, Name, OrganisationName);
 
-            await organisationClient.ContactUs(contactus);
+        await organisationClient.ContactUs(contactus);
 
-            return Redirect("/contact-us?message-sent=true");
-        }
-        catch (ApiException ex) when (ex.StatusCode == 404)
-        {
-            return Redirect("/page-not-found");
-        }
+        return Redirect("/contact-us?message-sent=true");
+
     }
 }
