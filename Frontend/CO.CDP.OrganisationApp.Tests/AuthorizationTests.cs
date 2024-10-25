@@ -86,13 +86,6 @@ public class AuthorizationTests
                 )
             );
 
-        OrganisationClient.Setup(client => client.GetOrganisationJoinRequestsAsync(It.IsAny<Guid>(), null))
-            .ReturnsAsync(
-                [
-                    new JoinRequestLookUp(new Guid(),new Organisation.WebApiClient.Person("a@b.com", "First name", person.Id, "Last name", []) , OrganisationJoinRequestStatus.Pending)
-                ]
-            );
-
         PersonClient.Setup(client => client.LookupPersonAsync(It.IsAny<string>())).ReturnsAsync(person);
 
         Session.Setup(s => s.Get<Models.UserDetails>(OrganisationApp.Session.UserDetailsKey))
