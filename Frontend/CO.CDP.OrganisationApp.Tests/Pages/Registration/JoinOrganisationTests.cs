@@ -1,9 +1,11 @@
 using CO.CDP.Organisation.WebApiClient;
+using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.Pages.Registration;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using OrganisationWebApiClient = CO.CDP.Organisation.WebApiClient;
 using Moq;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages.Registration;
@@ -121,4 +123,28 @@ public class JoinOrganisationModelTests
 
         _organisationClientMock.Verify(client => client.CreateJoinRequestAsync(It.IsAny<Guid>(), It.IsAny<CreateOrganisationJoinRequest>()), Times.Never);
     }
+
+    [Fact]
+    public async Task OnPost_CreateJoinRequestThrowsApiException_SetsFlashMessageAndReturnsPage()
+    {
+        _organisationClientMock.Setup(client => client.LookupOrganisationAsync(string.Empty, _identifier))
+            .ReturnsAsync(_organisation);
+        _joinOrganisationModel.Join = true;
+
+        _organisationClientMock.Setup(client => client.CreateJoinRequestAsync(
+                _organisationId,
+                It.Is<CreateOrganisationJoinRequest>(r => r.PersonId == _joinOrganisationModel.UserDetails.PersonId)))
+            .ThrowsAsync(new ApiException<OrganisationWebApiClient.ProblemDetails>("Error", 400, "Error", null!, null!, null!));
+
+        var result = await _joinOrganisationModel.OnPost(_identifier);
+
+        _tempDataMock.Verify(tempData => tempData.Put(
+                FlashMessageTypes.Important,
+                It.IsAny<FlashMessage>()),
+            Times.Once);
+
+        result.Should().BeOfType<PageResult>();
+    }
+
+
 }
