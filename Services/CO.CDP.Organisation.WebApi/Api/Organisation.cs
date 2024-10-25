@@ -677,7 +677,7 @@ public static class EndpointExtensions
                 [AuthenticationChannel.OneLogin],
                 [Constants.OrganisationPersonScope.Admin],
                 OrganisationIdLocation.Path)]
-        async (Guid organisationId, InvitePersonToOrganisation invitePersonToOrganisation, IUseCase<(Guid, InvitePersonToOrganisation), PersonInvite> useCase) =>
+        async (Guid organisationId, InvitePersonToOrganisation invitePersonToOrganisation, IUseCase<(Guid, InvitePersonToOrganisation), bool> useCase) =>
 
                     await useCase.Execute((organisationId, invitePersonToOrganisation))
                         .AndThen(Results.Ok)

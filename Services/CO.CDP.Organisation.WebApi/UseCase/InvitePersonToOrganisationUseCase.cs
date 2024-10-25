@@ -1,3 +1,4 @@
+using Amazon.CloudWatch.Model;
 using CO.CDP.GovUKNotify;
 using CO.CDP.GovUKNotify.Models;
 using CO.CDP.Organisation.WebApi.Model;
@@ -10,7 +11,7 @@ public class InvitePersonToOrganisationUseCase(
     IGovUKNotifyApiClient govUKNotifyApiClient,
     IConfiguration configuration,
     Func<Guid> guidFactory)
-    : IUseCase<(Guid organisationId, InvitePersonToOrganisation invitePersonData), PersonInvite>
+    : IUseCase<(Guid organisationId, InvitePersonToOrganisation invitePersonData), bool>
 {
     public InvitePersonToOrganisationUseCase(
         IOrganisationRepository organisationRepository,
@@ -22,7 +23,7 @@ public class InvitePersonToOrganisationUseCase(
 
     }
 
-    public async Task<PersonInvite> Execute((Guid organisationId, InvitePersonToOrganisation invitePersonData) command)
+    public async Task<bool> Execute((Guid organisationId, InvitePersonToOrganisation invitePersonData) command)
     {
         var organisation = await organisationRepository.Find(command.organisationId)
                            ?? throw new UnknownOrganisationException($"Unknown organisation {command.organisationId}.");
@@ -60,7 +61,7 @@ public class InvitePersonToOrganisationUseCase(
 
         await govUKNotifyApiClient.SendEmail(emailRequest);
 
-        return personInvite;
+        return true;
     }
 
     private PersonInvite CreatePersonInvite(
