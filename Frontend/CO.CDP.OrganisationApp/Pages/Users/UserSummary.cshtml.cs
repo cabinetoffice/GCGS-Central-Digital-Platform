@@ -1,7 +1,6 @@
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
-using CO.CDP.OrganisationApp.WebApiClients;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
@@ -18,16 +17,9 @@ public class UserSummaryModel(
 
     public Guid? SignedInPersonId { get; set; }
 
-    [BindProperty]
-    public Guid? JoinRequestId { get; set; }
-
-    [BindProperty]
-    public Guid? PersonId { get; set; }
-
     public ICollection<CO.CDP.Organisation.WebApiClient.Person> Persons { get; set; } = [];
 
     public ICollection<PersonInviteModel> PersonInvites { get; set; } = [];
-    public ICollection<JoinRequestLookUp> OrganisationJoinRequests { get; set; } = [];
 
     [BindProperty]
     [Required(ErrorMessage = "Select yes to add another user")]
@@ -39,15 +31,8 @@ public class UserSummaryModel(
 
         try
         {
-            var getPersonsTask = organisationClient.GetOrganisationPersonsAsync(Id);
-            var getPersonInvitesTask = organisationClient.GetOrganisationPersonInvitesAsync(Id);
-            var getOrganisationJoinRequestsTask = organisationClient.GetOrganisationJoinRequests(Id, null);
-
-            await Task.WhenAll(getPersonsTask, getPersonInvitesTask, getOrganisationJoinRequestsTask);
-
-            Persons = getPersonsTask.Result;
-            PersonInvites = getPersonInvitesTask.Result;
-            OrganisationJoinRequests = getOrganisationJoinRequestsTask.Result;
+            Persons = await organisationClient.GetOrganisationPersonsAsync(Id);
+            PersonInvites = await organisationClient.GetOrganisationPersonInvitesAsync(Id);
         }
         catch (ApiException ex) when (ex.StatusCode == 404)
         {
@@ -72,25 +57,5 @@ public class UserSummaryModel(
         }
 
         return Redirect("/organisation/" + Id);
-    }
-
-    public async Task<IActionResult> OnGetJoinRequest(Guid reqid, Guid personid, OrganisationJoinRequestStatus decision)
-    {
-        try
-        {
-            var updateJoinRequest = new UpdateJoinRequest(UserDetails.PersonId!.Value, decision);
-
-            await organisationClient.UpdateOrganisationJoinRequest(Id, reqid, updateJoinRequest);
-
-            var redirectUrl = decision == OrganisationJoinRequestStatus.Accepted
-            ? $"/organisation/{Id}/users/{personid}/change-role?handler=person"
-            : $"/organisation/{Id}/users/user-summary";
-
-            return Redirect(redirectUrl);
-        }
-        catch (ApiException ex) when (ex.StatusCode == 404)
-        {
-            return Redirect("/page-not-found");
-        }
     }
 }
