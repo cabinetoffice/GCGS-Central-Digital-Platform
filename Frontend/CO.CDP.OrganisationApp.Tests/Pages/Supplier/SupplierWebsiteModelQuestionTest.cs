@@ -91,14 +91,17 @@ public class SupplierWebsiteModelQuestionTest
     }
 
     [Fact]
-    public void OnPost_InvalidWebsiteUrl_ReturnsPageResult()
+    public async Task OnPost_InvalidaWebsiteUrl_ReturnsPage()
     {
+        var id = Guid.NewGuid();
+        _model.Id = id;
         _model.HasWebsiteAddress = true;
         _model.WebsiteAddress = "https://.invalid-doamain.com/test-page";
 
-        var results = ModelValidationHelper.Validate(_model);
+        var result = await _model.OnPost();
 
-        results.Count.Should().Be(1);
+        result.Should().BeOfType<PageResult>();
+        _organisationClientMock.Verify(c => c.GetOrganisationAsync(id), Times.Never);
     }
 
     [Fact]

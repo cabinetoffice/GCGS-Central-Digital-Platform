@@ -18,7 +18,6 @@ public class SupplierWebsiteQuestionModel(IOrganisationClient organisationClient
 
     [BindProperty]
     [RequiredIf(nameof(HasWebsiteAddress), true, ErrorMessage = "Enter the website address")]
-    [ValidUri(ErrorMessage = "Enter a valid website address in the correct format")]
     public string? WebsiteAddress { get; set; }
 
     [BindProperty(SupportsGet = true)]
@@ -49,6 +48,20 @@ public class SupplierWebsiteQuestionModel(IOrganisationClient organisationClient
 
     public async Task<IActionResult> OnPost()
     {
+        if (!string.IsNullOrWhiteSpace(WebsiteAddress))
+        {
+            if (!WebsiteAddress.StartsWith("http") && !WebsiteAddress.StartsWith("//"))
+            {
+                WebsiteAddress = $"//{WebsiteAddress}";
+            }
+
+            if (!Uri.TryCreate(WebsiteAddress, UriKind.Absolute, out _))
+            {
+                ModelState.AddModelError(nameof(WebsiteAddress),
+                    "Website address must be in the correct format, like https://www.companyname.com");
+            }
+        }
+
         if (!ModelState.IsValid)
         {
             return Page();

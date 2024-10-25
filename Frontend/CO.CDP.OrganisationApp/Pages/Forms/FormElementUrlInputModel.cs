@@ -25,7 +25,7 @@ public class FormElementUrlInputModel : FormElementModel, IValidatableObject
         if (HasValue != false && !string.IsNullOrWhiteSpace(TextInput))
         {
             formAnswer ??= new FormAnswer();
-            formAnswer.TextValue = TextInput.Trim();
+            formAnswer.TextValue = TryFixUrl(TextInput);
         }
 
         return formAnswer;
@@ -61,10 +61,22 @@ public class FormElementUrlInputModel : FormElementModel, IValidatableObject
             {
                 yield return new ValidationResult("Enter a website address", [nameof(TextInput)]);
             }
-            else if (TextInput.Contains(".") == false || TextInput.Trim().Contains(" "))
+            else
             {
-                yield return new ValidationResult("Website address must be in the correct format, like www.companyname.com", [nameof(TextInput)]);
+                if (!Uri.TryCreate(TryFixUrl(TextInput), UriKind.Absolute, out _))
+                {
+                    yield return new ValidationResult("Website address must be in the correct format, like www.companyname.com", [nameof(TextInput)]);
+                }
             }
         }
+    }
+
+    private static string TryFixUrl(string url)
+    {
+        if (!url.StartsWith("http") && !url.StartsWith("//"))
+        {
+            url = $"//{url}";
+        }
+        return url;
     }
 }

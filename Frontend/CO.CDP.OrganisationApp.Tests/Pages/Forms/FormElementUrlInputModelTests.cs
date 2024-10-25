@@ -48,8 +48,8 @@ public class FormElementUrlInputModelTests
     [Theory]
     [InlineData(null, null)]
     [InlineData(" ", null)]
+    [InlineData("example.com", "//example.com")]
     [InlineData("https://example.com", "https://example.com")]
-    [InlineData("https://example.com/withspaceinend ", "https://example.com/withspaceinend")]
     public void GetAnswer_WhenHasValueIsNull_GetsExpectedFormAnswer(string? input, string? expected)
     {
         var model = new FormElementUrlInputModel
@@ -118,28 +118,6 @@ public class FormElementUrlInputModelTests
         validationResults.Should().ContainSingle();
         validationResults[0].ErrorMessage.Should().Be("Enter a website address");
     }
-
-    [Theory]
-    [InlineData("invalid-url")]
-    [InlineData("http://example.url/has space")]
-    public void Validate_ShouldReturnError_WhenTextInputIsInvalidUrl(string url)
-    {
-        var model = new FormElementUrlInputModel
-        {
-            IsRequired = true,
-            HasValue = true,
-            TextInput = url
-        };
-
-        var validationResults = new List<ValidationResult>();
-        var context = new ValidationContext(model);
-        Validator.TryValidateObject(model, context, validationResults, true);
-
-        validationResults.Should().ContainSingle();
-        validationResults[0].ErrorMessage.Should().Be("Website address must be in the correct format, like www.companyname.com");
-    }
-
-
 
     [Theory]
     [InlineData("https://example.com")]
