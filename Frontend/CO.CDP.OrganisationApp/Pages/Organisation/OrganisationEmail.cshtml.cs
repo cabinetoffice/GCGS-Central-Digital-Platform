@@ -13,8 +13,8 @@ namespace CO.CDP.OrganisationApp.Pages.Organisation;
 public class OrganisationEmailModel(OrganisationWebApiClient.IOrganisationClient organisationClient) : PageModel
 {
     [BindProperty]
-    [DisplayName("Enter the organisation's contact email address")]
-    [Required(ErrorMessage = "Enter the organisation's contact email address")]
+    [DisplayName("Enter your organisation's email address")]
+    [Required(ErrorMessage = "Enter your organisation's email address")]
     [EmailAddress(ErrorMessage = "Enter an email address in the correct format, like name@example.com")]
     public string? EmailAddress { get; set; }
 

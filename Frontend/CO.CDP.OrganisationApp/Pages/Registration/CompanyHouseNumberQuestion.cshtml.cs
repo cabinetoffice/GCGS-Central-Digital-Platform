@@ -17,11 +17,11 @@ public class CompanyHouseNumberQuestionModel(ISession session,
     public override string CurrentPage => OrganisationHasCompanyHouseNumberPage;
 
     [BindProperty]
-    [Required(ErrorMessage = "Select an option")]
+    [Required(ErrorMessage = "Select 'yes' or 'no'")]
     public bool? HasCompaniesHouseNumber { get; set; }
 
     [BindProperty]
-    [RequiredIf(nameof(HasCompaniesHouseNumber), true, ErrorMessage = "Please enter the Companies House number.")]
+    [RequiredIf(nameof(HasCompaniesHouseNumber), true, ErrorMessage = "Enter a company number")]
     public string? CompaniesHouseNumber { get; set; }
 
     [BindProperty]
@@ -36,7 +36,7 @@ public class CompanyHouseNumberQuestionModel(ISession session,
 
     public string? OrganisationName;
 
-    public FlashMessage NotificationBannerCompanyNotFound { get { return new FlashMessage("We cannot find your company number on Companies House. If it’s correct continue and enter your details manually."); } }
+    public FlashMessage NotificationBannerCompanyNotFound { get { return new FlashMessage("We cannot find your company number on Companies House. If it’s correct, continue and enter your details manually."); } }
     public FlashMessage NotificationBannerCompanyAlreadyRegistered { get { return new FlashMessage("An organisation with this company number already exists. Change the company number or <a class='govuk-notification-banner__link' href='/registration/" + OrganisationIdentifier + "/join-organisation'>request to join " + OrganisationName + ".</a>"); } }
 
     public void OnGet()
