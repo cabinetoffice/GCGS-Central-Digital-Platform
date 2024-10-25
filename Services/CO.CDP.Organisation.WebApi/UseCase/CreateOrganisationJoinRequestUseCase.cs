@@ -42,13 +42,7 @@ public class CreateOrganisationJoinRequestUseCase(
         var person = await personRepository.Find(command.createOrganisationJoinRequestCommand.PersonId)
                            ?? throw new UnknownPersonException($"Unknown person {command.createOrganisationJoinRequestCommand.PersonId}.");
 
-        var alreadyAdded = await CheckPersonAlreadyAdded(organisation, person);
-
-        if (alreadyAdded)
-        {
-            throw new PersonAlreadyAddedToOrganisationException(
-                $"Person {command.createOrganisationJoinRequestCommand.PersonId} already added to organisation {command.organisationId}.");
-        }
+        await GuardPersonIsNotAlreadyAdded(organisation, person);
 
         var organisationJoinRequest = CreateOrganisationJoinRequest(organisation, person);
 
@@ -166,15 +160,14 @@ public class CreateOrganisationJoinRequestUseCase(
         return organisationPersons.Where(op => op.Scopes.Contains(Constants.OrganisationPersonScope.Admin)).Select(op => op.Person).ToList();
     }
 
-    private async Task<bool> CheckPersonAlreadyAdded(Persistence.Organisation organisation, Person person)
+    private async Task GuardPersonIsNotAlreadyAdded(Persistence.Organisation organisation, Person person)
     {
         var matchingOrganisationPerson = await organisationRepository.FindOrganisationPerson(organisation.Guid, person.Guid);
 
         if (matchingOrganisationPerson != null)
         {
-            return true;
+            throw new PersonAlreadyAddedToOrganisationException(
+                $"Person {person.Guid} already added to organisation {organisation.Guid}.");
         }
-
-        return false;
     }
 }
