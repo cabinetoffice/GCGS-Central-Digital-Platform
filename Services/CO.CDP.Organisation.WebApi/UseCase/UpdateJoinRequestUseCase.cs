@@ -38,8 +38,11 @@ public class UpdateJoinRequestUseCase(
                 Scopes = []
             });
 
+            joinRequest.Person.Tenants.Add(organisation.Tenant);
+            personRepository.Save(joinRequest.Person);
+
             organisationRepository.Save(organisation);
-        }        
+        }
 
         requestRepository.Save(joinRequest);
 
@@ -52,18 +55,18 @@ public class UpdateJoinRequestUseCase(
     {
         var baseAppUrl = configuration.GetValue<string>("OrganisationAppUrl") ?? "";
         var templateId = configuration.GetValue<string>("GOVUKNotify:RequestToJoinOrganisationDecisionTemplateId") ?? "";
-        
+
         var missingConfigs = new List<string>();
 
         if (string.IsNullOrEmpty(baseAppUrl)) missingConfigs.Add("OrganisationAppUrl");
         if (string.IsNullOrEmpty(templateId)) missingConfigs.Add("GOVUKNotify:RequestToJoinOrganisationDecisionTemplateId");
-        
+
         if (missingConfigs.Count != 0)
         {
             logger.LogError(new Exception("Unable to send an email"), $"Missing configuration keys: {string.Join(", ", missingConfigs)}. Unable to send an email.");
             return;
         }
-        
+
         var emailRequest = new EmailNotificationRequest
         {
             EmailAddress = organisationJoinRequest.Person!.Email,
@@ -73,7 +76,7 @@ public class UpdateJoinRequestUseCase(
                 { "org_name", organisationJoinRequest.Organisation!.Name },
                 { "decision",  organisationJoinRequest.Status.ToString().ToLower()},
                 { "first_name", organisationJoinRequest.Person.FirstName},
-                { "last_name", organisationJoinRequest.Person.LastName },                
+                { "last_name", organisationJoinRequest.Person.LastName },
             }
         };
 
