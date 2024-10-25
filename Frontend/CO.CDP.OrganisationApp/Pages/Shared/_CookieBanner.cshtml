@@ -2,7 +2,7 @@
     string currentUrl = Context.Request.PathBase + Context.Request.Path + Context.Request.QueryString;
 }
 
-@if (!Context.Request.Cookies.ContainsKey(CookieSettings.CookieName) && !Context.Request.Path.StartsWithSegments("/Cookies")) {
+@if (!Context.Request.Cookies.ContainsKey(CookieSettings.CookieName) && !Context.Request.Path.StartsWithSegments("/cookies")) {
     <div class="govuk-cookie-banner" data-nosnippet role="region" aria-label="Cookies on Find a Tender">
         <div class="govuk-cookie-banner__message govuk-width-container">
             <div class="govuk-grid-row">
@@ -17,7 +17,7 @@
                 </div>
             </div>
             
-            <form action="/Cookies" method="post">
+            <form action="/cookies" method="post">
                 @Html.AntiForgeryToken()
 
                 <input type="hidden" name="@CookieSettings.CookieSettingsPageReturnUrlFieldName" value="@currentUrl" />
@@ -25,7 +25,7 @@
                 <div class="govuk-button-group">
                     <govuk-button name="@CookieSettings.CookieAcceptanceFieldName" value="@CookieAcceptanceValues.Accept">Accept analytics cookies</govuk-button>
                     <govuk-button name="@CookieSettings.CookieAcceptanceFieldName" value="@CookieAcceptanceValues.Reject">Reject analytics cookies</govuk-button>
-                    <a class="govuk-link" href="/Cookies">View cookies</a>
+                    <a class="govuk-link" href="/cookies">View cookies</a>
                 </div>
             </form>                            
         </div>
@@ -40,7 +40,7 @@
             <div class="govuk-grid-row">
                 <div class="govuk-grid-column-two-thirds">
                     <div class="govuk-cookie-banner__content">
-                        <p class="govuk-body">You’ve @acceptedState additional cookies. You can <a class="govuk-link" href="/Cookies">change your cookie settings</a> at any time.</p>
+                        <p class="govuk-body">You’ve @acceptedState additional cookies. You can <a class="govuk-link" href="/cookies">change your cookie settings</a> at any time.</p>
                     </div>
                 </div>
             </div>
