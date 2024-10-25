@@ -31,7 +31,7 @@ public class UpdateJoinRequestUseCaseTests
         _mockPersonRepository = new Mock<IPersonRepository>();
 
         var inMemorySettings = new List<KeyValuePair<string, string?>>
-        {            
+        {
             new("OrganisationAppUrl", "http://baseurl/"),
             new("GOVUKNotify:RequestToJoinOrganisationDecisionTemplateId", "template-id")
         };
@@ -148,6 +148,33 @@ public class UpdateJoinRequestUseCaseTests
         _mockOrganisationRepository.Verify(repo => repo.Find(organisationId), Times.Once);
         _mockRequestRepository.Verify(repo => repo.Find(joinRequestId, organisationId), Times.Once);
         _mockRequestRepository.Verify(repo => repo.Save(It.IsAny<CO.CDP.OrganisationInformation.Persistence.OrganisationJoinRequest>()), Times.Never);
+    }
+
+    [Fact]
+    public async Task Execute_ShouldThrowUnknownPersonException_WhenJoinRequestPersonIsNull()
+    {
+        var organisationId = Guid.NewGuid();
+        var joinRequestId = Guid.NewGuid();
+        var updateJoinRequest = new UpdateJoinRequest
+        {
+            ReviewedBy = _reviewedBy,
+            status = OrganisationJoinRequestStatus.Accepted
+        };
+        var joinRequest = OrganisationJoinRequest;
+        joinRequest.Person = null;
+
+        _mockOrganisationRepository
+            .Setup(repo => repo.Find(organisationId))
+            .ReturnsAsync(Organisation);
+
+        _ = _mockRequestRepository
+            .Setup(repo => repo.Find(joinRequestId, organisationId))
+            .ReturnsAsync(joinRequest);
+
+        Func<Task> act = async () => await _useCase.Execute((organisationId, joinRequestId, updateJoinRequest));
+
+        await act.Should().ThrowAsync<UnknownPersonException>()
+            .WithMessage($"Person details not found for join request {joinRequest.Guid}.");
     }
 
     [Fact]
