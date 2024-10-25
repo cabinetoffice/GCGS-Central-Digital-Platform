@@ -1,7 +1,7 @@
 using CO.CDP.Tenant.WebApiClient;
 using Microsoft.AspNetCore.Mvc;
 
-namespace CO.CDP.OrganisationApp.Pages;
+namespace CO.CDP.OrganisationApp.Pages.Organisation;
 
 public class OrganisationSelectionModel(
     ITenantClient tenantClient,
@@ -20,10 +20,5 @@ public class OrganisationSelectionModel(
                 .ForEach(o => UserOrganisations.Add(o)));
 
         return Page();
-    }
-
-    public IActionResult OnPost()
-    {
-        return RedirectToPage("/Registration/OrganisationType");
     }
 }

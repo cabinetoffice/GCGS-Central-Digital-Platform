@@ -1,4 +1,4 @@
-using CO.CDP.OrganisationApp.Pages;
+using CO.CDP.OrganisationApp.Pages.Organisation;
 using CO.CDP.Tenant.WebApiClient;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
@@ -34,17 +34,6 @@ public class OrganisationSelectionTest
         var actionResult = await model.OnGet();
 
         model.UserOrganisations.Should().HaveCount(1);
-    }
-
-    [Fact]
-    public void OnPost_WhenValidModel_ShouldRegisterPerson()
-    {
-        var model = GivenOrganisationSelectionModelModel();
-
-        var actionResult = model.OnPost();
-
-        actionResult.Should().BeOfType<RedirectToPageResult>()
-            .Which.PageName.Should().Be("/Registration/OrganisationType");
     }
 
     private OrganisationSelectionModel GivenOrganisationSelectionModelModel()
