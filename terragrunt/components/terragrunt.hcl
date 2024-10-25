@@ -36,6 +36,7 @@ locals {
       cidr_block             = "10.${local.cidr_b_development}.0.0/16"
       account_id             = 471112892058
       canary_schedule_expression = "rate(30 minutes)" # "cron(15 7,11,15 ? * MON-FRI)" # UTC+0
+      fts_azure_frontdoor    = null
       name                   = "dev"
       pinned_service_version = null
       postgres_instance_type = "db.t4g.micro"
@@ -52,12 +53,13 @@ locals {
       top_level_domain = "findatender.codatt.net"
     }
     staging = {
-      cidr_block             = "10.${local.cidr_b_staging}.0.0/16"
-      account_id             = 905418042182
+      cidr_block                 = "10.${local.cidr_b_staging}.0.0/16"
+      account_id                 = 905418042182
       canary_schedule_expression = "rate(30 minutes)"
-      name                   = "staging"
-      pinned_service_version = "0.7.0"
-      postgres_instance_type = "db.t4g.micro"
+      fts_azure_frontdoor        = null
+      name                       = "staging"
+      pinned_service_version     = "1.0.3"
+      postgres_instance_type     = "db.t4g.micro"
       private_subnets = [
         "10.${local.cidr_b_staging}.101.0/24",
         "10.${local.cidr_b_staging}.102.0/24",
@@ -74,6 +76,7 @@ locals {
       cidr_block                 = "10.${local.cidr_b_integration}.0.0/16"
       account_id                 = 767397666448
       canary_schedule_expression = "rate(30 minutes)"
+      fts_azure_frontdoor        = null
       name                       = "integration"
       pinned_service_version     = "0.7.0"
       postgres_instance_type     = "db.t4g.micro"
@@ -93,8 +96,9 @@ locals {
       cidr_block                 = "10.${local.cidr_b_production}.0.0/16"
       account_id                 = 471112843276
       canary_schedule_expression = "rate(15 minutes)"
+      fts_azure_frontdoor        = "nqc-front-door-uksouth.azurefd.net"
       name                       = "production"
-      pinned_service_version     = "0.7.0"
+      pinned_service_version     = "1.0.3"
       postgres_instance_type     = "db.t4g.micro"
       private_subnets = [
         "10.${local.cidr_b_production}.101.0/24",
@@ -110,6 +114,8 @@ locals {
     }
   }
 
+  fts_azure_frontdoor = try(local.environments[local.environment].fts_azure_frontdoor, null)
+
   pinned_service_version = try(local.environments[local.environment].pinned_service_version, null)
 
   product = {
@@ -119,7 +125,7 @@ locals {
   }
 
   desired_count_non_production = 1
-  desired_count_production = 1
+  desired_count_production     = 1
 
   service_configs_scaling_non_production = {
     authority = {

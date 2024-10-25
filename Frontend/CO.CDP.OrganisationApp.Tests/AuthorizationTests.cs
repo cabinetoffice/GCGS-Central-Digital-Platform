@@ -5,11 +5,16 @@ using CO.CDP.Tenant.WebApiClient;
 using FluentAssertions;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using System.Net;
+using Amazon.SimpleSystemsManagement;
 using CO.CDP.TestKit.Mvc;
+using Microsoft.AspNetCore.DataProtection.KeyManagement;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 
 namespace CO.CDP.OrganisationApp.Tests;
 public class AuthorizationTests
@@ -99,6 +104,9 @@ public class AuthorizationTests
                     options.ClientId = "123";
                     options.Authority = "https://whatever";
                 });
+                services.RemoveAll<IAmazonSimpleSystemsManagement>();
+                services.RemoveAll<IConfigureOptions<KeyManagementOptions>>();
+                services.AddDataProtection().DisableAutomaticKeyGeneration();
             });
         });
 
@@ -179,7 +187,7 @@ public class AuthorizationTests
         responseBody.Should().NotBeNull();
         response.StatusCode.Should().Be(HttpStatusCode.OK);
         responseBody.Should().Contain("Organisation details");
-        responseBody.Should().Contain($"href=\"/organisation/{OrganisationId}/users/user-summary\">Users</a>");
+        responseBody.Should().Contain($"href=\"/organisation/{OrganisationId}/users/user-summary\">Manage users</a>");
     }
 
     [Fact]
@@ -203,7 +211,7 @@ public class AuthorizationTests
 
     public static IEnumerable<object[]> SupportAdminAccessTestCases()
     {
-        yield return new object[] { $"/organisation/{OrganisationId}", new[] { "Organisation name", "Organisation identifier", "Organisation email", "Supplier information" }, new[] { "Change", "Users" }, HttpStatusCode.OK };
+        yield return new object[] { $"/organisation/{OrganisationId}", new[] { "Organisation name", "Organisation identifier", "Organisation email", "Complete supplier information" }, new[] { "Change", "Users" }, HttpStatusCode.OK };
         yield return new object[] { $"/organisation/{OrganisationId}/address/uk?frm-overview", new string[] {}, new string[] {}, HttpStatusCode.NotFound };
         yield return new object[] { $"/organisation/{OrganisationId}/users/user-summary", new string[] {}, new string[] {}, HttpStatusCode.NotFound };
     }

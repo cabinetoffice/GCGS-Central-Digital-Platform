@@ -89,7 +89,7 @@ public class OrganisationIdentificationModelTests
         {
             OrganisationScheme = organisationType
         };
-        model.ModelState.AddModelError("OrganisationType", "Please select your organisation type");
+        model.ModelState.AddModelError("OrganisationType", "Select your organisation type");
 
         var result = await model.OnPost();
 
