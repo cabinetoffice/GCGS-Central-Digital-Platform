@@ -5,6 +5,8 @@ resource "random_string" "pgadmin_admin_password" {
 
 resource "aws_secretsmanager_secret" "pgadmin_credentials" {
   name = "${local.name_prefix}-${var.pgadmin_config.name}-credentials"
+  description = "PGAdmin Credentials"
+  tags = var.tags
 }
 
 resource "aws_secretsmanager_secret_version" "pgadmin_credentials_version" {
