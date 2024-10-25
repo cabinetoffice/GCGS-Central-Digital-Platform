@@ -18,7 +18,7 @@ public class JoinOrganisationModel(
     [Required(ErrorMessage = "Select an option")]
     public bool Join { get; set; }
 
-    public FlashMessage NotificationBannerAlreadyMemberOfOrganisation { get { return new FlashMessage("You are already a member of this organisation. <a class='govuk-notification-banner__link' href='/organisation/" + OrganisationDetails?.Id + "'>View Organisation</a>"); } }
+    public FlashMessage NotificationBannerAlreadyMemberOfOrganisation { get { return new FlashMessage(ErrorMessagesList.AlreadyMemberOfOrganisation + " <a class='govuk-notification-banner__link' href='/organisation/" + OrganisationDetails?.Id + "'>View Organisation</a>"); } }
 
     public async Task<IActionResult> OnGet(string identifier)
     {
