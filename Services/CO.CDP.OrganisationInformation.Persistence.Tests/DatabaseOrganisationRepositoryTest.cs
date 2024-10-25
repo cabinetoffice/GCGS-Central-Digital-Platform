@@ -340,7 +340,7 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql) : 
 
         var tenant = GivenTenant();
         var organisation = GivenOrganisation(
-            name: "Acme Ltd",
+            name: "ABC Ltd",
             tenant: tenant
         );
         repository.Save(organisation);
