@@ -1,3 +1,5 @@
+using System;
+
 namespace CO.CDP.Organisation.WebApi.Model;
 
 public class UnknownOrganisationException(string message, Exception? cause = null) : Exception(message, cause);
@@ -21,3 +23,4 @@ public class UnknownAuthenticationKeyException(string message, Exception? cause 
 public class InvalidSupportUpdateOrganisationCommand(string message, Exception? cause = null) : Exception(message, cause);
 public class DuplicateEmailWithinOrganisationException(string message, Exception? cause = null) : Exception(message, cause);
 public class PersonAlreadyAddedToOrganisationException(string message, Exception? cause = null) : Exception(message, cause);
+public class UnknownOrganisationJoinRequestException(string message, Exception? cause = null) : Exception(message, cause);
