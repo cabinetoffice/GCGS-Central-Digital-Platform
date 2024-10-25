@@ -20,7 +20,7 @@ using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using System.Globalization;
-using Microsoft.AspNetCore.DataProtection;
+// using Microsoft.AspNetCore.DataProtection;
 using static IdentityModel.OidcConstants;
 using static System.Net.Mime.MediaTypeNames;
 using ISession = CO.CDP.OrganisationApp.ISession;
@@ -187,8 +187,9 @@ builder.Services
     .AddAmazonCloudWatchLogsService()
     .AddCloudWatchSerilog(builder.Configuration);
 
-builder.Services.AddDataProtection()
-    .PersistKeysToAWSSystemsManager("/OrganisationApp/DataProtection");
+// @see DP-723 for details: https://noticingsystem.atlassian.net/browse/DP-723?focusedCommentId=27796
+// builder.Services.AddDataProtection()
+//    .PersistKeysToAWSSystemsManager("/OrganisationApp/DataProtection");
 
 var app = builder.Build();
 app.UseForwardedHeaders();
