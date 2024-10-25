@@ -54,7 +54,7 @@ public class DataService(IShareCodeRepository shareCodeRepository, IConnectedEnt
                     case FormQuestionType.YesOrNo:
                         {
                             pdfAnswerSet.QuestionAnswers.Add(new Tuple<string, string>($"{answer.Question.Title}",
-                                answer.OptionValue ?? "No"));
+                                answer.OptionValue ?? "Not specified"));
                             break;
                         }
                     case FormQuestionType.Date:
@@ -66,20 +66,20 @@ public class DataService(IShareCodeRepository shareCodeRepository, IConnectedEnt
                     case FormQuestionType.Url:
                         {
                             pdfAnswerSet.QuestionAnswers.Add(new Tuple<string, string>($"{answer.Question.Title}",
-                               answer.TextValue ?? ""));
+                               answer.TextValue ?? "Not specified"));
                             break;
                         }
                     case FormQuestionType.FileUpload:
                         {
                             pdfAnswerSet.QuestionAnswers.Add(new Tuple<string, string>($"{answer.Question.Title}",
-                               answer.TextValue ?? "No"));
+                               answer.TextValue ?? "Not specified"));
                             break;
                         }
                     case FormQuestionType.Text:
                     case FormQuestionType.MultiLine:
                         {
                             pdfAnswerSet.QuestionAnswers.Add(new Tuple<string, string>($"{answer.Question.Title}:",
-                                answer.TextValue ?? ""));
+                                answer.TextValue ?? "Not specified"));
                             break;
                         }
                 }
@@ -102,7 +102,6 @@ public class DataService(IShareCodeRepository shareCodeRepository, IConnectedEnt
                 {
                     StreetAddress = a.Address.StreetAddress,
                     Locality = a.Address.Locality,
-                    Region = a.Address.Region,
                     PostalCode = a.Address.PostalCode,
                     CountryName = a.Address.CountryName,
                     Country = a.Address.Country,
@@ -118,7 +117,6 @@ public class DataService(IShareCodeRepository shareCodeRepository, IConnectedEnt
                 {
                     StreetAddress = a.Address.StreetAddress,
                     Locality = a.Address.Locality,
-                    Region = a.Address.Region,
                     PostalCode = a.Address.PostalCode,
                     CountryName = a.Address.CountryName,
                     Country = a.Address.Country,
@@ -162,7 +160,8 @@ public class DataService(IShareCodeRepository shareCodeRepository, IConnectedEnt
             WebsiteAddress = websiteAddress,
             EmailAddress = emailAddress,
             OrganisationType = organisationType,
-            LegalForm = legalForm
+            LegalForm = legalForm,
+            OrganisationName = organisation.Name
         };
     }
 

@@ -76,4 +76,29 @@ public class GetSharedDataFileUseCaseTests
 
         await act.Should().ThrowAsync<UserUnauthorizedException>();
     }
+
+    [Fact]
+    public async Task DataService_ShouldReturnBasicInformationWithOrganisationName()
+    {
+        var organisationId = Guid.NewGuid();
+        var sharecode = "valid-sharecode";
+        var expectedOrganisationName = "Organisation Name";
+
+        var sharedSupplierInformation = new SharedSupplierInformation
+        {
+            OrganisationId = organisationId,
+            BasicInformation = DataSharingFactory.CreateMockBasicInformation(),
+            ConnectedPersonInformation = DataSharingFactory.CreateMockConnectedPersonInformation(),
+            FormAnswerSetForPdfs = DataSharingFactory.CreateMockFormAnswerSetForPdfs(),
+            AttachedDocuments = []
+        };
+
+        _dataService.Setup(service => service.GetSharedSupplierInformationAsync(sharecode))
+            .ReturnsAsync(sharedSupplierInformation);
+
+        var result = await _dataService.Object.GetSharedSupplierInformationAsync(sharecode);
+
+        result.Should().NotBeNull();
+        result.BasicInformation.OrganisationName.Should().Be(expectedOrganisationName);
+    }
 }
