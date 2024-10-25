@@ -17,7 +17,7 @@ public class OrganisationIdentificationModel(ISession session,
 
     [BindProperty]
     [DisplayName("Organisation Type")]
-    [Required(ErrorMessage = "Please select your organisation type")]
+    [Required(ErrorMessage = "Select your organisation type")]
     public string? OrganisationScheme { get; set; }
 
     [BindProperty]

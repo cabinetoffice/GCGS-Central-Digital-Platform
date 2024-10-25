@@ -17,7 +17,7 @@ public class CompanyHouseNumberQuestionModel(ISession session,
     public override string CurrentPage => OrganisationHasCompanyHouseNumberPage;
 
     [BindProperty]
-    [Required(ErrorMessage = "Please select an option")]
+    [Required(ErrorMessage = "Select an option")]
     public bool? HasCompaniesHouseNumber { get; set; }
 
     [BindProperty]
