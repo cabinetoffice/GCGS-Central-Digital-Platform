@@ -9,3 +9,92 @@ image::diagrams/structurizr-1-CDP-2-ContainerView.svg[Container View of the Cent
 
 .Legend
 image::diagrams/structurizr-1-CDP-2-ContainerView-key.svg[Legend]
+
+Most of the services that were implemented have been defined as part of the High Level Design
+(`TPP Identity and Organisation Information Services HLD v0.1.docx`) that the team was given to follow when they started.
+
+A number of Web APIs is designed to be seen as independent externally, but internally shares the database.
+The entity verification services is one exception here as it is explicitly designed to be isolated from other services.
+
+== Personas
+
+There are two main public personas that interact with the system: suppliers and buyers.
+
+=== Supplier
+
+Suppliers offer their services to government organisations.
+They use SIRSI to sign up their organisation on the platform, fill out their profile (supplier information),
+manage users and API keys.
+
+=== Buyer
+
+Buyers are government organisation that buy services from suppliers.
+They use SIRSI to sign up their organisation on the platform.
+
+== External services
+
+=== GOV.UK One Login
+
+https://www.sign-in.service.gov.uk/[GOV.UK One Login] is used as a single sign-on solution shared between all
+the CDP services to provide seamless navigation experience between them.
+
+
+=== GOV.UK Notify
+
+https://www.notifications.service.gov.uk/[GOV.UK Notify] is used to send out email notifications to users.
+
+== Applications and services
+
+=== Organisation Web Application
+
+The Organisation web application is where buyers and suppliers sign up and manage their organisations.
+This is where suppliers provide the supplier information that is later used in the procurement process.
+
+.Organisation web application components
+image::diagrams/structurizr-1-CDP-3-OrganisationApp-Components.svg[Organisation web application components]
+
+The web application implements the User Interface with the https://design-system.service.gov.uk/[GOV.UK Design system].
+It calls other services (Web APIs) to perform actual work.
+
+=== Authority
+
+The **Authority** service provides an OpenID based authentication for the Web APIs.
+It's used to exchange the One Login token to our own one. This is to make the token valid for longer.
+One Login token is only valid for three minutes, while the Authority token is valid for one hour.
+
+The **Authority** service is one of the few services that were not part of the High Level Design.
+Originally, Web APIs were suppose to be authenticated with One Login tokens.
+This turned out not be be practical due to their short-lived nature.
+
+.Authority service components
+image::diagrams/structurizr-1-CDP-3-Authority-Components.svg[Authority service components]
+
+=== Tenant
+
+.Tenant service components
+image::diagrams/structurizr-1-CDP-4-TenantApi-Components.svg[Tenant service components]
+
+=== Person
+
+.Person service components
+image::diagrams/structurizr-1-CDP-5-PersonApi-Components.svg[Person service components]
+
+=== Organisation
+
+.Organisation service components
+image::diagrams/structurizr-1-CDP-6-OrganisationApi-Components.svg[Organisation service components]
+
+=== Forms
+
+.Forms service components
+image::diagrams/structurizr-1-CDP-7-FormsApi-Components.svg[Forms service components]
+
+=== Data sharing
+
+.Data sharing service components
+image::diagrams/structurizr-1-CDP-8-DataSharingApi-Components.svg[Data sharing service components]
+
+=== Entity verification
+
+.Entity verification service components
+image::diagrams/structurizr-1-CDP-9-EntityVerification-Components.svg[Entity verification service components]
