@@ -34,7 +34,7 @@ public class CookiesModel(
 
     public IActionResult OnPost()
     {
-        if(!ModelState.IsValid) {
+        if(!ModelState.IsValid || CookieAcceptance == null) {
             return Page();
         }
 
@@ -75,7 +75,8 @@ public static class CookieSettings
     public const string CookiesAcceptedQueryString = "cookiesAccepted";
 
     // Cookie name in FTS is FT_COOKIES_PREFERENCES_SET
-    // Cookie values have been configured to match, so if we're sharing a domain in production,
-    // we could switch to using the same cookie name and remove the frontend page (But keep the post handler for setting it?)
+    // Cookie values have been configured to match (See the 1 and 2 in the CookieAcceptanceValues enum).
+    // So if we're sharing a domain in production,we could switch to using the same cookie name and remove the frontend page
+    // (But keep the post handler for setting it - otherwise our cookie banner would need to post across to their subdomain)
     public const string CookieName = "SIRSI_COOKIES_PREFERENCES_SET";
 }
