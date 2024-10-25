@@ -31,7 +31,7 @@ public static class ApiExceptionMapper
             : null;
     }
 
-    private static string GetErrorMessageByCode(string errorCode, string exceptionMessage)
+    private static string GetErrorMessageByCode(string errorCode, string? exceptionMessage = null)
     {
         return errorCode switch
         {
@@ -44,7 +44,7 @@ public static class ApiExceptionMapper
             ErrorCodes.UNKNOWN_ORGANISATION => ErrorMessagesList.UnknownOrganisation,
             ErrorCodes.BUYER_INFO_NOT_EXISTS => ErrorMessagesList.BuyerInfoNotExists,
             ErrorCodes.UNKNOWN_BUYER_INFORMATION_UPDATE_TYPE => ErrorMessagesList.UnknownBuyerInformationUpdateType,
-            ErrorCodes.ORGANISATION_UPDATE_INVALID_INPUT => $"{exceptionMessage}",
+            ErrorCodes.ORGANISATION_UPDATE_INVALID_INPUT => exceptionMessage ?? ErrorMessagesList.UnexpectedError,
             _ => ErrorMessagesList.UnexpectedError
         };
     }
