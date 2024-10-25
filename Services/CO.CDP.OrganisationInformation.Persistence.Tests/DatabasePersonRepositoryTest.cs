@@ -118,7 +118,11 @@ public class DatabasePersonRepositoryTest(PostgreSqlFixture postgreSql) : IClass
         var result = await repository.FindPersonWithTenant(person.Guid);
 
         result.Should().NotBeNull();
-        result.Guid.Should().Be(person.Guid);
+
+        if (result != null)
+        {
+            result.Guid.Should().Be(person.Guid);
+        }
     }
 
     [Fact]
