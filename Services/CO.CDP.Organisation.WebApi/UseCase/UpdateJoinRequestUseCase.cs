@@ -16,7 +16,7 @@ public class UpdateJoinRequestUseCase(
 {
     public async Task<bool> Execute((Guid organisationId, Guid joinRequestId, UpdateJoinRequest updateJoinRequest) command)
     {
-        var organisation = await organisationRepository.Find(command.organisationId)
+        var organisation = await organisationRepository.FindIncludingTenant(command.organisationId)
             ?? throw new UnknownOrganisationException($"Unknown organisation {command.organisationId}.");
 
         var joinRequest = await requestRepository.Find(command.joinRequestId, command.organisationId)

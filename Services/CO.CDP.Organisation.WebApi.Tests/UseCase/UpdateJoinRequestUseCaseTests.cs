@@ -71,7 +71,7 @@ public class UpdateJoinRequestUseCaseTests
         var joinRequest = OrganisationJoinRequest;
 
         _mockOrganisationRepository
-            .Setup(repo => repo.Find(_organisationId))
+            .Setup(repo => repo.FindIncludingTenant(_organisationId))
             .ReturnsAsync(Organisation);
 
         _mockRequestRepository
@@ -90,7 +90,7 @@ public class UpdateJoinRequestUseCaseTests
         joinRequest.Status.Should().Be(updateJoinRequest.status);
         joinRequest.ReviewedOn.Should().BeCloseTo(DateTimeOffset.UtcNow, TimeSpan.FromSeconds(1));
 
-        _mockOrganisationRepository.Verify(repo => repo.Find(_organisationId), Times.Once);
+        _mockOrganisationRepository.Verify(repo => repo.FindIncludingTenant(_organisationId), Times.Once);
         _mockRequestRepository.Verify(repo => repo.Find(_joinRequestId, _organisationId), Times.Once);
         _mockRequestRepository.Verify(repo => repo.Save(joinRequest), Times.Once);
         _mockGovUKNotifyApiClient.Verify(client => client.SendEmail(It.IsAny<EmailNotificationRequest>()), Times.Once);
@@ -108,7 +108,7 @@ public class UpdateJoinRequestUseCaseTests
         };
 
         _mockOrganisationRepository
-            .Setup(repo => repo.Find(organisationId))
+            .Setup(repo => repo.FindIncludingTenant(organisationId))
             .ReturnsAsync((CO.CDP.OrganisationInformation.Persistence.Organisation?)null);
 
         Func<Task> act = async () => await _useCase.Execute((organisationId, joinRequestId, updateJoinRequest));
@@ -116,7 +116,7 @@ public class UpdateJoinRequestUseCaseTests
         await act.Should().ThrowAsync<UnknownOrganisationException>()
             .WithMessage($"Unknown organisation {organisationId}.");
 
-        _mockOrganisationRepository.Verify(repo => repo.Find(organisationId), Times.Once);
+        _mockOrganisationRepository.Verify(repo => repo.FindIncludingTenant(organisationId), Times.Once);
         _mockRequestRepository.Verify(repo => repo.Find(It.IsAny<Guid>(), It.IsAny<Guid>()), Times.Never);
         _mockRequestRepository.Verify(repo => repo.Save(It.IsAny<CO.CDP.OrganisationInformation.Persistence.OrganisationJoinRequest>()), Times.Never);
     }
@@ -133,7 +133,7 @@ public class UpdateJoinRequestUseCaseTests
         };
 
         _mockOrganisationRepository
-            .Setup(repo => repo.Find(organisationId))
+            .Setup(repo => repo.FindIncludingTenant(organisationId))
             .ReturnsAsync(Organisation);
 
         _ = _mockRequestRepository
@@ -145,7 +145,7 @@ public class UpdateJoinRequestUseCaseTests
         await act.Should().ThrowAsync<UnknownOrganisationJoinRequestException>()
             .WithMessage($"Unknown organisation join request for org id {organisationId} or request id {joinRequestId}.");
 
-        _mockOrganisationRepository.Verify(repo => repo.Find(organisationId), Times.Once);
+        _mockOrganisationRepository.Verify(repo => repo.FindIncludingTenant(organisationId), Times.Once);
         _mockRequestRepository.Verify(repo => repo.Find(joinRequestId, organisationId), Times.Once);
         _mockRequestRepository.Verify(repo => repo.Save(It.IsAny<CO.CDP.OrganisationInformation.Persistence.OrganisationJoinRequest>()), Times.Never);
     }
@@ -164,7 +164,7 @@ public class UpdateJoinRequestUseCaseTests
         joinRequest.Person = null;
 
         _mockOrganisationRepository
-            .Setup(repo => repo.Find(organisationId))
+            .Setup(repo => repo.FindIncludingTenant(organisationId))
             .ReturnsAsync(Organisation);
 
         _ = _mockRequestRepository
@@ -189,7 +189,7 @@ public class UpdateJoinRequestUseCaseTests
         var joinRequest = OrganisationJoinRequest;
 
         _mockOrganisationRepository
-            .Setup(repo => repo.Find(_organisationId))
+            .Setup(repo => repo.FindIncludingTenant(_organisationId))
             .ReturnsAsync(Organisation);
 
         _mockRequestRepository
@@ -204,7 +204,7 @@ public class UpdateJoinRequestUseCaseTests
         await act.Should().ThrowAsync<UnknownPersonException>()
             .WithMessage($"Unknown person {_person.Guid}.");
 
-        _mockOrganisationRepository.Verify(repo => repo.Find(_organisationId), Times.Once);
+        _mockOrganisationRepository.Verify(repo => repo.FindIncludingTenant(_organisationId), Times.Once);
         _mockRequestRepository.Verify(repo => repo.Find(_joinRequestId, _organisationId), Times.Once);
         _mockRequestRepository.Verify(repo => repo.Save(It.IsAny<CO.CDP.OrganisationInformation.Persistence.OrganisationJoinRequest>()), Times.Never);
     }
@@ -222,7 +222,7 @@ public class UpdateJoinRequestUseCaseTests
             status = OrganisationJoinRequestStatus.Accepted,
         };
 
-        _mockOrganisationRepository.Setup(r => r.Find(_organisationId)).ReturnsAsync(organisation);
+        _mockOrganisationRepository.Setup(r => r.FindIncludingTenant(_organisationId)).ReturnsAsync(organisation);
         _mockRequestRepository.Setup(r => r.Find(_joinRequestId, _organisationId)).ReturnsAsync(joinRequest);
         _mockPersonRepository.Setup(r => r.Find(_reviewedBy)).ReturnsAsync(person);
 
@@ -249,7 +249,7 @@ public class UpdateJoinRequestUseCaseTests
         };
 
         joinRequest.Status = OrganisationJoinRequestStatus.Rejected;
-        _mockOrganisationRepository.Setup(r => r.Find(_organisationId)).ReturnsAsync(organisation);
+        _mockOrganisationRepository.Setup(r => r.FindIncludingTenant(_organisationId)).ReturnsAsync(organisation);
         _mockRequestRepository.Setup(r => r.Find(_joinRequestId, _organisationId)).ReturnsAsync(joinRequest);
         _mockPersonRepository.Setup(r => r.Find(_person.Guid)).ReturnsAsync(_person);
 
