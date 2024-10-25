@@ -75,7 +75,7 @@ public class FormElementUrlInputModel : FormElementModel, IValidatableObject
     {
         if (!url.StartsWith("http") && !url.StartsWith("//"))
         {
-            url = $"//{url}";
+            url = $"https://{url}";
         }
         return url;
     }

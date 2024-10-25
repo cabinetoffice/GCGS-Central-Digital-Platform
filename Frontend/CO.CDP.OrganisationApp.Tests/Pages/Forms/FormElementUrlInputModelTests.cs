@@ -48,7 +48,7 @@ public class FormElementUrlInputModelTests
     [Theory]
     [InlineData(null, null)]
     [InlineData(" ", null)]
-    [InlineData("example.com", "//example.com")]
+    [InlineData("example.com", "https://example.com")]
     [InlineData("https://example.com", "https://example.com")]
     public void GetAnswer_WhenHasValueIsNull_GetsExpectedFormAnswer(string? input, string? expected)
     {
