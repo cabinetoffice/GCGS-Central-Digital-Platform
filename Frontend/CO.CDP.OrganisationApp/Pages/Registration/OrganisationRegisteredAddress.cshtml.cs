@@ -86,9 +86,10 @@ public class OrganisationRegisteredAddressModel(ISession session, ICompaniesHous
         if (reset) Address = new AddressPartialModel { UkOrNonUk = UkOrNonUk };
 
         Address.Heading = Address.IsNonUkAddress ?
-            "Enter the organisation's registered non-UK address" : "Enter the organisation's registered UK address";
+            "Enter the organisation's registered non-UK address" : "Enter the organisation's registered address";
 
-        Address.AddressHint = "The address of the company or organisation which is recorded on public records or within the public domain. This will be displayed on notices.";
+        Address.AddressHint = Address.IsNonUkAddress ?
+            "The address recorded on public records or within the public domain" : "The address registered with Companies House, or the principal address the business conducts its activities. For example, a head office.";
 
         Address.NonUkAddressLink = $"/registration/organisation-registered-address/non-uk{(RedirectToSummary == true ? "?frm-summary" : "")}";
     }
