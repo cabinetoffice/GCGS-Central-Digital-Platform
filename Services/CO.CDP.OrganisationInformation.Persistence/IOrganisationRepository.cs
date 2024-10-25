@@ -15,8 +15,6 @@ public interface IOrganisationRepository : IDisposable
 
     public Task<OrganisationPerson?> FindOrganisationPerson(Guid organisationId, string userUrn);
 
-    public Task<Person?> FindPersonWithTenant(Guid personId);
-
     public Task<Organisation?> FindByName(string name);
 
     public Task<IEnumerable<Organisation>> FindByUserUrn(string userUrn);

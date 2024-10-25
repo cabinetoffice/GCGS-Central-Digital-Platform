@@ -38,13 +38,6 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
         return await context.Set<OrganisationPerson>().FirstOrDefaultAsync(o => o.Organisation.Guid == organisationId && o.Person.Guid == personId);
     }
 
-    public async Task<Person?> FindPersonWithTenant(Guid personId)
-    {
-        return await context.Persons
-            .Include(p => p.Tenants)
-            .FirstOrDefaultAsync(o => o.Guid == personId);
-    }
-
     public async Task<OrganisationPerson?> FindOrganisationPerson(Guid organisationId, string userUrn)
     {
         return await context.Set<OrganisationPerson>()

@@ -27,7 +27,7 @@ public class RemovePersonFromOrganisationUseCaseTest
         var command = (organisation.Guid, new RemovePersonFromOrganisation { PersonId = person.Guid });
         _organisationRepository.Setup(r => r.Find(command.Item1)).ReturnsAsync(organisation);
         _personRepository.Setup(r => r.FindByOrganisation(command.Item1)).ReturnsAsync(new List<OrganisationInformation.Persistence.Person> { person });
-        _organisationRepository.Setup(r => r.FindPersonWithTenant(person.Guid)).ReturnsAsync(person);
+        _personRepository.Setup(r => r.FindPersonWithTenant(person.Guid)).ReturnsAsync(person);
 
         var result = await UseCase.Execute(command);
 

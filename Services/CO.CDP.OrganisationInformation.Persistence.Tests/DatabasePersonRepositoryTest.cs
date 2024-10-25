@@ -103,6 +103,49 @@ public class DatabasePersonRepositoryTest(PostgreSqlFixture postgreSql) : IClass
         found.As<Person>().Organisations.Should().Contain(org => org.Guid == organisation.Guid);
     }
 
+    [Fact]
+    public async Task FindPersonWithTenant_PersonExists_ReturnsPerson()
+    {
+        using var repository = PersonRepository();
+        var person = GivenPerson(guid: Guid.NewGuid(), email: "Person_Tenant1@example.com");
+        var tenant = GivenTenant();
+        var organisation = GivenOrganisation(guid: Guid.NewGuid(), name: "TheOrganisation_Tenant1");
+
+        person.Tenants.Add(tenant);
+        person.Organisations.Add(organisation);
+        repository.Save(person);
+
+        var result = await repository.FindPersonWithTenant(person.Guid);
+
+        result.Should().NotBeNull();
+        result.Guid.Should().Be(person.Guid);
+    }
+
+    [Fact]
+    public async Task FindPersonWithTenant_PersonExistsButNotLinkedToATenant_ReturnsNull()
+    {
+        using var repository = PersonRepository();
+        var person = GivenPerson(guid: Guid.NewGuid(), email: "Person_Tenant2@example.com");
+        var tenant = GivenTenant();
+        var organisation = GivenOrganisation(guid: Guid.NewGuid(), name: "TheOrganisation_Tenant2");
+
+        person.Organisations.Add(organisation);
+        repository.Save(person);
+
+        var result = await repository.FindPersonWithTenant(person.Guid);
+
+        result.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task FindPersonWithTenant_PersonDoesNotExist_ReturnsNull()
+    {
+        using var repository = PersonRepository();
+        
+        var result = await repository.FindPersonWithTenant(Guid.NewGuid());
+
+        result.Should().BeNull();
+    }
 
     private IPersonRepository PersonRepository()
     {
