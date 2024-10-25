@@ -5,11 +5,16 @@ using CO.CDP.Tenant.WebApiClient;
 using FluentAssertions;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using System.Net;
+using Amazon.SimpleSystemsManagement;
 using CO.CDP.TestKit.Mvc;
+using Microsoft.AspNetCore.DataProtection.KeyManagement;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 
 namespace CO.CDP.OrganisationApp.Tests;
 public class AuthorizationTests
@@ -99,6 +104,9 @@ public class AuthorizationTests
                     options.ClientId = "123";
                     options.Authority = "https://whatever";
                 });
+                services.RemoveAll<IAmazonSimpleSystemsManagement>();
+                services.RemoveAll<IConfigureOptions<KeyManagementOptions>>();
+                services.AddDataProtection().DisableAutomaticKeyGeneration();
             });
         });
 
