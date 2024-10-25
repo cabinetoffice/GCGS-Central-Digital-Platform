@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization.Policy;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -12,5 +13,10 @@ public static class ServiceCollectionExtensions
             .UseInMemoryDatabase(databaseName: $"db-{Guid.NewGuid()}")
             .Options;
         return services.AddScoped<DbContextOptions<TC>>(_ => dbContextOptions);
+    }
+
+    public static IServiceCollection ConfigureFakePolicyEvaluator(this IServiceCollection serviceCollection)
+    {
+        return serviceCollection.AddSingleton<IPolicyEvaluator, FakePolicyEvaluator>();
     }
 }

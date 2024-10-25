@@ -4,29 +4,33 @@ using CO.CDP.Person.WebApiClient;
 using CO.CDP.Tenant.WebApiClient;
 using FluentAssertions;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using System.Net;
+using Amazon.SimpleSystemsManagement;
+using CO.CDP.TestKit.Mvc;
+using Microsoft.AspNetCore.DataProtection.KeyManagement;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 
 namespace CO.CDP.OrganisationApp.Tests;
 public class AuthorizationTests
 {
-    private static readonly Mock<TenantClient> tenantClient = new Mock<TenantClient>("https://whatever", new HttpClient());
-    private static readonly Mock<PersonClient> personClient = new Mock<PersonClient>("https://whatever", new HttpClient());
-    private static readonly Mock<OrganisationClient> organisationClient = new Mock<OrganisationClient>("https://whatever", new HttpClient());
-    private static readonly Mock<ISession> _mockSession = new Mock<ISession>();
-    private static Guid testOrganisationId = new Guid("0510ce2a-10c9-4c1a-b9cb-3d65c52aa7b7");
-    private static Guid personId = new Guid("5b0d3aa8-94cd-4ede-ba03-546937035690");
-    private static Guid personInviteGuid = new Guid("330fb1d4-26e2-4c69-898f-6197f9321361");
+    private static readonly Mock<TenantClient> TenantClient = new("https://whatever", new HttpClient());
+    private static readonly Mock<PersonClient> PersonClient = new("https://whatever", new HttpClient());
+    private static readonly Mock<OrganisationClient> OrganisationClient = new("https://whatever", new HttpClient());
+    private static readonly Mock<ISession> Session = new();
+    private static readonly Guid OrganisationId = new("0510ce2a-10c9-4c1a-b9cb-3d65c52aa7b7");
+    private static readonly Guid PersonId = new("5b0d3aa8-94cd-4ede-ba03-546937035690");
+    private static readonly Guid PersonInviteGuid = new("330fb1d4-26e2-4c69-898f-6197f9321361");
 
-    public HttpClient BuildHttpClient(List<string> userOrganisationScopes, List<string> userScopes)
+    private HttpClient BuildHttpClient(List<string> userOrganisationScopes, List<string> userScopes)
     {
-        var services = new ServiceCollection();
-
         var organisation = new UserOrganisation(
-                                    id: testOrganisationId,
+                                    id: OrganisationId,
                                     name: "Org name",
                                     roles:
                                     [
@@ -35,12 +39,12 @@ public class AuthorizationTests
                                     ],
                                     pendingRoles: [],
                                     scopes: userOrganisationScopes,
-                                    uri: new Uri("http://foo")
+                                    uri: new Uri("https://example.com")
                                 );
 
-        var person = new Person.WebApiClient.Person("a@b.com", "First name", personId, "Last name", userScopes);
+        var person = new Person.WebApiClient.Person("a@b.com", "First name", PersonId, "Last name", userScopes);
 
-        tenantClient.Setup(client => client.LookupTenantAsync())
+        TenantClient.Setup(client => client.LookupTenantAsync())
             .ReturnsAsync(
                 new TenantLookup(
                     [
@@ -53,10 +57,7 @@ public class AuthorizationTests
                     new UserDetails("a@b.com", "User name", "urn")
                 ));
 
-        services.AddTransient<ITenantClient, TenantClient>(sc => tenantClient.Object);
-
-
-        organisationClient.Setup(client => client.GetOrganisationPersonsAsync(It.IsAny<Guid>()))
+        OrganisationClient.Setup(client => client.GetOrganisationPersonsAsync(It.IsAny<Guid>()))
             .ReturnsAsync(
                 [
                     new CO.CDP.Organisation.WebApiClient.Person("a@b.com", "First name", person.Id, "Last name", [ OrganisationPersonScopes.Admin, OrganisationPersonScopes.Editor ])
@@ -64,20 +65,20 @@ public class AuthorizationTests
             );
 
 
-        organisationClient.Setup(client => client.GetOrganisationPersonInvitesAsync(It.IsAny<Guid>()))
+        OrganisationClient.Setup(client => client.GetOrganisationPersonInvitesAsync(It.IsAny<Guid>()))
             .ReturnsAsync(
                 [
-                    new PersonInviteModel("a@b.com", "Person invite", personInviteGuid, "Last name", [ OrganisationPersonScopes.Admin, OrganisationPersonScopes.Editor ])
+                    new PersonInviteModel("a@b.com", "Person invite", PersonInviteGuid, "Last name", [ OrganisationPersonScopes.Admin, OrganisationPersonScopes.Editor ])
                 ]
             );
 
-        organisationClient.Setup(client => client.GetOrganisationAsync(testOrganisationId))
+        OrganisationClient.Setup(client => client.GetOrganisationAsync(OrganisationId))
             .ReturnsAsync(
                 new CO.CDP.Organisation.WebApiClient.Organisation(
                     additionalIdentifiers: [],
                     addresses: [],
                     contactPoint: new ContactPoint("a@b.com", "Contact", "123", new Uri("http://whatever")),
-                    id: testOrganisationId,
+                    id: OrganisationId,
                     identifier: new Identifier("asd", "asd", "asd", new Uri("http://whatever")),
                     name: "Org name",
                     roles: [ Organisation.WebApiClient.PartyRole.Supplier, Organisation.WebApiClient.PartyRole.Tenderer ],
@@ -85,49 +86,55 @@ public class AuthorizationTests
                 )
             );
 
-        personClient.Setup(client => client.LookupPersonAsync(It.IsAny<string>())).ReturnsAsync(person);
+        OrganisationClient.Setup(client => client.GetOrganisationJoinRequestsAsync(It.IsAny<Guid>(), null))
+            .ReturnsAsync(
+                [
+                    new JoinRequestLookUp(new Guid(),new Organisation.WebApiClient.Person("a@b.com", "First name", person.Id, "Last name", []) , OrganisationJoinRequestStatus.Pending)
+                ]
+            );
 
-        services.AddTransient<IOrganisationClient, OrganisationClient>(sc => organisationClient.Object);
+        PersonClient.Setup(client => client.LookupPersonAsync(It.IsAny<string>())).ReturnsAsync(person);
 
-        services.AddTransient<IPersonClient, PersonClient>(sc => personClient.Object);
-
-        _mockSession.Setup(s => s.Get<Models.UserDetails>(Session.UserDetailsKey))
+        Session.Setup(s => s.Get<Models.UserDetails>(OrganisationApp.Session.UserDetailsKey))
             .Returns(new Models.UserDetails() { Email = "a@b.com", UserUrn = "urn", PersonId = person.Id });
 
-        services.AddSingleton(_mockSession.Object);
-
-        services.AddAuthentication(options =>
+        var factory = new TestWebApplicationFactory<Program>(builder =>
         {
-            options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-            options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
-        })
-        .AddScheme<AuthenticationSchemeOptions, FakeCookieAuthHandler>(CookieAuthenticationDefaults.AuthenticationScheme, options => { });
-
-        services.Configure<OpenIdConnectOptions>(OpenIdConnectDefaults.AuthenticationScheme, options => {
-            options.ClientId = "123";
-            options.Authority = "https://whatever";
+            builder.ConfigureServices(services =>
+            {
+                services.AddTransient<ITenantClient, TenantClient>(_ => TenantClient.Object);
+                services.AddTransient<IOrganisationClient, OrganisationClient>(_ => OrganisationClient.Object);
+                services.AddTransient<IPersonClient, PersonClient>(_ => PersonClient.Object);
+                services.AddSingleton(Session.Object);
+                services.AddTransient<IAuthenticationSchemeProvider, FakeSchemeProvider>();
+                services.Configure<OpenIdConnectOptions>(OpenIdConnectDefaults.AuthenticationScheme, options => {
+                    options.ClientId = "123";
+                    options.Authority = "https://whatever";
+                });
+                services.RemoveAll<IAmazonSimpleSystemsManagement>();
+                services.RemoveAll<IConfigureOptions<KeyManagementOptions>>();
+                services.AddDataProtection().DisableAutomaticKeyGeneration();
+            });
         });
-
-        var factory = new CustomisableWebApplicationFactory<Program>(services);
 
         return factory.CreateClient();
     }
 
     public static IEnumerable<object[]> TestCases()
     {
-        yield return new object[] { $"/organisation/{testOrganisationId}/users/user-summary", new string[] { "Organisation has 2 users" } };
-        yield return new object[] { $"/organisation/{testOrganisationId}/users/{personInviteGuid}/change-role?handler=personInvite", new string[] { "Person invite Last name", "Select a role" } };
+        yield return new object[] { $"/organisation/{OrganisationId}/users/user-summary", new[] { "Organisation has 2 users" } };
+        yield return new object[] { $"/organisation/{OrganisationId}/users/{PersonInviteGuid}/change-role?handler=personInvite", new[] { "Person invite Last name", "Select a role" } };
     }
 
     [Theory]
     [MemberData(nameof(TestCases))]
     public async Task TestAuthorizationIsSuccessful_WhenUserIsAllowedToAccessResourceAsAdminUser(string url, string[] expectedTexts)
     {
-        var _httpClient = BuildHttpClient([OrganisationPersonScopes.Admin], []);
+        var httpClient = BuildHttpClient([OrganisationPersonScopes.Admin], []);
 
         var request = new HttpRequestMessage(HttpMethod.Get, url);
 
-        var response = await _httpClient.SendAsync(request);
+        var response = await httpClient.SendAsync(request);
 
         var responseBody = await response.Content.ReadAsStringAsync();
 
@@ -143,11 +150,11 @@ public class AuthorizationTests
     [MemberData(nameof(TestCases))]
     public async Task TestAuthorizationIsUnsuccessful_WhenUserIsNotAllowedToAccessResourceAsEditorUser(string url, string[] _)
     {
-        var _httpClient = BuildHttpClient([OrganisationPersonScopes.Editor], []);
+        var httpClient = BuildHttpClient([OrganisationPersonScopes.Editor], []);
 
         var request = new HttpRequestMessage(HttpMethod.Get, url);
 
-        var response = await _httpClient.SendAsync(request);
+        var response = await httpClient.SendAsync(request);
 
         var responseBody = await response.Content.ReadAsStringAsync();
 
@@ -160,11 +167,11 @@ public class AuthorizationTests
     [MemberData(nameof(TestCases))]
     public async Task TestAuthorizationIsUnsuccessful_WhenUserIsNotAllowedToAccessResourceAsUserWithoutPermissions(string url, string[] _)
     {
-        var _httpClient = BuildHttpClient([], []);
+        using var httpClient = BuildHttpClient([], []);
 
         var request = new HttpRequestMessage(HttpMethod.Get, url);
 
-        var response = await _httpClient.SendAsync(request);
+        var response = await httpClient.SendAsync(request);
 
         var responseBody = await response.Content.ReadAsStringAsync();
 
@@ -176,28 +183,28 @@ public class AuthorizationTests
     [Fact]
     public async Task TestCanSeeUsersLinkOnOrganisationPage_WhenUserIsAllowedToAccessResourceAsAdminUser()
     {
-        var _httpClient = BuildHttpClient([ OrganisationPersonScopes.Admin, OrganisationPersonScopes.Viewer ], []);
+        var httpClient = BuildHttpClient([ OrganisationPersonScopes.Admin, OrganisationPersonScopes.Viewer ], []);
 
-        var request = new HttpRequestMessage(HttpMethod.Get, $"/organisation/{testOrganisationId}");
+        var request = new HttpRequestMessage(HttpMethod.Get, $"/organisation/{OrganisationId}");
 
-        var response = await _httpClient.SendAsync(request);
+        var response = await httpClient.SendAsync(request);
 
         var responseBody = await response.Content.ReadAsStringAsync();
 
         responseBody.Should().NotBeNull();
         response.StatusCode.Should().Be(HttpStatusCode.OK);
         responseBody.Should().Contain("Organisation details");
-        responseBody.Should().Contain($"href=\"/organisation/{testOrganisationId}/users/user-summary\">Users</a>");
+        responseBody.Should().Contain($"href=\"/organisation/{OrganisationId}/users/user-summary\">Manage users</a>");
     }
 
     [Fact]
     public async Task TestCannotSeeUsersLinkOnOrganisationPage_WhenUserIsNotAllowedToAccessResourceAsEditorUser()
     {
-        var _httpClient = BuildHttpClient([ OrganisationPersonScopes.Editor ], []);
+        var httpClient = BuildHttpClient([ OrganisationPersonScopes.Editor ], []);
 
-        var request = new HttpRequestMessage(HttpMethod.Get, $"/organisation/{testOrganisationId}");
+        var request = new HttpRequestMessage(HttpMethod.Get, $"/organisation/{OrganisationId}");
 
-        var response = await _httpClient.SendAsync(request);
+        var response = await httpClient.SendAsync(request);
 
         var responseBody = await response.Content.ReadAsStringAsync();
 
@@ -205,26 +212,26 @@ public class AuthorizationTests
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
         responseBody.Should().Contain("Organisation details");
-        responseBody.Should().NotContain($"href=\"/organisation/{testOrganisationId}/users/user-summary\">Users</a>");
+        responseBody.Should().NotContain($"href=\"/organisation/{OrganisationId}/users/user-summary\">Users</a>");
         responseBody.Should().NotContain("Users");
     }
 
     public static IEnumerable<object[]> SupportAdminAccessTestCases()
     {
-        yield return new object[] { $"/organisation/{testOrganisationId}", new string[] { "Organisation name", "Organisation identifier", "Organisation email", "Supplier information" }, new string[] { "Change", "Users" }, HttpStatusCode.OK };
-        yield return new object[] { $"/organisation/{testOrganisationId}/address/uk?frm-overview", new string[] {}, new string[] {}, HttpStatusCode.NotFound };
-        yield return new object[] { $"/organisation/{testOrganisationId}/users/user-summary", new string[] {}, new string[] {}, HttpStatusCode.NotFound };
+        yield return new object[] { $"/organisation/{OrganisationId}", new[] { "Organisation name", "Organisation identifier", "Organisation email", "Complete supplier information" }, new[] { "Change", "Users" }, HttpStatusCode.OK };
+        yield return new object[] { $"/organisation/{OrganisationId}/address/uk?frm-overview", new string[] {}, new string[] {}, HttpStatusCode.NotFound };
+        yield return new object[] { $"/organisation/{OrganisationId}/users/user-summary", new string[] {}, new string[] {}, HttpStatusCode.NotFound };
     }
 
     [Theory]
     [MemberData(nameof(SupportAdminAccessTestCases))]
     public async Task TestAuthorizationIsSuccessful_WhenUserIsAllowedToAccessResourceAsSupportAdminUser(string url, string[] shouldContain, string[] shouldNotContain, HttpStatusCode expectedStatusCode)
     {
-        var _httpClient = BuildHttpClient([], [PersonScopes.SupportAdmin]);
+        var httpClient = BuildHttpClient([], [PersonScopes.SupportAdmin]);
 
         var request = new HttpRequestMessage(HttpMethod.Get, url);
 
-        var response = await _httpClient.SendAsync(request);
+        var response = await httpClient.SendAsync(request);
 
         var responseBody = await response.Content.ReadAsStringAsync();
 

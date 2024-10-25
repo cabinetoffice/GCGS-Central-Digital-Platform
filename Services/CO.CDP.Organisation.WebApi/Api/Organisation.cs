@@ -3,6 +3,7 @@ using CO.CDP.Authentication.Authorization;
 using CO.CDP.Functional;
 using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.Organisation.WebApi.UseCase;
+using CO.CDP.OrganisationInformation;
 using CO.CDP.Swashbuckle.Filter;
 using CO.CDP.Swashbuckle.Security;
 using CO.CDP.Swashbuckle.SwaggerGen;
@@ -131,7 +132,7 @@ public static class EndpointExtensions
 
         app.MapPost("/organisations/{organisationId}/join-requests",
                 [OrganisationAuthorize([AuthenticationChannel.OneLogin])]
-                async (Guid organisationId, CreateOrganisationJoinRequest command, IUseCase<(Guid, CreateOrganisationJoinRequest), OrganisationJoinRequest> useCase) =>
+        async (Guid organisationId, CreateOrganisationJoinRequest command, IUseCase<(Guid, CreateOrganisationJoinRequest), OrganisationJoinRequest> useCase) =>
                     await useCase.Execute((organisationId, command))
                         .AndThen(Results.Ok))
             .Produces<OrganisationJoinRequest>(StatusCodes.Status200OK, "application/json")
@@ -152,6 +153,64 @@ public static class EndpointExtensions
                 operation.Responses["500"].Description = "Internal server error.";
                 return operation;
             });
+
+        app.MapGet("/organisations/{organisationId}/join-requests",
+            [OrganisationAuthorize(
+                [AuthenticationChannel.OneLogin],
+                [Constants.OrganisationPersonScope.Admin],
+                OrganisationIdLocation.Path)]
+        async (Guid organisationId, [FromQuery] OrganisationJoinRequestStatus? status, IUseCase<(Guid, OrganisationJoinRequestStatus?), IEnumerable<JoinRequestLookUp>> useCase) =>
+                await useCase.Execute((organisationId, status))
+                    .AndThen(organisations => organisations != null ? Results.Ok(organisations) : Results.NotFound()))
+            .Produces<List<JoinRequestLookUp>>(StatusCodes.Status200OK, "application/json")
+            .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
+            .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
+            .ProducesProblem(StatusCodes.Status422UnprocessableEntity)
+            .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError)
+            .WithOpenApi(operation =>
+            {
+                operation.OperationId = "GetOrganisationJoinRequests";
+                operation.Description = "Get organisations join request by Organisation ID and status.";
+                operation.Summary = "Get organisations join request by Organisation ID and status.";
+                operation.Responses["200"].Description = "Organisations join requestdetails.";
+                operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
+                operation.Responses["404"].Description = "Organisations join request information not found.";
+                operation.Responses["422"].Description = "Unprocessable entity.";
+                operation.Responses["500"].Description = "Internal server error.";
+                return operation;
+            });
+
+        app.MapPatch("/organisations/{organisationId}/join-requests/{joinRequestId}",
+            [OrganisationAuthorize(
+                [AuthenticationChannel.OneLogin],
+                [Constants.OrganisationPersonScope.Admin],
+                OrganisationIdLocation.Path)]
+        async (Guid organisationId, Guid joinRequestId, UpdateJoinRequest updateJoinRequest, IUseCase<(Guid, Guid, UpdateJoinRequest), bool> useCase) =>
+
+                 await useCase.Execute((organisationId, joinRequestId, updateJoinRequest))
+                     .AndThen(_ => Results.NoContent())
+         )
+         .Produces(StatusCodes.Status200OK)
+         .Produces(StatusCodes.Status204NoContent)
+         .ProducesProblem(StatusCodes.Status400BadRequest)
+         .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
+         .ProducesProblem(StatusCodes.Status404NotFound)
+         .ProducesProblem(StatusCodes.Status422UnprocessableEntity)
+         .ProducesProblem(StatusCodes.Status500InternalServerError)
+         .WithOpenApi(operation =>
+         {
+             operation.OperationId = "UpdateOrganisationJoinRequest";
+             operation.Description = "Update an organisation join request.";
+             operation.Summary = "Update an organisation join request.";
+             operation.Responses["200"].Description = "Organisation join request updated successfully.";
+             operation.Responses["204"].Description = "Organisation join request updated successfully.";
+             operation.Responses["400"].Description = "Bad request.";
+             operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
+             operation.Responses["404"].Description = "Organisation or join request not found.";
+             operation.Responses["422"].Description = "Unprocessable entity.";
+             operation.Responses["500"].Description = "Internal server error.";
+             return operation;
+         });
     }
 
     public static RouteGroupBuilder UseOrganisationLookupEndpoints(this RouteGroupBuilder app)
@@ -231,6 +290,29 @@ public static class EndpointExtensions
                 operation.Responses["500"].Description = "Internal server error.";
                 return operation;
             });
+
+        return app;
+    }
+
+    public static RouteGroupBuilder UseFeedbackEndpoints(this RouteGroupBuilder app)
+    {
+        app.MapPost("/feedback/",
+            async (ProvideFeedbackAndContact feedback, IUseCase<ProvideFeedbackAndContact, bool> useCase) =>
+                    await useCase.Execute(feedback)
+                        .AndThen(Results.Ok))
+                .Produces<Boolean>(StatusCodes.Status200OK, "application/json")
+                .ProducesProblem(StatusCodes.Status500InternalServerError)
+                .ProducesProblem(StatusCodes.Status400BadRequest)
+                .WithOpenApi(operation =>
+                {
+                    operation.OperationId = "FeedbackAndContact";
+                    operation.Description = "Contact the Find a Tender service team";
+                    operation.Summary = "Ask a question, report a problem or suggest an improvement to the Find a Tender service team.";
+                    operation.Responses["200"].Description = "Feedback sent successfully.";
+                    operation.Responses["400"].Description = "Bad request.";
+                    operation.Responses["500"].Description = "Internal server error.";
+                    return operation;
+                });
 
         return app;
     }
@@ -679,7 +761,7 @@ public static class EndpointExtensions
                 operation.Responses["500"].Description = "Internal server error.";
                 return operation;
             });
-
+        
         return app;
     }
 

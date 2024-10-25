@@ -1,4 +1,3 @@
-using CO.CDP.Localization;
 using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -13,7 +12,7 @@ public class OrganisationTypeModel(
     public override string CurrentPage => OrganisationTypePage;
 
     [BindProperty]
-    [Required(ErrorMessage = "Select the organisation type")]
+    [Required(ErrorMessage = "Select 'buyer' or 'supplier'")]
     public OrganisationType? OrganisationType { get; set; }
 
     [BindProperty]
