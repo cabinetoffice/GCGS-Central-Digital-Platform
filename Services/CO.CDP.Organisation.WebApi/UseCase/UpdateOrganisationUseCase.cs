@@ -97,23 +97,32 @@ public class UpdateOrganisationUseCase(
 
                 break;
             case OrganisationUpdateType.AdditionalIdentifiers:
-                if (updateObject.AdditionalIdentifiers == null)
+                if (updateObject.AdditionalIdentifiers == null || !updateObject.AdditionalIdentifiers.Any())
                 {
                     throw new InvalidUpdateOrganisationCommand("Missing additional identifiers.");
                 }
 
                 foreach (var identifier in updateObject.AdditionalIdentifiers)
                 {
+                    if (string.IsNullOrWhiteSpace(identifier.Id))
+                    {
+                        throw new InvalidUpdateOrganisationCommand($"Missing Identifier Number for scheme '{identifier.Scheme}'.");
+                    }
+
+                    // Check if Identifier number already exists
+                    var organisationIdentifier = organisationRepository.FindByIdentifier(identifier.Scheme, identifier.Id);
+                    if (organisationIdentifier.Result != null)
+                    {
+                        throw new InvalidUpdateOrganisationCommand($"The identifier '{identifier.Id}' you have entered belongs to a different organization that already exists.");
+                    }
+
                     var existingIdentifier = organisation.Identifiers.FirstOrDefault(i => i.Scheme == identifier.Scheme);
                     if (existingIdentifier != null)
                     {
-                        if (!string.IsNullOrEmpty(identifier.Id))
-                        {
-                            existingIdentifier.IdentifierId = identifier.Id;
-                            existingIdentifier.LegalName = identifier.LegalName;
-                        }
+                        existingIdentifier.IdentifierId = identifier.Id;
+                        existingIdentifier.LegalName = identifier.LegalName;
                     }
-                    else if (!string.IsNullOrEmpty(identifier.Id))
+                    else
                     {
                         organisation.Identifiers.Add(new OrganisationInformation.Persistence.Organisation.Identifier
                         {
