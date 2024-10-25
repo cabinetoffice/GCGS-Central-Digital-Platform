@@ -1,7 +1,8 @@
 @inject ITempDataService tempDataService
 @using CDP.OrganisationApp.Constants
+@using CDP.OrganisationApp.Models
 
-@if (tempDataService.Peek<string>(FlashMessageTypes.Success) != null)
+@if (tempDataService.Peek<FlashMessage>(FlashMessageTypes.Success) != null)
 {
     <div class="govuk-notification-banner govuk-notification-banner--success govuk-!-margin-top-8" role="alert" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
         <div class="govuk-notification-banner__header">
@@ -9,13 +10,21 @@
                 Success
             </h2>
         </div>
+        @{
+            FlashMessage message = tempDataService.Get<FlashMessage>(FlashMessageTypes.Success)!;
+        }
         <div class="govuk-notification-banner__content">
-            <p class="govuk-notification-banner__heading">@(tempDataService.Get<string>(FlashMessageTypes.Success))</p>
+            <p class="govuk-notification-banner__heading">@Html.Raw(message.Heading)</p>
+
+            @if (message.Description != null)
+            {
+                <p>@Html.Raw(message.Description)</p>
+            }
         </div>
     </div>
 }
 
-@if (tempDataService.Peek<string>(FlashMessageTypes.Important) != null)
+@if (tempDataService.Peek<FlashMessage>(FlashMessageTypes.Important) != null)
 {
     <div class="govuk-notification-banner govuk-!-margin-top-8" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
         <div class="govuk-notification-banner__header">
@@ -23,8 +32,16 @@
                 Important
             </h2>
         </div>
+        @{
+            FlashMessage message = tempDataService.Get<FlashMessage>(FlashMessageTypes.Important)!;
+        }
         <div class="govuk-notification-banner__content">
-            <p class="govuk-notification-banner__heading">@Html.Raw(tempDataService.Get<string>(FlashMessageTypes.Important))</p>
+            <p class="govuk-notification-banner__heading">@Html.Raw(message.Heading)</p>
+
+            @if (message.Description != null)
+            {
+                <p>@Html.Raw(message.Description)</p>
+            }
         </div>
     </div>
 }

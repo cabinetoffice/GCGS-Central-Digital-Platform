@@ -20,6 +20,7 @@ using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using System.Globalization;
+// using Microsoft.AspNetCore.DataProtection;
 using static IdentityModel.OidcConstants;
 using static System.Net.Mime.MediaTypeNames;
 using ISession = CO.CDP.OrganisationApp.ISession;
@@ -91,7 +92,7 @@ builder.Services.AddScoped<IUserInfoService, UserInfoService>();
 
 var formsServiceUrl = builder.Configuration.GetValue<string>("FormsService")
             ?? throw new Exception("Missing configuration key: FormsService.");
-builder.Services.AddHttpClient(FormsHttpClientName)    
+builder.Services.AddHttpClient(FormsHttpClientName)
     .AddHttpMessageHandler<CultureDelegatingHandler>()
     .AddHttpMessageHandler<ApiBearerTokenHandler>();
 builder.Services.AddTransient<IFormsClient, FormsClient>(
@@ -125,6 +126,7 @@ builder.Services.AddTransient<IOrganisationClient, OrganisationClient>(
 var dataSharingServiceUrl = builder.Configuration.GetValue<string>("DataSharingService")
             ?? throw new Exception("Missing configuration key: DataSharingService.");
 builder.Services.AddHttpClient(DataSharingHttpClientName)
+    .AddHttpMessageHandler<CultureDelegatingHandler>()
     .AddHttpMessageHandler<ApiBearerTokenHandler>();
 builder.Services.AddTransient<IDataSharingClient, DataSharingClient>(
     sc => new DataSharingClient(dataSharingServiceUrl,
@@ -185,6 +187,10 @@ builder.Services
     .AddAmazonCloudWatchLogsService()
     .AddCloudWatchSerilog(builder.Configuration);
 
+// @see DP-723 for details: https://noticingsystem.atlassian.net/browse/DP-723?focusedCommentId=27796
+// builder.Services.AddDataProtection()
+//    .PersistKeysToAWSSystemsManager("/OrganisationApp/DataProtection");
+
 var app = builder.Build();
 app.UseForwardedHeaders();
 app.UseMiddleware<ExceptionMiddleware>();
@@ -206,7 +212,6 @@ var localizationOptions = new RequestLocalizationOptions()
 app.UseRequestLocalization(localizationOptions);
 
 app.MapHealthChecks("/health").AllowAnonymous();
-app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 app.UseAuthentication();

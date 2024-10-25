@@ -31,12 +31,9 @@
         <div class="govuk-grid-column-two-thirds">
             <partial name="_ErrorSummary" model="@ModelState" />
             <h1 class="govuk-heading-l">
-                <span class="govuk-label--l">Overview</span>
+                <span class="govuk-label--l">Check your answers</span>
             </h1>
             <fieldset class="govuk-fieldset">
-
-                <h2 class="govuk-heading-m">Organisation details</h2>
-
                 <dl class="govuk-summary-list">
                     <div class="govuk-summary-list__row">
                         <dt class="govuk-summary-list__key">
@@ -69,7 +66,7 @@
                     </div>
                     <div class="govuk-summary-list__row">
                         <dt class="govuk-summary-list__key">
-                            Organisation Email address
+                            Email address
                         </dt>
                         <dd class="govuk-summary-list__value">
                             @details.OrganisationEmailAddress
@@ -81,7 +78,7 @@
 
                     <div class="govuk-summary-list__row">
                         <dt class="govuk-summary-list__key">
-                            Organisation address
+                            Registered address
                         </dt>
                         <dd class="govuk-summary-list__value">
                             <p class="govuk-body">@details.OrganisationAddressLine1</p>
@@ -128,7 +125,7 @@
 
                         <div class="govuk-summary-list__row">
                             <dt class="govuk-summary-list__key">
-                                Do devolved regulations apply to the organisation?
+                                Devolved regulations
                             </dt>
                             <dd class="govuk-summary-list__value">
                                 @(details.Devolved == true ? "Yes" : "No")
@@ -141,7 +138,7 @@
                         {
                             <div class="govuk-summary-list__row">
                                 <dt class="govuk-summary-list__key">
-                                    Which devolved regulations apply to the organisation?
+                                    Devolved regions
                                 </dt>
                                 <dd class="govuk-summary-list__value">
                                     @Html.Raw(string.Join("<br /> ", details.Regulations.Select(x => x.Description())))
@@ -156,7 +153,7 @@
             </fieldset>
             <form method="post">
                 <govuk-button>
-                    Submit
+                    Save
                 </govuk-button>
             </form>
         </div>

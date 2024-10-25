@@ -13,8 +13,10 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
     public async Task<Organisation?> Find(Guid organisationId)
     {
         return await context.Organisations
+            .Include(p => p.Tenant)
             .Include(p => p.Addresses)
             .ThenInclude(p => p.Address)
+            .AsSingleQuery()
             .FirstOrDefaultAsync(t => t.Guid == organisationId);
     }
 
@@ -23,6 +25,7 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
         return await context.Organisations
             .Include(p => p.Addresses)
             .ThenInclude(p => p.Address)
+            .AsSingleQuery()
             .FirstOrDefaultAsync(t => t.Name == name);
     }
     public async Task<IEnumerable<OrganisationPerson>> FindOrganisationPersons(Guid organisationId)
@@ -30,6 +33,7 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
         return await context.Set<OrganisationPerson>()
             .Include(op => op.Person)
             .Where(op => op.Organisation.Guid == organisationId)
+            .AsSingleQuery()
             .ToListAsync();
     }
 
@@ -51,6 +55,7 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
             .Include(p => p.Organisations)
             .ThenInclude(p => p.Addresses)
             .ThenInclude(p => p.Address)
+            .AsSingleQuery()
             .FirstOrDefaultAsync(p => p.UserUrn == userUrn);
         return person?.Organisations ?? [];
     }
@@ -61,6 +66,7 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
             .Include(p => p.Identifiers)
             .Include(p => p.Addresses)
             .ThenInclude(p => p.Address)
+            .AsSingleQuery()
             .FirstOrDefaultAsync(o => o.Identifiers.Any(i => i.Scheme == scheme && i.IdentifierId == identifierId));
     }
 
@@ -84,7 +90,7 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
                 break;
         }
 
-        return await result.ToListAsync();
+        return await result.AsSingleQuery().ToListAsync();
     }
 
     public async Task<IList<ConnectedEntity>> GetConnectedIndividualTrusts(int organisationId)
@@ -94,7 +100,7 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
             .Where(x => x.IndividualOrTrust != null && x.EntityType == ConnectedEntity.ConnectedEntityType.Individual)
             .Where(x => x.SupplierOrganisation != null && x.SupplierOrganisation.Id == organisationId);
 
-        return await result.ToListAsync();
+        return await result.AsSingleQuery().ToListAsync();
     }
 
     public async Task<IList<ConnectedEntity>> GetConnectedOrganisations(int organisationId)
@@ -104,7 +110,7 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
             .Where(x => x.Organisation != null && x.EntityType == ConnectedEntity.ConnectedEntityType.Organisation)
             .Where(x => x.SupplierOrganisation != null && x.SupplierOrganisation.Id == organisationId);
 
-        return await result.ToListAsync();
+        return await result.AsSingleQuery().ToListAsync();
     }
 
     public async Task<IList<ConnectedEntity>> GetConnectedTrustsOrTrustees(int organisationId)
@@ -114,7 +120,7 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
             .Where(x => x.IndividualOrTrust != null && x.EntityType == ConnectedEntity.ConnectedEntityType.TrustOrTrustee)
             .Where(x => x.SupplierOrganisation != null && x.SupplierOrganisation.Id == organisationId);
 
-        return await result.ToListAsync();
+        return await result.AsSingleQuery().ToListAsync();
     }
 
     public async Task<Organisation.LegalForm?> GetLegalForm(int organisationId)
@@ -134,6 +140,7 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
         var organisation = await context.Organisations
             .Where(x => x.Id == organisationId)
             .Include(x => x.SupplierInfo)
+            .AsSingleQuery()
             .FirstOrDefaultAsync();
 
         return organisation?.SupplierInfo?.OperationTypes ?? [];

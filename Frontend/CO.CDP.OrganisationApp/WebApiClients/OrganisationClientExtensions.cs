@@ -60,7 +60,7 @@ internal static class OrganisationClientExtensions
             => organisationClient.UpdateOrganisationAsync(organisationId,
                     new UpdatedOrganisation(
                         type: OrganisationUpdateType.AdditionalIdentifiers,
-                        organisation: new OrganisationInfo(additionalIdentifiers: additionalIdentifiers, contactPoint: null, addresses: null, identifierToRemove: null, organisationName: null)));
+                        organisation: new OrganisationInfo(additionalIdentifiers: additionalIdentifiers, contactPoint: null, addresses: null, identifierToRemove: null, organisationName: null, roles: null)));
 
     internal static Task UpdateOrganisationRemoveIdentifier(this IOrganisationClient organisationClient,
             Guid organisationId,
@@ -68,7 +68,7 @@ internal static class OrganisationClientExtensions
                 => organisationClient.UpdateOrganisationAsync(organisationId,
                         new UpdatedOrganisation(
                             type: OrganisationUpdateType.RemoveIdentifier,
-                            organisation: new OrganisationInfo(additionalIdentifiers: null, contactPoint: null, addresses: null, identifierToRemove: identifierToRemove, organisationName: null)));
+                            organisation: new OrganisationInfo(additionalIdentifiers: null, contactPoint: null, addresses: null, identifierToRemove: identifierToRemove, organisationName: null, roles: null)));
 
 
     internal static Task UpdateOrganisationName(this IOrganisationClient organisationClient,
@@ -77,14 +77,14 @@ internal static class OrganisationClientExtensions
             => organisationClient.UpdateOrganisationAsync(organisationId,
                     new UpdatedOrganisation(
                         type: OrganisationUpdateType.OrganisationName,
-                        organisation: new OrganisationInfo(additionalIdentifiers: null, contactPoint: null, addresses: null, identifierToRemove: null, organisationName: organisationName)));
+                        organisation: new OrganisationInfo(additionalIdentifiers: null, contactPoint: null, addresses: null, identifierToRemove: null, organisationName: organisationName, roles: null)));
     internal static Task UpdateOrganisationEmail(this IOrganisationClient organisationClient,
      Guid organisationId,
      OrganisationContactPoint contactPoint)
          => organisationClient.UpdateOrganisationAsync(organisationId,
                  new UpdatedOrganisation(
                      type: OrganisationUpdateType.OrganisationEmail,
-                     organisation: new OrganisationInfo(additionalIdentifiers: null, contactPoint: contactPoint, addresses: null, identifierToRemove: null, organisationName: null)));
+                     organisation: new OrganisationInfo(additionalIdentifiers: null, contactPoint: contactPoint, addresses: null, identifierToRemove: null, organisationName: null, roles: null)));
 
     internal static Task UpdateOrganisationContactPoint(this IOrganisationClient organisationClient,
         Guid organisationId,
@@ -92,7 +92,7 @@ internal static class OrganisationClientExtensions
             => organisationClient.UpdateOrganisationAsync(organisationId,
                     new UpdatedOrganisation(
                         type: OrganisationUpdateType.ContactPoint,
-                        organisation: new OrganisationInfo(additionalIdentifiers: null, contactPoint: contactPoint, addresses: null, identifierToRemove: null, organisationName: null)));
+                        organisation: new OrganisationInfo(additionalIdentifiers: null, contactPoint: contactPoint, addresses: null, identifierToRemove: null, organisationName: null, roles: null)));
 
     internal static Task UpdateOrganisationAddresses(this IOrganisationClient organisationClient,
         Guid organisationId,
@@ -100,7 +100,15 @@ internal static class OrganisationClientExtensions
             => organisationClient.UpdateOrganisationAsync(organisationId,
                     new UpdatedOrganisation(
                         type: OrganisationUpdateType.Address,
-                        organisation: new OrganisationInfo(additionalIdentifiers: null, contactPoint: null, addresses: addresses, identifierToRemove: null, organisationName: null)));
+                        organisation: new OrganisationInfo(additionalIdentifiers: null, contactPoint: null, addresses: addresses, identifierToRemove: null, organisationName: null, roles: null)));
+
+    internal static Task AddOrganisationRoles(this IOrganisationClient organisationClient,
+        Guid organisationId,
+        ICollection<PartyRole> roles)
+            => organisationClient.UpdateOrganisationAsync(organisationId,
+                    new UpdatedOrganisation(
+                        type: OrganisationUpdateType.AddRoles,
+                        organisation: new OrganisationInfo(additionalIdentifiers: null, contactPoint: null, addresses: null, identifierToRemove: null, organisationName: null, roles: roles)));
 
     internal static Task UpdateSupplierCompletedEmailAddress(this IOrganisationClient organisationClient, Guid organisationId)
         => organisationClient.UpdateSupplierInformationAsync(
@@ -162,6 +170,13 @@ internal static class OrganisationClientExtensions
             new UpdateSupplierInformation(
                 type: SupplierInformationUpdateType.CompletedVat,
                 supplierInformation: new SupplierInfo(supplierType: null, operationTypes: null, legalForm: null)));
+
+    internal static async Task<ICollection<JoinRequestLookUp>> GetOrganisationJoinRequests(this IOrganisationClient organisationClient,
+        Guid organisationId, OrganisationJoinRequestStatus? status)
+        => await organisationClient.GetOrganisationJoinRequestsAsync(organisationId, status);
+
+    internal static async Task UpdateOrganisationJoinRequest(this IOrganisationClient organisationClient, Guid organisationId, Guid joinRequestId, UpdateJoinRequest updateJoinRequest)
+        => await organisationClient.UpdateOrganisationJoinRequestAsync(organisationId, joinRequestId, updateJoinRequest);
 
     internal static async Task<bool> FeedbackAndContact(this IOrganisationClient organisationClient,
         ProvideFeedbackAndContact feedback)

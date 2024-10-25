@@ -10,7 +10,9 @@
 <head>
     @{
         var googleTagId = config["GoogleTagId"];
-        if (!string.IsNullOrWhiteSpace(googleTagId))
+        if (!string.IsNullOrWhiteSpace(googleTagId)
+        && Context.Request.Cookies.ContainsKey(CookieSettings.CookieName)
+        && Context.Request.Cookies[CookieSettings.CookieName] == ((int)CookieAcceptanceValues.Accept).ToString())
         {
             <!-- Google tag (gtag.js) -->
             <script async src="https://www.googletagmanager.com/gtag/js?id=@googleTagId"></script>
@@ -32,17 +34,21 @@
 @{
     var ftsService = config["FtsService"] ?? "";
     ftsService = ftsService.EndsWith("/") ? ftsService.TrimEnd(new Char[] { '/' }) : ftsService;
+    var organisationId = userInfoService.GetOrganisationId();
+    var homeLink = organisationId == null ? $"{this.Context.Request.Path}{this.Context.Request.QueryString}" : $"{ftsService}/login?organisation_id={organisationId}&redirect_url=/Search";
 }
 
 <body class="govuk-template__body">
     <script>document.body.className += ' js-enabled' + ('noModule' in HTMLScriptElement.prototype ? ' govuk-frontend-supported' : '');</script>
+
+    <partial name="Shared/_CookieBanner" />
 
     <a href="#main-content" class="govuk-skip-link" data-module="govuk-skip-link">Skip to main content</a>
 
     <header class="govuk-header" role="banner" data-module="govuk-header">
         <div class="govuk-header__container govuk-width-container">
             <div class="govuk-header__logo">
-                <a href="//gov.uk" class="govuk-header__link govuk-header__link--homepage">
+                <a href="https://gov.uk" class="govuk-header__link govuk-header__link--homepage">
                     <svg focusable="false"
                          role="img"
                          class="govuk-header__logotype"
@@ -59,10 +65,10 @@
             <div class="govuk-header__content">
                 <div class="app-header-layout">
                     <div class="app-header-layout__column">
-                        <partial name="Shared/LanguageSwitcher" />
+                        <partial name="Shared/_LanguageSwitcher" />
                     </div>
                     <div class="app-header-layout__column">
-                        <a href="@ftsService" class="govuk-header__link govuk-header__service-name">
+                        <a href="@homeLink" class="govuk-header__link govuk-header__service-name">
                             Find a Tender
                         </a>
                         <nav aria-label="Menu" class="govuk-header__navigation">
@@ -74,11 +80,10 @@
                                 {
                                     @if (await userInfoService.HasTenant())
                                     {
-                                        var organisationId = userInfoService.GetOrganisationId();
                                         if (organisationId != null)
                                         {
                                             <li class="govuk-header__navigation-item">
-                                                <a class="govuk-header__link" href="@($"{ftsService}/login?organisation_id={organisationId}&redirect_url=/search/results")">
+                                                <a class="govuk-header__link" href="@($"{ftsService}/login?organisation_id={organisationId}&redirect_url=/Search/Results")">
                                                     Search
                                                 </a>
                                             </li>
@@ -158,7 +163,7 @@
                             <a class="govuk-footer__link" href="https://www.gov.uk/government/organisations/crown-commercial-service">About us</a>
                         </li>
                         <li class="govuk-footer__inline-list-item">
-                            <a class="govuk-footer__link" target="_blank" href="/provide-feedback-and-contact/?context=support">Contact us</a>
+                            <a class="govuk-footer__link" target="_blank" href="@($"{ftsService}/Home/Contact")">Contact us</a>
                         </li>
                         <li class="govuk-footer__inline-list-item">
                             <a class="govuk-footer__link" href="@($"{ftsService}/Home/AccessibilityStatement")">Accessibility statement</a>
@@ -170,7 +175,7 @@
                             <a class="govuk-footer__link" href="https://www.gov.uk/government/publications/crown-commercial-service-privacy-notice/crown-commercial-service-privacy-notice">Privacy notice</a>
                         </li>
                         <li class="govuk-footer__inline-list-item">
-                            <a class="govuk-footer__link" href="@($"{ftsService}/Home/Cookies")">Cookies</a>
+                            <a class="govuk-footer__link" href="/cookies">Cookies</a>
                         </li>
                         <li class="govuk-footer__inline-list-item">
                             <a class="govuk-footer__link" href="@($"{ftsService}/Developer/Documentation")">Data and API</a>

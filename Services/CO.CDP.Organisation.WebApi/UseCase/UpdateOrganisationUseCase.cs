@@ -31,6 +31,15 @@ public class UpdateOrganisationUseCase(
                 organisation.Name = updateObject.OrganisationName;
                 break;
 
+            case OrganisationUpdateType.AddRoles:
+                if (updateObject.Roles == null || !updateObject.Roles.Any())
+                {
+                    throw new InvalidUpdateOrganisationCommand("Missing roles.");
+                }
+
+                organisation.Roles.AddRange(updateObject.Roles);
+                break;
+
             case OrganisationUpdateType.OrganisationEmail:
                 if (updateObject.ContactPoint == null || string.IsNullOrEmpty(updateObject.ContactPoint.Email))
                     throw new InvalidUpdateOrganisationCommand("Missing organisation email.");

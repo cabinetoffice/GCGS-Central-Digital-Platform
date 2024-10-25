@@ -17,16 +17,16 @@ public class OrganisationIdentificationModel(ISession session,
 
     [BindProperty]
     [DisplayName("Organisation Type")]
-    [Required(ErrorMessage = "Please select your organisation type")]
+    [Required(ErrorMessage = "Select an option")]
     public string? OrganisationScheme { get; set; }
 
     [BindProperty]
-    [DisplayName("Charity Commission for England & Wales")]
+    [DisplayName("Charity Commission for England and Wales")]
     public string? CharityCommissionEnglandWales { get; set; }
 
     [BindProperty]
-    [DisplayName("Charity Commission for England & Wales Number")]
-    [RequiredIf(nameof(OrganisationScheme), "GB-CHC", ErrorMessage = "Please enter the Charity Commission for England & Wales number.")]
+    [DisplayName("Charity number")]
+    [RequiredIf(nameof(OrganisationScheme), "GB-CHC", ErrorMessage = "Enter the number")]
     public string? CharityCommissionEnglandWalesNumber { get; set; }
 
     [BindProperty]
@@ -34,8 +34,8 @@ public class OrganisationIdentificationModel(ISession session,
     public string? ScottishCharityRegulator { get; set; }
 
     [BindProperty]
-    [DisplayName("Scottish Charity Regulator Number")]
-    [RequiredIf(nameof(OrganisationScheme), "GB-SC", ErrorMessage = "Please enter the Scottish Charity Regulator number.")]
+    [DisplayName("Charity number")]
+    [RequiredIf(nameof(OrganisationScheme), "GB-SC", ErrorMessage = "Enter the number")]
     public string? ScottishCharityRegulatorNumber { get; set; }
 
     [BindProperty]
@@ -43,8 +43,8 @@ public class OrganisationIdentificationModel(ISession session,
     public string? CharityCommissionNorthernIreland { get; set; }
 
     [BindProperty]
-    [DisplayName("Charity Commission for Northren Ireland Number")]
-    [RequiredIf(nameof(OrganisationScheme), "GB-NIC", ErrorMessage = "Please enter the Charity Commission for Northern Ireland number.")]
+    [DisplayName("Charity number")]
+    [RequiredIf(nameof(OrganisationScheme), "GB-NIC", ErrorMessage = "Enter the number")]
     public string? CharityCommissionNorthernIrelandNumber { get; set; }
 
     [BindProperty]
@@ -52,8 +52,8 @@ public class OrganisationIdentificationModel(ISession session,
     public string? MutualsPublicRegister { get; set; }
 
     [BindProperty]
-    [DisplayName("Mutuals Public Register Number")]
-    [RequiredIf(nameof(OrganisationScheme), "GB-MPR", ErrorMessage = "Please enter the Mutuals Public Register number .")]
+    [DisplayName("Registration number")]
+    [RequiredIf(nameof(OrganisationScheme), "GB-MPR", ErrorMessage = "Enter the number")]
     public string? MutualsPublicRegisterNumber { get; set; }
 
     [BindProperty]
@@ -61,8 +61,8 @@ public class OrganisationIdentificationModel(ISession session,
     public string? GuernseyRegistry { get; set; }
 
     [BindProperty]
-    [DisplayName("Guernsey Registry Number")]
-    [RequiredIf(nameof(OrganisationScheme), "GG-RCE", ErrorMessage = "Please enter the Guernsey Registry number.")]
+    [DisplayName("Entity number")]
+    [RequiredIf(nameof(OrganisationScheme), "GG-RCE", ErrorMessage = "Enter the number")]
     public string? GuernseyRegistryNumber { get; set; }
 
     [BindProperty]
@@ -70,8 +70,8 @@ public class OrganisationIdentificationModel(ISession session,
     public string? JerseyFinancialServicesCommissionRegistry { get; set; }
 
     [BindProperty]
-    [DisplayName("Jersey Financial Services Commission Registry Number")]
-    [RequiredIf(nameof(OrganisationScheme), "JE-FSC", ErrorMessage = "Please enter Jersey Financial Services Commission Registry number")]
+    [DisplayName("Registration number")]
+    [RequiredIf(nameof(OrganisationScheme), "JE-FSC", ErrorMessage = "Enter the number")]
     public string? JerseyFinancialServicesCommissionRegistryNumber { get; set; }
 
     [BindProperty]
@@ -79,8 +79,8 @@ public class OrganisationIdentificationModel(ISession session,
     public string? IsleofManCompaniesRegistry { get; set; }
 
     [BindProperty]
-    [DisplayName("Isle of Man Companies Registry Number")]
-    [RequiredIf(nameof(OrganisationScheme), "IM-CR", ErrorMessage = "Please enter the Isle of Man Companies Registry number.")]
+    [DisplayName("Company number")]
+    [RequiredIf(nameof(OrganisationScheme), "IM-CR", ErrorMessage = "Enter the number")]
     public string? IsleofManCompaniesRegistryNumber { get; set; }
 
     [BindProperty]
@@ -88,25 +88,27 @@ public class OrganisationIdentificationModel(ISession session,
     public string? NationalHealthServiceOrganisationsRegistry { get; set; }
 
     [BindProperty]
-    [DisplayName("NHS Organisation Data Service (ODS)")]
-    [RequiredIf(nameof(OrganisationScheme), "GB-NHS", ErrorMessage = "Please enter the NHS Organisation Data Service number.")]
+    [DisplayName("ODS code")]
+    [RequiredIf(nameof(OrganisationScheme), "GB-NHS", ErrorMessage = "Enter the code")]
     public string? NationalHealthServiceOrganisationsRegistryNumber { get; set; }
 
     [BindProperty]
-    [DisplayName("UK Register of Learning Providers (GB-UKPRN)")]
+    [DisplayName("UK Register of Learning Providers")]
     public string? UKLearningProviderReference { get; set; }
 
     [BindProperty]
-    [DisplayName("UK Register of Learning Providers (GB-UKPRN)")]
-    [RequiredIf(nameof(OrganisationScheme), "GB-UKPRN", ErrorMessage = "Please enter the UK Register of Learning Providers number.")]
+    [DisplayName("UK Provider Reference Number (UKPRN)")]
+    [RequiredIf(nameof(OrganisationScheme), "GB-UKPRN", ErrorMessage = "Enter the number")]
     public string? UKLearningProviderReferenceNumber { get; set; }
 
     [BindProperty]
-    [DisplayName("The organisation does not have a registry number")]
+    [DisplayName("None apply")]
     public string? Other { get; set; }
 
     [BindProperty]
     public bool? RedirectToSummary { get; set; }
+
+    public string? Identifier { get; set; }
 
     public void OnGet()
     {
@@ -141,7 +143,7 @@ public class OrganisationIdentificationModel(ISession session,
                 break;
             case "GB-UKPRN":
                 UKLearningProviderReferenceNumber = RegistrationDetails.OrganisationIdentificationNumber;
-                break;            
+                break;
             default:
                 break;
         }
@@ -156,7 +158,7 @@ public class OrganisationIdentificationModel(ISession session,
         }
 
         RegistrationDetails.OrganisationScheme = OrganisationScheme;
-        
+
         RegistrationDetails.OrganisationIdentificationNumber = OrganisationScheme switch
         {
             "GB-CHC" => CharityCommissionEnglandWalesNumber,
@@ -167,10 +169,13 @@ public class OrganisationIdentificationModel(ISession session,
             "JE-FSC" => JerseyFinancialServicesCommissionRegistryNumber,
             "IM-CR" => IsleofManCompaniesRegistryNumber,
             "GB-NHS" => NationalHealthServiceOrganisationsRegistryNumber,
-            "GB-UKPRN" => UKLearningProviderReferenceNumber,            
+            "GB-UKPRN" => UKLearningProviderReferenceNumber,
             "Other" => null,
             _ => null,
         };
+
+        Identifier = $"{OrganisationScheme}:{RegistrationDetails.OrganisationIdentificationNumber}";
+
         try
         {
             SessionContext.Set(Session.RegistrationDetailsKey, RegistrationDetails);
@@ -199,17 +204,16 @@ public class OrganisationIdentificationModel(ISession session,
             }
         }
 
-        return RedirectToPage("OrganisationAlreadyRegistered");
+        return RedirectToPage("OrganisationAlreadyRegistered", new { Identifier });
     }
 
     private async Task<CO.CDP.Organisation.WebApiClient.Organisation> LookupOrganisationAsync()
     {
-        return await organisationClient.LookupOrganisationAsync(string.Empty,
-                    $"{OrganisationScheme}:{RegistrationDetails.OrganisationIdentificationNumber}");
+        return await organisationClient.LookupOrganisationAsync(string.Empty, Identifier);
     }
 
     private async Task<ICollection<EntityVerificationClient.Identifier>> LookupEntityVerificationAsync()
     {
-        return await pponClient.GetIdentifiersAsync($"{OrganisationScheme}:{RegistrationDetails.OrganisationIdentificationNumber}");
+        return await pponClient.GetIdentifiersAsync(Identifier);
     }
 }
