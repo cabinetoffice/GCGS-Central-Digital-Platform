@@ -19,7 +19,7 @@ public static class ApiExceptionMapper
 
         var errorMessage = GetErrorMessageByCode(code);
         modelState.AddModelError(string.Empty, errorMessage);
-       
+
     }
 
     private static string? ExtractErrorCode(ApiException<ProblemDetails> aex)
@@ -43,6 +43,7 @@ public static class ApiExceptionMapper
             ErrorCodes.UNKNOWN_ORGANISATION => ErrorMessagesList.UnknownOrganisation,
             ErrorCodes.BUYER_INFO_NOT_EXISTS => ErrorMessagesList.BuyerInfoNotExists,
             ErrorCodes.UNKNOWN_BUYER_INFORMATION_UPDATE_TYPE => ErrorMessagesList.UnknownBuyerInformationUpdateType,
+            ErrorCodes.PERSON_ALREADY_ADDED_TO_ORGANISATION => ErrorMessagesList.AlreadyMemberOfOrganisation,
             _ => ErrorMessagesList.UnexpectedError
         };
     }

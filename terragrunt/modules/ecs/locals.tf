@@ -10,6 +10,7 @@ locals {
 
   one_loging = {
     credential_locations = {
+      account_url   = "${data.aws_secretsmanager_secret.one_login.arn}:AccountUrl::"
       authority   = "${data.aws_secretsmanager_secret.one_login.arn}:Authority::"
       client_id   = "${data.aws_secretsmanager_secret.one_login.arn}:ClientId::"
       private_key = "${data.aws_secretsmanager_secret.one_login.arn}:PrivateKey::"

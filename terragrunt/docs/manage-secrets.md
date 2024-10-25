@@ -123,6 +123,7 @@ ave aws secretsmanager put-secret-value --secret-id cdp-sirsi-govuknotify-suppor
 
 ```json
 {
+  "AccountUrl": "https://xxxx",
   "Authority": "https://xxxxx",
   "ClientId": "xxxxx",
   "PrivateKey": "-----BEGIN RSA PRIVATE KEY-----\nxxxx\nxxxx==\n-----END RSA PRIVATE KEY-----"
