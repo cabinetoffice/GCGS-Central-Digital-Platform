@@ -35,8 +35,6 @@
             <section>
                 @if (Model.UserOrganisations.Any())
                 {
-                
-
                     <table class="govuk-table">
                         <caption class="govuk-table__caption govuk-table__caption--m">My organisations</caption>
                         <thead class="govuk-table__head">
@@ -71,34 +69,34 @@
                         </tbody>
                     </table>
 
-                    <a href="/Registration/OrganisationType" class="govuk-body govuk-link govuk-link--no-visited-state">
+                    <a asp-page="/Registration/OrganisationType" class="govuk-body govuk-link govuk-link--no-visited-state">
                         Add another organisation
                     </a>
                 }
                 else
                 {
-                    
+                    <h2 class="govuk-heading-m">My organisations</h2>
 
-                        <p class="govuk-body">Register an organisation if you are:</p>
+                    <p class="govuk-body">Register an organisation if you are:</p>
 
-                        <ul class="govuk-list govuk-list--bullet">
-                            <li>a contracting authority who publishes notices to buy goods, works, services or utilities</li>
-                            <li>an organisation or sole trader who searches for tenders and submits bids to supply goods, works, services or utilities</li>
-                        </ul>
+                    <ul class="govuk-list govuk-list--bullet">
+                        <li>a contracting authority who publishes notices to buy goods, works, services or utilities</li>
+                        <li>an organisation or sole trader who searches for tenders and submits bids to supply goods, works, services or utilities</li>
+                    </ul>
 
-                        <form method="post">
-                            <govuk-button>
-                                Register an organisation
-                            </govuk-button>
-                        </form>
+                    <form method="post">
+                        <govuk-button>
+                            Register an organisation
+                        </govuk-button>
+                    </form>
 
-                        <h3 class="govuk-heading-s">After you've registered</h3>
+                    <h3 class="govuk-heading-s">After you've registered</h3>
 
-                        <p class="govuk-body">If you need to you can:</p>
-                        <ul class="govuk-list govuk-list--bullet">
-                            <li>register as the other role, if you are both a buyer and supplier</li>
-                            <li>add more organisations</li>
-                        </ul>
+                    <p class="govuk-body">If you need to you can:</p>
+                    <ul class="govuk-list govuk-list--bullet">
+                        <li>register as the other role, if you are both a buyer and supplier</li>
+                        <li>add more organisations</li>
+                    </ul>
                 }
             </section>
         </div>
