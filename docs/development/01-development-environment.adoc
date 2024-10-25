@@ -33,6 +33,7 @@ make compose.override.yml
 
 The `OrganisationApp` requires the following secrets / environment variables:
 
+* `OneLogin:AccountUrl` / `OneLogin__AccountUrl`
 * `OneLogin:Authority` / `OneLogin__Authority`
 * `OneLogin:ClientId` / `OneLogin__ClientId`
 * `OneLogin:PrivateKey` / `OneLogin__PrivateKey`
@@ -42,6 +43,7 @@ These can be set as secrets with the following dotnet commands:
 
 [source,bash]
 ----
+dotnet user-secrets set --project Frontend/CO.CDP.OrganisationApp/CO.CDP.OrganisationApp.csproj OneLogin:AccountUrl "https://home.integration.account.gov.uk/"
 dotnet user-secrets set --project Frontend/CO.CDP.OrganisationApp/CO.CDP.OrganisationApp.csproj OneLogin:Authority "https://oidc.example.com"
 dotnet user-secrets set --project Frontend/CO.CDP.OrganisationApp/CO.CDP.OrganisationApp.csproj OneLogin:ClientId "client-id"
 dotnet user-secrets set --project Frontend/CO.CDP.OrganisationApp/CO.CDP.OrganisationApp.csproj OneLogin:PrivateKey "-----BEGIN RSA PRIVATE KEY-----SECRET KEY-----END RSA PRIVATE KEY-----"
@@ -57,6 +59,7 @@ for the `organisation-app` service:
 ----
   organisation-app:
     environment:
+      OneLogin__AccountUrl: "https://home.integration.account.gov.uk/"
       OneLogin__Authority: "https://oidc.example.com"
       OneLogin__ClientId: "client-id"
       OneLogin__PrivateKey: "-----BEGIN RSA PRIVATE KEY-----SECRET KEY-----END RSA PRIVATE KEY-----"

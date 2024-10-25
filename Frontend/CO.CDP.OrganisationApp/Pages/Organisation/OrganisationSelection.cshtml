@@ -1,6 +1,7 @@
 @page "/organisation-selection"
 @using CO.CDP.Organisation.WebApiClient
 @using CO.CDP.OrganisationApp.WebApiClients
+@inject Microsoft.Extensions.Configuration.IConfiguration config
 
 @model OrganisationSelectionModel
 
@@ -23,9 +24,11 @@
                     </div>
                 </dl>
 
-
+                @{
+                    var oneLoginAccountUrl = config["OneLogin:AccountUrl"];
+                }
                 <p class="govuk-body">
-                    You can <a class="govuk-link govuk-link--no-visited-state" href="https://home.account.gov.uk/settings" target="_blank">change your sign in details in your GOV.UK One Login</a>.
+                    You can <a class="govuk-link govuk-link--no-visited-state" href="@oneLoginAccountUrl" target="_blank">change your sign in details in your GOV.UK One Login</a>.
                 </p>
 
             </section>
