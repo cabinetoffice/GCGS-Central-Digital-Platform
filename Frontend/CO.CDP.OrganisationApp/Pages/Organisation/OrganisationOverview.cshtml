@@ -11,6 +11,10 @@
     bool isViewer = await userInfoService.IsViewer();
 }
 
+@section BeforeContent {
+    <a class="govuk-back-link" href="/organisation-selection">Back</a>
+}
+
 <main class="govuk-main-wrapper" id="main-content">
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
@@ -36,7 +40,7 @@
                     <span class="govuk-label--l">@organisationDetails.Name</span>
                 </h1>
                 <h2 class="govuk-heading-m">Organisation details</h2>
-                <dl class="govuk-summary-list govuk-!-margin-bottom-3">
+                <dl class="govuk-summary-list govuk-!-margin-bottom-4">
                     <div class="govuk-summary-list__row">
                         <dt class="govuk-summary-list__key">
                             Organisation name
@@ -127,35 +131,43 @@
                     }
                 </dl>
 
-                <authorize scope="@OrgScopeRequirement.Editor">
-                    @if (organisationDetails.IsBuyer() && !organisationDetails.IsTenderer())
-                    {
-                        <a class="govuk-link govuk-!-font-size-19 govuk-!-font-weight-bold" asp-page="./OrganisationRegisterBuyerAsSupplier" asp-route-id="@Model.Id">Register as a supplier</a>
-                        <div class="govuk-section-break govuk-section-break--visible govuk-section-break--m"></div>
-                    }
-                </authorize>
-
                 @if (organisationDetails.IsTenderer())
                 {
-                    <a class="govuk-link govuk-!-font-size-19 govuk-!-font-weight-bold" href="/organisation/@RouteData.Values["id"]/supplier-information">Supplier information</a>
+                    <h3 class="govuk-heading-s govuk-!-margin-bottom-3">
+                        <a class="govuk-link" href="/organisation/@RouteData.Values["id"]/supplier-information">Complete supplier information</a>
+                    </h3>
+                    <p class="govuk-body">Complete and share your supplier information to be able to bid for procurements.</p>
                     <div class="govuk-section-break govuk-section-break--visible govuk-section-break--m"></div>
                 }
 
                 @if (organisationDetails.IsBuyer())
                 {
-                    <h3>
-                        <a class="govuk-link" href="/organisation/@RouteData.Values["id"]/manage-api-keys">@(isViewer ? "View" : "Manage") API keys (for Buyers)</a>
+                    <h3 class="govuk-heading-s govuk-!-margin-bottom-3">
+                        <a class="govuk-link" href="/organisation/@RouteData.Values["id"]/manage-api-keys">@(isViewer ? "View" : "Manage") API keys@(organisationDetails.IsTenderer() ? " (for Buyers)" : "")</a>
                     </h3>
 
-                    <p class="govuk-body">An application programming interface (API) key is a code that allows different pieces of software to share information.</p>
-                    <p class="govuk-body">You need to create an API key and share it with the e-Sender you use to publish procurement notices on the Find a Tender service.</p>
+                    <p class="govuk-body">Create an API key and share it with the e-Sender you use to publish procurement notices.</p>
 
                     <div class="govuk-section-break govuk-section-break--visible govuk-section-break--m"></div>
                 }
 
                 <authorize scope="@OrgScopeRequirement.Admin">
-                    <a class="govuk-link govuk-!-font-size-19 govuk-!-font-weight-bold" href="/organisation/@RouteData.Values["id"]/users/user-summary">Users</a>
+                    <h3 class="govuk-heading-s govuk-!-margin-bottom-3">
+                        <a class="govuk-link" href="/organisation/@RouteData.Values["id"]/users/user-summary">Manage users</a>
+                    </h3>
+                    <p class="govuk-body">View, add or remove users.</p>
                     <div class="govuk-section-break govuk-section-break--visible govuk-section-break--m"></div>
+                </authorize>
+
+                <authorize scope="@OrgScopeRequirement.Editor">
+                    @if (organisationDetails.IsBuyer() && !organisationDetails.IsTenderer())
+                    {
+                        <h3 class="govuk-heading-s govuk-!-margin-bottom-3">
+                            <a class="govuk-link" asp-page="./OrganisationRegisterBuyerAsSupplier" asp-route-id="@Model.Id">Register as a supplier</a>
+                        </h3>
+                        <p class="govuk-body">If you also supply goods, works, services or utilities to the public sector.</p>
+                        <div class="govuk-section-break govuk-section-break--visible govuk-section-break--m"></div>
+                    }
                 </authorize>
 
                 @if (organisationDetails.IsBuyer())
@@ -164,10 +176,6 @@
                         Get procurement guidance on the <a rel="noreferrer noopener" target="_blank" class="govuk-link" href="https://www.procurementpathway.civilservice.gov.uk/">Procurement Pathway service (opens in new tab)</a>
                     </p>
                 }
-
-                <div class="govuk-!-margin-top-6">
-                    <a href="/organisation-selection" class="govuk-link govuk-link--no-visited-state">Back to all organisations</a>
-                </div>
             </fieldset>
         </div>
     </div>

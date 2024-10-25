@@ -132,9 +132,6 @@ public class WebApiToPersistenceProfile : Profile
         CreateMap<Persistence.OrganisationJoinRequest, OrganisationJoinRequest>()
             .ForMember(m => m.Id, o => o.MapFrom(m => m.Guid));
 
-        CreateMap<Persistence.OrganisationJoinRequest, JoinRequestLookUp>()
-            .ForMember(m => m.Id, o => o.MapFrom(m => m.Guid));
-
         ConnectedEntityMapping();
         OrganisationEventsMapping();
     }
