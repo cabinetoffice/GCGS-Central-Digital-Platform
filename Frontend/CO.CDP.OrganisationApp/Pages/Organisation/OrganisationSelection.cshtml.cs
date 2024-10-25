@@ -21,9 +21,4 @@ public class OrganisationSelectionModel(
 
         return Page();
     }
-
-    public IActionResult OnPost()
-    {
-        return RedirectToPage("/Registration/OrganisationType");
-    }
 }
