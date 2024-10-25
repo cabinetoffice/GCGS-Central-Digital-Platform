@@ -1,3 +1,8 @@
 = Introduction
 
-The Central Digital Platform (CDP) that is being developed to support the new procurement regime. 
+The Central Digital Platform (**CDP**) is designed to support the new procurement regime.
+
+This documentation focuses on **SIRSI** (Supplier Information Registration and Sign In).
+
+SIRSI is a part of wider solution that contributes to the Central Digital Platform together
+with other services like Find a Tender.

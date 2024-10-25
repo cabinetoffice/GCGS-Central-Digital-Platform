@@ -1,5 +1,5 @@
 terraform {
-  source = contains(["development", "staging", "integration"], local.global_vars.locals.environment) ? "../../../modules//tools" : null
+  source = local.global_vars.locals.environment == "orchestrator" ? null : "../../../modules//tools"
 }
 
 include {
@@ -23,9 +23,12 @@ locals {
 dependency core_iam {
   config_path = "../../core/iam"
   mock_outputs = {
-    ecs_task_arn      = "mock"
-    ecs_task_name     = "mock"
-    ecs_task_exec_arn = "mock"
+    ecs_task_arn       = "mock"
+    ecs_task_exec_arn  = "mock"
+    ecs_task_exec_name = "mock"
+    ecs_task_name      = "mock"
+    rds_cloudwatch_arn = "mock"
+    terraform_arn      = "mock"
   }
 }
 
@@ -42,8 +45,9 @@ dependency core_networking {
 dependency core_security_groups {
   config_path = "../../core/security-groups"
   mock_outputs = {
-    alb_sg_id = "mock"
-    ecs_sg_id = "mock"
+    alb_sg_id         = "mock"
+    db_postgres_sg_id = "mock"
+    ecs_sg_id         = "mock"
   }
 }
 
@@ -95,17 +99,21 @@ inputs = {
   pgadmin_config     = local.global_vars.locals.tools_configs.pgadmin
   tags               = local.tags
 
-  role_ecs_task_arn      = dependency.core_iam.outputs.ecs_task_arn
-  role_ecs_task_name     = dependency.core_iam.outputs.ecs_task_name
-  role_ecs_task_exec_arn = dependency.core_iam.outputs.ecs_task_exec_arn
+  role_ecs_task_arn       = dependency.core_iam.outputs.ecs_task_arn
+  role_ecs_task_name      = dependency.core_iam.outputs.ecs_task_name
+  role_ecs_task_exec_arn  = dependency.core_iam.outputs.ecs_task_exec_arn
+  role_ecs_task_exec_name = dependency.core_iam.outputs.ecs_task_exec_name
+  role_rds_cloudwatch_arn = dependency.core_iam.outputs.rds_cloudwatch_arn
+  role_terraform_arn      = dependency.core_iam.outputs.terraform_arn
 
   private_subnet_ids    = dependency.core_networking.outputs.private_subnet_ids
   public_domain         = dependency.core_networking.outputs.public_domain
   public_hosted_zone_id = dependency.core_networking.outputs.public_hosted_zone_id
   vpc_id                = dependency.core_networking.outputs.vpc_id
 
-  ecs_alb_sg_id = dependency.core_security_groups.outputs.alb_sg_id
-  ecs_sg_id     = dependency.core_security_groups.outputs.ecs_sg_id
+  db_postgres_sg_id = dependency.core_security_groups.outputs.db_postgres_sg_id
+  ecs_alb_sg_id     = dependency.core_security_groups.outputs.alb_sg_id
+  ecs_sg_id         = dependency.core_security_groups.outputs.ecs_sg_id
 
   user_pool_arn       = dependency.service_auth.outputs.healthcheck_user_pool_arn
   user_pool_client_id = dependency.service_auth.outputs.healthcheck_user_pool_client_id

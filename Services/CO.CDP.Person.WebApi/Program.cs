@@ -65,7 +65,6 @@ if (!app.Environment.IsDevelopment())
 app.UseStatusCodePages();
 
 app.MapHealthChecks("/health").AllowAnonymous();
-app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 app.UsePersonEndpoints();

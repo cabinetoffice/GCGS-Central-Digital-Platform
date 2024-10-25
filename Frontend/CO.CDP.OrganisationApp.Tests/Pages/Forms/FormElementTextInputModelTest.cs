@@ -7,19 +7,47 @@ namespace CO.CDP.OrganisationApp.Tests.Pages.Forms;
 
 public class FormElementTextInputModelTest
 {
-    private readonly FormElementTextInputModel _model;
+    private readonly FormElementTextInputModel _model = new();
 
-    public FormElementTextInputModelTest()
+    [Theory]
+    [InlineData(null)]
+    [InlineData(" ")]
+    [InlineData("Test value")]
+    public void GetAnswer_WhenHasValueFalse_GetsExpectedFormAnswer(string? input)
     {
-        _model = new FormElementTextInputModel();
+        _model.HasValue = false;
+        _model.TextInput = input;
+
+        var answer = _model.GetAnswer();
+
+        answer.Should().NotBeNull();
+        answer.As<FormAnswer>().BoolValue.Should().Be(false);
+        answer.As<FormAnswer>().TextValue.Should().BeNull();
     }
 
     [Theory]
     [InlineData(null, null)]
     [InlineData(" ", null)]
     [InlineData("Test value", "Test value")]
-    public void GetAnswer_GetsExpectedFormAnswer(string? input, string? expected)
+    public void GetAnswer_WhenHasValueTrue_GetsExpectedFormAnswer(string? input, string? expected)
     {
+        _model.HasValue = true;
+        _model.TextInput = input;
+
+        var answer = _model.GetAnswer();
+
+        answer.Should().NotBeNull();
+        answer.As<FormAnswer>().BoolValue.Should().Be(true);
+        answer.As<FormAnswer>().TextValue.Should().Be(expected);
+    }
+
+    [Theory]
+    [InlineData(null, null)]
+    [InlineData(" ", null)]
+    [InlineData("Test value", "Test value")]
+    public void GetAnswer_WhenHasValueIsNull_GetsExpectedFormAnswer(string? input, string? expected)
+    {
+        _model.HasValue = null;
         _model.TextInput = input;
 
         var answer = _model.GetAnswer();
@@ -31,10 +59,10 @@ public class FormElementTextInputModelTest
         else
         {
             answer.Should().NotBeNull();
-            answer!.TextValue.Should().Be(expected);
+            answer.As<FormAnswer>().BoolValue.Should().BeNull();
+            answer.As<FormAnswer>().TextValue.Should().Be(expected);
         }
     }
-
 
     [Theory]
     [InlineData(null, null)]

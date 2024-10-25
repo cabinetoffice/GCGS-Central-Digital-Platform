@@ -42,6 +42,7 @@ module "ecs_service_organisation_app" {
       lg_region                = data.aws_region.current.name
       memory                   = var.service_configs.organisation_app.memory
       name                     = var.service_configs.organisation_app.name
+      onelogin_account_url     = local.one_loging.credential_locations.account_url
       onelogin_authority       = local.one_loging.credential_locations.authority
       onelogin_client_id       = local.one_loging.credential_locations.client_id
       onelogin_private_key     = local.one_loging.credential_locations.private_key
