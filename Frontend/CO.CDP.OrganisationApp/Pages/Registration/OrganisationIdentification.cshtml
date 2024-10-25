@@ -36,9 +36,12 @@
                     <fieldset class="govuk-fieldset">
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                             <h1 class="govuk-fieldset__heading">
-                                Select the organisation registry and enter the number
+                                Is your organisation on any of these registries?
                             </h1>
                         </legend>
+                        <div id="organisationidentification-hint" class="govuk-hint">
+                            Select all that apply. Then enter the registration number.
+                        </div>
                         <div class="govuk-radios" data-module="govuk-radios">
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input" id="GB-CHC" name="OrganisationScheme" type="radio" value="GB-CHC" data-aria-controls="conditional-GB-CHC" @(Model.OrganisationScheme == "GB-CHC" ? "checked" : "")>
