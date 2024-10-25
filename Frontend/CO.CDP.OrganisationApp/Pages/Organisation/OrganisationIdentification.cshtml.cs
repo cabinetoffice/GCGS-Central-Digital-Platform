@@ -16,7 +16,7 @@ public class OrganisationIdentificationModel(OrganisationWebApiClient.IOrganisat
 {
     [BindProperty]
     [DisplayName("Organisation Type")]
-    [Required(ErrorMessage = "Please select your organisation type")]
+    [Required]
     public List<string> OrganisationScheme { get; set; } = [];
 
     [BindProperty]
@@ -28,7 +28,7 @@ public class OrganisationIdentificationModel(OrganisationWebApiClient.IOrganisat
 
     [BindProperty]
     [DisplayName("Charity Commission for England & Wales Number")]
-    [RequiredIfContains(nameof(OrganisationScheme), "GB-CHC", ErrorMessage = "Please enter the Charity Commission for England & Wales number.")]
+    [RequiredIfContains(nameof(OrganisationScheme), "GB-CHC", ErrorMessage = "Enter the Charity Commission for England & Wales number.")]
     public string? CharityCommissionEnglandWalesNumber { get; set; }
 
     [BindProperty]
@@ -37,7 +37,7 @@ public class OrganisationIdentificationModel(OrganisationWebApiClient.IOrganisat
 
     [BindProperty]
     [DisplayName("Scottish Charity Regulator Number")]
-    [RequiredIfContains(nameof(OrganisationScheme), "GB-SC", ErrorMessage = "Please enter the Scottish Charity Regulator number.")]
+    [RequiredIfContains(nameof(OrganisationScheme), "GB-SC", ErrorMessage = "Enter the Scottish Charity Regulator number.")]
     public string? ScottishCharityRegulatorNumber { get; set; }
 
     [BindProperty]
@@ -46,7 +46,7 @@ public class OrganisationIdentificationModel(OrganisationWebApiClient.IOrganisat
 
     [BindProperty]
     [DisplayName("Charity Commission for Northern Ireland Number")]
-    [RequiredIfContains(nameof(OrganisationScheme), "GB-NIC", ErrorMessage = "Please enter the Charity Commission for Northern Ireland number.")]
+    [RequiredIfContains(nameof(OrganisationScheme), "GB-NIC", ErrorMessage = "Enter the Charity Commission for Northern Ireland number.")]
     public string? CharityCommissionNorthernIrelandNumber { get; set; }
 
     [BindProperty]
@@ -55,7 +55,7 @@ public class OrganisationIdentificationModel(OrganisationWebApiClient.IOrganisat
 
     [BindProperty]
     [DisplayName("Mutuals Public Register Number")]
-    [RequiredIfContains(nameof(OrganisationScheme), "GB-MPR", ErrorMessage = "Please enter the Mutuals Public Register number .")]
+    [RequiredIfContains(nameof(OrganisationScheme), "GB-MPR", ErrorMessage = "Enter the Mutuals Public Register number .")]
     public string? MutualsPublicRegisterNumber { get; set; }
 
     [BindProperty]
@@ -64,7 +64,7 @@ public class OrganisationIdentificationModel(OrganisationWebApiClient.IOrganisat
 
     [BindProperty]
     [DisplayName("Guernsey Registry Number")]
-    [RequiredIfContains(nameof(OrganisationScheme), "GG-RCE", ErrorMessage = "Please enter the Guernsey Registry number.")]
+    [RequiredIfContains(nameof(OrganisationScheme), "GG-RCE", ErrorMessage = "Enter the Guernsey Registry number.")]
     public string? GuernseyRegistryNumber { get; set; }
 
     [BindProperty]
@@ -73,7 +73,7 @@ public class OrganisationIdentificationModel(OrganisationWebApiClient.IOrganisat
 
     [BindProperty]
     [DisplayName("Jersey Financial Services Commission Registry Number")]
-    [RequiredIfContains(nameof(OrganisationScheme), "JE-FSC", ErrorMessage = "Please enter Jersey Financial Services Commission Registry number")]
+    [RequiredIfContains(nameof(OrganisationScheme), "JE-FSC", ErrorMessage = "Enter Jersey Financial Services Commission Registry number")]
     public string? JerseyFinancialServicesCommissionRegistryNumber { get; set; }
 
     [BindProperty]
@@ -82,7 +82,7 @@ public class OrganisationIdentificationModel(OrganisationWebApiClient.IOrganisat
 
     [BindProperty]
     [DisplayName("Isle of Man Companies Registry Number")]
-    [RequiredIfContains(nameof(OrganisationScheme), "IM-CR", ErrorMessage = "Please enter the Isle of Man Companies Registry number.")]
+    [RequiredIfContains(nameof(OrganisationScheme), "IM-CR", ErrorMessage = "Enter the Isle of Man Companies Registry number.")]
     public string? IsleofManCompaniesRegistryNumber { get; set; }
 
     [BindProperty]
@@ -91,7 +91,7 @@ public class OrganisationIdentificationModel(OrganisationWebApiClient.IOrganisat
 
     [BindProperty]
     [DisplayName("NHS Organisation Data Service (ODS)")]
-    [RequiredIfContains(nameof(OrganisationScheme), "GB-NHS", ErrorMessage = "Please enter the NHS Organisation Data Service number.")]
+    [RequiredIfContains(nameof(OrganisationScheme), "GB-NHS", ErrorMessage = "Enter the NHS Organisation Data Service number.")]
     public string? NationalHealthServiceOrganisationsRegistryNumber { get; set; }
 
     [BindProperty]
@@ -100,7 +100,7 @@ public class OrganisationIdentificationModel(OrganisationWebApiClient.IOrganisat
 
     [BindProperty]
     [DisplayName("UK Register of Learning Providers (GB-UKPRN)")]
-    [RequiredIfContains(nameof(OrganisationScheme), "GB-UKPRN", ErrorMessage = "Please enter the UK Register of Learning Providers number.")]
+    [RequiredIfContains(nameof(OrganisationScheme), "GB-UKPRN", ErrorMessage = "Enter the UK Register of Learning Providers number.")]
     public string? UKLearningProviderReferenceNumber { get; set; }
 
     [BindProperty]
@@ -150,6 +150,12 @@ public class OrganisationIdentificationModel(OrganisationWebApiClient.IOrganisat
 
     public async Task<IActionResult> OnPost()
     {
+        // Ensure OrganisationScheme is valid
+        if (OrganisationScheme == null || !OrganisationScheme.Any())
+        {
+            ModelState.AddModelError(nameof(OrganisationScheme), "Select your organisation type");
+        }
+
         if (!ModelState.IsValid)
         {
             var (validate, existingIdentifier) = await ValidateAndGetExistingIdentifiers();
@@ -160,27 +166,18 @@ public class OrganisationIdentificationModel(OrganisationWebApiClient.IOrganisat
             return Page();
         }
 
-        // Ensure OrganisationScheme is valid
-        if (OrganisationScheme == null || OrganisationScheme.Count == 0)
-        {
-            return Redirect("/invalid-organisation-scheme");
-        }
         try
         {
             var organisation = await organisationClient.GetOrganisationAsync(Id);
             if (organisation == null) return Redirect("/page-not-found");
 
-            // Create a new list of identifiers based on the OrganisationScheme
-            var identifiers = new List<OrganisationWebApiClient.OrganisationIdentifier>();
 
-            foreach (var scheme in OrganisationScheme)
-            {
-                identifiers.Add(new OrganisationWebApiClient.OrganisationIdentifier(
+            // Create identifiers for OrganisationScheme
+            var identifiers = OrganisationScheme!.Select(scheme => new OrganisationWebApiClient.OrganisationIdentifier(
                     id: GetOrganisationIdentificationNumber(scheme),
                     legalName: organisation.Name,
-                    scheme: scheme
-                ));
-            }
+                    scheme: scheme))
+                .ToList();           
 
             await organisationClient.UpdateOrganisationAdditionalIdentifiers(Id, identifiers);
 

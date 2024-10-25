@@ -86,6 +86,13 @@ public class AuthorizationTests
                 )
             );
 
+        OrganisationClient.Setup(client => client.GetOrganisationJoinRequestsAsync(It.IsAny<Guid>(), null))
+            .ReturnsAsync(
+                [
+                    new JoinRequestLookUp(new Guid(),new Organisation.WebApiClient.Person("a@b.com", "First name", person.Id, "Last name", []) , OrganisationJoinRequestStatus.Pending)
+                ]
+            );
+
         PersonClient.Setup(client => client.LookupPersonAsync(It.IsAny<string>())).ReturnsAsync(person);
 
         Session.Setup(s => s.Get<Models.UserDetails>(OrganisationApp.Session.UserDetailsKey))
@@ -187,7 +194,7 @@ public class AuthorizationTests
         responseBody.Should().NotBeNull();
         response.StatusCode.Should().Be(HttpStatusCode.OK);
         responseBody.Should().Contain("Organisation details");
-        responseBody.Should().Contain($"href=\"/organisation/{OrganisationId}/users/user-summary\">Users</a>");
+        responseBody.Should().Contain($"href=\"/organisation/{OrganisationId}/users/user-summary\">Manage users</a>");
     }
 
     [Fact]
@@ -211,7 +218,7 @@ public class AuthorizationTests
 
     public static IEnumerable<object[]> SupportAdminAccessTestCases()
     {
-        yield return new object[] { $"/organisation/{OrganisationId}", new[] { "Organisation name", "Organisation identifier", "Organisation email", "Supplier information" }, new[] { "Change", "Users" }, HttpStatusCode.OK };
+        yield return new object[] { $"/organisation/{OrganisationId}", new[] { "Organisation name", "Organisation identifier", "Organisation email", "Complete supplier information" }, new[] { "Change", "Users" }, HttpStatusCode.OK };
         yield return new object[] { $"/organisation/{OrganisationId}/address/uk?frm-overview", new string[] {}, new string[] {}, HttpStatusCode.NotFound };
         yield return new object[] { $"/organisation/{OrganisationId}/users/user-summary", new string[] {}, new string[] {}, HttpStatusCode.NotFound };
     }
