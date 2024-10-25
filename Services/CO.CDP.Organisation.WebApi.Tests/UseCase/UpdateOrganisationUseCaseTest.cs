@@ -17,6 +17,7 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
     private readonly Mock<Persistence.IOrganisationRepository> _organisationRepositoryMock = new();
     private readonly Mock<IPublisher> _publisher = new();
     private readonly Guid _organisationId = Guid.NewGuid();
+    private readonly Guid _anotherOrganisationId = Guid.NewGuid();
     private UpdateOrganisationUseCase UseCase =>
         new(_organisationRepositoryMock.Object, _publisher.Object, mapperFixture.Mapper);
 
@@ -150,6 +151,77 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
         await act.Should()
             .ThrowAsync<InvalidUpdateOrganisationCommand>()
             .WithMessage("Missing additional identifiers.");
+    }
+
+    [Fact]
+    public async Task ShouldThrowInvalidUpdateOrganisationCommand_WhenIdentifierAlreadyExists()
+    {
+        // Arrange
+        var command = new UpdateOrganisation
+        {
+            Type = OrganisationUpdateType.AdditionalIdentifiers,
+            Organisation = new OrganisationInfo
+            {
+                AdditionalIdentifiers = [new OrganisationIdentifier
+                {
+                    Id = "13294342",
+                    LegalName = "Tcme",
+                    Scheme = "VAT"
+                }]
+            }
+        };
+
+        var organisation = Organisation;
+
+        _organisationRepositoryMock.Setup(repo => repo.Find(_anotherOrganisationId)).ReturnsAsync(AnotherOrganisation);
+
+        _organisationRepositoryMock.Setup(repo => repo.FindByIdentifier("VAT", "13294342")).ReturnsAsync(organisation);
+
+
+
+        Func<Task> act = async () => await UseCase.Execute((_anotherOrganisationId, command));
+
+
+        await act.Should()
+          .ThrowAsync<InvalidUpdateOrganisationCommand>()
+            .WithMessage("The identifier '13294342' you have entered belongs to a different organization that already exists.");
+    }
+
+    [Fact]
+    public async Task ShouldAddNewIdentifier_WhenIdentifierDoesNotExistInOrganisation()
+    {
+        // Arrange
+        var command = new UpdateOrganisation
+        {
+            Type = OrganisationUpdateType.AdditionalIdentifiers,
+            Organisation = new OrganisationInfo
+            {
+                AdditionalIdentifiers = [new OrganisationIdentifier
+                {
+                    Id = "342",
+                    LegalName = "Tcme",
+                    Scheme = "VAT"
+                }]
+            }
+        };
+
+        var anotherOrganisation = AnotherOrganisation;
+
+        _organisationRepositoryMock.Setup(repo => repo.Find(_anotherOrganisationId)).ReturnsAsync(anotherOrganisation);
+
+        _organisationRepositoryMock.Setup(repo => repo.FindByIdentifier("VAT", "13294342")).ReturnsAsync((Persistence.Organisation?)null);
+
+        var result = await UseCase.Execute((_anotherOrganisationId, command));
+
+        result.Should().BeTrue();
+
+        _organisationRepositoryMock.Verify(repo => repo.SaveAsync(anotherOrganisation, AnyOnSave()), Times.Once);
+
+        // Assert
+        anotherOrganisation.Identifiers.Should().ContainSingle(i =>
+            i.IdentifierId == "342" &&
+            i.Scheme == "VAT" &&
+            i.LegalName == "Tcme");
     }
 
     [Fact]
@@ -618,6 +690,37 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
             }},
             Roles = [PartyRole.Buyer]
         };
+
+    private Persistence.Organisation AnotherOrganisation =>
+     new()
+     {
+         Guid = _organisationId,
+         Name = "Tcme Ltd",
+         Tenant = It.IsAny<Persistence.Tenant>(),
+         Identifiers = [
+                  new Persistence.Organisation.Identifier
+                {
+                    Scheme = "GB-MPR",
+                    IdentifierId = "5656",
+                    LegalName = "Unilever Ltd",
+                    Primary = true
+                }
+         ],
+         ContactPoints = [new Persistence.Organisation.ContactPoint { Email = "test2@test.com" }],
+         Addresses = {new OrganisationInformation.Persistence.Organisation.OrganisationAddress
+            {
+                Type  = OrganisationInformation.AddressType.Registered,
+                Address = new Address
+                {
+                    StreetAddress = "1234 Port St",
+                    Locality = "Port City",
+                    PostalCode = "178345",
+                    CountryName = "Test Land",
+                    Country = "AB"
+                }
+            }},
+         Roles = [PartyRole.Buyer]
+     };
 
     private Persistence.Organisation OrganisationWithVatPrimaryAndPpon =>
         new()
