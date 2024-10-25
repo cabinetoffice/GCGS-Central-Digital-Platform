@@ -1,65 +1,105 @@
 @page "/organisation-selection"
 @using CO.CDP.Organisation.WebApiClient
 @using CO.CDP.OrganisationApp.WebApiClients
+@inject Microsoft.Extensions.Configuration.IConfiguration config
 
 @model OrganisationSelectionModel
 
 <main class="govuk-main-wrapper" id="main-content">
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-            @if (Model.UserOrganisations.Any())
-            {
-                <h1 class="govuk-heading-l">
-                    <span class="govuk-label--l">Select or add an organisation</span>
-                </h1>
+            <h1 class="govuk-heading-l">My account</h1>
 
-                <table class="govuk-table">
-                    <caption class="govuk-table__caption govuk-table__caption--m">List of organisations</caption>
-                    <thead class="govuk-table__head">
-                        <tr class="govuk-table__row">
-                            <th scope="col" colspan="2" class="govuk-table__header">Organisation name</th>
-                        </tr>
-                    </thead>
-                    <tbody class="govuk-table__body">
-                        @{
-                            foreach (var org in Model.UserOrganisations)
-                            {
-                                <tr class="govuk-table__row">
-                                    <th scope="row" class="govuk-table__header">
-                                        @org.Name
-                                        @{
-                                            if (org.IsPendingBuyer())
-                                            {
-                                                <strong class="govuk-tag govuk-tag--blue">
-                                                    Pending approval
-                                                </strong>
+            <section>
+                <h2 class="govuk-heading-m">Sign in details</h2>
+
+                <dl class="govuk-summary-list">
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            Email address:
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            @Model.UserDetails.Email
+                        </dd>
+                    </div>
+                </dl>
+
+                @{
+                    var oneLoginAccountUrl = config["OneLogin:AccountUrl"];
+                }
+                <p class="govuk-body">
+                    You can <a class="govuk-link govuk-link--no-visited-state" href="@oneLoginAccountUrl/security" target="_blank">change your sign in details in your GOV.UK One Login</a>.
+                </p>
+
+            </section>
+
+            <hr class="govuk-section-break govuk-section-break--invisible govuk-section-break--xl">
+
+            <section>
+                @if (Model.UserOrganisations.Any())
+                {
+                    <table class="govuk-table">
+                        <caption class="govuk-table__caption govuk-table__caption--m">My organisations</caption>
+                        <thead class="govuk-table__head">
+                            <tr class="govuk-table__row">
+                                <th scope="col" colspan="2" class="govuk-table__header">Organisation name</th>
+                            </tr>
+                        </thead>
+                        <tbody class="govuk-table__body">
+                            @{
+                                foreach (var org in Model.UserOrganisations)
+                                {
+                                    <tr class="govuk-table__row">
+                                        <th scope="row" class="govuk-table__header">
+                                            @org.Name
+                                            @{
+                                                if (org.IsPendingBuyer())
+                                                {
+                                                    <strong class="govuk-tag govuk-tag--blue">
+                                                        Pending approval
+                                                    </strong>
+                                                }
                                             }
-                                        }
-                                    </th>
+                                        </th>
 
-                                    <td class="govuk-table__cell">
-                                        <a class="govuk-link govuk-link--no-visited-state"
-                                           href="/organisation/@org.Id">Select</a>
-                                    </td>
-                                </tr>
+                                        <td class="govuk-table__cell">
+                                            <a class="govuk-link govuk-link--no-visited-state"
+                                               href="/organisation/@org.Id">View</a>
+                                        </td>
+                                    </tr>
+                                }
                             }
-                        }
-                    </tbody>
-                </table>
-            }
-            else
-            {
-                <h1 class="govuk-heading-l">
-                    <span class="govuk-label--l">Add an organisation</span>
-                </h1>
+                        </tbody>
+                    </table>
 
-                <p class="govuk-body">Begin by adding your organisation. If you have more than one organisation to manage, you can add additional organisations after you've added the first one.</p>
-            }
-            <form method="post">
-                <govuk-button>
-                    Add organisation
-                </govuk-button>
-            </form>
+                    <a asp-page="/Registration/OrganisationType" class="govuk-body govuk-link govuk-link--no-visited-state">
+                        Add another organisation
+                    </a>
+                }
+                else
+                {
+                    <h2 class="govuk-heading-m">My organisations</h2>
+
+                    <p class="govuk-body">Register an organisation if you are:</p>
+
+                    <ul class="govuk-list govuk-list--bullet">
+                        <li>a contracting authority who publishes notices to buy goods, works, services or utilities</li>
+                        <li>an organisation or sole trader who searches for tenders and submits bids to supply goods, works, services or utilities</li>
+                    </ul>
+
+                    <a asp-page="/Registration/OrganisationType" class="govuk-button" role="button" data-module="govuk-button">
+                        Register an organisation
+                    </a>
+
+                    <h3 class="govuk-heading-s">After you've registered</h3>
+
+                    <p class="govuk-body">If you need to you can:</p>
+                    <ul class="govuk-list govuk-list--bullet">
+                        <li>register as the other role, if you are both a buyer and supplier</li>
+                        <li>add more organisations</li>
+                    </ul>
+                }
+            </section>
         </div>
     </div>
 </main>

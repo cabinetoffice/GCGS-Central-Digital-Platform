@@ -296,12 +296,6 @@ public record UpdatePersonToOrganisation
     public required List<string> Scopes { get; init; }
 }
 
-public record UpdateJoinRequest
-{
-    public required OrganisationJoinRequestStatus status { get; init; }
-    public required Guid ReviewedBy { get; init; }
-}
-
 [JsonConverter(typeof(JsonStringEnumConverter))]
 public enum SupportOrganisationUpdateType
 {

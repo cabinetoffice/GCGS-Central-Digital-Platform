@@ -34,6 +34,8 @@
 @{
     var ftsService = config["FtsService"] ?? "";
     ftsService = ftsService.EndsWith("/") ? ftsService.TrimEnd(new Char[] { '/' }) : ftsService;
+    var organisationId = userInfoService.GetOrganisationId();
+    var homeLink = organisationId == null ? $"{this.Context.Request.Path}{this.Context.Request.QueryString}" : $"{ftsService}/login?organisation_id={organisationId}&redirect_url=/Search";
 }
 
 <body class="govuk-template__body">
@@ -46,7 +48,7 @@
     <header class="govuk-header" role="banner" data-module="govuk-header">
         <div class="govuk-header__container govuk-width-container">
             <div class="govuk-header__logo">
-                <a href="//gov.uk" class="govuk-header__link govuk-header__link--homepage">
+                <a href="https://gov.uk" class="govuk-header__link govuk-header__link--homepage">
                     <svg focusable="false"
                          role="img"
                          class="govuk-header__logotype"
@@ -66,7 +68,7 @@
                         <partial name="Shared/_LanguageSwitcher" />
                     </div>
                     <div class="app-header-layout__column">
-                        <a href="@ftsService" class="govuk-header__link govuk-header__service-name">
+                        <a href="@homeLink" class="govuk-header__link govuk-header__service-name">
                             Find a Tender
                         </a>
                         <nav aria-label="Menu" class="govuk-header__navigation">
@@ -78,11 +80,10 @@
                                 {
                                     @if (await userInfoService.HasTenant())
                                     {
-                                        var organisationId = userInfoService.GetOrganisationId();
                                         if (organisationId != null)
                                         {
                                             <li class="govuk-header__navigation-item">
-                                                <a class="govuk-header__link" href="@($"{ftsService}/login?organisation_id={organisationId}&redirect_url=/search/results")">
+                                                <a class="govuk-header__link" href="@($"{ftsService}/login?organisation_id={organisationId}&redirect_url=/Search/Results")">
                                                     Search
                                                 </a>
                                             </li>
