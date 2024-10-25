@@ -13,7 +13,7 @@ public class CookiesModel(
     ITempDataService tempDataService) : PageModel
 {
     [BindProperty]
-    [Required(ErrorMessage="Please indicate whether you accept cookies that measure website use")]
+    [Required(ErrorMessage="Choose whether you accept cookies that measure website use")]
     public CookieAcceptanceValues? CookieAcceptance { get; set; }
 
     [BindProperty]
