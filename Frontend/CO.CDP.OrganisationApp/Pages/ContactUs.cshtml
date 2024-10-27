@@ -12,18 +12,14 @@
     @if (Model.MessageSent == true)
     {
         <div class="govuk-grid-row">
-            <div id="standard-left-col" class="standard-col govuk-grid-column-two-thirds">
-                <div class="standard-col-content">
-                    <div class="govuk-panel govuk-panel--confirmation break-word">
-                        <h1 class="govuk-panel__title">
-                            Message sent
-                        </h1>
-                    </div>
-                    <br />
-                    <h2 class="govuk-heading-m">What happens next</h2>
-                    <br>
-                    <p class="govuk-body">Our support team will contact you by email, Monday to Friday from 9am to 5pm, excluding bank holidays.</p>
-                </div>
+            <div class="govuk-grid-column-two-thirds">
+                  <div class="govuk-panel govuk-panel--confirmation">
+                      <h1 class="govuk-panel__title">
+                          Message sent
+                      </h1>
+                  </div>
+                  <h2 class="govuk-heading-m">What happens next</h2>
+                  <p class="govuk-body">Our support team will contact you by email, Monday to Friday from 9am to 5pm, excluding bank holidays.</p>
             </div>
         </div>
     }
