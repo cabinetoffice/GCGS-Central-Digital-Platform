@@ -96,7 +96,7 @@
                             }
                             <textarea class="govuk-textarea govuk-js-character-count @(messageHasError ? "govuk-input--error" : "")"
                                       id="@nameof(Model.Message)" name="@nameof(Model.Message)"
-                                      cols="50" rows="10" aria-describedby="@nameof(Model.Message)-info">@Model.Message</textarea>
+                                      cols="50" rows="10" @(messageHasError ? "aria-describedby=message-info message-error" : "")>@Model.Message</textarea>
                             <div id="@nameof(Model.Message)-info" class="govuk-hint govuk-character-count__message">
                                 You have 10,000 characters available
                             </div>
