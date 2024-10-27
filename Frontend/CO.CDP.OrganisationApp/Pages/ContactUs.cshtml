@@ -57,14 +57,14 @@
                             </label>
                             @if (emailAddressHasError)
                             {
-                                <p id="last-name-error" class="govuk-error-message">
+                                <p id="email-error" class="govuk-error-message">
                                     <span class="govuk-visually-hidden">Error:</span>
                                     @Html.ValidationMessageFor(m => m.EmailAddress)
                                 </p>
                             }
                             <input class="govuk-input @(emailAddressHasError ? "govuk-input--error" : "")" id="@nameof(Model.EmailAddress)"
-                                   value="@Model.EmailAddress" name="@nameof(Model.EmailAddress)" type="text" autocomplete="email"
-                                   spellcheck="false" @(emailAddressHasError ? "aria-describedby=last-name-error" : "")>
+                                   value="@Model.EmailAddress" name="@nameof(Model.EmailAddress)" type="email" autocomplete="email"
+                                   spellcheck="false" @(emailAddressHasError ? "aria-describedby=email-error" : "")>
                         </div>
 
                         <div class="govuk-form-group @(organisationNameHasError ? "govuk-form-group--error" : "")">
