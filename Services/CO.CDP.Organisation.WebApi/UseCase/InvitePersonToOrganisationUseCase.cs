@@ -1,4 +1,3 @@
-using Amazon.CloudWatch.Model;
 using CO.CDP.GovUKNotify;
 using CO.CDP.GovUKNotify.Models;
 using CO.CDP.Organisation.WebApi.Model;
@@ -66,7 +65,7 @@ public class InvitePersonToOrganisationUseCase(
 
     private PersonInvite CreatePersonInvite(
         InvitePersonToOrganisation command,
-        CO.CDP.OrganisationInformation.Persistence.Organisation organisation
+        OrganisationInformation.Persistence.Organisation organisation
     )
     {
         var personInvite = new PersonInvite
@@ -75,7 +74,7 @@ public class InvitePersonToOrganisationUseCase(
             FirstName = command.FirstName,
             LastName = command.LastName,
             Email = command.Email,
-            Organisation = organisation,
+            OrganisationId = organisation.Id,
             Scopes = command.Scopes
         };
 

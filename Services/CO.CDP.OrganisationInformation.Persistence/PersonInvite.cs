@@ -11,7 +11,8 @@ public class PersonInvite : IEntityDate
     public required string FirstName { get; set; }
     public required string LastName { get; set; }
     public required string Email { get; set; }
-    public required Organisation Organisation { get; set; }
+    public required int OrganisationId { get; set; }
+    public Organisation? Organisation { get; set; }
 
     public Person? Person { get; set; }
 

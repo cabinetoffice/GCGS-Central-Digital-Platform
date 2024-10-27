@@ -69,6 +69,7 @@ public class ClaimPersonInviteUseCaseTests
             FirstName = null!,
             LastName = null!,
             Email = null!,
+            OrganisationId = 0,
             Organisation = null!,
             Scopes = null!
         };
@@ -102,6 +103,7 @@ public class ClaimPersonInviteUseCaseTests
             FirstName = null!,
             LastName = null!,
             Email = null!,
+            OrganisationId = 0,
             Organisation = new Organisation
             {
                 OrganisationPersons = new List<OrganisationPerson>(),
