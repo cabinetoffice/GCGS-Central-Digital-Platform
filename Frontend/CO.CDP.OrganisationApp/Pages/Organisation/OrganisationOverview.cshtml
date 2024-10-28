@@ -159,16 +159,14 @@
                     <div class="govuk-section-break govuk-section-break--visible govuk-section-break--m"></div>
                 </authorize>
 
-                <authorize scope="@OrgScopeRequirement.Editor">
-                    @if (organisationDetails.IsBuyer() && !organisationDetails.IsTenderer())
-                    {
-                        <h3 class="govuk-heading-s govuk-!-margin-bottom-3">
-                            <a class="govuk-link" asp-page="./OrganisationRegisterBuyerAsSupplier" asp-route-id="@Model.Id">Register as a supplier</a>
-                        </h3>
-                        <p class="govuk-body">If you also supply goods, works, services or utilities to the public sector.</p>
-                        <div class="govuk-section-break govuk-section-break--visible govuk-section-break--m"></div>
-                    }
-                </authorize>
+                @if ((organisationDetails.IsPendingBuyer() || organisationDetails.IsBuyer()) && !organisationDetails.IsTenderer())
+                {
+                    <h3 class="govuk-heading-s govuk-!-margin-bottom-3">
+                        <a class="govuk-link" asp-page="./OrganisationRegisterBuyerAsSupplier" asp-route-id="@Model.Id">Register as a supplier</a>
+                    </h3>
+                    <p class="govuk-body">If you also supply goods, works, services or utilities to the public sector.</p>
+                    <div class="govuk-section-break govuk-section-break--visible govuk-section-break--m"></div>
+                }
 
                 @if (organisationDetails.IsBuyer())
                 {
