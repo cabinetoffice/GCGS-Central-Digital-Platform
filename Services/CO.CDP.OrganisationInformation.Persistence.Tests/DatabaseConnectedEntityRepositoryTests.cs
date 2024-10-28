@@ -83,7 +83,7 @@ public class DatabaseConnectedEntityRepositoryTests(PostgreSqlFixture postgreSql
             {
                 FirstName = "First Name",
                 LastName = "Last Name",
-                Category = ConnectedEntity.ConnectedEntityIndividualAndTrustCategoryType.DirectorOrIndividualWithTheSameResponsibilitiesForIndividual,
+                Category = ConnectedEntity.ConnectedEntityIndividualAndTrustCategoryType.DirectorOrIndivWithTheSameResponsibilitiesForIndiv,
                 ConnectedType = ConnectedEntity.ConnectedPersonType.Individual
             },
             SupplierOrganisation = organisation

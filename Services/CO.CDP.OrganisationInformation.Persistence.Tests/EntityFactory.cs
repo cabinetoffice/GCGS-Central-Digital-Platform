@@ -267,7 +267,7 @@ public static class EntityFactory
                Organisation supplierOrganisation,
                string firstName = "John",
                string lastName = "Doe",
-               ConnectedEntityIndividualAndTrustCategoryType category = ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndividual
+               ConnectedEntityIndividualAndTrustCategoryType category = ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndiv
            )
     {
         var individualTrust = new ConnectedIndividualTrust

@@ -97,7 +97,7 @@ internal static class EntityFactory
                         Id = 1,
                         FirstName = "John",
                         LastName = "Doe",
-                        Category = ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndividual,
+                        Category = ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndiv,
                         CreatedOn = DateTimeOffset.UtcNow,
                         UpdatedOn = DateTimeOffset.UtcNow
                     },
