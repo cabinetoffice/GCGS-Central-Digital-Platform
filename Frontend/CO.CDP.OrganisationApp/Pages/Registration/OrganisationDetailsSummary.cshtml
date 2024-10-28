@@ -61,7 +61,7 @@
                             @details.OrganisationName
                         </dd>
                         <dd class="govuk-summary-list__actions">
-                            <a class="govuk-link" href="/registration/organisation-name?frm-summary">Change<span class="govuk-visually-hidden"> organisation name</span></a>
+                            <a class="govuk-link" href="/registration/organisation-name?frm-summary">Change<span class="govuk-visually-hidden"> the organisation name</span></a>
                         </dd>
                     </div>
                     <div class="govuk-summary-list__row">
@@ -72,7 +72,7 @@
                             @details.OrganisationEmailAddress
                         </dd>
                         <dd class="govuk-summary-list__actions">
-                            <a class="govuk-link" href="/registration/organisation-email?frm-summary">Change<span class="govuk-visually-hidden"> email address</span></a>
+                            <a class="govuk-link" href="/registration/organisation-email?frm-summary">Change<span class="govuk-visually-hidden"> the email address</span></a>
                         </dd>
                     </div>
 
@@ -97,7 +97,7 @@
                         <dd class="govuk-summary-list__actions">
                             <a class="govuk-link"
                                href="/registration/organisation-registered-address/@(details.OrganisationCountryCode == Country.UKCountryCode ? "uk" : "non-uk")?frm-summary">
-                                Change<span class="govuk-visually-hidden"> organisation address</span>
+                                Change<span class="govuk-visually-hidden"> registered address</span>
                             </a>
                         </dd>
                     </div>
@@ -119,7 +119,7 @@
                                 }
                             </dd>
                             <dd class="govuk-summary-list__actions">
-                                <a class="govuk-link govuk-link--no-visited-state" href="@RegistrationStepModel.BuyerOrganisationTypePage?frm-summary">Change<span class="govuk-visually-hidden"> organisation type</span></a>
+                                <a class="govuk-link govuk-link--no-visited-state" href="@RegistrationStepModel.BuyerOrganisationTypePage?frm-summary">Change<span class="govuk-visually-hidden"> the organisation type</span></a>
                             </dd>
                         </div>
 
@@ -131,7 +131,7 @@
                                 @(details.Devolved == true ? "Yes" : "No")
                             </dd>
                             <dd class="govuk-summary-list__actions">
-                                <a class="govuk-link govuk-link--no-visited-state" href="@RegistrationStepModel.BuyerDevolvedRegulationPage?frm-summary">Change<span class="govuk-visually-hidden"> do devolved regulations apply to the organisation?</span></a>
+                                <a class="govuk-link govuk-link--no-visited-state" href="@RegistrationStepModel.BuyerDevolvedRegulationPage?frm-summary">Change<span class="govuk-visually-hidden"> the devolved regulations</span></a>
                             </dd>
                         </div>
                         @if (details.Devolved == true)
@@ -144,7 +144,7 @@
                                     @Html.Raw(string.Join("<br /> ", details.Regulations.Select(x => x.Description())))
                                 </dd>
                                 <dd class="govuk-summary-list__actions">
-                                    <a class="govuk-link govuk-link--no-visited-state" href="@RegistrationStepModel.BuyerSelectDevolvedRegulationPage?frm-summary">Change<span class="govuk-visually-hidden"> which devolved regulations apply to the organisation?</span></a>
+                                    <a class="govuk-link govuk-link--no-visited-state" href="@RegistrationStepModel.BuyerSelectDevolvedRegulationPage?frm-summary">Change<span class="govuk-visually-hidden"> the devolved regions</span></a>
                                 </dd>
                             </div>
                         }
