@@ -1,6 +1,7 @@
 using CO.CDP.OrganisationApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
+using System.Text.RegularExpressions;
 
 namespace CO.CDP.OrganisationApp.Pages.Forms;
 
@@ -25,7 +26,7 @@ public class FormElementUrlInputModel : FormElementModel, IValidatableObject
         if (HasValue != false && !string.IsNullOrWhiteSpace(TextInput))
         {
             formAnswer ??= new FormAnswer();
-            formAnswer.TextValue = TextInput.Trim();
+            formAnswer.TextValue = TryFixUrl(TextInput);
         }
 
         return formAnswer;
@@ -61,10 +62,22 @@ public class FormElementUrlInputModel : FormElementModel, IValidatableObject
             {
                 yield return new ValidationResult("Enter a website address", [nameof(TextInput)]);
             }
-            else if (TextInput.Contains(".") == false || TextInput.Trim().Contains(" "))
+            else
             {
-                yield return new ValidationResult("Website address must be in the correct format, like www.companyname.com", [nameof(TextInput)]);
+                if (!Uri.TryCreate(TryFixUrl(TextInput), UriKind.Absolute, out _))
+                {
+                    yield return new ValidationResult("Website address must be in the correct format, like www.companyname.com", [nameof(TextInput)]);
+                }
             }
         }
+    }
+
+    private static string TryFixUrl(string url)
+    {
+        if (!Regex.IsMatch(url, "^(http|https)://") && !url.StartsWith("//"))
+        {
+            url = $"http://{url}";
+        }
+        return url.Trim();
     }
 }
