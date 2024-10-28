@@ -14,7 +14,7 @@ public static class OrganisationSchemeType
     public const string IsleOfManCompaniesRegistry = "IM-CR";
     public const string NHSOrganisationsRegistry = "GB-NHS";
     public const string UKRegisterOfLearningProviders = "GB-UKPRN";
-    public const string VATNumber = "VAT";
+    public const string VAT = "VAT";
     public const string Other = "Other";
     public const string Ppon = "GB-PPON";
 
