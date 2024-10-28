@@ -1,6 +1,5 @@
 using CO.CDP.OrganisationInformation.Persistence;
 using CO.CDP.Person.WebApi.Model;
-using UnknownPersonException = CO.CDP.Person.WebApi.Model.UnknownPersonException;
 
 namespace CO.CDP.Person.WebApi.UseCase;
 
@@ -16,7 +15,7 @@ public class ClaimPersonInviteUseCase(
         var personInvite = await personInviteRepository.Find(command.claimPersonInvite.PersonInviteId) ?? throw new UnknownPersonInviteException($"Unknown personInvite {command.claimPersonInvite.PersonInviteId}.");
 
         GuardPersonInviteAleadyClaimed(personInvite);
-        await GuardFromDuplicateEmailWithinOrganisation(organisationId: personInvite.Organisation.Guid, person.Email);
+        await GuardFromDuplicateEmailWithinOrganisation(organisationId: personInvite.Organisation!.Guid, person.Email);
 
         var organisation = await organisationRepository.FindIncludingTenantByOrgId(personInvite.OrganisationId)
             ?? throw new UnknownOrganisationException($"Unknown organisation {personInvite.OrganisationId} for PersonInvite {command.claimPersonInvite.PersonInviteId}."); ;
