@@ -147,6 +147,7 @@ public static class SharedConsentFactory
         string? textValue = null,
         string? optionValue = null,
         FormAddress? addressValue = null,
+        string? jsonValue = null,
         FormAnswerSet? answerSet = null
     )
     {
@@ -166,6 +167,7 @@ public static class SharedConsentFactory
             TextValue = textValue,
             OptionValue = optionValue,
             AddressValue = addressValue,
+            JsonValue = jsonValue,
             CreatedOn = DateTimeOffset.UtcNow,
             UpdatedOn = DateTimeOffset.UtcNow,
         };

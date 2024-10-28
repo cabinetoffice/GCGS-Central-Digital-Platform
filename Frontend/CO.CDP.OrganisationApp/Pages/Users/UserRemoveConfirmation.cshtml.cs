@@ -1,9 +1,9 @@
 using CO.CDP.Organisation.WebApiClient;
+using CO.CDP.OrganisationApp.Constants;
+using CO.CDP.OrganisationApp.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
-using CO.CDP.OrganisationApp.Models;
-using CO.CDP.OrganisationApp.Constants;
-using Microsoft.AspNetCore.Authorization;
 
 namespace CO.CDP.OrganisationApp.Pages.Users;
 
