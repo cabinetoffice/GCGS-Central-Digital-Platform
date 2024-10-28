@@ -285,6 +285,14 @@ public record ProvideFeedbackAndContact
     public required string Subject { get; init; }
 }
 
+public record ContactUs
+{
+    public required string Name { get; init; }
+    public required string EmailAddress { get; init; }
+    public required string OrganisationName { get; init; }
+    public required string Message { get; init; }
+}
+
 
 public record UpdateInvitedPersonToOrganisation
 {

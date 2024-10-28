@@ -314,6 +314,24 @@ public static class EndpointExtensions
                     return operation;
                 });
 
+        app.MapPost("/contact-us/",
+            async (ContactUs contactUs, IUseCase<ContactUs, bool> useCase) =>
+                    await useCase.Execute(contactUs)
+                        .AndThen(Results.Ok))
+                .Produces<bool>(StatusCodes.Status200OK, "application/json")
+                .ProducesProblem(StatusCodes.Status500InternalServerError)
+                .ProducesProblem(StatusCodes.Status400BadRequest)
+                .WithOpenApi(operation =>
+                {
+                    operation.OperationId = "ContactUs";
+                    operation.Description = "Contact the Find a Tender service team";
+                    operation.Summary = "Ask a question, report a problem or suggest an improvement to the Find a Tender service team.";
+                    operation.Responses["200"].Description = "Feedback sent successfully.";
+                    operation.Responses["400"].Description = "Bad request.";
+                    operation.Responses["500"].Description = "Internal server error.";
+                    return operation;
+                });
+
         return app;
     }
 

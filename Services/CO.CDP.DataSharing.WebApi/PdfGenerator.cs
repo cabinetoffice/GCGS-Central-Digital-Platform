@@ -19,11 +19,11 @@ public class PdfGenerator : IPdfGenerator
             container.Page(page =>
             {
                 page.Size(PageSizes.A4);
-                page.Margin(2, Unit.Centimetre);
-                page.DefaultTextStyle(x => x.FontSize(12).FontFamily("DejaVu Sans"));
+                page.Margin(1, Unit.Centimetre);
+                page.DefaultTextStyle(x => x.FontSize(10).FontFamily("DejaVu Sans"));
 
 
-                page.Header().Text("Supplier Information").FontSize(16).Bold().AlignCenter();
+                page.Header().Text("Supplier Information").FontSize(14).Bold().AlignCenter();
 
                 page.Content().Column(col =>
                 {
@@ -35,7 +35,7 @@ public class PdfGenerator : IPdfGenerator
                 page.Footer().AlignRight().Text(x =>
                 {
                     x.Span("Generated on: ");
-                    x.Span(DateTime.Now.ToString("yyyy-MM-dd")).Bold();
+                    x.Span(DateTime.Now.ToString("dd-MM-yyyy")).Bold();
                 });
             });
         });
@@ -49,7 +49,7 @@ public class PdfGenerator : IPdfGenerator
     {
         foreach (var answerSet in formAnswerSet)
         {
-            col.Item().Text(answerSet.SectionName).Bold().FontSize(14);
+            col.Item().Text(answerSet.SectionName).Bold().FontSize(12);
             col.Item().PaddingBottom(10);
 
             if (answerSet.QuestionAnswers != null)
@@ -69,36 +69,42 @@ public class PdfGenerator : IPdfGenerator
 
     private void AddBasicInformationSection(ColumnDescriptor col, BasicInformation basicInformation)
     {
-        col.Item().Text("Basic Information").Bold().FontSize(14);
+        col.Item().Text("Basic Information").Bold().FontSize(12);
         col.Item().PaddingBottom(10);
 
         if (!string.IsNullOrEmpty(basicInformation.SupplierType?.ToString()))
-            col.Item().Element(container => AddTwoColumnRow(container, "Supplier Type:", basicInformation.SupplierType?.ToString()));
+            col.Item().Element(container => AddTwoColumnRow(container, "Supplier type:", basicInformation.SupplierType?.ToString()));
+
+        if (!string.IsNullOrEmpty(basicInformation.OrganisationName?.ToString()))
+            col.Item().Element(container => AddTwoColumnRow(container, "Organisation name:", basicInformation.OrganisationName?.ToString()));
 
         if (basicInformation.RegisteredAddress != null)
-            col.Item().Element(container => AddTwoColumnRow(container, "Registered Address:", FormatAddress(basicInformation.RegisteredAddress)));
+            col.Item().Element(container => AddTwoColumnRow(container, "Registered address:", FormatAddress(basicInformation.RegisteredAddress)));
 
         if (basicInformation.PostalAddress != null)
-            col.Item().Element(container => AddTwoColumnRow(container, "Postal Address:", FormatAddress(basicInformation.PostalAddress)));
+            col.Item().Element(container => AddTwoColumnRow(container, "Postal address:", FormatAddress(basicInformation.PostalAddress)));
 
         if (!string.IsNullOrEmpty(basicInformation.VatNumber))
-            col.Item().Element(container => AddTwoColumnRow(container, "VAT Number:", basicInformation.VatNumber));
+            col.Item().Element(container => AddTwoColumnRow(container, "VAT number:", basicInformation.VatNumber));
 
         if (!string.IsNullOrEmpty(basicInformation.WebsiteAddress))
-            col.Item().Element(container => AddTwoColumnRow(container, "Website Address:", basicInformation.WebsiteAddress));
+            col.Item().Element(container => AddTwoColumnRow(container, "Website address:", basicInformation.WebsiteAddress));
 
         if (!string.IsNullOrEmpty(basicInformation.EmailAddress))
-            col.Item().Element(container => AddTwoColumnRow(container, "Email Address:", basicInformation.EmailAddress));
+            col.Item().Element(container => AddTwoColumnRow(container, "Email address:", basicInformation.EmailAddress));
 
         if (!string.IsNullOrEmpty(basicInformation.OrganisationType.ToString()))
-            col.Item().Element(container => AddTwoColumnRow(container, "Organisation Type:", basicInformation.OrganisationType.ToString()));
+            col.Item().Element(container => AddTwoColumnRow(container, "Organisation type:", basicInformation.OrganisationType.ToString()));
 
         if (basicInformation.LegalForm != null)
         {
-            col.Item().Text("Legal Form:").Bold();
-            col.Item().Text($"Registered Legal Form: {basicInformation.LegalForm.RegisteredLegalForm}");
-            col.Item().Text($"Law Registered: {basicInformation.LegalForm.LawRegistered}");
-            col.Item().Text($"Registration Date: {basicInformation.LegalForm.RegistrationDate:yyyy-MM-dd}");
+            col.Item().Element(container =>
+            {
+                AddTwoColumnRow(container, "Legal form:",
+                    $"Registered legal form: {basicInformation.LegalForm.RegisteredLegalForm}\n" +
+                    $"Law registered: {basicInformation.LegalForm.LawRegistered}\n" +
+                    $"Registration date: {basicInformation.LegalForm.RegistrationDate:dd-MM-yyyy}");
+            });
         }
 
         col.Item().LineHorizontal(1);
@@ -107,7 +113,7 @@ public class PdfGenerator : IPdfGenerator
 
     private void AddConnectedPersonInformationSection(ColumnDescriptor col, List<ConnectedPersonInformation> connectedPersons)
     {
-        col.Item().Text("Connected Person Information").Bold().FontSize(14);
+        col.Item().Text("Connected Person Information").Bold().FontSize(12);
         col.Item().PaddingBottom(10);
 
         if (connectedPersons.Any())
@@ -117,79 +123,76 @@ public class PdfGenerator : IPdfGenerator
                 col.Item().LineHorizontal(1);
 
                 if (!string.IsNullOrEmpty(person.FirstName))
-                    col.Item().Element(container => AddTwoColumnRow(container, "First Name:", person.FirstName));
+                    col.Item().Element(container => AddTwoColumnRow(container, "First name:", person.FirstName));
 
                 if (!string.IsNullOrEmpty(person.LastName))
-                    col.Item().Element(container => AddTwoColumnRow(container, "Last Name:", person.LastName));
+                    col.Item().Element(container => AddTwoColumnRow(container, "Last name:", person.LastName));
 
                 if (!string.IsNullOrEmpty(person.Nationality))
                     col.Item().Element(container => AddTwoColumnRow(container, "Nationality:", person.Nationality));
 
                 if (person.DateOfBirth != null)
-                    col.Item().Element(container => AddTwoColumnRow(container, "Date of Birth:", person.DateOfBirth?.ToString("yyyy-MM-dd")));
+                    col.Item().Element(container => AddTwoColumnRow(container, "Date of birth:", person.DateOfBirth?.ToString("dd-MM-yyyy")));
 
                 if (!string.IsNullOrEmpty(person.PersonType.ToString()))
-                    col.Item().Element(container => AddTwoColumnRow(container, "Person Type:", person.PersonType.ToString()));
+                {
+                    col.Item().Element(container => AddTwoColumnRow(container, "Person type:", GetFriendlyPersonTypeText(person.PersonType)));
+                }
 
                 if (!string.IsNullOrEmpty(person.Category.ToString()))
-                    col.Item().Element(container => AddTwoColumnRow(container, "Category:", person.Category.ToString()));
+                {
+                    col.Item().Element(container => AddTwoColumnRow(container, "Category:", GetFriendlyCategoryText(person.Category)));
+                }
 
                 if (!string.IsNullOrEmpty(person.ResidentCountry))
-                    col.Item().Element(container => AddTwoColumnRow(container, "Resident Country:", person.ResidentCountry));
+                    col.Item().Element(container => AddTwoColumnRow(container, "Resident country:", person.ResidentCountry));
 
                 var registeredAddress = person.Addresses.FirstOrDefault(a => a.Type == AddressType.Registered);
                 var postalAddress = person.Addresses.FirstOrDefault(a => a.Type == AddressType.Postal);
 
                 if (registeredAddress != null)
                 {
-                    col.Item().Text("Registered Address:").Bold();
-                    col.Item().Text(FormatAddress(new Address
+                    col.Item().Element(container =>
                     {
-                        StreetAddress = registeredAddress.StreetAddress,
-                        Locality = registeredAddress.Locality,
-                        Region = registeredAddress.Region,
-                        PostalCode = registeredAddress.PostalCode,
-                        CountryName = registeredAddress.CountryName,
-                        Type = AddressType.Registered,
-                        Country = registeredAddress.CountryName
-                    }));
+                        AddTwoColumnRow(container, "Registered address: ",
+                            $"Street Address: {registeredAddress.StreetAddress}\n" +
+                            $"Locality: {registeredAddress.Locality}\n" +
+                            $"Postcode: {registeredAddress.PostalCode}\n" +
+                            $"Country: {registeredAddress.CountryName}");
+                    });
                 }
 
                 if (postalAddress != null)
                 {
-                    col.Item().Text("Postal Address:").Bold();
-                    col.Item().Text(FormatAddress(new Address
+                    col.Item().Element(container =>
                     {
-                        StreetAddress = postalAddress.StreetAddress,
-                        Locality = postalAddress.Locality,
-                        Region = postalAddress.Region,
-                        PostalCode = postalAddress.PostalCode,
-                        CountryName = postalAddress.CountryName,
-                        Type = AddressType.Postal,
-                        Country = postalAddress.CountryName
-                    }));
+                        AddTwoColumnRow(container, "Postal address: ",
+                            $"Street Address: {postalAddress.StreetAddress}\n" +
+                            $"Locality: {postalAddress.Locality}\n" +
+                            $"Postcode: {postalAddress.PostalCode}\n" +
+                            $"Country: {postalAddress.CountryName}");
+                    });
                 }
 
-                if (person.ControlConditions.Any())
+                if (person.ControlConditions.Count != 0)
                 {
-                    col.Item().Text("Control Conditions:").Bold();
-                    foreach (var condition in person.ControlConditions)
+                    col.Item().Element(container =>
                     {
-                        col.Item().Text(condition);
-                    }
+                        AddTwoColumnRow(container, "Control conditions:", string.Join("\n", person.ControlConditions));
+                    });
                 }
 
                 if (person.IndividualTrust != null)
                 {
                     col.Item().Text("Individual Trust Information:").Bold();
                     if (!string.IsNullOrEmpty(person.IndividualTrust.FirstName))
-                        col.Item().Element(container => AddTwoColumnRow(container, "First Name:", person.IndividualTrust.FirstName));
+                        col.Item().Element(container => AddTwoColumnRow(container, "First name:", person.IndividualTrust.FirstName));
                     if (!string.IsNullOrEmpty(person.IndividualTrust.LastName))
-                        col.Item().Element(container => AddTwoColumnRow(container, "Last Name:", person.IndividualTrust.LastName));
+                        col.Item().Element(container => AddTwoColumnRow(container, "Last name:", person.IndividualTrust.LastName));
                     if (!string.IsNullOrEmpty(person.IndividualTrust.Nationality))
                         col.Item().Element(container => AddTwoColumnRow(container, "Nationality:", person.IndividualTrust.Nationality));
                     if (person.IndividualTrust.DateOfBirth != null)
-                        col.Item().Element(container => AddTwoColumnRow(container, "Date of Birth:", person.IndividualTrust.DateOfBirth?.ToString("yyyy-MM-dd")));
+                        col.Item().Element(container => AddTwoColumnRow(container, "Date of birth:", person.IndividualTrust.DateOfBirth?.ToString("dd-MM-yyyy")));
                 }
 
                 if (person.Organisation != null)
@@ -198,9 +201,9 @@ public class PdfGenerator : IPdfGenerator
                     if (!string.IsNullOrEmpty(person.Organisation.Name))
                         col.Item().Element(container => AddTwoColumnRow(container, "Name:", person.Organisation.Name));
                     if (!string.IsNullOrEmpty(person.Organisation.RegisteredLegalForm))
-                        col.Item().Element(container => AddTwoColumnRow(container, "Registered Legal Form:", person.Organisation.RegisteredLegalForm));
+                        col.Item().Element(container => AddTwoColumnRow(container, "Registered legal form:", person.Organisation.RegisteredLegalForm));
                     if (!string.IsNullOrEmpty(person.Organisation.LawRegistered))
-                        col.Item().Element(container => AddTwoColumnRow(container, "Law Registered:", person.Organisation.LawRegistered));
+                        col.Item().Element(container => AddTwoColumnRow(container, "Law registered:", person.Organisation.LawRegistered));
                 }
             }
         }
@@ -227,6 +230,30 @@ public class PdfGenerator : IPdfGenerator
         if (address == null)
             return "N/A";
 
-        return $"{address.StreetAddress}, {address.Locality}, {address.Region}, {address.PostalCode}, {address.CountryName}";
+        return $"{address.StreetAddress}, {address.Locality}, {address.PostalCode}, {address.CountryName}";
+    }
+
+    private string GetFriendlyCategoryText(OrganisationInformation.Persistence.ConnectedEntity.ConnectedEntityIndividualAndTrustCategoryType category)
+    {
+        return category switch
+        {
+            OrganisationInformation.Persistence.ConnectedEntity.ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndividual => "Person with significant control (Individual)",
+            OrganisationInformation.Persistence.ConnectedEntity.ConnectedEntityIndividualAndTrustCategoryType.DirectorOrIndividualWithTheSameResponsibilitiesForIndividual => "Director or individual with same responsibilities (Individual)",
+            OrganisationInformation.Persistence.ConnectedEntity.ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndividualWithSignificantInfluenceOrControlForIndividual => "Other individual with significant influence or control (Individual)",
+            OrganisationInformation.Persistence.ConnectedEntity.ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForTrust => "Person with significant control (Trust)",
+            OrganisationInformation.Persistence.ConnectedEntity.ConnectedEntityIndividualAndTrustCategoryType.DirectorOrIndividualWithTheSameResponsibilitiesForTrust => "Director or individual with same responsibilities (Trust)",
+            OrganisationInformation.Persistence.ConnectedEntity.ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndividualWithSignificantInfluenceOrControlForTrust => "Other individual with significant influence or control (Trust)",
+            _ => "Unknown category"
+        };
+    }
+
+    private string GetFriendlyPersonTypeText(OrganisationInformation.Persistence.ConnectedEntity.ConnectedPersonType personType)
+    {
+        return personType switch
+        {
+            OrganisationInformation.Persistence.ConnectedEntity.ConnectedPersonType.Individual => "Individual",
+            OrganisationInformation.Persistence.ConnectedEntity.ConnectedPersonType.TrustOrTrustee => "Trust or Trustee",
+            _ => "Unknown person type"
+        };
     }
 }

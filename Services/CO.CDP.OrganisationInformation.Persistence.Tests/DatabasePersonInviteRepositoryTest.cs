@@ -36,6 +36,47 @@ public class DatabasePersonInviteRepositoryTest(PostgreSqlFixture postgreSql) : 
         found.Should().BeNull();
     }
 
+
+    [Fact]
+    public async Task IsInviteEmailUniqueWithinOrganisation_WhenDoesNotExist_ReturnsTrue()
+    {
+        using var repository = PersonInviteRepository();
+
+        var alreadyInvitedEmail = "john.doe@example.com";
+        var newInviteEmail = "jane.doe@example.com";
+        var tenant = GivenTenant();
+        var organisation = GivenOrganisation();
+        var invite = GivenPersonInvite(guid: organisation.Guid, email: alreadyInvitedEmail, tenant: tenant, organisation: organisation);
+
+        await using var context = postgreSql.OrganisationInformationContext();
+        await context.PersonInvites.AddAsync(invite);
+        await context.SaveChangesAsync();
+
+        var result = await repository.IsInviteEmailUniqueWithinOrganisation(organisation.Guid, newInviteEmail);
+
+        result.Should().Be(true);
+    }
+
+    [Fact]
+    public async Task IsInviteEmailUniqueWithinOrganisation_WhenDoesExist_ReturnsFalse()
+    {
+        using var repository = PersonInviteRepository();
+
+        var inviteEmail = "john.doe@example.com";
+        var tenant = GivenTenant();
+        var organisation = GivenOrganisation();
+        var invite = GivenPersonInvite(guid: organisation.Guid, email: inviteEmail, tenant: tenant, organisation: organisation);
+
+        await using var context = postgreSql.OrganisationInformationContext();
+        await context.PersonInvites.AddAsync(invite);
+        await context.SaveChangesAsync();
+
+        var result = await repository.IsInviteEmailUniqueWithinOrganisation(organisation.Guid, inviteEmail);
+
+        result.Should().Be(false);
+    }
+
+
     private IPersonInviteRepository PersonInviteRepository()
     {
         return new DatabasePersonInviteRepository(postgreSql.OrganisationInformationContext());

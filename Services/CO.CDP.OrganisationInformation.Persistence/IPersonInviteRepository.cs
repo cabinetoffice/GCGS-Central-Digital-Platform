@@ -8,5 +8,7 @@ public interface IPersonInviteRepository : IDisposable
 
     Task<IEnumerable<PersonInvite>> FindByOrganisation(Guid organisationId);
 
+    Task<bool> IsInviteEmailUniqueWithinOrganisation(Guid organisationId, string email);
+
     void Save(PersonInvite personInvite);
 }
