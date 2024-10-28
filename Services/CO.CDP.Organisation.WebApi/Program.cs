@@ -1,4 +1,3 @@
-using System.Reflection;
 using CO.CDP.Authentication;
 using CO.CDP.AwsServices;
 using CO.CDP.Configuration.Assembly;
@@ -15,7 +14,9 @@ using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.Organisation.WebApi.UseCase;
 using CO.CDP.OrganisationInformation;
 using CO.CDP.OrganisationInformation.Persistence;
+using CO.CDP.WebApi.Foundation;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection;
 using ConnectedEntity = CO.CDP.Organisation.WebApi.Model.ConnectedEntity;
 using ConnectedEntityLookup = CO.CDP.Organisation.WebApi.Model.ConnectedEntityLookup;
 using Organisation = CO.CDP.Organisation.WebApi.Model.Organisation;
@@ -111,7 +112,7 @@ if (Assembly.GetEntryAssembly().IsRunAs("CO.CDP.Organisation.WebApi"))
 
 var app = builder.Build();
 app.UseForwardedHeaders();
-app.UseMiddleware<CO.CDP.WebApi.Foundation.ExceptionMiddleware>(ErrorCodes.ExceptionMap);
+app.UseErrorHandler(ErrorCodes.ExceptionMap);
 
 // Configure the HTTP request pipeline.
 if (builder.Configuration.GetValue("Features:SwaggerUI", false))

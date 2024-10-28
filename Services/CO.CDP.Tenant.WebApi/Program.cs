@@ -1,4 +1,3 @@
-using System.Reflection;
 using CO.CDP.Authentication;
 using CO.CDP.AwsServices;
 using CO.CDP.Configuration.Assembly;
@@ -10,7 +9,9 @@ using CO.CDP.Tenant.WebApi.Api;
 using CO.CDP.Tenant.WebApi.AutoMapper;
 using CO.CDP.Tenant.WebApi.Model;
 using CO.CDP.Tenant.WebApi.UseCase;
+using CO.CDP.WebApi.Foundation;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection;
 using Tenant = CO.CDP.Tenant.WebApi.Model.Tenant;
 using TenantLookup = CO.CDP.OrganisationInformation.TenantLookup;
 
@@ -56,7 +57,7 @@ if (Assembly.GetEntryAssembly().IsRunAs("CO.CDP.Tenant.WebApi"))
 
 var app = builder.Build();
 app.UseForwardedHeaders();
-app.UseMiddleware<CO.CDP.WebApi.Foundation.ExceptionMiddleware>(ErrorCodes.ExceptionMap);
+app.UseErrorHandler(ErrorCodes.ExceptionMap);
 
 // Configure the HTTP request pipeline.
 if (builder.Configuration.GetValue("Features:SwaggerUI", false))

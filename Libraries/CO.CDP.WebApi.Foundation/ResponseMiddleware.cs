@@ -6,9 +6,9 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace CO.CDP.WebApi.Foundation;
 
-public class ExceptionMiddleware(
+public class ResponseMiddleware(
         RequestDelegate next,
-        ILogger<ExceptionMiddleware> logger,
+        ILogger<ResponseMiddleware> logger,
         Dictionary<Type, (int, string)> exceptionMap)
 {
     public async Task Invoke(HttpContext context)

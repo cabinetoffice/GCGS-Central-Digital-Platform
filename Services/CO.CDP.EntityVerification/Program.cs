@@ -12,6 +12,7 @@ using CO.CDP.EntityVerification.Ppon;
 using CO.CDP.EntityVerification.UseCase;
 using CO.CDP.MQ;
 using CO.CDP.MQ.Hosting;
+using CO.CDP.WebApi.Foundation;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 
@@ -70,7 +71,7 @@ builder.Services.AddEntityVerificationAuthorization();
 
 var app = builder.Build();
 app.UseForwardedHeaders();
-app.UseMiddleware<CO.CDP.WebApi.Foundation.ExceptionMiddleware>(ErrorCodes.ExceptionMap);
+app.UseErrorHandler(ErrorCodes.ExceptionMap);
 
 // Configure the HTTP request pipeline.
 if (builder.Configuration.GetValue("Features:SwaggerUI", false))

@@ -10,6 +10,7 @@ using CO.CDP.DataSharing.WebApi.DataService;
 using CO.CDP.DataSharing.WebApi.Model;
 using CO.CDP.DataSharing.WebApi.UseCase;
 using CO.CDP.OrganisationInformation.Persistence;
+using CO.CDP.WebApi.Foundation;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.Localization;
 using Microsoft.EntityFrameworkCore;
@@ -83,7 +84,7 @@ if (Assembly.GetEntryAssembly().IsRunAs("CO.CDP.DataSharing.WebApi"))
 
 var app = builder.Build();
 app.UseForwardedHeaders();
-app.UseMiddleware<CO.CDP.WebApi.Foundation.ExceptionMiddleware>(ErrorCodes.ExceptionMap);
+app.UseErrorHandler(ErrorCodes.ExceptionMap);
 
 // Configure the HTTP request pipeline.
 if (builder.Configuration.GetValue("Features:SwaggerUI", false))

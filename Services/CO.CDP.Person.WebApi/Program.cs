@@ -1,4 +1,3 @@
-using System.Reflection;
 using CO.CDP.Authentication;
 using CO.CDP.AwsServices;
 using CO.CDP.Configuration.Assembly;
@@ -10,7 +9,9 @@ using CO.CDP.Person.WebApi.Api;
 using CO.CDP.Person.WebApi.AutoMapper;
 using CO.CDP.Person.WebApi.Model;
 using CO.CDP.Person.WebApi.UseCase;
+using CO.CDP.WebApi.Foundation;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.ConfigureForwardedHeaders();
@@ -48,7 +49,7 @@ if (Assembly.GetEntryAssembly().IsRunAs("CO.CDP.Person.WebApi"))
 
 var app = builder.Build();
 app.UseForwardedHeaders();
-app.UseMiddleware<CO.CDP.WebApi.Foundation.ExceptionMiddleware>(ErrorCodes.ExceptionMap);
+app.UseErrorHandler(ErrorCodes.ExceptionMap);
 
 // Configure the HTTP request pipeline.
 if (builder.Configuration.GetValue("Features:SwaggerUI", false))
