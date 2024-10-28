@@ -163,7 +163,7 @@
     <value>Enter the organisation's name</value>
   </data>
   <data name="OrganisationRegistration_EnterOrganisationName_Hint" xml:space="preserve">
-    <value>As registered on Companies House if incorporated, or the trading name of the company.</value>
+    <value>As registered on Companies House if incorporated, or the trading name of the company</value>
   </data>
   <data name="Global_Error" xml:space="preserve">
     <value>Error</value>

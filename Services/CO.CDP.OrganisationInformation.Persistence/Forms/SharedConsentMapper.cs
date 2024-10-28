@@ -47,7 +47,8 @@ public static class SharedConsentMapper
         NumericValue = answer.NumericValue,
         StartValue = answer.StartValue,
         EndValue = answer.EndValue,
-        AddressValue = answer.AddressValue
+        AddressValue = answer.AddressValue,
+        JsonValue = answer.JsonValue,
     };
 
     private static SharedConsent CreateNewSharedConsent(SharedConsent sharedConsent) =>

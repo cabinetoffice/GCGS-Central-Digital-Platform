@@ -4,6 +4,7 @@ public static class ErrorMessagesList
 {
     public const string DuplicatePersonName = "A person with this name already exists. Please try again.";
     public const string DuplicatePersonEmail = "A user with this email address already exists for your organisation.";
+    public const string DuplicateInviteEmail = "A user with this email address has already been invited to your organisation.";
     public const string PersonNotFound = "The requested person was not found.";
     public const string PersonCreationFailed = "Adding a person failed, have you provided the correct person details.";
 
@@ -22,5 +23,6 @@ public static class ErrorMessagesList
     public const string UnknownBuyerInformationUpdateType = "The requested buyer information update type is unknown.";
 
     public const string DuplicateApiKeyName = "An API key with this name already exists. Please try again.";
+    public const string AlreadyMemberOfOrganisation = "You are already a member of this organisation.";
 
 }

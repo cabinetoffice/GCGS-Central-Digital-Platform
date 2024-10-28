@@ -322,6 +322,7 @@ public class UpdateFormSectionAnswersUseCaseTest(AutoMapperFixture mapperFixture
             GivenAnswer(question: GivenFormQuestion(section: section, type: Date),
                 dateValue: new DateTime(2024, 12, 31)),
             GivenAnswer(question: GivenFormQuestion(section: section, type: FileUpload), textValue: "my-photo.jpg"),
+            GivenAnswer(question: GivenFormQuestion(section: section, type: SingleChoice), jsonValue: "{\"json\": true}"),
         };
         var updateFormSectionAnswers = new UpdateFormSectionAnswers
         {
@@ -331,6 +332,7 @@ public class UpdateFormSectionAnswersUseCaseTest(AutoMapperFixture mapperFixture
                 new() { Id = answers[1].Guid, QuestionId = answers[1].Question.Guid, TextValue = "My new answer" },
                 new() { Id = answers[2].Guid, QuestionId = answers[2].Question.Guid, DateValue = new DateTime(2025, 1, 12) },
                 new() { Id = answers[3].Guid, QuestionId = answers[3].Question.Guid, TextValue = "my-new-photo.jpg" },
+                new() { Id = answers[4].Guid, QuestionId = answers[4].Question.Guid, JsonValue = "{\"json\": true}" },
             }
         };
         var answerSet = GivenAnswerSet(sharedConsent: sharedConsent, section: section, answers: answers);
@@ -350,7 +352,8 @@ public class UpdateFormSectionAnswersUseCaseTest(AutoMapperFixture mapperFixture
             sc.AnswerSets.First().Answers.ElementAt(0).BoolValue == true &&
             sc.AnswerSets.First().Answers.ElementAt(1).TextValue == "My new answer" &&
             sc.AnswerSets.First().Answers.ElementAt(2).DateValue == new DateTime(2025, 1, 12) &&
-            sc.AnswerSets.First().Answers.ElementAt(3).TextValue == "my-new-photo.jpg"
+            sc.AnswerSets.First().Answers.ElementAt(3).TextValue == "my-new-photo.jpg" &&
+            sc.AnswerSets.First().Answers.ElementAt(4).JsonValue == "{\"json\": true}"
         )));
     }
 
@@ -365,7 +368,8 @@ public class UpdateFormSectionAnswersUseCaseTest(AutoMapperFixture mapperFixture
             GivenFormQuestion(section: section, type: YesOrNo),
             GivenFormQuestion(section: section, type: Text),
             GivenFormQuestion(section: section, type: Date),
-            GivenFormQuestion(section: section, type: FileUpload)
+            GivenFormQuestion(section: section, type: FileUpload),
+            GivenFormQuestion(section: section, type: SingleChoice)
         };
         var updateFormSectionAnswers = new UpdateFormSectionAnswers
         {
@@ -375,6 +379,7 @@ public class UpdateFormSectionAnswersUseCaseTest(AutoMapperFixture mapperFixture
                 new() { Id = Guid.NewGuid(), QuestionId = questions[1].Guid, TextValue = "My new answer" },
                 new() { Id = Guid.NewGuid(), QuestionId = questions[2].Guid, DateValue = new DateTime(2025, 1, 12) },
                 new() { Id = Guid.NewGuid(), QuestionId = questions[3].Guid, TextValue = "my-new-photo.jpg" },
+                new() { Id = Guid.NewGuid(), QuestionId = questions[4].Guid, JsonValue = "{\"json\": true}" },
             }
         };
         var command = (
@@ -393,7 +398,8 @@ public class UpdateFormSectionAnswersUseCaseTest(AutoMapperFixture mapperFixture
             sc.AnswerSets.First().Answers.ElementAt(0).BoolValue == true &&
             sc.AnswerSets.First().Answers.ElementAt(1).TextValue == "My new answer" &&
             sc.AnswerSets.First().Answers.ElementAt(2).DateValue == new DateTime(2025, 1, 12) &&
-            sc.AnswerSets.First().Answers.ElementAt(3).TextValue == "my-new-photo.jpg"
+            sc.AnswerSets.First().Answers.ElementAt(3).TextValue == "my-new-photo.jpg" &&
+            sc.AnswerSets.First().Answers.ElementAt(4).JsonValue == "{\"json\": true}"
         )));
     }
 
@@ -420,7 +426,8 @@ public class UpdateFormSectionAnswersUseCaseTest(AutoMapperFixture mapperFixture
                     PostalCode = "SW19 8AR",
                     CountryName = "United Kingodm",
                     Country = "UK"
-                })
+                }),
+            GivenAnswer(question: GivenFormQuestion(section: section, type: SingleChoice), jsonValue: "{\"json\": true}"),
         };
 
         var updateFormSectionAnswers = new UpdateFormSectionAnswers
@@ -445,14 +452,15 @@ public class UpdateFormSectionAnswersUseCaseTest(AutoMapperFixture mapperFixture
             sc.Guid != sharedConsent.Guid &&
             sc.SubmissionState == Draft &&
             sc.AnswerSets.Count == 1 &&
-            sc.AnswerSets.First().Answers.Count == 7 &&
+            sc.AnswerSets.First().Answers.Count == 8 &&
             sc.AnswerSets.First().Answers.ElementAt(0).BoolValue == false &&
             sc.AnswerSets.First().Answers.ElementAt(1).TextValue == "My new answer" &&
             sc.AnswerSets.First().Answers.ElementAt(2).DateValue == new DateTime(2024, 12, 31) &&
             sc.AnswerSets.First().Answers.ElementAt(3).TextValue == "my-photo.jpg" &&
             sc.AnswerSets.First().Answers.ElementAt(4).BoolValue == true &&
             sc.AnswerSets.First().Answers.ElementAt(5).OptionValue == "Option-1" &&
-            sc.AnswerSets.First().Answers.ElementAt(6).AddressValue != null
+            sc.AnswerSets.First().Answers.ElementAt(6).AddressValue != null &&
+            sc.AnswerSets.First().Answers.ElementAt(7).JsonValue == "{\"json\": true}"
         )));
     }
 
