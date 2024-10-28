@@ -49,13 +49,18 @@ public class SupplierWebsiteModelQuestionTest
             .Which.Url.Should().Be("/page-not-found");
     }
 
-    [Fact]
-    public async Task OnPost_ValidModelState_ReturnsRedirectToSupplierBasicInformation()
+
+    [Theory]
+    [InlineData("http://xyz.com")]
+    [InlineData("https://example.com")]
+    [InlineData("//valid-doamain.com/test-page")]
+    [InlineData("httpvalid-doamain.com")]
+    public async Task OnPost_WithValidUrl_ReturnsRedirectToSupplierBasicInformation(string url)
     {
         var id = Guid.NewGuid();
         _model.Id = id;
         _model.HasWebsiteAddress = true;
-        _model.WebsiteAddress = "http://xyz.com";
+        _model.WebsiteAddress = url;
 
         _organisationClientMock.Setup(client => client.GetOrganisationAsync(id))
             .ReturnsAsync(OrganisationClientModel(id));
@@ -77,17 +82,6 @@ public class SupplierWebsiteModelQuestionTest
         var result = await _model.OnPost();
 
         result.Should().BeOfType<PageResult>();
-    }
-
-    [Fact]
-    public void OnPost_ValidWebsiteUrl_ReturnsNoModelStateError()
-    {
-        _model.HasWebsiteAddress = true;
-        _model.WebsiteAddress = "//valid-doamain.com/test-page";
-
-        var results = ModelValidationHelper.Validate(_model);
-
-        results.Count.Should().Be(0);
     }
 
     [Fact]

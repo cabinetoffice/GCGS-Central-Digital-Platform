@@ -1,6 +1,7 @@
 using CO.CDP.OrganisationApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
+using System.Text.RegularExpressions;
 
 namespace CO.CDP.OrganisationApp.Pages.Forms;
 
@@ -73,7 +74,7 @@ public class FormElementUrlInputModel : FormElementModel, IValidatableObject
 
     private static string TryFixUrl(string url)
     {
-        if (!url.StartsWith("http") && !url.StartsWith("//"))
+        if (!Regex.IsMatch(url, "^(http|https)://") && !url.StartsWith("//"))
         {
             url = $"http://{url}";
         }

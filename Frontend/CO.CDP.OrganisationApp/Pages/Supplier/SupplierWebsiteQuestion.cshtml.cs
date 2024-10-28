@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
+using System.Text.RegularExpressions;
 
 namespace CO.CDP.OrganisationApp.Pages.Supplier;
 
@@ -52,7 +53,7 @@ public class SupplierWebsiteQuestionModel(IOrganisationClient organisationClient
         {
             WebsiteAddress = WebsiteAddress.Trim();
 
-            if (!WebsiteAddress.StartsWith("http") && !WebsiteAddress.StartsWith("//"))
+            if (!Regex.IsMatch(WebsiteAddress, "^(http|https)://") && !WebsiteAddress.StartsWith("//"))
             {
                 WebsiteAddress = $"http://{WebsiteAddress}";
             }

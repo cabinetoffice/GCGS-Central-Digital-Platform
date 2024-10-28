@@ -30,6 +30,7 @@ public class FormElementUrlInputModelTests
     [InlineData(null, null)]
     [InlineData(" ", null)]
     [InlineData("https://example.com", "https://example.com")]
+    [InlineData("httpexample.com", "http://httpexample.com")]
     public void GetAnswer_WhenHasValueTrue_GetsExpectedFormAnswer(string? input, string? expected)
     {
         var model = new FormElementUrlInputModel
@@ -49,6 +50,7 @@ public class FormElementUrlInputModelTests
     [InlineData(null, null)]
     [InlineData(" ", null)]
     [InlineData("example.com", "http://example.com")]
+    [InlineData("httpexample.com", "http://httpexample.com")]
     [InlineData("https://example.com", "https://example.com")]
     public void GetAnswer_WhenHasValueIsNull_GetsExpectedFormAnswer(string? input, string? expected)
     {
