@@ -190,7 +190,7 @@ public static class ApiExtensions
             Description = "",
         });
         options.IncludeXmlComments(Assembly.GetExecutingAssembly(), Assembly.GetAssembly(typeof(Address)));
-        options.OperationFilter<ProblemDetailsOperationFilter>(Extensions.ServiceCollectionExtensions.ErrorCodes());
+        options.OperationFilter<ProblemDetailsOperationFilter>(ErrorCodes.HttpStatusCodeErrorMap());
         options.ConfigureBearerSecurity();
         options.ConfigureApiKeySecurity();
     }

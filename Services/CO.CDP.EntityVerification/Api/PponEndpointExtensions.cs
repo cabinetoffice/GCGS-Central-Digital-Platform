@@ -47,7 +47,7 @@ public static class PponApiExtensions
             Title = "PPON Service API",
             Description = "API for organisation identifier queries.",
         });
-        options.OperationFilter<ProblemDetailsOperationFilter>(Extensions.ServiceCollectionExtensions.ErrorCodes());
+        options.OperationFilter<ProblemDetailsOperationFilter>(ErrorCodes.HttpStatusCodeErrorMap());
         options.ConfigureBearerSecurity();
         options.UseAllOfToExtendReferenceSchemas();
     }

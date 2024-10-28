@@ -1,6 +1,5 @@
 using CO.CDP.Authentication.Authorization;
 using CO.CDP.Functional;
-using CO.CDP.OrganisationInformation.Persistence;
 using CO.CDP.Person.WebApi.Model;
 using CO.CDP.Person.WebApi.UseCase;
 using CO.CDP.Swashbuckle.Filter;
@@ -172,7 +171,7 @@ public static class ApiExtensions
                 };
             return typeMap.GetValueOrDefault(type, type.Name);
         });
-        options.OperationFilter<ProblemDetailsOperationFilter>(Extensions.ServiceCollectionExtensions.ErrorCodes());
+        options.OperationFilter<ProblemDetailsOperationFilter>(ErrorCodes.HttpStatusCodeErrorMap());
         options.ConfigureBearerSecurity();
         options.ConfigureApiKeySecurity();
         options.UseAllOfToExtendReferenceSchemas();

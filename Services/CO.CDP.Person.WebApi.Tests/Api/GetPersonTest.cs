@@ -1,4 +1,3 @@
-using CO.CDP.OrganisationInformation.Persistence;
 using CO.CDP.Person.WebApi.Model;
 using CO.CDP.Person.WebApi.UseCase;
 using CO.CDP.TestKit.Mvc;

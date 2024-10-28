@@ -11,7 +11,6 @@ using CO.CDP.Organisation.WebApi;
 using CO.CDP.Organisation.WebApi.Api;
 using CO.CDP.Organisation.WebApi.AutoMapper;
 using CO.CDP.Organisation.WebApi.Events;
-using CO.CDP.Organisation.WebApi.Extensions;
 using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.Organisation.WebApi.UseCase;
 using CO.CDP.OrganisationInformation;
@@ -96,7 +95,7 @@ builder.Services.AddScoped<IUseCase<(Guid, Guid, UpdateJoinRequest), bool>, Upda
 builder.Services.AddScoped<IUseCase<ProvideFeedbackAndContact, bool>, ProvideFeedbackAndContactUseCase>();
 builder.Services.AddScoped<IUseCase<ContactUs, bool>, ContactUsUseCase>();
 
-builder.Services.AddOrganisationProblemDetails();
+builder.Services.AddProblemDetails();
 
 builder.Services.AddJwtBearerAndApiKeyAuthentication(builder.Configuration, builder.Environment);
 builder.Services.AddOrganisationAuthorization();
@@ -112,6 +111,7 @@ if (Assembly.GetEntryAssembly().IsRunAs("CO.CDP.Organisation.WebApi"))
 
 var app = builder.Build();
 app.UseForwardedHeaders();
+app.UseMiddleware<CO.CDP.WebApi.Foundation.ExceptionMiddleware>(ErrorCodes.ExceptionMap);
 
 // Configure the HTTP request pipeline.
 if (builder.Configuration.GetValue("Features:SwaggerUI", false))

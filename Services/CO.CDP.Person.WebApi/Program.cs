@@ -5,9 +5,9 @@ using CO.CDP.Configuration.Assembly;
 using CO.CDP.Configuration.ForwardedHeaders;
 using CO.CDP.Configuration.Helpers;
 using CO.CDP.OrganisationInformation.Persistence;
+using CO.CDP.Person.WebApi;
 using CO.CDP.Person.WebApi.Api;
 using CO.CDP.Person.WebApi.AutoMapper;
-using CO.CDP.Person.WebApi.Extensions;
 using CO.CDP.Person.WebApi.Model;
 using CO.CDP.Person.WebApi.UseCase;
 using Microsoft.EntityFrameworkCore;
@@ -32,7 +32,7 @@ builder.Services.AddScoped<IUseCase<RegisterPerson, CO.CDP.Person.WebApi.Model.P
 builder.Services.AddScoped<IUseCase<Guid, CO.CDP.Person.WebApi.Model.Person?>, GetPersonUseCase>();
 builder.Services.AddScoped<IUseCase<string, CO.CDP.Person.WebApi.Model.Person?>, LookupPersonUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, ClaimPersonInvite), bool>, ClaimPersonInviteUseCase>();
-builder.Services.AddPersonProblemDetails();
+builder.Services.AddProblemDetails();
 
 builder.Services.AddJwtBearerAndApiKeyAuthentication(builder.Configuration, builder.Environment);
 builder.Services.AddOrganisationAuthorization();
@@ -48,6 +48,7 @@ if (Assembly.GetEntryAssembly().IsRunAs("CO.CDP.Person.WebApi"))
 
 var app = builder.Build();
 app.UseForwardedHeaders();
+app.UseMiddleware<CO.CDP.WebApi.Foundation.ExceptionMiddleware>(ErrorCodes.ExceptionMap);
 
 // Configure the HTTP request pipeline.
 if (builder.Configuration.GetValue("Features:SwaggerUI", false))
