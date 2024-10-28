@@ -30,7 +30,7 @@ public static class OrganisationSchemeType
         { IsleOfManCompaniesRegistry, "Isle of Man Companies Registry Number" },
         { NHSOrganisationsRegistry, "National Health Service Organisations Registry Number" },
         { UKRegisterOfLearningProviders, "UK Register of Learning Provider Number" },
-        { VATNumber, "VAT number" },
+        { VAT, "VAT number" },
         { Other, "Other / None" },
         { Ppon, "Ppon" }
     };
