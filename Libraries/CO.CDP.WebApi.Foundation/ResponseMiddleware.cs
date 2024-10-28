@@ -43,6 +43,11 @@ public class ResponseMiddleware(
 
     private static async Task HandleResponse(HttpContext context, int statusCode, ProblemDetails pd)
     {
+        if (context.Response.HasStarted)
+        {
+            return;
+        }
+
         if (context.RequestServices.GetService<IProblemDetailsService>() is { } problemDetailsService)
         {
             context.Response.StatusCode = statusCode;
