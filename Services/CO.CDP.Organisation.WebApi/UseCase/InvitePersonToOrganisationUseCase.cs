@@ -33,6 +33,12 @@ public class InvitePersonToOrganisationUseCase(
             throw new DuplicateEmailWithinOrganisationException($"A user with this email address already exists for your organisation.");
         }
 
+        var isInviteEmailUnique = await personInviteRepository.IsInviteEmailUniqueWithinOrganisation(command.organisationId, command.invitePersonData.Email);
+        if (!isInviteEmailUnique)
+        {
+            throw new DuplicateInviteEmailForOrganisationException($"A user with this email address has already been invited to your organisation.");
+        }
+
         var personInvite = CreatePersonInvite(command.invitePersonData, organisation);
 
         personInviteRepository.Save(personInvite);
