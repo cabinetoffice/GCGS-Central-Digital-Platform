@@ -64,24 +64,22 @@
                                 <li>
                                     @if (@organisationDetails.Identifier.Id == null)
                                     {
-                                        <text><br />PPON generation pending.</text>
+                                        <text>PPON generation pending.</text>
                                     }
                                     else
                                     {
                                         @organisationDetails.Identifier.Scheme.SchemeDescription()
+                                        <br />
                                         @organisationDetails.Identifier.Id
                                     }
                                 </li>
-                                @foreach (var aidentifier in organisationDetails.AdditionalIdentifiers)
+                                @foreach (var aidentifier in organisationDetails.AdditionalIdentifiersToShow())
                                 {
-                                    @if (@aidentifier.Scheme != Helper.VatSchemeName)
-                                    {
-                                        <li>
-                                            @aidentifier.Scheme.SchemeDescription()
-                                            <br />
-                                            @aidentifier.Id
-                                        </li>
-                                    }
+                                    <li>
+                                        @aidentifier.Scheme.SchemeDescription()
+                                        <br />
+                                        @aidentifier.Id
+                                    </li>
                                 }
                             </ul>
                         </dd>
