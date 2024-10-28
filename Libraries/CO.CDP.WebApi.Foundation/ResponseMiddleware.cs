@@ -32,7 +32,11 @@ public class ResponseMiddleware(
         {
             var (statusCode, errorCode) = MapException(ex);
 
-            var pd = new ProblemDetails { Status = statusCode };
+            var pd = new ProblemDetails
+            {
+                Status = statusCode,
+                Detail = ex.Message
+            };
             pd.Extensions.Add("code", errorCode);
 
             logger.LogInformation(ex, "Response status: {statusCode}, for request: {requestUrl}", statusCode, requestUrl);
