@@ -23,7 +23,7 @@ public static class OrganisationExtensions
     public static ICollection<Identifier> AdditionalIdentifiersToShow(this Organisation.WebApiClient.Organisation organisationDetails)
     {              
         return organisationDetails.AdditionalIdentifiers
-            .Where(identifier => identifier.Scheme != OrganisationSchemeType.VATNumber && identifier.Scheme != OrganisationSchemeType.Ppon && identifier.Scheme != OrganisationSchemeType.Other)
+            .Where(identifier => identifier.Scheme != OrganisationSchemeType.VAT && identifier.Scheme != OrganisationSchemeType.Ppon && identifier.Scheme != OrganisationSchemeType.Other)
             .ToList();
     }
 }
