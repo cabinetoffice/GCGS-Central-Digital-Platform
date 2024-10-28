@@ -4,7 +4,7 @@ namespace CO.CDP.OrganisationApp.Constants;
 
 public static class OrganisationSchemeType
 {
-    public const string CompaniesHouseNumber = "GB-COH";
+    public const string CompaniesHouse = "GB-COH";
     public const string CharityCommissionEnglandWales = "GB-CHC";
     public const string ScottishCharityRegulator = "GB-SC";
     public const string CharityCommissionNorthernIreland = "GB-NIC";
@@ -20,7 +20,7 @@ public static class OrganisationSchemeType
 
     private static readonly Dictionary<string, string> OrganisationScheme = new()
     {
-        { CompaniesHouseNumber, "Companies House Number" },
+        { CompaniesHouse, "Companies House Number" },
         { CharityCommissionEnglandWales, "Charity Commission for England & Wales Number" },
         { ScottishCharityRegulator, "Scottish Charity Regulator" },
         { CharityCommissionNorthernIreland, "Charity Commission for Northern Ireland Number" },
