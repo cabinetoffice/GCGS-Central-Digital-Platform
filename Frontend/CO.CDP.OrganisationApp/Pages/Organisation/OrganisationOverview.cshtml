@@ -50,7 +50,7 @@
                         </dd>
                         <authorize scope="@OrgScopeRequirement.Editor">
                             <dd class="govuk-summary-list__actions">
-                                <a class="govuk-link govuk-link--no-visited-state" href="/organisation/@Model.Id/name">Change<span class="govuk-visually-hidden"> address</span></a>
+                                <a class="govuk-link govuk-link--no-visited-state" href="/organisation/@Model.Id/name">Change<span class="govuk-visually-hidden"> the organisation name</span></a>
                             </dd>
                         </authorize>
                     </div>
@@ -99,7 +99,7 @@
                         </dd>
                         <authorize scope="@OrgScopeRequirement.Editor">
                             <dd class="govuk-summary-list__actions">
-                                <a class="govuk-link govuk-link--no-visited-state" href="/organisation/@Model.Id/email">Change<span class="govuk-visually-hidden"> address</span></a>
+                                <a class="govuk-link govuk-link--no-visited-state" href="/organisation/@Model.Id/email">Change<span class="govuk-visually-hidden"> the organisation email</span></a>
                             </dd>
                         </authorize>
                     </div>
@@ -122,7 +122,7 @@
                             </dd>
                             <authorize scope="@OrgScopeRequirement.Editor">
                                 <dd class="govuk-summary-list__actions">
-                                    <a class="govuk-link govuk-link--no-visited-state" href="/organisation/@Model.Id/address/@(registeredAddress.Country == Country.UKCountryCode ? "uk" : "non-uk")?frm-overview">Change<span class="govuk-visually-hidden"> address</span></a>
+                                    <a class="govuk-link govuk-link--no-visited-state" href="/organisation/@Model.Id/address/@(registeredAddress.Country == Country.UKCountryCode ? "uk" : "non-uk")?frm-overview">Change<span class="govuk-visually-hidden"> the organisation address</span></a>
                                 </dd>
                             </authorize>
                         </div>
@@ -157,16 +157,14 @@
                     <div class="govuk-section-break govuk-section-break--visible govuk-section-break--m"></div>
                 </authorize>
 
-                <authorize scope="@OrgScopeRequirement.Editor">
-                    @if (organisationDetails.IsBuyer() && !organisationDetails.IsTenderer())
-                    {
-                        <h3 class="govuk-heading-s govuk-!-margin-bottom-3">
-                            <a class="govuk-link" asp-page="./OrganisationRegisterBuyerAsSupplier" asp-route-id="@Model.Id">Register as a supplier</a>
-                        </h3>
-                        <p class="govuk-body">If you also supply goods, works, services or utilities to the public sector.</p>
-                        <div class="govuk-section-break govuk-section-break--visible govuk-section-break--m"></div>
-                    }
-                </authorize>
+                @if ((organisationDetails.IsPendingBuyer() || organisationDetails.IsBuyer()) && !organisationDetails.IsTenderer())
+                {
+                    <h3 class="govuk-heading-s govuk-!-margin-bottom-3">
+                        <a class="govuk-link" asp-page="./OrganisationRegisterBuyerAsSupplier" asp-route-id="@Model.Id">Register as a supplier</a>
+                    </h3>
+                    <p class="govuk-body">If you also supply goods, works, services or utilities to the public sector.</p>
+                    <div class="govuk-section-break govuk-section-break--visible govuk-section-break--m"></div>
+                }
 
                 @if (organisationDetails.IsBuyer())
                 {
