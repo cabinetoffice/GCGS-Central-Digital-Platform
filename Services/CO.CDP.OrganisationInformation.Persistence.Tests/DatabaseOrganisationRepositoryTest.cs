@@ -353,6 +353,26 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql) : 
     }
 
     [Fact]
+    public async Task FindIncludingTenantByOrgId_WhenFound_ReturnsOrganisation()
+    {
+        using var repository = OrganisationRepository();
+
+        var tenant = GivenTenant();
+        var organisation = GivenOrganisation(
+            name: "ABC Ltd",
+            tenant: tenant
+        );
+        
+        repository.Save(organisation);
+
+        var found = await repository.FindIncludingTenantByOrgId(organisation.Id);
+
+        found.Should().BeEquivalentTo(organisation, options => options.ComparingByMembers<Organisation>());
+        found.As<Organisation>().Id.Should().BePositive();
+        found.As<Organisation>().Tenant.Should().Be(tenant);
+    }
+
+    [Fact]
     public async Task GetConnectedIndividualTrusts_WhenConnectedEntitiesExist_ReturnsConnectedEntities()
     {
         using var repository = OrganisationRepository();

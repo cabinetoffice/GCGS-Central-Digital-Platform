@@ -5,7 +5,8 @@ namespace CO.CDP.Person.WebApi.UseCase;
 
 public class ClaimPersonInviteUseCase(
     IPersonRepository personRepository,
-    IPersonInviteRepository personInviteRepository)
+    IPersonInviteRepository personInviteRepository,
+    IOrganisationRepository organisationRepository)
     : IUseCase<(Guid personId, ClaimPersonInvite claimPersonInvite), bool>
 {
     public async Task<bool> Execute((Guid personId, ClaimPersonInvite claimPersonInvite) command)
@@ -19,10 +20,12 @@ public class ClaimPersonInviteUseCase(
                 $"PersonInvite {command.claimPersonInvite.PersonInviteId} has already been claimed.");
         }
 
-        var organisation = personInvite.Organisation!;
+        var organisation = await organisationRepository.FindIncludingTenantByOrgId(personInvite.OrganisationId)
+            ?? throw new UnknownOrganisationException($"Unknown organisation {personInvite.OrganisationId} for PersonInvite {command.claimPersonInvite.PersonInviteId}."); ;
+
         organisation.OrganisationPersons.Add(new OrganisationPerson
         {
-            Person = person,            
+            Person = person,
             Scopes = personInvite.Scopes,
             OrganisationId = organisation.Id,
         });
