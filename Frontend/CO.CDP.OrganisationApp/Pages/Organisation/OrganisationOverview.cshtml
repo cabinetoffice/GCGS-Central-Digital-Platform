@@ -64,11 +64,12 @@
                                 <li>
                                     @if (@organisationDetails.Identifier.Id == null)
                                     {
-                                        <text><br />PPON generation pending.</text>
+                                        <text>PPON generation pending.</text>
                                     }
                                     else
                                     {
                                         @organisationDetails.Identifier.Scheme.SchemeDescription()
+                                        <br />
                                         @organisationDetails.Identifier.Id
                                     }
                                 </li>
