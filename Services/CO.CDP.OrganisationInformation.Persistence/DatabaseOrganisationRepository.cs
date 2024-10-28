@@ -41,21 +41,21 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
     {
         return await context.Set<OrganisationPerson>()
             .Include(op => op.Person)
-            .Where(op => op.Organisation.Guid == organisationId)
+            .Where(op => op.Organisation != null && op.Organisation.Guid == organisationId)
             .AsSingleQuery()
             .ToListAsync();
     }
 
     public async Task<OrganisationPerson?> FindOrganisationPerson(Guid organisationId, Guid personId)
     {
-        return await context.Set<OrganisationPerson>().FirstOrDefaultAsync(o => o.Organisation.Guid == organisationId && o.Person.Guid == personId);
+        return await context.Set<OrganisationPerson>().FirstOrDefaultAsync(o => o.Organisation != null && o.Organisation.Guid == organisationId && o.Person.Guid == personId);
     }
 
     public async Task<OrganisationPerson?> FindOrganisationPerson(Guid organisationId, string userUrn)
     {
         return await context.Set<OrganisationPerson>()
             .AsNoTracking()
-            .FirstOrDefaultAsync(o => o.Organisation.Guid == organisationId && o.Person.UserUrn == userUrn);
+            .FirstOrDefaultAsync(o => o.Organisation != null && o.Organisation.Guid == organisationId && o.Person.UserUrn == userUrn);
     }
 
     public async Task<IEnumerable<Organisation>> FindByUserUrn(string userUrn)

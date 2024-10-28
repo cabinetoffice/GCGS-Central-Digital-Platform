@@ -103,11 +103,11 @@ public class ClaimPersonInviteUseCaseTests
             FirstName = null!,
             LastName = null!,
             Email = null!,
-            OrganisationId = 0,
+            OrganisationId = 1,
             Organisation = new Organisation
             {
                 OrganisationPersons = new List<OrganisationPerson>(),
-                Id = 0,
+                Id = 1,
                 Name = "Test Organisation",
                 Guid = new Guid(),
                 Tenant = tenant
@@ -126,7 +126,7 @@ public class ClaimPersonInviteUseCaseTests
         personInvite.Person.Should().Be(_defaultPerson);
         personInvite.Person?.Tenants.Should().Contain(tenant);
         personInvite.Organisation.OrganisationPersons.Should().Contain(op =>
-            op.Person == _defaultPerson && op.Organisation == personInvite.Organisation);
+            op.Person == _defaultPerson && op.OrganisationId == personInvite.OrganisationId);
         personInvite.Scopes.Should().Equal(personInvite.Organisation.OrganisationPersons.First().Scopes);
 
         _mockPersonRepository.Verify(repo => repo.Save(_defaultPerson), Times.Once);

@@ -14,16 +14,16 @@ public class DatabasePersonInviteRepository(OrganisationInformationContext conte
         return await context.PersonInvites
             .Include(pi => pi.Organisation)
             .Include(pi => pi.Person)
-            .Include(pi => pi.Organisation.Tenant)
+            .Include(pi => pi.Organisation!.Tenant)
             .AsSingleQuery()
-            .FirstOrDefaultAsync(t => t.Guid == personInviteId);
+            .FirstOrDefaultAsync(pi => pi.Guid == personInviteId);
     }
 
     public async Task<IEnumerable<PersonInvite>> FindByOrganisation(Guid organisationId)
     {
         return await context.PersonInvites
             .Include(pi => pi.Person)
-            .Where(pi => pi.Organisation.Guid == organisationId)
+            .Where(pi => pi.Organisation != null && pi.Organisation.Guid == organisationId)
             .ToArrayAsync();
     }
 
