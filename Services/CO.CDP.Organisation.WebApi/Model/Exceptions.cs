@@ -1,3 +1,5 @@
+using System;
+
 namespace CO.CDP.Organisation.WebApi.Model;
 
 public class UnknownOrganisationException(string message, Exception? cause = null) : Exception(message, cause);

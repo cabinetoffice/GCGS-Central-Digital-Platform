@@ -69,7 +69,7 @@ public static class EndpointExtensions
 
         app.MapPost("/persons/{personId}/claim-person-invite",
             [OrganisationAuthorize([AuthenticationChannel.OneLogin])]
-        async (Guid personId, ClaimPersonInvite command, IUseCase<(Guid, ClaimPersonInvite), PersonInvite> useCase) =>
+        async (Guid personId, ClaimPersonInvite command, IUseCase<(Guid, ClaimPersonInvite), bool> useCase) =>
                     await useCase.Execute((personId, command))
                         .AndThen(_ => Results.NoContent())
             )
