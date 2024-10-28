@@ -54,7 +54,7 @@ public class SupplierWebsiteQuestionModel(IOrganisationClient organisationClient
 
             if (!WebsiteAddress.StartsWith("http") && !WebsiteAddress.StartsWith("//"))
             {
-                WebsiteAddress = $"https://{WebsiteAddress}";
+                WebsiteAddress = $"http://{WebsiteAddress}";
             }
 
             if (!Uri.TryCreate(WebsiteAddress, UriKind.Absolute, out _))
