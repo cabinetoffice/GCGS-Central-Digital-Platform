@@ -12,6 +12,7 @@ public record BasicInformation
     public string? EmailAddress { get; init; }
     public OrganisationType OrganisationType { get; init; }
     public BasicLegalForm? LegalForm { get; init; }
+    public string? OrganisationName { get; init; }
 }
 
 public record BasicLegalForm
