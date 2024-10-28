@@ -10,6 +10,7 @@ public class ClaimPersonInviteUseCaseTests
 {
     private readonly Mock<IPersonRepository> _mockPersonRepository;
     private readonly Mock<IPersonInviteRepository> _mockPersonInviteRepository;
+    private readonly Mock<IOrganisationRepository> _mockOrganisationRepository;
     private readonly ClaimPersonInviteUseCase _useCase;
     private Guid _defaultPersonGuid;
     private Guid _defaultPersonInviteGuid;
@@ -19,7 +20,8 @@ public class ClaimPersonInviteUseCaseTests
     {
         _mockPersonRepository = new Mock<IPersonRepository>();
         _mockPersonInviteRepository = new Mock<IPersonInviteRepository>();
-        _useCase = new ClaimPersonInviteUseCase(_mockPersonRepository.Object, _mockPersonInviteRepository.Object);
+        _mockOrganisationRepository = new Mock<IOrganisationRepository>();
+        _useCase = new ClaimPersonInviteUseCase(_mockPersonRepository.Object, _mockPersonInviteRepository.Object, _mockOrganisationRepository.Object);
         _defaultPersonGuid = new Guid();
         _defaultPersonInviteGuid = new Guid();
         _defaultPerson = new OrganisationInformation.Persistence.Person
