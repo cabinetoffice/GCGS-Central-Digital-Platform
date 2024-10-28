@@ -171,6 +171,13 @@ internal static class OrganisationClientExtensions
                 type: SupplierInformationUpdateType.CompletedVat,
                 supplierInformation: new SupplierInfo(supplierType: null, operationTypes: null, legalForm: null)));
 
+    internal static async Task<ICollection<JoinRequestLookUp>> GetOrganisationJoinRequests(this IOrganisationClient organisationClient,
+        Guid organisationId, OrganisationJoinRequestStatus? status)
+        => await organisationClient.GetOrganisationJoinRequestsAsync(organisationId, status);
+
+    internal static async Task UpdateOrganisationJoinRequest(this IOrganisationClient organisationClient, Guid organisationId, Guid joinRequestId, UpdateJoinRequest updateJoinRequest)
+        => await organisationClient.UpdateOrganisationJoinRequestAsync(organisationId, joinRequestId, updateJoinRequest);
+
     internal static async Task<bool> FeedbackAndContact(this IOrganisationClient organisationClient,
         ProvideFeedbackAndContact feedback)
         => await organisationClient.FeedbackAndContactAsync(feedback);

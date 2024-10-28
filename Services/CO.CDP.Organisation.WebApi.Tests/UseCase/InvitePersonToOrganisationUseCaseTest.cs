@@ -66,11 +66,7 @@ public class InvitePersonToOrganisationUseCaseTest
 
         var result = await _useCase.Execute(command);
 
-        result.Should().NotBeNull();
-        result.As<PersonInvite>().FirstName.Should().Be("John");
-        result.As<PersonInvite>().LastName.Should().Be("Doe");
-        result.As<PersonInvite>().Email.Should().Be("john.doe@example.com");
-        result.As<PersonInvite>().Guid.Should().Be(_generatedGuid);
+        result.Should().BeTrue();
 
         _organisationRepository.Verify(repo => repo.Find(organisationId), Times.Once);
         _organisationRepository.Verify(repo => repo.IsEmailUniqueWithinOrganisation(organisationId, invitePersonData.Email), Times.Once);
@@ -145,12 +141,7 @@ public class InvitePersonToOrganisationUseCaseTest
 
         var result = await _useCase.Execute(command);
 
-        result.Should().NotBeNull();
-        result.As<PersonInvite>().FirstName.Should().Be("John");
-        result.As<PersonInvite>().LastName.Should().Be("Doe");
-        result.As<PersonInvite>().Email.Should().Be("john.doe@example.com");
-        result.As<PersonInvite>().Guid.Should().Be(_generatedGuid);
-
+        result.Should().BeTrue();
         _organisationRepository.Verify(repo => repo.Find(organisationId), Times.Once);
         _organisationRepository.Verify(repo => repo.IsEmailUniqueWithinOrganisation(organisationId, invitePersonData.Email), Times.Once);
         _personsInviteRepository.Verify(repo => repo.IsInviteEmailUniqueWithinOrganisation(organisationId, invitePersonData.Email), Times.Once);
