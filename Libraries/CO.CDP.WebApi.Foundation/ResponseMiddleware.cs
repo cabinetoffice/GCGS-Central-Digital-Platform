@@ -1,12 +1,12 @@
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Http.Extensions;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace CO.CDP.WebApi.Foundation;
 
-public class ResponseMiddleware(
+internal class ResponseMiddleware(
         RequestDelegate next,
         ILogger<ResponseMiddleware> logger,
         Dictionary<Type, (int, string)> exceptionMap)
@@ -30,16 +30,23 @@ public class ResponseMiddleware(
         }
         catch (Exception ex)
         {
-            var (statusCode, errorCode) = MapException(ex);
+            var statusCode = StatusCodes.Status500InternalServerError;
+            var errorCode = "GENERIC_ERROR";
+            var pd = new ProblemDetails { Status = statusCode };
 
-            var pd = new ProblemDetails
+            if (exceptionMap.TryGetValue(ex.GetType(), out (int status, string code) error))
             {
-                Status = statusCode,
-                Detail = ex.Message
-            };
-            pd.Extensions.Add("code", errorCode);
+                errorCode = error.code;
+                pd.Status = statusCode = error.status;
+                pd.Detail = ex.Message;
+                logger.LogInformation(ex, "Response status: {statusCode}, for request: {requestUrl}", statusCode, requestUrl);
+            }
+            else
+            {
+                logger.LogError(ex, ex.Message);
+            }
 
-            logger.LogInformation(ex, "Response status: {statusCode}, for request: {requestUrl}", statusCode, requestUrl);
+            pd.Extensions.Add("code", errorCode);
 
             await HandleResponse(context, statusCode, pd);
         }
@@ -63,15 +70,5 @@ public class ResponseMiddleware(
                     ProblemDetails = pd
                 });
         }
-    }
-
-    private (int status, string error) MapException(Exception exception)
-    {
-        if (exceptionMap.TryGetValue(exception.GetType(), out (int, string) code))
-        {
-            return code;
-        }
-
-        return (StatusCodes.Status500InternalServerError, "GENERIC_ERROR");
     }
 }

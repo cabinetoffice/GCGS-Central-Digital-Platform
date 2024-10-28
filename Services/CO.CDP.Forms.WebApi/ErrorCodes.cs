@@ -13,9 +13,4 @@ public static class ErrorCodes
         { typeof(UnknownQuestionsException), (StatusCodes.Status400BadRequest, "UNKNOWN_QUESTIONS") },
         { typeof(DuplicateOrganisationException), (StatusCodes.Status400BadRequest, "ORGANISATION_ALREADY_EXISTS") }
     };
-
-    public static Dictionary<string, List<string>> HttpStatusCodeErrorMap() =>
-        ExceptionMap.Values
-            .GroupBy(s => s.Item1)
-            .ToDictionary(k => k.Key.ToString(), v => v.Select(i => i.Item2).Distinct().ToList());
 }

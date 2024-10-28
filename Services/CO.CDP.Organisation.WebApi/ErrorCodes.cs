@@ -25,9 +25,4 @@ public static class ErrorCodes
         { typeof(DuplicateInviteEmailForOrganisationException), (StatusCodes.Status400BadRequest, "INVITE_EMAIL_ALREADY_EXISTS_FOR_ORGANISATION") },
         { typeof(PersonAlreadyAddedToOrganisationException), (StatusCodes.Status400BadRequest, "PERSON_ALREADY_ADDED_TO_ORGANISATION") }
     };
-
-    public static Dictionary<string, List<string>> HttpStatusCodeErrorMap() =>
-        ExceptionMap.Values
-            .GroupBy(s => s.Item1)
-            .ToDictionary(k => k.Key.ToString(), v => v.Select(i => i.Item2).Distinct().ToList());
 }

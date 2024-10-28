@@ -13,9 +13,4 @@ public static class ErrorCodes
         { typeof(UnknownPersonInviteException), (StatusCodes.Status404NotFound, "UNKNOWN_PERSON_INVITE") },
         { typeof(PersonInviteAlreadyClaimedException), (StatusCodes.Status400BadRequest, "PERSON_INVITE_ALREADY_CLAIMED") },
     };
-
-    public static Dictionary<string, List<string>> HttpStatusCodeErrorMap() =>
-        ExceptionMap.Values
-            .GroupBy(s => s.Item1)
-            .ToDictionary(k => k.Key.ToString(), v => v.Select(i => i.Item2).Distinct().ToList());
 }

@@ -10,9 +10,4 @@ public static class ErrorCodes
         { typeof(InvalidOrganisationRequestedException), (StatusCodes.Status403Forbidden, "INVALID_ORGANISATION_REQUESTED") },
         { typeof(ShareCodeNotFoundException), (StatusCodes.Status404NotFound, Constants.ShareCodeNotFoundExceptionCode) }
     };
-
-    public static Dictionary<string, List<string>> HttpStatusCodeErrorMap() =>
-        ExceptionMap.Values
-            .GroupBy(s => s.Item1)
-            .ToDictionary(k => k.Key.ToString(), v => v.Select(i => i.Item2).Distinct().ToList());
 }

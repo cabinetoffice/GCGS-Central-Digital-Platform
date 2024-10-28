@@ -3,6 +3,7 @@ using CO.CDP.EntityVerification.UseCase;
 using CO.CDP.Functional;
 using CO.CDP.Swashbuckle.Filter;
 using CO.CDP.Swashbuckle.Security;
+using CO.CDP.WebApi.Foundation;
 using DotSwashbuckle.AspNetCore.SwaggerGen;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -47,7 +48,7 @@ public static class PponApiExtensions
             Title = "PPON Service API",
             Description = "API for organisation identifier queries.",
         });
-        options.OperationFilter<ProblemDetailsOperationFilter>(ErrorCodes.HttpStatusCodeErrorMap());
+        options.OperationFilter<ProblemDetailsOperationFilter>(ErrorCodes.ExceptionMap.HttpStatusCodeErrorMap());
         options.ConfigureBearerSecurity();
         options.UseAllOfToExtendReferenceSchemas();
     }

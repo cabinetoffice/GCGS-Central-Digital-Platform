@@ -12,9 +12,4 @@ public static class ErrorCodes
         { typeof(TenantNotFoundException), (StatusCodes.Status404NotFound, "TENANT_DOES_NOT_EXIST") },
         { typeof(MissingUserUrnException), (StatusCodes.Status401Unauthorized, "NOT_AUTHENTICATED") },
     };
-
-    public static Dictionary<string, List<string>> HttpStatusCodeErrorMap() =>
-        ExceptionMap.Values
-            .GroupBy(s => s.Item1)
-            .ToDictionary(k => k.Key.ToString(), v => v.Select(i => i.Item2).Distinct().ToList());
 }
