@@ -359,7 +359,7 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql) : 
 
         var tenant = GivenTenant();
         var organisation = GivenOrganisation(
-            name: "ABC Ltd",
+            name: "ABCD Ltd",
             tenant: tenant
         );
         
