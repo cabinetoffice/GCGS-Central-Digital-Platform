@@ -11,8 +11,8 @@ public class OrganisationEmailModel(ISession session) : RegistrationStepModel(se
     public override string CurrentPage => OrganisationEmailPage;
 
     [BindProperty]
-    [DisplayName("Enter the organisation's contact email address")]
-    [Required(ErrorMessage = "Enter the organisation's contact email address")]
+    [DisplayName("Enter your organisation's email address")]
+    [Required(ErrorMessage = "Enter your organisation's email address")]
     [EmailAddress(ErrorMessage = "Enter an email address in the correct format, like name@example.com")]
     public string? EmailAddress { get; set; }
 
