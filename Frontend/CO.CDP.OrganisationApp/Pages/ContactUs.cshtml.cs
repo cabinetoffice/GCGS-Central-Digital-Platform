@@ -33,6 +33,7 @@ public class ContactUsModel(IOrganisationClient organisationClient) : PageModel
     [DisplayName("Message")]
     [Required(ErrorMessage = "Enter your message")]
     [MinLength(10, ErrorMessage = "Message must be between 10 and 10,000 characters")]
+    [MaxLength(10000)]
     public string? Message { get; set; }
 
     public string? Error { get; set; }
