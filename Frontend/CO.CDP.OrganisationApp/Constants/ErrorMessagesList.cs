@@ -25,4 +25,5 @@ public static class ErrorMessagesList
     public const string DuplicateApiKeyName = "An API key with this name already exists. Please try again.";
     public const string AlreadyMemberOfOrganisation = "You are already a member of this organisation.";
 
+    public const string OrganisationInvalidInput = "Invalid Input.";  
 }
