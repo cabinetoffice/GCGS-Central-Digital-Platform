@@ -2,6 +2,7 @@
 @model CO.CDP.OrganisationApp.Pages.Registration.OrganisationRegisteredAddressModel
 
 @{
+    ViewData["Title"] = Model.Address.Heading;
     var backLink = RegistrationStepModel.OrganisationEmailPage;
     var fromSummaryPage = Request.Query.ContainsKey("frm-summary");
     if (fromSummaryPage) Model.RedirectToSummary = true;

@@ -3,6 +3,7 @@
 @model OrganisationAlreadyRegistered
 
 @{
+    ViewData["Title"] = "This organisation has already registered";
     var backLink = RegistrationStepModel.OrganisationIdentifierPage;
     var overrideBackLink = Request.Query.ContainsKey("backLink");
 
@@ -18,7 +19,7 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <h1 class="govuk-heading-l">
-                This organisation has already registered
+                @ViewData["Title"]
             </h1>
 
             <p class="govuk-body">

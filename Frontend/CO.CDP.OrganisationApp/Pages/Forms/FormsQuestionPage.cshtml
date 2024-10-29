@@ -23,6 +23,8 @@
             backUrl = $"/organisation/{Model.OrganisationId}/forms/{Model.FormId}/sections/{Model.SectionId}/questions/{Model.PreviousQuestion.Id}{(Model.PreviousQuestionHasNonUKAddressAnswer() ? "?UkOrNonUk=non-uk" : "")}";
         }
     }
+
+    ViewData["Title"] = "Check your answers";
 }
 
 <a href="@backUrl" class="govuk-back-link">Back</a>
@@ -42,7 +44,7 @@
                 {
                     var answers = await Model.GetAnswers();
 
-                    <h1 class="govuk-heading-l">Check your answers</h1>
+                    <h1 class="govuk-heading-l">@ViewData["Title"]</h1>
                     <dl class="govuk-summary-list govuk-!-margin-bottom-9">
                         @foreach (var answer in answers)
                         {

@@ -4,6 +4,7 @@
 @model CO.CDP.OrganisationApp.Pages.Users.UserCheckAnswersModel
 
 @{
+    ViewData["Title"] = "Check your answers";
     var scopes = Model.PersonInviteStateData?.Scopes ?? new List<string>();
     var filteredScopes = scopes.Where(scope => !string.Equals(scope, OrganisationPersonScopes.Responder));
     var scopesCsvString = string.Join(", ", filteredScopes);
@@ -17,7 +18,7 @@
             <partial name="_ErrorSummary" model="@Model.ModelState" />
             <form class="form" method="post">
 
-                <h1 class="govuk-heading-l">Check your answers</h1>
+                <h1 class="govuk-heading-l">@ViewData["Title"]</h1>
                 <dl class="govuk-summary-list govuk-!-margin-bottom-3">
 
                     <div class="govuk-summary-list__row">

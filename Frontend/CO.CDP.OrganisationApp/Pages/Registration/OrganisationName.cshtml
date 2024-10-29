@@ -4,6 +4,7 @@
 @using CO.CDP.Localization
 
 @{
+    ViewData["Title"] = Html.DisplayNameFor(m => m.OrganisationName);
     var organisationNameHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.OrganisationName)).HasInnerHtml;
 
     var backLink = RegistrationStepModel.OrganisationIdentifierPage;
@@ -39,7 +40,7 @@
 
                         <h1 class="govuk-label-wrapper">
                             <label class="govuk-label govuk-label--l" for="@nameof(Model.OrganisationName)">
-                                @Html.DisplayNameFor(m => m.OrganisationName)
+                                @ViewData["Title"]
                             </label>
                         </h1>
 
