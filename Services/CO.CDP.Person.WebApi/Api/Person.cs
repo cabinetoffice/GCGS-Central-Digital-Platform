@@ -172,7 +172,7 @@ public static class ApiExtensions
                 };
             return typeMap.GetValueOrDefault(type, type.Name);
         });
-        options.OperationFilter<ProblemDetailsOperationFilter>(ErrorCodes.ExceptionMap.HttpStatusCodeErrorMap());
+        options.OperationFilter<ProblemDetailsOperationFilter>(ErrorCodes.Exception4xxMap.HttpStatusCodeErrorMap());
         options.ConfigureBearerSecurity();
         options.ConfigureApiKeySecurity();
         options.UseAllOfToExtendReferenceSchemas();

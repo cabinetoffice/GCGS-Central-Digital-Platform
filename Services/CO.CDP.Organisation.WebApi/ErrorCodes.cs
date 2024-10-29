@@ -6,7 +6,7 @@ namespace CO.CDP.Organisation.WebApi;
 
 public static class ErrorCodes
 {
-    public static readonly Dictionary<Type, (int, string)> ExceptionMap = new()
+    public static readonly Dictionary<Type, (int, string)> Exception4xxMap = new()
     {
         { typeof(BadHttpRequestException), (StatusCodes.Status422UnprocessableEntity, "UNPROCESSABLE_ENTITY") },
         { typeof(MissingOrganisationIdException), (StatusCodes.Status404NotFound, "ORGANISATION_NOT_FOUND") },

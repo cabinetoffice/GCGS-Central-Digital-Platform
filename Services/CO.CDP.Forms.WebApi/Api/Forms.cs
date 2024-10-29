@@ -131,7 +131,7 @@ public static class ApiExtensions
             Description = "API to support dynamic forms questions and for Financial Information."
         });
         options.IncludeXmlComments(Assembly.GetExecutingAssembly(), Assembly.GetAssembly(typeof(Address)));
-        options.OperationFilter<ProblemDetailsOperationFilter>(ErrorCodes.ExceptionMap.HttpStatusCodeErrorMap());
+        options.OperationFilter<ProblemDetailsOperationFilter>(ErrorCodes.Exception4xxMap.HttpStatusCodeErrorMap());
         options.ConfigureBearerSecurity();
         options.ConfigureApiKeySecurity();
         options.UseAllOfToExtendReferenceSchemas();

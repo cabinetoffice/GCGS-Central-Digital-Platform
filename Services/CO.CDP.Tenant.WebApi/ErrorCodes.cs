@@ -5,7 +5,7 @@ namespace CO.CDP.Tenant.WebApi;
 
 public static class ErrorCodes
 {
-    public static readonly Dictionary<Type, (int, string)> ExceptionMap = new()
+    public static readonly Dictionary<Type, (int, string)> Exception4xxMap = new()
     {
         { typeof(BadHttpRequestException), (StatusCodes.Status422UnprocessableEntity, "UNPROCESSABLE_ENTITY") },
         { typeof(DuplicateTenantException), (StatusCodes.Status400BadRequest, "TENANT_ALREADY_EXISTS") },

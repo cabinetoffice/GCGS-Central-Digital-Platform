@@ -897,7 +897,7 @@ public static class ApiExtensions
         }
        );
         options.IncludeXmlComments(Assembly.GetExecutingAssembly(), Assembly.GetAssembly(typeof(Address)));
-        options.OperationFilter<ProblemDetailsOperationFilter>(ErrorCodes.ExceptionMap.HttpStatusCodeErrorMap());
+        options.OperationFilter<ProblemDetailsOperationFilter>(ErrorCodes.Exception4xxMap.HttpStatusCodeErrorMap());
         options.ConfigureBearerSecurity();
         options.ConfigureApiKeySecurity();
         options.UseAllOfToExtendReferenceSchemas();

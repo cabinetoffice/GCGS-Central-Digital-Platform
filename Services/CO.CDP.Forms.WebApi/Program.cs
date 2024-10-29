@@ -77,7 +77,7 @@ if (Assembly.GetEntryAssembly().IsRunAs("CO.CDP.Forms.WebApi"))
 
 var app = builder.Build();
 app.UseForwardedHeaders();
-app.UseErrorHandler(ErrorCodes.ExceptionMap);
+app.UseErrorHandler(ErrorCodes.Exception4xxMap);
 
 // Configure the HTTP request pipeline.
 if (builder.Configuration.GetValue("Features:SwaggerUI", false))
