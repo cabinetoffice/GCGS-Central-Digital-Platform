@@ -15,7 +15,10 @@ public class ClaimPersonInviteUseCaseTests
     private readonly ClaimPersonInviteUseCase _useCase;
     private Guid _defaultPersonGuid;
     private Guid _defaultPersonInviteGuid;
+    private Guid _defaultOrganisationGuid;
     private OrganisationInformation.Persistence.Person _defaultPerson;
+    private Organisation _defaultOrganisation;
+    private Tenant _defaultTenant;
 
     public ClaimPersonInviteUseCaseTests()
     {
@@ -28,13 +31,29 @@ public class ClaimPersonInviteUseCaseTests
                         _mockOrganizationRepository.Object);
         _defaultPersonGuid = new Guid();
         _defaultPersonInviteGuid = new Guid();
+        _defaultOrganisationGuid = new Guid();
         _defaultPerson = new OrganisationInformation.Persistence.Person
         {
             Id = 0,
             Guid = _defaultPersonGuid,
             FirstName = null!,
             LastName = null!,
-            Email = null!
+            Email = "email@email.com"
+        };
+
+        _defaultTenant = new Tenant
+        {
+            Id = 1,
+            Guid = new Guid(),
+            Name = "Test Organisation Tenant"
+        };
+
+        _defaultOrganisation = new Organisation
+        {
+            Id = 1,
+            Guid = _defaultOrganisationGuid,
+            Name = "Test co",
+            Tenant = _defaultTenant,
         };
     }
 
@@ -112,7 +131,7 @@ public class ClaimPersonInviteUseCaseTests
             LastName = null!,
             Email = null!,
             OrganisationId = 1,
-            Organisation = null!,
+            Organisation = _defaultOrganisation,
             Scopes = new List<string> { "EDITOR", "ADMIN" }
         };
         var command = (personId: _defaultPerson.Guid, claimPersonInvite: new ClaimPersonInvite { PersonInviteId = _defaultPersonInviteGuid });
@@ -123,6 +142,8 @@ public class ClaimPersonInviteUseCaseTests
             .ReturnsAsync(claimedPersonInvite);
         _mockOrganizationRepository.Setup(repo => repo.FindIncludingTenantByOrgId(1))
             .ReturnsAsync((Organisation?)null);
+        _mockOrganizationRepository.Setup(repo => repo.IsEmailUniqueWithinOrganisation(_defaultOrganisation.Guid, _defaultPerson.Email))
+            .ReturnsAsync(true);
 
         Func<Task> act = async () => await _useCase.Execute(command);
 
@@ -132,15 +153,41 @@ public class ClaimPersonInviteUseCaseTests
     }
 
     [Fact]
+    public async Task Execute_Throws_DuplicateEmailWithinOrganisationException_When_EmailNotUniqueToOrganisation()
+    {
+        var claimedPersonInvite = new PersonInvite
+        {
+            Id = 0,
+            Person = null,
+            Guid = _defaultPersonInviteGuid,
+            FirstName = null!,
+            LastName = null!,
+            Email = null!,
+            OrganisationId = 1,
+            Organisation = _defaultOrganisation,
+            Scopes = new List<string> { "EDITOR", "ADMIN" }
+        };
+        var command = (personId: _defaultPerson.Guid, claimPersonInvite: new ClaimPersonInvite { PersonInviteId = _defaultPersonInviteGuid });
+
+        _mockPersonRepository.Setup(repo => repo.Find(_defaultPerson.Guid))
+            .ReturnsAsync(_defaultPerson);
+        _mockPersonInviteRepository.Setup(repo => repo.Find(command.claimPersonInvite.PersonInviteId))
+            .ReturnsAsync(claimedPersonInvite);
+        _mockOrganizationRepository.Setup(repo => repo.FindIncludingTenantByOrgId(1))
+            .ReturnsAsync(_defaultOrganisation);
+        _mockOrganizationRepository.Setup(repo => repo.IsEmailUniqueWithinOrganisation(_defaultOrganisation.Guid, _defaultPerson.Email))
+            .ReturnsAsync(false);
+
+        Func<Task> act = async () => await _useCase.Execute(command);
+
+        await act.Should()
+            .ThrowAsync<DuplicateEmailWithinOrganisationException>()
+            .WithMessage("A user with this email address already exists for your organisation.");
+    }
+
+    [Fact]
     public async Task Execute_Adds_Person_To_Organisation_And_Tenant_And_Claims_Invite()
     {
-        var tenant = new Tenant
-        {
-            Id = 1,
-            Guid = new Guid(),
-            Name = "Test Organisation Tenant"
-        };
-
         var personInvite = new PersonInvite
         {
             Id = 0,
@@ -150,14 +197,7 @@ public class ClaimPersonInviteUseCaseTests
             LastName = null!,
             Email = null!,
             OrganisationId = 1,
-            Organisation = new Organisation
-            {
-                OrganisationPersons = new List<OrganisationPerson>(),
-                Id = 1,
-                Name = "Test Organisation",
-                Guid = new Guid(),
-                Tenant = tenant
-            },
+            Organisation = _defaultOrganisation,
             Scopes = new List<string> { "EDITOR", "ADMIN" }
         };
         var command = (personId: _defaultPerson.Guid, claimPersonInvite: new ClaimPersonInvite { PersonInviteId = personInvite.Guid });
@@ -168,11 +208,13 @@ public class ClaimPersonInviteUseCaseTests
             .ReturnsAsync(personInvite);
         _mockOrganizationRepository.Setup(repo => repo.FindIncludingTenantByOrgId(1))
             .ReturnsAsync(personInvite.Organisation);
+        _mockOrganizationRepository.Setup(repo => repo.IsEmailUniqueWithinOrganisation(_defaultOrganisation.Guid, _defaultPerson.Email))
+            .ReturnsAsync(true);
 
         await _useCase.Execute(command);
 
         personInvite.Person.Should().Be(_defaultPerson);
-        personInvite.Person?.Tenants.Should().Contain(tenant);
+        personInvite.Person?.Tenants.Should().Contain(_defaultTenant);
         personInvite.Organisation.OrganisationPersons.Should().Contain(op =>
             op.Person == _defaultPerson && op.OrganisationId == personInvite.OrganisationId);
         personInvite.Scopes.Should().Equal(personInvite.Organisation.OrganisationPersons.First().Scopes);
