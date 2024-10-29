@@ -13,7 +13,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CO.CDP.OrganisationInformation.Persistence.Migrations
 {
     [DbContext(typeof(OrganisationInformationContext))]
-    [Migration("20241029121306_FurtherQuestionsExemptedHeadings")]
+    [Migration("20241029131027_FurtherQuestionsExemptedHeadings")]
     partial class FurtherQuestionsExemptedHeadings
     {
         /// <inheritdoc />
