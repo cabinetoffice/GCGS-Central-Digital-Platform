@@ -87,7 +87,7 @@
                                 </a>
                             </dd>
                         </div>
-                    }                                        
+                    }
 
                     @if (details.SupplierHasCompanyHouseNumber == true)
                     {
@@ -116,13 +116,14 @@
                         @if (Model.ShowLegalForm)
                         {
                             var enforceLinkPage = details.HasLegalForm == true ? "law-enforces" : "legal-form-question";
+                            var legalFormEmpty = string.IsNullOrEmpty(details.LegalForm);
 
                             <div class="govuk-summary-list__row">
                                 <dt class="govuk-summary-list__key">
                                     Legal form:
                                 </dt>
                                 <dd class="govuk-summary-list__value">
-                                    @details.LegalForm
+                                    @(legalFormEmpty == true ? "no" : "yes, " + details.LegalForm)
                                 </dd>
                                 <dd class="govuk-summary-list__actions">
                                     <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/legal-form-question/@Model.ConnectedEntityId?frm-chk-answer=true">
@@ -132,22 +133,25 @@
                                     </a>
                                 </dd>
                             </div>
-                        
-                            <div class="govuk-summary-list__row">
-                                <dt class="govuk-summary-list__key">
-                                    Enforced by:
-                                </dt>
-                                <dd class="govuk-summary-list__value">
-                                    @details.LawRegistered
-                                </dd>
-                                <dd class="govuk-summary-list__actions">
-                                    <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/@enforceLinkPage/@Model.ConnectedEntityId?frm-chk-answer=true">
-                                        Change<span class="govuk-visually-hidden">
-                                            the "enforced by" law
-                                        </span>
-                                    </a>
-                                </dd>
-                            </div>
+
+                            @if (!legalFormEmpty)
+                            {
+                                <div class="govuk-summary-list__row">
+                                    <dt class="govuk-summary-list__key">
+                                        Enforced by:
+                                    </dt>
+                                    <dd class="govuk-summary-list__value">
+                                        @details.LawRegistered
+                                    </dd>
+                                    <dd class="govuk-summary-list__actions">
+                                        <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/@enforceLinkPage/@Model.ConnectedEntityId?frm-chk-answer=true">
+                                            Change<span class="govuk-visually-hidden">
+                                                the "enforced by" law
+                                            </span>
+                                        </a>
+                                    </dd>
+                                </div>
+                            }
                         }
                     }
 
@@ -219,7 +223,7 @@
                             <dd class="govuk-summary-list__value">
                                 @Html.Raw(details.RegistrationDate.HasValue == true
                                          ? $"Yes<br>On {details.RegistrationDate.Value.ToString("dd/MM/yyyy")}"
-                                         : "No")                                
+                                         : "No")
                             </dd>
                             <dd class="govuk-summary-list__actions">
                                 <a class="govuk-link" href="@registrationLink">
@@ -263,8 +267,8 @@
                                 }
                                 else
                                 {
-                                    @Html.Raw($"Other<br>{details.RegisterName}")                                    
-                                }                                
+                                    @Html.Raw($"Other<br>{details.RegisterName}")
+                                }
                             </dd>
                             <dd class="govuk-summary-list__actions">
                                 <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/company-register-name/@Model.ConnectedEntityId?frm-chk-answer=true">
