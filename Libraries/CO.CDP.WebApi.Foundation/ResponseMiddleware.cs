@@ -1,7 +1,8 @@
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
 namespace CO.CDP.WebApi.Foundation;
@@ -9,11 +10,12 @@ namespace CO.CDP.WebApi.Foundation;
 internal class ResponseMiddleware(
         RequestDelegate next,
         ILogger<ResponseMiddleware> logger,
+        IWebHostEnvironment webHostEnvironment,
         Dictionary<Type, (int, string)> exceptionMap)
 {
     public async Task Invoke(HttpContext context)
     {
-        var requestUrl = context.Request.GetDisplayUrl();
+        var request = $"{context.Request.Method} {context.Request.Path}";
 
         try
         {
@@ -23,33 +25,40 @@ internal class ResponseMiddleware(
 
             if (statusCode >= 400 && statusCode < 500)
             {
-                logger.LogInformation("Response status: {statusCode}, for request: {requestUrl}", statusCode, requestUrl);
+                logger.LogInformation("Response status: {statusCode}, for request: {request}", statusCode, request);
 
                 await HandleResponse(context, statusCode, new ProblemDetails { Status = statusCode });
             }
         }
         catch (Exception ex)
         {
-            var statusCode = StatusCodes.Status500InternalServerError;
-            var errorCode = "GENERIC_ERROR";
-            var pd = new ProblemDetails { Status = statusCode };
-
-            if (exceptionMap.TryGetValue(ex.GetType(), out (int status, string code) error))
-            {
-                errorCode = error.code;
-                pd.Status = statusCode = error.status;
-                pd.Detail = ex.Message;
-                logger.LogInformation(ex, "Response status: {statusCode}, for request: {requestUrl}", statusCode, requestUrl);
-            }
-            else
-            {
-                logger.LogError(ex, ex.Message);
-            }
-
-            pd.Extensions.Add("code", errorCode);
-
-            await HandleResponse(context, statusCode, pd);
+            await HandleException(context, request, ex);
         }
+    }
+
+    private async Task HandleException(HttpContext context, string request, Exception ex)
+    {
+        var statusCode = StatusCodes.Status500InternalServerError;
+        var errorCode = "GENERIC_ERROR";
+        var message = "An unexpected error has occurred";
+
+        if (exceptionMap.TryGetValue(ex.GetType(), out (int status, string code) error))
+        {
+            statusCode = error.status;
+            message = ex.Message;
+            errorCode = error.code;
+            logger.LogInformation(ex, "Response status: {statusCode}, for request: {requestUrl}", statusCode, request);
+        }
+        else
+        {
+            logger.LogError(ex, ex.Message);
+        }
+
+        var pd = new ProblemDetails { Status = statusCode, Detail = message };
+        pd.Extensions.Add("code", errorCode);
+        if (webHostEnvironment.IsDevelopment()) pd.Detail = ex.ToString();
+
+        await HandleResponse(context, statusCode, pd);
     }
 
     private static async Task HandleResponse(HttpContext context, int statusCode, ProblemDetails pd)
@@ -62,6 +71,9 @@ internal class ResponseMiddleware(
         if (context.RequestServices.GetService<IProblemDetailsService>() is { } problemDetailsService)
         {
             context.Response.StatusCode = statusCode;
+
+            pd.Extensions.Add("trace-id", context.TraceIdentifier);
+            pd.Extensions.Add("instance", $"{context.Request.Method} {context.Request.Path}");
 
             await problemDetailsService.WriteAsync(
                 new ProblemDetailsContext
