@@ -4,6 +4,7 @@
 
 @{
     var hasError = ((TagBuilder)Html.ValidationMessageFor(m => m.ConfirmRemove)).HasInnerHtml;
+    ViewData["Title"] = Model.Heading;
 }
 
 <a href="/organisation/@Model.OrganisationId/forms/@Model.FormId/sections/@Model.SectionId/summary" class="govuk-back-link">Back</a>
