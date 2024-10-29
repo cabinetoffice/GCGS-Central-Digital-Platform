@@ -92,6 +92,13 @@ To create a new user, replace `new_user` with the desired username and `your_pas
 CREATE USER new_user WITH PASSWORD 'your_password';
 ```
 
+#### Grant Read and Write Access to Specific Tables
+
+```postgresql
+GRANT SELECT, UPDATE ON public.table1 TO new_user;
+GRANT SELECT, UPDATE ON public.table2 TO new_user;
+```
+
 ### 4. Remove
 
 #### Delete User
