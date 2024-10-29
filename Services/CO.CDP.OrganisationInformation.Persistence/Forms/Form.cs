@@ -62,4 +62,5 @@ public record FormSectionConfiguration
     public string? RemoveConfirmationCaption { get; set; }
     public string? RemoveConfirmationHeading { get; set; }
     public string? FurtherQuestionsExemptedHeading { get; set; }
+    public string? FurtherQuestionsExemptedHint { get; set; }
 }

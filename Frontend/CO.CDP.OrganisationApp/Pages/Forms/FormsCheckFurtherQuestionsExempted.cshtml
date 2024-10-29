@@ -4,6 +4,7 @@
 
 @{
     var hasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Confirm)).HasInnerHtml;
+    ViewData["Title"] = Model.Heading;
 }
 
 <a href="/organisation/@Model.OrganisationId/supplier-information" class="govuk-back-link">Back</a>
@@ -16,9 +17,13 @@
             <form method="post">
                 <div class="govuk-form-group @(hasError ? "govuk-form-group--error" : "")">
                     <fieldset class="govuk-fieldset" @(hasError ? Html.Raw(@"aria-describedby=""confirm-error""") : null)>
-                        @if (!string.IsNullOrEmpty(Model.Heading))
+                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                            <h1 class="govuk-fieldset__heading">@Model.Heading</h1>
+                        </legend>
+
+                        @if (!string.IsNullOrEmpty(Model.Hint))
                         {
-                            @Html.Raw(Model.Heading)
+                            <div class="govuk-hint">@Model.Hint</div>
                         }
 
                         @if (hasError)
