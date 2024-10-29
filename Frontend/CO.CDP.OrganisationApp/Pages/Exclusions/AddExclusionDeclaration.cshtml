@@ -1,6 +1,10 @@
 @page "/organisation/{organisationId:guid}/forms/{formId:guid}/sections/{sectionId:guid}/add-exclusion-declaration"
 @model AddExclusionDeclarationModel
 
+@{
+    ViewData["Title"] = "Add any mandatory and discretionary exclusions";
+}
+
 <a href="/organisation/@Model.OrganisationId/supplier-information" class="govuk-back-link">Back</a>
 
 <main class="govuk-main-wrapper" id="main-content">
@@ -8,7 +12,7 @@
     <div class="govuk-grid-row">
 
         <div class="govuk-grid-column-two-thirds">
-            <h1 class="govuk-heading-l">Add any mandatory and discretionary exclusions</h1>
+            <h1 class="govuk-heading-l">@ViewData["Title"]</h1>
 
             <p class="govuk-body">
                 You must tell us if there are any circumstances that may exclude you as a supplier from the procurement process because your organisation or a connected person committed an offence.
@@ -24,7 +28,6 @@
                 You'll need to provide details about each exclusion, such as where it happened and who it applies to and upload any supporting documents you may have.
             </p>
 
-            <!-- Penalties Details -->
             <h2 class="govuk-heading-m">Mandatory exclusions</h2>
             <p class="govuk-body">Penalties and other events that may exclude you are:</p>
             <ul class="govuk-list govuk-list--bullet">
@@ -36,10 +39,7 @@
                 <li>penalties for transactions connected with VAT fraud and evasion of tax or duty  </li>
                 <li>penalties payable for errors in tax documentation and failure to notify, and certain VAT and excise wrongdoing   </li>
             </ul>
-            <p></p>
 
-            <!-- Convictions -->
-            <!--<h2 class="govuk-heading-m">Convictions</h2>-->
             <p class="govuk-body">Convictions that may exclude you are: </p>
             <ul class="govuk-list govuk-list--bullet">
                 <li>ancillary offences - aiding, abetting, encouraging or assisting crime </li>
@@ -51,13 +51,12 @@
                 <li>terrorism and offences having a terrorist connection  </li>
                 <li>theft, fraud and bribery </li>
             </ul>
-            <p></p>
 
             <p class="govuk-body">
                 These exclusions are defined in
                 <a href="https://www.legislation.gov.uk/ukpga/2023/54/schedule/6" target="_blank">schedule 6 of the Procurement Act 2023 (opens in new tab)</a>.
             </p>
-            <!-- Court Rulings -->
+
             <h2 class="govuk-heading-m">Discretionary exclusions </h2>
             <p class="govuk-body">Discretionary exclusions that may exclude you are:  </p>
             <ul class="govuk-list govuk-list--bullet">
@@ -71,7 +70,6 @@
                 <li>professional misconduct  </li>
                 <li>suspension or ceasing to carry on all or a substantial part of a business  </li>
             </ul>
-            <p></p>
 
             <div id="court-rulings-body" class="govuk-body">
                 These exclusions are defined in
