@@ -98,6 +98,7 @@ public class UpdateInvitedPersonToOrganisationUseCaseTests : IClassFixture<AutoM
     private Persistence.Organisation Organisation =>
         new Persistence.Organisation
         {
+            Id = 1,
             Guid = _organisationId,
             Name = "Test",
             Tenant = It.IsAny<Tenant>(),
@@ -112,7 +113,7 @@ public class UpdateInvitedPersonToOrganisationUseCaseTests : IClassFixture<AutoM
            FirstName = "Test",
            LastName = "Test",
            Email = "Test@test.com",
-           Organisation = Organisation,
+           OrganisationId = Organisation.Id,
            InviteSentOn = DateTime.UtcNow,
            Scopes = ["Viewer"]
        };

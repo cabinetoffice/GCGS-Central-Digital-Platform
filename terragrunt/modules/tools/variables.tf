@@ -155,17 +155,32 @@ variable "tags" {
   type        = map(string)
 }
 
-variable "user_pool_arn" {
+variable "user_pool_arn_healthcheck" {
   default = null
   type    = string
 }
 
-variable "user_pool_client_id" {
+variable "user_pool_client_id_healthcheck" {
   default = null
   type    = string
 }
 
-variable "user_pool_domain" {
+variable "user_pool_domain_healthcheck" {
+  default = null
+  type    = string
+}
+
+variable "user_pool_arn_pgadmin" {
+  default = null
+  type    = string
+}
+
+variable "user_pool_client_id_pgadmin" {
+  default = null
+  type    = string
+}
+
+variable "user_pool_domain_pgadmin" {
   default = null
   type    = string
 }

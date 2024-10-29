@@ -50,11 +50,6 @@ variable "family" {
   type        = string
 }
 
-variable "healthcheck_enabled" {
-  description = "Health-check state"
-  default     = true
-}
-
 variable "healthcheck_healthy_threshold" {
   description = "Health-check threshold"
   default     = 3

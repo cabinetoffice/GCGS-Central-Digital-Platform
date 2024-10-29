@@ -180,7 +180,7 @@ public class DataService(IShareCodeRepository shareCodeRepository, IConnectedEnt
                 var connectedEntityIndividualAndTrustCategoryType = entity.IndividualOrTrust?.Category != null ?
                     entity.IndividualOrTrust.Category :
                     (connectedPersonType == ConnectedPersonType.Individual ?
-                        ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndividual :
+                        ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndiv :
                         ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForTrust);
 
                 var individualTrust = entity.IndividualOrTrust != null ? new ConnectedIndividualTrust(

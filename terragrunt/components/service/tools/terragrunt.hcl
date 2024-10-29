@@ -56,6 +56,8 @@ dependency service_auth {
   mock_outputs = {
     healthcheck_user_pool_arn       = "mock"
     healthcheck_user_pool_client_id = "mock"
+    pgadmin_user_pool_arn           = "mock"
+    pgadmin_user_pool_client_id     = "mock"
     user_pool_domain                = "mock"
   }
 }
@@ -115,9 +117,12 @@ inputs = {
   ecs_alb_sg_id     = dependency.core_security_groups.outputs.alb_sg_id
   ecs_sg_id         = dependency.core_security_groups.outputs.ecs_sg_id
 
-  user_pool_arn       = dependency.service_auth.outputs.healthcheck_user_pool_arn
-  user_pool_client_id = dependency.service_auth.outputs.healthcheck_user_pool_client_id
-  user_pool_domain    = dependency.service_auth.outputs.user_pool_domain
+  user_pool_arn_healthcheck       = dependency.service_auth.outputs.healthcheck_user_pool_arn
+  user_pool_arn_pgadmin           = dependency.service_auth.outputs.pgadmin_user_pool_arn
+  user_pool_client_id_healthcheck = dependency.service_auth.outputs.healthcheck_user_pool_client_id
+  user_pool_client_id_pgadmin     = dependency.service_auth.outputs.pgadmin_user_pool_client_id
+  user_pool_domain_healthcheck    = dependency.service_auth.outputs.user_pool_domain
+  user_pool_domain_pgadmin        = dependency.service_auth.outputs.user_pool_domain
 
   ecs_cluster_id   = dependency.service_ecs.outputs.ecs_cluster_id
   ecs_lb_dns_name  = dependency.service_ecs.outputs.ecs_lb_dns_name

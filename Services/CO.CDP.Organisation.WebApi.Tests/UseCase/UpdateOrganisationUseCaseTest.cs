@@ -132,8 +132,7 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
         Func<Task> act = async () => await UseCase.Execute((_organisationId, updateOrganisation));
 
         await act.Should()
-            .ThrowAsync<InvalidUpdateOrganisationCommand>()
-            .WithMessage("Unknown organisation update type.");
+            .ThrowAsync<InvalidUpdateOrganisationCommand.UnknownOrganisationUpdateType>();
     }
 
     [Fact]
@@ -149,8 +148,7 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
         Func<Task> act = async () => await UseCase.Execute((_organisationId, updateOrganisation));
 
         await act.Should()
-            .ThrowAsync<InvalidUpdateOrganisationCommand>()
-            .WithMessage("Missing additional identifiers.");
+            .ThrowAsync<InvalidUpdateOrganisationCommand.MissingAdditionalIdentifiers>();
     }
 
     [Fact]
@@ -237,8 +235,7 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
         Func<Task> act = async () => await UseCase.Execute((_organisationId, updateOrganisation));
 
         await act.Should()
-            .ThrowAsync<InvalidUpdateOrganisationCommand>()
-            .WithMessage("Missing organisation address.");
+            .ThrowAsync<InvalidUpdateOrganisationCommand.MissingOrganisationAddress>();
     }
 
     [Fact]
@@ -328,8 +325,7 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
         Func<Task> act = async () => await UseCase.Execute((_organisationId, command));
 
         await act.Should()
-         .ThrowAsync<InvalidUpdateOrganisationCommand>()
-         .WithMessage("There are no identifiers remaining that can be set as the primary.");
+         .ThrowAsync<InvalidUpdateOrganisationCommand.NoPrimaryIdentifier>();
     }
 
     [Fact]
@@ -408,8 +404,7 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
         Func<Task> act = async () => await UseCase.Execute((_organisationId, updateOrganisation));
 
         await act.Should()
-            .ThrowAsync<InvalidUpdateOrganisationCommand>()
-            .WithMessage("Missing organisation name.");
+            .ThrowAsync<InvalidUpdateOrganisationCommand.MissingOrganisationName>();
     }
 
     [Fact]
@@ -448,8 +443,7 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
         Func<Task> act = async () => await UseCase.Execute((_organisationId, updateOrganisation));
 
         await act.Should()
-            .ThrowAsync<InvalidUpdateOrganisationCommand>()
-            .WithMessage("Missing organisation email.");
+            .ThrowAsync<InvalidUpdateOrganisationCommand.MissingOrganisationEmail>();
     }
 
     [Fact]
@@ -474,8 +468,7 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
         Func<Task> act = async () => await UseCase.Execute((_organisationId, updateOrganisation));
 
         await act.Should()
-            .ThrowAsync<InvalidUpdateOrganisationCommand>()
-            .WithMessage("organisation email does not exists.");
+            .ThrowAsync<InvalidUpdateOrganisationCommand.OrganisationEmailDoesNotExist>();
     }
 
     [Fact]
@@ -514,8 +507,7 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
         Func<Task> act = async () => await UseCase.Execute((_organisationId, updateOrganisation));
 
         await act.Should()
-            .ThrowAsync<InvalidUpdateOrganisationCommand>()
-            .WithMessage("Missing organisation address.");
+            .ThrowAsync<InvalidUpdateOrganisationCommand.MissingOrganisationAddress>();
     }
 
     [Fact]
@@ -546,8 +538,7 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
         Func<Task> act = async () => await UseCase.Execute((_organisationId, updateOrganisation));
 
         await act.Should()
-            .ThrowAsync<InvalidUpdateOrganisationCommand>()
-            .WithMessage("Missing Organisation registered address.");
+            .ThrowAsync<InvalidUpdateOrganisationCommand.MissingOrganisationRegisteredAddress>();
     }
 
     [Fact]
@@ -621,8 +612,26 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
         Func<Task> act = async () => await UseCase.Execute((_organisationId, command));
 
         await act.Should()
-            .ThrowAsync<InvalidUpdateOrganisationCommand>()
-            .WithMessage("Missing roles.");
+            .ThrowAsync<InvalidUpdateOrganisationCommand.MissingRoles>();
+    }
+
+    [Fact]
+    public async Task Execute_ShouldThrowMissingContactPoint_WhenContactPointIsMissing()
+    {
+        var updateOrganisation = new UpdateOrganisation
+        {
+            Type = OrganisationUpdateType.ContactPoint,
+            Organisation = new OrganisationInfo()
+        };
+        var organisation = Organisation;
+
+        _organisationRepositoryMock.Setup(repo => repo.Find(_organisationId)).ReturnsAsync(organisation);
+
+        Func<Task> act = async () => await UseCase.Execute((_organisationId, updateOrganisation));
+
+        await act.Should()
+            .ThrowAsync<InvalidUpdateOrganisationCommand.MissingContactPoint>()
+            .WithMessage("Missing contact point.");
     }
 
     private Persistence.Organisation OrganisationWithOtherIdentifier =>

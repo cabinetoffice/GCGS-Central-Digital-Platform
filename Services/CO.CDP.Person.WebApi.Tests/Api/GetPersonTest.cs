@@ -15,7 +15,7 @@ namespace CO.CDP.Person.WebApi.Tests.Api;
 public class GetPersonTest
 {
     private readonly Mock<IUseCase<Guid, Model.Person?>> _getPersonUseCase = new();
-    private readonly Mock<IUseCase<(Guid, ClaimPersonInvite), PersonInvite>> _claimPersonInviteUseCase = new();
+    private readonly Mock<IUseCase<(Guid, ClaimPersonInvite), bool>> _claimPersonInviteUseCase = new();
 
     [Theory]
     [InlineData(OK, Channel.OneLogin)]
@@ -50,7 +50,7 @@ public class GetPersonTest
         var command = (personId, claimPersonInvite);
 
         _claimPersonInviteUseCase.Setup(useCase => useCase.Execute(command))
-            .ReturnsAsync(Mock.Of<PersonInvite>());
+            .ReturnsAsync(true);
 
         var factory = new TestAuthorizationWebApplicationFactory<Program>(
             channel, serviceCollection: s => s.AddScoped(_ => _claimPersonInviteUseCase.Object));

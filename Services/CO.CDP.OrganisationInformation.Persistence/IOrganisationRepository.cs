@@ -8,7 +8,8 @@ public interface IOrganisationRepository : IDisposable
     public void SaveOrganisationPerson(OrganisationPerson organisationPerson);
 
     public Task<Organisation?> Find(Guid organisationId);
-
+    public Task<Organisation?> FindIncludingTenant(Guid organisationId);
+    public Task<Organisation?> FindIncludingTenantByOrgId(int id);
     public Task<IEnumerable<OrganisationPerson>> FindOrganisationPersons(Guid organisationId);
 
     public Task<OrganisationPerson?> FindOrganisationPerson(Guid organisationId, Guid personId);

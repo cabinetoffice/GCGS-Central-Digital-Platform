@@ -26,7 +26,7 @@ public class UpdateOrganisationUseCase(
             case OrganisationUpdateType.OrganisationName:
                 if (string.IsNullOrEmpty(updateObject.OrganisationName))
                 {
-                    throw new InvalidUpdateOrganisationCommand("Missing organisation name.");
+                    throw new InvalidUpdateOrganisationCommand.MissingOrganisationName();
                 }
                 organisation.Name = updateObject.OrganisationName;
                 break;
@@ -34,7 +34,7 @@ public class UpdateOrganisationUseCase(
             case OrganisationUpdateType.AddRoles:
                 if (updateObject.Roles == null || !updateObject.Roles.Any())
                 {
-                    throw new InvalidUpdateOrganisationCommand("Missing roles.");
+                    throw new InvalidUpdateOrganisationCommand.MissingRoles();
                 }
 
                 organisation.Roles.AddRange(updateObject.Roles);
@@ -42,22 +42,22 @@ public class UpdateOrganisationUseCase(
 
             case OrganisationUpdateType.OrganisationEmail:
                 if (updateObject.ContactPoint == null || string.IsNullOrEmpty(updateObject.ContactPoint.Email))
-                    throw new InvalidUpdateOrganisationCommand("Missing organisation email.");
+                    throw new InvalidUpdateOrganisationCommand.MissingOrganisationEmail();
 
                 var organisationContact = organisation.ContactPoints.FirstOrDefault();
                 if (organisationContact == null)
-                    throw new InvalidUpdateOrganisationCommand("organisation email does not exists.");
+                    throw new InvalidUpdateOrganisationCommand.OrganisationEmailDoesNotExist();
 
                 organisationContact.Email = updateObject.ContactPoint.Email;
                 break;
 
             case OrganisationUpdateType.RegisteredAddress:
                 if (updateObject.Addresses == null)
-                    throw new InvalidUpdateOrganisationCommand("Missing organisation address.");
+                    throw new InvalidUpdateOrganisationCommand.MissingOrganisationAddress();
 
                 var newAddress = updateObject.Addresses.FirstOrDefault(x => x.Type == AddressType.Registered);
                 if (newAddress == null)
-                    throw new InvalidUpdateOrganisationCommand("Missing Organisation registered address.");
+                    throw new InvalidUpdateOrganisationCommand.MissingOrganisationRegisteredAddress();
 
                 var existingAddress = organisation.Addresses.FirstOrDefault(i => i.Type == newAddress.Type);
                 if (existingAddress != null)
@@ -99,7 +99,7 @@ public class UpdateOrganisationUseCase(
             case OrganisationUpdateType.AdditionalIdentifiers:
                 if (updateObject.AdditionalIdentifiers == null || !updateObject.AdditionalIdentifiers.Any())
                 {
-                    throw new InvalidUpdateOrganisationCommand("Missing additional identifiers.");
+                    throw new InvalidUpdateOrganisationCommand.MissingAdditionalIdentifiers();
                 }
 
                 foreach (var identifier in updateObject.AdditionalIdentifiers)
@@ -138,7 +138,7 @@ public class UpdateOrganisationUseCase(
             case OrganisationUpdateType.ContactPoint:
                 if (updateObject.ContactPoint == null)
                 {
-                    throw new InvalidUpdateOrganisationCommand("Missing contact point.");
+                    throw new InvalidUpdateOrganisationCommand.MissingContactPoint();
                 }
 
                 var existingContact = organisation.ContactPoints.FirstOrDefault();
@@ -159,7 +159,7 @@ public class UpdateOrganisationUseCase(
             case OrganisationUpdateType.Address:
                 if (updateObject.Addresses == null)
                 {
-                    throw new InvalidUpdateOrganisationCommand("Missing organisation address.");
+                    throw new InvalidUpdateOrganisationCommand.MissingOrganisationAddress();
                 }
                 foreach (var address in updateObject.Addresses)
                 {
@@ -193,7 +193,7 @@ public class UpdateOrganisationUseCase(
 
                 break;
             default:
-                throw new InvalidUpdateOrganisationCommand("Unknown organisation update type.");
+                throw new InvalidUpdateOrganisationCommand.UnknownOrganisationUpdateType();
         }
 
         organisation.UpdateSupplierInformation();
@@ -240,7 +240,7 @@ public class UpdateOrganisationUseCase(
         }
         else
         {
-            throw new InvalidUpdateOrganisationCommand("There are no identifiers remaining that can be set as the primary.");
+            throw new InvalidUpdateOrganisationCommand.NoPrimaryIdentifier();
         }
     }
 }
