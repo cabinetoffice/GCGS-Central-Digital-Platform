@@ -1,6 +1,10 @@
 @page "/organisation/{id}/supplier-information/connected-person/declaration"
 @model CO.CDP.OrganisationApp.Pages.Supplier.ConnectedEntityDeclarationModel
 
+@{
+    ViewData["Title"] = "Connected person";
+}
+
 <a href="/organisation/@Model.Id/supplier-information" class="govuk-back-link">Back</a>
 
 <main class="govuk-main-wrapper" id="main-content">
@@ -8,7 +12,7 @@
         <div class="govuk-grid-column-two-thirds">
             <form class="form" method="post">
                 <h1 class="govuk-heading-l">
-                    Connected person
+                    @ViewData["Title"]
                 </h1>
                 <p class="govuk-body">
                     A ‘connected person’ is someone who influences or controls your company.

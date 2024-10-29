@@ -3,6 +3,8 @@
 @model ConnectedEntityPostalSameAsRegisteredAddressModel
 
 @{
+    ViewData["Title"] = $"Does {Model.OrganisationName} have a different postal address?";
+
     var hasError = ((TagBuilder)Html.ValidationMessageFor(m => m.DifferentThanRegiseterdAddress)).HasInnerHtml;
     var ukNonUkAddress = Model.IsNonUkAddress.GetValueOrDefault() ? "non-uk" : "uk";
 }
@@ -23,7 +25,7 @@
 
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                             <h1 class="govuk-fieldset__heading">
-                                Does @(Model.OrganisationName) have a different postal address?
+                                @ViewData["Title"]
                             </h1>
                         </legend>
 

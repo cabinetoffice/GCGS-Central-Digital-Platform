@@ -1,6 +1,8 @@
 @page "/organisation/{id}/supplier-information/connected-person/overseas-company-question/{ConnectedEntityId?}"
 @model CO.CDP.OrganisationApp.Pages.Supplier.ConnectedEntityOverseasCompanyQuestionModel
 @{
+    ViewData["Title"] = Model.Heading;
+
     var overseasCompaniesHouseNumberHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.HasOverseasCompaniesHouseNumber)).HasInnerHtml
         || ((TagBuilder)Html.ValidationMessageFor(m => m.OverseasCompaniesHouseNumber)).HasInnerHtml;
 
@@ -23,7 +25,7 @@
                     <fieldset class="govuk-fieldset">
 
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                            <h1 class="govuk-fieldset__heading">@Model.Heading</h1>
+                            <h1 class="govuk-fieldset__heading">@ViewData["Title"]</h1>
                         </legend>
                         <div id="hasOverseasCompaniesHouseNumber-hint" class="govuk-hint">
                             @Model.Hint

@@ -4,6 +4,9 @@
 
 @{
     var details = Model.SupplierInformation!;
+
+    ViewData["Title"] = $"Manage {details.OrganisationName}'s basic information";
+
     string GetActionString(bool completed) => completed ? "Change" : "Add";
 
     void RenderAddress(CO.CDP.Organisation.WebApiClient.Address address)
@@ -47,9 +50,9 @@
 <main class="govuk-main-wrapper" id="main-content">
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-full">
-            <h2 class="govuk-heading-l">
-                Manage @(details.OrganisationName)'s basic information
-            </h2>
+            <h1 class="govuk-heading-l">
+                @ViewData["Title"]
+            </h1>
 
             <dl class="govuk-summary-list">
                 <div class="govuk-summary-list__row">

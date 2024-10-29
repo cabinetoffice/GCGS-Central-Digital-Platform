@@ -2,6 +2,7 @@
 @model CO.CDP.OrganisationApp.Pages.Supplier.LegalFormLawRegisteredModel
 
 @{
+    ViewData["Title"] = "Enter the law under which your organisation is registered";
     var lawRegisteredHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.LawRegistered)).HasInnerHtml;
     var backLink = $"/organisation/{Model.Id}/supplier-information/legal-form-select-org";
 
@@ -20,7 +21,7 @@
             <form class="form" method="post">
                 <div class="govuk-form-group @(lawRegisteredHasError ? "govuk-form-group--error": "")">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                        <h1 class="govuk-heading-l">Enter the law under which your organisation is registered</h1>
+                        <h1 class="govuk-heading-l">@ViewData["Title"]</h1>
                     </legend>
                     <div id="lawRegistered-hint" class="govuk-hint govuk-!-margin-bottom-6">
                         For example, the Companies Act 2006.

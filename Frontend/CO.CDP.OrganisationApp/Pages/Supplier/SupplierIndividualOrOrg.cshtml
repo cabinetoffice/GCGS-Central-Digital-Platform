@@ -3,6 +3,7 @@
 @model SupplierIndividualOrOrgModel
 
 @{
+    ViewData["Title"] = "What type of supplier are you?";
     var supplierTypeHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.SupplierType)).HasInnerHtml;
     var backLink = $"/organisation/{Model.Id}/supplier-information/{(Model.SupplierType.HasValue ? "basic-information" : "")}";
     string IsSelected(SupplierType radioValue) => Model.SupplierType == radioValue ? "checked='checked'" : string.Empty;
@@ -24,7 +25,7 @@
                     <fieldset class="govuk-fieldset">
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                             <h1 class="govuk-fieldset__heading">
-                                What type of supplier are you?
+                                @ViewData["Title"]
                             </h1>
                         </legend>
                         <div id="individualOrOrg-hint" class="govuk-hint">
