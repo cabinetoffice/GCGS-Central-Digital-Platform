@@ -54,9 +54,12 @@ internal class ResponseMiddleware(
             logger.LogError(ex, ex.Message);
         }
 
-        var pd = new ProblemDetails { Status = statusCode, Detail = message };
+        var pd = new ProblemDetails
+        {
+            Status = statusCode,
+            Detail = webHostEnvironment.IsDevelopment() ? ex.ToString() : message
+        };
         pd.Extensions.Add("code", errorCode);
-        if (webHostEnvironment.IsDevelopment()) pd.Detail = ex.ToString();
 
         await HandleResponse(context, statusCode, pd);
     }
@@ -72,8 +75,8 @@ internal class ResponseMiddleware(
         {
             context.Response.StatusCode = statusCode;
 
+            pd.Instance = context.Request.Path;
             pd.Extensions.Add("trace-id", context.TraceIdentifier);
-            pd.Extensions.Add("instance", $"{context.Request.Method} {context.Request.Path}");
 
             await problemDetailsService.WriteAsync(
                 new ProblemDetailsContext
