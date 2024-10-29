@@ -29,9 +29,14 @@ public class ClaimOrganisationInviteModel(
         {
             var errorCode = e.Result.AdditionalProperties.TryGetValue("code", out var code) && code is string codeString ? codeString : default;
 
-            if (errorCode != ErrorCodes.PERSON_INVITE_ALREADY_CLAIMED)
+            // We catch the error and don't do anything if the invite has already been claimed or the person is already a member of the organisation.
+            switch (errorCode)
             {
-                throw;
+                case ErrorCodes.PERSON_INVITE_ALREADY_CLAIMED:
+                case ErrorCodes.PERSON_ALREADY_ADDED_TO_ORGANISATION:
+                    break;
+                default:
+                    throw;
             }
         }
     }
