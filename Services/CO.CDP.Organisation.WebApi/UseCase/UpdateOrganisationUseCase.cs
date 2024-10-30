@@ -104,17 +104,7 @@ public class UpdateOrganisationUseCase(
 
                 foreach (var identifier in updateObject.AdditionalIdentifiers)
                 {
-                    if (string.IsNullOrWhiteSpace(identifier.Id))
-                    {
-                        throw new InvalidUpdateOrganisationCommand.MissingIdentifierNumber();
-                    }
-
-                    // Check if Identifier number already exists
-                    var organisationIdentifier = organisationRepository.FindByIdentifier(identifier.Scheme, identifier.Id);
-                    if (organisationIdentifier.Result != null)
-                    {
-                        throw new InvalidUpdateOrganisationCommand.IdentiferNumberAlreadyExists();
-                    }
+                    await ValidateIdentifierIsNotKnownToUs(organisationRepository, identifier);
 
                     var existingIdentifier = organisation.Identifiers.FirstOrDefault(i => i.Scheme == identifier.Scheme);
                     if (existingIdentifier != null)
@@ -202,6 +192,20 @@ public class UpdateOrganisationUseCase(
             async o => await publisher.Publish(mapper.Map<OrganisationUpdated>(o)));
 
         return await Task.FromResult(true);
+    }
+
+    private static async Task ValidateIdentifierIsNotKnownToUs(IOrganisationRepository organisationRepository, OrganisationIdentifier identifier)
+    {
+        if (string.IsNullOrWhiteSpace(identifier.Id))
+        {
+            throw new InvalidUpdateOrganisationCommand.MissingIdentifierNumber();
+        }
+
+        var organisationIdentifier = await organisationRepository.FindByIdentifier(identifier.Scheme, identifier.Id);
+        if (organisationIdentifier != null)
+        {
+            throw new InvalidUpdateOrganisationCommand.IdentiferNumberAlreadyExists();
+        }
     }
 
     private void RemoveIdentifier(OrganisationInformation.Persistence.Organisation organisation,

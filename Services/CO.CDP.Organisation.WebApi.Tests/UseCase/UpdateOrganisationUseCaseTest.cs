@@ -121,7 +121,7 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
     }
 
     [Fact]
-    public async Task Execute_ShouldThrowInvalidUpdateOrganisationCommand_WhenUpdateTypeIsUnknown()
+    public async Task Execute_ShouldThrowUnknownOrganisationUpdateType_WhenUpdateTypeIsUnknown()
     {
         var updateOrganisation = new UpdateOrganisation
         {
@@ -137,7 +137,7 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
     }
 
     [Fact]
-    public async Task Execute_ShouldThrowInvalidUpdateOrganisationCommand_WhenAdditionalIdentifiersIsNull()
+    public async Task Execute_ShouldThrowMissingAdditionalIdentifiers_WhenAdditionalIdentifiersIsNull()
     {
         var updateOrganisation = new UpdateOrganisation
         {
@@ -153,7 +153,7 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
     }
 
     [Fact]
-    public async Task ShouldThrowInvalidUpdateOrganisationCommand_WhenIdentifierAlreadyExists()
+    public async Task ShouldThrowIdentiferNumberAlreadyExists_WhenIdentifierAlreadyExists()
     {
         // Arrange
         var command = new UpdateOrganisation
@@ -170,20 +170,17 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
             }
         };
 
-        var organisation = Organisation;
+        var existingOrganisationWithSameIdentifier = Organisation;
 
         _organisationRepositoryMock.Setup(repo => repo.Find(_anotherOrganisationId)).ReturnsAsync(AnotherOrganisation);
 
-        _organisationRepositoryMock.Setup(repo => repo.FindByIdentifier("VAT", "13294342")).ReturnsAsync(organisation);
-
+        _organisationRepositoryMock.Setup(repo => repo.FindByIdentifier("VAT", "13294342")).ReturnsAsync(existingOrganisationWithSameIdentifier);
 
 
         Func<Task> act = async () => await UseCase.Execute((_anotherOrganisationId, command));
 
-
         await act.Should()
-          .ThrowAsync<IdentiferNumberAlreadyExists>()
-            .WithMessage("The identifier you have entered belongs to a different organization that already exists.");
+          .ThrowAsync<InvalidUpdateOrganisationCommand.IdentiferNumberAlreadyExists>();
     }
 
     [Fact]
@@ -224,7 +221,7 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
     }
 
     [Fact]
-    public async Task Execute_ShouldThrowInvalidUpdateOrganisationCommand_WhenAddressIsNull()
+    public async Task Execute_ShouldThrowMissingOrganisationAddress_WhenAddressIsNull()
     {
         var updateOrganisation = new UpdateOrganisation
         {
@@ -305,7 +302,7 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
     }
 
     [Fact]
-    public async Task Execute_ShouldThrowException_WhenVatIdentifierIsOnlyIdentifierAndVatNumberIsRemoved()
+    public async Task Execute_ShouldThrowExceptionNoPrimaryIdentifier_WhenVatIdentifierIsOnlyIdentifierAndVatNumberIsRemoved()
     {
         var command = new UpdateOrganisation
         {
@@ -393,7 +390,7 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
     }
 
     [Fact]
-    public async Task Execute_ShouldThrowInvalidUpdateOrganisationCommand_WhenOrganisationNameIsNull()
+    public async Task Execute_ShouldThrowMissingOrganisationName_WhenOrganisationNameIsNull()
     {
         var updateOrganisation = new UpdateOrganisation
         {
@@ -416,7 +413,7 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
             Type = OrganisationUpdateType.OrganisationName,
             Organisation = new OrganisationInfo
             {
-               OrganisationName="Updated Organisation Name"
+                OrganisationName = "Updated Organisation Name"
             }
         };
         var organisation = Organisation;
@@ -432,7 +429,7 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
 
 
     [Fact]
-    public async Task Execute_ShouldThrowInvalidUpdateOrganisationCommand_WhenOrganisationEmailIsNull()
+    public async Task Execute_ShouldThrowMissingOrganisationEmail_WhenOrganisationEmailIsNull()
     {
         var updateOrganisation = new UpdateOrganisation
         {
@@ -448,7 +445,7 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
     }
 
     [Fact]
-    public async Task Execute_ShouldThrowInvalidUpdateOrganisationCommand_WhenOrganisationEmail_DoesNotExists()
+    public async Task Execute_ShouldThrowOrganisationEmailDoesNotExist_WhenOrganisationEmail_DoesNotExists()
     {
         var updateOrganisation = new UpdateOrganisation
         {
@@ -480,8 +477,8 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
             Type = OrganisationUpdateType.OrganisationEmail,
             Organisation = new OrganisationInfo
             {
-                ContactPoint=new OrganisationContactPoint()
-                { Email="updatedemail@test.com" }
+                ContactPoint = new OrganisationContactPoint()
+                { Email = "updatedemail@test.com" }
             }
         };
         var organisation = Organisation;
@@ -496,7 +493,7 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
     }
 
     [Fact]
-    public async Task Execute_ShouldThrowInvalidUpdateOrganisationCommand_WhenOrganisationRegisteredAddressIsNull()
+    public async Task Execute_ShouldThrowMissingOrganisationAddress_WhenOrganisationRegisteredAddressIsNull()
     {
         var updateOrganisation = new UpdateOrganisation
         {
@@ -512,7 +509,7 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
     }
 
     [Fact]
-    public async Task Execute_ShouldThrowInvalidUpdateOrganisationCommand_WhenOrganisationRegisteredAddressIsMissing()
+    public async Task Execute_ShouldThrowMissingOrganisationRegisteredAddress_WhenOrganisationRegisteredAddressIsMissing()
     {
         var updateOrganisation = new UpdateOrganisation
         {
@@ -572,7 +569,7 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
         result.Should().BeTrue();
         _organisationRepositoryMock.Verify(repo => repo.SaveAsync(organisation, AnyOnSave()), Times.Once);
 
-        organisation.Addresses.FirstOrDefault(x=>x.Type==OrganisationInformation.AddressType.Registered)!.Address.CountryName.Should().Be("Test Land updated");
+        organisation.Addresses.FirstOrDefault(x => x.Type == OrganisationInformation.AddressType.Registered)!.Address.CountryName.Should().Be("Test Land updated");
     }
 
     [Fact]
@@ -598,7 +595,7 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
     }
 
     [Fact]
-    public async Task Execute_ShouldUpdateOrganisationRolesThrowsException_WhenRolesAreMissing()
+    public async Task Execute_ShouldUpdateOrganisationRolesThrowsExceptionMissingRoles_WhenRolesAreMissing()
     {
         var command = new UpdateOrganisation
         {
