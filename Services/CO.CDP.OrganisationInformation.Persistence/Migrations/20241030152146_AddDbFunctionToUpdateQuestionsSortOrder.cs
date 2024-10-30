@@ -10,7 +10,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-			migrationBuilder.Sql($@"
+            migrationBuilder.Sql($@"
                 CREATE OR REPLACE FUNCTION update_form_questions_sort_order()
                 RETURNS TRIGGER AS $$
                 BEGIN
