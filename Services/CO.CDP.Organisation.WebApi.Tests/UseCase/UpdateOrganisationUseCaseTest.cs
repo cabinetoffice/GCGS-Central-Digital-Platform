@@ -182,7 +182,7 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
 
         await act.Should()
           .ThrowAsync<InvalidUpdateOrganisationCommand>()
-            .WithMessage("The identifier '13294342' you have entered belongs to a different organization that already exists.");
+            .WithMessage("The identifier you have entered belongs to a different organization that already exists.");
     }
 
     [Fact]
