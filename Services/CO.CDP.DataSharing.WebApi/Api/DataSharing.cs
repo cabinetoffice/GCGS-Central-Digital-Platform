@@ -6,6 +6,7 @@ using CO.CDP.OrganisationInformation;
 using CO.CDP.Swashbuckle.Filter;
 using CO.CDP.Swashbuckle.Security;
 using CO.CDP.Swashbuckle.SwaggerGen;
+using CO.CDP.WebApi.Foundation;
 using DotSwashbuckle.AspNetCore.SwaggerGen;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
@@ -190,7 +191,7 @@ public static class ApiExtensions
             Description = "",
         });
         options.IncludeXmlComments(Assembly.GetExecutingAssembly(), Assembly.GetAssembly(typeof(Address)));
-        options.OperationFilter<ProblemDetailsOperationFilter>(Extensions.ServiceCollectionExtensions.ErrorCodes());
+        options.OperationFilter<ProblemDetailsOperationFilter>(ErrorCodes.Exception4xxMap.HttpStatusCodeErrorMap());
         options.ConfigureBearerSecurity();
         options.ConfigureApiKeySecurity();
     }
