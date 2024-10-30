@@ -101,7 +101,7 @@ public class OrganisationRegisteredAddressModel(OrganisationWebApiClient.IOrgani
         {
             if (Organisation != null && (Organisation.IsBuyer() || Organisation.IsPendingBuyer()))
             {
-                Address.Heading = "Enter your organisation’s address";
+                Address.Heading = "Enter your organisation's address";
                 Address.AddressHint = "The principal address the organisation conducts its activities. For example, a head office.";
             }
             else

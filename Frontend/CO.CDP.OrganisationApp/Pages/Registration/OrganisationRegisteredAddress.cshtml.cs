@@ -93,7 +93,7 @@ public class OrganisationRegisteredAddressModel(ISession session, ICompaniesHous
         {
             if(RegistrationDetails.OrganisationType == OrganisationType.Buyer)
             {
-                Address.Heading = "Enter your organisation’s address";
+                Address.Heading = "Enter your organisation's address";
                 Address.AddressHint = "The principal address the organisation conducts its activities. For example, a head office.";
             } else
             {
