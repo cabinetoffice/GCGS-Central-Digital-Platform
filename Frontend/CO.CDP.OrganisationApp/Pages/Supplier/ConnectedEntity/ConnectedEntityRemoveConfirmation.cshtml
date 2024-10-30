@@ -1,6 +1,7 @@
 @page "/organisation/{id}/supplier-information/connected-person/{connectedPersonId}/remove"
 @model CO.CDP.OrganisationApp.Pages.Supplier.ConnectedEntity.ConnectedEntityRemoveConfirmationModel
 @{
+    ViewData["Title"] = "Are you sure you want to remove this connected person?";
     var dayHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.EndDay)).HasInnerHtml;
     var monthHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.EndMonth)).HasInnerHtml;
     var yearHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.EndYear)).HasInnerHtml;
@@ -20,9 +21,9 @@
                     <div class="govuk-form-group @(hasError ? "govuk-form-group--error" : "")">
 
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                            <h2 class="govuk-fieldset__heading">
-                                Are you sure you want to remove this connected person?
-                            </h2>
+                            <h1 class="govuk-fieldset__heading">
+                                @ViewData["Title"]
+                            </h1>
                         </legend>
                         <div class="govuk-radios" data-module="govuk-radios">
                             <div class="govuk-radios__item">

@@ -1,8 +1,12 @@
 @page "/cookies/details"
 @model CO.CDP.OrganisationApp.Pages.CookieDetailsModel
 
+@{
+    ViewData["Title"] = "Details about cookies on Find a Tender";
+}
+
 <main class="govuk-main-wrapper" id="main-content">
-    <h1 class="govuk-heading-l">Details about cookies on Find a Tender</h1>
+    <h1 class="govuk-heading-l">@ViewData["Title"]</h1>
 
     <p class="govuk-body">Find a Tender puts small files (known as ‘cookies’) onto your computer to collect information about how you browse the site. Find out more about the cookies we use, what they’re for and when they expire.</p>
 

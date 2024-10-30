@@ -2,6 +2,7 @@
 @model CO.CDP.OrganisationApp.Pages.Supplier.LegalFormSelectOrganisationModel
 
 @{
+    ViewData["Title"] = "Select your organisation's legal form";
     var registeredOrgHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.RegisteredOrg)).HasInnerHtml;
     string IsSelected(string? radioValue)
     {
@@ -20,7 +21,7 @@
                     <fieldset class="govuk-fieldset">
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                             <h1 class="govuk-fieldset__heading">
-                                Select your organisation's legal form
+                                @ViewData["Title"]
                             </h1>
                         </legend>
                         <div id="legalForm-hint" class="govuk-hint govuk-!-margin-bottom-6">

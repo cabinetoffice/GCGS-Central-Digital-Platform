@@ -28,7 +28,7 @@
     <link rel="manifest" href="/manifest.json" />
     <link rel="stylesheet" href="/css/govuk-frontend-5.7.1.min.css">
     <link rel="stylesheet" href="/css/site.css">
-    <title>Central Digital Platform - GOV.UK</title>
+    <title>@ViewData["Title"]@(ViewData.ContainsKey("Title") && !String.IsNullOrEmpty((string?)ViewData["Title"]) ? " - " : "")Find a Tender - GOV.UK</title>
 </head>
 
 @{

@@ -5,6 +5,7 @@
 
 @{
     var hasError = ((TagBuilder)Html.ValidationMessageFor(m => m.AddAnotherAnswerSet)).HasInnerHtml;
+    ViewData["Title"] = Model.Heading;
 }
 
 <main class="govuk-main-wrapper" id="main-content">

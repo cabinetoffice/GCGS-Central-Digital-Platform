@@ -2,6 +2,8 @@
 @model CO.CDP.OrganisationApp.Pages.Supplier.ConnectedEntityLegalFormQuestionModel
 
 @{
+    ViewData["Title"] = Model.Heading;
+
     var selectionError = ((TagBuilder)Html.ValidationMessageFor(m => m.HasLegalForm)).HasInnerHtml;
     var legalFormNameHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.HasLegalForm)).HasInnerHtml
         || ((TagBuilder)Html.ValidationMessageFor(m => m.LegalFormName)).HasInnerHtml;
@@ -25,7 +27,7 @@
                 <div class="govuk-form-group @(selectionError ? "govuk-form-group--error" : "")">
                     <fieldset class="govuk-fieldset">
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                            <h1 class="govuk-fieldset__heading">@Model.Heading</h1>
+                            <h1 class="govuk-fieldset__heading">@ViewData["Title"]</h1>
                         </legend>
                         <div id="hasLegalForm-hint" class="govuk-hint">
                             @Model.Hint

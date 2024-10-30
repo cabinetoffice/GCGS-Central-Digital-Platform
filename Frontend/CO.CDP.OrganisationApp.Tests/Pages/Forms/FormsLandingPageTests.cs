@@ -161,7 +161,8 @@ public class FormsLandingPageTests
                     addAnotherAnswerLabel: null,
                     removeConfirmationCaption: null,
                     removeConfirmationHeading: null,
-                    furtherQuestionsExemptedHeading: null
+                    furtherQuestionsExemptedHeading: null,
+                    furtherQuestionsExemptedHint: null
                 ),
                 id: sectionId,
                 title: "SectionTitle"

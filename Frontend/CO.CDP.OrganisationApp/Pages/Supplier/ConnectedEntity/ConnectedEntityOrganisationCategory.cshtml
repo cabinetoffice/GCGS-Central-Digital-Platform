@@ -2,6 +2,8 @@
 @model CO.CDP.OrganisationApp.Pages.Supplier.ConnectedEntityOrganisationCategoryModel
 
 @{
+    ViewData["Title"] = "Select the category that best describes the 'connected person'";
+
     var personQuestionHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.ConnectedEntityCategory)).HasInnerHtml;
     string IsSelected(Constants.ConnectedEntityOrganisationCategoryType radioValue)
     {
@@ -20,7 +22,7 @@
                     <fieldset class="govuk-fieldset">
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                             <h1 class="govuk-fieldset__heading">
-                                Select the category that best describes the 'connected person'
+                                @ViewData["Title"]
                             </h1>
                         </legend>
                         <div id="connected-hint" class="govuk-hint">

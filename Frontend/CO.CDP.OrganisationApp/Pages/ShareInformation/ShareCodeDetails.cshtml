@@ -1,6 +1,7 @@
 @page "/organisation/{organisationId:guid}/forms/{formId:guid}/sections/{sectionId:guid}/share-code-details/{shareCode}"
 @model CO.CDP.OrganisationApp.Pages.ShareInformation.ShareCodeDetailsModel
 @{
+    ViewData["Title"] = Model.SharedConsentDetails?.ShareCode;
     var backUrl = $"/organisation/{Model.OrganisationId}/forms/{Model.FormId}/sections/{Model.SectionId}/share-codes-list-view";
 }
 
@@ -12,7 +13,7 @@
             <div class="govuk-form-group">
                 <span class="govuk-caption-l">Share code</span>
                 <h1 class="govuk-heading-l">
-                    @Model.SharedConsentDetails?.ShareCode
+                    @ViewData["Title"]
                 </h1>
                 <dl class="govuk-summary-list">
                     <div class="govuk-summary-list__row">

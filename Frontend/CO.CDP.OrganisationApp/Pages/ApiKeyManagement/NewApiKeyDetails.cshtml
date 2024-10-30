@@ -1,13 +1,17 @@
 @page "/organisation/{id}/manage-api-key/{apikey}/details"
 @model NewApiKeyDetailsModel
 
+@{
+    ViewData["Title"] = "API key created";
+}
+
 <main class="govuk-main-wrapper" id="main-content">
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <form class="form" method="post">
                 <div class="govuk-grid-column-full">
                     <div class="govuk-panel govuk-panel--confirmation">
-                        <h1 class="govuk-panel__title">API key created</h1>
+                        <h1 class="govuk-panel__title">@ViewData["Title"]</h1>
                         <div class="govuk-panel__body">
                             Your API key<br>
                             <strong id="apikeytext">@Model.ApiKey</strong>

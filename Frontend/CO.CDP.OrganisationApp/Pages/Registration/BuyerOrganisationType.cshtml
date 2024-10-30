@@ -3,6 +3,7 @@
 @model BuyerOrganisationTypeModel
 
 @{
+    ViewData["Title"] = "Select the organisation type";
     var organisationTypeHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.BuyerOrganisationType)).HasInnerHtml;
     var otherHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.OtherValue)).HasInnerHtml;
 
@@ -36,7 +37,7 @@
                     <fieldset class="govuk-fieldset">
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                             <h1 class="govuk-fieldset__heading">
-                                Select the organisation type
+                                @ViewData["Title"]
                             </h1>
                         </legend>
 

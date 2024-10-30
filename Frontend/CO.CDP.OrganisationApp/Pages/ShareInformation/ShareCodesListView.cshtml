@@ -3,6 +3,7 @@
 @using CO.CDP.OrganisationApp.Constants
 
 @{
+    ViewData["Title"] = "Share your supplier information";
     var createShareCodeLink = $"/organisation/{Model.OrganisationId}/forms/{Model.FormId}/sections/{Model.SectionId}";
     var backUrl = $"/organisation/{Model.OrganisationId}/supplier-information";
 }
@@ -15,7 +16,7 @@
 
             <div class="govuk-form-group">
                 <h1 class="govuk-heading-l">
-                    Share your supplier information
+                    @ViewData["Title"]
                 </h1>
 
                 <details class="govuk-details">

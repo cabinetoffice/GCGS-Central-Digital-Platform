@@ -2,6 +2,7 @@
 @model CO.CDP.OrganisationApp.Pages.Organisation.OrganisationIdentificationModel
 
 @{
+    ViewData["Title"] = "Is your organisation on any of these registries?";
     var charityCommissionEnglandWalesNumberHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.CharityCommissionEnglandWalesNumber)).HasInnerHtml;
     var scottishCharityRegulatorNumberHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.ScottishCharityRegulatorNumber)).HasInnerHtml;
     var charityCommissionNorthernIrelandNumberHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.CharityCommissionNorthernIrelandNumber)).HasInnerHtml;
@@ -32,7 +33,7 @@
                     <fieldset class="govuk-fieldset">
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                             <h1 class="govuk-fieldset__heading">
-                                Is your organisation on any of these registries?
+                                @ViewData["Title"]
                             </h1>
                         </legend>
 

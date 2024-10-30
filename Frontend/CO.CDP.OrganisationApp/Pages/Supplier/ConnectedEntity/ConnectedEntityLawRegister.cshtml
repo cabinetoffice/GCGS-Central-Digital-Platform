@@ -2,6 +2,7 @@
 @model CO.CDP.OrganisationApp.Pages.Supplier.ConnectedEntityLawRegisterModel
 
 @{
+    ViewData["Title"] = Model.LegalFormDisplayText;
     var legalFormHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.LegalForm)).HasInnerHtml;
 
     var lawRegister = ((TagBuilder)Html.ValidationMessageFor(m => m.LawRegistered)).HasInnerHtml;
@@ -28,7 +29,7 @@
                         <input type="hidden" name="RedirectToCheckYourAnswer" value="true" />
                     }
                     <h1 class="govuk-heading-l">
-                        @Model.LegalFormDisplayText
+                        @ViewData["Title"]
                     </h1>
                     <div class="govuk-form-group">
                         <label class="govuk-label" for="legalFormation-1">

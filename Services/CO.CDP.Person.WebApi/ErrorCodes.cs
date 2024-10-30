@@ -12,5 +12,6 @@ public static class ErrorCodes
         { typeof(UnknownPersonException), (StatusCodes.Status404NotFound, "UNKNOWN_PERSON") },
         { typeof(UnknownPersonInviteException), (StatusCodes.Status404NotFound, "UNKNOWN_PERSON_INVITE") },
         { typeof(PersonInviteAlreadyClaimedException), (StatusCodes.Status400BadRequest, "PERSON_INVITE_ALREADY_CLAIMED") },
+        { typeof(DuplicateEmailWithinOrganisationException), (StatusCodes.Status400BadRequest, "PERSON_ALREADY_ADDED_TO_ORGANISATION") },
     };
 }

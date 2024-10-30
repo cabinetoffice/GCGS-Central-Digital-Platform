@@ -5,4 +5,6 @@ locals {
   organisation_app_url    = "https://${var.public_domain}"
   healthcheck_domain      = "${local.name_prefix}-${var.environment}-healthcheck"
   healthcheck_url         = "https://healthcheck.${var.public_domain}"
+  pgadmin_domain          = "${local.name_prefix}-${var.environment}-pgadmin"
+  pgadmin_url             = "https://pgadmin.${var.public_domain}"
 }

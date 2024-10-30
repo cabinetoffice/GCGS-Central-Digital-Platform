@@ -45,6 +45,21 @@ public class ClaimOrganisationInviteModelTests
     }
 
     [Fact]
+    public async Task OnGet_ShouldStillRedirectToOrganisationSelection_WhenPersonAlreadyAddedToOrganisation()
+    {
+        var personInviteId = Guid.NewGuid();
+        var claimPersonInvite = new ClaimPersonInvite(personInviteId);
+        var problemDetails = new ProblemDetails("", "", null, "", "") { AdditionalProperties = { { "code", "PERSON_ALREADY_ADDED_TO_ORGANISATION" } } };
+        personClientMock.Setup(pc => pc.ClaimPersonInviteAsync(PersonId, new ClaimPersonInvite(personInviteId)))
+            .ThrowsAsync(new ApiException<ProblemDetails>("You are already a member of this organisation.", 400, "", null, problemDetails, null));
+
+        var result = await model.OnGet(personInviteId);
+
+        result.Should().BeOfType<RedirectToPageResult>()
+            .Which.PageName.Should().Be("../Organisation/OrganisationSelection");
+    }
+
+    [Fact]
     public async Task OnGet_ShouldThrowForOtherApiErrors()
     {
         var personInviteId = Guid.NewGuid();

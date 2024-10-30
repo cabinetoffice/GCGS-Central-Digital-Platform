@@ -4,6 +4,7 @@
 @model CO.CDP.OrganisationApp.Pages.Registration.OrganisationDetailsSummaryModel
 
 @{
+    ViewData["Title"] = "Check your answers";
     var details = Model.RegistrationDetails!;
 
     var backLink = RegistrationStepModel.OrganisationAddressPage;
@@ -31,7 +32,7 @@
         <div class="govuk-grid-column-two-thirds">
             <partial name="_ErrorSummary" model="@ModelState" />
             <h1 class="govuk-heading-l">
-                <span class="govuk-label--l">Check your answers</span>
+                @ViewData["Title"]
             </h1>
             <fieldset class="govuk-fieldset">
                 <dl class="govuk-summary-list">

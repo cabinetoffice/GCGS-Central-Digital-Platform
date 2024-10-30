@@ -2,6 +2,8 @@
 @model CO.CDP.OrganisationApp.Pages.Supplier.ConnectedEntityPscDetailsModel
 
 @{
+    ViewData["Title"] = Model.Heading;
+
     var firstNameHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.FirstName)).HasInnerHtml;
 
     var lastNameHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.LastName)).HasInnerHtml;
@@ -34,7 +36,7 @@
                 }
                 <fieldset class="govuk-fieldset">
                     <h1 class="govuk-heading-l">
-                        @Model.Heading
+                        @ViewData["Title"]
                     </h1>
                     <div class="govuk-form-group">
                         <label class="govuk-label" for="firstName">

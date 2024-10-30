@@ -4,6 +4,7 @@
 @using CO.CDP.OrganisationApp.Constants
 
 @{
+    ViewData["Title"] = "Join requests";
     var hasError = ((TagBuilder)Html.ValidationMessageFor(m => m.HasPerson)).HasInnerHtml;
     var totalPersons = Model.Persons.Count + Model.PersonInvites.Count;
     var pendingJoinRequests = Model.OrganisationJoinRequests.Where(x => x.Status == CDP.Organisation.WebApiClient.OrganisationJoinRequestStatus.Pending).ToList();
@@ -23,7 +24,7 @@
             @if (pendingJoinRequests.Any())
             {
                 <h1 class="govuk-heading-l">
-                    Join requests
+                    @ViewData["Title"]
                 </h1>
             }
 

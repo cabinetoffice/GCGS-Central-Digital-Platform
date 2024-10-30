@@ -5,23 +5,32 @@
 @{
     var apiKeys = Model.AuthenticationKeys;
     var count = apiKeys.Count();
+
+    if(count == 0)
+    {
+        ViewData["Title"] = "Manage API keys";
+    } else
+    {
+        ViewData["Title"] = $"You have {count} API {(count == 1 ? "key" : "keys")}";
+    }
 }
+
 <a href="/organisation/@Model.Id" class="govuk-back-link">Back</a>
 
 <main class="govuk-main-wrapper" id="main-content">
     <form class="form" method="post">
+        <h1 class="govuk-heading-l">
+            @ViewData["Title"]
+        </h1>
+
         @if (count == 0)
         {
-            <h1 class="govuk-heading-l">Manage API keys</h1>
             <p class="govuk-body">
                 API keys that you create will be listed here.
             </p>
         }
         else
-        {
-            <h1 class="govuk-heading-l">
-                You have @count API @(count == 1 ? "key" : "keys")
-            </h1>
+        {            
             <p class="govuk-body">
                 View your active and cancelled API keys. <authorize scope="@OrgScopeRequirement.Editor">You can cancel any that are no longer needed.</authorize>
             </p>

@@ -2,6 +2,7 @@
 @model ContactUsModel
 
 @{
+    ViewData["Title"] = "Message sent";
     var nameHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Name)).HasInnerHtml;
     var emailAddressHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.EmailAddress)).HasInnerHtml;
     var organisationNameHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.OrganisationName)).HasInnerHtml;
@@ -15,7 +16,7 @@
             <div class="govuk-grid-column-two-thirds">
                   <div class="govuk-panel govuk-panel--confirmation">
                       <h1 class="govuk-panel__title">
-                          Message sent
+                          @ViewData["Title"]
                       </h1>
                   </div>
                   <h2 class="govuk-heading-m">What happens next</h2>
