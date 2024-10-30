@@ -135,11 +135,10 @@
   <data name="BasicInformation_SectionTitle" xml:space="preserve">
     <value>Gwybodaeth sylfaenol</value>
   </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="OrganisationRegistration_EnterOrganisationName_Buyer_Hint" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
+  <data name="OrganisationRegistration_EnterOrganisationName_Heading" xml:space="preserve">
+    <value>Rhowch enw’r sefydliad</value>
   </data>
-  <data name="OrganisationRegistration_EnterOrganisationName_Supplier_Hint" xml:space="preserve">
+  <data name="Organisation_EnterOrganisationName_Supplier_Hint" xml:space="preserve">
     <value>Fel y'i cofrestrwyd â Thŷ'r Cwmnïau os yw'n gorfforedig, neu enw masnachu'r cwmni.</value>
   </data>
   <data name="Global_Continue" xml:space="preserve">
