@@ -58,7 +58,7 @@ locals {
       canary_schedule_expression = "rate(30 minutes)"
       fts_azure_frontdoor        = null
       name                       = "staging"
-      pinned_service_version     = "1.0.4"
+      pinned_service_version     = "1.0.5"
       postgres_instance_type     = "db.t4g.micro"
       private_subnets = [
         "10.${local.cidr_b_staging}.101.0/24",
