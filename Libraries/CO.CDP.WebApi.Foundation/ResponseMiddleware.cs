@@ -8,7 +8,7 @@ using Microsoft.Extensions.Logging;
 
 namespace CO.CDP.WebApi.Foundation;
 
-internal class ResponseMiddleware(
+public class ResponseMiddleware(
         RequestDelegate next,
         ILogger<ResponseMiddleware> logger,
         IWebHostEnvironment webHostEnvironment,

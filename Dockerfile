@@ -21,6 +21,7 @@ ARG NUGET_PACKAGES
 ENV NUGET_PACKAGES="${NUGET_PACKAGES}"
 WORKDIR /src
 COPY --link Libraries/CO.CDP.WebApi.Foundation/CO.CDP.WebApi.Foundation.csproj Libraries/CO.CDP.WebApi.Foundation/
+COPY --link Libraries/CO.CDP.WebApi.Foundation.Test/CO.CDP.WebApi.Foundation.Test.csproj Libraries/CO.CDP.WebApi.Foundation.Test/
 COPY --link Libraries/CO.CDP.GovUKNotify/CO.CDP.GovUKNotify.csproj Libraries/CO.CDP.GovUKNotify/
 COPY --link Libraries/CO.CDP.GovUKNotify.Test/CO.CDP.GovUKNotify.Test.csproj Libraries/CO.CDP.GovUKNotify.Test/
 COPY --link Libraries/CO.CDP.AwsServices/CO.CDP.AwsServices.csproj Libraries/CO.CDP.AwsServices/
