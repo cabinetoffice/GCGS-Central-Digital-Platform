@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -15,21 +16,22 @@ public class ResponseMiddleware(
 {
     public async Task Invoke(HttpContext context)
     {
+        var request = $"{context.Request.Method} {context.Request.GetDisplayUrl()}";
+
         try
         {
             await next.Invoke(context);
-            await Handle4xxError(context);
+            await Handle4xxError(context, request);
         }
         catch (Exception ex)
         {
-            await HandleException(context, ex);
+            await HandleException(context, request, ex);
         }
     }
 
-    private async Task Handle4xxError(HttpContext context)
+    private async Task Handle4xxError(HttpContext context, string request)
     {
         var statusCode = context.Response.StatusCode;
-        var request = context.Request.Path;
 
         if (statusCode >= 400 && statusCode < 500)
         {
@@ -39,7 +41,7 @@ public class ResponseMiddleware(
         }
     }
 
-    private async Task HandleException(HttpContext context, Exception ex)
+    private async Task HandleException(HttpContext context, string request, Exception ex)
     {
         var statusCode = StatusCodes.Status500InternalServerError;
         var errorCode = "GENERIC_ERROR";
@@ -50,7 +52,6 @@ public class ResponseMiddleware(
             statusCode = error.status;
             errorCode = error.code;
             message = ex.Message;
-            var request = context.Request.Path;
             logger.LogInformation(ex, "Response status: {statusCode}, for request: {request}", statusCode, request);
         }
         else
