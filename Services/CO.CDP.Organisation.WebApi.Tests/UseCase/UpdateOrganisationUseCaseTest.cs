@@ -154,8 +154,7 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
 
     [Fact]
     public async Task ShouldThrowIdentiferNumberAlreadyExists_WhenIdentifierAlreadyExists()
-    {
-        // Arrange
+    {        
         var command = new UpdateOrganisation
         {
             Type = OrganisationUpdateType.AdditionalIdentifiers,
@@ -185,8 +184,7 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
 
     [Fact]
     public async Task ShouldAddNewIdentifier_WhenIdentifierDoesNotExistInOrganisation()
-    {
-        // Arrange
+    {       
         var command = new UpdateOrganisation
         {
             Type = OrganisationUpdateType.AdditionalIdentifiers,
@@ -212,8 +210,7 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
         result.Should().BeTrue();
 
         _organisationRepositoryMock.Verify(repo => repo.SaveAsync(anotherOrganisation, AnyOnSave()), Times.Once);
-
-        // Assert
+       
         anotherOrganisation.Identifiers.Should().ContainSingle(i =>
             i.IdentifierId == "342" &&
             i.Scheme == "VAT" &&
@@ -270,7 +267,6 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
             ContactPoint = organisation.ContactPoints.First().AsEventValue(),
             Roles = organisation.Roles.AsEventValue()
         });
-
     }
 
     [Fact]
