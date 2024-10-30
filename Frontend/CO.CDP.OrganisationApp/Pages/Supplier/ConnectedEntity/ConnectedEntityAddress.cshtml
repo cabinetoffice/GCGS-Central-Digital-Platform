@@ -3,6 +3,8 @@
 @model CO.CDP.OrganisationApp.Pages.Supplier.ConnectedEntityAddressModel
 
 @{
+    ViewData["Title"] = Model.Address.Heading;
+
     var backLink = "";
 
     if (Model.Address.IsNonUkAddress)

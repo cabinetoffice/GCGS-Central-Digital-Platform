@@ -2,6 +2,7 @@
 @model CO.CDP.OrganisationApp.Pages.Supplier.SupplierEmailAddressModel
 
 @{
+    ViewData["Title"] = "Enter your email address";
     var emailAddressHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.EmailAddress)).HasInnerHtml;
 }
 
@@ -16,7 +17,7 @@
                     <fieldset class="govuk-fieldset">
 
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                            <h1 class="govuk-heading-l">Enter your email address</h1>
+                            <h1 class="govuk-heading-l">@ViewData["Title"]</h1>
                         </legend>
                         <div id="organisation-email-hint" class="govuk-hint">
                             It should be a shared inbox managed by your team, not your own email address. This will be displayed on notices.

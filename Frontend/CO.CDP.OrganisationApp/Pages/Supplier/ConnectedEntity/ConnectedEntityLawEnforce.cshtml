@@ -2,6 +2,8 @@
 @model CO.CDP.OrganisationApp.Pages.Supplier.ConnectedEntityLawEnforceModel
 
 @{
+    ViewData["Title"] = Model.Heading;
+
     var lawRegister = ((TagBuilder)Html.ValidationMessageFor(m => m.LawRegistered)).HasInnerHtml;
 
     var backPage = Request.Query.ContainsKey("frm-chk-answer") ? "check-answers-organisation" : Model.BackPageLink;
@@ -27,7 +29,7 @@
                     <div class="govuk-form-group">
                         <h1 class="govuk-label-wrapper">
                             <label class="govuk-label govuk-label--l" for="legalForm">
-                                @Model.Heading
+                                @ViewData["Title"]
                             </label>
                         </h1>
                         <div id="legalForm-hint" class="govuk-hint">

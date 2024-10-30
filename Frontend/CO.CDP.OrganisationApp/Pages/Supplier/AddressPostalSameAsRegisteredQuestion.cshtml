@@ -3,6 +3,7 @@
 @model CO.CDP.OrganisationApp.Pages.Supplier.AddressPostalSameAsRegisteredQuestionModel
 
 @{
+    ViewData["Title"] = "Is your organisation's postal address the same as its registered address?";
     var hasError = ((TagBuilder)Html.ValidationMessageFor(m => m.SameAsRegiseterdAddress)).HasInnerHtml;
 }
 
@@ -14,7 +15,7 @@
             <partial name="_ErrorSummary" model="@Model.ModelState" />
 
             <h1 class="govuk-heading-l">
-                Is your organisation's postal address the same as its registered address?
+                @ViewData["Title"]
             </h1>
 
             <div id="hint" class="govuk-hint">

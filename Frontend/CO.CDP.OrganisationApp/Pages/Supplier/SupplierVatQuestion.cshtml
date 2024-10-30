@@ -2,6 +2,7 @@
 @model CO.CDP.OrganisationApp.Pages.Supplier.SupplierVatQuestionModel
 
 @{
+    ViewData["Title"] = "Are you registered for VAT?";
     var invalidSelection = ((TagBuilder)Html.ValidationMessageFor(m => m.HasVatNumber)).HasInnerHtml;
     var vatRegHasError = invalidSelection || ((TagBuilder)Html.ValidationMessageFor(m => m.VatNumber)).HasInnerHtml;
 }
@@ -18,7 +19,7 @@
 
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                             <h1 class="govuk-fieldset__heading">
-                                Are you registered for VAT?
+                                @ViewData["Title"]
                             </h1>
                         </legend>
                         <div class="govuk-radios govuk-!-margin-top-6" data-module="govuk-radios">

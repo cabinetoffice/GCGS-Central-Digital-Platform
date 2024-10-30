@@ -4,6 +4,7 @@
 @model CO.CDP.OrganisationApp.Pages.Supplier.SupplierOperationQuestionModel
 
 @{
+    ViewData["Title"] = "How does your organisation operate?";
     var invalidSelection = ((TagBuilder)Html.ValidationMessageFor(m => m.SelectedOperationTypes)).HasInnerHtml;
     var operationTypeHasError = invalidSelection || ((TagBuilder)Html.ValidationMessageFor(m => m.SelectedOperationTypes)).HasInnerHtml;
 
@@ -24,7 +25,7 @@
             <fieldset class="govuk-fieldset">
                <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                   <h1 class="govuk-fieldset__heading">
-                     How does your organisation operate?
+                     @ViewData["Title"]
                   </h1>
                </legend>
                <div id="waste-hint" class="govuk-hint">

@@ -3,6 +3,7 @@
 @model CO.CDP.OrganisationApp.Pages.Supplier.LegalFormFormationDateModel
 
 @{
+    ViewData["Title"] = "What is the equivalent date your company registered under the Companies Act 2006?";
     var dayHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Day)).HasInnerHtml;
     var monthHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Month)).HasInnerHtml;
     var yearHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Year)).HasInnerHtml;
@@ -21,7 +22,7 @@
                     <fieldset class="govuk-fieldset">
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                             <h1 class="govuk-heading-l">
-                                What is the equivalent date your company registered under the Companies Act 2006?
+                                @ViewData["Title"]
                             </h1>
                         </legend>
 

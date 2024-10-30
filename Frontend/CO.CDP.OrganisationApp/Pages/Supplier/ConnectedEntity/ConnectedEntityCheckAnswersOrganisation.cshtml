@@ -2,6 +2,8 @@
 @using CO.CDP.OrganisationApp.Constants
 @model CO.CDP.OrganisationApp.Pages.Supplier.ConnectedEntityCheckAnswersOrganisationModel
 @{
+    ViewData["Title"] = Model.Heading;
+
     var details = Model.ConnectedEntityDetails!;
     var ukNonUkRegisterAddress = details.RegisteredAddress!.IsNonUk ? "non-uk" : "uk";
     var ukNonUkPostalAddress = details.PostalAddress != null ? (details.PostalAddress.IsNonUk ? "non-uk" : "uk") : "uk";
@@ -28,7 +30,7 @@
         <div class="govuk-grid-column-full">
             <form class="form" method="post">
                 <span class="govuk-caption-l">@Model.Caption</span>
-                <h1 class="govuk-heading-l">@Model.Heading</h1>
+                <h1 class="govuk-heading-l">@ViewData["Title"]</h1>
                 <dl class="govuk-summary-list">
 
                     <div class="govuk-summary-list__row">
