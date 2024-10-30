@@ -3,11 +3,11 @@ using static CO.CDP.Organisation.WebApi.Model.InvalidUpdateOrganisationCommand;
 using static CO.CDP.OrganisationInformation.Persistence.IAuthenticationKeyRepository.AuthenticationKeyRepositoryException;
 using static CO.CDP.OrganisationInformation.Persistence.IOrganisationRepository.OrganisationRepositoryException;
 
-namespace CO.CDP.Organisation.WebApi.Extensions;
+namespace CO.CDP.Organisation.WebApi;
 
-public static class ServiceCollectionExtensions
+public static class ErrorCodes
 {
-    private static readonly Dictionary<Type, (int, string)> ExceptionMap = new()
+    public static readonly Dictionary<Type, (int, string)> Exception4xxMap = new()
     {
         { typeof(BadHttpRequestException), (StatusCodes.Status422UnprocessableEntity, "UNPROCESSABLE_ENTITY") },
         { typeof(MissingOrganisationIdException), (StatusCodes.Status404NotFound, "ORGANISATION_NOT_FOUND") },
@@ -38,37 +38,4 @@ public static class ServiceCollectionExtensions
         { typeof(MissingIdentifierNumber), (StatusCodes.Status400BadRequest, "ORGANISATION_MISSING_IDENTIFIER_NUMBER") },
         { typeof(IdentiferNumberAlreadyExists), (StatusCodes.Status400BadRequest, "ORGANISATION_IDENTIFIER_NUMBER_ALREADY_EXISTS") }       
     };
-
-    public static IServiceCollection AddOrganisationProblemDetails(this IServiceCollection services)
-    {
-        services.AddProblemDetails(options =>
-            {
-                options.CustomizeProblemDetails = ctx =>
-                {
-                    if (ctx.Exception != null)
-                    {
-                        var (statusCode, errorCode) = MapException(ctx.Exception);
-                        ctx.ProblemDetails.Status = statusCode;
-                        ctx.HttpContext.Response.StatusCode = statusCode;
-                        ctx.ProblemDetails.Extensions.Add("code", errorCode);
-                    }
-                };
-            });
-
-        return services;
-    }
-
-    public static (int status, string error) MapException(Exception? exception)
-    {
-        if (ExceptionMap.TryGetValue(exception?.GetType() ?? typeof(Exception), out (int, string) code))
-        {
-            return code;
-        }
-        return (StatusCodes.Status500InternalServerError, "GENERIC_ERROR");
-    }
-
-    public static Dictionary<string, List<string>> ErrorCodes() =>
-        ExceptionMap.Values
-            .GroupBy(s => s.Item1)
-            .ToDictionary(k => k.Key.ToString(), v => v.Select(i => i.Item2).Distinct().ToList());
 }

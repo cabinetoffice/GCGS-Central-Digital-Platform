@@ -7,10 +7,10 @@ using CO.CDP.DataSharing.WebApi;
 using CO.CDP.DataSharing.WebApi.Api;
 using CO.CDP.DataSharing.WebApi.AutoMapper;
 using CO.CDP.DataSharing.WebApi.DataService;
-using CO.CDP.DataSharing.WebApi.Extensions;
 using CO.CDP.DataSharing.WebApi.Model;
 using CO.CDP.DataSharing.WebApi.UseCase;
 using CO.CDP.OrganisationInformation.Persistence;
+using CO.CDP.WebApi.Foundation;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.Localization;
 using Microsoft.EntityFrameworkCore;
@@ -64,7 +64,7 @@ builder.Services.AddScoped<IUseCase<ShareVerificationRequest, ShareVerificationR
 builder.Services.AddScoped<IUseCase<string, SupplierInformation?>, GetSharedDataUseCase>();
 builder.Services.AddScoped<IUseCase<string, SharedDataFile?>, GetSharedDataFileUseCase>();
 builder.Services.AddScoped<IUseCase<(string, string), string?>, GetSharedDataDocumentDownloadUrlUseCase>();
-builder.Services.AddDataSharingProblemDetails();
+builder.Services.AddProblemDetails();
 
 builder.Services.AddJwtBearerAndApiKeyAuthentication(builder.Configuration, builder.Environment);
 builder.Services.AddOrganisationAuthorization();
@@ -84,6 +84,7 @@ if (Assembly.GetEntryAssembly().IsRunAs("CO.CDP.DataSharing.WebApi"))
 
 var app = builder.Build();
 app.UseForwardedHeaders();
+app.UseErrorHandler(ErrorCodes.Exception4xxMap);
 
 // Configure the HTTP request pipeline.
 if (builder.Configuration.GetValue("Features:SwaggerUI", false))

@@ -3,11 +3,13 @@ using CO.CDP.AwsServices;
 using CO.CDP.Configuration.Assembly;
 using CO.CDP.Configuration.ForwardedHeaders;
 using CO.CDP.Configuration.Helpers;
+using CO.CDP.Forms.WebApi;
 using CO.CDP.Forms.WebApi.Api;
 using CO.CDP.Forms.WebApi.AutoMapper;
 using CO.CDP.Forms.WebApi.Model;
 using CO.CDP.Forms.WebApi.UseCase;
 using CO.CDP.OrganisationInformation.Persistence;
+using CO.CDP.WebApi.Foundation;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.Localization;
 using Microsoft.EntityFrameworkCore;
@@ -75,6 +77,7 @@ if (Assembly.GetEntryAssembly().IsRunAs("CO.CDP.Forms.WebApi"))
 
 var app = builder.Build();
 app.UseForwardedHeaders();
+app.UseErrorHandler(ErrorCodes.Exception4xxMap);
 
 // Configure the HTTP request pipeline.
 if (builder.Configuration.GetValue("Features:SwaggerUI", false))

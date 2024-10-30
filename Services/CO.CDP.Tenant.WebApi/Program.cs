@@ -1,16 +1,17 @@
-using System.Reflection;
 using CO.CDP.Authentication;
 using CO.CDP.AwsServices;
 using CO.CDP.Configuration.Assembly;
 using CO.CDP.Configuration.ForwardedHeaders;
 using CO.CDP.Configuration.Helpers;
 using CO.CDP.OrganisationInformation.Persistence;
+using CO.CDP.Tenant.WebApi;
 using CO.CDP.Tenant.WebApi.Api;
 using CO.CDP.Tenant.WebApi.AutoMapper;
-using CO.CDP.Tenant.WebApi.Extensions;
 using CO.CDP.Tenant.WebApi.Model;
 using CO.CDP.Tenant.WebApi.UseCase;
+using CO.CDP.WebApi.Foundation;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection;
 using Tenant = CO.CDP.Tenant.WebApi.Model.Tenant;
 using TenantLookup = CO.CDP.OrganisationInformation.TenantLookup;
 
@@ -36,7 +37,7 @@ builder.Services.AddScoped<IUseCase<RegisterTenant, Tenant>, RegisterTenantUseCa
 builder.Services.AddScoped<IUseCase<Guid, Tenant?>, GetTenantUseCase>();
 builder.Services.AddScoped<IUseCase<TenantLookup?>, LookupTenantUseCase>();
 builder.Services.AddScoped<IClaimService, ClaimService>();
-builder.Services.AddTenantProblemDetails();
+builder.Services.AddProblemDetails();
 
 builder.Services.AddJwtBearerAndApiKeyAuthentication(builder.Configuration, builder.Environment);
 builder.Services.AddOrganisationAuthorization();
@@ -56,6 +57,7 @@ if (Assembly.GetEntryAssembly().IsRunAs("CO.CDP.Tenant.WebApi"))
 
 var app = builder.Build();
 app.UseForwardedHeaders();
+app.UseErrorHandler(ErrorCodes.Exception4xxMap);
 
 // Configure the HTTP request pipeline.
 if (builder.Configuration.GetValue("Features:SwaggerUI", false))
