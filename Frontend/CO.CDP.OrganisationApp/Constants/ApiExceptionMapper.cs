@@ -15,7 +15,7 @@ public static class ApiExceptionMapper
         {
             modelState.AddModelError(string.Empty, ErrorMessagesList.UnexpectedError);
             return;
-        }      
+        }
 
         var errorMessage = GetErrorMessageByCode(code);
 
@@ -44,6 +44,17 @@ public static class ApiExceptionMapper
             ErrorCodes.BUYER_INFO_NOT_EXISTS => ErrorMessagesList.BuyerInfoNotExists,
             ErrorCodes.UNKNOWN_BUYER_INFORMATION_UPDATE_TYPE => ErrorMessagesList.UnknownBuyerInformationUpdateType,
             ErrorCodes.ORGANISATION_UPDATE_INVALID_INPUT => ErrorMessagesList.OrganisationInvalidInput,
+            ErrorCodes.ORGANISATION_MISSING_NAME => ErrorMessagesList.MissingOrganisationName,
+            ErrorCodes.ORGANISATION_MISSING_ROLES => ErrorMessagesList.MissingRoles,
+            ErrorCodes.ORGANISATION_MISSING_CONTACTPOINT => ErrorMessagesList.MissingContactPoint,
+            ErrorCodes.ORGANISATION_NOPRIMARY_IDENTIFIER => ErrorMessagesList.NoPrimaryIdentifier,
+            ErrorCodes.ORGANISATION_MISSING_EMAIL => ErrorMessagesList.MissingOrganisationEmail,
+            ErrorCodes.ORGANISATION_EMAIL_DOES_NOT_EXISTS => ErrorMessagesList.OrganisationEmailDoesNotExist,
+            ErrorCodes.ORGANISATION_MISSING_ADDRESS => ErrorMessagesList.MissingOrganisationAddress,
+            ErrorCodes.ORGANISATION_MISSING_REGISTERED_ADDRESS => ErrorMessagesList.MissingOrganisationRegisteredAddress,
+            ErrorCodes.ORGANISATION_MISSING_ADDITIONAL_IDENTIFIERS => ErrorMessagesList.MissingAdditionalIdentifiers,
+            ErrorCodes.ORGANISATION_MISSING_IDENTIFIER_NUMBER => ErrorMessagesList.MissingIdentifierNumber,
+            ErrorCodes.ORGANISATION_IDENTIFIER_NUMBER_ALREADY_EXISTS => ErrorMessagesList.IdentiferNumberAlreadyExists,
             _ => ErrorMessagesList.UnexpectedError
         };
     }

@@ -25,14 +25,21 @@ public abstract class InvalidUpdateOrganisationCommand(string message, Exception
     public class MissingOrganisationEmail() : InvalidUpdateOrganisationCommand("Missing organisation email.");
 
     public class OrganisationEmailDoesNotExist()
-        : InvalidUpdateOrganisationCommand("organisation email does not exists.");
+        : InvalidUpdateOrganisationCommand("Organisation email does not exists.");
 
     public class MissingOrganisationAddress() : InvalidUpdateOrganisationCommand("Missing organisation address.");
 
     public class MissingOrganisationRegisteredAddress()
         : InvalidUpdateOrganisationCommand("Missing Organisation registered address.");
 
-    public class MissingAdditionalIdentifiers() : InvalidUpdateOrganisationCommand("Missing additional identifiers.");
+    public class MissingAdditionalIdentifiers()
+        : InvalidUpdateOrganisationCommand("Missing additional identifiers.");
+
+    public class MissingIdentifierNumber()
+        : InvalidUpdateOrganisationCommand("Missing identifier number.");
+
+    public class IdentiferNumberAlreadyExists()
+        : InvalidUpdateOrganisationCommand("The identifier you have entered belongs to a different organization that already exists.");
 }
 public class BuyerInfoNotExistException(string message, Exception? cause = null) : Exception(message, cause);
 public class InvalidUpdateBuyerInformationCommand(string message, Exception? cause = null) : Exception(message, cause);
