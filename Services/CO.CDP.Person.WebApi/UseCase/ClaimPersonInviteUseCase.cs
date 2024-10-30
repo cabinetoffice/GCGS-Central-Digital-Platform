@@ -14,7 +14,8 @@ public class ClaimPersonInviteUseCase(
         var person = await personRepository.Find(command.personId) ?? throw new UnknownPersonException($"Unknown person {command.personId}.");
         var personInvite = await personInviteRepository.Find(command.claimPersonInvite.PersonInviteId) ?? throw new UnknownPersonInviteException($"Unknown personInvite {command.claimPersonInvite.PersonInviteId}.");
 
-        GuardPersonInviteAleadyClaimed(personInvite);
+        GuardPersonInviteExpired(personInvite);
+        GuardPersonInviteAlreadyClaimed(personInvite);
         await GuardFromDuplicateEmailWithinOrganisation(organisationId: personInvite.Organisation!.Guid, person.Email);
 
         var organisation = await organisationRepository.FindIncludingTenantByOrgId(personInvite.OrganisationId)
@@ -37,7 +38,16 @@ public class ClaimPersonInviteUseCase(
         return true;
     }
 
-    private void GuardPersonInviteAleadyClaimed(PersonInvite personInvite)
+    private void GuardPersonInviteExpired(PersonInvite personInvite)
+    {
+        if (personInvite.ExpiresOn < DateTimeOffset.UtcNow)
+        {
+            throw new PersonInviteExpiredException(
+                $"PersonInvite {personInvite.Guid} has expired.");
+        }
+    }
+
+    private void GuardPersonInviteAlreadyClaimed(PersonInvite personInvite)
     {
         if (personInvite.Person != null)
         {

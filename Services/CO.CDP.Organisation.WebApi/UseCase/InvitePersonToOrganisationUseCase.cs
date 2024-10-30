@@ -33,11 +33,7 @@ public class InvitePersonToOrganisationUseCase(
             throw new DuplicateEmailWithinOrganisationException($"A user with this email address already exists for your organisation.");
         }
 
-        var isInviteEmailUnique = await personInviteRepository.IsInviteEmailUniqueWithinOrganisation(command.organisationId, command.invitePersonData.Email);
-        if (!isInviteEmailUnique)
-        {
-            throw new DuplicateInviteEmailForOrganisationException($"A user with this email address has already been invited to your organisation.");
-        }
+        await ExpireExistingPersonInvites(command.organisationId, command.invitePersonData.Email);
 
         var personInvite = CreatePersonInvite(command.invitePersonData, organisation);
 
@@ -45,7 +41,6 @@ public class InvitePersonToOrganisationUseCase(
 
         var baseAppUrl = configuration.GetValue<string>("OrganisationAppUrl")
                             ?? throw new Exception("Missing configuration key: OrganisationAppUrl");
-
 
         var templateId = configuration.GetValue<string>("GOVUKNotify:PersonInviteEmailTemplateId")
                             ?? throw new Exception("Missing configuration key: GOVUKNotify:PersonInviteEmailTemplateId.");
@@ -67,6 +62,17 @@ public class InvitePersonToOrganisationUseCase(
         await govUKNotifyApiClient.SendEmail(emailRequest);
 
         return true;
+    }
+
+    private async Task ExpireExistingPersonInvites(Guid organisationId, string email)
+    {
+        var existingPersonInvites = await personInviteRepository.FindPersonInviteByEmail(organisationId, email);
+
+        foreach (var personInvite in existingPersonInvites)
+        {
+            personInvite.ExpiresOn = DateTimeOffset.UtcNow;
+            personInviteRepository.Save(personInvite);
+        }
     }
 
     private PersonInvite CreatePersonInvite(
