@@ -16,32 +16,28 @@ public class ResponseMiddleware(
 {
     public async Task Invoke(HttpContext context)
     {
-        var request = $"{context.Request.Method} {context.Request.GetDisplayUrl()}";
-
         try
         {
             await next.Invoke(context);
-            await Handle4xxError(context, request);
+            await Handle4xxError(context);
         }
         catch (Exception ex)
         {
-            await HandleException(context, request, ex);
+            await HandleException(context, ex);
         }
     }
 
-    private async Task Handle4xxError(HttpContext context, string request)
+    private async Task Handle4xxError(HttpContext context)
     {
         var statusCode = context.Response.StatusCode;
 
         if (statusCode >= 400 && statusCode < 500)
         {
-            logger.LogInformation("Response status: {statusCode}, for request: {request}", statusCode, request);
-
             await HandleResponse(context, statusCode, new ProblemDetails { Status = statusCode });
         }
     }
 
-    private async Task HandleException(HttpContext context, string request, Exception ex)
+    private async Task HandleException(HttpContext context, Exception ex)
     {
         var statusCode = StatusCodes.Status500InternalServerError;
         var errorCode = "GENERIC_ERROR";
@@ -52,7 +48,8 @@ public class ResponseMiddleware(
             statusCode = error.status;
             errorCode = error.code;
             message = ex.Message;
-            logger.LogInformation(ex, "Response status: {statusCode}, for request: {request}", statusCode, request);
+            var path = context.Request.Path;
+            logger.LogInformation(ex, "Response status: {statusCode}, for request: {path}", statusCode, path);
         }
         else
         {

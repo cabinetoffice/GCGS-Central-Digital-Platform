@@ -62,7 +62,6 @@ public class ResponseMiddlewareTests
         await _middleware.Invoke(context);
 
         context.Response.StatusCode.Should().Be(status);
-        VerifyLogger(LogLevel.Information, "Response status: 400, for request:  ://");
 
         var problemDetails = await GetResponseProblemDetailsAsync();
         problemDetails.Should().NotBeNull();
@@ -103,7 +102,7 @@ public class ResponseMiddlewareTests
         await _middleware.Invoke(context);
 
         context.Response.StatusCode.Should().Be(status);
-        VerifyLogger(LogLevel.Information, "Response status: 400, for request:  ://", exception);
+        VerifyLogger(LogLevel.Information, "Response status: 400, for request: ", exception);
 
         var problemDetails = await GetResponseProblemDetailsAsync();
         problemDetails.Should().NotBeNull();
