@@ -16,7 +16,7 @@ public class ResponseMiddleware(
 {
     public async Task Invoke(HttpContext context)
     {
-        var request = $"{context.Request.Method} {context.Request.GetDisplayUrl()}";
+        var request = $"{context.Request.Method} {context.Request.GetDisplayUrl()}".Replace(Environment.NewLine, "").Replace("\n", "").Replace("\r", "");
 
         try
         {
