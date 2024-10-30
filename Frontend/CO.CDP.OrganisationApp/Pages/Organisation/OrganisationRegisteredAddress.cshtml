@@ -2,6 +2,7 @@
 @model CO.CDP.OrganisationApp.Pages.Organisation.OrganisationRegisteredAddressModel
 
 @{
+    ViewData["Title"] = Model.Address.Heading;
     var backLink = $"/organisation/{@Model.Id}";
     var fromOverviewPage = Request.Query.ContainsKey("frm-overview");
     if (fromOverviewPage) Model.RedirectToOverview = true;

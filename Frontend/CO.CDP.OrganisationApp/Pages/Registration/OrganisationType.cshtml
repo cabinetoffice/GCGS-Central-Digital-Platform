@@ -5,6 +5,7 @@
 @using CO.CDP.OrganisationApp.Constants
 
 @{
+    ViewData["Title"] = "What do you want to register your organisation as?";
     var organisationTypeHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.OrganisationType)).HasInnerHtml;
 
     var backLink = "/organisation-selection";
@@ -37,7 +38,7 @@
                     <fieldset class="govuk-fieldset">
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                             <h1 class="govuk-fieldset__heading">
-                                What do you want to register your organisation as?
+                                @ViewData["Title"]
                             </h1>
                         </legend>
 

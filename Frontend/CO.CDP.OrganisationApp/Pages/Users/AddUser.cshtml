@@ -3,6 +3,7 @@
 @using CO.CDP.OrganisationApp.Constants
 
 @{
+    ViewData["Title"] = "Add a user";
     var firstNameHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.FirstName)).HasInnerHtml;
     var lastNameHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.LastName)).HasInnerHtml;
     var emailHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Email)).HasInnerHtml;
@@ -23,7 +24,7 @@
         </div>
         <div class="govuk-grid-column-full">
             <h1 class="govuk-heading-l">
-                Add a user
+                @ViewData["Title"]
             </h1>
             <form class="form" method="post">
                 <div class="govuk-form-group @(firstNameHasError ? "govuk-form-group--error" : "")">

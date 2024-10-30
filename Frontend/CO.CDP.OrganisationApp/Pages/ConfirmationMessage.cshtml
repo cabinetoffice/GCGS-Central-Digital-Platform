@@ -1,12 +1,15 @@
 @page "/confirmation-message"
 
+@{
+    ViewData["Title"] = "Thank you for contacting GOV.UK";
+}
+
 <main class="govuk-main-wrapper" id="main-content">
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <div class="govuk-!-margin-top-8 govuk-!-margin-bottom-8">
-
                 <h1 class="govuk-heading-xl">
-                    Thank you for contacting GOV.UK
+                    @ViewData["Title"]
                 </h1>
             </div>
 

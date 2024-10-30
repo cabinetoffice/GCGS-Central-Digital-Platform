@@ -1,6 +1,7 @@
 @page "/organisation/{id}/users/{userId}/remove"
 @model CO.CDP.OrganisationApp.Pages.Users.UserRemoveConfirmationModel
 @{
+    ViewData["Title"] = $"Are you sure you want to remove {Model.UserFullName}?";
     var hasError = ((TagBuilder)Html.ValidationMessageFor(m => m.ConfirmRemove)).HasInnerHtml;;
 }
 

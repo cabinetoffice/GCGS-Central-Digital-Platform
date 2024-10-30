@@ -1,13 +1,13 @@
 @page
 @model CO.CDP.OrganisationApp.Pages.ErrorModel
 @{
-    ViewData["Title"] = "Error page";
+    ViewData["Title"] = "Sorry, there is a problem with the service";
 }
 
 <main class="govuk-main-wrapper govuk-main-wrapper--l" id="main-content">
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-            <h1 class="govuk-heading-l">Sorry, there is a problem with the service</h1>
+            <h1 class="govuk-heading-l">@ViewData["Title"]</h1>
             <p class="govuk-body">Try again later.</p>                                
         </div>
     </div>

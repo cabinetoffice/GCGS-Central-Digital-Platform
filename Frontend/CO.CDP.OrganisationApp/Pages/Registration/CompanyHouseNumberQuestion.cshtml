@@ -3,6 +3,7 @@
 @model CO.CDP.OrganisationApp.Pages.Registration.CompanyHouseNumberQuestionModel
 
 @{
+    ViewData["Title"] = "Does your organisation have a Companies House number?";
     var companiesHouseNumberHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.HasCompaniesHouseNumber)).HasInnerHtml
         || ((TagBuilder)Html.ValidationMessageFor(m => m.CompaniesHouseNumber)).HasInnerHtml;
 
@@ -22,7 +23,7 @@
         <div class="govuk-grid-column-two-thirds">
             <partial name="_ErrorSummary" model="@Model.ModelState" />
 
-            <h1 class="govuk-heading-l">Does your organisation have a Companies House number?</h1>
+            <h1 class="govuk-heading-l">@ViewData["Title"]</h1>
             <p class="govuk-body">You can <a href="https://find-and-update.company-information.service.gov.uk/" target="_blank">find your company number on Companies House (opens in a new tab)</a>. It is an 8 digit or 2 letter and 6 digit number. For example, 12345678 or SC123456.</p>
             <form method="post">
                 @if (Request.Query.ContainsKey("frm-summary"))

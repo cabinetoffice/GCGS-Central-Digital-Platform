@@ -3,6 +3,7 @@
 @using CO.CDP.OrganisationApp.Constants
 
 @{
+    ViewData["Title"] = Model.UserFullName;
     var roleHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Role)).HasInnerHtml;
 
     string IsSelected(bool selectedCondition)
@@ -20,7 +21,7 @@
         </div>
         <div class="govuk-grid-column-full">
             <h1 class="govuk-heading-l">
-                @Model.UserFullName
+                @ViewData["Title"]
             </h1>
             <form class="form" method="post" asp-page-handler="@Model.Handler">
                 <div class="govuk-form-group @(roleHasError ? "govuk-form-group--error" : "")">
