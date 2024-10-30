@@ -44,7 +44,16 @@
                             </label>
                         </h1>
 
-                        <div id="hint" class="govuk-hint">@StaticTextResource.OrganisationRegistration_EnterOrganisationName_Hint</div>
+                        <div id="hint" class="govuk-hint">
+                            @if (Model.RegistrationDetails.OrganisationType == Constants.OrganisationType.Buyer)
+                            {
+                                @Html.Raw(StaticTextResource.Organisation_EnterOrganisationName_Buyer_Hint)
+                            }
+                            else
+                            {
+                                @StaticTextResource.Organisation_EnterOrganisationName_Supplier_Hint
+                            }
+                        </div>
 
                         <div class="govuk-form-group @(organisationNameHasError ? "govuk-form-group--error" : "")">
                             @if (organisationNameHasError)

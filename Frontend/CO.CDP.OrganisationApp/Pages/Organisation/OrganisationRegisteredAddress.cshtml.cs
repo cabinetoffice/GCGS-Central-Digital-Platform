@@ -1,4 +1,5 @@
 using CO.CDP.OrganisationApp.Constants;
+using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.Pages.Shared;
 using CO.CDP.OrganisationApp.WebApiClients;
 using Microsoft.AspNetCore.Authorization;
@@ -24,15 +25,17 @@ public class OrganisationRegisteredAddressModel(OrganisationWebApiClient.IOrgani
 
     [BindProperty]
     public bool? RedirectToOverview { get; set; }
+    public OrganisationWebApiClient.Organisation? Organisation;
 
     public async Task<IActionResult> OnGet()
     {
+        Organisation = await organisationClient.GetOrganisationAsync(Id);
+
+        if (Organisation == null) return Redirect("/page-not-found");
+
         SetupAddress(true);
 
-        var organisation = await organisationClient.GetOrganisationAsync(Id);
-        if (organisation == null) return Redirect("/page-not-found");
-
-        var regsiteredAddress = organisation.Addresses.FirstOrDefault(x => x.Type == AddressType.Registered);
+        var regsiteredAddress = Organisation.Addresses.FirstOrDefault(x => x.Type == AddressType.Registered);
 
         if (regsiteredAddress == null) return Redirect("/page-not-found");
 
@@ -57,8 +60,6 @@ public class OrganisationRegisteredAddressModel(OrganisationWebApiClient.IOrgani
         }
         try
         {
-            var organisation = await organisationClient.GetOrganisationAsync(Id);
-
             ICollection<OrganisationWebApiClient.OrganisationAddress> addresses = [
                             new OrganisationWebApiClient.OrganisationAddress(
                             streetAddress: Address.AddressLine1,
@@ -91,11 +92,24 @@ public class OrganisationRegisteredAddressModel(OrganisationWebApiClient.IOrgani
     {
         if (reset) Address = new AddressPartialModel { UkOrNonUk = UkOrNonUk };
 
-        Address.Heading = Address.IsNonUkAddress ?
-            "Enter your organisation's registered non-UK address" : "Enter your organisation's registered address";
-
-        Address.AddressHint = Address.IsNonUkAddress ?
-            "The address recorded on public records or within the public domain" : "The address registered with Companies House, or the principal address the business conducts its activities. For example, a head office.";
+        if (Address.IsNonUkAddress)
+        {
+            Address.Heading = "Enter your organisation's registered non-UK address";
+            Address.AddressHint = "The address recorded on public records or within the public domain.";
+        }
+        else
+        {
+            if (Organisation != null && (Organisation.IsBuyer() || Organisation.IsPendingBuyer()))
+            {
+                Address.Heading = "Enter your organisation's address";
+                Address.AddressHint = "The principal address the organisation conducts its activities. For example, a head office.";
+            }
+            else
+            {
+                Address.Heading = "Enter your organisation's registered address";
+                Address.AddressHint = "The address registered with Companies House, or the principal address the business conducts its activities. For example, a head office.";
+            }
+        }
 
         Address.NonUkAddressLink = $"/organisation/{Id}/address/non-uk{(RedirectToOverview == true ? "?frm-overview" : "")}";
     }

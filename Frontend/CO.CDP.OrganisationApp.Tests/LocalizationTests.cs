@@ -82,7 +82,7 @@ public class LocalizationTests
         responseBody.Should().NotBeNull();
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        responseBody.Should().Contain("Enter the organisation&#x27;s name");
+        responseBody.Should().Contain("Enter your organisation&#x27;s name");
     }
 
     [Fact]
@@ -102,7 +102,7 @@ public class LocalizationTests
         responseBody.Should().NotBeNull();
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        responseBody.Should().Contain("Enter the organisation&#x27;s name");
+        responseBody.Should().Contain("Enter your organisation&#x27;s name");
     }
 
     [Fact]
@@ -142,7 +142,7 @@ public class LocalizationTests
         responseBody.Should().NotBeNull();
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        responseBody.Should().Contain("<span class=\"field-validation-error\" data-valmsg-for=\"OrganisationName\" data-valmsg-replace=\"true\">Enter the organisation&#x27;s name</span>");
+        responseBody.Should().Contain("<span class=\"field-validation-error\" data-valmsg-for=\"OrganisationName\" data-valmsg-replace=\"true\">Enter your organisation&#x27;s name</span>");
     }
 
     [Fact]

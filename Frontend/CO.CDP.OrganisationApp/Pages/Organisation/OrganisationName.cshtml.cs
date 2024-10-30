@@ -20,15 +20,16 @@ public class OrganisationNameModel(IOrganisationClient organisationClient) : Pag
 
     [BindProperty(SupportsGet = true)]
     public Guid Id { get; set; }
+    public OrganisationWebApiClient.Organisation? Organisation;
 
     public async Task<IActionResult> OnGet()
     {
         try
         {
-            var organisation = await organisationClient.GetOrganisationAsync(Id);
-            if (organisation == null) return Redirect("/page-not-found");
+            Organisation = await organisationClient.GetOrganisationAsync(Id);
+            if (Organisation == null) return Redirect("/page-not-found");
 
-            OrganisationName = organisation.Name;
+            OrganisationName = Organisation.Name;
 
             return Page();
         }
@@ -45,9 +46,9 @@ public class OrganisationNameModel(IOrganisationClient organisationClient) : Pag
             return Page();
         }
 
-        var organisation = await organisationClient.GetOrganisationAsync(Id);
+        Organisation = await organisationClient.GetOrganisationAsync(Id);
 
-        if (organisation == null)
+        if (Organisation == null)
         {
             return Redirect("/page-not-found");
         }
