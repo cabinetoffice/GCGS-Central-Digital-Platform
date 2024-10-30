@@ -1,7 +1,5 @@
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using FluentAssertions;
-using Xunit;
 using CO.CDP.OrganisationApp.Pages.Registration;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages.Registration;
