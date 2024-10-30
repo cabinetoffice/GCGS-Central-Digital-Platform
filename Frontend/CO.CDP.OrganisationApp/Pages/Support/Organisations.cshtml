@@ -2,9 +2,13 @@
 @using CO.CDP.OrganisationApp.Constants
 @model OrganisationsModel
 
+@{
+    ViewData["Title"] = Model.Title;
+}
+
 <main class="govuk-main-wrapper" id="main-content">
     <table class="govuk-table">
-        <caption class="govuk-table__caption govuk-table__caption--m">@Model.Title</caption>
+        <caption class="govuk-table__caption govuk-table__caption--m">@ViewData["Title"]</caption>
         <thead class="govuk-table__head">
             <tr class="govuk-table__row">
                 <th scope="col" colspan="1" class="govuk-table__header">Organisation name</th>

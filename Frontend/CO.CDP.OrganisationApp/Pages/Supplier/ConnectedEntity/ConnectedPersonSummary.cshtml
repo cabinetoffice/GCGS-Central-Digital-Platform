@@ -4,6 +4,7 @@
 @inject IUserInfoService userInfoService
 
 @{
+    ViewData["Title"] = $"You have added {(Model.ConnectedEntities.Count == 1 ? "1 connected person" : $"{Model.ConnectedEntities.Count} connected persons")}";
     var hasError = ((TagBuilder)Html.ValidationMessageFor(m => m.HasConnectedEntity)).HasInnerHtml;
 }
 
@@ -16,7 +17,7 @@
         </div>
         <div class="govuk-grid-column-full">
             <h1 class="govuk-heading-l">
-                You have added @(Model.ConnectedEntities.Count == 1 ? "1 connected person" : $"{Model.ConnectedEntities.Count} connected persons")
+                @ViewData["Title"]
             </h1>
 
             @foreach (var ce in Model.ConnectedEntities)

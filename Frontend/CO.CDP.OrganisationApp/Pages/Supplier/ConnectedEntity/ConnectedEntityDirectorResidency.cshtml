@@ -1,6 +1,8 @@
 @page "/organisation/{id}/supplier-information/connected-person/director-residency/{ConnectedEntityId?}"
 @model CO.CDP.OrganisationApp.Pages.Supplier.ConnectedEntityDirectorResidencyModel
 @{
+    ViewData["Title"] = Model.Heading;
+
     var nationalityHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.DirectorLocation)).HasInnerHtml;
 
     var backLink = $"/organisation/{Model.Id}/supplier-information/connected-person/individual-psc-details/{Model.ConnectedEntityId}";
@@ -23,7 +25,7 @@
                 <div class="govuk-form-group @(nationalityHasError ? "govuk-form-group--error" : "")">
                     <span class="govuk-caption-l">@Model.Caption</span>
                     <h1 class="govuk-label-wrapper">
-                        <label class="govuk-label govuk-label--l" for="registerName">@Model.Heading</label>
+                        <label class="govuk-label govuk-label--l" for="registerName">@ViewData["Title"]</label>
                     </h1>                   
                     @if (nationalityHasError)
                     {

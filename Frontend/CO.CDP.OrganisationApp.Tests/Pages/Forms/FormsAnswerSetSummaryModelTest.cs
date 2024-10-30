@@ -38,7 +38,8 @@ public class FormsAnswerSetSummaryModelTest
                      removeConfirmationCaption: "Test Caption",
                      removeConfirmationHeading: "Test confimration heading",
                      singularSummaryHeading: null,
-                     furtherQuestionsExemptedHeading: null
+                     furtherQuestionsExemptedHeading: null,
+                     furtherQuestionsExemptedHint: null
                      )),
              questions: [],
              answerSets: [new FormAnswerSet(id: AnswerSetId, answers: [],

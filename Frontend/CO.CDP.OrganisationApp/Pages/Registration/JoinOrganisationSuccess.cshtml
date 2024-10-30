@@ -2,7 +2,8 @@
 @model JoinOrganisationSuccessModel
 
 @{
-var organisationDetails = Model.OrganisationDetails!;
+    ViewData["Title"] = "Request to join sent";
+    var organisationDetails = Model.OrganisationDetails!;
 }
 
 <a href="/organisation-selection" class="govuk-back-link">
@@ -14,7 +15,7 @@ var organisationDetails = Model.OrganisationDetails!;
         <div class="govuk-grid-column-full">
             <div class="govuk-panel govuk-panel--confirmation">
                 <h1 class="govuk-panel__title">
-                    Request to join sent
+                    @ViewData["Title"]
                 </h1>
                 <div class="govuk-panel__body">
                     You have successfully applied to join @organisationDetails.Name

@@ -2,6 +2,8 @@
 @model CO.CDP.OrganisationApp.Pages.Supplier.ConnectedEntityPersonTypeModel
 
 @{
+    ViewData["Title"] = "Select the relevant option";
+
     var personQuestionHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.ConnectedEntityType)).HasInnerHtml;
 
     string IsSelected(Constants.ConnectedEntityType radioValue)
@@ -21,7 +23,7 @@
                     <fieldset class="govuk-fieldset">
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                             <h1 class="govuk-fieldset__heading">
-                                Select the relevant option
+                                @ViewData["Title"]
                             </h1>
                         </legend>
                         <div id="connected-hint" class="govuk-hint">

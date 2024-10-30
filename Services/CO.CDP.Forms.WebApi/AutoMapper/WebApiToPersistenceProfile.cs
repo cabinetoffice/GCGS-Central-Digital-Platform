@@ -48,7 +48,8 @@ public class WebApiToPersistenceProfile : Profile
             .ForMember(dest => dest.AddAnotherAnswerLabel, opt => opt.MapFrom<NullableLocalizedPropertyResolver<Persistence.FormSectionConfiguration, Model.FormSectionConfiguration>, string?>(src => src.AddAnotherAnswerLabel))
             .ForMember(dest => dest.RemoveConfirmationCaption, opt => opt.MapFrom<NullableLocalizedPropertyResolver<Persistence.FormSectionConfiguration, Model.FormSectionConfiguration>, string?>(src => src.RemoveConfirmationCaption))
             .ForMember(dest => dest.RemoveConfirmationHeading, opt => opt.MapFrom<NullableLocalizedPropertyResolver<Persistence.FormSectionConfiguration, Model.FormSectionConfiguration>, string?>(src => src.RemoveConfirmationHeading))
-            .ForMember(dest => dest.FurtherQuestionsExemptedHeading, opt => opt.MapFrom<NullableLocalizedPropertyResolver<Persistence.FormSectionConfiguration, Model.FormSectionConfiguration>, string?>(src => src.FurtherQuestionsExemptedHeading));
+            .ForMember(dest => dest.FurtherQuestionsExemptedHeading, opt => opt.MapFrom<NullableLocalizedPropertyResolver<Persistence.FormSectionConfiguration, Model.FormSectionConfiguration>, string?>(src => src.FurtherQuestionsExemptedHeading))
+            .ForMember(dest => dest.FurtherQuestionsExemptedHint, opt => opt.MapFrom<NullableLocalizedPropertyResolver<Persistence.FormSectionConfiguration, Model.FormSectionConfiguration>, string?>(src => src.FurtherQuestionsExemptedHint));
 
         CreateMap<Model.FormAnswer, Persistence.FormAnswer>()
             .ForMember(dest => dest.Guid, opt => opt.MapFrom(src => src.Id))

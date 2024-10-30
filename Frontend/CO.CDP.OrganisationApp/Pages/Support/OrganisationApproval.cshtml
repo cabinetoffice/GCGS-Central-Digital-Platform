@@ -3,9 +3,10 @@
 @model OrganisationApprovalModel
 
 @{
-var organisationDetails = Model.OrganisationDetails!;
-var registeredAddress = organisationDetails.Addresses.FirstOrDefault(a => a.Type == CO.CDP.Organisation.WebApiClient.AddressType.Registered);
-var approvalHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Approval)).HasInnerHtml;
+    var organisationDetails = Model.OrganisationDetails!;
+    var registeredAddress = organisationDetails.Addresses.FirstOrDefault(a => a.Type == CO.CDP.Organisation.WebApiClient.AddressType.Registered);
+    var approvalHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Approval)).HasInnerHtml;
+    ViewData["Title"] = organisationDetails.Name;
 }
 
 <a href="/support/organisations/buyer" class="govuk-back-link">
@@ -18,7 +19,7 @@ var approvalHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Approval)).
             <partial name="_ErrorSummary" model="@Model.ModelState" />
             <fieldset class="govuk-fieldset">
                 <h1 class="govuk-heading-l">
-                    <span class="govuk-label--l">@organisationDetails.Name</span>
+                    @ViewData["Title"]
                 </h1>
                 <h2 class="govuk-heading-m">Organisation details</h2>
                 <dl class="govuk-summary-list">

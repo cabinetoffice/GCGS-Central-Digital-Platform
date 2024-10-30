@@ -2,6 +2,7 @@
 @model CO.CDP.OrganisationApp.Pages.Supplier.LegalFormOtherOrganisationModel
 
 @{
+    ViewData["Title"] = "Enter your organisation's registered legal form";
     var registeredOtherOrgHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.OtherOrganisation)).HasInnerHtml;
 }
 
@@ -16,7 +17,7 @@
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                         <h1 class="govuk-label-wrapper">
                             <label class="govuk-label govuk-label--l" for="legalForm-by-text">
-                                Enter your organisation's registered legal form
+                                @ViewData["Title"]
                             </label>
                         </h1>
                     </legend>
