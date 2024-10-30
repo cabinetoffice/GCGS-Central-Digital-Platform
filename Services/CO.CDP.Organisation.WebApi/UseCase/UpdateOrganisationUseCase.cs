@@ -104,7 +104,7 @@ public class UpdateOrganisationUseCase(
 
                 foreach (var identifier in updateObject.AdditionalIdentifiers)
                 {
-                    await ValidateIdentifierIsNotKnownToUs(organisationRepository, identifier);
+                    await ValidateIdentifierIsNotKnownToUs(identifier);
 
                     var existingIdentifier = organisation.Identifiers.FirstOrDefault(i => i.Scheme == identifier.Scheme);
                     if (existingIdentifier != null)
@@ -194,7 +194,7 @@ public class UpdateOrganisationUseCase(
         return await Task.FromResult(true);
     }
 
-    private static async Task ValidateIdentifierIsNotKnownToUs(IOrganisationRepository organisationRepository, OrganisationIdentifier identifier)
+    private async Task ValidateIdentifierIsNotKnownToUs(OrganisationIdentifier identifier)
     {
         if (string.IsNullOrWhiteSpace(identifier.Id))
         {
