@@ -384,7 +384,7 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
         Func<Task> act = async () => await UseCase.Execute((_organisationId, command));
 
         await act.Should()
-           .ThrowAsync<InvalidUpdateOrganisationCommand>();
+           .ThrowAsync<InvalidUpdateOrganisationCommand.MissingIdentifierNumber>();
 
         organisation.Identifiers.FirstOrDefault(i => i.Scheme == "VAT").Should().BeNull();
     }
