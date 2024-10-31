@@ -19,6 +19,5 @@ public record OrganisationExtended
 
     /// <example>["supplier"]</example>
     public required List<PartyRole> Roles { get; init; }
-
     public required Details Details { get; init; }
 }

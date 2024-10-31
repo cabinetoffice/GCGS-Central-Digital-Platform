@@ -40,7 +40,7 @@
             <hr class="govuk-section-break govuk-section-break--invisible govuk-section-break--xl">
 
             <section>
-                @if (Model.UserOrganisations.Any())
+                @if (Model.Organisations.Any())
                 {
                     <table class="govuk-table">
                         <caption class="govuk-table__caption govuk-table__caption--m">My organisations</caption>
@@ -51,13 +51,19 @@
                         </thead>
                         <tbody class="govuk-table__body">
                             @{
-                                foreach (var org in Model.UserOrganisations)
+                                foreach (var org in Model.Organisations)
                                 {
                                     <tr class="govuk-table__row">
                                         <th scope="row" class="govuk-table__header">
                                             @org.Name
                                             @{
-                                                if (org.IsPendingBuyer())
+                                                if (org.IsRejectedBuyer())
+                                                {
+                                                    <strong class="govuk-tag govuk-tag--blue">
+                                                        Action required
+                                                    </strong>
+                                                }
+                                                else if (org.IsPendingBuyer())
                                                 {
                                                     <strong class="govuk-tag govuk-tag--blue">
                                                         Pending approval

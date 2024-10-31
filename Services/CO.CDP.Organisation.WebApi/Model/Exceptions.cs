@@ -12,6 +12,7 @@ public abstract class InvalidUpdateOrganisationCommand(string message, Exception
         : InvalidUpdateOrganisationCommand("Unknown organisation update type.");
 
     public class MissingOrganisationName() : InvalidUpdateOrganisationCommand("Missing organisation name.");
+    public class MissingPersonId() : InvalidUpdateOrganisationCommand("Missing person ID.");
 
     public class MissingRoles() : InvalidUpdateOrganisationCommand("Missing roles.");
 

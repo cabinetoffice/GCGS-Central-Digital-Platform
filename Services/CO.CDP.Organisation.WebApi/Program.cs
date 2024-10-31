@@ -66,6 +66,7 @@ builder.Services.AddScoped<IOrganisationJoinRequestRepository, DatabaseOrganisat
 builder.Services.AddScoped<IUseCase<AssignOrganisationIdentifier, bool>, AssignIdentifierUseCase>();
 builder.Services.AddScoped<IUseCase<RegisterOrganisation, Organisation>, RegisterOrganisationUseCase>();
 builder.Services.AddScoped<IUseCase<Guid, Organisation?>, GetOrganisationUseCase>();
+builder.Services.AddScoped<IUseCase<Guid, OrganisationExtended?>, GetOrganisationExtendedUseCase>();
 builder.Services.AddScoped<IUseCase<Organisation?>, GetMyOrganisationUseCase>();
 builder.Services.AddScoped<IUseCase<OrganisationQuery, Organisation?>, LookupOrganisationUseCase>();
 builder.Services.AddScoped<IUseCase<PaginatedOrganisationQuery, IEnumerable<OrganisationExtended>>, GetOrganisationsUseCase>();

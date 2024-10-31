@@ -11,7 +11,9 @@ using OrganisationWebApiClient = CO.CDP.Organisation.WebApiClient;
 namespace CO.CDP.OrganisationApp.Pages.Organisation;
 
 [Authorize(Policy = OrgScopeRequirement.Editor)]
-public class OrganisationNameModel(IOrganisationClient organisationClient) : PageModel
+public class OrganisationNameModel(
+    IOrganisationClient organisationClient,
+    IUserInfoService userInfoService) : PageModel
 {
     [BindProperty]
     [DisplayName("Enter your organisation's name")]

@@ -20,6 +20,11 @@ public static class OrganisationExtensions
         return organisation.Details.PendingRoles.Contains(PartyRole.Buyer);
     }
 
+    public static bool IsRejectedBuyer(this Organisation.WebApiClient.Organisation organisation)
+    {
+        return IsPendingBuyer(organisation) && organisation.Details.Approval.ReviewedBy != null;
+    }
+
     public static ICollection<Identifier> AdditionalIdentifiersToShow(this Organisation.WebApiClient.Organisation organisationDetails)
     {              
         return organisationDetails.AdditionalIdentifiers

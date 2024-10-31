@@ -19,7 +19,7 @@ public class OrganisationOverviewModel(IOrganisationClient organisationClient) :
     {
         try
         {
-            OrganisationDetails = await organisationClient.GetOrganisationAsync(Id);
+            OrganisationDetails = await organisationClient.GetOrganisationExtendedAsync(Id);
             return Page();
         }
         catch (ApiException ex) when (ex.StatusCode == 404)

@@ -40,7 +40,8 @@ public class WebApiToPersistenceProfile : Profile
                         Id = m.ReviewedBy.Guid
                     } : null,
                     Comment = m.ReviewComment
-                }
+                },
+                PendingRoles = m.PendingRoles
             }));
 
         CreateMap<OrganisationIdentifier, Persistence.Organisation.Identifier>()
