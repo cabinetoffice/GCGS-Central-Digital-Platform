@@ -28,11 +28,12 @@ public class ChangePersonInviteUserRoleTests
     public async Task OnGet_ShouldInitializeModel_WhenPersonInviteExists()
     {
         var mockPersonInvite = new PersonInviteModel(
-                                    "a@b.com",
-                                    "John",
-                                    new Guid(),
-                                    "Smith",
-                                    new List<string> { OrganisationPersonScopes.Admin, OrganisationPersonScopes.Editor }
+                                    email: "a@b.com",
+                                    firstName: "John",
+                                    id: new Guid(),
+                                    lastName: "Smith",
+                                    scopes: new List<string> { OrganisationPersonScopes.Admin, OrganisationPersonScopes.Editor },
+                                    expiresOn: null
                                 );
 
         _mockOrganisationClient
@@ -64,12 +65,13 @@ public class ChangePersonInviteUserRoleTests
     public async Task OnPostPersonInvite_ShouldReturnPageResult_WhenModelStateIsInvalid()
     {
         var mockPersonInvite = new PersonInviteModel(
-                                    "a@b.com",
-                                    "John",
-                                    new Guid(),
-                                    "Smith",
-                                    new List<string> { OrganisationPersonScopes.Admin, OrganisationPersonScopes.Editor }
-                                );
+            email: "a@b.com",
+            firstName: "John",
+            id: new Guid(),
+            lastName: "Smith",
+            scopes: new List<string> { OrganisationPersonScopes.Admin, OrganisationPersonScopes.Editor },
+            expiresOn: null
+        );
 
         _mockOrganisationClient
             .Setup(s => s.GetOrganisationPersonInvitesAsync(mockPersonInvite.Id))
@@ -102,12 +104,13 @@ public class ChangePersonInviteUserRoleTests
     public async Task OnPostPersonInvite_ShouldUpdatePersonInviteTableAndRedirect_WhenModelStateIsValid()
     {
         var mockPersonInvite = new PersonInviteModel(
-                                    "a@b.com",
-                                    "John",
-                                    new Guid(),
-                                    "Smith",
-                                    new List<string> { OrganisationPersonScopes.Editor }
-                                );
+            email: "a@b.com",
+            firstName: "John",
+            id: new Guid(),
+            lastName: "Smith",
+            scopes: new List<string> { OrganisationPersonScopes.Editor },
+            expiresOn: null
+        );
 
         _mockOrganisationClient
             .Setup(s => s.GetOrganisationPersonInvitesAsync(mockPersonInvite.Id))

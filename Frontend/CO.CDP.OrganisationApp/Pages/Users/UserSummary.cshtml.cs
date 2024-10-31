@@ -93,25 +93,30 @@ public class UserSummaryModel(
         }
     }
 
-    private ICollection<PersonInviteModel> SortPersonInvites(ICollection<PersonInviteModel> personInvites)
+    private ICollection<PersonInviteModel>? SortPersonInvites(ICollection<PersonInviteModel>? personInvites)
     {
-        // Group invites by email
-        var invites = personInvites
-            .GroupBy(pi => pi.Email)
-            .Select(group =>
-            {
-                // Check if there are any unexpired invites in the group
-                var unexpiredInvites = group.Where(pi => pi.ExpiresOn == null || DateTimeOffset.UtcNow < pi.ExpiresOn).ToList();
+        if (personInvites != null)
+        {
+            // Group invites by email
+            var invites = personInvites
+                .GroupBy(pi => pi.Email)
+                .Select(group =>
+                {
+                    // Check if there are any unexpired invites in the group
+                    var unexpiredInvites = group.Where(pi => pi.ExpiresOn == null || DateTimeOffset.UtcNow < pi.ExpiresOn).ToList();
 
-                // Order the group by expiresOn so we can easily grab the last expired one
-                var orderedGroup = group.OrderBy(g => g.ExpiresOn);
+                    // Order the group by expiresOn so we can easily grab the last expired one
+                    var orderedGroup = group.OrderBy(g => g.ExpiresOn);
 
-                // If there are unexpired invites, return them, otherwise return the last expired invite
-                return unexpiredInvites.Any() ? unexpiredInvites : new List<PersonInviteModel> { orderedGroup.Last() };
-            })
-            .SelectMany(i => i)
-            .ToList();
+                    // If there are unexpired invites, return them, otherwise return the last expired invite
+                    return unexpiredInvites.Any() ? unexpiredInvites : new List<PersonInviteModel> { orderedGroup.Last() };
+                })
+                .SelectMany(i => i)
+                .ToList();
 
-        return invites;
+            return invites;
+        }
+
+        return personInvites;
     }
 }
