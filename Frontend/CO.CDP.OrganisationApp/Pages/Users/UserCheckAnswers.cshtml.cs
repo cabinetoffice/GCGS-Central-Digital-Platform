@@ -58,7 +58,7 @@ public class UserCheckAnswersModel(
         }
         catch (ApiException<CO.CDP.Organisation.WebApiClient.ProblemDetails> exc)
         {
-            ApiExceptionMapper.MapApiExceptions(exc, ModelState); 
+            ApiExceptionMapper.MapApiExceptions(exc, ModelState);
             return Page();
         }
         finally

@@ -127,13 +127,24 @@
                                     <span class="govuk-tag govuk-tag--yellow">Viewer</span>
                                 }
                             }
-                            <div class="govuk-hint">Invite sent</div>
+
+                            @if (DateTimeOffset.UtcNow > p.ExpiresOn)
+                            {
+                                <div class="govuk-hint">Invite expired</div>
+                            }
+                            else
+                            {
+                                <div class="govuk-hint">Invite sent</div>
+                            }
                         </dt>
                         <dd class="govuk-summary-list__value">
                             <strong>@p.Email</strong>
                         </dd>
                         <dd class="govuk-summary-list__actions">
                             <ul class="govuk-summary-list__actions-list">
+                                <li class="govuk-summary-list__actions-list-item">
+                                    <a class="govuk-link" href="/organisation/@Model.Id/users/@p.Id/resend-invite">Resend</a>
+                                </li>
                                 <li class="govuk-summary-list__actions-list-item">
                                     <a class="govuk-link" href="/organisation/@Model.Id/users/@p.Id/change-role?handler=personInvite">Change</a>
                                 </li>

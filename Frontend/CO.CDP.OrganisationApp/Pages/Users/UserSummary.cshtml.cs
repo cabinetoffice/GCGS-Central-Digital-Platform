@@ -1,6 +1,5 @@
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Constants;
-using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.WebApiClients;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -46,7 +45,7 @@ public class UserSummaryModel(
             await Task.WhenAll(getPersonsTask, getPersonInvitesTask, getOrganisationJoinRequestsTask);
 
             Persons = getPersonsTask.Result;
-            PersonInvites = getPersonInvitesTask.Result;
+            PersonInvites = SortPersonInvites(getPersonInvitesTask.Result);
             OrganisationJoinRequests = getOrganisationJoinRequestsTask.Result;
         }
         catch (ApiException ex) when (ex.StatusCode == 404)
@@ -92,5 +91,27 @@ public class UserSummaryModel(
         {
             return Redirect("/page-not-found");
         }
+    }
+
+    private ICollection<PersonInviteModel> SortPersonInvites(ICollection<PersonInviteModel> personInvites)
+    {
+        // Group invites by email
+        var invites = personInvites
+            .GroupBy(pi => pi.Email)
+            .Select(group =>
+            {
+                // Check if there are any unexpired invites in the group
+                var unexpiredInvites = group.Where(pi => pi.ExpiresOn == null || DateTimeOffset.UtcNow < pi.ExpiresOn).ToList();
+
+                // Order the group by expiresOn so we can easily grab the last expired one
+                var orderedGroup = group.OrderBy(g => g.ExpiresOn);
+
+                // If there are unexpired invites, return them, otherwise return the last expired invite
+                return unexpiredInvites.Any() ? unexpiredInvites : new List<PersonInviteModel> { orderedGroup.Last() };
+            })
+            .SelectMany(i => i)
+            .ToList();
+
+        return invites;
     }
 }

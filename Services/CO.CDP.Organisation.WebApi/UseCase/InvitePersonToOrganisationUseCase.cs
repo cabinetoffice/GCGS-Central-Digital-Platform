@@ -70,8 +70,11 @@ public class InvitePersonToOrganisationUseCase(
 
         foreach (var personInvite in existingPersonInvites)
         {
-            personInvite.ExpiresOn = DateTimeOffset.UtcNow;
-            personInviteRepository.Save(personInvite);
+            if (personInvite.ExpiresOn == null)
+            {
+                personInvite.ExpiresOn = DateTimeOffset.UtcNow;
+                personInviteRepository.Save(personInvite);
+            }
         }
     }
 
