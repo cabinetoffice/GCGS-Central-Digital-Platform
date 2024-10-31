@@ -3,6 +3,7 @@
 @model BuyerDevolvedRegulationModel
 
 @{
+    ViewData["Title"] = "Do devolved regulations apply to your organisation?";
     var devolvedHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Devolved)).HasInnerHtml;
 
     var backLink = RegistrationStepModel.BuyerOrganisationTypePage;
@@ -26,7 +27,7 @@
                     <fieldset class="govuk-fieldset">
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                             <h1 class="govuk-fieldset__heading">
-                                Do devolved regulations apply to your organisation?
+                                @ViewData["Title"]
                             </h1>
                         </legend>
                         @if (devolvedHasError)

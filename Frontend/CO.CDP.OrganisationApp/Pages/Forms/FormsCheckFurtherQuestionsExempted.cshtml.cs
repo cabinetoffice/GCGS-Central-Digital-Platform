@@ -26,6 +26,7 @@ public class FormsCheckFurtherQuestionsExemptedModel(IFormsClient formsClient, I
     public bool? Confirm { get; set; }
 
     public string? Heading { get; set; }
+    public string? Hint { get; set; }
 
     public async Task<IActionResult> OnGetAsync()
     {
@@ -61,5 +62,6 @@ public class FormsCheckFurtherQuestionsExemptedModel(IFormsClient formsClient, I
     {
         var form = await formsClient.GetFormSectionQuestionsAsync(FormId, SectionId, OrganisationId);
         Heading = form?.Section?.Configuration?.FurtherQuestionsExemptedHeading;
+        Hint = form?.Section?.Configuration?.FurtherQuestionsExemptedHint;
     }
 }

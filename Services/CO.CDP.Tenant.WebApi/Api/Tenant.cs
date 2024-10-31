@@ -6,6 +6,7 @@ using CO.CDP.Swashbuckle.Security;
 using CO.CDP.Swashbuckle.SwaggerGen;
 using CO.CDP.Tenant.WebApi.Model;
 using CO.CDP.Tenant.WebApi.UseCase;
+using CO.CDP.WebApi.Foundation;
 using DotSwashbuckle.AspNetCore.SwaggerGen;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
@@ -111,7 +112,7 @@ public static class ApiExtensions
             }
         );
         options.IncludeXmlComments(Assembly.GetExecutingAssembly(), Assembly.GetAssembly(typeof(Address)));
-        options.OperationFilter<ProblemDetailsOperationFilter>(Extensions.ServiceCollectionExtensions.ErrorCodes());
+        options.OperationFilter<ProblemDetailsOperationFilter>(ErrorCodes.Exception4xxMap.HttpStatusCodeErrorMap());
         options.ConfigureBearerSecurity();
         options.ConfigureApiKeySecurity();
     }

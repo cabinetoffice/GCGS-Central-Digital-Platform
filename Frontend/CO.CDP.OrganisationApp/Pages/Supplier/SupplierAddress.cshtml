@@ -2,6 +2,10 @@
 @using CO.CDP.OrganisationApp.Pages.Shared
 @model CO.CDP.OrganisationApp.Pages.Supplier.SupplierAddressModel
 
+@{
+    ViewData["Title"] = Model.Address.Heading;
+}
+
 @if (Model.Address.IsNonUkAddress)
 {
     <a href="/organisation/@Model.Id/supplier-information/@Model.AddressType.ToString().ToLower()-address/uk" class="govuk-back-link">Back</a>

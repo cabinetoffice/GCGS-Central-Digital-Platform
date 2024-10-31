@@ -20,6 +20,7 @@
         <PackageReference Include="AspNetCore.HealthChecks.NpgSql" Version="8.0.1" />
         <ProjectReference Include="..\..\Libraries\CO.CDP.Authentication\CO.CDP.Authentication.csproj" />
         <ProjectReference Include="..\..\Libraries\CO.CDP.AwsServices\CO.CDP.AwsServices.csproj" />
+        <ProjectReference Include="..\..\Libraries\CO.CDP.WebApi.Foundation\CO.CDP.WebApi.Foundation.csproj" />
         <ProjectReference Include="..\CO.CDP.OrganisationInformation.Persistence\CO.CDP.OrganisationInformation.Persistence.csproj" />
         <ProjectReference Include="..\CO.CDP.OrganisationInformation\CO.CDP.OrganisationInformation.csproj" />
         <ProjectReference Include="..\..\Libraries\CO.CDP.Functional\CO.CDP.Functional.csproj" />

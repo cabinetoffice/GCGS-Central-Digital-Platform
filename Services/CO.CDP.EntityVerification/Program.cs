@@ -1,19 +1,20 @@
-using System.Reflection;
+using CO.CDP.Authentication;
 using CO.CDP.AwsServices;
 using CO.CDP.Configuration.Assembly;
+using CO.CDP.Configuration.ForwardedHeaders;
+using CO.CDP.Configuration.Helpers;
+using CO.CDP.EntityVerification;
 using CO.CDP.EntityVerification.Api;
 using CO.CDP.EntityVerification.Events;
-using CO.CDP.EntityVerification.Extensions;
+using CO.CDP.EntityVerification.Model;
 using CO.CDP.EntityVerification.Persistence;
 using CO.CDP.EntityVerification.Ppon;
+using CO.CDP.EntityVerification.UseCase;
 using CO.CDP.MQ;
 using CO.CDP.MQ.Hosting;
-using CO.CDP.EntityVerification.UseCase;
-using CO.CDP.Configuration.Helpers;
+using CO.CDP.WebApi.Foundation;
 using Microsoft.EntityFrameworkCore;
-using CO.CDP.EntityVerification.Model;
-using CO.CDP.Authentication;
-using CO.CDP.Configuration.ForwardedHeaders;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.ConfigureForwardedHeaders();
@@ -24,7 +25,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(o => o.DocumentPponApi(builder.Configuration));
 
 builder.Services.AddHealthChecks();
-builder.Services.AddEntityVerificationProblemDetails();
+builder.Services.AddProblemDetails();
 builder.Services.AddDbContext<EntityVerificationContext>(o =>
     o.UseNpgsql(ConnectionStringHelper.GetConnectionString(builder.Configuration, "EntityVerificationDatabase")));
 builder.Services.AddScoped<IPponRepository, DatabasePponRepository>();
@@ -70,6 +71,7 @@ builder.Services.AddEntityVerificationAuthorization();
 
 var app = builder.Build();
 app.UseForwardedHeaders();
+app.UseErrorHandler(ErrorCodes.Exception4xxMap);
 
 // Configure the HTTP request pipeline.
 if (builder.Configuration.GetValue("Features:SwaggerUI", false))

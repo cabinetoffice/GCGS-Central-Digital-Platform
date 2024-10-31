@@ -1,4 +1,3 @@
-using System.Reflection;
 using CO.CDP.Authentication;
 using CO.CDP.AwsServices;
 using CO.CDP.Configuration.Assembly;
@@ -11,11 +10,13 @@ using CO.CDP.Organisation.WebApi;
 using CO.CDP.Organisation.WebApi.Api;
 using CO.CDP.Organisation.WebApi.AutoMapper;
 using CO.CDP.Organisation.WebApi.Events;
-using CO.CDP.Organisation.WebApi.Extensions;
 using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.Organisation.WebApi.UseCase;
+using CO.CDP.OrganisationInformation;
 using CO.CDP.OrganisationInformation.Persistence;
+using CO.CDP.WebApi.Foundation;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection;
 using ConnectedEntity = CO.CDP.Organisation.WebApi.Model.ConnectedEntity;
 using ConnectedEntityLookup = CO.CDP.Organisation.WebApi.Model.ConnectedEntityLookup;
 using Organisation = CO.CDP.Organisation.WebApi.Model.Organisation;
@@ -79,7 +80,7 @@ builder.Services.AddScoped<IUseCase<(Guid, Guid, UpdateConnectedEntity), bool>, 
 builder.Services.AddScoped<IUseCase<(Guid, Guid, DeleteConnectedEntity), bool>, DeleteConnectedEntityUseCase>();
 builder.Services.AddScoped<IUseCase<Guid, IEnumerable<Person>>, GetPersonsUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, RemovePersonFromOrganisation), bool>, RemovePersonFromOrganisationUseCase>();
-builder.Services.AddScoped<IUseCase<(Guid, InvitePersonToOrganisation), PersonInvite>, InvitePersonToOrganisationUseCase>();
+builder.Services.AddScoped<IUseCase<(Guid, InvitePersonToOrganisation), bool>, InvitePersonToOrganisationUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, Guid, UpdateInvitedPersonToOrganisation), bool>, UpdateInvitedPersonToOrganisationUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, Guid, UpdatePersonToOrganisation), bool>, UpdatePersonToOrganisationUseCase>();
 builder.Services.AddScoped<IUseCase<Guid, IEnumerable<PersonInviteModel>>, GetPersonInvitesUseCase>();
@@ -90,9 +91,12 @@ builder.Services.AddScoped<IUseCase<Guid, IEnumerable<CO.CDP.Organisation.WebApi
 builder.Services.AddScoped<IUseCase<(Guid, RegisterAuthenticationKey), bool>, RegisterAuthenticationKeyUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, string), bool>, RevokeAuthenticationKeyUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, CreateOrganisationJoinRequest), OrganisationJoinRequest>, CreateOrganisationJoinRequestUseCase>();
+builder.Services.AddScoped<IUseCase<(Guid, OrganisationJoinRequestStatus?), IEnumerable<JoinRequestLookUp>>, GetOrganisationJoinRequestUseCase>();
+builder.Services.AddScoped<IUseCase<(Guid, Guid, UpdateJoinRequest), bool>, UpdateJoinRequestUseCase>();
 builder.Services.AddScoped<IUseCase<ProvideFeedbackAndContact, bool>, ProvideFeedbackAndContactUseCase>();
+builder.Services.AddScoped<IUseCase<ContactUs, bool>, ContactUsUseCase>();
 
-builder.Services.AddOrganisationProblemDetails();
+builder.Services.AddProblemDetails();
 
 builder.Services.AddJwtBearerAndApiKeyAuthentication(builder.Configuration, builder.Environment);
 builder.Services.AddOrganisationAuthorization();
@@ -108,6 +112,7 @@ if (Assembly.GetEntryAssembly().IsRunAs("CO.CDP.Organisation.WebApi"))
 
 var app = builder.Build();
 app.UseForwardedHeaders();
+app.UseErrorHandler(ErrorCodes.Exception4xxMap);
 
 // Configure the HTTP request pipeline.
 if (builder.Configuration.GetValue("Features:SwaggerUI", false))

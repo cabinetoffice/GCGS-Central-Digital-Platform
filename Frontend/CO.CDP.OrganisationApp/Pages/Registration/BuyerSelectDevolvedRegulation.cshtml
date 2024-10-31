@@ -4,6 +4,7 @@
 @using CO.CDP.OrganisationApp.Constants
 
 @{
+    ViewData["Title"] = "Which devolved regulations apply?";
     var regulationsHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Regulations)).HasInnerHtml;
 
     var backLink = RegistrationStepModel.BuyerDevolvedRegulationPage;
@@ -32,7 +33,7 @@
                     <fieldset class="govuk-fieldset">
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                             <h1 class="govuk-fieldset__heading">
-                                Which devolved regulations apply?
+                                @ViewData["Title"]
                             </h1>
                         </legend>
                         <div id="waste-hint" class="govuk-hint">

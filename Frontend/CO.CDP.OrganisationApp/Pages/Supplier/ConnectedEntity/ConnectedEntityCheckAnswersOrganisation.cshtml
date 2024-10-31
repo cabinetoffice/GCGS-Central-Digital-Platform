@@ -2,6 +2,8 @@
 @using CO.CDP.OrganisationApp.Constants
 @model CO.CDP.OrganisationApp.Pages.Supplier.ConnectedEntityCheckAnswersOrganisationModel
 @{
+    ViewData["Title"] = Model.Heading;
+
     var details = Model.ConnectedEntityDetails!;
     var ukNonUkRegisterAddress = details.RegisteredAddress!.IsNonUk ? "non-uk" : "uk";
     var ukNonUkPostalAddress = details.PostalAddress != null ? (details.PostalAddress.IsNonUk ? "non-uk" : "uk") : "uk";
@@ -28,7 +30,7 @@
         <div class="govuk-grid-column-full">
             <form class="form" method="post">
                 <span class="govuk-caption-l">@Model.Caption</span>
-                <h1 class="govuk-heading-l">@Model.Heading</h1>
+                <h1 class="govuk-heading-l">@ViewData["Title"]</h1>
                 <dl class="govuk-summary-list">
 
                     <div class="govuk-summary-list__row">
@@ -41,7 +43,7 @@
                         <dd class="govuk-summary-list__actions">
                             <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/organisation-name/@Model.ConnectedEntityId?frm-chk-answer=true">
                                 Change<span class="govuk-visually-hidden">
-                                    the organisation name
+                                    the company name
                                 </span>
                             </a>
                         </dd>
@@ -61,7 +63,7 @@
                             <dd class="govuk-summary-list__actions">
                                 <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/registered-address/@ukNonUkRegisterAddress/@Model.ConnectedEntityId?frm-chk-answer=true">
                                     Change<span class="govuk-visually-hidden">
-                                        the organisation's address
+                                        the registered address
                                     </span>
                                 </a>
                             </dd>
@@ -82,12 +84,12 @@
                             <dd class="govuk-summary-list__actions">
                                 <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/postal-address/@ukNonUkPostalAddress/@Model.ConnectedEntityId?frm-chk-answer=true">
                                     Change<span class="govuk-visually-hidden">
-                                        the organisation's address
+                                        the postal address
                                     </span>
                                 </a>
                             </dd>
                         </div>
-                    }                                        
+                    }
 
                     @if (details.SupplierHasCompanyHouseNumber == true)
                     {
@@ -104,7 +106,7 @@
                                 <dd class="govuk-summary-list__actions">
                                     <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/law-register/@Model.ConnectedEntityId?frm-chk-answer=true">
                                         Change<span class="govuk-visually-hidden">
-                                            the Legal form
+                                            the legal form and law
                                         </span>
                                     </a>
                                 </dd>
@@ -116,38 +118,42 @@
                         @if (Model.ShowLegalForm)
                         {
                             var enforceLinkPage = details.HasLegalForm == true ? "law-enforces" : "legal-form-question";
+                            var legalFormEmpty = string.IsNullOrEmpty(details.LegalForm);
 
                             <div class="govuk-summary-list__row">
                                 <dt class="govuk-summary-list__key">
                                     Legal form:
                                 </dt>
                                 <dd class="govuk-summary-list__value">
-                                    @details.LegalForm
+                                    @(legalFormEmpty == true ? "no" : "yes, " + details.LegalForm)
                                 </dd>
                                 <dd class="govuk-summary-list__actions">
                                     <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/legal-form-question/@Model.ConnectedEntityId?frm-chk-answer=true">
                                         Change<span class="govuk-visually-hidden">
-                                            the Legal form
+                                            the legal form
                                         </span>
                                     </a>
                                 </dd>
                             </div>
-                        
-                            <div class="govuk-summary-list__row">
-                                <dt class="govuk-summary-list__key">
-                                    Enforced by:
-                                </dt>
-                                <dd class="govuk-summary-list__value">
-                                    @details.LawRegistered
-                                </dd>
-                                <dd class="govuk-summary-list__actions">
-                                    <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/@enforceLinkPage/@Model.ConnectedEntityId?frm-chk-answer=true">
-                                        Change<span class="govuk-visually-hidden">
-                                            which law enforces it?
-                                        </span>
-                                    </a>
-                                </dd>
-                            </div>
+
+                            @if (!legalFormEmpty)
+                            {
+                                <div class="govuk-summary-list__row">
+                                    <dt class="govuk-summary-list__key">
+                                        Enforced by:
+                                    </dt>
+                                    <dd class="govuk-summary-list__value">
+                                        @details.LawRegistered
+                                    </dd>
+                                    <dd class="govuk-summary-list__actions">
+                                        <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/@enforceLinkPage/@Model.ConnectedEntityId?frm-chk-answer=true">
+                                            Change<span class="govuk-visually-hidden">
+                                                the "enforced by" law
+                                            </span>
+                                        </a>
+                                    </dd>
+                                </div>
+                            }
                         }
                     }
 
@@ -165,7 +171,7 @@
                             <dd class="govuk-summary-list__actions">
                                 <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/company-question/@Model.ConnectedEntityId?frm-chk-answer=true">
                                     Change<span class="govuk-visually-hidden">
-                                        the company house number
+                                        the Companies House registration status and number
                                     </span>
                                 </a>
                             </dd>
@@ -184,7 +190,7 @@
                             <dd class="govuk-summary-list__actions">
                                 <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/overseas-company-question/@Model.ConnectedEntityId?frm-chk-answer=true">
                                     Change<span class="govuk-visually-hidden">
-                                        the company house number
+                                        the registered with overseas equivalent
                                     </span>
                                 </a>
                             </dd>
@@ -203,7 +209,7 @@
                             <dd class="govuk-summary-list__actions">
                                 <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/nature-of-control/@Model.ConnectedEntityId?frm-chk-answer=true">
                                     Change<span class="govuk-visually-hidden">
-                                        the nature of control
+                                        the conditions of control
                                     </span>
                                 </a>
                             </dd>
@@ -219,7 +225,7 @@
                             <dd class="govuk-summary-list__value">
                                 @Html.Raw(details.RegistrationDate.HasValue == true
                                          ? $"Yes<br>On {details.RegistrationDate.Value.ToString("dd/MM/yyyy")}"
-                                         : "No")                                
+                                         : "No")
                             </dd>
                             <dd class="govuk-summary-list__actions">
                                 <a class="govuk-link" href="@registrationLink">
@@ -263,13 +269,13 @@
                                 }
                                 else
                                 {
-                                    @Html.Raw($"Other<br>{details.RegisterName}")                                    
-                                }                                
+                                    @Html.Raw($"Other<br>{details.RegisterName}")
+                                }
                             </dd>
                             <dd class="govuk-summary-list__actions">
                                 <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/company-register-name/@Model.ConnectedEntityId?frm-chk-answer=true">
                                     Change<span class="govuk-visually-hidden">
-                                        the registered name
+                                        the register name
                                     </span>
                                 </a>
                             </dd>

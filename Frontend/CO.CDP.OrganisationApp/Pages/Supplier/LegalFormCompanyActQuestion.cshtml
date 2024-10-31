@@ -2,6 +2,7 @@
 @model CO.CDP.OrganisationApp.Pages.Supplier.LegalFormCompanyActQuestionModel
 
 @{
+    ViewData["Title"] = "Is your organisation registered on Companies House?";
     var registeredOnChHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.RegisteredOnCompanyHouse)).HasInnerHtml;
 }
 
@@ -17,7 +18,7 @@
 
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                             <h1 class="govuk-fieldset__heading">
-                                Is your organisation registered on Companies House?
+                                @ViewData["Title"]
                             </h1>
                         </legend>
                         <div id="caQuestion-hint" class="govuk-hint">

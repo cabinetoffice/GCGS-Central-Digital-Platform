@@ -1,7 +1,10 @@
 @page "/organisation/{id}/name"
 @model CO.CDP.OrganisationApp.Pages.Organisation.OrganisationNameModel
+@using CO.CDP.OrganisationApp.WebApiClients
+@using CO.CDP.Localization
 
 @{
+    ViewData["Title"] = Html.DisplayNameFor(m => m.OrganisationName);
     var organisationNameHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.OrganisationName)).HasInnerHtml;
 }
 
@@ -19,11 +22,20 @@
 
                         <h1 class="govuk-label-wrapper">
                             <label class="govuk-label govuk-label--l" for="@nameof(Model.OrganisationName)">
-                                @Html.DisplayNameFor(m => m.OrganisationName)
+                                @ViewData["Title"]
                             </label>
                         </h1>
 
-                        <div id="hint" class="govuk-hint">As registered with Companies House if incorporated, or the trading name of the company</div>
+                        <div id="hint" class="govuk-hint">
+                            @if (Model.Organisation != null && (Model.Organisation.IsBuyer() || Model.Organisation.IsPendingBuyer()))
+                            {
+                                @Html.Raw(StaticTextResource.Organisation_EnterOrganisationName_Buyer_Hint)
+                            }
+                            else
+                            {
+                                @StaticTextResource.Organisation_EnterOrganisationName_Supplier_Hint
+                            }
+                        </div>
 
                         <div class="govuk-form-group @(organisationNameHasError ? "govuk-form-group--error" : "")">
                             @if (organisationNameHasError)

@@ -2,6 +2,10 @@
 @model CreateApiKeyModel
 
 @{
+    ViewData["Title"] = "Name your API key";
+}
+
+@{
     var apiKeyNameHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.ApiKeyName)).HasInnerHtml;
 }
 <a href="/organisation/@Model.Id/manage-api-keys" class="govuk-back-link">Back</a>
@@ -14,7 +18,7 @@
                 <div class="govuk-form-group">
                     <h1 class="govuk-label-wrapper">
                         <label class="govuk-label govuk-label--l" for="APIKeyName">
-                            Name your API key
+                            @ViewData["Title"]
                         </label>
                     </h1>
                     <div id="hint" class="govuk-hint">

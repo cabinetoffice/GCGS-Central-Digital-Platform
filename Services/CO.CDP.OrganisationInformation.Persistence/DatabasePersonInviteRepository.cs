@@ -14,17 +14,24 @@ public class DatabasePersonInviteRepository(OrganisationInformationContext conte
         return await context.PersonInvites
             .Include(pi => pi.Organisation)
             .Include(pi => pi.Person)
-            .Include(pi => pi.Organisation.Tenant)
+            .Include(pi => pi.Organisation!.Tenant)
             .AsSingleQuery()
-            .FirstOrDefaultAsync(t => t.Guid == personInviteId);
+            .FirstOrDefaultAsync(pi => pi.Guid == personInviteId);
     }
 
     public async Task<IEnumerable<PersonInvite>> FindByOrganisation(Guid organisationId)
     {
         return await context.PersonInvites
             .Include(pi => pi.Person)
-            .Where(pi => pi.Organisation.Guid == organisationId)
+            .Where(pi => pi.Organisation != null && pi.Organisation.Guid == organisationId)
             .ToArrayAsync();
+    }
+
+    public async Task<bool> IsInviteEmailUniqueWithinOrganisation(Guid organisationId, string email)
+    {
+        return await context.PersonInvites
+            .Where(x => x.Organisation != null && x.Organisation.Guid == organisationId)
+            .AllAsync(x => x.Email != email);
     }
 
     public async Task<bool> Delete(PersonInvite personInvite)

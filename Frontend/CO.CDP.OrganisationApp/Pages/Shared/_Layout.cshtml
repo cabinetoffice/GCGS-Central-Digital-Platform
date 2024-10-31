@@ -28,7 +28,7 @@
     <link rel="manifest" href="/manifest.json" />
     <link rel="stylesheet" href="/css/govuk-frontend-5.7.1.min.css">
     <link rel="stylesheet" href="/css/site.css">
-    <title>Central Digital Platform - GOV.UK</title>
+    <title>@ViewData["Title"]@(ViewData.ContainsKey("Title") && !String.IsNullOrEmpty((string?)ViewData["Title"]) ? " - " : "")Find a Tender - GOV.UK</title>
 </head>
 
 @{
@@ -163,7 +163,7 @@
                             <a class="govuk-footer__link" href="https://www.gov.uk/government/organisations/crown-commercial-service">About us</a>
                         </li>
                         <li class="govuk-footer__inline-list-item">
-                            <a class="govuk-footer__link" target="_blank" href="@($"{ftsService}/Home/Contact")">Contact us</a>
+                            <a class="govuk-footer__link" target="_blank" href="/contact-us" )">Contact us</a>
                         </li>
                         <li class="govuk-footer__inline-list-item">
                             <a class="govuk-footer__link" href="@($"{ftsService}/Home/AccessibilityStatement")">Accessibility statement</a>

@@ -10,7 +10,7 @@ public class InvitePersonToOrganisationUseCase(
     IGovUKNotifyApiClient govUKNotifyApiClient,
     IConfiguration configuration,
     Func<Guid> guidFactory)
-    : IUseCase<(Guid organisationId, InvitePersonToOrganisation invitePersonData), PersonInvite>
+    : IUseCase<(Guid organisationId, InvitePersonToOrganisation invitePersonData), bool>
 {
     public InvitePersonToOrganisationUseCase(
         IOrganisationRepository organisationRepository,
@@ -22,7 +22,7 @@ public class InvitePersonToOrganisationUseCase(
 
     }
 
-    public async Task<PersonInvite> Execute((Guid organisationId, InvitePersonToOrganisation invitePersonData) command)
+    public async Task<bool> Execute((Guid organisationId, InvitePersonToOrganisation invitePersonData) command)
     {
         var organisation = await organisationRepository.Find(command.organisationId)
                            ?? throw new UnknownOrganisationException($"Unknown organisation {command.organisationId}.");
@@ -31,6 +31,12 @@ public class InvitePersonToOrganisationUseCase(
         if (!isEmailUnique)
         {
             throw new DuplicateEmailWithinOrganisationException($"A user with this email address already exists for your organisation.");
+        }
+
+        var isInviteEmailUnique = await personInviteRepository.IsInviteEmailUniqueWithinOrganisation(command.organisationId, command.invitePersonData.Email);
+        if (!isInviteEmailUnique)
+        {
+            throw new DuplicateInviteEmailForOrganisationException($"A user with this email address has already been invited to your organisation.");
         }
 
         var personInvite = CreatePersonInvite(command.invitePersonData, organisation);
@@ -60,12 +66,12 @@ public class InvitePersonToOrganisationUseCase(
 
         await govUKNotifyApiClient.SendEmail(emailRequest);
 
-        return personInvite;
+        return true;
     }
 
     private PersonInvite CreatePersonInvite(
         InvitePersonToOrganisation command,
-        CO.CDP.OrganisationInformation.Persistence.Organisation organisation
+        OrganisationInformation.Persistence.Organisation organisation
     )
     {
         var personInvite = new PersonInvite
@@ -74,7 +80,7 @@ public class InvitePersonToOrganisationUseCase(
             FirstName = command.FirstName,
             LastName = command.LastName,
             Email = command.Email,
-            Organisation = organisation,
+            OrganisationId = organisation.Id,
             Scopes = command.Scopes
         };
 

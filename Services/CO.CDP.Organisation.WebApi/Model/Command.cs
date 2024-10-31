@@ -285,6 +285,14 @@ public record ProvideFeedbackAndContact
     public required string Subject { get; init; }
 }
 
+public record ContactUs
+{
+    public required string Name { get; init; }
+    public required string EmailAddress { get; init; }
+    public required string OrganisationName { get; init; }
+    public required string Message { get; init; }
+}
+
 
 public record UpdateInvitedPersonToOrganisation
 {
@@ -294,6 +302,12 @@ public record UpdateInvitedPersonToOrganisation
 public record UpdatePersonToOrganisation
 {
     public required List<string> Scopes { get; init; }
+}
+
+public record UpdateJoinRequest
+{
+    public required OrganisationJoinRequestStatus status { get; init; }
+    public required Guid ReviewedBy { get; init; }
 }
 
 [JsonConverter(typeof(JsonStringEnumConverter))]

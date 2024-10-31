@@ -2,6 +2,8 @@
 @model CO.CDP.OrganisationApp.Pages.Supplier.ConnectedEntityOrganisationNameModel
 
 @{
+    ViewData["Title"] = Html.DisplayNameFor(m => m.OrganisationName);
+
     var organisationNameHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.OrganisationName)).HasInnerHtml;
 
     var categoryPage = (Model.ConnectedEntityType == Constants.ConnectedEntityType.Organisation
@@ -32,7 +34,7 @@
 
                         <h1 class="govuk-label-wrapper">
                             <label class="govuk-label govuk-label--l" for="@nameof(Model.OrganisationName)">
-                                @Html.DisplayNameFor(m => m.OrganisationName)
+                                @ViewData["Title"]
                             </label>
                         </h1>
 

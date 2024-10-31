@@ -9,6 +9,7 @@
     var organisationDetails = Model.OrganisationDetails!;
     var registeredAddress = organisationDetails.Addresses.FirstOrDefault(a => a.Type == CO.CDP.Organisation.WebApiClient.AddressType.Registered);
     bool isViewer = await userInfoService.IsViewer();
+    ViewData["Title"] = organisationDetails.Name;
 }
 
 @section BeforeContent {
@@ -37,7 +38,7 @@
 
             <fieldset class="govuk-fieldset">
                 <h1 class="govuk-heading-l">
-                    <span class="govuk-label--l">@organisationDetails.Name</span>
+                    <span class="govuk-label--l">@ViewData["Title"]</span>
                 </h1>
                 <h2 class="govuk-heading-m">Organisation details</h2>
                 <dl class="govuk-summary-list govuk-!-margin-bottom-4">
@@ -50,7 +51,7 @@
                         </dd>
                         <authorize scope="@OrgScopeRequirement.Editor">
                             <dd class="govuk-summary-list__actions">
-                                <a class="govuk-link govuk-link--no-visited-state" href="/organisation/@Model.Id/name">Change<span class="govuk-visually-hidden"> address</span></a>
+                                <a class="govuk-link govuk-link--no-visited-state" href="/organisation/@Model.Id/name">Change<span class="govuk-visually-hidden"> the organisation name</span></a>
                             </dd>
                         </authorize>
                     </div>
@@ -64,24 +65,22 @@
                                 <li>
                                     @if (@organisationDetails.Identifier.Id == null)
                                     {
-                                        <text><br />PPON generation pending.</text>
+                                        <text>PPON generation pending.</text>
                                     }
                                     else
                                     {
                                         @organisationDetails.Identifier.Scheme.SchemeDescription()
+                                        <br />
                                         @organisationDetails.Identifier.Id
                                     }
                                 </li>
-                                @foreach (var aidentifier in organisationDetails.AdditionalIdentifiers)
+                                @foreach (var aidentifier in organisationDetails.AdditionalIdentifiersToShow())
                                 {
-                                    @if (@aidentifier.Scheme != Helper.VatSchemeName)
-                                    {
-                                        <li>
-                                            @aidentifier.Scheme.SchemeDescription()
-                                            <br />
-                                            @aidentifier.Id
-                                        </li>
-                                    }
+                                    <li>
+                                        @aidentifier.Scheme.SchemeDescription()
+                                        <br />
+                                        @aidentifier.Id
+                                    </li>
                                 }
                             </ul>
                         </dd>
@@ -101,7 +100,7 @@
                         </dd>
                         <authorize scope="@OrgScopeRequirement.Editor">
                             <dd class="govuk-summary-list__actions">
-                                <a class="govuk-link govuk-link--no-visited-state" href="/organisation/@Model.Id/email">Change<span class="govuk-visually-hidden"> address</span></a>
+                                <a class="govuk-link govuk-link--no-visited-state" href="/organisation/@Model.Id/email">Change<span class="govuk-visually-hidden"> the organisation email</span></a>
                             </dd>
                         </authorize>
                     </div>
@@ -124,7 +123,7 @@
                             </dd>
                             <authorize scope="@OrgScopeRequirement.Editor">
                                 <dd class="govuk-summary-list__actions">
-                                    <a class="govuk-link govuk-link--no-visited-state" href="/organisation/@Model.Id/address/@(registeredAddress.Country == Country.UKCountryCode ? "uk" : "non-uk")?frm-overview">Change<span class="govuk-visually-hidden"> address</span></a>
+                                    <a class="govuk-link govuk-link--no-visited-state" href="/organisation/@Model.Id/address/@(registeredAddress.Country == Country.UKCountryCode ? "uk" : "non-uk")?frm-overview">Change<span class="govuk-visually-hidden"> the organisation address</span></a>
                                 </dd>
                             </authorize>
                         </div>
@@ -136,7 +135,7 @@
                     <h3 class="govuk-heading-s govuk-!-margin-bottom-3">
                         <a class="govuk-link" href="/organisation/@RouteData.Values["id"]/supplier-information">Complete supplier information</a>
                     </h3>
-                    <p class="govuk-body">Complete and share your supplier information to be able to bid for procurements.</p>
+                    <p class="govuk-body">Complete and share your supplier information to bid for procurements.</p>
                     <div class="govuk-section-break govuk-section-break--visible govuk-section-break--m"></div>
                 }
 
@@ -159,16 +158,14 @@
                     <div class="govuk-section-break govuk-section-break--visible govuk-section-break--m"></div>
                 </authorize>
 
-                <authorize scope="@OrgScopeRequirement.Editor">
-                    @if (organisationDetails.IsBuyer() && !organisationDetails.IsTenderer())
-                    {
-                        <h3 class="govuk-heading-s govuk-!-margin-bottom-3">
-                            <a class="govuk-link" asp-page="./OrganisationRegisterBuyerAsSupplier" asp-route-id="@Model.Id">Register as a supplier</a>
-                        </h3>
-                        <p class="govuk-body">If you also supply goods, works, services or utilities to the public sector.</p>
-                        <div class="govuk-section-break govuk-section-break--visible govuk-section-break--m"></div>
-                    }
-                </authorize>
+                @if ((organisationDetails.IsPendingBuyer() || organisationDetails.IsBuyer()) && !organisationDetails.IsTenderer())
+                {
+                    <h3 class="govuk-heading-s govuk-!-margin-bottom-3">
+                        <a class="govuk-link" asp-page="./OrganisationRegisterBuyerAsSupplier" asp-route-id="@Model.Id">Register as a supplier</a>
+                    </h3>
+                    <p class="govuk-body">If you also supply goods, works, services or utilities to the public sector.</p>
+                    <div class="govuk-section-break govuk-section-break--visible govuk-section-break--m"></div>
+                }
 
                 @if (organisationDetails.IsBuyer())
                 {

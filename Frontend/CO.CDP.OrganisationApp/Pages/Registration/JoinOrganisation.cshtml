@@ -2,9 +2,10 @@
 @model JoinOrganisationModel
 
 @{
-var organisationDetails = Model.OrganisationDetails!;
-var userDetails = Model.UserDetails;
-var joinHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Join)).HasInnerHtml;
+    var organisationDetails = Model.OrganisationDetails!;
+    var userDetails = Model.UserDetails;
+    var joinHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Join)).HasInnerHtml;
+    ViewData["Title"] = $"Join company: {@organisationDetails.Name}";
 }
 
 <a href="/registration/has-companies-house-number" class="govuk-back-link">
@@ -17,7 +18,7 @@ var joinHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Join)).HasInner
             <partial name="_ErrorSummary" model="@Model.ModelState" />
             <fieldset class="govuk-fieldset">
                 <h1 class="govuk-heading-l">
-                    <span class="govuk-label--l">Join company: @organisationDetails.Name</span>
+                    <span class="govuk-label--l">@ViewData["Title"]</span>
                 </h1>
                 <h2 class="govuk-heading-m">Organisation details</h2>
                 <dl class="govuk-summary-list">

@@ -2,6 +2,8 @@
 @model CO.CDP.OrganisationApp.Pages.Supplier.ConnectedEntityCompanyRegistrationDateModel
 
 @{
+    ViewData["Title"] = Model.Heading;
+
     var dayHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Day)).HasInnerHtml;
     var monthHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Month)).HasInnerHtml;
     var yearHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Year)).HasInnerHtml;
@@ -37,7 +39,7 @@
                     <fieldset class="govuk-fieldset" role="group" aria-describedby="connectedPersonDateHint">
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                             <span class="govuk-caption-l">@Model.Caption</span>
-                            <h1 class="govuk-fieldset__heading">@Model.Heading</h1>
+                            <h1 class="govuk-fieldset__heading">@ViewData["Title"]</h1>
                         </legend>
                         <div id="connectedPersonDate-hint" class="govuk-hint">
                             For example, the date a person with significant control was registered with Companies House.

@@ -147,7 +147,8 @@ public static class DataSharingFactory
                 RegisteredLegalForm = "Private Limited",
                 LawRegistered = "UK",
                 RegistrationDate = DateTimeOffset.UtcNow.AddYears(-10)
-            }
+            },
+            OrganisationName = "Organisation Name"
         };
     }
 
@@ -177,7 +178,7 @@ public static class DataSharingFactory
                 "British",
                 DateTimeOffset.Now.AddYears(-30),
                 ConnectedPersonType.Individual,
-                ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndividual,
+                ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndiv,
                 "UK",
                 new List<ConnectedAddress>
                 {

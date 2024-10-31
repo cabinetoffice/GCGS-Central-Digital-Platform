@@ -42,8 +42,8 @@ module "ecs_service_healthcheck" {
   role_ecs_task_arn      = var.role_ecs_task_arn
   role_ecs_task_exec_arn = var.role_ecs_task_exec_arn
   tags                   = var.tags
-  user_pool_arn          = var.user_pool_arn
-  user_pool_client_id    = var.user_pool_client_id
-  user_pool_domain       = var.user_pool_domain
+  user_pool_arn          = var.user_pool_arn_healthcheck
+  user_pool_client_id    = var.user_pool_client_id_healthcheck
+  user_pool_domain       = var.user_pool_domain_healthcheck
   vpc_id                 = var.vpc_id
 }

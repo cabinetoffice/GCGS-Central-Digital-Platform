@@ -1,6 +1,7 @@
 @page "/organisation/{id}/supplier-information/connected-person/supplier-has-control"
 @model CO.CDP.OrganisationApp.Pages.Supplier.ConnectedEntitySupplierHasControlModel
 @{
+    ViewData["Title"] = "Is your organisation influenced or controlled by another person or company?";
     var controlledByPersonOrCompanyHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.ControlledByPersonOrCompany)).HasInnerHtml;
 }
 
@@ -15,7 +16,7 @@
                     <fieldset class="govuk-fieldset">
 
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                            Is your organisation influenced or controlled by another person or company?
+                            @ViewData["Title"]
                         </legend>
 
                         <div class="govuk-radios" data-module="govuk-radios">

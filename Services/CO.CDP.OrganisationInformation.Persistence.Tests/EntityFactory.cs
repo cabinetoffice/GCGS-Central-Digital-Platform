@@ -79,6 +79,7 @@ public static class EntityFactory
             FirstName = "John",
             LastName = "Doe",
             Email = email,
+            OrganisationId = 1,
             Organisation = organisation ?? GivenOrganisation(),
             Person = null,
             Scopes = new List<string> { "scope1", "scope2" },
@@ -266,7 +267,7 @@ public static class EntityFactory
                Organisation supplierOrganisation,
                string firstName = "John",
                string lastName = "Doe",
-               ConnectedEntityIndividualAndTrustCategoryType category = ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndividual
+               ConnectedEntityIndividualAndTrustCategoryType category = ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndiv
            )
     {
         var individualTrust = new ConnectedIndividualTrust

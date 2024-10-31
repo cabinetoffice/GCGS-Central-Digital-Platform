@@ -3,6 +3,8 @@
 @using CO.CDP.OrganisationApp.Constants
 
 @{
+    ViewData["Title"] = Model.Heading;
+
     var controlConditionsHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.ControlConditions)).HasInnerHtml;
 
     string IsSelected(ConnectedEntityControlCondition entityControlCondition)
@@ -37,7 +39,7 @@
                     <fieldset class="govuk-fieldset" aria-describedby="natureOfControlHint">
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                             <span class="govuk-caption-l">@Model.Caption</span>
-                            <h1 class="govuk-fieldset__heading">@Model.Heading</h1>
+                            <h1 class="govuk-fieldset__heading">@ViewData["Title"]</h1>
                         </legend>
                         <div id="natureOfControl-hint" class="govuk-hint">
                             As defined in <a href="https://www.legislation.gov.uk/ukpga/2006/46/schedule/1A/part/1?timeline=false" target="_blank">part 1 schedule 1a of the Companies Act 2006</a>. Select all that apply.

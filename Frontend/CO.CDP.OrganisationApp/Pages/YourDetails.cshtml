@@ -2,6 +2,7 @@
 @model YourDetailsModel
 
 @{
+    ViewData["Title"] = "Enter your name";
     var firstNameHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.FirstName)).HasInnerHtml;
     var lastNameHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.LastName)).HasInnerHtml;
 }
@@ -12,7 +13,7 @@
             <partial name="_ErrorSummary" model="@ModelState" />
 
             <h1 class="govuk-heading-l">
-                Enter your name
+                @ViewData["Title"]
             </h1>
 
             <form method="post">

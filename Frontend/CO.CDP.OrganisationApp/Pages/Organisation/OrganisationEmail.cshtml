@@ -2,6 +2,7 @@
 @model CO.CDP.OrganisationApp.Pages.Organisation.OrganisationEmailModel
 
 @{
+    ViewData["Title"] = Html.DisplayNameFor(m => m.EmailAddress);
     var emailAddressHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.EmailAddress)).HasInnerHtml;
 }
 
@@ -26,7 +27,7 @@
 
                         <h1 class="govuk-label-wrapper">
                             <label class="govuk-label govuk-label--l" for="@nameof(Model.EmailAddress)">
-                                @Html.DisplayNameFor(m => m.EmailAddress)
+                                @ViewData["Title"]
                             </label>
                         </h1>
 

@@ -93,12 +93,12 @@ public class ConnectedEntity : IEntityDate
 
     public enum ConnectedEntityIndividualAndTrustCategoryType
     {
-        PersonWithSignificantControlForIndividual = 1,
-        DirectorOrIndividualWithTheSameResponsibilitiesForIndividual,
-        AnyOtherIndividualWithSignificantInfluenceOrControlForIndividual,
+        PersonWithSignificantControlForIndiv = 1,
+        DirectorOrIndivWithTheSameResponsibilitiesForIndiv,
+        AnyOtherIndivWithSignificantInfluenceOrControlForIndiv,
         PersonWithSignificantControlForTrust,
-        DirectorOrIndividualWithTheSameResponsibilitiesForTrust,
-        AnyOtherIndividualWithSignificantInfluenceOrControlForTrust
+        DirectorOrIndivWithTheSameResponsibilitiesForTrust,
+        AnyOtherIndivWithSignificantInfluenceOrControlForTrust
     }
 
     public enum ConnectedOrganisationCategory

@@ -12,8 +12,8 @@ namespace CO.CDP.Organisation.WebApi.Tests.UseCase;
 
 public class InvitePersonToOrganisationUseCaseTest
 {
-    private readonly Mock<Persistence.IOrganisationRepository> _organisationRepository = new();
-    private readonly Mock<Persistence.IPersonInviteRepository> _personsInviteRepository = new();
+    private readonly Mock<IOrganisationRepository> _organisationRepository = new();
+    private readonly Mock<IPersonInviteRepository> _personsInviteRepository = new();
     private readonly Mock<IGovUKNotifyApiClient> _mockGovUKNotifyApiClient = new();
     private readonly IConfiguration _mockConfiguration;
     private readonly Guid _generatedGuid = Guid.NewGuid();
@@ -39,7 +39,7 @@ public class InvitePersonToOrganisationUseCaseTest
     }
 
     [Fact]
-    public async Task Execute_ValidOrganisationAndInvite_SuccessfullySendsInvite()
+    public async Task Execute_ValidInviteForOrganisationWithoutExistingEmail_SuccessfullySendsInvite()
     {
         var organisationId = Guid.NewGuid();
         InvitePersonToOrganisation invitePersonData = CreateDummyInviteToPerson();
@@ -59,23 +59,24 @@ public class InvitePersonToOrganisationUseCaseTest
         _organisationRepository.Setup(repo => repo.IsEmailUniqueWithinOrganisation(organisationId, invitePersonData.Email))
             .ReturnsAsync(true);
 
+        _personsInviteRepository.Setup(repo => repo.IsInviteEmailUniqueWithinOrganisation(organisationId, invitePersonData.Email))
+            .ReturnsAsync(true);
+
         _mockGovUKNotifyApiClient.Setup(client => client.SendEmail(It.IsAny<EmailNotificationRequest>()));
 
         var result = await _useCase.Execute(command);
 
-        result.Should().NotBeNull();
-        result.As<PersonInvite>().FirstName.Should().Be("John");
-        result.As<PersonInvite>().LastName.Should().Be("Doe");
-        result.As<PersonInvite>().Email.Should().Be("john.doe@example.com");
-        result.As<PersonInvite>().Guid.Should().Be(_generatedGuid);
+        result.Should().BeTrue();
 
         _organisationRepository.Verify(repo => repo.Find(organisationId), Times.Once);
+        _organisationRepository.Verify(repo => repo.IsEmailUniqueWithinOrganisation(organisationId, invitePersonData.Email), Times.Once);
+        _personsInviteRepository.Verify(repo => repo.IsInviteEmailUniqueWithinOrganisation(organisationId, invitePersonData.Email), Times.Once);
         _personsInviteRepository.Verify(repo => repo.Save(It.IsAny<PersonInvite>()), Times.Once);
         _mockGovUKNotifyApiClient.Verify(client => client.SendEmail(It.IsAny<EmailNotificationRequest>()), Times.Once);
     }
 
     [Fact]
-    public async Task Execute_ValidOrganisationInviteWithDuplicateEmail_ThrowsException()
+    public async Task Execute_ValidInviteForOrganisationWithExistingEmail_ThrowsException()
     {
         var organisationId = Guid.NewGuid();
         InvitePersonToOrganisation invitePersonData = CreateDummyInviteToPerson();
@@ -95,6 +96,10 @@ public class InvitePersonToOrganisationUseCaseTest
         _organisationRepository.Setup(repo => repo.IsEmailUniqueWithinOrganisation(organisationId, invitePersonData.Email))
             .ReturnsAsync(false);
 
+        // Irrelevant as would throw exception before it executes
+        _personsInviteRepository.Setup(repo => repo.IsInviteEmailUniqueWithinOrganisation(organisationId, invitePersonData.Email))
+            .ReturnsAsync(false);
+
         _mockGovUKNotifyApiClient.Setup(client => client.SendEmail(It.IsAny<EmailNotificationRequest>()));
 
         var result = async () => await _useCase.Execute(command);
@@ -103,6 +108,80 @@ public class InvitePersonToOrganisationUseCaseTest
 
         _organisationRepository.Verify(repo => repo.Find(organisationId), Times.Once);
         _organisationRepository.Verify(repo => repo.IsEmailUniqueWithinOrganisation(organisationId, invitePersonData.Email), Times.Once);
+        _personsInviteRepository.Verify(repo => repo.IsInviteEmailUniqueWithinOrganisation(organisationId, invitePersonData.Email), Times.Never);
+        _personsInviteRepository.Verify(repo => repo.Save(It.IsAny<PersonInvite>()), Times.Never);
+        _mockGovUKNotifyApiClient.Verify(client => client.SendEmail(It.IsAny<EmailNotificationRequest>()), Times.Never);
+    }
+
+    [Fact]
+    public async Task Execute_ValidInviteWithUniqueEmailForOrganisation_SuccessfullySendsInvite()
+    {
+        var organisationId = Guid.NewGuid();
+        InvitePersonToOrganisation invitePersonData = CreateDummyInviteToPerson();
+
+        var organisation = new Persistence.Organisation
+        {
+            Guid = organisationId,
+            Name = "Test Organisation",
+            Tenant = It.IsAny<Tenant>()
+        };
+
+        var command = (organisationId, invitePersonData);
+
+        _organisationRepository.Setup(repo => repo.Find(organisationId))
+            .ReturnsAsync(organisation);
+
+        _organisationRepository.Setup(repo => repo.IsEmailUniqueWithinOrganisation(organisationId, invitePersonData.Email))
+            .ReturnsAsync(true);
+
+        _personsInviteRepository.Setup(repo => repo.IsInviteEmailUniqueWithinOrganisation(organisationId, invitePersonData.Email))
+            .ReturnsAsync(true);
+
+        _mockGovUKNotifyApiClient.Setup(client => client.SendEmail(It.IsAny<EmailNotificationRequest>()));
+
+        var result = await _useCase.Execute(command);
+
+        result.Should().BeTrue();
+        _organisationRepository.Verify(repo => repo.Find(organisationId), Times.Once);
+        _organisationRepository.Verify(repo => repo.IsEmailUniqueWithinOrganisation(organisationId, invitePersonData.Email), Times.Once);
+        _personsInviteRepository.Verify(repo => repo.IsInviteEmailUniqueWithinOrganisation(organisationId, invitePersonData.Email), Times.Once);
+        _personsInviteRepository.Verify(repo => repo.Save(It.IsAny<PersonInvite>()), Times.Once);
+        _mockGovUKNotifyApiClient.Verify(client => client.SendEmail(It.IsAny<EmailNotificationRequest>()), Times.Once);
+    }
+
+    [Fact]
+    public async Task Execute_ValidInviteDuplicateEmailForOrganisation_ThrowsException()
+    {
+        var organisationId = Guid.NewGuid();
+        InvitePersonToOrganisation invitePersonData = CreateDummyInviteToPerson();
+
+        var organisation = new Persistence.Organisation
+        {
+            Guid = organisationId,
+            Name = "Test Organisation",
+            Tenant = It.IsAny<Tenant>()
+        };
+
+        var command = (organisationId, invitePersonData);
+
+        _organisationRepository.Setup(repo => repo.Find(organisationId))
+            .ReturnsAsync(organisation);
+
+        _organisationRepository.Setup(repo => repo.IsEmailUniqueWithinOrganisation(organisationId, invitePersonData.Email))
+            .ReturnsAsync(true);
+
+        _personsInviteRepository.Setup(repo => repo.IsInviteEmailUniqueWithinOrganisation(organisationId, invitePersonData.Email))
+            .ReturnsAsync(false);
+
+        _mockGovUKNotifyApiClient.Setup(client => client.SendEmail(It.IsAny<EmailNotificationRequest>()));
+
+        var result = async () => await _useCase.Execute(command);
+
+        await result.Should().ThrowAsync<DuplicateInviteEmailForOrganisationException>();
+
+        _organisationRepository.Verify(repo => repo.Find(organisationId), Times.Once);
+        _organisationRepository.Verify(repo => repo.IsEmailUniqueWithinOrganisation(organisationId, invitePersonData.Email), Times.Once);
+        _personsInviteRepository.Verify(repo => repo.IsInviteEmailUniqueWithinOrganisation(organisationId, invitePersonData.Email), Times.Once);
         _personsInviteRepository.Verify(repo => repo.Save(It.IsAny<PersonInvite>()), Times.Never);
         _mockGovUKNotifyApiClient.Verify(client => client.SendEmail(It.IsAny<EmailNotificationRequest>()), Times.Never);
     }

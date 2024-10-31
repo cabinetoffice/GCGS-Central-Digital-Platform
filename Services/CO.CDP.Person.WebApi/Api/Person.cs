@@ -1,10 +1,10 @@
 using CO.CDP.Authentication.Authorization;
 using CO.CDP.Functional;
-using CO.CDP.OrganisationInformation.Persistence;
 using CO.CDP.Person.WebApi.Model;
 using CO.CDP.Person.WebApi.UseCase;
 using CO.CDP.Swashbuckle.Filter;
 using CO.CDP.Swashbuckle.Security;
+using CO.CDP.WebApi.Foundation;
 using DotSwashbuckle.AspNetCore.SwaggerGen;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
@@ -69,7 +69,7 @@ public static class EndpointExtensions
 
         app.MapPost("/persons/{personId}/claim-person-invite",
             [OrganisationAuthorize([AuthenticationChannel.OneLogin])]
-        async (Guid personId, ClaimPersonInvite command, IUseCase<(Guid, ClaimPersonInvite), PersonInvite> useCase) =>
+        async (Guid personId, ClaimPersonInvite command, IUseCase<(Guid, ClaimPersonInvite), bool> useCase) =>
                     await useCase.Execute((personId, command))
                         .AndThen(_ => Results.NoContent())
             )
@@ -172,7 +172,7 @@ public static class ApiExtensions
                 };
             return typeMap.GetValueOrDefault(type, type.Name);
         });
-        options.OperationFilter<ProblemDetailsOperationFilter>(Extensions.ServiceCollectionExtensions.ErrorCodes());
+        options.OperationFilter<ProblemDetailsOperationFilter>(ErrorCodes.Exception4xxMap.HttpStatusCodeErrorMap());
         options.ConfigureBearerSecurity();
         options.ConfigureApiKeySecurity();
         options.UseAllOfToExtendReferenceSchemas();

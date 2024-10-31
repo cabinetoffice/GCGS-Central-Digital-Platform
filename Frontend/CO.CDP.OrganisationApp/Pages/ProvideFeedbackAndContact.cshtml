@@ -2,9 +2,13 @@
 @model ProvideFeedbackAndContact
 @{
     if (Model.Context == ContactFormTypes.Feedback)
-    { ViewData["Title"] = "Provide Find a Tender Feedback"; }
+    {
+        ViewData["Title"] = "Provide Find a Tender Feedback";
+    }
     else if (Model.Context == ContactFormTypes.Support)
-    { ViewData["Title"] = "Contact Find a Tender"; }
+    {
+        ViewData["Title"] = "Contact Find a Tender";
+    }
 
     var feedbackOrContactOptionHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.FeedbackOrContactOption)).HasInnerHtml;
     var urlOfPageHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.UrlOfPage)).HasInnerHtml;
@@ -17,18 +21,9 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <partial name="_ErrorSummary" model="@ModelState" />
-            @if (Model.Context == ContactFormTypes.Feedback)
-            {
-                <h1 class="govuk-heading-xl">
-                    Provide feedback on Find a Tender
-                </h1>
-            }
-            else if (Model.Context == ContactFormTypes.Support)
-            {
-                <h1 class="govuk-heading-xl">
-                    Contact Find a Tender
-                </h1>
-            }
+            <h1 class="govuk-heading-xl">
+                @ViewData["Title"]
+            </h1>
 
             <form method="post" novalidate>
                 @if (Model.Context == ContactFormTypes.Feedback)

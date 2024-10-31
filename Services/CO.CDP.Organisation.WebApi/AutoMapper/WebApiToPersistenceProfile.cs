@@ -132,6 +132,9 @@ public class WebApiToPersistenceProfile : Profile
         CreateMap<Persistence.OrganisationJoinRequest, OrganisationJoinRequest>()
             .ForMember(m => m.Id, o => o.MapFrom(m => m.Guid));
 
+        CreateMap<Persistence.OrganisationJoinRequest, JoinRequestLookUp>()
+            .ForMember(m => m.Id, o => o.MapFrom(m => m.Guid));
+
         ConnectedEntityMapping();
         OrganisationEventsMapping();
     }
@@ -184,6 +187,7 @@ public class WebApiToPersistenceProfile : Profile
             .ForMember(m => m.Id, o => o.Ignore())
             .ForMember(m => m.CreatedOn, o => o.Ignore())
             .ForMember(m => m.UpdatedOn, o => o.Ignore())
+            .ForMember(m => m.Category, o => o.MapFrom(m => MapCategory(m.Category)))
             .ReverseMap();
 
         CreateMap<ConnectedOrganisation, Persistence.ConnectedEntity.ConnectedOrganisation>()
@@ -212,6 +216,20 @@ public class WebApiToPersistenceProfile : Profile
         CreateMap<Persistence.ConnectedEntityLookup, ConnectedEntityLookup>()
             .ForMember(m => m.Uri, o => o.MapFrom((src, _, _, context) => new Uri($"https://cdp.cabinetoffice.gov.uk/organisations/{context.Items["OrganisationId"]}/connected-entities/{src.EntityId}")))
             .ReverseMap();
+    }
+
+    private static Persistence.ConnectedEntity.ConnectedEntityIndividualAndTrustCategoryType MapCategory(ConnectedIndividualAndTrustCategory category)
+    {
+        return category switch
+        {
+            ConnectedIndividualAndTrustCategory.PersonWithSignificantControlForIndividual => Persistence.ConnectedEntity.ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndiv,
+            ConnectedIndividualAndTrustCategory.DirectorOrIndividualWithTheSameResponsibilitiesForIndividual => Persistence.ConnectedEntity.ConnectedEntityIndividualAndTrustCategoryType.DirectorOrIndivWithTheSameResponsibilitiesForIndiv,
+            ConnectedIndividualAndTrustCategory.AnyOtherIndividualWithSignificantInfluenceOrControlForIndividual => Persistence.ConnectedEntity.ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndivWithSignificantInfluenceOrControlForIndiv,
+            ConnectedIndividualAndTrustCategory.PersonWithSignificantControlForTrust => Persistence.ConnectedEntity.ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForTrust,
+            ConnectedIndividualAndTrustCategory.DirectorOrIndividualWithTheSameResponsibilitiesForTrust => Persistence.ConnectedEntity.ConnectedEntityIndividualAndTrustCategoryType.DirectorOrIndivWithTheSameResponsibilitiesForTrust,
+            ConnectedIndividualAndTrustCategory.AnyOtherIndividualWithSignificantInfluenceOrControlForTrust => Persistence.ConnectedEntity.ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndivWithSignificantInfluenceOrControlForTrust,
+            _ => Persistence.ConnectedEntity.ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndiv,
+        };
     }
 
     private void OrganisationEventsMapping()

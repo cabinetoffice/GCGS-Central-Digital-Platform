@@ -1,6 +1,5 @@
 using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.Organisation.WebApi.UseCase;
-using CO.CDP.OrganisationInformation.Persistence;
 using CO.CDP.TestKit.Mvc;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,7 +14,7 @@ namespace CO.CDP.Organisation.WebApi.Tests.Api;
 public class PersonInvitesEndpointsTests
 {
     private readonly Mock<IUseCase<Guid, IEnumerable<PersonInviteModel>>> _getPersonInvitesUseCase = new();
-    private readonly Mock<IUseCase<(Guid, InvitePersonToOrganisation), PersonInvite>> _invitePersonToOrganisationUseCase = new();
+    private readonly Mock<IUseCase<(Guid, InvitePersonToOrganisation), bool>> _invitePersonToOrganisationUseCase = new();
     private readonly Mock<IUseCase<(Guid, Guid, UpdateInvitedPersonToOrganisation), bool>> _updateInvitedPersonToOrganisationUseCase = new();
     private readonly Mock<IUseCase<(Guid, Guid), bool>> _removePersonInviteFromOrganisationUseCase = new();
 
@@ -64,7 +63,7 @@ public class PersonInvitesEndpointsTests
         };
         var command = (organisationId, invitePersonToOrganisation);
 
-        _invitePersonToOrganisationUseCase.Setup(uc => uc.Execute(command)).ReturnsAsync(Mock.Of<PersonInvite>());
+        _invitePersonToOrganisationUseCase.Setup(uc => uc.Execute(command)).ReturnsAsync(true);
 
         var factory = new TestAuthorizationWebApplicationFactory<Program>(
             channel, organisationId, scope,

@@ -2,6 +2,8 @@
 @using CO.CDP.OrganisationApp.Constants
 @model CO.CDP.OrganisationApp.Pages.Supplier.ConnectedEntityCheckAnswersIndividualOrTrustModel
 @{
+    ViewData["Title"] = Model.Heading;
+
     var details = Model.ConnectedEntityDetails!;
     var ukNonUkRegisterAddress = details.RegisteredAddress!.IsNonUk ? "non-uk" : "uk";
     var backLink = $"/organisation/{Model.Id}/supplier-information/connected-person/{Model.BackPageLink}/{Model.ConnectedEntityId}";
@@ -27,7 +29,7 @@
         <div class="govuk-grid-column-full">
             <form class="form" method="post">
                 <span class="govuk-caption-l">@Model.Caption</span>
-                <h1 class="govuk-heading-l">@Model.Heading</h1>
+                <h1 class="govuk-heading-l">@ViewData["Title"]</h1>
                 <dl class="govuk-summary-list">
 
                     <div class="govuk-summary-list__row">
@@ -66,7 +68,7 @@
                             <dd class="govuk-summary-list__actions">
                                 <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/director-residency/@Model.ConnectedEntityId?frm-chk-answer=true">
                                     Change<span class="govuk-visually-hidden">
-                                        the registered date
+                                        the director's residency
                                     </span>
                                 </a>
                             </dd>
@@ -88,7 +90,7 @@
                             <dd class="govuk-summary-list__actions">
                                 <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/registered-address/@ukNonUkRegisterAddress/@Model.ConnectedEntityId?frm-chk-answer=true">
                                     Change<span class="govuk-visually-hidden">
-                                        the person's address
+                                        the registered address
                                     </span>
                                 </a>
                             </dd>
@@ -114,7 +116,7 @@
                             <dd class="govuk-summary-list__actions">
                                 <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/postal-address/@ukNonUkPostalAddress/@Model.ConnectedEntityId?frm-chk-answer=true">
                                     Change<span class="govuk-visually-hidden">
-                                        the person's address
+                                        the postal address
                                     </span>
                                 </a>
                             </dd>
@@ -133,7 +135,7 @@
                             <dd class="govuk-summary-list__actions">
                                 <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/nature-of-control/@Model.ConnectedEntityId?frm-chk-answer=true">
                                     Change<span class="govuk-visually-hidden">
-                                        the nature of control
+                                        the conditions of control
                                     </span>
                                 </a>
                             </dd>
@@ -154,7 +156,7 @@
                             <dd class="govuk-summary-list__actions">
                                 <a class="govuk-link" href="@registrationLink">
                                     Change<span class="govuk-visually-hidden">
-                                        the registered date
+                                        the registered as PSC date
                                     </span>
                                 </a>
                             </dd>
@@ -180,7 +182,7 @@
                             <dd class="govuk-summary-list__actions">
                                 <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/company-register-name/@Model.ConnectedEntityId?frm-chk-answer=true">
                                     Change<span class="govuk-visually-hidden">
-                                        the registered name
+                                        the register name
                                     </span>
                                 </a>
                             </dd>

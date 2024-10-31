@@ -2,6 +2,8 @@
 @model CO.CDP.OrganisationApp.Pages.Supplier.ConnectedEntityCompanyQuestionModel
 
 @{
+    ViewData["Title"] = Model.Heading;
+
     var companiesHouseNumberHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.HasCompaniesHouseNumber)).HasInnerHtml
         || ((TagBuilder)Html.ValidationMessageFor(m => m.CompaniesHouseNumber)).HasInnerHtml;
 
@@ -24,7 +26,7 @@
                 <div class="govuk-form-group">
                     <fieldset class="govuk-fieldset">
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                            <h1 class="govuk-fieldset__heading">@Model.Heading</h1>
+                            <h1 class="govuk-fieldset__heading">@ViewData["Title"]</h1>
                         </legend>
                         <div id="hasCompaniesHouseNumber-hint" class="govuk-hint">
                             @Model.Hint
