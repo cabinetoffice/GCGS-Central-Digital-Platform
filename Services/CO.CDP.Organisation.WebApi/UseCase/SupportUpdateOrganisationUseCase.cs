@@ -15,7 +15,8 @@ public class SupportUpdateOrganisationUseCase(
     public async Task<bool> Execute((Guid organisationId, SupportUpdateOrganisation supportUpdateOrganisation) command)
     {
         var organisation = await organisationRepository.Find(command.organisationId) ?? throw new UnknownOrganisationException($"Unknown organisation {command.organisationId}.");
-        var sendemail = false;
+        var sendApprovalEmail = false;
+        var sendRejectionEmail = false;
 
         switch (command.supportUpdateOrganisation.Type)
         {
@@ -25,12 +26,15 @@ public class SupportUpdateOrganisationUseCase(
 
                 var person = await personRepository.Find(personId) ?? throw new UnknownPersonException($"Unknown person {personId}.");
 
-                if (command.supportUpdateOrganisation.Organisation.Approved)
+                if (command.supportUpdateOrganisation.Organisation.Approved == true)
                 {
                     organisation.ApprovedOn = DateTimeOffset.UtcNow;
                     organisation.PendingRoles.ForEach(r => organisation.Roles.Add(r));
                     organisation.PendingRoles.Clear();
-                    sendemail = true;
+                    sendApprovalEmail = true;
+                } else
+                {
+                    sendRejectionEmail = true;
                 }
 
                 organisation.ReviewedBy = person;
@@ -43,9 +47,14 @@ public class SupportUpdateOrganisationUseCase(
 
         organisationRepository.Save(organisation);
 
-        if (sendemail)
+        if (sendApprovalEmail)
         {
             await NotifyBuyerApprovedRequest(organisation);
+        }
+
+        if (sendRejectionEmail)
+        {
+            await NotifyBuyerRejectedRequest(organisation);
         }
 
         return true;
@@ -92,6 +101,60 @@ public class SupportUpdateOrganisationUseCase(
                     { "first_name", p.Person.FirstName },
                     { "last_name", p.Person.LastName },
                     { "org_link", orgLink }
+                }
+                };
+
+                await govUKNotifyApiClient.SendEmail(emailRequest);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, $"Failed to send email to {p.Person.Email} for organisation {organisation.Name}");
+            }
+        });
+
+        await Task.WhenAll(emailTasks);
+    }
+
+    private async Task NotifyBuyerRejectedRequest(OrganisationInformation.Persistence.Organisation organisation)
+    {
+        var baseAppUrl = configuration.GetValue<string>("OrganisationAppUrl") ?? "";
+        var templateId = configuration.GetValue<string>("GOVUKNotify:BuyerRejectedEmailTemplateId") ?? "";
+
+        var missingConfigs = new List<string>();
+
+        if (string.IsNullOrEmpty(baseAppUrl)) missingConfigs.Add("OrganisationAppUrl");
+        if (string.IsNullOrEmpty(templateId)) missingConfigs.Add("GOVUKNotify:BuyerRejectedEmailTemplateId");
+
+        if (missingConfigs.Count != 0)
+        {
+            logger.LogError(new Exception("Unable to send buyer rejected email"), $"Missing configuration keys: {string.Join(", ", missingConfigs)}. Unable to send buyer rejected email.");
+            return;
+        }
+
+        var orgLink = new Uri(new Uri(baseAppUrl), $"/organisation/{organisation.Guid}").ToString();
+
+        var orgPersons = await organisationRepository.FindOrganisationPersons(organisation.Guid);
+
+        var adminPersons = orgPersons.Where(p => p.Scopes.Contains("ADMIN")).ToList();
+        if (!adminPersons.Any())
+        {
+            logger.LogError(new Exception("Unable to send buyer rejected email"), "Admin person not found");
+            return;
+        }
+
+        var emailTasks = adminPersons.Select(async p =>
+        {
+            try
+            {
+                var emailRequest = new EmailNotificationRequest
+                {
+                    EmailAddress = p.Person.Email,
+                    TemplateId = templateId,
+                    Personalisation = new Dictionary<string, string>
+                {
+                    { "org_name", organisation.Name },
+                    { "org_link", orgLink },
+                    { "comments", organisation.ReviewComment },
                 }
                 };
 
