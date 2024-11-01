@@ -20,6 +20,11 @@ public class RemovePersonFromOrganisationUseCase(IOrganisationRepository organis
 
         if (organisationPerson == null) return await Task.FromResult(false);
 
+        var personWithTenant = await personRepository.FindPersonWithTenant(person.Guid);
+
+        if (personWithTenant == null) return await Task.FromResult(false);
+
+        organisation.Tenant.Persons.Remove(person);
         organisation.OrganisationPersons.Remove(organisationPerson);
 
         organisationRepository.Save(organisation);

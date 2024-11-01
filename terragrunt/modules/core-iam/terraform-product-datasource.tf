@@ -45,6 +45,17 @@ data "aws_iam_policy_document" "terraform_product" {
 
   statement {
     actions = [
+      "dynamodb:*",
+    ]
+    effect = "Allow"
+    resources = [
+      "arn:aws:dynamodb:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:table/${local.name_prefix}-*",
+    ]
+    sid = "ManageProductDynamoDB"
+  }
+
+  statement {
+    actions = [
       "synthetics:Create*",
       "synthetics:DeleteCanary",
       "synthetics:Get*",

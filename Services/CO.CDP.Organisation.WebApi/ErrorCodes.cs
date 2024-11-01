@@ -1,4 +1,5 @@
 using CO.CDP.Organisation.WebApi.Model;
+using static CO.CDP.Organisation.WebApi.Model.InvalidUpdateOrganisationCommand;
 using static CO.CDP.OrganisationInformation.Persistence.IAuthenticationKeyRepository.AuthenticationKeyRepositoryException;
 using static CO.CDP.OrganisationInformation.Persistence.IOrganisationRepository.OrganisationRepositoryException;
 
@@ -21,8 +22,20 @@ public static class ErrorCodes
         { typeof(InvalidUpdateSupplierInformationCommand), (StatusCodes.Status400BadRequest, "INVALID_SUPPLIER_INFORMATION_UPDATE_ENTITY") },
         { typeof(InvalidQueryException), (StatusCodes.Status400BadRequest, "ISSUE_WITH_QUERY_PARAMETERS") },
         { typeof(DuplicateAuthenticationKeyNameException), (StatusCodes.Status400BadRequest, "APIKEY_NAME_ALREADY_EXISTS") },
-        { typeof(DuplicateEmailWithinOrganisationException), (StatusCodes.Status400BadRequest, "EMAIL_ALREADY_EXISTS_WITHIN_ORGANISATION") },
         { typeof(DuplicateInviteEmailForOrganisationException), (StatusCodes.Status400BadRequest, "INVITE_EMAIL_ALREADY_EXISTS_FOR_ORGANISATION") },
-        { typeof(PersonAlreadyAddedToOrganisationException), (StatusCodes.Status400BadRequest, "PERSON_ALREADY_ADDED_TO_ORGANISATION") }
+        { typeof(PersonAlreadyAddedToOrganisationException), (StatusCodes.Status400BadRequest, "PERSON_ALREADY_ADDED_TO_ORGANISATION") },
+        { typeof(DuplicateEmailWithinOrganisationException), (StatusCodes.Status400BadRequest, "EMAIL_ALREADY_EXISTS_WITHIN_ORGANISATION") },
+        { typeof(InvalidUpdateOrganisationCommand), (StatusCodes.Status400BadRequest, "ORGANISATION_UPDATE_INVALID_INPUT") },
+        { typeof(MissingOrganisationName), (StatusCodes.Status400BadRequest, "ORGANISATION_MISSING_NAME") },
+        { typeof(MissingRoles), (StatusCodes.Status400BadRequest, "ORGANISATION_MISSING_ROLES") },
+        { typeof(MissingContactPoint), (StatusCodes.Status400BadRequest, "ORGANISATION_MISSING_CONTACTPOINT") },
+        { typeof(NoPrimaryIdentifier), (StatusCodes.Status400BadRequest, "ORGANISATION_NOPRIMARY_IDENTIFIER") },
+        { typeof(MissingOrganisationEmail), (StatusCodes.Status400BadRequest, "ORGANISATION_MISSING_EMAIL") },
+        { typeof(OrganisationEmailDoesNotExist), (StatusCodes.Status400BadRequest, "ORGANISATION_EMAIL_DOES_NOT_EXISTS") },
+        { typeof(MissingOrganisationAddress), (StatusCodes.Status400BadRequest, "ORGANISATION_MISSING_ADDRESS") },
+        { typeof(MissingOrganisationRegisteredAddress), (StatusCodes.Status400BadRequest, "ORGANISATION_MISSING_REGISTERED_ADDRESS") },
+        { typeof(MissingAdditionalIdentifiers), (StatusCodes.Status400BadRequest, "ORGANISATION_MISSING_ADDITIONAL_IDENTIFIERS") },
+        { typeof(MissingIdentifierNumber), (StatusCodes.Status400BadRequest, "ORGANISATION_MISSING_IDENTIFIER_NUMBER") },
+        { typeof(IdentiferNumberAlreadyExists), (StatusCodes.Status400BadRequest, "ORGANISATION_IDENTIFIER_NUMBER_ALREADY_EXISTS") }
     };
 }
