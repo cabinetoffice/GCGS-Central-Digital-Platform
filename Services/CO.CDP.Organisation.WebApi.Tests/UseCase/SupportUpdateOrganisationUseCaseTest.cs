@@ -30,7 +30,8 @@ public class SupportUpdateOrganisationUseCaseTests
             new("OrganisationAppUrl", "http://baseurl/"),
             new("GOVUKNotify:RequestReviewApplicationEmailTemplateId", "template-id"),
             new("GOVUKNotify:SupportAdminEmailAddress", "admin@example.com"),
-            new("GOVUKNotify:BuyerApprovedEmailTemplateId", "buyer-template-id"),
+            new("GOVUKNotify:BuyerApprovedEmailTemplateId", "buyer-approval-template-id"),
+            new("GOVUKNotify:BuyerRejectedEmailTemplateId", "buyer-rejection-template-id"),
         };
 
         IConfiguration mockConfiguration = new ConfigurationBuilder()
@@ -74,8 +75,7 @@ public class SupportUpdateOrganisationUseCaseTests
             Organisation = new SupportOrganisationInfo
             {
                 ReviewedById = Guid.NewGuid(),
-                Approved = true,
-                Comment = "Reviewed"
+                Approved = true
             },
             Type = SupportOrganisationUpdateType.Review
         };
@@ -98,8 +98,7 @@ public class SupportUpdateOrganisationUseCaseTests
             Organisation = new SupportOrganisationInfo
             {
                 ReviewedById = personId,
-                Approved = true,
-                Comment = "Reviewed"
+                Approved = true
             },
             Type = SupportOrganisationUpdateType.Review
         };
@@ -124,8 +123,7 @@ public class SupportUpdateOrganisationUseCaseTests
             Organisation = new SupportOrganisationInfo
             {
                 ReviewedById = _person.Guid,
-                Approved = true,
-                Comment = "Reviewed and approved"
+                Approved = true
             },
             Type = SupportOrganisationUpdateType.Review
         };
@@ -146,11 +144,62 @@ public class SupportUpdateOrganisationUseCaseTests
         result.Should().BeTrue();
         _organisation.ApprovedOn.Should().BeCloseTo(DateTimeOffset.UtcNow, TimeSpan.FromSeconds(1));
         _organisation.ReviewedBy.Should().Be(_person);
-        _organisation.ReviewComment.Should().Be("Reviewed and approved");
         _organisation.Roles.Should().BeEquivalentTo([PartyRole.Tenderer, PartyRole.Buyer]);
         _organisation.PendingRoles.Should().BeEmpty();
 
-        _notifyApiClient.Verify(x => x.SendEmail(It.IsAny<EmailNotificationRequest>()));
+        _notifyApiClient.Verify(x => x.SendEmail(It.Is<EmailNotificationRequest>(request =>
+            request.TemplateId.Contains("buyer-approval-template-id")
+            && request.Personalisation != null
+            && request.Personalisation["org_name"] == _organisation.Name
+            && request.Personalisation["first_name"] == orgPersonList.First().Person.FirstName
+            && request.Personalisation["last_name"] == orgPersonList.First().Person.LastName
+            && request.Personalisation["org_link"].Contains($"organisation/{_organisation.Guid}")
+        )));
+
+        _mockOrganisationRepository.Verify(repo => repo.Save(_organisation), Times.Once);
+    }
+
+    [Fact]
+    public async Task Execute_WhenUpdateIsReviewAndRejectedAndEmailIsSent_ShouldUpdateOrganisationReviewDetails()
+    {
+        var supportUpdateOrganisation = new SupportUpdateOrganisation
+        {
+            Organisation = new SupportOrganisationInfo
+            {
+                ReviewedById = _person.Guid,
+                Approved = false,
+                Comment = "Rejected"
+            },
+            Type = SupportOrganisationUpdateType.Review
+        };
+
+        _mockOrganisationRepository.Setup(repo => repo.Find(_organisation.Guid))
+            .ReturnsAsync(_organisation);
+
+        _mockPersonRepository.Setup(repo => repo.Find(_person.Guid))
+            .ReturnsAsync(_person);
+
+        var orgPersonList = new List<OrganisationPerson>() { GetOrganisationPerson() };
+
+        _mockOrganisationRepository.Setup(repo => repo.FindOrganisationPersons(_organisation.Guid))
+            .ReturnsAsync(orgPersonList);
+
+        var result = await _useCase.Execute((_organisation.Guid, supportUpdateOrganisation));
+
+        result.Should().BeTrue();
+        _organisation.ReviewedBy.Should().Be(_person);
+        _organisation.ReviewComment.Should().Be("Rejected");
+        _organisation.PendingRoles.Should().BeEquivalentTo([PartyRole.Buyer]);
+        _organisation.Roles.Should().BeEquivalentTo([PartyRole.Tenderer]);
+
+        _notifyApiClient.Verify(x => x.SendEmail(It.Is<EmailNotificationRequest>(request =>
+            request.TemplateId.Contains("buyer-rejection-template-id")
+            && request.Personalisation != null
+            && request.Personalisation["org_name"] == _organisation.Name
+            && request.Personalisation["first_name"] == orgPersonList.First().Person.FirstName
+            && request.Personalisation["last_name"] == orgPersonList.First().Person.LastName
+            && request.Personalisation["org_link"].Contains($"organisation/{_organisation.Guid}")
+        )));
 
         _mockOrganisationRepository.Verify(repo => repo.Save(_organisation), Times.Once);
     }
