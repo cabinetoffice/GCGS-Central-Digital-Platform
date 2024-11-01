@@ -60,19 +60,19 @@ public class SupportUpdateOrganisationUseCase(
         return true;
     }
 
-    private async Task NotifyBuyerApprovedRequest(OrganisationInformation.Persistence.Organisation organisation)
+    private async Task NotifyBuyerRequest(OrganisationInformation.Persistence.Organisation organisation, string templateKey)
     {
         var baseAppUrl = configuration.GetValue<string>("OrganisationAppUrl") ?? "";
-        var templateId = configuration.GetValue<string>("GOVUKNotify:BuyerApprovedEmailTemplateId") ?? "";
+        var templateId = configuration.GetValue<string>($"GOVUKNotify:{templateKey}") ?? "";
 
         var missingConfigs = new List<string>();
 
         if (string.IsNullOrEmpty(baseAppUrl)) missingConfigs.Add("OrganisationAppUrl");
-        if (string.IsNullOrEmpty(templateId)) missingConfigs.Add("GOVUKNotify:BuyerApprovedEmailTemplateId");
+        if (string.IsNullOrEmpty(templateId)) missingConfigs.Add($"GOVUKNotify:{templateKey}");
 
         if (missingConfigs.Count != 0)
         {
-            logger.LogError(new Exception("Unable to send buyer approved email"), $"Missing configuration keys: {string.Join(", ", missingConfigs)}. Unable to send buyer approved email.");
+            logger.LogError(new Exception("Unable to send buyer review email"), $"Missing configuration keys: {string.Join(", ", missingConfigs)}. Unable to send buyer review email.");
             return;
         }
 
@@ -83,7 +83,7 @@ public class SupportUpdateOrganisationUseCase(
         var adminPersons = orgPersons.Where(p => p.Scopes.Contains("ADMIN")).ToList();
         if (!adminPersons.Any())
         {
-            logger.LogError(new Exception("Unable to send buyer approved email"), "Admin person not found");
+            logger.LogError(new Exception("Unable to send buyer review email"), "Admin person not found");
             return;
         }
 
@@ -96,13 +96,18 @@ public class SupportUpdateOrganisationUseCase(
                     EmailAddress = p.Person.Email,
                     TemplateId = templateId,
                     Personalisation = new Dictionary<string, string>
-                {
-                    { "org_name", organisation.Name },
-                    { "first_name", p.Person.FirstName },
-                    { "last_name", p.Person.LastName },
-                    { "org_link", orgLink }
-                }
+                    {
+                        { "org_name", organisation.Name },
+                        { "first_name", p.Person.FirstName },
+                        { "last_name", p.Person.LastName },
+                        { "org_link", orgLink }
+                    }
                 };
+
+                if (!string.IsNullOrEmpty(organisation.ReviewComment))
+                {
+                    emailRequest.Personalisation["comments"] = organisation.ReviewComment;
+                }
 
                 await govUKNotifyApiClient.SendEmail(emailRequest);
             }
@@ -115,57 +120,13 @@ public class SupportUpdateOrganisationUseCase(
         await Task.WhenAll(emailTasks);
     }
 
+    private async Task NotifyBuyerApprovedRequest(OrganisationInformation.Persistence.Organisation organisation)
+    {
+        await NotifyBuyerRequest(organisation, "BuyerApprovedEmailTemplateId");
+    }
+
     private async Task NotifyBuyerRejectedRequest(OrganisationInformation.Persistence.Organisation organisation)
     {
-        var baseAppUrl = configuration.GetValue<string>("OrganisationAppUrl") ?? "";
-        var templateId = configuration.GetValue<string>("GOVUKNotify:BuyerRejectedEmailTemplateId") ?? "";
-
-        var missingConfigs = new List<string>();
-
-        if (string.IsNullOrEmpty(baseAppUrl)) missingConfigs.Add("OrganisationAppUrl");
-        if (string.IsNullOrEmpty(templateId)) missingConfigs.Add("GOVUKNotify:BuyerRejectedEmailTemplateId");
-
-        if (missingConfigs.Count != 0)
-        {
-            logger.LogError(new Exception("Unable to send buyer rejected email"), $"Missing configuration keys: {string.Join(", ", missingConfigs)}. Unable to send buyer rejected email.");
-            return;
-        }
-
-        var orgLink = new Uri(new Uri(baseAppUrl), $"/organisation/{organisation.Guid}").ToString();
-
-        var orgPersons = await organisationRepository.FindOrganisationPersons(organisation.Guid);
-
-        var adminPersons = orgPersons.Where(p => p.Scopes.Contains("ADMIN")).ToList();
-        if (!adminPersons.Any())
-        {
-            logger.LogError(new Exception("Unable to send buyer rejected email"), "Admin person not found");
-            return;
-        }
-
-        var emailTasks = adminPersons.Select(async p =>
-        {
-            try
-            {
-                var emailRequest = new EmailNotificationRequest
-                {
-                    EmailAddress = p.Person.Email,
-                    TemplateId = templateId,
-                    Personalisation = new Dictionary<string, string>
-                {
-                    { "org_name", organisation.Name },
-                    { "org_link", orgLink },
-                    { "comments", organisation.ReviewComment },
-                }
-                };
-
-                await govUKNotifyApiClient.SendEmail(emailRequest);
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, $"Failed to send email to {p.Person.Email} for organisation {organisation.Name}");
-            }
-        });
-
-        await Task.WhenAll(emailTasks);
+        await NotifyBuyerRequest(organisation, "BuyerRejectedEmailTemplateId");
     }
 }
