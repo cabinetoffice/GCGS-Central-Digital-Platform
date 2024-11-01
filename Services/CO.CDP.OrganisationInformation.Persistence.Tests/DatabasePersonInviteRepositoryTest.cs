@@ -76,6 +76,47 @@ public class DatabasePersonInviteRepositoryTest(PostgreSqlFixture postgreSql) : 
         result.Should().Be(false);
     }
 
+    [Fact]
+    public async Task FindPersonInviteByEmail_WhenInviteExists_ReturnsInvite()
+    {
+        using var repository = PersonInviteRepository();
+
+        var email = "john.doe@example.com";
+        var tenant = GivenTenant();
+        var organisation = GivenOrganisation(tenant: tenant);
+        var invite = GivenPersonInvite(guid: Guid.NewGuid(), email: email, organisation: organisation, tenant: tenant);
+
+        await using var context = postgreSql.OrganisationInformationContext();
+        await context.PersonInvites.AddAsync(invite);
+        await context.SaveChangesAsync();
+
+        var result = await repository.FindPersonInviteByEmail(organisation.Guid, email);
+
+        var personInvites = result as PersonInvite[] ?? result.ToArray();
+        personInvites.Should().NotBeNullOrEmpty();
+
+        personInvites.First().Email.Should().Be(email);
+    }
+
+
+    [Fact]
+    public async Task FindPersonInviteByEmail_WhenInviteDoesNotExist_ReturnsEmpty()
+    {
+        using var repository = PersonInviteRepository();
+
+        var email = "nonexistent@example.com";
+        var tenant = GivenTenant();
+        var organisation = GivenOrganisation();
+        var invite = GivenPersonInvite(guid: Guid.NewGuid(), email: "john.doe@example.com", tenant: tenant, organisation: organisation);
+
+        await using var context = postgreSql.OrganisationInformationContext();
+        await context.PersonInvites.AddAsync(invite);
+        await context.SaveChangesAsync();
+
+        var result = await repository.FindPersonInviteByEmail(organisation.Guid, email);
+
+        result.Should().BeEmpty();
+    }
 
     private IPersonInviteRepository PersonInviteRepository()
     {
