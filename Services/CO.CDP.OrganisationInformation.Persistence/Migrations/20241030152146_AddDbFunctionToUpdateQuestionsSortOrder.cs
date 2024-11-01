@@ -12,9 +12,8 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
         {
             migrationBuilder.Sql($@"
                 CREATE OR REPLACE FUNCTION update_form_questions_sort_order()
-                RETURNS TRIGGER AS $$
+                RETURNS VOID AS $$
                 BEGIN
-                
                   IF pg_trigger_depth() = 1 THEN
                     WITH RECURSIVE SectionQuestions AS (
                       SELECT q.id, q.next_question_id, q.section_id, 1 AS sort_order
@@ -32,15 +31,12 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                         ON q.id = sq.next_question_id
                         AND q.section_id = sq.section_id
                     )
-                    
+
                     UPDATE form_questions q
                     SET sort_order = sq.sort_order
                     FROM SectionQuestions sq
                     WHERE q.id = sq.id;
                   END IF;
-                  
-                  RETURN NEW;
-                  
                 END;
                 $$ LANGUAGE plpgsql;
             ");
