@@ -90,12 +90,10 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <form method="post">
-                <fieldset class="govuk-fieldset">
-                    <div class="govuk-form-group @(approvalHasError ? "govuk-form-group--error" : "")">
+                <div class="govuk-form-group @(approvalHasError ? "govuk-form-group--error" : "")" @(approvalHasError ? "aria-describedby=approval-error" : "")>
+                    <fieldset class="govuk-fieldset">                    
+                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Are you happy to approve?</legend>
 
-                        <h2 class="govuk-heading-m">
-                            <span class="govuk-label--m">Are you happy to approve?</span>
-                        </h2>
                         @if (approvalHasError)
                         {
                             <p id="approval-error" class="govuk-error-message">
@@ -105,31 +103,30 @@
                         }
                         <div class="govuk-radios govuk-radios--inline" data-module="govuk-radios">
                             <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="conditional-YES" name="Approval" type="radio"
+                                <input class="govuk-radios__input" id="@nameof(Model.Approval)" name="@nameof(Model.Approval)" type="radio"
                                        value="true">
-                                <label class="govuk-label govuk-radios__label" for="conditional-YES">Yes</label>
+                                <label class="govuk-label govuk-radios__label" for="@nameof(Model.Approval)">Yes</label>
                             </div>
                             <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="conditional-NO" name="Approval" type="radio"
+                                <input class="govuk-radios__input" id="@nameof(Model.Approval)-1" name="@nameof(Model.Approval)" type="radio"
                                        value="false">
-                                <label class="govuk-label govuk-radios__label" for="conditional-NO">No</label>
+                                <label class="govuk-label govuk-radios__label" for="@nameof(Model.Approval)-1">No</label>
                             </div>
                         </div>
+                    </fieldset>
+                </div>
 
-                    </div>
+                <div class="govuk-form-group">
+                    <label class="govuk-label govuk-label--s" for="comments">
+                        Comments
+                    </label>
+                    <!--<div class="govuk-hint" id="comment-hint">
+                        Hint text here
+                    </div>-->
+                    <textarea class="govuk-textarea" id="comments" name="comments" rows="3" maxlength="10000" aria-describedby="comment-hint"></textarea>
+                </div>
 
-                    <div class="govuk-form-group">
-                        <h1 class="govuk-label-wrapper">
-                            <label class="govuk-label govuk-label--s" for="comments">
-                                Comments
-                            </label>
-                        </h1>
-                        <textarea class="govuk-textarea" id="comments" name="comments" rows="3" maxlength="10000"></textarea>
-                    </div>
-
-                </fieldset>
-
-                <govuk-button class="govuk-!-margin-top-6">
+                <govuk-button>
                     Continue
                 </govuk-button>
             </form>
