@@ -7,6 +7,7 @@ using AutoMapper;
 using CO.CDP.Authentication;
 using CO.CDP.GovUKNotify;
 using CO.CDP.GovUKNotify.Models;
+using CO.CDP.OrganisationInformation.Persistence;
 
 namespace CO.CDP.Organisation.WebApi.UseCase;
 
@@ -43,6 +44,7 @@ public class CreateOrganisationJoinRequestUseCase(
                            ?? throw new UnknownPersonException($"Unknown person {command.createOrganisationJoinRequestCommand.PersonId}.");
 
         await GuardPersonIsNotAlreadyAdded(organisation, person);
+        await GuardPersonIsNotAlreadyInvited(organisation, person);
 
         var organisationJoinRequest = CreateOrganisationJoinRequest(organisation, person);
 
@@ -160,10 +162,21 @@ public class CreateOrganisationJoinRequestUseCase(
         return organisationPersons.Where(op => op.Scopes.Contains(Constants.OrganisationPersonScope.Admin)).Select(op => op.Person).ToList();
     }
 
+    private async Task GuardPersonIsNotAlreadyInvited(Persistence.Organisation organisation, Person person)
+    {
+        var joinRequest = await organisationJoinRequestRepository.FindByOrganisationAndPerson(organisation.Guid, person.Id);
+
+        if (joinRequest != null)
+        {
+            throw new PersonAlreadyInvitedToOrganisationException(
+                $"Person {person.Guid} already invited to organisation {organisation.Guid}.");
+        }
+    }
+
     private async Task GuardPersonIsNotAlreadyAdded(Persistence.Organisation organisation, Person person)
     {
         var matchingOrganisationPerson = await organisationRepository.FindOrganisationPerson(organisation.Guid, person.Guid);
-
+        
         if (matchingOrganisationPerson != null)
         {
             throw new PersonAlreadyAddedToOrganisationException(

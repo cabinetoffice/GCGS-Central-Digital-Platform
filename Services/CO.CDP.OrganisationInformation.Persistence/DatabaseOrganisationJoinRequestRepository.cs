@@ -33,6 +33,12 @@ public class DatabaseOrganisationJoinRequestRepository(OrganisationInformationCo
             .ToArrayAsync();
     }
 
+    public async Task<OrganisationJoinRequest?> FindByOrganisationAndPerson(Guid organisationId, int personId)
+    {
+        return await context.OrganisationJoinRequests
+            .FirstOrDefaultAsync(ojr => ojr.Organisation != null && ojr.Organisation.Guid == organisationId && ojr.PersonId == personId);
+    }
+
     public void Save(OrganisationJoinRequest organisationJoinRequest)
     {
         context.Update(organisationJoinRequest);
