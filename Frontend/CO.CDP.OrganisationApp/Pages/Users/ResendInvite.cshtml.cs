@@ -4,7 +4,6 @@ using CO.CDP.Organisation.WebApiClient;
 
 namespace CO.CDP.OrganisationApp.Pages.Users;
 
-[AuthenticatedSessionNotRequired]
 public class ResendInviteModel(ISession session, IOrganisationClient organisationClient) : PageModel
 {
     [BindProperty(SupportsGet = true)]
