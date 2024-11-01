@@ -87,6 +87,25 @@ public class CreateOrganisationJoinRequestUseCaseTests
     }
 
     [Fact]
+    public async Task Execute_WhenOrganisationIsknownAndPersonAlreadyInvited_ShouldThrowPersonAlreadyInvitedToOrganisationException()
+    {
+        var createJoinRequestCommand = new CreateOrganisationJoinRequest { PersonId = _person.Guid };
+        
+        _mockOrganisationRepository.Setup(repo => repo.Find(_organisation.Guid))
+            .ReturnsAsync(_organisation);
+
+        _mockPersonRepository.Setup(repo => repo.Find(_person.Guid))
+            .ReturnsAsync(_person);
+
+        _mockOrganisationJoinRequestRepository.Setup(repo => repo.FindByOrganisationAndPerson(_organisation.Guid, _person.Id))
+            .ReturnsAsync(new OrganisationInformation.Persistence.OrganisationJoinRequest() { Guid = Guid.NewGuid(), Status = OrganisationJoinRequestStatus.Pending});
+
+        Func<Task> action = async () => await _useCase.Execute((_organisation.Guid, createJoinRequestCommand));
+
+        await action.Should().ThrowAsync<PersonAlreadyInvitedToOrganisationException>();
+    }
+
+    [Fact]
     public async Task Execute_WhenPersonIsUnknown_ShouldThrowUnknownPersonException()
     {
         var personId = Guid.NewGuid();
