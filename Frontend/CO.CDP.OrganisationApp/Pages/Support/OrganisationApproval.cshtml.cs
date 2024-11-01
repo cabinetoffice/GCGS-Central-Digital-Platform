@@ -17,7 +17,7 @@ public class OrganisationApprovalModel(
     public bool Approval { get; set; }
 
     [BindProperty]
-    [RequiredIf(nameof(Approval), false, ErrorMessage = "Enter a comment")]
+    [RequiredIf(nameof(Approval), false, ErrorMessage = "Tell the user why you could not approve")]
     public string? Comments { get; set; }
 
     public async Task<IActionResult> OnGet(Guid organisationId)

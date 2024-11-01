@@ -115,8 +115,11 @@
                             <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-comment">
                                 <div class="govuk-form-group @(commentHasError ? "govuk-form-group--error" : "")">
                                     <label class="govuk-label govuk-label--s" for="@nameof(Model.Comments)">
-                                        Comments
+                                        Tell the user why you could not approve
                                     </label>
+                                    <div class="govuk-hint" id="comments-hint">
+                                        <p>Say what the user needs to do and the reason why. This message will be emailed and displayed in the user’s account.</p>
+                                    </div>
                                     @if (commentHasError)
                                     {
                                         <p id="comments-error" class="govuk-error-message">
@@ -124,7 +127,7 @@
                                             @Html.ValidationMessageFor(m => m.Comments)
                                         </p>
                                     }
-                                    <textarea class="govuk-textarea" id="@nameof(Model.Comments)" name="@nameof(Model.Comments)" rows="3" maxlength="10000" aria-describedby="@(commentHasError ? "comments-error" : "")"></textarea>
+                                    <textarea class="govuk-textarea" id="@nameof(Model.Comments)" name="@nameof(Model.Comments)" rows="3" maxlength="10000" aria-describedby="comments-hint @(commentHasError ? "comments-error" : "")"></textarea>
                                 </div>
                             </div>
                         </div>
