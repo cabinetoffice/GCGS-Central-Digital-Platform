@@ -6,6 +6,7 @@
     var organisationDetails = Model.OrganisationDetails!;
     var registeredAddress = organisationDetails.Addresses.FirstOrDefault(a => a.Type == CO.CDP.Organisation.WebApiClient.AddressType.Registered);
     var approvalHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Approval)).HasInnerHtml;
+    var commentHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Comments)).HasInnerHtml;
     ViewData["Title"] = organisationDetails.Name;
 }
 
@@ -90,12 +91,10 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <form method="post">
-                <fieldset class="govuk-fieldset">
-                    <div class="govuk-form-group @(approvalHasError ? "govuk-form-group--error" : "")">
+                <div class="govuk-form-group @(approvalHasError ? "govuk-form-group--error" : "")" @(approvalHasError ? "aria-describedby=approval-error" : "")>
+                    <fieldset class="govuk-fieldset">
+                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Are you happy to approve?</legend>
 
-                        <h2 class="govuk-heading-m">
-                            <span class="govuk-label--m">Are you happy to approve?</span>
-                        </h2>
                         @if (approvalHasError)
                         {
                             <p id="approval-error" class="govuk-error-message">
@@ -103,33 +102,36 @@
                                 @Html.ValidationMessageFor(m => m.Approval)
                             </p>
                         }
-                        <div class="govuk-radios govuk-radios--inline" data-module="govuk-radios">
+                        <div class="govuk-radios" data-module="govuk-radios">
                             <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="conditional-YES" name="Approval" type="radio"
-                                       value="true">
-                                <label class="govuk-label govuk-radios__label" for="conditional-YES">Yes</label>
+                                <input class="govuk-radios__input" id="@nameof(Model.Approval)" name="@nameof(Model.Approval)" type="radio" value="true" checked="@(ModelState.ErrorCount > 0 && Model.Approval == true)">
+                                <label class="govuk-label govuk-radios__label" for="@nameof(Model.Approval)">Yes</label>
                             </div>
                             <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="conditional-NO" name="Approval" type="radio"
-                                       value="false">
-                                <label class="govuk-label govuk-radios__label" for="conditional-NO">No</label>
+                                <input class="govuk-radios__input" id="@nameof(Model.Approval)-1" name="@nameof(Model.Approval)" type="radio" value="false" data-aria-controls="conditional-comment" checked="@(ModelState.ErrorCount > 0 && Model.Approval == false)">
+                                <label class="govuk-label govuk-radios__label" for="@nameof(Model.Approval)-1">No</label>
+                            </div>
+
+                            <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-comment">
+                                <div class="govuk-form-group @(commentHasError ? "govuk-form-group--error" : "")">
+                                    <label class="govuk-label govuk-label--s" for="@nameof(Model.Comments)">
+                                        Comments
+                                    </label>
+                                    @if (commentHasError)
+                                    {
+                                        <p id="comments-error" class="govuk-error-message">
+                                            <span class="govuk-visually-hidden">Error:</span>
+                                            @Html.ValidationMessageFor(m => m.Comments)
+                                        </p>
+                                    }
+                                    <textarea class="govuk-textarea" id="@nameof(Model.Comments)" name="@nameof(Model.Comments)" rows="3" maxlength="10000" aria-describedby="@(commentHasError ? "comments-error" : "")"></textarea>
+                                </div>
                             </div>
                         </div>
+                    </fieldset>
+                </div>
 
-                    </div>
-
-                    <div class="govuk-form-group">
-                        <h1 class="govuk-label-wrapper">
-                            <label class="govuk-label govuk-label--s" for="comments">
-                                Comments
-                            </label>
-                        </h1>
-                        <textarea class="govuk-textarea" id="comments" name="comments" rows="3" maxlength="10000"></textarea>
-                    </div>
-
-                </fieldset>
-
-                <govuk-button class="govuk-!-margin-top-6">
+                <govuk-button>
                     Continue
                 </govuk-button>
             </form>

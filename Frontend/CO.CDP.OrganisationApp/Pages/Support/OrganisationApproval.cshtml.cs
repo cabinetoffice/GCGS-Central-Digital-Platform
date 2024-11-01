@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using CO.CDP.Mvc.Validation;
 using CO.CDP.Organisation.WebApiClient;
 using Microsoft.AspNetCore.Mvc;
 using OrganisationWebApiClient = CO.CDP.Organisation.WebApiClient;
@@ -16,6 +17,7 @@ public class OrganisationApprovalModel(
     public bool Approval { get; set; }
 
     [BindProperty]
+    [RequiredIf(nameof(Approval), false, ErrorMessage = "Enter a comment")]
     public string? Comments { get; set; }
 
     public async Task<IActionResult> OnGet(Guid organisationId)
