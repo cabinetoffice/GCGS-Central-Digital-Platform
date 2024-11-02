@@ -1,0 +1,245 @@
+{
+  "Comment": "State machine for updating DynamoDB and Slack without Lambda",
+  "StartAt": "Has Execution ID",
+  "States": {
+    "Has Execution ID": {
+      "Type": "Choice",
+      "Default": "Fail",
+      "Choices": [
+        {
+          "Variable": "$.detail.execution-id",
+          "IsPresent": true,
+          "Next": "Is First Message"
+        }
+      ]
+    },
+    "Is First Message": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "And": [
+            {
+              "Variable": "$.detail.action",
+              "StringMatches": "Source"
+            },
+            {
+              "Variable": "$.detail.state",
+              "StringMatches": "STARTED"
+            }
+          ],
+          "Next": "Create Message"
+        },
+        {
+          "And": [
+            {
+              "Variable": "$.detail.action",
+              "StringEquals": "Source"
+            },
+            {
+              "Variable": "$.detail.state",
+              "StringEquals": "SUCCEEDED"
+            }
+          ],
+          "Next": "Update Message Source Details"
+        }
+      ],
+      "Default": "Update Message"
+    },
+    "Create Message": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::dynamodb:putItem",
+      "Parameters": {
+        "TableName": "${dynamodb_table_name}",
+        "Item": {
+          "pipeline_execution_id": {
+            "S.$": "$.detail.execution-id"
+          },
+          "external_execution_summary": {
+            "S": ""
+          },
+          "external_execution_id": {
+            "S": ""
+          },
+          "title": {
+            "S": "New deployment started, blah blah"
+          },
+          "stages": {
+            "M": {
+              "Source": {
+                "S.$": "$.detail.state"
+              },
+              "cdp-sirsi-deployment-to-orchestrator": {
+                "S": "PENDING"
+              },
+              "cdp-sirsi-deployment-to-development": {
+                "S": "PENDING"
+              },
+              "cdp-sirsi-deployment-to-staging": {
+                "S": "PENDING"
+              },
+              "cdp-sirsi-deployment-to-integration": {
+                "S": "PENDING"
+              },
+              "cdp-sirsi-deployment-to-production": {
+                "S": "PENDING"
+              }
+            }
+          }
+        }
+      },
+      "ResultPath": "$.result",
+      "Next": "Get Message"
+    },
+    "Get Message": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::dynamodb:getItem",
+      "Parameters": {
+        "TableName": "${dynamodb_table_name}",
+        "Key": {
+          "pipeline_execution_id": {
+            "S.$": "$.detail.execution-id"
+          }
+        }
+      },
+      "ResultSelector": {
+        "Attributes.$": "$.Item"
+      },
+      "ResultPath": "$.dynamoResult",
+      "Next": "Format Slack Message"
+    },
+    "Has Slack Timestamp": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "Variable": "$.dynamoResult.Attributes.slack_ts",
+          "IsPresent": true,
+          "Next": "Slack Update Message"
+        }
+      ],
+      "Default": "Slack Post Message"
+    },
+    "Set Slack Timestamp": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::dynamodb:updateItem",
+      "Parameters": {
+        "TableName": "${dynamodb_table_name}",
+        "Key": {
+          "pipeline_execution_id": {
+            "S.$": "$.detail.execution-id"
+          }
+        },
+        "UpdateExpression": "SET slack_ts = :slack_ts",
+        "ExpressionAttributeValues": {
+          ":slack_ts": {
+            "S.$": "$.slackResponse.ResponseBody.ts"
+          }
+        }
+      },
+      "End": true
+    },
+    "Update Message Source Details": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::dynamodb:updateItem",
+      "Parameters": {
+        "TableName": "${dynamodb_table_name}",
+        "Key": {
+          "pipeline_execution_id": {
+            "S.$": "$.detail.execution-id"
+          }
+        },
+        "UpdateExpression": "SET external_execution_summary = :summary, external_execution_id = :commit",
+        "ExpressionAttributeValues": {
+          ":summary": {
+            "S.$": "$.detail.execution-result.external-execution-summary"
+          },
+          ":commit": {
+            "S.$": "$.detail.execution-result.external-execution-id"
+          }
+        },
+        "ReturnValues": "ALL_NEW"
+      },
+      "ResultSelector": {
+        "Attributes.$": "$.Attributes"
+      },
+      "ResultPath": "$.dynamoResult",
+      "Next": "Update Message"
+    },
+    "Update Message": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::dynamodb:updateItem",
+      "Parameters": {
+        "TableName": "${dynamodb_table_name}",
+        "Key": {
+          "pipeline_execution_id": {
+            "S.$": "$.detail.execution-id"
+          }
+        },
+        "UpdateExpression": "SET stages.#stage = :state",
+        "ExpressionAttributeNames": {
+          "#stage.$": "$.detail.action"
+        },
+        "ExpressionAttributeValues": {
+          ":state": {
+            "S.$": "$.detail.state"
+          }
+        },
+        "ReturnValues": "ALL_NEW"
+      },
+      "ResultSelector": {
+        "Attributes.$": "$.Attributes"
+      },
+      "ResultPath": "$.dynamoResult",
+      "Next": "Format Slack Message"
+    },
+    "Format Slack Message": {
+      "Type": "Pass",
+      "InputPath": "$.dynamoResult.Attributes",
+      "Parameters": {
+        "formattedMessage": {
+          "text.$": "States.Format('AWS Execution ID: <https://eu-west-2.console.aws.amazon.com/codesuite/codepipeline/pipelines/cdp-sirsi-deployment/executions/{}/visualization?region=eu-west-2|{}>,...\n:building_construction: * Started Deployment Pipeline:* \n     . `{}` *Pull Source Code* <https://github.com/cabinetoffice/GCGS-Central-Digital-Platform/commit/{}|Commit Revision: {}>\n     . `{}` Update Orchestrator\n     . `{}` Update Development\n     . `{}` Update Staging\n     . `{}` Update Integration\n     . `{}` Update Production',$.pipeline_execution_id.S,$.pipeline_execution_id.S,$.stages.M.Source.S,$.external_execution_id.S,$.external_execution_id.S,$.stages.M['cdp-sirsi-deployment-to-orchestrator'].S, $.stages.M['cdp-sirsi-deployment-to-development'].S, $.stages.M['cdp-sirsi-deployment-to-staging'].S, $.stages.M['cdp-sirsi-deployment-to-integration'].S, $.stages.M['cdp-sirsi-deployment-to-production'].S)"
+        }
+      },
+      "ResultPath": "$.formattedMessage",
+      "Next": "Has Slack Timestamp"
+    },
+    "Slack Post Message": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::http:invoke",
+      "Parameters": {
+        "Method": "POST",
+        "ApiEndpoint": "${slack_post_endpoint}",
+        "Authentication": {
+          "ConnectionArn": "${auth_connection_arn}"
+        },
+        "RequestBody": {
+          "channel": "${slack_channel_id}",
+          "text.$": "$.formattedMessage.formattedMessage.text"
+        }
+      },
+      "ResultPath": "$.slackResponse",
+      "Next": "Set Slack Timestamp"
+    },
+    "Slack Update Message": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::http:invoke",
+      "Parameters": {
+        "Method": "POST",
+        "ApiEndpoint": "${slack_update_endpoint}",
+        "Authentication": {
+          "ConnectionArn": "${auth_connection_arn}"
+        },
+        "RequestBody": {
+          "channel": "${slack_channel_id}",
+          "ts.$": "$.dynamoResult.Attributes.slack_ts.S",
+          "text.$": "$.formattedMessage.formattedMessage.text"
+        }
+      },
+      "End": true
+    },
+    "Fail": {
+      "Type": "Fail",
+      "Error": "No Execution ID",
+      "Cause": "Triggered by an event without an execution ID"
+    }
+  }
+}

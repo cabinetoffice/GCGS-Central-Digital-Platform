@@ -6,6 +6,10 @@ data "aws_secretsmanager_secret_version" "slack_api_endpoint" {
   secret_id = "cdp-sirsi-slack-api-endpoint"
 }
 
+data "aws_secretsmanager_secret_version" "slack_configuration" {
+  secret_id = "cdp-sirsi-slack-configuration"
+}
+
 data "aws_iam_policy_document" "notification_step_function" {
   statement {
     effect = "Allow"
@@ -16,8 +20,19 @@ data "aws_iam_policy_document" "notification_step_function" {
     ]
 
     resources = [
-      aws_sfn_state_machine.slack_notification.arn
+      aws_sfn_state_machine.slack_notification.arn,
+      aws_sfn_state_machine.slack_unified_notification.arn
     ]
+  }
+
+  statement {
+    actions   = [
+      "dynamodb:GetItem",
+      "dynamodb:PutItem",
+      "dynamodb:UpdateItem"
+    ]
+    resources = [aws_dynamodb_table.pipeline_execution_timestamps.arn]
+    effect    = "Allow"
   }
 
   statement {
@@ -29,7 +44,8 @@ data "aws_iam_policy_document" "notification_step_function" {
     ]
 
     resources = [
-      aws_cloudwatch_event_connection.slack.arn
+      aws_cloudwatch_event_connection.slack.arn,
+      aws_cloudwatch_event_connection.slack_unified_notification.arn
     ]
   }
 
@@ -72,7 +88,8 @@ data "aws_iam_policy_document" "notification_step_function" {
     ]
 
     resources = [
-      aws_cloudwatch_event_connection.slack.arn
+      aws_cloudwatch_event_connection.slack.arn,
+      aws_cloudwatch_event_connection.slack_unified_notification.arn,
     ]
   }
 }

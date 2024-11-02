@@ -144,6 +144,7 @@ data "aws_iam_policy_document" "terraform_product" {
       "events:PutTargets",
       "events:RemoveTargets",
       "events:TagResource",
+      "events:UpdateConnection",
       "iam:PassRole",
     ]
     effect = "Allow"
