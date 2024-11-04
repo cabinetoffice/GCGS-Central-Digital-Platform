@@ -6,14 +6,6 @@ resource "aws_default_route_table" "private" {
   })
 }
 
-# resource "aws_route_table" "private" {
-#   vpc_id = aws_vpc.this.id
-#
-#   tags = merge(local.tags, {
-#     Name = "${var.externals_product.resource_name}-private"
-#   })
-# }
-
 resource "aws_route_table_association" "private" {
   count = length(var.externals_vpc_private_subnets)
 
