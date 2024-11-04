@@ -12,6 +12,20 @@ resource "aws_cloudwatch_event_connection" "slack" {
   }
 }
 
+resource "aws_cloudwatch_event_connection" "slack_unified_notification" {
+  name               = "${local.name_prefix}-goaco-slack-unified-notification"
+  description        = "Allow connection to GOACO's slack API"
+  authorization_type = "API_KEY"
+
+
+  auth_parameters {
+    api_key {
+      key   = "Authorization"
+      value = local.slack_api_auth
+    }
+  }
+}
+
 resource "aws_cloudwatch_event_target" "service_version_slack_notification" {
   arn      = aws_sfn_state_machine.slack_notification.arn
   role_arn = var.role_cloudwatch_events_arn
@@ -79,4 +93,23 @@ resource "aws_cloudwatch_event_target" "deployment_ecs_slack_notification" {
   arn      = aws_sfn_state_machine.slack_notification.arn
   role_arn = var.role_cloudwatch_events_arn
   rule     = aws_cloudwatch_event_rule.deployment_ecs.name
+}
+
+resource "aws_cloudwatch_event_rule" "deployment_pipeline_unified_slack_notification" {
+
+  name        = "${local.name_prefix}-ci-deployment-pipeline-unified"
+  description = "CloudWatch Event rule to detect deployment pipeline events"
+
+  event_pattern = jsonencode({
+    "source" : ["aws.codepipeline"],
+    "detail-type" : ["CodePipeline Action Execution State Change"],
+  })
+
+  tags = var.tags
+}
+
+resource "aws_cloudwatch_event_target" "deployment_pipeline_unified_slack_notification" {
+  arn      = aws_sfn_state_machine.slack_unified_notification.arn
+  role_arn = var.role_cloudwatch_events_arn
+  rule     = aws_cloudwatch_event_rule.deployment_pipeline_unified_slack_notification.name
 }

@@ -148,11 +148,23 @@ ave aws secretsmanager put-secret-value --secret-id cdp-sirsi-one-login-credenti
 
 ## Update Slack Configuration
 
-When the orchestrator's notification component is enabled, the system will notify a specified Slack channel about important CI/CD events. The required configuration for this connection must be stored as a secret named `slack-configuration` in the Orchestrator account. To create this secret, add a file named `slack-notification-api-endpoint.txt` under the secrets directory, containing a single line with the Slack API endpoint. Then, run the following command:
+When the orchestrator's notification component is enabled, the system will notify a specified Slack channel about important CI/CD events. The required configuration for this connection must be stored as a secret named `cdp-sirsi-slack-configuration` in the Orchestrator account. To create this secret, add a file named `cdp-sirsi-slack-configuration.json` under the `secrets` directory, containing the following:
+
+```json
+{
+  "API_ENDPOINT": "https://slack.com/api",
+  "API_AUTH": "Bearer xxx-xxxxxxxxx-xxxxxx-xxxx",
+  "SERVICE_ENDPOINT": "https://hooks.slack.com/services/xxxx/xxxxx/xxxx" 
+}
+```
+Then, run the following command:
 
 ```shell
 aws-switch-to-cdp-sirsi-orchestrator-goaco-terraform
-ave aws secretsmanager create-secret --name cdp-sirsi-slack-api-endpoint --secret-string file://secrets/slack-notification-api-endpoint.txt | jq .
+# Add using:
+# ave aws secretsmanager create-secret --name cdp-sirsi-slack-configuration --secret-string file://secrets/cdp-sirsi-slack-configuration.json | jq .
+# Or update using:
+ave aws secretsmanager put-secret-value --secret-id cdp-sirsi-slack-configuration --secret-string file://secrets/cdp-sirsi-slack-configuration.json | jq .
 ```
 
-This command will create a secret named `cdp-sirsi-slack-api-endpoint` in AWS Secrets Manager, setting its value from the contents of the `slack-notification-api-endpoint.txt` file in the secrets directory.
+This command will create a secret named `cdp-sirsi-slack-configuration` in AWS Secrets Manager, setting its value from the contents of the `slack-notification-api-endpoint.txt` file in the `secrets` directory.
