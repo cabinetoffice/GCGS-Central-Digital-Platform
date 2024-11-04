@@ -25,4 +25,16 @@ public static class ErrorMessagesList
     public const string DuplicateApiKeyName = "An API key with this name already exists. Please try again.";
     public const string AlreadyMemberOfOrganisation = "You are already a member of this organisation.";
 
+    public const string OrganisationInvalidInput = "Invalid Input.";
+    public const string MissingOrganisationName = "Missing organisation name.";
+    public const string MissingRoles = "Missing roles.";
+    public const string MissingContactPoint = "Missing contact point.";
+    public const string NoPrimaryIdentifier = "There are no identifiers remaining that can be set as the primary.";
+    public const string MissingOrganisationEmail = "Missing organisation email.";
+    public const string OrganisationEmailDoesNotExist = "Organisation email does not exists.";
+    public const string MissingOrganisationAddress = "Missing organisation address.";
+    public const string MissingOrganisationRegisteredAddress = "Missing Organisation registered address.";
+    public const string MissingAdditionalIdentifiers = "Missing additional identifiers.";
+    public const string MissingIdentifierNumber = "Missing identifier number.";
+    public const string IdentiferNumberAlreadyExists = "The identifier you have entered belongs to a different organization that already exists.";    
 }

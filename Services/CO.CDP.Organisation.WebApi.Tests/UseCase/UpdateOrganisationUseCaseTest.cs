@@ -9,6 +9,7 @@ using Moq;
 using Persistence = CO.CDP.OrganisationInformation.Persistence;
 using Address = CO.CDP.OrganisationInformation.Persistence.Address;
 using CO.CDP.OrganisationInformation;
+using static CO.CDP.Organisation.WebApi.Model.InvalidUpdateOrganisationCommand;
 
 namespace CO.CDP.Organisation.WebApi.Tests.UseCase;
 
@@ -17,6 +18,7 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
     private readonly Mock<Persistence.IOrganisationRepository> _organisationRepositoryMock = new();
     private readonly Mock<IPublisher> _publisher = new();
     private readonly Guid _organisationId = Guid.NewGuid();
+    private readonly Guid _anotherOrganisationId = Guid.NewGuid();
     private UpdateOrganisationUseCase UseCase =>
         new(_organisationRepositoryMock.Object, _publisher.Object, mapperFixture.Mapper);
 
@@ -119,7 +121,7 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
     }
 
     [Fact]
-    public async Task Execute_ShouldThrowInvalidUpdateOrganisationCommand_WhenUpdateTypeIsUnknown()
+    public async Task Execute_ShouldThrowUnknownOrganisationUpdateType_WhenUpdateTypeIsUnknown()
     {
         var updateOrganisation = new UpdateOrganisation
         {
@@ -135,7 +137,7 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
     }
 
     [Fact]
-    public async Task Execute_ShouldThrowInvalidUpdateOrganisationCommand_WhenAdditionalIdentifiersIsNull()
+    public async Task Execute_ShouldThrowMissingAdditionalIdentifiers_WhenAdditionalIdentifiersIsNull()
     {
         var updateOrganisation = new UpdateOrganisation
         {
@@ -151,7 +153,72 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
     }
 
     [Fact]
-    public async Task Execute_ShouldThrowInvalidUpdateOrganisationCommand_WhenAddressIsNull()
+    public async Task ShouldThrowIdentiferNumberAlreadyExists_WhenIdentifierAlreadyExists()
+    {        
+        var command = new UpdateOrganisation
+        {
+            Type = OrganisationUpdateType.AdditionalIdentifiers,
+            Organisation = new OrganisationInfo
+            {
+                AdditionalIdentifiers = [new OrganisationIdentifier
+                {
+                    Id = "13294342",
+                    LegalName = "Tcme",
+                    Scheme = "VAT"
+                }]
+            }
+        };
+
+        var existingOrganisationWithSameIdentifier = Organisation;
+
+        _organisationRepositoryMock.Setup(repo => repo.Find(_anotherOrganisationId)).ReturnsAsync(AnotherOrganisation);
+
+        _organisationRepositoryMock.Setup(repo => repo.FindByIdentifier("VAT", "13294342")).ReturnsAsync(existingOrganisationWithSameIdentifier);
+
+
+        Func<Task> act = async () => await UseCase.Execute((_anotherOrganisationId, command));
+
+        await act.Should()
+          .ThrowAsync<InvalidUpdateOrganisationCommand.IdentiferNumberAlreadyExists>();
+    }
+
+    [Fact]
+    public async Task ShouldAddNewIdentifier_WhenIdentifierDoesNotExistInOrganisation()
+    {       
+        var command = new UpdateOrganisation
+        {
+            Type = OrganisationUpdateType.AdditionalIdentifiers,
+            Organisation = new OrganisationInfo
+            {
+                AdditionalIdentifiers = [new OrganisationIdentifier
+                {
+                    Id = "342",
+                    LegalName = "Tcme",
+                    Scheme = "VAT"
+                }]
+            }
+        };
+
+        var anotherOrganisation = AnotherOrganisation;
+
+        _organisationRepositoryMock.Setup(repo => repo.Find(_anotherOrganisationId)).ReturnsAsync(anotherOrganisation);
+
+        _organisationRepositoryMock.Setup(repo => repo.FindByIdentifier("VAT", "13294342")).ReturnsAsync((Persistence.Organisation?)null);
+
+        var result = await UseCase.Execute((_anotherOrganisationId, command));
+
+        result.Should().BeTrue();
+
+        _organisationRepositoryMock.Verify(repo => repo.SaveAsync(anotherOrganisation, AnyOnSave()), Times.Once);
+       
+        anotherOrganisation.Identifiers.Should().ContainSingle(i =>
+            i.IdentifierId == "342" &&
+            i.Scheme == "VAT" &&
+            i.LegalName == "Tcme");
+    }
+
+    [Fact]
+    public async Task Execute_ShouldThrowMissingOrganisationAddress_WhenAddressIsNull()
     {
         var updateOrganisation = new UpdateOrganisation
         {
@@ -200,7 +267,6 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
             ContactPoint = organisation.ContactPoints.First().AsEventValue(),
             Roles = organisation.Roles.AsEventValue()
         });
-
     }
 
     [Fact]
@@ -232,7 +298,7 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
     }
 
     [Fact]
-    public async Task Execute_ShouldThrowException_WhenVatIdentifierIsOnlyIdentifierAndVatNumberIsRemoved()
+    public async Task Execute_ShouldThrowExceptionNoPrimaryIdentifier_WhenVatIdentifierIsOnlyIdentifierAndVatNumberIsRemoved()
     {
         var command = new UpdateOrganisation
         {
@@ -311,16 +377,16 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
         var organisation = OrganisationWithPponIdentifier;
         _organisationRepositoryMock.Setup(repo => repo.Find(_organisationId)).ReturnsAsync(organisation);
 
-        var result = await UseCase.Execute((_organisationId, command));
+        Func<Task> act = async () => await UseCase.Execute((_organisationId, command));
 
-        result.Should().BeTrue();
-        _organisationRepositoryMock.Verify(repo => repo.SaveAsync(organisation, AnyOnSave()), Times.Once);
+        await act.Should()
+           .ThrowAsync<InvalidUpdateOrganisationCommand.MissingIdentifierNumber>();
 
         organisation.Identifiers.FirstOrDefault(i => i.Scheme == "VAT").Should().BeNull();
     }
 
     [Fact]
-    public async Task Execute_ShouldThrowInvalidUpdateOrganisationCommand_WhenOrganisationNameIsNull()
+    public async Task Execute_ShouldThrowMissingOrganisationName_WhenOrganisationNameIsNull()
     {
         var updateOrganisation = new UpdateOrganisation
         {
@@ -343,7 +409,7 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
             Type = OrganisationUpdateType.OrganisationName,
             Organisation = new OrganisationInfo
             {
-               OrganisationName="Updated Organisation Name"
+                OrganisationName = "Updated Organisation Name"
             }
         };
         var organisation = Organisation;
@@ -359,7 +425,7 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
 
 
     [Fact]
-    public async Task Execute_ShouldThrowInvalidUpdateOrganisationCommand_WhenOrganisationEmailIsNull()
+    public async Task Execute_ShouldThrowMissingOrganisationEmail_WhenOrganisationEmailIsNull()
     {
         var updateOrganisation = new UpdateOrganisation
         {
@@ -375,7 +441,7 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
     }
 
     [Fact]
-    public async Task Execute_ShouldThrowInvalidUpdateOrganisationCommand_WhenOrganisationEmail_DoesNotExists()
+    public async Task Execute_ShouldThrowOrganisationEmailDoesNotExist_WhenOrganisationEmail_DoesNotExists()
     {
         var updateOrganisation = new UpdateOrganisation
         {
@@ -407,8 +473,8 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
             Type = OrganisationUpdateType.OrganisationEmail,
             Organisation = new OrganisationInfo
             {
-                ContactPoint=new OrganisationContactPoint()
-                { Email="updatedemail@test.com" }
+                ContactPoint = new OrganisationContactPoint()
+                { Email = "updatedemail@test.com" }
             }
         };
         var organisation = Organisation;
@@ -423,7 +489,7 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
     }
 
     [Fact]
-    public async Task Execute_ShouldThrowInvalidUpdateOrganisationCommand_WhenOrganisationRegisteredAddressIsNull()
+    public async Task Execute_ShouldThrowMissingOrganisationAddress_WhenOrganisationRegisteredAddressIsNull()
     {
         var updateOrganisation = new UpdateOrganisation
         {
@@ -439,7 +505,7 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
     }
 
     [Fact]
-    public async Task Execute_ShouldThrowInvalidUpdateOrganisationCommand_WhenOrganisationRegisteredAddressIsMissing()
+    public async Task Execute_ShouldThrowMissingOrganisationRegisteredAddress_WhenOrganisationRegisteredAddressIsMissing()
     {
         var updateOrganisation = new UpdateOrganisation
         {
@@ -499,7 +565,7 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
         result.Should().BeTrue();
         _organisationRepositoryMock.Verify(repo => repo.SaveAsync(organisation, AnyOnSave()), Times.Once);
 
-        organisation.Addresses.FirstOrDefault(x=>x.Type==OrganisationInformation.AddressType.Registered)!.Address.CountryName.Should().Be("Test Land updated");
+        organisation.Addresses.FirstOrDefault(x => x.Type == OrganisationInformation.AddressType.Registered)!.Address.CountryName.Should().Be("Test Land updated");
     }
 
     [Fact]
@@ -525,7 +591,7 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
     }
 
     [Fact]
-    public async Task Execute_ShouldUpdateOrganisationRolesThrowsException_WhenRolesAreMissing()
+    public async Task Execute_ShouldUpdateOrganisationRolesThrowsExceptionMissingRoles_WhenRolesAreMissing()
     {
         var command = new UpdateOrganisation
         {
@@ -627,6 +693,37 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
             }},
             Roles = [PartyRole.Buyer]
         };
+
+    private Persistence.Organisation AnotherOrganisation =>
+     new()
+     {
+         Guid = _organisationId,
+         Name = "Tcme Ltd",
+         Tenant = It.IsAny<Persistence.Tenant>(),
+         Identifiers = [
+                  new Persistence.Organisation.Identifier
+                {
+                    Scheme = "GB-MPR",
+                    IdentifierId = "5656",
+                    LegalName = "Unilever Ltd",
+                    Primary = true
+                }
+         ],
+         ContactPoints = [new Persistence.Organisation.ContactPoint { Email = "test2@test.com" }],
+         Addresses = {new OrganisationInformation.Persistence.Organisation.OrganisationAddress
+            {
+                Type  = OrganisationInformation.AddressType.Registered,
+                Address = new Address
+                {
+                    StreetAddress = "1234 Port St",
+                    Locality = "Port City",
+                    PostalCode = "178345",
+                    CountryName = "Test Land",
+                    Country = "AB"
+                }
+            }},
+         Roles = [PartyRole.Buyer]
+     };
 
     private Persistence.Organisation OrganisationWithVatPrimaryAndPpon =>
         new()

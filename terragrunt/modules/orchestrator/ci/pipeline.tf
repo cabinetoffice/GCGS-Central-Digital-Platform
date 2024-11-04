@@ -75,7 +75,7 @@ resource "aws_codepipeline" "this" {
   }
 
   stage {
-    name = "Update-Staging"
+    name = "Update-NonProd-Accounts"
     action {
       category         = "Build"
       input_artifacts  = ["source_output"]
@@ -95,10 +95,6 @@ resource "aws_codepipeline" "this" {
         ])
       }
     }
-  }
-
-  stage {
-    name = "Update-Integration"
     action {
       category         = "Build"
       input_artifacts  = ["source_output"]
@@ -117,17 +113,6 @@ resource "aws_codepipeline" "this" {
           }
         ])
       }
-    }
-  }
-
-  stage {
-    name = "Wait-for-approval-to-update-Production"
-    action {
-      name     = "ManualApproval"
-      category = "Approval"
-      owner    = "AWS"
-      provider = "Manual"
-      version  = "1"
     }
   }
 

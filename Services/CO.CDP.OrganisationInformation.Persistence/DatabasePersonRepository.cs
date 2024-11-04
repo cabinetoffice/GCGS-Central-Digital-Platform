@@ -19,6 +19,14 @@ public class DatabasePersonRepository(OrganisationInformationContext context) : 
         return await context.Persons.FirstOrDefaultAsync(t => t.UserUrn == urn);
     }
 
+    public async Task<Person?> FindPersonWithTenant(Guid personId)
+    {
+        return await context.Persons
+            .Include(p => p.Tenants)
+            .Where(p => p.Tenants.Count != 0)
+            .FirstOrDefaultAsync(o => o.Guid == personId);
+    }
+
     public async Task<IEnumerable<Person>> FindByOrganisation(Guid organisationId)
     {
         var organisation = await context.Organisations
