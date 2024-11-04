@@ -56,6 +56,9 @@ locals {
         "10.${local.cidr_b_development}.3.0/24"
       ]
       top_level_domain = "findatender.codatt.net"
+
+      externals_cidr_block      = "integration account feature" # To be deprecated after FTS Migration
+      externals_private_subnets = "integration account feature" # To be deprecated after FTS Migration
     }
     staging = {
       cidr_block                 = "10.${local.cidr_b_staging}.0.0/16"
@@ -76,6 +79,9 @@ locals {
         "10.${local.cidr_b_staging}.3.0/24"
       ]
       top_level_domain = "findatender.codatt.net"
+
+      externals_cidr_block      = "integration account feature" # To be deprecated after FTS Migration
+      externals_private_subnets = "integration account feature" # To be deprecated after FTS Migration
     }
     integration = {
       cidr_block                 = "10.${local.cidr_b_integration}.0.0/16"
@@ -123,6 +129,9 @@ locals {
         "10.${local.cidr_b_production}.3.0/24"
       ]
       top_level_domain = "private-beta.find-tender.service.gov.uk"
+
+      externals_cidr_block      = "integration account feature" # To be deprecated after FTS Migration
+      externals_private_subnets = "integration account feature" # To be deprecated after FTS Migration
     }
   }
 
