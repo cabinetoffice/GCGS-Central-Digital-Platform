@@ -5,6 +5,7 @@ namespace CO.CDP.OrganisationApp.Pages.Forms;
 public interface IFormElementModel
 {
     FormQuestionType? CurrentFormQuestionType { get; set; }
+    string? Heading { get; set; }
 
     void Initialize(FormQuestion question);
 
