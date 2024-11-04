@@ -4,16 +4,16 @@ variable "backup_retention_period" {
   default     = 7
 }
 
-variable "create_read_replica" {
-  description = "Create a read replica for this RDS instance"
-  type        = bool
-  default     = true
-}
-
 variable "copy_tags_to_snapshot" {
   description = "Whether copy all Instance tags to snapshots"
   type        = bool
   default     = false
+}
+
+variable "create_read_replica" {
+  description = "Create a read replica for this RDS instance"
+  type        = bool
+  default     = true
 }
 
 variable "db_name" {
@@ -38,9 +38,19 @@ variable "engine" {
   default     = "postgres"
 }
 
+variable "engine_version" {
+  description = "DB engine version"
+  type        = string
+}
+
 variable "family" {
   description = "The family of the DB parameter group"
-  type = string
+  type        = string
+}
+
+variable "instance_type" {
+  description = "RDS instance type for individual environments"
+  type        = string
 }
 
 variable "max_allocated_storage" {
@@ -74,23 +84,13 @@ variable "multi_az" {
 
 variable "parameter_group_name" {
   description = "The name of the DB parameter group."
-  type = string
+  type        = string
 }
 
 variable "performance_insights_enabled" {
   description = "Enable Performance Insights"
   type        = bool
   default     = true
-}
-
-variable "engine_version" {
-  description = "DB engine version"
-  type        = string
-}
-
-variable "instance_type" {
-  description = "RDS instance type for individual environments"
-  type        = string
 }
 
 variable "private_subnet_ids" {

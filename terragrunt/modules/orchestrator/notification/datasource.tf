@@ -26,7 +26,7 @@ data "aws_iam_policy_document" "notification_step_function" {
   }
 
   statement {
-    actions   = [
+    actions = [
       "dynamodb:GetItem",
       "dynamodb:PutItem",
       "dynamodb:UpdateItem"

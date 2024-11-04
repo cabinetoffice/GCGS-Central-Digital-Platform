@@ -23,6 +23,6 @@ resource "aws_route_table_association" "private" {
 
 resource "aws_route" "private_subnet_to_internet_gateway" {
   destination_cidr_block = "0.0.0.0/0"
-  gateway_id         = aws_internet_gateway.this.id
+  gateway_id             = aws_internet_gateway.this.id
   route_table_id         = aws_default_route_table.private.id
 }
