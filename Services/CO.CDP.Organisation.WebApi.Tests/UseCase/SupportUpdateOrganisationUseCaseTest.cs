@@ -46,7 +46,7 @@ public class SupportUpdateOrganisationUseCaseTests
             _notifyApiClient.Object,
             mockConfiguration,
             _logger.Object);
-        _organisation = new OrganisationInformation.Persistence.Organisation
+        _organisation = new Persistence.Organisation
         {
             Id = 1,
             Guid = Guid.NewGuid(),
@@ -54,6 +54,7 @@ public class SupportUpdateOrganisationUseCaseTests
             PendingRoles = [PartyRole.Buyer],
             Tenant = null!,
             Name = null!,
+            ContactPoints = [new Persistence.Organisation.ContactPoint { Email = "org-email@test.com" }]
         };
 
         _person = new Persistence.Person
@@ -150,10 +151,21 @@ public class SupportUpdateOrganisationUseCaseTests
 
         _notifyApiClient.Verify(x => x.SendEmail(It.Is<EmailNotificationRequest>(request =>
             request.TemplateId.Contains("buyer-approval-template-id")
+            && request.EmailAddress == orgPersonList.First().Person.Email
             && request.Personalisation != null
             && request.Personalisation["org_name"] == _organisation.Name
             && request.Personalisation["first_name"] == orgPersonList.First().Person.FirstName
             && request.Personalisation["last_name"] == orgPersonList.First().Person.LastName
+            && request.Personalisation["org_link"].Contains($"organisation/{_organisation.Guid}")
+        )));
+
+        _notifyApiClient.Verify(x => x.SendEmail(It.Is<EmailNotificationRequest>(request =>
+            request.TemplateId.Contains("buyer-approval-template-id")
+            && request.EmailAddress == _organisation.ContactPoints.First().Email
+            && request.Personalisation != null
+            && request.Personalisation["org_name"] == _organisation.Name
+            && request.Personalisation["first_name"] == "organisation"
+            && request.Personalisation["last_name"] == "owner"
             && request.Personalisation["org_link"].Contains($"organisation/{_organisation.Guid}")
         )));
 
@@ -195,10 +207,21 @@ public class SupportUpdateOrganisationUseCaseTests
 
         _notifyApiClient.Verify(x => x.SendEmail(It.Is<EmailNotificationRequest>(request =>
             request.TemplateId.Contains("buyer-rejection-template-id")
+            && request.EmailAddress == orgPersonList.First().Person.Email
             && request.Personalisation != null
             && request.Personalisation["org_name"] == _organisation.Name
             && request.Personalisation["first_name"] == orgPersonList.First().Person.FirstName
             && request.Personalisation["last_name"] == orgPersonList.First().Person.LastName
+            && request.Personalisation["org_link"].Contains($"organisation/{_organisation.Guid}")
+        )));
+
+        _notifyApiClient.Verify(x => x.SendEmail(It.Is<EmailNotificationRequest>(request =>
+            request.TemplateId.Contains("buyer-rejection-template-id")
+            && request.EmailAddress == _organisation.ContactPoints.First().Email
+            && request.Personalisation != null
+            && request.Personalisation["org_name"] == _organisation.Name
+            && request.Personalisation["first_name"] == "organisation"
+            && request.Personalisation["last_name"] == "owner"
             && request.Personalisation["org_link"].Contains($"organisation/{_organisation.Guid}")
         )));
 

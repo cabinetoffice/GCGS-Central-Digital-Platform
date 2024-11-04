@@ -88,33 +88,50 @@ public class SupportUpdateOrganisationUseCase(
             return;
         }
 
-        var emailTasks = adminPersons.Select(async p =>
+        var emailNotificationRequests = adminPersons.Select(p => new EmailNotificationRequest
+            {
+                EmailAddress = p.Person.Email,
+                TemplateId = templateId,
+                Personalisation = new Dictionary<string, string>
+                {
+                    { "org_name", organisation.Name },
+                    { "first_name", p.Person.FirstName },
+                    { "last_name", p.Person.LastName },
+                    { "org_link", orgLink }
+                }
+            });
+
+        var orgContactEmail = organisation.ContactPoints?.FirstOrDefault()?.Email;
+        if (orgContactEmail != null)
+        {
+            emailNotificationRequests = emailNotificationRequests.Append(new EmailNotificationRequest
+            {
+                EmailAddress = orgContactEmail,
+                TemplateId = templateId,
+                Personalisation = new Dictionary<string, string>
+                {
+                    { "org_name", organisation.Name },
+                    { "first_name", "organisation" },
+                    { "last_name", "owner" },
+                    { "org_link", orgLink }
+                }
+            });
+        }
+
+        var emailTasks = emailNotificationRequests.Select(async emailNotificationRequest =>
         {
             try
             {
-                var emailRequest = new EmailNotificationRequest
+                if (!string.IsNullOrEmpty(organisation.ReviewComment) && emailNotificationRequest.Personalisation != null)
                 {
-                    EmailAddress = p.Person.Email,
-                    TemplateId = templateId,
-                    Personalisation = new Dictionary<string, string>
-                    {
-                        { "org_name", organisation.Name },
-                        { "first_name", p.Person.FirstName },
-                        { "last_name", p.Person.LastName },
-                        { "org_link", orgLink }
-                    }
-                };
-
-                if (!string.IsNullOrEmpty(organisation.ReviewComment))
-                {
-                    emailRequest.Personalisation["comments"] = organisation.ReviewComment;
+                    emailNotificationRequest.Personalisation["comments"] = organisation.ReviewComment;
                 }
 
-                await govUKNotifyApiClient.SendEmail(emailRequest);
+                await govUKNotifyApiClient.SendEmail(emailNotificationRequest);
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, $"Failed to send email to {p.Person.Email} for organisation {organisation.Name}");
+                logger.LogError(ex, $"Failed to send email to {emailNotificationRequest.EmailAddress} for organisation {organisation.Name}");
             }
         });
 
