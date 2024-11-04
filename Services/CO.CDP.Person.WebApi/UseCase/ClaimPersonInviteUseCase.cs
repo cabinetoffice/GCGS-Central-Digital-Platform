@@ -40,7 +40,7 @@ public class ClaimPersonInviteUseCase(
 
     private void GuardPersonInviteExpired(PersonInvite personInvite)
     {
-        if (personInvite.ExpiresOn < DateTimeOffset.UtcNow)
+        if (personInvite.ExpiresOn?.UtcDateTime < DateTimeOffset.UtcNow)
         {
             throw new PersonInviteExpiredException(
                 $"PersonInvite {personInvite.Guid} has expired.");
