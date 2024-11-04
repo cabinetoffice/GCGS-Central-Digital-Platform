@@ -11,6 +11,8 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.Sql($@"
+                DROP FUNCTION IF EXISTS update_form_questions_sort_order();
+
                 CREATE OR REPLACE FUNCTION update_form_questions_sort_order()
                 RETURNS VOID AS $$
                 BEGIN
