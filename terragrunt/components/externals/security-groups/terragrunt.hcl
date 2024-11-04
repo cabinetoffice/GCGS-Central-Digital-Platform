@@ -1,5 +1,5 @@
 terraform {
-  source = local.global_vars.locals.environment == "integration" ? "../../../modules//externals/networking" : null
+  source = local.global_vars.locals.environment == "integration" ? "../../../modules//externals/security-groups" : null
 }
 
 include {
@@ -14,12 +14,20 @@ locals {
     local.global_vars.inputs.tags,
     local.externals_vars.inputs.tags,
     {
-      component = "networking"
+      component = "security-groups"
     }
   )
+}
 
+dependency externals_networking {
+  config_path = "../networking"
+  mock_outputs = {
+    vpc_id = "mock"
+  }
 }
 
 inputs = {
-  tags                = local.tags
+  tags = local.tags
+
+  vpc_id = dependency.externals_networking.outputs.vpc_id
 }

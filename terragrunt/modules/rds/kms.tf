@@ -1,3 +1,7 @@
+import {
+  id = ""
+  to = "module.rds_entity_verification.data.aws_secretsmanager_secret.this"
+}
 module "kms" {
   source = "../kms"
 

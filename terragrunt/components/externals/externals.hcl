@@ -5,5 +5,11 @@ locals {
 }
 
 inputs = {
-  tags = local.tags
+  tags = merge(
+    {
+      external_team = "cdp-fts"
+      life_time     = "during migration only"
+    },
+    local.tags
+  )
 }
