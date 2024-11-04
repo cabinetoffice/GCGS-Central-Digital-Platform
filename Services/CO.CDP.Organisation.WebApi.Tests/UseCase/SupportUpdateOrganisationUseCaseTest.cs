@@ -146,6 +146,7 @@ public class SupportUpdateOrganisationUseCaseTests
         _organisation.ReviewedBy.Should().Be(_person);
         _organisation.Roles.Should().BeEquivalentTo([PartyRole.Tenderer, PartyRole.Buyer]);
         _organisation.PendingRoles.Should().BeEmpty();
+        _organisation.ReviewComment.Should().BeNull();
 
         _notifyApiClient.Verify(x => x.SendEmail(It.Is<EmailNotificationRequest>(request =>
             request.TemplateId.Contains("buyer-approval-template-id")

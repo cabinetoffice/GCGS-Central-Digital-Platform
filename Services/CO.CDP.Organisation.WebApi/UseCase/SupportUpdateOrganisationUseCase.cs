@@ -31,6 +31,7 @@ public class SupportUpdateOrganisationUseCase(
                     organisation.ApprovedOn = DateTimeOffset.UtcNow;
                     organisation.PendingRoles.ForEach(r => organisation.Roles.Add(r));
                     organisation.PendingRoles.Clear();
+                    organisation.ReviewComment = string.Empty;
                     sendApprovalEmail = true;
                 } else
                 {
