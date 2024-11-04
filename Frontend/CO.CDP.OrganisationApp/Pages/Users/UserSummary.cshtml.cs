@@ -93,7 +93,7 @@ public class UserSummaryModel(
         }
     }
 
-    private ICollection<PersonInviteModel>? SortPersonInvites(ICollection<PersonInviteModel>? personInvites)
+    private ICollection<PersonInviteModel> SortPersonInvites(ICollection<PersonInviteModel>? personInvites)
     {
         if (personInvites != null)
         {
@@ -117,6 +117,6 @@ public class UserSummaryModel(
             return invites;
         }
 
-        return personInvites;
+        return new List<PersonInviteModel>();
     }
 }
