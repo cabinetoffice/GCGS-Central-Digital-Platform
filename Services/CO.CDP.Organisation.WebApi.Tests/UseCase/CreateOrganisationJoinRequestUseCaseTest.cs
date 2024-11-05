@@ -97,7 +97,7 @@ public class CreateOrganisationJoinRequestUseCaseTests
         _mockPersonRepository.Setup(repo => repo.Find(_person.Guid))
             .ReturnsAsync(_person);
 
-        _mockOrganisationJoinRequestRepository.Setup(repo => repo.FindByOrganisationAndPerson(_organisation.Guid, _person.Id))
+        _mockOrganisationJoinRequestRepository.Setup(repo => repo.FindByOrganisationAndPerson(_organisation.Guid, _person.Guid))
             .ReturnsAsync(new OrganisationInformation.Persistence.OrganisationJoinRequest() { Guid = Guid.NewGuid(), Status = OrganisationJoinRequestStatus.Pending});
 
         Func<Task> action = async () => await _useCase.Execute((_organisation.Guid, createJoinRequestCommand));

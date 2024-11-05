@@ -164,7 +164,7 @@ public class CreateOrganisationJoinRequestUseCase(
 
     private async Task GuardPersonIsNotAlreadyInvited(Persistence.Organisation organisation, Person person)
     {
-        var joinRequest = await organisationJoinRequestRepository.FindByOrganisationAndPerson(organisation.Guid, person.Id);
+        var joinRequest = await organisationJoinRequestRepository.FindByOrganisationAndPerson(organisation.Guid, person.Guid);
 
         if (joinRequest != null)
         {
