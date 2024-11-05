@@ -31,7 +31,7 @@ dependency core_iam {
 dependency externals_networking {
   config_path = "../networking"
   mock_outputs = {
-    private_subnets             = "mock"
+    private_subnet_ids          = "mock"
     private_subnets_cidr_blocks = "mock"
     vpc_id                      = "mock"
   }
@@ -51,7 +51,7 @@ inputs = {
   private_subnets_cidr_blocks = dependency.externals_networking.outputs.private_subnets_cidr_blocks
   vpc_id                      = dependency.externals_networking.outputs.vpc_id
 
-  db_mysql_sg_id = dependency.externals_security_groups.outputs.db_postgres_sg_id
+  db_mysql_sg_id = dependency.externals_security_groups.outputs.db_mysql_sg_id
 
   role_terraform_arn      = dependency.core_iam.outputs.terraform_arn
 }
