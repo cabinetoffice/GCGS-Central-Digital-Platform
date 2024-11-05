@@ -1,5 +1,5 @@
 resource "aws_secretsmanager_secret" "master_user_credential" {
-  name        = "${var.db_name}-master-password"
+  name        = "rds-db-${var.db_name}-master-password"
   description = "The secret associated with the primary RDS cluster ${var.db_name}"
 }
 
