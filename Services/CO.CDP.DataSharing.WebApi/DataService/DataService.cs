@@ -27,8 +27,20 @@ public class DataService(IShareCodeRepository shareCodeRepository, IConnectedEnt
             BasicInformation = MapToBasicInformation(sharedConsent.Organisation),
             ConnectedPersonInformation = MapToConnectedPersonInformation(connectedEntities),
             FormAnswerSetForPdfs = MapFormAnswerSetsForPdf(allFormSectionsExceptDeclaractions),
-            AttachedDocuments = MapAttachedDocuments(sharedConsent)
+            AttachedDocuments = MapAttachedDocuments(sharedConsent),
+            AdditionalIdentifiers = MapAdditionalIdentifiersForPdf(sharedConsent.Organisation.Identifiers)
         };
+    }
+
+    public IEnumerable<Model.Identifier> MapAdditionalIdentifiersForPdf(IEnumerable<Organisation.Identifier> identifiers)
+    {
+        return identifiers.Select(identifier => new Model.Identifier
+        {
+            Id = identifier.IdentifierId,
+            Scheme = identifier.Scheme,
+            LegalName = identifier.LegalName,
+            Uri = identifier.Uri
+        }).ToList();
     }
 
     public IEnumerable<FormAnswerSetForPdf> MapFormAnswerSetsForPdf(
@@ -227,7 +239,8 @@ public class DataService(IShareCodeRepository shareCodeRepository, IConnectedEnt
                     entity.IndividualOrTrust?.ControlCondition.Select(c => c.ToString()).ToList() ?? new List<string>(),
                     entity.CompanyHouseNumber,
                     individualTrust,
-                    organisation
+                    organisation,
+                    entity.EntityType
                 ));
             }
         }

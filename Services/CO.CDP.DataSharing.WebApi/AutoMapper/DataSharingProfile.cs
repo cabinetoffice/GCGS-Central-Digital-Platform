@@ -52,7 +52,7 @@ public class DataSharingProfile : Profile
                 o => o.MapFrom((_, _, _, context) => context.Items["AdditionalParties"]));
 
         Uri? tempResult;
-        CreateMap<Organisation.Identifier, Identifier>()
+        CreateMap<Organisation.Identifier, Model.Identifier>()
             .ForMember(m => m.Scheme, o => o.MapFrom(m => m.Scheme))
             .ForMember(m => m.Id, o => o.MapFrom(m => m.IdentifierId))
             .ForMember(m => m.LegalName, o => o.MapFrom(m => m.LegalName))
@@ -177,7 +177,8 @@ public class CustomResolver : IValueResolver<Persistence.SharedConsentQuestionAn
                 return source.Answer.DateValue.ToString();
             case Persistence.FormQuestionType.Address:
                 return source.Answer.AddressValue != null ? ToHtmlString(source.Answer.AddressValue) : "";
-            default: return "";
+            default:
+                return "";
         }
     }
 

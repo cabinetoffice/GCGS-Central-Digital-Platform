@@ -194,7 +194,8 @@ public static class DataSharingFactory
                 new List<string> { "ControlCondition1" },
                 "12345",
                 null,
-                null
+                null,
+                ConnectedEntity.ConnectedEntityType.Individual
             )
         ];
     }
