@@ -1,4 +1,5 @@
 @page "/organisation/{organisationId:guid}/forms/{formId:guid}/sections/{sectionId:guid}/share-code-details/{shareCode}"
+@using CO.CDP.OrganisationApp.Extensions
 @model CO.CDP.OrganisationApp.Pages.ShareInformation.ShareCodeDetailsModel
 @{
     ViewData["Title"] = Model.SharedConsentDetails?.ShareCode;
@@ -21,7 +22,7 @@
                             Created on
                         </dt>
                         <dd class="govuk-summary-list__value">
-                            @Model.SharedConsentDetails?.SubmittedAt.ToString("dd/MM/yyyy")
+                            @Model.SharedConsentDetails?.SubmittedAt.ToFormattedString()
                         </dd>
                         <dd class="govuk-summary-list__actions">
                             &nbsp;
