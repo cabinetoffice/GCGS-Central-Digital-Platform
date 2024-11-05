@@ -148,6 +148,7 @@ locals {
   external_product = {
     name          = "CDP FTS"
     resource_name = "cdp-sirsi-ext-fts"
+    mysql_access_allowed_ip_ranges = ["0.0.0.0/0"]
   }
 
   desired_count_non_production = 1

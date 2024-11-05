@@ -3,16 +3,12 @@ variable "db_mysql_sg_id" {
   type        = string
 }
 
-variable "environment" {
-  description = "The environment we are provisioning, i.e. test, do not mistake this with the AWS account"
-  type        = string
-}
-
 variable "externals_product" {
   description = "External product's common attributes"
   type = object({
-    name          = string
-    resource_name = string
+    name                           = string
+    resource_name                  = string
+    mysql_access_allowed_ip_ranges = list(string)
   })
 }
 
@@ -21,15 +17,6 @@ variable "is_production" {
   type        = bool
 }
 
-variable "postgres_engine_version" {
-  description = "DB engine version"
-  type        = string
-}
-
-variable "postgres_instance_type" {
-  description = "RDS instance type for individual environments"
-  type        = string
-}
 
 variable "private_subnet_ids" {
   description = "List of private subnet IDs"

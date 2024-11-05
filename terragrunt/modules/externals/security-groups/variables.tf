@@ -1,8 +1,9 @@
 variable "externals_product" {
   description = "External product's common attributes"
   type = object({
-    name          = string
-    resource_name = string
+    name                           = string
+    resource_name                  = string
+    mysql_access_allowed_ip_ranges = list(string)
   })
 }
 
