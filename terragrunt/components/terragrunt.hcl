@@ -4,11 +4,13 @@ locals {
     for name, env in local.environments : name => env.account_id
   }
 
+  cidr_b_production   = 1
+  cidr_b_staging      = 2
   cidr_b_development  = 3
   cidr_b_integration  = 4
   cidr_b_orchestrator = 5
-  cidr_b_production   = 1
-  cidr_b_staging      = 2
+  cidr_b_external_integration = 6
+
 
   environment = get_env("TG_ENVIRONMENT", "development")
 
@@ -31,6 +33,9 @@ locals {
         "10.${local.cidr_b_orchestrator}.3.0/24"
       ]
       top_level_domain = "findatender.codatt.net"
+
+      externals_cidr_block      = "integration account feature" # To be deprecated after FTS Migration
+      externals_private_subnets = "integration account feature" # To be deprecated after FTS Migration
     }
     development = {
       cidr_block             = "10.${local.cidr_b_development}.0.0/16"
@@ -51,6 +56,9 @@ locals {
         "10.${local.cidr_b_development}.3.0/24"
       ]
       top_level_domain = "findatender.codatt.net"
+
+      externals_cidr_block      = "integration account feature" # To be deprecated after FTS Migration
+      externals_private_subnets = "integration account feature" # To be deprecated after FTS Migration
     }
     staging = {
       cidr_block                 = "10.${local.cidr_b_staging}.0.0/16"
@@ -71,6 +79,9 @@ locals {
         "10.${local.cidr_b_staging}.3.0/24"
       ]
       top_level_domain = "findatender.codatt.net"
+
+      externals_cidr_block      = "integration account feature" # To be deprecated after FTS Migration
+      externals_private_subnets = "integration account feature" # To be deprecated after FTS Migration
     }
     integration = {
       cidr_block                 = "10.${local.cidr_b_integration}.0.0/16"
@@ -91,6 +102,13 @@ locals {
         "10.${local.cidr_b_integration}.3.0/24"
       ]
       top_level_domain = "findatender.codatt.net"
+
+      externals_cidr_block      = "10.${local.cidr_b_external_integration}.0.0/16"
+      externals_private_subnets = [
+        "10.${local.cidr_b_external_integration}.101.0/24",
+        "10.${local.cidr_b_external_integration}.102.0/24",
+        "10.${local.cidr_b_external_integration}.103.0/24"
+      ]
     }
     production = {
       cidr_block                 = "10.${local.cidr_b_production}.0.0/16"
@@ -111,6 +129,9 @@ locals {
         "10.${local.cidr_b_production}.3.0/24"
       ]
       top_level_domain = "private-beta.find-tender.service.gov.uk"
+
+      externals_cidr_block      = "integration account feature" # To be deprecated after FTS Migration
+      externals_private_subnets = "integration account feature" # To be deprecated after FTS Migration
     }
   }
 
@@ -122,6 +143,12 @@ locals {
     name               = "CDP SIRSI"
     resource_name      = "cdp-sirsi"
     public_hosted_zone = local.environment == "production" ? local.environments[local.environment].top_level_domain : "${local.environments[local.environment].name}.supplier.information.${local.environments[local.environment].top_level_domain}"
+  }
+
+  external_product = {
+    name          = "CDP FTS"
+    resource_name = "cdp-sirsi-ext-fts"
+    mysql_access_allowed_ip_ranges = ["0.0.0.0/0"]
   }
 
   desired_count_non_production = 1
@@ -380,15 +407,18 @@ generate provider {
 }
 
 inputs = {
-  environment             = local.environment
-  is_production           = local.is_production
-  product                 = local.product
-  tags                    = local.tags
-  postgres_engine_version = local.versions.postgres_engine
-  postgres_instance_type  = local.environments[local.environment].postgres_instance_type
-  vpc_cidr                = local.environments[local.environment].cidr_block
-  vpc_private_subnets     = local.environments[local.environment].private_subnets
-  vpc_public_subnets      = local.environments[local.environment].public_subnets
+  environment                   = local.environment
+  externals_product             = local.external_product
+  externals_vpc_cidr            = local.environments[local.environment].externals_cidr_block
+  externals_vpc_private_subnets = local.environments[local.environment].externals_private_subnets
+  is_production                 = local.is_production
+  postgres_engine_version       = local.versions.postgres_engine
+  postgres_instance_type        = local.environments[local.environment].postgres_instance_type
+  product                       = local.product
+  tags                          = local.tags
+  vpc_cidr                      = local.environments[local.environment].cidr_block
+  vpc_private_subnets           = local.environments[local.environment].private_subnets
+  vpc_public_subnets            = local.environments[local.environment].public_subnets
 }
 
 terraform {

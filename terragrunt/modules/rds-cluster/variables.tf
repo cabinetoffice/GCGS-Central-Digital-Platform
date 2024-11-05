@@ -10,12 +10,6 @@ variable "copy_tags_to_snapshot" {
   default     = false
 }
 
-variable "create_read_replica" {
-  description = "Create a read replica for this RDS instance"
-  type        = bool
-  default     = true
-}
-
 variable "db_name" {
   description = "Data base name"
   type        = string
@@ -35,17 +29,24 @@ variable "deletion_protection" {
 variable "engine" {
   description = "RDS engine"
   type        = string
-  default     = "postgres"
+  default     = "aurora-mysql"
 }
 
 variable "engine_version" {
   description = "DB engine version"
   type        = string
+  default     = "aurora-mysql8.0"
 }
 
 variable "family" {
   description = "The family of the DB parameter group"
   type        = string
+}
+
+variable "instance_count" {
+  description = ""
+  type        = number
+  default     = 2
 }
 
 variable "instance_type" {
@@ -76,12 +77,6 @@ variable "monitoring_role_arn" {
   default     = ""
 }
 
-variable "multi_az" {
-  description = "Enable Multi-AZ deployment for RDS"
-  type        = bool
-  default     = true
-}
-
 variable "parameter_group_name" {
   description = "The name of the DB parameter group."
   type        = string
@@ -107,12 +102,6 @@ variable "publicly_accessible" {
 variable "role_terraform_arn" {
   description = "Terraform IAM role ARN"
   type        = string
-}
-
-variable "storage_type" {
-  description = "The storage type to use for RDS (gp2, gp3, io1)"
-  type        = string
-  default     = "gp2"
 }
 
 variable "tags" {
