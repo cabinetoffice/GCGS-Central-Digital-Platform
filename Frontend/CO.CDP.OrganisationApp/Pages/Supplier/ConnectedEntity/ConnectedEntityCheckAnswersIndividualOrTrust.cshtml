@@ -42,7 +42,7 @@
                             <p class="govuk-body">@details.LastName</p>
                             @if (details.DateOfBirth.HasValue)
                             {
-                                <p class="govuk-body">DoB: @details.DateOfBirth?.ToString("dd MMMM yyyy")</p>
+                                <p class="govuk-body">DoB: @details.DateOfBirth?.ToFormattedString()</p>
                             }
                             @if (!string.IsNullOrEmpty(@details.Nationality))
                             {

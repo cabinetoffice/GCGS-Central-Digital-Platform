@@ -225,7 +225,7 @@
                             </dt>
                             <dd class="govuk-summary-list__value">
                                 @Html.Raw(details.RegistrationDate.HasValue == true
-                                         ? $"Yes<br>On {details.RegistrationDate.Value.ToString("dd MMMM yyyy")}"
+                                         ? $"Yes<br>On {details.RegistrationDate.Value.ToFormattedString()}"
                                          : "No")
                             </dd>
                             <dd class="govuk-summary-list__actions">
