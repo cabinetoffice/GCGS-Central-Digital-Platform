@@ -82,7 +82,6 @@ if (builder.Configuration.GetValue("Features:SwaggerUI", false))
 
 if (!app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler();
     app.UseHsts();
 }
 

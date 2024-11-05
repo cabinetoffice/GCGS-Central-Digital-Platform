@@ -81,7 +81,10 @@ public class ConnectedEntityCompanyRegisterNameModel(ISession session) : PageMod
     private void InitModal(ConnectedEntityState state, bool reset = false)
     {
         Caption = state.GetCaption();
-        Heading = $"Select where {state.OrganisationName} is registered as person with significant control";
+        var name = state.ConnectedEntityType == Constants.ConnectedEntityType.Organisation
+                    ? state.OrganisationName : state.FirstName;
+
+        Heading = $"Select where {name} is registered as person with significant control";
         ConnectedEntityType = state.ConnectedEntityType;
         SupplierHasCompanyHouseNumber = state.SupplierHasCompanyHouseNumber ?? false;
         BackPageLink = GetBackLinkPageName(state);

@@ -29,9 +29,10 @@ public class DatabasePersonInviteRepository(OrganisationInformationContext conte
 
     public async Task<bool> IsInviteEmailUniqueWithinOrganisation(Guid organisationId, string email)
     {
-        return await context.PersonInvites
+        return !await context.PersonInvites
             .Where(x => x.Organisation != null && x.Organisation.Guid == organisationId)
-            .AllAsync(x => x.Email != email);
+            .Where(x => x.Email == email && x.Person == null)
+            .AnyAsync();
     }
 
     public async Task<bool> Delete(PersonInvite personInvite)
