@@ -4,7 +4,7 @@
 @using CO.CDP.OrganisationApp.Constants
 
 @{
-    ViewData["Title"] = "Join requests";
+    ViewData["Title"] = "Manage users";
     var hasError = ((TagBuilder)Html.ValidationMessageFor(m => m.HasPerson)).HasInnerHtml;
     var totalPersons = Model.Persons.Count + Model.PersonInvites.Count;
     var pendingJoinRequests = Model.OrganisationJoinRequests.Where(x => x.Status == CDP.Organisation.WebApiClient.OrganisationJoinRequestStatus.Pending).ToList();
@@ -21,11 +21,13 @@
         </div>
         <div class="govuk-grid-column-full">
 
+            <h1 class="govuk-visually-hidden">@ViewData["Title"]</h1>
+
             @if (pendingJoinRequests.Any())
             {
-                <h1 class="govuk-heading-l">
-                    @ViewData["Title"]
-                </h1>
+                <h2 class="govuk-heading-l">
+                    Join requests
+                </h2>
             }
 
             <dl class="govuk-summary-list">
@@ -56,9 +58,9 @@
                 }
             </dl>
 
-            <h1 class="govuk-heading-l">
+            <h2 class="govuk-heading-l">
                 Organisation has @(totalPersons == 1 ? "1 user" : $"{totalPersons} users")
-            </h1>
+            </h2>
 
             @foreach (var p in Model.Persons)
             {
