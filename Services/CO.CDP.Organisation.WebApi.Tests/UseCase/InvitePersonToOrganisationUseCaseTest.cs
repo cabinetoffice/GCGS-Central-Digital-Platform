@@ -148,6 +148,60 @@ public class InvitePersonToOrganisationUseCaseTest
     }
 
     [Fact]
+public async Task Execute_ValidInviteWithSameEmailForOrganisation_ExpiresExistingInviteAndCreatesAnother()
+{
+    var organisationId = Guid.NewGuid();
+    var existingInviteGuid = Guid.NewGuid();
+    InvitePersonToOrganisation invitePersonData = CreateDummyInviteToPerson();
+
+    var organisation = new Persistence.Organisation
+    {
+        Guid = organisationId,
+        Name = "Test Organisation",
+        Tenant = It.IsAny<Tenant>()
+    };
+
+    var existingInvite = new PersonInvite
+    {
+        Id = 0,
+        Guid = existingInviteGuid,
+        FirstName = invitePersonData.FirstName,
+        LastName = invitePersonData.LastName,
+        Email = invitePersonData.Email,
+        OrganisationId = 0,
+        Organisation = organisation,
+        Scopes = [],
+        ExpiresOn = null // Not yet expired
+    };
+
+    var command = (organisationId, invitePersonData);
+
+    _organisationRepository.Setup(repo => repo.Find(organisationId))
+        .ReturnsAsync(organisation);
+
+    _organisationRepository.Setup(repo => repo.IsEmailUniqueWithinOrganisation(organisationId, invitePersonData.Email))
+        .ReturnsAsync(true);
+
+    _personsInviteRepository.Setup(repo => repo.IsInviteEmailUniqueWithinOrganisation(organisationId, invitePersonData.Email))
+        .ReturnsAsync(true);
+
+    _personsInviteRepository.Setup(repo => repo.FindPersonInviteByEmail(organisationId, invitePersonData.Email))
+        .ReturnsAsync(new[] { existingInvite });
+
+    _personsInviteRepository.Setup(repo => repo.Save(It.IsAny<PersonInvite>()));
+
+    var result = await _useCase.Execute(command);
+
+    result.Should().BeTrue();
+
+    existingInvite.ExpiresOn.Should().NotBeNull();
+
+    _personsInviteRepository.Verify(repo => repo.Save(It.Is<PersonInvite>(pi => pi.Email == invitePersonData.Email && pi.Guid != existingInviteGuid)), Times.Once);
+    _mockGovUKNotifyApiClient.Verify(client => client.SendEmail(It.IsAny<EmailNotificationRequest>()), Times.Once);
+}
+
+
+    [Fact]
     public async Task Execute_UnknownOrganisation_ThrowsUnknownOrganisationException()
     {
         var organisationId = Guid.NewGuid();
