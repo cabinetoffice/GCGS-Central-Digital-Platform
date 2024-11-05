@@ -1,5 +1,6 @@
 using CO.CDP.AwsServices;
 using CO.CDP.OrganisationApp.Constants;
+using CO.CDP.OrganisationApp.Extensions;
 using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.Pages.Forms.ChoiceProviderStrategies;
 using Microsoft.AspNetCore.Authorization;
@@ -208,7 +209,7 @@ public class FormsQuestionPageModel(
             FormQuestionType.Text => answer.TextValue ?? "",
             FormQuestionType.FileUpload => answer.TextValue ?? "",
             FormQuestionType.SingleChoice => await singleChoiceString(answer),
-            FormQuestionType.Date => answer.DateValue.HasValue == true ? answer.DateValue.Value.ToString("dd/MM/yyyy") : "",
+            FormQuestionType.Date => answer.DateValue.HasValue == true ? answer.DateValue.Value.ToFormattedString() : "",
             FormQuestionType.CheckBox => answer.BoolValue == true ? question?.Options?.Choices?.Values.FirstOrDefault() ?? "" : "",
             FormQuestionType.Address => answer.AddressValue != null ? answer.AddressValue.ToHtmlString() : "",
             FormQuestionType.MultiLine => answer.TextValue ?? "",

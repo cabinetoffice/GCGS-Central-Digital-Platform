@@ -1,5 +1,6 @@
 @page "/organisation/{id}/supplier-information/connected-person/check-answer-individual-trust/{ConnectedEntityId?}"
 @using CO.CDP.OrganisationApp.Constants
+@using CO.CDP.OrganisationApp.Extensions
 @model CO.CDP.OrganisationApp.Pages.Supplier.ConnectedEntityCheckAnswersIndividualOrTrustModel
 @{
     ViewData["Title"] = Model.Heading;
@@ -41,7 +42,7 @@
                             <p class="govuk-body">@details.LastName</p>
                             @if (details.DateOfBirth.HasValue)
                             {
-                                <p class="govuk-body">DoB: @details.DateOfBirth?.ToString("dd/MM/yyyy")</p>
+                                <p class="govuk-body">DoB: @details.DateOfBirth?.ToFormattedString()</p>
                             }
                             @if (!string.IsNullOrEmpty(@details.Nationality))
                             {
@@ -150,7 +151,7 @@
                             </dt>
                             <dd class="govuk-summary-list__value">
                                 @Html.Raw(details.RegistrationDate.HasValue == true
-                                    ? $"Yes<br>On {details.RegistrationDate.Value.ToString("dd/MM/yyyy")}"
+                                         ? $"Yes<br>On {details.RegistrationDate.Value.ToFormattedString()}"
                                     : "No")
                             </dd>
                             <dd class="govuk-summary-list__actions">
