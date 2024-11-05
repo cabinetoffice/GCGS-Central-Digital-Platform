@@ -1,5 +1,6 @@
 using CO.CDP.Forms.WebApiClient;
 using CO.CDP.OrganisationApp.Constants;
+using CO.CDP.OrganisationApp.Extensions;
 using CO.CDP.OrganisationApp.Pages.Forms.ChoiceProviderStrategies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -209,7 +210,7 @@ public class FormsAnswerSetSummaryModel(
             FormQuestionType.Text => answer.TextValue ?? "",
             FormQuestionType.FileUpload => answer.TextValue ?? "",
             FormQuestionType.SingleChoice => await singleChoiceString(answer),
-            FormQuestionType.Date => answer.DateValue.HasValue ? answer.DateValue.Value.ToString("dd/MM/yyyy") : "",
+            FormQuestionType.Date => answer.DateValue.HasValue ? answer.DateValue.Value.ToFormattedString() : "",
             FormQuestionType.CheckBox => answer.BoolValue.HasValue ? question.Options.Choices?.FirstOrDefault()?.Title ?? "" : "",
             FormQuestionType.Address => answer.AddressValue != null ? $"{answer.AddressValue.StreetAddress}, {answer.AddressValue.Locality}, {answer.AddressValue.PostalCode}, {answer.AddressValue.CountryName}" : "",
             FormQuestionType.MultiLine => answer.TextValue ?? "",

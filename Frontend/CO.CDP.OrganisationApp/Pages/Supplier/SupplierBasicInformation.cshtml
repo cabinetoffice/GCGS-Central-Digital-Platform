@@ -1,6 +1,7 @@
 @page "/organisation/{id}/supplier-information/basic-information"
 @model CO.CDP.OrganisationApp.Pages.Supplier.SupplierBasicInformationModel
 @using CO.CDP.OrganisationApp.Constants
+@using CO.CDP.OrganisationApp.Extensions
 
 @{
     var details = Model.SupplierInformation!;
@@ -33,7 +34,7 @@
             <p class="govuk-body">@legalForm.RegisteredLegalForm</p>
         }
         <p class="govuk-body">@legalForm.LawRegistered</p>
-        <p class="govuk-body">@legalForm.RegistrationDate.Date.ToShortDateString()</p>
+        <p class="govuk-body">@legalForm.RegistrationDate.ToFormattedString()</p>
     }
 
     void RenderOperationTypes(List<CO.CDP.Organisation.WebApiClient.OperationType> operationTypes)
