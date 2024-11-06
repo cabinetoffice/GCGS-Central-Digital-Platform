@@ -23,8 +23,6 @@
             backUrl = $"/organisation/{Model.OrganisationId}/forms/{Model.FormId}/sections/{Model.SectionId}/questions/{Model.PreviousQuestion.Id}{(Model.PreviousQuestionHasNonUKAddressAnswer() ? "?UkOrNonUk=non-uk" : "")}";
         }
     }
-
-    ViewData["Title"] = "Check your answers";
 }
 
 <a href="@backUrl" class="govuk-back-link">Back</a>
@@ -38,10 +36,12 @@
                 @if (Model.PartialViewName != null && Model.PartialViewModel != null)
                 {
                     @await Html.PartialAsync(Model.PartialViewName, Model.PartialViewModel)
+                    ViewData["Title"] = Model.PartialViewModel.Heading;
                 }
 
                 @if (isCheckYourAnswersPage)
                 {
+                    ViewData["Title"] = "Check your answers";
                     var answers = await Model.GetAnswers();
 
                     <h1 class="govuk-heading-l">@ViewData["Title"]</h1>
