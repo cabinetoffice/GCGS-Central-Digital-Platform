@@ -174,4 +174,28 @@
   <data name="Global_Continue" xml:space="preserve">
     <value>Continue</value>
   </data>
+  <data name="Header_Service_Name" xml:space="preserve">
+    <value>Find a Tender</value>
+  </data>
+  <data name="Header_Search" xml:space="preserve">
+    <value>Search</value>
+  </data>
+  <data name="Header_My_Notices" xml:space="preserve">
+    <value>My notices</value>
+  </data>
+  <data name="Header_My_Account" xml:space="preserve">
+    <value>My account</value>
+  </data>
+  <data name="Header_Support" xml:space="preserve">
+    <value>Support</value>
+  </data>
+  <data name="Header_Sign_Out" xml:space="preserve">
+    <value>Sign out</value>
+  </data>
+  <data name="Header_Menu" xml:space="preserve">
+    <value>Menu</value>
+  </data>
+  <data name="Header_Sign_In" xml:space="preserve">
+    <value>Sign in</value>
+  </data>
 </root>
