@@ -1,8 +1,3 @@
-variable "account_ids" {
-  description = "Map of all accounts and their IDs"
-  type        = map(string)
-}
-
 variable "deployment_pipeline_name" {
   description = "Deployment pipeline name"
   type        = string

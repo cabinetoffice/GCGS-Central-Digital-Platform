@@ -19,8 +19,7 @@ data "aws_iam_policy_document" "notification_step_function" {
       "states:InvokeHTTPEndpoint"
     ]
     resources = [
-      aws_sfn_state_machine.slack_notification.arn,
-      aws_sfn_state_machine.slack_unified_notification.arn
+      aws_sfn_state_machine.slack_notification.arn
     ]
   }
 

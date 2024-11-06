@@ -116,7 +116,7 @@
       "Type": "Task",
       "Resource": "arn:aws:states:::aws-sdk:sfn:startExecution",
       "Parameters": {
-        "StateMachineArn": "${slack_unified_notification_arn}",
+        "StateMachineArn": "${slack_notification_arn}",
         "Name.$": "$.execution_params.execution_name",
         "Input.$": "$",
         "TraceHeader": "MiddlemanStepFunctionExecution"
