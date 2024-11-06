@@ -83,10 +83,69 @@
         {
           "Variable": "$.detail.action",
           "StringMatches": "Source",
-          "Next": "Set Pipeline Stage Name"
+          "Next": "Has Execution Summary"
         }
       ],
       "Default": "Trim Pipeline Stage Name"
+    },
+    "Has Execution Summary": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "Variable": "$.detail.execution-result.external-execution-summary",
+          "IsPresent": true,
+          "Next": "Set Commit Link"
+        }
+      ],
+      "Default": "Set Empty Commit Link"
+    },
+    "Set Empty Commit Link": {
+      "Type": "Pass",
+      "Parameters": {
+        "commit_url": "..."
+      },
+      "ResultPath": "$.commit_url",
+      "Next": "Set Empty Commit Message"
+    },
+    "Set Empty Commit Message": {
+      "Type": "Pass",
+      "Parameters": {
+        "commit_message": "..."
+      },
+      "ResultPath": "$.commit_message",
+      "Next": "Set Pipeline Stage Name"
+    },
+    "Set Commit Link": {
+      "Type": "Pass",
+      "Parameters": {
+        "commit_link.$": "States.Format('<https://github.com/cabinetoffice/GCGS-Central-Digital-Platform/commit/{}|{}>', $.detail['execution-result']['external-execution-id'], $.detail['execution-result']['external-execution-id'])"
+      },
+      "ResultPath": "$.commit_link",
+      "Next": "Extract Execution Summary"
+    },
+    "Extract Execution Summary": {
+      "Type": "Pass",
+      "Parameters": {
+        "execution_summary.$": "$.detail.execution-result.external-execution-summary"
+      },
+      "ResultPath": "$.execution_summary",
+      "Next": "Extract Commit Message"
+    },
+    "Extract Commit Message": {
+      "Type": "Pass",
+      "Parameters": {
+        "commit_message.$": "States.StringToJson($.execution_summary.execution_summary)"
+      },
+      "ResultPath": "$.commit_message",
+      "Next": "Set Commit Message"
+    },
+    "Set Commit Message": {
+      "Type": "Pass",
+      "Parameters": {
+        "commit_message.$": "$.commit_message.commit_message.CommitMessage"
+      },
+      "ResultPath": "$.commit_message",
+      "Next": "Set Pipeline Stage Name"
     },
     "Set Pipeline Stage Name": {
       "Type": "Pass",

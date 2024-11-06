@@ -43,11 +43,11 @@
           "pipeline_execution_id": {
             "S.$": "$.detail.execution-id"
           },
-          "external_execution_summary": {
-            "S": ""
+          "commit_message": {
+            "S": "..."
           },
-          "external_execution_id": {
-            "S": ""
+          "commit_link": {
+            "S": "..."
           },
           "title": {
             "S": "New deployment started, blah blah"
@@ -136,13 +136,13 @@
             "S.$": "$.detail.execution-id"
           }
         },
-        "UpdateExpression": "SET external_execution_summary = :summary, external_execution_id = :commit",
+        "UpdateExpression": "SET commit_message = :summary, commit_link = :commit",
         "ExpressionAttributeValues": {
           ":summary": {
-            "S.$": "$.detail.execution-result.external-execution-summary"
+            "S.$": "$.commit_message.commit_message"
           },
           ":commit": {
-            "S.$": "$.detail.execution-result.external-execution-id"
+            "S.$": "$.commit_link.commit_link"
           }
         },
         "ReturnValues": "ALL_NEW"
@@ -185,7 +185,7 @@
       "InputPath": "$.dynamoResult.Attributes",
       "Parameters": {
         "formattedMessage": {
-          "text.$": "States.Format(':building_construction:\nAWS Execution ID: <https://eu-west-2.console.aws.amazon.com/codesuite/codepipeline/pipelines/cdp-sirsi-deployment/executions/{}/visualization?region=eu-west-2|{}>\n*Started Deployment Pipeline:* \n{} Pull *Source Code*\n{} Update *Orchestrator*\n{} Update *Development*\n{} Update *Staging*\n{} Update *Integration*\n{} Update *Production*',$.pipeline_execution_id.S,$.pipeline_execution_id.S,$.stages.M.Source.S,$.stages.M['cdp-sirsi-deployment-to-orchestrator'].S, $.stages.M['cdp-sirsi-deployment-to-development'].S, $.stages.M['cdp-sirsi-deployment-to-staging'].S, $.stages.M['cdp-sirsi-deployment-to-integration'].S, $.stages.M['cdp-sirsi-deployment-to-production'].S)"
+          "text.$": "States.Format(':github: Git commit: {}\n```{}```\n:aws-codepipeline: AWS Execution ID: <https://eu-west-2.console.aws.amazon.com/codesuite/codepipeline/pipelines/cdp-sirsi-deployment/executions/{}/visualization?region=eu-west-2|{}>\n*Started Deployment Pipeline:* \n{} Pull *Source Code*\n{} Update *Orchestrator*\n{} Update *Development*\n{} Update *Staging*\n{} Update *Integration*\n{} Update *Production*', $.commit_link.S, $.commit_message.S, $.pipeline_execution_id.S,$.pipeline_execution_id.S,$.stages.M.Source.S,$.stages.M['cdp-sirsi-deployment-to-orchestrator'].S, $.stages.M['cdp-sirsi-deployment-to-development'].S, $.stages.M['cdp-sirsi-deployment-to-staging'].S, $.stages.M['cdp-sirsi-deployment-to-integration'].S, $.stages.M['cdp-sirsi-deployment-to-production'].S)"
         }
       },
       "ResultPath": "$.formattedMessage",
