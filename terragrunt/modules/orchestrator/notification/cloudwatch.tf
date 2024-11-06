@@ -109,7 +109,7 @@ resource "aws_cloudwatch_event_rule" "deployment_pipeline_unified_slack_notifica
 }
 
 resource "aws_cloudwatch_event_target" "deployment_pipeline_unified_slack_notification" {
-  arn      = aws_sfn_state_machine.slack_unified_notification.arn
+  arn      = aws_sfn_state_machine.slack_notification_middleman.arn
   role_arn = var.role_cloudwatch_events_arn
   rule     = aws_cloudwatch_event_rule.deployment_pipeline_unified_slack_notification.name
 }

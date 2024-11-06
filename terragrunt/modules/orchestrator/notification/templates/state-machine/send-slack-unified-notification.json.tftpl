@@ -1,18 +1,7 @@
 {
   "Comment": "State machine for updating DynamoDB and Slack without Lambda",
-  "StartAt": "Has Execution ID",
+  "StartAt": "Is First Message",
   "States": {
-    "Has Execution ID": {
-      "Type": "Choice",
-      "Default": "Fail",
-      "Choices": [
-        {
-          "Variable": "$.detail.execution-id",
-          "IsPresent": true,
-          "Next": "Is First Message"
-        }
-      ]
-    },
     "Is First Message": {
       "Type": "Choice",
       "Choices": [
@@ -66,22 +55,22 @@
           "stages": {
             "M": {
               "Source": {
-                "S.$": "$.detail.state"
+                "S.$": "States.Format(':loading: ` STARTED ` @ `{}`', $.detail['start-time'])"
               },
               "cdp-sirsi-deployment-to-orchestrator": {
-                "S": "PENDING"
+                "S.$": "States.Format(':white_circle: ` PENDING ` @ `{}`', $.time)"
               },
               "cdp-sirsi-deployment-to-development": {
-                "S": "PENDING"
+                "S.$": "States.Format(':white_circle: ` PENDING ` @ `{}`', $.time)"
               },
               "cdp-sirsi-deployment-to-staging": {
-                "S": "PENDING"
+                "S.$": "States.Format(':white_circle: ` PENDING ` @ `{}`', $.time)"
               },
               "cdp-sirsi-deployment-to-integration": {
-                "S": "PENDING"
+                "S.$": "States.Format(':white_circle: ` PENDING ` @ `{}`', $.time)"
               },
               "cdp-sirsi-deployment-to-production": {
-                "S": "PENDING"
+                "S.$": "States.Format(':white_circle: ` PENDING ` @ `{}`', $.time)"
               }
             }
           }
@@ -180,7 +169,7 @@
         },
         "ExpressionAttributeValues": {
           ":state": {
-            "S.$": "$.detail.state"
+            "S.$": "$.translated_state.translated_state"
           }
         },
         "ReturnValues": "ALL_NEW"
@@ -196,7 +185,7 @@
       "InputPath": "$.dynamoResult.Attributes",
       "Parameters": {
         "formattedMessage": {
-          "text.$": "States.Format('AWS Execution ID: <https://eu-west-2.console.aws.amazon.com/codesuite/codepipeline/pipelines/cdp-sirsi-deployment/executions/{}/visualization?region=eu-west-2|{}>,...\n:building_construction: * Started Deployment Pipeline:* \n     . `{}` *Pull Source Code* <https://github.com/cabinetoffice/GCGS-Central-Digital-Platform/commit/{}|Commit Revision: {}>\n     . `{}` Update Orchestrator\n     . `{}` Update Development\n     . `{}` Update Staging\n     . `{}` Update Integration\n     . `{}` Update Production',$.pipeline_execution_id.S,$.pipeline_execution_id.S,$.stages.M.Source.S,$.external_execution_id.S,$.external_execution_id.S,$.stages.M['cdp-sirsi-deployment-to-orchestrator'].S, $.stages.M['cdp-sirsi-deployment-to-development'].S, $.stages.M['cdp-sirsi-deployment-to-staging'].S, $.stages.M['cdp-sirsi-deployment-to-integration'].S, $.stages.M['cdp-sirsi-deployment-to-production'].S)"
+          "text.$": "States.Format(':building_construction:\nAWS Execution ID: <https://eu-west-2.console.aws.amazon.com/codesuite/codepipeline/pipelines/cdp-sirsi-deployment/executions/{}/visualization?region=eu-west-2|{}>\n*Started Deployment Pipeline:* \n{} Pull *Source Code*\n{} Update *Orchestrator*\n{} Update *Development*\n{} Update *Staging*\n{} Update *Integration*\n{} Update *Production*',$.pipeline_execution_id.S,$.pipeline_execution_id.S,$.stages.M.Source.S,$.stages.M['cdp-sirsi-deployment-to-orchestrator'].S, $.stages.M['cdp-sirsi-deployment-to-development'].S, $.stages.M['cdp-sirsi-deployment-to-staging'].S, $.stages.M['cdp-sirsi-deployment-to-integration'].S, $.stages.M['cdp-sirsi-deployment-to-production'].S)"
         }
       },
       "ResultPath": "$.formattedMessage",
@@ -235,11 +224,6 @@
         }
       },
       "End": true
-    },
-    "Fail": {
-      "Type": "Fail",
-      "Error": "No Execution ID",
-      "Cause": "Triggered by an event without an execution ID"
     }
   }
 }

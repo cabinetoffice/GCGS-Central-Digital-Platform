@@ -1,0 +1,132 @@
+{
+  "Comment": "Middleman State Machine for preprocessing event and invoking main Slack notification Step Function",
+  "StartAt": "Has Execution ID",
+  "States": {
+    "Has Execution ID": {
+      "Type": "Choice",
+      "Default": "Fail",
+      "Choices": [
+        {
+          "Variable": "$.detail.execution-id",
+          "IsPresent": true,
+          "Next": "Trim Execution ID"
+        }
+      ]
+    },
+    "Trim Execution ID": {
+      "Type": "Pass",
+      "Parameters": {
+        "trimmed_execution_name.$": "States.ArrayGetItem(States.StringSplit($$.Execution.Name, '-'), 0)"
+      },
+      "ResultPath": "$.trimmed_execution_name",
+      "Next": "Translate CodeBuild States"
+    },
+    "Translate CodeBuild States": {
+      "Type": "Choice",
+      "Choices": [
+        {
+              "Variable": "$.detail.state",
+              "StringMatches": "STARTED",
+
+          "Next": "Translate STARTED"
+        },
+        {
+          "Variable": "$.detail.state",
+          "StringMatches": "SUCCEEDED",
+
+          "Next": "Translate SUCCEEDED"
+        },
+        {
+          "Variable": "$.detail.state",
+          "StringMatches": "FAILED",
+
+          "Next": "Translate FAILED"
+        }
+      ],
+      "Default": "Translate UNKNOWN"
+    },
+    "Translate STARTED": {
+      "Type": "Pass",
+      "Parameters": {
+        "translated_state.$": "States.Format(':loading: ` STARTED ` @ `{}`', $.detail['start-time'])"
+      },
+      "ResultPath": "$.translated_state",
+      "Next": "Is Source Action"
+    },
+    "Translate SUCCEEDED": {
+      "Type": "Pass",
+      "Parameters": {
+        "translated_state.$": "States.Format(':green_apple: `SUCCEEDED` @ `{}`', $.detail['start-time'])"
+      },
+      "ResultPath": "$.translated_state",
+      "Next": "Is Source Action"
+    },
+    "Translate FAILED": {
+      "Type": "Pass",
+      "Parameters": {
+        "translated_state.$": "States.Format(':red_circle: ` FAILED  ` @ `{}` [:homer-doh:<!here>:mega:]', $.detail['start-time'])"
+      },
+      "ResultPath": "$.translated_state",
+      "Next": "Is Source Action"
+    },
+    "Translate UNKNOWN": {
+      "Type": "Pass",
+      "Parameters": {
+        "translated_state.$": "States.Format(':large_orange_circle: `*{}*` @ `{}`', $.detail.state,  $.time)"
+      },
+      "ResultPath": "$.translated_state",
+      "Next": "Is Source Action"
+    },
+    "Is Source Action": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "Variable": "$.detail.action",
+          "StringMatches": "Source",
+          "Next": "Set Pipeline Stage Name"
+        }
+      ],
+      "Default": "Trim Pipeline Stage Name"
+    },
+    "Set Pipeline Stage Name": {
+      "Type": "Pass",
+      "Parameters": {
+        "trimmed_pipeline_stage_name.$": "$.detail.action"
+      },
+      "ResultPath": "$.trimmed_pipeline_stage_name",
+      "Next": "Prepare Execution Detail"
+    },
+    "Trim Pipeline Stage Name": {
+      "Type": "Pass",
+      "Parameters": {
+        "trimmed_pipeline_stage_name.$": "States.ArrayGetItem(States.StringSplit($.detail.action, '-'), 4)"
+      },
+      "ResultPath": "$.trimmed_pipeline_stage_name",
+      "Next": "Prepare Execution Detail"
+    },
+    "Prepare Execution Detail": {
+      "Type": "Pass",
+      "Parameters": {
+        "execution_name.$": "States.Format('{}-{}-via-sf-{}', $.trimmed_pipeline_stage_name.trimmed_pipeline_stage_name, $.detail.state, $.trimmed_execution_name.trimmed_execution_name)"
+      },
+      "ResultPath": "$.execution_params",
+      "Next": "Invoke Slack Notification StepFunction"
+    },
+    "Invoke Slack Notification StepFunction": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::aws-sdk:sfn:startExecution",
+      "Parameters": {
+        "StateMachineArn": "${slack_unified_notification_arn}",
+        "Name.$": "$.execution_params.execution_name",
+        "Input.$": "$",
+        "TraceHeader": "MiddlemanStepFunctionExecution"
+      },
+      "End": true
+    },
+    "Fail": {
+      "Type": "Fail",
+      "Error": "No Execution ID",
+      "Cause": "Triggered by an event without an execution ID"
+    }
+  }
+}
