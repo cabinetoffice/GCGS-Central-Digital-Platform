@@ -72,7 +72,7 @@
     "Translate UNKNOWN": {
       "Type": "Pass",
       "Parameters": {
-        "translated_state.$": "States.Format(':large_orange_circle: `*{}*` @ `{}`', $.detail.state,  $.time)"
+        "translated_state.$": "States.Format(':large_orange_circle: `*{}*` @ `{}   .`', $.detail.state,  $.time)"
       },
       "ResultPath": "$.translated_state",
       "Next": "Is Source Action"
