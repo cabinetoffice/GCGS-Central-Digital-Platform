@@ -23,7 +23,7 @@ public static class ErrorMessagesList
     public const string UnknownBuyerInformationUpdateType = "The requested buyer information update type is unknown.";
 
     public const string DuplicateApiKeyName = "An API key with this name already exists. Please try again.";
-    public const string AlreadyMemberOfOrganisation = "You are already a member of this organisation.";
+    public const string AlreadyMemberOfOrganisation = "You are either already a member of this organisation or have already requested to join.";
 
     public const string OrganisationInvalidInput = "Invalid Input.";
     public const string MissingOrganisationName = "Missing organisation name.";
@@ -36,5 +36,5 @@ public static class ErrorMessagesList
     public const string MissingOrganisationRegisteredAddress = "Missing Organisation registered address.";
     public const string MissingAdditionalIdentifiers = "Missing additional identifiers.";
     public const string MissingIdentifierNumber = "Missing identifier number.";
-    public const string IdentiferNumberAlreadyExists = "The identifier you have entered belongs to a different organization that already exists.";    
+    public const string IdentiferNumberAlreadyExists = "You’ve used this registry number for another organisation. Enter a different registry number.";    
 }
