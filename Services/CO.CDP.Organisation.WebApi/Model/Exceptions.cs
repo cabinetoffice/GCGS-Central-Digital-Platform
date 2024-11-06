@@ -56,4 +56,5 @@ public class InvalidSupportUpdateOrganisationCommand(string message, Exception? 
 public class DuplicateEmailWithinOrganisationException(string message, Exception? cause = null) : Exception(message, cause);
 public class DuplicateInviteEmailForOrganisationException(string message, Exception? cause = null) : Exception(message, cause);
 public class PersonAlreadyAddedToOrganisationException(string message, Exception? cause = null) : Exception(message, cause);
+public class PersonAlreadyInvitedToOrganisationException(string message, Exception? cause = null) : Exception(message, cause);
 public class UnknownOrganisationJoinRequestException(string message, Exception? cause = null) : Exception(message, cause);

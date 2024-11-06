@@ -23,7 +23,7 @@ public static class ErrorMessagesList
     public const string UnknownBuyerInformationUpdateType = "The requested buyer information update type is unknown.";
 
     public const string DuplicateApiKeyName = "An API key with this name already exists. Please try again.";
-    public const string AlreadyMemberOfOrganisation = "You are already a member of this organisation.";
+    public const string AlreadyMemberOfOrganisation = "You are either already a member of this organisation or have already requested to join.";
 
     public const string OrganisationInvalidInput = "Invalid Input.";
     public const string MissingOrganisationName = "Missing organisation name.";
