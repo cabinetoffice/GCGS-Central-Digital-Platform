@@ -17,15 +17,19 @@ public class RemovePersonFromOrganisationUseCase(IOrganisationRepository organis
         if (person == null) return await Task.FromResult(false);
 
         var organisationPerson = organisation.OrganisationPersons.FindLast(op => op.PersonId == person.Id);
-
-        if (organisationPerson == null) return await Task.FromResult(false);
-
         var personWithTenant = await personRepository.FindPersonWithTenant(person.Guid);
 
-        if (personWithTenant == null) return await Task.FromResult(false);
+        if (organisationPerson == null && personWithTenant == null) return await Task.FromResult(false);
 
-        organisation.Tenant.Persons.Remove(person);
-        organisation.OrganisationPersons.Remove(organisationPerson);
+        if (personWithTenant != null)
+        {
+            organisation.Tenant.Persons.Remove(person);
+        }
+
+        if (organisationPerson != null)
+        {
+            organisation.OrganisationPersons.Remove(organisationPerson);
+        }
 
         organisationRepository.Save(organisation);
 
