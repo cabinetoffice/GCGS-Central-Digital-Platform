@@ -198,4 +198,25 @@
   <data name="Header_Sign_In" xml:space="preserve">
     <value>Sign in</value>
   </data>
+  <data name="Footer_About_Us" xml:space="preserve">
+    <value>About us</value>
+  </data>
+  <data name="Footer_Contact_Us" xml:space="preserve">
+    <value>Contact us</value>
+  </data>
+  <data name="Footer_Accessibility_statement" xml:space="preserve">
+    <value>Accessibility statement</value>
+  </data>
+  <data name="Footer_Terms_And_Conditions" xml:space="preserve">
+    <value>Terms and conditions</value>
+  </data>
+  <data name="Footer_Privacy_notice" xml:space="preserve">
+    <value>Privacy notice</value>
+  </data>
+  <data name="Footer_Data_And_API" xml:space="preserve">
+    <value>Data and API</value>
+  </data>
+  <data name="Footer_Cookies" xml:space="preserve">
+    <value>Cookies</value>
+  </data>
 </root>
