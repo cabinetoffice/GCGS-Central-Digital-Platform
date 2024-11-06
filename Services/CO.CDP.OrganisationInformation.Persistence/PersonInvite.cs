@@ -20,4 +20,6 @@ public class PersonInvite : IEntityDate
     public DateTimeOffset InviteSentOn { get; set; }
     public DateTimeOffset CreatedOn { get; set; }
     public DateTimeOffset UpdatedOn { get; set; }
+
+    public DateTimeOffset? ExpiresOn { get; set; }
 }

@@ -7,4 +7,5 @@ public record PersonInviteModel
     public required string LastName { get; init; }
     public required string Email { get; init; }
     public List<string> Scopes { get; init; } = [];
+    public DateTimeOffset? ExpiresOn { get; init; }
 }

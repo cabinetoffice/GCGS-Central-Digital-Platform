@@ -68,7 +68,7 @@ public class AuthorizationTests
         OrganisationClient.Setup(client => client.GetOrganisationPersonInvitesAsync(It.IsAny<Guid>()))
             .ReturnsAsync(
                 [
-                    new PersonInviteModel("a@b.com", "Person invite", PersonInviteGuid, "Last name", [ OrganisationPersonScopes.Admin, OrganisationPersonScopes.Editor ])
+                    new PersonInviteModel(email: "a@b.com", firstName: "Person invite", id: PersonInviteGuid, lastName: "Last name", scopes: [ OrganisationPersonScopes.Admin, OrganisationPersonScopes.Editor ], expiresOn: null)
                 ]
             );
 
