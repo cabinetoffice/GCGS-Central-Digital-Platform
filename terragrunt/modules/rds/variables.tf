@@ -4,6 +4,12 @@ variable "backup_retention_period" {
   default     = 7
 }
 
+variable "copy_tags_to_snapshot" {
+  description = "Whether copy all Instance tags to snapshots"
+  type        = bool
+  default     = false
+}
+
 variable "create_read_replica" {
   description = "Create a read replica for this RDS instance"
   type        = bool
@@ -15,8 +21,8 @@ variable "db_name" {
   type        = string
 }
 
-variable "db_postgres_sg_id" {
-  description = "Postgres DB security group ID"
+variable "db_sg_id" {
+  description = "DB security group ID"
   type        = string
 }
 
@@ -26,8 +32,24 @@ variable "deletion_protection" {
   default     = true
 }
 
-variable "environment" {
-  description = "The environment we are provisioning, i.e. test, do not mistake this with the AWS account"
+variable "engine" {
+  description = "RDS engine"
+  type        = string
+  default     = "postgres"
+}
+
+variable "engine_version" {
+  description = "DB engine version"
+  type        = string
+}
+
+variable "family" {
+  description = "The family of the DB parameter group"
+  type        = string
+}
+
+variable "instance_type" {
+  description = "RDS instance type for individual environments"
   type        = string
 }
 
@@ -60,25 +82,26 @@ variable "multi_az" {
   default     = true
 }
 
+variable "parameter_group_name" {
+  description = "The name of the DB parameter group."
+  type        = string
+}
+
 variable "performance_insights_enabled" {
   description = "Enable Performance Insights"
   type        = bool
   default     = true
 }
 
-variable "postgres_engine_version" {
-  description = "DB engine version"
-  type        = string
-}
-
-variable "postgres_instance_type" {
-  description = "RDS instance type for individual environments"
-  type        = string
-}
-
 variable "private_subnet_ids" {
   description = "List of private subnet IDs"
   type        = list(string)
+}
+
+variable "publicly_accessible" {
+  description = "Control if instance is publicly accessible"
+  type        = bool
+  default     = false
 }
 
 variable "role_terraform_arn" {

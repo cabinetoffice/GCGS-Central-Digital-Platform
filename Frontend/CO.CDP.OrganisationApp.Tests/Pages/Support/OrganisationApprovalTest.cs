@@ -71,11 +71,10 @@ public class OrganisationApprovalModelTests
     }
 
     [Fact]
-    public async Task OnPost_WhenReviewIsSuccessful_ShouldRedirectToOrganisationsPage()
+    public async Task OnPost_WhenBuyerIsApproved_ShouldRedirectToOrganisationsPage()
     {
         var organisationId = Guid.NewGuid();
         _organisationApprovalModel.Approval = true;
-        _organisationApprovalModel.Comments = "Approved";
 
         _mockOrganisationClient
             .Setup(client => client.SupportUpdateOrganisationAsync(It.IsAny<Guid>(), It.IsAny<SupportUpdateOrganisation>()))
@@ -90,8 +89,32 @@ public class OrganisationApprovalModelTests
 
         _mockOrganisationClient.Verify(client => client.SupportUpdateOrganisationAsync(It.IsAny<Guid>(), It.Is<SupportUpdateOrganisation>(r =>
             r.Organisation.Approved == true &&
+            r.Organisation.ReviewedById == _personId
+        )), Times.Once);
+    }
+
+    [Fact]
+    public async Task OnPost_WhenBuyerIsRejected_ShouldRedirectToOrganisationsPage()
+    {
+        var organisationId = Guid.NewGuid();
+        _organisationApprovalModel.Approval = false;
+        _organisationApprovalModel.Comments = "Rejected";
+
+        _mockOrganisationClient
+            .Setup(client => client.SupportUpdateOrganisationAsync(It.IsAny<Guid>(), It.IsAny<SupportUpdateOrganisation>()))
+            .ReturnsAsync(true);
+
+        var result = await _organisationApprovalModel.OnPost(organisationId);
+
+        result.Should().BeOfType<RedirectToPageResult>();
+        var redirectToPageResult = result as RedirectToPageResult;
+        redirectToPageResult!.PageName.Should().Be("Organisations");
+        redirectToPageResult.RouteValues.Should().ContainKey("type").WhoseValue.Should().Be("buyer");
+
+        _mockOrganisationClient.Verify(client => client.SupportUpdateOrganisationAsync(It.IsAny<Guid>(), It.Is<SupportUpdateOrganisation>(r =>
+            r.Organisation.Approved == false &&
             r.Organisation.ReviewedById == _personId &&
-            r.Organisation.Comment == "Approved"
+            r.Organisation.Comment == "Rejected"
         )), Times.Once);
     }
 }

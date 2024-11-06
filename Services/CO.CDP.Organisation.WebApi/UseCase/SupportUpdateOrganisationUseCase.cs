@@ -15,7 +15,8 @@ public class SupportUpdateOrganisationUseCase(
     public async Task<bool> Execute((Guid organisationId, SupportUpdateOrganisation supportUpdateOrganisation) command)
     {
         var organisation = await organisationRepository.Find(command.organisationId) ?? throw new UnknownOrganisationException($"Unknown organisation {command.organisationId}.");
-        var sendemail = false;
+        var sendApprovalEmail = false;
+        var sendRejectionEmail = false;
 
         switch (command.supportUpdateOrganisation.Type)
         {
@@ -25,12 +26,16 @@ public class SupportUpdateOrganisationUseCase(
 
                 var person = await personRepository.Find(personId) ?? throw new UnknownPersonException($"Unknown person {personId}.");
 
-                if (command.supportUpdateOrganisation.Organisation.Approved)
+                if (command.supportUpdateOrganisation.Organisation.Approved == true)
                 {
                     organisation.ApprovedOn = DateTimeOffset.UtcNow;
                     organisation.PendingRoles.ForEach(r => organisation.Roles.Add(r));
                     organisation.PendingRoles.Clear();
-                    sendemail = true;
+                    organisation.ReviewComment = string.Empty;
+                    sendApprovalEmail = true;
+                } else
+                {
+                    sendRejectionEmail = true;
                 }
 
                 organisation.ReviewedBy = person;
@@ -43,27 +48,32 @@ public class SupportUpdateOrganisationUseCase(
 
         organisationRepository.Save(organisation);
 
-        if (sendemail)
+        if (sendApprovalEmail)
         {
             await NotifyBuyerApprovedRequest(organisation);
+        }
+
+        if (sendRejectionEmail)
+        {
+            await NotifyBuyerRejectedRequest(organisation);
         }
 
         return true;
     }
 
-    private async Task NotifyBuyerApprovedRequest(OrganisationInformation.Persistence.Organisation organisation)
+    private async Task NotifyBuyerRequest(OrganisationInformation.Persistence.Organisation organisation, string templateKey)
     {
         var baseAppUrl = configuration.GetValue<string>("OrganisationAppUrl") ?? "";
-        var templateId = configuration.GetValue<string>("GOVUKNotify:BuyerApprovedEmailTemplateId") ?? "";
+        var templateId = configuration.GetValue<string>($"GOVUKNotify:{templateKey}") ?? "";
 
         var missingConfigs = new List<string>();
 
         if (string.IsNullOrEmpty(baseAppUrl)) missingConfigs.Add("OrganisationAppUrl");
-        if (string.IsNullOrEmpty(templateId)) missingConfigs.Add("GOVUKNotify:BuyerApprovedEmailTemplateId");
+        if (string.IsNullOrEmpty(templateId)) missingConfigs.Add($"GOVUKNotify:{templateKey}");
 
         if (missingConfigs.Count != 0)
         {
-            logger.LogError(new Exception("Unable to send buyer approved email"), $"Missing configuration keys: {string.Join(", ", missingConfigs)}. Unable to send buyer approved email.");
+            logger.LogError(new Exception("Unable to send buyer review email"), $"Missing configuration keys: {string.Join(", ", missingConfigs)}. Unable to send buyer review email.");
             return;
         }
 
@@ -74,35 +84,67 @@ public class SupportUpdateOrganisationUseCase(
         var adminPersons = orgPersons.Where(p => p.Scopes.Contains("ADMIN")).ToList();
         if (!adminPersons.Any())
         {
-            logger.LogError(new Exception("Unable to send buyer approved email"), "Admin person not found");
+            logger.LogError(new Exception("Unable to send buyer review email"), "Admin person not found");
             return;
         }
 
-        var emailTasks = adminPersons.Select(async p =>
-        {
-            try
+        var emailNotificationRequests = adminPersons.Select(p => new EmailNotificationRequest
             {
-                var emailRequest = new EmailNotificationRequest
-                {
-                    EmailAddress = p.Person.Email,
-                    TemplateId = templateId,
-                    Personalisation = new Dictionary<string, string>
+                EmailAddress = p.Person.Email,
+                TemplateId = templateId,
+                Personalisation = new Dictionary<string, string>
                 {
                     { "org_name", organisation.Name },
                     { "first_name", p.Person.FirstName },
                     { "last_name", p.Person.LastName },
                     { "org_link", orgLink }
                 }
-                };
+            });
 
-                await govUKNotifyApiClient.SendEmail(emailRequest);
+        var orgContactEmail = organisation.ContactPoints?.FirstOrDefault()?.Email;
+        if (orgContactEmail != null)
+        {
+            emailNotificationRequests = emailNotificationRequests.Append(new EmailNotificationRequest
+            {
+                EmailAddress = orgContactEmail,
+                TemplateId = templateId,
+                Personalisation = new Dictionary<string, string>
+                {
+                    { "org_name", organisation.Name },
+                    { "first_name", "organisation" },
+                    { "last_name", "owner" },
+                    { "org_link", orgLink }
+                }
+            });
+        }
+
+        var emailTasks = emailNotificationRequests.Select(async emailNotificationRequest =>
+        {
+            try
+            {
+                if (!string.IsNullOrEmpty(organisation.ReviewComment) && emailNotificationRequest.Personalisation != null)
+                {
+                    emailNotificationRequest.Personalisation["comments"] = organisation.ReviewComment;
+                }
+
+                await govUKNotifyApiClient.SendEmail(emailNotificationRequest);
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, $"Failed to send email to {p.Person.Email} for organisation {organisation.Name}");
+                logger.LogError(ex, $"Failed to send email to {emailNotificationRequest.EmailAddress} for organisation {organisation.Name}");
             }
         });
 
         await Task.WhenAll(emailTasks);
+    }
+
+    private async Task NotifyBuyerApprovedRequest(OrganisationInformation.Persistence.Organisation organisation)
+    {
+        await NotifyBuyerRequest(organisation, "BuyerApprovedEmailTemplateId");
+    }
+
+    private async Task NotifyBuyerRejectedRequest(OrganisationInformation.Persistence.Organisation organisation)
+    {
+        await NotifyBuyerRequest(organisation, "BuyerRejectedEmailTemplateId");
     }
 }
