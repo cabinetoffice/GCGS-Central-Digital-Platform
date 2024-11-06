@@ -3,6 +3,7 @@
 
 @{
     ViewData["Title"] = "Is your organisation on any of these registries?";
+    var CompanyHouseNumberHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.CompanyHouseNumber)).HasInnerHtml;
     var charityCommissionEnglandWalesNumberHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.CharityCommissionEnglandWalesNumber)).HasInnerHtml;
     var scottishCharityRegulatorNumberHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.ScottishCharityRegulatorNumber)).HasInnerHtml;
     var charityCommissionNorthernIrelandNumberHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.CharityCommissionNorthernIrelandNumber)).HasInnerHtml;
@@ -39,6 +40,20 @@
 
 
                         <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+                            @if (existingOrganisationScheme.Contains("GB-COH") == false)
+                            {
+                                <div class="govuk-checkboxes__item">
+                                    <input class="govuk-checkboxes__input" id="GB-COH" name="OrganisationScheme" type="checkbox" value="GB-COH" data-aria-controls="conditional-GB-COH" @(Model.OrganisationScheme!.Contains("GB-COH") ? "checked" : "")>
+                                    @Html.LabelFor(m => m.CompanyHouse, new { @class = "govuk-label govuk-checkboxes__label", @for = "GB-COH" })
+                                </div>
+                                <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-GB-COH">
+                                    <div class="govuk-form-group @(CompanyHouseNumberHasError ? "govuk-form-group--error" : "")">
+                                        @Html.LabelFor(m => m.CompanyHouseNumber, new { @class = "govuk-label", @for = Model.CompanyHouseNumber })
+                                        @Html.ValidationMessageFor(m => m.CompanyHouseNumber, "", new { @class = "govuk-error-message", @id = "CompanyHouseNumber-error" })
+                                        @Html.TextBoxFor(m => m.CompanyHouseNumber, new { @class = "govuk-input " + (CompanyHouseNumberHasError ? "govuk-input--error" : ""), @id = "CompanyHouseNumber", @type = "text", spellcheck = "false", autocomplete = "off" })
+                                    </div>
+                                </div>
+                            }
                             @if (existingOrganisationScheme.Contains("GB-CHC") == false)
                             {
                                 <div class="govuk-checkboxes__item">

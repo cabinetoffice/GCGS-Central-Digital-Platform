@@ -23,6 +23,15 @@ public class OrganisationIdentificationModel(OrganisationWebApiClient.IOrganisat
     public List<string> ExistingOrganisationScheme { get; set; } = [];
 
     [BindProperty]
+    [DisplayName("Company House Number")]
+    public string? CompanyHouse { get; set; }
+
+    [BindProperty]
+    [DisplayName("Company House Number")]
+    [RequiredIfContains(nameof(OrganisationScheme), "GB-COH", ErrorMessage = "Enter the Company House number.")]
+    public string? CompanyHouseNumber { get; set; }
+
+    [BindProperty]
     [DisplayName("Charity Commission for England & Wales")]
     public string? CharityCommissionEnglandWales { get; set; }
 
@@ -177,7 +186,7 @@ public class OrganisationIdentificationModel(OrganisationWebApiClient.IOrganisat
                     id: GetOrganisationIdentificationNumber(scheme),
                     legalName: organisation.Name,
                     scheme: scheme))
-                .ToList();           
+                .ToList();
 
             await organisationClient.UpdateOrganisationAdditionalIdentifiers(Id, identifiers);
 
@@ -198,6 +207,7 @@ public class OrganisationIdentificationModel(OrganisationWebApiClient.IOrganisat
     {
         return scheme switch
         {
+            "GB-COH" => CompanyHouseNumber,
             "GB-CHC" => CharityCommissionEnglandWalesNumber,
             "GB-SC" => ScottishCharityRegulatorNumber,
             "GB-NIC" => CharityCommissionNorthernIrelandNumber,
@@ -216,6 +226,9 @@ public class OrganisationIdentificationModel(OrganisationWebApiClient.IOrganisat
     {
         switch (identifier.Scheme)
         {
+            case "GB-COH":
+                CompanyHouseNumber = identifier.LegalName;
+                break;
             case "GB-CHC":
                 CharityCommissionEnglandWalesNumber = identifier.LegalName;
                 break;
