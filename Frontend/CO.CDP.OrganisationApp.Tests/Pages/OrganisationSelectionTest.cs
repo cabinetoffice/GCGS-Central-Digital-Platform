@@ -60,6 +60,6 @@ public class OrganisationSelectionTest
                         }
                     )
                 },
-                new UserDetails("person@example.com", "Person A", "urn:test"));
+                new UserDetails("person@example.com", "Person A", [], "urn:test"));
     }
 }

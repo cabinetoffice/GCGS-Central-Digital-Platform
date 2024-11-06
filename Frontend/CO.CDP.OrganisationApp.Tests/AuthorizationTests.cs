@@ -54,7 +54,7 @@ public class AuthorizationTests
                             [ organisation ]
                         )
                     ],
-                    new UserDetails("a@b.com", "User name", "urn")
+                    new UserDetails("a@b.com", "User name", [], "urn")
                 ));
 
         OrganisationClient.Setup(client => client.GetOrganisationPersonsAsync(It.IsAny<Guid>()))

@@ -82,7 +82,8 @@ public class TenantLookupTest
             {
                 Urn = "urn:fdc:gov.uk:2022:43af5a8bf4c0414bb341d4f1fa894302",
                 Name = "Alice Cooper",
-                Email = "person@example.com"
+                Email = "person@example.com",
+                Scopes = []
             },
             Tenants =
             [
