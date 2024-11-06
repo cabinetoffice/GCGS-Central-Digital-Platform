@@ -52,7 +52,7 @@ public class DataSharingProfile : Profile
                 o => o.MapFrom((_, _, _, context) => context.Items["AdditionalParties"]));
 
         Uri? tempResult;
-        CreateMap<Organisation.Identifier, Model.Identifier>()
+        CreateMap<Organisation.Identifier, OrganisationInformation.Identifier>()
             .ForMember(m => m.Scheme, o => o.MapFrom(m => m.Scheme))
             .ForMember(m => m.Id, o => o.MapFrom(m => m.IdentifierId))
             .ForMember(m => m.LegalName, o => o.MapFrom(m => m.LegalName))
