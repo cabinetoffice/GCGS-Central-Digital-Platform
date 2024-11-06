@@ -273,12 +273,7 @@ public class PdfGenerator : IPdfGenerator
 
     private void AddTwoColumnRow(IContainer container, string label, string? value)
     {
-        if (!label.EndsWith("?") && !label.EndsWith(":"))
-        {
-            label = $"{label}";
-        }
-
-        if (label.Contains("?") && label.Contains(":"))
+        if (label.Contains('?') && label.Contains(':'))
         {
             label = label.TrimEnd(':');
         }
