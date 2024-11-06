@@ -36,5 +36,5 @@ public static class ErrorMessagesList
     public const string MissingOrganisationRegisteredAddress = "Missing Organisation registered address.";
     public const string MissingAdditionalIdentifiers = "Missing additional identifiers.";
     public const string MissingIdentifierNumber = "Missing identifier number.";
-    public const string IdentiferNumberAlreadyExists = "The identifier you have entered belongs to a different organization that already exists.";    
+    public const string IdentiferNumberAlreadyExists = "You’ve used this registry number for another organisation. Enter a different registry number.";    
 }
