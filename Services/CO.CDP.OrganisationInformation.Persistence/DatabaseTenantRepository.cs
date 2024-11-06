@@ -40,7 +40,8 @@ public class DatabaseTenantRepository(OrganisationInformationContext context) : 
                      {
                          Email = p.Email,
                          Urn = p.UserUrn ?? "",
-                         Name = $"{p.FirstName} {p.LastName}"
+                         Name = $"{p.FirstName} {p.LastName}",
+                         Scopes = p.Scopes
                      },
                      Tenants = p.Tenants.Select(t => new TenantLookup.Tenant
                      {
@@ -53,7 +54,7 @@ public class DatabaseTenantRepository(OrganisationInformationContext context) : 
                              Roles = o.Roles,
                              PendingRoles = o.PendingRoles,
                              // ReSharper disable once NullCoalescingConditionIsAlwaysNotNullAccordingToAPIContract
-                             Scopes = o.OrganisationPersons.Single(op => op.PersonId == p.Id).Scopes.Union(p.Scopes).ToList()
+                             Scopes = o.OrganisationPersons.Single(op => op.PersonId == p.Id).Scopes ?? new List<string>()
                          }).ToList()
                      }).ToList()
                  })

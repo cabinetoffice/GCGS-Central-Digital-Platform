@@ -39,7 +39,8 @@ public class LookupTenantUseCaseTest(AutoMapperFixture mapperFixture) : IClassFi
             {
                 Urn = userUrn,
                 Name = "fn ln",
-                Email = "person@example.com"
+                Email = "person@example.com",
+                Scopes = []
             },
             Tenants =
             [

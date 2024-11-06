@@ -244,7 +244,8 @@ public class TokenServiceTest : IClassFixture<AutoMapperFixture>
             {
                 Email = "test@test.com",
                 Name = "Test person",
-                Urn = _userUrn
+                Urn = _userUrn,
+                Scopes = []
             },
             Tenants = Enumerable.Range(0, numberOfTenant).Select(x =>
                 new TenantLookup.Tenant

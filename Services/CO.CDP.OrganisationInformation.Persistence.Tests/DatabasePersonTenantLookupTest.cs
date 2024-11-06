@@ -60,7 +60,8 @@ public class DatabasePersonTenantLookupTest(PostgreSqlFixture postgreSql) : ICla
             {
                 Email = acmeCoPerson.Email,
                 Name = $"{acmeCoPerson.FirstName} {acmeCoPerson.LastName}",
-                Urn = acmeCoPersonUrn
+                Urn = acmeCoPersonUrn,
+                Scopes = []
             },
             Tenants =
             [
@@ -91,7 +92,8 @@ public class DatabasePersonTenantLookupTest(PostgreSqlFixture postgreSql) : ICla
             {
                 Email = widgetCoPerson.Email,
                 Name = $"{widgetCoPerson.FirstName} {widgetCoPerson.LastName}",
-                Urn = widgetCoPersonUrn
+                Urn = widgetCoPersonUrn,
+                Scopes = []
             },
             Tenants =
             [
@@ -122,7 +124,8 @@ public class DatabasePersonTenantLookupTest(PostgreSqlFixture postgreSql) : ICla
             {
                 Email = acmeCoPersonWithNoTenantConnection.Email,
                 Name = $"{acmeCoPersonWithNoTenantConnection.FirstName} {acmeCoPersonWithNoTenantConnection.LastName}",
-                Urn = acmeCoWithNoTenantPersonUrn
+                Urn = acmeCoWithNoTenantPersonUrn,
+                Scopes = []
             },
             Tenants = new List<TenantLookup.Tenant>()
         });
@@ -135,7 +138,8 @@ public class DatabasePersonTenantLookupTest(PostgreSqlFixture postgreSql) : ICla
             {
                 Email = acmeCoPersonWithNoOrganisationConnection.Email,
                 Name = $"{acmeCoPersonWithNoOrganisationConnection.FirstName} {acmeCoPersonWithNoOrganisationConnection.LastName}",
-                Urn = acmeCoWithNoOrganisationPersonUrn
+                Urn = acmeCoWithNoOrganisationPersonUrn,
+                Scopes = []
             },
             Tenants =
             [
