@@ -37,7 +37,7 @@ public class PdfGenerator : IPdfGenerator
                 page.Footer().AlignRight().Text(x =>
                 {
                     x.Span("Generated on: ");
-                    x.Span(DateTime.Now.ToString("dd-MM-yyyy")).Bold();
+                    x.Span(DateTime.Now.ToString("dd MMMM yyyy")).Bold();
                 });
             });
         });
@@ -109,7 +109,7 @@ public class PdfGenerator : IPdfGenerator
                 AddTwoColumnRow(container, "Legal form",
                     $"Registered legal form: {basicInformation.LegalForm.RegisteredLegalForm}\n" +
                     $"Law registered: {basicInformation.LegalForm.LawRegistered}\n" +
-                    $"Registration date: {basicInformation.LegalForm.RegistrationDate:dd-MM-yyyy}");
+                    $"Registration date: {basicInformation.LegalForm.RegistrationDate:dd MMMM yyyy}");
             });
         }
 
@@ -149,7 +149,7 @@ public class PdfGenerator : IPdfGenerator
                     col.Item().Element(container => AddTwoColumnRow(container, "Nationality", person.Nationality));
 
                 if (person.DateOfBirth != null)
-                    col.Item().Element(container => AddTwoColumnRow(container, "Date of birth", person.DateOfBirth?.ToString("dd-MM-yyyy")));
+                    col.Item().Element(container => AddTwoColumnRow(container, "Date of birth", person.DateOfBirth?.ToString("dd MMMM yyyy")));
 
                 if (!string.IsNullOrEmpty(person.PersonType.ToString()))
                 {
@@ -229,7 +229,7 @@ public class PdfGenerator : IPdfGenerator
                     if (!string.IsNullOrEmpty(person.IndividualTrust.Nationality))
                         col.Item().Element(container => AddTwoColumnRow(container, "Nationality", person.IndividualTrust.Nationality));
                     if (person.IndividualTrust.DateOfBirth != null)
-                        col.Item().Element(container => AddTwoColumnRow(container, "Date of birth", person.IndividualTrust.DateOfBirth?.ToString("dd-MM-yyyy")));
+                        col.Item().Element(container => AddTwoColumnRow(container, "Date of birth", person.IndividualTrust.DateOfBirth?.ToString("dd MMMM yyyy")));
                 }
             }
         }
