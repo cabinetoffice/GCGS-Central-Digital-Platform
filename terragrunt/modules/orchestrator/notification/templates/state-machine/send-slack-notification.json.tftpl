@@ -1,176 +1,228 @@
 {
-  "Comment": "Send Slack notifications, keeping the team posted about deployment pipeline",
-  "StartAt": "CheckEventType",
+  "Comment": "State machine for updating DynamoDB and Slack without Lambda",
+  "StartAt": "Is First Message",
   "States": {
-    "CheckEventType": {
+    "Is First Message": {
       "Type": "Choice",
       "Choices": [
         {
-          "Variable": "$.detail-type",
-          "StringEquals": "AWS API Call via CloudTrail",
-          "Next": "CheckEventSource"
+          "And": [
+            {
+              "Variable": "$.detail.action",
+              "StringMatches": "Source"
+            },
+            {
+              "Variable": "$.detail.state",
+              "StringMatches": "STARTED"
+            }
+          ],
+          "Next": "Create Message"
         },
         {
-          "Variable": "$.detail-type",
-          "StringEquals": "CodePipeline Stage Execution State Change",
-          "Next": "SetPipelineMessage"
+          "And": [
+            {
+              "Variable": "$.detail.action",
+              "StringEquals": "Source"
+            },
+            {
+              "Variable": "$.detail.state",
+              "StringEquals": "SUCCEEDED"
+            }
+          ],
+          "Next": "Update Message Source Details"
         }
       ],
-      "Default": "DefaultMessage"
+      "Default": "Update Message"
     },
-    "CheckEventSource": {
-      "Type": "Choice",
-      "Choices": [
-        {
-          "Variable": "$.detail.eventSource",
-          "StringEquals": "ssm.amazonaws.com",
-          "Next": "CheckParameterName"
-        },
-        {
-          "Variable": "$.detail.eventSource",
-          "StringEquals": "codepipeline.amazonaws.com",
-          "Next": "IgnoreThisEvent"
-        }
-      ],
-      "Default": "DefaultMessage"
-    },
-    "CheckParameterName": {
-      "Type": "Choice",
-      "Choices": [
-        {
-          "Variable": "$.detail.requestParameters.name",
-          "StringEquals": "${ssm_service_version_name}",
-          "Next": "GetParameterValue"
-        }
-      ],
-      "Default": "DefaultMessage"
-    },
-    "GetParameterValue": {
+    "Create Message": {
       "Type": "Task",
-      "Resource": "arn:aws:states:::aws-sdk:ssm:getParameter",
+      "Resource": "arn:aws:states:::dynamodb:putItem",
       "Parameters": {
-        "Name.$": "$.detail.requestParameters.name"
+        "TableName": "${dynamodb_table_name}",
+        "Item": {
+          "pipeline_execution_id": {
+            "S.$": "$.detail.execution-id"
+          },
+          "commit_message": {
+            "S": "..."
+          },
+          "commit_link": {
+            "S": "..."
+          },
+          "title": {
+            "S": "New deployment started, blah blah"
+          },
+          "stages": {
+            "M": {
+              "Source": {
+                "S.$": "States.Format(':loading: ` STARTED ` @ `{}`', $.detail['start-time'])"
+              },
+              "cdp-sirsi-deployment-to-orchestrator": {
+                "S.$": "States.Format(':white_circle: ` PENDING ` @ `{}....`', $.time)"
+              },
+              "cdp-sirsi-deployment-to-development": {
+                "S.$": "States.Format(':white_circle: ` PENDING ` @ `{}....`', $.time)"
+              },
+              "cdp-sirsi-deployment-to-staging": {
+                "S.$": "States.Format(':white_circle: ` PENDING ` @ `{}....`', $.time)"
+              },
+              "cdp-sirsi-deployment-to-integration": {
+                "S.$": "States.Format(':white_circle: ` PENDING ` @ `{}....`', $.time)"
+              },
+              "cdp-sirsi-deployment-to-production": {
+                "S.$": "States.Format(':white_circle: ` PENDING ` @ `{}....`', $.time)"
+              }
+            }
+          }
+        }
+      },
+      "ResultPath": "$.result",
+      "Next": "Get Message"
+    },
+    "Get Message": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::dynamodb:getItem",
+      "Parameters": {
+        "TableName": "${dynamodb_table_name}",
+        "Key": {
+          "pipeline_execution_id": {
+            "S.$": "$.detail.execution-id"
+          }
+        }
       },
       "ResultSelector": {
-        "parameterValue.$": "$.Parameter.Value"
+        "Attributes.$": "$.Item"
       },
-      "ResultPath": "$.parameterDetails",
-      "Next": "SplitVersionString"
+      "ResultPath": "$.dynamoResult",
+      "Next": "Format Slack Message"
     },
-    "SplitVersionString": {
-      "Type": "Pass",
-      "Parameters": {
-        "splitResult.$": "States.StringSplit($.parameterDetails.parameterValue, '-')"
-      },
-      "ResultPath": "$.splitDetails",
-      "Next": "CheckIfCommitRevisionExists"
-    },
-    "CheckIfCommitRevisionExists": {
+    "Has Slack Timestamp": {
       "Type": "Choice",
       "Choices": [
         {
-          "Variable": "$.splitDetails.splitResult[1]",
+          "Variable": "$.dynamoResult.Attributes.slack_ts",
           "IsPresent": true,
-          "Next": "SetCommitLinkMessage"
+          "Next": "Slack Update Message"
         }
       ],
-      "Default": "SetTagLinkMessage"
+      "Default": "Slack Post Message"
     },
-    "SetCommitLinkMessage": {
-      "Type": "Pass",
+    "Set Slack Timestamp": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::dynamodb:updateItem",
       "Parameters": {
-        "blocks": [
-          {
-            "type": "section",
-            "block_id": "service_version",
-            "text": {
-              "type": "mrkdwn",
-              "text.$": "States.Format(':abn-version: New *service-version* `{}` published. <https://github.com/cabinetoffice/GCGS-Central-Digital-Platform/commit/{}|view commit {}> :me-looking:', $.parameterDetails.parameterValue, $.splitDetails.splitResult[1], $.splitDetails.splitResult[1])"
-            }
+        "TableName": "${dynamodb_table_name}",
+        "Key": {
+          "pipeline_execution_id": {
+            "S.$": "$.detail.execution-id"
           }
-        ]
-      },
-      "ResultPath": "$.constructedMessage",
-      "Next": "SendSlackNotification"
-    },
-    "SetTagLinkMessage": {
-      "Type": "Pass",
-      "Parameters": {
-        "blocks": [
-          {
-            "type": "section",
-            "block_id": "service_version",
-            "text": {
-              "type": "mrkdwn",
-              "text.$": "States.Format(':abn-version: New *service-version* `{}` published. <https://github.com/cabinetoffice/GCGS-Central-Digital-Platform/releases/tag/{}|view release {}> :me-looking:', $.parameterDetails.parameterValue, $.parameterDetails.parameterValue, $.parameterDetails.parameterValue)"
-            }
+        },
+        "UpdateExpression": "SET slack_ts = :slack_ts",
+        "ExpressionAttributeValues": {
+          ":slack_ts": {
+            "S.$": "$.slackResponse.ResponseBody.ts"
           }
-        ]
+        }
       },
-      "ResultPath": "$.constructedMessage",
-      "Next": "SendSlackNotification"
-    },
-    "SetPipelineMessage": {
-      "Type": "Pass",
-      "Parameters": {
-        "blocks": [
-          {
-            "type": "section",
-            "block_id": "pipeline_status",
-            "text": {
-              "type": "mrkdwn",
-              "text.$": "States.Format(':building_construction: `{}` *{}*.', $.detail.state, $.detail.stage)"
-            }
-          }
-        ]
-      },
-      "ResultPath": "$.constructedMessage",
-      "Next": "SendSlackNotification"
-    },
-    "DefaultMessage": {
-      "Type": "Pass",
-      "Result": {
-        "blocks": [
-          {
-            "type": "section",
-            "text": {
-              "type": "mrkdwn",
-              "text": "An event occurred that is not specifically handled."
-            }
-          }
-        ]
-      },
-      "ResultPath": "$.constructedMessage",
-      "Next": "SendSlackNotification"
-    },
-    "IgnoreThisEvent": {
-      "Type": "Pass",
       "End": true
     },
-    "SendSlackNotification": {
+    "Update Message Source Details": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::dynamodb:updateItem",
+      "Parameters": {
+        "TableName": "${dynamodb_table_name}",
+        "Key": {
+          "pipeline_execution_id": {
+            "S.$": "$.detail.execution-id"
+          }
+        },
+        "UpdateExpression": "SET commit_message = :summary, commit_link = :commit",
+        "ExpressionAttributeValues": {
+          ":summary": {
+            "S.$": "$.commit_message.commit_message"
+          },
+          ":commit": {
+            "S.$": "$.commit_link.commit_link"
+          }
+        },
+        "ReturnValues": "ALL_NEW"
+      },
+      "ResultSelector": {
+        "Attributes.$": "$.Attributes"
+      },
+      "ResultPath": "$.dynamoResult",
+      "Next": "Update Message"
+    },
+    "Update Message": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::dynamodb:updateItem",
+      "Parameters": {
+        "TableName": "${dynamodb_table_name}",
+        "Key": {
+          "pipeline_execution_id": {
+            "S.$": "$.detail.execution-id"
+          }
+        },
+        "UpdateExpression": "SET stages.#stage = :state",
+        "ExpressionAttributeNames": {
+          "#stage.$": "$.detail.action"
+        },
+        "ExpressionAttributeValues": {
+          ":state": {
+            "S.$": "$.translated_state.translated_state"
+          }
+        },
+        "ReturnValues": "ALL_NEW"
+      },
+      "ResultSelector": {
+        "Attributes.$": "$.Attributes"
+      },
+      "ResultPath": "$.dynamoResult",
+      "Next": "Format Slack Message"
+    },
+    "Format Slack Message": {
+      "Type": "Pass",
+      "InputPath": "$.dynamoResult.Attributes",
+      "Parameters": {
+        "formattedMessage": {
+          "text.$": "States.Format(':github: Git commit: {}\n```{}```\n:aws-codepipeline: AWS Execution ID: <https://eu-west-2.console.aws.amazon.com/codesuite/codepipeline/pipelines/cdp-sirsi-deployment/executions/{}/visualization?region=eu-west-2|{}>\n*Started Deployment Pipeline:* \n{} Pull *Source Code*\n{} Update *Orchestrator*\n{} Update *Development*\n{} Update *Staging*\n{} Update *Integration*\n{} Update *Production*', $.commit_link.S, $.commit_message.S, $.pipeline_execution_id.S,$.pipeline_execution_id.S,$.stages.M.Source.S,$.stages.M['cdp-sirsi-deployment-to-orchestrator'].S, $.stages.M['cdp-sirsi-deployment-to-development'].S, $.stages.M['cdp-sirsi-deployment-to-staging'].S, $.stages.M['cdp-sirsi-deployment-to-integration'].S, $.stages.M['cdp-sirsi-deployment-to-production'].S)"
+        }
+      },
+      "ResultPath": "$.formattedMessage",
+      "Next": "Has Slack Timestamp"
+    },
+    "Slack Post Message": {
       "Type": "Task",
       "Resource": "arn:aws:states:::http:invoke",
       "Parameters": {
         "Method": "POST",
-        "ApiEndpoint": "${api_endpoint}",
+        "ApiEndpoint": "${slack_post_endpoint}",
         "Authentication": {
           "ConnectionArn": "${auth_connection_arn}"
         },
         "RequestBody": {
-          "blocks.$": "$.constructedMessage.blocks"
+          "channel": "${slack_channel_id}",
+          "text.$": "$.formattedMessage.formattedMessage.text"
         }
       },
-      "Retry": [
-        {
-          "ErrorEquals": [
-            "States.ALL"
-          ],
-          "BackoffRate": 2,
-          "IntervalSeconds": 1,
-          "MaxAttempts": 3,
-          "JitterStrategy": "FULL"
+      "ResultPath": "$.slackResponse",
+      "Next": "Set Slack Timestamp"
+    },
+    "Slack Update Message": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::http:invoke",
+      "Parameters": {
+        "Method": "POST",
+        "ApiEndpoint": "${slack_update_endpoint}",
+        "Authentication": {
+          "ConnectionArn": "${auth_connection_arn}"
+        },
+        "RequestBody": {
+          "channel": "${slack_channel_id}",
+          "ts.$": "$.dynamoResult.Attributes.slack_ts.S",
+          "text.$": "$.formattedMessage.formattedMessage.text"
         }
-      ],
+      },
       "End": true
     }
   }
