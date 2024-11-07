@@ -148,11 +148,11 @@ var organisationAuthority = builder.Configuration.GetValue<Uri>("Organisation:Au
 builder.Services.AddHttpClient(AuthorityClient.OrganisationAuthorityHttpClientName, c => { c.BaseAddress = organisationAuthority; });
 
 builder.Services.AddTransient<CookieEvents>();
-builder.Services.AddTransient<IAuthorityClient, AuthorityClient>();
+builder.Services.AddTransient<IOneLoginAuthority, OneLoginAuthority>();
 builder.Services.AddSingleton<IOneLoginSessionManager, OneLoginSessionManager>();
 builder.Services.AddTransient<ITokenService, TokenService>();
-builder.Services.AddTransient<ITokenService, TokenService>();
-builder.Services.AddTransient<IOneLoginAuthority, OneLoginAuthority>();
+builder.Services.AddTransient<OidcEvents>();
+builder.Services.AddTransient<IAuthorityClient, AuthorityClient>();
 
 var oneLoginAuthority = builder.Configuration.GetValue<string>("OneLogin:Authority")
             ?? throw new Exception("Missing configuration key: OneLogin:Authority.");

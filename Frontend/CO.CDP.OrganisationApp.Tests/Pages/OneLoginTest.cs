@@ -215,9 +215,8 @@ public class OneLoginTest
     public async Task OnPostAsync_ShouldReturnBadRequest_WhenPageActionIsNotBackChannelSignOut()
     {
         var model = GivenOneLoginModel("some-other-action");
-        var logoutToken = "valid-token";
 
-        var result = await model.OnPostAsync(logoutToken);
+        var result = await model.OnPostAsync("valid-token");
 
         result.Should().BeOfType<BadRequestResult>();
     }
