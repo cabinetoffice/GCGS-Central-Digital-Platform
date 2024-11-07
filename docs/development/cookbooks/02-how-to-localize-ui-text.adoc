@@ -16,7 +16,11 @@ There are two separate resource files - `StaticTextResource` which is text that 
 
 Generally speaking, keys are either "global" in that they are not unique to a particular section and may appear anywhere on the service - for example `Global_Continue` represents the word `Continue` on the buttons that appear across the site. Or they can be namespaced to a specific section of the service such as `BasicInformation_SectionTitle`.
 
-Use Underscores_To_Separate_Words and not dots. This ensures that the key is the same whether you are using the strongly typed `StaticTextResource` class to access keys like `StaticTextResource.Global_Back`, or if you are using `@inject IHtmlLocalizer<StaticTextResource> Localizer` to access keys like `Localizer["Global_Back"]`
+Use Underscores_To_Separate and not dots or hyphens. This ensures that the key is the same whether you are using the strongly typed `StaticTextResource` class to access keys like `StaticTextResource.Global_Back`, or if you are using `@inject IHtmlLocalizer<StaticTextResource> Localizer` to access keys like `Localizer["Global_Back"]
+
+Underscores should be used to separate "sections" of the key. And CamelCase should be used within those sections. So for example the key `OrganisationRegistration_EnterOrganisationName_Heading`  represents a `Heading` within the `EnterOrganisationName` page in the `OrganisationRegistration` section of the service.
+
+"Section" could be anything from site section, page, area of the page, specific type of org that it applies to - whatever makes sense in the context of the key you are naming. Broadly though, each underscore represents an increase in specificity.
 
 This is purely a naming convention - there is no mechanism enforcing this. It requires developers to name things in an appropriate way.
 
