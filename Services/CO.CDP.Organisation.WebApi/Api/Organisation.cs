@@ -83,7 +83,7 @@ public static class EndpointExtensions
                 OrganisationIdLocation.Path,
                 [Constants.PersonScope.SupportAdmin])]
         async (Guid organisationId, IUseCase<Guid, Model.Organisation?> useCase) =>
-        await useCase.Execute(organisationId)
+            await useCase.Execute(organisationId)
                    .AndThen(organisation => organisation != null ? Results.Ok(organisation) : Results.NotFound()))
             .Produces<Model.Organisation>(StatusCodes.Status200OK, "application/json")
             .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)

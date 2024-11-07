@@ -23,7 +23,7 @@ public class UpdateOrganisationUseCase(
 {
     public async Task<bool> Execute((Guid organisationId, UpdateOrganisation updateOrganisation) command)
     {
-        var organisation = await organisationRepository.FindExtended(command.organisationId)
+        var organisation = await organisationRepository.Find(command.organisationId)
             ?? throw new UnknownOrganisationException($"Unknown organisation {command.organisationId}.");
 
         var updateObject = command.updateOrganisation.Organisation;
@@ -213,7 +213,6 @@ public class UpdateOrganisationUseCase(
         {
             await ResendBuyerApprovalEmail(organisation);
 
-            // TODO: We're "resetting" the review status here but the only way is to wipe the previous review. We should likely refactor this to have a review_status column.
             organisation.ReviewComment = null;
             organisation.ReviewedBy = null;
         }

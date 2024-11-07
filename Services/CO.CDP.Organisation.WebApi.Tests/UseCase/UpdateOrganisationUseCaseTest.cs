@@ -9,7 +9,6 @@ using Moq;
 using Persistence = CO.CDP.OrganisationInformation.Persistence;
 using Address = CO.CDP.OrganisationInformation.Persistence.Address;
 using CO.CDP.OrganisationInformation;
-using static CO.CDP.Organisation.WebApi.Model.InvalidUpdateOrganisationCommand;
 
 namespace CO.CDP.Organisation.WebApi.Tests.UseCase;
 

@@ -40,6 +40,5 @@ public interface IOrganisationRepository : IDisposable
 
     public Task<IList<OperationType>> GetOperationTypes(int organisationId);
 
-    public Task<bool> IsEmailUniqueWithinOrganisation(Guid organisationId, string email);
-    Task<Organisation?> FindExtended(Guid organisationId);
+    public Task<bool> IsEmailUniqueWithinOrganisation(Guid organisationId, string email)
 }
