@@ -16,7 +16,7 @@ There are two separate resource files - `StaticTextResource` which is text that 
 
 Generally speaking, keys are either "global" in that they are not unique to a particular section and may appear anywhere on the service - for example `Global_Continue` represents the word `Continue` on the buttons that appear across the site. Or they can be namespaced to a specific section of the service such as `BasicInformation_SectionTitle`.
 
-Use Underscores_To_Separate_Words and not dots or hyphens. This ensures that the key is the same whether you are using the strongly typed `StaticTextResource` class to access keys like `StaticTextResource.Global_Back`, or if you are using `@inject IHtmlLocalizer<StaticTextResource> Localizer` to access keys like `Localizer["Global_Back"]`
+Use Underscores_To_Separate_Words and not dots. This ensures that the key is the same whether you are using the strongly typed `StaticTextResource` class to access keys like `StaticTextResource.Global_Back`, or if you are using `@inject IHtmlLocalizer<StaticTextResource> Localizer` to access keys like `Localizer["Global_Back"]`
 
 This is purely a naming convention - there is no mechanism enforcing this. It requires developers to name things in an appropriate way.
 

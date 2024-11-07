@@ -174,49 +174,52 @@
   <data name="Global_Continue" xml:space="preserve">
     <value>Continue</value>
   </data>
-  <data name="Header_Service_Name" xml:space="preserve">
+  <data name="Header_ServiceName" xml:space="preserve">
     <value>Find a Tender</value>
   </data>
   <data name="Header_Search" xml:space="preserve">
     <value>Search</value>
   </data>
-  <data name="Header_My_Notices" xml:space="preserve">
+  <data name="Header_MyNotices" xml:space="preserve">
     <value>My notices</value>
   </data>
-  <data name="Header_My_Account" xml:space="preserve">
+  <data name="Header_MyAccount" xml:space="preserve">
     <value>My account</value>
   </data>
   <data name="Header_Support" xml:space="preserve">
     <value>Support</value>
   </data>
-  <data name="Header_Sign_Out" xml:space="preserve">
+  <data name="Header_SignOut" xml:space="preserve">
     <value>Sign out</value>
   </data>
   <data name="Header_Menu" xml:space="preserve">
     <value>Menu</value>
   </data>
-  <data name="Header_Sign_In" xml:space="preserve">
+  <data name="Header_SignIn" xml:space="preserve">
     <value>Sign in</value>
   </data>
-  <data name="Footer_About_Us" xml:space="preserve">
+  <data name="Footer_AboutUs" xml:space="preserve">
     <value>About us</value>
   </data>
-  <data name="Footer_Contact_Us" xml:space="preserve">
+  <data name="Footer_ContactUs" xml:space="preserve">
     <value>Contact us</value>
   </data>
-  <data name="Footer_Accessibility_statement" xml:space="preserve">
+  <data name="Footer_AccessibilityStatement" xml:space="preserve">
     <value>Accessibility statement</value>
   </data>
-  <data name="Footer_Terms_And_Conditions" xml:space="preserve">
+  <data name="Footer_TermsAndConditions" xml:space="preserve">
     <value>Terms and conditions</value>
   </data>
-  <data name="Footer_Privacy_notice" xml:space="preserve">
+  <data name="Footer_PrivacyNotice" xml:space="preserve">
     <value>Privacy notice</value>
   </data>
-  <data name="Footer_Data_And_API" xml:space="preserve">
+  <data name="Footer_DataAndAPI" xml:space="preserve">
     <value>Data and API</value>
   </data>
   <data name="Footer_Cookies" xml:space="preserve">
     <value>Cookies</value>
+  </data>
+  <data name="Footer_SupportLinks" xml:space="preserve">
+    <value>Support links</value>
   </data>
 </root>
