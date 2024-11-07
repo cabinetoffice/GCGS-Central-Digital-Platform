@@ -1,4 +1,3 @@
-using OrganisationWebApiClient = CO.CDP.Organisation.WebApiClient;
 using CO.CDP.Tenant.WebApiClient;
 using Microsoft.AspNetCore.Mvc;
 using CO.CDP.Organisation.WebApiClient;
@@ -10,7 +9,7 @@ public class OrganisationSelectionModel(
     IOrganisationClient organisationClient,
     ISession session) : LoggedInUserAwareModel(session)
 {
-    public List<OrganisationWebApiClient.Organisation> Organisations { get; set; } = [];
+    public IList<(UserOrganisation Organisation, Review? Review)> UserOrganisations { get; set; } = [];
 
     public string? Error { get; set; }
 
@@ -18,18 +17,19 @@ public class OrganisationSelectionModel(
     {
         var usersTenant = await tenantClient.LookupTenantAsync();
 
-        // TODO: Tenant call doesn't return details of review comments - need to extend it to include a review_status column as a minimum as part of a refactor of reviews
-        // For the moment, hack this data in just for the intial proof of concept
-        var organisationTasks = usersTenant.Tenants
+        UserOrganisations = await Task.WhenAll(usersTenant.Tenants
             .SelectMany(t => t.Organisations)
-            .Select(async o => await organisationClient.GetOrganisationExtendedAsync(o.Id));
+            .Select(async organisation =>
+            {
+                Review? review = null;
+                if (organisation.PendingRoles.Count > 0)
+                {
+                    var reviews = await organisationClient.GetOrganisationReviewsAsync(organisation.Id);
+                    review = reviews?.FirstOrDefault();
+                }
 
-        Organisations.AddRange(await Task.WhenAll(organisationTasks));
-
-        // Old way to restore to later
-        //usersTenant.Tenants.ToList()
-        //    .ForEach(t => t.Organisations.ToList()
-        //        .ForEach(o => UserOrganisations.Add(o)));
+                return (organisation, review);
+            }));
 
         return Page();
     }

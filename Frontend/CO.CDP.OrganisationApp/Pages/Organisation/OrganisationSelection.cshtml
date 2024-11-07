@@ -40,7 +40,7 @@
             <hr class="govuk-section-break govuk-section-break--invisible govuk-section-break--xl">
 
             <section>
-                @if (Model.Organisations.Any())
+                @if (Model.UserOrganisations.Any())
                 {
                     <table class="govuk-table">
                         <caption class="govuk-table__caption govuk-table__caption--m">My organisations</caption>
@@ -51,23 +51,26 @@
                         </thead>
                         <tbody class="govuk-table__body">
                             @{
-                                foreach (var org in Model.Organisations)
+                                foreach (var (org, review) in Model.UserOrganisations)
                                 {
                                     <tr class="govuk-table__row">
                                         <th scope="row" class="govuk-table__header">
                                             @org.Name
                                             @{
-                                                if (org.IsRejectedBuyer())
+                                                if (review != null)
                                                 {
-                                                    <strong class="govuk-tag govuk-tag--red">
-                                                        Not approved
-                                                    </strong>
-                                                }
-                                                else if (org.IsPendingBuyer())
-                                                {
-                                                    <strong class="govuk-tag govuk-tag--blue">
-                                                        Pending approval
-                                                    </strong>
+                                                    if (review.Status == ReviewStatus.Rejected)
+                                                    {
+                                                        <strong class="govuk-tag govuk-tag--red">
+                                                            Not approved
+                                                        </strong>
+                                                    }
+                                                    else if (review.Status == ReviewStatus.Pending)
+                                                    {
+                                                        <strong class="govuk-tag govuk-tag--blue">
+                                                            Pending approval
+                                                        </strong>
+                                                    }
                                                 }
                                             }
                                         </th>

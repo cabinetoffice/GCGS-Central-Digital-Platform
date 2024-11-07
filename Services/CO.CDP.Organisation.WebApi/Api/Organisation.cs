@@ -101,25 +101,25 @@ public static class EndpointExtensions
                return operation;
            });
 
-        app.MapGet("/organisations/{organisationId}/extended",
+        app.MapGet("/organisations/{organisationId}/reviews",
             [OrganisationAuthorize(
                 [AuthenticationChannel.OneLogin, AuthenticationChannel.ServiceKey],
                 [Constants.OrganisationPersonScope.Admin, Constants.OrganisationPersonScope.Editor, Constants.OrganisationPersonScope.Viewer],
                 OrganisationIdLocation.Path,
                 [Constants.PersonScope.SupportAdmin])]
-        async (Guid organisationId, IUseCase<Guid, Model.OrganisationExtended?> useCase) =>
+        async (Guid organisationId, IUseCase<Guid, IEnumerable<Review>> useCase) =>
         await useCase.Execute(organisationId)
                    .AndThen(organisation => organisation != null ? Results.Ok(organisation) : Results.NotFound()))
-            .Produces<Model.Organisation>(StatusCodes.Status200OK, "application/json")
+            .Produces<IEnumerable<Review>>(StatusCodes.Status200OK, "application/json")
             .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
             .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
             .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError)
             .WithOpenApi(operation =>
             {
-                operation.OperationId = "GetOrganisationExtended";
-                operation.Description = "Get an organisation by ID.";
-                operation.Summary = "Get an organisation by ID with additional details.";
-                operation.Responses["200"].Description = "Extended Organisation details.";
+                operation.OperationId = "GetOrganisationReviews";
+                operation.Description = "Get organisation reviews by organisation ID.";
+                operation.Summary = "Get a organisation reviews by ID.";
+                operation.Responses["200"].Description = "Organisation reviews.";
                 operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
                 operation.Responses["404"].Description = "Organisation not found.";
                 operation.Responses["500"].Description = "Internal server error.";
