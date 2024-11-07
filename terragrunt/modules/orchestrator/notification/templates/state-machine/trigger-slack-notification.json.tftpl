@@ -177,14 +177,23 @@
         "Input.$": "$",
         "TraceHeader": "MiddlemanStepFunctionExecution"
       },
+      "ResultPath": "$.Name",
       "Next": "Was It A Filed Action"
     },
     "Was It A Filed Action": {
       "Type": "Choice",
       "Choices": [
         {
-          "Variable": "$.detail.state",
-          "StringMatches": "FAILED",
+          "And": [
+            {
+              "Variable": "$.detail.state",
+              "IsPresent": true
+            },
+            {
+              "Variable": "$.detail.state",
+              "StringMatches": "FAILED"
+            }
+          ],
           "Next": "Invoke Slack Alert StepFunction"
         }
       ],

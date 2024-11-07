@@ -6,7 +6,7 @@
       "Type": "Pass",
       "Parameters": {
         "formattedMessage": {
-          "text.$": "States.Format(':homer-doh: :mega: <!here> an issue was reported:\n - Owner : `{}`\n - Provider : `{}`\n - Category : `{}`\n - Summary : `{}`\n - Action : <{}|{}>\n', $.detail.type.owner, $.detail.type.provider, $.detail.type.category, $.detail['execution-result']['external-execution-summary'], $.detail['execution-result']['external-execution-url'], $.detail.action)"
+          "text.$": "States.Format(':homer-doh: :mega: <!here> an issue was reported:\n- Owner     : `{}`\n- Provider  : `{}`\n- Category : `{}`\n- Summary : `{}`\n- Action      : <{}|{}>', $.detail.type.owner, $.detail.type.provider, $.detail.type.category, $.detail['execution-result']['external-execution-summary'], $.detail['execution-result']['external-execution-url'], $.detail.action)"
         }
       },
       "ResultPath": "$.formattedMessage",
