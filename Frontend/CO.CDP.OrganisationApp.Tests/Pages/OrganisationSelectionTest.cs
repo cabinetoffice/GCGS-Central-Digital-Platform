@@ -1,3 +1,4 @@
+using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Pages.Organisation;
 using CO.CDP.Tenant.WebApiClient;
 using FluentAssertions;
@@ -9,14 +10,16 @@ namespace CO.CDP.OrganisationApp.Tests.Pages;
 public class OrganisationSelectionTest
 {
     private readonly Mock<ISession> sessionMock;
-    private readonly Mock<ITenantClient> organisationClientMock;
+    private readonly Mock<ITenantClient> tenantClientMock;
+    private readonly Mock<IOrganisationClient> organisationClientMock;
 
     public OrganisationSelectionTest()
     {
         sessionMock = new Mock<ISession>();
         sessionMock.Setup(session => session.Get<Models.UserDetails>(Session.UserDetailsKey))
             .Returns(new Models.UserDetails { UserUrn = "urn:test" });
-        organisationClientMock = new Mock<ITenantClient>();
+        tenantClientMock = new Mock<ITenantClient>();
+        organisationClientMock = new Mock<IOrganisationClient>();
     }
 
     [Fact]
@@ -27,7 +30,7 @@ public class OrganisationSelectionTest
         sessionMock.Setup(s => s.Get<Models.UserDetails>(Session.UserDetailsKey))
             .Returns(new Models.UserDetails { UserUrn = "urn:test" });
 
-        organisationClientMock.Setup(o => o.LookupTenantAsync())
+        tenantClientMock.Setup(o => o.LookupTenantAsync())
             .ReturnsAsync(GetUserTenant());
 
         var actionResult = await model.OnGet();
@@ -37,7 +40,7 @@ public class OrganisationSelectionTest
 
     private OrganisationSelectionModel GivenOrganisationSelectionModelModel()
     {
-        return new OrganisationSelectionModel(organisationClientMock.Object, sessionMock.Object);
+        return new OrganisationSelectionModel(tenantClientMock.Object, organisationClientMock.Object, sessionMock.Object);
     }
 
     private TenantLookup GetUserTenant()

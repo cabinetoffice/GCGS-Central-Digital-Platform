@@ -9,6 +9,9 @@ using Moq;
 using Persistence = CO.CDP.OrganisationInformation.Persistence;
 using Address = CO.CDP.OrganisationInformation.Persistence.Address;
 using CO.CDP.OrganisationInformation;
+using CO.CDP.GovUKNotify;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Configuration;
 
 namespace CO.CDP.Organisation.WebApi.Tests.UseCase;
 
@@ -16,10 +19,13 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
 {
     private readonly Mock<Persistence.IOrganisationRepository> _organisationRepositoryMock = new();
     private readonly Mock<IPublisher> _publisher = new();
+    private readonly Mock<IConfiguration> _configuration = new();
+    private readonly Mock<IGovUKNotifyApiClient> _notifyClient = new();
+    private readonly Mock<ILogger<UpdateOrganisationUseCase>> _logger = new();
     private readonly Guid _organisationId = Guid.NewGuid();
     private readonly Guid _anotherOrganisationId = Guid.NewGuid();
     private UpdateOrganisationUseCase UseCase =>
-        new(_organisationRepositoryMock.Object, _publisher.Object, mapperFixture.Mapper);
+        new(_organisationRepositoryMock.Object, _publisher.Object, mapperFixture.Mapper, _configuration.Object, _notifyClient.Object, _logger.Object);
 
     [Fact]
     public async Task Execute_ShouldUpdateOrganisation_WhenOrganisationExists()

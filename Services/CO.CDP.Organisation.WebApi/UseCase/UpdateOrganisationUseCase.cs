@@ -18,7 +18,7 @@ public class UpdateOrganisationUseCase(
     IMapper mapper,
     IConfiguration configuration,
     IGovUKNotifyApiClient govUKNotifyApiClient,
-    ILogger<CreateOrganisationJoinRequestUseCase> logger
+    ILogger<UpdateOrganisationUseCase> logger
 ) : IUseCase<(Guid organisationId, UpdateOrganisation updateOrganisation), bool>
 {
     public async Task<bool> Execute((Guid organisationId, UpdateOrganisation updateOrganisation) command)
