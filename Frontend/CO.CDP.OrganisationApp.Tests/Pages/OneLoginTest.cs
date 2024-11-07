@@ -60,7 +60,7 @@ public class OneLoginTest
                 && rd.UserUrn == urn
             )), Times.Once);
 
-        oneLoginSessionManagerMock.Verify(v => v.RemoveUserLoggedOut(urn), Times.Once);
+        oneLoginSessionManagerMock.Verify(v => v.RemoveFromSignedOutSessionsList(urn), Times.Once);
     }
 
     [Fact]
@@ -254,7 +254,7 @@ public class OneLoginTest
 
         var result = await model.OnPostAsync(logoutToken);
 
-        oneLoginSessionManagerMock.Verify(m => m.AddUserLoggedOut(urn), Times.Once);
+        oneLoginSessionManagerMock.Verify(m => m.AddToSignedOutSessionsList(urn), Times.Once);
         result.Should().BeOfType<PageResult>();
     }
 

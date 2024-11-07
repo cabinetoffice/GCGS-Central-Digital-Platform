@@ -2,9 +2,9 @@ namespace CO.CDP.OrganisationApp.Authentication;
 
 public interface IOneLoginSessionManager
 {
-    void AddUserLoggedOut(string sub);
+    void AddToSignedOutSessionsList(string sub);
 
-    void RemoveUserLoggedOut(string sub);
+    void RemoveFromSignedOutSessionsList(string sub);
 
-    bool IsLoggedOut(string sub);
+    bool HasSignedOut(string sub);
 }

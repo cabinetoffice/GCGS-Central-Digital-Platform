@@ -25,8 +25,8 @@ public class CookieEventsTests
 
         await _cookieEvents.ValidatePrincipal(context);
 
-        _oneLoginSessionManagerMock.Verify(m => m.IsLoggedOut(It.IsAny<string>()), Times.Never);
-        _oneLoginSessionManagerMock.Verify(m => m.RemoveUserLoggedOut(It.IsAny<string>()), Times.Never);
+        _oneLoginSessionManagerMock.Verify(m => m.HasSignedOut(It.IsAny<string>()), Times.Never);
+        _oneLoginSessionManagerMock.Verify(m => m.RemoveFromSignedOutSessionsList(It.IsAny<string>()), Times.Never);
     }
 
     [Fact]
@@ -36,7 +36,7 @@ public class CookieEventsTests
 
         await _cookieEvents.ValidatePrincipal(context);
 
-        _oneLoginSessionManagerMock.Verify(m => m.IsLoggedOut(It.IsAny<string>()), Times.Never);
+        _oneLoginSessionManagerMock.Verify(m => m.HasSignedOut(It.IsAny<string>()), Times.Never);
     }
 
     [Fact]
@@ -44,11 +44,11 @@ public class CookieEventsTests
     {
         var urn = "user-urn";
         var context = CreateContext(authenticated: true, urn: urn);
-        _oneLoginSessionManagerMock.Setup(m => m.IsLoggedOut(urn)).Returns(false);
+        _oneLoginSessionManagerMock.Setup(m => m.HasSignedOut(urn)).Returns(false);
 
         await _cookieEvents.ValidatePrincipal(context);
 
-        _oneLoginSessionManagerMock.Verify(m => m.IsLoggedOut(urn), Times.Once);
+        _oneLoginSessionManagerMock.Verify(m => m.HasSignedOut(urn), Times.Once);
         _authenticationService.Verify(m => m.SignOutAsync(It.IsAny<HttpContext>(), It.IsAny<string>(), It.IsAny<AuthenticationProperties>()), Times.Never);
     }
 
@@ -57,12 +57,12 @@ public class CookieEventsTests
     {
         var urn = "user-urn";
         var context = CreateContext(authenticated: true, urn: urn);
-        _oneLoginSessionManagerMock.Setup(m => m.IsLoggedOut(urn)).Returns(true);
+        _oneLoginSessionManagerMock.Setup(m => m.HasSignedOut(urn)).Returns(true);
 
         await _cookieEvents.ValidatePrincipal(context);
 
-        _oneLoginSessionManagerMock.Verify(m => m.IsLoggedOut(urn), Times.Once);
-        _oneLoginSessionManagerMock.Verify(m => m.RemoveUserLoggedOut(urn), Times.Once);
+        _oneLoginSessionManagerMock.Verify(m => m.HasSignedOut(urn), Times.Once);
+        _oneLoginSessionManagerMock.Verify(m => m.RemoveFromSignedOutSessionsList(urn), Times.Once);
         _authenticationService.Verify(m => m.SignOutAsync(It.IsAny<HttpContext>(), It.IsAny<string>(), It.IsAny<AuthenticationProperties>()), Times.Once);
     }
 

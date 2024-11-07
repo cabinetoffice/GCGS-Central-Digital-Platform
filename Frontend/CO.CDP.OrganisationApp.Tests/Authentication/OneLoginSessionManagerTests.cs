@@ -21,11 +21,11 @@ public class OneLoginSessionManagerTests
     }
 
     [Fact]
-    public void AddUserLoggedOut_ShouldSetCache_WithCorrectExpiration()
+    public void AddToSignedOutSessionsList_ShouldSetCache_WithCorrectExpiration()
     {
         var userUrn = "user123";
 
-        sessionManager.AddUserLoggedOut(userUrn);
+        sessionManager.AddToSignedOutSessionsList(userUrn);
 
         cacheMock.Verify(c => c.Set(
             userUrn,
@@ -35,33 +35,33 @@ public class OneLoginSessionManagerTests
     }
 
     [Fact]
-    public void RemoveUserLoggedOut_ShouldRemoveCacheEntry()
+    public void RemoveFromSignedOutSessionsList_ShouldRemoveCacheEntry()
     {
         var userUrn = "user123";
 
-        sessionManager.RemoveUserLoggedOut(userUrn);
+        sessionManager.RemoveFromSignedOutSessionsList(userUrn);
 
         cacheMock.Verify(c => c.Remove(userUrn), Times.Once);
     }
 
     [Fact]
-    public void IsLoggedOut_ShouldReturnTrue_WhenUserIsLoggedOut()
+    public void HasSignedOut_ShouldReturnTrue_WhenUserIsSignedOut()
     {
         var userUrn = "user123";
         cacheMock.Setup(c => c.Get(userUrn)).Returns(Encoding.UTF8.GetBytes("1"));
 
-        var result = sessionManager.IsLoggedOut(userUrn);
+        var result = sessionManager.HasSignedOut(userUrn);
 
         result.Should().BeTrue();
     }
 
     [Fact]
-    public void IsLoggedOut_ShouldReturnFalse_WhenUserIsNotLoggedOut()
+    public void HasSignedOut_ShouldReturnFalse_WhenUserIsNotSignedOut()
     {
         var userUrn = "user123";
         cacheMock.Setup(c => c.Get(userUrn)).Returns((byte[]?)null);
 
-        var result = sessionManager.IsLoggedOut(userUrn);
+        var result = sessionManager.HasSignedOut(userUrn);
 
         result.Should().BeFalse();
     }

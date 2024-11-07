@@ -46,7 +46,7 @@ public class OneLoginModel(
 
         if (string.IsNullOrWhiteSpace(urn)) return BadRequest();
 
-        oneLoginSessionManager.AddUserLoggedOut(urn);
+        oneLoginSessionManager.AddToSignedOutSessionsList(urn);
 
         return Page();
     }
@@ -78,7 +78,7 @@ public class OneLoginModel(
         {
             return SignIn();
         }
-        oneLoginSessionManager.RemoveUserLoggedOut(urn);
+        oneLoginSessionManager.RemoveFromSignedOutSessionsList(urn);
 
         var ud = new UserDetails { UserUrn = urn, Email = email, Phone = phone };
         session.Set(Session.UserDetailsKey, ud);

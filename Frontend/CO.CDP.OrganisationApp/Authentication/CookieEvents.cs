@@ -14,12 +14,12 @@ public class CookieEvents(IOneLoginSessionManager oneLoginSessionManager) : Cook
 
         var urn = context.Principal.FindFirst("sub")?.Value;
 
-        if (urn == null || !oneLoginSessionManager.IsLoggedOut(urn))
+        if (urn == null || oneLoginSessionManager.HasSignedOut(urn) == false)
         {
             return;
         }
 
-        oneLoginSessionManager.RemoveUserLoggedOut(urn);
+        oneLoginSessionManager.RemoveFromSignedOutSessionsList(urn);
 
         context.RejectPrincipal();
         await context.HttpContext.SignOutAsync();

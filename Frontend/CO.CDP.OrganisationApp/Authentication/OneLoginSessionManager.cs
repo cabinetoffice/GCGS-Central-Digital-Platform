@@ -9,7 +9,7 @@ public class OneLoginSessionManager(
     private const string Value = "1";
     private double? _sessionTimeoutInMinutes;
 
-    public void AddUserLoggedOut(string userUrn)
+    public void AddToSignedOutSessionsList(string userUrn)
     {
         _sessionTimeoutInMinutes ??= config.GetValue<double>("SessionTimeoutInMinutes");
 
@@ -19,12 +19,12 @@ public class OneLoginSessionManager(
         });
     }
 
-    public void RemoveUserLoggedOut(string userUrn)
+    public void RemoveFromSignedOutSessionsList(string userUrn)
     {
         cache.Remove(userUrn);
     }
 
-    public bool IsLoggedOut(string userUrn)
+    public bool HasSignedOut(string userUrn)
     {
         return cache.GetString(userUrn) == Value;
     }
