@@ -54,13 +54,13 @@ public class AuthorizationTests
                             [ organisation ]
                         )
                     ],
-                    new UserDetails("a@b.com", "User name", [], "urn")
+                    new UserDetails(email: "a@b.com", name: "User name", scopes: userScopes, urn: "urn")
                 ));
 
         OrganisationClient.Setup(client => client.GetOrganisationPersonsAsync(It.IsAny<Guid>()))
             .ReturnsAsync(
                 [
-                    new CO.CDP.Organisation.WebApiClient.Person("a@b.com", "First name", person.Id, "Last name", [ OrganisationPersonScopes.Admin, OrganisationPersonScopes.Editor ])
+                    new Organisation.WebApiClient.Person("a@b.com", "First name", person.Id, "Last name", [ OrganisationPersonScopes.Admin, OrganisationPersonScopes.Editor ])
                 ]
             );
 
@@ -74,7 +74,7 @@ public class AuthorizationTests
 
         OrganisationClient.Setup(client => client.GetOrganisationAsync(OrganisationId))
             .ReturnsAsync(
-                new CO.CDP.Organisation.WebApiClient.Organisation(
+                new Organisation.WebApiClient.Organisation(
                     additionalIdentifiers: [],
                     addresses: [],
                     contactPoint: new ContactPoint("a@b.com", "Contact", "123", new Uri("http://whatever")),
