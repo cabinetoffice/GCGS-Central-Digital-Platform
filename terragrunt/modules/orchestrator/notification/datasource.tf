@@ -18,21 +18,21 @@ data "aws_iam_policy_document" "notification_step_function" {
     actions = [
       "states:InvokeHTTPEndpoint"
     ]
-
     resources = [
-      aws_sfn_state_machine.slack_notification.arn,
-      aws_sfn_state_machine.slack_unified_notification.arn
+      aws_sfn_state_machine.slack_notification.arn
     ]
   }
 
   statement {
-    actions   = [
+    effect = "Allow"
+    sid    = "DynamoDB"
+
+    actions = [
       "dynamodb:GetItem",
       "dynamodb:PutItem",
       "dynamodb:UpdateItem"
     ]
     resources = [aws_dynamodb_table.pipeline_execution_timestamps.arn]
-    effect    = "Allow"
   }
 
   statement {
@@ -42,7 +42,6 @@ data "aws_iam_policy_document" "notification_step_function" {
     actions = [
       "events:RetrieveConnectionCredentials"
     ]
-
     resources = [
       aws_cloudwatch_event_connection.slack.arn,
       aws_cloudwatch_event_connection.slack_unified_notification.arn
@@ -57,7 +56,6 @@ data "aws_iam_policy_document" "notification_step_function" {
       "secretsmanager:GetSecretValue",
       "secretsmanager:DescribeSecret",
     ]
-
     resources = [
       "arn:aws:secretsmanager:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:secret:events!connection/${local.name_prefix}-*"
     ]
@@ -70,7 +68,6 @@ data "aws_iam_policy_document" "notification_step_function" {
     actions = [
       "ssm:GetParameter"
     ]
-
     resources = [
       var.ssm_service_version_arn
     ]
@@ -86,10 +83,21 @@ data "aws_iam_policy_document" "notification_step_function" {
       "xray:PutTelemetryRecords",
       "xray:PutTraceSegments",
     ]
-
     resources = [
       aws_cloudwatch_event_connection.slack.arn,
       aws_cloudwatch_event_connection.slack_unified_notification.arn,
+    ]
+  }
+
+  statement {
+    effect = "Allow"
+    sid    = "ExecuteStates"
+
+    actions = [
+      "states:StartExecution"
+    ]
+    resources = [
+      "arn:aws:states:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:stateMachine:${local.name_prefix}-*"
     ]
   }
 }

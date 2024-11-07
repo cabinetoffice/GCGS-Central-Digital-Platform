@@ -39,11 +39,22 @@ public class UserSummaryModelTests
     }
 
     [Fact]
-    public async Task OnGet_ReturnsPageResult_WhenApiCallsSucceed()
+    public async Task OnGet_ReturnsPageResultWithUnexpiredInvites_WhenAnUnexpiredPersonInvitesAreIncluded()
     {
         var person = new CO.CDP.Organisation.WebApiClient.Person("john@johnson.com", "John", _userGuid, "Johnson", ["ADMIN"]);
-        var persons = new List<CO.CDP.Organisation.WebApiClient.Person>() { person };
-        var invites = new List<PersonInviteModel> { new PersonInviteModel("john@johnson.com", "John", _userGuid, "Johnson", [""]) };
+        var persons = new List<CO.CDP.Organisation.WebApiClient.Person> { person };
+
+        var idOfPersonInviteWeWantToSee = Guid.NewGuid();
+        var idOfPersonInviteWeDontWantToSee = Guid.NewGuid();
+        var emailOfPersonInviteWeWantToSee = "john@johnson.com";
+
+        var invites = new List<PersonInviteModel>
+        {
+            new PersonInviteModel(id: idOfPersonInviteWeDontWantToSee, firstName:"John", lastName: "Johnson", email: emailOfPersonInviteWeWantToSee, expiresOn: DateTimeOffset.UtcNow.AddDays(-2), scopes: [""]),
+            new PersonInviteModel(id: idOfPersonInviteWeWantToSee, firstName:"John", lastName: "Johnson", email: emailOfPersonInviteWeWantToSee, expiresOn: DateTimeOffset.UtcNow.AddDays(1), scopes: [""]), // The one we want
+            new PersonInviteModel(id: idOfPersonInviteWeDontWantToSee, firstName:"John", lastName: "Johnson", email: emailOfPersonInviteWeWantToSee, expiresOn: DateTimeOffset.UtcNow.AddDays(-1), scopes: [""]),
+            new PersonInviteModel(id: Guid.NewGuid(), firstName:"Bob", lastName: "Bobson", email: "bob@bobson.com", expiresOn: null, scopes: [""]),
+        };
         var joinRequests = new List<JoinRequestLookUp> { new JoinRequestLookUp(Guid.NewGuid(), person, OrganisationJoinRequestStatus.Pending) };
 
         _mockOrganisationClient
@@ -55,13 +66,53 @@ public class UserSummaryModelTests
             .ReturnsAsync(invites);
 
         _mockOrganisationClient.Setup(c => c.GetOrganisationJoinRequestsAsync(_organisationId, null))
-           .ReturnsAsync(joinRequests);
+            .ReturnsAsync(joinRequests);
 
         var result = await _pageModel.OnGet(null);
 
         result.Should().BeOfType<PageResult>();
         _pageModel.Persons.Should().Contain(persons);
-        _pageModel.PersonInvites.Should().BeEquivalentTo(invites);
+        _pageModel.PersonInvites.Should().Contain(i => i.Id == idOfPersonInviteWeWantToSee);
+        _pageModel.PersonInvites.Should().NotContain(i => i.Id == idOfPersonInviteWeDontWantToSee);
+        _pageModel.OrganisationJoinRequests.Should().BeEquivalentTo(joinRequests);
+    }
+
+    [Fact]
+    public async Task OnGet_ReturnsPageResultWithLastExpiredInvite_WhenNoUnexpiredPersonInvitesAreIncluded()
+    {
+        var person = new CO.CDP.Organisation.WebApiClient.Person("john@johnson.com", "John", _userGuid, "Johnson", ["ADMIN"]);
+        var persons = new List<CO.CDP.Organisation.WebApiClient.Person> { person };
+
+        var idOfPersonInviteWeWantToSee = Guid.NewGuid();
+        var idOfPersonInviteWeDontWantToSee = Guid.NewGuid();
+        var emailOfPersonInviteWeWantToSee = "john@johnson.com";
+
+        var invites = new List<PersonInviteModel>
+        {
+            new PersonInviteModel(id: idOfPersonInviteWeDontWantToSee, firstName:"John", lastName: "Johnson", email: emailOfPersonInviteWeWantToSee, expiresOn: DateTimeOffset.UtcNow.AddDays(-2), scopes: [""]),
+            new PersonInviteModel(id: idOfPersonInviteWeWantToSee, firstName:"John", lastName: "Johnson", email: emailOfPersonInviteWeWantToSee, expiresOn: DateTimeOffset.UtcNow.AddDays(-1), scopes: [""]), // The one we want
+            new PersonInviteModel(id: idOfPersonInviteWeDontWantToSee, firstName:"John", lastName: "Johnson", email: emailOfPersonInviteWeWantToSee, expiresOn: DateTimeOffset.UtcNow.AddDays(-3), scopes: [""]),
+            new PersonInviteModel(id: Guid.NewGuid(), firstName:"Bob", lastName: "Bobson", email: "bob@bobson.com", expiresOn: null, scopes: [""]),
+        };
+        var joinRequests = new List<JoinRequestLookUp> { new JoinRequestLookUp(Guid.NewGuid(), person, OrganisationJoinRequestStatus.Pending) };
+
+        _mockOrganisationClient
+            .Setup(client => client.GetOrganisationPersonsAsync(_organisationId))
+            .ReturnsAsync(persons);
+
+        _mockOrganisationClient
+            .Setup(client => client.GetOrganisationPersonInvitesAsync(_organisationId))
+            .ReturnsAsync(invites);
+
+        _mockOrganisationClient.Setup(c => c.GetOrganisationJoinRequestsAsync(_organisationId, null))
+            .ReturnsAsync(joinRequests);
+
+        var result = await _pageModel.OnGet(null);
+
+        result.Should().BeOfType<PageResult>();
+        _pageModel.Persons.Should().Contain(persons);
+        _pageModel.PersonInvites.Should().Contain(i => i.Id == idOfPersonInviteWeWantToSee);
+        _pageModel.PersonInvites.Should().NotContain(i => i.Id == idOfPersonInviteWeDontWantToSee);
         _pageModel.OrganisationJoinRequests.Should().BeEquivalentTo(joinRequests);
     }
 

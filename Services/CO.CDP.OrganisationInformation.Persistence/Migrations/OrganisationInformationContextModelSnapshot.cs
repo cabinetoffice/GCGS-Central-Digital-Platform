@@ -956,6 +956,10 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                         .HasColumnType("text")
                         .HasColumnName("email");
 
+                    b.Property<DateTimeOffset?>("ExpiresOn")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("expires_on");
+
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasColumnType("text")

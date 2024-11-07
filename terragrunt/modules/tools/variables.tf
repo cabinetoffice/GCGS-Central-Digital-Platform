@@ -160,22 +160,22 @@ variable "user_pool_arn_healthcheck" {
   type    = string
 }
 
-variable "user_pool_client_id_healthcheck" {
-  default = null
-  type    = string
-}
-
-variable "user_pool_domain_healthcheck" {
-  default = null
-  type    = string
-}
-
 variable "user_pool_arn_pgadmin" {
   default = null
   type    = string
 }
 
+variable "user_pool_client_id_healthcheck" {
+  default = null
+  type    = string
+}
+
 variable "user_pool_client_id_pgadmin" {
+  default = null
+  type    = string
+}
+
+variable "user_pool_domain_healthcheck" {
   default = null
   type    = string
 }

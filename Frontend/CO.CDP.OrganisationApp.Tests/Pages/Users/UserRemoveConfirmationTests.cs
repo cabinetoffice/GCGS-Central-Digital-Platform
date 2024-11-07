@@ -148,7 +148,7 @@ public class UserRemoveConfirmationModelTests
     [Fact]
     public async Task GetPersonInvite_Returns_PersonInvite_When_Found()
     {
-        var personInvite = new PersonInviteModel("john@johnson.com", "John", _pageModel.UserId, "Johnson", []);
+        var personInvite = new PersonInviteModel(email: "john@johnson.com", firstName: "John", id: _pageModel.UserId, lastName: "Johnson", scopes: [], expiresOn: null);
         _mockOrganisationClient.Setup(client => client.GetOrganisationPersonInvitesAsync(It.IsAny<Guid>()))
             .ReturnsAsync(new List<PersonInviteModel> { personInvite });
 

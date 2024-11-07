@@ -1,8 +1,3 @@
-variable "account_ids" {
-  description = "Map of all accounts and their IDs"
-  type        = map(string)
-}
-
 variable "deployment_pipeline_name" {
   description = "Deployment pipeline name"
   type        = string
@@ -44,8 +39,8 @@ variable "role_notification_step_function_name" {
 
 variable "slack_channel_id" {
   description = "Slack channel ID to send deployment notifications too"
-  type = string
-  default = "C07FUD6GL7R"
+  type        = string
+  default     = "C07FUD6GL7R"
 }
 
 variable "ssm_service_version_arn" {

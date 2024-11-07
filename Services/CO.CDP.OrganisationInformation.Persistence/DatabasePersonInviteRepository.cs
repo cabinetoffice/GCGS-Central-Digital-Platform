@@ -35,6 +35,14 @@ public class DatabasePersonInviteRepository(OrganisationInformationContext conte
             .AnyAsync();
     }
 
+    public async Task<IEnumerable<PersonInvite>> FindPersonInviteByEmail(Guid organisationId, string email)
+    {
+        return await context.PersonInvites
+            .Where(x => x.Organisation != null && x.Organisation.Guid == organisationId)
+            .Where(x => x.Email == email)
+            .ToArrayAsync();
+    }
+
     public async Task<bool> Delete(PersonInvite personInvite)
     {
         context.Remove(personInvite);

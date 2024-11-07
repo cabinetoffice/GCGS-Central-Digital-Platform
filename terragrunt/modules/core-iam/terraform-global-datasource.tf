@@ -216,6 +216,17 @@ data "aws_iam_policy_document" "terraform_global" {
 
   statement {
     actions = [
+      "rds:DescribeGlobalClusters",
+    ]
+    effect = "Allow"
+    resources = [
+      "arn:aws:rds::${data.aws_caller_identity.current.account_id}:global-cluster:*",
+    ]
+    sid = "ManageRDSCluster"
+  }
+
+  statement {
+    actions = [
       "elasticloadbalancing:DescribeListeners",
       "elasticloadbalancing:DescribeLoadBalancerAttributes",
       "elasticloadbalancing:DescribeLoadBalancers",

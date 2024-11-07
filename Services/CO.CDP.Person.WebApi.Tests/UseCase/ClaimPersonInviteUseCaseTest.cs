@@ -153,6 +153,38 @@ public class ClaimPersonInviteUseCaseTests
     }
 
     [Fact]
+    public async Task Execute_Throws_PersonInviteExpiredException_When_PersonInvite_Has_Expired()
+    {
+        var expiredInvite = new PersonInvite
+        {
+            Id = 0,
+            Person = null,
+            Guid = _defaultPersonInviteGuid,
+            FirstName = "John",
+            LastName = "Johnson",
+            Email = "john@johnson.com",
+            OrganisationId = 1,
+            Organisation = _defaultOrganisation,
+            Scopes = new List<string> { "EDITOR", "ADMIN" },
+            ExpiresOn = DateTimeOffset.UtcNow.AddDays(-1) // Set invite to expired
+        };
+
+        var command = (personId: _defaultPerson.Guid, claimPersonInvite: new ClaimPersonInvite { PersonInviteId = expiredInvite.Guid });
+
+        _mockPersonRepository.Setup(repo => repo.Find(_defaultPerson.Guid))
+            .ReturnsAsync(_defaultPerson);
+
+        _mockPersonInviteRepository.Setup(repo => repo.Find(command.claimPersonInvite.PersonInviteId))
+            .ReturnsAsync(expiredInvite);
+
+        Func<Task> act = async () => await _useCase.Execute(command);
+
+        await act.Should()
+            .ThrowAsync<PersonInviteExpiredException>()
+            .WithMessage($"PersonInvite {expiredInvite.Guid} has expired.");
+    }
+
+    [Fact]
     public async Task Execute_Throws_DuplicateEmailWithinOrganisationException_When_EmailNotUniqueToOrganisation()
     {
         var claimedPersonInvite = new PersonInvite
