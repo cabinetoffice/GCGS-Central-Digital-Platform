@@ -1,8 +1,12 @@
 @page "/contact-us"
 @model ContactUsModel
 
+@using CO.CDP.Localization
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IHtmlLocalizer<StaticTextResource> Localizer
+
 @{
-    ViewData["Title"] = "Message sent";
+    ViewData["Title"] = @StaticTextResource.Supplementary_ContactUs_Title;
     var nameHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Name)).HasInnerHtml;
     var emailAddressHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.EmailAddress)).HasInnerHtml;
     var organisationNameHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.OrganisationName)).HasInnerHtml;
@@ -19,8 +23,8 @@
                           @ViewData["Title"]
                       </h1>
                   </div>
-                  <h2 class="govuk-heading-m">What happens next</h2>
-                  <p class="govuk-body">Our support team will contact you by email, Monday to Friday from 9am to 5pm, excluding bank holidays.</p>
+                  <h2 class="govuk-heading-m">@StaticTextResource.Supplementary_ContactUs_WhatHappensNext</h2>
+                  <p class="govuk-body">@StaticTextResource.Supplementary_ContactUs_SupportTeam</p>
             </div>
         </div>
     }
@@ -31,7 +35,7 @@
                 <partial name="_ErrorSummary" model="@ModelState" />
 
                 <h1 class="govuk-heading-l">
-                    Contact us
+                    @StaticTextResource.Supplementary_ContactUs_ContactUs
                 </h1>
 
                 <form method="post" novalidate>
@@ -86,7 +90,7 @@
 
                         <div class="govuk-form-group govuk-character-count @(messageHasError ? "govuk-form-group--error" : "")" data-module="govuk-character-count" data-maxlength="10000">
                             <label class="govuk-label" for="@nameof(Model.Message)">
-                                Message
+                                @StaticTextResource.Supplementary_ContactUs_Message
                             </label>
                             @if (messageHasError)
                             {
@@ -99,13 +103,13 @@
                                       id="@nameof(Model.Message)" name="@nameof(Model.Message)"
                                       cols="50" rows="10" @(messageHasError ? "aria-describedby=message-info message-error" : "")>@Model.Message</textarea>
                             <div id="@nameof(Model.Message)-info" class="govuk-hint govuk-character-count__message">
-                                You have 10,000 characters available
+                                @StaticTextResource.Supplementary_ContactUs_CharsAvailable
                             </div>
                         </div>
                     </fieldset>
 
                     <govuk-button>
-                        Send
+                        @StaticTextResource.Supplementary_ContactUs_Send
                     </govuk-button>
                 </form>
             </div>
