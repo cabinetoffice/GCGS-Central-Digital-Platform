@@ -3,18 +3,19 @@ using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json.Linq;
 using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
 using static IdentityModel.OidcConstants;
 
 namespace CO.CDP.OrganisationApp.Authentication;
 
-public class OneLoginAuthority(IConfiguration config) : IOneLoginAuthority
+public class OneLoginAuthority(
+    IConfiguration config,
+    ILogger<OneLoginAuthority> logger) : IOneLoginAuthority
 {
     private OpenIdConnectConfiguration? _oneLoginConfig;
 
     public async Task<string?> ValidateLogoutToken(string logoutToken)
     {
-        ClaimsPrincipal claims;
+        JwtSecurityToken jwtSecurityToken;
         try
         {
             var oneLoginConfig = await GetConfiguration();
@@ -30,24 +31,31 @@ public class OneLoginAuthority(IConfiguration config) : IOneLoginAuthority
                 ValidAudience = clientId,
                 ValidateLifetime = true,
                 ValidateIssuerSigningKey = true,
-                IssuerSigningKeys = oneLoginConfig.SigningKeys
+                IssuerSigningKeys = oneLoginConfig.SigningKeys,
+
+                // Uncomment below line to override signingkey validation for testing purpose only
+                //RequireSignedTokens = false,
+                //SignatureValidator = (string token, TokenValidationParameters parameters) => new JwtSecurityToken(token)
             };
 
             var tokenHandler = new JwtSecurityTokenHandler();
-            claims = tokenHandler.ValidateToken(logoutToken, parameters, out var _);
+            tokenHandler.ValidateToken(logoutToken, parameters, out var token);
+            jwtSecurityToken = (JwtSecurityToken)token;
         }
-        catch
+        catch (Exception ex)
         {
+            logger.LogInformation(ex, "One Login logout token validation failed. {Token}", logoutToken);
+
             return null;
         }
 
-        var urn = claims.FindFirst("sub")?.Value;
+        var urn = jwtSecurityToken.Subject;
         if (string.IsNullOrWhiteSpace(urn)) return null;
 
-        var nonce = claims.FindFirstValue("nonce");
+        var nonce = jwtSecurityToken.Claims.FirstOrDefault(c => c.Type == "nonce")?.Value;
         if (!string.IsNullOrWhiteSpace(nonce)) return null;
 
-        var eventsJson = claims.FindFirst("events")?.Value;
+        var eventsJson = jwtSecurityToken.Claims.FirstOrDefault(c => c.Type == "events")?.Value;
         if (string.IsNullOrWhiteSpace(eventsJson)) return null;
 
         var events = JObject.Parse(eventsJson);
