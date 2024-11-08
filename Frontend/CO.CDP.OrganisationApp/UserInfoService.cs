@@ -1,55 +1,17 @@
 using CO.CDP.OrganisationApp.Constants;
-using CO.CDP.Person.WebApiClient;
 using CO.CDP.Tenant.WebApiClient;
 
 namespace CO.CDP.OrganisationApp;
 
-public class UserInfoService(IHttpContextAccessor httpContextAccessor, ITenantClient tenantClient, IPersonClient personClient) : IUserInfoService
+public class UserInfoService(IHttpContextAccessor httpContextAccessor, ITenantClient tenantClient) : IUserInfoService
 {
-    public async Task<ICollection<string>> GetUserScopes()
-    {
-        var userUrn = GetUserUrn();
-        if (userUrn == null)
-        {
-            return new List<string>(); // Return an empty list if no userUrn is found
-        }
-
-        var person = await personClient.LookupPersonAsync(userUrn);
-
-        if (person == null || person.Scopes == null)
-        {
-            return new List<string>(); // Return an empty list if no person or roles are found
-        }
-
-        return person.Scopes;
-    }
-
-    private string? GetUserUrn()
-    {
-        return httpContextAccessor.HttpContext?.User?.FindFirst("sub")?.Value;
-    }
-
-    public async Task<ICollection<string>> GetOrganisationUserScopes()
-    {
-        Guid? organisationId = GetOrganisationId();
-        if (organisationId != null)
-        {
-            var organisation = await GetPersonOrganisation((Guid)organisationId);
-
-            if (organisation != null)
-            {
-                return organisation.Scopes;
-            }
-        }
-
-        return [];
-    }
-
     public async Task<bool> IsViewer()
     {
-        var organisationPersonScopes = await GetOrganisationUserScopes();
-        var userScopes = await GetUserScopes();
-        return organisationPersonScopes.Contains(OrganisationPersonScopes.Viewer) || (organisationPersonScopes.Count == 0 && userScopes.Contains(PersonScopes.SupportAdmin));
+        var tenantLookup = await tenantClient.LookupTenantAsync();
+        var userScopes = tenantLookup.User.Scopes;
+        var organisationUserScopes = tenantLookup.Tenants.SelectMany(x => x.Organisations.SelectMany(y => y.Scopes)).ToList();
+
+        return organisationUserScopes.Contains(OrganisationPersonScopes.Viewer) || (organisationUserScopes.Count == 0 && userScopes.Contains(PersonScopes.SupportAdmin));
     }
 
     public async Task<bool> HasTenant()
