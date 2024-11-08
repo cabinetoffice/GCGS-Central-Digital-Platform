@@ -44,16 +44,24 @@ public class CreateOrganisationJoinRequestUseCase(
                            ?? throw new UnknownPersonException($"Unknown person {command.createOrganisationJoinRequestCommand.PersonId}.");
 
         await GuardPersonIsNotAlreadyAdded(organisation, person);
-        await GuardPersonIsNotAlreadyInvited(organisation, person);
+        
+        var joinRequest = await organisationJoinRequestRepository.FindByOrganisationAndPerson(organisation.Guid, person.Guid);
 
-        var organisationJoinRequest = CreateOrganisationJoinRequest(organisation, person);
+        if (joinRequest != null)
+        {
+            joinRequest.Status = OrganisationJoinRequestStatus.Pending;
+        }
+        else
+        {
+            joinRequest = CreateOrganisationJoinRequest(organisation, person);
+        }
 
-        organisationJoinRequestRepository.Save(organisationJoinRequest);
+        organisationJoinRequestRepository.Save(joinRequest);
 
         await NotifyUserRequestSent(organisation: organisation, person: person);
         await NotifyOrgAdminsOfApprovalRequest(organisation: organisation, person: person);
 
-        return mapper.Map<OrganisationJoinRequest>(organisationJoinRequest);
+        return mapper.Map<OrganisationJoinRequest>(joinRequest);
     }
 
     private Persistence.OrganisationJoinRequest CreateOrganisationJoinRequest(
