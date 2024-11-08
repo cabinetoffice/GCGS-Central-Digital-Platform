@@ -3,10 +3,9 @@
 
 @using CO.CDP.Localization
 @using Microsoft.AspNetCore.Mvc.Localization
-@inject IHtmlLocalizer<StaticTextResource> Localizer
 
 @{
-    ViewData["Title"] = @StaticTextResource.Supplementary_ContactUs_Title;
+    ViewData["Title"] = StaticTextResource.Supplementary_ContactUs_Title;
     var nameHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Name)).HasInnerHtml;
     var emailAddressHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.EmailAddress)).HasInnerHtml;
     var organisationNameHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.OrganisationName)).HasInnerHtml;
