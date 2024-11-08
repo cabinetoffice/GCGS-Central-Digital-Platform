@@ -27,31 +27,6 @@ public class UserInfoService(IHttpContextAccessor httpContextAccessor, ITenantCl
         }
     }
 
-    private async Task<UserOrganisation?> GetPersonOrganisation(Guid organisationId)
-    {
-        // Role checks may be made multiple times when building a page
-        // Therefore we cache the person's organisation details for the duration of the http request
-        var cacheKey = "CO.CDP.OrganisationApp.UserInfoService.GetPersonOrganisation";
-
-        if (httpContextAccessor?.HttpContext?.Items != null && httpContextAccessor.HttpContext.Items[cacheKey] is UserOrganisation cachedData)
-        {
-            return cachedData;
-        }
-
-        var result = await tenantClient.LookupTenantAsync();
-
-        var personOrganisation = result.Tenants
-            .SelectMany(tenant => tenant.Organisations)
-            .FirstOrDefault(org => org.Id == organisationId);
-
-        if (httpContextAccessor?.HttpContext?.Items != null)
-        {
-            httpContextAccessor.HttpContext.Items[cacheKey] = personOrganisation;
-        }
-
-        return personOrganisation;
-    }
-
     public Guid? GetOrganisationId()
     {
         if (httpContextAccessor?.HttpContext?.Request?.Path.Value == null)
