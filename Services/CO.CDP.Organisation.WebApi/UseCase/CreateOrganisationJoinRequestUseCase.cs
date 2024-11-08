@@ -169,18 +169,7 @@ public class CreateOrganisationJoinRequestUseCase(
         var organisationPersons = await organisationRepository.FindOrganisationPersons(organisation.Guid);
         return organisationPersons.Where(op => op.Scopes.Contains(Constants.OrganisationPersonScope.Admin)).Select(op => op.Person).ToList();
     }
-
-    private async Task GuardPersonIsNotAlreadyInvited(Persistence.Organisation organisation, Person person)
-    {
-        var joinRequest = await organisationJoinRequestRepository.FindByOrganisationAndPerson(organisation.Guid, person.Guid);
-
-        if (joinRequest != null)
-        {
-            throw new PersonAlreadyInvitedToOrganisationException(
-                $"Person {person.Guid} already invited to organisation {organisation.Guid}.");
-        }
-    }
-
+        
     private async Task GuardPersonIsNotAlreadyAdded(Persistence.Organisation organisation, Person person)
     {
         var matchingOrganisationPerson = await organisationRepository.FindOrganisationPerson(organisation.Guid, person.Guid);
