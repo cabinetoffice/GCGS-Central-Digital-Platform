@@ -28,7 +28,7 @@ cat <<EOF > /pgadmin4/servers.json
     },
     "2": {
       "Name": "SIRSI",
-      "Group": "CDP",
+      "Group": "Admin",
       "Host": "${DB_SIRSI_ADDRESS}",
       "Port": 5432,
       "MaintenanceDB": "${DB_SIRSI_NAME}",
@@ -37,7 +37,7 @@ cat <<EOF > /pgadmin4/servers.json
     },
     "3": {
       "Name": "Entity Verification",
-      "Group": "CDP",
+      "Group": "Admin",
       "Host": "${DB_ENTITY_VERIFICATION_ADDRESS}",
       "Port": 5432,
       "MaintenanceDB": "${DB_ENTITY_VERIFICATION_NAME}",
@@ -45,6 +45,24 @@ cat <<EOF > /pgadmin4/servers.json
       "SSLMode": "prefer"
     },
     "4": {
+      "Name": "SIRSI",
+      "Group": "CDP",
+      "Host": "${DB_SIRSI_ADDRESS}",
+      "Port": 5432,
+      "MaintenanceDB": "${DB_SIRSI_NAME}",
+      "Username": "${DB_SIRSI_USERNAME}_pgadmin",
+      "SSLMode": "prefer"
+    },
+    "5": {
+      "Name": "Entity Verification",
+      "Group": "CDP",
+      "Host": "${DB_ENTITY_VERIFICATION_ADDRESS}",
+      "Port": 5432,
+      "MaintenanceDB": "${DB_ENTITY_VERIFICATION_NAME}",
+      "Username": "${DB_ENTITY_VERIFICATION_USERNAME}_pgadmin",
+      "SSLMode": "prefer"
+    },
+    "6": {
       "Name": "dharmendra.verma@cdp-sirsi",
       "Group": "Production Support",
       "Host": "${DB_SIRSI_ADDRESS}",
@@ -53,7 +71,7 @@ cat <<EOF > /pgadmin4/servers.json
       "Username": "dharmendra.verma",
       "SSLMode": "prefer"
     },
-    "5": {
+    "7": {
         "Name": "dharmendra.verma@cdp-entity-verification",
         "Group": "Production Support",
         "Host": "${DB_ENTITY_VERIFICATION_ADDRESS}",
@@ -62,7 +80,7 @@ cat <<EOF > /pgadmin4/servers.json
         "Username": "dharmendra.verma",
         "SSLMode": "prefer"
     },
-    "6": {
+    "8": {
       "Name": "jakub.zalas@cdp-sirsi",
       "Group": "Production Support",
       "Host": "${DB_SIRSI_ADDRESS}",
@@ -71,7 +89,7 @@ cat <<EOF > /pgadmin4/servers.json
       "Username": "jakub.zalas",
       "SSLMode": "prefer"
     },
-    "7": {
+    "9": {
         "Name": "jakub.zalas@cdp-entity-verification",
         "Group": "Production Support",
         "Host": "${DB_ENTITY_VERIFICATION_ADDRESS}",
@@ -84,15 +102,17 @@ cat <<EOF > /pgadmin4/servers.json
 }
 EOF
 
-echo /pgadmin4/servers.json
+cat /pgadmin4/servers.json
 
-echo "Baking CONFIG_DATABASE_URI in config_local.py:"
+echo "Baking local config inf config_local.py:"
 if [ ! -f /pgadmin4/config_local.py ]; then
     touch /pgadmin4/config_local.py
 fi
 
 echo "CONFIG_DATABASE_URI = '${CONFIG_DATABASE_URI}'" > /pgadmin4/config_local.py
 echo "ALLOW_SAVE_PASSWORD = ${ALLOW_SAVE_PASSWORD:-False}" >> /pgadmin4/config_local.py
+
+cat /pgadmin4/config_local.py
 
 echo "Configuration of pgAdmin is complete!"
 echo "Handing over to pgAdmin."
