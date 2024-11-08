@@ -38,18 +38,67 @@ public class OrganisationSelectionTest
         model.UserOrganisations.Should().HaveCount(1);
     }
 
+    [Fact]
+    public async Task OnGet_WhenOrgHasPendingRoles_ShouldCallGetOrganisationReviewsAsync()
+    {
+        var model = GivenOrganisationSelectionModelModel();
+
+        sessionMock.Setup(s => s.Get<Models.UserDetails>(Session.UserDetailsKey))
+            .Returns(new Models.UserDetails { UserUrn = "urn:test" });
+
+        tenantClientMock.Setup(o => o.LookupTenantAsync())
+            .ReturnsAsync(GetUserTenant(pendingRoles: [PartyRole.Buyer]));
+
+        organisationClientMock.Setup(o => o.GetOrganisationReviewsAsync(It.IsAny<Guid>()))
+            .ReturnsAsync([GivenReview(ReviewStatus.Pending)]);
+
+        var actionResult = await model.OnGet();
+
+        organisationClientMock.Verify(c => c.GetOrganisationReviewsAsync(It.IsAny<Guid>()), Times.Once);
+
+        model.UserOrganisations.Should().HaveCount(1);
+        model.UserOrganisations?.FirstOrDefault().Review?.Status.Should().Be(ReviewStatus.Pending);
+    }
+
+    [Fact]
+    public async Task OnGet_WhenOrgHasPendingRoles_AndIsRejected_CallToGetOrganisationReviewsAsync_ShouldReturnRejectedStatus()
+    {
+        var model = GivenOrganisationSelectionModelModel();
+
+        sessionMock.Setup(s => s.Get<Models.UserDetails>(Session.UserDetailsKey))
+            .Returns(new Models.UserDetails { UserUrn = "urn:test" });
+
+        tenantClientMock.Setup(o => o.LookupTenantAsync())
+            .ReturnsAsync(GetUserTenant(pendingRoles: [PartyRole.Buyer]));
+
+        organisationClientMock.Setup(o => o.GetOrganisationReviewsAsync(It.IsAny<Guid>()))
+            .ReturnsAsync([GivenReview(ReviewStatus.Rejected)]);
+
+        var actionResult = await model.OnGet();
+
+        organisationClientMock.Verify(c => c.GetOrganisationReviewsAsync(It.IsAny<Guid>()), Times.Once);
+
+        model.UserOrganisations.Should().HaveCount(1);
+        model.UserOrganisations?.FirstOrDefault().Review?.Status.Should().Be(ReviewStatus.Rejected);
+    }
+
     private OrganisationSelectionModel GivenOrganisationSelectionModelModel()
     {
         return new OrganisationSelectionModel(tenantClientMock.Object, organisationClientMock.Object, sessionMock.Object);
     }
 
-    private TenantLookup GetUserTenant()
+    private static Review GivenReview(ReviewStatus reviewStatus)
+    {
+        return new Review(null, null, null, reviewStatus);
+    }
+
+    private TenantLookup GetUserTenant(ICollection<PartyRole>? pendingRoles = null)
     {
         return new TenantLookup(
                 new List<UserTenant>
                 {
                     new(
-                        id: Guid.NewGuid(),
+                        id: new Guid(),
                         name: "TrentTheTenant",
                         organisations: new List<UserOrganisation>()
                         {
@@ -57,7 +106,7 @@ public class OrganisationSelectionTest
                                 id: Guid.NewGuid(),
                                 name: "Acme Ltd",
                                 roles: new List<PartyRole> { PartyRole.Payee },
-                                pendingRoles: [],
+                                pendingRoles: pendingRoles != null ? pendingRoles : [],
                                 scopes: new List<string> { "Scope" },
                                 uri: new Uri("http://www.acme.com"))
                         }

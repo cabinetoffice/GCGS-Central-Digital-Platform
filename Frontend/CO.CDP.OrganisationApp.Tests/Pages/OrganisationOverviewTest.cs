@@ -28,6 +28,24 @@ public class OrganisationOverviewTest
         await _model.OnGet();
 
         _organisationClientMock.Verify(c => c.GetOrganisationAsync(id), Times.Once);
+        _organisationClientMock.Verify(c => c.GetOrganisationReviewsAsync(id), Times.Never);
+    }
+
+    [Fact]
+    public async Task OnGet_WithPendingBuyers_CallsGetOrganisationReviewsAsync()
+    {
+        var id = Guid.NewGuid();
+        _model.Id = id;
+        _organisationClientMock.Setup(o => o.GetOrganisationAsync(id))
+            .ReturnsAsync(GivenOrganisationClientModel(id: id, pendingRoles: [PartyRole.Buyer]));
+
+        _organisationClientMock.Setup(o => o.GetOrganisationReviewsAsync(id))
+            .ReturnsAsync([new Review(null, null, null, ReviewStatus.Pending)]);
+
+        await _model.OnGet();
+
+        _organisationClientMock.Verify(c => c.GetOrganisationAsync(id), Times.Once);
+        _organisationClientMock.Verify(c => c.GetOrganisationReviewsAsync(id), Times.Once);
     }
 
     [Fact]
@@ -43,8 +61,19 @@ public class OrganisationOverviewTest
             .Which.Url.Should().Be("/page-not-found");
     }
 
-    private static CO.CDP.Organisation.WebApiClient.Organisation GivenOrganisationClientModel(Guid? id)
+    private static CO.CDP.Organisation.WebApiClient.Organisation GivenOrganisationClientModel(Guid? id, ICollection<PartyRole>? pendingRoles = null)
     {
-        return new CO.CDP.Organisation.WebApiClient.Organisation(additionalIdentifiers: null, addresses: null, contactPoint: null, id: id ?? Guid.NewGuid(), identifier: null, name: "Test Org", roles: [], details: new Details(approval: null, pendingRoles: []));
+        return new CO.CDP.Organisation.WebApiClient.Organisation(
+            additionalIdentifiers: null,
+            addresses: null,
+            contactPoint: null,
+            id: id ?? Guid.NewGuid(),
+            identifier: null,
+            name: "Test Org",
+            roles: [],
+            details: new Details(
+                approval: null,
+                pendingRoles: pendingRoles != null ? pendingRoles : []
+            ));
     }
 }
