@@ -6,9 +6,9 @@ using FluentAssertions;
 using IdentityModel;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Logging;
 using Moq;
 using System.Security.Claims;
 
@@ -298,7 +298,7 @@ public class OneLoginTest
             personClientMock.Object,
             sessionMock.Object,
             oneLoginSessionManagerMock.Object,
-            oneLoginAuthorityMock.Object)
+            oneLoginAuthorityMock.Object, new Mock<ILogger<OneLoginModel>>().Object)
         { PageAction = pageAction };
     }
 }

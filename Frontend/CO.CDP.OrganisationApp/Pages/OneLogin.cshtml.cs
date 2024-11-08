@@ -19,7 +19,8 @@ public class OneLoginModel(
     IPersonClient personClient,
     ISession session,
     IOneLoginSessionManager oneLoginSessionManager,
-    IOneLoginAuthority oneLoginAuthority) : PageModel
+    IOneLoginAuthority oneLoginAuthority,
+    ILogger<OneLoginModel> logger) : PageModel
 {
     [BindProperty(SupportsGet = true)]
     public required string PageAction { get; set; }
@@ -37,16 +38,29 @@ public class OneLoginModel(
 
     public async Task<IActionResult> OnPostAsync(string logout_token)
     {
+        logger.LogInformation("One Login page post endpoint requested. {PageAction} {Token}", PageAction, logout_token);
+
         if (PageAction.ToLower() != "back-channel-sign-out" || string.IsNullOrWhiteSpace(logout_token))
         {
+            logger.LogInformation("One Login page post endpoint returns BadRequest response. {PageAction} {Token}", PageAction, logout_token);
+
             return BadRequest();
         }
 
         var urn = await oneLoginAuthority.ValidateLogoutToken(logout_token);
 
-        if (string.IsNullOrWhiteSpace(urn)) return BadRequest();
+        if (string.IsNullOrWhiteSpace(urn))
+        {
+            logger.LogInformation("One Login page post endpoint returns BadRequest response, because unable to validate logout token. {Token}",
+                logout_token);
+
+            return BadRequest();
+        }
 
         oneLoginSessionManager.AddToSignedOutSessionsList(urn);
+
+        logger.LogInformation("One Login page post endpoint process request successfully and added user {URN} to the signed-out sessions list. {Token}",
+            urn, logout_token);
 
         return Page();
     }
