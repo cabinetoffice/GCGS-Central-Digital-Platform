@@ -85,12 +85,14 @@ public class SupplierVatQuestionModel(IOrganisationClient organisationClient,
                 try
                 {
                     await LookupOrganisationAsync();
+                    ModelState.AddModelError(nameof(VatNumber), "The VAT Number entered has been used by another Organisation. Please check the VAT Number and re-enter.");
+                    return Page();
                 }
                 catch (Exception orgApiException) when (orgApiException is CO.CDP.Organisation.WebApiClient.ApiException && ((CO.CDP.Organisation.WebApiClient.ApiException)orgApiException).StatusCode == 404)
                 {
                     try
                     {
-                        await LookupEntityVerificationAsync();
+                        await LookupEntityVerificationAsync();                      
                     }
                     catch (Exception evApiException) when (evApiException is EntityVerificationClient.ApiException && ((EntityVerificationClient.ApiException)evApiException).StatusCode == 404)
                     {

@@ -32,27 +32,6 @@ resource "aws_cloudwatch_event_target" "service_version_slack_notification" {
   rule     = var.event_rule_ci_service_version_updated_name
 }
 
-resource "aws_cloudwatch_event_rule" "deployment_pipeline" {
-
-  name        = "${local.name_prefix}-ci-deployment-pipeline"
-  description = "CloudWatch Event rule to detect deployment Pipeline events"
-
-  event_pattern = jsonencode({
-    "source" : ["aws.codepipeline"],
-    "detail-type" : [
-      "CodePipeline Stage Execution State Change",
-    ],
-  })
-
-  tags = var.tags
-}
-
-resource "aws_cloudwatch_event_target" "deployment_pipeline_slack_notification" {
-  arn      = aws_sfn_state_machine.slack_notification.arn
-  role_arn = var.role_cloudwatch_events_arn
-  rule     = aws_cloudwatch_event_rule.deployment_pipeline.name
-}
-
 resource "aws_cloudwatch_event_rule" "deployment_codebuild" {
 
   name        = "${local.name_prefix}-ci-deployment-codebuild"
@@ -95,7 +74,7 @@ resource "aws_cloudwatch_event_target" "deployment_ecs_slack_notification" {
   rule     = aws_cloudwatch_event_rule.deployment_ecs.name
 }
 
-resource "aws_cloudwatch_event_rule" "deployment_pipeline_unified_slack_notification" {
+resource "aws_cloudwatch_event_rule" "deployment_pipeline" {
 
   name        = "${local.name_prefix}-ci-deployment-pipeline-unified"
   description = "CloudWatch Event rule to detect deployment pipeline events"
@@ -108,8 +87,8 @@ resource "aws_cloudwatch_event_rule" "deployment_pipeline_unified_slack_notifica
   tags = var.tags
 }
 
-resource "aws_cloudwatch_event_target" "deployment_pipeline_unified_slack_notification" {
-  arn      = aws_sfn_state_machine.slack_unified_notification.arn
+resource "aws_cloudwatch_event_target" "deployment_pipeline_slack_notification" {
+  arn      = aws_sfn_state_machine.slack_notification_middleman.arn
   role_arn = var.role_cloudwatch_events_arn
-  rule     = aws_cloudwatch_event_rule.deployment_pipeline_unified_slack_notification.name
+  rule     = aws_cloudwatch_event_rule.deployment_pipeline.name
 }
