@@ -195,7 +195,8 @@ public static class DataSharingFactory
                 "12345",
                 null,
                 null,
-                ConnectedEntity.ConnectedEntityType.Individual
+                ConnectedEntity.ConnectedEntityType.Individual,
+                ConnectedOrganisationCategory.RegisteredCompany
             )
         ];
     }

@@ -18,7 +18,8 @@ public record ConnectedPersonInformation
     string? CompanyHouseNumber,
     ConnectedIndividualTrust? IndividualTrust,
     ConnectedOrganisation? Organisation,
-    OrganisationInformation.Persistence.ConnectedEntity.ConnectedEntityType EntityType
+    OrganisationInformation.Persistence.ConnectedEntity.ConnectedEntityType EntityType,
+    ConnectedOrganisationCategory ConnectedOrganisationCategoryType
 );
 
 public record ConnectedIndividualTrust

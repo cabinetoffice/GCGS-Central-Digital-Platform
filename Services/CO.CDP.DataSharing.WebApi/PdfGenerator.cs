@@ -155,7 +155,7 @@ public class PdfGenerator : IPdfGenerator
                 {
                     if (!string.IsNullOrEmpty(person.Organisation?.Name))
                     {
-                        col.Item().Element(container => AddTwoColumnRow(container, "Type", "Organisation"));
+                        col.Item().Element(container => AddTwoColumnRow(container, "Type", GetFriendlyEntityTypeText(person.EntityType)));
                     }
                     else
                     {
@@ -165,7 +165,7 @@ public class PdfGenerator : IPdfGenerator
 
                 if (!string.IsNullOrEmpty(person.Organisation?.Name))
                 {
-                    col.Item().Element(container => AddTwoColumnRow(container, "Category", GetFriendlyEntityTypeText(person.EntityType)));
+                    col.Item().Element(container => AddTwoColumnRow(container, "Category", GetFriendlyOrganisationCategoryText(person.ConnectedOrganisationCategoryType)));
                 }
                 else if (!string.IsNullOrEmpty(person.ToString()))
                 {
@@ -202,6 +202,26 @@ public class PdfGenerator : IPdfGenerator
                     });
                 }
 
+                if (person.Organisation != null)
+                {
+                    if (person.Organisation.ControlConditions.Count != 0)
+                    {
+                        col.Item().Element(container =>
+                        {
+                            var controlConditionsText = string.Join(", ", person.Organisation.ControlConditions.Select(condition =>
+                            {
+                                if (Enum.TryParse(condition, out ControlCondition parsedCondition))
+                                {
+                                    return GetFriendlyControlConditionTypeText(parsedCondition);
+                                }
+                                return condition;
+                            }));
+
+                            AddTwoColumnRow(container, "Control conditions", controlConditionsText);
+                        });
+                    }
+                }
+
                 if (person.ControlConditions.Count != 0)
                 {
                     col.Item().Element(container =>
@@ -231,6 +251,27 @@ public class PdfGenerator : IPdfGenerator
                     if (person.IndividualTrust.DateOfBirth != null)
                         col.Item().Element(container => AddTwoColumnRow(container, "Date of birth", person.IndividualTrust.DateOfBirth?.ToString("dd MMMM yyyy")));
                 }
+
+                if (person.IndividualTrust != null)
+                {
+                    if (person.IndividualTrust.ControlConditions.Count != 0)
+                    {
+                        col.Item().Element(container =>
+                        {
+                            var controlConditionsText = string.Join(", ", person.IndividualTrust.ControlConditions.Select(condition =>
+                            {
+                                if (Enum.TryParse(condition, out ControlCondition parsedCondition))
+                                {
+                                    return GetFriendlyControlConditionTypeText(parsedCondition);
+                                }
+                                return condition;
+                            }));
+
+                            AddTwoColumnRow(container, "Control conditions", controlConditionsText);
+                        });
+                    }
+                }
+
             }
         }
         else
@@ -307,6 +348,19 @@ public class PdfGenerator : IPdfGenerator
         };
     }
 
+    private string GetFriendlyOrganisationCategoryText(OrganisationInformation.Persistence.ConnectedEntity.ConnectedOrganisationCategory organisationCategory)
+    {
+        return organisationCategory switch
+        {
+            OrganisationInformation.Persistence.ConnectedEntity.ConnectedOrganisationCategory.RegisteredCompany => "Registered company",
+            OrganisationInformation.Persistence.ConnectedEntity.ConnectedOrganisationCategory.DirectorOrTheSameResponsibilities => "Director or individual with the same responsibilities",
+            OrganisationInformation.Persistence.ConnectedEntity.ConnectedOrganisationCategory.ParentOrSubsidiaryCompany => "Parent or subsidiary company",
+            OrganisationInformation.Persistence.ConnectedEntity.ConnectedOrganisationCategory.ACompanyYourOrganisationHasTakenOver => "A company your organisation has taken over",
+            OrganisationInformation.Persistence.ConnectedEntity.ConnectedOrganisationCategory.AnyOtherOrganisationWithSignificantInfluenceOrControl => "Any other organisation with significant influence or control",
+            _ => "Unknown category"
+        };
+    }
+
     private string GetFriendlyEntityTypeText(OrganisationInformation.Persistence.ConnectedEntity.ConnectedEntityType entityType)
     {
         return entityType switch
@@ -329,6 +383,19 @@ public class PdfGenerator : IPdfGenerator
     }
 
     private string GetFriendlyControlConditionTypeText(ControlCondition controlConditionType)
+    {
+        return controlConditionType switch
+        {
+            ControlCondition.OwnsShares => "Owns shares",
+            ControlCondition.None => "None",
+            ControlCondition.HasVotingRights => "Has voting rights",
+            ControlCondition.CanAppointOrRemoveDirectors => "Can appoint or remove directors",
+            ControlCondition.HasOtherSignificantInfluenceOrControl => "Has other dignificant influence or control",
+            _ => "Unknown control condition"
+        };
+    }
+
+    private string GetFriendlyOrganisationControlConditionTypeText(ControlCondition controlConditionType)
     {
         return controlConditionType switch
         {

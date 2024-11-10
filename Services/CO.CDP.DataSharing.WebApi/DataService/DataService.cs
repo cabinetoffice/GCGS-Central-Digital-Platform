@@ -66,13 +66,13 @@ public class DataService(IShareCodeRepository shareCodeRepository, IConnectedEnt
                     case FormQuestionType.YesOrNo:
                         {
                             pdfAnswerSet.QuestionAnswers.Add(new Tuple<string, string>($"{answer.Question.Title}",
-                                answer.OptionValue ?? "Not specified"));
+                                answer.OptionValue ?? (answer.BoolValue == true ? "Yes" : "Not specified")));
                             break;
                         }
                     case FormQuestionType.Date:
                         {
                             pdfAnswerSet.QuestionAnswers.Add(new Tuple<string, string>($"{answer.Question.Title}",
-                                answer.DateValue?.ToString("dd-MM-yyyy") ?? "Not specified"));
+                                answer.DateValue?.ToString("dd MMMM yyyy") ?? "Not specified"));
                             break;
                         }
                     case FormQuestionType.Url:
@@ -88,10 +88,21 @@ public class DataService(IShareCodeRepository shareCodeRepository, IConnectedEnt
                             break;
                         }
                     case FormQuestionType.Text:
+                        {
+                            pdfAnswerSet.QuestionAnswers.Add(new Tuple<string, string>($"{answer.Question.Title}:",
+                                answer.TextValue ?? "Not specified"));
+                            break;
+                        }
                     case FormQuestionType.MultiLine:
                         {
                             pdfAnswerSet.QuestionAnswers.Add(new Tuple<string, string>($"{answer.Question.Title}:",
                                 answer.TextValue ?? "Not specified"));
+                            break;
+                        }
+                    case FormQuestionType.GroupedSingleChoice:
+                        {
+                            pdfAnswerSet.QuestionAnswers.Add(new Tuple<string, string>($"{answer.Question.Title}:",
+                                GetTitleFromValue(answer.OptionValue ?? "Not specified")));
                             break;
                         }
                 }
@@ -195,6 +206,8 @@ public class DataService(IShareCodeRepository shareCodeRepository, IConnectedEnt
                         ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndiv :
                         ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForTrust);
 
+                var connectedOrganisationCategoryType = entity.Organisation?.Category ?? ConnectedOrganisationCategory.RegisteredCompany;
+
                 var individualTrust = entity.IndividualOrTrust != null ? new ConnectedIndividualTrust(
                     entity.IndividualOrTrust.FirstName,
                     entity.IndividualOrTrust.LastName,
@@ -240,7 +253,8 @@ public class DataService(IShareCodeRepository shareCodeRepository, IConnectedEnt
                     entity.CompanyHouseNumber,
                     individualTrust,
                     organisation,
-                    entity.EntityType
+                    entity.EntityType,
+                    connectedOrganisationCategoryType
                 ));
             }
         }
@@ -262,5 +276,23 @@ public class DataService(IShareCodeRepository shareCodeRepository, IConnectedEnt
             }
         }
         return attachedDocuments;
+    }
+
+    private static string GetTitleFromValue(string value)
+    {
+        return value switch
+        {
+            "acting_improperly" => "Acting improperly in procurement",
+            "breach_of_contract" => "Breach of contract and poor performance",
+            "environmental_misconduct" => "Environmental misconduct",
+            "infringement_of_competition" => "Infringement of Competition Act 1998, under Chapter II prohibition",
+            "insolvency_bankruptcy" => "Insolvency or bankruptcy",
+            "labour_market_misconduct" => "Labour market misconduct",
+            "competition_law_infringements" => "Potential competition and competition law infringements",
+            "professional_misconduct" => "Professional misconduct",
+            "substantial_part_business" => "Suspension or ceasing to carry on all or a substantial part of a business",
+            "Not specified" => "Not specified",
+            _ => "Unknown"
+        };
     }
 }
