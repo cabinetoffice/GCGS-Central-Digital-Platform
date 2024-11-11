@@ -53,7 +53,7 @@
                         </dd>
                         <authorize scope="@OrgScopeRequirement.Editor">
                             <dd class="govuk-summary-list__actions">
-                                <a class="govuk-link govuk-link--no-visited-state" href="/organisation/@Model.Id/name">@StaticTextResource.Global_Change<span class="govuk-visually-hidden"> @StaticTextResource.Organisation_OrganisationName</span></a>
+                                <a class="govuk-link govuk-link--no-visited-state" href="/organisation/@Model.Id/name">@Html.Raw(@StaticTextResource.Organisation_ChangeName)</a>
                             </dd>
                         </authorize>
                     </div>
@@ -88,7 +88,7 @@
                         </dd>
                         <authorize scope="@OrgScopeRequirement.Editor">
                             <dd class="govuk-summary-list__actions">
-                                <a class="govuk-link govuk-link--no-visited-state" href="/organisation/@Model.Id/identifiers">@StaticTextResource.Global_Add<span class="govuk-visually-hidden"> @StaticTextResource.Organisation_Address</span></a>
+                                <a class="govuk-link govuk-link--no-visited-state" href="/organisation/@Model.Id/identifiers">@Html.Raw(StaticTextResource.Organisation_AddAddress)</a>
                             </dd>
                         </authorize>
                     </div>
@@ -102,7 +102,7 @@
                         </dd>
                         <authorize scope="@OrgScopeRequirement.Editor">
                             <dd class="govuk-summary-list__actions">
-                                <a class="govuk-link govuk-link--no-visited-state" href="/organisation/@Model.Id/email">@StaticTextResource.Global_Change<span class="govuk-visually-hidden"> @StaticTextResource.Organisation_OrganisationEmail</span></a>
+                                <a class="govuk-link govuk-link--no-visited-state" href="/organisation/@Model.Id/email">@Html.Raw(StaticTextResource.Organisation_ChangeEmail)</a>
                             </dd>
                         </authorize>
                     </div>
@@ -125,7 +125,7 @@
                             </dd>
                             <authorize scope="@OrgScopeRequirement.Editor">
                                 <dd class="govuk-summary-list__actions">
-                                    <a class="govuk-link govuk-link--no-visited-state" href="/organisation/@Model.Id/address/@(registeredAddress.Country == Country.UKCountryCode ? "uk" : "non-uk")?frm-overview">@StaticTextResource.Global_Change<span class="govuk-visually-hidden"> @StaticTextResource.Organisation_OrganisationAddress</span></a>
+                                    <a class="govuk-link govuk-link--no-visited-state" href="/organisation/@Model.Id/address/@(registeredAddress.Country == Country.UKCountryCode ? "uk" : "non-uk")?frm-overview">@Html.Raw(StaticTextResource.Organisation_ChangeAddress)</a>
                                 </dd>
                             </authorize>
                         </div>
@@ -144,7 +144,7 @@
                 @if (organisationDetails.IsBuyer())
                 {
                     <h3 class="govuk-heading-s govuk-!-margin-bottom-3">
-                        <a class="govuk-link" href="/organisation/@RouteData.Values["id"]/manage-api-keys">@StaticTextResource.Organisation_ManageApiKeys@(isViewer ? " @StaticTextResource.Global_View" : " @StaticTextResource.Global_Manage")</a>
+                        <a class="govuk-link" href="/organisation/@RouteData.Values["id"]/manage-api-keys">@(isViewer ? StaticTextResource.Organisation_ViewApiKeys : StaticTextResource.Organisation_ManageApiKeys) API keys@(organisationDetails.IsTenderer() ? StaticTextResource.Organisation_ApiKeysForBuyers : "")</a>
                     </h3>
 
                     <p class="govuk-body">@StaticTextResource.Organisation_CreateApiKey</p>

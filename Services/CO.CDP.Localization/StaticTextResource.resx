@@ -153,8 +153,8 @@
   <data name="Organisation_OrganisationName" xml:space="preserve">
     <value>Organisation name</value>
   </data>
-  <data name="Global_Change" xml:space="preserve">
-    <value>Change</value>
+  <data name="Organisation_ChangeName" xml:space="preserve">
+    <value>Change&lt;span class="govuk-visually-hidden"&gt; the organisation name&lt;/span&gt;</value>
   </data>
   <data name="Organisation_OrganisationIdentifier" xml:space="preserve">
     <value>Organisation identifier</value>
@@ -162,14 +162,20 @@
   <data name="Organisation_PponGenerationPending" xml:space="preserve">
     <value>PPON generation pending.</value>
   </data>
-  <data name="Global_Add" xml:space="preserve">
-    <value>Add</value>
-  </data>
   <data name="Organisation_Address" xml:space="preserve">
     <value>address</value>
   </data>
+  <data name="Organisation_AddAddress" xml:space="preserve">
+    <value>Add&lt;span class="govuk-visually-hidden"&gt; address&lt;/span&gt;</value>
+  </data>
+  <data name="Organisation_ChangeAddress" xml:space="preserve">
+    <value>Change&lt;span class="govuk-visually-hidden"&gt; address&lt;/span&gt;</value>
+  </data>
   <data name="Organisation_OrganisationEmail" xml:space="preserve">
     <value>Organisation email</value>
+  </data>
+  <data name="Organisation_ChangeEmail" xml:space="preserve">
+    <value>Change&lt;span class="govuk-visually-hidden"&gt; the organisation email</value>
   </data>
   <data name="Organisation_OrganisationAddress" xml:space="preserve">
     <value>Organisation address</value>
@@ -180,14 +186,14 @@
   <data name="Organisation_CompleteAndShareSupplierInformation" xml:space="preserve">
     <value>Complete and share your supplier information to bid for procurements.</value>
   </data>
-  <data name="Organisation_ManageApiKeys" xml:space="preserve">
-    <value>Manage API keys</value>
-  </data>
-  <data name="Global_View" xml:space="preserve">
+  <data name="Organisation_ViewApiKeys" xml:space="preserve">
     <value>View</value>
   </data>
-  <data name="Global_Manage" xml:space="preserve">
+  <data name="Organisation_ManageApiKeys" xml:space="preserve">
     <value>Manage</value>
+  </data>
+  <data name="Organisation_ApiKeysForBuyers" xml:space="preserve">
+    <value> (for Buyers)</value>
   </data>
   <data name="Organisation_CreateApiKey" xml:space="preserve">
     <value>Create an API key and share it with the e-Sender you use to publish procurement notices.</value>
