@@ -1365,7 +1365,13 @@ profile (has to be created manually).</p>
 <p>Generally speaking, keys are either "global" in that they are not unique to a particular section and may appear anywhere on the service - for example <code>Global_Continue</code> represents the word <code>Continue</code> on the buttons that appear across the site. Or they can be namespaced to a specific section of the service such as <code>BasicInformation_SectionTitle</code>.</p>
 </div>
 <div class="paragraph">
-<p>Use Underscores_To_Separate_Words and not dots or hyphens. This ensures that the key is the same whether you are using the strongly typed <code>StaticTextResource</code> class to access keys like <code>StaticTextResource.Global_Back</code>, or if you are using <code>@inject IHtmlLocalizer&lt;StaticTextResource&gt; Localizer</code> to access keys like <code>Localizer["Global_Back"]</code></p>
+<p>Use Underscores_To_Separate and not dots or hyphens. This ensures that the key is the same whether you are using the strongly typed <code>StaticTextResource</code> class to access keys like <code>StaticTextResource.Global_Back</code>, or if you are using <code>@inject IHtmlLocalizer&lt;StaticTextResource&gt; Localizer</code> to access keys like `Localizer["Global_Back"]</p>
+</div>
+<div class="paragraph">
+<p>Underscores should be used to separate "sections" of the key. And CamelCase should be used within those sections. So for example the key <code>OrganisationRegistration_EnterOrganisationName_Heading</code>  represents a <code>Heading</code> within the <code>EnterOrganisationName</code> page in the <code>OrganisationRegistration</code> section of the service.</p>
+</div>
+<div class="paragraph">
+<p>"Section" could be anything from site section, page, area of the page, specific type of org that it applies to - whatever makes sense in the context of the key you are naming. Broadly though, each underscore represents an increase in specificity.</p>
 </div>
 <div class="paragraph">
 <p>This is purely a naming convention - there is no mechanism enforcing this. It requires developers to name things in an appropriate way.</p>
@@ -2614,7 +2620,7 @@ The main difference to SpecFlow is that it&#8217;s built on top of xUnit.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2024-11-08 16:08:37 UTC
+Last updated 2024-11-11 11:40:26 UTC
 </div>
 </div>
 </body>
