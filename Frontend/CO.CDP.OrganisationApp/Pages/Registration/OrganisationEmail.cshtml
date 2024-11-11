@@ -1,6 +1,7 @@
 @page
 @attribute [RazorCompiledItemMetadata("RouteTemplate", RegistrationStepModel.OrganisationEmailPage)]
 @model CO.CDP.OrganisationApp.Pages.Registration.OrganisationEmailModel
+@using CO.CDP.Localization
 
 @{
     ViewData["Title"] = Html.DisplayNameFor(m => m.EmailAddress);
@@ -15,7 +16,7 @@
 }
 
 <a href="@backLink" class="govuk-back-link">
-    Back
+    @StaticTextResource.Global_Back
 </a>
 
 <main class="govuk-main-wrapper" id="main-content">
@@ -39,7 +40,7 @@
                             </label>
                         </h1>
 
-                        <div id="hint" class="govuk-hint">Where possible, use a shared inbox that other team members can access</div>
+                        <div id="hint" class="govuk-hint">@StaticTextResource.OrganisationRegistration_EnterOrganisationEmail_Hint</div>
 
                         <div class="govuk-form-group govuk-!-width-two-thirds @(emailAddressHasError ? "govuk-form-group--error" : "")">
                             @if (emailAddressHasError)
@@ -57,7 +58,7 @@
                 </div>
 
                 <govuk-button>
-                    Continue
+                    @StaticTextResource.Global_Continue
                 </govuk-button>
 
             </form>

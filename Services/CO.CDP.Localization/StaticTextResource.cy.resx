@@ -135,6 +135,9 @@
   <data name="BasicInformation_SectionTitle" xml:space="preserve">
     <value>Gwybodaeth sylfaenol</value>
   </data>
+  <data name="Global_Back" xml:space="preserve">
+    <value>Yn ôl</value>
+  </data>
   <data name="OrganisationRegistration_EnterOrganisationName_Heading" xml:space="preserve">
     <value>Rhowch enw’r sefydliad</value>
   </data>
@@ -143,5 +146,41 @@
   </data>
   <data name="Global_Continue" xml:space="preserve">
     <value>Parhau</value>
+  </data>
+  <data name="OrganisationRegistration_OrganisationType_Heading" xml:space="preserve">
+    <value>Beth ydych chi am gofrestru eich sefydliad fel?</value>
+  </data>
+  <data name="OrganisationRegistration_OrganisationType_Buyer" xml:space="preserve">
+    <value>Prynwr</value>
+  </data>
+  <data name="OrganisationRegistration_OrganisationType_Supplier" xml:space="preserve">
+    <value>Cyflenwr</value>
+  </data>
+  <data name="OrganisationRegistration_OrganisationType_Buyer_Hint" xml:space="preserve">
+    <value>Awdurdod contractio sy’n cyhoeddi hysbysiadau i brynu nwyddau, gwaith, gwasanaethau neu gyfleustodau</value>
+  </data>
+  <data name="OrganisationRegistration_OrganisationType_Supplier_Hint" xml:space="preserve">
+    <value>Sefydliad neu unig fasnachwr sy’n chwilio am dendrau ac yn cyflwyno cynigion i gyflenwi nwyddau, gwaith, gwasanaethau neu gyfleustodau</value>
+  </data>
+  <data name="OrganisationRegistration_CompanyHouseNumberQuestion_Heading" xml:space="preserve">
+    <value>A oes gan eich sefydliad rif Tŷ'r Cwmnïau?</value>
+  </data>
+  <data name="Global_Yes" xml:space="preserve">
+    <value>Ydw</value>
+  </data>
+  <data name="Global_No" xml:space="preserve">
+    <value>Nac ydw</value>
+  </data>
+  <data name="Global_ErrorSummary_Heading" xml:space="preserve">
+    <value>Mae yna broblem</value>
+  </data>
+  <data name="OrganisationRegistration_EnterOrganisationEmail_Heading" xml:space="preserve">
+    <value>Rhowch gyfeiriad e-bost eich sefydliad</value>
+  </data>
+  <data name="Global_EmailAddress_Error" xml:space="preserve">
+    <value>Rhowch gyfeiriad e-bost yn y fformat cywir, fel enw@enghraifft.com</value>
+  </data>
+  <data name="OrganisationRegistration_EnterOrganisationEmail_Hint" xml:space="preserve">
+    <value>Lle bo modd, defnyddiwch fewnflwch a rennir y gall aelodau eraill y tîm gael mynediad iddo</value>
   </data>
 </root>

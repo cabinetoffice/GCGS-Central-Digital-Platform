@@ -1,9 +1,10 @@
 @page
 @attribute [RazorCompiledItemMetadata("RouteTemplate", RegistrationStepModel.OrganisationHasCompanyHouseNumberPage)]
 @model CO.CDP.OrganisationApp.Pages.Registration.CompanyHouseNumberQuestionModel
+@using CO.CDP.Localization
 
 @{
-    ViewData["Title"] = "Does your organisation have a Companies House number?";
+    ViewData["Title"] = StaticTextResource.OrganisationRegistration_CompanyHouseNumberQuestion_Heading;
     var companiesHouseNumberHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.HasCompaniesHouseNumber)).HasInnerHtml
         || ((TagBuilder)Html.ValidationMessageFor(m => m.CompaniesHouseNumber)).HasInnerHtml;
 
@@ -15,7 +16,7 @@
     }
 }
 <a href="@backLink" class="govuk-back-link">
-    Back
+    @StaticTextResource.Global_Back
 </a>
 
 <main class="govuk-main-wrapper" id="main-content">
@@ -40,7 +41,7 @@
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input" id="YES" name="HasCompaniesHouseNumber" type="radio"
                                        value="true" data-aria-controls="conditional-YES" @(Model.HasCompaniesHouseNumber == true ? "checked" : "")>
-                                <label class="govuk-label govuk-radios__label" for="YES">Yes</label>
+                                <label class="govuk-label govuk-radios__label" for="YES">@StaticTextResource.Global_Yes</label>
                             </div>
 
                             <div class="govuk-radios__conditional" id="conditional-YES">
@@ -55,12 +56,12 @@
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input" id="NO" name="HasCompaniesHouseNumber" type="radio"
                                        value="false" @(Model.HasCompaniesHouseNumber == false ? "checked" : "")>
-                                <label class="govuk-label govuk-radios__label" for="NO">No</label>
+                                <label class="govuk-label govuk-radios__label" for="NO">@StaticTextResource.Global_No</label>
                             </div>
                         </div>
                     </fieldset>
                 </div>
-                <govuk-button>Continue</govuk-button>
+                <govuk-button>@StaticTextResource.Global_Continue</govuk-button>
             </form>
         </div>
     </div>

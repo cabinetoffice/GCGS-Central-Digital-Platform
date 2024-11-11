@@ -1,6 +1,7 @@
 @page
 @attribute [RazorCompiledItemMetadata("RouteTemplate", RegistrationStepModel.BuyerDevolvedRegulationPage)]
 @model BuyerDevolvedRegulationModel
+@using CO.CDP.Localization
 
 @{
     ViewData["Title"] = "Do devolved regulations apply to your organisation?";
@@ -41,13 +42,13 @@
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input" id="devolved-yes" name="Devolved" type="radio" value="true" @(Model.Devolved == true ? "checked" : "")>
                                 <label class="govuk-label govuk-radios__label" for="devolved-yes">
-                                    Yes
+                                    @StaticTextResource.Global_Yes
                                 </label>
                             </div>
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input" id="devolved-na" name="Devolved" type="radio" value="false" @(Model.Devolved == false ? "checked" : "")>
                                 <label class="govuk-label govuk-radios__label" for="devolved-na">
-                                    No
+                                    @StaticTextResource.Global_No
                                 </label>
                             </div>
                         </div>
@@ -55,7 +56,7 @@
                 </div>
                 <a href="/registration/buyer-select-devolved-regulations">
                     <govuk-button>
-                        Continue
+                        @StaticTextResource.Global_Continue
                     </govuk-button>
                 </a>
             </form>
