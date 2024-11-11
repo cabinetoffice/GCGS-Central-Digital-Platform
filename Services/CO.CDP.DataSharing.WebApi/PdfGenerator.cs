@@ -130,7 +130,8 @@ public class PdfGenerator : IPdfGenerator
 
                 if (person.Organisation != null)
                 {
-                    col.Item().Text("Organisation Information:").Bold();
+                    col.Item().Text("Connected Organisation Information:").Bold();
+                    col.Item().PaddingBottom(10);
                     if (!string.IsNullOrEmpty(person.Organisation.Name))
                         col.Item().Element(container => AddTwoColumnRow(container, "Name", person.Organisation.Name));
                     if (!string.IsNullOrEmpty(person.Organisation.RegisteredLegalForm))
@@ -293,12 +294,16 @@ public class PdfGenerator : IPdfGenerator
 
         if (additionalIdentifiers.Any())
         {
-            foreach (var identifier in additionalIdentifiers.Where(i => i.Scheme != "VAT" && i.Uri != null))
+            foreach (var identifier in additionalIdentifiers.Where(i => i.Scheme != "VAT"))
             {
                 col.Item().LineHorizontal(1);
 
+
+                if (!string.IsNullOrEmpty(identifier.Id))
+                    col.Item().Element(container => AddTwoColumnRow(container, "Identifier id", identifier.Id));
+
                 if (!string.IsNullOrEmpty(identifier.Scheme))
-                    col.Item().Element(container => AddTwoColumnRow(container, "Scheme", identifier.Scheme));
+                    col.Item().Element(container => AddTwoColumnRow(container, "Scheme", GetOrganisationSchemeTitle(identifier.Scheme)));
 
                 if (!string.IsNullOrEmpty(identifier.Scheme))
                     col.Item().Element(container => AddTwoColumnRow(container, "Legal name", identifier.LegalName));
@@ -395,6 +400,27 @@ public class PdfGenerator : IPdfGenerator
             ControlCondition.CanAppointOrRemoveDirectors => "Can appoint or remove directors",
             ControlCondition.HasOtherSignificantInfluenceOrControl => "Has other dignificant influence or control",
             _ => "Unknown control condition"
+        };
+    }
+
+    private static string GetOrganisationSchemeTitle(string value)
+    {
+        return value.ToUpper() switch
+        {
+            "GB-COH" => "Companies House Number",
+            "GB-CHC" => "Charity Commission for England & Wales Number",
+            "GB-SC" => "Scottish Charity Regulator",
+            "GB-NIC" => "Charity Commission for Northern Ireland Number",
+            "GB-MPR" => "Mutuals Public Register Number",
+            "GG-RCE" => "Guernsey Registry Number",
+            "JE-FSC" => "Jersey Financial Services Commission Registry Number",
+            "IM-CR" => "Isle of Man Companies Registry Number",
+            "GB-NHS" => "National Health Service Organisations Registry Number",
+            "GB-UKPRN" => "UK Register of Learning Provider Number",
+            "VAT" => "VAT number",
+            "GB-PPON" => "Ppon",
+            "OTHER" => "Other / None",
+            _ => "Unknown"
         };
     }
 }
