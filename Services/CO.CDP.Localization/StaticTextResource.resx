@@ -141,6 +141,75 @@
   <data name="Global_Back" xml:space="preserve">
     <value>Back</value>
   </data>
+  <data name="Global_Important" xml:space="preserve">
+    <value>Important</value>
+  </data>
+  <data name="Organisation_BuyerRegistrationPendingApproval" xml:space="preserve">
+    <value>Buyer registration pending approval.</value>
+  </data>
+  <data name="Organisation_OrganisationDetails" xml:space="preserve">
+    <value>Organisation details</value>
+  </data>
+  <data name="Organisation_OrganisationName" xml:space="preserve">
+    <value>Organisation name</value>
+  </data>
+  <data name="Global_Change" xml:space="preserve">
+    <value>Change</value>
+  </data>
+  <data name="Organisation_OrganisationIdentifier" xml:space="preserve">
+    <value>Organisation identifier</value>
+  </data>
+  <data name="Organisation_PponGenerationPending" xml:space="preserve">
+    <value>PPON generation pending.</value>
+  </data>
+  <data name="Global_Add" xml:space="preserve">
+    <value>Add</value>
+  </data>
+  <data name="Organisation_Address" xml:space="preserve">
+    <value>address</value>
+  </data>
+  <data name="Organisation_OrganisationEmail" xml:space="preserve">
+    <value>Organisation email</value>
+  </data>
+  <data name="Organisation_OrganisationAddress" xml:space="preserve">
+    <value>Organisation address</value>
+  </data>
+  <data name="Organisation_CompleteSupplierInformation" xml:space="preserve">
+    <value>Complete supplier information</value>
+  </data>
+  <data name="Organisation_CompleteAndShareSupplierInformation" xml:space="preserve">
+    <value>Complete and share your supplier information to bid for procurements.</value>
+  </data>
+  <data name="Organisation_ManageApiKeys" xml:space="preserve">
+    <value>Manage API keys</value>
+  </data>
+  <data name="Global_View" xml:space="preserve">
+    <value>View</value>
+  </data>
+  <data name="Global_Manage" xml:space="preserve">
+    <value>Manage</value>
+  </data>
+  <data name="Organisation_CreateApiKey" xml:space="preserve">
+    <value>Create an API key and share it with the e-Sender you use to publish procurement notices.</value>
+  </data>
+  <data name="Organisation_ManageUsers" xml:space="preserve">
+    <value>Manage users</value>
+  </data>
+  <data name="Organisation_ViewAddRemoveUsers" xml:space="preserve">
+    <value>View, add or remove users.</value>
+  </data>
+  <data name="Organisation_RegisterAsSupplier" xml:space="preserve">
+    <value>Register as a supplier</value>
+  </data>
+  <data name="Organisation_SupplyGoodsServices" xml:space="preserve">
+    <value>If you also supply goods, works, services or utilities to the public sector.</value>
+  </data>
+  <data name="Organisation_GetProcurementGuidance" xml:space="preserve">
+    <value>Get procurement guidance on the</value>
+  </data>
+  <data name="Organisation_ProcurementPathwayService" xml:space="preserve">
+    <value>Procurement Pathway service (opens in new tab)</value>
+  </data>
   <data name="Supplier_SupplierInformationSummary_ConnectedPersonCount_Singular" xml:space="preserve">
     <value>{0} Connected person</value>
   </data>
