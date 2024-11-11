@@ -291,6 +291,23 @@ public class DataService(IShareCodeRepository shareCodeRepository, IConnectedEnt
             "competition_law_infringements" => "Potential competition and competition law infringements",
             "professional_misconduct" => "Professional misconduct",
             "substantial_part_business" => "Suspension or ceasing to carry on all or a substantial part of a business",
+
+            "adjustments_for_tax_arrangements" => "Adjustments for tax arrangements that are abusive",
+            "defeat_in_respect" => "Defeat in respect of notifiable tax arrangements",
+            "failure_to_cooperate" => "Failure to cooperate with an investigation",
+            "finding_by_HMRC" => "Finding by HMRC, in exercise of its powers in respect of VAT, of abusive practice",
+            "penalties_for_transactions" => "Penalties for transactions connected with VAT fraud and evasion of tax or duty",
+            "penalties_payable" => "Penalties payable for errors in tax documentation and failure to notify, and certain VAT and excise",
+
+            "ancillary_offences_aiding" => "Ancillary offences - aiding, abetting, encouraging or assisting crime",
+            "cartel_offences" => "Cartel offences",
+            "corporate_manslaughter" => "Corporate manslaughter or homicide",
+            "labour_market" => "Labour market, slavery and human trafficking offences",
+            "organised_crime" => "Organised crime",
+            "tax_offences" => "Tax offences",
+            "terrorism_and_offences" => "Terrorism and offences having a terrorist connection",
+            "theft_fraud" => "Theft, fraud and bribery",
+
             "Not specified" => "Not specified",
             _ => "Unknown"
         };

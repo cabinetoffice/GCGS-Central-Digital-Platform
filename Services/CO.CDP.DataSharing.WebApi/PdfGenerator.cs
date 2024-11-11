@@ -29,9 +29,9 @@ public class PdfGenerator : IPdfGenerator
                 page.Content().Column(col =>
                 {
                     AddBasicInformationSection(col, basicInformation);
+                    AddAdditionalIdentifiersSection(col, additionalIdentifiers);
                     AddConnectedPersonInformationSection(col, connectedPersonInformation);
                     AddFormSections(col, supplierInformation.FormAnswerSetForPdfs);
-                    AddAdditionalIdentifiersSection(col, additionalIdentifiers);
                 });
 
                 page.Footer().AlignRight().Text(x =>
@@ -150,6 +150,9 @@ public class PdfGenerator : IPdfGenerator
 
                 if (person.DateOfBirth != null)
                     col.Item().Element(container => AddTwoColumnRow(container, "Date of birth", person.DateOfBirth?.ToString("dd MMMM yyyy")));
+
+                if (!string.IsNullOrEmpty(person.CompanyHouseNumber))
+                    col.Item().Element(container => AddTwoColumnRow(container, "Company House Number", person.CompanyHouseNumber));
 
                 if (!string.IsNullOrEmpty(person.PersonType.ToString()))
                 {
@@ -383,19 +386,6 @@ public class PdfGenerator : IPdfGenerator
     }
 
     private string GetFriendlyControlConditionTypeText(ControlCondition controlConditionType)
-    {
-        return controlConditionType switch
-        {
-            ControlCondition.OwnsShares => "Owns shares",
-            ControlCondition.None => "None",
-            ControlCondition.HasVotingRights => "Has voting rights",
-            ControlCondition.CanAppointOrRemoveDirectors => "Can appoint or remove directors",
-            ControlCondition.HasOtherSignificantInfluenceOrControl => "Has other dignificant influence or control",
-            _ => "Unknown control condition"
-        };
-    }
-
-    private string GetFriendlyOrganisationControlConditionTypeText(ControlCondition controlConditionType)
     {
         return controlConditionType switch
         {
