@@ -8,9 +8,11 @@
     var organisationNameHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.OrganisationName)).HasInnerHtml;
 }
 
-<a href="/organisation/@Model.Id" class="govuk-back-link">
-    Back
-</a>
+@section BeforeContent {
+    <a href="/organisation/@Model.Id" class="govuk-back-link">
+        Back
+    </a>
+}
 
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">

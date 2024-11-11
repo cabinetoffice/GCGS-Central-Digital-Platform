@@ -10,7 +10,9 @@
     var scopesCsvString = string.Join(", ", filteredScopes);
 }
 
-<a href="/organisation/@Model.Id/users/add-user" class="govuk-back-link">Back</a>
+@section BeforeContent {
+    <a href="/organisation/@Model.Id/users/add-user" class="govuk-back-link">Back</a>
+}
 
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-three-quarters">

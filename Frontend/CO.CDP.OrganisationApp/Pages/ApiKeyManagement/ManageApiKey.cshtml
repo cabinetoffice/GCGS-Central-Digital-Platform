@@ -15,7 +15,9 @@
     }
 }
 
-<a href="/organisation/@Model.Id" class="govuk-back-link">Back</a>
+@section BeforeContent {
+    <a href="/organisation/@Model.Id" class="govuk-back-link">Back</a>
+}
 
     <form class="form" method="post">
         <h1 class="govuk-heading-l">

@@ -9,9 +9,11 @@
     string IsSelected(SupplierType radioValue) => Model.SupplierType == radioValue ? "checked='checked'" : string.Empty;
 }
 
-<a href="@backLink" class="govuk-back-link">
-    Back
-</a>
+@section BeforeContent {
+    <a href="@backLink" class="govuk-back-link">
+        Back
+    </a>
+}
 
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">

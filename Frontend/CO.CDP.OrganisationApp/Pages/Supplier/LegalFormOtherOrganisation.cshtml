@@ -6,7 +6,9 @@
     var registeredOtherOrgHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.OtherOrganisation)).HasInnerHtml;
 }
 
-<a href="/organisation/@Model.Id/supplier-information/company-act-question?selected=false" class="govuk-back-link">Back</a>
+@section BeforeContent {
+    <a href="/organisation/@Model.Id/supplier-information/company-act-question?selected=false" class="govuk-back-link">Back</a>
+}
 
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">

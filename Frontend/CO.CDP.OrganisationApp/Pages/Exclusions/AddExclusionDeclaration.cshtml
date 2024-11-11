@@ -5,7 +5,9 @@
     ViewData["Title"] = "Add any mandatory and discretionary exclusions";
 }
 
-<a href="/organisation/@Model.OrganisationId/supplier-information" class="govuk-back-link">Back</a>
+@section BeforeContent {
+    <a href="/organisation/@Model.OrganisationId/supplier-information" class="govuk-back-link">Back</a>
+}
 
     <div class="govuk-grid-row">
 

@@ -7,7 +7,9 @@
     ViewData["Title"] = Model.Heading;
 }
 
-<a href="/organisation/@Model.OrganisationId/forms/@Model.FormId/sections/@Model.SectionId/summary" class="govuk-back-link">Back</a>
+@section BeforeContent {
+    <a href="/organisation/@Model.OrganisationId/forms/@Model.FormId/sections/@Model.SectionId/summary" class="govuk-back-link">Back</a>
+}
 
     <div class="govuk-grid-row">
 

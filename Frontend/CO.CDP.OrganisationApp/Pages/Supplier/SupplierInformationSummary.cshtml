@@ -36,9 +36,11 @@
     }
 }
 
-<a href="/organisation/@Model.Id" class="govuk-back-link">
-    @StaticTextResource.Global_Back
-</a>
+@section BeforeContent {
+    <a href="/organisation/@Model.Id" class="govuk-back-link">
+        @StaticTextResource.Global_Back
+    </a>
+}
 
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds govuk-body">

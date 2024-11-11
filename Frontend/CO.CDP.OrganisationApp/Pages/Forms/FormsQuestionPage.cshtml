@@ -25,7 +25,9 @@
     }
 }
 
-<a href="@backUrl" class="govuk-back-link">Back</a>
+@section BeforeContent {
+    <a href="@backUrl" class="govuk-back-link">Back</a>
+}
 
     <div class="govuk-grid-row">
         <div class="@(isCheckYourAnswersPage ? "govuk-grid-column-full" : "govuk-grid-column-two-thirds")">

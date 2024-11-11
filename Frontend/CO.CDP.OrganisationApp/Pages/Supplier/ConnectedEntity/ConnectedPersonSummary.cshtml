@@ -8,7 +8,9 @@
     var hasError = ((TagBuilder)Html.ValidationMessageFor(m => m.HasConnectedEntity)).HasInnerHtml;
 }
 
-<a href="/organisation/@Model.Id/supplier-information" class="govuk-back-link">Back</a>
+@section BeforeContent {
+    <a href="/organisation/@Model.Id/supplier-information" class="govuk-back-link">Back</a>
+}
 
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">

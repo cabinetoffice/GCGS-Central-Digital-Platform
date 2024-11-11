@@ -5,7 +5,9 @@
     var backUrl = $"/organisation/{Model.OrganisationId}/forms/{Model.FormId}/sections/{Model.SectionId}/share-codes-list-view";
 }
 
-<a href="@backUrl" class="govuk-back-link">Back</a>
+@section BeforeContent {
+    <a href="@backUrl" class="govuk-back-link">Back</a>
+}
 
     <div class="govuk-grid-column-ful-width">
         <div class="govuk-panel govuk-panel--confirmation">
