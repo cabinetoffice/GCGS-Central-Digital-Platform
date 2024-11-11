@@ -786,7 +786,7 @@ public class UpdateOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
     }
 
     [Fact]
-    public async Task Execute_ShouldSendEmail_WhenRejectedBuyerChangesSomethingOtherThanNameOrEmail()
+    public async Task Execute_ShouldNotSendEmail_WhenRejectedBuyerChangesSomethingOtherThanNameOrEmail()
     {
         var organisation = GivenOrganisation(pendingRoles: [PartyRole.Buyer], reviewedBy: GivenPerson(), reviewComment: "Terrible");
 
@@ -806,6 +806,52 @@ public class UpdateOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
         result.Should().BeTrue();
 
         _notifyClient.Verify(n => n.SendEmail(It.IsAny<EmailNotificationRequest>()), Times.Never);            
+    }
+
+    [Fact]
+    public async Task Execute_ShouldNotSendEmail_WhenApprovedBuyerChangesName()
+    {
+        var organisation = GivenOrganisation();
+
+        var updateOrganisation = new UpdateOrganisation
+        {
+            Type = OrganisationUpdateType.OrganisationName,
+            Organisation = new OrganisationInfo
+            {
+                OrganisationName = "Updated Name"
+            }
+        };
+
+        _organisationRepositoryMock.Setup(repo => repo.Find(It.IsAny<Guid>())).ReturnsAsync(organisation);
+
+        var result = await _useCase.Execute((Guid.NewGuid(), updateOrganisation));
+
+        result.Should().BeTrue();
+
+        _notifyClient.Verify(n => n.SendEmail(It.IsAny<EmailNotificationRequest>()), Times.Never);
+    }
+
+    [Fact]
+    public async Task Execute_ShouldNotSendEmail_WhenApprovedBuyerChangesEmail()
+    {
+        var organisation = GivenOrganisation();
+
+        var updateOrganisation = new UpdateOrganisation
+        {
+            Type = OrganisationUpdateType.OrganisationEmail,
+            Organisation = new OrganisationInfo
+            {
+                ContactPoint = new OrganisationContactPoint { Email = "foo@bar.com" }
+            }
+        };
+
+        _organisationRepositoryMock.Setup(repo => repo.Find(It.IsAny<Guid>())).ReturnsAsync(organisation);
+
+        var result = await _useCase.Execute((Guid.NewGuid(), updateOrganisation));
+
+        result.Should().BeTrue();
+
+        _notifyClient.Verify(n => n.SendEmail(It.IsAny<EmailNotificationRequest>()), Times.Never);
     }
 
     private Persistence.Organisation OrganisationWithOtherIdentifier =>
